@@ -869,9 +869,6 @@ Comprueba si Roblox funciona con [el lanzador original]({1}). Si no es así, ent
   <data name="Enums.BootstrapperIcon.IconEarly2015" xml:space="preserve">
     <value>A principios de 2015</value>
   </data>
-  <data name="Enums.BootstrapperIcon.IconFroststrapClassic" xml:space="preserve">
-    <value>Froststrap (Clásico)</value>
-  </data>
   <data name="Enums.BootstrapperIcon.IconLate2015" xml:space="preserve">
     <value>A finales de 2015</value>
   </data>
@@ -1258,7 +1255,7 @@ Haz clic en «Añadir cuenta» arriba para empezar</value>
     <value>Configura el aspecto de Froststrap.</value>
   </data>
   <data name="Menu.Appearance.Frequency" xml:space="preserve">
-    <value>Frecuencia:</value>
+    <value>Frecuencia</value>
   </data>
   <data name="Menu.Appearance.Icon.Description" xml:space="preserve">
     <value>Elige qué icono debe utilizar Froststrap.</value>
@@ -1267,7 +1264,7 @@ Haz clic en «Añadir cuenta» arriba para empezar</value>
     <value>Icono</value>
   </data>
   <data name="Menu.Appearance.Interval" xml:space="preserve">
-    <value>Intervalo:</value>
+    <value>Intervalo</value>
   </data>
   <data name="Menu.Appearance.Language.Description" xml:space="preserve">
     <value>Es necesario reiniciar la página para que los cambios surtan efecto. Es posible que parte del texto no se haya traducido al idioma seleccionado.</value>
@@ -1288,7 +1285,7 @@ Haz clic en «Añadir cuenta» arriba para empezar</value>
     <value>Vista previa</value>
   </data>
   <data name="Menu.Appearance.ResetDefault" xml:space="preserve">
-    <value>Restablecer los valores predeterminados</value>
+    <value>Restablecer valores predeterminados</value>
   </data>
   <data name="Menu.Appearance.StretchMode" xml:space="preserve">
     <value>Modo «Stretch»:</value>

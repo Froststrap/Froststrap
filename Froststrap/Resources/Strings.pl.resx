@@ -878,9 +878,6 @@ Sprawdź, czy Roblox działa z [oryginalnym programem uruchamiającym]({1}). Je�
   <data name="Enums.BootstrapperIcon.IconEarly2015" xml:space="preserve">
     <value>Początek 2015 roku</value>
   </data>
-  <data name="Enums.BootstrapperIcon.IconFroststrapClassic" xml:space="preserve">
-    <value>Froststrap (klasyczny)</value>
-  </data>
   <data name="Enums.BootstrapperIcon.IconLate2015" xml:space="preserve">
     <value>Pod koniec 2015 roku</value>
   </data>
@@ -1273,7 +1270,7 @@ Kliknij „Dodaj konto” powyżej, aby rozpocząć</value>
     <value>Skonfiguruj wygląd Froststrap.</value>
   </data>
   <data name="Menu.Appearance.Frequency" xml:space="preserve">
-    <value>Częstotliwość:</value>
+    <value>Częstotliwość</value>
   </data>
   <data name="Menu.Appearance.Icon.Description" xml:space="preserve">
     <value>Wybierz ikonę, której ma używać Froststrap.</value>
@@ -1282,7 +1279,7 @@ Kliknij „Dodaj konto” powyżej, aby rozpocząć</value>
     <value>Ikona</value>
   </data>
   <data name="Menu.Appearance.Interval" xml:space="preserve">
-    <value>Zakres:</value>
+    <value>Przedział</value>
   </data>
   <data name="Menu.Appearance.Language.Description" xml:space="preserve">
     <value>Aby zmiany zaczęły obowiązywać, konieczne jest ponowne uruchomienie strony. Niektóre fragmenty tekstu mogą nie zostać przetłumaczone na wybrany język.</value>
@@ -1986,7 +1983,7 @@ Chcesz to teraz usunąć?</value>
     <value>Poziom jakości przy dołączaniu do gry.</value>
   </data>
   <data name="Menu.GlobalSettings.StartQuality.Title" xml:space="preserve">
-    <value>Jakość początkowa</value>
+    <value>Jakość na początku</value>
   </data>
   <data name="Menu.GlobalSettings.StudioVolume.Description" xml:space="preserve">
     <value>Tom dla Roblox Studio.</value>
@@ -2239,7 +2236,7 @@ Czy chcesz zainstalować tę wtyczkę?</value>
     <value>Włącz tryb GameMode</value>
   </data>
   <data name="Menu.LinuxSettings.EnableHiDpi.Description" xml:space="preserve">
-    <value>Wymusza stosowanie natywnych opcji skalowania platformy o wysokiej rozdzielczości (DPI) podczas renderowania elementów interfejsu.</value>
+    <value>Wymusza domyślne opcje skalowania platformy o wysokiej rozdzielczości (DPI) podczas renderowania elementów interfejsu.</value>
   </data>
   <data name="Menu.LinuxSettings.EnableHiDpi.Title" xml:space="preserve">
     <value>Obsługa skalowania wyświetlaczy HiDPI</value>
@@ -2302,7 +2299,7 @@ Czy chcesz zainstalować tę wtyczkę?</value>
     <value>Zmienna</value>
   </data>
   <data name="Menu.LinuxSettings.VirtualDesktops.Description" xml:space="preserve">
-    <value>Utwórz osobne okno dla każdej instancji</value>
+    <value>Utwórz oddzielne okno dla każdej instancji</value>
   </data>
   <data name="Menu.LinuxSettings.VirtualDesktops.Title" xml:space="preserve">
     <value>Wirtualne pulpity</value>

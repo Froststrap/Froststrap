@@ -125,7 +125,7 @@
     <value>Sobre a Froststrap</value>
   </data>
   <data name="ActivityWatcher.LocationQueryFailed" xml:space="preserve">
-    <value>Não foi possível consultar a localização do servidor. Talvez você esteja entrando nas partidas muito rapidamente.</value>
+    <value>Não foi possível consultar a localização do servidor. Talvez você esteja entrando nos jogos muito rapidamente.</value>
   </data>
   <data name="AddCustomTheme.Title" xml:space="preserve">
     <value>Adicionar tema personalizado</value>
@@ -473,7 +473,7 @@ Deseja mudar para o canal padrão ({1})?</value>
     <value>Jogador</value>
   </data>
   <data name="Common.PresetFlagLists" xml:space="preserve">
-    <value>Listas de bandeiras predefinidas</value>
+    <value>Listas de sinalizadores predefinidas</value>
   </data>
   <data name="Common.Presets" xml:space="preserve">
     <value>Predefinições</value>
@@ -875,9 +875,6 @@ Verifique se o Roblox funciona com [o launcher original]({1}). Se não funcionar
   <data name="Enums.BootstrapperIcon.IconEarly2015" xml:space="preserve">
     <value>Início de 2015</value>
   </data>
-  <data name="Enums.BootstrapperIcon.IconFroststrapClassic" xml:space="preserve">
-    <value>Froststrap (Clássico)</value>
-  </data>
   <data name="Enums.BootstrapperIcon.IconLate2015" xml:space="preserve">
     <value>Final de 2015</value>
   </data>
@@ -1258,7 +1255,7 @@ Clique em “Adicionar conta” acima para começar</value>
     <value>Configure a aparência do Froststrap.</value>
   </data>
   <data name="Menu.Appearance.Frequency" xml:space="preserve">
-    <value>Frequência:</value>
+    <value>Frequência</value>
   </data>
   <data name="Menu.Appearance.Icon.Description" xml:space="preserve">
     <value>Escolha qual ícone o Froststrap deve usar.</value>
@@ -1267,7 +1264,7 @@ Clique em “Adicionar conta” acima para começar</value>
     <value>Ícone</value>
   </data>
   <data name="Menu.Appearance.Interval" xml:space="preserve">
-    <value>Intervalo:</value>
+    <value>Intervalo</value>
   </data>
   <data name="Menu.Appearance.Language.Description" xml:space="preserve">
     <value>É necessário reiniciar a página para que as alterações entrem em vigor. É possível que parte do texto não tenha sido traduzida para o idioma preferido.</value>
@@ -1580,7 +1577,7 @@ Por favor, não mexa nisso se não souber o que está fazendo</value>
     <value>Especifique o número de threads a ser usado para o download. Isso afeta apenas o Studio no Linux.</value>
   </data>
   <data name="Menu.Deployment.MultiThread.Title" xml:space="preserve">
-    <value>Download multithread</value>
+    <value>Download em múltiplos threads</value>
   </data>
   <data name="Menu.Deployment.OverrideHash.Description" xml:space="preserve">
     <value>Forçar o Roblox Studio a instalar e usar um hash de versão específico, em vez da versão mais recente.</value>
@@ -1716,7 +1713,7 @@ Deseja removê-lo agora?</value>
     <value>Qualidade do anti-aliasing (MSAA)</value>
   </data>
   <data name="Menu.FastFlags.Presets.OverrideGraphicQuality.Description" xml:space="preserve">
-    <value>Fixa a qualidade gráfica no nível selecionado. Observação: com essa configuração ativada, o controle deslizante de gráficos no menu do Roblox afetará apenas a distância de renderização no jogo.</value>
+    <value>Fixa a qualidade gráfica em um nível selecionado. Observação: com essa configuração ativada, o controle deslizante de gráficos no menu do Roblox afetará apenas a distância de renderização no jogo.</value>
   </data>
   <data name="Menu.FastFlags.Presets.OverrideGraphicQuality.Title" xml:space="preserve">
     <value>Substituir o nível de qualidade gráfica</value>
@@ -1782,7 +1779,7 @@ Deseja removê-lo agora?</value>
     <value>O nome do novo perfil não pode ficar em branco.</value>
   </data>
   <data name="Menu.FlagProfiles.NoProfileFound" xml:space="preserve">
-    <value>Não foram encontrados perfis.</value>
+    <value>Nenhum perfil encontrado.</value>
   </data>
   <data name="Menu.FlagProfiles.NoProfilesFound" xml:space="preserve">
     <value>Não foram encontrados perfis. Por favor, crie um perfil primeiro.</value>
@@ -1833,7 +1830,7 @@ Deseja removê-lo agora?</value>
     <value>Selecione um perfil para atualizar.</value>
   </data>
   <data name="Menu.FlagProfiles.Title" xml:space="preserve">
-    <value>Perfis de bandeiras rápidas</value>
+    <value>Perfis Fast Flag</value>
   </data>
   <data name="Menu.FlagProfiles.UpdateFailed" xml:space="preserve">
     <value>Falha ao atualizar o perfil:\n{0}</value>
@@ -1989,7 +1986,7 @@ Deseja removê-lo agora?</value>
     <value>Sensibilidade dos eixos X e Y para a perspectiva em terceira pessoa.</value>
   </data>
   <data name="Menu.GlobalSettings.ThirdPersonSensitivity.Title" xml:space="preserve">
-    <value>Sensibilidade na terceira pessoa</value>
+    <value>Sensibilidade em terceira pessoa</value>
   </data>
   <data name="Menu.GlobalSettings.Title" xml:space="preserve">
     <value>Configurações globais</value>
@@ -2221,7 +2218,7 @@ Deseja instalar o plugin?</value>
     <value>Modo de depuração</value>
   </data>
   <data name="Menu.LinuxSettings.EnableGameMode.Description" xml:space="preserve">
-    <value>O daemon de otimização GameMode da Feral Interactive é acionado durante os processos de inicialização dos jogos.</value>
+    <value>O daemon de otimização GameMode da Signals Feral Interactive intervém nos processos de inicialização dos jogos.</value>
   </data>
   <data name="Menu.LinuxSettings.EnableGameMode.Title" xml:space="preserve">
     <value>Ativar o GameMode</value>
@@ -2308,7 +2305,7 @@ Deseja instalar o plugin?</value>
     <value>Carregar</value>
   </data>
   <data name="Menu.ManualLogin.EnterCookie" xml:space="preserve">
-    <value>Por favor, insira um biscoito.</value>
+    <value>Insira um biscoito, por favor.</value>
   </data>
   <data name="Menu.ManualLogin.Instruction.1" xml:space="preserve">
     <value>Abra o site Roblox.com no seu navegador e faça login</value>
@@ -2350,7 +2347,7 @@ Deseja instalar o plugin?</value>
     <value>Aplicar aos cursores</value>
   </data>
   <data name="Menu.ModGenerator.ApplyEmoteWheel" xml:space="preserve">
-    <value>Aplicar à roda de emotes</value>
+    <value>Aplicar à roda de emoticons</value>
   </data>
   <data name="Menu.ModGenerator.ApplyShiftlock" xml:space="preserve">
     <value>Inscreva-se no Shiftlock</value>
@@ -2477,7 +2474,7 @@ Ela deve conter pelo menos uma das seguintes pastas: content, ExtraContent, Plat
     <value>Pré-visualização carregada</value>
   </data>
   <data name="Menu.Mods.Preview.Loading" xml:space="preserve">
-    <value>Carregando a pré-visualização da fonte...</value>
+    <value>Carregando a visualização da fonte...</value>
   </data>
   <data name="Menu.Mods.Preview.Loading.Glyphs" xml:space="preserve">
     <value>Carregando glifos...</value>
@@ -2829,7 +2826,7 @@ O aplicativo fechará esta janela assim que o login for concluído.</value>
     <value>Erro ao criar o atalho.</value>
   </data>
   <data name="Menu.Shortcuts.ExtractIcons.Description" xml:space="preserve">
-    <value>Permite que você use a variedade de ícones do Froststrap no Roblox para seus atalhos. [Veja como.]({0})</value>
+    <value>Permite que você use a variedade de ícones do Froststrap para o Roblox em seus atalhos. [Veja como.]({0})</value>
   </data>
   <data name="Menu.Shortcuts.ExtractIcons.Title" xml:space="preserve">
     <value>Extrair ícones do Roblox para uma pasta</value>

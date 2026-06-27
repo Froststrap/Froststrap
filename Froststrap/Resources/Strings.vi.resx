@@ -738,7 +738,7 @@ Sẽ sử dụng mặc định là {1}.</value>
     <comment>{0} is the element name (e.g. Button), {1} is the enum name (e.g. WindowCornerType), {2} is the value</comment>
   </data>
   <data name="CustomTheme.Errors.VersionNotNumber" xml:space="preserve">
-    <value>Phiên bản {0} không phải là một số</value>
+    <value>Phiên bản {0} không phải là một con số</value>
     <comment>{0} is the element name (e.g. Button)</comment>
   </data>
   <data name="CustomTheme.Errors.VersionNotRecognised" xml:space="preserve">
@@ -830,7 +830,7 @@ Nếu chưa, vui lòng báo cáo lỗi này qua một [vấn đề trên GitHub]
   <data name="Dialog.Exception.Info.2.Alt" xml:space="preserve">
     <value>Hãy kiểm tra [Froststrap Wiki]({0}) trước để xem liệu vấn đề này đã được khắc phục chưa.
 
-Nếu chưa, vui lòng báo cáo lỗi này cho những người quản trị nhánh này. KHÔNG báo cáo vấn đề này lên các vấn đề trên GitHub của Froststrap, vì đây là bản dựng không chính thức.</value>
+Nếu chưa, vui lòng báo cáo lỗi này cho nhóm quản trị của nhánh này. KHÔNG báo cáo vấn đề này lên các vấn đề trên GitHub của Froststrap, vì đây là bản dựng không chính thức.</value>
     <comment>&quot;fork&quot; in general means &quot;a variation of&quot; or &quot;a different version of&quot;. You can alternatively write the first sentence as &quot;...to the maintainers of this version.&quot;</comment>
   </data>
   <data name="Dialog.Exception.Report" xml:space="preserve">
@@ -886,9 +886,6 @@ Hãy kiểm tra xem Roblox có hoạt động với [trình khởi chạy gốc]
   </data>
   <data name="Enums.BootstrapperIcon.IconEarly2015" xml:space="preserve">
     <value>Đầu năm 2015</value>
-  </data>
-  <data name="Enums.BootstrapperIcon.IconFroststrapClassic" xml:space="preserve">
-    <value>Froststrap (Phiên bản cổ điển)</value>
   </data>
   <data name="Enums.BootstrapperIcon.IconLate2015" xml:space="preserve">
     <value>Cuối năm 2015</value>
@@ -1109,9 +1106,6 @@ Hãy kiểm tra xem Roblox có hoạt động với [trình khởi chạy gốc]
   <data name="Enums.Theme.Dark" xml:space="preserve">
     <value>Tối</value>
   </data>
-  <data name="Enums.Theme.Froststrap" xml:space="preserve">
-    <value>Dây buộc chống sương giá</value>
-  </data>
   <data name="Enums.Theme.Green" xml:space="preserve">
     <value>Màu xanh lá cây</value>
   </data>
@@ -1282,7 +1276,7 @@ Nhấp vào &apos;Thêm tài khoản&apos; ở trên để bắt đầu</value>
     <value>Cấu hình giao diện của Froststrap.</value>
   </data>
   <data name="Menu.Appearance.Frequency" xml:space="preserve">
-    <value>Tần suất:</value>
+    <value>Tần số</value>
   </data>
   <data name="Menu.Appearance.Icon.Description" xml:space="preserve">
     <value>Chọn biểu tượng mà Froststrap sẽ sử dụng.</value>
@@ -1291,7 +1285,7 @@ Nhấp vào &apos;Thêm tài khoản&apos; ở trên để bắt đầu</value>
     <value>Biểu tượng</value>
   </data>
   <data name="Menu.Appearance.Interval" xml:space="preserve">
-    <value>Khoảng thời gian:</value>
+    <value>Khoảng thời gian</value>
   </data>
   <data name="Menu.Appearance.Language.Description" xml:space="preserve">
     <value>Cần phải khởi động lại để các thay đổi có hiệu lực. Một số nội dung văn bản có thể chưa được dịch sang ngôn ngữ ưa thích.</value>
@@ -1366,7 +1360,7 @@ Nhấp vào &apos;Thêm tài khoản&apos; ở trên để bắt đầu</value>
     <value>Cấu hình các thao tác mà Froststrap sẽ thực hiện khi khởi chạy Roblox.</value>
   </data>
   <data name="Menu.Behaviour.ForceRobloxReinstall.Description" xml:space="preserve">
-    <value>Roblox sẽ được cài đặt lại hoàn toàn khi khởi động lần tiếp theo.</value>
+    <value>Roblox sẽ được cài đặt lại hoàn toàn vào lần khởi động tiếp theo.</value>
   </data>
   <data name="Menu.Behaviour.ForceRobloxReinstall.Title" xml:space="preserve">
     <value>Buộc cài đặt lại Roblox</value>
@@ -1390,7 +1384,7 @@ Nhấp vào &apos;Thêm tài khoản&apos; ở trên để bắt đầu</value>
     <value>Chọn số lượng khu vực cần kiểm tra; thao tác này sẽ hữu ích trong trường hợp hệ thống không thể tìm thấy các khu vực phù hợp nhất cho bạn.</value>
   </data>
   <data name="Menu.Bootstrapper.BestRegionAmount.Title" xml:space="preserve">
-    <value>Các mức thưởng cao nhất theo khu vực</value>
+    <value>Số tiền cao nhất theo khu vực</value>
   </data>
   <data name="Menu.Bootstrapper.CleanUp.Description" xml:space="preserve">
     <value>Tự động xóa dữ liệu cũ để giải phóng dung lượng. Ban đầu được phát triển bởi Fishstrap.</value>
@@ -1561,7 +1555,7 @@ Nhấp vào &apos;Thêm tài khoản&apos; ở trên để bắt đầu</value>
     <value>Không có dữ liệu hoạt động nào.</value>
   </data>
   <data name="Menu.ContextMenu.RegionJoin" xml:space="preserve">
-    <value>Tham gia Best Region (Ô tô)</value>
+    <value>Tham gia Best Region (Tự động)</value>
   </data>
   <data name="Menu.CookieState.CouldNotLoad" xml:space="preserve">
     <value>Không thể tải cookie của Roblox.</value>
@@ -1598,10 +1592,10 @@ Nhấp vào &apos;Thêm tài khoản&apos; ở trên để bắt đầu</value>
 Xin đừng can thiệp vào phần này nếu bạn không biết mình đang làm gì</value>
   </data>
   <data name="Menu.Deployment.FailedToLoadChannelData" xml:space="preserve">
-    <value>Không tải được dữ liệu kênh.</value>
+    <value>Không thể tải dữ liệu kênh.</value>
   </data>
   <data name="Menu.Deployment.GameSearch.Description" xml:space="preserve">
-    <value>Hãy tìm kiếm các trò chơi bằng thanh tìm kiếm ở phía trên.</value>
+    <value>Hãy tìm kiếm các trò chơi bằng thanh tìm kiếm ở phía trên cùng.</value>
   </data>
   <data name="Menu.Deployment.GameSearch.Title" xml:space="preserve">
     <value>Tìm kiếm trò chơi</value>
@@ -1791,7 +1785,7 @@ Bạn có muốn xóa nó ngay bây giờ không?</value>
     <value>Không sao chép được hồ sơ:\n{0}</value>
   </data>
   <data name="Menu.FlagProfiles.CurrentPlaceIds" xml:space="preserve">
-    <value>ID vị trí hiện tại</value>
+    <value>Mã địa điểm hiện tại</value>
   </data>
   <data name="Menu.FlagProfiles.DeleteSelected" xml:space="preserve">
     <value>Xóa các mục đã chọn</value>
@@ -2013,7 +2007,7 @@ Bạn có muốn xóa nó ngay bây giờ không?</value>
     <value>Kích thước chữ</value>
   </data>
   <data name="Menu.GlobalSettings.ThirdPersonSensitivity.Description" xml:space="preserve">
-    <value>Độ nhạy X và Y cho góc nhìn thứ ba.</value>
+    <value>Độ nhạy trục X và Y cho góc nhìn thứ ba.</value>
   </data>
   <data name="Menu.GlobalSettings.ThirdPersonSensitivity.Title" xml:space="preserve">
     <value>Độ nhạy của nhân vật thứ ba</value>
@@ -2028,7 +2022,7 @@ Bạn có muốn xóa nó ngay bây giờ không?</value>
     <value>Độ trong suốt của giao diện người dùng</value>
   </data>
   <data name="Menu.GlobalSettings.VRMode.Description" xml:space="preserve">
-    <value>Kích hoạt tính năng hỗ trợ Thực tế ảo.</value>
+    <value>Bật tính năng hỗ trợ Thực tế ảo.</value>
   </data>
   <data name="Menu.GlobalSettings.VRMode.Title" xml:space="preserve">
     <value>Chế độ VR</value>
@@ -2251,7 +2245,7 @@ Bạn có muốn cài đặt plugin này không?</value>
     <value>Daemon tối ưu hóa GameMode của Signals Feral Interactive can thiệp vào các quy trình khởi động trò chơi.</value>
   </data>
   <data name="Menu.LinuxSettings.EnableGameMode.Title" xml:space="preserve">
-    <value>Bật Chế độ Chơi game</value>
+    <value>Bật Chế độ Trò chơi</value>
   </data>
   <data name="Menu.LinuxSettings.EnableHiDpi.Description" xml:space="preserve">
     <value>Buộc sử dụng các tùy chọn thu phóng nền tảng DPI cao gốc khi hiển thị các thành phần giao diện.</value>
@@ -2621,7 +2615,7 @@ Nó phải chứa ít nhất một trong các thư mục sau: content, ExtraCont
     <value>Loại biểu tượng cảm xúc ưa thích</value>
   </data>
   <data name="Menu.PresetMods.Presets.MouseCursor.Description" xml:space="preserve">
-    <value>Chọn giữa việc sử dụng nhiều con trỏ Roblox.</value>
+    <value>Chọn giữa các tùy chọn sử dụng nhiều con trỏ Roblox.</value>
   </data>
   <data name="Menu.PresetMods.Presets.MouseCursor.Title" xml:space="preserve">
     <value>Con trỏ chuột</value>
@@ -2741,7 +2735,7 @@ Nó phải chứa ít nhất một trong các thư mục sau: content, ExtraCont
     <value>Thiết bị đã được liên kết - đang xác nhận đăng nhập...</value>
   </data>
   <data name="Menu.QuickSignIn.TimedOut" xml:space="preserve">
-    <value>Thời gian đăng nhập đã hết.</value>
+    <value>Thời gian đăng nhập đã hết hạn.</value>
   </data>
   <data name="Menu.QuickSignIn.Waitting" xml:space="preserve">
     <value>Đang chờ đăng nhập nhanh...

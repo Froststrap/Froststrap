@@ -253,7 +253,7 @@
     <value>ляво</value>
   </data>
   <data name="Bootstrapper.Status.RetryingPackage" xml:space="preserve">
-    <value>Опитвам отново с {0}...</value>
+    <value>Опитвам отново {0}...</value>
   </data>
   <data name="Bootstrapper.Status.SearchingNearbyServers" xml:space="preserve">
     <value>Търсене на сървъри в близост...</value>
@@ -419,7 +419,7 @@
     <value>Генериране</value>
   </data>
   <data name="Common.GlyphPreview" xml:space="preserve">
-    <value>Предварителен преглед на глифа</value>
+    <value>Преглед на глифа</value>
   </data>
   <data name="Common.HexCode" xml:space="preserve">
     <value>Шестнадесетичен код</value>
@@ -887,9 +887,6 @@
   <data name="Enums.BootstrapperIcon.IconEarly2015" xml:space="preserve">
     <value>В началото на 2015 г.</value>
   </data>
-  <data name="Enums.BootstrapperIcon.IconFroststrapClassic" xml:space="preserve">
-    <value>Froststrap (Класически)</value>
-  </data>
   <data name="Enums.BootstrapperIcon.IconLate2015" xml:space="preserve">
     <value>В края на 2015 г.</value>
   </data>
@@ -1282,7 +1279,7 @@
     <value>Настройте външния вид на Froststrap.</value>
   </data>
   <data name="Menu.Appearance.Frequency" xml:space="preserve">
-    <value>Честота:</value>
+    <value>Честота</value>
   </data>
   <data name="Menu.Appearance.Icon.Description" xml:space="preserve">
     <value>Изберете коя икона да използва Froststrap.</value>
@@ -1291,7 +1288,7 @@
     <value>Икона</value>
   </data>
   <data name="Menu.Appearance.Interval" xml:space="preserve">
-    <value>Интервал:</value>
+    <value>Интервал</value>
   </data>
   <data name="Menu.Appearance.Language.Description" xml:space="preserve">
     <value>Необходимо е презареждане на страницата, за да влязат промените в сила. Възможно е част от текста да не бъде преведен на предпочитания език.</value>
@@ -2272,7 +2269,7 @@
     <value>Преопределя вградените подсистеми на Vulkan, за да се премине към стария конвейер за оформление на OpenGL.</value>
   </data>
   <data name="Menu.LinuxSettings.ForceLegacyOpenGL.Title" xml:space="preserve">
-    <value>Принудително рендиране с OpenGL Legacy</value>
+    <value>Принудително рендиране с OpenGL в Legacy</value>
   </data>
   <data name="Menu.LinuxSettings.GameMode.Description" xml:space="preserve">
     <value>Приложете оптимизациите на системата, ако има такива (изисква gamemoded).</value>
@@ -2311,7 +2308,7 @@
     <value>Налага системата за табло с оформление на съвременния клиент за телевизор/конзола върху контекста на десктопния интерфейс.</value>
   </data>
   <data name="Menu.LinuxSettings.UseConsoleExperience.Title" xml:space="preserve">
-    <value>Използвайте конзолата</value>
+    <value>Използвайте интерфейса на конзолата</value>
   </data>
   <data name="Menu.LinuxSettings.Variable" xml:space="preserve">
     <value>Променлива</value>
@@ -2380,7 +2377,7 @@
     <value>Добави към колелото с емотикони</value>
   </data>
   <data name="Menu.ModGenerator.ApplyShiftlock" xml:space="preserve">
-    <value>Кандидатствай в Shiftlock</value>
+    <value>Кандидатствайте за работа в Shiftlock</value>
   </data>
   <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
     <value>Колкото по-голямо е числото, толкова по-високо е качеството, но отнема повече време; максималната стойност е 512, а по подразбиране е 32.</value>

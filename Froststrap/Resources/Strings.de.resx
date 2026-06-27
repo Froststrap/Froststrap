@@ -1224,7 +1224,7 @@ Klicken Sie oben auf „Konto hinzufügen“, um loszulegen</value>
     <value>Legen Sie fest, wie Froststrap aussehen soll.</value>
   </data>
   <data name="Menu.Appearance.Frequency" xml:space="preserve">
-    <value>Häufigkeit:</value>
+    <value>Häufigkeit</value>
   </data>
   <data name="Menu.Appearance.Icon.Description" xml:space="preserve">
     <value>Wählen Sie aus, welches Symbol Froststrap verwenden soll.</value>
@@ -1233,7 +1233,7 @@ Klicken Sie oben auf „Konto hinzufügen“, um loszulegen</value>
     <value>Symbol</value>
   </data>
   <data name="Menu.Appearance.Interval" xml:space="preserve">
-    <value>Zeitraum:</value>
+    <value>Intervall</value>
   </data>
   <data name="Menu.Appearance.Language.Description" xml:space="preserve">
     <value>Damit die Änderungen wirksam werden, ist ein Neustart erforderlich. Möglicherweise wird ein Teil des Textes nicht in die bevorzugte Sprache übersetzt.</value>
@@ -1371,7 +1371,7 @@ Klicken Sie oben auf „Konto hinzufügen“, um loszulegen</value>
     <value>Wählen Sie aus, wie viele Server überprüft werden sollen. Je mehr Server, desto länger kann der Vorgang dauern.</value>
   </data>
   <data name="Menu.Bootstrapper.MaxServerCheck.Title" xml:space="preserve">
-    <value>Maximaler Betrag für die Serverprüfung</value>
+    <value>Maximaler Betrag für Serverüberprüfung</value>
   </data>
   <data name="Menu.Bootstrapper.PreferredRegion.Description" xml:space="preserve">
     <value>Wählen Sie eine bestimmte Region aus, der Sie beitreten möchten, oder belassen Sie die Einstellung auf „Auto“, um die beste verfügbare Region zu erhalten.</value>
@@ -1395,7 +1395,7 @@ Klicken Sie oben auf „Konto hinzufügen“, um loszulegen</value>
     <value>Die Roblox-App soll automatisch gestartet werden, wenn Sie Ihren PC hochfahren.</value>
   </data>
   <data name="Menu.Bootstrapper.Startup.Title" xml:space="preserve">
-    <value>Beim Start starten</value>
+    <value>Start bei der Unternehmensgründung</value>
   </data>
   <data name="Menu.Bootstrapper.Tray.Description" xml:space="preserve">
     <value>Die App wird in die Taskleiste minimiert, anstatt sie vollständig zu schließen.</value>
@@ -1452,7 +1452,7 @@ Klicken Sie oben auf „Konto hinzufügen“, um loszulegen</value>
     <value>Farbe auswählen</value>
   </data>
   <data name="Menu.CommunityModInfo.Title" xml:space="preserve">
-    <value>Informationen zur Mode</value>
+    <value>Informationen zum Modell</value>
   </data>
   <data name="Menu.CommunityMods.AvatarEditor" xml:space="preserve">
     <value>Avatar-Editor</value>
@@ -1503,7 +1503,7 @@ Klicken Sie oben auf „Konto hinzufügen“, um loszulegen</value>
     <value>Die Cookie-Datei konnte nicht geladen werden.</value>
   </data>
   <data name="Menu.CookieState.Invalid" xml:space="preserve">
-    <value>Das Cookie wurde gefunden, ist jedoch ungültig oder abgelaufen.</value>
+    <value>Ein Cookie wurde gefunden, ist jedoch ungültig oder abgelaufen.</value>
   </data>
   <data name="Menu.CookieState.NotAllowed" xml:space="preserve">
     <value>Der Zugriff auf Cookies ist in den Einstellungen deaktiviert.</value>
@@ -1763,7 +1763,7 @@ Möchtest du es jetzt entfernen?</value>
     <value>Geben Sie die Orts-ID ein (z. B. 123456789)</value>
   </data>
   <data name="Menu.FlagProfiles.PlaceIdsTab" xml:space="preserve">
-    <value>Standort-IDs</value>
+    <value>Orts-IDs</value>
   </data>
   <data name="Menu.FlagProfiles.ProfileExists" xml:space="preserve">
     <value>Ein Profil mit diesem Namen existiert bereits.</value>
@@ -1850,7 +1850,7 @@ Möchtest du es jetzt entfernen?</value>
     <value>Grafikeinstellungen</value>
   </data>
   <data name="Menu.GlobalSettings.HapticStrength.Description" xml:space="preserve">
-    <value>Vibrationsstärke des Controllers.</value>
+    <value>Einstellung der Vibrationsstärke des Controllers.</value>
   </data>
   <data name="Menu.GlobalSettings.HapticStrength.Title" xml:space="preserve">
     <value>Haptische Stärke</value>
@@ -1940,7 +1940,7 @@ Möchtest du es jetzt entfernen?</value>
     <value>Bevorzugte Textgröße für die Anzeige.</value>
   </data>
   <data name="Menu.GlobalSettings.TextSize.Title" xml:space="preserve">
-    <value>Schriftgröße</value>
+    <value>Textgröße</value>
   </data>
   <data name="Menu.GlobalSettings.ThirdPersonSensitivity.Description" xml:space="preserve">
     <value>X- und Y-Empfindlichkeit für die dritte Person.</value>
@@ -2099,7 +2099,7 @@ Möchtest du es jetzt entfernen?</value>
     <value>Fügt eine kleine Schaltfläche hinzu, über die du dem Spiel beitreten kannst, an dem du gerade arbeitest.</value>
   </data>
   <data name="Menu.Integrations.JoinButton.Title" xml:space="preserve">
-    <value>„Beitreten“-Button</value>
+    <value>„Beitreten“-Schaltfläche</value>
   </data>
   <data name="Menu.Integrations.PlaytimeCounter.Description" xml:space="preserve">
     <value>Zeigt deine Gesamtspielzeit und die aktuelle Sitzungsdauer an, während du dich in einem Spiel oder im Studio befindest.</value>
@@ -2211,7 +2211,7 @@ Möchten Sie das Plugin installieren?</value>
     <value>Spielmodus</value>
   </data>
   <data name="Menu.LinuxSettings.GraphicsRenderer.Description" xml:space="preserve">
-    <value>Wählen Sie unter Wine das Rendering-Backend für Studio aus.</value>
+    <value>Wählen Sie das Rendering-Backend für Studio unter Wine aus.</value>
   </data>
   <data name="Menu.LinuxSettings.GraphicsRenderer.Title" xml:space="preserve">
     <value>Grafikrenderer</value>
@@ -2422,7 +2422,7 @@ Sie muss mindestens einen der folgenden Ordner enthalten: „content“, „Extr
     <value>Vorschau konnte nicht geladen werden: {0}</value>
   </data>
   <data name="Menu.Mods.Preview.Font.Preview" xml:space="preserve">
-    <value>Schriftart-Vorschau</value>
+    <value>Schriftartvorschau</value>
   </data>
   <data name="Menu.Mods.Preview.FontVariant" xml:space="preserve">
     <value>Schriftartvariante:</value>
@@ -2753,7 +2753,7 @@ Die App schließt dieses Fenster, sobald die Anmeldung abgeschlossen ist.</value
     <value>Es konnte kein geeigneter Server gefunden werden.</value>
   </data>
   <data name="Menu.SearchBar.SearchSomething" xml:space="preserve">
-    <value>Such mal nach etwas – vielleicht taucht es hier auf...</value>
+    <value>Such einfach mal nach etwas, und vielleicht taucht es hier auf...</value>
   </data>
   <data name="Menu.SearchBar.ServerFound" xml:space="preserve">
     <value>Server gefunden</value>

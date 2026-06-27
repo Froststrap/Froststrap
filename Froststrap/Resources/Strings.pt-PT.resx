@@ -872,9 +872,6 @@ Verifique se o Roblox funciona com [o lançador original]({1}). Se não funciona
   <data name="Enums.BootstrapperIcon.IconEarly2015" xml:space="preserve">
     <value>Início de 2015</value>
   </data>
-  <data name="Enums.BootstrapperIcon.IconFroststrapClassic" xml:space="preserve">
-    <value>Froststrap (Clássico)</value>
-  </data>
   <data name="Enums.BootstrapperIcon.IconLate2015" xml:space="preserve">
     <value>Final de 2015</value>
   </data>
@@ -1255,7 +1252,7 @@ Clique em «Adicionar conta» acima para começar</value>
     <value>Configure o aspeto do Froststrap.</value>
   </data>
   <data name="Menu.Appearance.Frequency" xml:space="preserve">
-    <value>Frequência:</value>
+    <value>Frequência</value>
   </data>
   <data name="Menu.Appearance.Icon.Description" xml:space="preserve">
     <value>Escolha o ícone que o Froststrap deve utilizar.</value>
@@ -1264,7 +1261,7 @@ Clique em «Adicionar conta» acima para começar</value>
     <value>Ícone</value>
   </data>
   <data name="Menu.Appearance.Interval" xml:space="preserve">
-    <value>Intervalo:</value>
+    <value>Intervalo</value>
   </data>
   <data name="Menu.Appearance.Language.Description" xml:space="preserve">
     <value>É necessário reiniciar a página para que as alterações entrem em vigor. É possível que parte do texto não tenha sido traduzido para o idioma preferido.</value>
@@ -1402,7 +1399,7 @@ Clique em «Adicionar conta» acima para começar</value>
     <value>Ativar o BetterMatchmaking</value>
   </data>
   <data name="Menu.Bootstrapper.MaxServerCheck.Description" xml:space="preserve">
-    <value>Selecione o número de servidores a verificar; quanto mais forem, mais tempo poderá demorar.</value>
+    <value>Selecione o número de servidores a verificar; quanto mais servidores, mais tempo poderá demorar.</value>
   </data>
   <data name="Menu.Bootstrapper.MaxServerCheck.Title" xml:space="preserve">
     <value>Valor máximo de verificação do servidor</value>
@@ -1670,7 +1667,7 @@ Queres removê-lo agora?</value>
     <value>Total de bandeiras</value>
   </data>
   <data name="Menu.FastFlagEditor.WhiteList" xml:space="preserve">
-    <value>Na sequência da inclusão de alguns FastFlags do Roblox na lista de permissões, estes são os únicos que continuam disponíveis para utilização.</value>
+    <value>Na sequência da inclusão de alguns FastFlags do Roblox na lista de permissões, estes são os únicos que ainda estão disponíveis para utilização.</value>
   </data>
   <data name="Menu.FastFlags.Description" xml:space="preserve">
     <value>Controlar a forma como determinados parâmetros e funcionalidades do motor do Roblox são configurados.</value>
@@ -2603,7 +2600,7 @@ Deve conter, pelo menos, uma das seguintes pastas: content, ExtraContent, Platfo
     <value>Modificações predefinidas</value>
   </data>
   <data name="Menu.QuickPlay.AccountManagerNotAvailable" xml:space="preserve">
-    <value>O gestor de conta não está disponível.</value>
+    <value>O gestor de contas não está disponível.</value>
   </data>
   <data name="Menu.QuickPlay.Active" xml:space="preserve">
     <value>Ativo</value>

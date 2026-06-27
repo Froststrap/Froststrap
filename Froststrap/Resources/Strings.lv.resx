@@ -879,13 +879,10 @@ Pārbaudiet, vai Roblox darbojas ar [oriģinālo palaišanas programmu]({1}). Ja
     <value>Uniforma</value>
   </data>
   <data name="Enums.BackgroundStretch.UniformToFill" xml:space="preserve">
-    <value>Aizpildāmā veidlapa</value>
+    <value>Vienots aizpildāmais veidlapas paraugs</value>
   </data>
   <data name="Enums.BootstrapperIcon.IconEarly2015" xml:space="preserve">
     <value>2015. gada sākumā</value>
-  </data>
-  <data name="Enums.BootstrapperIcon.IconFroststrapClassic" xml:space="preserve">
-    <value>Froststrap (klasiskais)</value>
   </data>
   <data name="Enums.BootstrapperIcon.IconLate2015" xml:space="preserve">
     <value>2015. gada beigas</value>
@@ -1276,7 +1273,7 @@ Lai sāktu, noklikšķiniet uz „Pievienot kontu” augšā</value>
     <value>Iestatiet, kādam jāizskatās Froststrap.</value>
   </data>
   <data name="Menu.Appearance.Frequency" xml:space="preserve">
-    <value>Biežums:</value>
+    <value>Frekvence</value>
   </data>
   <data name="Menu.Appearance.Icon.Description" xml:space="preserve">
     <value>Izvēlieties, kādu ikonu „Froststrap” vajadzētu izmantot.</value>
@@ -1285,7 +1282,7 @@ Lai sāktu, noklikšķiniet uz „Pievienot kontu” augšā</value>
     <value>Ikona</value>
   </data>
   <data name="Menu.Appearance.Interval" xml:space="preserve">
-    <value>Intervāls:</value>
+    <value>Intervāls</value>
   </data>
   <data name="Menu.Appearance.Language.Description" xml:space="preserve">
     <value>Lai izmaiņas stātos spēkā, ir nepieciešama atkārtota palaišana. Daļa teksta var būt netulkota vēlamajā valodā.</value>
@@ -1869,7 +1866,7 @@ Vai to izdzēst tagad?</value>
     <value>Iestatīt kā „Tikai lasīšanai”</value>
   </data>
   <data name="Menu.GBSEditor.Title" xml:space="preserve">
-    <value>Vispārējo iestatījumu redaktors</value>
+    <value>Vispārīgo iestatījumu redaktors</value>
   </data>
   <data name="Menu.GBSEditor.VectorX" xml:space="preserve">
     <value>Vektors X</value>
@@ -2299,7 +2296,7 @@ Vai vēlaties instalēt šo spraudni?</value>
     <value>Saskares ievades režīms</value>
   </data>
   <data name="Menu.LinuxSettings.UseConsoleExperience.Description" xml:space="preserve">
-    <value>Piespiež izmantot mūsdienīgo TV/konsoles klienta izkārtojuma paneļu sistēmu, nevis darbvirsmas saskarnes kontekstu.</value>
+    <value>Piespiež izmantot mūsdienīgo TV/konsoles klienta izkārtojuma vadības paneli, nevis darbvirsmas saskarnes kontekstu.</value>
   </data>
   <data name="Menu.LinuxSettings.UseConsoleExperience.Title" xml:space="preserve">
     <value>Izmantojiet konsoles funkcijas</value>
@@ -2332,7 +2329,7 @@ Vai vēlaties instalēt šo spraudni?</value>
     <value>Atveriet Roblox.com savā pārlūkprogrammā un piesakieties</value>
   </data>
   <data name="Menu.ManualLogin.Instruction.2" xml:space="preserve">
-    <value>Nospiediet taustiņu F12, lai atvērtu izstrādātāja rīkus</value>
+    <value>Nospiediet F12, lai atvērtu izstrādātāja rīkus</value>
   </data>
   <data name="Menu.ManualLogin.Instruction.3" xml:space="preserve">
     <value>Noklikšķiniet uz cilnes „Pieteikumi” (Chrome) vai „Uzglabāšana” (Firefox)</value>
@@ -2702,7 +2699,7 @@ Tajā ir jābūt vismaz vienai no šīm mapēm: content, ExtraContent, PlatformC
     <value>Uzraudzītie serveri ({0})</value>
   </data>
   <data name="Menu.QuickPlay.UnableToAuthenticate" xml:space="preserve">
-    <value>Nav iespējams veikt autentifikāciju. Lūdzu, piesakieties vēlreiz.</value>
+    <value>Nav iespējams veikt autentifikāciju. Lūdzu, piesakieties atkārtoti.</value>
   </data>
   <data name="Menu.QuickPlay.UnknownGame" xml:space="preserve">
     <value>Nezināma spēle</value>

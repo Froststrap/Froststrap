@@ -146,7 +146,7 @@
 Ar norite pakeisti numatytąjį kanalą į {0}?</value>
   </data>
   <data name="Bootstrapper.CancelButton.Skip" xml:space="preserve">
-    <value>Praleisti</value>
+    <value>Pereiti</value>
   </data>
   <data name="Bootstrapper.ConfirmLaunch" xml:space="preserve">
     <value>„Roblox“ šiuo metu veikia, o paleidus dar vieną instanciją ji bus uždaryta. Ar tikrai norite tęsti paleidimą?</value>
@@ -223,7 +223,7 @@ Ar norite pereiti prie numatytojo kanalo ({1})?</value>
     <value>Išgavimas</value>
   </data>
   <data name="Bootstrapper.Status.ExtractingDXVK" xml:space="preserve">
-    <value>Išskaičiuojama DXVK...</value>
+    <value>Išskaičiuojamas DXVK...</value>
   </data>
   <data name="Bootstrapper.Status.ExtractingDXVKSarek" xml:space="preserve">
     <value>Išskiriama „DXVK-Sarek“...</value>
@@ -884,9 +884,6 @@ Patikrinkite, ar „Roblox“ veikia naudojant [originalią paleidimo programą]
   <data name="Enums.BootstrapperIcon.IconEarly2015" xml:space="preserve">
     <value>2015 m. pradžia</value>
   </data>
-  <data name="Enums.BootstrapperIcon.IconFroststrapClassic" xml:space="preserve">
-    <value>„Froststrap“ (klasikinė versija)</value>
-  </data>
   <data name="Enums.BootstrapperIcon.IconLate2015" xml:space="preserve">
     <value>2015 m. pabaiga</value>
   </data>
@@ -1291,7 +1288,7 @@ Norėdami pradėti, spustelėkite „Pridėti paskyrą“ viršuje</value>
     <value>Nustatykite, kaip turėtų atrodyti „Froststrap“.</value>
   </data>
   <data name="Menu.Appearance.Frequency" xml:space="preserve">
-    <value>Dažnumas:</value>
+    <value>Dažnis</value>
   </data>
   <data name="Menu.Appearance.Icon.Description" xml:space="preserve">
     <value>Pasirinkite, kokią piktogramą turėtų naudoti „Froststrap“.</value>
@@ -1300,7 +1297,7 @@ Norėdami pradėti, spustelėkite „Pridėti paskyrą“ viršuje</value>
     <value>Piktograma</value>
   </data>
   <data name="Menu.Appearance.Interval" xml:space="preserve">
-    <value>Intervalas:</value>
+    <value>Intervalas</value>
   </data>
   <data name="Menu.Appearance.Language.Description" xml:space="preserve">
     <value>Kad pakeitimai įsigaliotų, reikia iš naujo paleisti sistemą. Kai kurie tekstai gali būti neišversti į pageidaujamą kalbą.</value>
@@ -1399,7 +1396,7 @@ Norėdami pradėti, spustelėkite „Pridėti paskyrą“ viršuje</value>
     <value>Pasirinkite, kiek regionų reikia patikrinti – tai gali padėti, jei sistema negali rasti jums tinkamiausių regionų.</value>
   </data>
   <data name="Menu.Bootstrapper.BestRegionAmount.Title" xml:space="preserve">
-    <value>Geriausios sumos pagal regionus</value>
+    <value>Geriausi regionų rodikliai</value>
   </data>
   <data name="Menu.Bootstrapper.CleanUp.Description" xml:space="preserve">
     <value>Automatiškai ištrina senus duomenis, kad atlaisvintų vietos. Sukūrė Fishstrap.</value>

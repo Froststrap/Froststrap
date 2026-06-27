@@ -872,10 +872,7 @@ Skontrolujte, či Roblox funguje s [pôvodným spúšťačom]({1}). Ak nie, nejd
     <value>Voľné pracovné miesto: Uniform</value>
   </data>
   <data name="Enums.BootstrapperIcon.IconEarly2015" xml:space="preserve">
-    <value>Začiatok roka 2015</value>
-  </data>
-  <data name="Enums.BootstrapperIcon.IconFroststrapClassic" xml:space="preserve">
-    <value>Froststrap (klasická verzia)</value>
+    <value>Začiatkom roka 2015</value>
   </data>
   <data name="Enums.BootstrapperIcon.IconLate2015" xml:space="preserve">
     <value>Koniec roka 2015</value>
@@ -980,7 +977,7 @@ Skontrolujte, či Roblox funguje s [pôvodným spúšťačom]({1}). Ak nie, nejd
     <value>Extra veľký</value>
   </data>
   <data name="Enums.PlayerListLayOut.x0" xml:space="preserve">
-    <value>Štvorec</value>
+    <value>Námestie</value>
   </data>
   <data name="Enums.PlayerListLayOut.x1" xml:space="preserve">
     <value>Normálne</value>
@@ -1263,16 +1260,13 @@ Kliknite hore na „Pridať účet“, aby ste mohli začať</value>
     <value>Nastavte vzhľad aplikácie Froststrap.</value>
   </data>
   <data name="Menu.Appearance.Frequency" xml:space="preserve">
-    <value>Frekvencia:</value>
+    <value>Frekvencia</value>
   </data>
   <data name="Menu.Appearance.Icon.Description" xml:space="preserve">
     <value>Vyberte, ktorú ikonu má Froststrap používať.</value>
   </data>
   <data name="Menu.Appearance.Icon.Title" xml:space="preserve">
     <value>Ikona</value>
-  </data>
-  <data name="Menu.Appearance.Interval" xml:space="preserve">
-    <value>Rozsah:</value>
   </data>
   <data name="Menu.Appearance.Language.Description" xml:space="preserve">
     <value>Aby sa zmeny uplatnili, je potrebné vykonať reštart. Niektoré texty sa možno nepreložia do preferovaného jazyka.</value>
@@ -1838,7 +1832,7 @@ Chcete ho teraz odstrániť?</value>
     <value>Profily rýchlych vlajok</value>
   </data>
   <data name="Menu.FlagProfiles.UpdateFailed" xml:space="preserve">
-    <value>Nepodarilo sa aktualizovať profil:\n{0}</value>
+    <value>Aktualizácia profilu sa nepodarila:\n{0}</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
     <value>Nastavenia v hre môžete zmeniť prostredníctvom prehľadného menu.</value>
@@ -1970,7 +1964,7 @@ Chcete ho teraz odstrániť?</value>
     <value>Úroveň kvality pri pripojení sa k hre.</value>
   </data>
   <data name="Menu.GlobalSettings.StartQuality.Title" xml:space="preserve">
-    <value>Začiatok kvality</value>
+    <value>Začiatočná kvalita</value>
   </data>
   <data name="Menu.GlobalSettings.StudioVolume.Description" xml:space="preserve">
     <value>Hlasitosť v programe Roblox Studio.</value>
@@ -2000,7 +1994,7 @@ Chcete ho teraz odstrániť?</value>
     <value>Priehľadnosť používateľského rozhrania</value>
   </data>
   <data name="Menu.GlobalSettings.VRMode.Description" xml:space="preserve">
-    <value>Zapnúť podporu virtuálnej reality.</value>
+    <value>Aktivujte podporu virtuálnej reality.</value>
   </data>
   <data name="Menu.GlobalSettings.VRMode.Title" xml:space="preserve">
     <value>Režim VR</value>
@@ -2277,7 +2271,7 @@ Chcete tento doplnok nainštalovať?</value>
     <value>Zapína alebo vypína profily správania pre hardvér s dotykovým displejom.</value>
   </data>
   <data name="Menu.LinuxSettings.TouchInputMode.Title" xml:space="preserve">
-    <value>Režim dotykového ovládania</value>
+    <value>Režim dotykového zadávania</value>
   </data>
   <data name="Menu.LinuxSettings.UseConsoleExperience.Description" xml:space="preserve">
     <value>Vynúti použitie moderného systému rozloženia klientského panela pre televíziu a herné konzoly namiesto kontextu rozhrania pracovnej plochy.</value>
@@ -2448,7 +2442,7 @@ Chcete tento doplnok nainštalovať?</value>
     <value>Načítať ZIP</value>
   </data>
   <data name="Menu.Mods.Imported" xml:space="preserve">
-    <value>Modul „{0}“ bol úspešne naimportovaný.</value>
+    <value>Modul „{0}“ bol úspešne importovaný.</value>
   </data>
   <data name="Menu.Mods.InfoBar" xml:space="preserve">
     <value>Modifikácie môžete importovať pretiahnutím alebo priamym importom; modifikácie s nižšou prioritou sa uplatňujú ako posledné, čím sa predchádza konfliktom s inými modifikáciami.</value>
@@ -2786,7 +2780,7 @@ Aplikácia toto okno zatvorí po dokončení prihlásenia.</value>
     <value>Uložiť</value>
   </data>
   <data name="Menu.SearchBar.AutoJoin" xml:space="preserve">
-    <value>Automatický režim: Vyhľadávanie najvhodnejšej oblasti pre vás...</value>
+    <value>Automatický režim: Hľadám pre vás najvhodnejšiu oblasť...</value>
   </data>
   <data name="Menu.SearchBar.JoinError" xml:space="preserve">
     <value>Nepodarilo sa pripojiť k hre: {0}</value>

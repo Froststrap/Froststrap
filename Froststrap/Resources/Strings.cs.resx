@@ -328,7 +328,7 @@ Chcete přepnout na výchozí kanál ({1})?</value>
     <value>Přidat jednotlivý</value>
   </data>
   <data name="Common.All" xml:space="preserve">
-    <value>Všechny</value>
+    <value>Vše</value>
   </data>
   <data name="Common.Angle" xml:space="preserve">
     <value>Úhel</value>
@@ -875,9 +875,6 @@ Zkuste, zda Roblox funguje s [původním spouštěčem]({1}). Pokud ne, nejedná
   <data name="Enums.BootstrapperIcon.IconEarly2015" xml:space="preserve">
     <value>Počátkem roku 2015</value>
   </data>
-  <data name="Enums.BootstrapperIcon.IconFroststrapClassic" xml:space="preserve">
-    <value>Froststrap (klasická verze)</value>
-  </data>
   <data name="Enums.BootstrapperIcon.IconLate2015" xml:space="preserve">
     <value>Konec roku 2015</value>
   </data>
@@ -1212,7 +1209,7 @@ Opravdu chcete pokračovat?</value>
   </data>
   <data name="Menu.AccountSelector.AlreadyLoggedIn" xml:space="preserve">
     <value>Účet „@{0}“ je již přihlášen.
-Bylo přepnuto na tento účet.</value>
+Přepnuto na tento účet.</value>
   </data>
   <data name="Menu.AccountSelector.AskToAddAccount" xml:space="preserve">
     <value>Nebyly přidány žádné účty
@@ -1267,7 +1264,7 @@ Klikněte nahoře na „Přidat účet“ a můžete začít</value>
     <value>Nastavte, jak má Froststrap vypadat.</value>
   </data>
   <data name="Menu.Appearance.Frequency" xml:space="preserve">
-    <value>Frekvence:</value>
+    <value>Frekvence</value>
   </data>
   <data name="Menu.Appearance.Icon.Description" xml:space="preserve">
     <value>Vyberte, jakou ikonu má Froststrap používat.</value>
@@ -1276,7 +1273,7 @@ Klikněte nahoře na „Přidat účet“ a můžete začít</value>
     <value>Ikona</value>
   </data>
   <data name="Menu.Appearance.Interval" xml:space="preserve">
-    <value>Rozmezí:</value>
+    <value>Rozmezí</value>
   </data>
   <data name="Menu.Appearance.Language.Description" xml:space="preserve">
     <value>Aby se změny projevily, je nutné provést restart. Některé části textu nemusí být přeloženy do preferovaného jazyka.</value>
@@ -1411,7 +1408,7 @@ Klikněte nahoře na „Přidat účet“ a můžete začít</value>
     <value>Zapnout funkci BetterMatchmaking</value>
   </data>
   <data name="Menu.Bootstrapper.MaxServerCheck.Description" xml:space="preserve">
-    <value>Vyberte počet serverů, které chcete zkontrolovat – čím více jich bude, tím déle to může trvat.</value>
+    <value>Zvolte, kolik serverů chcete zkontrolovat – čím více jich bude, tím déle to může trvat.</value>
   </data>
   <data name="Menu.Bootstrapper.MaxServerCheck.Title" xml:space="preserve">
     <value>Maximální částka pro kontrolu serveru</value>
@@ -1423,7 +1420,7 @@ Klikněte nahoře na „Přidat účet“ a můžete začít</value>
     <value>Preferovaný region</value>
   </data>
   <data name="Menu.Bootstrapper.RobloxTheme.Description" xml:space="preserve">
-    <value>Změní vzhledové téma aplikace Roblox.</value>
+    <value>Změní vizuální téma aplikace Roblox.</value>
   </data>
   <data name="Menu.Bootstrapper.RobloxTheme.Title" xml:space="preserve">
     <value>Téma aplikace Roblox</value>
@@ -1537,7 +1534,7 @@ Klikněte nahoře na „Přidat účet“ a můžete začít</value>
     <value>Pozorný pozorovatel</value>
   </data>
   <data name="Menu.ContextMenu.NoData" xml:space="preserve">
-    <value>Nejsou k dispozici žádné údaje o aktivitě.</value>
+    <value>Údaje o aktivitě nejsou k dispozici.</value>
   </data>
   <data name="Menu.ContextMenu.RegionJoin" xml:space="preserve">
     <value>Připojte se k Best Region (Auto)</value>
@@ -1902,7 +1899,7 @@ Chcete jej nyní odstranit?</value>
     <value>Tímto krokem dojde k nahrazení všech vašich stávajících globálních nastavení importovanými. Opravdu chcete pokračovat?</value>
   </data>
   <data name="Menu.GlobalSettings.Import.Fail" xml:space="preserve">
-    <value>Import nastavení se nezdařil. Ujistěte se, že aplikace Roblox není spuštěna, a zkuste to znovu.</value>
+    <value>Import nastavení se nezdařil. Ujistěte se, že aplikace Roblox není spuštěná, a zkuste to znovu.</value>
   </data>
   <data name="Menu.GlobalSettings.Import.NotGBS" xml:space="preserve">
     <value>Zdá se, že vybraný soubor není platným souborem nastavení GBS.</value>
@@ -2206,7 +2203,7 @@ Chcete plugin nainstalovat?</value>
     <value>Pokročilá nastavení pro víno</value>
   </data>
   <data name="Menu.LinuxSettings.AllowGamepadPermission.Description" xml:space="preserve">
-    <value>Umožňuje aplikaci Sober vyžádat si a zaznamenat vstupy z ovladačů, jako je Steam Deck nebo podobné ovladače.</value>
+    <value>Umožňuje aplikaci Sober vyžádat si a zaznamenat vstupy z ovladače prostřednictvím Steam Deck nebo podobných ovladačů.</value>
   </data>
   <data name="Menu.LinuxSettings.AllowGamepadPermission.Title" xml:space="preserve">
     <value>Povolit oprávnění pro gamepad</value>
@@ -2293,7 +2290,7 @@ Chcete plugin nainstalovat?</value>
     <value>Virtuální pracovní plochy</value>
   </data>
   <data name="Menu.LinuxSettings.WebPages.Description" xml:space="preserve">
-    <value>Používá se pro určité prvky uživatelského rozhraní a pro přihlášení</value>
+    <value>Používá se u některých prvků uživatelského rozhraní a při přihlášení</value>
   </data>
   <data name="Menu.LinuxSettings.WebPages.Title" xml:space="preserve">
     <value>Webové stránky</value>
@@ -2311,7 +2308,7 @@ Chcete plugin nainstalovat?</value>
     <value>Otevřete ve svém prohlížeči stránku Roblox.com a přihlaste se</value>
   </data>
   <data name="Menu.ManualLogin.Instruction.2" xml:space="preserve">
-    <value>Stiskněte klávesu F12 a otevřete Nástroje pro vývojáře</value>
+    <value>Stiskněte klávesu F12 a otevřete nástroje pro vývojáře</value>
   </data>
   <data name="Menu.ManualLogin.Instruction.3" xml:space="preserve">
     <value>Klikněte na záložku „Aplikace“ (Chrome) nebo „Úložiště“ (Firefox)</value>
@@ -2332,7 +2329,7 @@ Chcete plugin nainstalovat?</value>
     <value>Neplatný soubor cookie. Zkontrolujte jej a zkuste to znovu.</value>
   </data>
   <data name="Menu.ManualLogin.PasteSecurity" xml:space="preserve">
-    <value>Vložte svůj soubor cookie .ROBLOSECURITY</value>
+    <value>Vložte svůj soubor cookie s příponou .ROBLOSECURITY</value>
   </data>
   <data name="Menu.ManualLogin.Title" xml:space="preserve">
     <value>Ruční přihlášení</value>
@@ -2443,7 +2440,7 @@ Chcete plugin nainstalovat?</value>
     <value>Importovat složku</value>
   </data>
   <data name="Menu.Mods.ImportZIP" xml:space="preserve">
-    <value>Importovat ZIP</value>
+    <value>Načíst ZIP</value>
   </data>
   <data name="Menu.Mods.Imported" xml:space="preserve">
     <value>Modul „{0}“ byl úspěšně importován.</value>

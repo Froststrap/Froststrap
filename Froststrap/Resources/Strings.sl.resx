@@ -881,9 +881,6 @@ Preverite, ali Roblox deluje z [izvirnim zaganjalnikom]({1}). Če ne deluje, to 
   <data name="Enums.BootstrapperIcon.IconEarly2015" xml:space="preserve">
     <value>V začetku leta 2015</value>
   </data>
-  <data name="Enums.BootstrapperIcon.IconFroststrapClassic" xml:space="preserve">
-    <value>Froststrap (klasična različica)</value>
-  </data>
   <data name="Enums.BootstrapperIcon.IconLate2015" xml:space="preserve">
     <value>Konec leta 2015</value>
   </data>
@@ -1011,7 +1008,7 @@ Preverite, ali Roblox deluje z [izvirnim zaganjalnikom]({1}). Če ne deluje, to 
     <value>Raven 1</value>
   </data>
   <data name="Enums.QualityLevel.Level10" xml:space="preserve">
-    <value>Raven 10</value>
+    <value>Stopnja 10</value>
   </data>
   <data name="Enums.QualityLevel.Level11" xml:space="preserve">
     <value>Raven 11</value>
@@ -1270,16 +1267,13 @@ Kliknite »Dodaj račun« zgoraj, da začnete</value>
     <value>Nastavite videz Froststrapa.</value>
   </data>
   <data name="Menu.Appearance.Frequency" xml:space="preserve">
-    <value>Pogostost:</value>
+    <value>Frekvenca</value>
   </data>
   <data name="Menu.Appearance.Icon.Description" xml:space="preserve">
     <value>Izberite, katero ikono naj uporablja Froststrap.</value>
   </data>
   <data name="Menu.Appearance.Icon.Title" xml:space="preserve">
     <value>Ikona</value>
-  </data>
-  <data name="Menu.Appearance.Interval" xml:space="preserve">
-    <value>Obdobje:</value>
   </data>
   <data name="Menu.Appearance.Language.Description" xml:space="preserve">
     <value>Da bi spremembe začele veljati, je potrebna ponovna zagon. Nekateri deli besedila morda ne bodo prevedeni v želeni jezik.</value>
@@ -1417,7 +1411,7 @@ Kliknite »Dodaj račun« zgoraj, da začnete</value>
     <value>Omogoči BetterMatchmaking</value>
   </data>
   <data name="Menu.Bootstrapper.MaxServerCheck.Description" xml:space="preserve">
-    <value>Izberite število strežnikov, ki jih želite preveriti; več jih bo, dlje bo to lahko trajalo.</value>
+    <value>Izberite število strežnikov, ki jih želite preveriti; več jih bo, dlje bo to trajalo.</value>
   </data>
   <data name="Menu.Bootstrapper.MaxServerCheck.Title" xml:space="preserve">
     <value>Največji znesek za preverjanje strežnika</value>
@@ -1552,7 +1546,7 @@ Kliknite »Dodaj račun« zgoraj, da začnete</value>
     <value>Piškotka Roblox ni bilo mogoče naložiti.</value>
   </data>
   <data name="Menu.CookieState.Failed" xml:space="preserve">
-    <value>Prenos datoteke s piškotki ni uspel.</value>
+    <value>Naložitev datoteke s piškotki ni uspela.</value>
   </data>
   <data name="Menu.CookieState.Invalid" xml:space="preserve">
     <value>Piškotek je bil najden, vendar je neveljaven ali je potekel.</value>
@@ -1598,7 +1592,7 @@ Prosimo, ne posegajte v to, če ne veste, kaj počnete</value>
     <value>Prenos z več nitmi</value>
   </data>
   <data name="Menu.Deployment.OverrideHash.Description" xml:space="preserve">
-    <value>Roblox Studio prisili, da namesti in uporablja določen hash različice namesto najnovejše.</value>
+    <value>Roblox Studio prisili, da namesti in uporablja določeno verzijo (hash) namesto najnovejše.</value>
   </data>
   <data name="Menu.Deployment.OverrideHash.Title" xml:space="preserve">
     <value>Prepisati različico studia</value>
@@ -1986,7 +1980,7 @@ Več informacij:
     <value>Začetna kakovost</value>
   </data>
   <data name="Menu.GlobalSettings.StudioVolume.Description" xml:space="preserve">
-    <value>Zvočna jakost za Roblox Studio.</value>
+    <value>Glasnost za Roblox Studio.</value>
   </data>
   <data name="Menu.GlobalSettings.StudioVolume.Title" xml:space="preserve">
     <value>Prostorska študija</value>
@@ -2254,7 +2248,7 @@ Ali želite namestiti vtičnik?</value>
     <value>Zagon programa winecfg ni uspel: {0}</value>
   </data>
   <data name="Menu.LinuxSettings.ForceLegacyOpenGL.Description" xml:space="preserve">
-    <value>Prepisuje izvorne podsisteme Vulkana, da se namesto tega uporabi starejši postopek razporeditve OpenGL.</value>
+    <value>Prevzame nadzor nad izvirnimi podsistemi Vulkana, da se namesto tega uporabi starejši postopek razporeditve OpenGL.</value>
   </data>
   <data name="Menu.LinuxSettings.ForceLegacyOpenGL.Title" xml:space="preserve">
     <value>Prisilno uporabi klasično OpenGL-renderiranje</value>
@@ -2272,7 +2266,7 @@ Ali želite namestiti vtičnik?</value>
     <value>Grafični renderer</value>
   </data>
   <data name="Menu.LinuxSettings.LauncherCommand.Description" xml:space="preserve">
-    <value>Ovijte ukaz Studio (npr. gamescope -- %ukaz%)</value>
+    <value>Ovijte ukaz Studio (npr. gamescope -- %command%)</value>
   </data>
   <data name="Menu.LinuxSettings.LauncherCommand.Title" xml:space="preserve">
     <value>Ukaz za zagon</value>
@@ -2443,7 +2437,7 @@ Ali želite namestiti vtičnik?</value>
     <value>Mod z imenom »{0}« že obstaja.</value>
   </data>
   <data name="Menu.Mods.DeleteMod" xml:space="preserve">
-    <value>Ali želite »{0}« trajno izbrisati?</value>
+    <value>Ali želite &apos;{0}&apos; trajno izbrisati?</value>
   </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
     <value>Upravljanje in uporaba modifikacij datotek.</value>
@@ -2868,7 +2862,7 @@ Aplikacija bo to okno zaprla, ko bo prijava zaključena.</value>
     <value>Igra ni izbrana</value>
   </data>
   <data name="Menu.Shortcuts.PrivateAccessCode" xml:space="preserve">
-    <value>Zasebna koda za dostop</value>
+    <value>Osebna koda za dostop</value>
   </data>
   <data name="Menu.Shortcuts.Processing" xml:space="preserve">
     <value>Obdelava...</value>
