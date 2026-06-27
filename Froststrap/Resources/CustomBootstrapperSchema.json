@@ -45,7 +45,9 @@
 				"Version": "int",
 				"Theme": "Theme",
 				"Title": "string",
-				"IgnoreTitleBarInset": "bool"
+				"IgnoreTitleBarInset": "bool",
+        		"WindowBackdropType": "WindowBackdropType",
+        		"AllowsTransparency": "bool"
 			}
 		},
 		"TitleBar": {
@@ -449,6 +451,14 @@
 				"FlipXY",
 				"Tile"
 			]
+		},
+		"WindowBackdropType": {
+    			"Values": [
+        			"None",
+        			"Mica",
+        			"Acrylic",
+        			"Aero"
+    			]
 		},
 		"BrushMappingMode": {
 			"Values": [

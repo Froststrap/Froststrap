@@ -380,6 +380,64 @@ namespace Froststrap.UI.Elements.Bootstrapper
             dialog.ElementGrid.RenderTransform = dialog.RenderTransform;
             dialog.RenderTransform = null;
 
+            var backdropType = ParseXmlAttribute<WindowsBackdrops>(xmlElement, "WindowBackdropType", WindowsBackdrops.None);
+
+            List<WindowTransparencyLevel> transparencyLevels = [];
+
+            switch (backdropType)
+            {
+                case WindowsBackdrops.Mica:
+                    transparencyLevels.Add(WindowTransparencyLevel.Mica);
+                    transparencyLevels.Add(WindowTransparencyLevel.AcrylicBlur);
+                    transparencyLevels.Add(WindowTransparencyLevel.Blur);
+                    break;
+
+                case WindowsBackdrops.Acrylic:
+                    transparencyLevels.Add(WindowTransparencyLevel.AcrylicBlur);
+                    transparencyLevels.Add(WindowTransparencyLevel.Blur);
+                    transparencyLevels.Add(WindowTransparencyLevel.Mica);
+                    break;
+
+                case WindowsBackdrops.Aero:
+                    transparencyLevels.Add(WindowTransparencyLevel.Blur);
+                    transparencyLevels.Add(WindowTransparencyLevel.AcrylicBlur);
+                    break;
+
+                case WindowsBackdrops.None:
+                default:
+                    transparencyLevels.Add(WindowTransparencyLevel.None);
+                    break;
+            }
+
+            dialog.TransparencyLevelHint = transparencyLevels;
+
+            var isLight = dialog.ActualThemeVariant == ThemeVariant.Light;
+
+            if (backdropType != WindowsBackdrops.None)
+            {
+                byte alpha = backdropType switch
+                {
+                    WindowsBackdrops.Mica => (byte)200,
+                    WindowsBackdrops.Acrylic => (byte)128,
+                    WindowsBackdrops.Aero => (byte)64,
+                    _ => (byte)180
+                };
+
+                var color = isLight
+                    ? Color.FromArgb(alpha, 225, 225, 225)
+                    : Color.FromArgb(alpha, 30, 30, 30);
+
+                dialog.Background = new SolidColorBrush(color);
+            }
+            else
+            {
+                var color = isLight
+                    ? Color.FromRgb(240, 240, 240)
+                    : Color.FromRgb(30, 30, 30);
+
+                dialog.Background = new SolidColorBrush(color);
+            }
+
             var theme = ParseXmlAttribute<Theme>(xmlElement, "Theme", Enums.Theme.Default);
             if (theme == Enums.Theme.Default)
                 theme = App.Settings.Prop.Theme;

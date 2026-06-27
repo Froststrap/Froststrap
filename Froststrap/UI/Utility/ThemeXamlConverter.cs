@@ -9,6 +9,18 @@ namespace Froststrap.UI.Utility
             { "Panel.ZIndex", "ZIndex" }
         };
 
+        private static readonly Dictionary<string, string> BackdropTypeMap = new()
+        {
+            { "Mica", "Mica" },
+            { "Acrylic", "Acrylic" },
+            { "Aero", "Aero" },
+            { "Blur", "Aero" },
+            { "None", "None" },
+            { "Disable", "None" },
+            { "Disabled", "None" },
+            { "Default", "None" }
+        };
+
         public static string ConvertThemeXaml(string wpfXaml)
         {
             try
@@ -20,6 +32,7 @@ namespace Froststrap.UI.Utility
 
                 ConvertPropertiesAndValues(root);
                 ConvertControlTypes(root);
+                ConvertBackdropAttributes(root);
 
                 return doc.ToString();
             }
@@ -36,13 +49,24 @@ namespace Froststrap.UI.Utility
                 if (element.Attribute("WindowStyle")?.Value == "None")
                     element.SetAttributeValue("SystemDecorations", "None");
 
-                if (element.Attribute("AllowTransparency")?.Value?.ToLower() == "true")
-                    element.SetAttributeValue("TransparencyLevelHint", "Transparent");
+                var allowTransparency = element.Attribute("AllowTransparency");
+                if (allowTransparency is not null)
+                {
+                    allowTransparency.Remove();
+                }
 
                 var insetAttr = element.Attribute("IgnoreTitleBarInset");
                 if (insetAttr != null)
                 {
                     element.SetAttributeValue("IgnoreTitleBarInset", insetAttr.Value.ToLower());
+                }
+
+                var backgroundType = element.Attribute("BackgroundType");
+                if (backgroundType != null)
+                {
+                    var mappedValue = BackdropTypeMap.GetValueOrDefault(backgroundType.Value, "None");
+                    element.SetAttributeValue("WindowBackdropType", mappedValue);
+                    backgroundType.Remove();
                 }
             }
 
@@ -73,6 +97,29 @@ namespace Froststrap.UI.Utility
 
             foreach (var child in element.Elements())
                 ConvertControlTypes(child);
+        }
+
+        private static void ConvertBackdropAttributes(XElement element)
+        {
+            if (element.Name.LocalName == "BloxstrapCustomBootstrapper" || element.Name.LocalName == "Window")
+            {
+                var backdropAttr = element.Attribute("WindowBackdropType");
+                if (backdropAttr != null)
+                {
+                    var wpfValue = backdropAttr.Value;
+                    if (BackdropTypeMap.TryGetValue(wpfValue, out string? avaloniaValue))
+                    {
+                        element.SetAttributeValue("WindowBackdropType", avaloniaValue);
+                    }
+                    else
+                    {
+                        element.SetAttributeValue("WindowBackdropType", "None");
+                    }
+                }
+            }
+
+            foreach (var child in element.Elements())
+                ConvertBackdropAttributes(child);
         }
     }
 }
