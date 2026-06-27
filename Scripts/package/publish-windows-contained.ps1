@@ -6,12 +6,15 @@ param (
 
 $ErrorActionPreference = "Stop"
 
-if (Test-Path -Path "./$BuildDir") { Remove-Item -Recurse -Force "./$BuildDir" }
-New-Item -ItemType Directory -Path "./$BuildDir" | Out-Null
+if (-not (Test-Path -Path "./$BuildDir")) {
+    New-Item -ItemType Directory -Path "./$BuildDir" | Out-Null
+}
 
-dotnet publish "$Project" /p:PublishProfile=Publish-contained-x64 -c "$Config"
+$TempPublish = "./$BuildDir/temp-contained"
+dotnet publish "$Project" /p:PublishProfile=Publish-contained-x64 -c "$Config" -o "$TempPublish"
 
-$PublishPath = "./Froststrap/bin/$Config/net10.0/publish/Froststrap.exe"
-Copy-Item $PublishPath -Destination "./$BuildDir/Froststrap-SelfContained-Setup.exe"
+Copy-Item "$TempPublish/Froststrap.exe" -Destination "./$BuildDir/Froststrap-SelfContained-Setup.exe"
 
-Write-Host "Self-contained Windows build complete: $BuildDir/Froststrap-contained.exe" -ForegroundColor Green
+Remove-Item -Recurse -Force "$TempPublish"
+
+Write-Host "Self-contained Windows build complete: $BuildDir/Froststrap-SelfContained-Setup.exe" -ForegroundColor Green
