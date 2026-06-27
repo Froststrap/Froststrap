@@ -423,19 +423,35 @@ namespace Froststrap.UI.Elements.Bootstrapper
                     _ => (byte)180
                 };
 
-                var color = isLight
-                    ? Color.FromArgb(alpha, 225, 225, 225)
-                    : Color.FromArgb(alpha, 30, 30, 30);
+                if (dialog.Background != null && dialog.Background != Avalonia.Media.Brushes.Transparent)
+                {
+                    if (dialog.Background is SolidColorBrush solidBrush)
+                    {
+                        var originalColor = solidBrush.Color;
+                        var newColor = Color.FromArgb(alpha, originalColor.R, originalColor.G, originalColor.B);
+                        dialog.Background = new SolidColorBrush(newColor);
+                    }
+                    else if (dialog.Background is ImageBrush imageBrush)
+                    {
+                        imageBrush.Opacity = alpha / 255.0;
+                    }
+                    else if (dialog.Background is LinearGradientBrush linearGradient)
+                    {
+                        linearGradient.Opacity = alpha / 255.0;
+                    }
+                    else if (dialog.Background is RadialGradientBrush radialGradient)
+                    {
+                        radialGradient.Opacity = alpha / 255.0;
+                    }
+                }
+                else
+                {
+                    var color = isLight
+                        ? Color.FromArgb(alpha, 225, 225, 225)
+                        : Color.FromArgb(alpha, 30, 30, 30);
 
-                dialog.Background = new SolidColorBrush(color);
-            }
-            else
-            {
-                var color = isLight
-                    ? Color.FromRgb(240, 240, 240)
-                    : Color.FromRgb(30, 30, 30);
-
-                dialog.Background = new SolidColorBrush(color);
+                    dialog.Background = new SolidColorBrush(color);
+                }
             }
 
             var theme = ParseXmlAttribute<Theme>(xmlElement, "Theme", Enums.Theme.Default);

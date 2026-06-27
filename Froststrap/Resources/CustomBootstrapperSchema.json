@@ -46,8 +46,7 @@
 				"Theme": "Theme",
 				"Title": "string",
 				"IgnoreTitleBarInset": "bool",
-        		"WindowBackdropType": "WindowBackdropType",
-        		"AllowsTransparency": "bool"
+        		"WindowBackdropType": "WindowBackdropType"
 			}
 		},
 		"TitleBar": {
