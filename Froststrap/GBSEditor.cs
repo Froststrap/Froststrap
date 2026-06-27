@@ -175,21 +175,39 @@ namespace Froststrap
 
             App.Logger.WriteLine(LOG_IDENT, $"Loading from {FileLocation}...");
 
-            // since the file gets created after roblox starts it might not exist yet
-            // this safeguard should only run once, that being when the user first installs fishstrap
-            if (!File.Exists(FileLocation))
-                CreateTemplate();
-
             try
             {
                 Document = XDocument.Load(FileLocation);
                 Loaded = true;
                 previousReadOnlyState = GetReadOnly();
+                App.Logger.WriteLine(LOG_IDENT, "Loaded successfully!");
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine(LOG_IDENT, "Failed to load!");
+                App.Logger.WriteLine(LOG_IDENT, "Failed to load, recreating template...");
                 App.Logger.WriteException(LOG_IDENT, ex);
+
+                if (File.Exists(FileLocation))
+                {
+                    try { File.Delete(FileLocation); }
+                    catch { /* Ignore delete errors */ }
+                }
+
+                CreateTemplate();
+
+                try
+                {
+                    Document = XDocument.Load(FileLocation);
+                    Loaded = true;
+                    previousReadOnlyState = GetReadOnly();
+                    App.Logger.WriteLine(LOG_IDENT, "Recreated and loaded successfully!");
+                }
+                catch (Exception retryEx)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Failed even after recreating!");
+                    App.Logger.WriteException(LOG_IDENT, retryEx);
+                    Loaded = false;
+                }
             }
         }
 
