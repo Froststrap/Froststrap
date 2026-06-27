@@ -127,6 +127,9 @@
   <data name="ActivityWatcher.LocationQueryFailed" xml:space="preserve">
     <value>Nie udało się sprawdzić lokalizacji serwera. Być może dołączasz do gier zbyt szybko.</value>
   </data>
+  <data name="AddCustomTheme.Title" xml:space="preserve">
+    <value>Dodaj własny motyw</value>
+  </data>
   <data name="App.OSDeprecation.Win7_81" xml:space="preserve">
     <value>Roblox nie obsługuje już systemów Windows 7 ani 8.1. Aby nadal grać w Roblox, należy zaktualizować system do wersji Windows 10 lub nowszej.</value>
   </data>
@@ -1766,14 +1769,92 @@ Chcesz to teraz usunąć?</value>
   <data name="Menu.FastFlags.Title" xml:space="preserve">
     <value>Ustawienia FastFlag</value>
   </data>
+  <data name="Menu.FlagProfiles.AddPlaceId" xml:space="preserve">
+    <value>Dodaj identyfikator miejsca</value>
+  </data>
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
     <value>Wyczyść FFlags</value>
   </data>
+  <data name="Menu.FlagProfiles.CopyFailed" xml:space="preserve">
+    <value>Nie udało się skopiować profilu:\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.CurrentPlaceIds" xml:space="preserve">
+    <value>Aktualne identyfikatory miejsc</value>
+  </data>
+  <data name="Menu.FlagProfiles.DeleteSelected" xml:space="preserve">
+    <value>Usuń zaznaczone</value>
+  </data>
+  <data name="Menu.FlagProfiles.EnterPlaceId" xml:space="preserve">
+    <value>Wprowadź identyfikator miejsca.</value>
+  </data>
+  <data name="Menu.FlagProfiles.GetFlagsFailed" xml:space="preserve">
+    <value>Nie udało się pobrać aktualnych FastFlags.</value>
+  </data>
+  <data name="Menu.FlagProfiles.InvalidCharacter" xml:space="preserve">
+    <value>Nazwa profilu zawiera niedozwolony znak „{0}”.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ManagingPlaceIds" xml:space="preserve">
+    <value>Zarządzanie identyfikatorami lokalizacji dla: {0} ({1} identyfikatorów)</value>
+  </data>
+  <data name="Menu.FlagProfiles.NameCannotBeEmpty" xml:space="preserve">
+    <value>Nowa nazwa profilu nie może być pusta.</value>
+  </data>
   <data name="Menu.FlagProfiles.NoProfileFound" xml:space="preserve">
-    <value>Nie znaleziono żadnych profili</value>
+    <value>Nie znaleziono żadnych profili.</value>
+  </data>
+  <data name="Menu.FlagProfiles.NoProfilesFound" xml:space="preserve">
+    <value>Nie znaleziono żadnych profili. Proszę najpierw utworzyć profil.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ParseFailed" xml:space="preserve">
+    <value>Nie udało się przeanalizować wybranego profilu.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdExists" xml:space="preserve">
+    <value>Ten identyfikator miejsca został już dodany do profilu.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdNumeric" xml:space="preserve">
+    <value>Identyfikator miejsca musi być liczbą całkowitą.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdWatermark" xml:space="preserve">
+    <value>Wprowadź identyfikator miejsca (np. 123456789)</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdsTab" xml:space="preserve">
+    <value>Identyfikatory miejsc</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileExists" xml:space="preserve">
+    <value>Profil o tej nazwie już istnieje.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileNotFound" xml:space="preserve">
+    <value>Nie znaleziono wybranego pliku profilu.</value>
+  </data>
+  <data name="Menu.FlagProfiles.RemoveSelected" xml:space="preserve">
+    <value>Usuń zaznaczone</value>
+  </data>
+  <data name="Menu.FlagProfiles.RenameFailed" xml:space="preserve">
+    <value>Nie udało się zmienić nazwy profilu:\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfile" xml:space="preserve">
+    <value>Wybierz profil, aby zarządzać identyfikatorami miejsc</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileCopy" xml:space="preserve">
+    <value>Proszę wybrać profil do skopiowania.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileFirst" xml:space="preserve">
+    <value>Proszę najpierw wybrać profil.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileLabel" xml:space="preserve">
+    <value>Wybierz profil, aby zarządzać jego identyfikatorami lokalizacji:</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileRename" xml:space="preserve">
+    <value>Wybierz profil, którego nazwę chcesz zmienić.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileUpdate" xml:space="preserve">
+    <value>Wybierz profil, który chcesz zaktualizować.</value>
   </data>
   <data name="Menu.FlagProfiles.Title" xml:space="preserve">
     <value>Profile Fast Flag</value>
+  </data>
+  <data name="Menu.FlagProfiles.UpdateFailed" xml:space="preserve">
+    <value>Nie udało się zaktualizować profilu:\n{0}</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
     <value>Zmień ustawienia gry za pomocą wygodnego menu.</value>
@@ -1905,7 +1986,7 @@ Chcesz to teraz usunąć?</value>
     <value>Poziom jakości przy dołączaniu do gry.</value>
   </data>
   <data name="Menu.GlobalSettings.StartQuality.Title" xml:space="preserve">
-    <value>Jakość na początku</value>
+    <value>Jakość początkowa</value>
   </data>
   <data name="Menu.GlobalSettings.StudioVolume.Description" xml:space="preserve">
     <value>Tom dla Roblox Studio.</value>
@@ -2158,7 +2239,7 @@ Czy chcesz zainstalować tę wtyczkę?</value>
     <value>Włącz tryb GameMode</value>
   </data>
   <data name="Menu.LinuxSettings.EnableHiDpi.Description" xml:space="preserve">
-    <value>Wymusza domyślne opcje skalowania platformy o wysokiej rozdzielczości (DPI) podczas renderowania elementów interfejsu.</value>
+    <value>Wymusza stosowanie natywnych opcji skalowania platformy o wysokiej rozdzielczości (DPI) podczas renderowania elementów interfejsu.</value>
   </data>
   <data name="Menu.LinuxSettings.EnableHiDpi.Title" xml:space="preserve">
     <value>Obsługa skalowania wyświetlaczy HiDPI</value>
@@ -2221,7 +2302,7 @@ Czy chcesz zainstalować tę wtyczkę?</value>
     <value>Zmienna</value>
   </data>
   <data name="Menu.LinuxSettings.VirtualDesktops.Description" xml:space="preserve">
-    <value>Utwórz oddzielne okno dla każdej instancji</value>
+    <value>Utwórz osobne okno dla każdej instancji</value>
   </data>
   <data name="Menu.LinuxSettings.VirtualDesktops.Title" xml:space="preserve">
     <value>Wirtualne pulpity</value>
@@ -2287,7 +2368,7 @@ Czy chcesz zainstalować tę wtyczkę?</value>
     <value>Zgłoś się do Shiftlock</value>
   </data>
   <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
-    <value>Im wyższa liczba, tym lepsza jakość, ale trwa to dłużej. Maksymalna wartość to 64, a domyślna to 8.</value>
+    <value>Im wyższa liczba, tym lepsza jakość, ale trwa to dłużej; maksymalna wartość to 512, a domyślna to 32.</value>
   </data>
   <data name="Menu.ModGenerator.Cancelled" xml:space="preserve">
     <value>Generowanie modu zostało anulowane.</value>
@@ -2365,7 +2446,7 @@ Czy chcesz zainstalować tę wtyczkę?</value>
     <value>Czy chcesz trwale usunąć „{0}”?</value>
   </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
-    <value>Zarządzaj modyfikacjami plików i stosuj je w kliencie gry Roblox.</value>
+    <value>Zarządzaj modyfikacjami plików i stosuj je.</value>
   </data>
   <data name="Menu.Mods.DragOverlay" xml:space="preserve">
     <value>📦 Przeciągnij i upuść, aby zaimportować plik ZIP lub folder</value>
@@ -2394,6 +2475,30 @@ Musi zawierać co najmniej jeden z następujących folderów: content, ExtraCont
   </data>
   <data name="Menu.Mods.NoneInstalled" xml:space="preserve">
     <value>Nie zainstalowano żadnych modów.</value>
+  </data>
+  <data name="Menu.Mods.Preview.Failed" xml:space="preserve">
+    <value>Nie udało się załadować podglądu: {0}</value>
+  </data>
+  <data name="Menu.Mods.Preview.Font.Preview" xml:space="preserve">
+    <value>Podgląd czcionki</value>
+  </data>
+  <data name="Menu.Mods.Preview.FontVariant" xml:space="preserve">
+    <value>Wariant czcionki:</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loaded" xml:space="preserve">
+    <value>Wstępny podgląd załadowano</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading" xml:space="preserve">
+    <value>Ładowanie podglądu czcionki...</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading.Glyphs" xml:space="preserve">
+    <value>Ładowanie glifów...</value>
+  </data>
+  <data name="Menu.Mods.Preview.LoadingFont" xml:space="preserve">
+    <value>Ładowanie czcionki: {0}...</value>
+  </data>
+  <data name="Menu.Mods.Preview.NoColor" xml:space="preserve">
+    <value>W tym modzie nie znaleziono żadnych informacji o kolorach</value>
   </data>
   <data name="Menu.Mods.SelectedModAction" xml:space="preserve">
     <value>Wybrana akcja modułu</value>

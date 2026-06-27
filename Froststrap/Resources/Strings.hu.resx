@@ -127,6 +127,9 @@
   <data name="ActivityWatcher.LocationQueryFailed" xml:space="preserve">
     <value>A szerver helyét nem sikerült lekérdezni. Lehet, hogy túl gyorsan csatlakozol a játékokhoz.</value>
   </data>
+  <data name="AddCustomTheme.Title" xml:space="preserve">
+    <value>Egyéni téma hozzáadása</value>
+  </data>
   <data name="App.OSDeprecation.Win7_81" xml:space="preserve">
     <value>A Roblox már nem támogatja a Windows 7 és 8.1 rendszereket. Ha továbbra is szeretnél játszani a Robloxszal, kérjük, frissíts Windows 10-re vagy újabb verzióra.</value>
   </data>
@@ -944,7 +947,7 @@ Ellenőrizd, hogy a Roblox működik-e [az eredeti indítóprogrammal]({1}). Ha 
     <value>Napok</value>
   </data>
   <data name="Enums.CycleFrequency.EveryLaunch" xml:space="preserve">
-    <value>Minden indítás</value>
+    <value>Minden termékbemutató</value>
   </data>
   <data name="Enums.CycleFrequency.Hours" xml:space="preserve">
     <value>Nyitvatartási idő</value>
@@ -986,7 +989,7 @@ Ellenőrizd, hogy a Roblox működik-e [az eredeti indítóprogrammal]({1}). Ha 
     <value>Normál</value>
   </data>
   <data name="Enums.ProcessPriorityOption.AboveNormal" xml:space="preserve">
-    <value>A normál feletti</value>
+    <value>A normál felett</value>
   </data>
   <data name="Enums.ProcessPriorityOption.BelowNormal" xml:space="preserve">
     <value>A normál alatt</value>
@@ -1557,7 +1560,7 @@ Kattintson a fenti „Fiók hozzáadása” gombra a kezdéshez</value>
     <value>A Roblox cookie-fájl nem található.</value>
   </data>
   <data name="Menu.Deployment.AutoPreReleaseUpdate.Description" xml:space="preserve">
-    <value>A Froststrap a Roblox indításakor automatikusan ellenőrzi a rendszert, és tesztverzióra frissíti magát.</value>
+    <value>A Froststrap a Roblox indításakor automatikusan ellenőrzi a frissítéseket, és tesztverzióra frissíti magát.</value>
   </data>
   <data name="Menu.Deployment.AutoPreReleaseUpdate.Title" xml:space="preserve">
     <value>Előzetes kiadások frissítése</value>
@@ -1759,14 +1762,92 @@ Most törölni szeretnéd?</value>
   <data name="Menu.FastFlags.Title" xml:space="preserve">
     <value>FastFlag beállítások</value>
   </data>
+  <data name="Menu.FlagProfiles.AddPlaceId" xml:space="preserve">
+    <value>Helyazonosító hozzáadása</value>
+  </data>
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
     <value>FFlagek törlése</value>
   </data>
+  <data name="Menu.FlagProfiles.CopyFailed" xml:space="preserve">
+    <value>A profil másolása nem sikerült:\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.CurrentPlaceIds" xml:space="preserve">
+    <value>Jelenlegi helyazonosítók</value>
+  </data>
+  <data name="Menu.FlagProfiles.DeleteSelected" xml:space="preserve">
+    <value>Kijelöltek törlése</value>
+  </data>
+  <data name="Menu.FlagProfiles.EnterPlaceId" xml:space="preserve">
+    <value>Kérjük, adja meg a hely azonosítóját.</value>
+  </data>
+  <data name="Menu.FlagProfiles.GetFlagsFailed" xml:space="preserve">
+    <value>Nem sikerült lekérni az aktuális FastFlags-értékeket.</value>
+  </data>
+  <data name="Menu.FlagProfiles.InvalidCharacter" xml:space="preserve">
+    <value>A profilnév tartalmaz egy érvénytelen karaktert: „{0}”.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ManagingPlaceIds" xml:space="preserve">
+    <value>Helyazonosítók kezelése: {0} ({1} azonosító)</value>
+  </data>
+  <data name="Menu.FlagProfiles.NameCannotBeEmpty" xml:space="preserve">
+    <value>Az új profilnév nem lehet üres.</value>
+  </data>
   <data name="Menu.FlagProfiles.NoProfileFound" xml:space="preserve">
-    <value>Nem találtak profilokat</value>
+    <value>Nem találtak profilokat.</value>
+  </data>
+  <data name="Menu.FlagProfiles.NoProfilesFound" xml:space="preserve">
+    <value>Nem találtunk profilokat. Kérjük, először hozzon létre egy profilt.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ParseFailed" xml:space="preserve">
+    <value>A kiválasztott profil értelmezése sikertelen volt.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdExists" xml:space="preserve">
+    <value>Ez a helyazonosító már hozzá van adva a profilhoz.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdNumeric" xml:space="preserve">
+    <value>A helyazonosítónak egész számnak kell lennie.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdWatermark" xml:space="preserve">
+    <value>Írja be a helyazonosítót (pl. 123456789)</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdsTab" xml:space="preserve">
+    <value>Helyazonosítók</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileExists" xml:space="preserve">
+    <value>Ilyen nevű profil már létezik.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileNotFound" xml:space="preserve">
+    <value>A kiválasztott profilfájl nem található.</value>
+  </data>
+  <data name="Menu.FlagProfiles.RemoveSelected" xml:space="preserve">
+    <value>A kijelöltek eltávolítása</value>
+  </data>
+  <data name="Menu.FlagProfiles.RenameFailed" xml:space="preserve">
+    <value>A profil átnevezése nem sikerült:\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfile" xml:space="preserve">
+    <value>Válasszon ki egy profilt a helyazonosítók kezeléséhez</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileCopy" xml:space="preserve">
+    <value>Kérjük, válasszon ki egy másolni kívánt profilt.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileFirst" xml:space="preserve">
+    <value>Kérjük, először válasszon ki egy profilt.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileLabel" xml:space="preserve">
+    <value>Válasszon ki egy profilt a helyazonosítóinak kezeléséhez:</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileRename" xml:space="preserve">
+    <value>Kérjük, válasszon ki egy profilt, amelyet át szeretne nevezni.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileUpdate" xml:space="preserve">
+    <value>Kérjük, válasszon ki egy frissítendő profilt.</value>
   </data>
   <data name="Menu.FlagProfiles.Title" xml:space="preserve">
     <value>Gyors zászlóprofilok</value>
+  </data>
+  <data name="Menu.FlagProfiles.UpdateFailed" xml:space="preserve">
+    <value>A profil frissítése nem sikerült:\n{0}</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
     <value>A játék beállításait egy kényelmes menüből módosíthatod.</value>
@@ -1829,7 +1910,7 @@ Most törölni szeretnéd?</value>
     <value>Ezzel a jelenlegi globális beállítások mindegyike az importált beállításokkal kerül felülírásra. Biztosan folytatni szeretné?</value>
   </data>
   <data name="Menu.GlobalSettings.Import.Fail" xml:space="preserve">
-    <value>A beállítások importálása nem sikerült. Győződj meg róla, hogy a Roblox nem fut, majd próbáld meg újra.</value>
+    <value>A beállítások importálása nem sikerült. Győződj meg arról, hogy a Roblox nem fut, majd próbáld meg újra.</value>
   </data>
   <data name="Menu.GlobalSettings.Import.NotGBS" xml:space="preserve">
     <value>Úgy tűnik, hogy a kiválasztott fájl nem érvényes GBS-beállítási fájl.</value>
@@ -1877,13 +1958,13 @@ Most törölni szeretnéd?</value>
     <value>Perf statisztikák</value>
   </data>
   <data name="Menu.GlobalSettings.PlayerListLayout.Description" xml:space="preserve">
-    <value>Az esc gomb megnyomásával válthat az esc lejátszási lista négyzetes és normál felhasználói felülete között.</value>
+    <value>Az esc gomb megnyomásával váltson a játékoslista négyzetes és normál felhasználói felülete között.</value>
   </data>
   <data name="Menu.GlobalSettings.PlayerListLayout.Title" xml:space="preserve">
     <value>A játékosok listájának elrendezése</value>
   </data>
   <data name="Menu.GlobalSettings.ReducedMotion.Description" xml:space="preserve">
-    <value>Csökkenti a felhasználói felület animációit.</value>
+    <value>Csökkenti a felhasználói felület animációinak számát.</value>
   </data>
   <data name="Menu.GlobalSettings.ReducedMotion.Title" xml:space="preserve">
     <value>Mozgáscsökkentés</value>
@@ -1907,10 +1988,10 @@ Most törölni szeretnéd?</value>
     <value>Hangerő a Roblox Studio-ban.</value>
   </data>
   <data name="Menu.GlobalSettings.StudioVolume.Title" xml:space="preserve">
-    <value>Stúdió mérete</value>
+    <value>Stúdió Volume</value>
   </data>
   <data name="Menu.GlobalSettings.TextSize.Description" xml:space="preserve">
-    <value>A kívánt szövegméret.</value>
+    <value>A kívánt betűméret.</value>
   </data>
   <data name="Menu.GlobalSettings.TextSize.Title" xml:space="preserve">
     <value>Betűméret</value>
@@ -2172,10 +2253,10 @@ Szeretnéd telepíteni a bővítményt?</value>
     <value>A winecfg indítása sikertelen: {0}</value>
   </data>
   <data name="Menu.LinuxSettings.ForceLegacyOpenGL.Description" xml:space="preserve">
-    <value>Felülírja a natív Vulkan alrendszereket, és helyette a régi OpenGL elrendezési folyamatra vált át.</value>
+    <value>Felülírja a natív Vulkan-alrendszereket, és helyette a régi OpenGL-elrendezési folyamatra vált át.</value>
   </data>
   <data name="Menu.LinuxSettings.ForceLegacyOpenGL.Title" xml:space="preserve">
-    <value>OpenGL-alapú megjelenítés kényszerítése</value>
+    <value>OpenGL-alapú renderelés kényszerítése</value>
   </data>
   <data name="Menu.LinuxSettings.GameMode.Description" xml:space="preserve">
     <value>Ha elérhető, hajtsd végre a rendszeroptimalizálásokat (ehhez a gamemoded szükséges).</value>
@@ -2187,7 +2268,7 @@ Szeretnéd telepíteni a bővítményt?</value>
     <value>Válassza ki a Studio renderelő háttérprogramját a Wine alatt.</value>
   </data>
   <data name="Menu.LinuxSettings.GraphicsRenderer.Title" xml:space="preserve">
-    <value>Grafikus renderelő</value>
+    <value>Grafikus megjelenítő</value>
   </data>
   <data name="Menu.LinuxSettings.LauncherCommand.Description" xml:space="preserve">
     <value>A Studio parancs beágyazása (pl. gamescope -- %parancs%)</value>
@@ -2211,7 +2292,7 @@ Szeretnéd telepíteni a bővítményt?</value>
     <value>Érintéses bevitel módja</value>
   </data>
   <data name="Menu.LinuxSettings.UseConsoleExperience.Description" xml:space="preserve">
-    <value>A modern TV/konzol kliens elrendezésű irányítópult-rendszerét kényszeríti az asztali felület kontextusára.</value>
+    <value>A modern TV/konzol-kliens elrendezésű irányítópult-rendszerét kényszeríti az asztali felület kontextusára.</value>
   </data>
   <data name="Menu.LinuxSettings.UseConsoleExperience.Title" xml:space="preserve">
     <value>A konzol használata</value>
@@ -2226,7 +2307,7 @@ Szeretnéd telepíteni a bővítményt?</value>
     <value>Virtuális asztalok</value>
   </data>
   <data name="Menu.LinuxSettings.WebPages.Description" xml:space="preserve">
-    <value>Bizonyos felhasználói felület-elemekhez és a bejelentkezéshez használják</value>
+    <value>Bizonyos felhasználói felületi elemekhez és a bejelentkezéshez használják</value>
   </data>
   <data name="Menu.LinuxSettings.WebPages.Title" xml:space="preserve">
     <value>Weboldalak</value>
@@ -2280,13 +2361,13 @@ Szeretnéd telepíteni a bővítményt?</value>
     <value>Alkalmazás a kurzorokra</value>
   </data>
   <data name="Menu.ModGenerator.ApplyEmoteWheel" xml:space="preserve">
-    <value>Hozzáadás az emote-kerékhez</value>
+    <value>Hozzárendelés az emote-kerékhez</value>
   </data>
   <data name="Menu.ModGenerator.ApplyShiftlock" xml:space="preserve">
     <value>Jelentkezz a Shiftlockhoz</value>
   </data>
   <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
-    <value>Minél nagyobb a szám, annál jobb a minőség, de annál hosszabb ideig tart; a maximális érték 64, az alapértelmezett érték pedig 8.</value>
+    <value>Minél nagyobb az érték, annál jobb a minőség, de annál hosszabb ideig tart; a maximális érték 512, az alapértelmezett pedig 32.</value>
   </data>
   <data name="Menu.ModGenerator.Cancelled" xml:space="preserve">
     <value>A mod generálása törölve.</value>
@@ -2364,7 +2445,7 @@ Szeretnéd telepíteni a bővítményt?</value>
     <value>Véglegesen törölje a „{0}”-t?</value>
   </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
-    <value>A Roblox játékkliens fájljainak módosításainak kezelése és alkalmazása.</value>
+    <value>A fájlmódosítások kezelése és alkalmazása.</value>
   </data>
   <data name="Menu.Mods.DragOverlay" xml:space="preserve">
     <value>📦 Húzza ide a ZIP-fájlt vagy mappát az importáláshoz</value>
@@ -2393,6 +2474,30 @@ Legalább az alábbi mappák egyikét tartalmaznia kell: content, ExtraContent, 
   </data>
   <data name="Menu.Mods.NoneInstalled" xml:space="preserve">
     <value>Nincs telepítve semmilyen mod.</value>
+  </data>
+  <data name="Menu.Mods.Preview.Failed" xml:space="preserve">
+    <value>Az előnézet betöltése nem sikerült: {0}</value>
+  </data>
+  <data name="Menu.Mods.Preview.Font.Preview" xml:space="preserve">
+    <value>Betűtípus-előnézet</value>
+  </data>
+  <data name="Menu.Mods.Preview.FontVariant" xml:space="preserve">
+    <value>Betűtípus-változat:</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loaded" xml:space="preserve">
+    <value>Az előnézet betöltődött</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading" xml:space="preserve">
+    <value>A betűtípus-előnézet betöltése...</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading.Glyphs" xml:space="preserve">
+    <value>Glyfok betöltése...</value>
+  </data>
+  <data name="Menu.Mods.Preview.LoadingFont" xml:space="preserve">
+    <value>Betűtípus betöltése: {0}...</value>
+  </data>
+  <data name="Menu.Mods.Preview.NoColor" xml:space="preserve">
+    <value>Ebben a modban nem találtak színre vonatkozó információt</value>
   </data>
   <data name="Menu.Mods.SelectedModAction" xml:space="preserve">
     <value>Kiválasztott modul művelet</value>
@@ -2708,7 +2813,7 @@ Az alkalmazás bezárja ezt az ablakot, amint a bejelentkezés befejeződött.</
     <value>Nem sikerült megfelelő szervert találni.</value>
   </data>
   <data name="Menu.SearchBar.SearchSomething" xml:space="preserve">
-    <value>Keress rá valamire, és lehet, hogy itt megjelenik...</value>
+    <value>Keress rá valamire, és lehet, hogy itt fog megjelenni...</value>
   </data>
   <data name="Menu.SearchBar.ServerFound" xml:space="preserve">
     <value>Szerver megtalálva</value>

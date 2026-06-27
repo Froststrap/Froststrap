@@ -127,6 +127,9 @@
   <data name="ActivityWatcher.LocationQueryFailed" xml:space="preserve">
     <value>Не беше възможно да се провери местоположението на сървъра. Възможно е да се присъединявате към игри прекалено бързо.</value>
   </data>
+  <data name="AddCustomTheme.Title" xml:space="preserve">
+    <value>Добавяне на персонализирана тема</value>
+  </data>
   <data name="App.OSDeprecation.Win7_81" xml:space="preserve">
     <value>Roblox вече не поддържа Windows 7 или 8.1. За да продължите да играете Roblox, моля, преминете към Windows 10 или по-нова версия.</value>
   </data>
@@ -250,7 +253,7 @@
     <value>ляво</value>
   </data>
   <data name="Bootstrapper.Status.RetryingPackage" xml:space="preserve">
-    <value>Опитвам отново {0}...</value>
+    <value>Опитвам отново с {0}...</value>
   </data>
   <data name="Bootstrapper.Status.SearchingNearbyServers" xml:space="preserve">
     <value>Търсене на сървъри в близост...</value>
@@ -416,7 +419,7 @@
     <value>Генериране</value>
   </data>
   <data name="Common.GlyphPreview" xml:space="preserve">
-    <value>Преглед на глифа</value>
+    <value>Предварителен преглед на глифа</value>
   </data>
   <data name="Common.HexCode" xml:space="preserve">
     <value>Шестнадесетичен код</value>
@@ -1775,14 +1778,92 @@
   <data name="Menu.FastFlags.Title" xml:space="preserve">
     <value>Настройки на FastFlag</value>
   </data>
+  <data name="Menu.FlagProfiles.AddPlaceId" xml:space="preserve">
+    <value>Добави идентификатор на място</value>
+  </data>
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
     <value>Изчистване на FFlags</value>
   </data>
+  <data name="Menu.FlagProfiles.CopyFailed" xml:space="preserve">
+    <value>Не успях да копирам профила:\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.CurrentPlaceIds" xml:space="preserve">
+    <value>Текущи идентификатори на места</value>
+  </data>
+  <data name="Menu.FlagProfiles.DeleteSelected" xml:space="preserve">
+    <value>Изтрий избраното</value>
+  </data>
+  <data name="Menu.FlagProfiles.EnterPlaceId" xml:space="preserve">
+    <value>Моля, въведете идентификационния номер на мястото.</value>
+  </data>
+  <data name="Menu.FlagProfiles.GetFlagsFailed" xml:space="preserve">
+    <value>Не успях да изтегля актуалните FastFlags.</value>
+  </data>
+  <data name="Menu.FlagProfiles.InvalidCharacter" xml:space="preserve">
+    <value>Името на профила съдържа недопустим символ „{0}“.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ManagingPlaceIds" xml:space="preserve">
+    <value>Управление на идентификаторите на местата за: {0} ({1} идентификатора)</value>
+  </data>
+  <data name="Menu.FlagProfiles.NameCannotBeEmpty" xml:space="preserve">
+    <value>Името на новия профил не може да бъде празно.</value>
+  </data>
   <data name="Menu.FlagProfiles.NoProfileFound" xml:space="preserve">
-    <value>Не бяха намерени профили</value>
+    <value>Не бяха намерени профили.</value>
+  </data>
+  <data name="Menu.FlagProfiles.NoProfilesFound" xml:space="preserve">
+    <value>Не бяха намерени профили. Моля, първо създайте профил.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ParseFailed" xml:space="preserve">
+    <value>Не успяхме да анализираме избрания профил.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdExists" xml:space="preserve">
+    <value>Този идентификатор на мястото вече е добавен към профила.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdNumeric" xml:space="preserve">
+    <value>Идентификаторът на мястото трябва да бъде цяло число.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdWatermark" xml:space="preserve">
+    <value>Въведете идентификационния номер на мястото (например 123456789)</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdsTab" xml:space="preserve">
+    <value>Идентификатори на места</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileExists" xml:space="preserve">
+    <value>Вече съществува профил с това име.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileNotFound" xml:space="preserve">
+    <value>Избраният файл с профил не беше намерен.</value>
+  </data>
+  <data name="Menu.FlagProfiles.RemoveSelected" xml:space="preserve">
+    <value>Премахване на избраното</value>
+  </data>
+  <data name="Menu.FlagProfiles.RenameFailed" xml:space="preserve">
+    <value>Не успях да преименувам профила:\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfile" xml:space="preserve">
+    <value>Изберете профил, за да управлявате идентификаторите на местата</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileCopy" xml:space="preserve">
+    <value>Моля, изберете профил, който да копирате.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileFirst" xml:space="preserve">
+    <value>Моля, първо изберете профил.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileLabel" xml:space="preserve">
+    <value>Изберете профил, за да управлявате неговите идентификатори на места:</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileRename" xml:space="preserve">
+    <value>Моля, изберете профил, който искате да преименувате.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileUpdate" xml:space="preserve">
+    <value>Моля, изберете профил, който да актуализирате.</value>
   </data>
   <data name="Menu.FlagProfiles.Title" xml:space="preserve">
     <value>Профили на „Fast Flag“</value>
+  </data>
+  <data name="Menu.FlagProfiles.UpdateFailed" xml:space="preserve">
+    <value>Не успях да актуализирам профила:\n{0}</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
     <value>Променете настройките в играта чрез удобно меню.</value>
@@ -2191,7 +2272,7 @@
     <value>Преопределя вградените подсистеми на Vulkan, за да се премине към стария конвейер за оформление на OpenGL.</value>
   </data>
   <data name="Menu.LinuxSettings.ForceLegacyOpenGL.Title" xml:space="preserve">
-    <value>Принудително рендиране с OpenGL в Legacy</value>
+    <value>Принудително рендиране с OpenGL Legacy</value>
   </data>
   <data name="Menu.LinuxSettings.GameMode.Description" xml:space="preserve">
     <value>Приложете оптимизациите на системата, ако има такива (изисква gamemoded).</value>
@@ -2230,7 +2311,7 @@
     <value>Налага системата за табло с оформление на съвременния клиент за телевизор/конзола върху контекста на десктопния интерфейс.</value>
   </data>
   <data name="Menu.LinuxSettings.UseConsoleExperience.Title" xml:space="preserve">
-    <value>Използвайте интерфейса на конзолата</value>
+    <value>Използвайте конзолата</value>
   </data>
   <data name="Menu.LinuxSettings.Variable" xml:space="preserve">
     <value>Променлива</value>
@@ -2299,10 +2380,10 @@
     <value>Добави към колелото с емотикони</value>
   </data>
   <data name="Menu.ModGenerator.ApplyShiftlock" xml:space="preserve">
-    <value>Кандидатствайте за работа в Shiftlock</value>
+    <value>Кандидатствай в Shiftlock</value>
   </data>
   <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
-    <value>Колкото по-голямо е числото, толкова по-високо е качеството, но отнема повече време; максималната стойност е 64, а по подразбиране е 8.</value>
+    <value>Колкото по-голямо е числото, толкова по-високо е качеството, но отнема повече време; максималната стойност е 512, а по подразбиране е 32.</value>
   </data>
   <data name="Menu.ModGenerator.Cancelled" xml:space="preserve">
     <value>Създаването на мод е отменено.</value>
@@ -2380,7 +2461,7 @@
     <value>Да изтриете „{0}“ окончателно?</value>
   </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
-    <value>Управление и прилагане на модификации на файлове към клиента на играта Roblox.</value>
+    <value>Управление и прилагане на модификации на файлове.</value>
   </data>
   <data name="Menu.Mods.DragOverlay" xml:space="preserve">
     <value>📦 Плъзнете, за да импортирате ZIP файл / папка</value>
@@ -2409,6 +2490,30 @@
   </data>
   <data name="Menu.Mods.NoneInstalled" xml:space="preserve">
     <value>Няма инсталирани модификации.</value>
+  </data>
+  <data name="Menu.Mods.Preview.Failed" xml:space="preserve">
+    <value>Не успях да заредя предварителния преглед: {0}</value>
+  </data>
+  <data name="Menu.Mods.Preview.Font.Preview" xml:space="preserve">
+    <value>Предварителен преглед на шрифта</value>
+  </data>
+  <data name="Menu.Mods.Preview.FontVariant" xml:space="preserve">
+    <value>Вариант на шрифта:</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loaded" xml:space="preserve">
+    <value>Предварителният преглед е зареден</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading" xml:space="preserve">
+    <value>Зареждане на предварителен преглед на шрифта...</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading.Glyphs" xml:space="preserve">
+    <value>Зареждане на глифи...</value>
+  </data>
+  <data name="Menu.Mods.Preview.LoadingFont" xml:space="preserve">
+    <value>Зареждане на шрифт: {0}...</value>
+  </data>
+  <data name="Menu.Mods.Preview.NoColor" xml:space="preserve">
+    <value>В този мод не беше открита информация за цветовете</value>
   </data>
   <data name="Menu.Mods.SelectedModAction" xml:space="preserve">
     <value>Избрано действие на модификацията</value>

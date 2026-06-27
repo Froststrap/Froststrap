@@ -127,6 +127,9 @@
   <data name="ActivityWatcher.LocationQueryFailed" xml:space="preserve">
     <value>Lokacije strežnika ni bilo mogoče poiskati. Morda se v igre vključujete prehitro.</value>
   </data>
+  <data name="AddCustomTheme.Title" xml:space="preserve">
+    <value>Dodaj lastno temo</value>
+  </data>
   <data name="App.OSDeprecation.Win7_81" xml:space="preserve">
     <value>Roblox ne podpira več operacijskih sistemov Windows 7 in 8.1. Če želite še naprej igrati Roblox, posodobite sistem na Windows 10 ali novejšo različico.</value>
   </data>
@@ -1008,7 +1011,7 @@ Preverite, ali Roblox deluje z [izvirnim zaganjalnikom]({1}). Če ne deluje, to 
     <value>Raven 1</value>
   </data>
   <data name="Enums.QualityLevel.Level10" xml:space="preserve">
-    <value>Stopnja 10</value>
+    <value>Raven 10</value>
   </data>
   <data name="Enums.QualityLevel.Level11" xml:space="preserve">
     <value>Raven 11</value>
@@ -1414,7 +1417,7 @@ Kliknite »Dodaj račun« zgoraj, da začnete</value>
     <value>Omogoči BetterMatchmaking</value>
   </data>
   <data name="Menu.Bootstrapper.MaxServerCheck.Description" xml:space="preserve">
-    <value>Izberite število strežnikov, ki jih želite preveriti; več jih bo, dlje bo to trajalo.</value>
+    <value>Izberite število strežnikov, ki jih želite preveriti; več jih bo, dlje bo to lahko trajalo.</value>
   </data>
   <data name="Menu.Bootstrapper.MaxServerCheck.Title" xml:space="preserve">
     <value>Največji znesek za preverjanje strežnika</value>
@@ -1549,7 +1552,7 @@ Kliknite »Dodaj račun« zgoraj, da začnete</value>
     <value>Piškotka Roblox ni bilo mogoče naložiti.</value>
   </data>
   <data name="Menu.CookieState.Failed" xml:space="preserve">
-    <value>Naložitev datoteke s piškotki ni uspela.</value>
+    <value>Prenos datoteke s piškotki ni uspel.</value>
   </data>
   <data name="Menu.CookieState.Invalid" xml:space="preserve">
     <value>Piškotek je bil najden, vendar je neveljaven ali je potekel.</value>
@@ -1595,7 +1598,7 @@ Prosimo, ne posegajte v to, če ne veste, kaj počnete</value>
     <value>Prenos z več nitmi</value>
   </data>
   <data name="Menu.Deployment.OverrideHash.Description" xml:space="preserve">
-    <value>Roblox Studio prisili, da namesti in uporablja določeno verzijo (hash) namesto najnovejše.</value>
+    <value>Roblox Studio prisili, da namesti in uporablja določen hash različice namesto najnovejše.</value>
   </data>
   <data name="Menu.Deployment.OverrideHash.Title" xml:space="preserve">
     <value>Prepisati različico studia</value>
@@ -1760,14 +1763,92 @@ Več informacij:
   <data name="Menu.FastFlags.Title" xml:space="preserve">
     <value>Nastavitve FastFlag</value>
   </data>
+  <data name="Menu.FlagProfiles.AddPlaceId" xml:space="preserve">
+    <value>Dodaj ID kraja</value>
+  </data>
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
     <value>Izbriši FFlags</value>
   </data>
+  <data name="Menu.FlagProfiles.CopyFailed" xml:space="preserve">
+    <value>Kopiranje profila ni uspelo:\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.CurrentPlaceIds" xml:space="preserve">
+    <value>Trenutne identifikacijske številke lokacij</value>
+  </data>
+  <data name="Menu.FlagProfiles.DeleteSelected" xml:space="preserve">
+    <value>Izbriši izbrano</value>
+  </data>
+  <data name="Menu.FlagProfiles.EnterPlaceId" xml:space="preserve">
+    <value>Vnesite ID kraja.</value>
+  </data>
+  <data name="Menu.FlagProfiles.GetFlagsFailed" xml:space="preserve">
+    <value>Pridobivanje trenutnih FastFlags ni uspelo.</value>
+  </data>
+  <data name="Menu.FlagProfiles.InvalidCharacter" xml:space="preserve">
+    <value>Ime profila vsebuje neveljaven znak »{0}«.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ManagingPlaceIds" xml:space="preserve">
+    <value>Upravljanje identifikatorjev lokacij za: {0} ({1} identifikatorjev)</value>
+  </data>
+  <data name="Menu.FlagProfiles.NameCannotBeEmpty" xml:space="preserve">
+    <value>Ime novega profila ne sme biti prazno.</value>
+  </data>
   <data name="Menu.FlagProfiles.NoProfileFound" xml:space="preserve">
-    <value>Profilov ni bilo najdenih</value>
+    <value>Profilov ni bilo najdenih.</value>
+  </data>
+  <data name="Menu.FlagProfiles.NoProfilesFound" xml:space="preserve">
+    <value>Profilov ni bilo najdenih. Najprej ustvarite profil.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ParseFailed" xml:space="preserve">
+    <value>Izbrani profil ni bil pravilno razčlenjen.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdExists" xml:space="preserve">
+    <value>Ta ID lokacije je že dodan v profil.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdNumeric" xml:space="preserve">
+    <value>ID lokacije mora biti celo število.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdWatermark" xml:space="preserve">
+    <value>Vnesite ID lokacije (npr. 123456789)</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdsTab" xml:space="preserve">
+    <value>ID-ji lokacij</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileExists" xml:space="preserve">
+    <value>Profil s tem imenom že obstaja.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileNotFound" xml:space="preserve">
+    <value>Izbrana datoteka s profilom ni bila najdena.</value>
+  </data>
+  <data name="Menu.FlagProfiles.RemoveSelected" xml:space="preserve">
+    <value>Odstrani izbrano</value>
+  </data>
+  <data name="Menu.FlagProfiles.RenameFailed" xml:space="preserve">
+    <value>Preimenovanje profila ni uspelo:\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfile" xml:space="preserve">
+    <value>Izberite profil za upravljanje identifikatorjev lokacij</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileCopy" xml:space="preserve">
+    <value>Izberite profil, ki ga želite kopirati.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileFirst" xml:space="preserve">
+    <value>Najprej izberite profil.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileLabel" xml:space="preserve">
+    <value>Izberite profil, da upravljate z njegovimi ID-ji lokacij:</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileRename" xml:space="preserve">
+    <value>Izberite profil, ki ga želite preimenovati.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileUpdate" xml:space="preserve">
+    <value>Izberite profil, ki ga želite posodobiti.</value>
   </data>
   <data name="Menu.FlagProfiles.Title" xml:space="preserve">
     <value>Profilni zastavici »Fast«</value>
+  </data>
+  <data name="Menu.FlagProfiles.UpdateFailed" xml:space="preserve">
+    <value>Posodobitev profila ni uspela:\n{0}</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
     <value>Nastavitve v igri lahko spremenite prek priročnega menija.</value>
@@ -1905,7 +1986,7 @@ Več informacij:
     <value>Začetna kakovost</value>
   </data>
   <data name="Menu.GlobalSettings.StudioVolume.Description" xml:space="preserve">
-    <value>Glasnost za Roblox Studio.</value>
+    <value>Zvočna jakost za Roblox Studio.</value>
   </data>
   <data name="Menu.GlobalSettings.StudioVolume.Title" xml:space="preserve">
     <value>Prostorska študija</value>
@@ -2173,7 +2254,7 @@ Ali želite namestiti vtičnik?</value>
     <value>Zagon programa winecfg ni uspel: {0}</value>
   </data>
   <data name="Menu.LinuxSettings.ForceLegacyOpenGL.Description" xml:space="preserve">
-    <value>Prevzame nadzor nad izvirnimi podsistemi Vulkana, da se namesto tega uporabi starejši postopek razporeditve OpenGL.</value>
+    <value>Prepisuje izvorne podsisteme Vulkana, da se namesto tega uporabi starejši postopek razporeditve OpenGL.</value>
   </data>
   <data name="Menu.LinuxSettings.ForceLegacyOpenGL.Title" xml:space="preserve">
     <value>Prisilno uporabi klasično OpenGL-renderiranje</value>
@@ -2191,7 +2272,7 @@ Ali želite namestiti vtičnik?</value>
     <value>Grafični renderer</value>
   </data>
   <data name="Menu.LinuxSettings.LauncherCommand.Description" xml:space="preserve">
-    <value>Ovijte ukaz Studio (npr. gamescope -- %command%)</value>
+    <value>Ovijte ukaz Studio (npr. gamescope -- %ukaz%)</value>
   </data>
   <data name="Menu.LinuxSettings.LauncherCommand.Title" xml:space="preserve">
     <value>Ukaz za zagon</value>
@@ -2287,7 +2368,7 @@ Ali želite namestiti vtičnik?</value>
     <value>Prijavi se na Shiftlock</value>
   </data>
   <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
-    <value>Čim višja je številka, tem višja je kakovost, vendar traja dlje; najvišja vrednost je 64, privzeta pa 8.</value>
+    <value>Čim višja je številka, tem višja je kakovost, vendar traja dlje; najvišja vrednost je 512, privzeta pa 32.</value>
   </data>
   <data name="Menu.ModGenerator.Cancelled" xml:space="preserve">
     <value>Ustvarjanje modov je bilo preklicano.</value>
@@ -2362,10 +2443,10 @@ Ali želite namestiti vtičnik?</value>
     <value>Mod z imenom »{0}« že obstaja.</value>
   </data>
   <data name="Menu.Mods.DeleteMod" xml:space="preserve">
-    <value>Ali želite &apos;{0}&apos; trajno izbrisati?</value>
+    <value>Ali želite »{0}« trajno izbrisati?</value>
   </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
-    <value>Upravljanje in uporaba modifikacij datotek v igralnem odjemalcu Roblox.</value>
+    <value>Upravljanje in uporaba modifikacij datotek.</value>
   </data>
   <data name="Menu.Mods.DragOverlay" xml:space="preserve">
     <value>📦 Pustite datoteko ali mapo, da jo uvozite</value>
@@ -2394,6 +2475,30 @@ Vsebovati mora vsaj eno od naslednjih map: content, ExtraContent, PlatformConten
   </data>
   <data name="Menu.Mods.NoneInstalled" xml:space="preserve">
     <value>Ni nameščenih modifikacij.</value>
+  </data>
+  <data name="Menu.Mods.Preview.Failed" xml:space="preserve">
+    <value>Predogled ni bil naložen: {0}</value>
+  </data>
+  <data name="Menu.Mods.Preview.Font.Preview" xml:space="preserve">
+    <value>Predogled pisave</value>
+  </data>
+  <data name="Menu.Mods.Preview.FontVariant" xml:space="preserve">
+    <value>Različica pisave:</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loaded" xml:space="preserve">
+    <value>Predogled je naložen</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading" xml:space="preserve">
+    <value>Nalaganje predogleda pisave...</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading.Glyphs" xml:space="preserve">
+    <value>Nalaganje simbolov...</value>
+  </data>
+  <data name="Menu.Mods.Preview.LoadingFont" xml:space="preserve">
+    <value>Nalaganje pisave: {0}...</value>
+  </data>
+  <data name="Menu.Mods.Preview.NoColor" xml:space="preserve">
+    <value>V tej modifikaciji ni bilo najdenih podatkov o barvah</value>
   </data>
   <data name="Menu.Mods.SelectedModAction" xml:space="preserve">
     <value>Izbrana akcija modifikacije</value>
@@ -2763,7 +2868,7 @@ Aplikacija bo to okno zaprla, ko bo prijava zaključena.</value>
     <value>Igra ni izbrana</value>
   </data>
   <data name="Menu.Shortcuts.PrivateAccessCode" xml:space="preserve">
-    <value>Osebna koda za dostop</value>
+    <value>Zasebna koda za dostop</value>
   </data>
   <data name="Menu.Shortcuts.Processing" xml:space="preserve">
     <value>Obdelava...</value>

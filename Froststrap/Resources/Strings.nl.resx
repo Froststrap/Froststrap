@@ -127,6 +127,9 @@
   <data name="ActivityWatcher.LocationQueryFailed" xml:space="preserve">
     <value>De locatie van de server kon niet worden opgevraagd. Mogelijk sluit je te snel aan bij spellen.</value>
   </data>
+  <data name="AddCustomTheme.Title" xml:space="preserve">
+    <value>Aangepast thema toevoegen</value>
+  </data>
   <data name="App.OSDeprecation.Win7_81" xml:space="preserve">
     <value>Roblox biedt geen ondersteuning meer voor Windows 7 of 8.1. Als je Roblox wilt blijven spelen, moet je upgraden naar Windows 10 of een nieuwere versie.</value>
   </data>
@@ -184,7 +187,7 @@ Wil je overschakelen naar het standaardkanaal ({1})?</value>
     <value>Afhankelijkheden controleren</value>
   </data>
   <data name="Bootstrapper.Status.CheckingFlatpak" xml:space="preserve">
-    <value>De Flatpak-installatie wordt gecontroleerd...</value>
+    <value>Flatpak-installatie wordt gecontroleerd...</value>
   </data>
   <data name="Bootstrapper.Status.CheckingUpdates" xml:space="preserve">
     <value>Controleren op updates</value>
@@ -1705,14 +1708,92 @@ Wil je het nu verwijderen?</value>
   <data name="Menu.FastFlags.Title" xml:space="preserve">
     <value>FastFlag-instellingen</value>
   </data>
+  <data name="Menu.FlagProfiles.AddPlaceId" xml:space="preserve">
+    <value>Plaats-ID toevoegen</value>
+  </data>
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
     <value>FF-vlaggen wissen</value>
   </data>
+  <data name="Menu.FlagProfiles.CopyFailed" xml:space="preserve">
+    <value>Het kopiëren van het profiel is mislukt:\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.CurrentPlaceIds" xml:space="preserve">
+    <value>Huidige plaats-ID’s</value>
+  </data>
+  <data name="Menu.FlagProfiles.DeleteSelected" xml:space="preserve">
+    <value>Geselecteerde items verwijderen</value>
+  </data>
+  <data name="Menu.FlagProfiles.EnterPlaceId" xml:space="preserve">
+    <value>Voer een plaats-ID in.</value>
+  </data>
+  <data name="Menu.FlagProfiles.GetFlagsFailed" xml:space="preserve">
+    <value>Het is niet gelukt om de huidige FastFlags op te halen.</value>
+  </data>
+  <data name="Menu.FlagProfiles.InvalidCharacter" xml:space="preserve">
+    <value>De profielnaam bevat het ongeldige teken &apos;{0}&apos;.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ManagingPlaceIds" xml:space="preserve">
+    <value>Plaats-ID’s beheren voor: {0} ({1} ID’s)</value>
+  </data>
+  <data name="Menu.FlagProfiles.NameCannotBeEmpty" xml:space="preserve">
+    <value>De naam van het nieuwe profiel mag niet leeg zijn.</value>
+  </data>
   <data name="Menu.FlagProfiles.NoProfileFound" xml:space="preserve">
-    <value>Er zijn geen profielen gevonden</value>
+    <value>Er zijn geen profielen gevonden.</value>
+  </data>
+  <data name="Menu.FlagProfiles.NoProfilesFound" xml:space="preserve">
+    <value>Er zijn geen profielen gevonden. Maak eerst een profiel aan.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ParseFailed" xml:space="preserve">
+    <value>Het geselecteerde profiel kon niet worden geparseerd.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdExists" xml:space="preserve">
+    <value>Deze locatie-ID is al aan het profiel toegevoegd.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdNumeric" xml:space="preserve">
+    <value>De plaats-ID moet een geheel getal zijn.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdWatermark" xml:space="preserve">
+    <value>Voer de plaats-ID in (bijv. 123456789)</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdsTab" xml:space="preserve">
+    <value>Locatie-ID&apos;s</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileExists" xml:space="preserve">
+    <value>Er bestaat al een profiel met die naam.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileNotFound" xml:space="preserve">
+    <value>Het geselecteerde profielbestand is niet gevonden.</value>
+  </data>
+  <data name="Menu.FlagProfiles.RemoveSelected" xml:space="preserve">
+    <value>Geselecteerde verwijderen</value>
+  </data>
+  <data name="Menu.FlagProfiles.RenameFailed" xml:space="preserve">
+    <value>Het hernoemen van het profiel is mislukt:\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfile" xml:space="preserve">
+    <value>Selecteer een profiel om plaats-ID’s te beheren</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileCopy" xml:space="preserve">
+    <value>Kies een profiel om te kopiëren.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileFirst" xml:space="preserve">
+    <value>Kies eerst een profiel.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileLabel" xml:space="preserve">
+    <value>Kies een profiel om de plaats-ID’s ervan te beheren:</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileRename" xml:space="preserve">
+    <value>Kies een profiel waarvan u de naam wilt wijzigen.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileUpdate" xml:space="preserve">
+    <value>Kies een profiel om bij te werken.</value>
   </data>
   <data name="Menu.FlagProfiles.Title" xml:space="preserve">
     <value>Profielen van Fast Flag</value>
+  </data>
+  <data name="Menu.FlagProfiles.UpdateFailed" xml:space="preserve">
+    <value>Het bijwerken van het profiel is mislukt:\n{0}</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
     <value>Pas de instellingen in het spel aan via een handig menu.</value>
@@ -2091,7 +2172,7 @@ Wil je de plug-in installeren?</value>
     <value>Foutopsporingsmodus</value>
   </data>
   <data name="Menu.LinuxSettings.EnableGameMode.Description" xml:space="preserve">
-    <value>Signals, de optimalisatiedaemon van Feral Interactive, grijpt in tijdens de opstartprocedures van games.</value>
+    <value>Signals, de optimalisatiedaemon van Feral Interactive, grijpt in tijdens de opstartprocedure van games.</value>
   </data>
   <data name="Menu.LinuxSettings.EnableGameMode.Title" xml:space="preserve">
     <value>GameMode inschakelen</value>
@@ -2109,10 +2190,10 @@ Wil je de plug-in installeren?</value>
     <value>Omgevingsvariabelen</value>
   </data>
   <data name="Menu.LinuxSettings.FailedToStartWineCfg" xml:space="preserve">
-    <value>Kan winecfg niet starten: {0}</value>
+    <value>Het starten van winecfg is mislukt: {0}</value>
   </data>
   <data name="Menu.LinuxSettings.ForceLegacyOpenGL.Description" xml:space="preserve">
-    <value>Overschrijft de standaard Vulkan-subsystemen om in plaats daarvan terug te vallen op de verouderde OpenGL-layoutpijplijn.</value>
+    <value>Overschrijft de standaard Vulkan-subsystemen om in plaats daarvan terug te vallen op de verouderde OpenGL-lay-outpijplijn.</value>
   </data>
   <data name="Menu.LinuxSettings.ForceLegacyOpenGL.Title" xml:space="preserve">
     <value>OpenGL-weergave van Force Legacy forceren</value>
@@ -2226,7 +2307,7 @@ Wil je de plug-in installeren?</value>
     <value>Solliciteer bij Shiftlock</value>
   </data>
   <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
-    <value>Hoe hoger het getal, hoe beter de kwaliteit, maar het duurt wel langer. Het maximum is 64, de standaardinstelling is 8.</value>
+    <value>Hoe hoger het getal, hoe beter de kwaliteit, maar het duurt wel langer. Het maximum is 512, de standaardinstelling is 32.</value>
   </data>
   <data name="Menu.ModGenerator.Cancelled" xml:space="preserve">
     <value>Het genereren van mods is geannuleerd.</value>
@@ -2304,7 +2385,7 @@ Wil je de plug-in installeren?</value>
     <value>&apos;{0}&apos; definitief verwijderen?</value>
   </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
-    <value>Bestandsaanpassingen voor de Roblox-gameclient beheren en toepassen.</value>
+    <value>Bestandsaanpassingen beheren en toepassen.</value>
   </data>
   <data name="Menu.Mods.DragOverlay" xml:space="preserve">
     <value>📦 Sleep een ZIP-bestand of map hierheen om te importeren</value>
@@ -2333,6 +2414,30 @@ Deze moet ten minste één van de volgende mappen bevatten: content, ExtraConten
   </data>
   <data name="Menu.Mods.NoneInstalled" xml:space="preserve">
     <value>Er zijn geen mods geïnstalleerd.</value>
+  </data>
+  <data name="Menu.Mods.Preview.Failed" xml:space="preserve">
+    <value>Het laden van het voorbeeld is mislukt: {0}</value>
+  </data>
+  <data name="Menu.Mods.Preview.Font.Preview" xml:space="preserve">
+    <value>Lettertypevoorbeeld</value>
+  </data>
+  <data name="Menu.Mods.Preview.FontVariant" xml:space="preserve">
+    <value>Lettertypevariant:</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loaded" xml:space="preserve">
+    <value>Voorbeeld geladen</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading" xml:space="preserve">
+    <value>Het laden van het lettertypevoorbeeld...</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading.Glyphs" xml:space="preserve">
+    <value>Glyphs worden geladen...</value>
+  </data>
+  <data name="Menu.Mods.Preview.LoadingFont" xml:space="preserve">
+    <value>Lettertype wordt geladen: {0}...</value>
+  </data>
+  <data name="Menu.Mods.Preview.NoColor" xml:space="preserve">
+    <value>Er is geen kleurinformatie gevonden in deze mod</value>
   </data>
   <data name="Menu.Mods.SelectedModAction" xml:space="preserve">
     <value>Geselecteerde mod-actie</value>

@@ -127,6 +127,9 @@
   <data name="ActivityWatcher.LocationQueryFailed" xml:space="preserve">
     <value>Impossible de déterminer l&apos;emplacement du serveur. Vous rejoignez peut-être les parties trop rapidement.</value>
   </data>
+  <data name="AddCustomTheme.Title" xml:space="preserve">
+    <value>Ajouter un thème personnalisé</value>
+  </data>
   <data name="App.OSDeprecation.Win7_81" xml:space="preserve">
     <value>Roblox n&apos;est plus compatible avec Windows 7 ni Windows 8.1. Pour continuer à jouer à Roblox, veuillez passer à Windows 10 ou à une version plus récente.</value>
   </data>
@@ -214,7 +217,7 @@ Souhaitez-vous passer à la chaîne par défaut ({1}) ?</value>
     <value>Téléchargement de WebView2...</value>
   </data>
   <data name="Bootstrapper.Status.DownloadingWine" xml:space="preserve">
-    <value>Téléchargement de Wine…</value>
+    <value>Téléchargement de Wine...</value>
   </data>
   <data name="Bootstrapper.Status.Extracting" xml:space="preserve">
     <value>Extraction</value>
@@ -223,7 +226,7 @@ Souhaitez-vous passer à la chaîne par défaut ({1}) ?</value>
     <value>Extraction de DXVK...</value>
   </data>
   <data name="Bootstrapper.Status.ExtractingDXVKSarek" xml:space="preserve">
-    <value>Extraction de DXVK-Sarek...</value>
+    <value>Extraction de DXVK-Sarek…</value>
   </data>
   <data name="Bootstrapper.Status.ExtractingWine" xml:space="preserve">
     <value>Extraction du vin...</value>
@@ -1404,7 +1407,7 @@ Cliquez sur « Ajouter un compte » ci-dessus pour commencer</value>
     <value>Rejoignez des serveurs moins fréquentés lorsque vous vous connectez via le bouton « Jouer ».</value>
   </data>
   <data name="Menu.Bootstrapper.SmallerServer.Title" xml:space="preserve">
-    <value>Rejoignez des serveurs plus petits</value>
+    <value>Rejoindre des serveurs plus petits</value>
   </data>
   <data name="Menu.Bootstrapper.Startup.Description" xml:space="preserve">
     <value>Lancer automatiquement l&apos;application Roblox au démarrage de votre PC.</value>
@@ -1732,14 +1735,92 @@ Voulez-vous le supprimer maintenant ?</value>
   <data name="Menu.FastFlags.Title" xml:space="preserve">
     <value>Paramètres de FastFlag</value>
   </data>
+  <data name="Menu.FlagProfiles.AddPlaceId" xml:space="preserve">
+    <value>Ajouter un identifiant de lieu</value>
+  </data>
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
     <value>Effacer les FFlags</value>
   </data>
+  <data name="Menu.FlagProfiles.CopyFailed" xml:space="preserve">
+    <value>Échec de la copie du profil :\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.CurrentPlaceIds" xml:space="preserve">
+    <value>Identifiants de lieux actuels</value>
+  </data>
+  <data name="Menu.FlagProfiles.DeleteSelected" xml:space="preserve">
+    <value>Supprimer la sélection</value>
+  </data>
+  <data name="Menu.FlagProfiles.EnterPlaceId" xml:space="preserve">
+    <value>Veuillez saisir un identifiant de lieu.</value>
+  </data>
+  <data name="Menu.FlagProfiles.GetFlagsFailed" xml:space="preserve">
+    <value>Impossible de récupérer les FastFlags actuels.</value>
+  </data>
+  <data name="Menu.FlagProfiles.InvalidCharacter" xml:space="preserve">
+    <value>Le nom du profil contient un caractère non valide : « {0} ».</value>
+  </data>
+  <data name="Menu.FlagProfiles.ManagingPlaceIds" xml:space="preserve">
+    <value>Gestion des identifiants de lieux pour : {0} ({1} identifiants)</value>
+  </data>
+  <data name="Menu.FlagProfiles.NameCannotBeEmpty" xml:space="preserve">
+    <value>Le nom du nouveau profil ne peut pas être vide.</value>
+  </data>
   <data name="Menu.FlagProfiles.NoProfileFound" xml:space="preserve">
-    <value>Aucun profil trouvé</value>
+    <value>Aucun profil trouvé.</value>
+  </data>
+  <data name="Menu.FlagProfiles.NoProfilesFound" xml:space="preserve">
+    <value>Aucun profil trouvé. Veuillez d&apos;abord créer un profil.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ParseFailed" xml:space="preserve">
+    <value>Impossible d&apos;analyser le profil sélectionné.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdExists" xml:space="preserve">
+    <value>Cet identifiant de lieu est déjà ajouté au profil.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdNumeric" xml:space="preserve">
+    <value>L&apos;identifiant du lieu doit être un nombre entier.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdWatermark" xml:space="preserve">
+    <value>Saisissez l&apos;identifiant du lieu (par exemple, 123456789)</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdsTab" xml:space="preserve">
+    <value>Identifiants de lieu</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileExists" xml:space="preserve">
+    <value>Un profil portant ce nom existe déjà.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileNotFound" xml:space="preserve">
+    <value>Le fichier de profil sélectionné est introuvable.</value>
+  </data>
+  <data name="Menu.FlagProfiles.RemoveSelected" xml:space="preserve">
+    <value>Supprimer la sélection</value>
+  </data>
+  <data name="Menu.FlagProfiles.RenameFailed" xml:space="preserve">
+    <value>Échec de la modification du nom du profil :\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfile" xml:space="preserve">
+    <value>Sélectionnez un profil pour gérer les identifiants de lieu</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileCopy" xml:space="preserve">
+    <value>Veuillez sélectionner un profil à copier.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileFirst" xml:space="preserve">
+    <value>Veuillez d&apos;abord sélectionner un profil.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileLabel" xml:space="preserve">
+    <value>Sélectionnez un profil pour gérer ses identifiants de lieu :</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileRename" xml:space="preserve">
+    <value>Veuillez sélectionner un profil à renommer.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileUpdate" xml:space="preserve">
+    <value>Veuillez sélectionner un profil à mettre à jour.</value>
   </data>
   <data name="Menu.FlagProfiles.Title" xml:space="preserve">
     <value>Profils Fast Flag</value>
+  </data>
+  <data name="Menu.FlagProfiles.UpdateFailed" xml:space="preserve">
+    <value>Échec de la mise à jour du profil :\n{0}</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
     <value>Modifiez les paramètres du jeu depuis un menu pratique.</value>
@@ -2241,7 +2322,7 @@ Souhaitez-vous installer le plugin ?</value>
     <value>Postuler chez Shiftlock</value>
   </data>
   <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
-    <value>Plus le chiffre est élevé, meilleure est la qualité, mais le traitement prend plus de temps. La valeur maximale est 64, la valeur par défaut est 8.</value>
+    <value>Plus le chiffre est élevé, meilleure est la qualité, mais le traitement prend plus de temps. La valeur maximale est 512, la valeur par défaut est 32.</value>
   </data>
   <data name="Menu.ModGenerator.Cancelled" xml:space="preserve">
     <value>La génération du mod a été annulée.</value>
@@ -2319,7 +2400,7 @@ Souhaitez-vous installer le plugin ?</value>
     <value>Souhaitez-vous supprimer définitivement « {0} » ?</value>
   </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
-    <value>Gérer et appliquer des modifications de fichiers au client du jeu Roblox.</value>
+    <value>Gérer et appliquer les modifications apportées aux fichiers.</value>
   </data>
   <data name="Menu.Mods.DragOverlay" xml:space="preserve">
     <value>📦 Glisser-déposer pour importer un fichier ZIP ou un dossier</value>
@@ -2349,8 +2430,29 @@ Elle doit contenir au moins l&apos;un des dossiers suivants : content, ExtraCont
   <data name="Menu.Mods.NoneInstalled" xml:space="preserve">
     <value>Aucun mod n&apos;est installé.</value>
   </data>
+  <data name="Menu.Mods.Preview.Failed" xml:space="preserve">
+    <value>Échec du chargement de l&apos;aperçu : {0}</value>
+  </data>
+  <data name="Menu.Mods.Preview.Font.Preview" xml:space="preserve">
+    <value>Aperçu de la police</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loaded" xml:space="preserve">
+    <value>Aperçu chargé</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading" xml:space="preserve">
+    <value>Chargement de l&apos;aperçu de la police…</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading.Glyphs" xml:space="preserve">
+    <value>Chargement des glyphes…</value>
+  </data>
+  <data name="Menu.Mods.Preview.LoadingFont" xml:space="preserve">
+    <value>Chargement de la police : {0}...</value>
+  </data>
+  <data name="Menu.Mods.Preview.NoColor" xml:space="preserve">
+    <value>Aucune information sur les couleurs n&apos;a été trouvée dans ce mod</value>
+  </data>
   <data name="Menu.Mods.SelectedModAction" xml:space="preserve">
-    <value>Action du mod sélectionnée</value>
+    <value>Action du mod sélectionné</value>
   </data>
   <data name="Menu.Mods.Title" xml:space="preserve">
     <value>Mes mods</value>
@@ -2579,7 +2681,7 @@ Elle doit contenir au moins l&apos;un des dossiers suivants : content, ExtraCont
   </data>
   <data name="Menu.QuickSignIn.Waitting" xml:space="preserve">
     <value>En attente de la connexion rapide...
-L&apos;application fermera cette fenêtre une fois la connexion effectuée.</value>
+L&apos;application fermera cette fenêtre une fois la connexion terminée.</value>
   </data>
   <data name="Menu.RegionSelector.EnterPlaceId" xml:space="preserve">
     <value>Saisissez un identifiant de lieu, puis cliquez sur « Rechercher » pour afficher les serveurs.</value>
@@ -2606,7 +2708,7 @@ L&apos;application fermera cette fenêtre une fois la connexion effectuée.</val
     <value>{0} régions chargées.</value>
   </data>
   <data name="Menu.RegionSelector.LoadingDatacenters" xml:space="preserve">
-    <value>Chargement des centres de données...</value>
+    <value>Chargement des centres de données…</value>
   </data>
   <data name="Menu.RegionSelector.LoginRequired" xml:space="preserve">
     <value>Connectez-vous via le gestionnaire de compte, activez l&apos;option « Autorisation de compte Froststrap » ou signalez-le sur notre serveur Discord pour pouvoir l&apos;utiliser.</value>
@@ -2648,7 +2750,7 @@ L&apos;application fermera cette fenêtre une fois la connexion effectuée.</val
     <value>Enregistrer</value>
   </data>
   <data name="Menu.SearchBar.AutoJoin" xml:space="preserve">
-    <value>Mode automatique : recherche de la région la mieux adaptée à vos besoins...</value>
+    <value>Mode automatique : recherche de la région qui vous convient le mieux...</value>
   </data>
   <data name="Menu.SearchBar.JoinError" xml:space="preserve">
     <value>Échec de la connexion à la partie : {0}</value>

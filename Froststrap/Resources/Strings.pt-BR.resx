@@ -125,7 +125,10 @@
     <value>Sobre a Froststrap</value>
   </data>
   <data name="ActivityWatcher.LocationQueryFailed" xml:space="preserve">
-    <value>Não foi possível consultar a localização do servidor. Talvez você esteja entrando nos jogos muito rapidamente.</value>
+    <value>Não foi possível consultar a localização do servidor. Talvez você esteja entrando nas partidas muito rapidamente.</value>
+  </data>
+  <data name="AddCustomTheme.Title" xml:space="preserve">
+    <value>Adicionar tema personalizado</value>
   </data>
   <data name="App.OSDeprecation.Win7_81" xml:space="preserve">
     <value>O Roblox não é mais compatível com o Windows 7 ou 8.1. Para continuar jogando o Roblox, atualize para o Windows 10 ou uma versão mais recente.</value>
@@ -470,7 +473,7 @@ Deseja mudar para o canal padrão ({1})?</value>
     <value>Jogador</value>
   </data>
   <data name="Common.PresetFlagLists" xml:space="preserve">
-    <value>Listas de sinalizadores predefinidas</value>
+    <value>Listas de bandeiras predefinidas</value>
   </data>
   <data name="Common.Presets" xml:space="preserve">
     <value>Predefinições</value>
@@ -1577,7 +1580,7 @@ Por favor, não mexa nisso se não souber o que está fazendo</value>
     <value>Especifique o número de threads a ser usado para o download. Isso afeta apenas o Studio no Linux.</value>
   </data>
   <data name="Menu.Deployment.MultiThread.Title" xml:space="preserve">
-    <value>Download em múltiplos threads</value>
+    <value>Download multithread</value>
   </data>
   <data name="Menu.Deployment.OverrideHash.Description" xml:space="preserve">
     <value>Forçar o Roblox Studio a instalar e usar um hash de versão específico, em vez da versão mais recente.</value>
@@ -1713,7 +1716,7 @@ Deseja removê-lo agora?</value>
     <value>Qualidade do anti-aliasing (MSAA)</value>
   </data>
   <data name="Menu.FastFlags.Presets.OverrideGraphicQuality.Description" xml:space="preserve">
-    <value>Fixa a qualidade gráfica em um nível selecionado. Observação: com essa configuração ativada, o controle deslizante de gráficos no menu do Roblox afetará apenas a distância de renderização no jogo.</value>
+    <value>Fixa a qualidade gráfica no nível selecionado. Observação: com essa configuração ativada, o controle deslizante de gráficos no menu do Roblox afetará apenas a distância de renderização no jogo.</value>
   </data>
   <data name="Menu.FastFlags.Presets.OverrideGraphicQuality.Title" xml:space="preserve">
     <value>Substituir o nível de qualidade gráfica</value>
@@ -1748,14 +1751,92 @@ Deseja removê-lo agora?</value>
   <data name="Menu.FastFlags.Title" xml:space="preserve">
     <value>Configurações do FastFlag</value>
   </data>
+  <data name="Menu.FlagProfiles.AddPlaceId" xml:space="preserve">
+    <value>Adicionar ID do local</value>
+  </data>
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
     <value>Limpar FFlags</value>
   </data>
+  <data name="Menu.FlagProfiles.CopyFailed" xml:space="preserve">
+    <value>Falha ao copiar o perfil:\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.CurrentPlaceIds" xml:space="preserve">
+    <value>IDs de locais atuais</value>
+  </data>
+  <data name="Menu.FlagProfiles.DeleteSelected" xml:space="preserve">
+    <value>Excluir os selecionados</value>
+  </data>
+  <data name="Menu.FlagProfiles.EnterPlaceId" xml:space="preserve">
+    <value>Insira um ID de local.</value>
+  </data>
+  <data name="Menu.FlagProfiles.GetFlagsFailed" xml:space="preserve">
+    <value>Não foi possível obter os FastFlags atuais.</value>
+  </data>
+  <data name="Menu.FlagProfiles.InvalidCharacter" xml:space="preserve">
+    <value>O nome do perfil contém o caractere inválido &apos;{0}&apos;.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ManagingPlaceIds" xml:space="preserve">
+    <value>Gerenciando IDs de locais para: {0} ({1} IDs)</value>
+  </data>
+  <data name="Menu.FlagProfiles.NameCannotBeEmpty" xml:space="preserve">
+    <value>O nome do novo perfil não pode ficar em branco.</value>
+  </data>
   <data name="Menu.FlagProfiles.NoProfileFound" xml:space="preserve">
-    <value>Não foram encontrados perfis</value>
+    <value>Não foram encontrados perfis.</value>
+  </data>
+  <data name="Menu.FlagProfiles.NoProfilesFound" xml:space="preserve">
+    <value>Não foram encontrados perfis. Por favor, crie um perfil primeiro.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ParseFailed" xml:space="preserve">
+    <value>Não foi possível analisar o perfil selecionado.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdExists" xml:space="preserve">
+    <value>Este ID de local já foi adicionado ao perfil.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdNumeric" xml:space="preserve">
+    <value>O ID do local deve ser um número inteiro.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdWatermark" xml:space="preserve">
+    <value>Digite o ID do local (por exemplo, 123456789)</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdsTab" xml:space="preserve">
+    <value>IDs de locais</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileExists" xml:space="preserve">
+    <value>Já existe um perfil com esse nome.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileNotFound" xml:space="preserve">
+    <value>O arquivo de perfil selecionado não foi encontrado.</value>
+  </data>
+  <data name="Menu.FlagProfiles.RemoveSelected" xml:space="preserve">
+    <value>Remover os selecionados</value>
+  </data>
+  <data name="Menu.FlagProfiles.RenameFailed" xml:space="preserve">
+    <value>Falha ao renomear o perfil:\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfile" xml:space="preserve">
+    <value>Selecione um perfil para gerenciar IDs de locais</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileCopy" xml:space="preserve">
+    <value>Selecione um perfil para copiar.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileFirst" xml:space="preserve">
+    <value>Por favor, selecione primeiro um perfil.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileLabel" xml:space="preserve">
+    <value>Selecione um perfil para gerenciar seus IDs de local:</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileRename" xml:space="preserve">
+    <value>Selecione um perfil para renomeá-lo.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileUpdate" xml:space="preserve">
+    <value>Selecione um perfil para atualizar.</value>
   </data>
   <data name="Menu.FlagProfiles.Title" xml:space="preserve">
-    <value>Perfis Fast Flag</value>
+    <value>Perfis de bandeiras rápidas</value>
+  </data>
+  <data name="Menu.FlagProfiles.UpdateFailed" xml:space="preserve">
+    <value>Falha ao atualizar o perfil:\n{0}</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
     <value>Altere as configurações do jogo a partir de um menu prático.</value>
@@ -1908,7 +1989,7 @@ Deseja removê-lo agora?</value>
     <value>Sensibilidade dos eixos X e Y para a perspectiva em terceira pessoa.</value>
   </data>
   <data name="Menu.GlobalSettings.ThirdPersonSensitivity.Title" xml:space="preserve">
-    <value>Sensibilidade em terceira pessoa</value>
+    <value>Sensibilidade na terceira pessoa</value>
   </data>
   <data name="Menu.GlobalSettings.Title" xml:space="preserve">
     <value>Configurações globais</value>
@@ -2140,7 +2221,7 @@ Deseja instalar o plugin?</value>
     <value>Modo de depuração</value>
   </data>
   <data name="Menu.LinuxSettings.EnableGameMode.Description" xml:space="preserve">
-    <value>O daemon de otimização GameMode da Signals Feral Interactive intervém nos processos de inicialização dos jogos.</value>
+    <value>O daemon de otimização GameMode da Feral Interactive é acionado durante os processos de inicialização dos jogos.</value>
   </data>
   <data name="Menu.LinuxSettings.EnableGameMode.Title" xml:space="preserve">
     <value>Ativar o GameMode</value>
@@ -2227,7 +2308,7 @@ Deseja instalar o plugin?</value>
     <value>Carregar</value>
   </data>
   <data name="Menu.ManualLogin.EnterCookie" xml:space="preserve">
-    <value>Insira um biscoito, por favor.</value>
+    <value>Por favor, insira um biscoito.</value>
   </data>
   <data name="Menu.ManualLogin.Instruction.1" xml:space="preserve">
     <value>Abra o site Roblox.com no seu navegador e faça login</value>
@@ -2269,13 +2350,13 @@ Deseja instalar o plugin?</value>
     <value>Aplicar aos cursores</value>
   </data>
   <data name="Menu.ModGenerator.ApplyEmoteWheel" xml:space="preserve">
-    <value>Aplicar à roda de emoticons</value>
+    <value>Aplicar à roda de emotes</value>
   </data>
   <data name="Menu.ModGenerator.ApplyShiftlock" xml:space="preserve">
     <value>Inscreva-se no Shiftlock</value>
   </data>
   <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
-    <value>Quanto maior o número, melhor a qualidade, mas o processo demora mais tempo. O valor máximo é 64, e o padrão é 8.</value>
+    <value>Quanto maior o número, melhor a qualidade, mas o processo demora mais; o valor máximo é 512, e o padrão é 32.</value>
   </data>
   <data name="Menu.ModGenerator.Cancelled" xml:space="preserve">
     <value>A geração do mod foi cancelada.</value>
@@ -2353,7 +2434,7 @@ Deseja instalar o plugin?</value>
     <value>Deseja excluir “{0}” definitivamente?</value>
   </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
-    <value>Gerenciar e aplicar modificações de arquivos ao cliente do jogo Roblox.</value>
+    <value>Gerenciar e aplicar modificações em arquivos.</value>
   </data>
   <data name="Menu.Mods.DragOverlay" xml:space="preserve">
     <value>📦 Arraste e solte para importar arquivo Zip / pasta</value>
@@ -2382,6 +2463,30 @@ Ela deve conter pelo menos uma das seguintes pastas: content, ExtraContent, Plat
   </data>
   <data name="Menu.Mods.NoneInstalled" xml:space="preserve">
     <value>Não há mods instalados.</value>
+  </data>
+  <data name="Menu.Mods.Preview.Failed" xml:space="preserve">
+    <value>Falha ao carregar a visualização: {0}</value>
+  </data>
+  <data name="Menu.Mods.Preview.Font.Preview" xml:space="preserve">
+    <value>Pré-visualização da fonte</value>
+  </data>
+  <data name="Menu.Mods.Preview.FontVariant" xml:space="preserve">
+    <value>Variante da fonte:</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loaded" xml:space="preserve">
+    <value>Pré-visualização carregada</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading" xml:space="preserve">
+    <value>Carregando a pré-visualização da fonte...</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading.Glyphs" xml:space="preserve">
+    <value>Carregando glifos...</value>
+  </data>
+  <data name="Menu.Mods.Preview.LoadingFont" xml:space="preserve">
+    <value>Carregando fonte: {0}...</value>
+  </data>
+  <data name="Menu.Mods.Preview.NoColor" xml:space="preserve">
+    <value>Não foram encontradas informações sobre cores neste mod</value>
   </data>
   <data name="Menu.Mods.SelectedModAction" xml:space="preserve">
     <value>Ação do Mod selecionado</value>
@@ -2724,7 +2829,7 @@ O aplicativo fechará esta janela assim que o login for concluído.</value>
     <value>Erro ao criar o atalho.</value>
   </data>
   <data name="Menu.Shortcuts.ExtractIcons.Description" xml:space="preserve">
-    <value>Permite que você use a variedade de ícones do Froststrap para o Roblox em seus atalhos. [Veja como.]({0})</value>
+    <value>Permite que você use a variedade de ícones do Froststrap no Roblox para seus atalhos. [Veja como.]({0})</value>
   </data>
   <data name="Menu.Shortcuts.ExtractIcons.Title" xml:space="preserve">
     <value>Extrair ícones do Roblox para uma pasta</value>

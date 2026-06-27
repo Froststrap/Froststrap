@@ -127,6 +127,9 @@
   <data name="ActivityWatcher.LocationQueryFailed" xml:space="preserve">
     <value>サーバーの場所を照会できませんでした。ゲームへの参加間隔が短すぎる可能性があります。</value>
   </data>
+  <data name="AddCustomTheme.Title" xml:space="preserve">
+    <value>カスタムテーマを追加する</value>
+  </data>
   <data name="App.OSDeprecation.Win7_81" xml:space="preserve">
     <value>Robloxは、Windows 7および8.1のサポートを終了しました。Robloxを引き続きご利用いただくには、Windows 10以降にアップグレードしてください。</value>
   </data>
@@ -275,7 +278,7 @@
     <value>酒を断って…</value>
   </data>
   <data name="Bootstrapper.Status.StartingStudioWine" xml:space="preserve">
-    <value>Wineを使ってRoblox Studioを起動するには...</value>
+    <value>Wineを使ってRoblox Studioを起動するには…</value>
   </data>
   <data name="Bootstrapper.Status.UninstallingWebView2" xml:space="preserve">
     <value>WebView2 {0} をアンインストールしています...</value>
@@ -1453,7 +1456,7 @@
     <value>「プレイ」ボタンから参加する場合は、規模の小さいサーバーに参加してください。</value>
   </data>
   <data name="Menu.Bootstrapper.SmallerServer.Title" xml:space="preserve">
-    <value>小規模なサーバーに参加する</value>
+    <value>小規模サーバーに参加する</value>
   </data>
   <data name="Menu.Bootstrapper.Startup.Description" xml:space="preserve">
     <value>PCの起動時に、Robloxアプリを自動的に起動します。</value>
@@ -1781,14 +1784,92 @@
   <data name="Menu.FastFlags.Title" xml:space="preserve">
     <value>FastFlagの設定</value>
   </data>
+  <data name="Menu.FlagProfiles.AddPlaceId" xml:space="preserve">
+    <value>場所IDを追加</value>
+  </data>
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
     <value>FFlagをクリアする</value>
   </data>
+  <data name="Menu.FlagProfiles.CopyFailed" xml:space="preserve">
+    <value>プロファイルのコピーに失敗しました:\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.CurrentPlaceIds" xml:space="preserve">
+    <value>現在の場所ID</value>
+  </data>
+  <data name="Menu.FlagProfiles.DeleteSelected" xml:space="preserve">
+    <value>選択した項目を削除</value>
+  </data>
+  <data name="Menu.FlagProfiles.EnterPlaceId" xml:space="preserve">
+    <value>場所IDを入力してください。</value>
+  </data>
+  <data name="Menu.FlagProfiles.GetFlagsFailed" xml:space="preserve">
+    <value>現在の FastFlags の取得に失敗しました。</value>
+  </data>
+  <data name="Menu.FlagProfiles.InvalidCharacter" xml:space="preserve">
+    <value>プロフィール名に無効な文字「{0}」が含まれています。</value>
+  </data>
+  <data name="Menu.FlagProfiles.ManagingPlaceIds" xml:space="preserve">
+    <value>{0} の場所 ID を管理中 ({1} 個の ID)</value>
+  </data>
+  <data name="Menu.FlagProfiles.NameCannotBeEmpty" xml:space="preserve">
+    <value>新しいプロフィール名は空欄にすることはできません。</value>
+  </data>
   <data name="Menu.FlagProfiles.NoProfileFound" xml:space="preserve">
-    <value>プロフィールが見つかりませんでした</value>
+    <value>プロフィールが見つかりませんでした。</value>
+  </data>
+  <data name="Menu.FlagProfiles.NoProfilesFound" xml:space="preserve">
+    <value>プロフィールが見つかりませんでした。まずプロフィールを作成してください。</value>
+  </data>
+  <data name="Menu.FlagProfiles.ParseFailed" xml:space="preserve">
+    <value>選択されたプロファイルの解析に失敗しました。</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdExists" xml:space="preserve">
+    <value>この場所IDはすでにプロフィールに追加されています。</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdNumeric" xml:space="preserve">
+    <value>場所IDは整数でなければなりません。</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdWatermark" xml:space="preserve">
+    <value>場所IDを入力してください（例：123456789）</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdsTab" xml:space="preserve">
+    <value>場所ID</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileExists" xml:space="preserve">
+    <value>その名前のプロフィールはすでに存在します。</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileNotFound" xml:space="preserve">
+    <value>選択されたプロファイルファイルが見つかりません。</value>
+  </data>
+  <data name="Menu.FlagProfiles.RemoveSelected" xml:space="preserve">
+    <value>選択した項目を削除</value>
+  </data>
+  <data name="Menu.FlagProfiles.RenameFailed" xml:space="preserve">
+    <value>プロファイルの名前変更に失敗しました:\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfile" xml:space="preserve">
+    <value>場所IDを管理するプロファイルを選択してください</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileCopy" xml:space="preserve">
+    <value>コピーするプロフィールを選択してください。</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileFirst" xml:space="preserve">
+    <value>まずプロフィールをお選びください。</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileLabel" xml:space="preserve">
+    <value>プロファイルを選択して、その場所IDを管理してください：</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileRename" xml:space="preserve">
+    <value>名前を変更するプロフィールを選択してください。</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileUpdate" xml:space="preserve">
+    <value>更新するプロフィールを選択してください。</value>
   </data>
   <data name="Menu.FlagProfiles.Title" xml:space="preserve">
     <value>Fast Flagのプロファイル</value>
+  </data>
+  <data name="Menu.FlagProfiles.UpdateFailed" xml:space="preserve">
+    <value>プロファイルの更新に失敗しました:\n{0}</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
     <value>便利なメニューからゲーム内の設定を変更できます。</value>
@@ -2305,7 +2386,7 @@
     <value>Shiftlockに応募する</value>
   </data>
   <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
-    <value>数値が大きいほど品質は高くなりますが、処理に時間がかかります。最大値は64、デフォルトは8です。</value>
+    <value>数値が大きいほど品質は高くなりますが、処理に時間がかかります。最大値は512、デフォルトは32です。</value>
   </data>
   <data name="Menu.ModGenerator.Cancelled" xml:space="preserve">
     <value>MODの生成がキャンセルされました。</value>
@@ -2383,7 +2464,7 @@
     <value>「{0}」を完全に削除しますか？</value>
   </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
-    <value>Robloxゲームクライアントのファイルモッドを管理・適用します。</value>
+    <value>ファイルの改造を管理・適用する。</value>
   </data>
   <data name="Menu.Mods.DragOverlay" xml:space="preserve">
     <value>📦 Zipファイルやフォルダをドラッグ＆ドロップしてインポート</value>
@@ -2412,6 +2493,30 @@
   </data>
   <data name="Menu.Mods.NoneInstalled" xml:space="preserve">
     <value>MODはインストールされていません。</value>
+  </data>
+  <data name="Menu.Mods.Preview.Failed" xml:space="preserve">
+    <value>プレビューの読み込みに失敗しました：{0}</value>
+  </data>
+  <data name="Menu.Mods.Preview.Font.Preview" xml:space="preserve">
+    <value>フォントのプレビュー</value>
+  </data>
+  <data name="Menu.Mods.Preview.FontVariant" xml:space="preserve">
+    <value>フォントのバリエーション：</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loaded" xml:space="preserve">
+    <value>プレビューが読み込まれました</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading" xml:space="preserve">
+    <value>フォントのプレビューを読み込み中...</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading.Glyphs" xml:space="preserve">
+    <value>グリフを読み込み中...</value>
+  </data>
+  <data name="Menu.Mods.Preview.LoadingFont" xml:space="preserve">
+    <value>フォントを読み込み中：{0}...</value>
+  </data>
+  <data name="Menu.Mods.Preview.NoColor" xml:space="preserve">
+    <value>このMODには色に関する情報が含まれていません</value>
   </data>
   <data name="Menu.Mods.SelectedModAction" xml:space="preserve">
     <value>選択されたMODアクション</value>

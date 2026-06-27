@@ -127,6 +127,9 @@
   <data name="ActivityWatcher.LocationQueryFailed" xml:space="preserve">
     <value>Serveri asukohta ei õnnestunud kindlaks teha. Võimalik, et liitud mängudega liiga kiiresti.</value>
   </data>
+  <data name="AddCustomTheme.Title" xml:space="preserve">
+    <value>Lisa kohandatud teema</value>
+  </data>
   <data name="App.OSDeprecation.Win7_81" xml:space="preserve">
     <value>Roblox ei toeta enam Windows 7 ega 8.1. Et Robloxiga mängimist jätkata, palun uuendage oma operatsioonisüsteem Windows 10-le või uuemale versioonile.</value>
   </data>
@@ -143,13 +146,13 @@
 Kas soovid muuta oma eelistatud kanali {0}-ks?</value>
   </data>
   <data name="Bootstrapper.CancelButton.Skip" xml:space="preserve">
-    <value>Vahelejätmine</value>
+    <value>Vaheta</value>
   </data>
   <data name="Bootstrapper.ConfirmLaunch" xml:space="preserve">
     <value>Roblox on hetkel käivitatud ja uue instantsi käivitamine sulgeb selle. Kas soovid kindlasti käivitamist jätkata?</value>
   </data>
   <data name="Bootstrapper.Dialog.ChannelOutOfDate" xml:space="preserve">
-    <value>Kanal, millel te praegu viibite ({0}), on aegunud ja ilmselt ei saa enam uuendusi.
+    <value>Kanal, millel te praegu viibite ({0}), on aegunud ja ilmselt ei saa see enam uuendusi.
 Kas soovite minna üle vaikimisi kanalile ({1})?</value>
   </data>
   <data name="Bootstrapper.Dialog.NoUpgradeWithoutClient" xml:space="preserve">
@@ -416,7 +419,7 @@ Kas soovite minna üle vaikimisi kanalile ({1})?</value>
     <value>Sümboli eelvaade</value>
   </data>
   <data name="Common.HexCode" xml:space="preserve">
-    <value>Kuusekood</value>
+    <value>Kuusandkood</value>
   </data>
   <data name="Common.ImportFromFile" xml:space="preserve">
     <value>Importimine failist</value>
@@ -1215,7 +1218,7 @@ Kas olete kindel, et soovite jätkata?</value>
 Vahetati sellele kontole.</value>
   </data>
   <data name="Menu.AccountSelector.AskToAddAccount" xml:space="preserve">
-    <value>Kontoid pole lisatud
+    <value>Kontosid pole lisatud
 Alustamiseks klõpsa ülal nuppu „Lisa konto”</value>
   </data>
   <data name="Menu.AccountSelector.Login.LocalCookie" xml:space="preserve">
@@ -1432,7 +1435,7 @@ Alustamiseks klõpsa ülal nuppu „Lisa konto”</value>
     <value>Roblox-rakenduse teema</value>
   </data>
   <data name="Menu.Bootstrapper.SmallerServer.Description" xml:space="preserve">
-    <value>Liitu väiksemate serveritega, kui ühined mängu nupu kaudu.</value>
+    <value>Kui liitud mängu nupu kaudu, vali väiksemad serverid.</value>
   </data>
   <data name="Menu.Bootstrapper.SmallerServer.Title" xml:space="preserve">
     <value>Liitu väiksemate serveritega</value>
@@ -1604,7 +1607,7 @@ Palun ärge seda muutke, kui te ei tea, mida teete</value>
     <value>Mängija kanal</value>
   </data>
   <data name="Menu.Deployment.VersionHash.Description" xml:space="preserve">
-    <value>Sisesta Roblox Studio versiooni GUID (nt version-xxxxxxxxxxxxxxxx). Kehtib ainult Studio käivitamise puhul.</value>
+    <value>Sisesta Roblox Studio versiooni GUID (nt version-xxxxxxxxxxxxxxxx). Kehtib ainult Studio käivitamisel.</value>
   </data>
   <data name="Menu.Deployment.VersionHash.Title" xml:space="preserve">
     <value>Versiooni hash</value>
@@ -1757,14 +1760,92 @@ Kas soovid selle kohe eemaldada?</value>
   <data name="Menu.FastFlags.Title" xml:space="preserve">
     <value>FastFlagi seaded</value>
   </data>
+  <data name="Menu.FlagProfiles.AddPlaceId" xml:space="preserve">
+    <value>Lisa koha ID</value>
+  </data>
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
     <value>FFlagide tühistamine</value>
   </data>
+  <data name="Menu.FlagProfiles.CopyFailed" xml:space="preserve">
+    <value>Profiili kopeerimine ebaõnnestus:\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.CurrentPlaceIds" xml:space="preserve">
+    <value>Praegused asukoha ID-d</value>
+  </data>
+  <data name="Menu.FlagProfiles.DeleteSelected" xml:space="preserve">
+    <value>Kustuta valitud</value>
+  </data>
+  <data name="Menu.FlagProfiles.EnterPlaceId" xml:space="preserve">
+    <value>Palun sisestage koha ID.</value>
+  </data>
+  <data name="Menu.FlagProfiles.GetFlagsFailed" xml:space="preserve">
+    <value>Praeguste FastFlags-i andmete hankimine ebaõnnestus.</value>
+  </data>
+  <data name="Menu.FlagProfiles.InvalidCharacter" xml:space="preserve">
+    <value>Profiili nimi sisaldab keelatud märki „{0}“.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ManagingPlaceIds" xml:space="preserve">
+    <value>Asukoha ID-de haldamine: {0} ({1} ID-d)</value>
+  </data>
+  <data name="Menu.FlagProfiles.NameCannotBeEmpty" xml:space="preserve">
+    <value>Uus profiilinimi ei tohi olla tühi.</value>
+  </data>
   <data name="Menu.FlagProfiles.NoProfileFound" xml:space="preserve">
-    <value>Profiile ei leitud</value>
+    <value>Profiile ei leitud.</value>
+  </data>
+  <data name="Menu.FlagProfiles.NoProfilesFound" xml:space="preserve">
+    <value>Profiile ei leitud. Palun loo esmalt profiil.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ParseFailed" xml:space="preserve">
+    <value>Valitud profiili analüüsimine ebaõnnestus.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdExists" xml:space="preserve">
+    <value>See asukoha ID on profiili juba lisatud.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdNumeric" xml:space="preserve">
+    <value>Asukoha ID peab olema täisarv.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdWatermark" xml:space="preserve">
+    <value>Sisestage koha ID (nt 123456789)</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdsTab" xml:space="preserve">
+    <value>Asukoha ID-d</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileExists" xml:space="preserve">
+    <value>Sellise nimega profiil on juba olemas.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileNotFound" xml:space="preserve">
+    <value>Valitud profiilifaili ei leitud.</value>
+  </data>
+  <data name="Menu.FlagProfiles.RemoveSelected" xml:space="preserve">
+    <value>Eemalda valitud</value>
+  </data>
+  <data name="Menu.FlagProfiles.RenameFailed" xml:space="preserve">
+    <value>Profiili ümbernimetamine ebaõnnestus:\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfile" xml:space="preserve">
+    <value>Valige profiil, et hallata asukoha ID-sid</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileCopy" xml:space="preserve">
+    <value>Palun valige profiil, mida soovite kopeerida.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileFirst" xml:space="preserve">
+    <value>Palun valige kõigepealt profiil.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileLabel" xml:space="preserve">
+    <value>Valige profiil, et hallata selle asukoha ID-sid:</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileRename" xml:space="preserve">
+    <value>Palun valige profiil, mille nime soovite muuta.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileUpdate" xml:space="preserve">
+    <value>Palun valige profiil, mida soovite uuendada.</value>
   </data>
   <data name="Menu.FlagProfiles.Title" xml:space="preserve">
     <value>Fast Flagi profiilid</value>
+  </data>
+  <data name="Menu.FlagProfiles.UpdateFailed" xml:space="preserve">
+    <value>Profiili uuendamine ebaõnnestus:\n{0}</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
     <value>Muuda mängusiseseid seadeid mugava menüü kaudu.</value>
@@ -2167,7 +2248,7 @@ Kas soovite pistikprogrammi paigaldada?</value>
     <value>Asendab Vulkani algsed alamsüsteemid, et kasutada selle asemel vana OpenGL-i paigutusprotsessi.</value>
   </data>
   <data name="Menu.LinuxSettings.ForceLegacyOpenGL.Title" xml:space="preserve">
-    <value>Sunni kasutama vana OpenGL-renderdamist</value>
+    <value>Jõusta OpenGL-renderdamine</value>
   </data>
   <data name="Menu.LinuxSettings.GameMode.Description" xml:space="preserve">
     <value>Kohalda süsteemi optimeerimisi, kui need on saadaval (nõuab gamemoded-i).</value>
@@ -2278,7 +2359,7 @@ Kas soovite pistikprogrammi paigaldada?</value>
     <value>Kandideeri Shiftlocki</value>
   </data>
   <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
-    <value>Mida suurem number, seda parem kvaliteet, kuid see võtab rohkem aega; maksimaalne väärtus on 64, vaikimisi on 8.</value>
+    <value>Mida suurem number, seda parem kvaliteet, kuid see võtab rohkem aega; maksimaalne väärtus on 512, vaikimisi on 32.</value>
   </data>
   <data name="Menu.ModGenerator.Cancelled" xml:space="preserve">
     <value>Modide loomine tühistati.</value>
@@ -2299,7 +2380,7 @@ Kas soovite pistikprogrammi paigaldada?</value>
     <value>Ära värvi mängu ikooni</value>
   </data>
   <data name="Menu.ModGenerator.Downnloading" xml:space="preserve">
-    <value>Laaditakse vajalikke ressursse...</value>
+    <value>Laaditakse vajalikke faile...</value>
   </data>
   <data name="Menu.ModGenerator.Extracting" xml:space="preserve">
     <value>Failide väljavõtmine...</value>
@@ -2356,7 +2437,7 @@ Kas soovite pistikprogrammi paigaldada?</value>
     <value>Kas soovid &apos;{0}&apos; lõplikult kustutada?</value>
   </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
-    <value>Roblox-i mängukliendi failide modifikatsioonide haldamine ja rakendamine.</value>
+    <value>Haldada ja rakendada failide muudatusi.</value>
   </data>
   <data name="Menu.Mods.DragOverlay" xml:space="preserve">
     <value>📦 Lohistage siia ZIP-faili või kausta importimiseks</value>
@@ -2385,6 +2466,30 @@ See peab sisaldama vähemalt ühte järgmistest kaustadest: content, ExtraConten
   </data>
   <data name="Menu.Mods.NoneInstalled" xml:space="preserve">
     <value>Mooduleid pole paigaldatud.</value>
+  </data>
+  <data name="Menu.Mods.Preview.Failed" xml:space="preserve">
+    <value>Eelvaate laadimine ebaõnnestus: {0}</value>
+  </data>
+  <data name="Menu.Mods.Preview.Font.Preview" xml:space="preserve">
+    <value>Kirjatüübi eelvaade</value>
+  </data>
+  <data name="Menu.Mods.Preview.FontVariant" xml:space="preserve">
+    <value>Kirjatüübi variant:</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loaded" xml:space="preserve">
+    <value>Eelvaade laaditud</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading" xml:space="preserve">
+    <value>Laaditakse kirjatüübi eelvaadet...</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading.Glyphs" xml:space="preserve">
+    <value>Sümboleid laaditakse...</value>
+  </data>
+  <data name="Menu.Mods.Preview.LoadingFont" xml:space="preserve">
+    <value>Fontide laadimine: {0}...</value>
+  </data>
+  <data name="Menu.Mods.Preview.NoColor" xml:space="preserve">
+    <value>Selles modis ei leitud värviandmeid</value>
   </data>
   <data name="Menu.Mods.SelectedModAction" xml:space="preserve">
     <value>Valitud modifikatsiooni tegevus</value>

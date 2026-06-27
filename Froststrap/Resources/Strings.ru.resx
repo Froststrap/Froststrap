@@ -127,6 +127,9 @@
   <data name="ActivityWatcher.LocationQueryFailed" xml:space="preserve">
     <value>Не удалось определить местоположение сервера. Возможно, вы присоединяетесь к играм слишком быстро.</value>
   </data>
+  <data name="AddCustomTheme.Title" xml:space="preserve">
+    <value>Добавить пользовательскую тему</value>
+  </data>
   <data name="App.OSDeprecation.Win7_81" xml:space="preserve">
     <value>Roblox больше не поддерживает Windows 7 и 8.1. Чтобы продолжить игру в Roblox, обновите систему до Windows 10 или более поздней версии.</value>
   </data>
@@ -1171,7 +1174,7 @@
     <value>Хеш коммита</value>
   </data>
   <data name="Menu.About.CommitRef" xml:space="preserve">
-    <value>Ссылка на коммит</value>
+    <value>Ссылка на фиксацию</value>
   </data>
   <data name="Menu.About.Contributors" xml:space="preserve">
     <value>Авторы</value>
@@ -1318,7 +1321,7 @@
     <value>Автоматически переключать пользовательские темы.</value>
   </data>
   <data name="Menu.Appearance.ThemeCycling.Title" xml:space="preserve">
-    <value>Тема «Велоспорт»</value>
+    <value>Велоспорт</value>
   </data>
   <data name="Menu.Appearance.Title" xml:space="preserve">
     <value>Внешний вид</value>
@@ -1531,7 +1534,7 @@
     <value>Мод «{0}» успешно установлен!</value>
   </data>
   <data name="Menu.CommunityMods.Overwrite" xml:space="preserve">
-    <value>Перезаписать существующий мод «{0}»?</value>
+    <value>Заменить существующий мод «{0}»?</value>
   </data>
   <data name="Menu.CommunityMods.SearchMods" xml:space="preserve">
     <value>Поиск модификаций...</value>
@@ -1582,7 +1585,7 @@
     <value>Автоматическое обновление Sober</value>
   </data>
   <data name="Menu.Deployment.Channel.Description" xml:space="preserve">
-    <value>Выберите канал развертывания. Не изменяйте настройки, если не знаете, что делаете.</value>
+    <value>Выберите канал развертывания. Не изменяйте настройки, если не уверены в том, что делаете.</value>
   </data>
   <data name="Menu.Deployment.Channel.OutOfDate" xml:space="preserve">
     <value>Этот канал устарел и, скорее всего, больше не обновляется. Пожалуйста, воспользуйтесь другим каналом.</value>
@@ -1610,7 +1613,7 @@
     <value>Заставить Roblox Studio установить и использовать версию с определённым хешем вместо самой последней.</value>
   </data>
   <data name="Menu.Deployment.OverrideHash.Title" xml:space="preserve">
-    <value>Версия Override Studio</value>
+    <value>Переопределить версию Studio</value>
   </data>
   <data name="Menu.Deployment.PlayerChannel.Title" xml:space="preserve">
     <value>Канал игрока</value>
@@ -1775,14 +1778,92 @@
   <data name="Menu.FastFlags.Title" xml:space="preserve">
     <value>Настройки FastFlag</value>
   </data>
+  <data name="Menu.FlagProfiles.AddPlaceId" xml:space="preserve">
+    <value>Добавить идентификатор места</value>
+  </data>
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
     <value>Очистить FFlags</value>
   </data>
+  <data name="Menu.FlagProfiles.CopyFailed" xml:space="preserve">
+    <value>Не удалось скопировать профиль:\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.CurrentPlaceIds" xml:space="preserve">
+    <value>Текущие идентификаторы мест</value>
+  </data>
+  <data name="Menu.FlagProfiles.DeleteSelected" xml:space="preserve">
+    <value>Удалить выделенное</value>
+  </data>
+  <data name="Menu.FlagProfiles.EnterPlaceId" xml:space="preserve">
+    <value>Введите идентификатор места.</value>
+  </data>
+  <data name="Menu.FlagProfiles.GetFlagsFailed" xml:space="preserve">
+    <value>Не удалось получить текущие значения FastFlags.</value>
+  </data>
+  <data name="Menu.FlagProfiles.InvalidCharacter" xml:space="preserve">
+    <value>В названии профиля содержится недопустимый символ «{0}».</value>
+  </data>
+  <data name="Menu.FlagProfiles.ManagingPlaceIds" xml:space="preserve">
+    <value>Управление идентификаторами мест для: {0} ({1} идентификаторов)</value>
+  </data>
+  <data name="Menu.FlagProfiles.NameCannotBeEmpty" xml:space="preserve">
+    <value>Новое имя профиля не может быть пустым.</value>
+  </data>
   <data name="Menu.FlagProfiles.NoProfileFound" xml:space="preserve">
-    <value>Профилей не найдено</value>
+    <value>Профилей не найдено.</value>
+  </data>
+  <data name="Menu.FlagProfiles.NoProfilesFound" xml:space="preserve">
+    <value>Профилей не найдено. Пожалуйста, сначала создайте профиль.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ParseFailed" xml:space="preserve">
+    <value>Не удалось проанализировать выбранный профиль.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdExists" xml:space="preserve">
+    <value>Этот идентификатор места уже добавлен в профиль.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdNumeric" xml:space="preserve">
+    <value>Идентификатор места должен быть целым числом.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdWatermark" xml:space="preserve">
+    <value>Введите идентификатор места (например, 123456789)</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdsTab" xml:space="preserve">
+    <value>Идентификаторы мест</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileExists" xml:space="preserve">
+    <value>Профиль с таким именем уже существует.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileNotFound" xml:space="preserve">
+    <value>Выбранный файл профиля не найден.</value>
+  </data>
+  <data name="Menu.FlagProfiles.RemoveSelected" xml:space="preserve">
+    <value>Удалить выделенное</value>
+  </data>
+  <data name="Menu.FlagProfiles.RenameFailed" xml:space="preserve">
+    <value>Не удалось переименовать профиль:\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfile" xml:space="preserve">
+    <value>Выберите профиль для управления идентификаторами мест</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileCopy" xml:space="preserve">
+    <value>Пожалуйста, выберите профиль для копирования.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileFirst" xml:space="preserve">
+    <value>Пожалуйста, сначала выберите профиль.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileLabel" xml:space="preserve">
+    <value>Выберите профиль, чтобы управлять его идентификаторами мест:</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileRename" xml:space="preserve">
+    <value>Выберите профиль, который хотите переименовать.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileUpdate" xml:space="preserve">
+    <value>Пожалуйста, выберите профиль для обновления.</value>
   </data>
   <data name="Menu.FlagProfiles.Title" xml:space="preserve">
     <value>Профили «Fast Flag»</value>
+  </data>
+  <data name="Menu.FlagProfiles.UpdateFailed" xml:space="preserve">
+    <value>Не удалось обновить профиль:\n{0}</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
     <value>Изменяйте настройки игры через удобное меню.</value>
@@ -2302,7 +2383,7 @@
     <value>Подать заявку на работу в Shiftlock</value>
   </data>
   <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
-    <value>Чем выше число, тем выше качество, но это занимает больше времени. Максимальное значение — 64, по умолчанию — 8.</value>
+    <value>Чем выше число, тем выше качество, но это занимает больше времени. Максимальное значение — 512, по умолчанию — 32.</value>
   </data>
   <data name="Menu.ModGenerator.Cancelled" xml:space="preserve">
     <value>Создание мода отменено.</value>
@@ -2380,7 +2461,7 @@
     <value>Удалить «{0}» без возможности восстановления?</value>
   </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
-    <value>Управление файлами модификаций и их применение к игровому клиенту Roblox.</value>
+    <value>Управление и применение модификаций файлов.</value>
   </data>
   <data name="Menu.Mods.DragOverlay" xml:space="preserve">
     <value>📦 Перетащите файл ZIP или папку для импорта</value>
@@ -2409,6 +2490,30 @@
   </data>
   <data name="Menu.Mods.NoneInstalled" xml:space="preserve">
     <value>Модификации не установлены.</value>
+  </data>
+  <data name="Menu.Mods.Preview.Failed" xml:space="preserve">
+    <value>Не удалось загрузить предварительный просмотр: {0}</value>
+  </data>
+  <data name="Menu.Mods.Preview.Font.Preview" xml:space="preserve">
+    <value>Предварительный просмотр шрифта</value>
+  </data>
+  <data name="Menu.Mods.Preview.FontVariant" xml:space="preserve">
+    <value>Вариант шрифта:</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loaded" xml:space="preserve">
+    <value>Предварительный просмотр загружен</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading" xml:space="preserve">
+    <value>Загрузка предварительного просмотра шрифта...</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading.Glyphs" xml:space="preserve">
+    <value>Загрузка глифов...</value>
+  </data>
+  <data name="Menu.Mods.Preview.LoadingFont" xml:space="preserve">
+    <value>Загрузка шрифта: {0}...</value>
+  </data>
+  <data name="Menu.Mods.Preview.NoColor" xml:space="preserve">
+    <value>В этом моде не найдена информация о цветах</value>
   </data>
   <data name="Menu.Mods.SelectedModAction" xml:space="preserve">
     <value>Выбранное действие мода</value>

@@ -127,6 +127,9 @@
   <data name="ActivityWatcher.LocationQueryFailed" xml:space="preserve">
     <value>Не вдалося отримати інформацію про місцезнаходження сервера. Можливо, ви приєднуєтеся до ігор занадто швидко.</value>
   </data>
+  <data name="AddCustomTheme.Title" xml:space="preserve">
+    <value>Додати власну тему</value>
+  </data>
   <data name="App.OSDeprecation.Win7_81" xml:space="preserve">
     <value>Roblox більше не підтримує Windows 7 та 8.1. Щоб продовжити грати в Roblox, будь ласка, перейдіть на Windows 10 або новішу версію.</value>
   </data>
@@ -1288,7 +1291,7 @@
     <value>Іконка</value>
   </data>
   <data name="Menu.Appearance.Interval" xml:space="preserve">
-    <value>Інтервал:</value>
+    <value>Діапазон:</value>
   </data>
   <data name="Menu.Appearance.Language.Description" xml:space="preserve">
     <value>Щоб зміни набули чинності, необхідно перезапустити систему. Деякі фрагменти тексту можуть бути не перекладені на обрану мову.</value>
@@ -1778,14 +1781,92 @@
   <data name="Menu.FastFlags.Title" xml:space="preserve">
     <value>Налаштування FastFlag</value>
   </data>
+  <data name="Menu.FlagProfiles.AddPlaceId" xml:space="preserve">
+    <value>Додати ідентифікатор місця</value>
+  </data>
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
     <value>Очистити FFlags</value>
   </data>
+  <data name="Menu.FlagProfiles.CopyFailed" xml:space="preserve">
+    <value>Не вдалося скопіювати профіль:\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.CurrentPlaceIds" xml:space="preserve">
+    <value>Поточні ідентифікатори місць</value>
+  </data>
+  <data name="Menu.FlagProfiles.DeleteSelected" xml:space="preserve">
+    <value>Видалити вибране</value>
+  </data>
+  <data name="Menu.FlagProfiles.EnterPlaceId" xml:space="preserve">
+    <value>Введіть, будь ласка, ідентифікатор місця.</value>
+  </data>
+  <data name="Menu.FlagProfiles.GetFlagsFailed" xml:space="preserve">
+    <value>Не вдалося отримати поточні FastFlags.</value>
+  </data>
+  <data name="Menu.FlagProfiles.InvalidCharacter" xml:space="preserve">
+    <value>Назва профілю містить недопустимий символ «{0}».</value>
+  </data>
+  <data name="Menu.FlagProfiles.ManagingPlaceIds" xml:space="preserve">
+    <value>Управління ідентифікаторами місць для: {0} ({1} ідентифікаторів)</value>
+  </data>
+  <data name="Menu.FlagProfiles.NameCannotBeEmpty" xml:space="preserve">
+    <value>Нова назва профілю не може бути порожньою.</value>
+  </data>
   <data name="Menu.FlagProfiles.NoProfileFound" xml:space="preserve">
-    <value>Профілів не знайдено</value>
+    <value>Профілів не знайдено.</value>
+  </data>
+  <data name="Menu.FlagProfiles.NoProfilesFound" xml:space="preserve">
+    <value>Профілів не знайдено. Будь ласка, спочатку створіть профіль.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ParseFailed" xml:space="preserve">
+    <value>Не вдалося проаналізувати вибраний профіль.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdExists" xml:space="preserve">
+    <value>Цей ідентифікатор місця вже додано до профілю.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdNumeric" xml:space="preserve">
+    <value>Ідентифікатор місця повинен бути цілим числом.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdWatermark" xml:space="preserve">
+    <value>Введіть ідентифікатор місця (наприклад, 123456789)</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdsTab" xml:space="preserve">
+    <value>Ідентифікатори місць</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileExists" xml:space="preserve">
+    <value>Профіль з такою назвою вже існує.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileNotFound" xml:space="preserve">
+    <value>Вибраний файл профілю не знайдено.</value>
+  </data>
+  <data name="Menu.FlagProfiles.RemoveSelected" xml:space="preserve">
+    <value>Видалити вибране</value>
+  </data>
+  <data name="Menu.FlagProfiles.RenameFailed" xml:space="preserve">
+    <value>Не вдалося перейменувати профіль:\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfile" xml:space="preserve">
+    <value>Виберіть профіль для управління ідентифікаторами місць</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileCopy" xml:space="preserve">
+    <value>Будь ласка, виберіть профіль для копіювання.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileFirst" xml:space="preserve">
+    <value>Будь ласка, спочатку виберіть профіль.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileLabel" xml:space="preserve">
+    <value>Виберіть профіль, щоб керувати його ідентифікаторами місць:</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileRename" xml:space="preserve">
+    <value>Будь ласка, виберіть профіль, який потрібно перейменувати.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileUpdate" xml:space="preserve">
+    <value>Будь ласка, виберіть профіль для оновлення.</value>
   </data>
   <data name="Menu.FlagProfiles.Title" xml:space="preserve">
     <value>Профілі «Fast Flag»</value>
+  </data>
+  <data name="Menu.FlagProfiles.UpdateFailed" xml:space="preserve">
+    <value>Не вдалося оновити профіль:\n{0}</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
     <value>Змінюйте налаштування гри за допомогою зручного меню.</value>
@@ -1851,7 +1932,7 @@
     <value>Не вдалося імпортувати налаштування. Переконайтеся, що Roblox не запущено, і спробуйте ще раз.</value>
   </data>
   <data name="Menu.GlobalSettings.Import.NotGBS" xml:space="preserve">
-    <value>Вибраний файл, судячи з усього, не є дійсним файлом налаштувань GBS.</value>
+    <value>Вибраний файл, схоже, не є дійсним файлом налаштувань GBS.</value>
   </data>
   <data name="Menu.GlobalSettings.Import.NotXML" xml:space="preserve">
     <value>Вибраний файл не є дійсним XML-файлом.</value>
@@ -1869,7 +1950,7 @@
     <value>Інвертувати Y</value>
   </data>
   <data name="Menu.GlobalSettings.MasterVolume.Description" xml:space="preserve">
-    <value>Глобальний рівень обсягу.</value>
+    <value>Загальний обсяг.</value>
   </data>
   <data name="Menu.GlobalSettings.MasterVolume.Title" xml:space="preserve">
     <value>Загальна гучність</value>
@@ -2305,7 +2386,7 @@
     <value>Подати заявку на роботу в Shiftlock</value>
   </data>
   <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
-    <value>Чим вище число, тим вища якість, але це займає більше часу. Максимальне значення — 64, за замовчуванням — 8.</value>
+    <value>Чим вище число, тим вища якість, але це займає більше часу; максимальне значення — 512, за замовчуванням — 32.</value>
   </data>
   <data name="Menu.ModGenerator.Cancelled" xml:space="preserve">
     <value>Створення модів скасовано.</value>
@@ -2323,7 +2404,7 @@
     <value>Створюйте моди легко одним кліком.</value>
   </data>
   <data name="Menu.ModGenerator.DontColorPlay" xml:space="preserve">
-    <value>Значок «Не грайся з кольорами»</value>
+    <value>Значок «Не грати з кольорами»</value>
   </data>
   <data name="Menu.ModGenerator.Downnloading" xml:space="preserve">
     <value>Завантаження необхідних ресурсів...</value>
@@ -2353,7 +2434,7 @@
     <value>Зміна кольорів зображень...</value>
   </data>
   <data name="Menu.ModGenerator.RobloxIcon" xml:space="preserve">
-    <value>Іконка Roblox (не обов’язково)</value>
+    <value>Іконка Roblox (за бажанням)</value>
   </data>
   <data name="Menu.ModGenerator.SavedTo" xml:space="preserve">
     <value>Збережено в {0}</value>
@@ -2383,7 +2464,7 @@
     <value>Остаточно видалити «{0}»?</value>
   </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
-    <value>Керуйте файлами модифікацій та застосовуйте їх до ігрового клієнта Roblox.</value>
+    <value>Керувати модифікаціями файлів та застосовувати їх.</value>
   </data>
   <data name="Menu.Mods.DragOverlay" xml:space="preserve">
     <value>📦 Перетягніть файл ZIP або папку, щоб імпортувати</value>
@@ -2412,6 +2493,30 @@
   </data>
   <data name="Menu.Mods.NoneInstalled" xml:space="preserve">
     <value>Модифікації не встановлено.</value>
+  </data>
+  <data name="Menu.Mods.Preview.Failed" xml:space="preserve">
+    <value>Не вдалося завантажити попередній перегляд: {0}</value>
+  </data>
+  <data name="Menu.Mods.Preview.Font.Preview" xml:space="preserve">
+    <value>Попередній перегляд шрифту</value>
+  </data>
+  <data name="Menu.Mods.Preview.FontVariant" xml:space="preserve">
+    <value>Варіант шрифту:</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loaded" xml:space="preserve">
+    <value>Попередній перегляд завантажено</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading" xml:space="preserve">
+    <value>Завантаження попереднього перегляду шрифту...</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading.Glyphs" xml:space="preserve">
+    <value>Завантаження гліфів...</value>
+  </data>
+  <data name="Menu.Mods.Preview.LoadingFont" xml:space="preserve">
+    <value>Завантаження шрифту: {0}...</value>
+  </data>
+  <data name="Menu.Mods.Preview.NoColor" xml:space="preserve">
+    <value>У цьому моді не знайдено інформації про кольори</value>
   </data>
   <data name="Menu.Mods.SelectedModAction" xml:space="preserve">
     <value>Вибрана дія модифікації</value>
@@ -2636,14 +2741,14 @@
     <value>Скопіюйте цей код і вставте його на [сторінці швидкого входу]({0}).</value>
   </data>
   <data name="Menu.QuickSignIn.Linked" xml:space="preserve">
-    <value>Пристрій підключено — затверджується вхід...</value>
+    <value>Пристрій підключено — підтвердження входу...</value>
   </data>
   <data name="Menu.QuickSignIn.TimedOut" xml:space="preserve">
     <value>Час очікування входу закінчився.</value>
   </data>
   <data name="Menu.QuickSignIn.Waitting" xml:space="preserve">
     <value>Очікування швидкого входу...
-Після завершення входу додаток закриє це вікно.</value>
+Додаток закриє це вікно після завершення входу.</value>
   </data>
   <data name="Menu.RegionSelector.EnterPlaceId" xml:space="preserve">
     <value>Введіть ідентифікатор місця та натисніть «Пошук», щоб переглянути сервери.</value>
@@ -2712,7 +2817,7 @@
     <value>Зберегти</value>
   </data>
   <data name="Menu.SearchBar.AutoJoin" xml:space="preserve">
-    <value>Автоматичний режим: Пошук оптимального регіону для вас...</value>
+    <value>Автоматичний режим: пошук оптимального регіону для вас...</value>
   </data>
   <data name="Menu.SearchBar.JoinError" xml:space="preserve">
     <value>Не вдалося приєднатися до гри: {0}</value>

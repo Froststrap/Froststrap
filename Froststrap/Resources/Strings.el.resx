@@ -127,6 +127,9 @@
   <data name="ActivityWatcher.LocationQueryFailed" xml:space="preserve">
     <value>Δεν ήταν δυνατή η αναζήτηση της τοποθεσίας του διακομιστή. Ίσως συμμετέχετε σε παιχνίδια πολύ γρήγορα.</value>
   </data>
+  <data name="AddCustomTheme.Title" xml:space="preserve">
+    <value>Προσθήκη προσαρμοσμένου θέματος</value>
+  </data>
   <data name="App.OSDeprecation.Win7_81" xml:space="preserve">
     <value>Το Roblox δεν υποστηρίζει πλέον τα Windows 7 ή 8.1. Για να συνεχίσετε να παίζετε το Roblox, παρακαλούμε να πραγματοποιήσετε αναβάθμιση στα Windows 10 ή σε νεότερη έκδοση.</value>
   </data>
@@ -232,7 +235,7 @@
     <value>Αναζήτηση των κορυφαίων {0} περιοχών...</value>
   </data>
   <data name="Bootstrapper.Status.InitializingWinePrefix" xml:space="preserve">
-    <value>Εκκίνηση του προθέματος Wine...</value>
+    <value>Αρχικοποίηση του προθέματος Wine...</value>
   </data>
   <data name="Bootstrapper.Status.Installing" xml:space="preserve">
     <value>Εγκατάσταση του {product}...</value>
@@ -259,7 +262,7 @@
     <value>Αναζήτηση διακομιστών στο {0}...</value>
   </data>
   <data name="Bootstrapper.Status.SettingUpDXVK" xml:space="preserve">
-    <value>Εγκατάσταση του DXVK...</value>
+    <value>Εκκίνηση του DXVK...</value>
   </data>
   <data name="Bootstrapper.Status.SkippingMatchmaking" xml:space="preserve">
     <value>Παράλειψη αναζήτησης διακομιστή...</value>
@@ -999,7 +1002,7 @@
     <value>Υψηλό</value>
   </data>
   <data name="Enums.ProcessPriorityOption.Low" xml:space="preserve">
-    <value>Χαμηλή</value>
+    <value>Χαμηλό</value>
   </data>
   <data name="Enums.ProcessPriorityOption.Normal" xml:space="preserve">
     <value>Κανονικό</value>
@@ -1086,7 +1089,7 @@
     <value>Υψηλή (Προεπιλογή)</value>
   </data>
   <data name="Enums.TextureQuality.Low" xml:space="preserve">
-    <value>Χαμηλή</value>
+    <value>Χαμηλό</value>
   </data>
   <data name="Enums.TextureQuality.Lowest" xml:space="preserve">
     <value>Χαμηλότερο</value>
@@ -1372,7 +1375,7 @@
     <value>Ρυθμίσεις αποθήκευσης εφαρμογών</value>
   </data>
   <data name="Menu.Bootstrapper.BestRegionAmount.Description" xml:space="preserve">
-    <value>Επιλέξτε τον αριθμό των περιοχών που θέλετε να ελέγξετε· αυτό μπορεί να βοηθήσει αν το πρόγραμμα δεν καταφέρει να εντοπίσει τις καλύτερες περιοχές για εσάς.</value>
+    <value>Επιλέξτε τον αριθμό των περιοχών που θέλετε να ελέγξετε· αυτό βοηθάει σε περίπτωση που δεν μπορεί να εντοπίσει τις καλύτερες περιοχές για εσάς.</value>
   </data>
   <data name="Menu.Bootstrapper.BestRegionAmount.Title" xml:space="preserve">
     <value>Καλύτερα ποσά ανά περιοχή</value>
@@ -1444,7 +1447,7 @@
     <value>Αυτόματη εκκίνηση της εφαρμογής Roblox κατά την εκκίνηση του υπολογιστή σου.</value>
   </data>
   <data name="Menu.Bootstrapper.Startup.Title" xml:space="preserve">
-    <value>Έναρξη λειτουργίας κατά τη φάση εκκίνησης</value>
+    <value>Εκκίνηση κατά τη δημιουργία της startup</value>
   </data>
   <data name="Menu.Bootstrapper.Tray.Description" xml:space="preserve">
     <value>Μεταφέρει την εφαρμογή στη γραμμή εργασιών αντί να την κλείσει εντελώς.</value>
@@ -1567,7 +1570,7 @@
     <value>Το Froststrap θα ελέγχει αυτόματα και θα ενημερώνεται σε δοκιμαστική έκδοση κατά την εκκίνηση του Roblox.</value>
   </data>
   <data name="Menu.Deployment.AutoPreReleaseUpdate.Title" xml:space="preserve">
-    <value>Ενημέρωση σχετικά με τις προ-κυκλοφορίες</value>
+    <value>Ενημέρωση για τις προ-κυκλοφορίες</value>
   </data>
   <data name="Menu.Deployment.AutoUpdateSober" xml:space="preserve">
     <value>Αυτόματη ενημέρωση του Sober</value>
@@ -1766,14 +1769,92 @@
   <data name="Menu.FastFlags.Title" xml:space="preserve">
     <value>Ρυθμίσεις FastFlag</value>
   </data>
+  <data name="Menu.FlagProfiles.AddPlaceId" xml:space="preserve">
+    <value>Προσθήκη αναγνωριστικού τοποθεσίας</value>
+  </data>
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
     <value>Εκκαθάριση FFlags</value>
   </data>
+  <data name="Menu.FlagProfiles.CopyFailed" xml:space="preserve">
+    <value>Δεν κατέστη δυνατή η αντιγραφή του προφίλ:\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.CurrentPlaceIds" xml:space="preserve">
+    <value>Τρέχοντα αναγνωριστικά τοποθεσιών</value>
+  </data>
+  <data name="Menu.FlagProfiles.DeleteSelected" xml:space="preserve">
+    <value>Διαγραφή επιλεγμένων</value>
+  </data>
+  <data name="Menu.FlagProfiles.EnterPlaceId" xml:space="preserve">
+    <value>Παρακαλώ εισάγετε έναν κωδικό τοποθεσίας.</value>
+  </data>
+  <data name="Menu.FlagProfiles.GetFlagsFailed" xml:space="preserve">
+    <value>Δεν κατέστη δυνατή η λήψη των τρεχόντων FastFlags.</value>
+  </data>
+  <data name="Menu.FlagProfiles.InvalidCharacter" xml:space="preserve">
+    <value>Το όνομα του προφίλ περιέχει μη έγκυρο χαρακτήρα «{0}».</value>
+  </data>
+  <data name="Menu.FlagProfiles.ManagingPlaceIds" xml:space="preserve">
+    <value>Διαχείριση αναγνωριστικών τοποθεσιών για: {0} ({1} αναγνωριστικά)</value>
+  </data>
+  <data name="Menu.FlagProfiles.NameCannotBeEmpty" xml:space="preserve">
+    <value>Το όνομα του νέου προφίλ δεν μπορεί να είναι κενό.</value>
+  </data>
   <data name="Menu.FlagProfiles.NoProfileFound" xml:space="preserve">
-    <value>Δεν βρέθηκαν προφίλ</value>
+    <value>Δεν βρέθηκαν προφίλ.</value>
+  </data>
+  <data name="Menu.FlagProfiles.NoProfilesFound" xml:space="preserve">
+    <value>Δεν βρέθηκαν προφίλ. Παρακαλώ, δημιουργήστε πρώτα ένα προφίλ.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ParseFailed" xml:space="preserve">
+    <value>Δεν ήταν δυνατή η ανάλυση του επιλεγμένου προφίλ.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdExists" xml:space="preserve">
+    <value>Αυτός ο κωδικός τοποθεσίας έχει ήδη προστεθεί στο προφίλ.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdNumeric" xml:space="preserve">
+    <value>Ο κωδικός τοποθεσίας πρέπει να είναι ακέραιος αριθμός.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdWatermark" xml:space="preserve">
+    <value>Εισάγετε τον κωδικό τοποθεσίας (π.χ. 123456789)</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdsTab" xml:space="preserve">
+    <value>Αναγνωριστικά τοποθεσιών</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileExists" xml:space="preserve">
+    <value>Υπάρχει ήδη ένα προφίλ με αυτό το όνομα.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileNotFound" xml:space="preserve">
+    <value>Δεν βρέθηκε το επιλεγμένο αρχείο προφίλ.</value>
+  </data>
+  <data name="Menu.FlagProfiles.RemoveSelected" xml:space="preserve">
+    <value>Αφαίρεση επιλεγμένων</value>
+  </data>
+  <data name="Menu.FlagProfiles.RenameFailed" xml:space="preserve">
+    <value>Δεν κατέστη δυνατή η μετονομασία του προφίλ:\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfile" xml:space="preserve">
+    <value>Επιλέξτε ένα προφίλ για να διαχειριστείτε τα αναγνωριστικά τοποθεσιών</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileCopy" xml:space="preserve">
+    <value>Παρακαλώ επιλέξτε ένα προφίλ για να το αντιγράψετε.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileFirst" xml:space="preserve">
+    <value>Παρακαλώ επιλέξτε πρώτα ένα προφίλ.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileLabel" xml:space="preserve">
+    <value>Επιλέξτε ένα προφίλ για να διαχειριστείτε τα αναγνωριστικά τοποθεσιών του:</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileRename" xml:space="preserve">
+    <value>Παρακαλώ επιλέξτε ένα προφίλ για να το μετονομάσετε.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileUpdate" xml:space="preserve">
+    <value>Παρακαλώ επιλέξτε ένα προφίλ για ενημέρωση.</value>
   </data>
   <data name="Menu.FlagProfiles.Title" xml:space="preserve">
     <value>Προφίλ Fast Flag</value>
+  </data>
+  <data name="Menu.FlagProfiles.UpdateFailed" xml:space="preserve">
+    <value>Δεν κατέστη δυνατή η ενημέρωση του προφίλ:\n{0}</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
     <value>Αλλάξτε τις ρυθμίσεις του παιχνιδιού από ένα εύχρηστο μενού.</value>
@@ -2263,7 +2344,7 @@
     <value>Κάντε διπλό κλικ στη στήλη «Τιμή» και αντιγράψτε την</value>
   </data>
   <data name="Menu.ManualLogin.Instruction.7" xml:space="preserve">
-    <value>Επικολλήστε την τιμή στο παραπάνω πλαίσιο</value>
+    <value>Επικολλήστε την τιμή στο πλαίσιο παραπάνω</value>
   </data>
   <data name="Menu.ManualLogin.InvalidCookie" xml:space="preserve">
     <value>Το cookie δεν είναι έγκυρο. Παρακαλώ, ελέγξτε το και δοκιμάστε ξανά.</value>
@@ -2272,7 +2353,7 @@
     <value>Επικολλήστε το cookie .ROBLOSECURITY</value>
   </data>
   <data name="Menu.ManualLogin.Title" xml:space="preserve">
-    <value>Σύνδεση με χειροκίνητη εισαγωγή στοιχείων</value>
+    <value>Σύνδεση με χειροκίνητη εισαγωγή</value>
   </data>
   <data name="Menu.ModGenerator.AddStop" xml:space="preserve">
     <value>Προσθήκη χρώματος</value>
@@ -2290,7 +2371,7 @@
     <value>Υποβάλετε αίτηση στο Shiftlock</value>
   </data>
   <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
-    <value>Όσο μεγαλύτερος είναι ο αριθμός, τόσο καλύτερη είναι η ποιότητα, αλλά διαρκεί περισσότερο. Η μέγιστη τιμή είναι 64, ενώ η προεπιλεγμένη είναι 8.</value>
+    <value>Όσο μεγαλύτερος είναι ο αριθμός, τόσο καλύτερη είναι η ποιότητα, αλλά διαρκεί περισσότερο. Το μέγιστο είναι 512, ενώ η προεπιλογή είναι 32.</value>
   </data>
   <data name="Menu.ModGenerator.Cancelled" xml:space="preserve">
     <value>Η δημιουργία mod ακυρώθηκε.</value>
@@ -2368,7 +2449,7 @@
     <value>Θέλετε να διαγράψετε οριστικά το «{0}»;</value>
   </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
-    <value>Διαχείριση και εφαρμογή τροποποιήσεων αρχείων στον πελάτη παιχνιδιού Roblox.</value>
+    <value>Διαχείριση και εφαρμογή τροποποιήσεων αρχείων.</value>
   </data>
   <data name="Menu.Mods.DragOverlay" xml:space="preserve">
     <value>📦 Μεταφορά για εισαγωγή αρχείου Zip / φακέλου</value>
@@ -2397,6 +2478,30 @@
   </data>
   <data name="Menu.Mods.NoneInstalled" xml:space="preserve">
     <value>Δεν έχουν εγκατασταθεί τροποποιήσεις.</value>
+  </data>
+  <data name="Menu.Mods.Preview.Failed" xml:space="preserve">
+    <value>Δεν κατέστη δυνατή η φόρτωση της προεπισκόπησης: {0}</value>
+  </data>
+  <data name="Menu.Mods.Preview.Font.Preview" xml:space="preserve">
+    <value>Προεπισκόπηση γραμματοσειράς</value>
+  </data>
+  <data name="Menu.Mods.Preview.FontVariant" xml:space="preserve">
+    <value>Παραλλαγή γραμματοσειράς:</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loaded" xml:space="preserve">
+    <value>Φορτώθηκε η προεπισκόπηση</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading" xml:space="preserve">
+    <value>Φόρτωση προεπισκόπησης γραμματοσειράς...</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading.Glyphs" xml:space="preserve">
+    <value>Φόρτωση γραμματοσήμων...</value>
+  </data>
+  <data name="Menu.Mods.Preview.LoadingFont" xml:space="preserve">
+    <value>Φόρτωση γραμματοσειράς: {0}...</value>
+  </data>
+  <data name="Menu.Mods.Preview.NoColor" xml:space="preserve">
+    <value>Δεν βρέθηκαν πληροφορίες σχετικά με τα χρώματα σε αυτό το mod</value>
   </data>
   <data name="Menu.Mods.SelectedModAction" xml:space="preserve">
     <value>Επιλεγμένη ενέργεια τροποποίησης</value>
@@ -2736,7 +2841,7 @@
     <value>Ρυθμίστε τον τρόπο με τον οποίο το Froststrap μπορεί να ξεκινήσει εύκολα.</value>
   </data>
   <data name="Menu.Shortcuts.ErrorCreatingShortcut" xml:space="preserve">
-    <value>Σφάλμα κατά τη δημιουργία συντόμευσης.</value>
+    <value>Σφάλμα κατά τη δημιουργία της συντόμευσης.</value>
   </data>
   <data name="Menu.Shortcuts.ExtractIcons.Description" xml:space="preserve">
     <value>Σας επιτρέπει να χρησιμοποιήσετε τη συλλογή εικονιδίων Roblox του Froststrap για τις συντομεύσεις σας. [Δείτε πώς.]({0})</value>

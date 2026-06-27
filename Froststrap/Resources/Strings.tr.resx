@@ -127,6 +127,9 @@
   <data name="ActivityWatcher.LocationQueryFailed" xml:space="preserve">
     <value>Sunucu konumu sorgulanamadı. Oyunlara çok hızlı bir şekilde katılıyor olabilirsiniz.</value>
   </data>
+  <data name="AddCustomTheme.Title" xml:space="preserve">
+    <value>Özel Tema Ekle</value>
+  </data>
   <data name="App.OSDeprecation.Win7_81" xml:space="preserve">
     <value>Roblox artık Windows 7 veya 8.1&apos;i desteklemiyor. Roblox&apos;a oynamaya devam etmek için lütfen Windows 10 veya daha yeni bir sürüme geçin.</value>
   </data>
@@ -1306,7 +1309,7 @@ Başlamak için yukarıdaki “Hesap Ekle” seçeneğine tıklayın</value>
     <value>Özel temaları otomatik olarak sırayla görüntüle.</value>
   </data>
   <data name="Menu.Appearance.ThemeCycling.Title" xml:space="preserve">
-    <value>Tema: Bisiklet</value>
+    <value>Bisiklet Teması</value>
   </data>
   <data name="Menu.Appearance.Title" xml:space="preserve">
     <value>Görünüm</value>
@@ -1429,13 +1432,13 @@ Başlamak için yukarıdaki “Hesap Ekle” seçeneğine tıklayın</value>
     <value>Tercih Edilen Bölge</value>
   </data>
   <data name="Menu.Bootstrapper.RobloxTheme.Description" xml:space="preserve">
-    <value>Roblox&apos;un görsel temasını değiştirir.</value>
+    <value>Roblox’un görsel temasını değiştirir.</value>
   </data>
   <data name="Menu.Bootstrapper.RobloxTheme.Title" xml:space="preserve">
     <value>Roblox Uygulama Teması</value>
   </data>
   <data name="Menu.Bootstrapper.SmallerServer.Description" xml:space="preserve">
-    <value>Oynat düğmesi aracılığıyla oyuna katılırken daha küçük sunuculara katılın.</value>
+    <value>&quot;Oyna&quot; düğmesi aracılığıyla oyuna katılırken daha küçük sunuculara katılın.</value>
   </data>
   <data name="Menu.Bootstrapper.SmallerServer.Title" xml:space="preserve">
     <value>Daha Küçük Sunuculara Katılın</value>
@@ -1519,7 +1522,7 @@ Başlamak için yukarıdaki “Hesap Ekle” seçeneğine tıklayın</value>
     <value>Çeşitli Modlar</value>
   </data>
   <data name="Menu.CommunityMods.ModInstalled" xml:space="preserve">
-    <value>&apos;{0}&apos; modunu başarıyla yüklediniz!</value>
+    <value>&apos;{0}&apos; modunun kurulumu başarıyla tamamlandı!</value>
   </data>
   <data name="Menu.CommunityMods.Overwrite" xml:space="preserve">
     <value>Mevcut &apos;{0}&apos; modunu üzerine yazmak istiyor musunuz?</value>
@@ -1564,7 +1567,7 @@ Başlamak için yukarıdaki “Hesap Ekle” seçeneğine tıklayın</value>
     <value>Roblox çerez dosyası bulunamadı.</value>
   </data>
   <data name="Menu.Deployment.AutoPreReleaseUpdate.Description" xml:space="preserve">
-    <value>Froststrap, Roblox başlatıldığında kendisini otomatik olarak kontrol eder ve bir test sürümüne günceller.</value>
+    <value>Froststrap, Roblox başlatıldığında kendini otomatik olarak kontrol eder ve bir test sürümüne günceller.</value>
   </data>
   <data name="Menu.Deployment.AutoPreReleaseUpdate.Title" xml:space="preserve">
     <value>Ön Sürümlere İlişkin Güncelleme</value>
@@ -1766,14 +1769,92 @@ Daha fazla bilgi:
   <data name="Menu.FastFlags.Title" xml:space="preserve">
     <value>FastFlag Ayarları</value>
   </data>
+  <data name="Menu.FlagProfiles.AddPlaceId" xml:space="preserve">
+    <value>Yer Kimliği Ekle</value>
+  </data>
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
     <value>FFlag&apos;leri Temizle</value>
   </data>
+  <data name="Menu.FlagProfiles.CopyFailed" xml:space="preserve">
+    <value>Profil kopyalanamadı:\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.CurrentPlaceIds" xml:space="preserve">
+    <value>Mevcut Yer Kimlikleri</value>
+  </data>
+  <data name="Menu.FlagProfiles.DeleteSelected" xml:space="preserve">
+    <value>Seçilenleri Sil</value>
+  </data>
+  <data name="Menu.FlagProfiles.EnterPlaceId" xml:space="preserve">
+    <value>Lütfen bir yer kimliği girin.</value>
+  </data>
+  <data name="Menu.FlagProfiles.GetFlagsFailed" xml:space="preserve">
+    <value>Güncel FastFlags alınamadı.</value>
+  </data>
+  <data name="Menu.FlagProfiles.InvalidCharacter" xml:space="preserve">
+    <value>Profil adında &apos;{0}&apos; adlı geçersiz bir karakter bulunmaktadır.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ManagingPlaceIds" xml:space="preserve">
+    <value>Aşağıdakiler için konum kimliklerini yönetme: {0} ({1} kimlik)</value>
+  </data>
+  <data name="Menu.FlagProfiles.NameCannotBeEmpty" xml:space="preserve">
+    <value>Yeni profil adı boş bırakılamaz.</value>
+  </data>
   <data name="Menu.FlagProfiles.NoProfileFound" xml:space="preserve">
-    <value>Profil Bulunamadı</value>
+    <value>Profil bulunamadı.</value>
+  </data>
+  <data name="Menu.FlagProfiles.NoProfilesFound" xml:space="preserve">
+    <value>Hiçbir profil bulunamadı. Lütfen önce bir profil oluşturun.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ParseFailed" xml:space="preserve">
+    <value>Seçilen profilin ayrıştırılması başarısız oldu.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdExists" xml:space="preserve">
+    <value>Bu konum kimliği profile zaten eklenmiştir.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdNumeric" xml:space="preserve">
+    <value>Yer Kimliği tamsayı olmalıdır.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdWatermark" xml:space="preserve">
+    <value>Yer Kimliğini girin (örn. 123456789)</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdsTab" xml:space="preserve">
+    <value>Yer Kimlikleri</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileExists" xml:space="preserve">
+    <value>Bu isimde bir profil zaten mevcut.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileNotFound" xml:space="preserve">
+    <value>Seçilen profil dosyası bulunamadı.</value>
+  </data>
+  <data name="Menu.FlagProfiles.RemoveSelected" xml:space="preserve">
+    <value>Seçilenleri Kaldır</value>
+  </data>
+  <data name="Menu.FlagProfiles.RenameFailed" xml:space="preserve">
+    <value>Profilin adı değiştirilemedi:\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfile" xml:space="preserve">
+    <value>Yer kimliklerini yönetmek için bir profil seçin</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileCopy" xml:space="preserve">
+    <value>Lütfen kopyalamak istediğiniz profili seçin.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileFirst" xml:space="preserve">
+    <value>Lütfen önce bir profil seçin.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileLabel" xml:space="preserve">
+    <value>Yer kimliklerini yönetmek için bir profil seçin:</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileRename" xml:space="preserve">
+    <value>Lütfen adını değiştirmek istediğiniz profili seçin.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileUpdate" xml:space="preserve">
+    <value>Lütfen güncellemek istediğiniz profili seçin.</value>
   </data>
   <data name="Menu.FlagProfiles.Title" xml:space="preserve">
     <value>Hızlı Bayrak Profilleri</value>
+  </data>
+  <data name="Menu.FlagProfiles.UpdateFailed" xml:space="preserve">
+    <value>Profil güncellenemedi:\n{0}</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
     <value>Oyun içi ayarları kullanışlı bir menüden değiştirin.</value>
@@ -2106,7 +2187,7 @@ Daha fazla bilgi:
     <value>Oyun Etkinliğini Göster</value>
   </data>
   <data name="Menu.Integrations.ShowTesting.Description" xml:space="preserve">
-    <value>Bir oyunu test ederken RPC&apos;nizde küçük bir oynatma simgesi gösterir.</value>
+    <value>Bir oyunu test ederken RPC&apos;nizde küçük bir oynat simgesi gösterir.</value>
   </data>
   <data name="Menu.Integrations.ShowTesting.Title" xml:space="preserve">
     <value>Testleri Göster</value>
@@ -2125,7 +2206,7 @@ Eklentiyi yüklemek istiyor musunuz?</value>
     <value>Entegrasyonlar</value>
   </data>
   <data name="Menu.Integrations.TitleChange.Description" xml:space="preserve">
-    <value>Roblox&apos;un başlık çubuğundaki başlığı oyunun adına değiştirir.</value>
+    <value>Roblox&apos;un başlık çubuğundaki başlığı oyunun adıyla değiştirir.</value>
   </data>
   <data name="Menu.Integrations.TitleChange.Title" xml:space="preserve">
     <value>Başlık Değişikliği</value>
@@ -2179,7 +2260,7 @@ Eklentiyi yüklemek istiyor musunuz?</value>
     <value>Yerel Vulkan alt sistemlerini geçersiz kılar ve bunun yerine eski OpenGL düzen boru hattına geri döner.</value>
   </data>
   <data name="Menu.LinuxSettings.ForceLegacyOpenGL.Title" xml:space="preserve">
-    <value>OpenGL ile Oluşturmayı Zorla</value>
+    <value>OpenGL Oluşturmayı Zorla</value>
   </data>
   <data name="Menu.LinuxSettings.GameMode.Description" xml:space="preserve">
     <value>Mevcut ise sistem optimizasyonlarını uygulayın (gamemoded gereklidir).</value>
@@ -2290,7 +2371,7 @@ Eklentiyi yüklemek istiyor musunuz?</value>
     <value>Shiftlock’a Başvur</value>
   </data>
   <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
-    <value>Sayı ne kadar yüksekse, kalite o kadar yüksek olur ancak işlem süresi de o kadar uzar. Maksimum değer 64, varsayılan değer ise 8’dir.</value>
+    <value>Sayı ne kadar yüksekse, kalite o kadar yüksek olur ancak işlem süresi de o kadar uzar; maksimum değer 512, varsayılan değer ise 32’dir.</value>
   </data>
   <data name="Menu.ModGenerator.Cancelled" xml:space="preserve">
     <value>Mod oluşturma işlemi iptal edildi.</value>
@@ -2368,7 +2449,7 @@ Eklentiyi yüklemek istiyor musunuz?</value>
     <value>&apos;{0}&apos; öğesini kalıcı olarak silmek istiyor musunuz?</value>
   </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
-    <value>Roblox Oyun İstemcisi’ndeki dosya modlarını yönetin ve uygulayın.</value>
+    <value>Dosya modlarını yönetin ve uygulayın.</value>
   </data>
   <data name="Menu.Mods.DragOverlay" xml:space="preserve">
     <value>📦 Zip dosyasını / klasörü içe aktarmak için buraya sürükleyin</value>
@@ -2397,6 +2478,30 @@ Aşağıdaki klasörlerden en az birini içermesi gerekir: content, ExtraContent
   </data>
   <data name="Menu.Mods.NoneInstalled" xml:space="preserve">
     <value>Yüklü mod yok.</value>
+  </data>
+  <data name="Menu.Mods.Preview.Failed" xml:space="preserve">
+    <value>Önizleme yüklenemedi: {0}</value>
+  </data>
+  <data name="Menu.Mods.Preview.Font.Preview" xml:space="preserve">
+    <value>Yazı Tipi Önizlemesi</value>
+  </data>
+  <data name="Menu.Mods.Preview.FontVariant" xml:space="preserve">
+    <value>Yazı Tipi Varyantı:</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loaded" xml:space="preserve">
+    <value>Önizleme yüklendi</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading" xml:space="preserve">
+    <value>Yazı tipi önizlemesi yükleniyor...</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading.Glyphs" xml:space="preserve">
+    <value>Glifler yükleniyor...</value>
+  </data>
+  <data name="Menu.Mods.Preview.LoadingFont" xml:space="preserve">
+    <value>Yazı tipi yükleniyor: {0}...</value>
+  </data>
+  <data name="Menu.Mods.Preview.NoColor" xml:space="preserve">
+    <value>Bu modda renk bilgisi bulunamadı</value>
   </data>
   <data name="Menu.Mods.SelectedModAction" xml:space="preserve">
     <value>Seçilen Mod Eylemi</value>

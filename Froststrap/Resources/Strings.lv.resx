@@ -127,6 +127,9 @@
   <data name="ActivityWatcher.LocationQueryFailed" xml:space="preserve">
     <value>Neizdevās noskaidrot servera atrašanās vietu. Iespējams, jūs pievienojaties spēlēm pārāk ātri.</value>
   </data>
+  <data name="AddCustomTheme.Title" xml:space="preserve">
+    <value>Pievienot pielāgotu tēmu</value>
+  </data>
   <data name="App.OSDeprecation.Win7_81" xml:space="preserve">
     <value>„Roblox“ vairs neatbalsta operētājsistēmas „Windows 7“ un „Windows 8.1“. Lai turpinātu spēlēt „Roblox“, lūdzu, veiciet atjauninājumu uz „Windows 10“ vai jaunāku versiju.</value>
   </data>
@@ -876,7 +879,7 @@ Pārbaudiet, vai Roblox darbojas ar [oriģinālo palaišanas programmu]({1}). Ja
     <value>Uniforma</value>
   </data>
   <data name="Enums.BackgroundStretch.UniformToFill" xml:space="preserve">
-    <value>Vienots aizpildāmais veidlapas paraugs</value>
+    <value>Aizpildāmā veidlapa</value>
   </data>
   <data name="Enums.BootstrapperIcon.IconEarly2015" xml:space="preserve">
     <value>2015. gada sākumā</value>
@@ -1769,14 +1772,92 @@ Vai to izdzēst tagad?</value>
   <data name="Menu.FastFlags.Title" xml:space="preserve">
     <value>FastFlag iestatījumi</value>
   </data>
+  <data name="Menu.FlagProfiles.AddPlaceId" xml:space="preserve">
+    <value>Pievienot vietas identifikatoru</value>
+  </data>
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
     <value>Dzēst FFlags</value>
   </data>
+  <data name="Menu.FlagProfiles.CopyFailed" xml:space="preserve">
+    <value>Neizdevās kopēt profilu:\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.CurrentPlaceIds" xml:space="preserve">
+    <value>Pašreizējie vietu identifikatori</value>
+  </data>
+  <data name="Menu.FlagProfiles.DeleteSelected" xml:space="preserve">
+    <value>Dzēst atlasīto</value>
+  </data>
+  <data name="Menu.FlagProfiles.EnterPlaceId" xml:space="preserve">
+    <value>Lūdzu, ievadiet vietas identifikatoru.</value>
+  </data>
+  <data name="Menu.FlagProfiles.GetFlagsFailed" xml:space="preserve">
+    <value>Neizdevās iegūt aktuālos FastFlags.</value>
+  </data>
+  <data name="Menu.FlagProfiles.InvalidCharacter" xml:space="preserve">
+    <value>Profila nosaukumā ir nepareizs simbols „{0}“.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ManagingPlaceIds" xml:space="preserve">
+    <value>Vietu identifikatoru pārvaldība: {0} ({1} identifikatori)</value>
+  </data>
+  <data name="Menu.FlagProfiles.NameCannotBeEmpty" xml:space="preserve">
+    <value>Jaunā profila nosaukums nedrīkst būt tukšs.</value>
+  </data>
   <data name="Menu.FlagProfiles.NoProfileFound" xml:space="preserve">
-    <value>Profilu nav atrasts</value>
+    <value>Profilu nav atrasts.</value>
+  </data>
+  <data name="Menu.FlagProfiles.NoProfilesFound" xml:space="preserve">
+    <value>Profilu nav atrasts. Lūdzu, vispirms izveidojiet profilu.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ParseFailed" xml:space="preserve">
+    <value>Neizdevās analizēt izvēlēto profilu.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdExists" xml:space="preserve">
+    <value>Šis vietas identifikators jau ir pievienots profilam.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdNumeric" xml:space="preserve">
+    <value>Vietas identifikatoram jābūt veselskaitlim.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdWatermark" xml:space="preserve">
+    <value>Ievadiet vietas identifikatoru (piem., 123456789)</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdsTab" xml:space="preserve">
+    <value>Vietu identifikatori</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileExists" xml:space="preserve">
+    <value>Profils ar šādu nosaukumu jau pastāv.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileNotFound" xml:space="preserve">
+    <value>Izvēlētais profila fails nav atrasts.</value>
+  </data>
+  <data name="Menu.FlagProfiles.RemoveSelected" xml:space="preserve">
+    <value>Noņemt atlasīto</value>
+  </data>
+  <data name="Menu.FlagProfiles.RenameFailed" xml:space="preserve">
+    <value>Nepavyka pārdēvēt profilu:\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfile" xml:space="preserve">
+    <value>Izvēlieties profilu, lai pārvaldītu vietu identifikatorus</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileCopy" xml:space="preserve">
+    <value>Lūdzu, izvēlieties profilu, kuru vēlaties kopēt.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileFirst" xml:space="preserve">
+    <value>Lūdzu, vispirms izvēlieties profilu.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileLabel" xml:space="preserve">
+    <value>Izvēlieties profilu, lai pārvaldītu tā vietu identifikatorus:</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileRename" xml:space="preserve">
+    <value>Lūdzu, izvēlieties profilu, kura nosaukumu vēlaties mainīt.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileUpdate" xml:space="preserve">
+    <value>Lūdzu, izvēlieties profilu, kuru vēlaties atjaunināt.</value>
   </data>
   <data name="Menu.FlagProfiles.Title" xml:space="preserve">
     <value>„Fast Flag“ profili</value>
+  </data>
+  <data name="Menu.FlagProfiles.UpdateFailed" xml:space="preserve">
+    <value>Neizdevās atjaunināt profilu:\n{0}</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
     <value>Mainiet spēles iestatījumus, izmantojot ērtu izvēlni.</value>
@@ -1788,7 +1869,7 @@ Vai to izdzēst tagad?</value>
     <value>Iestatīt kā „Tikai lasīšanai”</value>
   </data>
   <data name="Menu.GBSEditor.Title" xml:space="preserve">
-    <value>Vispārīgo iestatījumu redaktors</value>
+    <value>Vispārējo iestatījumu redaktors</value>
   </data>
   <data name="Menu.GBSEditor.VectorX" xml:space="preserve">
     <value>Vektors X</value>
@@ -2218,7 +2299,7 @@ Vai vēlaties instalēt šo spraudni?</value>
     <value>Saskares ievades režīms</value>
   </data>
   <data name="Menu.LinuxSettings.UseConsoleExperience.Description" xml:space="preserve">
-    <value>Piespiež izmantot mūsdienīgo TV/konsoles klienta izkārtojuma vadības paneli, nevis darbvirsmas saskarnes kontekstu.</value>
+    <value>Piespiež izmantot mūsdienīgo TV/konsoles klienta izkārtojuma paneļu sistēmu, nevis darbvirsmas saskarnes kontekstu.</value>
   </data>
   <data name="Menu.LinuxSettings.UseConsoleExperience.Title" xml:space="preserve">
     <value>Izmantojiet konsoles funkcijas</value>
@@ -2251,7 +2332,7 @@ Vai vēlaties instalēt šo spraudni?</value>
     <value>Atveriet Roblox.com savā pārlūkprogrammā un piesakieties</value>
   </data>
   <data name="Menu.ManualLogin.Instruction.2" xml:space="preserve">
-    <value>Nospiediet F12, lai atvērtu izstrādātāja rīkus</value>
+    <value>Nospiediet taustiņu F12, lai atvērtu izstrādātāja rīkus</value>
   </data>
   <data name="Menu.ManualLogin.Instruction.3" xml:space="preserve">
     <value>Noklikšķiniet uz cilnes „Pieteikumi” (Chrome) vai „Uzglabāšana” (Firefox)</value>
@@ -2293,7 +2374,7 @@ Vai vēlaties instalēt šo spraudni?</value>
     <value>Pieteikties darbam „Shiftlock“</value>
   </data>
   <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
-    <value>Jo lielāks skaitlis, jo augstāka kvalitāte, taču tas prasa vairāk laika; maksimālais vērtība ir 64, noklusējuma vērtība ir 8.</value>
+    <value>Jo lielāks skaitlis, jo augstāka kvalitāte, taču tas prasa vairāk laika; maksimālais vērtība ir 512, noklusējuma vērtība ir 32.</value>
   </data>
   <data name="Menu.ModGenerator.Cancelled" xml:space="preserve">
     <value>Modu ģenerēšana atcelta.</value>
@@ -2371,7 +2452,7 @@ Vai vēlaties instalēt šo spraudni?</value>
     <value>Vai vēlaties neatgriezeniski dzēst „{0}“?</value>
   </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
-    <value>Pārvaldiet un piemērojiet failu modifikācijas Roblox spēļu klientam.</value>
+    <value>Pārvaldīt un piemērot failu modifikācijas.</value>
   </data>
   <data name="Menu.Mods.DragOverlay" xml:space="preserve">
     <value>📦 Velciet, lai importētu ZIP failu / mapi</value>
@@ -2400,6 +2481,30 @@ Tajā ir jābūt vismaz vienai no šīm mapēm: content, ExtraContent, PlatformC
   </data>
   <data name="Menu.Mods.NoneInstalled" xml:space="preserve">
     <value>Nav instalēti nekādi modifikatori.</value>
+  </data>
+  <data name="Menu.Mods.Preview.Failed" xml:space="preserve">
+    <value>Nepavyka ielādēt priekšskatījumu: {0}</value>
+  </data>
+  <data name="Menu.Mods.Preview.Font.Preview" xml:space="preserve">
+    <value>Fontu priekšskatījums</value>
+  </data>
+  <data name="Menu.Mods.Preview.FontVariant" xml:space="preserve">
+    <value>Rakstzīmju variants:</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loaded" xml:space="preserve">
+    <value>Priekšskatījums ielādēts</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading" xml:space="preserve">
+    <value>Tiek ielādēts fontu priekšskatījums...</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading.Glyphs" xml:space="preserve">
+    <value>Tiek ielādēti simboli...</value>
+  </data>
+  <data name="Menu.Mods.Preview.LoadingFont" xml:space="preserve">
+    <value>Ielādē fontu: {0}...</value>
+  </data>
+  <data name="Menu.Mods.Preview.NoColor" xml:space="preserve">
+    <value>Šajā modā nav atrasta informācija par krāsām</value>
   </data>
   <data name="Menu.Mods.SelectedModAction" xml:space="preserve">
     <value>Izvēlētā modu darbība</value>
@@ -2597,7 +2702,7 @@ Tajā ir jābūt vismaz vienai no šīm mapēm: content, ExtraContent, PlatformC
     <value>Uzraudzītie serveri ({0})</value>
   </data>
   <data name="Menu.QuickPlay.UnableToAuthenticate" xml:space="preserve">
-    <value>Nav iespējams veikt autentifikāciju. Lūdzu, piesakieties atkārtoti.</value>
+    <value>Nav iespējams veikt autentifikāciju. Lūdzu, piesakieties vēlreiz.</value>
   </data>
   <data name="Menu.QuickPlay.UnknownGame" xml:space="preserve">
     <value>Nezināma spēle</value>

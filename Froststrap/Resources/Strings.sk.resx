@@ -127,6 +127,9 @@
   <data name="ActivityWatcher.LocationQueryFailed" xml:space="preserve">
     <value>Nepodarilo sa zistiť polohu servera. Možno sa pripájate do hier príliš rýchlo.</value>
   </data>
+  <data name="AddCustomTheme.Title" xml:space="preserve">
+    <value>Pridať vlastnú šablónu</value>
+  </data>
   <data name="App.OSDeprecation.Win7_81" xml:space="preserve">
     <value>Roblox už nepodporuje systémy Windows 7 ani 8.1. Ak chcete naďalej hrať Roblox, prejdite na systém Windows 10 alebo novší.</value>
   </data>
@@ -869,7 +872,7 @@ Skontrolujte, či Roblox funguje s [pôvodným spúšťačom]({1}). Ak nie, nejd
     <value>Voľné pracovné miesto: Uniform</value>
   </data>
   <data name="Enums.BootstrapperIcon.IconEarly2015" xml:space="preserve">
-    <value>Začiatkom roka 2015</value>
+    <value>Začiatok roka 2015</value>
   </data>
   <data name="Enums.BootstrapperIcon.IconFroststrapClassic" xml:space="preserve">
     <value>Froststrap (klasická verzia)</value>
@@ -977,7 +980,7 @@ Skontrolujte, či Roblox funguje s [pôvodným spúšťačom]({1}). Ak nie, nejd
     <value>Extra veľký</value>
   </data>
   <data name="Enums.PlayerListLayOut.x0" xml:space="preserve">
-    <value>Námestie</value>
+    <value>Štvorec</value>
   </data>
   <data name="Enums.PlayerListLayOut.x1" xml:space="preserve">
     <value>Normálne</value>
@@ -1750,14 +1753,92 @@ Chcete ho teraz odstrániť?</value>
   <data name="Menu.FastFlags.Title" xml:space="preserve">
     <value>Nastavenia FastFlag</value>
   </data>
+  <data name="Menu.FlagProfiles.AddPlaceId" xml:space="preserve">
+    <value>Pridať ID miesta</value>
+  </data>
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
     <value>Vymazať FFlags</value>
   </data>
+  <data name="Menu.FlagProfiles.CopyFailed" xml:space="preserve">
+    <value>Kopírovanie profilu sa nepodarilo:\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.CurrentPlaceIds" xml:space="preserve">
+    <value>Aktuálne identifikátory miest</value>
+  </data>
+  <data name="Menu.FlagProfiles.DeleteSelected" xml:space="preserve">
+    <value>Odstrániť vybrané</value>
+  </data>
+  <data name="Menu.FlagProfiles.EnterPlaceId" xml:space="preserve">
+    <value>Zadajte prosím identifikátor miesta.</value>
+  </data>
+  <data name="Menu.FlagProfiles.GetFlagsFailed" xml:space="preserve">
+    <value>Nepodarilo sa načítať aktuálne FastFlags.</value>
+  </data>
+  <data name="Menu.FlagProfiles.InvalidCharacter" xml:space="preserve">
+    <value>Názov profilu obsahuje neplatný znak „{0}“.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ManagingPlaceIds" xml:space="preserve">
+    <value>Správa identifikátorov miest pre: {0} ({1} identifikátorov)</value>
+  </data>
+  <data name="Menu.FlagProfiles.NameCannotBeEmpty" xml:space="preserve">
+    <value>Názov nového profilu nesmie byť prázdny.</value>
+  </data>
   <data name="Menu.FlagProfiles.NoProfileFound" xml:space="preserve">
-    <value>Nenašli sa žiadne profily</value>
+    <value>Nenašli sa žiadne profily.</value>
+  </data>
+  <data name="Menu.FlagProfiles.NoProfilesFound" xml:space="preserve">
+    <value>Nenašli sa žiadne profily. Najskôr si prosím vytvorte profil.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ParseFailed" xml:space="preserve">
+    <value>Nepodarilo sa analyzovať vybraný profil.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdExists" xml:space="preserve">
+    <value>Toto ID miesta je už pridané do profilu.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdNumeric" xml:space="preserve">
+    <value>ID miesta musí byť celé číslo.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdWatermark" xml:space="preserve">
+    <value>Zadajte ID miesta (napr. 123456789)</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdsTab" xml:space="preserve">
+    <value>ID miest</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileExists" xml:space="preserve">
+    <value>Profil s týmto názvom už existuje.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileNotFound" xml:space="preserve">
+    <value>Zvolený profilový súbor nebol nájdený.</value>
+  </data>
+  <data name="Menu.FlagProfiles.RemoveSelected" xml:space="preserve">
+    <value>Odstrániť vybrané</value>
+  </data>
+  <data name="Menu.FlagProfiles.RenameFailed" xml:space="preserve">
+    <value>Nepodarilo sa premenovať profil:\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfile" xml:space="preserve">
+    <value>Vyberte profil, v ktorom chcete spravovať identifikátory miest</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileCopy" xml:space="preserve">
+    <value>Vyberte prosím profil, ktorý chcete skopírovať.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileFirst" xml:space="preserve">
+    <value>Najskôr si prosím vyberte profil.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileLabel" xml:space="preserve">
+    <value>Vyberte profil, ktorého ID miest chcete spravovať:</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileRename" xml:space="preserve">
+    <value>Vyberte prosím profil, ktorý chcete premenovať.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileUpdate" xml:space="preserve">
+    <value>Vyberte prosím profil, ktorý chcete aktualizovať.</value>
   </data>
   <data name="Menu.FlagProfiles.Title" xml:space="preserve">
     <value>Profily rýchlych vlajok</value>
+  </data>
+  <data name="Menu.FlagProfiles.UpdateFailed" xml:space="preserve">
+    <value>Nepodarilo sa aktualizovať profil:\n{0}</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
     <value>Nastavenia v hre môžete zmeniť prostredníctvom prehľadného menu.</value>
@@ -1889,7 +1970,7 @@ Chcete ho teraz odstrániť?</value>
     <value>Úroveň kvality pri pripojení sa k hre.</value>
   </data>
   <data name="Menu.GlobalSettings.StartQuality.Title" xml:space="preserve">
-    <value>Začiatočná kvalita</value>
+    <value>Začiatok kvality</value>
   </data>
   <data name="Menu.GlobalSettings.StudioVolume.Description" xml:space="preserve">
     <value>Hlasitosť v programe Roblox Studio.</value>
@@ -1919,7 +2000,7 @@ Chcete ho teraz odstrániť?</value>
     <value>Priehľadnosť používateľského rozhrania</value>
   </data>
   <data name="Menu.GlobalSettings.VRMode.Description" xml:space="preserve">
-    <value>Aktivujte podporu virtuálnej reality.</value>
+    <value>Zapnúť podporu virtuálnej reality.</value>
   </data>
   <data name="Menu.GlobalSettings.VRMode.Title" xml:space="preserve">
     <value>Režim VR</value>
@@ -2196,7 +2277,7 @@ Chcete tento doplnok nainštalovať?</value>
     <value>Zapína alebo vypína profily správania pre hardvér s dotykovým displejom.</value>
   </data>
   <data name="Menu.LinuxSettings.TouchInputMode.Title" xml:space="preserve">
-    <value>Režim dotykového zadávania</value>
+    <value>Režim dotykového ovládania</value>
   </data>
   <data name="Menu.LinuxSettings.UseConsoleExperience.Description" xml:space="preserve">
     <value>Vynúti použitie moderného systému rozloženia klientského panela pre televíziu a herné konzoly namiesto kontextu rozhrania pracovnej plochy.</value>
@@ -2274,7 +2355,7 @@ Chcete tento doplnok nainštalovať?</value>
     <value>Prihlásiť sa do Shiftlocku</value>
   </data>
   <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
-    <value>Čím vyššie číslo, tým vyššia kvalita, ale trvá to dlhšie. Maximálna hodnota je 64, predvolená hodnota je 8.</value>
+    <value>Čím vyššie číslo, tým vyššia kvalita, ale trvá to dlhšie. Maximálna hodnota je 512, predvolená hodnota je 32.</value>
   </data>
   <data name="Menu.ModGenerator.Cancelled" xml:space="preserve">
     <value>Vytvorenie modu bolo zrušené.</value>
@@ -2352,7 +2433,7 @@ Chcete tento doplnok nainštalovať?</value>
     <value>Chcete trvalo odstrániť „{0}“?</value>
   </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
-    <value>Spravujte a aplikujte úpravy súborov na herný klient Roblox.</value>
+    <value>Spravovať a aplikovať úpravy súborov.</value>
   </data>
   <data name="Menu.Mods.DragOverlay" xml:space="preserve">
     <value>📦 Pretiahnite súbor ZIP alebo priečinok na import</value>
@@ -2367,7 +2448,7 @@ Chcete tento doplnok nainštalovať?</value>
     <value>Načítať ZIP</value>
   </data>
   <data name="Menu.Mods.Imported" xml:space="preserve">
-    <value>Modul „{0}“ bol úspešne importovaný.</value>
+    <value>Modul „{0}“ bol úspešne naimportovaný.</value>
   </data>
   <data name="Menu.Mods.InfoBar" xml:space="preserve">
     <value>Modifikácie môžete importovať pretiahnutím alebo priamym importom; modifikácie s nižšou prioritou sa uplatňujú ako posledné, čím sa predchádza konfliktom s inými modifikáciami.</value>
@@ -2381,6 +2462,30 @@ Musí obsahovať aspoň jednu z nasledujúcich zložiek: content, ExtraContent, 
   </data>
   <data name="Menu.Mods.NoneInstalled" xml:space="preserve">
     <value>Nie sú nainštalované žiadne mody.</value>
+  </data>
+  <data name="Menu.Mods.Preview.Failed" xml:space="preserve">
+    <value>Nepodarilo sa načítať náhľad: {0}</value>
+  </data>
+  <data name="Menu.Mods.Preview.Font.Preview" xml:space="preserve">
+    <value>Náhľad písma</value>
+  </data>
+  <data name="Menu.Mods.Preview.FontVariant" xml:space="preserve">
+    <value>Variant písma:</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loaded" xml:space="preserve">
+    <value>Náhľad sa načítal</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading" xml:space="preserve">
+    <value>Načítava sa náhľad písma...</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading.Glyphs" xml:space="preserve">
+    <value>Načítavanie znakov...</value>
+  </data>
+  <data name="Menu.Mods.Preview.LoadingFont" xml:space="preserve">
+    <value>Načítavanie písma: {0}...</value>
+  </data>
+  <data name="Menu.Mods.Preview.NoColor" xml:space="preserve">
+    <value>V tomto modifikácii neboli nájdené žiadne informácie o farbách</value>
   </data>
   <data name="Menu.Mods.SelectedModAction" xml:space="preserve">
     <value>Vybraná akcia modu</value>
@@ -2681,7 +2786,7 @@ Aplikácia toto okno zatvorí po dokončení prihlásenia.</value>
     <value>Uložiť</value>
   </data>
   <data name="Menu.SearchBar.AutoJoin" xml:space="preserve">
-    <value>Automatický režim: Hľadám pre vás najvhodnejšiu oblasť...</value>
+    <value>Automatický režim: Vyhľadávanie najvhodnejšej oblasti pre vás...</value>
   </data>
   <data name="Menu.SearchBar.JoinError" xml:space="preserve">
     <value>Nepodarilo sa pripojiť k hre: {0}</value>
