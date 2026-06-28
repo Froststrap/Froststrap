@@ -1,9 +1,6 @@
 name: Auto-Translate with DeepLX
 
 on:
-  push:
-    paths:
-      - 'Froststrap/Resources/Strings.resx'
   workflow_dispatch:
 
 jobs:
