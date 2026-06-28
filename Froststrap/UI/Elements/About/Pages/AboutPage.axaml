@@ -118,6 +118,8 @@
 
                 <Expander Grid.Column="1" Margin="4,0,4,0" Header="{x:Static resources:Strings.Menu_About_Contributors}" IsExpanded="True">
                     <StackPanel>
+                        <controls:MarkdownTextBlock MarkdownText="[Efaz](https://github.com/EfazDev)" />
+                        <controls:MarkdownTextBlock MarkdownText="[Valra](https://github.com/NotValra)" />
                         <controls:MarkdownTextBlock MarkdownText="[jokoyanto987](https://github.com/jokoyanto987)" />
                         <controls:MarkdownTextBlock MarkdownText="[Scroom](https://discord.com/users/1254472513199673347)" />
                         <controls:MarkdownTextBlock MarkdownText="[MattDinio](https://discord.com/users/1353528667245903892)" />
@@ -131,7 +133,6 @@
                         <controls:MarkdownTextBlock MarkdownText="[Flemish](https://discord.com/users/1286961047990702124)" />
                         <controls:MarkdownTextBlock MarkdownText="[Noby](https://discord.com/users/1304922060882972732)" />
                         <controls:MarkdownTextBlock MarkdownText="[Obsurd](https://discord.com/users/818680236963135498)" />
-                        <controls:MarkdownTextBlock MarkdownText="[Valra](https://github.com/NotValra)" />
                         <controls:MarkdownTextBlock MarkdownText="[SunGod (Polaris)](https://www.roblox.com/users/1484207733/profile)" />
                     </StackPanel>
                 </Expander>
