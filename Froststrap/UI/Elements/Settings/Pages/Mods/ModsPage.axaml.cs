@@ -36,7 +36,6 @@ namespace Froststrap.UI.Elements.Settings.Pages.Mods
 
         public ModsPage()
         {
-            AddHandler(DragDrop.DropEvent, Page_Drop);
             InitializeComponent();
             App.FrostRPC?.SetPage("Mods");
             this.Loaded += (s, e) => SetupViewModelIfNeeded();
