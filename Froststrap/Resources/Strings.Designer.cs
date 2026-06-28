@@ -8549,6 +8549,24 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to When enabled, you will be notified when a new Froststrap update is available and redirected to the releases page..
+        /// </summary>
+        public static string Settings_PromptForAppUpdates_Description {
+            get {
+                return ResourceManager.GetString("Settings.PromptForAppUpdates_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Prompt for app updates on Linux.
+        /// </summary>
+        public static string Settings_PromptForAppUpdates_Title {
+            get {
+                return ResourceManager.GetString("Settings.PromptForAppUpdates_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to install {0} via Flatpak.{1}.
         /// </summary>
         public static string Sober_FlatpakInstallFailed {
@@ -8623,6 +8641,19 @@ namespace Froststrap.Resources {
         public static string Update_Available {
             get {
                 return ResourceManager.GetString("Update.Available", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A new version ({0}) of Froststrap is available for Linux.
+        ///
+        ///Linux updates cannot be installed automatically. Please download the latest version manually from GitHub.
+        ///
+        ///Would you like to visit the releases page now?.
+        /// </summary>
+        public static string Update_Linux_Available {
+            get {
+                return ResourceManager.GetString("Update.Linux.Available", resourceCulture);
             }
         }
         

@@ -74,8 +74,9 @@ namespace Froststrap.Models.Persistable
         public int MaxThreadDownload { get; set; } = 3;
         public Theme Theme { get; set; } = Theme.Default;
 
-        // Settings Page
+        // Deployment Page
         public UpdateCheck UpdateChecks { get; set; } = UpdateCheck.Stable;
+        public bool PromptForAppUpdates { get; set; } = true;
         public bool UpdateRoblox { get; set; } = true;
         public bool AutomaticallyUpdateSober { get; set; } = true;
         public string RobloxDomain { get; set; } = RobloxInterfaces.Deployment.DefaultRobloxDomain;

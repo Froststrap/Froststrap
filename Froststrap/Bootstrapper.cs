@@ -264,7 +264,7 @@ namespace Froststrap
             }
 
 #if (!DEBUG || DEBUG_UPDATER) && !QA_BUILD
-            if (!App.LaunchSettings.BypassUpdateCheck && !App.LaunchSettings.UpgradeFlag.Active && App.Settings.Prop.UpdateChecks != UpdateCheck.Disabled && !OperatingSystem.IsLinux())
+            if (!App.LaunchSettings.BypassUpdateCheck && !App.LaunchSettings.UpgradeFlag.Active && App.Settings.Prop.UpdateChecks != UpdateCheck.Disabled)
             {
                 bool updatePresent = await CheckForUpdates();
                 if (updatePresent)
@@ -1849,7 +1849,6 @@ namespace Froststrap
         #endregion
 
         #region App Install
-
         private async Task<bool> CheckForUpdates()
         {
             const string LOG_IDENT = "Bootstrapper::CheckForUpdates";
@@ -1900,6 +1899,29 @@ namespace Froststrap
                 }
 
                 App.Logger.WriteLine(LOG_IDENT, $"Update available: {currentVer} -> {releaseVer}");
+
+                if (OperatingSystem.IsLinux() && App.Settings.Prop.PromptForAppUpdates)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Update detected, prompting user to manually update");
+
+                    var results = await Frontend.ShowMessageBox(
+                        string.Format(Strings.Update_Linux_Available, releaseVer),
+                        MessageBoxImage.Information,
+                        MessageBoxButton.YesNo
+                    );
+
+                    if (results == MessageBoxResult.Yes)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, "User chose to visit releases page");
+                        Utilities.ShellExecute(App.ProjectDownloadLink);
+                    }
+                    else
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, "User declined the update, continuing launch");
+                    }
+
+                    return false;
+                }
 
                 var asset = FindPlatformAsset(releaseInfo.Assets);
                 if (asset is null)

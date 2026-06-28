@@ -107,6 +107,12 @@ namespace Froststrap.UI.ViewModels.Settings
             set => App.Settings.Prop.GameSearch = value;
         }
 
+        public static bool PromptForAppUpdates
+        {
+            get => App.Settings.Prop.PromptForAppUpdates;
+            set => App.Settings.Prop.PromptForAppUpdates = value;
+        }
+
         private async Task HandleTestModeConfirmation()
         {
             var result = await Frontend.ShowMessageBox(Strings.Menu_TestMode_Prompt, MessageBoxImage.Information, MessageBoxButton.YesNo);

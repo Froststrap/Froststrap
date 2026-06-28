@@ -3035,4 +3035,17 @@ Would you like to switch your preferred channel to {0}?</value>
   <data name="Update.Available" xml:space="preserve">
     <value>A new {0} version {1} is available.{2}</value>
   </data>
+  <data name="Update.Linux.Available" xml:space="preserve">
+    <value>A new version ({0}) of Froststrap is available for Linux.
+
+Linux updates cannot be installed automatically. Please download the latest version manually from GitHub.
+
+Would you like to visit the releases page now?</value>
+  </data>
+  <data name="Settings.PromptForAppUpdates_Title" xml:space="preserve">
+    <value>Prompt for app updates on Linux</value>
+  </data>
+  <data name="Settings.PromptForAppUpdates_Description" xml:space="preserve">
+    <value>When enabled, you will be notified when a new Froststrap update is available and redirected to the releases page.</value>
+  </data>
 </root>
