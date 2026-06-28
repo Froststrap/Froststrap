@@ -21,7 +21,7 @@ namespace Froststrap.UI.ViewModels.Bootstrapper
 
             if (aero)
             {
-                byte alpha = 8;
+                byte alpha = 64;
                 var color = isLight
                     ? Color.FromArgb(alpha, 225, 225, 225)
                     : Color.FromArgb(alpha, 30, 30, 30);
