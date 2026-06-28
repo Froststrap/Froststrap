@@ -9,6 +9,9 @@ Var CreateStartMenuShortcut
 Var KeepUserDataCheckbox
 Var KeepUserData
 
+Var LanguageComboBox
+Var LanguageValue
+
 Name "Froststrap"
 
 !ifndef PUBLISH_DIR
@@ -38,7 +41,7 @@ RequestExecutionLevel user
 !define MUI_FINISHPAGE_RUN_TEXT "Launch Froststrap"
 
 !insertmacro MUI_PAGE_DIRECTORY
-Page Custom OptionsPageCreate OptionsPageLeave
+Page Custom LanguagePageCreate LanguagePageLeave
 !insertmacro MUI_PAGE_INSTFILES
 !insertmacro MUI_PAGE_FINISH
 
@@ -47,6 +50,109 @@ UninstPage Custom un.OptionsPageCreate un.OptionsPageLeave
 !insertmacro MUI_UNPAGE_INSTFILES
 
 !insertmacro MUI_LANGUAGE "English"
+
+; ---------------------------------------------------------------------------
+; Language Selection Page
+; ---------------------------------------------------------------------------
+
+Function LanguagePageCreate
+    nsDialogs::Create 1018
+    Pop $0
+    ${If} $0 == error
+        Abort
+    ${EndIf}
+
+    ${NSD_CreateLabel} 0 0 100% 24u "Select your preferred language:"
+    Pop $0
+
+    ${NSD_CreateComboBox} 0 30u 100% 12u ""
+    Pop $LanguageComboBox
+
+    ${NSD_CB_AddString} $LanguageComboBox "System Default (nil)"
+    ${NSD_CB_AddString} $LanguageComboBox "English (en)"
+    ${NSD_CB_AddString} $LanguageComboBox "English (United States) (en-US)"
+    ${NSD_CB_AddString} $LanguageComboBox "العربية (ar)"
+    ${NSD_CB_AddString} $LanguageComboBox "Български (bg)"
+    ${NSD_CB_AddString} $LanguageComboBox "Čeština (cs)"
+    ${NSD_CB_AddString} $LanguageComboBox "Dansk (da)"
+    ${NSD_CB_AddString} $LanguageComboBox "Deutsch (de)"
+    ${NSD_CB_AddString} $LanguageComboBox "Ελληνικά (el)"
+    ${NSD_CB_AddString} $LanguageComboBox "Español (es-ES)"
+    ${NSD_CB_AddString} $LanguageComboBox "Eesti (et)"
+    ${NSD_CB_AddString} $LanguageComboBox "Suomi (fi)"
+    ${NSD_CB_AddString} $LanguageComboBox "Français (fr)"
+    ${NSD_CB_AddString} $LanguageComboBox "Magyar (hu)"
+    ${NSD_CB_AddString} $LanguageComboBox "Bahasa Indonesia (id)"
+    ${NSD_CB_AddString} $LanguageComboBox "Italiano (it)"
+    ${NSD_CB_AddString} $LanguageComboBox "日本語 (ja)"
+    ${NSD_CB_AddString} $LanguageComboBox "한국어 (ko)"
+    ${NSD_CB_AddString} $LanguageComboBox "Lietuvių (lt)"
+    ${NSD_CB_AddString} $LanguageComboBox "Latviešu (lv)"
+    ${NSD_CB_AddString} $LanguageComboBox "Nederlands (nl)"
+    ${NSD_CB_AddString} $LanguageComboBox "Polski (pl)"
+    ${NSD_CB_AddString} $LanguageComboBox "Português (Brasil) (pt-BR)"
+    ${NSD_CB_AddString} $LanguageComboBox "Português (Portugal) (pt-PT)"
+    ${NSD_CB_AddString} $LanguageComboBox "Română (ro)"
+    ${NSD_CB_AddString} $LanguageComboBox "Русский (ru)"
+    ${NSD_CB_AddString} $LanguageComboBox "Slovenčina (sk)"
+    ${NSD_CB_AddString} $LanguageComboBox "Slovenščina (sl)"
+    ${NSD_CB_AddString} $LanguageComboBox "Svenska (sv-SE)"
+    ${NSD_CB_AddString} $LanguageComboBox "Türkçe (tr)"
+    ${NSD_CB_AddString} $LanguageComboBox "Українська (uk)"
+    ${NSD_CB_AddString} $LanguageComboBox "Tiếng Việt (vi)"
+    ${NSD_CB_AddString} $LanguageComboBox "中文 (简体) (zh-CN)"
+    ${NSD_CB_AddString} $LanguageComboBox "中文 (繁體) (zh-TW)"
+
+    ${NSD_CB_SelectString} $LanguageComboBox "System Default (nil)"
+
+    nsDialogs::Show
+FunctionEnd
+
+Function LanguagePageLeave
+    ${NSD_GetText} $LanguageComboBox $0
+    Push $0
+    Call ExtractLanguageIdentifier
+    Pop $LanguageValue
+
+    ${If} $LanguageValue == ""
+        StrCpy $LanguageValue "nil"
+    ${EndIf}
+FunctionEnd
+
+Function ExtractLanguageIdentifier
+    Exch $0
+    Push $1
+    Push $2
+    Push $3
+
+    StrCpy $1 0
+    ${Do}
+        StrCpy $2 $0 1 $1
+        ${If} $2 == "("
+            IntOp $1 $1 + 1
+            ${Break}
+        ${EndIf}
+        IntOp $1 $1 + 1
+    ${LoopWhile} $1 < ${NSIS_MAX_STRLEN}
+
+    StrCpy $2 0
+    StrLen $3 $0
+    ${Do}
+        IntOp $3 $3 - 1
+        StrCpy $2 $0 1 $3
+        ${If} $2 == ")"
+            ${Break}
+        ${EndIf}
+    ${LoopWhile} $3 > 0
+
+    IntOp $3 $3 - $1
+    StrCpy $0 $0 $3 $1
+
+    Pop $3
+    Pop $2
+    Pop $1
+    Exch $0
+FunctionEnd
 
 ; ---------------------------------------------------------------------------
 ; Install pages
@@ -105,6 +211,7 @@ Section "Froststrap"
     ; Froststrap app registry keys (used by the app to locate itself)
     WriteRegStr HKCU "Software\Froststrap" "InstallLocation" "$INSTDIR"
     WriteRegStr HKCU "Software\Froststrap" "AppPath" "$INSTDIR\${APP_EXE}"
+    WriteRegStr HKCU "Software\Froststrap" "Language" "$LanguageValue"
 
     ; Programs & Features / winget uninstall entry
     WriteRegStr HKCU "${APP_UNINSTALL_KEY}" "DisplayName"      "${APP_NAME}"
@@ -157,6 +264,7 @@ Section "Uninstall"
     DeleteRegKey   HKCU "${APP_UNINSTALL_KEY}"
     DeleteRegValue HKCU "Software\Froststrap" "InstallLocation"
     DeleteRegValue HKCU "Software\Froststrap" "AppPath"
+    DeleteRegValue HKCU "Software\Froststrap" "Language"
     DeleteRegKey /IfEmpty HKCU "Software\Froststrap"
 
     ; Step 3: remove the install directory.

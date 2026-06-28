@@ -430,6 +430,29 @@ public partial class App : Application
                 Settings.Save();
             }
 
+            if (OperatingSystem.IsWindows() && Settings.Prop.Locale == "nil")
+            {
+                try
+                {
+                    using var key = Registry.CurrentUser.OpenSubKey("Software\\Froststrap");
+                    if (key != null)
+                    {
+                        string? lang = key.GetValue("Language") as string;
+                        if (!string.IsNullOrEmpty(lang))
+                        {
+                            Settings.Prop.Locale = lang;
+                            Locale.Set(lang);
+                            Settings.Save();
+                            key.DeleteValue("Language", false);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.WriteLine("App::OnFrameworkInitializationCompleted", $"Failed to read installer language: {ex.Message}");
+                }
+            }
+
             AvaloniaWindow.ApplyTheme();
             Locale.Set(Settings.Prop.Locale);
 
