@@ -4406,6 +4406,16 @@ Windows Registry Editor Version 5.00
                     }
                 }
 
+                if (string.IsNullOrEmpty(packageName) && OperatingSystem.IsMacOS())
+                {
+                    string zipName = IsStudioLaunch ? "RobloxStudioApp.zip" : "RobloxPlayer.zip";
+                    if (PackageDirectoryMap.TryGetValue(zipName, out string? dir))
+                    {
+                        packageName = zipName;
+                        packageDir = dir;
+                    }
+                }
+
                 if (string.IsNullOrEmpty(packageName) || string.IsNullOrEmpty(packageDir))
                 {
                     string versionFileLocation = Path.Combine(_latestVersionDirectory, actualFile);
