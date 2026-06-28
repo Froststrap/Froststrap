@@ -63,8 +63,8 @@
             </controls:CardExpander>
 
             <controls:OptionControl
-                Description="{x:Static resources:Strings.Settings.PromptForAppUpdates_Description}"
-                Header="{x:Static resources:Strings.Settings.PromptForAppUpdates_Title}"
+                Description="{x:Static resources:Strings.Settings_PromptForAppUpdates_Description}"
+                Header="{x:Static resources:Strings.Settings_PromptForAppUpdates_Title}"
                 IsVisible="{x:Static gv:GlobalViewModel.IsLinux}">
                 <ToggleSwitch IsChecked="{Binding PromptForAppUpdates, Mode=TwoWay}"/>
             </controls:OptionControl>
