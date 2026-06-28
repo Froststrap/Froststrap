@@ -2987,4 +2987,52 @@ Would you like to switch your preferred channel to {0}?</value>
   <data name="Menu.UnsavedChangesPrompt" xml:space="preserve">
     <value>You have unsaved changes. Do you want to save before closing?</value>
   </data>
+  <data name="Menu_Mods_CannotImportSubfolder" xml:space="preserve">
+    <value>Cannot import a subfolder as a mod. Please drag the mod folder directly.</value>
+  </data>
+  <data name="Menu_Mods_InvalidModFolderName" xml:space="preserve">
+    <value>Invalid mod folder name.</value>
+  </data>
+  <data name="Menu_Mods_AlreadyImported" xml:space="preserve">
+    <value>Mod '{0}' is already imported.</value>
+  </data>  
+  <data name="Menu.Mods.DefaultNewModName" xml:space="preserve">
+    <value>New Mod</value>
+  </data>
+  <data name="Menu.Mods.ExportSelectMod" xml:space="preserve">
+    <value>Please select a mod to export.</value>
+  </data>
+  <data name="Menu.Mods.ExportFolderMissing" xml:space="preserve">
+    <value>Mod folder '{0}' does not exist.</value>
+  </data>
+  <data name="Menu.Mods.ExportFailed" xml:space="preserve">
+    <value>Failed to export mod: {0}</value>
+  </data>
+  <data name="Menu.Mods.ExportSuccess" xml:space="preserve">
+    <value>Mod '{0}' exported successfully!</value>
+  </data>
+  <data name="Menu.Mods.DeleteFailed" xml:space="preserve">
+    <value>Failed to delete mod: {0}</value>
+  </data>
+  <data name="Menu.Mods.RenameFailed" xml:space="preserve">
+    <value>Failed to rename mod: {0}</value>
+  </data>
+  <data name="Menu.Mods.ZipExtractFailed" xml:space="preserve">
+    <value>Failed to extract ZIP: {0}</value>
+  </data>
+  <data name="Menu.Mods.PreviewFont" xml:space="preserve">
+    <value>Preview Font</value>
+  </data>
+  <data name="Sober.FlatpakInstallFailed" xml:space="preserve">
+    <value>Failed to install {0} via Flatpak.{1}</value>
+  </data>
+  <data name="Update.NoPackageAvailable" xml:space="preserve">
+    <value>No update package available for {0}. Please download manually from GitHub.</value>
+  </data>
+  <data name="Sober.LaunchFailed" xml:space="preserve">
+    <value>Failed to launch Sober. Make sure Flatpak and {0} are installed.{1}</value>
+  </data>
+  <data name="Update.Available" xml:space="preserve">
+    <value>A new {0} version {1} is available.{2}</value>
+  </data>
 </root>

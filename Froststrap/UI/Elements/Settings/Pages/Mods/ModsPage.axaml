@@ -164,7 +164,7 @@
                                                  Content="{x:Static resources:Strings.Common_Export}" Icon="ArrowExport" Margin="0,4" />
 
                             <controls:IconButton Icon="Text"
-                                                 Content="Preview Font"
+                                                 Content="{x:Static resources:Strings.Menu_Mods_PreviewFont}"
                                                  Command="{Binding TogglePreviewCommand}"
                                                  HorizontalAlignment="Stretch"
                                                  Margin="0,4"

@@ -103,7 +103,7 @@ def main():
     
     unused = []
     for entry in existing:
-        if not entry in found and not "Enums." in entry:
+        if entry not in found and not "Enums." in entry and "CustomTheme.Error" not in entry:
             unused.append(entry)
             print(entry)
     

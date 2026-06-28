@@ -1454,8 +1454,9 @@ namespace Froststrap
             {
                 App.Logger.WriteLine(LOG_IDENT, "Failed to launch Sober via flatpak!");
                 App.Logger.WriteException(LOG_IDENT, ex);
+                string detailsPart = string.IsNullOrWhiteSpace(ex.Message) ? "" : $"\n\n{ex.Message}";
                 await Frontend.ShowMessageBox(
-                    $"Failed to launch Sober. Make sure Flatpak and {SoberFlatpakId} are installed.\n\n{ex.Message}",
+                    string.Format(Strings.Sober_LaunchFailed, SoberFlatpakId, detailsPart),
                     MessageBoxImage.Error
                 );
                 App.Terminate(ErrorCode.ERROR_CANCELLED);
@@ -1905,7 +1906,7 @@ namespace Froststrap
                 {
                     App.Logger.WriteLine(LOG_IDENT, "No suitable asset found for this platform");
                     await Frontend.ShowMessageBox(
-                        $"No update package available for {GetPlatformName()}. Please download manually from GitHub.",
+                        string.Format(Strings.Update_NoPackageAvailable, GetPlatformName()),
                         MessageBoxImage.Warning
                     );
                     Utilities.ShellExecute(App.ProjectDownloadLink);
@@ -1917,8 +1918,9 @@ namespace Froststrap
                 if (!App.LaunchSettings.QuietFlag.Active)
                 {
                     string releaseType = releaseInfo.Prerelease ? "pre-release" : "stable";
+                    string newlinePart = "\n\nWould you like to update now?";
                     var result = await Frontend.ShowMessageBox(
-                        $"A new {releaseType} version {releaseVer} is available.\n\nWould you like to update now?",
+                        string.Format(Strings.Update_Available, releaseType, releaseVer, newlinePart),
                         MessageBoxImage.Question,
                         MessageBoxButton.YesNo
                     );
@@ -2763,10 +2765,9 @@ exit";
             if (installProcess.ExitCode != 0)
             {
                 string details = string.Join('\n', errorLines.TakeLast(8));
-                await Frontend.ShowMessageBox(
-                    $"Failed to install {SoberFlatpakId} via Flatpak.{(string.IsNullOrWhiteSpace(details) ? string.Empty : $"\n\n{details}")}",
-                    MessageBoxImage.Error
-                );
+                string detailsPart = string.IsNullOrWhiteSpace(details) ? "" : $"\n\n{details}";
+                string message = string.Format(Strings.Sober_FlatpakInstallFailed, SoberFlatpakId, detailsPart);
+                await Frontend.ShowMessageBox(message, MessageBoxImage.Error);
                 App.Terminate(ErrorCode.ERROR_CANCELLED);
                 return false;
             }

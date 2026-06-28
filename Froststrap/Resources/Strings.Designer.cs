@@ -7040,6 +7040,24 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to New Mod.
+        /// </summary>
+        public static string Menu_Mods_DefaultNewModName {
+            get {
+                return ResourceManager.GetString("Menu.Mods.DefaultNewModName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to delete mod: {0}.
+        /// </summary>
+        public static string Menu_Mods_DeleteFailed {
+            get {
+                return ResourceManager.GetString("Menu.Mods.DeleteFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delete &apos;{0}&apos; permanently?.
         /// </summary>
         public static string Menu_Mods_DeleteMod {
@@ -7063,6 +7081,42 @@ namespace Froststrap.Resources {
         public static string Menu_Mods_DragOverlay {
             get {
                 return ResourceManager.GetString("Menu.Mods.DragOverlay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to export mod: {0}.
+        /// </summary>
+        public static string Menu_Mods_ExportFailed {
+            get {
+                return ResourceManager.GetString("Menu.Mods.ExportFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mod folder &apos;{0}&apos; does not exist..
+        /// </summary>
+        public static string Menu_Mods_ExportFolderMissing {
+            get {
+                return ResourceManager.GetString("Menu.Mods.ExportFolderMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please select a mod to export..
+        /// </summary>
+        public static string Menu_Mods_ExportSelectMod {
+            get {
+                return ResourceManager.GetString("Menu.Mods.ExportSelectMod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mod &apos;{0}&apos; exported successfully!.
+        /// </summary>
+        public static string Menu_Mods_ExportSuccess {
+            get {
+                return ResourceManager.GetString("Menu.Mods.ExportSuccess", resourceCulture);
             }
         }
         
@@ -7221,6 +7275,24 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Preview Font.
+        /// </summary>
+        public static string Menu_Mods_PreviewFont {
+            get {
+                return ResourceManager.GetString("Menu.Mods.PreviewFont", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to rename mod: {0}.
+        /// </summary>
+        public static string Menu_Mods_RenameFailed {
+            get {
+                return ResourceManager.GetString("Menu.Mods.RenameFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Selected Mod Action.
         /// </summary>
         public static string Menu_Mods_SelectedModAction {
@@ -7244,6 +7316,15 @@ namespace Froststrap.Resources {
         public static string Menu_Mods_UnsupportedFile {
             get {
                 return ResourceManager.GetString("Menu.Mods.UnsupportedFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to extract ZIP: {0}.
+        /// </summary>
+        public static string Menu_Mods_ZipExtractFailed {
+            get {
+                return ResourceManager.GetString("Menu.Mods.ZipExtractFailed", resourceCulture);
             }
         }
         
@@ -8468,6 +8549,24 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to install {0} via Flatpak.{1}.
+        /// </summary>
+        public static string Sober_FlatpakInstallFailed {
+            get {
+                return ResourceManager.GetString("Sober.FlatpakInstallFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to launch Sober. Make sure Flatpak and {0} are installed.{1}.
+        /// </summary>
+        public static string Sober_LaunchFailed {
+            get {
+                return ResourceManager.GetString("Sober.LaunchFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to They&apos;ll be kept where Froststrap was installed, and will automatically be restored on a reinstall..
         /// </summary>
         public static string Uninstaller_KeepData_Description {
@@ -8515,6 +8614,24 @@ namespace Froststrap.Resources {
         public static string Uninstaller_Uninstall {
             get {
                 return ResourceManager.GetString("Uninstaller.Uninstall", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A new {0} version {1} is available.{2}.
+        /// </summary>
+        public static string Update_Available {
+            get {
+                return ResourceManager.GetString("Update.Available", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No update package available for {0}. Please download manually from GitHub..
+        /// </summary>
+        public static string Update_NoPackageAvailable {
+            get {
+                return ResourceManager.GetString("Update.NoPackageAvailable", resourceCulture);
             }
         }
     }

@@ -203,7 +203,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
         public void AddMod()
         {
             string modsFolder = Paths.Modifications;
-            string baseName = "New Mod";
+            string baseName = Strings.Menu_Mods_DefaultNewModName;
             string folderName = baseName;
             int counter = 1;
 
@@ -312,7 +312,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             catch (Exception ex)
             {
                 App.Logger.WriteLine("ModsViewModel::Delete", ex.Message);
-                _ = Frontend.ShowMessageBox($"Failed to delete mod: {ex.Message}", MessageBoxImage.Error, MessageBoxButton.OK);
+                await Frontend.ShowMessageBox(string.Format(Strings.Menu_Mods_DeleteFailed, ex.Message), MessageBoxImage.Error, MessageBoxButton.OK);
             }
         }
 
@@ -355,7 +355,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             catch (Exception ex)
             {
                 App.Logger.WriteLine("ModsViewModel::RenameMod", ex.Message);
-                _ = Frontend.ShowMessageBox($"Failed to rename mod: {ex.Message}", MessageBoxImage.Error, MessageBoxButton.OK);
+                _ = Frontend.ShowMessageBox(string.Format(Strings.Menu_Mods_RenameFailed, ex.Message), MessageBoxImage.Error, MessageBoxButton.OK);
             }
         }
 
@@ -434,7 +434,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             catch (Exception ex)
             {
                 App.Logger.WriteLine("ModsViewModel::ImportZip", ex.Message);
-                await Frontend.ShowMessageBox($"Failed to extract ZIP: {ex.Message}", MessageBoxImage.Error, MessageBoxButton.OK);
+                await Frontend.ShowMessageBox(string.Format(Strings.Menu_Mods_ZipExtractFailed, ex.Message), MessageBoxImage.Error, MessageBoxButton.OK);
             }
             finally
             {
@@ -509,19 +509,19 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
                 if (segments.Length != 1)
                 {
-                    await Frontend.ShowMessageBox("Cannot import a subfolder as a mod. Please drag the mod folder directly.", MessageBoxImage.Warning);
+                    await Frontend.ShowMessageBox(Strings.Menu_Mods_CannotImportSubfolder, MessageBoxImage.Warning);
                     return;
                 }
 
                 if (string.IsNullOrWhiteSpace(folderName))
                 {
-                    await Frontend.ShowMessageBox("Invalid mod folder name.", MessageBoxImage.Error);
+                    await Frontend.ShowMessageBox(Strings.Menu_Mods_InvalidModFolderName, MessageBoxImage.Error);
                     return;
                 }
 
                 if (Modifications.Any(m => m.FolderName.Equals(folderName, StringComparison.OrdinalIgnoreCase)))
                 {
-                    await Frontend.ShowMessageBox($"Mod '{folderName}' is already imported.", MessageBoxImage.Information);
+                    await Frontend.ShowMessageBox(string.Format(Strings.Menu_Mods_AlreadyImported, folderName), MessageBoxImage.Information);
                     return;
                 }
 
@@ -537,7 +537,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                 UpdatePriorities();
                 OnPropertyChanged(nameof(HasMods));
                 CheckFontPreviewAvailability(newFolderMod);
-                await Frontend.ShowMessageBox($"Mod '{folderName}' imported successfully.", MessageBoxImage.Information);
+                await Frontend.ShowMessageBox(string.Format(Strings.Menu_Mods_Imported, folderName), MessageBoxImage.Information);
                 return;
             }
 
@@ -586,14 +586,14 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
         {
             if (mod == null || string.IsNullOrWhiteSpace(mod.FolderName))
             {
-                await Frontend.ShowMessageBox("Please select a mod to export.", MessageBoxImage.Warning);
+                await Frontend.ShowMessageBox(Strings.Menu_Mods_ExportSelectMod, MessageBoxImage.Warning);
                 return;
             }
 
             string modPath = Path.Combine(Paths.Modifications, mod.FolderName);
             if (!Directory.Exists(modPath))
             {
-                await Frontend.ShowMessageBox($"Mod folder '{mod.FolderName}' does not exist.", MessageBoxImage.Error);
+                await Frontend.ShowMessageBox(string.Format(Strings.Menu_Mods_ExportFolderMissing, mod.FolderName), MessageBoxImage.Error);
                 return;
             }
 
@@ -631,12 +631,12 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                     System.IO.Compression.ZipFile.CreateFromDirectory(modPath, file.Path.LocalPath);
                 });
 
-                await Frontend.ShowMessageBox($"Mod '{mod.FolderName}' exported successfully!", MessageBoxImage.Information);
+                await Frontend.ShowMessageBox(string.Format(Strings.Menu_Mods_ExportSuccess, mod.FolderName), MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
                 App.Logger.WriteLine("ModsViewModel::ExportMod", ex.Message);
-                await Frontend.ShowMessageBox($"Failed to export mod: {ex.Message}", MessageBoxImage.Error);
+                await Frontend.ShowMessageBox(string.Format(Strings.Menu_Mods_ExportFailed, ex.Message), MessageBoxImage.Error);
             }
         }
 
