@@ -1,6 +1,7 @@
 ﻿using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.Enums.GBSPresets;
+using System.Runtime.InteropServices;
 using System.Windows.Input;
 using System.Xml.Linq;
 
@@ -33,7 +34,17 @@ namespace Froststrap.UI.ViewModels.Settings
             await _dialogService.OpenGlobalSettingsEditorAsync();
         });
 
-        public static ICommand OpenRobloxFolderCommand => new RelayCommand(() => Utilities.ShellExecute(Paths.Roblox, true));
+        public static ICommand OpenRobloxFolderCommand => new RelayCommand(() =>
+        {
+            string targetPath;
+
+            if (OperatingSystem.IsMacOS())
+                targetPath = Path.Combine(Paths.UserProfile, "Library", "Roblox");
+            else
+                targetPath = Paths.Roblox;
+
+            Utilities.ShellExecute(targetPath, true);
+        });
         public ICommand ExportCommand => new RelayCommand(ExportSettings);
         public ICommand ImportCommand => new RelayCommand(ImportSettings);
 
