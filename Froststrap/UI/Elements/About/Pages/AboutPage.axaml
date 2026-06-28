@@ -120,6 +120,7 @@
                     <StackPanel>
                         <controls:MarkdownTextBlock MarkdownText="[Efaz](https://github.com/EfazDev)" />
                         <controls:MarkdownTextBlock MarkdownText="[Valra](https://github.com/NotValra)" />
+                        <controls:MarkdownTextBlock MarkdownText="[Bloxxy](https://github.com/ItzBloxxy)" />
                         <controls:MarkdownTextBlock MarkdownText="[jokoyanto987](https://github.com/jokoyanto987)" />
                         <controls:MarkdownTextBlock MarkdownText="[Scroom](https://discord.com/users/1254472513199673347)" />
                         <controls:MarkdownTextBlock MarkdownText="[MattDinio](https://discord.com/users/1353528667245903892)" />
