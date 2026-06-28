@@ -483,14 +483,61 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             }
         }
 
+        private static bool IsPathInside(string parentPath, string childPath)
+        {
+            var parent = Path.GetFullPath(parentPath).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            var child = Path.GetFullPath(childPath).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            return child.StartsWith(parent, StringComparison.OrdinalIgnoreCase);
+        }
+
         private async Task ImportModFromSource(string sourcePath, bool isZip, string? baseNameOverride = null)
         {
             string? modRoot = ValidateModStructure(sourcePath);
             if (modRoot == null)
             {
-                await Frontend.ShowMessageBox(
-                    Strings.Menu_Mods_InvalidModFolders,
-                    MessageBoxImage.Error, MessageBoxButton.OK);
+                await Frontend.ShowMessageBox(Strings.Menu_Mods_InvalidModFolders, MessageBoxImage.Error, MessageBoxButton.OK);
+                return;
+            }
+
+            string modsFolder = Paths.Modifications;
+
+            if (IsPathInside(modsFolder, modRoot))
+            {
+                string relative = Path.GetRelativePath(modsFolder, modRoot);
+                string[] segments = relative.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+                string folderName = segments[0];
+
+                if (segments.Length != 1)
+                {
+                    await Frontend.ShowMessageBox("Cannot import a subfolder as a mod. Please drag the mod folder directly.", MessageBoxImage.Warning);
+                    return;
+                }
+
+                if (string.IsNullOrWhiteSpace(folderName))
+                {
+                    await Frontend.ShowMessageBox("Invalid mod folder name.", MessageBoxImage.Error);
+                    return;
+                }
+
+                if (Modifications.Any(m => m.FolderName.Equals(folderName, StringComparison.OrdinalIgnoreCase)))
+                {
+                    await Frontend.ShowMessageBox($"Mod '{folderName}' is already imported.", MessageBoxImage.Information);
+                    return;
+                }
+
+                var newFolderMod = new ModConfig
+                {
+                    FolderName = folderName,
+                    Target = ModTarget.Both,
+                    Enabled = true,
+                    Priority = Modifications.Count > 0 ? Modifications.Max(x => x.Priority) + 1 : 0
+                };
+
+                Modifications.Add(newFolderMod);
+                UpdatePriorities();
+                OnPropertyChanged(nameof(HasMods));
+                CheckFontPreviewAvailability(newFolderMod);
+                await Frontend.ShowMessageBox($"Mod '{folderName}' imported successfully.", MessageBoxImage.Information);
                 return;
             }
 
@@ -506,7 +553,6 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             if (string.IsNullOrWhiteSpace(safeName))
                 safeName = "ImportedMod";
 
-            string modsFolder = Paths.Modifications;
             string newFolderName = safeName;
             int counter = 1;
             while (Directory.Exists(Path.Combine(modsFolder, newFolderName)) ||
