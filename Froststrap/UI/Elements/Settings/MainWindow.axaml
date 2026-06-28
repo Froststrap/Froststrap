@@ -27,7 +27,7 @@
             <controls:TitleBar
                 Title="Froststrap Settings"
                 Grid.Row="0"
-                Icon="avares://Froststrap/Froststrap.ico">
+                Icon="avares://Froststrap/Froststrap.png">
 
                 <elements:SearchBar Width="400" DataContext="{Binding SearchBar}" />
 
@@ -46,25 +46,25 @@
             <ui:NavigationView.MenuItems>
                 <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_Integrations_Title}" Tag="integrations">
                     <ui:NavigationViewItem.IconSource>
-                        <ic:SymbolIconSource Symbol="Link" />
+                        <ic:SymbolIconSource Foreground="{DynamicResource TextFillColorPrimaryBrush}" Symbol="Link" />
                     </ui:NavigationViewItem.IconSource>
                 </ui:NavigationViewItem>
 
                 <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_Behaviour_Title}" Tag="behaviour">
                     <ui:NavigationViewItem.IconSource>
-                        <ic:SymbolIconSource Symbol="PlaySettings" />
+                        <ic:SymbolIconSource Foreground="{DynamicResource TextFillColorPrimaryBrush}" Symbol="PlaySettings" />
                     </ui:NavigationViewItem.IconSource>
                 </ui:NavigationViewItem>
 
                 <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_QuickPlay_Title}" Tag="quickplay">
                     <ui:NavigationViewItem.IconSource>
-                        <ic:SymbolIconSource Symbol="Replay" />
+                        <ic:SymbolIconSource Foreground="{DynamicResource TextFillColorPrimaryBrush}" Symbol="Replay" />
                     </ui:NavigationViewItem.IconSource>
                 </ui:NavigationViewItem>
 
                 <ui:NavigationViewItem Content="{x:Static resources:Strings.Common_Deployment}" Tag="channels">
                     <ui:NavigationViewItem.IconSource>
-                        <ic:SymbolIconSource Symbol="CloudArrowUp" />
+                        <ic:SymbolIconSource Foreground="{DynamicResource TextFillColorPrimaryBrush}" Symbol="CloudArrowUp" />
                     </ui:NavigationViewItem.IconSource>
                 </ui:NavigationViewItem>
 
@@ -72,13 +72,13 @@
 
                 <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_PresetMods_Title}" Tag="mods">
                     <ui:NavigationViewItem.IconSource>
-                        <ic:SymbolIconSource Symbol="PuzzlePiece" />
+                        <ic:SymbolIconSource Foreground="{DynamicResource TextFillColorPrimaryBrush}" Symbol="PuzzlePiece" />
                     </ui:NavigationViewItem.IconSource>
                 </ui:NavigationViewItem>
 
                 <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_Appearance_Title}" Tag="appearance">
                     <ui:NavigationViewItem.IconSource>
-                        <ic:SymbolIconSource Symbol="Color" />
+                        <ic:SymbolIconSource Foreground="{DynamicResource TextFillColorPrimaryBrush}" Symbol="Color" />
                     </ui:NavigationViewItem.IconSource>
                 </ui:NavigationViewItem>
 
@@ -86,19 +86,19 @@
 
                 <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_FastFlags_Title}" Tag="fastflags">
                     <ui:NavigationViewItem.IconSource>
-                        <ic:SymbolIconSource Symbol="Flag" />
+                        <ic:SymbolIconSource Foreground="{DynamicResource TextFillColorPrimaryBrush}" Symbol="Flag" />
                     </ui:NavigationViewItem.IconSource>
                 </ui:NavigationViewItem>
 
                 <ui:NavigationViewItem Name="gbs" Content="{x:Static resources:Strings.Menu_GlobalSettings_Title}" Tag="globalsettings">
                     <ui:NavigationViewItem.IconSource>
-                        <ic:SymbolIconSource Symbol="EditSettings" />
+                        <ic:SymbolIconSource Foreground="{DynamicResource TextFillColorPrimaryBrush}" Symbol="EditSettings" />
                     </ui:NavigationViewItem.IconSource>
                 </ui:NavigationViewItem>
 
                 <ui:NavigationViewItem Name="linux" IsVisible="{x:Static gv:GlobalViewModel.IsLinux}" Content="{x:Static resources:Strings.Menu_LinuxSettings_Title}" Tag="linuxsettings">
                     <ui:NavigationViewItem.IconSource>
-                        <ic:SymbolIconSource Symbol="Settings" />
+                        <ic:SymbolIconSource Foreground="{DynamicResource TextFillColorPrimaryBrush}" Symbol="Settings" />
                     </ui:NavigationViewItem.IconSource>
                 </ui:NavigationViewItem>
 
@@ -106,19 +106,19 @@
 
                 <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_RegionSelector_Title}" Tag="regionselector">
                     <ui:NavigationViewItem.IconSource>
-                        <ic:SymbolIconSource Symbol="Earth" />
+                        <ic:SymbolIconSource Foreground="{DynamicResource TextFillColorPrimaryBrush}" Symbol="Earth" />
                     </ui:NavigationViewItem.IconSource>
                 </ui:NavigationViewItem>
 
                 <ui:NavigationViewItem Content="{x:Static resources:Strings.Common_Shortcuts}" Tag="shortcuts">
                     <ui:NavigationViewItem.IconSource>
-                        <ic:SymbolIconSource Symbol="Link" />
+                        <ic:SymbolIconSource Foreground="{DynamicResource TextFillColorPrimaryBrush}" Symbol="Link" />
                     </ui:NavigationViewItem.IconSource>
                 </ui:NavigationViewItem>
 
                 <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_About_Title}" Tag="about">
                     <ui:NavigationViewItem.IconSource>
-                        <ic:SymbolIconSource Symbol="Info" />
+                        <ic:SymbolIconSource Foreground="{DynamicResource TextFillColorPrimaryBrush}" Symbol="Info" />
                     </ui:NavigationViewItem.IconSource>
                 </ui:NavigationViewItem>
             </ui:NavigationView.MenuItems>

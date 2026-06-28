@@ -33,6 +33,7 @@ lipo -create \
 
 # Setup App Bundle
 cp ./macos/Info.plist "./$BUILD_DIR/Froststrap.app/Contents/Info.plist"
+cp ./Froststrap/Froststrap.icns "./$BUILD_DIR/Froststrap.app/Contents/Resources/Froststrap.icns"
 chmod +x "./$BUILD_DIR/Froststrap.app/Contents/MacOS/Froststrap"
 
 # Ad-hoc sign
