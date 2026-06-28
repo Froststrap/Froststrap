@@ -103,7 +103,7 @@ namespace Froststrap
 
         public IBootstrapperDialog? Dialog = null;
         public bool IsStudioLaunch => _launchMode != LaunchMode.Player;
-        public string MutexName { get; set; } = "c-Bootstrapper";
+        public string MutexName { get; set; } = "Froststrap-Bootstrapper";
 
         public bool QuitIfMutexExists { get; set; } = false;
 
@@ -139,6 +139,22 @@ namespace Froststrap
 
         private async Task SetupPackageDictionaries()
         {
+            if (OperatingSystem.IsMacOS())
+            {
+                PackageDirectoryMap = new Dictionary<string, string>
+                {
+                    { "RobloxPlayer.zip", "" },
+                    { "RobloxStudioApp.zip", "" }
+                };
+                return;
+            }
+
+            if (OperatingSystem.IsLinux() && !IsStudioLaunch)
+            {
+                PackageDirectoryMap = new Dictionary<string, string>();
+                return;
+            }
+
             await App.RemoteData.WaitUntilDataFetched();
 
             var localData = App.RemoteData.Prop.PackageMaps[IsStudioLaunch ? "studio" : "player"];
@@ -2290,7 +2306,6 @@ exit";
             {
                 try
                 {
-                    App.Logger.WriteLine(LOG_IDENT, $"Terminating process {process.ProcessName} ({process.Id})");
                     process.Kill();
                 }
                 catch (Exception ex)
@@ -2299,28 +2314,6 @@ exit";
                     App.Logger.WriteException(LOG_IDENT, ex);
                 }
             }
-
-            string studioProcessName = OperatingSystem.IsMacOS() ? "RobloxStudio" : "RobloxStudioBeta";
-            var studioProcesses = Process.GetProcessesByName(studioProcessName);
-
-            if (studioProcesses.Length == 0)
-                return;
-
-            App.Logger.WriteLine(LOG_IDENT, "Waiting for Roblox Studio processes to exit...");
-            SetStatus("Waiting for Roblox Studio...");
-
-            while (Process.GetProcessesByName(studioProcessName).Length > 0)
-            {
-                Thread.Sleep(1000);
-
-                if (_cancelTokenSource.IsCancellationRequested)
-                {
-                    App.Logger.WriteLine(LOG_IDENT, "Studio wait cancelled by user.");
-                    return;
-                }
-            }
-
-            App.Logger.WriteLine(LOG_IDENT, "All Roblox Studio processes closed.");
         }
 
         private async Task UpgradeRoblox()
