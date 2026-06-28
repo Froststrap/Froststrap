@@ -4047,6 +4047,11 @@ Windows Registry Editor Version 5.00
                 ? Path.Combine(_latestVersionDirectory, AppData.ExecutableName, "Contents", "Resources")
                 : _latestVersionDirectory;
 
+            if (OperatingSystem.IsMacOS())
+            {
+                EnsureMacResourcesBackup(contentDirectory, _latestVersionGuid);
+            }
+
             var currentModManifest = new Dictionary<string, ModFileEntry>(StringComparer.OrdinalIgnoreCase);
 
             string modFontFamiliesFolder = Path.Combine(Paths.Modifications, "content", "fonts", "families");
@@ -4242,9 +4247,7 @@ Windows Registry Editor Version 5.00
             }
 
             foreach (string relPath in filesToDelete)
-            {
                 allModFiles.Remove(relPath);
-            }
 
             foreach (string relPath in filesToDelete)
             {
@@ -4383,14 +4386,25 @@ Windows Registry Editor Version 5.00
                 string actualFile = fileLocation;
                 string? fileNameWithoutExt = Path.GetFileNameWithoutExtension(fileLocation);
 
-                if (fileNameWithoutExt != null && fileNameWithoutExt.EndsWith("_Delete"))
-                {
-                    if (OperatingSystem.IsLinux() && !IsStudioLaunch)
-                        continue;
+                if (fileNameWithoutExt != null && fileNameWithoutExt.EndsWith("_Delete") && OperatingSystem.IsLinux() && !IsStudioLaunch)
+                    continue;
 
-                    string directory = Path.GetDirectoryName(fileLocation) ?? "";
-                    string originalName = fileNameWithoutExt[..^7];
-                    actualFile = Path.Combine(directory, originalName + Path.GetExtension(fileLocation));
+                if (OperatingSystem.IsMacOS())
+                {
+                    string backupDir = GetResourcesBackupPath(_latestVersionGuid);
+                    string sourceFile = Path.Combine(backupDir, actualFile);
+                    string destFile = Path.Combine(contentDirectory, actualFile);
+                    if (File.Exists(sourceFile))
+                    {
+                        Directory.CreateDirectory(Path.GetDirectoryName(destFile)!);
+                        File.Copy(sourceFile, destFile, true);
+                        App.Logger.WriteLine(LOG_IDENT, $"Restored '{actualFile}' from backup");
+                    }
+                    else
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"Backup file not found: {actualFile}");
+                    }
+                    continue;
                 }
 
                 string? packageName = null;
@@ -4403,16 +4417,6 @@ Windows Registry Editor Version 5.00
                         packageName = kvp.Key;
                         packageDir = kvp.Value;
                         break;
-                    }
-                }
-
-                if (string.IsNullOrEmpty(packageName) && OperatingSystem.IsMacOS())
-                {
-                    string zipName = IsStudioLaunch ? "RobloxStudioApp.zip" : "RobloxPlayer.zip";
-                    if (PackageDirectoryMap.TryGetValue(zipName, out string? dir))
-                    {
-                        packageName = zipName;
-                        packageDir = dir;
                     }
                 }
 
@@ -4458,6 +4462,40 @@ Windows Registry Editor Version 5.00
 
             App.Logger.WriteLine(LOG_IDENT, "Finished checking file mods");
             return success;
+        }
+
+        private static string GetResourcesBackupPath(string versionGuid)
+        {
+            return Path.Combine(Paths.Base, "ModBackup", versionGuid);
+        }
+
+        private static void CopyDirectory(string sourceDir, string destDir, bool overwrite = true)
+        {
+            Directory.CreateDirectory(destDir);
+            foreach (string file in Directory.GetFiles(sourceDir, "*", SearchOption.AllDirectories))
+            {
+                string relative = Path.GetRelativePath(sourceDir, file);
+                string dest = Path.Combine(destDir, relative);
+                Directory.CreateDirectory(Path.GetDirectoryName(dest)!);
+                File.Copy(file, dest, overwrite);
+            }
+        }
+
+        private static void EnsureMacResourcesBackup(string resourcesDir, string versionGuid)
+        {
+            const string LOG_IDENT = "Bootstrapper::EnsureMacResourcesBackup";
+            string backupDir = GetResourcesBackupPath(versionGuid);
+
+            if (Directory.Exists(backupDir))
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Resources backup for version {versionGuid} already exists.");
+                return;
+            }
+
+            App.Logger.WriteLine(LOG_IDENT, $"Creating Resources backup for version {versionGuid}...");
+            Directory.CreateDirectory(backupDir);
+            CopyDirectory(resourcesDir, backupDir, true);
+            App.Logger.WriteLine(LOG_IDENT, "Resources backup created.");
         }
 
         private static string GetMacArchPath()
