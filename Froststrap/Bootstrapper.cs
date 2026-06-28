@@ -2379,6 +2379,23 @@ exit";
 
             Directory.CreateDirectory(_latestVersionDirectory);
 
+            if (OperatingSystem.IsMacOS())
+            {
+                string backupDir = GetResourcesBackupPath(_latestVersionGuid);
+                if (Directory.Exists(backupDir))
+                {
+                    try
+                    {
+                        Directory.Delete(backupDir, true);
+                        App.Logger.WriteLine(LOG_IDENT, $"Deleted existing mod backup for {_latestVersionGuid}");
+                    }
+                    catch (Exception ex)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"Failed to delete mod backup: {ex.Message}");
+                    }
+                }
+            }
+
             var packages = _versionPackageManifest
                     .OrderByDescending(p => p.PackedSize)
                     .ToList();
