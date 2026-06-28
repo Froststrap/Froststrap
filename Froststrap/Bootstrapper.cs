@@ -968,8 +968,6 @@ namespace Froststrap
 
                     try
                     {
-                        App.FastFlags.LoadProfile(profileName, clearFlags: true);
-
                         string profilesDirectory = Paths.SavedFlagProfiles;
                         string profilePath = Path.Combine(profilesDirectory, profileName);
 
