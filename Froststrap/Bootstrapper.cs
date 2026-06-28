@@ -4437,7 +4437,7 @@ Windows Registry Editor Version 5.00
                 App.Logger.WriteLine(LOG_IDENT, $"Restoring '{internalZipPath}' from package {packageName}");
             }
 
-            if (!OperatingSystem.IsLinux())
+            if (!OperatingSystem.IsLinux() || IsStudioLaunch)
             {
                 foreach (var entry in fileRestoreMap)
                 {
