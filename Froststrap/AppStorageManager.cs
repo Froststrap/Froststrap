@@ -112,6 +112,7 @@ public class AppStorageManager : JsonManager<Dictionary<string, object>>
 
             string contents = JsonSerializer.Serialize(Prop, _writeOptions);
             File.WriteAllText(FileLocation, contents);
+            _savedHash = ComputeHash(Prop);
             App.Logger.WriteLine(LOG_IDENT, "Save Complete!");
         }
         catch (Exception ex)
@@ -142,6 +143,7 @@ public class AppStorageManager : JsonManager<Dictionary<string, object>>
 
             Prop = settings;
             Loaded = true;
+            _savedHash = ComputeHash(Prop);
             App.Logger.WriteLine(LOG_IDENT, "Loaded successfully!");
             return true;
         }

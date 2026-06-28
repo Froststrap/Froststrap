@@ -2984,4 +2984,7 @@ Would you like to switch your preferred channel to {0}?</value>
   <data name="Menu.FlagProfiles.CurrentPlaceIds" xml:space="preserve">
     <value>Current Place IDs</value>
   </data>
+  <data name="Menu.UnsavedChangesPrompt" xml:space="preserve">
+    <value>You have unsaved changes. Do you want to save before closing?</value>
+  </data>
 </root>

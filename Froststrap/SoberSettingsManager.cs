@@ -95,6 +95,7 @@ public class SoberSettingsManager : JsonManager<Dictionary<string, object>>
                            ?? [];
             Prop = settings;
             Loaded = true;
+            _savedHash = ComputeHash(Prop);
             App.Logger.WriteLine(LOG_IDENT, "Loaded successfully!");
             return true;
         }
@@ -131,6 +132,7 @@ public class SoberSettingsManager : JsonManager<Dictionary<string, object>>
             Directory.CreateDirectory(Path.GetDirectoryName(FileLocation)!);
             string contents = JsonSerializer.Serialize(Prop, _writeOptions);
             File.WriteAllText(FileLocation, contents);
+            _savedHash = ComputeHash(Prop);
             App.Logger.WriteLine(LOG_IDENT, "Save complete!");
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)

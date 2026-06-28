@@ -7022,6 +7022,24 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Mod &apos;{0}&apos; is already imported..
+        /// </summary>
+        public static string Menu_Mods_AlreadyImported {
+            get {
+                return ResourceManager.GetString("Menu_Mods_AlreadyImported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot import a subfolder as a mod. Please drag the mod folder directly..
+        /// </summary>
+        public static string Menu_Mods_CannotImportSubfolder {
+            get {
+                return ResourceManager.GetString("Menu_Mods_CannotImportSubfolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delete &apos;{0}&apos; permanently?.
         /// </summary>
         public static string Menu_Mods_DeleteMod {
@@ -7099,6 +7117,15 @@ namespace Froststrap.Resources {
         public static string Menu_Mods_InvalidFolderName {
             get {
                 return ResourceManager.GetString("Menu.Mods.InvalidFolderName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid mod folder name..
+        /// </summary>
+        public static string Menu_Mods_InvalidModFolderName {
+            get {
+                return ResourceManager.GetString("Menu_Mods_InvalidModFolderName", resourceCulture);
             }
         }
         
@@ -8419,6 +8446,15 @@ namespace Froststrap.Resources {
         public static string Menu_Title {
             get {
                 return ResourceManager.GetString("Menu.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have unsaved changes. Do you want to save before closing?.
+        /// </summary>
+        public static string Menu_UnsavedChangesPrompt {
+            get {
+                return ResourceManager.GetString("Menu.UnsavedChangesPrompt", resourceCulture);
             }
         }
         

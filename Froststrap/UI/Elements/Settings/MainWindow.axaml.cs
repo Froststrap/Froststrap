@@ -768,8 +768,28 @@ namespace Froststrap.UI.Elements.Settings
 
         #region Event Handlers
 
-        private void MainWindow_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
+        private async void MainWindow_Closing(object? sender, CancelEventArgs e)
         {
+            if (MainWindowViewModel.HasUnsavedChanges)
+            {
+                e.Cancel = true;
+
+                var result = await Frontend.ShowMessageBox(
+                    Strings.Menu_UnsavedChangesPrompt,
+                    MessageBoxImage.Warning,
+                    MessageBoxButton.YesNoCancel
+                );
+
+                if (result == MessageBoxResult.Yes)
+                    _viewModel?.SaveSettings();
+                else if (result == MessageBoxResult.Cancel)
+                    return;
+
+                this.Closing -= MainWindow_Closing;
+                this.Close();
+                return;
+            }
+
             State.Width = this.Width;
             State.Height = this.Height;
             State.Left = this.Position.X;

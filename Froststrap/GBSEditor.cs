@@ -1,5 +1,4 @@
 ﻿using Froststrap.Enums.GBSPresets;
-using Froststrap;
 using System.Xml.Linq;
 using System.Xml.XPath;
 
@@ -69,11 +68,28 @@ namespace Froststrap
 
         public bool Loaded { get; set; } = false;
 
-        public static string FileLocation => OperatingSystem.IsLinux() ? 
-                Path.Combine(Paths.Roblox, "data", "sober", "appData", "GlobalBasicSettings_13.xml") : 
-                    OperatingSystem.IsMacOS() ? 
+        public static string FileLocation => OperatingSystem.IsLinux() ?
+                Path.Combine(Paths.Roblox, "data", "sober", "appData", "GlobalBasicSettings_13.xml") :
+                    OperatingSystem.IsMacOS() ?
                         Path.Combine(Paths.UserProfile, "Library", "Roblox", "GlobalBasicSettings_13.xml") :
                             Path.Combine(Paths.Roblox, "GlobalBasicSettings_13.xml");
+
+        private string? _savedHash;
+
+        private string ComputeHash()
+        {
+            if (Document == null) return string.Empty;
+            return MD5Hash.FromString(Document.ToString());
+        }
+
+        public bool HasUnsavedChanges
+        {
+            get
+            {
+                if (_savedHash == null) return false;
+                return ComputeHash() != _savedHash;
+            }
+        }
 
         public void SetPreset(string prefix, object? value)
         {
@@ -180,6 +196,7 @@ namespace Froststrap
                 Document = XDocument.Load(FileLocation);
                 Loaded = true;
                 previousReadOnlyState = GetReadOnly();
+                _savedHash = ComputeHash();
                 App.Logger.WriteLine(LOG_IDENT, "Loaded successfully!");
             }
             catch (Exception ex)
@@ -200,6 +217,7 @@ namespace Froststrap
                     Document = XDocument.Load(FileLocation);
                     Loaded = true;
                     previousReadOnlyState = GetReadOnly();
+                    _savedHash = ComputeHash();
                     App.Logger.WriteLine(LOG_IDENT, "Recreated and loaded successfully!");
                 }
                 catch (Exception retryEx)
@@ -222,6 +240,7 @@ namespace Froststrap
                 SetReadOnly(false, true);
                 Document?.Save(FileLocation);
                 SetReadOnly(previousReadOnlyState);
+                _savedHash = ComputeHash();
             }
             catch (Exception ex)
             {

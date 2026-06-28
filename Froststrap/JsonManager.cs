@@ -1,5 +1,7 @@
 ﻿using System.Text.Json.Nodes;
 using System.Reflection;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Froststrap
 {
@@ -35,6 +37,23 @@ namespace Froststrap
 
         public virtual string LOG_IDENT_CLASS => $"JsonManager<{ClassName}>";
 
+        public string? _savedHash;
+
+        protected virtual string ComputeHash(T obj)
+        {
+            string json = JsonSerializer.Serialize(obj, _jsonOptions);
+            return MD5Hash.FromString(json);
+        }
+
+        public bool HasUnsavedChanges
+        {
+            get
+            {
+                if (_savedHash == null) return false;
+                return ComputeHash(Prop) != _savedHash;
+            }
+        }
+
         public virtual bool Load(bool alertFailure = true)
         {
             string LOG_IDENT = $"{LOG_IDENT_CLASS}::Load";
@@ -53,6 +72,7 @@ namespace Froststrap
                     _prop = settings;
                     Loaded = true;
                     LastFileHash = MD5Hash.FromString(contents);
+                    _savedHash = ComputeHash(_prop);
 
                     App.Logger.WriteLine(LOG_IDENT, "Loaded successfully!");
 
@@ -63,6 +83,7 @@ namespace Froststrap
                     App.Logger.WriteLine(LOG_IDENT, $"Could not find {FileLocation}.");
                     Loaded = true;
 
+                    _savedHash = ComputeHash(_prop);
                     return false;
                 }
             }
@@ -117,6 +138,7 @@ namespace Froststrap
                 File.WriteAllText(FileLocation, contents);
 
                 LastFileHash = MD5Hash.FromString(contents);
+                _savedHash = ComputeHash(Prop);
             }
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
             {
@@ -159,8 +181,7 @@ namespace Froststrap
                 }
 
                 var currentJson = JsonSerializer.SerializeToNode(Prop, _jsonOptions)?.AsObject();
-                if (currentJson is null)
-                    throw new InvalidOperationException("Failed to serialize current object.");
+                 _ = currentJson ?? throw new InvalidOperationException("Failed to serialize current object.");
 
                 if (currentJson.TryGetPropertyValue(SettingName, out JsonNode? value))
                 {
@@ -176,6 +197,7 @@ namespace Froststrap
                 string contents = existingJson.ToJsonString(_jsonOptions);
                 File.WriteAllText(FileLocation, contents);
                 LastFileHash = MD5Hash.FromString(contents);
+                _savedHash = ComputeHash(Prop);
                 App.Logger.WriteLine(LOG_IDENT, "SaveSetting complete!");
             }
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or JsonException)

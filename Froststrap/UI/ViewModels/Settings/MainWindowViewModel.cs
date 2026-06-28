@@ -26,6 +26,15 @@ namespace Froststrap.UI.ViewModels.Settings
             set => SetProperty(ref _currentPage, value);
         }
 
+        public static bool HasUnsavedChanges =>
+            App.Settings.HasUnsavedChanges ||
+            App.State.HasUnsavedChanges ||
+            App.FastFlags.HasUnsavedChanges ||
+            App.AppStorage.HasUnsavedChanges ||
+            (OperatingSystem.IsLinux() && App.SoberSettings.HasUnsavedChanges) ||
+            App.GlobalSettings.HasUnsavedChanges ||
+            App.PendingSettingTasks.Count > 0;
+
         private string _selectedPage = "integrations";
         public string SelectedPage { get => _selectedPage; set => SetProperty(ref _selectedPage, value); }
 
