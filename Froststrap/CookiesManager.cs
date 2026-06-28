@@ -26,17 +26,14 @@ namespace Froststrap
         private const string AuthCookieName = ".ROBLOSECURITY";
         private const string SupportedVersion = "1";
         private const string AuthPattern = $@"\t{AuthCookieName}\t(.+?)(;|$)";
+        private const string MacAuthPattern = @"_\|WARNING:-DO-NOT-SHARE-.*?\|_[A-Za-z0-9+\-_\.]+";
 
         public string GetAuthCookie() => AuthCookie;
 
         private static string CookiesPath => RuntimeInformation.IsOSPlatform(OSPlatform.OSX)
-
             ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Library", "HTTPStorages", "com.roblox.RobloxPlayer.binarycookies")
-
             : RuntimeInformation.IsOSPlatform(OSPlatform.Linux)
-
                 ? Path.Combine(Paths.Roblox, "data", "sober", "cookies")
-
                 : Path.Combine(Paths.Roblox, "LocalStorage", Deployment.IsDefaultRobloxDomain ? "RobloxCookies.dat" : $"{Deployment.RobloxDomain}_RobloxCookies.dat");
 
         public async Task<HttpResponseMessage> AuthRequest(HttpRequestMessage request)
@@ -159,14 +156,40 @@ namespace Froststrap
 
         private static async Task<string> LoadMacCookies(string logIdent)
         {
-            byte[] fileBytes = await File.ReadAllBytesAsync(CookiesPath);
-            string fileString = Encoding.Latin1.GetString(fileBytes);
+            try
+            {
+                byte[] fileBytes = await File.ReadAllBytesAsync(CookiesPath);
 
-            var match = Regex.Match(fileString, @"_\|WARNING:-DO-NOT-SHARE-.*\|_");
-            if (match.Success) return match.Value;
+                string fileString = Encoding.UTF8.GetString(fileBytes);
 
-            App.Logger.WriteLine(logIdent, "Could not find .ROBLOSECURITY in binary cookies file.");
-            return string.Empty;
+                var authMatch = Regex.Match(fileString, MacAuthPattern);
+
+                if (authMatch.Success)
+                {
+                    string cookieValue = authMatch.Value;
+                    App.Logger.WriteLine(logIdent, $"Found .ROBLOSECURITY cookie (length: {cookieValue.Length})");
+                    return cookieValue;
+                }
+
+                var fallbackMatch = Regex.Match(fileString, @"\.ROBLOSECURITY\t([^\t]+)");
+                if (fallbackMatch.Success)
+                {
+                    string cookieValue = fallbackMatch.Groups[1].Value;
+                    if (cookieValue.StartsWith("_|WARNING:-DO-NOT-SHARE-"))
+                    {
+                        App.Logger.WriteLine(logIdent, $"Found .ROBLOSECURITY cookie via fallback (length: {cookieValue.Length})");
+                        return cookieValue;
+                    }
+                }
+
+                App.Logger.WriteLine(logIdent, "Could not find .ROBLOSECURITY cookie in binary cookies file.");
+                return string.Empty;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteException(logIdent, ex);
+                return string.Empty;
+            }
         }
 
         private static async Task<string> LoadLinuxCookies(string logIdent)
