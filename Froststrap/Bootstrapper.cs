@@ -151,7 +151,7 @@ namespace Froststrap
 
             if (OperatingSystem.IsLinux() && !IsStudioLaunch)
             {
-                PackageDirectoryMap = new Dictionary<string, string>();
+                PackageDirectoryMap = [];
                 return;
             }
 
@@ -2293,7 +2293,7 @@ exit";
             }
         }
 
-        private void KillRobloxPlayers()
+        private static void KillRobloxPlayers()
         {
             const string LOG_IDENT = "Bootstrapper::KillRobloxPlayers";
 
