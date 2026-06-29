@@ -6905,6 +6905,15 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Mod Options.
+        /// </summary>
+        public static string Menu_ModGenerator_ModsOptions {
+            get {
+                return ResourceManager.GetString("Menu.ModGenerator.ModsOptions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Packaging....
         /// </summary>
         public static string Menu_ModGenerator_Packaging {
@@ -7026,7 +7035,7 @@ namespace Froststrap.Resources {
         /// </summary>
         public static string Menu_Mods_AlreadyImported {
             get {
-                return ResourceManager.GetString("Menu_Mods_AlreadyImported", resourceCulture);
+                return ResourceManager.GetString("Menu.Mods.AlreadyImported", resourceCulture);
             }
         }
         
@@ -7035,7 +7044,7 @@ namespace Froststrap.Resources {
         /// </summary>
         public static string Menu_Mods_CannotImportSubfolder {
             get {
-                return ResourceManager.GetString("Menu_Mods_CannotImportSubfolder", resourceCulture);
+                return ResourceManager.GetString("Menu.Mods.CannotImportSubfolder", resourceCulture);
             }
         }
         
@@ -7179,7 +7188,7 @@ namespace Froststrap.Resources {
         /// </summary>
         public static string Menu_Mods_InvalidModFolderName {
             get {
-                return ResourceManager.GetString("Menu_Mods_InvalidModFolderName", resourceCulture);
+                return ResourceManager.GetString("Menu.Mods.InvalidModFolderName", resourceCulture);
             }
         }
         
@@ -8553,7 +8562,7 @@ namespace Froststrap.Resources {
         /// </summary>
         public static string Settings_PromptForAppUpdates_Description {
             get {
-                return ResourceManager.GetString("Settings.PromptForAppUpdates_Description", resourceCulture);
+                return ResourceManager.GetString("Settings.PromptForAppUpdates.Description", resourceCulture);
             }
         }
         
@@ -8562,7 +8571,7 @@ namespace Froststrap.Resources {
         /// </summary>
         public static string Settings_PromptForAppUpdates_Title {
             get {
-                return ResourceManager.GetString("Settings.PromptForAppUpdates_Title", resourceCulture);
+                return ResourceManager.GetString("Settings.PromptForAppUpdates.Title", resourceCulture);
             }
         }
         

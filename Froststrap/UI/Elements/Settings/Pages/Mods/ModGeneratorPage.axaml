@@ -145,7 +145,7 @@
                     <StackPanel>
                         <TextBlock FontSize="14"
                                    FontWeight="Bold"
-                                   Text="Mod Options"
+                                   Text="{x:Static resources:Strings.Menu_ModGenerator_ModOptions}"
                                    Margin="0,0,0,8"
                                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
                         <WrapPanel Orientation="Horizontal">

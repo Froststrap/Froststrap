@@ -2987,13 +2987,13 @@ Would you like to switch your preferred channel to {0}?</value>
   <data name="Menu.UnsavedChangesPrompt" xml:space="preserve">
     <value>You have unsaved changes. Do you want to save before closing?</value>
   </data>
-  <data name="Menu_Mods_CannotImportSubfolder" xml:space="preserve">
+  <data name="Menu.Mods.CannotImportSubfolder" xml:space="preserve">
     <value>Cannot import a subfolder as a mod. Please drag the mod folder directly.</value>
   </data>
-  <data name="Menu_Mods_InvalidModFolderName" xml:space="preserve">
+  <data name="Menu.Mods.InvalidModFolderName" xml:space="preserve">
     <value>Invalid mod folder name.</value>
   </data>
-  <data name="Menu_Mods_AlreadyImported" xml:space="preserve">
+  <data name="Menu.Mods.AlreadyImported" xml:space="preserve">
     <value>Mod '{0}' is already imported.</value>
   </data>  
   <data name="Menu.Mods.DefaultNewModName" xml:space="preserve">
@@ -3042,10 +3042,13 @@ Linux updates cannot be installed automatically. Please download the latest vers
 
 Would you like to visit the releases page now?</value>
   </data>
-  <data name="Settings.PromptForAppUpdates_Title" xml:space="preserve">
+  <data name="Settings.PromptForAppUpdates.Title" xml:space="preserve">
     <value>Prompt for app updates on Linux</value>
   </data>
-  <data name="Settings.PromptForAppUpdates_Description" xml:space="preserve">
+  <data name="Settings.PromptForAppUpdates.Description" xml:space="preserve">
     <value>When enabled, you will be notified when a new Froststrap update is available and redirected to the releases page.</value>
+  </data>
+  <data name="Menu.ModGenerator.ModsOptions" xml:space="preserve">
+    <value>Mod Options</value>
   </data>
 </root>
