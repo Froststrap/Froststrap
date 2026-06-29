@@ -2945,8 +2945,7 @@ exit";
                     }
                     catch (Exception ex)
                     {
-                        if (!updateProcess.HasExited)
-                            App.Logger.WriteLine(LOG_IDENT, $"Error reading flatpak output: {ex.Message}");
+                        App.Logger.WriteLine(LOG_IDENT, $"Error reading flatpak output: {ex.Message}");
                     }
                 }, linkedCts.Token);
 
@@ -2966,8 +2965,7 @@ exit";
                     catch (OperationCanceledException) { }
                     catch (Exception ex)
                     {
-                        if (!updateProcess.HasExited)
-                            App.Logger.WriteLine(LOG_IDENT, $"Error reading flatpak stderr: {ex.Message}");
+                        App.Logger.WriteLine(LOG_IDENT, $"Error reading flatpak stderr: {ex.Message}");
                     }
                 }, linkedCts.Token);
 
