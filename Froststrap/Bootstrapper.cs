@@ -1900,7 +1900,7 @@ namespace Froststrap
 
                 App.Logger.WriteLine(LOG_IDENT, $"Update available: {currentVer} -> {releaseVer}");
 
-                if (OperatingSystem.IsLinux() && App.Settings.Prop.PromptForAppUpdates)
+                if (OperatingSystem.IsLinux())
                 {
                     App.Logger.WriteLine(LOG_IDENT, "Update detected, prompting user to manually update");
 

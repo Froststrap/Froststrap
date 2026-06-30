@@ -3656,7 +3656,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Froststrap will automatically check and update itself to a stable version when launching Roblox..
+        ///   Looks up a localized string similar to Froststrap will automatically check and update itself to a stable version when launching Roblox, Will only notify users on linux..
         /// </summary>
         public static string Menu_Behaviour_AutoUpdate_Description {
             get {
@@ -4385,7 +4385,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Froststrap will automatically check and update itself to a test version when launching Roblox..
+        ///   Looks up a localized string similar to Froststrap will automatically check and update itself to a test version when launching Roblox, Will only notify user on linux..
         /// </summary>
         public static string Menu_Deployment_AutoPreReleaseUpdate_Description {
             get {
@@ -8554,24 +8554,6 @@ namespace Froststrap.Resources {
         public static string Paths_Icons {
             get {
                 return ResourceManager.GetString("Paths.Icons", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to When enabled, you will be notified when a new Froststrap update is available and redirected to the releases page..
-        /// </summary>
-        public static string Settings_PromptForAppUpdates_Description {
-            get {
-                return ResourceManager.GetString("Settings.PromptForAppUpdates.Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Prompt for app updates on Linux.
-        /// </summary>
-        public static string Settings_PromptForAppUpdates_Title {
-            get {
-                return ResourceManager.GetString("Settings.PromptForAppUpdates.Title", resourceCulture);
             }
         }
         

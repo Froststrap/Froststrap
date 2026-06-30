@@ -631,7 +631,7 @@ Would you like to upgrade your currently installed version?</value>
     <value>Appearance</value>
   </data>
   <data name="Menu.Behaviour.AutoUpdate.Description" xml:space="preserve">
-    <value>Froststrap will automatically check and update itself to a stable version when launching Roblox.</value>
+    <value>Froststrap will automatically check and update itself to a stable version when launching Roblox, Will only notify users on linux.</value>
   </data>
   <data name="Menu.Behaviour.AutoUpdate.Title" xml:space="preserve">
     <value>Automatically Update Froststrap</value>
@@ -2071,7 +2071,7 @@ Would you like to switch your preferred channel to {0}?</value>
     <value>Update to Pre Releases</value>
   </data>
   <data name="Menu.Deployment.AutoPreReleaseUpdate.Description" xml:space="preserve">
-    <value>Froststrap will automatically check and update itself to a test version when launching Roblox.</value>
+    <value>Froststrap will automatically check and update itself to a test version when launching Roblox, Will only notify user on linux.</value>
   </data>
   <data name="Menu.TestMode.Description" xml:space="preserve">
     <value>Automatically hide the settings window when launching Roblox and restore it when Roblox closes.</value>
@@ -3041,12 +3041,6 @@ Would you like to switch your preferred channel to {0}?</value>
 Linux updates cannot be installed automatically. Please download the latest version manually from GitHub.
 
 Would you like to visit the releases page now?</value>
-  </data>
-  <data name="Settings.PromptForAppUpdates.Title" xml:space="preserve">
-    <value>Prompt for app updates on Linux</value>
-  </data>
-  <data name="Settings.PromptForAppUpdates.Description" xml:space="preserve">
-    <value>When enabled, you will be notified when a new Froststrap update is available and redirected to the releases page.</value>
   </data>
   <data name="Menu.ModGenerator.ModsOptions" xml:space="preserve">
     <value>Mod Options</value>
