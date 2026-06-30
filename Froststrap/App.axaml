@@ -3,7 +3,7 @@
     Name="Froststrap"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:ic="using:FluentIcons.Avalonia.Fluent"
+    xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
     xmlns:sty="using:FluentAvalonia.Styling"
     xmlns:converters="using:Froststrap.UI.Converters"
     RequestedThemeVariant="Dark">
@@ -11,8 +11,9 @@
     <Application.Styles>
         <sty:FluentAvaloniaTheme PreferSystemTheme="True" PreferUserAccentColor="True" />
 
-        <Style Selector="ic|SymbolIcon">
-            <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+        <Style Selector="ic|Lucide">
+            <Setter Property="StrokeBrush" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+            <Setter Property="StrokeThickness" Value="1.5" />
         </Style>
 
         <StyleInclude Source="avares://Froststrap/UI/Elements/Controls/Hyperlink.axaml" />
@@ -23,7 +24,7 @@
         <StyleInclude Source="avares://Froststrap/UI/Elements/Controls/TitleBar.axaml" />
         <StyleInclude Source="avares://Froststrap/UI/Elements/Controls/CardAction.axaml" />
         <StyleInclude Source="avares://Froststrap/UI/Elements/Controls/IconButton.axaml" />
-        
+
         <StyleInclude Source="avares://AvaloniaEdit/Themes/Fluent/AvaloniaEdit.xaml" />
 
         <StyleInclude Source="avares://Froststrap/UI/AppThemes/Default.axaml" />
