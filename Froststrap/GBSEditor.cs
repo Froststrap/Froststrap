@@ -168,14 +168,20 @@ namespace Froststrap
 
             try
             {
-                var uri = new Uri("avares://Froststrap/Resources/GlobalBasicSettings_Template.xml");
-                var assetLoader = Avalonia.Platform.AssetLoader.GetAssets(uri, null);
+                string? directory = Path.GetDirectoryName(FileLocation);
+                if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                    App.Logger.WriteLine(LOG_IDENT, $"Created directory: {directory}");
+                }
 
+                var uri = new Uri("avares://Froststrap/Resources/GlobalBasicSettings_Template.xml");
                 using var resourceStream = Avalonia.Platform.AssetLoader.Open(uri);
                 using var fileStream = File.Create(FileLocation);
                 resourceStream.CopyTo(fileStream);
 
                 previousReadOnlyState = GetReadOnly();
+                App.Logger.WriteLine(LOG_IDENT, "Template created successfully!");
             }
             catch (Exception ex)
             {
@@ -183,7 +189,6 @@ namespace Froststrap
                 App.Logger.WriteException(LOG_IDENT, ex);
             }
         }
-
 
         public void Load()
         {
@@ -193,6 +198,13 @@ namespace Froststrap
 
             try
             {
+                string? directory = Path.GetDirectoryName(FileLocation);
+                if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                    App.Logger.WriteLine(LOG_IDENT, $"Created directory: {directory}");
+                }
+
                 Document = XDocument.Load(FileLocation);
                 Loaded = true;
                 previousReadOnlyState = GetReadOnly();
