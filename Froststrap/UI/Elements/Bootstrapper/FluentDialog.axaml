@@ -48,7 +48,7 @@
                 HorizontalAlignment="Center"
                 TextAlignment="Center"
                 FontSize="18"
-                TextWrapping="Wrap"
+                TextTrimming="CharacterEllipsis" 
                 Text="{Binding Message}"/>
 
             <ProgressBar
