@@ -306,6 +306,8 @@ namespace Froststrap.UI.ViewModels.Settings
             var localGames = new List<QuickPlayGameItem>();
             foreach (var entry in _allHistory)
             {
+                if (entry.UniverseId == 0) continue;
+
                 var details = UniverseDetails.LoadFromCache(entry.UniverseId);
                 var lastSession = entry.Servers.OrderByDescending(s => s.JoinedAt).FirstOrDefault();
                 localGames.Add(new QuickPlayGameItem
@@ -365,13 +367,15 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private static async Task FetchThumbnailsForGames(List<QuickPlayGameItem> games)
         {
-            var thumbRequests = games.Select(item => new ThumbnailRequest
-            {
-                TargetId = (ulong)item.UniverseId,
-                Type = ThumbnailType.GameIcon,
-                Size = "150x150",
-                Format = ThumbnailFormat.Png
-            }).ToList();
+            var thumbRequests = games
+                .Where(item => item.UniverseId != 0)
+                .Select(item => new ThumbnailRequest
+                {
+                    TargetId = (ulong)item.UniverseId,
+                    Type = ThumbnailType.GameIcon,
+                    Size = "150x150",
+                    Format = ThumbnailFormat.Png
+                }).ToList();
 
             try
             {
@@ -411,20 +415,25 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private static List<QuickPlayGameItem> MergeByApiOrder(List<QuickPlayGameItem> localGames, List<QuickPlayGameItem> apiGames)
         {
-            var localByUniverse = localGames.ToDictionary(g => g.UniverseId, g => g);
-            var result = new List<QuickPlayGameItem>(apiGames.Count);
+            var validLocal = localGames.Where(g => g.UniverseId != 0).ToList();
+            var validApi = apiGames.Where(g => g.UniverseId != 0).ToList();
 
-            foreach (var apiGame in apiGames)
+            var localByUniverse = validLocal
+                .GroupBy(g => g.UniverseId)
+                .ToDictionary(g => g.Key, g => g.First());
+
+            var result = new List<QuickPlayGameItem>(validApi.Count);
+
+            foreach (var apiGame in validApi)
             {
                 if (localByUniverse.TryGetValue(apiGame.UniverseId, out var localGame))
-                {
                     result.Add(localGame);
-                }
                 else
-                {
                     result.Add(apiGame);
-                }
             }
+
+            var apiUniverseIds = new HashSet<long>(validApi.Select(g => g.UniverseId));
+            result.AddRange(validLocal.Where(g => !apiUniverseIds.Contains(g.UniverseId)));
 
             return result;
         }
@@ -475,6 +484,8 @@ namespace Froststrap.UI.ViewModels.Settings
                 var localGames = new List<QuickPlayGameItem>();
                 foreach (var entry in _allHistory)
                 {
+                    if (entry.UniverseId == 0) continue;
+
                     var details = UniverseDetails.LoadFromCache(entry.UniverseId);
                     var lastSession = entry.Servers.OrderByDescending(s => s.JoinedAt).FirstOrDefault();
                     localGames.Add(new QuickPlayGameItem
@@ -513,10 +524,33 @@ namespace Froststrap.UI.ViewModels.Settings
             try
             {
                 if (!File.Exists(cachePath)) return [];
+
                 string json = File.ReadAllText(cachePath);
-                return JsonSerializer.Deserialize<List<GameHistoryEntry>>(json) ?? [];
+                var entries = JsonSerializer.Deserialize<List<GameHistoryEntry>>(json) ?? [];
+
+                var validEntries = entries.Where(e => e.UniverseId > 0).ToList();
+
+                if (validEntries.Count != entries.Count)
+                {
+                    try
+                    {
+                        var cleanJson = JsonSerializer.Serialize(validEntries);
+                        File.WriteAllText(cachePath, cleanJson);
+                        App.Logger.WriteLine("QuickPlayViewModel", "Cleaned GameHistory.json by removing entries with UniverseId = 0");
+                    }
+                    catch (Exception ex)
+                    {
+                        App.Logger.WriteLine("QuickPlayViewModel", $"Failed to rewrite cleaned cache: {ex.Message}");
+                    }
+                }
+
+                return validEntries;
             }
-            catch { return []; }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine("QuickPlayViewModel", $"Error loading history: {ex.Message}");
+                return [];
+            }
         }
 
         private async Task FetchSubplacesAsync(long universeId)
@@ -693,6 +727,7 @@ namespace Froststrap.UI.ViewModels.Settings
             for (int i = 0; i < recentSort.Games.Count; i++)
             {
                 var apiGame = recentSort.Games[i];
+                if (apiGame.UniverseId == 0) continue;
                 games.Add(new QuickPlayGameItem
                 {
                     UniverseId = apiGame.UniverseId,
