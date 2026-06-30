@@ -149,7 +149,7 @@
     <value>Пропустить</value>
   </data>
   <data name="Bootstrapper.ConfirmLaunch" xml:space="preserve">
-    <value>В данный момент Roblox запущен, и запуск ещё одного экземпляра приведёт к его закрытию. Вы действительно хотите продолжить запуск?</value>
+    <value>В данный момент Roblox запущен, и запуск ещё одного процесса приведёт к его закрытию. Вы действительно хотите продолжить запуск?</value>
   </data>
   <data name="Bootstrapper.Dialog.ChannelOutOfDate" xml:space="preserve">
     <value>Канал, на котором вы сейчас находитесь ({0}), устарел и, судя по всему, больше не обновляется.
@@ -299,14 +299,14 @@
     <value>Ожидание данных...</value>
   </data>
   <data name="Bootstrapper.Status.WaitingOtherInstances" xml:space="preserve">
-    <value>Ожидание других экземпляров...</value>
+    <value>Ожидание других процессов...</value>
   </data>
   <data name="Bootstrapper.StylePreview.ImageCancel" xml:space="preserve">
-    <value>Предварительный просмотр стиля — нажмите кнопку «X» в правом верхнем углу, чтобы закрыть</value>
+    <value>Предпросмотр стиля — нажмите кнопку «X» в правом верхнем углу, чтобы закрыть</value>
     <comment>Text for style previews that use an X button. Currently only applies to Byfron</comment>
   </data>
   <data name="Bootstrapper.StylePreview.TextCancel" xml:space="preserve">
-    <value>Предварительный просмотр стиля — нажмите «Отмена», чтобы закрыть</value>
+    <value>Предпросмотр стиля — нажмите «Отмена», чтобы закрыть</value>
     <comment>Text for style previews that use text button that says &quot;Cancel&quot;</comment>
   </data>
   <data name="Bootstrapper.SuccessfullyUninstalled" xml:space="preserve">
@@ -419,7 +419,7 @@
     <value>Создать</value>
   </data>
   <data name="Common.GlyphPreview" xml:space="preserve">
-    <value>Предварительный просмотр глифа</value>
+    <value>Предпросмотр глифа</value>
   </data>
   <data name="Common.HexCode" xml:space="preserve">
     <value>Шестнадцатеричный код</value>
@@ -479,7 +479,7 @@
     <value>Производительность</value>
   </data>
   <data name="Common.Player" xml:space="preserve">
-    <value>Игрок</value>
+    <value>Roblox</value>
   </data>
   <data name="Common.PresetFlagLists" xml:space="preserve">
     <value>Списки флагов с предустановленными настройками</value>
@@ -533,7 +533,7 @@
     <value>Трезвый</value>
   </data>
   <data name="Common.Studio" xml:space="preserve">
-    <value>Исследование</value>
+    <value>Studio</value>
   </data>
   <data name="Common.SystemDefault" xml:space="preserve">
     <value>Настройки по умолчанию системы</value>
@@ -585,10 +585,10 @@
 Время работы: {1}</value>
   </data>
   <data name="ContextMenu.ServerInformation.CopyInstanceId" xml:space="preserve">
-    <value>Скопировать идентификатор экземпляра</value>
+    <value>Скопировать идентификатор процесса</value>
   </data>
   <data name="ContextMenu.ServerInformation.InstanceId" xml:space="preserve">
-    <value>Идентификатор экземпляра</value>
+    <value>Идентификатор процесса</value>
   </data>
   <data name="ContextMenu.ServerInformation.Location" xml:space="preserve">
     <value>Местоположение</value>
@@ -643,7 +643,7 @@
     <value>Сохранить изменения в {0}?</value>
   </data>
   <data name="CustomTheme.Editor.Errors.PreviewFailed" xml:space="preserve">
-    <value>Не удалось открыть предварительный просмотр темы: {0}</value>
+    <value>Не удалось открыть предпросмотр темы: {0}</value>
   </data>
   <data name="CustomTheme.Editor.OpenThemeDirectory" xml:space="preserve">
     <value>Открыть каталог тем</value>
@@ -867,10 +867,10 @@
     <value>Froststrap не может записывать данные в реестр Windows. Вероятно, антивирусная программа создаёт помехи и вызывает проблемы. Пожалуйста, убедитесь, что нет ничего, что могло бы ограничивать работу Froststrap.</value>
   </data>
   <data name="Enums.BackgroundMode.Gradient" xml:space="preserve">
-    <value>Градиенты</value>
+    <value>Градиент</value>
   </data>
   <data name="Enums.BackgroundMode.Image" xml:space="preserve">
-    <value>Изображения</value>
+    <value>Изображение</value>
   </data>
   <data name="Enums.BackgroundStretch.Fill" xml:space="preserve">
     <value>Заполнить</value>
@@ -1246,13 +1246,13 @@
     <value>Онлайн (сайт Roblox)</value>
   </data>
   <data name="Menu.AlreadyRunning.Caption" xml:space="preserve">
-    <value>Обратите внимание, что не все ваши изменения вступят в силу сразу, пока вы не закроете все открытые в данный момент экземпляры Roblox.</value>
+    <value>Обратите внимание, что не все ваши изменения вступят в силу сразу, пока вы не закроете все открытые в данный момент процессы Roblox.</value>
   </data>
   <data name="Menu.AlreadyRunning.Title" xml:space="preserve">
     <value>Froststrap уже запущен</value>
   </data>
   <data name="Menu.Appearance.BackgroundMode" xml:space="preserve">
-    <value>Режим фоновой работы:</value>
+    <value>Режим фона:</value>
   </data>
   <data name="Menu.Appearance.Bootstrapper.Description" xml:space="preserve">
     <value>Настройте программу автозагрузки Froststrap с помощью широкого спектра параметров.</value>
@@ -1291,7 +1291,7 @@
     <value>Интервал</value>
   </data>
   <data name="Menu.Appearance.Language.Description" xml:space="preserve">
-    <value>Чтобы изменения вступили в силу, необходимо перезапустить систему. Некоторые фрагменты текста могут не быть переведены на выбранный язык.</value>
+    <value>Чтобы изменения вступили в силу, необходимо перезапустить Froststrap. Некоторые фрагменты текста могут не быть переведены на выбранный язык.</value>
   </data>
   <data name="Menu.Appearance.Language.Title" xml:space="preserve">
     <value>Язык</value>
@@ -1306,7 +1306,7 @@
     <value>Непрозрачность:</value>
   </data>
   <data name="Menu.Appearance.Preview" xml:space="preserve">
-    <value>Предварительный просмотр</value>
+    <value>Предпросмотр</value>
   </data>
   <data name="Menu.Appearance.ResetDefault" xml:space="preserve">
     <value>Сброс к настройкам по умолчанию</value>
@@ -1354,10 +1354,10 @@
     <value>Закрыть обработчик сбоев</value>
   </data>
   <data name="Menu.Behaviour.ConfirmLaunches.Description" xml:space="preserve">
-    <value>Предотвращает закрытие текущей игры в случае случайного запуска другого экземпляра Roblox.</value>
+    <value>Предотвращает закрытие текущей игры в случае случайного запуска другого процесса Roblox.</value>
   </data>
   <data name="Menu.Behaviour.ConfirmLaunches.Title" xml:space="preserve">
-    <value>Подтверждение запуска экземпляра</value>
+    <value>Подтверждение запуска процесса</value>
   </data>
   <data name="Menu.Behaviour.Description" xml:space="preserve">
     <value>Настройте, что Froststrap должен делать при запуске Roblox.</value>
@@ -2118,7 +2118,7 @@
     <value>При выходе из игры, а не при возвращении в приложение, Roblox полностью закроется. [Это может привести к сбоям в работе некоторых функций!]({0})</value>
   </data>
   <data name="Menu.Integrations.DesktopApp.Title" xml:space="preserve">
-    <value>Похоже на рабочий стол</value>
+    <value>Выход на рабочий стол</value>
   </data>
   <data name="Menu.Integrations.DoubleClickAction.Description" xml:space="preserve">
     <value>При запуске Roblox открывает определённое окно при двойном щелчке по значку Froststrap в системном трее.</value>
@@ -2178,7 +2178,7 @@
     <value>Находясь в игре, вы сможете узнать, где расположен ваш сервер, с помощью сайта [ipinfo.io](https://ipinfo.io).</value>
   </data>
   <data name="Menu.Integrations.QueryServerLocation.Title" xml:space="preserve">
-    <value>Определение местоположения сервера запросов</value>
+    <value>Определение местоположения сервера</value>
   </data>
   <data name="Menu.Integrations.RequiresActivityTracking" xml:space="preserve">
     <value>Для использования этой функции необходимо включить отслеживание активности, а также установить и запустить настольное приложение Discord. [Узнать больше]({0}).</value>
@@ -2314,7 +2314,7 @@
     <value>Переменная</value>
   </data>
   <data name="Menu.LinuxSettings.VirtualDesktops.Description" xml:space="preserve">
-    <value>Создать отдельное окно для каждого экземпляра</value>
+    <value>Создать отдельное окно для каждого процесса</value>
   </data>
   <data name="Menu.LinuxSettings.VirtualDesktops.Title" xml:space="preserve">
     <value>Виртуальные рабочие столы</value>
@@ -2407,7 +2407,7 @@
     <value>Извлечение файлов...</value>
   </data>
   <data name="Menu.ModGenerator.FailedPreview" xml:space="preserve">
-    <value>Не удалось загрузить шрифты для предварительного просмотра.</value>
+    <value>Не удалось загрузить шрифты для предпросмотра.</value>
   </data>
   <data name="Menu.ModGenerator.IconSet" xml:space="preserve">
     <value>Набор значков:</value>
@@ -2437,7 +2437,7 @@
     <value>Начинается генерация модов...</value>
   </data>
   <data name="Menu.ModGenerator.StylePreview" xml:space="preserve">
-    <value>Предварительный просмотр стиля</value>
+    <value>Предпросмотр стиля</value>
   </data>
   <data name="Menu.ModGenerator.Title" xml:space="preserve">
     <value>Генератор моделей</value>
@@ -2489,19 +2489,19 @@
     <value>Модификации не установлены.</value>
   </data>
   <data name="Menu.Mods.Preview.Failed" xml:space="preserve">
-    <value>Не удалось загрузить предварительный просмотр: {0}</value>
+    <value>Не удалось загрузить предпросмотр: {0}</value>
   </data>
   <data name="Menu.Mods.Preview.Font.Preview" xml:space="preserve">
-    <value>Предварительный просмотр шрифта</value>
+    <value>Предпросмотр шрифта</value>
   </data>
   <data name="Menu.Mods.Preview.FontVariant" xml:space="preserve">
     <value>Вариант шрифта:</value>
   </data>
   <data name="Menu.Mods.Preview.Loaded" xml:space="preserve">
-    <value>Предварительный просмотр загружен</value>
+    <value>Предпросмотр загружен</value>
   </data>
   <data name="Menu.Mods.Preview.Loading" xml:space="preserve">
-    <value>Загрузка предварительного просмотра шрифта...</value>
+    <value>Загрузка предпросмотра шрифта...</value>
   </data>
   <data name="Menu.Mods.Preview.Loading.Glyphs" xml:space="preserve">
     <value>Загрузка глифов...</value>
@@ -2603,7 +2603,7 @@
     <value>Удалить пользовательский Shiftlock</value>
   </data>
   <data name="Menu.PresetMods.Misc.CustomShiftLock.Title" xml:space="preserve">
-    <value>Shiftlock на заказ</value>
+    <value>Shiftlock на выбор</value>
   </data>
   <data name="Menu.PresetMods.OpenModsFolder" xml:space="preserve">
     <value>Открыть папку с модификациями пресетов</value>
@@ -2681,7 +2681,7 @@
     <value>Подходящий сервер не найден.</value>
   </data>
   <data name="Menu.QuickPlay.Players" xml:space="preserve">
-    <value>игроки</value>
+    <value>Актив</value>
   </data>
   <data name="Menu.QuickPlay.PleaseSelectAccount" xml:space="preserve">
     <value>Пожалуйста, сначала выберите учетную запись.</value>
@@ -2757,7 +2757,7 @@
     <value>Идентификатор: {0}</value>
   </data>
   <data name="Menu.RegionSelector.Join" xml:space="preserve">
-    <value>Присоединяйтесь</value>
+    <value>Зайти</value>
   </data>
   <data name="Menu.RegionSelector.LargeServers" xml:space="preserve">
     <value>Крупные серверы</value>
@@ -2901,13 +2901,13 @@
     <value>Сначала выберите игру.</value>
   </data>
   <data name="Menu.Shortcuts.ServerInstanceId" xml:space="preserve">
-    <value>Идентификатор экземпляра сервера</value>
+    <value>Идентификатор процесса сервера</value>
   </data>
   <data name="Menu.Shortcuts.ShortcutCreated" xml:space="preserve">
     <value>Ярлык создан!</value>
   </data>
   <data name="Menu.Shortcuts.UpdatingPreview" xml:space="preserve">
-    <value>Обновляется предварительный просмотр...</value>
+    <value>Обновляется предпросмотр...</value>
   </data>
   <data name="Menu.TestMode" xml:space="preserve">
     <value>Тестовый режим</value>
