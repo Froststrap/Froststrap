@@ -29,7 +29,7 @@
                         <Image Source="{Binding Mod.ThumbnailImage}"
                                Stretch="UniformToFill"
                                RenderOptions.BitmapInterpolationMode="HighQuality"/>
-                        <ui:ProgressRing IsIndeterminate="True"
+                        <ui:FAProgressRing IsIndeterminate="True"
                                          IsVisible="{Binding Mod.IsLoadingThumbnail}"
                                          Width="30" Height="30" />
                     </Panel>
@@ -57,7 +57,7 @@
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
-                                <ui:ProgressRing IsIndeterminate="True"
+                                <ui:FAProgressRing IsIndeterminate="True"
                                                  IsVisible="{Binding IsLoadingGlyphs}"
                                                  Width="24" Height="24"/>
                             </Panel>

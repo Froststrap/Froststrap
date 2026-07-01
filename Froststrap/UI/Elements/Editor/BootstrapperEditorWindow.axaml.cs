@@ -171,7 +171,7 @@ namespace Froststrap.UI.Elements.Editor
                 }
                 else
                 {
-                    Dispatcher.UIThread.Post(() => ShowNotification("Error", message, InfoBarSeverity.Error, 5000));
+                    Dispatcher.UIThread.Post(() => ShowNotification("Error", message, FAInfoBarSeverity.Error, 5000));
                 }
             };
 
@@ -234,11 +234,11 @@ namespace Froststrap.UI.Elements.Editor
             ShowNotification(
                 Strings.Menu_SettingsSaved_Title,
                 Strings.Menu_SettingsSaved_Message,
-                InfoBarSeverity.Success,
+                FAInfoBarSeverity.Success,
                 3000);
         }
 
-        public void ShowNotification(string title, string subtitle, InfoBarSeverity type, int timeout, LucideIconNames? customIcon = null)
+        public void ShowNotification(string title, string subtitle, FAInfoBarSeverity type, int timeout, LucideIconNames? customIcon = null)
         {
             var notificationPanel = this.FindControl<Panel>("NotificationPanel");
             if (notificationPanel == null) return;
@@ -290,13 +290,13 @@ namespace Froststrap.UI.Elements.Editor
             ShowNotificationInternal(title, subtitle, type, timeout, customIcon);
         }
 
-        private void ShowNotificationInternal(string title, string subtitle, InfoBarSeverity type, int timeout, LucideIconNames? customIcon = null)
+        private void ShowNotificationInternal(string title, string subtitle, FAInfoBarSeverity type, int timeout, LucideIconNames? customIcon = null)
         {
             var notificationPanel = this.FindControl<Panel>("NotificationPanel");
             if (notificationPanel == null) return;
 
-            var accentColor = type == InfoBarSeverity.Success ? "#00D084" : "#FFB900";
-            var iconSymbol = customIcon ?? (type == InfoBarSeverity.Success
+            var accentColor = type == FAInfoBarSeverity.Success ? "#00D084" : "#FFB900";
+            var iconSymbol = customIcon ?? (type == FAInfoBarSeverity.Success
                 ? LucideIconNames.CircleCheck
                 : LucideIconNames.TriangleAlert);
 

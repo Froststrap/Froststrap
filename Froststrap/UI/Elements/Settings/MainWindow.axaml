@@ -35,7 +35,7 @@
             </controls:TitleBar>
         </Grid>
 
-        <ui:NavigationView
+        <ui:FANavigationView
             Name="NavView"
             Grid.Row="1"
             Background="{DynamicResource ControlFillColorDefaultBrush}"
@@ -44,87 +44,87 @@
             ItemInvoked="NavView_ItemInvoked"
             OpenPaneLength="220"
             PaneDisplayMode="Left">
-            <ui:NavigationView.MenuItems>
-                <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_Integrations_Title}" Tag="integrations">
-                    <ui:NavigationViewItem.IconSource>
+            <ui:FANavigationView.MenuItems>
+                <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_Integrations_Title}" Tag="integrations">
+                    <ui:FANavigationViewItem.IconSource>
                         <ic:LucideIconSource Icon="Plus" StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}" StrokeThickness="1.5" />
-                    </ui:NavigationViewItem.IconSource>
-                </ui:NavigationViewItem>
+                    </ui:FANavigationViewItem.IconSource>
+                </ui:FANavigationViewItem>
 
-                <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_Behaviour_Title}" Tag="behaviour">
-                    <ui:NavigationViewItem.IconSource>
+                <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_Behaviour_Title}" Tag="behaviour">
+                    <ui:FANavigationViewItem.IconSource>
                         <ic:LucideIconSource Icon="Play" StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}" StrokeThickness="1.5" />
-                    </ui:NavigationViewItem.IconSource>
-                </ui:NavigationViewItem>
+                    </ui:FANavigationViewItem.IconSource>
+                </ui:FANavigationViewItem>
 
-                <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_QuickPlay_Title}" Tag="quickplay">
-                    <ui:NavigationViewItem.IconSource>
+                <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_QuickPlay_Title}" Tag="quickplay">
+                    <ui:FANavigationViewItem.IconSource>
                         <ic:LucideIconSource Icon="Gamepad2" StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}" StrokeThickness="1.5" />
-                    </ui:NavigationViewItem.IconSource>
-                </ui:NavigationViewItem>
+                    </ui:FANavigationViewItem.IconSource>
+                </ui:FANavigationViewItem>
 
-                <ui:NavigationViewItem Content="{x:Static resources:Strings.Common_Deployment}" Tag="channels">
-                    <ui:NavigationViewItem.IconSource>
+                <ui:FANavigationViewItem Content="{x:Static resources:Strings.Common_Deployment}" Tag="channels">
+                    <ui:FANavigationViewItem.IconSource>
                         <ic:LucideIconSource Icon="HardDriveUpload" StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}" StrokeThickness="1.5" />
-                    </ui:NavigationViewItem.IconSource>
-                </ui:NavigationViewItem>
+                    </ui:FANavigationViewItem.IconSource>
+                </ui:FANavigationViewItem>
 
-                <ui:NavigationViewItemSeparator />
+                <ui:FANavigationViewItemSeparator />
 
-                <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_PresetMods_Title}" Tag="mods">
-                    <ui:NavigationViewItem.IconSource>
+                <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_PresetMods_Title}" Tag="mods">
+                    <ui:FANavigationViewItem.IconSource>
                         <ic:LucideIconSource Icon="BookOpen" StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}" StrokeThickness="1.5" />
-                    </ui:NavigationViewItem.IconSource>
-                </ui:NavigationViewItem>
+                    </ui:FANavigationViewItem.IconSource>
+                </ui:FANavigationViewItem>
 
-                <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_Appearance_Title}" Tag="appearance">
-                    <ui:NavigationViewItem.IconSource>
+                <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_Appearance_Title}" Tag="appearance">
+                    <ui:FANavigationViewItem.IconSource>
                         <ic:LucideIconSource Icon="Palette" StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}" StrokeThickness="1.5" />
-                    </ui:NavigationViewItem.IconSource>
-                </ui:NavigationViewItem>
+                    </ui:FANavigationViewItem.IconSource>
+                </ui:FANavigationViewItem>
 
-                <ui:NavigationViewItemSeparator />
+                <ui:FANavigationViewItemSeparator />
 
-                <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_FastFlags_Title}" Tag="fastflags">
-                    <ui:NavigationViewItem.IconSource>
+                <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_FastFlags_Title}" Tag="fastflags">
+                    <ui:FANavigationViewItem.IconSource>
                         <ic:LucideIconSource Icon="Flag" StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}" StrokeThickness="1.5" />
-                    </ui:NavigationViewItem.IconSource>
-                </ui:NavigationViewItem>
+                    </ui:FANavigationViewItem.IconSource>
+                </ui:FANavigationViewItem>
 
-                <ui:NavigationViewItem Name="gbs" Content="{x:Static resources:Strings.Menu_GlobalSettings_Title}" Tag="globalsettings">
-                    <ui:NavigationViewItem.IconSource>
+                <ui:FANavigationViewItem Name="gbs" Content="{x:Static resources:Strings.Menu_GlobalSettings_Title}" Tag="globalsettings">
+                    <ui:FANavigationViewItem.IconSource>
                         <ic:LucideIconSource Icon="PenLine" StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}" StrokeThickness="1.5" />
-                    </ui:NavigationViewItem.IconSource>
-                </ui:NavigationViewItem>
+                    </ui:FANavigationViewItem.IconSource>
+                </ui:FANavigationViewItem>
 
-                <ui:NavigationViewItem Name="linux" IsVisible="{x:Static gv:GlobalViewModel.IsLinux}" Content="{x:Static resources:Strings.Menu_LinuxSettings_Title}" Tag="linuxsettings">
-                    <ui:NavigationViewItem.IconSource>
+                <ui:FANavigationViewItem Name="linux" IsVisible="{x:Static gv:GlobalViewModel.IsLinux}" Content="{x:Static resources:Strings.Menu_LinuxSettings_Title}" Tag="linuxsettings">
+                    <ui:FANavigationViewItem.IconSource>
                         <ic:LucideIconSource Icon="Settings" StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}" StrokeThickness="1.5" />
-                    </ui:NavigationViewItem.IconSource>
-                </ui:NavigationViewItem>
+                    </ui:FANavigationViewItem.IconSource>
+                </ui:FANavigationViewItem>
 
-                <ui:NavigationViewItemSeparator />
+                <ui:FANavigationViewItemSeparator />
 
-                <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_RegionSelector_Title}" Tag="regionselector">
-                    <ui:NavigationViewItem.IconSource>
+                <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_RegionSelector_Title}" Tag="regionselector">
+                    <ui:FANavigationViewItem.IconSource>
                         <ic:LucideIconSource Icon="Globe" StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}" StrokeThickness="1.5" />
-                    </ui:NavigationViewItem.IconSource>
-                </ui:NavigationViewItem>
+                    </ui:FANavigationViewItem.IconSource>
+                </ui:FANavigationViewItem>
 
-                <ui:NavigationViewItem Content="{x:Static resources:Strings.Common_Shortcuts}" Tag="shortcuts">
-                    <ui:NavigationViewItem.IconSource>
+                <ui:FANavigationViewItem Content="{x:Static resources:Strings.Common_Shortcuts}" Tag="shortcuts">
+                    <ui:FANavigationViewItem.IconSource>
                         <ic:LucideIconSource Icon="Link2" StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}" StrokeThickness="1.5" />
-                    </ui:NavigationViewItem.IconSource>
-                </ui:NavigationViewItem>
+                    </ui:FANavigationViewItem.IconSource>
+                </ui:FANavigationViewItem>
 
-                <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_About_Title}" Tag="about">
-                    <ui:NavigationViewItem.IconSource>
+                <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_About_Title}" Tag="about">
+                    <ui:FANavigationViewItem.IconSource>
                         <ic:LucideIconSource Icon="Info" StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}" StrokeThickness="1.5" />
-                    </ui:NavigationViewItem.IconSource>
-                </ui:NavigationViewItem>
-            </ui:NavigationView.MenuItems>
+                    </ui:FANavigationViewItem.IconSource>
+                </ui:FANavigationViewItem>
+            </ui:FANavigationView.MenuItems>
 
-            <ui:NavigationView.Content>
+            <ui:FANavigationView.Content>
                 <Grid RowDefinitions="Auto,*">
                     <Border
                         Grid.Row="0"
@@ -197,7 +197,7 @@
                                 IsVisible="{Binding CurrentPageDescription, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
                                 MarkdownText="{Binding CurrentPageDescription}" />
 
-                            <ui:InfoBar
+                            <ui:FAInfoBar
                                 x:Name="AlertBar"
                                 Margin="0,8,0,0"
                                 IsVisible="False"
@@ -212,8 +212,8 @@
                             VerticalAlignment="Stretch" />
                     </Panel>
                 </Grid>
-            </ui:NavigationView.Content>
-        </ui:NavigationView>
+            </ui:FANavigationView.Content>
+        </ui:FANavigationView>
 
         <Border
             Grid.Row="2"

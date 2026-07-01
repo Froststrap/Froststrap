@@ -14,7 +14,6 @@
                          MaxWidth="3000"
                          MaxHeight="3000"
                          CanResize="False"
-                         SystemDecorations="None"
                          WindowStartupLocation="CenterScreen">
 
     <Grid RowDefinitions="Auto,*">

@@ -202,9 +202,9 @@ namespace Froststrap.UI.Elements.Settings
             }
         }
 
-        private void NavView_ItemInvoked(object? sender, NavigationViewItemInvokedEventArgs e)
+        private void NavView_ItemInvoked(object? sender, FANavigationViewItemInvokedEventArgs e)
         {
-            if (e.InvokedItemContainer is NavigationViewItem navItem && navItem.Tag is string tag)
+            if (e.InvokedItemContainer is FANavigationViewItem navItem && navItem.Tag is string tag)
             {
                 if (tag == "about")
                 {
@@ -221,12 +221,12 @@ namespace Froststrap.UI.Elements.Settings
 
         private void UpdateSelectedNavigationViewItem(string selectedPage)
         {
-            var navView = this.FindControl<NavigationView>("NavView");
+            var navView = this.FindControl<FANavigationView>("NavView");
             if (navView == null) return;
 
             foreach (var item in navView.MenuItems)
             {
-                if (item is NavigationViewItem navItem && navItem.Tag is string tag)
+                if (item is FANavigationViewItem navItem && navItem.Tag is string tag)
                 {
                     if (tag == selectedPage)
                     {
@@ -237,7 +237,7 @@ namespace Froststrap.UI.Elements.Settings
             }
             foreach (var item in navView.FooterMenuItems)
             {
-                if (item is NavigationViewItem navItem && navItem.Tag is string tag)
+                if (item is FANavigationViewItem navItem && navItem.Tag is string tag)
                 {
                     if (tag == selectedPage)
                     {
@@ -309,7 +309,7 @@ namespace Froststrap.UI.Elements.Settings
             ShowNotification(
                 Strings.Menu_SettingsSaved_Title,
                 Strings.Menu_SettingsSaved_Message,
-                InfoBarSeverity.Success,
+                FAInfoBarSeverity.Success,
                 3000);
         }
 
@@ -319,16 +319,16 @@ namespace Froststrap.UI.Elements.Settings
             ShowNotification(
                 Strings.Menu_AlreadyRunning_Title,
                 Strings.Menu_AlreadyRunning_Caption,
-                InfoBarSeverity.Warning,
+                FAInfoBarSeverity.Warning,
                 5000);
         }
 
-        public static void ShowGlobalNotification(string title, string subtitle, InfoBarSeverity type, int timeout = 3000, LucideIconNames? icon = null)
+        public static void ShowGlobalNotification(string title, string subtitle, FAInfoBarSeverity type, int timeout = 3000, LucideIconNames? icon = null)
         {
             Dispatcher.UIThread.Post(() => Instance?.ShowNotification(title, subtitle, type, timeout, icon));
         }
 
-        public void ShowNotification(string title, string subtitle, InfoBarSeverity type, int timeout, LucideIconNames? customIcon = null)
+        public void ShowNotification(string title, string subtitle, FAInfoBarSeverity type, int timeout, LucideIconNames? customIcon = null)
         {
             var notificationPanel = this.FindControl<Panel>("NotificationPanel");
             if (notificationPanel == null) return;
@@ -380,13 +380,13 @@ namespace Froststrap.UI.Elements.Settings
             ShowNotificationInternal(title, subtitle, type, timeout, customIcon);
         }
 
-        private void ShowNotificationInternal(string title, string subtitle, InfoBarSeverity type, int timeout, LucideIconNames? customIcon = null)
+        private void ShowNotificationInternal(string title, string subtitle, FAInfoBarSeverity type, int timeout, LucideIconNames? customIcon = null)
         {
             var notificationPanel = this.FindControl<Panel>("NotificationPanel");
             if (notificationPanel == null) return;
 
-            var accentColor = type == InfoBarSeverity.Success ? "#00D084" : "#FFB900";
-            var iconSymbol = customIcon ?? (type == InfoBarSeverity.Success
+            var accentColor = type == FAInfoBarSeverity.Success ? "#00D084" : "#FFB900";
+            var iconSymbol = customIcon ?? (type == FAInfoBarSeverity.Success
                 ? LucideIconNames.CircleCheck
                 : LucideIconNames.TriangleAlert);
 
@@ -763,7 +763,7 @@ namespace Froststrap.UI.Elements.Settings
 
         private void LoadNavigationPaneState()
         {
-            var navView = this.FindControl<NavigationView>("NavView");
+            var navView = this.FindControl<FANavigationView>("NavView");
             if (navView == null) return;
 
             navView.IsPaneOpen = App.State.Prop.IsNavigationPaneOpen;
@@ -798,7 +798,7 @@ namespace Froststrap.UI.Elements.Settings
             State.Left = this.Position.X;
             State.Top = this.Position.Y;
 
-            var navView = this.FindControl<NavigationView>("NavView");
+            var navView = this.FindControl<FANavigationView>("NavView");
             if (navView != null)
             {
                 App.State.Prop.IsNavigationPaneOpen = navView.IsPaneOpen;

@@ -106,7 +106,7 @@
                         <StackPanel Spacing="15" IsVisible="{Binding IsImageMode}">
                             <Grid ColumnDefinitions="*, Auto, Auto" Margin="0,4">
                                 <TextBox Text="{Binding BackgroundImagePath}"
-                                         Watermark="No image selected..."
+                                         PlaceholderText="No image selected..."
                                          IsReadOnly="True"
                                          VerticalContentAlignment="Center"
                                          Margin="0,0,8,0"/>
@@ -359,7 +359,7 @@
                 </controls:OptionControl>
 
                 <controls:OptionControl Header="{x:Static resources:Strings.Menu_Appearance_CustomisationTitle_Title}" Description="{x:Static resources:Strings.Menu_Appearance_CustomisationTitle_Description}">
-                    <TextBox Watermark="Froststrap" Width="200" Text="{Binding Title, Mode=TwoWay}" />
+                    <TextBox PlaceholderText="Froststrap" Width="200" Text="{Binding Title, Mode=TwoWay}" />
                 </controls:OptionControl>
             </StackPanel>
         </ScrollViewer>

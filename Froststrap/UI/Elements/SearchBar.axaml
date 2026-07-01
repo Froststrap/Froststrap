@@ -16,22 +16,21 @@
 
     <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="400">
         <TextBox x:Name="SearchTextBox"
-                 Watermark="{x:Static resources:Strings.Menu_SearchBar_SearchSomething}"
+                 PlaceholderText="{x:Static resources:Strings.Menu_SearchBar_SearchSomething}"
                  Text="{Binding SearchQuery}"
                  VerticalAlignment="Center"
                  VerticalContentAlignment="Center">
 
             <TextBox.InnerLeftContent>
-                <Button Command="{Binding ToggleSearchListCommand}"
-                        Background="Transparent"
-                        BorderThickness="0"
-                        Padding="10,0,8,0"
-                        IsTabStop="False"
-                        VerticalAlignment="Center">
-                    <ic:Lucide Icon="Search"
-                               Height="16"
-                               Width="16"/>
-                </Button>
+                <controls:IconButton Command="{Binding ToggleSearchListCommand}"
+                                     Icon="Search"
+                                     IconSize="16"
+                                     Background="Transparent"
+                                     BorderThickness="0"
+                                     IsTabStop="False"
+                                     VerticalAlignment="Center">
+                </controls:IconButton>
+
             </TextBox.InnerLeftContent>
 
             <TextBox.InnerRightContent>
@@ -52,8 +51,7 @@
 
             <FlyoutBase.AttachedFlyout>
                 <Flyout Placement="Bottom"
-                        ShowMode="Transient"
-                        IsOpen="{Binding IsSearchFlyoutOpen, Mode=TwoWay}">
+                        ShowMode="Transient">
                     <Border Width="400"
                             MaxHeight="450"
                             Background="{DynamicResource SolidBackgroundFillColorQuarternaryBrush}"

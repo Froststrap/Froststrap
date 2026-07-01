@@ -601,7 +601,7 @@ Would you like to upgrade your currently installed version?</value>
     <value>The text that shows as the title of the bootstrapper.</value>
   </data>
   <data name="Menu.Appearance.CustomisationTitle.Title" xml:space="preserve">
-    <value>Title</value>
+    <value>Bootstrapper Title</value>
   </data>
   <data name="Menu.Appearance.Description" xml:space="preserve">
     <value>Configure how Froststrap should look.</value>
@@ -616,7 +616,7 @@ Would you like to upgrade your currently installed version?</value>
     <value>Choose what icon Froststrap should use.</value>
   </data>
   <data name="Menu.Appearance.Icon.Title" xml:space="preserve">
-    <value>Icon</value>
+    <value>Bootstrapper Icon</value>
   </data>
   <data name="Menu.Appearance.Preview" xml:space="preserve">
     <value>Preview</value>

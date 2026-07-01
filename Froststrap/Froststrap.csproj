@@ -68,10 +68,10 @@
   <ItemGroup>
     <PackageReference Include="AnimatedImage.Avalonia" Version="2.1.4" />
     <PackageReference Include="Avalonia" Version="12.0.5" />
-    <PackageReference Include="Avalonia.AvaloniaEdit" Version="11.4.1" />
-    <PackageReference Include="Avalonia.Desktop" Version="11.3.13" />
-    <PackageReference Include="Avalonia.Labs.Notifications" Version="11.2.0" />
-    <PackageReference Include="Avalonia.Diagnostics" Version="11.3.13">
+    <PackageReference Include="Avalonia.AvaloniaEdit" Version="12.0.0-rc1" />
+    <PackageReference Include="Avalonia.Desktop" Version="12.0.5" />
+    <PackageReference Include="Avalonia.Labs.Notifications" Version="12.0.2" />
+    <PackageReference Include="AvaloniaUI.DiagnosticsSupport" Version="2.2.0">
       <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
       <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
     </PackageReference>
@@ -84,7 +84,7 @@
     <PackageReference Include="securifybv.ShellLink" Version="0.1.0" />
     <PackageReference Include="SixLabors.ImageSharp" Version="3.1.12" />
     <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="10.0.8" />
-    <PackageReference Include="Tmds.DBus.Protocol" Version="0.21.3" />
+	<PackageReference Include="Tmds.DBus.Protocol" Version="0.92.0" />
     <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.106" PrivateAssets="all" />
   </ItemGroup>
 

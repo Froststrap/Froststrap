@@ -29,16 +29,6 @@
             <Setter Property="StrokeBrush" Value="{DynamicResource TextFillColorPrimaryBrush}" />
             <Setter Property="StrokeThickness" Value="1.5" />
         </Style>
-
-        <Style Selector="ui|ImageIcon Image">
-            <Setter Property="Width" Value="50" />
-            <Setter Property="Height" Value="50" />
-            <Setter Property="Stretch" Value="Uniform" />
-        </Style>
-
-        <Style Selector="ui|ImageIcon">
-            <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
-        </Style>
     </Application.Styles>
 
     <Application.Resources>
@@ -63,5 +53,6 @@
             <converters:NumberAbbreviationConverter x:Key="NumberAbbreviationConverter" />
             <converters:UrlToBitmapConverter x:Key="UrlToBitmapConverter" />
         </ResourceDictionary>
+		<x:String x:Key="AppIcon">avares://Froststrap/Froststrap.ico</x:String>
     </Application.Resources>
 </Application>

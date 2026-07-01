@@ -2,16 +2,17 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
+using Avalonia.Input.Platform;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
-using LucideAvalonia.Enum;
-using LucideAvalonia;
+using Avalonia.Threading;
+using Avalonia.VisualTree;
 using Froststrap.UI.Elements.Dialogs;
+using LucideAvalonia;
+using LucideAvalonia.Enum;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using Avalonia.Threading;
-using Avalonia.VisualTree;
 
 namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
 {

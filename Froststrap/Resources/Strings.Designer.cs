@@ -3449,7 +3449,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Title.
+        ///   Looks up a localized string similar to Bootstrapper Title.
         /// </summary>
         public static string Menu_Appearance_CustomisationTitle_Title {
             get {
@@ -3503,7 +3503,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Icon.
+        ///   Looks up a localized string similar to Bootstrapper Icon.
         /// </summary>
         public static string Menu_Appearance_Icon_Title {
             get {

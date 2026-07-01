@@ -3,7 +3,6 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Media;
 using Avalonia.Metadata;
-using FluentAvalonia.UI.Controls;
 using LucideAvalonia.Enum;
 using WindowState = Avalonia.Controls.WindowState;
 
@@ -42,60 +41,82 @@ namespace Froststrap.UI.Elements.Controls
         [Content]
         public object? Content { get => GetValue(ContentProperty); set => SetValue(ContentProperty, value); }
 
+        private Window? _window;
+        private IconButton? _minBtn;
+        private IconButton? _maxBtn;
+        private IconButton? _closeBtn;
+
         protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
         {
             base.OnApplyTemplate(e);
 
-            if (VisualRoot is not Window window) return;
+            _window = TopLevel.GetTopLevel(this) as Window;
+            if (_window == null) return;
 
-            // hides title and close stuff for macOS.
             foreach (var it in new[] { "PART_LeftPanel", "PART_RightPanel" })
             {
                 var ctrl = e.NameScope.Find<StackPanel>(it);
-                if (ctrl != null) ctrl!.IsVisible = !OperatingSystem.IsMacOS();
+                ctrl?.IsVisible = !OperatingSystem.IsMacOS();
             }
 
-            window.PropertyChanged += (s, ev) =>
+            _window.PropertyChanged += OnWindowPropertyChanged;
+
+            _minBtn = e.NameScope.Find<IconButton>("PART_MinimizeButton");
+            _maxBtn = e.NameScope.Find<IconButton>("PART_MaximizeButton");
+            _closeBtn = e.NameScope.Find<IconButton>("PART_CloseButton");
+
+            _minBtn?.Click += OnMinimizeClick;
+            _maxBtn?.Click += OnMaximizeClick;
+            _closeBtn?.Click += OnCloseClick;
+
+            UpdateMaximizeIcon();
+        }
+
+        private void OnWindowPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
+        {
+            if (e.Property.Name == nameof(Window.WindowState))
             {
-                if (ev.Property.Name == nameof(Window.WindowState))
-                {
-                    var maxBtn = e.NameScope.Find<IconButton>("PART_MaximizeButton");
-                    maxBtn?.Icon = window.WindowState == WindowState.Maximized
-                        ? LucideIconNames.Maximize
-                        : LucideIconNames.Minimize;
-                    SetValue(WindowStateProperty, window.WindowState);
-                }
-            };
+                SetValue(WindowStateProperty, _window!.WindowState);
+                UpdateMaximizeIcon();
+            }
+        }
 
-            var dragLayer = e.NameScope.Find<Control>("PART_DragLayer");
-            dragLayer?.PointerPressed += (s, ev) =>
+        private void UpdateMaximizeIcon()
+        {
+            if (_maxBtn != null && _window != null)
             {
-                if (ev.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
-                {
-                    if (ev.ClickCount == 2 && ShowMaximize)
-                    {
-                        window.WindowState = window.WindowState == WindowState.Maximized
-                            ? WindowState.Normal
-                            : WindowState.Maximized;
-                    }
-                    else
-                    {
-                        window.BeginMoveDrag(ev);
-                    }
-                }
-            };
+                _maxBtn.Icon = _window.WindowState == WindowState.Maximized
+                    ? LucideIconNames.Minimize
+                    : LucideIconNames.Maximize;
+            }
+        }
 
-            var minBtn = e.NameScope.Find<IconButton>("PART_MinimizeButton");
-            minBtn?.Click += (s, ev) => window.WindowState = WindowState.Minimized;
+        private void OnMinimizeClick(object? sender, EventArgs e)
+        {
+            _window?.WindowState = WindowState.Minimized;
+        }
 
-            var maxBtn = e.NameScope.Find<IconButton>("PART_MaximizeButton");
-            maxBtn?.Click += (s, ev) =>
-                window.WindowState = window.WindowState == WindowState.Maximized
-                    ? WindowState.Normal
-                    : WindowState.Maximized;
+        private void OnMaximizeClick(object? sender, EventArgs e)
+        {
+            if (_window == null) return;
+            _window.WindowState = _window.WindowState == WindowState.Maximized
+                ? WindowState.Normal
+                : WindowState.Maximized;
+        }
 
-            var closeBtn = e.NameScope.Find<IconButton>("PART_CloseButton");
-            closeBtn?.Click += (s, ev) => window.Close();
+        private void OnCloseClick(object? sender, EventArgs e)
+        {
+            _window?.Close();
+        }
+
+        protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+        {
+            base.OnDetachedFromVisualTree(e);
+
+            _window?.PropertyChanged -= OnWindowPropertyChanged;
+            _minBtn?.Click -= OnMinimizeClick;
+            _maxBtn?.Click -= OnMaximizeClick;
+            _closeBtn?.Click -= OnCloseClick;
         }
     }
 }

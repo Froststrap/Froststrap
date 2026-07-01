@@ -67,7 +67,7 @@
                         <StackPanel x:Name="PlaceIdsContent" Spacing="8" IsVisible="False">
                             <TextBlock Text="{x:Static resources:Strings.Menu_FlagProfiles_AddPlaceId}" FontSize="12" FontWeight="Medium" />
                             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
-                                <TextBox x:Name="NewPlaceIdTextBox" Watermark="{x:Static resources:Strings.Menu_FlagProfiles_PlaceIdWatermark}" />
+                                <TextBox x:Name="NewPlaceIdTextBox" PlaceholderText="{x:Static resources:Strings.Menu_FlagProfiles_PlaceIdWatermark}" />
                                 <Button x:Name="AddPlaceButton" Grid.Column="1" Content="{x:Static resources:Strings.Common_Add}" Click="AddPlaceButton_Click" MinWidth="80" />
                             </Grid>
 
@@ -81,7 +81,7 @@
                 <TabItem Header="{x:Static resources:Strings.Menu_Save}">
                     <StackPanel Spacing="12" Margin="0,0,0,24">
                         <Separator Margin="-12,8" />
-                        <TextBox x:Name="SaveProfile" Watermark="Profile Name" />
+                        <TextBox x:Name="SaveProfile" PlaceholderText="Profile Name" />
                     </StackPanel>
                 </TabItem>
 
@@ -90,7 +90,7 @@
                         <Separator Margin="-12,8" />
                         <StackPanel Spacing="12">
                             <Grid x:Name="RenamePanel" ColumnDefinitions="*,Auto,Auto,Auto" ColumnSpacing="8">
-                                <TextBox Grid.Column="0" x:Name="RenameTextBox" Watermark="Rename Profile" />
+                                <TextBox Grid.Column="0" x:Name="RenameTextBox" PlaceholderText="Rename Profile" />
                                 <Button Grid.Column="1" Content="{x:Static resources:Strings.Common_Rename}" Click="RenameButton_Click" MinWidth="80" />
                                 <Button Grid.Column="2" Content="{x:Static resources:Strings.Common_Copy}" Click="CopyButton_Click" MinWidth="80" />
                                 <Button Grid.Column="3" Content="{x:Static resources:Strings.Common_Update}" Click="UpdateButton_Click" MinWidth="80" />

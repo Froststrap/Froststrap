@@ -46,7 +46,7 @@
 
                 <Separator Margin="0,8" />
 
-                <ui:InfoBar Message="{x:Static resources:Strings.Menu_Mods_InfoBar}"
+                <ui:FAInfoBar Message="{x:Static resources:Strings.Menu_Mods_InfoBar}"
                             Severity="Informational"
                             IsOpen="True"
                             Margin="0,4"
@@ -160,7 +160,7 @@
                         <TextBlock Text="{x:Static resources:Strings.Menu_Mods_SelectedModAction}" FontWeight="SemiBold" Margin="0,0,0,8" />
 
                         <StackPanel IsEnabled="{Binding SelectedMod, Converter={x:Static conv:ObjectConverters.IsNotNull}}">
-                            <TextBox Watermark="New name"
+                            <TextBox PlaceholderText="New name"
                                      Text="{Binding NewName}"
                                      Margin="0,4" />
                             <controls:IconButton Icon="Pencil"

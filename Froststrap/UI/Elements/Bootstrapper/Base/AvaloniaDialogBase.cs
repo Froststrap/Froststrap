@@ -2,6 +2,7 @@
 using Avalonia.Threading;
 using Froststrap.UI.Utility;
 using Froststrap.UI.ViewModels.Bootstrapper;
+using Avalonia.Media;
 
 namespace Froststrap.UI.Elements.Bootstrapper.Base
 {
@@ -83,6 +84,10 @@ namespace Froststrap.UI.Elements.Bootstrapper.Base
         {
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
             CanResize = false;
+
+            this.WindowDecorations = WindowDecorations.None;
+
+            TextOptions.SetTextRenderingMode(this, TextRenderingMode.Antialias);
             this.Closing += Dialog_Closing;
         }
 

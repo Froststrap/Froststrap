@@ -63,7 +63,7 @@
         <Border Grid.Row="2"
                 Classes="loadingView"
                 Tag="{Binding LoadState}">
-            <ui:ProgressRing IsIndeterminate="True"
+            <ui:FAProgressRing IsIndeterminate="True"
                              Width="100" Height="100"
                              VerticalAlignment="Center"
                              HorizontalAlignment="Center" />

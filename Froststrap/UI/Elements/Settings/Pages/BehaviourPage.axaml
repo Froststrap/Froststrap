@@ -82,7 +82,7 @@
                         Header="{x:Static resources:Strings.Menu_Bootstrapper_PreferredRegion_Title}"
                         Description="{x:Static resources:Strings.Menu_Bootstrapper_PreferredRegion_Description}">
 						<StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-							<ui:ProgressRing
+							<ui:FAProgressRing
                                 IsActive="{Binding IsLoadingRegions}"
                                 Width="20"
                                 Height="20"

@@ -166,7 +166,7 @@
                                                Width="100"
                                                Minimum="0"
                                                Maximum="64"
-                                               Watermark="8"
+                                               PlaceholderText="8"
                                                ToolTip.Tip="{x:Static resources:Strings.Menu_ModGenerator_BandInfo}"
                                                VerticalAlignment="Center"
                                                IsEnabled="{Binding IsNotGeneratingMod}"/>
@@ -177,7 +177,7 @@
                             <StackPanel Grid.Column="0" Margin="0,0,8,0">
                                 <TextBlock Text="{x:Static resources:Strings.Menu_ModGenerator_RobloxIcon}" FontWeight="SemiBold" Margin="0,0,0,4"/>
                                 <Grid ColumnDefinitions="*,Auto,Auto">
-                                    <TextBox Text="{Binding RobloxIconImagePath}" IsReadOnly="True" Watermark="No image selected"
+                                    <TextBox Text="{Binding RobloxIconImagePath}" IsReadOnly="True" PlaceholderText="No image selected"
                                              VerticalAlignment="Center" IsEnabled="{Binding IsNotGeneratingMod}"/>
                                     <Button Grid.Column="1" Content="{x:Static resources:Strings.Common_Select}" Command="{Binding SelectRobloxIconCommand}" Margin="4,0,4,0"
                                             IsEnabled="{Binding IsNotGeneratingMod}"/>
@@ -189,7 +189,7 @@
                             <StackPanel Grid.Column="1" Margin="8,0,0,0">
                                 <TextBlock Text="{x:Static resources:Strings.Menu_ModGenerator_CustomSpinner}" FontWeight="SemiBold" Margin="0,0,0,4"/>
                                 <Grid ColumnDefinitions="*,Auto,Auto">
-                                    <TextBox Text="{Binding CustomSpinnerPath}" IsReadOnly="True" Watermark="No image selected"
+                                    <TextBox Text="{Binding CustomSpinnerPath}" IsReadOnly="True" PlaceholderText="No image selected"
                                              VerticalAlignment="Center" IsEnabled="{Binding IsNotGeneratingMod}"/>
                                     <Button Grid.Column="1" Content="{x:Static resources:Strings.Common_Select}" Command="{Binding SelectSpinnerIconCommand}" Margin="4,0,4,0"
                                             IsEnabled="{Binding IsNotGeneratingMod}"/>
@@ -201,7 +201,7 @@
 
                         <TextBlock Text="{x:Static resources:Strings.Menu_ModGenerator_CustomModName}" FontWeight="SemiBold" Margin="0,8,0,4" IsVisible="{Binding IncludeModifications}"/>
                         <TextBox Text="{Binding ModFolderName, UpdateSourceTrigger=PropertyChanged}"
-                                 Watermark="{Binding SuggestedFolderName}"
+                                 PlaceholderText="{Binding SuggestedFolderName}"
                                  IsVisible="{Binding IncludeModifications}"
                                  IsEnabled="{Binding IsNotGeneratingMod}"
                                  Margin="0,8,0,4"/>

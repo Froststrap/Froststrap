@@ -184,7 +184,7 @@
                                 <StackPanel Grid.RowSpan="2" Grid.Column="1" Margin="4,0,0,0" IsVisible="{Binding IsCustomCursorSetSelected}">
                                     <Grid Margin="0,0,0,48" RowDefinitions="Auto,16,Auto" ColumnDefinitions="*,*,*,*">
                                         <Grid Grid.Row="0" Grid.ColumnSpan="4" ColumnDefinitions="*,Auto">
-                                            <TextBox Grid.Column="0" Watermark="Custom Cursor Set 1" Text="{Binding SelectedCustomCursorSetName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch" />
+                                            <TextBox Grid.Column="0" PlaceholderText="Custom Cursor Set 1" Text="{Binding SelectedCustomCursorSetName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch" />
                                             <controls:IconButton Grid.Column="1" Margin="4,0,0,0"
                                                                  Icon="Pencil"
                                                                  Content="{x:Static resources:Strings.Common_Rename}"

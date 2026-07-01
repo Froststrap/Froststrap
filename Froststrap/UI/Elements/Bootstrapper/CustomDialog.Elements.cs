@@ -558,9 +558,9 @@ namespace Froststrap.UI.Elements.Bootstrapper
             return progressBar;
         }
 
-        private static FluentAvalonia.UI.Controls.ProgressRing HandleXmlElement_ProgressRing(CustomDialog dialog, XElement xmlElement)
+        private static FluentAvalonia.UI.Controls.FAProgressRing HandleXmlElement_ProgressRing(CustomDialog dialog, XElement xmlElement)
         {
-            var progressRing = new FluentAvalonia.UI.Controls.ProgressRing();
+            var progressRing = new FluentAvalonia.UI.Controls.FAProgressRing();
             HandleXmlElement_RangeBase(dialog, progressRing, xmlElement);
 
             progressRing.IsIndeterminate = ParseXmlAttribute<bool>(xmlElement, "IsIndeterminate", false);
@@ -568,13 +568,13 @@ namespace Froststrap.UI.Elements.Bootstrapper
             if (xmlElement.Attribute("Name")?.Value == "PrimaryProgressRing")
             {
                 Binding isIndeterminateBinding = new("ProgressIndeterminate") { Mode = BindingMode.OneWay };
-                progressRing.Bind(FluentAvalonia.UI.Controls.ProgressRing.IsIndeterminateProperty, isIndeterminateBinding);
+                progressRing.Bind(FluentAvalonia.UI.Controls.FAProgressRing.IsIndeterminateProperty, isIndeterminateBinding);
 
                 Binding maximumBinding = new("ProgressMaximum") { Mode = BindingMode.OneWay };
-                progressRing.Bind(FluentAvalonia.UI.Controls.ProgressRing.MaximumProperty, maximumBinding);
+                progressRing.Bind(FluentAvalonia.UI.Controls.FAProgressRing.MaximumProperty, maximumBinding);
 
                 Binding valueBinding = new("ProgressValue") { Mode = BindingMode.OneWay };
-                progressRing.Bind(FluentAvalonia.UI.Controls.ProgressRing.ValueProperty, valueBinding);
+                progressRing.Bind(FluentAvalonia.UI.Controls.FAProgressRing.ValueProperty, valueBinding);
             }
 
             return progressRing;

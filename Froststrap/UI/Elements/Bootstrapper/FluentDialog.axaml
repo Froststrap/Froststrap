@@ -15,7 +15,6 @@
     Height="280"
     MinHeight="0"
     CanResize="False"
-    SystemDecorations="None"
     Title="Froststrap"
     WindowStartupLocation="CenterScreen"
     ExtendClientAreaToDecorationsHint="True"

@@ -139,7 +139,7 @@
                            FontWeight="SemiBold"
                            Opacity="0.9"/>
 
-                <ui:ProgressRing IsActive="{Binding IsLoading}"
+                <ui:FAProgressRing IsActive="{Binding IsLoading}"
                                  Width="48"
                                  Height="48"
                                  Foreground="{DynamicResource SystemAccentColor}"/>
@@ -159,7 +159,7 @@
                            FontWeight="SemiBold"
                            Opacity="0.9"/>
 
-                <ui:ProgressRing IsActive="{Binding IsJoiningBestRegion}"
+                <ui:FAProgressRing IsActive="{Binding IsJoiningBestRegion}"
                                  Width="48"
                                  Height="48"
                                  Foreground="{DynamicResource SystemAccentColor}"/>
@@ -202,7 +202,7 @@
                     <Grid>
                         <Grid IsVisible="{Binding IsLoadingServers}" Height="350" Background="#80000000" ZIndex="1">
                             <StackPanel Spacing="16" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <ui:ProgressRing IsActive="{Binding IsLoadingServers}" Width="40" Height="40"
+                                <ui:FAProgressRing IsActive="{Binding IsLoadingServers}" Width="40" Height="40"
                                                  Foreground="{DynamicResource SystemAccentColor}"/>
                                 <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_LoadingServers}" FontSize="12" Opacity="0.7"/>
                             </StackPanel>
@@ -275,7 +275,7 @@
                             <StackPanel Spacing="16"
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center">
-                                <ui:ProgressRing IsActive="{Binding IsLoadingSubplaces}"
+                                <ui:FAProgressRing IsActive="{Binding IsLoadingSubplaces}"
                                                  Width="40"
                                                  Height="40"
                                                  Foreground="{DynamicResource SystemAccentColor}"/>
@@ -348,7 +348,7 @@
                         <Grid Height="350">
                             <Grid IsVisible="{Binding IsLoadingPrivateServers}">
                                 <StackPanel Spacing="16" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                    <ui:ProgressRing IsActive="{Binding IsLoadingPrivateServers}" Width="40" Height="40"
+                                    <ui:FAProgressRing IsActive="{Binding IsLoadingPrivateServers}" Width="40" Height="40"
                                                      Foreground="{DynamicResource SystemAccentColor}"/>
                                     <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_LoadingPrivateServers}" FontSize="12" Opacity="0.7"/>
                                 </StackPanel>

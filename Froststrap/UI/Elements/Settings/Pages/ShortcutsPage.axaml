@@ -93,7 +93,7 @@
                             x:Name="SearchTextBox"
                             VerticalAlignment="Center"
                             Text="{Binding SearchQuery, Mode=TwoWay}"
-                            Watermark="{x:Static resources:Strings.Menu_RegionSelector_FindGame}">
+                            PlaceholderText="{x:Static resources:Strings.Menu_RegionSelector_FindGame}">
 
                             <TextBox.InnerRightContent>
                                 <controls:IconButton
@@ -160,7 +160,8 @@
                                                                 Spacing="4">
                                                                 <ic:Lucide
                                                                     Margin="8,2,0,0"
-                                                                    FontSize="12"
+                                                                    Height="12"
+																	Width="12"
                                                                     Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                                                                     Icon="Users"/>
                                                                 <TextBlock
@@ -187,11 +188,11 @@
                     <Grid Margin="0,16,0,0" ColumnDefinitions="*,16,*">
                         <StackPanel Grid.Column="0">
                             <Label Content="{x:Static resources:Strings.Menu_Shortcuts_ServerInstanceId}" FontSize="12" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
-                            <TextBox Text="{Binding JobId, UpdateSourceTrigger=PropertyChanged}" Margin="0,4,0,0" Watermark="GUID/JobID" />
+                            <TextBox Text="{Binding JobId, UpdateSourceTrigger=PropertyChanged}" Margin="0,4,0,0" PlaceholderText="GUID/JobID" />
                         </StackPanel>
                         <StackPanel Grid.Column="2">
                             <Label Content="{x:Static resources:Strings.Menu_Shortcuts_PrivateAccessCode}" FontSize="12" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
-                            <TextBox Text="{Binding AccessCode, UpdateSourceTrigger=PropertyChanged}" Margin="0,4,0,0" Watermark="Access Code" />
+                            <TextBox Text="{Binding AccessCode, UpdateSourceTrigger=PropertyChanged}" Margin="0,4,0,0" PlaceholderText="Access Code" />
                         </StackPanel>
                     </Grid>
 

@@ -23,7 +23,7 @@
                         MaxWidth="500"
                         VerticalAlignment="Center"
                         Text="{Binding SearchQuery, Mode=TwoWay}"
-                        Watermark="{x:Static resources:Strings.Menu_RegionSelector_FindGame}">
+                        PlaceholderText="{x:Static resources:Strings.Menu_RegionSelector_FindGame}">
 
                         <TextBox.InnerRightContent>
                             <controls:IconButton
@@ -90,7 +90,8 @@
                                                             Spacing="4">
                                                             <ic:Lucide
                                                                 Margin="0,2,0,0"
-                                                                FontSize="12"
+                                                                Height="12"
+																Width="12"
                                                                 Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                                                                 Icon="Users"/>
                                                             <TextBlock
@@ -185,8 +186,8 @@
                         VerticalAlignment="Center">
                 <ic:Lucide
                     Margin="0,2,0,0"
-                    Width="64"
-                    Height="64"
+                    Width="48"
+                    Height="48"
                     HorizontalAlignment="Center"
                     Opacity="0.5"
                     Foreground="{DynamicResource TextFillColorSecondaryBrush}"
@@ -209,7 +210,7 @@
                             VerticalAlignment="Center"
                             Spacing="16">
 
-                    <ui:ProgressRing IsIndeterminate="True"
+                    <ui:FAProgressRing IsIndeterminate="True"
                                      Width="100" Height="100"
                                      HorizontalAlignment="Center" />
 

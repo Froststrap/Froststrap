@@ -49,7 +49,7 @@
             <Grid IsVisible="{Binding !IsLoading}" RowDefinitions="Auto, Auto, *">
 
                 <StackPanel Grid.Row="0" Margin="0,0,0,8">
-                    <TextBox Watermark="{x:Static resources:Strings.Menu_CommunityMods_SearchMods}"
+                    <TextBox PlaceholderText="{x:Static resources:Strings.Menu_CommunityMods_SearchMods}"
                              Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}"
                              Margin="4,0,12,0" />
                 </StackPanel>
@@ -118,7 +118,7 @@
                                                    VerticalAlignment="Stretch"
                                                    RenderOptions.BitmapInterpolationMode="HighQuality"/>
 
-                                            <ui:ProgressRing IsVisible="{Binding IsLoadingThumbnail}"
+                                            <ui:FAProgressRing IsVisible="{Binding IsLoadingThumbnail}"
                                                              IsIndeterminate="True"
                                                              Width="24" Height="24"
                                                              HorizontalAlignment="Center"

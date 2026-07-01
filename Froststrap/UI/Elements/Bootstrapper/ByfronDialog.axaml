@@ -10,7 +10,6 @@
                          x:DataType="vm:ByfronDialogViewModel"
                          Width="600" Height="400"
                          CanResize="False"
-                         SystemDecorations="None"
                          WindowStartupLocation="CenterScreen"
                          Title="Froststrap"
                          Background="Transparent"

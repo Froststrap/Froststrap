@@ -42,7 +42,7 @@
                                        Text="{x:Static resources:Strings.Common_Name}" />
                             <TextBox Grid.Column="1"
                                      x:Name="FlagNameTextBox"
-                                     Watermark="FFlagExample" />
+                                     PlaceholderText="FFlagExample" />
                         </Grid>
 
                         <Grid ColumnDefinitions="75, *" ColumnSpacing="12">
@@ -51,7 +51,7 @@
                                        Text="{x:Static resources:Strings.Common_Value}" />
                             <TextBox Grid.Column="1"
                                      x:Name="FlagValueTextBox"
-                                     Watermark="True" />
+                                     PlaceholderText="True" />
                         </Grid>
                     </StackPanel>
                 </TabItem>
@@ -67,7 +67,7 @@
                                  TextWrapping="Wrap"
                                  BorderThickness="0"
                                  VerticalContentAlignment="Center"
-                                 Watermark="{}{&#10;    &quot;FFlagDebugDisplayFPS&quot;: &quot;True&quot;&#10;}" />
+                                 PlaceholderText="{}{&#10;    &quot;FFlagDebugDisplayFPS&quot;: &quot;True&quot;&#10;}" />
 
                         <controls:IconButton Content="{x:Static resources:Strings.Common_ImportFromFile}"
                                              Icon="FileText"

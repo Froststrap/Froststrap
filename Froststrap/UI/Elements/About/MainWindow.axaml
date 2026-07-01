@@ -22,46 +22,46 @@
                            Icon="avares://Froststrap/Froststrap.ico" />
 
         <Grid Grid.Row="1" Name="MainGrid">
-            <ui:NavigationView Name="NavView"
+            <ui:FANavigationView Name="NavView"
                                IsPaneOpen="False"
                                PaneDisplayMode="LeftCompact"
                                IsSettingsVisible="False"
                                IsBackButtonVisible="False"
                                OpenPaneLength="140"
                                ItemInvoked="NavView_ItemInvoked">
-                <ui:NavigationView.Styles>
-                    <Style Selector="ui|NavigationView /template/ ScrollViewer#MenuItemsScrollViewer">
+                <ui:FANavigationView.Styles>
+                    <Style Selector="ui|FANavigationView /template/ ScrollViewer#MenuItemsScrollViewer">
                         <Setter Property="VerticalScrollBarVisibility" Value="Hidden"/>
                     </Style>
-                </ui:NavigationView.Styles>
-                <ui:NavigationView.MenuItems>
-                    <ui:NavigationViewItem Tag="about">
-                        <ui:NavigationViewItem.Content>
+                </ui:FANavigationView.Styles>
+                <ui:FANavigationView.MenuItems>
+                    <ui:FANavigationViewItem Tag="about">
+                        <ui:FANavigationViewItem.Content>
                             <StackPanel Orientation="Horizontal" Spacing="8">
                                 <ic:Lucide Icon="Info" Width="16" Height="16" />
                                 <TextBlock Text="{x:Static resources:Strings.Menu_About_Title}" VerticalAlignment="Center" />
                             </StackPanel>
-                        </ui:NavigationViewItem.Content>
-                    </ui:NavigationViewItem>
+                        </ui:FANavigationViewItem.Content>
+                    </ui:FANavigationViewItem>
 
-                    <ui:NavigationViewItem Tag="licenses">
-                        <ui:NavigationViewItem.Content>
+                    <ui:FANavigationViewItem Tag="licenses">
+                        <ui:FANavigationViewItem.Content>
                             <StackPanel Orientation="Horizontal" Spacing="8">
                                 <ic:Lucide Icon="Book" Width="16" Height="16" />
                                 <TextBlock Text="{x:Static resources:Strings.About_Licenses_Title}" VerticalAlignment="Center" />
                             </StackPanel>
-                        </ui:NavigationViewItem.Content>
-                    </ui:NavigationViewItem>
-                </ui:NavigationView.MenuItems>
+                        </ui:FANavigationViewItem.Content>
+                    </ui:FANavigationViewItem>
+                </ui:FANavigationView.MenuItems>
 
-                <ui:NavigationView.Content>
+                <ui:FANavigationView.Content>
                     <TransitioningContentControl
                         x:Name="PageContentControl"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Stretch"
                         Background="{DynamicResource LayerFillColorDefaultBrush}" />
-                </ui:NavigationView.Content>
-            </ui:NavigationView>
+                </ui:FANavigationView.Content>
+            </ui:FANavigationView>
         </Grid>
     </Grid>
 </base:AvaloniaWindow>
