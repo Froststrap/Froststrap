@@ -16,6 +16,7 @@ jobs:
         with:
           upload_sources: true
           download_translations: true
+          config: "Froststrap/Resources/crowdin.yml"
           localization_branch_name: l10n_crowdin_translations
           create_pull_request: true
           pull_request_title: "chore: update translations from Crowdin"
