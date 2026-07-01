@@ -8,6 +8,7 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Styling;
+using FluentAvalonia.UI.Controls;
 using Froststrap.UI.Elements.Controls;
 using System.Xml.Linq;
 
@@ -542,6 +543,14 @@ namespace Froststrap.UI.Elements.Bootstrapper
             HandleXmlElement_RangeBase(dialog, progressBar, xmlElement);
 
             progressBar.IsIndeterminate = ParseXmlAttribute<bool>(xmlElement, "IsIndeterminate", false);
+
+            object? cornerRadius = GetCornerRadiusFromXElement(xmlElement, "CornerRadius");
+            if (cornerRadius != null)
+                ProgressBarHelper.SetCornerRadius(progressBar, (CornerRadius)cornerRadius);
+
+            object? indicatorCornerRadius = GetCornerRadiusFromXElement(xmlElement, "IndicatorCornerRadius");
+            if (indicatorCornerRadius != null)
+                ProgressBarHelper.SetIndicatorCornerRadius(progressBar, (CornerRadius)indicatorCornerRadius);
 
             if (xmlElement.Attribute("Name")?.Value == "PrimaryProgressBar")
             {
