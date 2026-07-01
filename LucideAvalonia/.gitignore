@@ -1,0 +1,69 @@
+# Ignore Visual Studio Code configuration files
+.vscode/
+*.code-workspace
+
+# Ignore build and publish folders
+bin/
+obj/
+out/
+
+# Ignore user-specific and debug configuration files
+*.user
+*.rsuser
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Ignore log files
+*.log
+
+# Ignore environment configuration files
+.env
+.env.*
+
+# Ignore Avalonia specific files
+AppData/
+
+# Ignore system-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore Windows-specific files
+*.db
+*.opendb
+
+# Ignore compiled output and cache files
+*.pdb
+*.mdb
+*.exe
+*.dll
+*.pyc
+*.pidb
+*.cache
+*.ilk
+*.lib
+*.nupkg
+*.snupkg
+*.nuspec
+*.psess
+*.vsp
+*.vspx
+*.appx
+*.appxsym
+*.pfx
+
+# Ignore NuGet packages folder
+packages/
+*.nupkg
+*.snupkg
+
+# Ignore JetBrains Rider configuration files
+.idea/
+*.sln.iml
+
+# Ignore test results
+TestResults/
+
+# Ignore Visual Studio and NuGet folders
+.vs/
+.nuget/

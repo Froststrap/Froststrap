@@ -70,7 +70,7 @@
                                  Watermark="{}{&#10;    &quot;FFlagDebugDisplayFPS&quot;: &quot;True&quot;&#10;}" />
 
                         <controls:IconButton Content="{x:Static resources:Strings.Common_ImportFromFile}"
-                                             Icon="DocumentText"
+                                             Icon="FileText"
                                              HorizontalAlignment="Stretch"
                                              Click="ImportButton_Click"/>
                     </StackPanel>

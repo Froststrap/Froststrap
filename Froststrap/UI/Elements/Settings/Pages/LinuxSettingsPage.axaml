@@ -9,7 +9,7 @@
     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
     xmlns:ui="using:FluentAvalonia.UI.Controls"
     xmlns:gv="using:Froststrap.UI.ViewModels"
-    xmlns:ic="using:FluentIcons.Avalonia.Fluent"
+    xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
     d:DesignHeight="2500"
     d:DesignWidth="1200"
     x:DataType="vm:LinuxSettingsViewModel"
@@ -121,7 +121,7 @@
                                              Width="200"
                                              Watermark="{x:Static resources:Strings.Common_Value}"
                                              Padding="8,5" />
-                                    <controls:IconButton Icon="Delete"
+                                    <controls:IconButton Icon="Trash2"
                                                          Classes="Danger"
                                                          Command="{Binding RemoveCommand}"
                                                          Width="30"

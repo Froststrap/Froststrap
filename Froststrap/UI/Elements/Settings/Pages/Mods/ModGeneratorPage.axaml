@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
-             xmlns:ic="using:FluentIcons.Avalonia.Fluent"
+             xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
+             xmlns:lucideEnums="clr-namespace:LucideAvalonia.Enum;assembly=LucideAvalonia"
              xmlns:resources="using:Froststrap.Resources"
              xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
              xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings.Mods"
@@ -14,13 +15,13 @@
              d:DesignWidth="1100"
              mc:Ignorable="d">
 
-    <ScrollViewer>
-        <Grid Margin="14" RowDefinitions="Auto,Auto,*">
-            <Grid Grid.Row="0" ColumnDefinitions="*,*,*">
-                <controls:CardAction Grid.Column="0" Margin="0,0,4,0"
+	<ScrollViewer>
+		<Grid Margin="14" RowDefinitions="Auto,Auto,*">
+			<Grid Grid.Row="0" ColumnDefinitions="*,*,*">
+				<controls:CardAction Grid.Column="0" Margin="0,0,4,0"
                                      Command="{Binding OpenCommunityModsCommand}"
                                      Header="{x:Static resources:Strings.Menu_CommunityMods_Title}"
-                                     Icon="ShoppingStore"
+                                     Icon="House"
                                      Description="{x:Static resources:Strings.Menu_CommunityMods_Description}" />
 
                 <controls:CardAction Grid.Column="1" Margin="2,0,2,0"
@@ -32,7 +33,7 @@
                 <controls:CardAction Grid.Column="2" Margin="4,0,0,0"
                                      Command="{Binding OpenModsCommand}"
                                      Header="{x:Static resources:Strings.Menu_Mods_Title}"
-                                     Icon="TextBulletList"
+                                     Icon="List"
                                      Description="{x:Static resources:Strings.Menu_Mods_Description}" />
             </Grid>
 
@@ -222,7 +223,7 @@
                             <Button.ContentTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-                                        <ic:SymbolIcon Foreground="{DynamicResource TextFillColorPrimaryBrush}" Symbol="PlayCircle" />
+                                        <ic:Lucide StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}" Icon="CirclePlay" />
                                         <TextBlock Foreground="{DynamicResource TextFillColorPrimaryBrush}" Text="{Binding}" />
                                     </StackPanel>
                                 </DataTemplate>

@@ -112,7 +112,7 @@
             <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto" ColumnSpacing="12">
                 <controls:IconButton x:Name="RemovePlaceButton"
                                      Classes="Danger"
-                                     Icon="Delete"
+                                     Icon="Trash2"
                                      Grid.Column="0"
                                      Content="{x:Static resources:Strings.Menu_FlagProfiles_RemoveSelected}"
                                      Click="RemovePlaceButton_Click"
@@ -127,7 +127,7 @@
                 <StackPanel Grid.Column="4" Orientation="Horizontal" Spacing="12" HorizontalAlignment="Right">
 
                     <controls:IconButton x:Name="DeleteButton"
-                                         Icon="Delete"
+                                         Icon="Trash2"
                                          Classes="Danger"
                                          Content="{x:Static resources:Strings.Menu_FlagProfiles_DeleteSelected}"
                                          Click="DeleteButton_Click"

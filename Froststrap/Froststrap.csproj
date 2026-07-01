@@ -72,14 +72,12 @@
     <PackageReference Include="Avalonia.Desktop" Version="11.3.13" />
     <PackageReference Include="Avalonia.Labs.Notifications" Version="11.2.0" />
     <PackageReference Include="FluentAvaloniaUI" Version="2.5.1" />
-    <PackageReference Include="FluentIcons.Avalonia.Fluent" Version="2.0.323" />
     <PackageReference Include="Avalonia.Diagnostics" Version="11.3.13">
       <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
       <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
     </PackageReference>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
     <PackageReference Include="DiscordRichPresence" Version="1.6.1.70" />
-    <PackageReference Include="LucideAvalonia" Version="1.6.2" />
     <PackageReference Include="Markdig" Version="1.2.0" />
     <PackageReference Include="SharpZipLib" Version="1.4.2" />
     <PackageReference Include="PuppeteerSharp" Version="24.42.0" />
@@ -93,6 +91,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ColorPicker\ColorPicker.AvaloniaUI\ColorPicker.AvaloniaUI.csproj" />
+    <ProjectReference Include="..\LucideAvalonia\LucideAvalonia\LucideAvalonia.csproj" />
   </ItemGroup>
 
   <ItemGroup>

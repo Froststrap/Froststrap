@@ -6,15 +6,11 @@
     xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
     xmlns:sty="using:FluentAvalonia.Styling"
     xmlns:converters="using:Froststrap.UI.Converters"
+    xmlns:ui="using:FluentAvalonia.UI.Controls"
     RequestedThemeVariant="Dark">
 
     <Application.Styles>
         <sty:FluentAvaloniaTheme PreferSystemTheme="True" PreferUserAccentColor="True" />
-
-        <Style Selector="ic|Lucide">
-            <Setter Property="StrokeBrush" Value="{DynamicResource TextFillColorPrimaryBrush}" />
-            <Setter Property="StrokeThickness" Value="1.5" />
-        </Style>
 
         <StyleInclude Source="avares://Froststrap/UI/Elements/Controls/Hyperlink.axaml" />
         <StyleInclude Source="avares://Froststrap/UI/Elements/Controls/OptionControl.axaml" />
@@ -28,6 +24,21 @@
         <StyleInclude Source="avares://AvaloniaEdit/Themes/Fluent/AvaloniaEdit.xaml" />
 
         <StyleInclude Source="avares://Froststrap/UI/AppThemes/Default.axaml" />
+
+        <Style Selector="ic|Lucide">
+            <Setter Property="StrokeBrush" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+            <Setter Property="StrokeThickness" Value="1.5" />
+        </Style>
+
+        <Style Selector="ui|ImageIcon Image">
+            <Setter Property="Width" Value="50" />
+            <Setter Property="Height" Value="50" />
+            <Setter Property="Stretch" Value="Uniform" />
+        </Style>
+
+        <Style Selector="ui|ImageIcon">
+            <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+        </Style>
     </Application.Styles>
 
     <Application.Resources>
@@ -36,6 +47,7 @@
                 <ResourceInclude Source="avares://ColorPicker.AvaloniaUI/Templates/HueSlider.axaml" />
                 <ResourceInclude Source="avares://ColorPicker.AvaloniaUI/Templates/SquareSlider.axaml" />
                 <ResourceInclude Source="avares://ColorPicker.AvaloniaUI/Templates/SquarePicker.axaml" />
+                <ResourceInclude Source="avares://LucideAvalonia/Lucide/ResourcesIcons.axaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <StaticResource x:Key="ToolTipBackground" ResourceKey="ToolTipBackgroundBrush" />

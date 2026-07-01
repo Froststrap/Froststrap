@@ -19,21 +19,21 @@
             <Grid ColumnDefinitions="*,*,*" ColumnSpacing="6">
                 <controls:CardAction
                     Grid.Column="0"
-                    Icon="ArrowImport"
+                    Icon="ArrowRightToLine"
                     Header="{x:Static resources:Strings.Menu_BottomButtons_ImportSettings}"
                     Command="{Binding ImportSettingsCommand}"
                     CommandParameter="{Binding $parent[UserControl]}" />
 
                 <controls:CardAction
                     Grid.Column="1"
-                    Icon="ArrowExport"
+                    Icon="ArrowRightFromLine"
                     Header="{x:Static resources:Strings.Menu_BottomButtons_ExportSettings}"
                     Command="{Binding ExportSettingsCommand}"
                     CommandParameter="{Binding $parent[UserControl]}" />
 
                 <controls:CardAction
                     Grid.Column="2"
-                    Icon="ArrowReset"
+                    Icon="RotateCcw"
                     Header="{x:Static resources:Strings.Menu_BottomButtons_ResetSettingsToDefault}"
                     Command="{Binding ResetSettingsToDefaultCommand}" />
             </Grid>

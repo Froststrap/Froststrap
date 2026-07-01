@@ -5,7 +5,7 @@
 
     <Style Selector="controls|TitleBar">
         <Setter Property="Background" Value="Transparent" />
-        <Setter Property="Height" Value="48" /> 
+        <Setter Property="Height" Value="48" />
         <Setter Property="Template">
             <ControlTemplate>
                 <Grid ColumnDefinitions="Auto, *, Auto"
@@ -38,17 +38,17 @@
                     <StackPanel Grid.Column="2" Name="PART_RightPanel" Orientation="Horizontal" VerticalAlignment="Stretch">
                         <controls:IconButton Name="PART_MinimizeButton"
                                              Classes="TitleBarButton"
-                                             Icon="Subtract"
+                                             Icon="Minus"
                                              IsVisible="{TemplateBinding ShowMinimize}"/>
 
                         <controls:IconButton Name="PART_MaximizeButton"
                                              Classes="TitleBarButton"
                                              IsVisible="{TemplateBinding ShowMaximize}"
-                                             Icon="FullScreenMaximize"/>
+                                             Icon="Maximize"/>
 
                         <controls:IconButton Name="PART_CloseButton"
                                              Classes="TitleBarButton Close"
-                                             Icon="Dismiss"
+                                             Icon="X"
                                              IsVisible="{TemplateBinding ShowClose}"/>
                     </StackPanel>
                 </Grid>
@@ -58,10 +58,12 @@
 
     <Style Selector="controls|IconButton.TitleBarButton">
         <Setter Property="Width" Value="46" />
-        <Setter Property="Height" Value="32" /> <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Height" Value="32" />
+        <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="CornerRadius" Value="0" />
-        <Setter Property="VerticalAlignment" Value="Top" /> <Setter Property="IconSize" Value="10" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="IconSize" Value="10" />
         <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
     </Style>
 
@@ -73,9 +75,16 @@
         <Setter Property="Background" Value="#C42B1C" />
     </Style>
 
+    <Style Selector="controls|IconButton.TitleBarButton.Close:pointerover">
+        <Setter Property="Foreground" Value="White" />
+    </Style>
 
     <Style Selector="controls|IconButton.TitleBarButton.Close:pressed /template/ Border#PART_LayoutRoot">
         <Setter Property="Background" Value="#B22619" />
+    </Style>
+
+    <Style Selector="controls|IconButton.TitleBarButton.Close:pressed">
+        <Setter Property="Foreground" Value="White" />
     </Style>
 
     <Style Selector="controls|IconButton.TitleBarButton:disabled">

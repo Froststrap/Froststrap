@@ -14,6 +14,7 @@ using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
 using Froststrap.Integrations;
 using Froststrap.UI.Elements.Settings;
+using LucideAvalonia.Enum;
 using System.Collections.ObjectModel;
 
 namespace Froststrap.UI.ViewModels
@@ -426,7 +427,7 @@ namespace Froststrap.UI.ViewModels
             string.Format(Strings.Menu_SearchBar_JoiningName, content.Name),
             InfoBarSeverity.Success,
             5000,
-            FluentIcons.Common.Symbol.Globe
+            LucideIconNames.Globe
             );
         }
 
@@ -443,7 +444,7 @@ namespace Froststrap.UI.ViewModels
                 Strings.Menu_SearchBar_AutoJoin,
                 InfoBarSeverity.Informational,
                 5000,
-                FluentIcons.Common.Symbol.Globe
+                LucideIconNames.Globe
             );
 
             try
@@ -465,7 +466,7 @@ namespace Froststrap.UI.ViewModels
                         Strings.Menu_SearchBar_JoiningBest,
                         InfoBarSeverity.Success,
                         3000,
-                        FluentIcons.Common.Symbol.Checkmark
+                        LucideIconNames.Check
                     );
                 }
                 else
@@ -475,7 +476,7 @@ namespace Froststrap.UI.ViewModels
                         Strings.Menu_SearchBar_NoSuitableServer,
                         InfoBarSeverity.Warning,
                         5000,
-                        FluentIcons.Common.Symbol.Warning
+                        LucideIconNames.TriangleAlert
                     );
                 }
             }
@@ -487,7 +488,7 @@ namespace Froststrap.UI.ViewModels
                     string.Format(Strings.Menu_SearchBar_JoinError, ex.Message),
                     InfoBarSeverity.Error,
                     5000,
-                    FluentIcons.Common.Symbol.AccessibilityError
+                    LucideIconNames.TriangleAlert
                 );
             }
         }

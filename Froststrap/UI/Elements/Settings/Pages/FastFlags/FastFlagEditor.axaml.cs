@@ -4,11 +4,14 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
-using FluentIcons.Common;
+using LucideAvalonia.Enum;
+using LucideAvalonia;
 using Froststrap.UI.Elements.Dialogs;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Avalonia.Threading;
+using Avalonia.VisualTree;
 
 namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
 {
@@ -77,7 +80,9 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
                 {
                     Name = pair.Key,
                     Value = pair.Value?.ToString() ?? "",
-                    Preset = presetFlags.Contains(pair.Key) ? Symbol.CheckmarkCircle : Symbol.CircleOff
+                    Preset = presetFlags.Contains(pair.Key)
+                        ? LucideIconNames.CircleCheck
+                        : LucideIconNames.CircleX
                 };
 
                 _fastFlagList.Add(entry);
@@ -90,6 +95,37 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
             DeleteSelectedButton?.IsEnabled = false;
 
             UpdateTotalFlagsCount();
+
+            // Update icons after data is loaded
+            Dispatcher.UIThread.Post(UpdatePresetIcons, DispatcherPriority.Loaded);
+        }
+
+        private void UpdatePresetIcons()
+        {
+            if (_dataGrid is null) return;
+
+            // Find all rows in the DataGrid
+            foreach (var row in _dataGrid.GetVisualDescendants().OfType<DataGridRow>())
+            {
+                if (row.DataContext is FastFlag flag)
+                {
+                    // Find the Lucide icon in this row
+                    var icon = row.GetVisualDescendants().OfType<Lucide>().FirstOrDefault();
+                    if (icon is not null)
+                    {
+                        // Set the icon properties
+                        icon.Width = 20;
+                        icon.Height = 20;
+                        icon.Icon = flag.Preset;
+                        icon.StrokeBrush = Foreground;
+
+                        // Force repaint
+                        var brush = icon.StrokeBrush;
+                        icon.StrokeBrush = null;
+                        icon.StrokeBrush = brush;
+                    }
+                }
+            }
         }
 
         protected override void OnKeyDown(KeyEventArgs e)
@@ -228,6 +264,9 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
             }
 
             UpdateTotalFlagsCount();
+
+            // Force a full refresh to update presets
+            ReloadList();
         }
 
         private async Task ImportJSON(string json)
@@ -310,6 +349,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
             }
 
             ClearSearch();
+            ReloadList();
         }
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
@@ -344,7 +384,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
                 return;
             }
 
-            if (await Frontend.ShowMessageBox(Strings.Menu_FastFlagEditor_ConfirmDeleteAll,MessageBoxImage.Warning,
+            if (await Frontend.ShowMessageBox(Strings.Menu_FastFlagEditor_ConfirmDeleteAll, MessageBoxImage.Warning,
                 MessageBoxButton.YesNo) != MessageBoxResult.Yes)
             {
                 return;
@@ -639,7 +679,10 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
                     ClearSearch();
 
                 var presetFlags = FastFlagManager.PresetFlags.Values;
-                entry.Preset = presetFlags.Contains(newText) ? FluentIcons.Common.Symbol.CheckmarkCircle : FluentIcons.Common.Symbol.CircleOff;
+                entry.Preset = presetFlags.Contains(newText) ? LucideIconNames.CircleCheck : LucideIconNames.CircleX;
+
+                // Force a full refresh to update presets
+                ReloadList();
             }
             else if (header == Strings.Common_Value)
             {

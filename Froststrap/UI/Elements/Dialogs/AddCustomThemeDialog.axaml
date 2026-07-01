@@ -83,7 +83,7 @@
                                    TextAlignment="Center"
                                    TextWrapping="Wrap"/>
                         <controls:IconButton Content="{x:Static resources:Strings.Common_ImportFromFile}"
-                                             Icon="FolderZip"
+                                             Icon="FolderArchive"
                                              HorizontalAlignment="Stretch"
                                              Click="OnImportButtonClicked"/>
                         <TextBlock IsVisible="{Binding HasFileError}"

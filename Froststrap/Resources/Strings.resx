@@ -1348,7 +1348,7 @@ Would you like to switch your preferred channel to {0}?</value>
     <value>Export Settings</value>
   </data>
   <data name="Menu.FastFlagEditor.CleanList" xml:space="preserve">
-    <value>Clean List</value>
+    <value>Filter List</value>
   </data>
   <data name="Menu.FastFlagEditor.NoFlags" xml:space="preserve">
     <value>Wow, this is so empty! How about adding a FastFlag?</value>
@@ -1801,7 +1801,7 @@ Would you like to switch your preferred channel to {0}?</value>
     <value>No invalid FastFlags detected.</value>
   </data>
   <data name="Menu.FastFlagEditor.HaveBeenRemoved" xml:space="preserve">
-    <value>{0} have been removed due to not being in allow list.</value>
+    <value>{0} have been removed due to not being in Roblox Allow List.</value>
   </data>
   <data name="Menu.FastFlagEditor.FileExtensionWarning" xml:space="preserve">
     <value>Please drop JSON or TXT files.</value>

@@ -8,7 +8,8 @@
                      xmlns:resources="clr-namespace:Froststrap.Resources"
                      xmlns:models="clr-namespace:Froststrap.UI.ViewModels"
                      xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Dialogs"
-                     xmlns:ic="using:FluentIcons.Avalonia.Fluent"
+                     xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
+                     xmlns:lucideEnums="clr-namespace:LucideAvalonia.Enum;assembly=LucideAvalonia"
                      xmlns:enums="clr-namespace:Froststrap.Enums"
                      x:DataType="vm:LaunchMenuViewModel"
                      Title="Froststrap"
@@ -51,14 +52,14 @@
                                   Command="{Binding SetLaunchModeCommand}"
                                   CommandParameter="{x:Static enums:LaunchMode.Player}">
                             <MenuItem.Icon>
-                                <ic:SymbolIcon Symbol="Games" />
+                                <ic:Lucide Icon="Gamepad2" />
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem Header="{x:Static resources:Strings.Common_Studio}"
                                   Command="{Binding SetLaunchModeCommand}"
                                   CommandParameter="{x:Static enums:LaunchMode.Studio}">
                             <MenuItem.Icon>
-                                <ic:SymbolIcon Symbol="Wrench" />
+                                <ic:Lucide Icon="Wrench" />
                             </MenuItem.Icon>
                         </MenuItem>
                     </MenuFlyout>
@@ -77,7 +78,7 @@
 
                 <controls:CardAction
                     Grid.Column="1"
-                    Icon="Chat"
+                    Icon="MessageCircleMore"
                     Header="Discord"
                     CornerRadius="8"
                     BorderThickness="0"

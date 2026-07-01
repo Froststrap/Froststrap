@@ -1,10 +1,11 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.Metadata;
-using WindowState = Avalonia.Controls.WindowState;
 using Avalonia.Media;
-using FluentIcons.Common;
+using Avalonia.Metadata;
+using FluentAvalonia.UI.Controls;
+using LucideAvalonia.Enum;
+using WindowState = Avalonia.Controls.WindowState;
 
 namespace Froststrap.UI.Elements.Controls
 {
@@ -60,8 +61,8 @@ namespace Froststrap.UI.Elements.Controls
                 {
                     var maxBtn = e.NameScope.Find<IconButton>("PART_MaximizeButton");
                     maxBtn?.Icon = window.WindowState == WindowState.Maximized
-                        ? Symbol.FullScreenMinimize
-                        : Symbol.FullScreenMaximize;
+                        ? LucideIconNames.Maximize
+                        : LucideIconNames.Minimize;
                     SetValue(WindowStateProperty, window.WindowState);
                 }
             };

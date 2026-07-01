@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Basic project configuration -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <!-- NuGet package information -->
+  <PropertyGroup>
+    <PackageIcon>icon.png</PackageIcon>
+    <Title>LucideAvalonia</Title>
+    <Authors>Marwan</Authors>
+    <Description>A library for AvaloniaUI that integrates Lucide icons into your Avalonia applications.</Description>
+    <Copyright>Marwan</Copyright>
+    <PackageProjectUrl>https://github.com/MarwanFr/LucideAvaloniaUI/</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/MarwanFr/LucideAvaloniaUI/</RepositoryUrl>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>LucideAvalonia</PackageId>
+    <Version>1.6.2</Version>
+    <PackageTags>avalonia;icons;icon;ui;lucide;avaloniaui</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+  </PropertyGroup>
+
+  <ItemGroup>
+	<PackageReference Include="Avalonia" Version="11.3.13" />
+	<PackageReference Include="FluentAvaloniaUI" Version="2.5.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="icon.png">
+      <Pack>True</Pack>
+      <PackagePath>icon.png</PackagePath>
+    </None>
+  </ItemGroup>
+
+</Project>

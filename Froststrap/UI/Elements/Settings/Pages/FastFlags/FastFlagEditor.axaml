@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:ic="using:FluentIcons.Avalonia.Fluent"
+             xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
+             xmlns:lucideEnums="clr-namespace:LucideAvalonia.Enum;assembly=LucideAvalonia"
              xmlns:resources="using:Froststrap.Resources"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
              xmlns:model="clr-namespace:Froststrap.Models"
@@ -29,13 +30,13 @@
                         Margin="0,4,0,8" />
 
             <WrapPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,0">
-                <controls:IconButton Click="AddButton_Click" Icon="Add" Content="{x:Static resources:Strings.Menu_FastFlagEditor_AddNew}" Margin="0,0,8,8" />
-                <controls:IconButton Click="DeleteButton_Click" Icon="Delete" Classes="Danger" Content="{x:Static resources:Strings.Menu_FastFlagEditor_DeleteSelected}" Margin="0,0,8,8" x:Name="DeleteSelectedButton" IsEnabled="False" />
-                <controls:IconButton Click="DeleteAllButton_Click" Icon="Delete" Content="{x:Static resources:Strings.Common_DeleteAll}" Margin="0,0,8,8" />
+                <controls:IconButton Click="AddButton_Click" Icon="Plus" Content="{x:Static resources:Strings.Menu_FastFlagEditor_AddNew}" Margin="0,0,8,8" />
+                <controls:IconButton Click="DeleteButton_Click" Icon="Trash2" Classes="Danger" Content="{x:Static resources:Strings.Menu_FastFlagEditor_DeleteSelected}" Margin="0,0,8,8" x:Name="DeleteSelectedButton" IsEnabled="False" />
+                <controls:IconButton Click="DeleteAllButton_Click" Icon="Trash" Content="{x:Static resources:Strings.Common_DeleteAll}" Margin="0,0,8,8" />
                 <controls:IconButton Click="CopyJSONButton_Click" Icon="Clipboard" Content="{x:Static resources:Strings.Common_CopyAll}" Margin="0,0,8,8" />
-                <controls:IconButton Click="ExportJSONButton_Click" Icon="ArrowExport" Content="{x:Static resources:Strings.Menu_FastFlagEditor_ExportJson}" Margin="0,0,8,8" />
-                <controls:IconButton Click="FlagProfiles_Click" Icon="DocumentEdit" Content="{x:Static resources:Strings.Common_Profiles}" Margin="0,0,8,8" />
-                <controls:IconButton Click="CleanListButton_Click" Icon="Broom" Content="{x:Static resources:Strings.Menu_FastFlagEditor_CleanList}" Margin="0,0,8,8" />
+                <controls:IconButton Click="ExportJSONButton_Click" Icon="ArrowRightFromLine" Content="{x:Static resources:Strings.Menu_FastFlagEditor_ExportJson}" Margin="0,0,8,8" />
+                <controls:IconButton Click="FlagProfiles_Click" Icon="FilePenLine" Content="{x:Static resources:Strings.Common_Profiles}" Margin="0,0,8,8" />
+                <controls:IconButton Click="CleanListButton_Click" Icon="ListFilter" Content="{x:Static resources:Strings.Menu_FastFlagEditor_CleanList}" Margin="0,0,8,8" />
 
                 <ToggleButton Name="TogglePresetsButton"
                               Click="ToggleButton_Click"
@@ -60,7 +61,7 @@
                              Watermark="{x:Static resources:Strings.Common_Search}"
                              TextChanged="SearchTextBox_TextChanged">
                         <TextBox.InnerLeftContent>
-                            <ic:SymbolIcon Foreground="{DynamicResource TextFillColorPrimaryBrush}" FontSize="16" Symbol="Search" Margin="10,0,0,0" VerticalAlignment="Center" />
+                            <ic:Lucide Height="16" Width="16" Icon="Search" Margin="10,0,0,0" VerticalAlignment="Center" />
                         </TextBox.InnerLeftContent>
                     </TextBox>
 
@@ -99,12 +100,9 @@
                                                 IsVisible="{Binding #TogglePresetsButton.IsChecked}">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="model:FastFlag">
-                                    <ic:SymbolIcon Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                                                   Height="20"
-                                                   Width="20"
-                                                   Symbol="{Binding Preset}"
-                                                   HorizontalAlignment="Center"
-                                                   VerticalAlignment="Center" />
+                                    <ic:Lucide Height="20" Width="20"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center" />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>

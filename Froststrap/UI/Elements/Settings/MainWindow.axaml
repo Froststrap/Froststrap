@@ -11,6 +11,7 @@
     xmlns:local="clr-namespace:Froststrap.UI.Elements.Settings"
     xmlns:enums="using:Froststrap.Enums"
     xmlns:resources="using:Froststrap.Resources"
+    xmlns:av="using:Avalonia.Controls"
     xmlns:ui="using:FluentAvalonia.UI.Controls"
     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
     Title="{x:Static resources:Strings.Menu_Title}"
@@ -44,115 +45,82 @@
             OpenPaneLength="220"
             PaneDisplayMode="Left">
             <ui:NavigationView.MenuItems>
-                <ui:NavigationViewItem Tag="integrations">
-                    <ui:NavigationViewItem.Content>
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <ic:Lucide Icon="Plus" Width="16" Height="16" />
-                            <TextBlock Text="{x:Static resources:Strings.Menu_Integrations_Title}" VerticalAlignment="Center" />
-                        </StackPanel>
-                    </ui:NavigationViewItem.Content>
+                <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_Integrations_Title}" Tag="integrations">
+                    <ui:NavigationViewItem.IconSource>
+                        <ic:LucideIconSource Icon="Plus" StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}" StrokeThickness="1.5" />
+                    </ui:NavigationViewItem.IconSource>
                 </ui:NavigationViewItem>
 
-                <ui:NavigationViewItem Tag="behaviour">
-                    <ui:NavigationViewItem.Content>
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <ic:Lucide Icon="Play" Width="16" Height="16" />
-                            <TextBlock Text="{x:Static resources:Strings.Menu_Behaviour_Title}" VerticalAlignment="Center" />
-                        </StackPanel>
-                    </ui:NavigationViewItem.Content>
+                <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_Behaviour_Title}" Tag="behaviour">
+                    <ui:NavigationViewItem.IconSource>
+                        <ic:LucideIconSource Icon="Play" StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}" StrokeThickness="1.5" />
+                    </ui:NavigationViewItem.IconSource>
                 </ui:NavigationViewItem>
 
-                <ui:NavigationViewItem Tag="quickplay">
-                    <ui:NavigationViewItem.Content>
-                        <StackPanel Orientation="Horizontal" Spacing="16">
-                            <ic:Lucide Icon="Gamepad2" Width="16" Height="16" />
-                            <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_Title}" VerticalAlignment="Center" />
-                        </StackPanel>
-                    </ui:NavigationViewItem.Content>
+                <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_QuickPlay_Title}" Tag="quickplay">
+                    <ui:NavigationViewItem.IconSource>
+                        <ic:LucideIconSource Icon="Gamepad2" StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}" StrokeThickness="1.5" />
+                    </ui:NavigationViewItem.IconSource>
                 </ui:NavigationViewItem>
 
                 <ui:NavigationViewItem Content="{x:Static resources:Strings.Common_Deployment}" Tag="channels">
                     <ui:NavigationViewItem.IconSource>
-                        <ico:SymbolIconSource Foreground="{DynamicResource TextFillColorPrimaryBrush}" Symbol="CloudArrowUp" />
+                        <ic:LucideIconSource Icon="HardDriveUpload" StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}" StrokeThickness="1.5" />
                     </ui:NavigationViewItem.IconSource>
                 </ui:NavigationViewItem>
 
                 <ui:NavigationViewItemSeparator />
 
-                <ui:NavigationViewItem Tag="mods">
-                    <ui:NavigationViewItem.Content>
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <ic:Lucide Icon="Puzzle" Width="16" Height="16" />
-                            <TextBlock Text="{x:Static resources:Strings.Menu_PresetMods_Title}" VerticalAlignment="Center" />
-                        </StackPanel>
-                    </ui:NavigationViewItem.Content>
+                <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_PresetMods_Title}" Tag="mods">
+                    <ui:NavigationViewItem.IconSource>
+                        <ic:LucideIconSource Icon="BookOpen" StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}" StrokeThickness="1.5" />
+                    </ui:NavigationViewItem.IconSource>
                 </ui:NavigationViewItem>
 
-                <ui:NavigationViewItem Tag="appearance">
-                    <ui:NavigationViewItem.Content>
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <ic:Lucide Icon="Palette" Width="16" Height="16" />
-                            <TextBlock Text="{x:Static resources:Strings.Menu_Appearance_Title}" VerticalAlignment="Center" />
-                        </StackPanel>
-                    </ui:NavigationViewItem.Content>
+                <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_Appearance_Title}" Tag="appearance">
+                    <ui:NavigationViewItem.IconSource>
+                        <ic:LucideIconSource Icon="Palette" StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}" StrokeThickness="1.5" />
+                    </ui:NavigationViewItem.IconSource>
                 </ui:NavigationViewItem>
 
                 <ui:NavigationViewItemSeparator />
 
-                <ui:NavigationViewItem Tag="fastflags">
-                    <ui:NavigationViewItem.Content>
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <ic:Lucide Icon="Flag" Width="16" Height="16" />
-                            <TextBlock Text="{x:Static resources:Strings.Menu_FastFlags_Title}" VerticalAlignment="Center" />
-                        </StackPanel>
-                    </ui:NavigationViewItem.Content>
+                <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_FastFlags_Title}" Tag="fastflags">
+                    <ui:NavigationViewItem.IconSource>
+                        <ic:LucideIconSource Icon="Flag" StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}" StrokeThickness="1.5" />
+                    </ui:NavigationViewItem.IconSource>
                 </ui:NavigationViewItem>
 
-                <ui:NavigationViewItem Name="gbs" Tag="globalsettings">
-                    <ui:NavigationViewItem.Content>
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <ic:Lucide Icon="PenLine" Width="16" Height="16" />
-                            <TextBlock Text="{x:Static resources:Strings.Menu_GlobalSettings_Title}" VerticalAlignment="Center" />
-                        </StackPanel>
-                    </ui:NavigationViewItem.Content>
+                <ui:NavigationViewItem Name="gbs" Content="{x:Static resources:Strings.Menu_GlobalSettings_Title}" Tag="globalsettings">
+                    <ui:NavigationViewItem.IconSource>
+                        <ic:LucideIconSource Icon="PenLine" StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}" StrokeThickness="1.5" />
+                    </ui:NavigationViewItem.IconSource>
                 </ui:NavigationViewItem>
 
-                <ui:NavigationViewItem Name="linux" IsVisible="{x:Static gv:GlobalViewModel.IsLinux}" Tag="linuxsettings">
-                    <ui:NavigationViewItem.Content>
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <ic:Lucide Icon="Settings" Width="16" Height="16" />
-                            <TextBlock Text="{x:Static resources:Strings.Menu_LinuxSettings_Title}" VerticalAlignment="Center" />
-                        </StackPanel>
-                    </ui:NavigationViewItem.Content>
+                <ui:NavigationViewItem Name="linux" IsVisible="{x:Static gv:GlobalViewModel.IsLinux}" Content="{x:Static resources:Strings.Menu_LinuxSettings_Title}" Tag="linuxsettings">
+                    <ui:NavigationViewItem.IconSource>
+                        <ic:LucideIconSource Icon="Settings" StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}" StrokeThickness="1.5" />
+                    </ui:NavigationViewItem.IconSource>
                 </ui:NavigationViewItem>
 
                 <ui:NavigationViewItemSeparator />
 
-                <ui:NavigationViewItem Tag="regionselector">
-                    <ui:NavigationViewItem.Content>
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <ic:Lucide Icon="Globe" Width="16" Height="16" />
-                            <TextBlock Text="{x:Static resources:Strings.Menu_RegionSelector_Title}" VerticalAlignment="Center" />
-                        </StackPanel>
-                    </ui:NavigationViewItem.Content>
+                <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_RegionSelector_Title}" Tag="regionselector">
+                    <ui:NavigationViewItem.IconSource>
+                        <ic:LucideIconSource Icon="Globe" StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}" StrokeThickness="1.5" />
+                    </ui:NavigationViewItem.IconSource>
                 </ui:NavigationViewItem>
 
-                <ui:NavigationViewItem Tag="shortcuts">
-                    <ui:NavigationViewItem.Content>
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <ic:Lucide Icon="Link2" Width="16" Height="16" />
-                            <TextBlock Text="{x:Static resources:Strings.Common_Shortcuts}" VerticalAlignment="Center" />
-                        </StackPanel>
-                    </ui:NavigationViewItem.Content>
+                <ui:NavigationViewItem Content="{x:Static resources:Strings.Common_Shortcuts}" Tag="shortcuts">
+                    <ui:NavigationViewItem.IconSource>
+                        <ic:LucideIconSource Icon="Link2" StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}" StrokeThickness="1.5" />
+                    </ui:NavigationViewItem.IconSource>
                 </ui:NavigationViewItem>
 
-                <ui:NavigationViewItem Tag="about">
-                    <ui:NavigationViewItem.Content>
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <ic:Lucide Icon="Info" Width="16" Height="16" />
-                            <TextBlock Text="{x:Static resources:Strings.Menu_About_Title}" VerticalAlignment="Center" />
-                        </StackPanel>
-                    </ui:NavigationViewItem.Content>
+                <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_About_Title}" Tag="about">
+                    <ui:NavigationViewItem.IconSource>
+                        <ic:LucideIconSource Icon="Info" StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}" StrokeThickness="1.5" />
+                    </ui:NavigationViewItem.IconSource>
                 </ui:NavigationViewItem>
             </ui:NavigationView.MenuItems>
 

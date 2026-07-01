@@ -1,6 +1,9 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
-using FluentIcons.Common;
+using Avalonia.Controls.Primitives;
+using Avalonia.Threading;
+using Avalonia.VisualTree;
+using LucideAvalonia.Enum;
 
 namespace Froststrap.UI.Elements.Controls
 {
@@ -12,8 +15,11 @@ namespace Froststrap.UI.Elements.Controls
         public static readonly StyledProperty<string> DescriptionProperty =
             AvaloniaProperty.Register<CardAction, string>(nameof(Description));
 
-        public static readonly StyledProperty<object> IconProperty =
-            AvaloniaProperty.Register<CardAction, object>(nameof(Icon));
+        public static readonly StyledProperty<LucideIconNames> IconProperty =
+            AvaloniaProperty.Register<CardAction, LucideIconNames>(nameof(Icon));
+
+        public static readonly StyledProperty<double> IconSizeProperty =
+            AvaloniaProperty.Register<CardAction, double>(nameof(IconSize), 24);
 
         public string Header
         {
@@ -27,10 +33,16 @@ namespace Froststrap.UI.Elements.Controls
             set => SetValue(DescriptionProperty, value);
         }
 
-        public object Icon
+        public LucideIconNames Icon
         {
             get => GetValue(IconProperty);
             set => SetValue(IconProperty, value);
+        }
+
+        public double IconSize
+        {
+            get => GetValue(IconSizeProperty);
+            set => SetValue(IconSizeProperty, value);
         }
     }
 }

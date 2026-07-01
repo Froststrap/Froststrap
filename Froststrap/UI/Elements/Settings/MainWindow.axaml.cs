@@ -11,8 +11,9 @@ using Froststrap.UI.Elements.Controls;
 using Froststrap.UI.Utility;
 using Froststrap.UI.ViewModels.Settings;
 using Froststrap.UI.ViewModels.Settings.Mods;
+using LucideAvalonia;
+using LucideAvalonia.Enum;
 using System.ComponentModel;
-using Symbol = FluentIcons.Common.Symbol;
 
 namespace Froststrap.UI.Elements.Settings
 {
@@ -136,19 +137,19 @@ namespace Froststrap.UI.Elements.Settings
             };
         }
 
-        private readonly Dictionary<string, (string Title, Symbol Icon)> _pageInfo = new()
+        private readonly Dictionary<string, (string Title, LucideIconNames Icon)> _pageInfo = new()
         {
-            ["integrations"] = (Strings.Menu_Integrations_Title, Symbol.Link),
-            ["behaviour"] = (Strings.Menu_Behaviour_Title, Symbol.PlaySettings),
-            ["linuxsettings"] = (Strings.Menu_LinuxSettings_Title, Symbol.Settings),
-            ["mods"] = (Strings.Menu_PresetMods_Title, Symbol.PuzzlePiece),
-            ["fastflags"] = (Strings.Menu_FastFlags_Title, Symbol.Flag),
-            ["appearance"] = (Strings.Menu_Appearance_Title, Symbol.Color),
-            ["regionselector"] = (Strings.Menu_RegionSelector_Title, Symbol.Earth),
-            ["globalsettings"] = (Strings.Menu_GlobalSettings_Title, Symbol.EditSettings),
-            ["shortcuts"] = (Strings.Common_Shortcuts, Symbol.Link),
-            ["quickplay"] = (Strings.Menu_QuickPlay_Title, Symbol.Replay),
-            ["channels"] = (Strings.Common_Deployment, Symbol.CloudArrowUp),
+            ["integrations"] = (Strings.Menu_Integrations_Title, LucideIconNames.Plus),
+            ["behaviour"] = (Strings.Menu_Behaviour_Title, LucideIconNames.Play),
+            ["linuxsettings"] = (Strings.Menu_LinuxSettings_Title, LucideIconNames.Settings),
+            ["mods"] = (Strings.Menu_PresetMods_Title, LucideIconNames.BookOpen),
+            ["fastflags"] = (Strings.Menu_FastFlags_Title, LucideIconNames.Flag),
+            ["appearance"] = (Strings.Menu_Appearance_Title, LucideIconNames.Palette),
+            ["regionselector"] = (Strings.Menu_RegionSelector_Title, LucideIconNames.Globe),
+            ["globalsettings"] = (Strings.Menu_GlobalSettings_Title, LucideIconNames.PenLine),
+            ["shortcuts"] = (Strings.Common_Shortcuts, LucideIconNames.Link2),
+            ["quickplay"] = (Strings.Menu_QuickPlay_Title, LucideIconNames.Gamepad2),
+            ["channels"] = (Strings.Common_Deployment, LucideIconNames.HardDriveUpload),
         };
 
         private void UpdatePageView(object? viewModel)
@@ -322,12 +323,12 @@ namespace Froststrap.UI.Elements.Settings
                 5000);
         }
 
-        public static void ShowGlobalNotification(string title, string subtitle, InfoBarSeverity type, int timeout = 3000, Symbol? icon = null)
+        public static void ShowGlobalNotification(string title, string subtitle, InfoBarSeverity type, int timeout = 3000, LucideIconNames? icon = null)
         {
             Dispatcher.UIThread.Post(() => Instance?.ShowNotification(title, subtitle, type, timeout, icon));
         }
 
-        public void ShowNotification(string title, string subtitle, InfoBarSeverity type, int timeout, Symbol? customIcon = null)
+        public void ShowNotification(string title, string subtitle, InfoBarSeverity type, int timeout, LucideIconNames? customIcon = null)
         {
             var notificationPanel = this.FindControl<Panel>("NotificationPanel");
             if (notificationPanel == null) return;
@@ -379,15 +380,15 @@ namespace Froststrap.UI.Elements.Settings
             ShowNotificationInternal(title, subtitle, type, timeout, customIcon);
         }
 
-        private void ShowNotificationInternal(string title, string subtitle, InfoBarSeverity type, int timeout, Symbol? customIcon = null)
+        private void ShowNotificationInternal(string title, string subtitle, InfoBarSeverity type, int timeout, LucideIconNames? customIcon = null)
         {
             var notificationPanel = this.FindControl<Panel>("NotificationPanel");
             if (notificationPanel == null) return;
 
             var accentColor = type == InfoBarSeverity.Success ? "#00D084" : "#FFB900";
             var iconSymbol = customIcon ?? (type == InfoBarSeverity.Success
-                ? Symbol.CheckmarkCircle
-                : Symbol.Warning);
+                ? LucideIconNames.CircleCheck
+                : LucideIconNames.TriangleAlert);
 
             var contentGrid = new Grid
             {
@@ -395,11 +396,13 @@ namespace Froststrap.UI.Elements.Settings
                 Margin = new Thickness(0)
             };
 
-            var icon = new FluentIcons.Avalonia.Fluent.SymbolIcon
+            var icon = new Lucide
             {
-                Symbol = iconSymbol,
-                FontSize = 28,
-                Foreground = new SolidColorBrush(Color.Parse(accentColor)),
+                Icon = iconSymbol,
+                Width = 28,
+                Height = 28,
+                StrokeBrush = new SolidColorBrush(Color.Parse(accentColor)),
+                StrokeThickness = 1.5,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
                 Margin = new Thickness(16, 0, 12, 0)
             };
@@ -421,7 +424,7 @@ namespace Froststrap.UI.Elements.Settings
 
             var closeButton = new IconButton
             {
-                Icon = Symbol.Dismiss,
+                Icon = LucideIconNames.X,
                 IconSize = 16,
                 Background = Brushes.Transparent,
                 BorderThickness = new Thickness(0),
@@ -649,7 +652,7 @@ namespace Froststrap.UI.Elements.Settings
             stagingArea.IsVisible = false;
         }
 
-        private void IndexPage(Control pageView, string pageTag, string pageTitle, Symbol pageIcon)
+        private void IndexPage(Control pageView, string pageTag, string pageTitle, LucideIconNames pageIcon)
         {
             if (_viewModel == null || _searchIndexBuilder == null) return;
 

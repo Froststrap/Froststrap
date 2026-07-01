@@ -8,7 +8,6 @@
     xmlns:resources="using:Froststrap.Resources"
     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
     xmlns:gv="using:Froststrap.UI.ViewModels"
-    xmlns:ic="using:IconPacks.Avalonia.Material"
     d:DesignHeight="2500"
     d:DesignWidth="1200"
     x:DataType="vm:IntegrationsViewModel"
@@ -269,7 +268,7 @@
                         HorizontalAlignment="Stretch"
                         Command="{Binding AddIntegrationCommand, Mode=OneTime}"
                         Content="{x:Static resources:Strings.Common_New}"
-                        Icon="Add" />
+                        Icon="Plus" />
                     <controls:IconButton
                         Grid.Column="1"
                         Margin="4,0,0,0"
@@ -277,7 +276,7 @@
                         Classes="Danger"
                         Command="{Binding DeleteIntegrationCommand, Mode=OneTime}"
                         Content="{x:Static resources:Strings.Common_Delete}"
-                        Icon="Delete"
+                        Icon="Trash2"
                         IsEnabled="{Binding IsCustomIntegrationSelected, Mode=OneWay}" />
                 </Grid>
 

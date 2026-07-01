@@ -4566,7 +4566,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Clean List.
+        ///   Looks up a localized string similar to Filter List.
         /// </summary>
         public static string Menu_FastFlagEditor_CleanList {
             get {
@@ -4650,7 +4650,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} have been removed due to not being in allow list..
+        ///   Looks up a localized string similar to {0} have been removed due to not being in Roblox Allow List..
         /// </summary>
         public static string Menu_FastFlagEditor_HaveBeenRemoved {
             get {

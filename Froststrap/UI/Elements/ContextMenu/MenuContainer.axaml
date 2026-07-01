@@ -12,7 +12,7 @@ Opacity="0">
 
     <NativeMenu.Menu>
         <NativeMenu>
-            <NativeMenuItem Header="Froststrap v2.0.1" IsEnabled="False" />
+            <NativeMenuItem Header="Froststrap v2.0.0" IsEnabled="False" />
             <NativeMenuItem Header="Total: 00:00" IsEnabled="False" />
             <NativeMenuItemSeparator />
             <NativeMenuItem Header="{x:Static resources:Strings.Common_DiscordRichPresence}" IsVisible="False" Click="RichPresenceMenuItem_Click" ToggleType="CheckBox" IsChecked="True" />
