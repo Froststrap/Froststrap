@@ -23,34 +23,28 @@
 
         <Grid Grid.Row="1" Name="MainGrid">
             <ui:FANavigationView Name="NavView"
-                               IsPaneOpen="False"
-                               PaneDisplayMode="LeftCompact"
-                               IsSettingsVisible="False"
-                               IsBackButtonVisible="False"
-                               OpenPaneLength="140"
-                               ItemInvoked="NavView_ItemInvoked">
+                                 IsPaneOpen="False"
+                                 PaneDisplayMode="LeftCompact"
+                                 IsSettingsVisible="False"
+                                 IsBackButtonVisible="False"
+                                 OpenPaneLength="140"
+                                 ItemInvoked="NavView_ItemInvoked">
                 <ui:FANavigationView.Styles>
                     <Style Selector="ui|FANavigationView /template/ ScrollViewer#MenuItemsScrollViewer">
                         <Setter Property="VerticalScrollBarVisibility" Value="Hidden"/>
                     </Style>
                 </ui:FANavigationView.Styles>
                 <ui:FANavigationView.MenuItems>
-                    <ui:FANavigationViewItem Tag="about">
-                        <ui:FANavigationViewItem.Content>
-                            <StackPanel Orientation="Horizontal" Spacing="8">
-                                <ic:Lucide Icon="Info" Width="16" Height="16" />
-                                <TextBlock Text="{x:Static resources:Strings.Menu_About_Title}" VerticalAlignment="Center" />
-                            </StackPanel>
-                        </ui:FANavigationViewItem.Content>
+                    <ui:FANavigationViewItem Tag="about" Content="{x:Static resources:Strings.Menu_About_Title}">
+                        <ui:FANavigationViewItem.Icon>
+                            <ic:Lucide Icon="Book" Width="20" Height="20" />
+                        </ui:FANavigationViewItem.Icon>
                     </ui:FANavigationViewItem>
 
-                    <ui:FANavigationViewItem Tag="licenses">
-                        <ui:FANavigationViewItem.Content>
-                            <StackPanel Orientation="Horizontal" Spacing="8">
-                                <ic:Lucide Icon="Book" Width="16" Height="16" />
-                                <TextBlock Text="{x:Static resources:Strings.About_Licenses_Title}" VerticalAlignment="Center" />
-                            </StackPanel>
-                        </ui:FANavigationViewItem.Content>
+                    <ui:FANavigationViewItem Tag="licenses" Content="{x:Static resources:Strings.About_Licenses_Title}">
+                        <ui:FANavigationViewItem.Icon>
+                            <ic:Lucide Icon="Copyright" Width="20" Height="20" />
+                        </ui:FANavigationViewItem.Icon>
                     </ui:FANavigationViewItem>
                 </ui:FANavigationView.MenuItems>
 

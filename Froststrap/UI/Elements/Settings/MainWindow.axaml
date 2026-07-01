@@ -46,81 +46,81 @@
             PaneDisplayMode="Left">
             <ui:FANavigationView.MenuItems>
                 <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_Integrations_Title}" Tag="integrations">
-                    <ui:FANavigationViewItem.IconSource>
-                        <ic:LucideIconSource Icon="Plus" StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}" StrokeThickness="1.5" />
-                    </ui:FANavigationViewItem.IconSource>
+                    <ui:FANavigationViewItem.Icon>
+                        <ic:Lucide Icon="Plus" Width="20" Height="20" />
+                    </ui:FANavigationViewItem.Icon>
                 </ui:FANavigationViewItem>
 
                 <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_Behaviour_Title}" Tag="behaviour">
-                    <ui:FANavigationViewItem.IconSource>
-                        <ic:LucideIconSource Icon="Play" StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}" StrokeThickness="1.5" />
-                    </ui:FANavigationViewItem.IconSource>
+                    <ui:FANavigationViewItem.Icon>
+                        <ic:Lucide Icon="Play" Width="20" Height="20" />
+                    </ui:FANavigationViewItem.Icon>
                 </ui:FANavigationViewItem>
 
                 <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_QuickPlay_Title}" Tag="quickplay">
-                    <ui:FANavigationViewItem.IconSource>
-                        <ic:LucideIconSource Icon="Gamepad2" StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}" StrokeThickness="1.5" />
-                    </ui:FANavigationViewItem.IconSource>
+                    <ui:FANavigationViewItem.Icon>
+                        <ic:Lucide Icon="Gamepad" Width="20" Height="20" />
+                    </ui:FANavigationViewItem.Icon>
                 </ui:FANavigationViewItem>
 
                 <ui:FANavigationViewItem Content="{x:Static resources:Strings.Common_Deployment}" Tag="channels">
-                    <ui:FANavigationViewItem.IconSource>
-                        <ic:LucideIconSource Icon="HardDriveUpload" StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}" StrokeThickness="1.5" />
-                    </ui:FANavigationViewItem.IconSource>
+                    <ui:FANavigationViewItem.Icon>
+                        <ic:Lucide Icon="HardDriveUpload" Width="20" Height="20" />
+                    </ui:FANavigationViewItem.Icon>
                 </ui:FANavigationViewItem>
 
                 <ui:FANavigationViewItemSeparator />
 
                 <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_PresetMods_Title}" Tag="mods">
-                    <ui:FANavigationViewItem.IconSource>
-                        <ic:LucideIconSource Icon="BookOpen" StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}" StrokeThickness="1.5" />
-                    </ui:FANavigationViewItem.IconSource>
+                    <ui:FANavigationViewItem.Icon>
+                        <ic:Lucide Icon="BookOpen" Width="20" Height="20" />
+                    </ui:FANavigationViewItem.Icon>
                 </ui:FANavigationViewItem>
 
                 <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_Appearance_Title}" Tag="appearance">
-                    <ui:FANavigationViewItem.IconSource>
-                        <ic:LucideIconSource Icon="Palette" StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}" StrokeThickness="1.5" />
-                    </ui:FANavigationViewItem.IconSource>
+                    <ui:FANavigationViewItem.Icon>
+                        <ic:Lucide Icon="Palette" Width="20" Height="20" />
+                    </ui:FANavigationViewItem.Icon>
                 </ui:FANavigationViewItem>
 
                 <ui:FANavigationViewItemSeparator />
 
                 <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_FastFlags_Title}" Tag="fastflags">
-                    <ui:FANavigationViewItem.IconSource>
-                        <ic:LucideIconSource Icon="Flag" StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}" StrokeThickness="1.5" />
-                    </ui:FANavigationViewItem.IconSource>
+                    <ui:FANavigationViewItem.Icon>
+                        <ic:Lucide Icon="Flag" Width="20" Height="20" />
+                    </ui:FANavigationViewItem.Icon>
                 </ui:FANavigationViewItem>
 
                 <ui:FANavigationViewItem Name="gbs" Content="{x:Static resources:Strings.Menu_GlobalSettings_Title}" Tag="globalsettings">
-                    <ui:FANavigationViewItem.IconSource>
-                        <ic:LucideIconSource Icon="PenLine" StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}" StrokeThickness="1.5" />
-                    </ui:FANavigationViewItem.IconSource>
+                    <ui:FANavigationViewItem.Icon>
+                        <ic:Lucide Icon="PenLine" Width="20" Height="20" />
+                    </ui:FANavigationViewItem.Icon>
                 </ui:FANavigationViewItem>
 
                 <ui:FANavigationViewItem Name="linux" IsVisible="{x:Static gv:GlobalViewModel.IsLinux}" Content="{x:Static resources:Strings.Menu_LinuxSettings_Title}" Tag="linuxsettings">
-                    <ui:FANavigationViewItem.IconSource>
-                        <ic:LucideIconSource Icon="Settings" StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}" StrokeThickness="1.5" />
-                    </ui:FANavigationViewItem.IconSource>
+                    <ui:FANavigationViewItem.Icon>
+                        <ic:Lucide Icon="Settings" Width="20" Height="20" />
+                    </ui:FANavigationViewItem.Icon>
                 </ui:FANavigationViewItem>
 
                 <ui:FANavigationViewItemSeparator />
 
                 <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_RegionSelector_Title}" Tag="regionselector">
-                    <ui:FANavigationViewItem.IconSource>
-                        <ic:LucideIconSource Icon="Globe" StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}" StrokeThickness="1.5" />
-                    </ui:FANavigationViewItem.IconSource>
+                    <ui:FANavigationViewItem.Icon>
+                        <ic:Lucide Icon="Globe" Width="20" Height="20" />
+                    </ui:FANavigationViewItem.Icon>
                 </ui:FANavigationViewItem>
 
                 <ui:FANavigationViewItem Content="{x:Static resources:Strings.Common_Shortcuts}" Tag="shortcuts">
-                    <ui:FANavigationViewItem.IconSource>
-                        <ic:LucideIconSource Icon="Link2" StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}" StrokeThickness="1.5" />
-                    </ui:FANavigationViewItem.IconSource>
+                    <ui:FANavigationViewItem.Icon>
+                        <ic:Lucide Icon="Link2" Width="20" Height="20" />
+                    </ui:FANavigationViewItem.Icon>
                 </ui:FANavigationViewItem>
 
                 <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_About_Title}" Tag="about">
-                    <ui:FANavigationViewItem.IconSource>
-                        <ic:LucideIconSource Icon="Info" StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}" StrokeThickness="1.5" />
-                    </ui:FANavigationViewItem.IconSource>
+                    <ui:FANavigationViewItem.Icon>
+                        <ic:Lucide Icon="Book" Width="20" Height="20" />
+                    </ui:FANavigationViewItem.Icon>
                 </ui:FANavigationViewItem>
             </ui:FANavigationView.MenuItems>
 
