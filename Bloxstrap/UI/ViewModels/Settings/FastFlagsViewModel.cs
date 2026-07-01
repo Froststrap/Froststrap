@@ -20,14 +20,19 @@ namespace Bloxstrap.UI.ViewModels.Settings
 
         public bool RemoveGrass
         {
-            get => App.FastFlags?.GetPreset("Rendering.RemoveGrass1") == "0";
+            get =>
+            _flagsService.GetPreset("Rendering.RemoveGrass1") == "0" &&
+            _flagsService.GetPreset("Rendering.RemoveGrass2") == "0" &&
+            _flagsService.GetPreset("Rendering.RemoveGrass3") == "0";
             set
             {
-                App.FastFlags.SetPreset("Rendering.RemoveGrass1", value ? "0" : null);
-                App.FastFlags.SetPreset("Rendering.RemoveGrass2", value ? "0" : null);
-                App.FastFlags.SetPreset("Rendering.RemoveGrass3", value ? "0" : null);
-            }
+                _flagsService.SetPreset("Rendering.RemoveGrass1", value ? "0" : null);
+                _flagsService.SetPreset("Rendering.RemoveGrass2", value ? "0" : null);
+                _flagsService.SetPreset("Rendering.RemoveGrass3", value ? "0" : null);
+                OnPropertyChanged();
+                }
         }
+
 
         public bool LowPolyMeshesEnabled
         {
