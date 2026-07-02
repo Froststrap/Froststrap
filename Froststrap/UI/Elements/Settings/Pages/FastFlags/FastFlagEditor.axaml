@@ -23,11 +23,11 @@
         <Grid RowDefinitions="Auto, Auto, Auto, *" Margin="14">
 
             <ui:FAInfoBar Grid.Row="0"
-                        Message="{x:Static resources:Strings.Menu_FastFlagEditor_WhiteList}"
-                        Severity="Informational"
-                        IsOpen="True"
-                        IsClosable="False"
-                        Margin="0,4,0,8" />
+                          Message="{x:Static resources:Strings.Menu_FastFlagEditor_WhiteList}"
+                          Severity="Informational"
+                          IsOpen="True"
+                          IsClosable="False"
+                          Margin="0,4,0,8" />
 
             <WrapPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,0">
                 <controls:IconButton Click="AddButton_Click" Icon="Plus" Content="{x:Static resources:Strings.Menu_FastFlagEditor_AddNew}" Margin="0,0,8,8" />
@@ -36,7 +36,7 @@
                 <controls:IconButton Click="CopyJSONButton_Click" Icon="Clipboard" Content="{x:Static resources:Strings.Common_CopyAll}" Margin="0,0,8,8" />
                 <controls:IconButton Click="ExportJSONButton_Click" Icon="ArrowRightFromLine" Content="{x:Static resources:Strings.Menu_FastFlagEditor_ExportJson}" Margin="0,0,8,8" />
                 <controls:IconButton Click="FlagProfiles_Click" Icon="FilePenLine" Content="{x:Static resources:Strings.Common_Profiles}" Margin="0,0,8,8" />
-                <controls:IconButton Click="CleanListButton_Click" Icon="ListFilter" Content="{x:Static resources:Strings.Menu_FastFlagEditor_CleanList}" Margin="0,0,8,8" />
+                <controls:IconButton Click="CleanListButton_Click" Icon="Funnel" Content="{x:Static resources:Strings.Menu_FastFlagEditor_CleanList}" Margin="0,0,8,8" />
 
                 <ToggleButton Name="TogglePresetsButton"
                               Click="ToggleButton_Click"

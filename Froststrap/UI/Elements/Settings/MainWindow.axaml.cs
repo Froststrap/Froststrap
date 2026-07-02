@@ -399,8 +399,8 @@ namespace Froststrap.UI.Elements.Settings
             var icon = new Lucide
             {
                 Icon = iconSymbol,
-                Width = 28,
-                Height = 28,
+                Width = 36,
+                Height = 36,
                 StrokeBrush = new SolidColorBrush(Color.Parse(accentColor)),
                 StrokeThickness = 1.5,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,

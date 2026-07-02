@@ -53,6 +53,5 @@
             <converters:NumberAbbreviationConverter x:Key="NumberAbbreviationConverter" />
             <converters:UrlToBitmapConverter x:Key="UrlToBitmapConverter" />
         </ResourceDictionary>
-		<x:String x:Key="AppIcon">avares://Froststrap/Froststrap.ico</x:String>
     </Application.Resources>
 </Application>

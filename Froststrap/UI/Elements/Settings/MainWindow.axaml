@@ -59,7 +59,7 @@
 
                 <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_QuickPlay_Title}" Tag="quickplay">
                     <ui:FANavigationViewItem.Icon>
-                        <ic:Lucide Icon="Gamepad" Width="20" Height="20" />
+                        <ic:Lucide Icon="Gamepad2" Width="20" Height="20" />
                     </ui:FANavigationViewItem.Icon>
                 </ui:FANavigationViewItem>
 
@@ -119,7 +119,7 @@
 
                 <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_About_Title}" Tag="about">
                     <ui:FANavigationViewItem.Icon>
-                        <ic:Lucide Icon="Book" Width="20" Height="20" />
+                        <ic:Lucide Icon="CircleAlert" Width="20" Height="20" />
                     </ui:FANavigationViewItem.Icon>
                 </ui:FANavigationViewItem>
             </ui:FANavigationView.MenuItems>

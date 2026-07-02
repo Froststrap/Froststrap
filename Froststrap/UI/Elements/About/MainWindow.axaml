@@ -37,7 +37,7 @@
                 <ui:FANavigationView.MenuItems>
                     <ui:FANavigationViewItem Tag="about" Content="{x:Static resources:Strings.Menu_About_Title}">
                         <ui:FANavigationViewItem.Icon>
-                            <ic:Lucide Icon="Book" Width="20" Height="20" />
+                            <ic:Lucide Icon="CircleAlert" Width="20" Height="20" />
                         </ui:FANavigationViewItem.Icon>
                     </ui:FANavigationViewItem>
 
