@@ -12,6 +12,7 @@
                          CanResize="False"
                          WindowStartupLocation="CenterScreen"
                          Title="Froststrap"
+                         ExtendClientAreaToDecorationsHint="True"
                          Background="Transparent"
                          TransparencyLevelHint="Transparent">
 
