@@ -49,7 +49,7 @@ jobs:
             
             Please review the translations for accuracy.
           branch: auto-translate-deeplx
-          base: feat/crossplatform
+          base: avaloniaui
           delete-branch: true
           labels: automated, translation
           author: github-actions[bot] <github-actions[bot]@users.noreply.github.com>

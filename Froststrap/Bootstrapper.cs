@@ -4686,7 +4686,6 @@ Windows Registry Editor Version 5.00
                     }
 
                     string targetFolder = Path.Combine(_latestVersionDirectory, packageDir);
-                    Directory.CreateDirectory(targetFolder);
 
                     if (files != null && files.Count > 0)
                     {
@@ -4694,16 +4693,33 @@ Windows Registry Editor Version 5.00
                         {
                             string fullPath = Path.Combine(targetFolder, relativePath);
                             if (File.Exists(fullPath))
-                                File.SetAttributes(fullPath, FileAttributes.Normal);
+                            {
+                                try
+                                {
+                                    File.SetAttributes(fullPath, FileAttributes.Normal);
+                                    File.Delete(fullPath);
+                                }
+                                catch (Exception ex)
+                                {
+                                    App.Logger.WriteLine(LOG_IDENT, $"Failed to delete {fullPath}: {ex.Message}");
+                                }
+                            }
                         }
                     }
                     else
                     {
                         if (Directory.Exists(targetFolder))
                         {
-                            foreach (string file in Directory.GetFiles(targetFolder, "*", SearchOption.AllDirectories))
-                                File.SetAttributes(file, FileAttributes.Normal);
+                            try
+                            {
+                                Directory.Delete(targetFolder, true);
+                            }
+                            catch (Exception ex)
+                            {
+                                App.Logger.WriteLine(LOG_IDENT, $"Could not delete {targetFolder}: {ex.Message}");
+                            }
                         }
+                        Directory.CreateDirectory(targetFolder);
                     }
 
                     string? fileFilter = null;
