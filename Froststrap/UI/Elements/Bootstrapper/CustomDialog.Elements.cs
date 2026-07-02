@@ -501,11 +501,24 @@ namespace Froststrap.UI.Elements.Bootstrapper
             dialog.RootTitleBar.Margin = new Thickness(0, 0, 0, 0);
 
             dialog.RootTitleBar.ShowMinimize = ParseXmlAttribute<bool>(xmlElement, "ShowMinimize", true);
-    	    dialog.RootTitleBar.ShowMaximize = ParseXmlAttribute<bool>(xmlElement, "ShowMaximize", false);
+            dialog.RootTitleBar.ShowMaximize = ParseXmlAttribute<bool>(xmlElement, "ShowMaximize", false);
             dialog.RootTitleBar.ShowClose = ParseXmlAttribute<bool>(xmlElement, "ShowClose", true);
 
             string? title = xmlElement.Attribute("Title")?.Value ?? "Froststrap";
             dialog.RootTitleBar.Title = title;
+
+            if (!OperatingSystem.IsWindows())
+            {
+                dialog.WindowDecorations = WindowDecorations.Full;
+                dialog.ExtendClientAreaToDecorationsHint = true;
+
+                dialog.RootTitleBar.IsVisible = false;
+
+                dialog.Title = title;
+
+                Grid.SetRow(dialog.ElementGrid, 0);
+                Grid.SetRowSpan(dialog.ElementGrid, 2);
+            }
 
             return new DummyControl();
         }
