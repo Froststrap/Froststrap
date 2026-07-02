@@ -1150,36 +1150,12 @@ namespace Froststrap
 
             App.Logger.WriteLine(LOG_IDENT, $"Resolved Roblox path: {expectedPath}");
 
-            string executablePath;
-            string arguments = _launchCommandLine;
-
-            if (OperatingSystem.IsMacOS())
-            {
-                string innerExe = Path.Combine(expectedPath, "Contents", "MacOS", AppData.ProcessName);
-                if (File.Exists(innerExe))
-                {
-                    executablePath = innerExe;
-                }
-                else
-                {
-                    App.Logger.WriteLine(LOG_IDENT, "Inner executable not found, falling back to 'open'");
-                    executablePath = "open";
-                    arguments = $"-n \"{expectedPath}\" --args {_launchCommandLine}";
-                }
-            }
-            else
-            {
-                executablePath = expectedPath;
-            }
-
-            App.Logger.WriteLine(LOG_IDENT, $"Resolved executable path: {executablePath}");
-
             var startInfo = new ProcessStartInfo()
             {
-                FileName = executablePath,
-                Arguments = arguments,
+                FileName = OperatingSystem.IsMacOS() ? "open" : expectedPath,
+                Arguments = OperatingSystem.IsMacOS() ? $"-n \"{expectedPath}\" --args {_launchCommandLine}" : _launchCommandLine,
                 WorkingDirectory = AppData.Directory,
-                UseShellExecute = (OperatingSystem.IsMacOS() && executablePath == "open")
+                UseShellExecute = OperatingSystem.IsMacOS()
             };
 
             if (_launchMode == LaunchMode.Player && ShouldRunAsAdmin())
