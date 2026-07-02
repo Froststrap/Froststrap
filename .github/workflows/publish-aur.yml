@@ -71,7 +71,7 @@ jobs:
           ref: ${{ github.event.release.target_commitish }}
 
       - name: Publish
-        uses: KSXGitHub/github-actions-deploy-aur@master
+        uses: KSXGitHub/github-actions-deploy-aur@4.1.3
         with:
           pkgname: ${{ matrix.pkgname }}
           pkgbuild: ${{ matrix.pkgbuild }}
