@@ -360,3 +360,9 @@ flatpak/build-dir/
 flatpak/repo/
 .flatpak-builder/
 *.flatpak
+
+# AUR
+Scripts/aur/aur-deploy-key
+Scripts/aur/aur-deploy-key.pub
+*.aur-key
+*.aur-key.pub

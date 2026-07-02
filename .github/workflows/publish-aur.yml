@@ -1,0 +1,83 @@
+name: Publish to AUR
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-aur-${{ github.event.release.tag_name }}
+  cancel-in-progress: false
+
+jobs:
+  update-pkgbuilds:
+    name: Update PKGBUILDs
+    runs-on: ubuntu-latest
+    outputs:
+      pkgver: ${{ steps.version.outputs.pkgver }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@main
+        with:
+          ref: ${{ github.event.release.target_commitish }}
+
+      - name: Update PKGBUILDs
+        id: version
+        run: |
+          tag="${{ github.event.release.tag_name }}"
+          pkgver="${tag#v}"
+          pkgver="${pkgver//-/.}"
+          for pkgbuild in Scripts/archlinux/PKGBUILD Scripts/archlinux/binary/PKGBUILD; do
+            sed -i "s/^_tag=.*/_tag='${tag}'/" "$pkgbuild"
+            sed -i "s/^pkgrel=.*/pkgrel=${pkgrel}/" "$pkgbuild"
+          done
+          echo "pkgver=${pkgver}" >> "$GITHUB_OUTPUT"
+
+      - name: Commit PKGBUILDs
+        run: |
+          if git diff --quiet -- Scripts/archlinux/PKGBUILD Scripts/archlinux/binary/PKGBUILD; then
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Scripts/archlinux/PKGBUILD Scripts/archlinux/binary/PKGBUILD
+          git commit -m "chore(aur): update PKGBUILDs for ${{ github.event.release.tag_name }}"
+          git push
+
+  publish:
+    name: Publish ${{ matrix.pkgname }}
+    runs-on: ubuntu-latest
+    needs: update-pkgbuilds
+    environment:
+      name: aur-publish
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - pkgname: froststrap
+            pkgbuild: Scripts/archlinux/PKGBUILD
+          - pkgname: froststrap-bin
+            pkgbuild: Scripts/archlinux/binary/PKGBUILD
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@main
+        with:
+          ref: ${{ github.event.release.target_commitish }}
+
+      - name: Publish
+        uses: KSXGitHub/github-actions-deploy-aur@master
+        with:
+          pkgname: ${{ matrix.pkgname }}
+          pkgbuild: ${{ matrix.pkgbuild }}
+          updpkgsums: 'true'
+          ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+          commit_username: ${{ secrets.AUR_USERNAME }}
+          commit_email: ${{ secrets.AUR_EMAIL }}
+          commit_message: 'upgpkg: ${{ matrix.pkgname }} ${{ needs.update-pkgbuilds.outputs.pkgver }}'
+          allow_empty_commits: 'true'
+          force_push: 'false'

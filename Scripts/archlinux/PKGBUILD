@@ -1,7 +1,8 @@
 # Maintainer: blazebsc <blakeisfruity@proton.me>
 pkgname=froststrap
 _tag='v2.0.0-beta.9'
-pkgver=2.0.0.beta.9
+pkgver=${_tag#v}
+pkgver=${pkgver//-/.}
 pkgrel=2
 pkgdesc="A fork of Fishstrap/Bloxstrap, focused on performance and customization"
 arch=('x86_64')
