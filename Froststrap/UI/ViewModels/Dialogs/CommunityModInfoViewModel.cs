@@ -4,16 +4,12 @@ using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.UI.Elements.Base;
 using System.Collections.ObjectModel;
-using System.Globalization;
-using System.IO;
 using AvaFontFamily = Avalonia.Media.FontFamily;
 
 namespace Froststrap.UI.ViewModels.Dialogs
 {
     public partial class CommunityModInfoViewModel(CommunityMod mod, AvaloniaWindow window) : NotifyPropertyChangedViewModel
     {
-        private static readonly string FontDir = Path.Combine(Path.GetTempPath(), "Froststrap", "Fonts");
-
         private string _colorDisplayText = string.Empty;
         public string ColorDisplayText
         {
@@ -35,13 +31,6 @@ namespace Froststrap.UI.ViewModels.Dialogs
             set => SetProperty(ref _isLoadingGlyphs, value);
         }
 
-        private string _statusText = string.Empty;
-        public string StatusText
-        {
-            get => _statusText;
-            set => SetProperty(ref _statusText, value);
-        }
-
         private ObservableCollection<GlyphItem> _glyphItems = [];
         public ObservableCollection<GlyphItem> GlyphItems
         {
@@ -49,12 +38,14 @@ namespace Froststrap.UI.ViewModels.Dialogs
             set => SetProperty(ref _glyphItems, value);
         }
 
-        private IBrush _previewBrush = Brushes.White;
-        public IBrush PreviewBrush
+        private SolidColorBrush _previewBrush = new(Colors.White);
+        public SolidColorBrush PreviewBrush
         {
             get => _previewBrush;
             set => SetProperty(ref _previewBrush, value);
         }
+
+        public bool IsGradientMode => Mod.GradientStops?.Count >= 2;
 
         public void Initialize()
         {
@@ -69,112 +60,89 @@ namespace Froststrap.UI.ViewModels.Dialogs
         {
             try
             {
-                if (!Directory.Exists(FontDir))
-                    Directory.CreateDirectory(FontDir);
-
-                string fontPath = Path.Combine(FontDir, "BuilderIcons-Regular.ttf");
-
-                if (!File.Exists(fontPath))
-                {
-                    StatusText = "Downloading preview assets...";
-                    var data = await App.HttpClient.GetByteArrayAsync("https://raw.githubusercontent.com/RealMeddsam/config/main/BuilderIcons-Regular.ttf");
-                    await File.WriteAllBytesAsync(fontPath, data);
-                }
+                var fontFamily = new AvaFontFamily("avares://Froststrap/Resources/Fonts#BuilderIcons-Regular");
+                var typeface = new Typeface(fontFamily);
 
                 UpdateGlyphColors();
-                await LoadGlyphPreviewsAsync(fontPath);
+                await LoadGlyphPreviewsAsync(typeface);
             }
             catch (Exception ex)
             {
-                App.Logger?.WriteLine("CommunityModInfoViewModel", $"Failed to initialize: {ex.Message}");
-                StatusText = "Failed to load preview.";
+                App.Logger?.WriteLine("CommunityModInfoViewModel", $"Preview initialization failed: {ex.Message}");
             }
         }
 
         private void UpdateGlyphColors()
         {
-            if (Mod.GradientStops != null && Mod.GradientStops.Count > 0)
+            if (IsGradientMode)
             {
-                ColorDisplayText = string.Join(" → ", Mod.GradientStops.Select(s => s.Color.ToUpper()));
+                var stops = Mod.GradientStops!;
+                ColorDisplayText = string.Join(" → ", stops.Select(s => s.Color.ToUpper()));
 
-                var stops = new Avalonia.Media.GradientStops();
-                foreach (var stop in Mod.GradientStops.OrderBy(s => s.Offset))
-                {
-                    if (Color.TryParse(stop.Color, out var color))
-                        stops.Add(new Avalonia.Media.GradientStop(color, stop.Offset));
-                }
-                if (stops.Count > 0)
-                {
-                    double angle = Mod.GradientAngle ?? 90;
-                    var brush = new LinearGradientBrush
-                    {
-                        GradientStops = stops,
-                        StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
-                        EndPoint = new RelativePoint(1, 1, RelativeUnit.Relative)
-                    };
-                    double rad = (angle - 90) * Math.PI / 180.0;
-                    double dx = Math.Cos(rad);
-                    double dy = Math.Sin(rad);
-                    brush.StartPoint = new RelativePoint(0.5 - dx / 2, 0.5 - dy / 2, RelativeUnit.Relative);
-                    brush.EndPoint = new RelativePoint(0.5 + dx / 2, 0.5 + dy / 2, RelativeUnit.Relative);
-                    PreviewBrush = brush;
-                    return;
-                }
+                if (stops.Count > 0 && Color.TryParse(stops[0].Color, out var firstColor))
+                    PreviewBrush = new SolidColorBrush(firstColor);
+                else
+                    PreviewBrush = new SolidColorBrush(Colors.White);
+                return;
             }
-            else if (!string.IsNullOrEmpty(Mod.HexCode) && Color.TryParse(Mod.HexCode, out var color))
+
+            if (!string.IsNullOrEmpty(Mod.HexCode) && Color.TryParse(Mod.HexCode, out var hexColor))
             {
                 ColorDisplayText = Mod.HexCode.ToUpper();
-                PreviewBrush = new SolidColorBrush(color);
+                PreviewBrush = new SolidColorBrush(hexColor);
                 return;
             }
 
             ColorDisplayText = "No color information";
-            PreviewBrush = Brushes.White;
+            PreviewBrush = new SolidColorBrush(Colors.White);
         }
 
-        private static bool IsFileReady(string filename)
+        private IBrush CreateGradientBrush()
         {
-            try
+            if (!IsGradientMode || Mod.GradientStops == null || Mod.GradientStops.Count < 2)
+                return PreviewBrush;
+
+            var stops = Mod.GradientStops.OrderBy(s => s.Offset).ToList();
+            var avaloniaStops = new Avalonia.Media.GradientStops();
+            foreach (var stop in stops)
             {
-                using var fs = File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.None);
-                return fs.Length > 0;
+                if (Color.TryParse(stop.Color, out var color))
+                    avaloniaStops.Add(new Avalonia.Media.GradientStop(color, stop.Offset));
             }
-            catch (IOException)
+            if (avaloniaStops.Count < 2)
+                return PreviewBrush;
+
+            var brush = new LinearGradientBrush
             {
-                return false;
+                GradientStops = avaloniaStops
+            };
+
+            double angle = Mod.GradientAngle ?? 90;
+            double angleRad = angle * Math.PI / 180.0;
+            double dx = Math.Sin(angleRad);
+            double dy = -Math.Cos(angleRad);
+            double len = Math.Sqrt(dx * dx + dy * dy);
+            if (len > 0)
+            {
+                dx /= len;
+                dy /= len;
             }
+            brush.StartPoint = new RelativePoint(0.5 - dx / 2, 0.5 - dy / 2, RelativeUnit.Relative);
+            brush.EndPoint = new RelativePoint(0.5 + dx / 2, 0.5 + dy / 2, RelativeUnit.Relative);
+
+            return brush;
         }
 
-        private async Task LoadGlyphPreviewsAsync(string fontPath)
+        private async Task LoadGlyphPreviewsAsync(Typeface typeface)
         {
-            if (!File.Exists(fontPath) || !IsFileReady(fontPath)) return;
-
             IsLoadingGlyphs = true;
-            ObservableCollection<GlyphItem> newItems = [];
-            UpdateGlyphColors();
+            var newItems = new ObservableCollection<GlyphItem>();
 
             try
             {
-                string variantName = Path.GetFileNameWithoutExtension(fontPath);
-                AvaFontFamily? fontFamily = null;
+                IBrush glyphBrush = IsGradientMode ? CreateGradientBrush() : PreviewBrush;
 
-                if (Application.Current != null)
-                {
-                    string resourceKey = variantName.EndsWith("Filled") ? "BuilderIconsFilled" : "BuilderIconsRegular";
-                    if (Application.Current.Resources.TryGetResource(resourceKey, null, out object? res) && res is AvaFontFamily ff)
-                    {
-                        fontFamily = ff;
-                    }
-                }
-
-                if (fontFamily == null)
-                {
-                    var fontUri = new Uri($"file:///{fontPath.Replace('\\', '/')}");
-                    fontFamily = new AvaFontFamily(fontUri, "BuilderIcons");
-                }
-
-                var typeface = new Typeface(fontFamily);
-                var characterCodes = Enumerable.Range(0xF101, 25);
+                var characterCodes = Enumerable.Range(0xF101, 50);
 
                 foreach (var characterCode in characterCodes)
                 {
@@ -205,23 +173,21 @@ namespace Froststrap.UI.ViewModels.Dialogs
                             newItems.Add(new GlyphItem
                             {
                                 Data = geometry,
-                                Brush = PreviewBrush
+                                Brush = glyphBrush
                             });
                         }
-                        catch (Exception ex)
+                        catch
                         {
-                            App.Logger?.WriteLine("CommunityModInfoViewModel", $"Glyph Error: {ex.Message}");
+                            // Silently skip individual glyph errors
                         }
                     });
                 }
 
                 GlyphItems = newItems;
-                StatusText = "Preview loaded.";
             }
             catch (Exception ex)
             {
-                App.Logger?.WriteLine("CommunityModInfoViewModel", $"Load Error: {ex}");
-                StatusText = "Failed to load glyphs.";
+                App.Logger?.WriteLine("CommunityModInfoViewModel", $"Glyph loading error: {ex.Message}");
             }
             finally
             {

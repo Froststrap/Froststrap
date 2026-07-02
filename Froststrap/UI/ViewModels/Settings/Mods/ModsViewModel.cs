@@ -771,7 +771,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                         string colorHex = stop.GetProperty("Color").GetString() ?? "#FFFFFF";
                         if (Color.TryParse(colorHex, out var color))
                         {
-                            stops.Add(new GradientStop(color, offset));
+                            stops.Add(new Avalonia.Media.GradientStop(color, offset));
                         }
                     }
 

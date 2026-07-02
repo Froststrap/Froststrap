@@ -91,7 +91,7 @@ namespace Froststrap.UI.Elements.Base
                     {
                         if (Color.TryParse(s.Color, out var color))
                         {
-                            avaloniaStops.Add(new GradientStop(color, s.Offset));
+                            avaloniaStops.Add(new Avalonia.Media.GradientStop(color, s.Offset));
                         }
                     }
 

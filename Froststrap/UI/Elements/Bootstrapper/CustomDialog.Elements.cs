@@ -147,9 +147,9 @@ namespace Froststrap.UI.Elements.Bootstrapper
             return imageBrush;
         }
 
-        private static GradientStop HandleXmlElement_GradientStop(CustomDialog dialog, XElement xmlElement)
+        private static Avalonia.Media.GradientStop HandleXmlElement_GradientStop(CustomDialog dialog, XElement xmlElement)
         {
-            var gs = new GradientStop();
+            var gs = new Avalonia.Media.GradientStop();
 
             object? color = GetColorFromXElement(xmlElement, "Color");
             if (color is Color c)
@@ -194,7 +194,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
                         var color = Color.Parse(colorAttr);
                         var offset = double.Parse(offsetAttr, CultureInfo.InvariantCulture);
 
-                        brush.GradientStops.Add(new GradientStop(color, offset));
+                        brush.GradientStops.Add(new Avalonia.Media.GradientStop(color, offset));
                     }
                 }
             }
