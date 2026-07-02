@@ -1281,6 +1281,15 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Start Menu Icon.
+        /// </summary>
+        public static string Common_Shortcuts_StartMenu {
+            get {
+                return ResourceManager.GetString("Common.Shortcuts.StartMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sober.
         /// </summary>
         public static string Common_Sober {
@@ -1959,7 +1968,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Froststrap was unable to create shortcuts for the Desktop and Start Menu. Try creating them later through the settings..
+        ///   Looks up a localized string similar to Froststrap was unable to create shortcut. Try creating them later through the settings..
         /// </summary>
         public static string Dialog_CannotCreateShortcuts {
             get {

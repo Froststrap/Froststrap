@@ -5,6 +5,7 @@
     xmlns:resources="using:Froststrap.Resources"
     xmlns:ui="using:FluentAvalonia.UI.Controls"
     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
+	xmlns:gv="using:Froststrap.UI.ViewModels"
     xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
     xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
     x:DataType="vm:ShortcutsViewModel">
@@ -26,14 +27,24 @@
                 Text="{x:Static resources:Strings.Menu_Shortcuts_General_Title}" />
             <TextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="{x:Static resources:Strings.Menu_Shortcuts_General_Description}" />
 
-            <StackPanel>
-                <controls:OptionControl
-                    Grid.Column="0"
-                    Margin="0,0,4,0"
-                    Header="{x:Static resources:Strings.Common_Shortcuts_Desktop}">
-                    <ToggleSwitch IsChecked="{Binding DesktopIconTask.NewState, Mode=TwoWay}" />
-                </controls:OptionControl>
-            </StackPanel>
+			<Grid x:Name="ShortcutsGrid" ColumnDefinitions="*, *">
+				<controls:OptionControl
+					x:Name="DesktopOption"
+					Grid.Column="0"
+					Margin="0,0,4,0"
+					Header="{x:Static resources:Strings.Common_Shortcuts_Desktop}">
+					<ToggleSwitch IsChecked="{Binding DesktopIconTask.NewState, Mode=TwoWay}" />
+				</controls:OptionControl>
+
+				<controls:OptionControl
+					x:Name="StartMenuOption"
+					Grid.Column="1"
+					Margin="2,0,4,0"
+					IsVisible="{x:Static gv:GlobalViewModel.IsWindows}"
+					Header="{x:Static resources:Strings.Common_Shortcuts_StartMenu}">
+					<ToggleSwitch IsChecked="{Binding StartMenuIconTask.NewState, Mode=TwoWay}" />
+				</controls:OptionControl>
+			</Grid>
 
             <Separator Margin="0,8,0,4" />
 

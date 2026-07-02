@@ -12,6 +12,13 @@ namespace Froststrap.UI.Elements.Settings.Pages
             InitializeComponent();
             App.FrostRPC?.SetPage("Shortcut");
 
+            Loaded += (_, _) =>
+            {
+                ShortcutsGrid.ColumnDefinitions[1].Width = OperatingSystem.IsWindows()
+                    ? new GridLength(1, GridUnitType.Star)
+                    : new GridLength(0);
+            };
+
             DataContextChanged += (s, e) =>
             {
                 if (DataContext is ShortcutsViewModel vm)
