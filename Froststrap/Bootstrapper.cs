@@ -1183,7 +1183,24 @@ namespace Froststrap
             try
             {
                 using var process = Process.Start(startInfo)!;
-                _appPid = process.Id;
+
+                if (OperatingSystem.IsMacOS() && startInfo.FileName == "open")
+                {
+                    _appPid = await GetRobloxProcessIdAsync(expectedName, TimeSpan.FromSeconds(5));
+                    if (_appPid == 0)
+                    {
+                        _appPid = process.Id;
+                        App.Logger.WriteLine(LOG_IDENT, "Could not locate Roblox process, falling back to open PID.");
+                    }
+                    else
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"Detected Roblox process PID: {_appPid}");
+                    }
+                }
+                else
+                {
+                    _appPid = process.Id;
+                }
             }
             catch (Win32Exception ex) when (ex.NativeErrorCode == 1223)
             {
@@ -1723,6 +1740,24 @@ namespace Froststrap
             if (integration.Delay != 0)
                 Thread.Sleep(integration.Delay);
 
+        }
+
+        private async Task<int> GetRobloxProcessIdAsync(string expectedName, TimeSpan timeout)
+        {
+            string processName = expectedName.Replace(".app", "");
+            var startTime = DateTime.Now;
+
+            while (DateTime.Now - startTime < timeout)
+            {
+                var processes = Process.GetProcessesByName(processName);
+                var target = processes.OrderByDescending(p => p.StartTime).FirstOrDefault();
+                if (target != null)
+                {
+                    return target.Id;
+                }
+                await Task.Delay(100);
+            }
+            return 0;
         }
 
         private bool ShouldRunAsAdmin()
