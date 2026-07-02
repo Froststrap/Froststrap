@@ -26,10 +26,25 @@ public class SoberSettingsManager : JsonManager<Dictionary<string, object>>
         ["FFlagsContainer"] = "fflags"
     };
 
-    public void SetPreset(string prefix, object? value)
+    public void SetPreset(string presetName, object? value)
     {
-        foreach (var pair in PresetKeys.Where(x => x.Key.StartsWith(prefix, StringComparison.Ordinal)))
-            SetValue(pair.Value, value);
+        if (!PresetKeys.TryGetValue(presetName, out string? actualKey))
+        {
+            App.Logger.WriteLine(LOG_IDENT_CLASS, $"Unknown preset '{presetName}'");
+            return;
+        }
+
+        // Convert string values to appropriate types for Sober config
+        object? convertedValue = value switch
+        {
+            string s when s.Equals("true", StringComparison.OrdinalIgnoreCase) => true,
+            string s when s.Equals("false", StringComparison.OrdinalIgnoreCase) => false,
+            string s when long.TryParse(s, out long l) => l,
+            string s when double.TryParse(s, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out double d) => d,
+            _ => value
+        };
+
+        SetValue(actualKey, convertedValue);
     }
 
     public string? GetPreset(string name)
