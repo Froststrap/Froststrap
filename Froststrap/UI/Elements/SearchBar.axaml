@@ -2,7 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:ic="clr-namespace:FluentIcons.Avalonia.Fluent;assembly=FluentIcons.Avalonia.Fluent"
+             xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
              xmlns:models="using:Froststrap.Models"
              xmlns:controls="using:Froststrap.UI.Elements.Controls"
              xmlns:resources="using:Froststrap.Resources"
@@ -16,22 +16,21 @@
 
     <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="400">
         <TextBox x:Name="SearchTextBox"
-                 Watermark="{x:Static resources:Strings.Menu_SearchBar_SearchSomething}"
+                 PlaceholderText="{x:Static resources:Strings.Menu_SearchBar_SearchSomething}"
                  Text="{Binding SearchQuery}"
                  VerticalAlignment="Center"
                  VerticalContentAlignment="Center">
 
             <TextBox.InnerLeftContent>
-                <Button Command="{Binding ToggleSearchListCommand}"
-                        Background="Transparent"
-                        BorderThickness="0"
-                        Padding="10,0,8,0"
-                        IsTabStop="False"
-                        VerticalAlignment="Center">
-                    <ic:SymbolIcon Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                                   Symbol="Search"
-                                   FontSize="16" />
-                </Button>
+                <controls:IconButton Command="{Binding ToggleSearchListCommand}"
+                                     Icon="Search"
+                                     IconSize="16"
+                                     Background="Transparent"
+                                     BorderThickness="0"
+                                     IsTabStop="False"
+                                     VerticalAlignment="Center">
+                </controls:IconButton>
+
             </TextBox.InnerLeftContent>
 
             <TextBox.InnerRightContent>
@@ -44,16 +43,15 @@
                         Padding="0"
                         Margin="0,0,2,0"
                         VerticalAlignment="Center">
-                    <ic:SymbolIcon Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                                   Symbol="Dismiss"
-                                   FontSize="14" />
+                    <ic:Lucide Icon="X"
+                               Height="14"
+                               Width="14"/>
                 </Button>
             </TextBox.InnerRightContent>
 
             <FlyoutBase.AttachedFlyout>
                 <Flyout Placement="Bottom"
-                        ShowMode="Transient"
-                        IsOpen="{Binding IsSearchFlyoutOpen, Mode=TwoWay}">
+                        ShowMode="Transient">
                     <Border Width="400"
                             MaxHeight="450"
                             Background="{DynamicResource SolidBackgroundFillColorQuarternaryBrush}"
@@ -81,12 +79,13 @@
                                                         CornerRadius="4"
                                                         Margin="0,1">
                                                     <Grid ColumnDefinitions="Auto,*,Auto">
-                                                        <ic:SymbolIcon Grid.Column="0"
-                                                                       Symbol="{Binding IconSymbol, FallbackValue=Settings}"
-                                                                       FontSize="16"
-                                                                       Opacity="0.8"
-                                                                       Margin="0,0,12,0"
-                                                                       VerticalAlignment="Center" />
+                                                        <ic:Lucide Grid.Column="0"
+                                                                   Icon="{Binding IconSymbol, FallbackValue=Settings}"
+                                                                   Height="20"
+                                                                   Width="20"
+                                                                   Opacity="0.8"
+                                                                   Margin="0,0,12,0"
+                                                                   VerticalAlignment="Center" />
 
                                                         <StackPanel Grid.Column="1"
                                                                     VerticalAlignment="Center"
@@ -130,7 +129,7 @@
                                                                        FontWeight="SemiBold"
                                                                        TextTrimming="CharacterEllipsis" />
                                                             <StackPanel Orientation="Horizontal" Spacing="4" Margin="0,2,0,0">
-                                                                <ic:SymbolIcon Symbol="People" FontSize="12" VerticalAlignment="Center" />
+                                                                <ic:Lucide Icon="Users" Height="12" Width="12" VerticalAlignment="Center" />
                                                                 <TextBlock Text="{Binding PlayerCount, Converter={StaticResource NumberAbbreviationConverter}}"
                                                                            FontSize="11" VerticalAlignment="Center" />
                                                             </StackPanel>
@@ -143,7 +142,7 @@
                                                                              ToolTip.Tip="Region Selector"
                                                                              Margin="0,0,4,0" Width="32" Height="32"
                                                                              IconSize="16"
-                                                                             Icon="Earth"
+                                                                             Icon="Globe"
                                                                              Background="{DynamicResource ControlFillColorSecondaryBrush}"
                                                                              CornerRadius="6"/>
 

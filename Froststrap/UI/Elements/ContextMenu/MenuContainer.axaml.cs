@@ -1,5 +1,9 @@
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input.Platform;
+using Avalonia.Platform.Storage;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Input;
 using Avalonia.Threading;
 using Froststrap.Integrations;
 
@@ -178,10 +182,16 @@ namespace Froststrap.UI.Elements.ContextMenu
             }
         }
 
-        private void InviteDeeplinkMenuItem_Click(object? sender, EventArgs e)
+        private async void InviteDeeplinkMenuItem_Click(object? sender, EventArgs e)
         {
-            string deeplink = ActivityWatcher?.Data?.GetInviteDeeplink(true, DeeplinkType.RobloxWeb) ?? Strings.Menu_ContextMenu_NoData;
-            TopLevel.GetTopLevel(this)?.Clipboard?.SetTextAsync(deeplink);
+            string deeplink = ActivityWatcher?.Data?.GetInviteDeeplink(true, DeeplinkType.RobloxWeb)
+                               ?? Strings.Menu_ContextMenu_NoData;
+
+            var topLevel = TopLevel.GetTopLevel(this);
+            if (topLevel?.Clipboard is IClipboard clipboard)
+            {
+                await clipboard.SetTextAsync(deeplink);
+            }
         }
 
         private void ServerDetailsMenuItem_Click(object? sender, EventArgs e) => ShowServerInformationWindow();

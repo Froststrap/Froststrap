@@ -8,7 +8,7 @@
                          Width="576" Height="482"
                          CanResize="False"
                          Title="Froststrap"
-                         SystemDecorations="None"
+                         WindowDecorations="None"
                          WindowStartupLocation="CenterScreen"
                          ExtendClientAreaToDecorationsHint="True"
                          Background="#000000">

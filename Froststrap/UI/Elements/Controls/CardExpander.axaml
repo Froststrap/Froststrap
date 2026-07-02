@@ -39,17 +39,17 @@
                                                               Margin="0,0,12,0"
                                                               VerticalAlignment="Center" />
 
-                                            <ui:SymbolIcon Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                            <ui:FASymbolIcon Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                                                            Name="ExpanderIcon" 
                                                            Grid.Column="2" 
                                                            Symbol="ChevronDown"
                                                            FontSize="18">
-                                                <ui:SymbolIcon.Transitions>
+                                                <ui:FASymbolIcon.Transitions>
                                                     <Transitions>
                                                         <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.2" Easing="CubicEaseOut"/>
                                                     </Transitions>
-                                                </ui:SymbolIcon.Transitions>
-                                            </ui:SymbolIcon>
+                                                </ui:FASymbolIcon.Transitions>
+                                            </ui:FASymbolIcon>
                                         </Grid>
                                     </Border>
                                 </ControlTemplate>
@@ -79,7 +79,7 @@
         <Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
     </Style>
 
-    <Style Selector="controls|CardExpander[IsExpanded=True] ui|SymbolIcon#ExpanderIcon">
+    <Style Selector="controls|CardExpander[IsExpanded=True] ui|FASymbolIcon#ExpanderIcon">
         <Setter Property="RenderTransform" Value="rotate(180deg)" />
     </Style>
 

@@ -8,7 +8,6 @@
     xmlns:resources="using:Froststrap.Resources"
     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
     xmlns:gv="using:Froststrap.UI.ViewModels"
-    xmlns:ic="using:IconPacks.Avalonia.Material"
     d:DesignHeight="2500"
     d:DesignWidth="1200"
     x:DataType="vm:IntegrationsViewModel"
@@ -269,7 +268,7 @@
                         HorizontalAlignment="Stretch"
                         Command="{Binding AddIntegrationCommand, Mode=OneTime}"
                         Content="{x:Static resources:Strings.Common_New}"
-                        Icon="Add" />
+                        Icon="Plus" />
                     <controls:IconButton
                         Grid.Column="1"
                         Margin="4,0,0,0"
@@ -277,7 +276,7 @@
                         Classes="Danger"
                         Command="{Binding DeleteIntegrationCommand, Mode=OneTime}"
                         Content="{x:Static resources:Strings.Common_Delete}"
-                        Icon="Delete"
+                        Icon="Trash2"
                         IsEnabled="{Binding IsCustomIntegrationSelected, Mode=OneWay}" />
                 </Grid>
 
@@ -299,7 +298,7 @@
                     <Grid Margin="0,4,0,0" ColumnDefinitions="*, Auto">
                         <TextBox
                             Grid.Column="0"
-                            Watermark="C:\Windows\System32\cmd.exe"
+                            PlaceholderText="C:\Windows\System32\cmd.exe"
                             Text="{Binding SelectedCustomIntegration.Location}" />
                         <controls:IconButton
                             Grid.Column="1"
@@ -313,10 +312,10 @@
 
                     <Grid Margin="0,8,0,0" ColumnDefinitions="Auto, 1*, Auto, 2*">
                         <TextBlock Grid.Column="0" FontSize="14" VerticalAlignment="Center" Margin="0,0,4,0" Text="Launch Delay" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
-                        <TextBox Grid.Column="1" Margin="0,0,16,0" Watermark="200" Text="{Binding SelectedCustomIntegration.Delay}" />
+                        <TextBox Grid.Column="1" Margin="0,0,16,0" PlaceholderText="200" Text="{Binding SelectedCustomIntegration.Delay}" />
 
                         <TextBlock Grid.Column="2" FontSize="14" VerticalAlignment="Center" Margin="0,0,4,0" Text="{x:Static resources:Strings.Menu_Integrations_Custom_LaunchArgs}" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
-                        <TextBox Grid.Column="3" Watermark="{Binding Source='/k echo {0}', Converter={StaticResource StringFormatConverter}, ConverterParameter={x:Static resources:Strings.Menu_Integrations_Custom_LaunchArgs_Placeholder}}" Text="{Binding SelectedCustomIntegration.LaunchArgs}" />
+                        <TextBox Grid.Column="3" PlaceholderText="{Binding Source='/k echo {0}', Converter={StaticResource StringFormatConverter}, ConverterParameter={x:Static resources:Strings.Menu_Integrations_Custom_LaunchArgs_Placeholder}}" Text="{Binding SelectedCustomIntegration.LaunchArgs}" />
                     </Grid>
 
                     <StackPanel Margin="0,8,0,0" Orientation="Horizontal">
@@ -332,7 +331,7 @@
                             Text="{x:Static resources:Strings.Menu_Integrations_Custom_GameID}" />
                         <TextBox
                             Margin="0,4,0,0"
-                            Watermark="1873"
+                            PlaceholderText="1873"
                             Text="{Binding SelectedCustomIntegration.GameID}" />
                         <CheckBox
                             Margin="0,8,0,0"

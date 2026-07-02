@@ -50,7 +50,7 @@
                                        VerticalAlignment="Center" />
                             <TextBox Grid.Column="1"
                                      Text="{Binding Name}"
-                                     Watermark="Enter theme name" />
+                                     PlaceholderText="Enter theme name" />
                             <TextBlock IsVisible="{Binding HasNameError}"
                                        Text="{Binding NameError}" Grid.Row="1" Grid.Column="1"
                                        Foreground="{DynamicResource SystemFillColorCriticalBrush}"
@@ -83,7 +83,7 @@
                                    TextAlignment="Center"
                                    TextWrapping="Wrap"/>
                         <controls:IconButton Content="{x:Static resources:Strings.Common_ImportFromFile}"
-                                             Icon="FolderZip"
+                                             Icon="FolderArchive"
                                              HorizontalAlignment="Stretch"
                                              Click="OnImportButtonClicked"/>
                         <TextBlock IsVisible="{Binding HasFileError}"

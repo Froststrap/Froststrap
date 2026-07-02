@@ -10,7 +10,6 @@
         x:DataType="vm:ClassicFluentDialogViewModel"
         Width="420" Height="190"
         CanResize="False"
-		SystemDecorations="None"
         Title="Froststrap"
         WindowStartupLocation="CenterScreen"
         ExtendClientAreaToDecorationsHint="True"

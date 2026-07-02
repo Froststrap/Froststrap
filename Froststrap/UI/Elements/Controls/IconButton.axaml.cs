@@ -1,32 +1,22 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.Media;
-using FluentIcons.Common;
+using LucideAvalonia.Enum;
 
 namespace Froststrap.UI.Elements.Controls
 {
     public class IconButton : Button
     {
-        public static readonly StyledProperty<Geometry?> IconDataProperty =
-            AvaloniaProperty.Register<IconButton, Geometry?>(nameof(IconData));
-
         public static readonly StyledProperty<double> IconSizeProperty =
             AvaloniaProperty.Register<IconButton, double>(nameof(IconSize), 12);
 
-        public static readonly StyledProperty<Symbol?> IconProperty =
-            AvaloniaProperty.Register<IconButton, Symbol?>(nameof(Icon), null);
+        public static readonly StyledProperty<LucideIconNames?> IconProperty =
+            AvaloniaProperty.Register<IconButton, LucideIconNames?>(nameof(Icon), null);
 
         public static new readonly StyledProperty<FlyoutBase?> FlyoutProperty =
             AvaloniaProperty.Register<IconButton, FlyoutBase?>(nameof(Flyout), null);
 
         private Button? _secondaryButton;
-
-        public Geometry? IconData
-        {
-            get => GetValue(IconDataProperty);
-            set => SetValue(IconDataProperty, value);
-        }
 
         public double IconSize
         {
@@ -34,7 +24,7 @@ namespace Froststrap.UI.Elements.Controls
             set => SetValue(IconSizeProperty, value);
         }
 
-        public Symbol? Icon
+        public LucideIconNames? Icon
         {
             get => GetValue(IconProperty);
             set => SetValue(IconProperty, value);

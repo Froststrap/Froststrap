@@ -8,6 +8,7 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Styling;
+using FluentAvalonia.UI.Controls;
 using Froststrap.UI.Elements.Controls;
 using System.Xml.Linq;
 
@@ -500,11 +501,24 @@ namespace Froststrap.UI.Elements.Bootstrapper
             dialog.RootTitleBar.Margin = new Thickness(0, 0, 0, 0);
 
             dialog.RootTitleBar.ShowMinimize = ParseXmlAttribute<bool>(xmlElement, "ShowMinimize", true);
-    	    dialog.RootTitleBar.ShowMaximize = ParseXmlAttribute<bool>(xmlElement, "ShowMaximize", false);
+            dialog.RootTitleBar.ShowMaximize = ParseXmlAttribute<bool>(xmlElement, "ShowMaximize", false);
             dialog.RootTitleBar.ShowClose = ParseXmlAttribute<bool>(xmlElement, "ShowClose", true);
 
             string? title = xmlElement.Attribute("Title")?.Value ?? "Froststrap";
             dialog.RootTitleBar.Title = title;
+
+            if (!OperatingSystem.IsWindows())
+            {
+                dialog.WindowDecorations = WindowDecorations.Full;
+                dialog.ExtendClientAreaToDecorationsHint = true;
+
+                dialog.RootTitleBar.IsVisible = false;
+
+                dialog.Title = title;
+
+                Grid.SetRow(dialog.ElementGrid, 0);
+                Grid.SetRowSpan(dialog.ElementGrid, 2);
+            }
 
             return new DummyControl();
         }
@@ -543,6 +557,14 @@ namespace Froststrap.UI.Elements.Bootstrapper
 
             progressBar.IsIndeterminate = ParseXmlAttribute<bool>(xmlElement, "IsIndeterminate", false);
 
+            object? cornerRadius = GetCornerRadiusFromXElement(xmlElement, "CornerRadius");
+            if (cornerRadius != null)
+                ProgressBarHelper.SetCornerRadius(progressBar, (CornerRadius)cornerRadius);
+
+            object? indicatorCornerRadius = GetCornerRadiusFromXElement(xmlElement, "IndicatorCornerRadius");
+            if (indicatorCornerRadius != null)
+                ProgressBarHelper.SetIndicatorCornerRadius(progressBar, (CornerRadius)indicatorCornerRadius);
+
             if (xmlElement.Attribute("Name")?.Value == "PrimaryProgressBar")
             {
                 Binding isIndeterminateBinding = new("ProgressIndeterminate") { Mode = BindingMode.OneWay };
@@ -558,9 +580,9 @@ namespace Froststrap.UI.Elements.Bootstrapper
             return progressBar;
         }
 
-        private static FluentAvalonia.UI.Controls.ProgressRing HandleXmlElement_ProgressRing(CustomDialog dialog, XElement xmlElement)
+        private static FluentAvalonia.UI.Controls.FAProgressRing HandleXmlElement_ProgressRing(CustomDialog dialog, XElement xmlElement)
         {
-            var progressRing = new FluentAvalonia.UI.Controls.ProgressRing();
+            var progressRing = new FluentAvalonia.UI.Controls.FAProgressRing();
             HandleXmlElement_RangeBase(dialog, progressRing, xmlElement);
 
             progressRing.IsIndeterminate = ParseXmlAttribute<bool>(xmlElement, "IsIndeterminate", false);
@@ -568,13 +590,13 @@ namespace Froststrap.UI.Elements.Bootstrapper
             if (xmlElement.Attribute("Name")?.Value == "PrimaryProgressRing")
             {
                 Binding isIndeterminateBinding = new("ProgressIndeterminate") { Mode = BindingMode.OneWay };
-                progressRing.Bind(FluentAvalonia.UI.Controls.ProgressRing.IsIndeterminateProperty, isIndeterminateBinding);
+                progressRing.Bind(FluentAvalonia.UI.Controls.FAProgressRing.IsIndeterminateProperty, isIndeterminateBinding);
 
                 Binding maximumBinding = new("ProgressMaximum") { Mode = BindingMode.OneWay };
-                progressRing.Bind(FluentAvalonia.UI.Controls.ProgressRing.MaximumProperty, maximumBinding);
+                progressRing.Bind(FluentAvalonia.UI.Controls.FAProgressRing.MaximumProperty, maximumBinding);
 
                 Binding valueBinding = new("ProgressValue") { Mode = BindingMode.OneWay };
-                progressRing.Bind(FluentAvalonia.UI.Controls.ProgressRing.ValueProperty, valueBinding);
+                progressRing.Bind(FluentAvalonia.UI.Controls.FAProgressRing.ValueProperty, valueBinding);
             }
 
             return progressRing;

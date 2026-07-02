@@ -30,7 +30,7 @@
                            FontWeight="SemiBold"
                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
                 <TextBox x:Name="Part_HexBox"
-                         Watermark="#RRGGBB"
+                         PlaceholderText="#RRGGBB"
                          VerticalContentAlignment="Center"
                          TextChanged="Part_HexBox_TextChanged"/>
             </StackPanel>

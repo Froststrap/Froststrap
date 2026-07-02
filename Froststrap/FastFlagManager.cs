@@ -1,4 +1,5 @@
 ﻿using Froststrap.Enums.FlagPresets;
+using LucideAvalonia.Enum;
 
 namespace Froststrap
 {
@@ -280,7 +281,7 @@ namespace Froststrap
                 {
                     Name = kvp.Key,
                     Value = kvp.Value?.ToString() ?? "",
-                    Preset = FluentIcons.Common.Symbol.Subtract
+                    Preset = LucideIconNames.Minus
                 };
             }
         }

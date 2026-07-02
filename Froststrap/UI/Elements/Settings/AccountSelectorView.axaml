@@ -2,7 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:ic="using:FluentIcons.Avalonia.Fluent"
+             xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
              xmlns:resources="clr-namespace:Froststrap.Resources"
              xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
              xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
@@ -51,12 +51,13 @@
 
                     <Border CornerRadius="16" ClipToBounds="True">
                         <Panel>
-                            <ic:SymbolIcon Symbol="Person"
-                                           FontSize="18"
-                                           Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                           HorizontalAlignment="Center"
-                                           VerticalAlignment="Center"
-                                           IsVisible="{Binding CurrentAccountAvatarUrl, Converter={x:Static StringConverters.IsNullOrEmpty}}"/>
+                            <ic:Lucide Icon="User"
+                                       Height="18"
+                                       Width="18"
+                                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       IsVisible="{Binding CurrentAccountAvatarUrl, Converter={x:Static StringConverters.IsNullOrEmpty}}"/>
                             <Image Source="{Binding CurrentAccountAvatarUrl, Converter={StaticResource UrlToBitmapConverter}}"
                                    Stretch="UniformToFill"
                                    IsVisible="{Binding CurrentAccountAvatarUrl, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
@@ -184,12 +185,13 @@
                                                         Background="{DynamicResource ControlFillColorSecondaryBrush}"
                                                         ClipToBounds="True">
                                                     <Panel>
-                                                        <ic:SymbolIcon Symbol="Person"
-                                                                       FontSize="16"
-                                                                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                                                       HorizontalAlignment="Center"
-                                                                       VerticalAlignment="Center"
-                                                                       IsVisible="{Binding AvatarUrl, Converter={x:Static StringConverters.IsNullOrEmpty}}" />
+                                                        <ic:Lucide Icon="User"
+                                                                   Height="16"
+																   Width="16"
+                                                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                                                   HorizontalAlignment="Center"
+                                                                   VerticalAlignment="Center"
+                                                                   IsVisible="{Binding AvatarUrl, Converter={x:Static StringConverters.IsNullOrEmpty}}" />
                                                         <Image Source="{Binding AvatarUrl, Converter={StaticResource UrlToBitmapConverter}}"
                                                                Stretch="UniformToFill"
                                                                IsVisible="{Binding AvatarUrl, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />

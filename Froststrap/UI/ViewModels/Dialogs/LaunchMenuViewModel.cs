@@ -61,7 +61,7 @@ namespace Froststrap.UI.ViewModels.Dialogs
             }
         }
 
-        public string LaunchButtonIcon => SelectedLaunchMode == LaunchMode.Player ? "PlayCircle" : "Wrench";
+        public string LaunchButtonIcon => SelectedLaunchMode == LaunchMode.Player ? "CirclePlay" : "Wrench";
 
         public ICommand LaunchCommand { get; }
         public ICommand SetLaunchModeCommand { get; }

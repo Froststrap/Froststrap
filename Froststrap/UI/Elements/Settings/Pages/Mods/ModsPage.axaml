@@ -8,6 +8,8 @@
              xmlns:resources="using:Froststrap.Resources"
              xmlns:controls="using:Froststrap.UI.Elements.Controls"
              xmlns:conv="using:Avalonia.Data.Converters"
+             xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
+             xmlns:lucideEnums="clr-namespace:LucideAvalonia.Enum;assembly=LucideAvalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
              x:Class="Froststrap.UI.Elements.Settings.Pages.Mods.ModsPage"
              x:DataType="vm:ModsViewModel"
@@ -25,26 +27,32 @@
 
             <StackPanel Grid.Row="0">
                 <Grid ColumnDefinitions="*,*,*">
-                    <controls:CardAction Grid.Column="0" Margin="0,0,4,0" Header="{x:Static resources:Strings.Menu_CommunityMods_Title}"
-                                         Icon="ShoppingStore" Description="{x:Static resources:Strings.Menu_CommunityMods_Description}"
+                    <controls:CardAction Grid.Column="0" Margin="0,0,4,0"
+                                         Header="{x:Static resources:Strings.Menu_CommunityMods_Title}"
+                                         Icon="House"
+                                         Description="{x:Static resources:Strings.Menu_CommunityMods_Description}"
                                          Command="{Binding OpenCommunityModsCommand}" />
-                    <controls:CardAction Grid.Column="1" Margin="2,0,2,0" Header="{x:Static resources:Strings.Menu_PresetMods_Title}"
-                                         Icon="BookOpen" Description="{x:Static resources:Strings.Menu_PresetMods_Description}"
+                    <controls:CardAction Grid.Column="1" Margin="2,0,2,0"
+                                         Header="{x:Static resources:Strings.Menu_PresetMods_Title}"
+                                         Icon="BookOpen"
+                                         Description="{x:Static resources:Strings.Menu_PresetMods_Description}"
                                          Command="{Binding OpenPresetModsCommand}" />
-                    <controls:CardAction Grid.Column="2" Margin="4,0,0,0" Header="{x:Static resources:Strings.Menu_ModGenerator_Title}"
-                                         Icon="PaintBrush" Description="{x:Static resources:Strings.Menu_ModGenerator_Description}"
+                    <controls:CardAction Grid.Column="2" Margin="4,0,0,0"
+                                         Header="{x:Static resources:Strings.Menu_ModGenerator_Title}"
+                                         Icon="PaintbrushVertical"
+                                         Description="{x:Static resources:Strings.Menu_ModGenerator_Description}"
                                          Command="{Binding OpenModGeneratorCommand}" />
                 </Grid>
 
                 <Separator Margin="0,8" />
 
-                <ui:InfoBar Message="{x:Static resources:Strings.Menu_Mods_InfoBar}"
+                <ui:FAInfoBar Message="{x:Static resources:Strings.Menu_Mods_InfoBar}"
                             Severity="Informational"
                             IsOpen="True"
                             Margin="0,4"
                             IsClosable="False" />
 
-                <controls:IconButton Icon="Add"
+                <controls:IconButton Icon="Plus"
                                      Content="{x:Static resources:Strings.Menu_Mods_AddNewMod}"
                                      HorizontalAlignment="Stretch"
                                      Command="{Binding AddModCommand}"
@@ -57,7 +65,7 @@
                                          Margin="0,0,4,0"
                                          Command="{Binding ImportFolderCommand}"
                                          CommandParameter="{Binding $self}" />
-                    <controls:IconButton Icon="FolderZip"
+                    <controls:IconButton Icon="FolderArchive"
                                          Content="{x:Static resources:Strings.Menu_Mods_ImportZIP}"
                                          HorizontalAlignment="Stretch"
                                          Margin="4,0,0,0"
@@ -152,18 +160,18 @@
                         <TextBlock Text="{x:Static resources:Strings.Menu_Mods_SelectedModAction}" FontWeight="SemiBold" Margin="0,0,0,8" />
 
                         <StackPanel IsEnabled="{Binding SelectedMod, Converter={x:Static conv:ObjectConverters.IsNotNull}}">
-                            <TextBox Watermark="New name"
+                            <TextBox PlaceholderText="New name"
                                      Text="{Binding NewName}"
                                      Margin="0,4" />
-                            <controls:IconButton Icon="Edit"
+                            <controls:IconButton Icon="Pencil"
                                                  Content="{x:Static resources:Strings.Common_Rename}"
                                                  Command="{Binding RenameModCommand}"
                                                  HorizontalAlignment="Stretch"
                                                  Margin="0,4" />
                             <controls:IconButton Command="{Binding ExportModCommand}" CommandParameter="{Binding SelectedMod}"
-                                                 Content="{x:Static resources:Strings.Common_Export}" Icon="ArrowExport" Margin="0,4" />
+                                                 Content="{x:Static resources:Strings.Common_Export}" Icon="ArrowRightFromLine" Margin="0,4" />
 
-                            <controls:IconButton Icon="Text"
+                            <controls:IconButton Icon="Type"
                                                  Content="{x:Static resources:Strings.Menu_Mods_PreviewFont}"
                                                  Command="{Binding TogglePreviewCommand}"
                                                  HorizontalAlignment="Stretch"
@@ -172,7 +180,7 @@
 
                             <Grid ColumnDefinitions="*,*" Margin="0,4">
                                 <controls:IconButton Grid.Column="0"
-                                                     Icon="Delete"
+                                                     Icon="Trash2"
                                                      Content="{x:Static resources:Strings.Common_Delete}"
                                                      Classes="Danger"
                                                      Command="{Binding DeleteModCommand}"

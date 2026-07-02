@@ -14,6 +14,7 @@ using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
 using Froststrap.Integrations;
 using Froststrap.UI.Elements.Settings;
+using LucideAvalonia.Enum;
 using System.Collections.ObjectModel;
 
 namespace Froststrap.UI.ViewModels
@@ -226,34 +227,50 @@ namespace Froststrap.UI.ViewModels
                         }).ToList();
 
                         var fetchedUrls = await Thumbnails.GetThumbnailUrlsAsync(thumbRequests, token);
-                        if (fetchedUrls == null || token.IsCancellationRequested) return;
-
-                        using var semaphore = new SemaphoreSlim(4);
-                        var downloadTasks = new List<Task>();
-
-                        for (int i = 0; i < results.Count; i++)
+                        if (fetchedUrls != null && !token.IsCancellationRequested)
                         {
-                            if (i < fetchedUrls.Length && !string.IsNullOrEmpty(fetchedUrls[i]))
+                            using var semaphore = new SemaphoreSlim(4);
+                            var downloadTasks = new List<Task>();
+
+                            for (int i = 0; i < results.Count; i++)
                             {
-                                int index = i;
-                                downloadTasks.Add(Task.Run(async () =>
+                                if (i < fetchedUrls.Length && !string.IsNullOrEmpty(fetchedUrls[i]))
                                 {
-                                    await semaphore.WaitAsync(token);
-                                    try
+                                    int index = i;
+                                    downloadTasks.Add(Task.Run(async () =>
                                     {
-                                        var response = await App.HttpClient.GetByteArrayAsync(fetchedUrls[index], token);
-                                        using var ms = new MemoryStream(response);
-                                        var bitmap = new Bitmap(ms);
-                                        results[index].ThumbnailBitmap = bitmap;
-                                    }
-                                    catch { }
-                                    finally { semaphore.Release(); }
-                                }, token));
+                                        await semaphore.WaitAsync(token);
+                                        try
+                                        {
+                                            var response = await App.HttpClient.GetByteArrayAsync(fetchedUrls[index], token);
+                                            using var ms = new MemoryStream(response);
+                                            var bitmap = new Bitmap(ms);
+                                            results[index].ThumbnailBitmap = bitmap;
+                                        }
+                                        catch { }
+                                        finally { semaphore.Release(); }
+                                    }, token));
+                                }
                             }
+                            await Task.WhenAll(downloadTasks);
                         }
-                        await Task.WhenAll(downloadTasks);
                     }
-                    catch { }
+                    catch (OperationCanceledException) { /* Ignore */ }
+
+                    if (token.IsCancellationRequested) return;
+
+                    Dispatcher.UIThread.Post(() =>
+                    {
+                        if (token.IsCancellationRequested) return;
+
+                        GameSearchResults.Clear();
+                        foreach (var res in results)
+                            GameSearchResults.Add(res);
+
+                        IsSearchFlyoutOpen = HasAnyResults;
+                        OnPropertyChanged(nameof(HasAnyResults));
+                        OnPropertyChanged(nameof(CanLoadMore));
+                    }, DispatcherPriority.Background);
                 }, token);
             }
             catch (TaskCanceledException) { }
@@ -266,10 +283,7 @@ namespace Froststrap.UI.ViewModels
         [RelayCommand]
         public void ToggleSearchList()
         {
-            if (HasAnyResults)
-            {
-                IsSearchFlyoutOpen = !IsSearchFlyoutOpen;
-            }
+            IsSearchFlyoutOpen = !IsSearchFlyoutOpen;
         }
 
         [RelayCommand]
@@ -308,37 +322,43 @@ namespace Froststrap.UI.ViewModels
                             }).ToList();
 
                             var fetchedUrls = await Thumbnails.GetThumbnailUrlsAsync(thumbRequests, CancellationToken.None);
-
-                            var downloadTasks = new List<Task>();
-                            using var semaphore = new SemaphoreSlim(4);
-
-                            for (int i = 0; i < results.Count; i++)
+                            if (fetchedUrls != null)
                             {
-                                if (fetchedUrls != null && i < fetchedUrls.Length && !string.IsNullOrEmpty(fetchedUrls[i]))
-                                {
-                                    int index = i;
-                                    downloadTasks.Add(Task.Run(async () =>
-                                    {
-                                        await semaphore.WaitAsync();
-                                        try
-                                        {
-                                            var response = await App.HttpClient.GetByteArrayAsync(fetchedUrls[index]);
-                                            using var ms = new MemoryStream(response);
-                                            var bitmap = new Bitmap(ms);
-                                            results[index].ThumbnailBitmap = bitmap;
-                                        }
-                                        catch { /* Ignore image load failure */ }
-                                        finally
-                                        {
-                                            semaphore.Release();
-                                        }
-                                    }));
-                                }
-                            }
+                                using var semaphore = new SemaphoreSlim(4);
+                                var downloadTasks = new List<Task>();
 
-                            await Task.WhenAll(downloadTasks);
+                                for (int i = 0; i < results.Count; i++)
+                                {
+                                    if (i < fetchedUrls.Length && !string.IsNullOrEmpty(fetchedUrls[i]))
+                                    {
+                                        int index = i;
+                                        downloadTasks.Add(Task.Run(async () =>
+                                        {
+                                            await semaphore.WaitAsync();
+                                            try
+                                            {
+                                                var response = await App.HttpClient.GetByteArrayAsync(fetchedUrls[index]);
+                                                using var ms = new MemoryStream(response);
+                                                var bitmap = new Bitmap(ms);
+                                                results[index].ThumbnailBitmap = bitmap;
+                                            }
+                                            catch { }
+                                            finally { semaphore.Release(); }
+                                        }));
+                                    }
+                                }
+                                await Task.WhenAll(downloadTasks);
+                            }
                         }
-                        catch { /* Ignore thumbnail fetch failures */ }
+                        catch { /* Ignore */ }
+
+                        await Dispatcher.UIThread.InvokeAsync(() =>
+                        {
+                            foreach (var res in results)
+                                GameSearchResults.Add(res);
+
+                            OnPropertyChanged(nameof(CanLoadMore));
+                        }, DispatcherPriority.Background);
                     });
                 }
                 else
@@ -424,9 +444,9 @@ namespace Froststrap.UI.ViewModels
             MainWindow.ShowGlobalNotification(
             Strings.Menu_SearchBar_JoiningGame,
             string.Format(Strings.Menu_SearchBar_JoiningName, content.Name),
-            InfoBarSeverity.Success,
+            FAInfoBarSeverity.Success,
             5000,
-            FluentIcons.Common.Symbol.Globe
+            LucideIconNames.Globe
             );
         }
 
@@ -441,9 +461,9 @@ namespace Froststrap.UI.ViewModels
             MainWindow.ShowGlobalNotification(
                 Strings.Menu_SearchBar_JoiningGame,
                 Strings.Menu_SearchBar_AutoJoin,
-                InfoBarSeverity.Informational,
+                FAInfoBarSeverity.Informational,
                 5000,
-                FluentIcons.Common.Symbol.Globe
+                LucideIconNames.Globe
             );
 
             try
@@ -463,9 +483,9 @@ namespace Froststrap.UI.ViewModels
                     MainWindow.ShowGlobalNotification(
                         Strings.Menu_SearchBar_ServerFound,
                         Strings.Menu_SearchBar_JoiningBest,
-                        InfoBarSeverity.Success,
+                        FAInfoBarSeverity.Success,
                         3000,
-                        FluentIcons.Common.Symbol.Checkmark
+                        LucideIconNames.Check
                     );
                 }
                 else
@@ -473,9 +493,9 @@ namespace Froststrap.UI.ViewModels
                     MainWindow.ShowGlobalNotification(
                         Strings.Common_NotFound,
                         Strings.Menu_SearchBar_NoSuitableServer,
-                        InfoBarSeverity.Warning,
+                        FAInfoBarSeverity.Warning,
                         5000,
-                        FluentIcons.Common.Symbol.Warning
+                        LucideIconNames.TriangleAlert
                     );
                 }
             }
@@ -485,9 +505,9 @@ namespace Froststrap.UI.ViewModels
                 MainWindow.ShowGlobalNotification(
                     Strings.Common_Error,
                     string.Format(Strings.Menu_SearchBar_JoinError, ex.Message),
-                    InfoBarSeverity.Error,
+                    FAInfoBarSeverity.Error,
                     5000,
-                    FluentIcons.Common.Symbol.AccessibilityError
+                    LucideIconNames.TriangleAlert
                 );
             }
         }

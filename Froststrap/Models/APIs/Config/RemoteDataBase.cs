@@ -11,7 +11,7 @@ namespace Froststrap.Models.APIs.Config
         public string AlertContent { get; set; } = null!;
 
         [JsonPropertyName("alertSeverity")]
-        public InfoBarSeverity AlertSeverity { get; set; } = InfoBarSeverity.Informational;
+        public FAInfoBarSeverity AlertSeverity { get; set; } = FAInfoBarSeverity.Informational;
 
         [JsonPropertyName("packageMaps")]
         public PackageMaps PackageMaps { get; set; } = new();

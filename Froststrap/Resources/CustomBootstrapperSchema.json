@@ -79,7 +79,9 @@
 			"SuperClass": "RangeBase",
 			"IsCreatable": true,
 			"Attributes": {
-				"IsIndeterminate": "bool"
+				"IsIndeterminate": "bool",
+				"CornerRadius": "CornerRadius",
+				"IndicatorCornerRadius": "CornerRadius"
 			}
 		},
 		"ProgressRing": {

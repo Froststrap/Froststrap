@@ -1786,6 +1786,15 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The file &quot;{0}&quot; could not be found.
+        /// </summary>
+        public static string CustomTheme_Errors_FileNotFound {
+            get {
+                return ResourceManager.GetString("CustomTheme.Errors.FileNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Theme XML root is not {0}.
         /// </summary>
         public static string CustomTheme_Errors_InvalidRoot {
@@ -3449,7 +3458,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Title.
+        ///   Looks up a localized string similar to Bootstrapper Title.
         /// </summary>
         public static string Menu_Appearance_CustomisationTitle_Title {
             get {
@@ -3503,7 +3512,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Icon.
+        ///   Looks up a localized string similar to Bootstrapper Icon.
         /// </summary>
         public static string Menu_Appearance_Icon_Title {
             get {
@@ -3620,7 +3629,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Choose a window backdrop effect. Requires dark theme and a restart of the app. Note: Mica only works on Windows 11..
+        ///   Looks up a localized string similar to Choose a window backdrop effect. Requires dark theme and a restart of the app, Some backdrops may not work on diffrent OSes, Use with dark theme..
         /// </summary>
         public static string Menu_Appearance_WindowsBackdrop_Description {
             get {
@@ -4566,7 +4575,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Clean List.
+        ///   Looks up a localized string similar to Filter List.
         /// </summary>
         public static string Menu_FastFlagEditor_CleanList {
             get {
@@ -4650,7 +4659,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} have been removed due to not being in allow list..
+        ///   Looks up a localized string similar to {0} have been removed due to not being in Roblox Allow List..
         /// </summary>
         public static string Menu_FastFlagEditor_HaveBeenRemoved {
             get {

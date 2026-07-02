@@ -19,7 +19,16 @@ namespace Froststrap.UI.Elements.Bootstrapper
             SetupDialog();
 
             Icon = new WindowIcon(App.Settings.Prop.BootstrapperIcon.GetIcon());
-            
+
+            this.Loaded += (s, e) =>
+            {
+                RootTitleBar.PointerPressed += (sender, args) =>
+                {
+                    BeginMoveDrag(args);
+                    args.Handled = true;
+                };
+            };
+
             this.Closing += CustomDialog_Closing;
         }
 

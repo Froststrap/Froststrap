@@ -6,11 +6,12 @@
     xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
     xmlns:elements="clr-namespace:Froststrap.UI.Elements"
     xmlns:gv="using:Froststrap.UI.ViewModels"
-    xmlns:ic="using:FluentIcons.Avalonia.Fluent"
+    xmlns:ico="using:FluentIcons.Avalonia.Fluent"
+    xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
     xmlns:local="clr-namespace:Froststrap.UI.Elements.Settings"
-    xmlns:lucideAvalonia="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
     xmlns:enums="using:Froststrap.Enums"
     xmlns:resources="using:Froststrap.Resources"
+    xmlns:av="using:Avalonia.Controls"
     xmlns:ui="using:FluentAvalonia.UI.Controls"
     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
     Title="{x:Static resources:Strings.Menu_Title}"
@@ -34,7 +35,7 @@
             </controls:TitleBar>
         </Grid>
 
-        <ui:NavigationView
+        <ui:FANavigationView
             Name="NavView"
             Grid.Row="1"
             Background="{DynamicResource ControlFillColorDefaultBrush}"
@@ -43,87 +44,87 @@
             ItemInvoked="NavView_ItemInvoked"
             OpenPaneLength="220"
             PaneDisplayMode="Left">
-            <ui:NavigationView.MenuItems>
-                <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_Integrations_Title}" Tag="integrations">
-                    <ui:NavigationViewItem.IconSource>
-                        <ic:SymbolIconSource Foreground="{DynamicResource TextFillColorPrimaryBrush}" Symbol="Link" />
-                    </ui:NavigationViewItem.IconSource>
-                </ui:NavigationViewItem>
+            <ui:FANavigationView.MenuItems>
+                <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_Integrations_Title}" Tag="integrations">
+                    <ui:FANavigationViewItem.Icon>
+                        <ic:Lucide Icon="Plus" Width="20" Height="20" />
+                    </ui:FANavigationViewItem.Icon>
+                </ui:FANavigationViewItem>
 
-                <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_Behaviour_Title}" Tag="behaviour">
-                    <ui:NavigationViewItem.IconSource>
-                        <ic:SymbolIconSource Foreground="{DynamicResource TextFillColorPrimaryBrush}" Symbol="PlaySettings" />
-                    </ui:NavigationViewItem.IconSource>
-                </ui:NavigationViewItem>
+                <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_Behaviour_Title}" Tag="behaviour">
+                    <ui:FANavigationViewItem.Icon>
+                        <ic:Lucide Icon="Play" Width="20" Height="20" />
+                    </ui:FANavigationViewItem.Icon>
+                </ui:FANavigationViewItem>
 
-                <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_QuickPlay_Title}" Tag="quickplay">
-                    <ui:NavigationViewItem.IconSource>
-                        <ic:SymbolIconSource Foreground="{DynamicResource TextFillColorPrimaryBrush}" Symbol="Replay" />
-                    </ui:NavigationViewItem.IconSource>
-                </ui:NavigationViewItem>
+                <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_QuickPlay_Title}" Tag="quickplay">
+                    <ui:FANavigationViewItem.Icon>
+                        <ic:Lucide Icon="Gamepad" Width="20" Height="20" />
+                    </ui:FANavigationViewItem.Icon>
+                </ui:FANavigationViewItem>
 
-                <ui:NavigationViewItem Content="{x:Static resources:Strings.Common_Deployment}" Tag="channels">
-                    <ui:NavigationViewItem.IconSource>
-                        <ic:SymbolIconSource Foreground="{DynamicResource TextFillColorPrimaryBrush}" Symbol="CloudArrowUp" />
-                    </ui:NavigationViewItem.IconSource>
-                </ui:NavigationViewItem>
+                <ui:FANavigationViewItem Content="{x:Static resources:Strings.Common_Deployment}" Tag="channels">
+                    <ui:FANavigationViewItem.Icon>
+                        <ic:Lucide Icon="HardDriveUpload" Width="20" Height="20" />
+                    </ui:FANavigationViewItem.Icon>
+                </ui:FANavigationViewItem>
 
-                <ui:NavigationViewItemSeparator />
+                <ui:FANavigationViewItemSeparator />
 
-                <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_PresetMods_Title}" Tag="mods">
-                    <ui:NavigationViewItem.IconSource>
-                        <ic:SymbolIconSource Foreground="{DynamicResource TextFillColorPrimaryBrush}" Symbol="PuzzlePiece" />
-                    </ui:NavigationViewItem.IconSource>
-                </ui:NavigationViewItem>
+                <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_PresetMods_Title}" Tag="mods">
+                    <ui:FANavigationViewItem.Icon>
+                        <ic:Lucide Icon="BookOpen" Width="20" Height="20" />
+                    </ui:FANavigationViewItem.Icon>
+                </ui:FANavigationViewItem>
 
-                <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_Appearance_Title}" Tag="appearance">
-                    <ui:NavigationViewItem.IconSource>
-                        <ic:SymbolIconSource Foreground="{DynamicResource TextFillColorPrimaryBrush}" Symbol="Color" />
-                    </ui:NavigationViewItem.IconSource>
-                </ui:NavigationViewItem>
+                <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_Appearance_Title}" Tag="appearance">
+                    <ui:FANavigationViewItem.Icon>
+                        <ic:Lucide Icon="Palette" Width="20" Height="20" />
+                    </ui:FANavigationViewItem.Icon>
+                </ui:FANavigationViewItem>
 
-                <ui:NavigationViewItemSeparator />
+                <ui:FANavigationViewItemSeparator />
 
-                <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_FastFlags_Title}" Tag="fastflags">
-                    <ui:NavigationViewItem.IconSource>
-                        <ic:SymbolIconSource Foreground="{DynamicResource TextFillColorPrimaryBrush}" Symbol="Flag" />
-                    </ui:NavigationViewItem.IconSource>
-                </ui:NavigationViewItem>
+                <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_FastFlags_Title}" Tag="fastflags">
+                    <ui:FANavigationViewItem.Icon>
+                        <ic:Lucide Icon="Flag" Width="20" Height="20" />
+                    </ui:FANavigationViewItem.Icon>
+                </ui:FANavigationViewItem>
 
-                <ui:NavigationViewItem Name="gbs" Content="{x:Static resources:Strings.Menu_GlobalSettings_Title}" Tag="globalsettings">
-                    <ui:NavigationViewItem.IconSource>
-                        <ic:SymbolIconSource Foreground="{DynamicResource TextFillColorPrimaryBrush}" Symbol="EditSettings" />
-                    </ui:NavigationViewItem.IconSource>
-                </ui:NavigationViewItem>
+                <ui:FANavigationViewItem Name="gbs" Content="{x:Static resources:Strings.Menu_GlobalSettings_Title}" Tag="globalsettings">
+                    <ui:FANavigationViewItem.Icon>
+                        <ic:Lucide Icon="PenLine" Width="20" Height="20" />
+                    </ui:FANavigationViewItem.Icon>
+                </ui:FANavigationViewItem>
 
-                <ui:NavigationViewItem Name="linux" IsVisible="{x:Static gv:GlobalViewModel.IsLinux}" Content="{x:Static resources:Strings.Menu_LinuxSettings_Title}" Tag="linuxsettings">
-                    <ui:NavigationViewItem.IconSource>
-                        <ic:SymbolIconSource Foreground="{DynamicResource TextFillColorPrimaryBrush}" Symbol="Settings" />
-                    </ui:NavigationViewItem.IconSource>
-                </ui:NavigationViewItem>
+                <ui:FANavigationViewItem Name="linux" IsVisible="{x:Static gv:GlobalViewModel.IsLinux}" Content="{x:Static resources:Strings.Menu_LinuxSettings_Title}" Tag="linuxsettings">
+                    <ui:FANavigationViewItem.Icon>
+                        <ic:Lucide Icon="Settings" Width="20" Height="20" />
+                    </ui:FANavigationViewItem.Icon>
+                </ui:FANavigationViewItem>
 
-                <ui:NavigationViewItemSeparator />
+                <ui:FANavigationViewItemSeparator />
 
-                <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_RegionSelector_Title}" Tag="regionselector">
-                    <ui:NavigationViewItem.IconSource>
-                        <ic:SymbolIconSource Foreground="{DynamicResource TextFillColorPrimaryBrush}" Symbol="Earth" />
-                    </ui:NavigationViewItem.IconSource>
-                </ui:NavigationViewItem>
+                <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_RegionSelector_Title}" Tag="regionselector">
+                    <ui:FANavigationViewItem.Icon>
+                        <ic:Lucide Icon="Globe" Width="20" Height="20" />
+                    </ui:FANavigationViewItem.Icon>
+                </ui:FANavigationViewItem>
 
-                <ui:NavigationViewItem Content="{x:Static resources:Strings.Common_Shortcuts}" Tag="shortcuts">
-                    <ui:NavigationViewItem.IconSource>
-                        <ic:SymbolIconSource Foreground="{DynamicResource TextFillColorPrimaryBrush}" Symbol="Link" />
-                    </ui:NavigationViewItem.IconSource>
-                </ui:NavigationViewItem>
+                <ui:FANavigationViewItem Content="{x:Static resources:Strings.Common_Shortcuts}" Tag="shortcuts">
+                    <ui:FANavigationViewItem.Icon>
+                        <ic:Lucide Icon="Link2" Width="20" Height="20" />
+                    </ui:FANavigationViewItem.Icon>
+                </ui:FANavigationViewItem>
 
-                <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_About_Title}" Tag="about">
-                    <ui:NavigationViewItem.IconSource>
-                        <ic:SymbolIconSource Foreground="{DynamicResource TextFillColorPrimaryBrush}" Symbol="Info" />
-                    </ui:NavigationViewItem.IconSource>
-                </ui:NavigationViewItem>
-            </ui:NavigationView.MenuItems>
+                <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_About_Title}" Tag="about">
+                    <ui:FANavigationViewItem.Icon>
+                        <ic:Lucide Icon="Book" Width="20" Height="20" />
+                    </ui:FANavigationViewItem.Icon>
+                </ui:FANavigationViewItem>
+            </ui:FANavigationView.MenuItems>
 
-            <ui:NavigationView.Content>
+            <ui:FANavigationView.Content>
                 <Grid RowDefinitions="Auto,*">
                     <Border
                         Grid.Row="0"
@@ -196,7 +197,7 @@
                                 IsVisible="{Binding CurrentPageDescription, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
                                 MarkdownText="{Binding CurrentPageDescription}" />
 
-                            <ui:InfoBar
+                            <ui:FAInfoBar
                                 x:Name="AlertBar"
                                 Margin="0,8,0,0"
                                 IsVisible="False"
@@ -211,8 +212,8 @@
                             VerticalAlignment="Stretch" />
                     </Panel>
                 </Grid>
-            </ui:NavigationView.Content>
-        </ui:NavigationView>
+            </ui:FANavigationView.Content>
+        </ui:FANavigationView>
 
         <Border
             Grid.Row="2"
@@ -237,13 +238,13 @@
                             <MenuItem Header="{Binding PlayerMenuItemText}" Command="{Binding SetLaunchModeCommand}"
                                       CommandParameter="{x:Static enums:LaunchMode.Player}">
                                 <MenuItem.Icon>
-                                    <ic:SymbolIcon Symbol="Games" />
+                                    <ic:Lucide Icon="Gamepad2" />
                                 </MenuItem.Icon>
                             </MenuItem>
                             <MenuItem Header="{x:Static resources:Strings.Common_Studio}" Command="{Binding SetLaunchModeCommand}"
                                       CommandParameter="{x:Static enums:LaunchMode.Studio}">
                                 <MenuItem.Icon>
-                                    <ic:SymbolIcon Symbol="Wrench" />
+                                    <ic:Lucide Icon="Wrench" />
                                 </MenuItem.Icon>
                             </MenuItem>
                         </MenuFlyout>

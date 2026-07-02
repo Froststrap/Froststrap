@@ -1,7 +1,5 @@
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.Threading;
-using Avalonia.VisualTree;
 using Froststrap.UI.ViewModels;
 
 namespace Froststrap.UI.Elements;
@@ -22,36 +20,32 @@ public partial class SearchBar : UserControl
         };
     }
 
-    private void OnViewModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs args)
+    private void OnViewModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
-        if (args.PropertyName == nameof(SearchBarViewModel.IsSearchFlyoutOpen) && sender is SearchBarViewModel vm)
+        if (e.PropertyName == nameof(SearchBarViewModel.IsSearchFlyoutOpen) &&
+            sender is SearchBarViewModel vm)
         {
-            Dispatcher.UIThread.Post(() =>
+            var flyout = FlyoutBase.GetAttachedFlyout(SearchTextBox);
+            if (flyout == null) return;
+
+            if (vm.IsSearchFlyoutOpen)
             {
-                if (SearchTextBox == null || SearchTextBox.GetVisualRoot() == null)
-                    return;
-
-                var flyout = FlyoutBase.GetAttachedFlyout(SearchTextBox);
-
-                if (vm.IsSearchFlyoutOpen)
-                {
-                    if (flyout != null && !flyout.IsOpen)
-                    {
-                        FlyoutBase.ShowAttachedFlyout(SearchTextBox);
-                    }
-                }
-                else
-                {
-                    flyout?.Hide();
-                }
-            });
+                if (!flyout.IsOpen)
+                    FlyoutBase.ShowAttachedFlyout(SearchTextBox);
+            }
+            else
+            {
+                flyout.Hide();
+            }
         }
     }
 
     private void OnSearchIconClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        var flyout = FlyoutBase.GetAttachedFlyout(SearchTextBox);
-        flyout?.ShowAt(SearchTextBox);
+        if (DataContext is SearchBarViewModel vm)
+            vm.IsSearchFlyoutOpen = true;
+        else
+            FlyoutBase.ShowAttachedFlyout(SearchTextBox);
     }
 
     private void OnScrollChanged(object? sender, ScrollChangedEventArgs e)

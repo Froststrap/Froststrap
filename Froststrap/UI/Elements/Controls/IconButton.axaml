@@ -1,6 +1,7 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:ic="using:FluentIcons.Avalonia.Fluent"
+        xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
+        xmlns:ui="using:FluentAvalonia.UI.Controls"
         xmlns:converters="clr-namespace:Froststrap.UI.Converters"
         xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls">
 
@@ -32,11 +33,12 @@
                     </Border.Transitions>
 
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <ic:SymbolIcon Symbol="{TemplateBinding Icon}"
-                                       Foreground="{TemplateBinding Foreground}"
-                                       FontSize="{TemplateBinding IconSize}"
-                                       VerticalAlignment="Center"
-                                       IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+                        <ic:Lucide Icon="{TemplateBinding Icon}"
+                                   StrokeBrush="{TemplateBinding Foreground}"
+                                   Height="{TemplateBinding IconSize}"
+                                   Width="{TemplateBinding IconSize}"
+                                   VerticalAlignment="Center"
+                                   IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"/>
 
                         <ContentPresenter Content="{TemplateBinding Content}"
                                           VerticalAlignment="Center"
@@ -129,24 +131,12 @@
                                     HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                     VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                                     Spacing="8">
-                            <ic:SymbolIcon Symbol="{TemplateBinding Icon}"
-                                           Foreground="{TemplateBinding Foreground}"
-                                           FontSize="{TemplateBinding IconSize}"
-                                           VerticalAlignment="Center"
-                                           IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"/>
-                            <Path Data="{TemplateBinding IconData}"
-                                  Fill="{TemplateBinding Foreground}"
-                                  Width="{TemplateBinding IconSize}"
-                                  Height="{TemplateBinding IconSize}"
-                                  Stretch="Uniform"
-                                  VerticalAlignment="Center">
-                                <Path.IsVisible>
-                                    <MultiBinding Converter="{x:Static BoolConverters.And}">
-                                        <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="IconData" Converter="{x:Static ObjectConverters.IsNotNull}"/>
-                                        <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Icon" Converter="{x:Static ObjectConverters.IsNull}"/>
-                                    </MultiBinding>
-                                </Path.IsVisible>
-                            </Path>
+                            <ic:Lucide Icon="{TemplateBinding Icon}"
+                                       StrokeBrush="{TemplateBinding Foreground}"
+                                       Height="{TemplateBinding IconSize}"
+                                       Width="{TemplateBinding IconSize}"
+                                       VerticalAlignment="Center"
+                                       IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"/>
                             <ContentPresenter Content="{TemplateBinding Content}"
                                               VerticalAlignment="Center"
                                               HorizontalAlignment="Center"
@@ -180,17 +170,18 @@
                             </ControlTemplate>
                         </Button.Template>
 
-                        <ic:SymbolIcon Name="PART_Chevron"
-                                       Symbol="ChevronDown"
-                                       Foreground="{TemplateBinding Foreground}"
-                                       FontSize="12"
-                                       VerticalAlignment="Center">
-                            <ic:SymbolIcon.Transitions>
+                        <ic:Lucide Name="PART_Chevron"
+                                   Icon="ChevronDown"
+                                   StrokeBrush="{TemplateBinding Foreground}"
+                                   Height="12"
+                                   Width="12"
+                                   VerticalAlignment="Center">
+                            <ic:Lucide.Transitions>
                                 <Transitions>
                                     <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.2" Easing="CubicEaseOut" />
                                 </Transitions>
-                            </ic:SymbolIcon.Transitions>
-                        </ic:SymbolIcon>
+                            </ic:Lucide.Transitions>
+                        </ic:Lucide>
                     </Button>
                 </Grid>
             </ControlTemplate>
@@ -209,7 +200,7 @@
         <Setter Property="Opacity" Value="0.5" />
     </Style>
 
-    <Style Selector="controls|IconButton.DropDownButton:flyout-open /template/ ic|SymbolIcon#PART_Chevron">
+    <Style Selector="controls|IconButton.DropDownButton:flyout-open /template/ ic|Lucide#PART_Chevron">
         <Setter Property="RenderTransform" Value="rotate(180deg)" />
     </Style>
 
@@ -254,9 +245,9 @@
             <StackPanel Spacing="8">
                 <TextBlock Text="Default" FontWeight="Bold" />
                 <StackPanel Orientation="Horizontal" Spacing="8">
-                    <controls:IconButton Icon="Home" Content="Home" />
+                    <controls:IconButton Icon="House" Content="Home" />
                     <controls:IconButton Icon="Settings" Content="Settings" />
-                    <controls:IconButton Icon="Delete" Content="Delete" />
+                    <controls:IconButton Icon="Trash2" Content="Delete" />
                 </StackPanel>
             </StackPanel>
 
@@ -264,16 +255,16 @@
                 <TextBlock Text="Primary" FontWeight="Bold" />
                 <StackPanel Orientation="Horizontal" Spacing="8">
                     <controls:IconButton Classes="Primary" Icon="Save" Content="Save" />
-                    <controls:IconButton Classes="Primary" Icon="Add" Content="Add" />
-                    <controls:IconButton Classes="Primary" Icon="Checkmark" Content="Confirm" />
+                    <controls:IconButton Classes="Primary" Icon="Plus" Content="Add" />
+                    <controls:IconButton Classes="Primary" Icon="Check" Content="Confirm" />
                 </StackPanel>
             </StackPanel>
 
             <StackPanel Spacing="8">
                 <TextBlock Text="Danger" FontWeight="Bold" />
                 <StackPanel Orientation="Horizontal" Spacing="8">
-                    <controls:IconButton Classes="Danger" Icon="Delete" Content="Delete" />
-                    <controls:IconButton Classes="Danger" Icon="Warning" Content="Warning" />
+                    <controls:IconButton Classes="Danger" Icon="Trash2" Content="Delete" />
+                    <controls:IconButton Classes="Danger" Icon="TriangleAlert" Content="Warning" />
                 </StackPanel>
             </StackPanel>
 
@@ -282,16 +273,16 @@
                 <StackPanel Orientation="Horizontal" Spacing="8">
                     <controls:IconButton IsEnabled="False" Icon="Settings" Content="Disabled" />
                     <controls:IconButton Classes="Primary" IsEnabled="False" Icon="Save" Content="Disabled" />
-                    <controls:IconButton Classes="Danger" IsEnabled="False" Icon="Delete" Content="Disabled" />
+                    <controls:IconButton Classes="Danger" IsEnabled="False" Icon="Trash2" Content="Disabled" />
                 </StackPanel>
             </StackPanel>
 
             <StackPanel Spacing="8">
                 <TextBlock Text="Icon Only" FontWeight="Bold" />
                 <StackPanel Orientation="Horizontal" Spacing="8">
-                    <controls:IconButton Icon="Home" />
+                    <controls:IconButton Icon="House" />
                     <controls:IconButton Classes="Primary" Icon="Save" />
-                    <controls:IconButton Classes="Danger" Icon="Delete" />
+                    <controls:IconButton Classes="Danger" Icon="Trash2" />
                 </StackPanel>
             </StackPanel>
 
@@ -299,13 +290,13 @@
                 <TextBlock Text="DropDown Buttons (requires Flyout)" FontWeight="Bold" />
                 <StackPanel Orientation="Horizontal" Spacing="8">
                     <controls:IconButton Classes="DropDownButton" Icon="Save" Content="Save" />
-                    <controls:IconButton Classes="DropDownButton Primary" Icon="Add" Content="Add" />
-                    <controls:IconButton Classes="DropDownButton Danger" Icon="Delete" Content="Delete" />
+                    <controls:IconButton Classes="DropDownButton Primary" Icon="Plus" Content="Add" />
+                    <controls:IconButton Classes="DropDownButton Danger" Icon="Trash2" Content="Delete" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,8,0,0">
                     <controls:IconButton Classes="DropDownButton" Icon="Save" Content="Disabled" IsEnabled="False" />
-                    <controls:IconButton Classes="DropDownButton Primary" Icon="Add" Content="Disabled" IsEnabled="False" />
-                    <controls:IconButton Classes="DropDownButton Danger" Icon="Delete" Content="Disabled" IsEnabled="False" />
+                    <controls:IconButton Classes="DropDownButton Primary" Icon="Plus" Content="Disabled" IsEnabled="False" />
+                    <controls:IconButton Classes="DropDownButton Danger" Icon="Trash2" Content="Disabled" IsEnabled="False" />
                 </StackPanel>
                 <controls:IconButton Classes="DropDownButton" Icon="More" />
             </StackPanel>

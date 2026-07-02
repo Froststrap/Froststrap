@@ -1,4 +1,4 @@
-using FluentIcons.Common;
+using LucideAvalonia.Enum;
 
 namespace Froststrap.Models
 {
@@ -12,7 +12,7 @@ namespace Froststrap.Models
         public string? Category { get; set; }
         public string? Description { get; set; }
         public string? ParentSectionName { get; set; }
-        public Symbol? IconSymbol { get; set; }
+        public LucideIconNames? IconSymbol { get; set; }
         public string? PageName { get; set; }
         public override string ToString() => DisplayName;
     }

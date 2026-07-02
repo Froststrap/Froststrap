@@ -1,16 +1,16 @@
-﻿using FluentIcons.Common;
-using Froststrap.UI.ViewModels;
+﻿using Froststrap.UI.ViewModels;
+using LucideAvalonia.Enum;
 
 namespace Froststrap.Models
 {
     public class FastFlag : NotifyPropertyChangedViewModel
     {
         // public bool Enabled { get; set; }
-        private Symbol _preset;
+        private LucideIconNames _preset = LucideIconNames.CircleCheck;
         private string _name = string.Empty;
         private string _value = string.Empty;
 
-        public Symbol Preset
+        public LucideIconNames Preset
         {
             get => _preset;
             set => SetProperty(ref _preset, value);
