@@ -1786,6 +1786,15 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The file &quot;{0}&quot; could not be found.
+        /// </summary>
+        public static string CustomTheme_Errors_FileNotFound {
+            get {
+                return ResourceManager.GetString("CustomTheme.Errors.FileNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Theme XML root is not {0}.
         /// </summary>
         public static string CustomTheme_Errors_InvalidRoot {
@@ -3620,7 +3629,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Choose a window backdrop effect. Requires dark theme and a restart of the app. Note: Mica only works on Windows 11..
+        ///   Looks up a localized string similar to Choose a window backdrop effect. Requires dark theme and a restart of the app, Some backdrops may not work on diffrent OSes, Use with dark theme..
         /// </summary>
         public static string Menu_Appearance_WindowsBackdrop_Description {
             get {

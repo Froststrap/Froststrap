@@ -9,7 +9,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
 
         private class DummyControl : Control { }
 
-        private const int MaxElements = 100;
+        private const int MaxElements = 150;
 
         private bool _initialised = false;
 
