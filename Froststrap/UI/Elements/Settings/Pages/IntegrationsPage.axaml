@@ -251,6 +251,7 @@
                     Grid.Row="0"
                     Grid.Column="0"
                     Margin="0,0,4,0"
+					AutoScrollToSelectedItem="False"
                     ItemsSource="{Binding CustomIntegrations, Mode=OneWay}"
                     SelectedIndex="{Binding SelectedCustomIntegrationIndex, Mode=TwoWay}"
                     SelectionChanged="CustomIntegrationSelection">

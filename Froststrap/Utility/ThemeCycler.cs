@@ -39,6 +39,8 @@
                 App.Settings.Prop.CycleLastCycleTime = DateTime.Now;
 
                 App.Settings.Save();
+
+                App.Logger.WriteLine("ThemeCycler",$"Changed to '{App.Settings.Prop.SelectedCustomTheme}'");
             }
         }
     }

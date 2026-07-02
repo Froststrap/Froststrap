@@ -121,6 +121,7 @@
                                                 MaxWidth="500"
                                                 MinWidth="200"
                                                 MaxHeight="400"
+                                                AutoScrollToSelectedItem="False"
                                                 Background="Transparent"
                                                 ItemsSource="{Binding SearchResults}"
                                                 SelectedItem="{Binding SelectedSearchResult, Mode=TwoWay}">
@@ -161,7 +162,7 @@
                                                                 <ic:Lucide
                                                                     Margin="8,2,0,0"
                                                                     Height="12"
-																	Width="12"
+                                                                    Width="12"
                                                                     Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                                                                     Icon="Users"/>
                                                                 <TextBlock

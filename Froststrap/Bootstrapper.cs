@@ -1742,7 +1742,7 @@ namespace Froststrap
 
         }
 
-        private async Task<int> GetRobloxProcessIdAsync(string expectedName, TimeSpan timeout)
+        private static async Task<int> GetRobloxProcessIdAsync(string expectedName, TimeSpan timeout)
         {
             string processName = expectedName.Replace(".app", "");
             var startTime = DateTime.Now;

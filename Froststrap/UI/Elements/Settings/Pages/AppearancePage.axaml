@@ -221,6 +221,7 @@
                                  Grid.Column="0"
                                  Height="280"
                                  Margin="0,0,8,0"
+								 AutoScrollToSelectedItem="False"
                                  ItemsSource="{Binding CustomThemeSelections}"
                                  SelectedItem="{Binding SelectedThemeWrapper}"
                                  SelectedIndex="{Binding SelectedCustomThemeIndex, Mode=TwoWay}">
