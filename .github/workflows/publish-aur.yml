@@ -30,6 +30,7 @@ jobs:
           tag="${{ github.event.release.tag_name }}"
           pkgver="${tag#v}"
           pkgver="${pkgver//-/.}"
+          pkgrel="${pkgver%%.*}"
           for pkgbuild in Scripts/archlinux/PKGBUILD Scripts/archlinux/binary/PKGBUILD; do
             sed -i "s/^_tag=.*/_tag='${tag}'/" "$pkgbuild"
             sed -i "s/^pkgrel=.*/pkgrel=${pkgrel}/" "$pkgbuild"
