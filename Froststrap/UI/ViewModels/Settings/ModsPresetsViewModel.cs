@@ -200,7 +200,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        private void OpenModsFolder() => Utilities.ShellExecute(Paths.Modifications, true);
+        private void OpenModsFolder() => Utilities.ShellExecute(Paths.Modifications);
 
         private static string CursorPath => Path.Combine(Paths.Modifications, "content", "textures", "Cursors", "KeyboardMouse");
         private static string ShiftlockPath => Path.Combine(Paths.Modifications, "content", "textures");

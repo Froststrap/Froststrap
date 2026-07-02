@@ -264,7 +264,66 @@ namespace Froststrap
             }
         }
 
-        public void KillRobloxProcess() => CloseProcess(_watcherData!.ProcessId, true);
+        public void KillRobloxProcess()
+        {
+            int pid = _watcherData?.ProcessId ?? 0;
+            if (pid > 0)
+            {
+                CloseProcess(pid, true);
+                return;
+            }
+
+            const string LOG_IDENT = "Watcher::KillRobloxProcess";
+            App.Logger.WriteLine(LOG_IDENT, "No PID available, killing Roblox processes by name");
+
+            string[] processNames;
+            var mode = _watcherData?.LaunchMode ?? LaunchMode.None;
+
+            if (mode == LaunchMode.Player)
+            {
+                if (OperatingSystem.IsMacOS())
+                    processNames = ["RobloxPlayer"];
+                else if (OperatingSystem.IsWindows())
+                    processNames = ["RobloxPlayerBeta"];
+                else
+                    processNames = ["sober"];
+            }
+            else if (mode == LaunchMode.Studio || mode == LaunchMode.StudioAuth)
+            {
+                if (OperatingSystem.IsMacOS())
+                    processNames = ["RobloxStudio"];
+                else if (OperatingSystem.IsWindows())
+                    processNames = ["RobloxStudioBeta"];
+                else
+                    processNames = ["RobloxStudioBeta"];
+            }
+            else
+            {
+                if (OperatingSystem.IsMacOS())
+                    processNames = ["RobloxPlayer", "RobloxStudio"];
+                else if (OperatingSystem.IsWindows())
+                    processNames = ["RobloxPlayerBeta", "RobloxStudioBeta"];
+                else
+                    processNames = ["sober", "RobloxStudioBeta"];
+            }
+
+            foreach (var name in processNames)
+            {
+                foreach (var proc in Process.GetProcessesByName(name))
+                {
+                    try
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"Killing {proc.ProcessName} (PID {proc.Id})");
+                        proc.Kill();
+                    }
+                    catch (Exception ex)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"Failed to kill {proc.ProcessName} (PID {proc.Id})");
+                        App.Logger.WriteException(LOG_IDENT, ex);
+                    }
+                }
+            }
+        }
 
         public static void CloseProcess(int pid, bool force = false)
         {

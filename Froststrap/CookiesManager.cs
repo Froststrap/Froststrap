@@ -1,4 +1,5 @@
 ﻿using Froststrap.RobloxInterfaces;
+using System.Security.Cryptography;
 
 namespace Froststrap
 {
@@ -138,9 +139,16 @@ namespace Froststrap
 
         private static async Task<string> LoadWindowsCookies()
         {
-            byte[] fileBytes = await File.ReadAllBytesAsync(CookiesPath);
-            var cookies = ParseBinaryCookies(fileBytes);
-            return ExtractRoblosecurity(cookies) ?? string.Empty;
+            string content = await File.ReadAllTextAsync(CookiesPath);
+            var cookies = JsonSerializer.Deserialize<RobloxCookies>(content)!;
+
+            byte[] encryptedData = Convert.FromBase64String(cookies.Cookies);
+            byte[] unencryptedData = ProtectedData.Unprotect(encryptedData, null, DataProtectionScope.CurrentUser);
+
+            string rawCookies = Encoding.UTF8.GetString(unencryptedData);
+            Match authCookieMatch = Regex.Match(rawCookies, AuthPattern);
+
+            return authCookieMatch.Success ? authCookieMatch.Groups[1].Value : string.Empty;
         }
 
         private static async Task<string> LoadMacCookies()

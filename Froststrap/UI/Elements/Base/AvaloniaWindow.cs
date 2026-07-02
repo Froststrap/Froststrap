@@ -6,7 +6,6 @@ using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Styling;
 using FluentAvalonia.Styling;
-using Avalonia.Platform;
 
 namespace Froststrap.UI.Elements.Base
 {
@@ -17,27 +16,9 @@ namespace Froststrap.UI.Elements.Base
 
         public AvaloniaWindow()
         {
+            this.WindowDecorations = OperatingSystem.IsMacOS() ? WindowDecorations.Full : WindowDecorations.None;
             this.ExtendClientAreaToDecorationsHint = true;
-            this.ExtendClientAreaTitleBarHeightHint = -1;
-
-            if (OperatingSystem.IsWindows())
-            {
-                this.ExtendClientAreaChromeHints = ExtendClientAreaChromeHints.NoChrome;
-                this.SystemDecorations = SystemDecorations.Full;
-            }
-            else if (OperatingSystem.IsMacOS())
-            {
-                this.ExtendClientAreaChromeHints = ExtendClientAreaChromeHints.PreferSystemChrome;
-                this.SystemDecorations = SystemDecorations.Full;
-            }
-            else
-            {
-                this.ExtendClientAreaChromeHints = ExtendClientAreaChromeHints.NoChrome;
-                this.SystemDecorations = SystemDecorations.None;
-            }
-
-            RenderOptions.SetTextRenderingMode(this, TextRenderingMode.Antialias);
-
+            TextOptions.SetTextRenderingMode(this, TextRenderingMode.Antialias);
             ApplyTheme();
         }
 

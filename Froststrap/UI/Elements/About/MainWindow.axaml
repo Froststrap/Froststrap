@@ -8,7 +8,7 @@
                      xmlns:resources="clr-namespace:Froststrap.Resources"
                      xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.About"
                      xmlns:ui="using:FluentAvalonia.UI.Controls"
-                     xmlns:ic="using:FluentIcons.Avalonia.Fluent"
+                     xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
                      mc:Ignorable="d"
                      x:Class="Froststrap.UI.Elements.About.MainWindow"
                      x:DataType="vm:MainWindowViewModel"
@@ -17,42 +17,45 @@
                      WindowStartupLocation="CenterScreen" CanResize="True">
 
     <Grid RowDefinitions="Auto,*,Auto" Background="{DynamicResource ApplicationBackgroundColor}">
-        <controls:TitleBar Grid.Row="0" Background="{DynamicResource LayerFillColorDefaultBrush}" Title="{x:Static resources:Strings.About_Title}" Icon="avares://Froststrap/Froststrap.ico" />
+        <controls:TitleBar Grid.Row="0" Background="{DynamicResource LayerFillColorDefaultBrush}"
+                           Title="{x:Static resources:Strings.About_Title}"
+                           Icon="avares://Froststrap/Froststrap.ico" />
 
         <Grid Grid.Row="1" Name="MainGrid">
-            <ui:NavigationView Name="NavView"
-                               IsPaneOpen="False"
-                               PaneDisplayMode="LeftCompact"
-                               IsSettingsVisible="False"
-                               IsBackButtonVisible="False"
-                               OpenPaneLength="140"
-                               ItemInvoked="NavView_ItemInvoked">
-                <ui:NavigationView.Styles>
-                    <Style Selector="ui|NavigationView /template/ ScrollViewer#MenuItemsScrollViewer">
+            <ui:FANavigationView Name="NavView"
+                                 IsPaneOpen="False"
+                                 PaneDisplayMode="LeftCompact"
+                                 IsSettingsVisible="False"
+                                 IsBackButtonVisible="False"
+                                 OpenPaneLength="140"
+                                 ItemInvoked="NavView_ItemInvoked">
+                <ui:FANavigationView.Styles>
+                    <Style Selector="ui|FANavigationView /template/ ScrollViewer#MenuItemsScrollViewer">
                         <Setter Property="VerticalScrollBarVisibility" Value="Hidden"/>
                     </Style>
-                </ui:NavigationView.Styles>
-                <ui:NavigationView.MenuItems>
-                    <ui:NavigationViewItem Tag="about" Content="{x:Static resources:Strings.Menu_About_Title}">
-                        <ui:NavigationViewItem.IconSource>
-                            <ic:SymbolIconSource Foreground="{DynamicResource TextFillColorPrimaryBrush}" Symbol="Info" />
-                        </ui:NavigationViewItem.IconSource>
-                    </ui:NavigationViewItem>
-                    <ui:NavigationViewItem Tag="licenses" Content="{x:Static resources:Strings.About_Licenses_Title}">
-                        <ui:NavigationViewItem.IconSource>
-                            <ic:SymbolIconSource Foreground="{DynamicResource TextFillColorPrimaryBrush}" Symbol="Book" />
-                        </ui:NavigationViewItem.IconSource>
-                    </ui:NavigationViewItem>
-                </ui:NavigationView.MenuItems>
+                </ui:FANavigationView.Styles>
+                <ui:FANavigationView.MenuItems>
+                    <ui:FANavigationViewItem Tag="about" Content="{x:Static resources:Strings.Menu_About_Title}">
+                        <ui:FANavigationViewItem.Icon>
+                            <ic:Lucide Icon="Book" Width="20" Height="20" />
+                        </ui:FANavigationViewItem.Icon>
+                    </ui:FANavigationViewItem>
 
-                <ui:NavigationView.Content>
+                    <ui:FANavigationViewItem Tag="licenses" Content="{x:Static resources:Strings.About_Licenses_Title}">
+                        <ui:FANavigationViewItem.Icon>
+                            <ic:Lucide Icon="Copyright" Width="20" Height="20" />
+                        </ui:FANavigationViewItem.Icon>
+                    </ui:FANavigationViewItem>
+                </ui:FANavigationView.MenuItems>
+
+                <ui:FANavigationView.Content>
                     <TransitioningContentControl
                         x:Name="PageContentControl"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Stretch"
                         Background="{DynamicResource LayerFillColorDefaultBrush}" />
-                </ui:NavigationView.Content>
-            </ui:NavigationView>
+                </ui:FANavigationView.Content>
+            </ui:FANavigationView>
         </Grid>
     </Grid>
 </base:AvaloniaWindow>

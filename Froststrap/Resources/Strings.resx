@@ -399,6 +399,10 @@ If not, then please report this exception through a [GitHub issue]({1}) along wi
     <value>Custom bootstrappers can only have a maximum of {0} elements, got {1}</value>
     <comment>{0} and {1} are numbers</comment>
   </data>
+  <data name="CustomTheme.Errors.FileNotFound" xml:space="preserve">
+    <value>The file "{0}" could not be found</value>
+    <comment>{0} is the file path</comment>
+  </data>
   <data name="CustomTheme.Errors.VersionNotSet" xml:space="preserve">
     <value>{0} version is not set</value>
     <comment>{0} is the element name (e.g. Button)</comment>
@@ -601,7 +605,7 @@ Would you like to upgrade your currently installed version?</value>
     <value>The text that shows as the title of the bootstrapper.</value>
   </data>
   <data name="Menu.Appearance.CustomisationTitle.Title" xml:space="preserve">
-    <value>Title</value>
+    <value>Bootstrapper Title</value>
   </data>
   <data name="Menu.Appearance.Description" xml:space="preserve">
     <value>Configure how Froststrap should look.</value>
@@ -616,7 +620,7 @@ Would you like to upgrade your currently installed version?</value>
     <value>Choose what icon Froststrap should use.</value>
   </data>
   <data name="Menu.Appearance.Icon.Title" xml:space="preserve">
-    <value>Icon</value>
+    <value>Bootstrapper Icon</value>
   </data>
   <data name="Menu.Appearance.Preview" xml:space="preserve">
     <value>Preview</value>
@@ -1324,7 +1328,7 @@ Would you like to switch your preferred channel to {0}?</value>
     <value>Window Backdrop</value>
   </data>
   <data name="Menu.Appearance.WindowsBackdrop.Description" xml:space="preserve">
-    <value>Choose a window backdrop effect. Requires dark theme and a restart of the app. Note: Mica only works on Windows 11.</value>
+    <value>Choose a window backdrop effect. Requires dark theme and a restart of the app, Some backdrops may not work on diffrent OSes, Use with dark theme.</value>
   </data>
   <data name="Menu.Behaviour.CloseCrashHandler.Description" xml:space="preserve">
     <value>Automatically closes the RobloxCrashHandler.exe process on launch to free up some system usage.</value>
@@ -1348,7 +1352,7 @@ Would you like to switch your preferred channel to {0}?</value>
     <value>Export Settings</value>
   </data>
   <data name="Menu.FastFlagEditor.CleanList" xml:space="preserve">
-    <value>Clean List</value>
+    <value>Filter List</value>
   </data>
   <data name="Menu.FastFlagEditor.NoFlags" xml:space="preserve">
     <value>Wow, this is so empty! How about adding a FastFlag?</value>
@@ -1801,7 +1805,7 @@ Would you like to switch your preferred channel to {0}?</value>
     <value>No invalid FastFlags detected.</value>
   </data>
   <data name="Menu.FastFlagEditor.HaveBeenRemoved" xml:space="preserve">
-    <value>{0} have been removed due to not being in allow list.</value>
+    <value>{0} have been removed due to not being in Roblox Allow List.</value>
   </data>
   <data name="Menu.FastFlagEditor.FileExtensionWarning" xml:space="preserve">
     <value>Please drop JSON or TXT files.</value>

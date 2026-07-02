@@ -106,7 +106,7 @@
                         <StackPanel Spacing="15" IsVisible="{Binding IsImageMode}">
                             <Grid ColumnDefinitions="*, Auto, Auto" Margin="0,4">
                                 <TextBox Text="{Binding BackgroundImagePath}"
-                                         Watermark="No image selected..."
+                                         PlaceholderText="No image selected..."
                                          IsReadOnly="True"
                                          VerticalContentAlignment="Center"
                                          Margin="0,0,8,0"/>
@@ -246,7 +246,7 @@
                               ColumnDefinitions="*,*">
                             <controls:IconButton Grid.Column="0"
                                                  Margin="0,0,4,0"
-                                                 Icon="Add"
+                                                 Icon="Plus"
                                                  HorizontalAlignment="Stretch"
                                                  Command="{Binding AddCustomThemeCommand}"
                                                  CommandParameter="{Binding $parent[Window]}"
@@ -254,7 +254,7 @@
                             <controls:IconButton Grid.Column="1"
                                                  Margin="4,0,0,0"
                                                  Classes="Danger"
-                                                 Icon="Delete"
+                                                 Icon="Trash2"
                                                  HorizontalAlignment="Stretch"
                                                  Command="{Binding DeleteCustomThemeCommand}"
                                                  Content="{x:Static resources:Strings.Common_Delete}"
@@ -271,14 +271,14 @@
                             <TextBox Text="{Binding SelectedCustomThemeName, Mode=TwoWay}" />
 
                             <Grid ColumnDefinitions="*,*,*">
-                                <controls:IconButton Grid.Column="0" Margin="0,0,4,0" HorizontalAlignment="Stretch" Icon="Edit"
+                                <controls:IconButton Grid.Column="0" Margin="0,0,4,0" HorizontalAlignment="Stretch" Icon="Pencil"
                                                      Command="{Binding RenameCustomThemeCommand}"
                                                      Content="{x:Static resources:Strings.Common_Rename}" />
-                                <controls:IconButton Grid.Column="1" Margin="4,0,4,0" HorizontalAlignment="Stretch" Icon="DocumentEdit"
+                                <controls:IconButton Grid.Column="1" Margin="4,0,4,0" HorizontalAlignment="Stretch" Icon="FilePenLine"
                                                      Command="{Binding EditCustomThemeCommand}"
                                                      CommandParameter="{Binding $self}"
                                                      Content="{x:Static resources:Strings.Common_Edit}" />
-                                <controls:IconButton Grid.Column="2" Margin="4,0,0,0" HorizontalAlignment="Stretch" Icon="ArrowExport"
+                                <controls:IconButton Grid.Column="2" Margin="4,0,0,0" HorizontalAlignment="Stretch" Icon="ArrowRightFromLine"
                                                      Command="{Binding ExportCustomThemeCommand}"
                                                      CommandParameter="{Binding $self}"
                                                      Content="{x:Static resources:Strings.Common_Export}" />
@@ -359,7 +359,7 @@
                 </controls:OptionControl>
 
                 <controls:OptionControl Header="{x:Static resources:Strings.Menu_Appearance_CustomisationTitle_Title}" Description="{x:Static resources:Strings.Menu_Appearance_CustomisationTitle_Description}">
-                    <TextBox Watermark="Froststrap" Width="200" Text="{Binding Title, Mode=TwoWay}" />
+                    <TextBox PlaceholderText="Froststrap" Width="200" Text="{Binding Title, Mode=TwoWay}" />
                 </controls:OptionControl>
             </StackPanel>
         </ScrollViewer>

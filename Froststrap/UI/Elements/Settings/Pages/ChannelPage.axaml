@@ -19,21 +19,21 @@
             <Grid ColumnDefinitions="*,*,*" ColumnSpacing="6">
                 <controls:CardAction
                     Grid.Column="0"
-                    Icon="ArrowImport"
+                    Icon="ArrowRightToLine"
                     Header="{x:Static resources:Strings.Menu_BottomButtons_ImportSettings}"
                     Command="{Binding ImportSettingsCommand}"
                     CommandParameter="{Binding $parent[UserControl]}" />
 
                 <controls:CardAction
                     Grid.Column="1"
-                    Icon="ArrowExport"
+                    Icon="ArrowRightFromLine"
                     Header="{x:Static resources:Strings.Menu_BottomButtons_ExportSettings}"
                     Command="{Binding ExportSettingsCommand}"
                     CommandParameter="{Binding $parent[UserControl]}" />
 
                 <controls:CardAction
                     Grid.Column="2"
-                    Icon="ArrowReset"
+                    Icon="RotateCcw"
                     Header="{x:Static resources:Strings.Menu_BottomButtons_ResetSettingsToDefault}"
                     Command="{Binding ResetSettingsToDefaultCommand}" />
             </Grid>
@@ -186,7 +186,7 @@
                     </Grid>
 
                     <Grid ColumnDefinitions="Auto,*" IsVisible="{Binding PlayerDeployInfo, Converter={x:Static ObjectConverters.IsNull}}">
-                        <ui:ProgressRing
+                        <ui:FAProgressRing
                             Grid.Column="0"
                             Width="64"
                             Height="64"
@@ -249,7 +249,7 @@
                             Margin="8,0,0,0"
                             Padding="10,5"
                             IsEnabled="{Binding StudioVersionOverrideEnabled}"
-                            Watermark="version-xxxxxxxxxxxxxxxx"
+                            PlaceholderText="version-xxxxxxxxxxxxxxxx"
                             Text="{Binding StudioVersionOverrideHash, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
                         <StackPanel
@@ -257,7 +257,7 @@
                             Margin="8,0,0,0"
                             IsVisible="{Binding !IsHashIdle}">
 
-                            <ui:ProgressRing
+                            <ui:FAProgressRing
                                 Width="18"
                                 Height="18"
                                 Margin="0,0,8,0"
@@ -365,7 +365,7 @@
                     </Grid>
 
                     <Grid ColumnDefinitions="Auto,*" IsVisible="{Binding StudioDeployInfo, Converter={x:Static ObjectConverters.IsNull}}">
-                        <ui:ProgressRing
+                        <ui:FAProgressRing
                             Grid.Column="0"
                             Width="64"
                             Height="64"

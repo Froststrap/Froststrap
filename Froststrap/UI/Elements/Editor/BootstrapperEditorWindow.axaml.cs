@@ -14,11 +14,12 @@ using AvaloniaEdit.Editing;
 using AvaloniaEdit.Highlighting;
 using AvaloniaEdit.Highlighting.Xshd;
 using FluentAvalonia.UI.Controls;
-using Froststrap.UI.Elements.Controls;
 using Froststrap.UI.Elements.Base;
+using Froststrap.UI.Elements.Controls;
 using Froststrap.UI.ViewModels.Editor;
+using LucideAvalonia;
+using LucideAvalonia.Enum;
 using System.Xml;
-using Symbol = FluentIcons.Common.Symbol;
 
 namespace Froststrap.UI.Elements.Editor
 {
@@ -170,7 +171,7 @@ namespace Froststrap.UI.Elements.Editor
                 }
                 else
                 {
-                    Dispatcher.UIThread.Post(() => ShowNotification("Error", message, InfoBarSeverity.Error, 5000));
+                    Dispatcher.UIThread.Post(() => ShowNotification("Error", message, FAInfoBarSeverity.Error, 5000));
                 }
             };
 
@@ -233,11 +234,11 @@ namespace Froststrap.UI.Elements.Editor
             ShowNotification(
                 Strings.Menu_SettingsSaved_Title,
                 Strings.Menu_SettingsSaved_Message,
-                InfoBarSeverity.Success,
+                FAInfoBarSeverity.Success,
                 3000);
         }
 
-        public void ShowNotification(string title, string subtitle, InfoBarSeverity type, int timeout, Symbol? customIcon = null)
+        public void ShowNotification(string title, string subtitle, FAInfoBarSeverity type, int timeout, LucideIconNames? customIcon = null)
         {
             var notificationPanel = this.FindControl<Panel>("NotificationPanel");
             if (notificationPanel == null) return;
@@ -289,15 +290,15 @@ namespace Froststrap.UI.Elements.Editor
             ShowNotificationInternal(title, subtitle, type, timeout, customIcon);
         }
 
-        private void ShowNotificationInternal(string title, string subtitle, InfoBarSeverity type, int timeout, Symbol? customIcon = null)
+        private void ShowNotificationInternal(string title, string subtitle, FAInfoBarSeverity type, int timeout, LucideIconNames? customIcon = null)
         {
             var notificationPanel = this.FindControl<Panel>("NotificationPanel");
             if (notificationPanel == null) return;
 
-            var accentColor = type == InfoBarSeverity.Success ? "#00D084" : "#FFB900";
-            var iconSymbol = customIcon ?? (type == InfoBarSeverity.Success
-                ? Symbol.CheckmarkCircle
-                : Symbol.Warning);
+            var accentColor = type == FAInfoBarSeverity.Success ? "#00D084" : "#FFB900";
+            var iconSymbol = customIcon ?? (type == FAInfoBarSeverity.Success
+                ? LucideIconNames.CircleCheck
+                : LucideIconNames.TriangleAlert);
 
             var contentGrid = new Grid
             {
@@ -305,11 +306,13 @@ namespace Froststrap.UI.Elements.Editor
                 Margin = new Thickness(0)
             };
 
-            var icon = new FluentIcons.Avalonia.Fluent.SymbolIcon
+            var icon = new Lucide
             {
-                Symbol = iconSymbol,
-                FontSize = 28,
-                Foreground = new SolidColorBrush(Color.Parse(accentColor)),
+                Icon = iconSymbol,
+                Width = 28,
+                Height = 28,
+                StrokeBrush = new SolidColorBrush(Color.Parse(accentColor)),
+                StrokeThickness = 2.5,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
                 Margin = new Thickness(16, 0, 12, 0)
             };
@@ -331,7 +334,7 @@ namespace Froststrap.UI.Elements.Editor
 
             var closeButton = new IconButton
             {
-                Icon = Symbol.Dismiss,
+                Icon = LucideIconNames.X,
                 IconSize = 16,
                 Background = Brushes.Transparent,
                 BorderThickness = new Thickness(0),

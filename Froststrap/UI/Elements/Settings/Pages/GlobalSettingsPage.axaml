@@ -5,7 +5,8 @@
              xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
              xmlns:resources="clr-namespace:Froststrap.Resources"
              xmlns:models="clr-namespace:Froststrap.Models.APIs.Config"
-             xmlns:ic="using:FluentIcons.Avalonia.Fluent"
+             xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
+xmlns:enums="clr-namespace:LucideAvalonia.Enum;assembly=LucideAvalonia"
              x:Class="Froststrap.UI.Elements.Settings.Pages.GlobalSettingsPage"
              xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
              x:DataType="vm:GlobalSettingsViewModel"
@@ -15,7 +16,7 @@
             <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto">
                 <controls:CardAction Grid.Column="0" Grid.Row="0"
                                      Margin="0,0,4,0"
-                                     Icon="ArrowImport"
+                                     Icon="Import"
                                      Header="{x:Static resources:Strings.Common_Import}"
                                      Command="{Binding ImportCommand}"/>
 
@@ -27,13 +28,13 @@
 
                 <controls:CardAction Grid.Column="2"  Grid.Row="0"
                                      Margin="4,0,0,0"
-                                     Icon="ArrowExport"
+                                     Icon="ArrowRightFromLine"
                                      Header="{x:Static resources:Strings.Common_Export}"
                                      Command="{Binding ExportCommand}"/>
                 <controls:CardAction Grid.ColumnSpan="3"
                                      Grid.Row="1"
                                      Margin="0,0,4,0"
-                                     Icon="DocumentEdit"
+                                     Icon="FilePenLine"
                                      Header="{x:Static resources:Strings.Menu_GBSEditor_Title}"
                                      Description="{x:Static resources:Strings.Menu_GlobalSettingsEditor_Description}"
                                      Command="{Binding OpenGlobalSettingsEditorCommand}"/>

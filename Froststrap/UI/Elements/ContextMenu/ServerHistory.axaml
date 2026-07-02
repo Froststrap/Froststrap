@@ -63,7 +63,7 @@
         <Border Grid.Row="2"
                 Classes="loadingView"
                 Tag="{Binding LoadState}">
-            <ui:ProgressRing IsIndeterminate="True"
+            <ui:FAProgressRing IsIndeterminate="True"
                              Width="100" Height="100"
                              VerticalAlignment="Center"
                              HorizontalAlignment="Center" />
@@ -100,19 +100,19 @@
                                         Classes="Primary" />
 
                                     <controls:IconButton
-                                        Icon="Link"
+                                        Icon="Link2"
                                         Content="{x:Static resources:Strings.Common_Deeplink}"
                                         Command="{Binding CopyDeeplinkCommand}"
                                         CommandParameter="{Binding $self}"/>
 
                                     <controls:IconButton
-                                        Icon="ClipboardSettings"
+                                        Icon="Clipboard"
                                         Content="{x:Static resources:Strings.Common_ServerID}"
                                         Command="{Binding CopyServerIdCommand}"
                                         CommandParameter="{Binding $self}"/>
 
                                     <controls:IconButton
-                                        Icon="Delete"
+                                        Icon="Trash2"
                                         Command="{Binding DeleteHistoryCommand}"
                                         Classes="Danger"/>
                                 </StackPanel>

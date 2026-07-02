@@ -9,7 +9,7 @@
     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
     xmlns:ui="using:FluentAvalonia.UI.Controls"
     xmlns:gv="using:Froststrap.UI.ViewModels"
-    xmlns:ic="using:FluentIcons.Avalonia.Fluent"
+    xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
     d:DesignHeight="2500"
     d:DesignWidth="1200"
     x:DataType="vm:LinuxSettingsViewModel"
@@ -83,14 +83,14 @@
                 <StackPanel Spacing="4">
                     <TextBox Text="{Binding VirtualDesktopResolution, Mode=TwoWay}"
                              IsEnabled="{Binding VirtualDesktopEnabled}"
-                             Watermark="{x:Static resources:Strings.Menu_LinuxSettings_ResolutionPlaceholder}"/>
+                             PlaceholderText="{x:Static resources:Strings.Menu_LinuxSettings_ResolutionPlaceholder}"/>
                 </StackPanel>
             </controls:CardExpander>
 
             <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
                                     Header="{x:Static resources:Strings.Menu_LinuxSettings_LauncherCommand_Title}"
                                     Description="{x:Static resources:Strings.Menu_LinuxSettings_LauncherCommand_Description}">
-                <TextBox Text="{Binding StudioLauncher, Mode=TwoWay}" Watermark="{x:Static resources:Strings.Menu_LinuxSettings_LauncherPlaceholder}" />
+                <TextBox Text="{Binding StudioLauncher, Mode=TwoWay}" PlaceholderText="{x:Static resources:Strings.Menu_LinuxSettings_LauncherPlaceholder}" />
             </controls:OptionControl>
 
             <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
@@ -115,13 +115,13 @@
                                 <StackPanel Orientation="Horizontal" Spacing="4" Margin="0,2">
                                     <TextBox Text="{Binding Key, UpdateSourceTrigger=PropertyChanged}"
                                              Width="150"
-                                             Watermark="{x:Static resources:Strings.Menu_LinuxSettings_Variable}"
+                                             PlaceholderText="{x:Static resources:Strings.Menu_LinuxSettings_Variable}"
                                              Padding="8,5" />
                                     <TextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"
                                              Width="200"
-                                             Watermark="{x:Static resources:Strings.Common_Value}"
+                                             PlaceholderText="{x:Static resources:Strings.Common_Value}"
                                              Padding="8,5" />
-                                    <controls:IconButton Icon="Delete"
+                                    <controls:IconButton Icon="Trash2"
                                                          Classes="Danger"
                                                          Command="{Binding RemoveCommand}"
                                                          Width="30"
