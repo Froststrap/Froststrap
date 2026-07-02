@@ -7,8 +7,8 @@ namespace Froststrap.UI.Converters
     {
         public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
-            if (value == null && parameter == null) return true;
-            return value?.Equals(parameter) ?? false;
+            if (value == null || parameter == null) return false;
+            return value.ToString() == parameter.ToString();
         }
 
         public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)

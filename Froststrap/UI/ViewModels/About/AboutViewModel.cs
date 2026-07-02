@@ -2,13 +2,13 @@
 {
     public class AboutViewModel : NotifyPropertyChangedViewModel
     {
-        public string Version => string.Format(Strings.Menu_About_Version, App.Version);
+        public static string Version => string.Format(Strings.Menu_About_Version, App.Version);
 
-        public BuildMetadataAttribute BuildMetadata => App.BuildMetadata;
+        public static BuildMetadataAttribute BuildMetadata => App.BuildMetadata;
 
-        public string BuildTimestamp => BuildMetadata.Timestamp.ToFriendlyString();
-        public string BuildCommitHashUrl => $"https://github.com/{App.ProjectRepository}/commit/{BuildMetadata.CommitHash}";
-        public bool BuildInformationVisibility => !App.IsProductionBuild;
-        public bool BuildCommitVisibility => App.IsActionBuild;
+        public static string BuildTimestamp => BuildMetadata.Timestamp.ToFriendlyString();
+        public static string BuildCommitHashUrl => $"https://github.com/{App.ProjectRepository}/commit/{BuildMetadata.CommitHash}";
+        public static bool BuildInformationVisibility => !App.IsProductionBuild;
+        public static bool BuildCommitVisibility => App.IsActionBuild;
     }
 }

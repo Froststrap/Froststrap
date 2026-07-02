@@ -60,13 +60,13 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 Title = "Select Integration File",
                 AllowMultiple = false,
-                FileTypeFilter = new[]
-                {
+                FileTypeFilter =
+                [
                     new FilePickerFileType("All files")
                     {
-                        Patterns = new[] { "*.*" }
+                        Patterns = ["*.*"]
                     }
-                }
+                ]
             });
 
             if (files != null && files.Count > 0)
@@ -96,21 +96,21 @@ namespace Froststrap.UI.ViewModels.Settings
                 {
                     ShowServerDetailsEnabled = false;
                     ShowGameHistoryEnabled = false;
-                    ShowServerUptimeEnabled = false;
-                    ShowJoinNotification = false;
                     AutoRejoinEnabled = false;
                     PlaytimeCounterEnabled = false;
                     DisableAppPatchEnabled = false;
+                    AutoChangeTitle = false;
+                    AutoChangeIcon = false;
                     DiscordActivityEnabled = false;
                     DiscordActivityJoinEnabled = false;
                     StudioRPCEnabled = false;
 
                     OnPropertyChanged(nameof(ShowServerDetailsEnabled));
                     OnPropertyChanged(nameof(ShowGameHistoryEnabled));
-                    OnPropertyChanged(nameof(ShowServerUptimeEnabled));
-                    OnPropertyChanged(nameof(ShowJoinNotification));
                     OnPropertyChanged(nameof(AutoRejoinEnabled));
                     OnPropertyChanged(nameof(PlaytimeCounterEnabled));
+                    OnPropertyChanged(nameof(AutoChangeTitle));
+                    OnPropertyChanged(nameof(AutoChangeIcon));
                     OnPropertyChanged(nameof(DisableAppPatchEnabled));
                     OnPropertyChanged(nameof(DiscordActivityEnabled));
                     OnPropertyChanged(nameof(DiscordActivityJoinEnabled));
@@ -121,59 +121,19 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public bool ShowServerDetailsEnabled
+        public static bool ShowServerDetailsEnabled
         {
             get => App.Settings.Prop.ShowServerDetails;
-            set
-            {
-                App.Settings.Prop.ShowServerDetails = value;
-                OnPropertyChanged(nameof(ShowServerDetailsEnabled));
-
-                UpdateJoinNotificationState();
-            }
+            set => App.Settings.Prop.ShowServerDetails = value;
         }
 
-        public bool ShowServerUptimeEnabled
-        {
-            get => App.Settings.Prop.ShowServerUptime;
-            set
-            {
-                App.Settings.Prop.ShowServerUptime = value;
-                OnPropertyChanged(nameof(ShowServerUptimeEnabled));
-
-                UpdateJoinNotificationState();
-            }
-        }
-
-        public bool ShowJoinNotification
-        {
-            get => App.Settings.Prop.ShowJoinNotification;
-            set
-            {
-                App.Settings.Prop.ShowJoinNotification = value;
-                OnPropertyChanged(nameof(ShowJoinNotification));
-            }
-        }
-
-        public bool CanShowJoinNotification => ActivityTrackingEnabled && (ShowServerDetailsEnabled || ShowServerUptimeEnabled);
-
-        private void UpdateJoinNotificationState()
-        {
-            OnPropertyChanged(nameof(CanShowJoinNotification));
-
-            if (!ShowServerDetailsEnabled && !ShowServerUptimeEnabled)
-            {
-                ShowJoinNotification = false;
-            }
-        }
-
-        public bool PlaytimeCounterEnabled
+        public static bool PlaytimeCounterEnabled
         {
             get => App.Settings.Prop.PlaytimeCounter;
             set => App.Settings.Prop.PlaytimeCounter = value;
         }
 
-        public bool AutoRejoinEnabled
+        public static bool AutoRejoinEnabled
         {
             get => App.Settings.Prop.AutoRejoin;
             set => App.Settings.Prop.AutoRejoin = value;
@@ -189,34 +149,37 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        private async void OpenGameHistory()
+        public static bool AutoChangeTitle
         {
-            try
-            {
-                var activityWatcher = new ActivityWatcher();
-
-                var serverHistoryWindow = new Elements.ContextMenu.ServerHistory(activityWatcher);
-                serverHistoryWindow.Show();
-
-                App.FrostRPC?.SetDialog("Game History");
-
-                serverHistoryWindow.Closed += (s, e) =>
-                {
-                    activityWatcher?.Dispose();
-                    App.FrostRPC?.ClearDialog();
-                };
-            }
-            catch (Exception ex)
-            {
-                // Handle any errors
-                await Frontend.ShowMessageBox($"Failed to open Game History: {ex.Message}", MessageBoxImage.Error, MessageBoxButton.OK);
-            }
+            get => App.Settings.Prop.AutoChangeTitle;
+            set => App.Settings.Prop.AutoChangeTitle = value;
         }
 
-        public ObservableCollection<TrayDoubleClickAction> TrayDoubleClickActions { get; } =
-            new ObservableCollection<TrayDoubleClickAction>(Enum.GetValues(typeof(TrayDoubleClickAction)).Cast<TrayDoubleClickAction>());
+        public static bool AutoChangeIcon
+        {
+            get => App.Settings.Prop.AutoChangeIcon;
+            set => App.Settings.Prop.AutoChangeIcon = value;
+        }
 
-        public TrayDoubleClickAction SelectedDoubleClickAction
+        private async void OpenGameHistory()
+        {
+            var activityWatcher = new ActivityWatcher();
+
+            var serverHistoryWindow = new Elements.ContextMenu.ServerHistory(activityWatcher);
+            serverHistoryWindow.Show();
+
+            App.FrostRPC?.SetDialog("Game History");
+
+            serverHistoryWindow.Closed += (s, e) =>
+            {
+                activityWatcher?.Dispose();
+                App.FrostRPC?.ClearDialog();
+            };
+        }
+
+        public ObservableCollection<TrayDoubleClickAction> TrayDoubleClickActions { get; } = [.. Enum.GetValues<TrayDoubleClickAction>()];
+
+        public static TrayDoubleClickAction SelectedDoubleClickAction
         {
             get => App.Settings.Prop.DoubleClickAction;
             set => App.Settings.Prop.DoubleClickAction = value;
@@ -242,7 +205,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public bool ShowUsingFroststrapRPC
+        public static bool ShowUsingFroststrapRPC
         {
             get => App.Settings.Prop.ShowUsingFroststrapRPC;
             set
@@ -265,25 +228,25 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public bool DiscordActivityJoinEnabled
+        public static bool DiscordActivityJoinEnabled
         {
             get => !App.Settings.Prop.HideRPCButtons;
             set => App.Settings.Prop.HideRPCButtons = !value;
         }
 
-        public bool EnableCustomStatusDisplay
+        public static bool EnableCustomStatusDisplay
         {
             get => App.Settings.Prop.EnableCustomStatusDisplay;
             set => App.Settings.Prop.EnableCustomStatusDisplay = value;
         }
 
-        public bool DiscordAccountOnProfile
+        public static bool DiscordAccountOnProfile
         {
             get => App.Settings.Prop.ShowAccountOnRichPresence;
             set => App.Settings.Prop.ShowAccountOnRichPresence = value;
         }
 
-        public bool DisableAppPatchEnabled
+        public static bool DisableAppPatchEnabled
         {
             get => App.Settings.Prop.UseDisableAppPatch;
             set => App.Settings.Prop.UseDisableAppPatch = value;
@@ -300,8 +263,7 @@ namespace Froststrap.UI.ViewModels.Settings
             if (value && !App.Settings.Prop.StudioRPC)
             {
                 var result = await Frontend.ShowMessageBox(
-                    "This works by adding a custom made froststrap plugin that will log what your doing.\n" +
-                    "Do you want to install the plugin?",
+                    Strings.Menu_Integrations_StudioRPC_PluginConfirmation,
                     MessageBoxImage.Information,
                     MessageBoxButton.YesNo
                 );
@@ -334,49 +296,50 @@ namespace Froststrap.UI.ViewModels.Settings
             StudioPluginManager.Sync();
         }
 
-        public bool ThumbnailChanging
+        public static bool ThumbnailChanging
         {
             get => App.Settings.Prop.StudioThumbnailChanging;
             set => App.Settings.Prop.StudioThumbnailChanging = value;
         }
 
-        public bool EditingInfo
+        public static bool EditingInfo
         {
             get => App.Settings.Prop.StudioEditingInfo;
             set => App.Settings.Prop.StudioEditingInfo = value;
         }
 
-        public bool WorkspaceInfo
+        public static bool WorkspaceInfo
         {
             get => App.Settings.Prop.StudioWorkspaceInfo;
             set => App.Settings.Prop.StudioWorkspaceInfo = value;
         }
 
-        public bool ShowTesting
+        public static bool ShowTesting
         {
             get => App.Settings.Prop.StudioShowTesting;
             set => App.Settings.Prop.StudioShowTesting = value;
         }
 
-        public bool StudioGameButton
+        public static bool StudioGameButton
         {
             get => App.Settings.Prop.StudioGameButton;
             set => App.Settings.Prop.StudioGameButton = value;
         }
 
-        public bool DisableRobloxRecording
+       
+        public static bool DisableRobloxRecording
         {
             get => IsBlocked(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyVideos), "Roblox"));
-            set => SetBlockState(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyVideos), "Roblox"), value);
+            set =>BlockState(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyVideos), "Roblox"), value);
         }
 
-        public bool DisableRobloxScreenshots
+        public static bool DisableRobloxScreenshots
         {
             get => IsBlocked(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Roblox"));
-            set => SetBlockState(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Roblox"), value);
+            set => BlockState(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Roblox"), value);
         }
 
-        public ObservableCollection<CustomIntegration> CustomIntegrations
+        public static ObservableCollection<CustomIntegration> CustomIntegrations
         {
             get => App.Settings.Prop.CustomIntegrations;
             set => App.Settings.Prop.CustomIntegrations = value;
@@ -417,7 +380,7 @@ namespace Froststrap.UI.ViewModels.Settings
             return false;
         }
 
-        private static void SetBlockState(string targetPath, bool block)
+        private static void BlockState(string targetPath, bool block)
         {
             const string LOG_IDENT = "Watcher::SetBlockState";
             string backupPath = targetPath + " (Before Blocking)";
@@ -437,7 +400,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
                     if (!File.Exists(targetPath))
                     {
-                        File.WriteAllBytes(targetPath, Array.Empty<byte>());
+                        File.WriteAllBytes(targetPath, []);
                         File.SetAttributes(targetPath, FileAttributes.ReadOnly);
                     }
                 }

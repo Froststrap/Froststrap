@@ -1,19 +1,20 @@
 <UserControl x:Class="Froststrap.UI.Elements.Settings.Pages.GlobalSettings.GlobalSettingsEditor"
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:ic="using:FluentIcons.Avalonia.Fluent"
+             xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
              xmlns:model="clr-namespace:Froststrap.Models"
+             xmlns:resources="using:Froststrap.Resources"
              xmlns:local="clr-namespace:Froststrap.UI.Elements.Settings.Pages.GlobalSettings"
              x:DataType="local:GlobalSettingsEditor">
 
     <Grid RowDefinitions="Auto,*" Margin="14">
-        <Grid Grid.Row="0" Height="40" Margin="0,0,0,10">
-            <TextBox Name="SearchTextBox" 
-                     VerticalContentAlignment="Center" 
-                     Watermark="Search settings..." 
+        <Grid Grid.Row="0" Margin="0,0,0,10">
+            <TextBox Name="SearchTextBox"
+                     VerticalContentAlignment="Center"
+                     PlaceholderText="Search settings..."
                      TextChanged="SearchTextBox_TextChanged">
                 <TextBox.InnerLeftContent>
-                    <ic:SymbolIcon Symbol="Search" Margin="10,0,0,0" VerticalAlignment="Center" />
+                    <ic:Lucide Height="16" Width="16" Icon="Search" Margin="10,0,0,0" VerticalAlignment="Center" />
                 </TextBox.InnerLeftContent>
             </TextBox>
         </Grid>
@@ -25,9 +26,9 @@
                   GridLinesVisibility="Horizontal"
                   x:DataType="model:GlobalSetting">
             <DataGrid.Columns>
-                <DataGridTextColumn x:DataType="model:GlobalSetting" Header="Name" Binding="{Binding Name}" IsReadOnly="True" Width="*" />
+                <DataGridTextColumn x:DataType="model:GlobalSetting" Header="{x:Static resources:Strings.Common_Name}" Binding="{Binding Name}" IsReadOnly="True" Width="*" />
 
-                <DataGridTemplateColumn Header="Value" Width="150">
+                <DataGridTemplateColumn Header="{x:Static resources:Strings.Common_Value}" Width="150">
                     <DataTemplate>
                         <TextBlock x:DataType="model:GlobalSetting" Text="{Binding Value}" VerticalAlignment="Center" Margin="10,0"
                                    Opacity="{Binding IsVector, Converter={x:Static local:GlobalSettingsEditor.DimIfTrue}}" />
@@ -39,7 +40,7 @@
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Vector X" Width="100">
+                <DataGridTemplateColumn Header="{x:Static resources:Strings.Menu_GBSEditor_VectorX}" Width="100">
                     <DataTemplate>
                         <TextBlock x:DataType="model:GlobalSetting" Text="{Binding VectorX}" VerticalAlignment="Center" Margin="10,0"
                                    Opacity="{Binding IsVector, Converter={x:Static local:GlobalSettingsEditor.DimIfFalse}}" />
@@ -51,7 +52,7 @@
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Vector Y" Width="100">
+                <DataGridTemplateColumn Header="{x:Static resources:Strings.Menu_GBSEditor_VectorY}" Width="100">
                     <DataTemplate>
                         <TextBlock x:DataType="model:GlobalSetting" Text="{Binding VectorY}" VerticalAlignment="Center" Margin="10,0"
                                    Opacity="{Binding IsVector, Converter={x:Static local:GlobalSettingsEditor.DimIfFalse}}" />

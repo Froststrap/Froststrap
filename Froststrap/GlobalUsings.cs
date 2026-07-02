@@ -19,6 +19,7 @@ global using Froststrap.Enums.BootstrapperDialogs;
 global using Froststrap.Exceptions;
 global using Froststrap.Extensions;
 global using Froststrap.Models;
+global using Froststrap.Models.APIs;
 global using Froststrap.Models.APIs.Config;
 global using Froststrap.Models.APIs.GitHub;
 global using Froststrap.Models.APIs.Roblox;

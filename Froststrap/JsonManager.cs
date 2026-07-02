@@ -1,10 +1,18 @@
-﻿using System.Reflection;
-using System.Windows;
+﻿using System.Text.Json.Nodes;
+using System.Reflection;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Froststrap
 {
-    public class JsonManager<T> where T : class, new()
+    public class JsonManager<T>(string? className = null) where T : class, new()
     {
+        private static readonly JsonSerializerOptions _jsonOptions = new()
+        {
+            WriteIndented = true,
+            ReadCommentHandling = JsonCommentHandling.Skip
+        };
+
         protected T _prop = new();
 
         public virtual T Prop
@@ -17,9 +25,9 @@ namespace Froststrap
 
         public bool Loaded { get; protected set; } = false;
 
-        public virtual string ClassName { get; }
+        public virtual string ClassName { get; } = string.IsNullOrEmpty(className) ? typeof(T).Name : className;
 
-        public virtual string ProfilesLocation => Path.Combine(Paths.Base, $"Profiles.json");
+        public virtual string ProfilesLocation => Path.Combine(Paths.Base, "Profiles.json");
 
         public virtual string FileName => $"{ClassName}.json";
 
@@ -29,95 +37,108 @@ namespace Froststrap
 
         public virtual string LOG_IDENT_CLASS => $"JsonManager<{ClassName}>";
 
-        public JsonManager(string? className = null)
+        public string? _savedHash;
+
+        protected virtual string ComputeHash(T obj)
         {
-            ClassName = string.IsNullOrEmpty(className) ? typeof(T).Name : className;
+            string json = JsonSerializer.Serialize(obj, _jsonOptions);
+            return MD5Hash.FromString(json);
         }
 
-		public virtual bool Load(bool alertFailure = true)
-		{
-			string LOG_IDENT = $"{LOG_IDENT_CLASS}::Load";
+        public bool HasUnsavedChanges
+        {
+            get
+            {
+                if (_savedHash == null) return false;
+                return ComputeHash(Prop) != _savedHash;
+            }
+        }
 
-			App.Logger.WriteLine(LOG_IDENT, $"Loading from {FileLocation}...");
+        public virtual bool Load(bool alertFailure = true)
+        {
+            string LOG_IDENT = $"{LOG_IDENT_CLASS}::Load";
 
-			try
-			{
-				if (File.Exists(FileLocation))
-				{
-					string contents = File.ReadAllText(FileLocation);
+            App.Logger.WriteLine(LOG_IDENT, $"Loading from {FileLocation}...");
 
-                    T? settings = JsonSerializer.Deserialize<T>(contents);
+            try
+            {
+                if (File.Exists(FileLocation))
+                {
+                    string contents = File.ReadAllText(FileLocation);
 
-					if (settings is null)
-						throw new ArgumentNullException("Deserialization returned null");
+                    T settings = JsonSerializer.Deserialize<T>(contents, _jsonOptions)
+                        ?? throw new InvalidOperationException($"{ClassName} deserialization returned null.");
 
-					_prop = settings;
-					Loaded = true;
-					LastFileHash = MD5Hash.FromString(contents);
+                    _prop = settings;
+                    Loaded = true;
+                    LastFileHash = MD5Hash.FromString(contents);
+                    _savedHash = ComputeHash(_prop);
 
-					App.Logger.WriteLine(LOG_IDENT, "Loaded successfully!");
+                    App.Logger.WriteLine(LOG_IDENT, "Loaded successfully!");
 
-					return true;
-				}
-				else
-				{
-					App.Logger.WriteLine(LOG_IDENT, $"Could not find {FileLocation}.");
-					Loaded = true;
+                    return true;
+                }
+                else
+                {
+                    App.Logger.WriteLine(LOG_IDENT, $"Could not find {FileLocation}.");
+                    Loaded = true;
 
-					return false;
-				}
-			}
-			catch (Exception ex)
-			{
-				App.Logger.WriteLine(LOG_IDENT, "Failed to load!");
-				App.Logger.WriteException(LOG_IDENT, ex);
+                    _savedHash = ComputeHash(_prop);
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Failed to load!");
+                App.Logger.WriteException(LOG_IDENT, ex);
 
-				if (alertFailure)
-				{
-					string message = "";
+                if (alertFailure)
+                {
+                    string message = ClassName switch
+                    {
+                        nameof(Settings) => Strings.JsonManager_SettingsLoadFailed,
+                        nameof(FastFlagManager) => Strings.JsonManager_FastFlagsLoadFailed,
+                        _ => string.Empty
+                    };
 
-					if (ClassName == nameof(Settings))
-						message = Strings.JsonManager_SettingsLoadFailed;
-					else if (ClassName == nameof(FastFlagManager))
-						message = Strings.JsonManager_FastFlagsLoadFailed;
+                    if (!string.IsNullOrEmpty(message))
+                        _ = Frontend.ShowMessageBox($"{message}\n\n{ex.Message}", MessageBoxImage.Warning);
 
-					if (!String.IsNullOrEmpty(message))
-						_ = Frontend.ShowMessageBox($"{message}\n\n{ex.Message}", MessageBoxImage.Warning);
+                    try
+                    {
+                        if (File.Exists(FileLocation))
+                            File.Copy(FileLocation, FileLocation + ".bak", true);
+                    }
+                    catch (Exception copyEx)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"Failed to create backup file: {FileLocation}.bak");
+                        App.Logger.WriteException(LOG_IDENT, copyEx);
+                    }
+                }
 
-					try
-					{
-						if (File.Exists(FileLocation))
-							File.Copy(FileLocation, FileLocation + ".bak", true);
-					}
-					catch (Exception copyEx)
-					{
-						App.Logger.WriteLine(LOG_IDENT, $"Failed to create backup file: {FileLocation}.bak");
-						App.Logger.WriteException(LOG_IDENT, copyEx);
-					}
-				}
+                Loaded = true;
+                Save();
 
-				Loaded = true;
-				Save();
+                return false;
+            }
+        }
 
-				return false;
-			}
-		}
-
-		public virtual async void Save()
+        public virtual async void Save()
         {
             string LOG_IDENT = $"{LOG_IDENT_CLASS}::Save";
-            
+
             App.Logger.WriteLine(LOG_IDENT, $"Saving to {FileLocation}...");
 
             Directory.CreateDirectory(Path.GetDirectoryName(FileLocation)!);
 
             try
             {
-                string contents = JsonSerializer.Serialize(Prop, new JsonSerializerOptions { WriteIndented = true });
+                string contents = JsonSerializer.Serialize(Prop, _jsonOptions);
 
                 File.WriteAllText(FileLocation, contents);
 
                 LastFileHash = MD5Hash.FromString(contents);
+                _savedHash = ComputeHash(Prop);
             }
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
             {
@@ -131,6 +152,59 @@ namespace Froststrap
             }
 
             App.Logger.WriteLine(LOG_IDENT, "Save complete!");
+        }
+
+        public virtual void SaveSetting(string SettingName)
+        {
+            if (string.IsNullOrEmpty(SettingName))
+            {
+                Save();
+                return;
+            }
+
+            string LOG_IDENT = $"{LOG_IDENT_CLASS}::SaveSetting";
+            App.Logger.WriteLine(LOG_IDENT, $"Saving setting '{SettingName}' to {FileLocation}");
+
+            Directory.CreateDirectory(Path.GetDirectoryName(FileLocation)!);
+
+            try
+            {
+                JsonObject existingJson = [];
+                if (File.Exists(FileLocation))
+                {
+                    string existingContent = File.ReadAllText(FileLocation);
+                    if (!string.IsNullOrWhiteSpace(existingContent))
+                    {
+                        using var doc = JsonDocument.Parse(existingContent);
+                        existingJson = JsonSerializer.SerializeToNode(doc.RootElement)?.AsObject() ?? [];
+                    }
+                }
+
+                var currentJson = JsonSerializer.SerializeToNode(Prop, _jsonOptions)?.AsObject();
+                 _ = currentJson ?? throw new InvalidOperationException("Failed to serialize current object.");
+
+                if (currentJson.TryGetPropertyValue(SettingName, out JsonNode? value))
+                {
+                    existingJson[SettingName] = value?.DeepClone();
+                    App.Logger.WriteLine(LOG_IDENT, $"Updated Setting '{SettingName}'");
+                }
+                else
+                {
+                    App.Logger.WriteLine(LOG_IDENT, $"Setting '{SettingName}' not found – aborting save.");
+                    return;
+                }
+
+                string contents = existingJson.ToJsonString(_jsonOptions);
+                File.WriteAllText(FileLocation, contents);
+                LastFileHash = MD5Hash.FromString(contents);
+                _savedHash = ComputeHash(Prop);
+                App.Logger.WriteLine(LOG_IDENT, "SaveSetting complete!");
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or JsonException)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Failed to save Setting");
+                App.Logger.WriteException(LOG_IDENT, ex);
+            }
         }
 
         public virtual void Delete()
@@ -160,18 +234,17 @@ namespace Froststrap
             }
         }
 
-
         public async void SaveProfile(string name)
         {
-            string LOGGER_STRING = "SaveProfile::Profiles";
-
+            const string LOGGER_STRING = "SaveProfile::Profiles";
             string BaseDir = Paths.SavedFlagProfiles;
+
             try
             {
-                string FileDirectory = Path.Combine(BaseDir, name);
-
                 if (string.IsNullOrEmpty(name))
                     return;
+
+                string FileDirectory = Path.Combine(BaseDir, name);
 
                 if (!Directory.Exists(BaseDir))
                     Directory.CreateDirectory(BaseDir);
@@ -181,7 +254,7 @@ namespace Froststrap
                 if (!File.Exists(FileDirectory))
                     File.Create(FileDirectory).Dispose();
 
-                string FastFlagsJson = JsonSerializer.Serialize(Prop, new JsonSerializerOptions { WriteIndented = true });
+                string FastFlagsJson = JsonSerializer.Serialize(Prop, _jsonOptions);
 
                 File.WriteAllText(FileDirectory, FastFlagsJson);
             }
@@ -193,8 +266,7 @@ namespace Froststrap
 
         public async void LoadProfile(string? name, bool? clearFlags)
         {
-            string LOGGER_STRING = "LoadProfile::Profiles";
-
+            const string LOGGER_STRING = "LoadProfile::Profiles";
             string BaseDir = Paths.SavedFlagProfiles;
 
             if (string.IsNullOrEmpty(name))
@@ -206,26 +278,17 @@ namespace Froststrap
                     Directory.CreateDirectory(BaseDir);
 
                 string[] Files = Directory.GetFiles(BaseDir);
+                string FoundFile = Files.FirstOrDefault(f => Path.GetFileName(f) == name) ?? string.Empty;
 
-                string FoundFile = string.Empty;
-
-                foreach (var file in Files)
-                {
-                    if (Path.GetFileName(file) == name)
-                    {
-                        FoundFile = file;
-                        break;
-                    }
-                }
+                if (string.IsNullOrEmpty(FoundFile))
+                    return;
 
                 string SavedClientSettings = File.ReadAllText(FoundFile);
 
                 App.Logger.WriteLine(LOGGER_STRING, $"Loading {SavedClientSettings}");
 
-                T? settings = JsonSerializer.Deserialize<T>(SavedClientSettings);
-
-                if (settings is null)
-                    throw new ArgumentNullException("Deserialization returned null");
+                T settings = JsonSerializer.Deserialize<T>(SavedClientSettings)
+                    ?? throw new JsonException($"Failed to deserialize profile: {name}");
 
                 App.FastFlags.suspendUndoSnapshot = true;
                 App.FastFlags.SaveUndoSnapshot();
@@ -247,7 +310,6 @@ namespace Froststrap
                 }
 
                 App.FastFlags.suspendUndoSnapshot = false;
-
                 App.FastFlags.Save();
             }
             catch (Exception ex)
@@ -258,27 +320,25 @@ namespace Froststrap
 
         public async void LoadPresetProfile(string? name, bool? clearFlags)
         {
-            string LOGGER_STRING = "LoadProfile::Profiles";
+            const string LOGGER_STRING = "LoadProfile::Profiles";
 
             if (string.IsNullOrEmpty(name))
                 return;
 
             try
             {
-                string profileJson = null!;
+                string profileJson;
                 var assembly = Assembly.GetExecutingAssembly();
                 string resourcePrefix = "Froststrap.Resources.PresetFlags.";
-
-                // Check if name matches an embedded resource profile
                 string resourceFullName = resourcePrefix + name;
+
                 string? foundResource = assembly.GetManifestResourceNames()
-                                               .FirstOrDefault(r => r.Equals(resourceFullName, StringComparison.OrdinalIgnoreCase));
+                    .FirstOrDefault(r => r.Equals(resourceFullName, StringComparison.OrdinalIgnoreCase));
 
                 if (foundResource != null)
                 {
-                    // Load from embedded resource
                     using Stream stream = assembly.GetManifestResourceStream(foundResource)!;
-                    using StreamReader reader = new StreamReader(stream);
+                    using StreamReader reader = new(stream);
                     profileJson = reader.ReadToEnd();
 
                     App.Logger.WriteLine(LOGGER_STRING, $"Loading embedded preset profile {name}");
@@ -303,10 +363,8 @@ namespace Froststrap
                 }
 
                 // Deserialize the profile JSON
-                T? settings = JsonSerializer.Deserialize<T>(profileJson);
-
-                if (settings is null)
-                    throw new ArgumentNullException("Deserialization returned null");
+                T settings = JsonSerializer.Deserialize<T>(profileJson)
+                    ?? throw new ArgumentNullException(nameof(name), "Deserialization returned null");
 
                 App.FastFlags.suspendUndoSnapshot = true;
                 App.FastFlags.SaveUndoSnapshot();
@@ -342,6 +400,10 @@ namespace Froststrap
         /// </summary>
         public bool HasFileOnDiskChanged()
         {
+            // file was deleted after being loaded
+            if (!File.Exists(FileLocation))
+                return !string.IsNullOrEmpty(LastFileHash);
+
             // check if a file has been created since launch
             if (string.IsNullOrEmpty(LastFileHash) && File.Exists(FileLocation))
                 return true;
@@ -354,7 +416,7 @@ namespace Froststrap
     /// <see cref="JsonManager{T}"/> that will automatically load in the JSON if it has not been already
     /// </summary>
     /// <typeparam name="T">Class</typeparam>
-    public class LazyJsonManager<T> : JsonManager<T> where T : class, new()
+    public class LazyJsonManager<T>(string? className) : JsonManager<T>(className) where T : class, new()
     {
         public override T Prop
         {
@@ -370,11 +432,6 @@ namespace Froststrap
                 _prop = value;
                 Loaded = true;
             }
-        }
-
-        public LazyJsonManager(string? className)
-            : base(className)
-        {
         }
     }
 }

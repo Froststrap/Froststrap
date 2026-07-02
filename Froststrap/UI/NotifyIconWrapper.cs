@@ -1,21 +1,21 @@
-﻿using Avalonia;
+﻿using Avalonia.Controls.Notifications;
+using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Input;
+using Avalonia.Labs.Notifications;
 using Avalonia.Platform;
 using Avalonia.Threading;
 using Froststrap.Integrations;
 using Froststrap.UI.Elements.ContextMenu;
-using Froststrap.UI.Elements.Dialogs;
 
 namespace Froststrap.UI
 {
-	public class NotifyIconWrapper : IDisposable
-	{
-		private bool _isDisposed = false;
-		private readonly TrayIcon _trayIcon;
-		private readonly MenuContainer _menuContainer;
-		private readonly Watcher _watcher;
-		private ActivityWatcher? _activityWatcher => _watcher.ActivityWatcher;
+    public class NotifyIconWrapper : IDisposable
+    {
+        private bool _isDisposed = false;
+        private readonly TrayIcon _trayIcon;
+        private readonly MenuContainer _menuContainer;
+        private readonly Watcher _watcher;
+        private ActivityWatcher? ActivityWatcher => _watcher.ActivityWatcher;
 
         private DateTime _lastClickTime = DateTime.MinValue;
         private const int DoubleClickThresholdMs = 300;
@@ -38,20 +38,25 @@ namespace Froststrap.UI
 
             _trayIcon.Clicked += OnTrayIconClicked;
 
-            if (_activityWatcher is not null && (App.Settings.Prop.ShowServerDetails || App.Settings.Prop.ShowServerUptime))
-            {
-                _activityWatcher.OnGameJoin += OnGameJoin;
-            }
+            if (ActivityWatcher is not null && App.Settings.Prop.ShowServerDetails)
+                ActivityWatcher.ShowNotif += ShowNotif;
 
             TrayIcon.GetIcons(Application.Current!)?.Add(_trayIcon);
+
+            App.Logger.WriteLine("NotifyIconWrapper::NotifyIconWrapper", OperatingSystem.IsMacOS() ? "Running as macOS menu bar icon" : "Running as Windows system tray icon");
         }
 
+
+        // On macos simply clicking the icon instantly opens the menu so double click action isnt possible
         private void OnTrayIconClicked(object? sender, EventArgs e)
         {
-            HandleLeftClickLogic();
+            if (OperatingSystem.IsMacOS())
+                return;
+
+            HandleWindowsDoubleClickLogic();
         }
 
-        private void HandleLeftClickLogic()
+        private void HandleWindowsDoubleClickLogic()
         {
             DateTime now = DateTime.Now;
             double elapsed = (now - _lastClickTime).TotalMilliseconds;
@@ -72,7 +77,7 @@ namespace Froststrap.UI
             switch (App.Settings.Prop.DoubleClickAction)
             {
                 case TrayDoubleClickAction.None:
-                    _ = Frontend.ShowMessageBox("You don’t have the double-click action set to anything.", MessageBoxImage.Information);
+                    _ = Frontend.ShowMessageBox("You don't have the double-click action set to anything.", MessageBoxImage.Information);
                     break;
 
                 case TrayDoubleClickAction.GameHistory:
@@ -81,7 +86,7 @@ namespace Froststrap.UI
                         _ = Frontend.ShowMessageBox("Enable 'Game History' in settings to use this feature.", MessageBoxImage.Information);
                         return;
                     }
-                    var history = new ServerHistory(_activityWatcher!);
+                    var history = new ServerHistory(ActivityWatcher!);
                     history.Show();
                     break;
 
@@ -92,7 +97,7 @@ namespace Froststrap.UI
                         return;
                     }
 
-                    if (_activityWatcher?.InGame == true)
+                    if (ActivityWatcher?.InGame == true)
                         _menuContainer.ShowServerInformationWindow();
                     else
                         _ = Frontend.ShowMessageBox("Join a game first to view server information.", MessageBoxImage.Information);
@@ -100,24 +105,11 @@ namespace Froststrap.UI
             }
         }
 
-        public async void OnGameJoin(object? sender, EventArgs e)
+        public async void ShowNotif(object? sender, EventArgs e)
         {
-            if (_activityWatcher?.Data == null) return;
+            if (ActivityWatcher?.Data == null) return;
 
-            Task<string?>? thumbnailTask = null;
-            if (App.Settings.Prop.ShowJoinNotification)
-            {
-                thumbnailTask = Thumbnails.GetThumbnailUrlAsync(new ThumbnailRequest
-                {
-                    TargetId = (ulong)_activityWatcher.Data.UniverseId,
-                    Type = ThumbnailType.GameIcon,
-                    Size = "150x150",
-                    Format = ThumbnailFormat.Png,
-                    IsCircular = false
-                }, CancellationToken.None);
-            }
-
-            string title = _activityWatcher.Data.ServerType switch
+            string title = ActivityWatcher.Data.ServerType switch
             {
                 ServerType.Public => Strings.ContextMenu_ServerInformation_Notification_Title_Public,
                 ServerType.Private => Strings.ContextMenu_ServerInformation_Notification_Title_Private,
@@ -125,62 +117,72 @@ namespace Froststrap.UI
                 _ => ""
             };
 
-            bool locationActive = App.Settings.Prop.ShowServerDetails;
-            bool uptimeActive = App.Settings.Prop.ShowServerUptime;
-
-            string? serverLocation = "";
-            if (locationActive)
-                serverLocation = await _activityWatcher.Data.QueryServerLocation();
-
-            string? serverUptime = "";
-            if (uptimeActive)
+            string? serverLocation = await ActivityWatcher.Data.QueryServerLocation();
+            if (string.IsNullOrEmpty(serverLocation))
             {
-                DateTime? serverTime = await _activityWatcher.Data.QueryServerTime();
-                if (serverTime.HasValue)
-                {
-                    TimeSpan _serverUptime = DateTime.UtcNow - serverTime.Value;
-                    serverUptime = _serverUptime.TotalSeconds > 60
-                        ? Time.FormatTimeSpan(_serverUptime)
-                        : Strings.ContextMenu_ServerInformation_Notification_ServerNotTracked;
-                }
-            }
+                ShowAlert(
+                    string.Format(Strings.Dialog_Connectivity_UnableToConnect, "ipinfo.io"),
+                    Strings.ActivityWatcher_LocationQueryFailed,
+                    5,
+                    NotificationType.Warning
+                );
 
-            if ((string.IsNullOrEmpty(serverLocation) && locationActive) ||
-                (string.IsNullOrEmpty(serverUptime) && uptimeActive))
                 return;
+            }
+            string? serverUptime;
+            DateTime? serverTime = ActivityWatcher.Data.StartTime;
 
-            string notifContent = Strings.Common_UnknownStatus;
-            if (locationActive && !uptimeActive)
-                notifContent = String.Format(Strings.ContextMenu_ServerInformation_Notification_Text, serverLocation);
-            else if (!locationActive && uptimeActive)
-                notifContent = String.Format(Strings.ContextMenu_ServerInformationUptime_Notification_Text, serverUptime);
-            else if (locationActive && uptimeActive)
-                notifContent = String.Format(Strings.ContextMenu_ServerInformationUptimeAndLocation_Notification_Text, serverLocation, serverUptime);
-
-            string? thumbnailUrl = null;
-            if (thumbnailTask != null)
+            if (serverTime is not null)
             {
-                try { thumbnailUrl = await thumbnailTask; } catch { /* Fallback handled below */ }
+                TimeSpan _serverUptime = DateTime.UtcNow - serverTime.Value;
+                
+                if (_serverUptime.TotalMinutes < 1)
+                    serverUptime = "0 minutes";
+                else
+                    serverUptime = Time.FormatTimeSpan(_serverUptime);
+            }
+            else
+            {
+                serverUptime = "0 minutes";
             }
 
-            thumbnailUrl ??= "avares://Froststrap/Froststrap/Resources/MessageBox/FullQuality/Information.png";
-
-            if (App.Settings.Prop.ShowJoinNotification)
-                ShowAlertWithImage(title, notifContent, thumbnailUrl);
+            ShowAlert(
+                title,
+                string.Format(Strings.ContextMenu_ServerDetails_Notification_Text, serverLocation, serverUptime));
         }
 
-        public void ShowAlertWithImage(string title, string message, string imagePath)
+        public void ShowAlert(string title, string message, int duration = 5, NotificationType category = NotificationType.Information)
         {
             if (_isDisposed) return;
 
-            Dispatcher.UIThread.InvokeAsync(() =>
+            var manager = NativeNotificationManager.Current;
+            if (manager == null)
+            {
+                App.Logger.WriteLine("NotifyIconWrapper::ShowAlert", "NativeNotificationManager is null.");
+                return;
+            }
+
+            string categoryString = category switch
+            {
+                NotificationType.Success => "success",
+                NotificationType.Warning => "warning",
+                NotificationType.Error => "error",
+                _ => "info"
+            };
+
+            var notification = manager.CreateNotification(categoryString);
+
+            if (notification == null) return;
+
+            notification.Title = title;
+            notification.Message = message;
+
+            notification.Expiration = TimeSpan.FromSeconds(duration);
+
+            Dispatcher.UIThread.Post(() =>
             {
                 if (_isDisposed) return;
-
-                var notification = new NotificationDialog(title, message, imagePath, timeoutMs: 7000);
-
                 notification.Show();
-
             }, DispatcherPriority.Background);
         }
 

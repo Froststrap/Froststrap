@@ -1,0 +1,13 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Type=Application
+Name=Froststrap
+Comment=A fork of Fishstrap, focused on performance and customization
+Exec=Froststrap %u
+Icon=io.github.froststrap
+Terminal=false
+Categories=Game;
+Keywords=roblox;bootstrapper;launcher;
+StartupNotify=true
+StartupWMClass=Froststrap
+MimeType=x-scheme-handler/roblox;x-scheme-handler/roblox-player;

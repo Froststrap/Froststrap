@@ -1,73 +1,55 @@
 using Avalonia.Controls;
-using Avalonia.Interactivity;
 using Froststrap.UI.ViewModels.Settings;
 using Froststrap.UI.ViewModels.Settings.Mods;
 
 namespace Froststrap.UI.Elements.Settings.Pages.Mods
 {
-    internal class CommunityModsDialogService
+    internal class CommunityModsDialogService(MainWindowViewModel mainVm)
     {
-        private readonly MainWindowViewModel _mainVm;
+        private readonly MainWindowViewModel _mainVm = mainVm ?? throw new ArgumentNullException(nameof(mainVm));
 
-        public CommunityModsDialogService(MainWindowViewModel mainVm)
-        {
-            _mainVm = mainVm ?? throw new ArgumentNullException(nameof(mainVm));
-        }
+        public void OpenPresetMods() => _mainVm.NavigateToPresetModsCommand.Execute(null);
 
-        public void OpenPresetMods()
-        {
-            _mainVm.NavigateToPresetModsCommand.Execute(null);
-        }
+        public void OpenMods() => _mainVm.NavigateToMyModsCommand.Execute(null);
 
-        public void OpenMods()
-        {
-            _mainVm.NavigateToMyModsCommand.Execute(null);
-        }
-
-        public void OpenModGenerator()
-        {
-            _mainVm.NavigateToModGeneratorCommand.Execute(null);
-        }
+        public void OpenModGenerator() => _mainVm.NavigateToModGeneratorCommand.Execute(null);
     }
 
     public partial class CommunityModsPage : UserControl
     {
-        private bool _navigationSetUp = false;
+        private CommunityModsDialogService? _dialogService;
 
         public CommunityModsPage()
         {
             InitializeComponent();
             App.FrostRPC?.SetPage("Community Mods");
+            this.DataContextChanged += OnDataContextChanged;
         }
 
-        protected override void OnLoaded(RoutedEventArgs e)
+        private void OnDataContextChanged(object? sender, EventArgs e)
         {
-            base.OnLoaded(e);
-            SetupNavigationIfNeeded();
+            if (DataContext is not CommunityModsViewModel viewModel) return;
+
+            viewModel.OpenPresetModsEvent -= OnOpenPresetMods;
+            viewModel.OpenModsEvent -= OnOpenMods;
+            viewModel.OpenModGeneratorEvent -= OnOpenModGenerator;
+
+            viewModel.OpenPresetModsEvent += OnOpenPresetMods;
+            viewModel.OpenModsEvent += OnOpenMods;
+            viewModel.OpenModGeneratorEvent += OnOpenModGenerator;
         }
 
-        private void SetupNavigationIfNeeded()
+        private void OnOpenPresetMods(object? sender, EventArgs e) => EnsureDialogService()?.OpenPresetMods();
+        private void OnOpenMods(object? sender, EventArgs e) => EnsureDialogService()?.OpenMods();
+        private void OnOpenModGenerator(object? sender, EventArgs e) => EnsureDialogService()?.OpenModGenerator();
+
+        private CommunityModsDialogService? EnsureDialogService()
         {
-            if (_navigationSetUp) return;
-
-            try
-            {
-                var topLevel = TopLevel.GetTopLevel(this);
-                if (topLevel?.DataContext is MainWindowViewModel mainVm && DataContext is CommunityModsViewModel modsVm)
-                {
-                    var service = new CommunityModsDialogService(mainVm);
-
-                    modsVm.OpenPresetModsEvent += (s, e) => service.OpenPresetMods();
-                    modsVm.OpenModsEvent += (s, e) => service.OpenMods();
-                    modsVm.OpenModGeneratorEvent += (s, e) => service.OpenModGenerator();
-
-                    _navigationSetUp = true;
-                }
-            }
-            catch (Exception ex)
-            {
-                App.Logger?.WriteException("CommunityModsPage::SetupNavigation", ex);
-            }
+            if (_dialogService != null) return _dialogService;
+            var topLevel = TopLevel.GetTopLevel(this);
+            if (topLevel?.DataContext is MainWindowViewModel mainVm)
+                _dialogService = new CommunityModsDialogService(mainVm);
+            return _dialogService;
         }
     }
 }

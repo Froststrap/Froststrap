@@ -1,10 +1,7 @@
 ﻿namespace Froststrap.Exceptions
 {
-    internal class AssertionException : Exception
+    internal class AssertionException(string message) : Exception(
+        $"{message}\n\nThis is very likely just an off-chance error. Please report this first, and then start {App.ProjectName} again.")
     {
-        public AssertionException(string message)
-            : base($"{message}\n\nThis is very likely just an off-chance error. Please report this first, and then start {App.ProjectName} again.")
-        { 
-        }
     }
 }

@@ -6,6 +6,6 @@
         public DatacenterLocation Location { get; set; } = new();
 
         [JsonPropertyName("dataCenterIds")]
-        public List<int> DataCenterIds { get; set; } = new();
+        public List<int> DataCenterIds { get; set; } = [];
     }
 }

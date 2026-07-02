@@ -2,44 +2,50 @@
     x:Class="Froststrap.UI.Elements.Settings.Pages.RegionSelectorPage"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:lucideAvalonia="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
     xmlns:resources="using:Froststrap.Resources"
     xmlns:ui="using:FluentAvalonia.UI.Controls"
     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
     xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
-    xmlns:ic="using:FluentIcons.Avalonia.Fluent"
+    xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
     x:DataType="vm:RegionSelectorViewModel">
 
-    <ScrollViewer>
-        <Grid Margin="14" RowDefinitions="Auto,*">
-            <Border
-                Grid.Row="0"
-                Margin="0,0,0,16"
-                Padding="16"
-                CornerRadius="8">
-                <StackPanel Spacing="12">
-                    <StackPanel Orientation="Horizontal" Spacing="8">
-                        <TextBox
-                            x:Name="SearchTextBox"
-                            MinWidth="250"
-                            MaxWidth="500"
-                            VerticalAlignment="Center"
-                            Text="{Binding SearchQuery, Mode=TwoWay}"
-                            Watermark="{x:Static resources:Strings.Menu_RegionSelector_FindGame}">
+    <Grid Margin="14" RowDefinitions="Auto,*">
+        <Border
+            Grid.Row="0"
+            Margin="0,0,0,16"
+            Padding="16"
+            CornerRadius="8">
+            <StackPanel Spacing="12">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <TextBox
+                        x:Name="SearchTextBox"
+                        MinWidth="250"
+                        MaxWidth="500"
+                        VerticalAlignment="Center"
+                        Text="{Binding SearchQuery, Mode=TwoWay}"
+                        PlaceholderText="{x:Static resources:Strings.Menu_RegionSelector_FindGame}">
 
-                            <TextBox.InnerRightContent>
-                                <controls:IconButton
-                                    Command="{Binding SearchGamesCommand}"
-                                    Icon="Search"
-                                    IconSize="16"
-                                    Click="OnSearchButtonClick"
-                                    Background="Transparent"
-                                    BorderBrush="Transparent"
-                                    BorderThickness="0"/>
-                            </TextBox.InnerRightContent>
+                        <TextBox.InnerRightContent>
+                            <controls:IconButton
+                                Command="{Binding SearchGamesCommand}"
+                                Icon="Search"
+                                IconSize="16"
+                                Click="OnSearchButtonClick"
+                                Background="Transparent"
+                                BorderBrush="Transparent"
+                                BorderThickness="0"/>
+                        </TextBox.InnerRightContent>
 
-                            <FlyoutBase.AttachedFlyout>
-                                <Flyout Placement="BottomEdgeAlignedLeft" ShowMode="Transient">
+                        <FlyoutBase.AttachedFlyout>
+                            <Flyout Placement="BottomEdgeAlignedLeft" ShowMode="Transient">
+                                <Border HorizontalAlignment="Stretch"
+                                        MaxHeight="450"
+                                        Background="{DynamicResource SolidBackgroundFillColorQuarternaryBrush}"
+                                        BorderBrush="{DynamicResource ControlStrokeColorDefault}"
+                                        BorderThickness="1"
+                                        CornerRadius="8"
+                                        BoxShadow="0 8 32 0 #40000000"
+                                        Margin="0,4,0,0">
                                     <Panel>
                                         <ListBox
                                             MaxWidth="500"
@@ -58,40 +64,40 @@
                                                             Background="#10FFFFFF"
                                                             ClipToBounds="True"
                                                             CornerRadius="4">
-															<Image
-																RenderOptions.BitmapInterpolationMode="HighQuality"
-																Source="{Binding ThumbnailBitmap}"
-																Stretch="UniformToFill" />
+                                                            <Image
+                                                                RenderOptions.BitmapInterpolationMode="HighQuality"
+                                                                Source="{Binding ThumbnailBitmap}"
+                                                                Stretch="UniformToFill" />
                                                         </Border>
                                                         <StackPanel
                                                             Grid.Column="1"
                                                             Margin="10,0"
                                                             VerticalAlignment="Center">
                                                             <TextBlock
-                                                              FontWeight="SemiBold"
-                                                              FontSize="16"
-                                                              Text="{Binding Name}"
-                                                              TextTrimming="CharacterEllipsis" />
+                                                                FontWeight="SemiBold"
+                                                                FontSize="16"
+                                                                Text="{Binding Name}"
+                                                                TextTrimming="CharacterEllipsis" />
                                                             <TextBlock
-                                                              FontSize="10"
-                                                              Opacity="0.5"
-                                                              Text="{Binding RootPlaceId, StringFormat='ID: {0}'}" />
+                                                                FontSize="10"
+                                                                Opacity="0.5"
+                                                                Text="{Binding RootPlaceId, Converter={StaticResource StringFormatConverter}, ConverterParameter='{x:Static resources:Strings.Menu_RegionSelector_ID}'}" />
                                                         </StackPanel>
                                                         <StackPanel
                                                             Grid.Column="2"
                                                             VerticalAlignment="Center"
                                                             Orientation="Horizontal"
                                                             Spacing="4">
-                                                            <ic:SymbolIcon 
-                                                              Margin="0,2,0,0"
-                                                              Width="14"
-                                                              Height="14"
-                                                              Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                                              Symbol="People"/>
+                                                            <ic:Lucide
+                                                                Margin="0,2,0,0"
+                                                                Height="12"
+																Width="12"
+                                                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                                                Icon="Users"/>
                                                             <TextBlock
-                                                               VerticalAlignment="Center"
-                                                               FontSize="12"
-                                                               Text="{Binding PlayerCount, Converter={StaticResource NumberAbbreviationConverter}}" />
+                                                                VerticalAlignment="Center"
+                                                                FontSize="12"
+                                                                Text="{Binding PlayerCount, Converter={StaticResource NumberAbbreviationConverter}}" />
                                                         </StackPanel>
                                                     </Grid>
                                                 </DataTemplate>
@@ -103,118 +109,118 @@
                                             IsIndeterminate="True"
                                             IsVisible="{Binding IsGameSearchLoading}" />
                                     </Panel>
-                                </Flyout>
-                            </FlyoutBase.AttachedFlyout>
-                        </TextBox>
+                                </Border>
+                            </Flyout>
+                        </FlyoutBase.AttachedFlyout>
+                    </TextBox>
 
-                        <TextBlock
-                            Margin="8,0,0,0"
-                            VerticalAlignment="Center"
-                            Text="{x:Static resources:Strings.Menu_RegionSelector_ServerSize}" />
+                    <TextBlock
+                        Margin="8,0,0,0"
+                        VerticalAlignment="Center"
+                        Text="{x:Static resources:Strings.Menu_RegionSelector_ServerSize}" />
 
-                        <ComboBox
-                            x:Name="SortOrderComboBox"
-                            MinWidth="150"
-                            Margin="8,0,0,0"
-                            VerticalAlignment="Center"
-                            ItemsSource="{Binding SortOrderOptions}"
-                            SelectedItem="{Binding SelectedSortOrderItem}">
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Content}" />
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
-                    </StackPanel>
-
-                    <StackPanel Orientation="Horizontal" Spacing="8">
-                        <TextBlock VerticalAlignment="Center" Text="{x:Static resources:Strings.Menu_RegionSelector_Region}" />
-
-                        <ComboBox
-                            x:Name="RegionComboBox"
-                            Width="200"
-                            VerticalAlignment="Center"
-                            ItemsSource="{Binding Regions}"
-                            SelectedItem="{Binding SelectedRegion}" />
-
-                        <Button
-                            Width="100"
-                            VerticalAlignment="Center"
-                            Classes="accent"
-                            Command="{Binding SearchCommand}"
-                            Content="{x:Static resources:Strings.Common_Search}" />
-
-                        <Button
-                            Width="120"
-                            VerticalAlignment="Center"
-                            Command="{Binding LoadMoreCommand}"
-                            Content="{x:Static resources:Strings.Menu_RegionSelector_LoadMore}" />
-                    </StackPanel>
+                    <ComboBox
+                        x:Name="SortOrderComboBox"
+                        MinWidth="150"
+                        Margin="8,0,0,0"
+                        VerticalAlignment="Center"
+                        ItemsSource="{Binding SortOrderOptions}"
+                        SelectedItem="{Binding SelectedSortOrderItem}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Content}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
                 </StackPanel>
-            </Border>
 
-			<Grid Grid.Row="1">
-				<DataGrid
-                    AutoGenerateColumns="False"
-                    IsReadOnly="True"
-                    ItemsSource="{Binding Servers}">
-					<DataGrid.Columns>
-						<DataGridTextColumn Width="40" Binding="{Binding Number}" Header="#" />
-						<DataGridTextColumn Width="*" Binding="{Binding ServerId}" Header="Server ID" />
-						<DataGridTextColumn Width="Auto" MinWidth="100" Binding="{Binding Players}" Header="Players" />
-						<DataGridTextColumn Width="120" Binding="{Binding Region}" Header="Region" />
-						<DataGridTemplateColumn Width="100" Header="Join">
-							<DataGridTemplateColumn.CellTemplate>
-								<DataTemplate>
-									<Button Command="{Binding JoinCommand}" Content="Join" />
-								</DataTemplate>
-							</DataGridTemplateColumn.CellTemplate>
-						</DataGridTemplateColumn>
-					</DataGrid.Columns>
-				</DataGrid>
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <TextBlock VerticalAlignment="Center" Text="{x:Static resources:Strings.Menu_RegionSelector_Region}" />
 
-				<StackPanel IsVisible="{Binding IsServerListEmptyAndNotLoading}"
-							Margin="40"
-							HorizontalAlignment="Center"
-							VerticalAlignment="Center">
-                    <ic:SymbolIcon 
-                               Margin="0,2,0,0"
-                               Width="64"
-                               Height="64"
-                               HorizontalAlignment="Center" 
-                               Opacity="0.5"
-                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                               Symbol="Search"/>
-					<TextBlock HorizontalAlignment="Center"
-                               Margin="0,0,0,8"
-							   FontSize="16"
-							   FontWeight="Medium"
-							   Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-							   IsHitTestVisible="False"
-							   Text="{Binding ServerListMessage}"
-							   TextAlignment="Center"
-							   TextWrapping="Wrap" />
-				</StackPanel>
+                    <ComboBox
+                        x:Name="RegionComboBox"
+                        Width="200"
+                        VerticalAlignment="Center"
+                        ItemsSource="{Binding Regions}"
+                        SelectedItem="{Binding SelectedRegion}" />
 
-				<Grid Background="{DynamicResource SolidBackgroundFillColorBaseBrush}"
-					  IsVisible="{Binding ShowLoadingIndicator}"
-					  Opacity="0.9">
-					<StackPanel HorizontalAlignment="Center"
-			            VerticalAlignment="Center"
-			            Spacing="16">
+                    <Button
+                        Width="100"
+                        VerticalAlignment="Center"
+                        Classes="accent"
+                        Command="{Binding SearchCommand}"
+                        Content="{x:Static resources:Strings.Common_Search}" />
 
-						<ui:ProgressRing IsIndeterminate="True"
-									 Width="100" Height="100"
-									 HorizontalAlignment="Center" />
+                    <Button
+                        Width="120"
+                        VerticalAlignment="Center"
+                        Command="{Binding LoadMoreCommand}"
+                        Content="{x:Static resources:Strings.Menu_RegionSelector_LoadMore}" />
+                </StackPanel>
+            </StackPanel>
+        </Border>
 
-						<TextBlock HorizontalAlignment="Center"
-								   FontSize="14"
-								   FontWeight="SemiBold"
-								   Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-								   Text="{Binding LoadingMessage}" />
-					</StackPanel>
-				</Grid>
-			</Grid>
+        <Grid Grid.Row="1">
+            <DataGrid HorizontalScrollBarVisibility="Disabled"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True"
+                      ItemsSource="{Binding Servers}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Width="40" Binding="{Binding Number}" Header="#" />
+                    <DataGridTextColumn Width="*" Binding="{Binding ServerId}" Header="{x:Static resources:Strings.Common_ServerID}" />
+                    <DataGridTextColumn Width="Auto" MinWidth="100" Binding="{Binding Players}" Header="{x:Static resources:Strings.Menu_RegionSelector_Players}" />
+                    <DataGridTextColumn Width="120" Binding="{Binding Region}" Header="{x:Static resources:Strings.Menu_RegionSelector_RegionHeader}" />
+                    <DataGridTemplateColumn Width="100" Header="{x:Static resources:Strings.Menu_RegionSelector_Join}">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Command="{Binding JoinCommand}" Content="{x:Static resources:Strings.Menu_RegionSelector_Join}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <StackPanel IsVisible="{Binding IsServerListEmptyAndNotLoading}"
+                        Margin="40"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center">
+                <ic:Lucide
+                    Margin="0,2,0,0"
+                    Width="48"
+                    Height="48"
+                    HorizontalAlignment="Center"
+                    Opacity="0.5"
+                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                    Icon="Search"/>
+                <TextBlock HorizontalAlignment="Center"
+                           Margin="0,0,0,8"
+                           FontSize="16"
+                           FontWeight="Medium"
+                           Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                           IsHitTestVisible="False"
+                           Text="{Binding ServerListMessage}"
+                           TextAlignment="Center"
+                           TextWrapping="Wrap" />
+            </StackPanel>
+
+            <Grid Background="{DynamicResource SolidBackgroundFillColorBaseBrush}"
+                  IsVisible="{Binding ShowLoadingIndicator}"
+                  Opacity="0.9">
+                <StackPanel HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Spacing="16">
+
+                    <ui:FAProgressRing IsIndeterminate="True"
+                                     Width="100" Height="100"
+                                     HorizontalAlignment="Center" />
+
+                    <TextBlock HorizontalAlignment="Center"
+                               FontSize="14"
+                               FontWeight="SemiBold"
+                               Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                               Text="{Binding LoadingMessage}" />
+                </StackPanel>
+            </Grid>
         </Grid>
-    </ScrollViewer>
+    </Grid>
 </UserControl>

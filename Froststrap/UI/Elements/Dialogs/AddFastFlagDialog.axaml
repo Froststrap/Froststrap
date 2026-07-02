@@ -1,70 +1,94 @@
 ﻿<base:AvaloniaWindow xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:resources="clr-namespace:Froststrap.Resources"
-        xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
-        xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
-        x:Class="Froststrap.UI.Elements.Dialogs.AddFastFlagDialog"
-        Title="{x:Static resources:Strings.Dialog_AddFastFlag_Title}"
-        Width="480"
-        SizeToContent="Height"
-        CanResize="False"
-        WindowStartupLocation="CenterScreen">
+                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                     xmlns:resources="clr-namespace:Froststrap.Resources"
+                     xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+                     xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+                     x:Class="Froststrap.UI.Elements.Dialogs.AddFastFlagDialog"
+                     Title="{x:Static resources:Strings.Dialog_AddFastFlag_Title}"
+                     Width="480"
+                     SizeToContent="Height"
+                     CanResize="False"
+                     WindowStartupLocation="CenterScreen">
 
     <Grid RowDefinitions="Auto,*,Auto" Background="{DynamicResource ApplicationBackgroundColor}">
-        <controls:TitleBar Grid.Row="0" Title="{x:Static resources:Strings.Dialog_AddFastFlag_Title}" />
+        <controls:TitleBar Grid.Row="0" Title="{x:Static resources:Strings.Dialog_AddFastFlag_Title}" ShowMaximize="False" Icon="avares://Froststrap/Froststrap.ico" />
 
-        <TabControl x:Name="Tabs" Grid.Row="1" Margin="16">
-            <TabItem Header="{x:Static resources:Strings.Common_AddSingle}">
-                <StackPanel Margin="16" Spacing="12">
-                    <Grid ColumnDefinitions="Auto, *">
-                        <TextBlock Grid.Column="0" 
-                                   VerticalAlignment="Center" 
-                                   MinWidth="100" 
-                                   Text="{x:Static resources:Strings.Common_Name}" />
-                        <TextBox Grid.Column="1" 
-                                 x:Name="FlagNameTextBox" 
-                                 Watermark="FFlagExample" />
-                    </Grid>
+        <Border Grid.Row="1"
+                Margin="16"
+                CornerRadius="8"
+                BorderThickness="1"
+                BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                Background="{DynamicResource ControlFillColorDefaultBrush}">
+            <TabControl x:Name="Tabs">
+                <TabControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="2" />
+                    </ItemsPanelTemplate>
+                </TabControl.ItemsPanel>
 
-                    <Grid ColumnDefinitions="Auto, *">
-                        <TextBlock Grid.Column="0" 
-                                   VerticalAlignment="Center" 
-                                   MinWidth="100" 
-                                   Text="{x:Static resources:Strings.Common_Value}" />
-                        <TextBox Grid.Column="1" 
-                                 x:Name="FlagValueTextBox" 
-                                 Watermark="True" />
-                    </Grid>
-                </StackPanel>
-            </TabItem>
+                <TabControl.Styles>
+                    <Style Selector="TabItem">
+                        <Setter Property="HorizontalAlignment" Value="Stretch" />
+                        <Setter Property="HorizontalContentAlignment" Value="Center" />
+                    </Style>
+                </TabControl.Styles>
 
-            <TabItem Header="{x:Static resources:Strings.Common_ImportJson}">
-                <StackPanel Margin="11" Spacing="10">
-                    <TextBox x:Name="JsonTextBox" 
-                             AcceptsReturn="True" 
-                             AcceptsTab="True" 
-                             MinHeight="120" 
-                             MaxHeight="300" 
-                             TextWrapping="Wrap"
-                             Watermark="{}{&#10;    &quot;FFlagDebugDisplayFPS&quot;: &quot;True&quot;&#10;}" />
-                    
-                    <Button Content="{x:Static resources:Strings.Common_ImportFromFile}" 
-                            HorizontalAlignment="Stretch" 
-                            Click="ImportButton_Click" />
-                </StackPanel>
-            </TabItem>
-        </TabControl>
+                <TabItem Header="{x:Static resources:Strings.Common_AddSingle}">
+                    <StackPanel Spacing="12" Margin="0,0,0,24">
+                        <Separator Margin="-12,8" />
+                        <Grid ColumnDefinitions="75, *" RowDefinitions="Auto" ColumnSpacing="12">
+                            <TextBlock Grid.Column="0"
+                                       VerticalAlignment="Center"
+                                       Text="{x:Static resources:Strings.Common_Name}" />
+                            <TextBox Grid.Column="1"
+                                     x:Name="FlagNameTextBox"
+                                     PlaceholderText="FFlagExample" />
+                        </Grid>
 
-        <Border Grid.Row="2" Padding="15" Background="{DynamicResource PrimaryBackgroundColor}">
+                        <Grid ColumnDefinitions="75, *" ColumnSpacing="12">
+                            <TextBlock Grid.Column="0"
+                                       VerticalAlignment="Center"
+                                       Text="{x:Static resources:Strings.Common_Value}" />
+                            <TextBox Grid.Column="1"
+                                     x:Name="FlagValueTextBox"
+                                     PlaceholderText="True" />
+                        </Grid>
+                    </StackPanel>
+                </TabItem>
+
+                <TabItem Header="{x:Static resources:Strings.Common_ImportJson}">
+                    <StackPanel Spacing="12" Margin="0,0,0,24">
+                        <Separator Margin="-12,8" />
+                        <TextBox x:Name="JsonTextBox"
+                                 AcceptsReturn="True"
+                                 AcceptsTab="True"
+                                 MinHeight="120"
+                                 MaxHeight="300"
+                                 TextWrapping="Wrap"
+                                 BorderThickness="0"
+                                 VerticalContentAlignment="Center"
+                                 PlaceholderText="{}{&#10;    &quot;FFlagDebugDisplayFPS&quot;: &quot;True&quot;&#10;}" />
+
+                        <controls:IconButton Content="{x:Static resources:Strings.Common_ImportFromFile}"
+                                             Icon="FileText"
+                                             HorizontalAlignment="Stretch"
+                                             Click="ImportButton_Click"/>
+                    </StackPanel>
+                </TabItem>
+            </TabControl>
+        </Border>
+
+        <Border Grid.Row="2"
+                Padding="15"
+                Background="{DynamicResource PrimaryBackgroundColor}">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="12">
                 <Button x:Name="OkButton"
-                        Content="{x:Static resources:Strings.Common_OK}" 
-                        Click="OKButton_Click" 
-                        Classes="accent"
+                        Content="{x:Static resources:Strings.Common_OK}"
+                        Click="OKButton_Click"
                         Width="100"
                         IsEnabled="False" />
 
-                <Button Content="{x:Static resources:Strings.Common_Cancel}" 
+                <Button Content="{x:Static resources:Strings.Common_Cancel}"
                         Click="CancelButton_Click"
                         Width="100" />
             </StackPanel>

@@ -1,4 +1,4 @@
-namespace Froststrap.UI.ViewModels.About
+﻿namespace Froststrap.UI.ViewModels.About
 {
     public class LicensesViewModel : NotifyPropertyChangedViewModel
     {

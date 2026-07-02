@@ -1,136 +1,106 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <OutputType>WinExe</OutputType>
-        <TargetFramework>net10.0</TargetFramework>
-        <Nullable>enable</Nullable>
-        <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
-		<Version>2.0.0</Version>
-		<FileVersion>2.0.0</FileVersion>
-        <AssemblyName>Froststrap</AssemblyName>
-		<Product>$(AssemblyName)</Product>
-        <RootNamespace>Froststrap</RootNamespace>
-		<ApplicationIcon>Froststrap.ico</ApplicationIcon>
-        <ApplicationManifest>app.manifest</ApplicationManifest>
-    </PropertyGroup>
+  <PropertyGroup>
+    <OutputType Condition="'$(RuntimeIdentifier)' == 'linux-x64' Or '$(RuntimeIdentifier)' == 'linux-arm64'">Exe</OutputType>
+    <OutputType Condition="'$(RuntimeIdentifier)' != 'linux-x64' And '$(RuntimeIdentifier)' != 'linux-arm64'">WinExe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    <Version>2.0.0</Version>
+    <FileVersion>2.0.0</FileVersion>
+    <Company>Froststrap</Company>
+    <Product>$(AssemblyName)</Product>
+    <AssemblyName>Froststrap</AssemblyName>
+    <RootNamespace>Froststrap</RootNamespace>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Description>Froststrap - A Bloxstrap/Fishstrap fork</Description>
+    <ApplicationIcon>Froststrap.ico</ApplicationIcon>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <NoWarn>$(NoWarn);CA1416</NoWarn>
+  </PropertyGroup>
 
-    <!-- Resources needed by Avalonia -->
-    <!-- We don't need that many Avalonia Resources just specify the folder only 😭 -->
-	<ItemGroup>
-		<AvaloniaResource Include="Resources\**" />
-		<AvaloniaResource Include="UI\AppThemes\EditorThemes\*.xshd" />
-		<None Remove="Utility\UrlBuilder.cs~RFc2b343.TMP" />
-		<AvaloniaResource Include="Froststrap.ico" />
-		<AvaloniaResource Include="Froststrap.png" />
-	</ItemGroup>
+  <!-- Resources needed by Avalonia -->
+  <ItemGroup>
+    <AvaloniaResource Include="Resources\**" />
+    <AvaloniaResource Include="UI\AppThemes\EditorThemes\*.xshd" />
+    <AvaloniaResource Include="Froststrap.ico" />
+    <AvaloniaResource Include="Froststrap.png" />
+  </ItemGroup>
 
-	<ItemGroup>
-		<EmbeddedResource Include="Resources\CustomBootstrapperSchema.json" />
-		<EmbeddedResource Include="Resources\CustomBootstrapperTemplate_Blank.xml" />
-		<EmbeddedResource Include="Resources\CustomBootstrapperTemplate_Simple.xml" />
-		<EmbeddedResource Include="Resources\Icon2008.ico" />
-		<EmbeddedResource Include="Resources\Icon2011.ico" />
-		<EmbeddedResource Include="Resources\Icon2017.ico" />
-		<EmbeddedResource Include="Resources\Icon2019.ico" />
-		<EmbeddedResource Include="Resources\Icon2022.ico" />
-		<EmbeddedResource Include="Resources\Icon2025.ico" />
-		<EmbeddedResource Include="Resources\IconEarly2015.ico" />
-		<EmbeddedResource Include="Resources\IconFroststrap.ico" />
-		<EmbeddedResource Include="Resources\IconLate2015.ico" />
-		<EmbeddedResource Include="Resources\mappings.json" />
-		<EmbeddedResource Include="Resources\Mods\Cursor\BlackAndWhiteDot\ArrowCursor.png" />
-		<EmbeddedResource Include="Resources\Mods\Cursor\BlackAndWhiteDot\ArrowFarCursor.png" />
-		<EmbeddedResource Include="Resources\Mods\Cursor\BlackAndWhiteDot\IBeamCursor.png" />
-		<EmbeddedResource Include="Resources\Mods\Cursor\From2006\ArrowCursor.png" />
-		<EmbeddedResource Include="Resources\Mods\Cursor\From2006\ArrowFarCursor.png" />
-		<EmbeddedResource Include="Resources\Mods\Cursor\From2013\ArrowCursor.png" />
-		<EmbeddedResource Include="Resources\Mods\Cursor\From2013\ArrowFarCursor.png" />
-		<EmbeddedResource Include="Resources\Mods\Cursor\PurpleCross\ArrowCursor.png" />
-		<EmbeddedResource Include="Resources\Mods\Cursor\PurpleCross\ArrowFarCursor.png" />
-		<EmbeddedResource Include="Resources\Mods\Cursor\PurpleCross\IBeamCursor.png" />
-		<EmbeddedResource Include="Resources\Mods\OldAvatarBackground.rbxl" />
-		<EmbeddedResource Include="Resources\Mods\Sounds\Empty.mp3" />
-		<EmbeddedResource Include="Resources\Mods\Sounds\OldGetUp.mp3" />
-		<EmbeddedResource Include="Resources\Mods\Sounds\OldJump.mp3" />
-		<EmbeddedResource Include="Resources\Mods\Sounds\OldWalk.mp3" />
-		<EmbeddedResource Include="Resources\PresetFlags\Balanced Quality" />
-		<EmbeddedResource Include="Resources\PresetFlags\High Quality" />
-		<EmbeddedResource Include="Resources\PresetFlags\Low Quality" />
-		<EmbeddedResource Include="Resources\SkyboxFix\6c94b9385e52d221f0538aadaceead2d" />
-		<EmbeddedResource Include="Resources\SkyboxFix\7328622d2d509b95dd4dd2c721d1ca8b" />
-		<EmbeddedResource Include="Resources\SkyboxFix\78cb2e93aee0cdbd79b15a866bc93a54" />
-		<EmbeddedResource Include="Resources\SkyboxFix\9244e00ff9fd6cee0bb40a262bb35d31" />
-		<EmbeddedResource Include="Resources\SkyboxFix\a50f6563c50ca4d5dcb255ee5cfab097" />
-		<EmbeddedResource Include="Resources\SkyboxFix\a564ec8aeef3614e788d02f0090089d8" />
-	</ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\CustomBootstrapperSchema.json" />
+    <EmbeddedResource Include="Resources\CustomBootstrapperTemplate_Blank.xml" />
+    <EmbeddedResource Include="Resources\CustomBootstrapperTemplate_Simple.xml" />
+    <EmbeddedResource Include="Resources\Icon2008.ico" />
+    <EmbeddedResource Include="Resources\Icon2011.ico" />
+    <EmbeddedResource Include="Resources\Icon2017.ico" />
+    <EmbeddedResource Include="Resources\Icon2019.ico" />
+    <EmbeddedResource Include="Resources\Icon2022.ico" />
+    <EmbeddedResource Include="Resources\Icon2025.ico" />
+    <EmbeddedResource Include="Resources\IconEarly2015.ico" />
+    <EmbeddedResource Include="Resources\IconFroststrap.ico" />
+    <EmbeddedResource Include="Resources\IconLate2015.ico" />
+    <EmbeddedResource Include="Resources\mappings.json" />
+    <EmbeddedResource Include="Resources\Mods\Cursor\BlackAndWhiteDot\ArrowCursor.png" />
+    <EmbeddedResource Include="Resources\Mods\Cursor\BlackAndWhiteDot\ArrowFarCursor.png" />
+    <EmbeddedResource Include="Resources\Mods\Cursor\BlackAndWhiteDot\IBeamCursor.png" />
+    <EmbeddedResource Include="Resources\Mods\Cursor\From2006\ArrowCursor.png" />
+    <EmbeddedResource Include="Resources\Mods\Cursor\From2006\ArrowFarCursor.png" />
+    <EmbeddedResource Include="Resources\Mods\Cursor\From2013\ArrowCursor.png" />
+    <EmbeddedResource Include="Resources\Mods\Cursor\From2013\ArrowFarCursor.png" />
+    <EmbeddedResource Include="Resources\Mods\Cursor\PurpleCross\ArrowCursor.png" />
+    <EmbeddedResource Include="Resources\Mods\Cursor\PurpleCross\ArrowFarCursor.png" />
+    <EmbeddedResource Include="Resources\Mods\Cursor\PurpleCross\IBeamCursor.png" />
+    <EmbeddedResource Include="Resources\Mods\OldAvatarBackground.rbxl" />
+    <EmbeddedResource Include="Resources\Mods\Sounds\Empty.mp3" />
+    <EmbeddedResource Include="Resources\Mods\Sounds\OldGetUp.mp3" />
+    <EmbeddedResource Include="Resources\Mods\Sounds\OldJump.mp3" />
+    <EmbeddedResource Include="Resources\Mods\Sounds\OldWalk.mp3" />
+    <EmbeddedResource Include="Resources\PresetFlags\Balanced Quality" />
+    <EmbeddedResource Include="Resources\PresetFlags\High Quality" />
+    <EmbeddedResource Include="Resources\PresetFlags\Low Quality" />
+    <EmbeddedResource Include="Resources\vinegar_layer.cpp" />
+    <EmbeddedResource Include="Resources\vk_layer.h" />
+    <EmbeddedResource Include="Resources\VkLayer_VINEGAR_VinegarLayer.json" />
+  </ItemGroup>
 
-    <!-- NuGet packages -->
-	<ItemGroup>
-		<PackageReference Include="AnimatedImage.Avalonia" Version="2.1.4" />
-		<PackageReference Include="Avalonia" Version="11.3.13" />
-		<PackageReference Include="Avalonia.AvaloniaEdit" Version="11.4.1" />
-		<PackageReference Include="Avalonia.Desktop" Version="11.3.13" />
-		<PackageReference Include="FluentAvaloniaUI" Version="2.5.1" />
-		<PackageReference Include="FluentIcons.Avalonia.Fluent" Version="2.0.324" />
-        	<PackageReference Include="Avalonia.Diagnostics" Version="11.3.13">
-            		<IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
-            		<PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
-        	</PackageReference>
-        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
-	    <PackageReference Include="DiscordRichPresence" Version="1.5.0.51" />
-	    <PackageReference Include="Markdig" Version="1.1.2" />
-        <PackageReference Include="SharpZipLib" Version="1.4.2" />
-		<PackageReference Include="PuppeteerSharp" Version="24.40.0" />
-		<PackageReference Include="PuppeteerExtraSharp" Version="3.1.1" />
-		<PackageReference Include="securifybv.ShellLink" Version="0.1.0" />
-		<PackageReference Include="SixLabors.ImageSharp" Version="3.1.12" />
-		<PackageReference Include="System.Security.Cryptography.ProtectedData" Version="10.0.6" />
-    </ItemGroup>
+  <!-- NuGet packages -->
+  <ItemGroup>
+    <PackageReference Include="AnimatedImage.Avalonia" Version="2.1.4" />
+    <PackageReference Include="Avalonia" Version="12.0.5" />
+    <PackageReference Include="Avalonia.AvaloniaEdit" Version="12.0.0-rc1" />
+    <PackageReference Include="Avalonia.Desktop" Version="12.0.5" />
+    <PackageReference Include="Avalonia.Labs.Notifications" Version="12.0.2" />
+    <PackageReference Include="AvaloniaUI.DiagnosticsSupport" Version="2.2.0">
+      <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
+      <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+    <PackageReference Include="DiscordRichPresence" Version="1.6.1.70" />
+    <PackageReference Include="Markdig" Version="1.2.0" />
+    <PackageReference Include="SharpZipLib" Version="1.4.2" />
+    <PackageReference Include="PuppeteerSharp" Version="24.42.0" />
+    <PackageReference Include="PuppeteerExtraSharp" Version="3.1.1" />
+    <PackageReference Include="securifybv.ShellLink" Version="0.1.0" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.12" />
+    <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="10.0.8" />
+	<PackageReference Include="Tmds.DBus.Protocol" Version="0.92.0" />
+    <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.106" PrivateAssets="all" />
+  </ItemGroup>
 
-	<ItemGroup>
-		<ProjectReference Include="..\ColorPicker-Avalonia\src\ColorPicker.AvaloniaUI\ColorPicker.AvaloniaUI.csproj" />
-	</ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ColorPicker\ColorPicker.AvaloniaUI\ColorPicker.AvaloniaUI.csproj" />
+    <ProjectReference Include="..\LucideAvalonia\LucideAvalonia\LucideAvalonia.csproj" />
+    <ProjectReference Include="..\FluentAvalonia\src\FluentAvalonia\FluentAvalonia.csproj" />
+  </ItemGroup>
 
-    <ItemGroup>
-      <AssemblyAttribute Include="Froststrap.Models.Attributes.BuildMetadataAttribute">
+  <ItemGroup>
+    <AssemblyAttribute Include="Froststrap.Models.Attributes.BuildMetadataAttribute">
       <_Parameter1>$([System.DateTime]::UtcNow.ToString("s"))Z</_Parameter1>
       <_Parameter2>$(COMPUTERNAME)\$(USERNAME)</_Parameter2>
       <_Parameter3>$(CommitHash)</_Parameter3>
       <_Parameter4>$(CommitRef)</_Parameter4>
-      </AssemblyAttribute>
-    </ItemGroup>
-
-  <ItemGroup>
-    <AdditionalFiles Include="NativeMethods.txt" />
-
-    <!-- Provide the path to the winmds used as input into the analyzer. -->
-    <CompilerVisibleProperty Include="CsWin32InputMetadataPaths" />
-    <CompilerVisibleProperty Include="CsWin32InputDocPaths" />
-  </ItemGroup>
-
-  <Target Name="AssembleCsWin32InputPaths" BeforeTargets="GenerateMSBuildEditorConfigFileCore">
-    <!-- Roslyn only allows source generators to see msbuild properties, to lift msbuild items into semicolon-delimited properties. -->
-    <PropertyGroup>
-    <CsWin32InputMetadataPaths>@(ProjectionMetadataWinmd->'%(FullPath)','|')</CsWin32InputMetadataPaths>
-    <CsWin32InputDocPaths>@(ProjectionDocs->'%(FullPath)','|')</CsWin32InputDocPaths>
-    </PropertyGroup>
-  </Target>
-
-  <Target Name="FixMds" BeforeTargets="CoreCompile" Condition="'@(ProjectionMetadataWinmd)'==''">
-    <ItemGroup>
-      <ProjectionMetadataWinmd Include="$(UserProfile)\.nuget\packages\microsoft.windows.sdk.win32metadata\55.0.45-preview\Windows.Win32.winmd" />
-    </ItemGroup>
-  </Target>
-
-  <ItemGroup>
-    <Compile Update="Resources\Strings.Designer.cs">
-    <DesignTime>True</DesignTime>
-    <AutoGen>True</AutoGen>
-    <DependentUpon>Strings.resx</DependentUpon>
-    </Compile>
-    <Compile Update="UI\Elements\Settings\AccountSelectorView.axaml.cs">
-      <DependentUpon>AccountSelectorView.axaml</DependentUpon>
-    </Compile>
+    </AssemblyAttribute>
   </ItemGroup>
 
   <ItemGroup>
@@ -138,5 +108,13 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Strings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Resources\Strings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Strings.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
 </Project>

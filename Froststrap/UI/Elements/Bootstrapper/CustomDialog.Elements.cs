@@ -5,7 +5,6 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Shapes;
 using Avalonia.Data;
 using Avalonia.Layout;
-using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Styling;
@@ -17,76 +16,80 @@ namespace Froststrap.UI.Elements.Bootstrapper
 {
     public partial class CustomDialog
     {
+        private readonly List<Image> _animatedImages = [];
+
         #region Transformation
-        private static Transform HandleXmlElement_ScaleTransform(CustomDialog dialog, XElement xmlElement)
+        private static ScaleTransform HandleXmlElement_ScaleTransform(CustomDialog dialog, XElement xmlElement)
         {
-            var st = new ScaleTransform();
-
-            st.ScaleX = ParseXmlAttribute<double>(xmlElement, "ScaleX", 1);
-            st.ScaleY = ParseXmlAttribute<double>(xmlElement, "ScaleY", 1);
+            var st = new ScaleTransform
+            {
+                ScaleX = ParseXmlAttribute<double>(xmlElement, "ScaleX", 1),
+                ScaleY = ParseXmlAttribute<double>(xmlElement, "ScaleY", 1)
+            };
 
             return st;
         }
 
-        private static Transform HandleXmlElement_SkewTransform(CustomDialog dialog, XElement xmlElement)
+        private static SkewTransform HandleXmlElement_SkewTransform(CustomDialog dialog, XElement xmlElement)
         {
-            var st = new SkewTransform();
-
-            st.AngleX = ParseXmlAttribute<double>(xmlElement, "AngleX", 0);
-            st.AngleY = ParseXmlAttribute<double>(xmlElement, "AngleY", 0);
-
-            return st;
+            return new SkewTransform
+            {
+                AngleX = ParseXmlAttribute<double>(xmlElement, "AngleX", 0),
+                AngleY = ParseXmlAttribute<double>(xmlElement, "AngleY", 0)
+            };
         }
 
-        private static Transform HandleXmlElement_RotateTransform(CustomDialog dialog, XElement xmlElement)
+        private static RotateTransform HandleXmlElement_RotateTransform(CustomDialog dialog, XElement xmlElement)
         {
-            var rt = new RotateTransform();
-
-            rt.Angle = ParseXmlAttribute<double>(xmlElement, "Angle", 0);
-
-            return rt;
+            return new RotateTransform
+            {
+                Angle = ParseXmlAttribute<double>(xmlElement, "Angle", 0)
+            };
         }
 
-        private static Transform HandleXmlElement_TranslateTransform(CustomDialog dialog, XElement xmlElement)
+        private static TranslateTransform HandleXmlElement_TranslateTransform(CustomDialog dialog, XElement xmlElement)
         {
-            var tt = new TranslateTransform();
-
-            tt.X = ParseXmlAttribute<double>(xmlElement, "X", 0);
-            tt.Y = ParseXmlAttribute<double>(xmlElement, "Y", 0);
-
-            return tt;
+            return new TranslateTransform
+            {
+                X = ParseXmlAttribute<double>(xmlElement, "X", 0),
+                Y = ParseXmlAttribute<double>(xmlElement, "Y", 0)
+            };
         }
         #endregion
 
         #region Effects
         private static BlurEffect HandleXmlElement_BlurEffect(CustomDialog dialog, XElement xmlElement)
         {
-            var effect = new BlurEffect();
-
-            effect.Radius = ParseXmlAttribute<double>(xmlElement, "Radius", 5);
-
-            return effect;
+            return new BlurEffect
+            {
+                Radius = ParseXmlAttribute<double>(xmlElement, "Radius", 5)
+            };
         }
 
-        private static DropShadowEffect HandleXmlElement_DropShadowEffect(CustomDialog dialog, XElement xmlElement)
+        private static object HandleXmlElement_DropShadowEffect(CustomDialog dialog, XElement xmlElement)
         {
-            var effect = new DropShadowEffect();
-
-            effect.BlurRadius = ParseXmlAttribute<double>(xmlElement, "BlurRadius", 5);
-            effect.Opacity = ParseXmlAttribute<double>(xmlElement, "Opacity", 1);
-
+            double blurRadius = ParseXmlAttribute<double>(xmlElement, "BlurRadius", 5);
             double direction = ParseXmlAttribute<double>(xmlElement, "Direction", 315);
-            double depth = ParseXmlAttribute<double>(xmlElement, "ShadowDepth", 5);
+            double opacity = ParseXmlAttribute<double>(xmlElement, "Opacity", 1);
+            double shadowDepth = ParseXmlAttribute<double>(xmlElement, "ShadowDepth", 5);
 
-            double radians = direction * (Math.PI / 180.0);
-            effect.OffsetX = Math.Cos(radians) * depth;
-            effect.OffsetY = -Math.Sin(radians) * depth;
+            double angleRad = direction * (Math.PI / 180.0);
+            double offsetX = shadowDepth * Math.Cos(angleRad);
+            double offsetY = -shadowDepth * Math.Sin(angleRad);
 
-            var color = GetColorFromXElement(xmlElement, "Color");
-            if (color is Color c)
-                effect.Color = c;
+            var colorObj = GetColorFromXElement(xmlElement, "Color");
+            Color color = colorObj is Color c ? c : Colors.Black;
 
-            return effect;
+            var finalColor = Color.FromArgb((byte)(opacity * 255), color.R, color.G, color.B);
+
+            return new BoxShadows(new BoxShadow
+            {
+                OffsetX = offsetX,
+                OffsetY = offsetY,
+                Blur = blurRadius,
+                Spread = 0,
+                Color = finalColor
+            });
         }
         #endregion
 
@@ -96,7 +99,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
             brush.Opacity = ParseXmlAttribute<double>(xmlElement, "Opacity", 1.0);
         }
 
-        private static Brush HandleXmlElement_SolidColorBrush(CustomDialog dialog, XElement xmlElement)
+        private static SolidColorBrush HandleXmlElement_SolidColorBrush(CustomDialog dialog, XElement xmlElement)
         {
             var brush = new SolidColorBrush();
             HandleXml_Brush(brush, xmlElement);
@@ -108,7 +111,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
             return brush;
         }
 
-        private static Brush HandleXmlElement_ImageBrush(CustomDialog dialog, XElement xmlElement)
+        private static ImageBrush HandleXmlElement_ImageBrush(CustomDialog dialog, XElement xmlElement)
         {
             var imageBrush = new ImageBrush();
             HandleXml_Brush(imageBrush, xmlElement);
@@ -119,30 +122,26 @@ namespace Froststrap.UI.Elements.Bootstrapper
             imageBrush.Stretch = ParseXmlAttribute<Stretch>(xmlElement, "Stretch", Stretch.Fill);
             imageBrush.TileMode = ParseXmlAttribute<TileMode>(xmlElement, "TileMode", TileMode.None);
 
-            var viewbox = GetRectFromXElement(xmlElement, "Viewbox");
-            if (viewbox is Rect rVb)
-                imageBrush.SourceRect = new RelativeRect(rVb, RelativeUnit.Relative);
-
-            var viewport = GetRectFromXElement(xmlElement, "Viewport");
-            if (viewport is Rect rVp)
-                imageBrush.DestinationRect = new RelativeRect(rVp, RelativeUnit.Relative);
-
             var sourceData = GetImageSourceData(dialog, "ImageSource", xmlElement);
 
             if (sourceData.IsIcon)
             {
-                imageBrush.Bind(ImageBrush.SourceProperty, new Binding("Icon"));
+                Binding binding = new("Icon") { Mode = BindingMode.OneWay };
+                imageBrush.Bind(ImageBrush.SourceProperty, binding);
             }
-            else
+            else if (sourceData.Path != null)
             {
+                Bitmap bitmapImage;
                 try
                 {
-                    imageBrush.Source = new Bitmap(sourceData.Uri!.LocalPath);
+                    bitmapImage = new Bitmap(sourceData.Path);
                 }
                 catch (Exception ex)
                 {
                     throw new CustomThemeException(ex, "CustomTheme.Errors.ElementTypeCreationFailed", "Image", "Bitmap", ex.Message);
                 }
+
+                imageBrush.Source = bitmapImage;
             }
 
             return imageBrush;
@@ -161,59 +160,75 @@ namespace Froststrap.UI.Elements.Bootstrapper
             return gs;
         }
 
-        private static Brush HandleXmlElement_LinearGradientBrush(CustomDialog dialog, XElement xmlElement)
+        private static LinearGradientBrush HandleXmlElement_LinearGradientBrush(CustomDialog dialog, XElement xmlElement)
         {
             var brush = new LinearGradientBrush();
-            HandleXml_Brush(brush, xmlElement);
 
-            if (GetPointFromXElement(xmlElement, "StartPoint") is Point start)
-                brush.StartPoint = new RelativePoint(start, RelativeUnit.Relative);
+            // Using Point.Parse makes StartPoint and EndPoint not work
+            // Using normal RelivePoints.Parse breaks the gradient and offset and Start/End points
+            static RelativePoint ParseRelativePoint(string value)
+            {
+                string[] parts = value.Split(',');
+                double x = double.Parse(parts[0], CultureInfo.InvariantCulture);
+                double y = double.Parse(parts[1], CultureInfo.InvariantCulture);
+                return new RelativePoint(x, y, RelativeUnit.Relative);
+            }
 
-            if (GetPointFromXElement(xmlElement, "EndPoint") is Point end)
-                brush.EndPoint = new RelativePoint(end, RelativeUnit.Relative);
+            string? startPointStr = xmlElement.Attribute("StartPoint")?.Value;
+            if (startPointStr != null)
+                brush.StartPoint = ParseRelativePoint(startPointStr);
 
-            brush.SpreadMethod = ParseXmlAttribute<GradientSpreadMethod>(xmlElement, "SpreadMethod", GradientSpreadMethod.Pad);
+            string? endPointStr = xmlElement.Attribute("EndPoint")?.Value;
+            if (endPointStr != null)
+                brush.EndPoint = ParseRelativePoint(endPointStr);
 
             foreach (var child in xmlElement.Elements())
-                brush.GradientStops.Add(HandleXml<GradientStop>(dialog, child));
+            {
+                if (child.Name.LocalName == "GradientStop")
+                {
+                    string? colorAttr = child.Attribute("Color")?.Value;
+                    string? offsetAttr = child.Attribute("Offset")?.Value;
+
+                    if (colorAttr != null && offsetAttr != null)
+                    {
+                        var color = Color.Parse(colorAttr);
+                        var offset = double.Parse(offsetAttr, CultureInfo.InvariantCulture);
+
+                        brush.GradientStops.Add(new GradientStop(color, offset));
+                    }
+                }
+            }
 
             return brush;
         }
-
-        private static void ApplyBrush_UIElement(CustomDialog dialog, AvaloniaObject uiElement, string name, AvaloniaProperty property, XElement xmlElement)
+        
+        private static void ApplyBrush_UIElement(CustomDialog dialog, AvaloniaObject uiElement, string name, AvaloniaProperty dependencyProperty, XElement xmlElement)
         {
             object? brushAttr = GetBrushFromXElement(xmlElement, name);
-            if (brushAttr is Brush b)
+            if (brushAttr is IBrush brush)
             {
-                uiElement.SetValue(property, b);
+                uiElement.SetValue(dependencyProperty, brush);
                 return;
             }
-            else if (brushAttr is string s)
+            else if (brushAttr is string resourceKey)
             {
-                if (uiElement is StyledElement styled)
-                    styled.Bind(property, new DynamicResourceExtension(s));
+                uiElement.Bind(dependencyProperty, dialog.GetResourceObservable(resourceKey));
                 return;
             }
 
-            var brushElement = xmlElement.Element($"{xmlElement.Name.LocalName}.{name}");
+            var brushElement = xmlElement.Element($"{xmlElement.Name}.{name}");
             if (brushElement == null)
                 return;
 
-            if (brushElement.FirstNode is XElement first)
-            {
-                var brush = HandleXml<Brush>(dialog, first);
-                uiElement.SetValue(property, brush);
-            }
-            else
-            {
-                throw new CustomThemeException("CustomTheme.Errors.ElementAttributeMissingChild", xmlElement.Name, name);
-            }
+            var first = brushElement.Elements().FirstOrDefault();
+            _ = first ?? throw new CustomThemeException("CustomTheme.Errors.ElementAttributeMissingChild", xmlElement.Name, name);
+
+            var generatedBrush = HandleXml<IBrush>(dialog, first);
+            uiElement.SetValue(dependencyProperty, generatedBrush);
         }
         #endregion
 
         #region Shapes
-
-        //TOOD: Fix shape being invisible
         private static void HandleXmlElement_Shape(CustomDialog dialog, Shape shape, XElement xmlElement)
         {
             HandleXmlElement_FrameworkElement(dialog, shape, xmlElement);
@@ -223,7 +238,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
 
             shape.Stretch = ParseXmlAttribute<Stretch>(xmlElement, "Stretch", Stretch.Fill);
             shape.StrokeDashOffset = ParseXmlAttribute<double>(xmlElement, "StrokeDashOffset", 0);
-            shape.StrokeJoin = ParseXmlAttribute<PenLineJoin>(xmlElement, "StrokeLineJoin", PenLineJoin.Miter);
+            shape.StrokeLineCap = ParseXmlAttribute<PenLineCap>(xmlElement, "StrokeLineCap", PenLineCap.Flat);
             shape.StrokeMiterLimit = ParseXmlAttribute<double>(xmlElement, "StrokeMiterLimit", 10);
             shape.StrokeThickness = ParseXmlAttribute<double>(xmlElement, "StrokeThickness", 1);
         }
@@ -240,8 +255,13 @@ namespace Froststrap.UI.Elements.Bootstrapper
             var line = new Line();
             HandleXmlElement_Shape(dialog, line, xmlElement);
 
-            line.StartPoint = new Point(ParseXmlAttribute<double>(xmlElement, "X1", 0), ParseXmlAttribute<double>(xmlElement, "Y1", 0));
-            line.EndPoint = new Point(ParseXmlAttribute<double>(xmlElement, "X2", 0), ParseXmlAttribute<double>(xmlElement, "Y2", 0));
+            double x1 = ParseXmlAttribute<double>(xmlElement, "X1", 0);
+            double y1 = ParseXmlAttribute<double>(xmlElement, "Y1", 0);
+            double x2 = ParseXmlAttribute<double>(xmlElement, "X2", 0);
+            double y2 = ParseXmlAttribute<double>(xmlElement, "Y2", 0);
+
+            line.StartPoint = new Point(x1, y1);
+            line.EndPoint = new Point(x2, y2);
 
             return line;
         }
@@ -268,179 +288,186 @@ namespace Froststrap.UI.Elements.Bootstrapper
                     throw new Exception($"{xmlElement.Name} has duplicate name {name}");
 
                 dialog.UsedNames.Add(name);
-                uiElement.Name = name;
-            }
 
-            bool? isVisibleAttr = ParseXmlAttributeNullable<bool>(xmlElement, "IsVisible");
-            string? visibilityAttr = xmlElement.Attribute("Visibility")?.Value?.ToLower();
-
-            if (isVisibleAttr.HasValue)
-            {
-                uiElement.IsVisible = isVisibleAttr.Value;
-            }
-            else if (!string.IsNullOrEmpty(visibilityAttr))
-            {
-                switch (visibilityAttr)
+                if (string.IsNullOrEmpty(uiElement.Name))
                 {
-                    case "visible":
-                        uiElement.IsVisible = true;
-                        break;
-                    case "hidden":
-                        uiElement.IsVisible = true;
-                        uiElement.Opacity = 0;
-                        break;
-                    case "collapsed":
-                        uiElement.IsVisible = false;
-                        break;
+                    uiElement.Name = name;
                 }
-            }
-            else
-            {
-                uiElement.IsVisible = true;
             }
 
             uiElement.IsEnabled = ParseXmlAttribute<bool>(xmlElement, "IsEnabled", true);
-
-            if (GetThicknessFromXElement(xmlElement, "Margin") is Thickness margin)
-                uiElement.Margin = margin;
-
             uiElement.Height = ParseXmlAttribute<double>(xmlElement, "Height", double.NaN);
             uiElement.Width = ParseXmlAttribute<double>(xmlElement, "Width", double.NaN);
+            uiElement.Margin = (Thickness)(GetThicknessFromXElement(xmlElement, "Margin") ?? new Thickness(0));
 
             uiElement.HorizontalAlignment = ParseXmlAttribute<HorizontalAlignment>(xmlElement, "HorizontalAlignment", HorizontalAlignment.Left);
             uiElement.VerticalAlignment = ParseXmlAttribute<VerticalAlignment>(xmlElement, "VerticalAlignment", VerticalAlignment.Top);
 
             uiElement.Opacity = ParseXmlAttribute<double>(xmlElement, "Opacity", 1);
+            ApplyBrush_UIElement(dialog, uiElement, "OpacityMask", Visual.OpacityMaskProperty, xmlElement);
 
-            if (GetPointFromXElement(xmlElement, "RenderTransformOrigin") is Point origin)
-                uiElement.RenderTransformOrigin = new RelativePoint(origin, RelativeUnit.Relative);
+            object? renderTransformOrigin = GetPointFromXElement(xmlElement, "RenderTransformOrigin");
+            if (renderTransformOrigin is RelativePoint origin)
+                uiElement.RenderTransformOrigin = origin;
 
-            int zIndex = ParseXmlAttribute<int>(xmlElement, "ZIndex", -1);
-
-            if (zIndex == -1)
-                zIndex = ParseXmlAttribute<int>(xmlElement, "Panel.ZIndex", 0);
-
-            uiElement.ZIndex = Math.Clamp(zIndex, 0, 1000);
+            uiElement.ZIndex = ParseXmlAttributeClamped(xmlElement, "ZIndex", defaultValue: 0, min: 0, max: 1000);
 
             Grid.SetRow(uiElement, ParseXmlAttribute<int>(xmlElement, "Grid.Row", 0));
             Grid.SetRowSpan(uiElement, ParseXmlAttribute<int>(xmlElement, "Grid.RowSpan", 1));
             Grid.SetColumn(uiElement, ParseXmlAttribute<int>(xmlElement, "Grid.Column", 0));
             Grid.SetColumnSpan(uiElement, ParseXmlAttribute<int>(xmlElement, "Grid.ColumnSpan", 1));
 
-            ApplyTransformations_UIElement(dialog, uiElement, xmlElement);
-            ApplyEffects_UIElement(dialog, uiElement, xmlElement);
+            ApplyTransformations_Control(dialog, uiElement, xmlElement);
+            ApplyEffects_Control(dialog, uiElement, xmlElement);
+
+            string? visibility = xmlElement.Attribute("Visibility")?.Value;
+            if (!string.IsNullOrEmpty(visibility))
+            {
+                switch (visibility.ToLower())
+                {
+                    case "collapsed":
+                        uiElement.IsVisible = false;
+                        break;
+                    case "hidden":
+                        uiElement.IsVisible = true;
+                        uiElement.Opacity = 0;
+                        uiElement.IsHitTestVisible = false;
+                        break;
+                    case "visible":
+                    default:
+                        uiElement.IsVisible = true;
+                        break;
+                }
+            }
         }
 
-        private static void HandleXmlElement_Control(CustomDialog dialog, TemplatedControl uiElement, XElement xmlElement)
+        private static void HandleXmlElement_Control(CustomDialog dialog, Control uiElement, XElement xmlElement)
         {
             HandleXmlElement_FrameworkElement(dialog, uiElement, xmlElement);
 
-            if (GetThicknessFromXElement(xmlElement, "Padding") is Thickness padding)
-                uiElement.Padding = padding;
-
-            if (GetThicknessFromXElement(xmlElement, "BorderThickness") is Thickness bt)
-                uiElement.BorderThickness = bt;
-
-            ApplyBrush_UIElement(dialog, uiElement, "Foreground", TemplatedControl.ForegroundProperty, xmlElement);
-            ApplyBrush_UIElement(dialog, uiElement, "Background", TemplatedControl.BackgroundProperty, xmlElement);
-            ApplyBrush_UIElement(dialog, uiElement, "BorderBrush", TemplatedControl.BorderBrushProperty, xmlElement);
-
-            if (ParseXmlAttributeNullable<double>(xmlElement, "FontSize") is double fs)
-                uiElement.FontSize = fs;
-
-            uiElement.FontWeight = GetFontWeightFromXElement(xmlElement);
-            uiElement.FontStyle = GetFontStyleFromXElement(xmlElement);
-
-            //TODO: Fix Font Faaily
-            string? fontFamilyAttr = xmlElement.Attribute("FontFamily")?.Value;
-            if (!string.IsNullOrEmpty(fontFamilyAttr))
+            if (uiElement is TemplatedControl templatedControl)
             {
-                if (fontFamilyAttr.StartsWith("theme://"))
-                {
-                    string fullPath = GetFullPath(dialog, fontFamilyAttr)!;
+                object? padding = GetThicknessFromXElement(xmlElement, "Padding");
+                if (padding != null)
+                    templatedControl.Padding = (Thickness)padding;
 
-                    if (!string.IsNullOrEmpty(fullPath))
-                    {
-                        try
-                        {
-                            var uri = new Uri(fullPath, UriKind.Absolute);
-                            string fontName = fontFamilyAttr.Split('#').Last();
-                            uiElement.FontFamily = new Avalonia.Media.FontFamily(uri, fontName);
-                        }
-                        catch (Exception)
-                        {
-                            uiElement.FontFamily = new Avalonia.Media.FontFamily("Arial");
-                        }
-                    }
-                }
-                else
-                {
-                    uiElement.FontFamily = new Avalonia.Media.FontFamily(fontFamilyAttr);
-                }
+                object? borderThickness = GetThicknessFromXElement(xmlElement, "BorderThickness");
+                if (borderThickness != null)
+                    templatedControl.BorderThickness = (Thickness)borderThickness;
+
+                ApplyBrush_UIElement(dialog, templatedControl, "Foreground", TemplatedControl.ForegroundProperty, xmlElement);
+                ApplyBrush_UIElement(dialog, templatedControl, "Background", TemplatedControl.BackgroundProperty, xmlElement);
+                ApplyBrush_UIElement(dialog, templatedControl, "BorderBrush", TemplatedControl.BorderBrushProperty, xmlElement);
+
+                ApplyFontFamily(dialog, templatedControl, xmlElement);
+
+                var fontSize = ParseXmlAttributeNullable<double>(xmlElement, "FontSize");
+                if (fontSize is double fs)
+                    templatedControl.FontSize = fs;
+
+                templatedControl.FontWeight = GetFontWeightFromXElement(xmlElement);
+                templatedControl.FontStyle = GetFontStyleFromXElement(xmlElement);
             }
         }
 
-        private static Control HandleXmlElement_BloxstrapCustomBootstrapper(CustomDialog dialog, XElement xmlElement)
+        private static DummyControl HandleXmlElement_BloxstrapCustomBootstrapper(CustomDialog dialog, XElement xmlElement)
         {
-            HandleXmlElement_Control(dialog, dialog, xmlElement);
-
-            bool? isVisibleAttr = ParseXmlAttributeNullable<bool>(xmlElement, "IsVisible");
-            string? visibilityAttr = xmlElement.Attribute("Visibility")?.Value?.ToLower();
-
-            if (isVisibleAttr.HasValue)
-            {
-                dialog.IsVisible = isVisibleAttr.Value;
-            }
-            else if (!string.IsNullOrEmpty(visibilityAttr))
-            {
-                switch (visibilityAttr)
-                {
-                    case "visible":
-                        dialog.IsVisible = true;
-                        break;
-                    case "hidden":
-                        dialog.IsVisible = true;
-                        dialog.Opacity = 0;
-                        break;
-                    case "collapsed":
-                        dialog.IsVisible = false;
-                        break;
-                }
-            }
-            else
-            {
-                dialog.IsVisible = true;
-            }
-
+            xmlElement.SetAttributeValue("Visibility", "Collapsed");
             xmlElement.SetAttributeValue("IsEnabled", "True");
+            HandleXmlElement_Control(dialog, dialog, xmlElement);
 
             dialog.Opacity = 1;
 
             dialog.ElementGrid.RenderTransform = dialog.RenderTransform;
             dialog.RenderTransform = null;
 
-            dialog.ElementGrid.RenderTransform = dialog.RenderTransform;
-            dialog.RenderTransform = null;
+            var backdropType = ParseXmlAttribute<WindowsBackdrops>(xmlElement, "WindowBackdropType", WindowsBackdrops.None);
 
-            dialog.ElementGrid.Effect = dialog.Effect;
-            dialog.Effect = null;
+            List<WindowTransparencyLevel> transparencyLevels = [];
+
+            switch (backdropType)
+            {
+                case WindowsBackdrops.Mica:
+                    transparencyLevels.Add(WindowTransparencyLevel.Mica);
+                    transparencyLevels.Add(WindowTransparencyLevel.AcrylicBlur);
+                    transparencyLevels.Add(WindowTransparencyLevel.Blur);
+                    break;
+
+                case WindowsBackdrops.Acrylic:
+                    transparencyLevels.Add(WindowTransparencyLevel.AcrylicBlur);
+                    transparencyLevels.Add(WindowTransparencyLevel.Blur);
+                    transparencyLevels.Add(WindowTransparencyLevel.Mica);
+                    break;
+
+                case WindowsBackdrops.Aero:
+                    transparencyLevels.Add(WindowTransparencyLevel.Blur);
+                    transparencyLevels.Add(WindowTransparencyLevel.AcrylicBlur);
+                    break;
+
+                case WindowsBackdrops.None:
+                default:
+                    transparencyLevels.Add(WindowTransparencyLevel.None);
+                    break;
+            }
+
+            dialog.TransparencyLevelHint = transparencyLevels;
+
+            var isLight = dialog.ActualThemeVariant == ThemeVariant.Light;
+
+            if (backdropType != WindowsBackdrops.None)
+            {
+                byte alpha = backdropType switch
+                {
+                    WindowsBackdrops.Mica => (byte)200,
+                    WindowsBackdrops.Acrylic => (byte)128,
+                    WindowsBackdrops.Aero => (byte)64,
+                    _ => (byte)180
+                };
+
+                if (dialog.Background != null && dialog.Background != Avalonia.Media.Brushes.Transparent)
+                {
+                    if (dialog.Background is SolidColorBrush solidBrush)
+                    {
+                        var originalColor = solidBrush.Color;
+                        var newColor = Color.FromArgb(alpha, originalColor.R, originalColor.G, originalColor.B);
+                        dialog.Background = new SolidColorBrush(newColor);
+                    }
+                    else if (dialog.Background is ImageBrush imageBrush)
+                    {
+                        imageBrush.Opacity = alpha / 255.0;
+                    }
+                    else if (dialog.Background is LinearGradientBrush linearGradient)
+                    {
+                        linearGradient.Opacity = alpha / 255.0;
+                    }
+                    else if (dialog.Background is RadialGradientBrush radialGradient)
+                    {
+                        radialGradient.Opacity = alpha / 255.0;
+                    }
+                }
+                else
+                {
+                    var color = isLight
+                        ? Color.FromArgb(alpha, 225, 225, 225)
+                        : Color.FromArgb(alpha, 30, 30, 30);
+
+                    dialog.Background = new SolidColorBrush(color);
+                }
+            }
 
             var theme = ParseXmlAttribute<Theme>(xmlElement, "Theme", Enums.Theme.Default);
             if (theme == Enums.Theme.Default)
                 theme = App.Settings.Prop.Theme;
 
-            var avaloniaTheme = theme.GetFinal() == Enums.Theme.Dark ? ThemeVariant.Dark : ThemeVariant.Light;
-
-            dialog.RequestedThemeVariant = avaloniaTheme;
-
-            dialog.Resources.MergedDictionaries.Clear();
+            var finalTheme = theme.GetFinal();
+            dialog.RequestedThemeVariant = finalTheme == Enums.Theme.Light ? ThemeVariant.Light : ThemeVariant.Dark;
 
             dialog.ElementGrid.Margin = dialog.Margin;
 
-            dialog.Margin = new Thickness(0);
-            dialog.Padding = new Thickness(0);
+            dialog.Margin = new Thickness(0, 0, 0, 0);
+            dialog.Padding = new Thickness(0, 0, 0, 0);
 
-            string? title = xmlElement.Attribute("Title")?.Value ?? "Bloxstrap";
+            string? title = xmlElement.Attribute("Title")?.Value?.ToString() ?? "Froststrap";
             dialog.Title = title;
 
             bool ignoreTitleBarInset = ParseXmlAttribute<bool>(xmlElement, "IgnoreTitleBarInset", false);
@@ -450,57 +477,66 @@ namespace Froststrap.UI.Elements.Bootstrapper
                 Grid.SetRowSpan(dialog.ElementGrid, 2);
             }
 
-            return new Control();
+            return new DummyControl();
         }
 
         private static Control HandleXmlElement_BloxstrapCustomBootstrapper_Fake(CustomDialog dialog, XElement xmlElement)
         {
-            throw new CustomThemeException("CustomTheme.Errors.ElementInvalidChild", xmlElement.Parent!.Name.LocalName, xmlElement.Name.LocalName);
+            throw new Exception($"{xmlElement.Parent!.Name} cannot have a child of {xmlElement.Name}");
         }
 
-        private static Control HandleXmlElement_TitleBar(CustomDialog dialog, XElement xmlElement)
+        private static DummyControl HandleXmlElement_TitleBar(CustomDialog dialog, XElement xmlElement)
         {
-            HandleXmlElement_Control(dialog, dialog.RootTitleBar, xmlElement);
-
             xmlElement.SetAttributeValue("Name", "TitleBar");
             xmlElement.SetAttributeValue("IsEnabled", "True");
 
+            HandleXmlElement_Control(dialog, dialog.RootTitleBar, xmlElement);
+
             dialog.RootTitleBar.RenderTransform = null;
-
-            dialog.RootTitleBar.Effect = null;
-
             dialog.RootTitleBar.ZIndex = 1001;
 
-            dialog.RootTitleBar.Height = double.NaN;
+            dialog.RootTitleBar.Height = 32;
             dialog.RootTitleBar.Width = double.NaN;
             dialog.RootTitleBar.HorizontalAlignment = HorizontalAlignment.Stretch;
             dialog.RootTitleBar.Margin = new Thickness(0, 0, 0, 0);
 
             dialog.RootTitleBar.ShowMinimize = ParseXmlAttribute<bool>(xmlElement, "ShowMinimize", true);
+            dialog.RootTitleBar.ShowMaximize = ParseXmlAttribute<bool>(xmlElement, "ShowMaximize", false);
             dialog.RootTitleBar.ShowClose = ParseXmlAttribute<bool>(xmlElement, "ShowClose", true);
 
-            string? title = xmlElement.Attribute("Title")?.Value?.ToString() ?? "Bloxstrap";
+            string? title = xmlElement.Attribute("Title")?.Value ?? "Froststrap";
             dialog.RootTitleBar.Title = title;
 
-            return new Control();
+            if (!OperatingSystem.IsWindows())
+            {
+                dialog.WindowDecorations = WindowDecorations.Full;
+                dialog.ExtendClientAreaToDecorationsHint = true;
+
+                dialog.RootTitleBar.IsVisible = false;
+
+                dialog.Title = title;
+
+                Grid.SetRow(dialog.ElementGrid, 0);
+                Grid.SetRowSpan(dialog.ElementGrid, 2);
+            }
+
+            return new DummyControl();
         }
 
-        private static Control HandleXmlElement_Button(CustomDialog dialog, XElement xmlElement)
+        private static Button HandleXmlElement_Button(CustomDialog dialog, XElement xmlElement)
         {
             var button = new Button();
-
             HandleXmlElement_Control(dialog, button, xmlElement);
 
             button.Content = GetContentFromXElement(dialog, xmlElement);
 
             if (xmlElement.Attribute("Name")?.Value == "CancelButton")
             {
-                button.Bind(Button.IsEnabledProperty, new Binding("CancelEnabled")
-                {
-                    Mode = BindingMode.OneWay
-                });
+                Binding cancelEnabledBinding = new("CancelEnabled") { Mode = BindingMode.TwoWay };
+                button.Bind(Button.IsEnabledProperty, cancelEnabledBinding);
 
-                button.Bind(Button.CommandProperty, new Binding("CancelInstallCommand"));
+                Binding cancelCommandBinding = new("CancelInstallCommand");
+                button.Bind(Button.CommandProperty, cancelCommandBinding);
             }
 
             return button;
@@ -514,64 +550,53 @@ namespace Froststrap.UI.Elements.Bootstrapper
             rangeBase.Maximum = ParseXmlAttribute<double>(xmlElement, "Maximum", 100);
         }
 
-        private static Control HandleXmlElement_ProgressBar(CustomDialog dialog, XElement xmlElement)
+        private static ProgressBar HandleXmlElement_ProgressBar(CustomDialog dialog, XElement xmlElement)
         {
             var progressBar = new ProgressBar();
-
             HandleXmlElement_RangeBase(dialog, progressBar, xmlElement);
 
             progressBar.IsIndeterminate = ParseXmlAttribute<bool>(xmlElement, "IsIndeterminate", false);
 
             object? cornerRadius = GetCornerRadiusFromXElement(xmlElement, "CornerRadius");
-            if (cornerRadius is CornerRadius cr)
-                progressBar.CornerRadius = cr;
+            if (cornerRadius != null)
+                ProgressBarHelper.SetCornerRadius(progressBar, (CornerRadius)cornerRadius);
 
+            object? indicatorCornerRadius = GetCornerRadiusFromXElement(xmlElement, "IndicatorCornerRadius");
+            if (indicatorCornerRadius != null)
+                ProgressBarHelper.SetIndicatorCornerRadius(progressBar, (CornerRadius)indicatorCornerRadius);
 
             if (xmlElement.Attribute("Name")?.Value == "PrimaryProgressBar")
             {
-                progressBar.Bind(ProgressBar.IsIndeterminateProperty, new Binding("ProgressIndeterminate")
-                {
-                    Mode = BindingMode.OneWay
-                });
+                Binding isIndeterminateBinding = new("ProgressIndeterminate") { Mode = BindingMode.OneWay };
+                progressBar.Bind(ProgressBar.IsIndeterminateProperty, isIndeterminateBinding);
 
-                progressBar.Bind(ProgressBar.MaximumProperty, new Binding("ProgressMaximum")
-                {
-                    Mode = BindingMode.OneWay
-                });
+                Binding maximumBinding = new("ProgressMaximum") { Mode = BindingMode.OneWay };
+                progressBar.Bind(ProgressBar.MaximumProperty, maximumBinding);
 
-                progressBar.Bind(ProgressBar.ValueProperty, new Binding("ProgressValue")
-                {
-                    Mode = BindingMode.OneWay
-                });
+                Binding valueBinding = new("ProgressValue") { Mode = BindingMode.OneWay };
+                progressBar.Bind(ProgressBar.ValueProperty, valueBinding);
             }
 
             return progressBar;
         }
 
-        private static Control HandleXmlElement_ProgressRing(CustomDialog dialog, XElement xmlElement)
+        private static FluentAvalonia.UI.Controls.FAProgressRing HandleXmlElement_ProgressRing(CustomDialog dialog, XElement xmlElement)
         {
-            var progressRing = new ProgressRing();
-
+            var progressRing = new FluentAvalonia.UI.Controls.FAProgressRing();
             HandleXmlElement_RangeBase(dialog, progressRing, xmlElement);
 
             progressRing.IsIndeterminate = ParseXmlAttribute<bool>(xmlElement, "IsIndeterminate", false);
 
             if (xmlElement.Attribute("Name")?.Value == "PrimaryProgressRing")
             {
-                progressRing.Bind(ProgressRing.IsIndeterminateProperty, new Binding("ProgressIndeterminate")
-                {
-                    Mode = BindingMode.OneWay
-                });
+                Binding isIndeterminateBinding = new("ProgressIndeterminate") { Mode = BindingMode.OneWay };
+                progressRing.Bind(FluentAvalonia.UI.Controls.FAProgressRing.IsIndeterminateProperty, isIndeterminateBinding);
 
-                progressRing.Bind(ProgressRing.MaximumProperty, new Binding("ProgressMaximum")
-                {
-                    Mode = BindingMode.OneWay
-                });
+                Binding maximumBinding = new("ProgressMaximum") { Mode = BindingMode.OneWay };
+                progressRing.Bind(FluentAvalonia.UI.Controls.FAProgressRing.MaximumProperty, maximumBinding);
 
-                progressRing.Bind(ProgressRing.ValueProperty, new Binding("ProgressValue")
-                {
-                    Mode = BindingMode.OneWay
-                });
+                Binding valueBinding = new("ProgressValue") { Mode = BindingMode.OneWay };
+                progressRing.Bind(FluentAvalonia.UI.Controls.FAProgressRing.ValueProperty, valueBinding);
             }
 
             return progressRing;
@@ -584,55 +609,31 @@ namespace Froststrap.UI.Elements.Bootstrapper
             ApplyBrush_UIElement(dialog, textBlock, "Foreground", TextBlock.ForegroundProperty, xmlElement);
             ApplyBrush_UIElement(dialog, textBlock, "Background", TextBlock.BackgroundProperty, xmlElement);
 
-            if (ParseXmlAttributeNullable<double>(xmlElement, "FontSize") is double fontSize)
-                textBlock.FontSize = fontSize;
+            var fontSize = ParseXmlAttributeNullable<double>(xmlElement, "FontSize");
+            if (fontSize is double value)
+                textBlock.FontSize = value;
 
             textBlock.FontWeight = GetFontWeightFromXElement(xmlElement);
             textBlock.FontStyle = GetFontStyleFromXElement(xmlElement);
 
             textBlock.LineHeight = ParseXmlAttribute<double>(xmlElement, "LineHeight", double.NaN);
 
-
             textBlock.TextAlignment = ParseXmlAttribute<TextAlignment>(xmlElement, "TextAlignment", TextAlignment.Center);
-            textBlock.TextTrimming = GetTextTrimmingFromXElement(xmlElement);
+            textBlock.TextTrimming = ParseXmlAttribute<TextTrimming>(xmlElement, "TextTrimming", TextTrimming.None);
             textBlock.TextWrapping = ParseXmlAttribute<TextWrapping>(xmlElement, "TextWrapping", TextWrapping.NoWrap);
 
-            textBlock.TextDecorations = GetTextDecorationsFromXElement(xmlElement);
+            var textDecorations = GetTextDecorationsFromXElement(xmlElement);
+            if (textDecorations != null)
+                textBlock.TextDecorations = textDecorations;
 
-            //TODO: Fix Font Faaily
-            string? fontFamilyAttr = xmlElement.Attribute("FontFamily")?.Value;
-            if (!string.IsNullOrEmpty(fontFamilyAttr))
-            {
-                if (fontFamilyAttr.StartsWith("theme://"))
-                {
-                    string fullPath = GetFullPath(dialog, fontFamilyAttr)!;
+            ApplyFontFamily(dialog, textBlock, xmlElement);
 
-                    if (!string.IsNullOrEmpty(fullPath))
-                    {
-                        try
-                        {
-                            var uri = new Uri(fullPath, UriKind.Absolute);
-                            string fontName = fontFamilyAttr.Split('#').Last();
-                            textBlock.FontFamily = new Avalonia.Media.FontFamily(uri, fontName);
-                        }
-                        catch (Exception)
-                        {
-                            textBlock.FontFamily = new Avalonia.Media.FontFamily("Arial");
-                        }
-                    }
-                }
-                else
-                {
-                    textBlock.FontFamily = new Avalonia.Media.FontFamily(fontFamilyAttr);
-                }
-            }
-
-
-            if (GetThicknessFromXElement(xmlElement, "Padding") is Thickness padding)
-                textBlock.Padding = padding;
+            object? padding = GetThicknessFromXElement(xmlElement, "Padding");
+            if (padding != null)
+                textBlock.Padding = (Thickness)padding;
         }
 
-        private static Control HandleXmlElement_TextBlock(CustomDialog dialog, XElement xmlElement)
+        private static TextBlock HandleXmlElement_TextBlock(CustomDialog dialog, XElement xmlElement)
         {
             var textBlock = new TextBlock();
             HandleXmlElement_TextBlock_Base(dialog, textBlock, xmlElement);
@@ -641,16 +642,14 @@ namespace Froststrap.UI.Elements.Bootstrapper
 
             if (xmlElement.Attribute("Name")?.Value == "StatusText")
             {
-                textBlock.Bind(TextBlock.TextProperty, new Binding("Message")
-                {
-                    Mode = BindingMode.OneWay
-                });
+                Binding textBinding = new("Message") { Mode = BindingMode.OneWay };
+                textBlock.Bind(TextBlock.TextProperty, textBinding);
             }
 
             return textBlock;
         }
 
-        private static Control HandleXmlElement_MarkdownTextBlock(CustomDialog dialog, XElement xmlElement)
+        private static MarkdownTextBlock HandleXmlElement_MarkdownTextBlock(CustomDialog dialog, XElement xmlElement)
         {
             var textBlock = new MarkdownTextBlock();
             HandleXmlElement_TextBlock_Base(dialog, textBlock, xmlElement);
@@ -662,53 +661,39 @@ namespace Froststrap.UI.Elements.Bootstrapper
             return textBlock;
         }
 
-        private static Control HandleXmlElement_Image(CustomDialog dialog, XElement xmlElement)
+        private static Image HandleXmlElement_Image(CustomDialog dialog, XElement xmlElement)
         {
             var image = new Image();
             HandleXmlElement_FrameworkElement(dialog, image, xmlElement);
 
-            image.HorizontalAlignment = ParseXmlAttribute<HorizontalAlignment>(xmlElement, "HorizontalAlignment", HorizontalAlignment.Center);
-            image.VerticalAlignment = ParseXmlAttribute<VerticalAlignment>(xmlElement, "VerticalAlignment", VerticalAlignment.Center);
-
             image.Stretch = ParseXmlAttribute<Stretch>(xmlElement, "Stretch", Stretch.Uniform);
             image.StretchDirection = ParseXmlAttribute<StretchDirection>(xmlElement, "StretchDirection", StretchDirection.Both);
 
-            RenderOptions.SetBitmapInterpolationMode(image, BitmapInterpolationMode.HighQuality);
+            var interpolationMode = ParseXmlAttribute<BitmapInterpolationMode>(xmlElement, "BitmapInterpolationMode", BitmapInterpolationMode.HighQuality);
+            RenderOptions.SetBitmapInterpolationMode(image, interpolationMode);
 
-            var sourceData = GetImageSourceData(dialog, "Source", xmlElement);
-            bool isAnimated = ParseXmlAttribute<bool>(xmlElement, "IsAnimated", false);
+            var imageData = GetImageSourceData(dialog, "Source", xmlElement);
 
-            if (sourceData.IsIcon)
+            if (imageData.IsIcon)
             {
-                image.Bind(Image.SourceProperty, new Binding("Icon") { Mode = BindingMode.OneWay });
+                image.Bind(Image.SourceProperty, new Binding("Icon"));
             }
-            else if (sourceData.Uri != null)
+            else if (imageData.Path != null)
             {
+                bool isAnimated = ParseXmlAttribute<bool>(xmlElement, "IsAnimated", false);
+
                 if (isAnimated)
                 {
-                    try
-                    {
-                        //TODO: Fix issue causing it to run in background after stopping preview
-                    	image.SetValue(ImageBehavior.AnimatedSourceProperty, sourceData.Uri);
+                    byte[] bytes = File.ReadAllBytes(imageData.Path);
+                    var memoryStream = new MemoryStream(bytes);
 
-                    	var repeat = ParseXmlAttribute<RepeatBehavior>(xmlElement, "RepeatBehavior", RepeatBehavior.Forever);
-                    	image.SetValue(ImageBehavior.RepeatBehaviorProperty, repeat);
-                    }
-                    catch (Exception)
-                    {
-                        image.Source = new Bitmap(sourceData.Uri.LocalPath);
-                    }
+                    image.SetValue(ImageBehavior.AnimatedSourceProperty, new AnimatedImageSourceStream(memoryStream));
+
+                    dialog._animatedImages.Add(image);
                 }
                 else
                 {
-                    try
-                    {
-                        image.Source = new Bitmap(sourceData.Uri.LocalPath);
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new CustomThemeException(ex, "CustomTheme.Errors.ElementTypeCreationFailed", "Image", "Bitmap", ex.Message);
-                    }
+                    image.Source = new Bitmap(imageData.Path);
                 }
             }
 
@@ -817,34 +802,29 @@ namespace Froststrap.UI.Elements.Bootstrapper
             return stackPanel;
         }
 
-        //TODO: Fix border being invisible
         private static Border HandleXmlElement_Border(CustomDialog dialog, XElement xmlElement)
         {
-            var border = new Border();
+            var border = new Avalonia.Controls.Border();
+
             HandleXmlElement_FrameworkElement(dialog, border, xmlElement);
 
-            ApplyBrush_UIElement(dialog, border, "Background", Border.BackgroundProperty, xmlElement);
-            ApplyBrush_UIElement(dialog, border, "BorderBrush", Border.BorderBrushProperty, xmlElement);
+            object? padding = GetThicknessFromXElement(xmlElement, "Padding");
+            if (padding != null) border.Padding = (Thickness)padding;
 
             object? borderThickness = GetThicknessFromXElement(xmlElement, "BorderThickness");
-            if (borderThickness != null)
-                border.BorderThickness = (Thickness)borderThickness;
-
-            object? padding = GetThicknessFromXElement(xmlElement, "Padding");
-            if (padding != null)
-                border.Padding = (Thickness)padding;
+            if (borderThickness != null) border.BorderThickness = (Thickness)borderThickness;
 
             object? cornerRadius = GetCornerRadiusFromXElement(xmlElement, "CornerRadius");
-            if (cornerRadius != null)
-                border.CornerRadius = (CornerRadius)cornerRadius;
+            if (cornerRadius != null) border.CornerRadius = (CornerRadius)cornerRadius;
 
-            var children = xmlElement.Elements().Where(x => !x.Name.ToString().StartsWith("Border."));
-            if (children.Any())
+            ApplyBrush_UIElement(dialog, border, "Background", Avalonia.Controls.Border.BackgroundProperty, xmlElement);
+            ApplyBrush_UIElement(dialog, border, "BorderBrush", Avalonia.Controls.Border.BorderBrushProperty, xmlElement);
+
+            var childElements = xmlElement.Elements().Where(e => !e.Name.LocalName.Contains('.')).ToList();
+            var firstChild = childElements.FirstOrDefault();
+            if (firstChild != null)
             {
-                if (children.Count() > 1)
-                    throw new CustomThemeException("CustomTheme.Errors.ElementMultipleChildren", "Border");
-
-                border.Child = HandleXml<Control>(dialog, children.First());
+                border.Child = HandleXml<Control>(dialog, firstChild);
             }
 
             return border;

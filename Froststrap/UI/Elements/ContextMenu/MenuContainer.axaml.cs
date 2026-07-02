@@ -1,5 +1,9 @@
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input.Platform;
+using Avalonia.Platform.Storage;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Input;
 using Avalonia.Threading;
 using Froststrap.Integrations;
 
@@ -8,13 +12,13 @@ namespace Froststrap.UI.Elements.ContextMenu
     public partial class MenuContainer : Base.AvaloniaWindow
     {
         private readonly Watcher? _watcher;
-        private ActivityWatcher? _activityWatcher => _watcher?.ActivityWatcher;
+        private ActivityWatcher? ActivityWatcher => _watcher?.ActivityWatcher;
 
         private ServerInformation? _serverInformationWindow;
         private ServerHistory? _gameHistoryWindow;
 
-        private Stopwatch _totalPlaytimeStopwatch = new Stopwatch();
-        private TimeSpan _accumulatedTotalPlaytime = TimeSpan.Zero;
+        private readonly Stopwatch _totalPlaytimeStopwatch = new();
+        private readonly TimeSpan _accumulatedTotalPlaytime = TimeSpan.Zero;
 
         private DispatcherTimer? _playtimeTimer;
         private DateTime? _studioPlaceJoinTime = null;
@@ -26,6 +30,7 @@ namespace Froststrap.UI.Elements.ContextMenu
         private NativeMenuItem? AutoJoinRegionMenuItem;
         private NativeMenuItem? ServerDetailsMenuItem;
         private NativeMenuItem? GameHistoryMenuItem;
+        private NativeMenuItem? CloseRobloxMenuItem;
 
         public MenuContainer()
         {
@@ -57,42 +62,41 @@ namespace Froststrap.UI.Elements.ContextMenu
             AutoJoinRegionMenuItem = items.ElementAtOrDefault(5);
             ServerDetailsMenuItem = items.ElementAtOrDefault(6);
             GameHistoryMenuItem = items.ElementAtOrDefault(7);
+            CloseRobloxMenuItem = items.ElementAtOrDefault(9);
         }
 
         public MenuContainer(Watcher watcher) : this()
         {
             _watcher = watcher;
 
-            if (_activityWatcher is not null)
+            if (ActivityWatcher is not null)
             {
-                _activityWatcher.OnGameJoin += ActivityWatcher_OnGameJoin;
-                _activityWatcher.OnGameLeave += ActivityWatcher_OnGameLeave;
-                _activityWatcher.OnStudioPlaceOpened += ActivityWatcher_OnStudioPlaceOpened;
-                _activityWatcher.OnStudioPlaceClosed += ActivityWatcher_OnStudioPlaceClosed;
+                ActivityWatcher.OnGameJoin += ActivityWatcher_OnGameJoin;
+                ActivityWatcher.OnGameLeave += ActivityWatcher_OnGameLeave;
+                ActivityWatcher.OnStudioPlaceOpened += ActivityWatcher_OnStudioPlaceOpened;
+                ActivityWatcher.OnStudioPlaceClosed += ActivityWatcher_OnStudioPlaceClosed;
 
                 Dispatcher.UIThread.Post(() => {
-                    if (_activityWatcher.InRobloxStudio)
+                    if (ActivityWatcher.InRobloxStudio)
                     {
-                        if (InviteDeeplinkMenuItem != null) InviteDeeplinkMenuItem.IsVisible = false;
-                        if (ServerDetailsMenuItem != null) ServerDetailsMenuItem.IsVisible = false;
-                        if (GameHistoryMenuItem != null) GameHistoryMenuItem.IsVisible = false;
-                        if (AutoJoinRegionMenuItem != null) AutoJoinRegionMenuItem.IsVisible = false;
+                        InviteDeeplinkMenuItem?.SetValue(MenuItem.IsVisibleProperty, false);
+                        ServerDetailsMenuItem?.SetValue(MenuItem.IsVisibleProperty, false);
+                        GameHistoryMenuItem?.SetValue(MenuItem.IsVisibleProperty, false);
+                        AutoJoinRegionMenuItem?.SetValue(MenuItem.IsVisibleProperty, false);
+                        CloseRobloxMenuItem?.SetValue(MenuItem.HeaderProperty, Strings.Menu_ContextMenu_CloseStudio);
 
                         if (App.Settings.Prop.PlaytimeCounter)
                         {
                             StartTotalPlaytimeTimer();
-                            if (PlaytimeMenuItem != null) PlaytimeMenuItem.IsVisible = true;
-                            if (_activityWatcher.InStudioPlace) _studioPlaceJoinTime = DateTime.Now;
+                            PlaytimeMenuItem?.SetValue(MenuItem.IsVisibleProperty, true);
+                            if (ActivityWatcher.InStudioPlace) _studioPlaceJoinTime = DateTime.Now;
                         }
                     }
                     else
                     {
                         if (App.Settings.Prop.PlaytimeCounter) StartTotalPlaytimeTimer();
 
-                        UpdateRegionJoinUI();
-
-                        if (GameHistoryMenuItem != null)
-                            GameHistoryMenuItem.IsVisible = App.Settings.Prop.ShowGameHistoryMenu;
+                        GameHistoryMenuItem?.SetValue(MenuItem.IsVisibleProperty, App.Settings.Prop.ShowGameHistoryMenu);
                     }
 
                     if (RichPresenceMenuItem != null)
@@ -103,8 +107,7 @@ namespace Froststrap.UI.Elements.ContextMenu
                         _watcher?.StudioRichPresence?.SetVisibility(RichPresenceMenuItem.IsChecked);
                     }
 
-                    if (VersionMenuItem != null)
-                        VersionMenuItem.Header = $"{App.ProjectName} v{App.Version}";
+                    VersionMenuItem?.SetValue(NativeMenuItem.HeaderProperty, $"{App.ProjectName} v{App.Version}");
                 });
             }
         }
@@ -119,15 +122,15 @@ namespace Froststrap.UI.Elements.ContextMenu
         private void PlaytimeTimer_Tick(object? sender, EventArgs e)
         {
             TimeSpan total = _accumulatedTotalPlaytime + _totalPlaytimeStopwatch.Elapsed;
-            if (_activityWatcher == null || PlaytimeMenuItem == null) return;
+            if (ActivityWatcher == null || PlaytimeMenuItem == null) return;
 
             string statusText;
-            if (_activityWatcher.InStudioPlace && _studioPlaceJoinTime.HasValue)
-                statusText = $"Total: {FormatTimeSpan(total)} | Studio: {FormatTimeSpan(DateTime.Now - _studioPlaceJoinTime.Value)}";
-            else if (_activityWatcher.InGame)
-                statusText = $"Total: {FormatTimeSpan(total)} | Game: {FormatTimeSpan(DateTime.Now - _activityWatcher.Data.TimeJoined)}";
+            if (ActivityWatcher.InStudioPlace && _studioPlaceJoinTime.HasValue)
+                statusText = $"{Strings.Common_Total}: {FormatTimeSpan(total)} | {Strings.Common_Studio}: {FormatTimeSpan(DateTime.Now - _studioPlaceJoinTime.Value)}";
+            else if (ActivityWatcher.InGame)
+                statusText = $"{Strings.Common_Total}: {FormatTimeSpan(total)} | {Strings.Common_Game}: {FormatTimeSpan(DateTime.Now - ActivityWatcher.Data.TimeJoined)}";
             else
-                statusText = $"Total: {FormatTimeSpan(total)}";
+                statusText = $"{Strings.Common_Total}: {FormatTimeSpan(total)}";
 
             PlaytimeMenuItem.Header = statusText;
         }
@@ -149,17 +152,17 @@ namespace Froststrap.UI.Elements.ContextMenu
 
         private void ActivityWatcher_OnGameJoin(object? sender, EventArgs e) =>
             Dispatcher.UIThread.Invoke(() => {
-                if (_activityWatcher?.Data.ServerType == ServerType.Public && InviteDeeplinkMenuItem != null)
+                if (ActivityWatcher?.Data.ServerType == ServerType.Public && InviteDeeplinkMenuItem != null)
                     InviteDeeplinkMenuItem.IsVisible = true;
-                if (ServerDetailsMenuItem != null) ServerDetailsMenuItem.IsVisible = true;
-                UpdateRegionJoinUI();
+                ServerDetailsMenuItem?.SetValue(MenuItem.IsVisibleProperty, true);
+                AutoJoinRegionMenuItem?.SetValue(MenuItem.IsVisibleProperty, true);
             });
 
         private void ActivityWatcher_OnGameLeave(object? sender, EventArgs e) =>
             Dispatcher.UIThread.Invoke(() => {
-                if (InviteDeeplinkMenuItem != null) InviteDeeplinkMenuItem.IsVisible = false;
-                if (ServerDetailsMenuItem != null) ServerDetailsMenuItem.IsVisible = false;
-                UpdateRegionJoinUI();
+                InviteDeeplinkMenuItem?.SetValue(MenuItem.IsVisibleProperty, false);
+                ServerDetailsMenuItem?.SetValue(MenuItem.IsVisibleProperty, false);
+                AutoJoinRegionMenuItem?.SetValue(MenuItem.IsVisibleProperty, false);
                 _serverInformationWindow?.Close();
             });
 
@@ -179,10 +182,16 @@ namespace Froststrap.UI.Elements.ContextMenu
             }
         }
 
-        private void InviteDeeplinkMenuItem_Click(object? sender, EventArgs e)
+        private async void InviteDeeplinkMenuItem_Click(object? sender, EventArgs e)
         {
-            string deeplink = _activityWatcher?.Data?.GetInviteDeeplink() ?? "No activity data available";
-            TopLevel.GetTopLevel(this)?.Clipboard?.SetTextAsync(deeplink);
+            string deeplink = ActivityWatcher?.Data?.GetInviteDeeplink(true, DeeplinkType.RobloxWeb)
+                               ?? Strings.Menu_ContextMenu_NoData;
+
+            var topLevel = TopLevel.GetTopLevel(this);
+            if (topLevel?.Clipboard is IClipboard clipboard)
+            {
+                await clipboard.SetTextAsync(deeplink);
+            }
         }
 
         private void ServerDetailsMenuItem_Click(object? sender, EventArgs e) => ShowServerInformationWindow();
@@ -190,89 +199,28 @@ namespace Froststrap.UI.Elements.ContextMenu
 
         private void JoinLastServerMenuItem_Click(object? sender, EventArgs e)
         {
-            if (_activityWatcher is null) return;
+            if (ActivityWatcher is null) return;
             if (_gameHistoryWindow is null)
             {
-                _gameHistoryWindow = new(_activityWatcher);
+                _gameHistoryWindow = new(ActivityWatcher);
                 _gameHistoryWindow.Closed += (_, _) => _gameHistoryWindow = null;
             }
             if (!_gameHistoryWindow.IsVisible) _gameHistoryWindow.Show();
             else _gameHistoryWindow.Activate();
         }
 
-        private void UpdateRegionJoinUI()
-        {
-            if (AutoJoinRegionMenuItem == null) return;
-
-            string region = App.Settings.Prop.SelectedRegion;
-            bool hasRegion = !string.IsNullOrEmpty(region);
-
-            bool inGame = _activityWatcher?.InGame ?? false;
-            AutoJoinRegionMenuItem.IsVisible = hasRegion && inGame;
-
-            AutoJoinRegionMenuItem.Header = hasRegion ? $"Join {region}" : "No Region Selected";
-            AutoJoinRegionMenuItem.IsEnabled = hasRegion;
-        }
-
         private async void AutoJoinRegionMenuItem_Click(object? sender, EventArgs e)
         {
-            if (_activityWatcher?.InGame != true || _activityWatcher?.Data == null)
-            {
-                _ = Frontend.ShowMessageBox("You need to be in a game to use this feature.", MessageBoxImage.Warning);
-                return;
-            }
-            string selectedRegion = App.Settings.Prop.SelectedRegion;
-            if (string.IsNullOrEmpty(selectedRegion)) return;
-            await FindAndJoinServerInRegion(_activityWatcher.Data.PlaceId, selectedRegion);
-        }
+            if (ActivityWatcher is null) return;
 
-        private async Task FindAndJoinServerInRegion(long placeId, string selectedRegion)
-        {
             var fetcher = new RobloxServerFetcher();
-            await App.RemoteData.WaitUntilDataFetched();
-            string cookie = App.RemoteData.Prop.Dummy;
-
-            if (!await fetcher.ValidateCookieAsync(cookie))
-            {
-                _ = Frontend.ShowMessageBox("Authentication failed. Please check your connection.", MessageBoxImage.Error);
-                return;
-            }
-
-            string? nextCursor = "";
-            for (int i = 0; i < 20; i++)
-            {
-                var result = await fetcher.FetchServerInstancesAsync(placeId, cookie, nextCursor);
-                var match = result.Servers.FirstOrDefault(s => s.Region == selectedRegion && s.Playing < s.MaxPlayers);
-
-                if (match != null)
-                {
-                    MessageBoxResult confirmResult = await Frontend.ShowMessageBox(
-                            $"Found server in {selectedRegion} with {match.Playing}/{match.MaxPlayers} players.\nDo you want to join?",
-                            MessageBoxImage.Question,
-                            MessageBoxButton.YesNo
-                        );
-
-                    if (confirmResult == MessageBoxResult.Yes)
-                    {
-                        string robloxUri = $"roblox://experiences/start?placeId={placeId}&gameInstanceId={match.Id}";
-                        Process.Start(new ProcessStartInfo
-                        {
-                            FileName = robloxUri,
-                            UseShellExecute = true
-                        });
-
-                        _watcher?.KillRobloxProcess();
-                        return;
-                    }
-                    else return;
-                }
-
-                if (string.IsNullOrEmpty(result.NextCursor)) break;
-                nextCursor = result.NextCursor;
-                await Task.Delay(200);
-            }
-
-            _ = Frontend.ShowMessageBox($"No available {selectedRegion} servers found.", MessageBoxImage.Information);
+            await fetcher.JoinBestServerAsync(
+                ActivityWatcher.Data.PlaceId,
+                App.Settings.Prop.JoinSmallerServer,
+                App.Settings.Prop.BestRegionAmounts,
+                App.Settings.Prop.MaxServerCheck,
+                showConfirmation: true
+            );
         }
     }
 }

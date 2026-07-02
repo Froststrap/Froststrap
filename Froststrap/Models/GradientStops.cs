@@ -1,4 +1,5 @@
-﻿using Froststrap.UI.ViewModels;
+﻿using Avalonia.Media;
+using Froststrap.UI.ViewModels;
 
 namespace Froststrap.Models
 {
@@ -15,14 +16,22 @@ namespace Froststrap.Models
             }
         }
 
-        private string _color = "#000000";
+        private string _color = "#FFFFFF";
+
         public string Color
         {
             get => _color;
             set
             {
-                _color = value;
-                OnPropertyChanged(nameof(Color));
+                var cleaned = string.IsNullOrWhiteSpace(value)
+                    ? value
+                    : string.Concat(value.Where(c => !char.IsWhiteSpace(c)));
+
+                if (_color != cleaned)
+                {
+                    _color = cleaned;
+                    OnPropertyChanged();
+                }
             }
         }
     }

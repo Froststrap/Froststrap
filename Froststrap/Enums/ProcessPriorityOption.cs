@@ -2,22 +2,22 @@
 {
     public enum ProcessPriorityOption
     {
-        [EnumName(StaticName = "Low")]
+        [EnumName(FromTranslation = "Enums.ProcessPriorityOption.Low")]
         Low,
 
-        [EnumName(StaticName = "Below Normal")]
+        [EnumName(FromTranslation = "Enums.ProcessPriorityOption.BelowNormal")]
         BelowNormal,
 
-        [EnumName(StaticName = "Normal")]
+        [EnumName(FromTranslation = "Enums.ProcessPriorityOption.Normal")]
         Normal,
 
-        [EnumName(StaticName = "Above Normal")]
+        [EnumName(FromTranslation = "Enums.ProcessPriorityOption.AboveNormal")]
         AboveNormal,
 
-        [EnumName(StaticName = "High")]
+        [EnumName(FromTranslation = "Enums.ProcessPriorityOption.High")]
         High,
 
-        [EnumName(StaticName = "Real Time")]
+        [EnumName(FromTranslation = "Enums.ProcessPriorityOption.RealTime")]
         RealTime
     }
 }

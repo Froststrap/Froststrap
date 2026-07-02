@@ -6,7 +6,7 @@ namespace Froststrap.Models.Manifest
     {
         private FileManifest(string data)
         {
-            using StringReader reader = new StringReader(data);
+            using StringReader reader = new(data);
 
             while (true)
             {

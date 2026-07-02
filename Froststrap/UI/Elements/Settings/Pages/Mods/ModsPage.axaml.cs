@@ -1,60 +1,43 @@
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
-using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using Froststrap.UI.ViewModels.Settings;
 using Froststrap.UI.ViewModels.Settings.Mods;
 
 namespace Froststrap.UI.Elements.Settings.Pages.Mods
 {
-    /// <summary>
-    /// Implementation of IModsDialogService for Mods navigation
-    /// </summary>
-    internal class ModsDialogService : IModsDialogService
+    internal class ModsDialogService(MainWindowViewModel mainVm) : IModsDialogService
     {
-        private readonly MainWindowViewModel _mainVm;
+        private readonly MainWindowViewModel _mainVm = mainVm ?? throw new ArgumentNullException(nameof(mainVm));
 
-        public ModsDialogService(MainWindowViewModel mainVm)
-        {
-            _mainVm = mainVm ?? throw new ArgumentNullException(nameof(mainVm));
-        }
-
-        public async Task OpenCommunityModsAsync()
+        public Task OpenCommunityModsAsync()
         {
             _mainVm.NavigateToCommunityModsCommand.Execute(null);
-            await Task.CompletedTask;
+            return Task.CompletedTask;
         }
 
-        public async Task OpenPresetModsAsync()
+        public Task OpenPresetModsAsync()
         {
             _mainVm.NavigateToPresetModsCommand.Execute(null);
-            await Task.CompletedTask;
+            return Task.CompletedTask;
         }
 
-        public async Task OpenModGeneratorAsync()
+        public Task OpenModGeneratorAsync()
         {
             _mainVm.NavigateToModGeneratorCommand.Execute(null);
-            await Task.CompletedTask;
+            return Task.CompletedTask;
         }
     }
 
     public partial class ModsPage : UserControl
     {
-        private string _originalName = "";
         private bool _viewModelSetUp = false;
 
         public ModsPage()
         {
-            AddHandler(DragDrop.DropEvent, Page_Drop);
-
             InitializeComponent();
-
             App.FrostRPC?.SetPage("Mods");
-
             this.Loaded += (s, e) => SetupViewModelIfNeeded();
         }
 
@@ -65,7 +48,6 @@ namespace Froststrap.UI.Elements.Settings.Pages.Mods
             try
             {
                 var topLevel = TopLevel.GetTopLevel(this);
-
                 if (topLevel?.DataContext is MainWindowViewModel mainVm)
                 {
                     CreateViewModelWithDialogService(mainVm);
@@ -98,42 +80,34 @@ namespace Froststrap.UI.Elements.Settings.Pages.Mods
             DataContext = fallbackVm;
         }
 
-        private void ModName_GotFocus(object? sender, GotFocusEventArgs e)
+        private void Page_DragEnter(object? sender, DragEventArgs e)
         {
-            if (sender is TextBox textBox)
-                _originalName = textBox.Text ?? "";
+            if (DataContext is ModsViewModel vm)
+                vm.IsDragOver = true;
         }
 
-        private void ModName_LostFocus(object? sender, RoutedEventArgs e)
+        private void Page_DragLeave(object? sender, DragEventArgs e)
         {
-            if (sender is TextBox textBox && DataContext is ModsViewModel viewModel)
-            {
-                if (_originalName != textBox.Text)
-                {
-                    bool success = viewModel.RenameMod(_originalName, textBox.Text ?? "");
-
-                    if (!success)
-                    {
-                        textBox.Text = _originalName;
-                    }
-                }
-            }
+            if (DataContext is ModsViewModel vm)
+                vm.IsDragOver = false;
         }
 
         private async void Page_Drop(object? sender, DragEventArgs e)
         {
-            var files = e.DataTransfer.TryGetFiles();
-
-            if (files != null && DataContext is ModsViewModel vm)
+            if (DataContext is ModsViewModel vm)
             {
-                var paths = files
-                    .Select(f => f.TryGetLocalPath())
-                    .Where(p => !string.IsNullOrEmpty(p))
-                    .ToArray();
+                vm.IsDragOver = false;
 
-                if (paths.Length > 0)
+                var files = e.DataTransfer.TryGetFiles();
+                if (files != null)
                 {
-                    await Task.Run(() => vm.ProcessDroppedFiles(paths!));
+                    var paths = files
+                        .Select(f => f.TryGetLocalPath())
+                        .Where(p => !string.IsNullOrEmpty(p))
+                        .ToArray();
+
+                    if (paths.Length > 0)
+                        await vm.ImportFromPaths(paths!);
                 }
             }
         }

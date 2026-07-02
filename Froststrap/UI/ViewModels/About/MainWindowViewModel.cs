@@ -1,49 +1,58 @@
-using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System;
 
 namespace Froststrap.UI.ViewModels.About
 {
-    public partial class MainWindowViewModel : ObservableObject
+    public partial class MainWindowViewModel : NotifyPropertyChangedViewModel
     {
-        [ObservableProperty]
         private object? _currentPage;
+        public object? CurrentPage
+        {
+            get => _currentPage;
+            set => SetProperty(ref _currentPage, value);
+        }
 
-        [ObservableProperty]
         private string _selectedPage = "about";
+        public string SelectedPage
+        {
+            get => _selectedPage;
+            set => SetProperty(ref _selectedPage, value);
+        }
 
         public IRelayCommand NavigateToAboutCommand { get; }
         public IRelayCommand NavigateToLicensesCommand { get; }
 
         public MainWindowViewModel()
         {
-            NavigateToAboutCommand = new RelayCommand(() =>
-            {
-                try
-                {
-                    SelectedPage = "about";
-                    CurrentPage = new AboutViewModel();
-                }
-                catch (Exception ex)
-                {
-                    App.Logger.WriteException("AboutMainWindowViewModel::NavigateToAbout", ex);
-                }
-            });
+            NavigateToAboutCommand = new RelayCommand(NavigateToAbout);
+            NavigateToLicensesCommand = new RelayCommand(NavigateToLicenses);
 
-            NavigateToLicensesCommand = new RelayCommand(() =>
-            {
-                try
-                {
-                    SelectedPage = "licenses";
-                    CurrentPage = new LicensesViewModel();
-                }
-                catch (Exception ex)
-                {
-                    App.Logger.WriteException("AboutMainWindowViewModel::NavigateToLicenses", ex);
-                }
-            });
+            NavigateToAbout();
+        }
 
-            NavigateToAboutCommand.Execute(null);
+        private void NavigateToAbout()
+        {
+            try
+            {
+                SelectedPage = "about";
+                CurrentPage = new AboutViewModel();
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteException("AboutMainWindowViewModel::NavigateToAbout", ex);
+            }
+        }
+
+        private void NavigateToLicenses()
+        {
+            try
+            {
+                SelectedPage = "licenses";
+                CurrentPage = new LicensesViewModel();
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteException("AboutMainWindowViewModel::NavigateToLicenses", ex);
+            }
         }
     }
 }

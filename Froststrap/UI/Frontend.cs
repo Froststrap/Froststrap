@@ -5,6 +5,7 @@ using Avalonia.Controls.Notifications;
 using Avalonia.Threading;
 using Froststrap.UI.Elements.Bootstrapper;
 using Froststrap.UI.Elements.Dialogs;
+using Avalonia.Labs.Notifications;
 
 namespace Froststrap.UI
 {
@@ -25,12 +26,9 @@ namespace Froststrap.UI
             if (App.LaunchSettings.QuietFlag.Active)
                 return;
 
-            string topLine = Strings.Dialog_PlayerError_FailedLaunch;
+            string topLine = crash ? Strings.Dialog_PlayerError_Crash : Strings.Dialog_PlayerError_FailedLaunch;
 
-            if (crash)
-                topLine = Strings.Dialog_PlayerError_Crash;
-
-            string info = String.Format(
+            string info = string.Format(
                 Strings.Dialog_PlayerError_HelpInformation,
                 $"https://github.com/{App.ProjectRepository}/wiki/Roblox-crashes-or-does-not-launch",
                 $"https://github.com/{App.ProjectRepository}/wiki/Switching-between-Roblox-and-Bloxstrap"
@@ -125,29 +123,16 @@ namespace Froststrap.UI
 
         public static async Task<IBootstrapperDialog> GetBootstrapperDialog(BootstrapperStyle style)
         {
-            switch (style)
+            return style switch
             {
-                case BootstrapperStyle.ClassicFluentDialog:
-                    return new ClassicFluentDialog();
-
-                case BootstrapperStyle.ByfronDialog:
-                    return new ByfronDialog();
-
-                case BootstrapperStyle.TwentyFiveDialog:
-                    return new TwentyFiveDialog();
-
-                case BootstrapperStyle.FluentDialog:
-                    return new FluentDialog(false);
-
-                case BootstrapperStyle.FluentAeroDialog:
-                    return new FluentDialog(true);
-
-                case BootstrapperStyle.CustomDialog:
-                    return await GetCustomBootstrapper();
-
-                default:
-                    return new FluentDialog(false);
-            }
+                BootstrapperStyle.ClassicFluentDialog => new ClassicFluentDialog(),
+                BootstrapperStyle.ByfronDialog => new ByfronDialog(),
+                BootstrapperStyle.TwentyFiveDialog => new TwentyFiveDialog(),
+                BootstrapperStyle.FluentDialog => new FluentDialog(false),
+                BootstrapperStyle.FluentAeroDialog => new FluentDialog(true),
+                BootstrapperStyle.CustomDialog => await GetCustomBootstrapper(),
+                _ => new FluentDialog(false)
+            };
         }
 
         private static async Task<MessageBoxResult> ShowFluentMessageBox(string message, MessageBoxImage icon, MessageBoxButton buttons)
@@ -178,20 +163,37 @@ namespace Froststrap.UI
             });
         }
 
-        public static void ShowBalloonTip(string title, string message, NotificationType type = NotificationType.Information, int timeoutSeconds = 5, Action? onClick = null)
+        public static void ShowBalloonTip(string title, string message, NotificationType category = NotificationType.Information, int timeoutSeconds = 5)
         {
-            string imagePath = type switch
+            var manager = NativeNotificationManager.Current;
+
+            if (manager == null)
             {
-                NotificationType.Warning => "avares://Froststrap/Froststrap/Resources/MessageBox/FullQuality/Warning.png",
-                NotificationType.Error => "avares://Froststrap/Froststrap/Resources/MessageBox/FullQuality/Error.png",
-                _ => "avares://Froststrap/Froststrap/Resources/MessageBox/FullQuality/Information.png"
+                App.Logger.WriteLine("Frontend::ShowBalloonTip", "NativeNotificationManager is null.");
+                return;
+            }
+
+            string categoryString = category switch
+            {
+                NotificationType.Success => "success",
+                NotificationType.Warning => "warning",
+                NotificationType.Error => "error",
+                _ => "info"
             };
 
-            Dispatcher.UIThread.Post(() =>
+            var notification = manager.CreateNotification(categoryString);
+
+            if (notification != null)
             {
-                var notification = new NotificationDialog(title, message, imagePath, timeoutSeconds * 1000);
-                notification.Show();
-            });
+                notification.Title = title;
+                notification.Message = message;
+                notification.Expiration = TimeSpan.FromSeconds(timeoutSeconds);
+
+                Dispatcher.UIThread.Post(() =>
+                {
+                    notification.Show();
+                });
+            }
         }
     }
 }

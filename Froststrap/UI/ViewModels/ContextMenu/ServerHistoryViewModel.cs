@@ -44,7 +44,7 @@ namespace Froststrap.UI.ViewModels.ContextMenu
                            x.TimeJoined > DateTime.Now.AddDays(-30))
                     .ToList();
 
-                if (entriesNeedingDetails.Any())
+                if (entriesNeedingDetails.Count > 0)
                 {
                     var universeIds = entriesNeedingDetails
                         .Select(x => x.UniverseId)
@@ -117,7 +117,7 @@ namespace Froststrap.UI.ViewModels.ContextMenu
             }
         }
 
-        private List<ActivityData> ProcessAndConsolidateHistory(List<ActivityData> history)
+        private static List<ActivityData> ProcessAndConsolidateHistory(List<ActivityData> history)
         {
             var cutoffDate = DateTime.Now.AddDays(-30);
             var consolidatedHistory = new List<ActivityData>();
@@ -142,7 +142,7 @@ namespace Froststrap.UI.ViewModels.ContextMenu
                             .OrderByDescending(x => x.TimeJoined)
                             .ToList();
 
-                        if (relatedSessions.Any())
+                        if (relatedSessions.Count > 0)
                         {
                             var latestSession = relatedSessions.First();
                             var earliestSession = relatedSessions.Last();
@@ -173,11 +173,10 @@ namespace Froststrap.UI.ViewModels.ContextMenu
                 }
             }
 
-            return consolidatedHistory
+            return [.. consolidatedHistory
                 .GroupBy(x => x.UniverseId)
-                .SelectMany(g => g.OrderByDescending(x => x.TimeJoined).Take(3))
-                .OrderByDescending(x => x.TimeJoined)
-                .ToList();
+    .           SelectMany(g => g.OrderByDescending(x => x.TimeJoined).Take(3))
+                .OrderByDescending(x => x.TimeJoined)];
         }
 
         private void CleanOldEntries()

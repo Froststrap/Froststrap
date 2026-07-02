@@ -10,7 +10,7 @@ namespace Froststrap.UI.Elements.About
 {
     public partial class MainWindow : Base.AvaloniaWindow
     {
-        private MainWindowViewModel? _viewModel;
+        private readonly MainWindowViewModel? _viewModel;
 
         public MainWindow()
         {
@@ -135,12 +135,12 @@ namespace Froststrap.UI.Elements.About
 
         private void UpdateSelectedNavigationViewItem(string selectedTag)
         {
-            var navView = this.FindControl<NavigationView>("NavView");
+            var navView = this.FindControl<FANavigationView>("NavView");
             if (navView == null) return;
 
             foreach (var item in navView.MenuItems)
             {
-                if (item is NavigationViewItem navItem && navItem.Tag is string tag)
+                if (item is FANavigationViewItem navItem && navItem.Tag is string tag)
                 {
                     if (tag == selectedTag)
                     {
@@ -151,9 +151,9 @@ namespace Froststrap.UI.Elements.About
             }
         }
 
-        private void NavView_ItemInvoked(object? sender, NavigationViewItemInvokedEventArgs e)
+        private void NavView_ItemInvoked(object? sender, FANavigationViewItemInvokedEventArgs e)
         {
-            if (e.InvokedItemContainer is NavigationViewItem navItem && navItem.Tag is string tag)
+            if (e.InvokedItemContainer is FANavigationViewItem navItem && navItem.Tag is string tag)
             {
                 if (tag == "about")
                 {

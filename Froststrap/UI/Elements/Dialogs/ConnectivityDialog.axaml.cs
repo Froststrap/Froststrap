@@ -43,10 +43,8 @@ namespace Froststrap.UI.Elements.Dialogs
             else
             {
                 var uri = new Uri($"avares://Froststrap/Resources/MessageBox/{iconFilename}.png");
-                using (var stream = AssetLoader.Open(uri))
-                {
-                    IconImage.Source = new Bitmap(stream);
-                }
+                using var stream = AssetLoader.Open(uri);
+                IconImage.Source = new Bitmap(stream);
             }
 
             TitleTextBlock.Text = title;
@@ -85,7 +83,7 @@ namespace Froststrap.UI.Elements.Dialogs
             ErrorTextBox.Text = sb.ToString();
         }
 
-        private void AddExceptionToBuilder(Exception exception, StringBuilder sb, bool inner = false)
+        private static void AddExceptionToBuilder(Exception exception, StringBuilder sb, bool inner = false)
         {
             if (inner)
                 sb.AppendLine($"[Inner Exception]\n{exception.GetType()}: {exception.Message}");

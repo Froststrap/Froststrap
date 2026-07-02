@@ -1,6 +1,4 @@
-﻿using Froststrap;
-
-namespace Froststrap.RobloxInterfaces
+﻿namespace Froststrap.RobloxInterfaces
 {
     public static class Deployment
     {
@@ -8,26 +6,23 @@ namespace Froststrap.RobloxInterfaces
 
         public const string DefaultChannel = "production";
 
-        private const string VersionStudioHash = "version-012732894899482c";
+        public static event EventHandler<string>? ChannelChanged;
 
-        public static EventHandler<string>? ChannelChanged;
-        private static string _channel = App.Settings.Prop.Channel;
+        private static string _channel = DefaultChannel;
         public static string Channel
         {
             get => _channel;
             set
             {
+                if (_channel == value) return;
                 _channel = value;
-                App.Settings.Prop.Channel = Channel;
-                App.Settings.Save();
-
                 ChannelChanged?.Invoke(null, value);
             }
         }
 
-        public static string ChannelToken = string.Empty;
+        public static string ChannelToken { get; set; } = string.Empty;
 
-        public static string BinaryType = "WindowsPlayer";
+        public static string BinaryType => OperatingSystem.IsMacOS() ? "MacPlayer" : "WindowsPlayer";
 
         public static string RobloxDomain => App.Settings.Prop.RobloxDomain;
 
@@ -37,115 +32,89 @@ namespace Froststrap.RobloxInterfaces
 
         public static string BaseUrl { get; private set; } = null!;
 
-        public static readonly List<HttpStatusCode?> BadChannelCodes = new()
-        {
+        public static readonly List<HttpStatusCode?> BadChannelCodes = [
             HttpStatusCode.Unauthorized,
             HttpStatusCode.Forbidden,
             HttpStatusCode.NotFound
-        };
+        ];
 
-        private static readonly Dictionary<string, ClientVersion> ClientVersionCache = new();
+        private static readonly Dictionary<string, ClientVersion> ClientVersionCache = [];
 
-        // a list of roblox deployment locations that we check for, in case one of them don't work
-        // these are all weighted based on their priority, so that we pick the most optimal one that we can. 0 = highest
-        private static readonly Dictionary<string, int> BaseUrls = new()
+        private static readonly List<string> BaseUrls =
+        [
+            "https://setup.rbxcdn.com",
+            "https://setup-ak.rbxcdn.com",
+            "https://setup-aws.rbxcdn.com",
+            "https://setup-cfly.rbxcdn.com",
+            "https://s3.amazonaws.com/setup.roblox.com"
+        ];
+
+        private static async Task<(string url, long latency)> GetLatency(string url, CancellationToken token)
         {
-            { "https://setup.rbxcdn.com", 0 },
-            { "https://setup-aws.rbxcdn.com", 2 },
-            { "https://setup-ak.rbxcdn.com", 2 },
-            { "https://roblox-setup.cachefly.net", 2 },
-            { "https://s3.amazonaws.com/setup.roblox.com", 4 }
-        };
-
-        private static async Task<string?> TestConnection(string url, int priority, CancellationToken token)
-        {
-            string LOG_IDENT = $"Deployment::TestConnection<{url}>";
-
-            await Task.Delay(priority * 1000, token);
-
-            App.Logger.WriteLine(LOG_IDENT, "Connecting...");
-
+            var stopwatch = Stopwatch.StartNew();
             try
             {
-                var response = await App.HttpClient.GetAsync($"{url}/versionStudio", token);
-
+                using var request = new HttpRequestMessage(HttpMethod.Head, $"{url}/versionStudio");
+                using var response = await App.HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, token);
                 response.EnsureSuccessStatusCode();
-
-                // versionStudio is the version hash for the last MFC studio to be deployed.
-                // the response body should always be "version-012732894899482c".
-                string content = await response.Content.ReadAsStringAsync(token);
-
-                if (content != VersionStudioHash)
-                    throw new InvalidHTTPResponseException($"versionStudio response does not match (expected \"{VersionStudioHash}\", got \"{content}\")");
+                stopwatch.Stop();
+                return (url, stopwatch.ElapsedMilliseconds);
             }
-            catch (TaskCanceledException)
+            catch
             {
-                App.Logger.WriteLine(LOG_IDENT, "Connectivity test cancelled.");
-                throw;
+                return (url, long.MaxValue);
             }
-            catch (Exception ex)
-            {
-                App.Logger.WriteException(LOG_IDENT, ex);
-                throw;
-            }
-
-            return url;
         }
 
         /// <summary>
         /// This function serves double duty as the setup mirror enumerator, and as our connectivity check.
         /// Returns null for success.
         /// </summary>
-        /// <returns></returns>
         public static async Task<Exception?> InitializeConnectivity()
         {
             const string LOG_IDENT = "Deployment::InitializeConnectivity";
-
+            const string FALLBACK_URL = "https://setup.rbxcdn.com";
             var tokenSource = new CancellationTokenSource();
 
-            var exceptions = new List<Exception>();
-            var tasks = (from entry in BaseUrls select TestConnection(entry.Key, entry.Value, tokenSource.Token)).ToList();
+            var tasks = BaseUrls.Select(url => GetLatency(url, tokenSource.Token)).ToList();
 
-            App.Logger.WriteLine(LOG_IDENT, "Testing connectivity...");
+            App.Logger.WriteLine(LOG_IDENT, "Testing for best regional download mirror...");
 
-            while (tasks.Any() && String.IsNullOrEmpty(BaseUrl))
+            try
             {
-                var finishedTask = await Task.WhenAny(tasks);
+                var results = await Task.WhenAll(tasks);
 
-                tasks.Remove(finishedTask);
+                var (url, latency) = results
+                    .Where(r => r.latency != long.MaxValue)
+                    .OrderBy(r => r.latency)
+                    .FirstOrDefault();
 
-                if (finishedTask.IsFaulted)
-                    exceptions.Add(finishedTask.Exception!.InnerException!);
-                else if (!finishedTask.IsCanceled)
-                    BaseUrl = finishedTask.Result;
+                if (url != null)
+                {
+                    BaseUrl = url;
+                    App.Logger.WriteLine(LOG_IDENT, $"Optimal BaseUrl: {BaseUrl} ({latency}ms)");
+                    tokenSource.Cancel();
+                    return null;
+                }
+
+                BaseUrl = FALLBACK_URL;
+                App.Logger.WriteLine(LOG_IDENT, $"No mirrors responded. Falling back to default: {BaseUrl}");
+                return new Exception("No regional mirrors were responsive.");
             }
-
-            // stop other running connectivity tests
-            tokenSource.Cancel();
-
-            if (string.IsNullOrEmpty(BaseUrl))
+            catch (Exception ex)
             {
-                if (exceptions.Any())
-                    return exceptions[0];
-
-                // task cancellation exceptions don't get added to the list
-                return new TaskCanceledException("All connection attempts timed out.");
+                BaseUrl = FALLBACK_URL;
+                App.Logger.WriteException(LOG_IDENT, ex);
+                return ex;
             }
-
-            App.Logger.WriteLine(LOG_IDENT, $"Got {BaseUrl} as the optimal base URL");
-
-            return null;
         }
 
         public static string GetLocation(string resource)
         {
             string location = BaseUrl;
-
             if (!IsDefaultChannel)
                 location += "/channel/common";
-
             location += resource;
-
             return location;
         }
 
@@ -160,7 +129,6 @@ namespace Froststrap.RobloxInterfaces
 
                 string content = await response.Content.ReadAsStringAsync();
                 UserChannel channelInfo = JsonSerializer.Deserialize<UserChannel>(content)!;
-
                 return channelInfo;
             }
             catch (HttpRequestException ex)
@@ -168,23 +136,19 @@ namespace Froststrap.RobloxInterfaces
                 App.Logger.WriteLine(LOG_IDENT, "Failed to get user channel");
                 App.Logger.WriteException(LOG_IDENT, ex);
             }
-
             return null;
         }
 
         public static async Task<bool> IsChannelPrivate(string channel)
         {
-
             if (channel == "production")
                 channel = "live";
-
             if (channel == "live")
-                return true;
+                return false;
 
             try
             {
-
-                Uri apiUrl = UrlBuilder.BuildApiUrl("clientsettingscdn", "v2/client-version/WindowsPlayer/channel/" + channel);
+                Uri apiUrl = UrlBuilder.BuildApiUrl("clientsettingscdn", $"v2/client-version/{BinaryType}/channel/{channel}");
                 var response = await App.HttpClient.GetAsync(apiUrl);
                 response.EnsureSuccessStatusCode();
             }
@@ -193,7 +157,6 @@ namespace Froststrap.RobloxInterfaces
                 if (BadChannelCodes.Contains(ex.StatusCode))
                     return true;
             }
-
             return false;
         }
 
@@ -202,22 +165,40 @@ namespace Froststrap.RobloxInterfaces
             const string LOG_IDENT = "Deployment::GetVersionTimestamp";
             const string header = "last-modified";
 
-            // since we arent getting the timestamp during launch there shouldnt be any collisions
             if (string.IsNullOrEmpty(BaseUrl))
                 await InitializeConnectivity();
 
             try
             {
-                string location = GetLocation($"/{version}-rbxPkgManifest.txt");
-                var response = await App.HttpClient.GetAsync(location);
-                response.EnsureSuccessStatusCode();
+                string location;
 
-                if (response.Content.Headers.TryGetValues(header, out var values))
+                if (OperatingSystem.IsMacOS())
                 {
-                    string lastModified = values.First();
-                    DateTime dateTime = DateTime.Parse(lastModified);
+                    location = GetLocation($"/mac/{version}-RobloxPlayer.zip");
 
-                    return dateTime;
+                    using var request = new HttpRequestMessage(HttpMethod.Head, location);
+                    using var response = await App.HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+                    response.EnsureSuccessStatusCode();
+
+                    if (response.Content.Headers.TryGetValues(header, out var values))
+                    {
+                        string lastModified = values.First();
+                        DateTime dateTime = DateTime.Parse(lastModified, CultureInfo.InvariantCulture);
+                        return dateTime;
+                    }
+                }
+                else
+                {
+                    location = GetLocation($"/{version}-rbxPkgManifest.txt");
+                    var response = await App.HttpClient.GetAsync(location);
+                    response.EnsureSuccessStatusCode();
+
+                    if (response.Content.Headers.TryGetValues(header, out var values))
+                    {
+                        string lastModified = values.First();
+                        DateTime dateTime = DateTime.Parse(lastModified, CultureInfo.InvariantCulture);
+                        return dateTime;
+                    }
                 }
             }
             catch (HttpRequestException ex)
@@ -225,27 +206,24 @@ namespace Froststrap.RobloxInterfaces
                 App.Logger.WriteLine(LOG_IDENT, $"Failed to get timestamp for {version}");
                 App.Logger.WriteException(LOG_IDENT, ex);
             }
-
             return null;
         }
 
-        public static async Task<ClientVersion> GetInfo(string? channel = null, bool behindProductionCheck = false, bool includeTimestamp = false)
+        public static async Task<ClientVersion> GetInfo(string? channel = null, bool behindProductionCheck = false, bool includeTimestamp = false, string? binaryTypeOverride = null)
         {
             const string LOG_IDENT = "Deployment::GetInfo";
 
-            if (String.IsNullOrEmpty(channel))
+            if (string.IsNullOrEmpty(channel))
                 channel = Channel;
 
-            bool isDefaultChannel = String.Compare(channel, DefaultChannel, StringComparison.OrdinalIgnoreCase) == 0;
+            bool isDefaultChannel = string.Compare(channel, DefaultChannel, StringComparison.OrdinalIgnoreCase) == 0;
 
             App.Logger.WriteLine(LOG_IDENT, $"Getting deploy info for channel {channel}");
 
-            string cacheKey = $"{channel}-{BinaryType}";
+            string activeBinaryType = binaryTypeOverride ?? BinaryType;
+            string cacheKey = $"{channel}-{activeBinaryType}";
 
-            HttpRequestMessage request = new()
-            {
-                Method = HttpMethod.Get
-            };
+            HttpRequestMessage request = new() { Method = HttpMethod.Get };
 
             if (!string.IsNullOrEmpty(ChannelToken))
             {
@@ -255,15 +233,14 @@ namespace Froststrap.RobloxInterfaces
 
             ClientVersion clientVersion;
 
-            if (ClientVersionCache.ContainsKey(cacheKey))
+            if (ClientVersionCache.TryGetValue(cacheKey, out var value))
             {
                 App.Logger.WriteLine(LOG_IDENT, "Deploy information is cached");
-                clientVersion = ClientVersionCache[cacheKey];
+                clientVersion = value;
             }
             else
             {
-                string path = $"v2/client-version/{BinaryType}";
-
+                string path = $"v2/client-version/{activeBinaryType}";
                 if (!isDefaultChannel)
                     path += $"/channel/{channel}";
 
@@ -272,8 +249,7 @@ namespace Froststrap.RobloxInterfaces
                     request.RequestUri = UrlBuilder.BuildApiUrl("clientsettingscdn", path);
                     clientVersion = await Http.SendJson<ClientVersion>(request);
                 }
-                catch (HttpRequestException httpEx)
-                when (!isDefaultChannel && BadChannelCodes.Contains(httpEx.StatusCode))
+                catch (HttpRequestException httpEx) when (!isDefaultChannel && BadChannelCodes.Contains(httpEx.StatusCode))
                 {
                     throw new InvalidChannelException(httpEx.StatusCode);
                 }
@@ -282,24 +258,28 @@ namespace Froststrap.RobloxInterfaces
                     App.Logger.WriteLine(LOG_IDENT, "Failed to contact clientsettingscdn! Falling back to clientsettings...");
                     App.Logger.WriteException(LOG_IDENT, ex);
 
+                    HttpRequestMessage fallbackRequest = new()
+                    {
+                        Method = HttpMethod.Get,
+                        RequestUri = UrlBuilder.BuildApiUrl("clientsettings", path)
+                    };
+                    if (!string.IsNullOrEmpty(ChannelToken))
+                        fallbackRequest.Headers.Add("Roblox-Channel-Token", ChannelToken);
+
                     try
                     {
-                        request.RequestUri = UrlBuilder.BuildApiUrl("clientsettings", path);
-                        clientVersion = await Http.SendJson<ClientVersion>(request);
+                        clientVersion = await Http.SendJson<ClientVersion>(fallbackRequest);
                     }
-                    catch (HttpRequestException httpEx)
-                    when (!isDefaultChannel && BadChannelCodes.Contains(httpEx.StatusCode))
+                    catch (HttpRequestException httpEx) when (!isDefaultChannel && BadChannelCodes.Contains(httpEx.StatusCode))
                     {
                         throw new InvalidChannelException(httpEx.StatusCode);
                     }
                 }
 
-                // check if channel is behind LIVE
                 if (!isDefaultChannel && behindProductionCheck)
                 {
                     var defaultClientVersion = await GetInfo(DefaultChannel);
-
-                    if ((Utilities.CompareVersions(clientVersion.Version, defaultClientVersion.Version) == VersionComparison.LessThan))
+                    if (Utilities.CompareVersions(clientVersion.Version, defaultClientVersion.Version) == VersionComparison.LessThan)
                         clientVersion.IsBehindDefaultChannel = true;
                 }
                 else

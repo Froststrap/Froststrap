@@ -1,30 +1,78 @@
-name: CI (Debug)
+name: Build (Debug)
 on: [push, pull_request]
-
 jobs:
-  build:
+  build-windows:
     runs-on: windows-latest
-
     steps:
-    - uses: actions/checkout@v6
-      with:
-        submodules: true
+      - uses: actions/checkout@v6
+        with:
+          submodules: true
+          fetch-depth: 0
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: "10.0.x"
+      - uses: extractions/setup-just@v3
+      - name: Set short SHA
+        run: echo "SHORT_SHA=$("${{ github.sha }}".Substring(0, 7))" >> $env:GITHUB_ENV
+      - name: Publish
+        run: just debug-windows
+      - uses: actions/upload-artifact@v6
+        with:
+          name: froststrap-debug-win-x64-${{ env.SHORT_SHA }}
+          path: Froststrap/bin/Debug/net10.0/win-x64/publish/*
 
-    - uses: actions/setup-dotnet@v5
-      with:
-        dotnet-version: '10.0.x'
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: true
+          fetch-depth: 0
+      - name: Set short SHA
+        run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
+      - uses: DeterminateSystems/nix-installer-action@v14
+      - name: Publish
+        run: nix develop -c just debug-macos
+      - uses: actions/upload-artifact@v6
+        with:
+          name: froststrap-debug-macos-arm64-${{ env.SHORT_SHA }}
+          path: Froststrap/bin/Debug/net10.0/osx-arm64/publish/*
 
-    - name: Restore dependencies
-      run: dotnet restore
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: true
+          fetch-depth: 0
+      - name: Set short SHA
+        run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
+      - uses: DeterminateSystems/nix-installer-action@v14
+      - name: Publish
+        run: nix develop -c just debug-linux
+      - uses: actions/upload-artifact@v6
+        with:
+          name: froststrap-debug-linux-x64-${{ env.SHORT_SHA }}
+          path: Froststrap/bin/Debug/net10.0/linux-x64/publish/*
 
-    - name: Build
-      run: dotnet build --no-restore
-
-    - name: Publish
-      run: dotnet publish -p:PublishSingleFile=true -p:CommitHash=${{ github.sha }} -p:CommitRef=${{ github.ref_type }}/${{ github.ref_name }} -r win-x64 -c Debug --self-contained false .\Froststrap\Froststrap.csproj
-
-    - name: Upload Artifact
-      uses: actions/upload-artifact@v6
-      with:
-        name: Froststrap (Debug) (${{ github.sha }})
-        path: .\Froststrap\bin\Debug\net10.0-windows\win-x64\publish\*
+  build-flatpak:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/flathub-infra/flatpak-github-actions:freedesktop-24.08
+      options: --privileged
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: true
+          fetch-depth: 0
+      - name: Set short SHA
+        run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
+      - uses: flatpak/flatpak-github-actions/flatpak-builder@v6
+        with:
+          manifest-path: flatpak/io.github.froststrap.yml
+          cache-key: flatpak-builder-${{ hashFiles('flatpak/io.github.froststrap.yml', '**/*.csproj', '**/packages.lock.json') }}
+          bundle: Froststrap-linux-x64.flatpak
+      - uses: actions/upload-artifact@v6
+        with:
+          name: froststrap-debug-flatpak-x64-${{ env.SHORT_SHA }}
+          path: Froststrap-linux-x64.flatpak

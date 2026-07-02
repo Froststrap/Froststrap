@@ -1,4 +1,5 @@
 ﻿using Avalonia.Controls;
+using Avalonia.Input.Platform;
 using System.Web;
 
 namespace Froststrap.UI.Elements.Dialogs
@@ -14,7 +15,6 @@ namespace Froststrap.UI.Elements.Dialogs
 
         public ExceptionDialog(Exception exception) : this()
         {
-
             App.FrostRPC?.SetDialog("Exception");
 
             AddException(exception);
@@ -30,21 +30,22 @@ namespace Froststrap.UI.Elements.Dialogs
 
             string issueUrl = $"{repoUrl}/issues/new?template=bug_report.yaml&title={title}&log={log}";
 
-            if (issueUrl.Length > MAX_GITHUB_URL_LENGTH)
-            {
+            // GUARD: Shorten url since too long
+            if (issueUrl.Length > MAX_GITHUB_URL_LENGTH) {
                 issueUrl = $"{repoUrl}/issues/new?template=bug_report.yaml&title={title}";
 
+                // GUARD: Shorten url (again) since too long
                 if (issueUrl.Length > MAX_GITHUB_URL_LENGTH)
                     issueUrl = $"{repoUrl}/issues/new?template=bug_report.yaml";
             }
 
             string helpMessage = String.Format(Strings.Dialog_Exception_Info_2, wikiUrl, issueUrl);
 
-            if (!App.IsActionBuild && !App.BuildMetadata.Machine.Contains("pizzaboxer", StringComparison.Ordinal))
+            if (!App.IsActionBuild)
                 helpMessage = String.Format(Strings.Dialog_Exception_Info_2_Alt, wikiUrl);
 
             HelpMessageMarkdown.MarkdownText = helpMessage;
-            VersionText.Text = String.Format(Strings.Dialog_Exception_Version, App.Version);
+            VersionText.Text = String.Format(Strings.Menu_About_Version, App.Version);
 
             ReportExceptionButton.Click += (_, _) => Utilities.ShellExecute(issueUrl);
 
@@ -63,8 +64,6 @@ namespace Froststrap.UI.Elements.Dialogs
                     }
                 }
             };
-
-            CloseButton.Click += (_, _) => Close();
 
             Loaded += (_, _) =>
             {
@@ -95,7 +94,7 @@ namespace Froststrap.UI.Elements.Dialogs
             ErrorTextBox.Text = sb.ToString();
         }
 
-        private void AddExceptionToBuilder(Exception exception, StringBuilder sb, bool inner = false)
+        private static void AddExceptionToBuilder(Exception exception, StringBuilder sb, bool inner = false)
         {
             if (inner)
                 sb.AppendLine($"[Inner Exception]\n{exception.GetType()}: {exception.Message}");

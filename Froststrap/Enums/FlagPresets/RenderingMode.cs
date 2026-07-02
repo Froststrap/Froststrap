@@ -2,7 +2,7 @@
 {
     public enum RenderingMode
     {
-        [EnumName(StaticName = "Direct3D11 (Default)")]
+        [EnumName(FromTranslation = "Enums.RenderingMode.Default")]
         Default,
         Vulkan,
         OpenGL

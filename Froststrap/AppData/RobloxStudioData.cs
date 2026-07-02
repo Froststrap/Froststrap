@@ -4,11 +4,12 @@
     {
         public string ProductName => "Roblox Studio";
 
-        public override string BinaryType => "WindowsStudio64";
+        // We are using wine to run linux studio, so we need to use the windows binary name.
+        public override string BinaryType => OperatingSystem.IsMacOS() ? "MacStudio" : "WindowsStudio64";
 
         public string RegistryName => "RobloxStudio";
 
-        public string ProcessName => "RobloxStudioBeta";
+        public string ProcessName => OperatingSystem.IsMacOS() ? "RobloxStudio" : "RobloxStudioBeta";
 
         public override string ExecutableName => App.RobloxStudioAppName;
 

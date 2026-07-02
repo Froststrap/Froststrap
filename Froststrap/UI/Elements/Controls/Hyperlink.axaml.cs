@@ -1,16 +1,12 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Media;
 
 namespace Froststrap.UI.Elements.Controls
 {
-    public class Hyperlink : ContentControl
+    public class Hyperlink : Button
     {
         public static readonly StyledProperty<string?> UrlProperty =
             AvaloniaProperty.Register<Hyperlink, string?>(nameof(Url));
-
-        public static readonly StyledProperty<string?> TextProperty =
-            AvaloniaProperty.Register<Hyperlink, string?>(nameof(Text));
 
         public string? Url
         {
@@ -20,25 +16,24 @@ namespace Froststrap.UI.Elements.Controls
 
         public string? Text
         {
-            get => GetValue(TextProperty);
-            set => SetValue(TextProperty, value);
+            get => Content as string;
+            set => Content = value;
         }
 
         public Hyperlink() { }
 
         public Hyperlink(string text, string url)
         {
-            Text = text;
+            Content = text;
             Url = url;
         }
 
-        protected override void OnPointerPressed(Avalonia.Input.PointerPressedEventArgs e)
+        protected override void OnClick()
         {
-            base.OnPointerPressed(e);
+            base.OnClick();
             if (!string.IsNullOrEmpty(Url))
             {
                 Utilities.ShellExecute(Url);
-                e.Handled = true;
             }
         }
     }

@@ -1,130 +1,88 @@
-﻿using System.Collections.ObjectModel;
-
-namespace Froststrap.UI.ViewModels.Settings
+﻿namespace Froststrap.UI.ViewModels.Settings
 {
     public class BehaviourViewModel : NotifyPropertyChangedViewModel
     {
+        private List<string> _availableRegions = [];
+        private bool _isLoadingRegions = false;
+
         public BehaviourViewModel()
         {
-            App.Cookies.StateChanged += (object? _, CookieState state) => CookieLoadingFailed = state != CookieState.Success && state != CookieState.Unknown;
+            App.Cookies.StateChanged += (_, state) =>
+                CookieLoadingFailed = state is not (CookieState.Success or CookieState.Unknown);
+
+            Task.Run(LoadAvailableRegionsAsync);
         }
 
-        public ObservableCollection<ProcessPriorityOption> ProcessPriorityOptions { get; } = new ObservableCollection<ProcessPriorityOption>(Enum.GetValues(typeof(ProcessPriorityOption)).Cast<ProcessPriorityOption>());
-
-        public ProcessPriorityOption SelectedPriority
+        public static IEnumerable<ProcessPriorityOption> ProcessPriorityOptions => Enum.GetValues<ProcessPriorityOption>();
+        public static ProcessPriorityOption SelectedPriority
         {
             get => App.Settings.Prop.SelectedProcessPriority;
             set => App.Settings.Prop.SelectedProcessPriority = value;
         }
 
-        public bool MultiInstances
+        public static bool LaunchAtStartup
         {
-            get => App.Settings.Prop.MultiInstanceLaunching;
-            set => HandleMultiInstanceChange(value);
+            get => App.AppStorage.GetBoolPreset("System.LaunchAtStartup");
+            set => App.AppStorage.SetBoolPreset("System.LaunchAtStartup", value);
         }
 
-        private async void HandleMultiInstanceChange(bool value)
+        public static bool MinimizeToTray
         {
-            if (value && !App.Settings.Prop.MultiInstanceLaunching)
-            {
-                var result = await Frontend.ShowMessageBox(
-                    "Roblox stated that multi-instance launching is considered an exploit, but it isn't bannable.\n\n" +
-                    "Are you sure you want to enable multi-instance launching?",
-                    MessageBoxImage.Warning,
-                    MessageBoxButton.YesNo
-                );
-
-                if (result != MessageBoxResult.Yes)
-                {
-                    return;
-                }
-            }
-
-            App.Settings.Prop.MultiInstanceLaunching = value;
-
-            if (!value)
-            {
-                Error773Fix = false;
-                OnPropertyChanged(nameof(Error773Fix));
-            }
-
-            OnPropertyChanged(nameof(MultiInstances));
+            get => App.AppStorage.GetBoolPreset("System.MinimizeToTray");
+            set => App.AppStorage.SetBoolPreset("System.MinimizeToTray", value);
         }
 
-        // Ill move to global settings in the future, too lazy to do it now
-        public bool IsAppStorageVisible => App.StorageSettings.Loaded && (ShowLaunchAtStartup || ShowMinimizeToTray || ShowSystemTrayModal || ShowTheme);
-        public bool ShowLaunchAtStartup => !string.IsNullOrEmpty(App.StorageSettings.Prop.LaunchAtStartup);
-        public bool ShowMinimizeToTray => !string.IsNullOrEmpty(App.StorageSettings.Prop.MinimizeToTray);
-        public bool ShowSystemTrayModal => !string.IsNullOrEmpty(App.StorageSettings.Prop.SystemTrayModalShown);
-        public bool ShowTheme => !string.IsNullOrEmpty(App.StorageSettings.Prop.DeviceLevelTheme);
+        public static IEnumerable<Enums.AppStoragePresets.Theme> AppThemeOptions => Enum.GetValues<Enums.AppStoragePresets.Theme>();
 
-        public bool LaunchAtStartup
-        {
-            get => App.StorageSettings.Prop.LaunchAtStartup?.ToLower() == "true";
-            set => App.StorageSettings.Prop.LaunchAtStartup = value.ToString().ToLower();
-        }
-
-        public bool SystemTrayModalShown
-        {
-            get => App.StorageSettings.Prop.SystemTrayModalShown?.ToLower() == "true";
-            set => App.StorageSettings.Prop.SystemTrayModalShown = value.ToString().ToLower();
-        }
-
-        public bool MinimizeToTray
-        {
-            get => App.StorageSettings.Prop.MinimizeToTray?.ToLower() == "true";
-            set => App.StorageSettings.Prop.MinimizeToTray = value.ToString().ToLower();
-        }
-
-        public IEnumerable<AppStorageSettingTheme> AppThemeOptions => Enum.GetValues(typeof(AppStorageSettingTheme)).Cast<AppStorageSettingTheme>();
-
-        public AppStorageSettingTheme SelectedTheme
+        public static Enums.AppStoragePresets.Theme SelectedTheme
         {
             get
             {
-		var json = App.StorageSettings.Prop.DeviceLevelTheme;
-        	return (!string.IsNullOrEmpty(json) && json.Contains("dark")) ? AppStorageSettingTheme.Dark : AppStorageSettingTheme.Light;
+                string? json = App.AppStorage.GetPreset("UI.Theme");
+                if (string.IsNullOrEmpty(json))
+                    return Enums.AppStoragePresets.Theme.Dark;
+
+                try
+                {
+                    var dict = JsonSerializer.Deserialize<Dictionary<string, string>>(json);
+                    string? themeValue = dict?.Values.FirstOrDefault();
+                    return themeValue == "light" ? Enums.AppStoragePresets.Theme.Light : Enums.AppStoragePresets.Theme.Dark;
+                }
+                catch
+                {
+                    return Enums.AppStoragePresets.Theme.Dark;
+                }
             }
             set
             {
-		    string themeStr = (value == AppStorageSettingTheme.Dark) ? "dark" : "light";
-        	string userId = App.StorageSettings.Prop.UserId ?? "0";
-        	App.StorageSettings.Prop.DeviceLevelTheme = $"{{\"{userId}\":\"{themeStr}\"}}";
+                string userId = App.AppStorage.GetValue("UserId") ?? "0";
+                string themeValue = AppStorageManager.ThemeValues[value];
+                string themeObject = $"{{\"{userId}\":\"{themeValue}\"}}";
+                App.AppStorage.SetPreset("UI.Theme", themeObject);
             }
         }
 
-        // too lazy to make new folder and place it there
-        public enum AppStorageSettingTheme
-        {
-            Light,
-            Dark
-        }
+        public static bool IsAppStorageVisible => App.AppStorage.Loaded;
 
-        public bool Error773Fix
-        {
-            get => App.Settings.Prop.Error773Fix;
-            set => App.Settings.Prop.Error773Fix = value;
-        }
-
-        public bool BackgroundUpdates
+        public static bool BackgroundUpdates
         {
             get => App.Settings.Prop.BackgroundUpdatesEnabled;
             set => App.Settings.Prop.BackgroundUpdatesEnabled = value;
         }
 
-        public bool CloseCrashHandler
+        public static bool CloseCrashHandler
         {
             get => App.Settings.Prop.AutoCloseCrashHandler;
             set => App.Settings.Prop.AutoCloseCrashHandler = value;
         }
 
-        public bool ConfirmLaunches
+        public static bool ConfirmLaunches
         {
             get => App.Settings.Prop.ConfirmLaunches;
             set => App.Settings.Prop.ConfirmLaunches = value;
         }
 
-        public bool CookieLoadingFinished => true;
+        public static bool CookieLoadingFinished => true;
 
         public bool CookieAccess
         {
@@ -153,16 +111,140 @@ namespace Froststrap.UI.ViewModels.Settings
         public bool EnableBetterMatchmaking
         {
             get => App.Settings.Prop.EnableBetterMatchmaking;
-            set => App.Settings.Prop.EnableBetterMatchmaking = value;
+            set
+            {
+                App.Settings.Prop.EnableBetterMatchmaking = value;
+                OnPropertyChanged(nameof(EnableBetterMatchmaking));
+            }
         }
 
-        public bool EnableBetterMatchmakingRandomization
+        public static bool JoinSmallerServer
         {
-            get => App.Settings.Prop.EnableBetterMatchmakingRandomization;
-            set => App.Settings.Prop.EnableBetterMatchmakingRandomization = value;
+            get => App.Settings.Prop.JoinSmallerServer;
+            set => App.Settings.Prop.JoinSmallerServer = value;
         }
 
-        public CleanerOptions SelectedCleanUpMode
+        public static int MaxServerCheck
+        {
+            get => App.Settings.Prop.MaxServerCheck;
+            set => App.Settings.Prop.MaxServerCheck = value;
+        }
+
+        public static int BestRegionAmounts
+        {
+            get => App.Settings.Prop.BestRegionAmounts;
+            set => App.Settings.Prop.BestRegionAmounts = value;
+        }
+
+        public string SelectedRegion
+        {
+            get => App.Settings.Prop.SelectedRegion;
+            set
+            {
+                App.Settings.Prop.SelectedRegion = value;
+                OnPropertyChanged(nameof(SelectedRegion));
+            }
+        }
+
+        public List<string> AvailableRegions
+        {
+            get => _availableRegions;
+            set
+            {
+                _availableRegions = value;
+                OnPropertyChanged(nameof(AvailableRegions));
+            }
+        }
+
+        public bool IsLoadingRegions
+        {
+            get => _isLoadingRegions;
+            set
+            {
+                _isLoadingRegions = value;
+                OnPropertyChanged(nameof(IsLoadingRegions));
+            }
+        }
+
+        private async Task LoadAvailableRegionsAsync()
+        {
+            try
+            {
+                IsLoadingRegions = true;
+
+                var datacenters = await Http.GetJson<List<DatacenterEntry>>(new Uri("https://apis.rovalra.com/v1/datacenters/list"));
+
+                if (datacenters != null && datacenters.Count > 0)
+                {
+                    var regions = new HashSet<string>();
+
+                    foreach (var dc in datacenters)
+                    {
+                        if (dc.Location != null && !string.IsNullOrEmpty(dc.Location.City))
+                        {
+                            string region = $"{dc.Location.City}, {dc.Location.Country}"
+                                .TrimStart(',')
+                                .Trim();
+                            regions.Add(region);
+                        }
+                        else if (dc.Location != null && !string.IsNullOrEmpty(dc.Location.Country))
+                        {
+                            regions.Add(dc.Location.Country);
+                        }
+                    }
+
+                    var sortedRegions = regions.OrderBy(r => r).ToList();
+                    sortedRegions.Insert(0, "Auto");
+                    AvailableRegions = sortedRegions;
+                }
+                else
+                {
+                    AvailableRegions = ["Auto"];
+                }
+
+                await SyncSelectedRegionAfterLoad();
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteException("BehaviourViewModel::LoadAvailableRegions", ex);
+                AvailableRegions = ["Auto"];
+                await SyncSelectedRegionAfterLoad();
+            }
+            finally
+            {
+                IsLoadingRegions = false;
+            }
+        }
+
+        private async Task SyncSelectedRegionAfterLoad()
+        {
+            await Task.Delay(50);
+
+            string current = SelectedRegion;
+
+            var match = AvailableRegions.FirstOrDefault(r => string.Equals(r?.Trim(), current?.Trim(), StringComparison.OrdinalIgnoreCase));
+
+            if (match != null)
+            {
+                if (match != current)
+                {
+                    SelectedRegion = match;
+                }
+                else
+                {
+                    var original = SelectedRegion;
+                    SelectedRegion = null!;
+                    await Task.Delay(10);
+                    SelectedRegion = original;
+                }
+            }
+            else
+            {
+                SelectedRegion = "Auto";
+            }
+        }
+
+        public static CleanerOptions SelectedCleanUpMode
         {
             get => App.Settings.Prop.CleanerOptions;
             set => App.Settings.Prop.CleanerOptions = value;
@@ -170,7 +252,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public IEnumerable<CleanerOptions> CleanerOptions { get; } = CleanerOptionsEx.Selections;
 
-        public CleanerOptions CleanerOption
+        public static CleanerOptions CleanerOption
         {
             get => App.Settings.Prop.CleanerOptions;
             set
@@ -179,7 +261,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        private List<string> CleanerItems = App.Settings.Prop.CleanerDirectories;
+        private readonly List<string> CleanerItems = App.Settings.Prop.CleanerDirectories;
 
         public bool CleanerLogs
         {

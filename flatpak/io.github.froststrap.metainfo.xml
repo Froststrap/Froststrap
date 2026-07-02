@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>io.github.froststrap</id>
+  <name>Froststrap</name>
+  <summary>A fork of Fishstrap, focused on performance and customization</summary>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>AGPL-3.0</project_license>
+  <url type="homepage">https://github.com/Froststrap/Froststrap</url>
+  <url type="bugtracker">https://github.com/Froststrap/Froststrap/issues</url>
+  <url type="donation">https://github.com/Froststrap/Froststrap</url>
+  <url type="vcs-browser">https://github.com/Froststrap/Froststrap</url>
+  <description>
+    <p>Froststrap is a cross-platform bootstrapper/launcher for Roblox, written in C#. It is a fork of Fishstrap (which itself is a fork of Bloxstrap), focused on performance, customization, and additional features.</p>
+    <p>Key features:</p>
+    <ul>
+      <li>Customizable bootstrapper launcher with themes and backgrounds</li>
+      <li>Multi-mod system with hex code generation</li>
+      <li>FastFlag management with profiles</li>
+      <li>Discord Rich Presence integration</li>
+      <li>Multi-instance launching support</li>
+      <li>Account manager</li>
+      <li>Game shortcuts and region selector</li>
+      <li>Automatic rejoin on inactivity disconnect</li>
+      <li>Playtime counter (total and session)</li>
+    </ul>
+  </description>
+  <launchable type="desktop-id">io.github.froststrap.desktop</launchable>
+  <screenshots>
+    <screenshot type="default">
+      <image>https://raw.githubusercontent.com/Froststrap/Froststrap/main/.resources/froststrap.png</image>
+    </screenshot>
+  </screenshots>
+  <content_rating type="oars-1.1" />
+  <releases>
+    <release version="2.0.0" date="2026-05-18" />
+  </releases>
+</component>

@@ -15,11 +15,14 @@
 #endif
 
 using Froststrap.AppData;
-using Froststrap.Models.APIs;
 using Froststrap.RobloxInterfaces;
-using Froststrap.UI.Elements.Bootstrapper.Base;
 using ICSharpCode.SharpZipLib.Zip;
+using ICSharpCode.SharpZipLib.GZip;
+using ICSharpCode.SharpZipLib.Tar;
 using Microsoft.Win32;
+using SixLabors.ImageSharp;
+using System.Collections;
+using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Data;
 using System.Web;
@@ -28,11 +31,22 @@ namespace Froststrap
 {
     public class Bootstrapper
     {
-        #region Properties
-        private const int ProgressBarMaximum = 10000;
+        #region Constants
 
-        private const double TaskbarProgressMaximumWpf = 1; // this can not be changed. keep it at 1.
-        private const int TaskbarProgressMaximumWinForms = AvaloniaDialogBase.TaskbarProgressMaximum;
+        private const int ProgressBarMaximum = 10000;
+        private const double TaskbarProgressMaximum = 1.0;
+        private const int DownloadBufferSize = 4096;
+        private const int MaxDownloadAttempts = 5;
+        private const string SoberFlatpakId = "org.vinegarhq.Sober";
+        private const string BackgroundUpdaterMutexName = "Froststrap-BackgroundUpdater";
+        private const string WinePrefixDir = "wineprefix";
+        private const string KombuchaRepoOwner = "vinegarhq";
+        private const string KombuchaRepoName = "kombucha";
+        private const string DxvkVersion = "2.7.1";
+        private const string DxvkSarekVersion = "1.11.0-async";
+        private const string DxvkSarekUrl = "https://github.com/Fartopblu/DXVK-Sarek/releases/download/1.11.0-async/dxvk-sarek-1.11.0-async.tar.gz";
+        private const string KombuchaWineDir = "wine";
+        private const string KombuchaSymlink = "kombucha";
 
         private const string AppSettings =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n" +
@@ -41,7 +55,12 @@ namespace Froststrap
             "	<BaseUrl>http://www.roblox.com</BaseUrl>\r\n" +
             "</Settings>\r\n";
 
+        #endregion
+
+        #region Properties
+
         private readonly FastZipEvents _fastZipEvents = new();
+        private static readonly JsonSerializerOptions _indentedJsonOptions = new() { WriteIndented = true };
         private readonly CancellationTokenSource _cancelTokenSource = new();
 
         private IAppData AppData = default!;
@@ -54,7 +73,15 @@ namespace Froststrap
         private string _latestVersionDirectory = null!;
         private PackageManifest _versionPackageManifest = null!;
         private GameJoinData _joinData = null!;
-        public static bool _staticDirectory => App.Settings.Prop.StaticDirectory;
+
+        public static bool StaticDirectory => App.Settings.Prop.StaticDirectory;
+        private static int MaxThreadDownload => App.Settings.Prop.MaxThreadDownload;
+        private static bool AutomaticallyUpdateSober => OperatingSystem.IsLinux() && App.Settings.Prop.AutomaticallyUpdateSober;
+        private bool MustUpgrade => App.LaunchSettings.ForceFlag.Active
+            || App.State.Prop.ForceReinstall
+            || (!OperatingSystem.IsLinux() && (String.IsNullOrEmpty(AppData.DistributionState.VersionGuid)
+            || (OperatingSystem.IsMacOS() ? !Directory.Exists(AppData.ExecutablePath) : !File.Exists(AppData.ExecutablePath))))
+            || (OperatingSystem.IsLinux() && IsStudioLaunch && !File.Exists(Path.Combine(_latestVersionDirectory, App.RobloxStudioAppName)));
 
         private bool _isInstalling = false;
         private double _progressIncrement;
@@ -63,26 +90,27 @@ namespace Froststrap
         private long _totalDownloadedBytes = 0;
         private bool _packageExtractionSuccess = true;
 
-        private bool _mustUpgrade => App.LaunchSettings.ForceFlag.Active || App.State.Prop.ForceReinstall || String.IsNullOrEmpty(AppData.DistributionState.VersionGuid) || !File.Exists(AppData.ExecutablePath);
+        private bool _matchmakingInProgress = false;
+        private bool _skipMatchmaking = false;
+        private CancellationTokenSource? _matchmakingCts;
+
+        private SynchronizationContext? _uiContext;
 
         private bool _noConnection = false;
 
         private AsyncMutex? _mutex;
-
-        private static Mutex? _multiInstanceMutex1;
-        private static Mutex? _multiInstanceMutex2;
-
         private int _appPid = 0;
 
         public IBootstrapperDialog? Dialog = null;
-
         public bool IsStudioLaunch => _launchMode != LaunchMode.Player;
+        public string MutexName { get; set; } = "Froststrap-Bootstrapper";
 
-        public string MutexName { get; set; } = "Bloxstrap-Bootstrapper";
         public bool QuitIfMutexExists { get; set; } = false;
+
         #endregion
 
         #region Core
+
         public Bootstrapper(LaunchMode launchMode)
         {
             _launchMode = launchMode;
@@ -91,27 +119,42 @@ namespace Froststrap
             // exceptions don't get thrown if we define events without actually binding to the failure events. probably a bug. ¯\_(ツ)_/¯
             _fastZipEvents.FileFailure += (_, e) =>
             {
-                // only give a pass to font files (no idea whats wrong with them)
-                if (!e.Name.EndsWith(".ttf"))
-                    throw e.Exception;
-
-                App.Logger.WriteLine("FastZipEvents::OnFileFailure", $"Failed to extract {e.Name}");
+                App.Logger.WriteLine("FastZipEvents::OnFileFailure", $"Failed to extract {e.Name}: {e.Exception.Message}");
                 _packageExtractionSuccess = false;
             };
             _fastZipEvents.DirectoryFailure += (_, e) => throw e.Exception;
             _fastZipEvents.ProcessFile += (_, e) => e.ContinueRunning = !_cancelTokenSource.IsCancellationRequested;
+
             SetupAppData();
+
+            Deployment.Channel = IsStudioLaunch ? App.Settings.Prop.StudioChannel : App.Settings.Prop.PlayerChannel;
+
+            App.Logger.WriteLine("Bootstrapper::Run", $"Using {(IsStudioLaunch ? "Studio" : "Player")} channel: {Deployment.Channel}");
         }
 
         private void SetupAppData()
         {
             AppData = IsStudioLaunch ? new RobloxStudioData() : new RobloxPlayerData();
-            Deployment.BinaryType = AppData.BinaryType;
         }
 
-        // we will use this later on since we have to wait for remote data
         private async Task SetupPackageDictionaries()
         {
+            if (OperatingSystem.IsMacOS())
+            {
+                PackageDirectoryMap = new Dictionary<string, string>
+                {
+                    { "RobloxPlayer.zip", "" },
+                    { "RobloxStudioApp.zip", "" }
+                };
+                return;
+            }
+
+            if (OperatingSystem.IsLinux() && !IsStudioLaunch)
+            {
+                PackageDirectoryMap = [];
+                return;
+            }
+
             await App.RemoteData.WaitUntilDataFetched();
 
             var localData = App.RemoteData.Prop.PackageMaps[IsStudioLaunch ? "studio" : "player"];
@@ -121,38 +164,41 @@ namespace Froststrap
 
             foreach (var package in localData)
                 PackageDirectoryMap[package.Key] = package.Value;
+
+            // Linux treats \\ weirdly, it leaves a \ in their name and dosent place in correct directory
+            if (OperatingSystem.IsLinux())
+            {
+                foreach (var key in PackageDirectoryMap.Keys.ToList())
+                {
+                    if (PackageDirectoryMap[key] != null)
+                        PackageDirectoryMap[key] = PackageDirectoryMap[key].Replace('\\', '/');
+                }
+            }
         }
 
         private void SetStatus(string message)
         {
             message = message.Replace("{product}", AppData.ProductName);
-
-            if (Dialog is not null)
-                Dialog.Message = message;
+            _uiContext?.Post(_ => Dialog?.Message = message, null);
         }
 
         private void UpdateProgressBar()
         {
-            if (Dialog is null)
-                return;
+            long current = Interlocked.Read(ref _totalDownloadedBytes);
+            _uiContext?.Post(_ =>
+            {
+                if (Dialog is null) return;
+                int progressValue = (int)Math.Floor(_progressIncrement * current);
+                progressValue = Math.Clamp(progressValue, 0, ProgressBarMaximum);
+                Dialog.ProgressValue = progressValue;
 
-            // UI progress
-            int progressValue = (int)Math.Floor(_progressIncrement * _totalDownloadedBytes);
-
-            // bugcheck: if we're restoring a file from a package, it'll incorrectly increment the progress beyond 100
-            // too lazy to fix properly so lol
-            progressValue = Math.Clamp(progressValue, 0, ProgressBarMaximum);
-
-            Dialog.ProgressValue = progressValue;
-
-            // taskbar progress
-            double taskbarProgressValue = _taskbarProgressIncrement * _totalDownloadedBytes;
-            taskbarProgressValue = Math.Clamp(taskbarProgressValue, 0, _taskbarProgressMaximum);
-
-            Dialog.TaskbarProgressValue = taskbarProgressValue;
+                double taskbarProgressValue = _taskbarProgressIncrement * current;
+                taskbarProgressValue = Math.Clamp(taskbarProgressValue, 0, _taskbarProgressMaximum);
+                Dialog.TaskbarProgressValue = taskbarProgressValue;
+            }, null);
         }
 
-        private async void HandleConnectionError(Exception exception)
+        private async Task HandleConnectionError(Exception exception)
         {
             const string LOG_IDENT = "Bootstrapper::HandleConnectionError";
 
@@ -170,7 +216,7 @@ namespace Froststrap
             if (exception is HttpRequestException && exception.InnerException is null)
                 message = String.Format(Strings.Dialog_Connectivity_RobloxDown, "[status.roblox.com](https://status.roblox.com)");
 
-            if (_mustUpgrade)
+            if (MustUpgrade)
                 message += $"\n\n{Strings.Dialog_Connectivity_RobloxUpgradeNeeded}\n\n{Strings.Dialog_Connectivity_TryAgainLater}";
             else
                 message += $"\n\n{Strings.Dialog_Connectivity_RobloxUpgradeSkip}";
@@ -178,10 +224,10 @@ namespace Froststrap
             await Frontend.ShowConnectivityDialog(
                 String.Format(Strings.Dialog_Connectivity_UnableToConnect, "Roblox"),
                 message,
-                _mustUpgrade ? MessageBoxImage.Error : MessageBoxImage.Warning,
+                MustUpgrade ? MessageBoxImage.Error : MessageBoxImage.Warning,
                 exception);
 
-            if (_mustUpgrade)
+            if (MustUpgrade)
                 App.Terminate(ErrorCode.ERROR_CANCELLED);
         }
 
@@ -192,23 +238,35 @@ namespace Froststrap
             App.Logger.WriteLine(LOG_IDENT, "Running bootstrapper");
 
             // this is now always enabled as of v2.8.0
-            if (Dialog is not null)
-                Dialog.CancelEnabled = true;
+            Dialog?.CancelEnabled = true;
+
+            _uiContext = SynchronizationContext.Current ?? new SynchronizationContext();
+
+            if (AutomaticallyUpdateSober && _launchMode == LaunchMode.Player)
+                await UpdateSoberFlatpakAsync();
 
             SetStatus(Strings.Bootstrapper_Status_Connecting);
 
-            var connectionResult = await Deployment.InitializeConnectivity();
+            // Skip the Roblox deployment API connectivity check entirely.
+            if (OperatingSystem.IsLinux() && !IsStudioLaunch)
+            {
+                _noConnection = true;
+                _latestVersionDirectory = Paths.SoberAssetOverlay;
+                App.Logger.WriteLine(LOG_IDENT, "Linux (Player): skipping connectivity check — Sober manages Roblox.");
+            }
+            else
+            {
+                var connectionResult = await Deployment.InitializeConnectivity();
+                App.Logger.WriteLine(LOG_IDENT, "Connectivity check finished");
 
-            App.Logger.WriteLine(LOG_IDENT, "Connectivity check finished");
-
-            if (connectionResult is not null)
-                HandleConnectionError(connectionResult);
+                if (connectionResult is not null)
+                    await HandleConnectionError(connectionResult);
+            }
 
 #if (!DEBUG || DEBUG_UPDATER) && !QA_BUILD
-            if (!App.UpdateCheckCompleted && !App.LaunchSettings.BypassUpdateCheck && App.Settings.Prop.UpdateChecks != UpdateCheck.Disabled)
+            if (!App.LaunchSettings.BypassUpdateCheck && !App.LaunchSettings.UpgradeFlag.Active && App.Settings.Prop.UpdateChecks != UpdateCheck.Disabled)
             {
                 bool updatePresent = await CheckForUpdates();
-
                 if (updatePresent)
                     return;
             }
@@ -217,28 +275,46 @@ namespace Froststrap
             // ensure only one instance of the bootstrapper is running at the time
             // so that we don't have stuff like two updates happening simultaneously
 
-            bool mutexExists = Utilities.DoesMutexExist(MutexName);
+            bool mutexExists;
+
+            if (OperatingSystem.IsWindows())
+            {
+                mutexExists = Utilities.DoesMutexExist(MutexName);
+            }
+            else
+            {
+                mutexExists = Utilities.IsInstanceRunningFileLock(MutexName);
+            }
 
             if (mutexExists)
             {
                 if (!QuitIfMutexExists)
                 {
-                    App.Logger.WriteLine(LOG_IDENT, $"{MutexName} mutex exists, waiting...");
+                    App.Logger.WriteLine(LOG_IDENT, $"{MutexName} instance exists, waiting...");
                     SetStatus(Strings.Bootstrapper_Status_WaitingOtherInstances);
+
+                    if (!OperatingSystem.IsWindows())
+                    {
+                        while (Utilities.IsInstanceRunningFileLock(MutexName) && !_cancelTokenSource.Token.IsCancellationRequested)
+                        {
+                            await Task.Delay(500, _cancelTokenSource.Token);
+                        }
+                    }
                 }
                 else
                 {
-                    App.Logger.WriteLine(LOG_IDENT, $"{MutexName} mutex exists, exiting!");
+                    App.Logger.WriteLine(LOG_IDENT, $"{MutexName} instance exists, exiting!");
                     return;
                 }
             }
 
             // wait for mutex to be released if it's not yet
-            await using var mutex = new AsyncMutex(false, MutexName);
-            await mutex.AcquireAsync(_cancelTokenSource.Token);
-
-            _mutex = mutex;
-
+            if (OperatingSystem.IsWindows())
+            {
+                var winMutex = new AsyncMutex(false, MutexName);
+                await winMutex.AcquireAsync(_cancelTokenSource.Token);
+                _mutex = winMutex;
+            }
 
             if (mutexExists)
             {
@@ -255,7 +331,7 @@ namespace Froststrap
                 }
                 catch (Exception ex)
                 {
-                    HandleConnectionError(ex);
+                    await HandleConnectionError(ex);
                 }
             }
 
@@ -270,15 +346,16 @@ namespace Froststrap
 
                 await SetupPackageDictionaries(); // mods also require it
 
-                if (AppData.DistributionState.VersionGuid != _latestVersionGuid || _mustUpgrade)
+                if (AppData.DistributionState.VersionGuid != _latestVersionGuid || MustUpgrade)
                 {
-                    bool backgroundUpdaterMutexOpen = Utilities.DoesMutexExist("Bloxstrap-BackgroundUpdater");
+                    bool backgroundUpdaterMutexOpen = Utilities.DoesMutexExist(BackgroundUpdaterMutexName);
+
                     if (App.LaunchSettings.BackgroundUpdaterFlag.Active)
                         backgroundUpdaterMutexOpen = false; // we want to actually update lol
 
                     App.Logger.WriteLine(LOG_IDENT, $"Background updater running: {backgroundUpdaterMutexOpen}");
 
-                    if (backgroundUpdaterMutexOpen && _mustUpgrade)
+                    if (backgroundUpdaterMutexOpen && MustUpgrade)
                     {
                         // I am Forced Upgrade, killer of Background Updates
                         Utilities.KillBackgroundUpdater();
@@ -301,29 +378,72 @@ namespace Froststrap
                 // where we'd need to restore files from a package that isn't present on disk and needs to be redownloaded
                 allModificationsApplied = await ApplyModifications();
             }
+            else if (OperatingSystem.IsLinux())
+            {
+                if (MustUpgrade)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Linux: Force reinstall enabled.");
+
+                    string clientPackagePath = Path.Combine(Paths.Versions, "Sober", "data", "sober", "packages", "x86_64", "com.roblox.client");
+
+                    try
+                    {
+                        if (Directory.Exists(clientPackagePath))
+                        {
+                            DirectoryInfo di = new(clientPackagePath);
+
+                            foreach (FileInfo file in di.GetFiles())
+                                file.Delete();
+
+                            foreach (DirectoryInfo dir in di.GetDirectories())
+                                dir.Delete(true);
+
+                            App.State.Prop.ForceReinstall = false;
+
+                            App.Logger.WriteLine(LOG_IDENT, $"Successfully cleared contents of {clientPackagePath}");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"Failed to purge packages: {ex.Message}");
+                    }
+                }
+
+                PackageDirectoryMap ??= [];
+                if (!_cancelTokenSource.IsCancellationRequested)
+                    allModificationsApplied = await ApplyModifications();
+            }
 
             // check registry entries for every launch, just in case the stock bootstrapper changes it back
 
-            if (IsStudioLaunch)
+            if (OperatingSystem.IsWindows())
             {
-                WindowsRegistry.RegisterStudio();
+                if (IsStudioLaunch)
+                {
+                    WindowsRegistry.RegisterStudio();
+                    App.Logger.WriteLine(LOG_IDENT, "Studio launch detected, syncing RPC plugin...");
+                    StudioPluginManager.Sync();
+                }
+                else
+                {
+                    WindowsRegistry.RegisterPlayer();
+                }
 
-                App.Logger.WriteLine(LOG_IDENT, "Studio launch detected, syncing RPC plugin...");
-                StudioPluginManager.Sync();
+                WindowsRegistry.RegisterClientLocation(IsStudioLaunch, _latestVersionDirectory); // if it for some reason doesnt exist
             }
             else
-                WindowsRegistry.RegisterPlayer();
-
-            WindowsRegistry.RegisterClientLocation(IsStudioLaunch, _latestVersionDirectory); // if it for some reason doesnt exist
+            {
+                if (IsStudioLaunch)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Studio launch detected, syncing RPC plugin...");
+                    StudioPluginManager.Sync();
+                }
+            }
 
             if (_launchMode != LaunchMode.Player)
-                await mutex.ReleaseAsync();
-
-            if (_launchMode == LaunchMode.Player)
             {
-                // await because some peoples pc are so ass that roblox opens before this finishes causing an error due to the event
-                if (App.Settings.Prop.MultiInstanceLaunching)
-                    await LaunchMultiInstanceWatcher();
+                if (OperatingSystem.IsWindows() && _mutex is not null) await _mutex.ReleaseAsync();
+                else Utilities._lockFileStream?.Dispose();
             }
 
             if (!App.LaunchSettings.NoLaunchFlag.Active && !_cancelTokenSource.IsCancellationRequested)
@@ -337,12 +457,47 @@ namespace Froststrap
                         Frontend.ShowBalloonTip(Strings.Bootstrapper_ModificationsFailed_Title, Strings.Bootstrapper_ModificationsFailed_Message, Avalonia.Controls.Notifications.NotificationType.Warning);
                 }
 
-                await StartRoblox();
+                if (!OperatingSystem.IsLinux())
+                {
+                    await StartRoblox();
+                }
+                else if (IsStudioLaunch)
+                {
+                    if (!await EnsureWineAndDependenciesAsync())
+                        await Frontend.ShowMessageBox(
+                            "Necessery wine files could not be auto installed.",
+                            MessageBoxImage.Error);
+                    App.Terminate(ErrorCode.ERROR_INSTALL_FAILURE);
+
+                    string studioExe = Path.Combine(_latestVersionDirectory, App.RobloxStudioAppName);
+                    if (!File.Exists(studioExe))
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, "RobloxStudioBeta.exe missing, triggering upgrade...");
+                        await UpgradeRoblox();
+                    }
+
+                    if (!File.Exists(studioExe))
+                    {
+                        await Frontend.ShowMessageBox(
+                            "Roblox Studio installation failed. Please check your connection and try again.",
+                            MessageBoxImage.Error);
+                        App.Terminate(ErrorCode.ERROR_INSTALL_FAILURE);
+                    }
+
+                    await LaunchStudioViaWineAsync();
+                }
+                else
+                {
+                    if (!await EnsureSoberInstalledAsync())
+                        return;
+                    await LaunchViaSober([]);
+                }
+
+                if (OperatingSystem.IsWindows() && _mutex is not null) await _mutex.ReleaseAsync();
+                else Utilities._lockFileStream?.Dispose();
+
+                Dialog?.CloseBootstrapper();
             }
-
-            await mutex.ReleaseAsync();
-
-            Dialog?.CloseBootstrapper();
         }
 
         /// <summary>
@@ -357,22 +512,36 @@ namespace Froststrap
             // if it's set in the launch uri, we need to use it and set the registry key for it
             // else, check if the registry key for it exists, and use it
 
-            using var key = Registry.CurrentUser.CreateSubKey($"SOFTWARE\\ROBLOX Corporation\\Environments\\{AppData.RegistryName}\\Channel");
-
             var match = Regex.Match(
                 App.LaunchSettings.RobloxLaunchArgs,
                 "channel:([a-zA-Z0-9-_]+)",
                 RegexOptions.IgnoreCase | RegexOptions.CultureInvariant
             );
 
-            bool ChannelFlag = App.LaunchSettings.ChannelFlag.Active && !string.IsNullOrEmpty(App.LaunchSettings.ChannelFlag.Data);
+            void EnrollChannel(string channel = "production")
+            {
+                Deployment.Channel = channel;
+                if (IsStudioLaunch)
+                    App.Settings.Prop.StudioChannel = channel;
+                else
+                    App.Settings.Prop.PlayerChannel = channel;
+                App.Settings.Save();
+            }
 
-            // CHANNEL CHANGE MODE
+            void RevertChannel()
+            {
+                Deployment.Channel = Deployment.DefaultChannel;
+                if (IsStudioLaunch)
+                    App.Settings.Prop.StudioChannel = Deployment.DefaultChannel;
+                else
+                    App.Settings.Prop.PlayerChannel = Deployment.DefaultChannel;
+                App.Settings.Save();
+            }
 
-            void EnrollChannel(string Channel = "production") => Deployment.Channel = Channel;
-            void RevertChannel() => Deployment.Channel = Deployment.DefaultChannel;
+            string enrolledChannel = match.Groups.Count == 2
+                ? match.Groups[1].Value.ToLowerInvariant()
+                : Deployment.DefaultChannel;
 
-            string EnrolledChannel = match.Groups.Count == 2 ? match.Groups[1].Value.ToLowerInvariant() : Deployment.DefaultChannel;
             bool behindProductionCheck = App.Settings.Prop.ChannelChangeMode == ChannelChangeMode.Prompt;
 
             // Private channels
@@ -387,52 +556,51 @@ namespace Froststrap
                 {
                     // prevent roblox from thinking its a different channel
                     // we have to do it to prevent issues with channel fflags
-                    if (!string.IsNullOrEmpty(EnrolledChannel))
+                    if (!string.IsNullOrEmpty(enrolledChannel))
                         _launchCommandLine = _launchCommandLine.Replace(
-                            $"channel:{EnrolledChannel}",
+                            $"channel:{enrolledChannel}",
                             $"channel:{userChannel.Channel}",
                             StringComparison.OrdinalIgnoreCase);
 
                     Deployment.ChannelToken = userChannel.Token;
-                    EnrolledChannel = userChannel.Channel;
+                    enrolledChannel = userChannel.Channel;
                 }
             }
 
-            if (!ChannelFlag)
+            bool channelFlag = App.LaunchSettings.ChannelFlag.Active && !string.IsNullOrEmpty(App.LaunchSettings.ChannelFlag.Data);
+
+            if (!channelFlag)
             {
                 switch (App.Settings.Prop.ChannelChangeMode)
                 {
                     case ChannelChangeMode.Automatic:
                         App.Logger.WriteLine(LOG_IDENT, "Enrolling into channel");
-
-                        EnrollChannel(EnrolledChannel);
+                        EnrollChannel(enrolledChannel);
                         break;
+
                     case ChannelChangeMode.Prompt:
                         App.Logger.WriteLine(LOG_IDENT, "Prompting channel enrollment");
 
-                        if
-                        (
-                        !match.Success ||
-                        match.Groups.Count != 2 ||
-                        match.Groups[1].Value.ToLowerInvariant() == Deployment.Channel
-                        )
+                        if (!match.Success || match.Groups.Count != 2 || string.Equals(match.Groups[1].Value, Deployment.Channel, StringComparison.OrdinalIgnoreCase))
                         {
                             App.Logger.WriteLine(LOG_IDENT, "Channel is either equal or incorrectly formatted");
                             break;
                         }
 
-                        string DisplayChannel = !String.IsNullOrEmpty(match.Groups[1].Value) ? match.Groups[1].Value : Deployment.DefaultChannel;
+                        string displayChannel = !String.IsNullOrEmpty(match.Groups[1].Value)
+                            ? match.Groups[1].Value
+                            : Deployment.DefaultChannel;
 
-                        var Result = await Frontend.ShowMessageBox(
-                        String.Format(Strings.Bootstrapper_Bootstrapper_Dialog_PromptChannelChange,
-                        DisplayChannel, App.Settings.Prop.Channel),
-                        MessageBoxImage.Question,
-                        MessageBoxButton.YesNo
+                        var promptResult = await Frontend.ShowMessageBox(
+                            String.Format(Strings.Bootstrapper_Bootstrapper_Dialog_PromptChannelChange, displayChannel, Deployment.Channel),
+                            MessageBoxImage.Question,
+                            MessageBoxButton.YesNo
                         );
 
-                        if (Result == MessageBoxResult.Yes)
-                            EnrollChannel(EnrolledChannel);
+                        if (promptResult == MessageBoxResult.Yes)
+                            EnrollChannel(enrolledChannel);
                         break;
+
                     case ChannelChangeMode.Ignore:
                         App.Logger.WriteLine(LOG_IDENT, "Ignoring channel enrollment");
                         break;
@@ -440,37 +608,40 @@ namespace Froststrap
             }
             else
             {
-                string ChannelFlagData = App.LaunchSettings.ChannelFlag.Data!;
-
-                if (!String.IsNullOrEmpty(ChannelFlagData))
+                string channelFlagData = App.LaunchSettings.ChannelFlag.Data!;
+                if (!String.IsNullOrEmpty(channelFlagData))
                 {
-                    App.Logger.WriteLine(LOG_IDENT, $"Forcing channel {ChannelFlagData}");
-                    EnrollChannel(ChannelFlagData);
+                    App.Logger.WriteLine(LOG_IDENT, $"Forcing channel {channelFlagData}");
+                    EnrollChannel(channelFlagData);
                 }
             }
 
-            if (!App.LaunchSettings.VersionFlag.Active || string.IsNullOrEmpty(App.LaunchSettings.VersionFlag.Data))
+            if (IsStudioLaunch
+                && App.Settings.Prop.StudioVersionOverrideEnabled
+                && !string.IsNullOrEmpty(App.Settings.Prop.StudioVersionOverrideHash))
+            {
+                _latestVersionGuid = App.Settings.Prop.StudioVersionOverrideHash.Trim();
+                App.Logger.WriteLine(LOG_IDENT, $"Studio version override active: pinned to {_latestVersionGuid}");
+            }
+            else if (!App.LaunchSettings.VersionFlag.Active || string.IsNullOrEmpty(App.LaunchSettings.VersionFlag.Data))
             {
                 ClientVersion clientVersion;
 
                 try
                 {
-                    clientVersion = await Deployment.GetInfo(Deployment.Channel, behindProductionCheck);
+                    clientVersion = await Deployment.GetInfo(Deployment.Channel, behindProductionCheck, false, AppData.BinaryType);
                 }
                 catch (InvalidChannelException ex)
                 {
-                    // copied from v2.5.4
-                    // we are keeping similar logic just updated for newer apis
-
                     // If channel does not exist
                     if (ex.StatusCode == HttpStatusCode.NotFound)
                     {
-                        App.Logger.WriteLine(LOG_IDENT, $"Reverting enrolled channel to {Deployment.DefaultChannel} because a WindowsPlayer build does not exist for {App.Settings.Prop.Channel}");
+                        App.Logger.WriteLine(LOG_IDENT, $"Reverting enrolled channel to {Deployment.DefaultChannel} because a WindowsPlayer build does not exist for {Deployment.Channel}");
                     }
                     // If channel is not available to the user (private/internal release channel)
                     else if (ex.StatusCode == HttpStatusCode.Unauthorized)
                     {
-                        App.Logger.WriteLine(LOG_IDENT, $"Reverting enrolled channel to {Deployment.DefaultChannel} because {App.Settings.Prop.Channel} is restricted for public use.");
+                        App.Logger.WriteLine(LOG_IDENT, $"Reverting enrolled channel to {Deployment.DefaultChannel} because {Deployment.Channel} is restricted for public use.");
 
                         // Only prompt if user has channel switching mode set to something other than Automatic.
                         if (App.Settings.Prop.ChannelChangeMode != ChannelChangeMode.Automatic)
@@ -491,7 +662,7 @@ namespace Froststrap
                     }
 
                     RevertChannel();
-                    clientVersion = await Deployment.GetInfo(Deployment.DefaultChannel, behindProductionCheck);
+                    clientVersion = await Deployment.GetInfo(Deployment.DefaultChannel, behindProductionCheck, false, AppData.BinaryType);
                 }
 
                 if (clientVersion.IsBehindDefaultChannel && App.Settings.Prop.ChannelChangeMode == ChannelChangeMode.Prompt)
@@ -504,14 +675,18 @@ namespace Froststrap
 
                     if (action == MessageBoxResult.Yes)
                     {
-                        App.Logger.WriteLine("Bootstrapper::CheckLatestVersion", $"Changed Roblox channel from {App.Settings.Prop.Channel} to {Deployment.DefaultChannel}");
+                        App.Logger.WriteLine("Bootstrapper::CheckLatestVersion", $"Changed Roblox channel from {Deployment.Channel} to {Deployment.DefaultChannel}");
 
                         RevertChannel();
-                        clientVersion = await Deployment.GetInfo(Deployment.DefaultChannel);
+                        clientVersion = await Deployment.GetInfo(Deployment.DefaultChannel, behindProductionCheck: false, binaryTypeOverride: AppData.BinaryType);
                     }
                 }
 
-                key.SetValueSafe("www." + Deployment.RobloxDomain, Deployment.IsDefaultChannel ? "" : Deployment.Channel);
+                if (OperatingSystem.IsWindows())
+                {
+                    using var key = Registry.CurrentUser.CreateSubKey($"SOFTWARE\\ROBLOX Corporation\\Environments\\{AppData.RegistryName}\\Channel");
+                    key.SetValueSafe("www." + Deployment.RobloxDomain, Deployment.IsDefaultChannel ? "" : Deployment.Channel);
+                }
 
                 _latestVersionGuid = clientVersion.VersionGuid;
                 _latestVersion = Utilities.ParseVersionSafe(clientVersion.Version);
@@ -523,22 +698,37 @@ namespace Froststrap
                 // we can't determine the version
             }
 
-            if (_staticDirectory)
+            if (StaticDirectory)
                 _latestVersionDirectory = AppData.StaticDirectory;
             else
                 _latestVersionDirectory = Path.Combine(Paths.Versions, _latestVersionGuid);
 
-            string pkgManifestUrl = Deployment.GetLocation($"/{_latestVersionGuid}-rbxPkgManifest.txt");
-            var pkgManifestData = await App.HttpClient.GetStringAsync(pkgManifestUrl);
+            // Mods are applied directly into Sober's asset_overlay directory instead of a versioned folder.
+            if (OperatingSystem.IsLinux() && !IsStudioLaunch)
+                _latestVersionDirectory = Paths.SoberAssetOverlay;
 
-            _versionPackageManifest = new(pkgManifestData);
+            if (OperatingSystem.IsMacOS())
+            {
+                // Mac uses monolithic zip downloads instead of individual packages
+                string zipName = IsStudioLaunch ? "RobloxStudioApp.zip" : "RobloxPlayer.zip";
+
+                // Construct a fake package manifest response to trick the internal system
+                string fakeManifest = $"v0\n{zipName}\n{_latestVersionGuid}\n0\n0";
+                _versionPackageManifest = new(fakeManifest);
+            }
+            else
+            {
+                string pkgManifestUrl = Deployment.GetLocation($"/{_latestVersionGuid}-rbxPkgManifest.txt");
+                var pkgManifestData = await App.HttpClient.GetStringAsync(pkgManifestUrl);
+                _versionPackageManifest = new(pkgManifestData);
+            }
 
             // this can happen if version is set through arguments
             if (_launchMode == LaunchMode.Unknown)
             {
                 App.Logger.WriteLine(LOG_IDENT, "Identifying launch mode from package manifest");
 
-                bool isPlayer = _versionPackageManifest.Exists(x => x.Name == "RobloxApp.zip");
+                bool isPlayer = _versionPackageManifest.Exists(x => x.Name == "RobloxApp.zip" || x.Name == "RobloxPlayer.zip");
                 App.Logger.WriteLine(LOG_IDENT, $"isPlayer: {isPlayer}");
 
                 _launchMode = isPlayer ? LaunchMode.Player : LaunchMode.Studio;
@@ -568,9 +758,15 @@ namespace Froststrap
                 return false;
             }
 
-            if (_mustUpgrade)
+            if (MustUpgrade)
             {
                 App.Logger.WriteLine(LOG_IDENT, "Not eligible: Must upgrade is true");
+                return false;
+            }
+
+            if (!string.IsNullOrEmpty(Deployment.ChannelToken))
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Not eligible: Private channel enrollment");
                 return false;
             }
 
@@ -612,299 +808,354 @@ namespace Froststrap
                 App.Logger.WriteLine(LOG_IDENT, "Eligible");
                 return true;
             }
-            else
-            {
-                App.Logger.WriteLine(LOG_IDENT, $"Not eligible: Major version diff is {diff}");
-                return false;
-            }
+
+            App.Logger.WriteLine(LOG_IDENT, $"Not eligible: Major version diff is {diff}");
+            return false;
         }
 
-        private static async Task LaunchMultiInstanceWatcher()
-        {
-            const string LOG_IDENT = "Bootstrapper::LaunchMultiInstanceWatcher";
-
-            try
-            {
-                if (Utilities.DoesMutexExist("ROBLOX_singletonMutex"))
-                {
-                    App.Logger.WriteLine(LOG_IDENT, "Mutex ROBLOX_singletonMutex already exists, skipping creation");
-                }
-                else
-                {
-                    _multiInstanceMutex1 = new Mutex(true, "ROBLOX_singletonMutex");
-                    App.Logger.WriteLine(LOG_IDENT, "Created multi-instance mutex: ROBLOX_singletonMutex");
-                }
-
-                if (Utilities.DoesMutexExist("ROBLOX_singletonEvent") || Utilities.DoesEventExist("ROBLOX_singletonEvent"))
-                {
-                    App.Logger.WriteLine(LOG_IDENT, "Mutex ROBLOX_singletonEvent already exists");
-                }
-                else
-                {
-                    _multiInstanceMutex2 = new Mutex(true, "ROBLOX_singletonEvent");
-                    App.Logger.WriteLine(LOG_IDENT, "Created multi-instance mutex: ROBLOX_singletonEvent");
-                }
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteLine(LOG_IDENT, $"Failed to apply multi-instance setup: {ex.Message}");
-            }
-
-            if (App.Settings.Prop.Error773Fix)
-            {
-                try
-                {
-                    string cookiesPath = Path.Combine(Paths.Roblox, "LocalStorage", "RobloxCookies.dat");
-
-                    if (File.Exists(cookiesPath))
-                    {
-                        FileAttributes attributes = File.GetAttributes(cookiesPath);
-                        if ((attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
-                        {
-                            attributes &= ~FileAttributes.ReadOnly;
-                            File.SetAttributes(cookiesPath, attributes);
-                        }
-
-                        File.SetAttributes(cookiesPath, FileAttributes.ReadOnly);
-
-                        App.Logger.WriteLine(LOG_IDENT, "Applied Error 773 fix");
-                    }
-                    else
-                    {
-                        App.Logger.WriteLine(LOG_IDENT, "773 fix not needed");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    App.Logger.WriteLine(LOG_IDENT, $"Failed to apply 773 fix: {ex.Message}");
-                }
-            }
-
-            using EventWaitHandle initEventHandle = new EventWaitHandle(false, EventResetMode.AutoReset, "Bloxstrap-MultiInstanceWatcherInitialisationFinished");
-            Process.Start(Paths.Process, "-multiinstancewatcher");
-
-            await Task.Run(() => initEventHandle.WaitOne(TimeSpan.FromSeconds(2)));
-
-            App.Logger.WriteLine(LOG_IDENT, "Multi-instance watcher initialization completed");
-        }
-
-        // Cleanup starts in watcher not here
-        public void CleanupMultiInstanceResources()
-        {
-            const string LOG_IDENT = "Bootstrapper::CleanupMultiInstanceResources";
-
-            try
-            {
-                int count = Process.GetProcesses().Count(x => x.ProcessName is "RobloxPlayerBeta");
-                count -= 1;
-
-                if (count > 0)
-                {
-                    App.Logger.WriteLine(LOG_IDENT, $"Skipping cleanup - {count} Roblox process(es) still running");
-                    return;
-                }
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteException(LOG_IDENT, ex);
-                return;
-            }
-
-            bool launchingMutex = Utilities.DoesMutexExist(MutexName);
-
-            if (launchingMutex)
-            {
-                App.Logger.WriteLine(LOG_IDENT, "Skipping cleanup, currently launching roblox");
-                return;
-            }
-
-            try
-            {
-                if (_multiInstanceMutex1 != null)
-                {
-                    _multiInstanceMutex1.Dispose();
-                    _multiInstanceMutex1 = null;
-                    App.Logger.WriteLine(LOG_IDENT, "Disposed ROBLOX_singletonMutex");
-                }
-
-                if (_multiInstanceMutex2 != null)
-                {
-                    _multiInstanceMutex2.Dispose();
-                    _multiInstanceMutex2 = null;
-                    App.Logger.WriteLine(LOG_IDENT, "Disposed ROBLOX_singletonEvent");
-                }
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteLine(LOG_IDENT, $"Error disposing mutexes: {ex.Message}");
-            }
-
-            if (App.Settings.Prop.Error773Fix)
-            {
-                try
-                {
-                    string cookiesPath = Path.Combine(Paths.Roblox, "LocalStorage", "RobloxCookies.dat");
-
-                    if (File.Exists(cookiesPath))
-                    {
-                        FileAttributes attributes = File.GetAttributes(cookiesPath);
-                        if ((attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
-                        {
-                            attributes &= ~FileAttributes.ReadOnly;
-                            File.SetAttributes(cookiesPath, attributes);
-                            App.Logger.WriteLine(LOG_IDENT, "Removed read-only attribute from RobloxCookies.dat");
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    App.Logger.WriteLine(LOG_IDENT, $"Failed to remove read-only attribute: {ex.Message}");
-                }
-            }
-        }
-
-        private double Deg2Rad(double deg)
-        {
-            return deg * (MathF.PI / 180);
-        }
-
-        // thank you valra, aGVsbG8gYnJhdGlj
-        private double GetDistance(double lat1, double lon1, double lat2, double lon2)
-        {
-            const double R = 6371;
-
-            double dLat = Deg2Rad(lat2 - lat1);
-            double dLon = Deg2Rad(lon2 - lon1);
-            double a =
-                Math.Sin(dLat / 2) * Math.Sin(dLat / 2) +
-                Math.Cos(Deg2Rad(lat1)) * Math.Cos(Deg2Rad(lat2)) *
-                Math.Sin(dLon / 2) * Math.Sin(dLon / 2);
-
-            double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
-            return R * c;
-        }
-
-        private async Task<string> GetBetterMatchmakingServerID()
+        private async Task<string> GetBetterMatchmakingServerID(CancellationToken cancellationToken = default)
         {
             const string LOG_IDENT = "Bootstrapper::GetBetterMatchmakingServerID";
 
-            Uri ipinfoUrl = new("https://ipinfo.io/json");
-            Uri roValraDatacentersUrl = new("https://apis.rovalra.com/v1/datacenters/list");
-
-            var ipinfo = await Http.GetJson<IPInfoResponse>(ipinfoUrl);
-
-            if (string.IsNullOrEmpty(ipinfo.Country))
-                throw new HttpRequestException("Country is blank.");
-
-            var datacenters = await Http.GetJson<List<RoValraDatacenter>>(roValraDatacentersUrl);
-
-            if (datacenters == null || !datacenters.Any())
-                throw new HttpRequestException("No datacenters in response.");
-
-            string[] location = ipinfo.Loc.Split(",");
-            double lat1 = double.Parse(location[0], CultureInfo.InvariantCulture);
-            double lon1 = double.Parse(location[1], CultureInfo.InvariantCulture);
-
-            var regions = datacenters
-                .OrderBy(dc => GetDistance(lat1, lon1, dc.Location.Latitude, dc.Location.Longitude))
-                .Select(dc => dc.Location.Country)
-                .Distinct()
-                .ToList();
-
-            if (regions.Contains(ipinfo.Country, StringComparer.OrdinalIgnoreCase))
+            if (!string.IsNullOrEmpty(App.Settings.Prop.SelectedRegion) &&
+                !App.Settings.Prop.SelectedRegion.Equals("Auto", StringComparison.OrdinalIgnoreCase))
             {
-                regions.Remove(ipinfo.Country);
-                regions.Insert(0, ipinfo.Country);
-            }
+                App.Logger.WriteLine(LOG_IDENT, $"User selected specific region: {App.Settings.Prop.SelectedRegion}");
 
-            foreach (var region in regions)
-            {
-                App.Logger.WriteLine(LOG_IDENT, $"Checking for servers in user region");
-                Uri roValraServersApi = new($"https://apis.rovalra.com/v1/servers/region?place_id={_joinData.PlaceId}&region={region}");
+                var selectedRegionFetcher = new Integrations.RobloxServerFetcher();
+                string? selectedRegionCookie = await selectedRegionFetcher.ResolveCookieAsync();
+                if (string.IsNullOrEmpty(selectedRegionCookie))
+                    throw new HttpRequestException("Could not obtain a valid .ROBLOSECURITY cookie");
 
-                var valraResponse = await Http.GetJson<RoValraServers>(roValraServersApi);
+                SetStatus(string.Format(Strings.Bootstrapper_Status_SearchingServers, App.Settings.Prop.SelectedRegion));
 
-                if (valraResponse?.Servers != null && valraResponse.Servers.Count > 0 && valraResponse.Servers[0].ServerId != null)
+                var selectedRegionResult = await selectedRegionFetcher.FindBestServerInSelectedRegionAsync(
+                    (long)_joinData.PlaceId!,
+                    App.Settings.Prop.SelectedRegion,
+                    App.Settings.Prop.JoinSmallerServer,
+                    App.Settings.Prop.MaxServerCheck,
+                    cookie: selectedRegionCookie,
+                    cancellationToken: cancellationToken);
+
+                if (selectedRegionResult.Found)
                 {
-                    if (App.Settings.Prop.EnableBetterMatchmakingRandomization)
-                    {
-                        int index = Random.Shared.Next(0, valraResponse.Servers.Count);
-                        return valraResponse.Servers[index].ServerId;
-                    }
-
-                    return valraResponse.Servers[0].ServerId;
+                    App.Logger.WriteLine(LOG_IDENT, $"Found server in selected region {App.Settings.Prop.SelectedRegion}: {selectedRegionResult.ServerId} (players: {selectedRegionResult.Players})");
+                    return selectedRegionResult.ServerId!;
                 }
 
-                App.Logger.WriteLine(LOG_IDENT, $"No servers available in user region. Falling back to the next closest...");
+                App.Logger.WriteLine(LOG_IDENT, $"No servers found in selected region {App.Settings.Prop.SelectedRegion}. Falling back to Auto mode.");
             }
 
+            if (cancellationToken.IsCancellationRequested)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Matchmaking was cancelled before auto mode could start.");
+                return "";
+            }
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var autoFetcher = new Integrations.RobloxServerFetcher();
+
+            if (cancellationToken.IsCancellationRequested)
+                return "";
+
+            SetStatus(string.Format(Strings.Bootstrapper_Status_FindingTopRegions, App.Settings.Prop.BestRegionAmounts));
+
+            var topRegions = await autoFetcher.GetClosestRegionsForAutoModeAsync(App.Settings.Prop.BestRegionAmounts, cancellationToken);
+
+            if (cancellationToken.IsCancellationRequested)
+                return "";
+
+            if (topRegions.Count == 0)
+                throw new HttpRequestException("No regions found from datacenter list");
+
+            if (!string.IsNullOrEmpty(_joinData.JobId))
+            {
+                string? defaultRegion = await GetServerRegionAsync(_joinData.JobId, (long)_joinData.PlaceId!, cancellationToken);
+                if (defaultRegion != null && topRegions.Count > 0 &&
+                    defaultRegion.Equals(topRegions[0], StringComparison.OrdinalIgnoreCase))
+                {
+                    App.Logger.WriteLine(LOG_IDENT, $"Default server is already in the closest region. Keeping it.");
+                    return _joinData.JobId;
+                }
+            }
+
+            SetStatus(Strings.Bootstrapper_Status_SearchingNearbyServers);
+            string? autoCookie = await autoFetcher.ResolveCookieAsync();
+            if (string.IsNullOrEmpty(autoCookie))
+                throw new HttpRequestException("Could not obtain a valid .ROBLOSECURITY cookie");
+
+            var autoResult = await autoFetcher.FindBestServerInRegionAsync(
+                (long)_joinData.PlaceId!,
+                topRegions,
+                App.Settings.Prop.JoinSmallerServer,
+                App.Settings.Prop.MaxServerCheck,
+                cookie: autoCookie,
+                cancellationToken: cancellationToken);
+
+            if (autoResult.Found)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Selected best server in {autoResult.Region} (rank {autoResult.Rank}, players: {autoResult.Players})");
+                return autoResult.ServerId!;
+            }
+
+            App.Logger.WriteLine(LOG_IDENT, "No server found in any of the top regions.");
             return "";
+        }
+
+        private static async Task<string?> GetServerRegionAsync(string jobId, long placeId, CancellationToken cancellationToken = default)
+        {
+            var fetcher = new Integrations.RobloxServerFetcher();
+            string? cookie = await fetcher.ResolveCookieAsync();
+            if (string.IsNullOrEmpty(cookie))
+                return null;
+
+            var datacentersResult = await fetcher.GetDatacentersAsync(cancellationToken);
+            if (datacentersResult == null)
+                return null;
+
+            var url = UrlBuilder.BuildApiUrl("gamejoin", "v1/join-game-instance");
+            var request = new HttpRequestMessage(HttpMethod.Post, url);
+            request.Headers.Add("Cookie", $".ROBLOSECURITY={cookie}");
+            request.Content = new StringContent(
+                JsonSerializer.Serialize(new { placeId, isTeleport = false, gameId = jobId, gameJoinAttemptId = jobId }),
+                Encoding.UTF8,
+                "application/json"
+            );
+
+            var response = await App.HttpClient.SendAsync(request, cancellationToken);
+            if (!response.IsSuccessStatusCode)
+                return null;
+
+            string json = await response.Content.ReadAsStringAsync(cancellationToken);
+            using var doc = JsonDocument.Parse(json);
+
+            if (doc.RootElement.TryGetProperty("DataCenterId", out var dcElem) && dcElem.TryGetInt32(out int dcId))
+            {
+                var (_, dcMap) = datacentersResult.Value;
+                if (dcMap.TryGetValue(dcId, out string? region))
+                    return region;
+            }
+            return null;
+        }
+
+        private static async Task ApplyFastFlagsBasedOnPlaceId(long placeId, string contentDirectory)
+        {
+            const string LOG_IDENT = "Bootstrapper::ApplyFastFlagsBasedOnPlaceId";
+
+            if (placeId <= 0)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Invalid place ID, skipping FastFlag application.");
+                return;
+            }
+
+            if (!App.Settings.Prop.UseFastFlagManager)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "FastFlag manager is disabled in settings.");
+                return;
+            }
+
+            App.Logger.WriteLine(LOG_IDENT, $"Checking for FastFlag profile matching place ID: {placeId}");
+
+            foreach (var kvp in App.Settings.Prop.ProfilePlaceIds)
+            {
+                string profileName = kvp.Key;
+                List<string> placeIds = kvp.Value;
+
+                if (placeIds.Contains(placeId.ToString()))
+                {
+                    App.Logger.WriteLine(LOG_IDENT, $"Found matching profile '{profileName}' for place ID {placeId}");
+
+                    try
+                    {
+                        string profilesDirectory = Paths.SavedFlagProfiles;
+                        string profilePath = Path.Combine(profilesDirectory, profileName);
+
+                        if (!File.Exists(profilePath))
+                        {
+                            App.Logger.WriteLine(LOG_IDENT, $"Profile file '{profileName}' not found at {profilePath}");
+                            return;
+                        }
+
+                        string profileJson = File.ReadAllText(profilePath);
+                        var flags = JsonSerializer.Deserialize<Dictionary<string, object>>(profileJson);
+
+                        if (flags == null || flags.Count == 0)
+                        {
+                            App.Logger.WriteLine(LOG_IDENT, $"Profile '{profileName}' is empty or invalid");
+                            return;
+                        }
+
+                        string clientSettingsDir = Path.Combine(contentDirectory, "ClientSettings");
+                        Directory.CreateDirectory(clientSettingsDir);
+                        string destPath = Path.Combine(clientSettingsDir, "ClientAppSettings.json");
+
+                        Dictionary<string, object> existingSettings = [];
+                        if (File.Exists(destPath))
+                        {
+                            try
+                            {
+                                string existingJson = File.ReadAllText(destPath);
+                                existingSettings = JsonSerializer.Deserialize<Dictionary<string, object>>(existingJson) ?? [];
+                            }
+                            catch (Exception ex)
+                            {
+                                App.Logger.WriteLine(LOG_IDENT, $"Failed to read existing ClientAppSettings.json: {ex.Message}");
+                            }
+                        }
+
+                        foreach (var flag in flags)
+                        {
+                            existingSettings[flag.Key] = flag.Value;
+                        }
+
+                        string mergedJson = JsonSerializer.Serialize(existingSettings, _indentedJsonOptions);
+                        await File.WriteAllTextAsync(destPath, mergedJson);
+
+                        App.Logger.WriteLine(LOG_IDENT, $"Successfully applied FastFlag profile '{profileName}' for place ID {placeId} ({flags.Count} flags)");
+                        App.Logger.WriteLine(LOG_IDENT, $"Updated versions folder: {destPath}");
+                        return;
+                    }
+                    catch (Exception ex)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"Failed to apply FastFlag profile '{profileName}': {ex.Message}");
+                    }
+                }
+            }
+
+            App.Logger.WriteLine(LOG_IDENT, $"No FastFlag profile found for place ID {placeId}");
         }
 
         private async Task StartRoblox()
         {
             const string LOG_IDENT = "Bootstrapper::StartRoblox";
 
-            SetStatus(Strings.Bootstrapper_Status_Starting);
-
             if (_launchMode == LaunchMode.Player)
             {
-                GameJoin gameJoin = new();
+                _joinData = GameJoin.GetJoinDataByLaunchCommand(_launchCommandLine);
 
-                _joinData = gameJoin.GetJoinDataByLaunchCommand(_launchCommandLine);
                 if (_joinData.JoinType == GameJoinType.Unknown)
                     App.Logger.WriteLine(LOG_IDENT, "Unable to get join data");
 
-                bool isFollowUser = false;
+                App.Logger.WriteLine(LOG_IDENT, $"Join Type: {_joinData.JoinType}");
+                App.Logger.WriteLine(LOG_IDENT, $"Join Origin: {_joinData.JoinOrigin ?? "null"}");
+                App.Logger.WriteLine(LOG_IDENT, $"Place ID: {_joinData.PlaceId?.ToString() ?? "null"}");
+                App.Logger.WriteLine(LOG_IDENT, $"Job ID: {_joinData.JobId ?? "null"}");
 
-                // _joinData.JoinType == GameJoinType.RequestFollowUser just doesnt work at all
-                // idk why they dont use it when the user is following a friend, but ok
-                App.Logger.WriteLine(LOG_IDENT, $"join origin: {_joinData.JoinOrigin}");
-                if (App.Settings.Prop.EnableBetterMatchmaking && (_joinData.JoinOrigin == "friendServerListJoin" || _joinData.JoinOrigin == "placesListInHomePage"))
+                if (_joinData.PlaceId.HasValue && _joinData.PlaceId.Value > 0)
                 {
-                    App.Logger.WriteLine(LOG_IDENT, "User is trying to join a friend, show dialog box");
-                    var Result = await Frontend.ShowMessageBox(
-                        String.Format(Strings.Bootstrapper_Experimental_BetterMatchmaking_FollowUser),
-                        MessageBoxImage.Question,
-                        MessageBoxButton.YesNo
-                    );
-
-                    if (Result == MessageBoxResult.Yes)
-                        isFollowUser = true;
+                    string contentDirectory = OperatingSystem.IsMacOS()
+                        ? Path.Combine(_latestVersionDirectory, AppData.ExecutableName, "Contents", "Resources")
+                        : _latestVersionDirectory;
+                    await ApplyFastFlagsBasedOnPlaceId(_joinData.PlaceId.Value, contentDirectory);
                 }
 
-
-                if (App.Settings.Prop.EnableBetterMatchmaking && _joinData.JoinType != GameJoinType.RequestPrivateGame && _joinData.PlaceId != null && !isFollowUser)
+                bool isRobloxUri = _launchCommandLine.StartsWith("roblox://", StringComparison.Ordinal);
+                if (isRobloxUri)
+                    App.Logger.WriteLine(LOG_IDENT, "Joining through roblox:// URI - skipping Better Matchmaking");
+                else
                 {
-                    string serverid = await GetBetterMatchmakingServerID();
-                    string placeLauncherUrl = UrlBuilder.BuildPlacelauncherUrl((long)_joinData.PlaceId, serverid);
+                    bool isFollowUser = false;
 
-                    if (!string.IsNullOrEmpty(serverid))
+                    // _joinData.JoinType == GameJoinType.RequestFollowUser just doesnt work at all
+                    // idk why they dont use it when the user is following a friend, but ok
+                    if (App.Settings.Prop.EnableBetterMatchmaking &&
+                        (_joinData.JoinOrigin == "friendServerListJoin" || _joinData.JoinOrigin == "placesListInHomePage"))
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, "User is trying to join a friend, showing dialog");
+
+                        var result = await Frontend.ShowMessageBox(
+                            String.Format(Strings.Menu_Bootstrapper_Experimental_BetterMatchmaking_FollowUser),
+                            MessageBoxImage.Question,
+                            MessageBoxButton.YesNo
+                        );
+
+                        if (result == MessageBoxResult.Yes)
+                            isFollowUser = true;
+                    }
+
+                    string? serverid = null;
+                    bool matchmakingCancelled = false;
+
+                    _matchmakingInProgress = true;
+                    _skipMatchmaking = false;
+                    _matchmakingCts = new CancellationTokenSource();
+
+                    Dialog?.CancelButtonText = Strings.Bootstrapper_CancelButton_Skip;
+
+                    try
+                    {
+                        if (App.Settings.Prop.EnableBetterMatchmaking &&
+                            _joinData.JoinType == GameJoinType.RequestGame &&
+                            _joinData.PlaceId != null &&
+                            !isFollowUser)
+                        {
+                            if (_skipMatchmaking)
+                            {
+                                App.Logger.WriteLine(LOG_IDENT, "Matchmaking was skipped due to user cancellation.");
+                                matchmakingCancelled = true;
+                            }
+                            else
+                            {
+                                serverid = await GetBetterMatchmakingServerID(_matchmakingCts.Token);
+                            }
+                        }
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, "Better Matchmaking was Skipped, joining original server.");
+                        matchmakingCancelled = true;
+                    }
+                    catch (HttpRequestException ex)
+                    {
+                        _ = Frontend.ShowConnectivityDialog(
+                            String.Format(Strings.Dialog_Connectivity_UnableToConnect, "rovalra.com"),
+                            Strings.Dialog_Connectivity_MatchmakingFailed,
+                            MessageBoxImage.Warning,
+                            ex
+                        );
+                    }
+                    finally
+                    {
+                        Dialog?.CancelButtonText = Strings.Common_Cancel;
+                        _matchmakingInProgress = false;
+                        _matchmakingCts?.Dispose();
+                        _matchmakingCts = null;
+                    }
+
+                    if (!matchmakingCancelled && !string.IsNullOrEmpty(serverid) && _joinData.PlaceId is not null)
+                    {
+                        string placeLauncherUrl = UrlBuilder.BuildPlacelauncherUrl((long)_joinData.PlaceId, serverid);
                         _launchCommandLine = _launchCommandLine.Replace(_joinData.PlaceLauncherUrl, HttpUtility.UrlEncode(placeLauncherUrl));
+                    }
                 }
 
                 if (!Deployment.IsDefaultRobloxDomain && string.IsNullOrEmpty(_launchCommandLine))
-                    _launchCommandLine = "roblox://navigation/home"; // fixes a bug on rblx.org where its stuck on the login screen, doesnt affect anything else
+                    _launchCommandLine = "roblox://navigation/home";
             }
 
-            string[] Names = { App.RobloxPlayerAppName, App.RobloxStudioAppName };
-            string ResolvedName = null!;
+            SetStatus(Strings.Bootstrapper_Status_Starting);
 
-            foreach (string Name in Names)
+            string expectedName = IsStudioLaunch ? App.RobloxStudioAppName : App.RobloxPlayerAppName;
+            string expectedPath = Path.Combine((string)AppData.Directory, expectedName);
+
+            if (!Directory.Exists(expectedPath) && !File.Exists(expectedPath))
             {
-                string DirectoryPath = Path.Combine((string)AppData.Directory, Name);
-                if (File.Exists(DirectoryPath))
-                    ResolvedName = Name;
+                App.Logger.WriteLine(LOG_IDENT, $"{expectedName} not found at {expectedPath}, triggering upgrade...");
+                await UpgradeRoblox();
             }
 
-            if (String.IsNullOrEmpty(ResolvedName))
-                await UpgradeRoblox();
+            if (!Directory.Exists(expectedPath) && !File.Exists(expectedPath))
+                throw new FileNotFoundException($"Roblox application not found at expected path after upgrade: {expectedPath}");
+
+            App.Logger.WriteLine(LOG_IDENT, $"Resolved Roblox path: {expectedPath}");
 
             var startInfo = new ProcessStartInfo()
             {
-                FileName = Path.Combine(AppData.Directory, ResolvedName),
-                Arguments = _launchCommandLine,
-                WorkingDirectory = AppData.Directory
+                FileName = OperatingSystem.IsMacOS() ? "open" : expectedPath,
+                Arguments = OperatingSystem.IsMacOS() ? $"-n \"{expectedPath}\" --args {_launchCommandLine}" : _launchCommandLine,
+                WorkingDirectory = AppData.Directory,
+                UseShellExecute = OperatingSystem.IsMacOS()
             };
 
             if (_launchMode == LaunchMode.Player && ShouldRunAsAdmin())
@@ -925,32 +1176,7 @@ namespace Froststrap
             foreach (var integration in App.Settings.Prop.CustomIntegrations)
             {
                 if (integration?.PreLaunch == true)
-                {
-                    App.Logger.WriteLine(LOG_IDENT, $"Pre-Launching custom integration '{integration.Name}' ({integration.Location} {integration.LaunchArgs} - autoclose is {integration.AutoClose})");
-                    int pid = 0;
-                    try
-                    {
-                        var process = Process.Start(new ProcessStartInfo
-                        {
-                            FileName = integration.Location,
-                            Arguments = integration.LaunchArgs.Replace("\r\n", " "),
-                            WorkingDirectory = Path.GetDirectoryName(integration.Location),
-                            UseShellExecute = true
-                        })!;
-                        pid = process.Id;
-                    }
-                    catch (Exception ex)
-                    {
-                        App.Logger.WriteLine(LOG_IDENT, $"Failed to pre-launch integration '{integration.Name}'!");
-                        App.Logger.WriteLine(LOG_IDENT, ex.Message);
-                    }
-
-                    if (integration?.AutoClose == true && pid != 0)
-                        autoclosePids.Add(pid);
-
-                    if (integration?.Delay != null)
-                        Thread.Sleep(integration.Delay);
-                }
+                    LaunchIntegration(integration, autoclosePids, LOG_IDENT);
             }
 
             // v2.2.0 - byfron will trip if we keep a process handle open for over a minute, so we're doing this now
@@ -979,95 +1205,531 @@ namespace Froststrap
                 // launch custom integrations now if normal roblox
                 foreach (var integration in App.Settings.Prop.CustomIntegrations)
                 {
-                    if (integration == null || integration.PreLaunch || integration.SpecifyGame) continue;
-                    try
-                    {
-                        App.Logger.WriteLine(LOG_IDENT, $"Launching custom integration '{integration.Name}' ({integration.Location} {integration.LaunchArgs} - autoclose is {integration.AutoClose})");
+                    if (integration == null || integration.PreLaunch || integration.SpecifyGame)
+                        continue;
 
-                        int pid = 0;
-
-                        try
-                        {
-                            var process = Process.Start(new ProcessStartInfo
-                            {
-                                FileName = integration.Location,
-                                Arguments = integration.LaunchArgs.Replace("\r\n", " "),
-                                WorkingDirectory = Path.GetDirectoryName(integration.Location),
-                                UseShellExecute = true
-                            })!;
-
-                            pid = process.Id;
-                        }
-                        catch (Exception ex)
-                        {
-                            App.Logger.WriteLine(LOG_IDENT, $"Failed to launch integration '{integration.Name}'!");
-                            App.Logger.WriteLine(LOG_IDENT, ex.Message);
-                        }
-
-                        if (integration.AutoClose && pid != 0)
-                            autoclosePids.Add(pid);
-                    }
-                    catch (Exception ex) { App.Logger.WriteLine(LOG_IDENT, ex.Message); }
-                }
-
-                Process.Start(new ProcessStartInfo
-                {
-                    FileName = Paths.Process,
-                    Arguments = $"-postlaunch {_appPid}",
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                    WindowStyle = ProcessWindowStyle.Hidden
-                });
-            }
-
-            string? logFileName = null;
-            string rbxLogDir = Path.Combine(Paths.Roblox, "logs");
-
-            for (int i = 0; i < 60; i++)
-            {
-                if (Directory.Exists(rbxLogDir))
-                {
-                    logFileName = Directory.GetFiles(rbxLogDir, "*.log")
-                        .Select(f => new FileInfo(f))
-                        .Where(f => f.CreationTimeUtc > DateTime.UtcNow.AddMinutes(-5))
-                        .OrderByDescending(f => f.CreationTimeUtc)
-                        .FirstOrDefault()?.FullName;
-                }
-
-                if (logFileName != null) break;
-                await Task.Delay(500);
-            }
-
-            if (App.Settings.Prop.EnableActivityTracking || App.LaunchSettings.TestModeFlag.Active || autoclosePids.Any())
-            {
-                using var ipl = new InterProcessLock("WatcherLaunch", TimeSpan.FromSeconds(5));
-                if (ipl.IsAcquired)
-                {
-                    var watcherData = new WatcherData
-                    {
-                        ProcessId = _appPid,
-                        LogFile = logFileName, 
-                        AutoclosePids = autoclosePids,
-                        LaunchMode = _launchMode
-                    };
-
-                    string watcherDataArg = Convert.ToBase64String(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(watcherData)));
-
-                    string args = $"-watcher \"{watcherDataArg}\"";
-
-                    if (App.LaunchSettings.TestModeFlag.Active)
-                        args += " -testmode";
-
-                    Process.Start(Paths.Process, args);
+                    LaunchIntegration(integration, autoclosePids, LOG_IDENT);
                 }
             }
+
+            await LaunchWatcherIfNeededAsync(autoclosePids);
 
             // allow for window to show, since the log is created pretty far beforehand
-            Thread.Sleep(1000);
+            await Task.Delay(1000);
+        }
+
+        private async Task LaunchViaSober(List<int> autoclosePids)
+        {
+            const string LOG_IDENT = "Bootstrapper::LaunchViaSober";
+
+            if (App.Settings.Prop.ShowServerDetails)
+                App.SoberSettings.SetPreset("ServerLocationIndicatorEnabled", "false");
+
+            if (App.Settings.Prop.UseDiscordRichPresence)
+            {
+                App.SoberSettings.SetPreset("DiscordRpcEnabled", "false");
+                App.SoberSettings.SetPreset("DiscordRpcShowJoinButton", "false");
+            }
+
+            if (App.Settings.Prop.UseDisableAppPatch)
+                App.SoberSettings.SetPreset("CloseOnLeave", "false");
+
+            App.SoberSettings.Save();
+
+            _joinData = GameJoin.GetJoinDataByLaunchCommand(_launchCommandLine);
+
+            if (_joinData.JoinType == GameJoinType.Unknown)
+                App.Logger.WriteLine(LOG_IDENT, "Unable to get join data");
+
+            App.Logger.WriteLine(LOG_IDENT, $"Join Type: {_joinData.JoinType}");
+            App.Logger.WriteLine(LOG_IDENT, $"Join Origin: {_joinData.JoinOrigin ?? "null"}");
+            App.Logger.WriteLine(LOG_IDENT, $"Place ID: {_joinData.PlaceId?.ToString() ?? "null"}");
+            App.Logger.WriteLine(LOG_IDENT, $"Job ID: {_joinData.JobId ?? "null"}");
+
+            if (_joinData.PlaceId.HasValue && _joinData.PlaceId.Value > 0)
+            {
+                string contentDirectory = OperatingSystem.IsMacOS()
+                    ? Path.Combine(_latestVersionDirectory, AppData.ExecutableName, "Contents", "Resources")
+                    : _latestVersionDirectory;
+                await ApplyFastFlagsBasedOnPlaceId(_joinData.PlaceId.Value, contentDirectory);
+            }
+
+            bool isRobloxUri = _launchCommandLine.StartsWith("roblox://", StringComparison.Ordinal);
+            if (isRobloxUri)
+                App.Logger.WriteLine(LOG_IDENT, "Joining through roblox:// URI - skipping Better Matchmaking");
+            else
+            {
+                bool isFollowUser = false;
+
+                // _joinData.JoinType == GameJoinType.RequestFollowUser just doesnt work at all
+                // idk why they dont use it when the user is following a friend, but ok
+                if (App.Settings.Prop.EnableBetterMatchmaking &&
+                    (_joinData.JoinOrigin == "friendServerListJoin" || _joinData.JoinOrigin == "placesListInHomePage"))
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "User is trying to join a friend, showing dialog");
+
+                    var result = await Frontend.ShowMessageBox(
+                        String.Format(Strings.Menu_Bootstrapper_Experimental_BetterMatchmaking_FollowUser),
+                        MessageBoxImage.Question,
+                        MessageBoxButton.YesNo
+                    );
+
+                    if (result == MessageBoxResult.Yes)
+                        isFollowUser = true;
+                }
+
+                string? serverid = null;
+                bool matchmakingCancelled = false;
+
+                _matchmakingInProgress = true;
+                _skipMatchmaking = false;
+                _matchmakingCts = new CancellationTokenSource();
+
+                Dialog?.CancelButtonText = Strings.Bootstrapper_CancelButton_Skip;
+
+                try
+                {
+                    if (App.Settings.Prop.EnableBetterMatchmaking &&
+                        _joinData.JoinType == GameJoinType.RequestGame &&
+                        _joinData.PlaceId != null &&
+                        !isFollowUser)
+                    {
+                        if (_skipMatchmaking)
+                        {
+                            App.Logger.WriteLine(LOG_IDENT, "Matchmaking was skipped due to user cancellation.");
+                            matchmakingCancelled = true;
+                        }
+                        else
+                        {
+                            serverid = await GetBetterMatchmakingServerID(_matchmakingCts.Token);
+                        }
+                    }
+                }
+                catch (OperationCanceledException)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Better Matchmaking was Skipped, joining original server.");
+                    matchmakingCancelled = true;
+                }
+                catch (HttpRequestException ex)
+                {
+                    _ = Frontend.ShowConnectivityDialog(
+                        String.Format(Strings.Dialog_Connectivity_UnableToConnect, "rovalra.com"),
+                        Strings.Dialog_Connectivity_MatchmakingFailed,
+                        MessageBoxImage.Warning,
+                        ex
+                    );
+                }
+                finally
+                {
+                    Dialog?.CancelButtonText = Strings.Common_Cancel;
+                    _matchmakingInProgress = false;
+                    _matchmakingCts?.Dispose();
+                    _matchmakingCts = null;
+                }
+
+                if (!matchmakingCancelled && !string.IsNullOrEmpty(serverid) && _joinData.PlaceId is not null)
+                {
+                    string placeLauncherUrl = UrlBuilder.BuildPlacelauncherUrl((long)_joinData.PlaceId, serverid);
+                    _launchCommandLine = _launchCommandLine.Replace(_joinData.PlaceLauncherUrl, HttpUtility.UrlEncode(placeLauncherUrl));
+                }
+            }
+
+            SetStatus(Strings.Bootstrapper_Status_StartingSober);
+
+            App.Logger.WriteLine(LOG_IDENT, $"Launching Sober via flatpak with args: {_launchCommandLine}");
+
+            var startInfo = new ProcessStartInfo
+            {
+                FileName = "flatpak",
+                Arguments = $"run {SoberFlatpakId} {_launchCommandLine}",
+                UseShellExecute = false,
+            };
+
+            try
+            {
+                // Record time before launch so we can detect the new latest.log
+                var launchTime = DateTime.UtcNow;
+
+                using var process = Process.Start(startInfo)!;
+                _appPid = process.Id;
+                App.Logger.WriteLine(LOG_IDENT, $"Sober launched with PID {_appPid}");
+                App.Logger.WriteLine(LOG_IDENT, "Launching Watcher...");
+                _mutex?.ReleaseAsync();
+                await LaunchWatcherIfNeededAsync(autoclosePids);
+
+                _ = Task.Run(async () =>
+                {
+                    string[] soberReadySignals = ["will_handle_app_startup", "will_handle_start_game"];
+                    const int pollIntervalMs = 50;
+                    const int timeoutMs = 30_000;
+                    var deadline = DateTime.UtcNow.AddMilliseconds(timeoutMs);
+
+                    try
+                    {
+                        string latestLog = Path.Combine(Paths.RobloxLogs, "latest.log");
+
+                        while (DateTime.UtcNow < deadline)
+                        {
+                            if (File.Exists(latestLog) && File.GetLastWriteTimeUtc(latestLog) >= launchTime)
+                                break;
+                            await Task.Delay(pollIntervalMs);
+                        }
+
+                        if (!File.Exists(latestLog))
+                        {
+                            App.Logger.WriteLine(LOG_IDENT, $"latest.log not found at {latestLog}, closing dialog.");
+                            return;
+                        }
+
+                        App.Logger.WriteLine(LOG_IDENT, $"Tailing {latestLog} for ready signal...");
+
+                        using var fs = new FileStream(latestLog, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
+                        using var reader = new StreamReader(fs);
+
+                        while (DateTime.UtcNow < deadline)
+                        {
+                            string? line = await reader.ReadLineAsync();
+                            if (line is null)
+                            {
+                                await Task.Delay(pollIntervalMs);
+                                continue;
+                            }
+                            if (soberReadySignals.Any(line.Contains))
+                            {
+                                App.Logger.WriteLine(LOG_IDENT, "Sober window ready — closing bootstrapper dialog.");
+                                Dialog?.CloseBootstrapper();
+                                return;
+                            }
+                        }
+
+                        App.Logger.WriteLine(LOG_IDENT, "Timed out waiting for Sober ready signal — closing dialog.");
+                    }
+                    catch (Exception ex)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"Log watcher error: {ex.Message} — closing dialog.");
+                    }
+                    finally
+                    {
+                        Dialog?.CloseBootstrapper();
+                    }
+                });
+
+                await Task.Run(async () =>
+                {
+                    while (!_cancelTokenSource.IsCancellationRequested)
+                    {
+                        await Task.Delay(2500);
+                        if (Process.GetProcessesByName("sober").Length == 0)
+                            break;
+                    }
+                });
+
+                App.Logger.WriteLine(LOG_IDENT, "Sober process exited");
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Failed to launch Sober via flatpak!");
+                App.Logger.WriteException(LOG_IDENT, ex);
+                string detailsPart = string.IsNullOrWhiteSpace(ex.Message) ? "" : $"\n\n{ex.Message}";
+                await Frontend.ShowMessageBox(
+                    string.Format(Strings.Sober_LaunchFailed, SoberFlatpakId, detailsPart),
+                    MessageBoxImage.Error
+                );
+                App.Terminate(ErrorCode.ERROR_CANCELLED);
+            }
+        }
+
+        private async Task LaunchStudioViaWineAsync()
+        {
+            const string LOG_IDENT = "Bootstrapper::LaunchStudioViaWine";
+
+            string studioExe = Path.Combine(_latestVersionDirectory, App.RobloxStudioAppName);
+            if (!File.Exists(studioExe))
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Cannot find RobloxStudioBeta.exe");
+                return;
+            }
+
+            SetStatus(Strings.Bootstrapper_Status_StartingStudioWine);
+
+            var env = new Dictionary<string, string>();
+
+            foreach (DictionaryEntry de in Environment.GetEnvironmentVariables())
+                if (de.Key is string key && de.Value is string value)
+                    env[key] = value;
+
+            env["WINEPREFIX"] = App.Settings.Prop.WinePrefixPath ?? "";
+            env["WINEARCH"] = "win64";
+            env["WINEDEBUG"] = App.Settings.Prop.StudioDebug ? "warn+seh,fixme-all,err-kerberos,err-ntlm,err-combase" : "warn+seh";
+            env["WINEDLLOVERRIDES"] = "dxdiagn,winemenubuilder.exe,mscoree,mshtml=";
+            env["WINEESYNC"] = "1";
+            env["WINEFSYNC"] = "1";
+            env["GDK_DISABLE"] = "vulkan";
+            env["XR_LOADER_DEBUG"] = "none";
+
+            var renderer = App.Settings.Prop.StudioRenderer;
+            bool useDxvk = (renderer == StudioRenderer.DXVK || renderer == StudioRenderer.DXVKSarek);
+            if (useDxvk)
+            {
+                env["WINE_D3D_CONFIG"] = "renderer=vulkan";
+                if (!App.Settings.Prop.StudioDebug)
+                    env["DXVK_LOG_LEVEL"] = "warn";
+                env["DXVK_LOG_PATH"] = "none";
+                env["DXVK_STATE_CACHE_PATH"] = Paths.Cache;
+            }
+            else if (renderer == StudioRenderer.Vulkan)
+            {
+                env["WINE_D3D_CONFIG"] = "renderer=vulkan";
+            }
+
+            string angle = (useDxvk || renderer == StudioRenderer.Vulkan) ? "vulkan" : "gl";
+            env["WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS"] = $"--disable-gpu-compositing --use-angle={angle}";
+
+            string? forcedGpu = App.Settings.Prop.StudioForcedGpu;
+            if (!string.IsNullOrEmpty(forcedGpu))
+            {
+                bool isNvidia = CheckForNvidiaGpu();
+                env["DRI_PRIME"] = forcedGpu;
+                if (isNvidia)
+                {
+                    env["__NV_PRIME_RENDER_OFFLOAD"] = "1";
+                    env["__GLX_VENDOR_LIBRARY_NAME"] = "nvidia";
+                    env["__EGL_VENDOR_LIBRARY_FILENAMES"] = IsFlatpak()
+                        ? "/usr/lib/x86_64-linux-gnu/GL/glvnd/egl_vendor.d/10_nvidia.json"
+                        : "/usr/share/glvnd/egl_vendor.d/10_nvidia.json";
+                }
+                else
+                {
+                    env["__GLX_VENDOR_LIBRARY_NAME"] = "mesa";
+                    env["__EGL_VENDOR_LIBRARY_FILENAMES"] = IsFlatpak()
+                        ? "/usr/lib/x86_64-linux-gnu/GL/glvnd/egl_vendor.d/50_mesa.json"
+                        : "/usr/share/glvnd/egl_vendor.d/50_mesa.json";
+                    env["__NV_PRIME_RENDER_OFFLOAD"] = "0";
+                }
+                env["__VK_LAYER_NV_optimus"] = "";
+                env["VK_LOADER_DRIVERS_SELECT"] = "";
+            }
+
+            if (useDxvk || renderer == StudioRenderer.Vulkan)
+            {
+                env["VK_LOADER_LAYERS_ENABLE"] = "VK_LAYER_VINEGAR_VinegarLayer";
+                env["VK_LAYER_PATH"] = Path.Combine(Paths.WineRoot, "vulkan_layer");
+            }
+
+            foreach (var userEnv in App.Settings.Prop.StudioEnvironmentVariables)
+                env[userEnv.Key] = userEnv.Value;
+
+            if (App.Settings.Prop.StudioDebug)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Studio Debug enabled - Environment variables:");
+                foreach (var kvp in env)
+                    App.Logger.WriteLine(LOG_IDENT, $"  {kvp.Key}={kvp.Value}");
+            }
+
+            string? dll;
+            string fastPath = Path.Combine(_latestVersionDirectory, "Plugins", "Qt5", "platforms", "qwindows.dll");
+            if (File.Exists(fastPath))
+                dll = fastPath;
+            else
+                dll = Directory.GetFiles(_latestVersionDirectory, "qwindows.dll", SearchOption.AllDirectories).FirstOrDefault();
+
+            string? platformsDir = !string.IsNullOrEmpty(dll) ? Path.GetDirectoryName(Path.GetDirectoryName(dll)) : null;
+            if (platformsDir != null && Directory.Exists(platformsDir))
+            {
+                env["QT_PLUGIN_PATH"] = platformsDir;
+                App.Logger.WriteLine(LOG_IDENT, $"QT_PLUGIN_PATH set to {platformsDir}");
+            }
+            else
+                App.Logger.WriteLine(LOG_IDENT, "Warning: Qt platform plugin not found – Studio may fail to start.");
+
+            if (!string.IsNullOrEmpty(App.Settings.Prop.WinePrefixPath))
+            {
+                string systemUser = Environment.UserName ?? "froststrap";
+                string winePluginDir = Path.Combine(App.Settings.Prop.WinePrefixPath, "drive_c", "users", systemUser, "AppData", "Local", "Roblox", "Plugins");
+                StudioPluginManager.OverridePluginDirectory = winePluginDir;
+                StudioPluginManager.Sync();
+            }
+            else
+                App.Logger.WriteLine(LOG_IDENT, "Wine prefix path is null or empty; cannot set plugin override.");
+
+            string? cookie = await GetRobloxSecurityCookieAsync();
+            if (!string.IsNullOrEmpty(cookie))
+                App.HttpClient.DefaultRequestHeaders.Add("Cookie", $".ROBLOSECURITY={cookie}");
+
+            string baseArgs = $"\"{studioExe}\" {_launchCommandLine}";
+            string finalArgs = baseArgs;
+
+            string? virtualDesktop = App.Settings.Prop.StudioVirtualDesktop;
+            if (!string.IsNullOrEmpty(virtualDesktop))
+            {
+                string uuid = Guid.NewGuid().ToString();
+                finalArgs = $"explorer /desktop={uuid},{virtualDesktop} {baseArgs}";
+            }
+
+            string? customLauncher = App.Settings.Prop.StudioLauncher;
+            if (!string.IsNullOrEmpty(customLauncher))
+            {
+                finalArgs = customLauncher.Replace("%command%", finalArgs);
+            }
+
+            var startInfo = new ProcessStartInfo
+            {
+                FileName = App.Settings.Prop.WineBinaryPath,
+                Arguments = finalArgs,
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                WorkingDirectory = _latestVersionDirectory
+            };
+
+            foreach (var kvp in env)
+                startInfo.Environment[kvp.Key] = kvp.Value;
+
+            try
+            {
+                var ulimit = await RunProcessAndReadOutputAsync("bash", "-c \"ulimit -n\"");
+                if (int.TryParse(ulimit?.Trim(), out int fdLimit) && fdLimit < 524288)
+                    App.Logger.WriteLine(LOG_IDENT, $"File descriptor limit ({fdLimit}) may be too low for esync/fsync.");
+            }
+            catch { }
+
+            var autoclosePids = new List<int>();
+            foreach (var integration in App.Settings.Prop.CustomIntegrations)
+                if (integration?.PreLaunch == true)
+                    LaunchIntegration(integration, autoclosePids, LOG_IDENT);
+
+            try
+            {
+                using var process = Process.Start(startInfo);
+                if (process == null)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Failed to start Roblox Studio process - Process.Start returned null");
+                    await Frontend.ShowMessageBox("Could not start Roblox Studio. Please check your Wine installation.", MessageBoxImage.Error);
+                    App.Terminate(ErrorCode.ERROR_CANCELLED);
+                    return;
+                }
+                _appPid = process.Id;
+                App.Logger.WriteLine(LOG_IDENT, $"Roblox Studio started with Wine (PID {_appPid})");
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Failed to launch Studio: {ex.Message}");
+                await Frontend.ShowMessageBox("Could not start Roblox Studio. Please check your Wine installation.", MessageBoxImage.Error);
+                App.Terminate(ErrorCode.ERROR_CANCELLED);
+                return;
+            }
+
+            _mutex?.ReleaseAsync();
+
+            foreach (var integration in App.Settings.Prop.CustomIntegrations)
+                if (integration != null && !integration.PreLaunch && !integration.SpecifyGame)
+                    LaunchIntegration(integration, autoclosePids, LOG_IDENT);
+
+            string wineLogDir = GetWineLogDirectory();
+            Directory.CreateDirectory(wineLogDir);
+            await LaunchWatcherIfNeededAsync(autoclosePids, logDirectory: wineLogDir);
+
+            await Task.Delay(1000);
+        }
+
+        private async Task LaunchWatcherIfNeededAsync(List<int> autoclosePids, string? logFileName = null, string? logDirectory = null)
+        {
+            if (!(App.Settings.Prop.EnableActivityTracking
+                || App.LaunchSettings.TestModeFlag.Active
+                || autoclosePids.Count > 0))
+                return;
+
+            try
+            {
+                _ = Process.GetProcessById(_appPid);
+            }
+            catch
+            {
+                return;
+            }
+
+            if (string.IsNullOrEmpty(logFileName))
+            {
+                string rbxLogDir = logDirectory ?? Paths.RobloxLogs;
+
+                for (int i = 0; i < 60; i++)
+                {
+                    if (Directory.Exists(rbxLogDir))
+                    {
+                        logFileName = Directory.GetFiles(rbxLogDir, "*.log")
+                            .Select(f => new FileInfo(f))
+                            .Where(f => f.CreationTimeUtc > DateTime.UtcNow.AddSeconds(-5))
+                            .OrderByDescending(f => f.CreationTimeUtc)
+                            .FirstOrDefault()?.FullName;
+                    }
+
+                    if (logFileName != null)
+                        break;
+
+                    await Task.Delay(500, _cancelTokenSource.Token);
+                }
+            }
+
+            using var ipl = new InterProcessLock("WatcherLaunch", TimeSpan.FromSeconds(5));
+            if (!ipl.IsAcquired)
+                return;
+
+            var watcherData = new WatcherData
+            {
+                ProcessId = _appPid,
+                LogFile = logFileName,
+                AutoclosePids = autoclosePids,
+                LaunchMode = _launchMode
+            };
+
+            string watcherDataArg = Convert.ToBase64String(
+                Encoding.UTF8.GetBytes(JsonSerializer.Serialize(watcherData)));
+
+            string args = $"-watcher \"{watcherDataArg}\"";
+
+            if (App.LaunchSettings.TestModeFlag.Active)
+                args += " -testmode";
+
+            Process.Start(Paths.Process, args);
+        }
+
+        private static void LaunchIntegration(CustomIntegration integration, List<int> autoclosePids, string logIdent)
+        {
+            App.Logger.WriteLine(logIdent, $"Launching custom integration '{integration.Name}' ({integration.Location} {integration.LaunchArgs} - autoclose is {integration.AutoClose})");
+
+            int pid = 0;
+
+            try
+            {
+                var process = Process.Start(new ProcessStartInfo
+                {
+                    FileName = integration.Location,
+                    Arguments = integration.LaunchArgs.Replace("\r\n", " "),
+                    WorkingDirectory = Path.GetDirectoryName(integration.Location),
+                    UseShellExecute = true
+                })!;
+
+                pid = process.Id;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(logIdent, $"Failed to launch integration '{integration.Name}'!");
+                App.Logger.WriteLine(logIdent, ex.Message);
+            }
+
+            if (integration.AutoClose && pid != 0)
+                autoclosePids.Add(pid);
+
+            if (integration.Delay != 0)
+                Thread.Sleep(integration.Delay);
+
         }
 
         private bool ShouldRunAsAdmin()
         {
+            if (!OperatingSystem.IsWindows())
+                return false;
+
             foreach (var root in WindowsRegistry.Roots)
             {
                 using var key = root.OpenSubKey("SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers");
@@ -1084,28 +1746,34 @@ namespace Froststrap
             return false;
         }
 
-        public void Cancel()
+        public bool Cancel()
         {
             const string LOG_IDENT = "Bootstrapper::Cancel";
 
+            if (_matchmakingInProgress)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Skipping Better MatchMaking.");
+                _skipMatchmaking = true;
+                _matchmakingCts?.Cancel();
+                SetStatus(Strings.Bootstrapper_Status_SkippingMatchmaking);
+                return true;
+            }
+
             if (_cancelTokenSource.IsCancellationRequested)
-                return;
+                return false;
 
             App.Logger.WriteLine(LOG_IDENT, "Cancelling launch...");
-
             _cancelTokenSource.Cancel();
 
-            if (Dialog is not null)
-                Dialog.CancelEnabled = false;
+            Dialog?.CancelEnabled = false;
 
             if (_isInstalling)
             {
                 try
                 {
-                    // clean up registry keys
-                    WindowsRegistry.RegisterClientLocation(IsStudioLaunch, null);
+                    if (OperatingSystem.IsWindows())
+                        WindowsRegistry.RegisterClientLocation(IsStudioLaunch, null);
 
-                    // clean up install
                     if (Directory.Exists(_latestVersionDirectory))
                         Directory.Delete(_latestVersionDirectory, true);
                 }
@@ -1125,9 +1793,34 @@ namespace Froststrap
                 catch (Exception) { }
             }
 
-            Dialog?.CloseBootstrapper();
+            if (OperatingSystem.IsLinux())
+            {
+                try
+                {
+                    foreach (var soberProcess in Process.GetProcessesByName("sober"))
+                    {
+                        try
+                        {
+                            App.Logger.WriteLine(LOG_IDENT, $"Killing sober process (PID {soberProcess.Id})");
+                            soberProcess.Kill(true);
+                        }
+                        catch (Exception ex)
+                        {
+                            App.Logger.WriteLine(LOG_IDENT, $"Failed to kill sober process (PID {soberProcess.Id})");
+                            App.Logger.WriteException(LOG_IDENT, ex);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Failed to enumerate sober processes.");
+                    App.Logger.WriteException(LOG_IDENT, ex);
+                }
+            }
 
+            Dialog?.CloseBootstrapper();
             App.SoftTerminate(ErrorCode.ERROR_CANCELLED);
+            return false;
         }
         #endregion
 
@@ -1136,179 +1829,387 @@ namespace Froststrap
         {
             const string LOG_IDENT = "Bootstrapper::CheckForUpdates";
 
-            if (App.Settings.Prop.UpdateChecks == UpdateCheck.Disabled)
-            {
-                App.Logger.WriteLine(LOG_IDENT, "Update checking is disabled in settings.");
-                return false;
-            }
-
             if (Process.GetProcessesByName(App.ProjectName).Length > 1)
             {
-                App.Logger.WriteLine(LOG_IDENT, $"More than one {App.ProjectName} instance running, aborting update check.");
+                App.Logger.WriteLine(LOG_IDENT, $"More than one {App.ProjectName} instance running, aborting update check");
                 return false;
             }
 
-            SetStatus("Checking for Updates...");
-
-            GithubRelease? releaseInfo = null;
-            string version;
-
-#if !DEBUG_UPDATER
-            UpdateCheck preference = App.Settings.Prop.UpdateChecks;
-
-            bool includePreRelease = (preference == UpdateCheck.Both || preference == UpdateCheck.Test);
-
-            releaseInfo = await App.GetLatestRelease(includePreRelease);
-
-            if (releaseInfo is null)
-                return false;
-
-            string currentVer = App.GetUpdateCheckVersion();
-            string releaseVer = releaseInfo.TagName;
-            version = releaseVer;
-
-            var versionComparison = Utilities.CompareVersions(currentVer, releaseVer);
-
-            if (versionComparison == VersionComparison.LessThan)
+            if (App.Settings.Prop.UpdateChecks == UpdateCheck.Disabled)
             {
-                string releaseType = releaseInfo.Prerelease ? "Pre-release" : "Stable";
-                App.Logger.WriteLine(LOG_IDENT, $"{releaseType} update available: {currentVer} -> {releaseVer}");
-
-                var result = await Frontend.ShowMessageBox(
-                    $"A new {releaseType.ToLower()} version {releaseVer} is available. Would you like to update now?",
-                    MessageBoxImage.Question,
-                    MessageBoxButton.YesNo
-                );
-
-                if (result != MessageBoxResult.Yes)
-                {
-                    App.Logger.WriteLine(LOG_IDENT, "User declined the update.");
-                    return false;
-                }
-            }
-            else
-            {
-                App.Logger.WriteLine(LOG_IDENT, $"No update required. Current: {currentVer}, Latest: {releaseVer}");
+                App.Logger.WriteLine(LOG_IDENT, "Update checking is disabled in settings");
                 return false;
             }
-#else
-    version = App.Version;
-#endif
 
-            SetStatus(Strings.Bootstrapper_Status_UpgradingFroststrap);
+            SetStatus(Strings.Bootstrapper_Status_CheckingUpdates);
+
+            App.Logger.WriteLine(LOG_IDENT, "Checking for updates...");
 
             try
             {
-                string downloadLocation;
+                bool includePreRelease = false;
 
-#if DEBUG_UPDATER
-                downloadLocation = Path.Combine(Paths.TempUpdates, "Bloxstrap.exe");
-                Directory.CreateDirectory(Paths.TempUpdates);
-                File.Copy(Paths.Process, downloadLocation, overwrite: true);
-#else
-                if (App.IsMockReleaseEnabled)
-                {
-                    downloadLocation = Path.Combine(Paths.TempUpdates, Path.GetFileName(Paths.Process));
-                    Directory.CreateDirectory(Paths.TempUpdates);
-
-                    App.Logger.WriteLine(LOG_IDENT, $"Using local mock updater payload for {version}.");
-                    File.Copy(Paths.Process, downloadLocation, overwrite: true);
-                }
-                else if (releaseInfo!.Assets is null || releaseInfo.Assets.Count == 0)
-                {
-                    App.Logger.WriteLine(LOG_IDENT, "Release found but no assets were available for download.");
-                    return false;
-                }
-
-                else
-                {
-                    var asset = releaseInfo.Assets[0];
-                    downloadLocation = Path.Combine(Paths.TempUpdates, asset.Name);
-                    Directory.CreateDirectory(Paths.TempUpdates);
-
-                    App.Logger.WriteLine(LOG_IDENT, $"Downloading {version}...");
-
-                    if (!File.Exists(downloadLocation))
-                    {
-                        using var response = await App.HttpClient.GetAsync(asset.BrowserDownloadUrl);
-                        response.EnsureSuccessStatusCode();
-
-                        await using var fileStream = new FileStream(downloadLocation, FileMode.Create, FileAccess.Write, FileShare.None);
-                        await response.Content.CopyToAsync(fileStream);
-                    }
-                }
+#if QA_BUILD || DEBUG
+                includePreRelease = true;
 #endif
 
-                App.Logger.WriteLine(LOG_IDENT, $"Starting updater {version}...");
+                if (App.Settings.Prop.UpdateChecks == UpdateCheck.Both || App.Settings.Prop.UpdateChecks == UpdateCheck.Test)
+                    includePreRelease = true;
 
-                var startInfo = new ProcessStartInfo(downloadLocation)
+                var releaseInfo = await App.GetLatestRelease(includePreRelease);
+
+                if (releaseInfo is null)
                 {
-                    UseShellExecute = true,
-                };
+                    App.Logger.WriteLine(LOG_IDENT, "Failed to get release information");
+                    return false;
+                }
 
-                startInfo.ArgumentList.Add("-upgrade");
+                string currentVer = App.Version;
+                string releaseVer = releaseInfo.TagName;
+                var versionComparison = Utilities.CompareVersions(currentVer, releaseVer);
 
-                foreach (var arg in App.LaunchSettings.Args)
-                    startInfo.ArgumentList.Add(arg);
-
-                if (_launchMode == LaunchMode.Player && !startInfo.ArgumentList.Contains("-player"))
-                    startInfo.ArgumentList.Add("-player");
-                else if (_launchMode == LaunchMode.Studio && !startInfo.ArgumentList.Contains("-studio"))
-                    startInfo.ArgumentList.Add("-studio");
-
-                App.Settings.Save();
-
-                using var updateLock = new InterProcessLock("AutoUpdater");
-
-                var process = Process.Start(startInfo);
-                if (process == null)
+                if (versionComparison == VersionComparison.Equal || versionComparison == VersionComparison.GreaterThan)
                 {
-                    var result = await Frontend.ShowMessageBox(
-                        string.Format(Strings.Bootstrapper_AutoUpdateFailed, version),
+                    App.Logger.WriteLine(LOG_IDENT, $"No updates found. Current: {currentVer}, Latest: {releaseVer}");
+                    return false;
+                }
+
+                App.Logger.WriteLine(LOG_IDENT, $"Update available: {currentVer} -> {releaseVer}");
+
+                if (OperatingSystem.IsLinux())
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Update detected, prompting user to manually update");
+
+                    var results = await Frontend.ShowMessageBox(
+                        string.Format(Strings.Update_Linux_Available, releaseVer),
                         MessageBoxImage.Information,
-                        MessageBoxButton.YesNo);
+                        MessageBoxButton.YesNo
+                    );
 
-                    if (result == MessageBoxResult.Yes)
+                    if (results == MessageBoxResult.Yes)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, "User chose to visit releases page");
                         Utilities.ShellExecute(App.ProjectDownloadLink);
+                    }
+                    else
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, "User declined the update, continuing launch");
+                    }
 
                     return false;
                 }
 
+                var asset = FindPlatformAsset(releaseInfo.Assets);
+                if (asset is null)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "No suitable asset found for this platform");
+                    await Frontend.ShowMessageBox(
+                        string.Format(Strings.Update_NoPackageAvailable, GetPlatformName()),
+                        MessageBoxImage.Warning
+                    );
+                    Utilities.ShellExecute(App.ProjectDownloadLink);
+                    return false;
+                }
+
+                App.Logger.WriteLine(LOG_IDENT, $"Found matching asset: {asset.Name}");
+
+                if (!App.LaunchSettings.QuietFlag.Active)
+                {
+                    string releaseType = releaseInfo.Prerelease ? "pre-release" : "stable";
+                    string newlinePart = "\n\nWould you like to update now?";
+                    var result = await Frontend.ShowMessageBox(
+                        string.Format(Strings.Update_Available, releaseType, releaseVer, newlinePart),
+                        MessageBoxImage.Question,
+                        MessageBoxButton.YesNo
+                    );
+
+                    if (result != MessageBoxResult.Yes)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, "User declined the update");
+                        return false;
+                    }
+                }
+
+                SetStatus(string.Format(Strings.Bootstrapper_Status_DownloadingUpdate, releaseVer));
+
+                string downloadPath = Path.Combine(Paths.TempUpdates, asset.Name);
+                Directory.CreateDirectory(Paths.TempUpdates);
+
+                App.Logger.WriteLine(LOG_IDENT, $"Downloading update from {asset.BrowserDownloadUrl}");
+
+                await DownloadFileWithProgressAsync(asset.BrowserDownloadUrl, downloadPath);
+
+                App.Logger.WriteLine(LOG_IDENT, $"Download complete: {downloadPath}");
+
+                Dialog?.ProgressIndeterminate = true;
+                Dialog?.TaskbarProgressState = TaskbarItemProgressState.Indeterminate;
+
+                SetStatus(string.Format(Strings.Bootstrapper_Status_InstallingUpdate, releaseVer));
+
+                bool updateApplied = await ApplyUpdate(downloadPath);
+
+                if (!updateApplied)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Update application failed");
+                    await Frontend.ShowMessageBox(
+                        string.Format(Strings.Bootstrapper_AutoUpdateFailed, releaseVer),
+                        MessageBoxImage.Information
+                    );
+                    Utilities.ShellExecute(App.ProjectDownloadLink);
+                    return false;
+                }
+
+                App.Logger.WriteLine(LOG_IDENT, "Update applied successfully");
                 return true;
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine(LOG_IDENT, "An exception occurred when running the auto-updater");
+                App.Logger.WriteLine(LOG_IDENT, "An exception occurred during update check");
                 App.Logger.WriteException(LOG_IDENT, ex);
 
-                var result = await Frontend.ShowMessageBox(
-                    string.Format(Strings.Bootstrapper_AutoUpdateFailed, version),
-                    MessageBoxImage.Information,
-                    MessageBoxButton.YesNo);
+                if (!App.LaunchSettings.QuietFlag.Active)
+                {
+                    await Frontend.ShowMessageBox(Strings.Bootstrapper_AutoUpdateFailed, MessageBoxImage.Information);
+                }
 
-                if (result == MessageBoxResult.Yes)
-                    Utilities.ShellExecute(App.ProjectDownloadLink);
+                return false;
+            }
+        }
+
+        private static GithubReleaseAsset? FindPlatformAsset(List<GithubReleaseAsset>? assets)
+        {
+            if (assets is null || assets.Count == 0)
+                return null;
+
+            var patterns = GetPlatformAssetPatterns();
+
+            foreach (var pattern in patterns)
+            {
+                var asset = assets.FirstOrDefault(a =>
+                    a.Name?.EndsWith(pattern, StringComparison.OrdinalIgnoreCase) == true);
+                if (asset is not null)
+                    return asset;
             }
 
-            return false;
+            return null;
         }
+
+        private static List<string> GetPlatformAssetPatterns()
+        {
+            if (OperatingSystem.IsWindows())
+            {
+                try
+                {
+                    var fileInfo = new FileInfo(Paths.Process);
+                    bool isSelfContained = fileInfo.Length > 80 * 1024 * 1024;
+
+                    if (isSelfContained)
+                        return ["Froststrap-SelfContained-Setup.exe", "-SelfContained-Setup.exe"];
+                    else
+                        return ["Froststrap-Setup.exe", "-Setup.exe"];
+                }
+                catch
+                {
+                    return ["Froststrap-Setup.exe", "-Setup.exe"];
+                }
+            }
+            else if (OperatingSystem.IsMacOS())
+            {
+                return ["Froststrap-macOS.dmg", ".dmg"];
+            }
+
+            return [];
+        }
+
+        private static string GetPlatformName()
+        {
+            if (OperatingSystem.IsWindows()) return "Windows";
+            if (OperatingSystem.IsMacOS()) return "macOS";
+            return "Unknown";
+        }
+
+        private static async Task<bool> ApplyUpdate(string updatePath)
+        {
+            const string LOG_IDENT = "Bootstrapper::ApplyUpdate";
+
+            try
+            {
+                App.Settings.Save();
+                App.State.Save();
+                App.PlayerState.Save();
+                App.StudioState.Save();
+
+                App.Logger.WriteLine(LOG_IDENT, $"Applying update: {updatePath}");
+
+                if (OperatingSystem.IsWindows())
+                {
+                    return await ApplyWindowsUpdate(updatePath);
+                }
+                else if (OperatingSystem.IsMacOS())
+                {
+                    return await ApplyMacOSUpdate(updatePath);
+                }
+
+                App.Logger.WriteLine(LOG_IDENT, "Unsupported operating system for updates");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Failed to apply update: {ex.Message}");
+                App.Logger.WriteException(LOG_IDENT, ex);
+                return false;
+            }
+        }
+
+        private static async Task<bool> ApplyWindowsUpdate(string updatePath)
+        {
+            const string LOG_IDENT = "Bootstrapper::ApplyWindowsUpdate";
+
+            App.Logger.WriteLine(LOG_IDENT, $"Applying Windows update: {updatePath}");
+
+            try
+            {
+                string scriptPath = Path.Combine(Paths.TempUpdates, "update_runner.bat");
+                string processPath = Paths.Process;
+
+                string scriptContent = $@"@echo off
+echo Waiting for {App.ProjectName} to exit...
+timeout /t 2 /nobreak >nul
+
+echo Installing update...
+""{updatePath}"" /S
+
+if errorlevel 1 (
+    echo Update failed with error code %errorlevel%
+    pause
+    exit /b %errorlevel%
+)
+
+echo Update installed successfully!
+echo Restarting {App.ProjectName}...
+
+start "" "" ""{processPath}""
+exit";
+
+                await File.WriteAllTextAsync(scriptPath, scriptContent);
+
+                var startInfo = new ProcessStartInfo
+                {
+                    FileName = scriptPath,
+                    UseShellExecute = true,
+                    WindowStyle = ProcessWindowStyle.Hidden
+                };
+
+                Process.Start(startInfo);
+                App.Terminate();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Failed to apply Windows update: {ex.Message}");
+                App.Logger.WriteException(LOG_IDENT, ex);
+                return false;
+            }
+        }
+
+        private static async Task<bool> ApplyMacOSUpdate(string updatePath)
+        {
+            const string LOG_IDENT = "Bootstrapper::ApplyMacOSUpdate";
+
+            App.Logger.WriteLine(LOG_IDENT, $"Applying macOS update: {updatePath}");
+
+            try
+            {
+                string scriptPath = Path.Combine(Paths.TempUpdates, "update_runner.sh");
+                string appName = App.ProjectName;
+
+                string scriptContent = $@"#!/bin/bash
+set -e
+
+echo ""Waiting for {appName} to exit...""
+sleep 2
+
+echo ""Mounting DMG...""
+MOUNT_DIR=$(hdiutil attach ""{updatePath}"" -nobrowse -mountpoint /Volumes/{appName}Update | grep -o '/Volumes/.*')
+
+if [ -z ""$MOUNT_DIR"" ]; then
+    echo ""Failed to mount DMG""
+    exit 1
+fi
+
+echo ""Copying app to /Applications...""
+if [ -d ""/Applications/{appName}.app"" ]; then
+    rm -rf ""/Applications/{appName}.app""
+fi
+cp -R ""$MOUNT_DIR/{appName}.app"" /Applications/
+
+echo ""Unmounting DMG...""
+hdiutil detach ""$MOUNT_DIR""
+
+echo ""Removing old app data...""
+rm -rf ""{Paths.Base}""
+
+echo ""Starting {appName}...""
+open /Applications/{appName}.app
+
+exit";
+
+                await File.WriteAllTextAsync(scriptPath, scriptContent);
+
+                var chmodInfo = new ProcessStartInfo
+                {
+                    FileName = "chmod",
+                    Arguments = $"+x \"{scriptPath}\"",
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+                using (var chmod = Process.Start(chmodInfo))
+                    await chmod!.WaitForExitAsync();
+
+                var startInfo = new ProcessStartInfo
+                {
+                    FileName = scriptPath,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                Process.Start(startInfo);
+                App.Terminate();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Failed to apply macOS update: {ex.Message}");
+                App.Logger.WriteException(LOG_IDENT, ex);
+                return false;
+            }
+        }
+
         #endregion
 
         #region Roblox Install
+
         private static bool TryDeleteRobloxInDirectory(string dir)
         {
-            string[] executables = { App.RobloxPlayerAppName, App.RobloxStudioAppName };
+            string[] executables = [App.RobloxPlayerAppName, App.RobloxStudioAppName];
 
             foreach (string exe in executables)
             {
                 string path = Path.Combine(dir, exe);
-                if (!File.Exists(path))
+
+                bool exists = OperatingSystem.IsMacOS() ? Directory.Exists(path) : File.Exists(path);
+                if (!exists)
                     return true;
 
                 try
                 {
-                    File.SetAttributes(path, FileAttributes.Normal);
-                    File.Delete(path);
+                    if (OperatingSystem.IsMacOS())
+                        Directory.Delete(path, true);
+                    else
+                    {
+                        File.SetAttributes(path, FileAttributes.Normal);
+                        File.Delete(path);
+                    }
                 }
                 catch (Exception)
                 {
@@ -1322,6 +2223,16 @@ namespace Froststrap
         public static void CleanupVersionsFolder()
         {
             const string LOG_IDENT = "Bootstrapper::CleanupVersionsFolder";
+
+            if (OperatingSystem.IsLinux())
+            {
+                bool isStudio = App.Bootstrapper?.IsStudioLaunch ?? false;
+                if (!isStudio)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Skipping cleanup on Linux (Player) to protect Sober's data directory.");
+                    return;
+                }
+            }
 
             if (App.LaunchSettings.BackgroundUpdaterFlag.Active)
             {
@@ -1339,44 +2250,52 @@ namespace Froststrap
             {
                 string dirName = Path.GetFileName(dir);
 
-                if (
-                    !_staticDirectory && (dirName != App.PlayerState.Prop.VersionGuid && dirName != App.StudioState.Prop.VersionGuid) ||
-                    _staticDirectory && (dirName != "WindowsPlayer" && dirName != "WindowsStudio64")
-                    )
-                {
+                // to make static directory work on studio linux
+                if (OperatingSystem.IsLinux() && dirName == "Sober")
+                    continue;
 
-                    // check if it's still being used first
-                    // we dont want to accidentally delete the files of a running roblox instance
-                    if (!TryDeleteRobloxInDirectory(dir))
-                        continue;
+                bool shouldDelete = StaticDirectory
+                    ? dirName != "WindowsPlayer" && dirName != "WindowsStudio64" && dirName != "MacPlayer" && dirName != "MacStudio"
+                    : dirName != App.PlayerState.Prop.VersionGuid && dirName != App.StudioState.Prop.VersionGuid;
+
+                if (!shouldDelete)
+                    continue;
+
+                // check if it's still being used first
+                // we dont want to accidentally delete the files of a running roblox instance
+                if (!TryDeleteRobloxInDirectory(dir))
+                    continue;
+
+                try
+                {
+                    Directory.Delete(dir, true);
+                }
+                catch (UnauthorizedAccessException)
+                {
                     try
                     {
+                        Filesystem.AssertReadOnlyDirectory(dir);
                         Directory.Delete(dir, true);
                     }
-                    catch (UnauthorizedAccessException)
-                    {
-                        try
-                        {
-                            Filesystem.AssertReadOnlyDirectory(dir);
-                            Directory.Delete(dir, true);
-                        }
-                        catch (Exception ex)
-                        {
-                            App.Logger.WriteLine(LOG_IDENT, $"Failed to delete {dir} after fixing attributes.");
-                            App.Logger.WriteException(LOG_IDENT, ex);
-                        }
-                    }
-                    catch (IOException ex)
+                    catch (Exception ex)
                     {
                         App.Logger.WriteLine(LOG_IDENT, $"Failed to delete {dir}");
                         App.Logger.WriteException(LOG_IDENT, ex);
                     }
+                }
+                catch (IOException ex)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, $"Failed to delete {dir}");
+                    App.Logger.WriteException(LOG_IDENT, ex);
                 }
             }
         }
 
         private void MigrateCompatibilityFlags()
         {
+            if (!OperatingSystem.IsWindows())
+                return;
+
             const string LOG_IDENT = "Bootstrapper::MigrateCompatibilityFlags";
 
             string oldClientLocation = Path.Combine(Paths.Versions, AppData.DistributionState.VersionGuid, AppData.ExecutableName);
@@ -1394,19 +2313,19 @@ namespace Froststrap
             }
         }
 
-        private void KillRobloxPlayers()
+        private static void KillRobloxPlayers()
         {
             const string LOG_IDENT = "Bootstrapper::KillRobloxPlayers";
 
             var processesToKill = new List<Process>();
-            processesToKill.AddRange(Process.GetProcessesByName("RobloxPlayerBeta"));
+            string playerProcessName = OperatingSystem.IsMacOS() ? "RobloxPlayer" : "RobloxPlayerBeta";
+            processesToKill.AddRange(Process.GetProcessesByName(playerProcessName));
             processesToKill.AddRange(Process.GetProcessesByName("RobloxCrashHandler"));
 
             foreach (Process process in processesToKill)
             {
                 try
                 {
-                    App.Logger.WriteLine(LOG_IDENT, $"Terminating process {process.ProcessName} ({process.Id})");
                     process.Kill();
                 }
                 catch (Exception ex)
@@ -1415,56 +2334,33 @@ namespace Froststrap
                     App.Logger.WriteException(LOG_IDENT, ex);
                 }
             }
-
-            var studioProcesses = Process.GetProcessesByName("RobloxStudioBeta");
-
-            if (studioProcesses.Any())
-            {
-                App.Logger.WriteLine(LOG_IDENT, "Waiting for Roblox Studio processes to exit...");
-
-                SetStatus("Waitting for Roblox Studio...");
-
-                while (Process.GetProcessesByName("RobloxStudioBeta").Any())
-                {
-                    Thread.Sleep(1000);
-
-                    if (_cancelTokenSource.IsCancellationRequested)
-                    {
-                        App.Logger.WriteLine(LOG_IDENT, "Studio wait cancelled by user.");
-                        return;
-                    }
-                }
-
-                App.Logger.WriteLine(LOG_IDENT, "All Roblox Studio processes closed.");
-            }
         }
 
         private async Task UpgradeRoblox()
         {
             const string LOG_IDENT = "Bootstrapper::UpgradeRoblox";
 
-            bool CancelUpgrade = !App.Settings.Prop.UpdateRoblox;
+            bool cancelUpgrade = !App.Settings.Prop.UpdateRoblox;
 
-            if (CancelUpgrade)
+            if (cancelUpgrade)
             {
                 SetStatus(Strings.Bootstrapper_Status_CancelUpgrade);
                 App.Logger.WriteLine(LOG_IDENT, "Upgrading disabled, cancelling the upgrade.");
-                Thread.Sleep(2000);
+
+                if (!Directory.Exists(_latestVersionDirectory))
+                {
+                    _ = Frontend.ShowMessageBox(Strings.Bootstrapper_Dialog_NoUpgradeWithoutClient, MessageBoxImage.Warning, MessageBoxButton.OK);
+                }
+                else
+                {
+                    await Task.Delay(2000);
+                    return;
+                }
             }
 
-            if (CancelUpgrade && !Directory.Exists(_latestVersionDirectory))
-            {
-                await Frontend.ShowMessageBox(Strings.Bootstrapper_Dialog_NoUpgradeWithoutClient, MessageBoxImage.Warning, MessageBoxButton.OK);
-            }
-            else if (CancelUpgrade)
-            {
-                return;
-            }
-
-            if (String.IsNullOrEmpty(AppData.DistributionState.VersionGuid))
-                SetStatus(Strings.Bootstrapper_Status_Installing);
-            else
-                SetStatus(Strings.Bootstrapper_Status_Upgrading);
+            SetStatus(string.IsNullOrEmpty(AppData.DistributionState.VersionGuid)
+                ? Strings.Bootstrapper_Status_Installing
+                : Strings.Bootstrapper_Status_Upgrading);
 
             Directory.CreateDirectory(Paths.Base);
             Directory.CreateDirectory(Paths.Downloads);
@@ -1472,34 +2368,47 @@ namespace Froststrap
 
             _isInstalling = true;
 
-            // make sure nothing is running before continuing upgrade
             if (!App.LaunchSettings.BackgroundUpdaterFlag.Active)
                 KillRobloxPlayers();
 
-            // get a fully clean install
             if (!App.LaunchSettings.BackgroundUpdaterFlag.Active && Directory.Exists(_latestVersionDirectory))
             {
-                try
-                {
-                    Directory.Delete(_latestVersionDirectory, true);
-                }
-                catch (Exception ex)
-                {
-                    App.Logger.WriteLine(LOG_IDENT, "Failed to delete the latest version directory");
-                    App.Logger.WriteException(LOG_IDENT, ex);
-                }
+                try { Directory.Delete(_latestVersionDirectory, true); }
+                catch (Exception ex) { App.Logger.WriteException(LOG_IDENT, ex); }
             }
 
             Directory.CreateDirectory(_latestVersionDirectory);
 
-            var cachedPackageHashes = Directory.GetFiles(Paths.Downloads).Select(x => Path.GetFileName(x));
+            if (OperatingSystem.IsMacOS())
+            {
+                string backupDir = GetResourcesBackupPath(_latestVersionGuid);
+                if (Directory.Exists(backupDir))
+                {
+                    try
+                    {
+                        Directory.Delete(backupDir, true);
+                        App.Logger.WriteLine(LOG_IDENT, $"Deleted existing mod backup for {_latestVersionGuid}");
+                    }
+                    catch (Exception ex)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"Failed to delete mod backup: {ex.Message}");
+                    }
+                }
+            }
 
-            // package manifest states packed size and uncompressed size in exact bytes
-            int totalSizeRequired = 0;
+            var packages = _versionPackageManifest
+                    .OrderByDescending(p => p.PackedSize)
+                    .ToList();
 
-            // packed size only matters if we don't already have the package cached on disk
-            totalSizeRequired += _versionPackageManifest.Where(x => !cachedPackageHashes.Contains(x.Signature)).Sum(x => x.PackedSize);
-            totalSizeRequired += _versionPackageManifest.Sum(x => x.Size);
+            var cachedPackageHashes = Directory.GetFiles(Paths.Downloads)
+                .Select(Path.GetFileName)
+                .Where(name => name != null)
+                .Select(name => name!)
+                .ToHashSet();
+
+            int totalSizeRequired = packages
+                .Where(x => x.Signature != null && !cachedPackageHashes.Contains(x.Signature))
+                .Sum(x => x.PackedSize) + packages.Sum(x => x.Size);
 
             if (Filesystem.GetFreeDiskSpace(Paths.Base) < totalSizeRequired)
             {
@@ -1510,114 +2419,164 @@ namespace Froststrap
 
             if (Dialog is not null)
             {
-                Dialog.ProgressStyle = ProgressBarStyle.Continuous;
+                Dialog.ProgressIndeterminate = false;
                 Dialog.TaskbarProgressState = TaskbarItemProgressState.Normal;
-
                 Dialog.ProgressMaximum = ProgressBarMaximum;
 
-                // compute total bytes to download
-                int totalPackedSize = _versionPackageManifest.Sum(package => package.PackedSize);
-                _progressIncrement = (double)ProgressBarMaximum / totalPackedSize;
-
-                if (Dialog is AvaloniaDialogBase)
-                    _taskbarProgressMaximum = (double)TaskbarProgressMaximumWinForms;
-                else
-                    _taskbarProgressMaximum = (double)TaskbarProgressMaximumWpf;
-
-                _taskbarProgressIncrement = _taskbarProgressMaximum / (double)totalPackedSize;
+                int totalPackedSize = packages.Sum(package => package.PackedSize);
+                _progressIncrement = totalPackedSize > 0 ? (double)ProgressBarMaximum / totalPackedSize : 0;
+                _taskbarProgressMaximum = TaskbarProgressMaximum;
+                _taskbarProgressIncrement = totalPackedSize > 0 ? _taskbarProgressMaximum / (double)totalPackedSize : 0;
             }
 
-            var extractionTasks = new List<Task>();
+            int totalPackages = packages.Count;
+            int processedPackages = 0;
+            int completedDownloads = 0;
+            int totalDownloads = packages.Count(p => p.Name != "WebView2RuntimeInstaller.zip");
+            var downloadsTcs = new TaskCompletionSource<bool>();
+            if (totalDownloads == 0) downloadsTcs.TrySetResult(true);
+            int maxConcurrency = MaxThreadDownload > 0 ? MaxThreadDownload : 1;
+            using var semaphore = new SemaphoreSlim(maxConcurrency);
+            var tasks = new List<Task>();
+            var extractionSuccesses = new ConcurrentBag<bool>();
 
-            foreach (var package in _versionPackageManifest)
+            foreach (var package in packages)
             {
-                if (_cancelTokenSource.IsCancellationRequested)
-                    return;
+                if (_cancelTokenSource.IsCancellationRequested) break;
 
-                // download all the packages synchronously
-                await DownloadPackage(package);
+                await semaphore.WaitAsync(_cancelTokenSource.Token);
 
-                // we'll extract the runtime installer later if we need to
-                if (package.Name == "WebView2RuntimeInstaller.zip")
-                    continue;
+                tasks.Add(Task.Run(async () =>
+                {
+                    try
+                    {
+                        if (_cancelTokenSource.IsCancellationRequested) return;
 
-                // extract the package async immediately after download
-                extractionTasks.Add(Task.Run(() => ExtractPackage(package), _cancelTokenSource.Token));
+                        int remaining = totalPackages - Interlocked.Increment(ref processedPackages);
+
+                        bool packageExists = File.Exists(package.DownloadPath);
+                        if (packageExists)
+                        {
+                            string calculatedMD5 = MD5Hash.FromFile(package.DownloadPath);
+                            if (!OperatingSystem.IsMacOS() && calculatedMD5 != package.Signature)
+                            {
+                                App.Logger.WriteLine(LOG_IDENT, $"Package {package.Name} is corrupted ({calculatedMD5} != {package.Signature})! Deleting and re-downloading...");
+                                File.Delete(package.DownloadPath);
+                                packageExists = false;
+                            }
+                            else
+                            {
+                                App.Logger.WriteLine(LOG_IDENT, $"Package {package.Name} already exists in cache, skipping download...");
+                                Interlocked.Add(ref _totalDownloadedBytes, package.PackedSize);
+                                UpdateProgressBar();
+                            }
+                        }
+
+                        if (!packageExists)
+                        {
+                            string downloadMsg = remaining > 0
+                                ? $"{Strings.Bootstrapper_Status_Downloading} {package.Name} - {remaining} {Strings.Bootstrapper_Status_PackagesLeft}"
+                                : $"{Strings.Bootstrapper_Status_Downloading} {package.Name}...";
+                            SetStatus(downloadMsg);
+                            await DownloadPackage(package);
+                        }
+
+                        if (Interlocked.Increment(ref completedDownloads) == totalDownloads)
+                            downloadsTcs.TrySetResult(true);
+
+                        if (package.Name != "WebView2RuntimeInstaller.zip")
+                        {
+                            string extractMsg = remaining > 0
+                                ? $"{Strings.Bootstrapper_Status_Extracting} {package.Name} - {remaining} {Strings.Bootstrapper_Status_PackagesLeft}"
+                                : $"{Strings.Bootstrapper_Status_Extracting} {package.Name}...";
+                            SetStatus(extractMsg);
+                            bool success = await ExtractPackage(package);
+                            extractionSuccesses.Add(success);
+                        }
+                        else
+                        {
+                            extractionSuccesses.Add(true);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"Error processing {package.Name}: {ex.Message}");
+                        extractionSuccesses.Add(false);
+                    }
+                    finally
+                    {
+                        semaphore.Release();
+                    }
+                }, _cancelTokenSource.Token));
             }
 
-            if (_cancelTokenSource.IsCancellationRequested)
-                return;
+            await Task.WhenAll(tasks);
+            _packageExtractionSuccess = extractionSuccesses.All(s => s);
+
+            if (_cancelTokenSource.IsCancellationRequested) return;
 
             if (Dialog is not null)
             {
-                Dialog.ProgressStyle = ProgressBarStyle.Marquee;
+                Dialog.ProgressIndeterminate = true;
                 Dialog.TaskbarProgressState = TaskbarItemProgressState.Indeterminate;
                 SetStatus(Strings.Bootstrapper_Status_Configuring);
             }
 
-            await Task.WhenAll(extractionTasks);
-
-            if (_cancelTokenSource.IsCancellationRequested)
-                return;
-
-            if (App.State.Prop.PromptWebView2Install)
+            if (OperatingSystem.IsWindows() && App.State.Prop.PromptWebView2Install)
             {
-                using var hklmKey = Registry.LocalMachine.OpenSubKey("SOFTWARE\\WOW6432Node\\Microsoft\\EdgeUpdate\\Clients\\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}");
-                using var hkcuKey = Registry.CurrentUser.OpenSubKey("Software\\Microsoft\\EdgeUpdate\\Clients\\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}");
+                using var hklmKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}");
+                using var hkcuKey = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}");
 
-                if (hklmKey is not null || hkcuKey is not null)
+                if (hklmKey == null && hkcuKey == null)
                 {
-                    // reset prompt state if the user has it installed
-                    App.State.Prop.PromptWebView2Install = true;
-                }
-                else
-                {
-                    var result = await Frontend.ShowMessageBox(Strings.Bootstrapper_WebView2NotFound, MessageBoxImage.Warning, MessageBoxButton.YesNo, MessageBoxResult.Yes);
-
-                    if (result != MessageBoxResult.Yes)
+                    var result = await Frontend.ShowMessageBox(Strings.Bootstrapper_WebView2NotFound, MessageBoxImage.Warning, MessageBoxButton.YesNo);
+                    if (result == MessageBoxResult.Yes)
                     {
-                        App.State.Prop.PromptWebView2Install = false;
+                        var package = _versionPackageManifest.Find(x => x.Name == "WebView2RuntimeInstaller.zip");
+                        if (package != null)
+                        {
+                            string baseDir = Path.Combine(_latestVersionDirectory, PackageDirectoryMap[package.Name]);
+                            await ExtractPackage(package);
+                            SetStatus(Strings.Bootstrapper_Status_InstallingWebView2);
+                            await Process.Start(new ProcessStartInfo
+                            {
+                                FileName = Path.Combine(baseDir, "MicrosoftEdgeWebview2Setup.exe"),
+                                Arguments = "/silent /install",
+                                WorkingDirectory = baseDir
+                            })!.WaitForExitAsync();
+                            Directory.Delete(baseDir, true);
+                        }
                     }
                     else
                     {
-                        App.Logger.WriteLine(LOG_IDENT, "Installing WebView2 runtime...");
-
-                        var package = _versionPackageManifest.Find(x => x.Name == "WebView2RuntimeInstaller.zip");
-
-                        if (package is null)
-                        {
-                            App.Logger.WriteLine(LOG_IDENT, "Aborted runtime install because package does not exist, has WebView2 been added in this Roblox version yet?");
-                            return;
-                        }
-
-                        string baseDirectory = Path.Combine(_latestVersionDirectory, PackageDirectoryMap[package.Name]);
-
-                        ExtractPackage(package);
-
-                        SetStatus(Strings.Bootstrapper_Status_InstallingWebView2);
-
-                        var startInfo = new ProcessStartInfo()
-                        {
-                            WorkingDirectory = baseDirectory,
-                            FileName = Path.Combine(baseDirectory, "MicrosoftEdgeWebview2Setup.exe"),
-                            Arguments = "/silent /install"
-                        };
-
-                        await Process.Start(startInfo)!.WaitForExitAsync();
-
-                        App.Logger.WriteLine(LOG_IDENT, "Finished installing runtime");
-
-                        Directory.Delete(baseDirectory, true);
+                        App.State.Prop.PromptWebView2Install = false;
                     }
                 }
             }
 
-            // finishing and cleanup
+            if (OperatingSystem.IsMacOS())
+            {
+                string[] appNames = ["RobloxPlayer.app", "RobloxStudio.app"];
+                foreach (string appName in appNames)
+                {
+                    string appPath = Path.Combine(_latestVersionDirectory, appName);
+                    if (!Directory.Exists(appPath)) continue;
+
+                    string macOsDir = Path.Combine(appPath, "Contents", "MacOS");
+                    if (Directory.Exists(macOsDir))
+                    {
+                        foreach (string file in Directory.GetFiles(macOsDir))
+                        {
+                            var fileInfo = new FileInfo(file);
+                            fileInfo.UnixFileMode |= UnixFileMode.UserExecute | UnixFileMode.GroupExecute | UnixFileMode.OtherExecute;
+                        }
+                    }
+                    Process.Start("xattr", $"-dr com.apple.quarantine \"{appPath}\"")?.WaitForExit();
+                }
+            }
 
             MigrateCompatibilityFlags();
-
             AppData.DistributionState.VersionGuid = _latestVersionGuid;
-
             AppData.DistributionState.PackageHashes.Clear();
 
             foreach (var package in _versionPackageManifest)
@@ -1625,69 +2584,1474 @@ namespace Froststrap
 
             CleanupVersionsFolder();
 
-            var allPackageHashes = new List<string>();
-
-            allPackageHashes.AddRange(App.PlayerState.Prop.PackageHashes.Values);
-            allPackageHashes.AddRange(App.StudioState.Prop.PackageHashes.Values);
-
             if (!App.Settings.Prop.DebugDisableVersionPackageCleanup)
             {
+                var activeHashes = App.PlayerState.Prop.PackageHashes.Values
+                    .Concat(App.StudioState.Prop.PackageHashes.Values)
+                    .Where(h => h != null)
+                    .ToHashSet();
+
                 foreach (string hash in cachedPackageHashes)
                 {
-                    if (!allPackageHashes.Contains(hash))
+                    if (!activeHashes.Contains(hash))
                     {
-                        App.Logger.WriteLine(LOG_IDENT, $"Deleting unused package {hash}");
-
-                        try
-                        {
-                            File.Delete(Path.Combine(Paths.Downloads, hash));
-                        }
-                        catch (Exception ex)
-                        {
-                            App.Logger.WriteLine(LOG_IDENT, $"Failed to delete {hash}!");
-                            App.Logger.WriteException(LOG_IDENT, ex);
-                        }
+                        try { File.Delete(Path.Combine(Paths.Downloads, hash)); }
+                        catch (Exception ex) { App.Logger.WriteException(LOG_IDENT, ex); }
                     }
                 }
             }
 
-            App.Logger.WriteLine(LOG_IDENT, "Registering approximate program size...");
-
-            int distributionSize = _versionPackageManifest.Sum(x => x.Size + x.PackedSize) / 1024;
-
-            AppData.DistributionState.Size = distributionSize;
-
-            int totalSize = App.PlayerState.Prop.Size + App.PlayerState.Prop.Size;
-
-            using (var uninstallKey = Registry.CurrentUser.CreateSubKey(App.UninstallKey))
+            int totalSize = App.PlayerState.Prop.Size + App.StudioState.Prop.Size;
+            if (OperatingSystem.IsWindows())
             {
+                using var uninstallKey = Registry.CurrentUser.CreateSubKey(App.UninstallKey);
                 uninstallKey.SetValueSafe("EstimatedSize", totalSize);
+                WindowsRegistry.RegisterClientLocation(IsStudioLaunch, _latestVersionDirectory);
             }
 
-            WindowsRegistry.RegisterClientLocation(IsStudioLaunch, _latestVersionDirectory);
-
-            App.Logger.WriteLine(LOG_IDENT, $"Registered as {totalSize} KB");
-
             App.State.Prop.ForceReinstall = false;
-
             App.State.Save();
             AppData.DistributionStateManager.Save();
-
             _isInstalling = false;
+        }
+
+        private static string? ParseFlatpakInstallStep(string line)
+        {
+            if (string.IsNullOrWhiteSpace(line))
+                return null;
+
+            line = Regex.Replace(line, @"\x1B\[[0-9;?]*[ -/]*[@-~]", string.Empty).Replace('\r', ' ').Trim();
+
+            int installingIndex = line.IndexOf("Installing", StringComparison.OrdinalIgnoreCase);
+            if (installingIndex < 0)
+                return null;
+
+            return line[installingIndex..].Trim();
+        }
+
+        private async Task<bool> EnsureSoberInstalledAsync()
+        {
+            const string LOG_IDENT = "Bootstrapper::EnsureSoberInstalled";
+
+            SetStatus(Strings.Bootstrapper_Status_CheckingFlatpak);
+
+            var flatpakCheck = new ProcessStartInfo
+            {
+                FileName = "flatpak",
+                Arguments = "--version",
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            try
+            {
+                using var checkProcess = Process.Start(flatpakCheck);
+                _ = checkProcess ?? throw new InvalidOperationException("Failed to start flatpak process.");
+
+                await checkProcess.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(15));
+
+                if (checkProcess.ExitCode != 0)
+                    throw new InvalidOperationException("Flatpak returned a non-zero exit code.");
+            }
+            catch (TimeoutException ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Timed out while checking Flatpak installation.");
+                App.Logger.WriteException(LOG_IDENT, ex);
+                await Frontend.ShowMessageBox(
+                    "Timed out while checking Flatpak installation. Please make sure Flatpak is working and try again.",
+                    MessageBoxImage.Error
+                );
+                App.Terminate(ErrorCode.ERROR_CANCELLED);
+                return false;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Flatpak not found.");
+                App.Logger.WriteException(LOG_IDENT, ex);
+                await Frontend.ShowMessageBox(
+                    "Flatpak is required on Linux.\n\nPlease install Flatpak first, then launch Froststrap again.",
+                    MessageBoxImage.Error
+                );
+                App.Terminate(ErrorCode.ERROR_CANCELLED);
+                return false;
+            }
+
+            var soberCheck = new ProcessStartInfo
+            {
+                FileName = "flatpak",
+                Arguments = $"info {SoberFlatpakId}",
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            try
+            {
+                using var soberProcess = Process.Start(soberCheck);
+                if (soberProcess is not null)
+                {
+                    await soberProcess.WaitForExitAsync();
+                    if (soberProcess.ExitCode == 0)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, "Sober is already installed.");
+                        return true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Failed to check Sober installation status.");
+                App.Logger.WriteException(LOG_IDENT, ex);
+            }
+
+            App.Logger.WriteLine(LOG_IDENT, "Installing Sober...");
+
+            if (Dialog is not null)
+            {
+                Dialog.ProgressIndeterminate = true;
+                Dialog.TaskbarProgressState = TaskbarItemProgressState.Indeterminate;
+            }
+
+            SetStatus(Strings.Bootstrapper_Status_InstallingSober);
+
+            var installStartInfo = new ProcessStartInfo
+            {
+                FileName = "flatpak",
+                Arguments = $"install --assumeyes --noninteractive flathub {SoberFlatpakId}",
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                CreateNoWindow = true
+            };
+
+            using var installProcess = Process.Start(installStartInfo);
+            if (installProcess is null)
+            {
+                await Frontend.ShowMessageBox(
+                    "Failed to start Sober installation via Flatpak.",
+                    MessageBoxImage.Error
+                );
+                App.Terminate(ErrorCode.ERROR_CANCELLED);
+                return false;
+            }
+
+            var errorLines = new List<string>();
+
+            async Task ReadInstallStream(StreamReader reader)
+            {
+                while (true)
+                {
+                    string? line = await reader.ReadLineAsync();
+                    if (line is null)
+                        break;
+
+                    App.Logger.WriteLine(LOG_IDENT, $"[flatpak] {line}");
+
+                    string? installStep = ParseFlatpakInstallStep(line);
+                    if (!string.IsNullOrEmpty(installStep))
+                        SetStatus(installStep);
+                    else if (!string.IsNullOrWhiteSpace(line))
+                        errorLines.Add(line.Trim());
+                }
+            }
+
+            await Task.WhenAll(
+                ReadInstallStream(installProcess.StandardOutput),
+                ReadInstallStream(installProcess.StandardError),
+                installProcess.WaitForExitAsync()
+            );
+
+            if (installProcess.ExitCode != 0)
+            {
+                string details = string.Join('\n', errorLines.TakeLast(8));
+                string detailsPart = string.IsNullOrWhiteSpace(details) ? "" : $"\n\n{details}";
+                string message = string.Format(Strings.Sober_FlatpakInstallFailed, SoberFlatpakId, detailsPart);
+                await Frontend.ShowMessageBox(message, MessageBoxImage.Error);
+                App.Terminate(ErrorCode.ERROR_CANCELLED);
+                return false;
+            }
+
+            App.Logger.WriteLine(LOG_IDENT, "Sober installation complete.");
+            SetStatus(Strings.Bootstrapper_Status_StartingSober);
+            return true;
+        }
+
+        private async Task UpdateSoberFlatpakAsync()
+        {
+            const string LOG_IDENT = "Bootstrapper::UpdateSoberFlatpak";
+
+            App.Logger.WriteLine(LOG_IDENT, $"Running 'flatpak update {SoberFlatpakId}'.");
+            SetStatus(Strings.Bootstrapper_Status_UpdatingSober);
+
+            if (Dialog is not null)
+            {
+                Dialog.ProgressIndeterminate = false;
+                Dialog.ProgressMaximum = 100;
+                Dialog.ProgressValue = 0;
+                Dialog.TaskbarProgressState = TaskbarItemProgressState.Normal;
+                Dialog.TaskbarProgressValue = 0.0;
+            }
+
+            var updateStartInfo = new ProcessStartInfo
+            {
+                FileName = "flatpak",
+                Arguments = $"update {SoberFlatpakId} --assumeyes",
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                CreateNoWindow = true
+            };
+
+            Process? updateProcess = null;
+
+            var timeout = TimeSpan.FromMinutes(10);
+            var cts = new CancellationTokenSource(timeout);
+
+            using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(
+                cts.Token,
+                _cancelTokenSource.Token
+            );
+
+            try
+            {
+                using var process = Process.Start(updateStartInfo);
+                updateProcess = process;
+                if (updateProcess is null)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Failed to start flatpak update process.");
+                    return;
+                }
+
+                var progressRegex = new Regex(
+                    @"Updating\s+(?<current>\d+)/(?<total>\d+)…",
+                    RegexOptions.Compiled | RegexOptions.IgnoreCase
+                );
+                var percentRegex = new Regex(
+                    @"(?<percent>\d+)%",
+                    RegexOptions.Compiled
+                );
+
+                int totalUpdates = 0;
+                int currentUpdate = 0;
+
+                var outputTask = Task.Run(async () =>
+                {
+                    try
+                    {
+                        while (!linkedCts.Token.IsCancellationRequested)
+                        {
+                            string? line = await updateProcess.StandardOutput.ReadLineAsync();
+                            if (line is null)
+                                break;
+
+                            if (!string.IsNullOrWhiteSpace(line))
+                            {
+                                App.Logger.WriteLine(LOG_IDENT, $"[flatpak] {line}");
+
+                                var progressMatch = progressRegex.Match(line);
+                                int current = 0, total = 0;
+                                if (progressMatch.Success)
+                                {
+                                    current = int.Parse(progressMatch.Groups["current"].Value);
+                                    total = int.Parse(progressMatch.Groups["total"].Value);
+                                }
+
+                                var percentMatch = percentRegex.Match(line);
+                                int percent = -1;
+                                if (percentMatch.Success)
+                                {
+                                    percent = int.Parse(percentMatch.Groups["percent"].Value);
+                                }
+
+                                if (progressMatch.Success && percentMatch.Success)
+                                {
+                                    if (total != totalUpdates)
+                                        totalUpdates = total;
+                                    if (current != currentUpdate)
+                                        currentUpdate = current;
+
+                                    double segmentSize = 100.0 / total;
+                                    double segmentProgress = (current - 1) * segmentSize + (percent / 100.0) * segmentSize;
+                                    int overallPercent = (int)Math.Round(segmentProgress);
+                                    overallPercent = Math.Clamp(overallPercent, 0, 100);
+
+                                    _uiContext?.Post(_ =>
+                                    {
+                                        if (Dialog is not null)
+                                        {
+                                            Dialog.ProgressValue = overallPercent;
+                                            Dialog.TaskbarProgressValue = overallPercent / 100.0;
+                                            SetStatus(string.Format(Strings.Bootstrapper_Status_UpdatingSoberProgress, current, total, percent));
+                                        }
+                                    }, null);
+                                }
+                                else if (progressMatch.Success)
+                                {
+                                    totalUpdates = total;
+                                    currentUpdate = current;
+                                    double segmentStart = (current - 1) * (100.0 / total);
+                                    int overallPercent = (int)Math.Round(segmentStart);
+                                    overallPercent = Math.Clamp(overallPercent, 0, 100);
+                                    _uiContext?.Post(_ =>
+                                    {
+                                        if (Dialog is not null)
+                                        {
+                                            Dialog.ProgressValue = overallPercent;
+                                            Dialog.TaskbarProgressValue = overallPercent / 100.0;
+                                            SetStatus(string.Format(Strings.Bootstrapper_Status_UpdatingSoberBasic, current, total));
+                                        }
+                                    }, null);
+                                }
+                                else
+                                {
+                                    string trimmed = line.Trim();
+                                    if (!string.IsNullOrEmpty(trimmed) && trimmed.Length < 80)
+                                    {
+                                        _uiContext?.Post(_ =>
+                                        {
+                                            SetStatus(trimmed);
+                                        }, null);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, "Output reading cancelled.");
+                    }
+                    catch (Exception ex)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"Error reading flatpak output: {ex.Message}");
+                    }
+                }, linkedCts.Token);
+
+                var errorTask = Task.Run(async () =>
+                {
+                    try
+                    {
+                        while (!linkedCts.Token.IsCancellationRequested)
+                        {
+                            string? line = await updateProcess.StandardError.ReadLineAsync();
+                            if (line is null)
+                                break;
+                            if (!string.IsNullOrWhiteSpace(line))
+                                App.Logger.WriteLine(LOG_IDENT, $"[flatpak-err] {line}");
+                        }
+                    }
+                    catch (OperationCanceledException) { }
+                    catch (Exception ex)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"Error reading flatpak stderr: {ex.Message}");
+                    }
+                }, linkedCts.Token);
+
+                await Task.WhenAny(
+                    updateProcess.WaitForExitAsync(linkedCts.Token),
+                    Task.Delay(Timeout.Infinite, linkedCts.Token)
+                );
+
+                if (!updateProcess.HasExited && linkedCts.IsCancellationRequested)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Update cancelled by user or timeout. Killing process.");
+                    try { updateProcess.Kill(true); } catch { }
+                }
+
+                if (!updateProcess.HasExited)
+                {
+                    await updateProcess.WaitForExitAsync();
+                }
+
+                if (updateProcess.ExitCode != 0 && updateProcess.ExitCode != -1)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, $"flatpak update exited with code {updateProcess.ExitCode}.");
+                }
+                else if (updateProcess.ExitCode == 0)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Sober update finished successfully.");
+                    _uiContext?.Post(_ =>
+                    {
+                        if (Dialog is not null)
+                        {
+                            Dialog.ProgressValue = 100;
+                            Dialog.TaskbarProgressValue = 1.0;
+                            SetStatus(Strings.Bootstrapper_Status_SoberUpdateComplete);
+                        }
+                    }, null);
+                }
+            }
+            catch (OperationCanceledException) when (cts.IsCancellationRequested)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Update timed out after 10 minutes.");
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Failed to update Sober.");
+                App.Logger.WriteException(LOG_IDENT, ex);
+            }
+            finally
+            {
+                _uiContext?.Post(_ =>
+                {
+                    if (Dialog is not null)
+                    {
+                        Dialog.ProgressIndeterminate = true;
+                        Dialog.ProgressValue = 0;
+                        Dialog.TaskbarProgressValue = 0.0;
+                        Dialog.TaskbarProgressState = TaskbarItemProgressState.None;
+                    }
+                }, null);
+            }
+        }
+
+        #region Linux Studio Monstrosity (dont ask questions)
+
+        private async Task EnsureWebView2ViaWineAsync()
+        {
+            const string LOG_IDENT = "Bootstrapper::EnsureWebView2ViaWine";
+
+            if (!App.Settings.Prop.EnableWebView2)
+            {
+                string? installedVersion = await GetWebView2InstalledVersionAsync();
+                if (!string.IsNullOrEmpty(installedVersion))
+                {
+                    App.Logger.WriteLine(LOG_IDENT, $"WebView2 disabled, uninstalling version {installedVersion}");
+                    await UninstallWebView2Async(installedVersion);
+                    if (!string.IsNullOrEmpty(App.Settings.Prop.WinePrefixPath))
+                    {
+                        string markerPath = Path.Combine(App.Settings.Prop.WinePrefixPath, ".webview2_version");
+                        if (File.Exists(markerPath))
+                            File.Delete(markerPath);
+                    }
+                }
+                else
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "WebView2 disabled and not installed, nothing to do.");
+                }
+                return;
+            }
+
+            if (string.IsNullOrEmpty(App.Settings.Prop.WinePrefixPath) || !Directory.Exists(App.Settings.Prop.WinePrefixPath))
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Wine prefix not ready, skipping WebView2 check.");
+                return;
+            }
+
+            string? currentInstalledVersion = await GetWebView2InstalledVersionAsync();
+
+            if (currentInstalledVersion != null)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"WebView2 already installed (version {currentInstalledVersion}), skipping.");
+                return;
+            }
+
+            string? latestVersion = null;
+            string? installerUrl = null;
+            if (string.IsNullOrEmpty(installerUrl))
+                return;
+
+            string downloadPath = Path.Combine(Paths.Downloads, $"WebView2_{latestVersion}.exe");
+            if (!File.Exists(downloadPath))
+            {
+                SetStatus(Strings.Bootstrapper_Status_DownloadingWebView2);
+                await DownloadFileWithProgressAsync(installerUrl, downloadPath);
+            }
+
+            if (Dialog != null)
+            {
+                Dialog.ProgressIndeterminate = true;
+                Dialog.TaskbarProgressState = TaskbarItemProgressState.Indeterminate;
+            }
+
+            try
+            {
+                string overrideKey = @"HKCU\Software\Wine\AppDefaults\msedgewebview2.exe";
+                using var checkProc = Process.Start(new ProcessStartInfo(App.Settings.Prop.WineBinaryPath, $"reg query \"{overrideKey}\" /v Version")
+                {
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                });
+                if (checkProc != null)
+                {
+                    checkProc.StartInfo.Environment["WINEPREFIX"] = App.Settings.Prop.WinePrefixPath;
+                    checkProc.StartInfo.Environment["WINEARCH"] = "win64";
+                    await checkProc.WaitForExitAsync();
+                    if (checkProc.ExitCode != 0)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, "Setting msedgewebview2.exe Windows version to win7");
+                        using var setProc = Process.Start(new ProcessStartInfo(App.Settings.Prop.WineBinaryPath, $"reg add \"{overrideKey}\" /v Version /t REG_SZ /d win7 /f")
+                        {
+                            UseShellExecute = false,
+                            CreateNoWindow = true
+                        });
+                        if (setProc != null)
+                        {
+                            setProc.StartInfo.Environment["WINEPREFIX"] = App.Settings.Prop.WinePrefixPath;
+                            setProc.StartInfo.Environment["WINEARCH"] = "win64";
+                            await setProc.WaitForExitAsync();
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Could not set version override: {ex.Message}");
+            }
+
+            SetStatus(Strings.Bootstrapper_Status_InstallingWebView2);
+            App.Logger.WriteLine(LOG_IDENT, "Running WebView2 installer");
+
+            string installerArgs = "--msedgewebview --do-not-launch-msedge --system-level";
+            var psi = new ProcessStartInfo(App.Settings.Prop.WineBinaryPath, $"\"{downloadPath}\" {installerArgs}")
+            {
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                CreateNoWindow = true,
+                WorkingDirectory = Paths.Downloads
+            };
+            psi.Environment["WINEPREFIX"] = App.Settings.Prop.WinePrefixPath;
+            psi.Environment["WINEARCH"] = "win64";
+
+            using var proc = Process.Start(psi);
+            if (proc == null)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Failed to start WebView2 installer.");
+                return;
+            }
+
+            _ = Task.Run(async () =>
+            {
+                try { while (await proc.StandardOutput.ReadLineAsync() is { } line) App.Logger.WriteLine(LOG_IDENT, $"[webview2-out] {line}"); } catch { }
+            });
+            _ = Task.Run(async () =>
+            {
+                try { while (await proc.StandardError.ReadLineAsync() is { } line) App.Logger.WriteLine(LOG_IDENT, $"[webview2-err] {line}"); } catch { }
+            });
+
+            using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(10));
+            await proc.WaitForExitAsync(cts.Token);
+
+            if (proc.ExitCode == 0)
+            {
+                string markerPath = Path.Combine(App.Settings.Prop.WinePrefixPath, ".webview2_version");
+                await File.WriteAllTextAsync(markerPath, latestVersion ?? "unknown");
+                App.Logger.WriteLine(LOG_IDENT, "WebView2 installed successfully.");
+            }
+            else
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"WebView2 installer exited with code {proc.ExitCode}");
+            }
+        }
+
+        private async Task UninstallWebView2Async(string version)
+        {
+            const string LOG_IDENT = "Bootstrapper::UninstallWebView2Async";
+            if (string.IsNullOrEmpty(App.Settings.Prop.WinePrefixPath))
+                return;
+
+            string uninstallerPath = Path.Combine(App.Settings.Prop.WinePrefixPath, "drive_c", "Program Files (x86)", "Microsoft",
+                "EdgeWebView", "Application", version, "Installer", "setup.exe");
+
+            if (!File.Exists(uninstallerPath))
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Uninstaller not found at {uninstallerPath}, skipping.");
+                return;
+            }
+
+            SetStatus(string.Format(Strings.Bootstrapper_Status_UninstallingWebView2, version));
+            if (Dialog != null)
+            {
+                Dialog.ProgressIndeterminate = true;
+                Dialog.TaskbarProgressState = TaskbarItemProgressState.Indeterminate;
+            }
+
+            var psi = new ProcessStartInfo(App.Settings.Prop.WineBinaryPath, $"\"{uninstallerPath}\" --msedgewebview --uninstall --system-level --force-uninstall")
+            {
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                CreateNoWindow = true
+            };
+            psi.Environment["WINEPREFIX"] = App.Settings.Prop.WinePrefixPath;
+            psi.Environment["WINEARCH"] = "win64";
+
+            using var proc = Process.Start(psi);
+            if (proc == null)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Failed to start uninstaller.");
+                return;
+            }
+
+            _ = Task.Run(async () =>
+            {
+                try { while (await proc.StandardOutput.ReadLineAsync() is { } line) App.Logger.WriteLine(LOG_IDENT, $"[uninstall-out] {line}"); } catch { }
+            });
+            _ = Task.Run(async () =>
+            {
+                try { while (await proc.StandardError.ReadLineAsync() is { } line) App.Logger.WriteLine(LOG_IDENT, $"[uninstall-err] {line}"); } catch { }
+            });
+
+            await proc.WaitForExitAsync();
+
+            if (proc.ExitCode == 0)
+                App.Logger.WriteLine(LOG_IDENT, $"WebView2 {version} uninstalled successfully.");
+            else
+                App.Logger.WriteLine(LOG_IDENT, $"Uninstaller exited with code {proc.ExitCode}");
+        }
+
+        private static async Task<string?> GetWebView2InstalledVersionAsync()
+        {
+            if (string.IsNullOrEmpty(App.Settings.Prop.WineBinaryPath) || string.IsNullOrEmpty(App.Settings.Prop.WinePrefixPath))
+                return null;
+
+            const string versionPath = @"HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Microsoft EdgeWebView";
+            var psi = new ProcessStartInfo(App.Settings.Prop.WineBinaryPath, $"reg query \"{versionPath}\" /v DisplayVersion")
+            {
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+            psi.Environment["WINEPREFIX"] = App.Settings.Prop.WinePrefixPath;
+            psi.Environment["WINEARCH"] = "win64";
+
+            using var proc = Process.Start(psi);
+            if (proc == null) return null;
+            string output = await proc.StandardOutput.ReadToEndAsync();
+            await proc.WaitForExitAsync();
+
+            var match = Regex.Match(output, @"DisplayVersion\s+REG_SZ\s+(\S+)");
+            return match.Success ? match.Groups[1].Value : null;
+        }
+
+        private async Task<bool> RunWineCmdAsync(string args, int timeoutMinutes = 5, bool captureOutput = false)
+        {
+            const string LOG_IDENT = "Bootstrapper::RunWineCmd";
+            using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(timeoutMinutes));
+            using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(_cancelTokenSource.Token, cts.Token);
+
+            var psi = new ProcessStartInfo(App.Settings.Prop.WineBinaryPath, args)
+            {
+                UseShellExecute = false,
+                RedirectStandardOutput = captureOutput,
+                RedirectStandardError = !captureOutput,
+                CreateNoWindow = true
+            };
+            psi.Environment["WINEPREFIX"] = App.Settings.Prop.WinePrefixPath ?? "";
+            psi.Environment["WINEARCH"] = "win64";
+            psi.Environment["WINEDLLOVERRIDES"] = "mscoree,mshtml=";
+
+            App.Logger.WriteLine(LOG_IDENT, $"Starting: {App.Settings.Prop.WineBinaryPath} {args}");
+            using var proc = Process.Start(psi);
+            if (proc == null)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Failed to start process.");
+                return false;
+            }
+
+            string output = "";
+            if (captureOutput)
+                output = await proc.StandardOutput.ReadToEndAsync();
+
+            try
+            {
+                await proc.WaitForExitAsync(linkedCts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Timeout/killed: {args}");
+                proc.Kill(true);
+                return false;
+            }
+
+            if (proc.ExitCode != 0)
+                App.Logger.WriteLine(LOG_IDENT, $"Exit {proc.ExitCode}: {args}");
+            return proc.ExitCode == 0;
+        }
+
+        private static async Task<string> RunProcessAndReadOutputAsync(string fileName, string arguments)
+        {
+            var psi = new ProcessStartInfo(fileName, arguments)
+            {
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+            using var process = Process.Start(psi);
+            if (process == null) return string.Empty;
+            string output = await process.StandardOutput.ReadToEndAsync();
+            await process.WaitForExitAsync();
+            return output;
+        }
+
+        private static string GetWineLogDirectory()
+        {
+            if (string.IsNullOrEmpty(App.Settings.Prop.WinePrefixPath))
+            {
+                App.Logger.WriteLine("Bootstrapper::GetWineLogDirectory", "Wine prefix not set, using default.");
+                App.Settings.Prop.WinePrefixPath = Path.Combine(Paths.Base, "WinePrefix");
+                App.Settings.Save();
+            }
+
+            string systemUser = Environment.UserName;
+            string logPath = Path.Combine(App.Settings.Prop.WinePrefixPath, "drive_c", "users", systemUser, "AppData", "Local", "Roblox", "logs");
+
+            if (!Directory.Exists(logPath))
+            {
+                try
+                {
+                    Directory.CreateDirectory(logPath);
+                    App.Logger.WriteLine("Bootstrapper::GetWineLogDirectory", $"Created log directory: {logPath}");
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.WriteLine("Bootstrapper::GetWineLogDirectory", $"Failed to create log directory: {ex.Message}");
+                }
+            }
+
+            return logPath;
+        }
+
+        private async Task<bool> EnsureWineAndDependenciesAsync()
+        {
+            const string LOG_IDENT = "Bootstrapper::EnsureWineAndDependencies";
+
+            SetStatus(Strings.Bootstrapper_Status_CheckingDependencies);
+
+            string wineInstallBase = Path.Combine(Paths.Base, KombuchaWineDir);
+            string versionMarker = Path.Combine(wineInstallBase, ".version");
+            bool kombuchaAvailable = File.Exists(Path.Combine(Paths.Base, KombuchaSymlink, "bin", "wine"));
+
+            if (!kombuchaAvailable || (File.Exists(versionMarker) && await NeedsNewWineVersionAsync(versionMarker)))
+            {
+                if (Dialog != null)
+                {
+                    Dialog.ProgressIndeterminate = false;
+                    Dialog.ProgressMaximum = ProgressBarMaximum;
+                    Dialog.TaskbarProgressState = TaskbarItemProgressState.Normal;
+                }
+
+                if (!await DownloadAndExtractWineAsync())
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Kombucha download failed, falling back to system Wine.");
+                    string? systemWine = await FindSystemWineAsync();
+                    App.Settings.Prop.WineBinaryPath = systemWine ?? "wine";
+                }
+            }
+            else
+            {
+                App.Settings.Prop.WineBinaryPath = Path.Combine(Paths.Base, KombuchaSymlink, "bin", "wine");
+            }
+
+            App.Settings.Save();
+
+            var testPsi = new ProcessStartInfo(App.Settings.Prop.WineBinaryPath, "--version")
+            {
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+            using var testProc = Process.Start(testPsi);
+            if (testProc == null)
+            {
+                await Frontend.ShowMessageBox("Failed to start Wine process.", MessageBoxImage.Error);
+                return false;
+            }
+            await testProc.WaitForExitAsync();
+            if (testProc.ExitCode != 0)
+            {
+                await Frontend.ShowMessageBox("Wine is not working correctly.", MessageBoxImage.Error);
+                return false;
+            }
+
+            App.Settings.Prop.WinePrefixPath = Path.Combine(Paths.Base, WinePrefixDir);
+            Directory.CreateDirectory(App.Settings.Prop.WinePrefixPath);
+            App.Settings.Save();
+
+            Environment.SetEnvironmentVariable("WINEPREFIX", App.Settings.Prop.WinePrefixPath);
+            Environment.SetEnvironmentVariable("WINEARCH", "win64");
+
+            string stampFile = Path.Combine(App.Settings.Prop.WinePrefixPath, ".wineprefix_stamp");
+            bool needInit = !File.Exists(stampFile) || await NeedsWineUpdateAsync();
+
+            if (needInit)
+            {
+                SetStatus(Strings.Bootstrapper_Status_InitializingWinePrefix);
+                if (Dialog != null)
+                {
+                    Dialog.ProgressIndeterminate = true;
+                    Dialog.TaskbarProgressState = TaskbarItemProgressState.Indeterminate;
+                }
+
+                if (!await RunWineCmdAsync("wineboot -u", 15))
+                {
+                    await Frontend.ShowMessageBox("Failed to initialise Wine prefix.", MessageBoxImage.Error);
+                    return false;
+                }
+
+                string wineInf = Path.Combine(Path.GetDirectoryName(App.Settings.Prop.WineBinaryPath) ?? "", "../share/wine/wine.inf");
+                if (File.Exists(wineInf))
+                {
+                    long stamp = File.GetLastWriteTimeUtc(wineInf).ToFileTimeUtc();
+                    await File.WriteAllTextAsync(stampFile, stamp.ToString());
+                }
+                else
+                {
+                    await File.WriteAllTextAsync(stampFile, "1");
+                }
+
+                await ApplyWineRegistryTweaksAsync();
+            }
+            else
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Wine prefix is up to date.");
+                await RunWineCmdAsync("wineserver -p6", 1);
+            }
+
+            await SetupVulkanLayerAsync();
+
+            var renderer = App.Settings.Prop.StudioRenderer;
+            bool useDxvk = (renderer == StudioRenderer.DXVK || renderer == StudioRenderer.DXVKSarek);
+            if (useDxvk)
+            {
+                SetStatus(Strings.Bootstrapper_Status_SettingUpDXVK);
+                if (!await SetupDxvkAsync())
+                    App.Logger.WriteLine(LOG_IDENT, "DXVK installation failed, continuing without it.");
+            }
+            else
+            {
+                await RestoreOriginalDllsAsync();
+            }
+
+            await EnsureWebView2ViaWineAsync();
+
+            return true;
+        }
+
+        private async Task RestoreOriginalDllsAsync()
+        {
+            const string LOG_IDENT = "Bootstrapper::RestoreOriginalDlls";
+            if (string.IsNullOrEmpty(App.Settings.Prop.WinePrefixPath) || string.IsNullOrEmpty(_latestVersionDirectory))
+                return;
+
+            string[] dlls = ["d3d9.dll", "d3d10core.dll", "d3d11.dll", "dxgi.dll"];
+            string sourceDir = Path.Combine(App.Settings.Prop.WinePrefixPath, "drive_c", "windows", "system32");
+            string targetDir = _latestVersionDirectory;
+
+            foreach (string dll in dlls)
+            {
+                string src = Path.Combine(sourceDir, dll);
+                string dst = Path.Combine(targetDir, dll);
+                if (File.Exists(src))
+                {
+                    try
+                    {
+                        Filesystem.AssertReadOnly(dst);
+                        File.Copy(src, dst, true);
+                        App.Logger.WriteLine(LOG_IDENT, $"Restored {dll}");
+                    }
+                    catch (Exception ex)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"Failed to restore {dll}: {ex.Message}");
+                    }
+                }
+                else if (File.Exists(dst))
+                {
+                    try
+                    {
+                        Filesystem.AssertReadOnly(dst);
+                        File.Delete(dst);
+                        App.Logger.WriteLine(LOG_IDENT, $"Removed orphaned {dll}");
+                    }
+                    catch (Exception ex)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"Failed to delete {dll}: {ex.Message}");
+                    }
+                }
+            }
+            await Task.CompletedTask;
+        }
+
+        private static async Task<bool> NeedsWineUpdateAsync()
+        {
+            string stampFile = Path.Combine(App.Settings.Prop.WinePrefixPath, ".wineprefix_stamp");
+            if (!File.Exists(stampFile)) return true;
+
+            string content = await File.ReadAllTextAsync(stampFile);
+            if (content == "disable")
+                return false;
+
+            if (!long.TryParse(content, out long lastUpdate))
+                return true;
+
+            string wineInf = Path.Combine(Path.GetDirectoryName(App.Settings.Prop.WineBinaryPath) ?? "", "../share/wine/wine.inf");
+            if (!File.Exists(wineInf))
+                return true;
+
+            long currentStamp = File.GetLastWriteTimeUtc(wineInf).ToFileTimeUtc();
+            return lastUpdate != currentStamp;
+        }
+
+        private static async Task<bool> NeedsNewWineVersionAsync(string versionMarkerFile)
+        {
+            if (!File.Exists(versionMarkerFile))
+                return true;
+            string currentTag = await File.ReadAllTextAsync(versionMarkerFile);
+            using var client = new HttpClient();
+            client.DefaultRequestHeaders.Add("User-Agent", "Froststrap");
+            var url = $"https://api.github.com/repos/{KombuchaRepoOwner}/{KombuchaRepoName}/releases/latest";
+            var json = await client.GetStringAsync(url);
+            var release = JsonSerializer.Deserialize<GithubRelease>(json);
+            return release?.TagName != currentTag;
+        }
+
+        private async Task DownloadFileWithProgressAsync(string url, string destination)
+        {
+            using var response = await App.HttpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
+            response.EnsureSuccessStatusCode();
+
+            long totalBytes = response.Content.Headers.ContentLength ?? -1;
+            if (totalBytes <= 0)
+                throw new InvalidOperationException("Unable to determine file size for progress reporting.");
+
+            _totalDownloadedBytes = 0;
+            _progressIncrement = (double)ProgressBarMaximum / totalBytes;
+            _taskbarProgressIncrement = TaskbarProgressMaximum / totalBytes;
+
+            if (Dialog != null)
+            {
+                Dialog.ProgressIndeterminate = false;
+                Dialog.ProgressMaximum = ProgressBarMaximum;
+                Dialog.ProgressValue = 0;
+                Dialog.TaskbarProgressState = TaskbarItemProgressState.Normal;
+                Dialog.TaskbarProgressValue = 0.0;
+            }
+
+            await using var stream = await response.Content.ReadAsStreamAsync();
+            await using var fileStream = new FileStream(destination, FileMode.Create, FileAccess.Write, FileShare.None);
+
+            var buffer = new byte[81920];
+            long totalRead = 0;
+            int bytesRead;
+
+            while ((bytesRead = await stream.ReadAsync(buffer.AsMemory(0, buffer.Length))) > 0)
+            {
+                await fileStream.WriteAsync(buffer.AsMemory(0, bytesRead));
+                totalRead += bytesRead;
+                Interlocked.Add(ref _totalDownloadedBytes, bytesRead);
+                UpdateProgressBar();
+            }
+
+            if (totalRead != totalBytes)
+                throw new IOException($"Downloaded {totalRead} bytes but expected {totalBytes}");
+        }
+
+        private static bool IsFlatpak() => File.Exists("/.flatpak-info");
+
+        private static void CreateSymlink(string symlinkPath, string targetPath)
+        {
+            if (OperatingSystem.IsWindows())
+                throw new NotSupportedException("Symlinks not supported on Windows in this context.");
+            var psi = new ProcessStartInfo("ln", $"-sf \"{targetPath}\" \"{symlinkPath}\"")
+            {
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+            using var p = Process.Start(psi);
+            p?.WaitForExit();
+        }
+
+        private static bool IsValidWineBinaryPath(string path)
+        {
+            if (!File.Exists(path)) return false;
+            try
+            {
+                byte[] magic = new byte[4];
+                using var fs = new FileStream(path, FileMode.Open, FileAccess.Read);
+                if (fs.Read(magic, 0, 4) < 4) return false;
+                return magic[0] == 0x7F && magic[1] == 'E' && magic[2] == 'L' && magic[3] == 'F';
+            }
+            catch { return false; }
+        }
+
+        private static async Task<string?> FindSystemWineAsync()
+        {
+            string[] paths = ["/usr/bin/wine", "/usr/local/bin/wine"];
+            foreach (var p in paths)
+                if (File.Exists(p)) return p;
+            try
+            {
+                string result = await RunProcessAndReadOutputAsync("which", "wine");
+                return result?.Trim();
+            }
+            catch { return null; }
+        }
+
+        private async Task<bool> DownloadAndExtractWineAsync()
+        {
+            const string LOG_IDENT = "Bootstrapper::DownloadAndExtractWine";
+            try
+            {
+                var release = await GetLatestKombuchaReleaseAsync();
+                string tag = release.TagName ?? throw new Exception("No tag");
+                string wineInstallBase = Path.Combine(Paths.Base, KombuchaWineDir);
+                string versionedDir = Path.Combine(wineInstallBase, $"kombucha-{tag}");
+                string symlinkPath = Path.Combine(Paths.Base, KombuchaSymlink);
+
+                if (Directory.Exists(versionedDir))
+                {
+                    string existingWineBinary = Path.Combine(versionedDir, "bin", "wine");
+                    if (IsValidWineBinaryPath(existingWineBinary))
+                    {
+                        CreateSymlink(symlinkPath, versionedDir);
+                        App.Settings.Prop.WineBinaryPath = Path.Combine(symlinkPath, "bin", "wine");
+                        App.Settings.Save();
+                        return true;
+                    }
+                    else
+                    {
+                        Directory.Delete(versionedDir, true);
+                    }
+                }
+
+                var asset = release.Assets?.FirstOrDefault(a => a.Name?.EndsWith(".tar.xz") == true)
+                    ?? throw new Exception("No .tar.xz asset found");
+
+                string cacheDir = Path.Combine(Paths.Cache, "kombucha");
+                Directory.CreateDirectory(cacheDir);
+                string cachedArchive = Path.Combine(cacheDir, $"{tag}.tar.xz");
+
+                if (!File.Exists(cachedArchive))
+                {
+                    SetStatus(Strings.Bootstrapper_Status_DownloadingWine);
+                    await DownloadFileWithProgressAsync(asset.BrowserDownloadUrl, cachedArchive);
+                }
+
+                SetStatus(Strings.Bootstrapper_Status_ExtractingWine);
+                if (Dialog != null)
+                {
+                    Dialog.ProgressIndeterminate = true;
+                    Dialog.TaskbarProgressState = TaskbarItemProgressState.Indeterminate;
+                }
+
+                if (Directory.Exists(versionedDir)) Directory.Delete(versionedDir, true);
+                Directory.CreateDirectory(versionedDir);
+
+                var extractPsi = new ProcessStartInfo("tar", $"-xJf \"{cachedArchive}\" -C \"{versionedDir}\" --strip-components=1")
+                {
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+                using var extractProc = Process.Start(extractPsi) ?? throw new Exception("tar process failed");
+                await extractProc.WaitForExitAsync();
+                if (extractProc.ExitCode != 0) throw new Exception("tar extraction failed");
+
+                string newWineBinary = Path.Combine(versionedDir, "bin", "wine");
+                if (!IsValidWineBinaryPath(newWineBinary))
+                    throw new Exception("Extracted Wine binary is invalid");
+
+                if (Directory.Exists(symlinkPath)) Directory.Delete(symlinkPath);
+                CreateSymlink(symlinkPath, versionedDir);
+
+                App.Settings.Prop.WineBinaryPath = Path.Combine(symlinkPath, "bin", "wine");
+                App.Settings.Save();
+
+                if (Dialog != null)
+                {
+                    Dialog.ProgressIndeterminate = false;
+                    Dialog.ProgressValue = ProgressBarMaximum;
+                    Dialog.TaskbarProgressValue = 1.0;
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        private static async Task<GithubRelease> GetLatestKombuchaReleaseAsync()
+        {
+            string url = $"https://api.github.com/repos/{KombuchaRepoOwner}/{KombuchaRepoName}/releases/latest";
+            string json = await App.HttpClient.GetStringAsync(url);
+            return JsonSerializer.Deserialize<GithubRelease>(json) ?? throw new Exception("Failed to parse release");
+        }
+
+        private async Task ApplyWineRegistryTweaksAsync()
+        {
+            const string LOG_IDENT = "Bootstrapper::ApplyRegistryTweaks";
+            if (string.IsNullOrEmpty(App.Settings.Prop.WinePrefixPath))
+                return;
+
+            string appliedMarker = Path.Combine(App.Settings.Prop.WinePrefixPath, ".shellfolders_applied");
+            if (File.Exists(appliedMarker))
+                return;
+
+            try
+            {
+                string localAppData = $"Z:{Paths.Base.Replace('/', '\\')}\\appdata";
+                string documents = $"Z:{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments).Replace('/', '\\')}";
+                string pictures = $"Z:{Environment.GetFolderPath(Environment.SpecialFolder.MyPictures).Replace('/', '\\')}";
+
+                Directory.CreateDirectory(Path.Combine(Paths.Base, "appdata"));
+
+                string tempDir = Paths.Temp;
+                Directory.CreateDirectory(tempDir);
+                string regFile = Path.Combine(tempDir, "vinegar_folders.reg");
+
+                var regContent = $@"
+Windows Registry Editor Version 5.00
+
+[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders]
+""Local AppData""=hex(2):{ToRegHex(localAppData)}
+""Documents""=hex(2):{ToRegHex(documents)}
+""My Pictures""=hex(2):{ToRegHex(pictures)}
+";
+                await File.WriteAllTextAsync(regFile, regContent);
+
+                var psi = new ProcessStartInfo(App.Settings.Prop.WineBinaryPath, $"regedit /S \"{regFile}\"")
+                {
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+                psi.Environment["WINEPREFIX"] = App.Settings.Prop.WinePrefixPath;
+                psi.Environment["WINEARCH"] = "win64";
+                using var p = Process.Start(psi);
+                if (p != null) await p.WaitForExitAsync();
+
+                try { File.Delete(regFile); } catch { }
+
+                await File.WriteAllTextAsync(appliedMarker, DateTime.UtcNow.ToString("o"));
+                await RunWineCmdAsync("wineboot -r", 2);
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Failed to apply folder tweaks: {ex.Message}");
+            }
+        }
+
+        private static string ToRegHex(string input)
+        {
+            var bytes = Encoding.Unicode.GetBytes(input + "\0");
+            return Convert.ToHexString(bytes);
+        }
+
+        // From vinegar source code
+        private async Task SetupVulkanLayerAsync()
+        {
+            const string LOG_IDENT = "Bootstrapper::SetupVulkanLayer";
+            string layerDir = Path.Combine(Paths.WineRoot, "vulkan_layer");
+            Directory.CreateDirectory(layerDir);
+
+            string soPath = Path.Combine(layerDir, "libVkLayer_VINEGAR_VinegarLayer.so");
+            string cppPath = Path.Combine(layerDir, "vinegar_layer.cpp");
+            string headerPath = Path.Combine(layerDir, "vk_layer.h");
+            string manifestPath = Path.Combine(layerDir, "VkLayer_VINEGAR_VinegarLayer.json");
+
+            if (!File.Exists(cppPath) || !File.Exists(headerPath) || !File.Exists(manifestPath))
+            {
+                try
+                {
+                    byte[] cppData = await Resource.Get("vinegar_layer.cpp");
+                    await File.WriteAllBytesAsync(cppPath, cppData);
+
+                    byte[] headerData = await Resource.Get("vk_layer.h");
+                    await File.WriteAllBytesAsync(headerPath, headerData);
+
+                    byte[] manifestData = await Resource.Get("VkLayer_VINEGAR_VinegarLayer.json");
+                    await File.WriteAllBytesAsync(manifestPath, manifestData);
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, $"Failed to extract Vulkan layer resources: {ex.Message}");
+                    return;
+                }
+            }
+
+            string manifestJson = await File.ReadAllTextAsync(manifestPath);
+            var manifestObj = JsonSerializer.Deserialize<Dictionary<string, object>>(manifestJson);
+            if (manifestObj != null && manifestObj.TryGetValue("layer", out var layerObj) && layerObj != null)
+            {
+                string layerJson = JsonSerializer.Serialize(layerObj);
+                var layer = JsonSerializer.Deserialize<Dictionary<string, object>>(layerJson);
+                if (layer != null && layer.ContainsKey("library_path"))
+                {
+                    layer["library_path"] = "libVkLayer_VINEGAR_VinegarLayer.so";
+                    manifestObj["layer"] = layer;
+                    string updatedJson = JsonSerializer.Serialize(manifestObj, _indentedJsonOptions);
+                    await File.WriteAllTextAsync(manifestPath, updatedJson);
+                }
+            }
+
+            if (!File.Exists(soPath))
+            {
+                SetStatus(Strings.Bootstrapper_Status_CompilingVulkanLayer);
+                var startInfo = new ProcessStartInfo
+                {
+                    FileName = "g++",
+                    Arguments = $"-shared -fPIC -o \"{soPath}\" -I\"{layerDir}\" \"{cppPath}\"",
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+                try
+                {
+                    using var process = Process.Start(startInfo);
+                    if (process != null)
+                    {
+                        await process.WaitForExitAsync();
+                        if (process.ExitCode != 0)
+                            App.Logger.WriteLine(LOG_IDENT, $"Compilation failed with exit code {process.ExitCode}");
+                        else
+                            App.Logger.WriteLine(LOG_IDENT, "Vulkan layer compiled successfully.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, $"Compilation error: {ex.Message}");
+                }
+            }
+        }
+
+        private static bool CheckForNvidiaGpu()
+        {
+            try
+            {
+                using var process = Process.Start(new ProcessStartInfo
+                {
+                    FileName = "lspci",
+                    Arguments = "",
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                });
+                if (process == null) return false;
+                string output = process.StandardOutput.ReadToEnd();
+                process.WaitForExit();
+                return output.Contains("NVIDIA", StringComparison.OrdinalIgnoreCase);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private async Task<bool> SetupDxvkAsync()
+        {
+            const string LOG_IDENT = "Bootstrapper::SetupDxvk";
+
+            var renderer = App.Settings.Prop.StudioRenderer;
+            bool useSarek = (renderer == StudioRenderer.DXVKSarek);
+            if (!useSarek && renderer != StudioRenderer.DXVK)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "DXVK not required, ensuring original DLLs are restored.");
+                await RestoreOriginalDllsAsync();
+                return true;
+            }
+
+            string version = useSarek ? DxvkSarekVersion : DxvkVersion;
+            string dllPath = Path.Combine(_latestVersionDirectory, "d3d11.dll");
+
+            string installedVersion = GetInstalledDxvkVersion(dllPath);
+            if (installedVersion == version)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"{version} already installed (DLL version check).");
+                return true;
+            }
+
+            string cacheDir = Path.Combine(Paths.Cache, "dxvk");
+            Directory.CreateDirectory(cacheDir);
+            string archivePath = Path.Combine(cacheDir, useSarek ? $"dxvk-sarek-{version}.tar.gz" : $"dxvk-{version}.tar.gz");
+
+            if (!File.Exists(archivePath))
+            {
+                SetStatus(useSarek ? Strings.Bootstrapper_Status_DownloadingDXVKSarek : Strings.Bootstrapper_Status_DownloadingDXVK);
+                string url = useSarek ? DxvkSarekUrl : $"https://github.com/doitsujin/dxvk/releases/download/v{version}/dxvk-{version}.tar.gz";
+                await DownloadFileWithProgressAsync(url, archivePath);
+            }
+
+            await RestoreOriginalDllsAsync();
+
+            SetStatus(useSarek ? Strings.Bootstrapper_Status_ExtractingDXVKSarek : Strings.Bootstrapper_Status_ExtractingDXVK);
+            if (Dialog != null)
+            {
+                Dialog.ProgressIndeterminate = true;
+                Dialog.TaskbarProgressState = TaskbarItemProgressState.Indeterminate;
+            }
+
+            bool success = await Task.Run(() =>
+            {
+                try
+                {
+                    using var fileStream = File.OpenRead(archivePath);
+                    using var gzipStream = new GZipInputStream(fileStream);
+                    using var tarStream = new TarInputStream(gzipStream, Encoding.UTF8);
+
+                    TarEntry entry;
+                    while ((entry = tarStream.GetNextEntry()) != null)
+                    {
+                        if (!entry.Name.Contains("/x64/") || !entry.Name.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
+                            continue;
+
+                        string fileName = Path.GetFileName(entry.Name);
+                        string destPath = Path.Combine(_latestVersionDirectory, fileName);
+                        using var output = File.Create(destPath);
+                        tarStream.CopyEntryContents(output);
+                    }
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, $"Extraction failed: {ex.Message}");
+                    return false;
+                }
+            });
+
+            if (!success)
+                return false;
+
+            App.Logger.WriteLine(LOG_IDENT, $"{version} installed successfully.");
+            return true;
+        }
+
+        private static string GetInstalledDxvkVersion(string dllPath)
+        {
+            if (!File.Exists(dllPath))
+                return "";
+            try
+            {
+                var versionInfo = FileVersionInfo.GetVersionInfo(dllPath);
+                if (!string.IsNullOrEmpty(versionInfo.FileVersion))
+                    return string.Join(".", versionInfo.FileVersion.Split('.')[0..3]);
+            }
+            catch { }
+            return "";
+        }
+
+        #endregion
+
+        public static async Task<string?> GetRobloxSecurityCookieAsync()
+        {
+            const string LOG_IDENT = "Bootstrapper::GetRobloxSecurityCookie";
+
+            if (string.IsNullOrEmpty(App.Settings.Prop.WinePrefixPath) || !Directory.Exists(App.Settings.Prop.WinePrefixPath))
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Wine prefix not set or missing.");
+                return null;
+            }
+
+            string userRegPath = Path.Combine(App.Settings.Prop.WinePrefixPath, "user.reg");
+            if (!File.Exists(userRegPath))
+            {
+                App.Logger.WriteLine(LOG_IDENT, "user.reg not found.");
+                return null;
+            }
+
+            string[] lines = await File.ReadAllLinesAsync(userRegPath);
+            string? encryptionKeyHex = null;
+            Dictionary<string, string> credEntries = [];
+
+            string? currentKey = null;
+            foreach (string line in lines)
+            {
+                if (line.StartsWith('[') && line.EndsWith(']'))
+                {
+                    currentKey = line.Trim('[', ']');
+                    continue;
+                }
+
+                if (currentKey == "Software\\Wine\\Credential Manager" && line.StartsWith('"'))
+                {
+                    var match = Regex.Match(line, "\"([^\"]+)\"=(hex\\(\\d+\\))?(.*)");
+                    if (match.Success)
+                    {
+                        string name = match.Groups[1].Value;
+                        string value = match.Groups[3].Value.Trim();
+                        if (name == "EncryptionKey" && value.StartsWith("hex:"))
+                            encryptionKeyHex = value[4..];
+                        else if (name.StartsWith("Generic: https://www.roblox.com:RobloxStudioAuth") && value.StartsWith("hex:"))
+                            credEntries[name] = value[4..];
+                    }
+                }
+            }
+
+            if (encryptionKeyHex == null)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "EncryptionKey not found.");
+                return null;
+            }
+
+            byte[] keyBytes = ParseRegBinaryHex(encryptionKeyHex);
+            string? userIdEntry = credEntries.Keys.FirstOrDefault(k => k.Contains("userid"));
+            if (userIdEntry == null)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "No userId entry found.");
+                return null;
+            }
+
+            byte[] encryptedUserId = ParseRegBinaryHex(credEntries[userIdEntry]);
+            byte[] decryptedUserIdBytes = RC4Decrypt(keyBytes, encryptedUserId);
+            string userId = Encoding.UTF8.GetString(decryptedUserIdBytes).TrimEnd('\0');
+            App.Logger.WriteLine(LOG_IDENT, $"Found userId: {userId}");
+
+            string cookieKey = $"Generic: https://www.roblox.com:RobloxStudioAuth.ROBLOSECURITY{userId}";
+            if (!credEntries.TryGetValue(cookieKey, out string? encryptedCookieHex))
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"No cookie entry for {cookieKey}");
+                return null;
+            }
+
+            byte[] encryptedCookie = ParseRegBinaryHex(encryptedCookieHex!);
+            byte[] decryptedCookie = RC4Decrypt(keyBytes, encryptedCookie);
+            string cookie = Encoding.UTF8.GetString(decryptedCookie).TrimEnd('\0');
+            App.Logger.WriteLine(LOG_IDENT, $"Successfully retrieved cookie (length {cookie.Length})");
+            return cookie;
+        }
+
+        private static byte[] RC4Decrypt(byte[] key, byte[] data)
+        {
+            byte[] s = new byte[256];
+            for (int i = 0; i < 256; i++) s[i] = (byte)i;
+            int j = 0;
+            for (int i = 0; i < 256; i++)
+            {
+                j = (j + s[i] + key[i % key.Length]) & 0xFF;
+                (s[i], s[j]) = (s[j], s[i]);
+            }
+            byte[] output = new byte[data.Length];
+            int i_idx = 0, j_idx = 0;
+            for (int n = 0; n < data.Length; n++)
+            {
+                i_idx = (i_idx + 1) & 0xFF;
+                j_idx = (j_idx + s[i_idx]) & 0xFF;
+                (s[i_idx], s[j_idx]) = (s[j_idx], s[i_idx]);
+                output[n] = (byte)(data[n] ^ s[(s[i_idx] + s[j_idx]) & 0xFF]);
+            }
+            return output;
+        }
+
+        private static byte[] ParseRegBinaryHex(string hexString)
+        {
+            hexString = hexString.Replace(",", "").Replace("\\", "").Trim();
+            if (hexString.Length % 2 != 0) throw new FormatException("Invalid hex length");
+            byte[] bytes = new byte[hexString.Length / 2];
+            for (int i = 0; i < bytes.Length; i++)
+                bytes[i] = Convert.ToByte(hexString.Substring(i * 2, 2), 16);
+            return bytes;
         }
 
         private static void StartBackgroundUpdater()
         {
             const string LOG_IDENT = "Bootstrapper::StartBackgroundUpdater";
 
-            if (Utilities.DoesMutexExist("Bloxstrap-BackgroundUpdater"))
+            if (Utilities.DoesMutexExist(BackgroundUpdaterMutexName))
             {
                 App.Logger.WriteLine(LOG_IDENT, "Background updater already running");
                 return;
             }
 
             App.Logger.WriteLine(LOG_IDENT, "Starting background updater");
-
             Process.Start(Paths.Process, "-backgroundupdater");
         }
 
@@ -1695,108 +4059,242 @@ namespace Froststrap
         {
             const string LOG_IDENT = "Bootstrapper::ApplyModifications";
             bool success = true;
-
             SetStatus(Strings.Bootstrapper_Status_ApplyingModifications);
             App.Logger.WriteLine(LOG_IDENT, "Checking file mods...");
 
             File.Delete(Path.Combine(Paths.Base, "ModManifest.txt"));
 
-            var currentModManifest = new Dictionary<string, ModFileEntry>(StringComparer.OrdinalIgnoreCase);
             Directory.CreateDirectory(Paths.Modifications);
 
+            var allMods = App.State.Prop.Mods.ToList();
+            var allModFolderNames = allMods.Select(m => m.FolderName).ToHashSet(StringComparer.OrdinalIgnoreCase);
+
             var activeMods = App.State.Prop.Mods
-                                .Where(x => x.Target != "Disabled" && (
-                                            x.Target == "Both" ||
-                                            (IsStudioLaunch && x.Target == "Studio") ||
-                                            (!IsStudioLaunch && x.Target == "Player")))
-                                .OrderBy(x => x.Priority)
-                                .ToList();
+                .Where(m => m.Enabled && (
+                    m.Target == ModTarget.Both ||
+                    (IsStudioLaunch && m.Target == ModTarget.Studio) ||
+                    (!IsStudioLaunch && m.Target == ModTarget.Player)))
+                .OrderByDescending(x => x.Priority)
+                .ToList();
 
-            string? activeFontFilename = null;
-            string? customFontModName = activeMods.LastOrDefault(mod =>
+            string contentDirectory = OperatingSystem.IsMacOS()
+                ? Path.Combine(_latestVersionDirectory, AppData.ExecutableName, "Contents", "Resources")
+                : _latestVersionDirectory;
+
+            if (OperatingSystem.IsMacOS())
             {
-                if (File.Exists(Path.Combine(Paths.Modifications, mod.FolderName, "content", "fonts", "CustomFont.ttf")))
-                {
-                    activeFontFilename = "CustomFont.ttf";
-                    return true;
-                }
-                if (File.Exists(Path.Combine(Paths.Modifications, mod.FolderName, "content", "fonts", "CustomFont.otf")))
-                {
-                    activeFontFilename = "CustomFont.otf";
-                    return true;
-                }
-                return false;
-            })?.FolderName;
-
-            if (customFontModName != null && activeFontFilename != null)
-            {
-                App.Logger.WriteLine(LOG_IDENT, $"Executing font patcher for {activeFontFilename}...");
-                string modFontFamiliesFolder = Path.Combine(Paths.Modifications, customFontModName, "content", "fonts", "families");
-                string familiesFolder = Path.Combine(_latestVersionDirectory, "content", "fonts", "families");
-
-                Directory.CreateDirectory(familiesFolder);
-                Directory.CreateDirectory(modFontFamiliesFolder);
-
-                string rbxAssetPath = $"rbxasset://fonts/{activeFontFilename}";
-                var jsonFiles = Directory.GetFiles(familiesFolder, "*.json");
-
-                await Task.Run(() =>
-                {
-                    Parallel.ForEach(jsonFiles, new ParallelOptions { MaxDegreeOfParallelism = 4 }, jsonFilePath =>
-                    {
-                        string jsonFilename = Path.GetFileName(jsonFilePath);
-                        string modFilepath = Path.Combine(modFontFamiliesFolder, jsonFilename);
-
-                        if (File.Exists(modFilepath)) return;
-
-                        var fontFamilyData = JsonSerializer.Deserialize<Models.FontFamily>(File.ReadAllText(jsonFilePath));
-                        if (fontFamilyData is null) return;
-
-                        bool shouldWrite = false;
-                        foreach (var fontFace in fontFamilyData.Faces)
-                        {
-                            if (fontFace.AssetId != rbxAssetPath)
-                            {
-                                fontFace.AssetId = rbxAssetPath;
-                                shouldWrite = true;
-                            }
-                        }
-
-                        if (shouldWrite)
-                            File.WriteAllText(modFilepath, JsonSerializer.Serialize(fontFamilyData, new JsonSerializerOptions { WriteIndented = true }));
-                    });
-                });
-                App.Logger.WriteLine(LOG_IDENT, "End font check");
+                EnsureMacResourcesBackup(contentDirectory, _latestVersionGuid);
             }
 
-            var finalFilesToCopy = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-            var filesToDelete = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var currentModManifest = new Dictionary<string, ModFileEntry>(StringComparer.OrdinalIgnoreCase);
+
+            string modFontFamiliesFolder = Path.Combine(Paths.Modifications, "content", "fonts", "families");
+
+            string? customFontPath = null;
+            string? customFontFilename = null;
+            string? customFontModFolder = null;
+
+            foreach (var mod in activeMods.OrderByDescending(m => m.Priority))
+            {
+                string modTtf = Path.Combine(Paths.Modifications, mod.FolderName, "content", "fonts", "CustomFont.ttf");
+                string modOtf = Path.Combine(Paths.Modifications, mod.FolderName, "content", "fonts", "CustomFont.otf");
+
+                if (File.Exists(modTtf))
+                {
+                    customFontPath = modTtf;
+                    customFontFilename = "CustomFont.ttf";
+                    customFontModFolder = mod.FolderName;
+                    break;
+                }
+                else if (File.Exists(modOtf))
+                {
+                    customFontPath = modOtf;
+                    customFontFilename = "CustomFont.otf";
+                    customFontModFolder = mod.FolderName;
+                    break;
+                }
+            }
+
+            if (customFontPath == null && File.Exists(Paths.CustomFont))
+            {
+                customFontPath = Paths.CustomFont;
+                customFontFilename = "CustomFont.ttf";
+            }
+
+            if (customFontPath != null && customFontFilename != null)
+            {
+                string fontFamiliesFolder;
+                if (customFontModFolder != null)
+                {
+                    fontFamiliesFolder = Path.Combine(Paths.Modifications, customFontModFolder, "content", "fonts", "families");
+                }
+                else
+                {
+                    fontFamiliesFolder = Path.Combine(Paths.Modifications, "content", "fonts", "families");
+                }
+
+                App.Logger.WriteLine(LOG_IDENT, $"Begin font check using '{customFontFilename}' from '{customFontPath}' saving to '{fontFamiliesFolder}'");
+                Directory.CreateDirectory(fontFamiliesFolder);
+
+                string contentFolder = Path.Combine(_latestVersionDirectory, "content");
+                Directory.CreateDirectory(contentFolder);
+                string fontsFolder = Path.Combine(contentFolder, "fonts");
+                Directory.CreateDirectory(fontsFolder);
+                string familiesFolder = Path.Combine(fontsFolder, "families");
+                Directory.CreateDirectory(familiesFolder);
+
+                string rbxAssetPath = $"rbxasset://fonts/{customFontFilename}";
+
+                foreach (string jsonFilePath in Directory.GetFiles(familiesFolder))
+                {
+                    string jsonFilename = Path.GetFileName(jsonFilePath);
+                    string modFilepath = Path.Combine(fontFamiliesFolder, jsonFilename);
+                    if (File.Exists(modFilepath))
+                        continue;
+                    var fontFamilyData = JsonSerializer.Deserialize<FontFamily>(File.ReadAllText(jsonFilePath));
+                    if (fontFamilyData is null)
+                        continue;
+                    bool shouldWrite = false;
+                    foreach (var fontFace in fontFamilyData.Faces)
+                    {
+                        if (fontFace.AssetId != rbxAssetPath)
+                        {
+                            fontFace.AssetId = rbxAssetPath;
+                            shouldWrite = true;
+                        }
+                    }
+                    if (shouldWrite)
+                        File.WriteAllText(modFilepath, JsonSerializer.Serialize(fontFamilyData, _indentedJsonOptions));
+                }
+                App.Logger.WriteLine(LOG_IDENT, "End font check");
+            }
+            else
+            {
+                string flatFontFamiliesFolder = Path.Combine(Paths.Modifications, "content", "fonts", "families");
+                if (Directory.Exists(flatFontFamiliesFolder))
+                {
+                    Directory.Delete(flatFontFamiliesFolder, true);
+                }
+            }
+
+            App.Logger.WriteLine(LOG_IDENT, "Writing AppSettings.xml...");
+            if (!File.Exists(Path.Combine(Paths.Modifications, "AppSettings.xml"))
+                && (!OperatingSystem.IsLinux() || IsStudioLaunch))
+            {
+                Directory.CreateDirectory(_latestVersionDirectory);
+                await File.WriteAllTextAsync(
+                    Path.Combine(_latestVersionDirectory, "AppSettings.xml"),
+                    AppSettings.Replace("roblox.com", Deployment.RobloxDomain)
+                );
+            }
+
+            var allModFiles = new Dictionary<string, (string SourcePath, int Priority, string ModName, FileInfo Info)>(StringComparer.OrdinalIgnoreCase);
+
+            if (Directory.Exists(Paths.Modifications))
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Processing PresetModifications (Flat folder)...");
+
+                foreach (string file in Directory.GetFiles(Paths.Modifications))
+                {
+                    string relativeFile = Path.GetFileName(file);
+                    if (relativeFile == "README.txt" ||
+                        relativeFile.EndsWith("info.json") ||
+                        relativeFile.EndsWith(".lock") ||
+                        relativeFile.StartsWith("ClientSettings\\"))
+                        continue;
+
+                    var info = new FileInfo(file);
+                    allModFiles[relativeFile] = (file, int.MinValue, "BaseModification", info);
+                }
+
+                foreach (string dir in Directory.GetDirectories(Paths.Modifications))
+                {
+                    string dirName = Path.GetFileName(dir);
+                    if (allModFolderNames.Contains(dirName, StringComparer.OrdinalIgnoreCase))
+                        continue;
+
+                    foreach (string file in Directory.GetFiles(dir, "*.*", SearchOption.AllDirectories))
+                    {
+                        string relativeFile = Path.GetRelativePath(Paths.Modifications, file);
+                        if (relativeFile == "README.txt" ||
+                            relativeFile.EndsWith("info.json") ||
+                            relativeFile.EndsWith(".lock") ||
+                            relativeFile.StartsWith("ClientSettings\\"))
+                            continue;
+
+                        var info = new FileInfo(file);
+                        allModFiles[relativeFile] = (file, int.MinValue, "BaseModification", info);
+                    }
+                }
+            }
 
             foreach (var mod in activeMods)
             {
                 string modSource = Path.Combine(Paths.Modifications, mod.FolderName);
-                if (Directory.Exists(modSource))
-                    ProcessModDirectory(modSource, finalFilesToCopy, filesToDelete);
+                if (!Directory.Exists(modSource))
+                {
+                    App.Logger.WriteLine(LOG_IDENT, $"Skipping mod '{mod.FolderName}': directory not found");
+                    continue;
+                }
+
+                App.Logger.WriteLine(LOG_IDENT, $"Processing mod '{mod.FolderName}' (priority: {mod.Priority})");
+
+                foreach (string file in Directory.GetFiles(modSource, "*.*", SearchOption.AllDirectories))
+                {
+                    string relativeFile = Path.GetRelativePath(modSource, file);
+
+                    if (relativeFile == "README.txt" ||
+                        relativeFile.EndsWith("info.json") ||
+                        relativeFile.EndsWith(".lock") ||
+                        relativeFile.StartsWith("ClientSettings\\"))
+                        continue;
+
+                    string? fileNameWithoutExt = Path.GetFileNameWithoutExtension(relativeFile);
+                    if (fileNameWithoutExt != null && fileNameWithoutExt.EndsWith("_Delete"))
+                        continue;
+
+                    var info = new FileInfo(file);
+
+                    allModFiles[relativeFile] = (file, mod.Priority, mod.FolderName, info);
+                }
             }
 
-            if (Directory.Exists(Paths.PresetModifications))
+            var filesToDelete = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            foreach (var mod in activeMods)
             {
-                App.Logger.WriteLine(LOG_IDENT, "Applying PresetModifications (Flat folder)...");
-                ProcessModDirectory(Paths.PresetModifications, finalFilesToCopy, filesToDelete);
+                string modSource = Path.Combine(Paths.Modifications, mod.FolderName);
+                if (!Directory.Exists(modSource)) continue;
+
+                foreach (string file in Directory.GetFiles(modSource, "*_Delete.*", SearchOption.AllDirectories))
+                {
+                    string relativeFile = Path.GetRelativePath(modSource, file);
+                    string actualFile = relativeFile;
+                    string? fileNameWithoutExt = Path.GetFileNameWithoutExtension(relativeFile);
+                    if (fileNameWithoutExt != null && fileNameWithoutExt.EndsWith("_Delete"))
+                    {
+                        string directory = Path.GetDirectoryName(relativeFile) ?? "";
+                        string originalName = fileNameWithoutExt[..^7];
+                        actualFile = Path.Combine(directory, originalName + Path.GetExtension(relativeFile));
+                    }
+                    filesToDelete.Add(actualFile);
+                }
             }
 
-            foreach (var relPath in filesToDelete)
+            foreach (string relPath in filesToDelete)
+                allModFiles.Remove(relPath);
+
+            foreach (string relPath in filesToDelete)
             {
-                string targetFile = Path.Combine(_latestVersionDirectory, relPath);
+                string targetFile = Path.Combine(contentDirectory, relPath);
                 if (File.Exists(targetFile))
                 {
                     Filesystem.AssertReadOnly(targetFile);
                     File.Delete(targetFile);
-                    App.Logger.WriteLine(LOG_IDENT, $"{relPath} has been deleted via _Delete flag");
+                    App.Logger.WriteLine(LOG_IDENT, $"{relPath} deleted via _Delete flag");
 
                     string? parentDir = Path.GetDirectoryName(targetFile);
                     while (!string.IsNullOrEmpty(parentDir) &&
-                            parentDir.TrimEnd(Path.DirectorySeparatorChar) != _latestVersionDirectory.TrimEnd(Path.DirectorySeparatorChar))
+                           parentDir.TrimEnd(Path.DirectorySeparatorChar) != contentDirectory.TrimEnd(Path.DirectorySeparatorChar))
                     {
                         if (Directory.Exists(parentDir) && !Directory.EnumerateFileSystemEntries(parentDir).Any())
                         {
@@ -1806,6 +4304,7 @@ namespace Froststrap
                         else break;
                     }
                 }
+
                 lock (currentModManifest)
                     currentModManifest[relPath + "_Delete"] = new ModFileEntry { Size = 0, LastModified = DateTime.Now };
             }
@@ -1813,28 +4312,27 @@ namespace Froststrap
             var fileTasks = new List<Task<bool>>();
             using var semaphore = new SemaphoreSlim(8);
 
-            foreach (var entry in finalFilesToCopy)
+            foreach (var entry in allModFiles)
             {
                 if (_cancelTokenSource.IsCancellationRequested) return true;
 
                 string relativeFile = entry.Key;
-                string sourceFile = entry.Value;
-                string fileVersionFolder = Path.Combine(_latestVersionDirectory, relativeFile);
+                var (sourceFile, priority, modName, sourceInfo) = entry.Value;
+                string fileVersionFolder = Path.Combine(contentDirectory, relativeFile);
 
                 fileTasks.Add(Task.Run(async () =>
                 {
                     await semaphore.WaitAsync();
                     try
                     {
-                        var sourceInfo = new FileInfo(sourceFile);
-                        lock (currentModManifest)
-                            currentModManifest[relativeFile] = new ModFileEntry { Size = sourceInfo.Length, LastModified = sourceInfo.LastWriteTime };
-
                         bool needsCopy = true;
+
                         if (File.Exists(fileVersionFolder))
                         {
                             var targetInfo = new FileInfo(fileVersionFolder);
-                            if (targetInfo.Length == sourceInfo.Length && targetInfo.LastWriteTime == sourceInfo.LastWriteTime)
+
+                            if (targetInfo.Length == sourceInfo.Length &&
+                                targetInfo.LastWriteTime == sourceInfo.LastWriteTime)
                             {
                                 needsCopy = false;
                             }
@@ -1846,6 +4344,7 @@ namespace Froststrap
                                 if (sourceHash == targetHash)
                                 {
                                     needsCopy = false;
+
                                     File.SetLastWriteTime(fileVersionFolder, sourceInfo.LastWriteTime);
                                 }
                             }
@@ -1861,30 +4360,36 @@ namespace Froststrap
                             App.Logger.WriteLine(LOG_IDENT, $"{relativeFile} applied");
                         }
 
+                        lock (currentModManifest)
+                        {
+                            currentModManifest[relativeFile] = new ModFileEntry
+                            {
+                                Size = sourceInfo.Length,
+                                LastModified = sourceInfo.LastWriteTime
+                            };
+                        }
+
                         return true;
                     }
                     catch (Exception ex)
                     {
-                        App.Logger.WriteLine(LOG_IDENT, $"Failed to apply ({relativeFile}): {ex.Message}");
+                        App.Logger.WriteLine(LOG_IDENT, $"Failed to apply ({relativeFile}) from mod '{modName}': {ex.Message}");
                         return false;
                     }
                     finally { semaphore.Release(); }
                 }));
             }
 
-            if (!File.Exists(Path.Combine(Paths.Modifications, "AppSettings.xml")))
-                await File.WriteAllTextAsync(Path.Combine(_latestVersionDirectory, "AppSettings.xml"), AppSettings.Replace("roblox.com", Deployment.RobloxDomain));
-
             var fileResults = await Task.WhenAll(fileTasks);
             success = success && fileResults.All(r => r);
 
-            if (App.Settings.Prop.UseFastFlagManager)
+            if (App.Settings.Prop.UseFastFlagManager && (!OperatingSystem.IsLinux() || IsStudioLaunch))
             {
-                string source = Path.Combine(Paths.PresetModifications, "ClientSettings", "ClientAppSettings.json");
+                string source = Path.Combine(Paths.Modifications, "ClientSettings", "ClientAppSettings.json");
                 if (File.Exists(source))
                 {
                     string rel = Path.Combine("ClientSettings", "ClientAppSettings.json");
-                    string dest = Path.Combine(_latestVersionDirectory, rel);
+                    string dest = Path.Combine(contentDirectory, rel);
                     var info = new FileInfo(source);
 
                     lock (currentModManifest)
@@ -1892,7 +4397,8 @@ namespace Froststrap
 
                     try
                     {
-                        bool match = File.Exists(dest) && (await Task.Run(() => MD5Hash.FromFile(source)) == await Task.Run(() => MD5Hash.FromFile(dest)));
+                        bool match = File.Exists(dest) &&
+                            (await Task.Run(() => MD5Hash.FromFile(source)) == await Task.Run(() => MD5Hash.FromFile(dest)));
                         if (!match)
                         {
                             Directory.CreateDirectory(Path.GetDirectoryName(dest)!);
@@ -1906,89 +4412,132 @@ namespace Froststrap
             }
 
             var fileRestoreMap = new Dictionary<string, List<string>>();
-
-            foreach (var fileLocation in AppData.DistributionState.ModManifest)
+            foreach (string fileLocation in AppData.DistributionState.ModManifest)
             {
                 if (currentModManifest.ContainsKey(fileLocation))
                     continue;
 
-                string targetFile = fileLocation;
-                string fileNameWithoutExt = Path.GetFileNameWithoutExtension(fileLocation);
+                string actualFile = fileLocation;
+                string? fileNameWithoutExt = Path.GetFileNameWithoutExtension(fileLocation);
 
-                if (fileNameWithoutExt.EndsWith("_Delete"))
+                if (fileNameWithoutExt != null && fileNameWithoutExt.EndsWith("_Delete") && OperatingSystem.IsLinux() && !IsStudioLaunch)
+                    continue;
+
+                if (OperatingSystem.IsMacOS())
                 {
-                    string directory = Path.GetDirectoryName(fileLocation) ?? "";
-                    string originalFileNameWithoutDelete = fileNameWithoutExt.Substring(0, fileNameWithoutExt.Length - 7);
-                    targetFile = Path.Combine(directory, originalFileNameWithoutDelete + Path.GetExtension(fileLocation));
-                }
-
-                var packageMapEntry = PackageDirectoryMap.SingleOrDefault(x => !String.IsNullOrEmpty(x.Value) && targetFile.StartsWith(x.Value, StringComparison.OrdinalIgnoreCase));
-                string packageName = packageMapEntry.Key;
-
-                if (String.IsNullOrEmpty(packageName))
-                {
-                    string versionFileLocation = Path.Combine(_latestVersionDirectory, targetFile);
-                    if (File.Exists(versionFileLocation)) File.Delete(versionFileLocation);
+                    string backupDir = GetResourcesBackupPath(_latestVersionGuid);
+                    string sourceFile = Path.Combine(backupDir, actualFile);
+                    string destFile = Path.Combine(contentDirectory, actualFile);
+                    if (File.Exists(sourceFile))
+                    {
+                        Directory.CreateDirectory(Path.GetDirectoryName(destFile)!);
+                        File.Copy(sourceFile, destFile, true);
+                        App.Logger.WriteLine(LOG_IDENT, $"Restored '{actualFile}' from backup");
+                    }
+                    else
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"Backup file not found: {actualFile}");
+                    }
                     continue;
                 }
 
-                if (!fileRestoreMap.ContainsKey(packageName))
-                    fileRestoreMap[packageName] = new();
+                string? packageName = null;
+                string? packageDir = null;
 
-                string internalZipPath = targetFile.Substring(packageMapEntry.Value.Length).TrimStart(Path.DirectorySeparatorChar);
+                foreach (var kvp in PackageDirectoryMap)
+                {
+                    if (!string.IsNullOrEmpty(kvp.Value) && actualFile.StartsWith(kvp.Value, StringComparison.OrdinalIgnoreCase))
+                    {
+                        packageName = kvp.Key;
+                        packageDir = kvp.Value;
+                        break;
+                    }
+                }
+
+                if (string.IsNullOrEmpty(packageName) || string.IsNullOrEmpty(packageDir))
+                {
+                    string versionFileLocation = Path.Combine(_latestVersionDirectory, actualFile);
+                    if (File.Exists(versionFileLocation))
+                    {
+                        Filesystem.AssertReadOnly(versionFileLocation);
+                        File.Delete(versionFileLocation);
+                        App.Logger.WriteLine(LOG_IDENT, $"Deleted orphaned file {actualFile}");
+                    }
+                    continue;
+                }
+
+                string internalZipPath = actualFile[packageDir.Length..].TrimStart(Path.DirectorySeparatorChar);
+
+                if (!fileRestoreMap.ContainsKey(packageName))
+                    fileRestoreMap[packageName] = [];
+
                 fileRestoreMap[packageName].Add(internalZipPath);
+                App.Logger.WriteLine(LOG_IDENT, $"Restoring '{internalZipPath}' from package {packageName}");
             }
 
-            foreach (var entry in fileRestoreMap)
+            if (!OperatingSystem.IsLinux() || IsStudioLaunch)
             {
-                var package = _versionPackageManifest.Find(x => x.Name == entry.Key);
-                if (package is not null)
+                foreach (var entry in fileRestoreMap)
                 {
-                    await DownloadPackage(package);
-                    ExtractPackage(package, entry.Value);
+                    var package = _versionPackageManifest.Find(x => x.Name == entry.Key);
+                    if (package is not null)
+                    {
+                        await DownloadPackage(package);
+                        await ExtractPackage(package, entry.Value);
+                    }
                 }
             }
 
             if (App.LaunchSettings.BackgroundUpdaterFlag.Active || !AppData.DistributionStateManager.HasFileOnDiskChanged())
             {
-                AppData.DistributionState.ModManifest = currentModManifest.Keys.ToList(); ;
+                AppData.DistributionState.ModManifest = [.. currentModManifest.Keys];
                 AppData.DistributionStateManager.Save();
             }
 
-            App.Logger.WriteLine(LOG_IDENT, $"Finished checking file mods");
-
+            App.Logger.WriteLine(LOG_IDENT, "Finished checking file mods");
             return success;
         }
 
-        private void ProcessModDirectory(string sourcePath, Dictionary<string, string> copyMap, HashSet<string> deleteSet)
+        private static string GetResourcesBackupPath(string versionGuid)
         {
-            foreach (string file in Directory.GetFiles(sourcePath, "*.*", SearchOption.AllDirectories))
+            return Path.Combine(Paths.Base, "ModBackup", versionGuid);
+        }
+
+        private static void CopyDirectory(string sourceDir, string destDir, bool overwrite = true)
+        {
+            Directory.CreateDirectory(destDir);
+            foreach (string file in Directory.GetFiles(sourceDir, "*", SearchOption.AllDirectories))
             {
-                string relativeFile = file.Substring(sourcePath.Length).TrimStart(Path.DirectorySeparatorChar);
-
-                if (relativeFile == "README.txt")
-                {
-                    File.Delete(file);
-                    continue;
-                }
-
-                if (relativeFile.EndsWith("ClientSettings") || relativeFile.EndsWith(".lock"))
-                    continue;
-
-                string fileNameWithoutExt = Path.GetFileNameWithoutExtension(relativeFile);
-
-                if (fileNameWithoutExt.EndsWith("_Delete"))
-                {
-                    string originalRelName = Path.Combine(Path.GetDirectoryName(relativeFile) ?? "", fileNameWithoutExt.Substring(0, fileNameWithoutExt.Length - 7) + Path.GetExtension(relativeFile));
-                    deleteSet.Add(originalRelName);
-                    copyMap.Remove(originalRelName);
-                }
-                else
-                {
-                    copyMap[relativeFile] = file;
-                    deleteSet.Remove(relativeFile);
-                }
+                string relative = Path.GetRelativePath(sourceDir, file);
+                string dest = Path.Combine(destDir, relative);
+                Directory.CreateDirectory(Path.GetDirectoryName(dest)!);
+                File.Copy(file, dest, overwrite);
             }
+        }
+
+        private static void EnsureMacResourcesBackup(string resourcesDir, string versionGuid)
+        {
+            const string LOG_IDENT = "Bootstrapper::EnsureMacResourcesBackup";
+            string backupDir = GetResourcesBackupPath(versionGuid);
+
+            if (Directory.Exists(backupDir))
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Resources backup for version {versionGuid} already exists.");
+                return;
+            }
+
+            App.Logger.WriteLine(LOG_IDENT, $"Creating Resources backup for version {versionGuid}...");
+            Directory.CreateDirectory(backupDir);
+            CopyDirectory(resourcesDir, backupDir, true);
+            App.Logger.WriteLine(LOG_IDENT, "Resources backup created.");
+        }
+
+        private static string GetMacArchPath()
+        {
+            return System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture
+                == System.Runtime.InteropServices.Architecture.Arm64
+                ? "/mac/arm64"
+                : "/mac";
         }
 
         private async Task DownloadPackage(Package package)
@@ -2000,27 +4549,27 @@ namespace Froststrap
 
             Directory.CreateDirectory(Paths.Downloads);
 
-            string packageUrl = Deployment.GetLocation($"/{_latestVersionGuid}-{package.Name}");
+            string packageUrl = OperatingSystem.IsMacOS()
+                ? Deployment.GetLocation($"{GetMacArchPath()}/{_latestVersionGuid}-{package.Name}")
+                : Deployment.GetLocation($"/{_latestVersionGuid}-{package.Name}");
+
             string robloxPackageLocation = Path.Combine(Paths.Roblox, "Downloads", package.Signature);
 
             if (File.Exists(package.DownloadPath))
             {
-                var file = new FileInfo(package.DownloadPath);
-
                 string calculatedMD5 = MD5Hash.FromFile(package.DownloadPath);
 
-                if (calculatedMD5 != package.Signature)
+                // Skip hash validation for macOS as the mock manifest lacks actual signature MD5s
+                if (!OperatingSystem.IsMacOS() && calculatedMD5 != package.Signature)
                 {
                     App.Logger.WriteLine(LOG_IDENT, $"Package is corrupted ({calculatedMD5} != {package.Signature})! Deleting and re-downloading...");
-                    file.Delete();
+                    File.Delete(package.DownloadPath);
                 }
                 else
                 {
-                    App.Logger.WriteLine(LOG_IDENT, $"Package is already downloaded, skipping...");
-
-                    _totalDownloadedBytes += package.PackedSize;
+                    App.Logger.WriteLine(LOG_IDENT, "Package is already downloaded, skipping...");
+                    Interlocked.Add(ref _totalDownloadedBytes, package.PackedSize);
                     UpdateProgressBar();
-
                     return;
                 }
             }
@@ -2028,26 +4577,18 @@ namespace Froststrap
             {
                 // let's cheat! if the stock bootstrapper already previously downloaded the file,
                 // then we can just copy the one from there
-
                 App.Logger.WriteLine(LOG_IDENT, $"Found existing copy at '{robloxPackageLocation}'! Copying to Downloads folder...");
                 File.Copy(robloxPackageLocation, package.DownloadPath);
-
-                _totalDownloadedBytes += package.PackedSize;
+                Interlocked.Add(ref _totalDownloadedBytes, package.PackedSize);
                 UpdateProgressBar();
-
                 return;
             }
 
-            if (File.Exists(package.DownloadPath))
-                return;
-
-            const int maxTries = 5;
-
             App.Logger.WriteLine(LOG_IDENT, "Downloading...");
 
-            var buffer = new byte[4096];
+            var buffer = new byte[DownloadBufferSize];
 
-            for (int i = 1; i <= maxTries; i++)
+            for (int i = 1; i <= MaxDownloadAttempts; i++)
             {
                 if (_cancelTokenSource.IsCancellationRequested)
                     return;
@@ -2069,28 +4610,19 @@ namespace Froststrap
                             return;
                         }
 
-                        int bytesRead = await stream.ReadAsync(buffer, _cancelTokenSource.Token);
-
+                        int bytesRead = await stream.ReadAsync(buffer.AsMemory(0, buffer.Length), _cancelTokenSource.Token);
                         if (bytesRead == 0)
                             break;
 
                         totalBytesRead += bytesRead;
-
                         await fileStream.WriteAsync(buffer.AsMemory(0, bytesRead), _cancelTokenSource.Token);
 
-                        _totalDownloadedBytes += bytesRead;
-                        SetStatus(
-                            String.Format(App.Settings.Prop.DownloadingStringFormat,
-                            package.Name,
-                            totalBytesRead / 1048576,
-                            package.Size / 1048576
-                            ));
+                        Interlocked.Add(ref _totalDownloadedBytes, bytesRead);
                         UpdateProgressBar();
                     }
 
                     string hash = MD5Hash.FromStream(fileStream);
-
-                    if (hash != package.Signature)
+                    if (!OperatingSystem.IsMacOS() && hash != package.Signature)
                         throw new ChecksumFailedException($"Failed to verify download of {packageUrl}\n\nExpected hash: {package.Signature}\nGot hash: {hash}");
 
                     App.Logger.WriteLine(LOG_IDENT, $"Finished downloading! ({totalBytesRead} bytes total)");
@@ -2098,7 +4630,7 @@ namespace Froststrap
                 }
                 catch (Exception ex)
                 {
-                    App.Logger.WriteLine(LOG_IDENT, $"An exception occurred after downloading {totalBytesRead} bytes. ({i}/{maxTries})");
+                    App.Logger.WriteLine(LOG_IDENT, $"An exception occurred after downloading {totalBytesRead} bytes. ({i}/{MaxDownloadAttempts})");
                     App.Logger.WriteException(LOG_IDENT, ex);
 
                     if (ex.GetType() == typeof(ChecksumFailedException))
@@ -2109,16 +4641,17 @@ namespace Froststrap
                             MessageBoxImage.Error,
                             ex
                         );
-
                         App.Terminate(ErrorCode.ERROR_CANCELLED);
                     }
-                    else if (i >= maxTries)
+                    else if (i >= MaxDownloadAttempts)
+                    {
                         throw;
+                    }
 
                     if (File.Exists(package.DownloadPath))
                         File.Delete(package.DownloadPath);
 
-                    _totalDownloadedBytes -= totalBytesRead;
+                    Interlocked.Add(ref _totalDownloadedBytes, -totalBytesRead);
                     UpdateProgressBar();
 
                     // attempt download over HTTP
@@ -2133,41 +4666,91 @@ namespace Froststrap
             }
         }
 
-        private void ExtractPackage(Package package, List<string>? files = null)
+        private async Task<bool> ExtractPackage(Package package, List<string>? files = null)
         {
             const string LOG_IDENT = "Bootstrapper::ExtractPackage";
+            int attempts = 0;
+            const int maxAttempts = 3;
 
-            string? packageDir = PackageDirectoryMap.GetValueOrDefault(package.Name);
-
-            if (packageDir is null)
+            while (attempts < maxAttempts)
             {
-                App.Logger.WriteLine(LOG_IDENT, $"WARNING: {package.Name} was not found in the package map!");
-                return;
+                try
+                {
+                    attempts++;
+
+                    string? packageDir = PackageDirectoryMap.GetValueOrDefault(package.Name);
+                    if (packageDir is null)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"WARNING: {package.Name} not found in package map, skipping.");
+                        return true;
+                    }
+
+                    string targetFolder = Path.Combine(_latestVersionDirectory, packageDir);
+                    Directory.CreateDirectory(targetFolder);
+
+                    if (files != null && files.Count > 0)
+                    {
+                        foreach (string relativePath in files)
+                        {
+                            string fullPath = Path.Combine(targetFolder, relativePath);
+                            if (File.Exists(fullPath))
+                                File.SetAttributes(fullPath, FileAttributes.Normal);
+                        }
+                    }
+                    else
+                    {
+                        if (Directory.Exists(targetFolder))
+                        {
+                            foreach (string file in Directory.GetFiles(targetFolder, "*", SearchOption.AllDirectories))
+                                File.SetAttributes(file, FileAttributes.Normal);
+                        }
+                    }
+
+                    string? fileFilter = null;
+                    if (files != null && files.Count > 0)
+                    {
+                        var regexList = new List<string>();
+                        foreach (string file in files)
+                            regexList.Add("^" + Regex.Escape(file) + "$");
+                        fileFilter = string.Join(';', regexList);
+                    }
+
+                    App.Logger.WriteLine(LOG_IDENT, $"Extracting {package.Name} (Attempt {attempts}/{maxAttempts})...");
+                    var fastZip = new FastZip(_fastZipEvents);
+                    fastZip.ExtractZip(package.DownloadPath, targetFolder, fileFilter);
+                    App.Logger.WriteLine(LOG_IDENT, $"Finished extracting {package.Name}");
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, $"Extraction failed on attempt {attempts}: {ex.Message}");
+
+                    if (ex.Message.EndsWith(".ttf", StringComparison.OrdinalIgnoreCase))
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"Ignoring non‑critical extraction failure for font file.");
+                        return true;
+                    }
+
+                    if (File.Exists(package.DownloadPath))
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, "Deleting corrupted package for retry...");
+                        File.Delete(package.DownloadPath);
+                    }
+
+                    if (attempts >= maxAttempts)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, "Max extraction attempts reached. Giving up.");
+                        return false;
+                    }
+
+                    App.Logger.WriteLine(LOG_IDENT, "Retrying download...");
+                    SetStatus(string.Format(Strings.Bootstrapper_Status_RetryingPackage, package.Name));
+                    await Task.Delay(1000);
+                    await DownloadPackage(package);
+                }
             }
 
-            string packageFolder = Path.Combine(_latestVersionDirectory, packageDir);
-            string? fileFilter = null;
-
-            // for sharpziplib, each file in the filter needs to be a regex
-            if (files is not null)
-            {
-                var regexList = new List<string>();
-
-                foreach (string file in files)
-                    regexList.Add("^" + file.Replace("\\", "\\\\").Replace("(", "\\(").Replace(")", "\\)") + "$");
-
-                fileFilter = String.Join(';', regexList);
-            }
-
-            App.Logger.WriteLine(LOG_IDENT, $"Extracting {package.Name}...");
-
-            var fastZip = new FastZip(_fastZipEvents);
-            fastZip.RestoreDateTimeOnExtract = false;
-            fastZip.RestoreAttributesOnExtract = false;
-
-            fastZip.ExtractZip(package.DownloadPath, packageFolder, fileFilter);
-
-            App.Logger.WriteLine(LOG_IDENT, $"Finished extracting {package.Name}");
+            return false;
         }
         #endregion
     }

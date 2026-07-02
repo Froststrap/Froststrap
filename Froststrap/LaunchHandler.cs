@@ -53,21 +53,11 @@ namespace Froststrap
             {
                 App.Logger.WriteLine(LOG_IDENT, "Opening watcher");
                 LaunchWatcher();
-                if (App.LaunchSettings.PostLaunchFlag.Active)
-                {
-                    App.Logger.WriteLine(LOG_IDENT, "Opening post-launch");
-                    LaunchPostLaunch();
-                }
             }
             else if (App.LaunchSettings.BackgroundUpdaterFlag.Active)
             {
                 App.Logger.WriteLine(LOG_IDENT, "Opening background updater");
                 LaunchBackgroundUpdater();
-            }
-            else if (App.LaunchSettings.MultiInstanceWatcherFlag.Active)
-            {
-                App.Logger.WriteLine(LOG_IDENT, "Opening multi-instance watcher");
-                LaunchMultiInstanceWatcher();
             }
             else if (App.LaunchSettings.RobloxLaunchMode != LaunchMode.None)
             {
@@ -78,11 +68,6 @@ namespace Froststrap
             {
                 App.Logger.WriteLine(LOG_IDENT, "Opening Bloxshade");
                 LaunchBloxshadeConfig();
-            }
-            else if (App.LaunchSettings.PostLaunchFlag.Active)
-            {
-                App.Logger.WriteLine(LOG_IDENT, "Opening post-launch");
-                LaunchPostLaunch();
             }
             else if (!App.LaunchSettings.QuietFlag.Active)
             {
@@ -168,6 +153,7 @@ namespace Froststrap
                 window.Closed += (s, e) =>
                 {
                     App.FrostRPC?.Dispose();
+                    App.FrostRPC = null;
                 };
 
                 window.Show();
@@ -196,6 +182,7 @@ namespace Froststrap
             dialog.Closed += (sender, e) =>
             {
                 App.FrostRPC?.Dispose();
+                App.FrostRPC = null;
                 ProcessNextAction(dialog.CloseAction);
             };
 
@@ -209,7 +196,7 @@ namespace Froststrap
             if (launchMode == LaunchMode.None)
                 throw new InvalidOperationException("No Roblox launch mode set");
 
-            if (!File.Exists(Path.Combine(Paths.System, "mfplat.dll")))
+            if (OperatingSystem.IsWindows() && !File.Exists(Path.Combine(Paths.System, "mfplat.dll")))
             {
                 await Frontend.ShowMessageBox(Strings.Bootstrapper_WMFNotFound, MessageBoxImage.Error);
 
@@ -219,7 +206,7 @@ namespace Froststrap
                 App.Terminate(ErrorCode.ERROR_FILE_NOT_FOUND);
             }
 
-            if (App.Settings.Prop.ConfirmLaunches && Utilities.IsRobloxRunning() && !App.Settings.Prop.MultiInstanceLaunching && launchMode != LaunchMode.Studio)
+            if (App.Settings.Prop.ConfirmLaunches && Utilities.IsRobloxRunning() && launchMode != LaunchMode.Studio)
             {
                 var result = await Frontend.ShowMessageBox(Strings.Bootstrapper_ConfirmLaunch, MessageBoxImage.Warning, MessageBoxButton.YesNo);
 
@@ -228,6 +215,9 @@ namespace Froststrap
                     App.Terminate();
                     return;
                 }
+
+                if (OperatingSystem.IsLinux())
+                    Utilities.KillSober();
             }
 
             // start bootstrapper and show the bootstrapper modal if we're not running silently
@@ -238,6 +228,7 @@ namespace Froststrap
             if (!App.LaunchSettings.QuietFlag.Active)
             {
                 App.Logger.WriteLine(LOG_IDENT, "Initializing bootstrapper dialog");
+                ThemeCycler.HandleLaunchCycle();
                 dialog = await App.Settings.Prop.BootstrapperStyle.GetNew();
                 App.Bootstrapper.Dialog = dialog;
                 dialog.Bootstrapper = App.Bootstrapper;
@@ -257,6 +248,13 @@ namespace Froststrap
 
                 App.Terminate();
             });
+
+            if ((OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) && !App.LaunchSettings.QuietFlag.Active)
+            {
+                if (Avalonia.Application.Current?.ApplicationLifetime is
+                    Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop)
+                    desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+            }
 
             dialog?.ShowBootstrapper();
 
@@ -300,28 +298,6 @@ namespace Froststrap
             });
         }
 
-        public static void LaunchMultiInstanceWatcher()
-        {
-            const string LOG_IDENT = "LaunchHandler::LaunchMultiInstanceWatcher";
-
-            App.Logger.WriteLine(LOG_IDENT, "Starting multi-instance watcher");
-
-            Task.Run(MultiInstanceWatcher.Run).ContinueWith(async t =>
-            {
-                App.Logger.WriteLine(LOG_IDENT, "Multi instance watcher task has finished");
-
-                if (t.IsFaulted)
-                {
-                    App.Logger.WriteLine(LOG_IDENT, "An exception occurred when running the multi-instance watcher");
-
-                    if (t.Exception is not null)
-                        await App.FinalizeExceptionHandling(t.Exception);
-                }
-
-                App.Terminate();
-            });
-        }
-
         public static void LaunchBloxshadeConfig()
         {
             const string LOG_IDENT = "LaunchHandler::LaunchBloxshade";
@@ -330,61 +306,6 @@ namespace Froststrap
 
             new BloxshadeDialog().Show();
             App.SoftTerminate();
-        }
-
-        public static void LaunchPostLaunch()
-        {
-            const string LOG_IDENT = "LaunchHandler::LaunchPostLaunch";
-
-            if (!int.TryParse(App.LaunchSettings.PostLaunchFlag.Data, out int robloxPid))
-            {
-                App.Logger.WriteLine(LOG_IDENT, "Failed to parse Roblox PID");
-                App.Terminate();
-                return;
-            }
-
-            Task.Run(async () =>
-            {
-                await Task.Delay(20000);
-
-                try
-                {
-                    var proc = Process.GetProcessById(robloxPid);
-                    if (!proc.HasExited)
-                    {
-                        if (App.Settings.Prop.SelectedProcessPriority != ProcessPriorityOption.Normal)
-                        {
-                            ProcessPriorityClass priorityClass = App.Settings.Prop.SelectedProcessPriority switch
-                            {
-                                ProcessPriorityOption.Low => ProcessPriorityClass.Idle,
-                                ProcessPriorityOption.BelowNormal => ProcessPriorityClass.BelowNormal,
-                                ProcessPriorityOption.AboveNormal => ProcessPriorityClass.AboveNormal,
-                                ProcessPriorityOption.High => ProcessPriorityClass.High,
-                                ProcessPriorityOption.RealTime => ProcessPriorityClass.RealTime,
-                                _ => ProcessPriorityClass.Normal
-                            };
-                            proc.PriorityClass = priorityClass;
-                            App.Logger.WriteLine(LOG_IDENT, $"Set priority to {priorityClass}");
-                        }
-
-                        if (App.Settings.Prop.AutoCloseCrashHandler)
-                        {
-                            foreach (var crashProc in Process.GetProcessesByName("RobloxCrashHandler"))
-                            {
-                                try { crashProc.Kill(); } catch { }
-                            }
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    App.Logger.WriteLine(LOG_IDENT, $"Worker error: {ex.Message}");
-                }
-
-                // do this so that if the watcher is open, it dosent close
-                if (!App.LaunchSettings.WatcherFlag.Active)
-                    App.Terminate();
-            });
         }
 
         public static void LaunchBackgroundUpdater()
@@ -402,12 +323,12 @@ namespace Froststrap
                 QuitIfMutexExists = true
             };
 
-            CancellationTokenSource cts = new CancellationTokenSource();
+            CancellationTokenSource cts = new();
 
             Task.Run(() =>
             {
                 App.Logger.WriteLine(LOG_IDENT, "Started event waiter");
-                using (EventWaitHandle handle = new EventWaitHandle(false, EventResetMode.AutoReset, "Froststrap-BackgroundUpdaterKillEvent"))
+                using (EventWaitHandle handle = new(false, EventResetMode.AutoReset, "Froststrap-BackgroundUpdaterKillEvent"))
                     handle.WaitOne();
 
                 App.Logger.WriteLine(LOG_IDENT, "Received close event, killing it all!");

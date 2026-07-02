@@ -1,22 +1,23 @@
-﻿using System.Web;
+﻿using System.Text.RegularExpressions;
+using System.Web;
 
 namespace Froststrap
 {
     public class GameJoin
     {
-        private long RegexMatchLong(string url, string query, string pattern)
+        private static long RegexMatchLong(string url, string query, string pattern)
         {
             Match match = Regex.Match(url, query + pattern);
 
             if (!match.Success)
                 return 0;
 
-            long.TryParse(match.Groups[1].Value, out long result);
+            _ = long.TryParse(match.Groups[1].Value, out long result);
 
             return result;
         }
 
-        private string RegexMatchString(string url, string query, string pattern)
+        private static string RegexMatchString(string url, string query, string pattern)
         {
             Match match = Regex.Match(url, query + pattern);
 
@@ -26,7 +27,7 @@ namespace Froststrap
             return match.Groups[1].Value;
         }
 
-        public GameJoinData GetJoinDataByLaunchCommand(string launchCommandLine)
+        public static GameJoinData GetJoinDataByLaunchCommand(string launchCommandLine)
         {
             const string LOG_IDENT = "Bootstrapper::GetJoinDataByLaunchCommand";
 
@@ -35,24 +36,67 @@ namespace Froststrap
             const string commonIntPattern = @"([0-9]+)";
             const string commonIdPattern = @"([a-zA-Z0-9-]+?)(&|\+|$)";
 
-            string? url = null;
-            string rawPlaceLancherUrl = null!;
-            GameJoinData joinData = new(); // by default its unknown
+            GameJoinData joinData = new();
 
-            if (!launchCommandLine.StartsWith("roblox-player:"))
-                return joinData; // its either empty or deeplink start, those arent supported (yet?)
+            if (!launchCommandLine.StartsWith("roblox-player:", StringComparison.Ordinal) &&
+                !launchCommandLine.StartsWith("roblox://", StringComparison.Ordinal))
+                return joinData;
+
+            if (launchCommandLine.StartsWith("roblox://", StringComparison.Ordinal))
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Processing roblox:// URI: {launchCommandLine}");
+
+                var placeIdMatch = Regex.Match(launchCommandLine, @"placeId=([0-9]+)");
+                if (placeIdMatch.Success)
+                {
+                    _ = long.TryParse(placeIdMatch.Groups[1].Value, out long placeId);
+                    if (placeId > 0)
+                    {
+                        joinData.JoinType = GameJoinType.RequestGame;
+                        joinData.PlaceId = placeId;
+                        joinData.PlaceLauncherUrl = launchCommandLine;
+                        App.Logger.WriteLine(LOG_IDENT, $"Extracted place ID from roblox:// URI: {placeId}");
+                    }
+                }
+
+                var jobIdMatch = Regex.Match(launchCommandLine, @"gameInstanceId=([a-zA-Z0-9-]+)");
+                if (jobIdMatch.Success)
+                {
+                    joinData.JobId = jobIdMatch.Groups[1].Value;
+                    App.Logger.WriteLine(LOG_IDENT, $"Extracted job ID from roblox:// URI: {joinData.JobId}");
+                }
+
+                var accessCodeMatch = Regex.Match(launchCommandLine, @"accessCode=([a-zA-Z0-9-]+)");
+                if (accessCodeMatch.Success)
+                {
+                    joinData.AccessCode = accessCodeMatch.Groups[1].Value;
+                    App.Logger.WriteLine(LOG_IDENT, $"Extracted access code from roblox:// URI: {joinData.AccessCode}");
+                }
+
+                var originMatch = Regex.Match(launchCommandLine, @"joinAttemptOrigin=([a-zA-Z0-9-]+)");
+                if (originMatch.Success)
+                {
+                    joinData.JoinOrigin = originMatch.Groups[1].Value;
+                    App.Logger.WriteLine(LOG_IDENT, $"Extracted join origin from roblox:// URI: {joinData.JoinOrigin}");
+                }
+
+                return joinData;
+            }
 
             Match urlMatch = Regex.Match(launchCommandLine, placelauncherPattern);
-            if (!urlMatch.Success || urlMatch.Groups.Count != 3) return joinData; // the regex failed
+            if (!urlMatch.Success || urlMatch.Groups.Count != 3)
+                return joinData;
 
-            rawPlaceLancherUrl = urlMatch.Groups[1].Value;
+            string rawPlaceLancherUrl = urlMatch.Groups[1].Value;
             joinData.PlaceLauncherUrl = rawPlaceLancherUrl;
 
-            url = HttpUtility.UrlDecode(rawPlaceLancherUrl);
-            if (string.IsNullOrEmpty(url)) return joinData;
+            string url = HttpUtility.UrlDecode(rawPlaceLancherUrl);
+            if (string.IsNullOrEmpty(url))
+                return joinData;
 
             Match typeMatch = Regex.Match(url, requestTypePattern);
-            if (!typeMatch.Success || typeMatch.Groups.Count != 2) return joinData;
+            if (!typeMatch.Success || typeMatch.Groups.Count != 2)
+                return joinData;
 
             App.Logger.WriteLine(LOG_IDENT, "Detecting join type");
 

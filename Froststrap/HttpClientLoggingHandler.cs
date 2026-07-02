@@ -1,12 +1,8 @@
 ﻿namespace Froststrap
 {
-    internal class HttpClientLoggingHandler : MessageProcessingHandler
+    internal class HttpClientLoggingHandler(HttpMessageHandler innerHandler)
+        : MessageProcessingHandler(innerHandler)
     {
-        public HttpClientLoggingHandler(HttpMessageHandler innerHandler)
-            : base(innerHandler)
-        {
-        }
-
         protected override HttpRequestMessage ProcessRequest(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             App.Logger.WriteLine("HttpClientLoggingHandler::ProcessRequest", $"{request.Method} {request.RequestUri}");

@@ -8,20 +8,18 @@
 *  SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
-using Avalonia.Threading;
 using Avalonia.Media.Imaging;
-using CommunityToolkit.Mvvm.ComponentModel;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
-using Froststrap.Integrations;
-using System.Collections.ObjectModel;
-using Froststrap.UI.Elements.Settings;
-using FluentIcons.Common;
-using Avalonia.Controls.Notifications;
 using FluentAvalonia.UI.Controls;
+using Froststrap.Integrations;
+using Froststrap.UI.Elements.Settings;
+using LucideAvalonia.Enum;
+using System.Collections.ObjectModel;
 
 namespace Froststrap.UI.ViewModels
 {
-    public partial class SearchBarViewModel : ObservableObject
+    public partial class SearchBarViewModel : NotifyPropertyChangedViewModel
     {
         private string _searchQuery = string.Empty;
         public string SearchQuery
@@ -32,19 +30,61 @@ namespace Froststrap.UI.ViewModels
                 if (SetProperty(ref _searchQuery, value))
                 {
                     FilterSearchResults();
+
                     TriggerGameSearch(value);
+                    GameSearchResults.Clear();
+                    IsGameSearchLoading = false;
                 }
             }
         }
 
-        [ObservableProperty]
+
         private ObservableCollection<OmniSearchContent> _gameSearchResults = [];
+        public ObservableCollection<OmniSearchContent> GameSearchResults
+        {
+            get => _gameSearchResults;
+            set => SetProperty(ref _gameSearchResults, value);
+        }
 
-        [ObservableProperty]
-        private bool _isGameSearchLoading = false;
+        private bool _isGameSearchLoading;
+        public bool IsGameSearchLoading
+        {
+            get => _isGameSearchLoading;
+            set
+            {
+                if (SetProperty(ref _isGameSearchLoading, value))
+                {
+                    OnPropertyChanged(nameof(CanLoadMore));
+                }
+            }
+        }
 
-        [ObservableProperty]
         private string _nextPageCursor = "";
+        public string NextPageCursor
+        {
+            get => _nextPageCursor;
+            set
+            {
+                if (SetProperty(ref _nextPageCursor, value))
+                {
+                    OnPropertyChanged(nameof(CanLoadMore));
+                }
+            }
+        }
+
+        private bool _isSearchFlyoutOpen;
+        public bool IsSearchFlyoutOpen
+        {
+            get => _isSearchFlyoutOpen;
+            set => SetProperty(ref _isSearchFlyoutOpen, value);
+        }
+
+        private string? _roblosecurity;
+        public string? Roblosecurity
+        {
+            get => _roblosecurity;
+            set => SetProperty(ref _roblosecurity, value);
+        }
 
         public bool CanLoadMore => !string.IsNullOrEmpty(NextPageCursor) && !IsGameSearchLoading;
 
@@ -72,6 +112,17 @@ namespace Froststrap.UI.ViewModels
 
         private void TriggerGameSearch(string query)
         {
+            if (!App.Settings.Prop.GameSearch)
+            {
+                Dispatcher.UIThread.Post(() =>
+                {
+                    GameSearchResults.Clear();
+                    IsSearchFlyoutOpen = FilteredSearchResults.Count > 0;
+                    OnPropertyChanged(nameof(HasAnyResults));
+                });
+                return;
+            }
+
             _searchDebounceCts?.Cancel();
             _searchDebounceCts = new CancellationTokenSource();
             var token = _searchDebounceCts.Token;
@@ -81,9 +132,14 @@ namespace Froststrap.UI.ViewModels
 
         private async Task SearchGamesAsync(string query, CancellationToken token)
         {
+            if (!App.Settings.Prop.GameSearch) return;
+
             if (string.IsNullOrWhiteSpace(query))
             {
-                GameSearchResults.Clear();
+                Dispatcher.UIThread.Post(() => {
+                    GameSearchResults.Clear();
+                    IsSearchFlyoutOpen = false;
+                });
                 return;
             }
 
@@ -93,6 +149,7 @@ namespace Froststrap.UI.ViewModels
                 if (token.IsCancellationRequested) return;
 
                 IsGameSearchLoading = true;
+                IsSearchFlyoutOpen = true;
 
                 List<OmniSearchContent> results = [];
 
@@ -100,10 +157,15 @@ namespace Froststrap.UI.ViewModels
                 {
                     try
                     {
-                        var placeReq = new HttpRequestMessage(HttpMethod.Get, $"https://games.roblox.com/v1/games/multiget-place-details?placeIds={placeId}");
-                        if (AccountManager.Shared.ActiveAccount != null)
+                        var uriBuilder = new UriBuilder(UrlBuilder.BuildApiUrl("games", "v1/games/multiget-place-details", secure: true))
                         {
-                            var cookie = AccountManager.Shared.GetRoblosecurityForUser(AccountManager.Shared.ActiveAccount.UserId);
+                            Query = $"placeIds={placeId}"
+                        };
+                        var placeReq = new HttpRequestMessage(HttpMethod.Get, uriBuilder.Uri);
+                        var account = AccountManager.Shared.ActiveAccount;
+                        if (account != null)
+                        {
+                            var cookie = AccountManager.Shared.GetRoblosecurityForUser(account.UserId);
                             if (!string.IsNullOrEmpty(cookie))
                                 placeReq.Headers.Add("Cookie", $".ROBLOSECURITY={cookie}");
                         }
@@ -116,20 +178,17 @@ namespace Froststrap.UI.ViewModels
                             if (doc.RootElement.ValueKind == JsonValueKind.Array && doc.RootElement.GetArrayLength() > 0)
                             {
                                 var placeElement = doc.RootElement[0];
-                                long universeId = placeElement.GetProperty("universeId").GetInt64();
-                                string name = placeElement.GetProperty("name").GetString() ?? $"Place {placeId}";
-
                                 results.Add(new OmniSearchContent
                                 {
                                     RootPlaceId = placeId,
-                                    UniverseId = (ulong)universeId,
-                                    Name = name,
+                                    UniverseId = (ulong)placeElement.GetProperty("universeId").GetInt64(),
+                                    Name = placeElement.GetProperty("name").GetString() ?? $"Place {placeId}",
                                     PlayerCount = 0
                                 });
                             }
                         }
                     }
-                    catch { /* Fallback to standard search if this fails */ }
+                    catch { /* Fallback to standard search */ }
                 }
 
                 if (results.Count == 0)
@@ -139,46 +198,43 @@ namespace Froststrap.UI.ViewModels
                         results.AddRange(searchResults);
                     NextPageCursor = nextCursor;
                 }
-                else 
-                {
-                    NextPageCursor = "";
-                }
 
                 if (token.IsCancellationRequested) return;
 
-                if (results != null && results.Count != 0)
+                Dispatcher.UIThread.Post(() =>
                 {
-                    Dispatcher.UIThread.Post(() =>
-                    {
-                        if (token.IsCancellationRequested) return;
-                        GameSearchResults.Clear();
-                        foreach (var res in results)
-                            GameSearchResults.Add(res);
+                    if (token.IsCancellationRequested) return;
 
-                        OnPropertyChanged(nameof(HasAnyResults));
-                        OnPropertyChanged(nameof(CanLoadMore));
-                    }, DispatcherPriority.Background);
+                    GameSearchResults.Clear();
+                    foreach (var res in results)
+                        GameSearchResults.Add(res);
 
-                    _ = Task.Run(async () =>
+                    IsSearchFlyoutOpen = HasAnyResults;
+
+                    OnPropertyChanged(nameof(HasAnyResults));
+                    OnPropertyChanged(nameof(CanLoadMore));
+                }, DispatcherPriority.Background);
+
+                _ = Task.Run(async () =>
+                {
+                    try
                     {
-                        try
+                        var thumbRequests = results.Select(r => new ThumbnailRequest
                         {
-                            var thumbRequests = results.Select(r => new ThumbnailRequest
-                            {
-                                Type = ThumbnailType.GameIcon,
-                                TargetId = r.UniverseId,
-                                Size = "128x128"
-                            }).ToList();
+                            Type = ThumbnailType.GameIcon,
+                            TargetId = r.UniverseId,
+                            Size = "128x128"
+                        }).ToList();
 
-                            var fetchedUrls = await Thumbnails.GetThumbnailUrlsAsync(thumbRequests, token);
-                            if (token.IsCancellationRequested) return;
-
-                            var downloadTasks = new List<Task>();
+                        var fetchedUrls = await Thumbnails.GetThumbnailUrlsAsync(thumbRequests, token);
+                        if (fetchedUrls != null && !token.IsCancellationRequested)
+                        {
                             using var semaphore = new SemaphoreSlim(4);
+                            var downloadTasks = new List<Task>();
 
                             for (int i = 0; i < results.Count; i++)
                             {
-                                if (fetchedUrls != null && i < fetchedUrls.Length && !string.IsNullOrEmpty(fetchedUrls[i]))
+                                if (i < fetchedUrls.Length && !string.IsNullOrEmpty(fetchedUrls[i]))
                                 {
                                     int index = i;
                                     downloadTasks.Add(Task.Run(async () =>
@@ -191,47 +247,50 @@ namespace Froststrap.UI.ViewModels
                                             var bitmap = new Bitmap(ms);
                                             results[index].ThumbnailBitmap = bitmap;
                                         }
-                                        catch { /* Ignore image load failure */ }
-                                        finally
-                                        {
-                                            semaphore.Release();
-                                        }
+                                        catch { }
+                                        finally { semaphore.Release(); }
                                     }, token));
                                 }
                             }
-
                             await Task.WhenAll(downloadTasks);
                         }
-                        catch { /* Ignore thumbnail fetch failures */ }
-                    }, token);
-                }
-                else
-                {
+                    }
+                    catch (OperationCanceledException) { /* Ignore */ }
+
+                    if (token.IsCancellationRequested) return;
+
                     Dispatcher.UIThread.Post(() =>
                     {
+                        if (token.IsCancellationRequested) return;
+
                         GameSearchResults.Clear();
+                        foreach (var res in results)
+                            GameSearchResults.Add(res);
+
+                        IsSearchFlyoutOpen = HasAnyResults;
                         OnPropertyChanged(nameof(HasAnyResults));
                         OnPropertyChanged(nameof(CanLoadMore));
-                    });
-                }
+                    }, DispatcherPriority.Background);
+                }, token);
             }
             catch (TaskCanceledException) { }
-            catch (Exception ex)
-            {
-                App.Logger.WriteLine("SearchBarViewModel", $"Search error: {ex.Message}");
-            }
             finally
             {
                 IsGameSearchLoading = false;
-                OnPropertyChanged(nameof(HasAnyResults));
-                OnPropertyChanged(nameof(CanLoadMore));
             }
+        }
+
+        [RelayCommand]
+        public void ToggleSearchList()
+        {
+            IsSearchFlyoutOpen = !IsSearchFlyoutOpen;
         }
 
         [RelayCommand]
         private async Task LoadMoreGamesAsync()
         {
-            if (string.IsNullOrWhiteSpace(NextPageCursor) || string.IsNullOrWhiteSpace(SearchQuery) || IsGameSearchLoading) return;
+            if (!App.Settings.Prop.GameSearch || string.IsNullOrWhiteSpace(NextPageCursor) || string.IsNullOrWhiteSpace(SearchQuery) || IsGameSearchLoading)
+                return;
 
             try
             {
@@ -263,37 +322,43 @@ namespace Froststrap.UI.ViewModels
                             }).ToList();
 
                             var fetchedUrls = await Thumbnails.GetThumbnailUrlsAsync(thumbRequests, CancellationToken.None);
-
-                            var downloadTasks = new List<Task>();
-                            using var semaphore = new SemaphoreSlim(4);
-
-                            for (int i = 0; i < results.Count; i++)
+                            if (fetchedUrls != null)
                             {
-                                if (fetchedUrls != null && i < fetchedUrls.Length && !string.IsNullOrEmpty(fetchedUrls[i]))
-                                {
-                                    int index = i;
-                                    downloadTasks.Add(Task.Run(async () =>
-                                    {
-                                        await semaphore.WaitAsync();
-                                        try
-                                        {
-                                            var response = await App.HttpClient.GetByteArrayAsync(fetchedUrls[index]);
-                                            using var ms = new MemoryStream(response);
-                                            var bitmap = new Bitmap(ms);
-                                            results[index].ThumbnailBitmap = bitmap;
-                                        }
-                                        catch { /* Ignore image load failure */ }
-                                        finally
-                                        {
-                                            semaphore.Release();
-                                        }
-                                    }));
-                                }
-                            }
+                                using var semaphore = new SemaphoreSlim(4);
+                                var downloadTasks = new List<Task>();
 
-                            await Task.WhenAll(downloadTasks);
+                                for (int i = 0; i < results.Count; i++)
+                                {
+                                    if (i < fetchedUrls.Length && !string.IsNullOrEmpty(fetchedUrls[i]))
+                                    {
+                                        int index = i;
+                                        downloadTasks.Add(Task.Run(async () =>
+                                        {
+                                            await semaphore.WaitAsync();
+                                            try
+                                            {
+                                                var response = await App.HttpClient.GetByteArrayAsync(fetchedUrls[index]);
+                                                using var ms = new MemoryStream(response);
+                                                var bitmap = new Bitmap(ms);
+                                                results[index].ThumbnailBitmap = bitmap;
+                                            }
+                                            catch { }
+                                            finally { semaphore.Release(); }
+                                        }));
+                                    }
+                                }
+                                await Task.WhenAll(downloadTasks);
+                            }
                         }
-                        catch { /* Ignore thumbnail fetch failures */ }
+                        catch { /* Ignore */ }
+
+                        await Dispatcher.UIThread.InvokeAsync(() =>
+                        {
+                            foreach (var res in results)
+                                GameSearchResults.Add(res);
+
+                            OnPropertyChanged(nameof(CanLoadMore));
+                        }, DispatcherPriority.Background);
                     });
                 }
                 else
@@ -346,6 +411,8 @@ namespace Froststrap.UI.ViewModels
             if (string.IsNullOrWhiteSpace(SearchQuery))
             {
                 FilteredSearchResults = [];
+                if (GameSearchResults.Count == 0) IsSearchFlyoutOpen = false;
+
                 OnPropertyChanged(nameof(HasAnyResults));
                 return;
             }
@@ -355,6 +422,10 @@ namespace Froststrap.UI.ViewModels
                 .ToList();
 
             FilteredSearchResults = new ObservableCollection<SearchBarItem>(filtered);
+
+            if (FilteredSearchResults.Count > 0)
+                IsSearchFlyoutOpen = true;
+
             OnPropertyChanged(nameof(HasAnyResults));
         }
 
@@ -362,11 +433,21 @@ namespace Froststrap.UI.ViewModels
         private async Task PlayGame(OmniSearchContent content)
         {
             if (content == null) return;
-            var account = AccountManager.Shared.ActiveAccount;
-            if (account == null) return;
-
             Clear();
-            await AccountManager.Shared.LaunchAccountAsync(account, content.RootPlaceId);
+
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = $"roblox://experiences/start?placeId={content.RootPlaceId}",
+                UseShellExecute = true
+            });
+
+            MainWindow.ShowGlobalNotification(
+            Strings.Menu_SearchBar_JoiningGame,
+            string.Format(Strings.Menu_SearchBar_JoiningName, content.Name),
+            FAInfoBarSeverity.Success,
+            5000,
+            LucideIconNames.Globe
+            );
         }
 
         [RelayCommand]
@@ -374,102 +455,60 @@ namespace Froststrap.UI.ViewModels
         {
             if (content == null) return;
 
-            var account = AccountManager.Shared.ActiveAccount;
-            if (account == null) 
-            {
-                return; 
-            }
-
-            string selectedRegion = App.Settings.Prop.SelectedRegion ?? "";
-            if (string.IsNullOrWhiteSpace(selectedRegion))
-            {
-                return; 
-            }
-
             Clear();
+            IsSearchFlyoutOpen = false;
 
             MainWindow.ShowGlobalNotification(
-                "Joining Game", 
-                $"Searching for region {selectedRegion}", 
-                InfoBarSeverity.Informational,
-                5000, 
-                FluentIcons.Common.Symbol.Globe
+                Strings.Menu_SearchBar_JoiningGame,
+                Strings.Menu_SearchBar_AutoJoin,
+                FAInfoBarSeverity.Informational,
+                5000,
+                LucideIconNames.Globe
             );
-
-            var fetcher = new RobloxServerFetcher();
-            string? nextCursor = "";
-            int attemptCount = 0;
-            const int maxAttempts = 20;
 
             try
             {
-                var datacentersResult = await fetcher.GetDatacentersAsync();
-                if (datacentersResult == null) return;
+                var fetcher = new RobloxServerFetcher();
 
-                var (regions, dcMap) = datacentersResult.Value;
-
-                string? cookie = AccountManager.Shared.GetRoblosecurityForUser(account.UserId);
-                if (string.IsNullOrWhiteSpace(cookie)) return;
-
-                while (attemptCount < maxAttempts)
-                {
-                    attemptCount++;
-                    var result = await fetcher.FetchServerInstancesAsync(content.RootPlaceId, cookie, nextCursor, 2);
-
-                    if (result?.Servers == null || result.Servers.Count == 0)
-                    {
-                        await Task.Delay(1000);
-                        continue;
-                    }
-
-                    var matchingServer = result.Servers.FirstOrDefault(server =>
-                        server.DataCenterId.HasValue &&
-                        dcMap.TryGetValue(server.DataCenterId.Value, out var mappedRegion) &&
-                        mappedRegion == selectedRegion);
-
-                    if (matchingServer != null)
-                    {
-                        MainWindow.ShowGlobalNotification(
-                            "Server Found", 
-                            $"Joining server in {selectedRegion}",
-                            InfoBarSeverity.Success, 
-                            5000, 
-                            FluentIcons.Common.Symbol.Checkmark
-                        );
-                        await AccountManager.Shared.LaunchAccountAsync(account, content.RootPlaceId, matchingServer.Id);
-                        return;
-                    }
-
-                    if (!string.IsNullOrEmpty(result.NextCursor))
-                    {
-                        nextCursor = result.NextCursor;
-                    }
-                    else
-                    {
-                        MainWindow.ShowGlobalNotification(
-                            "Not Found", 
-                            $"Could not find a server in {selectedRegion}.",
-                            InfoBarSeverity.Warning, 
-                            5000, 
-                            FluentIcons.Common.Symbol.Warning
-                        );
-                        return; // Searched all servers
-                    }
-
-                    await Task.Delay(500);
-                }
-
-                MainWindow.ShowGlobalNotification(
-                    "Search Timeout", 
-                    $"Failed to find a server in {selectedRegion} after {maxAttempts} attempts.",
-                    InfoBarSeverity.Warning, 
-                    5000, 
-                    FluentIcons.Common.Symbol.Warning
+                bool success = await fetcher.JoinBestServerAsync(
+                    content.RootPlaceId,
+                    App.Settings.Prop.JoinSmallerServer,
+                    App.Settings.Prop.BestRegionAmounts,
+                    App.Settings.Prop.MaxServerCheck,
+                    showConfirmation: false
                 );
+
+                if (success)
+                {
+                    MainWindow.ShowGlobalNotification(
+                        Strings.Menu_SearchBar_ServerFound,
+                        Strings.Menu_SearchBar_JoiningBest,
+                        FAInfoBarSeverity.Success,
+                        3000,
+                        LucideIconNames.Check
+                    );
+                }
+                else
+                {
+                    MainWindow.ShowGlobalNotification(
+                        Strings.Common_NotFound,
+                        Strings.Menu_SearchBar_NoSuitableServer,
+                        FAInfoBarSeverity.Warning,
+                        5000,
+                        LucideIconNames.TriangleAlert
+                    );
+                }
             }
             catch (Exception ex)
             {
                 App.Logger.WriteLine("SearchBarViewModel::RegionJoinGame", $"Exception: {ex.Message}");
+                MainWindow.ShowGlobalNotification(
+                    Strings.Common_Error,
+                    string.Format(Strings.Menu_SearchBar_JoinError, ex.Message),
+                    FAInfoBarSeverity.Error,
+                    5000,
+                    LucideIconNames.TriangleAlert
+                );
             }
         }
     }

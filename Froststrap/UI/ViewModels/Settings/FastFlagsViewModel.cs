@@ -24,31 +24,24 @@ namespace Froststrap.UI.ViewModels.Settings
         Task OpenFastFlagEditorAsync();
     }
 
-    public class FastFlagsViewModel : NotifyPropertyChangedViewModel
+    public class FastFlagsViewModel(
+        IFastFlagsService flagsService,
+        ISettingsService settingsService,
+        IDialogService dialogService) : NotifyPropertyChangedViewModel
     {
-        private readonly IFastFlagsService _flagsService;
-        private readonly ISettingsService _settingsService;
-        private readonly IDialogService _dialogService;
-        private Dictionary<string, object>? _preResetFlags;
+        private readonly IFastFlagsService _flagsService = flagsService ?? throw new ArgumentNullException(nameof(flagsService));
+        private readonly ISettingsService _settingsService = settingsService ?? throw new ArgumentNullException(nameof(settingsService));
+        private readonly IDialogService _dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
 
+        private Dictionary<string, object>? _preResetFlags;
         public event EventHandler? RequestPageReloadEvent;
 
-        public FastFlagsViewModel() 
+        public FastFlagsViewModel()
             : this(
                 new DefaultFastFlagsService(),
                 new DefaultSettingsService(),
                 new DefaultDialogService())
         {
-        }
-
-        public FastFlagsViewModel(
-            IFastFlagsService flagsService,
-            ISettingsService settingsService,
-            IDialogService dialogService)
-        {
-            _flagsService = flagsService ?? throw new ArgumentNullException(nameof(flagsService));
-            _settingsService = settingsService ?? throw new ArgumentNullException(nameof(settingsService));
-            _dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
         }
 
         public ICommand OpenFastFlagEditorCommand => new AsyncRelayCommand(async () =>
@@ -104,7 +97,7 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 int clamped = Math.Clamp(value, 0, 9);
 
-                int[] baseValues = { 2000, 1500, 1000, 500 };
+                int[] baseValues = [ 2000, 1500, 1000, 500 ];
                 int[] levels = new int[4];
 
                 for (int i = 0; i < 4; i++)
@@ -152,7 +145,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public IReadOnlyDictionary<MSAAMode, string?> MSAALevels => FastFlagManager.MSAAModes;
+        public static IReadOnlyDictionary<MSAAMode, string?> MSAALevels => FastFlagManager.MSAAModes;
 
         public MSAAMode SelectedMSAALevel
         {
@@ -164,18 +157,18 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public IReadOnlyDictionary<RenderingMode, string> RenderingModes => FastFlagManager.RenderingModes;
+        public static IReadOnlyDictionary<RenderingMode, string> RenderingModes => FastFlagManager.RenderingModes;
 
         public RenderingMode SelectedRenderingMode
         {
             get => App.FastFlags?.GetPresetEnum(RenderingModes, "Rendering.Mode", "True") ?? RenderingMode.Default;
             set
             {
-                RenderingMode[] DisableD3D11 = new RenderingMode[]
-                {
+                RenderingMode[] DisableD3D11 =
+                [
                     RenderingMode.Vulkan,
                     RenderingMode.OpenGL,
-                };
+                ];
 
                 App.FastFlags?.SetPresetEnum("Rendering.Mode", value.ToString(), "True");
                 _flagsService.SetPreset("Rendering.Mode.DisableD3D11", DisableD3D11.Contains(value) ? "True" : null);
@@ -193,7 +186,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public IReadOnlyDictionary<QualityLevel, string?> QualityLevels => FastFlagManager.QualityLevels;
+        public static IReadOnlyDictionary<QualityLevel, string?> QualityLevels => FastFlagManager.QualityLevels;
 
         public QualityLevel SelectedQualityLevel
         {
@@ -209,6 +202,25 @@ namespace Froststrap.UI.ViewModels.Settings
                     _flagsService.SetPreset("Rendering.FrmQuality", FastFlagManager.QualityLevels[value]);
                 }
                 OnPropertyChanged();
+            }
+        }
+
+        public static IReadOnlyDictionary<TextureQuality, string?> TextureQualities => FastFlagManager.TextureQualityLevels;
+
+        public TextureQuality SelectedTextureQuality
+        {
+            get => TextureQualities.FirstOrDefault(x => x.Value == _flagsService.GetPreset("Rendering.TextureQuality.Level")).Key;
+            set
+            {
+                if (value == TextureQuality.Default)
+                {
+                    _flagsService.SetPreset("Rendering.TextureQuality", null);
+                }
+                else
+                {
+                    _flagsService.SetPreset("Rendering.TextureQuality.OverrideEnabled", "True");
+                    _flagsService.SetPreset("Rendering.TextureQuality.Level", TextureQualities[value]);
+                }
             }
         }
 
@@ -261,7 +273,7 @@ namespace Froststrap.UI.ViewModels.Settings
         public void SetPresetEnum(string key, string value, string defaultValue)
             => App.FastFlags?.SetPreset(key, value);
 
-        public IReadOnlyDictionary<string, object> GetAllPresets() => App.FastFlags?.Prop ?? new Dictionary<string, object>();
+        public IReadOnlyDictionary<string, object> GetAllPresets() => App.FastFlags?.Prop ?? [];
 
         public void SetAllPresets(IReadOnlyDictionary<string, object> presets)
         {

@@ -4,26 +4,28 @@
     {
         public static string FormatTimeSpan(TimeSpan timeSpan)
         {
-            Func<Tuple<int, string>, string> tupleFormatter = t => $"{t.Item1} {t.Item2}{(t.Item1 == 1 ? string.Empty : "s")}";
-            var components = new List<Tuple<int, string>>
+            static string FormatTuple((int Value, string Name) t) =>
+                $"{t.Value} {t.Name}{(t.Value == 1 ? string.Empty : "s")}";
+
+            var components = new List<(int Value, string Name)>
             {
-                Tuple.Create((int) timeSpan.TotalDays, "day"),
-                Tuple.Create(timeSpan.Hours, "hour"),
-                Tuple.Create(timeSpan.Minutes, "minute")
+                ((int)timeSpan.TotalDays, "day"),
+                (timeSpan.Hours, "hour"),
+                (timeSpan.Minutes, "minute")
             };
 
-            components.RemoveAll(i => i.Item1 == 0);
+            components.RemoveAll(i => i.Value == 0);
 
             string extra = "";
 
             if (components.Count > 1)
             {
-                var finalComponent = components[components.Count - 1];
+                var finalComponent = components[^1];
                 components.RemoveAt(components.Count - 1);
-                extra = $" and {tupleFormatter(finalComponent)}";
+                extra = $" and {FormatTuple(finalComponent)}";
             }
 
-            return $"{string.Join(", ", components.Select(tupleFormatter))}{extra}";
+            return $"{string.Join(", ", components.Select(FormatTuple))}{extra}";
         }
     }
 }

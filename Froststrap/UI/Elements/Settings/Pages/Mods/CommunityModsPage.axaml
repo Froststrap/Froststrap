@@ -2,12 +2,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:resources="clr-namespace:Froststrap.Resources"
+             xmlns:resources="using:Froststrap.Resources"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
              xmlns:enums="using:Froststrap.Enums"
              xmlns:models="using:Froststrap.Models.APIs.Config"
              xmlns:vm="using:Froststrap.UI.ViewModels.Settings.Mods"
              xmlns:controls="using:Froststrap.UI.Elements.Controls"
+             xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
+             xmlns:lucideEnums="clr-namespace:LucideAvalonia.Enum;assembly=LucideAvalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
              x:Class="Froststrap.UI.Elements.Settings.Pages.Mods.CommunityModsPage"
              x:DataType="vm:CommunityModsViewModel">
@@ -23,61 +25,67 @@
     <ScrollViewer>
         <StackPanel Margin="14">
             <Grid ColumnDefinitions="*,*,*">
-                <controls:CardAction Grid.Column="0" Margin="0,0,4,0" Header="Preset Mods"
-                                     Icon="BookOpen" Description="Official built-in mods."
+                <controls:CardAction Grid.Column="0" Margin="0,0,4,0"
+                                     Header="{x:Static resources:Strings.Menu_PresetMods_Title}"
+                                     Icon="BookOpen"
+                                     Description="{x:Static resources:Strings.Menu_PresetMods_Description}"
                                      Command="{Binding OpenPresetModsCommand}" />
 
-                <controls:CardAction Grid.Column="1" Margin="2,0,2,0" Header="My Mods"
-                                     Icon="TextBulletList" Description="Manage your active mods."
+                <controls:CardAction Grid.Column="1" Margin="2,0,2,0"
+                                     Header="{x:Static resources:Strings.Menu_Mods_Title}"
+                                     Icon="List"
+                                     Description="{x:Static resources:Strings.Menu_Mods_Description}"
                                      Command="{Binding OpenModsCommand}" />
 
-                <controls:CardAction Grid.Column="2" Margin="4,0,0,0" Header="Mod Generator"
-                                     Icon="PaintBrush" Description="Generate mods easily with a single click."
+                <controls:CardAction Grid.Column="2" Margin="4,0,0,0"
+                                     Header="{x:Static resources:Strings.Menu_ModGenerator_Title}"
+                                     Icon="PaintbrushVertical"
+                                     Description="{x:Static resources:Strings.Menu_ModGenerator_Description}"
                                      Command="{Binding OpenModGeneratorCommand}"/>
             </Grid>
 
-            <Separator Margin="0,16,0,8" />
+            <Separator Margin="0,8" />
 
             <Grid IsVisible="{Binding !IsLoading}" RowDefinitions="Auto, Auto, *">
-                
+
                 <StackPanel Grid.Row="0" Margin="0,0,0,8">
-                    <TextBox Watermark="Search mods..." 
-                             Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}" 
+                    <TextBox PlaceholderText="{x:Static resources:Strings.Menu_CommunityMods_SearchMods}"
+                             Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}"
                              Margin="4,0,12,0" />
                 </StackPanel>
 
                 <WrapPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,8" Classes="FilterBar">
-                    <ToggleButton Content="All" 
+                    <ToggleButton Content="{x:Static resources:Strings.Common_All}"
                                   Command="{Binding SetFilterCommand}"
                                   CommandParameter="{x:Null}"
                                   IsChecked="{Binding ActiveFilter, Mode=OneWay, Converter={x:Static ObjectConverters.IsNull}}"/>
 
-                    <ToggleButton Content="Color Mods" 
+                    <ToggleButton Content="{x:Static resources:Strings.Menu_CommunityMods_ColorMods}"
                                   Command="{Binding SetFilterCommand}"
                                   CommandParameter="{x:Static enums:ModType.ColorMod}"
                                   IsChecked="{Binding ActiveFilter, Mode=OneWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static enums:ModType.ColorMod}}"/>
 
-                    <ToggleButton Content="Custom Themes" 
+                    <ToggleButton Content="{x:Static resources:Strings.Menu_CommunityMods_Themes}"
                                   Command="{Binding SetFilterCommand}"
                                   CommandParameter="{x:Static enums:ModType.CustomTheme}"
                                   IsChecked="{Binding ActiveFilter, Mode=OneWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static enums:ModType.CustomTheme}}"/>
 
-                    <ToggleButton Content="Misc Mods" 
+                    <ToggleButton Content="{x:Static resources:Strings.Menu_CommunityMods_Misc}"
                                   Command="{Binding SetFilterCommand}"
                                   CommandParameter="{x:Static enums:ModType.MiscMod}"
                                   IsChecked="{Binding ActiveFilter, Mode=OneWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static enums:ModType.MiscMod}}"/>
 
-                    <ToggleButton Content="SkyBox" 
+                    <ToggleButton Content="{x:Static resources:Strings.Menu_CommunityMods_SkyBox}"
                                   Command="{Binding SetFilterCommand}"
                                   CommandParameter="{x:Static enums:ModType.SkyBox}"
                                   IsChecked="{Binding ActiveFilter, Mode=OneWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static enums:ModType.SkyBox}}"/>
 
-                    <ToggleButton Content="Cursor" 
+                    <ToggleButton Content="{x:Static resources:Strings.Menu_CommunityMods_Cursor}"
                                   Command="{Binding SetFilterCommand}"
                                   CommandParameter="{x:Static enums:ModType.Cursor}"
                                   IsChecked="{Binding ActiveFilter, Mode=OneWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static enums:ModType.Cursor}}"/>
 
-                    <ToggleButton Content="Avatar Editor" 
+                    <ToggleButton Content="{x:Static resources:Strings.Menu_CommunityMods_AvatarEditor}"
                                   Command="{Binding SetFilterCommand}"
                                   CommandParameter="{x:Static enums:ModType.AvatarEditor}"
                                   IsChecked="{Binding ActiveFilter, Mode=OneWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static enums:ModType.AvatarEditor}}"/>
@@ -93,28 +101,28 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="models:CommunityMod">
                             <controls:Card VerticalAlignment="Top"
-                                    Height="270"
-                                    Margin="4"
-                                    Padding="0"
-                                    CornerRadius="8"
-                                    ClipToBounds="True">
+                                           Height="270"
+                                           Margin="4"
+                                           Padding="0"
+                                           CornerRadius="8"
+                                           ClipToBounds="True">
                                 <Grid RowDefinitions="140, Auto, Auto, *">
-                                    
+
                                     <Border Grid.Row="0"
                                             CornerRadius="8,8,0,0"
                                             ClipToBounds="True">
                                         <Grid>
-                                            <Image Source="{Binding ThumbnailImage}" 
+                                            <Image Source="{Binding ThumbnailImage}"
                                                    Stretch="UniformToFill"
                                                    HorizontalAlignment="Stretch"
                                                    VerticalAlignment="Stretch"
                                                    RenderOptions.BitmapInterpolationMode="HighQuality"/>
 
-                                            <ui:ProgressRing IsVisible="{Binding IsLoadingThumbnail}"
-                                                                    IsIndeterminate="True"
-                                                                    Width="24" Height="24"
-                                                                    HorizontalAlignment="Center"
-                                                                    VerticalAlignment="Center"/>
+                                            <ui:FAProgressRing IsVisible="{Binding IsLoadingThumbnail}"
+                                                             IsIndeterminate="True"
+                                                             Width="24" Height="24"
+                                                             HorizontalAlignment="Center"
+                                                             VerticalAlignment="Center"/>
                                         </Grid>
                                     </Border>
 
@@ -125,10 +133,10 @@
                                                Margin="12,8,12,0"
                                                TextTrimming="CharacterEllipsis"/>
 
-                                    <TextBlock Grid.Row="2" 
-                                               Foreground="{DynamicResource TextFillColorSecondaryBrush}" 
+                                    <TextBlock Grid.Row="2"
+                                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                                                FontSize="12"
-                                               Margin="12,2,12,4" 
+                                               Margin="12,2,12,4"
                                                TextTrimming="CharacterEllipsis">
                                         <TextBlock.Inlines>
                                             <Run Text="By: "/>
@@ -141,18 +149,18 @@
                                     <Grid Grid.Row="3" Margin="8" VerticalAlignment="Bottom" RowDefinitions="Auto, Auto" ColumnDefinitions="*, Auto">
                                         <ProgressBar Grid.Row="0" Grid.ColumnSpan="2"
                                                      Margin="0,0,0,8"
-                                                     Value="{Binding DownloadProgress}" 
+                                                     Value="{Binding DownloadProgress}"
                                                      Maximum="100"
                                                      Height="4"
                                                      IsVisible="{Binding IsDownloading}"/>
 
                                         <controls:IconButton Grid.Column="0" Grid.Row="1"
                                                              Height="34"
-                                                             HorizontalAlignment="Stretch" 
-                                                             Content="Download" 
-                                                             Icon="ArrowDownload"
+                                                             HorizontalAlignment="Stretch"
+                                                             Content="{x:Static resources:Strings.Common_Download}"
+                                                             Icon="Download"
                                                              Classes="Primary"
-                                                             Command="{Binding DownloadCommand}" 
+                                                             Command="{Binding DownloadCommand}"
                                                              CommandParameter="{Binding}"/>
 
                                         <controls:IconButton Grid.Column="1" Grid.Row="1"

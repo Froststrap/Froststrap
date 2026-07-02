@@ -11,7 +11,7 @@ namespace Froststrap.Extensions
             return bitmap.CreateScaledBitmap(new PixelSize(width, height));
         }
 
-        public static IImage GetImageSource(this Bitmap bitmap, bool handleException = true)
+        public static IImage GetImageSource(this Bitmap bitmap)
         {
             return bitmap;
         }

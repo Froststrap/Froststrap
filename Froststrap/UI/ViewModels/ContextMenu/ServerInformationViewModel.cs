@@ -1,4 +1,7 @@
-﻿using Avalonia.Controls;
+﻿using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Input.Platform;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.Integrations;
 using System.Windows;
@@ -18,10 +21,10 @@ namespace Froststrap.UI.ViewModels.ContextMenu
 
         public string ServerUptime { get; private set; } = Strings.Common_Loading;
 
-        public bool ServerLocationVisibility => App.Settings.Prop.ShowServerDetails;
-        public bool ServerUptimeVisibility => App.Settings.Prop.ShowServerUptime;
+        public static bool ServerLocationVisibility => App.Settings.Prop.ShowServerDetails;
+        public static bool ServerUptimeVisibility => App.Settings.Prop.ShowServerDetails;
 
-        public ICommand CopyInstanceIdCommand => new RelayCommand(CopyInstanceId);
+        public ICommand CopyInstanceIdCommand => new RelayCommand<Visual>(CopyInstanceId);
 
         public ServerInformationViewModel(Watcher watcher)
         {
@@ -48,20 +51,27 @@ namespace Froststrap.UI.ViewModels.ContextMenu
 
         public async void QueryServerUptime()
         {
-            DateTime? serverTime = await _activityWatcher.Data.QueryServerTime();
-            TimeSpan _serverUptime = DateTime.UtcNow - serverTime.Value;
+            DateTime? serverTime = _activityWatcher.Data.StartTime;
+            TimeSpan _serverUptime = TimeSpan.Zero;
+            if (serverTime is not null)
+                _serverUptime = DateTime.UtcNow - serverTime.Value;
 
-            string? serverUptime = Strings.ContextMenu_ServerInformation_Notification_ServerNotTracked;
-            if (_serverUptime.TotalSeconds > 60)
-                serverUptime = Time.FormatTimeSpan(_serverUptime);
-
-            ServerUptime = serverUptime;
+            ServerUptime = Time.FormatTimeSpan(_serverUptime);
 
             OnPropertyChanged(nameof(ServerUptime));
         }
 
-        private void CopyInstanceId() => TopLevel.GetTopLevel(null)?.Clipboard?.SetTextAsync(InstanceId);
-        public ICommand CloseCommand => new RelayCommand<Window>(window => window?.Close());
+        private async void CopyInstanceId(Visual? visual)
+        {
+            var topLevel = TopLevel.GetTopLevel(visual);
+
+            if (topLevel?.Clipboard != null)
+            {
+                await topLevel.Clipboard.SetTextAsync(InstanceId);
+            }
+        }
+
+        public static ICommand CloseCommand => new RelayCommand<Window>(window => window?.Close());
 
     }
 }

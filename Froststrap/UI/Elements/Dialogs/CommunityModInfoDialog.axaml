@@ -1,33 +1,35 @@
 ﻿<base:AvaloniaWindow x:Class="Froststrap.UI.Elements.Dialogs.CommunityModInfoDialog"
-        xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
-        xmlns:md="clr-namespace:Froststrap.UI.Elements.Controls"
-        xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Dialogs"
-        xmlns:resources="clr-namespace:Froststrap.Resources"
-        xmlns:ui="using:FluentAvalonia.UI.Controls"
-        x:DataType="vm:CommunityModInfoViewModel"
-        mc:Ignorable="d"
-        Width="650"
-        SizeToContent="Height"
-        WindowStartupLocation="CenterScreen">
+                     xmlns="https://github.com/avaloniaui"
+                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                     xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+                     xmlns:md="clr-namespace:Froststrap.UI.Elements.Controls"
+                     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Dialogs"
+                     xmlns:gi="clr-namespace:Froststrap.Models"
+                     xmlns:resources="clr-namespace:Froststrap.Resources"
+                     xmlns:ui="using:FluentAvalonia.UI.Controls"
+                     x:DataType="vm:CommunityModInfoViewModel"
+					 Title="{x:Static resources:Strings.Menu_CommunityModInfo_Title}"
+                     mc:Ignorable="d"
+                     Width="650"
+                     SizeToContent="Height"
+                     WindowStartupLocation="CenterScreen">
 
     <Grid RowDefinitions="Auto,*">
-        <md:TitleBar Grid.Row="0" 
-                     Title="Mod Information" 
+        <md:TitleBar Grid.Row="0"
+                     Title="{x:Static resources:Strings.Menu_CommunityModInfo_Title}"
                      Icon="avares://Froststrap/Froststrap.ico" />
 
         <Grid Grid.Row="1" Margin="16,0,16,16" ColumnDefinitions="320,*">
-            
+
             <StackPanel Grid.Column="0" Margin="0,0,16,0" Spacing="12">
                 <md:Card Height="180" ClipToBounds="True">
                     <Panel>
-                        <Image Source="{Binding Mod.ThumbnailImage}" 
-                               Stretch="UniformToFill" 
+                        <Image Source="{Binding Mod.ThumbnailImage}"
+                               Stretch="UniformToFill"
                                RenderOptions.BitmapInterpolationMode="HighQuality"/>
-                        <ui:ProgressRing IsIndeterminate="True" 
+                        <ui:FAProgressRing IsIndeterminate="True"
                                          IsVisible="{Binding Mod.IsLoadingThumbnail}"
                                          Width="30" Height="30" />
                     </Panel>
@@ -35,7 +37,7 @@
 
                 <md:Card Padding="12" IsVisible="{Binding Mod.IsColorMod}">
                     <StackPanel Spacing="8">
-                        <TextBlock Text="Glyph Preview" Margin="4,0,0,0" FontSize="12" FontWeight="SemiBold" />
+                        <TextBlock Text="{x:Static resources:Strings.Common_GlyphPreview}" Margin="4,0,0,0" FontSize="12" FontWeight="SemiBold" />
                         <ScrollViewer MaxHeight="160" VerticalScrollBarVisibility="Auto">
                             <Panel>
                                 <ItemsControl ItemsSource="{Binding GlyphItems}">
@@ -45,18 +47,18 @@
                                         </ItemsPanelTemplate>
                                     </ItemsControl.ItemsPanel>
                                     <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Border Width="42" Height="42" Margin="4" Padding="4" 
+                                        <DataTemplate x:DataType="gi:GlyphItem">
+                                            <Border Width="42" Height="42" Margin="4" Padding="4"
                                                     CornerRadius="6" Background="{DynamicResource ControlFillColorSecondaryBrush}">
                                                 <Viewbox>
-                                                    <Path Data="{Binding Data}" Fill="{Binding ColorBrush}"/>
+                                                    <Path Data="{Binding Data}" Fill="{Binding Brush}"/>
                                                 </Viewbox>
                                             </Border>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
-                                <ui:ProgressRing IsIndeterminate="True" 
-                                                 IsVisible="{Binding IsLoadingGlyphs}" 
+                                <ui:FAProgressRing IsIndeterminate="True"
+                                                 IsVisible="{Binding IsLoadingGlyphs}"
                                                  Width="24" Height="24"/>
                             </Panel>
                         </ScrollViewer>
@@ -67,41 +69,51 @@
             <md:Card Grid.Column="1" VerticalAlignment="Stretch">
                 <DockPanel LastChildFill="True" Margin="16">
                     <StackPanel DockPanel.Dock="Bottom" Spacing="8" Margin="0,16,0,0">
-                        <ProgressBar Value="{Binding Mod.DownloadProgress}" 
-                                     Height="4" 
+                        <ProgressBar Value="{Binding Mod.DownloadProgress}"
+                                     Height="4"
                                      IsVisible="{Binding Mod.IsDownloading}"/>
-                        <md:IconButton Content="Download" 
-                                       Icon="ArrowDownload" 
+                        <md:IconButton Content="Download"
+                                       Icon="Download"
                                        Classes="Primary"
-                                       HorizontalAlignment="Stretch" 
-                                       Height="40" 
-                                       Command="{Binding Mod.DownloadCommand}" 
+                                       HorizontalAlignment="Stretch"
+                                       Height="40"
+                                       Command="{Binding Mod.DownloadCommand}"
                                        CommandParameter="{Binding Mod}"/>
                     </StackPanel>
 
                     <StackPanel Spacing="4">
                         <TextBlock Text="{Binding Mod.Name}" FontSize="24" FontWeight="Bold" TextWrapping="Wrap"/>
-                        <TextBlock Text="{Binding Mod.Author, StringFormat='Created by {0}'}" 
+                        <TextBlock Text="{Binding Mod.Author, StringFormat='Created by {0}'}"
                                    FontSize="12" Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
-                        
-                        <StackPanel Orientation="Horizontal" Spacing="12" Margin="0,4">
-                             <TextBlock Text="{Binding Mod.HexCode, StringFormat='Hex: {0}'}" 
-                                       FontSize="12" Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
-                             <Border Width="12" Height="12" CornerRadius="2" 
-                                     Background="{Binding PreviewBrush}" VerticalAlignment="Center"/>
+
+                        <StackPanel Margin="0,4" IsVisible="{Binding Mod.IsColorMod}">
+                            <TextBlock Text="{Binding ColorDisplayText}"
+                                       FontSize="12"
+                                       Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                       TextWrapping="Wrap" />
                         </StackPanel>
 
-                        <Border Background="{DynamicResource SystemAccentColor}" 
-                                CornerRadius="4" Padding="8,2" 
+                        <StackPanel Orientation="Horizontal" Spacing="4" Margin="0,2,0,0"
+                                    IsVisible="{Binding Mod.GradientAngle.HasValue}">
+                            <TextBlock Text="{x:Static resources:Strings.Common_Angle}"
+                                       FontSize="12"
+                                       Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+                            <TextBlock Text="{Binding Mod.GradientAngle}"
+                                       FontSize="12"
+                                       Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+                        </StackPanel>
+
+                        <Border Background="{DynamicResource SystemAccentColor}"
+                                CornerRadius="4" Padding="8,2"
                                 HorizontalAlignment="Left" Margin="0,8,0,0">
-                            <TextBlock Text="{Binding Mod.ModTypeDisplay}" FontSize="10" FontWeight="SemiBold" Foreground="White"/>
+                            <TextBlock Text="{Binding Mod.ModTypeDisplay}" FontSize="10" FontWeight="SemiBold"/>
                         </Border>
 
                         <Separator Margin="0,12"/>
 
-                        <TextBlock Text="Description" FontWeight="SemiBold" Margin="0,0,0,4"/>
-                        <TextBlock Text="{Binding Mod.Description}" 
-                                   TextWrapping="Wrap" 
+                        <TextBlock Text="{x:Static resources:Strings.Common_Description}" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                        <TextBlock Text="{Binding Mod.Description}"
+                                   TextWrapping="Wrap"
                                    Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
                     </StackPanel>
                 </DockPanel>

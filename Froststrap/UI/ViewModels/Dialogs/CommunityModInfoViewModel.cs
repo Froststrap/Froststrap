@@ -1,47 +1,69 @@
 ﻿using Avalonia;
 using Avalonia.Media;
 using Avalonia.Threading;
-using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.UI.Elements.Base;
-using Froststrap.Models;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
-
 using AvaFontFamily = Avalonia.Media.FontFamily;
 
 namespace Froststrap.UI.ViewModels.Dialogs
 {
-    public partial class CommunityModInfoViewModel : ObservableObject
+    public partial class CommunityModInfoViewModel(CommunityMod mod, AvaloniaWindow window) : NotifyPropertyChangedViewModel
     {
         private static readonly string FontDir = Path.Combine(Path.GetTempPath(), "Froststrap", "Fonts");
 
-        [ObservableProperty] private CommunityMod _mod;
-        [ObservableProperty] private bool _isLoadingGlyphs = false;
-        [ObservableProperty] private string _statusText = string.Empty;
-        [ObservableProperty] private ObservableCollection<GlyphItem> _glyphItems = new();
-
-        [ObservableProperty] private IBrush _previewBrush = Brushes.White;
-
-        private readonly AvaloniaWindow _window;
-
-        public CommunityModInfoViewModel(CommunityMod mod, AvaloniaWindow window)
+        private string _colorDisplayText = string.Empty;
+        public string ColorDisplayText
         {
-            _mod = mod;
-            _window = window;
+            get => _colorDisplayText;
+            set => SetProperty(ref _colorDisplayText, value);
+        }
 
-            if (_mod.IsColorMod)
+        private CommunityMod _mod = mod;
+        public CommunityMod Mod
+        {
+            get => _mod;
+            set => SetProperty(ref _mod, value);
+        }
+
+        private bool _isLoadingGlyphs;
+        public bool IsLoadingGlyphs
+        {
+            get => _isLoadingGlyphs;
+            set => SetProperty(ref _isLoadingGlyphs, value);
+        }
+
+        private string _statusText = string.Empty;
+        public string StatusText
+        {
+            get => _statusText;
+            set => SetProperty(ref _statusText, value);
+        }
+
+        private ObservableCollection<GlyphItem> _glyphItems = [];
+        public ObservableCollection<GlyphItem> GlyphItems
+        {
+            get => _glyphItems;
+            set => SetProperty(ref _glyphItems, value);
+        }
+
+        private IBrush _previewBrush = Brushes.White;
+        public IBrush PreviewBrush
+        {
+            get => _previewBrush;
+            set => SetProperty(ref _previewBrush, value);
+        }
+
+        public void Initialize()
+        {
+            if (Mod.IsColorMod)
                 _ = InitializePreviewAsync();
         }
 
         [RelayCommand]
-        private void Close() => _window.Close();
+        private void Close() => window.Close();
 
         private async Task InitializePreviewAsync()
         {
@@ -55,8 +77,7 @@ namespace Froststrap.UI.ViewModels.Dialogs
                 if (!File.Exists(fontPath))
                 {
                     StatusText = "Downloading preview assets...";
-                    using var httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(30) };
-                    var data = await httpClient.GetByteArrayAsync("https://raw.githubusercontent.com/RealMeddsam/config/main/BuilderIcons-Regular.ttf");
+                    var data = await App.HttpClient.GetByteArrayAsync("https://raw.githubusercontent.com/RealMeddsam/config/main/BuilderIcons-Regular.ttf");
                     await File.WriteAllBytesAsync(fontPath, data);
                 }
 
@@ -72,13 +93,46 @@ namespace Froststrap.UI.ViewModels.Dialogs
 
         private void UpdateGlyphColors()
         {
-            if (Color.TryParse(Mod.HexCode, out var color))
+            if (Mod.GradientStops != null && Mod.GradientStops.Count > 0)
+            {
+                ColorDisplayText = string.Join(" → ", Mod.GradientStops.Select(s => s.Color.ToUpper()));
+
+                var stops = new Avalonia.Media.GradientStops();
+                foreach (var stop in Mod.GradientStops.OrderBy(s => s.Offset))
+                {
+                    if (Color.TryParse(stop.Color, out var color))
+                        stops.Add(new Avalonia.Media.GradientStop(color, stop.Offset));
+                }
+                if (stops.Count > 0)
+                {
+                    double angle = Mod.GradientAngle ?? 90;
+                    var brush = new LinearGradientBrush
+                    {
+                        GradientStops = stops,
+                        StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
+                        EndPoint = new RelativePoint(1, 1, RelativeUnit.Relative)
+                    };
+                    double rad = (angle - 90) * Math.PI / 180.0;
+                    double dx = Math.Cos(rad);
+                    double dy = Math.Sin(rad);
+                    brush.StartPoint = new RelativePoint(0.5 - dx / 2, 0.5 - dy / 2, RelativeUnit.Relative);
+                    brush.EndPoint = new RelativePoint(0.5 + dx / 2, 0.5 + dy / 2, RelativeUnit.Relative);
+                    PreviewBrush = brush;
+                    return;
+                }
+            }
+            else if (!string.IsNullOrEmpty(Mod.HexCode) && Color.TryParse(Mod.HexCode, out var color))
+            {
+                ColorDisplayText = Mod.HexCode.ToUpper();
                 PreviewBrush = new SolidColorBrush(color);
-            else
-                PreviewBrush = Brushes.White;
+                return;
+            }
+
+            ColorDisplayText = "No color information";
+            PreviewBrush = Brushes.White;
         }
 
-        private bool IsFileReady(string filename)
+        private static bool IsFileReady(string filename)
         {
             try
             {
@@ -96,7 +150,7 @@ namespace Froststrap.UI.ViewModels.Dialogs
             if (!File.Exists(fontPath) || !IsFileReady(fontPath)) return;
 
             IsLoadingGlyphs = true;
-            var newItems = new ObservableCollection<GlyphItem>();
+            ObservableCollection<GlyphItem> newItems = [];
             UpdateGlyphColors();
 
             try
@@ -104,10 +158,10 @@ namespace Froststrap.UI.ViewModels.Dialogs
                 string variantName = Path.GetFileNameWithoutExtension(fontPath);
                 AvaFontFamily? fontFamily = null;
 
-                if (Avalonia.Application.Current != null)
+                if (Application.Current != null)
                 {
                     string resourceKey = variantName.EndsWith("Filled") ? "BuilderIconsFilled" : "BuilderIconsRegular";
-                    if (Avalonia.Application.Current.Resources.TryGetResource(resourceKey, null, out object? res) && res is AvaFontFamily ff)
+                    if (Application.Current.Resources.TryGetResource(resourceKey, null, out object? res) && res is AvaFontFamily ff)
                     {
                         fontFamily = ff;
                     }
@@ -120,7 +174,7 @@ namespace Froststrap.UI.ViewModels.Dialogs
                 }
 
                 var typeface = new Typeface(fontFamily);
-                var characterCodes = Enumerable.Range(0xF101, 25).ToList();
+                var characterCodes = Enumerable.Range(0xF101, 25);
 
                 foreach (var characterCode in characterCodes)
                 {
@@ -148,12 +202,10 @@ namespace Froststrap.UI.ViewModels.Dialogs
                             );
                             geometry.Transform = translate;
 
-                            var finalBrush = PreviewBrush as SolidColorBrush ?? new SolidColorBrush(Colors.White);
-
                             newItems.Add(new GlyphItem
                             {
                                 Data = geometry,
-                                ColorBrush = finalBrush
+                                Brush = PreviewBrush
                             });
                         }
                         catch (Exception ex)

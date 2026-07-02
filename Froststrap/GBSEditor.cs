@@ -1,5 +1,4 @@
 ﻿using Froststrap.Enums.GBSPresets;
-using Froststrap;
 using System.Xml.Linq;
 using System.Xml.XPath;
 
@@ -69,7 +68,28 @@ namespace Froststrap
 
         public bool Loaded { get; set; } = false;
 
-        public string FileLocation => Path.Combine(Paths.Roblox, "GlobalBasicSettings_13.xml");
+        public static string FileLocation => OperatingSystem.IsLinux() ?
+                Path.Combine(Paths.Roblox, "data", "sober", "appData", "GlobalBasicSettings_13.xml") :
+                    OperatingSystem.IsMacOS() ?
+                        Path.Combine(Paths.UserProfile, "Library", "Roblox", "GlobalBasicSettings_13.xml") :
+                            Path.Combine(Paths.Roblox, "GlobalBasicSettings_13.xml");
+
+        private string? _savedHash;
+
+        private string ComputeHash()
+        {
+            if (Document == null) return string.Empty;
+            return MD5Hash.FromString(Document.ToString());
+        }
+
+        public bool HasUnsavedChanges
+        {
+            get
+            {
+                if (_savedHash == null) return false;
+                return ComputeHash() != _savedHash;
+            }
+        }
 
         public void SetPreset(string prefix, object? value)
         {
@@ -79,15 +99,16 @@ namespace Froststrap
 
         public string? GetPreset(string prefix)
         {
-            if (!PresetPaths.ContainsKey(prefix))
-                return null;
-
-            return GetValue(PresetPaths[prefix]);
+            if (PresetPaths.TryGetValue(prefix, out string? path))
+            {
+                return GetValue(path);
+            }
+            return null;
         }
 
         public void SetValue(string path, object? value)
         {
-            path = ResolvePath(path);
+            path = ResolvePath(path, RootPaths);
 
             XElement? element = Document?.XPathSelectElement(path);
             if (element is null)
@@ -98,8 +119,7 @@ namespace Froststrap
 
         public string? GetValue(string path)
         {
-            path = ResolvePath(path);
-
+            path = ResolvePath(path, RootPaths);
             return Document?.XPathSelectElement(path)?.Value;
         }
 
@@ -133,7 +153,7 @@ namespace Froststrap
             }
         }
 
-        public bool GetReadOnly()
+        public static bool GetReadOnly()
         {
             if (!File.Exists(FileLocation))
                 return false;
@@ -141,32 +161,89 @@ namespace Froststrap
             return File.GetAttributes(FileLocation).HasFlag(FileAttributes.ReadOnly);
         }
 
-        public void Load()
+        public void CreateTemplate()
         {
-            string LOG_IDENT = "GBSEditor::Load";
-
-            App.Logger.WriteLine(LOG_IDENT, $"Loading from {FileLocation}...");
-
-            if (!File.Exists(FileLocation)) // since the file gets created after roblox starts it might not exist yet  
-                return;
+            string LOG_IDENT = "GBSEditor::CreateTemplate";
+            App.Logger.WriteLine(LOG_IDENT, $"Creating template at {FileLocation}...");
 
             try
             {
-                Document = XDocument.Load(FileLocation);
-                Loaded = true;
+                string? directory = Path.GetDirectoryName(FileLocation);
+                if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                    App.Logger.WriteLine(LOG_IDENT, $"Created directory: {directory}");
+                }
+
+                var uri = new Uri("avares://Froststrap/Resources/GlobalBasicSettings_Template.xml");
+                using var resourceStream = Avalonia.Platform.AssetLoader.Open(uri);
+                using var fileStream = File.Create(FileLocation);
+                resourceStream.CopyTo(fileStream);
 
                 previousReadOnlyState = GetReadOnly();
+                App.Logger.WriteLine(LOG_IDENT, "Template created successfully!");
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine(LOG_IDENT, "Failed to load!");
+                App.Logger.WriteLine(LOG_IDENT, $"Failed to create template at {FileLocation}");
                 App.Logger.WriteException(LOG_IDENT, ex);
+            }
+        }
+
+        public void Load()
+        {
+            const string LOG_IDENT = "GBSEditor::Load";
+
+            App.Logger.WriteLine(LOG_IDENT, $"Loading from {FileLocation}...");
+
+            try
+            {
+                string? directory = Path.GetDirectoryName(FileLocation);
+                if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                    App.Logger.WriteLine(LOG_IDENT, $"Created directory: {directory}");
+                }
+
+                Document = XDocument.Load(FileLocation);
+                Loaded = true;
+                previousReadOnlyState = GetReadOnly();
+                _savedHash = ComputeHash();
+                App.Logger.WriteLine(LOG_IDENT, "Loaded successfully!");
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Failed to load, recreating template...");
+                App.Logger.WriteException(LOG_IDENT, ex);
+
+                if (File.Exists(FileLocation))
+                {
+                    try { File.Delete(FileLocation); }
+                    catch { /* Ignore delete errors */ }
+                }
+
+                CreateTemplate();
+
+                try
+                {
+                    Document = XDocument.Load(FileLocation);
+                    Loaded = true;
+                    previousReadOnlyState = GetReadOnly();
+                    _savedHash = ComputeHash();
+                    App.Logger.WriteLine(LOG_IDENT, "Recreated and loaded successfully!");
+                }
+                catch (Exception retryEx)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Failed even after recreating!");
+                    App.Logger.WriteException(LOG_IDENT, retryEx);
+                    Loaded = false;
+                }
             }
         }
 
         public virtual void Save()
         {
-            string LOG_IDENT = "GBSEditor::Save";
+            const string LOG_IDENT = "GBSEditor::Save";
 
             App.Logger.WriteLine(LOG_IDENT, $"Saving to {FileLocation}...");
 
@@ -174,49 +251,48 @@ namespace Froststrap
             {
                 SetReadOnly(false, true);
                 Document?.Save(FileLocation);
-
                 SetReadOnly(previousReadOnlyState);
+                _savedHash = ComputeHash();
             }
             catch (Exception ex)
             {
                 App.Logger.WriteLine(LOG_IDENT, "Failed to save");
                 App.Logger.WriteException(LOG_IDENT, ex);
-
                 return;
             }
 
             App.Logger.WriteLine(LOG_IDENT, "Save complete!");
         }
 
-        private string ResolvePath(string rawPath)
+
+        private static string ResolvePath(string rawPath, Dictionary<string, string> rootPaths)
         {
             return Regex.Replace(rawPath, @"\{(.+?)\}", match =>
             {
                 string key = match.Groups[1].Value;
-                return RootPaths.TryGetValue(key, out var value) ? value : match.Value; ;
+                return rootPaths.TryGetValue(key, out var value) ? value : match.Value; ;
             });
         }
 
         public string GetVectorValue(string vectorName, string axis)
         {
-            string basePath = ResolvePath(PresetPaths[vectorName]);
+            string basePath = ResolvePath(PresetPaths[vectorName], RootPaths);
             XElement? vectorElement = Document?.XPathSelectElement(basePath);
             return vectorElement?.Element(axis)?.Value ?? "0";
         }
 
         public void SetVectorValue(string vectorName, string axis, string value)
         {
-            string basePath = ResolvePath(PresetPaths[vectorName]);
+            string basePath = ResolvePath(PresetPaths[vectorName], RootPaths);
             XElement? vectorElement = Document?.XPathSelectElement(basePath);
 
-            XElement? axisElement = vectorElement?.Element(axis);
-            if (axisElement != null)
+            if (vectorElement?.Element(axis) is XElement axisElement)
             {
                 axisElement.Value = value;
             }
         }
 
-        public bool ExportSettings(string exportPath)
+        public static bool ExportSettings(string exportPath)
         {
             try
             {

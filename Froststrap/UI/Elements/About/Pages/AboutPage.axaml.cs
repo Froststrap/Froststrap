@@ -9,7 +9,7 @@ namespace Froststrap.UI.Elements.About.Pages
     {
         private readonly Queue<Key> _keys = new();
 
-        private readonly List<Key> _expectedKeys = new() { Key.M, Key.A, Key.T, Key.T, Key.LeftShift, Key.D1 };
+        private readonly List<Key> _expectedKeys = [ Key.M, Key.A, Key.T, Key.T, Key.LeftShift, Key.D1 ];
 
         private bool _triggered = false;
 

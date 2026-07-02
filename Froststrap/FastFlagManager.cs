@@ -1,25 +1,24 @@
-﻿using FluentIcons.Common;
-using Froststrap.Enums.FlagPresets;
+﻿using Froststrap.Enums.FlagPresets;
+using LucideAvalonia.Enum;
 
 namespace Froststrap
 {
     public class FastFlagManager : JsonManager<Dictionary<string, object>>
     {
-		private Dictionary<string, object> OriginalProp = new();
+        private static readonly JsonSerializerOptions _jsonOptions = new() { WriteIndented = true };
+        private static readonly JsonSerializerOptions _jsonReadOptions = new() { ReadCommentHandling = JsonCommentHandling.Skip };
 
-		public override string ClassName => nameof(FastFlagManager);
+        private Dictionary<string, object> OriginalProp = [];
 
+        public override string ClassName => nameof(FastFlagManager);
         public override string LOG_IDENT_CLASS => ClassName;
+        public override string ProfilesLocation => Paths.SavedFlagProfiles;
+        public override string FileName => "ClientAppSettings.json";
+        public override string FileLocation => Path.Combine(Paths.Modifications, "ClientSettings", FileName);
 
-        public override string ProfilesLocation => Path.Combine(Paths.Base, "Profiles");
+        public bool Changed => !OriginalProp.SequenceEqual(Prop);
 
-		public override string FileName => "ClientAppSettings.json";
-
-		public override string FileLocation => Path.Combine(Paths.PresetModifications, "ClientSettings", FileName);
-
-		public bool Changed => !OriginalProp.SequenceEqual(Prop);
-
-        public static IReadOnlyDictionary<string, string> PresetFlags = new Dictionary<string, string>
+        public static readonly IReadOnlyDictionary<string, string> PresetFlags = new Dictionary<string, string>
         {
             // Preset Flags
             { "Rendering.ManualFullscreen", "FFlagHandleAltEnterFullscreenManually" },
@@ -66,6 +65,14 @@ namespace Froststrap
 
         };
 
+        public static IReadOnlyDictionary<TextureQuality, string?> TextureQualityLevels => new Dictionary<TextureQuality, string?>
+        {
+            { TextureQuality.Default, null },
+            { TextureQuality.Medium, "0" },
+            { TextureQuality.Low, "1" },
+            { TextureQuality.Lowest, "2" },
+        };
+
         public static IReadOnlyDictionary<MSAAMode, string?> MSAAModes => new Dictionary<MSAAMode, string?>
         {
             { MSAAMode.Default, null },
@@ -102,7 +109,6 @@ namespace Froststrap
 
         public bool suspendUndoSnapshot = false;
 
-        // to delete a flag, set the value as null
         public void SetValue(string key, object? value)
         {
             const string LOG_IDENT = "FastFlagManager::SetValue";
@@ -119,12 +125,12 @@ namespace Froststrap
             }
             else
             {
-                if (Prop.ContainsKey(key))
+                if (Prop.TryGetValue(key, out object? existingValue))
                 {
-                    if (key == Prop[key]!.ToString())
+                    if (string.Equals(value.ToString(), existingValue?.ToString(), StringComparison.Ordinal))
                         return;
 
-                    App.Logger.WriteLine(LOG_IDENT, $"Changing of '{key}' from '{Prop[key]}' to '{value}' is pending");
+                    App.Logger.WriteLine(LOG_IDENT, $"Changing of '{key}' from '{existingValue}' to '{value}' is pending");
                 }
                 else
                 {
@@ -135,10 +141,8 @@ namespace Froststrap
             }
         }
 
-        // this returns null if the fflag doesn't exist
         public string? GetValue(string key)
         {
-            // check if we have an updated change for it pushed first
             if (Prop.TryGetValue(key, out object? value) && value is not null)
                 return value.ToString();
 
@@ -147,15 +151,15 @@ namespace Froststrap
 
         public void SetPreset(string prefix, object? value)
         {
-            foreach (var pair in PresetFlags.Where(x => x.Key.StartsWith(prefix)))
+            foreach (var pair in PresetFlags.Where(x => x.Key.StartsWith(prefix, StringComparison.Ordinal)))
                 SetValue(pair.Value, value);
         }
 
         public void SetPresetEnum(string prefix, string target, object? value)
         {
-            foreach (var pair in PresetFlags.Where(x => x.Key.StartsWith(prefix)))
+            foreach (var pair in PresetFlags.Where(x => x.Key.StartsWith(prefix, StringComparison.Ordinal)))
             {
-                if (pair.Key.StartsWith($"{prefix}.{target}"))
+                if (pair.Key.StartsWith($"{prefix}.{target}", StringComparison.Ordinal))
                     SetValue(pair.Value, value);
                 else
                     SetValue(pair.Value, null);
@@ -164,14 +168,14 @@ namespace Froststrap
 
         public string? GetPreset(string name)
         {
-            if (!PresetFlags.ContainsKey(name))
+            if (!PresetFlags.TryGetValue(name, out string? flagName))
             {
                 App.Logger.WriteLine("FastFlagManager::GetPreset", $"Could not find preset {name}");
                 Debug.Assert(false, $"Could not find preset {name}");
                 return null;
             }
 
-            return GetValue(PresetFlags[name]);
+            return GetValue(flagName);
         }
 
         public T GetPresetEnum<T>(IReadOnlyDictionary<T, string> mapping, string prefix, string value) where T : Enum
@@ -188,47 +192,80 @@ namespace Froststrap
             return mapping.First().Key;
         }
 
-        public bool IsPreset(string Flag) => PresetFlags.Values.Any(v => v.ToLower() == Flag.ToLower());
+        public static bool IsPreset(string flag) => PresetFlags.Values.Any(v => string.Equals(v, flag, StringComparison.OrdinalIgnoreCase));
 
         public override void Save()
         {
-            // convert all flag values to strings before saving
-
-            foreach (var pair in Prop)
-                Prop[pair.Key] = pair.Value!.ToString()!;
+            foreach (var key in Prop.Keys.ToList())
+                Prop[key] = Prop[key].ToString()!;
 
             base.Save();
 
-            // clone the dictionary
             OriginalProp = new(Prop);
+
+            if (OperatingSystem.IsLinux())
+                SyncToSoberConfig();
         }
 
-		public override bool Load(bool alertFailure = true)
-		{
-			bool result = base.Load(alertFailure);
+        [System.Runtime.Versioning.SupportedOSPlatform("linux")]
+        private void SyncToSoberConfig()
+        {
+            const string LOG_IDENT = "FastFlagManager::SyncToSoberConfig";
 
-			// clone the dictionary
-			OriginalProp = new(Prop);
+            try
+            {
+                if (!App.SoberSettings.Loaded)
+                    App.SoberSettings.Load(alertFailure: false);
+
+                var fflagsDict = App.SoberSettings.GetOrCreateFFlagsContainer();
+
+                foreach (var kvp in Prop)
+                {
+                    string val = kvp.Value?.ToString() ?? "";
+                    if (bool.TryParse(val, out bool boolResult))
+                        fflagsDict[kvp.Key] = boolResult;
+                    else if (long.TryParse(val, out long longResult))
+                        fflagsDict[kvp.Key] = longResult;
+                    else if (double.TryParse(val, NumberStyles.Float, CultureInfo.InvariantCulture, out double doubleResult))
+                        fflagsDict[kvp.Key] = doubleResult;
+                    else
+                        fflagsDict[kvp.Key] = val;
+                }
+
+                App.SoberSettings.Save();
+                App.Logger.WriteLine(LOG_IDENT, $"Successfully synced {fflagsDict.Count} flags.");
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Failed to sync flags.");
+                App.Logger.WriteException(LOG_IDENT, ex);
+            }
+        }
+
+        public override bool Load(bool alertFailure = true)
+        {
+            bool result = base.Load(alertFailure);
+            OriginalProp = new(Prop);
 
             if (GetPreset("Rendering.ManualFullscreen") != "False")
                 SetPreset("Rendering.ManualFullscreen", "False");
 
             return result;
-		}
+        }
 
-		public async void DeleteProfile(string Profile)
+        public static async Task DeleteProfile(string profile)
         {
             try
             {
-                string profilesDirectory = Path.Combine(Paths.Base, Paths.SavedFlagProfiles);
+                string profilesDirectory = Paths.SavedFlagProfiles;
 
                 if (!Directory.Exists(profilesDirectory))
                     Directory.CreateDirectory(profilesDirectory);
 
-                if (String.IsNullOrEmpty(Profile))
+                if (string.IsNullOrEmpty(profile))
                     return;
 
-                File.Delete(Path.Combine(profilesDirectory, Profile));
+                File.Delete(Path.Combine(profilesDirectory, profile));
             }
             catch (Exception ex)
             {
@@ -244,25 +281,24 @@ namespace Froststrap
                 {
                     Name = kvp.Key,
                     Value = kvp.Value?.ToString() ?? "",
-                    Preset = FluentIcons.Common.Symbol.Subtract // optional/default
+                    Preset = LucideIconNames.Minus
                 };
             }
         }
 
-        private readonly Stack<Dictionary<string, object?>> undoStack = new();
-        private readonly Stack<Dictionary<string, object?>> redoStack = new();
+        private readonly Stack<Dictionary<string, object>> undoStack = [];
+        private readonly Stack<Dictionary<string, object>> redoStack = [];
 
         public void SaveUndoSnapshot()
         {
-            // Avoid pushing if last snapshot is identical (optional but nice)
-            if (undoStack.Count > 0 && DictionaryEquals(undoStack.Peek(), Prop!))
+            if (undoStack.Count > 0 && DictionaryEquals(undoStack.Peek(), Prop))
                 return;
 
-            undoStack.Push(new Dictionary<string, object?>(Prop!));
+            undoStack.Push(new Dictionary<string, object>(Prop));
             redoStack.Clear();
         }
 
-        private bool DictionaryEquals(Dictionary<string, object?> a, Dictionary<string, object?> b)
+        private static bool DictionaryEquals(Dictionary<string, object> a, Dictionary<string, object> b)
         {
             if (a.Count != b.Count)
                 return false;
@@ -284,13 +320,13 @@ namespace Froststrap
             if (undoStack.Count == 0)
                 return;
 
-            redoStack.Push(new Dictionary<string, object?>(Prop!));
+            redoStack.Push(new Dictionary<string, object>(Prop));
 
             var previous = undoStack.Pop();
 
             Prop.Clear();
             foreach (var kvp in previous)
-                Prop[kvp.Key] = kvp.Value!;
+                Prop[kvp.Key] = kvp.Value;
         }
 
         public void Redo()
@@ -298,13 +334,13 @@ namespace Froststrap
             if (redoStack.Count == 0)
                 return;
 
-            undoStack.Push(new Dictionary<string, object?>(Prop!));
+            undoStack.Push(new Dictionary<string, object>(Prop));
 
             var next = redoStack.Pop();
 
             Prop.Clear();
             foreach (var kvp in next)
-                Prop[kvp.Key] = kvp.Value!;
+                Prop[kvp.Key] = kvp.Value;
         }
     }
 }

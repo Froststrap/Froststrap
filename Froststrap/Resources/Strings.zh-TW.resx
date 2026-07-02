@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -117,148 +117,490 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="About.Licenses.Title" xml:space="preserve">
+    <value>授權</value>
+    <comment>Referring to code licenses; see https://opensource.org/licenses for example</comment>
+  </data>
+  <data name="About.Title" xml:space="preserve">
+    <value>關於 Froststrap</value>
+  </data>
+  <data name="ActivityWatcher.LocationQueryFailed" xml:space="preserve">
+    <value>無法查詢伺服器位置。您可能加入遊戲的速度過快。</value>
+  </data>
+  <data name="AddCustomTheme.Title" xml:space="preserve">
+    <value>新增自訂主題</value>
+  </data>
+  <data name="App.OSDeprecation.Win7_81" xml:space="preserve">
+    <value>Roblox 已不再支援 Windows 7 或 8.1。若要繼續遊玩 Roblox，請升級至 Windows 10 或更新版本。</value>
+  </data>
+  <data name="Boostrapper.Dialog.UnauthorizedChannel" xml:space="preserve">
+    <value>您目前所在的頻道 ({0}) 現已限制公開使用。您將轉至預設頻道 ({1})。</value>
+  </data>
   <data name="Bootstrapper.AutoUpdateFailed" xml:space="preserve">
-    <value>Froststrap 未能自動更新到版本 {0}。請自行到官方網站下載最新版本並執行它來手動更新。</value>
+    <value>Froststrap 無法自動更新至版本 {0}。請手動從網站下載並執行該程式以進行更新。</value>
+  </data>
+  <data name="Bootstrapper.Bootstrapper.Dialog.PromptChannelChange" xml:space="preserve">
+    <value>Roblox 正嘗試將您的頻道設定為 {0}，但您目前的首選頻道是 {1}。
+
+
+您要將首選頻道切換為 {0} 嗎？</value>
+  </data>
+  <data name="Bootstrapper.CancelButton.Skip" xml:space="preserve">
+    <value>跳過</value>
   </data>
   <data name="Bootstrapper.ConfirmLaunch" xml:space="preserve">
-    <value>Roblox 當前正在運行，開啟另一個窗口將會關掉它。您確定要繼續開啟嗎？</value>
+    <value>Roblox 目前正在執行中，若啟動另一個執行個體，將導致其關閉。您確定要繼續啟動嗎？</value>
   </data>
-  <data name="Dialog.Connectivity.RobloxDown" xml:space="preserve">
-    <value>Roblox 的伺服器可能已經炸了。請參考 {0} 來了解更多資訊。</value>
+  <data name="Bootstrapper.Dialog.ChannelOutOfDate" xml:space="preserve">
+    <value>您目前所在的頻道 ({0}) 已過時，且似乎不再接收更新。
+您要切換到預設頻道 ({1}) 嗎？</value>
   </data>
-  <data name="Dialog.Connectivity.BadConnection" xml:space="preserve">
-    <value>無法連線，這可能是因為您的網路問題或者是防火牆設定，如果您的網路連線沒問題，請確認你的防毒軟體沒有干預 Froststrap 的網路權限。</value>
+  <data name="Bootstrapper.Dialog.NoUpgradeWithoutClient" xml:space="preserve">
+    <value>由於缺少客戶端，升級功能已被停用。
+    為避免問題發生，升級程序將繼續進行。</value>
   </data>
-  <data name="Bootstrapper.FirstRunUninstall" xml:space="preserve">
-    <value>您要先安裝Froststrap才能解除安裝。</value>
+  <data name="Bootstrapper.ExtractionFailed.Message" xml:space="preserve">
+    <value>部分內容可能遺失。請在設定中強制重新安裝 Roblox 以解決此問題。</value>
+  </data>
+  <data name="Bootstrapper.ExtractionFailed.Title" xml:space="preserve">
+    <value>無法提取所有檔案</value>
+  </data>
+  <data name="Bootstrapper.JsonManagerSaveFailed" xml:space="preserve">
+    <value>無法儲存 {0}：{1}</value>
+  </data>
+  <data name="Bootstrapper.ModificationsFailed.Message" xml:space="preserve">
+    <value>並非所有修改都會出現在本次發布中。</value>
+  </data>
+  <data name="Bootstrapper.ModificationsFailed.Title" xml:space="preserve">
+    <value>無法套用所有變更</value>
   </data>
   <data name="Bootstrapper.NotEnoughSpace" xml:space="preserve">
-    <value>你的電腦沒有足夠磁碟空間來安裝Froststrap和Roblox，請先釋放一些磁碟空間然後再試一遍。</value>
+    <value>Froststrap 的磁碟空間不足，無法下載並安裝 Roblox。請釋放一些磁碟空間後再試一次。</value>
   </data>
   <data name="Bootstrapper.Status.ApplyingModifications" xml:space="preserve">
-    <value>正在應用 Roblox 修改</value>
+    <value>正在套用 Roblox 模組...</value>
+  </data>
+  <data name="Bootstrapper.Status.CancelUpgrade" xml:space="preserve">
+    <value>取消 Roblox 升級。</value>
+  </data>
+  <data name="Bootstrapper.Status.CheckingDependencies" xml:space="preserve">
+    <value>檢查依賴項</value>
+  </data>
+  <data name="Bootstrapper.Status.CheckingFlatpak" xml:space="preserve">
+    <value>正在檢查 Flatpak 的安裝狀況...</value>
+  </data>
+  <data name="Bootstrapper.Status.CheckingUpdates" xml:space="preserve">
+    <value>檢查是否有更新</value>
+  </data>
+  <data name="Bootstrapper.Status.CompilingVulkanLayer" xml:space="preserve">
+    <value>正在編譯 Vulkan 層...</value>
   </data>
   <data name="Bootstrapper.Status.Configuring" xml:space="preserve">
-    <value>正在設定{product}...</value>
+    <value>正在設定 {product}...</value>
   </data>
   <data name="Bootstrapper.Status.Connecting" xml:space="preserve">
-    <value>正在連接至Roblox...</value>
+    <value>正在連線至 Roblox...</value>
+  </data>
+  <data name="Bootstrapper.Status.Downloading" xml:space="preserve">
+    <value>正在下載</value>
+  </data>
+  <data name="Bootstrapper.Status.DownloadingDXVK" xml:space="preserve">
+    <value>正在下載 DXVK...</value>
+  </data>
+  <data name="Bootstrapper.Status.DownloadingDXVKSarek" xml:space="preserve">
+    <value>正在下載 DXVK-Sarek...</value>
+  </data>
+  <data name="Bootstrapper.Status.DownloadingUpdate" xml:space="preserve">
+    <value>正在下載更新 {0}...</value>
+  </data>
+  <data name="Bootstrapper.Status.DownloadingWebView2" xml:space="preserve">
+    <value>正在下載 WebView2...</value>
+  </data>
+  <data name="Bootstrapper.Status.DownloadingWine" xml:space="preserve">
+    <value>正在下載 Wine...</value>
+  </data>
+  <data name="Bootstrapper.Status.Extracting" xml:space="preserve">
+    <value>擷取</value>
+  </data>
+  <data name="Bootstrapper.Status.ExtractingDXVK" xml:space="preserve">
+    <value>正在解壓縮 DXVK...</value>
+  </data>
+  <data name="Bootstrapper.Status.ExtractingDXVKSarek" xml:space="preserve">
+    <value>正在提取 DXVK-Sarek...</value>
+  </data>
+  <data name="Bootstrapper.Status.ExtractingWine" xml:space="preserve">
+    <value>正在萃取葡萄酒……</value>
+  </data>
+  <data name="Bootstrapper.Status.FindingTopRegions" xml:space="preserve">
+    <value>正在尋找前 {0} 個地區...</value>
+  </data>
+  <data name="Bootstrapper.Status.InitializingWinePrefix" xml:space="preserve">
+    <value>正在初始化 Wine 前綴...</value>
   </data>
   <data name="Bootstrapper.Status.Installing" xml:space="preserve">
     <value>正在安裝 {product}...</value>
   </data>
+  <data name="Bootstrapper.Status.InstallingSober" xml:space="preserve">
+    <value>安裝 Sober...</value>
+  </data>
+  <data name="Bootstrapper.Status.InstallingUpdate" xml:space="preserve">
+    <value>正在安裝更新 {0}...</value>
+  </data>
   <data name="Bootstrapper.Status.InstallingWebView2" xml:space="preserve">
-    <value>正在安裝WebView2，請稍候...</value>
+    <value>正在安裝 WebView2，請稍候...</value>
+  </data>
+  <data name="Bootstrapper.Status.PackagesLeft" xml:space="preserve">
+    <value>左</value>
+  </data>
+  <data name="Bootstrapper.Status.RetryingPackage" xml:space="preserve">
+    <value>正在重試 {0}...</value>
+  </data>
+  <data name="Bootstrapper.Status.SearchingNearbyServers" xml:space="preserve">
+    <value>正在搜尋附近的伺服器...</value>
+  </data>
+  <data name="Bootstrapper.Status.SearchingServers" xml:space="preserve">
+    <value>正在搜尋 {0} 中的伺服器...</value>
+  </data>
+  <data name="Bootstrapper.Status.SettingUpDXVK" xml:space="preserve">
+    <value>正在設定 DXVK...</value>
+  </data>
+  <data name="Bootstrapper.Status.SkippingMatchmaking" xml:space="preserve">
+    <value>跳過伺服器搜尋...</value>
+  </data>
+  <data name="Bootstrapper.Status.SoberUpdateComplete" xml:space="preserve">
+    <value>清醒狀態下的更新已完成。</value>
   </data>
   <data name="Bootstrapper.Status.Starting" xml:space="preserve">
-    <value>正在啟動{product}...</value>
-    <comment>"Starting Roblox" or "Starting Roblox Studio"</comment>
+    <value>正在啟動 {product}...</value>
+    <comment>&quot;Starting Roblox&quot; or &quot;Starting Roblox Studio&quot;</comment>
+  </data>
+  <data name="Bootstrapper.Status.StartingSober" xml:space="preserve">
+    <value>從清醒開始……</value>
+  </data>
+  <data name="Bootstrapper.Status.StartingStudioWine" xml:space="preserve">
+    <value>使用 Wine 啟動 Roblox Studio...</value>
+  </data>
+  <data name="Bootstrapper.Status.UninstallingWebView2" xml:space="preserve">
+    <value>正在解除安裝 WebView2 {0}...</value>
+  </data>
+  <data name="Bootstrapper.Status.UpdatingSober" xml:space="preserve">
+    <value>正在更新 Sober...</value>
+  </data>
+  <data name="Bootstrapper.Status.UpdatingSoberBasic" xml:space="preserve">
+    <value>正在更新 Sober ({0}/{1})...</value>
+  </data>
+  <data name="Bootstrapper.Status.UpdatingSoberProgress" xml:space="preserve">
+    <value>正在更新 Sober ({0}/{1}): {2}%</value>
   </data>
   <data name="Bootstrapper.Status.Upgrading" xml:space="preserve">
-    <value>正在更新{product}...</value>
+    <value>正在升級 {product}...</value>
+  </data>
+  <data name="Bootstrapper.Status.WaitingForData" xml:space="preserve">
+    <value>正在等待資料...</value>
   </data>
   <data name="Bootstrapper.Status.WaitingOtherInstances" xml:space="preserve">
-    <value>正在等待其他Roblox程式...</value>
+    <value>正在等待其他執行個體...</value>
   </data>
   <data name="Bootstrapper.StylePreview.ImageCancel" xml:space="preserve">
-    <value>風格外觀預覽 - 點擊右上角的 X 按鈕關閉</value>
+    <value>樣式預覽 — 點擊右上角的 X 按鈕以關閉</value>
     <comment>Text for style previews that use an X button. Currently only applies to Byfron</comment>
   </data>
   <data name="Bootstrapper.StylePreview.TextCancel" xml:space="preserve">
-    <value>風格外觀 - 點擊取消以關閉</value>
-    <comment>Text for style previews that use text button that says "Cancel"</comment>
+    <value>樣式預覽 — 點擊「取消」以關閉</value>
+    <comment>Text for style previews that use text button that says &quot;Cancel&quot;</comment>
   </data>
   <data name="Bootstrapper.SuccessfullyUninstalled" xml:space="preserve">
-    <value>Froststrap解除安裝成功</value>
+    <value>Froststrap 已成功解除安裝</value>
   </data>
   <data name="Bootstrapper.Uninstall.RobloxRunning" xml:space="preserve">
-    <value>Roblox 正在運行中，但在解除安裝 Froststrap 之前，你必須先關閉 Roblox，請問你現在要關閉 Roblox 嗎？</value>
+    <value>Roblox 目前正在執行中，但在解除安裝 Froststrap 之前必須先關閉該程式。您要現在關閉 Roblox 嗎？</value>
   </data>
   <data name="Bootstrapper.WMFNotFound" xml:space="preserve">
-    <value>似乎您的系統缺少Windows媒體基礎元件，這很大機會是你的Windows作業系統是N版本，請先安裝它然後再開啟Roblox。</value>
+    <value>Roblox 需要使用 Windows Media Foundation 元件。您的系統似乎缺少這些元件，這很可能是因為您使用的是 Windows 的 N 版。請先安裝這些元件，然後再啟動 Roblox。</value>
+  </data>
+  <data name="Bootstrapper.WebView2NotFound" xml:space="preserve">
+    <value>您目前尚未安裝 WebView2 執行環境。若未安裝此執行環境，部分 Roblox 功能將無法正常運作，例如桌面應用程式。您要現在下載嗎？</value>
+  </data>
+  <data name="Common.Add" xml:space="preserve">
+    <value>新增</value>
   </data>
   <data name="Common.AddSingle" xml:space="preserve">
-    <value>新增單個</value>
+    <value>新增單曲</value>
+  </data>
+  <data name="Common.All" xml:space="preserve">
+    <value>全部</value>
+  </data>
+  <data name="Common.Angle" xml:space="preserve">
+    <value>角度</value>
+  </data>
+  <data name="Common.Bands" xml:space="preserve">
+    <value>樂團</value>
   </data>
   <data name="Common.Browse" xml:space="preserve">
     <value>瀏覽</value>
   </data>
+  <data name="Common.Browser" xml:space="preserve">
+    <value>瀏覽器</value>
+  </data>
   <data name="Common.Cancel" xml:space="preserve">
     <value>取消</value>
+  </data>
+  <data name="Common.Clear" xml:space="preserve">
+    <value>清除</value>
   </data>
   <data name="Common.Close" xml:space="preserve">
     <value>關閉</value>
   </data>
+  <data name="Common.ColorPicker" xml:space="preserve">
+    <value>選色器</value>
+  </data>
+  <data name="Common.Confirm" xml:space="preserve">
+    <value>確認</value>
+  </data>
+  <data name="Common.Copy" xml:space="preserve">
+    <value>複製</value>
+  </data>
+  <data name="Common.CopyAll" xml:space="preserve">
+    <value>複製全部</value>
+  </data>
+  <data name="Common.CreateNew" xml:space="preserve">
+    <value>建立新項目</value>
+  </data>
+  <data name="Common.Custom" xml:space="preserve">
+    <value>自訂</value>
+  </data>
+  <data name="Common.Deeplink" xml:space="preserve">
+    <value>深度連結</value>
+  </data>
+  <data name="Common.Default" xml:space="preserve">
+    <value>預設</value>
+  </data>
   <data name="Common.Delete" xml:space="preserve">
     <value>刪除</value>
   </data>
-  <data name="Common.DiscordRichPresence" xml:space="preserve">
-    <value>Discord 活動狀態</value>
+  <data name="Common.DeleteAll" xml:space="preserve">
+    <value>刪除全部</value>
   </data>
-  <data name="Common.Help" xml:space="preserve">
-    <value>幫助</value>
+  <data name="Common.Deployment" xml:space="preserve">
+    <value>部署</value>
+  </data>
+  <data name="Common.Description" xml:space="preserve">
+    <value>說明</value>
+  </data>
+  <data name="Common.Disabled" xml:space="preserve">
+    <value>已停用</value>
+  </data>
+  <data name="Common.DiscordRichPresence" xml:space="preserve">
+    <value>Discord 豐富狀態資訊</value>
+  </data>
+  <data name="Common.Download" xml:space="preserve">
+    <value>下載</value>
+  </data>
+  <data name="Common.Edit" xml:space="preserve">
+    <value>編輯</value>
+  </data>
+  <data name="Common.Editor" xml:space="preserve">
+    <value>編輯</value>
+  </data>
+  <data name="Common.Error" xml:space="preserve">
+    <value>錯誤</value>
+  </data>
+  <data name="Common.Export" xml:space="preserve">
+    <value>匯出</value>
+    <comment>Currently used under the &quot;Froststrap&quot; settings tab for the button to export diagnostic data</comment>
+  </data>
+  <data name="Common.Files" xml:space="preserve">
+    <value>檔案</value>
+  </data>
+  <data name="Common.Game" xml:space="preserve">
+    <value>遊戲</value>
+  </data>
+  <data name="Common.Generate" xml:space="preserve">
+    <value>產生</value>
+  </data>
+  <data name="Common.GlyphPreview" xml:space="preserve">
+    <value>字形預覽</value>
+  </data>
+  <data name="Common.HexCode" xml:space="preserve">
+    <value>十六進位碼</value>
+  </data>
+  <data name="Common.Import" xml:space="preserve">
+    <value>匯入</value>
+  </data>
+  <data name="Common.ImportFromFile" xml:space="preserve">
+    <value>從檔案匯入</value>
   </data>
   <data name="Common.ImportJson" xml:space="preserve">
-    <value>導入 JSON</value>
+    <value>匯入 JSON</value>
   </data>
-  <data name="Common.OpenLogFile" xml:space="preserve">
-    <value>打開日誌文件</value>
+  <data name="Common.Install" xml:space="preserve">
+    <value>安裝</value>
+  </data>
+  <data name="Common.Launch" xml:space="preserve">
+    <value>啟動</value>
+  </data>
+  <data name="Common.Loading" xml:space="preserve">
+    <value>正在載入，請稍候...</value>
+  </data>
+  <data name="Common.Manual" xml:space="preserve">
+    <value>手冊</value>
   </data>
   <data name="Common.Miscellaneous" xml:space="preserve">
-    <value>其他</value>
+    <value>雜項</value>
   </data>
   <data name="Common.Name" xml:space="preserve">
-    <value>名稱</value>
+    <value>姓名</value>
   </data>
   <data name="Common.New" xml:space="preserve">
     <value>新</value>
   </data>
   <data name="Common.No" xml:space="preserve">
-    <value>否</value>
+    <value>不</value>
   </data>
-  <data name="Common.OK" xml:space="preserve">
-    <value>OK</value>
+  <data name="Common.NoResult" xml:space="preserve">
+    <value>未找到結果</value>
+  </data>
+  <data name="Common.NotAvailable" xml:space="preserve">
+    <value>暫無</value>
+  </data>
+  <data name="Common.NotFound" xml:space="preserve">
+    <value>未找到</value>
+  </data>
+  <data name="Common.Offset" xml:space="preserve">
+    <value>偏移量</value>
+  </data>
+  <data name="Common.OpenFolder" xml:space="preserve">
+    <value>開啟資料夾</value>
+  </data>
+  <data name="Common.OpenLogFile" xml:space="preserve">
+    <value>開啟日誌檔案</value>
+  </data>
+  <data name="Common.Performance" xml:space="preserve">
+    <value>表現</value>
+  </data>
+  <data name="Common.Player" xml:space="preserve">
+    <value>玩家</value>
+  </data>
+  <data name="Common.PresetFlagLists" xml:space="preserve">
+    <value>預設旗標清單</value>
   </data>
   <data name="Common.Presets" xml:space="preserve">
-    <value>預設</value>
+    <value>預設值</value>
   </data>
-  <data name="Common.Reset" xml:space="preserve">
-    <value>重設</value>
-    <comment>In the context of resetting something to a default value</comment>
+  <data name="Common.Priority" xml:space="preserve">
+    <value>優先級</value>
+  </data>
+  <data name="Common.Profiles" xml:space="preserve">
+    <value>個人檔案</value>
+  </data>
+  <data name="Common.Quality" xml:space="preserve">
+    <value>品質</value>
+  </data>
+  <data name="Common.Remove" xml:space="preserve">
+    <value>移除</value>
+  </data>
+  <data name="Common.Rename" xml:space="preserve">
+    <value>重新命名</value>
+  </data>
+  <data name="Common.RobloxNotInstalled" xml:space="preserve">
+    <value>Roblox 尚未安裝。在嘗試使用此選項之前，請先透過 Froststrap 至少啟動一次 Roblox。</value>
+  </data>
+  <data name="Common.SaveAndInstall" xml:space="preserve">
+    <value>儲存並安裝</value>
+  </data>
+  <data name="Common.SaveAndLaunch" xml:space="preserve">
+    <value>儲存並執行</value>
+  </data>
+  <data name="Common.Search" xml:space="preserve">
+    <value>搜尋</value>
+  </data>
+  <data name="Common.Select" xml:space="preserve">
+    <value>選擇</value>
+  </data>
+  <data name="Common.ServerID" xml:space="preserve">
+    <value>伺服器 ID</value>
+  </data>
+  <data name="Common.Settings" xml:space="preserve">
+    <value>設定</value>
+  </data>
+  <data name="Common.Shortcuts" xml:space="preserve">
+    <value>快捷方式</value>
+  </data>
+  <data name="Common.Shortcuts.Desktop" xml:space="preserve">
+    <value>桌面圖示</value>
+  </data>
+  <data name="Common.Sober" xml:space="preserve">
+    <value>清醒</value>
+  </data>
+  <data name="Common.Studio" xml:space="preserve">
+    <value>研究</value>
+  </data>
+  <data name="Common.SystemDefault" xml:space="preserve">
+    <value>系統預設值</value>
+  </data>
+  <data name="Common.Template" xml:space="preserve">
+    <value>範本</value>
+  </data>
+  <data name="Common.Timestamp" xml:space="preserve">
+    <value>時間戳記</value>
+  </data>
+  <data name="Common.Total" xml:space="preserve">
+    <value>總計</value>
+  </data>
+  <data name="Common.Unknown" xml:space="preserve">
+    <value>未知</value>
+  </data>
+  <data name="Common.Update" xml:space="preserve">
+    <value>更新</value>
   </data>
   <data name="Common.Value" xml:space="preserve">
-    <value>數值</value>
+    <value>價值</value>
   </data>
-  <data name="Common.Warning" xml:space="preserve">
-    <value>警告</value>
+  <data name="Common.Version" xml:space="preserve">
+    <value>版本</value>
+  </data>
+  <data name="Common.VersionGuid" xml:space="preserve">
+    <value>版本識別碼</value>
   </data>
   <data name="Common.Yes" xml:space="preserve">
-    <value>是</value>
+    <value>是的</value>
   </data>
   <data name="ContextMenu.CloseRoblox" xml:space="preserve">
-    <value>關閉Roblox</value>
-  </data>
-  <data name="ContextMenu.CloseRobloxMessage" xml:space="preserve">
-    <value>您確定想關閉Roblox嗎？這個會強制關閉所有Roblox程式。</value>
+    <value>關閉 Roblox</value>
   </data>
   <data name="ContextMenu.CopyDeeplinkInvite" xml:space="preserve">
     <value>複製邀請連結</value>
   </data>
+  <data name="ContextMenu.GameHistory.Description" xml:space="preserve">
+    <value>遊戲歷史紀錄僅會針對您當前的 Roblox 遊戲會話進行記錄。當您離開遊戲或在遊戲中進行傳送時，相關遊戲會出現在此處。並非所有伺服器都能重新加入。</value>
+  </data>
+  <data name="ContextMenu.GameHistory.Rejoin" xml:space="preserve">
+    <value>重新加入</value>
+  </data>
+  <data name="ContextMenu.GameHistory.Title" xml:space="preserve">
+    <value>遊戲歷史</value>
+  </data>
+  <data name="ContextMenu.ServerDetails.Notification.Text" xml:space="preserve">
+    <value>位置：{0}
+運行時間：{1}</value>
+  </data>
   <data name="ContextMenu.ServerInformation.CopyInstanceId" xml:space="preserve">
-    <value>複製伺服器Job ID</value>
+    <value>複製實例 ID</value>
   </data>
   <data name="ContextMenu.ServerInformation.InstanceId" xml:space="preserve">
-    <value>伺服器Job ID</value>
+    <value>實例 ID</value>
   </data>
   <data name="ContextMenu.ServerInformation.Location" xml:space="preserve">
-    <value>地區</value>
+    <value>地點</value>
   </data>
-  <data name="ContextMenu.ServerInformation.Notification.Text" xml:space="preserve">
-    <value>地區：{0} 
-點擊查看更多</value>
+  <data name="ContextMenu.ServerInformation.Notification.Title.Private" xml:space="preserve">
+    <value>已連線至私人伺服器</value>
   </data>
   <data name="ContextMenu.ServerInformation.Notification.Title.Public" xml:space="preserve">
-    <value>已連接至公共伺服器</value>
+    <value>已連線至公共伺服器</value>
+  </data>
+  <data name="ContextMenu.ServerInformation.Notification.Title.Reserved" xml:space="preserve">
+    <value>已連線至一臺預留伺服器</value>
   </data>
   <data name="ContextMenu.ServerInformation.Title" xml:space="preserve">
     <value>伺服器資訊</value>
@@ -266,430 +608,1484 @@
   <data name="ContextMenu.ServerInformation.Type" xml:space="preserve">
     <value>類型</value>
   </data>
+  <data name="ContextMenu.ServerInformation.Uptime" xml:space="preserve">
+    <value>正常運作時間</value>
+  </data>
+  <data name="CustomTheme.Add.Errors.FileNotZip" xml:space="preserve">
+    <value>檔案必須是 ZIP 格式</value>
+  </data>
+  <data name="CustomTheme.Add.Errors.NameEmpty" xml:space="preserve">
+    <value>姓名欄位不能為空</value>
+  </data>
+  <data name="CustomTheme.Add.Errors.NameIllegalCharacters" xml:space="preserve">
+    <value>名稱中包含非法字元</value>
+  </data>
+  <data name="CustomTheme.Add.Errors.NameReserved" xml:space="preserve">
+    <value>此名稱無法使用</value>
+  </data>
+  <data name="CustomTheme.Add.Errors.NameTaken" xml:space="preserve">
+    <value>此名稱已被使用</value>
+  </data>
+  <data name="CustomTheme.Add.Errors.Unknown" xml:space="preserve">
+    <value>未知錯誤</value>
+  </data>
+  <data name="CustomTheme.Add.Errors.ZipInvalidData" xml:space="preserve">
+    <value>ZIP 檔案無效或已損毀</value>
+  </data>
+  <data name="CustomTheme.Add.Errors.ZipMissingThemeFile" xml:space="preserve">
+    <value>在 ZIP 檔案中找不到主題檔案</value>
+  </data>
+  <data name="CustomTheme.DefaultName" xml:space="preserve">
+    <value>自訂主題 {0}</value>
+    <comment>{0} is a string (e.g. &apos;1&apos;, &apos;1-1234&apos;)</comment>
+  </data>
+  <data name="CustomTheme.Editor.ConfirmSave" xml:space="preserve">
+    <value>要將變更儲存至 {0} 嗎？</value>
+  </data>
+  <data name="CustomTheme.Editor.Errors.PreviewFailed" xml:space="preserve">
+    <value>無法預覽佈景主題：{0}</value>
+  </data>
+  <data name="CustomTheme.Editor.OpenThemeDirectory" xml:space="preserve">
+    <value>開啟主題目錄</value>
+  </data>
+  <data name="CustomTheme.Editor.Save.Success.Description" xml:space="preserve">
+    <value>您的主題已儲存！</value>
+  </data>
+  <data name="CustomTheme.Editor.Title" xml:space="preserve">
+    <value>編輯「{0}」</value>
+  </data>
+  <data name="CustomTheme.Errors.DialogAlreadyInitialised" xml:space="preserve">
+    <value>自訂對話方塊已初始化</value>
+  </data>
+  <data name="CustomTheme.Errors.ElementAttributeBlacklistedUriScheme" xml:space="preserve">
+    <value>{0}.{1} 使用被列入黑名單的方案 {2}</value>
+    <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text), {2} is the URI scheme (e.g. http)</comment>
+  </data>
+  <data name="CustomTheme.Errors.ElementAttributeConversionError" xml:space="preserve">
+    <value>{0} 的 {1} 無效：{2}</value>
+    <comment>{0} is the element name (e.g. Button), {1} is the attribute name (e.g. Text), {2} is the error reason</comment>
+  </data>
+  <data name="CustomTheme.Errors.ElementAttributeInvalidType" xml:space="preserve">
+    <value>{0}.{1} 不是有效的 {2}</value>
+    <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text), {2} is the type name (e.g. string)</comment>
+  </data>
+  <data name="CustomTheme.Errors.ElementAttributeMissing" xml:space="preserve">
+    <value>元素 {0} 缺少 {1} 屬性</value>
+    <comment>{0} is the element name (e.g. Button), {1} is the attribute name (e.g. Text)</comment>
+  </data>
+  <data name="CustomTheme.Errors.ElementAttributeMissingChild" xml:space="preserve">
+    <value>{0}.{1} 缺少其子節點</value>
+    <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text)</comment>
+  </data>
+  <data name="CustomTheme.Errors.ElementAttributeMultipleChildren" xml:space="preserve">
+    <value>{0}.{1} 只能有一個子節點</value>
+    <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text)</comment>
+  </data>
+  <data name="CustomTheme.Errors.ElementAttributeMultipleDefinitions" xml:space="preserve">
+    <value>{0} 只能定義一個 {1}</value>
+    <comment>{0} is the element name (e.g. Button), {1} is the attribute name (e.g. Text)</comment>
+  </data>
+  <data name="CustomTheme.Errors.ElementAttributeMustBeLargerThanMin" xml:space="preserve">
+    <value>{0}.{1} 必須大於 {2}</value>
+    <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text), {2} is a number</comment>
+  </data>
+  <data name="CustomTheme.Errors.ElementAttributeMustBeSmallerThanMax" xml:space="preserve">
+    <value>{0}.{1} 必須小於 {2}</value>
+    <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text), {2} is a number</comment>
+  </data>
+  <data name="CustomTheme.Errors.ElementAttributeParseError" xml:space="preserve">
+    <value>無法將 {0}.{1} 解析為 {2}</value>
+    <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text), {2} is the type name (e.g. string)</comment>
+  </data>
+  <data name="CustomTheme.Errors.ElementAttributeParseErrorNull" xml:space="preserve">
+    <value>{0}.{1} {2} 為空</value>
+    <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text), {2} is the type name (e.g. string)</comment>
+  </data>
+  <data name="CustomTheme.Errors.ElementInvalidChild" xml:space="preserve">
+    <value>{0} 不能有 {1} 的子節點</value>
+    <comment>{0} and {1} are element names (e.g. Button)</comment>
+  </data>
+  <data name="CustomTheme.Errors.ElementMultipleChildren" xml:space="preserve">
+    <value>{0} 只能有一個孩子</value>
+    <comment>{0} is the element name (e.g. Button)</comment>
+  </data>
+  <data name="CustomTheme.Errors.ElementTypeCreationFailed" xml:space="preserve">
+    <value>{0} 無法建立 {1}：{2}</value>
+    <comment>{0} is the element name (e.g. Button), {1} is the attribute name (e.g. Text), {2} is the error reason</comment>
+  </data>
+  <data name="CustomTheme.Errors.InvalidRoot" xml:space="preserve">
+    <value>主題 XML 的根節點並非 {0}</value>
+    <comment>{0} is the element name (e.g. Button)</comment>
+  </data>
+  <data name="CustomTheme.Errors.NoThemeSelected" xml:space="preserve">
+    <value>未選取自訂佈景主題</value>
+  </data>
+  <data name="CustomTheme.Errors.SetupFailed" xml:space="preserve">
+    <value>無法設定自訂啟動程式：{0}。
+將預設為 {1}。</value>
+    <comment>{0} is the error reason, {1} is the theme name (e.g. Froststrap (Classic))</comment>
+  </data>
+  <data name="CustomTheme.Errors.TooManyElements" xml:space="preserve">
+    <value>自訂啟動器最多只能包含 {0} 個元素，目前有 {1} 個</value>
+    <comment>{0} and {1} are numbers</comment>
+  </data>
+  <data name="CustomTheme.Errors.UnknownElement" xml:space="preserve">
+    <value>未知元素 {0}</value>
+    <comment>{0} is the element name (e.g. Button)</comment>
+  </data>
+  <data name="CustomTheme.Errors.UnknownEnumValue" xml:space="preserve">
+    <value>{0} 未知 {1} &apos;{2}&apos;</value>
+    <comment>{0} is the element name (e.g. Button), {1} is the enum name (e.g. WindowCornerType), {2} is the value</comment>
+  </data>
+  <data name="CustomTheme.Errors.VersionNotNumber" xml:space="preserve">
+    <value>{0} 版本號不是數字</value>
+    <comment>{0} is the element name (e.g. Button)</comment>
+  </data>
+  <data name="CustomTheme.Errors.VersionNotRecognised" xml:space="preserve">
+    <value>無法識別 {0} 版本 {1}</value>
+    <comment>{0} is the element name (e.g. Button), {1} is the version number</comment>
+  </data>
+  <data name="CustomTheme.Errors.VersionNotSet" xml:space="preserve">
+    <value>{0} 版本尚未設定</value>
+    <comment>{0} is the element name (e.g. Button)</comment>
+  </data>
+  <data name="CustomTheme.Errors.VersionNotSupported" xml:space="preserve">
+    <value>{0} 版本 {1} 已不再受支援</value>
+    <comment>{0} is the element name (e.g. Button), {1} is the version number</comment>
+  </data>
+  <data name="CustomTheme.Errors.XMLParseFailed" xml:space="preserve">
+    <value>無法解析佈景主題檔案：{0}</value>
+  </data>
+  <data name="CustomTheme.Templates.Blank.MoreExamples" xml:space="preserve">
+    <value>自訂啟動程式的範例可參見 {0}</value>
+  </data>
+  <data name="CustomTheme.Templates.Blank.UIElements" xml:space="preserve">
+    <value>請將 UI 元素放置於此處</value>
+  </data>
+  <data name="CustomTheme.Templates.Simple.MoreExamples" xml:space="preserve">
+    <value>在 {0} 處查看更多自訂 Bootstrapper 範例</value>
+  </data>
   <data name="Dialog.AddFastFlag.Title" xml:space="preserve">
-    <value>新增Fast Flag</value>
+    <value>新增「快速標記」功能</value>
+  </data>
+  <data name="Dialog.AlreadyRunning.Uninstaller" xml:space="preserve">
+    <value>請等待解除安裝程序完成。</value>
+  </data>
+  <data name="Dialog.Bloxshade.Setting" xml:space="preserve">
+    <value>Froststrap 已不再支援 Bloxshade。
+如需更多資訊，請加入 Bloxshade 的 Discord 伺服器。</value>
+  </data>
+  <data name="Dialog.Bloxshade.ThankYou" xml:space="preserve">
+    <value>對不起</value>
+  </data>
+  <data name="Dialog.CannotCreateShortcuts" xml:space="preserve">
+    <value>Froststrap 無法在桌面和「開始」選單中建立捷徑。請稍後嘗試透過設定建立這些捷徑。</value>
+  </data>
+  <data name="Dialog.Connectivity.BadConnection" xml:space="preserve">
+    <value>無法建立連線，這很可能表示網路連線不佳或遭到防火牆阻擋。如果您的網路連線正常，請確認您的防毒軟體是否正在阻擋 Froststrap。</value>
+  </data>
+  <data name="Dialog.Connectivity.MatchmakingFailed" xml:space="preserve">
+    <value>本次會話中將停用「BetterMatchmaking」功能。</value>
   </data>
   <data name="Dialog.Connectivity.MoreInfo" xml:space="preserve">
-    <value>伺服器資訊:</value>
+    <value>更多資訊：</value>
+  </data>
+  <data name="Dialog.Connectivity.RobloxDown" xml:space="preserve">
+    <value>Roblox 目前可能無法正常運作。請參閱 {0} 以獲取更多資訊。</value>
+  </data>
+  <data name="Dialog.Connectivity.RobloxUpgradeNeeded" xml:space="preserve">
+    <value>由於需要安裝或升級 Roblox，Froststrap 無法繼續執行。</value>
+  </data>
+  <data name="Dialog.Connectivity.RobloxUpgradeSkip" xml:space="preserve">
+    <value>本次啟動時，系統將不會檢查 Roblox 是否有更新，也不會套用模組的變更。</value>
   </data>
   <data name="Dialog.Connectivity.Title" xml:space="preserve">
-    <value>連接錯誤</value>
+    <value>連線錯誤</value>
+  </data>
+  <data name="Dialog.Connectivity.TryAgainLater" xml:space="preserve">
+    <value>請稍後再試一次。</value>
   </data>
   <data name="Dialog.Connectivity.UnableToConnect" xml:space="preserve">
-    <value>Froststrap 未能連接至 {0}</value>
+    <value>Froststrap 無法連線至 {0}</value>
     <comment>{0} is the name of a service (i.e. Roblox, GitHub)</comment>
   </data>
+  <data name="Dialog.Connectivity.UnableToDownload" xml:space="preserve">
+    <value>Froststrap 無法下載 Roblox</value>
+  </data>
+  <data name="Dialog.Connectivity.UnableToDownloadReason" xml:space="preserve">
+    <value>目前無法下載 Roblox。請閱讀以下說明頁面以獲取更多資訊：{0}</value>
+    <comment>{0} is a URL</comment>
+  </data>
   <data name="Dialog.Exception.CopyLogContents" xml:space="preserve">
-    <value>複製日誌内容</value>
+    <value>複製日誌內容</value>
   </data>
   <data name="Dialog.Exception.Info.1" xml:space="preserve">
-    <value>執行Froststrap時出現了錯誤</value>
+    <value>執行 Froststrap/Froststrap 時發生例外狀況</value>
   </data>
   <data name="Dialog.Exception.Info.2" xml:space="preserve">
-    <value>請先瀏覽[Froststrap Wiki]({0}) 來看此問題是否已解決。
+    <value>請先查閱 [Froststrap Wiki]({0})，確認此問題是否已透過修正方案解決。
 
-如果尚未被解決的話，那請透過[GitHub Issue]({1}) 中回報此問題，並附上所創建的日誌文件副本。</value>
+若尚未解決，請透過 [GitHub 問題單]({1}) 回報此異常，並附上生成的日誌檔案副本。</value>
+  </data>
+  <data name="Dialog.Exception.Info.2.Alt" xml:space="preserve">
+    <value>請先查閱 [Froststrap Wiki]({0})，確認此問題是否已透過修正程式解決。
+
+若尚未解決，請向此分支的維護者回報此例外狀況。請勿將此問題回報至 Froststrap 的 GitHub 問題追蹤系統，因為這是個非官方版本。</value>
+    <comment>&quot;fork&quot; in general means &quot;a variation of&quot; or &quot;a different version of&quot;. You can alternatively write the first sentence as &quot;...to the maintainers of this version.&quot;</comment>
+  </data>
+  <data name="Dialog.Exception.Report" xml:space="preserve">
+    <value>回報例外狀況</value>
   </data>
   <data name="Dialog.Exception.Title" xml:space="preserve">
-    <value>Froststrap異常</value>
+    <value>Froststrap 例外情況</value>
   </data>
-  <data name="Common.Custom" xml:space="preserve">
-    <value>自定義</value>
+  <data name="Dialog.IconLoadFailed" xml:space="preserve">
+    <value>無法載入所選的開機程式圖示。
+
+{0}</value>
+    <comment>{0} is an exception message</comment>
+  </data>
+  <data name="Dialog.LanguageSelector.Header" xml:space="preserve">
+    <value>選擇您偏好的語言</value>
+  </data>
+  <data name="Dialog.LanguageSelector.Subtext" xml:space="preserve">
+    <value>請先選擇語言，然後再繼續進行安裝。
+部分文字可能尚未翻譯成您所選的語言。</value>
+  </data>
+  <data name="Dialog.PlayerError.Crash" xml:space="preserve">
+    <value>Roblox 發生當機。</value>
+  </data>
+  <data name="Dialog.PlayerError.FailedLaunch" xml:space="preserve">
+    <value>Roblox 無法啟動。</value>
+  </data>
+  <data name="Dialog.PlayerError.HelpInformation" xml:space="preserve">
+    <value>如需了解此現象可能發生的原因及解決方法，請參閱 [這篇說明文章]({0})。
+
+請確認 Roblox 是否能透過 [原始啟動程式]({1}) 正常運作。若無法運作，則此問題與 Froststrap 無關；若能正常運作，請參閱說明文章。</value>
+  </data>
+  <data name="Dialog.RegistryWriteError" xml:space="preserve">
+    <value>Froststrap 無法寫入 Windows 登錄檔。很可能是防毒軟體造成干擾並引發問題。請檢查以確保沒有任何因素會限制 Froststrap 的運作。</value>
+  </data>
+  <data name="Enums.BackgroundMode.Gradient" xml:space="preserve">
+    <value>漸變</value>
+  </data>
+  <data name="Enums.BackgroundMode.Image" xml:space="preserve">
+    <value>圖片</value>
+  </data>
+  <data name="Enums.BackgroundStretch.Fill" xml:space="preserve">
+    <value>填寫</value>
+  </data>
+  <data name="Enums.BackgroundStretch.None" xml:space="preserve">
+    <value>無</value>
+  </data>
+  <data name="Enums.BackgroundStretch.Uniform" xml:space="preserve">
+    <value>制服</value>
+  </data>
+  <data name="Enums.BackgroundStretch.UniformToFill" xml:space="preserve">
+    <value>待填寫的制服</value>
   </data>
   <data name="Enums.BootstrapperIcon.IconEarly2015" xml:space="preserve">
     <value>2015年初</value>
   </data>
   <data name="Enums.BootstrapperIcon.IconLate2015" xml:space="preserve">
-    <value>2015年末</value>
+    <value>2015 年底</value>
   </data>
   <data name="Enums.BootstrapperStyle.ByfronDialog" xml:space="preserve">
-    <value>僞Byfron（2023）</value>
+    <value>仿製 Byfron（約 2023 年）</value>
   </data>
   <data name="Enums.BootstrapperStyle.ClassicFluentDialog" xml:space="preserve">
-    <value>Froststrap（經典）</value>
+    <value>Froststrap（經典版）</value>
+  </data>
+  <data name="Enums.BootstrapperStyle.CustomDialog" xml:space="preserve">
+    <value>自訂</value>
   </data>
   <data name="Enums.BootstrapperStyle.FluentAeroDialog" xml:space="preserve">
-    <value>Froststrap（透明）</value>
+    <value>霜帶（玻璃）</value>
   </data>
-  <data name="Enums.BootstrapperStyle.LegacyDialog2008" xml:space="preserve">
-    <value>經典（2008 - 2011）</value>
+  <data name="Enums.BootstrapperStyle.FluentDialog" xml:space="preserve">
+    <value>Froststrap（不透明）</value>
   </data>
-  <data name="Enums.BootstrapperStyle.LegacyDialog2011" xml:space="preserve">
-    <value>經典（2011 - 2014）</value>
+  <data name="Enums.BootstrapperStyle.TwentyFiveDialog" xml:space="preserve">
+    <value>Roblox（約 2025 年）</value>
   </data>
-  <data name="Enums.BootstrapperStyle.ProgressDialog" xml:space="preserve">
-    <value>Roblox (~2014)</value>
+  <data name="Enums.CleanerOptions.Never" xml:space="preserve">
+    <value>絕不</value>
   </data>
-  <data name="Enums.BootstrapperStyle.VistaDialog" xml:space="preserve">
-    <value>Vista （2008 - 2011）</value>
+  <data name="Enums.CleanerOptions.OneDay" xml:space="preserve">
+    <value>1 天後</value>
+  </data>
+  <data name="Enums.CleanerOptions.OneMonth" xml:space="preserve">
+    <value>1個月後</value>
+  </data>
+  <data name="Enums.CleanerOptions.OneWeek" xml:space="preserve">
+    <value>一週後</value>
+  </data>
+  <data name="Enums.CleanerOptions.TwoMonths" xml:space="preserve">
+    <value>兩個月後</value>
+  </data>
+  <data name="Enums.CopyFormatMode.Format1" xml:space="preserve">
+    <value>預設</value>
+  </data>
+  <data name="Enums.CopyFormatMode.Format2" xml:space="preserve">
+    <value>推薦</value>
+  </data>
+  <data name="Enums.CopyFormatMode.Format3" xml:space="preserve">
+    <value>按字母順序排列</value>
+  </data>
+  <data name="Enums.CopyFormatMode.Format4" xml:space="preserve">
+    <value>依長度由大到小排序</value>
+  </data>
+  <data name="Enums.CursorType.BlackAndWhiteDot" xml:space="preserve">
+    <value>黑白圓點</value>
   </data>
   <data name="Enums.CursorType.From2006" xml:space="preserve">
-    <value>2006 (卡通風)</value>
+    <value>~2006（卡通風格）</value>
   </data>
   <data name="Enums.CursorType.From2013" xml:space="preserve">
-    <value>2013 (菱角型)</value>
+    <value>~2013（Angular）</value>
   </data>
-  <data name="Enums.EmojiType.Catmoji" xml:space="preserve">
-    <value>Catmoji</value>
+  <data name="Enums.CursorType.PurpleCross" xml:space="preserve">
+    <value>紫色十字架</value>
+  </data>
+  <data name="Enums.CustomThemeTemplate.Blank" xml:space="preserve">
+    <value>空白</value>
+  </data>
+  <data name="Enums.CustomThemeTemplate.Simple" xml:space="preserve">
+    <value>簡單</value>
+  </data>
+  <data name="Enums.CycleFrequency.Days" xml:space="preserve">
+    <value>天數</value>
+  </data>
+  <data name="Enums.CycleFrequency.EveryLaunch" xml:space="preserve">
+    <value>每次發射</value>
+  </data>
+  <data name="Enums.CycleFrequency.Hours" xml:space="preserve">
+    <value>營業時間</value>
+  </data>
+  <data name="Enums.CycleFrequency.Minutes" xml:space="preserve">
+    <value>會議紀錄</value>
   </data>
   <data name="Enums.EmojiType.Default" xml:space="preserve">
-    <value>預設（Twemoji）</value>
+    <value>預設 (Twemoji)</value>
   </data>
-  <data name="Enums.EmojiType.Windows10" xml:space="preserve">
-    <value>Windows 10</value>
+  <data name="Enums.FlagPresets.RenderingMode.Vulkan" xml:space="preserve">
+    <value>火山</value>
   </data>
-  <data name="Enums.EmojiType.Windows11" xml:space="preserve">
-    <value>Windows 11</value>
+  <data name="Enums.FlagPresets.TextureQuality.Level0" xml:space="preserve">
+    <value>第 0 級（最低級）</value>
   </data>
-  <data name="Enums.EmojiType.Windows8" xml:space="preserve">
-    <value>Windows 8</value>
+  <data name="Enums.FlagPresets.TextureQuality.Level1" xml:space="preserve">
+    <value>第 1 級（低）</value>
   </data>
-  <data name="Enums.FlagPresets.InGameMenuVersion.V1" xml:space="preserve">
-    <value>2015 (V1)</value>
+  <data name="Enums.FlagPresets.TextureQuality.Level2" xml:space="preserve">
+    <value>第 2 級（中等）</value>
   </data>
-  <data name="Enums.FlagPresets.InGameMenuVersion.V2" xml:space="preserve">
-    <value>2020 (V2)</value>
+  <data name="Enums.FlagPresets.TextureQuality.Level3" xml:space="preserve">
+    <value>第 3 級（最高級）</value>
   </data>
-  <data name="Enums.FlagPresets.InGameMenuVersion.V4" xml:space="preserve">
-    <value>2023 (V4)</value>
+  <data name="Enums.FontSize.x1" xml:space="preserve">
+    <value>小</value>
   </data>
-  <data name="Enums.FlagPresets.LightingMode.Default" xml:space="preserve">
-    <value>以游戲預設為主</value>
+  <data name="Enums.FontSize.x2" xml:space="preserve">
+    <value>中</value>
   </data>
-  <data name="Enums.FlagPresets.LightingMode.Future" xml:space="preserve">
-    <value>Future (第三階段)</value>
+  <data name="Enums.FontSize.x3" xml:space="preserve">
+    <value>大</value>
   </data>
-  <data name="Enums.FlagPresets.LightingMode.ShadowMap" xml:space="preserve">
-    <value>ShadowMap (第二階段)</value>
+  <data name="Enums.FontSize.x4" xml:space="preserve">
+    <value>特大號</value>
   </data>
-  <data name="Enums.FlagPresets.LightingMode.Voxel" xml:space="preserve">
-    <value>Voxel (第一階段)</value>
+  <data name="Enums.PlayerListLayOut.x0" xml:space="preserve">
+    <value>正方形</value>
   </data>
-  <data name="Enums.FlagPresets.RenderingMode.D3D10" xml:space="preserve">
-    <value>Direct3D 10</value>
+  <data name="Enums.PlayerListLayOut.x1" xml:space="preserve">
+    <value>正常</value>
   </data>
-  <data name="Enums.FlagPresets.RenderingMode.D3D11" xml:space="preserve">
-    <value>Direct3D 11</value>
+  <data name="Enums.ProcessPriorityOption.AboveNormal" xml:space="preserve">
+    <value>高於正常值</value>
+  </data>
+  <data name="Enums.ProcessPriorityOption.BelowNormal" xml:space="preserve">
+    <value>低於正常水平</value>
+  </data>
+  <data name="Enums.ProcessPriorityOption.High" xml:space="preserve">
+    <value>高</value>
+  </data>
+  <data name="Enums.ProcessPriorityOption.Low" xml:space="preserve">
+    <value>低</value>
+  </data>
+  <data name="Enums.ProcessPriorityOption.Normal" xml:space="preserve">
+    <value>正常</value>
+  </data>
+  <data name="Enums.ProcessPriorityOption.RealTime" xml:space="preserve">
+    <value>即時</value>
+  </data>
+  <data name="Enums.QualityLevel.Level1" xml:space="preserve">
+    <value>第 1 級</value>
+  </data>
+  <data name="Enums.QualityLevel.Level10" xml:space="preserve">
+    <value>第 10 級</value>
+  </data>
+  <data name="Enums.QualityLevel.Level11" xml:space="preserve">
+    <value>第 11 級</value>
+  </data>
+  <data name="Enums.QualityLevel.Level12" xml:space="preserve">
+    <value>第 12 級</value>
+  </data>
+  <data name="Enums.QualityLevel.Level13" xml:space="preserve">
+    <value>第 13 級</value>
+  </data>
+  <data name="Enums.QualityLevel.Level14" xml:space="preserve">
+    <value>第 14 級</value>
+  </data>
+  <data name="Enums.QualityLevel.Level15" xml:space="preserve">
+    <value>第 15 級</value>
+  </data>
+  <data name="Enums.QualityLevel.Level16" xml:space="preserve">
+    <value>第 16 級</value>
+  </data>
+  <data name="Enums.QualityLevel.Level17" xml:space="preserve">
+    <value>第 17 級</value>
+  </data>
+  <data name="Enums.QualityLevel.Level18" xml:space="preserve">
+    <value>第 18 級</value>
+  </data>
+  <data name="Enums.QualityLevel.Level19" xml:space="preserve">
+    <value>第 19 級</value>
+  </data>
+  <data name="Enums.QualityLevel.Level2" xml:space="preserve">
+    <value>第 2 級</value>
+  </data>
+  <data name="Enums.QualityLevel.Level20" xml:space="preserve">
+    <value>第 20 級</value>
+  </data>
+  <data name="Enums.QualityLevel.Level21" xml:space="preserve">
+    <value>第 21 級</value>
+  </data>
+  <data name="Enums.QualityLevel.Level3" xml:space="preserve">
+    <value>第 3 級</value>
+  </data>
+  <data name="Enums.QualityLevel.Level4" xml:space="preserve">
+    <value>第 4 級</value>
+  </data>
+  <data name="Enums.QualityLevel.Level5" xml:space="preserve">
+    <value>第 5 級</value>
+  </data>
+  <data name="Enums.QualityLevel.Level6" xml:space="preserve">
+    <value>第 6 級</value>
+  </data>
+  <data name="Enums.QualityLevel.Level7" xml:space="preserve">
+    <value>第 7 級</value>
+  </data>
+  <data name="Enums.QualityLevel.Level8" xml:space="preserve">
+    <value>第 8 級</value>
+  </data>
+  <data name="Enums.QualityLevel.Level9" xml:space="preserve">
+    <value>第 9 級</value>
+  </data>
+  <data name="Enums.RenderingMode.Default" xml:space="preserve">
+    <value>Direct3D11（預設）</value>
   </data>
   <data name="Enums.ServerType.Private" xml:space="preserve">
     <value>私人伺服器</value>
   </data>
   <data name="Enums.ServerType.Public" xml:space="preserve">
-    <value>公共伺服器</value>
+    <value>公開伺服器</value>
   </data>
   <data name="Enums.ServerType.Reserved" xml:space="preserve">
-    <value>後備伺服器</value>
+    <value>保留伺服器</value>
+  </data>
+  <data name="Enums.TextureQuality.Default" xml:space="preserve">
+    <value>高（預設）</value>
+  </data>
+  <data name="Enums.TextureQuality.Low" xml:space="preserve">
+    <value>低</value>
+  </data>
+  <data name="Enums.TextureQuality.Lowest" xml:space="preserve">
+    <value>最低</value>
+  </data>
+  <data name="Enums.TextureQuality.Medium" xml:space="preserve">
+    <value>中</value>
+  </data>
+  <data name="Enums.Theme.Blue" xml:space="preserve">
+    <value>藍色</value>
   </data>
   <data name="Enums.Theme.Dark" xml:space="preserve">
-    <value>深暗</value>
+    <value>黑暗</value>
+  </data>
+  <data name="Enums.Theme.Green" xml:space="preserve">
+    <value>綠色</value>
   </data>
   <data name="Enums.Theme.Light" xml:space="preserve">
-    <value>明亮</value>
+    <value>光</value>
+  </data>
+  <data name="Enums.Theme.Orange" xml:space="preserve">
+    <value>橘色</value>
+  </data>
+  <data name="Enums.Theme.Pink" xml:space="preserve">
+    <value>粉紅色</value>
+  </data>
+  <data name="Enums.Theme.Purple" xml:space="preserve">
+    <value>紫色</value>
+  </data>
+  <data name="Enums.TrayDoubleClickAction.GameHistory" xml:space="preserve">
+    <value>遊戲歷史</value>
+  </data>
+  <data name="Enums.TrayDoubleClickAction.None" xml:space="preserve">
+    <value>無</value>
+  </data>
+  <data name="Enums.TrayDoubleClickAction.ServerInfo" xml:space="preserve">
+    <value>伺服器資訊</value>
+  </data>
+  <data name="FileTypes.ZipArchive" xml:space="preserve">
+    <value>ZIP 壓縮檔</value>
+    <comment>Shown in the save file dialog, where the file type selection dropdown is, e.g. &quot;Zip archive (*.zip)&quot;</comment>
   </data>
   <data name="InstallChecker.Updated" xml:space="preserve">
-    <value>Froststrap 已經更新至 v{0}</value>
+    <value>Froststrap 已升級至 v{0}</value>
   </data>
   <data name="InstallChecker.VersionDifferentThanInstalled" xml:space="preserve">
-    <value>你目前運行的Froststrap版本和你目前已安裝的版本不同。請問你要升級目前已安裝的版本嗎？</value>
+    <value>您啟動的 Froststrap 版本與目前安裝的版本不同。
+您要升級目前安裝的版本嗎？</value>
+  </data>
+  <data name="InstallChecker.VersionLessThanInstalled" xml:space="preserve">
+    <value>您啟動的 Froststrap 版本比目前安裝的版本更舊。
+可能會發生問題，且您的設定可能會被變更。建議重新安裝。
+您確定要繼續嗎？</value>
+  </data>
+  <data name="JsonManager.FastFlagsLoadFailed" xml:space="preserve">
+    <value>無法載入您的「Fast Flags」。它們已重設為預設設定。</value>
+  </data>
+  <data name="JsonManager.SettingsLoadFailed" xml:space="preserve">
+    <value>無法載入您的設定。系統已將其重設為預設設定。</value>
+  </data>
+  <data name="LaunchMenu.LaunchRoblox" xml:space="preserve">
+    <value>啟動 Roblox</value>
+  </data>
+  <data name="LaunchMenu.LaunchRobloxStudio" xml:space="preserve">
+    <value>啟動 Roblox Studio</value>
+  </data>
+  <data name="Logger.NoWriteMode" xml:space="preserve">
+    <value>由於 Froststrap 無法寫入 &apos;{0}&apos; 這個資料夾，因此本次啟動將不會產生任何日誌檔案</value>
+  </data>
+  <data name="Menu.About.BuildInfo" xml:space="preserve">
+    <value>建置資訊</value>
+  </data>
+  <data name="Menu.About.CommitHash" xml:space="preserve">
+    <value>提交哈希值</value>
+  </data>
+  <data name="Menu.About.CommitRef" xml:space="preserve">
+    <value>提交參考編號</value>
   </data>
   <data name="Menu.About.Contributors" xml:space="preserve">
     <value>貢獻者</value>
   </data>
   <data name="Menu.About.Contributors.Code" xml:space="preserve">
-    <value>代碼</value>
+    <value>程式碼</value>
   </data>
   <data name="Menu.About.Contributors.Description" xml:space="preserve">
-    <value>以下是對Froststrap有顯著貢獻的人，幫助它成為現在的樣子。</value>
+    <value>以下是所有曾為 Froststrap 和 Froststrap 做出顯著貢獻的人士，正是他們的付出，才將這兩者塑造成今日的模樣。</value>
   </data>
-  <data name="Menu.About.Contributors.FeatureIdeas" xml:space="preserve">
-    <value>功能建議</value>
-  </data>
-  <data name="Menu.About.Contributors.SpecialThanks" xml:space="preserve">
-    <value>特別感謝</value>
+  <data name="Menu.About.Contributors.Insipirations" xml:space="preserve">
+    <value>靈感來源</value>
   </data>
   <data name="Menu.About.Description" xml:space="preserve">
-    <value>一個專為Roblox設計，具有許多實用功能的第三方啟動器。</value>
+    <value>魚帶／霜帶分叉。</value>
   </data>
   <data name="Menu.About.DiscordServer" xml:space="preserve">
-    <value>Discord伺服器</value>
+    <value>Discord 伺服器</value>
   </data>
   <data name="Menu.About.GithubRepository" xml:space="preserve">
-    <value>Github代碼庫</value>
+    <value>GitHub 儲存庫</value>
   </data>
   <data name="Menu.About.HelpInformation" xml:space="preserve">
-    <value>幫助和資訊</value>
+    <value>協助與資訊</value>
   </data>
-  <data name="Menu.About.Licenses" xml:space="preserve">
-    <value>授權條款</value>
-  </data>
-  <data name="Menu.About.Licenses.BSD2" xml:space="preserve">
-    <value>BSD 2-clause授權條款</value>
+  <data name="Menu.About.Licenses.Apache" xml:space="preserve">
+    <value>Apache 2.0 授權條款</value>
   </data>
   <data name="Menu.About.Licenses.MIT" xml:space="preserve">
-    <value>MIT授權條款</value>
+    <value>MIT 授權條款</value>
   </data>
   <data name="Menu.About.ReportIssue" xml:space="preserve">
-    <value>報告錯誤</value>
+    <value>回報問題</value>
   </data>
   <data name="Menu.About.Title" xml:space="preserve">
     <value>關於</value>
   </data>
   <data name="Menu.About.Version" xml:space="preserve">
     <value>版本 {0}</value>
-    <comment>{0} is replaced with the version, i.e. "Version 2.8.0"</comment>
+    <comment>{0} is replaced with the version, i.e. &quot;Version 2.8.0&quot;</comment>
   </data>
-  <data name="Menu.AllFiles" xml:space="preserve">
-    <value>所有檔案</value>
+  <data name="Menu.AccountSelector.AccountRemoved" xml:space="preserve">
+    <value>帳戶「{0}」已遭移除，因為其 Cookie 無效或已過期。</value>
+  </data>
+  <data name="Menu.AccountSelector.AddAccount" xml:space="preserve">
+    <value>新增帳戶</value>
+  </data>
+  <data name="Menu.AccountSelector.AlreadyLoggedIn" xml:space="preserve">
+    <value>帳號「@{0}」已登入。
+已切換至該帳號。</value>
+  </data>
+  <data name="Menu.AccountSelector.AskToAddAccount" xml:space="preserve">
+    <value>尚未新增任何帳戶
+請點擊上方的「新增帳戶」開始使用</value>
+  </data>
+  <data name="Menu.AccountSelector.Login.LocalCookie" xml:space="preserve">
+    <value>本地 Cookie</value>
+  </data>
+  <data name="Menu.AccountSelector.NotLoggedIn" xml:space="preserve">
+    <value>尚未登入</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.InGame" xml:space="preserve">
+    <value>在《Roblox》遊戲中</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.InStudio" xml:space="preserve">
+    <value>在 Roblox Studio 中</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.Offline" xml:space="preserve">
+    <value>離線</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.Online" xml:space="preserve">
+    <value>線上（Roblox 網站）</value>
   </data>
   <data name="Menu.AlreadyRunning.Caption" xml:space="preserve">
-    <value>在關閉所有目前開啟的Roblox用戶端之前，並非所有變更都會立即生效。</value>
+    <value>請注意，在您關閉所有目前開啟的 Roblox 執行個體之前，並非所有變更都會立即生效。</value>
   </data>
   <data name="Menu.AlreadyRunning.Title" xml:space="preserve">
-    <value>Froststrap已經在執行中</value>
+    <value>Froststrap 已經在執行中</value>
+  </data>
+  <data name="Menu.Appearance.BackgroundMode" xml:space="preserve">
+    <value>背景模式：</value>
   </data>
   <data name="Menu.Appearance.Bootstrapper.Description" xml:space="preserve">
-    <value>你可以讓它看起來與眾不同，如經典，亦或者就像Roblox。</value>
+    <value>透過多種選項，自訂 Froststrap 的啟動程式。</value>
   </data>
-  <data name="Menu.Appearance.Bootstrapper.Title" xml:space="preserve">
-    <value>啟動器</value>
+  <data name="Menu.Appearance.Custom.Theme.Description" xml:space="preserve">
+    <value>您可以透過預設樣式輕鬆自訂 Froststrap 主題，或打造屬於您自己的獨特風格。</value>
   </data>
-  <data name="Menu.Appearance.Customisation.Description" xml:space="preserve">
-    <value>設置其他各種各樣的可自訂的選項。</value>
+  <data name="Menu.Appearance.Custom.Theme.Title" xml:space="preserve">
+    <value>應用程式主題</value>
   </data>
-  <data name="Menu.Appearance.Customisation.Title" xml:space="preserve">
-    <value>自定義</value>
+  <data name="Menu.Appearance.CustomThemes.DeleteFailed" xml:space="preserve">
+    <value>無法刪除自訂佈景主題 {0}：{1}</value>
   </data>
-  <data name="Menu.Appearance.CustomisationIcon.Description" xml:space="preserve">
-    <value>必須是一個包含大小從16px到128px的多尺寸.ico文件。設定圖標時選擇“自定義”選項以使用它。</value>
-  </data>
-  <data name="Menu.Appearance.CustomisationIcon.Title" xml:space="preserve">
-    <value>自定圖示</value>
+  <data name="Menu.Appearance.CustomThemes.NoneSelected" xml:space="preserve">
+    <value>未選取自訂佈景主題。</value>
   </data>
   <data name="Menu.Appearance.CustomisationTitle.Description" xml:space="preserve">
-    <value>顯示啟動器標題的文字。</value>
+    <value>顯示為啟動程式標題的文字。</value>
   </data>
   <data name="Menu.Appearance.CustomisationTitle.Title" xml:space="preserve">
     <value>標題</value>
   </data>
   <data name="Menu.Appearance.Description" xml:space="preserve">
-    <value>設定Froststrap的主題。</value>
+    <value>設定 Froststrap 的外觀。</value>
   </data>
-  <data name="Menu.Appearance.Global.Theme.Title" xml:space="preserve">
-    <value>全局主題</value>
+  <data name="Menu.Appearance.Frequency" xml:space="preserve">
+    <value>頻率</value>
   </data>
   <data name="Menu.Appearance.Icon.Description" xml:space="preserve">
-    <value>選擇Froststrap的圖示。</value>
+    <value>選擇 Froststrap 應使用的圖示。</value>
   </data>
   <data name="Menu.Appearance.Icon.Title" xml:space="preserve">
-    <value>圖標</value>
+    <value>圖示</value>
+  </data>
+  <data name="Menu.Appearance.Interval" xml:space="preserve">
+    <value>區間</value>
+  </data>
+  <data name="Menu.Appearance.Language.Description" xml:space="preserve">
+    <value>必須重新啟動，變更才能生效。部分文字可能未翻譯成您偏好的語言。</value>
+  </data>
+  <data name="Menu.Appearance.Language.Title" xml:space="preserve">
+    <value>語言</value>
+  </data>
+  <data name="Menu.Appearance.Launcher.Description" xml:space="preserve">
+    <value>選擇啟動畫面樣式。注意：舊版系統或 Vista 不支援深色主題。如需更多自訂啟動器，請造訪 Froststrap 官方 Discord 伺服器。</value>
+  </data>
+  <data name="Menu.Appearance.Launcher.Title" xml:space="preserve">
+    <value>自力更生風格</value>
+  </data>
+  <data name="Menu.Appearance.Opacity" xml:space="preserve">
+    <value>不透明度：</value>
   </data>
   <data name="Menu.Appearance.Preview" xml:space="preserve">
     <value>預覽</value>
   </data>
-  <data name="Menu.Appearance.Style.Description" xml:space="preserve">
-    <value>選擇主題外觀，深色主題不可以套用在經典/Vista主題上。</value>
+  <data name="Menu.Appearance.ResetDefault" xml:space="preserve">
+    <value>重設為預設值</value>
   </data>
-  <data name="Menu.Appearance.Style.Title" xml:space="preserve">
-    <value>外貌</value>
+  <data name="Menu.Appearance.StretchMode" xml:space="preserve">
+    <value>拉伸模式：</value>
+  </data>
+  <data name="Menu.Appearance.ThemeCycling.Description" xml:space="preserve">
+    <value>自動輪播自訂主題。</value>
+  </data>
+  <data name="Menu.Appearance.ThemeCycling.Title" xml:space="preserve">
+    <value>主題：單車</value>
   </data>
   <data name="Menu.Appearance.Title" xml:space="preserve">
     <value>外觀</value>
   </data>
+  <data name="Menu.Appearance.WindowsBackdrop.Description" xml:space="preserve">
+    <value>選擇一個視窗背景效果。需啟用深色主題並重新啟動應用程式。注意：Mica 僅適用於 Windows 11。</value>
+  </data>
+  <data name="Menu.Appearance.WindowsBackdrop.Title" xml:space="preserve">
+    <value>窗景背景</value>
+  </data>
+  <data name="Menu.Behaviour.AllowCookieAccess.Description" xml:space="preserve">
+    <value>透過您的驗證 Cookie 存取 Roblox API。[Froststrap 將存取哪些內容？]({0})</value>
+  </data>
+  <data name="Menu.Behaviour.AllowCookieAccess.Title" xml:space="preserve">
+    <value>Froststrap 帳戶權限</value>
+  </data>
   <data name="Menu.Behaviour.AutoUpdate.Description" xml:space="preserve">
-    <value>Froststrap在啟動Roblox時會自動進行檢查目前版本並且更新（如果有的話）。</value>
+    <value>Froststrap 會在啟動 Roblox 時自動檢查並更新至穩定版本。</value>
   </data>
   <data name="Menu.Behaviour.AutoUpdate.Title" xml:space="preserve">
-    <value>自動更新Froststrap</value>
+    <value>自動更新 Froststrap</value>
+  </data>
+  <data name="Menu.Behaviour.BackgroundUpdates.Description" xml:space="preserve">
+    <value>在背景中更新 Roblox，無需等待。不建議在網路速度較慢時使用。此功能需至少 3GB 的可用儲存空間才能運作。</value>
+  </data>
+  <data name="Menu.Behaviour.BackgroundUpdates.Title" xml:space="preserve">
+    <value>背景更新</value>
+  </data>
+  <data name="Menu.Behaviour.CloseCrashHandler.Description" xml:space="preserve">
+    <value>在啟動時自動關閉 RobloxCrashHandler.exe 程序，以釋放部分系統資源。</value>
+  </data>
+  <data name="Menu.Behaviour.CloseCrashHandler.Title" xml:space="preserve">
+    <value>關閉當機處理程式</value>
   </data>
   <data name="Menu.Behaviour.ConfirmLaunches.Description" xml:space="preserve">
-    <value>防止因意外啟動另一個Roblox程式而導致當前運行的程式被關閉。</value>
+    <value>可防止因意外啟動另一個 Roblox 執行個體而導致現有遊戲關閉。</value>
   </data>
   <data name="Menu.Behaviour.ConfirmLaunches.Title" xml:space="preserve">
-    <value>在啟動另一個Roblox程式時顯示的確認訊息</value>
+    <value>執行個體啟動確認</value>
   </data>
   <data name="Menu.Behaviour.Description" xml:space="preserve">
-    <value>設定 Froststrap 在啟動 Roblox 時應執行的操作。</value>
+    <value>設定 Froststrap 在啟動 Roblox 時應執行的動作。</value>
   </data>
   <data name="Menu.Behaviour.ForceRobloxReinstall.Description" xml:space="preserve">
-    <value>Roblox會在下次啟動時進行重新安裝。</value>
+    <value>下次啟動時，系統將對 Roblox 進行乾淨安裝。</value>
   </data>
   <data name="Menu.Behaviour.ForceRobloxReinstall.Title" xml:space="preserve">
-    <value>強制重新安裝Roblox</value>
+    <value>強制重新安裝 Roblox</value>
+  </data>
+  <data name="Menu.Behaviour.ProcessPriority.Description" xml:space="preserve">
+    <value>設定 Roblox 的 CPU 優先級。</value>
+  </data>
+  <data name="Menu.Behaviour.ProcessPriority.Title" xml:space="preserve">
+    <value>Roblox 程序優先級</value>
   </data>
   <data name="Menu.Behaviour.Title" xml:space="preserve">
-    <value>啟動器</value>
+    <value>自力更生者</value>
+  </data>
+  <data name="Menu.Bootstrapper.AppStorage.Description" xml:space="preserve">
+    <value>設定並儲存 Roblox 內部應用程式的設定。</value>
+  </data>
+  <data name="Menu.Bootstrapper.AppStorage.Title" xml:space="preserve">
+    <value>應用程式儲存空間設定</value>
+  </data>
+  <data name="Menu.Bootstrapper.BestRegionAmount.Description" xml:space="preserve">
+    <value>請選擇要檢查的區域數量，若系統無法找到最適合您的區域時，此設定將有所幫助。</value>
+  </data>
+  <data name="Menu.Bootstrapper.BestRegionAmount.Title" xml:space="preserve">
+    <value>各區域最佳金額</value>
+  </data>
+  <data name="Menu.Bootstrapper.CleanUp.Description" xml:space="preserve">
+    <value>會自動清除舊資料以釋放空間。最初由 Fishstrap 所開發。</value>
+  </data>
+  <data name="Menu.Bootstrapper.CleanUp.Title" xml:space="preserve">
+    <value>Froststrap 清潔劑</value>
+  </data>
+  <data name="Menu.Bootstrapper.Cleaner.Age.Description" xml:space="preserve">
+    <value>超過設定時間的檔案將會被刪除。</value>
+  </data>
+  <data name="Menu.Bootstrapper.Cleaner.Age.Title" xml:space="preserve">
+    <value>檔案刪除時程表</value>
+  </data>
+  <data name="Menu.Bootstrapper.Cleaner.Cache.Description" xml:space="preserve">
+    <value>舊的下載檔案將會被刪除。</value>
+  </data>
+  <data name="Menu.Bootstrapper.Cleaner.Cache.Title" xml:space="preserve">
+    <value>快取</value>
+  </data>
+  <data name="Menu.Bootstrapper.Cleaner.IncludeBloxstrap.Description" xml:space="preserve">
+    <value>Froststrap 日誌將被刪除。</value>
+  </data>
+  <data name="Menu.Bootstrapper.Cleaner.IncludeBloxstrap.Title" xml:space="preserve">
+    <value>Froststrap 日誌</value>
+  </data>
+  <data name="Menu.Bootstrapper.Cleaner.Logs.Description" xml:space="preserve">
+    <value>舊的日誌檔案將會被刪除。</value>
+  </data>
+  <data name="Menu.Bootstrapper.Cleaner.Logs.Title" xml:space="preserve">
+    <value>日誌選單</value>
+  </data>
+  <data name="Menu.Bootstrapper.Experimental.BetterMatchmaking.Description" xml:space="preserve">
+    <value>讓 Froststrap 決定您要加入哪個伺服器。系統會優先選擇距離您最近的伺服器。</value>
+  </data>
+  <data name="Menu.Bootstrapper.Experimental.BetterMatchmaking.FollowUser" xml:space="preserve">
+    <value>看來有位朋友正在玩這款遊戲。你想加入他們嗎？</value>
+  </data>
+  <data name="Menu.Bootstrapper.Experimental.BetterMatchmaking.Title" xml:space="preserve">
+    <value>啟用「BetterMatchmaking」</value>
+  </data>
+  <data name="Menu.Bootstrapper.MaxServerCheck.Description" xml:space="preserve">
+    <value>請選擇要檢查的伺服器數量，數量越多，可能需要越長的時間。</value>
+  </data>
+  <data name="Menu.Bootstrapper.MaxServerCheck.Title" xml:space="preserve">
+    <value>伺服器檢查上限</value>
+  </data>
+  <data name="Menu.Bootstrapper.PreferredRegion.Description" xml:space="preserve">
+    <value>請選擇要加入的特定區域，或維持「自動」設定以選擇最佳可用區域。</value>
+  </data>
+  <data name="Menu.Bootstrapper.PreferredRegion.Title" xml:space="preserve">
+    <value>首選地區</value>
+  </data>
+  <data name="Menu.Bootstrapper.RobloxTheme.Description" xml:space="preserve">
+    <value>變更 Roblox 的視覺主題。</value>
+  </data>
+  <data name="Menu.Bootstrapper.RobloxTheme.Title" xml:space="preserve">
+    <value>Roblox 應用程式主題</value>
+  </data>
+  <data name="Menu.Bootstrapper.SmallerServer.Description" xml:space="preserve">
+    <value>透過「遊玩」按鈕加入遊戲時，請選擇較小的伺服器。</value>
+  </data>
+  <data name="Menu.Bootstrapper.SmallerServer.Title" xml:space="preserve">
+    <value>加入規模較小的伺服器</value>
+  </data>
+  <data name="Menu.Bootstrapper.Startup.Description" xml:space="preserve">
+    <value>在啟動電腦時，自動開啟 Roblox 應用程式。</value>
+  </data>
+  <data name="Menu.Bootstrapper.Startup.Title" xml:space="preserve">
+    <value>在新創公司階段推出</value>
+  </data>
+  <data name="Menu.Bootstrapper.Tray.Description" xml:space="preserve">
+    <value>將應用程式移至系統托盤，而非完全關閉它。</value>
+  </data>
+  <data name="Menu.Bootstrapper.Tray.Title" xml:space="preserve">
+    <value>最小化至系統匣</value>
+  </data>
+  <data name="Menu.BottomButtons.ExportSettings" xml:space="preserve">
+    <value>匯出設定</value>
+  </data>
+  <data name="Menu.BottomButtons.ImportSettings" xml:space="preserve">
+    <value>匯入設定</value>
+  </data>
+  <data name="Menu.BottomButtons.ResetSettingsToDefault" xml:space="preserve">
+    <value>將設定重設為預設值</value>
+  </data>
+  <data name="Menu.Channel.ChangeAction.Automatic" xml:space="preserve">
+    <value>自動變更</value>
+  </data>
+  <data name="Menu.Channel.ChangeAction.Description" xml:space="preserve">
+    <value>Roblox 或 Froststrap 可能會試圖變更您的預設頻道。</value>
+  </data>
+  <data name="Menu.Channel.ChangeAction.Ignore" xml:space="preserve">
+    <value>永遠不要改變</value>
+  </data>
+  <data name="Menu.Channel.ChangeAction.Prompt" xml:space="preserve">
+    <value>始終迅速</value>
+  </data>
+  <data name="Menu.Channel.ChangeAction.Title" xml:space="preserve">
+    <value>自動換台操作</value>
+  </data>
+  <data name="Menu.Channel.Description" xml:space="preserve">
+    <value>變更 Roblox 和 Froststrap 的部署與安裝設定。</value>
+  </data>
+  <data name="Menu.Channel.RobloxUpgrades" xml:space="preserve">
+    <value>Roblox 升級</value>
+  </data>
+  <data name="Menu.Channel.RobloxUpgrades.Description" xml:space="preserve">
+    <value>若此功能已停用，Roblox 客戶端將不會升級至較新版本。</value>
+  </data>
+  <data name="Menu.Channel.StaticDirectory.Description" xml:space="preserve">
+    <value>將安裝目錄從版本-xxx 改為基於 BinaryType 的格式，此變更僅影響 Linux 版的 Studio。</value>
+  </data>
+  <data name="Menu.Channel.StaticDirectory.Title" xml:space="preserve">
+    <value>靜態目錄</value>
+  </data>
+  <data name="Menu.Channel.Switcher.Fetching" xml:space="preserve">
+    <value>正在擷取最新的部署資訊，請稍候...</value>
+  </data>
+  <data name="Menu.Channel.Switcher.Unauthorized" xml:space="preserve">
+    <value>指定的頻道不存在，或是屬於私人頻道</value>
+  </data>
+  <data name="Menu.ColorPicker.SelectColor" xml:space="preserve">
+    <value>選擇顏色</value>
+  </data>
+  <data name="Menu.CommunityModInfo.Title" xml:space="preserve">
+    <value>關於資訊</value>
+  </data>
+  <data name="Menu.CommunityMods.AvatarEditor" xml:space="preserve">
+    <value>頭像編輯器</value>
+  </data>
+  <data name="Menu.CommunityMods.ColorMods" xml:space="preserve">
+    <value>色彩模組</value>
+  </data>
+  <data name="Menu.CommunityMods.Cursor" xml:space="preserve">
+    <value>游標</value>
+  </data>
+  <data name="Menu.CommunityMods.Description" xml:space="preserve">
+    <value>探索由使用者創作的模組。</value>
+  </data>
+  <data name="Menu.CommunityMods.Misc" xml:space="preserve">
+    <value>其他模組</value>
+  </data>
+  <data name="Menu.CommunityMods.ModInstalled" xml:space="preserve">
+    <value>模組「{0}」已成功安裝！</value>
+  </data>
+  <data name="Menu.CommunityMods.Overwrite" xml:space="preserve">
+    <value>要覆寫現有的模組「{0}」嗎？</value>
+  </data>
+  <data name="Menu.CommunityMods.SearchMods" xml:space="preserve">
+    <value>搜尋模組...</value>
+  </data>
+  <data name="Menu.CommunityMods.ThemeInstalled" xml:space="preserve">
+    <value>主題「{0}」已安裝並套用！</value>
+  </data>
+  <data name="Menu.CommunityMods.Themes" xml:space="preserve">
+    <value>自訂主題</value>
+  </data>
+  <data name="Menu.CommunityMods.Title" xml:space="preserve">
+    <value>社群版主</value>
+  </data>
+  <data name="Menu.ContextMenu.CloseStudio" xml:space="preserve">
+    <value>關閉工作室</value>
+  </data>
+  <data name="Menu.ContextMenu.CloseWatcher" xml:space="preserve">
+    <value>密切觀察者</value>
+  </data>
+  <data name="Menu.ContextMenu.NoData" xml:space="preserve">
+    <value>沒有活動資料。</value>
+  </data>
+  <data name="Menu.ContextMenu.RegionJoin" xml:space="preserve">
+    <value>加入「最佳地區」（自動）</value>
+  </data>
+  <data name="Menu.CookieState.CouldNotLoad" xml:space="preserve">
+    <value>無法載入 Roblox 的 Cookie。</value>
+  </data>
+  <data name="Menu.CookieState.Failed" xml:space="preserve">
+    <value>無法載入 Cookie 檔案。</value>
+  </data>
+  <data name="Menu.CookieState.Invalid" xml:space="preserve">
+    <value>已找到 Cookie，但該 Cookie 無效或已過期。</value>
+  </data>
+  <data name="Menu.CookieState.NotAllowed" xml:space="preserve">
+    <value>設定中已停用 Cookie 存取功能。</value>
+  </data>
+  <data name="Menu.CookieState.NotFound" xml:space="preserve">
+    <value>找不到 Roblox 的 Cookie 檔案。</value>
+  </data>
+  <data name="Menu.Deployment.AutoPreReleaseUpdate.Description" xml:space="preserve">
+    <value>在啟動 Roblox 時，Froststrap 會自動檢查並將自身更新至測試版本。</value>
+  </data>
+  <data name="Menu.Deployment.AutoPreReleaseUpdate.Title" xml:space="preserve">
+    <value>預發布版本的更新</value>
+  </data>
+  <data name="Menu.Deployment.AutoUpdateSober" xml:space="preserve">
+    <value>自動更新 Sober</value>
+  </data>
+  <data name="Menu.Deployment.Channel.Description" xml:space="preserve">
+    <value>選擇部署管道，除非您清楚自己在做什麼，否則請勿更改。</value>
+  </data>
+  <data name="Menu.Deployment.Channel.OutOfDate" xml:space="preserve">
+    <value>此頻道已過時，且很可能不再更新。請改用其他頻道。</value>
+  </data>
+  <data name="Menu.Deployment.DomainValidation" xml:space="preserve">
+    <value>您輸入的網域無效
+如果您不確定自己在做什麼，請不要隨意更改此設定</value>
+  </data>
+  <data name="Menu.Deployment.FailedToLoadChannelData" xml:space="preserve">
+    <value>無法載入頻道資料。</value>
+  </data>
+  <data name="Menu.Deployment.GameSearch.Description" xml:space="preserve">
+    <value>請使用頂部的搜尋欄搜尋遊戲。</value>
+  </data>
+  <data name="Menu.Deployment.GameSearch.Title" xml:space="preserve">
+    <value>遊戲搜尋</value>
+  </data>
+  <data name="Menu.Deployment.MultiThread.Description" xml:space="preserve">
+    <value>指定下載時使用的執行緒數，此設定僅適用於 Linux 版的 Studio。</value>
+  </data>
+  <data name="Menu.Deployment.MultiThread.Title" xml:space="preserve">
+    <value>多執行緒下載</value>
+  </data>
+  <data name="Menu.Deployment.OverrideHash.Description" xml:space="preserve">
+    <value>強制 Roblox Studio 安裝並使用特定的版本哈希值，而非最新版本。</value>
+  </data>
+  <data name="Menu.Deployment.OverrideHash.Title" xml:space="preserve">
+    <value>覆寫 Studio 版本</value>
+  </data>
+  <data name="Menu.Deployment.PlayerChannel.Title" xml:space="preserve">
+    <value>玩家頻道</value>
+  </data>
+  <data name="Menu.Deployment.VersionHash.Description" xml:space="preserve">
+    <value>請輸入 Roblox Studio 的版本 GUID（例如：version-xxxxxxxxxxxxxxxx）。此設定僅適用於透過 Studio 啟動的實例。</value>
+  </data>
+  <data name="Menu.Deployment.VersionHash.Title" xml:space="preserve">
+    <value>版本哈希值</value>
+  </data>
+  <data name="Menu.Dialog.QuickSignIn.Title" xml:space="preserve">
+    <value>快速登入</value>
   </data>
   <data name="Menu.FastFlagEditor.AddNew" xml:space="preserve">
-    <value>增加</value>
+    <value>新增</value>
   </data>
   <data name="Menu.FastFlagEditor.AlreadyExists" xml:space="preserve">
-    <value>此flag名稱的條目已存在。</value>
+    <value>此旗幟名稱已有對應的條目。</value>
   </data>
-  <data name="Menu.FastFlagEditor.Back" xml:space="preserve">
-    <value>返回</value>
+  <data name="Menu.FastFlagEditor.CleanList" xml:space="preserve">
+    <value>乾淨清單</value>
   </data>
-  <data name="Menu.FastFlagEditor.BannerText" xml:space="preserve">
-    <value>錯誤地使用此功能會導致不穩定/意料之外的事情發生。</value>
-    <comment>The element that this string is rendered in *cannot be wrapped* and may be truncated when displayed if too long. If so, try and paraphrase a shortened version.</comment>
-  </data>
-  <data name="Menu.FastFlagEditor.BannerTitle" xml:space="preserve">
-    <value>小心使用。</value>
+  <data name="Menu.FastFlagEditor.ConfirmDeleteAll" xml:space="preserve">
+    <value>您確定要刪除所有標記嗎？</value>
   </data>
   <data name="Menu.FastFlagEditor.ConflictingImport" xml:space="preserve">
-    <value>有些你嘗試去導入的flags已經設置了值。請問你要不要用你導入的值來覆蓋目前的值？
+    <value>您嘗試匯入的部分旗標已有設定值。是否要將匯入中定義的值覆寫為其目前值？
 
-這裏有{0} 個已衝突的flag定義：
+共有 {0} 個衝突的旗標定義：
 {1}</value>
     <comment>{0} is a number, {1} is a comma-separated list</comment>
   </data>
   <data name="Menu.FastFlagEditor.DeleteSelected" xml:space="preserve">
-    <value>刪除所選擇的内容</value>
+    <value>刪除選取項目</value>
   </data>
   <data name="Menu.FastFlagEditor.Description" xml:space="preserve">
-    <value>管理您的FastFlag，雙擊一個欄位來編輯。</value>
+    <value>請在此管理您所有的 FastFlags。</value>
+  </data>
+  <data name="Menu.FastFlagEditor.DragOverlay" xml:space="preserve">
+    <value>📦 拖放以匯入 JSON / TXT</value>
   </data>
   <data name="Menu.FastFlagEditor.ExportJson" xml:space="preserve">
-    <value>導出 JSON</value>
+    <value>匯出 JSON</value>
   </data>
-  <data name="Menu.FastFlagEditor.InvalidCharacter" xml:space="preserve">
-    <value>您所輸入'{0}'的條目無效，名字中只能包含字母，數字和下劃綫。</value>
+  <data name="Menu.FastFlagEditor.Exported" xml:space="preserve">
+    <value>FastFlags 已成功匯出。</value>
+  </data>
+  <data name="Menu.FastFlagEditor.FileExtensionWarning" xml:space="preserve">
+    <value>請上傳 JSON 或 TXT 檔案。</value>
+  </data>
+  <data name="Menu.FastFlagEditor.HaveBeenRemoved" xml:space="preserve">
+    <value>{0} 因未列入允許清單而被移除。</value>
   </data>
   <data name="Menu.FastFlagEditor.InvalidJSON" xml:space="preserve">
-    <value>您所輸入的JSON無效，請仔細檢查它並再試一次。
+    <value>您輸入的 JSON 似乎不正確。請重新檢查並再次嘗試。
 
-更多資訊:
+更多資訊：
 {0}</value>
     <comment>{0} is an exception message</comment>
   </data>
-  <data name="Menu.FastFlagEditor.InvalidPrefix" xml:space="preserve">
-    <value>您所輸入'{0}'的條目無效，名字必須以 "FFlag"，"DFInt"，等作開頭。</value>
+  <data name="Menu.FastFlagEditor.NoFlagDelete" xml:space="preserve">
+    <value>沒有任何標記需要刪除。</value>
   </data>
-  <data name="Menu.FastFlagEditor.JsonCopiedToClipboard" xml:space="preserve">
-    <value>已複製到剪貼板。</value>
+  <data name="Menu.FastFlagEditor.NoFlags" xml:space="preserve">
+    <value>哇，這裡好空蕩蕩的！要不要加個 FastFlag 呢？</value>
   </data>
-  <data name="Menu.FastFlagEditor.LargeConfig" xml:space="preserve">
-    <value>您似乎正在導入一個非常龐大的配置表。您應該只導入您完全理解的配置表。請不要盲目地貼上他人製作的配置表。如果繼續，很可能會導致穩定性問題，並且可能會遇到意外的變化。
-
-您確定要繼續嗎？</value>
+  <data name="Menu.FastFlagEditor.NoInvalid" xml:space="preserve">
+    <value>未偵測到任何無效的 FastFlags。</value>
   </data>
-  <data name="Menu.FastFlagEditor.Search" xml:space="preserve">
-    <value>搜尋</value>
+  <data name="Menu.FastFlagEditor.NotInWhiteList" xml:space="preserve">
+    <value>&apos;{0}&apos; 未列入 Roblox 允許清單，因此無法使用。
+現在要刪除嗎？</value>
   </data>
   <data name="Menu.FastFlagEditor.ShowPresetFlags" xml:space="preserve">
-    <value>顯示預設的Flags</value>
+    <value>顯示預設標記</value>
   </data>
   <data name="Menu.FastFlagEditor.Title" xml:space="preserve">
-    <value>Fast Flag 編輯器</value>
+    <value>FastFlag 編輯器</value>
   </data>
-  <data name="Menu.FastFlagEditor.Warning.Back" xml:space="preserve">
-    <value>返回上一步</value>
+  <data name="Menu.FastFlagEditor.TotalFlags" xml:space="preserve">
+    <value>旗幟總數</value>
   </data>
-  <data name="Menu.FastFlagEditor.Warning.Continue" xml:space="preserve">
-    <value>我知道我在做什麼</value>
-  </data>
-  <data name="Menu.FastFlagEditor.Warning.Header" xml:space="preserve">
-    <value>你知道你在做什麼嗎？</value>
-  </data>
-  <data name="Menu.FastFlagEditor.Warning.Text" xml:space="preserve">
-    <value>Fast Flags 是非常強大的，因為它通常只給Roblox工程師用。雖然它們很有用，但是手動更改它們可能對穩定性和功能性造成嚴重影響。如果你不清楚您在做什麼，請不要用此編輯器。
-
-不要用這它來導入別人製作的大型「flag lists」，例如那些聲稱可以改善效能的Fast Flags。它們受上述問題的影響，而它們會因為你不會完全意識到它們正在改變什麼而造成問題。如果你打算這樣做，回頭是岸。</value>
+  <data name="Menu.FastFlagEditor.WhiteList" xml:space="preserve">
+    <value>隨著部分 Roblox FastFlags 被列入白名單，以下是目前僅剩且仍可使用的項目。</value>
   </data>
   <data name="Menu.FastFlags.Description" xml:space="preserve">
-    <value>控制Roblox引擎的特定參數和功能的設定。</value>
+    <value>控制 Roblox 引擎中特定參數與功能的設定方式。</value>
   </data>
   <data name="Menu.FastFlags.Editor.Description" xml:space="preserve">
-    <value>管理您的Fast Flags；請小心使用。</value>
+    <value>自行管理您的「快速標記」。請謹慎使用。</value>
     <comment>Title is Menu.FastFlagEditor.Title</comment>
   </data>
-  <data name="Menu.FastFlags.Help.Description" xml:space="preserve">
-    <value>了解更多有關Fast Flags的資訊，了解這些預設的功能以及如何使用它們。</value>
-    <comment>Title is Common.Help</comment>
+  <data name="Menu.FastFlags.ManagerEnabled.Description" xml:space="preserve">
+    <value>若停用此設定，將防止此處所設定的任何內容套用至 Roblox。</value>
   </data>
-  <data name="Menu.FastFlags.Presets.D3DExclusiveFullscreenInfo" xml:space="preserve">
-    <value>Alt + Enter鍵啟用為Direct3D [全螢幕獨佔模式]({0}) 已預設啟用。</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.EscapeMenuVersion.Title" xml:space="preserve">
-    <value>首選的ESC選單版本</value>
+  <data name="Menu.FastFlags.ManagerEnabled.Title" xml:space="preserve">
+    <value>允許 Froststrap 管理 FastFlags</value>
   </data>
   <data name="Menu.FastFlags.Presets.FixDisplayScaling.Description" xml:space="preserve">
-    <value>Roblox會根據顯示縮放來降低渲染品質；啟用此選項將禁用此功能。</value>
+    <value>Roblox 會根據您的顯示器在 Windows 中的縮放比例，相應地降低渲染品質。</value>
   </data>
   <data name="Menu.FastFlags.Presets.FixDisplayScaling.Title" xml:space="preserve">
-    <value>透過顯示縮放來保持渲染質量</value>
+    <value>在螢幕縮放時維持渲染品質</value>
   </data>
-  <data name="Menu.FastFlags.Presets.FPSLimit.Description" xml:space="preserve">
-    <value>如果您想使用Roblox原本就有的幀率解鎖器，將數字設置為0以使用默認設置。</value>
+  <data name="Menu.FastFlags.Presets.GraySky.Description" xml:space="preserve">
+    <value>將遊戲中的天空變更為純灰色。注意：若遊戲中由開發者新增了自訂天空盒，此設定將無法生效。</value>
   </data>
-  <data name="Menu.FastFlags.Presets.FPSLimit.Title" xml:space="preserve">
-    <value>幀數（FPS）上限</value>
+  <data name="Menu.FastFlags.Presets.GraySky.Title" xml:space="preserve">
+    <value>灰色的天空</value>
   </data>
-  <data name="Menu.FastFlags.Presets.HideGuis.Description" xml:space="preserve">
-    <value>用快捷鍵({0})開啟，此設定需加入[Froststrap group]({1})。</value>
+  <data name="Menu.FastFlags.Presets.LowPolyMeshes.Description" xml:space="preserve">
+    <value>控制網格品質以提升效能或視覺效果。</value>
   </data>
-  <data name="Menu.FastFlags.Presets.HideGuis.Title" xml:space="preserve">
-    <value>啟用隱藏介面功能</value>
+  <data name="Menu.FastFlags.Presets.LowPolyMeshes.Information" xml:space="preserve">
+    <value>拖曳以調整網格細節，以平衡效能與畫質。</value>
   </data>
-  <data name="Menu.FastFlags.Presets.LightingTechnology.Description" xml:space="preserve">
-    <value>此選擇會強制在全部遊戲使用。[小心，這可能會造成遊戲內的照明問題！]({0})</value>
+  <data name="Menu.FastFlags.Presets.LowPolyMeshes.Title" xml:space="preserve">
+    <value>網眼細節</value>
   </data>
-  <data name="Menu.FastFlags.Presets.LightingTechnology.Title" xml:space="preserve">
-    <value>首選的照明技術</value>
+  <data name="Menu.FastFlags.Presets.MSAA.Description" xml:space="preserve">
+    <value>較高的 MSAA 設定可減少鋸齒現象，但可能會影響效能。</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.MSAA.Title" xml:space="preserve">
+    <value>抗鋸齒品質 (MSAA)</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.OverrideGraphicQuality.Description" xml:space="preserve">
+    <value>將圖形品質鎖定為所選等級。注意：啟用此設定後，Roblox 選單中的圖形滑桿僅會影響遊戲中的渲染距離。</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.OverrideGraphicQuality.Title" xml:space="preserve">
+    <value>覆寫圖形品質等級</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.PauseVoxelizer.Description" xml:space="preserve">
+    <value>停用烘焙陰影以提升效能，但可能會在某些遊戲中導致光照問題。</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.PauseVoxelizer.Title" xml:space="preserve">
+    <value>暫停 Voxelizer</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.RemoveGrass.Description" xml:space="preserve">
+    <value>移除 Roblox 的預設草地貼圖。注意：此設定不會影響個別遊戲所使用的自訂草地貼圖。</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.RemoveGrass.Title" xml:space="preserve">
+    <value>停用草地</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.RenderingMode.Description" xml:space="preserve">
+    <value>設定 Roblox 所使用的渲染 API。注意：當使用 Direct3D 作為渲染 API 時，請按下 Alt + Enter 鍵以進入專用全螢幕模式。</value>
   </data>
   <data name="Menu.FastFlags.Presets.RenderingMode.Title" xml:space="preserve">
     <value>渲染模式</value>
   </data>
+  <data name="Menu.FastFlags.Presets.TextureQuality.Description" xml:space="preserve">
+    <value>調整遊戲的貼圖品質。注意：此設定也會影響 GUI 和 UI。</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.TextureQuality.Title" xml:space="preserve">
+    <value>紋理品質</value>
+  </data>
+  <data name="Menu.FastFlags.Reset.Title" xml:space="preserve">
+    <value>將所有設定重設為預設值</value>
+  </data>
   <data name="Menu.FastFlags.Title" xml:space="preserve">
-    <value>引擎設定</value>
+    <value>FastFlag 設定</value>
   </data>
-  <data name="Menu.FontFiles" xml:space="preserve">
-    <value>字體文件</value>
+  <data name="Menu.FlagProfiles.AddPlaceId" xml:space="preserve">
+    <value>新增地點 ID</value>
   </data>
-  <data name="Menu.IconFiles" xml:space="preserve">
-    <value>圖標文件</value>
+  <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
+    <value>清除 FFlags</value>
   </data>
-  <data name="Menu.InstallLocation.CantInstall" xml:space="preserve">
-    <value>Froststrap無法在此處資料夾安裝，請選擇在其他位置安裝，或點擊“重設”按鈕來使用其預設安裝路徑。</value>
+  <data name="Menu.FlagProfiles.CopyFailed" xml:space="preserve">
+    <value>無法複製設定檔：\n{0}</value>
   </data>
-  <data name="Menu.InstallLocation.NotEmpty" xml:space="preserve">
-    <value>您所選擇用來安裝Froststrap的資料夾已經存在而且還有其他檔案。強烈建議將Froststrap安裝到自己的獨立資料夾中。
-
-建議更改為以下路徑：
-{0}
-
-請問您是否更改為建議路徑？
-選擇「不」會無視此警告並繼續安裝。</value>
-    <comment>{0} is a file path</comment>
+  <data name="Menu.FlagProfiles.CurrentPlaceIds" xml:space="preserve">
+    <value>當前位置 ID</value>
   </data>
-  <data name="Menu.InstallLocation.NotSet" xml:space="preserve">
-    <value>你必須設置一個安裝路徑</value>
+  <data name="Menu.FlagProfiles.DeleteSelected" xml:space="preserve">
+    <value>刪除選取項目</value>
   </data>
-  <data name="Menu.InstallLocation.NoWritePerms" xml:space="preserve">
-    <value>Froststrap對您選擇的安裝路徑沒有寫入權限，請選擇其他路徑。</value>
+  <data name="Menu.FlagProfiles.EnterPlaceId" xml:space="preserve">
+    <value>請輸入地點 ID。</value>
+  </data>
+  <data name="Menu.FlagProfiles.GetFlagsFailed" xml:space="preserve">
+    <value>無法取得當前的 FastFlags。</value>
+  </data>
+  <data name="Menu.FlagProfiles.InvalidCharacter" xml:space="preserve">
+    <value>個人檔案名稱中包含無效字元「{0}」。</value>
+  </data>
+  <data name="Menu.FlagProfiles.ManagingPlaceIds" xml:space="preserve">
+    <value>管理以下地點的 ID：{0}（{1} 個 ID）</value>
+  </data>
+  <data name="Menu.FlagProfiles.NameCannotBeEmpty" xml:space="preserve">
+    <value>新個人檔案名稱不能為空。</value>
+  </data>
+  <data name="Menu.FlagProfiles.NoProfileFound" xml:space="preserve">
+    <value>未找到任何個人檔案。</value>
+  </data>
+  <data name="Menu.FlagProfiles.NoProfilesFound" xml:space="preserve">
+    <value>未找到任何個人檔案。請先建立個人檔案。</value>
+  </data>
+  <data name="Menu.FlagProfiles.ParseFailed" xml:space="preserve">
+    <value>無法解析所選的設定檔。</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdExists" xml:space="preserve">
+    <value>此地點 ID 已新增至個人檔案中。</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdNumeric" xml:space="preserve">
+    <value>位置 ID 必須為整數。</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdWatermark" xml:space="preserve">
+    <value>請輸入地點 ID（例如：123456789）</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdsTab" xml:space="preserve">
+    <value>地點識別碼</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileExists" xml:space="preserve">
+    <value>已經有同名的個人檔案了。</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileNotFound" xml:space="preserve">
+    <value>找不到所選的設定檔。</value>
+  </data>
+  <data name="Menu.FlagProfiles.RemoveSelected" xml:space="preserve">
+    <value>移除選取項目</value>
+  </data>
+  <data name="Menu.FlagProfiles.RenameFailed" xml:space="preserve">
+    <value>無法重新命名設定檔：\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfile" xml:space="preserve">
+    <value>選擇一個設定檔來管理地點 ID</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileCopy" xml:space="preserve">
+    <value>請選擇一個要複製的個人資料。</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileFirst" xml:space="preserve">
+    <value>請先選擇一個個人檔案。</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileLabel" xml:space="preserve">
+    <value>請選擇一個設定檔以管理其位置 ID：</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileRename" xml:space="preserve">
+    <value>請選擇一個要重新命名的設定檔。</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileUpdate" xml:space="preserve">
+    <value>請選擇要更新的個人資料。</value>
+  </data>
+  <data name="Menu.FlagProfiles.Title" xml:space="preserve">
+    <value>Fast Flag 設定檔</value>
+  </data>
+  <data name="Menu.FlagProfiles.UpdateFailed" xml:space="preserve">
+    <value>無法更新個人資料：\n{0}</value>
+  </data>
+  <data name="Menu.GBSEditor.Description" xml:space="preserve">
+    <value>透過便捷的選單來變更遊戲設定。</value>
+  </data>
+  <data name="Menu.GBSEditor.ReadOnly.Description" xml:space="preserve">
+    <value>防止 Roblox 覆寫全域設定。</value>
+  </data>
+  <data name="Menu.GBSEditor.ReadOnly.Title" xml:space="preserve">
+    <value>設定為唯讀</value>
+  </data>
+  <data name="Menu.GBSEditor.Title" xml:space="preserve">
+    <value>全域設定編輯器</value>
+  </data>
+  <data name="Menu.GBSEditor.VectorY" xml:space="preserve">
+    <value>Y 向量</value>
+  </data>
+  <data name="Menu.GlobalSettings.Accessibility.Title" xml:space="preserve">
+    <value>無障礙功能與其他事項</value>
+  </data>
+  <data name="Menu.GlobalSettings.AudioSettings.Title" xml:space="preserve">
+    <value>音訊設定</value>
+  </data>
+  <data name="Menu.GlobalSettings.Export.Fail" xml:space="preserve">
+    <value>無法匯出設定。請確認 Roblox 是否已關閉，然後再試一次。</value>
+  </data>
+  <data name="Menu.GlobalSettings.Export.Success" xml:space="preserve">
+    <value>設定已成功匯出至 {0}</value>
+  </data>
+  <data name="Menu.GlobalSettings.FirstPersonSensitivity.Description" xml:space="preserve">
+    <value>第一人稱視角的 X 軸與 Y 軸靈敏度。</value>
+  </data>
+  <data name="Menu.GlobalSettings.FirstPersonSensitivity.Title" xml:space="preserve">
+    <value>第一人稱靈敏度</value>
+  </data>
+  <data name="Menu.GlobalSettings.FramerateLimit.Description" xml:space="preserve">
+    <value>設定自訂的 FPS 上限。若要使用預設值，請輸入 -1。</value>
+  </data>
+  <data name="Menu.GlobalSettings.FramerateLimit.Title" xml:space="preserve">
+    <value>幀率限制</value>
+  </data>
+  <data name="Menu.GlobalSettings.Fullscreen.Description" xml:space="preserve">
+    <value>以全螢幕模式啟動 Roblox。</value>
+  </data>
+  <data name="Menu.GlobalSettings.Fullscreen.Title" xml:space="preserve">
+    <value>全螢幕</value>
+  </data>
+  <data name="Menu.GlobalSettings.GraphicsSettings.Title" xml:space="preserve">
+    <value>圖形設定</value>
+  </data>
+  <data name="Menu.GlobalSettings.HapticStrength.Description" xml:space="preserve">
+    <value>控制器震動強度。</value>
+  </data>
+  <data name="Menu.GlobalSettings.HapticStrength.Title" xml:space="preserve">
+    <value>觸覺強度</value>
+  </data>
+  <data name="Menu.GlobalSettings.Import.Confirmation" xml:space="preserve">
+    <value>此操作將以匯入的設定取代您目前的所有「全域設定」。您確定要繼續嗎？</value>
+  </data>
+  <data name="Menu.GlobalSettings.Import.Fail" xml:space="preserve">
+    <value>無法匯入設定。請確認 Roblox 是否已關閉，然後再試一次。</value>
+  </data>
+  <data name="Menu.GlobalSettings.Import.NotGBS" xml:space="preserve">
+    <value>所選的檔案似乎不是有效的 GBS 設定檔。</value>
+  </data>
+  <data name="Menu.GlobalSettings.Import.NotXML" xml:space="preserve">
+    <value>所選的檔案不是有效的 XML 檔案。</value>
+  </data>
+  <data name="Menu.GlobalSettings.Import.Success" xml:space="preserve">
+    <value>設定已成功匯入！</value>
+  </data>
+  <data name="Menu.GlobalSettings.InputSettings.Title" xml:space="preserve">
+    <value>輸入設定</value>
+  </data>
+  <data name="Menu.GlobalSettings.InvertY.Description" xml:space="preserve">
+    <value>將相機的 Y 軸反轉。</value>
+  </data>
+  <data name="Menu.GlobalSettings.InvertY.Title" xml:space="preserve">
+    <value>反轉 Y</value>
+  </data>
+  <data name="Menu.GlobalSettings.MasterVolume.Description" xml:space="preserve">
+    <value>全球交易量水準。</value>
+  </data>
+  <data name="Menu.GlobalSettings.MasterVolume.Title" xml:space="preserve">
+    <value>總音量</value>
+  </data>
+  <data name="Menu.GlobalSettings.MaxQuality.Description" xml:space="preserve">
+    <value>啟用更高的 MSAA 級別。</value>
+  </data>
+  <data name="Menu.GlobalSettings.MaxQuality.Title" xml:space="preserve">
+    <value>最高品質</value>
+  </data>
+  <data name="Menu.GlobalSettings.OpenRobloxFolder" xml:space="preserve">
+    <value>開啟 Roblox 資料夾</value>
+  </data>
+  <data name="Menu.GlobalSettings.PartyVolume.Description" xml:space="preserve">
+    <value>派對語音模式的音量。</value>
+  </data>
+  <data name="Menu.GlobalSettings.PartyVolume.Title" xml:space="preserve">
+    <value>派對音量</value>
+  </data>
+  <data name="Menu.GlobalSettings.PerfStats.Description" xml:space="preserve">
+    <value>顯示效能疊加層。</value>
+  </data>
+  <data name="Menu.GlobalSettings.PerfStats.Title" xml:space="preserve">
+    <value>完美數據</value>
+  </data>
+  <data name="Menu.GlobalSettings.PlayerListLayout.Description" xml:space="preserve">
+    <value>切換 esc 播放清單的介面顯示模式，在方塊式與標準介面之間切換。</value>
+  </data>
+  <data name="Menu.GlobalSettings.PlayerListLayout.Title" xml:space="preserve">
+    <value>玩家名單佈局</value>
+  </data>
+  <data name="Menu.GlobalSettings.ReducedMotion.Description" xml:space="preserve">
+    <value>減少使用者介面動畫。</value>
+  </data>
+  <data name="Menu.GlobalSettings.ReducedMotion.Title" xml:space="preserve">
+    <value>動作減弱</value>
+  </data>
+  <data name="Menu.GlobalSettings.Sensitivity.Description" xml:space="preserve">
+    <value>全景相機的靈敏度。</value>
+  </data>
+  <data name="Menu.GlobalSettings.Sensitivity.Title" xml:space="preserve">
+    <value>靈敏度</value>
+  </data>
+  <data name="Menu.GlobalSettings.ShiftLock.Description" xml:space="preserve">
+    <value>自動啟用 ShiftLock。</value>
+  </data>
+  <data name="Menu.GlobalSettings.StartQuality.Description" xml:space="preserve">
+    <value>加入遊戲時的畫質等級。</value>
+  </data>
+  <data name="Menu.GlobalSettings.StartQuality.Title" xml:space="preserve">
+    <value>起始品質</value>
+  </data>
+  <data name="Menu.GlobalSettings.StudioVolume.Description" xml:space="preserve">
+    <value>Roblox Studio 的音量。</value>
+  </data>
+  <data name="Menu.GlobalSettings.StudioVolume.Title" xml:space="preserve">
+    <value>《Studio Volume》</value>
+  </data>
+  <data name="Menu.GlobalSettings.TextSize.Description" xml:space="preserve">
+    <value>首選的顯示文字大小。</value>
+  </data>
+  <data name="Menu.GlobalSettings.TextSize.Title" xml:space="preserve">
+    <value>文字大小</value>
+  </data>
+  <data name="Menu.GlobalSettings.ThirdPersonSensitivity.Description" xml:space="preserve">
+    <value>第三人稱視角的 X 軸與 Y 軸靈敏度。</value>
+  </data>
+  <data name="Menu.GlobalSettings.ThirdPersonSensitivity.Title" xml:space="preserve">
+    <value>第三人稱敏感度</value>
+  </data>
+  <data name="Menu.GlobalSettings.Title" xml:space="preserve">
+    <value>全域設定</value>
+  </data>
+  <data name="Menu.GlobalSettings.UITransparency.Description" xml:space="preserve">
+    <value>調整 UI 元素的透明度。</value>
+  </data>
+  <data name="Menu.GlobalSettings.UITransparency.Title" xml:space="preserve">
+    <value>使用者介面透明度</value>
+  </data>
+  <data name="Menu.GlobalSettings.VRMode.Description" xml:space="preserve">
+    <value>啟用虛擬實境支援。</value>
+  </data>
+  <data name="Menu.GlobalSettings.VRMode.Title" xml:space="preserve">
+    <value>VR 模式</value>
+  </data>
+  <data name="Menu.GlobalSettings.Vignette.Description" xml:space="preserve">
+    <value>切換螢幕的暗角效果。</value>
+  </data>
+  <data name="Menu.GlobalSettings.Vignette.Title" xml:space="preserve">
+    <value>縮圖</value>
+  </data>
+  <data name="Menu.GlobalSettingsEditor.Description" xml:space="preserve">
+    <value>請在此管理所有全域設定。</value>
   </data>
   <data name="Menu.Integrations.ActivityTracking" xml:space="preserve">
     <value>活動追蹤</value>
   </data>
   <data name="Menu.Integrations.AllowActivityJoining.Description" xml:space="preserve">
-    <value>允許任何人透過你的Discord個人檔案來加入您正在玩的遊戲。</value>
+    <value>允許任何人透過您的 Discord 個人檔案加入您目前正在進行的遊戲。</value>
   </data>
   <data name="Menu.Integrations.AllowActivityJoining.Title" xml:space="preserve">
-    <value>允許其他人利用Discord活動狀態來加入遊戲</value>
+    <value>允許加入活動</value>
   </data>
-  <data name="Menu.Integrations.ShowAccountOnProfile.Description" xml:space="preserve">
-    <value>在您的 Discord 個人資料上顯示您正在使用的 Roblox 帳號。</value>
+  <data name="Menu.Integrations.AutoRejoin.Description" xml:space="preserve">
+    <value>若發生斷線或網路錯誤，系統將在 20 分鐘後自動重新連線至同一台伺服器。</value>
   </data>
-  <data name="Menu.Integrations.ShowAccountOnProfile.Title" xml:space="preserve">
-    <value>顯示 Roblox 帳號</value>
+  <data name="Menu.Integrations.AutoRejoin.Title" xml:space="preserve">
+    <value>自動重新加入</value>
+  </data>
+  <data name="Menu.Integrations.BlockCardExpander.Description" xml:space="preserve">
+    <value>切換某些 Roblox 內建功能。</value>
+  </data>
+  <data name="Menu.Integrations.BlockCardExpander.Title" xml:space="preserve">
+    <value>停用 Roblox 功能</value>
+  </data>
+  <data name="Menu.Integrations.BlockScreenShots.Description" xml:space="preserve">
+    <value>停用 Roblox 的截圖功能。注意：當此功能啟用時，快捷鍵組合將無法再使用。</value>
+  </data>
+  <data name="Menu.Integrations.BlockScreenShots.Title" xml:space="preserve">
+    <value>停用 Roblox 螢幕截圖功能</value>
+  </data>
+  <data name="Menu.Integrations.BlockVideoRecording.Description" xml:space="preserve">
+    <value>停用 Roblox 的錄影功能。注意：當此功能啟用時，熱鍵組合將無法再使用。</value>
+  </data>
+  <data name="Menu.Integrations.BlockVideoRecording.Title" xml:space="preserve">
+    <value>停用 Roblox 錄影功能</value>
   </data>
   <data name="Menu.Integrations.Custom.AppLocation" xml:space="preserve">
-    <value>應用程式路徑</value>
+    <value>申請地點</value>
   </data>
   <data name="Menu.Integrations.Custom.AutoClose" xml:space="preserve">
-    <value>當Roblox關閉的時候自動關閉</value>
+    <value>當 Roblox 關閉時自動關閉</value>
+  </data>
+  <data name="Menu.Integrations.Custom.AutoCloseOnGame" xml:space="preserve">
+    <value>當遊戲關閉時自動關閉</value>
   </data>
   <data name="Menu.Integrations.Custom.Description" xml:space="preserve">
-    <value>在這裡，你可以讓其他程式和Roblox一起啟動。</value>
+    <value>透過 Roblox 自動啟動其他程式。</value>
+  </data>
+  <data name="Menu.Integrations.Custom.GameID" xml:space="preserve">
+    <value>遊戲 ID</value>
   </data>
   <data name="Menu.Integrations.Custom.LaunchArgs" xml:space="preserve">
     <value>啟動參數</value>
@@ -701,583 +2097,852 @@
     <value>新整合功能</value>
   </data>
   <data name="Menu.Integrations.Custom.NoneSelected" xml:space="preserve">
-    <value>沒有整合功能被選擇，請選擇或加一個新的。</value>
+    <value>尚未選取任何整合服務。請選取或新增一個。</value>
+  </data>
+  <data name="Menu.Integrations.Custom.SpecifyGame" xml:space="preserve">
+    <value>在特定遊戲中執行</value>
   </data>
   <data name="Menu.Integrations.Custom.Title" xml:space="preserve">
-    <value>自訂整合功能</value>
+    <value>客製化整合</value>
+  </data>
+  <data name="Menu.Integrations.CustomStatusDisplay.Description" xml:space="preserve">
+    <value>顯示自訂狀態訊息，而非預設的「正在遊玩 Roblox」訊息。</value>
+  </data>
+  <data name="Menu.Integrations.CustomStatusDisplay.Title" xml:space="preserve">
+    <value>自訂狀態顯示</value>
   </data>
   <data name="Menu.Integrations.Description" xml:space="preserve">
-    <value>設定Roblox的附設功能。</value>
+    <value>設定與 Roblox 搭配使用的額外功能。</value>
   </data>
   <data name="Menu.Integrations.DesktopApp.Description" xml:space="preserve">
-    <value>當你離開遊戲時，Roblox 將會完全關閉；而不是讓您退回到主界面。
-[將會讓某些功能無法正常運作！]({0})</value>
+    <value>當你離開遊戲而非返回應用程式時，Roblox 將會完全關閉。[這會導致某些功能無法正常運作！]({0})</value>
   </data>
   <data name="Menu.Integrations.DesktopApp.Title" xml:space="preserve">
-    <value>不要在離開遊戲後返回主介面</value>
+    <value>接近桌面</value>
+  </data>
+  <data name="Menu.Integrations.DoubleClickAction.Description" xml:space="preserve">
+    <value>在啟動 Roblox 時，若在系統托盤中雙擊 Froststrap，將會開啟特定視窗。</value>
+  </data>
+  <data name="Menu.Integrations.DoubleClickAction.Title" xml:space="preserve">
+    <value>雙擊動作</value>
+  </data>
+  <data name="Menu.Integrations.DynamicThumbnail.Description" xml:space="preserve">
+    <value>根據您目前開啟的腳本，變更縮圖。</value>
+  </data>
+  <data name="Menu.Integrations.DynamicThumbnail.Title" xml:space="preserve">
+    <value>動態縮圖</value>
+  </data>
+  <data name="Menu.Integrations.EditingInfo.Description" xml:space="preserve">
+    <value>顯示腳本類型、腳本名稱以及腳本中的行數。</value>
+  </data>
+  <data name="Menu.Integrations.EditingInfo.Title" xml:space="preserve">
+    <value>編輯資訊</value>
   </data>
   <data name="Menu.Integrations.EnableActivityTracking.Description" xml:space="preserve">
-    <value>允許Froststrap偵測您正在游玩Roblox的游戲，某些功能需要此選項被啟用。</value>
+    <value>允許 Froststrap 偵測您正在遊玩的 Roblox 遊戲。某些功能可能需要此權限。</value>
   </data>
   <data name="Menu.Integrations.EnableActivityTracking.Title" xml:space="preserve">
-    <value>開啟活動追蹤</value>
+    <value>啟用活動追蹤</value>
   </data>
-  <data name="Menu.Integrations.RequiresActivityTracking" xml:space="preserve">
-    <value>此功能要求開啟活動追蹤功能，並且安裝和運行Discord桌面應用程式。[了解更多]({0})</value>
+  <data name="Menu.Integrations.FroststrapRPC.Description" xml:space="preserve">
+    <value>啟用此功能，即可在應用程式開啟時，於您的 Discord 個人檔案中顯示自訂的「正在遊玩 Froststrap」RPC。</value>
   </data>
-  <data name="Menu.Integrations.ShowGameActivity.Description" xml:space="preserve">
-    <value>您正在玩的Roblox遊戲會被顯示在您的Discord個人資料上。 [不起作用？]({0})</value>
+  <data name="Menu.Integrations.GameHistory.Description" xml:space="preserve">
+    <value>顯示您在本次會話中曾遊玩過的遊戲，並讓您重新加入該遊戲。</value>
   </data>
-  <data name="Menu.Integrations.ShowGameActivity.Title" xml:space="preserve">
-    <value>顯示Roblox遊戲狀態</value>
+  <data name="Menu.Integrations.GameHistoryMenu.Description" xml:space="preserve">
+    <value>查看遊戲紀錄，即可快速重新加入您的伺服器。</value>
+  </data>
+  <data name="Menu.Integrations.GameHistoryMenu.Title" xml:space="preserve">
+    <value>遊戲歷史紀錄選單</value>
+  </data>
+  <data name="Menu.Integrations.IconChange.Description" xml:space="preserve">
+    <value>自動將 Roblox 遊戲的標題列和工作列圖示變更為當前遊戲的圖示。</value>
+  </data>
+  <data name="Menu.Integrations.IconChange.Title" xml:space="preserve">
+    <value>圖示變更</value>
+  </data>
+  <data name="Menu.Integrations.JoinButton.Description" xml:space="preserve">
+    <value>新增一個小按鈕，可讓您加入目前正在進行的遊戲。</value>
+  </data>
+  <data name="Menu.Integrations.JoinButton.Title" xml:space="preserve">
+    <value>「加入」按鈕</value>
+  </data>
+  <data name="Menu.Integrations.PlaytimeCounter.Description" xml:space="preserve">
+    <value>在遊戲或 Studio 場景中，會顯示您的總遊玩時間與當前遊玩時間。</value>
+  </data>
+  <data name="Menu.Integrations.PlaytimeCounter.Title" xml:space="preserve">
+    <value>遊戲時間計數器</value>
   </data>
   <data name="Menu.Integrations.QueryServerLocation.Description" xml:space="preserve">
-    <value>在遊戲中，您可以通過 [ipinfo.io]({0}) 查看您所在伺服器的位置。</value>
+    <value>在遊戲中，您可以透過 [ipinfo.io](https://ipinfo.io) 查看您的伺服器所在位置。</value>
   </data>
   <data name="Menu.Integrations.QueryServerLocation.Title" xml:space="preserve">
     <value>查詢伺服器位置</value>
   </data>
+  <data name="Menu.Integrations.RequiresActivityTracking" xml:space="preserve">
+    <value>此功能需要啟用活動追蹤，並已安裝且正在執行 Discord 桌面應用程式。[了解更多]({0})。</value>
+  </data>
+  <data name="Menu.Integrations.ShowAccountOnProfile.Description" xml:space="preserve">
+    <value>在您的 Discord 個人檔案中顯示您目前正在使用的 Roblox 帳號。</value>
+  </data>
+  <data name="Menu.Integrations.ShowAccountOnProfile.Title" xml:space="preserve">
+    <value>顯示 Roblox 帳號</value>
+  </data>
+  <data name="Menu.Integrations.ShowGameActivity.Description" xml:space="preserve">
+    <value>您正在遊玩的 Roblox 遊戲將會顯示在您的 Discord 個人檔案上。[無法正常運作？]({0})</value>
+  </data>
+  <data name="Menu.Integrations.ShowGameActivity.Title" xml:space="preserve">
+    <value>顯示遊戲活動</value>
+  </data>
+  <data name="Menu.Integrations.ShowTesting.Description" xml:space="preserve">
+    <value>在測試遊戲時，會在您的 RPC 上顯示一個小型播放圖示。</value>
+  </data>
+  <data name="Menu.Integrations.ShowTesting.Title" xml:space="preserve">
+    <value>顯示測試</value>
+  </data>
+  <data name="Menu.Integrations.StudioActivity.Description" xml:space="preserve">
+    <value>啟動時，將顯示「Roblox Studio」作為您的 Discord 活動。</value>
+  </data>
+  <data name="Menu.Integrations.StudioActivity.Title" xml:space="preserve">
+    <value>顯示 Studio 活動</value>
+  </data>
+  <data name="Menu.Integrations.StudioRPC.PluginConfirmation" xml:space="preserve">
+    <value>此功能是透過新增一個客製化的 Froststrap 外掛來實現，該外掛會記錄您的操作。
+您要安裝這個外掛嗎？</value>
+  </data>
   <data name="Menu.Integrations.Title" xml:space="preserve">
     <value>整合功能</value>
   </data>
+  <data name="Menu.Integrations.TitleChange.Description" xml:space="preserve">
+    <value>將 Roblox 標題列的標題變更為遊戲名稱。</value>
+  </data>
+  <data name="Menu.Integrations.TitleChange.Title" xml:space="preserve">
+    <value>標題變更</value>
+  </data>
+  <data name="Menu.Integrations.WorkspaceInfo.Description" xml:space="preserve">
+    <value>顯示您目前工作區的名稱。</value>
+  </data>
+  <data name="Menu.Integrations.WorkspaceInfo.Title" xml:space="preserve">
+    <value>工作區資訊</value>
+  </data>
+  <data name="Menu.LinuxSettings.AddVariable" xml:space="preserve">
+    <value>+ 新增變數</value>
+  </data>
+  <data name="Menu.LinuxSettings.AdvancedWineSettings" xml:space="preserve">
+    <value>進階 Wine 設定</value>
+  </data>
+  <data name="Menu.LinuxSettings.AllowGamepadPermission.Description" xml:space="preserve">
+    <value>允許 Sober 透過 Steam Deck 或類似控制器來請求並擷取控制器輸入。</value>
+  </data>
+  <data name="Menu.LinuxSettings.AllowGamepadPermission.Title" xml:space="preserve">
+    <value>允許遊戲手把權限</value>
+  </data>
+  <data name="Menu.LinuxSettings.DebugMode.Description" xml:space="preserve">
+    <value>啟用 Wine/DXVK 的詳細日誌記錄與主控台輸出。</value>
+  </data>
+  <data name="Menu.LinuxSettings.DebugMode.Title" xml:space="preserve">
+    <value>除錯模式</value>
+  </data>
+  <data name="Menu.LinuxSettings.EnableGameMode.Description" xml:space="preserve">
+    <value>Signals 會於 Feral Interactive 的 GameMode 優化守護程式在遊戲啟動流程中進行掛鉤。</value>
+  </data>
+  <data name="Menu.LinuxSettings.EnableGameMode.Title" xml:space="preserve">
+    <value>啟用遊戲模式</value>
+  </data>
+  <data name="Menu.LinuxSettings.EnableHiDpi.Description" xml:space="preserve">
+    <value>在渲染介面元素時，強制使用原生高 DPI 平台的縮放選項。</value>
+  </data>
+  <data name="Menu.LinuxSettings.EnableHiDpi.Title" xml:space="preserve">
+    <value>HiDPI 顯示器縮放支援</value>
+  </data>
+  <data name="Menu.LinuxSettings.EnvironmentVariables.Description" xml:space="preserve">
+    <value>傳遞給 Wine 的其他環境變數。</value>
+  </data>
+  <data name="Menu.LinuxSettings.EnvironmentVariables.Title" xml:space="preserve">
+    <value>環境變數</value>
+  </data>
+  <data name="Menu.LinuxSettings.FailedToStartWineCfg" xml:space="preserve">
+    <value>無法啟動 winecfg：{0}</value>
+  </data>
+  <data name="Menu.LinuxSettings.ForceLegacyOpenGL.Description" xml:space="preserve">
+    <value>覆寫原生 Vulkan 子系統，改為回退至舊版的 OpenGL 佈局管線。</value>
+  </data>
+  <data name="Menu.LinuxSettings.ForceLegacyOpenGL.Title" xml:space="preserve">
+    <value>強制使用傳統 OpenGL 渲染</value>
+  </data>
+  <data name="Menu.LinuxSettings.GameMode.Description" xml:space="preserve">
+    <value>若系統支援，請套用系統優化設定（需啟用 gamemoded）。</value>
+  </data>
+  <data name="Menu.LinuxSettings.GameMode.Title" xml:space="preserve">
+    <value>遊戲模式</value>
+  </data>
+  <data name="Menu.LinuxSettings.GraphicsRenderer.Description" xml:space="preserve">
+    <value>在 Wine 環境下，為 Studio 選取渲染後端。</value>
+  </data>
+  <data name="Menu.LinuxSettings.GraphicsRenderer.Title" xml:space="preserve">
+    <value>圖形渲染器</value>
+  </data>
+  <data name="Menu.LinuxSettings.LauncherCommand.Description" xml:space="preserve">
+    <value>將 Studio 指令進行封裝（例如：gamescope -- %command%）</value>
+  </data>
+  <data name="Menu.LinuxSettings.LauncherCommand.Title" xml:space="preserve">
+    <value>啟動程式指令</value>
+  </data>
+  <data name="Menu.LinuxSettings.ResolutionPlaceholder" xml:space="preserve">
+    <value>例如 1920x1080</value>
+  </data>
+  <data name="Menu.LinuxSettings.Title" xml:space="preserve">
+    <value>Linux 設定</value>
+  </data>
+  <data name="Menu.LinuxSettings.TouchInputMode.Description" xml:space="preserve">
+    <value>啟用或停用觸控式顯示器硬體的行為處理設定檔。</value>
+  </data>
+  <data name="Menu.LinuxSettings.TouchInputMode.Title" xml:space="preserve">
+    <value>觸控輸入模式</value>
+  </data>
+  <data name="Menu.LinuxSettings.UseConsoleExperience.Description" xml:space="preserve">
+    <value>強制將現代電視／遊戲主機客戶端佈局儀表板系統套用至桌面介面情境中。</value>
+  </data>
+  <data name="Menu.LinuxSettings.UseConsoleExperience.Title" xml:space="preserve">
+    <value>使用主控台體驗</value>
+  </data>
+  <data name="Menu.LinuxSettings.Variable" xml:space="preserve">
+    <value>變數</value>
+  </data>
+  <data name="Menu.LinuxSettings.VirtualDesktops.Description" xml:space="preserve">
+    <value>為每個實例建立一個獨立的視窗</value>
+  </data>
+  <data name="Menu.LinuxSettings.VirtualDesktops.Title" xml:space="preserve">
+    <value>虛擬桌面</value>
+  </data>
+  <data name="Menu.LinuxSettings.WebPages.Description" xml:space="preserve">
+    <value>用於某些使用者介面元件及登入功能</value>
+  </data>
+  <data name="Menu.LinuxSettings.WebPages.Title" xml:space="preserve">
+    <value>網頁</value>
+  </data>
+  <data name="Menu.LinuxSettings.WineBinaryNotFound" xml:space="preserve">
+    <value>找不到 Wine 二進位檔。請確認已安裝 Wine。</value>
+  </data>
+  <data name="Menu.Load" xml:space="preserve">
+    <value>載入</value>
+  </data>
+  <data name="Menu.ManualLogin.EnterCookie" xml:space="preserve">
+    <value>請輸入一個餅乾。</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.1" xml:space="preserve">
+    <value>在瀏覽器中開啟 Roblox.com 並登入</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.2" xml:space="preserve">
+    <value>按下 F12 鍵以開啟開發者工具</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.3" xml:space="preserve">
+    <value>點選「應用程式」分頁（Chrome）或「儲存空間」分頁（Firefox）</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.4" xml:space="preserve">
+    <value>展開「Cookies」，然後選取「https://www.roblox.com」</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.5" xml:space="preserve">
+    <value>找出「ROBLOSECURITY」這個 Cookie</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.6" xml:space="preserve">
+    <value>雙擊「值」欄位並將其複製</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.7" xml:space="preserve">
+    <value>請將該值貼上至上方方框中</value>
+  </data>
+  <data name="Menu.ManualLogin.InvalidCookie" xml:space="preserve">
+    <value>Cookie 無效。請檢查後再試一次。</value>
+  </data>
+  <data name="Menu.ManualLogin.PasteSecurity" xml:space="preserve">
+    <value>貼上您的 .ROBLOSECURITY cookie</value>
+  </data>
+  <data name="Menu.ManualLogin.Title" xml:space="preserve">
+    <value>手動登入</value>
+  </data>
+  <data name="Menu.ModGenerator.AddStop" xml:space="preserve">
+    <value>添加顏色</value>
+  </data>
+  <data name="Menu.ModGenerator.AppliedModifications" xml:space="preserve">
+    <value>已成功套用修改（{0} 個檔案）。</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyCursor" xml:space="preserve">
+    <value>套用至游標</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyEmoteWheel" xml:space="preserve">
+    <value>套用至表情輪盤</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyShiftlock" xml:space="preserve">
+    <value>申請加入 Shiftlock</value>
+  </data>
+  <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
+    <value>數值越高，品質越好，但所需時間也越長；最大值為 512，預設值為 32。</value>
+  </data>
+  <data name="Menu.ModGenerator.Cancelled" xml:space="preserve">
+    <value>模組生成已取消。</value>
+  </data>
+  <data name="Menu.ModGenerator.CleaningUp" xml:space="preserve">
+    <value>正在清理中……</value>
+  </data>
+  <data name="Menu.ModGenerator.CustomModName" xml:space="preserve">
+    <value>模組名稱（可選）</value>
+  </data>
+  <data name="Menu.ModGenerator.CustomSpinner" xml:space="preserve">
+    <value>自訂旋轉輪（可選）</value>
+  </data>
+  <data name="Menu.ModGenerator.Description" xml:space="preserve">
+    <value>只需單擊一下，即可輕鬆生成模組。</value>
+  </data>
+  <data name="Menu.ModGenerator.DontColorPlay" xml:space="preserve">
+    <value>「勿上色」圖示</value>
+  </data>
+  <data name="Menu.ModGenerator.Downnloading" xml:space="preserve">
+    <value>正在下載所需的資源...</value>
+  </data>
+  <data name="Menu.ModGenerator.Extracting" xml:space="preserve">
+    <value>正在解壓縮檔案...</value>
+  </data>
+  <data name="Menu.ModGenerator.FailedPreview" xml:space="preserve">
+    <value>無法載入預覽字型。</value>
+  </data>
+  <data name="Menu.ModGenerator.IconSet" xml:space="preserve">
+    <value>圖示集：</value>
+  </data>
+  <data name="Menu.ModGenerator.IncludeModification" xml:space="preserve">
+    <value>新增至「我的模組」</value>
+  </data>
+  <data name="Menu.ModGenerator.Packaging" xml:space="preserve">
+    <value>包裝……</value>
+  </data>
+  <data name="Menu.ModGenerator.ReadyToGenerate" xml:space="preserve">
+    <value>準備好生成模組了嗎</value>
+  </data>
+  <data name="Menu.ModGenerator.RecoloringFonts" xml:space="preserve">
+    <value>重新設定字型顏色...</value>
+  </data>
+  <data name="Menu.ModGenerator.RecoloringPNGS" xml:space="preserve">
+    <value>正在重新上色圖片...</value>
+  </data>
+  <data name="Menu.ModGenerator.RobloxIcon" xml:space="preserve">
+    <value>Roblox 圖示（可選）</value>
+  </data>
+  <data name="Menu.ModGenerator.SavedTo" xml:space="preserve">
+    <value>已儲存至 {0}</value>
+  </data>
+  <data name="Menu.ModGenerator.Starting" xml:space="preserve">
+    <value>開始生成模組...</value>
+  </data>
+  <data name="Menu.ModGenerator.StylePreview" xml:space="preserve">
+    <value>樣式預覽</value>
+  </data>
+  <data name="Menu.ModGenerator.Title" xml:space="preserve">
+    <value>模組產生器</value>
+  </data>
+  <data name="Menu.ModGeneratorName.Exists" xml:space="preserve">
+    <value>已經有同名的模組了。請選擇另一個名稱。</value>
+  </data>
+  <data name="Menu.ModGeneratorName.Invalid" xml:space="preserve">
+    <value>資料夾名稱包含無效字元。</value>
+  </data>
+  <data name="Menu.Mods.AddNewMod" xml:space="preserve">
+    <value>新增模組</value>
+  </data>
+  <data name="Menu.Mods.AlreadyExist" xml:space="preserve">
+    <value>已經存在一個名為「{0}」的模組。</value>
+  </data>
+  <data name="Menu.Mods.DeleteMod" xml:space="preserve">
+    <value>要永久刪除「{0}」嗎？</value>
+  </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
-    <value>管理並啟用Roblox用戶端模組。</value>
+    <value>管理並套用檔案修改檔。</value>
   </data>
-  <data name="Menu.Mods.Help.Description" xml:space="preserve">
-    <value>查看關於如何管理和創造模組的資訊。</value>
-    <comment>Title is Common.Help</comment>
+  <data name="Menu.Mods.DragOverlay" xml:space="preserve">
+    <value>📦 拖放以匯入 ZIP 檔案／資料夾</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Choose" xml:space="preserve">
-    <value>選擇字體...</value>
+  <data name="Menu.Mods.FolderDosentExist" xml:space="preserve">
+    <value>「{0}」的資料夾已不存在。</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Description" xml:space="preserve">
-    <value>字體大小可在 “引擎設定” 中進行調整。</value>
+  <data name="Menu.Mods.ImportFolder" xml:space="preserve">
+    <value>匯入資料夾</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Invalid" xml:space="preserve">
-    <value>你選擇的文件不是一個有效的字體文件。</value>
+  <data name="Menu.Mods.ImportZIP" xml:space="preserve">
+    <value>匯入 ZIP 檔案</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Remove" xml:space="preserve">
-    <value>移除已套用的字體</value>
+  <data name="Menu.Mods.Imported" xml:space="preserve">
+    <value>模組「{0}」已成功匯入。</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Title" xml:space="preserve">
-    <value>使用自訂字體</value>
+  <data name="Menu.Mods.InfoBar" xml:space="preserve">
+    <value>透過拖曳模組或直接匯入來導入模組；優先級較低的模組會最後套用，藉此避免與其他模組發生衝突。</value>
   </data>
-  <data name="Menu.Mods.OpenModsFolder.Description" xml:space="preserve">
-    <value>在這管理Roblox自訂模組。</value>
+  <data name="Menu.Mods.InvalidFolderName" xml:space="preserve">
+    <value>資料夾名稱無效。</value>
   </data>
-  <data name="Menu.Mods.OpenModsFolder.Title" xml:space="preserve">
-    <value>開啟模組資料夾</value>
+  <data name="Menu.Mods.InvalidModFolders" xml:space="preserve">
+    <value>所選來源不包含有效的模組結構。
+它必須包含以下至少一個資料夾：content、ExtraContent、PlatformContent。</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Description" xml:space="preserve">
-    <value>選擇Roblox應使用表情符號的類型。</value>
+  <data name="Menu.Mods.NoneInstalled" xml:space="preserve">
+    <value>未安裝任何模組。</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Title" xml:space="preserve">
-    <value>首選表情符號類型</value>
+  <data name="Menu.Mods.Preview.Failed" xml:space="preserve">
+    <value>無法載入預覽：{0}</value>
   </data>
-  <data name="Menu.Mods.Presets.MouseCursor.Description" xml:space="preserve">
-    <value>選擇兩種不同的經典鼠標風格。</value>
+  <data name="Menu.Mods.Preview.Font.Preview" xml:space="preserve">
+    <value>字型預覽</value>
   </data>
-  <data name="Menu.Mods.Presets.MouseCursor.Title" xml:space="preserve">
-    <value>滑鼠游標</value>
+  <data name="Menu.Mods.Preview.FontVariant" xml:space="preserve">
+    <value>字型變體：</value>
   </data>
-  <data name="Menu.Mods.Presets.OldAvatarEditor.Description" xml:space="preserve">
-    <value>在Roblox應用程式中使用2020年之前舊版本的角色編輯器背景。</value>
+  <data name="Menu.Mods.Preview.Loaded" xml:space="preserve">
+    <value>預覽已載入</value>
   </data>
-  <data name="Menu.Mods.Presets.OldAvatarEditor.Title" xml:space="preserve">
-    <value>使用舊的角色編輯器的背景</value>
+  <data name="Menu.Mods.Preview.Loading" xml:space="preserve">
+    <value>正在載入字型預覽...</value>
   </data>
-  <data name="Menu.Mods.Presets.OldCharacterSounds.Description" xml:space="preserve">
-    <value>大致還原在2014 年之前使用的角色音效。</value>
+  <data name="Menu.Mods.Preview.Loading.Glyphs" xml:space="preserve">
+    <value>正在載入字形...</value>
   </data>
-  <data name="Menu.Mods.Presets.OldCharacterSounds.Title" xml:space="preserve">
-    <value>模擬經典角色音效。</value>
+  <data name="Menu.Mods.Preview.LoadingFont" xml:space="preserve">
+    <value>正在載入字型：{0}...</value>
   </data>
-  <data name="Menu.Mods.Presets.OldDeathSound.Description" xml:space="preserve">
-    <value>把之前的"Oof"死亡音效帶回來。</value>
+  <data name="Menu.Mods.Preview.NoColor" xml:space="preserve">
+    <value>未在此模組中找到任何顏色資訊</value>
   </data>
-  <data name="Menu.Mods.Presets.OldDeathSound.Title" xml:space="preserve">
-    <value>使用舊版死亡音效</value>
+  <data name="Menu.Mods.SelectedModAction" xml:space="preserve">
+    <value>選定的模組動作</value>
   </data>
   <data name="Menu.Mods.Title" xml:space="preserve">
-    <value>模組</value>
+    <value>我的模組</value>
   </data>
-  <data name="Menu.MoreInfo" xml:space="preserve">
-    <value>點擊以獲得此設定的更多資訊。</value>
+  <data name="Menu.Mods.UnsupportedFile" xml:space="preserve">
+    <value>不支援的檔案類型或路徑：{0}</value>
+  </data>
+  <data name="Menu.PresetMods.CursorSet.Apply" xml:space="preserve">
+    <value>套用設定</value>
+  </data>
+  <data name="Menu.PresetMods.CursorSet.Export" xml:space="preserve">
+    <value>匯出集</value>
+  </data>
+  <data name="Menu.PresetMods.CursorSet.Fetch" xml:space="preserve">
+    <value>取回 設定</value>
+  </data>
+  <data name="Menu.PresetMods.CursorSet.Import" xml:space="preserve">
+    <value>匯入集</value>
+  </data>
+  <data name="Menu.PresetMods.CursorSet.None" xml:space="preserve">
+    <value>未選取任何自訂游標集。</value>
+  </data>
+  <data name="Menu.PresetMods.Description" xml:space="preserve">
+    <value>官方內建模組。</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CardExpander.CustomCursors.Descriptions" xml:space="preserve">
+    <value>管理游標所需的一切功能。</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CardExpander.CustomCursors.Title" xml:space="preserve">
+    <value>自訂游標功能</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CompatibilitySettings.Description" xml:space="preserve">
+    <value>設定應用程式參數，例如 DPI 縮放行為和 [全螢幕最佳化]({0})。</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CompatibilitySettings.Title" xml:space="preserve">
+    <value>管理相容性設定</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CustomCursor.Choose" xml:space="preserve">
+    <value>選擇游標...</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CustomCursor.Description" xml:space="preserve">
+    <value>在 Roblox 中使用您自己的滑鼠游標。</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CustomCursor.Remove" xml:space="preserve">
+    <value>移除自訂游標</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CustomCursor.Title" xml:space="preserve">
+    <value>自訂游標</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CustomCursorSet.Description" xml:space="preserve">
+    <value>請預先準備好多組游標，以便隨時使用。</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CustomCursorSet.Title" xml:space="preserve">
+    <value>自訂游標組</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Choose" xml:space="preserve">
+    <value>選擇聲音...</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Description" xml:space="preserve">
+    <value>將死亡音效替換為您自選的音訊。</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Remove" xml:space="preserve">
+    <value>移除自訂死亡音效</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Title" xml:space="preserve">
+    <value>自訂死亡音效</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CustomFont.Choose" xml:space="preserve">
+    <value>選擇字型...</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CustomFont.Description" xml:space="preserve">
+    <value>在 Roblox 中設定所選的自訂字型。</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CustomFont.Remove" xml:space="preserve">
+    <value>移除已套用的字型</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CustomFont.Title" xml:space="preserve">
+    <value>自訂遊戲字型</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Choose" xml:space="preserve">
+    <value>選擇 ShiftLock...</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Description" xml:space="preserve">
+    <value>在 Roblox 中使用您自己的 Shiftlock。</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Remove" xml:space="preserve">
+    <value>移除自訂 Shiftlock</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Title" xml:space="preserve">
+    <value>客製化 Shiftlock</value>
+  </data>
+  <data name="Menu.PresetMods.OpenModsFolder" xml:space="preserve">
+    <value>開啟「預設模組」資料夾</value>
+  </data>
+  <data name="Menu.PresetMods.Presets.EmojiType.Description" xml:space="preserve">
+    <value>請選擇 Roblox 應使用哪種類型的表情符號。</value>
+  </data>
+  <data name="Menu.PresetMods.Presets.EmojiType.Error" xml:space="preserve">
+    <value>目前無法套用此表情符號模組。</value>
+  </data>
+  <data name="Menu.PresetMods.Presets.EmojiType.Title" xml:space="preserve">
+    <value>首選的表情符號類型</value>
+  </data>
+  <data name="Menu.PresetMods.Presets.MouseCursor.Description" xml:space="preserve">
+    <value>從多個 Roblox 游標中選擇其一。</value>
+  </data>
+  <data name="Menu.PresetMods.Presets.MouseCursor.Title" xml:space="preserve">
+    <value>滑鼠游標</value>
+  </data>
+  <data name="Menu.PresetMods.Presets.OldAvatarEditor.Description" xml:space="preserve">
+    <value>請恢復 2020 年之前 Roblox 應用程式中使用的舊版虛擬角色編輯器背景。</value>
+  </data>
+  <data name="Menu.PresetMods.Presets.OldAvatarEditor.Title" xml:space="preserve">
+    <value>使用舊版頭像編輯器的背景</value>
+  </data>
+  <data name="Menu.PresetMods.Title" xml:space="preserve">
+    <value>預設模組</value>
+  </data>
+  <data name="Menu.QuickPlay.AccountManagerNotAvailable" xml:space="preserve">
+    <value>客戶經理目前無法接聽。</value>
+  </data>
+  <data name="Menu.QuickPlay.Active" xml:space="preserve">
+    <value>有效</value>
+  </data>
+  <data name="Menu.QuickPlay.AvailableSubplaces" xml:space="preserve">
+    <value>可用的子位置</value>
+  </data>
+  <data name="Menu.QuickPlay.CheckingServers" xml:space="preserve">
+    <value>正在檢查伺服器...</value>
+  </data>
+  <data name="Menu.QuickPlay.Description" xml:space="preserve">
+    <value>回到您最近遊玩的遊戲。</value>
+  </data>
+  <data name="Menu.QuickPlay.FetchingGameInfo" xml:space="preserve">
+    <value>擷取遊戲資訊</value>
+  </data>
+  <data name="Menu.QuickPlay.FindingBestServer" xml:space="preserve">
+    <value>正在為您的地區尋找最佳伺服器...</value>
+  </data>
+  <data name="Menu.QuickPlay.JoinBestRegion" xml:space="preserve">
+    <value>加入「最佳地區」</value>
+  </data>
+  <data name="Menu.QuickPlay.JoinGame" xml:space="preserve">
+    <value>加入遊戲</value>
+  </data>
+  <data name="Menu.QuickPlay.Latest" xml:space="preserve">
+    <value>最新消息</value>
+  </data>
+  <data name="Menu.QuickPlay.LoadingPrivateServers" xml:space="preserve">
+    <value>正在載入私人伺服器...</value>
+  </data>
+  <data name="Menu.QuickPlay.LoadingRecentGames" xml:space="preserve">
+    <value>正在載入最近的遊戲...</value>
+  </data>
+  <data name="Menu.QuickPlay.LoadingServers" xml:space="preserve">
+    <value>正在載入伺服器...</value>
+  </data>
+  <data name="Menu.QuickPlay.LoadingSubplaces" xml:space="preserve">
+    <value>正在載入子位置...</value>
+  </data>
+  <data name="Menu.QuickPlay.NoPrivateServersFound" xml:space="preserve">
+    <value>未找到任何私人伺服器</value>
+  </data>
+  <data name="Menu.QuickPlay.NoSuitableServer" xml:space="preserve">
+    <value>未找到合適的伺服器。</value>
+  </data>
+  <data name="Menu.QuickPlay.Players" xml:space="preserve">
+    <value>球員</value>
+  </data>
+  <data name="Menu.QuickPlay.PleaseSelectAccount" xml:space="preserve">
+    <value>請先選擇一個帳戶。</value>
+  </data>
+  <data name="Menu.QuickPlay.PrivateServers" xml:space="preserve">
+    <value>私人伺服器</value>
+  </data>
+  <data name="Menu.QuickPlay.RejoinLastServer" xml:space="preserve">
+    <value>重新加入最後一個伺服器</value>
+  </data>
+  <data name="Menu.QuickPlay.RobloxServers" xml:space="preserve">
+    <value>Roblox 伺服器</value>
+  </data>
+  <data name="Menu.QuickPlay.SessionHistory" xml:space="preserve">
+    <value>會話記錄</value>
+  </data>
+  <data name="Menu.QuickPlay.Title" xml:space="preserve">
+    <value>快速遊玩</value>
+  </data>
+  <data name="Menu.QuickPlay.Tracked" xml:space="preserve">
+    <value>已追蹤</value>
+  </data>
+  <data name="Menu.QuickPlay.TrackedServers" xml:space="preserve">
+    <value>已追蹤的伺服器 ({0})</value>
+  </data>
+  <data name="Menu.QuickPlay.UnableToAuthenticate" xml:space="preserve">
+    <value>無法驗證身分。請重新登入。</value>
+  </data>
+  <data name="Menu.QuickPlay.UnknownGame" xml:space="preserve">
+    <value>未知遊戲</value>
+  </data>
+  <data name="Menu.QuickPlay.ViewSubplaces" xml:space="preserve">
+    <value>檢視子位置</value>
+  </data>
+  <data name="Menu.QuickPlay.VisitPage" xml:space="preserve">
+    <value>瀏覽頁面</value>
+  </data>
+  <data name="Menu.QuickPlay.Visits" xml:space="preserve">
+    <value>造訪次數</value>
+  </data>
+  <data name="Menu.QuickSignIn.Cancelled" xml:space="preserve">
+    <value>登入已取消。</value>
+  </data>
+  <data name="Menu.QuickSignIn.Complete" xml:space="preserve">
+    <value>登入完成！正在關閉...</value>
+  </data>
+  <data name="Menu.QuickSignIn.Instruction" xml:space="preserve">
+    <value>請複製這段程式碼，並將其貼到 [快速登入頁面]({0}) 中。</value>
+  </data>
+  <data name="Menu.QuickSignIn.Linked" xml:space="preserve">
+    <value>裝置已連結 - 正在核准登入...</value>
+  </data>
+  <data name="Menu.QuickSignIn.TimedOut" xml:space="preserve">
+    <value>登入已超時。</value>
+  </data>
+  <data name="Menu.QuickSignIn.Waitting" xml:space="preserve">
+    <value>正在等待快速登入中...
+登入完成後，應用程式將關閉此視窗。</value>
+  </data>
+  <data name="Menu.RegionSelector.EnterPlaceId" xml:space="preserve">
+    <value>輸入地點 ID，然後點擊「搜尋」以查看伺服器。</value>
+  </data>
+  <data name="Menu.RegionSelector.FailedToLoadDatacenters" xml:space="preserve">
+    <value>無法載入資料中心。</value>
+  </data>
+  <data name="Menu.RegionSelector.FindGame" xml:space="preserve">
+    <value>請輸入地點 ID 或遊戲名稱...</value>
+  </data>
+  <data name="Menu.RegionSelector.ID" xml:space="preserve">
+    <value>識別碼：{0}</value>
+  </data>
+  <data name="Menu.RegionSelector.Join" xml:space="preserve">
+    <value>加入</value>
+  </data>
+  <data name="Menu.RegionSelector.LargeServers" xml:space="preserve">
+    <value>大型伺服器</value>
+  </data>
+  <data name="Menu.RegionSelector.LoadMore" xml:space="preserve">
+    <value>載入更多</value>
+  </data>
+  <data name="Menu.RegionSelector.LoadedRegions" xml:space="preserve">
+    <value>已載入 {0} 個區域。</value>
+  </data>
+  <data name="Menu.RegionSelector.LoadingDatacenters" xml:space="preserve">
+    <value>正在載入資料中心...</value>
+  </data>
+  <data name="Menu.RegionSelector.LoginRequired" xml:space="preserve">
+    <value>請透過「帳戶管理員」登入，或啟用「Froststrap 帳戶權限」，或向我們的 Discord 伺服器回報此問題以進行使用。</value>
+  </data>
+  <data name="Menu.RegionSelector.NoPublicServers" xml:space="preserve">
+    <value>未找到任何公開伺服器。</value>
+  </data>
+  <data name="Menu.RegionSelector.NoServersForRegion" xml:space="preserve">
+    <value>未找到指定地區的伺服器。</value>
+  </data>
+  <data name="Menu.RegionSelector.Players" xml:space="preserve">
+    <value>球員</value>
+  </data>
+  <data name="Menu.RegionSelector.PleaseSelectRegion" xml:space="preserve">
+    <value>請先選擇一個地區。</value>
+  </data>
+  <data name="Menu.RegionSelector.Region" xml:space="preserve">
+    <value>地區：</value>
+  </data>
+  <data name="Menu.RegionSelector.RegionHeader" xml:space="preserve">
+    <value>地區</value>
+  </data>
+  <data name="Menu.RegionSelector.SearchingServers" xml:space="preserve">
+    <value>正在搜尋伺服器...</value>
+  </data>
+  <data name="Menu.RegionSelector.ServerSize" xml:space="preserve">
+    <value>伺服器大小：</value>
+  </data>
+  <data name="Menu.RegionSelector.SmallServers" xml:space="preserve">
+    <value>小型伺服器</value>
+  </data>
+  <data name="Menu.RegionSelector.Title" xml:space="preserve">
+    <value>地區選擇器</value>
+  </data>
+  <data name="Menu.Restart" xml:space="preserve">
+    <value>重新啟動</value>
   </data>
   <data name="Menu.Save" xml:space="preserve">
     <value>儲存</value>
   </data>
+  <data name="Menu.SearchBar.AutoJoin" xml:space="preserve">
+    <value>自動模式：正在為您尋找最佳區域...</value>
+  </data>
+  <data name="Menu.SearchBar.JoinError" xml:space="preserve">
+    <value>無法加入遊戲：{0}</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningBest" xml:space="preserve">
+    <value>正在連線至最佳伺服器...</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningGame" xml:space="preserve">
+    <value>加入遊戲</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningName" xml:space="preserve">
+    <value>透過快速遊玩加入 {0}。</value>
+  </data>
+  <data name="Menu.SearchBar.NoSuitableServer" xml:space="preserve">
+    <value>找不到合適的伺服器。</value>
+  </data>
+  <data name="Menu.SearchBar.SearchSomething" xml:space="preserve">
+    <value>搜尋某個內容，它可能會出現在這裡……</value>
+  </data>
+  <data name="Menu.SearchBar.ServerFound" xml:space="preserve">
+    <value>已找到伺服器</value>
+  </data>
   <data name="Menu.SettingsSaved.Message" xml:space="preserve">
-    <value>新的設定將會在你下次開啟 Roblox 時生效。</value>
+    <value>這些變更將在您下次啟動 Roblox 時生效。</value>
   </data>
   <data name="Menu.SettingsSaved.Title" xml:space="preserve">
-    <value>設定已保存！</value>
+    <value>設定已儲存！</value>
   </data>
-  <data name="Menu.Title" xml:space="preserve">
-    <value>Froststrap 設定</value>
+  <data name="Menu.Shortcut.GameShortcut.Description" xml:space="preserve">
+    <value>這讓您可以建立捷徑，以便快速加入特定的遊戲。</value>
   </data>
-  <data name="Dialog.LanguageSelector.Header" xml:space="preserve">
-    <value>選擇啟動器語言</value>
-  </data>
-  <data name="Dialog.LanguageSelector.Subtext" xml:space="preserve">
-    <value>在繼續安裝之前，請選擇一種語言。</value>
-  </data>
-  <data name="Menu.Appearance.Language.Title" xml:space="preserve">
-    <value>語言</value>
-  </data>
-  <data name="Menu.Appearance.Language.Description" xml:space="preserve">
-    <value>重新啟動Froststrap以讓變更生效。</value>
-  </data>
-  <data name="Menu.Behaviour.ForceRobloxLanguage.Title" xml:space="preserve">
-    <value>允許使用Roblox官方不支援的語言</value>
-  </data>
-  <data name="Menu.Behaviour.ForceRobloxLanguage.Description" xml:space="preserve">
-    <value>只適用於從Roblox網站啟動的遊戲。</value>
-  </data>
-  <data name="Enums.FlagPresets.InGameMenuVersion.V4Chrome" xml:space="preserve">
-    <value>2023（V4 + 最新UI）</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.Categories.Rendering" xml:space="preserve">
-    <value>渲染和畫質</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.Categories.UserInterface" xml:space="preserve">
-    <value>使用者介面與布局</value>
-  </data>
-  <data name="Menu.FastFlags.ManagerEnabled.Title" xml:space="preserve">
-    <value>允許Froststrap管理Fast Flags</value>
-  </data>
-  <data name="Menu.FastFlags.ManagerEnabled.Description" xml:space="preserve">
-    <value>禁用此功能將阻止任何在此設定的內容應用到Roblox。</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.MSAA.Title" xml:space="preserve">
-    <value>反鋸齒等級（MSAA）</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.DisablePostFX.Title" xml:space="preserve">
-    <value>禁用後期處理效果</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.FullscreenTitlebar.Title" xml:space="preserve">
-    <value>關閉視窗標題列</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.FullscreenTitlebar.Description" xml:space="preserve">
-    <value>阻止在滑鼠移上頂部的時候出現標題列。</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.TextureQuality.Title" xml:space="preserve">
-    <value>紋理品質</value>
-  </data>
-  <data name="Enums.FlagPresets.TextureQuality.Level0" xml:space="preserve">
-    <value>等級 0（最低）</value>
-  </data>
-  <data name="Enums.FlagPresets.TextureQuality.Level1" xml:space="preserve">
-    <value>等級 1</value>
-  </data>
-  <data name="Enums.FlagPresets.TextureQuality.Level2" xml:space="preserve">
-    <value>等級 2</value>
-  </data>
-  <data name="Enums.FlagPresets.TextureQuality.Level3" xml:space="preserve">
-    <value>等級 3（最高）</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.DisablePlayerShadows.Title" xml:space="preserve">
-    <value>關閉玩家陰影</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.FontPadding.Title" xml:space="preserve">
-    <value>字體大小</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.FontPadding.Description" xml:space="preserve">
-    <value>預設值為1。如果使用自訂字體，可進行調整。</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.DisableTerrainTextures.Title" xml:space="preserve">
-    <value>關閉地形材質</value>
-  </data>
-  <data name="Dialog.Connectivity.UnableToDownload" xml:space="preserve">
-    <value>Froststrap無法下載Roblox</value>
-  </data>
-  <data name="Dialog.Connectivity.UnableToDownloadReason" xml:space="preserve">
-    <value>目前無法下載Roblox。請閱讀此說明頁面以獲取更多資訊：{0}</value>
-    <comment>{0} is a URL</comment>
-  </data>
-  <data name="Common.ImportFromFile" xml:space="preserve">
-    <value>從文件匯入</value>
-  </data>
-  <data name="FileTypes.JSONFiles" xml:space="preserve">
-    <value>JSON 文件</value>
-    <comment>Shown in the open file dialog, where the file type selection dropdown is, e.g. "JSON files (*.json)"</comment>
-  </data>
-  <data name="Menu.FastFlagEditor.InvalidBoolValue" xml:space="preserve">
-    <value>'{0}'的條目無效；內容必須是布林值 ('True' 或 'False')</value>
-    <comment>Do not translate 'True' and 'False', those must stay in English</comment>
-  </data>
-  <data name="Menu.FastFlagEditor.InvalidNumberValue" xml:space="preserve">
-    <value>'{0}'的條目無效；內容必須是數字</value>
-  </data>
-  <data name="Logger.NoWriteMode" xml:space="preserve">
-    <value>這次啟動的日誌文件沒有被寫入因為Froststrap未能寫入至在'{0}'的文件夾</value>
-  </data>
-  <data name="Common.Default" xml:space="preserve">
-    <value>預設</value>
-  </data>
-  <data name="Common.Automatic" xml:space="preserve">
-    <value>自動</value>
-  </data>
-  <data name="Common.SystemDefault" xml:space="preserve">
-    <value>系統預設</value>
-  </data>
-  <data name="Menu.FastFlagEditor.InvalidPlaceFilter" xml:space="preserve">
-    <value>'{0}' 的條件無效，因為位置過濾器的條件格式不正確。</value>
-  </data>
-  <data name="Installer.Title" xml:space="preserve">
-    <value>Froststrap 安裝程式</value>
-  </data>
-  <data name="Installer.Welcome.Title" xml:space="preserve">
-    <value>歡迎</value>
-  </data>
-  <data name="Installer.Install.Title" xml:space="preserve">
-    <value>安裝</value>
-    <comment>Refers to "Install" as a verb</comment>
-  </data>
-  <data name="Installer.Completion.Title" xml:space="preserve">
-    <value>完成</value>
-  </data>
-  <data name="Common.Navigation.Back" xml:space="preserve">
-    <value>返回</value>
-  </data>
-  <data name="Common.Navigation.Next" xml:space="preserve">
-    <value>下一個</value>
-  </data>
-  <data name="Installer.Welcome.MainText" xml:space="preserve">
-    <value>感謝您下載 Froststrap。 
-
- {0} 或 {1} 都是 Froststrap 的官方網站。請確保您的 Froststrap 都是從官方來源下載來的。
-
-安裝過程快速簡單，安裝後您將能夠配置 Froststrap 的任何設定。</value>
-    <comment>{0} and {1} are URLs</comment>
-  </data>
-  <data name="Installer.Welcome.NextToContinue" xml:space="preserve">
-    <value>請點擊 “下一步” 以繼續。</value>
-  </data>
-  <data name="Installer.Welcome.UpdateNotice" xml:space="preserve">
-    <value>您正在嘗試安裝 Froststrap 的 {0} 版本，但是最新版本是 {1} 。您想下載嗎？</value>
-  </data>
-  <data name="Installer.Install.Location.Title" xml:space="preserve">
-    <value>選擇安裝位置</value>
-  </data>
-  <data name="Installer.Install.Location.Text" xml:space="preserve">
-    <value>Roblox 也將安裝在此路徑中。如果您希望將所有遊戲安裝到其他的硬碟，請更改此設定。否則，建議您保持不變。</value>
-  </data>
-  <data name="Installer.Install.Location.DataFound" xml:space="preserve">
-    <value>發現現有數據。您的模組和設定將被恢復。</value>
-  </data>
-  <data name="Common.Shortcuts" xml:space="preserve">
-    <value>捷徑</value>
-  </data>
-  <data name="Common.Shortcuts.Desktop" xml:space="preserve">
-    <value>桌面圖示</value>
-  </data>
-  <data name="Common.Shortcuts.StartMenu" xml:space="preserve">
-    <value>開始功能表圖示</value>
-  </data>
-  <data name="Installer.Completion.Text" xml:space="preserve">
-    <value>Froststrap 已成功安裝。
-
-Roblox 尚未安裝，這將在您第一次使用 Froststrap 啟動時進行。在此之前，您可能想先配置 Froststrap 的設定。
-
-另外，請避免使用「Roblox Player」快捷方式來啟動 Roblox，因為 Froststrap 不會與 Roblox 一起啟動。如果您在從網站啟動時看不到 Froststrap 隨同 Roblox 一起啟動，請從桌面上使用 Froststrap 啟動 Roblox 以解決此問題。
-
-請問您想做什麼？</value>
-  </data>
-  <data name="Installer.Completion.Settings.Title" xml:space="preserve">
-    <value>更改 Froststrap 的設定</value>
-  </data>
-  <data name="Installer.Completion.Settings.Description" xml:space="preserve">
-    <value>調整它所提供的所有功能</value>
-  </data>
-  <data name="Installer.Completion.Launch.Title" xml:space="preserve">
-    <value>安裝並啟動 Roblox</value>
-  </data>
-  <data name="Installer.Completion.Launch.Description" xml:space="preserve">
-    <value>一切完成後將帶您進入桌面應用程式</value>
-  </data>
-  <data name="Uninstaller.Title" xml:space="preserve">
-    <value>解除安裝 Froststrap</value>
-  </data>
-  <data name="Uninstaller.Text" xml:space="preserve">
-    <value>解除安裝將從您的系統中刪除 Froststrap，並重新配置默認的 Roblox 啟動器。
-
-如果您是因為 Roblox 出現問題，想要解除安裝，請先閱讀 [此幫助頁面]({0})。
-
-解除安裝的過程可能無法刪除全部文件。 所以你可能需要手動清理 Froststrap 的殘留文件。
-
-Froststrap 安裝在 "{1}"。</value>
-  </data>
-  <data name="Uninstaller.KeepData.Label" xml:space="preserve">
-    <value>保留我的設定和模組</value>
-  </data>
-  <data name="Uninstaller.KeepData.Description" xml:space="preserve">
-    <value>它們將保存在 Froststrap 安裝的位置，並且會在重新安裝時自動恢復</value>
-  </data>
-  <data name="Uninstaller.Uninstall" xml:space="preserve">
-    <value>解除安裝</value>
-  </data>
-  <data name="LaunchMenu.LaunchRoblox" xml:space="preserve">
-    <value>啟動 Roblox</value>
-  </data>
-  <data name="LaunchMenu.ConfigureSettings" xml:space="preserve">
-    <value>更改設定</value>
-  </data>
-  <data name="LaunchMenu.Wiki.Title" xml:space="preserve">
-    <value>遇到問題了嗎？</value>
-  </data>
-  <data name="LaunchMenu.Wiki.Description" xml:space="preserve">
-    <value>查看 Wiki 以獲取幫助</value>
-  </data>
-  <data name="Bootstrapper.WebView2NotFound" xml:space="preserve">
-    <value>您目前未安裝 WebView2 執行階段。某些 Roblox 功能（例如桌面應用程式）在沒有它的情況下將無法正常運行。您想現在下載 WebView2 嗎？</value>
-  </data>
-  <data name="Dialog.CannotCreateShortcuts" xml:space="preserve">
-    <value>Froststrap 無法為桌面和開始功能表創建捷徑。請稍後通過設置創建捷徑。</value>
-  </data>
-  <data name="Dialog.Exception.Info.2.Alt" xml:space="preserve">
-    <value>請您首先在 [Froststrap Wiki]({0}) 查看這個問題是否已被修復。
-
-如果沒有，請向此分支的維護者報告此異常。請勿在 Froststrap 的 GitHub 上開 Issues，因為這是一個非官方的版本。</value>
-    <comment>"fork" in general means "a variation of" or "a different version of". You can alternatively write the first sentence as "...to the maintainers of this version."</comment>
-  </data>
-  <data name="Installer.Install.Shortcuts.Description" xml:space="preserve">
-    <value>這些是調出多選啟動菜單的一般快捷鍵。特定功能的快捷鍵可以在設定中稍後創建。</value>
+  <data name="Menu.Shortcuts.CreateShortcut" xml:space="preserve">
+    <value>建立捷徑</value>
   </data>
   <data name="Menu.Shortcuts.Description" xml:space="preserve">
-    <value>設定 Froststrap 的快速啟動方式。</value>
+    <value>設定如何輕鬆啟動 Froststrap。</value>
   </data>
-  <data name="Menu.Shortcuts.General.Title" xml:space="preserve">
-    <value>一般設定</value>
+  <data name="Menu.Shortcuts.ErrorCreatingShortcut" xml:space="preserve">
+    <value>建立捷徑時發生錯誤。</value>
   </data>
-  <data name="Menu.Shortcuts.General.Description" xml:space="preserve">
-    <value>這些是調出多選啟動選單的捷徑。</value>
+  <data name="Menu.Shortcuts.ExtractIcons.Description" xml:space="preserve">
+    <value>讓您能在捷徑中使用 Froststrap 提供的各式 Roblox 圖示。[查看操作方法。]({0})</value>
+  </data>
+  <data name="Menu.Shortcuts.ExtractIcons.Title" xml:space="preserve">
+    <value>將 Roblox 圖示解壓縮至資料夾</value>
+  </data>
+  <data name="Menu.Shortcuts.Function.Description" xml:space="preserve">
+    <value>建立捷徑，以便快速存取特定功能。這些捷徑都會放置在桌面上。</value>
   </data>
   <data name="Menu.Shortcuts.Function.Title" xml:space="preserve">
     <value>功能</value>
   </data>
-  <data name="Menu.Shortcuts.Function.Description" xml:space="preserve">
-    <value>創建捷徑以快速訪問特定功能。這些將會全部放置在桌面上。</value>
+  <data name="Menu.Shortcuts.Game" xml:space="preserve">
+    <value>遊戲 {0}</value>
   </data>
-  <data name="ContextMenu.ServerInformation.Notification.Title.Private" xml:space="preserve">
-    <value>已連接至私人伺服器</value>
+  <data name="Menu.Shortcuts.GameShortcut.Title" xml:space="preserve">
+    <value>遊戲快捷鍵</value>
   </data>
-  <data name="ContextMenu.ServerInformation.Notification.Title.Reserved" xml:space="preserve">
-    <value>已連接至後備伺服器</value>
+  <data name="Menu.Shortcuts.General.Description" xml:space="preserve">
+    <value>以下是可呼叫出多選項啟動選單的快捷鍵。</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Error" xml:space="preserve">
-    <value>表情符號暫時無法被套用。</value>
+  <data name="Menu.Shortcuts.General.Title" xml:space="preserve">
+    <value>總論</value>
   </data>
-  <data name="Dialog.AlreadyRunning.Installer" xml:space="preserve">
-    <value>請等待安裝完成。</value>
+  <data name="Menu.Shortcuts.NoGameSelected" xml:space="preserve">
+    <value>未選取遊戲</value>
   </data>
-  <data name="Dialog.AlreadyRunning.Uninstaller" xml:space="preserve">
-    <value>請等待解除安裝完成。</value>
+  <data name="Menu.Shortcuts.PrivateAccessCode" xml:space="preserve">
+    <value>私人存取碼</value>
   </data>
-  <data name="About.Title" xml:space="preserve">
-    <value>關於 Froststrap</value>
+  <data name="Menu.Shortcuts.Processing" xml:space="preserve">
+    <value>處理中...</value>
   </data>
-  <data name="About.Licenses.Title" xml:space="preserve">
-    <value>授權條款</value>
-    <comment>Referring to code licenses; see https://opensource.org/licenses for example</comment>
+  <data name="Menu.Shortcuts.Ready" xml:space="preserve">
+    <value>準備好了</value>
   </data>
-  <data name="About.Translators.Title" xml:space="preserve">
-    <value>翻譯人員</value>
+  <data name="Menu.Shortcuts.ReadyToCreate" xml:space="preserve">
+    <value>準備好開始創作了嗎</value>
   </data>
-  <data name="Menu.UnsavedChanges" xml:space="preserve">
-    <value>您有未儲存的變更。確定要在不儲存的情況下關閉嗎？</value>
+  <data name="Menu.Shortcuts.ReadyWithManualId" xml:space="preserve">
+    <value>已備妥手動識別碼。</value>
   </data>
-  <data name="InstallChecker.VersionLessThanInstalled" xml:space="preserve">
-    <value>您啟動的 Froststrap 版本比當前已安裝的版本舊。
-可能會發生問題，並且您的設定可能會被更改，請建議重新安裝。
-您確定要繼續嗎？</value>
+  <data name="Menu.Shortcuts.SearchForGame" xml:space="preserve">
+    <value>搜尋遊戲</value>
   </data>
-  <data name="Dialog.PlayerError.FailedLaunch" xml:space="preserve">
-    <value>Roblox 啟動失敗。</value>
+  <data name="Menu.Shortcuts.SelectGameFirst" xml:space="preserve">
+    <value>請先選擇一款遊戲。</value>
   </data>
-  <data name="Dialog.PlayerError.Crash" xml:space="preserve">
-    <value>Roblox 已崩潰。</value>
+  <data name="Menu.Shortcuts.ServerInstanceId" xml:space="preserve">
+    <value>伺服器執行個體 ID</value>
   </data>
-  <data name="Dialog.PlayerError.HelpInformation" xml:space="preserve">
-    <value>有關此錯誤發生的原因及解決方法，請參閱 [此幫助頁]({0})。
-
-請檢查 Roblox 是否能在 [原版啟動器]({1}) 中執行。
-如果不能，則這不是 Froststrap 的問題；如果可以，那麼請參閱幫助頁面以為您除錯。</value>
+  <data name="Menu.Shortcuts.ShortcutCreated" xml:space="preserve">
+    <value>已建立捷徑！</value>
   </data>
-  <data name="Common.NetworkError" xml:space="preserve">
-    <value>由於網絡錯誤，無法載入數據。</value>
-  </data>
-  <data name="Common.Loading" xml:space="preserve">
-    <value>正在載入，請稍等...</value>
-  </data>
-  <data name="About.Supporters.Title" xml:space="preserve">
-    <value>贊助者</value>
-  </data>
-  <data name="About.Supporters.Description" xml:space="preserve">
-    <value>這些是使用 Ko-fi 來支持 Froststrap 的贊助者們；在此由衷感謝每一個協助 Froststrap 發展的贊助者們！
-（在此處的人都按其總捐款額來排名）</value>
-  </data>
-  <data name="JsonManager.SettingsLoadFailed" xml:space="preserve">
-    <value>無法載入您的設置 。它們已被重設為默認設置。</value>
-  </data>
-  <data name="JsonManager.FastFlagsLoadFailed" xml:space="preserve">
-    <value>無法載入您的 Flast Flags 。它們已被重設為默認設置。</value>
-  </data>
-  <data name="ContextMenu.GameHistory.Title" xml:space="preserve">
-    <value>遊戲歷史</value>
-  </data>
-  <data name="ContextMenu.GameHistory.Rejoin" xml:space="preserve">
-    <value>重新加入</value>
-  </data>
-  <data name="ActivityWatcher.RichPresenceLoadFailed" xml:space="preserve">
-    <value>由於載入遊戲資訊時發生錯誤，您當前的遊戲將不會在您的 Discord 活動狀態上顯示。</value>
-  </data>
-  <data name="ContextMenu.GameHistory.Description" xml:space="preserve">
-    <value>遊戲歷史僅在您當前的 Roblox 工作階段中記錄下來。當您離開遊戲或在遊戲中傳送時，您所遊玩的遊戲將出現在這裡。並非所有伺服器都可以重新加入。</value>
-  </data>
-  <data name="ActivityWatcher.LocationQueryFailed" xml:space="preserve">
-    <value>無法查詢伺服器位置。您可能加入遊戲的速度太快了。</value>
-  </data>
-  <data name="Dialog.Connectivity.TryAgainLater" xml:space="preserve">
-    <value>請稍後再試。</value>
-  </data>
-  <data name="Dialog.Connectivity.RobloxUpgradeSkip" xml:space="preserve">
-    <value>此次啟動將不會檢查 Roblox 更新，對模組的更改將不會被套用。</value>
-  </data>
-  <data name="Dialog.Connectivity.RobloxUpgradeNeeded" xml:space="preserve">
-    <value>因為 Roblox 需要安裝或更新，Froststrap 無法繼續執行。</value>
-  </data>
-  <data name="Installer.Install.CannotOverwrite" xml:space="preserve">
-    <value>Froststrap 之前已安裝到此位置並且仍然存在，但安裝程式無法覆蓋舊的可執行文件。
-
-請手動刪除安裝位置中的 Froststrap.exe，或者嘗試重啟系統，然後再嘗試重新安裝。</value>
-  </data>
-  <data name="Common.NotAvailable" xml:space="preserve">
-    <value>無法使用</value>
-  </data>
-  <data name="Menu.Mods.Misc.CompatibilitySettings.Title" xml:space="preserve">
-    <value>管理相容性設定</value>
-  </data>
-  <data name="Menu.Mods.Misc.CompatibilitySettings.Description" xml:space="preserve">
-    <value>配置應用程式參數，例如 DPI 縮放行為和 [全螢幕最佳化]({0})。</value>
-  </data>
-  <data name="Common.RobloxNotInstalled" xml:space="preserve">
-    <value>Roblox 尚未安裝。請至少使用 Froststrap 啟動一次 Roblox，然後再嘗試使用此選項。</value>
-  </data>
-  <data name="Installer.ShouldCancel" xml:space="preserve">
-    <value>您確定要取消安裝嗎？</value>
-  </data>
-  <data name="Bootstrapper.JsonManagerSaveFailed" xml:space="preserve">
-    <value>無法儲存 {0}: {1}</value>
-  </data>
-  <data name="Dialog.IconLoadFailed" xml:space="preserve">
-    <value>無法加載所選擇的啟動器圖標。
-
-{0}</value>
-    <comment>{0} is an exception message</comment>
-  </data>
-  <data name="Menu.Shortcuts.ExtractIcons.Title" xml:space="preserve">
-    <value>提取 Roblox 圖示到資料夾</value>
-  </data>
-  <data name="Menu.Shortcuts.ExtractIcons.Description" xml:space="preserve">
-    <value>啟用此選項後將會在 Froststrap 安裝根目錄上創建一個名為 “Icons” 的資料夾。
-（此選項允許您獲取 Roblox 圖示文件以便快捷應用於捷徑）[如何使用？]({0})</value>
-  </data>
-  <data name="Dialog.RegistryWriteError" xml:space="preserve">
-    <value>Froststrap 無法寫入進 Windows 登錄檔。可能是防毒軟體干擾並導致問題。請檢查是否有任何會限制 Froststrap 操作的應用程式。</value>
-  </data>
-  <data name="About.Supporters.Monthly" xml:space="preserve">
-    <value>每月</value>
-  </data>
-  <data name="About.Supporters.OneOff" xml:space="preserve">
-    <value>一次性</value>
-  </data>
-  <data name="Common.Analytics" xml:space="preserve">
-    <value>數據分析</value>
-  </data>
-  <data name="Menu.FastFlags.Reset.Title" xml:space="preserve">
-    <value>將所有設定重設為預設值</value>
-  </data>
-  <data name="Dialog.Exception.Report" xml:space="preserve">
-    <value>報告錯誤</value>
+  <data name="Menu.Shortcuts.UpdatingPreview" xml:space="preserve">
+    <value>正在更新預覽...</value>
   </data>
   <data name="Menu.TestMode" xml:space="preserve">
     <value>測試模式</value>
     <comment>See the prompt for more context</comment>
   </data>
+  <data name="Menu.TestMode.Description" xml:space="preserve">
+    <value>在啟動 Roblox 時自動隱藏設定視窗，並在關閉 Roblox 時恢復顯示。</value>
+  </data>
   <data name="Menu.TestMode.Prompt" xml:space="preserve">
-    <value>「測試模式」使您更輕鬆地反覆測試您的設定是如何影響 Roblox 的。
+    <value>「測試模式」可讓您更輕鬆地反覆測試設定對 Roblox 的影響。
 
-啟用後，它將在關閉設定視窗後自動啟動 Roblox，並在關閉 Roblox 後重新打開設定視窗，如此循環，直到您關閉該功能。
+啟用此模式後，系統會在您關閉「設定」後自動啟動 Roblox，並在關閉 Roblox 後重新開啟「設定」，如此循環運作，直到您將其停用為止。
 
-您想要啟用測試模式嗎？</value>
+您要啟用「測試模式」嗎？</value>
   </data>
-  <data name="About.Translators.Description" xml:space="preserve">
-    <value>Froststrap 的所有翻譯都是通過 [Crowdin]({0}) 群眾外包而來。這裡列出的每一個人都是慷慨地志願貢獻時間和精力來幫助本地化 Froststrap 的人。對這裡的每一位，我們深表感謝！</value>
-  </data>
-  <data name="Common.Navigation.Install" xml:space="preserve">
-    <value>安裝</value>
-    <comment>The word "Install" is being used as a verb in this instance, like the other navigation button texts of "Next" and "Back"</comment>
+  <data name="Menu.Title" xml:space="preserve">
+    <value>Froststrap 設定</value>
   </data>
   <data name="Paths.Icons" xml:space="preserve">
     <value>圖示</value>
-    <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
+    <comment>Name of the folder that gets created according to the &quot;create shortcut icons&quot; option. Ensure that it is a valid folder name.</comment>
   </data>
-  <data name="LaunchMenu.LaunchRobloxStudio" xml:space="preserve">
-    <value>啟動 Roblox Studio</value>
+  <data name="Uninstaller.KeepData.Description" xml:space="preserve">
+    <value>這些檔案將保留在原先安裝 Froststrap 的位置，並會在重新安裝時自動還原。</value>
   </data>
-  <data name="Dialog.Exception.Version" xml:space="preserve">
-    <value>版本 {0}</value>
+  <data name="Uninstaller.KeepData.Label" xml:space="preserve">
+    <value>保留我的設定和模組</value>
   </data>
-  <data name="Bootstrapper.FilesInUse" xml:space="preserve">
-    <value>Froststrap 目前無法更新 Roblox；因為當前 Roblox 的文件被其他佔用。
+  <data name="Uninstaller.Text" xml:space="preserve">
+    <value>解除安裝將從您的系統中移除 Froststrap，並在 Roblox 啟動程式仍安裝於系統時，自動重新設定其預設設定。
 
-請關閉任何可能正在使用 Roblox 程式文件的應用程式，然後重新啟動 Froststrap。</value>
-    <comment>This is *not* for when Roblox is still running when trying to upgrade. This applies to files being open (i.e. image assets)</comment>
+若您是因為遇到 Roblox 相關問題而進行解除安裝或重新安裝，請先閱讀 [這篇說明頁面]({0})。
+
+解除安裝程序可能無法完全清理所有殘留檔案，因此您可能需要手動清理 Froststrap 原先安裝位置的殘留檔案。
+
+Froststrap 安裝於 &quot;{1}&quot; 位置。</value>
   </data>
-  <data name="FileTypes.ZipArchive" xml:space="preserve">
-    <value>Zip 壓縮檔</value>
-    <comment>Shown in the save file dialog, where the file type selection dropdown is, e.g. "Zip archive (*.zip)"</comment>
+  <data name="Uninstaller.Title" xml:space="preserve">
+    <value>解除安裝 Froststrap</value>
   </data>
-  <data name="Common.Export" xml:space="preserve">
-    <value>導出</value>
-    <comment>Currently used under the "Froststrap" settings tab for the button to export diagnostic data</comment>
-  </data>
-  <data name="Dialog.Connectivity.Preventing" xml:space="preserve">
-    <value>可能有東西正在阻止 Froststrap 去連接網路。</value>
-  </data>
-  <data name="Dialog.Connectivity.TimedOut" xml:space="preserve">
-    <value>連接超時。這可能是因為較差的網路或被防火牆阻止連線。</value>
-  </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="Menu.Channel.Description" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Common.Channel" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Menu.ChannelChanger.Description" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Common.Version" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Common.VersionGuid" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Menu.Channel.RobloxUpgrades" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Bootstrapper.Status.UpgradingFroststrap" xml:space="preserve">
-    <value>正在取得最新的Froststrap...</value>
-  </data>
-  <data name="Menu.Froststrap.Description" xml:space="preserve">
-    <value>調整 Froststrap 自身行為相關的選項。</value>
-  </data>
-  <data name="Menu.Froststrap.Analytics.Title" xml:space="preserve">
-    <value>允許 Froststrap 對數據進行分析</value>
-  </data>
-  <data name="Menu.Froststrap.Analytics.Description" xml:space="preserve">
-    <value>這是匿名的，絕對沒有像政府一樣幹走您的個人資料。我們收集的內容和其原因，請參考我們的[隱私政策]({0})。</value>
+  <data name="Uninstaller.Uninstall" xml:space="preserve">
+    <value>解除安裝</value>
   </data>
 </root>

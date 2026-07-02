@@ -5,8 +5,9 @@ namespace Froststrap.Extensions
 {
     static class BootstrapperIconEx
     {
-        public static IReadOnlyCollection<BootstrapperIcon> Selections => new BootstrapperIcon[]
-        {
+        //TODO: Fix custom
+        public static IReadOnlyCollection<BootstrapperIcon> Selections =>
+        [
             BootstrapperIcon.IconFroststrap,
             BootstrapperIcon.Icon2025,
             BootstrapperIcon.Icon2022,
@@ -17,10 +18,10 @@ namespace Froststrap.Extensions
             BootstrapperIcon.Icon2011,
             BootstrapperIcon.Icon2008,
             BootstrapperIcon.IconFroststrapClassic,
-            BootstrapperIcon.IconCustom
-        };
+            //BootstrapperIcon.IconCustom
+        ];
 
-        private static Dictionary<BootstrapperIcon, Bitmap> _cache = new();
+        private static readonly Dictionary<BootstrapperIcon, Bitmap> _cache = [];
 
         public static Bitmap GetIcon(this BootstrapperIcon icon)
         {
@@ -29,7 +30,6 @@ namespace Froststrap.Extensions
             if (_cache.TryGetValue(icon, out var cached))
                 return cached;
 
-            // Load the custom icon file
             if (icon == BootstrapperIcon.IconCustom)
             {
                 Bitmap? customIcon = null;
@@ -47,7 +47,7 @@ namespace Froststrap.Extensions
                     }
                     catch (Exception ex)
                     {
-                        App.Logger.WriteLine(LOG_IDENT, $"Failed to load custom icon!");
+                        App.Logger.WriteLine(LOG_IDENT, "Failed to load custom icon!");
                         App.Logger.WriteException(LOG_IDENT, ex);
                     }
                 }

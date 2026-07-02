@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -117,92 +117,326 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="About.Licenses.Title" xml:space="preserve">
+    <value>Engedélyek</value>
+    <comment>Referring to code licenses; see https://opensource.org/licenses for example</comment>
+  </data>
+  <data name="About.Title" xml:space="preserve">
+    <value>A Froststrapról</value>
+  </data>
+  <data name="ActivityWatcher.LocationQueryFailed" xml:space="preserve">
+    <value>A szerver helyét nem sikerült lekérdezni. Lehet, hogy túl gyorsan csatlakozol a játékokhoz.</value>
+  </data>
+  <data name="AddCustomTheme.Title" xml:space="preserve">
+    <value>Egyéni téma hozzáadása</value>
+  </data>
+  <data name="App.OSDeprecation.Win7_81" xml:space="preserve">
+    <value>A Roblox már nem támogatja a Windows 7 és 8.1 rendszereket. Ha továbbra is szeretnél játszani a Robloxszal, kérjük, frissíts Windows 10-re vagy újabb verzióra.</value>
+  </data>
+  <data name="Boostrapper.Dialog.UnauthorizedChannel" xml:space="preserve">
+    <value>Az a csatorna, amelyen jelenleg tartózkodsz ({0}), már nem elérhető a nyilvánosság számára. Mostantól az alapértelmezett csatornán ({1}) leszel.</value>
+  </data>
   <data name="Bootstrapper.AutoUpdateFailed" xml:space="preserve">
-    <value>A Froststrap nem tudott automatikusan frissülni a {0} verzióra. Kérjük frissítse manuálisan úgy, hogy letölti és futtatja a webhelyről.</value>
+    <value>A Froststrap nem tudott automatikusan frissülni a {0} verzióra. Kérjük, frissítse kézzel úgy, hogy letölti és elindítja a programot a weboldalról.</value>
+  </data>
+  <data name="Bootstrapper.Bootstrapper.Dialog.PromptChannelChange" xml:space="preserve">
+    <value>A Roblox megpróbálja a csatornádat {0}-ra állítani, azonban a jelenlegi preferált csatornád {1}.
+
+
+Szeretnéd a preferált csatornádat {0}-ra váltani?</value>
+  </data>
+  <data name="Bootstrapper.CancelButton.Skip" xml:space="preserve">
+    <value>Ugrás</value>
   </data>
   <data name="Bootstrapper.ConfirmLaunch" xml:space="preserve">
-    <value>A Roblox jelenleg fut, és egy másik példány elindítása bezárja azt. Biztos, hogy folytatni akarod az indítást?</value>
+    <value>A Roblox jelenleg fut, és egy újabb példány elindítása leállítja azt. Biztosan el akarod indítani?</value>
   </data>
-  <data name="Dialog.Connectivity.RobloxDown" xml:space="preserve">
-    <value>A Roblox jelenleg nem elérhető. További információkért lásd {0}.</value>
+  <data name="Bootstrapper.Dialog.ChannelOutOfDate" xml:space="preserve">
+    <value>Az a csatorna, amelyen jelenleg tartózkodsz ({0}), elavult, és úgy tűnik, már nem kap frissítéseket.
+Szeretnél átváltani az alapértelmezett csatornára ({1})?</value>
   </data>
-  <data name="Dialog.Connectivity.BadConnection" xml:space="preserve">
-    <value>Nem sikerült kapcsolatot létesíteni, ami valószínűleg rossz internetkapcsolatra vagy tűzfalblokkolásra utal. Ha a kapcsolat rendben van, kérjük, győződjön meg róla, hogy a vírusirtója nem blokkolja a Froststrap-et.</value>
+  <data name="Bootstrapper.Dialog.NoUpgradeWithoutClient" xml:space="preserve">
+    <value>A frissítések le voltak tiltva a hiányzó kliens miatt.
+    A problémák elkerülése érdekében a frissítés folytatódik.</value>
   </data>
-  <data name="Bootstrapper.FirstRunUninstall" xml:space="preserve">
-    <value>Először telepítenie kell Froststrap-et az eltávolítás előtt.</value>
+  <data name="Bootstrapper.ExtractionFailed.Message" xml:space="preserve">
+    <value>Lehet, hogy egyes tartalmak hiányoznak. A probléma megoldásához a beállításokban kényszerítsd a Roblox újratelepítését.</value>
+  </data>
+  <data name="Bootstrapper.ExtractionFailed.Title" xml:space="preserve">
+    <value>Nem sikerült az összes fájlt kibontani</value>
+  </data>
+  <data name="Bootstrapper.JsonManagerSaveFailed" xml:space="preserve">
+    <value>A {0} mentése nem sikerült: {1}</value>
+  </data>
+  <data name="Bootstrapper.ModificationsFailed.Message" xml:space="preserve">
+    <value>Nem minden módosítás lesz benne a mostani kiadásban.</value>
+  </data>
+  <data name="Bootstrapper.ModificationsFailed.Title" xml:space="preserve">
+    <value>Nem sikerült az összes módosítást alkalmazni</value>
   </data>
   <data name="Bootstrapper.NotEnoughSpace" xml:space="preserve">
-    <value>A Froststrap-nek nincsen elég tárhelye a Roblox telepítéséhez. Kérjük, szabadítson fel lemezterületet, és próbálja újra.</value>
+    <value>A Froststrap-on nincs elegendő lemezterület a Roblox letöltéséhez és telepítéséhez. Kérjük, szabadítson fel némi lemezterületet, majd próbálja meg újra.</value>
   </data>
   <data name="Bootstrapper.Status.ApplyingModifications" xml:space="preserve">
-    <value>Roblox módosítások alkalmazása...</value>
+    <value>A Roblox-módosítások alkalmazása...</value>
+  </data>
+  <data name="Bootstrapper.Status.CancelUpgrade" xml:space="preserve">
+    <value>A Roblox-frissítés visszavonása.</value>
+  </data>
+  <data name="Bootstrapper.Status.CheckingDependencies" xml:space="preserve">
+    <value>A függőségek ellenőrzése</value>
+  </data>
+  <data name="Bootstrapper.Status.CheckingFlatpak" xml:space="preserve">
+    <value>A Flatpak telepítésének ellenőrzése...</value>
+  </data>
+  <data name="Bootstrapper.Status.CheckingUpdates" xml:space="preserve">
+    <value>Frissítések keresése</value>
+  </data>
+  <data name="Bootstrapper.Status.CompilingVulkanLayer" xml:space="preserve">
+    <value>A Vulkan-réteg összeállítása...</value>
   </data>
   <data name="Bootstrapper.Status.Configuring" xml:space="preserve">
-    <value>{product} beállítása...</value>
+    <value>A {product} beállítása...</value>
   </data>
   <data name="Bootstrapper.Status.Connecting" xml:space="preserve">
-    <value>Kapcsolódás a Roblox-hoz...</value>
+    <value>Csatlakozás a Robloxhoz...</value>
+  </data>
+  <data name="Bootstrapper.Status.Downloading" xml:space="preserve">
+    <value>Letöltés</value>
+  </data>
+  <data name="Bootstrapper.Status.DownloadingDXVK" xml:space="preserve">
+    <value>A DXVK letöltése...</value>
+  </data>
+  <data name="Bootstrapper.Status.DownloadingDXVKSarek" xml:space="preserve">
+    <value>A DXVK-Sarek letöltése...</value>
+  </data>
+  <data name="Bootstrapper.Status.DownloadingUpdate" xml:space="preserve">
+    <value>A {0} frissítés letöltése...</value>
+  </data>
+  <data name="Bootstrapper.Status.DownloadingWebView2" xml:space="preserve">
+    <value>WebView2 letöltése...</value>
+  </data>
+  <data name="Bootstrapper.Status.DownloadingWine" xml:space="preserve">
+    <value>Wine letöltése...</value>
+  </data>
+  <data name="Bootstrapper.Status.Extracting" xml:space="preserve">
+    <value>Kivonás</value>
+  </data>
+  <data name="Bootstrapper.Status.ExtractingDXVK" xml:space="preserve">
+    <value>DXVK kibontása...</value>
+  </data>
+  <data name="Bootstrapper.Status.ExtractingDXVKSarek" xml:space="preserve">
+    <value>DXVK-Sarek kinyerése...</value>
+  </data>
+  <data name="Bootstrapper.Status.ExtractingWine" xml:space="preserve">
+    <value>Bor kinyerése...</value>
+  </data>
+  <data name="Bootstrapper.Status.FindingTopRegions" xml:space="preserve">
+    <value>A legnépszerűbb {0} régiók keresése...</value>
+  </data>
+  <data name="Bootstrapper.Status.InitializingWinePrefix" xml:space="preserve">
+    <value>A Wine-prefix inicializálása...</value>
   </data>
   <data name="Bootstrapper.Status.Installing" xml:space="preserve">
-    <value>{product} telepítése...</value>
+    <value>A {product} telepítése...</value>
+  </data>
+  <data name="Bootstrapper.Status.InstallingSober" xml:space="preserve">
+    <value>A Sober telepítése...</value>
+  </data>
+  <data name="Bootstrapper.Status.InstallingUpdate" xml:space="preserve">
+    <value>A {0} frissítés telepítése...</value>
   </data>
   <data name="Bootstrapper.Status.InstallingWebView2" xml:space="preserve">
-    <value>WebView2 telepítése, kérjük várjon...</value>
+    <value>A WebView2 telepítése folyamatban van, kérjük, várjon...</value>
+  </data>
+  <data name="Bootstrapper.Status.PackagesLeft" xml:space="preserve">
+    <value>balra</value>
+  </data>
+  <data name="Bootstrapper.Status.RetryingPackage" xml:space="preserve">
+    <value>Újra próbálom a {0}-t...</value>
+  </data>
+  <data name="Bootstrapper.Status.SearchingNearbyServers" xml:space="preserve">
+    <value>Keresés a közeli szerverek között...</value>
+  </data>
+  <data name="Bootstrapper.Status.SearchingServers" xml:space="preserve">
+    <value>Keresés a {0} szerverén...</value>
+  </data>
+  <data name="Bootstrapper.Status.SettingUpDXVK" xml:space="preserve">
+    <value>A DXVK beállítása...</value>
+  </data>
+  <data name="Bootstrapper.Status.SkippingMatchmaking" xml:space="preserve">
+    <value>A szerverkeresés kihagyása...</value>
+  </data>
+  <data name="Bootstrapper.Status.SoberUpdateComplete" xml:space="preserve">
+    <value>A józan frissítés befejeződött.</value>
   </data>
   <data name="Bootstrapper.Status.Starting" xml:space="preserve">
-    <value>{product} elindítása...</value>
-    <comment>"Starting Roblox" or "Starting Roblox Studio"</comment>
+    <value>A {product} elindítása...</value>
+    <comment>&quot;Starting Roblox&quot; or &quot;Starting Roblox Studio&quot;</comment>
+  </data>
+  <data name="Bootstrapper.Status.StartingSober" xml:space="preserve">
+    <value>Józanul kezdve...</value>
+  </data>
+  <data name="Bootstrapper.Status.StartingStudioWine" xml:space="preserve">
+    <value>A Roblox Studio elindítása a Wine segítségével...</value>
+  </data>
+  <data name="Bootstrapper.Status.UninstallingWebView2" xml:space="preserve">
+    <value>A WebView2 {0} eltávolítása...</value>
+  </data>
+  <data name="Bootstrapper.Status.UpdatingSober" xml:space="preserve">
+    <value>A Sober frissítése...</value>
+  </data>
+  <data name="Bootstrapper.Status.UpdatingSoberBasic" xml:space="preserve">
+    <value>A Sober frissítése ({0}/{1})...</value>
+  </data>
+  <data name="Bootstrapper.Status.UpdatingSoberProgress" xml:space="preserve">
+    <value>A Sober frissítése ({0}/{1}): {2}%</value>
   </data>
   <data name="Bootstrapper.Status.Upgrading" xml:space="preserve">
-    <value>{product} frissítése...</value>
+    <value>A {product} frissítése folyamatban van...</value>
+  </data>
+  <data name="Bootstrapper.Status.WaitingForData" xml:space="preserve">
+    <value>Adatok betöltése...</value>
   </data>
   <data name="Bootstrapper.Status.WaitingOtherInstances" xml:space="preserve">
     <value>Várakozás más példányokra...</value>
   </data>
   <data name="Bootstrapper.StylePreview.ImageCancel" xml:space="preserve">
-    <value>Stílus előnézet - A bezáráshoz kattintson a jobb felső sarokban lévő X gombra</value>
+    <value>Stílus-előnézet – A jobb felső sarokban található X gombra kattintva bezárhatja</value>
     <comment>Text for style previews that use an X button. Currently only applies to Byfron</comment>
   </data>
   <data name="Bootstrapper.StylePreview.TextCancel" xml:space="preserve">
-    <value>Stílus előnézet - Kattintson a "Mégse" gombra a bezáráshoz</value>
-    <comment>Text for style previews that use text button that says "Cancel"</comment>
+    <value>Stílus-előnézet – A bezáráshoz kattintson a „Mégse” gombra</value>
+    <comment>Text for style previews that use text button that says &quot;Cancel&quot;</comment>
   </data>
   <data name="Bootstrapper.SuccessfullyUninstalled" xml:space="preserve">
-    <value>A Froststrap sikeresen eltávolításra került</value>
+    <value>A Froststrap eltávolítása sikeresen befejeződött</value>
   </data>
   <data name="Bootstrapper.Uninstall.RobloxRunning" xml:space="preserve">
-    <value>A Roblox jelenleg fut, de a Froststrap eltávolítása előtt be kell zárni. Szeretné bezárni a Robloxot most?</value>
+    <value>A Roblox jelenleg fut, de a Froststrap eltávolítása előtt be kell zárni. Szeretnéd most bezárni a Robloxot?</value>
   </data>
   <data name="Bootstrapper.WMFNotFound" xml:space="preserve">
-    <value>A Roblox megköveteli a Windows Media Foundation komponensek használatát. Úgy tűnik, ezek hiányoznak, valószínűleg azért, mert a Windows N kiadását használja. Kérjük, először telepítse őket, majd indítsa el a Robloxot.</value>
+    <value>A Robloxhoz a Windows Media Foundation összetevőinek használata szükséges. Úgy tűnik, ezek hiányoznak a rendszeréből, valószínűleg azért, mert a Windows N kiadását használja. Kérjük, először telepítse őket, majd indítsa el a Robloxot.</value>
+  </data>
+  <data name="Bootstrapper.WebView2NotFound" xml:space="preserve">
+    <value>Jelenleg nincs telepítve a WebView2 futtatókörnyezet. Enélkül a Roblox egyes funkciói, például az asztali alkalmazás, nem fognak megfelelően működni. Szeretnéd most letölteni?</value>
+  </data>
+  <data name="Common.Add" xml:space="preserve">
+    <value>Hozzáadás</value>
   </data>
   <data name="Common.AddSingle" xml:space="preserve">
     <value>Egyetlen hozzáadása</value>
   </data>
+  <data name="Common.All" xml:space="preserve">
+    <value>Minden</value>
+  </data>
+  <data name="Common.Angle" xml:space="preserve">
+    <value>Szög</value>
+  </data>
+  <data name="Common.Bands" xml:space="preserve">
+    <value>Zenekarok</value>
+  </data>
   <data name="Common.Browse" xml:space="preserve">
     <value>Böngészés</value>
+  </data>
+  <data name="Common.Browser" xml:space="preserve">
+    <value>Böngésző</value>
   </data>
   <data name="Common.Cancel" xml:space="preserve">
     <value>Mégse</value>
   </data>
+  <data name="Common.Clear" xml:space="preserve">
+    <value>Törlés</value>
+  </data>
   <data name="Common.Close" xml:space="preserve">
     <value>Bezárás</value>
+  </data>
+  <data name="Common.ColorPicker" xml:space="preserve">
+    <value>Színválasztó</value>
+  </data>
+  <data name="Common.Confirm" xml:space="preserve">
+    <value>Megerősítés</value>
+  </data>
+  <data name="Common.Copy" xml:space="preserve">
+    <value>Másolás</value>
+  </data>
+  <data name="Common.CopyAll" xml:space="preserve">
+    <value>Összes másolása</value>
+  </data>
+  <data name="Common.CreateNew" xml:space="preserve">
+    <value>Új létrehozása</value>
+  </data>
+  <data name="Common.Custom" xml:space="preserve">
+    <value>Egyedi</value>
+  </data>
+  <data name="Common.Deeplink" xml:space="preserve">
+    <value>Mélylink</value>
+  </data>
+  <data name="Common.Default" xml:space="preserve">
+    <value>Alapértelmezett</value>
   </data>
   <data name="Common.Delete" xml:space="preserve">
     <value>Törlés</value>
   </data>
-  <data name="Common.DiscordRichPresence" xml:space="preserve">
-    <value>Discord Rich Presence</value>
+  <data name="Common.DeleteAll" xml:space="preserve">
+    <value>Minden törlése</value>
   </data>
-  <data name="Common.Help" xml:space="preserve">
-    <value>Segítség</value>
+  <data name="Common.Deployment" xml:space="preserve">
+    <value>Bevezetés</value>
+  </data>
+  <data name="Common.Description" xml:space="preserve">
+    <value>Leírás</value>
+  </data>
+  <data name="Common.Disabled" xml:space="preserve">
+    <value>Fogyatékkal élők</value>
+  </data>
+  <data name="Common.Download" xml:space="preserve">
+    <value>Letöltés</value>
+  </data>
+  <data name="Common.Edit" xml:space="preserve">
+    <value>Szerkesztés</value>
+  </data>
+  <data name="Common.Editor" xml:space="preserve">
+    <value>Szerkesztő</value>
+  </data>
+  <data name="Common.Error" xml:space="preserve">
+    <value>Hiba</value>
+  </data>
+  <data name="Common.Files" xml:space="preserve">
+    <value>Fájlok</value>
+  </data>
+  <data name="Common.Game" xml:space="preserve">
+    <value>Játék</value>
+  </data>
+  <data name="Common.Generate" xml:space="preserve">
+    <value>Létrehozás</value>
+  </data>
+  <data name="Common.GlyphPreview" xml:space="preserve">
+    <value>Glif-előnézet</value>
+  </data>
+  <data name="Common.HexCode" xml:space="preserve">
+    <value>Hexadecimális kód</value>
+  </data>
+  <data name="Common.Import" xml:space="preserve">
+    <value>Importálás</value>
+  </data>
+  <data name="Common.ImportFromFile" xml:space="preserve">
+    <value>Importálás fájlból</value>
   </data>
   <data name="Common.ImportJson" xml:space="preserve">
-    <value>JSON importálása</value>
+    <value>JSON-import</value>
   </data>
-  <data name="Common.OpenLogFile" xml:space="preserve">
-    <value>Naplófájl megnyitása</value>
+  <data name="Common.Install" xml:space="preserve">
+    <value>Telepítés</value>
+  </data>
+  <data name="Common.Launch" xml:space="preserve">
+    <value>Indítás</value>
+  </data>
+  <data name="Common.Loading" xml:space="preserve">
+    <value>Betöltés, kérjük, várjon...</value>
+  </data>
+  <data name="Common.Manual" xml:space="preserve">
+    <value>Kézikönyv</value>
   </data>
   <data name="Common.Miscellaneous" xml:space="preserve">
     <value>Egyéb</value>
@@ -216,21 +450,110 @@
   <data name="Common.No" xml:space="preserve">
     <value>Nem</value>
   </data>
-  <data name="Common.OK" xml:space="preserve">
-    <value>Oké</value>
+  <data name="Common.NoResult" xml:space="preserve">
+    <value>Nem találtam találatot</value>
+  </data>
+  <data name="Common.NotAvailable" xml:space="preserve">
+    <value>Nem elérhető</value>
+  </data>
+  <data name="Common.NotFound" xml:space="preserve">
+    <value>Nem található</value>
+  </data>
+  <data name="Common.Offset" xml:space="preserve">
+    <value>Eltolás</value>
+  </data>
+  <data name="Common.OpenFolder" xml:space="preserve">
+    <value>Mappa megnyitása</value>
+  </data>
+  <data name="Common.OpenLogFile" xml:space="preserve">
+    <value>Naplófájl megnyitása</value>
+  </data>
+  <data name="Common.Performance" xml:space="preserve">
+    <value>Teljesítmény</value>
+  </data>
+  <data name="Common.Player" xml:space="preserve">
+    <value>Játékos</value>
+  </data>
+  <data name="Common.PresetFlagLists" xml:space="preserve">
+    <value>Előre beállított zászlólisták</value>
   </data>
   <data name="Common.Presets" xml:space="preserve">
-    <value>Előbeállítások</value>
+    <value>Előre beállított értékek</value>
   </data>
-  <data name="Common.Reset" xml:space="preserve">
-    <value>Visszaállítás</value>
-    <comment>In the context of resetting something to a default value</comment>
+  <data name="Common.Priority" xml:space="preserve">
+    <value>Elsőbbség</value>
+  </data>
+  <data name="Common.Profiles" xml:space="preserve">
+    <value>Profilok</value>
+  </data>
+  <data name="Common.Quality" xml:space="preserve">
+    <value>Minőség</value>
+  </data>
+  <data name="Common.Remove" xml:space="preserve">
+    <value>Eltávolítás</value>
+  </data>
+  <data name="Common.Rename" xml:space="preserve">
+    <value>Átnevezés</value>
+  </data>
+  <data name="Common.RobloxNotInstalled" xml:space="preserve">
+    <value>A Roblox még nincs telepítve. Kérjük, mielőtt ezt az opciót használná, indítsa el a Robloxot a Froststrap segítségével legalább egyszer.</value>
+  </data>
+  <data name="Common.SaveAndInstall" xml:space="preserve">
+    <value>Mentés és telepítés</value>
+  </data>
+  <data name="Common.SaveAndLaunch" xml:space="preserve">
+    <value>Mentés és indítás</value>
+  </data>
+  <data name="Common.Search" xml:space="preserve">
+    <value>Keresés</value>
+  </data>
+  <data name="Common.Select" xml:space="preserve">
+    <value>Kiválasztás</value>
+  </data>
+  <data name="Common.ServerID" xml:space="preserve">
+    <value>Szerverazonosító</value>
+  </data>
+  <data name="Common.Settings" xml:space="preserve">
+    <value>Beállítások</value>
+  </data>
+  <data name="Common.Shortcuts" xml:space="preserve">
+    <value>Gyorsbillentyűk</value>
+  </data>
+  <data name="Common.Shortcuts.Desktop" xml:space="preserve">
+    <value>Asztali ikon</value>
+  </data>
+  <data name="Common.Sober" xml:space="preserve">
+    <value>Józan</value>
+  </data>
+  <data name="Common.Studio" xml:space="preserve">
+    <value>Iroda</value>
+  </data>
+  <data name="Common.SystemDefault" xml:space="preserve">
+    <value>A rendszer alapértelmezett beállítása</value>
+  </data>
+  <data name="Common.Template" xml:space="preserve">
+    <value>Sablon</value>
+  </data>
+  <data name="Common.Timestamp" xml:space="preserve">
+    <value>Időbélyeg</value>
+  </data>
+  <data name="Common.Total" xml:space="preserve">
+    <value>Összesen</value>
+  </data>
+  <data name="Common.Unknown" xml:space="preserve">
+    <value>Ismeretlen</value>
+  </data>
+  <data name="Common.Update" xml:space="preserve">
+    <value>Frissítés</value>
   </data>
   <data name="Common.Value" xml:space="preserve">
     <value>Érték</value>
   </data>
-  <data name="Common.Warning" xml:space="preserve">
-    <value>Figyelmeztetés</value>
+  <data name="Common.Version" xml:space="preserve">
+    <value>Verzió</value>
+  </data>
+  <data name="Common.VersionGuid" xml:space="preserve">
+    <value>Verzióazonosító</value>
   </data>
   <data name="Common.Yes" xml:space="preserve">
     <value>Igen</value>
@@ -238,1042 +561,2372 @@
   <data name="ContextMenu.CloseRoblox" xml:space="preserve">
     <value>Roblox bezárása</value>
   </data>
-  <data name="ContextMenu.CloseRobloxMessage" xml:space="preserve">
-    <value>Biztos, hogy beakarod zárni Robloxot? Ez teljesen leállítja az alkalmazást.</value>
-  </data>
   <data name="ContextMenu.CopyDeeplinkInvite" xml:space="preserve">
-    <value>Deeplink meghívó másolása</value>
+    <value>Meghívó deeplink másolása</value>
+  </data>
+  <data name="ContextMenu.GameHistory.Description" xml:space="preserve">
+    <value>A játékelőzmények csak az aktuális Roblox-munkamenet során kerülnek rögzítésre. A játékok akkor jelennek meg itt, amikor kilépsz belőlük, vagy a játékokon belül teleportálsz. Nem minden szerverre lehet újra csatlakozni.</value>
+  </data>
+  <data name="ContextMenu.GameHistory.Rejoin" xml:space="preserve">
+    <value>Újra csatlakozás</value>
+  </data>
+  <data name="ContextMenu.GameHistory.Title" xml:space="preserve">
+    <value>A játék története</value>
+  </data>
+  <data name="ContextMenu.ServerDetails.Notification.Text" xml:space="preserve">
+    <value>Helyszín: {0}
+Üzemidő: {1}</value>
   </data>
   <data name="ContextMenu.ServerInformation.CopyInstanceId" xml:space="preserve">
-    <value>Instance ID másolása</value>
+    <value>Példányazonosító másolása</value>
   </data>
   <data name="ContextMenu.ServerInformation.InstanceId" xml:space="preserve">
-    <value>Instance azonosító</value>
+    <value>Példányazonosító</value>
   </data>
   <data name="ContextMenu.ServerInformation.Location" xml:space="preserve">
-    <value>Hely</value>
+    <value>Helyszín</value>
   </data>
-  <data name="ContextMenu.ServerInformation.Notification.Text" xml:space="preserve">
-    <value>Helyszín: {0}
-Kattintson további információért</value>
+  <data name="ContextMenu.ServerInformation.Notification.Title.Private" xml:space="preserve">
+    <value>Csatlakozás egy privát szerverhez</value>
   </data>
   <data name="ContextMenu.ServerInformation.Notification.Title.Public" xml:space="preserve">
-    <value>Csatlakozva egy nyilvános szerverhez</value>
+    <value>Csatlakozás egy nyilvános szerverhez</value>
+  </data>
+  <data name="ContextMenu.ServerInformation.Notification.Title.Reserved" xml:space="preserve">
+    <value>Csatlakozás egy Reserved szerverhez</value>
   </data>
   <data name="ContextMenu.ServerInformation.Title" xml:space="preserve">
-    <value>Szerver információ</value>
+    <value>Szerveradatok</value>
   </data>
   <data name="ContextMenu.ServerInformation.Type" xml:space="preserve">
     <value>Típus</value>
   </data>
+  <data name="ContextMenu.ServerInformation.Uptime" xml:space="preserve">
+    <value>Üzemidő</value>
+  </data>
+  <data name="CustomTheme.Add.Errors.FileNotZip" xml:space="preserve">
+    <value>A fájlnak ZIP-formátumúnak kell lennie</value>
+  </data>
+  <data name="CustomTheme.Add.Errors.NameEmpty" xml:space="preserve">
+    <value>A név nem lehet üres</value>
+  </data>
+  <data name="CustomTheme.Add.Errors.NameIllegalCharacters" xml:space="preserve">
+    <value>A név nem megengedett karaktereket tartalmaz</value>
+  </data>
+  <data name="CustomTheme.Add.Errors.NameReserved" xml:space="preserve">
+    <value>A név nem használható</value>
+  </data>
+  <data name="CustomTheme.Add.Errors.NameTaken" xml:space="preserve">
+    <value>A név már foglalt</value>
+  </data>
+  <data name="CustomTheme.Add.Errors.Unknown" xml:space="preserve">
+    <value>Ismeretlen hiba</value>
+  </data>
+  <data name="CustomTheme.Add.Errors.ZipInvalidData" xml:space="preserve">
+    <value>Érvénytelen vagy sérült ZIP-fájl</value>
+  </data>
+  <data name="CustomTheme.Add.Errors.ZipMissingThemeFile" xml:space="preserve">
+    <value>A ZIP-fájlban nem található a témafájl</value>
+  </data>
+  <data name="CustomTheme.DefaultName" xml:space="preserve">
+    <value>Egyedi téma {0}</value>
+    <comment>{0} is a string (e.g. &apos;1&apos;, &apos;1-1234&apos;)</comment>
+  </data>
+  <data name="CustomTheme.Editor.ConfirmSave" xml:space="preserve">
+    <value>El akarja menteni a módosításokat a {0} fájlba?</value>
+  </data>
+  <data name="CustomTheme.Editor.Errors.PreviewFailed" xml:space="preserve">
+    <value>A téma előnézete nem sikerült: {0}</value>
+  </data>
+  <data name="CustomTheme.Editor.OpenThemeDirectory" xml:space="preserve">
+    <value>Téma-könyvtár megnyitása</value>
+  </data>
+  <data name="CustomTheme.Editor.Save.Success.Description" xml:space="preserve">
+    <value>A témádat elmentettük!</value>
+  </data>
+  <data name="CustomTheme.Editor.Title" xml:space="preserve">
+    <value>„{0}” szerkesztése</value>
+  </data>
+  <data name="CustomTheme.Errors.DialogAlreadyInitialised" xml:space="preserve">
+    <value>Az egyéni párbeszédablak már inicializálásra került</value>
+  </data>
+  <data name="CustomTheme.Errors.ElementAttributeBlacklistedUriScheme" xml:space="preserve">
+    <value>{0}.{1} a feketelistára tett {2} sémát használja</value>
+    <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text), {2} is the URI scheme (e.g. http)</comment>
+  </data>
+  <data name="CustomTheme.Errors.ElementAttributeConversionError" xml:space="preserve">
+    <value>{0}-nak érvénytelen {1}-je van: {2}</value>
+    <comment>{0} is the element name (e.g. Button), {1} is the attribute name (e.g. Text), {2} is the error reason</comment>
+  </data>
+  <data name="CustomTheme.Errors.ElementAttributeInvalidType" xml:space="preserve">
+    <value>{0}.{1} nem érvényes {2}</value>
+    <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text), {2} is the type name (e.g. string)</comment>
+  </data>
+  <data name="CustomTheme.Errors.ElementAttributeMissing" xml:space="preserve">
+    <value>Az {0} elemből hiányzik a {1} attribútum</value>
+    <comment>{0} is the element name (e.g. Button), {1} is the attribute name (e.g. Text)</comment>
+  </data>
+  <data name="CustomTheme.Errors.ElementAttributeMissingChild" xml:space="preserve">
+    <value>A {0}.{1} elemnél hiányzik a gyermekelem</value>
+    <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text)</comment>
+  </data>
+  <data name="CustomTheme.Errors.ElementAttributeMultipleChildren" xml:space="preserve">
+    <value>A {0}.{1} csak egy gyermeket tartalmazhat</value>
+    <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text)</comment>
+  </data>
+  <data name="CustomTheme.Errors.ElementAttributeMultipleDefinitions" xml:space="preserve">
+    <value>A {0} elemhez csak egy {1} definiálható</value>
+    <comment>{0} is the element name (e.g. Button), {1} is the attribute name (e.g. Text)</comment>
+  </data>
+  <data name="CustomTheme.Errors.ElementAttributeMustBeLargerThanMin" xml:space="preserve">
+    <value>{0}.{1} értékének nagyobbnak kell lennie, mint {2}</value>
+    <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text), {2} is a number</comment>
+  </data>
+  <data name="CustomTheme.Errors.ElementAttributeMustBeSmallerThanMax" xml:space="preserve">
+    <value>{0}.{1} értékének kisebbnek kell lennie, mint {2}</value>
+    <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text), {2} is a number</comment>
+  </data>
+  <data name="CustomTheme.Errors.ElementAttributeParseError" xml:space="preserve">
+    <value>A {0}.{1} nem értelmezhető {2}-ként</value>
+    <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text), {2} is the type name (e.g. string)</comment>
+  </data>
+  <data name="CustomTheme.Errors.ElementAttributeParseErrorNull" xml:space="preserve">
+    <value>{0}.{1} {2} értéke null</value>
+    <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text), {2} is the type name (e.g. string)</comment>
+  </data>
+  <data name="CustomTheme.Errors.ElementInvalidChild" xml:space="preserve">
+    <value>{0} nem lehet {1} gyermeke</value>
+    <comment>{0} and {1} are element names (e.g. Button)</comment>
+  </data>
+  <data name="CustomTheme.Errors.ElementMultipleChildren" xml:space="preserve">
+    <value>{0} csak egy gyermeke lehet</value>
+    <comment>{0} is the element name (e.g. Button)</comment>
+  </data>
+  <data name="CustomTheme.Errors.ElementTypeCreationFailed" xml:space="preserve">
+    <value>{0} létrehozása sikertelen volt: {1}: {2}</value>
+    <comment>{0} is the element name (e.g. Button), {1} is the attribute name (e.g. Text), {2} is the error reason</comment>
+  </data>
+  <data name="CustomTheme.Errors.InvalidRoot" xml:space="preserve">
+    <value>A téma XML-fájljának gyökérköre nem {0}</value>
+    <comment>{0} is the element name (e.g. Button)</comment>
+  </data>
+  <data name="CustomTheme.Errors.NoThemeSelected" xml:space="preserve">
+    <value>Nincs kiválasztva egyéni téma</value>
+  </data>
+  <data name="CustomTheme.Errors.SetupFailed" xml:space="preserve">
+    <value>Az egyéni bootstrapper beállítása nem sikerült: {0}.
+Alapértelmezésként a {1} kerül beállításra.</value>
+    <comment>{0} is the error reason, {1} is the theme name (e.g. Froststrap (Classic))</comment>
+  </data>
+  <data name="CustomTheme.Errors.TooManyElements" xml:space="preserve">
+    <value>Az egyéni bootstrapperek legfeljebb {0} elemet tartalmazhatnak, jelenleg {1} van</value>
+    <comment>{0} and {1} are numbers</comment>
+  </data>
+  <data name="CustomTheme.Errors.UnknownElement" xml:space="preserve">
+    <value>Ismeretlen elem {0}</value>
+    <comment>{0} is the element name (e.g. Button)</comment>
+  </data>
+  <data name="CustomTheme.Errors.UnknownEnumValue" xml:space="preserve">
+    <value>{0} Ismeretlen {1} &apos;{2}&apos;</value>
+    <comment>{0} is the element name (e.g. Button), {1} is the enum name (e.g. WindowCornerType), {2} is the value</comment>
+  </data>
+  <data name="CustomTheme.Errors.VersionNotNumber" xml:space="preserve">
+    <value>A {0} verziószám nem szám</value>
+    <comment>{0} is the element name (e.g. Button)</comment>
+  </data>
+  <data name="CustomTheme.Errors.VersionNotRecognised" xml:space="preserve">
+    <value>A {0} {1} verzió nem ismerhető fel</value>
+    <comment>{0} is the element name (e.g. Button), {1} is the version number</comment>
+  </data>
+  <data name="CustomTheme.Errors.VersionNotSet" xml:space="preserve">
+    <value>A {0} verzió nincs beállítva</value>
+    <comment>{0} is the element name (e.g. Button)</comment>
+  </data>
+  <data name="CustomTheme.Errors.VersionNotSupported" xml:space="preserve">
+    <value>A {0} {1} verziója már nem támogatott</value>
+    <comment>{0} is the element name (e.g. Button), {1} is the version number</comment>
+  </data>
+  <data name="CustomTheme.Errors.XMLParseFailed" xml:space="preserve">
+    <value>A témafájl értelmezése sikertelen: {0}</value>
+  </data>
+  <data name="CustomTheme.Templates.Blank.MoreExamples" xml:space="preserve">
+    <value>Egyedi bootstrapperekre vonatkozó példák a {0} oldalon találhatók</value>
+  </data>
+  <data name="CustomTheme.Templates.Blank.UIElements" xml:space="preserve">
+    <value>Helyezze ide a felhasználói felület elemeit</value>
+  </data>
+  <data name="CustomTheme.Templates.Simple.MoreExamples" xml:space="preserve">
+    <value>További egyedi bootstrapper-példákat találsz a {0} oldalon</value>
+  </data>
   <data name="Dialog.AddFastFlag.Title" xml:space="preserve">
-    <value>Fast Flag hozzáadása</value>
+    <value>„Gyors” jelölőnégyzet hozzáadása</value>
+  </data>
+  <data name="Dialog.AlreadyRunning.Uninstaller" xml:space="preserve">
+    <value>Kérjük, várja meg, amíg az eltávolítás befejeződik.</value>
+  </data>
+  <data name="Dialog.Bloxshade.Setting" xml:space="preserve">
+    <value>A Froststrap már nem támogatja a Bloxshade-et.
+További információkért csatlakozz a Bloxshade Discord-szerveréhez.</value>
+  </data>
+  <data name="Dialog.Bloxshade.ThankYou" xml:space="preserve">
+    <value>Elnézést</value>
+  </data>
+  <data name="Dialog.CannotCreateShortcuts" xml:space="preserve">
+    <value>A Froststrap nem tudott parancsikonokat létrehozni az asztalra és a Start menübe. Próbáld meg később létrehozni őket a beállítások segítségével.</value>
+  </data>
+  <data name="Dialog.Connectivity.BadConnection" xml:space="preserve">
+    <value>Nem sikerült létrehozni a kapcsolatot, ami valószínűleg gyenge internetkapcsolatra vagy tűzfal általi blokkolásra utal. Ha az internetkapcsolatod rendben van, kérjük, ellenőrizd, hogy a víruskereső programod nem blokkolja-e a Froststrap alkalmazást.</value>
+  </data>
+  <data name="Dialog.Connectivity.MatchmakingFailed" xml:space="preserve">
+    <value>A BetterMatchmaking funkció ebben a munkamenetben le lesz tiltva.</value>
   </data>
   <data name="Dialog.Connectivity.MoreInfo" xml:space="preserve">
-    <value>További információ:</value>
+    <value>További információk:</value>
+  </data>
+  <data name="Dialog.Connectivity.RobloxDown" xml:space="preserve">
+    <value>Lehet, hogy a Roblox jelenleg nem elérhető. További információkért lásd a {0} részt.</value>
+  </data>
+  <data name="Dialog.Connectivity.RobloxUpgradeNeeded" xml:space="preserve">
+    <value>Mivel a Roblox telepítésére vagy frissítésére van szükség, a Froststrap nem tud tovább futni.</value>
+  </data>
+  <data name="Dialog.Connectivity.RobloxUpgradeSkip" xml:space="preserve">
+    <value>Ebben a kiadásban a Roblox nem fogja ellenőrizni a frissítéseket, és a modokhoz tartozó módosítások sem kerülnek alkalmazásra.</value>
   </data>
   <data name="Dialog.Connectivity.Title" xml:space="preserve">
-    <value>Csatlakozási hiba</value>
+    <value>Kapcsolati hiba</value>
+  </data>
+  <data name="Dialog.Connectivity.TryAgainLater" xml:space="preserve">
+    <value>Kérjük, próbálja meg később újra.</value>
   </data>
   <data name="Dialog.Connectivity.UnableToConnect" xml:space="preserve">
-    <value>A Froststrap nem tudott kapcsolódni a {0}-hoz/hez/höz</value>
+    <value>A Froststrap nem tud csatlakozni a {0}-hoz</value>
     <comment>{0} is the name of a service (i.e. Roblox, GitHub)</comment>
   </data>
+  <data name="Dialog.Connectivity.UnableToDownload" xml:space="preserve">
+    <value>A Froststrap nem tudja letölteni a Robloxot</value>
+  </data>
+  <data name="Dialog.Connectivity.UnableToDownloadReason" xml:space="preserve">
+    <value>A Roblox jelenleg nem tölthető le. További információkért kérjük, olvassa el az alábbi súgóoldalt: {0}</value>
+    <comment>{0} is a URL</comment>
+  </data>
   <data name="Dialog.Exception.CopyLogContents" xml:space="preserve">
-    <value>Napló tartalmának másolása</value>
+    <value>A napló tartalmának másolása</value>
   </data>
   <data name="Dialog.Exception.Info.1" xml:space="preserve">
-    <value>Kivétel lépett fel a Froststrap futtatása közben</value>
+    <value>A Froststrap/Froststrap futtatása közben kivétel történt</value>
   </data>
   <data name="Dialog.Exception.Info.2" xml:space="preserve">
-    <value>Először nézze át a [Froststrap Wikit]({0}), mert lehet, hogy a problémáját már megválaszoltuk.
+    <value>Először nézd meg a [Froststrap Wiki]({0}) oldalt, hogy megnézd, megoldották-e már ezt a problémát.
 
-Ha nem, kérjük, hogy jelentse ezt egy [GitHub problémaként]({1}) a Froststrap által készített naplófájllal együtt.</value>
+Ha nem, akkor kérjük, jelentsd be ezt a kivételt egy [GitHub-problémajelentés]({1}) formájában, mellékelve a létrehozott naplófájl másolatát.</value>
+  </data>
+  <data name="Dialog.Exception.Info.2.Alt" xml:space="preserve">
+    <value>Először nézd meg a [Froststrap Wiki]({0}) oldalt, hogy megnézd, megoldották-e már ezt a problémát.
+
+Ha nem, akkor kérjük, jelentsd ezt a kivételt a fork karbantartóinak. NE jelentsd ezt a Froststrap GitHub-problémajegyzékében, mivel ez egy nem hivatalos kiadás.</value>
+    <comment>&quot;fork&quot; in general means &quot;a variation of&quot; or &quot;a different version of&quot;. You can alternatively write the first sentence as &quot;...to the maintainers of this version.&quot;</comment>
+  </data>
+  <data name="Dialog.Exception.Report" xml:space="preserve">
+    <value>Kivétel jelentése</value>
   </data>
   <data name="Dialog.Exception.Title" xml:space="preserve">
     <value>Froststrap kivétel</value>
   </data>
-  <data name="Common.Custom" xml:space="preserve">
-    <value>Saját</value>
+  <data name="Dialog.IconLoadFailed" xml:space="preserve">
+    <value>A kiválasztott bootstrapper ikon betöltése nem sikerült.
+
+{0}</value>
+    <comment>{0} is an exception message</comment>
+  </data>
+  <data name="Dialog.LanguageSelector.Header" xml:space="preserve">
+    <value>Válassza ki a kívánt nyelvet</value>
+  </data>
+  <data name="Dialog.LanguageSelector.Subtext" xml:space="preserve">
+    <value>A telepítés folytatásához válasszon ki egy nyelvet.
+Előfordulhat, hogy egyes szövegrészek nem lesznek lefordítva a kiválasztott nyelvre.</value>
+  </data>
+  <data name="Dialog.PlayerError.Crash" xml:space="preserve">
+    <value>A Roblox összeomlott.</value>
+  </data>
+  <data name="Dialog.PlayerError.FailedLaunch" xml:space="preserve">
+    <value>A Roblox elindítása nem sikerült.</value>
+  </data>
+  <data name="Dialog.PlayerError.HelpInformation" xml:space="preserve">
+    <value>Ha többet szeretnél megtudni arról, hogy miért fordulhat elő ez a probléma, és hogyan lehet megoldani, kérjük, olvasd el [ezt a súgócikket]({0}).
+
+Ellenőrizd, hogy a Roblox működik-e [az eredeti indítóprogrammal]({1}). Ha nem, akkor ez nem a Froststrap hibája. Ha igen, akkor olvass el a súgócikket.</value>
+  </data>
+  <data name="Dialog.RegistryWriteError" xml:space="preserve">
+    <value>A Froststrap nem tud írni a Windows rendszerleíró adatbázisába. Valószínűleg egy vírusirtó program zavarja a működését, és ez okozza a problémát. Kérjük, ellenőrizze, hogy nincs-e valami, ami korlátozná a Froststrap működését.</value>
+  </data>
+  <data name="Enums.BackgroundMode.Gradient" xml:space="preserve">
+    <value>Gradiensek</value>
+  </data>
+  <data name="Enums.BackgroundMode.Image" xml:space="preserve">
+    <value>Képek</value>
+  </data>
+  <data name="Enums.BackgroundStretch.Fill" xml:space="preserve">
+    <value>Kitöltés</value>
+  </data>
+  <data name="Enums.BackgroundStretch.None" xml:space="preserve">
+    <value>Nincs</value>
+  </data>
+  <data name="Enums.BackgroundStretch.Uniform" xml:space="preserve">
+    <value>Egyenruha</value>
+  </data>
+  <data name="Enums.BackgroundStretch.UniformToFill" xml:space="preserve">
+    <value>Betöltendő pozíció</value>
   </data>
   <data name="Enums.BootstrapperIcon.IconEarly2015" xml:space="preserve">
-    <value>Korai 2015</value>
+    <value>2015 eleje</value>
   </data>
   <data name="Enums.BootstrapperIcon.IconLate2015" xml:space="preserve">
-    <value>Késő 2015</value>
+    <value>2015 vége</value>
   </data>
   <data name="Enums.BootstrapperStyle.ByfronDialog" xml:space="preserve">
-    <value>Kamu Byfron (2023)</value>
+    <value>Hamis Byfron (~2023)</value>
   </data>
   <data name="Enums.BootstrapperStyle.ClassicFluentDialog" xml:space="preserve">
-    <value>Froststrap (Klasszikus)</value>
+    <value>Froststrap (klasszikus)</value>
+  </data>
+  <data name="Enums.BootstrapperStyle.CustomDialog" xml:space="preserve">
+    <value>Egyedi</value>
   </data>
   <data name="Enums.BootstrapperStyle.FluentAeroDialog" xml:space="preserve">
-    <value>Froststrap (Üveg)</value>
+    <value>Froststrap (üveg)</value>
   </data>
-  <data name="Enums.BootstrapperStyle.LegacyDialog2008" xml:space="preserve">
-    <value>Régi (2008 - 2011)</value>
+  <data name="Enums.BootstrapperStyle.FluentDialog" xml:space="preserve">
+    <value>Froststrap (átlátszatlan)</value>
   </data>
-  <data name="Enums.BootstrapperStyle.LegacyDialog2011" xml:space="preserve">
-    <value>Régi (2011 - 2014)</value>
+  <data name="Enums.CleanerOptions.Never" xml:space="preserve">
+    <value>Soha</value>
   </data>
-  <data name="Enums.BootstrapperStyle.ProgressDialog" xml:space="preserve">
-    <value>Roblox (~2014)</value>
+  <data name="Enums.CleanerOptions.OneDay" xml:space="preserve">
+    <value>1 nap elteltével</value>
   </data>
-  <data name="Enums.BootstrapperStyle.VistaDialog" xml:space="preserve">
-    <value>Vista (2008 - 2011)</value>
+  <data name="Enums.CleanerOptions.OneMonth" xml:space="preserve">
+    <value>1 hónap elteltével</value>
+  </data>
+  <data name="Enums.CleanerOptions.OneWeek" xml:space="preserve">
+    <value>1 hét elteltével</value>
+  </data>
+  <data name="Enums.CleanerOptions.TwoMonths" xml:space="preserve">
+    <value>2 hónap elteltével</value>
+  </data>
+  <data name="Enums.CopyFormatMode.Format1" xml:space="preserve">
+    <value>Alapértelmezett</value>
+  </data>
+  <data name="Enums.CopyFormatMode.Format2" xml:space="preserve">
+    <value>Ajánlott</value>
+  </data>
+  <data name="Enums.CopyFormatMode.Format3" xml:space="preserve">
+    <value>Ábécérendben</value>
+  </data>
+  <data name="Enums.CopyFormatMode.Format4" xml:space="preserve">
+    <value>Hosszúság szerint csökkenő sorrendben</value>
+  </data>
+  <data name="Enums.CursorType.BlackAndWhiteDot" xml:space="preserve">
+    <value>Fekete-fehér pötty</value>
   </data>
   <data name="Enums.CursorType.From2006" xml:space="preserve">
-    <value>2006 (Rajzfilmes)</value>
+    <value>~2006 (rajzfilmszerű)</value>
   </data>
-  <data name="Enums.CursorType.From2013" xml:space="preserve">
-    <value>2013 (Szögletes)</value>
+  <data name="Enums.CursorType.PurpleCross" xml:space="preserve">
+    <value>Lila Kereszt</value>
   </data>
-  <data name="Enums.EmojiType.Catmoji" xml:space="preserve">
-    <value>Catmoji</value>
+  <data name="Enums.CustomThemeTemplate.Blank" xml:space="preserve">
+    <value>Üres</value>
+  </data>
+  <data name="Enums.CustomThemeTemplate.Simple" xml:space="preserve">
+    <value>Egyszerű</value>
+  </data>
+  <data name="Enums.CycleFrequency.Days" xml:space="preserve">
+    <value>Napok</value>
+  </data>
+  <data name="Enums.CycleFrequency.EveryLaunch" xml:space="preserve">
+    <value>Minden indítás</value>
+  </data>
+  <data name="Enums.CycleFrequency.Hours" xml:space="preserve">
+    <value>Nyitvatartási idő</value>
+  </data>
+  <data name="Enums.CycleFrequency.Minutes" xml:space="preserve">
+    <value>Jegyzőkönyv</value>
   </data>
   <data name="Enums.EmojiType.Default" xml:space="preserve">
     <value>Alapértelmezett (Twemoji)</value>
   </data>
-  <data name="Enums.EmojiType.Windows10" xml:space="preserve">
-    <value>Windows 10</value>
+  <data name="Enums.FlagPresets.TextureQuality.Level0" xml:space="preserve">
+    <value>0. szint (legalacsonyabb)</value>
   </data>
-  <data name="Enums.EmojiType.Windows11" xml:space="preserve">
-    <value>Windows 11</value>
+  <data name="Enums.FlagPresets.TextureQuality.Level1" xml:space="preserve">
+    <value>1. szint (alacsony)</value>
   </data>
-  <data name="Enums.EmojiType.Windows8" xml:space="preserve">
-    <value>Windows 8</value>
+  <data name="Enums.FlagPresets.TextureQuality.Level2" xml:space="preserve">
+    <value>2. szint (közepes)</value>
   </data>
-  <data name="Enums.FlagPresets.InGameMenuVersion.V1" xml:space="preserve">
-    <value>2015 (1. verzió)</value>
+  <data name="Enums.FlagPresets.TextureQuality.Level3" xml:space="preserve">
+    <value>3. szint (legmagasabb)</value>
   </data>
-  <data name="Enums.FlagPresets.InGameMenuVersion.V2" xml:space="preserve">
-    <value>2020 (2. verzió)</value>
+  <data name="Enums.FontSize.x1" xml:space="preserve">
+    <value>Kicsi</value>
   </data>
-  <data name="Enums.FlagPresets.InGameMenuVersion.V4" xml:space="preserve">
-    <value>2023 (4. verzió)</value>
+  <data name="Enums.FontSize.x2" xml:space="preserve">
+    <value>Közepes</value>
   </data>
-  <data name="Enums.FlagPresets.LightingMode.Default" xml:space="preserve">
-    <value>Játék által kiválasztott</value>
+  <data name="Enums.FontSize.x3" xml:space="preserve">
+    <value>Nagy</value>
   </data>
-  <data name="Enums.FlagPresets.LightingMode.Future" xml:space="preserve">
-    <value>Future (3. fázis)</value>
+  <data name="Enums.FontSize.x4" xml:space="preserve">
+    <value>Extra nagy</value>
   </data>
-  <data name="Enums.FlagPresets.LightingMode.ShadowMap" xml:space="preserve">
-    <value>Shadow map (2. fázis)</value>
+  <data name="Enums.PlayerListLayOut.x0" xml:space="preserve">
+    <value>Négyzet</value>
   </data>
-  <data name="Enums.FlagPresets.LightingMode.Voxel" xml:space="preserve">
-    <value>Voxel (1. fázis)</value>
+  <data name="Enums.PlayerListLayOut.x1" xml:space="preserve">
+    <value>Normál</value>
   </data>
-  <data name="Enums.FlagPresets.RenderingMode.D3D10" xml:space="preserve">
-    <value>Direct3D 10</value>
+  <data name="Enums.ProcessPriorityOption.AboveNormal" xml:space="preserve">
+    <value>A normál feletti</value>
   </data>
-  <data name="Enums.FlagPresets.RenderingMode.D3D11" xml:space="preserve">
-    <value>Direct3D 11</value>
+  <data name="Enums.ProcessPriorityOption.BelowNormal" xml:space="preserve">
+    <value>A normál alatt</value>
+  </data>
+  <data name="Enums.ProcessPriorityOption.High" xml:space="preserve">
+    <value>Magas</value>
+  </data>
+  <data name="Enums.ProcessPriorityOption.Low" xml:space="preserve">
+    <value>Alacsony</value>
+  </data>
+  <data name="Enums.ProcessPriorityOption.Normal" xml:space="preserve">
+    <value>Normál</value>
+  </data>
+  <data name="Enums.ProcessPriorityOption.RealTime" xml:space="preserve">
+    <value>Valós idő</value>
+  </data>
+  <data name="Enums.QualityLevel.Level1" xml:space="preserve">
+    <value>1. szint</value>
+  </data>
+  <data name="Enums.QualityLevel.Level10" xml:space="preserve">
+    <value>10. szint</value>
+  </data>
+  <data name="Enums.QualityLevel.Level11" xml:space="preserve">
+    <value>11. szint</value>
+  </data>
+  <data name="Enums.QualityLevel.Level12" xml:space="preserve">
+    <value>12. szint</value>
+  </data>
+  <data name="Enums.QualityLevel.Level13" xml:space="preserve">
+    <value>13. szint</value>
+  </data>
+  <data name="Enums.QualityLevel.Level14" xml:space="preserve">
+    <value>14. szint</value>
+  </data>
+  <data name="Enums.QualityLevel.Level15" xml:space="preserve">
+    <value>15. szint</value>
+  </data>
+  <data name="Enums.QualityLevel.Level16" xml:space="preserve">
+    <value>16. szint</value>
+  </data>
+  <data name="Enums.QualityLevel.Level17" xml:space="preserve">
+    <value>17. szint</value>
+  </data>
+  <data name="Enums.QualityLevel.Level18" xml:space="preserve">
+    <value>18. szint</value>
+  </data>
+  <data name="Enums.QualityLevel.Level19" xml:space="preserve">
+    <value>19. szint</value>
+  </data>
+  <data name="Enums.QualityLevel.Level2" xml:space="preserve">
+    <value>2. szint</value>
+  </data>
+  <data name="Enums.QualityLevel.Level20" xml:space="preserve">
+    <value>20. szint</value>
+  </data>
+  <data name="Enums.QualityLevel.Level21" xml:space="preserve">
+    <value>21. szint</value>
+  </data>
+  <data name="Enums.QualityLevel.Level3" xml:space="preserve">
+    <value>3. szint</value>
+  </data>
+  <data name="Enums.QualityLevel.Level4" xml:space="preserve">
+    <value>4. szint</value>
+  </data>
+  <data name="Enums.QualityLevel.Level5" xml:space="preserve">
+    <value>5. szint</value>
+  </data>
+  <data name="Enums.QualityLevel.Level6" xml:space="preserve">
+    <value>6. szint</value>
+  </data>
+  <data name="Enums.QualityLevel.Level7" xml:space="preserve">
+    <value>7. szint</value>
+  </data>
+  <data name="Enums.QualityLevel.Level8" xml:space="preserve">
+    <value>8. szint</value>
+  </data>
+  <data name="Enums.QualityLevel.Level9" xml:space="preserve">
+    <value>9. szint</value>
+  </data>
+  <data name="Enums.RenderingMode.Default" xml:space="preserve">
+    <value>Direct3D11 (alapértelmezett)</value>
   </data>
   <data name="Enums.ServerType.Private" xml:space="preserve">
-    <value>Privát szerver</value>
+    <value>Magánszerver</value>
   </data>
   <data name="Enums.ServerType.Public" xml:space="preserve">
     <value>Nyilvános szerver</value>
   </data>
   <data name="Enums.ServerType.Reserved" xml:space="preserve">
-    <value>Fenntartott szerver</value>
+    <value>Foglalt szerver</value>
+  </data>
+  <data name="Enums.TextureQuality.Default" xml:space="preserve">
+    <value>Magas (alapértelmezett)</value>
+  </data>
+  <data name="Enums.TextureQuality.Low" xml:space="preserve">
+    <value>Alacsony</value>
+  </data>
+  <data name="Enums.TextureQuality.Lowest" xml:space="preserve">
+    <value>Legalacsonyabb</value>
+  </data>
+  <data name="Enums.TextureQuality.Medium" xml:space="preserve">
+    <value>Közepes</value>
+  </data>
+  <data name="Enums.Theme.Blue" xml:space="preserve">
+    <value>Kék</value>
   </data>
   <data name="Enums.Theme.Dark" xml:space="preserve">
     <value>Sötét</value>
   </data>
+  <data name="Enums.Theme.Green" xml:space="preserve">
+    <value>Zöld</value>
+  </data>
   <data name="Enums.Theme.Light" xml:space="preserve">
-    <value>Világos</value>
+    <value>Fény</value>
+  </data>
+  <data name="Enums.Theme.Orange" xml:space="preserve">
+    <value>Narancs</value>
+  </data>
+  <data name="Enums.Theme.Pink" xml:space="preserve">
+    <value>Rózsaszín</value>
+  </data>
+  <data name="Enums.Theme.Purple" xml:space="preserve">
+    <value>Lila</value>
+  </data>
+  <data name="Enums.TrayDoubleClickAction.GameHistory" xml:space="preserve">
+    <value>A játék története</value>
+  </data>
+  <data name="Enums.TrayDoubleClickAction.None" xml:space="preserve">
+    <value>Nincs</value>
+  </data>
+  <data name="Enums.TrayDoubleClickAction.ServerInfo" xml:space="preserve">
+    <value>Szerveradatok</value>
+  </data>
+  <data name="FileTypes.ZipArchive" xml:space="preserve">
+    <value>Zip-archívum</value>
+    <comment>Shown in the save file dialog, where the file type selection dropdown is, e.g. &quot;Zip archive (*.zip)&quot;</comment>
   </data>
   <data name="InstallChecker.Updated" xml:space="preserve">
-    <value>A Froststrap frissítve lett v{0}-ra/re</value>
+    <value>A Froststrap frissült a v{0} verzióra</value>
   </data>
   <data name="InstallChecker.VersionDifferentThanInstalled" xml:space="preserve">
-    <value>A Froststrap elindított verziója eltér a jelenleg telepített verziótól.
-Szeretné frissíteni a jelenleg telepített verzióját?</value>
+    <value>Az Ön által elindított Froststrap-verzió eltér a jelenleg telepített verziótól.
+Szeretné frissíteni a jelenleg telepített verziót?</value>
+  </data>
+  <data name="InstallChecker.VersionLessThanInstalled" xml:space="preserve">
+    <value>Az Ön által elindított Froststrap-verzió régebbi, mint a jelenleg telepített verzió.
+Problémák léphetnek fel, és a beállításai megváltozhatnak. Javasoljuk az újratelepítést.
+Biztosan folytatni szeretné?</value>
+  </data>
+  <data name="JsonManager.FastFlagsLoadFailed" xml:space="preserve">
+    <value>A Fast Flags beállítások betöltése nem sikerült. Azok visszaálltak az alapértelmezett beállításokra.</value>
+  </data>
+  <data name="JsonManager.SettingsLoadFailed" xml:space="preserve">
+    <value>A beállítások betöltése nem sikerült. A rendszer visszaállította az alapértelmezett beállításokat.</value>
+  </data>
+  <data name="LaunchMenu.LaunchRoblox" xml:space="preserve">
+    <value>Indítsd el a Robloxot</value>
+  </data>
+  <data name="LaunchMenu.LaunchRobloxStudio" xml:space="preserve">
+    <value>Indítsd el a Roblox Studiót</value>
+  </data>
+  <data name="Logger.NoWriteMode" xml:space="preserve">
+    <value>Erre az indításra nem készül naplófájl, mivel a Froststrap nem tud írni a „{0}” mappába.</value>
+  </data>
+  <data name="Menu.About.BuildInfo" xml:space="preserve">
+    <value>Építési adatok</value>
+  </data>
+  <data name="Menu.About.CommitHash" xml:space="preserve">
+    <value>Commit-hash</value>
+  </data>
+  <data name="Menu.About.CommitRef" xml:space="preserve">
+    <value>Változtatás hivatkozása</value>
   </data>
   <data name="Menu.About.Contributors" xml:space="preserve">
-    <value>Hozzájárulók</value>
+    <value>Közreműködők</value>
   </data>
   <data name="Menu.About.Contributors.Code" xml:space="preserve">
-    <value>Programozók</value>
+    <value>Kód</value>
   </data>
   <data name="Menu.About.Contributors.Description" xml:space="preserve">
-    <value>Ezek azok az emberek, akik jelentős mértékben hozzájárultak a Froststraphez, és segítettek abban, hogy azzá váljon, ami.</value>
+    <value>Ők azok, akik jelentős hozzájárulást nyújtottak a Froststrap és a Froststrap fejlesztéséhez, és akiknek köszönhetően a projekt a mai formáját nyerte el.</value>
   </data>
-  <data name="Menu.About.Contributors.FeatureIdeas" xml:space="preserve">
-    <value>Funkció Ajánlók</value>
-  </data>
-  <data name="Menu.About.Contributors.SpecialThanks" xml:space="preserve">
-    <value>Különleges Köszönet</value>
+  <data name="Menu.About.Contributors.Insipirations" xml:space="preserve">
+    <value>Inspirációk</value>
   </data>
   <data name="Menu.About.Description" xml:space="preserve">
-    <value>Egy alternatív indító a Roblox-hoz csomó extra funkcióval.</value>
+    <value>Egy Fishstrap/Froststrap villás rögzítés.</value>
   </data>
   <data name="Menu.About.DiscordServer" xml:space="preserve">
-    <value>Discord szerver</value>
+    <value>Discord-szerver</value>
   </data>
   <data name="Menu.About.GithubRepository" xml:space="preserve">
-    <value>GitHub tároló</value>
+    <value>GitHub-tárhely</value>
   </data>
   <data name="Menu.About.HelpInformation" xml:space="preserve">
-    <value>Segítség és információ</value>
+    <value>Segítség és információk</value>
   </data>
-  <data name="Menu.About.Licenses" xml:space="preserve">
-    <value>Licencek</value>
-  </data>
-  <data name="Menu.About.Licenses.BSD2" xml:space="preserve">
-    <value>BSD 2-Clause Licensz</value>
+  <data name="Menu.About.Licenses.Apache" xml:space="preserve">
+    <value>Apache 2.0 licenc</value>
   </data>
   <data name="Menu.About.Licenses.MIT" xml:space="preserve">
-    <value>MIT Licenc</value>
+    <value>MIT-licenc</value>
   </data>
   <data name="Menu.About.ReportIssue" xml:space="preserve">
-    <value>Hiba bejelentése</value>
+    <value>Hiba jelentése</value>
   </data>
   <data name="Menu.About.Title" xml:space="preserve">
-    <value>Froststrap-ről</value>
+    <value>Rólunk</value>
   </data>
   <data name="Menu.About.Version" xml:space="preserve">
-    <value>Verzió {0}</value>
-    <comment>{0} is replaced with the version, i.e. "Version 2.8.0"</comment>
+    <value>{0} verzió</value>
+    <comment>{0} is replaced with the version, i.e. &quot;Version 2.8.0&quot;</comment>
   </data>
-  <data name="Menu.AllFiles" xml:space="preserve">
-    <value>Összes fálj</value>
+  <data name="Menu.AccountSelector.AccountRemoved" xml:space="preserve">
+    <value>A „{0}” fiókot eltávolítottuk, mert a hozzá tartozó cookie érvénytelen vagy lejárt.</value>
+  </data>
+  <data name="Menu.AccountSelector.AddAccount" xml:space="preserve">
+    <value>Fiók hozzáadása</value>
+  </data>
+  <data name="Menu.AccountSelector.AlreadyLoggedIn" xml:space="preserve">
+    <value>Az „@{0}” fiók már be van jelentkezve.
+Átváltottam erre a fiókra.</value>
+  </data>
+  <data name="Menu.AccountSelector.AskToAddAccount" xml:space="preserve">
+    <value>Nincs hozzáadott fiók
+Kattintson a fenti „Fiók hozzáadása” gombra a kezdéshez</value>
+  </data>
+  <data name="Menu.AccountSelector.Login.LocalCookie" xml:space="preserve">
+    <value>Helyi cookie</value>
+  </data>
+  <data name="Menu.AccountSelector.NotLoggedIn" xml:space="preserve">
+    <value>Nincs bejelentkezve</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.InGame" xml:space="preserve">
+    <value>Egy Roblox-játékban</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.InStudio" xml:space="preserve">
+    <value>A Roblox Studio-ban</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.Online" xml:space="preserve">
+    <value>Online (a Roblox weboldalán)</value>
   </data>
   <data name="Menu.AlreadyRunning.Caption" xml:space="preserve">
-    <value>Vegye figyelembe, hogy nem minden módosítása fog érvényesülni, amíg nem zárja be Roblox összes feladatát.</value>
+    <value>Felhívjuk figyelmét, hogy a módosítások nem mindegyike lép azonnal hatályba, amíg az összes jelenleg megnyitott Roblox-példányt be nem zárja.</value>
   </data>
   <data name="Menu.AlreadyRunning.Title" xml:space="preserve">
     <value>A Froststrap már fut</value>
   </data>
+  <data name="Menu.Appearance.BackgroundMode" xml:space="preserve">
+    <value>Háttér üzemmód:</value>
+  </data>
   <data name="Menu.Appearance.Bootstrapper.Description" xml:space="preserve">
-    <value>A kinézete lehet teljesen más, lehet retró, vagy csak normális Roblox kinézetű.</value>
+    <value>A Froststrap bootstrapperjét számos beállítási lehetőség segítségével testreszabhatja.</value>
   </data>
-  <data name="Menu.Appearance.Bootstrapper.Title" xml:space="preserve">
-    <value>Indító</value>
+  <data name="Menu.Appearance.Custom.Theme.Description" xml:space="preserve">
+    <value>A Froststrap témáit egyszerűen testreszabhatja az előre beállított sablonok segítségével, vagy létrehozhat saját, egyedi megjelenést.</value>
   </data>
-  <data name="Menu.Appearance.Customisation.Description" xml:space="preserve">
-    <value>Egyéb különféle testreszabható beállítások konfigurálása.</value>
+  <data name="Menu.Appearance.Custom.Theme.Title" xml:space="preserve">
+    <value>Alkalmazás-témák</value>
   </data>
-  <data name="Menu.Appearance.Customisation.Title" xml:space="preserve">
-    <value>Testreszabás</value>
+  <data name="Menu.Appearance.CustomThemes.DeleteFailed" xml:space="preserve">
+    <value>A {0} egyéni téma törlése nem sikerült: {1}</value>
   </data>
-  <data name="Menu.Appearance.CustomisationIcon.Description" xml:space="preserve">
-    <value>Több méretű .ico fájlnak kell lennie, 16px és 128px közötti méretekkel. Használatához állítsa be az ikont 'Egyedi'-nek.</value>
-  </data>
-  <data name="Menu.Appearance.CustomisationIcon.Title" xml:space="preserve">
-    <value>Saját Ikon</value>
+  <data name="Menu.Appearance.CustomThemes.NoneSelected" xml:space="preserve">
+    <value>Nincs kiválasztva egyéni téma.</value>
   </data>
   <data name="Menu.Appearance.CustomisationTitle.Description" xml:space="preserve">
-    <value>Az indító címeként megjelenő szöveg.</value>
+    <value>Az a szöveg, amely a bootstrapper címeként jelenik meg.</value>
   </data>
   <data name="Menu.Appearance.CustomisationTitle.Title" xml:space="preserve">
-    <value>Név</value>
+    <value>Cím</value>
   </data>
   <data name="Menu.Appearance.Description" xml:space="preserve">
-    <value>Állítsa be a Froststrap kinézetét.</value>
+    <value>Állítsd be, hogyan jelenjen meg a Froststrap.</value>
   </data>
-  <data name="Menu.Appearance.Global.Theme.Title" xml:space="preserve">
-    <value>Globális Téma</value>
+  <data name="Menu.Appearance.Frequency" xml:space="preserve">
+    <value>Frekvencia</value>
   </data>
   <data name="Menu.Appearance.Icon.Description" xml:space="preserve">
-    <value>Válassza ki, hogy milyen ikont használjon.</value>
+    <value>Válaszd ki, melyik ikont használja a Froststrap.</value>
   </data>
   <data name="Menu.Appearance.Icon.Title" xml:space="preserve">
     <value>Ikon</value>
   </data>
+  <data name="Menu.Appearance.Interval" xml:space="preserve">
+    <value>Intervallum</value>
+  </data>
+  <data name="Menu.Appearance.Language.Description" xml:space="preserve">
+    <value>A változtatások érvénybe lépéséhez újraindításra van szükség. Előfordulhat, hogy egyes szövegrészek nem kerülnek lefordításra a kívánt nyelvre.</value>
+  </data>
+  <data name="Menu.Appearance.Language.Title" xml:space="preserve">
+    <value>Nyelv</value>
+  </data>
+  <data name="Menu.Appearance.Launcher.Description" xml:space="preserve">
+    <value>Válasszon ki egy indítóképernyő-stílust! Megjegyzés: A sötét téma nem támogatott a Legacy és a Vista rendszereken. További testreszabható indítókért látogasson el a Froststrap hivatalos Discord-szerverére.</value>
+  </data>
+  <data name="Menu.Appearance.Launcher.Title" xml:space="preserve">
+    <value>Bootstrapper-stílus</value>
+  </data>
+  <data name="Menu.Appearance.Opacity" xml:space="preserve">
+    <value>Átlátszatlanság:</value>
+  </data>
   <data name="Menu.Appearance.Preview" xml:space="preserve">
     <value>Előnézet</value>
   </data>
-  <data name="Menu.Appearance.Style.Description" xml:space="preserve">
-    <value>Válassza ki a kinézetét. A sötét téma nem hat a Régi/Vista kinézetre.</value>
+  <data name="Menu.Appearance.ResetDefault" xml:space="preserve">
+    <value>Alapértelmezett beállítások visszaállítása</value>
   </data>
-  <data name="Menu.Appearance.Style.Title" xml:space="preserve">
-    <value>Stílus</value>
+  <data name="Menu.Appearance.StretchMode" xml:space="preserve">
+    <value>Stretch mód:</value>
+  </data>
+  <data name="Menu.Appearance.ThemeCycling.Description" xml:space="preserve">
+    <value>Az egyéni témák automatikus váltása.</value>
+  </data>
+  <data name="Menu.Appearance.ThemeCycling.Title" xml:space="preserve">
+    <value>Téma: Kerékpározás</value>
   </data>
   <data name="Menu.Appearance.Title" xml:space="preserve">
-    <value>Kinézet</value>
+    <value>Megjelenés</value>
+  </data>
+  <data name="Menu.Appearance.WindowsBackdrop.Description" xml:space="preserve">
+    <value>Válasszon ki egy ablakháttér-effektust! Ehhez sötét téma szükséges, és az alkalmazást újra kell indítani. Megjegyzés: A Mica csak Windows 11 rendszeren működik.</value>
+  </data>
+  <data name="Menu.Appearance.WindowsBackdrop.Title" xml:space="preserve">
+    <value>Ablakháttér</value>
+  </data>
+  <data name="Menu.Behaviour.AllowCookieAccess.Description" xml:space="preserve">
+    <value>A hitelesítési cookie-d segítségével hozzáférést biztosít a Roblox API-khoz. [Mire fog a Froststrap hozzáférni?]({0})</value>
+  </data>
+  <data name="Menu.Behaviour.AllowCookieAccess.Title" xml:space="preserve">
+    <value>Froststrap-fiók jogosultságai</value>
   </data>
   <data name="Menu.Behaviour.AutoUpdate.Description" xml:space="preserve">
-    <value>A Froststrap automatikusan ellenőrzi és frissíti magát a Roblox indításakor.</value>
+    <value>A Froststrap a Roblox indításakor automatikusan ellenőrzi és frissíti magát egy stabil verzióra.</value>
   </data>
   <data name="Menu.Behaviour.AutoUpdate.Title" xml:space="preserve">
-    <value>Froststrap automatikus frissítése</value>
+    <value>A Froststrap automatikus frissítése</value>
+  </data>
+  <data name="Menu.Behaviour.BackgroundUpdates.Description" xml:space="preserve">
+    <value>A várakozás helyett frissítsd a Robloxot a háttérben. Lassú internetkapcsolat esetén nem ajánlott. A funkció működéséhez legalább 3 GB szabad tárhelyre van szükség.</value>
+  </data>
+  <data name="Menu.Behaviour.BackgroundUpdates.Title" xml:space="preserve">
+    <value>Háttérfrissítések</value>
+  </data>
+  <data name="Menu.Behaviour.CloseCrashHandler.Description" xml:space="preserve">
+    <value>Indításkor automatikusan bezárja a RobloxCrashHandler.exe folyamatot, hogy felszabadítson némi rendszerkapacitást.</value>
+  </data>
+  <data name="Menu.Behaviour.CloseCrashHandler.Title" xml:space="preserve">
+    <value>A hiba-kezelő bezárása</value>
   </data>
   <data name="Menu.Behaviour.ConfirmLaunches.Description" xml:space="preserve">
-    <value>Megakadályozza, hogy a meglévő játéka bezárjódjon, amikor véletlenül egy újat indít el.</value>
+    <value>Megakadályozza a már futó játék bezáródását, ha véletlenül elindítasz egy másik Roblox-példányt.</value>
   </data>
   <data name="Menu.Behaviour.ConfirmLaunches.Title" xml:space="preserve">
-    <value>Kérdezzen rá, amikor egy másik Roblox feladatot indítok el</value>
+    <value>Az példány elindításának visszaigazolása</value>
   </data>
   <data name="Menu.Behaviour.Description" xml:space="preserve">
-    <value>Annak beállítása, hogy a Froststrap mit tegyen a Roblox indításakor.</value>
+    <value>Állítsd be, hogy a Froststrap mit tegyen a Roblox indításakor.</value>
   </data>
   <data name="Menu.Behaviour.ForceRobloxReinstall.Description" xml:space="preserve">
-    <value>A Roblox a következő induláskor frissen lesz telepítve.</value>
+    <value>A Roblox következő indításakor a program tiszta telepítése fog megtörténni.</value>
   </data>
   <data name="Menu.Behaviour.ForceRobloxReinstall.Title" xml:space="preserve">
-    <value>Roblox kényszerített újratelepítése</value>
+    <value>A Roblox újratelepítésének kényszerítése</value>
   </data>
-  <data name="Menu.Behaviour.Title" xml:space="preserve">
-    <value>Indító</value>
+  <data name="Menu.Behaviour.ProcessPriority.Description" xml:space="preserve">
+    <value>Kijelöli a Roblox CPU-prioritását.</value>
+  </data>
+  <data name="Menu.Behaviour.ProcessPriority.Title" xml:space="preserve">
+    <value>Roblox folyamatprioritás</value>
+  </data>
+  <data name="Menu.Bootstrapper.AppStorage.Description" xml:space="preserve">
+    <value>A tárolt belső Roblox-alkalmazás beállításainak konfigurálása.</value>
+  </data>
+  <data name="Menu.Bootstrapper.AppStorage.Title" xml:space="preserve">
+    <value>Az alkalmazás tárolási beállításai</value>
+  </data>
+  <data name="Menu.Bootstrapper.BestRegionAmount.Description" xml:space="preserve">
+    <value>Válaszd ki az ellenőrizni kívánt régiók számát; ez segíthet abban az esetben, ha a rendszer nem találja meg a legmegfelelőbb régiókat.</value>
+  </data>
+  <data name="Menu.Bootstrapper.BestRegionAmount.Title" xml:space="preserve">
+    <value>A legjobb régiók összegei</value>
+  </data>
+  <data name="Menu.Bootstrapper.CleanUp.Description" xml:space="preserve">
+    <value>A régi adatokat automatikusan törli, hogy helyet szabadítson fel. Eredetileg Fishstrap készítette.</value>
+  </data>
+  <data name="Menu.Bootstrapper.CleanUp.Title" xml:space="preserve">
+    <value>Froststrap tisztítószer</value>
+  </data>
+  <data name="Menu.Bootstrapper.Cleaner.Age.Description" xml:space="preserve">
+    <value>A beállított időtartamnál régebbi fájlok törlésre kerülnek.</value>
+  </data>
+  <data name="Menu.Bootstrapper.Cleaner.Age.Title" xml:space="preserve">
+    <value>Fájltörlési ütemterv</value>
+  </data>
+  <data name="Menu.Bootstrapper.Cleaner.Cache.Description" xml:space="preserve">
+    <value>A régi letöltések törlésre kerülnek.</value>
+  </data>
+  <data name="Menu.Bootstrapper.Cleaner.Cache.Title" xml:space="preserve">
+    <value>Gyorsítótár</value>
+  </data>
+  <data name="Menu.Bootstrapper.Cleaner.IncludeBloxstrap.Description" xml:space="preserve">
+    <value>A Froststrap naplófájlok törlésre kerülnek.</value>
+  </data>
+  <data name="Menu.Bootstrapper.Cleaner.IncludeBloxstrap.Title" xml:space="preserve">
+    <value>Froststrap naplófájlok</value>
+  </data>
+  <data name="Menu.Bootstrapper.Cleaner.Logs.Description" xml:space="preserve">
+    <value>A régi naplófájlok törlésre kerülnek.</value>
+  </data>
+  <data name="Menu.Bootstrapper.Cleaner.Logs.Title" xml:space="preserve">
+    <value>Naplók menü</value>
+  </data>
+  <data name="Menu.Bootstrapper.Experimental.BetterMatchmaking.Description" xml:space="preserve">
+    <value>Hagyd, hogy a Froststrap döntse el, melyik szerverhez csatlakozz. Elsőbbséget ad annak a szervernek, amelyik a legközelebb van hozzád.</value>
+  </data>
+  <data name="Menu.Bootstrapper.Experimental.BetterMatchmaking.FollowUser" xml:space="preserve">
+    <value>Úgy tűnik, egy barátod éppen ezt a játékot játszik. Csatlakozni szeretnél hozzá?</value>
+  </data>
+  <data name="Menu.Bootstrapper.Experimental.BetterMatchmaking.Title" xml:space="preserve">
+    <value>A BetterMatchmaking engedélyezése</value>
+  </data>
+  <data name="Menu.Bootstrapper.MaxServerCheck.Description" xml:space="preserve">
+    <value>Válassza ki, hány szervert szeretne ellenőrizni; minél több, annál hosszabb ideig tarthat a folyamat.</value>
+  </data>
+  <data name="Menu.Bootstrapper.MaxServerCheck.Title" xml:space="preserve">
+    <value>A szerver ellenőrzésének maximális összege</value>
+  </data>
+  <data name="Menu.Bootstrapper.PreferredRegion.Description" xml:space="preserve">
+    <value>Válasszon ki egy konkrét régiót, ahová csatlakozni szeretne, vagy hagyja az „Auto” beállítást a legjobb elérhető lehetőség kiválasztásához.</value>
+  </data>
+  <data name="Menu.Bootstrapper.PreferredRegion.Title" xml:space="preserve">
+    <value>Előnyben részesített régió</value>
+  </data>
+  <data name="Menu.Bootstrapper.RobloxTheme.Description" xml:space="preserve">
+    <value>Megváltoztatja a Roblox vizuális témáját.</value>
+  </data>
+  <data name="Menu.Bootstrapper.RobloxTheme.Title" xml:space="preserve">
+    <value>Roblox alkalmazás témája</value>
+  </data>
+  <data name="Menu.Bootstrapper.SmallerServer.Description" xml:space="preserve">
+    <value>Ha a „Play” gombra kattintva csatlakozol, válassz kisebb szervereket.</value>
+  </data>
+  <data name="Menu.Bootstrapper.SmallerServer.Title" xml:space="preserve">
+    <value>Csatlakozz a kisebb szerverekhez</value>
+  </data>
+  <data name="Menu.Bootstrapper.Startup.Description" xml:space="preserve">
+    <value>A számítógép indításakor automatikusan indítsd el a Roblox alkalmazást.</value>
+  </data>
+  <data name="Menu.Bootstrapper.Startup.Title" xml:space="preserve">
+    <value>Indítás a Startupnál</value>
+  </data>
+  <data name="Menu.Bootstrapper.Tray.Description" xml:space="preserve">
+    <value>Az alkalmazást a tálcára helyezi, ahelyett, hogy teljesen bezárná.</value>
+  </data>
+  <data name="Menu.Bootstrapper.Tray.Title" xml:space="preserve">
+    <value>A tálcára minimalizálás</value>
+  </data>
+  <data name="Menu.BottomButtons.ExportSettings" xml:space="preserve">
+    <value>Beállítások exportálása</value>
+  </data>
+  <data name="Menu.BottomButtons.ImportSettings" xml:space="preserve">
+    <value>Beállítások importálása</value>
+  </data>
+  <data name="Menu.BottomButtons.ResetSettingsToDefault" xml:space="preserve">
+    <value>Beállítások visszaállítása az alapértelmezett értékekre</value>
+  </data>
+  <data name="Menu.Channel.ChangeAction.Automatic" xml:space="preserve">
+    <value>Automatikus módosítás</value>
+  </data>
+  <data name="Menu.Channel.ChangeAction.Description" xml:space="preserve">
+    <value>Előfordulhat, hogy a Roblox vagy a Froststrap megpróbálja megváltoztatni a beállított csatornádat.</value>
+  </data>
+  <data name="Menu.Channel.ChangeAction.Ignore" xml:space="preserve">
+    <value>Soha ne változz!</value>
+  </data>
+  <data name="Menu.Channel.ChangeAction.Prompt" xml:space="preserve">
+    <value>Mindig pontos</value>
+  </data>
+  <data name="Menu.Channel.ChangeAction.Title" xml:space="preserve">
+    <value>Automatikus csatornaváltás</value>
+  </data>
+  <data name="Menu.Channel.Description" xml:space="preserve">
+    <value>A Roblox és a Froststrap telepítési és beállítási paramétereinek módosítása.</value>
+  </data>
+  <data name="Menu.Channel.RobloxUpgrades" xml:space="preserve">
+    <value>Roblox-frissítések</value>
+  </data>
+  <data name="Menu.Channel.RobloxUpgrades.Description" xml:space="preserve">
+    <value>Ha ez a beállítás ki van kapcsolva, a Roblox kliens nem frissül az újabb verziókra.</value>
+  </data>
+  <data name="Menu.Channel.StaticDirectory.Description" xml:space="preserve">
+    <value>Átállás a „version-xxx” formátumról a BinaryType-alapú telepítési könyvtárakra; ez kizárólag a Linux-on futó Studio-t érinti.</value>
+  </data>
+  <data name="Menu.Channel.StaticDirectory.Title" xml:space="preserve">
+    <value>Statikus könyvtár</value>
+  </data>
+  <data name="Menu.Channel.Switcher.Fetching" xml:space="preserve">
+    <value>A legfrissebb telepítési adatok betöltése, kérjük, várjon...</value>
+  </data>
+  <data name="Menu.Channel.Switcher.Unauthorized" xml:space="preserve">
+    <value>A megadott csatorna vagy nem létezik, vagy zárt csatorna</value>
+  </data>
+  <data name="Menu.ColorPicker.SelectColor" xml:space="preserve">
+    <value>Szín kiválasztása</value>
+  </data>
+  <data name="Menu.CommunityModInfo.Title" xml:space="preserve">
+    <value>Információk a Modról</value>
+  </data>
+  <data name="Menu.CommunityMods.AvatarEditor" xml:space="preserve">
+    <value>Avatar-szerkesztő</value>
+  </data>
+  <data name="Menu.CommunityMods.ColorMods" xml:space="preserve">
+    <value>Színmódosítások</value>
+  </data>
+  <data name="Menu.CommunityMods.Cursor" xml:space="preserve">
+    <value>Kijelölő</value>
+  </data>
+  <data name="Menu.CommunityMods.Description" xml:space="preserve">
+    <value>Fedezd fel a felhasználók által készített modokat!</value>
+  </data>
+  <data name="Menu.CommunityMods.Misc" xml:space="preserve">
+    <value>Különféle módosítások</value>
+  </data>
+  <data name="Menu.CommunityMods.ModInstalled" xml:space="preserve">
+    <value>A „{0}” mod sikeresen telepítve!</value>
+  </data>
+  <data name="Menu.CommunityMods.Overwrite" xml:space="preserve">
+    <value>Felülírja a meglévő „{0}” modot?</value>
+  </data>
+  <data name="Menu.CommunityMods.SearchMods" xml:space="preserve">
+    <value>Modok keresése...</value>
+  </data>
+  <data name="Menu.CommunityMods.ThemeInstalled" xml:space="preserve">
+    <value>A „{0}” téma telepítve és alkalmazva!</value>
+  </data>
+  <data name="Menu.CommunityMods.Themes" xml:space="preserve">
+    <value>Egyedi témák</value>
+  </data>
+  <data name="Menu.CommunityMods.Title" xml:space="preserve">
+    <value>Közösségi moderátorok</value>
+  </data>
+  <data name="Menu.ContextMenu.CloseStudio" xml:space="preserve">
+    <value>Stúdió bezárása</value>
+  </data>
+  <data name="Menu.ContextMenu.CloseWatcher" xml:space="preserve">
+    <value>Figyelmes megfigyelő</value>
+  </data>
+  <data name="Menu.ContextMenu.NoData" xml:space="preserve">
+    <value>Nincs elérhető tevékenységi adat.</value>
+  </data>
+  <data name="Menu.ContextMenu.RegionJoin" xml:space="preserve">
+    <value>Csatlakozz a Best Region (Auto) csoporthoz</value>
+  </data>
+  <data name="Menu.CookieState.CouldNotLoad" xml:space="preserve">
+    <value>A Roblox-süti betöltése nem sikerült.</value>
+  </data>
+  <data name="Menu.CookieState.Failed" xml:space="preserve">
+    <value>A cookie-fájl betöltése nem sikerült.</value>
+  </data>
+  <data name="Menu.CookieState.Invalid" xml:space="preserve">
+    <value>A cookie-t megtaláltuk, de érvénytelen vagy lejárt.</value>
+  </data>
+  <data name="Menu.CookieState.NotAllowed" xml:space="preserve">
+    <value>A beállításokban a cookie-k használata le van tiltva.</value>
+  </data>
+  <data name="Menu.CookieState.NotFound" xml:space="preserve">
+    <value>A Roblox cookie-fájl nem található.</value>
+  </data>
+  <data name="Menu.Deployment.AutoPreReleaseUpdate.Description" xml:space="preserve">
+    <value>A Froststrap a Roblox indításakor automatikusan ellenőrzi a rendszert, és tesztverzióra frissíti magát.</value>
+  </data>
+  <data name="Menu.Deployment.AutoPreReleaseUpdate.Title" xml:space="preserve">
+    <value>Előzetes kiadások frissítése</value>
+  </data>
+  <data name="Menu.Deployment.AutoUpdateSober" xml:space="preserve">
+    <value>A Sober automatikus frissítése</value>
+  </data>
+  <data name="Menu.Deployment.Channel.Description" xml:space="preserve">
+    <value>Válassza ki a telepítési csatornát! Ne módosítsa, hacsak nem tudja pontosan, mit csinál!</value>
+  </data>
+  <data name="Menu.Deployment.Channel.OutOfDate" xml:space="preserve">
+    <value>Ez a csatorna elavult, és valószínűleg már nem frissítik. Kérjük, használjon egy másik csatornát.</value>
+  </data>
+  <data name="Menu.Deployment.DomainValidation" xml:space="preserve">
+    <value>Érvénytelen domainnevet adott meg
+Kérjük, ne nyúljon ehhez, ha nem tudja, mit csinál!</value>
+  </data>
+  <data name="Menu.Deployment.FailedToLoadChannelData" xml:space="preserve">
+    <value>A csatornaadatok betöltése nem sikerült.</value>
+  </data>
+  <data name="Menu.Deployment.GameSearch.Description" xml:space="preserve">
+    <value>A játékokat a lap tetején található keresősáv segítségével keresheted.</value>
+  </data>
+  <data name="Menu.Deployment.GameSearch.Title" xml:space="preserve">
+    <value>Játékkeresés</value>
+  </data>
+  <data name="Menu.Deployment.MultiThread.Description" xml:space="preserve">
+    <value>Adja meg a letöltéshez használt szálak számát. Ez csak a Linuxon futó Studio verzióra vonatkozik.</value>
+  </data>
+  <data name="Menu.Deployment.MultiThread.Title" xml:space="preserve">
+    <value>Többszálas letöltés</value>
+  </data>
+  <data name="Menu.Deployment.OverrideHash.Description" xml:space="preserve">
+    <value>A Roblox Studio-t arra kényszeríti, hogy a legújabb verzió helyett egy meghatározott verzió-hash-értéket telepítsen és használjon.</value>
+  </data>
+  <data name="Menu.Deployment.OverrideHash.Title" xml:space="preserve">
+    <value>Studio-verzió felülírása</value>
+  </data>
+  <data name="Menu.Deployment.PlayerChannel.Title" xml:space="preserve">
+    <value>Játékos-csatorna</value>
+  </data>
+  <data name="Menu.Deployment.StudioChannel.Title" xml:space="preserve">
+    <value>Stúdiócsatorna</value>
+  </data>
+  <data name="Menu.Deployment.VersionHash.Description" xml:space="preserve">
+    <value>Írja be a Roblox Studio verziójának GUID-jét (pl. version-xxxxxxxxxxxxxxxx). Ez kizárólag a Studio indítására vonatkozik.</value>
+  </data>
+  <data name="Menu.Deployment.VersionHash.Title" xml:space="preserve">
+    <value>Verzió-hash</value>
+  </data>
+  <data name="Menu.Dialog.QuickSignIn.Title" xml:space="preserve">
+    <value>Gyors bejelentkezés</value>
   </data>
   <data name="Menu.FastFlagEditor.AddNew" xml:space="preserve">
     <value>Új hozzáadása</value>
   </data>
   <data name="Menu.FastFlagEditor.AlreadyExists" xml:space="preserve">
-    <value>Erre a flag névre már létezik bejegyzés.</value>
+    <value>Ehhez a zászlónevéhez már létezik egy bejegyzés.</value>
   </data>
-  <data name="Menu.FastFlagEditor.Back" xml:space="preserve">
-    <value>Vissza</value>
+  <data name="Menu.FastFlagEditor.CleanList" xml:space="preserve">
+    <value>Tiszta lista</value>
   </data>
-  <data name="Menu.FastFlagEditor.BannerText" xml:space="preserve">
-    <value>Ennek helytelen használata instabilitáshoz vagy váratlan dolgok bekövetkezéséhez vezethet.</value>
-    <comment>The element that this string is rendered in *cannot be wrapped* and may be truncated when displayed if too long. If so, try and paraphrase a shortened version.</comment>
-  </data>
-  <data name="Menu.FastFlagEditor.BannerTitle" xml:space="preserve">
-    <value>Óvatosan használja.</value>
+  <data name="Menu.FastFlagEditor.ConfirmDeleteAll" xml:space="preserve">
+    <value>Biztosan törölni szeretné az összes jelölést?</value>
   </data>
   <data name="Menu.FastFlagEditor.ConflictingImport" xml:space="preserve">
-    <value>Az importálni kívánt flag-ek némelyikének már vannak beállított értékei. Szeretné felülírni a jelenlegi értékeiket az importálás során meghatározottakkal?
+    <value>Az importálni kívánt jelzők közül néhánynak már vannak beállított értékei. Felülírja a jelenlegi értékeket az importban megadott értékekkel?
 
-{0} ellentmondásos flag definíció van:
+{0} ütköző jelződefiníció található:
 {1}</value>
     <comment>{0} is a number, {1} is a comma-separated list</comment>
   </data>
   <data name="Menu.FastFlagEditor.DeleteSelected" xml:space="preserve">
-    <value>Kijelölt(ek) törlése</value>
+    <value>A kijelöltek törlése</value>
   </data>
   <data name="Menu.FastFlagEditor.Description" xml:space="preserve">
-    <value>Kezelje a saját Fast Flag-jeit. a szerkesztéshez dupla kattintson egy oszlopot.</value>
+    <value>Itt kezelheti az összes FastFlags-jét.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.DragOverlay" xml:space="preserve">
+    <value>📦 Húzza ide a JSON- vagy TXT-fájlt az importáláshoz</value>
   </data>
   <data name="Menu.FastFlagEditor.ExportJson" xml:space="preserve">
-    <value>JSON exportálása</value>
+    <value>JSON-export</value>
   </data>
-  <data name="Menu.FastFlagEditor.InvalidCharacter" xml:space="preserve">
-    <value>A(z) '{0}' nem érvényes, mivel a nevek csak betűt, számot és aláhúzásokat tartalmazhatnak</value>
+  <data name="Menu.FastFlagEditor.Exported" xml:space="preserve">
+    <value>A FastFlags exportálása sikeresen befejeződött.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.FileExtensionWarning" xml:space="preserve">
+    <value>Kérjük, helyezze el a JSON- vagy TXT-fájlokat.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.HaveBeenRemoved" xml:space="preserve">
+    <value>A {0} elemet eltávolítottuk, mivel nem szerepel a megengedett listán.</value>
   </data>
   <data name="Menu.FastFlagEditor.InvalidJSON" xml:space="preserve">
-    <value>A JSON amit beillesztett nem érvényes. Nézze át még egyszer és próbálja újra.
+    <value>Úgy tűnik, hogy a megadott JSON-adat nem érvényes. Kérjük, ellenőrizze újra, majd próbálja meg újra.
 
-További információ:
+További információk:
 {0}</value>
     <comment>{0} is an exception message</comment>
   </data>
-  <data name="Menu.FastFlagEditor.InvalidPrefix" xml:space="preserve">
-    <value>A(z) '{0}' nem érvényes, mivel a nevek csak FFlag, DFInt, stb-vel kezdődhetnek</value>
+  <data name="Menu.FastFlagEditor.NoFlagDelete" xml:space="preserve">
+    <value>Nincs törölni való jelölés.</value>
   </data>
-  <data name="Menu.FastFlagEditor.JsonCopiedToClipboard" xml:space="preserve">
-    <value>Kimásolva a vágólapra.</value>
+  <data name="Menu.FastFlagEditor.NoFlags" xml:space="preserve">
+    <value>Hű, ez olyan üres! Mi lenne, ha hozzáadnánk egy FastFlag-et?</value>
   </data>
-  <data name="Menu.FastFlagEditor.LargeConfig" xml:space="preserve">
-    <value>Úgy tűnik, hogy egy nagyon nagy beállítást importálsz. Csak olyan beállítást importáljon, amit ön teljesen tudja, hogy mit csinál. NE importáljon be vakon az olyan beállításokat, amit mások készítettek. Ha továbblép, nagy eséllyel instabilitással és váratlan változásokkal fog szembesülni.
-
-Biztosan folytatja?</value>
+  <data name="Menu.FastFlagEditor.NoInvalid" xml:space="preserve">
+    <value>Nem észleltünk érvénytelen FastFlags-et.</value>
   </data>
-  <data name="Menu.FastFlagEditor.Search" xml:space="preserve">
-    <value>Keresés</value>
+  <data name="Menu.FastFlagEditor.NotInWhiteList" xml:space="preserve">
+    <value>A „{0}” nem szerepel a Roblox engedélyezési listáján, ezért nem fog működni.
+Most törölni szeretnéd?</value>
   </data>
   <data name="Menu.FastFlagEditor.ShowPresetFlags" xml:space="preserve">
-    <value>Előre beállított flag-ek mutatása</value>
+    <value>Előre beállított jelölők megjelenítése</value>
   </data>
   <data name="Menu.FastFlagEditor.Title" xml:space="preserve">
-    <value>Fast Flag Szerkesztő</value>
+    <value>FastFlag szerkesztő</value>
   </data>
-  <data name="Menu.FastFlagEditor.Warning.Back" xml:space="preserve">
-    <value>Visszatérés</value>
+  <data name="Menu.FastFlagEditor.TotalFlags" xml:space="preserve">
+    <value>Zászlók összesen</value>
   </data>
-  <data name="Menu.FastFlagEditor.Warning.Continue" xml:space="preserve">
-    <value>Tudom, hogy mit csinálok</value>
-  </data>
-  <data name="Menu.FastFlagEditor.Warning.Header" xml:space="preserve">
-    <value>Tudod, hogy mit csinálsz?</value>
-  </data>
-  <data name="Menu.FastFlagEditor.Warning.Text" xml:space="preserve">
-    <value>A Fast Flag-ek rendkívül erősek, mivel csak a Roblox mérnökei használhatják őket. Bár nagyon hasznosak lehetnek, a kézi konfigurálásuk komoly stabilitási és funkcionalitási problémákat okozhat. NE használd a szerkesztőt, ha nem vagy biztos abban, hogy mit csinálsz.</value>
+  <data name="Menu.FastFlagEditor.WhiteList" xml:space="preserve">
+    <value>Miután néhány Roblox FastFlag felkerült a fehérlistára, ezek az egyetlenek, amelyek továbbra is használhatók.</value>
   </data>
   <data name="Menu.FastFlags.Description" xml:space="preserve">
-    <value>Vezérelheti a Roblox motor egyes paramétereinek és funkcióinak konfigurálását.</value>
+    <value>Irányítsd a Roblox motor egyes paramétereinek és funkcióinak beállításait.</value>
   </data>
   <data name="Menu.FastFlags.Editor.Description" xml:space="preserve">
-    <value>Kezelje a saját Fast Flag-jeit. Óvatosan használd.</value>
+    <value>Kezelje saját Fast Flags-jeit. Óvatosan használja!</value>
     <comment>Title is Menu.FastFlagEditor.Title</comment>
   </data>
-  <data name="Menu.FastFlags.Help.Description" xml:space="preserve">
-    <value>Tudjon meg többet a Fast Flags-ről, az előbeállítások funkcióiról és használatukról.</value>
-    <comment>Title is Common.Help</comment>
+  <data name="Menu.FastFlags.ManagerEnabled.Description" xml:space="preserve">
+    <value>Ha ezt letiltod, az itt beállítottak nem kerülnek alkalmazásra a Robloxban.</value>
   </data>
-  <data name="Menu.FastFlags.Presets.D3DExclusiveFullscreenInfo" xml:space="preserve">
-    <value>A Direct3D [kizárólagos teljes képernyő]({0}) az Alt+Enter billentyűkombináció használatával alapértelmezés szerint engedélyezve van.</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.EscapeMenuVersion.Title" xml:space="preserve">
-    <value>Előnyben részesített játék menü verzió</value>
+  <data name="Menu.FastFlags.ManagerEnabled.Title" xml:space="preserve">
+    <value>Engedélyezze a Froststrap számára a FastFlags kezelését</value>
   </data>
   <data name="Menu.FastFlags.Presets.FixDisplayScaling.Description" xml:space="preserve">
-    <value>A Roblox csökkenti a renderelési minőséget attól függően, hogy a kijelző hogyan van méretezve a Windows-ban.</value>
+    <value>A Roblox a Windows rendszerben a kijelző méretezésétől függően csökkenti a megjelenítési minőséget.</value>
   </data>
   <data name="Menu.FastFlags.Presets.FixDisplayScaling.Title" xml:space="preserve">
-    <value>A megjelenítés minőségének megőrzése a kijelző méretezésével</value>
+    <value>A megjelenítési minőség megőrzése a képernyő méretezésével</value>
   </data>
-  <data name="Menu.FastFlags.Presets.FPSLimit.Description" xml:space="preserve">
-    <value>Állítsd 0-ra az alapértelmezettért, ha a Roblox saját FPS korlát eltörlőjét akarod használni.</value>
+  <data name="Menu.FastFlags.Presets.GraySky.Description" xml:space="preserve">
+    <value>A játék égboltját egyszínű szürkére változtatja. Megjegyzés: Ez nem fog működni azokban a játékokban, amelyekhez a fejlesztő egyedi skyboxot adott hozzá.</value>
   </data>
-  <data name="Menu.FastFlags.Presets.FPSLimit.Title" xml:space="preserve">
-    <value>FPS korlát</value>
+  <data name="Menu.FastFlags.Presets.GraySky.Title" xml:space="preserve">
+    <value>Szürke ég</value>
   </data>
-  <data name="Menu.FastFlags.Presets.HideGuis.Description" xml:space="preserve">
-    <value>A [billentyűparancsok]({0}) segítségével kapcsolható. Csak akkor működik, ha a [Froststrap Roblox csoportban]({1}) vagy.</value>
+  <data name="Menu.FastFlags.Presets.LowPolyMeshes.Description" xml:space="preserve">
+    <value>A háló minőségének szabályozásával javítható a teljesítmény vagy a grafika.</value>
   </data>
-  <data name="Menu.FastFlags.Presets.HideGuis.Title" xml:space="preserve">
-    <value>A GUI-k elrejtésének lehetővé tétele</value>
+  <data name="Menu.FastFlags.Presets.LowPolyMeshes.Information" xml:space="preserve">
+    <value>Húzza az egérrel a háló részletességének beállításához a teljesítmény vagy a minőség érdekében.</value>
   </data>
-  <data name="Menu.FastFlags.Presets.LightingTechnology.Description" xml:space="preserve">
-    <value>A kiválasztott feltétlenül meg fog jelenni az összes játékban. [Vigyázz, ez el tudja rontani a játék kinézetét!]({0})</value>
+  <data name="Menu.FastFlags.Presets.LowPolyMeshes.Title" xml:space="preserve">
+    <value>A háló részletei</value>
   </data>
-  <data name="Menu.FastFlags.Presets.LightingTechnology.Title" xml:space="preserve">
-    <value>Előnyben részesített világítási technológia</value>
+  <data name="Menu.FastFlags.Presets.MSAA.Description" xml:space="preserve">
+    <value>A magasabb MSAA-értékek csökkentik az élek szaggatottságát, de hatással lehetnek a teljesítményre.</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.MSAA.Title" xml:space="preserve">
+    <value>Anti-aliasing minőség (MSAA)</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.OverrideGraphicQuality.Description" xml:space="preserve">
+    <value>A grafikai minőséget a kiválasztott szintre rögzíti. Megjegyzés: Ha ez a beállítás engedélyezve van, a Roblox menüben található grafikai csúszka csak a játékban megjelenő renderelési távolságot befolyásolja.</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.OverrideGraphicQuality.Title" xml:space="preserve">
+    <value>A grafikai minőségi szint felülírása</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.PauseVoxelizer.Description" xml:space="preserve">
+    <value>Letiltja a beégetett árnyékokat a teljesítmény javítása érdekében, de ez egyes játékokban világítási problémákat okozhat.</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.PauseVoxelizer.Title" xml:space="preserve">
+    <value>A Voxelizer szüneteltetése</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.RemoveGrass.Description" xml:space="preserve">
+    <value>Eltávolítja a Roblox alapértelmezett fűtextúráit. Megjegyzés: Ez a beállítás nem érinti az egyes játékok által használt egyedi fűtextúrákat.</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.RemoveGrass.Title" xml:space="preserve">
+    <value>Fű letiltása</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.RenderingMode.Description" xml:space="preserve">
+    <value>Állítsd be a Robloxhoz használt renderelő API-t. Megjegyzés: Ha a Direct3D-t használod renderelő API-ként, nyomd meg az Alt + Enter billentyűkombinációt a kizárólagos teljes képernyős módba való váltáshoz.</value>
   </data>
   <data name="Menu.FastFlags.Presets.RenderingMode.Title" xml:space="preserve">
     <value>Renderelési mód</value>
   </data>
+  <data name="Menu.FastFlags.Presets.TextureQuality.Description" xml:space="preserve">
+    <value>Állítsa be a játékok textúra-minőségét. Megjegyzés: Ez a beállítás a grafikus felületre (GUI) és a felhasználói felületre (UI) is hatással van.</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.TextureQuality.Title" xml:space="preserve">
+    <value>Textúra minősége</value>
+  </data>
+  <data name="Menu.FastFlags.Reset.Title" xml:space="preserve">
+    <value>Minden beállítást visszaállítani az alapértelmezett értékre</value>
+  </data>
   <data name="Menu.FastFlags.Title" xml:space="preserve">
-    <value>Motor beállítások</value>
+    <value>FastFlag beállítások</value>
   </data>
-  <data name="Menu.FontFiles" xml:space="preserve">
-    <value>Betűtípus fájlok</value>
+  <data name="Menu.FlagProfiles.AddPlaceId" xml:space="preserve">
+    <value>Helyazonosító hozzáadása</value>
   </data>
-  <data name="Menu.IconFiles" xml:space="preserve">
-    <value>Ikon fájlok</value>
+  <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
+    <value>FFlagek törlése</value>
   </data>
-  <data name="Menu.InstallLocation.CantInstall" xml:space="preserve">
-    <value>A Froststrap nem telepíthető ide. Kérjük, válasszon másik helyet, vagy térjen vissza az alapértelmezett helyre a visszaállítás gombra kattintva.</value>
+  <data name="Menu.FlagProfiles.CopyFailed" xml:space="preserve">
+    <value>A profil másolása nem sikerült:\n{0}</value>
   </data>
-  <data name="Menu.InstallLocation.NotEmpty" xml:space="preserve">
-    <value>A mappa, amelybe a Froststrap telepítését választotta, már létezik, és NEM üres. Erősen ajánlott a Froststrap-et saját, független mappába telepíteni.
-
-A következő helyre történő váltás javasolt:
-{0}
-
-Szeretne a javasolt helyre váltani?
-A 'Nem' választása figyelmen kívül hagyja ezt a figyelmeztetést, és folytatja a telepítést.</value>
-    <comment>{0} is a file path</comment>
+  <data name="Menu.FlagProfiles.CurrentPlaceIds" xml:space="preserve">
+    <value>Jelenlegi helyazonosítók</value>
   </data>
-  <data name="Menu.InstallLocation.NotSet" xml:space="preserve">
-    <value>Először be kell állítania egy telepítési helyet</value>
+  <data name="Menu.FlagProfiles.DeleteSelected" xml:space="preserve">
+    <value>Kijelöltek törlése</value>
   </data>
-  <data name="Menu.InstallLocation.NoWritePerms" xml:space="preserve">
-    <value>A Froststrap nem rendelkezik írási hozzáféréssel a kiválasztott telepítési helyhez. Kérjük, válasszon másik helyet.</value>
+  <data name="Menu.FlagProfiles.EnterPlaceId" xml:space="preserve">
+    <value>Kérjük, adja meg a hely azonosítóját.</value>
+  </data>
+  <data name="Menu.FlagProfiles.GetFlagsFailed" xml:space="preserve">
+    <value>Nem sikerült lekérni az aktuális FastFlags-értékeket.</value>
+  </data>
+  <data name="Menu.FlagProfiles.InvalidCharacter" xml:space="preserve">
+    <value>A profilnév tartalmaz egy érvénytelen karaktert: „{0}”.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ManagingPlaceIds" xml:space="preserve">
+    <value>Helyazonosítók kezelése: {0} ({1} azonosító)</value>
+  </data>
+  <data name="Menu.FlagProfiles.NameCannotBeEmpty" xml:space="preserve">
+    <value>Az új profilnév nem lehet üres.</value>
+  </data>
+  <data name="Menu.FlagProfiles.NoProfileFound" xml:space="preserve">
+    <value>Nem találtak profilokat.</value>
+  </data>
+  <data name="Menu.FlagProfiles.NoProfilesFound" xml:space="preserve">
+    <value>Nem találtunk profilokat. Kérjük, először hozzon létre egy profilt.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ParseFailed" xml:space="preserve">
+    <value>A kiválasztott profil értelmezése sikertelen volt.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdExists" xml:space="preserve">
+    <value>Ez a helyazonosító már hozzá van adva a profilhoz.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdNumeric" xml:space="preserve">
+    <value>A helyazonosítónak egész számnak kell lennie.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdWatermark" xml:space="preserve">
+    <value>Írja be a helyazonosítót (pl. 123456789)</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdsTab" xml:space="preserve">
+    <value>Helyazonosítók</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileExists" xml:space="preserve">
+    <value>Ilyen nevű profil már létezik.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileNotFound" xml:space="preserve">
+    <value>A kiválasztott profilfájl nem található.</value>
+  </data>
+  <data name="Menu.FlagProfiles.RemoveSelected" xml:space="preserve">
+    <value>A kijelöltek eltávolítása</value>
+  </data>
+  <data name="Menu.FlagProfiles.RenameFailed" xml:space="preserve">
+    <value>A profil átnevezése nem sikerült:\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfile" xml:space="preserve">
+    <value>Válasszon ki egy profilt a helyazonosítók kezeléséhez</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileCopy" xml:space="preserve">
+    <value>Kérjük, válasszon ki egy másolni kívánt profilt.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileFirst" xml:space="preserve">
+    <value>Kérjük, először válasszon ki egy profilt.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileLabel" xml:space="preserve">
+    <value>Válasszon ki egy profilt a helyazonosítóinak kezeléséhez:</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileRename" xml:space="preserve">
+    <value>Kérjük, válasszon ki egy profilt, amelyet át szeretne nevezni.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileUpdate" xml:space="preserve">
+    <value>Kérjük, válasszon ki egy frissítendő profilt.</value>
+  </data>
+  <data name="Menu.FlagProfiles.Title" xml:space="preserve">
+    <value>Gyors zászlóprofilok</value>
+  </data>
+  <data name="Menu.FlagProfiles.UpdateFailed" xml:space="preserve">
+    <value>A profil frissítése nem sikerült:\n{0}</value>
+  </data>
+  <data name="Menu.GBSEditor.Description" xml:space="preserve">
+    <value>A játék beállításait egy kényelmes menüből módosíthatod.</value>
+  </data>
+  <data name="Menu.GBSEditor.ReadOnly.Description" xml:space="preserve">
+    <value>Megakadályozza, hogy a Roblox felülírja a globális beállításokat.</value>
+  </data>
+  <data name="Menu.GBSEditor.ReadOnly.Title" xml:space="preserve">
+    <value>Írásvédettként beállítani</value>
+  </data>
+  <data name="Menu.GBSEditor.Title" xml:space="preserve">
+    <value>Általános beállítások szerkesztője</value>
+  </data>
+  <data name="Menu.GBSEditor.VectorX" xml:space="preserve">
+    <value>Vektor X</value>
+  </data>
+  <data name="Menu.GBSEditor.VectorY" xml:space="preserve">
+    <value>Y-vektor</value>
+  </data>
+  <data name="Menu.GlobalSettings.Accessibility.Title" xml:space="preserve">
+    <value>Akadálymentesség és egyéb</value>
+  </data>
+  <data name="Menu.GlobalSettings.AudioSettings.Title" xml:space="preserve">
+    <value>Hangbeállítások</value>
+  </data>
+  <data name="Menu.GlobalSettings.Export.Fail" xml:space="preserve">
+    <value>A beállítások exportálása nem sikerült. Győződj meg arról, hogy a Roblox nem fut, majd próbáld meg újra.</value>
+  </data>
+  <data name="Menu.GlobalSettings.Export.Success" xml:space="preserve">
+    <value>A beállítások sikeresen exportálva a {0} helyre</value>
+  </data>
+  <data name="Menu.GlobalSettings.FirstPersonSensitivity.Description" xml:space="preserve">
+    <value>Az első személy nézőpontjának X- és Y-érzékenysége.</value>
+  </data>
+  <data name="Menu.GlobalSettings.FirstPersonSensitivity.Title" xml:space="preserve">
+    <value>Első személyű érzékenység</value>
+  </data>
+  <data name="Menu.GlobalSettings.FramerateLimit.Description" xml:space="preserve">
+    <value>Állíts be egy egyéni FPS-korlátot. Az alapértelmezett értékhez használd a -1 értéket.</value>
+  </data>
+  <data name="Menu.GlobalSettings.FramerateLimit.Title" xml:space="preserve">
+    <value>Képkockasebesség-korlát</value>
+  </data>
+  <data name="Menu.GlobalSettings.Fullscreen.Description" xml:space="preserve">
+    <value>Indítsd el a Robloxot teljes képernyős módban.</value>
+  </data>
+  <data name="Menu.GlobalSettings.Fullscreen.Title" xml:space="preserve">
+    <value>Teljes képernyős</value>
+  </data>
+  <data name="Menu.GlobalSettings.GraphicsSettings.Title" xml:space="preserve">
+    <value>Grafikai beállítások</value>
+  </data>
+  <data name="Menu.GlobalSettings.HapticStrength.Description" xml:space="preserve">
+    <value>A vezérlő rezgésereje.</value>
+  </data>
+  <data name="Menu.GlobalSettings.HapticStrength.Title" xml:space="preserve">
+    <value>Tapintási erő</value>
+  </data>
+  <data name="Menu.GlobalSettings.Import.Confirmation" xml:space="preserve">
+    <value>Ezzel a jelenlegi globális beállítások mindegyike az importált beállításokkal kerül felülírásra. Biztosan folytatni szeretné?</value>
+  </data>
+  <data name="Menu.GlobalSettings.Import.Fail" xml:space="preserve">
+    <value>A beállítások importálása nem sikerült. Győződj meg róla, hogy a Roblox nem fut, majd próbáld meg újra.</value>
+  </data>
+  <data name="Menu.GlobalSettings.Import.NotGBS" xml:space="preserve">
+    <value>Úgy tűnik, hogy a kiválasztott fájl nem érvényes GBS-beállítási fájl.</value>
+  </data>
+  <data name="Menu.GlobalSettings.Import.NotXML" xml:space="preserve">
+    <value>A kiválasztott fájl nem érvényes XML-fájl.</value>
+  </data>
+  <data name="Menu.GlobalSettings.Import.Success" xml:space="preserve">
+    <value>A beállítások importálása sikeresen megtörtént!</value>
+  </data>
+  <data name="Menu.GlobalSettings.InputSettings.Title" xml:space="preserve">
+    <value>Bemeneti beállítások</value>
+  </data>
+  <data name="Menu.GlobalSettings.InvertY.Description" xml:space="preserve">
+    <value>A kamera Y-tengelyének megfordítása.</value>
+  </data>
+  <data name="Menu.GlobalSettings.InvertY.Title" xml:space="preserve">
+    <value>Y-fordítás</value>
+  </data>
+  <data name="Menu.GlobalSettings.MasterVolume.Description" xml:space="preserve">
+    <value>Globális mennyiségi szint.</value>
+  </data>
+  <data name="Menu.GlobalSettings.MasterVolume.Title" xml:space="preserve">
+    <value>Fő hangerő</value>
+  </data>
+  <data name="Menu.GlobalSettings.MaxQuality.Description" xml:space="preserve">
+    <value>Lehetővé teszi a magasabb MSAA-szintek használatát.</value>
+  </data>
+  <data name="Menu.GlobalSettings.MaxQuality.Title" xml:space="preserve">
+    <value>Maximális minőség</value>
+  </data>
+  <data name="Menu.GlobalSettings.OpenRobloxFolder" xml:space="preserve">
+    <value>Nyisd meg a Roblox mappát</value>
+  </data>
+  <data name="Menu.GlobalSettings.PartyVolume.Description" xml:space="preserve">
+    <value>A „party voice” üzemmód hangereje.</value>
+  </data>
+  <data name="Menu.GlobalSettings.PartyVolume.Title" xml:space="preserve">
+    <value>A buli hangereje</value>
+  </data>
+  <data name="Menu.GlobalSettings.PerfStats.Description" xml:space="preserve">
+    <value>Teljesítmény-felület megjelenítése.</value>
+  </data>
+  <data name="Menu.GlobalSettings.PerfStats.Title" xml:space="preserve">
+    <value>Perf statisztikák</value>
+  </data>
+  <data name="Menu.GlobalSettings.PlayerListLayout.Description" xml:space="preserve">
+    <value>Az esc gomb megnyomásával válthat az esc lejátszási lista négyzetes és normál felhasználói felülete között.</value>
+  </data>
+  <data name="Menu.GlobalSettings.PlayerListLayout.Title" xml:space="preserve">
+    <value>A játékosok listájának elrendezése</value>
+  </data>
+  <data name="Menu.GlobalSettings.ReducedMotion.Description" xml:space="preserve">
+    <value>Csökkenti a felhasználói felület animációit.</value>
+  </data>
+  <data name="Menu.GlobalSettings.ReducedMotion.Title" xml:space="preserve">
+    <value>Mozgáscsökkentés</value>
+  </data>
+  <data name="Menu.GlobalSettings.Sensitivity.Description" xml:space="preserve">
+    <value>A kamera általános érzékenysége.</value>
+  </data>
+  <data name="Menu.GlobalSettings.Sensitivity.Title" xml:space="preserve">
+    <value>Érzékenység</value>
+  </data>
+  <data name="Menu.GlobalSettings.ShiftLock.Description" xml:space="preserve">
+    <value>A shiftlock automatikus engedélyezése.</value>
+  </data>
+  <data name="Menu.GlobalSettings.StartQuality.Description" xml:space="preserve">
+    <value>A játékhoz való csatlakozáskor érvényes minőségi szint.</value>
+  </data>
+  <data name="Menu.GlobalSettings.StartQuality.Title" xml:space="preserve">
+    <value>Kezdő szint</value>
+  </data>
+  <data name="Menu.GlobalSettings.StudioVolume.Description" xml:space="preserve">
+    <value>Hangerő a Roblox Studio-ban.</value>
+  </data>
+  <data name="Menu.GlobalSettings.StudioVolume.Title" xml:space="preserve">
+    <value>Stúdió mérete</value>
+  </data>
+  <data name="Menu.GlobalSettings.TextSize.Description" xml:space="preserve">
+    <value>A kívánt szövegméret.</value>
+  </data>
+  <data name="Menu.GlobalSettings.TextSize.Title" xml:space="preserve">
+    <value>Betűméret</value>
+  </data>
+  <data name="Menu.GlobalSettings.ThirdPersonSensitivity.Description" xml:space="preserve">
+    <value>X és Y érzékenység harmadik személy nézetben.</value>
+  </data>
+  <data name="Menu.GlobalSettings.ThirdPersonSensitivity.Title" xml:space="preserve">
+    <value>Harmadik személyű érzékenység</value>
+  </data>
+  <data name="Menu.GlobalSettings.Title" xml:space="preserve">
+    <value>Általános beállítások</value>
+  </data>
+  <data name="Menu.GlobalSettings.UITransparency.Description" xml:space="preserve">
+    <value>Az felhasználói felület elemeinek átlátszóságának beállítása.</value>
+  </data>
+  <data name="Menu.GlobalSettings.UITransparency.Title" xml:space="preserve">
+    <value>A felhasználói felület átláthatósága</value>
+  </data>
+  <data name="Menu.GlobalSettings.VRMode.Description" xml:space="preserve">
+    <value>Engedélyezze a virtuális valóság támogatását.</value>
+  </data>
+  <data name="Menu.GlobalSettings.VRMode.Title" xml:space="preserve">
+    <value>VR mód</value>
+  </data>
+  <data name="Menu.GlobalSettings.Vignette.Description" xml:space="preserve">
+    <value>A képernyő vignettázási hatásának be- és kikapcsolása.</value>
+  </data>
+  <data name="Menu.GlobalSettings.Vignette.Title" xml:space="preserve">
+    <value>Kis kép</value>
+  </data>
+  <data name="Menu.GlobalSettingsEditor.Description" xml:space="preserve">
+    <value>Itt kezelheted az összes általános beállításodat.</value>
   </data>
   <data name="Menu.Integrations.ActivityTracking" xml:space="preserve">
-    <value>Tevékenység nyomon követése</value>
+    <value>Tevékenységkövetés</value>
   </data>
   <data name="Menu.Integrations.AllowActivityJoining.Description" xml:space="preserve">
-    <value>Lehetővé teszi, hogy a Discord-profilodon keresztül bárki csatlakozhasson a játékhoz, amelyt éppen játszol.</value>
+    <value>Lehetővé teszi, hogy bárki csatlakozhasson ahhoz a játékhoz, amelyben éppen részt veszel, a Discord-profilodon keresztül.</value>
   </data>
   <data name="Menu.Integrations.AllowActivityJoining.Title" xml:space="preserve">
-    <value>Tevékenységi csatlakozás engedélyezése</value>
+    <value>Tevékenységekhez való csatlakozás engedélyezése</value>
   </data>
-  <data name="Menu.Integrations.ShowAccountOnProfile.Description" xml:space="preserve">
-    <value>Megjeleníti a Roblox-fiókot, amellyel a Discord-profilodon játszol.</value>
+  <data name="Menu.Integrations.AutoRejoin.Description" xml:space="preserve">
+    <value>20 perces kapcsolatmegszakadás vagy hálózati hiba után automatikusan újra csatlakozik ugyanahhoz a szerverhez.</value>
   </data>
-  <data name="Menu.Integrations.ShowAccountOnProfile.Title" xml:space="preserve">
-    <value>Megjeleníti a Roblox-fiókot, amellyel a Discord-profilodon játszol</value>
+  <data name="Menu.Integrations.AutoRejoin.Title" xml:space="preserve">
+    <value>Automatikus visszacsatlakozás</value>
+  </data>
+  <data name="Menu.Integrations.BlockCardExpander.Description" xml:space="preserve">
+    <value>Bizonyos beépített Roblox-funkciók be- és kikapcsolására szolgál.</value>
+  </data>
+  <data name="Menu.Integrations.BlockCardExpander.Title" xml:space="preserve">
+    <value>A Roblox funkcióinak letiltása</value>
+  </data>
+  <data name="Menu.Integrations.BlockScreenShots.Description" xml:space="preserve">
+    <value>Letiltja a Roblox képernyőkép-készítési funkcióját. Megjegyzés: Ha ez a funkció engedélyezve van, a gyorsbillentyű-kombináció nem fog működni.</value>
+  </data>
+  <data name="Menu.Integrations.BlockScreenShots.Title" xml:space="preserve">
+    <value>A Roblox képernyőképek letiltása</value>
+  </data>
+  <data name="Menu.Integrations.BlockVideoRecording.Description" xml:space="preserve">
+    <value>Letiltja a Roblox felvételi funkcióját. Megjegyzés: Ha ez a funkció engedélyezve van, a gyorsbillentyű-kombináció nem fog működni.</value>
+  </data>
+  <data name="Menu.Integrations.BlockVideoRecording.Title" xml:space="preserve">
+    <value>A Roblox felvételének letiltása</value>
   </data>
   <data name="Menu.Integrations.Custom.AppLocation" xml:space="preserve">
-    <value>Alkalmazás helye</value>
+    <value>Az alkalmazás helye</value>
   </data>
   <data name="Menu.Integrations.Custom.AutoClose" xml:space="preserve">
     <value>Automatikus bezárás a Roblox bezárásakor</value>
   </data>
+  <data name="Menu.Integrations.Custom.AutoCloseOnGame" xml:space="preserve">
+    <value>Automatikus bezárás a játék bezárásakor</value>
+  </data>
   <data name="Menu.Integrations.Custom.Description" xml:space="preserve">
-    <value>Itt más programokat is indíthatsz automatikusan a Robloxal együtt.</value>
+    <value>Indíts el további programokat automatikusan a Roblox segítségével.</value>
+  </data>
+  <data name="Menu.Integrations.Custom.GameID" xml:space="preserve">
+    <value>Játékazonosító</value>
   </data>
   <data name="Menu.Integrations.Custom.LaunchArgs" xml:space="preserve">
-    <value>Indítási érvek</value>
+    <value>Indítási paraméterek</value>
   </data>
   <data name="Menu.Integrations.Custom.LaunchArgs.Placeholder" xml:space="preserve">
-    <value>A Roblox elindult!</value>
+    <value>A Roblox már fut!</value>
   </data>
   <data name="Menu.Integrations.Custom.NewIntegration" xml:space="preserve">
     <value>Új integráció</value>
   </data>
   <data name="Menu.Integrations.Custom.NoneSelected" xml:space="preserve">
-    <value>Nincs kiválasztott integráció, kérjük, válasszon vagy adjon hozzá egy újat</value>
+    <value>Nincs kiválasztva integráció. Kérjük, válasszon ki egyet, vagy adjon hozzá egy újat.</value>
+  </data>
+  <data name="Menu.Integrations.Custom.SpecifyGame" xml:space="preserve">
+    <value>Egy adott játék futtatása</value>
   </data>
   <data name="Menu.Integrations.Custom.Title" xml:space="preserve">
     <value>Egyedi integrációk</value>
   </data>
+  <data name="Menu.Integrations.CustomStatusDisplay.Description" xml:space="preserve">
+    <value>Az alapértelmezett „Roblox lejátszása” üzenet helyett egy egyéni állapotüzenetet jelenít meg.</value>
+  </data>
+  <data name="Menu.Integrations.CustomStatusDisplay.Title" xml:space="preserve">
+    <value>Egyéni állapotkijelzés</value>
+  </data>
   <data name="Menu.Integrations.Description" xml:space="preserve">
-    <value>További funkciók konfigurálása a Roblox mellett.</value>
+    <value>Állítsd be a Robloxhoz kapcsolódó további funkciókat.</value>
   </data>
   <data name="Menu.Integrations.DesktopApp.Description" xml:space="preserve">
-    <value>A Roblox teljesen bezáródik, amikor kilépsz a játékból, ahelyett, hogy visszatérnél az alkalmazásba. [Néhány dolgot el fog rontani!]({0})</value>
+    <value>A Roblox teljesen bezárul, ha kilépsz a játékból, ahelyett, hogy visszatérnél az alkalmazásba. [Ez bizonyos funkciók működését megzavarhatja!]({0})</value>
   </data>
   <data name="Menu.Integrations.DesktopApp.Title" xml:space="preserve">
-    <value>Ne lépjen ki az asztali alkalmazásba</value>
+    <value>Az asztalhoz közel</value>
+  </data>
+  <data name="Menu.Integrations.DoubleClickAction.Description" xml:space="preserve">
+    <value>A Roblox indításakor egy adott ablak nyílik meg, ha duplán rákattintasz a tálcán található Froststrap ikonra.</value>
+  </data>
+  <data name="Menu.Integrations.DoubleClickAction.Title" xml:space="preserve">
+    <value>Kettős kattintás művelete</value>
+  </data>
+  <data name="Menu.Integrations.DynamicThumbnail.Description" xml:space="preserve">
+    <value>A megnyitott szkript függvényében megváltoztatja a miniatűrt.</value>
+  </data>
+  <data name="Menu.Integrations.DynamicThumbnail.Title" xml:space="preserve">
+    <value>Dinamikus miniatűr</value>
+  </data>
+  <data name="Menu.Integrations.EditingInfo.Description" xml:space="preserve">
+    <value>Megjeleníti a szkript típusát, nevét és a szkriptben található sorok számát.</value>
+  </data>
+  <data name="Menu.Integrations.EditingInfo.Title" xml:space="preserve">
+    <value>Szerkesztési információk</value>
   </data>
   <data name="Menu.Integrations.EnableActivityTracking.Description" xml:space="preserve">
-    <value>Lehetővé teszi a Froststrap számára, hogy felismerje, milyen Roblox játékkal játszol. Bizonyos funkciók megkövetelhetik ezt.</value>
+    <value>Lehetővé teszi a Froststrap számára, hogy felismerje, melyik Roblox-játékot játszod éppen. Bizonyos funkciókhoz ez szükséges lehet.</value>
   </data>
   <data name="Menu.Integrations.EnableActivityTracking.Title" xml:space="preserve">
-    <value>Aktivitáskövetés engedélyezése</value>
+    <value>A tevékenységkövetés engedélyezése</value>
+  </data>
+  <data name="Menu.Integrations.FroststrapRPC.Description" xml:space="preserve">
+    <value>Ha ezt engedélyezed, az alkalmazás megnyitása közben egy egyedi „Playing Froststrap” RPC jelenik meg a Discord-profilodban.</value>
+  </data>
+  <data name="Menu.Integrations.GameHistory.Description" xml:space="preserve">
+    <value>Megjeleníti az adott munkamenet során játszott játékot, és lehetővé teszi, hogy újra csatlakozz hozzá.</value>
+  </data>
+  <data name="Menu.Integrations.GameHistoryMenu.Description" xml:space="preserve">
+    <value>Tekintse meg a játékelőzményeket, hogy gyorsan visszatérhessen a szerverre.</value>
+  </data>
+  <data name="Menu.Integrations.GameHistoryMenu.Title" xml:space="preserve">
+    <value>Játéktörténet menü</value>
+  </data>
+  <data name="Menu.Integrations.IconChange.Description" xml:space="preserve">
+    <value>A Roblox játék címsorát és a tálcán megjelenő ikonját automatikusan az aktuális játék ikonjára cseréli.</value>
+  </data>
+  <data name="Menu.Integrations.IconChange.Title" xml:space="preserve">
+    <value>Ikoncsere</value>
+  </data>
+  <data name="Menu.Integrations.JoinButton.Description" xml:space="preserve">
+    <value>Hoz létre egy kis gombot, amellyel csatlakozhatsz az éppen szerkesztett játékhoz.</value>
+  </data>
+  <data name="Menu.Integrations.JoinButton.Title" xml:space="preserve">
+    <value>„Csatlakozás” gomb</value>
+  </data>
+  <data name="Menu.Integrations.PlaytimeCounter.Description" xml:space="preserve">
+    <value>Játék vagy a Studio-helyszínen tartózkodás közben megjeleníti a teljes játékidőt és az aktuális munkamenet időtartamát.</value>
+  </data>
+  <data name="Menu.Integrations.PlaytimeCounter.Title" xml:space="preserve">
+    <value>Játékidő-számláló</value>
+  </data>
+  <data name="Menu.Integrations.QueryServerLocation.Description" xml:space="preserve">
+    <value>A játékban a [ipinfo.io](https://ipinfo.io) oldalon megnézheted, hol található a szervered.</value>
+  </data>
+  <data name="Menu.Integrations.QueryServerLocation.Title" xml:space="preserve">
+    <value>A szerver helyének lekérdezése</value>
   </data>
   <data name="Menu.Integrations.RequiresActivityTracking" xml:space="preserve">
-    <value>Ehhez a funkcióhoz engedélyezni kell az aktivitáskövetést, valamint telepíteni és futtatni kell a Discord asztali alkalmazást. [Tudjon meg többet]({0}).</value>
+    <value>Ehhez a funkcióhoz engedélyezni kell a tevékenységkövetést, valamint telepítve és futtatva kell lennie a Discord asztali alkalmazásnak. [További információk]({0}).</value>
+  </data>
+  <data name="Menu.Integrations.ShowAccountOnProfile.Description" xml:space="preserve">
+    <value>Megjeleníti a Discord-profilodon azt a Roblox-fiókot, amellyel éppen játszol.</value>
+  </data>
+  <data name="Menu.Integrations.ShowAccountOnProfile.Title" xml:space="preserve">
+    <value>Roblox-fiók megjelenítése</value>
   </data>
   <data name="Menu.Integrations.ShowGameActivity.Description" xml:space="preserve">
-    <value>Az ön által játszott Roblox játék megjelenik Discord profilján. [Nem működik?]({0})</value>
+    <value>Az a Roblox-játék, amelyet éppen játszol, megjelenik a Discord-profilodon. [Nem működik?]({0})</value>
   </data>
   <data name="Menu.Integrations.ShowGameActivity.Title" xml:space="preserve">
     <value>Játékaktivitás megjelenítése</value>
   </data>
-  <data name="Menu.Integrations.QueryServerLocation.Description" xml:space="preserve">
-    <value>A játékban az [ipinfo.io]({0}) segítségével láthatod, hogy hol található a szervered.</value>
+  <data name="Menu.Integrations.ShowTesting.Description" xml:space="preserve">
+    <value>Játék tesztelése közben egy kis lejátszás ikon jelenik meg az RPC-ben.</value>
   </data>
-  <data name="Menu.Integrations.QueryServerLocation.Title" xml:space="preserve">
-    <value>Szerver helyének megtekintése</value>
+  <data name="Menu.Integrations.ShowTesting.Title" xml:space="preserve">
+    <value>Tesztelés megjelenítése</value>
+  </data>
+  <data name="Menu.Integrations.StudioActivity.Description" xml:space="preserve">
+    <value>Indításkor a Roblox Studio-t jeleníti meg Discord-tevékenységként.</value>
+  </data>
+  <data name="Menu.Integrations.StudioActivity.Title" xml:space="preserve">
+    <value>Display Studio tevékenység</value>
+  </data>
+  <data name="Menu.Integrations.StudioRPC.PluginConfirmation" xml:space="preserve">
+    <value>Ez úgy működik, hogy hozzáad egy egyedi Froststrap-bővítményt, amely naplózza a tevékenységeidet.
+Szeretnéd telepíteni a bővítményt?</value>
   </data>
   <data name="Menu.Integrations.Title" xml:space="preserve">
     <value>Integrációk</value>
   </data>
+  <data name="Menu.Integrations.TitleChange.Description" xml:space="preserve">
+    <value>A Roblox címsorának szövegét a játék nevére változtatja.</value>
+  </data>
+  <data name="Menu.Integrations.TitleChange.Title" xml:space="preserve">
+    <value>Címváltozás</value>
+  </data>
+  <data name="Menu.Integrations.WorkspaceInfo.Description" xml:space="preserve">
+    <value>Megjeleníti az aktuális munkaterület nevét.</value>
+  </data>
+  <data name="Menu.Integrations.WorkspaceInfo.Title" xml:space="preserve">
+    <value>A munkaterületről</value>
+  </data>
+  <data name="Menu.LinuxSettings.AddVariable" xml:space="preserve">
+    <value>+ Változó hozzáadása</value>
+  </data>
+  <data name="Menu.LinuxSettings.AdvancedWineSettings" xml:space="preserve">
+    <value>Bonyolultabb borbeállítások</value>
+  </data>
+  <data name="Menu.LinuxSettings.AllowGamepadPermission.Description" xml:space="preserve">
+    <value>Lehetővé teszi a Sober számára, hogy a Steam Deck vagy hasonló vezérlők segítségével vezérlőparancsokat kérjen és rögzítsen.</value>
+  </data>
+  <data name="Menu.LinuxSettings.AllowGamepadPermission.Title" xml:space="preserve">
+    <value>A játékvezérlő engedélyezése</value>
+  </data>
+  <data name="Menu.LinuxSettings.DebugMode.Description" xml:space="preserve">
+    <value>A Wine/DXVK részletes naplózásának és konzolkimenetének engedélyezése.</value>
+  </data>
+  <data name="Menu.LinuxSettings.DebugMode.Title" xml:space="preserve">
+    <value>Hibakeresési mód</value>
+  </data>
+  <data name="Menu.LinuxSettings.EnableGameMode.Description" xml:space="preserve">
+    <value>A Signals, a Feral Interactive GameMode optimalizáló démonja a játékindítási folyamatok során kapcsolódik be.</value>
+  </data>
+  <data name="Menu.LinuxSettings.EnableGameMode.Title" xml:space="preserve">
+    <value>GameMode engedélyezése</value>
+  </data>
+  <data name="Menu.LinuxSettings.EnableHiDpi.Description" xml:space="preserve">
+    <value>A felületelemek megjelenítésekor a rendszer a natív, magas DPI-értékű platformskálázási beállításokat alkalmazza.</value>
+  </data>
+  <data name="Menu.LinuxSettings.EnableHiDpi.Title" xml:space="preserve">
+    <value>HiDPI-képernyő méretezésének támogatása</value>
+  </data>
+  <data name="Menu.LinuxSettings.EnvironmentVariables.Description" xml:space="preserve">
+    <value>A Wine-nak átadott további környezeti változók.</value>
+  </data>
+  <data name="Menu.LinuxSettings.EnvironmentVariables.Title" xml:space="preserve">
+    <value>Környezeti változók</value>
+  </data>
+  <data name="Menu.LinuxSettings.FailedToStartWineCfg" xml:space="preserve">
+    <value>A winecfg indítása sikertelen: {0}</value>
+  </data>
+  <data name="Menu.LinuxSettings.ForceLegacyOpenGL.Description" xml:space="preserve">
+    <value>Felülírja a natív Vulkan alrendszereket, és helyette a régi OpenGL elrendezési folyamatra vált át.</value>
+  </data>
+  <data name="Menu.LinuxSettings.ForceLegacyOpenGL.Title" xml:space="preserve">
+    <value>OpenGL-alapú megjelenítés kényszerítése</value>
+  </data>
+  <data name="Menu.LinuxSettings.GameMode.Description" xml:space="preserve">
+    <value>Ha elérhető, hajtsd végre a rendszeroptimalizálásokat (ehhez a gamemoded szükséges).</value>
+  </data>
+  <data name="Menu.LinuxSettings.GameMode.Title" xml:space="preserve">
+    <value>Játékmód</value>
+  </data>
+  <data name="Menu.LinuxSettings.GraphicsRenderer.Description" xml:space="preserve">
+    <value>Válassza ki a Studio renderelő háttérprogramját a Wine alatt.</value>
+  </data>
+  <data name="Menu.LinuxSettings.GraphicsRenderer.Title" xml:space="preserve">
+    <value>Grafikus renderelő</value>
+  </data>
+  <data name="Menu.LinuxSettings.LauncherCommand.Description" xml:space="preserve">
+    <value>A Studio parancs beágyazása (pl. gamescope -- %parancs%)</value>
+  </data>
+  <data name="Menu.LinuxSettings.LauncherCommand.Title" xml:space="preserve">
+    <value>Indítóparancs</value>
+  </data>
+  <data name="Menu.LinuxSettings.LauncherPlaceholder" xml:space="preserve">
+    <value>gamescope -- %parancs%</value>
+  </data>
+  <data name="Menu.LinuxSettings.ResolutionPlaceholder" xml:space="preserve">
+    <value>pl. 1920x1080</value>
+  </data>
+  <data name="Menu.LinuxSettings.Title" xml:space="preserve">
+    <value>Linux-beállítások</value>
+  </data>
+  <data name="Menu.LinuxSettings.TouchInputMode.Description" xml:space="preserve">
+    <value>Engedélyezi vagy letiltja az érintésérzékeny kijelzőhardverek viselkedéskezelési profiljait.</value>
+  </data>
+  <data name="Menu.LinuxSettings.TouchInputMode.Title" xml:space="preserve">
+    <value>Érintéses bevitel módja</value>
+  </data>
+  <data name="Menu.LinuxSettings.UseConsoleExperience.Description" xml:space="preserve">
+    <value>A modern TV/konzol kliens elrendezésű irányítópult-rendszerét kényszeríti az asztali felület kontextusára.</value>
+  </data>
+  <data name="Menu.LinuxSettings.UseConsoleExperience.Title" xml:space="preserve">
+    <value>A konzol használata</value>
+  </data>
+  <data name="Menu.LinuxSettings.Variable" xml:space="preserve">
+    <value>Változó</value>
+  </data>
+  <data name="Menu.LinuxSettings.VirtualDesktops.Description" xml:space="preserve">
+    <value>Minden példányhoz hozzon létre egy külön ablakot</value>
+  </data>
+  <data name="Menu.LinuxSettings.VirtualDesktops.Title" xml:space="preserve">
+    <value>Virtuális asztalok</value>
+  </data>
+  <data name="Menu.LinuxSettings.WebPages.Description" xml:space="preserve">
+    <value>Bizonyos felhasználói felület-elemekhez és a bejelentkezéshez használják</value>
+  </data>
+  <data name="Menu.LinuxSettings.WebPages.Title" xml:space="preserve">
+    <value>Weboldalak</value>
+  </data>
+  <data name="Menu.LinuxSettings.WineBinaryNotFound" xml:space="preserve">
+    <value>A Wine bináris fájl nem található. Kérjük, ellenőrizze, hogy a Wine telepítve van-e.</value>
+  </data>
+  <data name="Menu.Load" xml:space="preserve">
+    <value>Betöltés</value>
+  </data>
+  <data name="Menu.ManualLogin.EnterCookie" xml:space="preserve">
+    <value>Kérjük, adjon meg egy cookie-t.</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.1" xml:space="preserve">
+    <value>Nyisd meg a Roblox.com oldalt a böngésződben, és jelentkezz be</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.2" xml:space="preserve">
+    <value>Nyomja meg az F12 billentyűt a Fejlesztői eszközök megnyitásához</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.3" xml:space="preserve">
+    <value>Kattintson az „Alkalmazások” fülre (Chrome) vagy a „Tárolás” fülre (Firefox)</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.4" xml:space="preserve">
+    <value>Bontsa ki a „Cookies” menüpontot, majd válassza ki a „https://www.roblox.com” elemet</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.5" xml:space="preserve">
+    <value>Keresse meg a „ROBLOSECURITY” nevű cookie-t</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.6" xml:space="preserve">
+    <value>Kattintson duplán az „Érték” oszlopra, majd másolja ki azt</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.7" xml:space="preserve">
+    <value>Illessze be az értéket a fenti mezőbe</value>
+  </data>
+  <data name="Menu.ManualLogin.InvalidCookie" xml:space="preserve">
+    <value>A süti érvénytelen. Kérjük, ellenőrizze, majd próbálja meg újra.</value>
+  </data>
+  <data name="Menu.ManualLogin.PasteSecurity" xml:space="preserve">
+    <value>Illessze be a .ROBLOSECURITY cookie-t</value>
+  </data>
+  <data name="Menu.ManualLogin.Title" xml:space="preserve">
+    <value>Kézi bejelentkezés</value>
+  </data>
+  <data name="Menu.ModGenerator.AddStop" xml:space="preserve">
+    <value>Szín hozzáadása</value>
+  </data>
+  <data name="Menu.ModGenerator.AppliedModifications" xml:space="preserve">
+    <value>A módosítások sikeresen alkalmazva ({0} fájl).</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyCursor" xml:space="preserve">
+    <value>Alkalmazás a kurzorokra</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyEmoteWheel" xml:space="preserve">
+    <value>Hozzáadás az emote-kerékhez</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyShiftlock" xml:space="preserve">
+    <value>Jelentkezz a Shiftlockhoz</value>
+  </data>
+  <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
+    <value>Minél nagyobb az érték, annál jobb a minőség, de annál hosszabb ideig tart; a maximális érték 512, az alapértelmezett pedig 32.</value>
+  </data>
+  <data name="Menu.ModGenerator.Cancelled" xml:space="preserve">
+    <value>A mod generálása törölve.</value>
+  </data>
+  <data name="Menu.ModGenerator.CleaningUp" xml:space="preserve">
+    <value>Takarítás...</value>
+  </data>
+  <data name="Menu.ModGenerator.CustomModName" xml:space="preserve">
+    <value>Mod neve (opcionális)</value>
+  </data>
+  <data name="Menu.ModGenerator.CustomSpinner" xml:space="preserve">
+    <value>Egyedi forgóelem (opcionális)</value>
+  </data>
+  <data name="Menu.ModGenerator.Description" xml:space="preserve">
+    <value>Készítsen modokat egyszerűen, egyetlen kattintással.</value>
+  </data>
+  <data name="Menu.ModGenerator.DontColorPlay" xml:space="preserve">
+    <value>„Ne színezz” játék ikonja</value>
+  </data>
+  <data name="Menu.ModGenerator.Downnloading" xml:space="preserve">
+    <value>A szükséges elemek letöltése...</value>
+  </data>
+  <data name="Menu.ModGenerator.Extracting" xml:space="preserve">
+    <value>Fájlok kibontása...</value>
+  </data>
+  <data name="Menu.ModGenerator.FailedPreview" xml:space="preserve">
+    <value>Nem sikerült betölteni az előnézeti betűtípusokat.</value>
+  </data>
+  <data name="Menu.ModGenerator.IconSet" xml:space="preserve">
+    <value>Ikonkészlet:</value>
+  </data>
+  <data name="Menu.ModGenerator.IncludeModification" xml:space="preserve">
+    <value>Hozzáadás a „Saját modjaimhoz” listához</value>
+  </data>
+  <data name="Menu.ModGenerator.Packaging" xml:space="preserve">
+    <value>Csomagolás...</value>
+  </data>
+  <data name="Menu.ModGenerator.ReadyToGenerate" xml:space="preserve">
+    <value>Készen állsz a mod létrehozására?</value>
+  </data>
+  <data name="Menu.ModGenerator.RecoloringFonts" xml:space="preserve">
+    <value>Betűtípusok átfestése...</value>
+  </data>
+  <data name="Menu.ModGenerator.RecoloringPNGS" xml:space="preserve">
+    <value>Képek átfestése...</value>
+  </data>
+  <data name="Menu.ModGenerator.RobloxIcon" xml:space="preserve">
+    <value>Roblox-ikon (opcionális)</value>
+  </data>
+  <data name="Menu.ModGenerator.SavedTo" xml:space="preserve">
+    <value>Elmentve a {0} mappába</value>
+  </data>
+  <data name="Menu.ModGenerator.Starting" xml:space="preserve">
+    <value>A mod generálása megkezdődött...</value>
+  </data>
+  <data name="Menu.ModGenerator.StylePreview" xml:space="preserve">
+    <value>Stílus-előnézet</value>
+  </data>
+  <data name="Menu.ModGenerator.Title" xml:space="preserve">
+    <value>Generátor ellen</value>
+  </data>
+  <data name="Menu.ModGeneratorName.Exists" xml:space="preserve">
+    <value>Már létezik ilyen nevű mod. Válassz egy másik nevet!</value>
+  </data>
+  <data name="Menu.ModGeneratorName.Invalid" xml:space="preserve">
+    <value>A mappa neve érvénytelen karaktereket tartalmaz.</value>
+  </data>
+  <data name="Menu.Mods.AddNewMod" xml:space="preserve">
+    <value>Új mod hozzáadása</value>
+  </data>
+  <data name="Menu.Mods.AlreadyExist" xml:space="preserve">
+    <value>Már létezik egy „{0}” nevű mod.</value>
+  </data>
+  <data name="Menu.Mods.DeleteMod" xml:space="preserve">
+    <value>Véglegesen törölje a „{0}”-t?</value>
+  </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
-    <value>Kezelje és alkalmazza a Roblox játékkliens fájlmodokat.</value>
+    <value>A fájlmódosítások kezelése és alkalmazása.</value>
   </data>
-  <data name="Menu.Mods.Help.Description" xml:space="preserve">
-    <value>Lásd a modok kezelésével és létrehozásával kapcsolatos információkat.</value>
-    <comment>Title is Common.Help</comment>
+  <data name="Menu.Mods.DragOverlay" xml:space="preserve">
+    <value>📦 Húzza ide a ZIP-fájlt vagy mappát az importáláshoz</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Choose" xml:space="preserve">
-    <value>Betűtípus kiválasztása...</value>
+  <data name="Menu.Mods.FolderDosentExist" xml:space="preserve">
+    <value>A „{0}” nevű mappa már nem létezik.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Description" xml:space="preserve">
-    <value>A betűméret a Motorbeállítások lapon állítható be.</value>
+  <data name="Menu.Mods.ImportFolder" xml:space="preserve">
+    <value>Mappa importálása</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Invalid" xml:space="preserve">
-    <value>A kiválasztott fájl nem tűnik érvényes betűtípusfájlnak.</value>
+  <data name="Menu.Mods.ImportZIP" xml:space="preserve">
+    <value>ZIP-fájl importálása</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Remove" xml:space="preserve">
-    <value>Alkalmazott betűtípus eltávolítása</value>
+  <data name="Menu.Mods.Imported" xml:space="preserve">
+    <value>A „{0}” mod sikeresen importálva.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Title" xml:space="preserve">
-    <value>Saját betűtípus használata</value>
+  <data name="Menu.Mods.InfoBar" xml:space="preserve">
+    <value>A modokat húzással vagy importálással lehet beolvasni; az alacsonyabb prioritású modok kerülnek alkalmazásra utoljára, így elkerülhetők az egyéb modokkal való ütközések.</value>
   </data>
-  <data name="Menu.Mods.OpenModsFolder.Description" xml:space="preserve">
-    <value>Egyéni Roblox modok kezelése itt.</value>
+  <data name="Menu.Mods.InvalidFolderName" xml:space="preserve">
+    <value>Érvénytelen mappa neve.</value>
   </data>
-  <data name="Menu.Mods.OpenModsFolder.Title" xml:space="preserve">
-    <value>Mods mappa megnyitása</value>
+  <data name="Menu.Mods.InvalidModFolders" xml:space="preserve">
+    <value>A kiválasztott forrás nem tartalmaz érvényes mod-struktúrát.
+Legalább az alábbi mappák egyikét tartalmaznia kell: content, ExtraContent, PlatformContent.</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Description" xml:space="preserve">
-    <value>Válassza ki, hogy milyen típusú emojit használjon a Roblox.</value>
+  <data name="Menu.Mods.NoneInstalled" xml:space="preserve">
+    <value>Nincs telepítve semmilyen mod.</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Title" xml:space="preserve">
-    <value>Előnyben részesített emoji típus</value>
+  <data name="Menu.Mods.Preview.Failed" xml:space="preserve">
+    <value>Az előnézet betöltése nem sikerült: {0}</value>
   </data>
-  <data name="Menu.Mods.Presets.MouseCursor.Description" xml:space="preserve">
-    <value>Válassz két klasszikus Roblox kurzorstílus használata közül.</value>
+  <data name="Menu.Mods.Preview.Font.Preview" xml:space="preserve">
+    <value>Betűtípus-előnézet</value>
   </data>
-  <data name="Menu.Mods.Presets.MouseCursor.Title" xml:space="preserve">
-    <value>Egér kurzor</value>
+  <data name="Menu.Mods.Preview.FontVariant" xml:space="preserve">
+    <value>Betűtípus-változat:</value>
   </data>
-  <data name="Menu.Mods.Presets.OldAvatarEditor.Description" xml:space="preserve">
-    <value>A régi avatár szerkesztő háttér visszahozása, amelyet a Roblox alkalmazásban használtak 2020 előtt.</value>
+  <data name="Menu.Mods.Preview.Loaded" xml:space="preserve">
+    <value>Az előnézet betöltődött</value>
   </data>
-  <data name="Menu.Mods.Presets.OldAvatarEditor.Title" xml:space="preserve">
-    <value>Régi avatár szerkesztő háttér használata</value>
+  <data name="Menu.Mods.Preview.Loading" xml:space="preserve">
+    <value>A betűtípus-előnézet betöltése...</value>
   </data>
-  <data name="Menu.Mods.Presets.OldCharacterSounds.Description" xml:space="preserve">
-    <value>Egy kísérlet arra, hogy nagyjából visszahozzuk a 2014 előtt használt karakterhangokat.</value>
+  <data name="Menu.Mods.Preview.Loading.Glyphs" xml:space="preserve">
+    <value>Glyfok betöltése...</value>
   </data>
-  <data name="Menu.Mods.Presets.OldCharacterSounds.Title" xml:space="preserve">
-    <value>Régi karakterhangok visszahozása</value>
+  <data name="Menu.Mods.Preview.LoadingFont" xml:space="preserve">
+    <value>Betűtípus betöltése: {0}...</value>
   </data>
-  <data name="Menu.Mods.Presets.OldDeathSound.Description" xml:space="preserve">
-    <value>A klasszikus 'oof' hang visszahozása.</value>
+  <data name="Menu.Mods.Preview.NoColor" xml:space="preserve">
+    <value>Ebben a modban nem találtak színre vonatkozó információt</value>
   </data>
-  <data name="Menu.Mods.Presets.OldDeathSound.Title" xml:space="preserve">
-    <value>Régi halálhang használata</value>
+  <data name="Menu.Mods.SelectedModAction" xml:space="preserve">
+    <value>Kiválasztott modul művelet</value>
   </data>
   <data name="Menu.Mods.Title" xml:space="preserve">
-    <value>Modok</value>
+    <value>A saját modjaim</value>
   </data>
-  <data name="Menu.MoreInfo" xml:space="preserve">
-    <value>Kattintson ide további információkért erről a lehetőségről.</value>
+  <data name="Menu.Mods.UnsupportedFile" xml:space="preserve">
+    <value>Nem támogatott fájltípus vagy elérési út: {0}</value>
+  </data>
+  <data name="Menu.PresetMods.CursorSet.Apply" xml:space="preserve">
+    <value>Alkalmazáskészlet</value>
+  </data>
+  <data name="Menu.PresetMods.CursorSet.Export" xml:space="preserve">
+    <value>Exportálási készlet</value>
+  </data>
+  <data name="Menu.PresetMods.CursorSet.Fetch" xml:space="preserve">
+    <value>Hozás – Beállítás</value>
+  </data>
+  <data name="Menu.PresetMods.CursorSet.Import" xml:space="preserve">
+    <value>Importálási készlet</value>
+  </data>
+  <data name="Menu.PresetMods.CursorSet.None" xml:space="preserve">
+    <value>Nincs kiválasztva egyéni kurzorkészlet.</value>
+  </data>
+  <data name="Menu.PresetMods.Description" xml:space="preserve">
+    <value>Hivatalos beépített modok.</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CardExpander.CustomCursors.Descriptions" xml:space="preserve">
+    <value>Minden, amire szükséged van a kurzorok kezeléséhez.</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CardExpander.CustomCursors.Title" xml:space="preserve">
+    <value>Egyedi kurzorfunkciók</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CompatibilitySettings.Description" xml:space="preserve">
+    <value>Állítsa be az alkalmazás paramétereit, például a DPI-skálázás viselkedését és a [teljes képernyős optimalizálásokat]({0}).</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CompatibilitySettings.Title" xml:space="preserve">
+    <value>Kompatibilitási beállítások kezelése</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CustomCursor.Choose" xml:space="preserve">
+    <value>Kijelölő eszköz kiválasztása...</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CustomCursor.Description" xml:space="preserve">
+    <value>Használd a saját egérkurzorjaidat a Robloxban.</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CustomCursor.Remove" xml:space="preserve">
+    <value>Egyéni kurzor eltávolítása</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CustomCursor.Title" xml:space="preserve">
+    <value>Egyedi kurzor</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CustomCursorSet.Description" xml:space="preserve">
+    <value>Több kurzorkészletet is tartson készenlétben a használatra.</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CustomCursorSet.Title" xml:space="preserve">
+    <value>Egyedi kurzorkészlet</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Choose" xml:space="preserve">
+    <value>Válassza ki a hangot...</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Description" xml:space="preserve">
+    <value>A halál hangját a saját hangfájloddal helyettesíti.</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Remove" xml:space="preserve">
+    <value>Egyéni halálhang eltávolítása</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Title" xml:space="preserve">
+    <value>Egyedi halálhang</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CustomFont.Choose" xml:space="preserve">
+    <value>Betűtípus kiválasztása...</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CustomFont.Description" xml:space="preserve">
+    <value>Beállítja a kiválasztott egyéni betűtípust a Robloxban.</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CustomFont.Remove" xml:space="preserve">
+    <value>Az alkalmazott betűtípus eltávolítása</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CustomFont.Title" xml:space="preserve">
+    <value>Egyedi játékbetűtípus</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Choose" xml:space="preserve">
+    <value>Válassza a ShiftLock lehetőséget...</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Description" xml:space="preserve">
+    <value>Használd a saját Shiftlockodat a Robloxban.</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Remove" xml:space="preserve">
+    <value>Az egyéni Shiftlock eltávolítása</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Title" xml:space="preserve">
+    <value>Egyedi Shiftlock</value>
+  </data>
+  <data name="Menu.PresetMods.OpenModsFolder" xml:space="preserve">
+    <value>A „Preset Mods” mappa megnyitása</value>
+  </data>
+  <data name="Menu.PresetMods.Presets.EmojiType.Description" xml:space="preserve">
+    <value>Válaszd ki, hogy milyen típusú emojikat használjon a Roblox.</value>
+  </data>
+  <data name="Menu.PresetMods.Presets.EmojiType.Error" xml:space="preserve">
+    <value>Az emoji-mod jelenleg nem alkalmazható.</value>
+  </data>
+  <data name="Menu.PresetMods.Presets.EmojiType.Title" xml:space="preserve">
+    <value>Előnyben részesített emoji-típus</value>
+  </data>
+  <data name="Menu.PresetMods.Presets.MouseCursor.Description" xml:space="preserve">
+    <value>Válassz a többféle Roblox-kurzor közül.</value>
+  </data>
+  <data name="Menu.PresetMods.Presets.MouseCursor.Title" xml:space="preserve">
+    <value>Egérkurzor</value>
+  </data>
+  <data name="Menu.PresetMods.Presets.OldAvatarEditor.Description" xml:space="preserve">
+    <value>Állítsák vissza azt a régi avatárszerkesztő-háttérképet, amelyet 2020 előtt a Roblox alkalmazásban használtak.</value>
+  </data>
+  <data name="Menu.PresetMods.Presets.OldAvatarEditor.Title" xml:space="preserve">
+    <value>A régi avatárszerkesztő háttérének használata</value>
+  </data>
+  <data name="Menu.PresetMods.Title" xml:space="preserve">
+    <value>Előre beállított módosítások</value>
+  </data>
+  <data name="Menu.QuickPlay.AccountManagerNotAvailable" xml:space="preserve">
+    <value>Az ügyfélmenedzser jelenleg nem elérhető.</value>
+  </data>
+  <data name="Menu.QuickPlay.Active" xml:space="preserve">
+    <value>Aktív</value>
+  </data>
+  <data name="Menu.QuickPlay.AvailableSubplaces" xml:space="preserve">
+    <value>Elérhető alhelyek</value>
+  </data>
+  <data name="Menu.QuickPlay.CheckingServers" xml:space="preserve">
+    <value>A szerverek ellenőrzése...</value>
+  </data>
+  <data name="Menu.QuickPlay.Description" xml:space="preserve">
+    <value>Térj vissza a legutóbbi játékaidhoz!</value>
+  </data>
+  <data name="Menu.QuickPlay.FetchingGameInfo" xml:space="preserve">
+    <value>Játékinformációk lekérése</value>
+  </data>
+  <data name="Menu.QuickPlay.FindingBestServer" xml:space="preserve">
+    <value>A régiódhoz legmegfelelőbb szerver keresése...</value>
+  </data>
+  <data name="Menu.QuickPlay.JoinBestRegion" xml:space="preserve">
+    <value>Csatlakozz a Best Regionhoz!</value>
+  </data>
+  <data name="Menu.QuickPlay.JoinGame" xml:space="preserve">
+    <value>Csatlakozz a játékhoz</value>
+  </data>
+  <data name="Menu.QuickPlay.Latest" xml:space="preserve">
+    <value>Legfrissebb</value>
+  </data>
+  <data name="Menu.QuickPlay.LoadingPrivateServers" xml:space="preserve">
+    <value>Magánszerverek betöltése...</value>
+  </data>
+  <data name="Menu.QuickPlay.LoadingRecentGames" xml:space="preserve">
+    <value>A legutóbbi mérkőzések betöltése...</value>
+  </data>
+  <data name="Menu.QuickPlay.LoadingServers" xml:space="preserve">
+    <value>Szerverek betöltése...</value>
+  </data>
+  <data name="Menu.QuickPlay.LoadingSubplaces" xml:space="preserve">
+    <value>Alhelyek betöltése...</value>
+  </data>
+  <data name="Menu.QuickPlay.NoPrivateServersFound" xml:space="preserve">
+    <value>Nem találtak magánszervereket</value>
+  </data>
+  <data name="Menu.QuickPlay.NoSuitableServer" xml:space="preserve">
+    <value>Nem találtam megfelelő szervert.</value>
+  </data>
+  <data name="Menu.QuickPlay.Players" xml:space="preserve">
+    <value>játékosok</value>
+  </data>
+  <data name="Menu.QuickPlay.PleaseSelectAccount" xml:space="preserve">
+    <value>Kérjük, először válasszon ki egy fiókot.</value>
+  </data>
+  <data name="Menu.QuickPlay.PrivateServers" xml:space="preserve">
+    <value>Magánszerverek</value>
+  </data>
+  <data name="Menu.QuickPlay.RejoinLastServer" xml:space="preserve">
+    <value>Visszatérés az utolsó szerverre</value>
+  </data>
+  <data name="Menu.QuickPlay.RobloxServers" xml:space="preserve">
+    <value>Roblox-szerverek</value>
+  </data>
+  <data name="Menu.QuickPlay.SessionHistory" xml:space="preserve">
+    <value>Munkamenet-előzmények</value>
+  </data>
+  <data name="Menu.QuickPlay.Title" xml:space="preserve">
+    <value>Gyors játék</value>
+  </data>
+  <data name="Menu.QuickPlay.Tracked" xml:space="preserve">
+    <value>Nyomon követett</value>
+  </data>
+  <data name="Menu.QuickPlay.TrackedServers" xml:space="preserve">
+    <value>Nyomon követett szerverek ({0})</value>
+  </data>
+  <data name="Menu.QuickPlay.UnableToAuthenticate" xml:space="preserve">
+    <value>A hitelesítés nem sikerült. Kérjük, jelentkezzen be újra.</value>
+  </data>
+  <data name="Menu.QuickPlay.UnknownGame" xml:space="preserve">
+    <value>Ismeretlen játék</value>
+  </data>
+  <data name="Menu.QuickPlay.ViewSubplaces" xml:space="preserve">
+    <value>Alhelyek megtekintése</value>
+  </data>
+  <data name="Menu.QuickPlay.VisitPage" xml:space="preserve">
+    <value>Látogasson el az oldalra</value>
+  </data>
+  <data name="Menu.QuickPlay.Visits" xml:space="preserve">
+    <value>Látogatások</value>
+  </data>
+  <data name="Menu.QuickSignIn.Cancelled" xml:space="preserve">
+    <value>A bejelentkezés törölve.</value>
+  </data>
+  <data name="Menu.QuickSignIn.Complete" xml:space="preserve">
+    <value>A bejelentkezés sikeresen befejeződött! Bezárás...</value>
+  </data>
+  <data name="Menu.QuickSignIn.Instruction" xml:space="preserve">
+    <value>Másold ki ezt a kódot, és illeszd be a [Gyors bejelentkezési oldalra]({0}).</value>
+  </data>
+  <data name="Menu.QuickSignIn.Linked" xml:space="preserve">
+    <value>Az eszköz összekapcsolva – a bejelentkezés jóváhagyása folyamatban...</value>
+  </data>
+  <data name="Menu.QuickSignIn.TimedOut" xml:space="preserve">
+    <value>A bejelentkezés időtúllépése.</value>
+  </data>
+  <data name="Menu.QuickSignIn.Waitting" xml:space="preserve">
+    <value>Várakozás a gyors bejelentkezésre...
+Az alkalmazás bezárja ezt az ablakot, amint a bejelentkezés befejeződött.</value>
+  </data>
+  <data name="Menu.RegionSelector.EnterPlaceId" xml:space="preserve">
+    <value>Írja be a helyazonosítót, majd kattintson a „Keresés” gombra a szerverek megtekintéséhez.</value>
+  </data>
+  <data name="Menu.RegionSelector.FailedToLoadDatacenters" xml:space="preserve">
+    <value>Az adatközpontok betöltése nem sikerült.</value>
+  </data>
+  <data name="Menu.RegionSelector.FindGame" xml:space="preserve">
+    <value>Írja be a hely azonosítóját vagy a játék nevét...</value>
+  </data>
+  <data name="Menu.RegionSelector.ID" xml:space="preserve">
+    <value>Azonosító: {0}</value>
+  </data>
+  <data name="Menu.RegionSelector.Join" xml:space="preserve">
+    <value>Csatlakozz</value>
+  </data>
+  <data name="Menu.RegionSelector.LargeServers" xml:space="preserve">
+    <value>Nagy teljesítményű szerverek</value>
+  </data>
+  <data name="Menu.RegionSelector.LoadMore" xml:space="preserve">
+    <value>Továbbiak betöltése</value>
+  </data>
+  <data name="Menu.RegionSelector.LoadedRegions" xml:space="preserve">
+    <value>{0} régió betöltve.</value>
+  </data>
+  <data name="Menu.RegionSelector.LoadingDatacenters" xml:space="preserve">
+    <value>Adatközpontok betöltése...</value>
+  </data>
+  <data name="Menu.RegionSelector.LoginRequired" xml:space="preserve">
+    <value>A használathoz jelentkezz be a fiókkezelőn keresztül, kapcsold be a „Froststrap fiókhozzáférés” opciót, vagy jelezd ezt a Discord-szerverünkön.</value>
+  </data>
+  <data name="Menu.RegionSelector.NoPublicServers" xml:space="preserve">
+    <value>Nem találtak nyilvános szervereket.</value>
+  </data>
+  <data name="Menu.RegionSelector.NoServersForRegion" xml:space="preserve">
+    <value>A megadott régióban nem találtunk szervert.</value>
+  </data>
+  <data name="Menu.RegionSelector.Players" xml:space="preserve">
+    <value>Játékosok</value>
+  </data>
+  <data name="Menu.RegionSelector.PleaseSelectRegion" xml:space="preserve">
+    <value>Kérjük, először válasszon ki egy régiót.</value>
+  </data>
+  <data name="Menu.RegionSelector.Region" xml:space="preserve">
+    <value>Régió:</value>
+  </data>
+  <data name="Menu.RegionSelector.RegionHeader" xml:space="preserve">
+    <value>Régió</value>
+  </data>
+  <data name="Menu.RegionSelector.SearchingServers" xml:space="preserve">
+    <value>Kiszolgálók keresése...</value>
+  </data>
+  <data name="Menu.RegionSelector.ServerSize" xml:space="preserve">
+    <value>A szerver mérete:</value>
+  </data>
+  <data name="Menu.RegionSelector.SmallServers" xml:space="preserve">
+    <value>Kis szerver</value>
+  </data>
+  <data name="Menu.RegionSelector.Title" xml:space="preserve">
+    <value>Régióválasztó</value>
+  </data>
+  <data name="Menu.Restart" xml:space="preserve">
+    <value>Újraindítás</value>
   </data>
   <data name="Menu.Save" xml:space="preserve">
     <value>Mentés</value>
   </data>
+  <data name="Menu.SearchBar.AutoJoin" xml:space="preserve">
+    <value>Automatikus mód: Az Ön számára legmegfelelőbb régió keresése...</value>
+  </data>
+  <data name="Menu.SearchBar.JoinError" xml:space="preserve">
+    <value>Nem sikerült csatlakozni a játékhoz: {0}</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningBest" xml:space="preserve">
+    <value>Csatlakozás a legjobb szerverhez...</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningGame" xml:space="preserve">
+    <value>Csatlakozás a játékhoz</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningName" xml:space="preserve">
+    <value>Csatlakozás a {0}-hoz a gyorsjáték segítségével.</value>
+  </data>
+  <data name="Menu.SearchBar.NoSuitableServer" xml:space="preserve">
+    <value>Nem sikerült megfelelő szervert találni.</value>
+  </data>
+  <data name="Menu.SearchBar.SearchSomething" xml:space="preserve">
+    <value>Keress rá valamire, és lehet, hogy itt megjelenik...</value>
+  </data>
+  <data name="Menu.SearchBar.ServerFound" xml:space="preserve">
+    <value>Szerver megtalálva</value>
+  </data>
   <data name="Menu.SettingsSaved.Message" xml:space="preserve">
-    <value>A módosítások a Roblox következő indításakor lépnek használásra.</value>
+    <value>A változtatások a Roblox következő indításakor lépnek életbe.</value>
   </data>
   <data name="Menu.SettingsSaved.Title" xml:space="preserve">
-    <value>Beállítások mentve!</value>
+    <value>A beállítások elmentve!</value>
   </data>
-  <data name="Menu.Title" xml:space="preserve">
-    <value>Froststrap beállítások</value>
+  <data name="Menu.Shortcut.GameShortcut.Description" xml:space="preserve">
+    <value>Ez lehetővé teszi, hogy olyan gyorsbillentyűket hozz létre, amelyekkel gyorsan csatlakozhatsz bizonyos játékokhoz.</value>
   </data>
-  <data name="Dialog.LanguageSelector.Header" xml:space="preserve">
-    <value>Kívánt nyelv kiválasztása</value>
-  </data>
-  <data name="Dialog.LanguageSelector.Subtext" xml:space="preserve">
-    <value>Válasszon egy nyelvet mielőtt folytatja a telepítést.</value>
-  </data>
-  <data name="Menu.Appearance.Language.Title" xml:space="preserve">
-    <value>Nyelv</value>
-  </data>
-  <data name="Menu.Appearance.Language.Description" xml:space="preserve">
-    <value>Egy újraindítás szükséges a módosítások érvénybe léptetéséhez.</value>
-  </data>
-  <data name="Menu.Behaviour.ForceRobloxLanguage.Title" xml:space="preserve">
-    <value>Nem támogatott Roblox nyelvek használata</value>
-  </data>
-  <data name="Menu.Behaviour.ForceRobloxLanguage.Description" xml:space="preserve">
-    <value>Csak azokra a játékokra vonatkozik, amelyek a Roblox oldaláról lettek elindítva.</value>
-  </data>
-  <data name="Enums.FlagPresets.InGameMenuVersion.V4Chrome" xml:space="preserve">
-    <value>2023 (4. verzió + új felület)</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.Categories.Rendering" xml:space="preserve">
-    <value>Renderelés és Grafika</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.Categories.UserInterface" xml:space="preserve">
-    <value>Felhasználói felület és Elrendezés</value>
-  </data>
-  <data name="Menu.FastFlags.ManagerEnabled.Title" xml:space="preserve">
-    <value>Fast Flag kezelés engedélyezése a Froststrap-nek</value>
-  </data>
-  <data name="Menu.FastFlags.ManagerEnabled.Description" xml:space="preserve">
-    <value>Ha ezt kikapcsolja, bármi, amit itt beállít, nem fog a Roblox-ra hatni.</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.MSAA.Title" xml:space="preserve">
-    <value>Élsimítás minőség (MSAA)</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.DisablePostFX.Title" xml:space="preserve">
-    <value>Utófeldolgozási effektusok letiltása</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.FullscreenTitlebar.Title" xml:space="preserve">
-    <value>A teljesképernyős címsor letiltása</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.FullscreenTitlebar.Description" xml:space="preserve">
-    <value>Nem fog megjelenni, ha az egerét a képernyő tetejére mozdítja.</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.TextureQuality.Title" xml:space="preserve">
-    <value>Textúra minősége</value>
-  </data>
-  <data name="Enums.FlagPresets.TextureQuality.Level0" xml:space="preserve">
-    <value>0. szint (Legalacsonyabb)</value>
-  </data>
-  <data name="Enums.FlagPresets.TextureQuality.Level1" xml:space="preserve">
-    <value>1. szint</value>
-  </data>
-  <data name="Enums.FlagPresets.TextureQuality.Level2" xml:space="preserve">
-    <value>2. szint</value>
-  </data>
-  <data name="Enums.FlagPresets.TextureQuality.Level3" xml:space="preserve">
-    <value>3. szint (Legmagasabb)</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.DisablePlayerShadows.Title" xml:space="preserve">
-    <value>Játékosok árnyékai letiltása</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.FontPadding.Title" xml:space="preserve">
-    <value>Betűtípus méret</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.FontPadding.Description" xml:space="preserve">
-    <value>Az alapértelmezett érték 1. Változtassa meg ezt, ha egy saját betűtípust használ.</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.DisableTerrainTextures.Title" xml:space="preserve">
-    <value>Tereptextúrák kikapcsolása</value>
-  </data>
-  <data name="Dialog.Connectivity.UnableToDownload" xml:space="preserve">
-    <value>A Froststrap nem tudja letölteni a Roblox-ot</value>
-  </data>
-  <data name="Dialog.Connectivity.UnableToDownloadReason" xml:space="preserve">
-    <value>A Roblox-ot nem lehet most letölteni. Kérjük, olvassa el a sugóoldalt további információért: {0}</value>
-    <comment>{0} is a URL</comment>
-  </data>
-  <data name="Common.ImportFromFile" xml:space="preserve">
-    <value>Importálás fájlból</value>
-  </data>
-  <data name="FileTypes.JSONFiles" xml:space="preserve">
-    <value>JSON fájlok</value>
-    <comment>Shown in the open file dialog, where the file type selection dropdown is, e.g. "JSON files (*.json)"</comment>
-  </data>
-  <data name="Menu.FastFlagEditor.InvalidBoolValue" xml:space="preserve">
-    <value>A(z) '{0}' nem érvényes, mivel az érték csak hamis (False) vagy igaz (True) lehet</value>
-    <comment>Do not translate 'True' and 'False', those must stay in English</comment>
-  </data>
-  <data name="Menu.FastFlagEditor.InvalidNumberValue" xml:space="preserve">
-    <value>A(z) '{0}' nem érvényes, mivel az érték csak egy szám lehet</value>
-  </data>
-  <data name="Logger.NoWriteMode" xml:space="preserve">
-    <value>Ehhez az indításhoz nem fog naplófájl íródni, mert a Froststrap nem tud írni a '{0}' mappába</value>
-  </data>
-  <data name="Common.Default" xml:space="preserve">
-    <value>Alapértelmezett</value>
-  </data>
-  <data name="Common.Automatic" xml:space="preserve">
-    <value>Automatikus</value>
-  </data>
-  <data name="Common.SystemDefault" xml:space="preserve">
-    <value>Rendszer alapértelmezett</value>
-  </data>
-  <data name="Menu.FastFlagEditor.InvalidPlaceFilter" xml:space="preserve">
-    <value>A '{0}' sor érvénytelen, mivel a place filter nem megfelelően van formázva.</value>
-  </data>
-  <data name="Installer.Title" xml:space="preserve">
-    <value>Froststrap telepítő</value>
-  </data>
-  <data name="Installer.Welcome.Title" xml:space="preserve">
-    <value>Üdvözöljük</value>
-  </data>
-  <data name="Installer.Install.Title" xml:space="preserve">
-    <value>Telepítés</value>
-    <comment>Refers to "Install" as a verb</comment>
-  </data>
-  <data name="Installer.Completion.Title" xml:space="preserve">
-    <value>Teljesítés</value>
-  </data>
-  <data name="Common.Navigation.Back" xml:space="preserve">
-    <value>Vissza</value>
-  </data>
-  <data name="Common.Navigation.Next" xml:space="preserve">
-    <value>Következő</value>
-  </data>
-  <data name="Installer.Welcome.MainText" xml:space="preserve">
-    <value>Köszönjük a Froststrap letöltését. 
-
-A Froststrap letöltéséhez csak a(z) {0} és a(z) {1} hivatalos oldal áll rendelkezésre, ezért kérjük ellenőrizd, hogy hivatalos forrásból származik-e a letöltés.
-
-A telepítési folyamat gyors és egyszerű lesz, és a telepítés után a Froststrap bármelyik beállítását konfigurálhatja.</value>
-    <comment>{0} and {1} are URLs</comment>
-  </data>
-  <data name="Installer.Welcome.NextToContinue" xml:space="preserve">
-    <value>A folytatáshoz kattintson a 'Tovább' gombra.</value>
-  </data>
-  <data name="Installer.Welcome.UpdateNotice" xml:space="preserve">
-    <value>A Froststrap {0} verzióját próbálja telepíteni, de a legújabb elérhető verzió {1}. Szeretné letölteni?</value>
-  </data>
-  <data name="Installer.Install.Location.Title" xml:space="preserve">
-    <value>Válassza ki, hogy hova telepítse</value>
-  </data>
-  <data name="Installer.Install.Location.Text" xml:space="preserve">
-    <value>A Roblox is erre az útvonalra lesz telepítve. Módosítsa ezt, ha az összes játékot külön meghajtóra szeretné telepíteni. Egyébként ajánlott, hogy ezt a beállítást hagyja meg.</value>
-  </data>
-  <data name="Installer.Install.Location.DataFound" xml:space="preserve">
-    <value>Meglévő adatok észlelve. A modok és a beállítások visszaállításra kerülnek.</value>
-  </data>
-  <data name="Common.Shortcuts" xml:space="preserve">
-    <value>Gyorsparancsok</value>
-  </data>
-  <data name="Common.Shortcuts.Desktop" xml:space="preserve">
-    <value>Asztali ikon</value>
-  </data>
-  <data name="Common.Shortcuts.StartMenu" xml:space="preserve">
-    <value>Start menü ikon</value>
-  </data>
-  <data name="Installer.Completion.Text" xml:space="preserve">
-    <value>A Froststrap sikeresen telepítve.
-
-A Roblox még nem lett telepítve, ez akkor fog megtörténni, amikor először indítod el a Froststrap segítségével. Mielőtt azonban ezt megtennéd, érdemes először a Froststrap beállításait konfigurálni.
-
-Továbbá kerülje a „Roblox Player” parancsikon használatát a Roblox elindításához, mivel a Froststrap nem fog elindulni a Roblox-szal együtt. Ha a weboldalról való indításkor nem jelenik meg a Froststrap, egyszerűen indítsd el a Robloxot a Froststrap segítségével egyszer az asztalról, hogy a probléma megoldódjon.
-
-Mit szeretnél tenni?</value>
-  </data>
-  <data name="Installer.Completion.Settings.Title" xml:space="preserve">
-    <value>A Froststrap beállításainak konfigurálása</value>
-  </data>
-  <data name="Installer.Completion.Settings.Description" xml:space="preserve">
-    <value>Trükközzön az összes funkcióval, amit kínál</value>
-  </data>
-  <data name="Installer.Completion.Launch.Title" xml:space="preserve">
-    <value>Telepítse és indítsa el a Robloxot</value>
-  </data>
-  <data name="Installer.Completion.Launch.Description" xml:space="preserve">
-    <value>Az asztali alkalmazásba kerülsz, amint minden készen van</value>
-  </data>
-  <data name="Uninstaller.Title" xml:space="preserve">
-    <value>Froststrap eltávolítása</value>
-  </data>
-  <data name="Uninstaller.Text" xml:space="preserve">
-    <value>Az eltávolítás eltávolítja a Froststrap-et a rendszerből, és automatikusan átállítja az alapértelmezett Roblox indítóprogramot, ha az még telepítve van.
-
-Ha azért távolítod el vagy telepíted újra, mert problémáid vannak a Roblox-al, először olvasd el [ezt a súgóoldalt]({0}).
-
-Előfordulhat, hogy az eltávolítási folyamat nem képes teljesen kitakarítani magát, ezért előfordulhat, hogy kézzel kell kitakarítani a megmaradt fájlokat, ahová a Froststrap telepítve volt.
-
-A Froststrap telepítése a „{1}” helyre történt.</value>
-  </data>
-  <data name="Uninstaller.KeepData.Label" xml:space="preserve">
-    <value>Tartsa meg a beállításaimat és modjaimat</value>
-  </data>
-  <data name="Uninstaller.KeepData.Description" xml:space="preserve">
-    <value>Ezek ott maradnak, ahová a Froststrap telepítve volt, és automatikusan visszaállnak egy újratelepítéskor.</value>
-  </data>
-  <data name="Uninstaller.Uninstall" xml:space="preserve">
-    <value>Eltávolítás</value>
-  </data>
-  <data name="LaunchMenu.LaunchRoblox" xml:space="preserve">
-    <value>Roblox elindítása</value>
-  </data>
-  <data name="LaunchMenu.ConfigureSettings" xml:space="preserve">
-    <value>Beállítások konfigurálása</value>
-  </data>
-  <data name="LaunchMenu.Wiki.Title" xml:space="preserve">
-    <value>Problémája van?</value>
-  </data>
-  <data name="LaunchMenu.Wiki.Description" xml:space="preserve">
-    <value>Segítségért lásd a Wiki-t</value>
-  </data>
-  <data name="Bootstrapper.WebView2NotFound" xml:space="preserve">
-    <value>Jelenleg nincs telepítve a WebView2 runtime. Egyes Roblox funkciók nem fognak megfelelően működni nélküle, például az asztali alkalmazás. Szeretnéd most letölteni?</value>
-  </data>
-  <data name="Dialog.CannotCreateShortcuts" xml:space="preserve">
-    <value>A Froststrap nem tudott parancsikonokat létrehozni az Asztal és a Start menü számára. Próbálja meg később létrehozni őket a beállításokon keresztül.</value>
-  </data>
-  <data name="Dialog.Exception.Info.2.Alt" xml:space="preserve">
-    <value>Nézd meg először a [Froststrap Wiki]({0}) oldalát, hátha már találtak megoldást erre a problémára.
-
-Ha nem, akkor kérjük, jelentse ezt a kivételt a fork karbantartóinak. NE jelentse ezt a Froststrap GitHub issue-jeiben, mivel ez egy nem hivatalos build.</value>
-    <comment>"fork" in general means "a variation of" or "a different version of". You can alternatively write the first sentence as "...to the maintainers of this version."</comment>
-  </data>
-  <data name="Installer.Install.Shortcuts.Description" xml:space="preserve">
-    <value>Ezek általános parancsikonok, amelyek egy több választási lehetőséget tartalmazó indítási menüt hoznak létre. Az egyes funkciókhoz tartozó parancsikonok később a beállításokban hozhatók létre.</value>
+  <data name="Menu.Shortcuts.CreateShortcut" xml:space="preserve">
+    <value>Parancsikon létrehozása</value>
   </data>
   <data name="Menu.Shortcuts.Description" xml:space="preserve">
-    <value>Annak beállítása, hogy a Froststrap könnyen elindítható legyen.</value>
+    <value>Állítsd be, hogyan lehet a Froststrap-ot könnyedén elindítani.</value>
   </data>
-  <data name="Menu.Shortcuts.General.Title" xml:space="preserve">
-    <value>Általános</value>
+  <data name="Menu.Shortcuts.ErrorCreatingShortcut" xml:space="preserve">
+    <value>Hiba történt a parancsikon létrehozásakor.</value>
   </data>
-  <data name="Menu.Shortcuts.General.Description" xml:space="preserve">
-    <value>Ezekkel a parancsikonokkal jelenik meg a többválasztós indítási menü.</value>
+  <data name="Menu.Shortcuts.ExtractIcons.Description" xml:space="preserve">
+    <value>Lehetővé teszi, hogy a Froststrap Roblox-ikonjait használd a gyorsbillentyűidhez. [Nézd meg, hogyan.]({0})</value>
   </data>
-  <data name="Menu.Shortcuts.Function.Title" xml:space="preserve">
-    <value>Funkció</value>
+  <data name="Menu.Shortcuts.ExtractIcons.Title" xml:space="preserve">
+    <value>Roblox-ikonok kibontása egy mappába</value>
   </data>
   <data name="Menu.Shortcuts.Function.Description" xml:space="preserve">
     <value>Hozzon létre parancsikonokat az egyes funkciók gyors eléréséhez. Ezek mind az Asztalon kerülnek elhelyezésre.</value>
   </data>
-  <data name="ContextMenu.ServerInformation.Notification.Title.Private" xml:space="preserve">
-    <value>Csatlakozva egy privát szerverhez</value>
+  <data name="Menu.Shortcuts.Function.Title" xml:space="preserve">
+    <value>Funkció</value>
   </data>
-  <data name="ContextMenu.ServerInformation.Notification.Title.Reserved" xml:space="preserve">
-    <value>Csatlakozás zárt szerverhez</value>
+  <data name="Menu.Shortcuts.Game" xml:space="preserve">
+    <value>Játék {0}</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Error" xml:space="preserve">
-    <value>Az emoji mod jelenleg nem alkalmazható.</value>
+  <data name="Menu.Shortcuts.GameShortcut.Title" xml:space="preserve">
+    <value>Játékparancsok</value>
   </data>
-  <data name="Dialog.AlreadyRunning.Installer" xml:space="preserve">
-    <value>Kérjük, várjon a telepítés befejezéséig.</value>
+  <data name="Menu.Shortcuts.General.Description" xml:space="preserve">
+    <value>Ezek azok a gyorsbillentyűk, amelyekkel megnyitható a többválasztásos indítómenü.</value>
   </data>
-  <data name="Dialog.AlreadyRunning.Uninstaller" xml:space="preserve">
-    <value>Kérjük, várjon, amíg az eltávolítás befejeződik.</value>
+  <data name="Menu.Shortcuts.General.Title" xml:space="preserve">
+    <value>Általános</value>
   </data>
-  <data name="About.Title" xml:space="preserve">
-    <value>A Froststrapről</value>
+  <data name="Menu.Shortcuts.NoGameSelected" xml:space="preserve">
+    <value>Nincs kiválasztott játék</value>
   </data>
-  <data name="About.Licenses.Title" xml:space="preserve">
-    <value>Licencek</value>
-    <comment>Referring to code licenses; see https://opensource.org/licenses for example</comment>
+  <data name="Menu.Shortcuts.PrivateAccessCode" xml:space="preserve">
+    <value>Személyes hozzáférési kód</value>
   </data>
-  <data name="About.Translators.Title" xml:space="preserve">
-    <value>Fordítók</value>
+  <data name="Menu.Shortcuts.Processing" xml:space="preserve">
+    <value>Feldolgozás...</value>
   </data>
-  <data name="Menu.UnsavedChanges" xml:space="preserve">
-    <value>El nem mentett módosításai vannak. Biztos, hogy mentés nélkül akarja bezárni?</value>
+  <data name="Menu.Shortcuts.Ready" xml:space="preserve">
+    <value>Készen áll</value>
   </data>
-  <data name="InstallChecker.VersionLessThanInstalled" xml:space="preserve">
-    <value>A Froststrap elindított verziója régebbi, mint a jelenleg telepített verzió.
-Problémák léphetnek fel, és a beállításai megváltozhatnak. Ajánlott az újratelepítés.
-Biztos, hogy folytatni szeretné?</value>
+  <data name="Menu.Shortcuts.ReadyToCreate" xml:space="preserve">
+    <value>Készen állsz az alkotásra?</value>
   </data>
-  <data name="Dialog.PlayerError.FailedLaunch" xml:space="preserve">
-    <value>A Roblox nem tudott elindulni.</value>
+  <data name="Menu.Shortcuts.ReadyWithManualId" xml:space="preserve">
+    <value>Készen áll a kézi azonosítóval.</value>
   </data>
-  <data name="Dialog.PlayerError.Crash" xml:space="preserve">
-    <value>A Roblox összeomlott.</value>
+  <data name="Menu.Shortcuts.SearchForGame" xml:space="preserve">
+    <value>Játék keresése</value>
   </data>
-  <data name="Dialog.PlayerError.HelpInformation" xml:space="preserve">
-    <value>Arról, hogy ez miért fordulhat elő, és hogyan lehet megoldani, olvassa el [ezt a súgócikket]({0}).
-
-Ellenőrizd, hogy a Roblox működik-e az [eredeti indítóprogrammal]({1}). Ha nem, akkor ez nem a Froststrap problémája. Ha igen, akkor olvassa el a súgócikket.</value>
+  <data name="Menu.Shortcuts.SelectGameFirst" xml:space="preserve">
+    <value>Először válassz ki egy játékot!</value>
   </data>
-  <data name="Common.NetworkError" xml:space="preserve">
-    <value>Hálózati hiba miatt nem sikerült betölteni az adatokat.</value>
+  <data name="Menu.Shortcuts.ServerInstanceId" xml:space="preserve">
+    <value>Szerverpéldány azonosítója</value>
   </data>
-  <data name="Common.Loading" xml:space="preserve">
-    <value>Betöltés, kis türelmet...</value>
+  <data name="Menu.Shortcuts.ShortcutCreated" xml:space="preserve">
+    <value>A parancsikon létrehozva!</value>
   </data>
-  <data name="About.Supporters.Title" xml:space="preserve">
-    <value>Támogatók</value>
-  </data>
-  <data name="About.Supporters.Description" xml:space="preserve">
-    <value>Ezek azok az emberek, akik a Ko-fi révén támogatták a Froststrap-et. Hatalmas köszönet mindenkinek!
-Itt minden személyt a teljes felajánlásuk alapján rangsorolunk.</value>
-  </data>
-  <data name="JsonManager.SettingsLoadFailed" xml:space="preserve">
-    <value>A beállítások nem tölthetők be. Az alapértelmezett konfigurációra lettek visszaállítva.</value>
-  </data>
-  <data name="JsonManager.FastFlagsLoadFailed" xml:space="preserve">
-    <value>A Fast Flageket nem lehetett betölteni. Az alapértelmezett konfigurációra lettek visszaállítva.</value>
-  </data>
-  <data name="ContextMenu.GameHistory.Title" xml:space="preserve">
-    <value>Játék előzmények</value>
-  </data>
-  <data name="ContextMenu.GameHistory.Rejoin" xml:space="preserve">
-    <value>Újra csatlakozás</value>
-  </data>
-  <data name="ActivityWatcher.RichPresenceLoadFailed" xml:space="preserve">
-    <value>Az aktuális játékod nem jelenik meg a Discord-profilodban, mert hiba történt a játékinformációk betöltésekor.</value>
-  </data>
-  <data name="ContextMenu.GameHistory.Description" xml:space="preserve">
-    <value>A játékelőzmények csak az aktuális Roblox-munkamenetre vonatkozóan kerülnek rögzítésre. A játékok akkor jelennek meg itt, amikor elhagyod őket, vagy teleportálsz bennük. Nem minden szerverhez lehet majd újra csatlakozni.</value>
-  </data>
-  <data name="ActivityWatcher.LocationQueryFailed" xml:space="preserve">
-    <value>A szerver helyét nem lehetett lekérni. Lehet, hogy túl gyorsan csatlakozik a játékokhoz.</value>
-  </data>
-  <data name="Dialog.Connectivity.TryAgainLater" xml:space="preserve">
-    <value>Kérjük, próbálja meg később újra.</value>
-  </data>
-  <data name="Dialog.Connectivity.RobloxUpgradeSkip" xml:space="preserve">
-    <value>A mostani induláskor a Roblox nem lesz ellenőrizve frissítések szempontjából, és a modok módosításai nem lesznek alkalmazva.</value>
-  </data>
-  <data name="Dialog.Connectivity.RobloxUpgradeNeeded" xml:space="preserve">
-    <value>Mivel a Robloxot telepíteni vagy frissíteni kell, a Froststrap nem tud folytatódni.</value>
-  </data>
-  <data name="Installer.Install.CannotOverwrite" xml:space="preserve">
-    <value>A Froststrap már korábban is települt erre a helyre, és még mindig jelen van, azonban a telepítő nem tudja felülírni a régi futtatható fájlt. 
-
-Kérjük, manuálisan törölje a Froststrap.exe fájlt a telepítési helyről, vagy próbálja meg újraindítani a rendszert, majd ezt követően próbálja meg újra a telepítést.</value>
-  </data>
-  <data name="Common.NotAvailable" xml:space="preserve">
-    <value>Nem elérhető</value>
-  </data>
-  <data name="Menu.Mods.Misc.CompatibilitySettings.Title" xml:space="preserve">
-    <value>Kompatibilitás beállítások kezelése</value>
-  </data>
-  <data name="Menu.Mods.Misc.CompatibilitySettings.Description" xml:space="preserve">
-    <value>Az alkalmazás paramétereinek konfigurálása, például a DPI-skálázási viselkedés és a [teljes képernyős optimalizálás]({0}).</value>
-  </data>
-  <data name="Common.RobloxNotInstalled" xml:space="preserve">
-    <value>A Roblox még nem lett telepítve. Kérjük, legalább egyszer indítsa el a Robloxot a Froststrap segítségével, mielőtt megpróbálná használni ezt az opciót.</value>
-  </data>
-  <data name="Installer.ShouldCancel" xml:space="preserve">
-    <value>Biztos, hogy le akarja állítani a telepítést?</value>
-  </data>
-  <data name="Bootstrapper.JsonManagerSaveFailed" xml:space="preserve">
-    <value>Nem sikerült menteni {0}: {1}</value>
-  </data>
-  <data name="Dialog.IconLoadFailed" xml:space="preserve">
-    <value>A kiválasztott indító ikon nem tudott betöltődni.
-
-{0}</value>
-    <comment>{0} is an exception message</comment>
-  </data>
-  <data name="Menu.Shortcuts.ExtractIcons.Title" xml:space="preserve">
-    <value>Roblox ikonok átmásolása mappába</value>
-  </data>
-  <data name="Menu.Shortcuts.ExtractIcons.Description" xml:space="preserve">
-    <value>Lehetővé teszi, hogy a Froststrap Roblox ikonok választékát használd a parancsikonokhoz. [Lásd hogyan.]({0})</value>
-  </data>
-  <data name="Dialog.RegistryWriteError" xml:space="preserve">
-    <value>A Froststrap nem tud írni a Windows Registry-be. Valószínűleg egy vírusirtó zavarja és problémákat okoz. Kérjük, ellenőrizze, hogy nincs-e valami, ami korlátozná a Froststrap működését.</value>
-  </data>
-  <data name="About.Supporters.Monthly" xml:space="preserve">
-    <value>Havi</value>
-  </data>
-  <data name="About.Supporters.OneOff" xml:space="preserve">
-    <value>Egyszeri</value>
-  </data>
-  <data name="Common.Analytics" xml:space="preserve">
-    <value>Analitika</value>
-  </data>
-  <data name="Menu.FastFlags.Reset.Title" xml:space="preserve">
-    <value>Minden visszaállítása alapértelmezettbe</value>
-  </data>
-  <data name="Dialog.Exception.Report" xml:space="preserve">
-    <value>Kivétel bejelentése</value>
+  <data name="Menu.Shortcuts.UpdatingPreview" xml:space="preserve">
+    <value>Az előnézet frissítése...</value>
   </data>
   <data name="Menu.TestMode" xml:space="preserve">
-    <value>Teszt mód</value>
+    <value>Teszt üzemmód</value>
     <comment>See the prompt for more context</comment>
   </data>
+  <data name="Menu.TestMode.Description" xml:space="preserve">
+    <value>A Roblox indításakor automatikusan elrejtse a beállítások ablakát, és a Roblox bezárásakor állítsa vissza.</value>
+  </data>
   <data name="Menu.TestMode.Prompt" xml:space="preserve">
-    <value>A tesztmód megkönnyíti a beállítások Robloxra gyakorolt hatásának iteratív tesztelését. 
+    <value>A Tesztmód segítségével könnyebben ellenőrizheted, hogy a beállításaid milyen hatással vannak a Robloxra. 
 
-Amíg engedélyezve van, a beállítások bezárása után automatikusan elindítja a Robloxot, és a Roblox bezárása után újra megnyitja a beállításokat, egy ciklusban, amíg le nem tiltod.
+Ha engedélyezve van, a Beállítások bezárása után automatikusan elindítja a Robloxot, a Roblox bezárása után pedig újra megnyitja a Beállításokat, és ezt a ciklust addig ismételgeti, amíg ki nem kapcsolod.
 
-Szeretné engedélyezni a teszt üzemmódot?</value>
+Szeretnéd engedélyezni a Tesztmódot?</value>
   </data>
-  <data name="About.Translators.Description" xml:space="preserve">
-    <value>A Froststrap összes fordítása a [Crowdin]({0}) segítségével készül. Mindenki, aki itt szerepel, olyan ember, aki nagylelkűen önkéntes munkát végzett, hogy segítsen a Froststrap lokalizálásában. Hatalmas köszönet mindenkinek!</value>
-  </data>
-  <data name="Common.Navigation.Install" xml:space="preserve">
-    <value>Telepítés</value>
-    <comment>The word "Install" is being used as a verb in this instance, like the other navigation button texts of "Next" and "Back"</comment>
+  <data name="Menu.Title" xml:space="preserve">
+    <value>Froststrap beállítások</value>
   </data>
   <data name="Paths.Icons" xml:space="preserve">
     <value>Ikonok</value>
-    <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
+    <comment>Name of the folder that gets created according to the &quot;create shortcut icons&quot; option. Ensure that it is a valid folder name.</comment>
   </data>
-  <data name="LaunchMenu.LaunchRobloxStudio" xml:space="preserve">
-    <value>Roblox Studio elindítása</value>
+  <data name="Uninstaller.KeepData.Description" xml:space="preserve">
+    <value>Ezeket a Froststrap telepítésének helyén tárolják, és újratelepítéskor automatikusan visszaállnak.</value>
   </data>
-  <data name="Dialog.Exception.Version" xml:space="preserve">
-    <value>Verzió {0}</value>
+  <data name="Uninstaller.KeepData.Label" xml:space="preserve">
+    <value>A beállításaimat és a módosításaimat megőrizni</value>
   </data>
-  <data name="Bootstrapper.FilesInUse" xml:space="preserve">
-    <value>A Froststrap megpróbálta frissíteni a Robloxot, de nem tudja, mert a Roblox fájljai még mindig használatban vannak.
+  <data name="Uninstaller.Text" xml:space="preserve">
+    <value>Az eltávolítás során a Froststrap eltávolításra kerül a rendszeredből, és automatikusan újrakonfigurálja az alapértelmezett Roblox indítót, ha az még telepítve van.
 
-Kérjük, zárjon be minden olyan alkalmazást, amely a Roblox fájljait használja, és indítsa újra.</value>
-    <comment>This is *not* for when Roblox is still running when trying to upgrade. This applies to files being open (i.e. image assets)</comment>
+Ha a Roblox-szal kapcsolatos problémák miatt távolítod el vagy telepíted újra a programot, először olvasd el [ezt a súgóoldalt]({0}).
+
+Előfordulhat, hogy az eltávolítási folyamat nem tudja teljesen megtisztítani a rendszert, ezért előfordulhat, hogy manuálisan kell eltávolítanod a Froststrap telepítési helyén maradt fájlokat.
+
+A Froststrap a „{1}” mappába volt telepítve.</value>
   </data>
-  <data name="FileTypes.ZipArchive" xml:space="preserve">
-    <value>Zip archívum</value>
-    <comment>Shown in the save file dialog, where the file type selection dropdown is, e.g. "Zip archive (*.zip)"</comment>
-  </data>
-  <data name="Common.Export" xml:space="preserve">
-    <value>Exportálás</value>
-    <comment>Currently used under the "Froststrap" settings tab for the button to export diagnostic data</comment>
-  </data>
-  <data name="Dialog.Connectivity.Preventing" xml:space="preserve">
-    <value>Valami valószínűleg megakadályozza, hogy a Froststrap csatlakozzon az internethez.</value>
-  </data>
-  <data name="Dialog.Connectivity.TimedOut" xml:space="preserve">
-    <value>A kapcsolat megszakadt, ami rossz internetkapcsolatra vagy tűzfalblokkolásra utalhat.</value>
-  </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="Menu.Channel.Description" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Common.Channel" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Menu.ChannelChanger.Description" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Common.Version" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Common.VersionGuid" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Menu.Channel.RobloxUpgrades" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Bootstrapper.Status.UpgradingFroststrap" xml:space="preserve">
-    <value>A legújabb Froststrap beszerzése...</value>
-  </data>
-  <data name="Menu.Froststrap.Description" xml:space="preserve">
-    <value>A Froststrap viselkedésével kapcsolatos beállítások konfigurálása.</value>
-  </data>
-  <data name="Menu.Froststrap.Analytics.Title" xml:space="preserve">
-    <value>Az analitika küldésének engedélyezése</value>
-  </data>
-  <data name="Menu.Froststrap.Analytics.Description" xml:space="preserve">
-    <value>Névtelen és semmi rossz, ígérjük. Ha többet szeretne megtudni arról, hogy mit és miért gyűjtünk, olvassa el az [adatvédelmi szabályzatunkat]({0}).</value>
+  <data name="Uninstaller.Title" xml:space="preserve">
+    <value>A Froststrap eltávolítása</value>
   </data>
 </root>

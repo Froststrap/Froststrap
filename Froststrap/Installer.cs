@@ -1,5 +1,6 @@
 ﻿using System.Runtime.Versioning;
 using Microsoft.Win32;
+using Froststrap.Utility;
 
 namespace Froststrap
 {
@@ -21,7 +22,7 @@ namespace Froststrap
 
             var processes = new List<Process>();
 
-            if (!string.IsNullOrEmpty(App.PlayerState.Prop.VersionGuid))
+            if (App.IsPlayerInstalled)
                 processes.AddRange(Process.GetProcessesByName(App.RobloxPlayerAppName));
 
             if (App.IsStudioInstalled)
@@ -141,15 +142,251 @@ namespace Froststrap
             }
         }
 
-        public static async Task RunMigrations()
+        public static async Task HandleUpgrade()
+        {
+            const string LOG_IDENT = "Installer::HandleUpgrade";
+
+            if (!File.Exists(Paths.Application) || Paths.Process == Paths.Application)
+                return;
+
+            bool isAutoUpgrade = App.LaunchSettings.UpgradeFlag.Active
+                || Paths.Process.StartsWith(Path.Combine(Paths.Base, "Updates"))
+                || Paths.Process.StartsWith(Path.Combine(Paths.Temp, "Updates"))
+                || Paths.Process.StartsWith(Paths.TempUpdates);
+
+            var existingVer = GetVersionInfo(Paths.Application);
+            var currentVer = GetVersionInfo(Paths.Process);
+
+            if (MD5Hash.FromFile(Paths.Process) == MD5Hash.FromFile(Paths.Application))
+                return;
+
+            if (currentVer is not null && existingVer is not null)
+            {
+                var comparison = Utilities.CompareVersions(currentVer, existingVer);
+
+                if (comparison == VersionComparison.LessThan)
+                {
+                    var result = await Frontend.ShowMessageBox(
+                        Strings.InstallChecker_VersionLessThanInstalled,
+                        MessageBoxImage.Question,
+                        MessageBoxButton.YesNo
+                    );
+
+                    if (result != MessageBoxResult.Yes)
+                        return;
+                }
+            }
+
+            if (!isAutoUpgrade)
+            {
+                var result = await Frontend.ShowMessageBox(
+                    Strings.InstallChecker_VersionDifferentThanInstalled,
+                    MessageBoxImage.Question,
+                    MessageBoxButton.YesNo
+                );
+
+                if (result != MessageBoxResult.Yes)
+                    return;
+            }
+
+            App.Logger.WriteLine(LOG_IDENT, "Starting upgrade process...");
+
+            bool copySuccess = await CopyExecutableWithRetry();
+            if (!copySuccess)
+                return;
+
+            await UpdateVersionInfo();
+
+            await RunMigrations(existingVer);
+
+            App.Settings.Save();
+            App.FastFlags.Save();
+            App.State.Save();
+            App.PlayerState.Save();
+            App.StudioState.Save();
+
+            if (isAutoUpgrade && OpenReleaseNotes)
+            {
+                Utilities.ShellExecute($"https://github.com/{App.ProjectRepository}/releases/tag/{currentVer ?? App.Version}");
+            }
+            else if (!isAutoUpgrade)
+            {
+                await Frontend.ShowMessageBox(
+                    string.Format(Strings.InstallChecker_Updated, currentVer ?? App.Version),
+                    MessageBoxImage.Information
+                );
+            }
+
+            App.Logger.WriteLine(LOG_IDENT, "Upgrade completed successfully");
+        }
+
+        private static string? GetVersionInfo(string filePath)
+        {
+            try
+            {
+                if (!File.Exists(filePath))
+                    return null;
+
+                var versionInfo = FileVersionInfo.GetVersionInfo(filePath);
+
+                if (!string.IsNullOrEmpty(versionInfo.ProductVersion))
+                    return versionInfo.ProductVersion;
+
+                if (!string.IsNullOrEmpty(versionInfo.FileVersion))
+                    return versionInfo.FileVersion;
+
+                if (OperatingSystem.IsMacOS())
+                {
+                    string infoPlist = Path.Combine(Path.GetDirectoryName(filePath) ?? "", "..", "Info.plist");
+                    if (File.Exists(infoPlist))
+                    {
+                        var plist = new System.Xml.XmlDocument();
+                        plist.Load(infoPlist);
+                        var node = plist.SelectSingleNode("//key[text()='CFBundleShortVersionString']/following-sibling::string");
+                        if (node != null)
+                            return node.InnerText;
+                    }
+                }
+
+                return null;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private static async Task<bool> CopyExecutableWithRetry()
+        {
+            const string LOG_IDENT = "Installer::CopyExecutableWithRetry";
+
+            try
+            {
+                if (OperatingSystem.IsLinux() || OperatingSystem.IsMacOS())
+                {
+                    if (File.Exists(Paths.Application))
+                    {
+                        var fileInfo = new FileInfo(Paths.Application) { IsReadOnly = false };
+                        if (OperatingSystem.IsLinux())
+                        {
+                            var psi = new ProcessStartInfo("chmod", $"+w \"{Paths.Application}\"")
+                            {
+                                UseShellExecute = false,
+                                CreateNoWindow = true
+                            };
+                            using var process = Process.Start(psi);
+                            await process!.WaitForExitAsync();
+                        }
+                    }
+                }
+
+                for (int i = 1; i <= 10; i++)
+                {
+                    try
+                    {
+                        File.Copy(Paths.Process, Paths.Application, true);
+
+                        if (OperatingSystem.IsLinux() || OperatingSystem.IsMacOS())
+                        {
+                            var psi = new ProcessStartInfo("chmod", $"+x \"{Paths.Application}\"")
+                            {
+                                UseShellExecute = false,
+                                CreateNoWindow = true
+                            };
+                            using var process = Process.Start(psi);
+                            await process!.WaitForExitAsync();
+                        }
+
+                        return true;
+                    }
+                    catch (Exception ex)
+                    {
+                        if (i == 10)
+                        {
+                            App.Logger.WriteLine(LOG_IDENT, $"Failed to copy after 10 attempts: {ex.Message}");
+                            App.Logger.WriteException(LOG_IDENT, ex);
+                            return false;
+                        }
+
+                        await Task.Delay(500);
+                    }
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Failed to copy executable: {ex.Message}");
+                App.Logger.WriteException(LOG_IDENT, ex);
+                return false;
+            }
+        }
+
+        private static async Task UpdateVersionInfo()
+        {
+            const string LOG_IDENT = "Installer::UpdateVersionInfo";
+
+            try
+            {
+                if (OperatingSystem.IsWindows())
+                {
+                    using var uninstallKey = Registry.CurrentUser.CreateSubKey(App.UninstallKey);
+                    uninstallKey.SetValueSafe("DisplayVersion", App.Version);
+                    uninstallKey.SetValueSafe("Publisher", App.ProjectOwner);
+                    uninstallKey.SetValueSafe("HelpLink", App.ProjectHelpLink);
+                    uninstallKey.SetValueSafe("URLInfoAbout", App.ProjectSupportLink);
+                    uninstallKey.SetValueSafe("URLUpdateInfo", App.ProjectDownloadLink);
+                }
+                else if (OperatingSystem.IsMacOS())
+                {
+                    string appPath = Paths.Application;
+                    string infoPlist = Path.Combine(Path.GetDirectoryName(appPath) ?? "", "..", "Info.plist");
+
+                    if (File.Exists(infoPlist))
+                    {
+                        var plist = new System.Xml.XmlDocument();
+                        plist.Load(infoPlist);
+
+                        var versionNode = plist.SelectSingleNode("//key[text()='CFBundleShortVersionString']/following-sibling::string");
+                        if (versionNode != null)
+                        {
+                            versionNode.InnerText = App.Version;
+                            plist.Save(infoPlist);
+                        }
+                    }
+                }
+                else if (OperatingSystem.IsLinux())
+                {
+                    string versionFile = Path.Combine(Paths.Base, ".version");
+                    await File.WriteAllTextAsync(versionFile, App.Version);
+
+                    string desktopFile = Path.Combine(Paths.UserProfile, ".local", "share", "applications",
+                        $"{App.ProjectName.ToLower()}.desktop");
+                    if (File.Exists(desktopFile))
+                    {
+                        var content = await File.ReadAllTextAsync(desktopFile);
+                    }
+                }
+
+                App.Logger.WriteLine(LOG_IDENT, $"Version info updated to {App.Version}");
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Failed to update version info: {ex.Message}");
+                App.Logger.WriteException(LOG_IDENT, ex);
+            }
+        }
+
+        public static async Task RunMigrations(string? previousVersion = null)
         {
             const string LOG_IDENT = "Installer::RunMigrations";
 
-            string currentVer = App.Version;
-            string? existingVer = App.State.Prop.LastMigratedVersion;
+            if (OperatingSystem.IsLinux())
+                SetupSoberSymlink();
 
-            // Fresh install — Settings.json doesn't exist yet so there is nothing
-            // to migrate. Stamp the current version and return immediately.
+            string currentVer = App.Version;
+            string? existingVer = previousVersion ?? App.State.Prop.LastMigratedVersion;
+
             if (existingVer is null && !App.Settings.IsSaved)
             {
                 App.Logger.WriteLine(LOG_IDENT, $"Fresh install detected — stamping LastMigratedVersion as {currentVer}");
@@ -158,8 +395,6 @@ namespace Froststrap
                 return;
             }
 
-            // Existing install that pre-dates LastMigratedVersion being introduced.
-            // Use the presence of the pre-1.4.0.0 legacy RobloxState file to decide.
             if (existingVer is null)
             {
                 var legacyStateCheck = new JsonManager<RobloxState>();
@@ -182,11 +417,6 @@ namespace Froststrap
             }
 
             App.Logger.WriteLine(LOG_IDENT, $"Running migrations: {existingVer} -> {currentVer}");
-
-            if (Utilities.CompareVersions(existingVer, "1.2.5.0") == VersionComparison.LessThan)
-            {
-                App.Settings.Prop.ShowServerUptime = false;
-            }
 
             if (Utilities.CompareVersions(existingVer, "1.4.0.0") == VersionComparison.LessThan)
             {
@@ -214,66 +444,10 @@ namespace Froststrap
 
                 TryDelete(Path.Combine(Paths.Cache, "GameHistory.json"));
             }
-
-            if (Utilities.CompareVersions(existingVer, "1.4.1.0") == VersionComparison.LessThan)
-            {
-                if (App.Settings.Prop.MultiInstanceLaunching)
-                    App.Settings.Prop.MultiInstanceLaunching = false;
-
-                TryDelete(Path.Combine(Paths.Cache, "GameHistory.json"));
-            }
-
             if (Utilities.CompareVersions(existingVer, "1.4.2") == VersionComparison.LessThan)
             {
-                string clientSettingsPath = Path.Combine(Paths.Modifications, "ClientSettings");
-                string migrationPath = Path.Combine(Paths.Modifications, "Migration from 1.4.1.0");
                 string genCacheDir = Path.Combine(Path.GetTempPath(), "Froststrap", "mod-generator");
                 string pluginCacheDir = Path.Combine(Paths.Roblox, "Plugins", "FroststrapStudioRPC.rbxmx");
-                string targetSettingsPath = Path.Combine(Paths.Base, "ClientSettings");
-
-                if (Directory.Exists(clientSettingsPath))
-                {
-                    if (Directory.Exists(targetSettingsPath))
-                        Directory.Delete(targetSettingsPath, true);
-                    Directory.Move(clientSettingsPath, targetSettingsPath);
-                }
-
-                // Only create the migration folder and move files if there is
-                // actually something in Modifications to migrate — avoids creating
-                // a phantom empty mod folder on installs with no existing mods.
-                var modFiles = Directory.Exists(Paths.Modifications)
-                    ? new DirectoryInfo(Paths.Modifications).GetFileSystemInfos()
-                        .Where(x => x.FullName != migrationPath)
-                        .ToList()
-                    : [];
-
-                if (modFiles.Count != 0)
-                {
-                    Directory.CreateDirectory(migrationPath);
-
-                    foreach (FileSystemInfo info in modFiles)
-                    {
-                        string destPath = Path.Combine(migrationPath, info.Name);
-
-                        try
-                        {
-                            if (info.Attributes.HasFlag(FileAttributes.Directory))
-                            {
-                                if (Directory.Exists(destPath)) Directory.Delete(destPath, true);
-                                Directory.Move(info.FullName, destPath);
-                            }
-                            else
-                            {
-                                if (File.Exists(destPath)) File.Delete(destPath);
-                                File.Move(info.FullName, destPath);
-                            }
-                        }
-                        catch (IOException ex)
-                        {
-                            App.Logger.WriteLine(LOG_IDENT, $"Could not migrate {info.Name}: {ex.Message}");
-                        }
-                    }
-                }
 
                 if (Directory.Exists(genCacheDir))
                 {
@@ -298,9 +472,6 @@ namespace Froststrap
                 App.Settings.Prop.SelectedBackdrop = WindowsBackdrops.None;
             }
 
-            // Save everything and stamp the version so this batch doesn't re-run
-            App.Settings.Save();
-            App.FastFlags.Save();
             App.State.Prop.LastMigratedVersion = currentVer;
             App.State.Save();
 
@@ -308,11 +479,6 @@ namespace Froststrap
             if (App.StudioState.Loaded) App.StudioState.Save();
 
             App.Logger.WriteLine(LOG_IDENT, $"Migrations complete — LastMigratedVersion set to {currentVer}");
-
-#pragma warning disable CS0162 // Keep this here
-            if (OpenReleaseNotes)
-                Utilities.ShellExecute($"https://github.com/{App.ProjectRepository}/releases/tag/{currentVer}");
-#pragma warning restore CS0162
         }
 
         [SupportedOSPlatform("windows")]
@@ -324,6 +490,88 @@ namespace Froststrap
             uninstallKey.SetValueSafe("HelpLink", App.ProjectHelpLink);
             uninstallKey.SetValueSafe("URLInfoAbout", App.ProjectSupportLink);
             uninstallKey.SetValueSafe("URLUpdateInfo", App.ProjectDownloadLink);
+        }
+
+        [System.Runtime.Versioning.SupportedOSPlatform("linux")]
+        private static void SetupSoberSymlink()
+        {
+            const string LOG_IDENT = "Installer::SetupSoberSymlink";
+
+            string flatpakId = "org.vinegarhq.Sober";
+            string flatpakDataPath = Path.Combine(Paths.UserProfile, ".var", "app", flatpakId);
+            string soberTarget = Path.Combine(Paths.Versions, "Sober");
+
+            if (IsSymlinkPointingAt(flatpakDataPath, soberTarget))
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Sober symlink already in place, skipping.");
+                return;
+            }
+
+            App.Logger.WriteLine(LOG_IDENT, $"Setting up Sober symlink: {flatpakDataPath} -> {soberTarget}");
+
+            Directory.CreateDirectory(soberTarget);
+
+            if (Directory.Exists(flatpakDataPath) && !IsSymlink(flatpakDataPath))
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Copying existing Sober data from {flatpakDataPath} to {soberTarget}");
+
+                var cp = new ProcessStartInfo("cp", $"-a \"{flatpakDataPath}/.\" \"{soberTarget}/\"")
+                {
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+                using (var proc = Process.Start(cp))
+                    proc?.WaitForExit();
+
+                App.Logger.WriteLine(LOG_IDENT, $"Removing original Sober data directory at {flatpakDataPath}");
+
+                // rm -rf handles locked subdirs that Directory.Delete can't remove.
+                var rm = new ProcessStartInfo("rm", $"-rf \"{flatpakDataPath}\"")
+                {
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+                using (var proc = Process.Start(rm))
+                    proc?.WaitForExit();
+            }
+            else if (IsSymlink(flatpakDataPath))
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Removing stale symlink at {flatpakDataPath}");
+                Directory.Delete(flatpakDataPath);
+            }
+
+            Directory.CreateDirectory(Path.GetDirectoryName(flatpakDataPath)!);
+
+            Directory.CreateSymbolicLink(flatpakDataPath, soberTarget);
+            App.Logger.WriteLine(LOG_IDENT, $"Created symlink: {flatpakDataPath} -> {soberTarget}");
+        }
+
+        [System.Runtime.Versioning.SupportedOSPlatform("linux")]
+        private static bool IsSymlink(string path)
+        {
+            if (!Path.Exists(path))
+                return false;
+
+            try
+            {
+                var attributes = File.GetAttributes(path);
+                return attributes.HasFlag(FileAttributes.ReparsePoint);
+            }
+            catch { return false; }
+        }
+
+        [System.Runtime.Versioning.SupportedOSPlatform("linux")]
+        private static bool IsSymlinkPointingAt(string path, string expectedTarget)
+        {
+          if (!IsSymlink(path)) 
+                return false;
+
+          try
+          {
+               string? actual = Directory.ResolveLinkTarget(path, returnFinalTarget: false)?.FullName;
+              return actual == expectedTarget;
+           }
+           catch { return false; }
         }
 
         private static void TryDelete(string path)

@@ -1,31 +1,31 @@
-﻿namespace Froststrap
+using System.Reflection;
+
+namespace Froststrap
 {
     public class LaunchSettings
     {
         public LaunchFlag MenuFlag { get; } = new("preferences,menu,settings");
         public LaunchFlag WatcherFlag { get; } = new("watcher");
-        public LaunchFlag MultiInstanceWatcherFlag { get; } = new("multiinstancewatcher");
-        public LaunchFlag AccountManagerFlag { get; } = new("accountmanager");
         public LaunchFlag BackgroundUpdaterFlag { get; } = new("backgroundupdater");
         public LaunchFlag QuietFlag { get; } = new("quiet"); // need to update this
         public LaunchFlag UninstallFlag { get; } = new("uninstall"); // need to update this
         public LaunchFlag NoLaunchFlag { get; } = new("nolaunch");
         public LaunchFlag TestModeFlag { get; } = new("testmode");
         public LaunchFlag NoGPUFlag { get; } = new("nogpu");
+        public LaunchFlag UpgradeFlag { get; } = new("upgrade");
         public LaunchFlag PlayerFlag { get; } = new("player");
         public LaunchFlag StudioFlag { get; } = new("studio");
         public LaunchFlag VersionFlag { get; } = new("version");
         public LaunchFlag ChannelFlag { get; } = new("channel");
         public LaunchFlag ForceFlag { get; } = new("force");
         public LaunchFlag BloxshadeFlag { get; } = new("bloxshade");
-        public LaunchFlag PostLaunchFlag { get; } = new("postlaunch");
         public LaunchFlag GameShortcutFlag { get; } = new("gameshortcut");
         public LaunchFlag NsisFlag { get; } = new("nsis");
 
 #if DEBUG
-        public bool BypassUpdateCheck => true;
+        public static bool BypassUpdateCheck => true;
 #else
-        public bool BypassUpdateCheck => UninstallFlag.Active || WatcherFlag.Active || BackgroundUpdaterFlag.Active || MultiInstanceWatcherFlag.Active || PostLaunchFlag.Active || NsisFlag.Active;
+        public bool BypassUpdateCheck => UninstallFlag.Active || WatcherFlag.Active || BackgroundUpdaterFlag.Active || NsisFlag.Active;
 #endif
 
         public LaunchMode RobloxLaunchMode { get; set; } = LaunchMode.None;
@@ -46,8 +46,9 @@
 #endif
 
             Args = args;
+            string? entryAssemblyPath = AppContext.BaseDirectory;
 
-            Dictionary<string, LaunchFlag> flagMap = new();
+            Dictionary<string, LaunchFlag> flagMap = [];
 
             // build flag map
             foreach (var prop in this.GetType().GetProperties())
@@ -69,7 +70,11 @@
             {
                 string arg = Args[0];
 
-                if (arg.StartsWith("roblox:", StringComparison.OrdinalIgnoreCase)
+                if (ShouldSkipHostArgument(arg, entryAssemblyPath))
+                {
+                    startIdx = 1;
+                }
+                else if (arg.StartsWith("roblox:", StringComparison.OrdinalIgnoreCase)
                     || arg.StartsWith("roblox-player:", StringComparison.OrdinalIgnoreCase))
                 {
                     App.Logger.WriteLine(LOG_IDENT, "Got Roblox player argument");
@@ -135,6 +140,43 @@
 
             if (GameShortcutFlag.Active && !string.IsNullOrEmpty(GameShortcutFlag.Data))
                 ParseGameShortcut(GameShortcutFlag.Data);
+
+            if (RobloxLaunchMode == LaunchMode.None)
+                InferRobloxLaunchFromAnyArgument();
+        }
+
+        private void InferRobloxLaunchFromAnyArgument()
+        {
+            const string LOG_IDENT = "LaunchSettings::InferRobloxLaunchFromAnyArgument";
+
+            foreach (string arg in Args)
+            {
+                if (arg.StartsWith("roblox:", StringComparison.OrdinalIgnoreCase)
+                    || arg.StartsWith("roblox-player:", StringComparison.OrdinalIgnoreCase))
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Found Roblox player URI outside first argument");
+                    RobloxLaunchMode = LaunchMode.Player;
+                    RobloxLaunchArgs = arg;
+                    return;
+                }
+            }
+        }
+
+        private static bool ShouldSkipHostArgument(string arg, string? entryAssemblyPath)
+        {
+            if (string.IsNullOrWhiteSpace(arg))
+                return false;
+
+            if (!Path.IsPathRooted(arg))
+                return false;
+
+            if (string.Equals(arg, entryAssemblyPath, StringComparison.OrdinalIgnoreCase))
+                return true;
+
+            if (arg.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
+                return true;
+
+            return false;
         }
 
         private void ParsePlayer(string? data)

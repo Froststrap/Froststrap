@@ -1,43 +1,126 @@
-using System.Collections.ObjectModel;
-using Avalonia;
 using Avalonia.Controls;
-using CommunityToolkit.Mvvm.ComponentModel;
+using Avalonia.Media;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.Integrations;
-using Froststrap.Models;
+using Froststrap.UI.Elements.Dialogs;
+using System.Collections.ObjectModel;
+using System.Security.Principal;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
-    public partial class AccountSelectorViewModel : ObservableObject
+    public partial class AccountSelectorViewModel : NotifyPropertyChangedViewModel, IDisposable
     {
         private const string LOG_IDENT = "AccountSelectorViewModel";
-        private readonly AccountManager _accountManager;
-        private readonly Dictionary<long, string?> _accountAvatarUrls = new();
+        private readonly AccountManager _accountManager = null!;
+        private readonly Dictionary<long, string?> _accountAvatarUrls = [];
 
-        [ObservableProperty]
-        private AccountManagerAccount? currentAccount;
+        public event Action? OnManualAddRequested;
 
-        [ObservableProperty]
-        private string? currentAccountAvatarUrl;
+        private DispatcherTimer? _presenceTimer;
+        private UserPresence? _currentPresence;
+        private const int PRESENCE_REFRESH_INTERVAL_MS = 20000;
 
-        [ObservableProperty]
-        private ObservableCollection<AccountWithAvatar> accounts = new();
-
-        [ObservableProperty]
-        private string selectedAddMethod = "Quick Sign In";
-
-        [ObservableProperty]
-        private bool isDropdownOpen = false;
-
-        [ObservableProperty]
-        private bool isAddingAccount = false;
-
-        public List<string> AddMethods { get; } = new()
+        private AccountManagerAccount? _currentAccount;
+        public AccountManagerAccount? CurrentAccount
         {
-            "Quick Sign In",
-            "Browser",
-            "Manual"
-        };
+            get => _currentAccount;
+            set => SetProperty(ref _currentAccount, value);
+        }
+
+        private string? _currentAccountAvatarUrl;
+        public string? CurrentAccountAvatarUrl
+        {
+            get => _currentAccountAvatarUrl;
+            set => SetProperty(ref _currentAccountAvatarUrl, value);
+        }
+
+        private ObservableCollection<AccountWithAvatar> _accounts = [];
+        public ObservableCollection<AccountWithAvatar> Accounts
+        {
+            get => _accounts;
+            set => SetProperty(ref _accounts, value);
+        }
+
+        private string _selectedAddMethod = Strings.Menu_AccountSelector_Login_LocalCookie;
+        public string SelectedAddMethod
+        {
+            get => _selectedAddMethod;
+            set => SetProperty(ref _selectedAddMethod, value);
+        }
+
+        private bool _isDropdownOpen;
+        public bool IsDropdownOpen
+        {
+            get => _isDropdownOpen;
+            set => SetProperty(ref _isDropdownOpen, value);
+        }
+
+        private bool _isAddingAccount;
+        public bool IsAddingAccount
+        {
+            get => _isAddingAccount;
+            set => SetProperty(ref _isAddingAccount, value);
+        }
+
+        private UserPresence? CurrentPresence
+        {
+            get => _currentPresence;
+            set
+            {
+                if (SetProperty(ref _currentPresence, value))
+                {
+                    OnPropertyChanged(nameof(PresenceTooltip));
+                    UpdatePresenceBrush();
+                }
+            }
+        }
+
+        private IBrush _presenceBrush = Brushes.Gray;
+        public IBrush PresenceBrush
+        {
+            get => _presenceBrush;
+            private set => SetProperty(ref _presenceBrush, value);
+        }
+
+        private void UpdatePresenceBrush()
+        {
+            if (CurrentPresence == null)
+            {
+                PresenceBrush = Brushes.Gray;
+                return;
+            }
+
+            int type = CurrentPresence.UserPresenceType;
+            PresenceBrush = type switch
+            {
+                0 => Brushes.Gray,
+                1 => Brushes.DodgerBlue,
+                2 => Brushes.LimeGreen,
+                3 => Brushes.Orange,
+                _ => Brushes.Gray
+            };
+        }
+
+        public string PresenceTooltip
+        {
+            get
+            {
+                if (CurrentPresence == null) return "Offline";
+                return CurrentPresence.UserPresenceType switch
+                {
+                    0 => Strings.Menu_AccountSelector_Presence_Offline,
+                    1 => Strings.Menu_AccountSelector_Presence_Online,
+                    2 => Strings.Menu_AccountSelector_Presence_InGame,
+                    3 => Strings.Menu_AccountSelector_Presence_InStudio,
+                    _ => Strings.Common_Unknown
+                };
+            }
+        }
+
+        public List<string> AddMethods { get; } = [Strings.Menu_AccountSelector_Login_LocalCookie, Strings.Menu_Dialog_QuickSignIn_Title, Strings.Common_Manual, Strings.Common_Browser];
+
+        public string CurrentAccountDisplayName => CurrentAccount == null ? Strings.Menu_AccountSelector_NotLoggedIn : $"@{CurrentAccount.Username}";
 
         public AccountSelectorViewModel()
         {
@@ -47,7 +130,17 @@ namespace Froststrap.UI.ViewModels.Settings
             _accountManager = AccountManager.Shared;
             _accountManager.ActiveAccountChanged += OnActiveAccountChanged;
 
-            _ = InitializeDataAsync();
+            Task.Run(async () =>
+            {
+                try
+                {
+                    await InitializeDataAsync();
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.WriteLine($"{LOG_IDENT}::Init", $"Safe catch: {ex.Message}");
+                }
+            });
         }
 
         private async Task InitializeDataAsync()
@@ -55,6 +148,7 @@ namespace Froststrap.UI.ViewModels.Settings
             try
             {
                 await LoadDataAsync();
+                await ValidateAndRemoveInvalidAccountsAsync();
                 App.Logger.WriteLine($"{LOG_IDENT}::InitializeDataAsync", "Initialised");
             }
             catch (Exception ex)
@@ -63,46 +157,124 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
+        private async Task ValidateAndRemoveInvalidAccountsAsync()
+        {
+            var invalidAccounts = new List<AccountManagerAccount>();
+
+            foreach (var account in _accountManager.Accounts)
+            {
+                bool isValid = await AccountManager.ValidateAccountAsync(account);
+                if (!isValid)
+                    invalidAccounts.Add(account);
+            }
+
+            foreach (var account in invalidAccounts)
+            {
+                _accountManager.RemoveAccount(account);
+                App.Logger.WriteLine(LOG_IDENT, $"Removed expired/invalid account: {account.Username}");
+
+                await Dispatcher.UIThread.InvokeAsync(() => Frontend.ShowMessageBox(string.Format(Strings.Menu_AccountSelector_AccountRemoved, account.Username)));
+            }
+
+            if (invalidAccounts.Count > 0)
+            {
+                await LoadDataAsync();
+            }
+        }
+
         private async Task LoadDataAsync()
         {
-            var mgr = _accountManager;
-
-            var accountIds = mgr.Accounts.Select(acc => acc.UserId).ToList();
-            if (accountIds.Count > 0)
+            try
             {
-                var avatarUrls = await mgr.GetAvatarUrlsBulkAsync(accountIds);
-                foreach (var kvp in avatarUrls)
+                var mgr = _accountManager;
+                var accountIds = mgr.Accounts.Select(acc => acc.UserId).ToList();
+
+                if (accountIds.Count > 0)
                 {
-                    _accountAvatarUrls[kvp.Key] = kvp.Value;
+                    var avatarUrls = await mgr.GetAvatarUrlsBulkAsync(accountIds);
+                    foreach (var kvp in avatarUrls)
+                    {
+                        _accountAvatarUrls[kvp.Key] = kvp.Value;
+                    }
+                }
+
+                CurrentAccount = mgr.ActiveAccount;
+                if (CurrentAccount != null)
+                {
+                    CurrentAccountAvatarUrl = GetAccountAvatarUrl(CurrentAccount.UserId);
+                }
+                OnPropertyChanged(nameof(CurrentAccountDisplayName));
+
+                Accounts.Clear();
+                foreach (var account in mgr.Accounts)
+                {
+                    var url = _accountAvatarUrls.TryGetValue(account.UserId, out var u) ? u : null;
+                    Accounts.Add(new AccountWithAvatar(account, url));
                 }
             }
-
-            CurrentAccount = mgr.ActiveAccount;
-            if (CurrentAccount != null)
+            catch (Exception ex)
             {
-                CurrentAccountAvatarUrl = GetAccountAvatarUrl(CurrentAccount.UserId);
-            }
-
-            Accounts.Clear();
-            foreach (var account in mgr.Accounts)
-            {
-                var url = _accountAvatarUrls.TryGetValue(account.UserId, out var u) ? u : null;
-                Accounts.Add(new AccountWithAvatar(account, url));
+                App.Logger.WriteLine(LOG_IDENT, $"Failed to load account data: {ex.Message}");
             }
         }
 
         private void OnActiveAccountChanged(AccountManagerAccount? account)
         {
-            CurrentAccount = account;
-            if (account != null)
+            Dispatcher.UIThread.Post(() =>
             {
-                CurrentAccountAvatarUrl = GetAccountAvatarUrl(account.UserId);
+                CurrentAccount = account;
+                CurrentAccountAvatarUrl = account != null ? GetAccountAvatarUrl(account.UserId) : null;
+                OnPropertyChanged(nameof(CurrentAccountDisplayName));
+
+                StopPresencePolling();
+                if (account != null)
+                {
+                    StartPresencePolling();
+                    _ = RefreshPresenceAsync();
+                }
+                else
+                {
+                    CurrentPresence = null;
+                }
+            });
+        }
+
+        private void StartPresencePolling()
+        {
+            if (_presenceTimer != null) return;
+
+            _presenceTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(PRESENCE_REFRESH_INTERVAL_MS)
+            };
+            _presenceTimer.Tick += async (s, e) => await RefreshPresenceAsync();
+            _presenceTimer.Start();
+        }
+
+        private void StopPresencePolling()
+        {
+            _presenceTimer?.Stop();
+            _presenceTimer = null;
+        }
+
+        private async Task RefreshPresenceAsync()
+        {
+            if (CurrentAccount == null) return;
+
+            try
+            {
+                var presence = await AccountManager.GetUserPresenceAsync(CurrentAccount.UserId);
+                if (presence != null)
+                {
+                    CurrentPresence = presence;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                CurrentAccountAvatarUrl = null;
+                App.Logger.WriteLine(LOG_IDENT, $"Failed to refresh presence: {ex.Message}");
             }
         }
+
 
         [RelayCommand]
         private void SelectAccount(AccountWithAvatar item)
@@ -112,10 +284,7 @@ namespace Froststrap.UI.ViewModels.Settings
         }
 
         [RelayCommand]
-        private void ToggleDropdown()
-        {
-            IsDropdownOpen = !IsDropdownOpen;
-        }
+        private void ToggleDropdown() => IsDropdownOpen = !IsDropdownOpen;
 
         [RelayCommand]
         private void DeleteAccount(AccountWithAvatar item)
@@ -133,34 +302,48 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 AccountManagerAccount? newAccount = null;
 
-                switch (SelectedAddMethod)
+                if (SelectedAddMethod == Strings.Menu_Dialog_QuickSignIn_Title)
                 {
-                    case "Quick Sign In":
-                        newAccount = await _accountManager.AddAccountByQuickSignInAsync();
-                        break;
-                    case "Browser":
-                        newAccount = await _accountManager.AddAccountByBrowser();
-                        break;
-                    case "Manual":
-                        OnManualAddRequested?.Invoke();
-                        return;
+                    var dialog = new QuickSignCodeDialog();
+                    var cts = new CancellationTokenSource();
+
+                    dialog.Closed += (_, _) => cts.Cancel();
+                    dialog.Show();
+
+                    newAccount = await AccountManager.AddAccountByQuickSignInAsync(dialog, cts.Token);
+                }
+                else if (SelectedAddMethod == Strings.Common_Browser)
+                {
+                    newAccount = await _accountManager.AddAccountByBrowser();
+                }
+                else if (SelectedAddMethod == Strings.Common_Manual)
+                {
+                    OnManualAddRequested?.Invoke();
+                    return;
+                }
+                else if (SelectedAddMethod == Strings.Menu_AccountSelector_Login_LocalCookie)
+                {
+                    newAccount = await ImportFromCookieManager();
                 }
 
-                if (newAccount != null && !Accounts.Any(a => a.UserId == newAccount.UserId))
-                {
-                    // Fetch avatar for the new account
-                    var avatarUrl = await _accountManager.GetAvatarUrlsBulkAsync(new List<long> { newAccount.UserId });
-                    var url = avatarUrl.GetValueOrDefault(newAccount.UserId);
-                    _accountAvatarUrls[newAccount.UserId] = url;
+                if (newAccount == null) return;
 
-                    Accounts.Add(new AccountWithAvatar(newAccount, url));
-                    _accountManager.SetActiveAccount(newAccount.UserId);
-                    IsDropdownOpen = false;
-                }
+                if (await HandleDuplicateAccountAsync(newAccount))
+                    return;
+
+                _accountManager.AddAccount(newAccount);
+
+                var avatarUrlMap = await _accountManager.GetAvatarUrlsBulkAsync([newAccount.UserId]);
+                var url = avatarUrlMap.GetValueOrDefault(newAccount.UserId);
+                _accountAvatarUrls[newAccount.UserId] = url;
+
+                Accounts.Add(new AccountWithAvatar(newAccount, url));
+                _accountManager.SetActiveAccount(newAccount.UserId);
+                IsDropdownOpen = false;
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine("AccountSelectorViewModel", $"Error adding account: {ex.Message}");
+                App.Logger.WriteLine(LOG_IDENT, $"Error adding account: {ex.Message}");
             }
             finally
             {
@@ -168,29 +351,96 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public event Action? OnManualAddRequested;
-
-        public void AddAccountDirect(AccountManagerAccount account)
+        private async Task<bool> HandleDuplicateAccountAsync(AccountManagerAccount account)
         {
-            if (!Accounts.Any(a => a.UserId == account.UserId))
+            var existing = _accountManager.Accounts.FirstOrDefault(a => a.UserId == account.UserId);
+            if (existing != null)
             {
-                var avatarUrl = GetAccountAvatarUrl(account.UserId);
-                Accounts.Add(new AccountWithAvatar(account, avatarUrl));
-                _accountManager.SetActiveAccount(account.UserId);
+                _accountManager.SetActiveAccount(existing.UserId);
+                IsDropdownOpen = false;
+                await Frontend.ShowMessageBox(string.Format(Strings.Menu_AccountSelector_AlreadyLoggedIn, existing.Username), MessageBoxImage.Information);
+                return true;
             }
+            return false;
+        }
+
+        private static async Task<AccountManagerAccount?> ImportFromCookieManager()
+        {
+            const string LOG_IDENT = "ImportFromCookieManager";
+
+            var cookieManager = new CookiesManager();
+
+            await cookieManager.LoadCookies();
+
+            if (!cookieManager.Loaded)
+            {
+                string error = cookieManager.State switch
+                {
+                    CookieState.NotAllowed => Strings.Menu_CookieState_NotAllowed,
+                    CookieState.NotFound => Strings.Menu_CookieState_NotFound,
+                    CookieState.Invalid => Strings.Menu_CookieState_Invalid,
+                    CookieState.Failed => Strings.Menu_CookieState_Failed,
+                    _ => Strings.Menu_CookieState_CouldNotLoad
+                };
+                _ = Frontend.ShowMessageBox(error);
+                return null;
+            }
+
+            var authUser = await cookieManager.GetAuthenticated();
+            if (authUser == null || authUser.Id == 0)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Failed to get authenticated user from cookie.");
+                return null;
+            }
+
+            string cookieValue = cookieManager.GetAuthCookie();
+            if (string.IsNullOrEmpty(cookieValue))
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Auth cookie is empty.");
+                return null;
+            }
+
+            return new AccountManagerAccount(
+                securityToken: cookieValue,
+                userId: authUser.Id,
+                username: authUser.Username,
+                displayName: authUser.DisplayName
+            );
+        }
+
+        public async void AddAccountDirect(AccountManagerAccount account)
+        {
+            if (await HandleDuplicateAccountAsync(account))
+                return;
+
+            _accountManager.AddAccount(account);
+
+            string? avatarUrl = null;
+            try
+            {
+                var urlMap = await _accountManager.GetAvatarUrlsBulkAsync([account.UserId]);
+                avatarUrl = urlMap.GetValueOrDefault(account.UserId);
+                if (avatarUrl != null)
+                    _accountAvatarUrls[account.UserId] = avatarUrl;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Failed to fetch avatar for {account.UserId}: {ex.Message}");
+            }
+
+            if (Accounts.All(a => a.UserId != account.UserId))
+            {
+                Accounts.Add(new AccountWithAvatar(account, avatarUrl));
+            }
+
+            _accountManager.SetActiveAccount(account.UserId);
             IsDropdownOpen = false;
         }
 
-        public class AccountWithAvatar
+        public class AccountWithAvatar(AccountManagerAccount account, string? avatarUrl)
         {
-            public AccountManagerAccount Account { get; }
-            public string? AvatarUrl { get; }
-
-            public AccountWithAvatar(AccountManagerAccount account, string? avatarUrl)
-            {
-                Account = account;
-                AvatarUrl = avatarUrl;
-            }
+            public AccountManagerAccount Account { get; } = account;
+            public string? AvatarUrl { get; } = avatarUrl;
 
             public string Username => Account.Username;
             public string DisplayName => Account.DisplayName;
@@ -199,16 +449,16 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public string? GetAccountAvatarUrl(long userId)
         {
-            if (_accountAvatarUrls.TryGetValue(userId, out var url))
-            {
-                return url;
-            }
-            return _accountManager.GetCachedAvatarUrl(userId);
+            return _accountAvatarUrls.TryGetValue(userId, out var url)
+                ? url
+                : _accountManager.GetCachedAvatarUrl(userId);
         }
 
         public void Dispose()
         {
+            StopPresencePolling();
             _accountManager.ActiveAccountChanged -= OnActiveAccountChanged;
+            GC.SuppressFinalize(this);
         }
     }
 }

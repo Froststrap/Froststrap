@@ -1,7 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
-using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.UI.Elements.Dialogs;
 using System.Collections.ObjectModel;
@@ -10,12 +9,10 @@ using System.IO.Compression;
 
 namespace Froststrap.UI.ViewModels.Settings.Mods
 {
-    public partial class CommunityModsViewModel : ObservableObject
+    public partial class CommunityModsViewModel : NotifyPropertyChangedViewModel
     {
-
         private readonly string _cacheFolder = Path.Combine(Paths.Cache, "Community Mods");
-
-        private List<CommunityMod> _allMods = new();
+        private List<CommunityMod> _allMods = [];
         private CancellationTokenSource? _searchCts;
         private const int CacheDurationDays = 7;
 
@@ -23,20 +20,59 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
         public event EventHandler? OpenModGeneratorEvent;
         public event EventHandler? OpenPresetModsEvent;
 
-        [ObservableProperty] private ObservableCollection<CommunityMod> _mods = new();
-        [ObservableProperty] private bool _isLoading = true;
-        [ObservableProperty] private bool _hasError;
-        [ObservableProperty] private string _errorMessage = string.Empty;
-        [ObservableProperty] private string _searchQuery = string.Empty;
-        [ObservableProperty] private ModType? _activeFilter;
+        private ObservableCollection<CommunityMod> _mods = [];
+        public ObservableCollection<CommunityMod> Mods
+        {
+            get => _mods;
+            set => SetProperty(ref _mods, value);
+        }
+
+        private bool _isLoading = true;
+        public bool IsLoading
+        {
+            get => _isLoading;
+            set => SetProperty(ref _isLoading, value);
+        }
+
+        private bool _hasError;
+        public bool HasError
+        {
+            get => _hasError;
+            set => SetProperty(ref _hasError, value);
+        }
+
+        private string _errorMessage = string.Empty;
+        public string ErrorMessage
+        {
+            get => _errorMessage;
+            set => SetProperty(ref _errorMessage, value);
+        }
+
+        private string _searchQuery = string.Empty;
+        public string SearchQuery
+        {
+            get => _searchQuery;
+            set
+            {
+                if (SetProperty(ref _searchQuery, value))
+                {
+                    _ = SearchModsAsync();
+                }
+            }
+        }
+
+        private ModType? _activeFilter;
+        public ModType? ActiveFilter
+        {
+            get => _activeFilter;
+            set => SetProperty(ref _activeFilter, value);
+        }
 
         public CommunityModsViewModel()
         {
             Directory.CreateDirectory(_cacheFolder);
-            App.RemoteData.Subscribe(async (s, e) => await RefreshModsAsync());
+            App.RemoteData.Subscribe(async (_, _) => await RefreshModsAsync());
         }
-
-        partial void OnSearchQueryChanged(string value) => _ = SearchModsAsync();
 
         [RelayCommand] private void OpenMods() => OpenModsEvent?.Invoke(this, EventArgs.Empty);
         [RelayCommand] private void OpenPresetMods() => OpenPresetModsEvent?.Invoke(this, EventArgs.Empty);
@@ -45,19 +81,13 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
         [RelayCommand]
         private void SetFilter(object? parameter)
         {
-            if (parameter == null)
+            if (parameter is null)
             {
                 ActiveFilter = null;
-                ApplyFilters();
-                return;
             }
-
-            if (parameter is ModType newFilter)
+            else if (parameter is ModType newFilter)
             {
-                if (ActiveFilter == newFilter)
-                    ActiveFilter = null;
-                else
-                    ActiveFilter = newFilter;
+                ActiveFilter = ActiveFilter == newFilter ? null : newFilter;
             }
 
             ApplyFilters();
@@ -74,7 +104,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                 if (App.RemoteData.LoadedState == GenericTriState.Unknown)
                     await App.RemoteData.WaitUntilDataFetched();
 
-                _allMods = App.RemoteData.Prop.CommunityMods ?? new();
+                _allMods = App.RemoteData.Prop.CommunityMods ?? [];
                 ApplyFilters();
 
                 _ = Task.Run(() => Task.WhenAll(_allMods.Select(LoadModThumbnailAsync)));
@@ -124,7 +154,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
         }
 
         [RelayCommand]
-        private async Task DownloadModAsync(CommunityMod mod)
+        private static async Task DownloadModAsync(CommunityMod mod)
         {
             if (mod == null || mod.IsDownloading) return;
 
@@ -146,22 +176,45 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                     App.Settings.Prop.BootstrapperStyle = BootstrapperStyle.CustomDialog;
                     App.Settings.Save();
 
-                    _ = Frontend.ShowMessageBox($"Theme '{mod.Name}' installed and applied!", MessageBoxImage.Information);
+                    _ = Frontend.ShowMessageBox(string.Format(Strings.Menu_CommunityMods_ThemeInstalled, mod.Name), MessageBoxImage.Information);
                 }
                 else
                 {
                     string installPath = Path.Combine(Paths.Modifications, mod.Name);
                     if (Directory.Exists(installPath))
                     {
-                        var result = await Frontend.ShowMessageBox($"Overwrite existing mod '{mod.Name}'?", MessageBoxImage.Question, MessageBoxButton.YesNo);
+                        var result = await Frontend.ShowMessageBox(string.Format(Strings.Menu_CommunityMods_Overwrite, mod.Name), MessageBoxImage.Question, MessageBoxButton.YesNo);
                         if (result != MessageBoxResult.Yes) return;
                         Directory.Delete(installPath, true);
                     }
 
                     await ExtractZipAsync(tempFile, installPath);
-                    if (mod.ModType == ModType.SkyBox) await ApplySkyboxFixAsync();
 
-                    _ = Frontend.ShowMessageBox($"Mod '{mod.Name}' installed successfully!", MessageBoxImage.Information);
+                    var existingMod = App.State.Prop.Mods.FirstOrDefault(m =>
+                        string.Equals(m.FolderName, mod.Name, StringComparison.OrdinalIgnoreCase));
+
+                    if (existingMod != null)
+                    {
+                        existingMod.Enabled = true;
+                        App.Logger.WriteLine("CommunityModsViewModel::DownloadModAsync", $"Enabled existing mod '{mod.Name}'.");
+                    }
+                    else
+                    {
+                        int maxPriority = App.State.Prop.Mods.Count > 0 ? App.State.Prop.Mods.Max(m => m.Priority) : 0;
+                        var newMod = new ModConfig
+                        {
+                            FolderName = mod.Name,
+                            Enabled = true,
+                            Priority = maxPriority + 1,
+                            Target = ModTarget.Both
+                        };
+                        App.State.Prop.Mods.Add(newMod);
+                        App.Logger.WriteLine("CommunityModsViewModel::DownloadModAsync", $"Added mod '{mod.Name}' to state.");
+                    }
+
+                    App.State.SaveSetting("Mods");
+
+                    _ = Frontend.ShowMessageBox(string.Format(Strings.Menu_CommunityMods_ModInstalled, mod.Name), MessageBoxImage.Information);
                 }
             }
             catch (Exception ex)
@@ -177,7 +230,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
         }
 
         [RelayCommand]
-        private async Task OpenModInfoDialog(Control? control)
+        private static async Task OpenModInfoDialog(Control? control)
         {
             if (control?.DataContext is not CommunityMod mod) return;
 
@@ -201,7 +254,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             }
         }
 
-        private async Task ExtractZipAsync(string zipPath, string dest)
+        private static async Task ExtractZipAsync(string zipPath, string dest)
         {
             await Task.Run(() =>
             {
@@ -211,7 +264,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             });
         }
 
-        private async Task DownloadFileAsync(string url, string path, IProgress<double> progress)
+        private static async Task DownloadFileAsync(string url, string path, IProgress<double> progress)
         {
             using var response = await App.HttpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
             response.EnsureSuccessStatusCode();
@@ -257,43 +310,6 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                 });
             }
             catch { mod.HasThumbnailError = true; }
-        }
-
-        private async Task ApplySkyboxFixAsync()
-        {
-            await Task.Run(() =>
-            {
-                string rbxStorage = Path.Combine(Paths.Roblox, "rbx-storage");
-                var files = new Dictionary<string, string>
-                {
-                    { "a564ec8aeef3614e788d02f0090089d8", "a5" },
-                    { "7328622d2d509b95dd4dd2c721d1ca8b", "73" },
-                    { "a50f6563c50ca4d5dcb255ee5cfab097", "a5" },
-                    { "6c94b9385e52d221f0538aadaceead2d", "6c" },
-                    { "9244e00ff9fd6cee0bb40a262bb35d31", "92" },
-                    { "78cb2e93aee0cdbd79b15a866bc93a54", "78" }
-                };
-
-                try
-                {
-                    foreach (var file in files)
-                    {
-                        string targetDir = Path.Combine(rbxStorage, file.Value);
-                        string targetPath = Path.Combine(targetDir, file.Key);
-                        Directory.CreateDirectory(targetDir);
-
-                        string resourceName = $"Bloxstrap.Resources.SkyboxFix.{file.Key}";
-                        using var stream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName);
-                        if (stream == null) continue;
-
-                        if (File.Exists(targetPath)) File.SetAttributes(targetPath, FileAttributes.Normal);
-                        using var fileStream = new FileStream(targetPath, FileMode.Create, FileAccess.Write);
-                        stream.CopyTo(fileStream);
-                        File.SetAttributes(targetPath, FileAttributes.ReadOnly);
-                    }
-                }
-                catch (Exception ex) { App.Logger.WriteLine("CommunityModsViewModel::ApplySkyboxFix", ex.ToString()); }
-            });
         }
     }
 }

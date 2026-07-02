@@ -8,15 +8,24 @@ using Froststrap.UI.Elements.Editor;
 using ICSharpCode.SharpZipLib.Zip;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Runtime.InteropServices;
 using System.Windows.Input;
+using WebDriverBiDi.Script;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
     public partial class AppearanceViewModel : NotifyPropertyChangedViewModel
     {
+        private static readonly JsonSerializerOptions _jsonOptions = new() { WriteIndented = true };
+
+        private static readonly string[] _icoFilter = ["*.ico"];
+        private static readonly string[] _zipFilter = ["*.zip"];
+        private static readonly string[] JsonPatterns = ["*.json"];
+        private static readonly JsonSerializerOptions SerializationOptions = new() { WriteIndented = true };
+
+        private CustomThemeCycleSelectionWrapper? _selectedThemeWrapper;
+
         public ICommand PreviewBootstrapperCommand => new RelayCommand(PreviewBootstrapper);
-        public IAsyncRelayCommand<Control> BrowseCustomIconLocationCommand => new AsyncRelayCommand<Control>(BrowseCustomIconLocation);
+        public IAsyncRelayCommand BrowseCustomIconLocationCommand => new AsyncRelayCommand<Control>(async c => await BrowseCustomIconLocation(c));
 
         public ICommand AddCustomThemeCommand => new RelayCommand<Control>(async c => await AddCustomTheme(c));
         public ICommand EditCustomThemeCommand => new RelayCommand<Control>(async c => await EditCustomTheme(c));
@@ -30,10 +39,9 @@ namespace Froststrap.UI.ViewModels.Settings
 
             IBootstrapperDialog dialog = await App.Settings.Prop.BootstrapperStyle.GetNew();
 
-            if (App.Settings.Prop.BootstrapperStyle == BootstrapperStyle.ByfronDialog)
-                dialog.Message = Strings.Bootstrapper_StylePreview_ImageCancel;
-            else
-                dialog.Message = Strings.Bootstrapper_StylePreview_TextCancel;
+            dialog.Message = App.Settings.Prop.BootstrapperStyle == BootstrapperStyle.ByfronDialog
+                ? Strings.Bootstrapper_StylePreview_ImageCancel
+                : Strings.Bootstrapper_StylePreview_TextCancel;
 
             dialog.CancelEnabled = true;
             dialog.ShowBootstrapper();
@@ -54,19 +62,12 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 Title = "Select Icon File",
                 AllowMultiple = false,
-                FileTypeFilter = new[]
-                {
-                    new FilePickerFileType("Icon Files")
-                    {
-                        Patterns = new[] { "*.ico" }
-                    }
-                }
+                FileTypeFilter = [new FilePickerFileType("Icon Files") { Patterns = _icoFilter }]
             });
 
-            if (files != null && files.Count > 0)
+            if (files.Count > 0)
             {
                 CustomIconLocation = files[0].Path.LocalPath;
-
                 OnPropertyChanged(nameof(CustomIconLocation));
             }
         }
@@ -75,38 +76,66 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public string SelectedLanguage
         {
-            get => Locale.SupportedLocales[App.Settings.Prop.Locale];
-            set => App.Settings.Prop.Locale = Locale.GetIdentifierFromName(value);
+            get
+            {
+                string identifier = App.Settings.Prop.Locale;
+                if (identifier == "nil")
+                    return Strings.Common_SystemDefault;
+
+                return Locale.SupportedLocales.TryGetValue(identifier, out var value)
+                    ? value
+                    : Strings.Common_SystemDefault;
+            }
+            set
+            {
+                string? identifier = Locale.SupportedLocales.FirstOrDefault(x => x.Value == value).Key;
+
+                if (identifier == null && value == Strings.Common_SystemDefault)
+                    identifier = "nil";
+
+                identifier ??= "nil";
+
+                if (App.Settings.Prop.Locale != identifier)
+                {
+                    App.Settings.Prop.Locale = identifier;
+                    OnPropertyChanged(nameof(SelectedLanguage));
+
+                    Locale.Set(identifier);
+                }
+            }
         }
 
-        public string DownloadingStatus
-        {
-            get => App.Settings.Prop.DownloadingStringFormat;
-            set => App.Settings.Prop.DownloadingStringFormat = value;
-        }
-
-        public ObservableCollection<BootstrapperIconEntry> Icons { get; set; } = new();
+        public ObservableCollection<BootstrapperIconEntry> Icons { get; set; } = [];
 
         public BootstrapperIcon Icon
         {
             get => App.Settings.Prop.BootstrapperIcon;
-            set => App.Settings.Prop.BootstrapperIcon = value;
+            set
+            {
+                App.Settings.Prop.BootstrapperIcon = value;
+                OnPropertyChanged(nameof(IsCustomIconSelected));
+            }
         }
 
-        public IEnumerable<WindowsBackdrops> BackdropOptions => Enum.GetValues(typeof(WindowsBackdrops)).Cast<WindowsBackdrops>();
+        public static bool IsCustomIconSelected => App.Settings.Prop.BootstrapperIcon == BootstrapperIcon.IconCustom;
+
+        public static IEnumerable<WindowsBackdrops> BackdropOptions => Enum.GetValues<WindowsBackdrops>();
 
         public WindowsBackdrops SelectedBackdrop
         {
             get => App.Settings.Prop.SelectedBackdrop;
             set
             {
-                App.Settings.Prop.SelectedBackdrop = value;
-                App.WindowsBackdrop();
-                OnPropertyChanged(nameof(SelectedBackdrop));
+                if (App.Settings.Prop.SelectedBackdrop != value)
+                {
+                    App.Settings.Prop.SelectedBackdrop = value;
+                    OnPropertyChanged(nameof(SelectedBackdrop));
+                    AvaloniaWindow.UpdateBackdropForAllWindows();
+                }
             }
         }
 
-        public string Title
+        public static string Title
         {
             get => App.Settings.Prop.BootstrapperTitle;
             set => App.Settings.Prop.BootstrapperTitle = value;
@@ -117,7 +146,7 @@ namespace Froststrap.UI.ViewModels.Settings
             get => App.Settings.Prop.BootstrapperIconCustomLocation;
             set
             {
-                if (String.IsNullOrEmpty(value))
+                if (string.IsNullOrEmpty(value))
                 {
                     if (App.Settings.Prop.BootstrapperIcon == BootstrapperIcon.IconCustom)
                         App.Settings.Prop.BootstrapperIcon = BootstrapperIcon.IconFroststrap;
@@ -137,37 +166,122 @@ namespace Froststrap.UI.ViewModels.Settings
         public AppearanceViewModel()
         {
             foreach (var entry in BootstrapperIconEx.Selections)
-                Icons.Add(new BootstrapperIconEntry { IconType = entry });
+                Icons.Add(new() { IconType = entry });
 
             PopulateCustomThemes();
             InitializeGradientStops();
         }
 
         public IEnumerable<BootstrapperStyle> Dialogs { get; } = BootstrapperStyleEx.Selections;
+
         public BootstrapperStyle Dialog
         {
             get => App.Settings.Prop.BootstrapperStyle;
             set
             {
-                if (App.Settings.Prop.BootstrapperStyle != value)
+                App.Settings.Prop.BootstrapperStyle = value;
+                OnPropertyChanged(nameof(CustomThemesExpanded));
+            }
+        }
+
+        public static bool CustomThemesExpanded => App.Settings.Prop.BootstrapperStyle == BootstrapperStyle.CustomDialog;
+
+        public bool IsThemeCyclingEnabled
+        {
+            get => App.Settings.Prop.CycleEnabled;
+            set
+            {
+                App.Settings.Prop.CycleEnabled = value;
+                OnPropertyChanged(nameof(IsThemeCyclingEnabled));
+            }
+        }
+
+        public static IEnumerable<CycleFrequency> CycleFrequencies => Enum.GetValues<CycleFrequency>();
+
+        public CycleFrequency SelectedCycleFrequency
+        {
+            get => App.Settings.Prop.CycleFrequency;
+            set
+            {
+                App.Settings.Prop.CycleFrequency = value;
+                OnPropertyChanged(nameof(SelectedCycleFrequency));
+                OnPropertyChanged(nameof(IsIntervalValueVisible));
+            }
+        }
+
+        public int CycleIntervalValue
+        {
+            get => App.Settings.Prop.CycleIntervalValue;
+            set
+            {
+                App.Settings.Prop.CycleIntervalValue = value;
+                OnPropertyChanged(nameof(CycleIntervalValue));
+            }
+        }
+
+        public bool IsIntervalValueVisible => SelectedCycleFrequency != CycleFrequency.EveryLaunch;
+
+        public ObservableCollection<CustomThemeCycleSelectionWrapper> CustomThemeSelections { get; set; } = [];
+
+        public void InitializeCustomThemeSelections()
+        {
+            foreach (var w in CustomThemeSelections)
+                w.PropertyChanged -= OnCycleSelectionPropertyChanged;
+
+            CustomThemeSelections.Clear();
+            var savedList = App.Settings.Prop.CycleEnabledCustomThemes;
+
+            foreach (var themeName in CustomThemes)
+            {
+                var selection = new CustomThemeCycleSelectionWrapper
                 {
-                    App.Settings.Prop.BootstrapperStyle = value;
-                    OnPropertyChanged(nameof(Dialog));
-                    OnPropertyChanged(nameof(CustomThemesExpanded));
+                    ThemeName = themeName,
+                    IsSelected = savedList.Contains(themeName)
+                };
+                selection.PropertyChanged += OnCycleSelectionPropertyChanged;
+                CustomThemeSelections.Add(selection);
+            }
+        }
+
+        public CustomThemeCycleSelectionWrapper? SelectedThemeWrapper
+        {
+            get => _selectedThemeWrapper;
+            set
+            {
+                if (_selectedThemeWrapper != value)
+                {
+                    _selectedThemeWrapper = value;
+                    OnPropertyChanged();
+                    SelectedCustomTheme = value?.ThemeName;
                 }
             }
         }
 
-        public bool CustomThemesExpanded => App.Settings.Prop.BootstrapperStyle == BootstrapperStyle.CustomDialog;
+        private void OnCycleSelectionPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (sender is CustomThemeCycleSelectionWrapper wrapper && e.PropertyName == nameof(wrapper.IsSelected))
+            {
+                var savedList = App.Settings.Prop.CycleEnabledCustomThemes;
+                if (wrapper.IsSelected)
+                {
+                    if (!savedList.Contains(wrapper.ThemeName))
+                        savedList.Add(wrapper.ThemeName);
+                }
+                else
+                {
+                    savedList.Remove(wrapper.ThemeName);
+                }
+            }
+        }
 
-        private void DeleteCustomThemeStructure(string name)
+        private static void DeleteCustomThemeStructure(string name)
         {
             string dir = Path.Combine(Paths.CustomThemes, name);
             if (Directory.Exists(dir))
                 Directory.Delete(dir, true);
         }
 
-        private void RenameCustomThemeStructure(string oldName, string newName)
+        private static void RenameCustomThemeStructure(string oldName, string newName)
         {
             string oldDir = Path.Combine(Paths.CustomThemes, oldName);
             string newDir = Path.Combine(Paths.CustomThemes, newName);
@@ -181,7 +295,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
             if (topLevel is not Window parentWindow)
             {
-                App.Logger.WriteLine("AppearanceVM", "AddCustomTheme: No parent window found.");
+                App.Logger.WriteLine(nameof(AppearanceViewModel), "AddCustomTheme: No parent window found.");
                 return;
             }
 
@@ -195,10 +309,12 @@ namespace Froststrap.UI.ViewModels.Settings
             if (dialog.Created)
             {
                 CustomThemes.Add(dialog.ThemeName);
+                var wrapper = new CustomThemeCycleSelectionWrapper { ThemeName = dialog.ThemeName, IsSelected = false };
+                wrapper.PropertyChanged += OnCycleSelectionPropertyChanged;
+                CustomThemeSelections.Add(wrapper);
 
-                SelectedCustomTheme = dialog.ThemeName;
+                SelectedThemeWrapper = wrapper;
                 SelectedCustomThemeIndex = CustomThemes.IndexOf(dialog.ThemeName);
-
                 OnPropertyChanged(nameof(SelectedCustomThemeIndex));
 
                 if (dialog.OpenEditor)
@@ -229,7 +345,7 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 Title = "Export Theme",
                 SuggestedFileName = $"{SelectedCustomTheme}.zip",
-                FileTypeChoices = new[] { new FilePickerFileType("Zip Archive") { Patterns = new[] { "*.zip" } } }
+                FileTypeChoices = [new FilePickerFileType("Zip Archive") { Patterns = _zipFilter }]
             });
 
             if (file is null) return;
@@ -254,40 +370,58 @@ namespace Froststrap.UI.ViewModels.Settings
                 }
 
                 zipStream.Finish();
-                zipStream.Close();
             });
-
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                Process.Start("explorer.exe", $"/select,\"{file.Path.LocalPath}\"");
-            }
+            Utilities.ShellExecute(file.Path.LocalPath, select: true);
         }
 
         private async void DeleteCustomTheme()
         {
-            if (SelectedCustomTheme is null)
-                return;
+            if (SelectedCustomTheme is null) return;
+
+            var themeToDelete = SelectedCustomTheme;
 
             try
             {
-                DeleteCustomThemeStructure(SelectedCustomTheme);
+                DeleteCustomThemeStructure(themeToDelete);
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException("AppearanceViewModel::DeleteCustomTheme", ex);
-                await Frontend.ShowMessageBox(string.Format(Strings.Menu_Appearance_CustomThemes_DeleteFailed, SelectedCustomTheme, ex.Message), MessageBoxImage.Error);
+                App.Logger.WriteException(nameof(AppearanceViewModel), ex);
+                await Frontend.ShowMessageBox(string.Format(Strings.Menu_Appearance_CustomThemes_DeleteFailed, themeToDelete, ex.Message), MessageBoxImage.Error);
                 return;
             }
 
-            CustomThemes.Remove(SelectedCustomTheme);
-
-            if (CustomThemes.Any())
+            await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
             {
-                SelectedCustomThemeIndex = CustomThemes.Count - 1;
-                OnPropertyChanged(nameof(SelectedCustomThemeIndex));
-            }
+                var wrapperToDelete = CustomThemeSelections.FirstOrDefault(w => w.ThemeName == themeToDelete);
 
-            OnPropertyChanged(nameof(IsCustomThemeSelected));
+                App.Settings.Prop.CycleEnabledCustomThemes.Remove(themeToDelete);
+
+                if (wrapperToDelete != null)
+                {
+                    wrapperToDelete.PropertyChanged -= OnCycleSelectionPropertyChanged;
+                    CustomThemeSelections.Remove(wrapperToDelete);
+                }
+
+                int idx = CustomThemes.IndexOf(themeToDelete);
+                if (idx >= 0) CustomThemes.RemoveAt(idx);
+
+                if (CustomThemes.Count > 0)
+                {
+                    var newSelectedWrapper = CustomThemeSelections.LastOrDefault();
+                    SelectedThemeWrapper = newSelectedWrapper;
+                    SelectedCustomThemeIndex = CustomThemes.Count - 1;
+                }
+                else
+                {
+                    SelectedThemeWrapper = null;
+                    SelectedCustomTheme = null;
+                    SelectedCustomThemeIndex = -1;
+                }
+
+                OnPropertyChanged(nameof(IsCustomThemeSelected));
+                OnPropertyChanged(nameof(SelectedCustomThemeIndex));
+            });
         }
 
         private async void RenameCustomTheme()
@@ -333,15 +467,31 @@ namespace Froststrap.UI.ViewModels.Settings
             }
 
             string newName = SelectedCustomThemeName;
-            int idx = CustomThemes.IndexOf(SelectedCustomTheme);
+            string oldName = SelectedCustomTheme;
 
-            CustomThemes[idx] = newName;
-            SelectedCustomTheme = newName;
-            SelectedCustomThemeIndex = idx;
+            await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                int idx = CustomThemes.IndexOf(oldName);
+                if (idx >= 0) CustomThemes[idx] = newName;
 
-            OnPropertyChanged(nameof(SelectedCustomThemeIndex));
-            OnPropertyChanged(nameof(SelectedCustomTheme));
-            OnPropertyChanged(nameof(SelectedCustomThemeName));
+                var wrapper = CustomThemeSelections.FirstOrDefault(w => w.ThemeName == oldName);
+                if (wrapper != null)
+                {
+                    wrapper.ThemeName = newName;
+                    if (App.Settings.Prop.CycleEnabledCustomThemes.Remove(oldName))
+                    {
+                        App.Settings.Prop.CycleEnabledCustomThemes.Add(newName);
+                    }
+                }
+
+                SelectedThemeWrapper = wrapper;
+                SelectedCustomTheme = newName;
+                SelectedCustomThemeIndex = idx;
+
+                OnPropertyChanged(nameof(SelectedCustomThemeIndex));
+                OnPropertyChanged(nameof(SelectedCustomTheme));
+                OnPropertyChanged(nameof(SelectedCustomThemeName));
+            });
         }
 
         private void PopulateCustomThemes()
@@ -356,19 +506,19 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 if (!File.Exists(Path.Combine(directory, "Theme.xml")))
                     continue;
-
                 CustomThemes.Add(Path.GetFileName(directory));
             }
 
+            InitializeCustomThemeSelections();
+
             if (!string.IsNullOrEmpty(selected))
             {
-                int idx = CustomThemes.IndexOf(selected);
-                if (idx != -1)
+                var wrapper = CustomThemeSelections.FirstOrDefault(w => w.ThemeName == selected);
+                if (wrapper != null)
                 {
-                    SelectedCustomThemeIndex = idx;
-                    SelectedCustomTheme = selected;
+                    SelectedThemeWrapper = wrapper;
+                    SelectedCustomThemeIndex = CustomThemes.IndexOf(selected);
                     SelectedCustomThemeName = selected;
-
                     OnPropertyChanged(nameof(SelectedCustomThemeIndex));
                     OnPropertyChanged(nameof(SelectedCustomThemeName));
                 }
@@ -385,6 +535,16 @@ namespace Froststrap.UI.ViewModels.Settings
                     App.Settings.Prop.SelectedCustomTheme = value;
                     SelectedCustomThemeName = value ?? string.Empty;
 
+                    if (value != null)
+                        SelectedThemeWrapper = CustomThemeSelections.FirstOrDefault(w => w.ThemeName == value);
+                    else
+                        SelectedThemeWrapper = null;
+
+                    if (value != null && App.Settings.Prop.CycleEnabledCustomThemes.Contains(value))
+                    {
+                        App.Settings.Prop.CycleCurrentIndex = App.Settings.Prop.CycleEnabledCustomThemes.IndexOf(value);
+                    }
+
                     OnPropertyChanged(nameof(SelectedCustomTheme));
                     OnPropertyChanged(nameof(SelectedCustomThemeName));
                     OnPropertyChanged(nameof(IsCustomThemeSelected));
@@ -394,11 +554,11 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public string SelectedCustomThemeName { get; set; } = "";
         public int SelectedCustomThemeIndex { get; set; }
-        public ObservableCollection<string> CustomThemes { get; set; } = new();
+        public ObservableCollection<string> CustomThemes { get; set; } = [];
         public bool IsCustomThemeSelected => SelectedCustomTheme is not null;
 
         #region Custom App Themes
-        public IEnumerable<Theme> Themes { get; } = Enum.GetValues(typeof(Theme)).Cast<Theme>();
+        public IEnumerable<Theme> Themes { get; } = Enum.GetValues<Theme>();
 
         public Theme Theme
         {
@@ -412,10 +572,10 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public bool CustomThemeExpanded => App.Settings.Prop.Theme == Theme.Custom;
+        public static bool CustomThemeExpanded => App.Settings.Prop.Theme == Theme.Custom;
 
-        public IEnumerable<BackgroundMode> BackgroundTypes { get; } = Enum.GetValues(typeof(BackgroundMode)).Cast<BackgroundMode>();
-        public IEnumerable<BackgroundStretch> BackgroundStretches { get; } = Enum.GetValues(typeof(BackgroundStretch)).Cast<BackgroundStretch>();
+        public IEnumerable<BackgroundMode> BackgroundTypes { get; } = Enum.GetValues<BackgroundMode>();
+        public IEnumerable<BackgroundStretch> BackgroundStretches { get; } = Enum.GetValues<BackgroundStretch>();
 
         public BackgroundMode BackgroundType
         {
@@ -477,13 +637,13 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public ObservableCollection<GradientStops> GradientStops { get; } = new();
+        public ObservableCollection<GradientStops> GradientStops { get; } = [];
 
         private ICommand? _addGradientStopCommand;
         public ICommand AddGradientStopCommand => _addGradientStopCommand ??= new RelayCommand(async () => await AddGradientStop());
 
         private ICommand? _resetGradientCommand;
-        public ICommand ResetGradientCommand => _resetGradientCommand ??= new RelayCommand(() => ResetGradient());
+        public ICommand ResetGradientCommand => _resetGradientCommand ??= new RelayCommand(ResetGradient);
 
         private ICommand? _removeGradientStopCommand;
         public ICommand RemoveGradientStopCommand => _removeGradientStopCommand ??= new RelayCommand<GradientStops>(stop =>
@@ -514,14 +674,13 @@ namespace Froststrap.UI.ViewModels.Settings
             var files = await tl.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
             {
                 Title = "Select Background Image",
-                FileTypeFilter = new[] { FilePickerFileTypes.ImageAll },
+                FileTypeFilter = [FilePickerFileTypes.ImageAll],
                 AllowMultiple = false
             });
 
-            var file = files.FirstOrDefault();
-            if (file != null)
+            if (files.Count > 0)
             {
-                BackgroundImagePath = file.Path.LocalPath;
+                BackgroundImagePath = files[0].Path.LocalPath;
             }
         });
 
@@ -555,7 +714,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private async Task AddGradientStop()
         {
-            var newStop = new GradientStops { Offset = 0.5, Color = "#000000" };
+            GradientStops newStop = new() { Offset = 0.5, Color = "#000000" };
             newStop.PropertyChanged += OnGradientStopPropertyChanged;
             GradientStops.Add(newStop);
             ApplyThemeUpdate();
@@ -571,12 +730,12 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private void ResetGradient()
         {
-            var defaultStops = new List<GradientStops>
-            {
-                new GradientStops { Offset = 0.0, Color = "#4D5560" },
-                new GradientStops { Offset = 0.5, Color = "#383F47" },
-                new GradientStops { Offset = 1.0, Color = "#252A30" }
-            };
+            List<GradientStops> defaultStops =
+            [
+                new() { Offset = 0.0, Color = "#4D5560" },
+                new() { Offset = 0.5, Color = "#383F47" },
+                new() { Offset = 1.0, Color = "#252A30" }
+            ];
 
             foreach (var stop in GradientStops) stop.PropertyChanged -= OnGradientStopPropertyChanged;
             GradientStops.Clear();
@@ -598,7 +757,7 @@ namespace Froststrap.UI.ViewModels.Settings
             var file = await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
             {
                 Title = "Export Gradient",
-                FileTypeChoices = new[] { new FilePickerFileType("JSON Files") { Patterns = new[] { "*.json" } } },
+                FileTypeChoices = [new FilePickerFileType("JSON Files") { Patterns = JsonPatterns }],
                 SuggestedFileName = "Froststrap Gradient Background.json"
             });
 
@@ -607,11 +766,11 @@ namespace Froststrap.UI.ViewModels.Settings
             var data = new
             {
                 GradientStops = GradientStops.Select(s => new { s.Offset, s.Color }).ToList(),
-                GradientAngle = GradientAngle
+                GradientAngle
             };
 
             using var stream = await file.OpenWriteAsync();
-            await JsonSerializer.SerializeAsync(stream, data, new JsonSerializerOptions { WriteIndented = true });
+            await JsonSerializer.SerializeAsync(stream, data, SerializationOptions);
         }
 
         private async Task ImportGradient(TopLevel topLevel)
@@ -619,12 +778,12 @@ namespace Froststrap.UI.ViewModels.Settings
             var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
             {
                 Title = "Import Gradient",
-                FileTypeFilter = new[] { new FilePickerFileType("JSON Files") { Patterns = new[] { "*.json" } } },
+                FileTypeFilter = [new FilePickerFileType("JSON Files") { Patterns = JsonPatterns }],
                 AllowMultiple = false
             });
 
-            var file = files.FirstOrDefault();
-            if (file == null) return;
+            if (files.Count == 0) return;
+            var file = files[0];
 
             try
             {
@@ -635,11 +794,11 @@ namespace Froststrap.UI.ViewModels.Settings
                 foreach (var s in GradientStops) s.PropertyChanged -= OnGradientStopPropertyChanged;
                 GradientStops.Clear();
 
-                if (root.TryGetProperty("GradientStops", out var stopsElement))
+                if (root.TryGetProperty(nameof(GradientStops), out var stopsElement))
                 {
                     foreach (var stop in stopsElement.EnumerateArray())
                     {
-                        var newStop = new GradientStops
+                        GradientStops newStop = new()
                         {
                             Offset = stop.GetProperty("Offset").GetDouble(),
                             Color = stop.GetProperty("Color").GetString() ?? "#FFFFFF"
@@ -649,23 +808,26 @@ namespace Froststrap.UI.ViewModels.Settings
                     }
                 }
 
-                if (root.TryGetProperty("GradientAngle", out var angleElement))
+                if (root.TryGetProperty(nameof(GradientAngle), out var angleElement))
                 {
                     GradientAngle = angleElement.GetDouble();
                 }
 
                 ApplyThemeUpdate();
             }
-            catch (Exception) { }
+            catch (Exception ex)
+            {
+                App.Logger.WriteException(nameof(ImportGradient), ex);
+            }
         }
 
         private void ApplyThemeUpdate()
         {
-            App.Settings.Prop.CustomGradientStops = GradientStops.Select(x => new GradientStops
+            App.Settings.Prop.CustomGradientStops = [.. GradientStops.Select(x => new GradientStops
             {
                 Offset = x.Offset,
                 Color = x.Color
-            }).ToList();
+            })];
 
             App.Settings.Prop.GradientAngle = GradientAngle;
 
@@ -677,11 +839,12 @@ namespace Froststrap.UI.ViewModels.Settings
             foreach (var s in GradientStops) s.PropertyChanged -= OnGradientStopPropertyChanged;
             GradientStops.Clear();
 
-            if (App.Settings.Prop.CustomGradientStops != null && App.Settings.Prop.CustomGradientStops.Any())
+            var savedStops = App.Settings.Prop.CustomGradientStops;
+            if (savedStops != null && savedStops.Count > 0)
             {
-                foreach (var stop in App.Settings.Prop.CustomGradientStops)
+                foreach (var stop in savedStops)
                 {
-                    var newStop = new GradientStops
+                    GradientStops newStop = new()
                     {
                         Offset = stop.Offset,
                         Color = stop.Color
@@ -697,5 +860,34 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
         #endregion
+    }
+
+    public class CustomThemeCycleSelectionWrapper : NotifyPropertyChangedViewModel
+    {
+        private bool _isSelected;
+        private string _themeName = string.Empty;
+
+        public string ThemeName
+        {
+            get => _themeName;
+            set
+            {
+                if (_themeName != value)
+                {
+                    _themeName = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public bool IsSelected
+        {
+            get => _isSelected;
+            set
+            {
+                _isSelected = value;
+                OnPropertyChanged();
+            }
+        }
     }
 }

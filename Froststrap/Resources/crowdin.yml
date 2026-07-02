@@ -1,0 +1,12 @@
+"project_id_env": "CROWDIN_PROJECT_ID"
+"api_token_env": "CROWDIN_PAT"
+
+"base_path": "../.."
+
+"files":
+  [
+    {
+      "source": "/Froststrap/Resources/Strings.resx",
+      "translation": "/Froststrap/Resources/Strings.%android_code%.resx",
+    },
+  ]

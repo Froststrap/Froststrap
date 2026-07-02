@@ -1,10 +1,9 @@
-﻿namespace Froststrap.Exceptions
-{
-    public class InvalidChannelException : Exception
-    {
-        public HttpStatusCode? StatusCode;
+﻿using System.Net;
 
-        public InvalidChannelException(HttpStatusCode? statusCode) : base()
-            => StatusCode = statusCode;
+namespace Froststrap.Exceptions
+{
+    public class InvalidChannelException(HttpStatusCode? statusCode) : Exception
+    {
+        public HttpStatusCode? StatusCode { get; } = statusCode;
     }
 }

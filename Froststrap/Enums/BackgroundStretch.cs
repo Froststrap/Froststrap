@@ -2,16 +2,16 @@
 {
     public enum BackgroundStretch
     {
-        [EnumName(StaticName = "None")]
+        [EnumName(FromTranslation = "Enums.BackgroundStretch.None")]
         None,
 
-        [EnumName(StaticName = "Fill")]
+        [EnumName(FromTranslation = "Enums.BackgroundStretch.Fill")]
         Fill,
 
-        [EnumName(StaticName = "Uniform")]
+        [EnumName(FromTranslation = "Enums.BackgroundStretch.Uniform")]
         Uniform,
 
-        [EnumName(StaticName = "Uniform To Fill")]
+        [EnumName(FromTranslation = "Enums.BackgroundStretch.UniformToFill")]
         UniformToFill
     }
 }

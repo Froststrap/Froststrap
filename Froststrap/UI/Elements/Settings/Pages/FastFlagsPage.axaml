@@ -7,7 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:resources="using:Froststrap.Resources"
     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
-    xmlns:ic="using:FluentIcons.Avalonia.Fluent"
+    xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
     d:DesignHeight="2500"
     d:DesignWidth="1200"
     x:DataType="vm:FastFlagsViewModel"
@@ -17,7 +17,7 @@
         <StackPanel Margin="14">
 
             <controls:CardAction
-                Icon="DocumentEdit"
+                Icon="FilePenLine"
                 Header="{x:Static resources:Strings.Menu_FastFlagEditor_Title}"
                 Description="{x:Static resources:Strings.Menu_FastFlags_Editor_Description}"
                 Command="{Binding OpenFastFlagEditorCommand}"/>
@@ -152,6 +152,18 @@
                     Padding="10,5"
                     ItemsSource="{Binding QualityLevels.Keys, Mode=OneTime}"
                     SelectedItem="{Binding SelectedQualityLevel, Mode=TwoWay}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding ., Converter={StaticResource EnumNameConverter}}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </controls:OptionControl>
+
+            <controls:OptionControl
+                Header="{x:Static resources:Strings.Menu_FastFlags_Presets_TextureQuality_Title}"
+                Description="{x:Static resources:Strings.Menu_FastFlags_Presets_TextureQuality_Description}">
+                <ComboBox Width="200" Margin="5,0,0,0" Padding="10,5,10,5" ItemsSource="{Binding TextureQualities.Keys, Mode=OneTime}" SelectedItem="{Binding SelectedTextureQuality, Mode=TwoWay}">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding ., Converter={StaticResource EnumNameConverter}}" />

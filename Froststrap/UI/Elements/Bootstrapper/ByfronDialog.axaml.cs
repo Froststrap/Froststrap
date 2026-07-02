@@ -1,8 +1,7 @@
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
-using Avalonia.Threading;
-using Avalonia.Controls;
 using Froststrap.UI.Elements.Bootstrapper.Base;
 using Froststrap.UI.ViewModels.Bootstrapper;
 
@@ -12,7 +11,6 @@ namespace Froststrap.UI.Elements.Bootstrapper
     {
         private readonly ByfronDialogViewModel _viewModel;
 
-        public new Froststrap.Bootstrapper? Bootstrapper { get; set; }
         public ByfronDialog()
         {
             InitializeComponent();
@@ -21,12 +19,17 @@ namespace Froststrap.UI.Elements.Bootstrapper
             _viewModel = new ByfronDialogViewModel(this, version);
             DataContext = _viewModel;
 
-            Title = App.Settings.Prop.BootstrapperTitle;
+            SetupDialog();
 
             var iconImage = App.Settings.Prop.BootstrapperIcon.GetIcon().GetImageSource();
             if (iconImage is Bitmap bitmap)
                 Icon = new WindowIcon(bitmap);
 
+            ApplyByfronStyles();
+        }
+
+        private void ApplyByfronStyles()
+        {
             if (App.Settings.Prop.Theme.GetFinal() == Enums.Theme.Light)
             {
                 _viewModel.DialogBorder = new Thickness(1);
@@ -39,18 +42,6 @@ namespace Froststrap.UI.Elements.Bootstrapper
                 _viewModel.ByfronLogoLocation = new Bitmap(Avalonia.Platform.AssetLoader.Open(uri));
             }
         }
-
-        #region IBootstrapperDialog Methods
-        public new void ShowBootstrapper() => this.Show();
-
-        public override void CloseBootstrapper()
-        {
-            _isClosing = true;
-            Dispatcher.UIThread.Post(this.Close);
-        }
-
-        public override void ShowSuccess(string message, Action? callback) => BaseFunctions.ShowSuccess(message, callback);
-        #endregion
 
         #region UI Elements Overrides
         public override string Message
@@ -94,12 +85,12 @@ namespace Froststrap.UI.Elements.Bootstrapper
             });
         }
 
-        public override ProgressBarStyle ProgressStyle
+        public override bool ProgressIndeterminate
         {
-            get => _viewModel.ProgressIndeterminate ? ProgressBarStyle.Marquee : ProgressBarStyle.Continuous;
+            get => _viewModel.ProgressIndeterminate;
             set => RunOnUI(() =>
             {
-                _viewModel.ProgressIndeterminate = (value == ProgressBarStyle.Marquee);
+                _viewModel.ProgressIndeterminate = value;
                 _viewModel.OnPropertyChanged(nameof(_viewModel.ProgressIndeterminate));
             });
         }

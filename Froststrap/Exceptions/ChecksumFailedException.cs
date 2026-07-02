@@ -1,9 +1,6 @@
 ﻿namespace Froststrap.Exceptions
 {
-    internal class ChecksumFailedException : Exception
+    internal class ChecksumFailedException(string message) : Exception(message)
     {
-        public ChecksumFailedException(string message) : base(message) 
-        { 
-        }
     }
 }

@@ -1,4 +1,3 @@
-using Avalonia.Controls.Notifications;
 using FluentAvalonia.UI.Controls;
 
 namespace Froststrap.Models.APIs.Config
@@ -12,7 +11,7 @@ namespace Froststrap.Models.APIs.Config
         public string AlertContent { get; set; } = null!;
 
         [JsonPropertyName("alertSeverity")]
-        public InfoBarSeverity AlertSeverity { get; set; } = InfoBarSeverity.Informational;
+        public FAInfoBarSeverity AlertSeverity { get; set; } = FAInfoBarSeverity.Informational;
 
         [JsonPropertyName("packageMaps")]
         public PackageMaps PackageMaps { get; set; } = new();
@@ -21,12 +20,12 @@ namespace Froststrap.Models.APIs.Config
         public string AllowedFastFlags { get; set; } = null!;
 
         [JsonPropertyName("mappings")]
-        public Dictionary<string, string[]> Mappings { get; set; } = new Dictionary<string, string[]>();
+        public Dictionary<string, string[]> Mappings { get; set; } = [];
 
         [JsonPropertyName("dummyCookie")]
         public string Dummy { get; set; } = string.Empty;
 
         [JsonPropertyName("communityMods")]
-        public List<CommunityMod> CommunityMods { get; set; } = new List<CommunityMod>();
+        public List<CommunityMod> CommunityMods { get; set; } = [];
     }
 }

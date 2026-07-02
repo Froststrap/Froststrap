@@ -2,10 +2,10 @@
 {
     public enum PlayerListLayOut
     {
-        [EnumName(StaticName = "Square")]
+        [EnumName(FromTranslation = "Enums.PlayerListLayOut.x0")]
         x0,
 
-        [EnumName(StaticName = "Normal")]
+        [EnumName(FromTranslation = "Enums.PlayerListLayOut.x1")]
         x1
     }
 }

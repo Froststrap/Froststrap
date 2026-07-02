@@ -20,6 +20,9 @@ namespace Froststrap
 
         private readonly CancellationTokenSource _cancellationTokenSource = new();
         private bool _isDisposed = false;
+        private int _gameModeHandle = -1;
+
+        public static int? ProcessId { get; private set; }
 
         public Watcher()
         {
@@ -38,7 +41,7 @@ namespace Froststrap
 #if DEBUG
                 string path = new RobloxPlayerData().ExecutablePath;
                 if (!File.Exists(path))
-                    throw new ApplicationException("Roblox player is not been installed");
+                    throw new ApplicationException("Roblox player has not been installed");
 
                 using var gameClientProcess = Process.Start(path);
 
@@ -54,6 +57,17 @@ namespace Froststrap
 
             if (_watcherData is null)
                 throw new Exception("Watcher data is invalid");
+
+            ProcessId = _watcherData.ProcessId;
+
+            if (OperatingSystem.IsLinux() && App.Settings.Prop.StudioGameMode && (_watcherData.LaunchMode == LaunchMode.Studio || _watcherData.LaunchMode == LaunchMode.StudioAuth))
+            {
+                _ = Task.Run(async () =>
+                {
+                    await Task.Delay(1000);
+                    _gameModeHandle = await RegisterGameModeWithDbusSendAsync(_watcherData.ProcessId);
+                });
+            }
 
             if (App.Settings.Prop.EnableActivityTracking)
             {
@@ -74,13 +88,244 @@ namespace Froststrap
                 else if (_watcherData.LaunchMode == LaunchMode.Player && App.Settings.Prop.UseDiscordRichPresence)
                     PlayerRichPresence = new(ActivityWatcher);
 
+                if (_watcherData.LaunchMode == LaunchMode.Player)
+                    IntegrationWatcher = new IntegrationWatcher(ActivityWatcher, _watcherData.ProcessId);
+
                 _notifyIcon = new(this);
+            }
+
+            if (_watcherData.LaunchMode == LaunchMode.Player)
+            {
+                _ = Task.Run(async () =>
+                {
+                    await Task.Delay(20000);
+
+                    try
+                    {
+                        var processes = Process.GetProcessesByName("RobloxPlayerBeta");
+
+                        foreach (var proc in processes)
+                        {
+                            if (proc.HasExited) continue;
+
+                            if (App.Settings.Prop.SelectedProcessPriority != ProcessPriorityOption.Normal)
+                            {
+                                ProcessPriorityClass priorityClass = App.Settings.Prop.SelectedProcessPriority switch
+                                {
+                                    ProcessPriorityOption.Low => ProcessPriorityClass.Idle,
+                                    ProcessPriorityOption.BelowNormal => ProcessPriorityClass.BelowNormal,
+                                    ProcessPriorityOption.AboveNormal => ProcessPriorityClass.AboveNormal,
+                                    ProcessPriorityOption.High => ProcessPriorityClass.High,
+                                    ProcessPriorityOption.RealTime => ProcessPriorityClass.RealTime,
+                                    _ => ProcessPriorityClass.Normal
+                                };
+
+                                proc.PriorityClass = priorityClass;
+                                App.Logger.WriteLine(LOG_IDENT, $"Set priority for {proc.Id} to {priorityClass}");
+                            }
+                        }
+
+                        if (App.Settings.Prop.AutoCloseCrashHandler)
+                        {
+                            foreach (var crashProc in Process.GetProcessesByName("RobloxCrashHandler"))
+                            {
+                                try { crashProc.Kill(); } catch { }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"Post-launch task error: {ex.Message}");
+                    }
+                });
             }
         }
 
-        public void KillRobloxProcess() => CloseProcess(_watcherData!.ProcessId, true);
+        private static async Task<int> RegisterGameModeWithDbusSendAsync(int pid)
+        {
+            const string LOG_IDENT = "Watcher::RegisterGameModeWithDbusSend";
 
-        public void CloseProcess(int pid, bool force = false)
+            const string GameModePortalService = "org.freedesktop.portal.Desktop";
+            const string GameModePortalPath = "/org/freedesktop/portal/desktop";
+            const string GameModePortalInterface = "org.freedesktop.portal.GameMode";
+
+            if (pid <= 0)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Invalid PID: {pid}");
+                return -1;
+            }
+
+            try
+            {
+                var whichPsi = new ProcessStartInfo
+                {
+                    FileName = "which",
+                    Arguments = "dbus-send",
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                using var whichProcess = Process.Start(whichPsi);
+                if (whichProcess == null || !whichProcess.WaitForExit(1000) || whichProcess.ExitCode != 0)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "dbus-send not found, GameMode registration skipped");
+                    return -1;
+                }
+
+                var psi = new ProcessStartInfo
+                {
+                    FileName = "dbus-send",
+                    Arguments = $"--session --print-reply --dest={GameModePortalService} {GameModePortalPath} {GameModePortalInterface}.RegisterGame int32:{pid}",
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                using var process = Process.Start(psi);
+                if (process == null)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Failed to start dbus-send");
+                    return -1;
+                }
+
+                string output = await process.StandardOutput.ReadToEndAsync();
+                string error = await process.StandardError.ReadToEndAsync();
+                await process.WaitForExitAsync();
+
+                if (process.ExitCode != 0)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, $"dbus-send failed: {error}");
+                    return -1;
+                }
+
+                var match = Regex.Match(output, @"int32\s+(\d+)");
+                if (!match.Success)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, $"Failed to parse GameMode response: {output}");
+                    return -1;
+                }
+
+                int handle = int.Parse(match.Groups[1].Value);
+
+                if (handle < 0)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, $"GameMode registration rejected with handle {handle}");
+                    return -1;
+                }
+
+                App.Logger.WriteLine(LOG_IDENT, $"Registered with GameMode via dbus-send, handle: {handle}");
+                return handle;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Failed to register with GameMode: {ex.Message}");
+                return -1;
+            }
+        }
+
+        private static async Task UnregisterGameModeWithDbusSendAsync(int handle)
+        {
+            const string LOG_IDENT = "Watcher::UnregisterGameModeWithDbusSend";
+
+            const string GameModePortalService = "org.freedesktop.portal.Desktop";
+            const string GameModePortalPath = "/org/freedesktop/portal/desktop";
+            const string GameModePortalInterface = "org.freedesktop.portal.GameMode";
+
+            if (handle <= 0)
+                return;
+
+            try
+            {
+                var psi = new ProcessStartInfo
+                {
+                    FileName = "dbus-send",
+                    Arguments = $"--session --print-reply --dest={GameModePortalService} {GameModePortalPath} {GameModePortalInterface}.UnregisterGame int32:{handle}",
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                using var process = Process.Start(psi);
+                if (process != null)
+                {
+                    await process.WaitForExitAsync();
+                    if (process.ExitCode == 0)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"Unregistered from GameMode, handle: {handle}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Failed to unregister from GameMode: {ex.Message}");
+            }
+        }
+
+        public void KillRobloxProcess()
+        {
+            int pid = _watcherData?.ProcessId ?? 0;
+            if (pid > 0)
+            {
+                CloseProcess(pid, true);
+                return;
+            }
+
+            const string LOG_IDENT = "Watcher::KillRobloxProcess";
+            App.Logger.WriteLine(LOG_IDENT, "No PID available, killing Roblox processes by name");
+
+            string[] processNames;
+            var mode = _watcherData?.LaunchMode ?? LaunchMode.None;
+
+            if (mode == LaunchMode.Player)
+            {
+                if (OperatingSystem.IsMacOS())
+                    processNames = ["RobloxPlayer"];
+                else if (OperatingSystem.IsWindows())
+                    processNames = ["RobloxPlayerBeta"];
+                else
+                    processNames = ["sober"];
+            }
+            else if (mode == LaunchMode.Studio || mode == LaunchMode.StudioAuth)
+            {
+                if (OperatingSystem.IsMacOS())
+                    processNames = ["RobloxStudio"];
+                else if (OperatingSystem.IsWindows())
+                    processNames = ["RobloxStudioBeta"];
+                else
+                    processNames = ["RobloxStudioBeta"];
+            }
+            else
+            {
+                if (OperatingSystem.IsMacOS())
+                    processNames = ["RobloxPlayer", "RobloxStudio"];
+                else if (OperatingSystem.IsWindows())
+                    processNames = ["RobloxPlayerBeta", "RobloxStudioBeta"];
+                else
+                    processNames = ["sober", "RobloxStudioBeta"];
+            }
+
+            foreach (var name in processNames)
+            {
+                foreach (var proc in Process.GetProcessesByName(name))
+                {
+                    try
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"Killing {proc.ProcessName} (PID {proc.Id})");
+                        proc.Kill();
+                    }
+                    catch (Exception ex)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"Failed to kill {proc.ProcessName} (PID {proc.Id})");
+                        App.Logger.WriteException(LOG_IDENT, ex);
+                    }
+                }
+            }
+        }
+
+        public static void CloseProcess(int pid, bool force = false)
         {
             const string LOG_IDENT = "Watcher::CloseProcess";
 
@@ -120,12 +365,29 @@ namespace Froststrap
                 while (!_cancellationTokenSource.Token.IsCancellationRequested)
                 {
                     var processExists = Utilities.GetProcessesSafe().Any(x => x.Id == _watcherData.ProcessId);
+
+                    if (!processExists && _watcherData.LaunchMode == LaunchMode.Player)
+                    {
+                        if (OperatingSystem.IsLinux())
+                            processExists = Utilities.GetProcessesSafe().Any(x => x.ProcessName == "sober");
+                        else if (OperatingSystem.IsMacOS())
+                            processExists = Utilities.GetProcessesSafe().Any(x => x.ProcessName == "RobloxPlayer");
+                    }
+
+                    if (!processExists && (_watcherData.LaunchMode == LaunchMode.Studio || _watcherData.LaunchMode == LaunchMode.StudioAuth) && OperatingSystem.IsMacOS())
+                        processExists = Utilities.GetProcessesSafe().Any(x => x.ProcessName == "RobloxStudio");
+
                     if (!processExists) break;
 
                     await Task.Delay(1000, _cancellationTokenSource.Token);
                 }
             }
             catch (OperationCanceledException) { return; }
+
+            if (_gameModeHandle > 0)
+            {
+                await UnregisterGameModeWithDbusSendAsync(_gameModeHandle);
+            }
 
             if (_watcherData.AutoclosePids is not null)
             {
@@ -146,10 +408,10 @@ namespace Froststrap
 
             _cancellationTokenSource.Cancel();
 
-            if (App.Settings.Prop.MultiInstanceLaunching)
+            if (_gameModeHandle > 0)
             {
-                App.Logger.WriteLine("Watcher::Dispose", "Starting multi-instance cleanup");
-                App.Bootstrapper?.CleanupMultiInstanceResources();
+                _ = UnregisterGameModeWithDbusSendAsync(_gameModeHandle);
+                _gameModeHandle = -1;
             }
 
             IntegrationWatcher?.Dispose();

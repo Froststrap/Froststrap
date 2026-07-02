@@ -1,17 +1,13 @@
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media.Imaging;
-using Avalonia.Threading;
 using Froststrap.UI.Elements.Bootstrapper.Base;
 using Froststrap.UI.ViewModels.Bootstrapper;
-using System;
 
 namespace Froststrap.UI.Elements.Bootstrapper
 {
     public partial class ClassicFluentDialog : AvaloniaDialogBase
     {
         private readonly ClassicFluentDialogViewModel _viewModel;
-        public new Froststrap.Bootstrapper? Bootstrapper { get; set; }
 
         public ClassicFluentDialog()
         {
@@ -20,24 +16,12 @@ namespace Froststrap.UI.Elements.Bootstrapper
             _viewModel = new ClassicFluentDialogViewModel(this);
             DataContext = _viewModel;
 
-            Title = App.Settings.Prop.BootstrapperTitle;
+            SetupDialog();
 
             var iconImage = App.Settings.Prop.BootstrapperIcon.GetIcon().GetImageSource();
             if (iconImage is Bitmap bitmap)
                 Icon = new WindowIcon(bitmap);
         }
-
-        #region IBootstrapperDialog Methods
-        public new void ShowBootstrapper() => this.Show();
-
-        public override void CloseBootstrapper()
-        {
-            _isClosing = true;
-            Dispatcher.UIThread.Post(this.Close);
-        }
-
-        public override void ShowSuccess(string message, Action? callback) => BaseFunctions.ShowSuccess(message, callback);
-        #endregion
 
         #region UI Elements Overrides
         public override string Message
@@ -45,7 +29,6 @@ namespace Froststrap.UI.Elements.Bootstrapper
             get => _viewModel.Message;
             set => RunOnUI(() =>
             {
-                _viewModel.Message = value;
                 _viewModel.OnPropertyChanged(nameof(_viewModel.Message));
             });
         }
@@ -81,12 +64,12 @@ namespace Froststrap.UI.Elements.Bootstrapper
             });
         }
 
-        public override ProgressBarStyle ProgressStyle
+        public override bool ProgressIndeterminate
         {
-            get => _viewModel.ProgressIndeterminate ? ProgressBarStyle.Marquee : ProgressBarStyle.Continuous;
+            get => _viewModel.ProgressIndeterminate;
             set => RunOnUI(() =>
             {
-                _viewModel.ProgressIndeterminate = (value == ProgressBarStyle.Marquee);
+                _viewModel.ProgressIndeterminate = value;
                 _viewModel.OnPropertyChanged(nameof(_viewModel.ProgressIndeterminate));
             });
         }

@@ -13,4 +13,39 @@ public partial class AppearancePage : UserControl
 
         App.FrostRPC?.SetPage("Appearance");
     }
+
+    private bool _isWindowsBackdropInitialized = false;
+
+    private async void WindowsBackdropChangeSelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (!_isWindowsBackdropInitialized)
+        {
+            _isWindowsBackdropInitialized = true;
+            return;
+        }
+
+        if (e.AddedItems.Count == 0)
+            return;
+
+        var result = await Frontend.ShowMessageBox(
+            "Some of these options require an app restart, Do you want to restart now?",
+            MessageBoxImage.Information,
+            MessageBoxButton.YesNo
+        );
+
+        if (result == MessageBoxResult.Yes)
+        {
+            if (this.VisualRoot is MainWindow mainWindow &&
+                mainWindow.DataContext is MainWindowViewModel mainWindowViewModel)
+            {
+                mainWindowViewModel.SaveSettings();
+            }
+
+            Process.Start(Paths.Process, "-menu");
+            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                desktop.Shutdown();
+            }
+        }
+    }
 }

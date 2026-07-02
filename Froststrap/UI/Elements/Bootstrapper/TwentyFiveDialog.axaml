@@ -1,31 +1,31 @@
-<Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:Froststrap.UI.ViewModels.Bootstrapper"
-        xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
-        xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
-        x:Class="Froststrap.UI.Elements.Bootstrapper.TwentyFiveDialog"
-        x:DataType="vm:TwentyFiveDialogViewModel"
-        Width="576" Height="482"
-        CanResize="False"
-        Title="Froststrap"
-        SystemDecorations="None"
-        WindowStartupLocation="CenterScreen"
-        ExtendClientAreaToDecorationsHint="True"
-        Background="#000000">
+<base:AvaloniaDialogBase xmlns="https://github.com/avaloniaui"
+                         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                         xmlns:vm="using:Froststrap.UI.ViewModels.Bootstrapper"
+                         xmlns:base="clr-namespace:Froststrap.UI.Elements.Bootstrapper.Base"
+                         xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+                         x:Class="Froststrap.UI.Elements.Bootstrapper.TwentyFiveDialog"
+                         x:DataType="vm:TwentyFiveDialogViewModel"
+                         Width="576" Height="482"
+                         CanResize="False"
+                         Title="Froststrap"
+                         WindowDecorations="None"
+                         WindowStartupLocation="CenterScreen"
+                         ExtendClientAreaToDecorationsHint="True"
+                         Background="#000000">
 
-	<Grid>
+    <Grid>
         <controls:TitleBar VerticalAlignment="Top" Title="" Icon="{x:Null}" ShowClose="False" ShowMaximize="False" ShowMinimize="False" />
-		<Image Source="avares://Froststrap/Resources/BootstrapperStyles/TwentyFiveDialog/PlayerLogo.png"
+        <Image Source="avares://Froststrap/Resources/BootstrapperStyles/TwentyFiveDialog/PlayerLogo.png"
                Height="254" Width="254"
                HorizontalAlignment="Center"
                VerticalAlignment="Top"
                Margin="0,60,0,0" />
 
-		<Grid VerticalAlignment="Bottom"
+        <Grid VerticalAlignment="Bottom"
               Background="#191A1F"
               Height="91">
 
-			<ProgressBar VerticalAlignment="Top"
+            <ProgressBar VerticalAlignment="Top"
                          Height="6"
                          Foreground="White"
                          Background="Transparent"
@@ -34,13 +34,13 @@
                          Maximum="{Binding ProgressMaximum}"
                          Value="{Binding ProgressValue}" />
 
-			<Image Source="avares://Froststrap/Resources/BootstrapperStyles/TwentyFiveDialog/Roblox.png"
+            <Image Source="avares://Froststrap/Resources/BootstrapperStyles/TwentyFiveDialog/Roblox.png"
                    Height="32" Width="103"
                    HorizontalAlignment="Left"
                    VerticalAlignment="Center"
                    Margin="30,0,0,0" />
 
-			<Button Content="Cancel"
+            <Button Content="{Binding CancelButtonText}"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center"
                     Margin="0,0,32,0"
@@ -48,6 +48,6 @@
                     CornerRadius="0"
                     Command="{Binding CancelInstallCommand}"
                     IsEnabled="{Binding CancelEnabled}" />
-		</Grid>
-	</Grid>
-</Window>
+        </Grid>
+    </Grid>
+</base:AvaloniaDialogBase>

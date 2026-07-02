@@ -29,12 +29,11 @@
                 var payload = new StringContent(JsonSerializer.Serialize(currentPayloadData));
 
                 Uri apiUrl = UrlBuilder.BuildApiUrl("thumbnails", "v1/batch");
-                var json = await App.HttpClient.PostFromJsonWithRetriesAsync<ThumbnailBatchResponse>(apiUrl, payload, 3, token);
 
-                if (json == null)
-                    throw new InvalidHTTPResponseException("Deserialised ThumbnailBatchResponse is null");
+                var json = await App.HttpClient.PostFromJsonWithRetriesAsync<ThumbnailBatchResponse>(apiUrl, payload, 3, token)
+                           ?? throw new InvalidHTTPResponseException("Deserialised ThumbnailBatchResponse is null");
 
-                var completedIndices = new List<int>();
+                List<int> completedIndices = [];
 
                 foreach (var item in json.Data)
                 {
@@ -73,7 +72,7 @@
 
         public static async Task<string?> GetThumbnailUrlAsync(ThumbnailRequest request, CancellationToken token)
         {
-            var results = await GetThumbnailUrlsAsync(new List<ThumbnailRequest> { request }, token);
+            var results = await GetThumbnailUrlsAsync([request], token);
             return results.FirstOrDefault();
         }
     }

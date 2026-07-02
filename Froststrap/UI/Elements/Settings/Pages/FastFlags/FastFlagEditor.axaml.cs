@@ -2,26 +2,49 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
+using Avalonia.Input.Platform;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
-using FluentIcons.Common;
+using Avalonia.Threading;
+using Avalonia.VisualTree;
 using Froststrap.UI.Elements.Dialogs;
+using LucideAvalonia;
+using LucideAvalonia.Enum;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
 {
-    public partial class FastFlagEditor : UserControl
+    public partial class FastFlagEditor : UserControl, INotifyPropertyChanged
     {
-        private readonly ObservableCollection<FastFlag> _fastFlagList = new();
+        private readonly ObservableCollection<FastFlag> _fastFlagList = [];
         private bool _showPresets = true;
         private string _searchFilter = string.Empty;
-        private string _lastSearch = string.Empty;
-        private DateTime _lastSearchTime = DateTime.MinValue;
-        private const int _debounceDelay = 70;
         private CancellationTokenSource? _searchCancellationTokenSource;
+
+        private static readonly JsonSerializerOptions _jsonOptions = new()
+        {
+            ReadCommentHandling = JsonCommentHandling.Skip,
+            AllowTrailingCommas = true
+        };
 
         private DataGrid? _dataGrid;
         private TextBox? _searchTextBox;
+
+        public new event PropertyChangedEventHandler? PropertyChanged;
+
+        protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+        protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value))
+                return false;
+            field = value;
+            OnPropertyChanged(propertyName);
+            return true;
+        }
 
         public FastFlagEditor()
         {
@@ -57,25 +80,53 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
                 var entry = new FastFlag
                 {
                     Name = pair.Key,
-                    Value = pair.Value?.ToString() ?? string.Empty,
-                    Preset = presetFlags.Contains(pair.Key) ? FluentIcons.Common.Symbol.CheckmarkCircle : FluentIcons.Common.Symbol.CircleOff
+                    Value = pair.Value?.ToString() ?? "",
+                    Preset = presetFlags.Contains(pair.Key)
+                        ? LucideIconNames.CircleCheck
+                        : LucideIconNames.CircleX
                 };
 
                 _fastFlagList.Add(entry);
             }
 
-            if (_dataGrid.ItemsSource is null)
-                _dataGrid.ItemsSource = _fastFlagList;
+            _dataGrid.ItemsSource ??= _fastFlagList;
 
-            if (!(_fastFlagList.Any() || App.FastFlags.Prop.Any()))
-                EmptyTextBlock.IsVisible = true;
-            else
-                EmptyTextBlock.IsVisible = false;
+            EmptyTextBlock.IsVisible = _fastFlagList.Count == 0 && App.FastFlags.Prop.Count == 0;
 
-            if (DeleteSelectedButton != null)
-                DeleteSelectedButton.IsEnabled = false;
+            DeleteSelectedButton?.IsEnabled = false;
 
             UpdateTotalFlagsCount();
+
+            // Update icons after data is loaded
+            Dispatcher.UIThread.Post(UpdatePresetIcons, DispatcherPriority.Loaded);
+        }
+
+        private void UpdatePresetIcons()
+        {
+            if (_dataGrid is null) return;
+
+            // Find all rows in the DataGrid
+            foreach (var row in _dataGrid.GetVisualDescendants().OfType<DataGridRow>())
+            {
+                if (row.DataContext is FastFlag flag)
+                {
+                    // Find the Lucide icon in this row
+                    var icon = row.GetVisualDescendants().OfType<Lucide>().FirstOrDefault();
+                    if (icon is not null)
+                    {
+                        // Set the icon properties
+                        icon.Width = 20;
+                        icon.Height = 20;
+                        icon.Icon = flag.Preset;
+                        icon.StrokeBrush = Foreground;
+
+                        // Force repaint
+                        var brush = icon.StrokeBrush;
+                        icon.StrokeBrush = null;
+                        icon.StrokeBrush = brush;
+                    }
+                }
+            }
         }
 
         protected override void OnKeyDown(KeyEventArgs e)
@@ -104,7 +155,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
         public void UpdateTotalFlagsCount()
         {
             int count = _fastFlagList.Count;
-            TotalFlagsTextBlock.Text = $"Total Flags: {count}";
+            TotalFlagsTextBlock.Text = $"{Strings.Menu_FastFlagEditor_TotalFlags}: {count}";
         }
 
         private async void AddButton_Click(object sender, RoutedEventArgs e)
@@ -189,7 +240,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
             if (!base64Flags.Contains(name))
             {
                 var result = await Frontend.ShowMessageBox(
-                    $"'{name}' is not in the Roblox allowlist and won't work.\n\nRemove it now?",
+                    string.Format(Strings.Menu_FastFlagEditor_NotInWhiteList, name),
                     MessageBoxImage.Warning,
                     MessageBoxButton.YesNo);
 
@@ -214,6 +265,9 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
             }
 
             UpdateTotalFlagsCount();
+
+            // Force a full refresh to update presets
+            ReloadList();
         }
 
         private async Task ImportJSON(string json)
@@ -225,19 +279,13 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
             if (!json.EndsWith('}'))
             {
                 int lastIndex = json.LastIndexOf('}');
-                json = lastIndex == -1 ? json + '}' : json.Substring(0, lastIndex + 1);
+                json = lastIndex == -1 ? json + '}' : json[..(lastIndex + 1)];
             }
 
             try
             {
-                var options = new JsonSerializerOptions
-                {
-                    ReadCommentHandling = JsonCommentHandling.Skip,
-                    AllowTrailingCommas = true
-                };
-
-                list = JsonSerializer.Deserialize<Dictionary<string, object>>(json, options);
-                if (list is null) throw new Exception("JSON returned null");
+                list = JsonSerializer.Deserialize<Dictionary<string, object>>(json, _jsonOptions);
+                _ = list ?? throw new Exception("JSON returned null");
             }
             catch (Exception ex)
             {
@@ -256,7 +304,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
             var conflictingFlags = App.FastFlags.Prop.Where(x => list.ContainsKey(x.Key)).Select(x => x.Key).ToList();
             bool overwriteConflicting = false;
 
-            if (conflictingFlags.Any())
+            if (conflictingFlags.Count > 0)
             {
                 string message = string.Format(
                     Strings.Menu_FastFlagEditor_ConflictingImport,
@@ -287,10 +335,10 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
             var base64Flags = DecodeBase64Flags(remoteManager.Prop.AllowedFastFlags);
 
             var invalidFlags = list.Keys.Where(flag => !base64Flags.Contains(flag)).ToList();
-            if (invalidFlags.Any())
+            if (invalidFlags.Count > 0)
             {
                 var result = await Frontend.ShowMessageBox(
-                    $"{invalidFlags.Count} imported flags are not in the allowlist and won't work.\n\nRemove them now?",
+                    string.Format(Strings.Menu_FastFlagEditor_NotInWhiteList, invalidFlags.Count),
                     MessageBoxImage.Warning,
                     MessageBoxButton.YesNo);
 
@@ -302,6 +350,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
             }
 
             ClearSearch();
+            ReloadList();
         }
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
@@ -328,15 +377,15 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
 
         private async void DeleteAllButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!(_fastFlagList.Any() || App.FastFlags.Prop.Any()))
+            if (!(_fastFlagList.Any() || App.FastFlags.Prop.Count > 0))
             {
                 await Frontend.ShowMessageBox(
-                    "There are no flags to delete.",
+                    Strings.Menu_FastFlagEditor_NoFlagDelete,
                     MessageBoxImage.Information);
                 return;
             }
 
-            if (await Frontend.ShowMessageBox("Are you sure you want to delete all flags?",MessageBoxImage.Warning,
+            if (await Frontend.ShowMessageBox(Strings.Menu_FastFlagEditor_ConfirmDeleteAll, MessageBoxImage.Warning,
                 MessageBoxButton.YesNo) != MessageBoxResult.Yes)
             {
                 return;
@@ -385,7 +434,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
             SaveJSONToFile(json);
         }
 
-        private string BuildFormattedJSON()
+        private static string BuildFormattedJSON()
         {
             var flags = App.FastFlags.Prop;
 
@@ -443,11 +492,11 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
                     Title = "ESave JSON or TXT File",
                     SuggestedFileName = "FroststrapExport.json",
                     DefaultExtension = "json",
-                    FileTypeChoices = new[]
-                    {
-                        new FilePickerFileType("JSON Files") { Patterns = new[] { "*.json" } },
-                        new FilePickerFileType("TXT Files") { Patterns = new[] { "*.txt" } }
-                    }
+                    FileTypeChoices =
+                    [
+                        new FilePickerFileType("JSON Files") { Patterns = ["*.json"] },
+                        new FilePickerFileType("TXT Files") { Patterns = ["*.txt"] }
+                    ]
                 });
 
                 if (file is not null)
@@ -457,7 +506,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
                     await writer.WriteAsync(json);
 
                     await Frontend.ShowMessageBox(
-                        "FastFlags exported successfully.",
+                        Strings.Menu_FastFlagEditor_Exported,
                         MessageBoxImage.Information);
                 }
             }
@@ -535,12 +584,12 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
                 int totalChanges = invalidRemoved.Count;
                 if (totalChanges == 0)
                 {
-                    await Frontend.ShowMessageBox("No invalid FastFlags detected.", MessageBoxImage.Information);
+                    await Frontend.ShowMessageBox(Strings.Menu_FastFlagEditor_NoInvalid, MessageBoxImage.Information);
                     return;
                 }
 
                 await Frontend.ShowMessageBox(
-                    $"{totalChanges} have been removed due to not being in allow list.",
+                    string.Format(Strings.Menu_FastFlagEditor_HaveBeenRemoved, totalChanges),
                     MessageBoxImage.Information);
 
                 ReloadList();
@@ -631,7 +680,10 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
                     ClearSearch();
 
                 var presetFlags = FastFlagManager.PresetFlags.Values;
-                entry.Preset = presetFlags.Contains(newText) ? FluentIcons.Common.Symbol.CheckmarkCircle : FluentIcons.Common.Symbol.CircleOff;
+                entry.Preset = presetFlags.Contains(newText) ? LucideIconNames.CircleCheck : LucideIconNames.CircleX;
+
+                // Force a full refresh to update presets
+                ReloadList();
             }
             else if (header == Strings.Common_Value)
             {
@@ -705,6 +757,52 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
             if (string.IsNullOrEmpty(bestMatch))
             {
                 SuggestionKeywordRun.Text = bestMatch;
+            }
+        }
+
+        private void OnDragEnter(object? sender, DragEventArgs e)
+        {
+            if (e.DataTransfer.Contains(DataFormat.File))
+                DragOverlay.IsVisible = true;
+        }
+
+        private void OnDragLeave(object? sender, DragEventArgs e)
+        {
+            DragOverlay.IsVisible = false;
+        }
+
+        private async void OnDrop(object? sender, DragEventArgs e)
+        {
+            DragOverlay.IsVisible = false;
+
+            var files = e.DataTransfer.TryGetFiles();
+            if (files == null) return;
+
+            var supportedExtensions = new[] { ".json", ".txt" };
+            var filePaths = files
+                .Select(f => f.TryGetLocalPath())
+                .Where(p => !string.IsNullOrEmpty(p))
+                .Select(p => p!)
+                .Where(p => supportedExtensions.Contains(Path.GetExtension(p).ToLowerInvariant()))
+                .ToList();
+
+            if (filePaths.Count == 0)
+            {
+                await Frontend.ShowMessageBox(Strings.Menu_FastFlagEditor_FileExtensionWarning, MessageBoxImage.Information);
+                return;
+            }
+
+            foreach (var path in filePaths)
+            {
+                try
+                {
+                    string content = await File.ReadAllTextAsync(path);
+                    await ImportJSON(content);
+                }
+                catch (Exception ex)
+                {
+                    await Frontend.ShowMessageBox($"Failed to read/import '{Path.GetFileName(path!)}': {ex.Message}", MessageBoxImage.Error);
+                }
             }
         }
     }

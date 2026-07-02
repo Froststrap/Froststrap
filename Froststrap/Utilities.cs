@@ -1,13 +1,14 @@
-﻿using Froststrap;
+﻿using Avalonia.Controls;
 using Froststrap.AppData;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
+using Froststrap.Utility;
 
 namespace Froststrap
 {
-    static class Utilities
+    static partial class Utilities
     {
-        public static void ShellExecute(string website)
+        public static void ShellExecute(string path, bool select = false)
         {
             try
             {
@@ -15,30 +16,32 @@ namespace Froststrap
                 {
                     Process.Start(new ProcessStartInfo
                     {
-                        FileName = website,
+                        FileName = select ? "explorer.exe" : path,
+                        Arguments = select ? $"/select,\"{path}\"" : "",
                         UseShellExecute = true
                     });
                 }
                 else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                 {
-                    Process.Start("xdg-open", website);
+                    string target = select ? Path.GetDirectoryName(path) ?? path : path;
+                    Process.Start("xdg-open", target);
                 }
                 else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
                 {
-                    Process.Start("open", website);
+                    string args = select ? $"-R \"{path}\"" : $"\"{path}\"";
+                    Process.Start("open", args);
                 }
             }
             catch (Win32Exception ex)
             {
                 if (ex.NativeErrorCode != (int)ErrorCode.CO_E_APPNOTFOUND)
                     throw;
-
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
                     Process.Start(new ProcessStartInfo
                     {
                         FileName = "rundll32.exe",
-                        Arguments = $"shell32,OpenAs_RunDLL {website}"
+                        Arguments = $"shell32,OpenAs_RunDLL {path}"
                     });
                 }
             }
@@ -49,7 +52,7 @@ namespace Froststrap
             if (version.StartsWith('v'))
                 version = version[1..];
 
-            int idx = version.IndexOf('+'); // commit info
+            int idx = version.IndexOf('+');
             if (idx != -1)
                 version = version[..idx];
 
@@ -61,7 +64,7 @@ namespace Froststrap
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="versionStr1"></param>
         /// <param name="versionStr2"></param>
@@ -223,7 +226,7 @@ namespace Froststrap
             {
                 App.Logger.WriteLine(LOG_IDENT, $"Unable to fetch processes!");
                 App.Logger.WriteException(LOG_IDENT, ex);
-                return Array.Empty<Process>(); // can we retry?
+                return []; // can we retry?
             }
         }
 
@@ -244,36 +247,60 @@ namespace Froststrap
             }
         }
 
-        public static bool DoesEventExist(string name)
+        public static FileStream? _lockFileStream;
+        public static bool IsInstanceRunningFileLock(string mutexName)
         {
-#if WINDOWS
+            string lockFilePath = Path.Combine(Paths.Base, $"{mutexName}.lock");
+
             try
             {
-                using (EventWaitHandle.OpenExisting(name)) { }
-                return true;
+                _lockFileStream = new FileStream(
+                    lockFilePath,
+                    FileMode.OpenOrCreate,
+                    FileAccess.ReadWrite,
+                    FileShare.None,
+                    bufferSize: 1,
+                    FileOptions.DeleteOnClose);
+
+                return false;
             }
-            catch (UnauthorizedAccessException)
+            catch (IOException)
             {
                 return true;
             }
-#else
-            // Not supported on operating systems other than windows
-            return false;
-#endif
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine("Bootstrapper::Lock", $"Failed to handle lock file: {ex.Message}");
+                return false;
+            }
         }
-
 
         public static bool IsRobloxRunning()
         {
             Process[] processes = GetProcessesSafe();
             string processName = Path.GetFileNameWithoutExtension(App.RobloxPlayerAppName);
 
-            return processes.Any(x => x.ProcessName == processName);
+            if (OperatingSystem.IsLinux())
+                return processes.Any(x => x.ProcessName == "sober");
+            else
+                return processes.Any(x => x.ProcessName == processName);
+        }
+
+        public static void KillSober()
+        {
+            Process[] processes = GetProcessesSafe();
+            foreach (var p in processes)
+            {
+                if (p.ProcessName == "sober")
+                {
+                    try { p.Kill(); p.WaitForExit(1000); } catch { }
+                }
+            }
         }
 
         public static void KillBackgroundUpdater()
         {
-            using EventWaitHandle handle = new EventWaitHandle(false, EventResetMode.AutoReset, "Froststrap-BackgroundUpdaterKillEvent");
+            using EventWaitHandle handle = new(false, EventResetMode.AutoReset, "Froststrap-BackgroundUpdaterKillEvent");
             handle.Set();
         }
     }

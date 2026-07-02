@@ -2,19 +2,11 @@
 {
     // https://gist.github.com/dfederm/35c729f6218834b764fa04c219181e4e
 
-    public sealed class AsyncMutex : IAsyncDisposable
+    public sealed class AsyncMutex(bool initiallyOwned, string name) : IAsyncDisposable
     {
-        private readonly bool _initiallyOwned;
-        private readonly string _name;
         private Task? _mutexTask;
         private ManualResetEventSlim? _releaseEvent;
         private CancellationTokenSource? _cancellationTokenSource;
-
-        public AsyncMutex(bool initiallyOwned, string name)
-        {
-            _initiallyOwned = initiallyOwned;
-            _name = name;
-        }
 
         public Task AcquireAsync(CancellationToken cancellationToken)
         {
@@ -26,21 +18,35 @@
             _cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 
             // Putting all mutex manipulation in its own task as it doesn't work in async contexts
-            // Note: this task should not throw.
             _mutexTask = Task.Factory.StartNew(
                 state =>
                 {
                     try
                     {
-                        CancellationToken cancellationToken = _cancellationTokenSource.Token;
-                        using var mutex = new Mutex(_initiallyOwned, _name);
+                        CancellationToken ct = _cancellationTokenSource.Token;
+                        using var mutex = new Mutex(initiallyOwned, name);
+
                         try
                         {
                             // Wait for either the mutex to be acquired, or cancellation
-                            if (WaitHandle.WaitAny(new[] { mutex, cancellationToken.WaitHandle }) != 0)
+                            if (OperatingSystem.IsWindows())
                             {
-                                taskCompletionSource.SetCanceled(cancellationToken);
-                                return;
+                                if (WaitHandle.WaitAny([mutex, ct.WaitHandle]) != 0)
+                                {
+                                    taskCompletionSource.SetCanceled(ct);
+                                    return;
+                                }
+                            }
+                            else
+                            {
+                                while (!mutex.WaitOne(100))
+                                {
+                                    if (ct.IsCancellationRequested)
+                                    {
+                                        taskCompletionSource.SetCanceled(ct);
+                                        return;
+                                    }
+                                }
                             }
                         }
                         catch (AbandonedMutexException)
@@ -57,7 +63,7 @@
                     }
                     catch (OperationCanceledException)
                     {
-                        taskCompletionSource.TrySetCanceled(cancellationToken);
+                        taskCompletionSource.TrySetCanceled();
                     }
                     catch (Exception ex)
                     {

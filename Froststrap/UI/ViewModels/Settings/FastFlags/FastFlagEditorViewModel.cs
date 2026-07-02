@@ -4,7 +4,7 @@ using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Settings.FastFlags
 {
-    public class FastFlagEditorViewModel : ObservableObject
+    public class FastFlagEditorViewModel
     {
         private readonly MainWindowViewModel _mainWindowViewModel;
         public ICommand BackCommand { get; }
@@ -17,10 +17,7 @@ namespace Froststrap.UI.ViewModels.Settings.FastFlags
 
             BackCommand = new RelayCommand(() =>
             {
-                if (_mainWindowViewModel != null)
-                {
-                    _mainWindowViewModel.NavigateToFastFlagsCommand.Execute(null);
-                }
+                _mainWindowViewModel?.NavigateToFastFlagsCommand.Execute(null);
             });
         }
     }

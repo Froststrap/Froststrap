@@ -46,58 +46,58 @@
             </Grid>
 
             <WrapPanel HorizontalAlignment="Center" Orientation="Horizontal">
-                <Button Margin="0,0,8,8" 
+                <Button Margin="0,0,8,8"
                         Content="{x:Static resources:Strings.Menu_About_GithubRepository}"
                         Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
                         CommandParameter="https://github.com/Froststrap/Froststrap" />
-                
-                <Button Margin="0,0,8,8" 
+
+                <Button Margin="0,0,8,8"
                         Content="{x:Static resources:Strings.Menu_About_HelpInformation}"
                         Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
                         CommandParameter="https://github.com/bloxstraplabs/bloxstrap/wiki" />
-                
-                <Button Margin="0,0,8,8" 
+
+                <Button Margin="0,0,8,8"
                         Content="{x:Static resources:Strings.Menu_About_ReportIssue}"
                         Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
                         CommandParameter="https://github.com/Froststrap/Froststrap/issues" />
-                
-                <Button Margin="0,0,0,8" 
+
+                <Button Margin="0,0,0,8"
                         Content="{x:Static resources:Strings.Menu_About_DiscordServer}"
                         Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
                         CommandParameter="https://discord.gg/KdR9vpRcUN" />
             </WrapPanel>
 
             <StackPanel IsVisible="{Binding BuildInformationVisibility}">
-                <TextBlock Text="Build Information" FontWeight="Bold" FontSize="20" Margin="0,16,0,0" />
+                <TextBlock Text="{x:Static resources:Strings.Menu_About_BuildInfo}" FontWeight="Bold" FontSize="20" Margin="0,16,0,0" />
 
                 <Grid Margin="0,8,0,0" ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto">
-                    <TextBlock Grid.Row="0" Grid.Column="0" Margin="0,4,16,4" FontSize="14" Text="Timestamp" />
+                    <TextBlock Grid.Row="0" Grid.Column="0" Margin="0,4,16,4" FontSize="14" Text="{x:Static resources:Strings.Common_Timestamp}" />
                     <TextBlock Grid.Row="0" Grid.Column="1" VerticalAlignment="Center"
                                Text="{Binding BuildTimestamp}" Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
 
-                    <TextBlock Grid.Row="1" Grid.Column="0" Margin="0,4,16,4" FontSize="14" Text="Version" />
+                    <TextBlock Grid.Row="1" Grid.Column="0" Margin="0,4,16,4" FontSize="14" Text="{x:Static resources:Strings.Common_Version}" />
                     <TextBlock Grid.Row="1" Grid.Column="1" VerticalAlignment="Center"
                                Text="{Binding Version}" Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
 
-                    <TextBlock Grid.Row="2" Grid.Column="0" Margin="0,4,16,4" FontSize="14" Text="Commit Hash"
+                    <TextBlock Grid.Row="2" Grid.Column="0" Margin="0,4,16,4" FontSize="14" Text="{x:Static resources:Strings.Menu_About_CommitHash}"
                                IsVisible="{Binding BuildCommitVisibility}" />
-                    
-                    <Button Grid.Row="2" Grid.Column="1" 
+
+                    <Button Grid.Row="2" Grid.Column="1"
                             IsVisible="{Binding BuildCommitVisibility}"
                             Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
                             CommandParameter="{Binding BuildCommitHashUrl}"
                             Padding="0"
                             Background="Transparent"
                             BorderThickness="0">
-                                <TextBlock Text="{Binding BuildMetadata.CommitHash}"
-                                       TextDecorations="Underline"
-                                       Foreground="{DynamicResource SystemAccentColor}" />
-                        </Button>
+                        <TextBlock Text="{Binding BuildMetadata.CommitHash}"
+                                   TextDecorations="Underline"
+                                   Foreground="{DynamicResource SystemAccentColor}" />
+                    </Button>
 
-                    <TextBlock Grid.Row="3" Grid.Column="0" Margin="0,4,16,4" FontSize="14" Text="Commit Ref"
+                    <TextBlock Grid.Row="3" Grid.Column="0" Margin="0,4,16,4" FontSize="14" Text="{x:Static resources:Strings.Menu_About_CommitRef}"
                                IsVisible="{Binding BuildCommitVisibility}" />
                     <TextBlock Grid.Row="3" Grid.Column="1" VerticalAlignment="Center"
-                               Text="{Binding BuildMetadata.CommitRef}" 
+                               Text="{Binding BuildMetadata.CommitRef}"
                                Foreground="{DynamicResource TextFillColorTertiaryBrush}"
                                IsVisible="{Binding BuildCommitVisibility}" />
                 </Grid>
@@ -116,8 +116,11 @@
                     </StackPanel>
                 </Expander>
 
-                <Expander Grid.Column="1" Margin="4,0,4,0" Header="{x:Static resources:Strings.Menu_About_Contributors_Contributors}" IsExpanded="True">
+                <Expander Grid.Column="1" Margin="4,0,4,0" Header="{x:Static resources:Strings.Menu_About_Contributors}" IsExpanded="True">
                     <StackPanel>
+                        <controls:MarkdownTextBlock MarkdownText="[Efaz](https://github.com/EfazDev)" />
+                        <controls:MarkdownTextBlock MarkdownText="[Valra](https://github.com/NotValra)" />
+                        <controls:MarkdownTextBlock MarkdownText="[Bloxxy](https://github.com/ItzBloxxy)" />
                         <controls:MarkdownTextBlock MarkdownText="[jokoyanto987](https://github.com/jokoyanto987)" />
                         <controls:MarkdownTextBlock MarkdownText="[Scroom](https://discord.com/users/1254472513199673347)" />
                         <controls:MarkdownTextBlock MarkdownText="[MattDinio](https://discord.com/users/1353528667245903892)" />
@@ -131,15 +134,16 @@
                         <controls:MarkdownTextBlock MarkdownText="[Flemish](https://discord.com/users/1286961047990702124)" />
                         <controls:MarkdownTextBlock MarkdownText="[Noby](https://discord.com/users/1304922060882972732)" />
                         <controls:MarkdownTextBlock MarkdownText="[Obsurd](https://discord.com/users/818680236963135498)" />
-                        <controls:MarkdownTextBlock MarkdownText="[Valra](https://github.com/NotValra)" />
                         <controls:MarkdownTextBlock MarkdownText="[SunGod (Polaris)](https://www.roblox.com/users/1484207733/profile)" />
                     </StackPanel>
                 </Expander>
 
                 <Expander Grid.Column="2" Margin="4,0,0,0" Header="{x:Static resources:Strings.Menu_About_Contributors_Insipirations}" IsExpanded="True">
                     <StackPanel>
-                        <controls:MarkdownTextBlock MarkdownText="[Fishstrap](https://github.com/fishstrap/fishstrap)" />
                         <controls:MarkdownTextBlock MarkdownText="[Bloxstrap](https://github.com/bloxstraplabs/bloxstrap)" />
+                        <controls:MarkdownTextBlock MarkdownText="[Fishstrap](https://github.com/fishstrap/fishstrap)" />
+                        <controls:MarkdownTextBlock MarkdownText="[AppleBlox](https://github.com/AppleBlox/appleblox)" />
+                        <controls:MarkdownTextBlock MarkdownText="[Sober/Vinegar](https://github.com/vinegarhq/vinegar)" />
                         <controls:MarkdownTextBlock MarkdownText="[MaximumADHD](https://github.com/MaximumADHD)" />
                     </StackPanel>
                 </Expander>

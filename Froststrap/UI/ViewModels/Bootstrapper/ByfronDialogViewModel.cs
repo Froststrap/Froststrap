@@ -5,12 +5,11 @@ using Avalonia.Platform;
 
 namespace Froststrap.UI.ViewModels.Bootstrapper
 {
-    public class ByfronDialogViewModel : BootstrapperDialogViewModel
+    public class ByfronDialogViewModel(IBootstrapperDialog dialog, string version) : BootstrapperDialogViewModel(dialog)
     {
-        // Using dark theme for default values.
-        public Bitmap ByfronLogoLocation { get; set; } = new Bitmap(AssetLoader.Open(new Uri("avares://Froststrap/Resources/BootstrapperStyles/ByfronDialog/ByfronLogoDark.jpg")));
+        public Bitmap ByfronLogoLocation { get; set; } = new(AssetLoader.Open(new Uri("avares://Froststrap/Resources/BootstrapperStyles/ByfronDialog/ByfronLogoDark.jpg")));
 
-        public Thickness DialogBorder { get; set; } = new Thickness(0);
+        public Thickness DialogBorder { get; set; } = new(0);
 
         public IBrush Background { get; set; } = Brushes.Black;
 
@@ -22,11 +21,6 @@ namespace Froststrap.UI.ViewModels.Bootstrapper
 
         public bool VersionTextVisible => !CancelEnabled;
 
-        public string VersionText { get; init; }
-
-        public ByfronDialogViewModel(IBootstrapperDialog dialog, string version) : base(dialog)
-        {
-            VersionText = version;
-        }
+        public string VersionText { get; init; } = version;
     }
 }

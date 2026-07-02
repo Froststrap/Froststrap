@@ -1,14 +1,50 @@
 using Avalonia.Controls;
-using Avalonia.Threading;
+using AnimatedImage.Avalonia;
 using Froststrap.UI.Elements.Bootstrapper.Base;
 using Froststrap.UI.ViewModels.Bootstrapper;
 
 namespace Froststrap.UI.Elements.Bootstrapper
 {
-	public partial class CustomDialog : AvaloniaDialogBase
+    public partial class CustomDialog : AvaloniaDialogBase
     {
-		private readonly BootstrapperDialogViewModel _viewModel;
-        public new Froststrap.Bootstrapper? Bootstrapper { get; set; }
+        private readonly BootstrapperDialogViewModel _viewModel;
+
+        public CustomDialog()
+        {
+            InitializeComponent();
+
+            _viewModel = new BootstrapperDialogViewModel(this);
+            DataContext = _viewModel;
+
+            SetupDialog();
+
+            Icon = new WindowIcon(App.Settings.Prop.BootstrapperIcon.GetIcon());
+
+            this.Loaded += (s, e) =>
+            {
+                RootTitleBar.PointerPressed += (sender, args) =>
+                {
+                    BeginMoveDrag(args);
+                    args.Handled = true;
+                };
+            };
+
+            this.Closing += CustomDialog_Closing;
+        }
+
+        private void CustomDialog_Closing(object? sender, WindowClosingEventArgs e)
+        {
+            foreach (var image in _animatedImages)
+            {
+                var animatedSource = image.GetValue(ImageBehavior.AnimatedSourceProperty);
+                if (animatedSource is AnimatedImageSourceStream streamSource && streamSource.StreamSource is MemoryStream ms)
+                {
+                    ms.Dispose();
+                }
+                image.ClearValue(ImageBehavior.AnimatedSourceProperty);
+            }
+            _animatedImages.Clear();
+        }
 
         #region UI Elements Overrides
         public override string Message
@@ -52,37 +88,15 @@ namespace Froststrap.UI.Elements.Bootstrapper
             });
         }
 
-        public override ProgressBarStyle ProgressStyle
+        public override bool ProgressIndeterminate
         {
-            get => _viewModel.ProgressIndeterminate ? ProgressBarStyle.Marquee : ProgressBarStyle.Continuous;
+            get => _viewModel.ProgressIndeterminate;
             set => RunOnUI(() =>
             {
-                _viewModel.ProgressIndeterminate = (value == ProgressBarStyle.Marquee);
+                _viewModel.ProgressIndeterminate = value;
                 _viewModel.OnPropertyChanged(nameof(_viewModel.ProgressIndeterminate));
             });
         }
-        #endregion
-
-        public CustomDialog()
-		{
-			InitializeComponent();
-
-			_viewModel = new BootstrapperDialogViewModel(this);
-			DataContext = _viewModel;
-			Title = App.Settings.Prop.BootstrapperTitle;
-			Icon = new WindowIcon(App.Settings.Prop.BootstrapperIcon.GetIcon());
-		}
-
-		#region IBootstrapperDialog Methods
-		public new void ShowBootstrapper() => this.Show();
-
-        public override void CloseBootstrapper()
-		{
-			_isClosing = true;
-			Dispatcher.UIThread.Post(this.Close);
-		}
-
-        public override void ShowSuccess(string message, Action? callback) => BaseFunctions.ShowSuccess(message, callback);
         #endregion
     }
 }

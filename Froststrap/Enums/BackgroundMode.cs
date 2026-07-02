@@ -2,10 +2,10 @@
 {
     public enum BackgroundMode
     {
-        [EnumName(StaticName = "Gradients")]
+        [EnumName(FromTranslation = "Enums.BackgroundMode.Gradient")]
         Gradient,
 
-        [EnumName(StaticName = "Images")]
+        [EnumName(FromTranslation = "Enums.BackgroundMode.Image")]
         Image
     }
 }

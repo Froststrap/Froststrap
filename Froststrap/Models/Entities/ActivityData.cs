@@ -1,3 +1,4 @@
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input.Platform;
 using Avalonia.Media.Imaging;
@@ -30,10 +31,12 @@ namespace Froststrap.Models.Entities
 
 		public string JobId { get; set; } = string.Empty;
 
-		/// <summary>
-		/// This will be empty unless the server joined is a private server
-		/// </summary>
-		public string AccessCode { get; set; } = string.Empty;
+        public string Region { get; set; } = string.Empty;
+
+        /// <summary>
+        /// This will be empty unless the server joined is a private server
+        /// </summary>
+        public string AccessCode { get; set; } = string.Empty;
 
 		public long UserId { get; set; } = 0;
 
@@ -49,12 +52,14 @@ namespace Froststrap.Models.Entities
 
 		public DateTime? TimeLeft { get; set; }
 
-		// everything below here is optional strictly for bloxstraprpc, discord rich presence, or game history
+        public DateTime? StartTime { get; set; }
 
-		/// <summary>
-		/// This is intended only for other people to use, i.e. context menu invite link, rich presence joining
-		/// </summary>
-		public string RPCLaunchData { get; set; } = string.Empty;
+        // everything below here is optional strictly for bloxstraprpc, discord rich presence, or game history
+
+        /// <summary>
+        /// This is intended only for other people to use, i.e. context menu invite link, rich presence joining
+        /// </summary>
+        public string RPCLaunchData { get; set; } = string.Empty;
 
 		public UniverseDetails? UniverseDetails { get; set; }
 
@@ -66,92 +71,39 @@ namespace Froststrap.Models.Entities
         public event EventHandler<string>? OnDeleteRequested;
 
 		public ICommand RejoinServerCommand => new RelayCommand(() => RejoinServer(true));
-		public ICommand CopyDeeplinkCommand => new RelayCommand(CopyDeeplink);
-		public ICommand CopyServerIdCommand => new RelayCommand(CopyServerId);
-		public ICommand DeleteHistoryCommand => new RelayCommand(DeleteHistory);
+        public ICommand CopyDeeplinkCommand => new RelayCommand<Visual>(CopyDeeplink);
+        public ICommand CopyServerIdCommand => new RelayCommand<Visual>(CopyServerId);
+        public ICommand DeleteHistoryCommand => new RelayCommand(DeleteHistory);
 
-		private SemaphoreSlim serverQuerySemaphore = new(1, 1);
-		private SemaphoreSlim serverTimeSemaphore = new(1, 1);
+		private readonly SemaphoreSlim serverQuerySemaphore = new(1, 1);
 
-		public string GetInviteDeeplink(bool launchData = true)
-		{
-			string deeplink = $"http://froststrap.github.io/invite?placeId={PlaceId}";
-
-			if (ServerType == ServerType.Private) // thats not going to work
-				deeplink += "&accessCode=" + AccessCode;
-			else
-				deeplink += "&gameInstanceId=" + JobId;
-
-			if (launchData && !string.IsNullOrEmpty(RPCLaunchData))
-				deeplink += "&launchData=" + HttpUtility.UrlEncode(RPCLaunchData);
-
-			return deeplink;
-		}
-
-        public async Task<DateTime?> QueryServerTime()
+        public string GetInviteDeeplink(bool launchData = true, DeeplinkType type = DeeplinkType.RobloxProtocol)
         {
-            const string LOG_IDENT = "ActivityData::QueryServerTime";
-
-            if (string.IsNullOrEmpty(JobId))
-                throw new InvalidOperationException("JobId is null");
-
-            if (PlaceId == 0)
-                throw new InvalidOperationException("PlaceId is null");
-
-            await serverTimeSemaphore.WaitAsync();
-
-            if (GlobalCache.ServerTime.TryGetValue(JobId, out DateTime? time))
+            string baseUrl = type switch
             {
-                serverTimeSemaphore.Release();
-                return time;
+                DeeplinkType.Froststrap => "http://froststrap.github.io/invite",
+                DeeplinkType.RobloxWeb => "https://www.roblox.com/games/start",
+                _ => "roblox://experiences/start"
+            };
+
+            string deeplink = $"{baseUrl}?placeId={PlaceId}";
+
+            if (ServerType == ServerType.Private)
+            {
+                deeplink += "&accessCode=" + AccessCode;
+            }
+            else
+            {
+                deeplink += "&gameInstanceId=" + JobId;
             }
 
-            DateTime? firstSeen = DateTime.UtcNow;
-            try
+            // Handle launch data
+            if (launchData && !string.IsNullOrEmpty(RPCLaunchData))
             {
-                Uri serverDetailsUrl = new($"https://apis.rovalra.com/v1/server_details?place_id={PlaceId}&server_ids={JobId}");
-                var serverTimeRaw = await Http.GetJson<RoValraTimeResponse>(serverDetailsUrl);
-
-                var serverBody = new RoValraProcessServerBody
-                {
-                    PlaceId = PlaceId,
-                    ServerIds = new() { JobId }
-                };
-
-                string json = JsonSerializer.Serialize(serverBody);
-                HttpContent postContent = new StringContent(json, Encoding.UTF8, "application/json");
-
-                Uri processServersUrl = new("https://apis.rovalra.com/process_servers");
-                _ = App.HttpClient.PostAsync(processServersUrl, postContent);
-
-                RoValrasServer? server = null;
-
-                if (serverTimeRaw?.Servers != null && serverTimeRaw.Servers.Count > 0)
-                    server = serverTimeRaw.Servers[0];
-
-                if (server?.FirstSeen != null)
-                    firstSeen = server.FirstSeen;
-
-                GlobalCache.ServerTime[JobId] = firstSeen;
-                serverTimeSemaphore.Release();
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteLine(LOG_IDENT, $"Failed to get server time for {PlaceId}/{JobId}");
-                App.Logger.WriteException(LOG_IDENT, ex);
-
-                GlobalCache.ServerTime[JobId] = firstSeen;
-                serverTimeSemaphore.Release();
-
-                _ = Frontend.ShowConnectivityDialog(
-                    string.Format(Strings.Dialog_Connectivity_UnableToConnect, "rovalra.com"),
-                    Strings.ActivityWatcher_LocationQueryFailed,
-                    MessageBoxImage.Warning,
-                    ex
-                );
+                deeplink += "&launchData=" + HttpUtility.UrlEncode(RPCLaunchData);
             }
 
-            return firstSeen;
+            return deeplink;
         }
 
         public async Task<string?> QueryServerLocation()
@@ -171,32 +123,6 @@ namespace Froststrap.Models.Entities
 
             try
             {
-                try
-                {
-                    Uri roValraGeoUrl = new($"https://apis.rovalra.com/v1/geolocation?ip={MachineAddress}");
-                    var response = await Http.GetJson<RoValraGeolocation>(roValraGeoUrl);
-                    var geolocation = response.Location;
-
-                    if (geolocation is not null)
-                    {
-                        if (geolocation.City == geolocation.Region && geolocation.City == geolocation.Country)
-                            location = geolocation.Country;
-                        else if (geolocation.City == geolocation.Region)
-                            location = $"{geolocation.Region}, {geolocation.Country}";
-                        else
-                            location = $"{geolocation.City}, {geolocation.Region}, {geolocation.Country}";
-
-                        App.Logger.WriteLine(LOG_IDENT, $"Got location from RoValra: {location}");
-                        GlobalCache.ServerLocation[MachineAddress] = location;
-                        serverQuerySemaphore.Release();
-                        return location;
-                    }
-                }
-                catch (Exception rovalraEx)
-                {
-                    App.Logger.WriteLine(LOG_IDENT, $"RoValra API failed, falling back to ipinfo.io: {rovalraEx.Message}");
-                }
-
                 Uri ipInfoUrl = new($"https://ipinfo.io/{MachineAddress}/json");
                 var ipInfo = await Http.GetJson<IPInfoResponse>(ipInfoUrl);
 
@@ -208,10 +134,8 @@ namespace Froststrap.Models.Entities
                 else
                     location = $"{ipInfo.City}, {ipInfo.Region}, {ipInfo.Country}";
 
-                App.Logger.WriteLine(LOG_IDENT, $"Got location from ipinfo.io: {location}");
                 GlobalCache.ServerLocation[MachineAddress] = location;
                 serverQuerySemaphore.Release();
-                return location;
             }
             catch (Exception ex)
             {
@@ -221,15 +145,15 @@ namespace Froststrap.Models.Entities
                 GlobalCache.ServerLocation[MachineAddress] = location;
                 serverQuerySemaphore.Release();
 
-                _ = Frontend.ShowConnectivityDialog(
-                    string.Format(Strings.Dialog_Connectivity_UnableToConnect, "rovalra.com/ipinfo.io"),
+                /*Frontend.ShowConnectivityDialog(
+                    string.Format(Strings.Dialog_Connectivity_UnableToConnect, "ipinfo.io"),
                     Strings.ActivityWatcher_LocationQueryFailed,
                     MessageBoxImage.Warning,
                     ex
-                );
-
-                return location;
+                );*/
             }
+
+            return location;
         }
 
         public void RejoinServer(bool CloseRoblox = true)
@@ -256,7 +180,7 @@ namespace Froststrap.Models.Entities
 			}
 		}
 
-		public void CloseRobloxProcesses()
+		public static void CloseRobloxProcesses()
 		{
 			const string LOG_IDENT = "ActivityData::CloseProcess";
 
@@ -288,10 +212,26 @@ namespace Froststrap.Models.Entities
 			}
 		}
 
-		private void CopyDeeplink() => TopLevel.GetTopLevel(null)?.Clipboard?.SetTextAsync(GetInviteDeeplink());
-		private void CopyServerId() => TopLevel.GetTopLevel(null)?.Clipboard?.SetTextAsync(JobId);
+        //Froststrap deeplink type when it works, for now use roblox one
+        private async void CopyDeeplink(Visual? visual)
+        {
+            var topLevel = TopLevel.GetTopLevel(visual);
+            if (topLevel?.Clipboard != null)
+            {
+                await topLevel.Clipboard.SetTextAsync(GetInviteDeeplink(true, DeeplinkType.RobloxWeb));
+            }
+        }
 
-		private void DeleteHistory()
+        private async void CopyServerId(Visual? visual)
+        {
+            var topLevel = TopLevel.GetTopLevel(visual);
+            if (topLevel?.Clipboard != null)
+            {
+                await topLevel.Clipboard.SetTextAsync(JobId);
+            }
+        }
+
+        private void DeleteHistory()
 		{
 			string jobIdToDelete = !string.IsNullOrEmpty(RootJobId) ? RootJobId : JobId;
 

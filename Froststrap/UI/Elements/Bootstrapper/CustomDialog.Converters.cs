@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel;
 using System.Xml.Linq;
 using Avalonia;
-using Avalonia.Media;
 using Avalonia.Controls;
+using Avalonia.Media;
 
 namespace Froststrap.UI.Elements.Bootstrapper
 {
@@ -21,44 +21,95 @@ namespace Froststrap.UI.Elements.Bootstrapper
             }
         }
 
-        private static object? GetTypeFromXElement<T>(XElement xmlElement, string attributeName, Func<string, T> parser)
+        private static Thickness? GetThicknessFromXElement(XElement xmlElement, string attributeName)
         {
-            string? attributeValue = xmlElement.Attribute(attributeName)?.Value;
-            if (attributeValue == null)
+            string? value = xmlElement.Attribute(attributeName)?.Value;
+            if (string.IsNullOrEmpty(value))
                 return null;
 
             try
             {
-                return parser(attributeValue);
+                return Thickness.Parse(value);
             }
             catch (Exception ex)
             {
-                throw new CustomThemeException(ex, "CustomTheme.Errors.ElementAttributeConversionError", xmlElement.Name, attributeName, ex.Message);
+                throw new CustomThemeException(ex, "CustomTheme.Errors.ElementAttributeConversionError",
+                    xmlElement.Name, attributeName, $"Could not parse '{value}' as Thickness");
             }
         }
 
-        private static object? GetThicknessFromXElement(XElement xmlElement, string attributeName) =>
-            GetTypeFromXElement(xmlElement, attributeName, Thickness.Parse);
+        private static Color? GetColorFromXElement(XElement xmlElement, string attributeName)
+        {
+            string? value = xmlElement.Attribute(attributeName)?.Value;
+            if (string.IsNullOrEmpty(value))
+                return null;
 
-        private static object? GetRectFromXElement(XElement xmlElement, string attributeName) =>
-            GetTypeFromXElement(xmlElement, attributeName, Rect.Parse);
+            try
+            {
+                return Color.Parse(value);
+            }
+            catch (Exception ex)
+            {
+                throw new CustomThemeException(ex, "CustomTheme.Errors.ElementAttributeConversionError",
+                    xmlElement.Name, attributeName, $"Could not parse '{value}' as Color");
+            }
+        }
 
-        private static object? GetColorFromXElement(XElement xmlElement, string attributeName) =>
-            GetTypeFromXElement(xmlElement, attributeName, Color.Parse);
+        private static Point? GetPointFromXElement(XElement xmlElement, string attributeName)
+        {
+            string? value = xmlElement.Attribute(attributeName)?.Value;
+            if (string.IsNullOrEmpty(value))
+                return null;
 
-        private static object? GetPointFromXElement(XElement xmlElement, string attributeName) =>
-            GetTypeFromXElement(xmlElement, attributeName, Point.Parse);
+            try
+            {
+                return Point.Parse(value);
+            }
+            catch (Exception ex)
+            {
+                throw new CustomThemeException(ex, "CustomTheme.Errors.ElementAttributeConversionError",
+                    xmlElement.Name, attributeName, $"Could not parse '{value}' as Point");
+            }
+        }
 
-        private static object? GetCornerRadiusFromXElement(XElement xmlElement, string attributeName) =>
-            GetTypeFromXElement(xmlElement, attributeName, CornerRadius.Parse);
+        private static CornerRadius? GetCornerRadiusFromXElement(XElement xmlElement, string attributeName)
+        {
+            string? value = xmlElement.Attribute(attributeName)?.Value;
+            if (string.IsNullOrEmpty(value))
+                return null;
 
-        private static object? GetGridLengthFromXElement(XElement xmlElement, string attributeName) =>
-            GetTypeFromXElement(xmlElement, attributeName, GridLength.Parse);
+            try
+            {
+                return CornerRadius.Parse(value);
+            }
+            catch (Exception ex)
+            {
+                throw new CustomThemeException(ex, "CustomTheme.Errors.ElementAttributeConversionError",
+                    xmlElement.Name, attributeName, $"Could not parse '{value}' as CornerRadius");
+            }
+        }
+
+        private static GridLength? GetGridLengthFromXElement(XElement xmlElement, string attributeName)
+        {
+            string? value = xmlElement.Attribute(attributeName)?.Value;
+            if (string.IsNullOrEmpty(value))
+                return null;
+
+            try
+            {
+                return GridLength.Parse(value);
+            }
+            catch (Exception ex)
+            {
+                throw new CustomThemeException(ex, "CustomTheme.Errors.ElementAttributeConversionError",
+                    xmlElement.Name, attributeName, $"Could not parse '{value}' as GridLength");
+            }
+        }
 
         private static object? GetBrushFromXElement(XElement element, string attributeName)
         {
             string? value = element.Attribute(attributeName)?.Value;
-            if (value == null)
+            if (string.IsNullOrEmpty(value))
                 return null;
 
             if (value.StartsWith('{') && value.EndsWith('}'))
@@ -70,7 +121,8 @@ namespace Froststrap.UI.Elements.Bootstrapper
             }
             catch (Exception ex)
             {
-                throw new CustomThemeException(ex, "CustomTheme.Errors.ElementAttributeConversionError", element.Name, attributeName, ex.Message);
+                throw new CustomThemeException(ex, "CustomTheme.Errors.ElementAttributeConversionError",
+                    element.Name, attributeName, ex.Message);
             }
         }
     }

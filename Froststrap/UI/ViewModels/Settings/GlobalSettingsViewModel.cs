@@ -1,6 +1,7 @@
 ﻿using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.Enums.GBSPresets;
+using System.Runtime.InteropServices;
 using System.Windows.Input;
 using System.Xml.Linq;
 
@@ -19,18 +20,12 @@ namespace Froststrap.UI.ViewModels.Settings
         }
     }
 
-    public class GlobalSettingsViewModel : NotifyPropertyChangedViewModel
+    public class GlobalSettingsViewModel(IDialogServiceGlobal dialogService) : NotifyPropertyChangedViewModel
     {
-        private readonly IDialogServiceGlobal _dialogService;
+        private readonly IDialogServiceGlobal _dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
 
-        public GlobalSettingsViewModel()
-            : this(new DefaultGlobalDialogService())
+        public GlobalSettingsViewModel() : this(new DefaultGlobalDialogService())
         {
-        }
-
-        public GlobalSettingsViewModel(IDialogServiceGlobal dialogService)
-        {
-            _dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
         }
 
         public ICommand OpenGlobalSettingsEditorCommand => new AsyncRelayCommand(async () =>
@@ -39,18 +34,22 @@ namespace Froststrap.UI.ViewModels.Settings
             await _dialogService.OpenGlobalSettingsEditorAsync();
         });
 
-        public ICommand OpenRobloxFolderCommand => new RelayCommand(() => Process.Start("explorer.exe", Paths.Roblox));
+        public static ICommand OpenRobloxFolderCommand => new RelayCommand(() =>
+        {
+            string targetPath;
+
+            if (OperatingSystem.IsMacOS())
+                targetPath = Path.Combine(Paths.UserProfile, "Library", "Roblox");
+            else
+                targetPath = Paths.Roblox;
+
+            Utilities.ShellExecute(targetPath, true);
+        });
         public ICommand ExportCommand => new RelayCommand(ExportSettings);
         public ICommand ImportCommand => new RelayCommand(ImportSettings);
 
         private async void ExportSettings()
         {
-            if (!File.Exists(App.GlobalSettings.FileLocation))
-            {
-                _ = Frontend.ShowMessageBox("No GBS settings file found to export.", MessageBoxImage.Warning);
-                return;
-            }
-
             var visualRoot = Avalonia.Application.Current?.ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop
                              ? desktop.MainWindow
                              : null;
@@ -60,24 +59,24 @@ namespace Froststrap.UI.ViewModels.Settings
             var file = await visualRoot.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
             {
                 Title = "Export GBS Settings",
-                SuggestedFileName = "FroststrapGlobalSettings.xml",
+                SuggestedFileName = "GlobalBasicSettings_13.xml",
                 DefaultExtension = ".xml",
-                FileTypeChoices = new[]
-                { new FilePickerFileType("GBS Settings File") { Patterns = new[] { "*.xml" } }}
+                FileTypeChoices =
+                [ new FilePickerFileType("GBS Settings File") { Patterns = ["*.xml" ] } ]
             });
 
             if (file != null)
             {
                 string localPath = file.Path.LocalPath;
-                bool success = App.GlobalSettings.ExportSettings(localPath);
+                bool success = GBSEditor.ExportSettings(localPath);
 
                 if (success)
                 {
-                    _ = Frontend.ShowMessageBox($"Settings exported successfully to {localPath}", MessageBoxImage.Information);
+                    _ = Frontend.ShowMessageBox(string.Format(Strings.Menu_GlobalSettings_Export_Success, localPath), MessageBoxImage.Information);
                 }
                 else
                 {
-                    _ = Frontend.ShowMessageBox("Failed to export settings. Make sure Roblox is not running and try again.", MessageBoxImage.Error);
+                    _ = Frontend.ShowMessageBox(Strings.Menu_GlobalSettings_Export_Fail, MessageBoxImage.Error);
                 }
             }
         }
@@ -94,12 +93,11 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 Title = "Import GBS Settings",
                 AllowMultiple = false,
-                FileTypeFilter = new[]
-                { new FilePickerFileType("GBS Settings File") { Patterns = new[] { "*.xml" } } }
+                FileTypeFilter = [new FilePickerFileType("GBS Settings File") { Patterns = ["*.xml"] }]
             });
 
-            var selectedFile = result.FirstOrDefault();
-            if (selectedFile == null) return;
+            if (result.Count == 0) return;
+            var selectedFile = result[0];
 
             string localPath = selectedFile.Path.LocalPath;
 
@@ -108,47 +106,63 @@ namespace Froststrap.UI.ViewModels.Settings
                 var doc = XDocument.Load(localPath);
                 if (doc.Root?.Name != "roblox")
                 {
-                    _ = Frontend.ShowMessageBox("The selected file does not appear to be a valid GBS settings file.", MessageBoxImage.Warning);
+                    _ = Frontend.ShowMessageBox(Strings.Menu_GlobalSettings_Import_NotGBS, MessageBoxImage.Warning);
                     return;
                 }
             }
             catch
             {
-                _ = Frontend.ShowMessageBox("The selected file is not a valid XML file.", MessageBoxImage.Warning);
+                _ = Frontend.ShowMessageBox(Strings.Menu_GlobalSettings_Import_NotXML, MessageBoxImage.Warning);
                 return;
             }
 
             var confirm = await Frontend.ShowMessageBox(
-                "This will replace all your current Global settings with the imported ones. Are you sure you want to continue?",
+                Strings.Menu_GlobalSettings_Import_Confirmation,
                 MessageBoxImage.Warning,
                 MessageBoxButton.YesNo);
 
             if (confirm == MessageBoxResult.Yes)
             {
                 bool success = App.GlobalSettings.ImportSettings(localPath);
-
                 if (success)
                 {
                     App.GlobalSettings.Load();
-                    _ = Frontend.ShowMessageBox("Settings imported successfully!", MessageBoxImage.Information);
+                    _ = Frontend.ShowMessageBox(Strings.Menu_GlobalSettings_Import_Success, MessageBoxImage.Information);
                 }
                 else
                 {
-                    _ = Frontend.ShowMessageBox("Failed to import settings. Make sure Roblox is not running and try again.", MessageBoxImage.Error);
+                    _ = Frontend.ShowMessageBox(Strings.Menu_GlobalSettings_Import_Fail, MessageBoxImage.Error);
                 }
             }
         }
 
-        public bool ReadOnly
+        public static bool ReadOnly
         {
-            get => App.GlobalSettings.GetReadOnly();
+            get => GBSEditor.GetReadOnly();
             set => App.GlobalSettings.SetReadOnly(value);
         }
 
-        public string FramerateCap
+        public static int FramerateCap
         {
-            get => App.GlobalSettings.GetPreset("Rendering.FramerateCap")!;
-            set => App.GlobalSettings.SetPreset("Rendering.FramerateCap", value);
+            get
+            {
+                if (int.TryParse(App.GlobalSettings.GetPreset("Rendering.FramerateCap"), out int framerate))
+                {
+                    if (framerate < 1)
+                        return 60;
+                    else
+                        return framerate;
+                }
+                else
+                    return 60;
+            }
+            set
+            {
+                if (value < 1)
+                    value = -1;
+
+                App.GlobalSettings.SetPreset("Rendering.FramerateCap", value);
+            }
         }
 
         public string GraphicsQuality
@@ -161,13 +175,13 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public bool Fullscreen
+        public static bool Fullscreen
         {
             get => App.GlobalSettings.GetPreset("Rendering.Fullscreen")?.ToLower() == "true";
             set => App.GlobalSettings.SetPreset("Rendering.Fullscreen", value);
         }
 
-        public bool MaxQualityEnabled
+        public static bool MaxQualityEnabled
         {
             get => App.GlobalSettings.GetPreset("Rendering.MaxQualityEnabled")?.ToLower() == "true";
             set => App.GlobalSettings.SetPreset("Rendering.MaxQualityEnabled", value);
@@ -193,30 +207,30 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public string MasterVolume
+        public static string MasterVolume
         {
             get => App.GlobalSettings.GetPreset("Audio.MasterVolume")!;
             set => App.GlobalSettings.SetPreset("Audio.MasterVolume", value);
         }
 
-        public string MasterVolumeStudio
+        public static string MasterVolumeStudio
         {
             get => App.GlobalSettings.GetPreset("Audio.MasterVolumeStudio")!;
             set => App.GlobalSettings.SetPreset("Audio.MasterVolumeStudio", value);
         }
 
-        public string PartyVoiceVolume
+        public static string PartyVoiceVolume
         {
             get => App.GlobalSettings.GetPreset("Audio.PartyVoiceVolume")!;
             set => App.GlobalSettings.SetPreset("Audio.PartyVoiceVolume", value);
         }
-        public string MouseSensitivity
+        public static string MouseSensitivity
         {
             get => App.GlobalSettings.GetPreset("User.MouseSensitivity")!;
             set => App.GlobalSettings.SetPreset("User.MouseSensitivity", value);
         }
 
-        public bool ShiftLock
+        public static bool ShiftLock
         {
             get => App.GlobalSettings.GetPreset("User.ShiftLock") == "1";
             set => App.GlobalSettings.SetPreset("User.ShiftLock", value ? "1" : "0");
@@ -261,13 +275,13 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public bool CameraYInverted
+        public static bool CameraYInverted
         {
             get => App.GlobalSettings.GetPreset("User.CameraYInverted")?.ToLower() == "true";
             set => App.GlobalSettings.SetPreset("User.CameraYInverted", value);
         }
 
-        public string HapticStrength
+        public static string HapticStrength
         {
             get => App.GlobalSettings.GetPreset("User.HapticStrength")!;
             set => App.GlobalSettings.SetPreset("User.HapticStrength", value);
@@ -283,45 +297,45 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public bool ReducedMotion
+        public static bool ReducedMotion
         {
             get => App.GlobalSettings.GetPreset("UI.ReducedMotion")?.ToLower() == "true";
             set => App.GlobalSettings.SetPreset("UI.ReducedMotion", value);
         }
 
-        public IReadOnlyDictionary<FontSize, string?> FontSizes => GBSEditor.FontSizes;
-        public FontSize SelectedFontSize
+        public static IReadOnlyDictionary<FontSize, string?> FontSizes => GBSEditor.FontSizes;
+        public static FontSize SelectedFontSize
         {
             get => FontSizes.FirstOrDefault(x => x.Value == App.GlobalSettings.GetPreset("UI.FontSize")).Key;
             set => App.GlobalSettings.SetPreset("UI.FontSize", FontSizes[value]);
         }
 
-        public IReadOnlyDictionary<PlayerListLayOut, string?> PlayerListLayOuts => GBSEditor.PlayerListLayOuts;
-        public PlayerListLayOut SelectedPlayerListLayOut
+        public static IReadOnlyDictionary<PlayerListLayOut, string?> PlayerListLayOuts => GBSEditor.PlayerListLayOuts;
+        public static PlayerListLayOut SelectedPlayerListLayOut
         {
             get => PlayerListLayOuts.FirstOrDefault(x => x.Value == App.GlobalSettings.GetPreset("UI.PlayerListLayOut")).Key;
             set => App.GlobalSettings.SetPreset("UI.PlayerListLayOut", PlayerListLayOuts[value]);
         }
 
-        public bool PerformanceStatsVisible
+        public static bool PerformanceStatsVisible
         {
             get => App.GlobalSettings.GetPreset("Misc.PerformanceStatsVisible")?.ToLower() == "true";
             set => App.GlobalSettings.SetPreset("Misc.PerformanceStatsVisible", value);
         }
 
-        public bool ChatTranslationEnabled
+        public static bool ChatTranslationEnabled
         {
             get => App.GlobalSettings.GetPreset("Misc.ChatTranslationEnabled")?.ToLower() == "true";
             set => App.GlobalSettings.SetPreset("Misc.ChatTranslationEnabled", value);
         }
 
-        public bool ChatTranslationFTUXShown
+        public static bool ChatTranslationFTUXShown
         {
             get => App.GlobalSettings.GetPreset("Misc.ChatTranslationFTUXShown")?.ToLower() == "true";
             set => App.GlobalSettings.SetPreset("Misc.ChatTranslationFTUXShown", value);
         }
 
-        public bool VREnabled
+        public static bool VREnabled
         {
             get => App.GlobalSettings.GetPreset("User.VREnabled")?.ToLower() == "true";
             set => App.GlobalSettings.SetPreset("User.VREnabled", value);

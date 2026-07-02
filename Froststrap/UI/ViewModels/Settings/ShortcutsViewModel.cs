@@ -1,106 +1,171 @@
-﻿using System.Collections.ObjectModel;
-using System.Windows;
-using System.Drawing;
-using Avalonia.Media.Imaging;
-using System.Security.Cryptography;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿/*
+*  Froststrap
+*  Copyright (c) Froststrap Team
+*
+*  This file is part of Froststrap and is distributed under the terms of the
+*  GNU Affero General Public License, version 3 or later.
+*
+*  SPDX-License-Identifier: AGPL-3.0-or-later
+*/
+
+using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.Input;
 using Avalonia.Threading;
+using Avalonia.Media.Imaging;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
-    public partial class ShortcutsViewModel : ObservableObject
+    public class ShortcutsViewModel : NotifyPropertyChangedViewModel
     {
+        private readonly string LOG_IDENT = "ShortcutsViewModel";
+
+        // Use .lnk as the canonical name.
+        // Shortcut.cs resolves the correct filename internally
         public ShortcutTask DesktopIconTask { get; } = new("Desktop", Paths.Desktop, $"{App.ProjectName}.lnk");
-        public ShortcutTask StartMenuIconTask { get; } = new("StartMenu", Paths.WindowsStartMenu, $"{App.ProjectName}.lnk");
         public ShortcutTask PlayerIconTask { get; } = new("RobloxPlayer", Paths.Desktop, $"{Strings.LaunchMenu_LaunchRoblox}.lnk", "-player");
         public ShortcutTask StudioIconTask { get; } = new("RobloxStudio", Paths.Desktop, $"{Strings.LaunchMenu_LaunchRobloxStudio}.lnk", "-studio");
         public ShortcutTask SettingsIconTask { get; } = new("Settings", Paths.Desktop, $"{Strings.Menu_Title}.lnk", "-settings");
-        public ShortcutTask AccountManagerIconTask { get; } = new("AccountManager", Paths.Desktop, "Account Manager.lnk", "-accountmanager");
         public ExtractIconsTask ExtractIconsTask { get; } = new();
 
-        [ObservableProperty] private string _searchQuery = "";
-        [ObservableProperty] private bool _isGameSearchLoading;
-        [ObservableProperty] private string _placeId = "";
-        [ObservableProperty] private string _jobId = "";
-        [ObservableProperty] private string _accessCode = "";
-
-        [ObservableProperty] private string _previewName = "No Game Selected";
-        [ObservableProperty] private string _previewId = "ID: 0";
-        [ObservableProperty] private Bitmap? _previewIcon;
-        [ObservableProperty] private string _shortcutStatus = "Ready";
-        [ObservableProperty] private bool _isSearchFlyoutOpen;
-
-        [ObservableProperty] private OmniSearchContent? _selectedSearchResult;
-        public ObservableCollection<OmniSearchContent> SearchResults { get; } = new();
-
+        #region Fields
+        private string _searchQuery = "";
+        private bool _isGameSearchLoading;
+        private string _placeId = "";
+        private string _jobId = "";
+        private string _accessCode = "";
+        private string _previewName = "";
+        private string _previewId = "";
+        private Bitmap? _previewIcon;
+        private string _shortcutStatus = "";
+        private bool _isSearchFlyoutOpen;
+        private OmniSearchContent? _selectedSearchResult;
         private CancellationTokenSource? _searchDebounceCts;
         private bool _isProcessingSelection = false;
+        #endregion
 
-        [RelayCommand]
-        public async Task CreateGameShortcut()
+        #region Properties
+        public string SearchQuery
         {
-            if (string.IsNullOrEmpty(PlaceId) || PreviewName == "No Game Selected")
+            get => _searchQuery;
+            set
             {
-                ShortcutStatus = "Select a game first.";
+                if (SetProperty(ref _searchQuery, value))
+                    OnSearchQueryChanged(value);
+            }
+        }
+
+        public bool IsGameSearchLoading
+        {
+            get => _isGameSearchLoading;
+            set => SetProperty(ref _isGameSearchLoading, value);
+        }
+
+        public string PlaceId
+        {
+            get => _placeId;
+            set => SetProperty(ref _placeId, value);
+        }
+
+        public string JobId
+        {
+            get => _jobId;
+            set => SetProperty(ref _jobId, value);
+        }
+
+        public string AccessCode
+        {
+            get => _accessCode;
+            set => SetProperty(ref _accessCode, value);
+        }
+
+        public string PreviewName
+        {
+            get => _previewName;
+            set => SetProperty(ref _previewName, value);
+        }
+
+        public string PreviewId
+        {
+            get => _previewId;
+            set => SetProperty(ref _previewId, value);
+        }
+
+        public Bitmap? PreviewIcon
+        {
+            get => _previewIcon;
+            set => SetProperty(ref _previewIcon, value);
+        }
+
+        public string ShortcutStatus
+        {
+            get => _shortcutStatus;
+            set => SetProperty(ref _shortcutStatus, value);
+        }
+
+        public bool IsSearchFlyoutOpen
+        {
+            get => _isSearchFlyoutOpen;
+            set => SetProperty(ref _isSearchFlyoutOpen, value);
+        }
+
+        public OmniSearchContent? SelectedSearchResult
+        {
+            get => _selectedSearchResult;
+            set
+            {
+                if (SetProperty(ref _selectedSearchResult, value))
+                    OnSelectedSearchResultChanged(value);
+            }
+        }
+
+        public ObservableCollection<OmniSearchContent> SearchResults { get; } = [];
+
+        public IAsyncRelayCommand CreateGameShortcutCommand { get; }
+        public IAsyncRelayCommand SearchGamesCommand { get; }
+        #endregion
+
+        public ShortcutsViewModel()
+        {
+            PreviewName = Strings.Menu_Shortcuts_NoGameSelected;
+            PreviewId = string.Format(Strings.Menu_RegionSelector_ID, 0);
+            ShortcutStatus = Strings.Menu_Shortcuts_Ready;
+
+            CreateGameShortcutCommand = new AsyncRelayCommand(CreateGameShortcut);
+            SearchGamesCommand = new AsyncRelayCommand(SearchGamesAsync);
+        }
+
+        private async Task CreateGameShortcut()
+        {
+            if (string.IsNullOrEmpty(PlaceId) || PreviewName == Strings.Menu_Shortcuts_NoGameSelected)
+            {
+                ShortcutStatus = Strings.Menu_Shortcuts_SelectGameFirst;
                 return;
             }
 
             try
             {
-                ShortcutStatus = "Processing...";
+                ShortcutStatus = Strings.Menu_Shortcuts_Processing;
 
-                string argData = PlaceId;
-                if (!string.IsNullOrEmpty(JobId)) argData += $";{JobId}";
-                if (!string.IsNullOrEmpty(AccessCode)) argData += $";{AccessCode}";
+                await Shortcut.CreateGameShortcut(
+                    appPath: Paths.Application,
+                    displayName: PreviewName,
+                    placeId: PlaceId,
+                    jobId: JobId,
+                    accessCode: AccessCode,
+                    icon: PreviewIcon,
+                    onStatus: status => ShortcutStatus = status
+                );
 
-                string safeName = SanitizeFileName(PreviewName);
-                string lnkPath = Path.Combine(Paths.Desktop, $"{safeName}.lnk");
-
-                string shortcutsIconDir = Path.Combine(Paths.Cache, "Game Shortcuts");
-                Directory.CreateDirectory(shortcutsIconDir);
-
-                string? finalIconPath = null;
-
-                if (PreviewIcon != null)
-                {
-                    try
-                    {
-                        ShortcutStatus = "Saving icon...";
-                        using var ms = new MemoryStream();
-                        PreviewIcon.Save(ms);
-                        byte[] imageBytes = ms.ToArray();
-
-                        string hash = ComputeHash(imageBytes);
-                        string icoPath = Path.Combine(shortcutsIconDir, $"{hash}.ico");
-
-                        if (!File.Exists(icoPath))
-                        {
-                            ShortcutStatus = "Converting icon...";
-                            using var icoFile = File.Create(icoPath);
-                            SaveBitmapAsIcon(PreviewIcon, icoFile);
-                        }
-                        finalIconPath = icoPath;
-                    }
-                    catch (Exception ex)
-                    {
-                        App.Logger.WriteLine("ShortcutsViewModel", $"Icon processing failed: {ex.Message}");
-                    }
-                }
-
-                ShortcutStatus = "Creating...";
-                Shortcut.Create(Paths.Application, $"-gameshortcut \"{argData}\"", lnkPath, finalIconPath);
-
-                ShortcutStatus = "Shortcut created!";
+                ShortcutStatus = Strings.Menu_Shortcuts_ShortcutCreated;
             }
             catch (Exception ex)
             {
-                ShortcutStatus = "Error creating shortcut.";
-                App.Logger.WriteLine("ShortcutsViewModel", $"Error: {ex.Message}");
+                ShortcutStatus = Strings.Menu_Shortcuts_ErrorCreatingShortcut;
+                App.Logger.WriteLine(LOG_IDENT, $"Error: {ex.Message}");
             }
         }
 
-        partial void OnSearchQueryChanged(string value)
+        private void OnSearchQueryChanged(string value)
         {
             if (_isProcessingSelection) return;
 
@@ -142,12 +207,12 @@ namespace Froststrap.UI.ViewModels.Settings
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine("ShortcutsViewModel", $"Failed to load preview bitmap: {ex.Message}");
+                App.Logger.WriteLine(LOG_IDENT, $"Failed to load preview bitmap: {ex.Message}");
                 return null;
             }
         }
 
-        partial void OnSelectedSearchResultChanged(OmniSearchContent? value)
+        private void OnSelectedSearchResultChanged(OmniSearchContent? value)
         {
             if (value is null) return;
 
@@ -155,13 +220,10 @@ namespace Froststrap.UI.ViewModels.Settings
 
             PlaceId = value.RootPlaceId.ToString();
             SearchQuery = PlaceId;
-
             PreviewName = value.Name!;
-            PreviewId = $"ID: {value.RootPlaceId}";
-
+            PreviewId = string.Format(Strings.Menu_RegionSelector_ID, value.RootPlaceId);
             PreviewIcon = value.ThumbnailBitmap;
-
-            ShortcutStatus = "Ready to create";
+            ShortcutStatus = Strings.Menu_Shortcuts_ReadyToCreate;
 
             _isProcessingSelection = false;
             IsSearchFlyoutOpen = false;
@@ -171,7 +233,7 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             try
             {
-                ShortcutStatus = "Updating preview...";
+                ShortcutStatus = Strings.Menu_Shortcuts_UpdatingPreview;
 
                 await UniverseDetails.FetchBulk(id.ToString());
                 var details = UniverseDetails.LoadFromCache(id);
@@ -179,24 +241,23 @@ namespace Froststrap.UI.ViewModels.Settings
                 if (details != null)
                 {
                     PreviewName = details.Data.Name;
-                    PreviewId = $"ID: {id}";
+                    PreviewId = string.Format(Strings.Menu_RegionSelector_ID, id);
                     PreviewIcon = await LoadBitmapFromUrl(details.Thumbnail.ImageUrl, token);
                 }
                 else
                 {
-                    PreviewName = $"Game {id}";
-                    PreviewId = $"ID: {id}";
+                    PreviewName = string.Format(Strings.Menu_Shortcuts_Game, id);
+                    PreviewId = string.Format(Strings.Menu_RegionSelector_ID, id);
                     PreviewIcon = null;
                 }
             }
             catch (Exception)
             {
-                PreviewName = $"Game {id}";
-                ShortcutStatus = "Ready with manual ID.";
+                PreviewName = string.Format(Strings.Menu_Shortcuts_Game, id);
+                ShortcutStatus = Strings.Menu_Shortcuts_ReadyWithManualId;
             }
         }
 
-        [RelayCommand]
         private async Task SearchGamesAsync()
         {
             if (string.IsNullOrWhiteSpace(SearchQuery) || SearchQuery.Length < 3)
@@ -210,7 +271,7 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 var results = await GameSearching.GetGameSearchResultsAsync(SearchQuery);
 
-                if (results.Any())
+                if (results != null && results.Count > 0)
                 {
                     var thumbRequests = results.Select(x => new ThumbnailRequest
                     {
@@ -241,61 +302,21 @@ namespace Froststrap.UI.ViewModels.Settings
                 Dispatcher.UIThread.Post(() =>
                 {
                     SearchResults.Clear();
-                    foreach (var res in results) SearchResults.Add(res);
+                    if (results != null)
+                    {
+                        foreach (var res in results) SearchResults.Add(res);
+                    }
                     IsSearchFlyoutOpen = SearchResults.Count > 0 && !string.IsNullOrWhiteSpace(SearchQuery);
                 }, DispatcherPriority.Background);
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine("ShortcutsViewModel", $"Search error: {ex.Message}");
+                App.Logger.WriteLine(LOG_IDENT, $"Search error: {ex.Message}");
             }
             finally
             {
                 IsGameSearchLoading = false;
             }
-        }
-
-        private static void SaveBitmapAsIcon(Bitmap bitmap, Stream output)
-        {
-            using var ms = new MemoryStream();
-            bitmap.Save(ms);
-            ms.Position = 0;
-
-            using var resized = Bitmap.DecodeToWidth(ms, 64);
-
-            using var pngStream = new MemoryStream();
-            resized.Save(pngStream);
-            byte[] pngBytes = pngStream.ToArray();
-
-            using var writer = new BinaryWriter(output);
-            writer.Write((short)0);
-            writer.Write((short)1);
-            writer.Write((short)1);
-
-            writer.Write((byte)64);
-            writer.Write((byte)64);
-            writer.Write((byte)0);
-            writer.Write((byte)0);
-            writer.Write((short)1);
-            writer.Write((short)32);
-
-            writer.Write(pngBytes.Length);
-            writer.Write(22);
-            writer.Write(pngBytes);
-        }
-
-        private static string SanitizeFileName(string name)
-        {
-            foreach (char c in Path.GetInvalidFileNameChars())
-                name = name.Replace(c, '_');
-            return name.Trim();
-        }
-
-        private static string ComputeHash(byte[] data)
-        {
-            using var sha256 = SHA256.Create();
-            byte[] hash = sha256.ComputeHash(data);
-            return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
         }
     }
 }

@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<roblox xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.roblox.com/roblox.xsd" version="4">
+	<External>null</External>
+	<External>nil</External>
+	<Item class="UserGameSettings" referent="RBX17633EFA9BBD402199582E10A8C7E8F2">
+		<Properties>
+			<int name="FramerateCap">60</int>
+			<bool name="Fullscreen">false</bool>
+			<token name="SavedQualityLevel">2</token>
+			<bool name="MaxQualityEnabled">false</bool>
+			<bool name="VignetteEnabled">true</bool>
+			<bool name="VignetteEnabledCustomOption">true</bool>
+			<float name="MasterVolume">1</float>
+			<float name="MasterVolumeStudio">1</float>
+			<float name="PartyVoiceVolume">1</float>
+			<float name="MouseSensitivity">1</float>
+			<token name="ControlMode">0</token>
+			<Vector2 name="MouseSensitivityFirstPerson">
+				<X>1</X>
+				<Y>1</Y>
+			</Vector2>
+			<Vector2 name="MouseSensitivityThirdPerson">
+				<X>1</X>
+				<Y>1</Y>
+			</Vector2>
+			<bool name="CameraYInverted">false</bool>
+			<float name="HapticStrength">1</float>
+			<float name="PreferredTransparency">1</float>
+			<bool name="ReducedMotion">false</bool>
+			<token name="PreferredTextSize">1</token>
+			<token name="PeoplePageLayout">0</token>
+			<bool name="PerformanceStatsVisible">false</bool>
+			<bool name="ChatTranslationEnabled">true</bool>
+			<bool name="ChatTranslationFTUXShown">true</bool>
+			<bool name="VREnabled">false</bool>
+		</Properties>
+	</Item>
+</roblox>

@@ -1,5 +1,5 @@
-﻿using Avalonia.Controls;
-using System.Xml.Linq;
+﻿using System.Xml.Linq;
+using Avalonia.Controls;
 
 namespace Froststrap.UI.Elements.Bootstrapper
 {
@@ -9,17 +9,18 @@ namespace Froststrap.UI.Elements.Bootstrapper
 
         private class DummyControl : Control { }
 
-        private const int MaxElements = 100;
+        private const int MaxElements = 150;
 
         private bool _initialised = false;
 
-        private List<string> UsedNames { get; } = new List<string>();
+        // prevent users from creating elements with the same name multiple times
+        private readonly List<string> UsedNames = [];
 
         private string ThemeDir { get; set; } = "";
 
         delegate object HandleXmlElementDelegate(CustomDialog dialog, XElement xmlElement);
 
-        private static Dictionary<string, HandleXmlElementDelegate> _elementHandlerMap = new Dictionary<string, HandleXmlElementDelegate>()
+        private static readonly Dictionary<string, HandleXmlElementDelegate> _elementHandlerMap = new()
         {
             ["BloxstrapCustomBootstrapper"] = HandleXmlElement_BloxstrapCustomBootstrapper_Fake,
             ["TitleBar"] = HandleXmlElement_TitleBar,
@@ -44,8 +45,8 @@ namespace Froststrap.UI.Elements.Bootstrapper
             ["RotateTransform"] = HandleXmlElement_RotateTransform,
             ["TranslateTransform"] = HandleXmlElement_TranslateTransform,
 
-            ["BlurEffect"] = HandleXmlElement_BlurEffect,
             ["DropShadowEffect"] = HandleXmlElement_DropShadowEffect,
+            ["BlurEffect"] = HandleXmlElement_BlurEffect,
 
             ["Ellipse"] = HandleXmlElement_Ellipse,
             ["Line"] = HandleXmlElement_Line,
@@ -57,28 +58,24 @@ namespace Froststrap.UI.Elements.Bootstrapper
 
         private static T HandleXml<T>(CustomDialog dialog, XElement xmlElement) where T : class
         {
-            if (!_elementHandlerMap.ContainsKey(xmlElement.Name.LocalName))
+            if (!_elementHandlerMap.ContainsKey(xmlElement.Name.ToString()))
                 throw new CustomThemeException("CustomTheme.Errors.UnknownElement", xmlElement.Name);
 
-            var element = _elementHandlerMap[xmlElement.Name.LocalName](dialog, xmlElement);
-
+            var element = _elementHandlerMap[xmlElement.Name.ToString()](dialog, xmlElement);
             if (element is not T)
-                throw new CustomThemeException("CustomTheme.Errors.ElementInvalidChild", xmlElement.Parent?.Name.LocalName ?? "Root", xmlElement.Name);
+                throw new CustomThemeException("CustomTheme.Errors.ElementInvalidChild", xmlElement.Parent!.Name, xmlElement.Name);
 
             return (T)element;
         }
 
         private static void AddXml(CustomDialog dialog, XElement xmlElement)
         {
-            if (xmlElement.Name.LocalName.StartsWith($"{xmlElement.Parent?.Name.LocalName}."))
-                return;
+            if (xmlElement.Name.ToString().Contains('.'))
+                return; // not an xml element (it's a property element like Grid.RowDefinitions)
 
-            var uiElement = HandleXml<Control>(dialog, xmlElement);
-
-            if (uiElement is not DummyControl)
-            {
-                dialog.ElementGrid.Children.Add(uiElement);
-            }
+            var control = HandleXml<Control>(dialog, xmlElement);
+            if (control is not DummyControl)
+                dialog.ElementGrid.Children.Add(control);
         }
 
         private static void AssertThemeVersion(string? versionStr)
@@ -93,7 +90,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
             {
                 case Version:
                     break;
-                case 0:
+                case 0: // Themes made between Oct 19, 2024 to Mar 11, 2025 (on the feature/custom-bootstrappers branch)
                     throw new CustomThemeException("CustomTheme.Errors.VersionNotSupported", "BloxstrapCustomBootstrapper", version);
                 default:
                     throw new CustomThemeException("CustomTheme.Errors.VersionNotRecognised", "BloxstrapCustomBootstrapper", version);
@@ -105,14 +102,13 @@ namespace Froststrap.UI.Elements.Bootstrapper
             if (_initialised)
                 throw new CustomThemeException("CustomTheme.Errors.DialogAlreadyInitialised");
 
-            if (xml.Name.LocalName != "BloxstrapCustomBootstrapper")
+            if (xml.Name != "BloxstrapCustomBootstrapper")
                 throw new CustomThemeException("CustomTheme.Errors.InvalidRoot", "BloxstrapCustomBootstrapper");
 
             AssertThemeVersion(xml.Attribute("Version")?.Value);
 
-            int descendantCount = xml.Descendants().Count();
-            if (descendantCount > MaxElements)
-                throw new CustomThemeException("CustomTheme.Errors.TooManyElements", MaxElements, descendantCount);
+            if (xml.Descendants().Count() > MaxElements)
+                throw new CustomThemeException("CustomTheme.Errors.TooManyElements", MaxElements, xml.Descendants().Count());
 
             _initialised = true;
 
@@ -127,11 +123,13 @@ namespace Froststrap.UI.Elements.Bootstrapper
         {
             ThemeDir = Path.Combine(Paths.CustomThemes, name);
 
+            string convertedXaml = Utility.ThemeXamlConverter.ConvertThemeXaml(contents);
+
             XElement xml;
             try
             {
-                using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(contents)))
-                    xml = XElement.Load(ms);
+                using var ms = new MemoryStream(Encoding.UTF8.GetBytes(convertedXaml));
+                xml = XElement.Load(ms);
             }
             catch (Exception ex)
             {
@@ -144,6 +142,10 @@ namespace Froststrap.UI.Elements.Bootstrapper
         public void ApplyCustomTheme(string name)
         {
             string path = Path.Combine(Paths.CustomThemes, name, "Theme.xml");
+
+            if (!File.Exists(path))
+                throw new CustomThemeException("CustomTheme.Errors.FileNotFound", path);
+
             ApplyCustomTheme(name, File.ReadAllText(path));
         }
         #endregion

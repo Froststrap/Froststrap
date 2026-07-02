@@ -354,3 +354,9 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
+# Flatpak
+flatpak/build-dir/
+flatpak/repo/
+.flatpak-builder/
+*.flatpak

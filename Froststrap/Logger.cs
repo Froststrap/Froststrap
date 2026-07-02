@@ -1,18 +1,18 @@
 ﻿namespace Froststrap
 {
-    // https://stackoverflow.com/a/53873141/11852173
-
     public class Logger
     {
         private readonly SemaphoreSlim _semaphore = new(1, 1);
-        private FileStream? _filestream;
+        private StreamWriter? _writer;
 
-        public readonly List<string> History = new();
+        public readonly List<string> History = [];
         public bool Initialized = false;
         public bool NoWriteMode = false;
         public string? FileLocation;
 
         public string AsDocument => String.Join('\n', History);
+
+        private static readonly string HomeVarName = OperatingSystem.IsWindows() ? "%USERPROFILE%" : "$HOME";
 
         public async void Initialize(bool useTempDir = false)
         {
@@ -41,7 +41,10 @@
 
             try
             {
-                _filestream = File.Open(location, FileMode.Create, FileAccess.Write, FileShare.Read);
+                _writer = new StreamWriter(location, false, Encoding.UTF8)
+                {
+                    AutoFlush = true
+                };
             }
             catch (IOException)
             {
@@ -56,8 +59,8 @@
                 WriteLine(LOG_IDENT, $"Failed to initialize because Froststrap cannot write to {directory}");
 
                 await Frontend.ShowMessageBox(
-                    String.Format(Strings.Logger_NoWriteMode, directory), 
-                    MessageBoxImage.Warning, 
+                    String.Format(Strings.Logger_NoWriteMode, directory),
+                    MessageBoxImage.Warning,
                     MessageBoxButton.OK
                 );
 
@@ -65,12 +68,10 @@
 
                 return;
             }
-            
 
             Initialized = true;
 
-            if (History.Count > 0)
-                WriteToLog(string.Join("\r\n", History));
+            if (History.Count > 0) foreach (var line in History) WriteToLog(line);
 
             WriteLine(LOG_IDENT, "Finished initializing!");
 
@@ -87,12 +88,11 @@
 
                 foreach (FileInfo log in logs.OrderByDescending(log => log.LastWriteTimeUtc).Skip(maxLogs))
                 {
-
                     WriteLine(LOG_IDENT, $"Cleaning up old log file '{log.Name}'");
 
                     try
                     {
-                       log.Delete();
+                        log.Delete();
                     }
                     catch (Exception ex)
                     {
@@ -103,19 +103,18 @@
             }
         }
 
-        private void WriteLine(string message)
-        {
+        public void WriteLine(string identifier, string context) {
             string timestamp = DateTime.UtcNow.ToString("s") + "Z";
-            string outcon = $"{timestamp} {message}";
-            string outlog = outcon.Replace(Paths.UserProfile, "%UserProfile%", StringComparison.InvariantCultureIgnoreCase);
+            string line = $"{timestamp} [{identifier}] {context}".Replace(
+                Paths.UserProfile,
+                HomeVarName,
+                StringComparison.InvariantCultureIgnoreCase
+            );
 
-            Debug.WriteLine(outcon);
-            WriteToLog(outlog);
-
-            History.Add(outlog);
+            Console.WriteLine(line);
+            WriteToLog(line);
+            History.Add(line);
         }
-
-        public void WriteLine(string identifier, string message) => WriteLine($"[{identifier}] {message}");
 
         public void WriteException(string identifier, Exception ex)
         {
@@ -123,22 +122,19 @@
 
             string hresult = "0x" + ex.HResult.ToString("X8");
 
-            WriteLine($"[{identifier}] ({hresult}) {ex}");
+            WriteLine(identifier, $"({hresult}) {ex}");
 
             Thread.CurrentThread.CurrentUICulture = Locale.CurrentCulture;
         }
 
         private async void WriteToLog(string message)
         {
-            if (!Initialized)
-                return;
+            if (!Initialized) return;
 
             try
             {
                 await _semaphore.WaitAsync();
-                await _filestream!.WriteAsync(Encoding.UTF8.GetBytes($"{message}\r\n"));
-
-                _ = _filestream.FlushAsync();
+                await _writer!.WriteLineAsync(message);
             }
             finally
             {

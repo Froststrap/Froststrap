@@ -4,7 +4,8 @@
     {
         public Bootstrapper? Bootstrapper { get; set; }
         string Message { get; set; }
-        ProgressBarStyle ProgressStyle { get; set; }
+        string CancelButtonText { get; set; }
+        bool ProgressIndeterminate { get; set; }
         int ProgressValue { get; set; }
         int ProgressMaximum { get; set; }
         TaskbarItemProgressState TaskbarProgressState { get; set; }

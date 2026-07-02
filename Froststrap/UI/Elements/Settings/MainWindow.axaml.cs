@@ -2,16 +2,17 @@ using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
-using Avalonia.Input;
 using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using FluentAvalonia.UI.Controls;
-using FluentIcons.Common;
 using Froststrap.UI.Elements.Controls;
 using Froststrap.UI.Utility;
 using Froststrap.UI.ViewModels.Settings;
+using Froststrap.UI.ViewModels.Settings.Mods;
+using LucideAvalonia;
+using LucideAvalonia.Enum;
 using System.ComponentModel;
 
 namespace Froststrap.UI.Elements.Settings
@@ -20,8 +21,14 @@ namespace Froststrap.UI.Elements.Settings
     {
         public static MainWindow? Instance { get; private set; }
 
-        private Models.Persistable.WindowState _state => App.State.Prop.SettingsWindow;
-        private MainWindowViewModel? _viewModel;
+        private static Models.Persistable.WindowState State => App.State.Prop.SettingsWindow;
+        private readonly MainWindowViewModel? _viewModel;
+
+        private Border? _currentNotification;
+        private CancellationTokenSource? _notificationCts;
+        private bool _isAnimatingOut = false;
+
+        private readonly Dictionary<string, Control> _cachedPages = [];
 
         public MainWindow()
         {
@@ -48,25 +55,24 @@ namespace Froststrap.UI.Elements.Settings
 
             LoadState();
 
-            App.RemoteData.Subscribe((object? sender, EventArgs e) => {
-                Dispatcher.UIThread.Post(() => {
-                    RemoteDataBase Data = App.RemoteData.Prop;
+            LoadNavigationPaneState();
 
-                    if (AlertBar != null)
-                    {
-                        AlertBar.IsVisible = Data.AlertEnabled;
-                        AlertBar.Message = Data.AlertContent;
-                        AlertBar.Severity = Data.AlertSeverity;
-                    }
-                });
-            });
+            App.RemoteData.Subscribe((_, _) => Dispatcher.UIThread.Post(() =>
+            {
+                var data = App.RemoteData.Prop;
+
+                if (AlertBar is not null)
+                {
+                    AlertBar.IsVisible = data.AlertEnabled;
+                    AlertBar.Message = data.AlertContent;
+                    AlertBar.Severity = data.AlertSeverity;
+                }
+            }));
 
             _viewModel.PropertyChanged += OnViewModelPropertyChanged;
 
             this.Closing += MainWindow_Closing;
             this.Closed += MainWindow_Closed;
-
-            App.WindowsBackdrop();
 
             UpdatePageView(_viewModel.CurrentPage);
 
@@ -100,6 +106,8 @@ namespace Froststrap.UI.Elements.Settings
 
             if (_viewModel?.SelectedPage != item.PageTag)
             {
+                SaveCurrentPage();
+
                 // Navigation will trigger UpdatePageView, which will scroll to the item
                 var action = GetNavigationAction(item.PageTag ?? "");
                 action?.Invoke();
@@ -116,23 +124,59 @@ namespace Froststrap.UI.Elements.Settings
             {
                 "integrations" => () => _viewModel?.NavigateToIntegrationsCommand.Execute(null),
                 "behaviour" => () => _viewModel?.NavigateToBehaviourCommand.Execute(null),
+                "linuxsettings" => () => _viewModel?.NavigateToLinuxSettingsCommand.Execute(null),
                 "mods" => () => _viewModel?.NavigateToPresetModsCommand.Execute(null),
                 "fastflags" => () => _viewModel?.NavigateToFastFlagsCommand.Execute(null),
                 "appearance" => () => _viewModel?.NavigateToAppearanceCommand.Execute(null),
                 "regionselector" => () => _viewModel?.NavigateToRegionSelectorCommand.Execute(null),
                 "globalsettings" => () => _viewModel?.NavigateToGlobalSettingsCommand.Execute(null),
                 "shortcuts" => () => _viewModel?.NavigateToShortcutsCommand.Execute(null),
+                "quickplay" => () => _viewModel?.NavigateToQuickPlayCommand.Execute(null),
                 "channels" => () => _viewModel?.NavigateToChannelsCommand.Execute(null),
                 _ => null
             };
         }
 
+        private readonly Dictionary<string, (string Title, LucideIconNames Icon)> _pageInfo = new()
+        {
+            ["integrations"] = (Strings.Menu_Integrations_Title, LucideIconNames.Plus),
+            ["behaviour"] = (Strings.Menu_Behaviour_Title, LucideIconNames.Play),
+            ["linuxsettings"] = (Strings.Menu_LinuxSettings_Title, LucideIconNames.Settings),
+            ["mods"] = (Strings.Menu_PresetMods_Title, LucideIconNames.BookOpen),
+            ["fastflags"] = (Strings.Menu_FastFlags_Title, LucideIconNames.Flag),
+            ["appearance"] = (Strings.Menu_Appearance_Title, LucideIconNames.Palette),
+            ["regionselector"] = (Strings.Menu_RegionSelector_Title, LucideIconNames.Globe),
+            ["globalsettings"] = (Strings.Menu_GlobalSettings_Title, LucideIconNames.PenLine),
+            ["shortcuts"] = (Strings.Common_Shortcuts, LucideIconNames.Link2),
+            ["quickplay"] = (Strings.Menu_QuickPlay_Title, LucideIconNames.Gamepad2),
+            ["channels"] = (Strings.Common_Deployment, LucideIconNames.HardDriveUpload),
+        };
+
         private void UpdatePageView(object? viewModel)
         {
+            SaveCurrentPage();
+
             var pageControl = this.FindControl<TransitioningContentControl>("PageContentControl");
             if (pageControl == null || viewModel == null) return;
 
-            var view = ResolveViewForViewModel(viewModel);
+            bool shouldReinitialize = viewModel is AppearanceViewModel || viewModel is ModsViewModel;
+
+            string pageTag = _viewModel?.SelectedPage ?? "";
+            Control? view = null;
+
+            if (!shouldReinitialize && !string.IsNullOrEmpty(pageTag) && _cachedPages.TryGetValue(pageTag, out var cachedView))
+            {
+                view = cachedView;
+            }
+            else
+            {
+                view = ResolveViewForViewModel(viewModel);
+
+                if (view != null && !shouldReinitialize && !string.IsNullOrEmpty(pageTag))
+                {
+                    _cachedPages[pageTag] = view;
+                }
+            }
 
             if (view != null)
             {
@@ -141,8 +185,10 @@ namespace Froststrap.UI.Elements.Settings
 
                 Dispatcher.UIThread.Post(() =>
                 {
-                    var pageTag = _viewModel?.SelectedPage ?? "";
-                    IndexPage(view, pageTag);
+                    if (!string.IsNullOrEmpty(pageTag) && _pageInfo.TryGetValue(pageTag, out var info))
+                    {
+                        IndexPage(view, pageTag, info.Title, info.Icon);
+                    }
 
                     if (_pendingSearchScrollItem != null)
                     {
@@ -156,15 +202,17 @@ namespace Froststrap.UI.Elements.Settings
             }
         }
 
-        private void NavView_ItemInvoked(object? sender, NavigationViewItemInvokedEventArgs e)
+        private void NavView_ItemInvoked(object? sender, FANavigationViewItemInvokedEventArgs e)
         {
-            if (e.InvokedItemContainer is NavigationViewItem navItem && navItem.Tag is string tag)
+            if (e.InvokedItemContainer is FANavigationViewItem navItem && navItem.Tag is string tag)
             {
                 if (tag == "about")
                 {
                     _viewModel?.OpenAboutCommand.Execute(null);
                     return;
                 }
+
+                SaveCurrentPage();
 
                 var action = GetNavigationAction(tag);
                 action?.Invoke();
@@ -173,12 +221,12 @@ namespace Froststrap.UI.Elements.Settings
 
         private void UpdateSelectedNavigationViewItem(string selectedPage)
         {
-            var navView = this.FindControl<NavigationView>("NavView");
+            var navView = this.FindControl<FANavigationView>("NavView");
             if (navView == null) return;
 
-            foreach(var item in navView.MenuItems)
+            foreach (var item in navView.MenuItems)
             {
-                if (item is NavigationViewItem navItem && navItem.Tag is string tag)
+                if (item is FANavigationViewItem navItem && navItem.Tag is string tag)
                 {
                     if (tag == selectedPage)
                     {
@@ -187,9 +235,9 @@ namespace Froststrap.UI.Elements.Settings
                     }
                 }
             }
-            foreach(var item in navView.FooterMenuItems)
+            foreach (var item in navView.FooterMenuItems)
             {
-                if (item is NavigationViewItem navItem && navItem.Tag is string tag)
+                if (item is FANavigationViewItem navItem && navItem.Tag is string tag)
                 {
                     if (tag == selectedPage)
                     {
@@ -242,17 +290,17 @@ namespace Froststrap.UI.Elements.Settings
             var screen = Screens.Primary?.Bounds;
             if (screen != null)
             {
-                if (_state.Left > screen.Value.Width) _state.Left = 0;
-                if (_state.Top > screen.Value.Height) _state.Top = 0;
+                if (State.Left > screen.Value.Width) State.Left = 0;
+                if (State.Top > screen.Value.Height) State.Top = 0;
             }
 
-            if (_state.Width > 0) this.Width = _state.Width;
-            if (_state.Height > 0) this.Height = _state.Height;
+            if (State.Width > 0) this.Width = State.Width;
+            if (State.Height > 0) this.Height = State.Height;
 
-            if (_state.Left > 0 && _state.Top > 0)
+            if (State.Left > 0 && State.Top > 0)
             {
                 this.WindowStartupLocation = WindowStartupLocation.Manual;
-                this.Position = new PixelPoint((int)_state.Left, (int)_state.Top);
+                this.Position = new PixelPoint((int)State.Left, (int)State.Top);
             }
         }
 
@@ -261,7 +309,7 @@ namespace Froststrap.UI.Elements.Settings
             ShowNotification(
                 Strings.Menu_SettingsSaved_Title,
                 Strings.Menu_SettingsSaved_Message,
-                InfoBarSeverity.Success,
+                FAInfoBarSeverity.Success,
                 3000);
         }
 
@@ -271,36 +319,90 @@ namespace Froststrap.UI.Elements.Settings
             ShowNotification(
                 Strings.Menu_AlreadyRunning_Title,
                 Strings.Menu_AlreadyRunning_Caption,
-                InfoBarSeverity.Warning,
+                FAInfoBarSeverity.Warning,
                 5000);
         }
 
-        public static void ShowGlobalNotification(string title, string subtitle, InfoBarSeverity type, int timeout = 3000, FluentIcons.Common.Symbol? icon = null)
+        public static void ShowGlobalNotification(string title, string subtitle, FAInfoBarSeverity type, int timeout = 3000, LucideIconNames? icon = null)
         {
             Dispatcher.UIThread.Post(() => Instance?.ShowNotification(title, subtitle, type, timeout, icon));
         }
 
-        public void ShowNotification(string title, string subtitle, InfoBarSeverity type, int timeout, FluentIcons.Common.Symbol? customIcon = null)
+        public void ShowNotification(string title, string subtitle, FAInfoBarSeverity type, int timeout, LucideIconNames? customIcon = null)
         {
             var notificationPanel = this.FindControl<Panel>("NotificationPanel");
             if (notificationPanel == null) return;
 
-            var accentColor = type == InfoBarSeverity.Success ? "#00D084" : "#FFB900";
-            var iconSymbol = customIcon ?? (type == InfoBarSeverity.Success
-                ? FluentIcons.Common.Symbol.CheckmarkCircle
-                : FluentIcons.Common.Symbol.Warning);
+            if (_isAnimatingOut)
+            {
+                Task.Run(async () =>
+                {
+                    while (_isAnimatingOut)
+                    {
+                        await Task.Delay(50);
+                    }
+                    Dispatcher.UIThread.Post(() => ShowNotification(title, subtitle, type, timeout, customIcon));
+                });
+                return;
+            }
+
+            _notificationCts?.Cancel();
+            _notificationCts?.Dispose();
+            _notificationCts = new CancellationTokenSource();
+            var token = _notificationCts.Token;
+
+            if (_currentNotification != null && notificationPanel.Children.Contains(_currentNotification))
+            {
+                _isAnimatingOut = true;
+                var oldNotification = _currentNotification;
+
+                oldNotification.Opacity = 0;
+                oldNotification.RenderTransform = new TranslateTransform(0, 40);
+
+                Task.Run(async () =>
+                {
+                    await Task.Delay(350);
+                    Dispatcher.UIThread.Post(() =>
+                    {
+                        if (notificationPanel.Children.Contains(oldNotification))
+                        {
+                            notificationPanel.Children.Remove(oldNotification);
+                        }
+                        _isAnimatingOut = false;
+                        _currentNotification = null;
+
+                        ShowNotificationInternal(title, subtitle, type, timeout, customIcon);
+                    });
+                });
+                return;
+            }
+
+            ShowNotificationInternal(title, subtitle, type, timeout, customIcon);
+        }
+
+        private void ShowNotificationInternal(string title, string subtitle, FAInfoBarSeverity type, int timeout, LucideIconNames? customIcon = null)
+        {
+            var notificationPanel = this.FindControl<Panel>("NotificationPanel");
+            if (notificationPanel == null) return;
+
+            var accentColor = type == FAInfoBarSeverity.Success ? "#00D084" : "#FFB900";
+            var iconSymbol = customIcon ?? (type == FAInfoBarSeverity.Success
+                ? LucideIconNames.CircleCheck
+                : LucideIconNames.TriangleAlert);
 
             var contentGrid = new Grid
             {
-                ColumnDefinitions = new ColumnDefinitions("Auto,*"),
+                ColumnDefinitions = new ColumnDefinitions("Auto,*,Auto"),
                 Margin = new Thickness(0)
             };
 
-            var icon = new FluentIcons.Avalonia.Fluent.SymbolIcon
+            var icon = new Lucide
             {
-                Symbol = iconSymbol,
-                FontSize = 28,
-                Foreground = new SolidColorBrush(Color.Parse(accentColor)),
+                Icon = iconSymbol,
+                Width = 28,
+                Height = 28,
+                StrokeBrush = new SolidColorBrush(Color.Parse(accentColor)),
+                StrokeThickness = 1.5,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
                 Margin = new Thickness(16, 0, 12, 0)
             };
@@ -320,25 +422,42 @@ namespace Froststrap.UI.Elements.Settings
             Grid.SetColumn(textPanel, 1);
             contentGrid.Children.Add(textPanel);
 
+            var closeButton = new IconButton
+            {
+                Icon = LucideIconNames.X,
+                IconSize = 16,
+                Background = Brushes.Transparent,
+                BorderThickness = new Thickness(0),
+                Padding = new Thickness(8, 4, 8, 4),
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right,
+                Width = 32,
+                Height = 32,
+                Margin = new Thickness(0, 0, 12, 0)
+            };
+
+            closeButton.Bind(IconButton.ForegroundProperty, new DynamicResourceExtension("TextFillColorSecondaryBrush"));
+
+            Grid.SetColumn(closeButton, 2);
+            contentGrid.Children.Add(closeButton);
+
             var notification = new Border
             {
                 BorderBrush = new SolidColorBrush(Color.Parse(accentColor)),
                 BorderThickness = new Thickness(1),
-                Padding = new Thickness(0, 12, 24, 12),
-                Margin = new Thickness(0, 0, 0, 10),
+                Padding = new Thickness(0, 12, 0, 12),
+                Margin = new Thickness(200, 0, 200, 40),
                 MinWidth = 350,
-                MaxWidth = 500,
                 Height = 80,
-                CornerRadius = new CornerRadius(12),
+                CornerRadius = new CornerRadius(6),
                 Opacity = 0,
                 RenderTransform = new TranslateTransform(0, 40),
-                Cursor = new Cursor(StandardCursorType.Hand),
                 Child = contentGrid,
-                BoxShadow = new BoxShadows(new BoxShadow { Blur = 10, OffsetY = 4, Color = Color.Parse("#40000000") })
+                BoxShadow = new BoxShadows(new BoxShadow { Blur = 10, OffsetY = 4, Color = Color.Parse("#40000000") }),
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch
             };
 
-            notification.Bind(Border.BackgroundProperty, new DynamicResourceExtension("SolidBackgroundFillColorBase"));
-
+            notification.Bind(Border.BackgroundProperty, new DynamicResourceExtension("NotificationBackgroundColor"));
 
             notification.Transitions =
             [
@@ -348,24 +467,49 @@ namespace Froststrap.UI.Elements.Settings
 
             async void Dismiss()
             {
+                if (_notificationCts?.Token.IsCancellationRequested ?? false) return;
                 if (!notificationPanel.Children.Contains(notification)) return;
                 notification.Opacity = 0;
                 notification.RenderTransform = new TranslateTransform(0, 40);
                 await Task.Delay(350);
-                notificationPanel.Children.Remove(notification);
+                if (notificationPanel.Children.Contains(notification))
+                {
+                    notificationPanel.Children.Remove(notification);
+                }
+                if (_currentNotification == notification)
+                {
+                    _currentNotification = null;
+                }
             }
 
-            notification.PointerPressed += (s, e) => Dismiss();
+            closeButton.Click += (s, e) =>
+            {
+                e.Handled = true;
+                Dismiss();
+            };
+
+            notification.PointerPressed += (s, e) =>
+            {
+                if (e.Source is IconButton) return;
+                Dismiss();
+            };
+
+            _currentNotification = notification;
             notificationPanel.Children.Add(notification);
 
             Dispatcher.UIThread.InvokeAsync(async () =>
             {
+                if (_notificationCts?.Token.IsCancellationRequested ?? false) return;
                 await Task.Delay(50);
+                if (_notificationCts?.Token.IsCancellationRequested ?? false) return;
                 notification.Opacity = 1;
                 notification.RenderTransform = new TranslateTransform(0, 0);
 
                 await Task.Delay(timeout);
-                Dismiss();
+                if (!(_notificationCts?.Token.IsCancellationRequested ?? false))
+                {
+                    Dismiss();
+                }
             });
         }
 
@@ -384,10 +528,7 @@ namespace Froststrap.UI.Elements.Settings
         public void HideLoading()
         {
             var loadingOverlay = this.FindControl<Grid>("LoadingOverlay");
-            if (loadingOverlay != null)
-            {
-                loadingOverlay.IsVisible = false;
-            }
+            loadingOverlay?.IsVisible = false;
         }
 
         private void AttachTitleBarButtons()
@@ -397,21 +538,21 @@ namespace Froststrap.UI.Elements.Settings
             var closeButton = this.FindControl<IconButton>("PART_CloseButton");
 
             minimizeButton?.Click += (s, e) =>
-                {
-                    this.WindowState = Avalonia.Controls.WindowState.Minimized;
-                };
+            {
+                this.WindowState = Avalonia.Controls.WindowState.Minimized;
+            };
 
             maximizeButton?.Click += (s, e) =>
-                {
-                    this.WindowState = this.WindowState == Avalonia.Controls.WindowState.Maximized 
-                        ? Avalonia.Controls.WindowState.Normal 
-                        : Avalonia.Controls.WindowState.Maximized;
-                };
+            {
+                this.WindowState = this.WindowState == Avalonia.Controls.WindowState.Maximized
+                    ? Avalonia.Controls.WindowState.Normal
+                    : Avalonia.Controls.WindowState.Maximized;
+            };
 
             closeButton?.Click += (s, e) =>
-                {
-                    this.Close();
-                };
+            {
+                this.Close();
+            };
         }
 
         private SearchIndexBuilder? _searchIndexBuilder;
@@ -424,16 +565,21 @@ namespace Froststrap.UI.Elements.Settings
 
             var pages = new List<(string PageTag, string PageTitle, object PageViewModel)>
             {
-                ("integrations", "Integrations", new IntegrationsViewModel()),
-                ("behaviour", "Behaviour", new BehaviourViewModel()),
-                ("mods", "Preset Mods", new ModsPresetsViewModel()),
-                ("fastflags", "Fast Flags", new FastFlagsViewModel()),
-                ("appearance", "Appearance", new AppearanceViewModel()),
-                ("regionselector", "Region Selector", new RegionSelectorViewModel()),
-                ("globalsettings", "Global Settings", new GlobalSettingsViewModel()),
-                ("shortcuts", "Shortcuts", new ShortcutsViewModel()),
-                ("channels", "Channels", new ChannelViewModel()),
+                ("integrations", Strings.Menu_Integrations_Title, new IntegrationsViewModel()),
+                ("behaviour", Strings.Menu_Behaviour_Title, new BehaviourViewModel()),
+                ("linuxsettings", Strings.Menu_LinuxSettings_Title, new LinuxSettingsViewModel()),
+                ("mods", Strings.Menu_PresetMods_Title, new ModsPresetsViewModel()),
+                ("fastflags", Strings.Menu_FastFlags_Title, new FastFlagsViewModel()),
+                ("appearance", Strings.Menu_Appearance_Title, new AppearanceViewModel()),
+                ("regionselector", Strings.Menu_RegionSelector_Title, new RegionSelectorViewModel()),
+                ("globalsettings", Strings.Menu_GlobalSettings_Title, new GlobalSettingsViewModel()),
+                ("shortcuts", Strings.Common_Shortcuts, new ShortcutsViewModel()),
+                ("quickplay", Strings.Menu_QuickPlay_Title, new QuickPlayViewModel()),
+                ("channels", Strings.Common_Deployment, new ChannelViewModel()),
             };
+
+            if (!_viewModel.GBSEnabled)
+                pages.RemoveAll(p => p.PageTag == "globalsettings");
 
             var searchIndex = _searchIndexBuilder.BuildIndex(pages);
 
@@ -441,12 +587,14 @@ namespace Froststrap.UI.Elements.Settings
             {
                 { "integrations", () => _viewModel.NavigateToIntegrationsCommand.Execute(null) },
                 { "behaviour", () => _viewModel.NavigateToBehaviourCommand.Execute(null) },
+                { "linuxsettings", () => _viewModel.NavigateToLinuxSettingsCommand.Execute(null) },
                 { "mods", () => _viewModel.NavigateToPresetModsCommand.Execute(null) },
                 { "fastflags", () => _viewModel.NavigateToFastFlagsCommand.Execute(null) },
                 { "appearance", () => _viewModel.NavigateToAppearanceCommand.Execute(null) },
                 { "regionselector", () => _viewModel.NavigateToRegionSelectorCommand.Execute(null) },
                 { "globalsettings", () => _viewModel.NavigateToGlobalSettingsCommand.Execute(null) },
                 { "shortcuts", () => _viewModel.NavigateToShortcutsCommand.Execute(null) },
+                { "quickplay", () => _viewModel.NavigateToQuickPlayCommand.Execute(null) },
                 { "channels", () => _viewModel.NavigateToChannelsCommand.Execute(null) },
             };
 
@@ -458,7 +606,7 @@ namespace Froststrap.UI.Elements.Settings
                 }
             }
 
-            _viewModel.SearchBar.SetSearchIndex(searchIndex);
+            _viewModel.SearchBar.SetSearchIndex([]);
 
             PreIndexPages(pages);
         }
@@ -474,7 +622,7 @@ namespace Froststrap.UI.Elements.Settings
 
             stagingArea.IsVisible = true;
 
-            foreach (var (pageTag, _, pageViewModel) in pages)
+            foreach (var (pageTag, pageTitle, pageViewModel) in pages)
             {
                 try
                 {
@@ -487,7 +635,8 @@ namespace Froststrap.UI.Elements.Settings
                     await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Render);
                     await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Background);
 
-                    IndexPage(view, pageTag);
+                    var (_, icon) = _pageInfo[pageTag];
+                    IndexPage(view, pageTag, pageTitle, icon);
 
                     stagingArea.Child = null;
 
@@ -503,7 +652,7 @@ namespace Froststrap.UI.Elements.Settings
             stagingArea.IsVisible = false;
         }
 
-        private void IndexPage(Control pageView, string pageTag)
+        private void IndexPage(Control pageView, string pageTag, string pageTitle, LucideIconNames pageIcon)
         {
             if (_viewModel == null || _searchIndexBuilder == null) return;
 
@@ -513,13 +662,38 @@ namespace Froststrap.UI.Elements.Settings
 
                 if (addedItems.Count > 0)
                 {
-                var currentIndex = _viewModel.SearchBar.GetSearchIndex();
-                    currentIndex.AddRange(addedItems);
+                    foreach (var item in addedItems)
+                    {
+                        item.PageName = pageTitle;
+                        item.IconSymbol = pageIcon;
+                    }
+
+                    var hiddenControlHeaders = pageView.GetVisualDescendants()
+                        .Where(c => !c.IsVisible)
+                        .Select(c => {
+                            if (c is OptionControl oc) return oc.Header?.ToString();
+                            if (c is CardExpander ce) return ce.Header?.ToString();
+                            if (c is CardAction ca) return ca.Header?.ToString();
+                            if (c is TextBlock tb) return tb.Text;
+                            return null;
+                        })
+                        .Where(name => !string.IsNullOrEmpty(name))
+                        .ToHashSet();
+
+                    var filteredItems = addedItems
+                        .Where(item => !hiddenControlHeaders.Contains(item.DisplayName))
+                        .ToList();
+
+                    if (filteredItems.Count > 0)
+                    {
+                        var currentIndex = _viewModel.SearchBar.GetSearchIndex();
+                        currentIndex.AddRange(filteredItems);
+                    }
                 }
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine("MainWindow::IndexPage", 
+                App.Logger.WriteLine("MainWindow::IndexPage",
                     $"Error scanning page {pageTag}: {ex.Message}");
             }
         }
@@ -537,10 +711,7 @@ namespace Froststrap.UI.Elements.Settings
                         .OfType<CardExpander>()
                         .FirstOrDefault(ce => (ce.Header as string) == item.ParentSectionName);
 
-                    if (parentExpander != null)
-                    {
-                        parentExpander.IsExpanded = true;
-                    }
+                    parentExpander?.IsExpanded = true;
                 }
 
                 Control? targetControl = null;
@@ -572,26 +743,69 @@ namespace Froststrap.UI.Elements.Settings
                         break;
                 }
 
-                if (targetControl != null)
-                {
-                    targetControl.BringIntoView();
-                }
+                targetControl?.BringIntoView();
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine("MainWindow::ScrollToSearchItem", 
+                App.Logger.WriteLine("MainWindow::ScrollToSearchItem",
                     $"Error scrolling to item: {ex.Message}");
             }
         }
 
+        private void SaveCurrentPage()
+        {
+            if (_viewModel?.CurrentPage != null)
+            {
+                App.State.Prop.LastPage = _viewModel.CurrentPage.GetType().FullName;
+                App.State.SaveSetting("LastPage");
+            }
+        }
+
+        private void LoadNavigationPaneState()
+        {
+            var navView = this.FindControl<FANavigationView>("NavView");
+            if (navView == null) return;
+
+            navView.IsPaneOpen = App.State.Prop.IsNavigationPaneOpen;
+        }
+
         #region Event Handlers
 
-        private void MainWindow_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
+        private async void MainWindow_Closing(object? sender, CancelEventArgs e)
         {
-            _state.Width = this.Width;
-            _state.Height = this.Height;
-            _state.Left = this.Position.X;
-            _state.Top = this.Position.Y;
+            if (MainWindowViewModel.HasUnsavedChanges)
+            {
+                e.Cancel = true;
+
+                var result = await Frontend.ShowMessageBox(
+                    Strings.Menu_UnsavedChangesPrompt,
+                    MessageBoxImage.Warning,
+                    MessageBoxButton.YesNoCancel
+                );
+
+                if (result == MessageBoxResult.Yes)
+                    _viewModel?.SaveSettings();
+                else if (result == MessageBoxResult.Cancel)
+                    return;
+
+                this.Closing -= MainWindow_Closing;
+                this.Close();
+                return;
+            }
+
+            State.Width = this.Width;
+            State.Height = this.Height;
+            State.Left = this.Position.X;
+            State.Top = this.Position.Y;
+
+            var navView = this.FindControl<FANavigationView>("NavView");
+            if (navView != null)
+            {
+                App.State.Prop.IsNavigationPaneOpen = navView.IsPaneOpen;
+                App.State.SaveSetting("IsNavigationPaneOpen");
+            }
+
+            SaveCurrentPage();
         }
 
         private void MainWindow_Closed(object? sender, EventArgs e)

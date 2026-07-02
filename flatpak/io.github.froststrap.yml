@@ -1,0 +1,69 @@
+app-id: io.github.froststrap
+runtime: org.freedesktop.Platform
+runtime-version: '25.08'
+sdk: org.freedesktop.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.dotnet10
+command: Froststrap
+finish-args:
+  - --share=ipc
+  - --socket=x11
+  - --socket=wayland
+  - --socket=pulseaudio
+  - --share=network
+  - --device=dri
+  - --filesystem=home
+  - --talk-name=org.freedesktop.Flatpak
+  - --filesystem=xdg-run/app/com.discordapp.Discord:create
+  - --filesystem=xdg-run/discord-ipc-0
+build-options:
+  append-path: /usr/lib/sdk/dotnet10/bin
+  env:
+    DOTNET_ROOT: /usr/lib/sdk/dotnet10
+  build-args:
+    - --share=network
+modules:
+  - name: Froststrap
+    buildsystem: simple
+    build-options:
+      env:
+        DOTNET_ROOT: /usr/lib/sdk/dotnet10
+    build-commands:
+      - |
+        # Restore dependencies
+        dotnet restore Froststrap/Froststrap.csproj
+
+        # Publish the application
+        dotnet publish Froststrap/Froststrap.csproj \
+          -r linux-x64 \
+          -c Release \
+          --self-contained true \
+          -p:PublishSingleFile=true \
+          --output /app/froststrap-bin
+
+        # Install binary
+        install -Dm755 /app/froststrap-bin/Froststrap /app/bin/Froststrap
+
+        # Install shared libraries and .NET files
+        cp -r /app/froststrap-bin/* /app/bin/
+
+        # Install desktop entry
+        install -Dm644 flatpak/io.github.froststrap.desktop /app/share/applications/io.github.froststrap.desktop
+
+        # Install icon
+        mkdir -p /app/share/icons/hicolor/512x512/apps
+        cp flatpak/io.github.froststrap.png /app/share/icons/hicolor/512x512/apps/io.github.froststrap.png
+
+        # Install metainfo
+        install -Dm644 flatpak/io.github.froststrap.metainfo.xml /app/share/metainfo/io.github.froststrap.metainfo.xml
+
+        # Install flatpak-spawn wrapper to allow Froststrap to run flatpak from the host
+        echo '#!/bin/sh' > /app/bin/flatpak
+        echo 'exec flatpak-spawn --host flatpak "$@"' >> /app/bin/flatpak
+        chmod +x /app/bin/flatpak
+
+        # Clean up temp
+        rm -rf /app/froststrap-bin
+    sources:
+      - type: dir
+        path: ..
