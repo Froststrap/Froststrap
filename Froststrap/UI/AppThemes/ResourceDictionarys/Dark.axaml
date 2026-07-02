@@ -12,17 +12,4 @@
 	<SolidColorBrush x:Key="ApplicationBackgroundColor"    Color="#01000000" />
 
 	<SolidColorBrush x:Key="NotificationBackgroundColor"   Color="#2D2D2D" />
-
-	<Bitmap x:Key="Icon_Plus">avares://Froststrap/Resources/SideNav/Plus_Light.png</Bitmap>
-	<Bitmap x:Key="Icon_Play">avares://Froststrap/Resources/SideNav/Play_Light.png</Bitmap>
-	<Bitmap x:Key="Icon_Gamepad2">avares://Froststrap/Resources/SideNav/Gamepad2_Light.png</Bitmap>
-	<Bitmap x:Key="Icon_HardDriveUpload">avares://Froststrap/Resources/SideNav/HardDriveUpload_Light.png</Bitmap>
-	<Bitmap x:Key="Icon_BookOpen">avares://Froststrap/Resources/SideNav/BookOpen_Light.png</Bitmap>
-	<Bitmap x:Key="Icon_Palette">avares://Froststrap/Resources/SideNav/Palette_Light.png</Bitmap>
-	<Bitmap x:Key="Icon_Flag">avares://Froststrap/Resources/SideNav/Flag_Light.png</Bitmap>
-	<Bitmap x:Key="Icon_PenLine">avares://Froststrap/Resources/SideNav/PenLine_Light.png</Bitmap>
-	<Bitmap x:Key="Icon_Settings">avares://Froststrap/Resources/SideNav/Settings_Light.png</Bitmap>
-	<Bitmap x:Key="Icon_Globe">avares://Froststrap/Resources/SideNav/Globe_Light.png</Bitmap>
-	<Bitmap x:Key="Icon_Link2">avares://Froststrap/Resources/SideNav/Link2_Light.png</Bitmap>
-	<Bitmap x:Key="Icon_Info">avares://Froststrap/Resources/SideNav/Info_Light.png</Bitmap>
 </ResourceDictionary>
