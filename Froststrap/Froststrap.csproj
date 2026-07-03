@@ -67,7 +67,6 @@
     <PackageReference Include="Avalonia" Version="12.0.5" />
     <PackageReference Include="Avalonia.AvaloniaEdit" Version="12.0.0-rc1" />
     <PackageReference Include="Avalonia.Desktop" Version="12.0.5" />
-    <PackageReference Include="Avalonia.Labs.Notifications" Version="12.0.2" />
     <PackageReference Include="AvaloniaUI.DiagnosticsSupport" Version="2.2.0">
       <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
       <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
@@ -89,6 +88,7 @@
     <ProjectReference Include="..\ColorPicker\ColorPicker.AvaloniaUI\ColorPicker.AvaloniaUI.csproj" />
     <ProjectReference Include="..\LucideAvalonia\LucideAvalonia\LucideAvalonia.csproj" />
     <ProjectReference Include="..\FluentAvalonia\src\FluentAvalonia\FluentAvalonia.csproj" />
+    <ProjectReference Include="..\Avalonia.Labs\src\Avalonia.Labs.Notifications\Avalonia.Labs.Notifications.csproj" />
   </ItemGroup>
 
   <ItemGroup>

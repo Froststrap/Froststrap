@@ -1,4 +1,5 @@
 ﻿using Avalonia.Labs.Notifications;
+
 namespace Froststrap.UI.Utility
 {
     public static class NotificationTracker
