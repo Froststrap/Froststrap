@@ -47,10 +47,10 @@
                 <Separator Margin="0,8" />
 
                 <ui:FAInfoBar Message="{x:Static resources:Strings.Menu_Mods_InfoBar}"
-                            Severity="Informational"
-                            IsOpen="True"
-                            Margin="0,4"
-                            IsClosable="False" />
+                              Severity="Informational"
+                              IsOpen="True"
+                              Margin="0,4"
+                              IsClosable="True" />
 
                 <controls:IconButton Icon="Plus"
                                      Content="{x:Static resources:Strings.Menu_Mods_AddNewMod}"

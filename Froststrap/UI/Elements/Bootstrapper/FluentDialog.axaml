@@ -22,8 +22,8 @@
     Background="{Binding BackgroundColourBrush}">
 
     <Grid>
-        <TextBlock Margin="5" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="11" FontFamily="{StaticResource Rubik}" Text="{Binding VersionText}" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
-        <TextBlock Margin="5" VerticalAlignment="Top" HorizontalAlignment="Right" FontSize="11" FontFamily="{StaticResource Rubik}" Text="{Binding ChannelText}" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+        <TextBlock Margin="5" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="11" FontFamily="{StaticResource Rubik}" Text="{Binding VersionText}" Foreground="{DynamicResource TextFillColorSecondaryBrush}" IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOS}"/>
+        <TextBlock Margin="5" VerticalAlignment="Top" HorizontalAlignment="Right" FontSize="11" FontFamily="{StaticResource Rubik}" Text="{Binding ChannelText}" Foreground="{DynamicResource TextFillColorSecondaryBrush}" IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOS}"/>
         <controls:TitleBar
             VerticalAlignment="Top"
             ShowClose="False"

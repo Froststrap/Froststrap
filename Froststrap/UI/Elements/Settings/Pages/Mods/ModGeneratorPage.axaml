@@ -15,10 +15,10 @@
              d:DesignWidth="1100"
              mc:Ignorable="d">
 
-	<ScrollViewer>
-		<Grid Margin="14" RowDefinitions="Auto,Auto,*">
-			<Grid Grid.Row="0" ColumnDefinitions="*,*,*">
-				<controls:CardAction Grid.Column="0" Margin="0,0,4,0"
+    <ScrollViewer>
+        <Grid Margin="14" RowDefinitions="Auto,Auto,*">
+            <Grid Grid.Row="0" ColumnDefinitions="*,*,*">
+                <controls:CardAction Grid.Column="0" Margin="0,0,4,0"
                                      Command="{Binding OpenCommunityModsCommand}"
                                      Header="{x:Static resources:Strings.Menu_CommunityMods_Title}"
                                      Icon="House"
@@ -212,23 +212,15 @@
 
                         <Separator Margin="0,12"/>
 
-                        <Button Command="{Binding GenerateModCommand}"
-                                IsEnabled="{Binding IsNotGeneratingMod}"
-                                Content="{x:Static resources:Strings.Common_Generate}"
-                                HorizontalAlignment="Stretch"
-                                Height="40"
-                                Background="{DynamicResource SystemAccentColor}"
-                                Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}"
-                                Classes="accent">
-                            <Button.ContentTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-                                        <ic:Lucide StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}" Icon="CirclePlay" />
-                                        <TextBlock Foreground="{DynamicResource TextFillColorPrimaryBrush}" Text="{Binding}" />
-                                    </StackPanel>
-                                </DataTemplate>
-                            </Button.ContentTemplate>
-                        </Button>
+                        <controls:IconButton Command="{Binding GenerateModCommand}"
+                                             IsEnabled="{Binding IsNotGeneratingMod}"
+                                             Content="{x:Static resources:Strings.Common_Generate}"
+                                             HorizontalAlignment="Stretch"
+                                             Height="40"
+                                             Icon="Play"
+                                             Background="{DynamicResource SystemAccentColor}"
+                                             Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}"
+                                             Classes="accent"/>
 
                         <TextBlock Text="{Binding StatusText}"
                                    Margin="0,12,0,0"

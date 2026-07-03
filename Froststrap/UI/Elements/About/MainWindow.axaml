@@ -24,9 +24,7 @@
         <Grid Grid.Row="1" Name="MainGrid">
             <ui:FANavigationView Name="NavView"
                                  IsPaneOpen="False"
-                                 PaneDisplayMode="LeftCompact"
-                                 IsSettingsVisible="False"
-                                 IsBackButtonVisible="False"
+                                 PaneDisplayMode="Left"
                                  OpenPaneLength="140"
                                  ItemInvoked="NavView_ItemInvoked">
                 <ui:FANavigationView.Styles>
