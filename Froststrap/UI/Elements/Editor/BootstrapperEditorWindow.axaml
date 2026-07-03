@@ -12,44 +12,45 @@
     Width="1000" Height="500"
     WindowStartupLocation="CenterScreen">
 
-<Grid RowDefinitions="Auto,*,Auto" Background="{DynamicResource ApplicationBackgroundColor}">
-        <controls:TitleBar Grid.Row="0" Title="{Binding Title}" 
+    <Grid RowDefinitions="Auto,*,Auto" Background="{DynamicResource ApplicationBackgroundColor}">
+        <controls:TitleBar Grid.Row="0" Title="{Binding Title}"
                            Icon="avares://Froststrap/Froststrap.ico" />
-    <Panel
-        Name="NotificationPanel"
-        Grid.Row="1"
-        HorizontalAlignment="Center"
-        VerticalAlignment="Bottom"
-        Margin="0,0,0,15"
-        MaxWidth="450"
-        ZIndex="1000" />
+        <Panel
+            Name="NotificationPanel"
+            Grid.Row="0"
+            Grid.RowSpan="3"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Bottom"
+            ZIndex="1000" />
 
-<Ae:TextEditor Name="UIXML" 
-               Grid.Row="1"
-               Classes="NewTextEditor"
-               ShowLineNumbers="True"
-               Margin="10"
-               Padding="5"
-               HorizontalScrollBarVisibility="Auto"
-               VerticalScrollBarVisibility="Visible" />
+        <Ae:TextEditor Name="UIXML"
+                       Grid.Row="1"
+                       Classes="NewTextEditor"
+                       ShowLineNumbers="True"
+                       Margin="10"
+                       Padding="5"
+                       HorizontalScrollBarVisibility="Auto"
+                       VerticalScrollBarVisibility="Visible" />
 
-        <Border Grid.Row="2" Background="{DynamicResource PrimaryBackgroundColor}" Padding="10">
+        <Border Grid.Row="2" Background="{DynamicResource ControlFillColorDefaultBrush}"
+                BorderBrush="{DynamicResource ControlStrokeColorDefault}"
+                BorderThickness="0,1,0,0" Padding="0,0,16,0" Height="56">
             <Grid ColumnDefinitions="*,Auto,Auto,Auto">
-                <Button Grid.Column="0" 
+                <Button Grid.Column="0" Margin="8,0,0,0"
                         Command="{Binding OpenThemeFolderCommand}"
                         Content="{x:Static resources:Strings.CustomTheme_Editor_OpenThemeDirectory}" />
 
-                <Button Grid.Column="1" Margin="10,0,0,0" 
+                <Button Grid.Column="1" Margin="10,0,0,0"
                         Classes="accent"
                         Command="{Binding PreviewCommand}"
                         Content="{x:Static resources:Strings.Menu_Appearance_Preview}" />
 
-                <Button Grid.Column="2" Margin="10,0,0,0" 
+                <Button Grid.Column="2" Margin="10,0,0,0"
                         Classes="accent"
                         Command="{Binding SaveCommand}"
                         Content="{x:Static resources:Strings.Menu_Save}" />
 
-                <Button Grid.Column="3" Margin="12,0,0,0" 
+                <Button Grid.Column="3" Margin="12,0,0,0"
                         Content="{x:Static resources:Strings.Common_Close}"
                         Click="OnCancelButtonClicked" />
             </Grid>
