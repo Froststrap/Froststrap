@@ -18,12 +18,14 @@ mkdir -p "$BUILD_DIR/Froststrap.app/Contents/Resources"
 dotnet publish "$PROJECT_FILE" \
     -c "$CONFIG" \
     -p:PublishProfile="$PUBLISH_PROFILE_ARM64" \
-    -o "./$BUILD_DIR/temp/arm64"
+    -o "./$BUILD_DIR/temp/arm64" \
+    --configfile "$(pwd)/nuget.config"
 
 dotnet publish "$PROJECT_FILE" \
     -c "$CONFIG" \
     -p:PublishProfile="$PUBLISH_PROFILE_X64" \
-    -o "./$BUILD_DIR/temp/x64"
+    -o "./$BUILD_DIR/temp/x64" \
+    --configfile "$(pwd)/nuget.config"
 
 # Create Universal Binary
 lipo -create \

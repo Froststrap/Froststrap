@@ -14,7 +14,8 @@ rm -rf "$BUILD_DIR" && mkdir -p "$BUILD_DIR"
 dotnet publish "$PROJECT_FILE" \
     -c "$CONFIG" \
     -p:PublishProfile="$PUBLISH_PROFILE" \
-    -o "$BUILD_DIR/linux-temp"
+    -o "$BUILD_DIR/linux-temp" \
+    --configfile "$REPO_ROOT/nuget.config"
 
 # Setup Filesystem
 mkdir -p "$APP_DIR/usr/bin"
