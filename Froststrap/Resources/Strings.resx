@@ -3049,4 +3049,7 @@ Would you like to visit the releases page now?</value>
   <data name="Menu.Appearance.PaneMode.Description" xml:space="preserve">
     <value>Changes how the left sidebar is shown.</value>
   </data>
+  <data name="Common.Auto" xml:space="preserve">
+    <value>Auto</value>
+  </data>
 </root>

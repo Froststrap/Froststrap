@@ -17,8 +17,8 @@
     Title="{x:Static resources:Strings.Menu_Title}"
     Width="1125"
     Height="700"
-    MinWidth="250"
-    MinHeight="250"
+    MinWidth="750"
+    MinHeight="415"
     x:DataType="vm:MainWindowViewModel"
     CanResize="True"
     WindowStartupLocation="CenterScreen">

@@ -633,6 +633,15 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Auto.
+        /// </summary>
+        public static string Common_Auto {
+            get {
+                return ResourceManager.GetString("Common.Auto", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Bands.
         /// </summary>
         public static string Common_Bands {

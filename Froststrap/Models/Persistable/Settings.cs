@@ -1,5 +1,4 @@
-﻿using FluentAvalonia.UI.Controls;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 
 namespace Froststrap.Models.Persistable
 {
@@ -40,7 +39,7 @@ namespace Froststrap.Models.Persistable
         public bool JoinSmallerServer { get; set; } = false;
         public int BestRegionAmounts { get; set; } = 5;
         public int MaxServerCheck { get; set; } = 25;
-        public string SelectedRegion { get; set; } = "Auto";
+        public string SelectedRegion { get; set; } = Strings.Common_Auto;
         public ProcessPriorityOption SelectedProcessPriority { get; set; } = ProcessPriorityOption.Normal;
 
         // FastFlag Editor/Settings
@@ -58,7 +57,7 @@ namespace Froststrap.Models.Persistable
         public DateTime CycleLastCycleTime { get; set; } = DateTime.MinValue;
         public BootstrapperIcon BootstrapperIcon { get; set; } = BootstrapperIcon.IconFroststrap;
         public WindowsBackdrops SelectedBackdrop { get; set; } = WindowsBackdrops.None;
-        public NavigationViewPaneDisplayMode NavigationPaneDisplayMode { get; set; } = NavigationViewPaneDisplayMode.Left;
+        public NavigationViewPaneDisplayMode NavigationPaneDisplayMode { get; set; } = NavigationViewPaneDisplayMode.Auto;
         public string Locale { get; set; } = "nil";
         public List<GradientStops> CustomGradientStops { get; set; } =
         [

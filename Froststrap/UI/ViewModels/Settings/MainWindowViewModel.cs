@@ -74,6 +74,7 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 return _navigationPaneDisplayMode switch
                 {
+                    NavigationViewPaneDisplayMode.Auto => FANavigationViewPaneDisplayMode.Auto,
                     NavigationViewPaneDisplayMode.Left => FANavigationViewPaneDisplayMode.Left,
                     NavigationViewPaneDisplayMode.Top => FANavigationViewPaneDisplayMode.Top,
                     NavigationViewPaneDisplayMode.LeftCompact => FANavigationViewPaneDisplayMode.LeftCompact,
