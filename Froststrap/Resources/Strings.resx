@@ -400,7 +400,7 @@ If not, then please report this exception through a [GitHub issue]({1}) along wi
     <comment>{0} and {1} are numbers</comment>
   </data>
   <data name="CustomTheme.Errors.FileNotFound" xml:space="preserve">
-    <value>The file "{0}" could not be found</value>
+    <value>The file "{0}" could not be found in your system</value>
     <comment>{0} is the file path</comment>
   </data>
   <data name="CustomTheme.Errors.VersionNotSet" xml:space="preserve">
