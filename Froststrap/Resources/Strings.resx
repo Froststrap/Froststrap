@@ -3034,4 +3034,19 @@ Would you like to visit the releases page now?</value>
   <data name="Menu.ModGenerator.ModsOptions" xml:space="preserve">
     <value>Mod Options</value>
   </data>
+  <data name="Enums.NavigationViewPaneDisplayMode.Left" xml:space="preserve">
+    <value>Left</value>
+  </data>
+  <data name="Enums.NavigationViewPaneDisplayMode.Top" xml:space="preserve">
+    <value>Top</value>
+  </data>
+  <data name="Enums.NavigationViewPaneDisplayMode.LeftCompact" xml:space="preserve">
+    <value>Left Compact</value>
+  </data>
+  <data name="Menu.Appearance.PaneMode.Title" xml:space="preserve">
+    <value>Navigation Pane Display Mode</value>
+  </data>
+  <data name="Menu.Appearance.PaneMode.Description" xml:space="preserve">
+    <value>Changes how the left sidebar is shown.</value>
+  </data>
 </root>

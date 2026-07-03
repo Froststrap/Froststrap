@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using FluentAvalonia.UI.Controls;
+using System.Collections.ObjectModel;
 
 namespace Froststrap.Models.Persistable
 {
@@ -57,6 +58,7 @@ namespace Froststrap.Models.Persistable
         public DateTime CycleLastCycleTime { get; set; } = DateTime.MinValue;
         public BootstrapperIcon BootstrapperIcon { get; set; } = BootstrapperIcon.IconFroststrap;
         public WindowsBackdrops SelectedBackdrop { get; set; } = WindowsBackdrops.None;
+        public NavigationViewPaneDisplayMode NavigationPaneDisplayMode { get; set; } = NavigationViewPaneDisplayMode.Left;
         public string Locale { get; set; } = "nil";
         public List<GradientStops> CustomGradientStops { get; set; } =
         [
@@ -83,12 +85,14 @@ namespace Froststrap.Models.Persistable
         public string PlayerChannel { get; set; } = RobloxInterfaces.Deployment.DefaultChannel;
         public string StudioChannel { get; set; } = RobloxInterfaces.Deployment.DefaultChannel;
         public ChannelChangeMode ChannelChangeMode { get; set; } = ChannelChangeMode.Prompt;
+        public bool StudioVersionOverrideEnabled { get; set; } = false;
+        public string StudioVersionOverrideHash { get; set; } = string.Empty;
+
+        // Linux Settings page
         public bool EnableWebView2 { get; set; } = true;
         public string? StudioVirtualDesktop { get; set; } = string.Empty;
         public string? StudioLauncher { get; set; } = string.Empty;
         public StudioRenderer StudioRenderer { get; set; } = StudioRenderer.DXVK;
-        public bool StudioVersionOverrideEnabled { get; set; } = false;
-        public string StudioVersionOverrideHash { get; set; } = string.Empty;
         public bool StudioGameMode { get; set; } = false;
         public bool StudioDebug { get; set; } = false;
         public Dictionary<string, string> StudioEnvironmentVariables { get; set; } = [];

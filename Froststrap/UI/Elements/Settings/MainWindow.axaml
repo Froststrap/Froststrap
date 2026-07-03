@@ -43,7 +43,7 @@
             IsSettingsVisible="False"
             ItemInvoked="NavView_ItemInvoked"
             OpenPaneLength="220"
-            PaneDisplayMode="Left">
+            PaneDisplayMode="{Binding NavigationPaneDisplayMode}">
             <ui:FANavigationView.MenuItems>
                 <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_Integrations_Title}" Tag="integrations">
                     <ui:FANavigationViewItem.Icon>

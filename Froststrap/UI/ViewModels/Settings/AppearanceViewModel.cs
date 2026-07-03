@@ -2,6 +2,8 @@
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using FluentAvalonia.UI.Controls;
 using Froststrap.UI.Elements.Base;
 using Froststrap.UI.Elements.Dialogs;
 using Froststrap.UI.Elements.Editor;
@@ -9,14 +11,11 @@ using ICSharpCode.SharpZipLib.Zip;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Input;
-using WebDriverBiDi.Script;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
     public partial class AppearanceViewModel : NotifyPropertyChangedViewModel
     {
-        private static readonly JsonSerializerOptions _jsonOptions = new() { WriteIndented = true };
-
         private static readonly string[] _icoFilter = ["*.ico"];
         private static readonly string[] _zipFilter = ["*.zip"];
         private static readonly string[] JsonPatterns = ["*.json"];
@@ -170,6 +169,22 @@ namespace Froststrap.UI.ViewModels.Settings
 
             PopulateCustomThemes();
             InitializeGradientStops();
+        }
+
+        public IEnumerable<NavigationViewPaneDisplayMode> PaneDisplayModes { get; } = Enum.GetValues<NavigationViewPaneDisplayMode>();
+
+        private NavigationViewPaneDisplayMode _selectedPaneDisplayMode = App.Settings.Prop.NavigationPaneDisplayMode;
+        public NavigationViewPaneDisplayMode SelectedPaneDisplayMode
+        {
+            get => _selectedPaneDisplayMode;
+            set
+            {
+                if (SetProperty(ref _selectedPaneDisplayMode, value))
+                {
+                    App.Settings.Prop.NavigationPaneDisplayMode = value;
+                    WeakReferenceMessenger.Default.Send(new NavigationPaneDisplayModeChangedMessage(value));
+                }
+            }
         }
 
         public IEnumerable<BootstrapperStyle> Dialogs { get; } = BootstrapperStyleEx.Selections;

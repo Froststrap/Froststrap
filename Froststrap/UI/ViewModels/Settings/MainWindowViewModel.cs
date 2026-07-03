@@ -1,15 +1,19 @@
+using FluentAvalonia.UI.Controls;
+using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Froststrap.UI.Elements.Settings.Pages;
 using Froststrap.UI.ViewModels.Settings.FastFlags;
 using Froststrap.UI.ViewModels.Settings.GlobalSettings;
 using Froststrap.UI.ViewModels.Settings.Mods;
-using Froststrap.UI.Elements.Settings.Pages;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
+    public record NavigationPaneDisplayModeChangedMessage(NavigationViewPaneDisplayMode NewMode);
+
     public class BreadcrumbItemModel
     {
         public string Content { get; set; } = string.Empty;
@@ -59,6 +63,31 @@ namespace Froststrap.UI.ViewModels.Settings
                     _breadcrumbItems?.CollectionChanged += OnBreadcrumbsChanged;
 
                 UpdateBreadcrumbVisibility();
+            }
+        }
+
+        private NavigationViewPaneDisplayMode _navigationPaneDisplayMode;
+
+        public FANavigationViewPaneDisplayMode NavigationPaneDisplayMode
+        {
+            get
+            {
+                return _navigationPaneDisplayMode switch
+                {
+                    NavigationViewPaneDisplayMode.Left => FANavigationViewPaneDisplayMode.Left,
+                    NavigationViewPaneDisplayMode.Top => FANavigationViewPaneDisplayMode.Top,
+                    NavigationViewPaneDisplayMode.LeftCompact => FANavigationViewPaneDisplayMode.LeftCompact,
+                    _ => FANavigationViewPaneDisplayMode.Left
+                };
+            }
+        }
+
+        private void UpdateNavigationPaneDisplayMode(NavigationViewPaneDisplayMode mode)
+        {
+            if (_navigationPaneDisplayMode != mode)
+            {
+                _navigationPaneDisplayMode = mode;
+                OnPropertyChanged(nameof(NavigationPaneDisplayMode));
             }
         }
 
@@ -187,6 +216,13 @@ namespace Froststrap.UI.ViewModels.Settings
                 NavigateToLastPage(lastPageName);
             else
                 NavigateToIntegrationsCommand.Execute(null);
+
+            _navigationPaneDisplayMode = App.Settings.Prop.NavigationPaneDisplayMode;
+
+            WeakReferenceMessenger.Default.Register<NavigationPaneDisplayModeChangedMessage>(this, (_, m) =>
+            {
+                UpdateNavigationPaneDisplayMode(m.NewMode);
+            });
         }
 
         private void Navigate(string pageId, string title, string description, object viewModel, ObservableCollection<BreadcrumbItemModel>? customBreadcrumbs = null)

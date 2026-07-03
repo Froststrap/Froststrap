@@ -2598,6 +2598,33 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Left.
+        /// </summary>
+        public static string Enums_NavigationViewPaneDisplayMode_Left {
+            get {
+                return ResourceManager.GetString("Enums.NavigationViewPaneDisplayMode.Left", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Left Compact.
+        /// </summary>
+        public static string Enums_NavigationViewPaneDisplayMode_LeftCompact {
+            get {
+                return ResourceManager.GetString("Enums.NavigationViewPaneDisplayMode.LeftCompact", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Top.
+        /// </summary>
+        public static string Enums_NavigationViewPaneDisplayMode_Top {
+            get {
+                return ResourceManager.GetString("Enums.NavigationViewPaneDisplayMode.Top", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Square.
         /// </summary>
         public static string Enums_PlayerListLayOut_x0 {
@@ -3526,6 +3553,24 @@ namespace Froststrap.Resources {
         public static string Menu_Appearance_Opacity {
             get {
                 return ResourceManager.GetString("Menu.Appearance.Opacity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Changes how the left sidebar is shown..
+        /// </summary>
+        public static string Menu_Appearance_PaneMode_Description {
+            get {
+                return ResourceManager.GetString("Menu.Appearance.PaneMode.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Navigation Pane Display Mode.
+        /// </summary>
+        public static string Menu_Appearance_PaneMode_Title {
+            get {
+                return ResourceManager.GetString("Menu.Appearance.PaneMode.Title", resourceCulture);
             }
         }
         
