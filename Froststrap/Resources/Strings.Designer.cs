@@ -246,15 +246,6 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Checking dependencies.
-        /// </summary>
-        public static string Bootstrapper_Status_CheckingDependencies {
-            get {
-                return ResourceManager.GetString("Bootstrapper.Status.CheckingDependencies", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Checking Flatpak installation....
         /// </summary>
         public static string Bootstrapper_Status_CheckingFlatpak {
@@ -269,15 +260,6 @@ namespace Froststrap.Resources {
         public static string Bootstrapper_Status_CheckingUpdates {
             get {
                 return ResourceManager.GetString("Bootstrapper.Status.CheckingUpdates", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Compiling Vulkan layer....
-        /// </summary>
-        public static string Bootstrapper_Status_CompilingVulkanLayer {
-            get {
-                return ResourceManager.GetString("Bootstrapper.Status.CompilingVulkanLayer", resourceCulture);
             }
         }
         
@@ -314,15 +296,6 @@ namespace Froststrap.Resources {
         public static string Bootstrapper_Status_DownloadingDXVK {
             get {
                 return ResourceManager.GetString("Bootstrapper.Status.DownloadingDXVK", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Downloading DXVK-Sarek....
-        /// </summary>
-        public static string Bootstrapper_Status_DownloadingDXVKSarek {
-            get {
-                return ResourceManager.GetString("Bootstrapper.Status.DownloadingDXVKSarek", resourceCulture);
             }
         }
         
@@ -368,15 +341,6 @@ namespace Froststrap.Resources {
         public static string Bootstrapper_Status_ExtractingDXVK {
             get {
                 return ResourceManager.GetString("Bootstrapper.Status.ExtractingDXVK", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Extracting DXVK-Sarek....
-        /// </summary>
-        public static string Bootstrapper_Status_ExtractingDXVKSarek {
-            get {
-                return ResourceManager.GetString("Bootstrapper.Status.ExtractingDXVKSarek", resourceCulture);
             }
         }
         
@@ -480,15 +444,6 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Setting up DXVK....
-        /// </summary>
-        public static string Bootstrapper_Status_SettingUpDXVK {
-            get {
-                return ResourceManager.GetString("Bootstrapper.Status.SettingUpDXVK", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Skipping server search....
         /// </summary>
         public static string Bootstrapper_Status_SkippingMatchmaking {
@@ -525,16 +480,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Starting Roblox Studio with Wine....
-        /// </summary>
-        public static string Bootstrapper_Status_StartingStudioWine {
-            get {
-                return ResourceManager.GetString("Bootstrapper.Status.StartingStudioWine", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Uninstalling WebView2 {0}....
+        ///   Looks up a localized string similar to Uninstalling WebView2....
         /// </summary>
         public static string Bootstrapper_Status_UninstallingWebView2 {
             get {

@@ -56,12 +56,9 @@
     <EmbeddedResource Include="Resources\Mods\Sounds\OldGetUp.mp3" />
     <EmbeddedResource Include="Resources\Mods\Sounds\OldJump.mp3" />
     <EmbeddedResource Include="Resources\Mods\Sounds\OldWalk.mp3" />
+	<EmbeddedResource Include="Resources\PresetFlags\High Quality" />
     <EmbeddedResource Include="Resources\PresetFlags\Balanced Quality" />
-    <EmbeddedResource Include="Resources\PresetFlags\High Quality" />
     <EmbeddedResource Include="Resources\PresetFlags\Low Quality" />
-    <EmbeddedResource Include="Resources\vinegar_layer.cpp" />
-    <EmbeddedResource Include="Resources\vk_layer.h" />
-    <EmbeddedResource Include="Resources\VkLayer_VINEGAR_VinegarLayer.json" />
   </ItemGroup>
 
   <!-- NuGet packages -->

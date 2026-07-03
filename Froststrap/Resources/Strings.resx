@@ -2814,12 +2814,6 @@ Would you like to switch your preferred channel to {0}?</value>
   <data name="Bootstrapper.Status.StartingSober" xml:space="preserve">
     <value>Starting Sober...</value>
   </data>
-  <data name="Bootstrapper.Status.StartingStudioWine" xml:space="preserve">
-    <value>Starting Roblox Studio with Wine...</value>
-  </data>
-  <data name="Bootstrapper.Status.CheckingDependencies" xml:space="preserve">
-    <value>Checking dependencies</value>
-  </data>
   <data name="Bootstrapper.Status.DownloadingWine" xml:space="preserve">
     <value>Downloading Wine...</value>
   </data>
@@ -2829,20 +2823,11 @@ Would you like to switch your preferred channel to {0}?</value>
   <data name="Bootstrapper.Status.InitializingWinePrefix" xml:space="preserve">
     <value>Initializing Wine prefix...</value>
   </data>
-  <data name="Bootstrapper.Status.SettingUpDXVK" xml:space="preserve">
-    <value>Setting up DXVK...</value>
-  </data>
   <data name="Bootstrapper.Status.ExtractingDXVK" xml:space="preserve">
     <value>Extracting DXVK...</value>
   </data>
-  <data name="Bootstrapper.Status.ExtractingDXVKSarek" xml:space="preserve">
-    <value>Extracting DXVK-Sarek...</value>
-  </data>
-  <data name="Bootstrapper.Status.CompilingVulkanLayer" xml:space="preserve">
-    <value>Compiling Vulkan layer...</value>
-  </data>
   <data name="Bootstrapper.Status.UninstallingWebView2" xml:space="preserve">
-    <value>Uninstalling WebView2 {0}...</value>
+    <value>Uninstalling WebView2...</value>
   </data>
   <data name="Bootstrapper.Status.DownloadingWebView2" xml:space="preserve">
     <value>Downloading WebView2...</value>
@@ -2882,9 +2867,6 @@ Would you like to switch your preferred channel to {0}?</value>
   </data>
   <data name="Bootstrapper.Status.DownloadingDXVK" xml:space="preserve">
     <value>Downloading DXVK...</value>
-  </data>
-  <data name="Bootstrapper.Status.DownloadingDXVKSarek" xml:space="preserve">
-    <value>Downloading DXVK-Sarek...</value>
   </data>
   <data name="Bootstrapper.Status.RetryingPackage" xml:space="preserve">
     <value>Retrying {0}...</value>

@@ -71,18 +71,17 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private void OpenWineCfg()
         {
-            string wineBinary = App.Settings.Prop.WineBinaryPath;
-            if (string.IsNullOrEmpty(wineBinary) || !File.Exists(wineBinary))
+            string baseWineDir = Path.Combine(Paths.Base, "Wine");
+            var wineMgr = new WineManager(baseWineDir);
+
+            string wineBinary = Path.Combine(baseWineDir, "kombucha", "bin", "wine");
+            if (!File.Exists(wineBinary))
             {
-                wineBinary = Path.Combine(Paths.Base, "kombucha", "bin", "wine");
-                if (!File.Exists(wineBinary))
-                {
-                    _ = Frontend.ShowMessageBox(Strings.Menu_LinuxSettings_WineBinaryNotFound, MessageBoxImage.Error);
-                    return;
-                }
+                _ = Frontend.ShowMessageBox(Strings.Menu_LinuxSettings_WineBinaryNotFound, MessageBoxImage.Error);
+                return;
             }
 
-            string winePrefix = App.Settings.Prop.WinePrefixPath ?? Path.Combine(Paths.Base, "prefixes", "studio");
+            string winePrefix = wineMgr.PrefixDir;
             var psi = new ProcessStartInfo
             {
                 FileName = wineBinary,
@@ -103,25 +102,17 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        private static string GetEffectiveWineBinary()
-        {
-            string? customPath = App.Settings.Prop.WineBinaryPath;
-            if (!string.IsNullOrEmpty(customPath) && File.Exists(customPath))
-                return customPath;
-
-            string kombuchaPath = Path.Combine(Paths.Base, "kombucha", "bin", "wine");
-            return File.Exists(kombuchaPath) ? kombuchaPath : "wine";
-        }
-
         public static bool IsWineAvailable
         {
             get
             {
                 if (!OperatingSystem.IsLinux()) return false;
-                string wineBinary = GetEffectiveWineBinary();
+                string baseWineDir = Path.Combine(Paths.Base, "Wine");
+                string wineBinary = Path.Combine(baseWineDir, "kombucha", "bin", "wine");
                 if (!File.Exists(wineBinary)) return false;
 
-                string winePrefix = App.Settings.Prop.WinePrefixPath ?? Path.Combine(Paths.Base, "prefixes", "studio");
+                var wineMgr = new WineManager(baseWineDir);
+                string winePrefix = wineMgr.PrefixDir;
                 return Directory.Exists(winePrefix);
             }
         }
