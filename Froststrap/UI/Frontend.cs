@@ -2,10 +2,11 @@
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Controls.Notifications;
+using Avalonia.Labs.Notifications;
 using Avalonia.Threading;
 using Froststrap.UI.Elements.Bootstrapper;
 using Froststrap.UI.Elements.Dialogs;
-using Avalonia.Labs.Notifications;
+using Froststrap.UI.Utility;
 
 namespace Froststrap.UI
 {
@@ -166,12 +167,7 @@ namespace Froststrap.UI
         public static void ShowBalloonTip(string title, string message, NotificationType category = NotificationType.Information, int timeoutSeconds = 5)
         {
             var manager = NativeNotificationManager.Current;
-
-            if (manager == null)
-            {
-                App.Logger.WriteLine("Frontend::ShowBalloonTip", "NativeNotificationManager is null.");
-                return;
-            }
+            if (manager == null) return;
 
             string categoryString = category switch
             {
@@ -182,18 +178,18 @@ namespace Froststrap.UI
             };
 
             var notification = manager.CreateNotification(categoryString);
+            if (notification == null) return;
 
-            if (notification != null)
+            notification.Title = title;
+            notification.Message = message;
+            notification.Expiration = TimeSpan.FromSeconds(timeoutSeconds);
+
+            NotificationTracker.Track(notification, TimeSpan.FromSeconds(timeoutSeconds));
+
+            Dispatcher.UIThread.Post(() =>
             {
-                notification.Title = title;
-                notification.Message = message;
-                notification.Expiration = TimeSpan.FromSeconds(timeoutSeconds);
-
-                Dispatcher.UIThread.Post(() =>
-                {
-                    notification.Show();
-                });
-            }
+                notification.Show();
+            }, DispatcherPriority.ApplicationIdle);
         }
     }
 }

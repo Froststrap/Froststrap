@@ -1,11 +1,12 @@
-﻿using Avalonia.Controls.Notifications;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Notifications;
 using Avalonia.Labs.Notifications;
 using Avalonia.Platform;
 using Avalonia.Threading;
 using Froststrap.Integrations;
 using Froststrap.UI.Elements.ContextMenu;
+using Froststrap.UI.Utility;
 
 namespace Froststrap.UI
 {
@@ -154,13 +155,8 @@ namespace Froststrap.UI
         public void ShowAlert(string title, string message, int duration = 5, NotificationType category = NotificationType.Information)
         {
             if (_isDisposed) return;
-
             var manager = NativeNotificationManager.Current;
-            if (manager == null)
-            {
-                App.Logger.WriteLine("NotifyIconWrapper::ShowAlert", "NativeNotificationManager is null.");
-                return;
-            }
+            if (manager == null) return;
 
             string categoryString = category switch
             {
@@ -171,19 +167,19 @@ namespace Froststrap.UI
             };
 
             var notification = manager.CreateNotification(categoryString);
-
             if (notification == null) return;
 
             notification.Title = title;
             notification.Message = message;
-
             notification.Expiration = TimeSpan.FromSeconds(duration);
+
+            NotificationTracker.Track(notification, TimeSpan.FromSeconds(duration));
 
             Dispatcher.UIThread.Post(() =>
             {
                 if (_isDisposed) return;
                 notification.Show();
-            }, DispatcherPriority.Background);
+            }, DispatcherPriority.ApplicationIdle);
         }
 
         public void Dispose()
