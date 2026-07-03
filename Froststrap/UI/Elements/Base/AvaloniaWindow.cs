@@ -16,8 +16,16 @@ namespace Froststrap.UI.Elements.Base
 
         public AvaloniaWindow()
         {
-            this.WindowDecorations = OperatingSystem.IsMacOS() ? WindowDecorations.Full : WindowDecorations.None;
-            this.ExtendClientAreaToDecorationsHint = true;
+            if (!OperatingSystem.IsMacOS())
+            {
+                this.WindowDecorations = WindowDecorations.BorderOnly;
+                this.ExtendClientAreaToDecorationsHint = true;
+            }
+            else
+            {
+                this.WindowDecorations = WindowDecorations.Full;
+            }
+
             TextOptions.SetTextRenderingMode(this, TextRenderingMode.Antialias);
             ApplyTheme();
         }
