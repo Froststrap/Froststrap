@@ -329,7 +329,7 @@ public partial class App : Application
 
             string? installLocation = null;
 
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            if (OperatingSystem.IsWindows())
             {
                 using var uninstallKey = Registry.CurrentUser.OpenSubKey(UninstallKey);
                 if (uninstallKey?.GetValue("InstallLocation") is string installLocValue)
@@ -464,7 +464,7 @@ public partial class App : Application
             if (Settings.Prop.AllowCookieAccess)
                 await Task.Run(Cookies.LoadCookies);
 
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            if (OperatingSystem.IsWindows())
             {
                 WindowsRegistry.RegisterApis();
 
@@ -484,6 +484,10 @@ public partial class App : Application
                 {
                     Logger.WriteLine("App::OnFrameworkInitializationCompleted", $"Failed to register app: {ex.Message}");
                 }
+            }
+            else if (OperatingSystem.IsLinux())
+            {
+                LinuxRegistry.RegisterAll();
             }
 
             PlatformSettings?.ColorValuesChanged += (sender, args) =>
