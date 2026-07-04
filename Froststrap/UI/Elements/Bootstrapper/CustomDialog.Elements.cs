@@ -507,7 +507,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
             string? title = xmlElement.Attribute("Title")?.Value ?? "Froststrap";
             dialog.RootTitleBar.Title = title;
 
-            if (!OperatingSystem.IsWindows())
+            if (OperatingSystem.IsMacOS())
             {
                 dialog.WindowDecorations = WindowDecorations.Full;
                 dialog.ExtendClientAreaToDecorationsHint = true;
