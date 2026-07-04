@@ -2,7 +2,7 @@
 {
     public class EmojiModPresetTask : EnumBaseTask<EmojiType>
     {
-        private static string FilePath => Path.Combine(Paths.Modifications, @"content\fonts\TwemojiMozilla.ttf");
+        private static string FilePath => Path.Combine(Paths.Modifications, "content", "fonts", "TwemojiMozilla.ttf");
 
         private static IEnumerable<KeyValuePair<EmojiType, string>>? QueryCurrentValue()
         {

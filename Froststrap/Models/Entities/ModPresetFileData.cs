@@ -16,9 +16,17 @@
 
         public ModPresetFileData(string contentPath, string resource)
         {
-            FilePath = contentPath;
+            //Why does linux do this bro, pisses me off
+            if (OperatingSystem.IsLinux())
+            {
+                var parts = contentPath.Split(new[] { '\\', '/' }, StringSplitOptions.RemoveEmptyEntries);
+                FilePath = Path.Combine(parts);
+            }
+            else
+            {
+                FilePath = contentPath;
+            }
             ResourceIdentifier = resource;
-
             using var stream = ResourceStream;
             ResourceHash = App.MD5Provider.ComputeHash(stream);
         }
