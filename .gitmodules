@@ -3,7 +3,7 @@
 	url = https://gitlab.com/froststrap/color-picker.git
 [submodule "FluentAvalonia"]
 	path = FluentAvalonia
-	url = https://github.com/Froststrap/FluentAvalonia.git
+	url = https://gitlab.com/froststrap/fluent-avalonia.git
 [submodule "LucideAvalonia"]
 	path = LucideAvalonia
 	url = https://github.com/Froststrap/LucideAvalonia.git
