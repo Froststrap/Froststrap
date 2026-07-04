@@ -171,8 +171,8 @@ namespace Froststrap
                 int eqIndex = trimmed.IndexOf('=');
                 if (eqIndex > 0)
                 {
-                    string name = trimmed.Substring(0, eqIndex).Trim();
-                    string value = trimmed.Substring(eqIndex + 1).Trim();
+                    string name = trimmed[..eqIndex].Trim();
+                    string value = trimmed[(eqIndex + 1)..].Trim();
                     if (name == ".ROBLOSECURITY")
                         return value;
                 }

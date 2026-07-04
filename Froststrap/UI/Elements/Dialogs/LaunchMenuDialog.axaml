@@ -42,7 +42,7 @@
                                  FontWeight="SemiBold"
                                  FontSize="14"
                                  Command="{Binding LaunchCommand}"
-                                 IconSize="20"
+                                 IconSize="24"
                                  Icon="{Binding LaunchButtonIcon}"
                                  Content="{Binding LaunchButtonText}"
                                  Padding="16,0">

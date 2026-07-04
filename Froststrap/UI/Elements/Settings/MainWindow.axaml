@@ -47,25 +47,25 @@
             <ui:FANavigationView.MenuItems>
                 <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_Integrations_Title}" Tag="integrations">
                     <ui:FANavigationViewItem.Icon>
-                        <ic:Lucide Icon="Plus" Width="20" Height="20" />
+                        <ic:Lucide Icon="Plus" />
                     </ui:FANavigationViewItem.Icon>
                 </ui:FANavigationViewItem>
 
                 <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_Behaviour_Title}" Tag="behaviour">
                     <ui:FANavigationViewItem.Icon>
-                        <ic:Lucide Icon="Play" Width="20" Height="20" />
+                        <ic:Lucide Icon="Play" />
                     </ui:FANavigationViewItem.Icon>
                 </ui:FANavigationViewItem>
 
                 <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_QuickPlay_Title}" Tag="quickplay">
                     <ui:FANavigationViewItem.Icon>
-                        <ic:Lucide Icon="Gamepad2" Width="20" Height="20" />
+                        <ic:Lucide Icon="Gamepad2" />
                     </ui:FANavigationViewItem.Icon>
                 </ui:FANavigationViewItem>
 
                 <ui:FANavigationViewItem Content="{x:Static resources:Strings.Common_Deployment}" Tag="channels">
                     <ui:FANavigationViewItem.Icon>
-                        <ic:Lucide Icon="HardDriveUpload" Width="20" Height="20" />
+                        <ic:Lucide Icon="HardDriveUpload" />
                     </ui:FANavigationViewItem.Icon>
                 </ui:FANavigationViewItem>
 
@@ -73,13 +73,13 @@
 
                 <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_PresetMods_Title}" Tag="mods">
                     <ui:FANavigationViewItem.Icon>
-                        <ic:Lucide Icon="BookOpen" Width="20" Height="20" />
+                        <ic:Lucide Icon="BookOpen" />
                     </ui:FANavigationViewItem.Icon>
                 </ui:FANavigationViewItem>
 
                 <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_Appearance_Title}" Tag="appearance">
                     <ui:FANavigationViewItem.Icon>
-                        <ic:Lucide Icon="Palette" Width="20" Height="20" />
+                        <ic:Lucide Icon="Palette" />
                     </ui:FANavigationViewItem.Icon>
                 </ui:FANavigationViewItem>
 
@@ -87,19 +87,19 @@
 
                 <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_FastFlags_Title}" Tag="fastflags">
                     <ui:FANavigationViewItem.Icon>
-                        <ic:Lucide Icon="Flag" Width="20" Height="20" />
+                        <ic:Lucide Icon="Flag" />
                     </ui:FANavigationViewItem.Icon>
                 </ui:FANavigationViewItem>
 
                 <ui:FANavigationViewItem Name="gbs" Content="{x:Static resources:Strings.Menu_GlobalSettings_Title}" Tag="globalsettings">
                     <ui:FANavigationViewItem.Icon>
-                        <ic:Lucide Icon="PenLine" Width="20" Height="20" />
+                        <ic:Lucide Icon="PenLine" />
                     </ui:FANavigationViewItem.Icon>
                 </ui:FANavigationViewItem>
 
                 <ui:FANavigationViewItem Name="linux" IsVisible="{x:Static gv:GlobalViewModel.IsLinux}" Content="{x:Static resources:Strings.Menu_LinuxSettings_Title}" Tag="linuxsettings">
                     <ui:FANavigationViewItem.Icon>
-                        <ic:Lucide Icon="Settings" Width="20" Height="20" />
+                        <ic:Lucide Icon="Settings" />
                     </ui:FANavigationViewItem.Icon>
                 </ui:FANavigationViewItem>
 
@@ -107,19 +107,19 @@
 
                 <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_RegionSelector_Title}" Tag="regionselector">
                     <ui:FANavigationViewItem.Icon>
-                        <ic:Lucide Icon="Globe" Width="20" Height="20" />
+                        <ic:Lucide Icon="Globe" />
                     </ui:FANavigationViewItem.Icon>
                 </ui:FANavigationViewItem>
 
                 <ui:FANavigationViewItem Content="{x:Static resources:Strings.Common_Shortcuts}" Tag="shortcuts">
                     <ui:FANavigationViewItem.Icon>
-                        <ic:Lucide Icon="Link2" Width="20" Height="20" />
+                        <ic:Lucide Icon="Link2" />
                     </ui:FANavigationViewItem.Icon>
                 </ui:FANavigationViewItem>
 
                 <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_About_Title}" Tag="about">
                     <ui:FANavigationViewItem.Icon>
-                        <ic:Lucide Icon="CircleAlert" Width="20" Height="20" />
+                        <ic:Lucide Icon="CircleAlert" />
                     </ui:FANavigationViewItem.Icon>
                 </ui:FANavigationViewItem>
             </ui:FANavigationView.MenuItems>

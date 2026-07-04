@@ -1750,7 +1750,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The file &quot;{0}&quot; could not be found.
+        ///   Looks up a localized string similar to The file &quot;{0}&quot; could not be found in your system.
         /// </summary>
         public static string CustomTheme_Errors_FileNotFound {
             get {
@@ -3575,7 +3575,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Navigation Pane Display Mode.
+        ///   Looks up a localized string similar to Sidebar Display Mode.
         /// </summary>
         public static string Menu_Appearance_PaneMode_Title {
             get {

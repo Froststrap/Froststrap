@@ -19,7 +19,7 @@
             //Why does linux do this bro, pisses me off
             if (OperatingSystem.IsLinux())
             {
-                var parts = contentPath.Split(new[] { '\\', '/' }, StringSplitOptions.RemoveEmptyEntries);
+                var parts = contentPath.Split([ '\\', '/' ], StringSplitOptions.RemoveEmptyEntries);
                 FilePath = Path.Combine(parts);
             }
             else

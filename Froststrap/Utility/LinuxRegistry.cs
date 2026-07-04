@@ -16,12 +16,12 @@ public static class LinuxRegistry
     );
 
     private static readonly string[] Schemes =
-    {
+    [
         "roblox",
         "roblox-player",
         "roblox-studio",
         "roblox-studio-auth"
-    };
+    ];
 
     public static void RegisterAll()
     {
