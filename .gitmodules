@@ -1,9 +1,9 @@
 [submodule "ColorPicker"]
 	path = ColorPicker
-	url = https://gitlab.com/froststrap/color-picker.git
+	url = https://github.com/Froststrap/ColorPicker
 [submodule "FluentAvalonia"]
 	path = FluentAvalonia
-	url = https://gitlab.com/froststrap/fluent-avalonia.git
+	url = https://github.com/Froststrap/FluentAvalonia.git
 [submodule "LucideAvalonia"]
 	path = LucideAvalonia
-	url = https://gitlab.com/froststrap/lucide-avalonia.git
+	url = https://github.com/Froststrap/LucideAvalonia.git
