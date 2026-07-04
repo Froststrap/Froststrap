@@ -206,7 +206,7 @@ namespace Froststrap
                 App.Terminate(ErrorCode.ERROR_FILE_NOT_FOUND);
             }
 
-            if (App.Settings.Prop.ConfirmLaunches && Utilities.IsRobloxRunning() && launchMode != LaunchMode.Studio)
+            if (App.Settings.Prop.ConfirmLaunches && Utilities.IsRobloxRunning() && launchMode == LaunchMode.Player)
             {
                 var result = await Frontend.ShowMessageBox(Strings.Bootstrapper_ConfirmLaunch, MessageBoxImage.Warning, MessageBoxButton.YesNo);
 
