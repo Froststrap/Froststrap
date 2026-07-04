@@ -258,9 +258,55 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
         {
             await Task.Run(() =>
             {
-                if (Directory.Exists(dest)) Directory.Delete(dest, true);
+                if (Directory.Exists(dest))
+                    Directory.Delete(dest, true);
                 Directory.CreateDirectory(dest);
-                ZipFile.ExtractToDirectory(zipPath, dest, true);
+
+                // For some reason on linux, it places the mod inside a subfolder, so we have to do this
+                if (OperatingSystem.IsLinux())
+                {
+                    string tempExtract = Path.Combine(Path.GetTempPath(), "Froststrap", Guid.NewGuid().ToString());
+                    Directory.CreateDirectory(tempExtract);
+                    try
+                    {
+                        ZipFile.ExtractToDirectory(zipPath, tempExtract, true);
+
+                        var entries = Directory.GetFileSystemEntries(tempExtract);
+                        if (entries.Length == 1 && Directory.Exists(entries[0]))
+                        {
+                            string rootDir = entries[0];
+                            foreach (var file in Directory.GetFiles(rootDir, "*", SearchOption.AllDirectories))
+                            {
+                                string relative = Path.GetRelativePath(rootDir, file);
+                                string target = Path.Combine(dest, relative);
+                                Directory.CreateDirectory(Path.GetDirectoryName(target)!);
+                                File.Move(file, target);
+                            }
+                            Directory.Delete(rootDir, true);
+                        }
+                        else
+                        {
+                            foreach (var entry in entries)
+                            {
+                                string name = Path.GetFileName(entry);
+                                string target = Path.Combine(dest, name);
+                                if (Directory.Exists(entry))
+                                    Directory.Move(entry, target);
+                                else
+                                    File.Move(entry, target);
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        if (Directory.Exists(tempExtract))
+                            Directory.Delete(tempExtract, true);
+                    }
+                }
+                else
+                {
+                    ZipFile.ExtractToDirectory(zipPath, dest, true);
+                }
             });
         }
 
