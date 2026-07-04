@@ -166,8 +166,16 @@ namespace Froststrap.UI
 
         public static void ShowBalloonTip(string title, string message, NotificationType category = NotificationType.Information, int timeoutSeconds = 5)
         {
+            if (OperatingSystem.IsMacOS())
+            {
+                bool success = MacOSNotifier.ShowNotification(title, message);
+                if (!success)
+                    App.Logger.WriteLine("Frontend", "Failed to show balloon tip via terminal-notifier.");
+                return;
+            }
+
             var manager = NativeNotificationManager.Current;
-            if (manager == null || OperatingSystem.IsMacOS()) return;
+            if (manager == null) return;
 
             string categoryString = category switch
             {

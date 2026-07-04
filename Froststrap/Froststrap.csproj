@@ -56,9 +56,16 @@
     <EmbeddedResource Include="Resources\Mods\Sounds\OldGetUp.mp3" />
     <EmbeddedResource Include="Resources\Mods\Sounds\OldJump.mp3" />
     <EmbeddedResource Include="Resources\Mods\Sounds\OldWalk.mp3" />
-	<EmbeddedResource Include="Resources\PresetFlags\High Quality" />
+    <EmbeddedResource Include="Resources\PresetFlags\High Quality" />
     <EmbeddedResource Include="Resources\PresetFlags\Balanced Quality" />
     <EmbeddedResource Include="Resources\PresetFlags\Low Quality" />
+  </ItemGroup>
+	
+  <ItemGroup>
+    <Content Include="Resources\terminal-notifier.app\**\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>Resources\terminal-notifier.app\%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </Content>
   </ItemGroup>
 
   <!-- NuGet packages -->
