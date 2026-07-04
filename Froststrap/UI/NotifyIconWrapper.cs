@@ -39,7 +39,7 @@ namespace Froststrap.UI
 
             _trayIcon.Clicked += OnTrayIconClicked;
 
-            if (ActivityWatcher is not null && App.Settings.Prop.ShowServerDetails)
+            if (ActivityWatcher is not null && App.Settings.Prop.ShowServerDetails && !OperatingSystem.IsMacOS())
                 ActivityWatcher.ShowNotif += ShowNotif;
 
             TrayIcon.GetIcons(Application.Current!)?.Add(_trayIcon);
@@ -153,17 +153,6 @@ namespace Froststrap.UI
         public void ShowAlert(string title, string message, int duration = 5, NotificationType category = NotificationType.Information)
         {
             if (_isDisposed) return;
-
-            if (OperatingSystem.IsMacOS())
-            {
-                bool success = MacOSNotifier.ShowNotification(title, message);
-                if (!success)
-                {
-                    App.Logger.WriteLine("NotifyIconWrapper", "Failed to show notification via terminal-notifier.");
-                }
-                return;
-            }
-
             var manager = NativeNotificationManager.Current;
             if (manager == null) return;
 
