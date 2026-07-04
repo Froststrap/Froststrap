@@ -34,7 +34,6 @@ namespace Froststrap
 
         public static string SoberAssetOverlay { get; private set; } = "";
         public static string SoberConfig { get; private set; } = "";
-        public static string WineRoot { get; private set; } = "";
 
         public static string CustomFont => Path.Combine(Modifications, "content", "fonts", "CustomFont.ttf");
 
@@ -123,7 +122,6 @@ namespace Froststrap
             if (OperatingSystem.IsLinux())
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(Application) ?? Application);
-                Directory.CreateDirectory(WineRoot);
             }
 
                 Directory.CreateDirectory(ConfigRoot);
