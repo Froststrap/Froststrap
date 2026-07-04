@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Runtime.InteropServices;
-using System.Linq;
+﻿using System.Runtime.InteropServices;
 
 namespace Froststrap
 {
@@ -161,11 +158,7 @@ namespace Froststrap
                     {
                         try
                         {
-                            if (File.Exists(src))
-                            {
-                                if (!File.Exists(dst))
-                                    File.Move(src, dst);
-                            }
+                            if (File.Exists(src) && !File.Exists(dst)) File.Move(src, dst);
                             else if (Directory.Exists(src))
                             {
                                 if (!Directory.Exists(dst))
