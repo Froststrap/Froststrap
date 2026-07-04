@@ -3,7 +3,6 @@
   <Project Path="ColorPicker/ColorPicker.AvaloniaUI/ColorPicker.AvaloniaUI.csproj" />
   <Project Path="LucideAvalonia/LucideAvalonia/LucideAvalonia.csproj" />
   <Project Path="FluentAvalonia/src/FluentAvalonia/FluentAvalonia.csproj" />
-  <Project Path="Avalonia.Labs/src/Avalonia.Labs.Notifications/Avalonia.Labs.Notifications.csproj" />
   <Properties Name="ExtensibilityGlobals" Scope="PostLoad">
     <Property Name="RESX_NeutralResourcesLanguage" Value="en-GB" />
   </Properties>

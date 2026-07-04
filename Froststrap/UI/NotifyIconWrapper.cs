@@ -39,12 +39,10 @@ namespace Froststrap.UI
 
             _trayIcon.Clicked += OnTrayIconClicked;
 
-            if (ActivityWatcher is not null && App.Settings.Prop.ShowServerDetails)
+            if (ActivityWatcher is not null && App.Settings.Prop.ShowServerDetails && !OperatingSystem.IsMacOS())
                 ActivityWatcher.ShowNotif += ShowNotif;
 
             TrayIcon.GetIcons(Application.Current!)?.Add(_trayIcon);
-
-            App.Logger.WriteLine("NotifyIconWrapper::NotifyIconWrapper", OperatingSystem.IsMacOS() ? "Running as macOS menu bar icon" : "Running as Windows system tray icon");
         }
 
 

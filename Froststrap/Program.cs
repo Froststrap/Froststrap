@@ -18,16 +18,22 @@ sealed class Program
     {
         string iconPath = ExtractToTemp("IconFroststrap.ico", "IconFroststrap.ico");
 
-        return AppBuilder.Configure<App>()
+        var builder = AppBuilder.Configure<App>()
             .UsePlatformDetect()
-            .WithAppNotifications(new AppNotificationOptions
+            .LogToTrace();
+
+        if (!OperatingSystem.IsMacOS())
+        {
+            builder = builder.WithAppNotifications(new AppNotificationOptions
             {
                 AppName = "Froststrap",
                 AppUserModelId = "Icon.Froststrap",
                 AppIcon = iconPath,
                 DisableComServer = true
-            })
-            .LogToTrace();
+            });
+        }
+
+        return builder;
     }
 
     public static string ExtractToTemp(string name, string fileName)

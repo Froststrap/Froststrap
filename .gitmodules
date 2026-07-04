@@ -7,6 +7,3 @@
 [submodule "LucideAvalonia"]
 	path = LucideAvalonia
 	url = https://gitlab.com/froststrap/lucide-avalonia.git
-[submodule "Avalonia.Labs"]
-	path = Avalonia.Labs
-	url = https://gitlab.com/froststrap/Avalonia.Labs.git

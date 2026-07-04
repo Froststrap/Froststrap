@@ -167,7 +167,7 @@ namespace Froststrap.UI
         public static void ShowBalloonTip(string title, string message, NotificationType category = NotificationType.Information, int timeoutSeconds = 5)
         {
             var manager = NativeNotificationManager.Current;
-            if (manager == null) return;
+            if (manager == null || OperatingSystem.IsMacOS()) return;
 
             string categoryString = category switch
             {
