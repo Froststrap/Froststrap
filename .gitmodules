@@ -9,4 +9,4 @@
 	url = https://github.com/Froststrap/LucideAvalonia.git
 [submodule "Avalonia.Labs"]
 	path = Avalonia.Labs
-	url = https://github.com/Froststrap/Avalonia.Labs
+	url = https://gitlab.com/froststrap/Avalonia.Labs.git
