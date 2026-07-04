@@ -2501,7 +2501,7 @@ exit";
                 using var checkProcess = Process.Start(flatpakCheck);
                 _ = checkProcess ?? throw new InvalidOperationException("Failed to start flatpak process.");
 
-                await checkProcess.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(15));
+                await checkProcess.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(30));
 
                 if (checkProcess.ExitCode != 0)
                     throw new InvalidOperationException("Flatpak returned a non-zero exit code.");
@@ -2569,7 +2569,7 @@ exit";
             var installStartInfo = new ProcessStartInfo
             {
                 FileName = "flatpak",
-                Arguments = $"install --assumeyes --noninteractive flathub {SoberFlatpakId}",
+                Arguments = $"install --assumeyes --noninteractive --user flathub {SoberFlatpakId}",
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
@@ -2647,7 +2647,7 @@ exit";
             var updateStartInfo = new ProcessStartInfo
             {
                 FileName = "flatpak",
-                Arguments = $"update {SoberFlatpakId} --assumeyes",
+                Arguments = $"update --user {SoberFlatpakId} --assumeyes",
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
@@ -2656,7 +2656,7 @@ exit";
 
             Process? updateProcess = null;
 
-            var timeout = TimeSpan.FromMinutes(10);
+            var timeout = TimeSpan.FromMinutes(20);
             var cts = new CancellationTokenSource(timeout);
 
             using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(
