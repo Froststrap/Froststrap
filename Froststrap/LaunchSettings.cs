@@ -82,6 +82,20 @@ namespace Froststrap
                     RobloxLaunchArgs = arg;
                     startIdx = 1;
                 }
+                else if (arg.StartsWith("roblox-studio-auth:", StringComparison.OrdinalIgnoreCase))
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Got Roblox Studio Auth argument");
+                    RobloxLaunchMode = LaunchMode.StudioAuth;
+                    RobloxLaunchArgs = arg;
+                    startIdx = 1;
+                }
+                else if (arg.StartsWith("roblox-studio:", StringComparison.OrdinalIgnoreCase))
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Got Roblox Studio argument");
+                    RobloxLaunchMode = LaunchMode.Studio;
+                    RobloxLaunchArgs = arg;
+                    startIdx = 1;
+                }
                 else if (arg.StartsWith("version-"))
                 {
                     App.Logger.WriteLine(LOG_IDENT, "Got version argument");
@@ -159,6 +173,20 @@ namespace Froststrap
                     RobloxLaunchArgs = arg;
                     return;
                 }
+                else if (arg.StartsWith("roblox-studio-auth:", StringComparison.OrdinalIgnoreCase))
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Found Roblox Studio Auth URI outside first argument");
+                    RobloxLaunchMode = LaunchMode.StudioAuth;
+                    RobloxLaunchArgs = arg;
+                    return;
+                }
+                else if (arg.StartsWith("roblox-studio:", StringComparison.OrdinalIgnoreCase))
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Found Roblox Studio URI outside first argument");
+                    RobloxLaunchMode = LaunchMode.Studio;
+                    RobloxLaunchArgs = arg;
+                    return;
+                }
             }
         }
 
@@ -185,7 +213,7 @@ namespace Froststrap
 
             RobloxLaunchMode = LaunchMode.Player;
 
-            if (!String.IsNullOrEmpty(data))
+            if (!string.IsNullOrEmpty(data))
             {
                 App.Logger.WriteLine(LOG_IDENT, "Got Roblox launch arguments");
                 RobloxLaunchArgs = data;
@@ -202,7 +230,7 @@ namespace Froststrap
 
             RobloxLaunchMode = LaunchMode.Studio;
 
-            if (String.IsNullOrEmpty(data))
+            if (string.IsNullOrEmpty(data))
             {
                 App.Logger.WriteLine(LOG_IDENT, "No Roblox launch arguments were provided");
                 return;
