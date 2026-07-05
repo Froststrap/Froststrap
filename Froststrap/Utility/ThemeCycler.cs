@@ -31,17 +31,37 @@
                 };
             }
 
-            if (shouldCycle)
+            if (!shouldCycle)
+                return;
+
+            var validThemes = App.Settings.Prop.CycleEnabledCustomThemes
+                .Where(name => Directory.Exists(Path.Combine(Paths.CustomThemes, name)))
+                .ToList();
+
+            if (validThemes.Count != App.Settings.Prop.CycleEnabledCustomThemes.Count)
             {
-                App.Settings.Prop.CycleCurrentIndex = (App.Settings.Prop.CycleCurrentIndex + 1) % App.Settings.Prop.CycleEnabledCustomThemes.Count;
-
-                App.Settings.Prop.SelectedCustomTheme = App.Settings.Prop.CycleEnabledCustomThemes[App.Settings.Prop.CycleCurrentIndex];
-                App.Settings.Prop.CycleLastCycleTime = DateTime.Now;
-
+                App.Settings.Prop.CycleEnabledCustomThemes = validThemes;
+                if (App.Settings.Prop.CycleCurrentIndex >= validThemes.Count)
+                    App.Settings.Prop.CycleCurrentIndex = 0;
                 App.Settings.Save();
-
-                App.Logger.WriteLine("ThemeCycler",$"Changed to '{App.Settings.Prop.SelectedCustomTheme}'");
             }
+
+            if (App.Settings.Prop.CycleEnabledCustomThemes.Count == 0)
+            {
+                App.Settings.Prop.CycleEnabled = false;
+                App.Settings.Prop.SelectedCustomTheme = null;
+                App.Settings.Save();
+                App.Logger.WriteLine("ThemeCycler", "No valid custom themes found – cycling disabled.");
+                return;
+            }
+
+            int newIndex = (App.Settings.Prop.CycleCurrentIndex + 1) % App.Settings.Prop.CycleEnabledCustomThemes.Count;
+            App.Settings.Prop.CycleCurrentIndex = newIndex;
+            App.Settings.Prop.SelectedCustomTheme = App.Settings.Prop.CycleEnabledCustomThemes[newIndex];
+            App.Settings.Prop.CycleLastCycleTime = DateTime.Now;
+
+            App.Settings.Save();
+            App.Logger.WriteLine("ThemeCycler", $"Changed to '{App.Settings.Prop.SelectedCustomTheme}'");
         }
     }
 }
