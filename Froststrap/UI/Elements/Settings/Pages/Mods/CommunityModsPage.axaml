@@ -112,17 +112,11 @@
                                             CornerRadius="8,8,0,0"
                                             ClipToBounds="True">
                                         <Grid>
-                                            <Image Source="{Binding ThumbnailImage}"
+                                            <Image Source="{Binding ThumbnailUrl, Converter={StaticResource UrlToBitmapConverter}}"
                                                    Stretch="UniformToFill"
                                                    HorizontalAlignment="Stretch"
                                                    VerticalAlignment="Stretch"
                                                    RenderOptions.BitmapInterpolationMode="HighQuality"/>
-
-                                            <ui:FAProgressRing IsVisible="{Binding IsLoadingThumbnail}"
-                                                             IsIndeterminate="True"
-                                                             Width="24" Height="24"
-                                                             HorizontalAlignment="Center"
-                                                             VerticalAlignment="Center"/>
                                         </Grid>
                                     </Border>
 

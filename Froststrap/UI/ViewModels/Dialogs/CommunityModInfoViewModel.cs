@@ -85,14 +85,6 @@ namespace Froststrap.UI.ViewModels.Dialogs
                     PreviewBrush = new SolidColorBrush(Colors.White);
                 return;
             }
-
-            if (!string.IsNullOrEmpty(Mod.HexCode) && Color.TryParse(Mod.HexCode, out var hexColor))
-            {
-                ColorDisplayText = Mod.HexCode.ToUpper();
-                PreviewBrush = new SolidColorBrush(hexColor);
-                return;
-            }
-
             ColorDisplayText = "No color information";
             PreviewBrush = new SolidColorBrush(Colors.White);
         }

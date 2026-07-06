@@ -15,9 +15,6 @@ namespace Froststrap.Models.APIs.Config
         [JsonPropertyName("download")]
         public string DownloadUrl { get; set; } = null!;
 
-        [JsonPropertyName("hexcode")]
-        public string? HexCode { get; set; } = null!;
-
         [JsonPropertyName("gradient")]
         public List<GradientStop>? GradientStops { get; set; }
 
@@ -35,33 +32,6 @@ namespace Froststrap.Models.APIs.Config
 
         [JsonPropertyName("modtype")]
         public ModType ModType { get; set; } = ModType.ColorMod;
-
-        [JsonIgnore]
-        private Bitmap? _thumbnailImage;
-        [JsonIgnore]
-        public Bitmap? ThumbnailImage
-        {
-            get => _thumbnailImage;
-            set => SetProperty(ref _thumbnailImage, value);
-        }
-
-        [JsonIgnore]
-        private bool _isLoadingThumbnail;
-        [JsonIgnore]
-        public bool IsLoadingThumbnail
-        {
-            get => _isLoadingThumbnail;
-            set => SetProperty(ref _isLoadingThumbnail, value);
-        }
-
-        [JsonIgnore]
-        private bool _hasThumbnailError;
-        [JsonIgnore]
-        public bool HasThumbnailError
-        {
-            get => _hasThumbnailError;
-            set => SetProperty(ref _hasThumbnailError, value);
-        }
 
         private bool _isDownloading;
 

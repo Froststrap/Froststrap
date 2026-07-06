@@ -11,10 +11,8 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 {
     public partial class CommunityModsViewModel : NotifyPropertyChangedViewModel
     {
-        private readonly string _cacheFolder = Path.Combine(Paths.Cache, "Community Mods");
         private List<CommunityMod> _allMods = [];
         private CancellationTokenSource? _searchCts;
-        private const int CacheDurationDays = 7;
 
         public event EventHandler? OpenModsEvent;
         public event EventHandler? OpenModGeneratorEvent;
@@ -70,7 +68,6 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
         public CommunityModsViewModel()
         {
-            Directory.CreateDirectory(_cacheFolder);
             App.RemoteData.Subscribe(async (_, _) => await RefreshModsAsync());
         }
 
@@ -106,8 +103,6 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
                 _allMods = App.RemoteData.Prop.CommunityMods ?? [];
                 ApplyFilters();
-
-                _ = Task.Run(() => Task.WhenAll(_allMods.Select(LoadModThumbnailAsync)));
             }
             catch (Exception ex)
             {
@@ -328,34 +323,6 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                 totalRead += read;
                 if (totalBytes != -1) progress.Report((double)totalRead / totalBytes * 100);
             }
-        }
-
-        private async Task LoadModThumbnailAsync(CommunityMod mod)
-        {
-            if (string.IsNullOrEmpty(mod.ThumbnailUrl)) return;
-            string cachePath = Path.Combine(_cacheFolder, $"{mod.Id}.png");
-
-            try
-            {
-                byte[] data;
-                if (File.Exists(cachePath) && (DateTime.UtcNow - File.GetLastWriteTimeUtc(cachePath)).TotalDays < CacheDurationDays)
-                {
-                    data = await File.ReadAllBytesAsync(cachePath);
-                }
-                else
-                {
-                    data = await App.HttpClient.GetByteArrayAsync(mod.ThumbnailUrl);
-                    await File.WriteAllBytesAsync(cachePath, data);
-                }
-
-                using var ms = new MemoryStream(data);
-                var bitmap = new Bitmap(ms);
-
-                await Dispatcher.UIThread.InvokeAsync(() => {
-                    mod.ThumbnailImage = bitmap;
-                });
-            }
-            catch { mod.HasThumbnailError = true; }
         }
     }
 }

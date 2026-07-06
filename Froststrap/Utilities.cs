@@ -1,8 +1,6 @@
-﻿using Avalonia.Controls;
-using Froststrap.AppData;
+﻿using Froststrap.AppData;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
-using Froststrap.Utility;
 
 namespace Froststrap
 {

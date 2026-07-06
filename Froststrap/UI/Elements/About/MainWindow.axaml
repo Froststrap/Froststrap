@@ -25,6 +25,7 @@
             <ui:FANavigationView Name="NavView"
                                  IsPaneOpen="False"
                                  PaneDisplayMode="Left"
+                                 IsSettingsVisible="False"
                                  OpenPaneLength="140"
                                  ItemInvoked="NavView_ItemInvoked">
                 <ui:FANavigationView.Styles>
