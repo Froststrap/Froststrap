@@ -43,7 +43,7 @@ namespace Froststrap.UI.ViewModels.Settings
             else
                 targetPath = Paths.Roblox;
 
-            Utilities.ShellExecute(targetPath, true);
+            Utilities.ShellExecute(targetPath);
         });
         public ICommand ExportCommand => new RelayCommand(ExportSettings);
         public ICommand ImportCommand => new RelayCommand(ImportSettings);
