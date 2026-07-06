@@ -3052,4 +3052,10 @@ Would you like to visit the releases page now?</value>
   <data name="Common.Auto" xml:space="preserve">
     <value>Auto</value>
   </data>
+  <data name="Common.Next" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="Common.Back" xml:space="preserve">
+    <value>Back</value>
+  </data>
 </root>

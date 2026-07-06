@@ -7,9 +7,9 @@
     "Froststrap (Launch)": {
       "commandName": "Project"
     },
-    "Froststrap (Account Manager)": {
+    "Froststrap (Onboarding)": {
       "commandName": "Project",
-      "commandLineArgs": "-accountmanager"
+      "commandLineArgs": "-onboarding"
     },
     "Froststrap (Quiet Launch)": {
       "commandName": "Project",

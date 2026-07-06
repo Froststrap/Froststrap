@@ -113,5 +113,8 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Strings.resx</DependentUpon>
     </Compile>
+    <Compile Update="UI\Elements\Onboarding\Pages\Page4.axaml.cs">
+      <DependentUpon>Page4.axaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 </Project>

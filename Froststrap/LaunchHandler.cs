@@ -44,6 +44,11 @@ namespace Froststrap
                 App.Logger.WriteLine(LOG_IDENT, "Opening uninstaller");
                 _ = LaunchUninstaller();
             }
+            if (App.LaunchSettings.OnboardingFlag.Active)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Opening uninstaller");
+                LaunchOnboarding();
+            }
             else if (App.LaunchSettings.MenuFlag.Active)
             {
                 App.Logger.WriteLine(LOG_IDENT, "Opening settings");
@@ -178,6 +183,26 @@ namespace Froststrap
 
             var dialog = new LaunchMenuDialog();
             App.FrostRPC?.SetPage("Launch Menu");
+
+            dialog.Closed += (sender, e) =>
+            {
+                App.FrostRPC?.Dispose();
+                App.FrostRPC = null;
+                ProcessNextAction(dialog.CloseAction);
+            };
+
+            dialog.Show();
+        }
+
+        public static void LaunchOnboarding()
+        {
+            if (App.Settings.Prop.ShowUsingFroststrapRPC && App.FrostRPC == null)
+            {
+                App.FrostRPC = new FroststrapRichPresence();
+            }
+
+            var dialog = new UI.Elements.Onboarding.MainWindow();
+            App.FrostRPC?.SetPage("Onboarding");
 
             dialog.Closed += (sender, e) =>
             {

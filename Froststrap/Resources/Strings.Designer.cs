@@ -642,6 +642,15 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Back.
+        /// </summary>
+        public static string Common_Back {
+            get {
+                return ResourceManager.GetString("Common.Back", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Bands.
         /// </summary>
         public static string Common_Bands {
@@ -998,6 +1007,15 @@ namespace Froststrap.Resources {
         public static string Common_New {
             get {
                 return ResourceManager.GetString("Common.New", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Next.
+        /// </summary>
+        public static string Common_Next {
+            get {
+                return ResourceManager.GetString("Common.Next", resourceCulture);
             }
         }
         

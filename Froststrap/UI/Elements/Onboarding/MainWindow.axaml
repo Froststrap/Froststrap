@@ -1,0 +1,69 @@
+<base:AvaloniaWindow
+    x:Class="Froststrap.UI.Elements.Onboarding.MainWindow"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+    xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+    xmlns:resources="using:Froststrap.Resources"
+    xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Onboarding"
+    mc:Ignorable="d"
+    Title="Froststrap Setup"
+    Width="640"
+    Height="480"
+    MinWidth="640"
+    MinHeight="480"
+    x:DataType="vm:MainWindowViewModel"
+    CanResize="False"
+    WindowStartupLocation="CenterScreen">
+
+    <Grid Background="{DynamicResource ApplicationBackgroundColor}" RowDefinitions="48,Auto,*,72">
+        <controls:TitleBar
+            Title="Froststrap Setup"
+            Icon="avares://Froststrap/Froststrap.ico" />
+
+        <Border Grid.Row="1" Padding="0,12,0,4">
+            <controls:StepIndicator
+                x:Name="RootNavigation"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Top"
+                PageCount="3"
+                CurrentIndex="0" />
+        </Border>
+
+        <Border Grid.Row="2" Padding="24,16,24,0">
+            <TransitioningContentControl
+                x:Name="RootFrame"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch" />
+        </Border>
+
+        <Border
+            Grid.Row="3"
+            Background="{DynamicResource ControlFillColorDefaultBrush}"
+            BorderBrush="{DynamicResource ControlElevationBorderBrush}"
+            BorderThickness="0,1,0,0">
+            <Grid Margin="20,16" ColumnDefinitions="*,Auto,Auto">
+                <Rectangle Grid.Column="0" Fill="Transparent" />
+
+                <Button
+                    Grid.Column="1"
+                    Width="{Binding ButtonWidth}"
+                    Height="36"
+                    Margin="0,0,8,0"
+                    Command="{Binding BackPageCommand}"
+                    Content="{x:Static resources:Strings.Common_Back}"/>
+
+                <Button
+                    Grid.Column="2"
+                    Width="{Binding ButtonWidth}"
+                    Height="36"
+                    Classes="accent"
+                    Command="{Binding NextPageCommand}"
+                    Content="{Binding NextButtonText}"/>
+            </Grid>
+        </Border>
+
+    </Grid>
+</base:AvaloniaWindow>
