@@ -9,7 +9,7 @@
     xmlns:resources="using:Froststrap.Resources"
     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Onboarding"
     mc:Ignorable="d"
-    Title="Froststrap Setup"
+    Title="{x:Static resources:Strings.Onboarding_Title}"
     Width="640"
     Height="480"
     MinWidth="640"
@@ -20,7 +20,7 @@
 
     <Grid Background="{DynamicResource ApplicationBackgroundColor}" RowDefinitions="48,Auto,*,72">
         <controls:TitleBar
-            Title="Froststrap Setup"
+            Title="{x:Static resources:Strings.Onboarding_Title}"
             Icon="avares://Froststrap/Froststrap.ico">
             <controls:StepIndicator
                 x:Name="RootNavigation"

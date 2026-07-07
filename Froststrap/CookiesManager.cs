@@ -28,7 +28,7 @@ namespace Froststrap
 
         public string GetAuthCookie() => AuthCookie;
 
-        private static string CookiesPath => OperatingSystem.IsMacOS()
+        public static string CookiesPath => OperatingSystem.IsMacOS()
             ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Library", "HTTPStorages", "com.roblox.RobloxPlayer.binarycookies")
             : OperatingSystem.IsLinux()
                 ? Path.Combine(Paths.Roblox, "data", "sober", "cookies")

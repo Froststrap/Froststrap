@@ -2541,7 +2541,8 @@ Would you like to switch your preferred channel to {0}?</value>
   </data>
   <data name="Menu.Shortcuts.Game" xml:space="preserve">
     <value>Game {0}</value>
-  </data>  <data name="Menu.LinuxSettings.Title" xml:space="preserve">
+  </data>
+  <data name="Menu.LinuxSettings.Title" xml:space="preserve">
     <value>Linux Settings</value>
   </data>
   <data name="Menu.LinuxSettings.AllowGamepadPermission.Title" xml:space="preserve">
@@ -2984,7 +2985,7 @@ Would you like to switch your preferred channel to {0}?</value>
   </data>
   <data name="Menu.Mods.AlreadyImported" xml:space="preserve">
     <value>Mod '{0}' is already imported.</value>
-  </data>  
+  </data>
   <data name="Menu.Mods.DefaultNewModName" xml:space="preserve">
     <value>New Mod</value>
   </data>
@@ -3085,7 +3086,10 @@ Would you like to visit the releases page now?</value>
   <data name="Onboarding.Page5.Text3" xml:space="preserve">
     <value>What would you like to do?</value>
   </data>
-  <data name="Common.LaunchRoblox" xml:space="preserve">
-    <value>Launch Roblox</value>
+  <data name="AccountManager.Replace.Success" xml:space="preserve">
+    <value>Cookie file updated for {0}. Launch Roblox to log in.</value>
+  </data>
+  <data name="AccountManager.Replace.Failed" xml:space="preserve">
+    <value>Failed to write cookie file for {0}.</value>
   </data>
 </root>

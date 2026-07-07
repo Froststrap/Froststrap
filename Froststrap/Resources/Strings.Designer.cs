@@ -79,6 +79,24 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to write cookie file for {0}..
+        /// </summary>
+        public static string AccountManager_Replace_Failed {
+            get {
+                return ResourceManager.GetString("AccountManager.Replace.Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cookie file updated for {0}. Launch Roblox to log in..
+        /// </summary>
+        public static string AccountManager_Replace_Success {
+            get {
+                return ResourceManager.GetString("AccountManager.Replace.Success", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The server location could not be queried. You may be joining games too quickly..
         /// </summary>
         public static string ActivityWatcher_LocationQueryFailed {
@@ -971,15 +989,6 @@ namespace Froststrap.Resources {
         public static string Common_Launch {
             get {
                 return ResourceManager.GetString("Common.Launch", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Launch Roblox.
-        /// </summary>
-        public static string Common_LaunchRoblox {
-            get {
-                return ResourceManager.GetString("Common.LaunchRoblox", resourceCulture);
             }
         }
         

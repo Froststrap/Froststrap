@@ -187,7 +187,7 @@
                                                     <Panel>
                                                         <ic:Lucide Icon="User"
                                                                    Height="16"
-																   Width="16"
+                                                                   Width="16"
                                                                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                                                                    HorizontalAlignment="Center"
                                                                    VerticalAlignment="Center"
@@ -210,18 +210,26 @@
                                                 </StackPanel>
                                             </Grid>
 
-                                            <controls:IconButton Grid.Column="1"
-                                                                 Width="32"
-                                                                 Height="32"
-                                                                 Padding="4"
-                                                                 Margin="12,0,0,0"
-                                                                 HorizontalAlignment="Right"
-                                                                 VerticalAlignment="Center"
-                                                                 Icon="Trash2"
-                                                                 IconSize="14"
-                                                                 Classes="Danger"
-                                                                 Command="{Binding $parent[ItemsControl].((vm:AccountSelectorViewModel)DataContext).DeleteAccountCommand}"
-                                                                 CommandParameter="{Binding}"/>
+                                            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="4" Margin="12,0,0,0">
+                                                <controls:IconButton Width="32"
+                                                                     Height="32"
+                                                                     Padding="4"
+                                                                     Icon="SwapLeftRight"
+                                                                     IconSize="14"
+                                                                     ToolTip.Tip="Use this account (replace cookie file)"
+                                                                     Command="{Binding $parent[ItemsControl].((vm:AccountSelectorViewModel)DataContext).ApplyAccountCommand}"
+                                                                     CommandParameter="{Binding}"/>
+
+                                                <controls:IconButton Width="32"
+                                                                     Height="32"
+                                                                     Padding="4"
+                                                                     Icon="Trash2"
+                                                                     IconSize="14"
+                                                                     Classes="Danger"
+                                                                     ToolTip.Tip="Remove this account"
+                                                                     Command="{Binding $parent[ItemsControl].((vm:AccountSelectorViewModel)DataContext).DeleteAccountCommand}"
+                                                                     CommandParameter="{Binding}"/>
+                                            </StackPanel>
                                         </Grid>
                                     </Button>
                                 </DataTemplate>
