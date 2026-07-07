@@ -37,11 +37,9 @@
 
             <TextBlock
                 Text="{x:Static resources:Strings.Common_Presets}"
-                FontSize="12"
-                FontWeight="SemiBold"
-                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                Margin="0,20,0,8"
-                Opacity="1" />
+                FontSize="20"
+                FontWeight="Bold"
+                Margin="0,20,0,8"/>
 
             <controls:OptionControl
                 Header="{x:Static resources:Strings.Menu_FastFlags_Presets_MSAA_Title}"
@@ -128,18 +126,18 @@
                 Header="{x:Static resources:Strings.Menu_FastFlags_Presets_RenderingMode_Title}"
                 Description="{x:Static resources:Strings.Menu_FastFlags_Presets_RenderingMode_Description}"
                 HelpLink="https://github.com/Meddsam/Froststrap/wiki/A-guide-to-FastFlags#rendering-mode">
-                <ComboBox
-                    MinWidth="200"
-                    Margin="0"
-                    Padding="10,5"
-                    ItemsSource="{Binding RenderingModes.Keys, Mode=OneTime}"
-                    SelectedItem="{Binding SelectedRenderingMode, Mode=TwoWay}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding ., Converter={StaticResource EnumNameConverter}}" />
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
+				<ComboBox
+					MinWidth="200"
+					Margin="0"
+					Padding="10,5"
+					ItemsSource="{Binding RenderingModeOptions, Mode=OneTime}"
+					SelectedItem="{Binding SelectedRenderingModeItem, Mode=TwoWay}">
+					<ComboBox.ItemTemplate>
+						<DataTemplate>
+							<TextBlock Text="{Binding Value}" />
+						</DataTemplate>
+					</ComboBox.ItemTemplate>
+				</ComboBox>
             </controls:OptionControl>
 
             <controls:OptionControl

@@ -167,14 +167,53 @@ namespace Froststrap.UI.ViewModels.Settings
             get => App.FastFlags?.GetPresetEnum(RenderingModes, "Rendering.Mode", "True") ?? RenderingMode.Default;
             set
             {
-                RenderingMode[] DisableD3D11 =
-                [
-                    RenderingMode.Vulkan,
-                    RenderingMode.OpenGL,
-                ];
+                string target = RenderingModes[value];
+                _flagsService.SetPresetEnum("Rendering.Mode", target, "True");
 
-                App.FastFlags?.SetPresetEnum("Rendering.Mode", value.ToString(), "True");
-                _flagsService.SetPreset("Rendering.Mode.DisableD3D11", DisableD3D11.Contains(value) ? "True" : null);
+                bool disableD3D11 = value == RenderingMode.Vulkan || value == RenderingMode.OpenGL;
+                _flagsService.SetPreset("Rendering.Mode.DisableD3D11", disableD3D11 ? "True" : null);
+
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(SelectedRenderingModeItem));
+            }
+        }
+
+        public static IEnumerable<KeyValuePair<RenderingMode, string>> RenderingModeOptions
+        {
+            get
+            {
+                foreach (RenderingMode mode in Enum.GetValues<RenderingMode>())
+                {
+                    if (mode == RenderingMode.Direct3D && !OperatingSystem.IsMacOS())
+                        continue;
+
+                    string display = mode switch
+                    {
+                        RenderingMode.Default when OperatingSystem.IsMacOS() => Strings.Enums_RenderingMode_DefaultMetal,
+                        RenderingMode.Default => Strings.Enums_RenderingMode_DefaultDirect,
+                        RenderingMode.Direct3D => Strings.Enums_FlagPresets_RenderingMode_Direct3D,
+                        _ => mode.ToString()
+                    };
+                    yield return new KeyValuePair<RenderingMode, string>(mode, display);
+                }
+            }
+        }
+
+        public KeyValuePair<RenderingMode, string>? SelectedRenderingModeItem
+        {
+            get
+            {
+                var match = RenderingModeOptions.FirstOrDefault(x => x.Key == SelectedRenderingMode);
+                if (match.Equals(default(KeyValuePair<RenderingMode, string>)))
+                    return RenderingModeOptions.FirstOrDefault();
+                return match;
+            }
+            set
+            {
+                if (value.HasValue)
+                {
+                    SelectedRenderingMode = value.Value.Key;
+                }
                 OnPropertyChanged();
             }
         }
@@ -273,8 +312,8 @@ namespace Froststrap.UI.ViewModels.Settings
             return App.FastFlags?.GetPreset(key);
         }
 
-        public void SetPresetEnum(string key, string value, string defaultValue)
-            => App.FastFlags?.SetPreset(key, value);
+        public void SetPresetEnum(string prefix, string target, string value)
+            => App.FastFlags?.SetPresetEnum(prefix, target, value);
 
         public IReadOnlyDictionary<string, object> GetAllPresets() => App.FastFlags?.Prop ?? [];
 
