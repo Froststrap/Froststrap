@@ -214,7 +214,7 @@
                                                 <controls:IconButton Width="32"
                                                                      Height="32"
                                                                      Padding="4"
-                                                                     Icon="SwapLeftRight"
+                                                                     Icon="ArrowLeftRight"
                                                                      IconSize="14"
                                                                      ToolTip.Tip="Use this account (replace cookie file)"
                                                                      Command="{Binding $parent[ItemsControl].((vm:AccountSelectorViewModel)DataContext).ApplyAccountCommand}"
