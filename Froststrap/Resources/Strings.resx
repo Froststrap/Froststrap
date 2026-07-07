@@ -2707,8 +2707,14 @@ Would you like to switch your preferred channel to {0}?</value>
   <data name="Enums.QualityLevel.Level21" xml:space="preserve">
     <value>Level 21</value>
   </data>
-  <data name="Enums.RenderingMode.Default" xml:space="preserve">
+  <data name="Enums.RenderingMode.DefaultDirect" xml:space="preserve">
     <value>Direct3D11 (Default)</value>
+  </data>
+  <data name="Enums.RenderingMode.DefaultMetal" xml:space="preserve">
+    <value>Metal (Default)</value>
+  </data>
+  <data name="Enums.FlagPresets.RenderingMode.Direct3D" xml:space="preserve">
+    <value>Direct3D11</value>
   </data>
   <data name="Enums.TextureQuality.Default" xml:space="preserve">
     <value>High (Default)</value>

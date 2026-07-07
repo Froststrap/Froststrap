@@ -2562,6 +2562,15 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Direct3D11.
+        /// </summary>
+        public static string Enums_FlagPresets_RenderingMode_Direct3D {
+            get {
+                return ResourceManager.GetString("Enums.FlagPresets.RenderingMode.Direct3D", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to OpenGL.
         /// </summary>
         public static string Enums_FlagPresets_RenderingMode_OpenGL {
@@ -2942,9 +2951,18 @@ namespace Froststrap.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Direct3D11 (Default).
         /// </summary>
-        public static string Enums_RenderingMode_Default {
+        public static string Enums_RenderingMode_DefaultDirect {
             get {
-                return ResourceManager.GetString("Enums.RenderingMode.Default", resourceCulture);
+                return ResourceManager.GetString("Enums.RenderingMode.DefaultDirect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Metal (Default).
+        /// </summary>
+        public static string Enums_RenderingMode_DefaultMetal {
+            get {
+                return ResourceManager.GetString("Enums.RenderingMode.DefaultMetal", resourceCulture);
             }
         }
         

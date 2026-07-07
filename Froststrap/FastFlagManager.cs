@@ -60,9 +60,9 @@ namespace Froststrap
         public static IReadOnlyDictionary<RenderingMode, string> RenderingModes => new Dictionary<RenderingMode, string>
         {
             { RenderingMode.Default, "None" },
+            { RenderingMode.Direct3D, "D3D11" },
             { RenderingMode.Vulkan, "Vulkan" },
             { RenderingMode.OpenGL, "OpenGL" },
-
         };
 
         public static IReadOnlyDictionary<TextureQuality, string?> TextureQualityLevels => new Dictionary<TextureQuality, string?>
