@@ -16,7 +16,7 @@
         <TextBlock Text="{x:Static resources:Strings.Onboarding_Page5_Text2}" Grid.ColumnSpan="2" Grid.Row="1" TextWrapping="Wrap" />
 
         <TextBlock Text="{x:Static resources:Strings.Onboarding_Page5_Text3}" Grid.ColumnSpan="2" Grid.Row="3" TextWrapping="Wrap" Margin="0,0,0,8" />
-        <controls:CardAction Header="{x:Static resources:Strings.Common_LaunchRoblox}" Icon="Gamepad2" Grid.Row="4" Grid.ColumnSpan="2"
+        <controls:CardAction Header="{x:Static resources:Strings.LaunchMenu_LaunchRoblox}" Icon="Gamepad2" Grid.Row="4" Grid.ColumnSpan="2"
                              Command="{Binding LaunchRobloxCommand}" />
 
         <controls:CardAction Header="{x:Static resources:Strings.Common_Settings}" Icon="Settings" Grid.Row="5" Margin="0,0,3,8"

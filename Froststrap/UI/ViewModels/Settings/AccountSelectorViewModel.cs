@@ -437,6 +437,22 @@ namespace Froststrap.UI.ViewModels.Settings
             IsDropdownOpen = false;
         }
 
+        [RelayCommand]
+        private static void ApplyAccount(AccountWithAvatar item)
+        {
+            if (item == null) return;
+
+            bool success = AccountManager.WriteCookieFileForAccount(item.Account);
+            if (success)
+            {
+                _ = Frontend.ShowMessageBox(string.Format(Strings.AccountManager_Replace_Success, item.Username));
+            }
+            else
+            {
+                _ = Frontend.ShowMessageBox(string.Format(Strings.AccountManager_Replace_Failed, item.Username), MessageBoxImage.Error);
+            }
+        }
+
         public class AccountWithAvatar(AccountManagerAccount account, string? avatarUrl)
         {
             public AccountManagerAccount Account { get; } = account;

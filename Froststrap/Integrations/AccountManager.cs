@@ -24,6 +24,7 @@ namespace Froststrap.Integrations
         private const string LOG_IDENT = "AccountManager";
         private const string AccountsFile = "AccountManager.json";
 
+        private static readonly JsonSerializerOptions _jsonOptions = new() { WriteIndented = true };
         public event Action<AccountManagerAccount?>? ActiveAccountChanged;
 
         private readonly string _accountsLocation;
@@ -31,7 +32,6 @@ namespace Froststrap.Integrations
         private readonly Dictionary<long, string?> _avatarUrlCache = [];
 
         private Browser? _browser;
-        private static readonly byte[] DpapiEntropy = Encoding.UTF8.GetBytes("Froststrap_DPAPI_v1");
 
         public AccountManagerAccount? ActiveAccount { get; private set; }
         public long CurrentPlaceId { get; set; }
@@ -56,7 +56,7 @@ namespace Froststrap.Integrations
             try
             {
                 return Convert.ToBase64String(ProtectedData.Protect(
-                    Encoding.UTF8.GetBytes(text), DpapiEntropy, DataProtectionScope.CurrentUser));
+                    Encoding.UTF8.GetBytes(text), null, DataProtectionScope.CurrentUser));
             }
             catch
             {
@@ -74,7 +74,7 @@ namespace Froststrap.Integrations
             try
             {
                 return Encoding.UTF8.GetString(ProtectedData.Unprotect(
-                    Convert.FromBase64String(text), DpapiEntropy, DataProtectionScope.CurrentUser));
+                    Convert.FromBase64String(text), null, DataProtectionScope.CurrentUser));
             }
             catch
             {
@@ -821,69 +821,6 @@ namespace Froststrap.Integrations
             }
         }
 
-        private static async Task<string> GetCsrfToken(string cookie)
-        {
-            var request = new HttpRequestMessage(HttpMethod.Post, UrlBuilder.BuildApiUrl("auth", "v1/logout", secure: true));
-            request.Headers.Add("Cookie", $".ROBLOSECURITY={cookie}");
-
-            var resp = await App.HttpClient.SendAsync(request);
-            return resp.Headers.TryGetValues("X-CSRF-TOKEN", out var tokens) ? tokens.First() : "";
-        }
-
-        public static async Task<string?> GetAuthTicket(string cookie, string csrf, long placeId)
-        {
-            using var request = new HttpRequestMessage(HttpMethod.Post, UrlBuilder.BuildApiUrl("auth", "v1/authentication-ticket/", secure: true));
-            request.Headers.Add("Cookie", $".ROBLOSECURITY={cookie}");
-            request.Headers.Add("X-CSRF-TOKEN", csrf);
-            request.Headers.Add("Referer", $"https://www.roblox.com/games/{placeId}/");
-            request.Content = new StringContent("{}", Encoding.UTF8, "application/json");
-
-            var resp = await App.HttpClient.SendAsync(request);
-            return resp.Headers.TryGetValues("rbx-authentication-ticket", out var vals) ? vals.First() : null;
-        }
-
-        public static async Task<string> JoinServer(AccountManagerAccount account, long placeId, string jobId = "", bool followUser = false, bool joinVip = false)
-        {
-            string csrf = await GetCsrfToken(account.SecurityToken);
-            string? ticket = await GetAuthTicket(account.SecurityToken, csrf, placeId);
-
-            if (string.IsNullOrEmpty(ticket))
-                return "ERROR: Failed to obtain authentication ticket.";
-
-            var browserTrackerId = new Random().Next(1000000, 9999999);
-            var launchTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-
-            string requestType = followUser ? "RequestFollowUser" : (joinVip ? "RequestPrivateGame" : "RequestGame");
-            var launcherUri = UrlBuilder.BuildApiUrl("assetgame", $"game/PlaceLauncher.ashx", secure: true);
-            var uriBuilder = new UriBuilder(launcherUri);
-            var query = $"request={requestType}&placeId={placeId}";
-
-            if (joinVip) query += $"&accessCode={jobId}";
-            else if (!string.IsNullOrEmpty(jobId)) query += $"&gameId={jobId}";
-
-            uriBuilder.Query = query;
-            string launcherUrl = uriBuilder.Uri.ToString();
-
-            string launchArgs = $"roblox-player:1+launchmode:play+gameinfo:{ticket}+launchtime:{launchTime}+placelauncherurl:{HttpUtility.UrlEncode(launcherUrl)}+browsertrackerid:{browserTrackerId}+LaunchExp:InApp";
-
-            try
-            {
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-                {
-                    Process.Start("open", $"\"{launchArgs}\"");
-                }
-                else
-                {
-                    Process.Start(new ProcessStartInfo(launchArgs) { UseShellExecute = true });
-                }
-                return "Success";
-            }
-            catch (Exception ex)
-            {
-                return $"ERROR: {ex.Message}";
-            }
-        }
-
         public async Task<Dictionary<long, string?>> GetAvatarUrlsBulkAsync(List<long> userIds)
         {
             const string LOG_IDENT_AVATARS = $"{LOG_IDENT}::GetAvatarUrlsBulk";
@@ -942,6 +879,254 @@ namespace Froststrap.Integrations
                 return;
             _accounts.Add(account);
             SaveAccounts();
+        }
+
+        public static bool WriteCookieFileForAccount(AccountManagerAccount account)
+        {
+            const string LOG_IDENT = "AccountManager::WriteCookieFile";
+
+            string plainCookie = account.SecurityToken;
+            if (string.IsNullOrEmpty(plainCookie))
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Account has no valid cookie.");
+                return false;
+            }
+
+            string filePath = CookiesManager.CookiesPath;
+
+            try
+            {
+                if (OperatingSystem.IsWindows())
+                {
+                    return WriteWindowsCookieFile(plainCookie, filePath);
+                }
+                else if (OperatingSystem.IsMacOS())
+                {
+                    return WriteMacCookieFile(plainCookie, filePath);
+                }
+                else if (OperatingSystem.IsLinux())
+                {
+                    return WriteLinuxCookieFile(plainCookie, filePath);
+                }
+                else
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Unsupported OS.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteException(LOG_IDENT, ex);
+                return false;
+            }
+        }
+
+        private static bool WriteWindowsCookieFile(string plainCookie, string filePath)
+        {
+            string guestData = GenerateGuestData();
+            string trackerData = GenerateTrackerData();
+
+            string fullNetscape =
+                $"#HttpOnly_.roblox.com\tTRUE\t/\tFALSE\t0\tGuestData\t{guestData}\n" +
+                $"#HttpOnly_.roblox.com\tTRUE\t/\tFALSE\t0\tRBXEventTrackerV2\t{trackerData}\n" +
+                $"#HttpOnly_.roblox.com\tTRUE\t/\tTRUE\t1817995500\t.ROBLOSECURITY\t{plainCookie}";
+
+            byte[] encrypted = ProtectedData.Protect(
+                Encoding.UTF8.GetBytes(fullNetscape),
+                null,
+                DataProtectionScope.CurrentUser);
+
+            var cookieData = new RobloxCookies
+            {
+                Version = "1",
+                Cookies = Convert.ToBase64String(encrypted)
+            };
+
+            string json = System.Text.Json.JsonSerializer.Serialize(cookieData, _jsonOptions);
+            BackupFile(filePath);
+            File.WriteAllText(filePath, json);
+            return true;
+        }
+
+        private static bool WriteMacCookieFile(string plainCookie, string filePath)
+        {
+            var staticCookies = new[]
+            {
+                new BinaryCookie("rbx-ip2", "rbx-ip2"),
+                new BinaryCookie("RBXPaymentsFlowContext", "98619ec1-af61-4739-a12b-c8fc4abbab79,"),
+                new BinaryCookie("rbxas", "40ac424f7d0844b99d92179bdb9e22341d7e2c49cc7ae6c5101cca1c9a67b365"),
+                new BinaryCookie("ARID", "fc r502pFLAl14bk47SYcQoDVdTFrOeqwK6AxopmW+t1Ke66bZfJX7J3KniMv+tn8NuVRLyJkFkO5z3XXzJm1ANOvLfHLkBv9q1aIoq/MT4rKYzZ6KXnZb+xnOMsu43OExsFnQhxZy2LCOzbYJMnuidqjZSIH6qQSU=**uKVnWDwQcFDl0aet")
+            };
+
+            var guestCookie = new BinaryCookie("GuestData", GenerateGuestData());
+            var trackerCookie = new BinaryCookie("RBXEventTrackerV2", GenerateTrackerData());
+            var securityCookie = new BinaryCookie(".ROBLOSECURITY", plainCookie, isSecure: true)
+            {
+                Expiry = MacTimeFromDateTime(DateTime.UtcNow.AddDays(365))
+            };
+
+            var allCookies = new List<BinaryCookie>(staticCookies) { guestCookie, trackerCookie, securityCookie };
+
+            for (int i = 0; i < allCookies.Count; i++)
+            {
+                var c = allCookies[i];
+                c.Domain = ".roblox.com";
+                c.Path = "/";
+                if (!c.Expiry.HasValue) c.Expiry = 0;
+                if (!c.Creation.HasValue) c.Creation = MacTimeFromDateTime(DateTime.UtcNow);
+                allCookies[i] = c;
+            }
+
+            byte[] binaryData = SerializeBinaryCookies(allCookies);
+            BackupFile(filePath);
+            File.WriteAllBytes(filePath, binaryData);
+            return true;
+        }
+
+        private struct BinaryCookie
+        {
+            public string Name { get; set; }
+            public string Value { get; set; }
+            public string Domain { get; set; }
+            public string Path { get; set; }
+            public int Flags { get; set; }
+            public double? Expiry { get; set; }
+            public double? Creation { get; set; }
+
+            public BinaryCookie(string name, string value, bool isSecure = false)
+            {
+                Name = name;
+                Value = value;
+                Domain = ".roblox.com";
+                Path = "/";
+                Flags = isSecure ? 1 : 0;
+                Expiry = null;
+                Creation = null;
+            }
+        }
+
+        private static byte[] SerializeBinaryCookies(List<BinaryCookie> cookies)
+        {
+            var records = new List<byte[]>();
+            foreach (var cookie in cookies)
+                records.Add(BuildCookieRecord(cookie));
+
+            int numCookies = records.Count;
+            int pageHeaderSize = 4 + 4 + numCookies * 4;
+            int totalPageSize = pageHeaderSize + records.Sum(b => b.Length);
+
+            using var ms = new MemoryStream();
+            using var writer = new BinaryWriter(ms);
+
+            writer.Write(0x00000100);
+            writer.Write(numCookies);
+            int offset = pageHeaderSize;
+            foreach (var rec in records)
+            {
+                writer.Write(offset);
+                offset += rec.Length;
+            }
+            foreach (var rec in records)
+                writer.Write(rec);
+
+            var pageData = ms.ToArray();
+
+            using var finalMs = new MemoryStream();
+            using var finalWriter = new BinaryWriter(finalMs);
+            finalWriter.Write([ 0x63, 0x6F, 0x6F, 0x6B ]);
+            finalWriter.Write(IPAddress.HostToNetworkOrder(1));
+            finalWriter.Write(IPAddress.HostToNetworkOrder(totalPageSize));
+            finalWriter.Write(pageData);
+            return finalMs.ToArray();
+        }
+
+        private static byte[] BuildCookieRecord(BinaryCookie cookie)
+        {
+            byte[] domainBytes = Encoding.UTF8.GetBytes(cookie.Domain + "\0");
+            byte[] nameBytes = Encoding.UTF8.GetBytes(cookie.Name + "\0");
+            byte[] pathBytes = Encoding.UTF8.GetBytes(cookie.Path + "\0");
+            byte[] valueBytes = Encoding.UTF8.GetBytes(cookie.Value + "\0");
+
+            int fixedSize = 52;
+            int totalSize = fixedSize + domainBytes.Length + nameBytes.Length + pathBytes.Length + valueBytes.Length;
+            byte[] record = new byte[totalSize];
+            using var ms = new MemoryStream(record);
+            using var writer = new BinaryWriter(ms);
+
+            writer.Write(0);
+            writer.Write(cookie.Flags);
+            writer.Write(new byte[12]);
+
+            int currentOffset = fixedSize;
+            int urlOffset = currentOffset;
+            int nameOffset = urlOffset + domainBytes.Length;
+            int pathOffset = nameOffset + nameBytes.Length;
+            int valueOffset = pathOffset + pathBytes.Length;
+
+            writer.Write(urlOffset);
+            writer.Write(nameOffset);
+            writer.Write(pathOffset);
+            writer.Write(valueOffset);
+            writer.Write(cookie.Expiry ?? 0.0);
+            writer.Write(cookie.Creation ?? 0.0);
+
+            writer.Write(domainBytes);
+            writer.Write(nameBytes);
+            writer.Write(pathBytes);
+            writer.Write(valueBytes);
+
+            return record;
+        }
+
+        private static double MacTimeFromDateTime(DateTime dt)
+        {
+            DateTime epoch = new(2001, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            return (dt.ToUniversalTime() - epoch).TotalSeconds;
+        }
+
+        private static bool WriteLinuxCookieFile(string plainCookie, string filePath)
+        {
+            string content = $".ROBLOSECURITY={plainCookie};";
+            BackupFile(filePath);
+            File.WriteAllText(filePath, content);
+            return true;
+        }
+
+        private static string GenerateGuestData()
+        {
+            using var rng = RandomNumberGenerator.Create();
+            byte[] bytes = new byte[4];
+            rng.GetBytes(bytes);
+            int randomPositive = BitConverter.ToInt32(bytes, 0) & int.MaxValue;
+            int userId = -(randomPositive % 999999999) - 1;
+            return $"UserID={userId};";
+        }
+
+        private static string GenerateTrackerData()
+        {
+            string createDate = DateTime.UtcNow.ToString("MM/dd/yyyy HH:mm:ss");
+            long browserId = GenerateRandomBrowserId();
+            return $"CreateDate={createDate}&rbxid=&rbxuid=&browserid={browserId};";
+        }
+
+        private static long GenerateRandomBrowserId()
+        {
+            using var rng = RandomNumberGenerator.Create();
+            byte[] bytes = new byte[8];
+            rng.GetBytes(bytes);
+            long value = BitConverter.ToInt64(bytes, 0) & long.MaxValue;
+            if (value < 1_000_000_000_000_000L)
+                value += 1_000_000_000_000_000L;
+            return value;
+        }
+
+        private static void BackupFile(string filePath)
+        {
+            if (File.Exists(filePath))
+            {
+                try { File.Copy(filePath, filePath + ".bak", overwrite: true); }
+                catch { /* ignore */ }
+            }
         }
     }
 }
