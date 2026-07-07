@@ -36,8 +36,8 @@
             <string>Roblox Player Protocol</string>
             <key>CFBundleURLSchemes</key>
             <array>
-                <string>roblox-player</string>
                 <string>roblox</string>
+                <string>roblox-player</string>
             </array>
         </dict>
         <dict>
@@ -46,6 +46,7 @@
             <key>CFBundleURLSchemes</key>
             <array>
                 <string>roblox-studio</string>
+                <string>roblox-studio-auth</string>
             </array>
         </dict>
     </array>

@@ -6,7 +6,16 @@ namespace Froststrap.UI.ViewModels.Onboarding
     public class MainWindowViewModel : NotifyPropertyChangedViewModel
     {
         public string NextButtonText { get; private set; } = Strings.Common_Next;
-
+        private bool _backButtonEnabled = false;
+        public bool BackButtonEnabled
+        {
+            get => _backButtonEnabled;
+            set
+            {
+                _backButtonEnabled = value;
+                OnPropertyChanged(nameof(BackButtonEnabled));
+            }
+        }
         public int ButtonWidth { get; } = Locale.CurrentCulture.Name.StartsWith("bg") ? 112 : 96;
 
         public ICommand BackPageCommand => new RelayCommand(BackPage);

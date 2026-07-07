@@ -65,7 +65,7 @@ namespace Froststrap.Models.Persistable
             new GradientStops { Offset = 0.5, Color = "#383F47" },
             new GradientStops { Offset = 1.0, Color = "#252A30" }
         ];
-        public double GradientAngle { get; set; } = 0;
+        public double? GradientAngle { get; set; } = 0;
         public BackgroundMode BackgroundType { get; set; } = BackgroundMode.Gradient;
         public string? BackgroundImagePath { get; set; } = "";
         public BackgroundStretch BackgroundStretch { get; set; } = BackgroundStretch.UniformToFill;

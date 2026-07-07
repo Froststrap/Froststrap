@@ -1,12 +1,15 @@
 ﻿using Avalonia.Controls;
 using Froststrap.Integrations;
+using Avalonia.Controls.ApplicationLifetimes;
 using Froststrap.UI.Elements.Dialogs;
+using Froststrap.UI.Elements.Onboarding;
+using Avalonia;
 
 namespace Froststrap
 {
     public static class LaunchHandler
     {
-        public static void ProcessNextAction(NextAction action, bool isUnfinishedInstall = false)
+        public static void ProcessNextAction(NextAction action)
         {
             const string LOG_IDENT = "LaunchHandler::ProcessNextAction";
 
@@ -29,7 +32,7 @@ namespace Froststrap
 
                 default:
                     App.Logger.WriteLine(LOG_IDENT, "Closing");
-                    App.Terminate(isUnfinishedInstall ? ErrorCode.ERROR_INSTALL_USEREXIT : ErrorCode.ERROR_SUCCESS);
+                    App.Terminate(ErrorCode.ERROR_SUCCESS);
                     break;
             }
         }
@@ -201,14 +204,32 @@ namespace Froststrap
                 App.FrostRPC = new FroststrapRichPresence();
             }
 
-            var dialog = new UI.Elements.Onboarding.MainWindow();
             App.FrostRPC?.SetPage("Onboarding");
+
+            var dialog = new LanguageSelectorDialog();
+            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                desktop.MainWindow = dialog;
+            }
 
             dialog.Closed += (sender, e) =>
             {
-                App.FrostRPC?.Dispose();
-                App.FrostRPC = null;
-                ProcessNextAction(dialog.CloseAction);
+                var mainWindow = new MainWindow();
+                if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop2)
+                {
+                    desktop2.MainWindow = mainWindow;
+                }
+                mainWindow.Show();
+
+                mainWindow.Closed += (s, ev) =>
+                {
+                    if (App.State.Prop.IsFirstLaunch)
+                    {
+                        App.State.Prop.IsFirstLaunch = false;
+                        App.State.Save();
+                    }
+                    ProcessNextAction(mainWindow.CloseAction);
+                };
             };
 
             dialog.Show();

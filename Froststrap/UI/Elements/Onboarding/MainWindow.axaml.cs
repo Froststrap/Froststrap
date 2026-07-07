@@ -1,11 +1,13 @@
 using Froststrap.UI.Elements.Base;
 using Froststrap.UI.Elements.Onboarding.Pages;
 using Froststrap.UI.ViewModels.Onboarding;
+using Froststrap;
 
 namespace Froststrap.UI.Elements.Onboarding
 {
     public partial class MainWindow : AvaloniaWindow
     {
+        public static MainWindow? Instance { get; private set; }
         internal readonly MainWindowViewModel _viewModel = new();
         private Type _currentPage = typeof(Page1);
 
@@ -14,16 +16,17 @@ namespace Froststrap.UI.Elements.Onboarding
             typeof(Page1),
             typeof(Page2),
             typeof(Page3),
-            typeof(Page4)
+            typeof(Page4),
+            typeof(Page5)
         ];
 
-        private DateTimeOffset _lastNavigation = DateTimeOffset.Now;
         public Func<Task<bool>>? NextPageCallback;
         public NextAction CloseAction = NextAction.Terminate;
         public bool Finished => _currentPage == _pages.Last();
 
         public MainWindow()
         {
+            Instance = this;
             DataContext = _viewModel;
             InitializeComponent();
 
@@ -31,15 +34,10 @@ namespace Froststrap.UI.Elements.Onboarding
 
             _viewModel.PageRequest += (_, type) =>
             {
-                if (DateTimeOffset.Now.Subtract(_lastNavigation).TotalMilliseconds < 500)
-                    return;
-
                 if (type == "next")
                     NextPage();
                 else if (type == "back")
                     BackPage();
-
-                _lastNavigation = DateTimeOffset.Now;
             };
 
             Navigate(typeof(Page1));
@@ -61,6 +59,7 @@ namespace Froststrap.UI.Elements.Onboarding
                 return;
             }
 
+            App.Settings.Save();
             var nextPageIndex = _pages.IndexOf(_currentPage) + 1;
             var page = _pages[nextPageIndex];
             Navigate(page);
@@ -90,9 +89,15 @@ namespace Froststrap.UI.Elements.Onboarding
             RootFrame.Content = pageInstance;
 
             var index = _pages.IndexOf(pageType);
-
             if (index >= 0)
                 RootNavigation.CurrentIndex = index;
+
+            if (_currentPage == _pages.Last())
+                SetNextButtonText(Strings.Common_Finish);
+            else
+                SetNextButtonText(Strings.Common_Next);
+
+            _viewModel.BackButtonEnabled = _currentPage != _pages.First();
 
             return true;
         }

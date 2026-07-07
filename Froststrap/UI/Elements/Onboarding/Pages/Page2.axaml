@@ -2,15 +2,30 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:models="using:Froststrap.Models"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+             xmlns:account="using:Froststrap.UI.Elements.Settings"
              xmlns:vm="using:Froststrap.UI.ViewModels.Onboarding"
              xmlns:resources="using:Froststrap.Resources"
+             xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
              xmlns:controls="using:Froststrap.UI.Elements.Controls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
              x:Class="Froststrap.UI.Elements.Onboarding.Pages.Page2"
              x:DataType="vm:Page2ViewModel">
 
-    <StackPanel Margin="14">
-		<TextBlock Text="Page 2" FontWeight="Bold" FontSize="20" />
-    </StackPanel>
+	<StackPanel Spacing="16">
+		<TextBlock Text="{x:Static resources:Strings.Onboarding_Page2_Text1}" TextWrapping="Wrap" />
+		<account:AccountSelectorView/>
+		<TextBlock Text="{x:Static resources:Strings.Onboarding_Page2_Text2}" TextWrapping="Wrap" />
+		<controls:OptionControl
+            Header="{x:Static resources:Strings.Menu_Behaviour_AllowCookieAccess_Title}"
+            Description="{Binding Source={x:Static resources:Strings.Menu_Behaviour_AllowCookieAccess_Description}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://github.com/fishstrap/fishstrap/wiki/Account-Access#what-will-fishstrap-access-with-your-account'}">
+			<StackPanel Orientation="Horizontal" Spacing="8">
+				<ic:Lucide Icon="TriangleAlert"
+                           VerticalAlignment="Center"
+                           StrokeBrush="Orange"
+                           IsVisible="{Binding CookieLoadingFailed}" />
+				<ToggleSwitch IsChecked="{Binding CookieAccess, Mode=TwoWay}" />
+			</StackPanel>
+		</controls:OptionControl>
+	</StackPanel>
 </UserControl>

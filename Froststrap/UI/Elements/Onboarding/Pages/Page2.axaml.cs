@@ -1,4 +1,5 @@
 ﻿using Avalonia.Controls;
+using Froststrap.UI.ViewModels.Onboarding;
 
 namespace Froststrap.UI.Elements.Onboarding.Pages
 {
@@ -6,6 +7,7 @@ namespace Froststrap.UI.Elements.Onboarding.Pages
     {
         public Page2()
         {
+            DataContext = new Page2ViewModel();
             InitializeComponent();
         }
     }

@@ -217,7 +217,7 @@
                                                                  Margin="12,0,0,0"
                                                                  HorizontalAlignment="Right"
                                                                  VerticalAlignment="Center"
-                                                                 Icon="Delete"
+                                                                 Icon="Trash2"
                                                                  IconSize="14"
                                                                  Classes="Danger"
                                                                  Command="{Binding $parent[ItemsControl].((vm:AccountSelectorViewModel)DataContext).DeleteAccountCommand}"
