@@ -12,6 +12,9 @@
 
         public bool ForceReinstall { get; set; } = false;
 
+        //if we were still windows only i would of just done it in nsis installer
+        public bool IsFirstLaunch { get; set; } = true;
+
         public WindowState SettingsWindow { get; set; } = new();
 
         public bool IsNavigationPaneOpen { get; set; } = true;

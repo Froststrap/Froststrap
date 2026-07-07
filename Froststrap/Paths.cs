@@ -22,7 +22,6 @@ namespace Froststrap
         public static string Cache { get; private set; } = "";
         public static string SavedFlagProfiles { get; private set; } = "";
         public static string Logs { get; private set; } = "";
-        public static string Integrations { get; private set; } = "";
         public static string Versions { get; private set; } = "";
         public static string Modifications { get; private set; } = "";
         public static string Roblox { get; private set; } = "";
@@ -87,7 +86,6 @@ namespace Froststrap
             CustomThemes = Path.Combine(ConfigRoot, "CustomThemes");
 
             Downloads = Path.Combine(DataRoot, "Downloads");
-            Integrations = Path.Combine(DataRoot, "Integrations");
             Versions = Path.Combine(DataRoot, "Versions");
             Modifications = Path.Combine(ConfigRoot, "Modifications");
 
@@ -124,7 +122,7 @@ namespace Froststrap
                 Directory.CreateDirectory(Path.GetDirectoryName(Application) ?? Application);
             }
 
-                Directory.CreateDirectory(ConfigRoot);
+            Directory.CreateDirectory(ConfigRoot);
             Directory.CreateDirectory(DataRoot);
 
             // Also ensure common per-user dirs exist
@@ -133,7 +131,6 @@ namespace Froststrap
             Directory.CreateDirectory(CustomThemes);
             Directory.CreateDirectory(Modifications);
             Directory.CreateDirectory(Downloads);
-            Directory.CreateDirectory(Integrations);
             Directory.CreateDirectory(Versions);
             Directory.CreateDirectory(Cache);
             Directory.CreateDirectory(Logs);

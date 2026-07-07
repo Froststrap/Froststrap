@@ -3058,4 +3058,34 @@ Would you like to visit the releases page now?</value>
   <data name="Common.Back" xml:space="preserve">
     <value>Back</value>
   </data>
+  <data name="Common.Finish" xml:space="preserve">
+    <value>Finish</value>
+  </data>
+  <data name="Onboarding.Title" xml:space="preserve">
+    <value>Froststrap Setup</value>
+  </data>
+  <data name="Onboarding.Page1" xml:space="preserve">
+    <value>Change how the app looks like using custom gradients, images and windows backdrops.</value>
+  </data>
+  <data name="Onboarding.Page2.Text1" xml:space="preserve">
+    <value>Some of our features like Better MatchMaking and Region Selector require a Roblox cookie, It is recommended to log into our built in account manager.</value>
+  </data>
+  <data name="Onboarding.Page2.Text2" xml:space="preserve">
+    <value>Or you can turn on account permission instead, as it uses your local cookie, You need to be logged in on the app to use, supported on every OS.</value>
+  </data>
+  <data name="Onboarding.Page3" xml:space="preserve">
+    <value>Check out our built in Better MatchMaking system, it changes the server your joinning to give you the best region, This feature requires a roblox cookie, Login to 'Account Manager' or turn on 'Account Permission'.</value>
+  </data>
+  <data name="Onboarding.Page5.Text1" xml:space="preserve">
+    <value>Roblox has not been installed yet, that will happen the next time you launch Roblox with Froststrap, However before you do that, you may want to configure your settings.</value>
+  </data>
+  <data name="Onboarding.Page5.Text2" xml:space="preserve">
+    <value>Also, avoid using the "Roblox Player" shortcut to launch Roblox, as Fishstrap won't launch with Roblox. If you don't see Fishstrap show when launching from the website, simply launch Roblox with Fishstrap once from the desktop to fix it.</value>
+  </data>
+  <data name="Onboarding.Page5.Text3" xml:space="preserve">
+    <value>What would you like to do?</value>
+  </data>
+  <data name="Common.LaunchRoblox" xml:space="preserve">
+    <value>Launch Roblox</value>
+  </data>
 </root>

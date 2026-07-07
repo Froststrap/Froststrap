@@ -3,7 +3,6 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using FluentAvalonia.UI.Controls;
 using Froststrap.UI.Elements.Base;
 using Froststrap.UI.Elements.Dialogs;
 using Froststrap.UI.Elements.Editor;
@@ -640,13 +639,18 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public bool IsGradientMode => BackgroundType == BackgroundMode.Gradient;
         public bool IsImageMode => BackgroundType == BackgroundMode.Image;
-
-        public double GradientAngle
+        public double? GradientAngle
         {
             get => App.Settings.Prop.GradientAngle;
             set
             {
-                App.Settings.Prop.GradientAngle = value;
+                if (!value.HasValue || value.Value < 0 || value.Value > 360)
+                    return;
+
+                if (App.Settings.Prop.GradientAngle == value)
+                    return;
+
+                App.Settings.Prop.GradientAngle = value.Value;
                 OnPropertyChanged(nameof(GradientAngle));
                 ApplyThemeUpdate();
             }

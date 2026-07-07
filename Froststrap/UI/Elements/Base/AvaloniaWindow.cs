@@ -103,7 +103,9 @@ namespace Froststrap.UI.Elements.Base
                         }
                     }
 
-                    double angleRad = (Math.PI / 180.0) * (App.Settings.Prop.GradientAngle - 90);
+                    double angle = App.Settings.Prop.GradientAngle ?? 45;
+                    double angleRad = (Math.PI / 180.0) * (angle - 90);
+
                     var startPoint = new RelativePoint(
                         0.5 - Math.Cos(angleRad) * 0.5,
                         0.5 - Math.Sin(angleRad) * 0.5,

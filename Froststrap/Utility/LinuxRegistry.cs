@@ -1,4 +1,3 @@
-using System.Text;
 using System.Runtime.Versioning;
 
 namespace Froststrap.Utility;
