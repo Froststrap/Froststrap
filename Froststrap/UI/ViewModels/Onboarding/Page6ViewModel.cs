@@ -47,38 +47,38 @@ namespace Froststrap.UI.ViewModels.Onboarding
         {
             FaqItems.Add(new FaqItem
             {
-                Question = "Q. Why isn't there multi instancing?",
-                Answer = "Long story short: Roblox considers multi instancing exploiting and has been actively trying to patch it for a while now. Froststrap will no longer offer the feature nor support its use."
+                Question = Strings.Menu_Onboarding_Page6_Q1,
+                Answer = Strings.Menu_Onboarding_Page6_A1
             });
 
             FaqItems.Add(new FaqItem
             {
-                Question = "Q. Why is there so few FastFlags?",
-                Answer = "Roblox has implemented a fflag allowlist, preventing the use of majority of fflags. This was done to prevent people from using exploitable fflags, and to add bogus fflags that could cause bugs. To see the whitelist, go [here](https://devforum.roblox.com/t/allowlist-for-local-client-configuration-via-fast-flags/3966569)"
+                Question = Strings.Menu_Onboarding_Page6_Q2,
+                Answer = Strings.Menu_Onboarding_Page6_A2
             });
 
             FaqItems.Add(new FaqItem
             {
-                Question = "Q. Help! I enabled some fflags and now my lighting doesn't work!",
-                Answer = "You enabled the Pause Voxelizer fflag (DFFlagDebugPauseVoxelizer), disable it to fix the issue."
+                Question = Strings.Menu_Onboarding_Page6_Q3,
+                Answer = Strings.Menu_Onboarding_Page6_A3
             });
 
             FaqItems.Add(new FaqItem
             {
-                Question = "Q. Whenever I launch Roblox via. Froststrap, I constantly get signed out of Roblox and am forced to resignin everytime.",
-                Answer = "Delete RobloxCookies.dat inside %localappdata%\\Roblox\\LocalStorage, which should fix the issue majority of the time. We do not know what causes this issue."
+                Question = Strings.Menu_Onboarding_Page6_Q4,
+                Answer = Strings.Menu_Onboarding_Page6_A4
             });
 
             FaqItems.Add(new FaqItem
             {
-                Question = "Q. How can I get blurry/no textures?",
-                Answer = "You don't. You may be able to achieve this with alternative software but we do not guarantee safety nor practicality."
+                Question = Strings.Menu_Onboarding_Page6_Q5,
+                Answer = Strings.Menu_Onboarding_Page6_A5
             });
 
             FaqItems.Add(new FaqItem
             {
-                Question = "Q. How do I reduce ping/ increase fps with fflags?",
-                Answer = "You don't, again. You may try to use some fflags to achieve higher fps on higher render distances, however lowering ping via fflags is not possible."
+                Question = Strings.Menu_Onboarding_Page6_Q6,
+                Answer = Strings.Menu_Onboarding_Page6_A6
             });
         }
     }
