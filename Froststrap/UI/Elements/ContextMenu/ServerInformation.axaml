@@ -1,20 +1,20 @@
 <base:AvaloniaWindow xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:vm="using:Froststrap.UI.ViewModels.ContextMenu"
-        xmlns:resources="using:Froststrap.Resources"
-        xmlns:controls="using:Froststrap.UI.Elements.Controls"
-        xmlns:base="using:Froststrap.UI.Elements.Base"
-        x:Class="Froststrap.UI.Elements.ContextMenu.ServerInformation"
-        x:DataType="vm:ServerInformationViewModel"
-        mc:Ignorable="d"
-        Title="{x:Static resources:Strings.ContextMenu_ServerInformation_Title}"
-        Width="420" SizeToContent="Height"
-        CanResize="False"
-        WindowStartupLocation="CenterScreen">
-    
-    <Grid RowDefinitions="Auto, *, Auto" Background="{DynamicResource ApplicationBackgroundColor}">
+                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                     xmlns:vm="using:Froststrap.UI.ViewModels.ContextMenu"
+                     xmlns:resources="using:Froststrap.Resources"
+                     xmlns:controls="using:Froststrap.UI.Elements.Controls"
+                     xmlns:base="using:Froststrap.UI.Elements.Base"
+                     x:Class="Froststrap.UI.Elements.ContextMenu.ServerInformation"
+                     x:DataType="vm:ServerInformationViewModel"
+                     mc:Ignorable="d"
+                     Title="{x:Static resources:Strings.ContextMenu_ServerInformation_Title}"
+                     Width="420" SizeToContent="Height"
+                     CanResize="False"
+                     WindowStartupLocation="CenterScreen">
+
+    <Grid RowDefinitions="Auto, *, Auto">
         <controls:TitleBar Grid.Row="0" Grid.ColumnSpan="2" x:Name="RootTitleBar" Title="{x:Static resources:Strings.ContextMenu_ServerInformation_Title}" ShowMinimize="False" ShowMaximize="False" Icon="avares://Froststrap/Froststrap.ico" />
 
         <Grid RowDefinitions="*, *, *, *" ColumnDefinitions="Auto, *" Grid.Row="1" Margin="16,8,16,16">
@@ -32,7 +32,7 @@
             <TextBlock Grid.Row="3" Grid.Column="1" Foreground="{DynamicResource TextFillColorTertiaryBrush}" Text="{Binding ServerUptime, Mode=OneWay}" IsVisible="{Binding ServerUptimeVisibility, Mode=OneTime}" />
         </Grid>
 
-        <Border Grid.Row="2" Padding="15" Background="{DynamicResource PrimaryBackgroundColor}">
+        <Border Grid.Row="2" Padding="15" Background="{DynamicResource ControlFillColorDefaultBrush}">
             <StackPanel Orientation="Horizontal" FlowDirection="LeftToRight" HorizontalAlignment="Right">
                 <Button MinWidth="100" Content="{x:Static resources:Strings.ContextMenu_ServerInformation_CopyInstanceId}" Command="{Binding CopyInstanceIdCommand, Mode=OneTime}" CommandParameter="{Binding $self}" />
                 <Button Margin="12,0,0,0" MinWidth="100" Content="{x:Static resources:Strings.Common_Close}" Command="{Binding CloseCommand}" CommandParameter="{Binding $parent[Window]}" />

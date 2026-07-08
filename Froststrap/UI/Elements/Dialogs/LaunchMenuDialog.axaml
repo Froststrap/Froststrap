@@ -19,7 +19,7 @@
                      WindowStartupLocation="CenterScreen"
                      mc:Ignorable="d">
 
-    <Grid Background="{DynamicResource ApplicationBackgroundColor}" RowDefinitions="Auto,*">
+    <Grid RowDefinitions="Auto,*">
         <controls:TitleBar Grid.Row="0" Title="" ShowMaximize="False" ShowMinimize="False" />
 
         <StackPanel Grid.Row="1" Margin="32,0,32,32">

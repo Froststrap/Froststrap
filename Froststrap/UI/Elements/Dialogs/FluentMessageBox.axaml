@@ -7,7 +7,7 @@
         MinWidth="320" MaxWidth="480" SizeToContent="WidthAndHeight" CanResize="False"
         WindowStartupLocation="CenterScreen">
 
-    <Grid Background="{DynamicResource ApplicationBackgroundColor}" RowDefinitions="Auto,*,Auto">
+    <Grid RowDefinitions="Auto,*,Auto">
         <md:TitleBar Grid.Row="0" x:Name="RootTitleBar" Icon="avares://Froststrap/Froststrap.ico" Title="Froststrap" />
 
         <Grid Grid.Row="1" Margin="20" ColumnDefinitions="Auto,*">
@@ -20,7 +20,7 @@
                                      Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
         </Grid>
 
-        <Border Grid.Row="2" Padding="15" Background="{DynamicResource PrimaryBackgroundColor}">
+        <Border Grid.Row="2" Padding="15" Background="{DynamicResource ControlFillColorDefaultBrush}">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                 <Button x:Name="ButtonOne" MinWidth="80" Content="Button 1" IsVisible="False" />
                 <Button x:Name="ButtonTwo" MinWidth="80" Margin="12,0,0,0" Content="Button 2" IsVisible="False" />

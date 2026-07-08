@@ -16,7 +16,7 @@
                      WindowStartupLocation="CenterOwner"
                      mc:Ignorable="d">
 
-    <Grid Background="{DynamicResource ApplicationBackgroundColor}" RowDefinitions="Auto,*,Auto">
+    <Grid RowDefinitions="Auto,*,Auto">
         <controls:TitleBar
             Title="{x:Static resources:Strings.Menu_ManualLogin_Title}"
             Grid.Row="0"
@@ -44,9 +44,9 @@
                 Grid.Row="2"
                 Margin="0,0,0,12"
                 Padding="16,12"
-                Background="{DynamicResource PrimaryBackgroundColor}"
+                Background="{DynamicResource ControlFillColorDefaultBrush}"
                 BorderBrush="{DynamicResource ControlElevationBorderBrush}"
-                BorderThickness="1"
+                BorderThickness="0,1,0,0"
                 CornerRadius="6">
                 <Grid RowDefinitions="Auto,*">
                     <TextBlock

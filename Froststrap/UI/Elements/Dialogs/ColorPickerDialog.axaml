@@ -12,7 +12,7 @@
     CanResize="False"
     WindowStartupLocation="CenterOwner">
 
-    <Grid RowDefinitions="Auto, *, Auto" Background="{DynamicResource ApplicationBackgroundColor}">
+    <Grid RowDefinitions="Auto, *, Auto">
         <controls:TitleBar Grid.Row="0"
                            Icon="avares://Froststrap/Froststrap.ico"
                            Title="{x:Static resources:Strings.Menu_ColorPicker_SelectColor}" />
@@ -36,7 +36,7 @@
             </StackPanel>
         </StackPanel>
 
-        <Border Grid.Row="2" Padding="15" Background="{DynamicResource PrimaryBackgroundColor}">
+        <Border Grid.Row="2" Padding="15" Background="{DynamicResource ControlFillColorDefaultBrush}">
             <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Right"
                         Spacing="12">

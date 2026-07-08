@@ -13,7 +13,7 @@
                      WindowStartupLocation="CenterScreen"
                      mc:Ignorable="d">
 
-    <Grid RowDefinitions="Auto,*,Auto" Background="{DynamicResource ApplicationBackgroundColor}">
+    <Grid RowDefinitions="Auto,*,Auto">
         <controls:TitleBar Grid.Row="0"
                            Icon="avares://Froststrap/Froststrap.ico"
                            Title="{x:Static resources:Strings.Menu_FlagProfiles_Title}"
@@ -108,7 +108,7 @@
 
         <Border Grid.Row="2"
                 Padding="15"
-                Background="{DynamicResource PrimaryBackgroundColor}">
+                Background="{DynamicResource ControlFillColorDefaultBrush}">
             <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto" ColumnSpacing="12">
                 <controls:IconButton x:Name="RemovePlaceButton"
                                      Classes="Danger"

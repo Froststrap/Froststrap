@@ -10,7 +10,7 @@
                      CanResize="False"
                      WindowStartupLocation="CenterScreen">
 
-    <Grid RowDefinitions="Auto,*,Auto" Background="{DynamicResource ApplicationBackgroundColor}">
+    <Grid RowDefinitions="Auto,*,Auto">
         <controls:TitleBar Grid.Row="0" Title="{x:Static resources:Strings.Dialog_AddFastFlag_Title}" ShowMaximize="False" Icon="avares://Froststrap/Froststrap.ico" />
 
         <Border Grid.Row="1"
@@ -80,7 +80,7 @@
 
         <Border Grid.Row="2"
                 Padding="15"
-                Background="{DynamicResource PrimaryBackgroundColor}">
+                Background="{DynamicResource ControlFillColorDefaultBrush}">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="12">
                 <Button x:Name="OkButton"
                         Content="{x:Static resources:Strings.Common_OK}"
