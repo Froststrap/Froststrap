@@ -18,7 +18,7 @@
                      WindowStartupLocation="CenterOwner"
                      mc:Ignorable="d">
 
-    <Grid Background="{DynamicResource ApplicationBackgroundColor}" RowDefinitions="Auto,*,Auto">
+    <Grid RowDefinitions="Auto,*,Auto">
         <controls:TitleBar
             Title="{x:Static resources:Strings.Menu_Dialog_QuickSignIn_Title}"
             Grid.Row="0"

@@ -16,7 +16,7 @@
                      MinWidth="740" Width="740" Height="440"
                      WindowStartupLocation="CenterScreen" CanResize="True">
 
-    <Grid RowDefinitions="Auto,*,Auto" Background="{DynamicResource ApplicationBackgroundColor}">
+    <Grid RowDefinitions="Auto,*,Auto">
         <controls:TitleBar Grid.Row="0" Background="{DynamicResource LayerFillColorDefaultBrush}"
                            Title="{x:Static resources:Strings.About_Title}"
                            Icon="avares://Froststrap/Froststrap.ico" />

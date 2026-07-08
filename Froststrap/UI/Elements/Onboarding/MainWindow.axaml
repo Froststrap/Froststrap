@@ -18,7 +18,7 @@
     CanResize="False"
     WindowStartupLocation="CenterScreen">
 
-    <Grid Background="{DynamicResource ApplicationBackgroundColor}" RowDefinitions="48,Auto,*,72">
+    <Grid RowDefinitions="48,Auto,*,72">
         <controls:TitleBar
             Title="{x:Static resources:Strings.Onboarding_Title}"
             Icon="avares://Froststrap/Froststrap.ico">

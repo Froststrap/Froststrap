@@ -12,7 +12,7 @@
     Width="1000" Height="500"
     WindowStartupLocation="CenterScreen">
 
-    <Grid RowDefinitions="Auto,*,Auto" Background="{DynamicResource ApplicationBackgroundColor}">
+    <Grid RowDefinitions="Auto,*,Auto">
         <controls:TitleBar Grid.Row="0" Title="{Binding Title}"
                            Icon="avares://Froststrap/Froststrap.ico" />
         <Panel

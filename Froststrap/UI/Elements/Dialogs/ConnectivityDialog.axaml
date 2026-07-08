@@ -13,7 +13,7 @@
                      Title="{x:Static resources:Strings.Dialog_Connectivity_Title}"
                      WindowStartupLocation="CenterScreen">
 
-    <Grid Background="{DynamicResource ApplicationBackgroundColor}" RowDefinitions="Auto,*,Auto">
+    <Grid RowDefinitions="Auto,*,Auto">
         <md:TitleBar Grid.Row="0" ShowMinimize="False" ShowMaximize="False" Title="{x:Static resources:Strings.Dialog_Connectivity_Title}" Icon="avares://Froststrap/Froststrap.ico" />
 
         <Grid Grid.Row="1" Margin="16" ColumnDefinitions="Auto,*">
@@ -40,7 +40,7 @@
         </Grid>
 
         <Border Grid.Row="2" Padding="15"
-                Background="{DynamicResource PrimaryBackgroundColor}">
+                Background="{DynamicResource ControlFillColorDefaultBrush}">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                 <TextBlock x:Name="VersionText"
                            Foreground="{DynamicResource TextFillColorTertiaryBrush}"
