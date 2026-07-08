@@ -247,6 +247,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
             uiElement.RenderTransform = tg;
         }
 
+        //TODO: Make font family actually work without crashing
         private static void ApplyFontFamily(CustomDialog dialog, object target, XElement xmlElement)
         {
             string? fontFamilyRaw = xmlElement.Attribute("FontFamily")?.Value;
