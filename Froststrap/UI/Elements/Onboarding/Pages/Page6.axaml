@@ -1,0 +1,68 @@
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:resources="using:Froststrap.Resources"
+    xmlns:controls="using:Froststrap.UI.Elements.Controls"
+    xmlns:vm="using:Froststrap.UI.ViewModels.Onboarding"
+    mc:Ignorable="d"
+    d:DesignWidth="800"
+    d:DesignHeight="600"
+    x:Class="Froststrap.UI.Elements.Onboarding.Pages.Page6"
+    x:DataType="vm:Page6ViewModel"
+>
+
+    <ScrollViewer>
+        <StackPanel Spacing="16" Margin="0,0,16,0">
+
+            <TextBlock
+                Text="Please take the time to read our FAQ that will most likely answer your question. If your question is still not answered feel free to join our Discord server."
+                TextWrapping="Wrap"
+                Foreground="#D0D0E0"
+                Margin="0,0,0,8"
+            />
+
+            <ItemsControl ItemsSource="{Binding FaqItems}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="vm:FaqItem">
+                        <Expander
+                            IsExpanded="{Binding IsExpanded}"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Stretch"
+                            CornerRadius="6"
+                            Background="#1E1E28"
+                            BorderBrush="#333342"
+                            BorderThickness="1"
+                            Margin="0,0,0,8"
+                        >
+                            <Expander.Header>
+                                <Grid ColumnDefinitions="*">
+                                    <TextBlock
+                                        Text="{Binding Question}"
+                                        TextWrapping="Wrap"
+                                        FontWeight="SemiBold"
+                                        Foreground="#E0E0E0"
+                                    />
+                                </Grid>
+                            </Expander.Header>
+
+                            <Border
+                                Background="#16161E"
+                                Padding="12"
+                                CornerRadius="4"
+                                Margin="0,4,0,0"
+                            >
+                                <controls:MarkdownTextBlock
+                                    MarkdownText="{Binding Answer}"
+                                    TextWrapping="Wrap"
+                                    Foreground="#B0B0C0"
+                                />
+                            </Border>
+                        </Expander>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

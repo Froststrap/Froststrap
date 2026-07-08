@@ -17,7 +17,8 @@ namespace Froststrap.UI.Elements.Onboarding
             typeof(Page2),
             typeof(Page3),
             typeof(Page4),
-            typeof(Page5)
+            typeof(Page5),
+            typeof(Page6)
         ];
 
         public Func<Task<bool>>? NextPageCallback;
