@@ -154,8 +154,7 @@ namespace Froststrap.UI.Elements.Base
             }
             else
             {
-                var customDict = new ResourceDictionary();
-                customDict["NotificationBackgroundColor"] = new SolidColorBrush(Color.Parse("#2D2D2D"));
+                var customDict = new ResourceDictionary{ ["NotificationBackgroundColor"] = new SolidColorBrush(Color.Parse("#2D2D2D")) };
                 _activeThemeDictionary = customDict;
                 Application.Current.Resources.MergedDictionaries.Add(customDict);
 

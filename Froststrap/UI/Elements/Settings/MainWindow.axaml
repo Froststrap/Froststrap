@@ -111,6 +111,12 @@
                     </ui:FANavigationViewItem.Icon>
                 </ui:FANavigationViewItem>
 
+                <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_ProfileSettings_Title}" Tag="profilesettings">
+                    <ui:FANavigationViewItem.Icon>
+                        <ic:Lucide Icon="SaveAll" />
+                    </ui:FANavigationViewItem.Icon>
+                </ui:FANavigationViewItem>
+
                 <ui:FANavigationViewItem Content="{x:Static resources:Strings.Common_Shortcuts}" Tag="shortcuts">
                     <ui:FANavigationViewItem.Icon>
                         <ic:Lucide Icon="Link2" />

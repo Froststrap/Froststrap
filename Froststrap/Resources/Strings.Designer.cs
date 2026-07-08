@@ -651,6 +651,15 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Apply.
+        /// </summary>
+        public static string Common_Apply {
+            get {
+                return ResourceManager.GetString("Common.Apply", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Auto.
         /// </summary>
         public static string Common_Auto {
@@ -7752,6 +7761,33 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Save and Export all of your settings into profiles to use later..
+        /// </summary>
+        public static string Menu_ProfileSettings_Description {
+            get {
+                return ResourceManager.GetString("Menu.ProfileSettings.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last Modified (UTC).
+        /// </summary>
+        public static string Menu_ProfileSettings_LastModified {
+            get {
+                return ResourceManager.GetString("Menu.ProfileSettings.LastModified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Profile Settings.
+        /// </summary>
+        public static string Menu_ProfileSettings_Title {
+            get {
+                return ResourceManager.GetString("Menu.ProfileSettings.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Account manager is not available..
         /// </summary>
         public static string Menu_QuickPlay_AccountManagerNotAvailable {
@@ -8675,7 +8711,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Also, avoid using the &quot;Roblox Player&quot; shortcut to launch Roblox, as Fishstrap won&apos;t launch with Roblox. If you don&apos;t see Fishstrap show when launching from the website, simply launch Roblox with Fishstrap once from the desktop to fix it..
+        ///   Looks up a localized string similar to Also, avoid using the &quot;Roblox Player&quot; shortcut to launch Roblox, as Froststrap won&apos;t launch with Roblox. If you don&apos;t see Froststrap show when launching from the website, simply launch Roblox with Froststrap once from the desktop to fix it..
         /// </summary>
         public static string Onboarding_Page5_Text2 {
             get {
@@ -8707,6 +8743,132 @@ namespace Froststrap.Resources {
         public static string Paths_Icons {
             get {
                 return ResourceManager.GetString("Paths.Icons", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Profile name....
+        /// </summary>
+        public static string ProfileNamePlaceholder {
+            get {
+                return ResourceManager.GetString("ProfileNamePlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to apply profile: {0}.
+        /// </summary>
+        public static string ProfileSettings_ApplyFailed {
+            get {
+                return ResourceManager.GetString("ProfileSettings.ApplyFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Apply profile &apos;{0}&apos; to current settings? This will overwrite your current settings..
+        /// </summary>
+        public static string ProfileSettings_ApplyProfile {
+            get {
+                return ResourceManager.GetString("ProfileSettings.ApplyProfile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Profile applied successfully..
+        /// </summary>
+        public static string ProfileSettings_ApplySuccess {
+            get {
+                return ResourceManager.GetString("ProfileSettings.ApplySuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete profile &apos;{0}&apos;?.
+        /// </summary>
+        public static string ProfileSettings_DeleteProfile {
+            get {
+                return ResourceManager.GetString("ProfileSettings.DeleteProfile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter a new name..
+        /// </summary>
+        public static string ProfileSettings_EnterNewName {
+            get {
+                return ResourceManager.GetString("ProfileSettings.EnterNewName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter a profile name..
+        /// </summary>
+        public static string ProfileSettings_EnterProfileName {
+            get {
+                return ResourceManager.GetString("ProfileSettings.EnterProfileName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Profile exported to {0}..
+        /// </summary>
+        public static string ProfileSettings_ExportSuccess {
+            get {
+                return ResourceManager.GetString("ProfileSettings.ExportSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to import: {0}.
+        /// </summary>
+        public static string ProfileSettings_ImportFailed {
+            get {
+                return ResourceManager.GetString("ProfileSettings.ImportFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Settings imported successfully..
+        /// </summary>
+        public static string ProfileSettings_ImportSuccess {
+            get {
+                return ResourceManager.GetString("ProfileSettings.ImportSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not find main window..
+        /// </summary>
+        public static string ProfileSettings_MainWindowNotFound {
+            get {
+                return ResourceManager.GetString("ProfileSettings.MainWindowNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Profile &apos;{0}&apos; already exists. Overwrite?.
+        /// </summary>
+        public static string ProfileSettings_ProfileExists {
+            get {
+                return ResourceManager.GetString("ProfileSettings.ProfileExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A profile with name &apos;{0}&apos; already exists. Overwrite?.
+        /// </summary>
+        public static string ProfileSettings_ProfileExistsRename {
+            get {
+                return ResourceManager.GetString("ProfileSettings.ProfileExistsRename", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update profile &apos;{0}&apos; with current settings?.
+        /// </summary>
+        public static string ProfileSettings_UpdateProfile {
+            get {
+                return ResourceManager.GetString("ProfileSettings.UpdateProfile", resourceCulture);
             }
         }
         
