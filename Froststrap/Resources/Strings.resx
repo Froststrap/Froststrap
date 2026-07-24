@@ -1234,7 +1234,9 @@ For more information join Bloxshade discord server.</value>
     <value>This channel is out of date, and is likely no longer being updated. Please use another channel.</value>
   </data>
   <data name="Bootstrapper.Dialog.ChannelOutOfDate" xml:space="preserve">
-    <value>The channel you're currently on ({0}) is out of date, and appears to no longer be receiving updates.&#xD;&#xA;Would you like to switch to the default channel ({1})?</value>
+    <value>The channel you're currently on ({0}) is out of date, and appears to no longer be receiving updates.
+	
+Would you like to switch to the default channel ({1})?</value>
   </data>
   <data name="Menu.Channel.ChangeAction.Title" xml:space="preserve">
     <value>Automatic Channel Change Action</value>
@@ -1646,7 +1648,9 @@ Would you like to switch your preferred channel to {0}?</value>
     <value>Copy this code and paste it in the [Quick Sign-In Page]({0}).</value>
   </data>
   <data name="Menu.QuickSignIn.Waitting" xml:space="preserve">
-    <value>Waiting for Quick Sign-In...&#xD;&#xA;The app will close this window when sign-in completes.</value>
+    <value>Waiting for Quick Sign-In...
+	
+The app will close this window when sign-in completes.</value>
   </data>
   <data name="Menu.QuickSignIn.Complete" xml:space="preserve">
     <value>Login complete! Closing...</value>
@@ -1733,7 +1737,9 @@ Would you like to switch your preferred channel to {0}?</value>
     <value>Account '{0}' has been removed because its cookie is invalid or expired.</value>
   </data>
   <data name="Menu.AccountSelector.AlreadyLoggedIn" xml:space="preserve">
-    <value>Account '@{0}' is already logged in.&#xD;&#xA;Switched to it.</value>
+    <value>Account '@{0}' is already logged in.
+	
+Switched to it.</value>
   </data>
   <data name="Menu.CookieState.NotAllowed" xml:space="preserve">
     <value>Cookie access is disabled in settings.</value>
@@ -1793,7 +1799,9 @@ Would you like to switch your preferred channel to {0}?</value>
     <value>📦 Drop to import JSON / TXT</value>
   </data>
   <data name="Menu.FastFlagEditor.NotInWhiteList" xml:space="preserve">
-    <value>'{0}' is not in the Roblox allowlist and won't work.&#xD;&#xA;Remove it now?</value>
+    <value>'{0}' is not in the Roblox allowlist and won't work.
+	
+Remove it now?</value>
   </data>
   <data name="Menu.FastFlagEditor.NoFlagDelete" xml:space="preserve">
     <value>There are no flags to delete.</value>
@@ -1997,7 +2005,9 @@ Would you like to switch your preferred channel to {0}?</value>
     <value>Unsupported file type or path: {0}</value>
   </data>
   <data name="Menu.Mods.InvalidModFolders" xml:space="preserve">
-    <value>Selected source does not contain a valid mod structure.&#xD;&#xA;It must contain at least one of the following folders: content, ExtraContent, PlatformContent.</value>
+    <value>Selected source does not contain a valid mod structure.
+	
+It must contain at least one of the following folders: content, ExtraContent, PlatformContent.</value>
   </data>
   <data name="Menu.Mods.Imported" xml:space="preserve">
     <value>Mod '{0}' imported successfully.</value>
@@ -2114,7 +2124,9 @@ Would you like to switch your preferred channel to {0}?</value>
     <value>Enter the Roblox Studio version GUID (e.g. version-xxxxxxxxxxxxxxxx). Only applies to Studio launches.</value>
   </data>
   <data name="Menu.Deployment.DomainValidation" xml:space="preserve">
-    <value>You entered an invalid domain&#xD;&#xA;Please dont mess with this if you dont know what your doing</value>
+    <value>You entered an invalid domain
+	
+Please dont mess with this if you dont know what your doing</value>
   </data>
   <data name="Menu.Deployment.FailedToLoadChannelData" xml:space="preserve">
     <value>Failed to load channel data.</value>
@@ -2339,7 +2351,9 @@ Would you like to switch your preferred channel to {0}?</value>
     <value>Adds a small button to join the game your working on.</value>
   </data>
   <data name="Menu.Integrations.StudioRPC.PluginConfirmation" xml:space="preserve">
-    <value>This works by adding a custom made froststrap plugin that will log what your doing.&#xD;&#xA;Do you want to install the plugin?</value>
+    <value>This works by adding a custom made froststrap plugin that will log what your doing.
+	
+Do you want to install the plugin?</value>
   </data>
   <data name="Menu.PresetMods.OpenModsFolder" xml:space="preserve">
     <value>Open Preset Mods Folder</value>
@@ -2948,7 +2962,7 @@ Would you like to switch your preferred channel to {0}?</value>
     <value>A profile with that name already exists.</value>
   </data>
   <data name="Menu.FlagProfiles.RenameFailed" xml:space="preserve">
-    <value>Failed to rename profile:\n{0}</value>
+    <value>Failed to rename profile: {0}</value>
   </data>
   <data name="Menu.FlagProfiles.SelectProfileCopy" xml:space="preserve">
     <value>Please select a profile to copy.</value>
@@ -2960,7 +2974,7 @@ Would you like to switch your preferred channel to {0}?</value>
     <value>Failed to parse the selected profile.</value>
   </data>
   <data name="Menu.FlagProfiles.CopyFailed" xml:space="preserve">
-    <value>Failed to copy profile:\n{0}</value>
+    <value>Failed to copy profile: {0}</value>
   </data>
   <data name="Menu.FlagProfiles.SelectProfileUpdate" xml:space="preserve">
     <value>Please select a profile to update.</value>
@@ -2969,7 +2983,7 @@ Would you like to switch your preferred channel to {0}?</value>
     <value>Failed to get current FastFlags.</value>
   </data>
   <data name="Menu.FlagProfiles.UpdateFailed" xml:space="preserve">
-    <value>Failed to update profile:\n{0}</value>
+    <value>Failed to update profile: {0}</value>
   </data>
   <data name="Menu.FlagProfiles.NoProfilesFound" xml:space="preserve">
     <value>No profiles found. Please create a profile first.</value>

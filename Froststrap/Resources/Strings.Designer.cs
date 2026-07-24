@@ -173,6 +173,7 @@ namespace Froststrap.Resources {
         
         /// <summary>
         ///   Looks up a localized string similar to The channel you&apos;re currently on ({0}) is out of date, and appears to no longer be receiving updates.
+        ///	
         ///Would you like to switch to the default channel ({1})?.
         /// </summary>
         public static string Bootstrapper_Dialog_ChannelOutOfDate {
@@ -3385,6 +3386,7 @@ namespace Froststrap.Resources {
         
         /// <summary>
         ///   Looks up a localized string similar to Account &apos;@{0}&apos; is already logged in.
+        ///	
         ///Switched to it..
         /// </summary>
         public static string Menu_AccountSelector_AlreadyLoggedIn {
@@ -4521,6 +4523,7 @@ namespace Froststrap.Resources {
         
         /// <summary>
         ///   Looks up a localized string similar to You entered an invalid domain
+        ///	
         ///Please dont mess with this if you dont know what your doing.
         /// </summary>
         public static string Menu_Deployment_DomainValidation {
@@ -4789,6 +4792,7 @@ namespace Froststrap.Resources {
         
         /// <summary>
         ///   Looks up a localized string similar to &apos;{0}&apos; is not in the Roblox allowlist and won&apos;t work.
+        ///	
         ///Remove it now?.
         /// </summary>
         public static string Menu_FastFlagEditor_NotInWhiteList {
@@ -5077,7 +5081,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to copy profile:\n{0}.
+        ///   Looks up a localized string similar to Failed to copy profile: {0}.
         /// </summary>
         public static string Menu_FlagProfiles_CopyFailed {
             get {
@@ -5239,7 +5243,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to rename profile:\n{0}.
+        ///   Looks up a localized string similar to Failed to rename profile: {0}.
         /// </summary>
         public static string Menu_FlagProfiles_RenameFailed {
             get {
@@ -5311,7 +5315,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to update profile:\n{0}.
+        ///   Looks up a localized string similar to Failed to update profile: {0}.
         /// </summary>
         public static string Menu_FlagProfiles_UpdateFailed {
             get {
@@ -6374,6 +6378,7 @@ namespace Froststrap.Resources {
         
         /// <summary>
         ///   Looks up a localized string similar to This works by adding a custom made froststrap plugin that will log what your doing.
+        ///	
         ///Do you want to install the plugin?.
         /// </summary>
         public static string Menu_Integrations_StudioRPC_PluginConfirmation {
@@ -7284,6 +7289,7 @@ namespace Froststrap.Resources {
         
         /// <summary>
         ///   Looks up a localized string similar to Selected source does not contain a valid mod structure.
+        ///	
         ///It must contain at least one of the following folders: content, ExtraContent, PlatformContent..
         /// </summary>
         public static string Menu_Mods_InvalidModFolders {
@@ -8221,6 +8227,7 @@ namespace Froststrap.Resources {
         
         /// <summary>
         ///   Looks up a localized string similar to Waiting for Quick Sign-In...
+        ///	
         ///The app will close this window when sign-in completes..
         /// </summary>
         public static string Menu_QuickSignIn_Waitting {
