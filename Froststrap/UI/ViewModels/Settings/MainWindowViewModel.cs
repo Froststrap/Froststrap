@@ -116,7 +116,6 @@ namespace Froststrap.UI.ViewModels.Settings
         public IRelayCommand NavigateToGlobalSettingsCommand { get; }
         public IRelayCommand NavigateToGlobalSettingsEditorCommand { get; }
         public IRelayCommand NavigateToShortcutsCommand { get; }
-        public IRelayCommand NavigateToProfileSettingsCommand { get; }
         public IRelayCommand NavigateToQuickPlayCommand { get; }
         public IRelayCommand NavigateToChannelsCommand { get; }
         public IRelayCommand NavigateToCommunityModsCommand { get; }
@@ -166,7 +165,6 @@ namespace Froststrap.UI.ViewModels.Settings
             NavigateToRegionSelectorCommand = new RelayCommand(() => Navigate("regionselector", Strings.Menu_RegionSelector_Title, null!, new RegionSelectorViewModel()));
             NavigateToGlobalSettingsCommand = new RelayCommand(() => Navigate("globalsettings", Strings.Menu_GlobalSettings_Title, Strings.Menu_GBSEditor_Description, new GlobalSettingsViewModel()));
             NavigateToShortcutsCommand = new RelayCommand(() => Navigate("shortcuts", Strings.Common_Shortcuts, Strings.Menu_Shortcuts_Description, new ShortcutsViewModel()));
-            NavigateToProfileSettingsCommand = new RelayCommand(() => Navigate("profilesettings", Strings.Menu_ProfileSettings_Title, Strings.Menu_ProfileSettings_Description, new ProfileSettingsViewModel()));
             NavigateToQuickPlayCommand = new RelayCommand(() => Navigate("quickplay", Strings.Menu_QuickPlay_Title, Strings.Menu_QuickPlay_Description, new QuickPlayViewModel()));
             NavigateToChannelsCommand = new RelayCommand(() => Navigate("channels", Strings.Common_Deployment, Strings.Menu_Channel_Description, new ChannelViewModel()));
 
@@ -278,9 +276,6 @@ namespace Froststrap.UI.ViewModels.Settings
                     break;
                 case "Froststrap.UI.ViewModels.Settings.ShortcutsViewModel":
                     NavigateToShortcutsCommand.Execute(null);
-                    break;
-                case "Froststrap.UI.ViewModels.Settings.ProfileSettingsViewModel":
-                    NavigateToProfileSettingsCommand.Execute(null);
                     break;
                 case "Froststrap.UI.ViewModels.Settings.QuickPlayViewModel":
                     NavigateToQuickPlayCommand.Execute(null);
