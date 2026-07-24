@@ -162,54 +162,93 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                 var progress = new Progress<double>(p => mod.DownloadProgress = p);
                 await DownloadFileAsync(mod.DownloadUrl, tempFile, progress);
 
+                string baseName = mod.Name;
+                string finalName = baseName;
+
                 if (mod.IsCustomTheme)
                 {
-                    string themePath = Path.Combine(Paths.CustomThemes, mod.Name);
+                    string themePath = Path.Combine(Paths.CustomThemes, finalName);
+
+                    if (Directory.Exists(themePath))
+                    {
+                        var result = await Frontend.ShowMessageBox(
+                            string.Format(Strings.Menu_CommunityMods_Overwrite, baseName),
+                            MessageBoxImage.Question,
+                            MessageBoxButton.YesNo);
+
+                        if (result == MessageBoxResult.Yes)
+                        {
+                            Directory.Delete(themePath, true);
+                        }
+                        else
+                        {
+                            int counter = 1;
+                            while (Directory.Exists(Path.Combine(Paths.CustomThemes, $"{baseName} {counter}")))
+                                counter++;
+                            finalName = $"{baseName} {counter}";
+                            themePath = Path.Combine(Paths.CustomThemes, finalName);
+                        }
+                    }
+
                     await ExtractZipAsync(tempFile, themePath);
 
-                    App.Settings.Prop.SelectedCustomTheme = mod.Name;
+                    App.Settings.Prop.SelectedCustomTheme = finalName;
                     App.Settings.Prop.BootstrapperStyle = BootstrapperStyle.CustomDialog;
                     App.Settings.Save();
 
-                    _ = Frontend.ShowMessageBox(string.Format(Strings.Menu_CommunityMods_ThemeInstalled, mod.Name), MessageBoxImage.Information);
+                    _ = Frontend.ShowMessageBox(string.Format(Strings.Menu_CommunityMods_ThemeInstalled, finalName), MessageBoxImage.Information);
                 }
                 else
                 {
-                    string installPath = Path.Combine(Paths.Modifications, mod.Name);
+                    string installPath = Path.Combine(Paths.Modifications, finalName);
+
                     if (Directory.Exists(installPath))
                     {
-                        var result = await Frontend.ShowMessageBox(string.Format(Strings.Menu_CommunityMods_Overwrite, mod.Name), MessageBoxImage.Question, MessageBoxButton.YesNo);
-                        if (result != MessageBoxResult.Yes) return;
-                        Directory.Delete(installPath, true);
+                        var result = await Frontend.ShowMessageBox(
+                            string.Format(Strings.Menu_CommunityMods_Overwrite, baseName),
+                            MessageBoxImage.Question,
+                            MessageBoxButton.YesNo);
+
+                        if (result == MessageBoxResult.Yes)
+                        {
+                            Directory.Delete(installPath, true);
+                        }
+                        else
+                        {
+                            int counter = 1;
+                            while (Directory.Exists(Path.Combine(Paths.Modifications, $"{baseName} {counter}")))
+                                counter++;
+                            finalName = $"{baseName} {counter}";
+                            installPath = Path.Combine(Paths.Modifications, finalName);
+                        }
                     }
 
                     await ExtractZipAsync(tempFile, installPath);
 
                     var existingMod = App.State.Prop.Mods.FirstOrDefault(m =>
-                        string.Equals(m.FolderName, mod.Name, StringComparison.OrdinalIgnoreCase));
+                        string.Equals(m.FolderName, finalName, StringComparison.OrdinalIgnoreCase));
 
                     if (existingMod != null)
                     {
                         existingMod.Enabled = true;
-                        App.Logger.WriteLine("CommunityModsViewModel::DownloadModAsync", $"Enabled existing mod '{mod.Name}'.");
+                        App.Logger.WriteLine("CommunityModsViewModel::DownloadModAsync", $"Enabled existing mod '{finalName}'.");
                     }
                     else
                     {
                         int maxPriority = App.State.Prop.Mods.Count > 0 ? App.State.Prop.Mods.Max(m => m.Priority) : 0;
                         var newMod = new ModConfig
                         {
-                            FolderName = mod.Name,
+                            FolderName = finalName,
                             Enabled = true,
                             Priority = maxPriority + 1,
                             Target = ModTarget.Both
                         };
                         App.State.Prop.Mods.Add(newMod);
-                        App.Logger.WriteLine("CommunityModsViewModel::DownloadModAsync", $"Added mod '{mod.Name}' to state.");
+                        App.Logger.WriteLine("CommunityModsViewModel::DownloadModAsync", $"Added mod '{finalName}' to state.");
                     }
 
                     App.State.SaveSetting("Mods");
-
-                    _ = Frontend.ShowMessageBox(string.Format(Strings.Menu_CommunityMods_ModInstalled, mod.Name), MessageBoxImage.Information);
+                    _ = Frontend.ShowMessageBox(string.Format(Strings.Menu_CommunityMods_ModInstalled, finalName), MessageBoxImage.Information);
                 }
             }
             catch (Exception ex)
