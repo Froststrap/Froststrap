@@ -256,8 +256,6 @@ namespace Froststrap.UI.ViewModels.Settings
                 case "Froststrap.UI.ViewModels.Settings.LinuxSettingsViewModel":
                     if (OperatingSystem.IsLinux())
                         NavigateToLinuxSettingsCommand.Execute(null);
-                    else
-                        NavigateToIntegrationsCommand.Execute(null);
                     break;
                 case "Froststrap.UI.ViewModels.Settings.Mods.ModsViewModel":
                     NavigateToMyModsCommand.Execute(null);
@@ -271,8 +269,6 @@ namespace Froststrap.UI.ViewModels.Settings
                 case "Froststrap.UI.ViewModels.Settings.GlobalSettingsViewModel":
                     if (GBSEnabled)
                         NavigateToGlobalSettingsCommand.Execute(null);
-                    else
-                        NavigateToIntegrationsCommand.Execute(null);
                     break;
                 case "Froststrap.UI.ViewModels.Settings.ShortcutsViewModel":
                     NavigateToShortcutsCommand.Execute(null);
@@ -301,8 +297,6 @@ namespace Froststrap.UI.ViewModels.Settings
                 case "Froststrap.UI.ViewModels.Settings.GlobalSettings.GlobalSettingsEditorViewModel":
                     if (GBSEnabled)
                         NavigateToGlobalSettingsEditorCommand.Execute(null);
-                    else
-                        NavigateToIntegrationsCommand.Execute(null);
                     break;
                 default:
                     NavigateToIntegrationsCommand.Execute(null);
