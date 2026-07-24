@@ -139,7 +139,13 @@ namespace Froststrap.UI.ViewModels.Settings
         public static bool ReadOnly
         {
             get => GBSEditor.GetReadOnly();
-            set => App.GlobalSettings.SetReadOnly(value);
+            set
+            {
+                if (value)
+                    _ = Frontend.ShowMessageBox(Strings.Menu_GlobalSettings_ReadonlyMessage, MessageBoxImage.Warning);
+
+                App.GlobalSettings.SetReadOnly(value);
+            }
         }
 
         public static int FramerateCap

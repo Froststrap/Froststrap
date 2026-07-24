@@ -3154,4 +3154,7 @@ Would you like to visit the releases page now?</value>
   <data name="Menu.Onboarding.Page6.A6" xml:space="preserve">
     <value>You don't, again. You may try to use some fflags to achieve higher fps on higher render distances, however lowering ping via fflags is not possible.</value>
   </data>
+  <data name="Menu.GlobalSettings.ReadonlyMessage" xml:space="preserve">
+    <value>Turning on Read-Only will force your settings like sensitivity, volume, etc. to the current values, even if you change them inside the Roblox app.</value>
+  </data>
 </root>

@@ -5666,6 +5666,15 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Turning on Read-Only will force your settings like sensitivity, volume, etc. to the current values, even if you change them inside the Roblox app..
+        /// </summary>
+        public static string Menu_GlobalSettings_ReadonlyMessage {
+            get {
+                return ResourceManager.GetString("Menu.GlobalSettings.ReadonlyMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Reduces UI animations..
         /// </summary>
         public static string Menu_GlobalSettings_ReducedMotion_Description {
