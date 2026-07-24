@@ -3112,56 +3112,8 @@ Would you like to visit the releases page now?</value>
   <data name="AccountManager.Replace.Failed" xml:space="preserve">
     <value>Failed to write cookie file for {0}.</value>
   </data>
-  <data name="Menu.ProfileSettings.Title" xml:space="preserve">
-    <value>Profile Settings</value>
-  </data>
-  <data name="Menu.ProfileSettings.Description" xml:space="preserve">
-    <value>Save and Export all of your settings into profiles to use later.</value>
-  </data>
   <data name="Common.Apply" xml:space="preserve">
     <value>Apply</value>
-  </data>
-  <data name="Menu.ProfileSettings.LastModified" xml:space="preserve">
-    <value>Last Modified (UTC)</value>
-  </data>
-  <data name="ProfileSettings.EnterProfileName" xml:space="preserve">
-    <value>Please enter a profile name.</value>
-  </data>
-  <data name="ProfileSettings.ProfileExists" xml:space="preserve">
-    <value>Profile '{0}' already exists. Overwrite?</value>
-  </data>
-  <data name="ProfileSettings.EnterNewName" xml:space="preserve">
-    <value>Please enter a new name.</value>
-  </data>
-  <data name="ProfileSettings.ProfileExistsRename" xml:space="preserve">
-    <value>A profile with name '{0}' already exists. Overwrite?</value>
-  </data>
-  <data name="ProfileSettings.ApplyProfile" xml:space="preserve">
-    <value>Apply profile '{0}' to current settings? This will overwrite your current settings.</value>
-  </data>
-  <data name="ProfileSettings.UpdateProfile" xml:space="preserve">
-    <value>Update profile '{0}' with current settings?</value>
-  </data>
-  <data name="ProfileSettings.DeleteProfile" xml:space="preserve">
-    <value>Delete profile '{0}'?</value>
-  </data>
-  <data name="ProfileSettings.ImportSuccess" xml:space="preserve">
-    <value>Settings imported successfully.</value>
-  </data>
-  <data name="ProfileSettings.ImportFailed" xml:space="preserve">
-    <value>Failed to import: {0}</value>
-  </data>
-  <data name="ProfileSettings.ExportSuccess" xml:space="preserve">
-    <value>Profile exported to {0}.</value>
-  </data>
-  <data name="ProfileSettings.ApplySuccess" xml:space="preserve">
-    <value>Profile applied successfully.</value>
-  </data>
-  <data name="ProfileSettings.ApplyFailed" xml:space="preserve">
-    <value>Failed to apply profile: {0}</value>
-  </data>
-  <data name="ProfileSettings.MainWindowNotFound" xml:space="preserve">
-    <value>Could not find main window.</value>
   </data>
   <data name="ProfileNamePlaceholder" xml:space="preserve">
     <value>Profile name...</value>
