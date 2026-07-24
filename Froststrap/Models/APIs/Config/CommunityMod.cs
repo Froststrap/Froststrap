@@ -75,5 +75,35 @@ namespace Froststrap.Models.APIs.Config
             ModType.CustomTheme => "Custom Theme",
             _ => "Unknown"
         };
+
+        private Bitmap? _thumbnail;
+        [JsonIgnore]
+        public Bitmap? Thumbnail
+        {
+            get => _thumbnail;
+            set => SetProperty(ref _thumbnail, value);
+        }
+
+        public async Task LoadThumbnailAsync()
+        {
+            if (Thumbnail != null || string.IsNullOrEmpty(ThumbnailUrl))
+                return;
+
+            try
+            {
+                using var response = await App.HttpClient.GetAsync(ThumbnailUrl);
+                if (!response.IsSuccessStatusCode) return;
+
+                await using var stream = await response.Content.ReadAsStreamAsync();
+
+                var bitmap = await Task.Run(() => Bitmap.DecodeToWidth(stream, 600));
+
+                await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() => Thumbnail = bitmap);
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine("CommunityMod::LoadThumbnailAsync", ex.ToString());
+            }
+        }
     }
 }

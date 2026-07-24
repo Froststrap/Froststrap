@@ -124,13 +124,16 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                  mod.Author?.Contains(query, StringComparison.OrdinalIgnoreCase) == true)
             ).ToList();
 
+            foreach (var mod in filtered)
+                mod.DownloadCommand = DownloadModCommand;
+
             Dispatcher.UIThread.Invoke(() =>
             {
                 Mods.Clear();
                 foreach (var mod in filtered)
                 {
-                    mod.DownloadCommand = DownloadModCommand;
                     Mods.Add(mod);
+                    _ = mod.LoadThumbnailAsync();
                 }
             });
         }
