@@ -231,6 +231,25 @@ public partial class App : Application
         return false;
     }
 
+    public static async Task AssertWindowsOSVersionAsync()
+    {
+        const string LOG_IDENT = "App::AssertWindowsOSVersion";
+
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        int major = Environment.OSVersion.Version.Major;
+        if (major < 10)
+        {
+            Logger.WriteLine(LOG_IDENT, $"Detected unsupported Windows version ({Environment.OSVersion.Version}).");
+
+            if (!LaunchSettings.QuietFlag.Active)
+                await Frontend.ShowMessageBox(Strings.App_OSDeprecation_Win7_81, MessageBoxImage.Error);
+
+            Terminate(ErrorCode.ERROR_INVALID_FUNCTION);
+        }
+    }
+
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
@@ -432,6 +451,8 @@ public partial class App : Application
 
             AvaloniaWindow.ApplyTheme();
             Locale.Set(Settings.Prop.Locale);
+
+            await AssertWindowsOSVersionAsync();
 
             await Installer.RunMigrations();
 
