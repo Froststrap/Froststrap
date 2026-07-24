@@ -333,7 +333,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                     {
                         if (string.IsNullOrEmpty(entry.Name)) continue;
 
-                        string relative = entry.FullName.Substring(rootPrefix.Length + 1);
+                        string relative = entry.FullName[(rootPrefix.Length + 1)..];
                         string targetPath = Path.Combine(dest, relative);
 
                         string? targetDir = Path.GetDirectoryName(targetPath);

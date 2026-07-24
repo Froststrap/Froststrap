@@ -5,7 +5,6 @@ namespace Froststrap.Models.APIs.Config
 {
     public partial class CommunityMod : NotifyPropertyChangedViewModel
     {
-
         [JsonPropertyName("id")]
         public string Id { get; set; } = null!;
 
@@ -84,10 +83,38 @@ namespace Froststrap.Models.APIs.Config
             set => SetProperty(ref _thumbnail, value);
         }
 
+        private string GetCacheFilePath()
+        {
+            string cacheDir = Path.Combine(Paths.Cache, "CommunityMods");
+            Directory.CreateDirectory(cacheDir);
+            return Path.Combine(cacheDir, $"{Id}.png");
+        }
+
         public async Task LoadThumbnailAsync()
         {
             if (Thumbnail != null || string.IsNullOrEmpty(ThumbnailUrl))
                 return;
+
+            string cachePath = GetCacheFilePath();
+
+            if (File.Exists(cachePath))
+            {
+                try
+                {
+                    var bitmap = await Task.Run(() =>
+                    {
+                        using var fs = File.OpenRead(cachePath);
+                        return Bitmap.DecodeToWidth(fs, 600);
+                    });
+                    await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() => Thumbnail = bitmap);
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.WriteLine("CommunityMod::LoadThumbnailAsync", $"Failed to load cached thumbnail: {ex.Message}");
+                    try { File.Delete(cachePath); } catch { }
+                }
+            }
 
             try
             {
@@ -95,8 +122,13 @@ namespace Froststrap.Models.APIs.Config
                 if (!response.IsSuccessStatusCode) return;
 
                 await using var stream = await response.Content.ReadAsStreamAsync();
-
                 var bitmap = await Task.Run(() => Bitmap.DecodeToWidth(stream, 600));
+
+                await Task.Run(() =>
+                {
+                    using var fs = File.Create(cachePath);
+                    bitmap.Save(fs);
+                });
 
                 await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() => Thumbnail = bitmap);
             }
