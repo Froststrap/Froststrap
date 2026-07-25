@@ -151,7 +151,10 @@ namespace Froststrap
             // exceptions don't get thrown if we define events without actually binding to the failure events. probably a bug. ¯\_(ツ)_/¯
             _fastZipEvents.FileFailure += (_, e) =>
             {
-                App.Logger.WriteLine("FastZipEvents::OnFileFailure", $"Failed to extract {e.Name}: {e.Exception.Message}");
+                if (!e.Name.EndsWith(".ttf", StringComparison.OrdinalIgnoreCase))
+                    throw e.Exception;
+
+                App.Logger.WriteLine("FastZipEvents::OnFileFailure", $"Failed to extract {e.Name}");
                 _packageExtractionSuccess = false;
             };
             _fastZipEvents.DirectoryFailure += (_, e) => throw e.Exception;
@@ -2351,11 +2354,6 @@ exit";
                             extractionSuccesses.Add(true);
                         }
                     }
-                    catch (Exception ex)
-                    {
-                        App.Logger.WriteLine(LOG_IDENT, $"Error processing {package.Name}: {ex.Message}");
-                        extractionSuccesses.Add(false);
-                    }
                     finally
                     {
                         semaphore.Release();
@@ -2889,7 +2887,7 @@ exit";
 
             SetRendererFastFlags(targetRenderer);
 
-            if (renderer == StudioRenderer.DXVK )
+            if (renderer == StudioRenderer.DXVK)
             {
                 string url = "https://github.com/doitsujin/dxvk/releases/download/v2.7.1/dxvk-2.7.1.tar.gz";
                 await InstallDxvkAsync(url);
@@ -4123,10 +4121,25 @@ exit";
                         File.Delete(package.DownloadPath);
                     }
 
+                    string? retryDir = PackageDirectoryMap.GetValueOrDefault(package.Name);
+                    if (retryDir != null)
+                    {
+                        string retryTargetFolder = Path.Combine(_latestVersionDirectory, retryDir);
+                        try
+                        {
+                            if (Directory.Exists(retryTargetFolder))
+                                Directory.Delete(retryTargetFolder, true);
+                        }
+                        catch (Exception cleanupEx)
+                        {
+                            App.Logger.WriteLine(LOG_IDENT, $"Failed to clean up partial extraction: {cleanupEx.Message}");
+                        }
+                    }
+
                     if (attempts >= maxAttempts)
                     {
-                        App.Logger.WriteLine(LOG_IDENT, "Max extraction attempts reached. Giving up.");
-                        return false;
+                        App.Logger.WriteLine(LOG_IDENT, $"Max extraction attempts reached for {package.Name}. Aborting install.");
+                        throw new InvalidOperationException($"Failed to extract package {package.Name} after {maxAttempts} attempts.", ex);
                     }
 
                     App.Logger.WriteLine(LOG_IDENT, "Retrying download...");
