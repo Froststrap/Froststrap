@@ -282,7 +282,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 case "Froststrap.UI.ViewModels.Settings.Mods.CommunityModsViewModel":
                     NavigateToCommunityModsCommand.Execute(null);
                     break;
-                case "Froststrap.UI.ViewModels.Settings.Mods.ModsPresetsViewModel":
+                case "Froststrap.UI.ViewModels.Settings.ModsPresetsViewModel":
                     NavigateToPresetModsCommand.Execute(null);
                     break;
                 case "Froststrap.UI.ViewModels.Settings.Mods.ModGeneratorViewModel":
