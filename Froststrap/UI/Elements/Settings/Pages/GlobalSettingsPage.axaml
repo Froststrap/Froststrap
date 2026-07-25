@@ -6,7 +6,8 @@
              xmlns:resources="clr-namespace:Froststrap.Resources"
              xmlns:models="clr-namespace:Froststrap.Models.APIs.Config"
              xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
-xmlns:enums="clr-namespace:LucideAvalonia.Enum;assembly=LucideAvalonia"
+             xmlns:enums="clr-namespace:LucideAvalonia.Enum;assembly=LucideAvalonia"
+             xmlns:fa="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
              x:Class="Froststrap.UI.Elements.Settings.Pages.GlobalSettingsPage"
              xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
              x:DataType="vm:GlobalSettingsViewModel"
@@ -53,7 +54,7 @@ xmlns:enums="clr-namespace:LucideAvalonia.Enum;assembly=LucideAvalonia"
                     </controls:SquareCard>
 
                     <controls:SquareCard Header="{x:Static resources:Strings.Menu_GlobalSettings_StartQuality_Title}" Description="{x:Static resources:Strings.Menu_GlobalSettings_StartQuality_Description}">
-                        <Slider Minimum="0" Maximum="10" TickFrequency="1" IsSnapToTickEnabled="True" Value="{Binding GraphicsQuality}" ToolTip.Tip="{Binding $self.Value}" />
+                        <fa:ShowValueSlider Minimum="0" Maximum="10" TickFrequency="1" IsSnapToTickEnabled="True" Value="{Binding GraphicsQuality}" ShowValue="True" />
                     </controls:SquareCard>
 
                     <controls:SquareCard Header="{x:Static resources:Strings.Menu_GlobalSettings_Fullscreen_Title}" Description="{x:Static resources:Strings.Menu_GlobalSettings_Fullscreen_Description}">
@@ -73,13 +74,13 @@ xmlns:enums="clr-namespace:LucideAvalonia.Enum;assembly=LucideAvalonia"
                 <TextBlock FontSize="20" FontWeight="Bold" Text="{x:Static resources:Strings.Menu_GlobalSettings_AudioSettings_Title}" Margin="0,0,0,8" />
                 <UniformGrid Columns="4">
                     <controls:SquareCard Header="{x:Static resources:Strings.Menu_GlobalSettings_MasterVolume_Title}" Description="{x:Static resources:Strings.Menu_GlobalSettings_MasterVolume_Description}">
-                        <Slider Minimum="0" Maximum="1" TickFrequency="0.1" IsSnapToTickEnabled="True" Value="{Binding MasterVolume}" ToolTip.Tip="{Binding $self.Value}" />
+                        <fa:ShowValueSlider Minimum="0" Maximum="1" TickFrequency="0.1" IsSnapToTickEnabled="True" Value="{Binding MasterVolume}" ShowValue="True" />
                     </controls:SquareCard>
                     <controls:SquareCard Header="{x:Static resources:Strings.Menu_GlobalSettings_StudioVolume_Title}" Description="{x:Static resources:Strings.Menu_GlobalSettings_StudioVolume_Description}">
-                        <Slider Minimum="0" Maximum="1" TickFrequency="0.1" IsSnapToTickEnabled="True" Value="{Binding MasterVolumeStudio}" ToolTip.Tip="{Binding $self.Value}" />
+                        <fa:ShowValueSlider Minimum="0" Maximum="1" TickFrequency="0.1" IsSnapToTickEnabled="True" Value="{Binding MasterVolumeStudio}" ShowValue="True" />
                     </controls:SquareCard>
                     <controls:SquareCard Header="{x:Static resources:Strings.Menu_GlobalSettings_PartyVolume_Title}" Description="{x:Static resources:Strings.Menu_GlobalSettings_PartyVolume_Description}">
-                        <Slider Minimum="0" Maximum="1" TickFrequency="0.1" IsSnapToTickEnabled="True" Value="{Binding PartyVoiceVolume}" ToolTip.Tip="{Binding $self.Value}" />
+                        <fa:ShowValueSlider Minimum="0" Maximum="1" TickFrequency="0.1" IsSnapToTickEnabled="True" Value="{Binding PartyVoiceVolume}" ShowValue="True" />
                     </controls:SquareCard>
                 </UniformGrid>
 
@@ -115,7 +116,7 @@ xmlns:enums="clr-namespace:LucideAvalonia.Enum;assembly=LucideAvalonia"
                         <ToggleSwitch IsChecked="{Binding CameraYInverted}" />
                     </controls:SquareCard>
                     <controls:SquareCard Header="{x:Static resources:Strings.Menu_GlobalSettings_HapticStrength_Title}" Description="{x:Static resources:Strings.Menu_GlobalSettings_HapticStrength_Description}">
-                        <Slider Minimum="0" Maximum="1" TickFrequency="0.1" IsSnapToTickEnabled="True" Value="{Binding HapticStrength}" ToolTip.Tip="{Binding $self.Value}" />
+                        <fa:ShowValueSlider Minimum="0" Maximum="1" TickFrequency="0.1" IsSnapToTickEnabled="True" Value="{Binding HapticStrength}" ShowValue="True" />
                     </controls:SquareCard>
                 </UniformGrid>
 
