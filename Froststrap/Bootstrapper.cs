@@ -21,7 +21,6 @@ using ICSharpCode.SharpZipLib.Tar;
 using ICSharpCode.SharpZipLib.Zip;
 using Microsoft.Win32;
 using SixLabors.ImageSharp;
-using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Data;
 using System.Net.Http.Json;
@@ -106,8 +105,6 @@ namespace Froststrap
         private PackageManifest _versionPackageManifest = null!;
         private GameJoinData _joinData = null!;
 
-        public static bool StaticDirectory => App.Settings.Prop.StaticDirectory;
-        private static int MaxThreadDownload => App.Settings.Prop.MaxThreadDownload;
         private static bool AutomaticallyUpdateSober => OperatingSystem.IsLinux() && App.Settings.Prop.AutomaticallyUpdateSober;
         private bool MustUpgrade => App.LaunchSettings.ForceFlag.Active
             || App.State.Prop.ForceReinstall
@@ -120,13 +117,12 @@ namespace Froststrap
         private double _taskbarProgressIncrement;
         private double _taskbarProgressMaximum;
         private long _totalDownloadedBytes = 0;
+        private long _totalPackagedBytes = 0;
         private bool _packageExtractionSuccess = true;
 
         private bool _matchmakingInProgress = false;
         private bool _skipMatchmaking = false;
         private CancellationTokenSource? _matchmakingCts;
-
-        private SynchronizationContext? _uiContext;
 
         private bool _noConnection = false;
 
@@ -214,23 +210,45 @@ namespace Froststrap
         private void SetStatus(string message)
         {
             message = message.Replace("{product}", AppData.ProductName);
-            _uiContext?.Post(_ => Dialog?.Message = message, null);
+            Dialog?.Message = message;
         }
 
-        private void UpdateProgressBar()
+        private static string FormatBytes(long bytes)
+        {
+            // How funny would it be if i just kept going up to quettabytes lol
+            string[] sizes = { "B", "KB", "MB", "GB" };
+            double len = bytes;
+            int order = 0;
+            while (len >= 1024 && order < sizes.Length - 1)
+            {
+                order++;
+                len /= 1024;
+            }
+            return $"{len:0.##} {sizes[order]}";
+        }
+
+        private void UpdateProgressBar(bool updateStatus = true)
         {
             long current = Interlocked.Read(ref _totalDownloadedBytes);
-            _uiContext?.Post(_ =>
-            {
-                if (Dialog is null) return;
-                int progressValue = (int)Math.Floor(_progressIncrement * current);
-                progressValue = Math.Clamp(progressValue, 0, ProgressBarMaximum);
-                Dialog.ProgressValue = progressValue;
+            if (Dialog is null) 
+                return;
 
-                double taskbarProgressValue = _taskbarProgressIncrement * current;
-                taskbarProgressValue = Math.Clamp(taskbarProgressValue, 0, _taskbarProgressMaximum);
-                Dialog.TaskbarProgressValue = taskbarProgressValue;
-            }, null);
+            if (updateStatus)
+            {
+                SetStatus(string.Format(
+                    Strings.Bootstrapper_Status_DownloadingPackages,
+                    FormatBytes(current),
+                    FormatBytes(_totalPackagedBytes)
+                ));
+            }
+
+            int progressValue = (int)Math.Floor(_progressIncrement * current);
+            progressValue = Math.Clamp(progressValue, 0, ProgressBarMaximum);
+            Dialog.ProgressValue = progressValue;
+
+            double taskbarProgressValue = _taskbarProgressIncrement * current;
+            taskbarProgressValue = Math.Clamp(taskbarProgressValue, 0, _taskbarProgressMaximum);
+            Dialog.TaskbarProgressValue = taskbarProgressValue;
         }
 
         private async Task HandleConnectionError(Exception exception)
@@ -274,8 +292,6 @@ namespace Froststrap
 
             // this is now always enabled as of v2.8.0
             Dialog?.CancelEnabled = true;
-
-            _uiContext = SynchronizationContext.Current ?? new SynchronizationContext();
 
             if (AutomaticallyUpdateSober && _launchMode == LaunchMode.Player)
                 await UpdateSoberFlatpakAsync();
@@ -712,7 +728,7 @@ namespace Froststrap
                 // we can't determine the version
             }
 
-            if (StaticDirectory)
+            if (App.Settings.Prop.StaticDirectory)
                 _latestVersionDirectory = AppData.StaticDirectory;
             else
                 _latestVersionDirectory = Path.Combine(Paths.Versions, _latestVersionGuid);
@@ -2110,7 +2126,7 @@ exit";
                 if (OperatingSystem.IsLinux() && dirName == "Sober")
                     continue;
 
-                bool shouldDelete = StaticDirectory
+                bool shouldDelete = App.Settings.Prop.StaticDirectory
                     ? dirName != "WindowsPlayer" && dirName != "WindowsStudio64" && dirName != "MacPlayer" && dirName != "MacStudio"
                     : dirName != App.PlayerState.Prop.VersionGuid && dirName != App.StudioState.Prop.VersionGuid;
 
@@ -2196,9 +2212,7 @@ exit";
         {
             const string LOG_IDENT = "Bootstrapper::UpgradeRoblox";
 
-            bool cancelUpgrade = !App.Settings.Prop.UpdateRoblox;
-
-            if (cancelUpgrade)
+            if (!App.Settings.Prop.UpdateRoblox)
             {
                 SetStatus(Strings.Bootstrapper_Status_CancelUpgrade);
                 App.Logger.WriteLine(LOG_IDENT, "Upgrading disabled, cancelling the upgrade.");
@@ -2224,16 +2238,26 @@ exit";
 
             _isInstalling = true;
 
-            if (!App.LaunchSettings.BackgroundUpdaterFlag.Active)
+            // make sure nothing is running before continuing upgrade
+            if (!App.LaunchSettings.BackgroundUpdaterFlag.Active && !IsStudioLaunch) // TODO: wait for studio processes to close before updating to prevent data loss
                 KillRobloxPlayers();
 
+            // get a fully clean install
             if (!App.LaunchSettings.BackgroundUpdaterFlag.Active && Directory.Exists(_latestVersionDirectory))
             {
-                try { Directory.Delete(_latestVersionDirectory, true); }
-                catch (Exception ex) { App.Logger.WriteException(LOG_IDENT, ex); }
+                try
+                {
+                    Directory.Delete(_latestVersionDirectory, true);
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Failed to delete the latest version directory");
+                    App.Logger.WriteException(LOG_IDENT, ex);
+                }
             }
 
             Directory.CreateDirectory(_latestVersionDirectory);
+
 
             if (OperatingSystem.IsMacOS())
             {
@@ -2252,19 +2276,14 @@ exit";
                 }
             }
 
-            var packages = _versionPackageManifest
-                    .OrderByDescending(p => p.PackedSize)
-                    .ToList();
+            var cachedPackageHashes = Directory.GetFiles(Paths.Downloads).Select(x => Path.GetFileName(x)).ToList();
 
-            var cachedPackageHashes = Directory.GetFiles(Paths.Downloads)
-                .Select(Path.GetFileName)
-                .Where(name => name != null)
-                .Select(name => name!)
-                .ToHashSet();
+            // package manifest states packed size and uncompressed size in exact bytes
+            long totalSizeRequired = 0;
 
-            int totalSizeRequired = packages
-                .Where(x => x.Signature != null && !cachedPackageHashes.Contains(x.Signature))
-                .Sum(x => x.PackedSize) + packages.Sum(x => x.Size);
+            // packed size only matters if we don't already have the package cached on disk
+            totalSizeRequired += _versionPackageManifest.Where(x => !cachedPackageHashes.Contains(x.Signature)).Sum(x => (long)x.PackedSize);
+            totalSizeRequired += _versionPackageManifest.Sum(x => (long)x.Size);
 
             if (Filesystem.GetFreeDiskSpace(Paths.Base) < totalSizeRequired)
             {
@@ -2277,94 +2296,45 @@ exit";
             {
                 Dialog.ProgressIndeterminate = false;
                 Dialog.TaskbarProgressState = TaskbarItemProgressState.Normal;
+
                 Dialog.ProgressMaximum = ProgressBarMaximum;
 
-                int totalPackedSize = packages.Sum(package => package.PackedSize);
-                _progressIncrement = totalPackedSize > 0 ? (double)ProgressBarMaximum / totalPackedSize : 0;
+                // compute total bytes to download
+                _totalPackagedBytes = _versionPackageManifest.Sum(package => package.PackedSize);
+                _progressIncrement = (double)ProgressBarMaximum / _totalPackagedBytes;
+
                 _taskbarProgressMaximum = TaskbarProgressMaximum;
-                _taskbarProgressIncrement = totalPackedSize > 0 ? _taskbarProgressMaximum / (double)totalPackedSize : 0;
+
+                _taskbarProgressIncrement = _taskbarProgressMaximum / (double)_totalPackagedBytes;
             }
 
-            int totalPackages = packages.Count;
-            int processedPackages = 0;
-            int completedDownloads = 0;
-            int totalDownloads = packages.Count(p => p.Name != "WebView2RuntimeInstaller.zip");
-            var downloadsTcs = new TaskCompletionSource<bool>();
-            if (totalDownloads == 0) downloadsTcs.TrySetResult(true);
-            int maxConcurrency = MaxThreadDownload > 0 ? MaxThreadDownload : 1;
-            using var semaphore = new SemaphoreSlim(maxConcurrency);
-            var tasks = new List<Task>();
-            var extractionSuccesses = new ConcurrentBag<bool>();
+            var packageTasks = new List<Task>();
 
+            // from largest to smallest, this is so larger packages (which need more time) get queued first
+            var packages = _versionPackageManifest.Where(p => p.Name != "RobloxPlayerInstaller.exe").OrderByDescending(p => p.PackedSize);
+
+            SemaphoreSlim downloadSemaphore = new(App.Settings.Prop.MaxThreadDownload > 0 ? App.Settings.Prop.MaxThreadDownload : 1);
             foreach (var package in packages)
             {
-                if (_cancelTokenSource.IsCancellationRequested) break;
+                await downloadSemaphore.WaitAsync(_cancelTokenSource.Token);
 
-                await semaphore.WaitAsync(_cancelTokenSource.Token);
 
-                tasks.Add(Task.Run(async () =>
-                {
-                    try
-                    {
-                        if (_cancelTokenSource.IsCancellationRequested) return;
+                var task = Task.Run(async () => {
+                    await DownloadPackage(package);
 
-                        int remaining = totalPackages - Interlocked.Increment(ref processedPackages);
+                    // we'll extract the runtime installer later if we need to
+                    if (package.Name != "WebView2RuntimeInstaller.zip")
+                        await ExtractPackage(package);
 
-                        bool packageExists = File.Exists(package.DownloadPath);
-                        if (packageExists)
-                        {
-                            string calculatedMD5 = MD5Hash.FromFile(package.DownloadPath);
-                            if (!OperatingSystem.IsMacOS() && calculatedMD5 != package.Signature)
-                            {
-                                App.Logger.WriteLine(LOG_IDENT, $"Package {package.Name} is corrupted ({calculatedMD5} != {package.Signature})! Deleting and re-downloading...");
-                                File.Delete(package.DownloadPath);
-                                packageExists = false;
-                            }
-                            else
-                            {
-                                App.Logger.WriteLine(LOG_IDENT, $"Package {package.Name} already exists in cache, skipping download...");
-                                Interlocked.Add(ref _totalDownloadedBytes, package.PackedSize);
-                                UpdateProgressBar();
-                            }
-                        }
+                    downloadSemaphore.Release();
+                }, _cancelTokenSource.Token);
 
-                        if (!packageExists)
-                        {
-                            string downloadMsg = remaining > 0
-                                ? $"{Strings.Bootstrapper_Status_Downloading} {package.Name} - {remaining} {Strings.Bootstrapper_Status_PackagesLeft}"
-                                : $"{Strings.Bootstrapper_Status_Downloading} {package.Name}...";
-                            SetStatus(downloadMsg);
-                            await DownloadPackage(package);
-                        }
-
-                        if (Interlocked.Increment(ref completedDownloads) == totalDownloads)
-                            downloadsTcs.TrySetResult(true);
-
-                        if (package.Name != "WebView2RuntimeInstaller.zip")
-                        {
-                            string extractMsg = remaining > 0
-                                ? $"{Strings.Bootstrapper_Status_Extracting} {package.Name} - {remaining} {Strings.Bootstrapper_Status_PackagesLeft}"
-                                : $"{Strings.Bootstrapper_Status_Extracting} {package.Name}...";
-                            SetStatus(extractMsg);
-                            bool success = await ExtractPackage(package);
-                            extractionSuccesses.Add(success);
-                        }
-                        else
-                        {
-                            extractionSuccesses.Add(true);
-                        }
-                    }
-                    finally
-                    {
-                        semaphore.Release();
-                    }
-                }, _cancelTokenSource.Token));
+                packageTasks.Add(task);
             }
+            await Task.WhenAll(packageTasks);
 
-            await Task.WhenAll(tasks);
-            _packageExtractionSuccess = extractionSuccesses.All(s => s);
-
-            if (_cancelTokenSource.IsCancellationRequested) return;
+            if (_cancelTokenSource.IsCancellationRequested)
+                return;
 
             if (Dialog is not null)
             {
@@ -2375,32 +2345,52 @@ exit";
 
             if (OperatingSystem.IsWindows() && App.State.Prop.PromptWebView2Install)
             {
-                using var hklmKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}");
-                using var hkcuKey = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}");
+                using var hklmKey = Registry.LocalMachine.OpenSubKey("SOFTWARE\\WOW6432Node\\Microsoft\\EdgeUpdate\\Clients\\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}");
+                using var hkcuKey = Registry.CurrentUser.OpenSubKey("Software\\Microsoft\\EdgeUpdate\\Clients\\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}");
 
-                if (hklmKey == null && hkcuKey == null)
+                if (hklmKey is not null || hkcuKey is not null)
                 {
-                    var result = await Frontend.ShowMessageBox(Strings.Bootstrapper_WebView2NotFound, MessageBoxImage.Warning, MessageBoxButton.YesNo);
-                    if (result == MessageBoxResult.Yes)
+                    // reset prompt state if the user has it installed
+                    App.State.Prop.PromptWebView2Install = true;
+                }
+                else
+                {
+                    var result = await Frontend.ShowMessageBox(Strings.Bootstrapper_WebView2NotFound, MessageBoxImage.Warning, MessageBoxButton.YesNo, MessageBoxResult.Yes);
+
+                    if (result != MessageBoxResult.Yes)
                     {
-                        var package = _versionPackageManifest.Find(x => x.Name == "WebView2RuntimeInstaller.zip");
-                        if (package != null)
-                        {
-                            string baseDir = Path.Combine(_latestVersionDirectory, PackageDirectoryMap[package.Name]);
-                            await ExtractPackage(package);
-                            SetStatus(Strings.Bootstrapper_Status_InstallingWebView2);
-                            await Process.Start(new ProcessStartInfo
-                            {
-                                FileName = Path.Combine(baseDir, "MicrosoftEdgeWebview2Setup.exe"),
-                                Arguments = "/silent /install",
-                                WorkingDirectory = baseDir
-                            })!.WaitForExitAsync();
-                            Directory.Delete(baseDir, true);
-                        }
+                        App.State.Prop.PromptWebView2Install = false;
                     }
                     else
                     {
-                        App.State.Prop.PromptWebView2Install = false;
+                        App.Logger.WriteLine(LOG_IDENT, "Installing WebView2 runtime...");
+
+                        var package = _versionPackageManifest.Find(x => x.Name == "WebView2RuntimeInstaller.zip");
+
+                        if (package is null)
+                        {
+                            App.Logger.WriteLine(LOG_IDENT, "Aborted runtime install because package does not exist, has WebView2 been added in this Roblox version yet?");
+                            return;
+                        }
+
+                        string baseDirectory = Path.Combine(_latestVersionDirectory, PackageDirectoryMap[package.Name]);
+
+                        await ExtractPackage(package);
+
+                        SetStatus(Strings.Bootstrapper_Status_InstallingWebView2);
+
+                        var startInfo = new ProcessStartInfo()
+                        {
+                            WorkingDirectory = baseDirectory,
+                            FileName = Path.Combine(baseDirectory, "MicrosoftEdgeWebview2Setup.exe"),
+                            Arguments = "/silent /install"
+                        };
+
+                        await Process.Start(startInfo)!.WaitForExitAsync();
+
+                        App.Logger.WriteLine(LOG_IDENT, "Finished installing runtime");
+
+                        Directory.Delete(baseDirectory, true);
                     }
                 }
             }
@@ -2426,8 +2416,12 @@ exit";
                 }
             }
 
+            // finishing and cleanup
+
             MigrateCompatibilityFlags();
+
             AppData.DistributionState.VersionGuid = _latestVersionGuid;
+
             AppData.DistributionState.PackageHashes.Clear();
 
             foreach (var package in _versionPackageManifest)
@@ -2435,24 +2429,40 @@ exit";
 
             CleanupVersionsFolder();
 
+            var allPackageHashes = new List<string>();
+
+            allPackageHashes.AddRange(App.PlayerState.Prop.PackageHashes.Values);
+            allPackageHashes.AddRange(App.StudioState.Prop.PackageHashes.Values);
+
             if (!App.Settings.Prop.DebugDisableVersionPackageCleanup)
             {
-                var activeHashes = App.PlayerState.Prop.PackageHashes.Values
-                    .Concat(App.StudioState.Prop.PackageHashes.Values)
-                    .Where(h => h != null)
-                    .ToHashSet();
-
                 foreach (string hash in cachedPackageHashes)
                 {
-                    if (!activeHashes.Contains(hash))
+                    if (!allPackageHashes.Contains(hash))
                     {
-                        try { File.Delete(Path.Combine(Paths.Downloads, hash)); }
-                        catch (Exception ex) { App.Logger.WriteException(LOG_IDENT, ex); }
+                        App.Logger.WriteLine(LOG_IDENT, $"Deleting unused package {hash}");
+
+                        try
+                        {
+                            File.Delete(Path.Combine(Paths.Downloads, hash));
+                        }
+                        catch (Exception ex)
+                        {
+                            App.Logger.WriteLine(LOG_IDENT, $"Failed to delete {hash}!");
+                            App.Logger.WriteException(LOG_IDENT, ex);
+                        }
                     }
                 }
             }
 
+            App.Logger.WriteLine(LOG_IDENT, "Registering approximate program size...");
+
+            int distributionSize = _versionPackageManifest.Sum(x => x.Size + x.PackedSize) / 1024;
+
+            AppData.DistributionState.Size = distributionSize;
+
             int totalSize = App.PlayerState.Prop.Size + App.StudioState.Prop.Size;
+
             if (OperatingSystem.IsWindows())
             {
                 using var uninstallKey = Registry.CurrentUser.CreateSubKey(App.UninstallKey);
@@ -2460,9 +2470,13 @@ exit";
                 WindowsRegistry.RegisterClientLocation(IsStudioLaunch, _latestVersionDirectory);
             }
 
+            App.Logger.WriteLine(LOG_IDENT, $"Registered as {totalSize} KB");
+
             App.State.Prop.ForceReinstall = false;
+
             App.State.Save();
             AppData.DistributionStateManager.Save();
+
             _isInstalling = false;
         }
 
@@ -2725,15 +2739,13 @@ exit";
                                     int overallPercent = (int)Math.Round(segmentProgress);
                                     overallPercent = Math.Clamp(overallPercent, 0, 100);
 
-                                    _uiContext?.Post(_ =>
+                                    if (Dialog is not null)
                                     {
-                                        if (Dialog is not null)
-                                        {
-                                            Dialog.ProgressValue = overallPercent;
-                                            Dialog.TaskbarProgressValue = overallPercent / 100.0;
-                                            SetStatus(string.Format(Strings.Bootstrapper_Status_UpdatingSoberProgress, current, total, percent));
-                                        }
-                                    }, null);
+                                        Dialog.ProgressValue = overallPercent;
+                                        Dialog.TaskbarProgressValue = overallPercent / 100.0;
+                                        SetStatus(string.Format(Strings.Bootstrapper_Status_UpdatingSoberProgress, current, total, percent));
+                                    }
+
                                 }
                                 else if (progressMatch.Success)
                                 {
@@ -2742,25 +2754,19 @@ exit";
                                     double segmentStart = (current - 1) * (100.0 / total);
                                     int overallPercent = (int)Math.Round(segmentStart);
                                     overallPercent = Math.Clamp(overallPercent, 0, 100);
-                                    _uiContext?.Post(_ =>
+                                    if (Dialog is not null)
                                     {
-                                        if (Dialog is not null)
-                                        {
-                                            Dialog.ProgressValue = overallPercent;
-                                            Dialog.TaskbarProgressValue = overallPercent / 100.0;
-                                            SetStatus(string.Format(Strings.Bootstrapper_Status_UpdatingSoberBasic, current, total));
-                                        }
-                                    }, null);
+                                        Dialog.ProgressValue = overallPercent;
+                                        Dialog.TaskbarProgressValue = overallPercent / 100.0;
+                                        SetStatus(string.Format(Strings.Bootstrapper_Status_UpdatingSoberBasic, current, total));
+                                    }
                                 }
                                 else
                                 {
                                     string trimmed = line.Trim();
                                     if (!string.IsNullOrEmpty(trimmed) && trimmed.Length < 80)
                                     {
-                                        _uiContext?.Post(_ =>
-                                        {
-                                            SetStatus(trimmed);
-                                        }, null);
+                                        SetStatus(trimmed);
                                     }
                                 }
                             }
@@ -2819,15 +2825,12 @@ exit";
                 else if (updateProcess.ExitCode == 0)
                 {
                     App.Logger.WriteLine(LOG_IDENT, "Sober update finished successfully.");
-                    _uiContext?.Post(_ =>
+                    if (Dialog is not null)
                     {
-                        if (Dialog is not null)
-                        {
-                            Dialog.ProgressValue = 100;
-                            Dialog.TaskbarProgressValue = 1.0;
-                            SetStatus(Strings.Bootstrapper_Status_SoberUpdateComplete);
-                        }
-                    }, null);
+                        Dialog.ProgressValue = 100;
+                        Dialog.TaskbarProgressValue = 1.0;
+                        SetStatus(Strings.Bootstrapper_Status_SoberUpdateComplete);
+                    }
                 }
             }
             catch (OperationCanceledException) when (cts.IsCancellationRequested)
@@ -2841,16 +2844,13 @@ exit";
             }
             finally
             {
-                _uiContext?.Post(_ =>
+                if (Dialog is not null)
                 {
-                    if (Dialog is not null)
-                    {
-                        Dialog.ProgressIndeterminate = true;
-                        Dialog.ProgressValue = 0;
-                        Dialog.TaskbarProgressValue = 0.0;
-                        Dialog.TaskbarProgressState = TaskbarItemProgressState.None;
-                    }
-                }, null);
+                    Dialog.ProgressIndeterminate = true;
+                    Dialog.ProgressValue = 0;
+                    Dialog.TaskbarProgressValue = 0.0;
+                    Dialog.TaskbarProgressState = TaskbarItemProgressState.None;
+                }
             }
         }
 
@@ -3059,7 +3059,7 @@ exit";
                     SetStatus(Strings.Bootstrapper_Status_InstallingWebView2);
 
                     int exitCode = await wineMgr.RunAsync(tempFile,
-                        [ "--msedgewebview", "--do-not-launch-msedge", "--system-level" ],
+                        ["--msedgewebview", "--do-not-launch-msedge", "--system-level"],
                         cancellationToken: _cancelTokenSource.Token);
 
                     App.Logger.WriteLine(LOG_IDENT, exitCode == 0
@@ -3093,7 +3093,7 @@ exit";
                 try
                 {
                     int exitCode = await wineMgr.RunAsync(uninstallerPath,
-                        [ "--msedgewebview", "--uninstall", "--system-level", "--force-uninstall" ],
+                        ["--msedgewebview", "--uninstall", "--system-level", "--force-uninstall"],
                         cancellationToken: _cancelTokenSource.Token);
 
                     string? stillInstalled = await wineMgr.QueryRegistryValueAsync(@"HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Microsoft EdgeWebView", "DisplayVersion", _cancelTokenSource.Token);
@@ -3413,7 +3413,7 @@ exit";
                 await fileStream.WriteAsync(buffer.AsMemory(0, bytesRead));
                 totalRead += bytesRead;
                 Interlocked.Add(ref _totalDownloadedBytes, bytesRead);
-                UpdateProgressBar();
+                UpdateProgressBar(false);
             }
 
             if (totalRead != totalBytes)
@@ -3461,9 +3461,7 @@ exit";
                 : _latestVersionDirectory;
 
             if (OperatingSystem.IsMacOS())
-            {
                 EnsureMacResourcesBackup(contentDirectory, _latestVersionGuid);
-            }
 
             var currentModManifest = new Dictionary<string, ModFileEntry>(StringComparer.OrdinalIgnoreCase);
 
@@ -3577,8 +3575,10 @@ exit";
                 {
                     string relativeFile = Path.GetFileName(file);
                     if (relativeFile == "README.txt" ||
-                        relativeFile.EndsWith("info.json") ||
+                        relativeFile == "info.json" ||
                         relativeFile.EndsWith(".lock") ||
+                        relativeFile.EndsWith(".dll") ||
+                        relativeFile.EndsWith(".exe") ||
                         relativeFile.StartsWith("ClientSettings\\"))
                         continue;
 
@@ -3596,8 +3596,10 @@ exit";
                     {
                         string relativeFile = Path.GetRelativePath(Paths.Modifications, file);
                         if (relativeFile == "README.txt" ||
-                            relativeFile.EndsWith("info.json") ||
+                            relativeFile == "info.json" ||
                             relativeFile.EndsWith(".lock") ||
+                            relativeFile.EndsWith(".dll") ||
+                            relativeFile.EndsWith(".exe") ||
                             relativeFile.StartsWith("ClientSettings\\"))
                             continue;
 
@@ -3931,8 +3933,7 @@ exit";
             string packageUrl = OperatingSystem.IsMacOS()
                 ? Deployment.GetLocation($"{GetMacArchPath()}/{_latestVersionGuid}-{package.Name}")
                 : Deployment.GetLocation($"/{_latestVersionGuid}-{package.Name}");
-
-            string robloxPackageLocation = Path.Combine(Paths.Roblox, "Downloads", package.Signature);
+            string robloxPackageLocation = Path.Combine(Paths.LocalAppData, "Roblox", "Downloads", package.Signature);
 
             if (File.Exists(package.DownloadPath))
             {
@@ -3956,12 +3957,18 @@ exit";
             {
                 // let's cheat! if the stock bootstrapper already previously downloaded the file,
                 // then we can just copy the one from there
+
                 App.Logger.WriteLine(LOG_IDENT, $"Found existing copy at '{robloxPackageLocation}'! Copying to Downloads folder...");
                 File.Copy(robloxPackageLocation, package.DownloadPath);
-                Interlocked.Add(ref _totalDownloadedBytes, package.PackedSize);
+
+                _totalDownloadedBytes += package.PackedSize;
                 UpdateProgressBar();
+
                 return;
             }
+
+            if (File.Exists(package.DownloadPath))
+                return;
 
             App.Logger.WriteLine(LOG_IDENT, "Downloading...");
 
@@ -3989,18 +3996,21 @@ exit";
                             return;
                         }
 
-                        int bytesRead = await stream.ReadAsync(buffer.AsMemory(0, buffer.Length), _cancelTokenSource.Token);
+                        int bytesRead = await stream.ReadAsync(buffer, _cancelTokenSource.Token);
+
                         if (bytesRead == 0)
                             break;
 
                         totalBytesRead += bytesRead;
+
                         await fileStream.WriteAsync(buffer.AsMemory(0, bytesRead), _cancelTokenSource.Token);
 
-                        Interlocked.Add(ref _totalDownloadedBytes, bytesRead);
+                        _totalDownloadedBytes += bytesRead;
                         UpdateProgressBar();
                     }
 
                     string hash = MD5Hash.FromStream(fileStream);
+
                     if (!OperatingSystem.IsMacOS() && hash != package.Signature)
                         throw new ChecksumFailedException($"Failed to verify download of {packageUrl}\n\nExpected hash: {package.Signature}\nGot hash: {hash}");
 
@@ -4020,17 +4030,16 @@ exit";
                             MessageBoxImage.Error,
                             ex
                         );
+
                         App.Terminate(ErrorCode.ERROR_CANCELLED);
                     }
                     else if (i >= MaxDownloadAttempts)
-                    {
                         throw;
-                    }
 
                     if (File.Exists(package.DownloadPath))
                         File.Delete(package.DownloadPath);
 
-                    Interlocked.Add(ref _totalDownloadedBytes, -totalBytesRead);
+                    _totalDownloadedBytes -= totalBytesRead;
                     UpdateProgressBar();
 
                     // attempt download over HTTP
@@ -4065,7 +4074,6 @@ exit";
                     }
 
                     string targetFolder = Path.Combine(_latestVersionDirectory, packageDir);
-
                     Directory.CreateDirectory(targetFolder);
 
                     if (files != null && files.Count > 0)
