@@ -21,12 +21,12 @@ debug-linux:
 [windows]
 publish-windows:
     #!powershell
-    pwsh ./Scripts/package/publish-windows.ps1 -Project "{{ project_file }}" -BuildDir "{{ build_dir }}"
+    powershell -ExecutionPolicy Bypass -File ./Scripts/package/publish-windows.ps1 -Project "{{ project_file }}" -BuildDir "{{ build_dir }}"
 
 [windows]
 publish-windows-contained:
     #!powershell
-    pwsh ./Scripts/package/publish-windows-contained.ps1 -Project "{{ project_file }}" -BuildDir "{{ build_dir }}"
+    powershell -ExecutionPolicy Bypass -File ./Scripts/package/publish-windows-contained.ps1 -Project "{{ project_file }}" -BuildDir "{{ build_dir }}"
 
 [unix]
 publish-macos:
