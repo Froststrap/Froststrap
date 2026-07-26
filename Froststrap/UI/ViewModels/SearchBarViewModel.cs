@@ -103,6 +103,9 @@ namespace Froststrap.UI.ViewModels
         public IRelayCommand<SearchBarItem> SearchResultSelectedCommand { get; }
 
         public event EventHandler<SearchBarItem>? SearchResultSelected;
+        public event EventHandler? SearchStarted;
+
+        private bool _isRefreshing = false;
 
         public SearchBarViewModel()
         {
@@ -396,6 +399,13 @@ namespace Froststrap.UI.ViewModels
             return _searchIndex;
         }
 
+        public void RefreshSearchResults()
+        {
+            _isRefreshing = true;
+            FilterSearchResults();
+            _isRefreshing = false;
+        }
+
         private void HandleSearchResultSelected(SearchBarItem? item)
         {
             if (item == null)
@@ -416,6 +426,9 @@ namespace Froststrap.UI.ViewModels
                 OnPropertyChanged(nameof(HasAnyResults));
                 return;
             }
+
+            if (!_isRefreshing)
+                SearchStarted?.Invoke(this, EventArgs.Empty);
 
             var filtered = _searchIndex
                 .Where(item => item.DisplayName.Contains(SearchQuery, StringComparison.OrdinalIgnoreCase))
