@@ -168,7 +168,11 @@ namespace Froststrap.UI.Elements.Settings
             var pageControl = this.FindControl<TransitioningContentControl>("PageContentControl");
             if (pageControl == null || viewModel == null) return;
 
-            bool shouldReinitialize = viewModel is AppearanceViewModel || viewModel is ModsViewModel;
+            if (pageControl.Content is Control oldContent)
+            {
+                oldContent.DataContext = null;
+                pageControl.Content = null;
+            }
 
             string pageTag = _viewModel?.SelectedPage ?? "";
             Control? view = ResolveViewForViewModel(viewModel);
