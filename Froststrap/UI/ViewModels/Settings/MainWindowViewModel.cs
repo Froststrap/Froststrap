@@ -39,6 +39,8 @@ namespace Froststrap.UI.ViewModels.Settings
             App.GlobalSettings.HasUnsavedChanges ||
             App.PendingSettingTasks.Count > 0;
 
+        private LaunchMode _selectedLaunchMode = LaunchMode.Player;
+
         private string _selectedPage = "integrations";
         public string SelectedPage { get => _selectedPage; set => SetProperty(ref _selectedPage, value); }
 
@@ -351,7 +353,6 @@ namespace Froststrap.UI.ViewModels.Settings
             SaveSettings();
             if (!App.LaunchSettings.TestModeFlag.Active)
             {
-
                 string arg = SelectedLaunchMode == LaunchMode.Player ? "-player" : "-studio";
                 Process.Start(Paths.Application, arg);
             }
@@ -363,12 +364,13 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public LaunchMode SelectedLaunchMode
         {
-            get => App.Settings.Prop.DefaultSaveAndLaunchMode;
-            set 
-            { 
-                App.Settings.Prop.DefaultSaveAndLaunchMode = value; 
-                OnPropertyChanged(nameof(SelectedLaunchMode));
-                OnPropertyChanged(nameof(LaunchButtonText));
+            get => _selectedLaunchMode;
+            set
+            {
+                if (SetProperty(ref _selectedLaunchMode, value))
+                {
+                    OnPropertyChanged(nameof(LaunchButtonText));
+                }
             }
         }
 
