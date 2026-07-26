@@ -28,7 +28,9 @@ namespace Froststrap.UI.Elements.Settings
         private CancellationTokenSource? _notificationCts;
         private bool _isAnimatingOut = false;
 
-        private readonly Dictionary<string, Control> _cachedPages = [];
+        private bool _isIndexingMissing;
+        private readonly HashSet<string> _indexedPageTags = [];
+        private readonly SearchIndexBuilder _searchIndexBuilder = new();
 
         public MainWindow()
         {
@@ -80,8 +82,17 @@ namespace Froststrap.UI.Elements.Settings
             {
                 UpdateSelectedNavigationViewItem(_viewModel.SelectedPage);
                 AttachTitleBarButtons();
-                BuildSearchIndex();
             }, DispatcherPriority.Loaded);
+
+            _viewModel.SearchBar.SearchStarted += async (s, e) =>
+            {
+                if (!_isIndexingMissing)
+                {
+                    _isIndexingMissing = true;
+                    await IndexMissingPagesAsync();
+                    _isIndexingMissing = false;
+                }
+            };
         }
 
         private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -145,10 +156,8 @@ namespace Froststrap.UI.Elements.Settings
             ["mods"] = (Strings.Menu_PresetMods_Title, LucideIconNames.BookOpen),
             ["fastflags"] = (Strings.Menu_FastFlags_Title, LucideIconNames.Flag),
             ["appearance"] = (Strings.Menu_Appearance_Title, LucideIconNames.Palette),
-            ["regionselector"] = (Strings.Menu_RegionSelector_Title, LucideIconNames.Globe),
             ["globalsettings"] = (Strings.Menu_GlobalSettings_Title, LucideIconNames.PenLine),
             ["shortcuts"] = (Strings.Common_Shortcuts, LucideIconNames.Link2),
-            ["quickplay"] = (Strings.Menu_QuickPlay_Title, LucideIconNames.Gamepad2),
             ["channels"] = (Strings.Common_Deployment, LucideIconNames.HardDriveUpload),
         };
 
@@ -162,21 +171,7 @@ namespace Froststrap.UI.Elements.Settings
             bool shouldReinitialize = viewModel is AppearanceViewModel || viewModel is ModsViewModel;
 
             string pageTag = _viewModel?.SelectedPage ?? "";
-            Control? view = null;
-
-            if (!shouldReinitialize && !string.IsNullOrEmpty(pageTag) && _cachedPages.TryGetValue(pageTag, out var cachedView))
-            {
-                view = cachedView;
-            }
-            else
-            {
-                view = ResolveViewForViewModel(viewModel);
-
-                if (view != null && !shouldReinitialize && !string.IsNullOrEmpty(pageTag))
-                {
-                    _cachedPages[pageTag] = view;
-                }
-            }
+            Control? view = ResolveViewForViewModel(viewModel);
 
             if (view != null)
             {
@@ -187,7 +182,11 @@ namespace Froststrap.UI.Elements.Settings
                 {
                     if (!string.IsNullOrEmpty(pageTag) && _pageInfo.TryGetValue(pageTag, out var info))
                     {
-                        IndexPage(view, pageTag, info.Title, info.Icon);
+                        if (!_indexedPageTags.Contains(pageTag))
+                        {
+                            IndexPage(view, pageTag, info.Title, info.Icon);
+                            _indexedPageTags.Add(pageTag);
+                        }
                     }
 
                     if (_pendingSearchScrollItem != null)
@@ -555,106 +554,88 @@ namespace Froststrap.UI.Elements.Settings
             };
         }
 
-        private SearchIndexBuilder? _searchIndexBuilder;
-
-        private void BuildSearchIndex()
+        private async Task IndexMissingPagesAsync()
         {
             if (_viewModel == null) return;
 
-            _searchIndexBuilder = new SearchIndexBuilder();
-
-            var pages = new List<(string PageTag, string PageTitle, object PageViewModel)>
+            var allPageTags = new List<string>
             {
-                ("integrations", Strings.Menu_Integrations_Title, new IntegrationsViewModel()),
-                ("behaviour", Strings.Menu_Behaviour_Title, new BehaviourViewModel()),
-                ("linuxsettings", Strings.Menu_LinuxSettings_Title, new LinuxSettingsViewModel()),
-                ("mods", Strings.Menu_PresetMods_Title, new ModsPresetsViewModel()),
-                ("fastflags", Strings.Menu_FastFlags_Title, new FastFlagsViewModel()),
-                ("appearance", Strings.Menu_Appearance_Title, new AppearanceViewModel()),
-                ("regionselector", Strings.Menu_RegionSelector_Title, new RegionSelectorViewModel()),
-                ("globalsettings", Strings.Menu_GlobalSettings_Title, new GlobalSettingsViewModel()),
-                ("shortcuts", Strings.Common_Shortcuts, new ShortcutsViewModel()),
-                ("quickplay", Strings.Menu_QuickPlay_Title, new QuickPlayViewModel()),
-                ("channels", Strings.Common_Deployment, new ChannelViewModel()),
+                "integrations",
+                "behaviour",
+                "linuxsettings",
+                "mods",
+                "fastflags",
+                "appearance",
+                "globalsettings",
+                "shortcuts",
+                "channels"
             };
 
             if (!_viewModel.GBSEnabled)
-                pages.RemoveAll(p => p.PageTag == "globalsettings");
+                allPageTags.Remove("globalsettings");
 
-            var searchIndex = _searchIndexBuilder.BuildIndex(pages);
+            var pagesToIndex = allPageTags.Where(tag => !_indexedPageTags.Contains(tag)).ToList();
+            if (pagesToIndex.Count == 0) return;
 
-            var navigationActions = new Dictionary<string, Action>
-            {
-                { "integrations", () => _viewModel.NavigateToIntegrationsCommand.Execute(null) },
-                { "behaviour", () => _viewModel.NavigateToBehaviourCommand.Execute(null) },
-                { "linuxsettings", () => _viewModel.NavigateToLinuxSettingsCommand.Execute(null) },
-                { "mods", () => _viewModel.NavigateToPresetModsCommand.Execute(null) },
-                { "fastflags", () => _viewModel.NavigateToFastFlagsCommand.Execute(null) },
-                { "appearance", () => _viewModel.NavigateToAppearanceCommand.Execute(null) },
-                { "regionselector", () => _viewModel.NavigateToRegionSelectorCommand.Execute(null) },
-                { "globalsettings", () => _viewModel.NavigateToGlobalSettingsCommand.Execute(null) },
-                { "shortcuts", () => _viewModel.NavigateToShortcutsCommand.Execute(null) },
-                { "quickplay", () => _viewModel.NavigateToQuickPlayCommand.Execute(null) },
-                { "channels", () => _viewModel.NavigateToChannelsCommand.Execute(null) },
-            };
-
-            foreach (var item in searchIndex)
-            {
-                if (item.PageTag != null && navigationActions.TryGetValue(item.PageTag, out var action))
-                {
-                    item.NavigateAction = action;
-                }
-            }
-
-            _viewModel.SearchBar.SetSearchIndex([]);
-
-            PreIndexPages(pages);
-        }
-
-        private async void PreIndexPages(List<(string PageTag, string PageTitle, object PageViewModel)> pages)
-        {
             var stagingArea = this.FindControl<Border>("OffscreenIndexingCanvas");
             if (stagingArea == null)
             {
-                App.Logger.WriteLine("MainWindow::PreIndexPages", "OffscreenIndexingCanvas not found, skipping pre-index");
+                App.Logger.WriteLine("MainWindow::IndexMissingPagesAsync", "OffscreenIndexingCanvas not found");
                 return;
             }
 
             stagingArea.IsVisible = true;
 
-            foreach (var (pageTag, pageTitle, pageViewModel) in pages)
+            foreach (var pageTag in pagesToIndex)
             {
                 try
                 {
-                    var view = ResolveViewForViewModel(pageViewModel);
+                    object? vm = pageTag switch
+                    {
+                        "integrations" => new IntegrationsViewModel(),
+                        "behaviour" => new BehaviourViewModel(),
+                        "linuxsettings" => new LinuxSettingsViewModel(),
+                        "mods" => new ModsPresetsViewModel(),
+                        "fastflags" => new FastFlagsViewModel(),
+                        "appearance" => new AppearanceViewModel(),
+                        "globalsettings" => new GlobalSettingsViewModel(),
+                        "shortcuts" => new ShortcutsViewModel(),
+                        "channels" => new ChannelViewModel(),
+                        _ => null
+                    };
+
+                    if (vm == null) continue;
+
+                    var view = ResolveViewForViewModel(vm);
                     if (view == null) continue;
 
-                    view.DataContext = pageViewModel;
+                    view.DataContext = vm;
                     stagingArea.Child = view;
 
                     await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Render);
                     await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Background);
 
-                    var (_, icon) = _pageInfo[pageTag];
-                    IndexPage(view, pageTag, pageTitle, icon);
+                    var (title, icon) = _pageInfo[pageTag];
+                    IndexPage(view, pageTag, title, icon);
+                    _indexedPageTags.Add(pageTag);
 
+                    view.DataContext = null;
                     stagingArea.Child = null;
-
-                    // Small yield between pages to keep the UI responsive
                     await Task.Delay(30);
                 }
                 catch (Exception ex)
                 {
-                    App.Logger.WriteLine("MainWindow::PreIndexPages", $"Error pre-indexing page {pageTag}: {ex.Message}");
+                    App.Logger.WriteLine("MainWindow::IndexMissingPagesAsync", $"Error indexing {pageTag}: {ex.Message}");
                 }
             }
 
             stagingArea.IsVisible = false;
+            _viewModel?.SearchBar.RefreshSearchResults();
         }
 
         private void IndexPage(Control pageView, string pageTag, string pageTitle, LucideIconNames pageIcon)
         {
-            if (_viewModel == null || _searchIndexBuilder == null) return;
+            if (_viewModel == null) return;
 
             try
             {
@@ -662,10 +643,13 @@ namespace Froststrap.UI.Elements.Settings
 
                 if (addedItems.Count > 0)
                 {
+                    var navAction = GetNavigationAction(pageTag);
                     foreach (var item in addedItems)
                     {
                         item.PageName = pageTitle;
                         item.IconSymbol = pageIcon;
+                        if (navAction != null)
+                            item.NavigateAction = navAction;
                     }
 
                     var hiddenControlHeaders = pageView.GetVisualDescendants()
