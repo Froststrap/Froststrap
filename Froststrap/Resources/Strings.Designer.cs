@@ -319,6 +319,15 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Downloading - {0} out of {1}.
+        /// </summary>
+        public static string Bootstrapper_Status_DownloadingPackages {
+            get {
+                return ResourceManager.GetString("Bootstrapper.Status.DownloadingPackages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Downloading update {0}....
         /// </summary>
         public static string Bootstrapper_Status_DownloadingUpdate {
