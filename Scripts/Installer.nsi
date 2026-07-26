@@ -10,8 +10,13 @@ Var CreateDesktopShortcut
 Var CreateStartMenuShortcut
 Var KeepUserDataCheckbox
 Var KeepUserData
+Var ExistingInstallChoice ; 0=Upgrade, 1=Clean
+Var IsExistingInstall     ; 1 if Froststrap is already installed
 
 Name "Froststrap"
+
+!define MUI_ICON "..\Froststrap\Froststrap.ico"
+!define MUI_UNICON "..\Froststrap\Froststrap.ico"
 
 !ifndef PUBLISH_DIR
   !define PUBLISH_DIR "..\build"
@@ -40,6 +45,7 @@ RequestExecutionLevel user
 !define MUI_FINISHPAGE_RUN_TEXT "Launch Froststrap"
 
 !insertmacro MUI_PAGE_DIRECTORY
+Page Custom ExistingInstallPageCreate ExistingInstallPageLeave
 Page Custom OptionsPageCreate OptionsPageLeave
 !insertmacro MUI_PAGE_INSTFILES
 !insertmacro MUI_PAGE_FINISH
@@ -51,10 +57,58 @@ UninstPage Custom un.OptionsPageCreate un.OptionsPageLeave
 !insertmacro MUI_LANGUAGE "English"
 
 ; ---------------------------------------------------------------------------
-; Install pages
+; Existing installation options page
+; ---------------------------------------------------------------------------
+
+Function ExistingInstallPageCreate
+    IfSilent silent notsilent
+silent:
+    Abort
+notsilent:
+
+    IfFileExists "$INSTDIR\${APP_EXE}" exists notexists
+notexists:
+    Abort
+exists:
+    StrCpy $IsExistingInstall 1
+
+    nsDialogs::Create 1018
+    Pop $0
+    ${If} $0 == error
+        Abort
+    ${EndIf}
+
+    ${NSD_CreateLabel} 0 0 100% 24u "Froststrap is already installed in:$\n$INSTDIR$\n$\nWhat would you like to do?"
+
+    ${NSD_CreateRadioButton} 0 60u 100% 12u "Upgrade (keep your settings and data)"
+    Pop $0
+    ${NSD_Check} $0
+    StrCpy $ExistingInstallChoice 0
+
+    ${NSD_CreateRadioButton} 0 80u 100% 12u "Clean install (remove all existing data before installing)"
+    Pop $1
+
+    nsDialogs::Show
+FunctionEnd
+
+Function ExistingInstallPageLeave
+    ${NSD_GetState} $0 $2
+    ${If} $2 == ${BST_CHECKED}
+        StrCpy $ExistingInstallChoice 0
+    ${Else}
+        StrCpy $ExistingInstallChoice 1
+    ${EndIf}
+FunctionEnd
+
+; ---------------------------------------------------------------------------
+; Shortcut selection page
 ; ---------------------------------------------------------------------------
 
 Function OptionsPageCreate
+    ${If} $IsExistingInstall == 1
+        Abort
+    ${EndIf}
+
     nsDialogs::Create 1018
     Pop $0
     ${If} $0 == error
@@ -101,6 +155,10 @@ FunctionEnd
 ; ---------------------------------------------------------------------------
 
 Section "Froststrap"
+    ${If} $ExistingInstallChoice == 1
+        RMDir /r "$INSTDIR"
+    ${EndIf}
+
     SetOutPath "$INSTDIR"
     File /r "${PUBLISH_DIR}\*"
 
