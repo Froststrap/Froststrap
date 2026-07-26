@@ -38,6 +38,19 @@ namespace Froststrap
         /// </summary>
         public string[] Args { get; private set; }
 
+        private static readonly string[] StudioFileExtensions = { ".rbxl", ".rbxlx", ".rbxm", ".rbxmx" };
+
+        private static bool IsRobloxStudioFile(string path)
+        {
+            if (string.IsNullOrEmpty(path)) return false;
+            try
+            {
+                var ext = Path.GetExtension(path);
+                return StudioFileExtensions.Contains(ext, StringComparer.OrdinalIgnoreCase);
+            }
+            catch { return false; }
+        }
+
         public LaunchSettings(string[] args)
         {
             const string LOG_IDENT = "LaunchSettings::LaunchSettings";
@@ -102,6 +115,13 @@ namespace Froststrap
                     App.Logger.WriteLine(LOG_IDENT, "Got version argument");
                     VersionFlag.Active = true;
                     VersionFlag.Data = arg;
+                    startIdx = 1;
+                }
+                else if (IsRobloxStudioFile(arg))
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Got Roblox Studio file argument");
+                    RobloxLaunchMode = LaunchMode.Studio;
+                    RobloxLaunchArgs = $"-task EditFile -localPlaceFile \"{arg}\"";
                     startIdx = 1;
                 }
             }

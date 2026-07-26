@@ -14,6 +14,15 @@ public static class LinuxRegistry
         DesktopEntryDir, "froststrap-handler.desktop"
     );
 
+    private static readonly string MimePackagesDir = Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+        ".local", "share", "mime", "packages"
+    );
+
+    private static readonly string MimeXmlPath = Path.Combine(
+        MimePackagesDir, "froststrap-mime.xml"
+    );
+
     private static readonly string[] Schemes =
     [
         "roblox",
@@ -21,6 +30,14 @@ public static class LinuxRegistry
         "roblox-studio",
         "roblox-studio-auth"
     ];
+
+    private static readonly Dictionary<string, string> ExtensionToMime = new(StringComparer.OrdinalIgnoreCase)
+    {
+        { ".rbxl", "application/x-roblox-place" },
+        { ".rbxlx", "application/x-roblox-place" },
+        { ".rbxm", "application/x-roblox-model" },
+        { ".rbxmx", "application/x-roblox-model" }
+    };
 
     public static void RegisterAll()
     {
@@ -35,20 +52,23 @@ public static class LinuxRegistry
         sb.AppendLine($"Exec={Paths.Application} %u");
         sb.AppendLine("StartupNotify=true");
         sb.AppendLine("Terminal=false");
-        sb.AppendLine("MimeType=" + string.Join(";", Schemes.Select(s => $"x-scheme-handler/{s}")));
+        var allMimeTypes = Schemes.Select(s => $"x-scheme-handler/{s}")
+            .Concat(ExtensionToMime.Values.Distinct())
+            .ToList();
+        sb.AppendLine("MimeType=" + string.Join(";", allMimeTypes));
         sb.AppendLine("NoDisplay=true");
 
         File.WriteAllText(DesktopFilePath, sb.ToString());
 
         Process.Start("chmod", $"+x \"{DesktopFilePath}\"")?.WaitForExit();
 
+        RegisterMimeTypes();
+
         try
         {
             Process.Start("update-desktop-database", DesktopEntryDir)?.WaitForExit();
         }
-        catch
-        {
-        }
+        catch { }
 
         foreach (var scheme in Schemes)
         {
@@ -65,10 +85,57 @@ public static class LinuxRegistry
                 using var p = Process.Start(psi);
                 p?.WaitForExit();
             }
-            catch
-            {
-            }
+            catch { }
         }
+
+        foreach (var mime in ExtensionToMime.Values.Distinct())
+        {
+            try
+            {
+                var psi = new ProcessStartInfo
+                {
+                    FileName = "xdg-mime",
+                    Arguments = $"default froststrap-handler.desktop {mime}",
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false
+                };
+                using var p = Process.Start(psi);
+                p?.WaitForExit();
+            }
+            catch { }
+        }
+    }
+
+    private static void RegisterMimeTypes()
+    {
+        if (!OperatingSystem.IsLinux()) return;
+
+        Directory.CreateDirectory(MimePackagesDir);
+
+        var xml = new StringBuilder();
+        xml.AppendLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+        xml.AppendLine("<mime-info xmlns=\"http://www.freedesktop.org/standards/shared-mime-info\">");
+
+        foreach (var kv in ExtensionToMime)
+        {
+            string ext = kv.Key.TrimStart('.');
+            string mime = kv.Value;
+            xml.AppendLine($"  <mime-type type=\"{mime}\">");
+            xml.AppendLine($"    <comment>Roblox Studio {kv.Key} file</comment>");
+            xml.AppendLine($"    <glob pattern=\"*{kv.Key}\"/>");
+            xml.AppendLine($"  </mime-type>");
+        }
+
+        xml.AppendLine("</mime-info>");
+
+        File.WriteAllText(MimeXmlPath, xml.ToString());
+
+        try
+        {
+            Process.Start("update-mime-database", MimePackagesDir)?.WaitForExit();
+        }
+        catch { }
     }
 
     public static void UnregisterAll()
@@ -82,9 +149,17 @@ public static class LinuxRegistry
             {
                 Process.Start("update-desktop-database", DesktopEntryDir)?.WaitForExit();
             }
-            catch
+            catch { }
+        }
+
+        if (File.Exists(MimeXmlPath))
+        {
+            File.Delete(MimeXmlPath);
+            try
             {
+                Process.Start("update-mime-database", MimePackagesDir)?.WaitForExit();
             }
+            catch { }
         }
     }
 }
