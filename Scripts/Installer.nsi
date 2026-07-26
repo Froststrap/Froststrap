@@ -129,6 +129,8 @@ Section "Froststrap"
     ${EndIf}
 
     WriteUninstaller "$INSTDIR\Uninstall.exe"
+
+    WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\App Paths\${APP_EXE}" "" "$INSTDIR\${APP_EXE}"
 SectionEnd
 
 ; ---------------------------------------------------------------------------
