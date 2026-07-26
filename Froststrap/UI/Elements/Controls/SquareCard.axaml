@@ -4,8 +4,8 @@
 
     
 	<Style Selector="controls|SquareCard">
-		<Setter Property="Background" Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
-		<Setter Property="BorderBrush" Value="{DynamicResource CardStrokeColorDefaultBrush}" />
+		<Setter Property="Background" Value="{DynamicResource ControlFillColorDefaultBrush}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource ControlElevationBorderBrush}" />
 		<Setter Property="BorderThickness" Value="1" />
 		<Setter Property="Padding" Value="14" />
 

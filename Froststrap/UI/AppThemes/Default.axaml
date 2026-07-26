@@ -11,11 +11,21 @@
         <Setter Property="Cursor" Value="Hand" />
     </Style>
 
+    <Style Selector="ic|Lucide">
+        <Setter Property="StrokeBrush" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+        <Setter Property="StrokeThickness" Value="1.5" />
+    </Style>
+
     <Style Selector="controls|CardExpander.NoUserExpansion">
-        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Background" Value="{DynamicResource ControlFillColorDefaultBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ControlElevationBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
         <Setter Property="Template">
             <ControlTemplate>
-                <controls:Card Name="ContentBorder" Padding="0" Margin="0,2">
+                <controls:Card Name="ContentBorder" Background="{TemplateBinding Background}"
+                               BorderBrush="{TemplateBinding BorderBrush}"
+                               BorderThickness="{TemplateBinding BorderThickness}"
+                               Padding="0" Margin="0,2">
                     <StackPanel>
                         <Border Padding="16,12" Background="Transparent">
                             <Grid ColumnDefinitions="*, Auto">
@@ -39,7 +49,7 @@
                         </Border>
 
                         <Border Name="PART_ContentContainer"
-                                BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
                                 ClipToBounds="True">
                             <Border.Transitions>
                                 <Transitions>
