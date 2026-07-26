@@ -24,8 +24,8 @@
                 <controls:CardExpander Classes="NoUserExpansion" Header="{x:Static resources:Strings.Menu_Appearance_Custom_Theme_Title}" Description="{x:Static resources:Strings.Menu_Appearance_Custom_Theme_Description}" IsExpanded="{Binding CustomThemeExpanded, Mode=OneWay}">
                     <controls:CardExpander.HeaderContent>
                         <ComboBox
-                            Grid.Column="1"
                             MinWidth="200"
+                            Margin="5,0,0,0"
                             Padding="10,5,10,5"
                             ItemsSource="{Binding Themes}"
                             SelectedItem="{Binding Theme, Mode=TwoWay}">
