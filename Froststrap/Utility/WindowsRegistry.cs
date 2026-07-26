@@ -85,6 +85,8 @@ namespace Froststrap.Utility
 
             RegisterStudioFileType(".rbxl");
             RegisterStudioFileType(".rbxlx");
+            RegisterStudioFileType(".rbxm");
+            RegisterStudioFileType(".rbxmx");
         }
 
         /// <summary>

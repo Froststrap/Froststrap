@@ -50,7 +50,7 @@
             </array>
         </dict>
     </array>
-   <key>CFBundleDocumentTypes</key>
+    <key>CFBundleDocumentTypes</key>
     <array>
         <dict>
             <key>CFBundleTypeName</key>
@@ -63,6 +63,8 @@
             <array>
                 <string>rbxl</string>
                 <string>rbxlx</string>
+                <string>rbxm</string>
+                <string>rbxmx</string>
             </array>
             <key>CFBundleTypeIconFile</key>
             <string>Froststrap</string>
