@@ -2,6 +2,8 @@
 !include "nsDialogs.nsh"
 !include "LogicLib.nsh"
 
+SetCompressor /SOLID /FINAL lzma
+
 Var DesktopShortcutCheckbox
 Var StartMenuShortcutCheckbox
 Var CreateDesktopShortcut
