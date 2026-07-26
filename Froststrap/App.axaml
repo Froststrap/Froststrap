@@ -24,11 +24,6 @@
         <StyleInclude Source="avares://AvaloniaEdit/Themes/Fluent/AvaloniaEdit.xaml" />
 
         <StyleInclude Source="avares://Froststrap/UI/AppThemes/Default.axaml" />
-
-        <Style Selector="ic|Lucide">
-            <Setter Property="StrokeBrush" Value="{DynamicResource TextFillColorPrimaryBrush}" />
-            <Setter Property="StrokeThickness" Value="1.5" />
-        </Style>
     </Application.Styles>
 
     <Application.Resources>

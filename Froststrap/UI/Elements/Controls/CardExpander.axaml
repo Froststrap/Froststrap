@@ -4,34 +4,39 @@
         xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls">
 
     <Style Selector="controls|CardExpander">
-        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Background" Value="{DynamicResource ControlFillColorDefaultBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ControlElevationBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
         <Setter Property="Template">
             <ControlTemplate>
-                <controls:Card Name="PART_RootCard" 
-                               Padding="0" 
+                <controls:Card Name="PART_RootCard"
+                               Background="{TemplateBinding Background}"
+                               BorderBrush="{TemplateBinding BorderBrush}"
+                               BorderThickness="{TemplateBinding BorderThickness}"
+                               Padding="0"
                                Margin="0,4">
                     <StackPanel>
-                        <ToggleButton Name="HeaderButton" 
-                                      Padding="16,12" 
-                                      Background="Transparent" 
+                        <ToggleButton Name="HeaderButton"
+                                      Padding="16,12"
+                                      Background="Transparent"
                                       BorderThickness="0"
                                       HorizontalAlignment="Stretch"
                                       IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}">
                             <ToggleButton.Template>
                                 <ControlTemplate>
-                                    <Border Background="{TemplateBinding Background}" 
+                                    <Border Background="{TemplateBinding Background}"
                                             Padding="{TemplateBinding Padding}">
                                         <Grid ColumnDefinitions="*,Auto,Auto">
                                             <StackPanel Grid.Column="0" VerticalAlignment="Center" Spacing="2">
-                                                <TextBlock Text="{Binding $parent[controls:CardExpander].Header}" 
-                                                           FontSize="14" 
-                                                           FontWeight="SemiBold" 
-                                                           Foreground="{DynamicResource TextFillColorPrimaryBrush}" 
+                                                <TextBlock Text="{Binding $parent[controls:CardExpander].Header}"
+                                                           FontSize="14"
+                                                           FontWeight="SemiBold"
+                                                           Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                                                            TextWrapping="Wrap" />
-                                                <controls:MarkdownTextBlock MarkdownText="{Binding $parent[controls:CardExpander].Description}" 
-                                                                           FontSize="12"
-                                                                           Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                                                           IsVisible="{Binding $parent[controls:CardExpander].Description, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+                                                <controls:MarkdownTextBlock MarkdownText="{Binding $parent[controls:CardExpander].Description}"
+                                                                            FontSize="12"
+                                                                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                                                            IsVisible="{Binding $parent[controls:CardExpander].Description, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
                                             </StackPanel>
 
                                             <ContentPresenter Grid.Column="1"
@@ -40,10 +45,10 @@
                                                               VerticalAlignment="Center" />
 
                                             <ui:FASymbolIcon Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                                                           Name="ExpanderIcon" 
-                                                           Grid.Column="2" 
-                                                           Symbol="ChevronDown"
-                                                           FontSize="18">
+                                                             Name="ExpanderIcon"
+                                                             Grid.Column="2"
+                                                             Symbol="ChevronDown"
+                                                             FontSize="18">
                                                 <ui:FASymbolIcon.Transitions>
                                                     <Transitions>
                                                         <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.2" Easing="CubicEaseOut"/>
@@ -57,7 +62,7 @@
                         </ToggleButton>
 
                         <Border Name="PART_ContentContainer"
-                                BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
                                 ClipToBounds="True">
                             <Border.Transitions>
                                 <Transitions>
@@ -73,10 +78,6 @@
                 </controls:Card>
             </ControlTemplate>
         </Setter>
-    </Style>
-
-    <Style Selector="controls|CardExpander ToggleButton#HeaderButton:pointerover">
-        <Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
     </Style>
 
     <Style Selector="controls|CardExpander[IsExpanded=True] ui|FASymbolIcon#ExpanderIcon">

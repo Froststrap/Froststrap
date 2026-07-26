@@ -4,8 +4,8 @@
         xmlns:controls="using:Froststrap.UI.Elements.Controls">
 
     <Style Selector="controls|Card">
-        <Setter Property="Background" Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource CardStrokeColorDefaultBrush}" />
+        <Setter Property="Background" Value="{DynamicResource ControlFillColorDefaultBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ControlElevationBorderBrush}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="{DynamicResource ControlCornerRadius}" />
         <Setter Property="MinHeight" Value="64" />
@@ -34,7 +34,6 @@
 
     <Style Selector="controls|Card:pointerover">
         <Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource CardStrokeColorDefaultBrush}" />
     </Style>
 
     <Style Selector="controls|Card:pressed">

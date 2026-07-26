@@ -5,11 +5,16 @@
         xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia">
 
     <Style Selector="controls|OptionControl">
-        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Background" Value="{DynamicResource ControlFillColorDefaultBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ControlElevationBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
         <Setter Property="Padding" Value="16,12" />
         <Setter Property="Template">
             <ControlTemplate>
                 <controls:Card Name="PART_RootCard"
+                               Background="{TemplateBinding Background}"
+                               BorderBrush="{TemplateBinding BorderBrush}"
+                               BorderThickness="{TemplateBinding BorderThickness}"
                                Padding="{TemplateBinding Padding}"
                                Margin="0,4">
 
@@ -30,7 +35,7 @@
                                                     Margin="6,0,0,0">
                                     <ic:Lucide Icon="CircleQuestionMark"
                                                Width="16" Height="16"
-                                               StrokeBrush="{DynamicResource SystemAccentColor}" />
+                                               StrokeBrush="{Binding Foreground, RelativeSource={RelativeSource AncestorType=controls:Hyperlink}}" />
                                 </controls:Hyperlink>
                             </WrapPanel>
 

@@ -6,14 +6,19 @@
         xmlns:converters="clr-namespace:Froststrap.UI.Converters">
 
     <Style Selector="controls|CardAction">
-        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Background" Value="{DynamicResource ControlFillColorDefaultBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ControlElevationBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
         <Setter Property="Padding" Value="16,12" />
-        <Setter Property="CornerRadius" Value="0" />
+        <Setter Property="CornerRadius" Value="{DynamicResource ControlCornerRadius}" />
         <Setter Property="IconSize" Value="24" />
         <Setter Property="Template">
             <ControlTemplate>
                 <controls:Card Name="PART_RootCard"
                                Padding="{TemplateBinding Padding}"
+                               Background="{TemplateBinding Background}"
+                               BorderBrush="{TemplateBinding BorderBrush}"
+                               BorderThickness="{TemplateBinding BorderThickness}"
                                Margin="0,4"
                                CornerRadius="{TemplateBinding CornerRadius}">
                     <Grid ColumnDefinitions="Auto,*">
