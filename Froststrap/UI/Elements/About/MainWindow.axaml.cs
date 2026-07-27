@@ -19,15 +19,9 @@ namespace Froststrap.UI.Elements.About
 
             InitializeComponent();
 
-            HookTitleBar();
+            Loaded += (_, _) => NavView.IsPaneOpen = false;
 
             App.FrostRPC?.SetDialog("About");
-
-            var translatorsText = this.FindControl<TextBlock>("TranslatorsText");
-            if (translatorsText != null && Locale.CurrentCulture.Name.StartsWith("tr"))
-            {
-                translatorsText.FontSize = 9;
-            }
 
             _viewModel.PropertyChanged += OnViewModelPropertyChanged;
 
@@ -50,25 +44,6 @@ namespace Froststrap.UI.Elements.About
                 UpdateSelectedNavigationViewItem(_viewModel.SelectedPage);
             }
         }
-
-        private void HookTitleBar()
-        {
-            var dragArea = this.FindControl<Panel>("TitleBarDragArea");
-            dragArea?.PointerPressed += (_, e) =>
-                {
-                    if (e.GetCurrentPoint(dragArea).Properties.IsLeftButtonPressed)
-                        BeginMoveDrag(e);
-                };
-        }
-
-        private void OnMinimize(object? sender, RoutedEventArgs e) => this.WindowState = Avalonia.Controls.WindowState.Minimized;
-
-        private void OnMaximize(object? sender, RoutedEventArgs e) =>
-            this.WindowState = this.WindowState == Avalonia.Controls.WindowState.Maximized
-                ? Avalonia.Controls.WindowState.Normal
-                : Avalonia.Controls.WindowState.Maximized;
-
-        private void OnClose(object? sender, RoutedEventArgs e) => Close();
 
         private void UpdatePageView(object? viewModel)
         {

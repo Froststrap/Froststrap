@@ -23,7 +23,6 @@
 
         <Grid Grid.Row="1" Name="MainGrid">
             <ui:FANavigationView Name="NavView"
-                                 IsPaneOpen="False"
 								 Background="{DynamicResource ControlFillColorDefaultBrush}"
                                  PaneDisplayMode="Left"
                                  IsSettingsVisible="False"
