@@ -84,7 +84,11 @@
                 FontWeight="Bold"
                 Text="{x:Static resources:Strings.Common_Miscellaneous}" />
 
-            <controls:CardExpander Description="{x:Static resources:Strings.Menu_Shortcut_GameShortcut_Description}" Header="{x:Static resources:Strings.Menu_Shortcuts_GameShortcut_Title}" IsExpanded="True">
+            <controls:MarkdownTextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                        MarkdownText="{x:Static resources:Strings.Menu_Shortcuts_Misc_Description}"
+                                        TextWrapping="Wrap" />
+
+            <controls:CardExpander Header="{x:Static resources:Strings.Menu_Shortcuts_GameShortcut_Title}" IsExpanded="True">
                 <StackPanel>
                     <Grid Margin="0,0,0,16" ColumnDefinitions="Auto,*">
 

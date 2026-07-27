@@ -3577,6 +3577,15 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Customize how Froststrap UI looks using wide variety of options..
+        /// </summary>
+        public static string Menu_Appearance_Froststrap_Description {
+            get {
+                return ResourceManager.GetString("Menu.Appearance.Froststrap.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Choose what icon Froststrap should use..
         /// </summary>
         public static string Menu_Appearance_Icon_Description {
@@ -3694,7 +3703,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Automatically cycle custom themes..
+        ///   Looks up a localized string similar to Automatically cycle between a variety of your custom themes..
         /// </summary>
         public static string Menu_Appearance_ThemeCycling_Description {
             get {
@@ -4551,6 +4560,15 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Miscellaneous Froststrap settings..
+        /// </summary>
+        public static string Menu_Deployment_Froststrap_Description {
+            get {
+                return ResourceManager.GetString("Menu.Deployment.Froststrap.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Search for games using the searchbar at the top..
         /// </summary>
         public static string Menu_Deployment_GameSearch_Description {
@@ -4605,11 +4623,29 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Change Roblox Player settings related to downloading specific Roblox versions..
+        /// </summary>
+        public static string Menu_Deployment_Player_Description {
+            get {
+                return ResourceManager.GetString("Menu.Deployment.Player.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Player Channel.
         /// </summary>
         public static string Menu_Deployment_PlayerChannel_Title {
             get {
                 return ResourceManager.GetString("Menu.Deployment.PlayerChannel.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change Roblox Studio settings related to downloading specific Roblox versions..
+        /// </summary>
+        public static string Menu_Deployment_Studio_Description {
+            get {
+                return ResourceManager.GetString("Menu.Deployment.Studio.Description", resourceCulture);
             }
         }
         
@@ -5891,6 +5927,15 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Options that require reading Roblox logs, requires the app to stay open in System Tray / Menu Bar.
+        /// </summary>
+        public static string Menu_Integrations_ActivityTracking_Description {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.ActivityTracking.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Allows for anybody to join the game you&apos;re currently in through your Discord profile..
         /// </summary>
         public static string Menu_Integrations_AllowActivityJoining_Description {
@@ -6319,6 +6364,24 @@ namespace Froststrap.Resources {
         public static string Menu_Integrations_RequiresActivityTracking {
             get {
                 return ResourceManager.GetString("Menu.Integrations.RequiresActivityTracking", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Customize how your Discord RPC looks when launching Roblox Player..
+        /// </summary>
+        public static string Menu_Integrations_RPC_Player_Description {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.RPC.Player.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Customize how your Discord RPC looks when launching Roblox Studio..
+        /// </summary>
+        public static string Menu_Integrations_RPC_Studio_Description {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.RPC.Studio.Description", resourceCulture);
             }
         }
         
@@ -7551,7 +7614,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to How do I reduce ping/ increase fps with fflags?.
+        ///   Looks up a localized string similar to How do I reduce ping/increase fps with fflags?.
         /// </summary>
         public static string Menu_Onboarding_Page6_Q6 {
             get {
@@ -7812,11 +7875,29 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Mods that require files from your pc..
+        /// </summary>
+        public static string Menu_PresetMods_Misc_Description {
+            get {
+                return ResourceManager.GetString("Menu.PresetMods.Misc.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Open Preset Mods Folder.
         /// </summary>
         public static string Menu_PresetMods_OpenModsFolder {
             get {
                 return ResourceManager.GetString("Menu.PresetMods.OpenModsFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Commonly used built-in mods in Froststrap..
+        /// </summary>
+        public static string Menu_PresetMods_Presets_Description {
+            get {
+                return ResourceManager.GetString("Menu.PresetMods.Presets.Description", resourceCulture);
             }
         }
         
@@ -7929,7 +8010,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Jump back into your recent games..
+        ///   Looks up a localized string similar to Jump back into your recently played games, Logging into account will add more games..
         /// </summary>
         public static string Menu_QuickPlay_Description {
             get {
@@ -8228,6 +8309,15 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select a region to join into..
+        /// </summary>
+        public static string Menu_RegionSelector_Description {
+            get {
+                return ResourceManager.GetString("Menu.RegionSelector.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enter a Place ID and click Search to view servers..
         /// </summary>
         public static string Menu_RegionSelector_EnterPlaceId {
@@ -8516,15 +8606,6 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This allows you to create shortcuts which let you join specific games quickly..
-        /// </summary>
-        public static string Menu_Shortcut_GameShortcut_Description {
-            get {
-                return ResourceManager.GetString("Menu.Shortcut.GameShortcut.Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Create Shortcut.
         /// </summary>
         public static string Menu_Shortcuts_CreateShortcut {
@@ -8620,6 +8701,15 @@ namespace Froststrap.Resources {
         public static string Menu_Shortcuts_General_Title {
             get {
                 return ResourceManager.GetString("Menu.Shortcuts.General.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create shortcuts that allows you to join specific games/servers quickly..
+        /// </summary>
+        public static string Menu_Shortcuts_Misc_Description {
+            get {
+                return ResourceManager.GetString("Menu.Shortcuts.Misc.Description", resourceCulture);
             }
         }
         

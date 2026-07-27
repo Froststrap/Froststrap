@@ -45,6 +45,10 @@
                 FontWeight="Bold"
                 Text="Froststrap" />
 
+            <controls:MarkdownTextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                        MarkdownText="{x:Static resources:Strings.Menu_Deployment_Froststrap_Description}"
+                                        TextWrapping="Wrap" />
+
             <controls:CardExpander
                 Header="{x:Static resources:Strings.Menu_Behaviour_AutoUpdate_Title}"
                 Description="{x:Static resources:Strings.Menu_Behaviour_AutoUpdate_Description}"
@@ -81,6 +85,10 @@
                        FontWeight="Bold"
                        Text="Roblox" />
 
+            <controls:MarkdownTextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                        MarkdownText="{x:Static resources:Strings.Menu_Deployment_Player_Description}"
+                                        TextWrapping="Wrap" />
+
             <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
                                     Header="{x:Static resources:Strings.Menu_Deployment_AutoUpdateSober}">
                 <ToggleSwitch IsChecked="{Binding AutomaticallyUpdateSober, Mode=TwoWay}" />
@@ -103,7 +111,7 @@
                                     Description="{x:Static resources:Strings.Menu_Deployment_MultiThread_Description}">
                 <TextBox
                     Width="200"
-                    Margin="8,0,0,0"
+                    Margin="5,0,0,0"
                     Padding="10,5"
                     Text="{Binding MaxThreadDownload, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
             </controls:OptionControl>
@@ -228,6 +236,10 @@
                        FontSize="20"
                        FontWeight="Bold"
                        Text="{x:Static resources:Strings.Common_Studio}" />
+
+            <controls:MarkdownTextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                        MarkdownText="{x:Static resources:Strings.Menu_Deployment_Studio_Description}"
+                                        TextWrapping="Wrap" />
 
             <controls:CardExpander
                 Header="{x:Static resources:Strings.Menu_Deployment_OverrideHash_Title}"
