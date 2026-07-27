@@ -1455,9 +1455,6 @@ Would you like to switch your preferred channel to {0}?</value>
   <data name="Menu.RegionSelector.LoadMore" xml:space="preserve">
     <value>Load More</value>
   </data>
-  <data name="Menu.Shortcut.GameShortcut.Description" xml:space="preserve">
-    <value>This allows you to create shortcuts which let you join specific games quickly.</value>
-  </data>
   <data name="Menu.RegionSelector.Title" xml:space="preserve">
     <value>Region Selector</value>
   </data>
@@ -1674,7 +1671,7 @@ The app will close this window when sign-in completes.</value>
     <value>Official built-in mods.</value>
   </data>
   <data name="Menu.QuickPlay.Description" xml:space="preserve">
-    <value>Jump back into your recent games.</value>
+    <value>Jump back into your recently played games, Logging into account will add more games.</value>
   </data>
   <data name="Common.Editor" xml:space="preserve">
     <value>Editor</value>
@@ -2028,7 +2025,7 @@ It must contain at least one of the following folders: content, ExtraContent, Pl
     <value>Theme Cycling</value>
   </data>
   <data name="Menu.Appearance.ThemeCycling.Description" xml:space="preserve">
-    <value>Automatically cycle custom themes.</value>
+    <value>Automatically cycle between a variety of your custom themes.</value>
   </data>
   <data name="Menu.Appearance.Frequency" xml:space="preserve">
     <value>Frequency</value>
@@ -3149,7 +3146,7 @@ Would you like to visit the releases page now?</value>
     <value>You don't. You may be able to achieve this with alternative software but we do not guarantee safety nor practicality.</value>
   </data>
   <data name="Menu.Onboarding.Page6.Q6" xml:space="preserve">
-    <value>How do I reduce ping/ increase fps with fflags?</value>
+    <value>How do I reduce ping/increase fps with fflags?</value>
   </data>
   <data name="Menu.Onboarding.Page6.A6" xml:space="preserve">
     <value>You don't, again. You may try to use some fflags to achieve higher fps on higher render distances, however lowering ping via fflags is not possible.</value>
@@ -3159,5 +3156,38 @@ Would you like to visit the releases page now?</value>
   </data>
   <data name="Bootstrapper.Status.DownloadingPackages" xml:space="preserve">
     <value>Downloading - {0} out of {1}</value>
+  </data>
+  <data name="Menu.Integrations.ActivityTracking.Description" xml:space="preserve">
+    <value>Options that require reading Roblox logs, requires the app to stay open in System Tray / Menu Bar</value>
+  </data>
+  <data name="Menu.Integrations.RPC.Player.Description" xml:space="preserve">
+    <value>Customize how your Discord RPC looks when launching Roblox Player.</value>
+  </data>
+  <data name="Menu.Integrations.RPC.Studio.Description" xml:space="preserve">
+    <value>Customize how your Discord RPC looks when launching Roblox Studio.</value>
+  </data>
+  <data name="Menu.Deployment.Froststrap.Description" xml:space="preserve">
+    <value>Miscellaneous Froststrap settings.</value>
+  </data>
+  <data name="Menu.Deployment.Player.Description" xml:space="preserve">
+    <value>Change Roblox Player settings related to downloading specific Roblox versions.</value>
+  </data>
+  <data name="Menu.Deployment.Studio.Description" xml:space="preserve">
+    <value>Change Roblox Studio settings related to downloading specific Roblox versions.</value>
+  </data>
+  <data name="Menu.PresetMods.Presets.Description" xml:space="preserve">
+    <value>Commonly used built-in mods in Froststrap.</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.Description" xml:space="preserve">
+    <value>Mods that require files from your pc.</value>
+  </data>
+  <data name="Menu.Appearance.Froststrap.Description" xml:space="preserve">
+    <value>Customize how Froststrap UI looks using wide variety of options.</value>
+  </data>
+  <data name="Menu.Shortcuts.Misc.Description" xml:space="preserve">
+    <value>Create shortcuts that allows you to join specific games/servers quickly.</value>
+  </data>
+  <data name="Menu.RegionSelector.Description" xml:space="preserve">
+    <value>Select a region to join into.</value>
   </data>
 </root>
