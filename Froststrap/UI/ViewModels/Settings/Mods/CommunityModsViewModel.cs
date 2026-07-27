@@ -291,65 +291,81 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             }
         }
 
+        private static readonly HashSet<string> RequiredModFolders = new(StringComparer.OrdinalIgnoreCase)
+        {
+            "content",
+            "ExtraContent",
+            "PlatformContent"
+        };
+
         private static async Task ExtractZipAsync(string zipPath, string dest)
         {
             await Task.Run(() =>
             {
-                using var archive = ZipFile.OpenRead(zipPath);
+                string tempExtract = Path.Combine(Path.GetTempPath(), "Froststrap", Guid.NewGuid().ToString());
+                Directory.CreateDirectory(tempExtract);
 
-                string? rootPrefix = null;
-                bool hasRootPrefix = true;
-
-                foreach (var entry in archive.Entries)
+                try
                 {
-                    if (string.IsNullOrEmpty(entry.Name)) continue; 
+                    ZipFile.ExtractToDirectory(zipPath, tempExtract, true);
 
-                    var parts = entry.FullName.Split('/');
-                    if (parts.Length > 1)
-                    {
-                        string first = parts[0];
-                        if (rootPrefix == null)
-                            rootPrefix = first;
-                        else if (rootPrefix != first)
-                        {
-                            hasRootPrefix = false;
-                            break;
-                        }
-                    }
-                    else
-                    {
-                        hasRootPrefix = false;
-                        break;
-                    }
-                }
+                    string[] entries = Directory.GetFileSystemEntries(tempExtract);
 
-                if (hasRootPrefix && rootPrefix != null)
-                {
                     if (Directory.Exists(dest))
                         Directory.Delete(dest, true);
                     Directory.CreateDirectory(dest);
 
-                    foreach (var entry in archive.Entries)
+                    if (entries.Length == 1 && Directory.Exists(entries[0]))
                     {
-                        if (string.IsNullOrEmpty(entry.Name)) continue;
+                        string rootDir = entries[0];
+                        string rootName = Path.GetFileName(rootDir);
 
-                        string relative = entry.FullName[(rootPrefix.Length + 1)..];
-                        string targetPath = Path.Combine(dest, relative);
-
-                        string? targetDir = Path.GetDirectoryName(targetPath);
-                        if (!string.IsNullOrEmpty(targetDir))
-                            Directory.CreateDirectory(targetDir);
-
-                        entry.ExtractToFile(targetPath, true);
+                        if (RequiredModFolders.Contains(rootName))
+                        {
+                            string target = Path.Combine(dest, rootName);
+                            Directory.Move(rootDir, target);
+                        }
+                        else
+                        {
+                            CopyDirectoryContents(rootDir, dest);
+                        }
+                    }
+                    else
+                    {
+                        foreach (string entry in entries)
+                        {
+                            string name = Path.GetFileName(entry);
+                            string target = Path.Combine(dest, name);
+                            if (Directory.Exists(entry))
+                                Directory.Move(entry, target);
+                            else
+                                File.Move(entry, target);
+                        }
                     }
                 }
-                else
+                finally
                 {
-                    if (Directory.Exists(dest))
-                        Directory.Delete(dest, true);
-                    ZipFile.ExtractToDirectory(zipPath, dest, true);
+                    if (Directory.Exists(tempExtract))
+                        Directory.Delete(tempExtract, true);
                 }
             });
+        }
+
+        private static void CopyDirectoryContents(string sourceDir, string destDir)
+        {
+            Directory.CreateDirectory(destDir);
+
+            foreach (string file in Directory.GetFiles(sourceDir))
+            {
+                string destFile = Path.Combine(destDir, Path.GetFileName(file));
+                File.Copy(file, destFile, overwrite: true);
+            }
+
+            foreach (string subDir in Directory.GetDirectories(sourceDir))
+            {
+                string destSubDir = Path.Combine(destDir, Path.GetFileName(subDir));
+                CopyDirectoryContents(subDir, destSubDir);
+            }
         }
 
         private static async Task DownloadFileAsync(string url, string path, IProgress<double> progress)
