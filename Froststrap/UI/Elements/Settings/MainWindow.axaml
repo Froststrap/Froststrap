@@ -209,7 +209,11 @@
                         <TransitioningContentControl
                             x:Name="PageContentControl"
                             HorizontalAlignment="Stretch"
-                            VerticalAlignment="Stretch" />
+                            VerticalAlignment="Stretch">
+                            <TransitioningContentControl.PageTransition>
+                                <CrossFade Duration="0:0:0.35" />
+                            </TransitioningContentControl.PageTransition>
+                        </TransitioningContentControl>
                     </Panel>
                 </Grid>
             </ui:FANavigationView.Content>
