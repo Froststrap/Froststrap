@@ -90,7 +90,8 @@ namespace Froststrap.Models.Entities
 
             if (ServerType == ServerType.Private)
             {
-                deeplink += "&accessCode=" + AccessCode;
+                if (!string.IsNullOrEmpty(AccessCode))
+            	    deeplink += "&accessCode=" + AccessCode;
             }
             else
             {

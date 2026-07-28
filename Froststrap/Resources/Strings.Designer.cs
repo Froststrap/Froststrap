@@ -1472,6 +1472,24 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Access Code.
+        /// </summary>
+        public static string ContextMenu_ServerInformation_AccessCode {
+            get {
+                return ResourceManager.GetString("ContextMenu.ServerInformation.AccessCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copy Access Code.
+        /// </summary>
+        public static string ContextMenu_ServerInformation_CopyAccessCode {
+            get {
+                return ResourceManager.GetString("ContextMenu.ServerInformation.CopyAccessCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Copy Instance ID.
         /// </summary>
         public static string ContextMenu_ServerInformation_CopyInstanceId {

@@ -496,10 +496,11 @@ public partial class App : Application
                 });
             };
 
+            // Should we disable onboarding until it actually looks good ? cuz it lowkey looks ass rn.
             if (State.Prop.IsFirstLaunch)
             {
                 LaunchSettings.OnboardingFlag.Active = true;
-                Logger.WriteLine("App::OnFrameworkInitializationCompleted", "First launch detected, enabling onboarding.");
+                Logger.WriteLine("App::OnFrameworkInitializationCompleted", "First launch detected, launching onboarding.");
             }
 
             LaunchHandler.ProcessLaunchArgs();

@@ -57,8 +57,8 @@ namespace Froststrap.UI.Elements.ContextMenu
 
             VersionMenuItem = items.ElementAtOrDefault(0);
             PlaytimeMenuItem = items.ElementAtOrDefault(1);
-            RichPresenceMenuItem = items.ElementAtOrDefault(3);
-            InviteDeeplinkMenuItem = items.ElementAtOrDefault(4);
+            InviteDeeplinkMenuItem = items.ElementAtOrDefault(3);
+            RichPresenceMenuItem = items.ElementAtOrDefault(4);
             AutoJoinRegionMenuItem = items.ElementAtOrDefault(5);
             ServerDetailsMenuItem = items.ElementAtOrDefault(6);
             GameHistoryMenuItem = items.ElementAtOrDefault(7);
@@ -152,8 +152,8 @@ namespace Froststrap.UI.Elements.ContextMenu
 
         private void ActivityWatcher_OnGameJoin(object? sender, EventArgs e) =>
             Dispatcher.UIThread.Invoke(() => {
-                if (ActivityWatcher?.Data.ServerType == ServerType.Public && InviteDeeplinkMenuItem != null)
-                    InviteDeeplinkMenuItem.IsVisible = true;
+                if (ActivityWatcher?.Data.ServerType != ServerType.Reserved && InviteDeeplinkMenuItem != null)
+                    InviteDeeplinkMenuItem?.SetValue(MenuItem.IsVisibleProperty, true);
                 ServerDetailsMenuItem?.SetValue(MenuItem.IsVisibleProperty, true);
                 AutoJoinRegionMenuItem?.SetValue(MenuItem.IsVisibleProperty, true);
             });
@@ -184,7 +184,7 @@ namespace Froststrap.UI.Elements.ContextMenu
 
         private async void InviteDeeplinkMenuItem_Click(object? sender, EventArgs e)
         {
-            string deeplink = ActivityWatcher?.Data?.GetInviteDeeplink(true, DeeplinkType.RobloxWeb)
+            string deeplink = ActivityWatcher?.Data?.GetInviteDeeplink(true, DeeplinkType.RobloxProtocol)
                                ?? Strings.Menu_ContextMenu_NoData;
 
             var topLevel = TopLevel.GetTopLevel(this);

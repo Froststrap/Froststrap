@@ -15,8 +15,8 @@ Opacity="0">
             <NativeMenuItem Header="Froststrap v2.0.0" IsEnabled="False" />
             <NativeMenuItem Header="Total: 00:00" IsEnabled="False" />
             <NativeMenuItemSeparator />
-            <NativeMenuItem Header="{x:Static resources:Strings.Common_DiscordRichPresence}" IsVisible="False" Click="RichPresenceMenuItem_Click" ToggleType="CheckBox" IsChecked="True" />
             <NativeMenuItem Header="{x:Static resources:Strings.ContextMenu_CopyDeeplinkInvite}" IsVisible="False" Click="InviteDeeplinkMenuItem_Click" />
+            <NativeMenuItem Header="{x:Static resources:Strings.Common_DiscordRichPresence}" IsVisible="False" Click="RichPresenceMenuItem_Click" ToggleType="CheckBox" IsChecked="True" />
             <NativeMenuItem Header="{x:Static resources:Strings.Menu_ContextMenu_RegionJoin}" IsVisible="False" Click="AutoJoinRegionMenuItem_Click"/>
             <NativeMenuItem Header="{x:Static resources:Strings.ContextMenu_ServerInformation_Title}" IsVisible="False" Click="ServerDetailsMenuItem_Click" />
             <NativeMenuItem Header="{x:Static resources:Strings.ContextMenu_GameHistory_Title}" Click="JoinLastServerMenuItem_Click" />

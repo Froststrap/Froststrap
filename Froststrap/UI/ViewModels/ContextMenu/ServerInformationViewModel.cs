@@ -15,6 +15,16 @@ namespace Froststrap.UI.ViewModels.ContextMenu
 
         public string InstanceId => _activityWatcher.Data.JobId;
 
+        public string AccessCode => _activityWatcher.Data.AccessCode;
+
+        public bool AccessCodeVisibility => !string.IsNullOrEmpty(_activityWatcher.Data.AccessCode) && _activityWatcher.Data.ServerType == Enums.ServerType.Private;
+
+        public bool ShowInstanceId => !AccessCodeVisibility;
+
+        public string CopyButtonText => AccessCodeVisibility
+            ? Strings.ContextMenu_ServerInformation_CopyAccessCode
+            : Strings.ContextMenu_ServerInformation_CopyInstanceId;
+
         public string ServerType => _activityWatcher.Data.ServerType.ToTranslatedString();
 
         public string ServerLocation { get; private set; } = Strings.Common_Loading;
@@ -24,7 +34,7 @@ namespace Froststrap.UI.ViewModels.ContextMenu
         public static bool ServerLocationVisibility => App.Settings.Prop.ShowServerDetails;
         public static bool ServerUptimeVisibility => App.Settings.Prop.ShowServerDetails;
 
-        public ICommand CopyInstanceIdCommand => new RelayCommand<Visual>(CopyInstanceId);
+        public ICommand CopyCommand => new RelayCommand<Visual>(CopyToClipboard);
 
         public ServerInformationViewModel(Watcher watcher)
         {
@@ -61,17 +71,17 @@ namespace Froststrap.UI.ViewModels.ContextMenu
             OnPropertyChanged(nameof(ServerUptime));
         }
 
-        private async void CopyInstanceId(Visual? visual)
+        private async void CopyToClipboard(Visual? visual)
         {
             var topLevel = TopLevel.GetTopLevel(visual);
 
             if (topLevel?.Clipboard != null)
             {
-                await topLevel.Clipboard.SetTextAsync(InstanceId);
+                string textToCopy = AccessCodeVisibility ? AccessCode : InstanceId;
+                await topLevel.Clipboard.SetTextAsync(textToCopy);
             }
         }
 
         public static ICommand CloseCommand => new RelayCommand<Window>(window => window?.Close());
-
     }
 }
