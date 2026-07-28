@@ -73,6 +73,13 @@ namespace Froststrap
             {
                 ActivityWatcher = new(_watcherData.LogFile, _watcherData.LaunchMode, _watcherData.ProcessId);
 
+                if (!string.IsNullOrEmpty(_watcherData.AccessCode))
+                {
+                    ActivityWatcher.Data.AccessCode = _watcherData.AccessCode;
+                    ActivityWatcher.Data.ServerType = ServerType.Private;
+                    App.Logger.WriteLine("Watcher", $"Set access code from launch data: {_watcherData.AccessCode}");
+                }
+
                 if (App.Settings.Prop.UseDisableAppPatch)
                 {
                     ActivityWatcher.OnAppClose += delegate

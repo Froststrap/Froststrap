@@ -12,6 +12,7 @@ namespace Froststrap.Integrations
         // while levels being changed is fairly rare, please limit the number of varying number of FLog types you have to use, if possible
 
         private const string GameTeleportingEntry = "[FLog::UgcExperienceController] UgcExperienceController: doTeleport: joinScriptUrl";
+        private const string GameLaunchEventEntry = "[FLog::NewWebView2Browser] Webview handles hybrid javascript event";
         private const string GameJoiningUniverseEntry = "[FLog::GameJoinLoadTime] Report game_join_loadtime:";
         private const string GameJoiningUDMUXEntry = "[FLog::Network] UDMUX Address = ";
         private const string GameJoinedEntry = "[FLog::Network] serverId:";
@@ -370,6 +371,28 @@ namespace Froststrap.Integrations
                     }
 
                     App.Logger.WriteLine(LOG_IDENT, $"Joining Game ({Data})");
+                }
+                else if (logMessage.StartsWith(GameLaunchEventEntry))
+                {
+                    int jsonStart = logMessage.IndexOf('{');
+                    string jsonString = logMessage[jsonStart..];
+                    using JsonDocument doc = JsonDocument.Parse(jsonString);
+                    if (doc.RootElement.TryGetProperty("params", out JsonElement paramsElement) && paramsElement.TryGetProperty("request", out JsonElement requestElement))
+                    {
+                        if (requestElement.TryGetProperty("requestType", out JsonElement requestTypeElement) && requestTypeElement.GetString() == "RequestPrivateGame")
+                        {
+                            if (requestElement.TryGetProperty("accessCode", out JsonElement accessCodeElement))
+                            {
+                                string? accessCode = accessCodeElement.GetString();
+                                if (!string.IsNullOrEmpty(accessCode))
+                                {
+                                    Data.AccessCode = accessCode;
+                                    Data.ServerType = ServerType.Private;
+                                    App.Logger.WriteLine(LOG_IDENT, $"Captured private server access code: {accessCode}");
+                                }
+                            }
+                        }
+                    }
                 }
             }
             else if (!InGame && Data.PlaceId != 0)

@@ -9,5 +9,7 @@
         public List<int>? AutoclosePids { get; set; }
 
         public LaunchMode LaunchMode { get; set; } = LaunchMode.Player;
+
+        public string? AccessCode { get; set; }
     }
 }

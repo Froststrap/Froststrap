@@ -249,11 +249,17 @@
   <data name="ContextMenu.ServerInformation.CopyInstanceId" xml:space="preserve">
     <value>Copy Instance ID</value>
   </data>
+  <data name="ContextMenu.ServerInformation.CopyAccessCode" xml:space="preserve">
+    <value>Copy Access Code</value>
+  </data>
   <data name="ContextMenu.ServerInformation.InstanceId" xml:space="preserve">
     <value>Instance ID</value>
   </data>
   <data name="ContextMenu.ServerInformation.Location" xml:space="preserve">
     <value>Location</value>
+  </data>
+  <data name="ContextMenu.ServerInformation.AccessCode" xml:space="preserve">
+    <value>Access Code</value>
   </data>
   <data name="ContextMenu.ServerInformation.Uptime" xml:space="preserve">
     <value>Uptime</value>
