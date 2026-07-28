@@ -172,7 +172,10 @@
             {
                 IsLoadingRegions = true;
 
-                var datacenters = await Http.GetJson<List<DatacenterEntry>>(new Uri("https://apis.rovalra.com/v1/datacenters/list"));
+                var datacenters = await Http.GetJson<List<DatacenterEntry>>(
+                    new Uri("https://apis.rovalra.com/v1/datacenters/list"));
+
+                List<string> baseRegions = new List<string>();
 
                 if (datacenters != null && datacenters.Count > 0)
                 {
@@ -193,27 +196,48 @@
                         }
                     }
 
-                    var sortedRegions = regions.OrderBy(r => r).ToList();
-                    sortedRegions.Insert(0, "Auto");
-                    AvailableRegions = sortedRegions;
-                }
-                else
-                {
-                    AvailableRegions = ["Auto"];
+                    baseRegions = regions.OrderBy(r => r).ToList();
                 }
 
-                await SyncSelectedRegionAfterLoad();
+                AvailableRegions = BuildAvailableRegionsWithCurrent(baseRegions);
             }
             catch (Exception ex)
             {
                 App.Logger.WriteException("BehaviourViewModel::LoadAvailableRegions", ex);
-                AvailableRegions = ["Auto"];
-                await SyncSelectedRegionAfterLoad();
+                AvailableRegions = BuildAvailableRegionsWithCurrent(new List<string>());
             }
             finally
             {
                 IsLoadingRegions = false;
             }
+
+            await SyncSelectedRegionAfterLoad();
+        }
+
+        private List<string> BuildAvailableRegionsWithCurrent(IEnumerable<string> baseRegions)
+        {
+            string current = SelectedRegion;
+            var list = new List<string> { "Auto" };
+
+            foreach (var region in baseRegions)
+            {
+                if (!string.Equals(region, "Auto", StringComparison.OrdinalIgnoreCase))
+                    list.Add(region);
+            }
+
+            if (!string.IsNullOrEmpty(current) &&
+                !string.Equals(current, "Auto", StringComparison.OrdinalIgnoreCase))
+            {
+                bool exists = list.Any(r => string.Equals(r?.Trim(), current?.Trim(),
+                    StringComparison.OrdinalIgnoreCase));
+
+                if (!exists)
+                {
+                    list.Add(current);
+                }
+            }
+
+            return list;
         }
 
         private async Task SyncSelectedRegionAfterLoad()
@@ -222,7 +246,8 @@
 
             string current = SelectedRegion;
 
-            var match = AvailableRegions.FirstOrDefault(r => string.Equals(r?.Trim(), current?.Trim(), StringComparison.OrdinalIgnoreCase));
+            var match = AvailableRegions.FirstOrDefault(r =>
+                string.Equals(r?.Trim(), current?.Trim(), StringComparison.OrdinalIgnoreCase));
 
             if (match != null)
             {
