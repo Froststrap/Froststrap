@@ -77,6 +77,8 @@ namespace Froststrap.Models.Persistable
 
         // Deployment Page
         public UpdateCheck UpdateChecks { get; set; } = UpdateCheck.Stable;
+        public bool GameSearch { get; set; } = true;
+        public string? InstallDirectory { get; set; }
         public bool UpdateRoblox { get; set; } = true;
         public bool AutomaticallyUpdateSober { get; set; } = true;
         public string RobloxDomain { get; set; } = RobloxInterfaces.Deployment.DefaultRobloxDomain;
@@ -97,7 +99,6 @@ namespace Froststrap.Models.Persistable
         public Dictionary<string, string> StudioEnvironmentVariables { get; set; } = [];
 
         // Misc Stuff
-        public bool GameSearch { get; set; } = true;
         public bool ForceLocalData { get; set; } = false;
         public bool DebugDisableVersionPackageCleanup { get; set; } = false;
     }

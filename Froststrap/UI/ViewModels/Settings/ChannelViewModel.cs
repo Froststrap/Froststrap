@@ -18,6 +18,8 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             _ = LoadChannelDeployInfo(App.Settings.Prop.PlayerChannel, false);
             _ = LoadChannelDeployInfo(App.Settings.Prop.StudioChannel, true);
+            BrowseInstallDirectoryCommand = new AsyncRelayCommand<object?>(BrowseInstallDirectoryAsync);
+            MoveInstallDirectoryCommand = new AsyncRelayCommand<object?>(MoveInstallDirectoryAsync);
         }
 
         public static IEnumerable<UpdateCheck> UpdateCheckValues => Enum.GetValues<UpdateCheck>();
@@ -43,6 +45,17 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
+        // TODO: Instead of setting, read directly from registry
+        public string InstallDirectory
+        {
+            get => App.Settings.Prop.InstallDirectory ?? Paths.Base;
+            set
+            {
+                App.Settings.Prop.InstallDirectory = value;
+                OnPropertyChanged();
+            }
+        }
+
         private static Window? GetMainWindow()
         {
             if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
@@ -53,6 +66,8 @@ namespace Froststrap.UI.ViewModels.Settings
         public ICommand ImportSettingsCommand => new AsyncRelayCommand<object?>(ImportSettingsAsync);
         public ICommand ExportSettingsCommand => new AsyncRelayCommand<object?>(ExportSettingsAsync);
         public ICommand ResetSettingsToDefaultCommand => new RelayCommand(ResetSettingsToDefault);
+        public IAsyncRelayCommand BrowseInstallDirectoryCommand { get; }
+        public IAsyncRelayCommand MoveInstallDirectoryCommand { get; }
 
         public bool PreReleaseUpdatesEnabled
         {
@@ -563,6 +578,77 @@ namespace Froststrap.UI.ViewModels.Settings
                 if (!token.IsCancellationRequested)
                     SetHashValidationState(StudioHashValidationState.Invalid, $"Network error: {ex.Message}");
             }
+        }
+
+        private async Task BrowseInstallDirectoryAsync(object? parameter)
+        {
+            var topLevel = GetTopLevel(parameter);
+            if (topLevel == null) return;
+
+            var folders = await topLevel.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions
+            {
+                Title = "Select New Installation Directory"
+            });
+            if (folders.Count > 0)
+            {
+                var path = folders[0].TryGetLocalPath();
+                if (!string.IsNullOrEmpty(path))
+                    InstallDirectory = path;
+            }
+        }
+
+        // TODO: fix the app freezing when doing this by doing it on a diffrent thread maybe ? too lazy to do it rn and i dont wanna touch this
+        private async Task MoveInstallDirectoryAsync(object? parameter)
+        {
+            string newDir = InstallDirectory;
+            string currentDir = Paths.Base;
+
+            if (string.Equals(newDir, currentDir, StringComparison.OrdinalIgnoreCase))
+            {
+                await Frontend.ShowMessageBox("The new directory is the same as the current installation.", MessageBoxImage.Information);
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(newDir))
+            {
+                await Frontend.ShowMessageBox("Please specify a valid directory.", MessageBoxImage.Warning);
+                return;
+            }
+
+            // TODO: Add translations here and in ui
+            var confirm = await Frontend.ShowMessageBox(
+                $"Move Froststrap from '{currentDir}' to '{newDir}'?\n\nAll files will be moved, shortcuts updated, and the application will restart.",
+                MessageBoxImage.Question,
+                MessageBoxButton.YesNo);
+            if (confirm != MessageBoxResult.Yes) return;
+
+            try
+            {
+                App.Settings.Prop.InstallDirectory = newDir;
+                App.Settings.Save();
+                App.State.Save();
+                App.FastFlags.Save();
+                App.GlobalSettings.Save();
+                App.AppStorage.Save();
+                if (OperatingSystem.IsLinux())
+                    App.SoberSettings.Save();
+
+                await Installer.MoveInstallation(newDir);
+            }
+            catch (Exception ex)
+            {
+                await Frontend.ShowMessageBox($"Move failed: {ex.Message}", MessageBoxImage.Error);
+                App.Logger.WriteException("MoveInstallDirectory", ex);
+            }
+        }
+
+        private static TopLevel? GetTopLevel(object? parameter)
+        {
+            if (parameter is Control control)
+                return TopLevel.GetTopLevel(control);
+            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+                return desktop.MainWindow;
+            return null;
         }
     }
 }
