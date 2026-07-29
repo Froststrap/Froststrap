@@ -18,20 +18,35 @@ namespace Froststrap.UI.ViewModels.Onboarding
             InitializeGradientStops();
         }
 
-        public static IEnumerable<WindowsBackdrops> BackdropOptions => Enum.GetValues<WindowsBackdrops>();
+        public static IEnumerable<WindowsBackdrops> BackdropOptions => Enum.GetValues<WindowsBackdrops>().Where(IsBackdropSupported);
 
         public WindowsBackdrops SelectedBackdrop
         {
             get => App.Settings.Prop.SelectedBackdrop;
             set
             {
-                if (App.Settings.Prop.SelectedBackdrop != value)
+                var newValue = IsBackdropSupported(value) ? value : WindowsBackdrops.None;
+                if (App.Settings.Prop.SelectedBackdrop != newValue)
                 {
-                    App.Settings.Prop.SelectedBackdrop = value;
+                    App.Settings.Prop.SelectedBackdrop = newValue;
                     OnPropertyChanged(nameof(SelectedBackdrop));
                     AvaloniaWindow.UpdateBackdropForAllWindows();
                 }
             }
+        }
+
+        private static bool IsBackdropSupported(WindowsBackdrops backdrop)
+        {
+            if (!OperatingSystem.IsWindows())
+                return backdrop == WindowsBackdrops.None;
+
+            return backdrop switch
+            {
+                WindowsBackdrops.Mica => OperatingSystem.IsWindowsVersionAtLeast(10, 0, 22000),
+                WindowsBackdrops.Acrylic => OperatingSystem.IsWindowsVersionAtLeast(10, 0, 17763),
+                WindowsBackdrops.Aero => OperatingSystem.IsWindowsVersionAtLeast(10, 0, 10240),
+                _ => true
+            };
         }
 
         public IEnumerable<Theme> Themes { get; } = Enum.GetValues<Theme>();
