@@ -2283,8 +2283,10 @@ exit";
             long totalSizeRequired = 0;
 
             // packed size only matters if we don't already have the package cached on disk
-            totalSizeRequired += _versionPackageManifest.Where(x => !cachedPackageHashes.Contains(x.Signature)).Sum(x => (long)x.PackedSize);
-            totalSizeRequired += _versionPackageManifest.Sum(x => (long)x.Size);
+            var installPackages = _versionPackageManifest.Where(p => p.Name != "RobloxPlayerInstaller.exe").ToList();
+
+            totalSizeRequired += installPackages.Where(x => !cachedPackageHashes.Contains(x.Signature)).Sum(x => (long)x.PackedSize);
+            totalSizeRequired += installPackages.Sum(x => (long)x.Size);
 
             if (Filesystem.GetFreeDiskSpace(Paths.Base) < totalSizeRequired)
             {
@@ -2301,7 +2303,7 @@ exit";
                 Dialog.ProgressMaximum = ProgressBarMaximum;
 
                 // compute total bytes to download
-                _totalPackagedBytes = _versionPackageManifest.Sum(package => package.PackedSize);
+                _totalPackagedBytes = _versionPackageManifest.Where(p => p.Name != "RobloxPlayerInstaller.exe").Sum(package => package.PackedSize);
                 _progressIncrement = (double)ProgressBarMaximum / _totalPackagedBytes;
 
                 _taskbarProgressMaximum = TaskbarProgressMaximum;
@@ -2458,7 +2460,7 @@ exit";
 
             App.Logger.WriteLine(LOG_IDENT, "Registering approximate program size...");
 
-            int distributionSize = _versionPackageManifest.Sum(x => x.Size + x.PackedSize) / 1024;
+            int distributionSize = _versionPackageManifest.Where(x => x.Name != "RobloxPlayerInstaller.exe").Sum(x => x.Size + x.PackedSize) / 1024;
 
             AppData.DistributionState.Size = distributionSize;
 
