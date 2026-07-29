@@ -211,7 +211,7 @@ namespace Froststrap.UI.ViewModels.Settings
                     new() { Content = Strings.Menu_PresetMods_Title, Tag = "mods" },
                     new() { Content = Strings.Menu_Mods_Title, Tag = null, IsLast = true }
                 ];
-                Navigate("custommods", Strings.Menu_Mods_Title, Strings.Menu_Mods_Description, new ModsViewModel(), crumbs);
+                Navigate("custommods", Strings.Menu_Mods_Title, Strings.Menu_Mods_InfoBar, new ModsViewModel(), crumbs);
             });
 
             var lastPageName = App.State.Prop.LastPage;
