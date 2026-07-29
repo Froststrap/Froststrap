@@ -751,14 +751,13 @@ namespace Froststrap.Integrations
             }
         }
 
-        public static async Task<bool> ValidateAccountAsync(AccountManagerAccount account)
+        public static async Task<bool?> ValidateAccountAsync(AccountManagerAccount account)
         {
             const string LOG_IDENT_VALIDATE = $"{LOG_IDENT}::ValidateAccount";
 
             try
             {
                 string decryptedCookie = Unprotect(account.SecurityToken);
-
                 if (string.IsNullOrEmpty(decryptedCookie))
                 {
                     App.Logger.WriteLine(LOG_IDENT_VALIDATE, $"Account {account.Username}: No valid cookie found");
@@ -771,15 +770,19 @@ namespace Froststrap.Integrations
                 using var client = new HttpClient(handler);
                 var response = await client.GetAsync(UrlBuilder.BuildApiUrl("users", "v1/users/authenticated", secure: true));
 
-                bool isValid = response.StatusCode == HttpStatusCode.OK;
-                App.Logger.WriteLine(LOG_IDENT_VALIDATE, $"Account {account.Username}: {(isValid ? "Valid" : "Invalid")} (Status: {response.StatusCode})");
+                if (response.StatusCode == HttpStatusCode.OK)
+                    return true;
+                if (response.StatusCode == HttpStatusCode.Unauthorized ||
+                    response.StatusCode == HttpStatusCode.Forbidden)
+                    return false;
 
-                return isValid;
+                App.Logger.WriteLine(LOG_IDENT_VALIDATE, $"Account {account.Username}: Unexpected status {response.StatusCode}");
+                return null;
             }
             catch (Exception ex)
             {
                 App.Logger.WriteException(LOG_IDENT_VALIDATE, ex);
-                return false;
+                return null;
             }
         }
 

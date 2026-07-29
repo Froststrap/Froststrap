@@ -163,9 +163,11 @@ namespace Froststrap.UI.ViewModels.Settings
 
             foreach (var account in _accountManager.Accounts)
             {
-                bool isValid = await AccountManager.ValidateAccountAsync(account);
-                if (!isValid)
+                bool? isValid = await AccountManager.ValidateAccountAsync(account);
+                if (isValid == false)
                     invalidAccounts.Add(account);
+                else if (isValid == null)
+                    App.Logger.WriteLine(LOG_IDENT, $"Could not validate account {account.Username} (network/server issue) – keeping it.");
             }
 
             foreach (var account in invalidAccounts)
@@ -173,7 +175,8 @@ namespace Froststrap.UI.ViewModels.Settings
                 _accountManager.RemoveAccount(account);
                 App.Logger.WriteLine(LOG_IDENT, $"Removed expired/invalid account: {account.Username}");
 
-                await Dispatcher.UIThread.InvokeAsync(() => Frontend.ShowMessageBox(string.Format(Strings.Menu_AccountSelector_AccountRemoved, account.Username)));
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                    Frontend.ShowMessageBox(string.Format(Strings.Menu_AccountSelector_AccountRemoved, account.Username)));
             }
 
             if (invalidAccounts.Count > 0)
