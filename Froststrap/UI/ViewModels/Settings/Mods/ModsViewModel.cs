@@ -272,7 +272,14 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             int index = Modifications.IndexOf(mod);
             if (index > 0)
             {
-                Modifications.Move(index, index - 1);
+                var list = Modifications.ToList();
+                list.RemoveAt(index);
+                list.Insert(index - 1, mod);
+
+                Modifications.Clear();
+                foreach (var item in list)
+                    Modifications.Add(item);
+
                 UpdatePriorities();
                 SelectedMod = mod;
             }
@@ -284,7 +291,14 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             int index = Modifications.IndexOf(mod);
             if (index < Modifications.Count - 1)
             {
-                Modifications.Move(index, index + 1);
+                var list = Modifications.ToList();
+                list.RemoveAt(index);
+                list.Insert(index + 1, mod);
+
+                Modifications.Clear();
+                foreach (var item in list)
+                    Modifications.Add(item);
+
                 UpdatePriorities();
                 SelectedMod = mod;
             }
