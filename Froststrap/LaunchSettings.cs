@@ -177,14 +177,14 @@ namespace Froststrap
                 ParseGameShortcut(GameShortcutFlag.Data);
 
             if (RobloxLaunchMode == LaunchMode.None)
-                InferRobloxLaunchFromAnyArgument();
+                TryResolveRobloxUri();
         }
 
-        private void InferRobloxLaunchFromAnyArgument()
+        public bool TryResolveRobloxUri(IEnumerable<string>? args = null)
         {
-            const string LOG_IDENT = "LaunchSettings::InferRobloxLaunchFromAnyArgument";
+            const string LOG_IDENT = "LaunchSettings::TryResolveRobloxUri";
 
-            foreach (string arg in Args)
+            foreach (string arg in args ?? Args)
             {
                 if (arg.StartsWith("roblox:", StringComparison.OrdinalIgnoreCase)
                     || arg.StartsWith("roblox-player:", StringComparison.OrdinalIgnoreCase))
@@ -192,23 +192,25 @@ namespace Froststrap
                     App.Logger.WriteLine(LOG_IDENT, "Found Roblox player URI outside first argument");
                     RobloxLaunchMode = LaunchMode.Player;
                     RobloxLaunchArgs = arg;
-                    return;
+                    return true;
                 }
                 else if (arg.StartsWith("roblox-studio-auth:", StringComparison.OrdinalIgnoreCase))
                 {
                     App.Logger.WriteLine(LOG_IDENT, "Found Roblox Studio Auth URI outside first argument");
                     RobloxLaunchMode = LaunchMode.StudioAuth;
                     RobloxLaunchArgs = arg;
-                    return;
+                    return true;
                 }
                 else if (arg.StartsWith("roblox-studio:", StringComparison.OrdinalIgnoreCase))
                 {
                     App.Logger.WriteLine(LOG_IDENT, "Found Roblox Studio URI outside first argument");
                     RobloxLaunchMode = LaunchMode.Studio;
                     RobloxLaunchArgs = arg;
-                    return;
+                    return true;
                 }
             }
+
+            return false;
         }
 
         private static bool ShouldSkipHostArgument(string arg, string? entryAssemblyPath)
