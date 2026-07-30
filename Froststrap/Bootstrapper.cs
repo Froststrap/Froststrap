@@ -232,7 +232,7 @@ namespace Froststrap
         private void UpdateProgressBar(bool updateStatus = true)
         {
             long current = Interlocked.Read(ref _totalDownloadedBytes);
-            if (Dialog is null) 
+            if (Dialog is null)
                 return;
 
             if (updateStatus)
@@ -964,93 +964,6 @@ namespace Froststrap
             return null;
         }
 
-        private static async Task ApplyFastFlagsBasedOnPlaceId(long placeId, string contentDirectory)
-        {
-            const string LOG_IDENT = "Bootstrapper::ApplyFastFlagsBasedOnPlaceId";
-
-            if (placeId <= 0)
-            {
-                App.Logger.WriteLine(LOG_IDENT, "Invalid place ID, skipping FastFlag application.");
-                return;
-            }
-
-            if (!App.Settings.Prop.UseFastFlagManager)
-            {
-                App.Logger.WriteLine(LOG_IDENT, "FastFlag manager is disabled in settings.");
-                return;
-            }
-
-            App.Logger.WriteLine(LOG_IDENT, $"Checking for FastFlag profile matching place ID: {placeId}");
-
-            foreach (var kvp in App.Settings.Prop.ProfilePlaceIds)
-            {
-                string profileName = kvp.Key;
-                List<string> placeIds = kvp.Value;
-
-                if (placeIds.Contains(placeId.ToString()))
-                {
-                    App.Logger.WriteLine(LOG_IDENT, $"Found matching profile '{profileName}' for place ID {placeId}");
-
-                    try
-                    {
-                        string profilesDirectory = Paths.SavedFlagProfiles;
-                        string profilePath = Path.Combine(profilesDirectory, profileName);
-
-                        if (!File.Exists(profilePath))
-                        {
-                            App.Logger.WriteLine(LOG_IDENT, $"Profile file '{profileName}' not found at {profilePath}");
-                            return;
-                        }
-
-                        string profileJson = File.ReadAllText(profilePath);
-                        var flags = JsonSerializer.Deserialize<Dictionary<string, object>>(profileJson);
-
-                        if (flags == null || flags.Count == 0)
-                        {
-                            App.Logger.WriteLine(LOG_IDENT, $"Profile '{profileName}' is empty or invalid");
-                            return;
-                        }
-
-                        string clientSettingsDir = Path.Combine(contentDirectory, "ClientSettings");
-                        Directory.CreateDirectory(clientSettingsDir);
-                        string destPath = Path.Combine(clientSettingsDir, "ClientAppSettings.json");
-
-                        Dictionary<string, object> existingSettings = [];
-                        if (File.Exists(destPath))
-                        {
-                            try
-                            {
-                                string existingJson = File.ReadAllText(destPath);
-                                existingSettings = JsonSerializer.Deserialize<Dictionary<string, object>>(existingJson) ?? [];
-                            }
-                            catch (Exception ex)
-                            {
-                                App.Logger.WriteLine(LOG_IDENT, $"Failed to read existing ClientAppSettings.json: {ex.Message}");
-                            }
-                        }
-
-                        foreach (var flag in flags)
-                        {
-                            existingSettings[flag.Key] = flag.Value;
-                        }
-
-                        string mergedJson = JsonSerializer.Serialize(existingSettings, _indentedJsonOptions);
-                        await File.WriteAllTextAsync(destPath, mergedJson);
-
-                        App.Logger.WriteLine(LOG_IDENT, $"Successfully applied FastFlag profile '{profileName}' for place ID {placeId} ({flags.Count} flags)");
-                        App.Logger.WriteLine(LOG_IDENT, $"Updated versions folder: {destPath}");
-                        return;
-                    }
-                    catch (Exception ex)
-                    {
-                        App.Logger.WriteLine(LOG_IDENT, $"Failed to apply FastFlag profile '{profileName}': {ex.Message}");
-                    }
-                }
-            }
-
-            App.Logger.WriteLine(LOG_IDENT, $"No FastFlag profile found for place ID {placeId}");
-        }
-
         private async Task StartRoblox()
         {
             const string LOG_IDENT = "Bootstrapper::StartRoblox";
@@ -1065,14 +978,6 @@ namespace Froststrap
                 App.Logger.WriteLine(LOG_IDENT, $"Place ID: {_joinData.PlaceId?.ToString() ?? "null"}");
                 App.Logger.WriteLine(LOG_IDENT, $"Job ID: {_joinData.JobId ?? "null"}");
                 App.Logger.WriteLine(LOG_IDENT, $"Access Code: {_joinData.AccessCode ?? "null"}");
-
-                if (_joinData.PlaceId.HasValue && _joinData.PlaceId.Value > 0)
-                {
-                    string contentDirectory = OperatingSystem.IsMacOS()
-                        ? Path.Combine(_latestVersionDirectory, AppData.ExecutableName, "Contents", "Resources")
-                        : _latestVersionDirectory;
-                    await ApplyFastFlagsBasedOnPlaceId(_joinData.PlaceId.Value, contentDirectory);
-                }
 
                 bool isRobloxUri = _launchCommandLine.StartsWith("roblox://", StringComparison.Ordinal);
                 if (isRobloxUri)
@@ -1285,14 +1190,6 @@ namespace Froststrap
             App.Logger.WriteLine(LOG_IDENT, $"Place ID: {_joinData.PlaceId?.ToString() ?? "null"}");
             App.Logger.WriteLine(LOG_IDENT, $"Job ID: {_joinData.JobId ?? "null"}");
             App.Logger.WriteLine(LOG_IDENT, $"Access Code: {_joinData.AccessCode ?? "null"}");
-
-            if (_joinData.PlaceId.HasValue && _joinData.PlaceId.Value > 0)
-            {
-                string contentDirectory = OperatingSystem.IsMacOS()
-                    ? Path.Combine(_latestVersionDirectory, AppData.ExecutableName, "Contents", "Resources")
-                    : _latestVersionDirectory;
-                await ApplyFastFlagsBasedOnPlaceId(_joinData.PlaceId.Value, contentDirectory);
-            }
 
             bool isRobloxUri = _launchCommandLine.StartsWith("roblox://", StringComparison.Ordinal);
             if (isRobloxUri)
@@ -3764,7 +3661,57 @@ exit";
             var fileResults = await Task.WhenAll(fileTasks);
             success = success && fileResults.All(r => r);
 
-            if (!App.Settings.Prop.UseFastFlagManager)
+            if (App.Settings.Prop.UseFastFlagManager)
+            {
+                bool profileApplied = false;
+                string source = Path.Combine(Paths.Modifications, "ClientSettings", "ClientAppSettings.json");
+                string rel = Path.Combine("ClientSettings", "ClientAppSettings.json");
+                string dest = Path.Combine(contentDirectory, rel);
+
+                if (_joinData.PlaceId.HasValue && _joinData.PlaceId.Value > 0)
+                {
+                    profileApplied = await ApplyFastFlagsBasedOnPlaceId(
+                        _joinData.PlaceId.Value,
+                        contentDirectory);
+
+                    if (profileApplied && File.Exists(dest))
+                    {
+                        var destInfo = new FileInfo(dest);
+                        lock (currentModManifest)
+                            currentModManifest[rel] = new ModFileEntry { Size = destInfo.Length, LastModified = destInfo.LastWriteTime };
+                        App.Logger.WriteLine(LOG_IDENT, "Profile FastFlag file added to manifest.");
+                    }
+                }
+
+                if (!profileApplied)
+                {
+                    if (!OperatingSystem.IsLinux() || IsStudioLaunch)
+                    {
+                        if (File.Exists(source))
+                        {
+                            var info = new FileInfo(source);
+
+                            lock (currentModManifest)
+                                currentModManifest[rel] = new ModFileEntry { Size = info.Length, LastModified = info.LastWriteTime };
+
+                            try
+                            {
+                                bool match = File.Exists(dest) &&
+                                    (await Task.Run(() => MD5Hash.FromFile(source)) == await Task.Run(() => MD5Hash.FromFile(dest)));
+                                if (!match)
+                                {
+                                    Directory.CreateDirectory(Path.GetDirectoryName(dest)!);
+                                    File.Copy(source, dest, true);
+                                    File.SetLastWriteTime(dest, info.LastWriteTime);
+                                    App.Logger.WriteLine(LOG_IDENT, "FastFlags Applied (normal source).");
+                                }
+                            }
+                            catch (Exception ex) { App.Logger.WriteException(LOG_IDENT, ex); }
+                        }
+                    }
+                }
+            }
+            else
             {
                 string rel = Path.Combine("ClientSettings", "ClientAppSettings.json");
                 string dest = Path.Combine(contentDirectory, rel);
@@ -3781,33 +3728,6 @@ exit";
                     {
                         App.Logger.WriteException(LOG_IDENT, ex);
                     }
-                }
-            }
-            else if (!OperatingSystem.IsLinux() || IsStudioLaunch)
-            {
-                string source = Path.Combine(Paths.Modifications, "ClientSettings", "ClientAppSettings.json");
-                if (File.Exists(source))
-                {
-                    string rel = Path.Combine("ClientSettings", "ClientAppSettings.json");
-                    string dest = Path.Combine(contentDirectory, rel);
-                    var info = new FileInfo(source);
-
-                    lock (currentModManifest)
-                        currentModManifest[rel] = new ModFileEntry { Size = info.Length, LastModified = info.LastWriteTime };
-
-                    try
-                    {
-                        bool match = File.Exists(dest) &&
-                            (await Task.Run(() => MD5Hash.FromFile(source)) == await Task.Run(() => MD5Hash.FromFile(dest)));
-                        if (!match)
-                        {
-                            Directory.CreateDirectory(Path.GetDirectoryName(dest)!);
-                            File.Copy(source, dest, true);
-                            File.SetLastWriteTime(dest, info.LastWriteTime);
-                            App.Logger.WriteLine(LOG_IDENT, "FastFlags Applied.");
-                        }
-                    }
-                    catch (Exception ex) { App.Logger.WriteException(LOG_IDENT, ex); }
                 }
             }
 
@@ -3896,6 +3816,63 @@ exit";
 
             App.Logger.WriteLine(LOG_IDENT, "Finished checking file mods");
             return success;
+        }
+
+        private static async Task<bool> ApplyFastFlagsBasedOnPlaceId(long placeId, string contentDirectory)
+        {
+            const string LOG_IDENT = "Bootstrapper::ApplyFastFlagsBasedOnPlaceId";
+
+            if (placeId <= 0 || !App.Settings.Prop.UseFastFlagManager)
+                return false;
+
+            App.Logger.WriteLine(LOG_IDENT, $"Checking for FastFlag profile matching place ID: {placeId}");
+
+            foreach (var kvp in App.Settings.Prop.ProfilePlaceIds)
+            {
+                string profileName = kvp.Key;
+                List<string> placeIds = kvp.Value;
+
+                if (placeIds.Contains(placeId.ToString()))
+                {
+                    App.Logger.WriteLine(LOG_IDENT, $"Found matching profile '{profileName}' for place ID {placeId}");
+
+                    try
+                    {
+                        string profilePath = Path.Combine(Paths.SavedFlagProfiles, profileName);
+
+                        if (!File.Exists(profilePath))
+                        {
+                            App.Logger.WriteLine(LOG_IDENT, $"Profile file '{profileName}' not found at {profilePath}");
+                            return false;
+                        }
+
+                        string profileJson = await File.ReadAllTextAsync(profilePath);
+                        var flags = JsonSerializer.Deserialize<Dictionary<string, object>>(profileJson);
+
+                        if (flags == null || flags.Count == 0)
+                        {
+                            App.Logger.WriteLine(LOG_IDENT, $"Profile '{profileName}' is empty or invalid");
+                            return false;
+                        }
+
+                        Directory.CreateDirectory(Path.Combine(contentDirectory, "ClientSettings"));
+                        string destPath = Path.Combine(contentDirectory, "ClientSettings", "ClientAppSettings.json");
+
+                        await File.WriteAllTextAsync(destPath, profileJson);
+
+                        App.Logger.WriteLine(LOG_IDENT, $"Successfully applied FastFlag profile '{profileName}' for place ID {placeId} ({flags.Count} flags)");
+                        return true;
+                    }
+                    catch (Exception ex)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"Failed to apply FastFlag profile '{profileName}': {ex.Message}");
+                        return false;
+                    }
+                }
+            }
+
+            App.Logger.WriteLine(LOG_IDENT, $"No FastFlag profile found for place ID {placeId}");
+            return false;
         }
 
         private static string GetResourcesBackupPath(string versionGuid)
