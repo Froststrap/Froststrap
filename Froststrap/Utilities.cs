@@ -228,7 +228,8 @@ namespace Froststrap
             }
         }
 
-        public static bool DoesMutexExist(string name)
+        // We using InterProcessLocks now
+        /*public static bool DoesMutexExist(string name)
         {
             try
             {
@@ -243,7 +244,7 @@ namespace Froststrap
             {
                 return false;
             }
-        }
+        }*/
 
         public static bool IsRobloxRunning()
         {
