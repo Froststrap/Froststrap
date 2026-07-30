@@ -39,9 +39,10 @@
                     <Style Selector="TabItem">
                         <Setter Property="HorizontalAlignment" Value="Stretch" />
                         <Setter Property="HorizontalContentAlignment" Value="Center" />
+                        <Setter Property="FontSize" Value="20" />
                     </Style>
                 </TabControl.Styles>
-				
+
                 <TabItem Header="{x:Static resources:Strings.Common_CreateNew}">
                     <StackPanel Spacing="12" Margin="0,0,0,24">
                         <Separator Margin="-12,8" />
