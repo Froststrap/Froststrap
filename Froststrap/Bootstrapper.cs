@@ -103,7 +103,7 @@ namespace Froststrap
         private string _latestVersionGuid = null!;
         private string _latestVersionDirectory = null!;
         private PackageManifest _versionPackageManifest = null!;
-        private GameJoinData _joinData = null!;
+        private readonly GameJoinData _joinData = null!;
 
         private static bool AutomaticallyUpdateSober => OperatingSystem.IsLinux() && App.Settings.Prop.AutomaticallyUpdateSober;
         private bool MustUpgrade => App.LaunchSettings.ForceFlag.Active
@@ -218,7 +218,7 @@ namespace Froststrap
         private static string FormatBytes(long bytes)
         {
             // How funny would it be if i just kept going up to quettabytes lol
-            string[] sizes = { "B", "KB", "MB", "GB" };
+            string[] sizes = [ "B", "KB", "MB", "GB" ];
             double len = bytes;
             int order = 0;
             while (len >= 1024 && order < sizes.Length - 1)
@@ -641,14 +641,45 @@ namespace Froststrap
                 }
             }
 
-            if (IsStudioLaunch
-                && App.Settings.Prop.StudioVersionOverrideEnabled
-                && !string.IsNullOrEmpty(App.Settings.Prop.StudioVersionOverrideHash))
+            bool overrideUsed = false;
+
+            if (IsStudioLaunch && App.Settings.Prop.StudioVersionOverrideEnabled && !string.IsNullOrEmpty(App.Settings.Prop.StudioVersionOverrideHash))
             {
                 _latestVersionGuid = App.Settings.Prop.StudioVersionOverrideHash.Trim();
                 App.Logger.WriteLine(LOG_IDENT, $"Studio version override active: pinned to {_latestVersionGuid}");
+                overrideUsed = true;
             }
-            else if (!App.LaunchSettings.VersionFlag.Active || string.IsNullOrEmpty(App.LaunchSettings.VersionFlag.Data))
+            else if (!IsStudioLaunch && App.Settings.Prop.PlayerVersionOverrideEnabled && !string.IsNullOrEmpty(App.Settings.Prop.PlayerVersionOverrideHash))
+            {
+                string overrideHash = App.Settings.Prop.PlayerVersionOverrideHash.Trim();
+                var (valid, error) = await UI.ViewModels.Settings.ChannelViewModel.ValidateHashCore(overrideHash, true, AppData.BinaryType);
+
+                if (valid)
+                {
+                    _latestVersionGuid = overrideHash;
+                    App.Logger.WriteLine(LOG_IDENT, $"Player version override active: pinned to {_latestVersionGuid}");
+                    overrideUsed = true;
+                }
+                else
+                {
+                    App.Logger.WriteLine(LOG_IDENT, $"Player version override invalid: {error}. Falling back to channel.");
+
+                    if (!App.LaunchSettings.QuietFlag.Active)
+                    {
+                        await Frontend.ShowMessageBox(
+                            string.Format(Strings.Bootstrapper_Status_InvalidOverride, overrideHash, error),
+                            MessageBoxImage.Warning,
+                            MessageBoxButton.OK
+                        );
+                    }
+
+                    App.Settings.Prop.PlayerVersionOverrideEnabled = false;
+                    App.Settings.Prop.PlayerVersionOverrideHash = string.Empty;
+                    App.Settings.Save();
+                }
+            }
+
+            if (!overrideUsed && (!App.LaunchSettings.VersionFlag.Active || string.IsNullOrEmpty(App.LaunchSettings.VersionFlag.Data)))
             {
                 ClientVersion clientVersion;
 
@@ -716,11 +747,21 @@ namespace Froststrap
                 _latestVersionGuid = clientVersion.VersionGuid;
                 _latestVersion = Utilities.ParseVersionSafe(clientVersion.Version);
             }
-            else
+            else if (!overrideUsed)
             {
-                App.Logger.WriteLine(LOG_IDENT, $"Version set to {App.LaunchSettings.VersionFlag.Data} from arguments");
-                _latestVersionGuid = App.LaunchSettings.VersionFlag.Data;
-                // we can't determine the version
+                string? versionData = App.LaunchSettings.VersionFlag.Data;
+                if (string.IsNullOrEmpty(versionData))
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "VersionFlag.Data was unexpectedly null or empty. Falling back to default channel.");
+                    var fallbackInfo = await Deployment.GetInfo(Deployment.DefaultChannel, false, false, AppData.BinaryType);
+                    _latestVersionGuid = fallbackInfo.VersionGuid;
+                    _latestVersion = Utilities.ParseVersionSafe(fallbackInfo.Version);
+                }
+                else
+                {
+                    App.Logger.WriteLine(LOG_IDENT, $"Version set to {versionData} from arguments");
+                    _latestVersionGuid = versionData;
+                }
             }
 
             if (App.Settings.Prop.StaticDirectory)

@@ -66,6 +66,7 @@
                 </controls:OptionControl>
             </controls:CardExpander>
 
+            <!-- TODO: add strings -->
             <controls:OptionControl
                 Header="Installation Directory"
                 Description="Change where Froststrap is installed. All files will be moved to the new location.">
@@ -128,6 +129,67 @@
                 <ToggleSwitch IsChecked="{Binding UpdateRoblox, Mode=TwoWay}" />
             </controls:OptionControl>
 
+            <controls:CardExpander
+                Header="{x:Static resources:Strings.Menu_Deployment_PlayerOverrideHash_Title}"
+                Description="{x:Static resources:Strings.Menu_Deployment_PlayerOverrideHash_Description}"
+                IsExpanded="{Binding PlayerVersionOverrideEnabled, Mode=TwoWay}"
+                Classes="NoUserExpansion"
+                IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOS}">
+
+                <controls:CardExpander.HeaderContent>
+                    <ToggleSwitch IsChecked="{Binding PlayerVersionOverrideEnabled, Mode=TwoWay}" />
+                </controls:CardExpander.HeaderContent>
+
+                <controls:OptionControl
+                    Header="{x:Static resources:Strings.Menu_Deployment_VersionHash_Title}"
+                    Description="{x:Static resources:Strings.Menu_Deployment_VersionHash_Description}">
+                    <StackPanel Spacing="6">
+                        <TextBox
+                            Width="280"
+                            Margin="8,0,0,0"
+                            Padding="10,5"
+                            IsEnabled="{Binding PlayerVersionOverrideEnabled}"
+                            PlaceholderText="version-xxxxxxxxxxxxxxxx"
+                            Text="{Binding PlayerVersionOverrideHash, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                        <StackPanel
+                            Orientation="Horizontal"
+                            Margin="8,0,0,0"
+                            IsVisible="{Binding !IsPlayerHashIdle}">
+
+                            <ui:FAProgressRing
+                                Width="18"
+                                Height="18"
+                                Margin="0,0,8,0"
+                                IsIndeterminate="True"
+                                IsVisible="{Binding IsPlayerHashChecking}" />
+
+                            <Image
+                                Source="avares://Froststrap/Resources/MessageBox/Information.png"
+                                Width="18"
+                                Height="18"
+                                Margin="0,0,8,0"
+                                RenderOptions.BitmapInterpolationMode="HighQuality"
+                                IsVisible="{Binding IsPlayerHashValid}" />
+
+                            <Image
+                                Source="avares://Froststrap/Resources/MessageBox/Error.png"
+                                Width="18"
+                                Height="18"
+                                Margin="0,0,8,0"
+                                RenderOptions.BitmapInterpolationMode="HighQuality"
+                                IsVisible="{Binding IsPlayerHashInvalid}" />
+
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                TextWrapping="Wrap"
+                                Text="{Binding PlayerHashValidationMessage}"
+                                Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                        </StackPanel>
+                    </StackPanel>
+                </controls:OptionControl>
+            </controls:CardExpander>
+
             <controls:OptionControl Header="{x:Static resources:Strings.Menu_Deployment_MultiThread_Title}"
                                     Description="{x:Static resources:Strings.Menu_Deployment_MultiThread_Description}">
                 <TextBox
@@ -153,6 +215,7 @@
                         Width="172"
                         Margin="8,0,0,0"
                         Padding="10,5"
+                        IsEnabled="{Binding !PlayerVersionOverrideEnabled}"
                         Text="{Binding PlayerChannel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 </controls:CardExpander.HeaderContent>
 
@@ -269,8 +332,7 @@
                 Classes="NoUserExpansion">
 
                 <controls:CardExpander.HeaderContent>
-                    <ToggleSwitch
-                        IsChecked="{Binding StudioVersionOverrideEnabled, Mode=TwoWay}"/>
+                    <ToggleSwitch IsChecked="{Binding StudioVersionOverrideEnabled, Mode=TwoWay}" />
                 </controls:CardExpander.HeaderContent>
 
                 <controls:OptionControl
@@ -288,14 +350,14 @@
                         <StackPanel
                             Orientation="Horizontal"
                             Margin="8,0,0,0"
-                            IsVisible="{Binding !IsHashIdle}">
+                            IsVisible="{Binding !IsStudioHashIdle}">
 
                             <ui:FAProgressRing
                                 Width="18"
                                 Height="18"
                                 Margin="0,0,8,0"
                                 IsIndeterminate="True"
-                                IsVisible="{Binding IsHashChecking}" />
+                                IsVisible="{Binding IsStudioHashChecking}" />
 
                             <Image
                                 Source="avares://Froststrap/Resources/MessageBox/Information.png"
@@ -303,7 +365,7 @@
                                 Height="18"
                                 Margin="0,0,8,0"
                                 RenderOptions.BitmapInterpolationMode="HighQuality"
-                                IsVisible="{Binding IsHashValid}" />
+                                IsVisible="{Binding IsStudioHashValid}" />
 
                             <Image
                                 Source="avares://Froststrap/Resources/MessageBox/Error.png"
@@ -311,18 +373,16 @@
                                 Height="18"
                                 Margin="0,0,8,0"
                                 RenderOptions.BitmapInterpolationMode="HighQuality"
-                                IsVisible="{Binding IsHashInvalid}" />
+                                IsVisible="{Binding IsStudioHashInvalid}" />
 
                             <TextBlock
                                 VerticalAlignment="Center"
                                 TextWrapping="Wrap"
-                                Text="{Binding HashValidationMessage}"
+                                Text="{Binding StudioHashValidationMessage}"
                                 Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
-
                         </StackPanel>
                     </StackPanel>
                 </controls:OptionControl>
-
             </controls:CardExpander>
 
             <controls:CardExpander
@@ -335,7 +395,7 @@
                         Width="172"
                         Margin="8,0,0,0"
                         Padding="10,5"
-                        IsEnabled="{Binding !StudioVersionOverrideEnabled, Mode=TwoWay}"
+                        IsEnabled="{Binding !StudioVersionOverrideEnabled}"
                         Text="{Binding StudioChannel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 </controls:CardExpander.HeaderContent>
 
