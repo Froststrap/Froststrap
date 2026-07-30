@@ -1,57 +1,59 @@
-﻿using System.Runtime.InteropServices;
-
-namespace Froststrap.Utility
+﻿namespace Froststrap.Utility
 {
     public class InterProcessLock : IDisposable
     {
-        private readonly string _lockName;
-        private readonly Mutex? _windowsMutex;
-        private readonly FileStream? _unixLockFile;
-
+        private readonly string _lockFilePath;
+        private readonly FileStream? _lockFileStream;
         public bool IsAcquired { get; private set; }
 
         public InterProcessLock(string name) : this(name, TimeSpan.Zero) { }
 
         public InterProcessLock(string name, TimeSpan timeout)
         {
-            _lockName = "Froststrap-" + name;
+            string baseDir = Paths.Base;
+            if (string.IsNullOrEmpty(baseDir))
+                baseDir = Path.GetTempPath();
 
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            string lockDir = Path.Combine(baseDir, "Locks");
+            try
             {
-                _windowsMutex = new Mutex(false, _lockName);
-                try
-                {
-                    IsAcquired = _windowsMutex.WaitOne(timeout);
-                }
-                catch (AbandonedMutexException)
-                {
-                    IsAcquired = true;
-                }
+                Directory.CreateDirectory(lockDir);
             }
-            else
+            catch
             {
-                // Use file-based locking on macOS/Linux
+                lockDir = Path.Combine(Path.GetTempPath(), "FroststrapLocks");
+                Directory.CreateDirectory(lockDir);
+            }
+
+            _lockFilePath = Path.Combine(lockDir, $"Froststrap-{name}.lock");
+
+            DateTime start = DateTime.UtcNow;
+            while (true)
+            {
                 try
                 {
-                    string lockDir = Paths.Base;;
-                    Directory.CreateDirectory(lockDir);
-
-                    string lockFile = Path.Combine(lockDir, $"{_lockName}.lock");
-
-                    // Try to open with exclusive access
-                    _unixLockFile = File.Open(
-                        lockFile,
+                    _lockFileStream = File.Open(
+                        _lockFilePath,
                         FileMode.Create,
                         FileAccess.ReadWrite,
                         FileShare.None
                     );
-
                     IsAcquired = true;
+                    break;
+                }
+                catch (IOException) when (timeout > TimeSpan.Zero)
+                {
+                    if (DateTime.UtcNow - start >= timeout)
+                        break;
+                    Thread.Sleep(50);
                 }
                 catch (IOException)
                 {
-                    // Lock file is already in use
-                    IsAcquired = false;
+                    break;
+                }
+                catch
+                {
+                    break;
                 }
             }
         }
@@ -60,18 +62,9 @@ namespace Froststrap.Utility
         {
             if (IsAcquired)
             {
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                {
-                    _windowsMutex?.ReleaseMutex();
-                }
-                else
-                {
-                    _unixLockFile?.Dispose();
-                }
-
+                _lockFileStream?.Dispose();
                 IsAcquired = false;
             }
-
             GC.SuppressFinalize(this);
         }
     }

@@ -136,45 +136,42 @@ namespace Froststrap
         {
             const string LOG_IDENT = "LaunchHandler::LaunchSettings";
 
-            using var interlock = new InterProcessLock("Settings");
+            var interlock = new InterProcessLock("Settings");
 
-            if (interlock.IsAcquired)
+            if (!interlock.IsAcquired)
             {
-                bool showAlreadyRunningWarning = Process.GetProcessesByName(App.ProjectName).Length > 1;
-
-                // before we open the window, force load the distribution states
-                // some menu viewmodels require the distribution states, which will result in a short freeze once the page is opened
-                if (!App.PlayerState.Loaded)
-                    _ = App.PlayerState.Load();
-                if (!App.StudioState.Loaded)
-                    _ = App.StudioState.Load();
-
-                if (App.Settings.Prop.ShowUsingFroststrapRPC && App.FrostRPC == null)
-                {
-                    App.FrostRPC = new FroststrapRichPresence();
-                }
-
-                var window = new UI.Elements.Settings.MainWindow(showAlreadyRunningWarning);
-
-                App.FrostRPC?.SetPage("Settings");
-
-                window.Closed += (s, e) =>
-                {
-                    App.FrostRPC?.Dispose();
-                    App.FrostRPC = null;
-                };
-
-                window.Show();
-            }
-            else
-            {
+                interlock.Dispose();
                 App.Logger.WriteLine(LOG_IDENT, "Found an already existing menu window");
 
                 using var activateEvent = new EventWaitHandle(false, EventResetMode.AutoReset, "Froststrap-ActivateSettingsEvent");
                 activateEvent.Set();
 
                 App.Terminate();
+                return;
             }
+
+            if (!App.PlayerState.Loaded)
+                _ = App.PlayerState.Load();
+            if (!App.StudioState.Loaded)
+                _ = App.StudioState.Load();
+
+            if (App.Settings.Prop.ShowUsingFroststrapRPC && App.FrostRPC == null)
+            {
+                App.FrostRPC = new FroststrapRichPresence();
+            }
+
+            var window = new UI.Elements.Settings.MainWindow(false);
+            App.FrostRPC?.SetPage("Settings");
+
+            window.Closed += (s, e) =>
+            {
+                interlock.Dispose();
+                App.FrostRPC?.Dispose();
+                App.FrostRPC = null;
+                App.Terminate();
+            };
+
+            window.Show();
         }
 
         public static void LaunchMenu()
@@ -365,7 +362,7 @@ namespace Froststrap
             App.Logger.WriteLine(LOG_IDENT, "Initializing bootstrapper");
             App.Bootstrapper = new Bootstrapper(LaunchMode.Player)
             {
-                MutexName = "Froststrap-BackgroundUpdater",
+                MutexName = Bootstrapper.BackgroundUpdaterMutexName,
                 QuitIfMutexExists = true
             };
 

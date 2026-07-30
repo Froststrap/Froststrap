@@ -109,23 +109,28 @@
         <Border Grid.Row="2"
                 Padding="15"
                 Background="{DynamicResource ControlFillColorDefaultBrush}">
-            <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto" ColumnSpacing="12">
+            <Grid ColumnDefinitions="*, Auto" ColumnSpacing="12">
                 <controls:IconButton x:Name="RemovePlaceButton"
+                                     Grid.Column="0"
                                      Classes="Danger"
                                      Icon="Trash2"
-                                     Grid.Column="0"
                                      Content="{x:Static resources:Strings.Menu_FlagProfiles_RemoveSelected}"
                                      Click="RemovePlaceButton_Click"
                                      IsEnabled="False"
-                                     HorizontalAlignment="Left"
-                                     IsVisible="False" />
+                                     IsVisible="False"
+                                     HorizontalAlignment="Left" />
+
                 <CheckBox x:Name="ClearFlags"
+                          Grid.Column="0"
                           HorizontalAlignment="Left"
+                          VerticalAlignment="Center"
                           Content="{x:Static resources:Strings.Menu_FlagProfiles_ClearFlags}"
                           IsVisible="False" />
 
-                <StackPanel Grid.Column="4" Orientation="Horizontal" Spacing="12" HorizontalAlignment="Right">
-
+                <StackPanel Grid.Column="1"
+                            Orientation="Horizontal"
+                            Spacing="12"
+                            HorizontalAlignment="Right">
                     <controls:IconButton x:Name="DeleteButton"
                                          Icon="Trash2"
                                          Classes="Danger"

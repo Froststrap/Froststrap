@@ -245,46 +245,6 @@ namespace Froststrap
             }
         }
 
-        public static FileStream? _lockFileStream;
-        public static bool IsInstanceRunningFileLock(string mutexName)
-        {
-            string lockFilePath = Path.Combine(Paths.Base, $"{mutexName}.lock");
-
-            try
-            {
-                _lockFileStream = new FileStream(
-                    lockFilePath,
-                    FileMode.OpenOrCreate,
-                    FileAccess.ReadWrite,
-                    FileShare.None,
-                    bufferSize: 1,
-                    FileOptions.DeleteOnClose);
-
-                return false;
-            }
-            catch (IOException)
-            {
-                return true;
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteLine("Bootstrapper::Lock", $"Failed to handle lock file: {ex.Message}");
-                return false;
-            }
-        }
-
-        public static bool IsBootstrapperRunning(string mutex)
-        {
-            if (OperatingSystem.IsWindows())
-            {
-                return DoesMutexExist(mutex);
-            }
-            else
-            {
-                return IsInstanceRunningFileLock(mutex);
-            }
-        }
-
         public static bool IsRobloxRunning()
         {
             Process[] processes = GetProcessesSafe();
