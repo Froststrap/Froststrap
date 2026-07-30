@@ -161,6 +161,8 @@ namespace Froststrap
             Deployment.Channel = IsStudioLaunch ? App.Settings.Prop.StudioChannel : App.Settings.Prop.PlayerChannel;
 
             App.Logger.WriteLine("Bootstrapper::Run", $"Using {(IsStudioLaunch ? "Studio" : "Player")} channel: {Deployment.Channel}");
+
+            _joinData = GameJoin.GetJoinDataByLaunchCommand(_launchCommandLine);
         }
 
         private void SetupAppData()
@@ -1055,8 +1057,6 @@ namespace Froststrap
 
             if (_launchMode == LaunchMode.Player)
             {
-                _joinData = GameJoin.GetJoinDataByLaunchCommand(_launchCommandLine);
-
                 if (_joinData.JoinType == GameJoinType.Unknown)
                     App.Logger.WriteLine(LOG_IDENT, "Unable to get join data");
 
@@ -1064,6 +1064,7 @@ namespace Froststrap
                 App.Logger.WriteLine(LOG_IDENT, $"Join Origin: {_joinData.JoinOrigin ?? "null"}");
                 App.Logger.WriteLine(LOG_IDENT, $"Place ID: {_joinData.PlaceId?.ToString() ?? "null"}");
                 App.Logger.WriteLine(LOG_IDENT, $"Job ID: {_joinData.JobId ?? "null"}");
+                App.Logger.WriteLine(LOG_IDENT, $"Access Code: {_joinData.AccessCode ?? "null"}");
 
                 if (_joinData.PlaceId.HasValue && _joinData.PlaceId.Value > 0)
                 {
@@ -1276,8 +1277,6 @@ namespace Froststrap
 
             App.SoberSettings.Save();
 
-            _joinData = GameJoin.GetJoinDataByLaunchCommand(_launchCommandLine);
-
             if (_joinData.JoinType == GameJoinType.Unknown)
                 App.Logger.WriteLine(LOG_IDENT, "Unable to get join data");
 
@@ -1285,6 +1284,7 @@ namespace Froststrap
             App.Logger.WriteLine(LOG_IDENT, $"Join Origin: {_joinData.JoinOrigin ?? "null"}");
             App.Logger.WriteLine(LOG_IDENT, $"Place ID: {_joinData.PlaceId?.ToString() ?? "null"}");
             App.Logger.WriteLine(LOG_IDENT, $"Job ID: {_joinData.JobId ?? "null"}");
+            App.Logger.WriteLine(LOG_IDENT, $"Access Code: {_joinData.AccessCode ?? "null"}");
 
             if (_joinData.PlaceId.HasValue && _joinData.PlaceId.Value > 0)
             {
@@ -3764,7 +3764,26 @@ exit";
             var fileResults = await Task.WhenAll(fileTasks);
             success = success && fileResults.All(r => r);
 
-            if (App.Settings.Prop.UseFastFlagManager && (!OperatingSystem.IsLinux() || IsStudioLaunch))
+            if (!App.Settings.Prop.UseFastFlagManager)
+            {
+                string rel = Path.Combine("ClientSettings", "ClientAppSettings.json");
+                string dest = Path.Combine(contentDirectory, rel);
+                if (File.Exists(dest))
+                {
+                    try
+                    {
+                        File.Delete(dest);
+                        lock (currentModManifest)
+                            currentModManifest.Remove(rel);
+                        App.Logger.WriteLine(LOG_IDENT, "ClientSettings deleted because UseFastFlagManager is false.");
+                    }
+                    catch (Exception ex)
+                    {
+                        App.Logger.WriteException(LOG_IDENT, ex);
+                    }
+                }
+            }
+            else if (!OperatingSystem.IsLinux() || IsStudioLaunch)
             {
                 string source = Path.Combine(Paths.Modifications, "ClientSettings", "ClientAppSettings.json");
                 if (File.Exists(source))
