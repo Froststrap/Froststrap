@@ -39,7 +39,7 @@ namespace Froststrap
         private const int DownloadBufferSize = 4096;
         private const int MaxDownloadAttempts = 5;
         private const string SoberFlatpakId = "org.vinegarhq.Sober";
-        public const string BackgroundUpdaterMutexName = "BackgroundUpdater";
+        public const string BackgroundUpdaterLockName = "BackgroundUpdater";
         private static readonly string[] DxvkDlls = ["d3d9.dll", "d3d10core.dll", "d3d11.dll", "dxgi.dll"];
 
         private const string WebView2MicrosoftRootPem = """
@@ -131,9 +131,9 @@ namespace Froststrap
 
         public IBootstrapperDialog? Dialog = null;
         public bool IsStudioLaunch => _launchMode != LaunchMode.Player;
-        public string MutexName { get; set; } = "Bootstrapper";
+        public string LockName { get; set; } = "Bootstrapper";
 
-        public bool QuitIfMutexExists { get; set; } = false;
+        public bool QuitIfLockExists { get; set; } = false;
 
         #endregion
 
@@ -327,25 +327,25 @@ namespace Froststrap
             // so that we don't have stuff like two updates happening simultaneously
 
             bool lockWasAlreadyHeld = false;
-            _appLock = new InterProcessLock(MutexName, TimeSpan.Zero);
+            _appLock = new InterProcessLock(LockName, TimeSpan.Zero);
 
             if (!_appLock.IsAcquired)
             {
                 lockWasAlreadyHeld = true;
 
-                if (QuitIfMutexExists)
+                if (QuitIfLockExists)
                 {
-                    App.Logger.WriteLine(LOG_IDENT, $"{MutexName} instance exists, exiting!");
+                    App.Logger.WriteLine(LOG_IDENT, $"{LockName} instance exists, exiting!");
                     return;
                 }
 
-                App.Logger.WriteLine(LOG_IDENT, $"{MutexName} instance exists, waiting...");
+                App.Logger.WriteLine(LOG_IDENT, $"{LockName} instance exists, waiting...");
                 SetStatus(Strings.Bootstrapper_Status_WaitingOtherInstances);
 
                 while (!_cancelTokenSource.Token.IsCancellationRequested)
                 {
                     _appLock.Dispose();
-                    _appLock = new InterProcessLock(MutexName, TimeSpan.Zero);
+                    _appLock = new InterProcessLock(LockName, TimeSpan.Zero);
                     if (_appLock.IsAcquired)
                         break;
 
@@ -390,21 +390,25 @@ namespace Froststrap
 
                 if (AppData.DistributionState.VersionGuid != _latestVersionGuid || MustUpgrade)
                 {
-                    bool backgroundUpdaterMutexOpen = Utilities.DoesMutexExist(BackgroundUpdaterMutexName);
+                    bool backgroundUpdaterLockOpen;
+                    using (var checkLock = new InterProcessLock(BackgroundUpdaterLockName, TimeSpan.Zero))
+                    {
+                        backgroundUpdaterLockOpen = !checkLock.IsAcquired;
+                    }
 
                     if (App.LaunchSettings.BackgroundUpdaterFlag.Active)
-                        backgroundUpdaterMutexOpen = false; // we want to actually update lol
+                        backgroundUpdaterLockOpen = false; // we want to actually update lol
 
-                    App.Logger.WriteLine(LOG_IDENT, $"Background updater running: {backgroundUpdaterMutexOpen}");
+                    App.Logger.WriteLine(LOG_IDENT, $"Background updater running: {backgroundUpdaterLockOpen}");
 
-                    if (backgroundUpdaterMutexOpen && MustUpgrade)
+                    if (backgroundUpdaterLockOpen && MustUpgrade)
                     {
                         // I am Forced Upgrade, killer of Background Updates
                         Utilities.KillBackgroundUpdater();
-                        backgroundUpdaterMutexOpen = false;
+                        backgroundUpdaterLockOpen = false;
                     }
 
-                    if (!backgroundUpdaterMutexOpen)
+                    if (!backgroundUpdaterLockOpen)
                     {
                         if (IsEligibleForBackgroundUpdate())
                             StartBackgroundUpdater();
@@ -3418,7 +3422,7 @@ exit";
         {
             const string LOG_IDENT = "Bootstrapper::StartBackgroundUpdater";
 
-            using var checkLock = new InterProcessLock(BackgroundUpdaterMutexName, TimeSpan.Zero);
+            using var checkLock = new InterProcessLock(BackgroundUpdaterLockName, TimeSpan.Zero);
             if (!checkLock.IsAcquired)
             {
                 App.Logger.WriteLine(LOG_IDENT, "Background updater already running");

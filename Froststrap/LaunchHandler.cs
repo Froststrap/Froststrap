@@ -362,8 +362,8 @@ namespace Froststrap
             App.Logger.WriteLine(LOG_IDENT, "Initializing bootstrapper");
             App.Bootstrapper = new Bootstrapper(LaunchMode.Player)
             {
-                MutexName = Bootstrapper.BackgroundUpdaterMutexName,
-                QuitIfMutexExists = true
+                LockName = Bootstrapper.BackgroundUpdaterLockName,
+                QuitIfLockExists = true
             };
 
             CancellationTokenSource cts = new();
