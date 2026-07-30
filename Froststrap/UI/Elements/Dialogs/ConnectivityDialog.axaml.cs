@@ -1,4 +1,6 @@
-﻿using Avalonia.Media.Imaging;
+﻿using Avalonia.Controls;
+using Avalonia.Input.Platform;
+using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 
 namespace Froststrap.UI.Elements.Dialogs
@@ -12,7 +14,6 @@ namespace Froststrap.UI.Elements.Dialogs
 
         public ConnectivityDialog(string title, string description, MessageBoxImage image, Exception exception) : this()
         {
-
             App.FrostRPC?.SetDialog("Connectivity");
 
             string? iconFilename = null;
@@ -52,7 +53,25 @@ namespace Froststrap.UI.Elements.Dialogs
 
             AddException(exception);
 
+            VersionText.Text = String.Format(Strings.Menu_About_Version, App.Version);
+
             CloseButton.Click += (_, _) => Close();
+
+            OpenLogButton.Click += async delegate
+            {
+                if (App.Logger.Initialized && !String.IsNullOrEmpty(App.Logger.FileLocation))
+                {
+                    Utilities.ShellExecute(App.Logger.FileLocation);
+                }
+                else
+                {
+                    var topLevel = TopLevel.GetTopLevel(this);
+                    if (topLevel?.Clipboard != null)
+                    {
+                        await topLevel.Clipboard.SetTextAsync(App.Logger.AsDocument);
+                    }
+                }
+            };
 
             Loaded += (_, _) =>
             {

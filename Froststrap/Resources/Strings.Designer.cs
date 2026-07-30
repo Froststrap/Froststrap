@@ -2126,6 +2126,15 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Copy Log to Clipboard.
+        /// </summary>
+        public static string Dialog_Exception_CopyLog {
+            get {
+                return ResourceManager.GetString("Dialog.Exception.CopyLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Copy log contents.
         /// </summary>
         public static string Dialog_Exception_CopyLogContents {

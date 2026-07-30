@@ -3209,4 +3209,7 @@ Reason: {1}
 
 The override will be disabled and the channel version will be used instead.</value>
   </data>
+  <data name="Dialog.Exception.CopyLog" xml:space="preserve">
+    <value>Copy Log to Clipboard</value>
+  </data>
 </root>

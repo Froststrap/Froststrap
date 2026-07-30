@@ -31,6 +31,12 @@ body:
     id: log
     attributes:
       label: Froststrap Log
-      description: If you're getting a Froststrap Exception error, upload your log file here. Otherwise, just leave it empty.
+      description: |
+        If you're getting an exception, please copy the log content and paste it here.
+        You can find the log file at:
+          - Windows: `%localappdata%\Froststrap\Logs\Froststrap_*.log` (the most recent file is the latest)
+          - macOS: `~/Library/Application Support/Froststrap/Logs/Froststrap_*.log`
+          - Linux: `~/.local/share/Froststrap/Logs/Froststrap_*.log`
+        **Alternatively**, click the **“Copy Log to Clipboard”** button inside the exception window and paste it below.
       value: "N/A"
       render: text

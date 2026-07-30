@@ -65,6 +65,15 @@ namespace Froststrap.UI.Elements.Dialogs
                 }
             };
 
+            CopyLogButton.Click += async delegate
+            {
+                var topLevel = TopLevel.GetTopLevel(this);
+                if (topLevel?.Clipboard != null)
+                {
+                    await topLevel.Clipboard.SetTextAsync(App.Logger.AsDocument);
+                }
+            };
+
             Loaded += (_, _) =>
             {
                 Activate();
