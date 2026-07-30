@@ -436,6 +436,19 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The pinned player version &apos;{0}&apos; is invalid.
+        ///	
+        ///Reason: {1}
+        ///
+        ///The override will be disabled and the channel version will be used instead..
+        /// </summary>
+        public static string Bootstrapper_Status_InvalidOverride {
+            get {
+                return ResourceManager.GetString("Bootstrapper.Status.InvalidOverride", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to left.
         /// </summary>
         public static string Bootstrapper_Status_PackagesLeft {
@@ -4655,6 +4668,24 @@ namespace Froststrap.Resources {
         public static string Menu_Deployment_PlayerChannel_Title {
             get {
                 return ResourceManager.GetString("Menu.Deployment.PlayerChannel.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Force Roblox Player to install and use a specific version hash instead of the latest..
+        /// </summary>
+        public static string Menu_Deployment_PlayerOverrideHash_Description {
+            get {
+                return ResourceManager.GetString("Menu.Deployment.PlayerOverrideHash.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Override Player Version.
+        /// </summary>
+        public static string Menu_Deployment_PlayerOverrideHash_Title {
+            get {
+                return ResourceManager.GetString("Menu.Deployment.PlayerOverrideHash.Title", resourceCulture);
             }
         }
         

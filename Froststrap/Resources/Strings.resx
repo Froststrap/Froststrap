@@ -3196,4 +3196,17 @@ Would you like to visit the releases page now?</value>
   <data name="Menu.RegionSelector.Description" xml:space="preserve">
     <value>Select a region to join into.</value>
   </data>
+  <data name="Menu.Deployment.PlayerOverrideHash.Title" xml:space="preserve">
+    <value>Override Player Version</value>
+  </data>
+  <data name="Menu.Deployment.PlayerOverrideHash.Description" xml:space="preserve">
+    <value>Force Roblox Player to install and use a specific version hash instead of the latest.</value>
+  </data>
+  <data name="Bootstrapper.Status.InvalidOverride" xml:space="preserve">
+    <value>The pinned player version '{0}' is invalid.
+	
+Reason: {1}
+
+The override will be disabled and the channel version will be used instead.</value>
+  </data>
 </root>

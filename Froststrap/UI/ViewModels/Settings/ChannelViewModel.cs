@@ -45,7 +45,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        // TODO: Instead of setting, read directly from registry
+        // TODO: Instead of a setting, read directly from registry
         public string InstallDirectory
         {
             get => App.Settings.Prop.InstallDirectory ?? Paths.Base;
@@ -433,9 +433,13 @@ namespace Froststrap.UI.ViewModels.Settings
             OnPropertyChanged(nameof(IsRobloxInstallationMissing));
             OnPropertyChanged(nameof(StudioVersionOverrideEnabled));
             OnPropertyChanged(nameof(StudioVersionOverrideHash));
+            OnPropertyChanged(nameof(PlayerVersionOverrideEnabled));
+            OnPropertyChanged(nameof(PlayerVersionOverrideHash));
             OnPropertyChanged(nameof(PlayerChannel));
             OnPropertyChanged(nameof(StudioChannel));
-            SetHashValidationState(StudioHashValidationState.Idle, string.Empty);
+
+            SetStudioHashState(VersionHashValidationState.Idle, string.Empty);
+            SetPlayerHashState(VersionHashValidationState.Idle, string.Empty);
         }
 
         public static IReadOnlyDictionary<string, ChannelChangeMode> ChannelChangeModes => new Dictionary<string, ChannelChangeMode>
@@ -467,7 +471,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 if (value && !string.IsNullOrWhiteSpace(App.Settings.Prop.StudioVersionOverrideHash))
                     _ = ValidateStudioVersionHashAsync(App.Settings.Prop.StudioVersionOverrideHash);
                 else if (!value)
-                    SetHashValidationState(StudioHashValidationState.Idle, string.Empty);
+                    SetStudioHashState(VersionHashValidationState.Idle, string.Empty);
             }
         }
 
@@ -482,75 +486,127 @@ namespace Froststrap.UI.ViewModels.Settings
                 if (App.Settings.Prop.StudioVersionOverrideEnabled)
                     _ = ValidateStudioVersionHashAsync(value);
                 else
-                    SetHashValidationState(StudioHashValidationState.Idle, string.Empty);
+                    SetStudioHashState(VersionHashValidationState.Idle, string.Empty);
             }
         }
 
-        public enum StudioHashValidationState { Idle, Checking, Valid, Invalid }
-
-        private StudioHashValidationState _hashValidationState = StudioHashValidationState.Idle;
-        private string _hashValidationMessage = string.Empty;
-        private CancellationTokenSource? _hashValidationCts;
-
-        public StudioHashValidationState HashValidationState
+        public bool PlayerVersionOverrideEnabled
         {
-            get => _hashValidationState;
+            get => App.Settings.Prop.PlayerVersionOverrideEnabled;
+            set
+            {
+                if (App.Settings.Prop.PlayerVersionOverrideEnabled == value) return;
+                App.Settings.Prop.PlayerVersionOverrideEnabled = value;
+                OnPropertyChanged();
+                if (value && !string.IsNullOrWhiteSpace(PlayerVersionOverrideHash))
+                    _ = ValidatePlayerVersionHashAsync(PlayerVersionOverrideHash);
+                else if (!value)
+                    SetPlayerHashState(VersionHashValidationState.Idle, string.Empty);
+            }
+        }
+
+        public string PlayerVersionOverrideHash
+        {
+            get => App.Settings.Prop.PlayerVersionOverrideHash;
+            set
+            {
+                value = value?.Trim() ?? string.Empty;
+                App.Settings.Prop.PlayerVersionOverrideHash = value;
+                OnPropertyChanged();
+                if (PlayerVersionOverrideEnabled)
+                    _ = ValidatePlayerVersionHashAsync(value);
+                else
+                    SetPlayerHashState(VersionHashValidationState.Idle, string.Empty);
+            }
+        }
+
+        public enum VersionHashValidationState { Idle, Checking, Valid, Invalid }
+
+        private VersionHashValidationState _studioHashState = VersionHashValidationState.Idle;
+        private string _studioHashMessage = string.Empty;
+        private CancellationTokenSource? _studioHashCts;
+
+        public VersionHashValidationState StudioHashValidationState
+        {
+            get => _studioHashState;
             private set
             {
-                _hashValidationState = value;
-                OnPropertyChanged(nameof(HashValidationState));
-                OnPropertyChanged(nameof(IsHashIdle));
-                OnPropertyChanged(nameof(IsHashChecking));
-                OnPropertyChanged(nameof(IsHashValid));
-                OnPropertyChanged(nameof(IsHashInvalid));
+                _studioHashState = value;
+                OnPropertyChanged(nameof(StudioHashValidationState));
+                OnPropertyChanged(nameof(IsStudioHashIdle));
+                OnPropertyChanged(nameof(IsStudioHashChecking));
+                OnPropertyChanged(nameof(IsStudioHashValid));
+                OnPropertyChanged(nameof(IsStudioHashInvalid));
             }
         }
 
-        public string HashValidationMessage
+        public string StudioHashValidationMessage
         {
-            get => _hashValidationMessage;
+            get => _studioHashMessage;
             private set
             {
-                _hashValidationMessage = value;
-                OnPropertyChanged(nameof(HashValidationMessage));
+                _studioHashMessage = value;
+                OnPropertyChanged(nameof(StudioHashValidationMessage));
             }
         }
 
-        public bool IsHashIdle => HashValidationState == StudioHashValidationState.Idle;
-        public bool IsHashChecking => HashValidationState == StudioHashValidationState.Checking;
-        public bool IsHashValid => HashValidationState == StudioHashValidationState.Valid;
-        public bool IsHashInvalid => HashValidationState == StudioHashValidationState.Invalid;
+        public bool IsStudioHashIdle => StudioHashValidationState == VersionHashValidationState.Idle;
+        public bool IsStudioHashChecking => StudioHashValidationState == VersionHashValidationState.Checking;
+        public bool IsStudioHashValid => StudioHashValidationState == VersionHashValidationState.Valid;
+        public bool IsStudioHashInvalid => StudioHashValidationState == VersionHashValidationState.Invalid;
 
-        private void SetHashValidationState(StudioHashValidationState state, string message)
+        private void SetStudioHashState(VersionHashValidationState state, string message)
         {
-            HashValidationState = state;
-            HashValidationMessage = message;
+            StudioHashValidationState = state;
+            StudioHashValidationMessage = message;
         }
 
-        private async Task ValidateStudioVersionHashAsync(string hash)
-        {
-            _hashValidationCts?.Cancel();
-            _hashValidationCts = new CancellationTokenSource();
-            var token = _hashValidationCts.Token;
+        private VersionHashValidationState _playerHashState = VersionHashValidationState.Idle;
+        private string _playerHashMessage = string.Empty;
+        private CancellationTokenSource? _playerHashCts;
 
+        public VersionHashValidationState PlayerHashValidationState
+        {
+            get => _playerHashState;
+            private set
+            {
+                _playerHashState = value;
+                OnPropertyChanged(nameof(PlayerHashValidationState));
+                OnPropertyChanged(nameof(IsPlayerHashIdle));
+                OnPropertyChanged(nameof(IsPlayerHashChecking));
+                OnPropertyChanged(nameof(IsPlayerHashValid));
+                OnPropertyChanged(nameof(IsPlayerHashInvalid));
+            }
+        }
+
+        public string PlayerHashValidationMessage
+        {
+            get => _playerHashMessage;
+            private set
+            {
+                _playerHashMessage = value;
+                OnPropertyChanged(nameof(PlayerHashValidationMessage));
+            }
+        }
+
+        public bool IsPlayerHashIdle => PlayerHashValidationState == VersionHashValidationState.Idle;
+        public bool IsPlayerHashChecking => PlayerHashValidationState == VersionHashValidationState.Checking;
+        public bool IsPlayerHashValid => PlayerHashValidationState == VersionHashValidationState.Valid;
+        public bool IsPlayerHashInvalid => PlayerHashValidationState == VersionHashValidationState.Invalid;
+
+        private void SetPlayerHashState(VersionHashValidationState state, string message)
+        {
+            PlayerHashValidationState = state;
+            PlayerHashValidationMessage = message;
+        }
+
+        public static async Task<(bool Valid, string Error)> ValidateHashCore(string hash, bool enforceAgeAndBan = false, string? binaryType = null)
+        {
             if (string.IsNullOrWhiteSpace(hash))
-            {
-                SetHashValidationState(StudioHashValidationState.Idle, string.Empty);
-                return;
-            }
+                return (false, "Hash is empty.");
 
             if (!Regex.IsMatch(hash, @"^version-[0-9a-f]{16}$", RegexOptions.IgnoreCase))
-            {
-                SetHashValidationState(StudioHashValidationState.Invalid, "Invalid format. Expected: version-xxxxxxxxxxxxxxxx");
-                return;
-            }
-
-            SetHashValidationState(StudioHashValidationState.Checking, "Checking version...");
-
-            try { await Task.Delay(500, token); }
-            catch (OperationCanceledException) { return; }
-
-            if (token.IsCancellationRequested) return;
+                return (false, "Invalid format. Expected: version-xxxxxxxxxxxxxxxx");
 
             try
             {
@@ -558,26 +614,103 @@ namespace Froststrap.UI.ViewModels.Settings
                     ? "https://setup.rbxcdn.com"
                     : Deployment.BaseUrl;
 
-                string manifestUrl = $"{baseUrl}/{hash}-rbxPkgManifest.txt";
+                string resourceUrl;
 
-                using var request = new HttpRequestMessage(HttpMethod.Head, manifestUrl);
-                using var response = await App.HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, token);
+                if (OperatingSystem.IsMacOS())
+                {
+                    if (string.IsNullOrEmpty(binaryType))
+                        return (false, "Binary type is required for macOS validation.");
 
-                if (token.IsCancellationRequested) return;
+                    string zipName = binaryType.Contains("Studio", StringComparison.OrdinalIgnoreCase)
+                        ? "RobloxStudioApp.zip"
+                        : "RobloxPlayer.zip";
 
-                if (response.IsSuccessStatusCode)
-                    SetHashValidationState(StudioHashValidationState.Valid, "Version found.");
-                else if (response.StatusCode == HttpStatusCode.NotFound)
-                    SetHashValidationState(StudioHashValidationState.Invalid, "Version not found on Roblox servers.");
+                    resourceUrl = $"{baseUrl}/mac/{hash}-{zipName}";
+                }
                 else
-                    SetHashValidationState(StudioHashValidationState.Invalid, $"Unexpected response: {(int)response.StatusCode} {response.StatusCode}");
+                {
+                    resourceUrl = $"{baseUrl}/{hash}-rbxPkgManifest.txt";
+                }
+
+                using var request = new HttpRequestMessage(HttpMethod.Head, resourceUrl);
+                using var response = await App.HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    if (response.StatusCode == HttpStatusCode.NotFound)
+                        return (false, "Version not found on Roblox servers.");
+                    return (false, $"Unexpected response: {(int)response.StatusCode} {response.StatusCode}");
+                }
+
+                if (enforceAgeAndBan)
+                {
+                    await App.RemoteData.WaitUntilDataFetched();
+
+                    if (App.RemoteData.Prop?.BannedVersionHashes?.Contains(hash) == true)
+                        return (false, "This version is banned.");
+
+                    DateTime? timestamp = await Deployment.GetVersionTimestamp(hash);
+                    if (!timestamp.HasValue)
+                        return (false, "Could not verify version date.");
+
+                    if ((DateTime.UtcNow - timestamp.Value).TotalDays > 90)
+                        return (false, "Version is older than 3 months.");
+                }
+
+                return (true, string.Empty);
             }
-            catch (OperationCanceledException) { }
             catch (Exception ex)
             {
-                if (!token.IsCancellationRequested)
-                    SetHashValidationState(StudioHashValidationState.Invalid, $"Network error: {ex.Message}");
+                return (false, $"Network error: {ex.Message}");
             }
+        }
+
+        private static async Task ValidateVersionHashAsync(string hash, Action<VersionHashValidationState, string> setState, CancellationToken token, bool enforceAgeAndBan = false, string? binaryType = null)
+        {
+            var (valid, error) = await ValidateHashCore(hash, enforceAgeAndBan, binaryType);
+
+            if (token.IsCancellationRequested) return;
+
+            if (valid)
+                setState(VersionHashValidationState.Valid, "Version found.");
+            else
+                setState(VersionHashValidationState.Invalid, error);
+        }
+
+        private static string GetBinaryType(bool isStudio)
+        {
+            if (OperatingSystem.IsMacOS())
+                return isStudio ? "MacStudio" : "MacPlayer";
+            else
+                return isStudio ? "WindowsStudio64" : "WindowsPlayer";
+        }
+
+        private async Task ValidateStudioVersionHashAsync(string hash)
+        {
+            _studioHashCts?.Cancel();
+            _studioHashCts = new CancellationTokenSource();
+            var token = _studioHashCts.Token;
+
+            await ValidateVersionHashAsync(
+                hash,
+                (state, msg) => SetStudioHashState(state, msg),
+                token,
+                enforceAgeAndBan: false,
+                binaryType: GetBinaryType(true));
+        }
+
+        private async Task ValidatePlayerVersionHashAsync(string hash)
+        {
+            _playerHashCts?.Cancel();
+            _playerHashCts = new CancellationTokenSource();
+            var token = _playerHashCts.Token;
+
+            await ValidateVersionHashAsync(
+                hash,
+                (state, msg) => SetPlayerHashState(state, msg),
+                token,
+                enforceAgeAndBan: true,
+                binaryType: GetBinaryType(false));
         }
 
         private async Task BrowseInstallDirectoryAsync(object? parameter)

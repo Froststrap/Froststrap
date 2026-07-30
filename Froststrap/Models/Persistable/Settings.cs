@@ -88,6 +88,8 @@ namespace Froststrap.Models.Persistable
         public ChannelChangeMode ChannelChangeMode { get; set; } = ChannelChangeMode.Prompt;
         public bool StudioVersionOverrideEnabled { get; set; } = false;
         public string StudioVersionOverrideHash { get; set; } = string.Empty;
+        public bool PlayerVersionOverrideEnabled { get; set; } = false;
+        public string PlayerVersionOverrideHash { get; set; } = string.Empty;
 
         // Linux Settings page
         public bool EnableWebView2 { get; set; } = true;
