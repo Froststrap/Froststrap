@@ -101,6 +101,9 @@ public partial class App : Application
     public static readonly HttpClient HttpClient = new(new HttpClientLoggingHandler(new HttpClientHandler { AutomaticDecompression = DecompressionMethods.All }));
 
     private static bool _showingExceptionDialog = false;
+    private static readonly Lock ActivationLock = new();
+    private static string? _pendingActivationUri;
+    private static bool _launchArgsProcessed;
 
     private static string? GetEnvironmentVariable(params string[] names)
     {
@@ -207,13 +210,11 @@ public partial class App : Application
                 ex
             );
 
-            using (var checkLock = new InterProcessLock("Bootstrapper", TimeSpan.Zero))
+            using var checkLock = new InterProcessLock("Bootstrapper", TimeSpan.Zero);
+            if (!checkLock.IsAcquired)
             {
-                if (!checkLock.IsAcquired)
-                {
-                    Logger.WriteLine("App::FinalizeExceptionHandling", "Bootstrapper is running, closing.");
-                    Terminate(ErrorCode.ERROR_INSTALL_FAILURE);
-                }
+                Logger.WriteLine("App::FinalizeExceptionHandling", "Bootstrapper is running, closing.");
+                Terminate(ErrorCode.ERROR_INSTALL_FAILURE);
             }
         }
         else
@@ -264,6 +265,39 @@ public partial class App : Application
 
         AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
         TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
+
+        if (OperatingSystem.IsMacOS()
+            && TryGetFeature(typeof(IActivatableLifetime)) is IActivatableLifetime activatableLifetime)
+        {
+            activatableLifetime.Activated += OnAppActivated;
+        }
+    }
+
+    private static void OnAppActivated(object? sender, ActivatedEventArgs e)
+    {
+        if (!OperatingSystem.IsMacOS())
+            return;
+
+        if (e is not ProtocolActivatedEventArgs { Kind: ActivationKind.OpenUri } protocolArgs)
+            return;
+
+        string uri = protocolArgs.Uri.ToString();
+
+        lock (ActivationLock)
+        {
+            if (!_launchArgsProcessed)
+            {
+                if (LaunchSettings is not null && LaunchSettings.RobloxLaunchMode == LaunchMode.None)
+                    LaunchSettings.TryResolveRobloxUri([uri]);
+                else if (LaunchSettings is null)
+                    _pendingActivationUri = uri;
+
+                return;
+            }
+        }
+
+        Logger.WriteLine("App::OnAppActivated", $"Received activation URI: {uri}");
+        LaunchHandler.HandleActivationUri(uri);
     }
 
     public static FroststrapRichPresence? FrostRPC
@@ -353,6 +387,12 @@ public partial class App : Application
                 HttpClient.DefaultRequestHeaders.Add("User-Agent", userAgent.ToString());
 
             LaunchSettings = new LaunchSettings(Environment.GetCommandLineArgs());
+
+            lock (ActivationLock)
+            {
+                if (LaunchSettings.RobloxLaunchMode == LaunchMode.None && _pendingActivationUri is not null)
+                    LaunchSettings.TryResolveRobloxUri([_pendingActivationUri]);
+            }
 
             string? installLocation = null;
 
@@ -510,6 +550,9 @@ public partial class App : Application
                 LaunchSettings.OnboardingFlag.Active = true;
                 Logger.WriteLine("App::OnFrameworkInitializationCompleted", "First launch detected, launching onboarding.");
             }
+
+            lock (ActivationLock)
+                _launchArgsProcessed = true;
 
             LaunchHandler.ProcessLaunchArgs();
         }

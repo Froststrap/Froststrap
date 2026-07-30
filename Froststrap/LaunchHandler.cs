@@ -396,5 +396,28 @@ namespace Froststrap
 
             App.Logger.WriteLine(LOG_IDENT, "Exiting");
         }
+
+        private static int _activationInFlight;
+
+        public static void HandleActivationUri(string uri)
+        {
+            const string LOG_IDENT = "LaunchHandler::HandleActivationUri";
+
+            if (!App.LaunchSettings.TryResolveRobloxUri([uri]))
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Ignoring unrecognized activation URI: {uri}");
+                return;
+            }
+
+            if (Interlocked.CompareExchange(ref _activationInFlight, 1, 0) != 0)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "A launch is already being handled, ignoring activation");
+                return;
+            }
+
+            var mode = App.LaunchSettings.RobloxLaunchMode;
+            App.Logger.WriteLine(LOG_IDENT, $"Handling activation URI as a Roblox launch ({mode})");
+            Avalonia.Threading.Dispatcher.UIThread.Post(() => LaunchRoblox(mode));
+        }
     }
 }
