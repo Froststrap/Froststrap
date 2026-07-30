@@ -203,18 +203,18 @@ public partial class App : Application
             await Frontend.ShowConnectivityDialog(
                 Strings.Dialog_Connectivity_UnableToConnect,
                 "Network Error",
-                MessageBoxImage.Error,
+                MessageBoxImage.Warning,
                 ex
             );
 
-            if (Utilities.IsBootstrapperRunning("Froststrap-Bootstrapper"))
+            using (var checkLock = new InterProcessLock("Bootstrapper", TimeSpan.Zero))
             {
-                Logger.WriteLine("App::FinalizeExceptionHandling", "Bootstrapper is running, closing.");
-                Terminate(ErrorCode.ERROR_INSTALL_FAILURE);
-                return;
+                if (!checkLock.IsAcquired)
+                {
+                    Logger.WriteLine("App::FinalizeExceptionHandling", "Bootstrapper is running, closing.");
+                    Terminate(ErrorCode.ERROR_INSTALL_FAILURE);
+                }
             }
-
-            return;
         }
         else
         {
