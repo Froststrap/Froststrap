@@ -273,6 +273,18 @@ namespace Froststrap
             }
         }
 
+        public static bool IsBootstrapperRunning(string mutex)
+        {
+            if (OperatingSystem.IsWindows())
+            {
+                return DoesMutexExist(mutex);
+            }
+            else
+            {
+                return IsInstanceRunningFileLock(mutex);
+            }
+        }
+
         public static bool IsRobloxRunning()
         {
             Process[] processes = GetProcessesSafe();

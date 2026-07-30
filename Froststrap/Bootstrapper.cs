@@ -328,14 +328,7 @@ namespace Froststrap
 
             bool mutexExists;
 
-            if (OperatingSystem.IsWindows())
-            {
-                mutexExists = Utilities.DoesMutexExist(MutexName);
-            }
-            else
-            {
-                mutexExists = Utilities.IsInstanceRunningFileLock(MutexName);
-            }
+                mutexExists = Utilities.IsBootstrapperRunning(MutexName);
 
             if (mutexExists)
             {

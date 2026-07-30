@@ -202,17 +202,25 @@ public partial class App : Application
         {
             await Frontend.ShowConnectivityDialog(
                 Strings.Dialog_Connectivity_UnableToConnect,
-                "Internet",
+                "Network Error",
                 MessageBoxImage.Error,
                 ex
             );
+
+            if (Utilities.IsBootstrapperRunning("Froststrap-Bootstrapper"))
+            {
+                Logger.WriteLine("App::FinalizeExceptionHandling", "Bootstrapper is running, closing.");
+                Terminate(ErrorCode.ERROR_INSTALL_FAILURE);
+                return;
+            }
+
+            return;
         }
         else
         {
             await Frontend.ShowExceptionDialog(ex);
+            Terminate(ErrorCode.ERROR_INSTALL_FAILURE);
         }
-
-        Terminate(ErrorCode.ERROR_INSTALL_FAILURE);
     }
 
     private static bool IsNetworkException(Exception? ex)
