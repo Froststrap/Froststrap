@@ -39,7 +39,7 @@ namespace Froststrap
         private const int DownloadBufferSize = 4096;
         private const int MaxDownloadAttempts = 5;
         private const string SoberFlatpakId = "org.vinegarhq.Sober";
-        private const string BackgroundUpdaterMutexName = "Froststrap-BackgroundUpdater";
+        public const string BackgroundUpdaterMutexName = "BackgroundUpdater";
         private static readonly string[] DxvkDlls = ["d3d9.dll", "d3d10core.dll", "d3d11.dll", "dxgi.dll"];
 
         private const string WebView2MicrosoftRootPem = """
@@ -126,12 +126,12 @@ namespace Froststrap
 
         private bool _noConnection = false;
 
-        private AsyncMutex? _mutex;
+        private InterProcessLock? _appLock;
         private int _appPid = 0;
 
         public IBootstrapperDialog? Dialog = null;
         public bool IsStudioLaunch => _launchMode != LaunchMode.Player;
-        public string MutexName { get; set; } = "Froststrap-Bootstrapper";
+        public string MutexName { get; set; } = "Bootstrapper";
 
         public bool QuitIfMutexExists { get; set; } = false;
 
@@ -326,41 +326,39 @@ namespace Froststrap
             // ensure only one instance of the bootstrapper is running at the time
             // so that we don't have stuff like two updates happening simultaneously
 
-            bool mutexExists;
+            bool lockWasAlreadyHeld = false;
+            _appLock = new InterProcessLock(MutexName, TimeSpan.Zero);
 
-                mutexExists = Utilities.IsBootstrapperRunning(MutexName);
-
-            if (mutexExists)
+            if (!_appLock.IsAcquired)
             {
-                if (!QuitIfMutexExists)
-                {
-                    App.Logger.WriteLine(LOG_IDENT, $"{MutexName} instance exists, waiting...");
-                    SetStatus(Strings.Bootstrapper_Status_WaitingOtherInstances);
+                lockWasAlreadyHeld = true;
 
-                    if (!OperatingSystem.IsWindows())
-                    {
-                        while (Utilities.IsInstanceRunningFileLock(MutexName) && !_cancelTokenSource.Token.IsCancellationRequested)
-                        {
-                            await Task.Delay(500, _cancelTokenSource.Token);
-                        }
-                    }
-                }
-                else
+                if (QuitIfMutexExists)
                 {
                     App.Logger.WriteLine(LOG_IDENT, $"{MutexName} instance exists, exiting!");
                     return;
                 }
+
+                App.Logger.WriteLine(LOG_IDENT, $"{MutexName} instance exists, waiting...");
+                SetStatus(Strings.Bootstrapper_Status_WaitingOtherInstances);
+
+                while (!_cancelTokenSource.Token.IsCancellationRequested)
+                {
+                    _appLock.Dispose();
+                    _appLock = new InterProcessLock(MutexName, TimeSpan.Zero);
+                    if (_appLock.IsAcquired)
+                        break;
+
+                    await Task.Delay(500, _cancelTokenSource.Token);
+                }
+
+                if (_cancelTokenSource.Token.IsCancellationRequested)
+                    return;
             }
 
-            // wait for mutex to be released if it's not yet
-            if (OperatingSystem.IsWindows())
-            {
-                var winMutex = new AsyncMutex(false, MutexName);
-                await winMutex.AcquireAsync(_cancelTokenSource.Token);
-                _mutex = winMutex;
-            }
+            App.Logger.WriteLine(LOG_IDENT, "Lock acquired.");
 
-            if (mutexExists)
+            if (lockWasAlreadyHeld)
             {
                 App.Settings.Load();
                 App.State.Load();
@@ -486,8 +484,7 @@ namespace Froststrap
 
             if (_launchMode != LaunchMode.Player)
             {
-                if (OperatingSystem.IsWindows() && _mutex is not null) await _mutex.ReleaseAsync();
-                else Utilities._lockFileStream?.Dispose();
+                if (OperatingSystem.IsWindows() && _appLock is not null) _appLock.Dispose();
             }
 
             if (!App.LaunchSettings.NoLaunchFlag.Active && !_cancelTokenSource.IsCancellationRequested)
@@ -516,8 +513,7 @@ namespace Froststrap
                     await LaunchViaSober([]);
                 }
 
-                if (OperatingSystem.IsWindows() && _mutex is not null) await _mutex.ReleaseAsync();
-                else Utilities._lockFileStream?.Dispose();
+                if (OperatingSystem.IsWindows() && _appLock is not null) _appLock.Dispose();
 
                 Dialog?.CloseBootstrapper();
             }
@@ -1238,7 +1234,7 @@ namespace Froststrap
             }
 
             App.Logger.WriteLine(LOG_IDENT, $"Started Roblox (PID {_appPid}). Launching Watcher...");
-            _mutex?.ReleaseAsync();
+            _appLock?.Dispose();
 
             if (!IsStudioLaunch)
             {
@@ -1394,7 +1390,7 @@ namespace Froststrap
                 _appPid = process.Id;
                 App.Logger.WriteLine(LOG_IDENT, $"Sober launched with PID {_appPid}");
                 App.Logger.WriteLine(LOG_IDENT, "Launching Watcher...");
-                _mutex?.ReleaseAsync();
+                _appLock?.Dispose();
                 await LaunchWatcherIfNeededAsync(autoclosePids);
 
                 _ = Task.Run(async () =>
@@ -1683,6 +1679,8 @@ namespace Froststrap
                     App.Logger.WriteException(LOG_IDENT, ex);
                 }
             }
+
+            _appLock?.Dispose();
 
             Dialog?.CloseBootstrapper();
             App.SoftTerminate(ErrorCode.ERROR_CANCELLED);
@@ -3362,7 +3360,7 @@ exit";
                 return;
             }
 
-            _mutex?.ReleaseAsync();
+            _appLock?.Dispose();
 
             foreach (var integration in App.Settings.Prop.CustomIntegrations)
                 if (integration != null && !integration.PreLaunch && !integration.SpecifyGame)
@@ -3420,11 +3418,13 @@ exit";
         {
             const string LOG_IDENT = "Bootstrapper::StartBackgroundUpdater";
 
-            if (Utilities.DoesMutexExist(BackgroundUpdaterMutexName))
+            using var checkLock = new InterProcessLock(BackgroundUpdaterMutexName, TimeSpan.Zero);
+            if (!checkLock.IsAcquired)
             {
                 App.Logger.WriteLine(LOG_IDENT, "Background updater already running");
                 return;
             }
+            checkLock.Dispose();
 
             App.Logger.WriteLine(LOG_IDENT, "Starting background updater");
             Process.Start(Paths.Process, "-backgroundupdater");
