@@ -38,6 +38,7 @@
                     <Style Selector="TabItem">
                         <Setter Property="HorizontalAlignment" Value="Stretch" />
                         <Setter Property="HorizontalContentAlignment" Value="Center" />
+                        <Setter Property="FontSize" Value="20" />
                     </Style>
                 </TabControl.Styles>
 

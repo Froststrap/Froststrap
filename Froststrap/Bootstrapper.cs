@@ -3679,7 +3679,6 @@ exit";
                         var destInfo = new FileInfo(dest);
                         lock (currentModManifest)
                             currentModManifest[rel] = new ModFileEntry { Size = destInfo.Length, LastModified = destInfo.LastWriteTime };
-                        App.Logger.WriteLine(LOG_IDENT, "Profile FastFlag file added to manifest.");
                     }
                 }
 
@@ -3689,11 +3688,6 @@ exit";
                     {
                         if (File.Exists(source))
                         {
-                            var info = new FileInfo(source);
-
-                            lock (currentModManifest)
-                                currentModManifest[rel] = new ModFileEntry { Size = info.Length, LastModified = info.LastWriteTime };
-
                             try
                             {
                                 bool match = File.Exists(dest) &&
@@ -3702,8 +3696,12 @@ exit";
                                 {
                                     Directory.CreateDirectory(Path.GetDirectoryName(dest)!);
                                     File.Copy(source, dest, true);
-                                    File.SetLastWriteTime(dest, info.LastWriteTime);
                                     App.Logger.WriteLine(LOG_IDENT, "FastFlags Applied (normal source).");
+
+                                    var info = new FileInfo(source);
+
+                                    lock (currentModManifest)
+                                        currentModManifest[rel] = new ModFileEntry { Size = info.Length, LastModified = info.LastWriteTime };
                                 }
                             }
                             catch (Exception ex) { App.Logger.WriteException(LOG_IDENT, ex); }
