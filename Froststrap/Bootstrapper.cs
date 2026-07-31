@@ -108,9 +108,10 @@ namespace Froststrap
         private static bool AutomaticallyUpdateSober => OperatingSystem.IsLinux() && App.Settings.Prop.AutomaticallyUpdateSober;
         private bool MustUpgrade => App.LaunchSettings.ForceFlag.Active
             || App.State.Prop.ForceReinstall
-            || (!OperatingSystem.IsLinux() && (String.IsNullOrEmpty(AppData.DistributionState.VersionGuid)
+            || ((!OperatingSystem.IsLinux() || (OperatingSystem.IsLinux() && IsStudioLaunch)) && (String.IsNullOrEmpty(AppData.DistributionState.VersionGuid)
             || (OperatingSystem.IsMacOS() ? !Directory.Exists(AppData.ExecutablePath) : !File.Exists(AppData.ExecutablePath))))
-            || (OperatingSystem.IsLinux() && IsStudioLaunch && !File.Exists(Path.Combine(_latestVersionDirectory, App.RobloxStudioAppName)));
+            || (OperatingSystem.IsWindows() && !IsStudioLaunch && !File.Exists(Path.Combine(_latestVersionDirectory, "WebView2Loader.dll")))
+            || (OperatingSystem.IsWindows() && !IsStudioLaunch && !File.Exists(Path.Combine(_latestVersionDirectory, "RobloxPlayerBeta.dll")));
 
         private bool _isInstalling = false;
         private double _progressIncrement;
