@@ -5274,15 +5274,6 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Managing place IDs for: {0} ({1} IDs).
-        /// </summary>
-        public static string Menu_FlagProfiles_ManagingPlaceIds {
-            get {
-                return ResourceManager.GetString("Menu.FlagProfiles.ManagingPlaceIds", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to New profile name cannot be empty..
         /// </summary>
         public static string Menu_FlagProfiles_NameCannotBeEmpty {
