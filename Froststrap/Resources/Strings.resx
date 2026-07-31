@@ -2937,9 +2937,6 @@ Do you want to install the plugin?</value>
   <data name="Menu.FlagProfiles.RemoveSelected" xml:space="preserve">
     <value>Remove Selected</value>
   </data>
-  <data name="Menu.FlagProfiles.ManagingPlaceIds" xml:space="preserve">
-    <value>Managing place IDs for: {0} ({1} IDs)</value>
-  </data>
   <data name="Menu.FlagProfiles.SelectProfileFirst" xml:space="preserve">
     <value>Please select a profile first.</value>
   </data>

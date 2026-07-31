@@ -74,7 +74,7 @@
 
                             <TextBlock Text="{x:Static resources:Strings.Menu_FlagProfiles_CurrentPlaceIds}" FontSize="12" FontWeight="Medium" />
                             <ListBox x:Name="PlaceIdsListBox" Height="120" SelectionChanged="PlaceIdsListBox_SelectionChanged" />
-                            <TextBlock x:Name="PlaceIdInfoText" Text="{x:Static resources:Strings.Menu_FlagProfiles_SelectProfile}" Foreground="{DynamicResource SystemFillColorSecondaryBrush}" FontSize="12" HorizontalAlignment="Center" IsVisible="False" />
+                            <TextBlock x:Name="PlaceIdInfoText" Text="{x:Static resources:Strings.Menu_FlagProfiles_SelectProfile}" Foreground="{DynamicResource SystemFillColorSecondaryBrush}" FontSize="12" HorizontalAlignment="Center" IsVisible="False" Margin="0,0,0,-8" />
                         </StackPanel>
                     </StackPanel>
                 </TabItem>
