@@ -15,6 +15,8 @@ namespace Froststrap
 
         public readonly IntegrationWatcher? IntegrationWatcher;
 
+        public readonly Softkey? Softkey;
+
         public readonly PlayerDiscordRichPresence? PlayerRichPresence;
         public readonly StudioDiscordRichPresence? StudioRichPresence;
 
@@ -97,6 +99,9 @@ namespace Froststrap
 
                 if (_watcherData.LaunchMode == LaunchMode.Player)
                     IntegrationWatcher = new IntegrationWatcher(ActivityWatcher, _watcherData.ProcessId);
+
+                if (_watcherData.LaunchMode == LaunchMode.Player && App.Settings.Prop.SoftKeyEnabled)
+                    Softkey = new Softkey(_watcherData.ProcessId);
 
                 _notifyIcon = new(this);
             }
@@ -362,6 +367,7 @@ namespace Froststrap
             }
 
             IntegrationWatcher?.Dispose();
+            Softkey?.Dispose();
             _notifyIcon?.Dispose();
             PlayerRichPresence?.Dispose();
             StudioRichPresence?.Dispose();

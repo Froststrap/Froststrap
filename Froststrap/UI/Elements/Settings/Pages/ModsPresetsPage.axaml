@@ -209,7 +209,7 @@
                                                 </Viewbox>
                                             </Border>
                                             <StackPanel Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Orientation="Vertical" Margin="0,8,0,0">
-                                                <controls:IconButton Content="{x:Static resources:Strings.Common_Browser}"
+                                                <controls:IconButton Content="{x:Static resources:Strings.Common_Browse}"
                                                                      Icon="Folder"
                                                                      Command="{Binding AddMouseLockedCursorCommand}"
                                                                      CommandParameter="{Binding $self}"
@@ -255,7 +255,7 @@
                                                 </Viewbox>
                                             </Border>
                                             <StackPanel Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Orientation="Vertical" Margin="0,8,0,0">
-                                                <controls:IconButton Content="{x:Static resources:Strings.Common_Browser}"
+                                                <controls:IconButton Content="{x:Static resources:Strings.Common_Browse}"
                                                                      Icon="Folder"
                                                                      Command="{Binding AddArrowFarCursorCommand}"
                                                                      CommandParameter="{Binding $self}"
@@ -278,7 +278,7 @@
                                                 </Viewbox>
                                             </Border>
                                             <StackPanel Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Orientation="Vertical" Margin="0,8,0,0">
-                                                <controls:IconButton Content="{x:Static resources:Strings.Common_Browser}"
+                                                <controls:IconButton Content="{x:Static resources:Strings.Common_Browse}"
                                                                      Icon="Folder"
                                                                      Command="{Binding AddIBeamCursorCommand}"
                                                                      CommandParameter="{Binding $self}"

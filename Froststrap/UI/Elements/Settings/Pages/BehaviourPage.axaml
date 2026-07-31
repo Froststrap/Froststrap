@@ -65,6 +65,32 @@
 				</StackPanel>
 			</controls:OptionControl>
 
+			<controls:CardExpander Header="{x:Static resources:Strings.Menu_Bootstrapper_SoftKey_Title}"
+                                   Description="{x:Static resources:Strings.Menu_Bootstrapper_SoftKey_Description}"
+                                   Classes="NoUserExpansion"
+                                   IsExpanded="{Binding SoftKeyEnabled, Mode=OneWay}"
+                                   IsVisible="{x:Static gv:GlobalViewModel.IsWindows}">
+				<controls:CardExpander.HeaderContent>
+					<ToggleSwitch IsChecked="{Binding SoftKeyEnabled, Mode=TwoWay}" />
+				</controls:CardExpander.HeaderContent>
+				<StackPanel>
+					<controls:OptionControl
+                        Header="{x:Static resources:Strings.Menu_Bootstrapper_SoftKeyProfile_Title}"
+                        Description="{x:Static resources:Strings.Menu_Bootstrapper_SoftKeyProfile_Description}">
+						<ComboBox
+                            MinWidth="200"
+                            ItemsSource="{Binding SoftKeyProfiles}"
+                            SelectedItem="{Binding SoftKeyProfile, Mode=TwoWay}">
+							<ComboBox.ItemTemplate>
+								<DataTemplate>
+									<TextBlock Text="{Binding}" />
+								</DataTemplate>
+							</ComboBox.ItemTemplate>
+						</ComboBox>
+					</controls:OptionControl>
+				</StackPanel>
+			</controls:CardExpander>
+
 			<controls:CardExpander Header="{x:Static resources:Strings.Menu_Bootstrapper_Experimental_BetterMatchmaking_Title}"
                                    Description="{x:Static resources:Strings.Menu_Bootstrapper_Experimental_BetterMatchmaking_Description}"
                                    Classes="NoUserExpansion" IsExpanded="{Binding EnableBetterMatchmaking, Mode=OneWay}">

@@ -1,22 +1,22 @@
-<Window 
-x:Class="Froststrap.UI.Elements.ContextMenu.MenuContainer" 
-xmlns="https://github.com/avaloniaui" 
-xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
-xmlns:base="clr-namespace:Froststrap.UI.Elements.Base" 
-xmlns:resources="clr-namespace:Froststrap.Resources" 
-Title="ContextMenuContainer" 
-Width="0" Height="0" 
-ShowInTaskbar="False"
-WindowDecorations="None" 
-Opacity="0">
-
+<Window
+    x:Class="Froststrap.UI.Elements.ContextMenu.MenuContainer"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+    xmlns:resources="clr-namespace:Froststrap.Resources"
+    Title="ContextMenuContainer"
+    Width="0" Height="0"
+    ShowInTaskbar="False"
+    WindowDecorations="None"
+    Opacity="0">
     <NativeMenu.Menu>
         <NativeMenu>
             <NativeMenuItem Header="Froststrap v2.0.0" IsEnabled="False" />
             <NativeMenuItem Header="Total: 00:00" IsEnabled="False" />
             <NativeMenuItemSeparator />
-            <NativeMenuItem Header="{x:Static resources:Strings.ContextMenu_CopyDeeplinkInvite}" IsVisible="False" Click="InviteDeeplinkMenuItem_Click" />
             <NativeMenuItem Header="{x:Static resources:Strings.Common_DiscordRichPresence}" IsVisible="False" Click="RichPresenceMenuItem_Click" ToggleType="CheckBox" IsChecked="True" />
+            <NativeMenuItem Header="{x:Static resources:Strings.Menu_Bootstrapper_SoftKey_Title}" IsVisible="False" Click="SoftkeyMenuItem_Click" ToggleType="CheckBox" IsChecked="True" />
+            <NativeMenuItem Header="{x:Static resources:Strings.ContextMenu_CopyDeeplinkInvite}" IsVisible="False" Click="InviteDeeplinkMenuItem_Click" />
             <NativeMenuItem Header="{x:Static resources:Strings.Menu_ContextMenu_RegionJoin}" IsVisible="False" Click="AutoJoinRegionMenuItem_Click"/>
             <NativeMenuItem Header="{x:Static resources:Strings.ContextMenu_ServerInformation_Title}" IsVisible="False" Click="ServerDetailsMenuItem_Click" />
             <NativeMenuItem Header="{x:Static resources:Strings.ContextMenu_GameHistory_Title}" Click="JoinLastServerMenuItem_Click" />
