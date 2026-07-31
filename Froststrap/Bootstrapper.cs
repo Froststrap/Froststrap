@@ -218,7 +218,7 @@ namespace Froststrap
         private static string FormatBytes(long bytes)
         {
             // How funny would it be if i just kept going up to quettabytes lol
-            string[] sizes = [ "B", "KB", "MB", "GB" ];
+            string[] sizes = ["B", "KB", "MB", "GB"];
             double len = bytes;
             int order = 0;
             while (len >= 1024 && order < sizes.Length - 1)
@@ -3711,10 +3711,7 @@ exit";
 
                 if (_joinData.PlaceId.HasValue && _joinData.PlaceId.Value > 0)
                 {
-                    profileApplied = await ApplyFastFlagsBasedOnPlaceId(
-                        _joinData.PlaceId.Value,
-                        contentDirectory);
-
+                    profileApplied = await ApplyFastFlagsBasedOnPlaceId(_joinData.PlaceId.Value, contentDirectory);
                     if (profileApplied && File.Exists(dest))
                     {
                         var destInfo = new FileInfo(dest);
@@ -3738,9 +3735,11 @@ exit";
                                     Directory.CreateDirectory(Path.GetDirectoryName(dest)!);
                                     File.Copy(source, dest, true);
                                     App.Logger.WriteLine(LOG_IDENT, "FastFlags Applied (normal source).");
+                                }
 
-                                    var info = new FileInfo(source);
-
+                                if (File.Exists(dest))
+                                {
+                                    var info = new FileInfo(dest);
                                     lock (currentModManifest)
                                         currentModManifest[rel] = new ModFileEntry { Size = info.Length, LastModified = info.LastWriteTime };
                                 }
@@ -3763,10 +3762,7 @@ exit";
                             currentModManifest.Remove(rel);
                         App.Logger.WriteLine(LOG_IDENT, "ClientSettings deleted because UseFastFlagManager is false.");
                     }
-                    catch (Exception ex)
-                    {
-                        App.Logger.WriteException(LOG_IDENT, ex);
-                    }
+                    catch (Exception ex) { App.Logger.WriteException(LOG_IDENT, ex); }
                 }
             }
 
