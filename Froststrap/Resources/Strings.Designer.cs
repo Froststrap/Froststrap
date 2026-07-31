@@ -1448,7 +1448,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Game history is only recorded for your current Roblox session. Games will appear here as you leave them or teleport within them. Not all servers will be rejoinable..
+        ///   Looks up a localized string similar to Games will appear here as you leave them or teleport within them. Not all servers will be rejoinable..
         /// </summary>
         public static string ContextMenu_GameHistory_Description {
             get {
@@ -4153,6 +4153,42 @@ namespace Froststrap.Resources {
         public static string Menu_Bootstrapper_SmallerServer_Title {
             get {
                 return ResourceManager.GetString("Menu.Bootstrapper.SmallerServer.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable SOCD resolution for key inputs to improve strafing..
+        /// </summary>
+        public static string Menu_Bootstrapper_SoftKey_Description {
+            get {
+                return ResourceManager.GetString("Menu.Bootstrapper.SoftKey.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Soft Key.
+        /// </summary>
+        public static string Menu_Bootstrapper_SoftKey_Title {
+            get {
+                return ResourceManager.GetString("Menu.Bootstrapper.SoftKey.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select the layout pattern SoftKey should resolve inputs for..
+        /// </summary>
+        public static string Menu_Bootstrapper_SoftKeyProfile_Description {
+            get {
+                return ResourceManager.GetString("Menu.Bootstrapper.SoftKeyProfile.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keybinding Profile.
+        /// </summary>
+        public static string Menu_Bootstrapper_SoftKeyProfile_Title {
+            get {
+                return ResourceManager.GetString("Menu.Bootstrapper.SoftKeyProfile.Title", resourceCulture);
             }
         }
         

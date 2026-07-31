@@ -13,7 +13,30 @@
             Task.Run(LoadAvailableRegionsAsync);
         }
 
+        public static IEnumerable<SoftKeyProfile> SoftKeyProfiles => Enum.GetValues<SoftKeyProfile>();
+
+        public bool SoftKeyEnabled
+        {
+            get => App.Settings.Prop.SoftKeyEnabled;
+            set
+            {
+                App.Settings.Prop.SoftKeyEnabled = value;
+                OnPropertyChanged(nameof(SoftKeyEnabled));
+            }
+        }
+
+        public SoftKeyProfile SoftKeyProfile
+        {
+            get => App.Settings.Prop.SoftKeyProfile;
+            set
+            {
+                App.Settings.Prop.SoftKeyProfile = value;
+                OnPropertyChanged(nameof(SoftKeyProfile));
+            }
+        }
+
         public static IEnumerable<ProcessPriorityOption> ProcessPriorityOptions => Enum.GetValues<ProcessPriorityOption>();
+
         public static ProcessPriorityOption SelectedPriority
         {
             get => App.Settings.Prop.SelectedProcessPriority;

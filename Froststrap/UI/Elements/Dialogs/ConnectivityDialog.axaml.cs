@@ -57,22 +57,6 @@ namespace Froststrap.UI.Elements.Dialogs
 
             CloseButton.Click += (_, _) => Close();
 
-            OpenLogButton.Click += async delegate
-            {
-                if (App.Logger.Initialized && !String.IsNullOrEmpty(App.Logger.FileLocation))
-                {
-                    Utilities.ShellExecute(App.Logger.FileLocation);
-                }
-                else
-                {
-                    var topLevel = TopLevel.GetTopLevel(this);
-                    if (topLevel?.Clipboard != null)
-                    {
-                        await topLevel.Clipboard.SetTextAsync(App.Logger.AsDocument);
-                    }
-                }
-            };
-
             Loaded += (_, _) =>
             {
                 Activate();

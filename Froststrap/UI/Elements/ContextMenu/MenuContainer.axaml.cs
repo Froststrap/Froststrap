@@ -1,9 +1,7 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input.Platform;
-using Avalonia.Platform.Storage;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Input;
 using Avalonia.Threading;
 using Froststrap.Integrations;
 
@@ -26,6 +24,7 @@ namespace Froststrap.UI.Elements.ContextMenu
         private NativeMenuItem? VersionMenuItem;
         private NativeMenuItem? PlaytimeMenuItem;
         private NativeMenuItem? RichPresenceMenuItem;
+        private NativeMenuItem? SoftkeyMenuItem;
         private NativeMenuItem? InviteDeeplinkMenuItem;
         private NativeMenuItem? AutoJoinRegionMenuItem;
         private NativeMenuItem? ServerDetailsMenuItem;
@@ -37,7 +36,7 @@ namespace Froststrap.UI.Elements.ContextMenu
             InitializeComponent();
             MapNativeMenuItems();
 
-            if (Avalonia.Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
             }
@@ -57,12 +56,13 @@ namespace Froststrap.UI.Elements.ContextMenu
 
             VersionMenuItem = items.ElementAtOrDefault(0);
             PlaytimeMenuItem = items.ElementAtOrDefault(1);
-            InviteDeeplinkMenuItem = items.ElementAtOrDefault(3);
-            RichPresenceMenuItem = items.ElementAtOrDefault(4);
-            AutoJoinRegionMenuItem = items.ElementAtOrDefault(5);
-            ServerDetailsMenuItem = items.ElementAtOrDefault(6);
-            GameHistoryMenuItem = items.ElementAtOrDefault(7);
-            CloseRobloxMenuItem = items.ElementAtOrDefault(9);
+            RichPresenceMenuItem = items.ElementAtOrDefault(3);
+            SoftkeyMenuItem = items.ElementAtOrDefault(4);
+            InviteDeeplinkMenuItem = items.ElementAtOrDefault(5);
+            AutoJoinRegionMenuItem = items.ElementAtOrDefault(6);
+            ServerDetailsMenuItem = items.ElementAtOrDefault(7);
+            GameHistoryMenuItem = items.ElementAtOrDefault(8);
+            CloseRobloxMenuItem = items.ElementAtOrDefault(10);
         }
 
         public MenuContainer(Watcher watcher) : this()
@@ -83,6 +83,7 @@ namespace Froststrap.UI.Elements.ContextMenu
                         ServerDetailsMenuItem?.SetValue(MenuItem.IsVisibleProperty, false);
                         GameHistoryMenuItem?.SetValue(MenuItem.IsVisibleProperty, false);
                         AutoJoinRegionMenuItem?.SetValue(MenuItem.IsVisibleProperty, false);
+                        SoftkeyMenuItem?.SetValue(MenuItem.IsVisibleProperty, false);
                         CloseRobloxMenuItem?.SetValue(MenuItem.HeaderProperty, Strings.Menu_ContextMenu_CloseStudio);
 
                         if (App.Settings.Prop.PlaytimeCounter)
@@ -97,6 +98,9 @@ namespace Froststrap.UI.Elements.ContextMenu
                         if (App.Settings.Prop.PlaytimeCounter) StartTotalPlaytimeTimer();
 
                         GameHistoryMenuItem?.SetValue(MenuItem.IsVisibleProperty, App.Settings.Prop.ShowGameHistoryMenu);
+
+                        SoftkeyMenuItem?.IsVisible = App.Settings.Prop.SoftKeyEnabled && _watcher?.Softkey != null;
+                        SoftkeyMenuItem?.IsChecked = true;
                     }
 
                     if (RichPresenceMenuItem != null)
@@ -179,6 +183,14 @@ namespace Froststrap.UI.Elements.ContextMenu
 
                 _watcher?.PlayerRichPresence?.SetVisibility(isChecked);
                 _watcher?.StudioRichPresence?.SetVisibility(isChecked);
+            }
+        }
+
+        private void SoftkeyMenuItem_Click(object? sender, EventArgs e)
+        {
+            if (sender is NativeMenuItem item)
+            {
+                _watcher?.Softkey?.SetEnabled(item.IsChecked);
             }
         }
 

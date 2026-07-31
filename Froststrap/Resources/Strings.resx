@@ -1092,7 +1092,7 @@ Check if Roblox works with [the original launcher]({1}). If it doesn't, then thi
     <value>Rejoin</value>
   </data>
   <data name="ContextMenu.GameHistory.Description" xml:space="preserve">
-    <value>Game history is only recorded for your current Roblox session. Games will appear here as you leave them or teleport within them. Not all servers will be rejoinable.</value>
+    <value>Games will appear here as you leave them or teleport within them. Not all servers will be rejoinable.</value>
   </data>
   <data name="ActivityWatcher.LocationQueryFailed" xml:space="preserve">
     <value>The server location could not be queried. You may be joining games too quickly.</value>
@@ -3211,5 +3211,17 @@ The override will be disabled and the channel version will be used instead.</val
   </data>
   <data name="Dialog.Exception.CopyLog" xml:space="preserve">
     <value>Copy Log to Clipboard</value>
+  </data>
+  <data name="Menu.Bootstrapper.SoftKey.Title" xml:space="preserve">
+    <value>Soft Key</value>
+  </data>
+  <data name="Menu.Bootstrapper.SoftKey.Description" xml:space="preserve">
+    <value>Enable SOCD resolution for key inputs to improve strafing.</value>
+  </data>
+  <data name="Menu.Bootstrapper.SoftKeyProfile.Title" xml:space="preserve">
+    <value>Keybinding Profile</value>
+  </data>
+  <data name="Menu.Bootstrapper.SoftKeyProfile.Description" xml:space="preserve">
+    <value>Select the layout pattern SoftKey should resolve inputs for.</value>
   </data>
 </root>
