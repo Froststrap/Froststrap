@@ -12,6 +12,8 @@ using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.Integrations;
+using Froststrap.Models;
+using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 
 namespace Froststrap.UI.ViewModels.Settings
@@ -312,32 +314,95 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private async Task LoadRegionsAsync()
         {
-            IsLoading = true;
-            LoadingMessage = Strings.Menu_RegionSelector_LoadingDatacenters;
-
-            var result = await _fetcher!.GetDatacentersAsync() ?? await LoadDatacentersFromCacheAsync();
-
-            if (result == null)
+            var cacheResult = await LoadDatacentersFromCacheAsync();
+            if (cacheResult != null)
             {
-                LoadingMessage = Strings.Menu_RegionSelector_FailedToLoadDatacenters;
-                IsLoading = false;
+                var (regions, dcMap) = cacheResult.Value;
+                PopulateRegions(regions, dcMap);
                 return;
             }
 
-            if (result.Value.regions != null)
+            IsLoading = true;
+            LoadingMessage = Strings.Menu_RegionSelector_LoadingDatacenters;
+
+            var apiResult = await _fetcher!.GetDatacentersAsync();
+            if (apiResult != null)
             {
-                Regions.Clear();
-                foreach (var r in result.Value.regions) Regions.Add(r);
-                _dcMap = result.Value.datacenterMap;
-                await SaveDatacentersToCacheAsync(result.Value);
+                var (regions, dcMap) = apiResult.Value;
+                PopulateRegions(regions, dcMap);
+                await SaveDatacentersToCacheAsync(dcMap);
+                LoadingMessage = string.Format(Strings.Menu_RegionSelector_LoadedRegions, Regions.Count);
+                IsLoading = false;
+                await Task.Delay(800);
+                LoadingMessage = "";
+                return;
             }
 
-            SelectedRegion = Regions.FirstOrDefault(r => r.Equals(_selectedRegion, StringComparison.OrdinalIgnoreCase)) ?? Regions.FirstOrDefault();
+            var staleCache = await LoadDatacentersFromCacheAsync(allowExpired: true);
+            if (staleCache != null)
+            {
+                var (regions, dcMap) = staleCache.Value;
+                PopulateRegions(regions, dcMap);
+                LoadingMessage = Strings.Menu_RegionSelector_UsingCachedData;
+                IsLoading = false;
+                await Task.Delay(1500);
+                LoadingMessage = "";
+                return;
+            }
 
-            LoadingMessage = string.Format(Strings.Menu_RegionSelector_LoadedRegions, Regions.Count);
+            LoadingMessage = Strings.Menu_RegionSelector_FailedToLoadDatacenters;
             IsLoading = false;
-            await Task.Delay(800);
-            LoadingMessage = "";
+        }
+
+        private void PopulateRegions(List<string> regions, Dictionary<int, string> dcMap)
+        {
+            var sorted = regions
+                .OrderBy(r => r, StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            Regions.Clear();
+            foreach (var r in sorted)
+                Regions.Add(r);
+
+            _dcMap = dcMap;
+
+            Dispatcher.UIThread.Post(() =>
+            {
+                var preferred = Regions.FirstOrDefault(r => r.Equals(_selectedRegion, StringComparison.OrdinalIgnoreCase));
+                SelectedRegion = preferred ?? Regions.FirstOrDefault();
+            }, DispatcherPriority.Background);
+        }
+
+        private static async Task<(List<string> regions, Dictionary<int, string> datacenterMap)?> LoadDatacentersFromCacheAsync(bool allowExpired = false)
+        {
+            try
+            {
+                if (!File.Exists(GetCachePath())) return null;
+
+                var json = await File.ReadAllTextAsync(GetCachePath());
+                var cache = JsonSerializer.Deserialize<DatacentersCache>(json);
+
+                if (cache == null) return null;
+
+                if (!allowExpired && cache.LastUpdated < DateTime.UtcNow.AddDays(-7))
+                    return null;
+
+                var map = new Dictionary<int, string>();
+                var regions = new List<string>();
+
+                foreach (var kvp in cache.Regions)
+                {
+                    regions.Add(kvp.Key);
+                    foreach (var id in kvp.Value)
+                        map[id] = kvp.Key;
+                }
+
+                return (regions, map);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         private async Task SearchAsync()
@@ -385,16 +450,22 @@ namespace Froststrap.UI.ViewModels.Settings
                 if (_displayedServerIds.Add(s.Id) && s.DataCenterId.HasValue &&
                     _dcMap!.TryGetValue(s.DataCenterId.Value, out var mappedRegion) && mappedRegion == SelectedRegion)
                 {
-                    Servers.Add(new ServerEntry
+                    var serverEntry = new ServerEntry
                     {
                         Number = number++,
                         ServerId = s.Id,
                         Players = $"{s.Playing}/{s.MaxPlayers}",
+                        PlayingCount = s.Playing,
                         Region = s.Region,
                         DataCenterId = s.DataCenterId,
                         Uptime = s.UptimeDisplay,
+                        PlayerTokens = s.PlayerTokens,
                         JoinCommand = new RelayCommand(() => JoinServer(s.Id))
-                    });
+                    };
+
+                    Servers.Add(serverEntry);
+
+                    _ = serverEntry.LoadThumbnailsAsync();
                 }
             }
 
@@ -416,17 +487,52 @@ namespace Froststrap.UI.ViewModels.Settings
             catch (Exception ex) { App.Logger.WriteException(LOG_IDENT, ex); }
         }
 
+        private async Task LoadMoreServersAsync()
+        {
+            IsLoading = true;
+
+            for (int i = 0; i < 5 && !string.IsNullOrWhiteSpace(NextCursor); i++)
+            {
+                await LoadServersAsync();
+            }
+
+            IsLoading = false;
+        }
+
         private static string GetCachePath() => Path.Combine(Paths.Cache, "DataCentersCache.json");
 
-        private static async Task SaveDatacentersToCacheAsync((List<string> regions, Dictionary<int, string> datacenterMap) data)
+        private static async Task SaveDatacentersToCacheAsync(Dictionary<int, string> datacenterMap)
         {
             try
             {
+                var regionDict = new Dictionary<string, List<int>>();
+                foreach (var kvp in datacenterMap)
+                {
+                    if (!regionDict.TryGetValue(kvp.Value, out var list))
+                    {
+                        list = [];
+                        regionDict[kvp.Value] = list;
+                    }
+                    list.Add(kvp.Key);
+                }
+
+                var sortedRegionDict = new Dictionary<string, List<int>>();
+                foreach (var region in regionDict.Keys.OrderBy(r => r, StringComparer.OrdinalIgnoreCase))
+                {
+                    sortedRegionDict[region] = regionDict[region];
+                }
+
+                var cache = new DatacentersCache
+                {
+                    Regions = sortedRegionDict,
+                    LastUpdated = DateTime.UtcNow
+                };
+
                 Directory.CreateDirectory(Paths.Cache);
-                var json = JsonSerializer.Serialize(new { data.regions, data.datacenterMap, LastUpdated = DateTime.UtcNow });
+                var json = JsonSerializer.Serialize(cache);
                 await File.WriteAllTextAsync(GetCachePath(), json);
             }
-            catch { /* Ignore cache save errors */ }
+            catch { /* ignore cache save errors */ }
         }
 
         private static async Task<(List<string> regions, Dictionary<int, string> datacenterMap)?> LoadDatacentersFromCacheAsync()
@@ -434,11 +540,29 @@ namespace Froststrap.UI.ViewModels.Settings
             try
             {
                 if (!File.Exists(GetCachePath())) return null;
+
                 var json = await File.ReadAllTextAsync(GetCachePath());
                 var cache = JsonSerializer.Deserialize<DatacentersCache>(json);
-                return (cache != null && cache.LastUpdated > DateTime.UtcNow.AddDays(-7)) ? (cache.Regions, cache.DatacenterMap) : null;
+
+                if (cache == null || cache.LastUpdated < DateTime.UtcNow.AddDays(-7))
+                    return null;
+
+                var map = new Dictionary<int, string>();
+                var regions = new List<string>();
+
+                foreach (var kvp in cache.Regions)
+                {
+                    regions.Add(kvp.Key);
+                    foreach (var id in kvp.Value)
+                        map[id] = kvp.Key;
+                }
+
+                return (regions, map);
             }
-            catch { return null; }
+            catch
+            {
+                return null;
+            }
         }
 
         private async Task SearchGamesAsync(CancellationToken token = default)
@@ -484,15 +608,6 @@ namespace Froststrap.UI.ViewModels.Settings
             }
             catch (Exception ex) { App.Logger.WriteLine(LOG_IDENT, $"Search error: {ex.Message}"); }
             finally { IsGameSearchLoading = false; }
-        }
-
-        private async Task LoadMoreServersAsync()
-        {
-            IsLoading = true;
-            _ = Servers.Count;
-            for (int i = 0; i < 5 && !string.IsNullOrWhiteSpace(NextCursor); i++)
-                await LoadServersAsync();
-            IsLoading = false;
         }
     }
 }

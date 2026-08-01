@@ -3,10 +3,7 @@
     public class DatacentersCache
     {
         [JsonPropertyName("regions")]
-        public List<string> Regions { get; set; } = [];
-
-        [JsonPropertyName("datacenterMap")]
-        public Dictionary<int, string> DatacenterMap { get; set; } = [];
+        public Dictionary<string, List<int>> Regions { get; set; } = [];
 
         [JsonPropertyName("lastUpdated")]
         public DateTime LastUpdated { get; set; }

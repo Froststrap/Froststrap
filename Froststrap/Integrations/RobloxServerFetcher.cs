@@ -392,7 +392,7 @@ namespace Froststrap.Integrations
             var instances = new ConcurrentBag<ServerInstance>();
             var placeCache = _serverCache.GetOrAdd(placeId, _ => []);
 
-            var serverInfos = new List<(string jobId, int playing, int maxPlayers, JsonElement serverElem)>();
+            var serverInfos = new List<(string jobId, int playing, int maxPlayers, List<string> playerTokens)>();
             var serverIdsToFetch = new List<string>();
 
             foreach (var serverElem in dataElement.EnumerateArray())
@@ -400,6 +400,12 @@ namespace Froststrap.Integrations
                 string jobId = serverElem.GetProperty("id").GetString() ?? "";
                 int playing = serverElem.GetProperty("playing").GetInt32();
                 int maxPlayers = serverElem.GetProperty("maxPlayers").GetInt32();
+
+                var playerTokensElement = serverElem.GetProperty("playerTokens");
+                var playerTokens = playerTokensElement.EnumerateArray()
+                                      .Select(x => x.GetString() ?? "")
+                                      .Where(s => !string.IsNullOrEmpty(s))
+                                      .ToList();
 
                 if (playing >= maxPlayers) continue;
 
@@ -409,7 +415,7 @@ namespace Froststrap.Integrations
                     continue;
                 }
 
-                serverInfos.Add((jobId, playing, maxPlayers, serverElem));
+                serverInfos.Add((jobId, playing, maxPlayers, playerTokens));
                 serverIdsToFetch.Add(jobId);
             }
 
@@ -434,7 +440,7 @@ namespace Froststrap.Integrations
 
             for (int i = 0; i < serverInfos.Count; i++)
             {
-                var (jobId, playing, maxPlayers, _) = serverInfos[i];
+                var (jobId, playing, maxPlayers, playerTokens) = serverInfos[i];
                 var (_, dcId) = regionResults[i];
 
                 string region = (dcId.HasValue && _datacenterIdToRegion!.TryGetValue(dcId.Value, out var mapped)) ? mapped : "Unknown";
@@ -447,7 +453,8 @@ namespace Froststrap.Integrations
                     MaxPlayers = maxPlayers,
                     Region = region,
                     DataCenterId = dcId,
-                    FirstSeen = uptime
+                    FirstSeen = uptime,
+                    PlayerTokens = playerTokens
                 };
 
                 if (region != "Unknown") placeCache[jobId] = server;

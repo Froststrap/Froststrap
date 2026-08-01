@@ -20,6 +20,9 @@
         [JsonPropertyName("firstSeen")]
         public DateTime? FirstSeen { get; set; }
 
+        [JsonPropertyName("playerTokens")]
+        public List<string> PlayerTokens { get; set; } = [];
+
         [JsonIgnore]
         public string UptimeDisplay
         {

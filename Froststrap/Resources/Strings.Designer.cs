@@ -8583,6 +8583,15 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Using cached datacenter data (offline).
+        /// </summary>
+        public static string Menu_RegionSelector_UsingCachedData {
+            get {
+                return ResourceManager.GetString("Menu.RegionSelector.UsingCachedData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Restart.
         /// </summary>
         public static string Menu_Restart {

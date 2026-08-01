@@ -3221,4 +3221,7 @@ The override will be disabled and the channel version will be used instead.</val
   <data name="Menu.Bootstrapper.SoftKeyProfile.Description" xml:space="preserve">
     <value>Select the layout pattern SoftKey should resolve inputs for.</value>
   </data>
+  <data name="Menu.RegionSelector.UsingCachedData" xml:space="preserve">
+    <value>Using cached datacenter data (offline)</value>
+  </data>
 </root>
