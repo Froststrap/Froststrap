@@ -4672,7 +4672,9 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Move Froststrap from &apos;{0}&apos; to &apos;{1}&apos;?\n\nAll files will be moved, shortcuts updated, and the application will restart..
+        ///   Looks up a localized string similar to Move Froststrap from &apos;{0}&apos; to &apos;{1}&apos;?
+        ///	
+        ///All files will be moved, shortcuts updated, and the application will restart..
         /// </summary>
         public static string Menu_Deployment_MoveInstallation_Confirm {
             get {
@@ -8556,7 +8558,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Log in using account manager or turn on &apos;Froststrap Account Permission&apos; or report this to our discord server to use..
+        ///   Looks up a localized string similar to Log in to &apos;Account Manager&apos; or turn on &apos;Froststrap Account Permission&apos; in bootstrapper page to use..
         /// </summary>
         public static string Menu_RegionSelector_LoginRequired {
             get {

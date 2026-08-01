@@ -2485,7 +2485,7 @@ Do you want to install the plugin?</value>
     <value>Small Servers</value>
   </data>
   <data name="Menu.RegionSelector.LoginRequired" xml:space="preserve">
-    <value>Log in using account manager or turn on 'Froststrap Account Permission' or report this to our discord server to use.</value>
+    <value>Log in to 'Account Manager' or turn on 'Froststrap Account Permission' in bootstrapper page to use.</value>
   </data>
   <data name="Menu.RegionSelector.EnterPlaceId" xml:space="preserve">
     <value>Enter a Place ID and click Search to view servers.</value>
@@ -3240,7 +3240,9 @@ The override will be disabled and the channel version will be used instead.</val
     <value>Please specify a valid directory.</value>
   </data>
   <data name="Menu.Deployment.MoveInstallation.Confirm" xml:space="preserve">
-    <value>Move Froststrap from '{0}' to '{1}'?\n\nAll files will be moved, shortcuts updated, and the application will restart.</value>
+    <value>Move Froststrap from '{0}' to '{1}'?
+	
+All files will be moved, shortcuts updated, and the application will restart.</value>
   </data>
   <data name="Menu.Deployment.MoveInstallation.Success" xml:space="preserve">
     <value>Froststrap has been moved successfully. The application will now restart.</value>
