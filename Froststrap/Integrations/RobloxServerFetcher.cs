@@ -324,20 +324,6 @@ namespace Froststrap.Integrations
             return null;
         }
 
-        private static async Task<string?> GetCookieFromRemoteDataAsync()
-        {
-            try
-            {
-                if (App.RemoteData != null)
-                {
-                    await App.RemoteData.WaitUntilDataFetched();
-                    return App.RemoteData.Prop?.Dummy;
-                }
-            }
-            catch (Exception ex) { App.Logger.WriteException($"{LOG_IDENT}::GetCookieFromRemoteData", ex); }
-            return null;
-        }
-
         public async Task<string?> ResolveCookieAsync()
         {
             var accountManagerCookie = await GetCookieFromAccountManagerAsync();
@@ -350,15 +336,8 @@ namespace Froststrap.Integrations
             var cookiesManagerCookie = await GetCookieFromCookiesManagerAsync();
             if (!string.IsNullOrWhiteSpace(cookiesManagerCookie) && await ValidateCookieAsync(cookiesManagerCookie))
             {
-                App.Logger.WriteLine(LOG_IDENT, "Account Manager cookie failed or missing. Using valid cookie from Cookies Manager.");
+                App.Logger.WriteLine(LOG_IDENT, "Using valid cookie from Cookies Manager.");
                 return cookiesManagerCookie;
-            }
-
-            var remoteDataCookie = await GetCookieFromRemoteDataAsync();
-            if (!string.IsNullOrWhiteSpace(remoteDataCookie) && await ValidateCookieAsync(remoteDataCookie))
-            {
-                App.Logger.WriteLine(LOG_IDENT, "Cookies Manager cookie failed or missing. Using valid cookie from Remote Data.");
-                return remoteDataCookie;
             }
 
             App.Logger.WriteLine(LOG_IDENT, "Failed to resolve any valid .ROBLOSECURITY cookie.");
@@ -580,13 +559,13 @@ namespace Froststrap.Integrations
         }
 
         public async Task<ServerSelectionResult> FindBestServerInRegionAsync(
-    long placeId,
-    List<string> topRegions,
-    bool joinSmallerServer = true,
-    int maxServerCheck = 100,
-    int maxPages = 5,
-    string? cookie = null,
-    CancellationToken cancellationToken = default)
+            long placeId,
+            List<string> topRegions,
+            bool joinSmallerServer = true,
+            int maxServerCheck = 100,
+            int maxPages = 5,
+            string? cookie = null,
+            CancellationToken cancellationToken = default)
         {
             try
             {
