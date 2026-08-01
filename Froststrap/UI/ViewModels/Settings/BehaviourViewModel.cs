@@ -4,13 +4,78 @@
     {
         private List<string> _availableRegions = [];
         private bool _isLoadingRegions = false;
+        private static string GetCachePath() => Path.Combine(Paths.Cache, "DataCentersCache.json");
+
+        private static async Task SaveDatacentersToCacheAsync(Dictionary<int, string> datacenterMap)
+        {
+            try
+            {
+                var regionDict = new Dictionary<string, List<int>>();
+                foreach (var kvp in datacenterMap)
+                {
+                    if (!regionDict.TryGetValue(kvp.Value, out var list))
+                    {
+                        list = [];
+                        regionDict[kvp.Value] = list;
+                    }
+                    list.Add(kvp.Key);
+                }
+
+                var sortedDict = regionDict
+                    .OrderBy(kvp => kvp.Key, StringComparer.OrdinalIgnoreCase)
+                    .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+
+                var cache = new DatacentersCache
+                {
+                    Regions = sortedDict,
+                    LastUpdated = DateTime.UtcNow
+                };
+
+                Directory.CreateDirectory(Paths.Cache);
+                var json = JsonSerializer.Serialize(cache);
+                await File.WriteAllTextAsync(GetCachePath(), json);
+            }
+            catch { /* ignore */ }
+        }
+
+        private static async Task<(List<string> regions, Dictionary<int, string> datacenterMap)?> LoadDatacentersFromCacheAsync(bool allowExpired = false)
+        {
+            try
+            {
+                if (!File.Exists(GetCachePath())) return null;
+
+                var json = await File.ReadAllTextAsync(GetCachePath());
+                var cache = JsonSerializer.Deserialize<DatacentersCache>(json);
+
+                if (cache == null) return null;
+
+                if (!allowExpired && cache.LastUpdated < DateTime.UtcNow.AddDays(-7))
+                    return null;
+
+                var map = new Dictionary<int, string>();
+                var regions = new List<string>();
+
+                foreach (var kvp in cache.Regions)
+                {
+                    regions.Add(kvp.Key);
+                    foreach (var id in kvp.Value)
+                        map[id] = kvp.Key;
+                }
+
+                return (regions, map);
+            }
+            catch
+            {
+                return null;
+            }
+        }
 
         public BehaviourViewModel()
         {
             App.Cookies.StateChanged += (_, state) =>
                 CookieLoadingFailed = state is not (CookieState.Success or CookieState.Unknown);
 
-            Task.Run(LoadAvailableRegionsAsync);
+            _ = LoadAvailableRegionsAsync();
         }
 
         public static IEnumerable<SoftKeyProfile> SoftKeyProfiles => Enum.GetValues<SoftKeyProfile>();
@@ -191,14 +256,23 @@
 
         private async Task LoadAvailableRegionsAsync()
         {
+            List<string> baseRegions;
+
+            var cacheResult = await LoadDatacentersFromCacheAsync();
+            if (cacheResult != null)
+            {
+                baseRegions = cacheResult.Value.regions;
+                AvailableRegions = BuildAvailableRegionsWithCurrent(baseRegions);
+                await SyncSelectedRegionAfterLoad();
+                return;
+            }
+
+            IsLoadingRegions = true;
+
             try
             {
-                IsLoadingRegions = true;
-
                 var datacenters = await Http.GetJson<List<DatacenterEntry>>(
                     new Uri("https://apis.rovalra.com/v1/datacenters/list"));
-
-                List<string> baseRegions = new List<string>();
 
                 if (datacenters != null && datacenters.Count > 0)
                 {
@@ -219,21 +293,44 @@
                         }
                     }
 
-                    baseRegions = regions.OrderBy(r => r).ToList();
-                }
+                    baseRegions = [.. regions.OrderBy(r => r, StringComparer.OrdinalIgnoreCase)];
 
-                AvailableRegions = BuildAvailableRegionsWithCurrent(baseRegions);
+                    var map = new Dictionary<int, string>();
+                    foreach (var dc in datacenters)
+                    {
+                        string regionKey = string.IsNullOrWhiteSpace(dc.Location?.City) && string.IsNullOrWhiteSpace(dc.Location?.Country)
+                            ? "Unknown"
+                            : $"{dc.Location.City}, {dc.Location.Country}".Trim().Trim(',', ' ');
+                        foreach (var id in dc.DataCenterIds)
+                            map[id] = regionKey;
+                    }
+                    await SaveDatacentersToCacheAsync(map);
+                }
+                else
+                {
+                    baseRegions = [];
+                }
             }
             catch (Exception ex)
             {
                 App.Logger.WriteException("BehaviourViewModel::LoadAvailableRegions", ex);
-                AvailableRegions = BuildAvailableRegionsWithCurrent(new List<string>());
+
+                var stale = await LoadDatacentersFromCacheAsync(allowExpired: true);
+                if (stale != null)
+                {
+                    baseRegions = stale.Value.regions;
+                }
+                else
+                {
+                    baseRegions = [];
+                }
             }
             finally
             {
                 IsLoadingRegions = false;
             }
 
+            AvailableRegions = BuildAvailableRegionsWithCurrent(baseRegions);
             await SyncSelectedRegionAfterLoad();
         }
 
