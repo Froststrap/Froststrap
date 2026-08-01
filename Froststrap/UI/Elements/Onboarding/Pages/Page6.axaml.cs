@@ -1,4 +1,4 @@
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Froststrap.UI.ViewModels.Onboarding;
 
 namespace Froststrap.UI.Elements.Onboarding.Pages
