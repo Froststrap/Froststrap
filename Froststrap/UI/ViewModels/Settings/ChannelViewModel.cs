@@ -4,7 +4,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.RobloxInterfaces;
-using System.Collections.ObjectModel;
+using Microsoft.Win32;
 using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Settings
@@ -14,12 +14,14 @@ namespace Froststrap.UI.ViewModels.Settings
         private CancellationTokenSource? _playerCts;
         private CancellationTokenSource? _studioCts;
 
+        private bool _isMoving;
+
         public ChannelViewModel()
         {
             _ = LoadChannelDeployInfo(App.Settings.Prop.PlayerChannel, false);
             _ = LoadChannelDeployInfo(App.Settings.Prop.StudioChannel, true);
             BrowseInstallDirectoryCommand = new AsyncRelayCommand<object?>(BrowseInstallDirectoryAsync);
-            MoveInstallDirectoryCommand = new AsyncRelayCommand<object?>(MoveInstallDirectoryAsync);
+            MoveInstallDirectoryCommand = new AsyncRelayCommand<object?>(MoveInstallDirectoryAsync, CanMove);
         }
 
         public static IEnumerable<UpdateCheck> UpdateCheckValues => Enum.GetValues<UpdateCheck>();
@@ -45,13 +47,21 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        // TODO: Instead of a setting, read directly from registry
         public string InstallDirectory
         {
-            get => App.Settings.Prop.InstallDirectory ?? Paths.Base;
+            get
+            {
+                using var key = Registry.CurrentUser.OpenSubKey(App.UninstallKey);
+                if (key?.GetValue("InstallLocation") is string location && Directory.Exists(location))
+                    return location;
+
+                return Paths.Base;
+            }
             set
             {
-                App.Settings.Prop.InstallDirectory = value;
+                using var key = Registry.CurrentUser.CreateSubKey(App.UninstallKey);
+                key?.SetValue("InstallLocation", value);
+
                 OnPropertyChanged();
             }
         }
@@ -730,34 +740,37 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        // TODO: fix the app freezing when doing this by doing it on a diffrent thread maybe ? too lazy to do it rn and i dont wanna touch this
         private async Task MoveInstallDirectoryAsync(object? parameter)
         {
+            if (_isMoving) return;
+
             string newDir = InstallDirectory;
             string currentDir = Paths.Base;
 
             if (string.Equals(newDir, currentDir, StringComparison.OrdinalIgnoreCase))
             {
-                await Frontend.ShowMessageBox("The new directory is the same as the current installation.", MessageBoxImage.Information);
+                await Frontend.ShowMessageBox(Strings.Menu_Deployment_MoveInstallation_SameDirectory, MessageBoxImage.Information);
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(newDir))
             {
-                await Frontend.ShowMessageBox("Please specify a valid directory.", MessageBoxImage.Warning);
+                await Frontend.ShowMessageBox(Strings.Menu_Deployment_MoveInstallation_InvalidDirectory, MessageBoxImage.Warning);
                 return;
             }
 
-            // TODO: Add translations here and in ui
             var confirm = await Frontend.ShowMessageBox(
-                $"Move Froststrap from '{currentDir}' to '{newDir}'?\n\nAll files will be moved, shortcuts updated, and the application will restart.",
+                string.Format(Strings.Menu_Deployment_MoveInstallation_Confirm, currentDir, newDir),
                 MessageBoxImage.Question,
                 MessageBoxButton.YesNo);
+
             if (confirm != MessageBoxResult.Yes) return;
 
             try
             {
-                App.Settings.Prop.InstallDirectory = newDir;
+                _isMoving = true;
+                MoveInstallDirectoryCommand.NotifyCanExecuteChanged();
+
                 App.Settings.Save();
                 App.State.Save();
                 App.FastFlags.Save();
@@ -766,14 +779,32 @@ namespace Froststrap.UI.ViewModels.Settings
                 if (OperatingSystem.IsLinux())
                     App.SoberSettings.Save();
 
-                await Installer.MoveInstallation(newDir);
+                await Task.Run(() => Installer.MoveInstallation(newDir));
+
+                InstallDirectory = newDir;
+
+                await Frontend.ShowMessageBox(Strings.Menu_Deployment_MoveInstallation_Success, MessageBoxImage.Information);
+
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = Paths.Process,
+                    UseShellExecute = true
+                });
+                App.Terminate();
             }
             catch (Exception ex)
             {
-                await Frontend.ShowMessageBox($"Move failed: {ex.Message}", MessageBoxImage.Error);
+                await Frontend.ShowMessageBox(string.Format(Strings.Menu_Deployment_MoveInstallation_Failed, ex.Message), MessageBoxImage.Error);
                 App.Logger.WriteException("MoveInstallDirectory", ex);
             }
+            finally
+            {
+                _isMoving = false;
+                MoveInstallDirectoryCommand.NotifyCanExecuteChanged();
+            }
         }
+
+        private bool CanMove(object? parameter) => !_isMoving;
 
         private static TopLevel? GetTopLevel(object? parameter)
         {

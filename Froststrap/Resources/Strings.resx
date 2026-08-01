@@ -3224,4 +3224,28 @@ The override will be disabled and the channel version will be used instead.</val
   <data name="Menu.RegionSelector.UsingCachedData" xml:space="preserve">
     <value>Using cached datacenter data (offline)</value>
   </data>
+  <data name="Menu.Deployment.MoveInstallation.Title" xml:space="preserve">
+    <value>Installation Directory</value>
+  </data>
+  <data name="Menu.Deployment.MoveInstallation.Description" xml:space="preserve">
+    <value>Change where Froststrap is installed. All files will be moved to the new location.</value>
+  </data>
+  <data name="Menu.Deployment.MoveInstallation" xml:space="preserve">
+    <value>Move Installation</value>
+  </data>
+  <data name="Menu.Deployment.MoveInstallation.SameDirectory" xml:space="preserve">
+    <value>The new directory is the same as the current installation.</value>
+  </data>
+  <data name="Menu.Deployment.MoveInstallation.InvalidDirectory" xml:space="preserve">
+    <value>Please specify a valid directory.</value>
+  </data>
+  <data name="Menu.Deployment.MoveInstallation.Confirm" xml:space="preserve">
+    <value>Move Froststrap from '{0}' to '{1}'?\n\nAll files will be moved, shortcuts updated, and the application will restart.</value>
+  </data>
+  <data name="Menu.Deployment.MoveInstallation.Success" xml:space="preserve">
+    <value>Froststrap has been moved successfully. The application will now restart.</value>
+  </data>
+  <data name="Menu.Deployment.MoveInstallation.Failed" xml:space="preserve">
+    <value>Move failed: {0}</value>
+  </data>
 </root>

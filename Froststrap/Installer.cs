@@ -1,5 +1,6 @@
-﻿using System.Runtime.Versioning;
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
+using System.Runtime.Versioning;
+using System.Security.Cryptography;
 
 namespace Froststrap
 {
@@ -602,14 +603,14 @@ namespace Froststrap
 
             string[] itemsToMove = [
                 "Settings.json",
-        "State.json",
-        "StudioState.json",
-        "PlayerState.json",
-        "Uninstall.exe",
-        "Cache",
-        "CustomCursorsSets",
-        "CustomThemes",
-        "Modifications"
+                "State.json",
+                "StudioState.json",
+                "PlayerState.json",
+                "Uninstall.exe",
+                "Cache",
+                "CustomCursorsSets",
+                "CustomThemes",
+                "Modifications"
             ];
 
             string exeName = Path.GetFileName(Paths.Process);
@@ -654,11 +655,6 @@ namespace Froststrap
                 }
             }
 
-            UpdateRegistryForNewLocation(newDir);
-
-            App.Settings.Prop.InstallDirectory = newDir;
-            App.Settings.Save();
-
             string oldExePath = Paths.Process;
             string newExePath = Path.Combine(newDir, exeName);
 
@@ -672,26 +668,46 @@ namespace Froststrap
                     {
                         await srcStream.CopyToAsync(dstStream);
                     }
+
+                    var srcInfo = new FileInfo(oldExePath);
+                    var dstInfo = new FileInfo(newExePath);
+                    if (srcInfo.Length != dstInfo.Length)
+                        throw new IOException("Size mismatch after copy.");
+
+                    byte[] srcHash, dstHash;
+                    using (var srcFs = new FileStream(oldExePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+                    using (var dstFs = new FileStream(newExePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+                    {
+                        var buffer = new byte[1024 * 1024];
+                        int read = await srcFs.ReadAsync(buffer);
+                        srcHash = MD5.HashData(buffer.AsSpan(0, read));
+                        read = await dstFs.ReadAsync(buffer);
+                        dstHash = MD5.HashData(buffer.AsSpan(0, read));
+                    }
+                    if (!srcHash.SequenceEqual(dstHash))
+                        throw new IOException("Hash mismatch after copy.");
+
                     copied = true;
                     break;
                 }
                 catch (Exception ex)
                 {
                     App.Logger.WriteLine(LOG_IDENT, $"Copy attempt {i + 1} failed: {ex.Message}");
-                    await Task.Delay(500);
+                    if (i < 4) await Task.Delay(500);
                 }
             }
             if (!copied)
                 throw new IOException("Failed to copy executable after multiple retries.");
 
+            UpdateRegistryForNewLocation(newDir);
+
             string batchName = "MoveHelper.bat";
             string batchPath = Path.Combine(newDir, batchName);
 
-            // TODO: Fix it not copying exe correctly and corrupting it
             string batchContent = $@"@echo off
-timeout /t 2 /nobreak >nul
+timeout /t 3 /nobreak >nul
 start """" ""{newExePath}"" -settings
-timeout /t 2 /nobreak >nul
+timeout /t 3 /nobreak >nul
 rmdir /s /q ""{oldDir}""
 del ""%~f0""
 ";

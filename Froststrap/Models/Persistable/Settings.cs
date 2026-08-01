@@ -80,7 +80,6 @@ namespace Froststrap.Models.Persistable
         // Deployment Page
         public UpdateCheck UpdateChecks { get; set; } = UpdateCheck.Stable;
         public bool GameSearch { get; set; } = true;
-        public string? InstallDirectory { get; set; }
         public bool UpdateRoblox { get; set; } = true;
         public bool AutomaticallyUpdateSober { get; set; } = true;
         public string RobloxDomain { get; set; } = RobloxInterfaces.Deployment.DefaultRobloxDomain;

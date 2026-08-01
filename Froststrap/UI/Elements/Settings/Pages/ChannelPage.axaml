@@ -66,25 +66,25 @@
                 </controls:OptionControl>
             </controls:CardExpander>
 
-            <!-- TODO: add strings -->
             <controls:OptionControl
-                Header="Installation Directory"
-                Description="Change where Froststrap is installed. All files will be moved to the new location.">
+                Header="{x:Static resources:Strings.Menu_Deployment_MoveInstallation_Title}"
+                Description="{x:Static resources:Strings.Menu_Deployment_MoveInstallation_Description}"
+				IsVisible="{x:Static gv:GlobalViewModel.IsWindows}">
                 <Grid ColumnDefinitions="*,Auto" RowDefinitions="*,Auto" RowSpacing="6" ColumnSpacing="4" Width="200">
                     <TextBox
                         Text="{Binding InstallDirectory, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                    <Button
+                    <controls:IconButton
                         Grid.Column="1"
                         Command="{Binding BrowseInstallDirectoryCommand}"
                         CommandParameter="{Binding $parent[UserControl]}"
-                        Content="Browse" />
+                        Icon="Folder" />
                     <Button
                         Command="{Binding MoveInstallDirectoryCommand}"
                         CommandParameter="{Binding $parent[UserControl]}"
                         HorizontalAlignment="Stretch"
                         Grid.ColumnSpan="2"
                         Grid.Row="1"
-                        Content="Move Installation" />
+                        Content="{x:Static resources:Strings.Menu_Deployment_MoveInstallation}" />
                 </Grid>
             </controls:OptionControl>
 
