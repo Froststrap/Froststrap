@@ -8,8 +8,7 @@ namespace Froststrap
         public LaunchFlag WatcherFlag { get; } = new("watcher");
         public LaunchFlag BackgroundUpdaterFlag { get; } = new("backgroundupdater");
         public LaunchFlag OnboardingFlag { get; } = new("onboarding");
-        public LaunchFlag QuietFlag { get; } = new("quiet"); // need to update this
-        public LaunchFlag UninstallFlag { get; } = new("uninstall"); // need to update this
+        public LaunchFlag QuietFlag { get; } = new("quiet");
         public LaunchFlag NoLaunchFlag { get; } = new("nolaunch");
         public LaunchFlag TestModeFlag { get; } = new("testmode");
         public LaunchFlag NoGPUFlag { get; } = new("nogpu");

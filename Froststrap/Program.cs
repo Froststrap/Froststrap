@@ -8,10 +8,20 @@ sealed class Program
     // Initialization code. Don't use any Avalonia, third-party APIs or any
     // SynchronizationContext-reliant code before AppMain is called: things aren't initialized
     // yet and stuff might break.
-    [STAThread]
-    public static void Main(string[] args) => BuildAvaloniaApp()
-        .StartWithClassicDesktopLifetime(args);
+    public static bool NoGPU { get; private set; }
 
+    [STAThread]
+    public static void Main(string[] args)
+    {
+        NoGPU = args.Any(a => a.Equals("-nogpu", StringComparison.OrdinalIgnoreCase));
+
+        if (NoGPU)
+        {
+            Environment.SetEnvironmentVariable("AVALONIA_GPU", "0");
+        }
+
+        BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
+    }
 
     // Avalonia configuration, don't remove; also used by visual designer.
     public static AppBuilder BuildAvaloniaApp()

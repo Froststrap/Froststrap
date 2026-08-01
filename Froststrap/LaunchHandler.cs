@@ -42,11 +42,6 @@ namespace Froststrap
             const string LOG_IDENT = "LaunchHandler::ProcessLaunchArgs";
 
             // this order is specific
-            if (App.LaunchSettings.UninstallFlag.Active)
-            {
-                App.Logger.WriteLine(LOG_IDENT, "Opening uninstaller");
-                _ = LaunchUninstaller();
-            }
             if (App.LaunchSettings.OnboardingFlag.Active)
             {
                 App.Logger.WriteLine(LOG_IDENT, "Opening uninstaller");
@@ -87,49 +82,6 @@ namespace Froststrap
                 App.Logger.WriteLine(LOG_IDENT, "Closing - quiet flag active");
                 App.Terminate();
             }
-        }
-
-        public static async Task LaunchUninstaller()
-        {
-            using var interlock = new InterProcessLock("Uninstaller");
-
-            if (!interlock.IsAcquired)
-            {
-                await Frontend.ShowMessageBox(Strings.Dialog_AlreadyRunning_Uninstaller, MessageBoxImage.Error);
-                App.Terminate();
-                return;
-            }
-
-            bool confirmed = false;
-            bool keepData = true;
-
-            if (App.LaunchSettings.QuietFlag.Active)
-            {
-                confirmed = true;
-            }
-            else
-            {
-                var dialog = new UninstallerDialog();
-
-                var tcs = new TaskCompletionSource();
-                dialog.Closed += (s, e) => tcs.SetResult();
-
-                dialog.Show();
-                await tcs.Task;
-
-                confirmed = dialog.Confirmed;
-                keepData = dialog.KeepData;
-            }
-
-            if (!confirmed)
-            {
-                App.Terminate();
-                return;
-            }
-
-            await Installer.DoUninstall(keepData);
-            await Frontend.ShowMessageBox(Strings.Bootstrapper_SuccessfullyUninstalled, MessageBoxImage.Information);
-            App.Terminate();
         }
 
         public static void LaunchSettings()
