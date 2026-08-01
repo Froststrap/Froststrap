@@ -1,30 +1,68 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:ui="using:FluentAvalonia.UI.Controls"
-             xmlns:models="clr-namespace:Froststrap.UI.ViewModels"
-             xmlns:vm="using:Froststrap.UI.ViewModels.Onboarding"
-             xmlns:resources="using:Froststrap.Resources"
-             xmlns:controls="using:Froststrap.UI.Elements.Controls"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
-             x:Class="Froststrap.UI.Elements.Onboarding.Pages.Page5"
-             x:DataType="vm:Page5ViewModel">
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:resources="using:Froststrap.Resources"
+    xmlns:controls="using:Froststrap.UI.Elements.Controls"
+    xmlns:vm="using:Froststrap.UI.ViewModels.Onboarding"
+    mc:Ignorable="d"
+    d:DesignWidth="800"
+    d:DesignHeight="600"
+    x:Class="Froststrap.UI.Elements.Onboarding.Pages.Page5"
+    x:DataType="vm:Page5ViewModel"
+    >
 
-    <Grid RowDefinitions="Auto,Auto,*,Auto,Auto,Auto" ColumnDefinitions="*,*">
-        <TextBlock Text="{x:Static resources:Strings.Onboarding_Page5_Text1}" Grid.ColumnSpan="2" TextWrapping="Wrap" Margin="0,0,0,12" />
-        <TextBlock Text="{x:Static resources:Strings.Onboarding_Page5_Text2}" Grid.ColumnSpan="2" Grid.Row="1" TextWrapping="Wrap" />
+    <ScrollViewer>
+        <StackPanel Spacing="16" Margin="0,0,16,0">
 
-        <TextBlock Text="{x:Static resources:Strings.Onboarding_Page5_Text3}" Grid.ColumnSpan="2" Grid.Row="3" TextWrapping="Wrap" Margin="0,0,0,8" />
-        <controls:CardAction Header="{x:Static resources:Strings.LaunchMenu_LaunchRoblox}" Icon="Gamepad2" Grid.Row="4" Grid.ColumnSpan="2"
-                             Command="{Binding LaunchRobloxCommand}" />
+            <TextBlock
+                Text="Please take the time to read our FAQ that will most likely answer your question. If your question is still not answered feel free to join our Discord server."
+                TextWrapping="Wrap"
+                Foreground="#D0D0E0"
+                Margin="0,0,0,8"
+                />
+            <!-- Why are we doing it like this exactly in codebehind ???-->
+            <ItemsControl ItemsSource="{Binding FaqItems}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="vm:FaqItem">
+                        <Expander
+                            IsExpanded="{Binding IsExpanded}"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Stretch"
+                            CornerRadius="6"
+                            Background="#1E1E28"
+                            BorderBrush="#333342"
+                            BorderThickness="1"
+                            Margin="0,0,0,8"
+                            >
+                            <Expander.Header>
+                                <Grid ColumnDefinitions="*">
+                                    <TextBlock
+                                        Text="{Binding Question}"
+                                        TextWrapping="Wrap"
+                                        FontWeight="SemiBold"
+                                        Foreground="#E0E0E0"
+                                        />
+                                </Grid>
+                            </Expander.Header>
 
-        <controls:CardAction Header="{x:Static resources:Strings.Common_Settings}" Icon="Settings" Grid.Row="5" Margin="0,0,3,8"
-                             Command="{Binding LaunchSettingsCommand}" />
-
-        <controls:CardAction Header="Discord" Icon="MessageCircleMore"
-                             Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
-                             CommandParameter="https://discord.gg/KdR9vpRcUN"
-                             Grid.Row="5" Grid.Column="1" Margin="3,0,0,8" />
-    </Grid>
+                            <Border
+                                Background="#16161E"
+                                Padding="12"
+                                CornerRadius="4"
+                                Margin="0,4,0,0"
+                                >
+                                <controls:MarkdownTextBlock
+                                    MarkdownText="{Binding Answer}"
+                                    TextWrapping="Wrap"
+                                    Foreground="#B0B0C0"
+                                    />
+                            </Border>
+                        </Expander>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+    </ScrollViewer>
 </UserControl>
