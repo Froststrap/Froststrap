@@ -4663,6 +4663,78 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Move Installation.
+        /// </summary>
+        public static string Menu_Deployment_MoveInstallation {
+            get {
+                return ResourceManager.GetString("Menu.Deployment.MoveInstallation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move Froststrap from &apos;{0}&apos; to &apos;{1}&apos;?\n\nAll files will be moved, shortcuts updated, and the application will restart..
+        /// </summary>
+        public static string Menu_Deployment_MoveInstallation_Confirm {
+            get {
+                return ResourceManager.GetString("Menu.Deployment.MoveInstallation.Confirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change where Froststrap is installed. All files will be moved to the new location..
+        /// </summary>
+        public static string Menu_Deployment_MoveInstallation_Description {
+            get {
+                return ResourceManager.GetString("Menu.Deployment.MoveInstallation.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move failed: {0}.
+        /// </summary>
+        public static string Menu_Deployment_MoveInstallation_Failed {
+            get {
+                return ResourceManager.GetString("Menu.Deployment.MoveInstallation.Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please specify a valid directory..
+        /// </summary>
+        public static string Menu_Deployment_MoveInstallation_InvalidDirectory {
+            get {
+                return ResourceManager.GetString("Menu.Deployment.MoveInstallation.InvalidDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The new directory is the same as the current installation..
+        /// </summary>
+        public static string Menu_Deployment_MoveInstallation_SameDirectory {
+            get {
+                return ResourceManager.GetString("Menu.Deployment.MoveInstallation.SameDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Froststrap has been moved successfully. The application will now restart..
+        /// </summary>
+        public static string Menu_Deployment_MoveInstallation_Success {
+            get {
+                return ResourceManager.GetString("Menu.Deployment.MoveInstallation.Success", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Installation Directory.
+        /// </summary>
+        public static string Menu_Deployment_MoveInstallation_Title {
+            get {
+                return ResourceManager.GetString("Menu.Deployment.MoveInstallation.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Specify the thread amount used for downloading, Only affects studio on linux..
         /// </summary>
         public static string Menu_Deployment_MultiThread_Description {
