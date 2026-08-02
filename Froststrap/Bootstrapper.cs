@@ -2390,9 +2390,11 @@ exit";
             }
 
             App.State.Prop.ForceReinstall = false;
-
             App.State.Save();
             AppData.DistributionStateManager.Save();
+
+            if (!IsStudioLaunch)
+                InitializeModFolders();
 
             _isInstalling = false;
         }
@@ -3830,6 +3832,63 @@ exit";
 
             App.Logger.WriteLine(LOG_IDENT, "Finished checking file mods");
             return success;
+        }
+
+        private void InitializeModFolders()
+        {
+            const string LOG_IDENT = "Bootstrapper::InitializeModFolders";
+
+            if (string.IsNullOrEmpty(_latestVersionDirectory) || !Directory.Exists(_latestVersionDirectory))
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Version directory does not exist, skipping.");
+                return;
+            }
+
+            if (OperatingSystem.IsLinux() && !IsStudioLaunch)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Skipping mod folder initialization on Linux Player (Sober).");
+                return;
+            }
+
+            string contentRoot = OperatingSystem.IsMacOS()
+                ? Path.Combine(_latestVersionDirectory, AppData.ExecutableName, "Contents", "Resources")
+                : _latestVersionDirectory;
+            if (!Directory.Exists(contentRoot))
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Content root not found: {contentRoot}, skipping.");
+                return;
+            }
+
+            string[] topFolders = ["ExtraContent", "content", "PlatformContent"];
+
+            string modsRoot = Paths.Modifications;
+            Directory.CreateDirectory(modsRoot);
+
+            App.Logger.WriteLine(LOG_IDENT, "Initializing mod folders for ExtraContent, content, and PlatformContent...");
+
+            foreach (string topFolder in topFolders)
+            {
+                string sourceFolder = Path.Combine(contentRoot, topFolder);
+                if (!Directory.Exists(sourceFolder))
+                {
+                    App.Logger.WriteLine(LOG_IDENT, $"Top folder '{topFolder}' not found, skipping.");
+                    continue;
+                }
+
+                var directories = Directory.GetDirectories(sourceFolder, "*", SearchOption.AllDirectories);
+                var allDirs = new List<string> { topFolder };
+                allDirs.AddRange(directories.Select(d => Path.GetRelativePath(contentRoot, d)));
+
+                foreach (string relPath in allDirs)
+                {
+                    string target = Path.Combine(modsRoot, relPath);
+                    Directory.CreateDirectory(target);
+                }
+
+                App.Logger.WriteLine(LOG_IDENT, $"Mirrored {allDirs.Count} directories for '{topFolder}'.");
+            }
+
+            App.Logger.WriteLine(LOG_IDENT, "Mod folder initialization complete.");
         }
 
         private static async Task<bool> ApplyFastFlagsBasedOnPlaceId(long placeId, string contentDirectory)
