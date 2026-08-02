@@ -1,6 +1,8 @@
-name: Auto-Translate with DeepLX
+name: Synchronize Translations
 
 on:
+  push:
+    branches: ["**"]
   workflow_dispatch:
 
 jobs:
@@ -11,7 +13,7 @@ jobs:
       pull-requests: write
 
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Setup Python
@@ -19,10 +21,10 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install dependencies
+      - name: Install Python dependencies
         run: pip install requests
 
-      - name: Restore DeepLX cache
+      - name: Restore DeepLX translation cache
         uses: actions/cache@v3
         with:
           path: Scripts/Translations/deeplx_cache.json
@@ -30,26 +32,39 @@ jobs:
           restore-keys: |
             deeplx-cache-
 
+      - name: Crowdin sync
+        uses: crowdin/github-action@v2
+        with:
+          project_id: ${{ secrets.CROWDIN_PROJECT_ID }}
+          api_token: ${{ secrets.CROWDIN_PAT }}
+          source: 'Froststrap/Resources/Strings.resx'
+          translation: 'Froststrap/Resources/Strings.%android_code%.resx'
+          upload_sources: true
+          download_translations: true
+          create_pull_request: false
+
       - name: Start DeepLX
         run: |
           docker run -d --name deeplx -p 1188:1188 ghcr.io/owo-network/deeplx:latest
           sleep 5
 
-      - name: Run translation
+      - name: Run DeepLX translation
         run: python Scripts/Translations/translate_deeplx.py
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.PR_GITHUB }}
-          commit-message: "chore: auto-translate resources with DeepLX"
-          title: "Auto-Translate Strings"
+          commit-message: "chore: update translations from Crowdin and DeepLX"
+          title: "Update translations (Crowdin + DeepLX)"
           body: |
-            This PR auto-translates strings using DeepLX.
-            
-            Please review the translations for accuracy.
-          branch: auto-translate-deeplx
-          base: avaloniaui
+            This PR includes translations from:
+            - Crowdin – human-reviewed translations
+            - DeepLX – auto-translated for new or changed strings (fallback)
+
+            Please review and merge.
+          branch: l10n_crowdin_translations
+          base: ${{ github.ref_name }}
           delete-branch: true
           labels: automated, translation
           author: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
