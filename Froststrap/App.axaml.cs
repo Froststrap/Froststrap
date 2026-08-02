@@ -359,41 +359,6 @@ public partial class App : Application
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            Logger.WriteLine(LOG_IDENT, $"Starting {ProjectName} v{Version}");
-            Logger.WriteLine(LOG_IDENT, $"OS Description: {RuntimeInformation.OSDescription}");
-            Logger.WriteLine(LOG_IDENT, $"OS Architecture: {RuntimeInformation.OSArchitecture}");
-
-            var userAgent = new StringBuilder($"{ProjectName}/{Version}");
-
-            if (IsActionBuild)
-            {
-                Logger.WriteLine(LOG_IDENT, $"Compiled {BuildMetadata.Timestamp.ToFriendlyString()} from commit {BuildMetadata.CommitHash} ({BuildMetadata.CommitRef})");
-                userAgent.Append(IsProductionBuild ? " (Production)" : $" (Artifact {BuildMetadata.CommitHash}, {BuildMetadata.CommitRef})");
-            }
-            else
-            {
-                Logger.WriteLine(LOG_IDENT, $"Compiled {BuildMetadata.Timestamp.ToFriendlyString()}");
-#if QA_BUILD
-                userAgent.Append(" (QA)");
-#else
-                userAgent.Append($" (Build {Convert.ToBase64String(Encoding.UTF8.GetBytes(BuildMetadata.Machine))})");
-#endif
-            }
-
-            Logger.WriteLine(LOG_IDENT, $"Loaded from {Paths.Process}");
-
-            HttpClient.Timeout = TimeSpan.FromSeconds(60);
-            if (HttpClient.DefaultRequestHeaders.UserAgent.Count == 0)
-                HttpClient.DefaultRequestHeaders.Add("User-Agent", userAgent.ToString());
-
-            LaunchSettings = new LaunchSettings(Environment.GetCommandLineArgs());
-
-            lock (ActivationLock)
-            {
-                if (LaunchSettings.RobloxLaunchMode == LaunchMode.None && _pendingActivationUri is not null)
-                    LaunchSettings.TryResolveRobloxUri([_pendingActivationUri]);
-            }
-
             string? installLocation = null;
 
             if (OperatingSystem.IsWindows())
@@ -442,12 +407,55 @@ public partial class App : Application
                 }
 
                 Paths.Initialize(installLocation);
-
+                Logger.Initialize(false);
                 Logger.WriteLine(LOG_IDENT, $"Not installed, running in portable mode from '{installLocation}'");
             }
             else
             {
                 Paths.Initialize(installLocation);
+                Logger.Initialize(false);
+            }
+
+            if (!Logger.Initialized && !Logger.NoWriteMode)
+            {
+                Logger.WriteLine(LOG_IDENT, "Possible duplicate launch detected, terminating.");
+                Terminate();
+                return;
+            }
+
+            Logger.WriteLine(LOG_IDENT, $"Starting {ProjectName} v{Version}");
+            Logger.WriteLine(LOG_IDENT, $"OS Description: {RuntimeInformation.OSDescription}");
+            Logger.WriteLine(LOG_IDENT, $"OS Architecture: {RuntimeInformation.OSArchitecture}");
+
+            var userAgent = new StringBuilder($"{ProjectName}/{Version}");
+
+            if (IsActionBuild)
+            {
+                Logger.WriteLine(LOG_IDENT, $"Compiled {BuildMetadata.Timestamp.ToFriendlyString()} from commit {BuildMetadata.CommitHash} ({BuildMetadata.CommitRef})");
+                userAgent.Append(IsProductionBuild ? " (Production)" : $" (Artifact {BuildMetadata.CommitHash}, {BuildMetadata.CommitRef})");
+            }
+            else
+            {
+                Logger.WriteLine(LOG_IDENT, $"Compiled {BuildMetadata.Timestamp.ToFriendlyString()}");
+#if QA_BUILD
+            userAgent.Append(" (QA)");
+#else
+                userAgent.Append($" (Build {Convert.ToBase64String(Encoding.UTF8.GetBytes(BuildMetadata.Machine))})");
+#endif
+            }
+
+            Logger.WriteLine(LOG_IDENT, $"Loaded from {Paths.Process}");
+
+            HttpClient.Timeout = TimeSpan.FromSeconds(60);
+            if (HttpClient.DefaultRequestHeaders.UserAgent.Count == 0)
+                HttpClient.DefaultRequestHeaders.Add("User-Agent", userAgent.ToString());
+
+            LaunchSettings = new LaunchSettings(Environment.GetCommandLineArgs());
+
+            lock (ActivationLock)
+            {
+                if (LaunchSettings.RobloxLaunchMode == LaunchMode.None && _pendingActivationUri is not null)
+                    LaunchSettings.TryResolveRobloxUri([_pendingActivationUri]);
             }
 
             if (Paths.Process != Paths.Application)
@@ -469,13 +477,6 @@ public partial class App : Application
                 {
                     File.Copy(Paths.Process, Paths.Application);
                 }
-            }
-
-            if (!Logger.Initialized && !Logger.NoWriteMode)
-            {
-                Logger.WriteLine(LOG_IDENT, "Possible duplicate launch detected, terminating.");
-                Terminate();
-                return;
             }
 
             _ = Task.Run(RemoteData.LoadData);

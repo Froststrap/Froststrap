@@ -328,7 +328,6 @@ namespace Froststrap
 
             // ensure only one instance of the bootstrapper is running at the time
             // so that we don't have stuff like two updates happening simultaneously
-
             bool lockWasAlreadyHeld = false;
             _appLock = new InterProcessLock(LockName, TimeSpan.Zero);
 
@@ -361,168 +360,168 @@ namespace Froststrap
 
             App.Logger.WriteLine(LOG_IDENT, "Lock acquired.");
 
-            if (lockWasAlreadyHeld)
+            try
             {
-                App.Settings.Load();
-                App.State.Load();
-                AppData.DistributionStateManager.Load();
-            }
-
-            if (!_noConnection)
-            {
-                try
+                if (lockWasAlreadyHeld)
                 {
-                    await GetLatestVersionInfo();
-                }
-                catch (Exception ex)
-                {
-                    await HandleConnectionError(ex);
-                }
-            }
-
-            CleanupVersionsFolder(); // cleanup after background updater
-
-            bool allModificationsApplied = true;
-
-            if (!_noConnection)
-            {
-                if (App.RemoteData.LoadedState == GenericTriState.Unknown) // we dont want it to flicker
-                    SetStatus(Strings.Bootstrapper_Status_WaitingForData);
-
-                await SetupPackageDictionaries(); // mods also require it
-
-                if (AppData.DistributionState.VersionGuid != _latestVersionGuid || MustUpgrade)
-                {
-                    bool backgroundUpdaterLockOpen;
-                    using (var checkLock = new InterProcessLock(BackgroundUpdaterLockName, TimeSpan.Zero))
-                    {
-                        backgroundUpdaterLockOpen = !checkLock.IsAcquired;
-                    }
-
-                    if (App.LaunchSettings.BackgroundUpdaterFlag.Active)
-                        backgroundUpdaterLockOpen = false; // we want to actually update lol
-
-                    App.Logger.WriteLine(LOG_IDENT, $"Background updater running: {backgroundUpdaterLockOpen}");
-
-                    if (backgroundUpdaterLockOpen && MustUpgrade)
-                    {
-                        // I am Forced Upgrade, killer of Background Updates
-                        Utilities.KillBackgroundUpdater();
-                        backgroundUpdaterLockOpen = false;
-                    }
-
-                    if (!backgroundUpdaterLockOpen)
-                    {
-                        if (IsEligibleForBackgroundUpdate())
-                            StartBackgroundUpdater();
-                        else
-                            await UpgradeRoblox();
-                    }
+                    App.Settings.Load();
+                    App.State.Load();
+                    AppData.DistributionStateManager.Load();
                 }
 
-                if (_cancelTokenSource.IsCancellationRequested)
-                    return;
-
-                // we require deployment details for applying modifications for a worst case scenario,
-                // where we'd need to restore files from a package that isn't present on disk and needs to be redownloaded
-                allModificationsApplied = await ApplyModifications();
-            }
-            else if (OperatingSystem.IsLinux())
-            {
-                if (MustUpgrade)
+                if (!_noConnection)
                 {
-                    App.Logger.WriteLine(LOG_IDENT, "Linux: Force reinstall enabled.");
-
-                    string clientPackagePath = Path.Combine(Paths.Versions, "Sober", "data", "sober", "packages", "x86_64", "com.roblox.client");
-
                     try
                     {
-                        if (Directory.Exists(clientPackagePath))
-                        {
-                            DirectoryInfo di = new(clientPackagePath);
-
-                            foreach (FileInfo file in di.GetFiles())
-                                file.Delete();
-
-                            foreach (DirectoryInfo dir in di.GetDirectories())
-                                dir.Delete(true);
-
-                            App.State.Prop.ForceReinstall = false;
-
-                            App.Logger.WriteLine(LOG_IDENT, $"Successfully cleared contents of {clientPackagePath}");
-                        }
+                        await GetLatestVersionInfo();
                     }
                     catch (Exception ex)
                     {
-                        App.Logger.WriteLine(LOG_IDENT, $"Failed to purge packages: {ex.Message}");
+                        await HandleConnectionError(ex);
                     }
                 }
 
-                PackageDirectoryMap ??= [];
-                if (!_cancelTokenSource.IsCancellationRequested)
-                    allModificationsApplied = await ApplyModifications();
-            }
+                CleanupVersionsFolder(); // cleanup after background updater
 
-            // check registry entries for every launch, just in case the stock bootstrapper changes it back
+                bool allModificationsApplied = true;
 
-            if (OperatingSystem.IsWindows())
-            {
-                if (IsStudioLaunch)
+                if (!_noConnection)
                 {
-                    WindowsRegistry.RegisterStudio();
-                    App.Logger.WriteLine(LOG_IDENT, "Studio launch detected, syncing RPC plugin...");
-                    StudioPluginManager.Sync();
-                }
-                else
-                {
-                    WindowsRegistry.RegisterPlayer();
-                }
+                    if (App.RemoteData.LoadedState == GenericTriState.Unknown) // we dont want it to flicker
+                        SetStatus(Strings.Bootstrapper_Status_WaitingForData);
 
-                WindowsRegistry.RegisterClientLocation(IsStudioLaunch, _latestVersionDirectory); // if it for some reason doesnt exist
-            }
-            else
-            {
-                if (IsStudioLaunch)
-                {
-                    App.Logger.WriteLine(LOG_IDENT, "Studio launch detected, syncing RPC plugin...");
-                    StudioPluginManager.Sync();
-                }
-            }
+                    await SetupPackageDictionaries(); // mods also require it
 
-            if (_launchMode != LaunchMode.Player)
-            {
-                if (OperatingSystem.IsWindows() && _appLock is not null) _appLock.Dispose();
-            }
+                    if (AppData.DistributionState.VersionGuid != _latestVersionGuid || MustUpgrade)
+                    {
+                        bool backgroundUpdaterLockOpen;
+                        using (var checkLock = new InterProcessLock(BackgroundUpdaterLockName, TimeSpan.Zero))
+                        {
+                            backgroundUpdaterLockOpen = !checkLock.IsAcquired;
+                        }
 
-            if (!App.LaunchSettings.NoLaunchFlag.Active && !_cancelTokenSource.IsCancellationRequested)
-            {
-                if (!App.LaunchSettings.QuietFlag.Active)
-                {
-                    // show some balloon tips
-                    if (!_packageExtractionSuccess)
-                        Frontend.ShowBalloonTip(Strings.Bootstrapper_ExtractionFailed_Title, Strings.Bootstrapper_ExtractionFailed_Message, Avalonia.Controls.Notifications.NotificationType.Warning);
-                    else if (!allModificationsApplied)
-                        Frontend.ShowBalloonTip(Strings.Bootstrapper_ModificationsFailed_Title, Strings.Bootstrapper_ModificationsFailed_Message, Avalonia.Controls.Notifications.NotificationType.Warning);
-                }
+                        if (App.LaunchSettings.BackgroundUpdaterFlag.Active)
+                            backgroundUpdaterLockOpen = false; // we want to actually update lol
 
-                if (!OperatingSystem.IsLinux())
-                {
-                    await StartRoblox();
-                }
-                else if (IsStudioLaunch)
-                {
-                    await LaunchStudioViaWineAsync();
-                }
-                else
-                {
-                    if (!await EnsureSoberInstalledAsync())
+                        App.Logger.WriteLine(LOG_IDENT, $"Background updater running: {backgroundUpdaterLockOpen}");
+
+                        if (backgroundUpdaterLockOpen && MustUpgrade)
+                        {
+                            // I am Forced Upgrade, killer of Background Updates
+                            Utilities.KillBackgroundUpdater();
+                            backgroundUpdaterLockOpen = false;
+                        }
+
+                        if (!backgroundUpdaterLockOpen)
+                        {
+                            if (IsEligibleForBackgroundUpdate())
+                                StartBackgroundUpdater();
+                            else
+                                await UpgradeRoblox();
+                        }
+                    }
+
+                    if (_cancelTokenSource.IsCancellationRequested)
                         return;
-                    await LaunchViaSober([]);
+
+                    // we require deployment details for applying modifications for a worst case scenario,
+                    // where we'd need to restore files from a package that isn't present on disk and needs to be redownloaded
+                    allModificationsApplied = await ApplyModifications();
+                }
+                else if (OperatingSystem.IsLinux())
+                {
+                    if (MustUpgrade)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, "Linux: Force reinstall enabled.");
+
+                        string clientPackagePath = Path.Combine(Paths.Versions, "Sober", "data", "sober", "packages", "x86_64", "com.roblox.client");
+
+                        try
+                        {
+                            if (Directory.Exists(clientPackagePath))
+                            {
+                                DirectoryInfo di = new(clientPackagePath);
+
+                                foreach (FileInfo file in di.GetFiles())
+                                    file.Delete();
+
+                                foreach (DirectoryInfo dir in di.GetDirectories())
+                                    dir.Delete(true);
+
+                                App.State.Prop.ForceReinstall = false;
+
+                                App.Logger.WriteLine(LOG_IDENT, $"Successfully cleared contents of {clientPackagePath}");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            App.Logger.WriteLine(LOG_IDENT, $"Failed to purge packages: {ex.Message}");
+                        }
+                    }
+
+                    PackageDirectoryMap ??= [];
+                    if (!_cancelTokenSource.IsCancellationRequested)
+                        allModificationsApplied = await ApplyModifications();
                 }
 
-                if (OperatingSystem.IsWindows() && _appLock is not null) _appLock.Dispose();
+                // check registry entries for every launch, just in case the stock bootstrapper changes it back
+                if (OperatingSystem.IsWindows())
+                {
+                    if (IsStudioLaunch)
+                    {
+                        WindowsRegistry.RegisterStudio();
+                        App.Logger.WriteLine(LOG_IDENT, "Studio launch detected, syncing RPC plugin...");
+                        StudioPluginManager.Sync();
+                    }
+                    else
+                    {
+                        WindowsRegistry.RegisterPlayer();
+                    }
 
-                Dialog?.CloseBootstrapper();
+                    WindowsRegistry.RegisterClientLocation(IsStudioLaunch, _latestVersionDirectory); // if it for some reason doesnt exist
+                    WindowsRegistry.UpdateEstimatedSize();
+                }
+                else
+                {
+                    if (IsStudioLaunch)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, "Studio launch detected, syncing RPC plugin...");
+                        StudioPluginManager.Sync();
+                    }
+                }
+
+                if (!App.LaunchSettings.NoLaunchFlag.Active && !_cancelTokenSource.IsCancellationRequested)
+                {
+                    if (!App.LaunchSettings.QuietFlag.Active)
+                    {
+                        // show some balloon tips
+                        if (!_packageExtractionSuccess)
+                            Frontend.ShowBalloonTip(Strings.Bootstrapper_ExtractionFailed_Title, Strings.Bootstrapper_ExtractionFailed_Message, Avalonia.Controls.Notifications.NotificationType.Warning);
+                        else if (!allModificationsApplied)
+                            Frontend.ShowBalloonTip(Strings.Bootstrapper_ModificationsFailed_Title, Strings.Bootstrapper_ModificationsFailed_Message, Avalonia.Controls.Notifications.NotificationType.Warning);
+                    }
+
+                    if (!OperatingSystem.IsLinux())
+                    {
+                        await StartRoblox();
+                    }
+                    else if (IsStudioLaunch)
+                    {
+                        await LaunchStudioViaWineAsync();
+                    }
+                    else
+                    {
+                        if (!await EnsureSoberInstalledAsync())
+                            return;
+                        await LaunchViaSober([]);
+                    }
+
+                    Dialog?.CloseBootstrapper();
+                }
+            }
+            finally
+            {
+                _appLock?.Dispose();
             }
         }
 
@@ -1186,7 +1185,6 @@ namespace Froststrap
             }
 
             App.Logger.WriteLine(LOG_IDENT, $"Started Roblox (PID {_appPid}). Launching Watcher...");
-            _appLock?.Dispose();
 
             if (!IsStudioLaunch)
             {
@@ -1333,7 +1331,6 @@ namespace Froststrap
                 _appPid = process.Id;
                 App.Logger.WriteLine(LOG_IDENT, $"Sober launched with PID {_appPid}");
                 App.Logger.WriteLine(LOG_IDENT, "Launching Watcher...");
-                _appLock?.Dispose();
                 await LaunchWatcherIfNeededAsync(autoclosePids);
 
                 _ = Task.Run(async () =>
@@ -2392,23 +2389,6 @@ exit";
                 }
             }
 
-            App.Logger.WriteLine(LOG_IDENT, "Registering approximate program size...");
-
-            int distributionSize = _versionPackageManifest.Where(x => x.Name != "RobloxPlayerInstaller.exe").Sum(x => x.Size + x.PackedSize) / 1024;
-
-            AppData.DistributionState.Size = distributionSize;
-
-            int totalSize = App.PlayerState.Prop.Size + App.StudioState.Prop.Size;
-
-            if (OperatingSystem.IsWindows())
-            {
-                using var uninstallKey = Registry.CurrentUser.CreateSubKey(App.UninstallKey);
-                uninstallKey.SetValueSafe("EstimatedSize", totalSize);
-                WindowsRegistry.RegisterClientLocation(IsStudioLaunch, _latestVersionDirectory);
-            }
-
-            App.Logger.WriteLine(LOG_IDENT, $"Registered as {totalSize} KB");
-
             App.State.Prop.ForceReinstall = false;
 
             App.State.Save();
@@ -3302,8 +3282,6 @@ exit";
                 App.Terminate(ErrorCode.ERROR_CANCELLED);
                 return;
             }
-
-            _appLock?.Dispose();
 
             foreach (var integration in App.Settings.Prop.CustomIntegrations)
                 if (integration != null && !integration.PreLaunch && !integration.SpecifyGame)

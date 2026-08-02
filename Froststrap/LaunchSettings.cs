@@ -25,7 +25,7 @@ namespace Froststrap
 #if DEBUG
         public static bool BypassUpdateCheck => true;
 #else
-        public bool BypassUpdateCheck => UninstallFlag.Active || WatcherFlag.Active || BackgroundUpdaterFlag.Active || NsisFlag.Active;
+        public bool BypassUpdateCheck => WatcherFlag.Active || BackgroundUpdaterFlag.Active || NsisFlag.Active;
 #endif
 
         public LaunchMode RobloxLaunchMode { get; set; } = LaunchMode.None;
