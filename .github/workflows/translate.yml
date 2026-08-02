@@ -34,6 +34,8 @@ jobs:
 
       - name: Crowdin sync
         uses: crowdin/github-action@v2
+        env:
+          GH_TOKEN: ${{ secrets.PR_GITHUB }}
         with:
           project_id: ${{ secrets.CROWDIN_PROJECT_ID }}
           token: ${{ secrets.CROWDIN_PAT }}
@@ -42,6 +44,7 @@ jobs:
           upload_sources: true
           download_translations: true
           create_pull_request: false
+          push_translations: false
 
       - name: Start DeepLX
         run: |
