@@ -182,5 +182,28 @@ namespace Froststrap.Utility
                 App.Logger.WriteLine("Protocol::Unregister", $"Failed to unregister {key}: {ex}");
             }
         }
+
+        public static void UpdateEstimatedSize()
+        {
+            if (!OperatingSystem.IsWindows())
+                return;
+
+            try
+            {
+                long totalBytes = 0;
+                var files = Directory.GetFiles(Paths.Base, "*", SearchOption.AllDirectories);
+                foreach (var file in files)
+                    totalBytes += new FileInfo(file).Length;
+
+                int totalKB = (int)(totalBytes / 1024);
+                using var uninstallKey = Registry.CurrentUser.CreateSubKey(App.UninstallKey);
+                uninstallKey?.SetValueSafe("EstimatedSize", totalKB);
+                App.Logger.WriteLine("WindowsRegistry::UpdateEstimatedSize", $"Updated EstimatedSize to {totalKB} KB");
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine("WindowsRegistry::UpdateEstimatedSize", $"Failed to update size: {ex.Message}");
+            }
+        }
     }
 }
