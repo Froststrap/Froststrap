@@ -191,4 +191,19 @@
             </Style>
         </Style>
     </Style>
+
+    <Style Selector="controls|IconButton.TitleBarNavButton:disabled">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Opacity" Value="0.5" />
+    </Style>
+    <Style Selector="controls|IconButton.TitleBarNavButton:disabled /template/ Border#PART_LayoutRoot">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+    </Style>
+    <Style Selector="controls|IconButton.TitleBarNavButton:disabled:pointerover /template/ Border#PART_LayoutRoot">
+        <Setter Property="Background" Value="Transparent" />
+    </Style>
 </Styles>

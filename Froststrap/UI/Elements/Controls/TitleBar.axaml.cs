@@ -31,12 +31,16 @@ namespace Froststrap.UI.Elements.Controls
         public static readonly StyledProperty<WindowState> WindowStateProperty =
             AvaloniaProperty.Register<TitleBar, WindowState>(nameof(WindowState), defaultValue: WindowState.Normal);
 
+        public static readonly StyledProperty<object?> LeftContentProperty =
+            AvaloniaProperty.Register<TitleBar, object?>(nameof(LeftContent));
+
         public string? Title { get => GetValue(TitleProperty); set => SetValue(TitleProperty, value); }
         public bool ShowMinimize { get => GetValue(ShowMinimizeProperty); set => SetValue(ShowMinimizeProperty, value); }
         public bool ShowMaximize { get => GetValue(ShowMaximizeProperty); set => SetValue(ShowMaximizeProperty, value); }
         public bool ShowClose { get => GetValue(ShowCloseProperty); set => SetValue(ShowCloseProperty, value); }
         public IImage? Icon { get => GetValue(IconProperty); set => SetValue(IconProperty, value); }
         public WindowState WindowState { get => GetValue(WindowStateProperty); set => SetValue(WindowStateProperty, value); }
+        public object? LeftContent { get => GetValue(LeftContentProperty); set => SetValue(LeftContentProperty, value); }
 
         [Content]
         public object? Content { get => GetValue(ContentProperty); set => SetValue(ContentProperty, value); }

@@ -12,20 +12,26 @@
                       Height="{TemplateBinding Height}"
                       Background="{TemplateBinding Background}">
 
-                    <StackPanel Grid.Column="0" Name="PART_LeftPanel" Margin="0,12,0,0" Orientation="Horizontal" IsHitTestVisible="False" VerticalAlignment="Top">
+                    <StackPanel Grid.Column="0" Name="PART_LeftPanel" Margin="0,4,0,0" Orientation="Horizontal" IsHitTestVisible="True" VerticalAlignment="Top">
                         <Image Source="{TemplateBinding Icon}"
                                IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"
                                Width="16" Height="16"
                                Margin="12,0,0,0"
                                VerticalAlignment="Center"
-                               RenderOptions.BitmapInterpolationMode="HighQuality" />
+                               RenderOptions.BitmapInterpolationMode="HighQuality"
+                               IsHitTestVisible="False" />
+
+                        <ContentPresenter Content="{TemplateBinding LeftContent}"
+                                          VerticalAlignment="Center"
+                                          Margin="6,0,0,0" />
 
                         <TextBlock Text="{TemplateBinding Title}"
                                    VerticalAlignment="Center"
                                    FontSize="12"
-                                   Margin="8,0"
+                                   Margin="8,0,0,0"
                                    FontWeight="Normal"
-                                   Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                                   Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                   IsHitTestVisible="False" />
                     </StackPanel>
 
                     <Panel Grid.Column="1">

@@ -13,6 +13,7 @@ using System.Windows.Input;
 namespace Froststrap.UI.ViewModels.Settings
 {
     public record NavigationPaneDisplayModeChangedMessage(NavigationViewPaneDisplayMode NewMode);
+    public record NavigationEntry(string PageId, string Title, string Description, object ViewModel, ObservableCollection<BreadcrumbItemModel>? Breadcrumbs);
 
     public class BreadcrumbItemModel
     {
@@ -23,6 +24,14 @@ namespace Froststrap.UI.ViewModels.Settings
 
     public class MainWindowViewModel : ObservableObject
     {
+        private readonly Stack<NavigationEntry> _backStack = new();
+        private readonly Stack<NavigationEntry> _forwardStack = new();
+        private NavigationEntry? _currentNavigationEntry;
+        private bool _isNavigatingBackForward = false;
+
+        public IRelayCommand BackCommand { get; }
+        public IRelayCommand ForwardCommand { get; }
+
         private object? _currentPage;
         public object? CurrentPage
         {
@@ -150,6 +159,9 @@ namespace Froststrap.UI.ViewModels.Settings
             BreadcrumbItemClickedCommand = new RelayCommand<BreadcrumbItemModel>(HandleBreadcrumbItemClicked);
             SearchBar = new();
 
+            BackCommand = new RelayCommand(GoBack, CanGoBack);
+            ForwardCommand = new RelayCommand(GoForward, CanGoForward);
+
             NavigateToIntegrationsCommand = new RelayCommand(() => Navigate("integrations", Strings.Menu_Integrations_Title, Strings.Menu_Integrations_Description, new IntegrationsViewModel()));
             NavigateToBehaviourCommand = new RelayCommand(() => Navigate("behaviour", Strings.Menu_Behaviour_Title, Strings.Menu_Behaviour_Description, new BehaviourViewModel()));
             NavigateToLinuxSettingsCommand = new RelayCommand(() => Navigate("linuxsettings", Strings.Menu_LinuxSettings_Title, null!, new LinuxSettingsViewModel()));
@@ -228,16 +240,60 @@ namespace Froststrap.UI.ViewModels.Settings
             });
         }
 
+        private bool CanGoBack() => _backStack.Count > 0;
+        private bool CanGoForward() => _forwardStack.Count > 0;
+
+        private void GoBack()
+        {
+            if (_backStack.Count == 0) return;
+            _isNavigatingBackForward = true;
+            var entry = _backStack.Pop();
+            _forwardStack.Push(_currentNavigationEntry!);
+            Navigate(entry.PageId, entry.Title, entry.Description, entry.ViewModel, entry.Breadcrumbs);
+            _isNavigatingBackForward = false;
+            UpdateCanExecute();
+        }
+
+        private void GoForward()
+        {
+            if (_forwardStack.Count == 0) return;
+            _isNavigatingBackForward = true;
+            var entry = _forwardStack.Pop();
+            _backStack.Push(_currentNavigationEntry!);
+            Navigate(entry.PageId, entry.Title, entry.Description, entry.ViewModel, entry.Breadcrumbs);
+            _isNavigatingBackForward = false;
+            UpdateCanExecute();
+        }
+
+        private void UpdateCanExecute()
+        {
+            (BackCommand as RelayCommand)?.NotifyCanExecuteChanged();
+            (ForwardCommand as RelayCommand)?.NotifyCanExecuteChanged();
+        }
+
         private void Navigate(string pageId, string title, string description, object viewModel, ObservableCollection<BreadcrumbItemModel>? customBreadcrumbs = null)
         {
             try
             {
+                if (!_isNavigatingBackForward)
+                {
+                    if (_currentNavigationEntry != null && _currentNavigationEntry.PageId != pageId)
+                    {
+                        _backStack.Push(_currentNavigationEntry);
+                        _forwardStack.Clear();
+                    }
+                }
+
+                _currentNavigationEntry = new NavigationEntry(pageId, title, description, viewModel, customBreadcrumbs);
+
                 SelectedPage = pageId;
                 CurrentPageTitle = title;
                 CurrentPageDescription = description;
                 BreadcrumbItems = customBreadcrumbs ?? [];
                 CurrentPage = viewModel;
                 SearchBar.Clear();
+
+                UpdateCanExecute();
             }
             catch (Exception ex)
             {
