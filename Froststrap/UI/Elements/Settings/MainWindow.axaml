@@ -22,16 +22,34 @@
     x:DataType="vm:MainWindowViewModel"
     CanResize="True"
     WindowStartupLocation="CenterScreen">
-
+	
     <Grid RowDefinitions="48,*,56">
         <Grid Grid.Row="0" Background="{DynamicResource ControlFillColorDefaultBrush}">
             <controls:TitleBar
-                Title="Froststrap Settings"
                 Grid.Row="0"
                 Icon="avares://Froststrap/Froststrap.png">
+                <controls:TitleBar.LeftContent>
+                    <StackPanel Orientation="Horizontal" Spacing="4">
+                        <controls:IconButton
+                            Background="Transparent"
+                            BorderBrush="Transparent"
+                            IconSize="14"
+                            Classes="TitleBarNavButton"
+                            Icon="ArrowLeft"
+                            Command="{Binding BackCommand}"
+                            IsEnabled="{Binding BackCommand.CanExecute}" />
+                        <controls:IconButton
+                            Background="Transparent"
+                            BorderBrush="Transparent"
+                            IconSize="16"
+                            Classes="TitleBarNavButton"
+                            Icon="ArrowRight"
+                            Command="{Binding ForwardCommand}"
+                            IsEnabled="{Binding ForwardCommand.CanExecute}" />
+                    </StackPanel>
+                </controls:TitleBar.LeftContent>
 
                 <elements:SearchBar Width="400" DataContext="{Binding SearchBar}" />
-
             </controls:TitleBar>
         </Grid>
 
