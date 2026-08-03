@@ -31,7 +31,7 @@ namespace Froststrap.Integrations
         private const string GameJoiningUniverseUserIDPattern = @"userid:([0-9]+)";
         private const string GameJoinReferralPattern = @"referral_page:([^,]+)";
         private const string GameTeleportJoinTypePattern = @"JoinTypeId""%3a(\d+)%2c";
-        private const string GameJoiningUDMUXPattern = @"UDMUX Address = ([0-9\.]+), Port = [0-9]+ \| RCC Server Address = ([0-9\.]+), Port = [0-9]+";
+        private const string GameJoiningUDMUXPattern = @"UDMUX Address\s*=\s*([0-9\.]+),\s*Port\s*=\s*[0-9]+\s*\|\s*RCC Server Address\s*=\s*([0-9\.]+),\s*Port\s*=\s*[0-9]+";
         private const string GameJoinedEntryPattern = @"serverId: ([0-9\.]+)\|[0-9]+";
         private const string GameMessageEntryPattern = @"\[BloxstrapRPC\] (.*)";
         private const string GameDisconnectReasonPattern = @"Sending disconnect with reason: (\d+)";
@@ -445,34 +445,50 @@ namespace Froststrap.Integrations
                 {
                     var match = Regex.Match(logMessage, GameJoiningUDMUXPattern);
 
-                    if (match.Groups.Count != 3 || match.Groups[2].Value != Data.MachineAddress)
+                    if (!match.Success || match.Groups.Count != 3)
                     {
-                        App.Logger.WriteLine(LOG_IDENT, "Failed to assert format for game join UDMUX entry");
+                        App.Logger.WriteLine(LOG_IDENT, "Failed to parse UDMUX entry (regex mismatch)");
                         App.Logger.WriteLine(LOG_IDENT, logMessage);
                         return;
                     }
 
-                    Data.MachineAddress = match.Groups[1].Value;
+                    string udmuxAddress = match.Groups[1].Value;
+                    string rccAddress = match.Groups[2].Value;
+
+                    if (string.IsNullOrEmpty(Data.MachineAddress) || Data.MachineAddress != rccAddress)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"Updating MachineAddress from {Data.MachineAddress} to {rccAddress}");
+                        Data.MachineAddress = rccAddress;
+                    }
 
                     App.Logger.WriteLine(LOG_IDENT, $"Server is UDMUX protected ({Data})");
                 }
                 else if (logMessage.StartsWith(GameJoinedEntry))
                 {
+                    if (logMessage.Contains("UNASSIGNED_SYSTEM_ADDRESS"))
+                        return;
+
                     Match match = Regex.Match(logMessage, GameJoinedEntryPattern);
 
-                    if (match.Groups.Count != 2 || match.Groups[1].Value != Data.MachineAddress)
+                    if (match.Success && match.Groups.Count == 2)
+                    {
+                        string serverAddress = match.Groups[1].Value;
+                        if (!string.IsNullOrEmpty(serverAddress) && serverAddress != Data.MachineAddress)
+                        {
+                            App.Logger.WriteLine(LOG_IDENT, $"Updating MachineAddress from {Data.MachineAddress} to {serverAddress}");
+                            Data.MachineAddress = serverAddress;
+                        }
+
+                        App.Logger.WriteLine(LOG_IDENT, $"Joined Game ({Data})");
+                        InGame = true;
+                        Data.TimeJoined = DateTime.Now;
+                        OnGameJoin?.Invoke(this, EventArgs.Empty);
+                    }
+                    else
                     {
                         App.Logger.WriteLine(LOG_IDENT, $"Failed to assert format for game joined entry");
                         App.Logger.WriteLine(LOG_IDENT, logMessage);
-                        return;
                     }
-
-                    App.Logger.WriteLine(LOG_IDENT, $"Joined Game ({Data})");
-
-                    InGame = true;
-                    Data.TimeJoined = DateTime.Now;
-
-                    OnGameJoin?.Invoke(this, EventArgs.Empty);
                 }
             }
             else if (InGame && Data.PlaceId != 0)
