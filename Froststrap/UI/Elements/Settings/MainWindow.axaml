@@ -26,8 +26,7 @@
     <Grid RowDefinitions="48,*,56">
         <Grid Grid.Row="0" Background="{DynamicResource ControlFillColorDefaultBrush}">
             <controls:TitleBar
-                Grid.Row="0"
-                Icon="avares://Froststrap/Froststrap.png">
+                Grid.Row="0">
                 <controls:TitleBar.LeftContent>
                     <StackPanel Orientation="Horizontal" Spacing="4">
                         <controls:IconButton

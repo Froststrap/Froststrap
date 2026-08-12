@@ -41,6 +41,13 @@
             </controls:OptionControl>
 
             <controls:OptionControl
+                Description="{x:Static resources:Strings.Menu_Integrations_ServerUptime_Description}"
+                Header="{x:Static resources:Strings.Menu_Integrations_ServerUptime_Title}"
+                IsEnabled="{Binding ShowServerDetailsEnabled}">
+                <ToggleSwitch IsChecked="{Binding ShowServerUptimeEnabled, Mode=TwoWay}" />
+            </controls:OptionControl>
+
+            <controls:OptionControl
                 Description="{x:Static resources:Strings.Menu_Integrations_TitleChange_Description}"
                 Header="{x:Static resources:Strings.Menu_Integrations_TitleChange_Title}"
                 IsVisible="{x:Static gv:GlobalViewModel.IsWindows}"
