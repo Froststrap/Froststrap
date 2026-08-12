@@ -452,7 +452,6 @@ namespace Froststrap.Integrations
                         return;
                     }
 
-                    string udmuxAddress = match.Groups[1].Value;
                     string rccAddress = match.Groups[2].Value;
 
                     if (string.IsNullOrEmpty(Data.MachineAddress) || Data.MachineAddress != rccAddress)

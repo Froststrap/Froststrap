@@ -167,7 +167,6 @@ namespace Froststrap.UI.Elements.ContextMenu
                 InviteDeeplinkMenuItem?.SetValue(MenuItem.IsVisibleProperty, false);
                 ServerDetailsMenuItem?.SetValue(MenuItem.IsVisibleProperty, false);
                 AutoJoinRegionMenuItem?.SetValue(MenuItem.IsVisibleProperty, false);
-                _serverInformationWindow?.Close();
             });
 
         private void ActivityWatcher_OnStudioPlaceOpened(object? sender, EventArgs e) => _studioPlaceJoinTime = DateTime.Now;

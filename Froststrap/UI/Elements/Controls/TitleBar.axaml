@@ -16,7 +16,7 @@
                         <Image Source="{TemplateBinding Icon}"
                                IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"
                                Width="16" Height="16"
-                               Margin="12,0,0,0"
+                               Margin="12,4,0,0"
                                VerticalAlignment="Center"
                                RenderOptions.BitmapInterpolationMode="HighQuality"
                                IsHitTestVisible="False" />
