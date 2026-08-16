@@ -344,33 +344,6 @@ Jika belum, sila laporkan masalah tersebut melalui [isu GitHub]({1}) bersama den
   <data name="Enums.EmojiType.Windows8" xml:space="preserve">
     <value>Windows 8</value>
   </data>
-  <data name="Enums.FlagPresets.InGameMenuVersion.V1" xml:space="preserve">
-    <value>2015 (V1)</value>
-  </data>
-  <data name="Enums.FlagPresets.InGameMenuVersion.V2" xml:space="preserve">
-    <value>2020 (V2)</value>
-  </data>
-  <data name="Enums.FlagPresets.InGameMenuVersion.V4" xml:space="preserve">
-    <value>2023 (V4)</value>
-  </data>
-  <data name="Enums.FlagPresets.LightingMode.Default" xml:space="preserve">
-    <value>Ditetapkan oleh permainan</value>
-  </data>
-  <data name="Enums.FlagPresets.LightingMode.Future" xml:space="preserve">
-    <value>Masa hadapan (Fasa 3)</value>
-  </data>
-  <data name="Enums.FlagPresets.LightingMode.ShadowMap" xml:space="preserve">
-    <value>Shadow Map (Fasa 2)</value>
-  </data>
-  <data name="Enums.FlagPresets.LightingMode.Voxel" xml:space="preserve">
-    <value>Voxel (Fasa 1)</value>
-  </data>
-  <data name="Enums.FlagPresets.RenderingMode.D3D10" xml:space="preserve">
-    <value>Direct3D 10</value>
-  </data>
-  <data name="Enums.FlagPresets.RenderingMode.D3D11" xml:space="preserve">
-    <value>Direct3D 11</value>
-  </data>
   <data name="Enums.ServerType.Private" xml:space="preserve">
     <value>Server peribadi</value>
   </data>
@@ -400,12 +373,6 @@ Jika belum, sila laporkan masalah tersebut melalui [isu GitHub]({1}) bersama den
   </data>
   <data name="Menu.About.Contributors.Description" xml:space="preserve">
     <value>Berikut adalah individu yang telah memberi sumbangan besar kepada Froststrap, membantu membentuknya menjadi seperti yang ada sekarang.</value>
-  </data>
-  <data name="Menu.About.Contributors.FeatureIdeas" xml:space="preserve">
-    <value>Idea dan Fungsi</value>
-  </data>
-  <data name="Menu.About.Contributors.SpecialThanks" xml:space="preserve">
-    <value>Jutaan Terima Kasih</value>
   </data>
   <data name="Menu.About.Description" xml:space="preserve">
     <value>Alternatif bootstrapper untuk Roblox dengan beberapa ciri tambahan.</value>
@@ -474,9 +441,6 @@ Jika belum, sila laporkan masalah tersebut melalui [isu GitHub]({1}) bersama den
   <data name="Menu.Appearance.Description" xml:space="preserve">
     <value>Tetapkan rupa bentuk Froststrap.</value>
   </data>
-  <data name="Menu.Appearance.Global.Theme.Title" xml:space="preserve">
-    <value>Tema Global</value>
-  </data>
   <data name="Menu.Appearance.Icon.Description" xml:space="preserve">
     <value>Pilih ikon yang akan digunakan.</value>
   </data>
@@ -485,12 +449,6 @@ Jika belum, sila laporkan masalah tersebut melalui [isu GitHub]({1}) bersama den
   </data>
   <data name="Menu.Appearance.Preview" xml:space="preserve">
     <value>Previu</value>
-  </data>
-  <data name="Menu.Appearance.Style.Description" xml:space="preserve">
-    <value>Pilih gaya yang diinginkan. Tema gelap tidak dapat digunakan pada Legasi/Vista.</value>
-  </data>
-  <data name="Menu.Appearance.Style.Title" xml:space="preserve">
-    <value>Gaya</value>
   </data>
   <data name="Menu.Appearance.Title" xml:space="preserve">
     <value>Penampilan</value>
@@ -607,32 +565,11 @@ JANGAN mengimport sebarang senarai "Fast Flags" yang dibuat oleh pengguna lain y
   <data name="Menu.FastFlags.Presets.D3DExclusiveFullscreenInfo" xml:space="preserve">
     <value>Direct3D untuk [skrin penuh eksklusif]({0}) menggunakan Alt+Enter telah diaktifkan secara lalai.</value>
   </data>
-  <data name="Menu.FastFlags.Presets.EscapeMenuVersion.Title" xml:space="preserve">
-    <value>Pilih versi menu keluar</value>
-  </data>
   <data name="Menu.FastFlags.Presets.FixDisplayScaling.Description" xml:space="preserve">
     <value>Roblox akan mengurangkan kualiti "rendering" bergantung pada skala skrin anda dalam Windows.</value>
   </data>
   <data name="Menu.FastFlags.Presets.FixDisplayScaling.Title" xml:space="preserve">
     <value>Kekalkan kualiti "rendering" bersama dengan skala paparan</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.FPSLimit.Description" xml:space="preserve">
-    <value>Jika anda ingin menggunakan kadar bingkai Roblox yang asal, tetapkan kepada 0.</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.FPSLimit.Title" xml:space="preserve">
-    <value>Had kadar bingkai</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.HideGuis.Description" xml:space="preserve">
-    <value>Diaktifkan menggunakan [pintasan papan kekunci]({0}). Fungsi ini hanya akan berfungsi jika anda berada dalam [kumpulan Froststrap] sahaja ({1}).</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.HideGuis.Title" xml:space="preserve">
-    <value>Aktifkan keupayaan untuk menyembunyikan GUI</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.LightingTechnology.Description" xml:space="preserve">
-    <value>Pilihan yang anda pilih akan dipaksa diaktifkan dalam semua permainan. [Amaran! ia berkemungkinan akan menyebabkan masalah pencahayaan pada permainan]({0})</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.LightingTechnology.Title" xml:space="preserve">
-    <value>Pilihan teknologi pencahayaan</value>
   </data>
   <data name="Menu.FastFlags.Presets.RenderingMode.Title" xml:space="preserve">
     <value>Mod "rendering"</value>
@@ -831,15 +768,6 @@ Memilih 'Tidak' akan mengabaikan amaran ini dan pemasangan akan diteruskan.</val
   <data name="Menu.Behaviour.ForceRobloxLanguage.Description" xml:space="preserve">
     <value>Hanya terpakai pada permainan yang dilancarkan dari laman web Roblox sahaja.</value>
   </data>
-  <data name="Enums.FlagPresets.InGameMenuVersion.V4Chrome" xml:space="preserve">
-    <value>2023 (V4 + Antaramuka Baru)</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.Categories.Rendering" xml:space="preserve">
-    <value>"Rendering" dan Grafik</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.Categories.UserInterface" xml:space="preserve">
-    <value>Antaramuka Pengguna dan Susun Atur</value>
-  </data>
   <data name="Menu.FastFlags.ManagerEnabled.Title" xml:space="preserve">
     <value>Benarkan Froststrap untuk mengurus "Fast Flags"</value>
   </data>
@@ -848,42 +776,6 @@ Memilih 'Tidak' akan mengabaikan amaran ini dan pemasangan akan diteruskan.</val
   </data>
   <data name="Menu.FastFlags.Presets.MSAA.Title" xml:space="preserve">
     <value>Kualiti anti-aliasing (MSAA)</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.DisablePostFX.Title" xml:space="preserve">
-    <value>Nyahaktifkan kesan pasca pemprosesan</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.FullscreenTitlebar.Title" xml:space="preserve">
-    <value>Nyahaktifkan bar tajuk skrin penuh</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.FullscreenTitlebar.Description" xml:space="preserve">
-    <value>Menghalang ia daripada muncul ketika anda menggerakkan tetikus ke bahagian atas skrin.</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.TextureQuality.Title" xml:space="preserve">
-    <value>Kualiti tekstur</value>
-  </data>
-  <data name="Enums.FlagPresets.TextureQuality.Level0" xml:space="preserve">
-    <value>Tahap 0 (Terendah)</value>
-  </data>
-  <data name="Enums.FlagPresets.TextureQuality.Level1" xml:space="preserve">
-    <value>Tahap 1</value>
-  </data>
-  <data name="Enums.FlagPresets.TextureQuality.Level2" xml:space="preserve">
-    <value>Tahap 2</value>
-  </data>
-  <data name="Enums.FlagPresets.TextureQuality.Level3" xml:space="preserve">
-    <value>Tahap 3 (Tertinggi)</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.DisablePlayerShadows.Title" xml:space="preserve">
-    <value>Nyahaktifkan bayang pada pemain</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.FontPadding.Title" xml:space="preserve">
-    <value>Saiz font</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.FontPadding.Description" xml:space="preserve">
-    <value>Nilai asal adalah 1. Laraskan jika anda menggunakan font sendiri.</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.DisableTerrainTextures.Title" xml:space="preserve">
-    <value>Nyahaktifkan tekstur permukaan rupa bumi</value>
   </data>
   <data name="Dialog.Connectivity.UnableToDownload" xml:space="preserve">
     <value>Froststrap tidak dapat memuat turun Roblox</value>
@@ -1208,6 +1100,9 @@ Adakah anda ingin mengaktifkan mod pengujian?</value>
     <value>Pasang</value>
     <comment>The word "Install" is being used as a verb in this instance, like the other navigation button texts of "Next" and "Back"</comment>
   </data>
+  <data name="Enums.FlagPresets.RenderingMode.D3D11" xml:space="preserve">
+    <value>Direct3D 11</value>
+  </data>
   <data name="Paths.Icons" xml:space="preserve">
     <value>Ikon</value>
     <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
@@ -1267,5 +1162,110 @@ Sila tutup sebarang aplikasi yang mungkin menggunakan fail Roblox, dan cuba lagi
   </data>
   <data name="Menu.Froststrap.Analytics.Description" xml:space="preserve">
     <value>Untuk maklumat tentang apa yang kami kumpulkan dan sebabnya, rujuk dasar [privasi kami.]({0}). Ia adalah secara anonim dan tidak berniat jahat, kami janji.</value>
+  </data>
+  <data name="Enums.FlagPresets.InGameMenuVersion.V1" xml:space="preserve">
+    <value>2015 (V1)</value>
+  </data>
+  <data name="Enums.FlagPresets.InGameMenuVersion.V2" xml:space="preserve">
+    <value>2020 (V2)</value>
+  </data>
+  <data name="Enums.FlagPresets.InGameMenuVersion.V4" xml:space="preserve">
+    <value>2023 (V4)</value>
+  </data>
+  <data name="Enums.FlagPresets.LightingMode.Default" xml:space="preserve">
+    <value>Ditetapkan oleh permainan</value>
+  </data>
+  <data name="Enums.FlagPresets.LightingMode.Future" xml:space="preserve">
+    <value>Masa hadapan (Fasa 3)</value>
+  </data>
+  <data name="Enums.FlagPresets.LightingMode.ShadowMap" xml:space="preserve">
+    <value>Shadow Map (Fasa 2)</value>
+  </data>
+  <data name="Enums.FlagPresets.LightingMode.Voxel" xml:space="preserve">
+    <value>Voxel (Fasa 1)</value>
+  </data>
+  <data name="Enums.FlagPresets.RenderingMode.D3D10" xml:space="preserve">
+    <value>Direct3D 10</value>
+  </data>
+  <data name="Menu.About.Contributors.FeatureIdeas" xml:space="preserve">
+    <value>Idea dan Fungsi</value>
+  </data>
+  <data name="Menu.About.Contributors.SpecialThanks" xml:space="preserve">
+    <value>Jutaan Terima Kasih</value>
+  </data>
+  <data name="Menu.Appearance.Global.Theme.Title" xml:space="preserve">
+    <value>Tema Global</value>
+  </data>
+  <data name="Menu.Appearance.Style.Description" xml:space="preserve">
+    <value>Pilih gaya yang diinginkan. Tema gelap tidak dapat digunakan pada Legasi/Vista.</value>
+  </data>
+  <data name="Menu.Appearance.Style.Title" xml:space="preserve">
+    <value>Gaya</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.EscapeMenuVersion.Title" xml:space="preserve">
+    <value>Pilih versi menu keluar</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.FPSLimit.Description" xml:space="preserve">
+    <value>Jika anda ingin menggunakan kadar bingkai Roblox yang asal, tetapkan kepada 0.</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.FPSLimit.Title" xml:space="preserve">
+    <value>Had kadar bingkai</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.HideGuis.Description" xml:space="preserve">
+    <value>Diaktifkan menggunakan [pintasan papan kekunci]({0}). Fungsi ini hanya akan berfungsi jika anda berada dalam [kumpulan Froststrap] sahaja ({1}).</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.HideGuis.Title" xml:space="preserve">
+    <value>Aktifkan keupayaan untuk menyembunyikan GUI</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.LightingTechnology.Description" xml:space="preserve">
+    <value>Pilihan yang anda pilih akan dipaksa diaktifkan dalam semua permainan. [Amaran! ia berkemungkinan akan menyebabkan masalah pencahayaan pada permainan]({0})</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.LightingTechnology.Title" xml:space="preserve">
+    <value>Pilihan teknologi pencahayaan</value>
+  </data>
+  <data name="Enums.FlagPresets.InGameMenuVersion.V4Chrome" xml:space="preserve">
+    <value>2023 (V4 + Antaramuka Baru)</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.Categories.Rendering" xml:space="preserve">
+    <value>"Rendering" dan Grafik</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.Categories.UserInterface" xml:space="preserve">
+    <value>Antaramuka Pengguna dan Susun Atur</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.DisablePostFX.Title" xml:space="preserve">
+    <value>Nyahaktifkan kesan pasca pemprosesan</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.FullscreenTitlebar.Title" xml:space="preserve">
+    <value>Nyahaktifkan bar tajuk skrin penuh</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.FullscreenTitlebar.Description" xml:space="preserve">
+    <value>Menghalang ia daripada muncul ketika anda menggerakkan tetikus ke bahagian atas skrin.</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.TextureQuality.Title" xml:space="preserve">
+    <value>Kualiti tekstur</value>
+  </data>
+  <data name="Enums.FlagPresets.TextureQuality.Level0" xml:space="preserve">
+    <value>Tahap 0 (Terendah)</value>
+  </data>
+  <data name="Enums.FlagPresets.TextureQuality.Level1" xml:space="preserve">
+    <value>Tahap 1</value>
+  </data>
+  <data name="Enums.FlagPresets.TextureQuality.Level2" xml:space="preserve">
+    <value>Tahap 2</value>
+  </data>
+  <data name="Enums.FlagPresets.TextureQuality.Level3" xml:space="preserve">
+    <value>Tahap 3 (Tertinggi)</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.DisablePlayerShadows.Title" xml:space="preserve">
+    <value>Nyahaktifkan bayang pada pemain</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.FontPadding.Title" xml:space="preserve">
+    <value>Saiz font</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.FontPadding.Description" xml:space="preserve">
+    <value>Nilai asal adalah 1. Laraskan jika anda menggunakan font sendiri.</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.DisableTerrainTextures.Title" xml:space="preserve">
+    <value>Nyahaktifkan tekstur permukaan rupa bumi</value>
   </data>
 </root>

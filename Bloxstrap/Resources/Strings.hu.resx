@@ -344,33 +344,6 @@ Ha nem, kérjük, hogy jelentse ezt egy [GitHub problémaként]({1}) a Froststra
   <data name="Enums.EmojiType.Windows8" xml:space="preserve">
     <value>Windows 8</value>
   </data>
-  <data name="Enums.FlagPresets.InGameMenuVersion.V1" xml:space="preserve">
-    <value>2015 (1. verzió)</value>
-  </data>
-  <data name="Enums.FlagPresets.InGameMenuVersion.V2" xml:space="preserve">
-    <value>2020 (2. verzió)</value>
-  </data>
-  <data name="Enums.FlagPresets.InGameMenuVersion.V4" xml:space="preserve">
-    <value>2023 (4. verzió)</value>
-  </data>
-  <data name="Enums.FlagPresets.LightingMode.Default" xml:space="preserve">
-    <value>Játék által kiválasztott</value>
-  </data>
-  <data name="Enums.FlagPresets.LightingMode.Future" xml:space="preserve">
-    <value>Future (3. fázis)</value>
-  </data>
-  <data name="Enums.FlagPresets.LightingMode.ShadowMap" xml:space="preserve">
-    <value>Shadow map (2. fázis)</value>
-  </data>
-  <data name="Enums.FlagPresets.LightingMode.Voxel" xml:space="preserve">
-    <value>Voxel (1. fázis)</value>
-  </data>
-  <data name="Enums.FlagPresets.RenderingMode.D3D10" xml:space="preserve">
-    <value>Direct3D 10</value>
-  </data>
-  <data name="Enums.FlagPresets.RenderingMode.D3D11" xml:space="preserve">
-    <value>Direct3D 11</value>
-  </data>
   <data name="Enums.ServerType.Private" xml:space="preserve">
     <value>Privát szerver</value>
   </data>
@@ -401,12 +374,6 @@ Szeretné frissíteni a jelenleg telepített verzióját?</value>
   </data>
   <data name="Menu.About.Contributors.Description" xml:space="preserve">
     <value>Ezek azok az emberek, akik jelentős mértékben hozzájárultak a Froststraphez, és segítettek abban, hogy azzá váljon, ami.</value>
-  </data>
-  <data name="Menu.About.Contributors.FeatureIdeas" xml:space="preserve">
-    <value>Funkció Ajánlók</value>
-  </data>
-  <data name="Menu.About.Contributors.SpecialThanks" xml:space="preserve">
-    <value>Különleges Köszönet</value>
   </data>
   <data name="Menu.About.Description" xml:space="preserve">
     <value>Egy alternatív indító a Roblox-hoz csomó extra funkcióval.</value>
@@ -475,9 +442,6 @@ Szeretné frissíteni a jelenleg telepített verzióját?</value>
   <data name="Menu.Appearance.Description" xml:space="preserve">
     <value>Állítsa be a Froststrap kinézetét.</value>
   </data>
-  <data name="Menu.Appearance.Global.Theme.Title" xml:space="preserve">
-    <value>Globális Téma</value>
-  </data>
   <data name="Menu.Appearance.Icon.Description" xml:space="preserve">
     <value>Válassza ki, hogy milyen ikont használjon.</value>
   </data>
@@ -486,12 +450,6 @@ Szeretné frissíteni a jelenleg telepített verzióját?</value>
   </data>
   <data name="Menu.Appearance.Preview" xml:space="preserve">
     <value>Előnézet</value>
-  </data>
-  <data name="Menu.Appearance.Style.Description" xml:space="preserve">
-    <value>Válassza ki a kinézetét. A sötét téma nem hat a Régi/Vista kinézetre.</value>
-  </data>
-  <data name="Menu.Appearance.Style.Title" xml:space="preserve">
-    <value>Stílus</value>
   </data>
   <data name="Menu.Appearance.Title" xml:space="preserve">
     <value>Kinézet</value>
@@ -608,32 +566,11 @@ Biztosan folytatja?</value>
   <data name="Menu.FastFlags.Presets.D3DExclusiveFullscreenInfo" xml:space="preserve">
     <value>A Direct3D [kizárólagos teljes képernyő]({0}) az Alt+Enter billentyűkombináció használatával alapértelmezés szerint engedélyezve van.</value>
   </data>
-  <data name="Menu.FastFlags.Presets.EscapeMenuVersion.Title" xml:space="preserve">
-    <value>Előnyben részesített játék menü verzió</value>
-  </data>
   <data name="Menu.FastFlags.Presets.FixDisplayScaling.Description" xml:space="preserve">
     <value>A Roblox csökkenti a renderelési minőséget attól függően, hogy a kijelző hogyan van méretezve a Windows-ban.</value>
   </data>
   <data name="Menu.FastFlags.Presets.FixDisplayScaling.Title" xml:space="preserve">
     <value>A megjelenítés minőségének megőrzése a kijelző méretezésével</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.FPSLimit.Description" xml:space="preserve">
-    <value>Állítsd 0-ra az alapértelmezettért, ha a Roblox saját FPS korlát eltörlőjét akarod használni.</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.FPSLimit.Title" xml:space="preserve">
-    <value>FPS korlát</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.HideGuis.Description" xml:space="preserve">
-    <value>A [billentyűparancsok]({0}) segítségével kapcsolható. Csak akkor működik, ha a [Froststrap Roblox csoportban]({1}) vagy.</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.HideGuis.Title" xml:space="preserve">
-    <value>A GUI-k elrejtésének lehetővé tétele</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.LightingTechnology.Description" xml:space="preserve">
-    <value>A kiválasztott feltétlenül meg fog jelenni az összes játékban. [Vigyázz, ez el tudja rontani a játék kinézetét!]({0})</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.LightingTechnology.Title" xml:space="preserve">
-    <value>Előnyben részesített világítási technológia</value>
   </data>
   <data name="Menu.FastFlags.Presets.RenderingMode.Title" xml:space="preserve">
     <value>Renderelési mód</value>
@@ -832,15 +769,6 @@ A 'Nem' választása figyelmen kívül hagyja ezt a figyelmeztetést, és folyta
   <data name="Menu.Behaviour.ForceRobloxLanguage.Description" xml:space="preserve">
     <value>Csak azokra a játékokra vonatkozik, amelyek a Roblox oldaláról lettek elindítva.</value>
   </data>
-  <data name="Enums.FlagPresets.InGameMenuVersion.V4Chrome" xml:space="preserve">
-    <value>2023 (4. verzió + új felület)</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.Categories.Rendering" xml:space="preserve">
-    <value>Renderelés és Grafika</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.Categories.UserInterface" xml:space="preserve">
-    <value>Felhasználói felület és Elrendezés</value>
-  </data>
   <data name="Menu.FastFlags.ManagerEnabled.Title" xml:space="preserve">
     <value>Fast Flag kezelés engedélyezése a Froststrap-nek</value>
   </data>
@@ -849,42 +777,6 @@ A 'Nem' választása figyelmen kívül hagyja ezt a figyelmeztetést, és folyta
   </data>
   <data name="Menu.FastFlags.Presets.MSAA.Title" xml:space="preserve">
     <value>Élsimítás minőség (MSAA)</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.DisablePostFX.Title" xml:space="preserve">
-    <value>Utófeldolgozási effektusok letiltása</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.FullscreenTitlebar.Title" xml:space="preserve">
-    <value>A teljesképernyős címsor letiltása</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.FullscreenTitlebar.Description" xml:space="preserve">
-    <value>Nem fog megjelenni, ha az egerét a képernyő tetejére mozdítja.</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.TextureQuality.Title" xml:space="preserve">
-    <value>Textúra minősége</value>
-  </data>
-  <data name="Enums.FlagPresets.TextureQuality.Level0" xml:space="preserve">
-    <value>0. szint (Legalacsonyabb)</value>
-  </data>
-  <data name="Enums.FlagPresets.TextureQuality.Level1" xml:space="preserve">
-    <value>1. szint</value>
-  </data>
-  <data name="Enums.FlagPresets.TextureQuality.Level2" xml:space="preserve">
-    <value>2. szint</value>
-  </data>
-  <data name="Enums.FlagPresets.TextureQuality.Level3" xml:space="preserve">
-    <value>3. szint (Legmagasabb)</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.DisablePlayerShadows.Title" xml:space="preserve">
-    <value>Játékosok árnyékai letiltása</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.FontPadding.Title" xml:space="preserve">
-    <value>Betűtípus méret</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.FontPadding.Description" xml:space="preserve">
-    <value>Az alapértelmezett érték 1. Változtassa meg ezt, ha egy saját betűtípust használ.</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.DisableTerrainTextures.Title" xml:space="preserve">
-    <value>Tereptextúrák kikapcsolása</value>
   </data>
   <data name="Dialog.Connectivity.UnableToDownload" xml:space="preserve">
     <value>A Froststrap nem tudja letölteni a Roblox-ot</value>
@@ -1215,6 +1107,9 @@ Szeretné engedélyezni a teszt üzemmódot?</value>
     <value>Telepítés</value>
     <comment>The word "Install" is being used as a verb in this instance, like the other navigation button texts of "Next" and "Back"</comment>
   </data>
+  <data name="Enums.FlagPresets.RenderingMode.D3D11" xml:space="preserve">
+    <value>Direct3D 11</value>
+  </data>
   <data name="Paths.Icons" xml:space="preserve">
     <value>Ikonok</value>
     <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
@@ -1275,5 +1170,110 @@ Kérjük, zárjon be minden olyan alkalmazást, amely a Roblox fájljait haszná
   </data>
   <data name="Menu.Froststrap.Analytics.Description" xml:space="preserve">
     <value>Névtelen és semmi rossz, ígérjük. Ha többet szeretne megtudni arról, hogy mit és miért gyűjtünk, olvassa el az [adatvédelmi szabályzatunkat]({0}).</value>
+  </data>
+  <data name="Enums.FlagPresets.InGameMenuVersion.V1" xml:space="preserve">
+    <value>2015 (1. verzió)</value>
+  </data>
+  <data name="Enums.FlagPresets.InGameMenuVersion.V2" xml:space="preserve">
+    <value>2020 (2. verzió)</value>
+  </data>
+  <data name="Enums.FlagPresets.InGameMenuVersion.V4" xml:space="preserve">
+    <value>2023 (4. verzió)</value>
+  </data>
+  <data name="Enums.FlagPresets.LightingMode.Default" xml:space="preserve">
+    <value>Játék által kiválasztott</value>
+  </data>
+  <data name="Enums.FlagPresets.LightingMode.Future" xml:space="preserve">
+    <value>Future (3. fázis)</value>
+  </data>
+  <data name="Enums.FlagPresets.LightingMode.ShadowMap" xml:space="preserve">
+    <value>Shadow map (2. fázis)</value>
+  </data>
+  <data name="Enums.FlagPresets.LightingMode.Voxel" xml:space="preserve">
+    <value>Voxel (1. fázis)</value>
+  </data>
+  <data name="Enums.FlagPresets.RenderingMode.D3D10" xml:space="preserve">
+    <value>Direct3D 10</value>
+  </data>
+  <data name="Menu.About.Contributors.FeatureIdeas" xml:space="preserve">
+    <value>Funkció Ajánlók</value>
+  </data>
+  <data name="Menu.About.Contributors.SpecialThanks" xml:space="preserve">
+    <value>Különleges Köszönet</value>
+  </data>
+  <data name="Menu.Appearance.Global.Theme.Title" xml:space="preserve">
+    <value>Globális Téma</value>
+  </data>
+  <data name="Menu.Appearance.Style.Description" xml:space="preserve">
+    <value>Válassza ki a kinézetét. A sötét téma nem hat a Régi/Vista kinézetre.</value>
+  </data>
+  <data name="Menu.Appearance.Style.Title" xml:space="preserve">
+    <value>Stílus</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.EscapeMenuVersion.Title" xml:space="preserve">
+    <value>Előnyben részesített játék menü verzió</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.FPSLimit.Description" xml:space="preserve">
+    <value>Állítsd 0-ra az alapértelmezettért, ha a Roblox saját FPS korlát eltörlőjét akarod használni.</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.FPSLimit.Title" xml:space="preserve">
+    <value>FPS korlát</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.HideGuis.Description" xml:space="preserve">
+    <value>A [billentyűparancsok]({0}) segítségével kapcsolható. Csak akkor működik, ha a [Froststrap Roblox csoportban]({1}) vagy.</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.HideGuis.Title" xml:space="preserve">
+    <value>A GUI-k elrejtésének lehetővé tétele</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.LightingTechnology.Description" xml:space="preserve">
+    <value>A kiválasztott feltétlenül meg fog jelenni az összes játékban. [Vigyázz, ez el tudja rontani a játék kinézetét!]({0})</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.LightingTechnology.Title" xml:space="preserve">
+    <value>Előnyben részesített világítási technológia</value>
+  </data>
+  <data name="Enums.FlagPresets.InGameMenuVersion.V4Chrome" xml:space="preserve">
+    <value>2023 (4. verzió + új felület)</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.Categories.Rendering" xml:space="preserve">
+    <value>Renderelés és Grafika</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.Categories.UserInterface" xml:space="preserve">
+    <value>Felhasználói felület és Elrendezés</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.DisablePostFX.Title" xml:space="preserve">
+    <value>Utófeldolgozási effektusok letiltása</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.FullscreenTitlebar.Title" xml:space="preserve">
+    <value>A teljesképernyős címsor letiltása</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.FullscreenTitlebar.Description" xml:space="preserve">
+    <value>Nem fog megjelenni, ha az egerét a képernyő tetejére mozdítja.</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.TextureQuality.Title" xml:space="preserve">
+    <value>Textúra minősége</value>
+  </data>
+  <data name="Enums.FlagPresets.TextureQuality.Level0" xml:space="preserve">
+    <value>0. szint (Legalacsonyabb)</value>
+  </data>
+  <data name="Enums.FlagPresets.TextureQuality.Level1" xml:space="preserve">
+    <value>1. szint</value>
+  </data>
+  <data name="Enums.FlagPresets.TextureQuality.Level2" xml:space="preserve">
+    <value>2. szint</value>
+  </data>
+  <data name="Enums.FlagPresets.TextureQuality.Level3" xml:space="preserve">
+    <value>3. szint (Legmagasabb)</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.DisablePlayerShadows.Title" xml:space="preserve">
+    <value>Játékosok árnyékai letiltása</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.FontPadding.Title" xml:space="preserve">
+    <value>Betűtípus méret</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.FontPadding.Description" xml:space="preserve">
+    <value>Az alapértelmezett érték 1. Változtassa meg ezt, ha egy saját betűtípust használ.</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.DisableTerrainTextures.Title" xml:space="preserve">
+    <value>Tereptextúrák kikapcsolása</value>
   </data>
 </root>

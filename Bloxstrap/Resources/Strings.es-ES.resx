@@ -344,33 +344,6 @@ Si no es así, informe de esta excepción a través de un [Problema en GitHub]({
   <data name="Enums.EmojiType.Windows8" xml:space="preserve">
     <value>Windows 8</value>
   </data>
-  <data name="Enums.FlagPresets.InGameMenuVersion.V1" xml:space="preserve">
-    <value>2015 (Versión 1)</value>
-  </data>
-  <data name="Enums.FlagPresets.InGameMenuVersion.V2" xml:space="preserve">
-    <value>2020 (Versión 2)</value>
-  </data>
-  <data name="Enums.FlagPresets.InGameMenuVersion.V4" xml:space="preserve">
-    <value>2023 (Versión 4)</value>
-  </data>
-  <data name="Enums.FlagPresets.LightingMode.Default" xml:space="preserve">
-    <value>Elegido por el juego</value>
-  </data>
-  <data name="Enums.FlagPresets.LightingMode.Future" xml:space="preserve">
-    <value>Futuro (Fase 3)</value>
-  </data>
-  <data name="Enums.FlagPresets.LightingMode.ShadowMap" xml:space="preserve">
-    <value>Shadow Map (Fase 2)</value>
-  </data>
-  <data name="Enums.FlagPresets.LightingMode.Voxel" xml:space="preserve">
-    <value>Voxel (Fase 1)</value>
-  </data>
-  <data name="Enums.FlagPresets.RenderingMode.D3D10" xml:space="preserve">
-    <value>Direct3D 10</value>
-  </data>
-  <data name="Enums.FlagPresets.RenderingMode.D3D11" xml:space="preserve">
-    <value>Direct3D 11</value>
-  </data>
   <data name="Enums.ServerType.Private" xml:space="preserve">
     <value>Servidor privado</value>
   </data>
@@ -401,12 +374,6 @@ Si no es así, informe de esta excepción a través de un [Problema en GitHub]({
   </data>
   <data name="Menu.About.Contributors.Description" xml:space="preserve">
     <value>Estas son las personas que han hecho notables contribuciones a Froststrap, ayudando a convertirlo en lo que es.</value>
-  </data>
-  <data name="Menu.About.Contributors.FeatureIdeas" xml:space="preserve">
-    <value>Ideas de Características</value>
-  </data>
-  <data name="Menu.About.Contributors.SpecialThanks" xml:space="preserve">
-    <value>Agradecimientos Especiales</value>
   </data>
   <data name="Menu.About.Description" xml:space="preserve">
     <value>Un iniciador alternativo de Roblox con un montón de características adicionales.</value>
@@ -475,9 +442,6 @@ Si no es así, informe de esta excepción a través de un [Problema en GitHub]({
   <data name="Menu.Appearance.Description" xml:space="preserve">
     <value>Configura como Froststrap debería verse.</value>
   </data>
-  <data name="Menu.Appearance.Global.Theme.Title" xml:space="preserve">
-    <value>Tema global</value>
-  </data>
   <data name="Menu.Appearance.Icon.Description" xml:space="preserve">
     <value>Elige cuál ícono se debería de usar.</value>
   </data>
@@ -486,12 +450,6 @@ Si no es así, informe de esta excepción a través de un [Problema en GitHub]({
   </data>
   <data name="Menu.Appearance.Preview" xml:space="preserve">
     <value>Vista previa</value>
-  </data>
-  <data name="Menu.Appearance.Style.Description" xml:space="preserve">
-    <value>Elige como debería verse, El tema oscuro no aplica para Clásico/Vista.</value>
-  </data>
-  <data name="Menu.Appearance.Style.Title" xml:space="preserve">
-    <value>Estilo</value>
   </data>
   <data name="Menu.Appearance.Title" xml:space="preserve">
     <value>Apariencia</value>
@@ -610,32 +568,11 @@ NO los uses para importar grandes "listas de flags" creadas por otras personas q
   <data name="Menu.FastFlags.Presets.D3DExclusiveFullscreenInfo" xml:space="preserve">
     <value>Direct3D [pantalla completa exclusiva]({0}) usando Alt+Enter está activado por defecto.</value>
   </data>
-  <data name="Menu.FastFlags.Presets.EscapeMenuVersion.Title" xml:space="preserve">
-    <value>Versión preferida del menú de escape</value>
-  </data>
   <data name="Menu.FastFlags.Presets.FixDisplayScaling.Description" xml:space="preserve">
     <value>Roblox reduce tu calidad de renderizado dependiendo en como está escalada tu resolución en Windows.</value>
   </data>
   <data name="Menu.FastFlags.Presets.FixDisplayScaling.Title" xml:space="preserve">
     <value>Preservar la calidad de renderizado con escalado de resolución</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.FPSLimit.Description" xml:space="preserve">
-    <value>Establece a 0 por defecto si quieres usar el desbloqueador de fotogramas nativo de Roblox.</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.FPSLimit.Title" xml:space="preserve">
-    <value>Límite de velocidad de fotogramas</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.HideGuis.Description" xml:space="preserve">
-    <value>Alternado con [atajos de teclado]({0}). Solo funciona si estás en el [grupo de Froststrap]({1}).</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.HideGuis.Title" xml:space="preserve">
-    <value>Habilitar la capacidad de ocultar GUIs</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.LightingTechnology.Description" xml:space="preserve">
-    <value>El elegido se activará a la fuerza en todos los juegos. [Cuidado, puede causar problemas de iluminación]({0})</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.LightingTechnology.Title" xml:space="preserve">
-    <value>Tecnología de iluminación preferida</value>
   </data>
   <data name="Menu.FastFlags.Presets.RenderingMode.Title" xml:space="preserve">
     <value>Modo de renderizado</value>
@@ -834,15 +771,6 @@ Seleccionar "No" va a ignorar esta advertencia y continuara con la instalación.
   <data name="Menu.Behaviour.ForceRobloxLanguage.Description" xml:space="preserve">
     <value>Solo se aplica a los juegos lanzados desde el sitio web de Roblox.</value>
   </data>
-  <data name="Enums.FlagPresets.InGameMenuVersion.V4Chrome" xml:space="preserve">
-    <value>2023 (Versión 4 + Nueva interfaz de usuario)</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.Categories.Rendering" xml:space="preserve">
-    <value>Renderizado y gráficos</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.Categories.UserInterface" xml:space="preserve">
-    <value>Interfaz de usuario y diseño</value>
-  </data>
   <data name="Menu.FastFlags.ManagerEnabled.Title" xml:space="preserve">
     <value>Permitir que Froststrap gestione las Fast Flags</value>
   </data>
@@ -851,42 +779,6 @@ Seleccionar "No" va a ignorar esta advertencia y continuara con la instalación.
   </data>
   <data name="Menu.FastFlags.Presets.MSAA.Title" xml:space="preserve">
     <value>Calidad del suavizado de bordes (MSAA)</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.DisablePostFX.Title" xml:space="preserve">
-    <value>Desactivar efectos de post-procesamiento</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.FullscreenTitlebar.Title" xml:space="preserve">
-    <value>Desactivar barra de título en pantalla completa</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.FullscreenTitlebar.Description" xml:space="preserve">
-    <value>Evita que se muestre cada vez que mueves el mouse a la parte superior de la pantalla.</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.TextureQuality.Title" xml:space="preserve">
-    <value>Calidad de las texturas</value>
-  </data>
-  <data name="Enums.FlagPresets.TextureQuality.Level0" xml:space="preserve">
-    <value>Nivel 0 (El más bajo)</value>
-  </data>
-  <data name="Enums.FlagPresets.TextureQuality.Level1" xml:space="preserve">
-    <value>Nivel 1</value>
-  </data>
-  <data name="Enums.FlagPresets.TextureQuality.Level2" xml:space="preserve">
-    <value>Nivel 2</value>
-  </data>
-  <data name="Enums.FlagPresets.TextureQuality.Level3" xml:space="preserve">
-    <value>Nivel 3 (El más alto)</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.DisablePlayerShadows.Title" xml:space="preserve">
-    <value>Desactivar las sombras de los jugadores</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.FontPadding.Title" xml:space="preserve">
-    <value>Tamaño de fuente</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.FontPadding.Description" xml:space="preserve">
-    <value>El valor por defecto es 1. Ajústalo si utilizas una fuente personalizada.</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.DisableTerrainTextures.Title" xml:space="preserve">
-    <value>Desactivar texturas del terreno</value>
   </data>
   <data name="Dialog.Connectivity.UnableToDownload" xml:space="preserve">
     <value>Froststrap no es capaz de descargar Roblox</value>
@@ -1216,6 +1108,9 @@ Mientras esté activado, se iniciará automáticamente Roblox después de cerrar
     <value>Instalar</value>
     <comment>The word "Install" is being used as a verb in this instance, like the other navigation button texts of "Next" and "Back"</comment>
   </data>
+  <data name="Enums.FlagPresets.RenderingMode.D3D11" xml:space="preserve">
+    <value>Direct3D 11</value>
+  </data>
   <data name="Paths.Icons" xml:space="preserve">
     <value>Iconos</value>
     <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
@@ -1276,5 +1171,110 @@ Por favor cierre las aplicaciones que estén usando los archivos de Roblox, y vu
   </data>
   <data name="Menu.Froststrap.Analytics.Description" xml:space="preserve">
     <value>Son anónimas y nada malas, promesa. Para saber qué recopilamos y por qué, consulta nuestra [política de privacidad]({0}).</value>
+  </data>
+  <data name="Enums.FlagPresets.InGameMenuVersion.V1" xml:space="preserve">
+    <value>2015 (Versión 1)</value>
+  </data>
+  <data name="Enums.FlagPresets.InGameMenuVersion.V2" xml:space="preserve">
+    <value>2020 (Versión 2)</value>
+  </data>
+  <data name="Enums.FlagPresets.InGameMenuVersion.V4" xml:space="preserve">
+    <value>2023 (Versión 4)</value>
+  </data>
+  <data name="Enums.FlagPresets.LightingMode.Default" xml:space="preserve">
+    <value>Elegido por el juego</value>
+  </data>
+  <data name="Enums.FlagPresets.LightingMode.Future" xml:space="preserve">
+    <value>Futuro (Fase 3)</value>
+  </data>
+  <data name="Enums.FlagPresets.LightingMode.ShadowMap" xml:space="preserve">
+    <value>Shadow Map (Fase 2)</value>
+  </data>
+  <data name="Enums.FlagPresets.LightingMode.Voxel" xml:space="preserve">
+    <value>Voxel (Fase 1)</value>
+  </data>
+  <data name="Enums.FlagPresets.RenderingMode.D3D10" xml:space="preserve">
+    <value>Direct3D 10</value>
+  </data>
+  <data name="Menu.About.Contributors.FeatureIdeas" xml:space="preserve">
+    <value>Ideas de Características</value>
+  </data>
+  <data name="Menu.About.Contributors.SpecialThanks" xml:space="preserve">
+    <value>Agradecimientos Especiales</value>
+  </data>
+  <data name="Menu.Appearance.Global.Theme.Title" xml:space="preserve">
+    <value>Tema global</value>
+  </data>
+  <data name="Menu.Appearance.Style.Description" xml:space="preserve">
+    <value>Elige como debería verse, El tema oscuro no aplica para Clásico/Vista.</value>
+  </data>
+  <data name="Menu.Appearance.Style.Title" xml:space="preserve">
+    <value>Estilo</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.EscapeMenuVersion.Title" xml:space="preserve">
+    <value>Versión preferida del menú de escape</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.FPSLimit.Description" xml:space="preserve">
+    <value>Establece a 0 por defecto si quieres usar el desbloqueador de fotogramas nativo de Roblox.</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.FPSLimit.Title" xml:space="preserve">
+    <value>Límite de velocidad de fotogramas</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.HideGuis.Description" xml:space="preserve">
+    <value>Alternado con [atajos de teclado]({0}). Solo funciona si estás en el [grupo de Froststrap]({1}).</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.HideGuis.Title" xml:space="preserve">
+    <value>Habilitar la capacidad de ocultar GUIs</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.LightingTechnology.Description" xml:space="preserve">
+    <value>El elegido se activará a la fuerza en todos los juegos. [Cuidado, puede causar problemas de iluminación]({0})</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.LightingTechnology.Title" xml:space="preserve">
+    <value>Tecnología de iluminación preferida</value>
+  </data>
+  <data name="Enums.FlagPresets.InGameMenuVersion.V4Chrome" xml:space="preserve">
+    <value>2023 (Versión 4 + Nueva interfaz de usuario)</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.Categories.Rendering" xml:space="preserve">
+    <value>Renderizado y gráficos</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.Categories.UserInterface" xml:space="preserve">
+    <value>Interfaz de usuario y diseño</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.DisablePostFX.Title" xml:space="preserve">
+    <value>Desactivar efectos de post-procesamiento</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.FullscreenTitlebar.Title" xml:space="preserve">
+    <value>Desactivar barra de título en pantalla completa</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.FullscreenTitlebar.Description" xml:space="preserve">
+    <value>Evita que se muestre cada vez que mueves el mouse a la parte superior de la pantalla.</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.TextureQuality.Title" xml:space="preserve">
+    <value>Calidad de las texturas</value>
+  </data>
+  <data name="Enums.FlagPresets.TextureQuality.Level0" xml:space="preserve">
+    <value>Nivel 0 (El más bajo)</value>
+  </data>
+  <data name="Enums.FlagPresets.TextureQuality.Level1" xml:space="preserve">
+    <value>Nivel 1</value>
+  </data>
+  <data name="Enums.FlagPresets.TextureQuality.Level2" xml:space="preserve">
+    <value>Nivel 2</value>
+  </data>
+  <data name="Enums.FlagPresets.TextureQuality.Level3" xml:space="preserve">
+    <value>Nivel 3 (El más alto)</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.DisablePlayerShadows.Title" xml:space="preserve">
+    <value>Desactivar las sombras de los jugadores</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.FontPadding.Title" xml:space="preserve">
+    <value>Tamaño de fuente</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.FontPadding.Description" xml:space="preserve">
+    <value>El valor por defecto es 1. Ajústalo si utilizas una fuente personalizada.</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.DisableTerrainTextures.Title" xml:space="preserve">
+    <value>Desactivar texturas del terreno</value>
   </data>
 </root>

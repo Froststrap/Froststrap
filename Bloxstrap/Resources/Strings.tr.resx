@@ -344,33 +344,6 @@ Değilse, lütfen bu sorunu oluşturulan kayıt dosyasının bir kopyasıyla bir
   <data name="Enums.EmojiType.Windows8" xml:space="preserve">
     <value>Windows 8</value>
   </data>
-  <data name="Enums.FlagPresets.InGameMenuVersion.V1" xml:space="preserve">
-    <value>2015 (V1)</value>
-  </data>
-  <data name="Enums.FlagPresets.InGameMenuVersion.V2" xml:space="preserve">
-    <value>2020 (V2)</value>
-  </data>
-  <data name="Enums.FlagPresets.InGameMenuVersion.V4" xml:space="preserve">
-    <value>2023 (V4)</value>
-  </data>
-  <data name="Enums.FlagPresets.LightingMode.Default" xml:space="preserve">
-    <value>Oyun tarafından seçilme</value>
-  </data>
-  <data name="Enums.FlagPresets.LightingMode.Future" xml:space="preserve">
-    <value>Gelecek (3. Aşama)</value>
-  </data>
-  <data name="Enums.FlagPresets.LightingMode.ShadowMap" xml:space="preserve">
-    <value>Gölge Haritası (2. Aşama)</value>
-  </data>
-  <data name="Enums.FlagPresets.LightingMode.Voxel" xml:space="preserve">
-    <value>Voksel (1. Aşama)</value>
-  </data>
-  <data name="Enums.FlagPresets.RenderingMode.D3D10" xml:space="preserve">
-    <value>Direct3D 10</value>
-  </data>
-  <data name="Enums.FlagPresets.RenderingMode.D3D11" xml:space="preserve">
-    <value>Direct3D 11</value>
-  </data>
   <data name="Enums.ServerType.Private" xml:space="preserve">
     <value>Özel sunucu</value>
   </data>
@@ -400,12 +373,6 @@ Değilse, lütfen bu sorunu oluşturulan kayıt dosyasının bir kopyasıyla bir
   </data>
   <data name="Menu.About.Contributors.Description" xml:space="preserve">
     <value>Bu insanlar Froststrap'e kayda değer katkılarda bulunmuş ve onun bu hale gelmesine yardımcı olmuş kişilerdir.</value>
-  </data>
-  <data name="Menu.About.Contributors.FeatureIdeas" xml:space="preserve">
-    <value>Özellik Fikirleri</value>
-  </data>
-  <data name="Menu.About.Contributors.SpecialThanks" xml:space="preserve">
-    <value>Özel Teşekkür</value>
   </data>
   <data name="Menu.About.Description" xml:space="preserve">
     <value>Roblox için ek özelliklere sahip alternatif bir bootstrapper.</value>
@@ -474,9 +441,6 @@ Değilse, lütfen bu sorunu oluşturulan kayıt dosyasının bir kopyasıyla bir
   <data name="Menu.Appearance.Description" xml:space="preserve">
     <value>Froststrap'in nasıl görünmesi gerektiğini yapılandırın.</value>
   </data>
-  <data name="Menu.Appearance.Global.Theme.Title" xml:space="preserve">
-    <value>Global Tema</value>
-  </data>
   <data name="Menu.Appearance.Icon.Description" xml:space="preserve">
     <value>Hangi simgeyi kullanması gerektiğini seçiniz.</value>
   </data>
@@ -485,12 +449,6 @@ Değilse, lütfen bu sorunu oluşturulan kayıt dosyasının bir kopyasıyla bir
   </data>
   <data name="Menu.Appearance.Preview" xml:space="preserve">
     <value>Önizleme</value>
-  </data>
-  <data name="Menu.Appearance.Style.Description" xml:space="preserve">
-    <value>Nasıl görünmesi gerektiğini seçin. Koyu tema Legacy/Vista için geçerli değildir.</value>
-  </data>
-  <data name="Menu.Appearance.Style.Title" xml:space="preserve">
-    <value>Stil</value>
   </data>
   <data name="Menu.Appearance.Title" xml:space="preserve">
     <value>Görünüş</value>
@@ -609,32 +567,11 @@ Bunu, diğer insanlar tarafından yapılan ve performansı artırmayı vaat eden
   <data name="Menu.FastFlags.Presets.D3DExclusiveFullscreenInfo" xml:space="preserve">
     <value>Alt+Enter kullanarak Direct3D [özel tam ekran]({0}) varsayılan olarak zaten etkindir.</value>
   </data>
-  <data name="Menu.FastFlags.Presets.EscapeMenuVersion.Title" xml:space="preserve">
-    <value>Tercih edilen ESC menüsü versiyonu</value>
-  </data>
   <data name="Menu.FastFlags.Presets.FixDisplayScaling.Description" xml:space="preserve">
     <value>Roblox, ekranınızın Windows'ta nasıl ölçeklendirildiğine bağlı olarak işleme kalitenizi azaltır.</value>
   </data>
   <data name="Menu.FastFlags.Presets.FixDisplayScaling.Title" xml:space="preserve">
     <value>Ekran ölçeklendirme ile rendering kalitesini koruma</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.FPSLimit.Description" xml:space="preserve">
-    <value>Roblox'un kendi kare hızı açıcısını kullanmak için varsayılanı 0'a ayarlayın.</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.FPSLimit.Title" xml:space="preserve">
-    <value>Kare hızı limiti (FPS)</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.HideGuis.Description" xml:space="preserve">
-    <value>[Klavye kısayolları]({0}) ile değiştirilir. Yalnızca [Froststrap grubu]({1}) içindeyseniz çalışır.</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.HideGuis.Title" xml:space="preserve">
-    <value>GUI'leri gizleme özelliğini etkinleştir</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.LightingTechnology.Description" xml:space="preserve">
-    <value>Seçilmiş olan tüm oyunlarda zorla etkinleştirilecektir. [Dikkatli olun, aydınlatma sorunlarına neden olabilir!]({0})</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.LightingTechnology.Title" xml:space="preserve">
-    <value>Tercih edilen aydınlatma teknolojisi</value>
   </data>
   <data name="Menu.FastFlags.Presets.RenderingMode.Title" xml:space="preserve">
     <value>Rendering modu</value>
@@ -833,15 +770,6 @@ Aşağıdaki konuma değiştirilmesi önerilir:
   <data name="Menu.Behaviour.ForceRobloxLanguage.Description" xml:space="preserve">
     <value>Yalnızca Roblox'un web sitesinden başlatılan oyunlar için uygulanır.</value>
   </data>
-  <data name="Enums.FlagPresets.InGameMenuVersion.V4Chrome" xml:space="preserve">
-    <value>2023 (V4 + Yeni UI)</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.Categories.Rendering" xml:space="preserve">
-    <value>İşleme ve Grafikler</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.Categories.UserInterface" xml:space="preserve">
-    <value>Kullanıcı Arayüzü ve Düzeni</value>
-  </data>
   <data name="Menu.FastFlags.ManagerEnabled.Title" xml:space="preserve">
     <value>Froststrap'in Fast Flag'ları yönetmesine izin verin</value>
   </data>
@@ -850,42 +778,6 @@ Aşağıdaki konuma değiştirilmesi önerilir:
   </data>
   <data name="Menu.FastFlags.Presets.MSAA.Title" xml:space="preserve">
     <value>Anti-aliasing kalitesi (MSAA)</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.DisablePostFX.Title" xml:space="preserve">
-    <value>İşlem-sonrası efeklerini devre dışı bırak</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.FullscreenTitlebar.Title" xml:space="preserve">
-    <value>Tam ekran başlık çubuğunu kapat</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.FullscreenTitlebar.Description" xml:space="preserve">
-    <value>Farenizi ekranın üst kısmına getirdiğinizde görüntülenmesini engeller.</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.TextureQuality.Title" xml:space="preserve">
-    <value>Doku kalitesi</value>
-  </data>
-  <data name="Enums.FlagPresets.TextureQuality.Level0" xml:space="preserve">
-    <value>Seviye 0 (En Düşüğü)</value>
-  </data>
-  <data name="Enums.FlagPresets.TextureQuality.Level1" xml:space="preserve">
-    <value>Seviye 1</value>
-  </data>
-  <data name="Enums.FlagPresets.TextureQuality.Level2" xml:space="preserve">
-    <value>Seviye 2</value>
-  </data>
-  <data name="Enums.FlagPresets.TextureQuality.Level3" xml:space="preserve">
-    <value>Seviye 3 (En Yükseği)</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.DisablePlayerShadows.Title" xml:space="preserve">
-    <value>Oyuncu gölgelerini kapat</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.FontPadding.Title" xml:space="preserve">
-    <value>Yazı tipi boyutu</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.FontPadding.Description" xml:space="preserve">
-    <value>Varsayılan değer 1'dir. Özel bir yazı tipi kullanıyorsanız değiştirin.</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.DisableTerrainTextures.Title" xml:space="preserve">
-    <value>Arazi dokularını devre dışı bırak</value>
   </data>
   <data name="Dialog.Connectivity.UnableToDownload" xml:space="preserve">
     <value>Froststrap Roblox'u indiremiyor</value>
@@ -1214,6 +1106,9 @@ Test modu açmak ister misiniz?</value>
     <value>Yükle</value>
     <comment>The word "Install" is being used as a verb in this instance, like the other navigation button texts of "Next" and "Back"</comment>
   </data>
+  <data name="Enums.FlagPresets.RenderingMode.D3D11" xml:space="preserve">
+    <value>Direct3D 11</value>
+  </data>
   <data name="Paths.Icons" xml:space="preserve">
     <value>Simgeler</value>
     <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
@@ -1274,5 +1169,110 @@ Lütfen Roblox'un dosyalarını kullanabilecek olan uygulamaları kapatın, ve t
   </data>
   <data name="Menu.Froststrap.Analytics.Description" xml:space="preserve">
     <value>Hepsi anonim ve kötü bir şey değil, söz. Ne topladığımız ve neden topladığımız hakkında bilgi için [gizlilik politikamıza]({0}) bakın.</value>
+  </data>
+  <data name="Enums.FlagPresets.InGameMenuVersion.V1" xml:space="preserve">
+    <value>2015 (V1)</value>
+  </data>
+  <data name="Enums.FlagPresets.InGameMenuVersion.V2" xml:space="preserve">
+    <value>2020 (V2)</value>
+  </data>
+  <data name="Enums.FlagPresets.InGameMenuVersion.V4" xml:space="preserve">
+    <value>2023 (V4)</value>
+  </data>
+  <data name="Enums.FlagPresets.LightingMode.Default" xml:space="preserve">
+    <value>Oyun tarafından seçilme</value>
+  </data>
+  <data name="Enums.FlagPresets.LightingMode.Future" xml:space="preserve">
+    <value>Gelecek (3. Aşama)</value>
+  </data>
+  <data name="Enums.FlagPresets.LightingMode.ShadowMap" xml:space="preserve">
+    <value>Gölge Haritası (2. Aşama)</value>
+  </data>
+  <data name="Enums.FlagPresets.LightingMode.Voxel" xml:space="preserve">
+    <value>Voksel (1. Aşama)</value>
+  </data>
+  <data name="Enums.FlagPresets.RenderingMode.D3D10" xml:space="preserve">
+    <value>Direct3D 10</value>
+  </data>
+  <data name="Menu.About.Contributors.FeatureIdeas" xml:space="preserve">
+    <value>Özellik Fikirleri</value>
+  </data>
+  <data name="Menu.About.Contributors.SpecialThanks" xml:space="preserve">
+    <value>Özel Teşekkür</value>
+  </data>
+  <data name="Menu.Appearance.Global.Theme.Title" xml:space="preserve">
+    <value>Global Tema</value>
+  </data>
+  <data name="Menu.Appearance.Style.Description" xml:space="preserve">
+    <value>Nasıl görünmesi gerektiğini seçin. Koyu tema Legacy/Vista için geçerli değildir.</value>
+  </data>
+  <data name="Menu.Appearance.Style.Title" xml:space="preserve">
+    <value>Stil</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.EscapeMenuVersion.Title" xml:space="preserve">
+    <value>Tercih edilen ESC menüsü versiyonu</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.FPSLimit.Description" xml:space="preserve">
+    <value>Roblox'un kendi kare hızı açıcısını kullanmak için varsayılanı 0'a ayarlayın.</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.FPSLimit.Title" xml:space="preserve">
+    <value>Kare hızı limiti (FPS)</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.HideGuis.Description" xml:space="preserve">
+    <value>[Klavye kısayolları]({0}) ile değiştirilir. Yalnızca [Froststrap grubu]({1}) içindeyseniz çalışır.</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.HideGuis.Title" xml:space="preserve">
+    <value>GUI'leri gizleme özelliğini etkinleştir</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.LightingTechnology.Description" xml:space="preserve">
+    <value>Seçilmiş olan tüm oyunlarda zorla etkinleştirilecektir. [Dikkatli olun, aydınlatma sorunlarına neden olabilir!]({0})</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.LightingTechnology.Title" xml:space="preserve">
+    <value>Tercih edilen aydınlatma teknolojisi</value>
+  </data>
+  <data name="Enums.FlagPresets.InGameMenuVersion.V4Chrome" xml:space="preserve">
+    <value>2023 (V4 + Yeni UI)</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.Categories.Rendering" xml:space="preserve">
+    <value>İşleme ve Grafikler</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.Categories.UserInterface" xml:space="preserve">
+    <value>Kullanıcı Arayüzü ve Düzeni</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.DisablePostFX.Title" xml:space="preserve">
+    <value>İşlem-sonrası efeklerini devre dışı bırak</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.FullscreenTitlebar.Title" xml:space="preserve">
+    <value>Tam ekran başlık çubuğunu kapat</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.FullscreenTitlebar.Description" xml:space="preserve">
+    <value>Farenizi ekranın üst kısmına getirdiğinizde görüntülenmesini engeller.</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.TextureQuality.Title" xml:space="preserve">
+    <value>Doku kalitesi</value>
+  </data>
+  <data name="Enums.FlagPresets.TextureQuality.Level0" xml:space="preserve">
+    <value>Seviye 0 (En Düşüğü)</value>
+  </data>
+  <data name="Enums.FlagPresets.TextureQuality.Level1" xml:space="preserve">
+    <value>Seviye 1</value>
+  </data>
+  <data name="Enums.FlagPresets.TextureQuality.Level2" xml:space="preserve">
+    <value>Seviye 2</value>
+  </data>
+  <data name="Enums.FlagPresets.TextureQuality.Level3" xml:space="preserve">
+    <value>Seviye 3 (En Yükseği)</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.DisablePlayerShadows.Title" xml:space="preserve">
+    <value>Oyuncu gölgelerini kapat</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.FontPadding.Title" xml:space="preserve">
+    <value>Yazı tipi boyutu</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.FontPadding.Description" xml:space="preserve">
+    <value>Varsayılan değer 1'dir. Özel bir yazı tipi kullanıyorsanız değiştirin.</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.DisableTerrainTextures.Title" xml:space="preserve">
+    <value>Arazi dokularını devre dışı bırak</value>
   </data>
 </root>

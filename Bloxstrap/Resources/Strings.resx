@@ -2265,4 +2265,7 @@ Would you like to switch your preferred channel to {0}?</value>
   <data name="Common.Timestamp" xml:space="preserve">
     <value>Timestamp</value>
   </data>
+  <data name="Enums.BootstrapperStyle.ModernDialog" xml:space="preserve">
+    <value>Modern</value>
+  </data>
 </root>

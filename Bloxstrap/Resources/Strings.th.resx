@@ -344,33 +344,6 @@
   <data name="Enums.EmojiType.Windows8" xml:space="preserve">
     <value>Windows 8</value>
   </data>
-  <data name="Enums.FlagPresets.InGameMenuVersion.V1" xml:space="preserve">
-    <value>2015 (V1)</value>
-  </data>
-  <data name="Enums.FlagPresets.InGameMenuVersion.V2" xml:space="preserve">
-    <value>2020 (V2)</value>
-  </data>
-  <data name="Enums.FlagPresets.InGameMenuVersion.V4" xml:space="preserve">
-    <value>2023 (V4)</value>
-  </data>
-  <data name="Enums.FlagPresets.LightingMode.Default" xml:space="preserve">
-    <value>เกมเป็นผู้เลือก</value>
-  </data>
-  <data name="Enums.FlagPresets.LightingMode.Future" xml:space="preserve">
-    <value>Future (Phase 3)</value>
-  </data>
-  <data name="Enums.FlagPresets.LightingMode.ShadowMap" xml:space="preserve">
-    <value>Shadow Map (Phase 2)</value>
-  </data>
-  <data name="Enums.FlagPresets.LightingMode.Voxel" xml:space="preserve">
-    <value>Voxel (Phase 1)</value>
-  </data>
-  <data name="Enums.FlagPresets.RenderingMode.D3D10" xml:space="preserve">
-    <value>Direct3D 10</value>
-  </data>
-  <data name="Enums.FlagPresets.RenderingMode.D3D11" xml:space="preserve">
-    <value>Direct3D 11</value>
-  </data>
   <data name="Enums.ServerType.Private" xml:space="preserve">
     <value>เซิร์ฟเวอร์ส่วนตัว</value>
   </data>
@@ -401,12 +374,6 @@
   </data>
   <data name="Menu.About.Contributors.Description" xml:space="preserve">
     <value>คนเหล่านี้คือคนที่มีส่วนร่วมใน Froststrap และช่วยพัฒนามันให้เป็นอย่างที่เป็น.</value>
-  </data>
-  <data name="Menu.About.Contributors.FeatureIdeas" xml:space="preserve">
-    <value>ไอเดียเกี่ยวกับฟีเจอร์</value>
-  </data>
-  <data name="Menu.About.Contributors.SpecialThanks" xml:space="preserve">
-    <value>ขอบคุณมากเป็นพิเศษ</value>
   </data>
   <data name="Menu.About.Description" xml:space="preserve">
     <value>มีทางเลือกมากมายสำหรับ bootstrapper สำหรับ Roblox กับกลุ่มฟีเจอร์ที่มากมาย</value>
@@ -475,9 +442,6 @@
   <data name="Menu.Appearance.Description" xml:space="preserve">
     <value>ตั้งค่าว่า Froststrap ควรจะเป็นอย่างไร</value>
   </data>
-  <data name="Menu.Appearance.Global.Theme.Title" xml:space="preserve">
-    <value>ธีมที่ใช้อยู่</value>
-  </data>
   <data name="Menu.Appearance.Icon.Description" xml:space="preserve">
     <value>เลือกโลโก้ที่จะให้แสดง</value>
   </data>
@@ -486,12 +450,6 @@
   </data>
   <data name="Menu.Appearance.Preview" xml:space="preserve">
     <value>ตัวอย่าง</value>
-  </data>
-  <data name="Menu.Appearance.Style.Description" xml:space="preserve">
-    <value>เลือกว่าจะใช้ธีมไหน สำหรับธีมมืด จะไม่สามารถได้กับธีม Legacy/Vista</value>
-  </data>
-  <data name="Menu.Appearance.Style.Title" xml:space="preserve">
-    <value>สไตล์</value>
   </data>
   <data name="Menu.Appearance.Title" xml:space="preserve">
     <value>การแสดงผล</value>
@@ -608,32 +566,11 @@
   <data name="Menu.FastFlags.Presets.D3DExclusiveFullscreenInfo" xml:space="preserve">
     <value>Direct3D [พิเศษสำหรับโหมดเต็มหน้าจอ]({0}) โดยใช้ Alt+Enter ถูกเปิดไว้เป็นค่าเริ่มต้น</value>
   </data>
-  <data name="Menu.FastFlags.Presets.EscapeMenuVersion.Title" xml:space="preserve">
-    <value>เวอร์ชั่นเมนู Escape ที่ต้องการ</value>
-  </data>
   <data name="Menu.FastFlags.Presets.FixDisplayScaling.Description" xml:space="preserve">
     <value>Roblox จะลดคุณภาพการเรนเดอร์ตามความละเอียดของการแสดงผลใน Windows</value>
   </data>
   <data name="Menu.FastFlags.Presets.FixDisplayScaling.Title" xml:space="preserve">
     <value>คงคุณภาพของการเรนเดอร์ด้วยการปรับขนาดของการแสดงผล</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.FPSLimit.Description" xml:space="preserve">
-    <value>ให้ตั้งเป็น 0 เพื่อค่าเริ่มต้น หากคุณต้องการใช้ตัวปลดล็อคเฟรมเรทของ Roblox</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.FPSLimit.Title" xml:space="preserve">
-    <value>การจำกัด Framerate</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.HideGuis.Description" xml:space="preserve">
-    <value>สลับกับ[ปุ่มคีย์บอร์ด]({0}) จะสามารถใช้ได้ถ้าคุณอยู่ใน[กลุ่มของ Froststrap]({1})</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.HideGuis.Title" xml:space="preserve">
-    <value>เปิดใช้ความสามารถในการซ่อน GUIs</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.LightingTechnology.Description" xml:space="preserve">
-    <value>ตัวที่เลือกจะถูกบังคับใช้ในทุกเกม [ระวัง, อาจทำให้เกิดปัญหาเกี่ยวกับแสง]({0})</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.LightingTechnology.Title" xml:space="preserve">
-    <value>เทคโนโลยีแสงที่ต้องการ</value>
   </data>
   <data name="Menu.FastFlags.Presets.RenderingMode.Title" xml:space="preserve">
     <value>โหมดการเรนเดอร์</value>
@@ -833,15 +770,6 @@
   <data name="Menu.Behaviour.ForceRobloxLanguage.Description" xml:space="preserve">
     <value>ใช้กับเพียงเกมที่เปิดจากเว็บไซต์ Roblox เท่านั้น</value>
   </data>
-  <data name="Enums.FlagPresets.InGameMenuVersion.V4Chrome" xml:space="preserve">
-    <value>2023 (V4 + UI ใหม่)</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.Categories.Rendering" xml:space="preserve">
-    <value>การเรนเดอร์และกราฟฟิก</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.Categories.UserInterface" xml:space="preserve">
-    <value>เค้าโครงและแสดงผลของผู้ใช้</value>
-  </data>
   <data name="Menu.FastFlags.ManagerEnabled.Title" xml:space="preserve">
     <value>อนุญาตให้ Froststrap จัดการ Fast Flags</value>
   </data>
@@ -850,42 +778,6 @@
   </data>
   <data name="Menu.FastFlags.Presets.MSAA.Title" xml:space="preserve">
     <value>Anti-aliasing quality (MSAA)</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.DisablePostFX.Title" xml:space="preserve">
-    <value>ปิดการใช้งานเอฟเฟกต์หลังจากการประมวลผล</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.FullscreenTitlebar.Title" xml:space="preserve">
-    <value>ปิดการใช้งานแถบหัวข้อในโหมดเต็มหน้าจอ</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.FullscreenTitlebar.Description" xml:space="preserve">
-    <value>หยุดมันจากการแสดงผลเมื่อคุณขยับเมาส์ของคุณไปที่บนสุดของหน้าจอ</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.TextureQuality.Title" xml:space="preserve">
-    <value>คุณภาพของพื้นผิว</value>
-  </data>
-  <data name="Enums.FlagPresets.TextureQuality.Level0" xml:space="preserve">
-    <value>เลเวล 0 (ต่ำที่สุด)</value>
-  </data>
-  <data name="Enums.FlagPresets.TextureQuality.Level1" xml:space="preserve">
-    <value>เลเวล 1</value>
-  </data>
-  <data name="Enums.FlagPresets.TextureQuality.Level2" xml:space="preserve">
-    <value>เลเวล 2</value>
-  </data>
-  <data name="Enums.FlagPresets.TextureQuality.Level3" xml:space="preserve">
-    <value>เลเวล 3 (สูงที่สุด)</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.DisablePlayerShadows.Title" xml:space="preserve">
-    <value>ปิดซ่อนเงาของเพลเยอร์</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.FontPadding.Title" xml:space="preserve">
-    <value>ขนาดของฟอร์น</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.FontPadding.Description" xml:space="preserve">
-    <value>ค่าเริ่มต้นคือ 1 แก้ไขมันหากคุณใช้ฟอร์นที่กำหนดด้วยตัวเอง</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.DisableTerrainTextures.Title" xml:space="preserve">
-    <value>ปิดใช้การแสดงพื้นผิว</value>
   </data>
   <data name="Dialog.Connectivity.UnableToDownload" xml:space="preserve">
     <value>Froststrap ไม่สามารถดาวน์โหลด Roblox ได้</value>
@@ -1211,6 +1103,9 @@ Froststrap จะติดตั้งไว้ที่ "{1}"</value>
     <value>ติดตั้ง</value>
     <comment>The word "Install" is being used as a verb in this instance, like the other navigation button texts of "Next" and "Back"</comment>
   </data>
+  <data name="Enums.FlagPresets.RenderingMode.D3D11" xml:space="preserve">
+    <value>Direct3D 11</value>
+  </data>
   <data name="Paths.Icons" xml:space="preserve">
     <value>ไอคอน</value>
     <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
@@ -1271,5 +1166,110 @@ Froststrap จะติดตั้งไว้ที่ "{1}"</value>
   </data>
   <data name="Menu.Froststrap.Analytics.Description" xml:space="preserve">
     <value>มันเป็นข้อมูลที่ไม่ระบุชื่อและไม่มีอะไรที่ไม่ดีแน่นอน สําหรับข้อมูลเกี่ยวกับสิ่งที่เรารวบรวมและเหตุผล โปรดดูที่ [นโยบายความเป็นส่วนตัวของเรา]({0})</value>
+  </data>
+  <data name="Enums.FlagPresets.InGameMenuVersion.V1" xml:space="preserve">
+    <value>2015 (V1)</value>
+  </data>
+  <data name="Enums.FlagPresets.InGameMenuVersion.V2" xml:space="preserve">
+    <value>2020 (V2)</value>
+  </data>
+  <data name="Enums.FlagPresets.InGameMenuVersion.V4" xml:space="preserve">
+    <value>2023 (V4)</value>
+  </data>
+  <data name="Enums.FlagPresets.LightingMode.Default" xml:space="preserve">
+    <value>เกมเป็นผู้เลือก</value>
+  </data>
+  <data name="Enums.FlagPresets.LightingMode.Future" xml:space="preserve">
+    <value>Future (Phase 3)</value>
+  </data>
+  <data name="Enums.FlagPresets.LightingMode.ShadowMap" xml:space="preserve">
+    <value>Shadow Map (Phase 2)</value>
+  </data>
+  <data name="Enums.FlagPresets.LightingMode.Voxel" xml:space="preserve">
+    <value>Voxel (Phase 1)</value>
+  </data>
+  <data name="Enums.FlagPresets.RenderingMode.D3D10" xml:space="preserve">
+    <value>Direct3D 10</value>
+  </data>
+  <data name="Menu.About.Contributors.FeatureIdeas" xml:space="preserve">
+    <value>ไอเดียเกี่ยวกับฟีเจอร์</value>
+  </data>
+  <data name="Menu.About.Contributors.SpecialThanks" xml:space="preserve">
+    <value>ขอบคุณมากเป็นพิเศษ</value>
+  </data>
+  <data name="Menu.Appearance.Global.Theme.Title" xml:space="preserve">
+    <value>ธีมที่ใช้อยู่</value>
+  </data>
+  <data name="Menu.Appearance.Style.Description" xml:space="preserve">
+    <value>เลือกว่าจะใช้ธีมไหน สำหรับธีมมืด จะไม่สามารถได้กับธีม Legacy/Vista</value>
+  </data>
+  <data name="Menu.Appearance.Style.Title" xml:space="preserve">
+    <value>สไตล์</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.EscapeMenuVersion.Title" xml:space="preserve">
+    <value>เวอร์ชั่นเมนู Escape ที่ต้องการ</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.FPSLimit.Description" xml:space="preserve">
+    <value>ให้ตั้งเป็น 0 เพื่อค่าเริ่มต้น หากคุณต้องการใช้ตัวปลดล็อคเฟรมเรทของ Roblox</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.FPSLimit.Title" xml:space="preserve">
+    <value>การจำกัด Framerate</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.HideGuis.Description" xml:space="preserve">
+    <value>สลับกับ[ปุ่มคีย์บอร์ด]({0}) จะสามารถใช้ได้ถ้าคุณอยู่ใน[กลุ่มของ Froststrap]({1})</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.HideGuis.Title" xml:space="preserve">
+    <value>เปิดใช้ความสามารถในการซ่อน GUIs</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.LightingTechnology.Description" xml:space="preserve">
+    <value>ตัวที่เลือกจะถูกบังคับใช้ในทุกเกม [ระวัง, อาจทำให้เกิดปัญหาเกี่ยวกับแสง]({0})</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.LightingTechnology.Title" xml:space="preserve">
+    <value>เทคโนโลยีแสงที่ต้องการ</value>
+  </data>
+  <data name="Enums.FlagPresets.InGameMenuVersion.V4Chrome" xml:space="preserve">
+    <value>2023 (V4 + UI ใหม่)</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.Categories.Rendering" xml:space="preserve">
+    <value>การเรนเดอร์และกราฟฟิก</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.Categories.UserInterface" xml:space="preserve">
+    <value>เค้าโครงและแสดงผลของผู้ใช้</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.DisablePostFX.Title" xml:space="preserve">
+    <value>ปิดการใช้งานเอฟเฟกต์หลังจากการประมวลผล</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.FullscreenTitlebar.Title" xml:space="preserve">
+    <value>ปิดการใช้งานแถบหัวข้อในโหมดเต็มหน้าจอ</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.FullscreenTitlebar.Description" xml:space="preserve">
+    <value>หยุดมันจากการแสดงผลเมื่อคุณขยับเมาส์ของคุณไปที่บนสุดของหน้าจอ</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.TextureQuality.Title" xml:space="preserve">
+    <value>คุณภาพของพื้นผิว</value>
+  </data>
+  <data name="Enums.FlagPresets.TextureQuality.Level0" xml:space="preserve">
+    <value>เลเวล 0 (ต่ำที่สุด)</value>
+  </data>
+  <data name="Enums.FlagPresets.TextureQuality.Level1" xml:space="preserve">
+    <value>เลเวล 1</value>
+  </data>
+  <data name="Enums.FlagPresets.TextureQuality.Level2" xml:space="preserve">
+    <value>เลเวล 2</value>
+  </data>
+  <data name="Enums.FlagPresets.TextureQuality.Level3" xml:space="preserve">
+    <value>เลเวล 3 (สูงที่สุด)</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.DisablePlayerShadows.Title" xml:space="preserve">
+    <value>ปิดซ่อนเงาของเพลเยอร์</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.FontPadding.Title" xml:space="preserve">
+    <value>ขนาดของฟอร์น</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.FontPadding.Description" xml:space="preserve">
+    <value>ค่าเริ่มต้นคือ 1 แก้ไขมันหากคุณใช้ฟอร์นที่กำหนดด้วยตัวเอง</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.DisableTerrainTextures.Title" xml:space="preserve">
+    <value>ปิดใช้การแสดงพื้นผิว</value>
   </data>
 </root>

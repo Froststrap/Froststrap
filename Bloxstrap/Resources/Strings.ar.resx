@@ -344,33 +344,6 @@
   <data name="Enums.EmojiType.Windows8" xml:space="preserve">
     <value>نظام ويندوز 8</value>
   </data>
-  <data name="Enums.FlagPresets.InGameMenuVersion.V1" xml:space="preserve">
-    <value>2015 (النسخة الأولى)</value>
-  </data>
-  <data name="Enums.FlagPresets.InGameMenuVersion.V2" xml:space="preserve">
-    <value>2020 (النسخة الثانية)</value>
-  </data>
-  <data name="Enums.FlagPresets.InGameMenuVersion.V4" xml:space="preserve">
-    <value>2023 (النسخة الرابعة)</value>
-  </data>
-  <data name="Enums.FlagPresets.LightingMode.Default" xml:space="preserve">
-    <value>مختار من قبل اللعبة</value>
-  </data>
-  <data name="Enums.FlagPresets.LightingMode.Future" xml:space="preserve">
-    <value>Future (المرحلة الثالثة)</value>
-  </data>
-  <data name="Enums.FlagPresets.LightingMode.ShadowMap" xml:space="preserve">
-    <value>Shadow Map (المرحلة الثانية)</value>
-  </data>
-  <data name="Enums.FlagPresets.LightingMode.Voxel" xml:space="preserve">
-    <value>Voxel (المرحلة الأولى)</value>
-  </data>
-  <data name="Enums.FlagPresets.RenderingMode.D3D10" xml:space="preserve">
-    <value>Direct3D 10</value>
-  </data>
-  <data name="Enums.FlagPresets.RenderingMode.D3D11" xml:space="preserve">
-    <value>Direct3D 11</value>
-  </data>
   <data name="Enums.ServerType.Private" xml:space="preserve">
     <value>السيرفر الخاص</value>
   </data>
@@ -401,12 +374,6 @@
   </data>
   <data name="Menu.About.Contributors.Description" xml:space="preserve">
     <value>هؤلاء هم الأشخاص الذين قدموا مساهمات ملحوظة في Froststrap، مما ساعد في جعلها على ما هي عليه الآن.</value>
-  </data>
-  <data name="Menu.About.Contributors.FeatureIdeas" xml:space="preserve">
-    <value>أفكار مستقبلية</value>
-  </data>
-  <data name="Menu.About.Contributors.SpecialThanks" xml:space="preserve">
-    <value>شكر خاص</value>
   </data>
   <data name="Menu.About.Description" xml:space="preserve">
     <value>أداة تمهيد بديلة لـ Roblox مع مجموعة من الميزات الإضافية.</value>
@@ -475,9 +442,6 @@
   <data name="Menu.Appearance.Description" xml:space="preserve">
     <value>قم بتعديل شكل Froststrap.</value>
   </data>
-  <data name="Menu.Appearance.Global.Theme.Title" xml:space="preserve">
-    <value>المظهر العالمي</value>
-  </data>
   <data name="Menu.Appearance.Icon.Description" xml:space="preserve">
     <value>اختر الايقونة الذي تريد استخدامها.</value>
   </data>
@@ -486,12 +450,6 @@
   </data>
   <data name="Menu.Appearance.Preview" xml:space="preserve">
     <value>إلقاء نظرة</value>
-  </data>
-  <data name="Menu.Appearance.Style.Description" xml:space="preserve">
-    <value>اختر كيف يجب أن تبدو. لا ينطبق المظهر الداكن على Legacy/Vista.</value>
-  </data>
-  <data name="Menu.Appearance.Style.Title" xml:space="preserve">
-    <value>الشكل</value>
   </data>
   <data name="Menu.Appearance.Title" xml:space="preserve">
     <value>المظهر</value>
@@ -608,32 +566,11 @@
   <data name="Menu.FastFlags.Presets.D3DExclusiveFullscreenInfo" xml:space="preserve">
     <value>Direct3D [ملء الشاشة الحصري]({0}) باستخدام Alt+Enter بشكل تلقائي.</value>
   </data>
-  <data name="Menu.FastFlags.Presets.EscapeMenuVersion.Title" xml:space="preserve">
-    <value>إصدار قائمة الهروب المفضلة</value>
-  </data>
   <data name="Menu.FastFlags.Presets.FixDisplayScaling.Description" xml:space="preserve">
     <value>Roblox تقلل من جودة العرض الخاص اعتمادا على كيفية تحجيم العرض الخاص بك في Windows.</value>
   </data>
   <data name="Menu.FastFlags.Presets.FixDisplayScaling.Title" xml:space="preserve">
     <value>الحفاظ على جودة العرض مع تحجيم العرض</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.FPSLimit.Description" xml:space="preserve">
-    <value>تعيين إلى 0 للإعدادات الأصلية إذا كنت ترغب في استخدام معدل إطار Roblox الأصلي.</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.FPSLimit.Title" xml:space="preserve">
-    <value>حد معدل الإطارات (FPS)</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.HideGuis.Description" xml:space="preserve">
-    <value>يتم تفعيله باستخدام [اختصارات لوحة المفاتيح]({0}). يعمل فقط إذا كنت في [مجموعة Froststrap في Roblox]({1}).</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.HideGuis.Title" xml:space="preserve">
-    <value>القدرة على إخفاء واجهات المستخدم</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.LightingTechnology.Description" xml:space="preserve">
-    <value>سيتم تمكين المختارة في جميع الألعاب. [احذر، قد يسبب مشاكل في الإضاءة!]({0})</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.LightingTechnology.Title" xml:space="preserve">
-    <value>تقنية الإضاءة</value>
   </data>
   <data name="Menu.FastFlags.Presets.RenderingMode.Title" xml:space="preserve">
     <value>وضع العرض</value>
@@ -832,15 +769,6 @@
   <data name="Menu.Behaviour.ForceRobloxLanguage.Description" xml:space="preserve">
     <value>ينطبق فقط على الألعاب التي تم إطلاقها من موقع Roblox.</value>
   </data>
-  <data name="Enums.FlagPresets.InGameMenuVersion.V4Chrome" xml:space="preserve">
-    <value>2023 (النسخة الرابعة + واجهة مستخدم جديدة)</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.Categories.Rendering" xml:space="preserve">
-    <value>التقديم و الرسومات</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.Categories.UserInterface" xml:space="preserve">
-    <value>واجهة المستخدم والتخطيط</value>
-  </data>
   <data name="Menu.FastFlags.ManagerEnabled.Title" xml:space="preserve">
     <value>السماح لFroststrap لادارة FastFlags</value>
   </data>
@@ -849,42 +777,6 @@
   </data>
   <data name="Menu.FastFlags.Presets.MSAA.Title" xml:space="preserve">
     <value>جودة مكافحة التعرجات (MSAA)</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.DisablePostFX.Title" xml:space="preserve">
-    <value>تعطيل تأثيرات ما بعد المعالجة</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.FullscreenTitlebar.Title" xml:space="preserve">
-    <value>إيقاف شريط العنوان بملء الشاشة</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.FullscreenTitlebar.Description" xml:space="preserve">
-    <value>يمنعها من الظهور كلما قمت بتحريك المؤشر إلى أعلى الشاشة.</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.TextureQuality.Title" xml:space="preserve">
-    <value>جودة الملمس</value>
-  </data>
-  <data name="Enums.FlagPresets.TextureQuality.Level0" xml:space="preserve">
-    <value>المستوى 0 (الأدنى)</value>
-  </data>
-  <data name="Enums.FlagPresets.TextureQuality.Level1" xml:space="preserve">
-    <value>المستوى 1</value>
-  </data>
-  <data name="Enums.FlagPresets.TextureQuality.Level2" xml:space="preserve">
-    <value>المستوى 2</value>
-  </data>
-  <data name="Enums.FlagPresets.TextureQuality.Level3" xml:space="preserve">
-    <value>المستوى 3 (الأعلى)</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.DisablePlayerShadows.Title" xml:space="preserve">
-    <value>تعطيل ظلال اللاعب</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.FontPadding.Title" xml:space="preserve">
-    <value>حجم الخط</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.FontPadding.Description" xml:space="preserve">
-    <value>القيمة الأصلية هي 1. اضبط إذا كنت تستخدم خطاً مخصصاً.</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.DisableTerrainTextures.Title" xml:space="preserve">
-    <value>تعطيل الملمس التضاريس</value>
   </data>
   <data name="Dialog.Connectivity.UnableToDownload" xml:space="preserve">
     <value>Froststrap غير قادر على تحميل Roblox</value>
@@ -1215,6 +1107,9 @@
     <value>تثبيت</value>
     <comment>The word "Install" is being used as a verb in this instance, like the other navigation button texts of "Next" and "Back"</comment>
   </data>
+  <data name="Enums.FlagPresets.RenderingMode.D3D11" xml:space="preserve">
+    <value>Direct3D 11</value>
+  </data>
   <data name="Paths.Icons" xml:space="preserve">
     <value>الأيقونات</value>
     <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
@@ -1275,5 +1170,110 @@
   </data>
   <data name="Menu.Froststrap.Analytics.Description" xml:space="preserve">
     <value>إنه مجهول وما فيه شر، أوعدكم! للحصول على نظرة ثاقبة حول ما نجمعه و لماذا, راجع [الPrivacy Policy]({0}).</value>
+  </data>
+  <data name="Enums.FlagPresets.InGameMenuVersion.V1" xml:space="preserve">
+    <value>2015 (النسخة الأولى)</value>
+  </data>
+  <data name="Enums.FlagPresets.InGameMenuVersion.V2" xml:space="preserve">
+    <value>2020 (النسخة الثانية)</value>
+  </data>
+  <data name="Enums.FlagPresets.InGameMenuVersion.V4" xml:space="preserve">
+    <value>2023 (النسخة الرابعة)</value>
+  </data>
+  <data name="Enums.FlagPresets.LightingMode.Default" xml:space="preserve">
+    <value>مختار من قبل اللعبة</value>
+  </data>
+  <data name="Enums.FlagPresets.LightingMode.Future" xml:space="preserve">
+    <value>Future (المرحلة الثالثة)</value>
+  </data>
+  <data name="Enums.FlagPresets.LightingMode.ShadowMap" xml:space="preserve">
+    <value>Shadow Map (المرحلة الثانية)</value>
+  </data>
+  <data name="Enums.FlagPresets.LightingMode.Voxel" xml:space="preserve">
+    <value>Voxel (المرحلة الأولى)</value>
+  </data>
+  <data name="Enums.FlagPresets.RenderingMode.D3D10" xml:space="preserve">
+    <value>Direct3D 10</value>
+  </data>
+  <data name="Menu.About.Contributors.FeatureIdeas" xml:space="preserve">
+    <value>أفكار مستقبلية</value>
+  </data>
+  <data name="Menu.About.Contributors.SpecialThanks" xml:space="preserve">
+    <value>شكر خاص</value>
+  </data>
+  <data name="Menu.Appearance.Global.Theme.Title" xml:space="preserve">
+    <value>المظهر العالمي</value>
+  </data>
+  <data name="Menu.Appearance.Style.Description" xml:space="preserve">
+    <value>اختر كيف يجب أن تبدو. لا ينطبق المظهر الداكن على Legacy/Vista.</value>
+  </data>
+  <data name="Menu.Appearance.Style.Title" xml:space="preserve">
+    <value>الشكل</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.EscapeMenuVersion.Title" xml:space="preserve">
+    <value>إصدار قائمة الهروب المفضلة</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.FPSLimit.Description" xml:space="preserve">
+    <value>تعيين إلى 0 للإعدادات الأصلية إذا كنت ترغب في استخدام معدل إطار Roblox الأصلي.</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.FPSLimit.Title" xml:space="preserve">
+    <value>حد معدل الإطارات (FPS)</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.HideGuis.Description" xml:space="preserve">
+    <value>يتم تفعيله باستخدام [اختصارات لوحة المفاتيح]({0}). يعمل فقط إذا كنت في [مجموعة Froststrap في Roblox]({1}).</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.HideGuis.Title" xml:space="preserve">
+    <value>القدرة على إخفاء واجهات المستخدم</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.LightingTechnology.Description" xml:space="preserve">
+    <value>سيتم تمكين المختارة في جميع الألعاب. [احذر، قد يسبب مشاكل في الإضاءة!]({0})</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.LightingTechnology.Title" xml:space="preserve">
+    <value>تقنية الإضاءة</value>
+  </data>
+  <data name="Enums.FlagPresets.InGameMenuVersion.V4Chrome" xml:space="preserve">
+    <value>2023 (النسخة الرابعة + واجهة مستخدم جديدة)</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.Categories.Rendering" xml:space="preserve">
+    <value>التقديم و الرسومات</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.Categories.UserInterface" xml:space="preserve">
+    <value>واجهة المستخدم والتخطيط</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.DisablePostFX.Title" xml:space="preserve">
+    <value>تعطيل تأثيرات ما بعد المعالجة</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.FullscreenTitlebar.Title" xml:space="preserve">
+    <value>إيقاف شريط العنوان بملء الشاشة</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.FullscreenTitlebar.Description" xml:space="preserve">
+    <value>يمنعها من الظهور كلما قمت بتحريك المؤشر إلى أعلى الشاشة.</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.TextureQuality.Title" xml:space="preserve">
+    <value>جودة الملمس</value>
+  </data>
+  <data name="Enums.FlagPresets.TextureQuality.Level0" xml:space="preserve">
+    <value>المستوى 0 (الأدنى)</value>
+  </data>
+  <data name="Enums.FlagPresets.TextureQuality.Level1" xml:space="preserve">
+    <value>المستوى 1</value>
+  </data>
+  <data name="Enums.FlagPresets.TextureQuality.Level2" xml:space="preserve">
+    <value>المستوى 2</value>
+  </data>
+  <data name="Enums.FlagPresets.TextureQuality.Level3" xml:space="preserve">
+    <value>المستوى 3 (الأعلى)</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.DisablePlayerShadows.Title" xml:space="preserve">
+    <value>تعطيل ظلال اللاعب</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.FontPadding.Title" xml:space="preserve">
+    <value>حجم الخط</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.FontPadding.Description" xml:space="preserve">
+    <value>القيمة الأصلية هي 1. اضبط إذا كنت تستخدم خطاً مخصصاً.</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.DisableTerrainTextures.Title" xml:space="preserve">
+    <value>تعطيل الملمس التضاريس</value>
   </data>
 </root>

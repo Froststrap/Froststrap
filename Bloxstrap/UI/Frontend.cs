@@ -95,6 +95,7 @@ namespace Bloxstrap.UI
                 BootstrapperStyle.ClassicFluentDialog => new ClassicFluentDialog(),
                 BootstrapperStyle.TwentyFiveDialog => new TwentyFiveDialog(),
                 BootstrapperStyle.ByfronDialog => new ByfronDialog(),
+                BootstrapperStyle.ModernDialog => new ModernDialog(),
                 BootstrapperStyle.FroststrapDialog => new FroststrapDialog(),
                 BootstrapperStyle.FluentDialog => new FluentDialog(false),
                 BootstrapperStyle.FluentAeroDialog => new FluentDialog(true),

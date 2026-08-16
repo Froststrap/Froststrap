@@ -9,6 +9,7 @@
         ClassicFluentDialog,
         TwentyFiveDialog,
         ByfronDialog,
+        ModernDialog,
         FluentDialog,
         FroststrapDialog,
         FluentAeroDialog,

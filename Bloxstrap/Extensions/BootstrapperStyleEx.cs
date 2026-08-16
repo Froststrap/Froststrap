@@ -11,6 +11,7 @@
             BootstrapperStyle.FluentDialog,
             BootstrapperStyle.ClassicFluentDialog,
             BootstrapperStyle.ByfronDialog,
+            BootstrapperStyle.ModernDialog,
             BootstrapperStyle.TwentyFiveDialog,
             BootstrapperStyle.ProgressDialog,
             BootstrapperStyle.LegacyDialog2011,
