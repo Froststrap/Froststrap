@@ -2387,6 +2387,15 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Modern.
+        /// </summary>
+        public static string Enums_BootstrapperStyle_Modern {
+            get {
+                return ResourceManager.GetString("Enums.BootstrapperStyle.Modern", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Roblox (~2025).
         /// </summary>
         public static string Enums_BootstrapperStyle_TwentyFiveDialog {

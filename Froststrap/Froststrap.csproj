@@ -113,5 +113,8 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Strings.resx</DependentUpon>
     </Compile>
+    <Compile Update="UI\Elements\Bootstrapper\ModernDialog.axaml.cs">
+      <DependentUpon>ModernDialog.axaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 </Project>

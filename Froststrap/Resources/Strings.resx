@@ -1710,7 +1710,8 @@ The app will close this window when sign-in completes.</value>
     <value>Not Logged In</value>
   </data>
   <data name="Menu.AccountSelector.AskToAddAccount" xml:space="preserve">
-    <value>No accounts added&#xa;Click 'Add Account' above to get started</value>
+    <value>No accounts added
+Click 'Add Account' above to get started</value>
   </data>
   <data name="Menu.AccountSelector.Login.LocalCookie" xml:space="preserve">
     <value>Local Cookie</value>
@@ -3249,5 +3250,8 @@ All files will be moved, shortcuts updated, and the application will restart.</v
   </data>
   <data name="Menu.Deployment.MoveInstallation.Failed" xml:space="preserve">
     <value>Move failed: {0}</value>
+  </data>
+  <data name="Enums.BootstrapperStyle.ModernDialog" xml:space="preserve">
+    <value>Modern</value>
   </data>
 </root>
