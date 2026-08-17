@@ -23,7 +23,7 @@
     CanResize="True"
     WindowStartupLocation="CenterScreen">
 
-    <Grid RowDefinitions="48,*,56">
+   <Grid RowDefinitions="48,*,56">
         <Grid Grid.Row="0" Background="{DynamicResource ControlFillColorDefaultBrush}">
             <controls:TitleBar
                 x:Name="PART_TitleBar"
