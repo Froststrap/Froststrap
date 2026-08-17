@@ -1,5 +1,5 @@
 ﻿using Avalonia;
-using Avalonia.Labs.Notifications;
+using Avalonia.Wayland;
 
 namespace Froststrap;
 
@@ -32,15 +32,17 @@ sealed class Program
             .UsePlatformDetect()
             .LogToTrace();
 
-        if (!OperatingSystem.IsMacOS())
+        if (OperatingSystem.IsLinux() && !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("WAYLAND_DISPLAY")))
         {
-            builder = builder.WithAppNotifications(new AppNotificationOptions
-            {
-                AppName = "Froststrap",
-                AppUserModelId = "Icon.Froststrap",
-                AppIcon = iconPath,
-                DisableComServer = true
-            });
+            builder = builder.UseWayland()
+                .With(new WaylandPlatformOptions
+                {
+                    UseDmabufSwapchain = true
+                });
+        }
+        else
+        {
+            builder = builder.UsePlatformDetect();
         }
 
         return builder;

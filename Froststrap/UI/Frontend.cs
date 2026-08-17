@@ -2,10 +2,11 @@
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Controls.Notifications;
-using Avalonia.Labs.Notifications;
 using Avalonia.Threading;
+using FluentAvalonia.UI.Controls;
 using Froststrap.UI.Elements.Bootstrapper;
 using Froststrap.UI.Elements.Dialogs;
+using Froststrap.UI.Elements.Settings;
 using Froststrap.UI.Utility;
 
 namespace Froststrap.UI
@@ -166,30 +167,18 @@ namespace Froststrap.UI
 
         public static void ShowBalloonTip(string title, string message, NotificationType category = NotificationType.Information, int timeoutSeconds = 5)
         {
-            var manager = NativeNotificationManager.Current;
-            if (manager == null || OperatingSystem.IsMacOS()) return;
-
-            string categoryString = category switch
+            var severity = category switch
             {
-                NotificationType.Success => "success",
-                NotificationType.Warning => "warning",
-                NotificationType.Error => "error",
-                _ => "info"
+                NotificationType.Success => FAInfoBarSeverity.Success,
+                NotificationType.Warning => FAInfoBarSeverity.Warning,
+                NotificationType.Error => FAInfoBarSeverity.Error,
+                _ => FAInfoBarSeverity.Informational
             };
-
-            var notification = manager.CreateNotification(categoryString);
-            if (notification == null) return;
-
-            notification.Title = title;
-            notification.Message = message;
-            notification.Expiration = TimeSpan.FromSeconds(timeoutSeconds);
-
-            NotificationTracker.Track(notification, TimeSpan.FromSeconds(timeoutSeconds));
 
             Dispatcher.UIThread.Post(() =>
             {
-                notification.Show();
-            }, DispatcherPriority.ApplicationIdle);
+                MainWindow.ShowGlobalNotification(title, message, severity, timeoutSeconds * 1000);
+            });
         }
     }
 }

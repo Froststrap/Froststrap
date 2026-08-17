@@ -22,14 +22,19 @@
     x:DataType="vm:MainWindowViewModel"
     CanResize="True"
     WindowStartupLocation="CenterScreen">
-	
+
     <Grid RowDefinitions="48,*,56">
         <Grid Grid.Row="0" Background="{DynamicResource ControlFillColorDefaultBrush}">
             <controls:TitleBar
+                x:Name="PART_TitleBar"
                 Grid.Row="0"
                 Icon="avares://Froststrap/Froststrap.png">
+
                 <controls:TitleBar.LeftContent>
-                    <StackPanel Orientation="Horizontal" Spacing="4">
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="4"
+                                Margin="8,0,0,0"
+                                WindowDecorationProperties.ElementRole="None">
                         <controls:IconButton
                             Background="Transparent"
                             BorderBrush="Transparent"
@@ -37,7 +42,8 @@
                             Classes="TitleBarNavButton"
                             Icon="ArrowLeft"
                             Command="{Binding BackCommand}"
-                            IsEnabled="{Binding BackCommand.CanExecute}" />
+                            IsEnabled="{Binding BackCommand.CanExecute}"
+                            WindowDecorationProperties.ElementRole="None" />
                         <controls:IconButton
                             Background="Transparent"
                             BorderBrush="Transparent"
@@ -45,11 +51,19 @@
                             Classes="TitleBarNavButton"
                             Icon="ArrowRight"
                             Command="{Binding ForwardCommand}"
-                            IsEnabled="{Binding ForwardCommand.CanExecute}" />
+                            IsEnabled="{Binding ForwardCommand.CanExecute}"
+                            WindowDecorationProperties.ElementRole="None" />
                     </StackPanel>
                 </controls:TitleBar.LeftContent>
 
-                <elements:SearchBar Width="400" DataContext="{Binding SearchBar}" />
+                <Grid Margin="140,0,140,0"
+                      WindowDecorationProperties.ElementRole="None">
+                    <elements:SearchBar
+                        Width="400"
+                        HorizontalAlignment="Center"
+                        DataContext="{Binding SearchBar}"
+                        WindowDecorationProperties.ElementRole="None" />
+                </Grid>
             </controls:TitleBar>
         </Grid>
 
