@@ -1313,6 +1313,8 @@ namespace Froststrap
 
             SetStatus(Strings.Bootstrapper_Status_StartingSober);
 
+            Utilities.KillSober();
+
             App.Logger.WriteLine(LOG_IDENT, $"Launching Sober via flatpak with args: {_launchCommandLine}");
 
             var startInfo = new ProcessStartInfo

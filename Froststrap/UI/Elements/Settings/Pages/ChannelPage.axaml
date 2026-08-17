@@ -129,6 +129,15 @@
                 <ToggleSwitch IsChecked="{Binding UpdateRoblox, Mode=TwoWay}" />
             </controls:OptionControl>
 
+            <controls:OptionControl Header="{x:Static resources:Strings.Menu_Deployment_MultiThread_Title}"
+                                    Description="{x:Static resources:Strings.Menu_Deployment_MultiThread_Description}">
+                <TextBox
+                    Width="200"
+                    Margin="5,0,0,0"
+                    Padding="10,5"
+                    Text="{Binding MaxThreadDownload, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            </controls:OptionControl>
+
             <controls:CardExpander
                 Header="{x:Static resources:Strings.Menu_Deployment_PlayerOverrideHash_Title}"
                 Description="{x:Static resources:Strings.Menu_Deployment_PlayerOverrideHash_Description}"
@@ -189,15 +198,6 @@
                     </StackPanel>
                 </controls:OptionControl>
             </controls:CardExpander>
-
-            <controls:OptionControl Header="{x:Static resources:Strings.Menu_Deployment_MultiThread_Title}"
-                                    Description="{x:Static resources:Strings.Menu_Deployment_MultiThread_Description}">
-                <TextBox
-                    Width="200"
-                    Margin="5,0,0,0"
-                    Padding="10,5"
-                    Text="{Binding MaxThreadDownload, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-            </controls:OptionControl>
 
             <controls:OptionControl Header="{x:Static resources:Strings.Menu_Channel_StaticDirectory_Title}"
                                     Description="{x:Static resources:Strings.Menu_Channel_StaticDirectory_Description}">

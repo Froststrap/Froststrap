@@ -8,6 +8,7 @@ namespace Froststrap.Models.Persistable
         // Integration Page
         public bool EnableActivityTracking { get; set; } = true;
         public bool ShowServerDetails { get; set; } = true;
+        public bool ShowServerUptime { get; set; } = true;
         public bool AutoRejoin { get; set; } = false;
         public bool ShowGameHistoryMenu { get; set; } = true;
         public bool PlaytimeCounter { get; set; } = true;

@@ -41,7 +41,12 @@ namespace Froststrap.UI
             _trayIcon.Clicked += OnTrayIconClicked;
 
             if (ActivityWatcher is not null && App.Settings.Prop.ShowServerDetails && !OperatingSystem.IsMacOS())
-                ActivityWatcher.ShowNotif += ShowNotif;
+            {
+                if (App.Settings.Prop.ShowServerUptime)
+                    ActivityWatcher.ShowNotif += ShowNotif;
+                else
+                    ActivityWatcher.OnGameJoin += ShowNotif;
+            }
 
             TrayIcon.GetIcons(Application.Current!)?.Add(_trayIcon);
         }
@@ -124,30 +129,34 @@ namespace Froststrap.UI
                     5,
                     FAInfoBarSeverity.Warning
                 );
-
                 return;
             }
 
-            string? serverUptime;
-            DateTime? serverTime = ActivityWatcher.Data.StartTime;
-
-            if (serverTime is not null)
+            string message;
+            if (App.Settings.Prop.ShowServerUptime)
             {
-                TimeSpan _serverUptime = DateTime.UtcNow - serverTime.Value;
-
-                if (_serverUptime.TotalMinutes < 1)
-                    serverUptime = "0 minutes";
+                string? serverUptime;
+                DateTime? serverTime = ActivityWatcher.Data.StartTime;
+                if (serverTime is not null)
+                {
+                    TimeSpan _serverUptime = DateTime.UtcNow - serverTime.Value;
+                    serverUptime = _serverUptime.TotalMinutes < 1
+                        ? "0 minutes"
+                        : Time.FormatTimeSpan(_serverUptime);
+                }
                 else
-                    serverUptime = Time.FormatTimeSpan(_serverUptime);
+                {
+                    serverUptime = "0 minutes";
+                }
+
+                message = string.Format(Strings.ContextMenu_ServerDetails_Notification_Text, serverLocation, serverUptime);
             }
             else
             {
-                serverUptime = "0 minutes";
+                message = string.Format(Strings.ContextMenu_ServerDetails_Notification_Text_ServerID, serverLocation);
             }
 
-            ShowAlert(
-                title,
-                string.Format(Strings.ContextMenu_ServerDetails_Notification_Text, serverLocation, serverUptime));
+            ShowAlert(title, message);
         }
 
         public void ShowAlert(string title, string message, int durationSeconds = 5, FAInfoBarSeverity severity = FAInfoBarSeverity.Informational)
@@ -187,6 +196,12 @@ namespace Froststrap.UI
                     App.Logger.WriteLine("NotifyIconWrapper::Dispose", $"Error during cleanup: {ex.Message}");
                 }
             });
+
+            if (ActivityWatcher is not null)
+            {
+                ActivityWatcher.ShowNotif -= ShowNotif;
+                ActivityWatcher.OnGameJoin -= ShowNotif;
+            }
 
             GC.SuppressFinalize(this);
         }
