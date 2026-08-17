@@ -1,11 +1,12 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Notifications;
-using Avalonia.Labs.Notifications;
 using Avalonia.Platform;
 using Avalonia.Threading;
+using FluentAvalonia.UI.Controls;
 using Froststrap.Integrations;
 using Froststrap.UI.Elements.ContextMenu;
+using Froststrap.UI.Elements.Settings;
 using Froststrap.UI.Utility;
 
 namespace Froststrap.UI
@@ -45,8 +46,6 @@ namespace Froststrap.UI
             TrayIcon.GetIcons(Application.Current!)?.Add(_trayIcon);
         }
 
-
-        // On macos simply clicking the icon instantly opens the menu so double click action isnt possible
         private void OnTrayIconClicked(object? sender, EventArgs e)
         {
             if (OperatingSystem.IsMacOS())
@@ -123,18 +122,19 @@ namespace Froststrap.UI
                     string.Format(Strings.Dialog_Connectivity_UnableToConnect, "ipinfo.io"),
                     Strings.ActivityWatcher_LocationQueryFailed,
                     5,
-                    NotificationType.Warning
+                    FAInfoBarSeverity.Warning
                 );
 
                 return;
             }
+
             string? serverUptime;
             DateTime? serverTime = ActivityWatcher.Data.StartTime;
 
             if (serverTime is not null)
             {
                 TimeSpan _serverUptime = DateTime.UtcNow - serverTime.Value;
-                
+
                 if (_serverUptime.TotalMinutes < 1)
                     serverUptime = "0 minutes";
                 else
@@ -150,34 +150,16 @@ namespace Froststrap.UI
                 string.Format(Strings.ContextMenu_ServerDetails_Notification_Text, serverLocation, serverUptime));
         }
 
-        public void ShowAlert(string title, string message, int duration = 5, NotificationType category = NotificationType.Information)
+        public void ShowAlert(string title, string message, int durationSeconds = 5, FAInfoBarSeverity severity = FAInfoBarSeverity.Informational)
         {
             if (_isDisposed) return;
-            var manager = NativeNotificationManager.Current;
-            if (manager == null) return;
 
-            string categoryString = category switch
-            {
-                NotificationType.Success => "success",
-                NotificationType.Warning => "warning",
-                NotificationType.Error => "error",
-                _ => "info"
-            };
-
-            var notification = manager.CreateNotification(categoryString);
-            if (notification == null) return;
-
-            notification.Title = title;
-            notification.Message = message;
-            notification.Expiration = TimeSpan.FromSeconds(duration);
-
-            NotificationTracker.Track(notification, TimeSpan.FromSeconds(duration));
-
-            Dispatcher.UIThread.Post(() =>
-            {
-                if (_isDisposed) return;
-                notification.Show();
-            }, DispatcherPriority.ApplicationIdle);
+            MainWindow.ShowGlobalNotification(
+                title,
+                message,
+                severity,
+                durationSeconds * 1000
+            );
         }
 
         public void Dispose()
