@@ -99,11 +99,12 @@ namespace Froststrap.UI.Elements.ContextMenu
 
                         GameHistoryMenuItem?.SetValue(MenuItem.IsVisibleProperty, App.Settings.Prop.ShowGameHistoryMenu);
 
-                        SoftkeyMenuItem?.IsVisible = App.Settings.Prop.SoftKeyEnabled && _watcher?.Softkey != null;
+                        SoftkeyMenuItem?.IsVisible = App.Settings.Prop.SoftKeyEnabled && _watcher?.Softkey != null && OperatingSystem.IsWindows();
                         SoftkeyMenuItem?.IsChecked = true;
                     }
 
-                    if (RichPresenceMenuItem != null)
+                    //TODO: Fix Discord RPC on MACOS so we can remove the check here
+                    if (RichPresenceMenuItem != null && !OperatingSystem.IsMacOS())
                     {
                         RichPresenceMenuItem.IsVisible = (_watcher?.PlayerRichPresence is not null || _watcher?.StudioRichPresence is not null);
 
