@@ -133,7 +133,7 @@ public partial class App : Application
     {
         int exitCodeNum = (int)exitCode;
 
-        Logger.WriteLine("App::Terminate", $"Terminating with exit code {exitCodeNum} ({exitCode})");
+        Logger.Debug($"Terminating with exit code {exitCodeNum} ({exitCode})");
 
         Environment.Exit(exitCodeNum);
     }
@@ -142,7 +142,7 @@ public partial class App : Application
     {
         int exitCodeNum = (int)exitCode;
 
-        Logger.WriteLine("App::SoftTerminate", $"Terminating with exit code {exitCodeNum} ({exitCode})");
+        Logger.Debug($"Terminating with exit code {exitCodeNum} ({exitCode})");
 
         Dispatcher.UIThread.Invoke(() =>
         {
@@ -156,7 +156,7 @@ public partial class App : Application
     {
         e.Handled = true;
 
-        Logger.WriteLine("App::GlobalExceptionHandler", "An exception occurred");
+        Logger.Error($"An exception occurred: {e.Exception.Message}");
 
         await FinalizeExceptionHandling(e.Exception);
     }
@@ -164,27 +164,26 @@ public partial class App : Application
     public static async Task FinalizeExceptionHandling(AggregateException ex)
     {
         foreach (var innerEx in ex.InnerExceptions)
-            Logger.WriteException("App::FinalizeExceptionHandling", innerEx);
+            Logger.Error("Unhandled exception: ", innerEx);
 
         await FinalizeExceptionHandling(ex.GetBaseException(), false);
     }
 
     public static async Task FinalizeExceptionHandling(Exception ex, bool log = true)
     {
-        if (log)
-            Logger.WriteException("App::FinalizeExceptionHandling", ex);
+        if (log) Logger.Error($"Unhandled exception {ex.Message}");
 
         // IOException wrapping SocketException(125 = ECANCELED). This is normal shutdown, not an error.
         if (ex is IOException && ex.InnerException is System.Net.Sockets.SocketException se && se.ErrorCode == 125)
         {
-            Logger.WriteLine("App::FinalizeExceptionHandling", "Ignoring expected cancellation IOException on shutdown (ECANCELED).");
+            Logger.Error("Ignoring expected cancellation IOException on shutdown (ECANCELED).");
             return;
         }
 
         // Also swallow bare OperationCanceledException — these are always intentional cancellations.
         if (ex is OperationCanceledException)
         {
-            Logger.WriteLine("App::FinalizeExceptionHandling", "Ignoring OperationCanceledException on shutdown.");
+            Logger.Error("Ignoring OperationCanceledException on shutdown.");
             return;
         }
 
@@ -213,7 +212,7 @@ public partial class App : Application
             using var checkLock = new InterProcessLock("Bootstrapper", TimeSpan.Zero);
             if (!checkLock.IsAcquired)
             {
-                Logger.WriteLine("App::FinalizeExceptionHandling", "Bootstrapper is running, closing.");
+                Logger.Error("Bootstrapper is running, closing.");
                 Terminate(ErrorCode.ERROR_INSTALL_FAILURE);
             }
         }
@@ -240,17 +239,16 @@ public partial class App : Application
         return false;
     }
 
+    /// TODO: remove this,useless function 
     public static async Task AssertWindowsOSVersionAsync()
     {
-        const string LOG_IDENT = "App::AssertWindowsOSVersion";
-
         if (!OperatingSystem.IsWindows())
             return;
 
         int major = Environment.OSVersion.Version.Major;
         if (major < 10)
         {
-            Logger.WriteLine(LOG_IDENT, $"Detected unsupported Windows version ({Environment.OSVersion.Version}).");
+            Logger.Error($"Detected unsupported Windows version ({Environment.OSVersion.Version}).");
 
             if (!LaunchSettings.QuietFlag.Active)
                 await Frontend.ShowMessageBox(Strings.App_OSDeprecation_Win7_81, MessageBoxImage.Error);
@@ -296,7 +294,7 @@ public partial class App : Application
             }
         }
 
-        Logger.WriteLine("App::OnAppActivated", $"Received activation URI: {uri}");
+        Logger.Info($"Received activation URI: {uri}");
         LaunchHandler.HandleActivationUri(uri);
     }
 
@@ -308,14 +306,12 @@ public partial class App : Application
 
     public static async Task<GithubRelease?> GetLatestRelease(bool includePreRelease = false)
     {
-        const string LOG_IDENT = "App::GetLatestRelease";
-
         try
         {
             if (IsMockReleaseEnabled)
             {
                 string mockTag = MockReleaseTag ?? "v0.0.0-mock";
-                Logger.WriteLine(LOG_IDENT, $"Using mocked release {mockTag}");
+                Logger.Debug($"Using mocked release {mockTag}");
                 return new GithubRelease
                 {
                     TagName = mockTag,
@@ -336,7 +332,7 @@ public partial class App : Application
                 var releases = await Http.GetJson<List<GithubRelease>>(new Uri(url));
                 if (releases is null || releases.Count == 0)
                 {
-                    Logger.WriteLine(LOG_IDENT, "No releases found");
+                    Logger.Info("No releases found");
                     return null;
                 }
                 return releases[0];
@@ -348,15 +344,13 @@ public partial class App : Application
         }
         catch (Exception ex)
         {
-            Logger.WriteException(LOG_IDENT, ex);
+            Logger.Error($"Unhandled exception {ex}");
             return null;
         }
     }
 
     public override async void OnFrameworkInitializationCompleted()
     {
-        const string LOG_IDENT = "App::OnStartup";
-
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             string? installLocation = null;
@@ -400,43 +394,33 @@ public partial class App : Application
 
                 if (string.IsNullOrWhiteSpace(installLocation))
                 {
-                    Logger.Initialize(true);
-                    Logger.WriteLine(LOG_IDENT, "No install location could be resolved, terminating.");
+                    Logger.Error("No install location could be resolved, terminating.");
                     Terminate();
                     return;
                 }
 
                 Paths.Initialize(installLocation);
-                Logger.Initialize(false);
-                Logger.WriteLine(LOG_IDENT, $"Not installed, running in portable mode from '{installLocation}'");
+                Logger.Info($"Not installed, running in portable mode from '{installLocation}'");
             }
             else
             {
                 Paths.Initialize(installLocation);
-                Logger.Initialize(false);
             }
 
-            if (!Logger.Initialized && !Logger.NoWriteMode)
-            {
-                Logger.WriteLine(LOG_IDENT, "Possible duplicate launch detected, terminating.");
-                Terminate();
-                return;
-            }
-
-            Logger.WriteLine(LOG_IDENT, $"Starting {ProjectName} v{Version}");
-            Logger.WriteLine(LOG_IDENT, $"OS Description: {RuntimeInformation.OSDescription}");
-            Logger.WriteLine(LOG_IDENT, $"OS Architecture: {RuntimeInformation.OSArchitecture}");
+            Logger.Debug($"Starting {ProjectName} v{Version}");
+            Logger.Debug($"OS Description: {RuntimeInformation.OSDescription}");
+            Logger.Debug($"OS Architecture: {RuntimeInformation.OSArchitecture}");
 
             var userAgent = new StringBuilder($"{ProjectName}/{Version}");
 
             if (IsActionBuild)
             {
-                Logger.WriteLine(LOG_IDENT, $"Compiled {BuildMetadata.Timestamp.ToFriendlyString()} from commit {BuildMetadata.CommitHash} ({BuildMetadata.CommitRef})");
+                Logger.Debug($"Compiled {BuildMetadata.Timestamp.ToFriendlyString()} from commit {BuildMetadata.CommitHash} ({BuildMetadata.CommitRef})");
                 userAgent.Append(IsProductionBuild ? " (Production)" : $" (Artifact {BuildMetadata.CommitHash}, {BuildMetadata.CommitRef})");
             }
             else
             {
-                Logger.WriteLine(LOG_IDENT, $"Compiled {BuildMetadata.Timestamp.ToFriendlyString()}");
+                Logger.Debug($"Compiled {BuildMetadata.Timestamp.ToFriendlyString()}");
 #if QA_BUILD
             userAgent.Append(" (QA)");
 #else
@@ -444,7 +428,7 @@ public partial class App : Application
 #endif
             }
 
-            Logger.WriteLine(LOG_IDENT, $"Loaded from {Paths.Process}");
+            Logger.Debug($"Loaded from {Paths.Process}");
 
             HttpClient.Timeout = TimeSpan.FromSeconds(60);
             if (HttpClient.DefaultRequestHeaders.UserAgent.Count == 0)
@@ -522,11 +506,11 @@ public partial class App : Application
                         key.SetValue("IconUri", "avares://Froststrap/Froststrap.ico");
                     }
 
-                    Logger.WriteLine("App::OnFrameworkInitializationCompleted", "Registered app for notifications");
+                    Logger.Debug("Registered app for notifications");
                 }
                 catch (Exception ex)
                 {
-                    Logger.WriteLine("App::OnFrameworkInitializationCompleted", $"Failed to register app: {ex.Message}");
+                    Logger.Error($"Failed to register app: {ex.Message}");
                 }
             }
             else if (OperatingSystem.IsLinux())
@@ -546,7 +530,7 @@ public partial class App : Application
             if (State.Prop.IsFirstLaunch)
             {
                 LaunchSettings.OnboardingFlag.Active = true;
-                Logger.WriteLine("App::OnFrameworkInitializationCompleted", "First launch detected, launching onboarding.");
+                Logger.Info("First launch detected, launching onboarding.");
             }
 
             lock (ActivationLock)
