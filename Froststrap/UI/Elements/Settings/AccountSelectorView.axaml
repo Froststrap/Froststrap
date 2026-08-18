@@ -216,7 +216,7 @@
                                                                      Padding="4"
                                                                      Icon="ArrowLeftRight"
                                                                      IconSize="14"
-                                                                     ToolTip.Tip="Use this account (replace cookie file)"
+                                                                     ToolTip.Tip="Use this account"
                                                                      Command="{Binding $parent[ItemsControl].((vm:AccountSelectorViewModel)DataContext).ApplyAccountCommand}"
                                                                      CommandParameter="{Binding}"/>
 

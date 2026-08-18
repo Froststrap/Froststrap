@@ -3110,10 +3110,10 @@ Would you like to visit the releases page now?</value>
     <value>What would you like to do?</value>
   </data>
   <data name="AccountManager.Replace.Success" xml:space="preserve">
-    <value>Cookie file updated for {0}. Launch Roblox to log in.</value>
+    <value>Roblox App Account has been changed to {0}.</value>
   </data>
   <data name="AccountManager.Replace.Failed" xml:space="preserve">
-    <value>Failed to write cookie file for {0}.</value>
+    <value>Failed to login to {0} in Roblox App.</value>
   </data>
   <data name="Common.Apply" xml:space="preserve">
     <value>Apply</value>
