@@ -128,6 +128,7 @@ namespace Froststrap.UI
             {
                 BootstrapperStyle.ClassicFluentDialog => new ClassicFluentDialog(),
                 BootstrapperStyle.ByfronDialog => new ByfronDialog(),
+                BootstrapperStyle.ModernDialog => new ModernDialog(),
                 BootstrapperStyle.TwentyFiveDialog => new TwentyFiveDialog(),
                 BootstrapperStyle.FluentDialog => new FluentDialog(false),
                 BootstrapperStyle.FluentAeroDialog => new FluentDialog(true),

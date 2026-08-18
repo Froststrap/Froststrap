@@ -11,6 +11,7 @@
             BootstrapperStyle.ClassicFluentDialog,
             BootstrapperStyle.TwentyFiveDialog,
             BootstrapperStyle.ByfronDialog,
+            BootstrapperStyle.ModernDialog,
             BootstrapperStyle.CustomDialog
         ];
     }
