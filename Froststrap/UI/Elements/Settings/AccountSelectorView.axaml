@@ -155,7 +155,7 @@
                     </Border>
 
                     <!-- Accounts List or Empty State -->
-                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" IsVisible="{Binding Accounts.Count}">
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" MaxHeight="150" IsVisible="{Binding Accounts.Count}">
                         <ItemsControl ItemsSource="{Binding Accounts}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
