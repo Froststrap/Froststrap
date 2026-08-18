@@ -11,6 +11,11 @@ New-Item -ItemType Directory -Path "./$BuildDir" | Out-Null
 
 dotnet publish "$Project" /p:PublishProfile=Publish-x64 -c "$Config" --configfile "$PSScriptRoot\..\..\nuget.config"
 
+if ($LASTEXITCODE -ne 0) {
+    Write-Error "dotnet publish failed with exit code $LASTEXITCODE"
+    exit $LASTEXITCODE
+}
+
 $PublishPath = "./Froststrap/bin/$Config/net10.0/publish/Froststrap.exe"
 Copy-Item $PublishPath -Destination "./$BuildDir/"
 

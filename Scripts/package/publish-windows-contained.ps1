@@ -15,6 +15,11 @@ $Version = (git describe --tags --abbrev=0).TrimStart('v')
 
 dotnet publish "$Project" /p:PublishProfile=Publish-contained-x64 -c "$Config" -o "$TempPublish" --configfile "$PSScriptRoot\..\..\nuget.config"
 
+if ($LASTEXITCODE -ne 0) {
+    Write-Error "dotnet publish failed with exit code $LASTEXITCODE"
+    exit $LASTEXITCODE
+}
+
 & makensis /DPUBLISH_DIR="..\$TempPublish" /DAPP_VERSION="$Version" /DSELFCONTAINED=1 Scripts/Installer.nsi
 
 Remove-Item -Recurse -Force "$TempPublish"
