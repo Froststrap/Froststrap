@@ -14,12 +14,7 @@
                      mc:Ignorable="d">
 
     <Grid RowDefinitions="Auto,*,Auto">
-        <controls:TitleBar Grid.Row="0"
-                           Icon="avares://Froststrap/Froststrap.ico"
-                           Title="{x:Static resources:Strings.Menu_FlagProfiles_Title}"
-                           ShowMaximize="False" />
-
-        <Border Grid.Row="1"
+        <Border Grid.Row="0"
                 Margin="16"
                 CornerRadius="8"
                 BorderThickness="1"
@@ -107,7 +102,7 @@
             </TabControl>
         </Border>
 
-        <Border Grid.Row="2"
+        <Border Grid.Row="1"
                 Padding="15"
                 Background="{DynamicResource ControlFillColorDefaultBrush}">
             <Grid ColumnDefinitions="*, Auto" ColumnSpacing="12">

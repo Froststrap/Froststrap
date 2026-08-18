@@ -8,12 +8,10 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Grid Height="{TemplateBinding Height}"
-                      Background="{TemplateBinding Background}"
-                      WindowDecorationProperties.ElementRole="TitleBar">
+                      Background="{TemplateBinding Background}">
                     <ContentPresenter Content="{TemplateBinding Content}"
                                       VerticalAlignment="Center"
-                                      HorizontalAlignment="Center"
-                                      WindowDecorationProperties.ElementRole="None" />
+                                      HorizontalAlignment="Center" />
                 </Grid>
             </ControlTemplate>
         </Setter>

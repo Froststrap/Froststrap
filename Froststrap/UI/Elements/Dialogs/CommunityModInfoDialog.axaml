@@ -17,11 +17,7 @@
                      WindowStartupLocation="CenterScreen">
 
     <Grid RowDefinitions="Auto,*">
-        <md:TitleBar Grid.Row="0"
-                     Title="{x:Static resources:Strings.Menu_CommunityModInfo_Title}"
-                     Icon="avares://Froststrap/Froststrap.ico" />
-
-        <Grid Grid.Row="1" Margin="16,0,16,16" ColumnDefinitions="320,*">
+        <Grid Grid.Row="0" Margin="16,0,16,16" ColumnDefinitions="320,*">
 
             <StackPanel Grid.Column="0" Margin="0,0,16,0" Spacing="12">
                 <md:Card Height="180" ClipToBounds="True">

@@ -201,7 +201,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
 
             return brush;
         }
-        
+
         private static void ApplyBrush_UIElement(CustomDialog dialog, AvaloniaObject uiElement, string name, AvaloniaProperty dependencyProperty, XElement xmlElement)
         {
             object? brushAttr = GetBrushFromXElement(xmlElement, name);
