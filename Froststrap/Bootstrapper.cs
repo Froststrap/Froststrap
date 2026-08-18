@@ -3820,7 +3820,7 @@ exit";
                     var package = _versionPackageManifest.Find(x => x.Name == entry.Key);
                     if (package is not null)
                     {
-                        await DownloadPackage(package);
+                        await DownloadPackage(package, updateProgress: false);
                         await ExtractPackage(package, entry.Value);
                     }
                 }
@@ -3992,7 +3992,7 @@ exit";
                 : "/mac";
         }
 
-        private async Task DownloadPackage(Package package)
+        private async Task DownloadPackage(Package package, bool updateProgress = true)
         {
             string LOG_IDENT = $"Bootstrapper::DownloadPackage.{package.Name}";
 
@@ -4019,8 +4019,11 @@ exit";
                 else
                 {
                     App.Logger.WriteLine(LOG_IDENT, "Package is already downloaded, skipping...");
-                    Interlocked.Add(ref _totalDownloadedBytes, package.PackedSize);
-                    UpdateProgressBar();
+                    if (updateProgress)
+                    {
+                        Interlocked.Add(ref _totalDownloadedBytes, package.PackedSize);
+                        UpdateProgressBar();
+                    }
                     return;
                 }
             }
@@ -4031,10 +4034,11 @@ exit";
 
                 App.Logger.WriteLine(LOG_IDENT, $"Found existing copy at '{robloxPackageLocation}'! Copying to Downloads folder...");
                 File.Copy(robloxPackageLocation, package.DownloadPath);
-
-                _totalDownloadedBytes += package.PackedSize;
-                UpdateProgressBar();
-
+                if (updateProgress)
+                {
+                    _totalDownloadedBytes += package.PackedSize;
+                    UpdateProgressBar();
+                }
                 return;
             }
 
