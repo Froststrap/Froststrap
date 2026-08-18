@@ -68,7 +68,7 @@ namespace Froststrap.UI.ViewModels.Dialogs
             }
             catch (Exception ex)
             {
-                App.Logger?.WriteLine("CommunityModInfoViewModel", $"Preview initialization failed: {ex.Message}");
+                App.Logger.WriteLine("CommunityModInfoViewModel", $"Preview initialization failed: {ex.Message}");
             }
         }
 
@@ -179,7 +179,7 @@ namespace Froststrap.UI.ViewModels.Dialogs
             }
             catch (Exception ex)
             {
-                App.Logger?.WriteLine("CommunityModInfoViewModel", $"Glyph loading error: {ex.Message}");
+                App.Logger.WriteLine("CommunityModInfoViewModel", $"Glyph loading error: {ex.Message}");
             }
             finally
             {

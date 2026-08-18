@@ -72,7 +72,7 @@ namespace Froststrap.Integrations
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException(LOG_IDENT, ex);
+                App.Logger.Error("Unhandled exception:", ex);
             }
         }
 
@@ -95,7 +95,7 @@ namespace Froststrap.Integrations
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException($"{LOG_IDENT}::Uptime", ex);
+                App.Logger.Error($"Unhandled exception: {ex}");
             }
 
             return null;

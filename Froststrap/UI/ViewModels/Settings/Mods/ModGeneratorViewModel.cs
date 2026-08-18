@@ -265,7 +265,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             }
             catch (Exception ex)
             {
-                App.Logger?.WriteException("ModGenerator::LoadFontFiles", ex);
+                App.Logger.WriteException("ModGenerator::LoadFontFiles", ex);
                 StatusText = Strings.Menu_ModGenerator_FailedPreview;
             }
         }
@@ -322,14 +322,14 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
                             glyphItems.Add(new GlyphItem { Data = geometry, Brush = glyphBrush });
                         }
-                        catch (Exception ex) { App.Logger?.WriteException("ModGenerator::LoadGlyphPreview", ex); }
+                        catch (Exception ex) { App.Logger.WriteException("ModGenerator::LoadGlyphPreview", ex); }
                     });
                 }
                 GlyphItems = glyphItems;
             }
             catch (Exception ex)
             {
-                App.Logger?.WriteException("ModGenerator::LoadGlyphPreviews", ex);
+                App.Logger.WriteException("ModGenerator::LoadGlyphPreviews", ex);
                 StatusText = Strings.Menu_ModGenerator_FailedPreview;
             }
         }
@@ -661,7 +661,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             }
             catch (Exception ex)
             {
-                App.Logger?.WriteException(LOG_IDENT, ex);
+                App.Logger.WriteException(LOG_IDENT, ex);
                 StatusText = $"Error: {ex.Message}";
             }
             finally
@@ -820,7 +820,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             catch (Exception ex)
             {
                 StatusText = $"Color picker error: {ex.Message}";
-                App.Logger?.WriteException("OpenColorPickerAsync", ex);
+                App.Logger.WriteException("OpenColorPickerAsync", ex);
             }
         }
 

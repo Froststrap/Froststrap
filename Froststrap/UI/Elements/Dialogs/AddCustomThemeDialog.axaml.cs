@@ -140,7 +140,7 @@ namespace Froststrap.UI.Elements.Dialogs
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException("AddCustomThemeDialog::ValidateImport", ex);
+                App.Logger.Error("Unhandled exception:", ex);
                 viewModel.FileError = Strings.CustomTheme_Add_Errors_ZipInvalidData;
                 return false;
             }
@@ -210,7 +210,7 @@ namespace Froststrap.UI.Elements.Dialogs
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException("AddCustomThemeDialog::Import", ex);
+                App.Logger.Error("Unhandled exception:", ex);
                 _viewModel.FileError = Strings.CustomTheme_Add_Errors_Unknown;
             }
             finally

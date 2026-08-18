@@ -882,7 +882,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                         }
                         catch (Exception ex)
                         {
-                            App.Logger?.WriteLine("ModsViewModel::LoadGlyphsWithColor", $"Glyph Error: {ex.Message}");
+                            App.Logger.WriteLine("ModsViewModel::LoadGlyphsWithColor", $"Glyph Error: {ex.Message}");
                         }
                     });
                 }
