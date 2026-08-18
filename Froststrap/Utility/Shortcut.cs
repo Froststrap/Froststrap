@@ -54,7 +54,7 @@ namespace Froststrap.Utility
                 }
                 catch (Exception ex)
                 {
-                    App.Logger.WriteLine("Shortcut::GetFroststrapIconPath", $"Failed to extract icon: {ex.Message}");
+                    App.Logger.Error($"Failed to extract icon: {ex.Message}");
                     return "application-x-executable";
                 }
             }

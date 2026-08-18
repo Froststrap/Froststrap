@@ -217,19 +217,19 @@ namespace Froststrap.Integrations
             string? customLogoPath,
             string? customSpinnerPath)
         {
-            App.Logger?.WriteLine(LOG_IDENT, $"Parsing image set data: {getImageSetDataPath}");
+            App.Logger.WriteLine(LOG_IDENT, $"Parsing image set data: {getImageSetDataPath}");
 
             var spriteData = LuaImageSetParser.Parse(getImageSetDataPath);
             if (spriteData.Count == 0)
             {
-                App.Logger?.WriteLine(LOG_IDENT, "No sprite sheets found from Lua file.");
+                App.Logger.WriteLine(LOG_IDENT, "No sprite sheets found from Lua file.");
                 return;
             }
-            App.Logger?.WriteLine(LOG_IDENT, $"Found {spriteData.Count} sprite sheets.");
+            App.Logger.WriteLine(LOG_IDENT, $"Found {spriteData.Count} sprite sheets.");
 
             foreach (var (sheetPath, sprites) in spriteData)
             {
-                App.Logger?.WriteLine(LOG_IDENT, $"Processing sheet: {sheetPath} with {sprites.Count} sprites");
+                App.Logger.WriteLine(LOG_IDENT, $"Processing sheet: {sheetPath} with {sprites.Count} sprites");
                 if (!File.Exists(sheetPath)) continue;
 
                 using var sheet = Image.Load<Rgba32>(sheetPath);
@@ -264,7 +264,7 @@ namespace Froststrap.Integrations
                     string tempPath = sheetPath + ".tmp";
                     sheet.SaveAsPng(tempPath);
                     ReplaceFileWithRetry(sheetPath, tempPath);
-                    App.Logger?.WriteLine(LOG_IDENT, $"Recolored sprite sheet: {sheetPath}");
+                    App.Logger.WriteLine(LOG_IDENT, $"Recolored sprite sheet: {sheetPath}");
                 }
             }
         }
@@ -416,7 +416,7 @@ namespace Froststrap.Integrations
         {
             public static Dictionary<string, List<SpriteDef>> Parse(string luaPath)
             {
-                App.Logger?.WriteLine(LOG_IDENT, $"Parsing Lua file: {luaPath}");
+                App.Logger.WriteLine(LOG_IDENT, $"Parsing Lua file: {luaPath}");
                 string text = File.ReadAllText(luaPath);
                 var result = new Dictionary<string, List<SpriteDef>>();
 
@@ -439,7 +439,7 @@ namespace Froststrap.Integrations
                     string tableContent = text.Substring(braceStart + 1, braceEnd - braceStart - 1);
 
                     var matches = entryRegex.Matches(tableContent);
-                    App.Logger?.WriteLine(LOG_IDENT, $"Found {matches.Count} entries in {tableName}");
+                    App.Logger.WriteLine(LOG_IDENT, $"Found {matches.Count} entries in {tableName}");
                     totalMatches += matches.Count;
 
                     foreach (Match match in matches)
@@ -461,9 +461,9 @@ namespace Froststrap.Integrations
                     }
                 }
 
-                App.Logger?.WriteLine(LOG_IDENT, $"Total sprite definitions: {totalMatches}, across {result.Count} sheets");
+                App.Logger.WriteLine(LOG_IDENT, $"Total sprite definitions: {totalMatches}, across {result.Count} sheets");
                 if (totalMatches == 0)
-                    App.Logger?.WriteLine(LOG_IDENT, "WARNING: No sprites matched. Check the Lua file format.");
+                    App.Logger.WriteLine(LOG_IDENT, "WARNING: No sprites matched. Check the Lua file format.");
 
                 return result;
             }

@@ -49,8 +49,7 @@
                 }
                 catch (Exception ex)
                 {
-                    App.Logger.WriteLine(LOG_IDENT, "Failed to sync Studio RPC plugin.");
-                    App.Logger.WriteException(LOG_IDENT, ex);
+                    App.Logger.Error($"Failed to sync Studio RPC plugin: {ex}");
                 }
             });
         }
