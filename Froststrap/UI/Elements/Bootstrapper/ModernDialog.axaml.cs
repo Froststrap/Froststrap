@@ -1,0 +1,97 @@
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Media;
+using Avalonia.Media.Imaging;
+using Froststrap.UI.Elements.Bootstrapper.Base;
+using Froststrap.UI.ViewModels.Bootstrapper;
+
+namespace Froststrap.UI.Elements.Bootstrapper
+{
+    public partial class ModernDialog: AvaloniaDialogBase
+    {
+        private readonly ModernDialogViewModel _viewModel;
+
+        public ModernDialog()
+        {
+            InitializeComponent();
+
+            string version = Utilities.GetRobloxVersionStr(Bootstrapper?.IsStudioLaunch ?? false);
+            _viewModel = new ModernDialogViewModel(this, version);
+            DataContext = _viewModel;
+
+            SetupDialog();
+
+            var iconImage = App.Settings.Prop.BootstrapperIcon.GetIcon().GetImageSource();
+            if (iconImage is Bitmap bitmap)
+                Icon = new WindowIcon(bitmap);
+
+            ApplyModernStyles();
+        }
+
+        private void ApplyModernStyles()
+        {
+            if (App.Settings.Prop.Theme.GetFinal() == Enums.Theme.Light)
+            {
+                _viewModel.DialogBorder = new Thickness(1);
+                _viewModel.Background = new SolidColorBrush(Color.FromRgb(242, 244, 245));
+                _viewModel.Foreground = new SolidColorBrush(Color.FromRgb(57, 59, 61));
+                _viewModel.IconColor = new SolidColorBrush(Color.FromRgb(57, 59, 61));
+                _viewModel.ProgressBarBackground = new SolidColorBrush(Color.FromRgb(189, 190, 190));
+
+            }
+        }
+
+        #region UI Elements Overrides
+        public override string Message
+        {
+            get => _viewModel.Message;
+            set => RunOnUI(() =>
+            {
+                _viewModel.Message = value;
+                _viewModel.OnPropertyChanged(nameof(_viewModel.Message));
+            });
+        }
+
+        public override int ProgressMaximum
+        {
+            get => _viewModel.ProgressMaximum;
+            set => RunOnUI(() =>
+            {
+                _viewModel.ProgressMaximum = value;
+                _viewModel.OnPropertyChanged(nameof(_viewModel.ProgressMaximum));
+            });
+        }
+
+        public override int ProgressValue
+        {
+            get => _viewModel.ProgressValue;
+            set => RunOnUI(() =>
+            {
+                _viewModel.ProgressValue = value;
+                _viewModel.OnPropertyChanged(nameof(_viewModel.ProgressValue));
+            });
+        }
+
+        public override bool CancelEnabled
+        {
+            get => _viewModel.CancelEnabled;
+            set => RunOnUI(() =>
+            {
+                _viewModel.CancelEnabled = value;
+                _viewModel.OnPropertyChanged(nameof(_viewModel.CancelEnabled));
+                _viewModel.OnPropertyChanged(nameof(_viewModel.CancelButtonVisible));
+            });
+        }
+
+        public override bool ProgressIndeterminate
+        {
+            get => _viewModel.ProgressIndeterminate;
+            set => RunOnUI(() =>
+            {
+                _viewModel.ProgressIndeterminate = value;
+                _viewModel.OnPropertyChanged(nameof(_viewModel.ProgressIndeterminate));
+            });
+        }
+        #endregion
+    }
+}

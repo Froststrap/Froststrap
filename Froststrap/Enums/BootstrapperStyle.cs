@@ -5,6 +5,7 @@
         ClassicFluentDialog,
         TwentyFiveDialog,
         ByfronDialog,
+        ModernDialog,
         FluentDialog,
         FluentAeroDialog,
         CustomDialog
