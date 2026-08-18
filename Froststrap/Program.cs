@@ -1,10 +1,13 @@
-﻿using Avalonia;
+﻿using NLog;
+using Avalonia;
 using Avalonia.Labs.Notifications;
 
 namespace Froststrap;
 
 sealed class Program
 {
+    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
     // Initialization code. Don't use any Avalonia, third-party APIs or any
     // SynchronizationContext-reliant code before AppMain is called: things aren't initialized
     // yet and stuff might break.
@@ -20,7 +23,19 @@ sealed class Program
             Environment.SetEnvironmentVariable("AVALONIA_GPU", "0");
         }
 
-        BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
+        try
+        {
+            BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
+        }
+        catch (Exception ex)
+        {
+            Logger.Fatal(ex, "Unhandled exception during startup");
+            throw;
+        }
+        finally
+        {
+            LogManager.Shutdown();
+        }
     }
 
     // Avalonia configuration, don't remove; also used by visual designer.
