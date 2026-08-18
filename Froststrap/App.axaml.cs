@@ -72,7 +72,7 @@ public partial class App : Application
 
     public static readonly MD5 MD5Provider = MD5.Create();
 
-    public static readonly Logger Logger = new();
+    public static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
     public static readonly Dictionary<string, BaseTask> PendingSettingTasks = [];
 
