@@ -16,10 +16,7 @@
         WindowStartupLocation="CenterScreen">
 
 	<Grid RowDefinitions="Auto,*">
-
-		<controls:TitleBar Grid.Row="0" Title="Bloxshade" Icon="avares://Froststrap/Froststrap.ico" />
-
-		<Grid Grid.Row="1" RowDefinitions="Auto,*,Auto">
+		<Grid Grid.Row="0" RowDefinitions="*,Auto">
 
 			<TextBlock Grid.Row="0"
                        Text="{x:Static resources:Strings.Dialog_Bloxshade_ThankYou}"
@@ -32,7 +29,7 @@
                        HorizontalAlignment="Center"
                        Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
 
-			<Border Grid.Row="2" Margin="0,15,0,0" Padding="10"
+			<Border Grid.Row="1" Margin="0,15,0,0" Padding="10"
                     Background="{DynamicResource SolidBackgroundFillColorSecondaryBrush}">
 				<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
 					<Button MinWidth="100"

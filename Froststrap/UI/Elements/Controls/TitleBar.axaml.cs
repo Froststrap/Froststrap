@@ -1,8 +1,11 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Metadata;
+using Avalonia.VisualTree;
 using LucideAvalonia.Enum;
 using WindowState = Avalonia.Controls.WindowState;
 
@@ -60,7 +63,8 @@ namespace Froststrap.UI.Elements.Controls
             foreach (var it in new[] { "PART_LeftPanel", "PART_RightPanel" })
             {
                 var ctrl = e.NameScope.Find<StackPanel>(it);
-                ctrl?.IsVisible = !OperatingSystem.IsMacOS();
+                if (ctrl != null)
+                    ctrl.IsVisible = !OperatingSystem.IsMacOS();
             }
 
             _window.PropertyChanged += OnWindowPropertyChanged;
@@ -69,11 +73,46 @@ namespace Froststrap.UI.Elements.Controls
             _maxBtn = e.NameScope.Find<IconButton>("PART_MaximizeButton");
             _closeBtn = e.NameScope.Find<IconButton>("PART_CloseButton");
 
-            _minBtn?.Click += OnMinimizeClick;
-            _maxBtn?.Click += OnMaximizeClick;
-            _closeBtn?.Click += OnCloseClick;
+            if (_minBtn != null) _minBtn.Click += OnMinimizeClick;
+            if (_maxBtn != null) _maxBtn.Click += OnMaximizeClick;
+            if (_closeBtn != null) _closeBtn.Click += OnCloseClick;
 
             UpdateMaximizeIcon();
+        }
+
+        protected override void OnPointerPressed(PointerPressedEventArgs e)
+        {
+            base.OnPointerPressed(e);
+
+            if (e.Handled) return;
+            if (e.GetCurrentPoint(this).Properties.PointerUpdateKind != PointerUpdateKind.LeftButtonPressed) return;
+
+            if (IsInteractiveSource(e.Source)) return;
+
+            _window?.BeginMoveDrag(e);
+        }
+
+        protected override void OnDoubleTapped(TappedEventArgs e)
+        {
+            base.OnDoubleTapped(e);
+
+            if (e.Handled) return;
+            if (_window == null) return;
+
+            if (IsInteractiveSource(e.Source)) return;
+
+            _window.WindowState = _window.WindowState == WindowState.Maximized
+                ? WindowState.Normal
+                : WindowState.Maximized;
+        }
+
+        private static bool IsInteractiveSource(object? source)
+        {
+            if (source is not Visual visual) return false;
+
+            return visual.FindAncestorOfType<TextBox>(includeSelf: true) != null
+                || visual.FindAncestorOfType<Button>(includeSelf: true) != null
+                || visual.FindAncestorOfType<UserControl>(includeSelf: true) != null;
         }
 
         private void OnWindowPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
@@ -95,12 +134,13 @@ namespace Froststrap.UI.Elements.Controls
             }
         }
 
-        private void OnMinimizeClick(object? sender, EventArgs e)
+        private void OnMinimizeClick(object? sender, RoutedEventArgs e)
         {
-            _window?.WindowState = WindowState.Minimized;
+            if (_window != null)
+                _window.WindowState = WindowState.Minimized;
         }
 
-        private void OnMaximizeClick(object? sender, EventArgs e)
+        private void OnMaximizeClick(object? sender, RoutedEventArgs e)
         {
             if (_window == null) return;
             _window.WindowState = _window.WindowState == WindowState.Maximized
@@ -108,7 +148,7 @@ namespace Froststrap.UI.Elements.Controls
                 : WindowState.Maximized;
         }
 
-        private void OnCloseClick(object? sender, EventArgs e)
+        private void OnCloseClick(object? sender, RoutedEventArgs e)
         {
             _window?.Close();
         }
@@ -117,10 +157,10 @@ namespace Froststrap.UI.Elements.Controls
         {
             base.OnDetachedFromVisualTree(e);
 
-            _window?.PropertyChanged -= OnWindowPropertyChanged;
-            _minBtn?.Click -= OnMinimizeClick;
-            _maxBtn?.Click -= OnMaximizeClick;
-            _closeBtn?.Click -= OnCloseClick;
+            if (_window != null) _window.PropertyChanged -= OnWindowPropertyChanged;
+            if (_minBtn != null) _minBtn.Click -= OnMinimizeClick;
+            if (_maxBtn != null) _maxBtn.Click -= OnMaximizeClick;
+            if (_closeBtn != null) _closeBtn.Click -= OnCloseClick;
         }
     }
 }

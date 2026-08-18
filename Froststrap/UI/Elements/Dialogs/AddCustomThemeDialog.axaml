@@ -16,13 +16,8 @@
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
 
-    <Grid RowDefinitions="Auto,*,Auto">
-        <controls:TitleBar Grid.Row="0"
-                           Icon="avares://Froststrap/Froststrap.ico"
-                           Title="{x:Static resources:Strings.AddCustomTheme_Title}"
-                           ShowMaximize="False" />
-
-        <Border Grid.Row="1"
+    <Grid RowDefinitions="*,Auto">
+        <Border Grid.Row="0"
                 Margin="16"
                 CornerRadius="8"
                 BorderThickness="1"
@@ -96,7 +91,7 @@
             </TabControl>
         </Border>
 
-        <Border Grid.Row="2"
+        <Border Grid.Row="1"
                 Padding="15"
                 Background="{DynamicResource ControlFillColorDefaultBrush}">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="12">

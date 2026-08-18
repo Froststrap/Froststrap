@@ -17,16 +17,8 @@ namespace Froststrap.UI.Elements.Base
 
         public AvaloniaWindow()
         {
-            if (OperatingSystem.IsWindows() || OperatingSystem.IsMacOS())
-            {
-                WindowDecorations = WindowDecorations.Full;
-                ExtendClientAreaToDecorationsHint = true;
-            }
-            else
-            {
-                WindowDecorations = WindowDecorations.Full;
-                ExtendClientAreaToDecorationsHint = false;
-            }
+            WindowDecorations = WindowDecorations.Full;
+            ExtendClientAreaToDecorationsHint = false;
 
             TextOptions.SetTextRenderingMode(this, TextRenderingMode.Antialias);
             ApplyTheme();
@@ -191,16 +183,8 @@ namespace Froststrap.UI.Elements.Base
         {
             base.OnOpened(e);
 
-            if (OperatingSystem.IsWindows() || OperatingSystem.IsMacOS())
-            {
-                WindowDecorations = WindowDecorations.Full;
-                ExtendClientAreaToDecorationsHint = true;
-            }
-            else
-            {
-                WindowDecorations = WindowDecorations.Full;
-                ExtendClientAreaToDecorationsHint = false;
-            }
+            WindowDecorations = WindowDecorations.Full;
+            ExtendClientAreaToDecorationsHint = false;
 
             ApplyWindowBackground();
             UpdateBackdropForAllWindows();
