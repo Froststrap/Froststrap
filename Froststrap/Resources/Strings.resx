@@ -3252,6 +3252,6 @@ All files will be moved, shortcuts updated, and the application will restart.</v
     <value>Move failed: {0}</value>
   </data>
   <data name="Enums.BootstrapperStyle.ModernDialog" xml:space="preserve">
-    <value>Modern</value>
+    <value>Fake Byfron (No Logo)</value>
   </data>
 </root>
