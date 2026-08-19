@@ -290,7 +290,7 @@ namespace Froststrap.Integrations
                     }
                     catch (Exception ex)
                     {
-                        App.Logger.Error("Unhandled exception: " ex);
+                        App.Logger.Error("Unhandled exception: ", ex);
                     }
                     activity.UniverseDetails = UniverseDetails.LoadFromCache(activity.UniverseId);
                 }
