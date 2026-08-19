@@ -8,6 +8,29 @@ namespace Froststrap
     {
         public static bool Initialized => LogManager.Configuration != null;
 
+        public static string GetLogDirectory()
+        {
+            if (OperatingSystem.IsMacOS()) return Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                "Library", "Logs", "Froststrap"
+            );
+
+
+            if (OperatingSystem.IsLinux())
+            {
+                var xdgState = Environment.GetEnvironmentVariable("XDG_STATE_HOME");
+                var baseDir = string.IsNullOrEmpty(xdgState)
+                ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".local", "state")
+                : xdgState;
+                return Path.Combine(baseDir, "Froststrap");
+            }
+
+            return Path.Combine(
+                "C:\\ProgramData",
+                "Froststrap", "Logs"
+            );
+        }
+
         public static string? FileLocation
         {
             get
