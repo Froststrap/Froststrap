@@ -21,7 +21,6 @@ namespace Froststrap
         public static string Downloads { get; private set; } = "";
         public static string Cache { get; private set; } = "";
         public static string SavedFlagProfiles { get; private set; } = "";
-        public static string Logs { get; private set; } = "";
         public static string Versions { get; private set; } = "";
         public static string Modifications { get; private set; } = "";
         public static string Roblox { get; private set; } = "";
@@ -35,6 +34,32 @@ namespace Froststrap
         public static string SoberConfig { get; private set; } = "";
 
         public static string CustomFont => Path.Combine(Modifications, "content", "fonts", "CustomFont.ttf");
+
+        public static string Logs
+        {
+            get
+            {
+                if (OperatingSystem.IsMacOS())
+                {
+                    return Path.Combine(
+                        Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                        "Library", "Logs", "Froststrap"
+                    );
+                }
+                if (OperatingSystem.IsLinux())
+                {
+                    var xdgState = Environment.GetEnvironmentVariable("XDG_STATE_HOME");
+                    var baseDir = string.IsNullOrEmpty(xdgState)
+                    ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".local", "state")
+                    : xdgState;
+                    return Path.Combine(baseDir, "Froststrap");
+                }
+                return Path.Combine(
+                    "C:\\ProgramData",
+                    "Froststrap", "Logs"
+                );
+            }
+        }
 
         public static string Base => DataRoot;
         public static bool Initialized => !String.IsNullOrEmpty(DataRoot);
@@ -76,8 +101,6 @@ namespace Froststrap
 
                 // Set cache and logs to XDG locations
                 Cache = Path.Combine(xdgCache, App.ProjectName);
-                Logs = Path.Combine(xdgState, App.ProjectName);
-
                 Application = Path.Combine(xdgBin, App.ProjectName);
             }
 
@@ -92,9 +115,6 @@ namespace Froststrap
             // Ensure cache/logs have sensible defaults when not set by XDG above
             if (String.IsNullOrEmpty(Cache))
                 Cache = Path.Combine(DataRoot, "Cache");
-
-            if (String.IsNullOrEmpty(Logs))
-                Logs = Path.Combine(DataRoot, "Logs");
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {

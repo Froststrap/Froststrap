@@ -81,13 +81,12 @@ namespace Froststrap.UI.Elements.Dialogs
 
         private bool ValidateCreateNew()
         {
-            const string LOG_IDENT = "AddCustomThemeDialog::ValidateCreateNew";
             _viewModel.NameError = "";
 
             if (string.IsNullOrEmpty(_viewModel.Name))
             {
                 _viewModel.NameError = Strings.CustomTheme_Add_Errors_NameEmpty;
-                App.Logger.WriteLine(LOG_IDENT, "Name is empty");
+                App.Logger.Error("Name is empty");
                 return false;
             }
 
@@ -106,11 +105,11 @@ namespace Froststrap.UI.Elements.Dialogs
             if (File.Exists(GetThemePath(_viewModel.Name)))
             {
                 _viewModel.NameError = Strings.CustomTheme_Add_Errors_NameTaken;
-                App.Logger.WriteLine(LOG_IDENT, "Theme name already exists");
+                App.Logger.Error("Theme name already exists");
                 return false;
             }
 
-            App.Logger.WriteLine(LOG_IDENT, $"Validation passed for theme: {_viewModel.Name}");
+            App.Logger.Info($"Validation passed for theme: {_viewModel.Name}");
             return true;
         }
 
@@ -140,7 +139,7 @@ namespace Froststrap.UI.Elements.Dialogs
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException("AddCustomThemeDialog::ValidateImport", ex);
+                App.Logger.Error("Unhandled exception:", ex);
                 viewModel.FileError = Strings.CustomTheme_Add_Errors_ZipInvalidData;
                 return false;
             }
@@ -210,7 +209,7 @@ namespace Froststrap.UI.Elements.Dialogs
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException("AddCustomThemeDialog::Import", ex);
+                App.Logger.Error("Unhandled exception:", ex);
                 _viewModel.FileError = Strings.CustomTheme_Add_Errors_Unknown;
             }
             finally

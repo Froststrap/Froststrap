@@ -24,13 +24,11 @@ namespace Froststrap.Integrations
 
         public PlayerDiscordRichPresence(ActivityWatcher activityWatcher)
         {
-            const string LOG_IDENT = "PlayerDiscordRichPresence";
-
             _isMacOS = OperatingSystem.IsMacOS();
 
             if (_isMacOS)
             {
-                App.Logger.WriteLine(LOG_IDENT, "Skipping Discord RPC initialization on macOS");
+                App.Logger.Info("Skipping Discord RPC initialization on macOS");
                 _rpcClient = null!;
                 _activityWatcher = activityWatcher;
                 return;
@@ -43,19 +41,19 @@ namespace Froststrap.Integrations
             _activityWatcher.OnGameLeave += (_, _) => Task.Run(() => SetCurrentGame());
             _activityWatcher.OnRPCMessage += (_, message) => ProcessRPCMessage(message);
 
-            _rpcClient.OnReady += (_, e) => App.Logger.WriteLine(LOG_IDENT, $"Received ready from user {e.User} ({e.User.ID})");
+            _rpcClient.OnReady += (_, e) => App.Logger.Info($"Received ready from user {e.User} ({e.User.ID})");
 
             _rpcClient.OnPresenceUpdate += (_, e) =>
-                App.Logger.WriteLine(LOG_IDENT, "Presence updated");
+                App.Logger.Info("Presence updated");
 
             _rpcClient.OnError += (_, e) =>
-                App.Logger.WriteLine(LOG_IDENT, $"An RPC error occurred - {e.Message}");
+                App.Logger.Error($"An RPC error occurred - {e.Message}");
 
             _rpcClient.OnConnectionEstablished += (_, e) =>
-                App.Logger.WriteLine(LOG_IDENT, "Established connection with Discord RPC");
+                App.Logger.Info("Established connection with Discord RPC");
 
             _rpcClient.OnClose += (_, e) =>
-                App.Logger.WriteLine(LOG_IDENT, $"Lost connection to Discord RPC - {e.Reason} ({e.Code})");
+                App.Logger.Error($"Lost connection to Discord RPC - {e.Reason} ({e.Code})");
 
             try
             {
@@ -63,7 +61,7 @@ namespace Froststrap.Integrations
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine(LOG_IDENT, $"Failed to init RPC: {ex.Message}");
+                App.Logger.Error($"Failed to init RPC: {ex.Message}");
             }
         }
 
@@ -71,14 +69,12 @@ namespace Froststrap.Integrations
         {
             if (_isMacOS || _disposed) return;
 
-            const string LOG_IDENT = "DiscordRichPresence::ProcessRPCMessage";
-
             if (message.Command != "SetRichPresence" && message.Command != "SetLaunchData")
                 return;
 
             if (_currentPresence is null || _originalPresence is null)
             {
-                App.Logger.WriteLine(LOG_IDENT, "Presence is not set, enqueuing message");
+                App.Logger.Info("Presence is not set, enqueuing message");
                 _messageQueue.Enqueue(message);
                 return;
             }
@@ -180,7 +176,6 @@ namespace Froststrap.Integrations
         {
             if (_isMacOS || _disposed) return;
 
-            const string LOG_IDENT = "DiscordRichPresence::ProcessSetRichPresence";
             Models.BloxstrapRPC.RichPresence? presenceData;
 
             Debug.Assert(_currentPresence is not null);
@@ -195,20 +190,20 @@ namespace Froststrap.Integrations
             }
             catch (Exception)
             {
-                App.Logger.WriteLine(LOG_IDENT, "Failed to parse message! (JSON deserialization threw an exception)");
+                App.Logger.Error("Failed to parse message! (JSON deserialization threw an exception)");
                 return;
             }
 
             if (presenceData is null)
             {
-                App.Logger.WriteLine(LOG_IDENT, "Failed to parse message! (JSON deserialization returned null)");
+                App.Logger.Error("Failed to parse message! (JSON deserialization returned null)");
                 return;
             }
 
             if (presenceData.Details is not null)
             {
                 if (presenceData.Details.Length > 128)
-                    App.Logger.WriteLine(LOG_IDENT, $"Details cannot be longer than 128 characters");
+                    App.Logger.Error($"Details cannot be longer than 128 characters");
                 else if (presenceData.Details == "<reset>")
                     _currentPresence.Details = _originalPresence.Details;
                 else
@@ -218,7 +213,7 @@ namespace Froststrap.Integrations
             if (presenceData.State is not null)
             {
                 if (presenceData.State.Length > 128)
-                    App.Logger.WriteLine(LOG_IDENT, $"State cannot be longer than 128 characters");
+                    App.Logger.Error($"State cannot be longer than 128 characters");
                 else if (presenceData.State == "<reset>")
                     _currentPresence.State = _originalPresence.State;
                 else
@@ -325,7 +320,7 @@ namespace Froststrap.Integrations
         {
             if (_isMacOS || _disposed) return;
 
-            App.Logger.WriteLine("DiscordRichPresence::SetVisibility", $"Setting presence visibility ({visible})");
+            App.Logger.Info($"Setting presence visibility ({visible})");
 
             _visible = visible;
 
@@ -339,11 +334,9 @@ namespace Froststrap.Integrations
         {
             if (_isMacOS || _disposed) return false;
 
-            const string LOG_IDENT = "DiscordRichPresence::SetCurrentGame";
-
             if (!_activityWatcher.InGame)
             {
-                App.Logger.WriteLine(LOG_IDENT, "Not in game, clearing presence");
+                App.Logger.Info("Not in game, clearing presence");
                 _currentPresence = _originalPresence = null;
                 _messageQueue.Clear();
                 UpdatePresence();
@@ -351,7 +344,7 @@ namespace Froststrap.Integrations
             }
 
             var activity = _activityWatcher.Data;
-            App.Logger.WriteLine(LOG_IDENT, $"Setting presence for Place ID {activity.PlaceId}");
+            App.Logger.Info($"Setting presence for Place ID {activity.PlaceId}");
 
             var timeStarted = activity.RootActivity?.TimeJoined ?? activity.TimeJoined;
 
@@ -360,7 +353,7 @@ namespace Froststrap.Integrations
                 try { await UniverseDetails.FetchSingle(activity.UniverseId); }
                 catch (Exception ex)
                 {
-                    App.Logger.WriteException(LOG_IDENT, ex);
+                    App.Logger.Error(ex);
                     return false;
                 }
                 activity.UniverseDetails = UniverseDetails.LoadFromCache(activity.UniverseId);
@@ -412,7 +405,7 @@ namespace Froststrap.Integrations
 
             if (_messageQueue.TryDequeue(out var queuedMessage))
             {
-                App.Logger.WriteLine(LOG_IDENT, "Processing queued messages");
+                App.Logger.Info("Processing queued messages");
                 ProcessRPCMessage(queuedMessage, false);
             }
 
@@ -458,8 +451,6 @@ namespace Froststrap.Integrations
         {
             if (_isMacOS || _disposed || _rpcClient == null) return;
 
-            const string LOG_IDENT = "DiscordRichPresence::UpdatePresence";
-
             if (!_rpcClient.IsInitialized)
                 return;
 
@@ -470,12 +461,12 @@ namespace Froststrap.Integrations
                     if (_currentPresence != null)
                     {
                         _currentPresence.Assets ??= new Assets();
-                        App.Logger.WriteLine(LOG_IDENT, "Updating presence");
+                        App.Logger.Info("Updating presence");
                         _rpcClient.SetPresence(_currentPresence);
                     }
                     else
                     {
-                        App.Logger.WriteLine(LOG_IDENT, "Clearing presence (no current presence)");
+                        App.Logger.Info("Clearing presence (no current presence)");
                         _rpcClient.ClearPresence();
                     }
                 }
@@ -486,11 +477,11 @@ namespace Froststrap.Integrations
             }
             catch (IOException ex) when (ex.InnerException is SocketException)
             {
-                App.Logger.WriteLine(LOG_IDENT, "Socket interrupted (Operation Canceled). This is expected on macOS.");
+                App.Logger.Error("Socket interrupted (Operation Canceled). This is expected on macOS.");
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException(LOG_IDENT, ex);
+                App.Logger.Error(ex);
             }
         }
 
@@ -499,8 +490,7 @@ namespace Froststrap.Integrations
             if (_disposed) return;
             _disposed = true;
 
-            const string LOG_IDENT = "DiscordRichPresence::Dispose";
-            App.Logger.WriteLine(LOG_IDENT, "Cleaning up Discord RPC and Presence");
+            App.Logger.Info("Cleaning up Discord RPC and Presence");
 
             if (_rpcClient != null)
             {
@@ -519,7 +509,7 @@ namespace Froststrap.Integrations
                 catch (IOException ex) when (ex.InnerException is SocketException) { }
                 catch (Exception ex)
                 {
-                    App.Logger.WriteException(LOG_IDENT, ex);
+                    App.Logger.Error(ex);
                 }
             }
 

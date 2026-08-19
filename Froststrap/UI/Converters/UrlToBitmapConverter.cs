@@ -37,7 +37,7 @@ namespace Froststrap.UI.Converters
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine("UrlToBitmapConverter", $"Failed to load image from {url}: {ex.Message}");
+                App.Logger.Error($"Failed to load image from {url}: {ex.Message}");
                 _imageCache.TryAdd(url, null);
             }
 

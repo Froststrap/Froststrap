@@ -105,7 +105,7 @@
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException("BehaviourViewModel::LoadAvailableRegions", ex);
+                App.Logger.Error(ex);
                 AvailableRegions = BuildAvailableRegionsWithCurrent(new List<string>());
             }
             finally

@@ -11,7 +11,6 @@ namespace Froststrap
         private Dictionary<string, object> OriginalProp = [];
 
         public override string ClassName => nameof(FastFlagManager);
-        public override string LOG_IDENT_CLASS => ClassName;
         public override string ProfilesLocation => Paths.SavedFlagProfiles;
         public override string FileName => "ClientAppSettings.json";
         public override string FileLocation => Path.Combine(Paths.Modifications, "ClientSettings", FileName);
@@ -111,15 +110,13 @@ namespace Froststrap
 
         public void SetValue(string key, object? value)
         {
-            const string LOG_IDENT = "FastFlagManager::SetValue";
-
             if (!suspendUndoSnapshot)
                 SaveUndoSnapshot();
 
             if (value is null)
             {
                 if (Prop.ContainsKey(key))
-                    App.Logger.WriteLine(LOG_IDENT, $"Deletion of '{key}' is pending");
+                    App.Logger.Info($"Deletion of '{key}' is pending");
 
                 Prop.Remove(key);
             }
@@ -130,11 +127,11 @@ namespace Froststrap
                     if (string.Equals(value.ToString(), existingValue?.ToString(), StringComparison.Ordinal))
                         return;
 
-                    App.Logger.WriteLine(LOG_IDENT, $"Changing of '{key}' from '{existingValue}' to '{value}' is pending");
+                    App.Logger.Info($"Changing of '{key}' from '{existingValue}' to '{value}' is pending");
                 }
                 else
                 {
-                    App.Logger.WriteLine(LOG_IDENT, $"Setting of '{key}' to '{value}' is pending");
+                    App.Logger.Info($"Setting of '{key}' to '{value}' is pending");
                 }
 
                 Prop[key] = value.ToString()!;
@@ -170,7 +167,7 @@ namespace Froststrap
         {
             if (!PresetFlags.TryGetValue(name, out string? flagName))
             {
-                App.Logger.WriteLine("FastFlagManager::GetPreset", $"Could not find preset {name}");
+                App.Logger.Error($"Could not find preset {name}");
                 Debug.Assert(false, $"Could not find preset {name}");
                 return null;
             }
@@ -210,8 +207,6 @@ namespace Froststrap
         [System.Runtime.Versioning.SupportedOSPlatform("linux")]
         private void SyncToSoberConfig()
         {
-            const string LOG_IDENT = "FastFlagManager::SyncToSoberConfig";
-
             try
             {
                 if (!App.SoberSettings.Loaded)
@@ -233,12 +228,11 @@ namespace Froststrap
                 }
 
                 App.SoberSettings.Save();
-                App.Logger.WriteLine(LOG_IDENT, $"Successfully synced {fflagsDict.Count} flags.");
+                App.Logger.Info($"Successfully synced {fflagsDict.Count} flags.");
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine(LOG_IDENT, "Failed to sync flags.");
-                App.Logger.WriteException(LOG_IDENT, ex);
+                App.Logger.Error($"Failed to sync flags: {ex}");
             }
         }
 

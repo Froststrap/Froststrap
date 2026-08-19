@@ -68,7 +68,7 @@ namespace Froststrap.UI.Elements.Editor
                 }
                 catch (Exception ex)
                 {
-                    App.Logger.WriteLine("Schema", $"Critical error loading schema: {ex.Message}");
+                    App.Logger.Error($"Critical error loading schema: {ex.Message}");
                 }
             }
 
@@ -220,7 +220,7 @@ namespace Froststrap.UI.Elements.Editor
             }
             catch (Exception)
             {
-                App.Logger.WriteLine("BootstrapperEditorWindow", "Theme file not found, falling back to default XML.");
+                App.Logger.Error("Theme file not found, falling back to default XML.");
                 UIXML.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("XML");
             }
         }

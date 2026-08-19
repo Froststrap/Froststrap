@@ -5,13 +5,13 @@
     {
         protected override HttpRequestMessage ProcessRequest(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            App.Logger.WriteLine("HttpClientLoggingHandler::ProcessRequest", $"{request.Method} {request.RequestUri}");
+            App.Logger.Info($"{request.Method} {request.RequestUri}");
             return request;
         }
 
         protected override HttpResponseMessage ProcessResponse(HttpResponseMessage response, CancellationToken cancellationToken)
         {
-            App.Logger.WriteLine("HttpClientLoggingHandler::ProcessResponse", $"{(int)response.StatusCode} {response.ReasonPhrase} {response.RequestMessage!.RequestUri}");
+            App.Logger.Info($"{(int)response.StatusCode} {response.ReasonPhrase} {response.RequestMessage!.RequestUri}");
             return response;
         }
     }

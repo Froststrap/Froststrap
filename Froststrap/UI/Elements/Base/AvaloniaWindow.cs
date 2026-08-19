@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
+using Avalonia.Media.Imaging;
 using Avalonia.Styling;
 using FluentAvalonia.Styling;
 
@@ -14,6 +15,10 @@ namespace Froststrap.UI.Elements.Base
         private static ResourceDictionary? _activeThemeDictionary;
 
         private static IBrush? _currentBackgroundBrush;
+        private static Bitmap? _currentBackgroundBitmap;
+        private static string? _currentBitmapPath;
+
+        private static readonly string[] AnimatedImageExtensions = [".gif"];
 
         public AvaloniaWindow()
         {
@@ -55,6 +60,11 @@ namespace Froststrap.UI.Elements.Base
             }
 
             IBrush? backgroundBrush = null;
+            bool isAnimatedGif = false;
+            string? backgroundImagePath = null;
+            Bitmap? backgroundBitmap = null;
+            Stretch imageStretch = Stretch.UniformToFill;
+            double imageOpacity = 1.0;
 
             if (finalTheme != Enums.Theme.Custom)
             {
@@ -81,7 +91,7 @@ namespace Froststrap.UI.Elements.Base
                 }
                 catch (Exception ex)
                 {
-                    App.Logger.WriteLine("AvaloniaWindow", $"Theme/Style loading error for {themeName}: {ex.Message}");
+                    App.Logger.Error($"Theme/Style loading error for {themeName}: {ex.Message}");
                 }
             }
             else
@@ -124,6 +134,42 @@ namespace Froststrap.UI.Elements.Base
                         EndPoint = endPoint
                     };
                 }
+                else if (App.Settings.Prop.BackgroundType == BackgroundMode.Image)
+                {
+                    string path = App.Settings.Prop.BackgroundImagePath ?? string.Empty;
+
+                    if (!string.IsNullOrEmpty(path) && System.IO.File.Exists(path))
+                    {
+                        try
+                        {
+                            string extension = System.IO.Path.GetExtension(path);
+                            isAnimatedGif = AnimatedImageExtensions.Contains(extension, StringComparer.OrdinalIgnoreCase);
+
+                            if (isAnimatedGif)
+                            {
+                                backgroundImagePath = path;
+                            }
+                            else
+                            {
+                                backgroundBitmap = (path == _currentBitmapPath && _currentBackgroundBitmap != null)
+                                    ? _currentBackgroundBitmap
+                                    : new Bitmap(path);
+                                _currentBitmapPath = path;
+                            }
+
+                            imageStretch = (Stretch)App.Settings.Prop.BackgroundStretch;
+                            imageOpacity = App.Settings.Prop.BackgroundOpacity;
+                        }
+                        catch (Exception ex)
+                        {
+                            App.Logger.Error($"Image load error: {ex.Message}");
+                        }
+                    }
+                    else
+                    {
+                        _currentBitmapPath = null;
+                    }
+                }
             }
 
             _currentBackgroundBrush = backgroundBrush ?? Brushes.Transparent;
@@ -142,8 +188,6 @@ namespace Froststrap.UI.Elements.Base
 
         private void ApplyWindowBackground()
         {
-            // avoid custom background image host/content wrapping.
-            // Only apply brush background.
             this.Background = _currentBackgroundBrush ?? Brushes.Transparent;
         }
 

@@ -7,7 +7,6 @@
         /// </remarks>
         public static async Task<string?[]> GetThumbnailUrlsAsync(List<ThumbnailRequest> requests, CancellationToken token)
         {
-            const string LOG_IDENT = "Thumbnails::GetThumbnailUrlsAsync";
             const int RETRIES = 5;
             const int RETRY_TIME_INCREMENT = 500; // ms
 
@@ -46,12 +45,12 @@
                     }
                     else if (item.State == "Error")
                     {
-                        App.Logger.WriteLine(LOG_IDENT, $"{item.TargetId} got error code {item.ErrorCode} ({item.ErrorMessage})");
+                        App.Logger.Error($"{item.TargetId} got error code {item.ErrorCode} ({item.ErrorMessage})");
                         completedIndices.Add(originalIndex);
                     }
                     else if (item.State != "Pending")
                     {
-                        App.Logger.WriteLine(LOG_IDENT, $"{item.TargetId} got unexpected state \"{item.State}\"");
+                        App.Logger.Error($"{item.TargetId} got unexpected state \"{item.State}\"");
                         completedIndices.Add(originalIndex);
                     }
                 }
@@ -61,7 +60,7 @@
                 if (remainingRequests.Count > 0)
                 {
                     if (i == RETRIES)
-                        App.Logger.WriteLine(LOG_IDENT, $"Ran out of retries with {remainingRequests.Count} items still pending.");
+                        App.Logger.Warn($"Ran out of retries with {remainingRequests.Count} items still pending.");
                     else
                         await Task.Delay(RETRY_TIME_INCREMENT * i, token);
                 }

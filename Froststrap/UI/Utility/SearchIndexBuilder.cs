@@ -95,8 +95,7 @@ namespace Froststrap.UI.Utility
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine("SearchIndexBuilder::ScanRenderedPageForElements",
-                    $"Error scanning rendered page {pageTag}: {ex.Message}");
+                App.Logger.Error($"Error scanning rendered page {pageTag}: {ex.Message}");
                 return newItems;
             }
         }

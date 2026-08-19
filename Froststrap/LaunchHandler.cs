@@ -11,27 +11,25 @@ namespace Froststrap
     {
         public static void ProcessNextAction(NextAction action)
         {
-            const string LOG_IDENT = "LaunchHandler::ProcessNextAction";
-
             switch (action)
             {
                 case NextAction.LaunchSettings:
-                    App.Logger.WriteLine(LOG_IDENT, "Opening settings");
+                    App.Logger.Info("Opening settings");
                     LaunchSettings();
                     break;
 
                 case NextAction.LaunchRoblox:
-                    App.Logger.WriteLine(LOG_IDENT, "Opening Roblox");
+                    App.Logger.Info("Opening Roblox");
                     LaunchRoblox(LaunchMode.Player);
                     break;
 
                 case NextAction.LaunchRobloxStudio:
-                    App.Logger.WriteLine(LOG_IDENT, "Opening Roblox Studio");
+                    App.Logger.Info("Opening Roblox Studio");
                     LaunchRoblox(LaunchMode.Studio);
                     break;
 
                 default:
-                    App.Logger.WriteLine(LOG_IDENT, "Closing");
+                    App.Logger.Info("Closing");
                     App.Terminate(ErrorCode.ERROR_SUCCESS);
                     break;
             }
@@ -39,61 +37,57 @@ namespace Froststrap
 
         public static void ProcessLaunchArgs()
         {
-            const string LOG_IDENT = "LaunchHandler::ProcessLaunchArgs";
-
             // this order is specific
             if (App.LaunchSettings.OnboardingFlag.Active)
             {
-                App.Logger.WriteLine(LOG_IDENT, "Opening uninstaller");
+                App.Logger.Info("Opening uninstaller");
                 LaunchOnboarding();
             }
             else if (App.LaunchSettings.MenuFlag.Active)
             {
-                App.Logger.WriteLine(LOG_IDENT, "Opening settings");
+                App.Logger.Info("Opening settings");
                 LaunchSettings();
             }
             else if (App.LaunchSettings.WatcherFlag.Active)
             {
-                App.Logger.WriteLine(LOG_IDENT, "Opening watcher");
+                App.Logger.Info("Opening watcher");
                 LaunchWatcher();
             }
             else if (App.LaunchSettings.BackgroundUpdaterFlag.Active)
             {
-                App.Logger.WriteLine(LOG_IDENT, "Opening background updater");
+                App.Logger.Info("Opening background updater");
                 LaunchBackgroundUpdater();
             }
             else if (App.LaunchSettings.RobloxLaunchMode != LaunchMode.None)
             {
-                App.Logger.WriteLine(LOG_IDENT, $"Opening bootstrapper ({App.LaunchSettings.RobloxLaunchMode})");
+                App.Logger.Info($"Opening bootstrapper ({App.LaunchSettings.RobloxLaunchMode})");
                 LaunchRoblox(App.LaunchSettings.RobloxLaunchMode);
             }
             else if (App.LaunchSettings.BloxshadeFlag.Active)
             {
-                App.Logger.WriteLine(LOG_IDENT, "Opening Bloxshade");
+                App.Logger.Info("Opening Bloxshade");
                 LaunchBloxshadeConfig();
             }
             else if (!App.LaunchSettings.QuietFlag.Active)
             {
-                App.Logger.WriteLine(LOG_IDENT, "Opening menu");
+                App.Logger.Info("Opening menu");
                 LaunchMenu();
             }
             else
             {
-                App.Logger.WriteLine(LOG_IDENT, "Closing - quiet flag active");
+                App.Logger.Info("Closing - quiet flag active");
                 App.Terminate();
             }
         }
 
         public static void LaunchSettings()
         {
-            const string LOG_IDENT = "LaunchHandler::LaunchSettings";
-
             var interlock = new InterProcessLock("Settings");
 
             if (!interlock.IsAcquired)
             {
                 interlock.Dispose();
-                App.Logger.WriteLine(LOG_IDENT, "Found an already existing menu window");
+                App.Logger.Info("Found an already existing menu window");
 
                 using var activateEvent = new EventWaitHandle(false, EventResetMode.AutoReset, "Froststrap-ActivateSettingsEvent");
                 activateEvent.Set();
@@ -186,8 +180,6 @@ namespace Froststrap
 
         public static async void LaunchRoblox(LaunchMode launchMode)
         {
-            const string LOG_IDENT = "LaunchHandler::LaunchRoblox";
-
             if (launchMode == LaunchMode.None)
                 throw new InvalidOperationException("No Roblox launch mode set");
 
@@ -213,13 +205,13 @@ namespace Froststrap
             }
 
             // start bootstrapper and show the bootstrapper modal if we're not running silently
-            App.Logger.WriteLine(LOG_IDENT, "Initializing bootstrapper");
+            App.Logger.Info("Initializing bootstrapper");
             App.Bootstrapper = new Bootstrapper(launchMode);
             IBootstrapperDialog? dialog = null;
 
             if (!App.LaunchSettings.QuietFlag.Active)
             {
-                App.Logger.WriteLine(LOG_IDENT, "Initializing bootstrapper dialog");
+                App.Logger.Info("Initializing bootstrapper dialog");
                 ThemeCycler.HandleLaunchCycle();
                 dialog = await App.Settings.Prop.BootstrapperStyle.GetNew();
                 App.Bootstrapper.Dialog = dialog;
@@ -228,11 +220,11 @@ namespace Froststrap
 
             _ = Task.Run(App.Bootstrapper.Run).ContinueWith(async t =>
             {
-                App.Logger.WriteLine(LOG_IDENT, "Bootstrapper task has finished");
+                App.Logger.Info("Bootstrapper task has finished");
 
                 if (t.IsFaulted)
                 {
-                    App.Logger.WriteLine(LOG_IDENT, "An exception occurred when running the bootstrapper");
+                    App.Logger.Error("An exception occurred when running the bootstrapper");
 
                     if (t.Exception is not null)
                         await App.FinalizeExceptionHandling(t.Exception);
@@ -250,13 +242,11 @@ namespace Froststrap
 
             dialog?.ShowBootstrapper();
 
-            App.Logger.WriteLine(LOG_IDENT, "Exiting");
+            App.Logger.Info("Exiting");
         }
 
         public static void LaunchWatcher()
         {
-            const string LOG_IDENT = "LaunchHandler::LaunchWatcher";
-
             // this whole topology is a bit confusing, bear with me:
             // main thread: strictly UI only, handles showing of the notification area icon, context menu, server details dialog
             // - server information task: queries server location, invoked if either the explorer notification is shown or the server details dialog is opened
@@ -270,13 +260,13 @@ namespace Froststrap
 
             watcherTask.ContinueWith(async t =>
             {
-                App.Logger.WriteLine(LOG_IDENT, "Watcher task has finished");
+                App.Logger.Info("Watcher task has finished");
 
                 watcher.Dispose();
 
                 if (t.IsFaulted)
                 {
-                    App.Logger.WriteLine(LOG_IDENT, "An exception occurred when running the watcher");
+                    App.Logger.Error("An exception occurred when running the watcher");
 
                     if (t.Exception is not null)
                         await App.FinalizeExceptionHandling(t.Exception);
@@ -292,9 +282,7 @@ namespace Froststrap
 
         public static void LaunchBloxshadeConfig()
         {
-            const string LOG_IDENT = "LaunchHandler::LaunchBloxshade";
-
-            App.Logger.WriteLine(LOG_IDENT, "Showing unsupported warning");
+            App.Logger.Info("Showing unsupported warning");
 
             new BloxshadeDialog().Show();
             App.SoftTerminate();
@@ -302,13 +290,11 @@ namespace Froststrap
 
         public static void LaunchBackgroundUpdater()
         {
-            const string LOG_IDENT = "LaunchHandler::LaunchBackgroundUpdater";
-
             // Activate some LaunchFlags we need
             App.LaunchSettings.QuietFlag.Active = true;
             App.LaunchSettings.NoLaunchFlag.Active = true;
 
-            App.Logger.WriteLine(LOG_IDENT, "Initializing bootstrapper");
+            App.Logger.Info("Initializing bootstrapper");
             App.Bootstrapper = new Bootstrapper(LaunchMode.Player)
             {
                 LockName = Bootstrapper.BackgroundUpdaterLockName,
@@ -319,22 +305,22 @@ namespace Froststrap
 
             Task.Run(() =>
             {
-                App.Logger.WriteLine(LOG_IDENT, "Started event waiter");
+                App.Logger.Info("Started event waiter");
                 using (EventWaitHandle handle = new(false, EventResetMode.AutoReset, "Froststrap-BackgroundUpdaterKillEvent"))
                     handle.WaitOne();
 
-                App.Logger.WriteLine(LOG_IDENT, "Received close event, killing it all!");
+                App.Logger.Info("Received close event, killing it all!");
                 App.Bootstrapper.Cancel();
             }, cts.Token);
 
             Task.Run(App.Bootstrapper.Run).ContinueWith(async t =>
             {
-                App.Logger.WriteLine(LOG_IDENT, "Bootstrapper task has finished");
+                App.Logger.Info("Bootstrapper task has finished");
                 cts.Cancel(); // stop event waiter
 
                 if (t.IsFaulted)
                 {
-                    App.Logger.WriteLine(LOG_IDENT, "An exception occurred when running the bootstrapper");
+                    App.Logger.Error("An exception occurred when running the bootstrapper");
 
                     if (t.Exception is not null)
                         await App.FinalizeExceptionHandling(t.Exception);
@@ -343,29 +329,27 @@ namespace Froststrap
                 App.Terminate();
             });
 
-            App.Logger.WriteLine(LOG_IDENT, "Exiting");
+            App.Logger.Info("Exiting");
         }
 
         private static int _activationInFlight;
 
         public static void HandleActivationUri(string uri)
         {
-            const string LOG_IDENT = "LaunchHandler::HandleActivationUri";
-
             if (!App.LaunchSettings.TryResolveRobloxUri([uri]))
             {
-                App.Logger.WriteLine(LOG_IDENT, $"Ignoring unrecognized activation URI: {uri}");
+                App.Logger.Info($"Ignoring unrecognized activation URI: {uri}");
                 return;
             }
 
             if (Interlocked.CompareExchange(ref _activationInFlight, 1, 0) != 0)
             {
-                App.Logger.WriteLine(LOG_IDENT, "A launch is already being handled, ignoring activation");
+                App.Logger.Info("A launch is already being handled, ignoring activation");
                 return;
             }
 
             var mode = App.LaunchSettings.RobloxLaunchMode;
-            App.Logger.WriteLine(LOG_IDENT, $"Handling activation URI as a Roblox launch ({mode})");
+            App.Logger.Info($"Handling activation URI as a Roblox launch ({mode})");
             Avalonia.Threading.Dispatcher.UIThread.Post(() => LaunchRoblox(mode));
         }
     }

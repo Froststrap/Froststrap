@@ -14,15 +14,13 @@ namespace Froststrap.Models.Entities
 {
     public static class GameSearching
     {
-        private const string LOG_IDENT = "GameSearching";
-
         public static async Task<List<OmniSearchContent>> GetGameSearchResultsAsync(string searchQuery)
         {
             var results = new List<OmniSearchContent>();
 
             if (string.IsNullOrWhiteSpace(searchQuery))
             {
-                App.Logger.WriteLine(LOG_IDENT, "Search query is empty.");
+                App.Logger.Error("Search query is empty.");
                 return results;
             }
 
@@ -34,7 +32,7 @@ namespace Froststrap.Models.Entities
 
                 if (response?.SearchResults is null)
                 {
-                    App.Logger.WriteLine(LOG_IDENT, "Search API returned no results.");
+                    App.Logger.Error("Search API returned no results.");
                     return results;
                 }
 
@@ -65,7 +63,7 @@ namespace Froststrap.Models.Entities
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine(LOG_IDENT, $"Error fetching search results: {ex.Message}");
+                App.Logger.Error($"Error fetching search results: {ex.Message}");
             }
 
             return results;
@@ -127,7 +125,7 @@ namespace Froststrap.Models.Entities
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine(LOG_IDENT, $"Error fetching detailed search results: {ex.Message}");
+                App.Logger.Error($"Error fetching detailed search results: {ex.Message}");
             }
 
             return (results, "");
