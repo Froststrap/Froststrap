@@ -16,6 +16,8 @@ sealed class Program
     [STAThread]
     public static void Main(string[] args)
     {
+        Logger.Debug($"Log file: {Logging.FileLocation}");
+
         NoGPU = args.Any(a => a.Equals("-nogpu", StringComparison.OrdinalIgnoreCase));
 
         if (NoGPU)
