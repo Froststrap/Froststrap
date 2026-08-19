@@ -300,7 +300,7 @@ namespace Froststrap.UI.ViewModels.Settings
                     OnPropertyChanged(nameof(PlayerShowLoadingError));
                     OnPropertyChanged(nameof(PlayerInfoLoadingText));
                 }
-                App.Logger.WriteException("ChannelViewModel::LoadChannelDeployInfo", ex);
+                App.Logger.Error("Unhandled exception: ", ex);
             }
         }
 
@@ -795,7 +795,7 @@ namespace Froststrap.UI.ViewModels.Settings
             catch (Exception ex)
             {
                 await Frontend.ShowMessageBox(string.Format(Strings.Menu_Deployment_MoveInstallation_Failed, ex.Message), MessageBoxImage.Error);
-                App.Logger.WriteException("MoveInstallDirectory", ex);
+                App.Logger.Error("Unhandled exception: ", ex);
             }
             finally
             {

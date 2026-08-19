@@ -12,8 +12,6 @@ using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.Integrations;
-using Froststrap.Models;
-using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 
 namespace Froststrap.UI.ViewModels.Settings
@@ -26,7 +24,6 @@ namespace Froststrap.UI.ViewModels.Settings
 
     public class RegionSelectorViewModel : NotifyPropertyChangedViewModel
     {
-        private const string LOG_IDENT = "RegionSelectorViewModel";
         private readonly HashSet<string> _displayedServerIds = [];
         private RobloxServerFetcher? _fetcher;
         private Dictionary<int, string>? _dcMap;
@@ -309,7 +306,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 if (HasValidCookies)
                     await LoadRegionsAsync();
             }
-            catch (Exception ex) { App.Logger.WriteException(LOG_IDENT, ex); }
+            catch (Exception ex) { App.Logger.Error(ex); }
         }
 
         private async Task LoadRegionsAsync()
@@ -484,7 +481,7 @@ namespace Froststrap.UI.ViewModels.Settings
                     UseShellExecute = true
                 });
             }
-            catch (Exception ex) { App.Logger.WriteException(LOG_IDENT, ex); }
+            catch (Exception ex) { App.Logger.Error(ex); }
         }
 
         private async Task LoadMoreServersAsync()
@@ -606,7 +603,7 @@ namespace Froststrap.UI.ViewModels.Settings
                     IsSearchFlyoutOpen = SearchResults.Count > 0 && !string.IsNullOrWhiteSpace(SearchQuery);
                 }, DispatcherPriority.Background);
             }
-            catch (Exception ex) { App.Logger.WriteLine(LOG_IDENT, $"Search error: {ex.Message}"); }
+            catch (Exception ex) { App.Logger.Error($"Search error: {ex.Message}"); }
             finally { IsGameSearchLoading = false; }
         }
     }
