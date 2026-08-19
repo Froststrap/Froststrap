@@ -25,8 +25,6 @@ namespace Froststrap.Extensions
 
         public static Bitmap GetIcon(this BootstrapperIcon icon)
         {
-            const string LOG_IDENT = "BootstrapperIconEx::GetIcon";
-
             if (_cache.TryGetValue(icon, out var cached))
                 return cached;
 
@@ -37,7 +35,7 @@ namespace Froststrap.Extensions
 
                 if (string.IsNullOrEmpty(location))
                 {
-                    App.Logger.WriteLine(LOG_IDENT, "Warning: custom icon is not set.");
+                    App.Logger.Warn("Custom icon is not set.");
                 }
                 else
                 {
@@ -47,8 +45,7 @@ namespace Froststrap.Extensions
                     }
                     catch (Exception ex)
                     {
-                        App.Logger.WriteLine(LOG_IDENT, "Failed to load custom icon!");
-                        App.Logger.WriteException(LOG_IDENT, ex);
+                        App.Logger.Error($"Failed to load custom icon! {ex}");
                     }
                 }
 

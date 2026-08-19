@@ -8,8 +8,6 @@ namespace Froststrap.Integrations
 {
     public sealed class Softkey : IDisposable
     {
-        private const string LOG_IDENT = "Softkey";
-
         private uint _keyUp;
         private uint _keyLeft;
         private uint _keyDown;
@@ -53,7 +51,7 @@ namespace Froststrap.Integrations
 
             if (!OperatingSystem.IsWindows())
             {
-                App.Logger.WriteLine(LOG_IDENT, "Softkey is only supported on Windows, skipping");
+                App.Logger.Warn("Softkey is only supported on Windows, skipping");
                 return;
             }
 
@@ -122,12 +120,11 @@ namespace Froststrap.Integrations
 
             if (_hookHandle == IntPtr.Zero)
             {
-                App.Logger.WriteLine(LOG_IDENT,
-                    $"Failed to install keyboard hook, error {Marshal.GetLastWin32Error()}");
+                App.Logger.Error($"Failed to install keyboard hook, error {Marshal.GetLastWin32Error()}");
                 return;
             }
 
-            App.Logger.WriteLine(LOG_IDENT, "Keyboard hook installed");
+            App.Logger.Info("Keyboard hook installed");
 
             while (GetMessage(out MSG msg, IntPtr.Zero, 0, 0) > 0)
             {
@@ -185,7 +182,7 @@ namespace Froststrap.Integrations
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine(LOG_IDENT, $"Hook callback crashed: {ex.Message}");
+                App.Logger.Error( $"Hook callback crashed: {ex.Message}");
                 return CallNextHookEx(_hookHandle, nCode, wParam, lParam);
             }
         }
@@ -368,8 +365,7 @@ namespace Froststrap.Integrations
 
             if (result == 0)
             {
-                App.Logger.WriteLine(LOG_IDENT,
-                    $"SendInput failed (error {Marshal.GetLastWin32Error()}) – falling back to keybd_event.");
+                App.Logger.Warn($"SendInput failed (error {Marshal.GetLastWin32Error()}) – falling back to keybd_event.");
 
                 byte bVk = (byte)vkCode;
                 uint dwFlags = keyDown ? 0 : KEYEVENTF_KEYUP;
@@ -398,7 +394,7 @@ namespace Froststrap.Integrations
                     _hookHandle = IntPtr.Zero;
                 }
 
-                App.Logger.WriteLine(LOG_IDENT, "Keyboard hook removed");
+                App.Logger.Info("Keyboard hook removed");
             }
 
             GC.SuppressFinalize(this);
