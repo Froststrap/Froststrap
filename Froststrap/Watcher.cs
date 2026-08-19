@@ -28,11 +28,9 @@ namespace Froststrap
 
         public Watcher()
         {
-            const string LOG_IDENT = "Watcher";
-
             if (!_lock.IsAcquired)
             {
-                App.Logger.WriteLine(LOG_IDENT, "Watcher instance already exists");
+                Logger.Error("Watcher instance already exists");
                 return;
             }
 
@@ -79,14 +77,14 @@ namespace Froststrap
                 {
                     ActivityWatcher.Data.AccessCode = _watcherData.AccessCode;
                     ActivityWatcher.Data.ServerType = ServerType.Private;
-                    App.Logger.WriteLine("Watcher", $"Set access code from launch data: {_watcherData.AccessCode}");
+                    Logger.Info($"Set access code from launch data: {_watcherData.AccessCode}");
                 }
 
                 if (App.Settings.Prop.UseDisableAppPatch)
                 {
                     ActivityWatcher.OnAppClose += delegate
                     {
-                        App.Logger.WriteLine(LOG_IDENT, "Received desktop app exit, closing Roblox");
+                        Logger.Info("Received desktop app exit, closing Roblox");
                         using var process = Process.GetProcessById(_watcherData.ProcessId);
                         process.CloseMainWindow();
                     };
@@ -133,7 +131,7 @@ namespace Froststrap
                                 };
 
                                 proc.PriorityClass = priorityClass;
-                                App.Logger.WriteLine(LOG_IDENT, $"Set priority for {proc.Id} to {priorityClass}");
+                                Logger.Info($"Set priority for {proc.Id} to {priorityClass}");
                             }
                         }
 
@@ -147,7 +145,7 @@ namespace Froststrap
                     }
                     catch (Exception ex)
                     {
-                        App.Logger.WriteLine(LOG_IDENT, $"Post-launch task error: {ex.Message}");
+                        Logger.Error($"Post-launch task error: {ex.Message}");
                     }
                 });
             }
@@ -155,15 +153,13 @@ namespace Froststrap
 
         private static async Task<int> RegisterGameModeWithDbusSendAsync(int pid)
         {
-            const string LOG_IDENT = "Watcher::RegisterGameModeWithDbusSend";
-
             const string GameModePortalService = "org.freedesktop.portal.Desktop";
             const string GameModePortalPath = "/org/freedesktop/portal/desktop";
             const string GameModePortalInterface = "org.freedesktop.portal.GameMode";
 
             if (pid <= 0)
             {
-                App.Logger.WriteLine(LOG_IDENT, $"Invalid PID: {pid}");
+                Logger.Error($"Invalid PID: {pid}");
                 return -1;
             }
 
@@ -181,7 +177,7 @@ namespace Froststrap
                 using var whichProcess = Process.Start(whichPsi);
                 if (whichProcess == null || !whichProcess.WaitForExit(1000) || whichProcess.ExitCode != 0)
                 {
-                    App.Logger.WriteLine(LOG_IDENT, "dbus-send not found, GameMode registration skipped");
+                    Logger.Info("dbus-send not found, GameMode registration skipped");
                     return -1;
                 }
 
@@ -198,7 +194,7 @@ namespace Froststrap
                 using var process = Process.Start(psi);
                 if (process == null)
                 {
-                    App.Logger.WriteLine(LOG_IDENT, "Failed to start dbus-send");
+                    Logger.Info("Failed to start dbus-send");
                     return -1;
                 }
 
@@ -208,14 +204,14 @@ namespace Froststrap
 
                 if (process.ExitCode != 0)
                 {
-                    App.Logger.WriteLine(LOG_IDENT, $"dbus-send failed: {error}");
+                    Logger.Error($"dbus-send failed: {error}");
                     return -1;
                 }
 
                 var match = Regex.Match(output, @"int32\s+(\d+)");
                 if (!match.Success)
                 {
-                    App.Logger.WriteLine(LOG_IDENT, $"Failed to parse GameMode response: {output}");
+                    Logger.Error($"Failed to parse GameMode response: {output}");
                     return -1;
                 }
 
@@ -223,24 +219,22 @@ namespace Froststrap
 
                 if (handle < 0)
                 {
-                    App.Logger.WriteLine(LOG_IDENT, $"GameMode registration rejected with handle {handle}");
+                    Logger.Error($"GameMode registration rejected with handle {handle}");
                     return -1;
                 }
 
-                App.Logger.WriteLine(LOG_IDENT, $"Registered with GameMode via dbus-send, handle: {handle}");
+                Logger.Info($"Registered with GameMode via dbus-send, handle: {handle}");
                 return handle;
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine(LOG_IDENT, $"Failed to register with GameMode: {ex.Message}");
+                Logger.Error($"Failed to register with GameMode: {ex.Message}");
                 return -1;
             }
         }
 
         private static async Task UnregisterGameModeWithDbusSendAsync(int handle)
         {
-            const string LOG_IDENT = "Watcher::UnregisterGameModeWithDbusSend";
-
             const string GameModePortalService = "org.freedesktop.portal.Desktop";
             const string GameModePortalPath = "/org/freedesktop/portal/desktop";
             const string GameModePortalInterface = "org.freedesktop.portal.GameMode";
@@ -266,30 +260,28 @@ namespace Froststrap
                     await process.WaitForExitAsync();
                     if (process.ExitCode == 0)
                     {
-                        App.Logger.WriteLine(LOG_IDENT, $"Unregistered from GameMode, handle: {handle}");
+                        Logger.Info($"Unregistered from GameMode, handle: {handle}");
                     }
                 }
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine(LOG_IDENT, $"Failed to unregister from GameMode: {ex.Message}");
+                Logger.Error($"Failed to unregister from GameMode: {ex.Message}");
             }
         }
 
         public void KillRobloxProcess() => CloseProcess(_watcherData!.ProcessId, true);
         public static void CloseProcess(int pid, bool force = false)
         {
-            const string LOG_IDENT = "Watcher::CloseProcess";
-
             try
             {
                 using var process = Process.GetProcessById(pid);
 
-                App.Logger.WriteLine(LOG_IDENT, $"Killing process '{process.ProcessName}' (pid={pid}, force={force})");
+                Logger.Info($"Killing process '{process.ProcessName}' (pid={pid}, force={force})");
 
                 if (process.HasExited)
                 {
-                    App.Logger.WriteLine(LOG_IDENT, $"PID {pid} has already exited");
+                    Logger.Info($"PID {pid} has already exited");
                     return;
                 }
 
@@ -300,8 +292,8 @@ namespace Froststrap
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine(LOG_IDENT, $"PID {pid} could not be closed");
-                App.Logger.WriteException(LOG_IDENT, ex);
+                Logger.Error($"PID {pid} could not be closed");
+                Logger.Error(ex);
             }
         }
 
@@ -356,7 +348,7 @@ namespace Froststrap
             if (_isDisposed)
                 return;
 
-            App.Logger.WriteLine("Watcher::Dispose", "Disposing Watcher");
+            Logger.Info("Disposing Watcher");
 
             _cancellationTokenSource.Cancel();
 

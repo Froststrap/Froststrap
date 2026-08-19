@@ -8,7 +8,7 @@
  *  SPDX-License-Identifier: AGPL-3.0-or-later
  *
  *  Description: Nix flake for shipping for Nix-darwin, Nix, NixOS, and modules
- *               of the Nix ecosystem. 
+ *               of the Nix ecosystem.
  */
 
 using DiscordRPC;
@@ -32,13 +32,11 @@ namespace Froststrap.Integrations
 
         public StudioDiscordRichPresence(ActivityWatcher activityWatcher)
         {
-            const string LOG_IDENT = "StudioDiscordRichPresence";
-
             _isMacOS = OperatingSystem.IsMacOS();
 
             if (_isMacOS)
             {
-                App.Logger.WriteLine(LOG_IDENT, "Skipping Discord RPC initialization on macOS");
+                Logger.Info("Skipping Discord RPC initialization on macOS");
                 _rpcClient = null!;
                 _activityWatcher = activityWatcher;
                 return;
@@ -53,18 +51,18 @@ namespace Froststrap.Integrations
 
             _rpcClient.OnReady += (_, e) =>
             {
-                App.Logger.WriteLine(LOG_IDENT, $"Received ready from user {e.User} ({e.User.ID})");
+                Logger.Info($"Received ready from user {e.User} ({e.User.ID})");
                 if (!_disposed) InitializeStudioPresence();
             };
 
             _rpcClient.OnConnectionEstablished += (_, e) =>
-                App.Logger.WriteLine(LOG_IDENT, "Established connection with Discord RPC");
+                Logger.Info("Established connection with Discord RPC");
 
             _rpcClient.OnClose += (_, e) =>
-                App.Logger.WriteLine(LOG_IDENT, $"Lost connection to Discord RPC - {e.Reason} ({e.Code})");
+                Logger.Info($"Lost connection to Discord RPC - {e.Reason} ({e.Code})");
 
             _rpcClient.OnError += (_, e) =>
-                App.Logger.WriteLine(LOG_IDENT, $"An RPC error occurred - {e.Message}");
+                Logger.Info($"An RPC error occurred - {e.Message}");
 
             try
             {
@@ -72,23 +70,21 @@ namespace Froststrap.Integrations
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine(LOG_IDENT, $"Failed to init RPC: {ex.Message}");
+                Logger.Error($"Failed to init RPC: {ex.Message}");
             }
         }
 
         // for future use
         private static void HandleStudioPlaceOpened()
         {
-            const string LOG_IDENT = "StudioDiscordRichPresence::HandleStudioPlaceOpened";
-            App.Logger.WriteLine(LOG_IDENT, "Studio place opened");
+            Logger.Info("Studio place opened");
         }
 
         private void HandleStudioPlaceClosed()
         {
             if (_isMacOS || _disposed) return;
 
-            const string LOG_IDENT = "StudioDiscordRichPresence::HandleStudioPlaceClosed";
-            App.Logger.WriteLine(LOG_IDENT, "Studio place closed");
+            Logger.Info("Studio place closed");
 
             ResetStudioPresence();
             _rpcEnabled = true;
@@ -113,7 +109,7 @@ namespace Froststrap.Integrations
         {
             if (_isMacOS || _disposed || _rpcClient == null) return;
 
-            App.Logger.WriteLine("StudioDiscordRichPresence::InitializeStudioPresence", "Initializing Studio presence");
+            Logger.Info("Initializing Studio presence");
 
             _currentPresence = new DiscordRPC.RichPresence
             {
@@ -141,7 +137,7 @@ namespace Froststrap.Integrations
         {
             if (_isMacOS || _disposed || _rpcClient == null) return;
 
-            App.Logger.WriteLine("StudioDiscordRichPresence::ResetStudioPresence", "Resetting Studio presence");
+            Logger.Info("Resetting Studio presence");
 
             DateTime? existingTimestamp = _currentPresence?.Timestamps?.Start;
 
@@ -166,7 +162,6 @@ namespace Froststrap.Integrations
         {
             if (_isMacOS || _disposed || _rpcClient == null) return;
 
-            const string LOG_IDENT = "StudioDiscordRichPresence::ProcessStudioRichPresence";
             StudioRichPresence? presenceData;
 
             try
@@ -175,7 +170,7 @@ namespace Froststrap.Integrations
             }
             catch (Exception)
             {
-                App.Logger.WriteLine(LOG_IDENT, "Failed to parse studio message!");
+                Logger.Error("Failed to parse studio message!");
                 return;
             }
 
@@ -234,7 +229,7 @@ namespace Froststrap.Integrations
         {
             if (_isMacOS || _disposed || _rpcClient == null) return;
 
-            App.Logger.WriteLine("StudioDiscordRichPresence::SetVisibility", $"Setting presence visibility ({visible})");
+            Logger.Info($"Setting presence visibility ({visible})");
 
             _visible = visible;
 
@@ -248,8 +243,6 @@ namespace Froststrap.Integrations
         {
             if (_isMacOS || _disposed || _rpcClient == null) return;
 
-            const string LOG_IDENT = "StudioDiscordRichPresence::UpdatePresence";
-
             if (_currentPresence is null || !_rpcClient.IsInitialized)
                 return;
 
@@ -260,11 +253,11 @@ namespace Froststrap.Integrations
             }
             catch (IOException ex) when (ex.InnerException is SocketException)
             {
-                App.Logger.WriteLine(LOG_IDENT, "Socket interrupted on macOS. Suppressed.");
+                Logger.Error("Socket interrupted on macOS. Suppressed.");
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException(LOG_IDENT, ex);
+                Logger.Error(ex);
             }
         }
 
@@ -273,7 +266,7 @@ namespace Froststrap.Integrations
             if (_disposed) return;
             _disposed = true;
 
-            App.Logger.WriteLine("StudioDiscordRichPresence::Dispose", "Cleaning up Discord RPC");
+            Logger.Info("Cleaning up Discord RPC");
 
             if (_rpcClient != null)
             {
@@ -286,7 +279,7 @@ namespace Froststrap.Integrations
                     _rpcClient.Dispose();
                 }
                 catch (IOException ex) when (ex.InnerException is SocketException) { }
-                catch (Exception ex) { App.Logger.WriteException("StudioDiscordRichPresence::Dispose", ex); }
+                catch (Exception ex) { Logger.Error(ex); }
             }
 
             GC.SuppressFinalize(this);

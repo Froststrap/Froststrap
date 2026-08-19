@@ -58,8 +58,6 @@ namespace Froststrap
 
         public async Task<AuthenticatedUser?> GetAuthenticated()
         {
-            const string LOG_IDENT = "CookiesManager::GetAuthenticated";
-
             try
             {
                 Uri apiUrl = UrlBuilder.BuildApiUrl("users", "v1/users/authenticated");
@@ -71,8 +69,7 @@ namespace Froststrap
             }
             catch (HttpRequestException ex)
             {
-                App.Logger.WriteLine(LOG_IDENT, "Failed to get authenticated user");
-                App.Logger.WriteException(LOG_IDENT, ex);
+                Logger.Error($"Failed to get authenticated user: {ex.Message}");
             }
 
             return null;
@@ -80,26 +77,24 @@ namespace Froststrap
 
         public async Task LoadCookies()
         {
-            const string LOG_IDENT = "CookiesManager::LoadCookies";
-
             // we use the status to infrom user about it in the menu
             if (!Enabled)
             {
                 State = CookieState.NotAllowed;
-                App.Logger.WriteLine(LOG_IDENT, "Cookie access not allowed");
+                Logger.Error("Cookie access not allowed");
                 return;
             }
 
             if (!string.IsNullOrEmpty(AuthCookie))
             {
-                App.Logger.WriteLine(LOG_IDENT, "Cookie was already loaded!");
+                Logger.Error("Cookie was already loaded!");
                 return;
             }
 
             if (!File.Exists(CookiesPath))
             {
                 State = CookieState.NotFound;
-                App.Logger.WriteLine(LOG_IDENT, "Cookie file not found");
+                Logger.Error("Cookie file not found");
                 return;
             }
 
@@ -132,7 +127,7 @@ namespace Froststrap
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException(LOG_IDENT, ex);
+                Logger.Error($"Failed to load cookies: {ex.Message}");
                 State = CookieState.Failed;
             }
         }
@@ -213,7 +208,7 @@ namespace Froststrap
 
                 int pageHeader = ReadLittleEndianInt32(data, pageStart);
                 if (pageHeader != 0x00000100 && pageHeader != 0x00010000)
-                    App.Logger.WriteLine("BinaryCookies", $"Unexpected page header: 0x{pageHeader:X} at offset {pageStart}");
+                    Logger.Error($"Unexpected page header: 0x{pageHeader:X} at offset {pageStart}");
 
                 int numCookies = ReadLittleEndianInt32(data, pageStart + 4);
                 int cookieOffsetsOffset = pageStart + 8;
@@ -228,7 +223,7 @@ namespace Froststrap
                     }
                     catch (Exception ex)
                     {
-                        App.Logger.WriteLine("BinaryCookies", $"Failed to parse cookie {c} in page {p}: {ex.Message}");
+                        Logger.Error($"Failed to parse cookie {c} in page {p}: {ex.Message}");
                     }
                 }
 

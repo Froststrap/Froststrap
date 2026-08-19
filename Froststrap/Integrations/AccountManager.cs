@@ -21,7 +21,6 @@ namespace Froststrap.Integrations
 {
     public class AccountManager
     {
-        private const string LOG_IDENT = "AccountManager";
         private const string AccountsFile = "AccountManager.json";
 
         private static readonly JsonSerializerOptions _jsonOptions = new() { WriteIndented = true };
@@ -95,7 +94,7 @@ namespace Froststrap.Integrations
                         ActiveAccount = _accounts.Find(a => a.UserId == data.ActiveAccountId);
                 }
             }
-            catch (Exception ex) { App.Logger.WriteException(LOG_IDENT, ex); }
+            catch (Exception ex) { Logger.Exception(ex); }
         }
 
         public void SaveAccounts()
@@ -110,7 +109,7 @@ namespace Froststrap.Integrations
                 };
                 File.WriteAllText(_accountsLocation, JsonConvert.SerializeObject(data, Formatting.Indented));
             }
-            catch (Exception ex) { App.Logger.WriteException(LOG_IDENT, ex); }
+            catch (Exception ex) { Logger.Exception(ex); }
         }
 
         public void SetActiveAccount(long? userId)
@@ -133,8 +132,6 @@ namespace Froststrap.Integrations
         // https://devforum.roblox.com/t/how-to-generate-a-roblosecurity-token-from-quick-login/3147931
         public static async Task<AccountManagerAccount?> AddAccountByQuickSignInAsync(QuickSignCodeDialog dialog, CancellationToken cancellationToken)
         {
-            const string LOG_IDENT_QS = $"{LOG_IDENT}::QuickSignIn";
-
             try
             {
                 using var client = new HttpClient();
@@ -185,18 +182,18 @@ namespace Froststrap.Integrations
                         {
                             var errJson = JObject.Parse(body);
                             var errorMsg = errJson["errors"]?[0]?["message"]?.Value<string>() ?? "Unknown error";
-                            App.Logger.WriteLine(LOG_IDENT_QS, $"Status API returned error: {errorMsg}");
+                            Logger.Error($"Status API returned error: {errorMsg}");
                             await Dispatcher.UIThread.InvokeAsync(() => dialog.UpdateStatus("Cancelled"));
                         }
                         else if (body.Trim().Equals("\"CodeInvalid\"", StringComparison.OrdinalIgnoreCase) ||
                                  body.Trim().Equals("CodeInvalid", StringComparison.OrdinalIgnoreCase))
                         {
-                            App.Logger.WriteLine(LOG_IDENT_QS, "Code invalid/expired.");
+                            Logger.Info("Code invalid/expired.");
                             await Dispatcher.UIThread.InvokeAsync(() => dialog.UpdateStatus("Cancelled"));
                         }
                         else
                         {
-                            App.Logger.WriteLine(LOG_IDENT_QS, $"Unexpected 400 response: {body}");
+                            Logger.Warn($"Unexpected 400 response: {body}");
                             await Dispatcher.UIThread.InvokeAsync(() => dialog.UpdateStatus("Error: unexpected response"));
                         }
                         return null;
@@ -209,7 +206,7 @@ namespace Froststrap.Integrations
                     }
                     catch (JsonReaderException)
                     {
-                        App.Logger.WriteLine(LOG_IDENT_QS, $"Status endpoint returned non‑JSON: {body}");
+                        Logger.Warn($"Status endpoint returned non‑JSON: {body}");
                         await Dispatcher.UIThread.InvokeAsync(() => dialog.UpdateStatus("Error: invalid response"));
                         return null;
                     }
@@ -223,12 +220,12 @@ namespace Froststrap.Integrations
                         if (errors is { Count: > 0 })
                         {
                             var errorMessage = errors[0]?["message"]?.Value<string>() ?? "Unknown error";
-                            App.Logger.WriteLine(LOG_IDENT_QS, $"API error: {errorMessage}");
+                            Logger.Warn($"API error: {errorMessage}");
                             await Dispatcher.UIThread.InvokeAsync(() => dialog.UpdateStatus($"Error: {errorMessage}"));
                             return null;
                         }
 
-                        App.Logger.WriteLine(LOG_IDENT_QS, $"Missing 'status' field in response: {body}");
+                        Logger.Warn($"Missing 'status' field in response: {body}");
                         await Dispatcher.UIThread.InvokeAsync(() => dialog.UpdateStatus("Error: unexpected status"));
                         return null;
                     }
@@ -260,7 +257,7 @@ namespace Froststrap.Integrations
 
                     if (DateTime.UtcNow > expirationTime)
                     {
-                        App.Logger.WriteLine(LOG_IDENT_QS, "Code timed out.");
+                        Logger.Info("Code timed out.");
                         await Dispatcher.UIThread.InvokeAsync(() => dialog.UpdateStatus("TimedOut"));
                         return null;
                     }
@@ -308,7 +305,7 @@ namespace Froststrap.Integrations
 
                 if (string.IsNullOrEmpty(robloSecurity))
                 {
-                    App.Logger.WriteLine(LOG_IDENT_QS, "No .ROBLOSECURITY cookie in response.");
+                    Logger.Warn("No .ROBLOSECURITY cookie in response.");
                     await Dispatcher.UIThread.InvokeAsync(() =>
                         dialog.UpdateStatus("Failed: no cookie received"));
                     return null;
@@ -317,6 +314,7 @@ namespace Froststrap.Integrations
                 var account = await GetAccountInfoFromCookie(robloSecurity);
                 if (account == null)
                 {
+                    Logger.Warn("Failed: invalid account");
                     await Dispatcher.UIThread.InvokeAsync(() =>
                         dialog.UpdateStatus("Failed: invalid account"));
                     return null;
@@ -331,7 +329,7 @@ namespace Froststrap.Integrations
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException(LOG_IDENT_QS, ex);
+                Logger.Error(ex);
                 await Dispatcher.UIThread.InvokeAsync(() =>
                     dialog.UpdateStatus($"Error: {ex.Message}"));
                 return null;
@@ -340,12 +338,11 @@ namespace Froststrap.Integrations
 
         public async Task<AccountManagerAccount?> AddAccountByBrowser()
         {
-            const string LOG_IDENT_BROWSER = $"{LOG_IDENT}::AddAccountByBrowser";
             var completionSource = new TaskCompletionSource<string?>(TaskCreationOptions.RunContinuationsAsynchronously);
 
             try
             {
-                App.Logger.WriteLine(LOG_IDENT_BROWSER, "Launching browser for account login...");
+                Logger.Info("Launching browser for account login...");
 
                 string? executablePath = GetSystemBrowserPath();
 
@@ -368,7 +365,7 @@ namespace Froststrap.Integrations
 
                     if (executablePath == null)
                     {
-                        App.Logger.WriteLine(LOG_IDENT_BROWSER, "No browser found, downloading Chromium...");
+                        Logger.Info("No browser found, downloading Chromium...");
                         var browserInfo = await fetcher.DownloadAsync();
                         executablePath = browserInfo.GetExecutablePath();
                     }
@@ -413,7 +410,7 @@ namespace Froststrap.Integrations
 
                             if (securityCookie != null)
                             {
-                                App.Logger.WriteLine(LOG_IDENT_BROWSER, "Successfully captured cookie.");
+                                Logger.Info("Successfully captured cookie.");
                                 completionSource.TrySetResult(securityCookie.Value);
                                 break;
                             }
@@ -425,7 +422,7 @@ namespace Froststrap.Integrations
 
                 try
                 {
-                    App.Logger.WriteLine(LOG_IDENT_BROWSER, "Navigating to Roblox...");
+                    Logger.Info("Navigating to Roblox...");
                     await mainPage.GoToAsync("https://www.roblox.com/login", new NavigationOptions
                     {
                         WaitUntil = [WaitUntilNavigation.Networkidle2]
@@ -433,7 +430,7 @@ namespace Froststrap.Integrations
                 }
                 catch (Exception ex)
                 {
-                    App.Logger.WriteLine(LOG_IDENT_BROWSER, $"Initial nav failed ({ex.Message}), trying JS fallback...");
+                    Logger.Error($"Initial nav failed ({ex.Message}), trying JS fallback...");
                     try
                     {
                         if (!mainPage.IsClosed)
@@ -451,12 +448,12 @@ namespace Froststrap.Integrations
                 }
                 else
                 {
-                    App.Logger.WriteLine(LOG_IDENT_BROWSER, "Login timed out after 10 minutes.");
+                    Logger.Info("Login timed out after 10 minutes.");
                 }
 
                 if (string.IsNullOrEmpty(newCookie))
                 {
-                    App.Logger.WriteLine(LOG_IDENT_BROWSER, "Account add process cancelled or failed.");
+                    Logger.Info("Account add process cancelled or failed.");
                     return null;
                 }
 
@@ -475,7 +472,7 @@ namespace Froststrap.Integrations
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException(LOG_IDENT_BROWSER, ex);
+                Logger.Error(ex);
                 return null;
             }
             finally
@@ -715,7 +712,7 @@ namespace Froststrap.Integrations
                 }
                 catch (HttpRequestException ex) when (ex.InnerException is System.Net.Sockets.SocketException || ex.Message.Contains("canceled"))
                 {
-                    App.Logger.WriteLine(LOG_IDENT_GET_INFO, "Network socket not ready or canceled. skipping info fetch.");
+                    Logger.Info("Network socket not ready or canceled. skipping info fetch.");
                     return null;
                 }
 
@@ -723,15 +720,13 @@ namespace Froststrap.Integrations
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException(LOG_IDENT_GET_INFO, ex);
+                Logger.Error(ex);
                 return null;
             }
         }
 
         public static async Task<UserPresence?> GetUserPresenceAsync(long userId)
         {
-            const string LOG_IDENT_PRESENCE = $"{LOG_IDENT}::GetUserPresence";
-
             try
             {
                 var requestData = new { userIds = new[] { userId } };
@@ -746,21 +741,19 @@ namespace Froststrap.Integrations
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException(LOG_IDENT_PRESENCE, ex);
+                Logger.Error(ex);
                 return null;
             }
         }
 
         public static async Task<bool?> ValidateAccountAsync(AccountManagerAccount account)
         {
-            const string LOG_IDENT_VALIDATE = $"{LOG_IDENT}::ValidateAccount";
-
             try
             {
                 string decryptedCookie = Unprotect(account.SecurityToken);
                 if (string.IsNullOrEmpty(decryptedCookie))
                 {
-                    App.Logger.WriteLine(LOG_IDENT_VALIDATE, $"Account {account.Username}: No valid cookie found");
+                    Logger.Info($"Account {account.Username}: No valid cookie found");
                     return false;
                 }
 
@@ -776,20 +769,18 @@ namespace Froststrap.Integrations
                     response.StatusCode == HttpStatusCode.Forbidden)
                     return false;
 
-                App.Logger.WriteLine(LOG_IDENT_VALIDATE, $"Account {account.Username}: Unexpected status {response.StatusCode}");
+                Logger.Info($"Account {account.Username}: Unexpected status {response.StatusCode}");
                 return null;
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException(LOG_IDENT_VALIDATE, ex);
+                Logger.Error(ex);
                 return null;
             }
         }
 
         public bool RemoveAccount(AccountManagerAccount account)
         {
-            const string LOG_IDENT_REMOVE = $"{LOG_IDENT}::RemoveAccount";
-
             try
             {
                 bool wasActive = (ActiveAccount?.UserId == account.UserId);
@@ -812,21 +803,20 @@ namespace Froststrap.Integrations
 
                     SaveAccounts();
 
-                    App.Logger.WriteLine(LOG_IDENT_REMOVE, $"Removed account {account.Username} ({account.UserId}).");
+                    Logger.Info($"Removed account {account.Username} ({account.UserId}).");
                     return true;
                 }
                 return false;
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException(LOG_IDENT_REMOVE, ex);
+                Logger.Error(ex);
                 return false;
             }
         }
 
         public async Task<Dictionary<long, string?>> GetAvatarUrlsBulkAsync(List<long> userIds)
         {
-            const string LOG_IDENT_AVATARS = $"{LOG_IDENT}::GetAvatarUrlsBulk";
             var result = new Dictionary<long, string?>();
             if (userIds == null || userIds.Count == 0) return result;
 
@@ -860,11 +850,11 @@ namespace Froststrap.Integrations
                 }
                 catch (OperationCanceledException)
                 {
-                    App.Logger.WriteLine(LOG_IDENT_AVATARS, "Avatar fetch was canceled by the system (SocketException 89).");
+                    Logger.Info("Avatar fetch was canceled by the system (SocketException 89).");
                 }
                 catch (Exception ex)
                 {
-                    App.Logger.WriteLine(LOG_IDENT_AVATARS, $"Batch failed: {ex.Message}");
+                    Logger.Error($"Batch failed: {ex.Message}");
                 }
             }
 
@@ -886,12 +876,10 @@ namespace Froststrap.Integrations
 
         public static bool WriteCookieFileForAccount(AccountManagerAccount account)
         {
-            const string LOG_IDENT = "AccountManager::WriteCookieFile";
-
             string plainCookie = account.SecurityToken;
             if (string.IsNullOrEmpty(plainCookie))
             {
-                App.Logger.WriteLine(LOG_IDENT, "Account has no valid cookie.");
+                Logger.Info("Account has no valid cookie.");
                 return false;
             }
 
@@ -913,13 +901,13 @@ namespace Froststrap.Integrations
                 }
                 else
                 {
-                    App.Logger.WriteLine(LOG_IDENT, "Unsupported OS.");
+                    Logger.Info("Unsupported OS.");
                     return false;
                 }
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException(LOG_IDENT, ex);
+                Logger.Error(ex);
                 return false;
             }
         }
