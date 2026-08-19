@@ -14,7 +14,7 @@ namespace Froststrap.UI
     {
         public static async Task<MessageBoxResult> ShowMessageBox(string message, MessageBoxImage icon = MessageBoxImage.Information, MessageBoxButton buttons = MessageBoxButton.OK, MessageBoxResult defaultResult = MessageBoxResult.None)
         {
-            App.Logger.WriteLine("Frontend::ShowMessageBox", message);
+            App.Logger.Info(message);
 
             if (App.LaunchSettings.QuietFlag.Active)
                 return defaultResult;
@@ -98,8 +98,6 @@ namespace Froststrap.UI
 
         private static async Task<IBootstrapperDialog> GetCustomBootstrapper()
         {
-            const string LOG_IDENT = "Frontend::GetCustomBootstrapper";
-
             Directory.CreateDirectory(Paths.CustomThemes);
 
             try
@@ -113,7 +111,7 @@ namespace Froststrap.UI
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException(LOG_IDENT, ex);
+                App.Logger.Error("Unhandled exception", ex);
 
                 if (!App.LaunchSettings.QuietFlag.Active)
                     await ShowMessageBox($"Failed to setup custom bootstrapper: {ex.Message}.\nDefaulting to Fluent.", MessageBoxImage.Error);
