@@ -99,11 +99,12 @@ namespace Froststrap.UI.Elements.ContextMenu
 
                         GameHistoryMenuItem?.SetValue(MenuItem.IsVisibleProperty, App.Settings.Prop.ShowGameHistoryMenu);
 
-                        SoftkeyMenuItem?.IsVisible = App.Settings.Prop.SoftKeyEnabled && _watcher?.Softkey != null;
+                        SoftkeyMenuItem?.IsVisible = App.Settings.Prop.SoftKeyEnabled && _watcher?.Softkey != null && OperatingSystem.IsWindows();
                         SoftkeyMenuItem?.IsChecked = true;
                     }
 
-                    if (RichPresenceMenuItem != null)
+                    //TODO: Fix Discord RPC on MACOS so we can remove the check here
+                    if (RichPresenceMenuItem != null && !OperatingSystem.IsMacOS())
                     {
                         RichPresenceMenuItem.IsVisible = (_watcher?.PlayerRichPresence is not null || _watcher?.StudioRichPresence is not null);
 
@@ -167,7 +168,6 @@ namespace Froststrap.UI.Elements.ContextMenu
                 InviteDeeplinkMenuItem?.SetValue(MenuItem.IsVisibleProperty, false);
                 ServerDetailsMenuItem?.SetValue(MenuItem.IsVisibleProperty, false);
                 AutoJoinRegionMenuItem?.SetValue(MenuItem.IsVisibleProperty, false);
-                _serverInformationWindow?.Close();
             });
 
         private void ActivityWatcher_OnStudioPlaceOpened(object? sender, EventArgs e) => _studioPlaceJoinTime = DateTime.Now;

@@ -1299,6 +1299,7 @@ namespace Froststrap
 
             SetStatus(Strings.Bootstrapper_Status_StartingSober);
 
+            Utilities.KillSober();
             App.Logger.Debug($"Launching Sober via flatpak with args: {_launchCommandLine}");
 
             var startInfo = new ProcessStartInfo
@@ -3756,7 +3757,7 @@ exit";
                     var package = _versionPackageManifest.Find(x => x.Name == entry.Key);
                     if (package is not null)
                     {
-                        await DownloadPackage(package);
+                        await DownloadPackage(package, updateProgress: false);
                         await ExtractPackage(package, entry.Value);
                     }
                 }
@@ -3923,7 +3924,7 @@ exit";
                 : "/mac";
         }
 
-        private async Task DownloadPackage(Package package)
+        private async Task DownloadPackage(Package package, bool updateProgress = true)
         {
             if (_cancelTokenSource.IsCancellationRequested)
                 return;
@@ -3948,8 +3949,11 @@ exit";
                 else
                 {
                     App.Logger.Info("Package is already downloaded, skipping...");
-                    Interlocked.Add(ref _totalDownloadedBytes, package.PackedSize);
-                    UpdateProgressBar();
+                    if (updateProgress)
+                    {
+                        Interlocked.Add(ref _totalDownloadedBytes, package.PackedSize);
+                        UpdateProgressBar();
+                    }
                     return;
                 }
             }
@@ -3960,10 +3964,11 @@ exit";
 
                 App.Logger.Info($"Found existing copy at '{robloxPackageLocation}'! Copying to Downloads folder...");
                 File.Copy(robloxPackageLocation, package.DownloadPath);
-
-                _totalDownloadedBytes += package.PackedSize;
-                UpdateProgressBar();
-
+                if (updateProgress)
+                {
+                    _totalDownloadedBytes += package.PackedSize;
+                    UpdateProgressBar();
+                }
                 return;
             }
 
