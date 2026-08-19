@@ -5,13 +5,13 @@ using Avalonia.Controls;
 using Avalonia.Controls.Notifications;
 using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Media;
+using Avalonia.Input;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using FluentAvalonia.UI.Controls;
 using Froststrap.UI.Elements.Controls;
 using Froststrap.UI.Utility;
 using Froststrap.UI.ViewModels.Settings;
-using Froststrap.UI.ViewModels.Settings.Mods;
 using LucideAvalonia;
 using LucideAvalonia.Enum;
 using System.ComponentModel;
@@ -105,6 +105,20 @@ namespace Froststrap.UI.Elements.Settings
                 Position = NotificationPosition.TopRight,
                 MaxItems = 3
             };
+        }
+
+        private void TitleBarGrid_PointerPressed(object sender, PointerPressedEventArgs e)
+        {
+            if (!e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
+                return;
+
+            if (e.Source is Visual hit)
+            {
+                if (hit.FindAncestorOfType<SearchBar>() != null)
+                    return;
+            }
+
+            this.BeginMoveDrag(e);
         }
 
         private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
