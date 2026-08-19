@@ -14,9 +14,7 @@
 
         public static void DoCleaning()
         {
-            const string LOG_IDENT = "Cleaner::DoCleaning";
-
-            App.Logger.WriteLine(LOG_IDENT, "Cleaner has started");
+            App.Logger.Debug("Cleaner has started");
 
             var maxFileAge = App.Settings.Prop.CleanerOptions switch
             {
@@ -39,7 +37,7 @@
 
                 if (!App.Settings.Prop.CleanerDirectories.Contains(type))
                 {
-                    App.Logger.WriteLine(LOG_IDENT, $"Skipping {type}");
+                    App.Logger.Info($"Skipping {type}");
                     continue;
                 }
 
@@ -50,7 +48,7 @@
                 {
                     string[] files = RecursivlyGetFiles(folder);
 
-                    App.Logger.WriteLine(LOG_IDENT, $"Running cleaner in {type}, {files.Length} files found");
+                    App.Logger.Info($"Running cleaner in {type}, {files.Length} files found");
 
                     foreach (string file in files)
                     {
@@ -59,7 +57,7 @@
 
                         if (deletedItems >= MaxFiles)
                         {
-                            App.Logger.WriteLine(LOG_IDENT, $"Reached file threshold in {type}, continuing to next directory");
+                            App.Logger.Info($"Reached file threshold in {type}, continuing to next directory");
                             break;
                         }
 
@@ -70,19 +68,17 @@
                         }
                         catch (Exception ex)
                         {
-                            App.Logger.WriteLine(LOG_IDENT, $"Unable to delete {file}");
-                            App.Logger.WriteException(LOG_IDENT, ex);
+                            App.Logger.Error($"Unable to delete {file}: {ex}");
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    App.Logger.WriteLine(LOG_IDENT, $"Failed to clean up {folder}");
-                    App.Logger.WriteException(LOG_IDENT, ex);
+                    App.Logger.Error($"Failed to clean up {folder}: {ex}");
                 }
             }
 
-            App.Logger.WriteLine(LOG_IDENT, "Cleaner finished");
+            App.Logger.Info("Cleaner finished");
         }
 
         private static bool VerifyFile(string file, DateTime threshold)
