@@ -19,8 +19,6 @@ namespace Froststrap.Integrations
 {
     public static class ModGenerator
     {
-        private const string LOG_IDENT = "ModGenerator";
-
         private const string ModGeneratorVersionApiUrl = "https://api.github.com/repos/Froststrap/mod-generator/releases/latest";
         private static string ModGeneratorVersionCacheFile => Path.Combine(Paths.Cache, "ModGeneratorVersion.json");
 
@@ -114,7 +112,7 @@ namespace Froststrap.Integrations
                 }
             }
 
-            App.Logger.WriteLine(LOG_IDENT, $"Downloading mod-generator (cached: {cachedVersion})...");
+            App.Logger.Info($"Downloading mod-generator (cached: {cachedVersion})...");
             await DownloadModGeneratorInternalAsync();
             return exePath;
         }
@@ -156,7 +154,7 @@ namespace Froststrap.Integrations
             }
 
             CacheModGeneratorVersion(release.TagName);
-            App.Logger.WriteLine(LOG_IDENT, $"mod-generator updated to version {release.TagName}");
+            App.Logger.Info($"mod-generator updated to version {release.TagName}");
         }
 
         public static void RecolorAllPngs(
@@ -217,19 +215,19 @@ namespace Froststrap.Integrations
             string? customLogoPath,
             string? customSpinnerPath)
         {
-            App.Logger.WriteLine(LOG_IDENT, $"Parsing image set data: {getImageSetDataPath}");
+            App.Logger.Info($"Parsing image set data: {getImageSetDataPath}");
 
             var spriteData = LuaImageSetParser.Parse(getImageSetDataPath);
             if (spriteData.Count == 0)
             {
-                App.Logger.WriteLine(LOG_IDENT, "No sprite sheets found from Lua file.");
+                App.Logger.Warn("No sprite sheets found from Lua file.");
                 return;
             }
-            App.Logger.WriteLine(LOG_IDENT, $"Found {spriteData.Count} sprite sheets.");
+            App.Logger.Info($"Found {spriteData.Count} sprite sheets.");
 
             foreach (var (sheetPath, sprites) in spriteData)
             {
-                App.Logger.WriteLine(LOG_IDENT, $"Processing sheet: {sheetPath} with {sprites.Count} sprites");
+                App.Logger.Info($"Processing sheet: {sheetPath} with {sprites.Count} sprites");
                 if (!File.Exists(sheetPath)) continue;
 
                 using var sheet = Image.Load<Rgba32>(sheetPath);
@@ -264,7 +262,7 @@ namespace Froststrap.Integrations
                     string tempPath = sheetPath + ".tmp";
                     sheet.SaveAsPng(tempPath);
                     ReplaceFileWithRetry(sheetPath, tempPath);
-                    App.Logger.WriteLine(LOG_IDENT, $"Recolored sprite sheet: {sheetPath}");
+                    App.Logger.Info($"Recolored sprite sheet: {sheetPath}");
                 }
             }
         }
@@ -416,7 +414,7 @@ namespace Froststrap.Integrations
         {
             public static Dictionary<string, List<SpriteDef>> Parse(string luaPath)
             {
-                App.Logger.WriteLine(LOG_IDENT, $"Parsing Lua file: {luaPath}");
+                App.Logger.Info($"Parsing Lua file: {luaPath}");
                 string text = File.ReadAllText(luaPath);
                 var result = new Dictionary<string, List<SpriteDef>>();
 
@@ -439,7 +437,7 @@ namespace Froststrap.Integrations
                     string tableContent = text.Substring(braceStart + 1, braceEnd - braceStart - 1);
 
                     var matches = entryRegex.Matches(tableContent);
-                    App.Logger.WriteLine(LOG_IDENT, $"Found {matches.Count} entries in {tableName}");
+                    App.Logger.Info($"Found {matches.Count} entries in {tableName}");
                     totalMatches += matches.Count;
 
                     foreach (Match match in matches)
@@ -461,9 +459,9 @@ namespace Froststrap.Integrations
                     }
                 }
 
-                App.Logger.WriteLine(LOG_IDENT, $"Total sprite definitions: {totalMatches}, across {result.Count} sheets");
+                App.Logger.Info($"Total sprite definitions: {totalMatches}, across {result.Count} sheets");
                 if (totalMatches == 0)
-                    App.Logger.WriteLine(LOG_IDENT, "WARNING: No sprites matched. Check the Lua file format.");
+                    App.Logger.Warn("No sprites matched. Check the Lua file format.");
 
                 return result;
             }
@@ -495,7 +493,7 @@ namespace Froststrap.Integrations
             if (bands.HasValue && bands.Value > 0) args += $" --bands {bands.Value}";
             if (!string.IsNullOrEmpty(skipGlyphs)) args += $" --skip-glyphs \"{skipGlyphs}\"";
 
-            App.Logger.WriteLine("RecolorFontsAsync", $"Recolor Args: {args}");
+            App.Logger.Info("RecolorFontsAsync", $"Recolor Args: {args}");
             await ExecuteExeAsync(exePath, args, Path.GetDirectoryName(exePath)!);
         }
 
