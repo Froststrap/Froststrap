@@ -5,8 +5,6 @@ namespace Froststrap
     {
         public override string ClassName => nameof(RemoteDataManager);
 
-        public override string LOG_IDENT_CLASS => ClassName;
-
         public override string FileLocation => Path.Combine(Paths.Base, "Data.json");
 
         public GenericTriState LoadedState = GenericTriState.Unknown;
@@ -48,10 +46,9 @@ namespace Froststrap
         // remember that our data isnt necessary, we can fetch it in the background 
         public async Task LoadData()
         {
-            const string LOG_IDENT = $"{nameof(RemoteDataManager)}::LoadData";
             if (App.Settings.Prop.ForceLocalData || App.LaunchSettings.WatcherFlag.Active)
             {
-                App.Logger.WriteLine(LOG_IDENT, "Force loading local data");
+                App.Logger.Info("Force loading local data");
                 this.Load(false);
 
                 LoadedState = GenericTriState.Successful; // we treat it as successful to simulate the production data
@@ -63,14 +60,12 @@ namespace Froststrap
                     Prop = await Http.GetJson<RemoteDataBase>(remoteDataUri);
 
                     LoadedState = GenericTriState.Successful;
-                    App.Logger.WriteLine(LOG_IDENT, "Remote data loaded");
+                    App.Logger.Info("Remote data loaded");
                 }
                 catch (Exception ex)
                 {
-                    App.Logger.WriteLine(LOG_IDENT, "Could not load remote data");
-                    App.Logger.WriteException(LOG_IDENT, ex);
-
-                    App.Logger.WriteLine(LOG_IDENT, "Loading local data");
+                    App.Logger.Error($"Could not load remote data: {ex}");
+                    App.Logger.Info("Loading local data instead");
                     this.Load(false);
 
                     LoadedState = GenericTriState.Failed;
@@ -81,7 +76,7 @@ namespace Froststrap
             if (LoadedState == GenericTriState.Successful)
                 this.Save();
 
-            App.Logger.WriteLine(LOG_IDENT, $"Loading finished with status: {LoadedState}");
+            App.Logger.Info($"Loading finished with status: {LoadedState}");
         }
     }
 }
