@@ -382,7 +382,6 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private static void BlockState(string targetPath, bool block)
         {
-            const string LOG_IDENT = "Watcher::SetBlockState";
             string backupPath = targetPath + " (Before Blocking)";
 
             try

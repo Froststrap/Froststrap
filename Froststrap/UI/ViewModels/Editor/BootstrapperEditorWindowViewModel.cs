@@ -49,7 +49,6 @@ namespace Froststrap.UI.ViewModels.Editor
 
         private void Save()
         {
-            const string LOG_IDENT = "BootstrapperEditorWindowViewModel::Save";
             string path = Path.Combine(Directory, "Theme.xml");
 
             try
