@@ -9,7 +9,7 @@ namespace Froststrap;
 sealed class Program
 {
     /// Here for arg parser, helpful to also know all
-    /// possible arguments withing Froststrap.
+    /// possible arguments within Froststrap.
     public class Options
     {
         [Option('c', "console", HelpText = "Attaches a console window for debugging.")]
