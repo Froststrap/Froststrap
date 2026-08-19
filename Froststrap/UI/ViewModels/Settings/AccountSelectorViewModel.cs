@@ -5,13 +5,11 @@ using CommunityToolkit.Mvvm.Input;
 using Froststrap.Integrations;
 using Froststrap.UI.Elements.Dialogs;
 using System.Collections.ObjectModel;
-using System.Security.Principal;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
     public partial class AccountSelectorViewModel : NotifyPropertyChangedViewModel, IDisposable
     {
-        private const string LOG_IDENT = "AccountSelectorViewModel";
         private readonly AccountManager _accountManager = null!;
         private readonly Dictionary<long, string?> _accountAvatarUrls = [];
 
@@ -138,7 +136,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 }
                 catch (Exception ex)
                 {
-                    App.Logger.WriteLine($"{LOG_IDENT}::Init", $"Safe catch: {ex.Message}");
+                    App.Logger.Error($"Safe catch: {ex.Message}");
                 }
             });
         }
@@ -149,11 +147,11 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 await LoadDataAsync();
                 await ValidateAndRemoveInvalidAccountsAsync();
-                App.Logger.WriteLine($"{LOG_IDENT}::InitializeDataAsync", "Initialised");
+                App.Logger.Info("Initialised");
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine($"{LOG_IDENT}::InitializeDataAsync", $"Exception: {ex.Message}");
+                App.Logger.Error($"Exception: {ex.Message}");
             }
         }
 
@@ -167,13 +165,13 @@ namespace Froststrap.UI.ViewModels.Settings
                 if (isValid == false)
                     invalidAccounts.Add(account);
                 else if (isValid == null)
-                    App.Logger.WriteLine(LOG_IDENT, $"Could not validate account {account.Username} (network/server issue) – keeping it.");
+                    App.Logger.Warn($"Could not validate account {account.Username} (network/server issue) – keeping it.");
             }
 
             foreach (var account in invalidAccounts)
             {
                 _accountManager.RemoveAccount(account);
-                App.Logger.WriteLine(LOG_IDENT, $"Removed expired/invalid account: {account.Username}");
+                App.Logger.Info($"Removed expired/invalid account: {account.Username}");
 
                 await Dispatcher.UIThread.InvokeAsync(() =>
                     Frontend.ShowMessageBox(string.Format(Strings.Menu_AccountSelector_AccountRemoved, account.Username)));
@@ -217,7 +215,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine(LOG_IDENT, $"Failed to load account data: {ex.Message}");
+                App.Logger.Error($"Failed to load account data: {ex.Message}");
             }
         }
 
@@ -274,7 +272,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine(LOG_IDENT, $"Failed to refresh presence: {ex.Message}");
+                App.Logger.Error($"Failed to refresh presence: {ex.Message}");
             }
         }
 
@@ -346,7 +344,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine(LOG_IDENT, $"Error adding account: {ex.Message}");
+                App.Logger.Error($"Error adding account: {ex.Message}");
             }
             finally
             {
@@ -369,8 +367,6 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private static async Task<AccountManagerAccount?> ImportFromCookieManager()
         {
-            const string LOG_IDENT = "ImportFromCookieManager";
-
             var cookieManager = new CookiesManager();
 
             await cookieManager.LoadCookies();
@@ -392,14 +388,14 @@ namespace Froststrap.UI.ViewModels.Settings
             var authUser = await cookieManager.GetAuthenticated();
             if (authUser == null || authUser.Id == 0)
             {
-                App.Logger.WriteLine(LOG_IDENT, "Failed to get authenticated user from cookie.");
+                App.Logger.Error("Failed to get authenticated user from cookie.");
                 return null;
             }
 
             string cookieValue = cookieManager.GetAuthCookie();
             if (string.IsNullOrEmpty(cookieValue))
             {
-                App.Logger.WriteLine(LOG_IDENT, "Auth cookie is empty.");
+                App.Logger.Warn("Auth cookie is empty.");
                 return null;
             }
 
@@ -428,7 +424,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine(LOG_IDENT, $"Failed to fetch avatar for {account.UserId}: {ex.Message}");
+                App.Logger.Error($"Failed to fetch avatar for {account.UserId}: {ex.Message}");
             }
 
             if (Accounts.All(a => a.UserId != account.UserId))
