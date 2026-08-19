@@ -24,38 +24,13 @@
     WindowStartupLocation="CenterScreen">
 
     <Grid RowDefinitions="48,*,56">
-        <Grid Grid.Row="0" Background="{DynamicResource ControlFillColorDefaultBrush}">
-            <Grid ColumnDefinitions="Auto,*,Auto">
-                <StackPanel Grid.Column="0"
-                            Orientation="Horizontal"
-                            Spacing="4"
-                            Margin="8,0,0,0"
-                            VerticalAlignment="Center">
-                    <controls:IconButton
-                        Background="Transparent"
-                        BorderBrush="Transparent"
-                        IconSize="14"
-                        Classes="TitleBarNavButton"
-                        Icon="ArrowLeft"
-                        Command="{Binding BackCommand}"
-                        IsEnabled="{Binding BackCommand.CanExecute}" />
-                    <controls:IconButton
-                        Background="Transparent"
-                        BorderBrush="Transparent"
-                        IconSize="16"
-                        Classes="TitleBarNavButton"
-                        Icon="ArrowRight"
-                        Command="{Binding ForwardCommand}"
-                        IsEnabled="{Binding ForwardCommand.CanExecute}" />
-                </StackPanel>
-
-                <elements:SearchBar
-                    Grid.Column="1"
-                    Width="400"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    DataContext="{Binding SearchBar}" />
-            </Grid>
+        <Grid Grid.Row="0" Background="{DynamicResource ControlFillColorDefaultBrush}" PointerPressed="TitleBarGrid_PointerPressed">
+            <elements:SearchBar
+                Grid.Column="1"
+                Width="400"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                DataContext="{Binding SearchBar}" />
         </Grid>
 
         <ui:FANavigationView

@@ -18,7 +18,7 @@ namespace Froststrap.UI.Elements.Base
         public AvaloniaWindow()
         {
             WindowDecorations = WindowDecorations.Full;
-            ExtendClientAreaToDecorationsHint = false;
+            ExtendClientAreaToDecorationsHint = true;
 
             TextOptions.SetTextRenderingMode(this, TextRenderingMode.Antialias);
             ApplyTheme();
@@ -161,18 +161,17 @@ namespace Froststrap.UI.Elements.Base
                 {
                     window.TransparencyLevelHint = selectedBackdrop switch
                     {
-                        Enums.WindowsBackdrops.Mica    => new[] { WindowTransparencyLevel.Mica, WindowTransparencyLevel.AcrylicBlur, WindowTransparencyLevel.Blur, WindowTransparencyLevel.None },
-                        Enums.WindowsBackdrops.Acrylic => new[] { WindowTransparencyLevel.AcrylicBlur, WindowTransparencyLevel.Blur, WindowTransparencyLevel.None },
-                        Enums.WindowsBackdrops.Aero    => new[] { WindowTransparencyLevel.Blur, WindowTransparencyLevel.None },
-                        _                              => new[] { WindowTransparencyLevel.None }
+                        Enums.WindowsBackdrops.Mica => [WindowTransparencyLevel.Mica, WindowTransparencyLevel.AcrylicBlur, WindowTransparencyLevel.Blur, WindowTransparencyLevel.None],
+                        Enums.WindowsBackdrops.Acrylic => [WindowTransparencyLevel.AcrylicBlur, WindowTransparencyLevel.Blur, WindowTransparencyLevel.None],
+                        Enums.WindowsBackdrops.Aero => [WindowTransparencyLevel.Blur, WindowTransparencyLevel.None],
+                        _ => [WindowTransparencyLevel.None]
                     };
 
                     window.Background = Brushes.Transparent;
                 }
                 else
                 {
-                    // Linux/macOS: force opaque for stability
-                    window.TransparencyLevelHint = new[] { WindowTransparencyLevel.None };
+                    window.TransparencyLevelHint = [WindowTransparencyLevel.None];
                     window.Opacity = 1.0;
                     window.Background = _currentBackgroundBrush ?? new SolidColorBrush(Color.Parse("#202020"));
                 }
@@ -182,9 +181,6 @@ namespace Froststrap.UI.Elements.Base
         protected override void OnOpened(EventArgs e)
         {
             base.OnOpened(e);
-
-            WindowDecorations = WindowDecorations.Full;
-            ExtendClientAreaToDecorationsHint = false;
 
             ApplyWindowBackground();
             UpdateBackdropForAllWindows();
