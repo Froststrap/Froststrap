@@ -400,7 +400,6 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private static void BlockState(string targetPath, bool block)
         {
-            const string LOG_IDENT = "Watcher::SetBlockState";
             string backupPath = targetPath + " (Before Blocking)";
 
             try
@@ -439,7 +438,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException(LOG_IDENT, ex);
+                App.Logger.Error("Unhandled exception: ", ex);
             }
         }
     }

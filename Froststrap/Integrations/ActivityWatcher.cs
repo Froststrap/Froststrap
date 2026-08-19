@@ -86,14 +86,12 @@ namespace Froststrap.Integrations
 
         public static void CloseProcess(int pid)
         {
-            const string LOG_IDENT = "Watcher::CloseProcess";
-
             try
             {
                 using var process = Process.GetProcessById(pid);
                 if (process.HasExited)
                 {
-                    App.Logger.WriteLine(LOG_IDENT, $"PID {pid} has already exited");
+                    App.Logger.Info($"PID {pid} has already exited");
                     return;
                 }
 
@@ -101,8 +99,7 @@ namespace Froststrap.Integrations
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine(LOG_IDENT, $"PID {pid} could not be closed");
-                App.Logger.WriteException(LOG_IDENT, ex);
+                App.Logger.Error($"PID {pid} could not be closed {ex}");
             }
         }
 
@@ -125,8 +122,6 @@ namespace Froststrap.Integrations
 
         public async void Start()
         {
-            const string LOG_IDENT = "ActivityWatcher::Start";
-
             // okay, here's the process:
             //
             // - tail the latest log file from %localappdata%\roblox\logs
@@ -151,7 +146,7 @@ namespace Froststrap.Integrations
                 // if roblox doesn't start quickly enough, we can wind up fetching the previous log file
                 // good rule of thumb is to find a log file that was created in the last 15 seconds or so
 
-                App.Logger.WriteLine(LOG_IDENT, "Opening Roblox log file...");
+                App.Logger.Info("Opening Roblox log file...");
 
                 string logNameFilter = (InRobloxStudio || _launchMode == LaunchMode.Studio || _launchMode == LaunchMode.StudioAuth)
                     ? "Studio"
@@ -167,7 +162,7 @@ namespace Froststrap.Integrations
 
                     if (candidates.Count == 0)
                     {
-                        App.Logger.WriteLine(LOG_IDENT, $"No '{logNameFilter}' log files found, waiting...");
+                        App.Logger.Info($"No '{logNameFilter}' log files found, waiting...");
                         await Task.Delay(1000);
                         continue;
                     }
@@ -177,7 +172,7 @@ namespace Froststrap.Integrations
                     if (logFileInfo.CreationTime.AddSeconds(15) > DateTime.Now)
                         break;
 
-                    App.Logger.WriteLine(LOG_IDENT, $"Could not find recent enough log file, waiting... (newest is {logFileInfo.Name})");
+                    App.Logger.Info($"Could not find recent enough log file, waiting... (newest is {logFileInfo.Name})");
                     await Task.Delay(1000);
                 }
 
@@ -192,7 +187,7 @@ namespace Froststrap.Integrations
 
             var logFileStream = logFileInfo.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
 
-            App.Logger.WriteLine(LOG_IDENT, $"Opened {LogLocation}");
+            App.Logger.Info($"Opened {LogLocation}");
 
             using var streamReader = new StreamReader(logFileStream);
 
@@ -209,8 +204,6 @@ namespace Froststrap.Integrations
 
         private void ReadLogEntry(string entry)
         {
-            const string LOG_IDENT = "ActivityWatcher::ReadLogEntry";
-
             OnLogEntry?.Invoke(this, entry);
 
             _logEntriesRead += 1;
@@ -218,9 +211,9 @@ namespace Froststrap.Integrations
             // debug stats to ensure that the log reader is working correctly
             // if more than 1000 log entries have been read, only log per 100 to save on spam
             if (_logEntriesRead <= 1000 && _logEntriesRead % 50 == 0)
-                App.Logger.WriteLine(LOG_IDENT, $"Read {_logEntriesRead} log entries");
+                App.Logger.Info($"Read {_logEntriesRead} log entries");
             else if (_logEntriesRead % 100 == 0)
-                App.Logger.WriteLine(LOG_IDENT, $"Read {_logEntriesRead} log entries");
+                App.Logger.Info($"Read {_logEntriesRead} log entries");
 
             string? logMessage = ExtractLogMessage(entry);
             if (string.IsNullOrEmpty(logMessage))
@@ -264,8 +257,6 @@ namespace Froststrap.Integrations
 
         private void ProcessStudioLogEntry(string logMessage)
         {
-            const string LOG_IDENT = "ActivityWatcher::ProcessStudioLogEntry";
-
             // incase this got called and InRobloxStudio is still false
             if (!InRobloxStudio)
             {
@@ -277,7 +268,7 @@ namespace Froststrap.Integrations
             {
                 if (logMessage.StartsWith(StudioPlaceOpenEntry))
                 {
-                    App.Logger.WriteLine(LOG_IDENT, "Studio place opened");
+                    App.Logger.Info("Studio place opened");
                     InStudioPlace = true;
 
                     OnStudioPlaceOpened?.Invoke(this, EventArgs.Empty);
@@ -287,7 +278,7 @@ namespace Froststrap.Integrations
             {
                 if (logMessage.StartsWith(StudioPlaceCloseEntry))
                 {
-                    App.Logger.WriteLine(LOG_IDENT, "Studio place closed");
+                    App.Logger.Info("Studio place closed");
                     InStudioPlace = false;
 
                     OnStudioPlaceClosed?.Invoke(this, EventArgs.Empty);
@@ -297,17 +288,15 @@ namespace Froststrap.Integrations
 
         private async void ProcessPlayerLogEntry(string logMessage)
         {
-            const string LOG_IDENT = "ActivityWatcher::ProcessPlayerLogEntry";
-
             if (logMessage.StartsWith(GameLeavingEntry) || logMessage.StartsWith(GameLeavingEntrySober) || logMessage.StartsWith(AppCloseEntrySober))
             {
-                App.Logger.WriteLine(LOG_IDENT, "User is back into the desktop app");
+                App.Logger.Debug("User is back into the desktop app");
 
                 OnAppClose?.Invoke(this, EventArgs.Empty);
 
                 if (Data.PlaceId != 0 && !InGame)
                 {
-                    App.Logger.WriteLine(LOG_IDENT, "User appears to be leaving from a cancelled/errored join");
+                    App.Logger.Debug("User appears to be leaving from a cancelled/errored join");
                     Data = new();
                 }
 
@@ -324,16 +313,16 @@ namespace Froststrap.Integrations
                     if (reasonCode == 1)
                     {
                         _shouldAutoRejoin = true;
-                        App.Logger.WriteLine(LOG_IDENT, $"Inactivity timeout detected (reason code: {reasonCode})");
+                        App.Logger.Info($"Inactivity timeout detected (reason code: {reasonCode})");
                     }
                     if (reasonCode == 277)
                     {
                         _shouldAutoRejoin = true;
-                        App.Logger.WriteLine(LOG_IDENT, $"Internet Disconnection detected (reason code: {reasonCode})");
+                        App.Logger.Info($"Internet Disconnection detected (reason code: {reasonCode})");
                     }
                     else
                     {
-                        App.Logger.WriteLine(LOG_IDENT, $"Disconnect reason code: {reasonCode}");
+                        App.Logger.Info($"Disconnect reason code: {reasonCode}");
                     }
                 }
             }
@@ -348,8 +337,7 @@ namespace Froststrap.Integrations
 
                     if (match.Groups.Count != 4)
                     {
-                        App.Logger.WriteLine(LOG_IDENT, $"Failed to assert format for game join entry");
-                        App.Logger.WriteLine(LOG_IDENT, logMessage);
+                        App.Logger.Error($"Failed to assert format for game join entry {logMessage}");
                         return;
                     }
 
@@ -370,7 +358,7 @@ namespace Froststrap.Integrations
                         _reservedTeleportMarker = false;
                     }
 
-                    App.Logger.WriteLine(LOG_IDENT, $"Joining Game ({Data})");
+                    App.Logger.Info($"Joining Game ({Data})");
                 }
                 else if (logMessage.StartsWith(GameLaunchEventEntry))
                 {
@@ -388,7 +376,7 @@ namespace Froststrap.Integrations
                                 {
                                     Data.AccessCode = accessCode;
                                     Data.ServerType = ServerType.Private;
-                                    App.Logger.WriteLine(LOG_IDENT, $"Captured private server access code: {accessCode}");
+                                    App.Logger.Info($"Captured private server access code: {accessCode}");
                                 }
                             }
                         }
@@ -416,8 +404,7 @@ namespace Froststrap.Integrations
 
                     if (Data.UniverseId == 0)
                     {
-                        App.Logger.WriteLine(LOG_IDENT, "Failed to extract UniverseId from game join entry");
-                        App.Logger.WriteLine(LOG_IDENT, logMessage);
+                        App.Logger.Error($"Failed to extract UniverseId from game join entry. {logMessage}");
                         return;
                     }
 
@@ -447,8 +434,7 @@ namespace Froststrap.Integrations
 
                     if (!match.Success || match.Groups.Count != 3)
                     {
-                        App.Logger.WriteLine(LOG_IDENT, "Failed to parse UDMUX entry (regex mismatch)");
-                        App.Logger.WriteLine(LOG_IDENT, logMessage);
+                        App.Logger.Error($"Failed to parse UDMUX entry (regex mismatch). {logMessage}");
                         return;
                     }
 
@@ -456,11 +442,11 @@ namespace Froststrap.Integrations
 
                     if (string.IsNullOrEmpty(Data.MachineAddress) || Data.MachineAddress != rccAddress)
                     {
-                        App.Logger.WriteLine(LOG_IDENT, $"Updating MachineAddress from {Data.MachineAddress} to {rccAddress}");
+                        App.Logger.Info($"Updating MachineAddress from {Data.MachineAddress} to {rccAddress}");
                         Data.MachineAddress = rccAddress;
                     }
 
-                    App.Logger.WriteLine(LOG_IDENT, $"Server is UDMUX protected ({Data})");
+                    App.Logger.Info($"Server is UDMUX protected ({Data})");
                 }
                 else if (logMessage.StartsWith(GameJoinedEntry))
                 {
@@ -474,19 +460,18 @@ namespace Froststrap.Integrations
                         string serverAddress = match.Groups[1].Value;
                         if (!string.IsNullOrEmpty(serverAddress) && serverAddress != Data.MachineAddress)
                         {
-                            App.Logger.WriteLine(LOG_IDENT, $"Updating MachineAddress from {Data.MachineAddress} to {serverAddress}");
+                            App.Logger.Info($"Updating MachineAddress from {Data.MachineAddress} to {serverAddress}");
                             Data.MachineAddress = serverAddress;
                         }
 
-                        App.Logger.WriteLine(LOG_IDENT, $"Joined Game ({Data})");
+                        App.Logger.Info($"Joined Game ({Data})");
                         InGame = true;
                         Data.TimeJoined = DateTime.Now;
                         OnGameJoin?.Invoke(this, EventArgs.Empty);
                     }
                     else
                     {
-                        App.Logger.WriteLine(LOG_IDENT, $"Failed to assert format for game joined entry");
-                        App.Logger.WriteLine(LOG_IDENT, logMessage);
+                        App.Logger.Error($"Failed to assert format for game joined entry {logMessage}");
                     }
                 }
             }
@@ -496,7 +481,7 @@ namespace Froststrap.Integrations
 
                 if (logMessage.StartsWith(GameDisconnectedEntry))
                 {
-                    App.Logger.WriteLine(LOG_IDENT, $"Disconnected from Game ({Data})");
+                    App.Logger.Info($"Disconnected from Game ({Data})");
 
                     InGame = false;
                     Data.TimeLeft = DateTime.Now;
@@ -519,7 +504,7 @@ namespace Froststrap.Integrations
                         }
                         else
                         {
-                            App.Logger.WriteLine(LOG_IDENT, "No inactivity detected within 3 seconds, skipping auto-rejoin");
+                            App.Logger.Warn("No inactivity detected within 3 seconds, skipping auto-rejoin");
                         }
                     }
 
@@ -527,23 +512,23 @@ namespace Froststrap.Integrations
                 }
                 else if (logMessage.StartsWith(GameTeleportingEntry))
                 {
-                    App.Logger.WriteLine(LOG_IDENT, $"Initiating teleport to server ({Data})");
+                    App.Logger.Info($"Initiating teleport to server ({Data})");
                     _teleportMarker = true;
 
                     var joinTypeMatch = Regex.Match(logMessage, GameTeleportJoinTypePattern);
                     if (joinTypeMatch.Success && int.TryParse(joinTypeMatch.Groups[1].Value, out int joinTypeId))
                     {
                         var joinType = (ServerSessionJoinType)joinTypeId;
-                        App.Logger.WriteLine(LOG_IDENT, $"Teleport JoinTypeId: {joinTypeId}");
+                        App.Logger.Info($"Teleport JoinTypeId: {joinTypeId}");
 
                         if (joinType is ServerSessionJoinType.NewGamePrivateGame or ServerSessionJoinType.SpecificPrivateGame)
                         {
                             _reservedTeleportMarker = true;
-                            App.Logger.WriteLine(LOG_IDENT, "Detected reserved server teleport");
+                            App.Logger.Info("Detected reserved server teleport");
                         }
                     }
                     else
-                        App.Logger.WriteLine(LOG_IDENT, "Failed to detect teleport type");
+                        App.Logger.Error("Failed to detect teleport type");
                 }
                 else if (logMessage.StartsWith(GameMessageEntry))
                 {
@@ -551,19 +536,18 @@ namespace Froststrap.Integrations
 
                     if (match.Groups.Count != 2)
                     {
-                        App.Logger.WriteLine(LOG_IDENT, $"Failed to assert format for RPC message entry");
-                        App.Logger.WriteLine(LOG_IDENT, logMessage);
+                        App.Logger.Error($"Failed to assert format for RPC message entry. {logMessage}");
                         return;
                     }
 
                     string messagePlain = match.Groups[1].Value;
                     Message? message;
 
-                    App.Logger.WriteLine(LOG_IDENT, $"Received message: '{messagePlain}'");
+                    App.Logger.Info($"Received message: '{messagePlain}'");
 
                     if ((DateTime.Now - LastRPCRequest).TotalSeconds <= 1)
                     {
-                        App.Logger.WriteLine(LOG_IDENT, "Dropping message as ratelimit has been hit");
+                        App.Logger.Info("Dropping message as ratelimit has been hit");
                         return;
                     }
 
@@ -571,21 +555,21 @@ namespace Froststrap.Integrations
                     {
                         message = JsonSerializer.Deserialize<Message>(messagePlain);
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
-                        App.Logger.WriteLine(LOG_IDENT, "Failed to parse message! (JSON deserialization threw an exception)");
+                        App.Logger.Error($"Failed to parse message! (JSON deserialization threw an exception) {ex.Message}");
                         return;
                     }
 
                     if (message is null)
                     {
-                        App.Logger.WriteLine(LOG_IDENT, "Failed to parse message! (JSON deserialization returned null)");
+                        App.Logger.Error("Failed to parse message! (JSON deserialization returned null)");
                         return;
                     }
 
                     if (string.IsNullOrEmpty(message.Command))
                     {
-                        App.Logger.WriteLine(LOG_IDENT, "Failed to parse message! (Command is empty)");
+                        App.Logger.Error("Failed to parse message! (Command is empty)");
                         return;
                     }
 
@@ -597,21 +581,21 @@ namespace Froststrap.Integrations
                         {
                             data = message.Data.Deserialize<string>();
                         }
-                        catch (Exception)
+                        catch (Exception ex)
                         {
-                            App.Logger.WriteLine(LOG_IDENT, "Failed to parse message! (JSON deserialization threw an exception)");
+                            App.Logger.Error($"Failed to parse message! (JSON deserialization threw an exception) {ex.Message}");
                             return;
                         }
 
                         if (data is null)
                         {
-                            App.Logger.WriteLine(LOG_IDENT, "Failed to parse message! (JSON deserialization returned null)");
+                            App.Logger.Error("Failed to parse message! (JSON deserialization returned null)");
                             return;
                         }
 
                         if (data.Length > 200)
                         {
-                            App.Logger.WriteLine(LOG_IDENT, "Data cannot be longer than 200 characters");
+                            App.Logger.Error("Data cannot be longer than 200 characters");
                             return;
                         }
 
@@ -628,14 +612,13 @@ namespace Froststrap.Integrations
 
                     if (!match.Success && match.Groups.Count == 2)
                     {
-                        App.Logger.WriteLine(LOG_IDENT, $"Failed to assert format for server uptime entry");
-                        App.Logger.WriteLine(LOG_IDENT, logMessage);
+                        App.Logger.Error($"Failed to assert format for server uptime entry. {logMessage}");
                         return;
                     }
 
                     string startTime = match.Groups[1].Value;
 
-                    App.Logger.WriteLine(LOG_IDENT, $"Server started at {startTime}");
+                    App.Logger.Info($"Server started at {startTime}");
 
                     Data.StartTime = DateTime.ParseExact(startTime, "yyyyMMdd'T'HHmmss'Z'", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal);
 
@@ -657,9 +640,9 @@ namespace Froststrap.Integrations
 
                 _ = ListenForHTTPRequests(_httpCancellationTokenSource.Token);
 
-                App.Logger.WriteLine("ActivityWatcher", $"Studio RPC server active on port {HttpPort}");
+                App.Logger.Info($"Studio RPC server active on port {HttpPort}");
             }
-            catch (Exception ex) { App.Logger.WriteException("ActivityWatcher::Start", ex); }
+            catch (Exception ex) { App.Logger.Error("Unhandled exception: ", ex); }
         }
 
         public void StopHTTPServer()
@@ -687,7 +670,7 @@ namespace Froststrap.Integrations
                 catch (OperationCanceledException) { break; }
                 catch (Exception ex)
                 {
-                    App.Logger.WriteException("ActivityWatcher::HTTPListener", ex);
+                    App.Logger.Error(ex);
                     await Task.Delay(1000, token);
                 }
             }
@@ -724,7 +707,7 @@ namespace Froststrap.Integrations
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine("ActivityWatcher::ProcessHTTP", $"Error: {ex.Message}");
+                App.Logger.Error($"Unhandled exception: {ex.Message}");
                 response.StatusCode = 500;
             }
         }
@@ -735,7 +718,7 @@ namespace Froststrap.Integrations
             {
                 if (!File.Exists(GameHistoryCachePath))
                 {
-                    App.Logger.WriteLine("ActivityWatcher::LoadGameHistory", "No existing game history cache found");
+                    App.Logger.Info("No existing game history cache found");
                     History = [];
                     return;
                 }
@@ -775,7 +758,7 @@ namespace Froststrap.Integrations
                         .OrderByDescending(x => x.TimeJoined)
                         .Take(300)];
 
-                    App.Logger.WriteLine("ActivityWatcher::LoadGameHistory", $"Loaded {History.Count} sessions from cache");
+                    App.Logger.Error($"Loaded {History.Count} sessions from cache");
                 }
                 else
                 {
@@ -784,7 +767,7 @@ namespace Froststrap.Integrations
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException("ActivityWatcher::LoadGameHistory", ex);
+                App.Logger.Error(ex);
                 History = [];
             }
         }
@@ -845,11 +828,11 @@ namespace Froststrap.Integrations
                 string json = JsonSerializer.Serialize(gameHistory, _saveOptions);
                 File.WriteAllText(GameHistoryCachePath, json);
 
-                App.Logger.WriteLine("ActivityWatcher::SaveGameHistory", $"Saved {gameHistory.Count} games (max 10 servers each) to cache");
+                App.Logger.Info($"Saved {gameHistory.Count} games (max 10 servers each) to cache");
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException("ActivityWatcher::SaveGameHistory", ex);
+                App.Logger.Error(ex);
             }
         }
 

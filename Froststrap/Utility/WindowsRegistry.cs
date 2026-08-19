@@ -179,7 +179,7 @@ namespace Froststrap.Utility
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine("Protocol::Unregister", $"Failed to unregister {key}: {ex}");
+                App.Logger.Error($"Failed to unregister {key}: {ex}");
             }
         }
 
@@ -198,11 +198,11 @@ namespace Froststrap.Utility
                 int totalKB = (int)(totalBytes / 1024);
                 using var uninstallKey = Registry.CurrentUser.CreateSubKey(App.UninstallKey);
                 uninstallKey?.SetValueSafe("EstimatedSize", totalKB);
-                App.Logger.WriteLine("WindowsRegistry::UpdateEstimatedSize", $"Updated EstimatedSize to {totalKB} KB");
+                App.Logger.Info($"Updated EstimatedSize to {totalKB} KB");
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine("WindowsRegistry::UpdateEstimatedSize", $"Failed to update size: {ex.Message}");
+                App.Logger.Error($"Failed to update size: {ex.Message}");
             }
         }
     }

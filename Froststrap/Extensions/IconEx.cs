@@ -27,7 +27,7 @@ namespace Froststrap.Extensions
                 }
                 catch (Exception ex)
                 {
-                    App.Logger.WriteException("IconEx::GetBitmapFromStream", ex);
+                    App.Logger.Error("Unhandled exception: ", ex);
                     await Frontend.ShowMessageBox(string.Format(Strings.Dialog_IconLoadFailed, ex.Message));
                     return BootstrapperIcon.IconFroststrap.GetIcon();
                 }

@@ -313,7 +313,7 @@
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException("BehaviourViewModel::LoadAvailableRegions", ex);
+                App.Logger.Error("Unhandled exception: ", ex);
 
                 var stale = await LoadDatacentersFromCacheAsync(allowExpired: true);
                 if (stale != null)

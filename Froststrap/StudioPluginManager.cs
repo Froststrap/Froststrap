@@ -2,7 +2,6 @@
 {
     public static class StudioPluginManager
     {
-        private const string LOG_IDENT = "StudioIntegration";
         private const string VersionApiUrl = "https://api.github.com/repos/Froststrap/FroststrapStudioRPC/releases/latest";
 
         public static string? OverridePluginDirectory { get; set; }
@@ -43,14 +42,13 @@
 
                     if (needsUpdate)
                     {
-                        App.Logger.WriteLine(LOG_IDENT, $"Syncing plugin (Local: {cachedVersion}, Remote: {release.TagName})");
+                        App.Logger.Info($"Syncing plugin (Local: {cachedVersion}, Remote: {release.TagName})");
                         await DownloadPluginAsync(release);
                     }
                 }
                 catch (Exception ex)
                 {
-                    App.Logger.WriteLine(LOG_IDENT, "Failed to sync Studio RPC plugin.");
-                    App.Logger.WriteException(LOG_IDENT, ex);
+                    App.Logger.Error($"Failed to sync Studio RPC plugin: {ex}");
                 }
             });
         }

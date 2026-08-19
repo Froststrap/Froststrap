@@ -111,7 +111,7 @@ namespace Froststrap.Models.APIs.Config
                 }
                 catch (Exception ex)
                 {
-                    App.Logger.WriteLine("CommunityMod::LoadThumbnailAsync", $"Failed to load cached thumbnail: {ex.Message}");
+                    App.Logger.Error($"Failed to load cached thumbnail: {ex.Message}");
                     try { File.Delete(cachePath); } catch { }
                 }
             }
@@ -134,7 +134,7 @@ namespace Froststrap.Models.APIs.Config
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine("CommunityMod::LoadThumbnailAsync", ex.ToString());
+                App.Logger.Error("Unhandled exception: ", ex.Message);
             }
         }
     }

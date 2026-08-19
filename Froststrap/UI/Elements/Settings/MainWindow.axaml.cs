@@ -50,7 +50,7 @@ namespace Froststrap.UI.Elements.Settings
             _viewModel.RequestCloseWindowEvent += (_, _) => Close();
             _viewModel.SearchBar.SearchResultSelected += (_, item) => OnSearchResultSelected(item);
 
-            App.Logger.WriteLine("MainWindow", "Initializing settings window");
+            App.Logger.Debug("Initializing settings window");
 
             if (showAlreadyRunningWarning)
                 ShowAlreadyRunningNotification();
@@ -299,7 +299,7 @@ namespace Froststrap.UI.Elements.Settings
                     }
                     catch (Exception ex)
                     {
-                        App.Logger.WriteLine("MainWindow", $"Failed to create view {viewTypeName}: {ex.Message}");
+                        App.Logger.Error($"Failed to create view {viewTypeName}: {ex.Message}");
                     }
                 }
             }
@@ -578,7 +578,7 @@ namespace Froststrap.UI.Elements.Settings
             var stagingArea = this.FindControl<Border>("OffscreenIndexingCanvas");
             if (stagingArea == null)
             {
-                App.Logger.WriteLine("MainWindow::IndexMissingPagesAsync", "OffscreenIndexingCanvas not found");
+                App.Logger.Error("OffscreenIndexingCanvas not found");
                 return;
             }
 
@@ -623,7 +623,7 @@ namespace Froststrap.UI.Elements.Settings
                 }
                 catch (Exception ex)
                 {
-                    App.Logger.WriteLine("MainWindow::IndexMissingPagesAsync", $"Error indexing {pageTag}: {ex.Message}");
+                    App.Logger.Error($"Error indexing {pageTag}: {ex.Message}");
                 }
             }
 
@@ -675,8 +675,7 @@ namespace Froststrap.UI.Elements.Settings
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine("MainWindow::IndexPage",
-                    $"Error scanning page {pageTag}: {ex.Message}");
+                App.Logger.Error($"Failed to scan page {pageTag}: {ex.Message}");
             }
         }
 
@@ -729,8 +728,7 @@ namespace Froststrap.UI.Elements.Settings
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine("MainWindow::ScrollToSearchItem",
-                    $"Error scrolling to item: {ex.Message}");
+                App.Logger.Error($"Failed scrolling to item: {ex.Message}");
             }
         }
 
@@ -799,7 +797,7 @@ namespace Froststrap.UI.Elements.Settings
             else
                 App.SoftTerminate();
 
-            App.Logger.WriteLine("MainWindow", "Settings window closed");
+            App.Logger.Info("Settings window closed");
         }
 
         #endregion

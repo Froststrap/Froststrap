@@ -113,7 +113,7 @@ namespace Froststrap.UI.Elements.Bootstrapper.Base
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine("AvaloniaDialogBase", $"Taskbar Error: {ex.Message}");
+                App.Logger.Error($"Unhandled taskbar error: {ex.Message}");
             }
         }
 

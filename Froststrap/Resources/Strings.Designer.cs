@@ -79,7 +79,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to write cookie file for {0}..
+        ///   Looks up a localized string similar to Failed to login to {0} in Roblox App..
         /// </summary>
         public static string AccountManager_Replace_Failed {
             get {
@@ -88,7 +88,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cookie file updated for {0}. Launch Roblox to log in..
+        ///   Looks up a localized string similar to Roblox App Account has been changed to {0}..
         /// </summary>
         public static string AccountManager_Replace_Success {
             get {
@@ -1485,8 +1485,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Location: {0}
-        ///Server ID: {1}.
+        ///   Looks up a localized string similar to Location: {0}.
         /// </summary>
         public static string ContextMenu_ServerDetails_Notification_Text_ServerID {
             get {
@@ -2406,6 +2405,15 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Modern.
+        /// </summary>
+        public static string Enums_BootstrapperStyle_Modern {
+            get {
+                return ResourceManager.GetString("Enums.BootstrapperStyle.Modern", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Roblox (~2025).
         /// </summary>
         public static string Enums_BootstrapperStyle_TwentyFiveDialog {
@@ -3286,7 +3294,7 @@ namespace Froststrap.Resources {
         /// </summary>
         public static string Logger_NoWriteMode {
             get {
-                return ResourceManager.GetString("Logger.NoWriteMode", resourceCulture);
+                return ResourceManager.GetString("App.Logger.NoWriteMode", resourceCulture);
             }
         }
         

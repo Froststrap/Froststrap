@@ -108,7 +108,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             {
                 HasError = true;
                 ErrorMessage = $"Failed to load mods: {ex.Message}";
-                App.Logger.WriteLine("CommunityModsViewModel::RefreshModsAsync", ex.ToString());
+                App.Logger.Error($"Unhandled exception: {ex}");
             }
             finally { IsLoading = false; }
         }
@@ -234,7 +234,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                     if (existingMod != null)
                     {
                         existingMod.Enabled = true;
-                        App.Logger.WriteLine("CommunityModsViewModel::DownloadModAsync", $"Enabled existing mod '{finalName}'.");
+                        App.Logger.Info($"Enabled existing mod '{finalName}'.");
                     }
                     else
                     {
@@ -247,7 +247,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                             Target = ModTarget.Both
                         };
                         App.State.Prop.Mods.Add(newMod);
-                        App.Logger.WriteLine("CommunityModsViewModel::DownloadModAsync", $"Added mod '{finalName}' to state.");
+                        App.Logger.Info($"Added mod '{finalName}' to state.");
                     }
 
                     App.State.SaveSetting("Mods");
@@ -257,7 +257,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             catch (Exception ex)
             {
                 _ = Frontend.ShowMessageBox(ex.Message, MessageBoxImage.Error);
-                App.Logger.WriteLine("CommunityModsViewModel::DownloadModAsync", ex.ToString());
+                App.Logger.Error(ex);
             }
             finally
             {
@@ -283,7 +283,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine("CommunityModsViewModel::OpenModInfoDialog", ex.ToString());
+                App.Logger.Error($"Unhandled exception: {ex.Message}");
             }
             finally
             {

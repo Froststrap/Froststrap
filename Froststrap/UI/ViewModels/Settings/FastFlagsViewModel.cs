@@ -46,9 +46,9 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public ICommand OpenFastFlagEditorCommand => new AsyncRelayCommand(async () =>
         {
-            App.Logger.WriteLine("FastFlagsViewModel", "OpenFastFlagEditorCommand executed");
+            App.Logger.Info("OpenFastFlagEditorCommand executed");
             await _dialogService.OpenFastFlagEditorAsync();
-            App.Logger.WriteLine("FastFlagsViewModel", "OpenFastFlagEditorCommand completed");
+            App.Logger.Info("OpenFastFlagEditorCommand completed");
         });
 
         public bool RemoveGrass

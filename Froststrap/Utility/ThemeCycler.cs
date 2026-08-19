@@ -51,7 +51,7 @@
                 App.Settings.Prop.CycleEnabled = false;
                 App.Settings.Prop.SelectedCustomTheme = null;
                 App.Settings.Save();
-                App.Logger.WriteLine("ThemeCycler", "No valid custom themes found – cycling disabled.");
+                App.Logger.Warn("No valid custom themes found – cycling disabled.");
                 return;
             }
 
@@ -61,7 +61,7 @@
             App.Settings.Prop.CycleLastCycleTime = DateTime.Now;
 
             App.Settings.Save();
-            App.Logger.WriteLine("ThemeCycler", $"Changed to '{App.Settings.Prop.SelectedCustomTheme}'");
+            App.Logger.Info($"Changed to '{App.Settings.Prop.SelectedCustomTheme}'");
         }
     }
 }

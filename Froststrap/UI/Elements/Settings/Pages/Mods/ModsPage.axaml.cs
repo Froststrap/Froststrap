@@ -61,7 +61,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.Mods
             }
             catch (Exception ex)
             {
-                App.Logger?.WriteException("ModsPage::SetupViewModel", ex);
+                App.Logger.Error("Unhandled exception: ", ex);
                 CreateFallbackViewModel();
                 _viewModelSetUp = true;
             }

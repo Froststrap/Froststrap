@@ -13,7 +13,7 @@ namespace Froststrap.UI.ViewModels.Settings.FastFlags
         {
             _mainWindowViewModel = mainWindowViewModel;
 
-            App.Logger.WriteLine("FastFlagEditorViewModel", "FastFlagEditorViewModel created.");
+            App.Logger.Debug("FastFlagEditorViewModel created.");
 
             BackCommand = new RelayCommand(() =>
             {

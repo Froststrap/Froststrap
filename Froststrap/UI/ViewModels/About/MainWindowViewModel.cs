@@ -38,7 +38,7 @@ namespace Froststrap.UI.ViewModels.About
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException("AboutMainWindowViewModel::NavigateToAbout", ex);
+                App.Logger.Error("Unhandled exception: ", ex);
             }
         }
 
@@ -51,7 +51,7 @@ namespace Froststrap.UI.ViewModels.About
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException("AboutMainWindowViewModel::NavigateToLicenses", ex);
+                App.Logger.Error("Unhandled exception: ", ex);
             }
         }
     }

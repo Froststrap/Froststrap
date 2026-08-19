@@ -85,7 +85,7 @@ namespace Froststrap.UI.ViewModels.ContextMenu
                             }
                             catch (Exception imgEx)
                             {
-                                App.Logger.WriteLine("ServerHistoryViewModel::LoadData", $"Failed to load image: {imgEx.Message}");
+                                App.Logger.Error($"Failed to load image: {imgEx.Message}");
                             }
                         }
                     }
@@ -107,7 +107,7 @@ namespace Froststrap.UI.ViewModels.ContextMenu
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException("ServerHistoryViewModel::LoadData", ex);
+                App.Logger.Error("Unhandled exception: ", ex);
 
                 Error = $"Failed to load game history: {ex.Message}";
                 OnPropertyChanged(nameof(Error));
@@ -192,15 +192,14 @@ namespace Froststrap.UI.ViewModels.ContextMenu
 
                 if (removedCount > 0)
                 {
-                    App.Logger.WriteLine("ServerHistoryViewModel::CleanOldEntries",
-                        $"Removed {removedCount} old history entries (older than {30} days)");
+                    App.Logger.Info($"Removed {removedCount} old history entries (older than {30} days)");
 
                     _activityWatcher.SaveGameHistory();
                 }
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException("ServerHistoryViewModel::CleanOldEntries", ex);
+                App.Logger.Error("Unhandled exception: ", ex);
             }
         }
 
@@ -229,8 +228,7 @@ namespace Froststrap.UI.ViewModels.ContextMenu
 
                 if (removedCount > 0)
                 {
-                    App.Logger.WriteLine("ServerHistoryViewModel::DeleteHistoryEntry",
-                        $"Removed {removedCount} history entries for job {jobId}");
+                    App.Logger.Info($"Removed {removedCount} history entries for job {jobId}");
 
                     _activityWatcher.SaveGameHistory();
 
@@ -239,7 +237,7 @@ namespace Froststrap.UI.ViewModels.ContextMenu
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException("ServerHistoryViewModel::DeleteHistoryEntry", ex);
+                App.Logger.Error("Unhandled exception: ", ex);
             }
         }
 

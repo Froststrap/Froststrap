@@ -29,8 +29,6 @@ namespace Froststrap
 
         public static GameJoinData GetJoinDataByLaunchCommand(string launchCommandLine)
         {
-            const string LOG_IDENT = "Bootstrapper::GetJoinDataByLaunchCommand";
-
             const string placelauncherPattern = @"placelauncherurl:(.+?)(\+|$)";
             const string requestTypePattern = @"request=(.+?)&";
             const string commonIntPattern = @"([0-9]+)";
@@ -44,7 +42,7 @@ namespace Froststrap
 
             if (launchCommandLine.StartsWith("roblox://", StringComparison.Ordinal))
             {
-                App.Logger.WriteLine(LOG_IDENT, $"Processing roblox:// URI: {launchCommandLine}");
+                App.Logger.Info($"Processing roblox:// URI: {launchCommandLine}");
 
                 var placeIdMatch = Regex.Match(launchCommandLine, @"placeId=([0-9]+)");
                 if (placeIdMatch.Success)
@@ -55,7 +53,7 @@ namespace Froststrap
                         joinData.JoinType = GameJoinType.RequestGame;
                         joinData.PlaceId = placeId;
                         joinData.PlaceLauncherUrl = launchCommandLine;
-                        App.Logger.WriteLine(LOG_IDENT, $"Extracted place ID from roblox:// URI: {placeId}");
+                        App.Logger.Info($"Extracted place ID from roblox:// URI: {placeId}");
                     }
                 }
 
@@ -63,21 +61,21 @@ namespace Froststrap
                 if (jobIdMatch.Success)
                 {
                     joinData.JobId = jobIdMatch.Groups[1].Value;
-                    App.Logger.WriteLine(LOG_IDENT, $"Extracted job ID from roblox:// URI: {joinData.JobId}");
+                    App.Logger.Info($"Extracted job ID from roblox:// URI: {joinData.JobId}");
                 }
 
                 var accessCodeMatch = Regex.Match(launchCommandLine, @"accessCode=([a-zA-Z0-9-]+)");
                 if (accessCodeMatch.Success)
                 {
                     joinData.AccessCode = accessCodeMatch.Groups[1].Value;
-                    App.Logger.WriteLine(LOG_IDENT, $"Extracted access code from roblox:// URI: {joinData.AccessCode}");
+                    App.Logger.Info($"Extracted access code from roblox:// URI: {joinData.AccessCode}");
                 }
 
                 var originMatch = Regex.Match(launchCommandLine, @"joinAttemptOrigin=([a-zA-Z0-9-]+)");
                 if (originMatch.Success)
                 {
                     joinData.JoinOrigin = originMatch.Groups[1].Value;
-                    App.Logger.WriteLine(LOG_IDENT, $"Extracted join origin from roblox:// URI: {joinData.JoinOrigin}");
+                    App.Logger.Info($"Extracted join origin from roblox:// URI: {joinData.JoinOrigin}");
                 }
 
                 return joinData;
@@ -98,7 +96,7 @@ namespace Froststrap
             if (!typeMatch.Success || typeMatch.Groups.Count != 2)
                 return joinData;
 
-            App.Logger.WriteLine(LOG_IDENT, "Detecting join type");
+            App.Logger.Debug("Detecting join type");
 
             // yuck
             switch (typeMatch.Groups[1].Value)
@@ -170,7 +168,7 @@ namespace Froststrap
                     }
             }
 
-            App.Logger.WriteLine(LOG_IDENT, $"Join type: {joinData.JoinType}");
+            App.Logger.Info($"Join type: {joinData.JoinType}");
 
             return joinData;
         }

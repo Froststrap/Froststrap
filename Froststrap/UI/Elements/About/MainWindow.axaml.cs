@@ -100,7 +100,7 @@ namespace Froststrap.UI.Elements.About
                     }
                     catch (Exception ex)
                     {
-                        App.Logger.WriteLine("About.MainWindow", $"Failed to create view {viewTypeName}: {ex.Message}");
+                        App.Logger.Error($"Failed to create view {viewTypeName}: {ex.Message}");
                     }
                 }
             }
