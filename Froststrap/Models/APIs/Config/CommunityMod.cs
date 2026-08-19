@@ -127,7 +127,7 @@ namespace Froststrap.Models.APIs.Config
                 await Task.Run(() =>
                 {
                     using var fs = File.Create(cachePath);
-                    bitmap.Save(fs);
+                    bitmap.Save(fs, PngBitmapEncoderOptions.Default);
                 });
 
                 await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() => Thumbnail = bitmap);
