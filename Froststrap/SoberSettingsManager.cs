@@ -6,7 +6,7 @@ public class SoberSettingsManager : JsonManager<Dictionary<string, object>>
     private static readonly JsonSerializerOptions _readOptions = new() { ReadCommentHandling = JsonCommentHandling.Skip, AllowTrailingCommas = true };
 
     public override string ClassName => nameof(SoberSettingsManager);
-    public override string LOG_IDENT_CLASS => ClassName;
+    public string LOG_IDENT_CLASS => ClassName;
     public override string FileName => "config.json";
     public override string FileLocation => Path.Combine(Paths.SoberConfig, FileName);
 
