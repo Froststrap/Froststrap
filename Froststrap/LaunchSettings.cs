@@ -11,7 +11,6 @@ namespace Froststrap
         public LaunchFlag QuietFlag { get; } = new("quiet");
         public LaunchFlag NoLaunchFlag { get; } = new("nolaunch");
         public LaunchFlag TestModeFlag { get; } = new("testmode");
-        public LaunchFlag NoGPUFlag { get; } = new("nogpu");
         public LaunchFlag UpgradeFlag { get; } = new("upgrade");
         public LaunchFlag PlayerFlag { get; } = new("player");
         public LaunchFlag StudioFlag { get; } = new("studio");
