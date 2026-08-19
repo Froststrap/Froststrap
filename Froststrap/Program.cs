@@ -1,6 +1,7 @@
 ﻿using NLog;
 using Avalonia;
 using Avalonia.Labs.Notifications;
+using System.Runtime.InteropServices;
 
 namespace Froststrap;
 
@@ -13,9 +14,16 @@ sealed class Program
     // yet and stuff might break.
     public static bool NoGPU { get; private set; }
 
+    [DllImport("kernel32.dll")]
+    private static extern bool AllocConsole();
+            
     [STAThread]
     public static void Main(string[] args)
     {
+        NLog.GlobalDiagnosticsContext.Set("startTime", DateTime.UtcNow.ToString("yyyyMMdd'T'HHmmss'Z'"));
+        if (args.Any(a => a.Equals("-attachConsole", StringComparison.OrdinalIgnoreCase)) && OperatingSystem.IsWindows()) {
+            AllocConsole();
+        }
         Logger.Debug($"Log file: {Logging.FileLocation}");
 
         NoGPU = args.Any(a => a.Equals("-nogpu", StringComparison.OrdinalIgnoreCase));
