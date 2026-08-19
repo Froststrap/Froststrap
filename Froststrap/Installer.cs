@@ -18,8 +18,6 @@ namespace Froststrap
         /// </summary>
         public static async Task DoUninstall(bool keepData)
         {
-            const string LOG_IDENT = "Installer::DoUninstall";
-
             var processes = new List<Process>();
 
             if (App.IsPlayerInstalled)
@@ -53,7 +51,7 @@ namespace Froststrap
                     }
                     catch (Exception ex)
                     {
-                        App.Logger.WriteLine(LOG_IDENT, $"Failed to close process: {ex}");
+                        Logger.Info($"Failed to close process: {ex}");
                     }
                 }
             }
@@ -98,8 +96,8 @@ namespace Froststrap
                 }
                 catch (Exception ex)
                 {
-                    App.Logger.WriteLine(LOG_IDENT, $"Encountered exception during cleanup step #{cleanupSequence.IndexOf(step)}");
-                    App.Logger.WriteException(LOG_IDENT, ex);
+                    Logger.Info($"Encountered exception during cleanup step #{cleanupSequence.IndexOf(step)}");
+                    Logger.Error(ex);
                 }
             }
         }
@@ -189,7 +187,7 @@ namespace Froststrap
                     return;
             }
 
-            App.Logger.WriteLine(LOG_IDENT, "Starting upgrade process...");
+            Logger.Info("Starting upgrade process...");
 
             bool copySuccess = await CopyExecutableWithRetry();
             if (!copySuccess)
@@ -217,7 +215,7 @@ namespace Froststrap
                 );
             }
 
-            App.Logger.WriteLine(LOG_IDENT, "Upgrade completed successfully");
+            Logger.Info("Upgrade completed successfully");
         }
 
         private static string? GetVersionInfo(string filePath)
@@ -303,8 +301,7 @@ namespace Froststrap
                     {
                         if (i == 10)
                         {
-                            App.Logger.WriteLine(LOG_IDENT, $"Failed to copy after 10 attempts: {ex.Message}");
-                            App.Logger.WriteException(LOG_IDENT, ex);
+                            Logger.Error($"Failed to copy after 10 attempts: {ex}");
                             return false;
                         }
 
@@ -316,16 +313,13 @@ namespace Froststrap
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine(LOG_IDENT, $"Failed to copy executable: {ex.Message}");
-                App.Logger.WriteException(LOG_IDENT, ex);
+                Logger.Error($"Failed to copy executable: {ex}");
                 return false;
             }
         }
 
         private static async Task UpdateVersionInfo()
         {
-            const string LOG_IDENT = "Installer::UpdateVersionInfo";
-
             try
             {
                 if (OperatingSystem.IsWindows())
@@ -368,19 +362,16 @@ namespace Froststrap
                     }
                 }
 
-                App.Logger.WriteLine(LOG_IDENT, $"Version info updated to {App.Version}");
+                Logger.Info($"Version info updated to {App.Version}");
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine(LOG_IDENT, $"Failed to update version info: {ex.Message}");
-                App.Logger.WriteException(LOG_IDENT, ex);
+                Logger.Error($"Failed to update version info: {ex}");
             }
         }
 
         public static async Task RunMigrations(string? previousVersion = null)
         {
-            const string LOG_IDENT = "Installer::RunMigrations";
-
             if (OperatingSystem.IsLinux())
                 SetupSoberSymlink();
 
@@ -389,7 +380,7 @@ namespace Froststrap
 
             if (existingVer is null && !App.Settings.IsSaved)
             {
-                App.Logger.WriteLine(LOG_IDENT, $"Fresh install detected — stamping LastMigratedVersion as {currentVer}");
+                Logger.Info($"Fresh install detected — stamping LastMigratedVersion as {currentVer}");
                 App.State.Prop.LastMigratedVersion = currentVer;
                 App.State.Save();
                 return;
@@ -400,23 +391,23 @@ namespace Froststrap
                 var legacyStateCheck = new JsonManager<RobloxState>();
                 if (!legacyStateCheck.IsSaved)
                 {
-                    App.Logger.WriteLine(LOG_IDENT, "No LastMigratedVersion but no legacy data found — treating as already migrated");
+                    Logger.Info("No LastMigratedVersion but no legacy data found — treating as already migrated");
                     App.State.Prop.LastMigratedVersion = currentVer;
                     App.State.Save();
                     return;
                 }
 
-                App.Logger.WriteLine(LOG_IDENT, "Legacy RobloxState data found — treating as pre-migration install");
+                Logger.Info("Legacy RobloxState data found — treating as pre-migration install");
                 existingVer = "0.0.0";
             }
 
             if (Utilities.CompareVersions(existingVer, currentVer) != VersionComparison.LessThan)
             {
-                App.Logger.WriteLine(LOG_IDENT, $"Migrations up to date (last={existingVer}, current={currentVer})");
+                Logger.Info($"Migrations up to date (last={existingVer}, current={currentVer})");
                 return;
             }
 
-            App.Logger.WriteLine(LOG_IDENT, $"Running migrations: {existingVer} -> {currentVer}");
+            Logger.Info($"Running migrations: {existingVer} -> {currentVer}");
 
             if (Utilities.CompareVersions(existingVer, "1.4.0.0") == VersionComparison.LessThan)
             {
@@ -450,13 +441,13 @@ namespace Froststrap
                 if (Directory.Exists(genCacheDir))
                 {
                     Directory.Delete(genCacheDir, true);
-                    App.Logger.WriteLine(LOG_IDENT, "Deleted mod-generator cache for migration.");
+                    Logger.Info("Deleted mod-generator cache for migration.");
                 }
 
                 if (Directory.Exists(pluginCacheDir))
                 {
                     Directory.Delete(pluginCacheDir, true);
-                    App.Logger.WriteLine(LOG_IDENT, "Deleted studio plugin for migration.");
+                    Logger.Info("Deleted studio plugin for migration.");
                 }
 
                 TryDelete(Path.Combine(Paths.Cache, "channelCache.json"));
@@ -476,7 +467,7 @@ namespace Froststrap
             if (App.PlayerState.Loaded) App.PlayerState.Save();
             if (App.StudioState.Loaded) App.StudioState.Save();
 
-            App.Logger.WriteLine(LOG_IDENT, $"Migrations complete — LastMigratedVersion set to {currentVer}");
+            Logger.Info($"Migrations complete — LastMigratedVersion set to {currentVer}");
         }
 
         [SupportedOSPlatform("windows")]
@@ -501,17 +492,17 @@ namespace Froststrap
 
             if (IsSymlinkPointingAt(flatpakDataPath, soberTarget))
             {
-                App.Logger.WriteLine(LOG_IDENT, "Sober symlink already in place, skipping.");
+                Logger.Info("Sober symlink already in place, skipping.");
                 return;
             }
 
-            App.Logger.WriteLine(LOG_IDENT, $"Setting up Sober symlink: {flatpakDataPath} -> {soberTarget}");
+            Logger.Info($"Setting up Sober symlink: {flatpakDataPath} -> {soberTarget}");
 
             Directory.CreateDirectory(soberTarget);
 
             if (Directory.Exists(flatpakDataPath) && !IsSymlink(flatpakDataPath))
             {
-                App.Logger.WriteLine(LOG_IDENT, $"Copying existing Sober data from {flatpakDataPath} to {soberTarget}");
+                Logger.Info($"Copying existing Sober data from {flatpakDataPath} to {soberTarget}");
 
                 var cp = new ProcessStartInfo("cp", $"-a \"{flatpakDataPath}/.\" \"{soberTarget}/\"")
                 {
@@ -521,7 +512,7 @@ namespace Froststrap
                 using (var proc = Process.Start(cp))
                     proc?.WaitForExit();
 
-                App.Logger.WriteLine(LOG_IDENT, $"Removing original Sober data directory at {flatpakDataPath}");
+                Logger.Info($"Removing original Sober data directory at {flatpakDataPath}");
 
                 // rm -rf handles locked subdirs that Directory.Delete can't remove.
                 var rm = new ProcessStartInfo("rm", $"-rf \"{flatpakDataPath}\"")
@@ -534,14 +525,14 @@ namespace Froststrap
             }
             else if (IsSymlink(flatpakDataPath))
             {
-                App.Logger.WriteLine(LOG_IDENT, $"Removing stale symlink at {flatpakDataPath}");
+                Logger.Info($"Removing stale symlink at {flatpakDataPath}");
                 Directory.Delete(flatpakDataPath);
             }
 
             Directory.CreateDirectory(Path.GetDirectoryName(flatpakDataPath)!);
 
             Directory.CreateSymbolicLink(flatpakDataPath, soberTarget);
-            App.Logger.WriteLine(LOG_IDENT, $"Created symlink: {flatpakDataPath} -> {soberTarget}");
+            Logger.Info($"Created symlink: {flatpakDataPath} -> {soberTarget}");
         }
 
         [System.Runtime.Versioning.SupportedOSPlatform("linux")]
@@ -561,7 +552,7 @@ namespace Froststrap
         [System.Runtime.Versioning.SupportedOSPlatform("linux")]
         private static bool IsSymlinkPointingAt(string path, string expectedTarget)
         {
-          if (!IsSymlink(path)) 
+          if (!IsSymlink(path))
                 return false;
 
           try
@@ -620,7 +611,7 @@ namespace Froststrap
 
                 if (!File.Exists(source) && !Directory.Exists(source))
                 {
-                    App.Logger.WriteLine(LOG_IDENT, $"Skipping missing item: {item}");
+                    Logger.Info($"Skipping missing item: {item}");
                     continue;
                 }
 
@@ -648,7 +639,7 @@ namespace Froststrap
                 }
                 catch (Exception ex)
                 {
-                    App.Logger.WriteException(LOG_IDENT, ex);
+                    Logger.Error(ex);
                     throw new IOException($"Failed to copy {item}: {ex.Message}", ex);
                 }
             }
@@ -690,7 +681,7 @@ namespace Froststrap
                 }
                 catch (Exception ex)
                 {
-                    App.Logger.WriteLine(LOG_IDENT, $"Copy attempt {i + 1} failed: {ex.Message}");
+                    Logger.Info($"Copy attempt {i + 1} failed: {ex.Message}");
                     if (i < 4) await Task.Delay(500);
                 }
             }
