@@ -400,7 +400,7 @@ public partial class App : Application
                 }
 
                 Paths.Initialize(installLocation);
-                Logger.Info($"Not installed, running in portable mode from '{installLocation}'");
+                Logger.Debug($"Not installed, running in portable mode from '{installLocation}'");
             }
             else
             {
