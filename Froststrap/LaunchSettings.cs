@@ -137,7 +137,7 @@ namespace Froststrap
 
                 if (!flagMap.TryGetValue(identifier, out LaunchFlag? flag) || flag is null)
                 {
-                    App.Logger.Error($"Unknown argument: {identifier}");
+                    App.Logger.Warn($"Unknown argument: {identifier}");
                     continue;
                 }
 
