@@ -74,11 +74,11 @@ namespace Froststrap.UI.Elements.Settings.Pages
                     DataContext = new GlobalSettingsViewModel();
                 }
 
-                App.Logger.WriteLine("GlobalSettingsPage", "ViewModel reinitialized and data reloaded.");
+                App.Logger.Info("ViewModel reinitialized and data reloaded.");
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException("GlobalSettingsPage", ex);
+                App.Logger.Error("Unhandled exception: ", ex);
                 DataContext = new GlobalSettingsViewModel();
             }
         }

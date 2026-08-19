@@ -56,7 +56,7 @@ namespace Froststrap.UI.ViewModels.Dialogs
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine("ManualCookieDialog", $"Validation error: {ex.Message}");
+                App.Logger.Error($"Validation error: {ex.Message}");
                 await Frontend.ShowMessageBox($"Error validating cookie: {ex.Message}", MessageBoxImage.Error);
             }
             finally
@@ -97,7 +97,7 @@ namespace Froststrap.UI.ViewModels.Dialogs
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine("ManualCookieDialog", $"HTTP Error: {ex.Message}");
+                App.Logger.Error($"HTTP Error: {ex.Message}");
                 return null;
             }
         }

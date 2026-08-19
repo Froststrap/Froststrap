@@ -24,7 +24,6 @@ namespace Froststrap.UI.ViewModels.Editor
 
         private void Preview()
         {
-            const string LOG_IDENT = "BootstrapperEditorWindowViewModel::Preview";
             try
             {
                 CustomDialog dialog = new();
@@ -39,7 +38,7 @@ namespace Froststrap.UI.ViewModels.Editor
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException(LOG_IDENT, ex);
+                App.Logger.Error("Unhandled exception: ", ex);
                 _ = Frontend.ShowMessageBox(
                     string.Format(Strings.CustomTheme_Editor_Errors_PreviewFailed, ex.Message),
                     MessageBoxImage.Error,
@@ -61,7 +60,7 @@ namespace Froststrap.UI.ViewModels.Editor
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException(LOG_IDENT, ex);
+                App.Logger.Error("Unhandled exception: ", ex);
                 ThemeSavedCallback?.Invoke(false, ex.Message);
             }
         }
