@@ -1,13 +1,7 @@
-<<<<<<< HEAD
-﻿using Avalonia;
-using Avalonia.Wayland;
-=======
-﻿using NLog;
+using NLog;
 using Avalonia;
 using CommandLine;
-using Avalonia.Labs.Notifications;
 using System.Runtime.InteropServices;
->>>>>>> refactor-logger
 
 namespace Froststrap;
 
@@ -29,7 +23,7 @@ sealed class Program
 
     [DllImport("kernel32.dll")]
     private static extern bool AllocConsole();
-            
+
     [STAThread]
     public static void Main(string[] args)
     {
