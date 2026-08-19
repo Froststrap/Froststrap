@@ -268,6 +268,9 @@
     <value>Location: {0}
 Uptime: {1}</value>
   </data>
+  <data name="ContextMenu.ServerDetails.Notification.Text.ServerID" xml:space="preserve">
+    <value>Location: {0}</value>
+  </data>
   <data name="ContextMenu.ServerInformation.Notification.Title.Public" xml:space="preserve">
     <value>Connected to a Public server</value>
   </data>
@@ -1710,7 +1713,8 @@ The app will close this window when sign-in completes.</value>
     <value>Not Logged In</value>
   </data>
   <data name="Menu.AccountSelector.AskToAddAccount" xml:space="preserve">
-    <value>No accounts added&#xa;Click 'Add Account' above to get started</value>
+    <value>No accounts added
+Click 'Add Account' above to get started</value>
   </data>
   <data name="Menu.AccountSelector.Login.LocalCookie" xml:space="preserve">
     <value>Local Cookie</value>
@@ -3107,10 +3111,10 @@ Would you like to visit the releases page now?</value>
     <value>What would you like to do?</value>
   </data>
   <data name="AccountManager.Replace.Success" xml:space="preserve">
-    <value>Cookie file updated for {0}. Launch Roblox to log in.</value>
+    <value>Roblox App Account has been changed to {0}.</value>
   </data>
   <data name="AccountManager.Replace.Failed" xml:space="preserve">
-    <value>Failed to write cookie file for {0}.</value>
+    <value>Failed to login to {0} in Roblox App.</value>
   </data>
   <data name="Common.Apply" xml:space="preserve">
     <value>Apply</value>
@@ -3161,7 +3165,7 @@ Would you like to visit the releases page now?</value>
     <value>Downloading - {0} out of {1}</value>
   </data>
   <data name="Menu.Integrations.ActivityTracking.Description" xml:space="preserve">
-    <value>Options that require reading Roblox logs, requires the app to stay open in System Tray / Menu Bar</value>
+    <value>Options that require reading Roblox logs, requires the app to stay open in System Tray / Menu Bar.</value>
   </data>
   <data name="Menu.Integrations.RPC.Player.Description" xml:space="preserve">
     <value>Customize how your Discord RPC looks when launching Roblox Player.</value>
@@ -3249,5 +3253,17 @@ All files will be moved, shortcuts updated, and the application will restart.</v
   </data>
   <data name="Menu.Deployment.MoveInstallation.Failed" xml:space="preserve">
     <value>Move failed: {0}</value>
+  </data>
+  <data name="ContextMenu.ServerInformation.NotInAServer" xml:space="preserve">
+    <value>You are currently not in a server.</value>
+  </data>
+  <data name="Menu.Integrations.ServerUptime.Description" xml:space="preserve">
+    <value>Show you how long the server has been running for, Will delay server info notification until loaded.</value>
+  </data>
+  <data name="Menu.Integrations.ServerUptime.Title" xml:space="preserve">
+    <value>Server Uptime</value>
+  </data>
+  <data name="Enums.BootstrapperStyle.ModernDialog" xml:space="preserve">
+    <value>Fake Byfron (No Logo)</value>
   </data>
 </root>

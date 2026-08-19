@@ -79,7 +79,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to write cookie file for {0}..
+        ///   Looks up a localized string similar to Failed to login to {0} in Roblox App..
         /// </summary>
         public static string AccountManager_Replace_Failed {
             get {
@@ -88,7 +88,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cookie file updated for {0}. Launch Roblox to log in..
+        ///   Looks up a localized string similar to Roblox App Account has been changed to {0}..
         /// </summary>
         public static string AccountManager_Replace_Success {
             get {
@@ -1485,6 +1485,15 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Location: {0}.
+        /// </summary>
+        public static string ContextMenu_ServerDetails_Notification_Text_ServerID {
+            get {
+                return ResourceManager.GetString("ContextMenu.ServerDetails.Notification.Text.ServerID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Access Code.
         /// </summary>
         public static string ContextMenu_ServerInformation_AccessCode {
@@ -1553,6 +1562,15 @@ namespace Froststrap.Resources {
         public static string ContextMenu_ServerInformation_Notification_Title_Reserved {
             get {
                 return ResourceManager.GetString("ContextMenu.ServerInformation.Notification.Title.Reserved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You are currently not in a server..
+        /// </summary>
+        public static string ContextMenu_ServerInformation_NotInAServer {
+            get {
+                return ResourceManager.GetString("ContextMenu.ServerInformation.NotInAServer", resourceCulture);
             }
         }
         
@@ -2383,6 +2401,15 @@ namespace Froststrap.Resources {
         public static string Enums_BootstrapperStyle_FluentDialog {
             get {
                 return ResourceManager.GetString("Enums.BootstrapperStyle.FluentDialog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Modern.
+        /// </summary>
+        public static string Enums_BootstrapperStyle_Modern {
+            get {
+                return ResourceManager.GetString("Enums.BootstrapperStyle.Modern", resourceCulture);
             }
         }
         
@@ -6086,7 +6113,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Options that require reading Roblox logs, requires the app to stay open in System Tray / Menu Bar.
+        ///   Looks up a localized string similar to Options that require reading Roblox logs, requires the app to stay open in System Tray / Menu Bar..
         /// </summary>
         public static string Menu_Integrations_ActivityTracking_Description {
             get {
@@ -6541,6 +6568,24 @@ namespace Froststrap.Resources {
         public static string Menu_Integrations_RPC_Studio_Description {
             get {
                 return ResourceManager.GetString("Menu.Integrations.RPC.Studio.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show you how long the server has been running for, Will delay server info notification until loaded..
+        /// </summary>
+        public static string Menu_Integrations_ServerUptime_Description {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.ServerUptime.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Server Uptime.
+        /// </summary>
+        public static string Menu_Integrations_ServerUptime_Title {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.ServerUptime.Title", resourceCulture);
             }
         }
         

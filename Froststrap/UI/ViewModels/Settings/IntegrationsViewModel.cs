@@ -121,10 +121,28 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public static bool ShowServerDetailsEnabled
+        public bool ShowServerDetailsEnabled
         {
             get => App.Settings.Prop.ShowServerDetails;
-            set => App.Settings.Prop.ShowServerDetails = value;
+            set
+            {
+                App.Settings.Prop.ShowServerDetails = value;
+
+                if (!value)
+                {
+                    ShowServerUptimeEnabled = false;
+
+                    OnPropertyChanged(nameof(ShowServerUptimeEnabled));
+                }
+
+                OnPropertyChanged(nameof(ShowServerDetailsEnabled));
+            }
+        }
+
+        public static bool ShowServerUptimeEnabled
+        {
+            get => App.Settings.Prop.ShowServerUptime;
+            set => App.Settings.Prop.ShowServerUptime = value;
         }
 
         public static bool PlaytimeCounterEnabled

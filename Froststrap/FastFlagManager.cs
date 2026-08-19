@@ -11,7 +11,6 @@ namespace Froststrap
         private Dictionary<string, object> OriginalProp = [];
 
         public override string ClassName => nameof(FastFlagManager);
-        public string LOG_IDENT_CLASS => ClassName;
         public override string ProfilesLocation => Paths.SavedFlagProfiles;
         public override string FileName => "ClientAppSettings.json";
         public override string FileLocation => Path.Combine(Paths.Modifications, "ClientSettings", FileName);
@@ -68,9 +67,9 @@ namespace Froststrap
         public static IReadOnlyDictionary<TextureQuality, string?> TextureQualityLevels => new Dictionary<TextureQuality, string?>
         {
             { TextureQuality.Default, null },
-            { TextureQuality.Medium, "0" },
+            { TextureQuality.Medium, "2" },
             { TextureQuality.Low, "1" },
-            { TextureQuality.Lowest, "2" },
+            { TextureQuality.Lowest, "0" },
         };
 
         public static IReadOnlyDictionary<MSAAMode, string?> MSAAModes => new Dictionary<MSAAMode, string?>

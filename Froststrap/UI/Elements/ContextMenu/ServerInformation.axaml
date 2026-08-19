@@ -15,29 +15,57 @@
                      WindowStartupLocation="CenterScreen">
 
     <Grid RowDefinitions="Auto, *, Auto">
-        <controls:TitleBar Grid.Row="0" Grid.ColumnSpan="2" x:Name="RootTitleBar" Title="{x:Static resources:Strings.ContextMenu_ServerInformation_Title}" ShowMinimize="False" ShowMaximize="False" Icon="avares://Froststrap/Froststrap.ico" />
-        <Grid RowDefinitions="Auto, Auto, Auto, Auto, Auto" ColumnDefinitions="Auto, *" Grid.Row="1" Margin="16,8,16,16">
+        <controls:TitleBar Grid.Row="0" Grid.ColumnSpan="2" x:Name="RootTitleBar"
+                           Title="{x:Static resources:Strings.ContextMenu_ServerInformation_Title}"
+                           ShowMinimize="False" ShowMaximize="False"
+                           Icon="avares://Froststrap/Froststrap.ico" />
 
-            <TextBlock Grid.Row="0" Grid.Column="0" Margin="0,0,16,12" VerticalAlignment="Center" Text="{x:Static resources:Strings.ContextMenu_ServerInformation_Type}"  />
-            <TextBlock Grid.Row="0" Grid.Column="1" Foreground="{DynamicResource TextFillColorTertiaryBrush}" Text="{Binding ServerType, Mode=OneWay}"/>
+        <Grid Grid.Row="1" Margin="16,8,16,16">
+            <TextBlock Grid.Row="0" Text="{x:Static resources:Strings.ContextMenu_ServerInformation_NotInAServer}"
+                       IsVisible="{Binding !HasServerData}"
+                       HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,20" />
 
-            <TextBlock Grid.Row="1" Grid.Column="0" Margin="0,0,16,12" VerticalAlignment="Center" Text="{x:Static resources:Strings.ContextMenu_ServerInformation_InstanceId}" IsVisible="{Binding ShowInstanceId, Mode=OneTime}" />
-            <TextBlock Grid.Row="1" Grid.Column="1" Foreground="{DynamicResource TextFillColorTertiaryBrush}" Text="{Binding InstanceId, Mode=OneWay}" IsVisible="{Binding ShowInstanceId, Mode=OneTime}" />
+            <Grid IsVisible="{Binding HasServerData}"
+                  RowDefinitions="Auto, Auto, Auto, Auto, Auto"
+                  ColumnDefinitions="Auto, *">
+                <TextBlock Grid.Row="0" Grid.Column="0" Margin="0,0,16,12" VerticalAlignment="Center"
+                           Text="{x:Static resources:Strings.ContextMenu_ServerInformation_Type}" />
+                <TextBlock Grid.Row="0" Grid.Column="1" Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                           Text="{Binding ServerType}" />
 
-            <TextBlock Grid.Row="2" Grid.Column="0" Margin="0,0,16,12" VerticalAlignment="Center" Text="{x:Static resources:Strings.ContextMenu_ServerInformation_AccessCode}" IsVisible="{Binding AccessCodeVisibility, Mode=OneTime}" />
-            <TextBlock Grid.Row="2" Grid.Column="1" Foreground="{DynamicResource TextFillColorTertiaryBrush}" Text="{Binding AccessCode, Mode=OneWay}" IsVisible="{Binding AccessCodeVisibility, Mode=OneTime}" />
+                <TextBlock Grid.Row="1" Grid.Column="0" Margin="0,0,16,12" VerticalAlignment="Center"
+                           Text="{x:Static resources:Strings.ContextMenu_ServerInformation_InstanceId}"
+                           IsVisible="{Binding ShowInstanceId}" />
+                <TextBlock Grid.Row="1" Grid.Column="1" Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                           Text="{Binding InstanceId}" IsVisible="{Binding ShowInstanceId}" />
 
-            <TextBlock Grid.Row="3" Grid.Column="0" Margin="0,0,16,12" VerticalAlignment="Center" Text="{x:Static resources:Strings.ContextMenu_ServerInformation_Location}" IsVisible="{Binding ServerLocationVisibility, Mode=OneTime}"  />
-            <TextBlock Grid.Row="3" Grid.Column="1" Foreground="{DynamicResource TextFillColorTertiaryBrush}" Text="{Binding ServerLocation, Mode=OneWay}" IsVisible="{Binding ServerLocationVisibility, Mode=OneTime}" />
+                <TextBlock Grid.Row="2" Grid.Column="0" Margin="0,0,16,12" VerticalAlignment="Center"
+                           Text="{x:Static resources:Strings.ContextMenu_ServerInformation_AccessCode}"
+                           IsVisible="{Binding AccessCodeVisibility}" />
+                <TextBlock Grid.Row="2" Grid.Column="1" Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                           Text="{Binding AccessCode}" IsVisible="{Binding AccessCodeVisibility}" />
 
-            <TextBlock Grid.Row="4" Grid.Column="0" Margin="0,0,16,12" VerticalAlignment="Center" Text="{x:Static resources:Strings.ContextMenu_ServerInformation_Uptime}" IsVisible="{Binding ServerUptimeVisibility, Mode=OneTime}"  />
-            <TextBlock Grid.Row="4" Grid.Column="1" Foreground="{DynamicResource TextFillColorTertiaryBrush}" Text="{Binding ServerUptime, Mode=OneWay}" IsVisible="{Binding ServerUptimeVisibility, Mode=OneTime}" />
+                <TextBlock Grid.Row="3" Grid.Column="0" Margin="0,0,16,12" VerticalAlignment="Center"
+                           Text="{x:Static resources:Strings.ContextMenu_ServerInformation_Location}"
+                           IsVisible="{Binding ServerLocationVisibility}" />
+                <TextBlock Grid.Row="3" Grid.Column="1" Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                           Text="{Binding ServerLocation}" IsVisible="{Binding ServerLocationVisibility}" />
+
+                <TextBlock Grid.Row="4" Grid.Column="0" Margin="0,0,16,12" VerticalAlignment="Center"
+                           Text="{x:Static resources:Strings.ContextMenu_ServerInformation_Uptime}"
+                           IsVisible="{Binding ServerUptimeVisibility}" />
+                <TextBlock Grid.Row="4" Grid.Column="1" Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                           Text="{Binding ServerUptime}" IsVisible="{Binding ServerUptimeVisibility}" />
+            </Grid>
         </Grid>
 
         <Border Grid.Row="2" Padding="15" Background="{DynamicResource ControlFillColorDefaultBrush}">
             <StackPanel Orientation="Horizontal" FlowDirection="LeftToRight" HorizontalAlignment="Right">
-                <Button MinWidth="100" Content="{Binding CopyButtonText, Mode=OneTime}" Command="{Binding CopyCommand, Mode=OneTime}" CommandParameter="{Binding $self}" />
-                <Button Margin="12,0,0,0" MinWidth="100" Content="{x:Static resources:Strings.Common_Close}" Command="{Binding CloseCommand}" CommandParameter="{Binding $parent[Window]}" />
+                <Button MinWidth="100" Content="{Binding CopyButtonText}"
+                        Command="{Binding CopyCommand}" CommandParameter="{Binding $self}"
+                        IsVisible="{Binding HasServerData}" />
+                <Button Margin="12,0,0,0" MinWidth="100" Content="{x:Static resources:Strings.Common_Close}"
+                        Command="{Binding CloseCommand}" CommandParameter="{Binding $parent[Window]}" />
             </StackPanel>
         </Border>
     </Grid>

@@ -1,87 +1,189 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input.Platform;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.Integrations;
-using System.Windows;
 using System.Windows.Input;
 
-namespace Froststrap.UI.ViewModels.ContextMenu
+namespace Froststrap.UI.ViewModels.ContextMenu;
+
+public class ServerInformationViewModel : NotifyPropertyChangedViewModel
 {
-    internal class ServerInformationViewModel : NotifyPropertyChangedViewModel
+    private ActivityWatcher? _activityWatcher;
+    private string _serverType = string.Empty;
+    private string _instanceId = string.Empty;
+    private string _accessCode = string.Empty;
+    private string _location = string.Empty;
+    private string _uptime = string.Empty;
+    private bool _hasServerData = false;
+
+    public string ServerType
     {
-        private readonly ActivityWatcher _activityWatcher;
+        get => _serverType;
+        set => SetProperty(ref _serverType, value);
+    }
 
-        public string InstanceId => _activityWatcher.Data.JobId;
-
-        public string AccessCode => _activityWatcher.Data.AccessCode;
-
-        public bool AccessCodeVisibility => !string.IsNullOrEmpty(_activityWatcher.Data.AccessCode) && _activityWatcher.Data.ServerType == Enums.ServerType.Private;
-
-        public bool ShowInstanceId => !AccessCodeVisibility;
-
-        public string CopyButtonText => AccessCodeVisibility
-            ? Strings.ContextMenu_ServerInformation_CopyAccessCode
-            : Strings.ContextMenu_ServerInformation_CopyInstanceId;
-
-        public string ServerType => _activityWatcher.Data.ServerType.ToTranslatedString();
-
-        public string ServerLocation { get; private set; } = Strings.Common_Loading;
-
-        public string ServerUptime { get; private set; } = Strings.Common_Loading;
-
-        public static bool ServerLocationVisibility => App.Settings.Prop.ShowServerDetails;
-        public static bool ServerUptimeVisibility => App.Settings.Prop.ShowServerDetails;
-
-        public ICommand CopyCommand => new RelayCommand<Visual>(CopyToClipboard);
-
-        public ServerInformationViewModel(Watcher watcher)
+    public string InstanceId
+    {
+        get => _instanceId;
+        set
         {
-            _activityWatcher = watcher.ActivityWatcher!;
-
-            if (ServerLocationVisibility)
-                QueryServerLocation();
-
-            if (ServerUptimeVisibility)
-                QueryServerUptime();
+            if (SetProperty(ref _instanceId, value))
+                OnPropertyChanged(nameof(ShowInstanceId));
         }
+    }
 
-        public async void QueryServerLocation()
+    public string AccessCode
+    {
+        get => _accessCode;
+        set
         {
-            string? location = await _activityWatcher.Data.QueryServerLocation();
-
-            if (String.IsNullOrEmpty(location))
-                ServerLocation = Strings.Common_NotAvailable;
-            else
-                ServerLocation = location;
-
-            OnPropertyChanged(nameof(ServerLocation));
-        }
-
-        public async void QueryServerUptime()
-        {
-            DateTime? serverTime = _activityWatcher.Data.StartTime;
-            TimeSpan _serverUptime = TimeSpan.Zero;
-            if (serverTime is not null)
-                _serverUptime = DateTime.UtcNow - serverTime.Value;
-
-            ServerUptime = Time.FormatTimeSpan(_serverUptime);
-
-            OnPropertyChanged(nameof(ServerUptime));
-        }
-
-        private async void CopyToClipboard(Visual? visual)
-        {
-            var topLevel = TopLevel.GetTopLevel(visual);
-
-            if (topLevel?.Clipboard != null)
+            if (SetProperty(ref _accessCode, value))
             {
-                string textToCopy = AccessCodeVisibility ? AccessCode : InstanceId;
-                await topLevel.Clipboard.SetTextAsync(textToCopy);
+                OnPropertyChanged(nameof(AccessCodeVisibility));
+                OnPropertyChanged(nameof(CopyButtonText));
             }
         }
+    }
 
-        public static ICommand CloseCommand => new RelayCommand<Window>(window => window?.Close());
+    public string ServerLocation
+    {
+        get => _location;
+        set
+        {
+            if (SetProperty(ref _location, value))
+                OnPropertyChanged(nameof(ServerLocationVisibility));
+        }
+    }
+
+    public string ServerUptime
+    {
+        get => _uptime;
+        set
+        {
+            if (SetProperty(ref _uptime, value))
+                OnPropertyChanged(nameof(ServerUptimeVisibility));
+        }
+    }
+
+    public bool HasServerData
+    {
+        get => _hasServerData;
+        set
+        {
+            if (SetProperty(ref _hasServerData, value))
+            {
+                OnPropertyChanged(nameof(ShowInstanceId));
+                OnPropertyChanged(nameof(AccessCodeVisibility));
+                OnPropertyChanged(nameof(ServerLocationVisibility));
+                OnPropertyChanged(nameof(ServerUptimeVisibility));
+                OnPropertyChanged(nameof(ShowCopyButton));
+                OnPropertyChanged(nameof(CopyButtonText));
+            }
+        }
+    }
+
+    public bool ShowInstanceId => HasServerData && !string.IsNullOrEmpty(InstanceId);
+    public bool AccessCodeVisibility => HasServerData && !string.IsNullOrEmpty(AccessCode);
+    public bool ServerLocationVisibility => HasServerData && !string.IsNullOrEmpty(ServerLocation) && ServerLocation != Strings.Common_NotAvailable;
+    public bool ServerUptimeVisibility => HasServerData && !string.IsNullOrEmpty(ServerUptime) && ServerUptime != Strings.Common_NotAvailable && App.Settings.Prop.ShowServerUptime;
+    public bool ShowCopyButton => HasServerData;
+
+    public ICommand CopyCommand { get; }
+    public ICommand CloseCommand { get; }
+
+    public string CopyButtonText => AccessCodeVisibility
+        ? Strings.ContextMenu_ServerInformation_CopyAccessCode
+        : Strings.ContextMenu_ServerInformation_CopyInstanceId;
+
+    public ServerInformationViewModel()
+    {
+        CopyCommand = new RelayCommand<Visual?>(CopyToClipboard);
+        CloseCommand = new RelayCommand<Window>(window => window?.Close());
+    }
+
+    public void SetWatcher(ActivityWatcher? watcher)
+    {
+        _activityWatcher = watcher;
+    }
+
+    public void UpdateData(ActivityData data)
+    {
+        ServerType = data.ServerType.ToString();
+        InstanceId = data.JobId;
+        AccessCode = data.AccessCode;
+        ServerLocation = data.Region ?? Strings.Common_NotAvailable;
+        ServerUptime = data.StartTime.HasValue
+            ? FormatUptime(DateTime.UtcNow - data.StartTime.Value)
+            : Strings.Common_NotAvailable;
+        HasServerData = true;
+    }
+
+    public void ClearData()
+    {
+        ServerType = string.Empty;
+        InstanceId = string.Empty;
+        AccessCode = string.Empty;
+        ServerLocation = string.Empty;
+        ServerUptime = string.Empty;
+        HasServerData = false;
+    }
+
+    public void RefreshUptime()
+    {
+        if (_activityWatcher == null || !_activityWatcher.InGame) return;
+        var data = _activityWatcher.Data;
+        if (data.StartTime.HasValue)
+        {
+            ServerUptime = FormatUptime(DateTime.UtcNow - data.StartTime.Value);
+        }
+        else
+        {
+            ServerUptime = Strings.Common_NotAvailable;
+        }
+    }
+
+    public async void RefreshLocation()
+    {
+        if (_activityWatcher == null || !_activityWatcher.InGame) return;
+        var data = _activityWatcher.Data;
+        if (!string.IsNullOrEmpty(data.Region))
+        {
+            ServerLocation = data.Region;
+        }
+        else if (data.MachineAddressValid)
+        {
+            string? location = await data.QueryServerLocation();
+            if (!string.IsNullOrEmpty(location))
+            {
+                ServerLocation = location;
+            }
+            else
+            {
+                ServerLocation = Strings.Common_NotAvailable;
+            }
+        }
+        else
+        {
+            ServerLocation = Strings.Common_NotAvailable;
+        }
+    }
+
+    private static string FormatUptime(TimeSpan uptime)
+    {
+        if (uptime.TotalHours >= 1)
+            return $"{(int)uptime.TotalHours}h {uptime.Minutes}m {uptime.Seconds}s";
+        return $"{uptime.Minutes}m {uptime.Seconds}s";
+    }
+
+    private async void CopyToClipboard(Visual? visual)
+    {
+        if (visual is null) return;
+        var topLevel = TopLevel.GetTopLevel(visual);
+        if (topLevel?.Clipboard is not null)
+        {
+            string textToCopy = AccessCodeVisibility ? AccessCode : InstanceId;
+            await topLevel.Clipboard.SetTextAsync(textToCopy);
+        }
     }
 }
