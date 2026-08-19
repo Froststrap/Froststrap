@@ -69,7 +69,7 @@ namespace Froststrap
             }
             catch (HttpRequestException ex)
             {
-                Logger.Error($"Failed to get authenticated user: {ex.Message}");
+                App.Logger.Error($"Failed to get authenticated user: {ex.Message}");
             }
 
             return null;
@@ -81,20 +81,20 @@ namespace Froststrap
             if (!Enabled)
             {
                 State = CookieState.NotAllowed;
-                Logger.Error("Cookie access not allowed");
+                App.Logger.Error("Cookie access not allowed");
                 return;
             }
 
             if (!string.IsNullOrEmpty(AuthCookie))
             {
-                Logger.Error("Cookie was already loaded!");
+                App.Logger.Error("Cookie was already loaded!");
                 return;
             }
 
             if (!File.Exists(CookiesPath))
             {
                 State = CookieState.NotFound;
-                Logger.Error("Cookie file not found");
+                App.Logger.Error("Cookie file not found");
                 return;
             }
 
@@ -127,7 +127,7 @@ namespace Froststrap
             }
             catch (Exception ex)
             {
-                Logger.Error($"Failed to load cookies: {ex.Message}");
+                App.Logger.Error($"Failed to load cookies: {ex.Message}");
                 State = CookieState.Failed;
             }
         }
@@ -208,7 +208,7 @@ namespace Froststrap
 
                 int pageHeader = ReadLittleEndianInt32(data, pageStart);
                 if (pageHeader != 0x00000100 && pageHeader != 0x00010000)
-                    Logger.Error($"Unexpected page header: 0x{pageHeader:X} at offset {pageStart}");
+                    App.Logger.Error($"Unexpected page header: 0x{pageHeader:X} at offset {pageStart}");
 
                 int numCookies = ReadLittleEndianInt32(data, pageStart + 4);
                 int cookieOffsetsOffset = pageStart + 8;
@@ -223,7 +223,7 @@ namespace Froststrap
                     }
                     catch (Exception ex)
                     {
-                        Logger.Error($"Failed to parse cookie {c} in page {p}: {ex.Message}");
+                        App.Logger.Error($"Failed to parse cookie {c} in page {p}: {ex.Message}");
                     }
                 }
 

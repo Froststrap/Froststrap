@@ -94,7 +94,7 @@ namespace Froststrap.Integrations
                         ActiveAccount = _accounts.Find(a => a.UserId == data.ActiveAccountId);
                 }
             }
-            catch (Exception ex) { Logger.Exception(ex); }
+            catch (Exception ex) { App.Logger.Exception(ex); }
         }
 
         public void SaveAccounts()
@@ -109,7 +109,7 @@ namespace Froststrap.Integrations
                 };
                 File.WriteAllText(_accountsLocation, JsonConvert.SerializeObject(data, Formatting.Indented));
             }
-            catch (Exception ex) { Logger.Exception(ex); }
+            catch (Exception ex) { App.Logger.Exception(ex); }
         }
 
         public void SetActiveAccount(long? userId)
@@ -182,18 +182,18 @@ namespace Froststrap.Integrations
                         {
                             var errJson = JObject.Parse(body);
                             var errorMsg = errJson["errors"]?[0]?["message"]?.Value<string>() ?? "Unknown error";
-                            Logger.Error($"Status API returned error: {errorMsg}");
+                            App.Logger.Error($"Status API returned error: {errorMsg}");
                             await Dispatcher.UIThread.InvokeAsync(() => dialog.UpdateStatus("Cancelled"));
                         }
                         else if (body.Trim().Equals("\"CodeInvalid\"", StringComparison.OrdinalIgnoreCase) ||
                                  body.Trim().Equals("CodeInvalid", StringComparison.OrdinalIgnoreCase))
                         {
-                            Logger.Info("Code invalid/expired.");
+                            App.Logger.Info("Code invalid/expired.");
                             await Dispatcher.UIThread.InvokeAsync(() => dialog.UpdateStatus("Cancelled"));
                         }
                         else
                         {
-                            Logger.Warn($"Unexpected 400 response: {body}");
+                            App.Logger.Warn($"Unexpected 400 response: {body}");
                             await Dispatcher.UIThread.InvokeAsync(() => dialog.UpdateStatus("Error: unexpected response"));
                         }
                         return null;
@@ -206,7 +206,7 @@ namespace Froststrap.Integrations
                     }
                     catch (JsonReaderException)
                     {
-                        Logger.Warn($"Status endpoint returned non‑JSON: {body}");
+                        App.Logger.Warn($"Status endpoint returned non‑JSON: {body}");
                         await Dispatcher.UIThread.InvokeAsync(() => dialog.UpdateStatus("Error: invalid response"));
                         return null;
                     }
@@ -220,12 +220,12 @@ namespace Froststrap.Integrations
                         if (errors is { Count: > 0 })
                         {
                             var errorMessage = errors[0]?["message"]?.Value<string>() ?? "Unknown error";
-                            Logger.Warn($"API error: {errorMessage}");
+                            App.Logger.Warn($"API error: {errorMessage}");
                             await Dispatcher.UIThread.InvokeAsync(() => dialog.UpdateStatus($"Error: {errorMessage}"));
                             return null;
                         }
 
-                        Logger.Warn($"Missing 'status' field in response: {body}");
+                        App.Logger.Warn($"Missing 'status' field in response: {body}");
                         await Dispatcher.UIThread.InvokeAsync(() => dialog.UpdateStatus("Error: unexpected status"));
                         return null;
                     }
@@ -257,7 +257,7 @@ namespace Froststrap.Integrations
 
                     if (DateTime.UtcNow > expirationTime)
                     {
-                        Logger.Info("Code timed out.");
+                        App.Logger.Info("Code timed out.");
                         await Dispatcher.UIThread.InvokeAsync(() => dialog.UpdateStatus("TimedOut"));
                         return null;
                     }
@@ -305,7 +305,7 @@ namespace Froststrap.Integrations
 
                 if (string.IsNullOrEmpty(robloSecurity))
                 {
-                    Logger.Warn("No .ROBLOSECURITY cookie in response.");
+                    App.Logger.Warn("No .ROBLOSECURITY cookie in response.");
                     await Dispatcher.UIThread.InvokeAsync(() =>
                         dialog.UpdateStatus("Failed: no cookie received"));
                     return null;
@@ -314,7 +314,7 @@ namespace Froststrap.Integrations
                 var account = await GetAccountInfoFromCookie(robloSecurity);
                 if (account == null)
                 {
-                    Logger.Warn("Failed: invalid account");
+                    App.Logger.Warn("Failed: invalid account");
                     await Dispatcher.UIThread.InvokeAsync(() =>
                         dialog.UpdateStatus("Failed: invalid account"));
                     return null;
@@ -329,7 +329,7 @@ namespace Froststrap.Integrations
             }
             catch (Exception ex)
             {
-                Logger.Error(ex);
+                App.Logger.Error(ex);
                 await Dispatcher.UIThread.InvokeAsync(() =>
                     dialog.UpdateStatus($"Error: {ex.Message}"));
                 return null;
@@ -342,7 +342,7 @@ namespace Froststrap.Integrations
 
             try
             {
-                Logger.Info("Launching browser for account login...");
+                App.Logger.Info("Launching browser for account login...");
 
                 string? executablePath = GetSystemBrowserPath();
 
@@ -365,7 +365,7 @@ namespace Froststrap.Integrations
 
                     if (executablePath == null)
                     {
-                        Logger.Info("No browser found, downloading Chromium...");
+                        App.Logger.Info("No browser found, downloading Chromium...");
                         var browserInfo = await fetcher.DownloadAsync();
                         executablePath = browserInfo.GetExecutablePath();
                     }
@@ -410,7 +410,7 @@ namespace Froststrap.Integrations
 
                             if (securityCookie != null)
                             {
-                                Logger.Info("Successfully captured cookie.");
+                                App.Logger.Info("Successfully captured cookie.");
                                 completionSource.TrySetResult(securityCookie.Value);
                                 break;
                             }
@@ -422,7 +422,7 @@ namespace Froststrap.Integrations
 
                 try
                 {
-                    Logger.Info("Navigating to Roblox...");
+                    App.Logger.Info("Navigating to Roblox...");
                     await mainPage.GoToAsync("https://www.roblox.com/login", new NavigationOptions
                     {
                         WaitUntil = [WaitUntilNavigation.Networkidle2]
@@ -430,7 +430,7 @@ namespace Froststrap.Integrations
                 }
                 catch (Exception ex)
                 {
-                    Logger.Error($"Initial nav failed ({ex.Message}), trying JS fallback...");
+                    App.Logger.Error($"Initial nav failed ({ex.Message}), trying JS fallback...");
                     try
                     {
                         if (!mainPage.IsClosed)
@@ -448,12 +448,12 @@ namespace Froststrap.Integrations
                 }
                 else
                 {
-                    Logger.Info("Login timed out after 10 minutes.");
+                    App.Logger.Info("Login timed out after 10 minutes.");
                 }
 
                 if (string.IsNullOrEmpty(newCookie))
                 {
-                    Logger.Info("Account add process cancelled or failed.");
+                    App.Logger.Info("Account add process cancelled or failed.");
                     return null;
                 }
 
@@ -472,7 +472,7 @@ namespace Froststrap.Integrations
             }
             catch (Exception ex)
             {
-                Logger.Error(ex);
+                App.Logger.Error(ex);
                 return null;
             }
             finally
@@ -712,7 +712,7 @@ namespace Froststrap.Integrations
                 }
                 catch (HttpRequestException ex) when (ex.InnerException is System.Net.Sockets.SocketException || ex.Message.Contains("canceled"))
                 {
-                    Logger.Info("Network socket not ready or canceled. skipping info fetch.");
+                    App.Logger.Info("Network socket not ready or canceled. skipping info fetch.");
                     return null;
                 }
 
@@ -720,7 +720,7 @@ namespace Froststrap.Integrations
             }
             catch (Exception ex)
             {
-                Logger.Error(ex);
+                App.Logger.Error(ex);
                 return null;
             }
         }
@@ -741,7 +741,7 @@ namespace Froststrap.Integrations
             }
             catch (Exception ex)
             {
-                Logger.Error(ex);
+                App.Logger.Error(ex);
                 return null;
             }
         }
@@ -753,7 +753,7 @@ namespace Froststrap.Integrations
                 string decryptedCookie = Unprotect(account.SecurityToken);
                 if (string.IsNullOrEmpty(decryptedCookie))
                 {
-                    Logger.Info($"Account {account.Username}: No valid cookie found");
+                    App.Logger.Info($"Account {account.Username}: No valid cookie found");
                     return false;
                 }
 
@@ -769,12 +769,12 @@ namespace Froststrap.Integrations
                     response.StatusCode == HttpStatusCode.Forbidden)
                     return false;
 
-                Logger.Info($"Account {account.Username}: Unexpected status {response.StatusCode}");
+                App.Logger.Info($"Account {account.Username}: Unexpected status {response.StatusCode}");
                 return null;
             }
             catch (Exception ex)
             {
-                Logger.Error(ex);
+                App.Logger.Error(ex);
                 return null;
             }
         }
@@ -803,14 +803,14 @@ namespace Froststrap.Integrations
 
                     SaveAccounts();
 
-                    Logger.Info($"Removed account {account.Username} ({account.UserId}).");
+                    App.Logger.Info($"Removed account {account.Username} ({account.UserId}).");
                     return true;
                 }
                 return false;
             }
             catch (Exception ex)
             {
-                Logger.Error(ex);
+                App.Logger.Error(ex);
                 return false;
             }
         }
@@ -850,11 +850,11 @@ namespace Froststrap.Integrations
                 }
                 catch (OperationCanceledException)
                 {
-                    Logger.Info("Avatar fetch was canceled by the system (SocketException 89).");
+                    App.Logger.Info("Avatar fetch was canceled by the system (SocketException 89).");
                 }
                 catch (Exception ex)
                 {
-                    Logger.Error($"Batch failed: {ex.Message}");
+                    App.Logger.Error($"Batch failed: {ex.Message}");
                 }
             }
 
@@ -879,7 +879,7 @@ namespace Froststrap.Integrations
             string plainCookie = account.SecurityToken;
             if (string.IsNullOrEmpty(plainCookie))
             {
-                Logger.Info("Account has no valid cookie.");
+                App.Logger.Info("Account has no valid cookie.");
                 return false;
             }
 
@@ -901,13 +901,13 @@ namespace Froststrap.Integrations
                 }
                 else
                 {
-                    Logger.Info("Unsupported OS.");
+                    App.Logger.Info("Unsupported OS.");
                     return false;
                 }
             }
             catch (Exception ex)
             {
-                Logger.Error(ex);
+                App.Logger.Error(ex);
                 return false;
             }
         }

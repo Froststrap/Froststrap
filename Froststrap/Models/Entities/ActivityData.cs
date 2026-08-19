@@ -138,7 +138,7 @@ namespace Froststrap.Models.Entities
             }
             catch (Exception ex)
             {
-                Logger.Error($"Failed to get server location for {MachineAddress}: {ex.Message}");
+                App.Logger.Error($"Failed to get server location for {MachineAddress}: {ex.Message}");
 
                 GlobalCache.ServerLocation[MachineAddress] = location;
                 serverQuerySemaphore.Release();
@@ -158,7 +158,7 @@ namespace Froststrap.Models.Entities
 		{
 			try
 			{
-				Logger.Info($"Rejoining server: {PlaceId}/{JobId}");
+				App.Logger.Info($"Rejoining server: {PlaceId}/{JobId}");
 
 				string robloxUri = GetInviteDeeplink(true);
 
@@ -173,7 +173,7 @@ namespace Froststrap.Models.Entities
 			}
 			catch (Exception ex)
 			{
-				Logger.Error($"Failed to rejoin server: {ex.Message}");
+				App.Logger.Error($"Failed to rejoin server: {ex.Message}");
 				_ = Frontend.ShowMessageBox($"Failed to rejoin server: {ex.Message}", MessageBoxImage.Error);
 			}
 		}
@@ -186,7 +186,7 @@ namespace Froststrap.Models.Entities
 
 				if (process.Length == 0)
 				{
-					Logger.Info($"Roblox not found");
+					App.Logger.Info($"Roblox not found");
 					return;
 				}
 
@@ -194,7 +194,7 @@ namespace Froststrap.Models.Entities
 				{
 					if ((DateTime.Now - proc.StartTime).TotalSeconds < 3)
 					{
-						Logger.Info($"Skipping new process");
+						App.Logger.Info($"Skipping new process");
 						continue;
 					}
 
@@ -203,7 +203,7 @@ namespace Froststrap.Models.Entities
 			}
 			catch (Exception ex)
 			{
-				Logger.Error($"Roblox could not be closed: {ex.Message}");
+				App.Logger.Error($"Roblox could not be closed: {ex.Message}");
 			}
 		}
 

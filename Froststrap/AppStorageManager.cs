@@ -28,7 +28,7 @@ public class AppStorageManager : JsonManager<Dictionary<string, object>>
         if (value is null)
         {
             if (Prop.ContainsKey(key))
-                Logger.Info($"Deletion of '{key}' pending");
+                App.Logger.Info($"Deletion of '{key}' pending");
             Prop.Remove(key);
         }
         else
@@ -37,7 +37,7 @@ public class AppStorageManager : JsonManager<Dictionary<string, object>>
             if (Prop.TryGetValue(key, out object? existing) && existing?.ToString() == newVal)
                 return;
 
-            Logger.Info($"Setting '{key}' to '{newVal}'");
+            App.Logger.Info($"Setting '{key}' to '{newVal}'");
             Prop[key] = newVal;
         }
     }
@@ -46,7 +46,7 @@ public class AppStorageManager : JsonManager<Dictionary<string, object>>
     {
         if (!PresetKeys.TryGetValue(friendlyName, out string? actualKey))
         {
-            Logger.Error($"Unknown preset '{friendlyName}'");
+            App.Logger.Error($"Unknown preset '{friendlyName}'");
             return;
         }
         SetValue(actualKey, value);
@@ -56,7 +56,7 @@ public class AppStorageManager : JsonManager<Dictionary<string, object>>
     {
         if (!PresetKeys.TryGetValue(friendlyName, out string? actualKey))
         {
-            Logger.Error($"Unknown preset '{friendlyName}'");
+            App.Logger.Error($"Unknown preset '{friendlyName}'");
             return null;
         }
         return GetValue(actualKey);
@@ -67,14 +67,14 @@ public class AppStorageManager : JsonManager<Dictionary<string, object>>
         if (value is null)
         {
             if (Prop.ContainsKey(key))
-                Logger.Info($"Deletion of '{key}' pending");
+                App.Logger.Info($"Deletion of '{key}' pending");
             Prop.Remove(key);
         }
         else
         {
             if (Prop.TryGetValue(key, out object? existing) && Equals(existing, value))
                 return;
-            Logger.Info($"Setting '{key}' (raw)");
+            App.Logger.Info($"Setting '{key}' (raw)");
             Prop[key] = value;
         }
     }
@@ -91,11 +91,11 @@ public class AppStorageManager : JsonManager<Dictionary<string, object>>
     {
         if (!File.Exists(FileLocation))
         {
-            Logger.Info("Save skipped – file does not exist.");
+            App.Logger.Info("Save skipped – file does not exist.");
             return;
         }
 
-        Logger.Info($"Saving to {FileLocation}...");
+        App.Logger.Info($"Saving to {FileLocation}...");
 
         try
         {
@@ -106,22 +106,22 @@ public class AppStorageManager : JsonManager<Dictionary<string, object>>
             string contents = JsonSerializer.Serialize(Prop, _writeOptions);
             File.WriteAllText(FileLocation, contents);
             _savedHash = ComputeHash(Prop);
-            Logger.Info("Save Complete!");
+            App.Logger.Info("Save Complete!");
         }
         catch (Exception ex)
         {
-            Logger.Error("Failed to save appStorage.json");
-            Logger.Error(ex);
+            App.Logger.Error("Failed to save appStorage.json");
+            App.Logger.Error(ex);
         }
     }
 
     public override bool Load(bool alertFailure = true)
     {
-        Logger.Info($"Loading from {FileLocation}...");
+        App.Logger.Info($"Loading from {FileLocation}...");
 
         if (!File.Exists(FileLocation))
         {
-            Logger.Error("File does not exist. No storage loaded.");
+            App.Logger.Error("File does not exist. No storage loaded.");
             Loaded = false;
             Prop = [];
             return false;
@@ -136,13 +136,13 @@ public class AppStorageManager : JsonManager<Dictionary<string, object>>
             Prop = settings;
             Loaded = true;
             _savedHash = ComputeHash(Prop);
-            Logger.Info("Loaded successfully!");
+            App.Logger.Info("Loaded successfully!");
             return true;
         }
         catch (Exception ex)
         {
-            Logger.Error("Failed to load!");
-            Logger.Error(ex);
+            App.Logger.Error("Failed to load!");
+            App.Logger.Error(ex);
             Loaded = false;
             Prop = [];
 
