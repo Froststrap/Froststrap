@@ -146,7 +146,7 @@ namespace Froststrap
             }
             catch (Exception ex)
             {
-                Logger.Error($"Failed to set read-only on {FileLocation}", ex);
+                App.Logger.Error($"Failed to set read-only on {FileLocation}", ex);
             }
         }
 
@@ -160,7 +160,7 @@ namespace Froststrap
 
         public void CreateTemplate()
         {
-            Logger.Info($"Creating template at {FileLocation}...");
+            App.Logger.Info($"Creating template at {FileLocation}...");
 
             try
             {
@@ -168,7 +168,7 @@ namespace Froststrap
                 if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
                 {
                     Directory.CreateDirectory(directory);
-                    Logger.Info($"Created directory: {directory}");
+                    App.Logger.Info($"Created directory: {directory}");
                 }
 
                 var uri = new Uri("avares://Froststrap/Resources/GlobalBasicSettings_Template.xml");
@@ -177,17 +177,17 @@ namespace Froststrap
                 resourceStream.CopyTo(fileStream);
 
                 previousReadOnlyState = GetReadOnly();
-                Logger.Info("Template created successfully!");
+                App.Logger.Info("Template created successfully!");
             }
             catch (Exception ex)
             {
-                Logger.Error($"Failed to create template at {FileLocation}", ex);
+                App.Logger.Error($"Failed to create template at {FileLocation}", ex);
             }
         }
 
         public void Load()
         {
-            Logger.Info($"Loading from {FileLocation}...");
+            App.Logger.Info($"Loading from {FileLocation}...");
 
             try
             {
@@ -195,18 +195,18 @@ namespace Froststrap
                 if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
                 {
                     Directory.CreateDirectory(directory);
-                    Logger.Info($"Created directory: {directory}");
+                    App.Logger.Info($"Created directory: {directory}");
                 }
 
                 Document = XDocument.Load(FileLocation);
                 Loaded = true;
                 previousReadOnlyState = GetReadOnly();
                 _savedHash = ComputeHash();
-                Logger.Info("Loaded successfully!");
+                App.Logger.Info("Loaded successfully!");
             }
             catch (Exception ex)
             {
-                Logger.Error("Failed to load, recreating template...", ex);
+                App.Logger.Error("Failed to load, recreating template...", ex);
 
                 if (File.Exists(FileLocation))
                 {
@@ -222,12 +222,12 @@ namespace Froststrap
                     Loaded = true;
                     previousReadOnlyState = GetReadOnly();
                     _savedHash = ComputeHash();
-                    Logger.Info("Recreated and loaded successfully!");
+                    App.Logger.Info("Recreated and loaded successfully!");
                 }
                 catch (Exception retryEx)
                 {
-                    Logger.Error("Failed even after recreating!");
-                    Logger.Error(retryEx);
+                    App.Logger.Error("Failed even after recreating!");
+                    App.Logger.Error(retryEx);
                     Loaded = false;
                 }
             }
@@ -235,7 +235,7 @@ namespace Froststrap
 
         public virtual void Save()
         {
-            Logger.Info($"Saving to {FileLocation}...");
+            App.Logger.Info($"Saving to {FileLocation}...");
 
             try
             {
@@ -246,12 +246,12 @@ namespace Froststrap
             }
             catch (Exception ex)
             {
-                Logger.Error("Failed to save");
-                Logger.Error(ex);
+                App.Logger.Error("Failed to save");
+                App.Logger.Error(ex);
                 return;
             }
 
-            Logger.Info("Save complete!");
+            App.Logger.Info("Save complete!");
         }
 
 

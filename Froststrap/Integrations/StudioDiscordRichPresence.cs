@@ -36,7 +36,7 @@ namespace Froststrap.Integrations
 
             if (_isMacOS)
             {
-                Logger.Info("Skipping Discord RPC initialization on macOS");
+                App.Logger.Info("Skipping Discord RPC initialization on macOS");
                 _rpcClient = null!;
                 _activityWatcher = activityWatcher;
                 return;
@@ -51,18 +51,18 @@ namespace Froststrap.Integrations
 
             _rpcClient.OnReady += (_, e) =>
             {
-                Logger.Info($"Received ready from user {e.User} ({e.User.ID})");
+                App.Logger.Info($"Received ready from user {e.User} ({e.User.ID})");
                 if (!_disposed) InitializeStudioPresence();
             };
 
             _rpcClient.OnConnectionEstablished += (_, e) =>
-                Logger.Info("Established connection with Discord RPC");
+                App.Logger.Info("Established connection with Discord RPC");
 
             _rpcClient.OnClose += (_, e) =>
-                Logger.Info($"Lost connection to Discord RPC - {e.Reason} ({e.Code})");
+                App.Logger.Info($"Lost connection to Discord RPC - {e.Reason} ({e.Code})");
 
             _rpcClient.OnError += (_, e) =>
-                Logger.Info($"An RPC error occurred - {e.Message}");
+                App.Logger.Info($"An RPC error occurred - {e.Message}");
 
             try
             {
@@ -70,21 +70,21 @@ namespace Froststrap.Integrations
             }
             catch (Exception ex)
             {
-                Logger.Error($"Failed to init RPC: {ex.Message}");
+                App.Logger.Error($"Failed to init RPC: {ex.Message}");
             }
         }
 
         // for future use
         private static void HandleStudioPlaceOpened()
         {
-            Logger.Info("Studio place opened");
+            App.Logger.Info("Studio place opened");
         }
 
         private void HandleStudioPlaceClosed()
         {
             if (_isMacOS || _disposed) return;
 
-            Logger.Info("Studio place closed");
+            App.Logger.Info("Studio place closed");
 
             ResetStudioPresence();
             _rpcEnabled = true;
@@ -109,7 +109,7 @@ namespace Froststrap.Integrations
         {
             if (_isMacOS || _disposed || _rpcClient == null) return;
 
-            Logger.Info("Initializing Studio presence");
+            App.Logger.Info("Initializing Studio presence");
 
             _currentPresence = new DiscordRPC.RichPresence
             {
@@ -137,7 +137,7 @@ namespace Froststrap.Integrations
         {
             if (_isMacOS || _disposed || _rpcClient == null) return;
 
-            Logger.Info("Resetting Studio presence");
+            App.Logger.Info("Resetting Studio presence");
 
             DateTime? existingTimestamp = _currentPresence?.Timestamps?.Start;
 
@@ -170,7 +170,7 @@ namespace Froststrap.Integrations
             }
             catch (Exception)
             {
-                Logger.Error("Failed to parse studio message!");
+                App.Logger.Error("Failed to parse studio message!");
                 return;
             }
 
@@ -229,7 +229,7 @@ namespace Froststrap.Integrations
         {
             if (_isMacOS || _disposed || _rpcClient == null) return;
 
-            Logger.Info($"Setting presence visibility ({visible})");
+            App.Logger.Info($"Setting presence visibility ({visible})");
 
             _visible = visible;
 
@@ -253,11 +253,11 @@ namespace Froststrap.Integrations
             }
             catch (IOException ex) when (ex.InnerException is SocketException)
             {
-                Logger.Error("Socket interrupted on macOS. Suppressed.");
+                App.Logger.Error("Socket interrupted on macOS. Suppressed.");
             }
             catch (Exception ex)
             {
-                Logger.Error(ex);
+                App.Logger.Error(ex);
             }
         }
 
@@ -266,7 +266,7 @@ namespace Froststrap.Integrations
             if (_disposed) return;
             _disposed = true;
 
-            Logger.Info("Cleaning up Discord RPC");
+            App.Logger.Info("Cleaning up Discord RPC");
 
             if (_rpcClient != null)
             {
@@ -279,7 +279,7 @@ namespace Froststrap.Integrations
                     _rpcClient.Dispose();
                 }
                 catch (IOException ex) when (ex.InnerException is SocketException) { }
-                catch (Exception ex) { Logger.Error(ex); }
+                catch (Exception ex) { App.Logger.Error(ex); }
             }
 
             GC.SuppressFinalize(this);

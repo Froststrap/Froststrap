@@ -14,22 +14,22 @@ namespace Froststrap
             switch (action)
             {
                 case NextAction.LaunchSettings:
-                    Logger.Info("Opening settings");
+                    App.Logger.Info("Opening settings");
                     LaunchSettings();
                     break;
 
                 case NextAction.LaunchRoblox:
-                    Logger.Info("Opening Roblox");
+                    App.Logger.Info("Opening Roblox");
                     LaunchRoblox(LaunchMode.Player);
                     break;
 
                 case NextAction.LaunchRobloxStudio:
-                    Logger.Info("Opening Roblox Studio");
+                    App.Logger.Info("Opening Roblox Studio");
                     LaunchRoblox(LaunchMode.Studio);
                     break;
 
                 default:
-                    Logger.Info("Closing");
+                    App.Logger.Info("Closing");
                     App.Terminate(ErrorCode.ERROR_SUCCESS);
                     break;
             }
@@ -40,42 +40,42 @@ namespace Froststrap
             // this order is specific
             if (App.LaunchSettings.OnboardingFlag.Active)
             {
-                Logger.Info("Opening uninstaller");
+                App.Logger.Info("Opening uninstaller");
                 LaunchOnboarding();
             }
             else if (App.LaunchSettings.MenuFlag.Active)
             {
-                Logger.Info("Opening settings");
+                App.Logger.Info("Opening settings");
                 LaunchSettings();
             }
             else if (App.LaunchSettings.WatcherFlag.Active)
             {
-                Logger.Info("Opening watcher");
+                App.Logger.Info("Opening watcher");
                 LaunchWatcher();
             }
             else if (App.LaunchSettings.BackgroundUpdaterFlag.Active)
             {
-                Logger.Info("Opening background updater");
+                App.Logger.Info("Opening background updater");
                 LaunchBackgroundUpdater();
             }
             else if (App.LaunchSettings.RobloxLaunchMode != LaunchMode.None)
             {
-                Logger.Info($"Opening bootstrapper ({App.LaunchSettings.RobloxLaunchMode})");
+                App.Logger.Info($"Opening bootstrapper ({App.LaunchSettings.RobloxLaunchMode})");
                 LaunchRoblox(App.LaunchSettings.RobloxLaunchMode);
             }
             else if (App.LaunchSettings.BloxshadeFlag.Active)
             {
-                Logger.Info("Opening Bloxshade");
+                App.Logger.Info("Opening Bloxshade");
                 LaunchBloxshadeConfig();
             }
             else if (!App.LaunchSettings.QuietFlag.Active)
             {
-                Logger.Info("Opening menu");
+                App.Logger.Info("Opening menu");
                 LaunchMenu();
             }
             else
             {
-                Logger.Info("Closing - quiet flag active");
+                App.Logger.Info("Closing - quiet flag active");
                 App.Terminate();
             }
         }
@@ -87,7 +87,7 @@ namespace Froststrap
             if (!interlock.IsAcquired)
             {
                 interlock.Dispose();
-                Logger.Info("Found an already existing menu window");
+                App.Logger.Info("Found an already existing menu window");
 
                 using var activateEvent = new EventWaitHandle(false, EventResetMode.AutoReset, "Froststrap-ActivateSettingsEvent");
                 activateEvent.Set();
@@ -180,8 +180,6 @@ namespace Froststrap
 
         public static async void LaunchRoblox(LaunchMode launchMode)
         {
-            const string LOG_IDENT = "LaunchHandler::LaunchRoblox";
-
             if (launchMode == LaunchMode.None)
                 throw new InvalidOperationException("No Roblox launch mode set");
 
@@ -210,13 +208,13 @@ namespace Froststrap
             }
 
             // start bootstrapper and show the bootstrapper modal if we're not running silently
-            Logger.Info("Initializing bootstrapper");
+            App.Logger.Info("Initializing bootstrapper");
             App.Bootstrapper = new Bootstrapper(launchMode);
             IBootstrapperDialog? dialog = null;
 
             if (!App.LaunchSettings.QuietFlag.Active)
             {
-                Logger.Info("Initializing bootstrapper dialog");
+                App.Logger.Info("Initializing bootstrapper dialog");
                 ThemeCycler.HandleLaunchCycle();
                 dialog = await App.Settings.Prop.BootstrapperStyle.GetNew();
                 App.Bootstrapper.Dialog = dialog;
@@ -225,11 +223,11 @@ namespace Froststrap
 
             _ = Task.Run(App.Bootstrapper.Run).ContinueWith(async t =>
             {
-                Logger.Info("Bootstrapper task has finished");
+                App.Logger.Info("Bootstrapper task has finished");
 
                 if (t.IsFaulted)
                 {
-                    Logger.Error("An exception occurred when running the bootstrapper");
+                    App.Logger.Error("An exception occurred when running the bootstrapper");
 
                     if (t.Exception is not null)
                         await App.FinalizeExceptionHandling(t.Exception);
@@ -247,7 +245,7 @@ namespace Froststrap
 
             dialog?.ShowBootstrapper();
 
-            Logger.Info("Exiting");
+            App.Logger.Info("Exiting");
         }
 
         public static void LaunchWatcher()
@@ -265,13 +263,13 @@ namespace Froststrap
 
             watcherTask.ContinueWith(async t =>
             {
-                Logger.Info("Watcher task has finished");
+                App.Logger.Info("Watcher task has finished");
 
                 watcher.Dispose();
 
                 if (t.IsFaulted)
                 {
-                    Logger.Error("An exception occurred when running the watcher");
+                    App.Logger.Error("An exception occurred when running the watcher");
 
                     if (t.Exception is not null)
                         await App.FinalizeExceptionHandling(t.Exception);
@@ -287,7 +285,7 @@ namespace Froststrap
 
         public static void LaunchBloxshadeConfig()
         {
-            Logger.Info("Showing unsupported warning");
+            App.Logger.Info("Showing unsupported warning");
 
             new BloxshadeDialog().Show();
             App.SoftTerminate();
@@ -299,7 +297,7 @@ namespace Froststrap
             App.LaunchSettings.QuietFlag.Active = true;
             App.LaunchSettings.NoLaunchFlag.Active = true;
 
-            Logger.Info("Initializing bootstrapper");
+            App.Logger.Info("Initializing bootstrapper");
             App.Bootstrapper = new Bootstrapper(LaunchMode.Player)
             {
                 LockName = Bootstrapper.BackgroundUpdaterLockName,
@@ -310,22 +308,22 @@ namespace Froststrap
 
             Task.Run(() =>
             {
-                Logger.Info("Started event waiter");
+                App.Logger.Info("Started event waiter");
                 using (EventWaitHandle handle = new(false, EventResetMode.AutoReset, "Froststrap-BackgroundUpdaterKillEvent"))
                     handle.WaitOne();
 
-                Logger.Info("Received close event, killing it all!");
+                App.Logger.Info("Received close event, killing it all!");
                 App.Bootstrapper.Cancel();
             }, cts.Token);
 
             Task.Run(App.Bootstrapper.Run).ContinueWith(async t =>
             {
-                Logger.Info("Bootstrapper task has finished");
+                App.Logger.Info("Bootstrapper task has finished");
                 cts.Cancel(); // stop event waiter
 
                 if (t.IsFaulted)
                 {
-                    Logger.Error("An exception occurred when running the bootstrapper");
+                    App.Logger.Error("An exception occurred when running the bootstrapper");
 
                     if (t.Exception is not null)
                         await App.FinalizeExceptionHandling(t.Exception);
@@ -334,7 +332,7 @@ namespace Froststrap
                 App.Terminate();
             });
 
-            Logger.Info("Exiting");
+            App.Logger.Info("Exiting");
         }
 
         private static int _activationInFlight;
@@ -343,18 +341,18 @@ namespace Froststrap
         {
             if (!App.LaunchSettings.TryResolveRobloxUri([uri]))
             {
-                Logger.Info($"Ignoring unrecognized activation URI: {uri}");
+                App.Logger.Info($"Ignoring unrecognized activation URI: {uri}");
                 return;
             }
 
             if (Interlocked.CompareExchange(ref _activationInFlight, 1, 0) != 0)
             {
-                Logger.Info("A launch is already being handled, ignoring activation");
+                App.Logger.Info("A launch is already being handled, ignoring activation");
                 return;
             }
 
             var mode = App.LaunchSettings.RobloxLaunchMode;
-            Logger.Info($"Handling activation URI as a Roblox launch ({mode})");
+            App.Logger.Info($"Handling activation URI as a Roblox launch ({mode})");
             Avalonia.Threading.Dispatcher.UIThread.Post(() => LaunchRoblox(mode));
         }
     }

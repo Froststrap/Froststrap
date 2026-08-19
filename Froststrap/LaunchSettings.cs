@@ -53,7 +53,7 @@ namespace Froststrap
         public LaunchSettings(string[] args)
         {
 #if DEBUG
-            Logger.Info($"Launched with arguments: {string.Join(' ', args)}");
+            App.Logger.Info($"Launched with arguments: {string.Join(' ', args)}");
 #endif
 
             Args = args;
@@ -88,35 +88,35 @@ namespace Froststrap
                 else if (arg.StartsWith("roblox:", StringComparison.OrdinalIgnoreCase)
                     || arg.StartsWith("roblox-player:", StringComparison.OrdinalIgnoreCase))
                 {
-                    Logger.Info("Got Roblox player argument");
+                    App.Logger.Info("Got Roblox player argument");
                     RobloxLaunchMode = LaunchMode.Player;
                     RobloxLaunchArgs = arg;
                     startIdx = 1;
                 }
                 else if (arg.StartsWith("roblox-studio-auth:", StringComparison.OrdinalIgnoreCase))
                 {
-                    Logger.Info("Got Roblox Studio Auth argument");
+                    App.Logger.Info("Got Roblox Studio Auth argument");
                     RobloxLaunchMode = LaunchMode.StudioAuth;
                     RobloxLaunchArgs = arg;
                     startIdx = 1;
                 }
                 else if (arg.StartsWith("roblox-studio:", StringComparison.OrdinalIgnoreCase))
                 {
-                    Logger.Info("Got Roblox Studio argument");
+                    App.Logger.Info("Got Roblox Studio argument");
                     RobloxLaunchMode = LaunchMode.Studio;
                     RobloxLaunchArgs = arg;
                     startIdx = 1;
                 }
                 else if (arg.StartsWith("version-"))
                 {
-                    Logger.Info("Got version argument");
+                    App.Logger.Info("Got version argument");
                     VersionFlag.Active = true;
                     VersionFlag.Data = arg;
                     startIdx = 1;
                 }
                 else if (IsRobloxStudioFile(arg))
                 {
-                    Logger.Info("Got Roblox Studio file argument");
+                    App.Logger.Info("Got Roblox Studio file argument");
                     RobloxLaunchMode = LaunchMode.Studio;
                     RobloxLaunchArgs = $"-task EditFile -localPlaceFile \"{arg}\"";
                     startIdx = 1;
@@ -130,7 +130,7 @@ namespace Froststrap
 
                 if (!arg.StartsWith('-'))
                 {
-                    Logger.Error($"Invalid argument: {arg}");
+                    App.Logger.Error($"Invalid argument: {arg}");
                     continue;
                 }
 
@@ -138,13 +138,13 @@ namespace Froststrap
 
                 if (!flagMap.TryGetValue(identifier, out LaunchFlag? flag) || flag is null)
                 {
-                    Logger.Error($"Unknown argument: {identifier}");
+                    App.Logger.Error($"Unknown argument: {identifier}");
                     continue;
                 }
 
                 if (flag.Active)
                 {
-                    Logger.Error($"Tried to set {identifier} flag twice");
+                    App.Logger.Error($"Tried to set {identifier} flag twice");
                     continue;
                 }
 
@@ -154,11 +154,11 @@ namespace Froststrap
                 {
                     flag.Data = nextArg;
                     i++;
-                    Logger.Info($"Identifier '{identifier}' is active with data");
+                    App.Logger.Info($"Identifier '{identifier}' is active with data");
                 }
                 else
                 {
-                    Logger.Info($"Identifier '{identifier}' is active");
+                    App.Logger.Info($"Identifier '{identifier}' is active");
                 }
             }
 
@@ -184,21 +184,21 @@ namespace Froststrap
                 if (arg.StartsWith("roblox:", StringComparison.OrdinalIgnoreCase)
                     || arg.StartsWith("roblox-player:", StringComparison.OrdinalIgnoreCase))
                 {
-                    Logger.Info("Found Roblox player URI outside first argument");
+                    App.Logger.Info("Found Roblox player URI outside first argument");
                     RobloxLaunchMode = LaunchMode.Player;
                     RobloxLaunchArgs = arg;
                     return true;
                 }
                 else if (arg.StartsWith("roblox-studio-auth:", StringComparison.OrdinalIgnoreCase))
                 {
-                    Logger.Info("Found Roblox Studio Auth URI outside first argument");
+                    App.Logger.Info("Found Roblox Studio Auth URI outside first argument");
                     RobloxLaunchMode = LaunchMode.StudioAuth;
                     RobloxLaunchArgs = arg;
                     return true;
                 }
                 else if (arg.StartsWith("roblox-studio:", StringComparison.OrdinalIgnoreCase))
                 {
-                    Logger.Info("Found Roblox Studio URI outside first argument");
+                    App.Logger.Info("Found Roblox Studio URI outside first argument");
                     RobloxLaunchMode = LaunchMode.Studio;
                     RobloxLaunchArgs = arg;
                     return true;
@@ -231,12 +231,12 @@ namespace Froststrap
 
             if (!string.IsNullOrEmpty(data))
             {
-                Logger.Info("Got Roblox launch arguments");
+                App.Logger.Info("Got Roblox launch arguments");
                 RobloxLaunchArgs = data;
             }
             else
             {
-                Logger.Error("No Roblox launch arguments were provided");
+                App.Logger.Error("No Roblox launch arguments were provided");
             }
         }
 
@@ -246,25 +246,25 @@ namespace Froststrap
 
             if (string.IsNullOrEmpty(data))
             {
-                Logger.Error("No Roblox launch arguments were provided");
+                App.Logger.Error("No Roblox launch arguments were provided");
                 return;
             }
 
             if (data.StartsWith("roblox-studio:"))
             {
-                Logger.Info("Got Roblox Studio launch arguments");
+                App.Logger.Info("Got Roblox Studio launch arguments");
                 RobloxLaunchArgs = data;
             }
             else if (data.StartsWith("roblox-studio-auth:"))
             {
-                Logger.Info("Got Roblox Studio Auth launch arguments");
+                App.Logger.Info("Got Roblox Studio Auth launch arguments");
                 RobloxLaunchMode = LaunchMode.StudioAuth;
                 RobloxLaunchArgs = data;
             }
             else
             {
                 // likely a local path
-                Logger.Info("Got Roblox Studio local place file");
+                App.Logger.Info("Got Roblox Studio local place file");
                 RobloxLaunchArgs = $"-task EditFile -localPlaceFile \"{data}\"";
             }
         }
@@ -275,7 +275,7 @@ namespace Froststrap
 
             if (parts.Length < 1)
             {
-                Logger.Error("Insufficient data for game shortcut");
+                App.Logger.Error("Insufficient data for game shortcut");
                 return;
             }
 
@@ -290,7 +290,7 @@ namespace Froststrap
             else if (!string.IsNullOrEmpty(jobId))
                 deeplink += "&gameInstanceId=" + jobId;
 
-            Logger.Info($"Generated shortcut deeplink: {deeplink}");
+            App.Logger.Info($"Generated shortcut deeplink: {deeplink}");
 
             RobloxLaunchMode = LaunchMode.Player;
             RobloxLaunchArgs = deeplink;

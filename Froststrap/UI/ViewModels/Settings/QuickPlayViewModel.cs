@@ -387,7 +387,7 @@ namespace Froststrap.UI.ViewModels.Settings
                         games[i].ThumbnailUrl = url;
                 }
             }
-            catch (Exception ex) { Logger.Error($"Thumbnail fetch failed: {ex.Message}"); }
+            catch (Exception ex) { App.Logger.Error($"Thumbnail fetch failed: {ex.Message}"); }
         }
 
         private static async Task<List<QuickPlayGameItem>> GetCachedApiGamesAsync()
@@ -410,7 +410,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 var json = JsonSerializer.Serialize(games);
                 await File.WriteAllTextAsync(cachePath, json);
             }
-            catch (Exception ex) { Logger.Error($"Failed to cache API games: {ex.Message}"); }
+            catch (Exception ex) { App.Logger.Error($"Failed to cache API games: {ex.Message}"); }
         }
 
         private static List<QuickPlayGameItem> MergeByApiOrder(List<QuickPlayGameItem> localGames, List<QuickPlayGameItem> apiGames)
@@ -515,7 +515,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
             catch (Exception ex)
             {
-                Logger.Error($"Background refresh failed: {ex.Message}");
+                App.Logger.Error($"Background refresh failed: {ex.Message}");
             }
         }
 
@@ -536,11 +536,11 @@ namespace Froststrap.UI.ViewModels.Settings
                     {
                         var cleanJson = JsonSerializer.Serialize(validEntries);
                         File.WriteAllText(cachePath, cleanJson);
-                        Logger.Info("Cleaned GameHistory.json by removing entries with UniverseId = 0");
+                        App.Logger.Info("Cleaned GameHistory.json by removing entries with UniverseId = 0");
                     }
                     catch (Exception ex)
                     {
-                        Logger.Error($"Failed to rewrite cleaned cache: {ex.Message}");
+                        App.Logger.Error($"Failed to rewrite cleaned cache: {ex.Message}");
                     }
                 }
 
@@ -548,7 +548,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
             catch (Exception ex)
             {
-                Logger.Error($"Error loading history: {ex.Message}");
+                App.Logger.Error($"Error loading history: {ex.Message}");
                 return [];
             }
         }
@@ -591,7 +591,7 @@ namespace Froststrap.UI.ViewModels.Settings
                     }
                     catch (Exception ex)
                     {
-                        Logger.Error($"Subplace thumbnail fetch failed: {ex.Message}");
+                        App.Logger.Error($"Subplace thumbnail fetch failed: {ex.Message}");
                     }
 
                     foreach (var p in tempSubplaces) Subplaces.Add(p);
@@ -599,7 +599,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
             catch (Exception ex)
             {
-                Logger.Error($"Subplace fetch failed: {ex.Message}");
+                App.Logger.Error($"Subplace fetch failed: {ex.Message}");
             }
             finally
             {
@@ -694,7 +694,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
             catch (Exception ex)
             {
-                Logger.Error($"Exception in ShowPrivateServersForGameAsync: {ex.Message}");
+                App.Logger.Error($"Exception in ShowPrivateServersForGameAsync: {ex.Message}");
                 await Dispatcher.UIThread.InvokeAsync(() => ArePrivateServersEmpty = true);
             }
             finally
