@@ -1,4 +1,4 @@
-﻿/*
+﻿/*pp
  *  Froststrap
  *  Copyright (c) Froststrap Team
  *
@@ -94,7 +94,7 @@ namespace Froststrap.Integrations
             }
             catch (Exception ex)
             {
-                App.App.Logger.Error($"Unhandled exception: {ex}");
+                App.Logger.Error($"Unhandled exception: {ex}");
             }
 
             return null;
