@@ -28,7 +28,8 @@ sealed class Program
     [STAThread]
     public static void Main(string[] args)
     {
-        NLog.GlobalDiagnosticsContext.Set("startTime", DateTime.UtcNow.ToString("yyyyMMdd'T'HHmmss'Z'"));
+        GlobalDiagnosticsContext.Set("logRoot", Logging.GetLogDirectory());
+        GlobalDiagnosticsContext.Set("startTime", DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss"));
 
         var parser = new Parser(settings =>
         {
