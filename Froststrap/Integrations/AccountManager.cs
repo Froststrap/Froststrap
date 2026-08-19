@@ -94,7 +94,7 @@ namespace Froststrap.Integrations
                         ActiveAccount = _accounts.Find(a => a.UserId == data.ActiveAccountId);
                 }
             }
-            catch (Exception ex) { App.Logger.Exception(ex); }
+            catch (Exception ex) { App.Logger.Error("Unhandled exception: ", ex); }
         }
 
         public void SaveAccounts()
@@ -109,7 +109,7 @@ namespace Froststrap.Integrations
                 };
                 File.WriteAllText(_accountsLocation, JsonConvert.SerializeObject(data, Formatting.Indented));
             }
-            catch (Exception ex) { App.Logger.Exception(ex); }
+            catch (Exception ex) { App.Logger.Error("Unhandled exception: ", ex); }
         }
 
         public void SetActiveAccount(long? userId)
@@ -683,8 +683,6 @@ namespace Froststrap.Integrations
 
         private static async Task<AccountManagerAccount?> GetAccountInfoFromCookie(string securityCookie)
         {
-            const string LOG_IDENT_GET_INFO = $"{LOG_IDENT}::GetAccountInfoFromCookie";
-
             try
             {
                 var handler = new HttpClientHandler { CookieContainer = new System.Net.CookieContainer() };
