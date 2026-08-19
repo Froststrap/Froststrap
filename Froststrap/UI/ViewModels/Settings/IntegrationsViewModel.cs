@@ -421,7 +421,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException(LOG_IDENT, ex);
+                App.Logger.Error("Unhandled exception: ", ex);
             }
         }
     }
