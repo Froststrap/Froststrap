@@ -819,7 +819,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             catch (Exception ex)
             {
                 StatusText = $"Color picker error: {ex.Message}";
-                App.Logger.WriteException("OpenColorPickerAsync", ex);
+                App.Logger.Error("Unhandled exception: ", ex);
             }
         }
 
