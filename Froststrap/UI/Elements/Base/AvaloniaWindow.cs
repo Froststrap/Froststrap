@@ -6,6 +6,7 @@ using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Styling;
 using FluentAvalonia.Styling;
+using Froststrap.AttachedProperties;
 
 namespace Froststrap.UI.Elements.Base
 {
@@ -24,6 +25,7 @@ namespace Froststrap.UI.Elements.Base
         {
             WindowDecorations = WindowDecorations.Full;
             ExtendClientAreaToDecorationsHint = true;
+            MacOSTitleBar.SetIsThick(this, true);
 
             TextOptions.SetTextRenderingMode(this, TextRenderingMode.Antialias);
             ApplyTheme();
@@ -229,6 +231,6 @@ namespace Froststrap.UI.Elements.Base
             ApplyWindowBackground();
             UpdateBackdropForAllWindows();
             Locale.ApplyLocaleToWindow(this);
-        }
+        }      
     }
 }
