@@ -13,8 +13,8 @@
                      WindowStartupLocation="CenterScreen"
                      mc:Ignorable="d">
 
-    <Grid RowDefinitions="Auto,*,Auto">
-        <Border Grid.Row="0"
+    <Grid RowDefinitions="32,Auto,*">
+        <Border Grid.Row="1"
                 Margin="16"
                 CornerRadius="8"
                 BorderThickness="1"
@@ -102,7 +102,7 @@
             </TabControl>
         </Border>
 
-        <Border Grid.Row="1"
+        <Border Grid.Row="2"
                 Padding="15"
                 Background="{DynamicResource ControlFillColorDefaultBrush}">
             <Grid ColumnDefinitions="*, Auto" ColumnSpacing="12">
