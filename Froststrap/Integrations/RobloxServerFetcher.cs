@@ -1,4 +1,4 @@
-﻿/*
+﻿/*pp
  *  Froststrap
  *  Copyright (c) Froststrap Team
  *
@@ -16,7 +16,6 @@ namespace Froststrap.Integrations
 {
     public class RobloxServerFetcher
     {
-        private const string LOG_IDENT = "RobloxServerFetcher";
         private readonly HttpClient _client;
         private Dictionary<int, string>? _datacenterIdToRegion;
         private List<string>? _regionList;
@@ -66,13 +65,13 @@ namespace Froststrap.Integrations
                     if (loadedCache != null)
                     {
                         _serverCache = loadedCache;
-                        App.Logger.WriteLine(LOG_IDENT, $"Loaded {_serverCache.Count} games from disk.");
+                        App.Logger.Info($"Loaded {_serverCache.Count} games from disk.");
                     }
                 }
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException(LOG_IDENT, ex);
+                App.Logger.Error("Unhandled exception:", ex);
             }
         }
 
@@ -95,7 +94,7 @@ namespace Froststrap.Integrations
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException($"{LOG_IDENT}::Uptime", ex);
+                App.Logger.Error($"Unhandled exception: {ex}");
             }
 
             return null;
@@ -153,7 +152,7 @@ namespace Froststrap.Integrations
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException($"{LOG_IDENT}::UptimesBatch", ex);
+                App.Logger.Error("Unhandled exception:", ex);
                 return result;
             }
         }
@@ -200,7 +199,7 @@ namespace Froststrap.Integrations
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException($"{LOG_IDENT}::Datacenters", ex);
+                App.Logger.Error("Unhandled exception:", ex);
                 return null;
             }
         }
@@ -299,7 +298,7 @@ namespace Froststrap.Integrations
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException($"{LOG_IDENT}::GetCookieFromAccountManager", ex);
+                App.Logger.Error("Unhandled exception:", ex);
             }
             return null;
         }
@@ -319,7 +318,7 @@ namespace Froststrap.Integrations
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException($"{LOG_IDENT}::GetCookieFromCookiesManager", ex);
+                App.Logger.Error("Unhandled exception:", ex);
             }
             return null;
         }
@@ -329,18 +328,18 @@ namespace Froststrap.Integrations
             var accountManagerCookie = await GetCookieFromAccountManagerAsync();
             if (!string.IsNullOrWhiteSpace(accountManagerCookie) && await ValidateCookieAsync(accountManagerCookie))
             {
-                App.Logger.WriteLine(LOG_IDENT, "Using valid cookie from Account Manager.");
+                App.Logger.Info("Using valid cookie from Account Manager.");
                 return accountManagerCookie;
             }
 
             var cookiesManagerCookie = await GetCookieFromCookiesManagerAsync();
             if (!string.IsNullOrWhiteSpace(cookiesManagerCookie) && await ValidateCookieAsync(cookiesManagerCookie))
             {
-                App.Logger.WriteLine(LOG_IDENT, "Using valid cookie from Cookies Manager.");
+                App.Logger.Info("Using valid cookie from Cookies Manager.");
                 return cookiesManagerCookie;
             }
 
-            App.Logger.WriteLine(LOG_IDENT, "Failed to resolve any valid .ROBLOSECURITY cookie.");
+            App.Logger.Error("Failed to resolve any valid .ROBLOSECURITY cookie.");
             return null;
         }
 
@@ -548,12 +547,12 @@ namespace Froststrap.Integrations
                     .Select(kvp => kvp.Key)
                     .ToList();
 
-                App.Logger.WriteLine("RobloxServerFetcher", $"Top {closestRegions.Count} regions: {string.Join(", ", closestRegions)}");
+                App.Logger.Info($"Top {closestRegions.Count} regions: {string.Join(", ", closestRegions)}");
                 return closestRegions;
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException("RobloxServerFetcher::GetClosestRegionsForAutoMode", ex);
+                App.Logger.Error("Unhandled exception:", ex);
                 return [];
             }
         }
@@ -586,7 +585,7 @@ namespace Froststrap.Integrations
                 for (int i = 0; i < topRegions.Count; i++)
                     regionRank[topRegions[i]] = i + 1;
 
-                App.Logger.WriteLine("RobloxServerFetcher", $"Searching in top {topRegions.Count} regions: {string.Join(", ", topRegions)}");
+                App.Logger.Info($"Searching in top {topRegions.Count} regions: {string.Join(", ", topRegions)}");
 
                 string? nextCursor = null;
                 int serversChecked = 0;
@@ -634,7 +633,7 @@ namespace Froststrap.Integrations
                     await Task.Delay(100, cancellationToken);
                 }
 
-                App.Logger.WriteLine("RobloxServerFetcher", $"Collected {allServers.Count} servers from {pagesFetched} pages");
+                App.Logger.Info($"Collected {allServers.Count} servers from {pagesFetched} pages");
 
                 string? bestServerId = null;
                 string? bestServerRegion = null;
@@ -669,11 +668,11 @@ namespace Froststrap.Integrations
                         bestMaxPlayers = server.MaxPlayers;
                         bestServerId = server.Id;
                         bestServerRegion = serverRegion;
-                        App.Logger.WriteLine("RobloxServerFetcher", $"Found better server in {serverRegion} (rank {rank}, players: {server.Playing}/{server.MaxPlayers})");
+                        App.Logger.Info($"Found better server in {serverRegion} (rank {rank}, players: {server.Playing}/{server.MaxPlayers})");
 
                         if (rank == 1)
                         {
-                            App.Logger.WriteLine("RobloxServerFetcher", "Found rank 1 server, stopping early");
+                            App.Logger.Info("Found rank 1 server, stopping early");
                             break;
                         }
                     }
@@ -690,7 +689,7 @@ namespace Froststrap.Integrations
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException("RobloxServerFetcher::FindBestServerInRegionAsync", ex);
+                App.Logger.Error("Unhandled exception:", ex);
                 return new ServerSelectionResult();
             }
         }
@@ -722,7 +721,7 @@ namespace Froststrap.Integrations
 
                 var (_, dcMap) = datacentersResult.Value;
 
-                App.Logger.WriteLine("RobloxServerFetcher", $"Searching for servers in selected region: {selectedRegion}");
+                App.Logger.Info($"Searching for servers in selected region: {selectedRegion}");
 
                 string? nextCursor = "";
                 int serversChecked = 0;
@@ -768,7 +767,7 @@ namespace Froststrap.Integrations
                         await Task.Delay(100, cancellationToken);
                 }
 
-                App.Logger.WriteLine("RobloxServerFetcher", $"Found {allServers.Count} servers in selected region from {pagesFetched} pages");
+                App.Logger.Info($"Found {allServers.Count} servers in selected region from {pagesFetched} pages");
 
                 var bestServer = joinSmallerServer
                     ? allServers.OrderBy(s => s.Playing).FirstOrDefault()
@@ -790,7 +789,7 @@ namespace Froststrap.Integrations
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException("RobloxServerFetcher::FindBestServerInSelectedRegionAsync", ex);
+                App.Logger.Error("Unhandled exception:", ex);
                 return new ServerSelectionResult();
             }
         }
@@ -855,7 +854,7 @@ namespace Froststrap.Integrations
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException("RobloxServerFetcher::JoinBestServerAsync", ex);
+                App.Logger.Error("Unhandled exception:", ex);
                 return false;
             }
         }

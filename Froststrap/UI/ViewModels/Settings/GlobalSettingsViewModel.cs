@@ -30,7 +30,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public ICommand OpenGlobalSettingsEditorCommand => new AsyncRelayCommand(async () =>
         {
-            App.Logger.WriteLine("GlobalSettingsViewModel", "Opening Global Settings Editor...");
+            App.Logger.Info("Opening Global Settings Editor...");
             await _dialogService.OpenGlobalSettingsEditorAsync();
         });
 

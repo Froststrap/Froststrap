@@ -265,7 +265,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             }
             catch (Exception ex)
             {
-                App.Logger?.WriteException("ModGenerator::LoadFontFiles", ex);
+                App.Logger.Error($"Unhandled exception: {ex}");
                 StatusText = Strings.Menu_ModGenerator_FailedPreview;
             }
         }
@@ -322,14 +322,14 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
                             glyphItems.Add(new GlyphItem { Data = geometry, Brush = glyphBrush });
                         }
-                        catch (Exception ex) { App.Logger?.WriteException("ModGenerator::LoadGlyphPreview", ex); }
+                        catch (Exception ex) { App.Logger.Error($"Unhandled exception: {ex}"); }
                     });
                 }
                 GlyphItems = glyphItems;
             }
             catch (Exception ex)
             {
-                App.Logger?.WriteException("ModGenerator::LoadGlyphPreviews", ex);
+                App.Logger.Error($"Unhandled exception: {ex}");
                 StatusText = Strings.Menu_ModGenerator_FailedPreview;
             }
         }
@@ -410,7 +410,6 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
         private async Task GenerateModAsync()
         {
-            const string LOG_IDENT = "ModGenerator";
             if (!IsValidHexColor(SolidColorHex)) return;
 
             IsNotGeneratingMod = false;
@@ -619,7 +618,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                             };
                             App.State.Prop.Mods.Add(newMod);
                             App.State.SaveSetting("Mods");
-                            App.Logger.WriteLine(LOG_IDENT, $"Added mod '{modFolderName}' to state.");
+                            App.Logger.Info($"Added mod '{modFolderName}' to state.");
                         }
                         else
                         {
@@ -661,7 +660,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             }
             catch (Exception ex)
             {
-                App.Logger?.WriteException(LOG_IDENT, ex);
+                App.Logger.Error($"Unhandled exception: {ex}");
                 StatusText = $"Error: {ex.Message}";
             }
             finally
@@ -820,7 +819,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             catch (Exception ex)
             {
                 StatusText = $"Color picker error: {ex.Message}";
-                App.Logger?.WriteException("OpenColorPickerAsync", ex);
+                App.Logger.Error("Unhandled exception: ", ex);
             }
         }
 

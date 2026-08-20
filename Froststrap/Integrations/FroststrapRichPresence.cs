@@ -18,13 +18,11 @@ namespace Froststrap.Integrations
 
         public FroststrapRichPresence()
         {
-            const string LOG_IDENT = "FroststrapRichPresence";
-
             _isMacOS = OperatingSystem.IsMacOS();
 
             if (_isMacOS)
             {
-                App.Logger.WriteLine(LOG_IDENT, "Skipping Discord RPC initialization on macOS");
+                App.Logger.Warn("Skipping Discord RPC initialization on macOS");
                 _rpcClient = null!;
                 _startTimestamps = new Timestamps { Start = DateTime.UtcNow };
                 _uptimeStopwatch = Stopwatch.StartNew();
@@ -51,7 +49,7 @@ namespace Froststrap.Integrations
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine(LOG_IDENT, $"Failed to init RPC: {ex.Message}");
+                App.Logger.Error($"Failed to init RPC: {ex.Message}");
             }
         }
 
@@ -59,7 +57,7 @@ namespace Froststrap.Integrations
         {
             if (_disposed || _isMacOS) return;
 
-            App.Logger.WriteLine("FroststrapRichPresence", $"Connected as {args.User.Username}");
+            App.Logger.Info($"Connected as {args.User.Username}");
 
             if (!_disposed)
                 UpdatePresence();
@@ -92,8 +90,6 @@ namespace Froststrap.Integrations
 
         public void UpdatePresence()
         {
-            const string LOG_IDENT = "FroststrapRichPresence";
-
             if (_disposed || _isMacOS || _rpcClient == null || !_rpcClient.IsInitialized)
                 return;
 
@@ -131,11 +127,11 @@ namespace Froststrap.Integrations
             }
             catch (IOException ex) when (ex.InnerException is SocketException)
             {
-                App.Logger.WriteLine(LOG_IDENT, "Socket interrupted (Operation Canceled). This is expected on macOS.");
+                App.Logger.Error("Socket interrupted (Operation Canceled). This is expected on macOS.");
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException(LOG_IDENT, ex);
+                App.Logger.Error("Unhandled exception: ", ex);
             }
         }
 
@@ -144,7 +140,7 @@ namespace Froststrap.Integrations
             if (_disposed) return;
             _disposed = true;
 
-            App.Logger.WriteLine("FroststrapRichPresence::Dispose", "Cleaning up Discord RPC");
+            App.Logger.Info("Cleaning up Discord RPC");
 
             if (_rpcClient != null)
             {
@@ -169,7 +165,7 @@ namespace Froststrap.Integrations
                 }
                 catch (Exception ex)
                 {
-                    App.Logger.WriteLine("FroststrapRichPresence::Dispose", $"Cleanup error: {ex.Message}");
+                    App.Logger.Error($"Cleanup error: {ex.Message}");
                 }
             }
 

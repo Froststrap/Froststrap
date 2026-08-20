@@ -54,7 +54,7 @@ namespace Froststrap.Utility
                 }
                 catch (Exception ex)
                 {
-                    App.Logger.WriteLine("Shortcut::GetFroststrapIconPath", $"Failed to extract icon: {ex.Message}");
+                    App.Logger.Error($"Failed to extract icon: {ex.Message}");
                     return "application-x-executable";
                 }
             }
@@ -71,7 +71,6 @@ namespace Froststrap.Utility
 
         public static async void Create(string exePath, string exeArgs, string lnkPath, string? iconPath = null)
         {
-            const string LOG_IDENT = "Shortcut::Create";
             string resolvedPath = ResolvePath(lnkPath);
 
             if (File.Exists(resolvedPath))
@@ -91,8 +90,7 @@ namespace Froststrap.Utility
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine(LOG_IDENT, $"Failed to create a shortcut for {resolvedPath}!");
-                App.Logger.WriteException(LOG_IDENT, ex);
+                App.Logger.Error($"Failed to create a shortcut for {resolvedPath}! {ex}");
 
                 if (_loadStatus == GenericTriState.Failed)
                     return;
@@ -132,8 +130,6 @@ namespace Froststrap.Utility
             Bitmap? icon,
             Action<string>? onStatus = null)
         {
-            const string LOG_IDENT = "Shortcut::CreateGameShortcut";
-
             string argData = placeId;
             if (!string.IsNullOrEmpty(jobId)) argData += $";{jobId}";
             if (!string.IsNullOrEmpty(accessCode)) argData += $";{accessCode}";
@@ -170,7 +166,7 @@ namespace Froststrap.Utility
                 }
                 catch (Exception ex)
                 {
-                    App.Logger.WriteLine(LOG_IDENT, $"Icon processing failed: {ex.Message}");
+                    App.Logger.Error($"Icon processing failed: {ex.Message}");
                 }
             }
 
@@ -203,8 +199,6 @@ namespace Froststrap.Utility
             string lnkPath,
             Action<string>? onStatus)
         {
-            const string LOG_IDENT = "Shortcut::CreateGameShortcutInternal";
-
             string argData = placeId;
             if (!string.IsNullOrEmpty(jobId)) argData += $";{jobId}";
             if (!string.IsNullOrEmpty(accessCode)) argData += $";{accessCode}";
@@ -238,7 +232,7 @@ namespace Froststrap.Utility
                 }
                 catch (Exception ex)
                 {
-                    App.Logger.WriteLine(LOG_IDENT, $"Icon processing failed: {ex.Message}");
+                    App.Logger.Error($"Icon processing failed: {ex.Message}");
                 }
             }
 

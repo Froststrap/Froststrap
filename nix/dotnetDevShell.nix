@@ -26,7 +26,7 @@
 }:
 mkShell (finalAttrs: {
   meta.license = lib.licenses.unlicense;
-  runtimeLibs = lib.optionals stdenv.isLinux [
+  runtimeLibs = lib.optionals stdenv.hostPlatform.isLinux [
     expat
     fontconfig
     freetype
@@ -50,13 +50,13 @@ mkShell (finalAttrs: {
     dotnetCorePackages.sdk_10_0-bin
     omnisharp-roslyn # lsp
     just
-  ] ++ lib.optionals stdenv.isLinux [
+  ] ++ lib.optionals stdenv.hostPlatform.isLinux [
     glib
-  ] ++ lib.optionals stdenv.isDarwin [
+  ] ++ lib.optionals stdenv.hostPlatform.isDarwin [
     create-dmg
   ];
 
-  nativeBuildInputs = lib.optionals stdenv.isLinux [
+  nativeBuildInputs = lib.optionals stdenv.hostPlatform.isLinux [
     pkg-config
     libxcb
     xcbutil

@@ -18,7 +18,7 @@
                 }
                 catch (Exception ex)
                 {
-                    App.Logger.WriteException("HttpClientEx::GetWithRetriesAsync", ex);
+                    App.Logger.Error("Unhandled exception: ", ex);
 
                     if (i == retries)
                         throw;
@@ -44,7 +44,7 @@
                 }
                 catch (Exception ex)
                 {
-                    App.Logger.WriteException("HttpClientEx::PostWithRetriesAsync", ex);
+                    App.Logger.Error("Unhandled exception: ", ex);
 
                     if (i == retries)
                         throw;

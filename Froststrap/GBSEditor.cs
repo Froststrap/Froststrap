@@ -127,8 +127,6 @@ namespace Froststrap
 
         public void SetReadOnly(bool readOnly, bool preserveState = false)
         {
-            const string LOG_IDENT = "GBSEditor::SetReadOnly";
-
             if (!File.Exists(FileLocation))
                 return;
 
@@ -148,8 +146,7 @@ namespace Froststrap
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine(LOG_IDENT, $"Failed to set read-only on {FileLocation}");
-                App.Logger.WriteException(LOG_IDENT, ex);
+                App.Logger.Error($"Failed to set read-only on {FileLocation}", ex);
             }
         }
 
@@ -163,8 +160,7 @@ namespace Froststrap
 
         public void CreateTemplate()
         {
-            string LOG_IDENT = "GBSEditor::CreateTemplate";
-            App.Logger.WriteLine(LOG_IDENT, $"Creating template at {FileLocation}...");
+            App.Logger.Info($"Creating template at {FileLocation}...");
 
             try
             {
@@ -172,7 +168,7 @@ namespace Froststrap
                 if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
                 {
                     Directory.CreateDirectory(directory);
-                    App.Logger.WriteLine(LOG_IDENT, $"Created directory: {directory}");
+                    App.Logger.Info($"Created directory: {directory}");
                 }
 
                 var uri = new Uri("avares://Froststrap/Resources/GlobalBasicSettings_Template.xml");
@@ -181,20 +177,17 @@ namespace Froststrap
                 resourceStream.CopyTo(fileStream);
 
                 previousReadOnlyState = GetReadOnly();
-                App.Logger.WriteLine(LOG_IDENT, "Template created successfully!");
+                App.Logger.Info("Template created successfully!");
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine(LOG_IDENT, $"Failed to create template at {FileLocation}");
-                App.Logger.WriteException(LOG_IDENT, ex);
+                App.Logger.Error($"Failed to create template at {FileLocation}", ex);
             }
         }
 
         public void Load()
         {
-            const string LOG_IDENT = "GBSEditor::Load";
-
-            App.Logger.WriteLine(LOG_IDENT, $"Loading from {FileLocation}...");
+            App.Logger.Info($"Loading from {FileLocation}...");
 
             try
             {
@@ -202,19 +195,18 @@ namespace Froststrap
                 if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
                 {
                     Directory.CreateDirectory(directory);
-                    App.Logger.WriteLine(LOG_IDENT, $"Created directory: {directory}");
+                    App.Logger.Info($"Created directory: {directory}");
                 }
 
                 Document = XDocument.Load(FileLocation);
                 Loaded = true;
                 previousReadOnlyState = GetReadOnly();
                 _savedHash = ComputeHash();
-                App.Logger.WriteLine(LOG_IDENT, "Loaded successfully!");
+                App.Logger.Info("Loaded successfully!");
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine(LOG_IDENT, "Failed to load, recreating template...");
-                App.Logger.WriteException(LOG_IDENT, ex);
+                App.Logger.Error("Failed to load, recreating template...", ex);
 
                 if (File.Exists(FileLocation))
                 {
@@ -230,12 +222,12 @@ namespace Froststrap
                     Loaded = true;
                     previousReadOnlyState = GetReadOnly();
                     _savedHash = ComputeHash();
-                    App.Logger.WriteLine(LOG_IDENT, "Recreated and loaded successfully!");
+                    App.Logger.Info("Recreated and loaded successfully!");
                 }
                 catch (Exception retryEx)
                 {
-                    App.Logger.WriteLine(LOG_IDENT, "Failed even after recreating!");
-                    App.Logger.WriteException(LOG_IDENT, retryEx);
+                    App.Logger.Error("Failed even after recreating!");
+                    App.Logger.Error(retryEx);
                     Loaded = false;
                 }
             }
@@ -243,9 +235,7 @@ namespace Froststrap
 
         public virtual void Save()
         {
-            const string LOG_IDENT = "GBSEditor::Save";
-
-            App.Logger.WriteLine(LOG_IDENT, $"Saving to {FileLocation}...");
+            App.Logger.Info($"Saving to {FileLocation}...");
 
             try
             {
@@ -256,12 +246,12 @@ namespace Froststrap
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine(LOG_IDENT, "Failed to save");
-                App.Logger.WriteException(LOG_IDENT, ex);
+                App.Logger.Error("Failed to save");
+                App.Logger.Error(ex);
                 return;
             }
 
-            App.Logger.WriteLine(LOG_IDENT, "Save complete!");
+            App.Logger.Info("Save complete!");
         }
 
 

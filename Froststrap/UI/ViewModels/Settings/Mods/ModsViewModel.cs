@@ -325,7 +325,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine("ModsViewModel::Delete", ex.Message);
+                App.Logger.Error($"Unhandled exception: {ex.Message}");
                 await Frontend.ShowMessageBox(string.Format(Strings.Menu_Mods_DeleteFailed, ex.Message), MessageBoxImage.Error, MessageBoxButton.OK);
             }
         }
@@ -368,7 +368,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine("ModsViewModel::RenameMod", ex.Message);
+                App.Logger.Error($"Unhandled exception {ex.Message}");
                 _ = Frontend.ShowMessageBox(string.Format(Strings.Menu_Mods_RenameFailed, ex.Message), MessageBoxImage.Error, MessageBoxButton.OK);
             }
         }
@@ -447,7 +447,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine("ModsViewModel::ImportZip", ex.Message);
+                App.Logger.Error($"Unhandled exception: {ex.Message}");
                 await Frontend.ShowMessageBox(string.Format(Strings.Menu_Mods_ZipExtractFailed, ex.Message), MessageBoxImage.Error, MessageBoxButton.OK);
             }
             finally
@@ -482,7 +482,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                     }
                     catch (Exception ex)
                     {
-                        App.Logger.WriteLine("ModsViewModel::ImportFromPaths", ex.Message);
+                        App.Logger.Error($"Unhandled exception: {ex.Message}");
                         await Frontend.ShowMessageBox($"Failed to extract ZIP: {ex.Message}", MessageBoxImage.Error, MessageBoxButton.OK);
                     }
                     finally
@@ -649,7 +649,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine("ModsViewModel::ExportMod", ex.Message);
+                App.Logger.Error($"Unhandled exception: {ex.Message}");
                 await Frontend.ShowMessageBox(string.Format(Strings.Menu_Mods_ExportFailed, ex.Message), MessageBoxImage.Error);
             }
         }
@@ -672,7 +672,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine("ModsViewModel::LoadTogglePreviewGlyphs", ex.Message);
+                App.Logger.Error($"Unhandled exception: {ex.Message}");
             }
         }
 
@@ -743,7 +743,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine("ModsViewModel::LoadModFontPreview", ex.Message);
+                App.Logger.Error($"Unhandled exception: {ex.Message}");
                 PreviewStatus = string.Format(Strings.Menu_Mods_Preview_Failed, ex.Message);
                 PreviewGlyphItems = [];
             }
@@ -817,7 +817,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine("ModsViewModel::GetColorFromInfoJson", ex.Message);
+                App.Logger.Error($"Unhandled exception: {ex.Message}");
             }
 
             return null;
@@ -882,7 +882,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                         }
                         catch (Exception ex)
                         {
-                            App.Logger?.WriteLine("ModsViewModel::LoadGlyphsWithColor", $"Glyph Error: {ex.Message}");
+                            App.Logger.Error($"Unhandled exception: {ex.Message}");
                         }
                     });
                 }
@@ -894,7 +894,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine("ModsViewModel::LoadGlyphsWithColor", ex.Message);
+                App.Logger.Error($"Unhandled exception: {ex.Message}");
                 throw;
             }
         }
@@ -927,7 +927,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine("ModsViewModel::CheckFontPreviewAvailability", ex.Message);
+                App.Logger.Error($"Unhandled exception: {ex.Message}");
                 HasFontPreview = false;
             }
         }

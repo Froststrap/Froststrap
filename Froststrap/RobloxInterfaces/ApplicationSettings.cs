@@ -33,8 +33,7 @@ namespace Froststrap.RobloxInterfaces
                 if (_initialised)
                     return;
 
-                string logIndent = $"ApplicationSettings::Fetch.{_applicationName}.{_channelName}";
-                App.Logger.WriteLine(logIndent, "Fetching fast flags");
+                App.Logger.Info("Fetching fast flags");
 
                 string path = $"/v2/settings/application/{_applicationName}";
 
@@ -49,8 +48,8 @@ namespace Froststrap.RobloxInterfaces
                 }
                 catch (Exception ex)
                 {
-                    App.Logger.WriteLine(logIndent, "Failed to contact clientsettingscdn! Falling back to clientsettings...");
-                    App.Logger.WriteException(logIndent, ex);
+                    App.Logger.Error("Unhandled exception while contacting clientsettings: ", ex);
+                    App.Logger.Warn("Falling back to clientsettings...");
 
                     response = await App.HttpClient.GetAsync("https://clientsettings." + Deployment.RobloxDomain + path);
                 }

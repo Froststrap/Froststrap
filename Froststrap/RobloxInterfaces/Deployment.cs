@@ -72,13 +72,12 @@
         /// </summary>
         public static async Task<Exception?> InitializeConnectivity()
         {
-            const string LOG_IDENT = "Deployment::InitializeConnectivity";
             const string FALLBACK_URL = "https://setup.rbxcdn.com";
             var tokenSource = new CancellationTokenSource();
 
             var tasks = BaseUrls.Select(url => GetLatency(url, tokenSource.Token)).ToList();
 
-            App.Logger.WriteLine(LOG_IDENT, "Testing for best regional download mirror...");
+            App.Logger.Info("Testing for best regional download mirror...");
 
             try
             {
@@ -92,19 +91,19 @@
                 if (url != null)
                 {
                     BaseUrl = url;
-                    App.Logger.WriteLine(LOG_IDENT, $"Optimal BaseUrl: {BaseUrl} ({latency}ms)");
+                    App.Logger.Info($"Optimal BaseUrl: {BaseUrl} ({latency}ms)");
                     tokenSource.Cancel();
                     return null;
                 }
 
                 BaseUrl = FALLBACK_URL;
-                App.Logger.WriteLine(LOG_IDENT, $"No mirrors responded. Falling back to default: {BaseUrl}");
+                App.Logger.Warn($"No mirrors responded. Falling back to default: {BaseUrl}");
                 return new Exception("No regional mirrors were responsive.");
             }
             catch (Exception ex)
             {
                 BaseUrl = FALLBACK_URL;
-                App.Logger.WriteException(LOG_IDENT, ex);
+                App.Logger.Error("Unhandled exception: ", ex);
                 return ex;
             }
         }
@@ -120,7 +119,6 @@
 
         public async static Task<UserChannel?> GetUserChannel(string binaryType)
         {
-            const string LOG_IDENT = "Deployment::GetUserChannel";
             try
             {
                 Uri apiUrl = UrlBuilder.BuildApiUrl("clientsettings", "v2/user-channel?binaryType=" + binaryType);
@@ -133,8 +131,7 @@
             }
             catch (HttpRequestException ex)
             {
-                App.Logger.WriteLine(LOG_IDENT, "Failed to get user channel");
-                App.Logger.WriteException(LOG_IDENT, ex);
+                App.Logger.Error($"Failed to get user channel: {ex}");
             }
             return null;
         }
@@ -162,7 +159,6 @@
 
         public static async Task<DateTime?> GetVersionTimestamp(string version)
         {
-            const string LOG_IDENT = "Deployment::GetVersionTimestamp";
             const string header = "last-modified";
 
             if (string.IsNullOrEmpty(BaseUrl))
@@ -203,22 +199,20 @@
             }
             catch (HttpRequestException ex)
             {
-                App.Logger.WriteLine(LOG_IDENT, $"Failed to get timestamp for {version}");
-                App.Logger.WriteException(LOG_IDENT, ex);
+                App.Logger.Error($"Failed to get timestamp for {version}: {ex}");
             }
             return null;
         }
 
         public static async Task<ClientVersion> GetInfo(string? channel = null, bool behindProductionCheck = false, bool includeTimestamp = false, string? binaryTypeOverride = null)
         {
-            const string LOG_IDENT = "Deployment::GetInfo";
 
             if (string.IsNullOrEmpty(channel))
                 channel = Channel;
 
             bool isDefaultChannel = string.Compare(channel, DefaultChannel, StringComparison.OrdinalIgnoreCase) == 0;
 
-            App.Logger.WriteLine(LOG_IDENT, $"Getting deploy info for channel {channel}");
+            App.Logger.Info($"Getting deploy info for channel {channel}");
 
             string activeBinaryType = binaryTypeOverride ?? BinaryType;
             string cacheKey = $"{channel}-{activeBinaryType}";
@@ -227,7 +221,7 @@
 
             if (!string.IsNullOrEmpty(ChannelToken))
             {
-                App.Logger.WriteLine(LOG_IDENT, "Got Roblox-Channel-Token");
+                App.Logger.Info("Got Roblox-Channel-Token");
                 request.Headers.Add("Roblox-Channel-Token", ChannelToken);
             }
 
@@ -235,7 +229,7 @@
 
             if (ClientVersionCache.TryGetValue(cacheKey, out var value))
             {
-                App.Logger.WriteLine(LOG_IDENT, "Deploy information is cached");
+                App.Logger.Info("Deploy information is cached");
                 clientVersion = value;
             }
             else
@@ -255,8 +249,8 @@
                 }
                 catch (Exception ex)
                 {
-                    App.Logger.WriteLine(LOG_IDENT, "Failed to contact clientsettingscdn! Falling back to clientsettings...");
-                    App.Logger.WriteException(LOG_IDENT, ex);
+                    App.Logger.Error($"Failed to contact clientsettingscdn! {ex}");
+                    App.Logger.Warn("Falling back to clientsettings...");
 
                     HttpRequestMessage fallbackRequest = new()
                     {

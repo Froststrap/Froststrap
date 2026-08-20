@@ -13,7 +13,7 @@ namespace Froststrap.UI.ViewModels.Settings.GlobalSettings
         {
             _mainWindowViewModel = mainWindowViewModel;
 
-            App.Logger.WriteLine("GlobalSettingsEditorViewModel", "FastFlagEditorViewModel created.");
+            App.Logger.Info("FastFlagEditorViewModel created.");
 
             BackCommand = new RelayCommand(() =>
             {

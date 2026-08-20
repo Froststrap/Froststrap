@@ -313,7 +313,7 @@ namespace Froststrap.UI.ViewModels.Onboarding
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException(nameof(ImportGradient), ex);
+                App.Logger.Error("Unhandled exception: ", ex);
             }
         }
 

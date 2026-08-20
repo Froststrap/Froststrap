@@ -372,7 +372,7 @@ namespace Froststrap.UI.ViewModels
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine("SearchBarViewModel", $"Load more error: {ex.Message}");
+                App.Logger.Error($"Load more error: {ex.Message}");
             }
             finally
             {
@@ -514,7 +514,7 @@ namespace Froststrap.UI.ViewModels
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine("SearchBarViewModel::RegionJoinGame", $"Exception: {ex.Message}");
+                App.Logger.Error($"Unhandled exception: {ex.Message}");
                 MainWindow.ShowGlobalNotification(
                     Strings.Common_Error,
                     string.Format(Strings.Menu_SearchBar_JoinError, ex.Message),

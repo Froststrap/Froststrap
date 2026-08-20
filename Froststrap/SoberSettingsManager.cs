@@ -6,7 +6,6 @@ public class SoberSettingsManager : JsonManager<Dictionary<string, object>>
     private static readonly JsonSerializerOptions _readOptions = new() { ReadCommentHandling = JsonCommentHandling.Skip, AllowTrailingCommas = true };
 
     public override string ClassName => nameof(SoberSettingsManager);
-    public override string LOG_IDENT_CLASS => ClassName;
     public override string FileName => "config.json";
     public override string FileLocation => Path.Combine(Paths.SoberConfig, FileName);
 
@@ -30,7 +29,7 @@ public class SoberSettingsManager : JsonManager<Dictionary<string, object>>
     {
         if (!PresetKeys.TryGetValue(presetName, out string? actualKey))
         {
-            App.Logger.WriteLine(LOG_IDENT_CLASS, $"Unknown preset '{presetName}'");
+            App.Logger.Warn($"Unknown preset '{presetName}'");
             return;
         }
 
@@ -52,7 +51,7 @@ public class SoberSettingsManager : JsonManager<Dictionary<string, object>>
         if (PresetKeys.TryGetValue(name, out string? actualKey))
             return GetValue(actualKey);
 
-        App.Logger.WriteLine(LOG_IDENT_CLASS, $"Unknown preset '{name}'");
+        App.Logger.Warn($"Unknown preset '{name}'");
         return null;
     }
 
@@ -83,21 +82,19 @@ public class SoberSettingsManager : JsonManager<Dictionary<string, object>>
 
     public override bool Load(bool alertFailure = true)
     {
-        string LOG_IDENT = $"{LOG_IDENT_CLASS}::Load";
-
         if (!OperatingSystem.IsLinux())
         {
-            App.Logger.WriteLine(LOG_IDENT, "Not on Linux, Sober settings not applicable.");
+            App.Logger.Warn("Not on Linux, Sober settings not applicable.");
             Loaded = false;
             Prop = [];
             return false;
         }
 
-        App.Logger.WriteLine(LOG_IDENT, $"Loading from {FileLocation}...");
+        App.Logger.Info($"Loading from {FileLocation}...");
 
         if (!File.Exists(FileLocation))
         {
-            App.Logger.WriteLine(LOG_IDENT, "Config file does not exist. Sober is not configured.");
+            App.Logger.Warn("Config file does not exist. Sober is not configured.");
             Loaded = false;
             Prop = [];
             return false;
@@ -111,13 +108,12 @@ public class SoberSettingsManager : JsonManager<Dictionary<string, object>>
             Prop = settings;
             Loaded = true;
             _savedHash = ComputeHash(Prop);
-            App.Logger.WriteLine(LOG_IDENT, "Loaded successfully!");
+            App.Logger.Info("Loaded successfully!");
             return true;
         }
         catch (Exception ex)
         {
-            App.Logger.WriteLine(LOG_IDENT, "Failed to load!");
-            App.Logger.WriteException(LOG_IDENT, ex);
+            App.Logger.Error($"Failed to load! {ex}");
             Loaded = false;
             Prop = [];
 
@@ -132,15 +128,13 @@ public class SoberSettingsManager : JsonManager<Dictionary<string, object>>
 
     public override void Save()
     {
-        string LOG_IDENT = $"{LOG_IDENT_CLASS}::Save";
-
         if (!Loaded)
         {
-            App.Logger.WriteLine(LOG_IDENT, "Save skipped – settings not loaded (non‑Linux or file missing/invalid).");
+            App.Logger.Warn("Save skipped – settings not loaded (non‑Linux or file missing/invalid).");
             return;
         }
 
-        App.Logger.WriteLine(LOG_IDENT, $"Saving to {FileLocation}...");
+        App.Logger.Info($"Saving to {FileLocation}...");
 
         try
         {
@@ -148,12 +142,11 @@ public class SoberSettingsManager : JsonManager<Dictionary<string, object>>
             string contents = JsonSerializer.Serialize(Prop, _writeOptions);
             File.WriteAllText(FileLocation, contents);
             _savedHash = ComputeHash(Prop);
-            App.Logger.WriteLine(LOG_IDENT, "Save complete!");
+            App.Logger.Debug("Save complete!");
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
         {
-            App.Logger.WriteLine(LOG_IDENT, "Failed to save");
-            App.Logger.WriteException(LOG_IDENT, ex);
+            App.Logger.Error($"Failed to save {ex}");
             _ = Frontend.ShowMessageBox(string.Format(Strings.Bootstrapper_JsonManagerSaveFailed, ClassName, ex.Message), MessageBoxImage.Warning);
         }
     }

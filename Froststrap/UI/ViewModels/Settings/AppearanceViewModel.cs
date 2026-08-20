@@ -324,7 +324,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
             if (topLevel is not Window parentWindow)
             {
-                App.Logger.WriteLine(nameof(AppearanceViewModel), "AddCustomTheme: No parent window found.");
+                App.Logger.Info("No parent window found.");
                 return;
             }
 
@@ -415,7 +415,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException(nameof(AppearanceViewModel), ex);
+                App.Logger.Error($"Unhandled exception: {ex.Message}");
                 await Frontend.ShowMessageBox(string.Format(Strings.Menu_Appearance_CustomThemes_DeleteFailed, themeToDelete, ex.Message), MessageBoxImage.Error);
                 return;
             }
@@ -490,7 +490,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException("Rename", ex);
+                App.Logger.Error($"Unhandled exception: {ex.Message}");
                 await Frontend.ShowMessageBox("Rename failed", MessageBoxImage.Error);
                 return;
             }
@@ -851,7 +851,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException(nameof(ImportGradient), ex);
+                App.Logger.Error($"Unhandled exception: {ex.Message}");
             }
         }
 

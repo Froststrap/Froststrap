@@ -3294,7 +3294,7 @@ namespace Froststrap.Resources {
         /// </summary>
         public static string Logger_NoWriteMode {
             get {
-                return ResourceManager.GetString("Logger.NoWriteMode", resourceCulture);
+                return ResourceManager.GetString("App.Logger.NoWriteMode", resourceCulture);
             }
         }
         
