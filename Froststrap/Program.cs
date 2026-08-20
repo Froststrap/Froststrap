@@ -1,7 +1,10 @@
 ﻿using NLog;
 using Avalonia;
 using CommandLine;
+using CommandLine.Text;
+using System.Reflection;
 using Avalonia.Labs.Notifications;
+using System.Runtime.Versioning;
 using System.Runtime.InteropServices;
 
 namespace Froststrap;
@@ -14,9 +17,7 @@ sealed class Program
     {
         [Option('c', "console", HelpText = "Attaches a console window for debugging.")]
         public bool AttachConsole { get; set; }
-        [Option('v', "version", HelpText = "Version number")]
-        public bool Verbose { get; set; }
-        [Option('g', "nogpu", HelpText = "Sets env AVALONIA_GPU to 0 on runtime")]
+        [Option('g', "nogpu", HelpText = "Sets env AVALONIA_GPU to 0 on runtime.")]
         public bool NoGPU { get; set; }
     }
 
@@ -43,12 +44,28 @@ sealed class Program
 
         if (argsResult is NotParsed<Options> notParsed)
         {
-            bool isHelpOrVersion = notParsed.Errors.Any(e =>
-            e.Tag == ErrorType.HelpRequestedError || e.Tag == ErrorType.VersionRequestedError);
-
-            if (isHelpOrVersion)
+            if (notParsed.Errors.Any(e=> e.Tag == ErrorType.HelpRequestedError))
             {
-                Environment.Exit(0);
+                Console.WriteLine(
+                    HelpText.AutoBuild(argsResult, h => {
+                        h.AdditionalNewLineAfterOption = false;
+                        h.Heading = "Froststrap";
+                        h.Copyright = "(c) Froststrap Team";
+                        return HelpText.DefaultParsingErrorsHandler(argsResult, h);
+                    })
+                );
+                return;
+            }
+
+            if (notParsed.Errors.Any(e=> e.Tag == ErrorType.VersionRequestedError))
+            {
+                Console.WriteLine($"Froststrap v{
+                    typeof(Program)
+                        .Assembly
+                        .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
+                        .InformationalVersion.Split("+")[0]
+                        ?? "0.0.0"
+                }");
                 return;
             }
 
