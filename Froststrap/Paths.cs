@@ -1,6 +1,4 @@
-﻿using System.Runtime.InteropServices;
-
-namespace Froststrap
+﻿namespace Froststrap
 {
     static class Paths
     {
@@ -42,21 +40,21 @@ namespace Froststrap
                 if (OperatingSystem.IsMacOS())
                 {
                     return Path.Combine(
-                        Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-                        "Library", "Logs", "Froststrap"
+                        Paths.UserProfile,
+                        "Library", "Application Support", App.ProjectName, "Logs"
                     );
                 }
                 if (OperatingSystem.IsLinux())
                 {
                     var xdgState = Environment.GetEnvironmentVariable("XDG_STATE_HOME");
                     var baseDir = string.IsNullOrEmpty(xdgState)
-                    ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".local", "state")
+                    ? Path.Combine(Paths.UserProfile, ".local", "state")
                     : xdgState;
-                    return Path.Combine(baseDir, "Froststrap");
+                    return Path.Combine(baseDir, App.ProjectName);
                 }
                 return Path.Combine(
-                    "C:\\ProgramData",
-                    "Froststrap", "Logs"
+                    Paths.LocalAppData,
+                    App.ProjectName, "Logs"
                 );
             }
         }
@@ -86,7 +84,6 @@ namespace Froststrap
                 string xdgConfig = Environment.GetEnvironmentVariable("XDG_CONFIG_HOME") ?? Path.Combine(UserProfile, ".config");
                 string xdgData = Environment.GetEnvironmentVariable("XDG_DATA_HOME") ?? Path.Combine(UserProfile, ".local", "share");
                 string xdgCache = Environment.GetEnvironmentVariable("XDG_CACHE_HOME") ?? Path.Combine(UserProfile, ".cache");
-                string xdgState = Environment.GetEnvironmentVariable("XDG_STATE_HOME") ?? Path.Combine(UserProfile, ".local", "state");
                 string xdgBin = Environment.GetEnvironmentVariable("XDG_BIN_HOME") ?? Path.Combine(UserProfile, ".local", "bin");
 
                 ConfigRoot = Path.Combine(xdgConfig, App.ProjectName);
@@ -112,16 +109,16 @@ namespace Froststrap
             Versions = Path.Combine(DataRoot, "Versions");
             Modifications = Path.Combine(ConfigRoot, "Modifications");
 
-            // Ensure cache/logs have sensible defaults when not set by XDG above
+            // Ensure cache have sensible defaults when not set by XDG above
             if (String.IsNullOrEmpty(Cache))
                 Cache = Path.Combine(DataRoot, "Cache");
 
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            if (OperatingSystem.IsMacOS())
             {
                 RobloxLogs = Path.Combine(UserProfile, "Library", "Logs", "Roblox");
                 RobloxCache = Path.Combine(UserProfile, "Library", "Caches", "com.roblox.RobloxPlayer");
             }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            else if (OperatingSystem.IsLinux())
             {
                 RobloxLogs = Path.Combine(Roblox, "data", "sober", "sober_logs");
                 RobloxCache = Path.Combine(Roblox, "cache");
@@ -132,7 +129,7 @@ namespace Froststrap
                 RobloxCache = Path.Combine(Path.GetTempPath(), "Roblox");
             }
 
-            string exeName = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? $"{App.ProjectName}.exe" : App.ProjectName;
+            string exeName = OperatingSystem.IsWindows() ? $"{App.ProjectName}.exe" : App.ProjectName;
 
             if (!OperatingSystem.IsLinux())
                 Application = Path.Combine(DataRoot, exeName);
