@@ -12,34 +12,59 @@ namespace Froststrap
             {
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
-                    Process.Start(new ProcessStartInfo
+                    var psi = new ProcessStartInfo
                     {
                         FileName = select ? "explorer.exe" : path,
-                        Arguments = select ? $"/select,\"{path}\"" : "",
                         UseShellExecute = true
-                    });
+                    };
+
+                    if (select)
+                    {
+                        psi.ArgumentList.Add($"/select,\"{path}\"");
+                    }
+
+                    Process.Start(psi);
                 }
                 else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                 {
-                    string target = select ? Path.GetDirectoryName(path) ?? path : path;
-                    Process.Start("xdg-open", target);
+                    string target = select ? (Path.GetDirectoryName(path) ?? path) : path;
+
+                    var psi = new ProcessStartInfo("xdg-open")
+                    {
+                        UseShellExecute = false
+                    };
+                    psi.ArgumentList.Add(target);
+
+                    Process.Start(psi);
                 }
                 else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
                 {
-                    string args = select ? $"-R \"{path}\"" : $"\"{path}\"";
-                    Process.Start("open", args);
+                    var psi = new ProcessStartInfo("open")
+                    {
+                        UseShellExecute = false
+                    };
+
+                    if (select)
+                    {
+                        psi.ArgumentList.Add("-R");
+                    }
+                    psi.ArgumentList.Add(path);
+
+                    Process.Start(psi);
                 }
             }
             catch (Win32Exception ex)
             {
                 if (ex.NativeErrorCode != (int)ErrorCode.CO_E_APPNOTFOUND)
                     throw;
+
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
                     Process.Start(new ProcessStartInfo
                     {
                         FileName = "rundll32.exe",
-                        Arguments = $"shell32,OpenAs_RunDLL {path}"
+                        Arguments = $"shell32,OpenAs_RunDLL {path}",
+                        UseShellExecute = true
                     });
                 }
             }
