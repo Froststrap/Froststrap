@@ -97,8 +97,6 @@ sealed class Program
     // Avalonia configuration, don't remove; also used by visual designer.
     public static AppBuilder BuildAvaloniaApp()
     {
-        string iconPath = ExtractToTemp("IconFroststrap.ico", "IconFroststrap.ico");
-
         var builder = AppBuilder.Configure<App>()
             .UsePlatformDetect()
             .LogToTrace();
@@ -121,19 +119,5 @@ sealed class Program
         }
 
         return builder;
-    }
-
-    public static string ExtractToTemp(string name, string fileName)
-    {
-        string tempFilePath = Path.Combine(Paths.Temp, fileName);
-
-        if (!File.Exists(tempFilePath))
-        {
-            using var stream = Resource.GetStream(name);
-            Directory.CreateDirectory(Path.GetDirectoryName(tempFilePath)!);
-            using var fileStream = File.Create(tempFilePath);
-            stream.CopyTo(fileStream);
-        }
-        return tempFilePath;
     }
 }
