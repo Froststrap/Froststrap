@@ -103,8 +103,12 @@ sealed class Program
             .UsePlatformDetect()
             .LogToTrace();
 
-        if (OperatingSystem.IsLinux() && !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("WAYLAND_DISPLAY")))
+        // We won't enable Wayland by default until its merged into Avalonia upstream
+        if (OperatingSystem.IsLinux() &&
+            !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("FROSTSTRAP_FORCE_WAYLAND")))
         {
+            App.Logger.Debug("Using Wayland backend (FROSTSTRAP_FORCE_WAYLAND)");
+
             builder = builder.UseWayland()
                 .With(new WaylandPlatformOptions
                 {
