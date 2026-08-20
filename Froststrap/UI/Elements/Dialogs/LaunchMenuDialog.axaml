@@ -26,7 +26,7 @@
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="16" Margin="0,0,0,24">
                 <Image Width="64" Height="64" Source="avares://Froststrap/Froststrap.ico"
                        RenderOptions.BitmapInterpolationMode="HighQuality"/>
-                <StackPanel VerticalAlignment="Center" Spacing="4">
+                <StackPanel VerticalAlignment="Center">
                     <TextBlock Name="LaunchTitle" Text="Froststrap" FontSize="28" FontWeight="Bold" />
                     <TextBlock Text="{Binding Version}"
                                FontSize="13"
