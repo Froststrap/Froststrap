@@ -23,7 +23,7 @@ namespace Froststrap.UI
 
         public NotifyIconWrapper(Watcher watcher)
         {
-            App.Logger.WriteLine("NotifyIconWrapper::NotifyIconWrapper", "Initializing Avalonia TrayIcon");
+            App.Logger.Info("Initializing Avalonia TrayIcon");
 
             _watcher = watcher;
             _menuContainer = new MenuContainer(_watcher);
@@ -195,7 +195,7 @@ namespace Froststrap.UI
             if (_isDisposed) return;
             _isDisposed = true;
 
-            App.Logger.WriteLine("NotifyIconWrapper::Dispose", "Cleaning up TrayIcon and MenuContainer");
+            App.Logger.Info("Cleaning up TrayIcon and MenuContainer");
 
             Dispatcher.UIThread.Post(() =>
             {
@@ -212,7 +212,7 @@ namespace Froststrap.UI
                 }
                 catch (Exception ex)
                 {
-                    App.Logger.WriteLine("NotifyIconWrapper::Dispose", $"Error during cleanup: {ex.Message}");
+                    App.Logger.Error($"Error during cleanup: {ex.Message}");
                 }
             });
 

@@ -86,14 +86,14 @@ namespace Froststrap
 
                 return ComparePrerelease(prerelease1, prerelease2);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 // temporary diagnostic log for the issue described here:
                 // https://github.com/Bloxstraplabs/Bloxstrap/issues/3193
                 // the problem is that this happens only on upgrade, so my only hope of catching this is bug reports following the next release
 
-                App.Logger.WriteLine("Utilities::CompareVersions", "An exception occurred when comparing versions");
-                App.Logger.WriteLine("Utilities::CompareVersions", $"versionStr1={versionStr1} versionStr2={versionStr2}");
+                App.Logger.Info($"versionStr1={versionStr1} versionStr2={versionStr2}");
+                App.Logger.Error($"An exception occurred when comparing versions: {ex}");
 
                 throw;
             }
@@ -173,11 +173,9 @@ namespace Froststrap
         /// </summary>
         public static Version? ParseVersionSafe(string versionStr)
         {
-            const string LOG_IDENT = "Utilities::ParseVersionSafe";
-
             if (!Version.TryParse(versionStr, out Version? version))
             {
-                App.Logger.WriteLine(LOG_IDENT, $"Failed to convert {versionStr} to a valid Version type.");
+                App.Logger.Error($"Failed to convert {versionStr} to a valid Version type.");
                 return version;
             }
 
@@ -214,37 +212,16 @@ namespace Froststrap
 
         public static Process[] GetProcessesSafe()
         {
-            const string LOG_IDENT = "Utilities::GetProcessesSafe";
-
             try
             {
                 return Process.GetProcesses();
             }
             catch (ArithmeticException ex) // thanks microsoft
             {
-                App.Logger.WriteLine(LOG_IDENT, $"Unable to fetch processes!");
-                App.Logger.WriteException(LOG_IDENT, ex);
+                App.Logger.Error($"Unable to fetch processes! {ex}");
                 return []; // can we retry?
             }
         }
-
-        // We using InterProcessLocks now
-        /*public static bool DoesMutexExist(string name)
-        {
-            try
-            {
-                Mutex.OpenExisting(name).Close();
-                return true;
-            }
-            catch (UnauthorizedAccessException)
-            {
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }*/
 
         public static bool IsRobloxRunning()
         {

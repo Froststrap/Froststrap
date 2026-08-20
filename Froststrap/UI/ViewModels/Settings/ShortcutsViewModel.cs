@@ -17,8 +17,6 @@ namespace Froststrap.UI.ViewModels.Settings
 {
     public class ShortcutsViewModel : NotifyPropertyChangedViewModel
     {
-        private readonly string LOG_IDENT = "ShortcutsViewModel";
-
         // Use .lnk as the canonical name.
         // Shortcut.cs resolves the correct filename internally
         public ShortcutTask DesktopIconTask { get; } = new("Desktop", Paths.Desktop, $"{App.ProjectName}.lnk");
@@ -162,7 +160,7 @@ namespace Froststrap.UI.ViewModels.Settings
             catch (Exception ex)
             {
                 ShortcutStatus = Strings.Menu_Shortcuts_ErrorCreatingShortcut;
-                App.Logger.WriteLine(LOG_IDENT, $"Error: {ex.Message}");
+                App.Logger.Error($"Unhandled exception: {ex.Message}");
             }
         }
 
@@ -208,7 +206,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine(LOG_IDENT, $"Failed to load preview bitmap: {ex.Message}");
+                App.Logger.Error($"Failed to load preview bitmap: {ex.Message}");
                 return null;
             }
         }
@@ -312,7 +310,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine(LOG_IDENT, $"Search error: {ex.Message}");
+                App.Logger.Error($"Search error: {ex.Message}");
             }
             finally
             {

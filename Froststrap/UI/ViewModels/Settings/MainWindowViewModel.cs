@@ -297,7 +297,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException("MainWindowViewModel::NavigationCommand", ex);
+                App.Logger.Error(ex);
             }
         }
 
@@ -373,8 +373,6 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public void SaveSettings()
         {
-            const string LOG_IDENT = "MainWindowViewModel::SaveSettings";
-
             if (CurrentPage != null)
             {
                 App.State.Prop.LastPage = CurrentPage.GetType().FullName;
@@ -395,7 +393,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
                 if (task.Changed)
                 {
-                    App.Logger.WriteLine(LOG_IDENT, $"Executing pending task '{task}'");
+                    App.Logger.Info($"Executing pending task '{task}'");
                     task.Execute();
                 }
             }

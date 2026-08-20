@@ -1,7 +1,5 @@
 ﻿using System.Text.Json.Nodes;
 using System.Reflection;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace Froststrap
 {
@@ -35,8 +33,6 @@ namespace Froststrap
 
         public bool IsSaved => File.Exists(FileLocation);
 
-        public virtual string LOG_IDENT_CLASS => $"JsonManager<{ClassName}>";
-
         public string? _savedHash;
 
         protected virtual string ComputeHash(T obj)
@@ -56,9 +52,7 @@ namespace Froststrap
 
         public virtual bool Load(bool alertFailure = true)
         {
-            string LOG_IDENT = $"{LOG_IDENT_CLASS}::Load";
-
-            App.Logger.WriteLine(LOG_IDENT, $"Loading from {FileLocation}...");
+            App.Logger.Info($"Loading from {FileLocation}...");
 
             try
             {
@@ -74,13 +68,13 @@ namespace Froststrap
                     LastFileHash = MD5Hash.FromString(contents);
                     _savedHash = ComputeHash(_prop);
 
-                    App.Logger.WriteLine(LOG_IDENT, "Loaded successfully!");
+                    App.Logger.Info("Loaded successfully!");
 
                     return true;
                 }
                 else
                 {
-                    App.Logger.WriteLine(LOG_IDENT, $"Could not find {FileLocation}.");
+                    App.Logger.Error($"Could not find {FileLocation}.");
                     Loaded = true;
 
                     _savedHash = ComputeHash(_prop);
@@ -89,8 +83,8 @@ namespace Froststrap
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine(LOG_IDENT, "Failed to load!");
-                App.Logger.WriteException(LOG_IDENT, ex);
+                App.Logger.Error("Failed to load!");
+                App.Logger.Error(ex);
 
                 if (alertFailure)
                 {
@@ -111,8 +105,8 @@ namespace Froststrap
                     }
                     catch (Exception copyEx)
                     {
-                        App.Logger.WriteLine(LOG_IDENT, $"Failed to create backup file: {FileLocation}.bak");
-                        App.Logger.WriteException(LOG_IDENT, copyEx);
+                        App.Logger.Error($"Failed to create backup file: {FileLocation}.bak");
+                        App.Logger.Error(copyEx);
                     }
                 }
 
@@ -125,9 +119,7 @@ namespace Froststrap
 
         public virtual async void Save()
         {
-            string LOG_IDENT = $"{LOG_IDENT_CLASS}::Save";
-
-            App.Logger.WriteLine(LOG_IDENT, $"Saving to {FileLocation}...");
+            App.Logger.Info($"Saving to {FileLocation}...");
 
             Directory.CreateDirectory(Path.GetDirectoryName(FileLocation)!);
 
@@ -142,8 +134,8 @@ namespace Froststrap
             }
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
             {
-                App.Logger.WriteLine(LOG_IDENT, "Failed to save");
-                App.Logger.WriteException(LOG_IDENT, ex);
+                App.Logger.Error("Failed to save");
+                App.Logger.Error(ex);
 
                 string errorMessage = string.Format(Strings.Bootstrapper_JsonManagerSaveFailed, ClassName, ex.Message);
                 await Frontend.ShowMessageBox(errorMessage, MessageBoxImage.Warning);
@@ -151,7 +143,7 @@ namespace Froststrap
                 return;
             }
 
-            App.Logger.WriteLine(LOG_IDENT, "Save complete!");
+            App.Logger.Info("Save complete!");
         }
 
         public virtual void SaveSetting(string SettingName)
@@ -162,8 +154,7 @@ namespace Froststrap
                 return;
             }
 
-            string LOG_IDENT = $"{LOG_IDENT_CLASS}::SaveSetting";
-            App.Logger.WriteLine(LOG_IDENT, $"Saving setting '{SettingName}' to {FileLocation}");
+            App.Logger.Info($"Saving setting '{SettingName}' to {FileLocation}");
 
             Directory.CreateDirectory(Path.GetDirectoryName(FileLocation)!);
 
@@ -186,11 +177,11 @@ namespace Froststrap
                 if (currentJson.TryGetPropertyValue(SettingName, out JsonNode? value))
                 {
                     existingJson[SettingName] = value?.DeepClone();
-                    App.Logger.WriteLine(LOG_IDENT, $"Updated Setting '{SettingName}'");
+                    App.Logger.Info($"Updated Setting '{SettingName}'");
                 }
                 else
                 {
-                    App.Logger.WriteLine(LOG_IDENT, $"Setting '{SettingName}' not found – aborting save.");
+                    App.Logger.Error($"Setting '{SettingName}' not found – aborting save.");
                     return;
                 }
 
@@ -198,19 +189,17 @@ namespace Froststrap
                 File.WriteAllText(FileLocation, contents);
                 LastFileHash = MD5Hash.FromString(contents);
                 _savedHash = ComputeHash(Prop);
-                App.Logger.WriteLine(LOG_IDENT, "SaveSetting complete!");
+                App.Logger.Info("SaveSetting complete!");
             }
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or JsonException)
             {
-                App.Logger.WriteLine(LOG_IDENT, "Failed to save Setting");
-                App.Logger.WriteException(LOG_IDENT, ex);
+                App.Logger.Error("Failed to save Setting");
+                App.Logger.Error(ex);
             }
         }
 
         public virtual void Delete()
         {
-            string LOG_IDENT = $"{LOG_IDENT_CLASS}::Delete";
-
             try
             {
                 if (File.Exists(FileLocation))
@@ -218,17 +207,17 @@ namespace Froststrap
                     File.Delete(FileLocation);
 
                     Loaded = false;
-                    App.Logger.WriteLine(LOG_IDENT, "Delete complete!");
+                    App.Logger.Info("Delete complete!");
                 }
                 else
                 {
-                    App.Logger.WriteLine(LOG_IDENT, "File does not exist on disk");
+                    App.Logger.Error("File does not exist on disk");
                 }
             }
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
             {
-                App.Logger.WriteLine(LOG_IDENT, "Failed to delete");
-                App.Logger.WriteException(LOG_IDENT, ex);
+                App.Logger.Error("Failed to delete");
+                App.Logger.Error(ex);
 
                 // should we notify?
             }
@@ -236,7 +225,6 @@ namespace Froststrap
 
         public async void SaveProfile(string name)
         {
-            const string LOGGER_STRING = "SaveProfile::Profiles";
             string BaseDir = Paths.SavedFlagProfiles;
 
             try
@@ -249,7 +237,7 @@ namespace Froststrap
                 if (!Directory.Exists(BaseDir))
                     Directory.CreateDirectory(BaseDir);
 
-                App.Logger.WriteLine(LOGGER_STRING, $"Writing flag profile {name}");
+                App.Logger.Info($"Writing flag profile {name}");
 
                 if (!File.Exists(FileDirectory))
                     File.Create(FileDirectory).Dispose();
@@ -266,7 +254,6 @@ namespace Froststrap
 
         public async void LoadProfile(string? name, bool? clearFlags)
         {
-            const string LOGGER_STRING = "LoadProfile::Profiles";
             string BaseDir = Paths.SavedFlagProfiles;
 
             if (string.IsNullOrEmpty(name))
@@ -285,7 +272,7 @@ namespace Froststrap
 
                 string SavedClientSettings = File.ReadAllText(FoundFile);
 
-                App.Logger.WriteLine(LOGGER_STRING, $"Loading {SavedClientSettings}");
+                App.Logger.Info($"Loading {SavedClientSettings}");
 
                 T settings = JsonSerializer.Deserialize<T>(SavedClientSettings)
                     ?? throw new JsonException($"Failed to deserialize profile: {name}");
@@ -320,8 +307,6 @@ namespace Froststrap
 
         public async void LoadPresetProfile(string? name, bool? clearFlags)
         {
-            const string LOGGER_STRING = "LoadProfile::Profiles";
-
             if (string.IsNullOrEmpty(name))
                 return;
 
@@ -341,7 +326,7 @@ namespace Froststrap
                     using StreamReader reader = new(stream);
                     profileJson = reader.ReadToEnd();
 
-                    App.Logger.WriteLine(LOGGER_STRING, $"Loading embedded preset profile {name}");
+                    App.Logger.Info($"Loading embedded preset profile {name}");
                 }
                 else
                 {
@@ -359,7 +344,7 @@ namespace Froststrap
 
                     profileJson = File.ReadAllText(FoundFile);
 
-                    App.Logger.WriteLine(LOGGER_STRING, $"Loading user profile from file {name}");
+                    App.Logger.Info($"Loading user profile from file {name}");
                 }
 
                 // Deserialize the profile JSON

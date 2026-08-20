@@ -93,7 +93,7 @@ namespace Froststrap.Integrations
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine("IntegrationWatcher::LoadDefaultIcon", $"Failed to load multi-size default asset icon: {ex.Message}");
+                App.Logger.Error($"Failed to load multi-size default asset icon: {ex.Message}");
             }
         }
 
@@ -133,7 +133,6 @@ namespace Froststrap.Integrations
 
         private void OnGameLeave(object? sender, EventArgs e)
         {
-            const string LOG_IDENT = "IntegrationWatcher::OnGameLeave";
 
             if (_robloxWindowHandle.Value != IntPtr.Zero || OperatingSystem.IsWindows())
             {
@@ -141,7 +140,7 @@ namespace Froststrap.Integrations
                 {
                     if (App.Settings.Prop.AutoChangeIcon)
                     {
-                        App.Logger.WriteLine(LOG_IDENT, "Resetting window icons back to default");
+                        App.Logger.Info("Resetting window icons back to default");
 
                         if (_defaultRobloxIconSmallHandle != null && !_defaultRobloxIconSmallHandle.IsInvalid &&
                             _defaultRobloxIconBigHandle != null && !_defaultRobloxIconBigHandle.IsInvalid)
@@ -164,13 +163,13 @@ namespace Froststrap.Integrations
 
                     if (App.Settings.Prop.AutoChangeTitle)
                     {
-                        App.Logger.WriteLine(LOG_IDENT, "Resetting window title back to 'Roblox'");
+                        App.Logger.Info("Resetting window title back to 'Roblox'");
                         PInvoke.SetWindowText(_robloxWindowHandle, "Roblox");
                     }
                 }
                 catch (Exception ex)
                 {
-                    App.Logger.WriteLine(LOG_IDENT, $"Failed to reset window modifications: {ex.Message}");
+                    App.Logger.Error($"Failed to reset window modifications: {ex.Message}");
                 }
             }
 
@@ -217,8 +216,6 @@ namespace Froststrap.Integrations
         [SupportedOSPlatform("windows")]
         private async Task UpdateIconToGameIcon()
         {
-            const string LOG_IDENT = "IntegrationWatcher::UpdateIconToGameIcon";
-
             if (_robloxWindowHandle.Value == IntPtr.Zero) return;
 
             try
@@ -226,7 +223,7 @@ namespace Froststrap.Integrations
                 var activity = _activityWatcher.Data;
                 if (activity == null || activity.UniverseId == 0) return;
 
-                App.Logger.WriteLine(LOG_IDENT, $"Fetching icon layout for Universe ID: {activity.UniverseId}");
+                App.Logger.Info($"Fetching icon layout for Universe ID: {activity.UniverseId}");
 
                 var request = new ThumbnailRequest
                 {
@@ -240,7 +237,7 @@ namespace Froststrap.Integrations
 
                 if (string.IsNullOrEmpty(iconUrl))
                 {
-                    App.Logger.WriteLine(LOG_IDENT, "Failed to resolve valid asset thumbnail address.");
+                    App.Logger.Info("Failed to resolve valid asset thumbnail address.");
                     return;
                 }
 
@@ -266,20 +263,18 @@ namespace Froststrap.Integrations
                     PInvoke.SendMessage(_robloxWindowHandle, WM_SETICON, (WPARAM)ICON_SMALL, _customGameIconSmallHandle.DangerousGetHandle());
                     PInvoke.SendMessage(_robloxWindowHandle, WM_SETICON, (WPARAM)ICON_BIG, _customGameIconBigHandle.DangerousGetHandle());
 
-                    App.Logger.WriteLine(LOG_IDENT, "Game icon transformation injected successfully across both small and large sizing frames.");
+                    App.Logger.Info("Game icon transformation injected successfully across both small and large sizing frames.");
                 }
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine(LOG_IDENT, $"Failed to process game icon adjustment: {ex.Message}");
+                App.Logger.Error($"Failed to process game icon adjustment: {ex.Message}");
             }
         }
 
         [SupportedOSPlatform("windows")]
         private async Task UpdateTitleToGameName()
         {
-            const string LOG_IDENT = "IntegrationWatcher::UpdateTitleToGameName";
-
             if (_robloxWindowHandle.Value == IntPtr.Zero) return;
 
             try
@@ -295,7 +290,7 @@ namespace Froststrap.Integrations
                     }
                     catch (Exception ex)
                     {
-                        App.Logger.WriteException(LOG_IDENT, ex);
+                        App.Logger.Error("Unhandled exception: ", ex);
                     }
                     activity.UniverseDetails = UniverseDetails.LoadFromCache(activity.UniverseId);
                 }
@@ -311,14 +306,12 @@ namespace Froststrap.Integrations
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine(LOG_IDENT, $"Failed to update title: {ex.Message}");
+                App.Logger.Error($"Failed to update title: {ex.Message}");
             }
         }
 
         private void LaunchIntegration(CustomIntegration integration)
         {
-            const string LOG_IDENT = "IntegrationWatcher::LaunchIntegration";
-
             try
             {
                 var process = Process.Start(new ProcessStartInfo
@@ -331,30 +324,28 @@ namespace Froststrap.Integrations
 
                 if (process != null)
                 {
-                    App.Logger.WriteLine(LOG_IDENT, $"Integration '{integration.Name}' launched for game ID '{integration.GameID}' (PID {process.Id}).");
+                    App.Logger.Info($"Integration '{integration.Name}' launched for game ID '{integration.GameID}' (PID {process.Id}).");
                     _activeIntegrations[process.Id] = integration;
                 }
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine(LOG_IDENT, $"Failed to launch integration '{integration.Name}': {ex.Message}");
+                App.Logger.Error($"Failed to launch integration '{integration.Name}': {ex.Message}");
             }
         }
 
         private static void TerminateProcess(int pid)
         {
-            const string LOG_IDENT = "IntegrationWatcher::TerminateProcess";
-
             try
             {
                 var process = Process.GetProcessById(pid);
                 process.Kill();
 
-                App.Logger.WriteLine(LOG_IDENT, $"Terminated integration process (PID {pid}).");
+                App.Logger.Info($"Terminated integration process (PID {pid}).");
             }
             catch (Exception)
             {
-                App.Logger.WriteLine(LOG_IDENT, $"Failed to terminate process (PID {pid}), likely already exited.");
+                App.Logger.Error($"Failed to terminate process (PID {pid}), likely already exited.");
             }
         }
 

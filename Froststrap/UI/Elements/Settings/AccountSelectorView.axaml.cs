@@ -8,7 +8,6 @@ namespace Froststrap.UI.Elements.Settings
 {
     public partial class AccountSelectorView : UserControl
     {
-        private const string LOG_IDENT = "AccountSelectorView";
         private readonly AccountSelectorViewModel? _viewModel;
 
         public AccountSelectorView()
@@ -40,7 +39,7 @@ namespace Froststrap.UI.Elements.Settings
         {
             try
             {
-                App.Logger.WriteLine(LOG_IDENT, "Showing manual cookie dialog");
+                App.Logger.Info("Showing manual cookie dialog");
 
                 var dialog = new ManualCookieDialog();
 
@@ -53,19 +52,19 @@ namespace Froststrap.UI.Elements.Settings
 
                     if (result != null)
                     {
-                        App.Logger.WriteLine(LOG_IDENT, $"Dialog returned account: {result.Username}");
+                        App.Logger.Info($"Dialog returned account: {result.Username}");
 
                         _viewModel?.AddAccountDirect(result);
                     }
                 }
                 else
                 {
-                    App.Logger.WriteLine(LOG_IDENT, "Error: Could not find a parent window.");
+                    App.Logger.Error("Could not find a parent window.");
                 }
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine(LOG_IDENT, $"Error showing manual dialog: {ex.Message}");
+                App.Logger.Error($"Couldn't show manual dialog: {ex.Message}");
             }
             finally
             {

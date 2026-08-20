@@ -566,7 +566,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
                 await remoteManager.LoadData();
 
                 var base64Flags = DecodeBase64Flags(remoteManager.Prop.AllowedFastFlags);
-                App.Logger.WriteLine("CleanList", $"Loaded {base64Flags.Count} allowed flags.");
+                App.Logger.Info($"Loaded {base64Flags.Count} allowed flags.");
 
                 var allFlags = App.FastFlags.GetAllFlags();
                 var invalidRemoved = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
@@ -630,7 +630,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine("DecodeBase64Flags", $"Failed to decode Base64: {ex.Message}");
+                App.Logger.Error($"Failed to decode Base64: {ex.Message}");
             }
 
             return result;

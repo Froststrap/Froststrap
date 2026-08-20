@@ -73,7 +73,7 @@ namespace Froststrap.UI.ViewModels.Settings
             var topLevel = GetDialogTopLevel();
             if (topLevel is null)
             {
-                App.Logger.WriteLine("ModsViewModel", "Could not find a main window for custom font selection.");
+                App.Logger.Error("Could not find a main window for custom font selection.");
                 return;
             }
 
@@ -399,7 +399,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 CustomCursorSets.Add(new CustomCursorSet { Name = Path.GetFileName(newFolderPath), FolderPath = newFolderPath });
                 SelectedCustomCursorSetIndex = CustomCursorSets.Count - 1;
             }
-            catch (Exception ex) { App.Logger.WriteException("ModsViewModel::AddCustomCursorSet", ex); }
+            catch (Exception ex) { App.Logger.Error("Unhandled exception: ", ex); }
         }
 
         private void DeleteCustomCursorSet()
@@ -411,7 +411,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 CustomCursorSets.Remove(SelectedCustomCursorSet);
                 SelectedCustomCursorSetIndex = CustomCursorSets.Count > 0 ? 0 : -1;
             }
-            catch (Exception ex) { App.Logger.WriteException("ModsViewModel::DeleteCustomCursorSet", ex); }
+            catch (Exception ex) { App.Logger.Error("Unhandled exception: ", ex); }
         }
 
         private void RenameCustomCursorSet()
@@ -427,7 +427,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 CustomCursorSets[idx] = new CustomCursorSet { Name = SelectedCustomCursorSetName, FolderPath = newPath };
                 SelectedCustomCursorSetIndex = idx;
             }
-            catch (Exception ex) { App.Logger.WriteException("ModsViewModel::Rename", ex); }
+            catch (Exception ex) { App.Logger.Error("Unhandled exception: ", ex); }
         }
 
         private void ApplyCursorSet()
@@ -456,7 +456,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
                 _ = Frontend.ShowMessageBox($"Cursor set '{SelectedCustomCursorSet.Name}' applied successfully!", MessageBoxImage.Information);
             }
-            catch (Exception ex) { App.Logger.WriteException("ModsViewModel::ApplyCursorSet", ex); }
+            catch (Exception ex) { App.Logger.Error("Unhandled exception: ", ex); }
         }
 
         private async Task ExportCursorSet(Control? control)
@@ -488,7 +488,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException("ModsViewModel::ExportCursorSet", ex);
+                App.Logger.Error("Unhandled exception: ", ex);
             }
         }
 
@@ -534,7 +534,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException("ModsViewModel::ImportCursorSet", ex);
+                App.Logger.Error("Unhandled exception: ", ex);
             }
         }
 
@@ -568,7 +568,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException("ModsViewModel::AddCursor", ex);
+                App.Logger.Error("Unhandled exception: ", ex);
             }
         }
 
@@ -626,7 +626,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException("ModsViewModel::GetCurrentCursorSet", ex);
+                App.Logger.Error("Unhandled exception: ", ex);
                 _ = Frontend.ShowMessageBox($"Failed to get current cursor set:\n{ex.Message}", MessageBoxImage.Error);
             }
 

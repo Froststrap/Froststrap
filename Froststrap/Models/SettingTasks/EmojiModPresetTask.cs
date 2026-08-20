@@ -25,8 +25,6 @@
 
         public override async void Execute()
         {
-            const string LOG_IDENT = "EmojiModPresetTask::Execute";
-
             var query = QueryCurrentValue();
 
             if (NewState != EmojiType.Default && (query is null || query.FirstOrDefault().Key != NewState))
@@ -46,7 +44,7 @@
                 }
                 catch (Exception ex)
                 {
-                    App.Logger.WriteException(LOG_IDENT, ex);
+                    App.Logger.Error("Unhandled exception: ", ex);
 
                     await Frontend.ShowConnectivityDialog(
                         String.Format(Strings.Dialog_Connectivity_UnableToConnect, "GitHub"),

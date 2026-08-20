@@ -19,14 +19,14 @@ namespace Froststrap.UI.Elements.Dialogs
 
             AddException(exception);
 
-            if (!App.Logger.Initialized)
+            if (!Logging.Initialized)
                 LocateLogFileButton.Content = Strings.Dialog_Exception_CopyLogContents;
 
             string repoUrl = $"https://github.com/{App.ProjectRepository}";
             string wikiUrl = $"{repoUrl}/wiki";
 
             string title = HttpUtility.UrlEncode($"[BUG] {exception.GetType()}: {exception.Message}");
-            string log = HttpUtility.UrlEncode(App.Logger.AsDocument);
+            string log = HttpUtility.UrlEncode(Logging.AsDocument);
 
             string issueUrl = $"{repoUrl}/issues/new?template=bug_report.yaml&title={title}&log={log}";
 
@@ -51,16 +51,16 @@ namespace Froststrap.UI.Elements.Dialogs
 
             LocateLogFileButton.Click += async delegate
             {
-                if (App.Logger.Initialized && !String.IsNullOrEmpty(App.Logger.FileLocation))
+                if (Logging.Initialized && !String.IsNullOrEmpty(Logging.FileLocation))
                 {
-                    Utilities.ShellExecute(App.Logger.FileLocation);
+                    Utilities.ShellExecute(Logging.FileLocation);
                 }
                 else
                 {
                     var topLevel = TopLevel.GetTopLevel(this);
                     if (topLevel?.Clipboard != null)
                     {
-                        await topLevel.Clipboard.SetTextAsync(App.Logger.AsDocument);
+                        await topLevel.Clipboard.SetTextAsync(Logging.AsDocument);
                     }
                 }
             };
@@ -70,7 +70,7 @@ namespace Froststrap.UI.Elements.Dialogs
                 var topLevel = TopLevel.GetTopLevel(this);
                 if (topLevel?.Clipboard != null)
                 {
-                    await topLevel.Clipboard.SetTextAsync(App.Logger.AsDocument);
+                    await topLevel.Clipboard.SetTextAsync(Logging.AsDocument);
                 }
             };
 
