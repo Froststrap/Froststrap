@@ -25,6 +25,7 @@ namespace Froststrap.UI.Elements.Base
         {
             WindowDecorations = WindowDecorations.Full;
             ExtendClientAreaToDecorationsHint = true;
+            ExtendClientAreaTitleBarHeightHint = -1;
             MacOSTitleBar.SetIsThick(this, true);
 
             TextOptions.SetTextRenderingMode(this, TextRenderingMode.Antialias);

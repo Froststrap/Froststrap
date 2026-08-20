@@ -19,7 +19,7 @@
     WindowStartupLocation="CenterScreen">
 
     <Grid RowDefinitions="48,Auto,*,72">
-        <Grid Grid.Row="0" Background="{DynamicResource ControlFillColorDefaultBrush}">
+        <Grid Grid.Row="0">
             <controls:StepIndicator
                 x:Name="RootNavigation"
                 HorizontalAlignment="Center"

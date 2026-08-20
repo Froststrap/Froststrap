@@ -13,8 +13,8 @@
                      Title="{x:Static resources:Strings.Dialog_Connectivity_Title}"
                      WindowStartupLocation="CenterScreen">
 
-    <Grid RowDefinitions="*,Auto">
-        <Grid Grid.Row="0" Margin="16" ColumnDefinitions="Auto,*">
+    <Grid RowDefinitions="32,*,Auto">
+        <Grid Grid.Row="1" Margin="16" ColumnDefinitions="Auto,*">
             <Image x:Name="IconImage" Grid.Column="0" Width="32" Height="32"
                    Margin="0,0,15,0" VerticalAlignment="Top" RenderOptions.BitmapInterpolationMode="HighQuality" />
 
@@ -37,7 +37,7 @@
             </StackPanel>
         </Grid>
 
-        <Border Grid.Row="1" Padding="15"
+        <Border Grid.Row="2" Padding="15"
                 Background="{DynamicResource ControlFillColorDefaultBrush}">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                 <TextBlock x:Name="VersionText"

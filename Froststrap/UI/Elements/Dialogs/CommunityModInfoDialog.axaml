@@ -16,8 +16,8 @@
                      SizeToContent="Height"
                      WindowStartupLocation="CenterScreen">
 
-    <Grid RowDefinitions="Auto,*">
-        <Grid Grid.Row="0" Margin="16,0,16,16" ColumnDefinitions="320,*">
+    <Grid RowDefinitions="32,Auto,*">
+        <Grid Grid.Row="1" Margin="16,0,16,16" ColumnDefinitions="320,*">
 
             <StackPanel Grid.Column="0" Margin="0,0,16,0" Spacing="12">
                 <md:Card Height="180" ClipToBounds="True">
@@ -59,7 +59,7 @@
                 </md:Card>
             </StackPanel>
 
-            <md:Card Grid.Column="1" VerticalAlignment="Stretch">
+            <md:Card Grid.Column="2" VerticalAlignment="Stretch">
                 <DockPanel LastChildFill="True" Margin="16">
                     <StackPanel DockPanel.Dock="Bottom" Spacing="8" Margin="0,16,0,0">
                         <ProgressBar Value="{Binding Mod.DownloadProgress}"
