@@ -17,6 +17,14 @@ internal partial class INNotify {
         byte[]? imageData,
         nuint imageLen
     );
+	[LibraryImport(
+		"backend",
+		EntryPoint = "send_notification_message"
+	)]
+    public static partial int SendMessage(
+        [MarshalAs(UnmanagedType.LPUTF8Str)] string title,
+        [MarshalAs(UnmanagedType.LPUTF8Str)] string description
+    );
 }
 
 /// A native notifier
@@ -27,9 +35,19 @@ public class NNotify {
 		byte[]? imageData,
 		nuint imgLen
 	) {
-		// run on another thread, i don't care if it fails or not.
+		// Run on another thread, I don't care if it fails or not.
 		Task.Run(()=>{
 			INNotify.Send(title, description, imageData, imgLen);
+		});
+	}
+	/// Only takes in text fields, to make life easier
+	public static void SendMessage(
+		string title,
+		string description
+	) {
+		// Run on another thread, I don't care if it fails or not.
+		Task.Run(()=>{
+			INNotify.SendMessage(title, description);
 		});
 	}
 }
