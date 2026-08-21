@@ -1,11 +1,13 @@
 {
   typos,
+  inputs,
   mkShell,
-  callPackage
+  callPackage,
 }:
 mkShell {
   inputsFrom = [
     (callPackage ./dotnetDevShell.nix { })
+    (callPackage ./rustDevShell.nix { inherit inputs; })
     (callPackage ./goDevShell.nix { })
   ];
 

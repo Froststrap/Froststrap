@@ -95,6 +95,7 @@ Froststrap uses a **multi-license model** depending on the origin of the code:
 | Code | License |
 |---|---|
 | Code written or modified by Froststrap | [AGPL-3.0](https://www.gnu.org/licenses/agpl-3.0.en.html) |
+| Rust code | [MPL-2.0](https://www.mozilla.org/en/MPL/2.0)
 | Upstream code inherited from Fishstrap/Bloxstrap | [MIT](https://opensource.org/licenses/MIT) |
 | Nix-related code (unmodified) | [Unlicense](https://unlicense.org/) |
 

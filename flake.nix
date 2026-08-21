@@ -7,6 +7,10 @@
     self.submodules = true;
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     treefmt-nix.url = "github:numtide/treefmt-nix";
+    fenix = {
+      url = "github:nix-community/fenix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -14,7 +18,7 @@
       nixpkgs,
       treefmt-nix,
       ...
-    }:
+    }@inputs:
     let
       forAllSystems = nixpkgs.lib.genAttrs nixpkgs.lib.systems.flakeExposed;
     in
@@ -24,7 +28,8 @@
         in rec {
           dotnet = pkgs.callPackage ./nix/dotnetDevShell.nix { };
           go = pkgs.callPackage ./nix/goDevShell.nix { };
-          froststrap = pkgs.callPackage ./nix/combinedDevShell.nix { };
+          rust = pkgs.callPackage ./nix/rustDevShell.nix { inherit inputs; };
+          froststrap = pkgs.callPackage ./nix/combinedDevShell.nix { inherit inputs; };
           default = froststrap;
         });
         packages = forAllSystems (system: let
