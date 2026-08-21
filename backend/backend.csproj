@@ -8,7 +8,7 @@
 
   <PropertyGroup>
     <RustProjectDir>$(MSBuildProjectDirectory)</RustProjectDir>
-    <RustCrateName>backend</RustCrateName>
+    <RustCrateName>rbackend</RustCrateName>
 
     <RustProfile Condition="'$(Configuration)' == 'Release'">release</RustProfile>
     <RustProfile Condition="'$(Configuration)' != 'Release'">debug</RustProfile>

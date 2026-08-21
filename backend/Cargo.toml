@@ -1,5 +1,5 @@
 [package]
-name = "backend"
+name = "rbackend"
 edition.workspace = true
 version.workspace = true
 authors.workspace = true
