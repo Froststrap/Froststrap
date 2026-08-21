@@ -33,7 +33,7 @@ pub unsafe extern "C" fn notification_send(
 
     let mut notification = Notification::new();
     notification.summary(&title).body(&description);
-    // notification.image_path(temp_path.to_string_lossy().as_ref());
+    notification.image_path(temp_path.to_string_lossy().as_ref());
 
     let result = match notification.show() {
         Ok(_) => {
