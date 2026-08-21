@@ -111,6 +111,7 @@ namespace Froststrap.UI
 
         public async void ShowNotif(object? sender, EventArgs e)
         {
+            App.Logger.Debug("Dispatching Notfification");
             if (ActivityWatcher?.Data == null) return;
 
             string title = ActivityWatcher.Data.ServerType switch
@@ -162,6 +163,7 @@ namespace Froststrap.UI
 
         public void ShowAlert(string title, string message, int duration = 5, NotificationType category = NotificationType.Information)
         {
+            App.Logger.Debug("Dispatching Alert");
             if (_isDisposed) return;
             var manager = NativeNotificationManager.Current;
             if (manager == null) return;
