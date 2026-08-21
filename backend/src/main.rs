@@ -1,10 +1,11 @@
 //! This is a test file full of shit testing libs functionality
 
-use backend::send_notification;
+use backend::{send_notification, send_notification_message};
 use std::ffi::CString;
 
 fn main() {
     test_notification_send();
+    test_notification_message_send();
 }
 
 fn test_notification_send() {
@@ -28,4 +29,11 @@ fn test_notification_send() {
             png_bytes.len(),
         )
     };
+}
+
+fn test_notification_message_send() {
+    let title = CString::new("Test Title").unwrap();
+    let description = CString::new("Testing description").unwrap();
+
+    unsafe { send_notification_message(title.as_ptr(), description.as_ptr()) };
 }

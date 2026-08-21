@@ -162,35 +162,5 @@ namespace Froststrap.UI
                 return messagebox.Result;
             });
         }
-
-        public static void ShowBalloonTip(string title, string message, NotificationType category = NotificationType.Information, int timeoutSeconds = 5)
-        {
-            App.Logger.Info("helhoolhlhesltoegoeyhngoeshyg");
-        
-            var manager = NativeNotificationManager.Current;
-            if (manager == null || OperatingSystem.IsMacOS()) return;
-
-            string categoryString = category switch
-            {
-                NotificationType.Success => "success",
-                NotificationType.Warning => "warning",
-                NotificationType.Error => "error",
-                _ => "info"
-            };
-
-            var notification = manager.CreateNotification(categoryString);
-            if (notification == null) return;
-
-            notification.Title = title;
-            notification.Message = message;
-            notification.Expiration = TimeSpan.FromSeconds(timeoutSeconds);
-
-            NotificationTracker.Track(notification, TimeSpan.FromSeconds(timeoutSeconds));
-
-            Dispatcher.UIThread.Post(() =>
-            {
-                notification.Show();
-            }, DispatcherPriority.ApplicationIdle);
-        }
     }
 }
