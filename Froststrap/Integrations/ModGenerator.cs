@@ -278,7 +278,7 @@ namespace Froststrap.Integrations
             {
                 Size = new Size(targetSprite.W, targetSprite.H),
                 Mode = ResizeMode.Pad,
-                PadColor = new Rgba32(0, 0, 0, 0)
+                PadColor = new SixLabors.ImageSharp.Color()
             }));
 
             for (int y = 0; y < targetSprite.H; y++)
