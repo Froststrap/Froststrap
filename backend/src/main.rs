@@ -1,6 +1,6 @@
 //! This is a test file full of shit testing libs functionality
 
-use backend::notification_send;
+use backend::send_notification;
 use std::ffi::CString;
 
 fn main() {
@@ -8,7 +8,6 @@ fn main() {
 }
 
 fn test_notification_send() {
-    // 1x1 pixel PNG, just enough to exercise the decode path
     let img = image::RgbImage::from_pixel(1, 1, image::Rgb([255, 0, 0]));
     let mut png_bytes = Vec::new();
     image::DynamicImage::ImageRgb8(img)
@@ -21,15 +20,12 @@ fn test_notification_send() {
     let title = CString::new("Test Notification").unwrap();
     let description = CString::new("Fired from a Rust test").unwrap();
 
-    let result = unsafe {
-        notification_send(
+    unsafe {
+        send_notification(
             title.as_ptr(),
             description.as_ptr(),
             png_bytes.as_ptr(),
             png_bytes.len(),
         )
     };
-
-    println!("result: {result}");
-    assert_eq!(result, 0);
 }

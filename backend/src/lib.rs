@@ -5,7 +5,7 @@ use image::DynamicImage;
 use notify_rust::Notification;
 
 #[unsafe(no_mangle)]
-pub unsafe extern "C" fn notification_send(
+pub unsafe extern "C" fn send_notification(
     title: *const c_char,
     description: *const c_char,
     image_data: *const u8,
@@ -25,25 +25,17 @@ pub unsafe extern "C" fn notification_send(
 
     let temp_path =
         std::env::temp_dir().join(format!("froststrap-notif-{}.png", std::process::id()));
-    if let Err(e) = dynamic_image.save(&temp_path) {
-        eprintln!("temp png save failed: {e:?}");
+    if let Err(_) = dynamic_image.save(&temp_path) {
         return -2;
     }
-    eprintln!("wrote temp image to {}", temp_path.display());
 
     let mut notification = Notification::new();
     notification.summary(&title).body(&description);
     notification.image_path(temp_path.to_string_lossy().as_ref());
 
     let result = match notification.show() {
-        Ok(_) => {
-            eprintln!("notification.show() returned Ok");
-            0
-        }
-        Err(e) => {
-            eprintln!("notification.show() failed: {e:?}");
-            -3
-        }
+        Ok(_) => 0,
+        Err(_) => -3,
     };
 
     let _ = std::fs::remove_file(&temp_path);
