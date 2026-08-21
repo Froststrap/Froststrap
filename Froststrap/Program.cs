@@ -82,14 +82,13 @@ sealed class Program
     // Avalonia configuration, don't remove; also used by visual designer.
     public static AppBuilder BuildAvaloniaApp()
     {
-        string iconPath = ExtractToTemp("IconFroststrap.ico", "IconFroststrap.ico");
-
         var builder = AppBuilder.Configure<App>()
             .UsePlatformDetect()
             .LogToTrace();
 
         if (!OperatingSystem.IsMacOS())
         {
+            string iconPath = ExtractToTemp("IconFroststrap.ico", "IconFroststrap.ico");
             builder = builder.WithAppNotifications(new AppNotificationOptions
             {
                 AppName = "Froststrap",
