@@ -1,6 +1,6 @@
 //! This is a test file full of shit testing libs functionality
 
-use backend::{send_notification, send_notification_message};
+use rbackend::{send_notification, send_notification_message};
 use std::ffi::CString;
 
 fn main() {

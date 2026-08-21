@@ -8,7 +8,7 @@ namespace Froststrap.Backend;
 /// A native notifier
 internal partial class INNotify {
 	[LibraryImport(
-		"backend",
+		"rbackend",
 		EntryPoint = "send_notification"
 	)]
     public static partial int Send(
@@ -18,7 +18,7 @@ internal partial class INNotify {
         nuint imageLen
     );
 	[LibraryImport(
-		"backend",
+		"rbackend",
 		EntryPoint = "send_notification_message"
 	)]
     public static partial int SendMessage(
