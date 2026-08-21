@@ -42,9 +42,9 @@ namespace Froststrap.UI
             if (ActivityWatcher is not null && App.Settings.Prop.ShowServerDetails && !OperatingSystem.IsMacOS())
             {
                 if (App.Settings.Prop.ShowServerUptime)
-                    ActivityWatcher.ShowNotif += ShowNotif;
+                    ActivityWatcher.ShowNotif += ShowNotification;
                 else
-                    ActivityWatcher.OnGameJoin += ShowNotif;
+                    ActivityWatcher.OnGameJoin += ShowNotification;
             }
 
             TrayIcon.GetIcons(Application.Current!)?.Add(_trayIcon);
@@ -109,7 +109,7 @@ namespace Froststrap.UI
             }
         }
 
-        public async void ShowNotif(object? sender, EventArgs e)
+        public async void ShowNotification(object? sender, EventArgs e)
         {
             App.Logger.Debug("Dispatching Notfification");
             if (ActivityWatcher?.Data == null) return;
@@ -125,11 +125,11 @@ namespace Froststrap.UI
             string? serverLocation = await ActivityWatcher.Data.QueryServerLocation();
             if (string.IsNullOrEmpty(serverLocation))
             {
+                App.Logger.Error("Couldn't connect to ipinfo.io");
                 ShowAlert(
                     string.Format(Strings.Dialog_Connectivity_UnableToConnect, "ipinfo.io"),
                     Strings.ActivityWatcher_LocationQueryFailed,
-                    5,
-                    NotificationType.Warning
+                    5
                 );
                 return;
             }
@@ -161,35 +161,18 @@ namespace Froststrap.UI
             ShowAlert(title, message);
         }
 
-        public void ShowAlert(string title, string message, int duration = 5, NotificationType category = NotificationType.Information)
+        private void ShowAlert(string title, string message, int duration = 5)
         {
             App.Logger.Debug("Dispatching Alert");
             if (_isDisposed) return;
             var manager = NativeNotificationManager.Current;
             if (manager == null) return;
 
-            string categoryString = category switch
-            {
-                NotificationType.Success => "success",
-                NotificationType.Warning => "warning",
-                NotificationType.Error => "error",
-                _ => "info"
-            };
-
-            var notification = manager.CreateNotification(categoryString);
-            if (notification == null) return;
-
-            notification.Title = title;
-            notification.Message = message;
-            notification.Expiration = TimeSpan.FromSeconds(duration);
-
-            NotificationTracker.Track(notification, TimeSpan.FromSeconds(duration));
-
-            Dispatcher.UIThread.Post(() =>
-            {
-                if (_isDisposed) return;
-                notification.Show();
-            }, DispatcherPriority.ApplicationIdle);
+            Backend.NNotify.SendMessage(
+                title,
+                message,
+                duration
+            );           
         }
 
         public void Dispose()
@@ -220,8 +203,8 @@ namespace Froststrap.UI
 
             if (ActivityWatcher is not null)
             {
-                ActivityWatcher.ShowNotif -= ShowNotif;
-                ActivityWatcher.OnGameJoin -= ShowNotif;
+                ActivityWatcher.ShowNotif -= ShowNotification;
+                ActivityWatcher.OnGameJoin -= ShowNotification;
             }
 
             GC.SuppressFinalize(this);
