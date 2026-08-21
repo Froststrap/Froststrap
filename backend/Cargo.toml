@@ -1,0 +1,10 @@
+[package]
+name = "backend"
+edition.workspace = true
+version.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+image.workspace = true
+notify-rust.workspace = true

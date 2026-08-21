@@ -1,0 +1,25 @@
+[workspace]
+resolver = "3"
+members = [
+  "backend"
+]
+default-members = [
+  "backend"
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "MPL-2.0"
+authors = [
+  "Invra <identificationsucks@gmail.com>",
+  "UltimatePlayer97 <gogole.help134@gmail.com>",
+  "RealMeddsam <realferidjelalia@gmail.com>"
+]
+
+[workspace.dependencies]
+image = "0.25.10"
+
+[workspace.dependencies.notify-rust]
+version = "4"
+features = ["images"]
