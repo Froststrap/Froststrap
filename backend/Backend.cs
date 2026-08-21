@@ -23,7 +23,8 @@ internal partial class INNotify {
 	)]
     public static partial int SendMessage(
         [MarshalAs(UnmanagedType.LPUTF8Str)] string title,
-        [MarshalAs(UnmanagedType.LPUTF8Str)] string description
+        [MarshalAs(UnmanagedType.LPUTF8Str)] string description,
+		Int32 duration
     );
 }
 
@@ -40,14 +41,14 @@ public class NNotify {
 			INNotify.Send(title, description, imageData, imgLen);
 		});
 	}
-	/// Only takes in text fields, to make life easier
 	public static void SendMessage(
 		string title,
-		string description
+		string description,
+		int duration = 5
 	) {
 		// Run on another thread, I don't care if it fails or not.
 		Task.Run(()=>{
-			INNotify.SendMessage(title, description);
+			INNotify.SendMessage(title, description, duration);
 		});
 	}
 }

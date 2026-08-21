@@ -35,5 +35,5 @@ fn test_notification_message_send() {
     let title = CString::new("Test Title").unwrap();
     let description = CString::new("Testing description").unwrap();
 
-    unsafe { send_notification_message(title.as_ptr(), description.as_ptr()) };
+    unsafe { send_notification_message(title.as_ptr(), description.as_ptr(), 5) };
 }
