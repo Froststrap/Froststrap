@@ -27,6 +27,12 @@
     <AvaloniaResource Include="Froststrap.png" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Include="Froststrap.ico" />
+    <EmbeddedResource Include="Froststrap.png" />
+    <EmbeddedResource Include="Resources\**\*.*" Exclude="Resources\**\*.resx" />
+  </ItemGroup>
+
   <!-- NuGet packages -->
   <ItemGroup>
     <PackageReference Include="AnimatedImage.Avalonia" Version="2.1.4" />
