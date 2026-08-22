@@ -1782,7 +1782,7 @@ namespace Froststrap
                 try
                 {
                     var fileInfo = new FileInfo(Paths.Process);
-                    bool isSelfContained = fileInfo.Length > 80 * 1024 * 1024;
+                    bool isSelfContained = fileInfo.Length > 100 * 1024 * 1024;
 
                     if (isSelfContained)
                         return ["Froststrap-SelfContained-Setup.exe", "-SelfContained-Setup.exe"];
