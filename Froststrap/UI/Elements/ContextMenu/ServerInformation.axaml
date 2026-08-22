@@ -14,13 +14,8 @@
                      CanResize="False"
                      WindowStartupLocation="CenterScreen">
 
-    <Grid RowDefinitions="Auto, *, Auto">
-        <controls:TitleBar Grid.Row="0" Grid.ColumnSpan="2" x:Name="RootTitleBar"
-                           Title="{x:Static resources:Strings.ContextMenu_ServerInformation_Title}"
-                           ShowMinimize="False" ShowMaximize="False"
-                           Icon="avares://Froststrap/Froststrap.ico" />
-
-        <Grid Grid.Row="1" Margin="16,8,16,16">
+    <Grid RowDefinitions="*, Auto">
+        <Grid Grid.Row="0" Margin="16,8,16,16">
             <TextBlock Grid.Row="0" Text="{x:Static resources:Strings.ContextMenu_ServerInformation_NotInAServer}"
                        IsVisible="{Binding !HasServerData}"
                        HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,20" />
@@ -59,7 +54,7 @@
             </Grid>
         </Grid>
 
-        <Border Grid.Row="2" Padding="15" Background="{DynamicResource ControlFillColorDefaultBrush}">
+        <Border Grid.Row="1" Padding="15" Background="{DynamicResource ControlFillColorDefaultBrush}">
             <StackPanel Orientation="Horizontal" FlowDirection="LeftToRight" HorizontalAlignment="Right">
                 <Button MinWidth="100" Content="{Binding CopyButtonText}"
                         Command="{Binding CopyCommand}" CommandParameter="{Binding $self}"

@@ -20,6 +20,7 @@ namespace Froststrap.UI.Elements.Settings
 {
     public partial class MainWindow : Base.AvaloniaWindow
     {
+        protected override bool ApplyTopPadding => false;
         public static MainWindow? Instance { get; private set; }
 
         public static WindowNotificationManager? NotificationManager { get; private set; }
