@@ -101,7 +101,7 @@ sealed class Program
             .UsePlatformDetect()
             .LogToTrace();
 
-        // We won't enable Wayland by default until its merged into Avalonia upstream
+        /*// We won't enable Wayland by default until its merged into Avalonia upstream
         if (OperatingSystem.IsLinux() &&
             !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("FROSTSTRAP_FORCE_WAYLAND")))
         {
@@ -116,7 +116,9 @@ sealed class Program
         else
         {
             builder = builder.UsePlatformDetect();
-        }
+        }*/
+
+        builder = builder.UsePlatformDetect();
 
         return builder;
     }
