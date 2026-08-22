@@ -25,12 +25,16 @@
       {
         devShells = forAllSystems (system: let
           pkgs = import nixpkgs { inherit system; };
-        in rec {
-          dotnet = pkgs.callPackage ./nix/dotnetDevShell.nix { };
-          go = pkgs.callPackage ./nix/goDevShell.nix { };
-          rust = pkgs.callPackage ./nix/rustDevShell.nix { inherit inputs; };
-          froststrap = pkgs.callPackage ./nix/combinedDevShell.nix { inherit inputs; };
-          default = froststrap;
+          inherit (pkgs.callPackage ./nix/devshell-tools.nix {}) mkComposedShell;
+          dotnetFrag = pkgs.callPackage ./nix/dotnetDevShell.nix { };
+          extraFrag = pkgs.callPackage ./nix/extra.nix { };
+          rustFrag = pkgs.callPackage ./nix/rustDevShell.nix { inherit inputs; };
+          goFrag = pkgs.callPackage ./nix/goDevShell.nix { };
+        in {
+          default = mkComposedShell [ dotnetFrag rustFrag goFrag extraFrag ];
+          dotnet = mkComposedShell [ dotnetFrag ];
+          rust = mkComposedShell [ rustFrag ];
+          go = mkComposedShell [ goFrag ];
         });
         packages = forAllSystems (system: let
           pkgs = import nixpkgs { inherit system; };
