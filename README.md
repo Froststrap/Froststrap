@@ -97,12 +97,7 @@ Froststrap uses a **multi-license model** depending on the origin of the code:
 | Code written or modified by Froststrap | [AGPL-3.0](https://www.gnu.org/licenses/agpl-3.0.en.html) |
 | Rust code | [MPL-2.0](https://www.mozilla.org/en/MPL/2.0)
 | Upstream code inherited from Fishstrap/Bloxstrap | [MIT](https://opensource.org/licenses/MIT) |
-| Nix-related code (unmodified) | [Unlicense](https://unlicense.org/) |
-
-**In plain terms:**
-- If Froststrap wrote it or modified it, it's **AGPL-3.0** — any modifications must be open-sourced under the same license
-- Code inherited from upstream (Fishstrap / Bloxstrap) remains under its original **MIT** license
-- Nix-specific code is **unlicensed** (public domain) and is strictly limited to Nix-related functionality
+| Nix code | [Unlicense](https://unlicense.org/) |
 
 When in doubt about which license applies to a specific file, check the file header or refer to the [LICENSE](./LICENSE) file.
 
