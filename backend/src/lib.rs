@@ -6,6 +6,11 @@ use std::os::raw::c_char;
 use image::DynamicImage;
 use notify_rust::Notification;
 
+#[cfg(target_os = "macos")]
+const APP_ID: &'static str = "io.github.froststrap.app";
+#[cfg(not(target_os = "macos"))]
+const APP_ID: &'static str = "Icon.Froststrap";
+
 #[unsafe(no_mangle)]
 pub unsafe extern "C" fn send_notification(
     title: *const c_char,
@@ -34,6 +39,7 @@ pub unsafe extern "C" fn send_notification(
     let mut notification = Notification::new();
     notification.summary(&title).body(&description);
     notification.image_path(temp_path.to_string_lossy().as_ref());
+    notification.app_id(APP_ID);
 
     let result = match notification.show() {
         Ok(_) => 0,
@@ -55,6 +61,7 @@ pub unsafe extern "C" fn send_notification_message(
 
     let mut notification = Notification::new();
     notification
+        .app_id(APP_ID)
         .summary(&title)
         .body(&description)
         .timeout(duration);
