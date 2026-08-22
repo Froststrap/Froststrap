@@ -6,11 +6,12 @@
 	<Color name="XmlTag" foreground="#569CD6" exampleText='&lt;tag attribute="value" /&gt;' />
 	<Color name="AttributeName" foreground="#9CDCFE" exampleText='&lt;tag attribute="value" /&gt;' />
 	<Color name="AttributeValue" foreground="#CE9178" exampleText='&lt;tag attribute="value" /&gt;' />
+	<Color name="Link" foreground="#4EC9B0" exampleText="https://example.com" />
 	<Color name="Entity" foreground="White" exampleText="index.aspx?a=1&amp;amp;b=2" />
 	<Color name="BrokenEntity" foreground="White" exampleText="index.aspx?a=1&amp;b=2" />
 
 	<RuleSet>
-		<Span color="Comment" multiline="true">
+		<Span color="Comment" multiline="true" ruleSet="CommentSet">
 			<Begin>&lt;!--</Begin>
 			<End>--&gt;</End>
 		</Span>
@@ -45,12 +46,13 @@
 		<Import ruleSet="EntitySet"/>
 	</RuleSet>
 
+	<RuleSet name="CommentSet">
+		<Rule color="Link">(https?|ftp)://[^\s"'&lt;&gt;]+</Rule>
+	</RuleSet>
+
 	<RuleSet name="EntitySet">
-		<Rule color="Entity">
-			&amp;[\w\d\#]+;
-		</Rule>
-		<Rule color="BrokenEntity">
-			&amp;[\w\d\#]*
-		</Rule>
+		<Rule color="Entity">&amp;[\w\d\#]+;</Rule>
+		<Rule color="BrokenEntity">&amp;[\w\d\#]*</Rule>
+		<Rule color="Link">(https?|ftp)://[^\s"'&lt;&gt;]+</Rule>
 	</RuleSet>
 </SyntaxDefinition>

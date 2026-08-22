@@ -1,4 +1,7 @@
-﻿using Avalonia;
+﻿using System;
+using System.IO;
+using System.Linq;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
@@ -14,12 +17,12 @@ namespace Froststrap.UI.Elements.Base
     {
         private static IStyle? _activeColorStyle;
         private static ResourceDictionary? _activeThemeDictionary;
-
         private static IBrush? _currentBackgroundBrush;
         private static Bitmap? _currentBackgroundBitmap;
         private static string? _currentBitmapPath;
-
         private static readonly string[] AnimatedImageExtensions = [".gif"];
+
+        protected virtual bool ApplyTopPadding => true;
 
         public AvaloniaWindow()
         {
@@ -27,8 +30,11 @@ namespace Froststrap.UI.Elements.Base
             ExtendClientAreaToDecorationsHint = true;
             ExtendClientAreaTitleBarHeightHint = -1;
             MacOSTitleBar.SetIsThick(this, true);
-
             TextOptions.SetTextRenderingMode(this, TextRenderingMode.Antialias);
+
+            if (ApplyTopPadding && OperatingSystem.IsWindows())
+                Padding = new Thickness(0, 32, 0, 0);
+
             ApplyTheme();
         }
 
@@ -194,33 +200,30 @@ namespace Froststrap.UI.Elements.Base
             this.Background = _currentBackgroundBrush ?? Brushes.Transparent;
         }
 
+        //TODO: Fix none applying blur transparency even after app restart
         public static void UpdateBackdropForAllWindows()
         {
             if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
                 return;
 
-            bool isWindows = OperatingSystem.IsWindows();
             var selectedBackdrop = App.Settings.Prop.SelectedBackdrop;
 
             foreach (var window in desktop.Windows)
             {
-                if (isWindows && selectedBackdrop != Enums.WindowsBackdrops.None)
+                if (OperatingSystem.IsWindows() && selectedBackdrop != WindowsBackdrops.None)
                 {
                     window.TransparencyLevelHint = selectedBackdrop switch
                     {
-                        Enums.WindowsBackdrops.Mica => [WindowTransparencyLevel.Mica, WindowTransparencyLevel.None],
-                        Enums.WindowsBackdrops.Acrylic => [WindowTransparencyLevel.AcrylicBlur, WindowTransparencyLevel.None],
-                        Enums.WindowsBackdrops.Aero => [WindowTransparencyLevel.Blur, WindowTransparencyLevel.None],
+                        WindowsBackdrops.Acrylic => [WindowTransparencyLevel.AcrylicBlur, WindowTransparencyLevel.None],
+                        WindowsBackdrops.Mica => [WindowTransparencyLevel.Mica, WindowTransparencyLevel.None],
+                        WindowsBackdrops.Aero => [WindowTransparencyLevel.Blur, WindowTransparencyLevel.None],
                         _ => [WindowTransparencyLevel.None]
                     };
-
                     window.Background = Brushes.Transparent;
                 }
                 else
                 {
                     window.TransparencyLevelHint = [WindowTransparencyLevel.None];
-                    window.Opacity = 1.0;
-                    window.Background = _currentBackgroundBrush ?? new SolidColorBrush(Color.Parse("#202020"));
                 }
             }
         }
@@ -228,10 +231,9 @@ namespace Froststrap.UI.Elements.Base
         protected override void OnOpened(EventArgs e)
         {
             base.OnOpened(e);
-
             ApplyWindowBackground();
             UpdateBackdropForAllWindows();
             Locale.ApplyLocaleToWindow(this);
-        }      
+        }
     }
 }

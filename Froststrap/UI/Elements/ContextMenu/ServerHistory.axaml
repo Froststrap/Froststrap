@@ -39,19 +39,14 @@
         </Style>
     </base:AvaloniaWindow.Styles>
 
-    <Grid RowDefinitions="Auto,Auto,*,Auto">
-        <controls:TitleBar x:Name="RootTitleBar"
-                           Title="{x:Static resources:Strings.ContextMenu_GameHistory_Title}"
-                           Grid.Row="0"
-                           Padding="8"
-                           Icon="avares://Froststrap/Froststrap.ico"/>
+    <Grid RowDefinitions="Auto,*">
 
-        <TextBlock Grid.Row="1"
+        <TextBlock Grid.Row="0"
                    Margin="16,8,16,0"
                    Text="{x:Static resources:Strings.ContextMenu_GameHistory_Description}"
                    TextWrapping="Wrap" />
 
-        <TextBlock Grid.Row="2"
+        <TextBlock Grid.Row="1"
                    Classes="errorView"
                    Tag="{Binding LoadState}"
                    Margin="16,8,16,0"
@@ -60,16 +55,16 @@
                    Text="{Binding Error}"
                    TextWrapping="Wrap" />
 
-        <Border Grid.Row="2"
+        <Border Grid.Row="1"
                 Classes="loadingView"
                 Tag="{Binding LoadState}">
             <ui:FAProgressRing IsIndeterminate="True"
-                             Width="100" Height="100"
-                             VerticalAlignment="Center"
-                             HorizontalAlignment="Center" />
+                               Width="100" Height="100"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Center" />
         </Border>
 
-        <ListBox Grid.Row="2"
+        <ListBox Grid.Row="1"
                  Classes="contentView"
                  Tag="{Binding LoadState}"
                  Margin="8"
