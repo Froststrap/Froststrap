@@ -22,6 +22,7 @@ namespace Froststrap.UI
             return await ShowFluentMessageBox(message, icon, buttons);
         }
 
+        //Were supposed to show this when watcher fails to launch but we lowkey dont anymore idk why
         public static async Task ShowPlayerErrorDialog(bool crash = false)
         {
             if (App.LaunchSettings.QuietFlag.Active)
