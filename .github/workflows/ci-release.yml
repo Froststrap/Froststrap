@@ -1,125 +1,436 @@
 name: Build (Release)
-on: [push, pull_request]
+
+on:
+  push:
+  pull_request:
+
 jobs:
   build-windows:
     runs-on: windows-latest
+
     steps:
       - uses: actions/checkout@v6
         with:
           submodules: true
           fetch-depth: 0
-      - uses: actions/setup-dotnet@v5
+
+      - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: "10.0.x"
-      - uses: extractions/setup-just@v3
+
+      - uses: extractions/setup-just@v4
+
       - name: Install NSIS
         uses: negrutiu/nsis-install@v2
+
       - name: Set short SHA
-        run: echo "SHORT_SHA=$("${{ github.sha }}".Substring(0, 7))" >> $env:GITHUB_ENV
+        shell: pwsh
+        run: |
+          "SHORT_SHA=$("${{ github.sha }}".Substring(0, 7))" >> $env:GITHUB_ENV
+
       - name: Build and package
         run: just ci-publish-windows
-      - uses: actions/upload-artifact@v6
+
+      - uses: actions/upload-artifact@v7
         with:
           name: froststrap-release-win-x64-${{ env.SHORT_SHA }}
           path: build/*
 
+
   build-macos:
     runs-on: macos-latest
+
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           submodules: true
           fetch-depth: 0
+
       - name: Set short SHA
-        run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
+        run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> "$GITHUB_ENV"
+
       - uses: DeterminateSystems/nix-installer-action@v14
+
       - name: Build and package
         run: nix develop -c just ci-publish-macos
-      - name: Remove quarantine from artifacts
-        run: |
-          xattr -rd com.apple.quarantine build/Froststrap-macOS.dmg 2>/dev/null || true
-      - uses: actions/upload-artifact@v6
+
+      - uses: actions/upload-artifact@v7
         with:
-          name: froststrap-release-macos-universal-${{ env.SHORT_SHA }}
+          name: froststrap-unsigned-macos-${{ env.SHORT_SHA }}
           path: build/*
+
 
   build-linux:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           submodules: true
           fetch-depth: 0
+
       - name: Set short SHA
-        run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
-      - uses: actions/setup-dotnet@v4
+        run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> "$GITHUB_ENV"
+
+      - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: "10.0.x"
-      - uses: extractions/setup-just@v2
+
+      - uses: extractions/setup-just@v4
+
       - uses: DeterminateSystems/nix-installer-action@v14
+
       - name: Build and package
         run: just ci-publish-linux
-      - uses: actions/upload-artifact@v6
+
+      - uses: actions/upload-artifact@v4
         with:
           name: froststrap-release-linux-x64-${{ env.SHORT_SHA }}
           path: build/*
 
+
   build-flatpak:
     runs-on: ubuntu-latest
+
     container:
       image: ghcr.io/flathub-infra/flatpak-github-actions:freedesktop-24.08
       options: --privileged
+
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           submodules: true
           fetch-depth: 0
+
       - name: Set short SHA
-        run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
+        run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> "$GITHUB_ENV"
+
       - uses: flatpak/flatpak-github-actions/flatpak-builder@v6
         with:
           manifest-path: flatpak/io.github.froststrap.yml
           cache-key: flatpak-builder-${{ hashFiles('flatpak/io.github.froststrap.yml', '**/*.csproj', '**/packages.lock.json') }}
           bundle: Froststrap-linux-x64.flatpak
-      - uses: actions/upload-artifact@v6
+
+      - uses: actions/upload-artifact@v7
         with:
           name: froststrap-flatpak-x64-${{ env.SHORT_SHA }}
           path: Froststrap-linux-x64.flatpak
 
-  release:
-    needs: [build-windows, build-macos, build-linux, build-flatpak]
+  sign-macos:
+    needs: build-macos
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/v')
-    permissions:
-      contents: write
+
     steps:
       - name: Set short SHA
-        run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
+        run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> "$GITHUB_ENV"
+
+      - name: Download unsigned macOS artifact
+        uses: actions/download-artifact@v7
+        with:
+          name: froststrap-unsigned-macos-${{ env.SHORT_SHA }}
+          path: build
+
+      - name: Materialize signing certificate
+        env:
+          P12_BASE64: ${{ secrets.MACOS_CERTIFICATE_P12_BASE64 }}
+        run: |
+          echo "$P12_BASE64" | base64 --decode > cert.p12
+
+      - name: Materialize App Store Connect API key
+        env:
+          APP_STORE_CONNECT_P8_CONTENT: ${{ secrets.APP_STORE_CONNECT_P8_CONTENT }}
+          APPLE_KEY_ID: ${{ secrets.APPLE_KEY_ID }}
+        run: |
+          mkdir -p private_keys
+          printf '%s\n' "$APP_STORE_CONNECT_P8_CONTENT" \
+            > "private_keys/AuthKey_${APPLE_KEY_ID}.p8"
+
+      - name: Sign, notarize, and staple
+        uses: indygreg/apple-code-sign-action@v1
+        with:
+          input_path: build/Froststrap-macOS.dmg
+          p12_file: cert.p12
+          p12_password: ${{ secrets.MACOS_CERTIFICATE_PWD }}
+          notarize: true
+          staple: true
+          app_store_connect_api_issuer: ${{ secrets.APPLE_ISSUER_ID }}
+          app_store_connect_api_key: ${{ secrets.APPLE_KEY_ID }}
+
+      - name: Upload signed macOS artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: froststrap-release-macos-universal-${{ env.SHORT_SHA }}
+          path: build/Froststrap-macOS.dmg
+
+  release:
+    needs:
+      - build-windows
+      - build-linux
+      - build-flatpak
+      - sign-macos
+
+    runs-on: ubuntu-latest
+
+    if: startsWith(github.ref, 'refs/tags/v')
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Set short SHA
+        run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> "$GITHUB_ENV"
+
       - name: Download Windows artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: froststrap-release-win-x64-${{ env.SHORT_SHA }}
           path: release
+
       - name: Download macOS artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: froststrap-release-macos-universal-${{ env.SHORT_SHA }}
           path: release
+
       - name: Download Linux artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: froststrap-release-linux-x64-${{ env.SHORT_SHA }}
           path: release
+
       - name: Download Flatpak artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: froststrap-flatpak-x64-${{ env.SHORT_SHA }}
           path: release
+
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
+          name: Froststrap ${{ github.ref_name }}
           prerelease: ${{ contains(github.ref_name, '-') }}
           draft: true
+          fail_on_unmatched_files: true
+          files: |
+            release/Froststrap-Setup.exe
+            release/Froststrap-SelfContained-Setup.exe
+            release/Froststrap-macOS.dmg
+            release/Froststrap-linux-x64.AppImage
+            release/Froststrap-linux-x64.deb
+            release/Froststrap-linux-x64.rpm
+            release/Froststrap-linux-x64.flatpakname: Build (Release)
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: true
+          fetch-depth: 0
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: "10.0.x"
+
+      - uses: extractions/setup-just@v4
+
+      - name: Install NSIS
+        uses: negrutiu/nsis-install@v2
+
+      - name: Set short SHA
+        shell: pwsh
+        run: |
+          "SHORT_SHA=$("${{ github.sha }}".Substring(0, 7))" >> $env:GITHUB_ENV
+
+      - name: Build and package
+        run: just ci-publish-windows
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: froststrap-release-win-x64-${{ env.SHORT_SHA }}
+          path: build/*
+
+
+  build-macos:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: true
+          fetch-depth: 0
+
+      - name: Set short SHA
+        run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> "$GITHUB_ENV"
+
+      - uses: DeterminateSystems/nix-installer-action@v14
+
+      - name: Build and package
+        run: nix develop -c just ci-publish-macos
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: froststrap-unsigned-macos-${{ env.SHORT_SHA }}
+          path: build/*
+
+
+  build-linux:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: true
+          fetch-depth: 0
+
+      - name: Set short SHA
+        run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> "$GITHUB_ENV"
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: "10.0.x"
+
+      - uses: extractions/setup-just@v4
+
+      - uses: DeterminateSystems/nix-installer-action@v14
+
+      - name: Build and package
+        run: just ci-publish-linux
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: froststrap-release-linux-x64-${{ env.SHORT_SHA }}
+          path: build/*
+
+
+  build-flatpak:
+    runs-on: ubuntu-latest
+
+    container:
+      image: ghcr.io/flathub-infra/flatpak-github-actions:freedesktop-24.08
+      options: --privileged
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: true
+          fetch-depth: 0
+
+      - name: Set short SHA
+        run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> "$GITHUB_ENV"
+
+      - uses: flatpak/flatpak-github-actions/flatpak-builder@v6
+        with:
+          manifest-path: flatpak/io.github.froststrap.yml
+          cache-key: flatpak-builder-${{ hashFiles('flatpak/io.github.froststrap.yml', '**/*.csproj', '**/packages.lock.json') }}
+          bundle: Froststrap-linux-x64.flatpak
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: froststrap-flatpak-x64-${{ env.SHORT_SHA }}
+          path: Froststrap-linux-x64.flatpak
+
+  sign-macos:
+    needs: build-macos
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set short SHA
+        run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> "$GITHUB_ENV"
+
+      - name: Download unsigned macOS artifact
+        uses: actions/download-artifact@v7
+        with:
+          name: froststrap-unsigned-macos-${{ env.SHORT_SHA }}
+          path: build
+
+      - name: Materialize signing certificate
+        env:
+          P12_BASE64: ${{ secrets.MACOS_CERTIFICATE_P12_BASE64 }}
+        run: |
+          echo "$P12_BASE64" | base64 --decode > cert.p12
+
+      - name: Materialize App Store Connect API key
+        env:
+          APP_STORE_CONNECT_P8_CONTENT: ${{ secrets.APP_STORE_CONNECT_P8_CONTENT }}
+          APPLE_KEY_ID: ${{ secrets.APPLE_KEY_ID }}
+        run: |
+          mkdir -p private_keys
+          printf '%s\n' "$APP_STORE_CONNECT_P8_CONTENT" \
+            > "private_keys/AuthKey_${APPLE_KEY_ID}.p8"
+
+      - name: Sign, notarize, and staple
+        uses: indygreg/apple-code-sign-action@v1
+        with:
+          input_path: build/Froststrap-macOS.dmg
+          p12_file: cert.p12
+          p12_password: ${{ secrets.MACOS_CERTIFICATE_PWD }}
+          notarize: true
+          staple: true
+          app_store_connect_api_issuer: ${{ secrets.APPLE_ISSUER_ID }}
+          app_store_connect_api_key: ${{ secrets.APPLE_KEY_ID }}
+
+      - name: Upload signed macOS artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: froststrap-release-macos-universal-${{ env.SHORT_SHA }}
+          path: build/Froststrap-macOS.dmg
+
+  release:
+    needs:
+      - build-windows
+      - build-linux
+      - build-flatpak
+      - sign-macos
+
+    runs-on: ubuntu-latest
+
+    if: startsWith(github.ref, 'refs/tags/v')
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Set short SHA
+        run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> "$GITHUB_ENV"
+
+      - name: Download Windows artifact
+        uses: actions/download-artifact@v7
+        with:
+          name: froststrap-release-win-x64-${{ env.SHORT_SHA }}
+          path: release
+
+      - name: Download macOS artifact
+        uses: actions/download-artifact@v7
+        with:
+          name: froststrap-release-macos-universal-${{ env.SHORT_SHA }}
+          path: release
+
+      - name: Download Linux artifact
+        uses: actions/download-artifact@v7
+        with:
+          name: froststrap-release-linux-x64-${{ env.SHORT_SHA }}
+          path: release
+
+      - name: Download Flatpak artifact
+        uses: actions/download-artifact@v7
+        with:
+          name: froststrap-flatpak-x64-${{ env.SHORT_SHA }}
+          path: release
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Froststrap ${{ github.ref_name }}
+          prerelease: ${{ contains(github.ref_name, '-') }}
+          draft: true
+          fail_on_unmatched_files: true
           files: |
             release/Froststrap-Setup.exe
             release/Froststrap-SelfContained-Setup.exe
@@ -128,5 +439,3 @@ jobs:
             release/Froststrap-linux-x64.deb
             release/Froststrap-linux-x64.rpm
             release/Froststrap-linux-x64.flatpak
-          name: Froststrap ${{ github.ref_name }}
-          fail_on_unmatched_files: true
