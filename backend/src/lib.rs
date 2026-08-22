@@ -52,7 +52,7 @@ pub unsafe extern "C" fn send_notification(
     notification.app_id(APP_ID);
 
     #[cfg(target_os = "linux")]
-    notification.name(APP_ID);
+    notification.appname(APP_ID);
 
     let result = match notification.show() {
         Ok(_) => 0,
@@ -88,7 +88,7 @@ pub unsafe extern "C" fn send_notification_message(
     notification.app_id(APP_ID);
 
     #[cfg(target_os = "linux")]
-    notification.name(APP_ID);
+    notification.appname(APP_ID);
 
     let result = match notification.show() {
         Ok(_) => 0,
