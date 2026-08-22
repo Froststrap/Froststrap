@@ -8,8 +8,10 @@ use notify_rust::Notification;
 
 #[cfg(target_os = "macos")]
 const APP_ID: &'static str = "io.github.froststrap.app";
-#[cfg(not(target_os = "macos"))]
+#[cfg(target_os = "windows")]
 const APP_ID: &'static str = "Icon.Froststrap";
+#[cfg(target_os = "linux")]
+const APP_ID: &'static str = "Froststrap";
 
 #[unsafe(no_mangle)]
 pub unsafe extern "C" fn send_notification(
@@ -21,6 +23,12 @@ pub unsafe extern "C" fn send_notification(
     let title = unsafe { CStr::from_ptr(title) }.to_string_lossy();
     let description = unsafe { CStr::from_ptr(description) }.to_string_lossy();
     let buffer = unsafe { std::slice::from_raw_parts(image_data, image_len) };
+
+    #[cfg(target_os = "macos")]
+    match notify_rust::set_application(APP_ID) {
+        Ok(_) => (),
+        Err(_) => return -4,
+    };
 
     let dynamic_image: DynamicImage = match image::load_from_memory(buffer) {
         Ok(img) => img,
@@ -39,7 +47,12 @@ pub unsafe extern "C" fn send_notification(
     let mut notification = Notification::new();
     notification.summary(&title).body(&description);
     notification.image_path(temp_path.to_string_lossy().as_ref());
+
+    #[cfg(target_os = "windows")]
     notification.app_id(APP_ID);
+
+    #[cfg(target_os = "linux")]
+    notification.name(APP_ID);
 
     let result = match notification.show() {
         Ok(_) => 0,
@@ -59,12 +72,23 @@ pub unsafe extern "C" fn send_notification_message(
     let title = unsafe { CStr::from_ptr(title) }.to_string_lossy();
     let description = unsafe { CStr::from_ptr(description) }.to_string_lossy();
 
+    #[cfg(target_os = "macos")]
+    match notify_rust::set_application(APP_ID) {
+        Ok(_) => (),
+        Err(_) => return -4,
+    };
+
     let mut notification = Notification::new();
     notification
-        .app_id(APP_ID)
         .summary(&title)
         .body(&description)
         .timeout(duration);
+
+    #[cfg(target_os = "windows")]
+    notification.app_id(APP_ID);
+
+    #[cfg(target_os = "linux")]
+    notification.name(APP_ID);
 
     let result = match notification.show() {
         Ok(_) => 0,
