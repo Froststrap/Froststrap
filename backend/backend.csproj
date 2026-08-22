@@ -23,11 +23,18 @@
     <NativeLibSourcePath>$(RustProjectDir)/../target/$(RustProfile)/$(NativeLibFileName)</NativeLibSourcePath>
   </PropertyGroup>
 
-  <Target Name="BuildBackend" BeforeTargets="Build;Publish">
+  <Target Name="BuildBackend" BeforeTargets="BeforeBuild">
     <Exec Command="cargo build $(RustCargoFlags)" WorkingDirectory="$(RustProjectDir)" />
 
     <Error Condition="!Exists('$(NativeLibSourcePath)')" Text="Expected cargo output not found at $(NativeLibSourcePath)" />
 
     <Copy SourceFiles="$(NativeLibSourcePath)" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" />
   </Target>
+
+  <ItemGroup>
+    <Content Include="$(NativeLibSourcePath)" Link="$(NativeLibFileName)">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </Content>
+  </ItemGroup>
 </Project>
