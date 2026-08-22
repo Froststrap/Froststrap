@@ -151,8 +151,6 @@ namespace Froststrap.UI
         {
             App.Logger.Debug("Dispatching Alert");
             if (_isDisposed) return;
-            var manager = NativeNotificationManager.Current;
-            if (manager == null) return;
 
             Backend.NNotify.SendMessage(
                 title,
