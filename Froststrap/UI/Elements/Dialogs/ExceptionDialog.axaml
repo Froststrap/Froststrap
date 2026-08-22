@@ -9,7 +9,7 @@
                      xmlns:resources="clr-namespace:Froststrap.Resources"
                      mc:Ignorable="d"
                      Title="{x:Static resources:Strings.Dialog_Exception_Title}"
-                     Width="555"
+                     Width="600"
                      SizeToContent="Height"
                      WindowStartupLocation="CenterScreen">
 
@@ -42,16 +42,17 @@
             <Grid>
                 <TextBlock x:Name="VersionText" VerticalAlignment="Center"
                            HorizontalAlignment="Left"
-                           Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+                           Foreground="{DynamicResource TextFillColorTertiaryBrush}" Margin="0,0,8,0" />
 
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                     <Button x:Name="CopyLogButton"
                             Content="{x:Static resources:Strings.Dialog_Exception_CopyLog}" />
                     <Button x:Name="ReportExceptionButton"
-                            Content="{x:Static resources:Strings.Dialog_Exception_Report}" />
+                            Content="{x:Static resources:Strings.Dialog_Exception_Report}"
+                            Margin="6,0,0,0" />
                     <Button x:Name="LocateLogFileButton"
                             Content="{x:Static resources:Strings.Common_OpenLogFile}"
-                            Margin="12,0,0,0" />
+                            Margin="6,0,0,0" />
                 </StackPanel>
             </Grid>
         </Border>

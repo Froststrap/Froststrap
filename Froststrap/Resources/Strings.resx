@@ -3267,9 +3267,6 @@ All files will be moved, shortcuts updated, and the application will restart.</v
   <data name="Enums.BootstrapperStyle.ModernDialog" xml:space="preserve">
     <value>Fake Byfron (No Logo)</value>
   </data>
-  <data name="Enums.BootstrapperStyle.ModernDialog" xml:space="preserve">
-    <value>Fake Byfron (No Logo)</value>
-  </data>
   <data name="Common.JustStarted" xml:space="preserve">
     <value>Just Started</value>
   </data>
