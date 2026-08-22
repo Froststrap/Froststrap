@@ -42,21 +42,21 @@ namespace Froststrap
                 if (OperatingSystem.IsMacOS())
                 {
                     return Path.Combine(
-                        Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-                        "Library", "Logs", "Froststrap"
+                        Paths.UserProfile,
+                        "Library", "Application Support", App.ProjectName, "Logs"
                     );
                 }
                 if (OperatingSystem.IsLinux())
                 {
                     var xdgState = Environment.GetEnvironmentVariable("XDG_STATE_HOME");
                     var baseDir = string.IsNullOrEmpty(xdgState)
-                    ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".local", "state")
+                    ? Path.Combine(Paths.UserProfile, ".local", "state")
                     : xdgState;
-                    return Path.Combine(baseDir, "Froststrap");
+                    return Path.Combine(baseDir, App.ProjectName);
                 }
                 return Path.Combine(
-                    "C:\\ProgramData",
-                    "Froststrap", "Logs"
+                    Paths.LocalAppData,
+                    App.ProjectName, "Logs"
                 );
             }
         }
