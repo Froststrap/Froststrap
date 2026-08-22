@@ -148,7 +148,7 @@ namespace Froststrap.Utility
                     Directory.CreateDirectory(shortcutsIconDir);
 
                     using var ms = new MemoryStream();
-                    icon.Save(ms, PngBitmapEncoderOptions.Default);
+                    icon.Save(ms);
                     byte[] imageBytes = ms.ToArray();
 
                     string hash = ComputeHash(imageBytes);
@@ -214,7 +214,7 @@ namespace Froststrap.Utility
                     Directory.CreateDirectory(shortcutsIconDir);
 
                     using var ms = new MemoryStream();
-                    icon.Save(ms, PngBitmapEncoderOptions.Default);
+                    icon.Save(ms);
                     byte[] imageBytes = ms.ToArray();
 
                     string hash = ComputeHash(imageBytes);
@@ -313,12 +313,12 @@ namespace Froststrap.Utility
         private static void SaveBitmapAsIcon(Bitmap bitmap, Stream output)
         {
             using var ms = new MemoryStream();
-            bitmap.Save(ms, PngBitmapEncoderOptions.Default);
+            bitmap.Save(ms);
             ms.Position = 0;
 
             using var resized = Bitmap.DecodeToWidth(ms, 64);
             using var pngStream = new MemoryStream();
-            resized.Save(pngStream, PngBitmapEncoderOptions.Default);
+            resized.Save(pngStream);
             byte[] pngBytes = pngStream.ToArray();
 
             using var writer = new BinaryWriter(output);
