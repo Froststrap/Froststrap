@@ -134,31 +134,17 @@ namespace Froststrap.UI
                 return;
             }
 
-            string message;
-            if (App.Settings.Prop.ShowServerUptime)
+            if (!App.Settings.Prop.ShowServerUptime)
             {
-                string? serverUptime;
-                DateTime? serverTime = ActivityWatcher.Data.StartTime;
-                if (serverTime is not null)
-                {
-                    TimeSpan _serverUptime = DateTime.UtcNow - serverTime.Value;
-                    serverUptime = _serverUptime.TotalMinutes < 1
-                        ? "0 minutes"
-                        : Time.FormatTimeSpan(_serverUptime);
-                }
-                else
-                {
-                    serverUptime = "0 minutes";
-                }
-
-                message = string.Format(Strings.ContextMenu_ServerDetails_Notification_Text, serverLocation, serverUptime);
-            }
-            else
-            {
-                message = string.Format(Strings.ContextMenu_ServerDetails_Notification_Text_ServerID, serverLocation);
+                ShowAlert(title, string.Format(Strings.ContextMenu_ServerDetails_Notification_Text_ServerID, serverLocation));
             }
 
-            ShowAlert(title, message);
+            TimeSpan _serverUptime = DateTime.UtcNow - (ActivityWatcher.Data.StartTime ?? DateTime.UtcNow);
+            string serverUptime = _serverUptime.TotalMinutes < 1
+                ? "0 minutes"
+                : Time.FormatTimeSpan(_serverUptime);
+
+            ShowAlert(title, string.Format(Strings.ContextMenu_ServerDetails_Notification_Text, serverLocation, serverUptime));
         }
 
         private void ShowAlert(string title, string message, int duration = 5)
