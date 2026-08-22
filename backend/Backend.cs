@@ -24,7 +24,7 @@ internal partial class INNotify {
     public static partial int SendMessage(
         [MarshalAs(UnmanagedType.LPUTF8Str)] string title,
         [MarshalAs(UnmanagedType.LPUTF8Str)] string description,
-		Int32 duration
+		int duration
     );
 }
 
