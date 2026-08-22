@@ -407,6 +407,9 @@ public partial class App : Application
                 Paths.Initialize(installLocation);
             }
 
+            NLog.GlobalDiagnosticsContext.Set("logRoot", Paths.Logs);
+            NLog.GlobalDiagnosticsContext.Set("startTime", DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss"));
+
             Logger.Debug($"Starting {ProjectName} v{Version}");
             Logger.Debug($"OS Description: {RuntimeInformation.OSDescription}");
             Logger.Debug($"OS Architecture: {RuntimeInformation.OSArchitecture}");
