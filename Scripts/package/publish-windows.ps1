@@ -13,7 +13,7 @@ if (-not (Test-Path -Path "./$BuildDir")) {
 $TempPublish = "./$BuildDir/temp-contained"
 $Version = (git describe --tags --abbrev=0).TrimStart('v')
 
-dotnet publish "$Project" /p:PublishProfile=Publish-contained-x64 -c "$Config" -o "$TempPublish" --configfile "$PSScriptRoot\..\..\nuget.config"
+dotnet publish "$Project" /p:PublishProfile=Publish-windows-x64 -c "$Config" -o "$TempPublish" --configfile "$PSScriptRoot\..\..\nuget.config"
 
 if ($LASTEXITCODE -ne 0) {
     Write-Error "dotnet publish failed with exit code $LASTEXITCODE"
