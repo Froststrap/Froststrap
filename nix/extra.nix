@@ -1,7 +1,6 @@
 {
   typos,
-  callPackage,
-  ... # capture inputs
+  callPackage
 }:
 let
   inherit (callPackage ./devshell-tools.nix {}) mkFragment;
