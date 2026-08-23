@@ -60,7 +60,7 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 Title = "Select Icon File",
                 AllowMultiple = false,
-                FileTypeFilter = [new FilePickerFileType("Icon Files") { Patterns = _icoFilter }]
+                FileTypeFilter = [new FilePickerFileType("Images") { Patterns = ["*.ico", "*.png", "*.jpg", "*.jpeg", "*.bmp"] }]
             });
 
             if (files.Count > 0)
@@ -170,6 +170,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 }
 
                 App.Settings.Prop.BootstrapperIconCustomLocation = value;
+                BootstrapperIconEx.InvalidateCustomIcon();
 
                 OnPropertyChanged(nameof(Icon));
                 OnPropertyChanged(nameof(Icons));
