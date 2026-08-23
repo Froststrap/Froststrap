@@ -92,7 +92,7 @@ sealed class Program
             builder = builder.WithAppNotifications(new AppNotificationOptions
             {
                 AppName = "Froststrap",
-                AppUserModelId = "Icon.Froststrap",
+                AppUserModelId = "xyz.froststrap.desktop",
                 AppIcon = iconPath,
                 DisableComServer = true
             });
