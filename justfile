@@ -17,16 +17,10 @@ debug-macos:
 [unix]
 debug-linux:
     dotnet publish {{ project_file }} -r linux-x64 -c Debug --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true --configfile nuget.config
-
 [windows]
 publish-windows:
     #!powershell
     powershell -ExecutionPolicy Bypass -File ./Scripts/package/publish-windows.ps1 -Project "{{ project_file }}" -BuildDir "{{ build_dir }}"
-
-[windows]
-publish-windows-contained:
-    #!powershell
-    powershell -ExecutionPolicy Bypass -File ./Scripts/package/publish-windows-contained.ps1 -Project "{{ project_file }}" -BuildDir "{{ build_dir }}"
 
 [unix]
 publish-macos:
@@ -46,7 +40,6 @@ publish-flatpak:
 # CI Aliases
 ci-publish-windows:
     @just publish-windows
-    @just publish-windows-contained
 
 ci-publish-macos:
     @just publish-macos

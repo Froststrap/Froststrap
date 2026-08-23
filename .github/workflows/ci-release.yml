@@ -9,7 +9,7 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           submodules: true
           fetch-depth: 0
@@ -36,7 +36,6 @@ jobs:
           name: froststrap-release-win-x64-${{ env.SHORT_SHA }}
           path: build/*
 
-
   build-macos:
     runs-on: macos-latest
 
@@ -49,7 +48,9 @@ jobs:
       - name: Set short SHA
         run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> "$GITHUB_ENV"
 
-      - uses: DeterminateSystems/nix-installer-action@v14
+      - uses: DeterminateSystems/nix-installer-action@v22
+
+      - uses: DeterminateSystems/magic-nix-cache-action@v14
 
       - name: Build and package
         run: nix develop -c just ci-publish-macos
@@ -58,7 +59,6 @@ jobs:
         with:
           name: froststrap-unsigned-macos-${{ env.SHORT_SHA }}
           path: build/*
-
 
   build-linux:
     runs-on: ubuntu-latest
@@ -78,43 +78,24 @@ jobs:
 
       - uses: extractions/setup-just@v4
 
-      - uses: DeterminateSystems/nix-installer-action@v14
+      - uses: DeterminateSystems/nix-installer-action@v22
 
-      - name: Build and package
+      - uses: DeterminateSystems/magic-nix-cache-action@v14
+
+      - name: Build and package binaries
         run: just ci-publish-linux
 
-      - uses: actions/upload-artifact@v4
-        with:
-          name: froststrap-release-linux-x64-${{ env.SHORT_SHA }}
-          path: build/*
-
-
-  build-flatpak:
-    runs-on: ubuntu-latest
-
-    container:
-      image: ghcr.io/flathub-infra/flatpak-github-actions:freedesktop-24.08
-      options: --privileged
-
-    steps:
-      - uses: actions/checkout@v7
-        with:
-          submodules: true
-          fetch-depth: 0
-
-      - name: Set short SHA
-        run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> "$GITHUB_ENV"
-
-      - uses: flatpak/flatpak-github-actions/flatpak-builder@v6
+      - name: Build Flatpak package from binary
+        uses: flatpak/flatpak-github-actions/flatpak-builder@v6
         with:
           manifest-path: flatpak/io.github.froststrap.yml
           cache-key: flatpak-builder-${{ hashFiles('flatpak/io.github.froststrap.yml', '**/*.csproj', '**/packages.lock.json') }}
-          bundle: Froststrap-linux-x64.flatpak
+          bundle: build/Froststrap-linux-x64.flatpak
 
       - uses: actions/upload-artifact@v7
         with:
-          name: froststrap-flatpak-x64-${{ env.SHORT_SHA }}
-          path: Froststrap-linux-x64.flatpak
+          name: froststrap-release-linux-x64-${{ env.SHORT_SHA }}
+          path: build/*
 
   sign-macos:
     needs: build-macos
@@ -144,8 +125,7 @@ jobs:
           APPLE_KEY_ID: ${{ secrets.APPLE_KEY_ID }}
         run: |
           mkdir -p private_keys
-          printf '%s\n' "$APP_STORE_CONNECT_P8_CONTENT" \
-            > "private_keys/AuthKey_${APPLE_KEY_ID}.p8"
+          printf '%s\n' "$APP_STORE_CONNECT_P8_CONTENT" > "private_keys/AuthKey_${APPLE_KEY_ID}.p8"
 
       - name: Sign, notarize, and staple
         uses: indygreg/apple-code-sign-action@v1
@@ -158,6 +138,7 @@ jobs:
           staple: true
           app_store_connect_api_issuer: ${{ secrets.APPLE_ISSUER_ID }}
           app_store_connect_api_key: ${{ secrets.APPLE_KEY_ID }}
+          app_store_connect_api_key_path: private_keys/AuthKey_${{ secrets.APPLE_KEY_ID }}.p8
 
       - name: Upload signed macOS artifact
         uses: actions/upload-artifact@v7
@@ -169,7 +150,6 @@ jobs:
     needs:
       - build-windows
       - build-linux
-      - build-flatpak
       - sign-macos
 
     runs-on: ubuntu-latest
@@ -201,12 +181,6 @@ jobs:
           name: froststrap-release-linux-x64-${{ env.SHORT_SHA }}
           path: release
 
-      - name: Download Flatpak artifact
-        uses: actions/download-artifact@v7
-        with:
-          name: froststrap-flatpak-x64-${{ env.SHORT_SHA }}
-          path: release
-
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
@@ -216,7 +190,6 @@ jobs:
           fail_on_unmatched_files: true
           files: |
             release/Froststrap-Setup.exe
-            release/Froststrap-SelfContained-Setup.exe
             release/Froststrap.pkg
             release/Froststrap-linux-x64.AppImage
             release/Froststrap-linux-x64.deb
