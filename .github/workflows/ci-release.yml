@@ -48,17 +48,29 @@ jobs:
       - name: Set short SHA
         run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> "$GITHUB_ENV"
 
-      - uses: DeterminateSystems/nix-installer-action@v22
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: "10.0.x"
 
-      - uses: DeterminateSystems/magic-nix-cache-action@v14
-
-      - name: Build and package
-        run: nix develop -c just ci-publish-macos
+      - name: Build, sign (if release), and package
+        env:
+          SIGN: ${{ startsWith(github.ref, 'refs/tags/v') && 'true' || 'false' }}
+          CERT_P12_BASE64: ${{ secrets.CERT_P12_BASE64 }}
+          CERT_P12_INSTALLER_BASE64: ${{ secrets.CERT_P12_INSTALLER_BASE64 }}
+          P12_PASSWORD: ${{ secrets.P12_PASSWORD }}
+          DEVELOPER_ID_APP: ${{ secrets.DEVELOPER_ID_APP }}
+          DEVELOPER_ID_INSTALLER: ${{ secrets.DEVELOPER_ID_INSTALLER }}
+          APPLE_KEY_ID: ${{ secrets.APPLE_KEY_ID }}
+          APPLE_ISSUER_ID: ${{ secrets.APPLE_ISSUER_ID }}
+          APP_STORE_CONNECT_P8_CONTENT: ${{ secrets.APP_STORE_P8_CONTENT }}
+        run: |
+          chmod +x Scripts/publish-macos.sh
+          ./Scripts/publish-macos.sh
 
       - uses: actions/upload-artifact@v7
         with:
-          name: froststrap-unsigned-macos-${{ env.SHORT_SHA }}
-          path: build/*
+          name: froststrap-release-macos-universal-${{ env.SHORT_SHA }}
+          path: build/Froststrap.pkg
 
   build-linux:
     runs-on: ubuntu-latest
@@ -101,59 +113,11 @@ jobs:
           name: froststrap-release-linux-x64-${{ env.SHORT_SHA }}
           path: build/*
 
-  sign-macos:
-    needs: build-macos
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Set short SHA
-        run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> "$GITHUB_ENV"
-
-      - name: Download unsigned macOS artifact
-        uses: actions/download-artifact@v7
-        with:
-          name: froststrap-unsigned-macos-${{ env.SHORT_SHA }}
-          path: build
-
-      - name: Materialize PEM signing files
-        env:
-          KEY_PEM: ${{ secrets.MACOS_KEY_PEM }}
-          CERT_PEM: ${{ secrets.MACOS_CERT_PEM }}
-        run: |
-          echo "$KEY_PEM" | tr ' ' '\n' > key.pem
-          echo "$CERT_PEM" | tr ' ' '\n' > cert.pem
-
-      - name: Materialize App Store Connect API key
-        env:
-          APP_STORE_CONNECT_P8_CONTENT: ${{ secrets.APP_STORE_CONNECT_P8_CONTENT }}
-          APPLE_KEY_ID: ${{ secrets.APPLE_KEY_ID }}
-        run: |
-          mkdir -p private_keys
-          printf '%s\n' "$APP_STORE_CONNECT_P8_CONTENT" > "private_keys/AuthKey_${APPLE_KEY_ID}.p12"
-
-      - name: Sign, notarize, and staple
-        uses: indygreg/apple-code-sign-action@v1
-        with:
-          input_path: build/Froststrap.pkg
-          pem_file: |
-            key.pem
-            cert.pem
-          notarize: true
-          staple: true
-          app_store_connect_api_issuer: ${{ secrets.APPLE_ISSUER_ID }}
-          app_store_connect_api_key: ${{ secrets.APPLE_KEY_ID }}
-
-      - name: Upload signed macOS artifact
-        uses: actions/upload-artifact@v7
-        with:
-          name: froststrap-release-macos-universal-${{ env.SHORT_SHA }}
-          path: build/Froststrap.pkg
-
   release:
     needs:
       - build-windows
       - build-linux
-      - sign-macos
+      - build-macos
 
     runs-on: ubuntu-latest
 
