@@ -1,0 +1,13 @@
+[package]
+name = "rbackend"
+edition.workspace = true
+version.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+image.workspace = true
+notify-rust.workspace = true

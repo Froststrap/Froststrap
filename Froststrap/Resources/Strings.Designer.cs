@@ -1016,6 +1016,15 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Just Started.
+        /// </summary>
+        public static string Common_JustStarted {
+            get {
+                return ResourceManager.GetString("Common.JustStarted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Launch.
         /// </summary>
         public static string Common_Launch {
@@ -1485,7 +1494,8 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Location: {0}.
+        ///   Looks up a localized string similar to Location: {0}
+        ///Server ID: {1}.
         /// </summary>
         public static string ContextMenu_ServerDetails_Notification_Text_ServerID {
             get {
@@ -2405,11 +2415,11 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Modern.
+        ///   Looks up a localized string similar to Fake Byfron (No Logo).
         /// </summary>
-        public static string Enums_BootstrapperStyle_Modern {
+        public static string Enums_BootstrapperStyle_ModernDialog {
             get {
-                return ResourceManager.GetString("Enums.BootstrapperStyle.Modern", resourceCulture);
+                return ResourceManager.GetString("Enums.BootstrapperStyle.ModernDialog", resourceCulture);
             }
         }
         
@@ -3294,7 +3304,7 @@ namespace Froststrap.Resources {
         /// </summary>
         public static string Logger_NoWriteMode {
             get {
-                return ResourceManager.GetString("App.Logger.NoWriteMode", resourceCulture);
+                return ResourceManager.GetString("Logger.NoWriteMode", resourceCulture);
             }
         }
         

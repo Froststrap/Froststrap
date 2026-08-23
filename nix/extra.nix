@@ -1,21 +1,13 @@
 {
-  go,
-  gopls,
-  pkg-config,
-  gcc,
+  typos,
   callPackage,
+  ... # capture inputs
 }:
 let
   inherit (callPackage ./devshell-tools.nix {}) mkFragment;
 in
 mkFragment {
   buildInputs = [
-    go
-    gopls
-    gcc
-  ];
-
-  nativeBuildInputs = [
-    pkg-config
+    typos
   ];
 }
