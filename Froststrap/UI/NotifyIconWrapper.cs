@@ -1,12 +1,11 @@
-﻿using Avalonia;
+﻿﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Notifications;
+using Avalonia.Labs.Notifications;
 using Avalonia.Platform;
 using Avalonia.Threading;
-using FluentAvalonia.UI.Controls;
 using Froststrap.Integrations;
 using Froststrap.UI.Elements.ContextMenu;
-using Froststrap.UI.Elements.Settings;
 using Froststrap.UI.Utility;
 
 namespace Froststrap.UI
@@ -43,14 +42,16 @@ namespace Froststrap.UI
             if (ActivityWatcher is not null && App.Settings.Prop.ShowServerDetails && !OperatingSystem.IsMacOS())
             {
                 if (App.Settings.Prop.ShowServerUptime)
-                    ActivityWatcher.ShowNotif += ShowNotif;
+                    ActivityWatcher.ShowNotif += ShowNotification;
                 else
-                    ActivityWatcher.OnGameJoin += ShowNotif;
+                    ActivityWatcher.OnGameJoin += ShowNotification;
             }
 
             TrayIcon.GetIcons(Application.Current!)?.Add(_trayIcon);
         }
 
+
+        // On macos simply clicking the icon instantly opens the menu so double click action isnt possible
         private void OnTrayIconClicked(object? sender, EventArgs e)
         {
             if (OperatingSystem.IsMacOS())
@@ -108,8 +109,9 @@ namespace Froststrap.UI
             }
         }
 
-        public async void ShowNotif(object? sender, EventArgs e)
+        public async void ShowNotification(object? sender, EventArgs e)
         {
+            App.Logger.Debug("Dispatching Notfification");
             if (ActivityWatcher?.Data == null) return;
 
             string title = ActivityWatcher.Data.ServerType switch
@@ -123,52 +125,41 @@ namespace Froststrap.UI
             string? serverLocation = await ActivityWatcher.Data.QueryServerLocation();
             if (string.IsNullOrEmpty(serverLocation))
             {
+                App.Logger.Error("Couldn't connect to ipinfo.io");
                 ShowAlert(
                     string.Format(Strings.Dialog_Connectivity_UnableToConnect, "ipinfo.io"),
                     Strings.ActivityWatcher_LocationQueryFailed,
-                    5,
-                    FAInfoBarSeverity.Warning
+                    5
                 );
                 return;
             }
 
-            string message;
-            if (App.Settings.Prop.ShowServerUptime)
+            if (!App.Settings.Prop.ShowServerUptime)
             {
-                string? serverUptime;
-                DateTime? serverTime = ActivityWatcher.Data.StartTime;
-                if (serverTime is not null)
-                {
-                    TimeSpan _serverUptime = DateTime.UtcNow - serverTime.Value;
-                    serverUptime = _serverUptime.TotalMinutes < 1
-                        ? "0 minutes"
-                        : Time.FormatTimeSpan(_serverUptime);
-                }
-                else
-                {
-                    serverUptime = "0 minutes";
-                }
-
-                message = string.Format(Strings.ContextMenu_ServerDetails_Notification_Text, serverLocation, serverUptime);
+                string? serverID = ActivityWatcher.Data.JobId;
+                ShowAlert(title, string.Format(Strings.ContextMenu_ServerDetails_Notification_Text_ServerID, serverLocation, serverID));
             }
             else
             {
-                message = string.Format(Strings.ContextMenu_ServerDetails_Notification_Text_ServerID, serverLocation);
-            }
+                TimeSpan _serverUptime = DateTime.UtcNow - (ActivityWatcher.Data.StartTime ?? DateTime.UtcNow);
+                string serverUptime = _serverUptime.TotalMinutes < 1
+                    ? Strings.Common_JustStarted
+                    : Time.FormatTimeSpan(_serverUptime);
 
-            ShowAlert(title, message);
+                ShowAlert(title, string.Format(Strings.ContextMenu_ServerDetails_Notification_Text, serverLocation, serverUptime));
+            }
         }
 
-        public void ShowAlert(string title, string message, int durationSeconds = 5, FAInfoBarSeverity severity = FAInfoBarSeverity.Informational)
+        private void ShowAlert(string title, string message, int duration = 5)
         {
+            App.Logger.Debug("Dispatching Alert");
             if (_isDisposed) return;
 
-            MainWindow.ShowGlobalNotification(
+            Backend.NNotify.SendMessage(
                 title,
                 message,
-                severity,
-                durationSeconds * 1000
-            );
+                duration
+            );           
         }
 
         public void Dispose()
@@ -199,8 +190,8 @@ namespace Froststrap.UI
 
             if (ActivityWatcher is not null)
             {
-                ActivityWatcher.ShowNotif -= ShowNotif;
-                ActivityWatcher.OnGameJoin -= ShowNotif;
+                ActivityWatcher.ShowNotif -= ShowNotification;
+                ActivityWatcher.OnGameJoin -= ShowNotification;
             }
 
             GC.SuppressFinalize(this);

@@ -269,7 +269,8 @@
 Uptime: {1}</value>
   </data>
   <data name="ContextMenu.ServerDetails.Notification.Text.ServerID" xml:space="preserve">
-    <value>Location: {0}</value>
+    <value>Location: {0}
+Server ID: {1}</value>
   </data>
   <data name="ContextMenu.ServerInformation.Notification.Title.Public" xml:space="preserve">
     <value>Connected to a Public server</value>
@@ -3265,5 +3266,8 @@ All files will be moved, shortcuts updated, and the application will restart.</v
   </data>
   <data name="Enums.BootstrapperStyle.ModernDialog" xml:space="preserve">
     <value>Fake Byfron (No Logo)</value>
+  </data>
+  <data name="Common.JustStarted" xml:space="preserve">
+    <value>Just Started</value>
   </data>
 </root>

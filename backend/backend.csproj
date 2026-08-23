@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <RustProjectDir>$(MSBuildProjectDirectory)</RustProjectDir>
+    <RustCrateName>rbackend</RustCrateName>
+
+    <RustProfile Condition="'$(Configuration)' == 'Release'">release</RustProfile>
+    <RustProfile Condition="'$(Configuration)' != 'Release'">debug</RustProfile>
+    <RustCargoFlags Condition="'$(Configuration)' == 'Release'">--release</RustCargoFlags>
+
+    <NativeLibPrefix Condition="!$([MSBuild]::IsOSPlatform('Windows'))">lib</NativeLibPrefix>
+    <NativeLibExt Condition="$([MSBuild]::IsOSPlatform('Windows'))">dll</NativeLibExt>
+    <NativeLibExt Condition="$([MSBuild]::IsOSPlatform('OSX'))">dylib</NativeLibExt>
+    <NativeLibExt Condition="$([MSBuild]::IsOSPlatform('Linux'))">so</NativeLibExt>
+
+    <NativeLibFileName>$(NativeLibPrefix)$(RustCrateName).$(NativeLibExt)</NativeLibFileName>
+    <NativeLibSourcePath>$(RustProjectDir)/../target/$(RustProfile)/$(NativeLibFileName)</NativeLibSourcePath>
+  </PropertyGroup>
+
+  <Target Name="BuildBackend" BeforeTargets="BeforeBuild">
+    <Exec Command="cargo build $(RustCargoFlags)" WorkingDirectory="$(RustProjectDir)" />
+
+    <Error Condition="!Exists('$(NativeLibSourcePath)')" Text="Expected cargo output not found at $(NativeLibSourcePath)" />
+
+    <Copy SourceFiles="$(NativeLibSourcePath)" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" />
+  </Target>
+
+  <ItemGroup>
+    <Content Include="$(NativeLibSourcePath)" Link="$(NativeLibFileName)">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </Content>
+  </ItemGroup>
+</Project>
