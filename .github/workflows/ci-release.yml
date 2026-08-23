@@ -63,10 +63,6 @@ jobs:
   build-linux:
     runs-on: ubuntu-latest
 
-    container:
-      image: ghcr.io/flathub-infra/flatpak-github-actions:freedesktop-24.08
-      options: --privileged
-
     steps:
       - uses: actions/checkout@v7
         with:
@@ -89,11 +85,15 @@ jobs:
       - name: Build and package binaries
         run: just ci-publish-linux
 
+      - name: Install Flatpak builder dependencies
+        run: |
+          sudo apt-get install -y flatpak flatpak-builder
+
       - name: Build Flatpak package from binary
         uses: flatpak/flatpak-github-actions/flatpak-builder@v6
         with:
-          manifest-path: flatpak/io.github.froststrap.yml
-          cache-key: flatpak-builder-${{ hashFiles('flatpak/io.github.froststrap.yml', '**/*.csproj', '**/packages.lock.json') }}
+          manifest-path: Scripts/flatpak/xyz.froststrap.yml
+          cache-key: flatpak-builder-${{ hashFiles('flatpak/xyz.froststrap.yml', '**/*.csproj', '**/packages.lock.json') }}
           bundle: build/Froststrap-linux-x64.flatpak
 
       - uses: actions/upload-artifact@v7
@@ -129,7 +129,7 @@ jobs:
           APPLE_KEY_ID: ${{ secrets.APPLE_KEY_ID }}
         run: |
           mkdir -p private_keys
-          printf '%s\n' "$APP_STORE_CONNECT_P8_CONTENT" > "private_keys/AuthKey_${APPLE_KEY_ID}.p8"
+          printf '%s\n' "$APP_STORE_CONNECT_P8_CONTENT" > "private_keys/AuthKey_${APPLE_KEY_ID}.p12"
 
       - name: Sign, notarize, and staple
         uses: indygreg/apple-code-sign-action@v1
@@ -142,7 +142,6 @@ jobs:
           staple: true
           app_store_connect_api_issuer: ${{ secrets.APPLE_ISSUER_ID }}
           app_store_connect_api_key: ${{ secrets.APPLE_KEY_ID }}
-          app_store_connect_api_key_path: private_keys/AuthKey_${{ secrets.APPLE_KEY_ID }}.p8
 
       - name: Upload signed macOS artifact
         uses: actions/upload-artifact@v7
