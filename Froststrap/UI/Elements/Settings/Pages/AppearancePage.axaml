@@ -380,7 +380,7 @@
                             </ComboBox.ItemTemplate>
                         </ComboBox>
 
-                        <!--<controls:IconButton Grid.Column="1" Margin="4,0,0,0" Icon="Folder" ToolTip.Tip="{Binding CustomIconLocation, Mode=OneWay}" Command="{Binding BrowseCustomIconLocationCommand}" CommandParameter="{Binding $self}" IsEnabled="{Binding IsCustomIconSelected}" />-->
+                        <controls:IconButton Grid.Column="1" Margin="4,0,0,0" Icon="Folder" ToolTip.Tip="{Binding CustomIconLocation, Mode=OneWay}" Command="{Binding BrowseCustomIconLocationCommand}" CommandParameter="{Binding $self}" IsEnabled="{Binding IsCustomIconSelected}" />
                     </Grid>
                 </controls:OptionControl>
 

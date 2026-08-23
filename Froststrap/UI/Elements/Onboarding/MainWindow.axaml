@@ -19,16 +19,14 @@
     WindowStartupLocation="CenterScreen">
 
     <Grid RowDefinitions="48,Auto,*,72">
-        <controls:TitleBar
-            Title="{x:Static resources:Strings.Onboarding_Title}"
-            Icon="avares://Froststrap/Froststrap.ico">
+        <Grid Grid.Row="0">
             <controls:StepIndicator
                 x:Name="RootNavigation"
                 HorizontalAlignment="Center"
-                VerticalAlignment="Top"
+                VerticalAlignment="Center"
                 PageCount="3"
                 CurrentIndex="0" />
-        </controls:TitleBar>
+        </Grid>
 
         <Border Grid.Row="2" Padding="24,16,24,0" Margin="0,8,0,0">
             <TransitioningContentControl
@@ -57,6 +55,5 @@
                     Content="{Binding NextButtonText}"/>
             </Grid>
         </Border>
-
     </Grid>
 </base:AvaloniaWindow>

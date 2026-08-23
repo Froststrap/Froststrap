@@ -1,13 +1,14 @@
-﻿using Avalonia;
+﻿using AnimatedImage.Avalonia;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Layout;
+using Avalonia.Controls.Presenters;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Styling;
-using AnimatedImage.Avalonia;
 using FluentAvalonia.Styling;
+using Froststrap.UI.Utility;
 
 namespace Froststrap.UI.Elements.Base
 {
@@ -26,6 +27,13 @@ namespace Froststrap.UI.Elements.Base
 
         private static readonly string[] AnimatedImageExtensions = [".gif"];
 
+        private readonly Panel? _backgroundHost;
+        private readonly Image? _backgroundImage;
+        private readonly Border? _backgroundBorder;
+        private readonly ContentPresenter? _contentHost;
+
+        protected virtual bool ApplyTopPadding => true;
+
         static AvaloniaWindow()
         {
             ContentProperty.OverrideMetadata<AvaloniaWindow>(
@@ -34,57 +42,82 @@ namespace Froststrap.UI.Elements.Base
 
         private static object? CoerceContent(AvaloniaObject sender, object? value)
         {
-            if (sender is not AvaloniaWindow window || window._contentHost is null)
+            if (sender is not AvaloniaWindow window || window._backgroundHost is null)
                 return value;
 
             if (ReferenceEquals(value, window._backgroundHost))
                 return value;
 
-            window._contentHost.Content = value;
+            window._contentHost?.Content = value;
+
             return window._backgroundHost;
         }
 
-        private readonly Panel _backgroundHost;
-        private readonly Image _backgroundImage;
-        private readonly ContentControl _contentHost;
-
         public AvaloniaWindow()
         {
-            if (!OperatingSystem.IsMacOS())
+            var uri = new Uri("avares://Froststrap/UI/Elements/Base/BackgroundPanel.axaml");
+            var panel = (Panel)AvaloniaXamlLoader.Load(uri);
+
+            _backgroundBorder = panel.Find<Border>("PART_BackgroundBorder");
+            _backgroundImage = panel.Find<Image>("PART_BackgroundImage");
+            _contentHost = panel.Find<ContentPresenter>("PART_ContentHost");
+            _backgroundHost = panel;
+
+            if (_backgroundImage != null)
+                RenderOptions.SetBitmapInterpolationMode(_backgroundImage, BitmapInterpolationMode.HighQuality);
+
+            ApplyWindowBackground();
+
+            WindowDecorations = WindowDecorations.Full;
+            ExtendClientAreaToDecorationsHint = true;
+            ExtendClientAreaTitleBarHeightHint = -1;
+            MacOSTitleBar.SetIsThick(this, true);
+            TextOptions.SetTextRenderingMode(this, TextRenderingMode.Antialias);
+
+            if (ApplyTopPadding && OperatingSystem.IsWindows())
+                _contentHost?.Margin = new Thickness(0, 32, 0, 0);
+
+            ApplyTheme();
+        }
+
+        private void ApplyWindowBackground()
+        {
+            if (_backgroundHost == null || _backgroundImage == null || _backgroundBorder == null)
+                return;
+
+            bool showImage = _currentIsAnimatedGif || _currentBackgroundBitmap != null;
+
+            _backgroundHost.Background = null;
+
+            if (showImage)
             {
-                this.WindowDecorations = WindowDecorations.BorderOnly;
-                this.ExtendClientAreaToDecorationsHint = true;
+                _backgroundBorder.Background = null;
+                _backgroundImage.IsVisible = true;
+                _backgroundImage.Stretch = _currentImageStretch;
+                _backgroundImage.Opacity = _currentImageOpacity;
+
+                if (_currentIsAnimatedGif && _currentAnimatedImagePath is not null)
+                {
+                    var uri = new Uri(_currentAnimatedImagePath, UriKind.Absolute);
+                    ImageBehavior.SetAnimatedSource(_backgroundImage, new AnimatedImageSourceUri(uri));
+                    ImageBehavior.SetRepeatBehavior(_backgroundImage, RepeatBehavior.Forever);
+                }
+                else
+                {
+                    if (ImageBehavior.GetAnimatedSource(_backgroundImage) is not null)
+                        ImageBehavior.SetAnimatedSource(_backgroundImage, null!);
+                    _backgroundImage.Source = _currentBackgroundBitmap;
+                }
             }
             else
             {
-                this.WindowDecorations = WindowDecorations.Full;
+                _backgroundImage.IsVisible = false;
+                _backgroundImage.Source = null;
+                if (ImageBehavior.GetAnimatedSource(_backgroundImage) is not null)
+                    ImageBehavior.SetAnimatedSource(_backgroundImage, null!);
+
+                _backgroundBorder.Background = _currentBackgroundBrush;
             }
-
-            TextOptions.SetTextRenderingMode(this, TextRenderingMode.Antialias);
-
-            _backgroundImage = new Image
-            {
-                IsVisible = false,
-                IsHitTestVisible = false,
-                Stretch = Stretch.UniformToFill,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Stretch
-            };
-            RenderOptions.SetBitmapInterpolationMode(_backgroundImage, BitmapInterpolationMode.HighQuality);
-
-            _contentHost = new ContentControl
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Stretch,
-                HorizontalContentAlignment = HorizontalAlignment.Stretch,
-                VerticalContentAlignment = VerticalAlignment.Stretch
-            };
-
-            _backgroundHost = new Panel();
-            _backgroundHost.Children.Add(_backgroundImage);
-            _backgroundHost.Children.Add(_contentHost);
-
-            ApplyTheme();
         }
 
         public static void ApplyTheme()
@@ -154,14 +187,13 @@ namespace Froststrap.UI.Elements.Base
             }
             else
             {
-                var customDict = new ResourceDictionary{ ["NotificationBackgroundColor"] = new SolidColorBrush(Color.Parse("#2D2D2D")) };
+                var customDict = new ResourceDictionary { ["NotificationBackgroundColor"] = new SolidColorBrush(Color.Parse("#2D2D2D")) };
                 _activeThemeDictionary = customDict;
                 Application.Current.Resources.MergedDictionaries.Add(customDict);
 
                 if (App.Settings.Prop.BackgroundType == BackgroundMode.Gradient)
                 {
                     var avaloniaStops = new Avalonia.Media.GradientStops();
-
                     foreach (var s in App.Settings.Prop.CustomGradientStops)
                     {
                         if (Color.TryParse(s.Color, out var color))
@@ -190,7 +222,6 @@ namespace Froststrap.UI.Elements.Base
                 else if (App.Settings.Prop.BackgroundType == BackgroundMode.Image)
                 {
                     string path = App.Settings.Prop.BackgroundImagePath ?? string.Empty;
-
                     if (!string.IsNullOrEmpty(path) && System.IO.File.Exists(path))
                     {
                         try
@@ -244,31 +275,6 @@ namespace Froststrap.UI.Elements.Base
             UpdateBackdropForAllWindows();
         }
 
-        private void ApplyWindowBackground()
-        {
-            bool showImage = _currentIsAnimatedGif || _currentBackgroundBitmap != null;
-
-            _backgroundHost.Background = showImage ? Brushes.Transparent : _currentBackgroundBrush;
-
-            _backgroundImage.IsVisible = showImage;
-            _backgroundImage.Stretch = _currentImageStretch;
-            _backgroundImage.Opacity = _currentImageOpacity;
-
-            if (_currentIsAnimatedGif && _currentAnimatedImagePath is not null)
-            {
-                var uri = new Uri(_currentAnimatedImagePath, UriKind.Absolute);
-                ImageBehavior.SetAnimatedSource(_backgroundImage, new AnimatedImageSourceUri(uri));
-                ImageBehavior.SetRepeatBehavior(_backgroundImage, RepeatBehavior.Forever);
-            }
-            else
-            {
-                if (_backgroundImage.GetValue(ImageBehavior.AnimatedSourceProperty) is not null)
-                    ImageBehavior.SetAnimatedSource(_backgroundImage, null!);
-
-                _backgroundImage.Source = _currentBackgroundBitmap;
-            }
-        }
-
         public static void UpdateBackdropForAllWindows()
         {
             if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
@@ -278,13 +284,13 @@ namespace Froststrap.UI.Elements.Base
 
             foreach (var window in desktop.Windows)
             {
-                if (selectedBackdrop != Enums.WindowsBackdrops.None)
+                if (selectedBackdrop != WindowsBackdrops.None)
                 {
                     window.TransparencyLevelHint = selectedBackdrop switch
                     {
-                        Enums.WindowsBackdrops.Acrylic => [WindowTransparencyLevel.AcrylicBlur, WindowTransparencyLevel.None],
-                        Enums.WindowsBackdrops.Mica => [WindowTransparencyLevel.Mica, WindowTransparencyLevel.None],
-                        Enums.WindowsBackdrops.Aero => [WindowTransparencyLevel.Blur, WindowTransparencyLevel.None],
+                        WindowsBackdrops.Acrylic => [WindowTransparencyLevel.AcrylicBlur, WindowTransparencyLevel.None],
+                        WindowsBackdrops.Mica => [WindowTransparencyLevel.Mica, WindowTransparencyLevel.None],
+                        WindowsBackdrops.Aero => [WindowTransparencyLevel.Blur, WindowTransparencyLevel.None],
                         _ => [WindowTransparencyLevel.None]
                     };
                     window.Background = Brushes.Transparent;
@@ -313,7 +319,7 @@ namespace Froststrap.UI.Elements.Base
         {
             base.OnClosed(e);
 
-            if (_backgroundImage.GetValue(ImageBehavior.AnimatedSourceProperty) is not null)
+            if (_backgroundImage != null && ImageBehavior.GetAnimatedSource(_backgroundImage) is not null)
                 ImageBehavior.SetAnimatedSource(_backgroundImage, null!);
         }
     }

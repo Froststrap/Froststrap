@@ -74,7 +74,7 @@
 
                 <controls:OptionControl Header="{x:Static resources:Strings.Menu_PresetMods_Presets_EmojiType_Title}"
                                         Description="{x:Static resources:Strings.Menu_PresetMods_Presets_EmojiType_Description}">
-                    <ComboBox MinWidth="220" ItemsSource="{Binding EmojiFontTask.Selections, Mode=OneTime}"
+                    <ComboBox MinWidth="200" ItemsSource="{Binding EmojiFontTask.Selections, Mode=OneTime}"
                               SelectedItem="{Binding EmojiFontTask.NewState, Mode=TwoWay}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>

@@ -12,6 +12,8 @@ namespace Froststrap.UI.Elements.About
     {
         private readonly MainWindowViewModel? _viewModel;
 
+        protected override bool ApplyTopPadding => false;
+
         public MainWindow()
         {
             _viewModel = new MainWindowViewModel();
