@@ -20,7 +20,6 @@
         <StyleInclude Source="avares://Froststrap/UI/Elements/Controls/TitleBar.axaml" />
         <StyleInclude Source="avares://Froststrap/UI/Elements/Controls/CardAction.axaml" />
         <StyleInclude Source="avares://Froststrap/UI/Elements/Controls/IconButton.axaml" />
-        <StyleInclude Source="avares://Froststrap/UI/Elements/Base/AvaloniaWindow.axaml" />
 
         <StyleInclude Source="avares://AvaloniaEdit/Themes/Fluent/AvaloniaEdit.xaml" />
 

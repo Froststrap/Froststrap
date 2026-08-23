@@ -25,6 +25,7 @@
     <AvaloniaResource Include="UI/AppThemes/EditorThemes/*.xshd" />
     <AvaloniaResource Include="Froststrap.ico" />
     <AvaloniaResource Include="Froststrap.png" />
+    <AvaloniaResource Include="UI\Elements\Base\BackgroundPanel.axaml" />
   </ItemGroup>
 
   <ItemGroup>

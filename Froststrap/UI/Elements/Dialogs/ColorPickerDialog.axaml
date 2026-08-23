@@ -8,8 +8,8 @@
     xmlns:resources="clr-namespace:Froststrap.Resources"
     Title="{x:Static resources:Strings.Common_ColorPicker}"
     Width="400"
-    SizeToContent="Height"
-    CanResize="False"
+    Height="450"
+    CanResize="True"
     WindowStartupLocation="CenterOwner">
 
     <Grid RowDefinitions="*,Auto">
