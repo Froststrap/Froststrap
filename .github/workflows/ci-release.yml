@@ -97,17 +97,27 @@ jobs:
       - name: Build and package binaries
         run: just ci-publish-linux
 
-      - name: Install Flatpak builder dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y flatpak flatpak-builder
+      - uses: actions/upload-artifact@v7
+        with:
+          name: froststrap-release-linux-x64-${{ env.SHORT_SHA }}
+          path: build/*
 
-      - name: Add Flathub remote
-        run: |
-          sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-          flatpak remote-ls flathub
+  build-flatpak:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/flathub-infra/flatpak-github-actions:freedesktop-24.08
+      options: --privileged
 
-      - name: Build Flatpak package from binary
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: true
+          fetch-depth: 0
+
+      - name: Set short SHA
+        run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> "$GITHUB_ENV"
+
+      - name: Build Flatpak package
         uses: flatpak/flatpak-github-actions/flatpak-builder@v6
         with:
           manifest-path: Scripts/flatpak/xyz.froststrap.yml
@@ -116,14 +126,15 @@ jobs:
 
       - uses: actions/upload-artifact@v7
         with:
-          name: froststrap-release-linux-x64-${{ env.SHORT_SHA }}
-          path: build/*
+          name: froststrap-release-flatpak-x64-${{ env.SHORT_SHA }}
+          path: build/Froststrap-linux-x64.flatpak
 
   release:
     needs:
       - build-windows
       - build-linux
       - build-macos
+      - build-flatpak
 
     runs-on: ubuntu-latest
 
@@ -152,6 +163,12 @@ jobs:
         uses: actions/download-artifact@v7
         with:
           name: froststrap-release-linux-x64-${{ env.SHORT_SHA }}
+          path: release
+
+      - name: Download Flatpak artifact
+        uses: actions/download-artifact@v7
+        with:
+          name: froststrap-release-flatpak-x64-${{ env.SHORT_SHA }}
           path: release
 
       - name: Create release
