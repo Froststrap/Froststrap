@@ -29,12 +29,10 @@
           dotnetFrag = pkgs.callPackage ./nix/dotnetDevShell.nix { };
           extraFrag = pkgs.callPackage ./nix/extra.nix { };
           rustFrag = pkgs.callPackage ./nix/rustDevShell.nix { inherit inputs; };
-          goFrag = pkgs.callPackage ./nix/goDevShell.nix { };
         in {
-          default = mkComposedShell [ dotnetFrag rustFrag goFrag extraFrag ];
+          default = mkComposedShell [ dotnetFrag rustFrag extraFrag ];
           dotnet = mkComposedShell [ dotnetFrag ];
           rust = mkComposedShell [ rustFrag ];
-          go = mkComposedShell [ goFrag ];
         });
         packages = forAllSystems (system: let
           pkgs = import nixpkgs { inherit system; };
@@ -51,7 +49,6 @@
             programs = {
               nixfmt.enable = true;
               nixf-diagnose.enable = true;
-              toml-sort.enable = true;
             };
             settings.formatter = {
               dotnet-format = {
