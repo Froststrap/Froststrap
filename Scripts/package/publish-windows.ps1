@@ -6,22 +6,22 @@ param (
 
 $ErrorActionPreference = "Stop"
 
-if (Test-Path -Path "./$BuildDir") { Remove-Item -Recurse -Force "./$BuildDir" }
-New-Item -ItemType Directory -Path "./$BuildDir" | Out-Null
+if (-not (Test-Path -Path "./$BuildDir")) {
+    New-Item -ItemType Directory -Path "./$BuildDir" | Out-Null
+}
 
-dotnet publish "$Project" /p:PublishProfile=Publish-x64 -c "$Config" --configfile "$PSScriptRoot\..\..\nuget.config"
+$TempPublish = "./$BuildDir/temp-contained"
+$Version = (git describe --tags --abbrev=0).TrimStart('v')
+
+dotnet publish "$Project" /p:PublishProfile=Publish-contained-x64 -c "$Config" -o "$TempPublish" --configfile "$PSScriptRoot\..\..\nuget.config"
 
 if ($LASTEXITCODE -ne 0) {
     Write-Error "dotnet publish failed with exit code $LASTEXITCODE"
     exit $LASTEXITCODE
 }
 
-$PublishPath = "./Froststrap/bin/$Config/net10.0/publish/Froststrap.exe"
-Copy-Item $PublishPath -Destination "./$BuildDir/"
+& makensis /DPUBLISH_DIR="..\$TempPublish" /DAPP_VERSION="$Version" /DSELFCONTAINED=1 Scripts/Installer.nsi
 
-$Version = (git describe --tags --abbrev=0).TrimStart('v')
-& makensis /DPUBLISH_DIR="..\$BuildDir" /DAPP_VERSION="$Version" Scripts/Installer.nsi
+Remove-Item -Recurse -Force "$TempPublish"
 
-Remove-Item "./$BuildDir/Froststrap.exe"
-
-Write-Host "Windows build complete: $BuildDir/Froststrap-Setup.exe" -ForegroundColor Green
+Write-Host "Self-contained Windows installer complete: $BuildDir/Froststrap-Setup.exe" -ForegroundColor Green

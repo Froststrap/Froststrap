@@ -7,8 +7,8 @@ PROJECT_FILE=${1:-"Froststrap/Froststrap.csproj"}
 BUILD_DIR=${2:-"build"}
 CONFIG="Release"
 
-FLATPAK_DIR="flatpak"
-MANIFEST="$FLATPAK_DIR/io.github.froststrap.yml"
+FLATPAK_DIR="Scripts/flatpak"
+MANIFEST="$FLATPAK_DIR/xyz.froststrap.yml"
 FLATPAK_BUILD_DIR="$FLATPAK_DIR/build-dir"
 REPO_DIR="$FLATPAK_DIR/repo"
 STATE_DIR="$FLATPAK_DIR/.flatpak-builder"
@@ -43,7 +43,7 @@ flatpak-builder \
 # Export and create bundle
 mkdir -p "$REPO_DIR"
 flatpak build-export "$REPO_DIR" "$FLATPAK_BUILD_DIR"
-flatpak build-bundle "$REPO_DIR" "$FLATPAK_FILE" io.github.froststrap \
+flatpak build-bundle "$REPO_DIR" "$FLATPAK_FILE" xyz.froststrap \
   --runtime-repo=https://flathub.org/repo/flathub.flatpakrepo
 
 echo "Done!"

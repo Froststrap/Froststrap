@@ -1,12 +1,11 @@
-﻿using Avalonia;
+﻿﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Controls.Notifications;
+using Avalonia.Labs.Notifications;
 using Avalonia.Threading;
-using FluentAvalonia.UI.Controls;
 using Froststrap.UI.Elements.Bootstrapper;
 using Froststrap.UI.Elements.Dialogs;
-using Froststrap.UI.Elements.Settings;
 using Froststrap.UI.Utility;
 
 namespace Froststrap.UI
@@ -23,6 +22,7 @@ namespace Froststrap.UI
             return await ShowFluentMessageBox(message, icon, buttons);
         }
 
+        //Were supposed to show this when watcher fails to launch but we lowkey dont anymore idk why
         public static async Task ShowPlayerErrorDialog(bool crash = false)
         {
             if (App.LaunchSettings.QuietFlag.Active)
@@ -161,22 +161,6 @@ namespace Froststrap.UI
                 }
 
                 return messagebox.Result;
-            });
-        }
-
-        public static void ShowBalloonTip(string title, string message, NotificationType category = NotificationType.Information, int timeoutSeconds = 5)
-        {
-            var severity = category switch
-            {
-                NotificationType.Success => FAInfoBarSeverity.Success,
-                NotificationType.Warning => FAInfoBarSeverity.Warning,
-                NotificationType.Error => FAInfoBarSeverity.Error,
-                _ => FAInfoBarSeverity.Informational
-            };
-
-            Dispatcher.UIThread.Post(() =>
-            {
-                MainWindow.ShowGlobalNotification(title, message, severity, timeoutSeconds * 1000);
             });
         }
     }

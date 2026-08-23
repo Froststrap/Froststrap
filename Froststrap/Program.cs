@@ -95,6 +95,7 @@ sealed class Program
     }
 
     // Avalonia configuration, don't remove; also used by visual designer.
+    // TODO: Strip out notification config, and do it all in Rust-side.
     public static AppBuilder BuildAvaloniaApp()
     {
         var builder = AppBuilder.Configure<App>()

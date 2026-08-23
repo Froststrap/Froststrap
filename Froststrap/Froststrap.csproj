@@ -21,44 +21,16 @@
 
   <!-- Resources needed by Avalonia -->
   <ItemGroup>
-    <AvaloniaResource Include="Resources\**" />
-    <AvaloniaResource Include="UI\AppThemes\EditorThemes\*.xshd" />
+    <AvaloniaResource Include="Resources/**" />
+    <AvaloniaResource Include="UI/AppThemes/EditorThemes/*.xshd" />
     <AvaloniaResource Include="Froststrap.ico" />
     <AvaloniaResource Include="Froststrap.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Resources\CustomBootstrapperSchema.json" />
-    <EmbeddedResource Include="Resources\CustomBootstrapperTemplate_Blank.xml" />
-    <EmbeddedResource Include="Resources\CustomBootstrapperTemplate_Simple.xml" />
-    <EmbeddedResource Include="Resources\Icon2008.ico" />
-    <EmbeddedResource Include="Resources\Icon2011.ico" />
-    <EmbeddedResource Include="Resources\Icon2017.ico" />
-    <EmbeddedResource Include="Resources\Icon2019.ico" />
-    <EmbeddedResource Include="Resources\Icon2022.ico" />
-    <EmbeddedResource Include="Resources\Icon2025.ico" />
-    <EmbeddedResource Include="Resources\IconEarly2015.ico" />
-    <EmbeddedResource Include="Resources\IconFroststrap.ico" />
-    <EmbeddedResource Include="Resources\IconLate2015.ico" />
-    <EmbeddedResource Include="Resources\mappings.json" />
-    <EmbeddedResource Include="Resources\Mods\Cursor\BlackAndWhiteDot\ArrowCursor.png" />
-    <EmbeddedResource Include="Resources\Mods\Cursor\BlackAndWhiteDot\ArrowFarCursor.png" />
-    <EmbeddedResource Include="Resources\Mods\Cursor\BlackAndWhiteDot\IBeamCursor.png" />
-    <EmbeddedResource Include="Resources\Mods\Cursor\From2006\ArrowCursor.png" />
-    <EmbeddedResource Include="Resources\Mods\Cursor\From2006\ArrowFarCursor.png" />
-    <EmbeddedResource Include="Resources\Mods\Cursor\From2013\ArrowCursor.png" />
-    <EmbeddedResource Include="Resources\Mods\Cursor\From2013\ArrowFarCursor.png" />
-    <EmbeddedResource Include="Resources\Mods\Cursor\PurpleCross\ArrowCursor.png" />
-    <EmbeddedResource Include="Resources\Mods\Cursor\PurpleCross\ArrowFarCursor.png" />
-    <EmbeddedResource Include="Resources\Mods\Cursor\PurpleCross\IBeamCursor.png" />
-    <EmbeddedResource Include="Resources\Mods\OldAvatarBackground.rbxl" />
-    <EmbeddedResource Include="Resources\Mods\Sounds\Empty.mp3" />
-    <EmbeddedResource Include="Resources\Mods\Sounds\OldGetUp.mp3" />
-    <EmbeddedResource Include="Resources\Mods\Sounds\OldJump.mp3" />
-    <EmbeddedResource Include="Resources\Mods\Sounds\OldWalk.mp3" />
-    <EmbeddedResource Include="Resources\PresetFlags\High Quality" />
-    <EmbeddedResource Include="Resources\PresetFlags\Balanced Quality" />
-    <EmbeddedResource Include="Resources\PresetFlags\Low Quality" />
+    <EmbeddedResource Include="Froststrap.ico" />
+    <EmbeddedResource Include="Froststrap.png" />
+    <EmbeddedResource Include="Resources\**\*.*" Exclude="Resources\**\*.resx" />
   </ItemGroup>
 
   <!-- NuGet packages -->
@@ -87,29 +59,30 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ColorPicker\ColorPicker.AvaloniaUI\ColorPicker.AvaloniaUI.csproj" />
-    <ProjectReference Include="..\LucideAvalonia\LucideAvalonia\LucideAvalonia.csproj" />
-    <ProjectReference Include="..\FluentAvalonia\src\FluentAvalonia\FluentAvalonia.csproj" />
+    <ProjectReference Include="../ColorPicker/ColorPicker.AvaloniaUI/ColorPicker.AvaloniaUI.csproj" />
+    <ProjectReference Include="../LucideAvalonia/LucideAvalonia/LucideAvalonia.csproj" />
+    <ProjectReference Include="../FluentAvalonia/src/FluentAvalonia/FluentAvalonia.csproj" />
+    <ProjectReference Include="../backend/backend.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <AssemblyAttribute Include="Froststrap.Models.Attributes.BuildMetadataAttribute">
       <_Parameter1>$([System.DateTime]::UtcNow.ToString("s"))Z</_Parameter1>
-      <_Parameter2>$(COMPUTERNAME)\$(USERNAME)</_Parameter2>
+      <_Parameter2>$(COMPUTERNAME)/$(USERNAME)</_Parameter2>
       <_Parameter3>$(CommitHash)</_Parameter3>
       <_Parameter4>$(CommitRef)</_Parameter4>
     </AssemblyAttribute>
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Resources\Strings.resx">
+    <EmbeddedResource Update="Resources/Strings.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Strings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Resources\Strings.Designer.cs">
+    <Compile Update="Resources/Strings.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>Strings.resx</DependentUpon>

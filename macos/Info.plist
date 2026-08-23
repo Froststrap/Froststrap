@@ -9,7 +9,7 @@
     <key>CFBundleExecutable</key>
     <string>Froststrap</string>
     <key>CFBundleIdentifier</key>
-    <string>io.github.froststrap.app</string>
+    <string>xyz.froststrap.desktop</string>
     <key>CFBundleInfoDictionaryVersion</key>
     <string>6.0</string>
     <key>CFBundleName</key>
