@@ -1,5 +1,6 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="using:FluentAvalonia.UI.Controls"
         xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls">
 
     <Style Selector="controls|TitleBar">
@@ -7,13 +8,72 @@
         <Setter Property="Height" Value="48" />
         <Setter Property="Template">
             <ControlTemplate>
-                <Grid Height="{TemplateBinding Height}"
+                <Grid ColumnDefinitions="Auto, *, Auto"
+                      Height="{TemplateBinding Height}"
                       Background="{TemplateBinding Background}">
-                    <ContentPresenter Content="{TemplateBinding Content}"
-                                      VerticalAlignment="Center"
-                                      HorizontalAlignment="Center" />
+
+                    <StackPanel Grid.Column="0" Name="PART_LeftPanel" Margin="0,4,0,0" Orientation="Horizontal" IsHitTestVisible="True" VerticalAlignment="Top">
+                        <Image Source="{TemplateBinding Icon}"
+                               IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"
+                               Width="16" Height="16"
+                               Margin="8,4,0,0"
+                               VerticalAlignment="Center"
+                               RenderOptions.BitmapInterpolationMode="HighQuality"
+                               IsHitTestVisible="False" />
+
+                        <TextBlock Text="{TemplateBinding Title}"
+                                   VerticalAlignment="Center"
+                                   FontSize="12"
+                                   Margin="4,0,0,0"
+                                   FontWeight="Normal"
+                                   Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                   IsHitTestVisible="False" />
+                    </StackPanel>
+
+                    <Panel Grid.Column="1"
+                           Name="PART_DragLayer"
+                           WindowDecorationProperties.ElementRole="TitleBar"
+                           Background="Transparent"
+                           VerticalAlignment="Stretch"
+                           HorizontalAlignment="Stretch" />
+
+                    <StackPanel Grid.Column="2" Name="PART_RightPanel" Orientation="Horizontal" VerticalAlignment="Stretch">
+                        <controls:IconButton Name="PART_MinimizeButton"
+                                             Classes="TitleBarButton"
+                                             Icon="Minus"
+                                             IsVisible="{TemplateBinding ShowMinimize}"/>
+
+                        <controls:IconButton Name="PART_MaximizeButton"
+                                             Classes="TitleBarButton"
+                                             IsVisible="{TemplateBinding ShowMaximize}"
+                                             Icon="Maximize"/>
+
+                        <controls:IconButton Name="PART_CloseButton"
+                                             Classes="TitleBarButton Close"
+                                             Icon="X"
+                                             IsVisible="{TemplateBinding ShowClose}"/>
+                    </StackPanel>
                 </Grid>
             </ControlTemplate>
         </Setter>
+    </Style>
+
+    <Style Selector="controls|IconButton.TitleBarButton">
+        <Setter Property="Width" Value="46" />
+        <Setter Property="Height" Value="32" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="0" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="IconSize" Value="10" />
+        <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+    </Style>
+
+    <Style Selector="controls|IconButton.TitleBarButton:pointerover /template/ Border#PART_LayoutRoot">
+        <Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
+    </Style>
+
+    <Style Selector="controls|IconButton.TitleBarButton:disabled">
+        <Setter Property="Opacity" Value="{DynamicResource ThemeDisabledOpacity}" />
     </Style>
 </Styles>
