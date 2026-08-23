@@ -150,7 +150,7 @@ jobs:
       - name: Sign, notarize, and staple
         uses: indygreg/apple-code-sign-action@v1
         with:
-          input_path: build/Froststrap-macOS.dmg
+          input_path: build/Froststrap.pkg
           pem_file: |
             key.pem
             cert.pem
@@ -163,7 +163,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: froststrap-release-macos-universal-${{ env.SHORT_SHA }}
-          path: build/Froststrap-macOS.dmg
+          path: build/Froststrap.pkg
 
   release:
     needs:
@@ -217,7 +217,7 @@ jobs:
           files: |
             release/Froststrap-Setup.exe
             release/Froststrap-SelfContained-Setup.exe
-            release/Froststrap-macOS.dmg
+            release/Froststrap.pkg
             release/Froststrap-linux-x64.AppImage
             release/Froststrap-linux-x64.deb
             release/Froststrap-linux-x64.rpm
