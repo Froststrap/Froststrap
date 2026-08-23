@@ -18,16 +18,8 @@
                      WindowStartupLocation="CenterOwner"
                      mc:Ignorable="d">
 
-    <Grid RowDefinitions="Auto,*,Auto">
-        <controls:TitleBar
-            Title="{x:Static resources:Strings.Menu_Dialog_QuickSignIn_Title}"
-            Grid.Row="0"
-            ShowMaximize="False"
-            Icon="avares://Froststrap/Froststrap.ico"
-            KeyboardNavigation.TabNavigation="None"
-            ShowMinimize="False" />
-
-        <Grid Grid.Row="1" Margin="20,8,20,16" RowDefinitions="Auto,Auto,Auto,Auto,*">
+    <Grid RowDefinitions="*,Auto">
+        <Grid Grid.Row="0" Margin="20,16,20,16" RowDefinitions="Auto,Auto,Auto,Auto,*">
             <StackPanel
                 Grid.Row="0"
                 Margin="0,0,0,16"
@@ -104,7 +96,7 @@
         </Grid>
 
         <Border
-            Grid.Row="2"
+            Grid.Row="1"
             Background="{DynamicResource ControlFillColorDefaultBrush}"
             BorderBrush="{DynamicResource ControlElevationBorderBrush}"
             BorderThickness="1,1,0,0">

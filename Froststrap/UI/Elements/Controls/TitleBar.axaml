@@ -16,35 +16,26 @@
                         <Image Source="{TemplateBinding Icon}"
                                IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"
                                Width="16" Height="16"
-                               Margin="12,4,0,0"
+                               Margin="8,4,0,0"
                                VerticalAlignment="Center"
                                RenderOptions.BitmapInterpolationMode="HighQuality"
                                IsHitTestVisible="False" />
 
-                        <ContentPresenter Content="{TemplateBinding LeftContent}"
-                                          VerticalAlignment="Center"
-                                          Margin="6,0,0,0" />
-
                         <TextBlock Text="{TemplateBinding Title}"
                                    VerticalAlignment="Center"
                                    FontSize="12"
-                                   Margin="8,0,0,0"
+                                   Margin="4,0,0,0"
                                    FontWeight="Normal"
                                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                                    IsHitTestVisible="False" />
                     </StackPanel>
 
-                    <Panel Grid.Column="1">
-                        <Panel Name="PART_DragLayer"
-                               WindowDecorationProperties.ElementRole="TitleBar"
-                               Background="Transparent"
-                               VerticalAlignment="Stretch"
-                               HorizontalAlignment="Stretch" />
-
-                        <ContentPresenter Content="{TemplateBinding Content}"
-                                          VerticalAlignment="Center"
-                                          HorizontalAlignment="Center" />
-                    </Panel>
+                    <Panel Grid.Column="1"
+                           Name="PART_DragLayer"
+                           WindowDecorationProperties.ElementRole="TitleBar"
+                           Background="Transparent"
+                           VerticalAlignment="Stretch"
+                           HorizontalAlignment="Stretch" />
 
                     <StackPanel Grid.Column="2" Name="PART_RightPanel" Orientation="Horizontal" VerticalAlignment="Stretch">
                         <controls:IconButton Name="PART_MinimizeButton"

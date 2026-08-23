@@ -8,16 +8,12 @@
     xmlns:resources="clr-namespace:Froststrap.Resources"
     Title="{x:Static resources:Strings.Common_ColorPicker}"
     Width="400"
-    SizeToContent="Height"
-    CanResize="False"
+    Height="450"
+    CanResize="True"
     WindowStartupLocation="CenterOwner">
 
-    <Grid RowDefinitions="Auto, *, Auto">
-        <controls:TitleBar Grid.Row="0"
-                           Icon="avares://Froststrap/Froststrap.ico"
-                           Title="{x:Static resources:Strings.Menu_ColorPicker_SelectColor}" />
-
-        <StackPanel Grid.Row="1" Margin="20" Spacing="20">
+    <Grid RowDefinitions="*,Auto">
+        <StackPanel Grid.Row="0" Margin="20" Spacing="20">
             <Border CornerRadius="4" ClipToBounds="True">
                 <colorPicker:SquarePicker x:Name="Part_SquarePicker"
                                           Height="220"
@@ -36,7 +32,7 @@
             </StackPanel>
         </StackPanel>
 
-        <Border Grid.Row="2" Padding="15" Background="{DynamicResource ControlFillColorDefaultBrush}">
+        <Border Grid.Row="1" Padding="15" Background="{DynamicResource ControlFillColorDefaultBrush}">
             <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Right"
                         Spacing="12">

@@ -12,9 +12,7 @@
     Width="1000" Height="500"
     WindowStartupLocation="CenterScreen">
 
-    <Grid RowDefinitions="Auto,*,Auto">
-        <controls:TitleBar Grid.Row="0" Title="{Binding Title}"
-                           Icon="avares://Froststrap/Froststrap.ico" />
+    <Grid RowDefinitions="*,Auto">
         <Panel
             Name="NotificationPanel"
             Grid.Row="0"
@@ -24,7 +22,7 @@
             ZIndex="1000" />
 
         <Ae:TextEditor Name="UIXML"
-                       Grid.Row="1"
+                       Grid.Row="0"
                        Classes="NewTextEditor"
                        ShowLineNumbers="True"
                        Margin="10"
@@ -32,7 +30,7 @@
                        HorizontalScrollBarVisibility="Auto"
                        VerticalScrollBarVisibility="Visible" />
 
-        <Border Grid.Row="2" Background="{DynamicResource ControlFillColorDefaultBrush}"
+        <Border Grid.Row="1" Background="{DynamicResource ControlFillColorDefaultBrush}"
                 BorderBrush="{DynamicResource ControlStrokeColorDefault}"
                 BorderThickness="0,1,0,0" Padding="0,0,16,0" Height="56">
             <Grid ColumnDefinitions="*,Auto,Auto,Auto">

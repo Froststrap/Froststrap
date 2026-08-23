@@ -2,15 +2,16 @@ using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
+using Avalonia.Controls.Notifications;
 using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Media;
+using Avalonia.Input;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using FluentAvalonia.UI.Controls;
 using Froststrap.UI.Elements.Controls;
 using Froststrap.UI.Utility;
 using Froststrap.UI.ViewModels.Settings;
-using Froststrap.UI.ViewModels.Settings.Mods;
 using LucideAvalonia;
 using LucideAvalonia.Enum;
 using System.ComponentModel;
@@ -19,7 +20,10 @@ namespace Froststrap.UI.Elements.Settings
 {
     public partial class MainWindow : Base.AvaloniaWindow
     {
+        protected override bool ApplyTopPadding => false;
         public static MainWindow? Instance { get; private set; }
+
+        public static WindowNotificationManager? NotificationManager { get; private set; }
 
         private static Models.Persistable.WindowState State => App.State.Prop.SettingsWindow;
         private readonly MainWindowViewModel? _viewModel;
@@ -53,10 +57,9 @@ namespace Froststrap.UI.Elements.Settings
                 ShowAlreadyRunningNotification();
 
             gbs.Opacity = _viewModel.GBSEnabled ? 1 : 0.5;
-            gbs.IsEnabled = _viewModel.GBSEnabled; // binding doesnt work as expected so we are setting it in here instead
+            gbs.IsEnabled = _viewModel.GBSEnabled;
 
             LoadState();
-
             LoadNavigationPaneState();
 
             App.RemoteData.Subscribe((_, _) => Dispatcher.UIThread.Post(() =>
@@ -81,7 +84,6 @@ namespace Froststrap.UI.Elements.Settings
             Dispatcher.UIThread.Post(() =>
             {
                 UpdateSelectedNavigationViewItem(_viewModel.SelectedPage);
-                AttachTitleBarButtons();
             }, DispatcherPriority.Loaded);
 
             _viewModel.SearchBar.SearchStarted += async (s, e) =>
@@ -93,6 +95,31 @@ namespace Froststrap.UI.Elements.Settings
                     _isIndexingMissing = false;
                 }
             };
+        }
+
+        protected override void OnOpened(System.EventArgs e)
+        {
+            base.OnOpened(e);
+
+            NotificationManager = new WindowNotificationManager(TopLevel.GetTopLevel(this))
+            {
+                Position = NotificationPosition.TopRight,
+                MaxItems = 3
+            };
+        }
+
+        private void TitleBarGrid_PointerPressed(object sender, PointerPressedEventArgs e)
+        {
+            if (!e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
+                return;
+
+            if (e.Source is Visual hit)
+            {
+                if (hit.FindAncestorOfType<SearchBar>() != null)
+                    return;
+            }
+
+            this.BeginMoveDrag(e);
         }
 
         private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -119,7 +146,6 @@ namespace Froststrap.UI.Elements.Settings
             {
                 SaveCurrentPage();
 
-                // Navigation will trigger UpdatePageView, which will scroll to the item
                 var action = GetNavigationAction(item.PageTag ?? "");
                 action?.Invoke();
             }
@@ -346,7 +372,6 @@ namespace Froststrap.UI.Elements.Settings
             _notificationCts?.Cancel();
             _notificationCts?.Dispose();
             _notificationCts = new CancellationTokenSource();
-            var token = _notificationCts.Token;
 
             if (_currentNotification != null && notificationPanel.Children.Contains(_currentNotification))
             {
@@ -526,30 +551,6 @@ namespace Froststrap.UI.Elements.Settings
         {
             var loadingOverlay = this.FindControl<Grid>("LoadingOverlay");
             loadingOverlay?.IsVisible = false;
-        }
-
-        private void AttachTitleBarButtons()
-        {
-            var minimizeButton = this.FindControl<IconButton>("PART_MinimizeButton");
-            var maximizeButton = this.FindControl<IconButton>("PART_MaximizeButton");
-            var closeButton = this.FindControl<IconButton>("PART_CloseButton");
-
-            minimizeButton?.Click += (s, e) =>
-            {
-                this.WindowState = Avalonia.Controls.WindowState.Minimized;
-            };
-
-            maximizeButton?.Click += (s, e) =>
-            {
-                this.WindowState = this.WindowState == Avalonia.Controls.WindowState.Maximized
-                    ? Avalonia.Controls.WindowState.Normal
-                    : Avalonia.Controls.WindowState.Maximized;
-            };
-
-            closeButton?.Click += (s, e) =>
-            {
-                this.Close();
-            };
         }
 
         private async Task IndexMissingPagesAsync()
@@ -790,6 +791,8 @@ namespace Froststrap.UI.Elements.Settings
 
         private void MainWindow_Closed(object? sender, EventArgs e)
         {
+            NotificationManager = null;
+
             if (App.LaunchSettings.TestModeFlag.Active)
                 LaunchHandler.LaunchRoblox(LaunchMode.Player);
             else

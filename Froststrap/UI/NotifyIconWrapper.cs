@@ -1,7 +1,6 @@
-﻿using Avalonia;
+﻿﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Notifications;
-using Avalonia.Labs.Notifications;
 using Avalonia.Platform;
 using Avalonia.Threading;
 using Froststrap.Integrations;

@@ -1,8 +1,6 @@
-﻿using Avalonia;
+﻿﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Controls.Notifications;
-using Avalonia.Labs.Notifications;
 using Avalonia.Threading;
 using Froststrap.UI.Elements.Bootstrapper;
 using Froststrap.UI.Elements.Dialogs;

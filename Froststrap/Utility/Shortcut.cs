@@ -43,8 +43,7 @@ namespace Froststrap.Utility
 
                     var uri = new Uri("avares://Froststrap/Froststrap.png");
                     using var pngStream = AssetLoader.Open(uri);
-                    if (pngStream is null)
-                        throw new FileNotFoundException("Embedded Froststrap.png not found.");
+                    _ = pngStream ?? throw new FileNotFoundException("Embedded Froststrap.png not found.");
 
                     using var fileStream = File.Create(iconPath);
                     pngStream.CopyTo(fileStream);

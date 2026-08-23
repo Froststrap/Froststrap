@@ -1,7 +1,8 @@
-﻿using NLog;
+using NLog;
 using Avalonia;
 using CommandLine;
-using Avalonia.Labs.Notifications;
+using CommandLine.Text;
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 namespace Froststrap;
@@ -14,9 +15,7 @@ sealed class Program
     {
         [Option('c', "console", HelpText = "Attaches a console window for debugging.")]
         public bool AttachConsole { get; set; }
-        [Option('v', "version", HelpText = "Version number")]
-        public bool Verbose { get; set; }
-        [Option('g', "nogpu", HelpText = "Sets env AVALONIA_GPU to 0 on runtime")]
+        [Option('g', "nogpu", HelpText = "Sets env AVALONIA_GPU to 0 on runtime.")]
         public bool NoGPU { get; set; }
     }
 
@@ -24,7 +23,7 @@ sealed class Program
 
     [DllImport("kernel32.dll")]
     private static extern bool AllocConsole();
-            
+
     [STAThread]
     public static void Main(string[] args)
     {
@@ -43,12 +42,28 @@ sealed class Program
 
         if (argsResult is NotParsed<Options> notParsed)
         {
-            bool isHelpOrVersion = notParsed.Errors.Any(e =>
-            e.Tag == ErrorType.HelpRequestedError || e.Tag == ErrorType.VersionRequestedError);
-
-            if (isHelpOrVersion)
+            if (notParsed.Errors.Any(e=> e.Tag == ErrorType.HelpRequestedError))
             {
-                Environment.Exit(0);
+                Console.WriteLine(
+                    HelpText.AutoBuild(argsResult, h => {
+                        h.AdditionalNewLineAfterOption = false;
+                        h.Heading = "Froststrap";
+                        h.Copyright = "(c) Froststrap Team";
+                        return HelpText.DefaultParsingErrorsHandler(argsResult, h);
+                    })
+                );
+                return;
+            }
+
+            if (notParsed.Errors.Any(e=> e.Tag == ErrorType.VersionRequestedError))
+            {
+                Console.WriteLine($"Froststrap v{
+                    typeof(Program)
+                        .Assembly
+                        .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
+                        .InformationalVersion.Split("+")[0]
+                        ?? "0.0.0"
+                }");
                 return;
             }
 
@@ -87,32 +102,25 @@ sealed class Program
             .UsePlatformDetect()
             .LogToTrace();
 
-        if (!OperatingSystem.IsMacOS())
+        /*// We won't enable Wayland by default until its merged into Avalonia upstream
+        if (OperatingSystem.IsLinux() &&
+            !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("FROSTSTRAP_FORCE_WAYLAND")))
         {
-            string iconPath = ExtractToTemp("IconFroststrap.ico", "IconFroststrap.ico");
-            builder = builder.WithAppNotifications(new AppNotificationOptions
-            {
-                AppName = "Froststrap",
-                AppUserModelId = "xyz.froststrap.desktop",
-                AppIcon = iconPath,
-                DisableComServer = true
-            });
+            App.Logger.Debug("Using Wayland backend (FROSTSTRAP_FORCE_WAYLAND)");
+
+            builder = builder.UseWayland()
+                .With(new WaylandPlatformOptions
+                {
+                    UseDmabufSwapchain = true
+                });
         }
+        else
+        {
+            builder = builder.UsePlatformDetect();
+        }*/
+
+        builder = builder.UsePlatformDetect();
 
         return builder;
-    }
-
-    public static string ExtractToTemp(string name, string fileName)
-    {
-        string tempFilePath = Path.Combine(Paths.Temp, fileName);
-
-        if (!File.Exists(tempFilePath))
-        {
-            using var stream = Resource.GetStream(name);
-            Directory.CreateDirectory(Path.GetDirectoryName(tempFilePath)!);
-            using var fileStream = File.Create(tempFilePath);
-            stream.CopyTo(fileStream);
-        }
-        return tempFilePath;
     }
 }
