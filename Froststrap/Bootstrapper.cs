@@ -489,11 +489,11 @@ namespace Froststrap
                 {
                     if (!App.LaunchSettings.QuietFlag.Active)
                     {
-                        // show some balloon tips
+                        // show tips
                         if (!_packageExtractionSuccess)
-                            Frontend.ShowBalloonTip(Strings.Bootstrapper_ExtractionFailed_Title, Strings.Bootstrapper_ExtractionFailed_Message, Avalonia.Controls.Notifications.NotificationType.Warning);
+                            Backend.NNotify.SendMessage(Strings.Bootstrapper_ExtractionFailed_Title, Strings.Bootstrapper_ExtractionFailed_Message);
                         else if (!allModificationsApplied)
-                            Frontend.ShowBalloonTip(Strings.Bootstrapper_ModificationsFailed_Title, Strings.Bootstrapper_ModificationsFailed_Message, Avalonia.Controls.Notifications.NotificationType.Warning);
+                            Backend.NNotify.SendMessage(Strings.Bootstrapper_ModificationsFailed_Title, Strings.Bootstrapper_ModificationsFailed_Message);
                     }
 
                     if (!OperatingSystem.IsLinux())
@@ -1782,7 +1782,7 @@ namespace Froststrap
                 try
                 {
                     var fileInfo = new FileInfo(Paths.Process);
-                    bool isSelfContained = fileInfo.Length > 80 * 1024 * 1024;
+                    bool isSelfContained = fileInfo.Length > 100 * 1024 * 1024;
 
                     if (isSelfContained)
                         return ["Froststrap-SelfContained-Setup.exe", "-SelfContained-Setup.exe"];

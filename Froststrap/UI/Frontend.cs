@@ -22,6 +22,7 @@ namespace Froststrap.UI
             return await ShowFluentMessageBox(message, icon, buttons);
         }
 
+        //Were supposed to show this when watcher fails to launch but we lowkey dont anymore idk why
         public static async Task ShowPlayerErrorDialog(bool crash = false)
         {
             if (App.LaunchSettings.QuietFlag.Active)
@@ -161,34 +162,6 @@ namespace Froststrap.UI
 
                 return messagebox.Result;
             });
-        }
-
-        public static void ShowBalloonTip(string title, string message, NotificationType category = NotificationType.Information, int timeoutSeconds = 5)
-        {
-            var manager = NativeNotificationManager.Current;
-            if (manager == null || OperatingSystem.IsMacOS()) return;
-
-            string categoryString = category switch
-            {
-                NotificationType.Success => "success",
-                NotificationType.Warning => "warning",
-                NotificationType.Error => "error",
-                _ => "info"
-            };
-
-            var notification = manager.CreateNotification(categoryString);
-            if (notification == null) return;
-
-            notification.Title = title;
-            notification.Message = message;
-            notification.Expiration = TimeSpan.FromSeconds(timeoutSeconds);
-
-            NotificationTracker.Track(notification, TimeSpan.FromSeconds(timeoutSeconds));
-
-            Dispatcher.UIThread.Post(() =>
-            {
-                notification.Show();
-            }, DispatcherPriority.ApplicationIdle);
         }
     }
 }

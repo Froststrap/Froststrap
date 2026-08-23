@@ -1,5 +1,4 @@
 {
-  mkShell,
   lib,
   stdenv,
   expat,
@@ -22,10 +21,13 @@
   just,
   glib,
   omnisharp-roslyn,
-  create-dmg
+  create-dmg,
+  callPackage,
 }:
-mkShell (finalAttrs: {
-  meta.license = lib.licenses.unlicense;
+let
+  inherit (callPackage ./devshell-tools.nix {}) mkFragment;
+in
+mkFragment (finalAttrs: {
   runtimeLibs = lib.optionals stdenv.hostPlatform.isLinux [
     expat
     fontconfig
@@ -63,5 +65,7 @@ mkShell (finalAttrs: {
     libxkbcommon
   ];
 
-  LD_LIBRARY_PATH = lib.makeLibraryPath finalAttrs.runtimeLibs;
+  shellHook = ''
+    export LD_LIBRARY_PATH=${lib.makeLibraryPath finalAttrs.runtimeLibs}
+  '';
 })
