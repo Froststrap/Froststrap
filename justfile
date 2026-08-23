@@ -17,6 +17,7 @@ debug-macos:
 [unix]
 debug-linux:
     dotnet publish {{ project_file }} -r linux-x64 -c Debug --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true --configfile nuget.config
+
 [windows]
 publish-windows:
     #!powershell
@@ -32,11 +33,6 @@ publish-linux:
     chmod +x ./Scripts/package/publish-linux.sh
     ./Scripts/package/publish-linux.sh "{{ project_file }}" "{{ build_dir }}" "Publish-linux-x64"
 
-[unix]
-publish-flatpak:
-    chmod +x ./Scripts/package/publish-flatpak.sh
-    ./Scripts/package/publish-flatpak.sh "{{ project_file }}" "{{ build_dir }}"
-
 # CI Aliases
 ci-publish-windows:
     @just publish-windows
@@ -46,6 +42,3 @@ ci-publish-macos:
 
 ci-publish-linux:
     @just publish-linux
-
-ci-publish-flatpak:
-    @just publish-flatpak
