@@ -8,7 +8,7 @@ using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Styling;
 using FluentAvalonia.Styling;
-using Froststrap.AttachedProperties;
+using Froststrap.UI.Utility;
 
 namespace Froststrap.UI.Elements.Base
 {
