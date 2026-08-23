@@ -54,7 +54,7 @@ jobs:
 
       - name: Build, sign (if release), and package
         env:
-          SIGN: true
+          SIGN: ${{ startsWith(github.ref, 'refs/tags/v') && 'true' || 'false' }}
           CERT_P12_BASE64: ${{ secrets.CERT_P12_BASE64 }}
           CERT_P12_INSTALLER_BASE64: ${{ secrets.CERT_P12_INSTALLER_BASE64 }}
           P12_PASSWORD: ${{ secrets.P12_PASSWORD }}
@@ -99,13 +99,19 @@ jobs:
 
       - name: Install Flatpak builder dependencies
         run: |
+          sudo apt-get update
           sudo apt-get install -y flatpak flatpak-builder
+
+      - name: Add Flathub remote
+        run: |
+          sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+          flatpak remote-ls flathub
 
       - name: Build Flatpak package from binary
         uses: flatpak/flatpak-github-actions/flatpak-builder@v6
         with:
           manifest-path: Scripts/flatpak/xyz.froststrap.yml
-          cache-key: flatpak-builder-${{ hashFiles('flatpak/xyz.froststrap.yml', '**/*.csproj', '**/packages.lock.json') }}
+          cache-key: flatpak-builder-${{ hashFiles('Scripts/flatpak/xyz.froststrap.yml', '**/*.csproj', '**/packages.lock.json') }}
           bundle: build/Froststrap-linux-x64.flatpak
 
       - uses: actions/upload-artifact@v7
