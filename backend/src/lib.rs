@@ -6,10 +6,8 @@ use std::os::raw::c_char;
 use image::DynamicImage;
 use notify_rust::Notification;
 
-#[cfg(target_os = "macos")]
-const APP_ID: &'static str = "io.github.froststrap.app";
-#[cfg(target_os = "windows")]
-const APP_ID: &'static str = "Icon.Froststrap";
+#[cfg(not(target_os = "linux"))]
+const APP_ID: &'static str = "xyz.froststrap.desktop";
 #[cfg(target_os = "linux")]
 const APP_ID: &'static str = "Froststrap";
 

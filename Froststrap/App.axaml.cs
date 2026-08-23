@@ -495,28 +495,7 @@ public partial class App : Application
             if (Settings.Prop.AllowCookieAccess)
                 await Task.Run(Cookies.LoadCookies);
 
-            if (OperatingSystem.IsWindows())
-            {
-                WindowsRegistry.RegisterApis();
-
-                try
-                {
-                    var appUserModelId = "Froststrap.Froststrap";
-
-                    using (var key = Microsoft.Win32.Registry.CurrentUser.CreateSubKey(@"Software\Classes\AppUserModelId\" + appUserModelId))
-                    {
-                        key.SetValue("DisplayName", "Froststrap");
-                        key.SetValue("IconUri", "avares://Froststrap/Froststrap.ico");
-                    }
-
-                    Logger.Debug("Registered app for notifications");
-                }
-                catch (Exception ex)
-                {
-                    Logger.Error($"Failed to register app: {ex.Message}");
-                }
-            }
-            else if (OperatingSystem.IsLinux())
+            if (OperatingSystem.IsLinux())
             {
                 LinuxRegistry.RegisterAll();
             }
