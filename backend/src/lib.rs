@@ -12,6 +12,20 @@ const APP_ID: &'static str = "xyz.froststrap.desktop";
 const APP_ID: &'static str = "Froststrap";
 
 #[unsafe(no_mangle)]
+pub unsafe extern "C" fn set_application() -> i32 {
+    #[cfg(target_os = "macos")]
+    match notify_rust::set_application(APP_ID) {
+        Ok(_) => (),
+        Err(e) => {
+            eprintln!("{e}");
+            return -4;
+        }
+    };
+
+    0
+}
+
+#[unsafe(no_mangle)]
 pub unsafe extern "C" fn send_notification(
     title: *const c_char,
     description: *const c_char,
@@ -21,13 +35,6 @@ pub unsafe extern "C" fn send_notification(
     let title = unsafe { CStr::from_ptr(title) }.to_string_lossy();
     let description = unsafe { CStr::from_ptr(description) }.to_string_lossy();
     let buffer = unsafe { std::slice::from_raw_parts(image_data, image_len) };
-
-    #[cfg(target_os = "macos")]
-    match notify_rust::set_application(APP_ID) {
-        Ok(_) => (),
-        Err(_) => return -4,
-    };
-
     let dynamic_image: DynamicImage = match image::load_from_memory(buffer) {
         Ok(img) => img,
         Err(e) => {
@@ -69,13 +76,6 @@ pub unsafe extern "C" fn send_notification_message(
 ) -> i32 {
     let title = unsafe { CStr::from_ptr(title) }.to_string_lossy();
     let description = unsafe { CStr::from_ptr(description) }.to_string_lossy();
-
-    #[cfg(target_os = "macos")]
-    match notify_rust::set_application(APP_ID) {
-        Ok(_) => (),
-        Err(_) => return -4,
-    };
-
     let mut notification = Notification::new();
     notification
         .summary(&title)

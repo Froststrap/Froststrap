@@ -26,18 +26,25 @@ internal partial class INNotify {
         [MarshalAs(UnmanagedType.LPUTF8Str)] string description,
 		int duration
     );
+	[LibraryImport(
+		"rbackend",
+		EntryPoint = "set_application"
+	)]
+    public static partial int SetApplication();
 }
 
 /// A native notifier
 public class NNotify {
+	private static readonly Lazy<int> _appInit = new(() => INNotify.SetApplication());
+
 	public static void Send(
 		string title,
 		string description,
 		byte[]? imageData,
 		nuint imgLen
 	) {
-		// Run on another thread, I don't care if it fails or not.
 		Task.Run(()=>{
+			_ = _appInit.Value;
 			INNotify.Send(title, description, imageData, imgLen);
 		});
 	}
@@ -46,8 +53,8 @@ public class NNotify {
 		string description,
 		int duration = 5
 	) {
-		// Run on another thread, I don't care if it fails or not.
 		Task.Run(()=>{
+			_ = _appInit.Value;
 			INNotify.SendMessage(title, description, duration);
 		});
 	}
