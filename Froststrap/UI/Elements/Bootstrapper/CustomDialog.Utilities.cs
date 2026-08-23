@@ -1,6 +1,9 @@
 ﻿using Avalonia.Media;
+using Avalonia.Media.Fonts;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using System.Xml.Linq;
+using System.Security.Cryptography;
 using FontFamily = Avalonia.Media.FontFamily;
 
 namespace Froststrap.UI.Elements.Bootstrapper
@@ -247,12 +250,176 @@ namespace Froststrap.UI.Elements.Bootstrapper
             uiElement.RenderTransform = tg;
         }
 
-        //TODO: Make font family actually work without crashing
+
+        private static readonly string[] _fontFileExtensions = [".ttf", ".otf", ".ttc"];
+
+        private readonly record struct LoadedFont(string Name, string Reference);
+
+        private static readonly Dictionary<string, LoadedFont?> _customFontCache = new(StringComparer.OrdinalIgnoreCase);
+        private static readonly Lock _customFontLock = new();
+
+        private static LoadedFont? LoadSingleFontFile(string path)
+        {
+            lock (_customFontLock)
+            {
+                if (_customFontCache.TryGetValue(path, out var cached))
+                    return cached;
+
+                LoadedFont? result = null;
+
+                try
+                {
+                    string key = "fonts:froststrap-" + Convert.ToHexString(MD5.HashData(Encoding.UTF8.GetBytes(path)));
+
+                    var collection = new EmbeddedFontCollection(new Uri(key, UriKind.Absolute), new Uri(path, UriKind.Absolute));
+                    FontManager.Current.AddFontCollection(collection);
+
+                    string? familyName = collection.Select(f => f.Name).FirstOrDefault();
+                    if (familyName != null)
+                        result = new LoadedFont(familyName, $"{key}#{familyName}");
+                }
+                catch
+                {
+                    result = null;
+                }
+
+                _customFontCache[path] = result;
+                return result;
+            }
+        }
+
+        private static string? FindFontFamilyInDirectory(string directory, string familyName)
+        {
+            string lowerName = familyName.ToLowerInvariant();
+
+            foreach (var ext in _fontFileExtensions)
+            {
+                string candidate = Path.Combine(directory, lowerName + ext);
+                if (File.Exists(candidate))
+                    return LoadSingleFontFile(candidate)?.Reference;
+            }
+
+            foreach (var ext in _fontFileExtensions)
+            {
+                string[] files;
+                try
+                {
+                    files = Directory.GetFiles(directory, $"*{ext}", SearchOption.TopDirectoryOnly);
+                }
+                catch
+                {
+                    continue;
+                }
+
+                foreach (var file in files)
+                {
+                    var loaded = LoadSingleFontFile(file);
+                    if (loaded is { } font && font.Name.Equals(familyName, StringComparison.OrdinalIgnoreCase))
+                        return font.Reference;
+                }
+            }
+
+            return null;
+        }
+
+        private static bool LooksLikePathSegment(string segment)
+        {
+            int hashIdx = segment.LastIndexOf('#');
+            string locationPart = hashIdx >= 0 ? segment[..hashIdx] : segment;
+
+            if (locationPart.Length == 0)
+                return false;
+
+            if (locationPart.StartsWith("theme://", StringComparison.OrdinalIgnoreCase) ||
+                locationPart.StartsWith("file://", StringComparison.OrdinalIgnoreCase))
+                return true;
+
+            if (locationPart.IndexOfAny(['/', '\\']) >= 0)
+                return true;
+
+            string ext = Path.GetExtension(locationPart);
+            return ext.Equals(".ttf", StringComparison.OrdinalIgnoreCase) ||
+                   ext.Equals(".otf", StringComparison.OrdinalIgnoreCase) ||
+                   ext.Equals(".ttc", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static string? ResolveFontFileSegment(CustomDialog dialog, string segment)
+        {
+            int hashIdx = segment.LastIndexOf('#');
+            string locationRaw = hashIdx >= 0 ? segment[..hashIdx] : segment;
+            string? nameHint = hashIdx >= 0 ? segment[(hashIdx + 1)..].Trim() : null;
+            if (string.IsNullOrEmpty(nameHint))
+                nameHint = null;
+
+            string? resolvedLocation;
+            try
+            {
+                resolvedLocation = GetFullPath(dialog, locationRaw);
+            }
+            catch
+            {
+                resolvedLocation = null;
+            }
+
+            if (string.IsNullOrEmpty(resolvedLocation))
+                return null;
+
+            if (File.Exists(resolvedLocation))
+                return LoadSingleFontFile(resolvedLocation)?.Reference;
+
+            if (nameHint != null && Directory.Exists(resolvedLocation))
+                return FindFontFamilyInDirectory(resolvedLocation, nameHint);
+
+            return null;
+        }
+
+        private static string? ResolveFontFamilySegment(CustomDialog dialog, string rawSegment)
+        {
+            string segment = rawSegment.Trim();
+            if (segment.Length == 0)
+                return null;
+
+            if (LooksLikePathSegment(segment))
+                return ResolveFontFileSegment(dialog, segment);
+
+            return segment.StartsWith('#') ? segment[1..].Trim() : segment;
+        }
+
         private static void ApplyFontFamily(CustomDialog dialog, object target, XElement xmlElement)
         {
             string? fontFamilyRaw = xmlElement.Attribute("FontFamily")?.Value;
             if (string.IsNullOrWhiteSpace(fontFamilyRaw))
                 return;
+
+            FontFamily? fontFamily;
+
+            try
+            {
+                var resolved = fontFamilyRaw
+                    .Split(',')
+                    .Select(segment => ResolveFontFamilySegment(dialog, segment))
+                    .Where(segment => !string.IsNullOrEmpty(segment))
+                    .ToList();
+
+                fontFamily = resolved.Count > 0 ? new FontFamily(string.Join(", ", resolved)) : null;
+            }
+            catch
+            {
+                fontFamily = null;
+            }
+
+            if (fontFamily == null)
+                return;
+
+            switch (target)
+            {
+                case TemplatedControl templatedControl:
+                    templatedControl.FontFamily = fontFamily;
+                    break;
+                case TextBlock textBlock:
+                    textBlock.FontFamily = fontFamily;
+                    break;
+            }
         }
     }
 }
