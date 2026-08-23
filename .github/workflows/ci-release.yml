@@ -130,11 +130,13 @@ jobs:
           name: froststrap-unsigned-macos-${{ env.SHORT_SHA }}
           path: build
 
-      - name: Materialize signing certificate
+      - name: Materialize PEM signing files
         env:
-          P12_BASE64: ${{ secrets.MACOS_CERTIFICATE_P12_BASE64 }}
+          KEY_PEM: ${{ secrets.MACOS_KEY_PEM }}
+          CERT_PEM: ${{ secrets.MACOS_CERT_PEM }}
         run: |
-          echo "$P12_BASE64" | base64 --decode > cert.p12
+          echo "$KEY_PEM" | tr ' ' '\n' > key.pem
+          echo "$CERT_PEM" | tr ' ' '\n' > cert.pem
 
       - name: Materialize App Store Connect API key
         env:
@@ -149,8 +151,9 @@ jobs:
         uses: indygreg/apple-code-sign-action@v1
         with:
           input_path: build/Froststrap-macOS.dmg
-          p12_file: cert.p12
-          p12_password: ${{ secrets.MACOS_CERTIFICATE_PWD }}
+          pem_file: |
+            key.pem
+            cert.pem
           notarize: true
           staple: true
           app_store_connect_api_issuer: ${{ secrets.APPLE_ISSUER_ID }}
