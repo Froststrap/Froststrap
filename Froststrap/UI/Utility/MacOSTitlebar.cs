@@ -4,7 +4,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;
 
-namespace Froststrap.AttachedProperties;
+namespace Froststrap.UI.Utility;
 
 public static class MacOSTitleBar
 {
