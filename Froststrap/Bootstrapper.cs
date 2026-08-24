@@ -1779,21 +1779,11 @@ namespace Froststrap
         {
             if (OperatingSystem.IsWindows())
             {
-                try
-                {
-                    var fileInfo = new FileInfo(Paths.Process);
-                    bool isSelfContained = fileInfo.Length > 100 * 1024 * 1024;
-
-                    return ["Froststrap-Setup.exe", "-SelfContained-Setup.exe"];
-                }
-                catch
-                {
-                    return ["Froststrap-Setup.exe", "-Setup.exe"];
-                }
+                return ["Froststrap-Setup.exe", "-Setup.exe"];
             }
             else if (OperatingSystem.IsMacOS())
             {
-                return ["Froststrap-macOS.dmg", ".dmg"];
+                return ["Froststrap-MacOS.pkg", ".pkg"];
             }
 
             return [];
@@ -1900,25 +1890,8 @@ set -e
 echo ""Waiting for {appName} to exit...""
 sleep 2
 
-echo ""Mounting DMG...""
-MOUNT_DIR=$(hdiutil attach ""{updatePath}"" -nobrowse -mountpoint /Volumes/{appName}Update | grep -o '/Volumes/.*')
-
-if [ -z ""$MOUNT_DIR"" ]; then
-    echo ""Failed to mount DMG""
-    exit 1
-fi
-
-echo ""Copying app to /Applications...""
-if [ -d ""/Applications/{appName}.app"" ]; then
-    rm -rf ""/Applications/{appName}.app""
-fi
-cp -R ""$MOUNT_DIR/{appName}.app"" /Applications/
-
-echo ""Unmounting DMG...""
-hdiutil detach ""$MOUNT_DIR""
-
-echo ""Removing old app data...""
-rm -rf ""{Paths.Base}""
+echo ""Installing update via package...""
+sudo installer -pkg ""{updatePath}"" -target /
 
 echo ""Starting {appName}...""
 open /Applications/{appName}.app
