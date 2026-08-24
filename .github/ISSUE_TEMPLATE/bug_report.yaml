@@ -2,12 +2,26 @@ name: Bug Report
 title: "[BUG] "
 description: Report a problem you're having
 body:
+  - type: checkboxes
+    id: ack
+    attributes:
+      label: Acknowledgement
+      description: If you tick any of these wrong, you may receive punishment in return
+      options:
+        - label: I have checked that this issue I am reporting doesn't exist in closed or open issues.
+          required: false
+        - label: I agree that I have just ticked all the boxes without actually reading
+          required: false
+        - label: I have given all relevant, detailed information with no placeholder text remaining
+          required: false
+        - label: I agree that false information ticked above could result in a temporary block in contributing
+          required: true
   - type: input
     id: version
     attributes:
       label: Froststrap Version
       description: "What version of Froststrap are you using?"
-      placeholder: "v1.2.0.1"
+      placeholder: "v1.2.3"
     validations:
       required: true
   - type: textarea
