@@ -41,7 +41,7 @@
                 {
                     return Path.Combine(
                         Paths.UserProfile,
-                        "Library", "Application Support", App.ProjectName, "Logs"
+                        "Library", "Logs", App.ProjectName
                     );
                 }
                 if (OperatingSystem.IsLinux())
