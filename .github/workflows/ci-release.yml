@@ -145,7 +145,7 @@ jobs:
           draft: true
           fail_on_unmatched_files: true
           files: |
-            release/Froststrap-SelfContained-Setup.exe
+            release/Froststrap-Setup.exe
             release/Froststrap.pkg
             release/Froststrap-linux-x64.AppImage
             release/Froststrap-linux-x64.deb
