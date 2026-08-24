@@ -20,8 +20,8 @@
                      mc:Ignorable="d">
 
     <Grid>
-        <StackPanel  Margin="32,0,32,32">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="16" Margin="0,0,0,24">
+        <StackPanel Margin="32,0,32,32">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="16" Margin="0,8,0,24">
                 <Image Width="64" Height="64" Source="avares://Froststrap/Froststrap.ico"
                        RenderOptions.BitmapInterpolationMode="HighQuality"/>
                 <StackPanel VerticalAlignment="Center">
@@ -65,21 +65,25 @@
             </controls:IconButton>
 
             <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
-                <controls:CardAction
+                <controls:IconButton
                     Grid.Column="0"
                     Icon="Settings"
-                    Header="{x:Static resources:Strings.Common_Settings}"
+                    Content="{x:Static resources:Strings.Common_Settings}"
                     CornerRadius="8"
                     BorderThickness="0"
+                    Height="56"
                     Command="{Binding LaunchSettingsCommand}"
+                    IconSize="24"
                     Padding="12,10" />
 
-                <controls:CardAction
+                <controls:IconButton
                     Grid.Column="1"
                     Icon="MessageCircleMore"
-                    Header="Discord"
+                    Content="Discord"
                     CornerRadius="8"
+                    Height="56"
                     BorderThickness="0"
+                    IconSize="24"
                     Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
                     CommandParameter="https://discord.gg/KdR9vpRcUN"
                     Padding="12,10" />
