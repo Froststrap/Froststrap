@@ -27,7 +27,7 @@ Name "Froststrap"
 !endif
 
 !ifdef SELFCONTAINED
-  OutFile "..\build\Froststrap-SelfContained-Setup.exe"
+  OutFile "..\build\Froststrap-Setup.exe"
 !else
   OutFile "${PUBLISH_DIR}\Froststrap-Setup.exe"
 !endif
