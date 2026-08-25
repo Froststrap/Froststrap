@@ -595,7 +595,8 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
             string destFolder = Path.Combine(modsFolder, newFolderName);
             Directory.CreateDirectory(destFolder);
-            CopyDirectory(modRoot, destFolder, overwrite: false);
+
+            await Task.Run(() => CopyDirectory(modRoot, destFolder, overwrite: false));
 
             var newMod = new ModConfig
             {
