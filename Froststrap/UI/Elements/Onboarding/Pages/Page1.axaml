@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:lucideAvalonia="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
              xmlns:models="using:Froststrap.Models"
              xmlns:vm="using:Froststrap.UI.ViewModels.Onboarding"
@@ -10,18 +11,55 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
              x:Class="Froststrap.UI.Elements.Onboarding.Pages.Page1"
              x:DataType="vm:Page1ViewModel">
-
-
     <ScrollViewer>
         <StackPanel Grid.Row="0" Margin="12">
-            <TextBlock Text="{x:Static resources:Strings.Dialog_LanguageSelector_Header}"
-                       FontSize="20" FontWeight="SemiBold" />
-
-            <TextBlock Text="{x:Static resources:Strings.Dialog_LanguageSelector_Subtext}"
-                       TextWrapping="Wrap" Margin="0,0,0,12" />
-
-            <ComboBox ItemsSource="{Binding Languages, Mode=OneTime}" HorizontalAlignment="Stretch"
-                      SelectedItem="{Binding SelectedLanguage, Mode=TwoWay}" />
+            <StackPanel Orientation="Vertical" Spacing="8" HorizontalAlignment="Center" Margin="0,0,0,12">
+                <lucideAvalonia:Lucide Icon="Languages" Width="65" Height="65"
+                                       HorizontalAlignment="Center"
+                                       StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}"
+                                       StrokeThickness="1.5" />
+                <TextBlock Margin="0,10,0,0" Text="{x:Static resources:Strings.Dialog_LanguageSelector_Header}"
+                           FontSize="20" FontWeight="SemiBold"
+                           HorizontalAlignment="Center" />
+            </StackPanel>
+            <ListBox x:Name="LanguageList"
+                     ItemsSource="{Binding Languages, Mode=OneTime}"
+                     SelectedItem="{Binding SelectedLanguage, Mode=TwoWay}"
+                     Width = "300"
+                     MaxHeight="180"
+                     Background="Transparent"
+                     BorderThickness="0"
+                     Padding="0">
+                <ListBox.Styles>
+                    <Style Selector="ListBoxItem">
+                        <Setter Property="Padding" Value="0" />
+                        <Setter Property="Margin" Value="0,0,0,6" />
+                        <Setter Property="Background" Value="Transparent" />
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        <Setter Property="CornerRadius" Value="6" />
+                    </Style>
+                    <Style Selector="ListBoxItem Border#ItemBorder:pointerover">
+                        <Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
+                    </Style>
+                    <Style Selector="ListBoxItem Border#ItemBorder.selected">
+                        <Setter Property="Background" Value="{DynamicResource AccentFillColorDefaultBrush}" />
+                        <Setter Property="BorderBrush" Value="{DynamicResource AccentFillColorDefaultBrush}" />
+                    </Style>
+                </ListBox.Styles>
+                <ListBox.ItemTemplate>
+                    <DataTemplate x:DataType="x:String">
+                        <Border x:Name="ItemBorder"
+                                Padding="14,10"
+                                CornerRadius="6"
+                                BorderThickness="1"
+                                Background="{DynamicResource ControlFillColorDefaultBrush}"
+                                BorderBrush="{DynamicResource ControlElevationBorderBrush}"
+                                Classes.selected="{Binding $parent[ListBoxItem].IsSelected}">
+                            <TextBlock Text="{Binding}" FontSize="14" />
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
         </StackPanel>
     </ScrollViewer>
 </UserControl>
