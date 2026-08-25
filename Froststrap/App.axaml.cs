@@ -1,9 +1,6 @@
 using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using Avalonia.Media;
-using Avalonia.Styling;
 using Avalonia.Threading;
 using Froststrap.AppData;
 using Froststrap.Integrations;
@@ -12,7 +9,6 @@ using Microsoft.Win32;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
-using System.Text.RegularExpressions;
 
 namespace Froststrap;
 
@@ -31,7 +27,7 @@ public partial class App : Application
     public const string ProjectDownloadLink = "https://github.com/Froststrap/Froststrap/releases";
     public const string ProjectHelpLink = "https://github.com/bloxstraplabs/bloxstrap/wiki";
     public const string ProjectSupportLink = "https://github.com/Froststrap/Froststrap/issues/new";
-    public const string ProjectRemoteDataLink = "https://raw.githubusercontent.com/RealMeddsam/config/refs/heads/main/Data.json";
+    public const string ProjectRemoteDataLink = "https://raw.githubusercontent.com/Froststrap/config/refs/heads/main/Data.json";
 
     public static string RobloxPlayerAppName => OperatingSystem.IsMacOS() ? "RobloxPlayer.app" : "RobloxPlayerBeta.exe";
     public static string RobloxStudioAppName => OperatingSystem.IsMacOS() ? "RobloxStudio.app" : "RobloxStudioBeta.exe";
