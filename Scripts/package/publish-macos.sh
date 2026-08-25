@@ -64,13 +64,13 @@ if [ "$SIGN" = "true" ]; then
     pkgbuild --root "$BUILD_DIR/payload" --install-location / --identifier xyz.froststrap.desktop "$BUILD_DIR/Froststrap-unsigned.pkg"
 
     echo "Signing PKG with $DEVELOPER_ID_INSTALLER"
-    productsign --sign "$DEVELOPER_ID_INSTALLER" "$BUILD_DIR/Froststrap-unsigned.pkg" "$BUILD_DIR/Froststrap-MacOS.pkg"
+    productsign --sign "$DEVELOPER_ID_INSTALLER" "$BUILD_DIR/Froststrap-unsigned.pkg" "$BUILD_DIR/Froststrap.pkg"
 
     echo "Submitting for notarization..."
     mkdir -p ~/.private_keys
     echo "$APP_STORE_CONNECT_P8_CONTENT" > ~/.private_keys/AuthKey_${APPLE_KEY_ID}.p8
 
-    SUBMISSION_OUTPUT=$(xcrun notarytool submit "$BUILD_DIR/Froststrap-MacOS.pkg" --key-id "$APPLE_KEY_ID" --issuer "$APPLE_ISSUER_ID" --key ~/.private_keys/AuthKey_${APPLE_KEY_ID}.p8 --wait 2>&1)
+    SUBMISSION_OUTPUT=$(xcrun notarytool submit "$BUILD_DIR/Froststrap.pkg" --key-id "$APPLE_KEY_ID" --issuer "$APPLE_ISSUER_ID" --key ~/.private_keys/AuthKey_${APPLE_KEY_ID}.p8 --wait 2>&1)
     echo "$SUBMISSION_OUTPUT"
 
     SUBMISSION_ID=$(echo "$SUBMISSION_OUTPUT" | grep -o 'id: [a-f0-9-]*' | head -1 | sed 's/id: //')
@@ -81,17 +81,17 @@ if [ "$SIGN" = "true" ]; then
         exit 1
     fi
 
-    xcrun stapler staple "$BUILD_DIR/Froststrap-MacOS.pkg"
+    xcrun stapler staple "$BUILD_DIR/Froststrap.pkg"
 
     security delete-keychain /tmp/temp.keychain
     rm -f /tmp/app.p12 /tmp/installer.p12
 else
     echo "Building unsigned PKG (skipping signing)"
     pkgbuild --root "$BUILD_DIR/payload" --install-location / --identifier xyz.froststrap.desktop "$BUILD_DIR/Froststrap-unsigned.pkg"
-    mv "$BUILD_DIR/Froststrap-unsigned.pkg" "$BUILD_DIR/Froststrap-MacOS.pkg"
+    mv "$BUILD_DIR/Froststrap-unsigned.pkg" "$BUILD_DIR/Froststrap.pkg"
 fi
 
 # Cleanup temp folders
 rm -rf "$BUILD_DIR/temp" "$BUILD_DIR/payload"
 
-echo "macOS build complete: $BUILD_DIR/Froststrap-MacOS.pkg"
+echo "macOS build complete: $BUILD_DIR/Froststrap.pkg"
