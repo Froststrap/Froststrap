@@ -25,12 +25,14 @@
     <AvaloniaResource Include="UI/AppThemes/EditorThemes/*.xshd" />
     <AvaloniaResource Include="Froststrap.ico" />
     <AvaloniaResource Include="Froststrap.png" />
+    <AvaloniaResource Include="FroststrapTray.ico" />
     <AvaloniaResource Include="UI\Elements\Base\BackgroundPanel.axaml" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Froststrap.ico" />
     <EmbeddedResource Include="Froststrap.png" />
+    <EmbeddedResource Include="FroststrapTray.ico" />
     <EmbeddedResource Include="Resources\**\*.*" Exclude="Resources\**\*.resx" />
     <EmbeddedResource Include="NLog.config">
       <LogicalName>NLog.config</LogicalName>
