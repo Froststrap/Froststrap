@@ -117,11 +117,8 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                 {
                     _currentFontVariant = value;
                     IsFilledFont = value.Equals("Filled", StringComparison.OrdinalIgnoreCase);
-
                     if (IsPreviewOpen && SelectedMod != null && _currentBrush != null)
-                    {
                         _ = LoadGlyphsWithColorAsync(_currentBrush, _currentFontVariant);
-                    }
                 }
             }
         }
@@ -144,14 +141,11 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
         }
 
         public ICommand TogglePreviewCommand => new RelayCommand(TogglePreview);
-
         private void TogglePreview()
         {
             IsPreviewOpen = !IsPreviewOpen;
             if (IsPreviewOpen && SelectedMod != null)
-            {
                 _ = LoadModFontPreviewAsync(SelectedMod);
-            }
         }
 
         public bool HasMods => Modifications.Count > 0;
@@ -206,19 +200,14 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             string baseName = Strings.Menu_Mods_DefaultNewModName;
             string folderName = baseName;
             int counter = 1;
-
             while (Modifications.Any(x => x.FolderName.Equals(folderName, StringComparison.OrdinalIgnoreCase)) ||
                    Directory.Exists(Path.Combine(modsFolder, folderName)))
             {
                 folderName = $"{baseName} {counter}";
                 counter++;
             }
-
-            if (!Directory.Exists(modsFolder))
-                Directory.CreateDirectory(modsFolder);
-
+            if (!Directory.Exists(modsFolder)) Directory.CreateDirectory(modsFolder);
             Directory.CreateDirectory(Path.Combine(modsFolder, folderName));
-
             var newMod = new ModConfig
             {
                 FolderName = folderName,
@@ -264,6 +253,16 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
             App.State.Prop.Mods = [.. Modifications];
             App.State.SaveSetting("Mods");
+
+            var oldSelected = SelectedMod;
+            var newList = Modifications.ToList();
+            Modifications = new ObservableCollection<ModConfig>(newList);
+            OnPropertyChanged(nameof(Modifications));
+
+            if (oldSelected != null && Modifications.Contains(oldSelected))
+                SelectedMod = oldSelected;
+            else
+                SelectedMod = Modifications.FirstOrDefault();
         }
 
         private void MoveUp(ModConfig? mod)
@@ -372,7 +371,6 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                 _ = Frontend.ShowMessageBox(string.Format(Strings.Menu_Mods_RenameFailed, ex.Message), MessageBoxImage.Error, MessageBoxButton.OK);
             }
         }
-
 
         private static readonly HashSet<string> RequiredModFolders = ["content", "ExtraContent", "PlatformContent"];
 
