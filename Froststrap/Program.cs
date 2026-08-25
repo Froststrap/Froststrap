@@ -27,6 +27,8 @@ sealed class Program
     [STAThread]
     public static void Main(string[] args)
     {
+        var assembly = typeof(App).Assembly;
+        LogManager.Setup().LoadConfigurationFromAssemblyResource(assembly, "NLog.config");
         GlobalDiagnosticsContext.Set("logRoot", Paths.Logs);
         GlobalDiagnosticsContext.Set("startTime", DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss"));
 

@@ -32,6 +32,9 @@
     <EmbeddedResource Include="Froststrap.ico" />
     <EmbeddedResource Include="Froststrap.png" />
     <EmbeddedResource Include="Resources\**\*.*" Exclude="Resources\**\*.resx" />
+    <EmbeddedResource Include="NLog.config">
+      <LogicalName>NLog.config</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
 
   <!-- NuGet packages -->
@@ -88,11 +91,5 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Strings.resx</DependentUpon>
     </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="NLog.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 </Project>
