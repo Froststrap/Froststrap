@@ -5,7 +5,6 @@ namespace Froststrap.Extensions
 {
     static class BootstrapperIconEx
     {
-        //TODO: Fix custom
         public static IReadOnlyCollection<BootstrapperIcon> Selections =>
         [
             BootstrapperIcon.IconFroststrap,
