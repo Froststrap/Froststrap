@@ -3,11 +3,11 @@ using Froststrap.UI.ViewModels.Onboarding;
 
 namespace Froststrap.UI.Elements.Onboarding.Pages
 {
-    public partial class Page4 : UserControl
+    public partial class Page7 : UserControl
     {
-        public Page4()
+        public Page7()
         {
-            DataContext = new Page4ViewModel();
+            DataContext = new Page7ViewModel();
             InitializeComponent();
         }
     }
