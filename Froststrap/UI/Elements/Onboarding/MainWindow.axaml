@@ -18,25 +18,24 @@
     CanResize="False"
     WindowStartupLocation="CenterScreen">
 
-    <Grid RowDefinitions="48,Auto,*,72">
-        <Grid Grid.Row="0">
-            <controls:StepIndicator
-                x:Name="RootNavigation"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                PageCount="3"
-                CurrentIndex="0" />
-        </Grid>
-
-        <Border Grid.Row="2" Padding="24,16,24,0" Margin="0,8,0,0">
+    <Grid Margin="0,15,0,0" RowDefinitions="*,Auto,72">
+        <Border Grid.Row="0" Padding="24,16,24,0" Margin="0,8,0,0">
             <TransitioningContentControl
                 x:Name="RootFrame"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch" />
         </Border>
 
+        <controls:StepIndicator
+            Grid.Row="1"
+            x:Name="RootNavigation"
+            HorizontalAlignment="Stretch"
+            PageCount="3"
+            CurrentIndex="0" />
+
         <Border
-            Grid.Row="3" Margin="0,10,0,0" Padding="15"
+            Grid.Row="2"
+            Padding="15"
             Background="{DynamicResource ControlFillColorDefaultBrush}"
             BorderBrush="{DynamicResource ControlElevationBorderBrush}"
             BorderThickness="0,1,0,0">
@@ -47,7 +46,6 @@
                     Command="{Binding BackPageCommand}"
                     IsEnabled="{Binding BackButtonEnabled}"
                     Content="{x:Static resources:Strings.Common_Back}"/>
-
                 <Button
                     Grid.Column="2"
                     Width="{Binding ButtonWidth}"

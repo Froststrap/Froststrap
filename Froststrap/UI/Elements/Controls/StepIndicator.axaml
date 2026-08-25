@@ -2,13 +2,17 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="160" d:DesignHeight="24"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="6"
              x:Class="Froststrap.UI.Elements.Controls.StepIndicator">
-
-    <StackPanel x:Name="DotsHost"
-                Orientation="Horizontal"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Spacing="8" />
-
+    <Border x:Name="Track"
+            Height="4"
+            CornerRadius="2"
+            ClipToBounds="True"
+            Background="{DynamicResource ControlFillColorSecondaryBrush}">
+        <Border x:Name="FillBar"
+                HorizontalAlignment="Left"
+                Width="0"
+                CornerRadius="2"
+                Background="{DynamicResource AccentFillColorDefaultBrush}" />
+    </Border>
 </UserControl>
