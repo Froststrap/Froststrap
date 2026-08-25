@@ -10,8 +10,8 @@
     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Onboarding"
     mc:Ignorable="d"
     Title="{x:Static resources:Strings.Onboarding_Title}"
-    Width="640"
-    Height="480"
+    Width="700"
+    Height="550"
     MinWidth="640"
     MinHeight="480"
     x:DataType="vm:MainWindowViewModel"
@@ -35,7 +35,7 @@
 
         <Border
             Grid.Row="2"
-            Padding="15"
+            Padding="18"
             Background="{DynamicResource ControlFillColorDefaultBrush}"
             BorderBrush="{DynamicResource ControlElevationBorderBrush}"
             BorderThickness="0,1,0,0">
