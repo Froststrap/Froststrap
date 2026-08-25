@@ -38,6 +38,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.Mods
         {
             InitializeComponent();
             App.FrostRPC?.SetPage("Mods");
+            SetupViewModelIfNeeded();
             this.Loaded += (s, e) => SetupViewModelIfNeeded();
         }
 
@@ -82,18 +83,21 @@ namespace Froststrap.UI.Elements.Settings.Pages.Mods
 
         private void Page_DragEnter(object? sender, DragEventArgs e)
         {
+            e.Handled = true;
             if (DataContext is ModsViewModel vm)
                 vm.IsDragOver = true;
         }
 
         private void Page_DragLeave(object? sender, DragEventArgs e)
         {
+            e.Handled = true;
             if (DataContext is ModsViewModel vm)
                 vm.IsDragOver = false;
         }
 
         private async void Page_Drop(object? sender, DragEventArgs e)
         {
+            e.Handled = true;
             if (DataContext is ModsViewModel vm)
             {
                 vm.IsDragOver = false;
