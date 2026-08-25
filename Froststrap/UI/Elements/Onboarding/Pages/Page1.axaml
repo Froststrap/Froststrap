@@ -55,13 +55,13 @@
                 <ListBox.ItemTemplate>
                     <DataTemplate x:DataType="x:String">
                         <Border x:Name="ItemBorder"
-                                Padding="14,10"
+                                Padding="10"
                                 CornerRadius="6"
                                 BorderThickness="1"
                                 Background="{DynamicResource ControlFillColorDefaultBrush}"
                                 BorderBrush="{DynamicResource ControlElevationBorderBrush}"
                                 Classes.selected="{Binding $parent[ListBoxItem].IsSelected}">
-                            <TextBlock Text="{Binding}" FontSize="14" />
+                            <TextBlock HorizontalAlignment="Center" Text="{Binding}" FontSize="14" />
                         </Border>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
