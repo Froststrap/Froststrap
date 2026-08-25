@@ -1,11 +1,9 @@
-﻿﻿using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Notifications;
 using Avalonia.Platform;
 using Avalonia.Threading;
 using Froststrap.Integrations;
 using Froststrap.UI.Elements.ContextMenu;
-using Froststrap.UI.Utility;
 
 namespace Froststrap.UI
 {
