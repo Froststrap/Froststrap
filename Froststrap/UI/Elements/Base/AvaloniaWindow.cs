@@ -74,7 +74,7 @@ namespace Froststrap.UI.Elements.Base
             MacOSTitleBar.SetIsThick(this, true);
             TextOptions.SetTextRenderingMode(this, TextRenderingMode.Antialias);
 
-            if (ApplyTopPadding && OperatingSystem.IsWindows())
+            if (ApplyTopPadding)
                 _contentHost?.Margin = new Thickness(0, 32, 0, 0);
 
             ApplyTheme();
