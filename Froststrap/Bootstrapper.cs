@@ -20,7 +20,6 @@ using ICSharpCode.SharpZipLib.GZip;
 using ICSharpCode.SharpZipLib.Tar;
 using ICSharpCode.SharpZipLib.Zip;
 using Microsoft.Win32;
-// using SixLabors.ImageSharp;
 using System.ComponentModel;
 using System.Data;
 using System.Net.Http.Json;
