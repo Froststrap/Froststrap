@@ -515,15 +515,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
             if (IsPathInside(modsFolder, modRoot))
             {
-                string relative = Path.GetRelativePath(modsFolder, modRoot);
-                string[] segments = relative.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-                string folderName = segments[0];
-
-                if (segments.Length != 1)
-                {
-                    await Frontend.ShowMessageBox(Strings.Menu_Mods_CannotImportSubfolder, MessageBoxImage.Warning);
-                    return;
-                }
+                string folderName = Path.GetFileName(modRoot.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar));
 
                 if (string.IsNullOrWhiteSpace(folderName))
                 {
@@ -537,18 +529,17 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                     return;
                 }
 
-                var newFolderMod = new ModConfig
+                var existingMod = new ModConfig
                 {
                     FolderName = folderName,
                     Target = ModTarget.Both,
                     Enabled = true,
                     Priority = Modifications.Count > 0 ? Modifications.Max(x => x.Priority) + 1 : 0
                 };
-
-                Modifications.Add(newFolderMod);
+                Modifications.Add(existingMod);
                 UpdatePriorities();
                 OnPropertyChanged(nameof(HasMods));
-                CheckFontPreviewAvailability(newFolderMod);
+                CheckFontPreviewAvailability(existingMod);
                 await Frontend.ShowMessageBox(string.Format(Strings.Menu_Mods_Imported, folderName), MessageBoxImage.Information);
                 return;
             }
