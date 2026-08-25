@@ -1783,7 +1783,7 @@ namespace Froststrap
             }
             else if (OperatingSystem.IsMacOS())
             {
-                return ["Froststrap-MacOS.pkg", ".pkg"];
+                return ["Froststrap.pkg", ".pkg"];
             }
 
             return [];

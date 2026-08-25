@@ -70,7 +70,7 @@ jobs:
       - uses: actions/upload-artifact@v7
         with:
           name: froststrap-release-macos-universal-${{ env.SHORT_SHA }}
-          path: build/Froststrap-MacOS.pkg
+          path: build/Froststrap.pkg
 
   build-linux:
     runs-on: ubuntu-latest
@@ -146,7 +146,7 @@ jobs:
           fail_on_unmatched_files: true
           files: |
             release/Froststrap-Setup.exe
-            release/Froststrap-MacOS.pkg
+            release/Froststrap.pkg
             release/Froststrap-linux-x64.AppImage
             release/Froststrap-linux-x64.deb
             release/Froststrap-linux-x64.rpm
