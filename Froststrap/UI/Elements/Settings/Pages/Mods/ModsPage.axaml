@@ -13,17 +13,17 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
              x:Class="Froststrap.UI.Elements.Settings.Pages.Mods.ModsPage"
              x:DataType="vm:ModsViewModel"
-             DragDrop.AllowDrop="True">
+             Background="Transparent"
+             DragDrop.AllowDrop="True"
+             DragDrop.Drop="Page_Drop"
+             DragDrop.DragEnter="Page_DragEnter"
+             DragDrop.DragLeave="Page_DragLeave">
 
     <Grid>
 
         <Grid RowDefinitions="Auto, *, Auto"
               Margin="14"
-              Background="Transparent"
-              DragDrop.AllowDrop="True"
-              DragDrop.Drop="Page_Drop"
-              DragDrop.DragEnter="Page_DragEnter"
-              DragDrop.DragLeave="Page_DragLeave">
+              Background="Transparent">
 
             <StackPanel Grid.Row="0">
                 <Grid ColumnDefinitions="*,*,*">
