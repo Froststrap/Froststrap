@@ -298,11 +298,19 @@ namespace Froststrap.Integrations
                 if (activity.UniverseDetails?.Data == null) return;
 
                 string gameName = activity.UniverseDetails.Data.Name;
+                if (string.IsNullOrEmpty(gameName)) return;
 
-                if (!string.IsNullOrEmpty(gameName))
+                string title = gameName;
+
+                if (App.Settings.Prop.AutoChangeTitleWithPlayerCount)
                 {
-                    PInvoke.SetWindowText(_robloxWindowHandle, gameName);
+                    long playing = activity.UniverseDetails.Data.Playing;
+                    var converter = new UI.Converters.NumberAbbreviationConverter();
+                    string abbreviated = converter.Convert(playing, typeof(string), null, CultureInfo.CurrentCulture) as string ?? playing.ToString();
+                    title = $"{gameName} ({abbreviated} playing)";
                 }
+
+                PInvoke.SetWindowText(_robloxWindowHandle, title);
             }
             catch (Exception ex)
             {

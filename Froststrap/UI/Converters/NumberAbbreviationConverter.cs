@@ -18,11 +18,11 @@ namespace Froststrap.UI.Converters
                 var formatCulture = CultureInfo.InvariantCulture;
 
                 if (number >= 1_000_000_000)
-                    return (number / 1_000_000_000D).ToString("0.#", formatCulture) + "B";
+                    return (number / 1_000_000_000D).ToString("0.##", formatCulture) + "B";
                 if (number >= 1_000_000)
-                    return (number / 1_000_000D).ToString("0.#", formatCulture) + "M";
+                    return (number / 1_000_000D).ToString("0.##", formatCulture) + "M";
                 if (number >= 1_000)
-                    return (number / 1_000D).ToString("0.#", formatCulture) + "K";
+                    return (number / 1_000D).ToString("0.##", formatCulture) + "K";
 
                 return number.ToString("0", formatCulture);
             }

@@ -6465,6 +6465,15 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to View Game History.
+        /// </summary>
+        public static string Menu_Integrations_GameHistory_View {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.GameHistory.View", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to View game history to quickly rejoin your server..
         /// </summary>
         public static string Menu_Integrations_GameHistoryMenu_Description {
@@ -6706,6 +6715,24 @@ namespace Froststrap.Resources {
         public static string Menu_Integrations_TitleChange_Title {
             get {
                 return ResourceManager.GetString("Menu.Integrations.TitleChange.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Adds a player counter to the game title..
+        /// </summary>
+        public static string Menu_Integrations_TitleChangePlayer_Description {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.TitleChangePlayer.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Player Counter.
+        /// </summary>
+        public static string Menu_Integrations_TitleChangePlayer_Title {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.TitleChangePlayer.Title", resourceCulture);
             }
         }
         
