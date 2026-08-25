@@ -760,7 +760,7 @@ namespace Froststrap.Integrations
                         .OrderByDescending(x => x.TimeJoined)
                         .Take(300)];
 
-                    App.Logger.Error($"Loaded {History.Count} sessions from cache");
+                    App.Logger.Info($"Loaded {History.Count} sessions from cache");
                 }
                 else
                 {
