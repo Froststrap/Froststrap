@@ -43,7 +43,7 @@ namespace Froststrap.UI.Elements.Onboarding
 
             Navigate(typeof(Page1));
 
-            App.Logger.Debug("Initializing installer window");
+            App.Logger.Debug("Initializing onboarding window");
         }
 
         async void NextPage()
