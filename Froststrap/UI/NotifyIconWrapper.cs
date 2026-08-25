@@ -38,7 +38,7 @@ namespace Froststrap.UI
 
             _trayIcon.Clicked += OnTrayIconClicked;
 
-            if (ActivityWatcher is not null && App.Settings.Prop.ShowServerDetails && !OperatingSystem.IsMacOS())
+            if (ActivityWatcher is not null && App.Settings.Prop.ShowServerDetails)
             {
                 if (App.Settings.Prop.ShowServerUptime)
                     ActivityWatcher.ShowNotif += ShowNotification;
