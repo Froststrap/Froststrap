@@ -1,7 +1,6 @@
 using Froststrap.UI.Elements.Base;
 using Froststrap.UI.Elements.Onboarding.Pages;
 using Froststrap.UI.ViewModels.Onboarding;
-using Froststrap;
 
 namespace Froststrap.UI.Elements.Onboarding
 {
@@ -18,7 +17,8 @@ namespace Froststrap.UI.Elements.Onboarding
             typeof(Page3),
             typeof(Page4),
             typeof(Page5),
-            typeof(Page6)
+            typeof(Page6),
+            typeof(Page7)
         ];
 
         public Func<Task<bool>>? NextPageCallback;

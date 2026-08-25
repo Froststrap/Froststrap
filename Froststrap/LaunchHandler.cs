@@ -149,33 +149,22 @@ namespace Froststrap
 
             App.FrostRPC?.SetPage("Onboarding");
 
-            var dialog = new LanguageSelectorDialog();
-            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            var mainWindow = new MainWindow();
+            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop2)
             {
-                desktop.MainWindow = dialog;
+                desktop2.MainWindow = mainWindow;
             }
+            mainWindow.Show();
 
-            dialog.Closed += (sender, e) =>
+            mainWindow.Closed += (s, ev) =>
             {
-                var mainWindow = new MainWindow();
-                if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop2)
+                if (App.State.Prop.IsFirstLaunch)
                 {
-                    desktop2.MainWindow = mainWindow;
+                    App.State.Prop.IsFirstLaunch = false;
+                    App.State.Save();
                 }
-                mainWindow.Show();
-
-                mainWindow.Closed += (s, ev) =>
-                {
-                    if (App.State.Prop.IsFirstLaunch)
-                    {
-                        App.State.Prop.IsFirstLaunch = false;
-                        App.State.Save();
-                    }
-                    ProcessNextAction(mainWindow.CloseAction);
-                };
+                ProcessNextAction(mainWindow.CloseAction);
             };
-
-            dialog.Show();
         }
 
         public static async void LaunchRoblox(LaunchMode launchMode)

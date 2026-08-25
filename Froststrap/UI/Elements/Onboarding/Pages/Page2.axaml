@@ -3,29 +3,160 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
-             xmlns:account="using:Froststrap.UI.Elements.Settings"
+             xmlns:models="using:Froststrap.Models"
              xmlns:vm="using:Froststrap.UI.ViewModels.Onboarding"
              xmlns:resources="using:Froststrap.Resources"
-             xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
              xmlns:controls="using:Froststrap.UI.Elements.Controls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
              x:Class="Froststrap.UI.Elements.Onboarding.Pages.Page2"
              x:DataType="vm:Page2ViewModel">
 
-	<StackPanel Spacing="16">
-		<TextBlock Text="{x:Static resources:Strings.Onboarding_Page2_Text1}" TextWrapping="Wrap" />
-		<account:AccountSelectorView/>
-		<TextBlock Text="{x:Static resources:Strings.Onboarding_Page2_Text2}" TextWrapping="Wrap" />
-		<controls:OptionControl
-            Header="{x:Static resources:Strings.Menu_Behaviour_AllowCookieAccess_Title}"
-            Description="{Binding Source={x:Static resources:Strings.Menu_Behaviour_AllowCookieAccess_Description}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://github.com/fishstrap/fishstrap/wiki/Account-Access#what-will-fishstrap-access-with-your-account'}">
-			<StackPanel Orientation="Horizontal" Spacing="8">
-				<ic:Lucide Icon="TriangleAlert"
-                           VerticalAlignment="Center"
-                           StrokeBrush="Orange"
-                           IsVisible="{Binding CookieLoadingFailed}" />
-				<ToggleSwitch IsChecked="{Binding CookieAccess, Mode=TwoWay}" />
-			</StackPanel>
-		</controls:OptionControl>
-	</StackPanel>
+
+    <ScrollViewer>
+        <StackPanel>
+            <TextBlock Text="{x:Static resources:Strings.Onboarding_Page2}" TextWrapping="Wrap" Margin="0,0,0,16" />
+            <controls:OptionControl
+                Header="{x:Static resources:Strings.Menu_Appearance_WindowsBackdrop_Title}"
+                Description="{x:Static resources:Strings.Menu_Appearance_WindowsBackdrop_Description}">
+                <ComboBox
+                    MinWidth="200"
+                    Margin="5,0,0,0"
+                    Padding="10,5,10,5"
+                    ItemsSource="{Binding BackdropOptions}"
+                    SelectedItem="{Binding SelectedBackdrop, Mode=TwoWay}"/>
+            </controls:OptionControl>
+
+            <controls:CardExpander Classes="NoUserExpansion" Header="{x:Static resources:Strings.Menu_Appearance_Custom_Theme_Title}" Description="{x:Static resources:Strings.Menu_Appearance_Custom_Theme_Description}" IsExpanded="{Binding CustomThemeExpanded, Mode=OneWay}">
+                <controls:CardExpander.HeaderContent>
+                    <ComboBox
+                        Grid.Column="1"
+                        MinWidth="200"
+                        Padding="10,5,10,5"
+                        ItemsSource="{Binding Themes}"
+                        SelectedItem="{Binding Theme, Mode=TwoWay}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Converter={StaticResource EnumNameConverter}}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </controls:CardExpander.HeaderContent>
+                <StackPanel Spacing="15">
+                    <StackPanel Spacing="5">
+                        <TextBlock Text="{x:Static resources:Strings.Menu_Appearance_BackgroundMode}" FontWeight="Bold"/>
+                        <ComboBox ItemsSource="{Binding BackgroundTypes}"
+                                  SelectedItem="{Binding BackgroundType}"
+                                  HorizontalAlignment="Stretch">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding ., Converter={StaticResource EnumNameConverter}}" />
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                        <Separator Margin="0,8" />
+                    </StackPanel>
+
+                    <StackPanel Spacing="15" IsVisible="{Binding IsGradientMode}">
+
+                        <WrapPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                <Button Content="{x:Static resources:Strings.Menu_ModGenerator_AddStop}" Command="{Binding AddGradientStopCommand}" Margin="0,4,0,0" Classes="accent"/>
+                                <Button Content="{x:Static resources:Strings.Menu_Appearance_ResetDefault}" Command="{Binding ResetGradientCommand}" Margin="0,4,0,0"/>
+                                <TextBlock Text="{x:Static resources:Strings.Common_Angle}" VerticalAlignment="Center" Margin="0,4,0,0"/>
+                                <NumericUpDown Value="{Binding GradientAngle}" Width="160" Minimum="0" Maximum="360" VerticalAlignment="Center" Margin="0,4,0,0"/>
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
+                                <Button Content="{x:Static resources:Strings.Common_Export}" Command="{Binding ExportGradientCommand}" CommandParameter="{Binding $parent[TopLevel]}" Margin="0,4,0,0"/>
+                                <Button Content="{x:Static resources:Strings.Common_Import}" Command="{Binding ImportGradientCommand}" CommandParameter="{Binding $parent[TopLevel]}" Margin="0,4,0,0"/>
+                            </StackPanel>
+
+                        </WrapPanel>
+
+                        <ItemsControl ItemsSource="{Binding GradientStops}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid ColumnDefinitions="Auto,*,45,110,Auto,Auto" Margin="0,4" VerticalAlignment="Center">
+                                        <TextBlock Text="{x:Static resources:Strings.Common_Offset}" VerticalAlignment="Center" Margin="0,0,10,0"/>
+
+                                        <Slider Grid.Column="1"
+                                                Minimum="0"
+                                                Maximum="1"
+                                                Value="{Binding Offset, Mode=TwoWay}"
+                                                VerticalAlignment="Center"/>
+
+                                        <TextBlock Grid.Column="2"
+                                                   Text="{Binding Offset, StringFormat=\{0:N2\}}"
+                                                   HorizontalAlignment="Right"
+                                                   Margin="0,0,10,0"
+                                                   VerticalAlignment="Center"/>
+
+                                        <TextBox Grid.Column="3" Text="{Binding Color}" Margin="0,0,8,0" VerticalAlignment="Center"/>
+
+                                        <Button Grid.Column="4"
+                                                Content="{x:Static resources:Strings.Common_ColorPicker}"
+                                                Command="{Binding $parent[ItemsControl].((vm:Page2ViewModel)DataContext).OpenColorPickerCommand}"
+                                                CommandParameter="{Binding $self}"
+                                                Margin="0,0,8,0"/>
+
+                                        <Button Grid.Column="5" Content="{x:Static resources:Strings.Common_Remove}"
+                                                Command="{Binding $parent[ItemsControl].((vm:Page2ViewModel)DataContext).RemoveGradientStopCommand}"
+                                                CommandParameter="{Binding}"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+
+                    <StackPanel Spacing="15" IsVisible="{Binding IsImageMode}">
+                        <Grid ColumnDefinitions="*, Auto, Auto" Margin="0,4">
+                            <TextBox Text="{Binding BackgroundImagePath}"
+                                     PlaceholderText="No image selected..."
+                                     IsReadOnly="True"
+                                     VerticalContentAlignment="Center"
+                                     Margin="0,0,8,0"/>
+
+                            <Button Grid.Column="1"
+                                    Content="{x:Static resources:Strings.Common_Browse}"
+                                    Command="{Binding SelectImageCommand}"
+                                    CommandParameter="{Binding $parent[TopLevel]}"
+                                    Margin="0,0,8,0"/>
+
+                            <Button Grid.Column="2"
+                                    Content="{x:Static resources:Strings.Common_Clear}"
+                                    Command="{Binding ClearImageCommand}"
+                                    Classes="accent"/>
+                        </Grid>
+
+                        <Grid ColumnDefinitions="Auto, *, Auto" Margin="0,10,0,0">
+                            <TextBlock Text="{x:Static resources:Strings.Menu_Appearance_StretchMode}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                            <ComboBox Grid.Column="1"
+                                      ItemsSource="{Binding BackgroundStretches}"
+                                      SelectedItem="{Binding BackgroundStretch}"
+                                      HorizontalAlignment="Stretch">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding ., Converter={StaticResource EnumNameConverter}}" />
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </Grid>
+
+                        <Grid ColumnDefinitions="Auto, *, 50" Margin="0,10,0,0">
+                            <TextBlock Text="{x:Static resources:Strings.Menu_Appearance_Opacity}" VerticalAlignment="Center" Margin="0,0,15,0"/>
+                            <Slider Grid.Column="1"
+                                    Minimum="0"
+                                    Maximum="1"
+                                    Value="{Binding BackgroundOpacity}"
+                                    VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="2"
+                                       Text="{Binding BackgroundOpacity, StringFormat=\{0:P0\}}"
+                                       HorizontalAlignment="Right"
+                                       VerticalAlignment="Center"/>
+                        </Grid>
+                    </StackPanel>
+                </StackPanel>
+            </controls:CardExpander>
+        </StackPanel>
+    </ScrollViewer>
 </UserControl>
