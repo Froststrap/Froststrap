@@ -1,19 +1,20 @@
-<Panel xmlns="https://github.com/avaloniaui"
-       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-	<Border x:Name="PART_BackgroundBorder"
+<local:BackgroundHostPanel xmlns="https://github.com/avaloniaui"
+                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                           xmlns:local="clr-namespace:Froststrap.UI.Elements.Base">
+    <Border x:Name="PART_BackgroundBorder"
             IsHitTestVisible="False"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch" />
-	<Image x:Name="PART_BackgroundImage"
+    <Image x:Name="PART_BackgroundImage"
            IsVisible="False"
            IsHitTestVisible="False"
            Stretch="UniformToFill"
            HorizontalAlignment="Stretch"
            VerticalAlignment="Stretch"
            RenderOptions.BitmapInterpolationMode="HighQuality" />
-	<ContentPresenter x:Name="PART_ContentHost"
+    <ContentPresenter x:Name="PART_ContentHost"
                       HorizontalAlignment="Stretch"
                       VerticalAlignment="Stretch"
                       HorizontalContentAlignment="Stretch"
                       VerticalContentAlignment="Stretch" />
-</Panel>
+</local:BackgroundHostPanel>
