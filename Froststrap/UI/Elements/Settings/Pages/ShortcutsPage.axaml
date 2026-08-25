@@ -139,7 +139,8 @@
                                                 AutoScrollToSelectedItem="False"
                                                 Background="Transparent"
                                                 ItemsSource="{Binding SearchResults}"
-                                                SelectedItem="{Binding SelectedSearchResult, Mode=TwoWay}">
+                                                SelectedItem="{Binding SelectedSearchResult, Mode=TwoWay}"
+                                                ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                                                 <ListBox.ItemTemplate>
                                                     <DataTemplate>
                                                         <Grid ColumnDefinitions="Auto,*,Auto">
