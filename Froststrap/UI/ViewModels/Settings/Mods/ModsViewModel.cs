@@ -391,21 +391,49 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
         private async Task ImportFolderAsync(object? parameter)
         {
             if (parameter is not Avalonia.Visual control)
-            {
                 return;
-            }
 
             if (TopLevel.GetTopLevel(control) is not TopLevel topLevel)
-            {
                 return;
-            }
 
             var folders = await topLevel.StorageProvider.OpenFolderPickerAsync(
-                new FolderPickerOpenOptions { AllowMultiple = false, Title = "Select Mod Folder" });
-            if (folders.Count == 0) return;
+                new FolderPickerOpenOptions
+                {
+                    AllowMultiple = true,
+                    Title = "Select Mod Folder(s)"
+                });
 
-            string folderPath = folders[0].Path.LocalPath;
-            await ImportModFromSource(folderPath, isZip: false);
+            if (folders.Count == 0)
+                return;
+
+            int successCount = 0;
+            int failCount = 0;
+
+            foreach (var folder in folders)
+            {
+                string folderPath = folder.Path.LocalPath;
+                try
+                {
+                    await ImportModFromSource(folderPath, isZip: false);
+                    successCount++;
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.Error($"Failed to import folder '{folderPath}': {ex.Message}");
+                    await Frontend.ShowMessageBox($"Failed to import folder: {ex.Message}", MessageBoxImage.Error, MessageBoxButton.OK);
+                    failCount++;
+                }
+            }
+
+            if (folders.Count > 1)
+            {
+                string summary = $"Imported {successCount} mod(s) successfully";
+                if (failCount > 0)
+                    summary += $", {failCount} failed.";
+                else
+                    summary += ".";
+                await Frontend.ShowMessageBox(summary, MessageBoxImage.Information);
+            }
         }
 
         private async Task ImportZipAsync(object? parameter)
@@ -423,7 +451,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             var files = await topLevel.StorageProvider.OpenFilePickerAsync(
                 new FilePickerOpenOptions
                 {
-                    AllowMultiple = true,
+                    AllowMultiple = false,
                     Title = "Select Mod ZIP Archive",
                     FileTypeFilter = [new FilePickerFileType("Zip Files") { Patterns = ["*.zip"] }]
                 });
