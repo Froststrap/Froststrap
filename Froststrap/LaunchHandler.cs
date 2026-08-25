@@ -40,7 +40,7 @@ namespace Froststrap
             // this order is specific
             if (App.LaunchSettings.OnboardingFlag.Active)
             {
-                App.Logger.Info("Opening uninstaller");
+                App.Logger.Info("Opening onboarding");
                 LaunchOnboarding();
             }
             else if (App.LaunchSettings.MenuFlag.Active)
