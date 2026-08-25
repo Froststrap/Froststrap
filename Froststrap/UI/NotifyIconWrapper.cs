@@ -29,7 +29,7 @@ namespace Froststrap.UI
 
             _trayIcon = new TrayIcon
             {
-                Icon = new WindowIcon(AssetLoader.Open(new Uri("avares://Froststrap/Froststrap.ico"))),
+                Icon = new WindowIcon(AssetLoader.Open(new Uri("avares://Froststrap/FroststrapTray.ico"))),
                 ToolTipText = "Froststrap",
                 Menu = nativeMenu
             };
