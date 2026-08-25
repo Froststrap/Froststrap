@@ -47,13 +47,26 @@
                 <ToggleSwitch IsChecked="{Binding ShowServerUptimeEnabled, Mode=TwoWay}" />
             </controls:OptionControl>
 
-            <controls:OptionControl
+            <controls:CardExpander
+                Classes="NoUserExpansion"
+                IsExpanded="{Binding AutoChangeTitle, Mode=OneWay}"
                 Description="{x:Static resources:Strings.Menu_Integrations_TitleChange_Description}"
                 Header="{x:Static resources:Strings.Menu_Integrations_TitleChange_Title}"
                 IsVisible="{x:Static gv:GlobalViewModel.IsWindows}"
                 IsEnabled="{Binding ActivityTrackingEnabled}">
-                <ToggleSwitch IsChecked="{Binding AutoChangeTitle, Mode=TwoWay}" />
-            </controls:OptionControl>
+                <controls:CardExpander.HeaderContent>
+                    <ToggleSwitch IsChecked="{Binding AutoChangeTitle, Mode=TwoWay}" />
+                </controls:CardExpander.HeaderContent>
+
+                <StackPanel Margin="0,8,0,0">
+                    <controls:OptionControl
+                        Description="{x:Static resources:Strings.Menu_Integrations_TitleChangePlayer_Title}"
+                        Header="{x:Static resources:Strings.Menu_Integrations_TitleChangePlayer_Description}"
+                        IsEnabled="{Binding AutoChangeTitle}">
+                        <ToggleSwitch IsChecked="{Binding AutoChangeTitlePlayerCounter, Mode=TwoWay}" />
+                    </controls:OptionControl>
+                </StackPanel>
+            </controls:CardExpander>
 
             <controls:OptionControl
                 Header="{x:Static resources:Strings.Menu_Integrations_IconChange_Title}"
@@ -103,7 +116,7 @@
                 Header="{x:Static resources:Strings.ContextMenu_GameHistory_Title}"
                 Description="{x:Static resources:Strings.Menu_Integrations_GameHistory_Description}">
                 <controls:CardExpander.HeaderContent>
-                    <ToggleSwitch Grid.Column="1" IsChecked="{Binding ShowGameHistoryEnabled, Mode=TwoWay}" />
+                    <ToggleSwitch IsChecked="{Binding ShowGameHistoryEnabled, Mode=TwoWay}" />
                 </controls:CardExpander.HeaderContent>
 
                 <StackPanel Margin="0,8,0,0">
@@ -115,7 +128,7 @@
                             Margin="0,8,0,0"
                             HorizontalAlignment="Left"
                             Command="{Binding OpenGameHistoryCommand}"
-                            Content="View Game History"/>
+                            Content="{x:Static resources:Strings.Menu_Integrations_GameHistory_View}"/>
                     </controls:OptionControl>
                 </StackPanel>
             </controls:CardExpander>

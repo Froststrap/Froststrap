@@ -15,6 +15,7 @@ namespace Froststrap.Models.Persistable
         public TrayDoubleClickAction DoubleClickAction { get; set; } = TrayDoubleClickAction.ServerInfo;
         public bool UseDisableAppPatch { get; set; } = false;
         public bool AutoChangeTitle { get; set; } = true;
+        public bool AutoChangeTitleWithPlayerCount { get; set; } = true;
         public bool AutoChangeIcon { get; set; } = false;
         public bool ShowUsingFroststrapRPC { get; set; } = true;
         public bool UseDiscordRichPresence { get; set; } = true;

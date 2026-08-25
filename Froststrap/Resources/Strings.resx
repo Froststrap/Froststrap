@@ -3270,4 +3270,13 @@ All files will be moved, shortcuts updated, and the application will restart.</v
   <data name="Common.JustStarted" xml:space="preserve">
     <value>Just Started</value>
   </data>
+  <data name="Menu.Integrations.TitleChangePlayer.Title" xml:space="preserve">
+    <value>Player Counter</value>
+  </data>
+  <data name="Menu.Integrations.TitleChangePlayer.Description" xml:space="preserve">
+    <value>Adds a player counter to the game title.</value>
+  </data>
+  <data name="Menu.Integrations.GameHistory.View" xml:space="preserve">
+    <value>View Game History</value>
+  </data>
 </root>
