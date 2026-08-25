@@ -172,6 +172,9 @@ namespace Froststrap.UI.ViewModels.Settings
                 App.Settings.Prop.BootstrapperIconCustomLocation = value;
                 BootstrapperIconEx.InvalidateCustomIcon();
 
+                var customEntry = Icons.FirstOrDefault(e => e.IconType == BootstrapperIcon.IconCustom);
+                customEntry?.RefreshImage();
+
                 OnPropertyChanged(nameof(Icon));
                 OnPropertyChanged(nameof(Icons));
             }
