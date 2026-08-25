@@ -184,14 +184,10 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public bool AutoChangeTitlePlayerCounter
+        public static bool AutoChangeTitlePlayerCounter
         {
             get => App.Settings.Prop.AutoChangeTitleWithPlayerCount;
-            set
-            {
-                App.Settings.Prop.AutoChangeTitleWithPlayerCount = value;
-                OnPropertyChanged(nameof(AutoChangeTitlePlayerCounter));
-            }
+            set => App.Settings.Prop.AutoChangeTitleWithPlayerCount = value;
         }
 
         public static bool AutoChangeIcon
