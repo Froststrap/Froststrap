@@ -447,7 +447,7 @@ public partial class App : Application
 
             if (Paths.Process != Paths.Application)
             {
-                if (OperatingSystem.IsLinux())
+                if (OperatingSystem.IsLinux() || OperatingSystem.IsMacOS())
                 {
                     string escapedProcessPath = Paths.Process.Replace("\"", "\\\"");
                     string launcherScript = $"#!/bin/sh\nexec \"{escapedProcessPath}\" \"$@\"\n";
