@@ -18,7 +18,7 @@
     CanResize="False"
     WindowStartupLocation="CenterScreen">
 
-    <Grid Margin="0,15,0,0" RowDefinitions="*,Auto,72">
+    <Grid RowDefinitions="*,Auto,72">
         <Border Grid.Row="0" Padding="24,16,24,0" Margin="0,8,0,0">
             <TransitioningContentControl
                 x:Name="RootFrame"
