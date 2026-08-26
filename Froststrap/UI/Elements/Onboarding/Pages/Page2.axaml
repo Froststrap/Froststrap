@@ -5,6 +5,7 @@
              xmlns:ui="using:FluentAvalonia.UI.Controls"
              xmlns:models="using:Froststrap.Models"
              xmlns:vm="using:Froststrap.UI.ViewModels.Onboarding"
+             xmlns:lucideAvalonia="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
              xmlns:resources="using:Froststrap.Resources"
              xmlns:controls="using:Froststrap.UI.Elements.Controls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
@@ -13,8 +14,23 @@
 
 
     <ScrollViewer>
-        <StackPanel>
-            <TextBlock Text="{x:Static resources:Strings.Onboarding_Page2}" TextWrapping="Wrap" Margin="0,0,0,16" />
+        <StackPanel Grid.Row="0" Margin="12">
+            <StackPanel Orientation="Vertical" Spacing="8" HorizontalAlignment="Center" Margin="0,0,0,12">
+                <lucideAvalonia:Lucide x:Name="HeaderIcon" Icon="Palette" Width="70" Height="70"
+                       HorizontalAlignment="Center"
+                       StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}"
+                       StrokeThickness="1.5">
+                    <lucideAvalonia:Lucide.Transitions>
+                        <Transitions>
+                            <DoubleTransition Property="Opacity" Duration="0:0:1" Easing="CubicEaseInOut" />
+                        </Transitions>
+                    </lucideAvalonia:Lucide.Transitions>
+                </lucideAvalonia:Lucide>
+                <TextBlock Margin="0,10,0,0" Text="{x:Static resources:Strings.Menu_Appearance_Title}"
+                           FontSize="20" FontWeight="SemiBold"
+                           HorizontalAlignment="Center" />
+            </StackPanel>
+            <TextBlock Text="{x:Static resources:Strings.Onboarding_Page2}" HorizontalAlignment="Center" TextWrapping="Wrap" Margin="0,0,0,16" />
             <controls:OptionControl
                 Header="{x:Static resources:Strings.Menu_Appearance_WindowsBackdrop_Title}"
                 Description="{x:Static resources:Strings.Menu_Appearance_WindowsBackdrop_Description}">
