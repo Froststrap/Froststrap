@@ -235,7 +235,7 @@ public partial class App : Application
         return false;
     }
 
-    /// TODO: remove this,useless function 
+    /// TODO: remove this,useless function
     public static async Task AssertWindowsOSVersionAsync()
     {
         if (!OperatingSystem.IsWindows())
