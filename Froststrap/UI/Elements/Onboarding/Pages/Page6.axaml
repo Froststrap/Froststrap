@@ -17,7 +17,7 @@
         <StackPanel Spacing="16" Margin="0,0,16,0">
 
             <TextBlock
-                Text="Please take the time to read our FAQ that will most likely answer your question. If your question is still not answered feel free to join our Discord server."
+                Text="Please take the time to read our FAQ that will most likely answer your question. If your question is still not answered feel free to join our Discord."
                 TextWrapping="Wrap"
                 Foreground="#D0D0E0"
                 Margin="0,0,0,8"
@@ -31,7 +31,6 @@
                             HorizontalAlignment="Stretch"
                             HorizontalContentAlignment="Stretch"
                             CornerRadius="6"
-                            Background="#1E1E28"
                             BorderBrush="#333342"
                             BorderThickness="1"
                             Margin="0,0,0,8"
@@ -48,11 +47,10 @@
                             </Expander.Header>
 
                             <Border
-                                Background="#16161E"
-                                Padding="12"
+                                Padding="4"
                                 CornerRadius="4"
                                 Margin="0,4,0,0"
-                                >
+                            >
                                 <controls:MarkdownTextBlock
                                     MarkdownText="{Binding Answer}"
                                     TextWrapping="Wrap"
