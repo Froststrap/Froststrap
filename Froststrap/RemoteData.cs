@@ -14,6 +14,7 @@ namespace Froststrap
         public override string ClassName => nameof(RemoteDataManager);
 
         public override string FileLocation => Path.Combine(Paths.Base, "Data.json");
+        private string SignatureFileLocation => $"{FileLocation}.sig";
 
         public GenericTriState LoadedState = GenericTriState.Unknown;
 
@@ -22,7 +23,7 @@ namespace Froststrap
         private const int Ed25519PublicKeyLength = 32;
         private const int Ed25519SignatureLength = 64;
 
-        private const string ConfigPublicKeyBase64 = "frqqb5rEBhsU5pMkPQDQYwM3FyEmJWWIQWsVKztwzrI="; // no this isn't my private key
+        private const string ConfigPublicKeyBase64 = "frqqb5rEBhsU5pMkPQDQYwM3FyEmJWWIQWsVKztwzrI=";
         private static readonly byte[] ConfigPublicKey = Convert.FromBase64String(ConfigPublicKeyBase64);
 
         public void Subscribe(EventHandler Handler)
@@ -36,7 +37,7 @@ namespace Froststrap
                     Handler(this, EventArgs.Empty);
                     break;
                 default:
-                    Handler(this, EventArgs.Empty); // data loading most likely failed but we still have the default/local config
+                    Handler(this, EventArgs.Empty);
                     break;
             }
         }
@@ -44,7 +45,7 @@ namespace Froststrap
         public async Task WaitUntilDataFetched()
         {
             const int delay = 100;
-            const int maxTries = 30; // 3 seconds
+            const int maxTries = 30;
             int tries = 0;
 
             while (LoadedState == GenericTriState.Unknown)
@@ -62,9 +63,8 @@ namespace Froststrap
             if (App.Settings.Prop.ForceLocalData || App.LaunchSettings.WatcherFlag.Active)
             {
                 App.Logger.Info("Force loading local data");
-                this.Load(false);
-
-                LoadedState = GenericTriState.Successful; // we treat it as successful to simulate the production data
+                LoadLocalVerifiedData();
+                LoadedState = GenericTriState.Successful;
             }
             else
             {
@@ -79,43 +79,84 @@ namespace Froststrap
                     byte[] dataBytes = await client.GetByteArrayAsync(remoteDataUri);
                     byte[] sigBytes = await client.GetByteArrayAsync(remoteSigUri);
 
-                    if (sigBytes.Length != Ed25519SignatureLength)
+                    if (sigBytes.Length != Ed25519SignatureLength || !VerifyEd25519(dataBytes, sigBytes, ConfigPublicKey))
                     {
-                        throw new SecurityException($"Invalid signature length ({sigBytes.Length} bytes). Expected {Ed25519SignatureLength} bytes.");
+                        throw new SecurityException("Remote Data.json signature verification failed!");
                     }
 
-                    if (!VerifyEd25519(dataBytes, sigBytes, ConfigPublicKey))
-                    {
-                        throw new SecurityException("Cryptographic verification failed: Data.json signature is invalid or tampered with!");
-                    }
-
-                    App.Logger.Info("Data.json signature verified successfully.");
+                    App.Logger.Info("Remote Data.json signature verified successfully.");
 
                     Prop = JsonSerializer.Deserialize<RemoteDataBase>(dataBytes)
                            ?? throw new JsonException("Deserialized remote data was null.");
 
                     LoadedState = GenericTriState.Successful;
                     App.Logger.Info("Remote data loaded");
+
+                    SaveLocalVerifiedData(dataBytes, sigBytes);
                 }
                 catch (Exception ex)
                 {
-                    // Network failed OR signature verification failed
-                    // Keep existing local Data.json intact and fall back to it
                     App.Logger.Error($"Could not load remote data: {ex.Message}");
-                    App.Logger.Info("Loading local data instead");
+                    App.Logger.Info("Attempting to load verified local cache instead...");
 
-                    this.Load(false);
-                    LoadedState = GenericTriState.Failed;
+                    bool localSuccess = LoadLocalVerifiedData();
+                    LoadedState = localSuccess ? GenericTriState.Successful : GenericTriState.Failed;
                 }
             }
 
             DataLoaded?.Invoke(this, EventArgs.Empty);
-
-            // Only overwrite local cache if remote fetch & verification succeeded
-            if (LoadedState == GenericTriState.Successful)
-                this.Save();
-
             App.Logger.Info($"Loading finished with status: {LoadedState}");
+        }
+
+        private void SaveLocalVerifiedData(byte[] dataBytes, byte[] sigBytes)
+        {
+            try
+            {
+                File.WriteAllBytes(FileLocation, dataBytes);
+                File.WriteAllBytes(SignatureFileLocation, sigBytes);
+                App.Logger.Info("Saved verified Data.json and Data.json.sig to local cache.");
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Warn($"Failed to save local cache: {ex.Message}");
+            }
+        }
+
+        private bool LoadLocalVerifiedData()
+        {
+            if (!File.Exists(FileLocation) || !File.Exists(SignatureFileLocation))
+            {
+                App.Logger.Info("No complete local cache found. Loading default local config.");
+                this.Load(false);
+                return false;
+            }
+
+            try
+            {
+                byte[] localDataBytes = File.ReadAllBytes(FileLocation);
+                byte[] localSigBytes = File.ReadAllBytes(SignatureFileLocation);
+
+                if (localSigBytes.Length != Ed25519SignatureLength || !VerifyEd25519(localDataBytes, localSigBytes, ConfigPublicKey))
+                {
+                    App.Logger.Error("LOCAL DISK CACHE TAMPERED! Signature check failed for local Data.json.");
+
+                    File.Delete(FileLocation);
+                    File.Delete(SignatureFileLocation);
+
+                    this.Load(false);
+                    return false;
+                }
+
+                Prop = JsonSerializer.Deserialize<RemoteDataBase>(localDataBytes)!;
+                App.Logger.Info("Successfully verified and loaded local Data.json cache from disk.");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error($"Error reading local cache: {ex.Message}");
+                this.Load(false);
+                return false;
+            }
         }
 
         private static bool VerifyEd25519(byte[] data, byte[] signature, byte[] publicKey)
