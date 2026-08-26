@@ -24,7 +24,7 @@
                                  Background="{DynamicResource ControlFillColorDefaultBrush}"
                                  PaneDisplayMode="Left"
                                  IsSettingsVisible="False"
-                                 OpenPaneLength="140"
+                                 OpenPaneLength="160"
                                  ItemInvoked="NavView_ItemInvoked">
                 <ui:FANavigationView.Styles>
                     <Style Selector="ui|FANavigationView /template/ ScrollViewer#MenuItemsScrollViewer">
@@ -41,6 +41,12 @@
                     <ui:FANavigationViewItem Tag="licenses" Content="{x:Static resources:Strings.About_Licenses_Title}">
                         <ui:FANavigationViewItem.Icon>
                             <ic:Lucide Icon="Copyright" Width="20" Height="20" />
+                        </ui:FANavigationViewItem.Icon>
+                    </ui:FANavigationViewItem>
+
+                    <ui:FANavigationViewItem Tag="onboarding" Content="{x:Static resources:Strings.About_Onboarding_Title}">
+                        <ui:FANavigationViewItem.Icon>
+                            <ic:Lucide Icon="Rocket" Width="20" Height="20" />
                         </ui:FANavigationViewItem.Icon>
                     </ui:FANavigationViewItem>
                 </ui:FANavigationView.MenuItems>

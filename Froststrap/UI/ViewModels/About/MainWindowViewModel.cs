@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.Input;
+using Froststrap.UI.ViewModels.Onboarding;
 
 namespace Froststrap.UI.ViewModels.About
 {
@@ -20,11 +21,13 @@ namespace Froststrap.UI.ViewModels.About
 
         public IRelayCommand NavigateToAboutCommand { get; }
         public IRelayCommand NavigateToLicensesCommand { get; }
+        public IRelayCommand RestartOnboardingCommand { get; }
 
         public MainWindowViewModel()
         {
             NavigateToAboutCommand = new RelayCommand(NavigateToAbout);
             NavigateToLicensesCommand = new RelayCommand(NavigateToLicenses);
+            RestartOnboardingCommand = new RelayCommand(RestartOnboarding);
 
             NavigateToAbout();
         }
@@ -52,6 +55,19 @@ namespace Froststrap.UI.ViewModels.About
             catch (Exception ex)
             {
                 App.Logger.Error("Unhandled exception: ", ex);
+            }
+        }
+
+        private void RestartOnboarding()
+        {
+            try
+            {
+                var onboardingWindow = new Froststrap.UI.Elements.Onboarding.MainWindow();
+                onboardingWindow.Show();
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error("Failed to start onboarding: ", ex);
             }
         }
     }
