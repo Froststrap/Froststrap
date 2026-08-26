@@ -10,9 +10,7 @@
 
 using System.IO.Compression;
 using System.Reflection;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing;
+using SkiaSharp;
 using Color = Avalonia.Media.Color;
 
 namespace Froststrap.Integrations
@@ -230,7 +228,7 @@ namespace Froststrap.Integrations
                 App.Logger.Info($"Processing sheet: {sheetPath} with {sprites.Count} sprites");
                 if (!File.Exists(sheetPath)) continue;
 
-                using var sheet = Image.Load<Rgba32>(sheetPath);
+                using var sheet = LoadAsRgba8888(sheetPath);
                 bool modified = false;
 
                 if (!string.IsNullOrEmpty(customLogoPath) && File.Exists(customLogoPath))
@@ -248,65 +246,75 @@ namespace Froststrap.Integrations
                     if (string.Equals(sprite.Name, "icons/graphic/loadingspinner", StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(customSpinnerPath))
                         continue;
 
-                    var rect = new Rectangle(sprite.X, sprite.Y, sprite.W, sprite.H);
-                    using var cropped = sheet.Clone(ctx => ctx.Crop(rect));
-                    using var recolored = ApplyMaskToImage(cropped, solidColor, gradient, gradientAngleDeg);
+                    using var cropped = ExtractSprite(sheet, sprite.X, sprite.Y, sprite.W, sprite.H);
+                    using var recolored = ApplyMaskToBitmap(cropped, solidColor, gradient, gradientAngleDeg);
+
                     for (int y = 0; y < sprite.H; y++)
                         for (int x = 0; x < sprite.W; x++)
-                            sheet[sprite.X + x, sprite.Y + y] = recolored[x, y];
+                            sheet.SetPixel(sprite.X + x, sprite.Y + y, recolored.GetPixel(x, y));
+
                     modified = true;
                 }
 
                 if (modified)
                 {
                     string tempPath = sheetPath + ".tmp";
-                    sheet.SaveAsPng(tempPath);
+                    SaveBitmapAsPng(sheet, tempPath);
                     ReplaceFileWithRetry(sheetPath, tempPath);
                     App.Logger.Info($"Recolored sprite sheet: {sheetPath}");
                 }
             }
         }
 
-        private static bool ReplaceCustomSprite(Image<Rgba32> sheet, List<SpriteDef> sprites, string targetSpriteName, string customImagePath)
+        private static bool ReplaceCustomSprite(SKBitmap sheet, List<SpriteDef> sprites, string targetSpriteName, string customImagePath)
         {
             var targetSprite = sprites.FirstOrDefault(s => string.Equals(s.Name, targetSpriteName, StringComparison.OrdinalIgnoreCase));
             if (targetSprite == null || targetSprite.W <= 0 || targetSprite.H <= 0)
                 return false;
 
-            using var customImage = Image.Load<Rgba32>(customImagePath);
-            using var resized = customImage.Clone(ctx => ctx.Resize(new ResizeOptions
+            using var customImage = LoadAsRgba8888(customImagePath);
+
+            float scale = Math.Min((float)targetSprite.W / customImage.Width, (float)targetSprite.H / customImage.Height);
+            int scaledW = Math.Max(1, (int)Math.Round(customImage.Width * scale));
+            int scaledH = Math.Max(1, (int)Math.Round(customImage.Height * scale));
+
+            using var resized = new SKBitmap(new SKImageInfo(targetSprite.W, targetSprite.H, SKColorType.Rgba8888, SKAlphaType.Unpremul));
+            using (var canvas = new SKCanvas(resized))
             {
-                Size = new Size(targetSprite.W, targetSprite.H),
-                Mode = ResizeMode.Pad,
-                PadColor = new Rgba32(0, 0, 0, 0)
-            }));
+                canvas.Clear(SKColors.Transparent);
+                var destRect = SKRect.Create(
+                    (targetSprite.W - scaledW) / 2f,
+                    (targetSprite.H - scaledH) / 2f,
+                    scaledW, scaledH);
+                canvas.DrawBitmap(customImage, destRect);
+            }
 
             for (int y = 0; y < targetSprite.H; y++)
                 for (int x = 0; x < targetSprite.W; x++)
                 {
-                    var px = resized[x, y];
-                    if (px.A > 0)
-                        sheet[targetSprite.X + x, targetSprite.Y + y] = px;
+                    var px = resized.GetPixel(x, y);
+                    if (px.Alpha > 0)
+                        sheet.SetPixel(targetSprite.X + x, targetSprite.Y + y, px);
                 }
             return true;
         }
 
         private static void SafeRecolorImage(string path, Color solidColor, List<GradientStop>? gradient, float gradientAngleDeg)
         {
-            using var image = Image.Load<Rgba32>(path);
-            using var recolored = ApplyMaskToImage(image, solidColor, gradient, gradientAngleDeg);
+            using var image = LoadAsRgba8888(path);
+            using var recolored = ApplyMaskToBitmap(image, solidColor, gradient, gradientAngleDeg);
             string tempPath = path + ".tmp";
-            recolored.SaveAsPng(tempPath);
+            SaveBitmapAsPng(recolored, tempPath);
             ReplaceFileWithRetry(path, tempPath);
         }
 
-        private static Image<Rgba32> ApplyMaskToImage(Image<Rgba32> original, Color solidColor, List<GradientStop>? gradient, float gradientAngleDeg)
+        private static SKBitmap ApplyMaskToBitmap(SKBitmap original, Color solidColor, List<GradientStop>? gradient, float gradientAngleDeg)
         {
-            var output = original.Clone();
             int width = original.Width;
             int height = original.Height;
+            var output = original.Copy();
 
-            double cos, sin, minProj, maxProj, denom;
+            double cos, sin, minProj, denom;
             if (gradient != null && gradient.Count > 0)
             {
                 double rad = (gradientAngleDeg - 90) * Math.PI / 180.0;
@@ -319,10 +327,11 @@ namespace Froststrap.Integrations
                 double p10 = w * cos + 0 * sin;
                 double p01 = 0 * cos + h * sin;
                 double p11 = w * cos + h * sin;
-                minProj = Math.Min(Math.Min(p00, p10), Math.Min(p01, p11));
-                maxProj = Math.Max(Math.Max(p00, p10), Math.Max(p01, p11));
-                denom = maxProj - minProj;
+                double minProj0 = Math.Min(Math.Min(p00, p10), Math.Min(p01, p11));
+                double maxProj0 = Math.Max(Math.Max(p00, p10), Math.Max(p01, p11));
+                denom = maxProj0 - minProj0;
                 if (Math.Abs(denom) < 1e-6) denom = 1.0;
+                minProj = minProj0;
             }
             else
             {
@@ -334,8 +343,8 @@ namespace Froststrap.Integrations
             {
                 for (int x = 0; x < width; x++)
                 {
-                    var srcPixel = original[x, y];
-                    if (srcPixel.A == 0) continue;
+                    var srcPixel = original.GetPixel(x, y);
+                    if (srcPixel.Alpha == 0) continue;
 
                     Color targetColor;
                     if (gradient != null && gradient.Count > 0)
@@ -350,7 +359,7 @@ namespace Froststrap.Integrations
                         targetColor = solidColor;
                     }
 
-                    output[x, y] = new Rgba32(targetColor.R, targetColor.G, targetColor.B, srcPixel.A);
+                    output.SetPixel(x, y, new SKColor(targetColor.R, targetColor.G, targetColor.B, srcPixel.Alpha));
                 }
             }
             return output;
@@ -388,6 +397,41 @@ namespace Froststrap.Integrations
             byte g = (byte)(left.Color.G + (right.Color.G - left.Color.G) * localT);
             byte b = (byte)(left.Color.B + (right.Color.B - left.Color.B) * localT);
             return Color.FromRgb(r, g, b);
+        }
+
+        private static SKBitmap LoadAsRgba8888(string path)
+        {
+            using var decoded = SKBitmap.Decode(path)
+                ?? throw new IOException($"Failed to decode image: {path}");
+
+            if (decoded.ColorType == SKColorType.Rgba8888 && decoded.AlphaType == SKAlphaType.Unpremul)
+                return decoded.Copy();
+
+            var converted = new SKBitmap(new SKImageInfo(decoded.Width, decoded.Height, SKColorType.Rgba8888, SKAlphaType.Unpremul));
+            using (var canvas = new SKCanvas(converted))
+            {
+                canvas.Clear(SKColors.Transparent);
+                using var paint = new SKPaint { BlendMode = SKBlendMode.Src };
+                canvas.DrawBitmap(decoded, 0, 0, paint);
+            }
+            return converted;
+        }
+
+        private static SKBitmap ExtractSprite(SKBitmap source, int x, int y, int w, int h)
+        {
+            var dest = new SKBitmap(new SKImageInfo(w, h, SKColorType.Rgba8888, SKAlphaType.Unpremul));
+            for (int row = 0; row < h; row++)
+                for (int col = 0; col < w; col++)
+                    dest.SetPixel(col, row, source.GetPixel(x + col, y + row));
+            return dest;
+        }
+
+        private static void SaveBitmapAsPng(SKBitmap bitmap, string path)
+        {
+            using var image = SKImage.FromBitmap(bitmap);
+            using var data = image.Encode(SKEncodedImageFormat.Png, 100);
+            using var stream = File.Create(path);
+            data.SaveTo(stream);
         }
 
         private static void ReplaceFileWithRetry(string originalPath, string tempPath)
