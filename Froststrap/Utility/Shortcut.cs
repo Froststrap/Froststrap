@@ -8,6 +8,7 @@
 *  SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
@@ -239,10 +240,40 @@ namespace Froststrap.Utility
             Create(appPath, $"-gameshortcut \"{argData}\"", lnkPath, finalIconPath);
         }
 
-        private static void CreateWindowsShortcut(string exePath, string exeArgs, string lnkPath, string? iconPath)
+        private static void CreateWindowsShortcut(
+            string exePath,
+            string exeArgs,
+            string lnkPath,
+            string? iconPath
+        )
         {
-            string finalIconPath = string.IsNullOrEmpty(iconPath) ? exePath : iconPath;
-            ShellLink.Shortcut.CreateShortcut(exePath, exeArgs, finalIconPath, 0).WriteToFile(lnkPath);
+            var shellType = Type.GetTypeFromProgID("WScript.Shell")
+                ?? throw new InvalidOperationException("Windows Script Host is unavailable.");
+
+            dynamic shell = Activator.CreateInstance(shellType)!;
+            dynamic shortcut = shell.CreateShortcut(lnkPath);
+
+            try
+            {
+                shortcut.TargetPath = exePath;
+                shortcut.Arguments = exeArgs;
+                shortcut.WorkingDirectory = Path.GetDirectoryName(exePath);
+
+                var finalIconPath = string.IsNullOrWhiteSpace(iconPath)
+                    ? exePath
+                    : iconPath;
+
+                if (Path.GetExtension(finalIconPath)
+                    .Equals(".ico", StringComparison.OrdinalIgnoreCase))
+                shortcut.IconLocation = finalIconPath;
+                else shortcut.IconLocation = $"{finalIconPath},0";
+                shortcut.Save();
+            }
+            finally
+            {
+                Marshal.FinalReleaseComObject(shortcut);
+                Marshal.FinalReleaseComObject(shell);
+            }
         }
 
         // idk if these will work at all
