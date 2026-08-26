@@ -132,13 +132,19 @@ namespace Froststrap.UI.Elements.About
         {
             if (e.InvokedItemContainer is FANavigationViewItem navItem && navItem.Tag is string tag)
             {
-                if (tag == "about")
+                switch (tag)
                 {
-                    _viewModel?.NavigateToAboutCommand.Execute(null);
-                }
-                else if (tag == "licenses")
-                {
-                    _viewModel?.NavigateToLicensesCommand.Execute(null);
+                    case "about":
+                        _viewModel?.NavigateToAboutCommand.Execute(null);
+                        break;
+
+                    case "licenses":
+                        _viewModel?.NavigateToLicensesCommand.Execute(null);
+                        break;
+
+                    case "onboarding":
+                        _viewModel?.RestartOnboardingCommand.Execute(null);
+                        break;
                 }
             }
         }

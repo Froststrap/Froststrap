@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
-    Microsoft ResX Schema 
-    
+  <!--
+    Microsoft ResX Schema
+
     Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
     associated with the data types.
-    
+
     Example:
-    
+
     ... ado.net/XML headers & schema ...
     <resheader name="resmimetype">text/microsoft-resx</resheader>
     <resheader name="version">2.0</resheader>
@@ -26,36 +26,36 @@
         <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
         <comment>This is a comment</comment>
     </data>
-                
-    There are any number of "resheader" rows that contain simple 
+
+    There are any number of "resheader" rows that contain simple
     name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
     mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
     extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
     read any of the formats listed below.
-    
+
     mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
+    value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
             : and then encoded with base64 encoding.
-    
+
     mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
+    value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
             : and then encoded with base64 encoding.
 
     mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
+    value   : The object must be serialized into a byte array
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
@@ -1064,6 +1064,9 @@ If not, then please report this exception to the maintainers of this fork. Do NO
     <value>Licenses</value>
     <comment>Referring to code licenses; see https://opensource.org/licenses for example</comment>
   </data>
+  <data name="About.Onboarding.Title" xml:space="preserve">
+    <value>Onboarding</value>
+  </data>
   <data name="InstallChecker.VersionLessThanInstalled" xml:space="preserve">
     <value>The version of Froststrap you've launched is older than the version you currently have installed.
 Issues may occur and your settings may be altered. A reinstall is recommended.
@@ -1151,7 +1154,7 @@ Check if Roblox works with [the original launcher]({1}). If it doesn't, then thi
     <comment>See the prompt for more context</comment>
   </data>
   <data name="Menu.TestMode.Prompt" xml:space="preserve">
-    <value>Test Mode makes it easier to iteratively test how your settings affect Roblox. 
+    <value>Test Mode makes it easier to iteratively test how your settings affect Roblox.
 
 While enabled, it will automatically launch Roblox after closing Settings, and reopen Settings after closing Roblox, in a cycle until you disable it.
 
@@ -1245,7 +1248,7 @@ For more information join Bloxshade discord server.</value>
   </data>
   <data name="Bootstrapper.Dialog.ChannelOutOfDate" xml:space="preserve">
     <value>The channel you're currently on ({0}) is out of date, and appears to no longer be receiving updates.
-	
+
 Would you like to switch to the default channel ({1})?</value>
   </data>
   <data name="Menu.Channel.ChangeAction.Title" xml:space="preserve">
@@ -1656,7 +1659,7 @@ Would you like to switch your preferred channel to {0}?</value>
   </data>
   <data name="Menu.QuickSignIn.Waitting" xml:space="preserve">
     <value>Waiting for Quick Sign-In...
-	
+
 The app will close this window when sign-in completes.</value>
   </data>
   <data name="Menu.QuickSignIn.Complete" xml:space="preserve">
@@ -1746,7 +1749,7 @@ Click 'Add Account' above to get started</value>
   </data>
   <data name="Menu.AccountSelector.AlreadyLoggedIn" xml:space="preserve">
     <value>Account '@{0}' is already logged in.
-	
+
 Switched to it.</value>
   </data>
   <data name="Menu.CookieState.NotAllowed" xml:space="preserve">
@@ -1808,7 +1811,7 @@ Switched to it.</value>
   </data>
   <data name="Menu.FastFlagEditor.NotInWhiteList" xml:space="preserve">
     <value>'{0}' is not in the Roblox allowlist and won't work.
-	
+
 Remove it now?</value>
   </data>
   <data name="Menu.FastFlagEditor.NoFlagDelete" xml:space="preserve">
@@ -2014,7 +2017,7 @@ Remove it now?</value>
   </data>
   <data name="Menu.Mods.InvalidModFolders" xml:space="preserve">
     <value>Selected source does not contain a valid mod structure.
-	
+
 It must contain at least one of the following folders: content, ExtraContent, PlatformContent.</value>
   </data>
   <data name="Menu.Mods.Imported" xml:space="preserve">
@@ -2133,7 +2136,7 @@ It must contain at least one of the following folders: content, ExtraContent, Pl
   </data>
   <data name="Menu.Deployment.DomainValidation" xml:space="preserve">
     <value>You entered an invalid domain
-	
+
 Please dont mess with this if you dont know what your doing</value>
   </data>
   <data name="Menu.Deployment.FailedToLoadChannelData" xml:space="preserve">
@@ -2360,7 +2363,7 @@ Please dont mess with this if you dont know what your doing</value>
   </data>
   <data name="Menu.Integrations.StudioRPC.PluginConfirmation" xml:space="preserve">
     <value>This works by adding a custom made froststrap plugin that will log what your doing.
-	
+
 Do you want to install the plugin?</value>
   </data>
   <data name="Menu.PresetMods.OpenModsFolder" xml:space="preserve">
@@ -3206,7 +3209,7 @@ Would you like to visit the releases page now?</value>
   </data>
   <data name="Bootstrapper.Status.InvalidOverride" xml:space="preserve">
     <value>The pinned player version '{0}' is invalid.
-	
+
 Reason: {1}
 
 The override will be disabled and the channel version will be used instead.</value>
@@ -3246,7 +3249,7 @@ The override will be disabled and the channel version will be used instead.</val
   </data>
   <data name="Menu.Deployment.MoveInstallation.Confirm" xml:space="preserve">
     <value>Move Froststrap from '{0}' to '{1}'?
-	
+
 All files will be moved, shortcuts updated, and the application will restart.</value>
   </data>
   <data name="Menu.Deployment.MoveInstallation.Success" xml:space="preserve">
