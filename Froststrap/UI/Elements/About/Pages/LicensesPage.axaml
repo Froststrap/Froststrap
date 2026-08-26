@@ -113,12 +113,6 @@
                                CommandParameter="https://github.com/Overmiind/Puppeteer-sharp-extra/blob/master/LICENSE" />
 
                 <ui:CardAction Margin="4" Icon="Copyright"
-                               Header="Shell Link"
-                               Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
-                               Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
-                               CommandParameter="https://github.com/securifybv/ShellLink/blob/master/LICENSE.txt" />
-
-                <ui:CardAction Margin="4" Icon="Copyright"
                                Header="SixLabors ImageSharp"
                                Description="Custom License"
                                Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
