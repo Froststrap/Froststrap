@@ -71,12 +71,6 @@
                                CommandParameter="https://github.com/MarwanFr/LucideAvaloniaUI/blob/main/LICENSE" />
 
                 <ui:CardAction Margin="4" Icon="Copyright"
-                               Header="Avalonia Labs"
-                               Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
-                               Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
-                               CommandParameter="https://github.com/AvaloniaUI/Avalonia.Labs/blob/main/LICENSE" />
-
-                <ui:CardAction Margin="4" Icon="Copyright"
                                Header="Pixi ColorPicker"
                                Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
                                Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
