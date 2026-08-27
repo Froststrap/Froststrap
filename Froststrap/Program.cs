@@ -3,7 +3,9 @@ using Avalonia;
 using CommandLine;
 using CommandLine.Text;
 using System.Reflection;
+#if WINDOWS
 using System.Runtime.InteropServices;
+#endif
 
 namespace Froststrap;
 
@@ -23,8 +25,10 @@ sealed class Program
 
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
+#if WINDOWS
     [DllImport("kernel32.dll")]
     private static extern bool AllocConsole();
+#endif
 
     [STAThread]
     public static void Main(string[] args)
@@ -78,7 +82,9 @@ sealed class Program
 
         var opts = ((Parsed<Options>)argsResult).Value;
 
+#if WINDOWS
         if (opts.AttachConsole) AllocConsole();
+#endif
         if (opts.NoGPU) Environment.SetEnvironmentVariable("AVALONIA_GPU", "0");
 
         try
