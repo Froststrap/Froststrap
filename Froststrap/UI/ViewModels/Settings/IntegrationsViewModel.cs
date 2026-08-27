@@ -361,11 +361,11 @@ namespace Froststrap.UI.ViewModels.Settings
             set => App.Settings.Prop.StudioGameButton = value;
         }
 
-       
+
         public static bool DisableRobloxRecording
         {
             get => IsBlocked(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyVideos), "Roblox"));
-            set =>BlockState(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyVideos), "Roblox"), value);
+            set => BlockState(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyVideos), "Roblox"), value);
         }
 
         public static bool DisableRobloxScreenshots

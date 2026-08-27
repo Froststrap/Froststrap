@@ -16,7 +16,7 @@
             request.EnsureSuccessStatusCode();
 
             string json = await request.Content.ReadAsStringAsync();
-            
+
             return JsonSerializer.Deserialize<T>(json)!;
         }
 

@@ -206,9 +206,9 @@ namespace Froststrap.UI.ViewModels.Settings
         private static string ShiftlockPath => Path.Combine(Paths.Modifications, "content", "textures");
         private static string SoundPath => Path.Combine(Paths.Modifications, "content", "sounds");
 
-        private static readonly string[] CursorFiles = [ "ArrowCursor.png", "ArrowFarCursor.png", "IBeamCursor.png" ];
-        private static readonly string[] ShiftlockFiles = [ "MouseLockedCursor.png" ];
-        private static readonly string[] SoundFiles = [ "oof.ogg" ];
+        private static readonly string[] CursorFiles = ["ArrowCursor.png", "ArrowFarCursor.png", "IBeamCursor.png"];
+        private static readonly string[] ShiftlockFiles = ["MouseLockedCursor.png"];
+        private static readonly string[] SoundFiles = ["oof.ogg"];
 
         public static bool HasCustomCursors => CursorFiles.Any(f => File.Exists(Path.Combine(CursorPath, f)));
         public static bool HasCustomShiftlock => ShiftlockFiles.Any(f => File.Exists(Path.Combine(ShiftlockPath, f)));
@@ -231,7 +231,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public async Task AddCustomDeathSound() =>
             await AddCustomFileAsync(SoundFiles, SoundPath, "Select Death Sound",
-                [ new FilePickerFileType("Audio") { Patterns = ["*.ogg"] } ], "death sound", RefreshStates);
+                [new FilePickerFileType("Audio") { Patterns = ["*.ogg"] }], "death sound", RefreshStates);
 
         public void RemoveCustomCursorMod() =>
             RemoveCustomFile(CursorFiles, CursorPath, "No custom cursors found.", RefreshStates);
@@ -444,7 +444,7 @@ namespace Froststrap.UI.ViewModels.Settings
             try
             {
                 Directory.CreateDirectory(targetKB);
-                string[] targets = [ Path.Combine(targetDir, "MouseLockedCursor.png"), Path.Combine(targetKB, "ArrowCursor.png"), Path.Combine(targetKB, "ArrowFarCursor.png"), Path.Combine(targetKB, "IBeamCursor.png") ];
+                string[] targets = [Path.Combine(targetDir, "MouseLockedCursor.png"), Path.Combine(targetKB, "ArrowCursor.png"), Path.Combine(targetKB, "ArrowFarCursor.png"), Path.Combine(targetKB, "IBeamCursor.png")];
                 foreach (var t in targets) if (File.Exists(t)) File.Delete(t);
 
                 foreach (string file in Directory.GetFiles(SelectedCustomCursorSet.FolderPath, "*.png", SearchOption.AllDirectories))

@@ -44,10 +44,11 @@ sealed class Program
 
         if (argsResult is NotParsed<Options> notParsed)
         {
-            if (notParsed.Errors.Any(e=> e.Tag == ErrorType.HelpRequestedError))
+            if (notParsed.Errors.Any(e => e.Tag == ErrorType.HelpRequestedError))
             {
                 Console.WriteLine(
-                    HelpText.AutoBuild(argsResult, h => {
+                    HelpText.AutoBuild(argsResult, h =>
+                    {
                         h.AdditionalNewLineAfterOption = false;
                         h.Heading = "Froststrap";
                         h.Copyright = "(c) Froststrap Team";
@@ -57,15 +58,13 @@ sealed class Program
                 return;
             }
 
-            if (notParsed.Errors.Any(e=> e.Tag == ErrorType.VersionRequestedError))
+            if (notParsed.Errors.Any(e => e.Tag == ErrorType.VersionRequestedError))
             {
-                Console.WriteLine($"Froststrap v{
-                    typeof(Program)
+                Console.WriteLine($"Froststrap v{typeof(Program)
                         .Assembly
                         .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
                         .InformationalVersion.Split("+")[0]
-                        ?? "0.0.0"
-                }");
+                        ?? "0.0.0"}");
                 return;
             }
 

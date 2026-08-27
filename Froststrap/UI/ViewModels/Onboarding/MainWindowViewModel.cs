@@ -19,7 +19,7 @@ namespace Froststrap.UI.ViewModels.Onboarding
         public int ButtonWidth { get; } = Locale.CurrentCulture.Name.StartsWith("bg") ? 112 : 96;
 
         public ICommand BackPageCommand => new RelayCommand(BackPage);
-        
+
         public ICommand NextPageCommand => new RelayCommand(NextPage);
 
         public event EventHandler<string>? PageRequest;

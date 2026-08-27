@@ -1,10 +1,10 @@
 ﻿namespace Froststrap.Enums.Messagebox
 {
-    public enum MessageBoxResult 
-    { 
+    public enum MessageBoxResult
+    {
         None,
-        OK, 
-        Cancel, 
+        OK,
+        Cancel,
         Yes,
         No
     }

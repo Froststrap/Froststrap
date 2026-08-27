@@ -159,7 +159,8 @@ namespace Froststrap.UI.Elements.Editor
 
             DataContext = _viewModel;
 
-            this.Loaded += (s, e) => {
+            this.Loaded += (s, e) =>
+            {
                 UIXML.Text = _viewModel.Code;
             };
 
@@ -614,8 +615,8 @@ namespace Froststrap.UI.Elements.Editor
 
         private void CloseCompletionWindow()
         {
-                _completionWindow?.Close();
-                _completionWindow = null;
+            _completionWindow?.Close();
+            _completionWindow = null;
         }
 
         private void ShowCompletionWindow(List<ICompletionData> completionData)

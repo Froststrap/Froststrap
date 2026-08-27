@@ -1022,7 +1022,7 @@ namespace Froststrap.Integrations
 
             using var finalMs = new MemoryStream();
             using var finalWriter = new BinaryWriter(finalMs);
-            finalWriter.Write([ 0x63, 0x6F, 0x6F, 0x6B ]);
+            finalWriter.Write([0x63, 0x6F, 0x6F, 0x6B]);
             finalWriter.Write(IPAddress.HostToNetworkOrder(1));
             finalWriter.Write(IPAddress.HostToNetworkOrder(totalPageSize));
             finalWriter.Write(pageData);

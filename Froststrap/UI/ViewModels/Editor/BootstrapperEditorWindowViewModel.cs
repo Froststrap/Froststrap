@@ -67,10 +67,11 @@ namespace Froststrap.UI.ViewModels.Editor
         private void OpenThemeFolder()
         {
             if (string.IsNullOrEmpty(Directory)) return;
-            Process.Start(new ProcessStartInfo{ 
-                FileName = Directory, 
-                UseShellExecute = true, 
-                Verb = "open" 
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = Directory,
+                UseShellExecute = true,
+                Verb = "open"
             });
         }
     }

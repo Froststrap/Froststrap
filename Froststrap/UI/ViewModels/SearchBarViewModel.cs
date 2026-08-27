@@ -139,7 +139,8 @@ namespace Froststrap.UI.ViewModels
 
             if (string.IsNullOrWhiteSpace(query))
             {
-                Dispatcher.UIThread.Post(() => {
+                Dispatcher.UIThread.Post(() =>
+                {
                     GameSearchResults.Clear();
                     IsSearchFlyoutOpen = false;
                 });

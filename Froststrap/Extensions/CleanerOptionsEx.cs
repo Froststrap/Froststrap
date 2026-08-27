@@ -3,7 +3,7 @@
     static class CleanerOptionsEx
     {
         public static IReadOnlyCollection<CleanerOptions> Selections =>
-        [            
+        [
             CleanerOptions.Never,
             CleanerOptions.OneDay,
             CleanerOptions.OneWeek,

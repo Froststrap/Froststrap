@@ -3,10 +3,10 @@
     public class ModPresetTask : BoolBaseTask
     {
         private readonly Dictionary<string, ModPresetFileData> _fileDataMap = [];
-        
+
         private readonly Dictionary<string, string> _pathMap;
 
-        public ModPresetTask(string name, string path, string resource) : this(name, new() {{ path, resource }}) { }
+        public ModPresetTask(string name, string path, string resource) : this(name, new() { { path, resource } }) { }
 
         public ModPresetTask(string name, Dictionary<string, string> pathMap) : base("ModPreset", name)
         {

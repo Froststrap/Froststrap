@@ -31,7 +31,8 @@ namespace Froststrap.UI.Elements.Dialogs
             string issueUrl = $"{repoUrl}/issues/new?template=bug_report.yaml&title={title}&log={log}";
 
             // GUARD: Shorten url since too long
-            if (issueUrl.Length > MAX_GITHUB_URL_LENGTH) {
+            if (issueUrl.Length > MAX_GITHUB_URL_LENGTH)
+            {
                 issueUrl = $"{repoUrl}/issues/new?template=bug_report.yaml&title={title}";
 
                 // GUARD: Shorten url (again) since too long

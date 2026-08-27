@@ -7,7 +7,7 @@ using Froststrap.UI.ViewModels.Bootstrapper;
 
 namespace Froststrap.UI.Elements.Bootstrapper
 {
-    public partial class ModernDialog: AvaloniaDialogBase
+    public partial class ModernDialog : AvaloniaDialogBase
     {
         private readonly ModernDialogViewModel _viewModel;
 

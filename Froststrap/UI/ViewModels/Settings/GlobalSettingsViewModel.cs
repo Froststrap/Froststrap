@@ -62,7 +62,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 SuggestedFileName = "GlobalBasicSettings_13.xml",
                 DefaultExtension = ".xml",
                 FileTypeChoices =
-                [ new FilePickerFileType("GBS Settings File") { Patterns = ["*.xml" ] } ]
+                [new FilePickerFileType("GBS Settings File") { Patterns = ["*.xml"] }]
             });
 
             if (file != null)

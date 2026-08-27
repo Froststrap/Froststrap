@@ -12,7 +12,7 @@ public class WineManager(string baseWineDir)
             return;
 
         Directory.CreateDirectory(_prefixDir);
-        await RunAsync("wineboot", [ "-u" ], cancellationToken: cancellationToken);
+        await RunAsync("wineboot", ["-u"], cancellationToken: cancellationToken);
     }
 
     public async Task<int> RunAsync(string exePath, string[] args, Dictionary<string, string>? env = null, CancellationToken cancellationToken = default)
@@ -49,10 +49,10 @@ public class WineManager(string baseWineDir)
     {
         var args = new List<string> { "add", keyPath };
         if (!string.IsNullOrEmpty(valueName))
-            args.AddRange([ "/v", valueName ]);
+            args.AddRange(["/v", valueName]);
         else
             args.Add("/ve");
-        args.AddRange([ "/t", type, "/d", data, "/f" ]);
+        args.AddRange(["/t", type, "/d", data, "/f"]);
         await RunAsync("reg", [.. args], cancellationToken: cancellationToken);
     }
 
@@ -60,13 +60,13 @@ public class WineManager(string baseWineDir)
     {
         var args = new List<string> { "delete", keyPath, "/f" };
         if (!string.IsNullOrEmpty(valueName))
-            args.AddRange([ "/v", valueName ]);
+            args.AddRange(["/v", valueName]);
         await RunAsync("reg", [.. args], cancellationToken: cancellationToken);
     }
 
     public async Task<string?> QueryRegistryValueAsync(string keyPath, string valueName, CancellationToken cancellationToken = default)
     {
-        var (exitCode, output) = await RunWithOutputAsync("reg", [ "query", keyPath, "/v", valueName ], cancellationToken: cancellationToken);
+        var (exitCode, output) = await RunWithOutputAsync("reg", ["query", keyPath, "/v", valueName], cancellationToken: cancellationToken);
         if (exitCode != 0) return null;
 
         var lines = output.Split('\n');
@@ -74,7 +74,7 @@ public class WineManager(string baseWineDir)
         {
             if (line.Contains(valueName) && line.Contains("REG_SZ"))
             {
-                var parts = line.Split([ ' ', '\t' ], StringSplitOptions.RemoveEmptyEntries);
+                var parts = line.Split([' ', '\t'], StringSplitOptions.RemoveEmptyEntries);
                 if (parts.Length >= 3)
                     return parts[2].Trim();
             }
@@ -84,7 +84,7 @@ public class WineManager(string baseWineDir)
 
     public async Task<bool> RegistryKeyExistsAsync(string keyPath, CancellationToken cancellationToken = default)
     {
-        var (exitCode, _) = await RunWithOutputAsync("reg", [ "query", keyPath ], cancellationToken: cancellationToken);
+        var (exitCode, _) = await RunWithOutputAsync("reg", ["query", keyPath], cancellationToken: cancellationToken);
         return exitCode == 0;
     }
 

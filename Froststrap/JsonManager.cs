@@ -172,7 +172,7 @@ namespace Froststrap
                 }
 
                 var currentJson = JsonSerializer.SerializeToNode(Prop, _jsonOptions)?.AsObject();
-                 _ = currentJson ?? throw new InvalidOperationException("Failed to serialize current object.");
+                _ = currentJson ?? throw new InvalidOperationException("Failed to serialize current object.");
 
                 if (currentJson.TryGetPropertyValue(SettingName, out JsonNode? value))
                 {

@@ -2179,7 +2179,8 @@ exit";
                 await downloadSemaphore.WaitAsync(_cancelTokenSource.Token);
 
 
-                var task = Task.Run(async () => {
+                var task = Task.Run(async () =>
+                {
                     await DownloadPackage(package);
 
                     // we'll extract the runtime installer later if we need to
@@ -3264,7 +3265,7 @@ exit";
 
         private async Task<bool> ApplyModifications()
         {
-           bool success = true;
+            bool success = true;
             SetStatus(Strings.Bootstrapper_Status_ApplyingModifications);
             App.Logger.Info("Checking file mods...");
 
