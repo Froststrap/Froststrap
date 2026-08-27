@@ -83,10 +83,8 @@ class ResxDuplicateFinder:
 def main():
     finder = ResxDuplicateFinder()
     
-    print("RESX Duplicate Value Finder")
-    print()
-    print(f"Looking for: {finder.base_file}")
-    print()
+    print("RESX Duplicate Value Finder\n")
+    print(f"Looking for: {finder.base_file}\n")
     
     duplicates = finder.find_duplicate_values(finder.base_file)
     
