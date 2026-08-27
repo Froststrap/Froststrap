@@ -12,9 +12,9 @@ using FluentAvalonia.UI.Controls;
 using Froststrap.UI.Elements.Controls;
 using Froststrap.UI.Utility;
 using Froststrap.UI.ViewModels.Settings;
-using LucideAvalonia;
 using LucideAvalonia.Enum;
 using System.ComponentModel;
+using Avalonia.Controls.Shapes;
 
 namespace Froststrap.UI.Elements.Settings
 {
@@ -418,25 +418,22 @@ namespace Froststrap.UI.Elements.Settings
                 Margin = new Thickness(0)
             };
 
-            var icon = new Lucide
+            var icon = new Ellipse
             {
-                Icon = iconSymbol,
-                Width = 36,
-                Height = 36,
-                StrokeBrush = new SolidColorBrush(Color.Parse(accentColor)),
-                StrokeThickness = 1.5,
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
-                Margin = new Thickness(16, 0, 12, 0)
+                Width = 12,
+                Height = 12,
+                Margin = new Thickness(25),
+                Fill = new SolidColorBrush(Color.Parse(accentColor)),
             };
             Grid.SetColumn(icon, 0);
             contentGrid.Children.Add(icon);
 
             var textPanel = new StackPanel { VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center, Spacing = 2 };
 
-            var titleText = new TextBlock { Text = title, FontWeight = FontWeight.SemiBold, FontSize = 14 };
+            var titleText = new TextBlock { Text = title, FontWeight = FontWeight.SemiBold, FontSize = 16, Margin = new Thickness(0,2) };
             titleText.Bind(TextBlock.ForegroundProperty, new DynamicResourceExtension("TextFillColorPrimaryBrush"));
 
-            var subtitleText = new TextBlock { Text = subtitle, FontSize = 12, TextWrapping = TextWrapping.Wrap };
+            var subtitleText = new TextBlock { Text = subtitle, FontSize = 12, TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0,2) };
             subtitleText.Bind(TextBlock.ForegroundProperty, new DynamicResourceExtension("TextFillColorSecondaryBrush"));
 
             textPanel.Children.Add(titleText);
@@ -447,15 +444,15 @@ namespace Froststrap.UI.Elements.Settings
             var closeButton = new IconButton
             {
                 Icon = LucideIconNames.X,
-                IconSize = 16,
+                IconSize = 12,
+                CornerRadius = new CornerRadius(0, 10, 10, 0),
                 Background = Brushes.Transparent,
                 BorderThickness = new Thickness(0),
                 Padding = new Thickness(8, 4, 8, 4),
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right,
-                Width = 32,
-                Height = 32,
-                Margin = new Thickness(0, 0, 12, 0)
+                Margin = new Thickness(20, 0, 0, 0),
+                Width = 50,
             };
 
             closeButton.Bind(IconButton.ForegroundProperty, new DynamicResourceExtension("TextFillColorSecondaryBrush"));
@@ -465,18 +462,15 @@ namespace Froststrap.UI.Elements.Settings
 
             var notification = new Border
             {
-                BorderBrush = new SolidColorBrush(Color.Parse(accentColor)),
-                BorderThickness = new Thickness(1),
-                Padding = new Thickness(0, 12, 0, 12),
-                Margin = new Thickness(200, 0, 200, 40),
+                Margin = new Thickness(0, 15, 15, 0),
                 MinWidth = 350,
                 Height = 80,
-                CornerRadius = new CornerRadius(6),
+                CornerRadius = new CornerRadius(10),
                 Opacity = 0,
                 RenderTransform = new TranslateTransform(0, 40),
                 Child = contentGrid,
                 BoxShadow = new BoxShadows(new BoxShadow { Blur = 10, OffsetY = 4, Color = Color.Parse("#40000000") }),
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right
             };
 
             notification.Bind(Border.BackgroundProperty, new DynamicResourceExtension("NotificationBackgroundColor"));

@@ -279,9 +279,9 @@
             Name="NotificationPanel"
             Grid.Row="0"
             Grid.RowSpan="3"
-            Margin="0,0,0,15"
+            Margin="0,50,0,0"
             HorizontalAlignment="Stretch"
-            VerticalAlignment="Bottom"
+            VerticalAlignment="Top"
             ZIndex="1000" />
 
         <Border
