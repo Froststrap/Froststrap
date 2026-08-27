@@ -24,6 +24,18 @@ body:
       placeholder: "v1.2.3"
     validations:
       required: true
+  - type: input
+    id: os
+    attributes:
+      label: Operating System
+      description: "What OS are you using?"
+      placeholder: |
+        "E.g."
+        "Windows 11 25H2"
+        "macOS Tahoe 26.6.2"
+        "Ubuntu 26.04 LTS"
+    validations:
+      required: true
   - type: textarea
     id: what-happened
     attributes:
