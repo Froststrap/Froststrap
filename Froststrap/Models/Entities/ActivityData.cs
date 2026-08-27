@@ -11,25 +11,25 @@ using System.Windows.Input;
 
 namespace Froststrap.Models.Entities
 {
-	public class ActivityData
-	{
-		private long _universeId = 0;
+    public class ActivityData
+    {
+        private long _universeId = 0;
 
-		/// <summary>
-		/// If the current activity stems from an in-universe teleport, then this will be
-		/// set to the activity that corresponds to the initial game join
-		/// </summary>
-		public ActivityData? RootActivity { get; set; }
+        /// <summary>
+        /// If the current activity stems from an in-universe teleport, then this will be
+        /// set to the activity that corresponds to the initial game join
+        /// </summary>
+        public ActivityData? RootActivity { get; set; }
 
-		public long UniverseId
-		{
-			get => _universeId;
-			set => _universeId = value;
-		}
+        public long UniverseId
+        {
+            get => _universeId;
+            set => _universeId = value;
+        }
 
-		public long PlaceId { get; set; } = 0;
+        public long PlaceId { get; set; } = 0;
 
-		public string JobId { get; set; } = string.Empty;
+        public string JobId { get; set; } = string.Empty;
 
         public string Region { get; set; } = string.Empty;
 
@@ -38,19 +38,19 @@ namespace Froststrap.Models.Entities
         /// </summary>
         public string AccessCode { get; set; } = string.Empty;
 
-		public long UserId { get; set; } = 0;
+        public long UserId { get; set; } = 0;
 
-		public string MachineAddress { get; set; } = string.Empty;
+        public string MachineAddress { get; set; } = string.Empty;
 
-		public bool MachineAddressValid => !string.IsNullOrEmpty(MachineAddress) && !MachineAddress.StartsWith("10.");
+        public bool MachineAddressValid => !string.IsNullOrEmpty(MachineAddress) && !MachineAddress.StartsWith("10.");
 
-		public bool IsTeleport { get; set; } = false;
+        public bool IsTeleport { get; set; } = false;
 
-		public ServerType ServerType { get; set; } = ServerType.Public;
+        public ServerType ServerType { get; set; } = ServerType.Public;
 
-		public DateTime TimeJoined { get; set; }
+        public DateTime TimeJoined { get; set; }
 
-		public DateTime? TimeLeft { get; set; }
+        public DateTime? TimeLeft { get; set; }
 
         public DateTime? StartTime { get; set; }
 
@@ -61,21 +61,21 @@ namespace Froststrap.Models.Entities
         /// </summary>
         public string RPCLaunchData { get; set; } = string.Empty;
 
-		public UniverseDetails? UniverseDetails { get; set; }
+        public UniverseDetails? UniverseDetails { get; set; }
 
-		public string? RootJobId { get; set; }
+        public string? RootJobId { get; set; }
 
         public Bitmap? ThumbnailBitmap { get; set; }
 
 
         public event EventHandler<string>? OnDeleteRequested;
 
-		public ICommand RejoinServerCommand => new RelayCommand(() => RejoinServer(true));
+        public ICommand RejoinServerCommand => new RelayCommand(() => RejoinServer(true));
         public ICommand CopyDeeplinkCommand => new RelayCommand<Visual>(CopyDeeplink);
         public ICommand CopyServerIdCommand => new RelayCommand<Visual>(CopyServerId);
         public ICommand DeleteHistoryCommand => new RelayCommand(DeleteHistory);
 
-		private readonly SemaphoreSlim serverQuerySemaphore = new(1, 1);
+        private readonly SemaphoreSlim serverQuerySemaphore = new(1, 1);
 
         public string GetInviteDeeplink(bool launchData = true, DeeplinkType type = DeeplinkType.RobloxProtocol)
         {
@@ -91,7 +91,7 @@ namespace Froststrap.Models.Entities
             if (ServerType == ServerType.Private)
             {
                 if (!string.IsNullOrEmpty(AccessCode))
-            	    deeplink += "&accessCode=" + AccessCode;
+                    deeplink += "&accessCode=" + AccessCode;
             }
             else
             {
@@ -155,57 +155,57 @@ namespace Froststrap.Models.Entities
         }
 
         public void RejoinServer(bool CloseRoblox = true)
-		{
-			try
-			{
-				App.Logger.Info($"Rejoining server: {PlaceId}/{JobId}");
+        {
+            try
+            {
+                App.Logger.Info($"Rejoining server: {PlaceId}/{JobId}");
 
-				string robloxUri = GetInviteDeeplink(true);
+                string robloxUri = GetInviteDeeplink(true);
 
-				Process.Start(new ProcessStartInfo
-				{
-					FileName = robloxUri,
-					UseShellExecute = true
-				});
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = robloxUri,
+                    UseShellExecute = true
+                });
 
-				if (CloseRoblox)
-					CloseRobloxProcesses();
-			}
-			catch (Exception ex)
-			{
-				App.Logger.Error($"Failed to rejoin server: {ex.Message}");
-				_ = Frontend.ShowMessageBox($"Failed to rejoin server: {ex.Message}", MessageBoxImage.Error);
-			}
-		}
+                if (CloseRoblox)
+                    CloseRobloxProcesses();
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error($"Failed to rejoin server: {ex.Message}");
+                _ = Frontend.ShowMessageBox($"Failed to rejoin server: {ex.Message}", MessageBoxImage.Error);
+            }
+        }
 
-		public static void CloseRobloxProcesses()
-		{
-			try
-			{
-				var process = Process.GetProcessesByName("RobloxPlayerBeta");
+        public static void CloseRobloxProcesses()
+        {
+            try
+            {
+                var process = Process.GetProcessesByName("RobloxPlayerBeta");
 
-				if (process.Length == 0)
-				{
-					App.Logger.Info($"Roblox not found");
-					return;
-				}
+                if (process.Length == 0)
+                {
+                    App.Logger.Info($"Roblox not found");
+                    return;
+                }
 
-				foreach (var proc in process)
-				{
-					if ((DateTime.Now - proc.StartTime).TotalSeconds < 3)
-					{
-						App.Logger.Info($"Skipping new process");
-						continue;
-					}
+                foreach (var proc in process)
+                {
+                    if ((DateTime.Now - proc.StartTime).TotalSeconds < 3)
+                    {
+                        App.Logger.Info($"Skipping new process");
+                        continue;
+                    }
 
-					proc.Kill();
-				}
-			}
-			catch (Exception ex)
-			{
-				App.Logger.Error($"Roblox could not be closed: {ex.Message}");
-			}
-		}
+                    proc.Kill();
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error($"Roblox could not be closed: {ex.Message}");
+            }
+        }
 
         //Froststrap deeplink type when it works, for now use roblox one
         private async void CopyDeeplink(Visual? visual)
@@ -227,13 +227,13 @@ namespace Froststrap.Models.Entities
         }
 
         private void DeleteHistory()
-		{
-			string jobIdToDelete = !string.IsNullOrEmpty(RootJobId) ? RootJobId : JobId;
+        {
+            string jobIdToDelete = !string.IsNullOrEmpty(RootJobId) ? RootJobId : JobId;
 
-			if (!string.IsNullOrEmpty(jobIdToDelete))
-			{
-				OnDeleteRequested?.Invoke(this, jobIdToDelete);
-			}
-		}
-	}
+            if (!string.IsNullOrEmpty(jobIdToDelete))
+            {
+                OnDeleteRequested?.Invoke(this, jobIdToDelete);
+            }
+        }
+    }
 }

@@ -59,11 +59,11 @@ namespace Froststrap.UI.ViewModels.Settings
             get => _breadcrumbItems;
             set
             {
-                    _breadcrumbItems?.CollectionChanged -= OnBreadcrumbsChanged;
+                _breadcrumbItems?.CollectionChanged -= OnBreadcrumbsChanged;
 
                 SetProperty(ref _breadcrumbItems, value);
 
-                    _breadcrumbItems?.CollectionChanged += OnBreadcrumbsChanged;
+                _breadcrumbItems?.CollectionChanged += OnBreadcrumbsChanged;
 
                 UpdateBreadcrumbVisibility();
             }
@@ -163,7 +163,8 @@ namespace Froststrap.UI.ViewModels.Settings
                     new DefaultSettingsService(),
                     dialogService
                 );
-                Navigate("fastflags", Strings.Menu_FastFlags_Title, Strings.Menu_FastFlags_Description, viewModel);});
+                Navigate("fastflags", Strings.Menu_FastFlags_Title, Strings.Menu_FastFlags_Description, viewModel);
+            });
             NavigateToAppearanceCommand = new RelayCommand(() => Navigate("appearance", Strings.Menu_Appearance_Title, Strings.Menu_Appearance_Description, new AppearanceViewModel()));
             NavigateToRegionSelectorCommand = new RelayCommand(() => Navigate("regionselector", Strings.Menu_RegionSelector_Title, Strings.Menu_RegionSelector_Description, new RegionSelectorViewModel()));
             NavigateToGlobalSettingsCommand = new RelayCommand(() => Navigate("globalsettings", Strings.Menu_GlobalSettings_Title, Strings.Menu_GBSEditor_Description, new GlobalSettingsViewModel()));

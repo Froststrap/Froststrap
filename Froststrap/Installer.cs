@@ -456,15 +456,15 @@ namespace Froststrap
         [System.Runtime.Versioning.SupportedOSPlatform("linux")]
         private static bool IsSymlinkPointingAt(string path, string expectedTarget)
         {
-          if (!IsSymlink(path))
+            if (!IsSymlink(path))
                 return false;
 
-          try
-          {
-               string? actual = Directory.ResolveLinkTarget(path, returnFinalTarget: false)?.FullName;
-              return actual == expectedTarget;
-           }
-           catch { return false; }
+            try
+            {
+                string? actual = Directory.ResolveLinkTarget(path, returnFinalTarget: false)?.FullName;
+                return actual == expectedTarget;
+            }
+            catch { return false; }
         }
 
         private static void TryDelete(string path)

@@ -10,7 +10,7 @@
         {
             _shortcutPath = Path.Combine(lnkFolder, lnkName);
             _exeFlags = exeFlags;
-            
+
             OriginalState = File.Exists(Shortcut.ResolvePath(_shortcutPath));
         }
 

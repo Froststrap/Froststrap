@@ -36,7 +36,7 @@ namespace Froststrap
         /// </summary>
         public string[] Args { get; private set; }
 
-        private static readonly string[] StudioFileExtensions = [ ".rbxl", ".rbxlx", ".rbxm", ".rbxmx" ];
+        private static readonly string[] StudioFileExtensions = [".rbxl", ".rbxlx", ".rbxm", ".rbxmx"];
 
         private static bool IsRobloxStudioFile(string path)
         {

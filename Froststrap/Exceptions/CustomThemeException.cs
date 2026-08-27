@@ -33,7 +33,7 @@
 
         public override string ToString()
         {
-            StringBuilder sb = new (GetType().ToString());
+            StringBuilder sb = new(GetType().ToString());
 
             if (!string.IsNullOrEmpty(Message))
                 sb.Append($": {Message}");

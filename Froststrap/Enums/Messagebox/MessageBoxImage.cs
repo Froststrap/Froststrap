@@ -1,7 +1,7 @@
 ﻿namespace Froststrap.Enums.Messagebox
 {
-    public enum MessageBoxImage 
-    { 
+    public enum MessageBoxImage
+    {
         None,
         Error,
         Information,

@@ -63,7 +63,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 _flagsService.SetPreset("Rendering.RemoveGrass2", value ? "0" : null);
                 _flagsService.SetPreset("Rendering.RemoveGrass3", value ? "0" : null);
                 OnPropertyChanged();
-                }
+            }
         }
 
         public bool LowPolyMeshesEnabled
@@ -100,7 +100,7 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 int clamped = Math.Clamp(value, 0, 9);
 
-                int[] baseValues = [ 2000, 1500, 1000, 500 ];
+                int[] baseValues = [2000, 1500, 1000, 500];
                 int[] levels = new int[4];
 
                 for (int i = 0; i < 4; i++)

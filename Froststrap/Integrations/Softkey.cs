@@ -182,7 +182,7 @@ namespace Froststrap.Integrations
             }
             catch (Exception ex)
             {
-                App.Logger.Error( $"Hook callback crashed: {ex.Message}");
+                App.Logger.Error($"Hook callback crashed: {ex.Message}");
                 return CallNextHookEx(_hookHandle, nCode, wParam, lParam);
             }
         }

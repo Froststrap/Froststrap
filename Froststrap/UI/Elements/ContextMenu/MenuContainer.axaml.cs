@@ -76,7 +76,8 @@ namespace Froststrap.UI.Elements.ContextMenu
                 ActivityWatcher.OnStudioPlaceOpened += ActivityWatcher_OnStudioPlaceOpened;
                 ActivityWatcher.OnStudioPlaceClosed += ActivityWatcher_OnStudioPlaceClosed;
 
-                Dispatcher.UIThread.Post(() => {
+                Dispatcher.UIThread.Post(() =>
+                {
                     if (ActivityWatcher.InRobloxStudio)
                     {
                         InviteDeeplinkMenuItem?.SetValue(MenuItem.IsVisibleProperty, false);
@@ -156,7 +157,8 @@ namespace Froststrap.UI.Elements.ContextMenu
         }
 
         private void ActivityWatcher_OnGameJoin(object? sender, EventArgs e) =>
-            Dispatcher.UIThread.Invoke(() => {
+            Dispatcher.UIThread.Invoke(() =>
+            {
                 if (ActivityWatcher?.Data.ServerType != ServerType.Reserved && InviteDeeplinkMenuItem != null)
                     InviteDeeplinkMenuItem?.SetValue(MenuItem.IsVisibleProperty, true);
                 ServerDetailsMenuItem?.SetValue(MenuItem.IsVisibleProperty, true);
@@ -164,7 +166,8 @@ namespace Froststrap.UI.Elements.ContextMenu
             });
 
         private void ActivityWatcher_OnGameLeave(object? sender, EventArgs e) =>
-            Dispatcher.UIThread.Invoke(() => {
+            Dispatcher.UIThread.Invoke(() =>
+            {
                 InviteDeeplinkMenuItem?.SetValue(MenuItem.IsVisibleProperty, false);
                 ServerDetailsMenuItem?.SetValue(MenuItem.IsVisibleProperty, false);
                 AutoJoinRegionMenuItem?.SetValue(MenuItem.IsVisibleProperty, false);

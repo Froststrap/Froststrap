@@ -221,7 +221,8 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public RegionSelectorViewModel()
         {
-            Servers.CollectionChanged += (_, _) => {
+            Servers.CollectionChanged += (_, _) =>
+            {
                 OnPropertyChanged(nameof(IsServerListEmpty));
                 OnPropertyChanged(nameof(IsServerListEmptyAndNotLoading));
             };

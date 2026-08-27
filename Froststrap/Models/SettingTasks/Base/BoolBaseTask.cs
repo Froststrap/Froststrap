@@ -30,7 +30,7 @@ namespace Froststrap.Models.SettingTasks.Base
             set
             {
                 _newState = value;
-                
+
                 if (Changed)
                     App.PendingSettingTasks[Name] = this;
                 else

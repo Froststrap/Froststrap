@@ -100,7 +100,7 @@ namespace Froststrap.Utility
                 await Frontend.ShowMessageBox(Strings.Dialog_CannotCreateShortcuts, MessageBoxImage.Warning);
             }
         }
-        
+
         public static void Delete(string lnkPath)
         {
             // Always try to clean up the raw path too in case an old .lnk was left behind.
@@ -265,7 +265,7 @@ namespace Froststrap.Utility
 
                 if (Path.GetExtension(finalIconPath)
                     .Equals(".ico", StringComparison.OrdinalIgnoreCase))
-                shortcut.IconLocation = finalIconPath;
+                    shortcut.IconLocation = finalIconPath;
                 else shortcut.IconLocation = $"{finalIconPath},0";
                 shortcut.Save();
             }
@@ -337,7 +337,7 @@ namespace Froststrap.Utility
             string appMenuPath = Path.Combine(appsDir, Path.GetFileName(finalDesktopPath));
             File.WriteAllText(appMenuPath, content);
         }
-        
+
         private static string GetLinuxAppMenuDir() =>
             Path.Combine(Paths.UserProfile, ".local", "share", "applications");
 

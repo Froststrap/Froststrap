@@ -156,7 +156,7 @@ namespace Froststrap.UI
                 title,
                 message,
                 duration
-            );           
+            );
         }
 
         public void Dispose()

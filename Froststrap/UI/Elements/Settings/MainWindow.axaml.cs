@@ -653,7 +653,8 @@ namespace Froststrap.UI.Elements.Settings
 
                     var hiddenControlHeaders = pageView.GetVisualDescendants()
                         .Where(c => !c.IsVisible)
-                        .Select(c => {
+                        .Select(c =>
+                        {
                             if (c is OptionControl oc) return oc.Header?.ToString();
                             if (c is CardExpander ce) return ce.Header?.ToString();
                             if (c is CardAction ca) return ca.Header?.ToString();
