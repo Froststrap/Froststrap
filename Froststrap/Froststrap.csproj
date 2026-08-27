@@ -3,6 +3,7 @@
   <PropertyGroup>
     <OutputType Condition="'$(RuntimeIdentifier)' == 'linux-x64' Or '$(RuntimeIdentifier)' == 'linux-arm64'">Exe</OutputType>
     <OutputType Condition="'$(RuntimeIdentifier)' != 'linux-x64' And '$(RuntimeIdentifier)' != 'linux-arm64'">WinExe</OutputType>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
