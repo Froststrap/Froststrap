@@ -33,7 +33,7 @@ if [ -z "${IN_NIX_SHELL:-}" ]; then
     echo "error: could not locate nix binary" >&2
     exit 1
   fi
-  unset TARGETNAME
+
   exec "$NIX_BIN" develop --command "$0" "$@"
 fi
 
@@ -46,6 +46,7 @@ ARCH="arm64"
 [ "$(uname -m)" = "x86_64" ] && ARCH="x64"
 PUBLISH_PROFILE="Publish-osx-$ARCH"
 
+unset TARGETNAME TARGET_NAME
 echo "Publishing Froststrap binary for osx-$ARCH into $OUTPUT_DIR..."
 
 rm -rf "$OUTPUT_DIR"
@@ -54,8 +55,6 @@ mkdir -p "$OUTPUT_DIR"
 dotnet publish "$PROJECT_FILE" \
     -c "$CONFIG" \
     -p:PublishProfile="$PUBLISH_PROFILE" \
-    -p:PublishSingleFile=true \
-    -p:SelfContained=true \
     -o "$OUTPUT_DIR" \
     --configfile "$SRCROOT/../nuget.config"
 
