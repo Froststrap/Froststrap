@@ -8,6 +8,8 @@ namespace Froststrap.Integrations
     [SupportedOSPlatform("windows")]
     public class IntegrationWatcher : IDisposable
     {
+        private static unsafe bool IsHandleValid(HWND hwnd) => hwnd.Value != null;
+
         private readonly ActivityWatcher _activityWatcher;
         private readonly Dictionary<int, CustomIntegration> _activeIntegrations = [];
 
@@ -131,10 +133,10 @@ namespace Froststrap.Integrations
             }
         }
 
-        private void OnGameLeave(object? sender, EventArgs e)
+        private unsafe void OnGameLeave(object? sender, EventArgs e)
         {
 
-            if (_robloxWindowHandle.Value != IntPtr.Zero || OperatingSystem.IsWindows())
+            if (!IsHandleValid(_robloxWindowHandle) || OperatingSystem.IsWindows())
             {
                 try
                 {
@@ -187,7 +189,7 @@ namespace Froststrap.Integrations
         [SupportedOSPlatform("windows")]
         private void EnsureWindowHandleCached()
         {
-            if (_robloxWindowHandle.Value != IntPtr.Zero) return;
+            if (!IsHandleValid(_robloxWindowHandle)) return;
 
             IntPtr nativeHandle = IntPtr.Zero;
             try
@@ -216,7 +218,7 @@ namespace Froststrap.Integrations
         [SupportedOSPlatform("windows")]
         private async Task UpdateIconToGameIcon()
         {
-            if (_robloxWindowHandle.Value == IntPtr.Zero) return;
+            if (!IsHandleValid(_robloxWindowHandle)) return;
 
             try
             {
@@ -275,7 +277,7 @@ namespace Froststrap.Integrations
         [SupportedOSPlatform("windows")]
         private async Task UpdateTitleToGameName()
         {
-            if (_robloxWindowHandle.Value == IntPtr.Zero) return;
+            if (!IsHandleValid(_robloxWindowHandle)) return;
 
             try
             {
