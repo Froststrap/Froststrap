@@ -13,8 +13,10 @@ sealed class Program
     /// possible arguments within Froststrap.
     public class Options
     {
+#if WINDOWS
         [Option('c', "console", HelpText = "Attaches a console window for debugging.")]
         public bool AttachConsole { get; set; }
+#endif
         [Option('g', "nogpu", HelpText = "Sets env AVALONIA_GPU to 0 on runtime.")]
         public bool NoGPU { get; set; }
     }
