@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <OutputType Condition="'$(RuntimeIdentifier)' == 'linux-x64' Or '$(RuntimeIdentifier)' == 'linux-arm64'">Exe</OutputType>
     <OutputType Condition="'$(RuntimeIdentifier)' != 'linux-x64' And '$(RuntimeIdentifier)' != 'linux-arm64'">WinExe</OutputType>
@@ -7,7 +6,6 @@
     <AnalysisLevel>latest-all</AnalysisLevel>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <TargetFramework>net10.0</TargetFramework>
-    <NoWarn>CA2007</NoWarn>
     <Nullable>enable</Nullable>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
     <Version>2.0.0</Version>
@@ -20,7 +18,7 @@
     <Description>Froststrap - A Fishstrap fork</Description>
     <ApplicationIcon>Froststrap.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <NoWarn>$(NoWarn);CA1416</NoWarn>
+    <NoWarn>$(NoWarn);CA1416;CA2007</NoWarn>
   </PropertyGroup>
 
   <!-- Resources needed by Avalonia -->
