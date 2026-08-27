@@ -19,7 +19,7 @@
     <ApplicationIcon>Froststrap.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <NoWarn>$(NoWarn);CA1416;CA2007</NoWarn>
-    <OutputType Condition="'$(RuntimeIdentifier)' != 'linux-x64' And '$(RuntimeIdentifier)' != 'linux-arm64' And '$(RuntimeIdentifier)' != 'osx-x64' And '$(RuntimeIdentifier)' != 'osx-arm64' And '$(RuntimeIdentifier)' != 'osx'">WinExe</OutputType>
+    <OutputType Condition="'$(RuntimeIdentifier)' == 'win-x64' Or '$(RuntimeIdentifier)' == 'win-x86' Or '$(RuntimeIdentifier)' == 'win-arm64'">WinExe</OutputType>
   </PropertyGroup>
 
   <!-- Resources needed by Avalonia -->
