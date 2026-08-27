@@ -19,7 +19,7 @@
     <ApplicationIcon>Froststrap.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <NoWarn>$(NoWarn);CA1416;CA2007</NoWarn>
-    <DefineConstants Condition="$(RuntimeIdentifier.StartsWith('win'))">$(DefineConstants);WINDOWS</DefineConstants>
+    <OutputType Condition="'$(RuntimeIdentifier)' != 'linux-x64' And '$(RuntimeIdentifier)' != 'linux-arm64' And '$(RuntimeIdentifier)' != 'osx-x64' And '$(RuntimeIdentifier)' != 'osx-arm64' And '$(RuntimeIdentifier)' != 'osx'">WinExe</OutputType>
   </PropertyGroup>
 
   <!-- Resources needed by Avalonia -->
