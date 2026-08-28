@@ -1,16 +1,12 @@
 #!/bin/bash
 set -e
 
-# Resolve SRCROOT: use Xcode's injected value if present, otherwise
-# compute the repo root from this script's own location (so it still
-# works when run manually or from a CI job that doesn't set SRCROOT).
 if [ -z "${SRCROOT:-}" ]; then
   SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
   SRCROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 fi
 export SRCROOT
 
-# 1. Self-bootstrap into the Nix development environment if not already inside one
 if [ -z "${IN_NIX_SHELL:-}" ]; then
   if [ -n "$SKIP_DOTNET_BUILD" ]; then
     echo "SKIP_DOTNET_BUILD set — skipping build"
@@ -37,26 +33,30 @@ if [ -z "${IN_NIX_SHELL:-}" ]; then
   exec "$NIX_BIN" develop --accept-flake-config --command "$0" "$@"
 fi
 
-# --- 2. Inside the Nix development environment ---
 CONFIG="${1:-Release}"
 PROJECT_FILE="${2:-"$SRCROOT/../Froststrap/Froststrap.csproj"}"
 OUTPUT_DIR="$SRCROOT/build/dotnet"
 
-ARCH="arm64"
-[ "$(uname -m)" = "x86_64" ] && ARCH="x64"
-PUBLISH_PROFILE="Publish-osx-$ARCH"
-
 unset TARGETNAME TARGET_NAME
-echo "Publishing Froststrap binary for osx-$ARCH into $OUTPUT_DIR..."
-
 rm -rf "$OUTPUT_DIR"
 mkdir -p "$OUTPUT_DIR"
 
 dotnet publish "$PROJECT_FILE" \
     -c "$CONFIG" \
-    -p:PublishProfile="$PUBLISH_PROFILE" \
-    -o "$OUTPUT_DIR" \
+    -p:PublishProfile="Publish-osx-arm64" \
+    -o "$OUTPUT_DIR/arm64" \
     --configfile "$SRCROOT/../nuget.config"
+
+dotnet publish "$PROJECT_FILE" \
+    -c "$CONFIG" \
+    -p:PublishProfile="Publish-osx-x64" \
+    -o "$OUTPUT_DIR/x64" \
+    --configfile "$SRCROOT/../nuget.config"
+
+lipo -create \
+    "$OUTPUT_DIR/arm64/Froststrap" \
+    "$OUTPUT_DIR/x64/Froststrap" \
+    -output "$OUTPUT_DIR/Froststrap"
 
 if [ -f "$OUTPUT_DIR/Froststrap" ]; then
     chmod +x "$OUTPUT_DIR/Froststrap"
