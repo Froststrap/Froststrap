@@ -48,21 +48,27 @@ jobs:
       - name: Set short SHA
         run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> "$GITHUB_ENV"
 
-      - uses: actions/setup-dotnet@v6
+      - uses: DeterminateSystems/nix-installer-action@v22
+      - uses: DeterminateSystems/magic-nix-cache-action@v14
+
+      - uses: apple-actions/import-codesign-certs@v7
         with:
-          dotnet-version: "10.0.x"
+          p12-file-base64: ${{ secrets.CERT_P12_BASE64 }}
+          p12-password: ${{ secrets.P12_PASSWORD }}
+
+      - uses: apple-actions/import-codesign-certs@v7
+        with:
+          p12-file-base64: ${{ secrets.CERT_P12_INSTALLER_BASE64 }}
+          p12-password: ${{ secrets.P12_PASSWORD }}
 
       - name: Build, sign (if release), and package
         env:
           SIGN: ${{ startsWith(github.ref, 'refs/tags/v') && 'true' || 'false' }}
-          CERT_P12_BASE64: ${{ secrets.CERT_P12_BASE64 }}
-          CERT_P12_INSTALLER_BASE64: ${{ secrets.CERT_P12_INSTALLER_BASE64 }}
-          P12_PASSWORD: ${{ secrets.P12_PASSWORD }}
           DEVELOPER_ID_APP: ${{ secrets.DEVELOPER_ID_APP }}
           DEVELOPER_ID_INSTALLER: ${{ secrets.DEVELOPER_ID_INSTALLER }}
+          APP_STORE_CONNECT_P8_CONTENT: ${{ secrets.APP_STORE_CONNECT_P8_CONTENT }}
           APPLE_KEY_ID: ${{ secrets.APPLE_KEY_ID }}
           APPLE_ISSUER_ID: ${{ secrets.APPLE_ISSUER_ID }}
-          APP_STORE_CONNECT_P8_CONTENT: ${{ secrets.APP_STORE_P8_CONTENT }}
         run: |
           chmod +x Scripts/package/publish-macos.sh
           ./Scripts/package/publish-macos.sh
