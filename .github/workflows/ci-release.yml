@@ -51,6 +51,10 @@ jobs:
       - uses: DeterminateSystems/nix-installer-action@v22
       - uses: DeterminateSystems/magic-nix-cache-action@v14
 
+      - name: Remove stale signing keychain
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: security delete-keychain signing_temp.keychain || true
+
       - uses: apple-actions/import-codesign-certs@v7
         # if: startsWith(github.ref, 'refs/tags/v')
         with:
