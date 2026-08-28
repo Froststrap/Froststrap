@@ -2,7 +2,7 @@
 set -e
 
 XCODE_PROJECT_DIR="macApp"
-XCODE_PROJECT="macApp.xcodeproj"
+XCODE_PROJECT="Froststrap.xcodeproj"
 XCODE_SCHEME="Froststrap"
 ENTITLEMENTS_PATH="$XCODE_PROJECT_DIR/Froststrap.entitlements"
 
@@ -29,8 +29,7 @@ APP_PATH="$DERIVED_DATA_PATH/Build/Products/$CONFIG/Froststrap.app"
 
 if [ ! -d "$APP_PATH" ]; then
     echo "ERROR: expected .app not found at $APP_PATH"
-    echo "Check SYMROOT / CONFIGURATION_BUILD_DIR in the Xcode project's build settings,"
-    echo "or pass -derivedDataPath to xcodebuild to pin the output location explicitly."
+    echo "xcodebuild reported success but the .app isn't where -derivedDataPath should have put it -- check for a custom SYMROOT/CONFIGURATION_BUILD_DIR build setting overriding it in the project."
     exit 1
 fi
 
@@ -56,10 +55,19 @@ if [ "$SIGN" = "true" ]; then
     mkdir -p ~/.private_keys
     echo "$APP_STORE_CONNECT_P8_CONTENT" > ~/.private_keys/AuthKey_${APPLE_KEY_ID}.p8
 
+    set +e
     SUBMISSION_OUTPUT=$(xcrun notarytool submit "$BUILD_DIR/Froststrap.pkg" \
         --key-id "$APPLE_KEY_ID" --issuer "$APPLE_ISSUER_ID" \
         --key ~/.private_keys/AuthKey_${APPLE_KEY_ID}.p8 --wait 2>&1)
+    NOTARY_EXIT=$?
+    set -e
+
     echo "$SUBMISSION_OUTPUT"
+
+    if [ $NOTARY_EXIT -ne 0 ]; then
+        echo "notarytool exited with status $NOTARY_EXIT (see output above)"
+        exit 1
+    fi
 
     SUBMISSION_ID=$(echo "$SUBMISSION_OUTPUT" | grep -o 'id: [a-f0-9-]*' | head -1 | sed 's/id: //')
     if echo "$SUBMISSION_OUTPUT" | grep -q "status: Invalid"; then
