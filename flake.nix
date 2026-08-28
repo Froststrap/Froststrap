@@ -3,6 +3,11 @@
 {
   description = "Flake for Froststrap";
 
+  nixConfig = {
+    extra-substituters = [ "https://invra.cachix.org" ];
+    extra-trusted-public-keys = [ "invra.cachix.org-1:5lB/b5n5iQVLCbAYfnH5f5ASzqlVB6uKfINHge7lVvk=" ];
+  };
+
   inputs = {
     fenix = {
       url = "github:nix-community/fenix";
