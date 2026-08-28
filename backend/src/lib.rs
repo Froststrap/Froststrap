@@ -88,10 +88,8 @@ pub unsafe extern "C" fn send_notification_message(
     #[cfg(target_os = "linux")]
     notification.appname(APP_ID);
 
-    let result = match notification.show() {
+    match notification.show() {
         Ok(_) => 0,
         Err(_) => -3,
-    };
-
-    result
+    }
 }
