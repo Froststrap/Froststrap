@@ -19,11 +19,13 @@ namespace Froststrap.UI.ViewModels.Settings
     public class SortOrderComboBoxItem
     {
         public string Content { get; set; } = "";
-        public int Tag { get; set; }
+        public string Tag { get; set; }
     }
 
     public class RegionSelectorViewModel : NotifyPropertyChangedViewModel
     {
+        private const int MaxServers = 20;
+
         private readonly HashSet<string> _displayedServerIds = [];
         private RobloxServerFetcher? _fetcher;
         private Dictionary<int, string>? _dcMap;
@@ -41,7 +43,7 @@ namespace Froststrap.UI.ViewModels.Settings
         private bool _hasValidCookies;
         private string _searchQuery = "";
         private OmniSearchContent? _selectedSearchResult;
-        private int _selectedSortOrder = 2;
+        private string _selectedSortOrder = "BestLatency";
         private SortOrderComboBoxItem? _selectedSortOrderItem;
         private int _lastFetchProcessedCount;
         private string? _thumbnailUrl;
@@ -155,10 +157,17 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public int SelectedSortOrder
+        public string SelectedSortOrder
         {
             get => _selectedSortOrder;
-            set => SetProperty(ref _selectedSortOrder, value);
+            set
+            {
+                if (SetProperty(ref _selectedSortOrder, value))
+                {
+                    OnPropertyChanged(nameof(IsRegionSelectionEnabled));
+                    SearchCommand.NotifyCanExecuteChanged();
+                }
+            }
         }
 
         public SortOrderComboBoxItem? SelectedSortOrderItem
@@ -201,8 +210,9 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public List<SortOrderComboBoxItem> SortOrderOptions { get; } =
         [
-            new() { Content = Strings.Menu_RegionSelector_LargeServers, Tag = 2 },
-            new() { Content = Strings.Menu_RegionSelector_SmallServers, Tag = 1 }
+            new() { Content = Strings.Common_Auto, Tag = "BestLatency" },
+            new() { Content = Strings.Menu_RegionSelector_LargeServers, Tag = "OccupancyDesc" },
+            new() { Content = Strings.Menu_RegionSelector_SmallServers, Tag = "OccupancyAsc" }
         ];
 
         public bool IsServerListEmpty => Servers.Count == 0;
@@ -217,6 +227,10 @@ namespace Froststrap.UI.ViewModels.Settings
         public IAsyncRelayCommand SearchCommand { get; }
         public IAsyncRelayCommand LoadMoreCommand { get; }
         public IAsyncRelayCommand SearchGamesCommand { get; }
+
+        public bool IsRegionSelectionEnabled => SelectedSortOrder != "BestLatency";
+
+        private bool IsAutoSortOrder => SelectedSortOrder == "BestLatency";
         #endregion
 
         public RegionSelectorViewModel()
@@ -225,14 +239,15 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 OnPropertyChanged(nameof(IsServerListEmpty));
                 OnPropertyChanged(nameof(IsServerListEmptyAndNotLoading));
+                LoadMoreCommand.NotifyCanExecuteChanged(); // Update LoadMore button state when server count changes
             };
 
             SearchCommand = new AsyncRelayCommand(SearchAsync, () => !IsLoading && !string.IsNullOrWhiteSpace(PlaceId) && HasValidCookies);
             SearchGamesCommand = new AsyncRelayCommand(SearchGamesAsync, () => !IsLoading && !IsGameSearchLoading && !string.IsNullOrWhiteSpace(SearchQuery) && HasValidCookies);
-            LoadMoreCommand = new AsyncRelayCommand(LoadMoreServersAsync, () => !IsLoading && !string.IsNullOrWhiteSpace(NextCursor));
+            LoadMoreCommand = new AsyncRelayCommand(LoadMoreServersAsync, () => !IsLoading && !string.IsNullOrWhiteSpace(NextCursor) && Servers.Count < MaxServers);
 
             _ = InitializeCookiesAsync();
-            SelectedSortOrderItem = SortOrderOptions.FirstOrDefault(x => x.Tag == 2);
+            SelectedSortOrderItem = SortOrderOptions.FirstOrDefault(x => x.Tag == "BestLatency");
         }
 
         private void OnSearchQueryChanged(string value)
@@ -405,7 +420,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private async Task SearchAsync()
         {
-            if (string.IsNullOrWhiteSpace(SelectedRegion))
+            if (!IsAutoSortOrder && string.IsNullOrWhiteSpace(SelectedRegion))
             {
                 _ = Frontend.ShowMessageBox(Strings.Menu_RegionSelector_PleaseSelectRegion, MessageBoxImage.Warning);
                 return;
@@ -424,7 +439,8 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 await LoadServersAsync(pagesChecked == 0);
                 pagesChecked++;
-                if (string.IsNullOrWhiteSpace(NextCursor)) break;
+                if (string.IsNullOrWhiteSpace(NextCursor) || Servers.Count >= MaxServers)
+                    break;
             }
 
             IsLoading = false;
@@ -434,7 +450,8 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private async Task LoadServersAsync(bool resetCursor = false)
         {
-            if (string.IsNullOrWhiteSpace(PlaceId) || string.IsNullOrWhiteSpace(SelectedRegion) || string.IsNullOrWhiteSpace(Roblosecurity)) return;
+            if (string.IsNullOrWhiteSpace(PlaceId) || string.IsNullOrWhiteSpace(Roblosecurity)) return;
+            if (!IsAutoSortOrder && string.IsNullOrWhiteSpace(SelectedRegion)) return;
 
             if (resetCursor) NextCursor = "";
             if (!long.TryParse(PlaceId, out var placeIdLong)) return;
@@ -443,27 +460,41 @@ namespace Froststrap.UI.ViewModels.Settings
             if (result == null) return;
 
             int number = Servers.Count + 1;
+            bool shouldFilterByRegion = !IsAutoSortOrder;
+
             foreach (var s in result.Servers)
             {
-                if (_displayedServerIds.Add(s.Id) && s.DataCenterId.HasValue &&
-                    _dcMap!.TryGetValue(s.DataCenterId.Value, out var mappedRegion) && mappedRegion == SelectedRegion)
+                // Stop adding if we've reached the max
+                if (Servers.Count >= MaxServers)
+                    break;
+
+                if (_displayedServerIds.Add(s.Id) && s.DataCenterId.HasValue)
                 {
-                    var serverEntry = new ServerEntry
+                    bool regionMatches = true;
+                    if (shouldFilterByRegion)
                     {
-                        Number = number++,
-                        ServerId = s.Id,
-                        Players = $"{s.Playing}/{s.MaxPlayers}",
-                        PlayingCount = s.Playing,
-                        Region = s.Region,
-                        DataCenterId = s.DataCenterId,
-                        Uptime = s.UptimeDisplay,
-                        PlayerTokens = s.PlayerTokens,
-                        JoinCommand = new RelayCommand(() => JoinServer(s.Id))
-                    };
+                        regionMatches = _dcMap!.TryGetValue(s.DataCenterId.Value, out var mappedRegion) && mappedRegion == SelectedRegion;
+                    }
 
-                    Servers.Add(serverEntry);
+                    if (regionMatches)
+                    {
+                        var serverEntry = new ServerEntry
+                        {
+                            Number = number++,
+                            ServerId = s.Id,
+                            Players = $"{s.Playing}/{s.MaxPlayers}",
+                            PlayingCount = s.Playing,
+                            Region = s.Region,
+                            DataCenterId = s.DataCenterId,
+                            Uptime = s.UptimeDisplay,
+                            PlayerTokens = s.PlayerTokens,
+                            JoinCommand = new RelayCommand(() => JoinServer(s.Id))
+                        };
 
-                    _ = serverEntry.LoadThumbnailsAsync();
+                        Servers.Add(serverEntry);
+
+                        _ = serverEntry.LoadThumbnailsAsync();
+                    }
                 }
             }
 
@@ -487,9 +518,12 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private async Task LoadMoreServersAsync()
         {
+            if (Servers.Count >= MaxServers)
+                return;
+
             IsLoading = true;
 
-            for (int i = 0; i < 5 && !string.IsNullOrWhiteSpace(NextCursor); i++)
+            for (int i = 0; i < 5 && !string.IsNullOrWhiteSpace(NextCursor) && Servers.Count < MaxServers; i++)
             {
                 await LoadServersAsync();
             }

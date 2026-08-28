@@ -2472,7 +2472,7 @@ Do you want to install the plugin?</value>
     <value>Unknown Game</value>
   </data>
   <data name="Menu.RegionSelector.ServerSize" xml:space="preserve">
-    <value>Server Size:</value>
+    <value>Sort Order:</value>
   </data>
   <data name="Menu.RegionSelector.Region" xml:space="preserve">
     <value>Region:</value>

@@ -343,17 +343,17 @@ namespace Froststrap.Integrations
             return null;
         }
 
-        public async Task<FetchResult> FetchServerInstancesAsync(long placeId, string cursor = "", int sortOrder = 2, string? optionalCookie = null, CancellationToken cancellationToken = default)
+        public async Task<FetchResult> FetchServerInstancesAsync(long placeId, string cursor = "", string sortOrder = "BestLatency", string? optionalCookie = null, CancellationToken cancellationToken = default)
         {
             string? roblosecurity = !string.IsNullOrWhiteSpace(optionalCookie) ? optionalCookie : await ResolveCookieAsync();
             if (string.IsNullOrWhiteSpace(roblosecurity)) return new FetchResult();
 
             if (_datacenterIdToRegion == null) await GetDatacentersAsync(cancellationToken);
 
-            var baseUri = UrlBuilder.BuildApiUrl("games", $"v1/games/{placeId}/servers/Public", secure: true);
+            var baseUri = UrlBuilder.BuildApiUrl("games", $"v2/games/{placeId}/servers/Public", secure: true);
             var url = new UriBuilder(baseUri)
             {
-                Query = $"sortOrder={sortOrder}&excludeFullGames=true&limit=100&cursor={cursor}"
+                Query = $"sortOrder=Desc&excludeFullGames=true&limit=100&orderBy={sortOrder}&cursor={cursor}"
             }.Uri;
 
             var req = new HttpRequestMessage(HttpMethod.Get, url);
@@ -560,7 +560,7 @@ namespace Froststrap.Integrations
         public async Task<ServerSelectionResult> FindBestServerInRegionAsync(
             long placeId,
             List<string> topRegions,
-            bool joinSmallerServer = true,
+            string sortOrder = "BestLatency",
             int maxServerCheck = 100,
             int maxPages = 5,
             string? cookie = null,
@@ -585,7 +585,7 @@ namespace Froststrap.Integrations
                 for (int i = 0; i < topRegions.Count; i++)
                     regionRank[topRegions[i]] = i + 1;
 
-                App.Logger.Info($"Searching in top {topRegions.Count} regions: {string.Join(", ", topRegions)}");
+                App.Logger.Info($"Searching in top {topRegions.Count} regions: {string.Join(", ", topRegions)} with sort order: {sortOrder}");
 
                 string? nextCursor = null;
                 int serversChecked = 0;
@@ -595,7 +595,6 @@ namespace Froststrap.Integrations
 
                 while (pagesFetched < maxPages && serversChecked < maxServerCheck)
                 {
-                    int sortOrder = joinSmallerServer ? 1 : 2;
                     var result = await FetchServerInstancesAsync(placeId, nextCursor ?? "", sortOrder, cookie, cancellationToken);
 
                     if (result?.Servers == null || result.Servers.Count == 0)
@@ -635,56 +634,24 @@ namespace Froststrap.Integrations
 
                 App.Logger.Info($"Collected {allServers.Count} servers from {pagesFetched} pages");
 
-                string? bestServerId = null;
-                string? bestServerRegion = null;
-                int bestRank = int.MaxValue;
-                int bestPlayers = int.MaxValue;
-                int bestMaxPlayers = 0;
+                if (allServers.Count == 0)
+                    return new ServerSelectionResult();
 
-                foreach (var server in allServers)
-                {
-                    if (!server.DataCenterId.HasValue) continue;
-                    if (!dcMap.TryGetValue(server.DataCenterId.Value, out var serverRegion)) continue;
-                    if (!regionRank.TryGetValue(serverRegion, out int rank)) continue;
+                var sorted = allServers
+                    .OrderBy(s => regionRank[dcMap[s.DataCenterId!.Value]])
+                    .ThenBy(s => sortOrder == "OccupancyDesc" ? -s.Playing : s.Playing)
+                    .ToList();
 
-                    bool isBetter = false;
-                    if (rank < bestRank)
-                    {
-                        isBetter = true;
-                    }
-                    else if (rank == bestRank && joinSmallerServer && server.Playing < bestPlayers)
-                    {
-                        isBetter = true;
-                    }
-                    else if (rank == bestRank && !joinSmallerServer && server.Playing > bestPlayers)
-                    {
-                        isBetter = true;
-                    }
-
-                    if (isBetter)
-                    {
-                        bestRank = rank;
-                        bestPlayers = server.Playing;
-                        bestMaxPlayers = server.MaxPlayers;
-                        bestServerId = server.Id;
-                        bestServerRegion = serverRegion;
-                        App.Logger.Info($"Found better server in {serverRegion} (rank {rank}, players: {server.Playing}/{server.MaxPlayers})");
-
-                        if (rank == 1)
-                        {
-                            App.Logger.Info("Found rank 1 server, stopping early");
-                            break;
-                        }
-                    }
-                }
+                var best = sorted.First();
+                int bestRank = regionRank[dcMap[best.DataCenterId!.Value]];
 
                 return new ServerSelectionResult
                 {
-                    ServerId = bestServerId,
-                    Region = bestServerRegion,
+                    ServerId = best.Id,
+                    Region = dcMap[best.DataCenterId.Value],
                     Rank = bestRank,
-                    Players = bestPlayers,
-                    MaxPlayers = bestMaxPlayers
+                    Players = best.Playing,
+                    MaxPlayers = best.MaxPlayers
                 };
             }
             catch (Exception ex)
@@ -694,10 +661,20 @@ namespace Froststrap.Integrations
             }
         }
 
+        private static ServerInstance PickBestServer(List<ServerInstance> servers, string sortOrder)
+        {
+            if (sortOrder == "OccupancyDesc")
+                return servers.OrderByDescending(s => s.Playing).First();
+            else if (sortOrder == "OccupancyAsc")
+                return servers.OrderBy(s => s.Playing).First();
+            else
+                return servers.First();
+        }
+
         public async Task<ServerSelectionResult> FindBestServerInSelectedRegionAsync(
             long placeId,
             string selectedRegion,
-            bool joinSmallerServer = true,
+            string sortOrder = "BestLatency",
             int maxServerCheck = 100,
             int maxPages = 3,
             string? cookie = null,
@@ -721,7 +698,7 @@ namespace Froststrap.Integrations
 
                 var (_, dcMap) = datacentersResult.Value;
 
-                App.Logger.Info($"Searching for servers in selected region: {selectedRegion}");
+                App.Logger.Info($"Searching for servers in selected region: {selectedRegion} with sort order: {sortOrder}");
 
                 string? nextCursor = "";
                 int serversChecked = 0;
@@ -731,7 +708,6 @@ namespace Froststrap.Integrations
 
                 while (!string.IsNullOrEmpty(nextCursor) && pagesFetched < maxPages && serversChecked < maxServerCheck)
                 {
-                    int sortOrder = joinSmallerServer ? 1 : 2;
                     var result = await FetchServerInstancesAsync(placeId, nextCursor ?? "", sortOrder, cookie, cancellationToken);
 
                     if (result?.Servers == null || result.Servers.Count == 0)
@@ -757,35 +733,25 @@ namespace Froststrap.Integrations
                     }
 
                     pagesFetched++;
-
-                    if (!string.IsNullOrEmpty(result.NextCursor))
-                        nextCursor = result.NextCursor;
-                    else
-                        break;
-
+                    nextCursor = result.NextCursor;
                     if (!string.IsNullOrEmpty(nextCursor))
                         await Task.Delay(100, cancellationToken);
                 }
 
                 App.Logger.Info($"Found {allServers.Count} servers in selected region from {pagesFetched} pages");
 
-                var bestServer = joinSmallerServer
-                    ? allServers.OrderBy(s => s.Playing).FirstOrDefault()
-                    : allServers.FirstOrDefault();
+                if (allServers.Count == 0)
+                    return new ServerSelectionResult();
 
-                if (bestServer != null)
+                var best = PickBestServer(allServers, sortOrder);
+                return new ServerSelectionResult
                 {
-                    return new ServerSelectionResult
-                    {
-                        ServerId = bestServer.Id,
-                        Region = selectedRegion,
-                        Rank = 1,
-                        Players = bestServer.Playing,
-                        MaxPlayers = bestServer.MaxPlayers
-                    };
-                }
-
-                return new ServerSelectionResult();
+                    ServerId = best.Id,
+                    Region = selectedRegion,
+                    Rank = 1,
+                    Players = best.Playing,
+                    MaxPlayers = best.MaxPlayers
+                };
             }
             catch (Exception ex)
             {
@@ -796,7 +762,6 @@ namespace Froststrap.Integrations
 
         public async Task<bool> JoinBestServerAsync(
             long placeId,
-            bool joinSmallerServer = true,
             int bestRegionAmounts = 3,
             int maxServerCheck = 100,
             bool showConfirmation = true,
@@ -805,6 +770,9 @@ namespace Froststrap.Integrations
         {
             try
             {
+                string sortOrder = App.Settings.Prop.SelectedServerSortOrder ?? "BestLatency";
+                string selectedRegion = App.Settings.Prop.SelectedRegion ?? "";
+
                 if (string.IsNullOrEmpty(cookie))
                 {
                     cookie = await ResolveCookieAsync();
@@ -815,6 +783,40 @@ namespace Froststrap.Integrations
                     }
                 }
 
+                if (!string.IsNullOrEmpty(selectedRegion) &&
+                    !selectedRegion.Equals("Auto", StringComparison.OrdinalIgnoreCase))
+                {
+                    var result = await FindBestServerInSelectedRegionAsync(
+                        placeId,
+                        selectedRegion,
+                        sortOrder,
+                        maxServerCheck,
+                        cookie: cookie,
+                        cancellationToken: cancellationToken);
+
+                    if (result.Found)
+                    {
+                        if (showConfirmation)
+                        {
+                            string playerCount = $"{result.Players}/{result.MaxPlayers}";
+                            var confirmResult = await Frontend.ShowMessageBox(
+                                $"Found server in {result.Region} with {playerCount} players.\nDo you want to join?",
+                                MessageBoxImage.Question,
+                                MessageBoxButton.YesNo);
+                            if (confirmResult != MessageBoxResult.Yes)
+                                return false;
+                        }
+
+                        string robloxUri = $"roblox://experiences/start?placeId={placeId}&gameInstanceId={result.ServerId}";
+                        Process.Start(new ProcessStartInfo
+                        {
+                            FileName = robloxUri,
+                            UseShellExecute = true
+                        });
+                        return true;
+                    }
+                }
+
                 var topRegions = await GetClosestRegionsForAutoModeAsync(bestRegionAmounts, cancellationToken);
                 if (topRegions.Count == 0)
                 {
@@ -822,9 +824,15 @@ namespace Froststrap.Integrations
                     return false;
                 }
 
-                var result = await FindBestServerInRegionAsync(placeId, topRegions, joinSmallerServer, maxServerCheck, cookie: cookie, cancellationToken: cancellationToken);
+                var autoResult = await FindBestServerInRegionAsync(
+                    placeId,
+                    topRegions,
+                    "BestLatency",
+                    maxServerCheck,
+                    cookie: cookie,
+                    cancellationToken: cancellationToken);
 
-                if (!result.Found)
+                if (!autoResult.Found)
                 {
                     await Frontend.ShowMessageBox($"Could not find a suitable server after checking servers in {topRegions.Count} regions.", MessageBoxImage.Information);
                     return false;
@@ -832,24 +840,21 @@ namespace Froststrap.Integrations
 
                 if (showConfirmation)
                 {
-                    string playerCount = $"{result.Players}/{result.MaxPlayers}";
+                    string playerCount = $"{autoResult.Players}/{autoResult.MaxPlayers}";
                     var confirmResult = await Frontend.ShowMessageBox(
-                        $"Found server in {result.Region} with {playerCount} players.\nDo you want to join?",
+                        $"Found server in {autoResult.Region} with {playerCount} players.\nDo you want to join?",
                         MessageBoxImage.Question,
-                        MessageBoxButton.YesNo
-                    );
-
+                        MessageBoxButton.YesNo);
                     if (confirmResult != MessageBoxResult.Yes)
                         return false;
                 }
 
-                string robloxUri = $"roblox://experiences/start?placeId={placeId}&gameInstanceId={result.ServerId}";
+                string robloxUriAuto = $"roblox://experiences/start?placeId={placeId}&gameInstanceId={autoResult.ServerId}";
                 Process.Start(new ProcessStartInfo
                 {
-                    FileName = robloxUri,
+                    FileName = robloxUriAuto,
                     UseShellExecute = true
                 });
-
                 return true;
             }
             catch (Exception ex)

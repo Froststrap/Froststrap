@@ -107,7 +107,8 @@
 
                     <ComboBox x:Name="RegionComboBox" Width="200" VerticalAlignment="Center"
                               ItemsSource="{Binding Regions}"
-                              SelectedItem="{Binding SelectedRegion}" />
+                              SelectedItem="{Binding SelectedRegion}"
+                              IsEnabled="{Binding IsRegionSelectionEnabled}" />
 
                     <Button Width="100" VerticalAlignment="Center" Classes="accent"
                             Command="{Binding SearchCommand}"
