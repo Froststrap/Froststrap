@@ -875,8 +875,11 @@ namespace Froststrap
             string sortOrder = App.Settings.Prop.SelectedServerSortOrder ?? "BestLatency";
             string selectedRegion = App.Settings.Prop.SelectedRegion ?? "";
 
-            if (!string.IsNullOrEmpty(selectedRegion) &&
-                !selectedRegion.Equals("Auto", StringComparison.OrdinalIgnoreCase))
+            bool shouldUseRegion = sortOrder != "BestLatency" &&
+                                   !string.IsNullOrEmpty(selectedRegion) &&
+                                   !selectedRegion.Equals("Auto", StringComparison.OrdinalIgnoreCase);
+
+            if (shouldUseRegion)
             {
                 App.Logger.Debug($"User selected specific region: {selectedRegion}, sort order: {sortOrder}");
 
