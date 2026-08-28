@@ -34,7 +34,7 @@ if [ -z "${IN_NIX_SHELL:-}" ]; then
     exit 1
   fi
 
-  exec "$NIX_BIN" develop --command "$0" "$@"
+  exec "$NIX_BIN" develop --accept-flake-config --command "$0" "$@"
 fi
 
 # --- 2. Inside the Nix development environment ---
