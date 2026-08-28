@@ -222,6 +222,7 @@ namespace Froststrap.UI.ViewModels.Settings
             else
                 NavigateToIntegrationsCommand.Execute(null);
 
+            SelectedLaunchMode = App.State.Prop.LastLaunchMode;
             _navigationPaneDisplayMode = App.Settings.Prop.NavigationPaneDisplayMode;
 
             WeakReferenceMessenger.Default.Register<NavigationPaneDisplayModeChangedMessage>(this, (_, m) =>
@@ -369,6 +370,8 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 if (SetProperty(ref _selectedLaunchMode, value))
                 {
+                    App.State.Prop.LastLaunchMode = value;
+                    App.State.SaveSetting("LastLaunchMode");
                     OnPropertyChanged(nameof(LaunchButtonText));
                 }
             }
