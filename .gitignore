@@ -13,3 +13,4 @@ DerivedData/
 .vs/
 .idea/
 .vscode/
+*.user

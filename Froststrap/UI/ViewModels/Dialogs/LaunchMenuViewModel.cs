@@ -14,6 +14,8 @@ namespace Froststrap.UI.ViewModels.Dialogs
                 if (_selectedLaunchMode != value)
                 {
                     _selectedLaunchMode = value;
+                    App.State.Prop.LastLaunchMode = value;
+                    App.State.SaveSetting("LastLaunchMode");
                     OnPropertyChanged(nameof(SelectedLaunchMode));
                     OnPropertyChanged(nameof(LaunchButtonText));
                     OnPropertyChanged(nameof(LaunchButtonIcon));
@@ -76,6 +78,7 @@ namespace Froststrap.UI.ViewModels.Dialogs
             SetLaunchModeCommand = new RelayCommand<LaunchMode>(mode => SelectedLaunchMode = mode);
             LaunchSettingsCommand = new RelayCommand(() => CloseWindowRequest?.Invoke(this, NextAction.LaunchSettings));
             LaunchAboutCommand = new RelayCommand(() => new Elements.About.MainWindow().Show());
+            SelectedLaunchMode = App.State.Prop.LastLaunchMode;
         }
 
         private void ExecuteLaunch()

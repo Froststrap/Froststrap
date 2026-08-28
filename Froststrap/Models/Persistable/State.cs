@@ -18,6 +18,7 @@
         public WindowState SettingsWindow { get; set; } = new();
 
         public bool IsNavigationPaneOpen { get; set; } = true;
+        public LaunchMode LastLaunchMode { get; set; } = LaunchMode.Player;
 
         public string? LastMigratedVersion { get; set; } = null;
 
