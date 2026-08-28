@@ -1,11 +1,11 @@
 {
   "profiles": {
+    "Froststrap (Launch)": {
+      "commandName": "Project"
+    },
     "Froststrap (Menu)": {
       "commandName": "Project",
       "commandLineArgs": "-menu"
-    },
-    "Froststrap (Launch)": {
-      "commandName": "Project"
     },
     "Froststrap (Onboarding)": {
       "commandName": "Project",
