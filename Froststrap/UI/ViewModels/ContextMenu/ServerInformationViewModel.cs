@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input.Platform;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.Integrations;
 using System.Windows.Input;
@@ -16,6 +17,9 @@ public class ServerInformationViewModel : NotifyPropertyChangedViewModel
     private string _location = string.Empty;
     private string _uptime = string.Empty;
     private bool _hasServerData = false;
+
+    private DispatcherTimer? _uptimeTimer;
+    private bool _isTimerRunning;
 
     public string ServerType
     {
@@ -100,6 +104,13 @@ public class ServerInformationViewModel : NotifyPropertyChangedViewModel
     {
         CopyCommand = new RelayCommand<Visual?>(CopyToClipboard);
         CloseCommand = new RelayCommand<Window>(window => window?.Close());
+
+        // Initialize the timer for live uptime updates
+        _uptimeTimer = new DispatcherTimer
+        {
+            Interval = TimeSpan.FromSeconds(1)
+        };
+        _uptimeTimer.Tick += (s, e) => RefreshUptime();
     }
 
     public void SetWatcher(ActivityWatcher? watcher)
@@ -117,10 +128,14 @@ public class ServerInformationViewModel : NotifyPropertyChangedViewModel
             ? FormatUptime(DateTime.UtcNow - data.StartTime.Value)
             : Strings.Common_NotAvailable;
         HasServerData = true;
+
+        StartUptimeUpdates();
     }
 
     public void ClearData()
     {
+        StopUptimeUpdates();
+
         ServerType = string.Empty;
         InstanceId = string.Empty;
         AccessCode = string.Empty;
@@ -184,6 +199,24 @@ public class ServerInformationViewModel : NotifyPropertyChangedViewModel
         {
             string textToCopy = AccessCodeVisibility ? AccessCode : InstanceId;
             await topLevel.Clipboard.SetTextAsync(textToCopy);
+        }
+    }
+
+    private void StartUptimeUpdates()
+    {
+        if (!_isTimerRunning && HasServerData && _activityWatcher != null && _activityWatcher.InGame)
+        {
+            _uptimeTimer?.Start();
+            _isTimerRunning = true;
+        }
+    }
+
+    public void StopUptimeUpdates()
+    {
+        if (_isTimerRunning)
+        {
+            _uptimeTimer?.Stop();
+            _isTimerRunning = false;
         }
     }
 }
