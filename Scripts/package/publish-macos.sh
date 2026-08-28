@@ -37,7 +37,7 @@ cp -R "$APP_PATH" "$BUILD_DIR/Froststrap.app"
 
 if [ "$SIGN" = "true" ]; then
     echo "Signing .app with $DEVELOPER_ID_APP"
-    codesign --force --options runtime --entitlements "$ENTITLEMENTS_PATH" \
+    codesign --force --deep --options runtime --entitlements "$ENTITLEMENTS_PATH" \
         --sign "$DEVELOPER_ID_APP" "$BUILD_DIR/Froststrap.app"
     codesign --verify --verbose=4 "$BUILD_DIR/Froststrap.app"
 
@@ -54,6 +54,7 @@ if [ "$SIGN" = "true" ]; then
     echo "Submitting for notarization..."
     mkdir -p ~/.private_keys
     echo "$APP_STORE_CONNECT_P8_CONTENT" > ~/.private_keys/AuthKey_${APPLE_KEY_ID}.p8
+    wc -l ~/.private_keys/AuthKey_${APPLE_KEY_ID}.p8
 
     set +e
     SUBMISSION_OUTPUT=$(xcrun notarytool submit "$BUILD_DIR/Froststrap.pkg" \
