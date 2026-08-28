@@ -221,7 +221,6 @@ namespace Froststrap.UI.ViewModels.Settings
                     var fetcher = new RobloxServerFetcher();
                     bool success = await fetcher.JoinBestServerAsync(
                         item.PlaceId,
-                        App.Settings.Prop.JoinSmallerServer,
                         App.Settings.Prop.BestRegionAmounts,
                         App.Settings.Prop.MaxServerCheck,
                         showConfirmation: false

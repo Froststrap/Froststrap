@@ -231,7 +231,6 @@ namespace Froststrap.UI.Elements.ContextMenu
             var fetcher = new RobloxServerFetcher();
             await fetcher.JoinBestServerAsync(
                 ActivityWatcher.Data.PlaceId,
-                App.Settings.Prop.JoinSmallerServer,
                 App.Settings.Prop.BestRegionAmounts,
                 App.Settings.Prop.MaxServerCheck,
                 showConfirmation: true

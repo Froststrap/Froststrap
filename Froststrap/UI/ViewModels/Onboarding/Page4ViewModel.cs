@@ -1,12 +1,19 @@
-﻿namespace Froststrap.UI.ViewModels.Onboarding
+﻿using Froststrap.UI.ViewModels.Settings;
+
+namespace Froststrap.UI.ViewModels.Onboarding
 {
     public class Page4ViewModel : NotifyPropertyChangedViewModel
     {
         private List<string> _availableRegions = [];
         private bool _isLoadingRegions = false;
+        private string _selectedSortOrder;
+        private SortOrderComboBoxItem _selectedSortOrderItem;
 
         public Page4ViewModel()
         {
+            _selectedSortOrder = App.Settings.Prop.SelectedServerSortOrder ?? "BestLatency";
+            SelectedSortOrderItem = SortOrderOptions.FirstOrDefault(x => x.Tag == _selectedSortOrder)
+                                    ?? SortOrderOptions.First();
             Task.Run(LoadAvailableRegionsAsync);
         }
 
@@ -20,11 +27,6 @@
             }
         }
 
-        public static bool JoinSmallerServer
-        {
-            get => App.Settings.Prop.JoinSmallerServer;
-            set => App.Settings.Prop.JoinSmallerServer = value;
-        }
 
         public static int MaxServerCheck
         {
@@ -68,6 +70,45 @@
             }
         }
 
+        public List<SortOrderComboBoxItem> SortOrderOptions { get; } =
+        [
+            new() { Content = Strings.Common_Auto, Tag = "BestLatency" },
+            new() { Content = Strings.Menu_RegionSelector_LargeServers, Tag = "OccupancyDesc" },
+            new() { Content = Strings.Menu_RegionSelector_SmallServers, Tag = "OccupancyAsc" }
+        ];
+
+        public string SelectedSortOrder
+        {
+            get => _selectedSortOrder;
+            set
+            {
+                if (_selectedSortOrder != value)
+                {
+                    _selectedSortOrder = value;
+                    App.Settings.Prop.SelectedServerSortOrder = value;
+                    OnPropertyChanged(nameof(SelectedSortOrder));
+                    OnPropertyChanged(nameof(IsRegionSelectionEnabled));
+                }
+            }
+        }
+
+        public SortOrderComboBoxItem SelectedSortOrderItem
+        {
+            get => _selectedSortOrderItem;
+            set
+            {
+                if (_selectedSortOrderItem != value)
+                {
+                    _selectedSortOrderItem = value;
+                    OnPropertyChanged(nameof(SelectedSortOrderItem));
+                    if (value != null)
+                        SelectedSortOrder = value.Tag;
+                }
+            }
+        }
+
+        public bool IsRegionSelectionEnabled => SelectedSortOrder != "BestLatency";
+
         private async Task LoadAvailableRegionsAsync()
         {
             try
@@ -77,7 +118,7 @@
                 var datacenters = await Http.GetJson<List<DatacenterEntry>>(
                     new Uri("https://apis.rovalra.com/v1/datacenters/list"));
 
-                List<string> baseRegions = new List<string>();
+                List<string> baseRegions = [];
 
                 if (datacenters != null && datacenters.Count > 0)
                 {
@@ -98,7 +139,7 @@
                         }
                     }
 
-                    baseRegions = regions.OrderBy(r => r).ToList();
+                    baseRegions = regions.OrderBy(r => r, StringComparer.OrdinalIgnoreCase).ToList();
                 }
 
                 AvailableRegions = BuildAvailableRegionsWithCurrent(baseRegions);
@@ -106,7 +147,7 @@
             catch (Exception ex)
             {
                 App.Logger.Error(ex);
-                AvailableRegions = BuildAvailableRegionsWithCurrent(new List<string>());
+                AvailableRegions = BuildAvailableRegionsWithCurrent([]);
             }
             finally
             {
@@ -118,8 +159,7 @@
 
         private List<string> BuildAvailableRegionsWithCurrent(IEnumerable<string> baseRegions)
         {
-            string current = SelectedRegion;
-            var list = new List<string> { "Auto" };
+            var list = new List<string>();
 
             foreach (var region in baseRegions)
             {
@@ -127,12 +167,12 @@
                     list.Add(region);
             }
 
+            string current = SelectedRegion;
             if (!string.IsNullOrEmpty(current) &&
                 !string.Equals(current, "Auto", StringComparison.OrdinalIgnoreCase))
             {
                 bool exists = list.Any(r => string.Equals(r?.Trim(), current?.Trim(),
                     StringComparison.OrdinalIgnoreCase));
-
                 if (!exists)
                 {
                     list.Add(current);
@@ -148,12 +188,16 @@
 
             string current = SelectedRegion;
 
-            var match = AvailableRegions.FirstOrDefault(r =>
-                string.Equals(r?.Trim(), current?.Trim(), StringComparison.OrdinalIgnoreCase));
-
-            if (match != null)
+            if (string.Equals(current, "Auto", StringComparison.OrdinalIgnoreCase) ||
+                !AvailableRegions.Any(r => string.Equals(r?.Trim(), current?.Trim(), StringComparison.OrdinalIgnoreCase)))
             {
-                if (match != current)
+                SelectedRegion = AvailableRegions.FirstOrDefault() ?? string.Empty;
+            }
+            else
+            {
+                var match = AvailableRegions.FirstOrDefault(r =>
+                    string.Equals(r?.Trim(), current?.Trim(), StringComparison.OrdinalIgnoreCase));
+                if (match != null && match != current)
                 {
                     SelectedRegion = match;
                 }
@@ -164,10 +208,6 @@
                     await Task.Delay(10);
                     SelectedRegion = original;
                 }
-            }
-            else
-            {
-                SelectedRegion = "Auto";
             }
         }
     }

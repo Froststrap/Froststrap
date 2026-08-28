@@ -872,33 +872,36 @@ namespace Froststrap
 
         private async Task<string> GetBetterMatchmakingServerID(CancellationToken cancellationToken = default)
         {
-            if (!string.IsNullOrEmpty(App.Settings.Prop.SelectedRegion) &&
-                !App.Settings.Prop.SelectedRegion.Equals("Auto", StringComparison.OrdinalIgnoreCase))
+            string sortOrder = App.Settings.Prop.SelectedServerSortOrder ?? "BestLatency";
+            string selectedRegion = App.Settings.Prop.SelectedRegion ?? "";
+
+            if (!string.IsNullOrEmpty(selectedRegion) &&
+                !selectedRegion.Equals("Auto", StringComparison.OrdinalIgnoreCase))
             {
-                App.Logger.Debug($"User selected specific region: {App.Settings.Prop.SelectedRegion}");
+                App.Logger.Debug($"User selected specific region: {selectedRegion}, sort order: {sortOrder}");
 
                 var selectedRegionFetcher = new Integrations.RobloxServerFetcher();
                 string? selectedRegionCookie = await selectedRegionFetcher.ResolveCookieAsync();
                 if (string.IsNullOrEmpty(selectedRegionCookie))
                     throw new HttpRequestException("Could not obtain a valid .ROBLOSECURITY cookie");
 
-                SetStatus(string.Format(Strings.Bootstrapper_Status_SearchingServers, App.Settings.Prop.SelectedRegion));
+                SetStatus(string.Format(Strings.Bootstrapper_Status_SearchingServers, selectedRegion));
 
                 var selectedRegionResult = await selectedRegionFetcher.FindBestServerInSelectedRegionAsync(
                     (long)_joinData.PlaceId!,
-                    App.Settings.Prop.SelectedRegion,
-                    App.Settings.Prop.JoinSmallerServer,
+                    selectedRegion,
+                    sortOrder,
                     App.Settings.Prop.MaxServerCheck,
                     cookie: selectedRegionCookie,
                     cancellationToken: cancellationToken);
 
                 if (selectedRegionResult.Found)
                 {
-                    App.Logger.Info($"Found server in selected region {App.Settings.Prop.SelectedRegion}: {selectedRegionResult.ServerId} (players: {selectedRegionResult.Players})");
+                    App.Logger.Info($"Found server in selected region {selectedRegion}: {selectedRegionResult.ServerId} (players: {selectedRegionResult.Players})");
                     return selectedRegionResult.ServerId!;
                 }
 
-                App.Logger.Info($"No servers found in selected region {App.Settings.Prop.SelectedRegion}. Falling back to Auto mode.");
+                App.Logger.Info($"No servers found in selected region {selectedRegion}. Falling back to Auto mode.");
             }
 
             if (cancellationToken.IsCancellationRequested)
@@ -943,7 +946,7 @@ namespace Froststrap
             var autoResult = await autoFetcher.FindBestServerInRegionAsync(
                 (long)_joinData.PlaceId!,
                 topRegions,
-                App.Settings.Prop.JoinSmallerServer,
+                "BestLatency",
                 App.Settings.Prop.MaxServerCheck,
                 cookie: autoCookie,
                 cancellationToken: cancellationToken);

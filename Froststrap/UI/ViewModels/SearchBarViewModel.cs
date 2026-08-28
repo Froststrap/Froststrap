@@ -486,7 +486,6 @@ namespace Froststrap.UI.ViewModels
 
                 bool success = await fetcher.JoinBestServerAsync(
                     content.RootPlaceId,
-                    App.Settings.Prop.JoinSmallerServer,
                     App.Settings.Prop.BestRegionAmounts,
                     App.Settings.Prop.MaxServerCheck,
                     showConfirmation: false
