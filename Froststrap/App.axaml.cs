@@ -252,6 +252,25 @@ public partial class App : Application
             Terminate(ErrorCode.ERROR_INVALID_FUNCTION);
         }
     }
+    
+    // verifies and makes sure the registry exists
+    public static async Task AssertWindowsAUMIDAsync()
+    {
+        if (!OperatingSystem.IsWindows()) return;
+        Logger.Debug("Verifying AUMID creation");
+
+        using var AUMIDKey = Microsoft.Win32.Registry.CurrentUser.CreateSubKey(@"Software\Classes\AppUserModelId\xyz.froststrap.desktop");
+        using var uninstallKey = Registry.CurrentUser.OpenSubKey(UninstallKey);
+        if (uninstallKey?.GetValue("InstallLocation") is string installLocValue) {
+            AUMIDKey.SetValue("DisplayName", "Froststrap");
+            AUMIDKey.SetValue("IconBackgroundColor", "FFDDDDDD");
+            AUMIDKey.SetValue("IconUri", $"{installLocValue}\\Froststrap.ico");
+            Logger.Info("Created keys");
+        } else {
+            Logger.Error("Couldn't create key, uninstallKey doesnt exist.");
+        }
+        AUMIDKey.Close();
+    }
 
     public override void Initialize()
     {
@@ -482,6 +501,7 @@ public partial class App : Application
             Locale.Set(Settings.Prop.Locale);
 
             await AssertWindowsOSVersionAsync();
+            await AssertWindowsAUMIDAsync();
 
             await Installer.RunMigrations();
 
