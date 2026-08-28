@@ -25,8 +25,8 @@ publish-windows:
 
 [unix]
 publish-macos:
-    chmod +x ./Scripts/package/publish-macos.sh
-    ./Scripts/package/publish-macos.sh "{{ project_file }}" "{{ build_dir }}" "Publish-osx-arm64" "Publish-osx-x64"
+    chmod +x Scripts/package/publish-macos.sh
+    ./Scripts/package/publish-macos.sh
 
 [unix]
 publish-linux:
@@ -36,7 +36,7 @@ publish-linux:
 # CI Aliases
 ci-publish-windows:
     @just publish-windows
-
+    
 ci-publish-macos:
     @just publish-macos
 
