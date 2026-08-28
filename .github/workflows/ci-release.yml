@@ -55,18 +55,22 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v')
         run: security delete-keychain signing_temp.keychain || true
 
-      - uses: apple-actions/import-codesign-certs@v7
-        # if: startsWith(github.ref, 'refs/tags/v')
+      - name: Import app cert
+        id: import_app_cert
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: apple-actions/import-codesign-certs@v7
         with:
           p12-file-base64: ${{ secrets.CERT_P12_BASE64 }}
           p12-password: ${{ secrets.P12_PASSWORD }}
 
-      - uses: apple-actions/import-codesign-certs@v7
-        # if: startsWith(github.ref, 'refs/tags/v')
+      - name: Import installer cert
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: apple-actions/import-codesign-certs@v7
         with:
           p12-file-base64: ${{ secrets.CERT_P12_INSTALLER_BASE64 }}
           p12-password: ${{ secrets.P12_PASSWORD }}
           create-keychain: false
+          keychain-password: ${{ steps.import_app_cert.outputs.keychain-password }}
 
       - name: Build, sign (if release), and package
         env:
