@@ -10,7 +10,7 @@
                 return null;
 
             using var fileStream = File.OpenRead(FilePath);
-            string hash = MD5Hash.Stringify(App.MD5Provider.ComputeHash(fileStream));
+            string hash = MD5Hash.Stringify(App.SHA256Provider.ComputeHash(fileStream));
 
             return EmojiTypeEx.Hashes.Where(x => x.Value == hash);
         }

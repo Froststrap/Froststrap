@@ -28,7 +28,7 @@
             }
             ResourceIdentifier = resource;
             using var stream = ResourceStream;
-            ResourceHash = App.MD5Provider.ComputeHash(stream);
+            ResourceHash = App.SHA256Provider.ComputeHash(stream);
         }
 
         public bool HashMatches()
@@ -37,7 +37,7 @@
                 return false;
 
             using var fileStream = FileStream;
-            var fileHash = App.MD5Provider.ComputeHash(fileStream);
+            var fileHash = App.SHA256Provider.ComputeHash(fileStream);
 
             return fileHash.SequenceEqual(ResourceHash);
         }

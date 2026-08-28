@@ -56,8 +56,6 @@ public partial class App : Application
 
     public static string? MockCurrentVersion => GetEnvironmentVariable(MockCurrentVersionEnvironmentVariable);
 
-    public static string GetUpdateCheckVersion() => MockCurrentVersion ?? Version;
-
     public static bool IsPlayerInstalled => PlayerData.IsInstalled;
 
     public static bool IsStudioInstalled => StudioData.IsInstalled;
@@ -66,7 +64,7 @@ public partial class App : Application
 
     public static readonly RobloxStudioData StudioData = new();
 
-    public static readonly MD5 MD5Provider = MD5.Create();
+    public static readonly SHA256 SHA256Provider = SHA256.Create();
 
     public static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
