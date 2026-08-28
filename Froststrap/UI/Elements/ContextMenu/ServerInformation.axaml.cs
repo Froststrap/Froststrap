@@ -73,6 +73,8 @@ public partial class ServerInformation : Base.AvaloniaWindow
             aw.OnGameLeave -= OnGameLeave;
             aw.ShowNotif -= OnShowNotif;
         }
+
+        _viewModel.StopUptimeUpdates();
         base.OnClosed(e);
     }
 }
