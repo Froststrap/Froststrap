@@ -252,19 +252,35 @@ public partial class App : Application
             Terminate(ErrorCode.ERROR_INVALID_FUNCTION);
         }
     }
-    
+
+    public static string ExtractToTemp(string name, string fileName)
+    {
+        string tempFilePath = Path.Combine(Paths.Temp, fileName);
+
+        if (!File.Exists(tempFilePath))
+        {
+            using var stream = Resource.GetStream(name);
+            Directory.CreateDirectory(Path.GetDirectoryName(tempFilePath)!);
+            using var fileStream = File.Create(tempFilePath);
+            stream.CopyTo(fileStream);
+        }
+        return tempFilePath;
+    }
+
     // verifies and makes sure the registry exists
     public static async Task AssertWindowsAUMIDAsync()
     {
         if (!OperatingSystem.IsWindows()) return;
         Logger.Debug("Verifying AUMID creation");
 
+        string iconPath = ExtractToTemp("IconFroststrap.ico", "IconFroststrap.ico");
+
         using var AUMIDKey = Microsoft.Win32.Registry.CurrentUser.CreateSubKey(@"Software\Classes\AppUserModelId\xyz.froststrap.desktop");
         using var uninstallKey = Registry.CurrentUser.OpenSubKey(UninstallKey);
         if (uninstallKey?.GetValue("InstallLocation") is string installLocValue) {
             AUMIDKey.SetValue("DisplayName", "Froststrap");
             AUMIDKey.SetValue("IconBackgroundColor", "FFDDDDDD");
-            AUMIDKey.SetValue("IconUri", $"{installLocValue}\\Froststrap.ico");
+            AUMIDKey.SetValue("IconUri", iconPath);
             Logger.Info("Created keys");
         } else {
             Logger.Error("Couldn't create key, uninstallKey doesnt exist.");
