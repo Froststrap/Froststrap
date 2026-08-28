@@ -14,14 +14,18 @@ rm -rf "$BUILD_DIR"
 mkdir -p "$BUILD_DIR"
 
 echo "Building via xcodebuild ($XCODE_SCHEME, $CONFIG)..."
+
+DERIVED_DATA_PATH="$(pwd)/DerivedData"
+
 xcodebuild \
     -project "$XCODE_PROJECT_DIR/$XCODE_PROJECT" \
     -scheme "$XCODE_SCHEME" \
     -configuration "$CONFIG" \
+    -derivedDataPath "$DERIVED_DATA_PATH" \
     CODE_SIGNING_ALLOWED=NO \
     build
 
-APP_PATH="$XCODE_PROJECT_DIR/build/$CONFIG/Froststrap.app"
+APP_PATH="$DERIVED_DATA_PATH/Build/Products/$CONFIG/Froststrap.app"
 
 if [ ! -d "$APP_PATH" ]; then
     echo "ERROR: expected .app not found at $APP_PATH"
