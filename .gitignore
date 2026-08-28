@@ -1,5 +1,6 @@
 # Build artifacts
 target
+result
 build/
 [Bb]in/
 [Oo]bj/
