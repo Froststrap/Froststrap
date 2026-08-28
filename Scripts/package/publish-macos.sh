@@ -2,7 +2,7 @@
 set -e
 
 XCODE_PROJECT_DIR="macApp"
-XCODE_PROJECT="Froststrap.xcodeproj"
+XCODE_PROJECT="macApp.xcodeproj"
 XCODE_SCHEME="Froststrap"
 ENTITLEMENTS_PATH="$XCODE_PROJECT_DIR/Froststrap.entitlements"
 
