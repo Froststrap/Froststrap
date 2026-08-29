@@ -28,13 +28,21 @@ namespace Froststrap.UI.Elements.Settings
         private static Models.Persistable.WindowState State => App.State.Prop.SettingsWindow;
         private readonly MainWindowViewModel? _viewModel;
 
-        private Border? _currentNotification;
-        private CancellationTokenSource? _notificationCts;
-        private bool _isAnimatingOut = false;
-
         private bool _isIndexingMissing;
         private readonly HashSet<string> _indexedPageTags = [];
         private readonly SearchIndexBuilder _searchIndexBuilder = new();
+
+        private const double NotificationHeight = 80;
+        private const double NotificationSpacing = 15;
+        private const double NotificationSlideDistance = 500;
+        private const int MaxVisibleNotifications = 3;
+        private readonly List<NotificationEntry> _notifications = [];
+        private sealed class NotificationEntry
+        {
+            public required Border Element { get; init; }
+            public required TranslateTransform Transform { get; init; }
+            public CancellationTokenSource? TimeoutCts { get; set; }
+        }
 
         public MainWindow()
         {
@@ -356,57 +364,6 @@ namespace Froststrap.UI.Elements.Settings
             var notificationPanel = this.FindControl<Panel>("NotificationPanel");
             if (notificationPanel == null) return;
 
-            if (_isAnimatingOut)
-            {
-                Task.Run(async () =>
-                {
-                    while (_isAnimatingOut)
-                    {
-                        await Task.Delay(50);
-                    }
-                    Dispatcher.UIThread.Post(() => ShowNotification(title, subtitle, type, timeout, customIcon));
-                });
-                return;
-            }
-
-            _notificationCts?.Cancel();
-            _notificationCts?.Dispose();
-            _notificationCts = new CancellationTokenSource();
-
-            if (_currentNotification != null && notificationPanel.Children.Contains(_currentNotification))
-            {
-                _isAnimatingOut = true;
-                var oldNotification = _currentNotification;
-
-                oldNotification.Opacity = 0;
-                oldNotification.RenderTransform = new TranslateTransform(0, 40);
-
-                Task.Run(async () =>
-                {
-                    await Task.Delay(350);
-                    Dispatcher.UIThread.Post(() =>
-                    {
-                        if (notificationPanel.Children.Contains(oldNotification))
-                        {
-                            notificationPanel.Children.Remove(oldNotification);
-                        }
-                        _isAnimatingOut = false;
-                        _currentNotification = null;
-
-                        ShowNotificationInternal(title, subtitle, type, timeout, customIcon);
-                    });
-                });
-                return;
-            }
-
-            ShowNotificationInternal(title, subtitle, type, timeout, customIcon);
-        }
-
-        private void ShowNotificationInternal(string title, string subtitle, FAInfoBarSeverity type, int timeout, LucideIconNames? customIcon = null)
-        {
-            var notificationPanel = this.FindControl<Panel>("NotificationPanel");
-            if (notificationPanel == null) return;
-
             var accentColor = type == FAInfoBarSeverity.Success ? "#00D084" : "#FFB900";
             var iconSymbol = customIcon ?? (type == FAInfoBarSeverity.Success
                 ? LucideIconNames.CircleCheck
@@ -429,13 +386,10 @@ namespace Froststrap.UI.Elements.Settings
             contentGrid.Children.Add(icon);
 
             var textPanel = new StackPanel { VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center, Spacing = 2 };
-
-            var titleText = new TextBlock { Text = title, FontWeight = FontWeight.SemiBold, FontSize = 16, Margin = new Thickness(0,2) };
+            var titleText = new TextBlock { Text = title, FontWeight = FontWeight.SemiBold, FontSize = 16, Margin = new Thickness(0, 2) };
             titleText.Bind(TextBlock.ForegroundProperty, new DynamicResourceExtension("TextFillColorPrimaryBrush"));
-
-            var subtitleText = new TextBlock { Text = subtitle, FontSize = 12, TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0,2) };
+            var subtitleText = new TextBlock { Text = subtitle, FontSize = 12, TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 2) };
             subtitleText.Bind(TextBlock.ForegroundProperty, new DynamicResourceExtension("TextFillColorSecondaryBrush"));
-
             textPanel.Children.Add(titleText);
             textPanel.Children.Add(subtitleText);
             Grid.SetColumn(textPanel, 1);
@@ -454,79 +408,80 @@ namespace Froststrap.UI.Elements.Settings
                 Margin = new Thickness(20, 0, 0, 0),
                 Width = 50,
             };
-
             closeButton.Bind(IconButton.ForegroundProperty, new DynamicResourceExtension("TextFillColorSecondaryBrush"));
-
             Grid.SetColumn(closeButton, 2);
             contentGrid.Children.Add(closeButton);
+
+            var transform = new TranslateTransform(NotificationSlideDistance, 0);
+            transform.Transitions =
+            [
+                new DoubleTransition { Property = TranslateTransform.XProperty, Duration = TimeSpan.FromMilliseconds(350), Easing = new QuarticEaseOut() },
+                new DoubleTransition { Property = TranslateTransform.YProperty, Duration = TimeSpan.FromMilliseconds(300), Easing = new QuarticEaseOut() }
+            ];
 
             var notification = new Border
             {
                 Margin = new Thickness(0, 15, 15, 0),
                 MinWidth = 350,
-                Height = 80,
+                Height = NotificationHeight,
                 CornerRadius = new CornerRadius(10),
-                Opacity = 0,
-                RenderTransform = new TranslateTransform(0, 40),
+                RenderTransform = transform,
                 Child = contentGrid,
                 BoxShadow = new BoxShadows(new BoxShadow { Blur = 10, OffsetY = 4, Color = Color.Parse("#40000000") }),
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right,
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top
             };
-
             notification.Bind(Border.BackgroundProperty, new DynamicResourceExtension("NotificationBackgroundColor"));
 
-            notification.Transitions =
-            [
-                new TransformOperationsTransition { Property = Border.RenderTransformProperty, Duration = TimeSpan.FromMilliseconds(350), Easing = new QuarticEaseOut() },
-                new DoubleTransition { Property = Border.OpacityProperty, Duration = TimeSpan.FromMilliseconds(250) }
-            ];
+            var entry = new NotificationEntry { Element = notification, Transform = transform };
 
-            async void Dismiss()
-            {
-                if (_notificationCts?.Token.IsCancellationRequested ?? false) return;
-                if (!notificationPanel.Children.Contains(notification)) return;
-                notification.Opacity = 0;
-                notification.RenderTransform = new TranslateTransform(0, 40);
-                await Task.Delay(350);
-                if (notificationPanel.Children.Contains(notification))
-                {
-                    notificationPanel.Children.Remove(notification);
-                }
-                if (_currentNotification == notification)
-                {
-                    _currentNotification = null;
-                }
-            }
+            void Dismiss() => DismissNotification(entry);
 
-            closeButton.Click += (s, e) =>
-            {
-                e.Handled = true;
-                Dismiss();
-            };
+            closeButton.Click += (s, e) => { e.Handled = true; Dismiss(); };
+            notification.PointerPressed += (s, e) => { if (e.Source is IconButton) return; Dismiss(); };
 
-            notification.PointerPressed += (s, e) =>
-            {
-                if (e.Source is IconButton) return;
-                Dismiss();
-            };
-
-            _currentNotification = notification;
+            _notifications.Insert(0, entry);
             notificationPanel.Children.Add(notification);
+
+            while (_notifications.Count > MaxVisibleNotifications)
+                DismissNotification(_notifications[^1]);
+
+            RepositionNotifications();
+
+            var cts = new CancellationTokenSource();
+            entry.TimeoutCts = cts;
 
             Dispatcher.UIThread.InvokeAsync(async () =>
             {
-                if (_notificationCts?.Token.IsCancellationRequested ?? false) return;
                 await Task.Delay(50);
-                if (_notificationCts?.Token.IsCancellationRequested ?? false) return;
-                notification.Opacity = 1;
-                notification.RenderTransform = new TranslateTransform(0, 0);
+                if (cts.IsCancellationRequested) return;
+                transform.X = 0;
 
                 await Task.Delay(timeout);
-                if (!(_notificationCts?.Token.IsCancellationRequested ?? false))
-                {
+                if (!cts.IsCancellationRequested)
                     Dismiss();
-                }
             });
+        }
+
+        private async void DismissNotification(NotificationEntry entry)
+        {
+            if (!_notifications.Remove(entry)) return;
+
+            entry.TimeoutCts?.Cancel();
+            RepositionNotifications();
+
+            entry.Transform.X = NotificationSlideDistance;
+            await Task.Delay(350);
+
+            var notificationPanel = this.FindControl<Panel>("NotificationPanel");
+            if (notificationPanel != null && notificationPanel.Children.Contains(entry.Element))
+                notificationPanel.Children.Remove(entry.Element);
+        }
+
+        private void RepositionNotifications()
+        {
+            for (var i = 0; i < _notifications.Count; i++)
+                _notifications[i].Transform.Y = i * (NotificationHeight + NotificationSpacing);
         }
 
         public void ShowLoading(string message = "Loading...")
