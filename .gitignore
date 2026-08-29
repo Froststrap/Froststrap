@@ -2,6 +2,7 @@
 target
 result
 build/
+.build/
 [Bb]in/
 [Oo]bj/
 publish/
