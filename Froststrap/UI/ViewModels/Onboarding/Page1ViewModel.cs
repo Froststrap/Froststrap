@@ -1,13 +1,7 @@
-﻿using CommunityToolkit.Mvvm.Input;
-using System.Windows.Input;
-
-namespace Froststrap.UI.ViewModels.Onboarding
+﻿namespace Froststrap.UI.ViewModels.Onboarding
 {
     public class Page1ViewModel : NotifyPropertyChangedViewModel
     {
-        private static readonly string[] JsonPatterns = ["*.json"];
-        private static readonly JsonSerializerOptions SerializationOptions = new() { WriteIndented = true };
-
         public Page1ViewModel() { }
 
         public static List<string> Languages => Locale.GetLanguages();
