@@ -96,4 +96,15 @@
       <DependentUpon>Strings.resx</DependentUpon>
     </Compile>
   </ItemGroup>
+
+  <Target Name="BuildVirtualDisplayDylib" BeforeTargets="BeforeBuild" Condition="$([MSBuild]::IsOSPlatform('OSX'))">
+    <Exec Command="sh mixed_mac.sh" WorkingDirectory="$(MSBuildProjectDirectory)/../macApp/virtualdisplay" />
+  </Target>
+
+  <ItemGroup>
+    <Content Condition="$([MSBuild]::IsOSPlatform('OSX'))" Include="../macApp/virtualdisplay/.build/out/Products/Release/libvirtualdisplay.dylib" Link="libvirtualdisplay.dylib">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </Content>
+  </ItemGroup>
 </Project>
