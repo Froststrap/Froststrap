@@ -9,6 +9,7 @@ publish/
 __pycache__/
 *.pyc
 DerivedData/
+# .DS_Store
 
 # IDE stuff
 .vs/
