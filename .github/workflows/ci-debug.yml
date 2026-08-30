@@ -2,7 +2,7 @@ name: Build (Debug)
 on: [push, pull_request]
 jobs:
   build-windows:
-    runs-on: windows-latest
+    runs-on: blacksmith-2vcpu-windows-2025
     steps:
       - uses: actions/checkout@v6
         with:
@@ -22,7 +22,7 @@ jobs:
           path: Froststrap/bin/Debug/net10.0/win-x64/publish/*
 
   build-macos:
-    runs-on: macos-latest
+    runs-on: blacksmith-6vcpu-macos-latest
     steps:
       - uses: actions/checkout@v6
         with:
@@ -39,7 +39,7 @@ jobs:
           path: Froststrap/bin/Debug/net10.0/osx-arm64/publish/*
 
   build-linux:
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-2vcpu-ubuntu-2404
     steps:
       - uses: actions/checkout@v6
         with:
