@@ -1,8 +1,21 @@
-name: Build (Release)
+name: CI
 
 on:
   push:
+    branches:
+      - avaloniaui
+    tags:
+      - "v*"
   pull_request:
+    branches:
+      - avaloniaui
+
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ !startsWith(github.ref, 'refs/tags/v') }}
+
+env:
+  RELEASE_BUILD: ${{ startsWith(github.ref, 'refs/tags/v') }}
 
 jobs:
   build-windows:
@@ -20,18 +33,33 @@ jobs:
 
       - uses: extractions/setup-just@v4
 
-      - name: Install NSIS
-        uses: negrutiu/nsis-install@v2
-
       - name: Set short SHA
         shell: pwsh
         run: |
           "SHORT_SHA=$("${{ github.sha }}".Substring(0, 7))" >> $env:GITHUB_ENV
 
-      - name: Build and package
+      - name: Build debug binaries
+        if: env.RELEASE_BUILD != 'true'
+        run: just debug-windows
+
+      - name: Upload debug binaries
+        if: env.RELEASE_BUILD != 'true'
+        uses: actions/upload-artifact@v7
+        with:
+          name: froststrap-debug-win-x64-${{ env.SHORT_SHA }}
+          path: Froststrap/bin/Debug/net10.0/win-x64/publish/*
+
+      - name: Install NSIS
+        if: env.RELEASE_BUILD == 'true'
+        uses: negrutiu/nsis-install@v2
+
+      - name: Build and package release
+        if: env.RELEASE_BUILD == 'true'
         run: just ci-publish-windows
 
-      - uses: actions/upload-artifact@v7
+      - name: Upload release package
+        if: env.RELEASE_BUILD == 'true'
+        uses: actions/upload-artifact@v7
         with:
           name: froststrap-release-win-x64-${{ env.SHORT_SHA }}
           path: build/*
@@ -49,23 +77,41 @@ jobs:
         with:
           dotnet-version: "10.0.x"
 
+      - uses: extractions/setup-just@v4
+
       - name: Set short SHA
         run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> "$GITHUB_ENV"
 
+      - name: Prepare Swift build output
+        run: |
+          mkdir -p macApp/virtualdisplay/.build
+          ln -s apple macApp/virtualdisplay/.build/out
+
+      - name: Build debug binaries
+        if: env.RELEASE_BUILD != 'true'
+        run: just debug-macos
+
+      - name: Upload debug binaries
+        if: env.RELEASE_BUILD != 'true'
+        uses: actions/upload-artifact@v7
+        with:
+          name: froststrap-debug-macos-arm64-${{ env.SHORT_SHA }}
+          path: Froststrap/bin/Debug/net10.0/osx-arm64/publish/*
+
       - name: Remove stale signing keychain
-        if: startsWith(github.ref, 'refs/tags/v')
+        if: env.RELEASE_BUILD == 'true'
         run: security delete-keychain signing_temp.keychain || true
 
       - name: Import app cert
         id: import_app_cert
-        if: startsWith(github.ref, 'refs/tags/v')
+        if: env.RELEASE_BUILD == 'true'
         uses: apple-actions/import-codesign-certs@v7
         with:
           p12-file-base64: ${{ secrets.CERT_P12_BASE64 }}
           p12-password: ${{ secrets.P12_PASSWORD }}
 
       - name: Import installer cert
-        if: startsWith(github.ref, 'refs/tags/v')
+        if: env.RELEASE_BUILD == 'true'
         uses: apple-actions/import-codesign-certs@v7
         with:
           p12-file-base64: ${{ secrets.CERT_P12_INSTALLER_BASE64 }}
@@ -73,22 +119,23 @@ jobs:
           create-keychain: false
           keychain-password: ${{ steps.import_app_cert.outputs.keychain-password }}
 
-      - name: Build, sign (if release), and package
+      - name: Build, sign, and package release
+        if: env.RELEASE_BUILD == 'true'
         env:
           IN_NIX_SHELL: "1"
-          SIGN: ${{ startsWith(github.ref, 'refs/tags/v') && 'true' || 'false' }}
+          SIGN: "true"
           DEVELOPER_ID_APP: ${{ secrets.DEVELOPER_ID_APP }}
           DEVELOPER_ID_INSTALLER: ${{ secrets.DEVELOPER_ID_INSTALLER }}
           APP_STORE_CONNECT_P8_CONTENT: ${{ secrets.APP_STORE_CONNECT_P8_CONTENT }}
           APPLE_KEY_ID: ${{ secrets.APPLE_KEY_ID }}
           APPLE_ISSUER_ID: ${{ secrets.APPLE_ISSUER_ID }}
         run: |
-          mkdir -p macApp/virtualdisplay/.build
-          ln -s apple macApp/virtualdisplay/.build/out
           chmod +x Scripts/package/publish-macos.sh
           ./Scripts/package/publish-macos.sh
 
-      - uses: actions/upload-artifact@v7
+      - name: Upload release package
+        if: env.RELEASE_BUILD == 'true'
+        uses: actions/upload-artifact@v7
         with:
           name: froststrap-release-macos-universal-${{ env.SHORT_SHA }}
           path: build/Froststrap.pkg
@@ -112,26 +159,38 @@ jobs:
       - uses: extractions/setup-just@v4
 
       - uses: DeterminateSystems/nix-installer-action@v22
-
       - uses: DeterminateSystems/magic-nix-cache-action@v14
 
-      - name: Build and package binaries
+      - name: Build debug binaries
+        if: env.RELEASE_BUILD != 'true'
+        run: nix develop -c just debug-linux
+
+      - name: Upload debug binaries
+        if: env.RELEASE_BUILD != 'true'
+        uses: actions/upload-artifact@v7
+        with:
+          name: froststrap-debug-linux-x64-${{ env.SHORT_SHA }}
+          path: Froststrap/bin/Debug/net10.0/linux-x64/publish/*
+
+      - name: Build and package release
+        if: env.RELEASE_BUILD == 'true'
         run: just ci-publish-linux
 
-      - uses: actions/upload-artifact@v7
+      - name: Upload release packages
+        if: env.RELEASE_BUILD == 'true'
+        uses: actions/upload-artifact@v7
         with:
           name: froststrap-release-linux-x64-${{ env.SHORT_SHA }}
           path: build/*
 
   release:
+    if: startsWith(github.ref, 'refs/tags/v')
     needs:
       - build-windows
       - build-linux
       - build-macos
 
     runs-on: blacksmith-2vcpu-ubuntu-2404
-
-    if: startsWith(github.ref, 'refs/tags/v')
 
     permissions:
       contents: write
@@ -158,7 +217,7 @@ jobs:
           name: froststrap-release-linux-x64-${{ env.SHORT_SHA }}
           path: release
 
-      - name: Create release
+      - name: Create draft release
         uses: softprops/action-gh-release@v2
         with:
           name: Froststrap ${{ github.ref_name }}
