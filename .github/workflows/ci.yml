@@ -65,7 +65,7 @@ jobs:
           path: build/*
 
   build-macos:
-    runs-on: blacksmith-6vcpu-macos-15
+    runs-on: macos-15
 
     steps:
       - uses: actions/checkout@v7
