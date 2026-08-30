@@ -35,7 +35,10 @@ jobs:
       - name: Set short SHA
         run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
       - name: Publish
-        run: just debug-macos
+        run: |
+          mkdir -p macApp/virtualdisplay/.build
+          ln -s apple macApp/virtualdisplay/.build/out
+          just debug-macos
       - uses: actions/upload-artifact@v6
         with:
           name: froststrap-debug-macos-arm64-${{ env.SHORT_SHA }}
