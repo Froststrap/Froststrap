@@ -35,11 +35,17 @@ sealed class Program
         GlobalDiagnosticsContext.Set("logRoot", Paths.Logs);
         GlobalDiagnosticsContext.Set("startTime", DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss"));
 
-        var noGpuOption = new Option<bool>("--nogpu", "Sets env AVALONIA_GPU to 0 on runtime.");
+        var noGpuOption = new Option<bool>("--nogpu")
+        {
+            Description = "Sets env AVALONIA_GPU to 0 on runtime."
+        };
         noGpuOption.Aliases.Add("-g");
 
 #if WINDOWS
-        var consoleOption = new Option<bool>("--console", "Attaches a console window for debugging.");
+        var consoleOption = new Option<bool>("--console")
+        {
+            Description = "Attaches a console window for debugging."
+        };
         consoleOption.Aliases.Add("-c");
 #endif
 
