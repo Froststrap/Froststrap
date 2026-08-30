@@ -90,6 +90,7 @@ sealed class Program
         try
         {
             Logger.Debug($"Log file: {Logging.FileLocation}");
+            AppInitializer.InitializeNativeResolvers();
             BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
         }
         catch (Exception ex)
