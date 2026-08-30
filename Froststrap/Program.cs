@@ -1,7 +1,6 @@
 using NLog;
 using Avalonia;
-using CommandLine;
-using CommandLine.Text;
+using System.CommandLine;
 using System.Reflection;
 #if WINDOWS
 using System.Runtime.InteropServices;
@@ -16,10 +15,8 @@ sealed class Program
     public class Options
     {
 #if WINDOWS
-        [Option('c', "console", HelpText = "Attaches a console window for debugging.")]
         public bool AttachConsole { get; set; }
 #endif
-        [Option('g', "nogpu", HelpText = "Sets env AVALONIA_GPU to 0 on runtime.")]
         public bool NoGPU { get; set; }
     }
 
@@ -31,77 +28,60 @@ sealed class Program
 #endif
 
     [STAThread]
-    public static void Main(string[] args)
+    public static int Main(string[] args)
     {
         var assembly = typeof(App).Assembly;
         LogManager.Setup().LoadConfigurationFromAssemblyResource(assembly, "NLog.config");
         GlobalDiagnosticsContext.Set("logRoot", Paths.Logs);
         GlobalDiagnosticsContext.Set("startTime", DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss"));
 
-        var parser = new Parser(settings =>
-        {
-            settings.AutoHelp = true;
-            settings.AutoVersion = true;
-            settings.IgnoreUnknownArguments = true;
-            settings.HelpWriter = null;
-        });
-
-        var argsResult = parser.ParseArguments<Options>(args);
-
-        if (argsResult is NotParsed<Options> notParsed)
-        {
-            if (notParsed.Errors.Any(e => e.Tag == ErrorType.HelpRequestedError))
-            {
-                Console.WriteLine(
-                    HelpText.AutoBuild(argsResult, h =>
-                    {
-                        h.AdditionalNewLineAfterOption = false;
-                        h.Heading = "Froststrap";
-                        h.Copyright = "(c) Froststrap Team";
-                        return HelpText.DefaultParsingErrorsHandler(argsResult, h);
-                    })
-                );
-                return;
-            }
-
-            if (notParsed.Errors.Any(e => e.Tag == ErrorType.VersionRequestedError))
-            {
-                Console.WriteLine($"Froststrap v{typeof(Program)
-                        .Assembly
-                        .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
-                        .InformationalVersion.Split("+")[0]
-                        ?? "0.0.0"}");
-                return;
-            }
-
-            Logger.Warn("Arg parse failed: {0}",
-            string.Join(", ", notParsed.Errors.Select(e => e.Tag)));
-            Environment.Exit(1);
-            return;
-        }
-
-        var opts = ((Parsed<Options>)argsResult).Value;
+        var noGpuOption = new Option<bool>("--nogpu", "Sets env AVALONIA_GPU to 0 on runtime.");
+        noGpuOption.Aliases.Add("-g");
 
 #if WINDOWS
-        if (opts.AttachConsole) AllocConsole();
+        var consoleOption = new Option<bool>("--console", "Attaches a console window for debugging.");
+        consoleOption.Aliases.Add("-c");
 #endif
-        if (opts.NoGPU) Environment.SetEnvironmentVariable("AVALONIA_GPU", "0");
 
-        try
+        var rootCommand = new RootCommand("Froststrap");
+        rootCommand.Options.Add(noGpuOption);
+#if WINDOWS
+        rootCommand.Options.Add(consoleOption);
+#endif
+
+        rootCommand.SetAction(parseResult =>
         {
-            Logger.Debug($"Log file: {Logging.FileLocation}");
-            AppInitializer.InitializeNativeResolvers();
-            BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
-        }
-        catch (Exception ex)
-        {
-            Logger.Fatal(ex, "Unhandled exception during startup");
-            throw;
-        }
-        finally
-        {
-            LogManager.Shutdown();
-        }
+            var opts = new Options
+            {
+                NoGPU = parseResult.GetValue(noGpuOption),
+#if WINDOWS
+                AttachConsole = parseResult.GetValue(consoleOption)
+#endif
+            };
+
+#if WINDOWS
+            if (opts.AttachConsole) AllocConsole();
+#endif
+            if (opts.NoGPU) Environment.SetEnvironmentVariable("AVALONIA_GPU", "0");
+
+            try
+            {
+                Logger.Debug($"Log file: {Logging.FileLocation}");
+                AppInitializer.InitializeNativeResolvers();
+                BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
+            }
+            catch (Exception ex)
+            {
+                Logger.Fatal(ex, "Unhandled exception during startup");
+                throw;
+            }
+            finally
+            {
+                LogManager.Shutdown();
+            }
+        });
+
+        return rootCommand.Parse(args).Invoke();
     }
 
     // Avalonia configuration, don't remove; also used by visual designer.
