@@ -75,6 +75,7 @@ jobs:
 
       - name: Build, sign (if release), and package
         env:
+          IN_NIX_SHELL: "1"
           SIGN: ${{ startsWith(github.ref, 'refs/tags/v') && 'true' || 'false' }}
           DEVELOPER_ID_APP: ${{ secrets.DEVELOPER_ID_APP }}
           DEVELOPER_ID_INSTALLER: ${{ secrets.DEVELOPER_ID_INSTALLER }}
