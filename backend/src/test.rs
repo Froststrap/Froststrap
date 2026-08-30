@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod test {
-    use crate::{send_notification, send_notification_message, set_application};
+    use crate::notify::{send_notification, send_notification_message, set_application};
     use std::ffi::CString;
     use std::sync::Once;
 
