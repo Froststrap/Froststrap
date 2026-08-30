@@ -98,7 +98,7 @@
   </ItemGroup>
 
   <Target Name="BuildVirtualDisplayDylib" BeforeTargets="BeforeBuild" Condition="$([MSBuild]::IsOSPlatform('OSX'))">
-    <Exec Command="sh mixed_mac.sh" WorkingDirectory="$(MSBuildProjectDirectory)/../macApp/virtualdisplay" />
+    <Exec Command="sh output_dylib.sh" WorkingDirectory="$(MSBuildProjectDirectory)/../macApp/virtualdisplay" />
   </Target>
 
   <ItemGroup>
