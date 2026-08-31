@@ -160,7 +160,9 @@ Section "Froststrap"
     ${EndIf}
 
     SetOutPath "$INSTDIR"
-    File /r "${PUBLISH_DIR}\*"
+    File /r "${PUBLISH_DIR}\Froststrap.exe"
+    File /r "${PUBLISH_DIR}\FluentAvalonia.xml"
+    File /r "..\Froststrap\Froststrap.ico"
 
     ; Froststrap app registry keys (used by the app to locate itself)
     WriteRegStr HKCU "Software\Froststrap" "InstallLocation" "$INSTDIR"
