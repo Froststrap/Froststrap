@@ -490,9 +490,9 @@ namespace Froststrap
                     {
                         // show tips
                         if (!_packageExtractionSuccess)
-                            Backend.NNotify.SendMessage(Strings.Bootstrapper_ExtractionFailed_Title, Strings.Bootstrapper_ExtractionFailed_Message);
+                            Backend.NativeNotify.SendMessage(Strings.Bootstrapper_ExtractionFailed_Title, Strings.Bootstrapper_ExtractionFailed_Message);
                         else if (!allModificationsApplied)
-                            Backend.NNotify.SendMessage(Strings.Bootstrapper_ModificationsFailed_Title, Strings.Bootstrapper_ModificationsFailed_Message);
+                            Backend.NativeNotify.SendMessage(Strings.Bootstrapper_ModificationsFailed_Title, Strings.Bootstrapper_ModificationsFailed_Message);
                     }
 
                     if (!OperatingSystem.IsLinux())
