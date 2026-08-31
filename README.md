@@ -92,7 +92,7 @@ More features are planned! You can also suggest new features in the Issues secti
 Froststrap uses a **multi-license model** depending on the type of code:
 
 | Code                         | Locaiton                                                                      | License                                                   |
-|------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------|
+|------------------------------|-------------------------------------------------------------------------------|-----------------------------------------------------------|
 | Upstream code from Fishstrap | `n/a` - Can be found anywhere before we touched                               | [MIT](https://opensource.org/licenses/MIT)                |
 | Code written by Froststrap   | `n/a` - Can be found anywhere else                                            | [AGPL-3.0](https://opensource.org/license/agpl-3-0)       |
 | Rust + F# code               | [`./backend`](./backend), [`./Scripts/Translations`](./Scripts/Translations)  | [MPL-2.0](https://opensource.org/license/MPL-2.0)         |
