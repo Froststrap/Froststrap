@@ -3,7 +3,7 @@
 </h1>
 
 <p align="center">
-    Froststrap is a fork of <a href="https://github.com/fishstrap/fishstrap.git"><strong>Fishstrap</strong></a> focused on performance, customization, and additional features.
+    Froststrap is a cross-platform Roblox booststrapper which started from <a href="https://github.com/fishstrap/fishstrap.git"><strong>Fishstrap</strong></a>.
 </p>
 
 <p align="center">
@@ -26,12 +26,12 @@
 </div>
 
 > [!CAUTION]
-> The repo, [Froststrap/Froststrap](https://github.com/Froststrap/Froststrap.git), and [our website](https://froststrap.github.io), are the **ONLY PLACES** you should
+> The repo, [Froststrap/Froststrap](https://github.com/Froststrap/Froststrap.git), and [our website](https://froststrap.xyz), are the **ONLY PLACES** you should
 > download the binary/executable from, as any other source is **NOT** affiliated with us, and is a potential threat. 
 
 ---
 
-## Key Improvements Over Bloxstrap and Fishstrap
+## Key Improvements Over Fishstrap
 
 ### Integrations
 - Automatically rejoin servers you were disconnected from due to inactivity
@@ -40,14 +40,13 @@
 - Replace "Playing Roblox" with the name of the game you're playing using Custom Status Display
 - The playtime counter shows both total and session playtime
 - Roblox Studio RPC integrated within Froststrap
-- Change the Studio RPC thumbnail depending on the script that is open
-- Show script type, name, and number of lines of code
+    * Change the Studio RPC thumbnail depending on the script that is open
+    * Show script type, name, and number of lines of code
 
 ### Bootstrapper
 - Change the Roblox process priority
 - Automatically close the Roblox Crash Handler to reduce memory usage
 - Integrated cleaner tool to remove leftover files
-- Multi-instance launching support
 
 ### Mods
 - Multi-mod system that allows you to download many mods at once
@@ -77,12 +76,12 @@
 - View all currently available Roblox channels
 
 ### Extra Features
-- Remembers the last opened tab
 - Easily import settings from other bootstrappers such as Fishstrap and Bloxstrap
 - Create game shortcuts for faster game joining
 - Join servers in your region more easily using the region selector
 - Join servers in your selected region through the system tray while playing
 - Built-in account manager
+    * Region selector
 
 More features are planned! You can also suggest new features in the Issues section.
 
@@ -90,16 +89,16 @@ More features are planned! You can also suggest new features in the Issues secti
 
 ## Licensing
 
-Froststrap uses a **multi-license model** depending on the origin of the code:
+Froststrap uses a **multi-license model** depending on the type of code:
 
-| Code | License |
-|---|---|
-| Code written or modified by Froststrap | [AGPL-3.0](https://www.gnu.org/licenses/agpl-3.0.en.html) |
-| Rust code | [MPL-2.0](https://www.mozilla.org/en/MPL/2.0)
-| Upstream code inherited from Fishstrap/Bloxstrap | [MIT](https://opensource.org/licenses/MIT) |
-| Nix code | [Unlicense](https://unlicense.org/) |
+| Code                         | Locaiton                                                                      | License                                                   |
+|------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------|
+| Upstream code from Fishstrap | `n/a` - Can be found anywhere before we touched                               | [MIT](https://opensource.org/licenses/MIT)                |
+| Code written by Froststrap   | `n/a` - Can be found anywhere else                                            | [AGPL-3.0](https://opensource.org/license/agpl-3-0)       |
+| Rust + F# code               | [`./backend`](./backend), [`./Scripts/Translations`](./Scripts/Translations)  | [MPL-2.0](https://opensource.org/license/MPL-2.0)         |
+| Nix code                     | [`./nix`](./nix), [`./flake.nix`](flake.nix), [`./flake.lock`](./flake.lock)  | [Unlicense](https://unlicense.org/)                       |
 
-When in doubt about which license applies to a specific file, check the file header or refer to the [LICENSE](./LICENSE) file.
+When in doubt about which license applies to a specific file, check the file header, or refer to table above.
 
 ## Star History
 
