@@ -8,7 +8,10 @@ license.workspace = true
 [lib]
 crate-type = ["cdylib"]
 
-[dependencies]
+[target.'cfg(linux)'.dependencies]
+zbus.workspace = true
+
+[target.'cfg(macos)'.dependencies]
 objc2.workspace = true
 block2.workspace = true
 objc2-foundation.workspace = true
