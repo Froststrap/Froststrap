@@ -7,6 +7,7 @@ open System.Text.RegularExpressions
 open System.Xml.Linq
 open System.Security.Cryptography
 open System.Diagnostics
+open System.Collections.Generic
 
 module DeepLXTranslator =
     type TranslationRequest = {
@@ -81,16 +82,18 @@ module DeepLXTranslator =
     let getCacheKey (text: string) (lang: string) =
         sprintf "%s|%s" lang (computeMd5 text)
 
-    let loadCache (cachePath: string) : Map<string, string> =
+    let loadCache (cachePath: string) : Dictionary<string, string> =
         if File.Exists(cachePath) then
             try
                 let json = File.ReadAllText(cachePath)
-                let result = JsonSerializer.Deserialize<Map<string, string>>(json)
-                if box result <> null then result else Map.empty
-            with _ -> Map.empty
-        else Map.empty
+                let result = JsonSerializer.Deserialize<Dictionary<string, string>>(json)
+                if box result <> null then result else Dictionary<string, string>()
+            with ex ->
+                printfn "Warning: failed to load cache (%s). Starting with empty cache." ex.Message
+                Dictionary<string, string>()
+        else Dictionary<string, string>()
 
-    let saveCache (cachePath: string) (cache: Map<string, string>) =
+    let saveCache (cachePath: string) (cache: Dictionary<string, string>) =
         try
             let options = JsonSerializerOptions(WriteIndented = true, Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping)
             let json = JsonSerializer.Serialize(cache, options)
@@ -106,14 +109,14 @@ module DeepLXTranslator =
         | Some code -> code
         | None -> lang.ToUpperInvariant()
 
-    let translateWithRetry (config: Config) (cache: Map<string, string>) (text: string) (targetLang: string) (maxRetries: int) =
+    let translateWithRetry (config: Config) (cache: Dictionary<string, string>) (text: string) (targetLang: string) (maxRetries: int) =
         if shouldSkip config.SkipPatterns text then (text, cache)
         else
             let cacheKey = getCacheKey text targetLang
-            match cache.TryFind(cacheKey) with
-            | Some cached -> (cached, cache)
-            | None ->
-                let rec attemptLoop retryCount waitTime =
+            match cache.TryGetValue(cacheKey) with
+            | true, cached -> (cached, cache)
+            | false, _ ->
+                let rec attemptLoop retryCount =
                     if retryCount >= maxRetries then (text, cache)
                     else
                         try
@@ -126,48 +129,49 @@ module DeepLXTranslator =
 
                             match int response.StatusCode with
                             | 400 ->
-                                if retryCount < maxRetries - 1 then System.Threading.Thread.Sleep(1500); attemptLoop (retryCount + 1) waitTime
+                                if retryCount < maxRetries - 1 then System.Threading.Thread.Sleep(1000); attemptLoop (retryCount + 1)
                                 else (text, cache)
                             | 429 ->
-                                printfn "    Rate limited (429). Backing off for %d seconds..." waitTime
+                                let waitTime = 5
+                                printfn "    Rate limited (429), waiting %ds..." waitTime
+                                Console.Out.Flush()
                                 System.Threading.Thread.Sleep(waitTime * 1000)
-                                let nextWait = Math.Min(waitTime + 3, 15)
-                                attemptLoop (retryCount + 1) nextWait
+                                attemptLoop (retryCount + 1)
                             | status when status >= 500 ->
-                                if retryCount < maxRetries - 1 then System.Threading.Thread.Sleep(3000); attemptLoop (retryCount + 1) waitTime
+                                if retryCount < maxRetries - 1 then System.Threading.Thread.Sleep(3000); attemptLoop (retryCount + 1)
                                 else (text, cache)
                             | 200 ->
                                 let respBody = response.Content.ReadAsStringAsync().GetAwaiter().GetResult()
                                 let result = JsonSerializer.Deserialize<DeepLXResponse>(respBody)
                                 
                                 if box result = null || result.Code <> 200 then
-                                    if retryCount < maxRetries - 1 then System.Threading.Thread.Sleep(2000); attemptLoop (retryCount + 1) waitTime
+                                    if retryCount < maxRetries - 1 then System.Threading.Thread.Sleep(1000); attemptLoop (retryCount + 1)
                                     else (text, cache)
                                 else
                                     let translated = if String.IsNullOrEmpty(result.Data) then text else result.Data
                                     if translated = text && text.Length > 3 then
                                         if retryCount = 0 then
                                             printfn "    Retrying once (translation failed)..."
-                                            System.Threading.Thread.Sleep(3000)
-                                            attemptLoop (retryCount + 1) waitTime
+                                            Console.Out.Flush()
+                                            System.Threading.Thread.Sleep(2000)
+                                            attemptLoop (retryCount + 1)
                                         else (text, cache)
                                     else
-                                        let updatedCache = cache.Add(cacheKey, translated)
-                                        saveCache config.CacheFile updatedCache
-                                        (translated, updatedCache)
+                                        cache.[cacheKey] <- translated
+                                        saveCache config.CacheFile cache
+                                        (translated, cache)
                             | _ -> (text, cache)
                         with _ ->
                             if retryCount = maxRetries - 1 then (text, cache)
                             else
-                                System.Threading.Thread.Sleep(3000)
-                                attemptLoop (retryCount + 1) waitTime
+                                System.Threading.Thread.Sleep(2000)
+                                attemptLoop (retryCount + 1)
 
-                attemptLoop 0 5
+                attemptLoop 0
 
-    let translateBatch (config: Config) (cache: Map<string, string>) (texts: string list) (targetLang: string) =
+    let translateBatch (config: Config) (cache: Dictionary<string, string>) (texts: string list) (targetLang: string) =
         if List.isEmpty texts then (Map.empty, cache)
         else
-            let mutable currentCache = cache
             let mutable results = Map.empty
             let mutable uncached = []
 
@@ -176,30 +180,31 @@ module DeepLXTranslator =
                     results <- results.Add(text, text)
                 else
                     let cacheKey = getCacheKey text targetLang
-                    match currentCache.TryFind(cacheKey) with
-                    | Some cached -> results <- results.Add(text, cached)
-                    | None -> uncached <- text :: uncached
+                    match cache.TryGetValue(cacheKey) with
+                    | true, cached -> results <- results.Add(text, cached)
+                    | false, _ -> uncached <- text :: uncached
 
             let uncachedList = List.rev uncached
             if not (List.isEmpty uncachedList) then
                 printfn "    Translating %d strings..." uncachedList.Length
+                Console.Out.Flush()
                 
                 for i = 0 to uncachedList.Length - 1 do
                     let text = uncachedList.[i]
                     if i > 0 && i % 10 = 0 then
-                        printfn "    Progress: %d/%d (Cooling down 3s...)" i uncachedList.Length
-                        System.Threading.Thread.Sleep(3000)
+                        printfn "    Progress: %d/%d (Cooling down 1s...)" i uncachedList.Length
+                        Console.Out.Flush()
+                        System.Threading.Thread.Sleep(1000)
 
-                    let (translated, newCache) = translateWithRetry config currentCache text targetLang 4
-                    currentCache <- newCache
+                    let (translated, _) = translateWithRetry config cache text targetLang 2
                     results <- results.Add(text, translated)
 
                     if i < uncachedList.Length - 1 then
-                        System.Threading.Thread.Sleep(1800)
+                        System.Threading.Thread.Sleep(400)
 
-                saveCache config.CacheFile currentCache
+                saveCache config.CacheFile cache
 
-            (results, currentCache)
+            (results, cache)
 
     let getBaseHeader (baseFile: string) =
         if not (File.Exists baseFile) then ""
@@ -292,13 +297,14 @@ module DeepLXTranslator =
 
         sb.Append("</root>").ToString()
 
-    let translateLanguage (config: Config) (cache: Map<string, string>) (lang: string) (baseStrings: Map<string, string>) =
+    let translateLanguage (config: Config) (cache: Dictionary<string, string>) (lang: string) (baseStrings: Map<string, string>) =
         if List.contains lang config.SkipLanguages then
             printfn "Skipping %s (base English file)" lang
             (0, cache)
         else
             let langFile = Path.Combine(config.ResourcesDir, sprintf "Strings.%s.resx" lang)
             printfn "Processing %s..." lang
+            Console.Out.Flush()
 
             let existingTranslations = getExistingTranslations langFile
             let existingKeys = existingTranslations |> Map.keys |> Set.ofSeq
@@ -319,6 +325,7 @@ module DeepLXTranslator =
                 if not (Set.isEmpty addedKeys) then printfn "  Added: %d new strings" addedKeys.Count
                 if not (Set.isEmpty changedKeys) then printfn "  Changed: %d strings updated" changedKeys.Count
                 if not (Set.isEmpty removedKeys) then printfn "  Removed: %d strings" removedKeys.Count
+                Console.Out.Flush()
 
                 let needTranslationKeys = Set.union addedKeys changedKeys
                 let needTranslationMap = 
@@ -327,19 +334,18 @@ module DeepLXTranslator =
                     |> Map.ofSeq
 
                 let mutable translatedMap = Map.empty
-                let mutable currentCache = cache
 
                 if not (Map.isEmpty needTranslationMap) then
                     printfn "  Translating %d strings..." needTranslationMap.Count
+                    Console.Out.Flush()
                     let textList = needTranslationMap |> Map.values |> Seq.toList
-                    let (resMap, updatedCache) = translateBatch config currentCache textList lang
+                    let (resMap, _) = translateBatch config cache textList lang
                     translatedMap <- resMap
-                    currentCache <- updatedCache
 
                 let baseHeader = getBaseHeader config.BaseFile
                 if String.IsNullOrEmpty baseHeader then
                     printfn "  Failed to read base header!"
-                    (0, currentCache)
+                    (0, cache)
                 else
                     let baseDoc = XDocument.Load(config.BaseFile)
                     let newDoc = XDocument(baseDoc)
@@ -348,7 +354,7 @@ module DeepLXTranslator =
 
                     let root = Option.ofObj newDoc.Root
                     match root with
-                    | None -> (0, currentCache)
+                    | None -> (0, cache)
                     | Some rootNode ->
                         for KeyValue(key, original) in needTranslationMap do
                             let translated = match translatedMap.TryFind(original) with Some t -> t | None -> original
@@ -381,7 +387,8 @@ module DeepLXTranslator =
                         File.WriteAllText(langFile, formattedContent, Encoding.UTF8)
                         let totalChanges = addedKeys.Count + changedKeys.Count + removedKeys.Count
                         printfn "  Added %d new, updated %d, removed %d" addedKeys.Count changedKeys.Count removedKeys.Count
-                        (totalChanges, currentCache)
+                        Console.Out.Flush()
+                        (totalChanges, cache)
 
     let isDeepLxRunning (url: string) =
         try
@@ -395,6 +402,7 @@ module DeepLXTranslator =
     let startDeepLx () =
         try
             printfn "Starting DeepLX container..."
+            Console.Out.Flush()
             
             let runProc (cmd: string) (args: string) =
                 let psi = ProcessStartInfo(cmd, args)
@@ -414,16 +422,19 @@ module DeepLXTranslator =
             if code1 <> 0 then
                 printfn "Failed to start DeepLX: %s" err1
                 printfn "Trying alternative DeepLX image..."
+                Console.Out.Flush()
                 let code2, err2 = runProc "docker" "run -d --name deeplx -p 1188:1188 --restart unless-stopped missuo/deeplx:latest"
                 if code2 <> 0 then
                     printfn "Failed to start with alternative image: %s" err2
                     false
                 else
                     printfn "Waiting for DeepLX to initialize..."
+                    Console.Out.Flush()
                     System.Threading.Thread.Sleep(10000)
                     true
             else
                 printfn "Waiting for DeepLX to initialize..."
+                Console.Out.Flush()
                 System.Threading.Thread.Sleep(10000)
                 true
         with ex ->
@@ -431,6 +442,10 @@ module DeepLXTranslator =
             false
 
     let translateAll () =
+        let stdout = new StreamWriter(Console.OpenStandardOutput())
+        stdout.AutoFlush <- true
+        Console.SetOut(stdout)
+
         let config = createConfig ()
         printfn "\nStarting translation with DeepLX..."
 
@@ -449,18 +464,17 @@ module DeepLXTranslator =
             printfn "Found %d strings in base file" baseStrings.Count
             printfn "Translating %d languages\n" config.Languages.Length
 
-            let mutable cache = loadCache config.CacheFile
+            let cache = loadCache config.CacheFile
             let mutable totalStats = 0
 
             config.Languages |> List.iteri (fun i lang ->
                 printf "[%d/%d] " (i + 1) config.Languages.Length
-                let (changes, updatedCache) = translateLanguage config cache lang baseStrings
-                cache <- updatedCache
+                let (changes, _) = translateLanguage config cache lang baseStrings
                 totalStats <- totalStats + changes
 
                 if i < config.Languages.Length - 1 then
-                    printfn "  Language complete. Cooling down 5 seconds before next language..."
-                    System.Threading.Thread.Sleep(5000)
+                    printfn "  Language complete. Cooling down 3 seconds before next language..."
+                    System.Threading.Thread.Sleep(3000)
             )
 
             printfn "\nComplete. Processed %d changes across %d languages" totalStats config.Languages.Length
