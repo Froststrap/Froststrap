@@ -10,16 +10,6 @@ internal partial class INNotify
 {
     [LibraryImport(
         "rbackend",
-        EntryPoint = "send_notification"
-    )]
-    public static partial int Send(
-        [MarshalAs(UnmanagedType.LPUTF8Str)] string title,
-        [MarshalAs(UnmanagedType.LPUTF8Str)] string description,
-        byte[]? imageData,
-        nuint imageLen
-    );
-    [LibraryImport(
-        "rbackend",
         EntryPoint = "send_notification_message"
     )]
     public static partial int SendMessage(
@@ -39,19 +29,6 @@ public class NNotify
 {
     private static readonly Lazy<int> _appInit = new(() => INNotify.SetApplication());
 
-    public static void Send(
-        string title,
-        string description,
-        byte[]? imageData,
-        nuint imgLen
-    )
-    {
-        Task.Run(() =>
-        {
-            _ = _appInit.Value;
-            INNotify.Send(title, description, imageData, imgLen);
-        });
-    }
     public static void SendMessage(
         string title,
         string description,

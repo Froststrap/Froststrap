@@ -18,8 +18,7 @@ authors = [
 ]
 
 [workspace.dependencies]
-image = "0.25.10"
-
-[workspace.dependencies.notify-rust]
-version = "4"
-features = ["images"]
+objc2 = "0.6"
+block2 = "0.6"
+objc2-foundation = "0.3"
+objc2-user-notifications = "0.3"
