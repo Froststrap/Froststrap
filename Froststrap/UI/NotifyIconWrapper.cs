@@ -108,7 +108,7 @@ namespace Froststrap.UI
 
         public async void ShowNotification(object? sender, EventArgs e)
         {
-            App.Logger.Debug("Dispatching Notfification");
+            App.Logger.Debug("Dispatching event notfification");
             if (ActivityWatcher?.Data == null) return;
 
             string title = ActivityWatcher.Data.ServerType switch
