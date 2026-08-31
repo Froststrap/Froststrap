@@ -97,39 +97,15 @@
     </Compile>
   </ItemGroup>
 
-  <Target Name="BuildVirtualDisplayDylib"
-          BeforeTargets="BeforeBuild"
-          Condition="$([MSBuild]::IsOSPlatform('OSX'))">
+  <Target Name="BuildVirtualDisplayDylib" BeforeTargets="BeforeBuild" Condition="$([MSBuild]::IsOSPlatform('OSX'))">
+    <Exec Command="sh output_dylib.sh" WorkingDirectory="$(MSBuildProjectDirectory)/../macApp/virtualdisplay" />
 
-      <Message Importance="high"
-               Text="MSBuildProjectDirectory=$(MSBuildProjectDirectory)" />
-
-      <Exec Command="pwd &amp;&amp; echo '--- files before build ---' &amp;&amp; find . -maxdepth 5 -type f | sort"
-            WorkingDirectory="$(MSBuildProjectDirectory)/../macApp/virtualdisplay" />
-
-      <Exec Command="sh output_dylib.sh"
-            WorkingDirectory="$(MSBuildProjectDirectory)/../macApp/virtualdisplay" />
-
-      <Exec Command="pwd &amp;&amp; echo '--- .build contents ---' &amp;&amp; find .build -type f -print 2&gt;/dev/null | sort || true"
-            WorkingDirectory="$(MSBuildProjectDirectory)/../macApp/virtualdisplay" />
-
-      <Exec Command="echo '--- Expected dylib ---' &amp;&amp; ls -la .build/out/Products/Release/libvirtualdisplay.dylib"
-            WorkingDirectory="$(MSBuildProjectDirectory)/../macApp/virtualdisplay" />
-
-      <ItemGroup>
-        <Content Include="$(MSBuildProjectDirectory)/../macApp/virtualdisplay/.build/out/Products/Release/libvirtualdisplay.dylib">
-          <Link>libvirtualdisplay.dylib</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-          <Visible>false</Visible>
-        </Content>
-      </ItemGroup>
-
-      <Message Importance="high"
-               Text="=== VirtualDisplay Content Item ===" />
-
-      <Message Importance="high"
-               Text="@(Content)" />
-
+    <ItemGroup>
+      <Content Include="$(MSBuildProjectDirectory)/../macApp/virtualdisplay/.build/out/Products/Release/libvirtualdisplay.dylib">
+        <Link>libvirtualdisplay.dylib</Link>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <Visible>false</Visible>
+      </Content>
+    </ItemGroup>
   </Target>
-
 </Project>
