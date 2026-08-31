@@ -1,6 +1,8 @@
 {
   lib,
-  mkShell
+  stdenv,
+  mkShell,
+  mkShellNoCC,
 }:
 {
   mkFragment = argsOrFn: let
@@ -11,7 +13,7 @@
     shellHook = args.shellHook or "";
   };
 
-  mkComposedShell = frags: mkShell {
+  mkComposedShell = frags: (if stdenv.hostPlatform.isDarwin then mkShellNoCC else mkShell) {
     buildInputs = lib.concatMap (f: f.buildInputs) frags;
     nativeBuildInputs = lib.concatMap (f: f.nativeBuildInputs) frags;
     shellHook = lib.concatStringsSep "\n" (map (f: f.shellHook) frags);
