@@ -7,7 +7,7 @@ let
   inherit (callPackage ./devshell-tools.nix {}) mkFragment;
 in
 mkFragment {
-  shellHook = lib.optionalString stdenv.isDarwin ''
+  shellHook = lib.optionalString stdenv.hostPlatform.isDarwin ''
     if [ -d "/Applications/Xcode-beta.app" ]; then
       export DEVELOPER_DIR="/Applications/Xcode-beta.app/Contents/Developer"
     else
