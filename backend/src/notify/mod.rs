@@ -21,6 +21,7 @@ pub fn request_notificaiton_permission() -> i32 {
     return 0;
 }
 
+#[allow(unused)]
 #[unsafe(no_mangle)]
 pub fn set_application(b: *const c_char) -> i32 {
     #[cfg(target_os = "windows")]
