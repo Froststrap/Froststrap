@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 namespace Froststrap.Backend;
 
 /// A native notifier
-internal partial class INNotify
+internal partial class InternalNativeNotify
 {
     [LibraryImport(
         "rbackend",
@@ -27,10 +27,10 @@ internal partial class INNotify
 }
 
 /// A native notifier
-public class NNotify
+public class NativeNotify
 {
     public static void InitRing() {
-        INNotify.SetApplication("xyz.froststrap.desktop");    
+        InternalNativeNotify.SetApplication("xyz.froststrap.desktop");    
     }
     
     public static void SendMessage(
@@ -41,7 +41,7 @@ public class NNotify
     {
         Task.Run(() =>
         {
-            INNotify.SendMessage(title, description, duration);
+            InternalNativeNotify.SendMessage(title, description, duration);
         });
     }
 }

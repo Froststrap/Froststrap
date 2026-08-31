@@ -152,7 +152,7 @@ namespace Froststrap.UI
             App.Logger.Debug("Dispatching Alert");
             if (_isDisposed) return;
 
-            Backend.NNotify.SendMessage(
+            Backend.NativeNotify.SendMessage(
                 title,
                 message,
                 duration
