@@ -38,6 +38,9 @@ ci-publish-windows:
     @just publish-windows
     
 ci-publish-macos:
+    which -a ld
+    which -a swiftc
+    echo $PATH
     @just publish-macos
 
 ci-publish-linux:
