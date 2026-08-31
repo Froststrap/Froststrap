@@ -85,9 +85,7 @@ jobs:
           APP_STORE_CONNECT_P8_CONTENT: ${{ secrets.APP_STORE_CONNECT_P8_CONTENT }}
           APPLE_KEY_ID: ${{ secrets.APPLE_KEY_ID }}
           APPLE_ISSUER_ID: ${{ secrets.APPLE_ISSUER_ID }}
-        run: |
-          chmod +x Scripts/package/publish-macos.sh
-          ./Scripts/package/publish-macos.sh
+        run: nix develop -c just ci-publish-macos
 
       - uses: actions/upload-artifact@v7
         with:
