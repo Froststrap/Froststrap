@@ -131,7 +131,7 @@ module DeepLXTranslator =
                             | 429 ->
                                 printfn "    Rate limited (429). Backing off for %d seconds..." waitTime
                                 System.Threading.Thread.Sleep(waitTime * 1000)
-                                let nextWait = Math.Min(waitTime * 2, 60)
+                                let nextWait = Math.Min(waitTime + 3, 15)
                                 attemptLoop (retryCount + 1) nextWait
                             | status when status >= 500 ->
                                 if retryCount < maxRetries - 1 then System.Threading.Thread.Sleep(3000); attemptLoop (retryCount + 1) waitTime
@@ -162,7 +162,7 @@ module DeepLXTranslator =
                                 System.Threading.Thread.Sleep(3000)
                                 attemptLoop (retryCount + 1) waitTime
 
-                attemptLoop 0 10
+                attemptLoop 0 5
 
     let translateBatch (config: Config) (cache: Map<string, string>) (texts: string list) (targetLang: string) =
         if List.isEmpty texts then (Map.empty, cache)
@@ -186,16 +186,16 @@ module DeepLXTranslator =
                 
                 for i = 0 to uncachedList.Length - 1 do
                     let text = uncachedList.[i]
-                    if i > 0 && i % 5 = 0 then
-                        printfn "    Progress: %d/%d (Cooling down 2s...)" i uncachedList.Length
-                        System.Threading.Thread.Sleep(2000)
+                    if i > 0 && i % 10 = 0 then
+                        printfn "    Progress: %d/%d (Cooling down 3s...)" i uncachedList.Length
+                        System.Threading.Thread.Sleep(3000)
 
                     let (translated, newCache) = translateWithRetry config currentCache text targetLang 4
                     currentCache <- newCache
                     results <- results.Add(text, translated)
 
                     if i < uncachedList.Length - 1 then
-                        System.Threading.Thread.Sleep(1200)
+                        System.Threading.Thread.Sleep(1800)
 
                 saveCache config.CacheFile currentCache
 
