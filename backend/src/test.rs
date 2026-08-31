@@ -10,8 +10,9 @@ mod test {
 
     #[test]
     fn test_notification_send() {
-        let title = CString::new("Test Title").unwrap();
-        let description = CString::new("Testing description").unwrap();
+        crate::notify::set_application(CString::new("xyz.froststrap.desktop").unwrap().as_ptr());
+        let title = CString::new("Notification Test").unwrap();
+        let description = CString::new("A description came with the test too!").unwrap();
 
         let result = unsafe { send_notification_message(title.as_ptr(), description.as_ptr(), 5) };
 

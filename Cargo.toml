@@ -23,3 +23,10 @@ block2 = "0.6"
 zbus = "5.19.0"
 objc2-foundation = "0.3"
 objc2-user-notifications = "0.3"
+
+[workspace.dependencies.windows]
+version = "0.62.2"
+features = [
+  "UI_Notifications",
+  "Data_Xml_Dom",
+]

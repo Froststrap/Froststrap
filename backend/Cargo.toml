@@ -11,6 +11,9 @@ crate-type = ["cdylib"]
 [target.'cfg(target_os = "linux")'.dependencies]
 zbus.workspace = true
 
+[target.'cfg(target_os = "windows")'.dependencies]
+windows.workspace = true
+
 [target.'cfg(target_os = "macos")'.dependencies]
 objc2.workspace = true
 block2.workspace = true
