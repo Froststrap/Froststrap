@@ -97,11 +97,18 @@
     </Compile>
   </ItemGroup>
 
-  <Target Name="BuildVirtualDisplayDylib" BeforeTargets="BeforeBuild" Condition="$([MSBuild]::IsOSPlatform('OSX'))">
-    <Exec Command="sh output_dylib.sh" WorkingDirectory="$(MSBuildProjectDirectory)/../macApp/virtualdisplay" />
-
+  <Target
+    Name="BuildVirtualDisplayDylib"
+    BeforeTargets="BeforeBuild"
+    Condition="$([MSBuild]::IsOSPlatform('OSX'))">
+    <Exec Command="sh output_dylib.sh"
+          WorkingDirectory="$(MSBuildProjectDirectory)/../macApp/virtualdisplay" />
+    <PropertyGroup>
+      <VirtualDisplayBuildDir Condition="Exists('$(MSBuildProjectDirectory)/../macApp/virtualdisplay/.build/out')">out</VirtualDisplayBuildDir>
+      <VirtualDisplayBuildDir Condition="Exists('$(MSBuildProjectDirectory)/../macApp/virtualdisplay/.build/apple')">apple</VirtualDisplayBuildDir>
+    </PropertyGroup>
     <ItemGroup>
-      <Content Include="$(MSBuildProjectDirectory)/../macApp/virtualdisplay/.build/out/Products/Release/libvirtualdisplay.dylib">
+      <Content Include="$(MSBuildProjectDirectory)/../macApp/virtualdisplay/.build/$(VirtualDisplayBuildDir)/Products/Release/libvirtualdisplay.dylib">
         <Link>libvirtualdisplay.dylib</Link>
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         <Visible>false</Visible>
