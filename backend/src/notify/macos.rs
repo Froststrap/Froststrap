@@ -1,3 +1,4 @@
+use crate::notify::data_types::{NotificationPermissionResult, SendNotificationResult};
 use block2::RcBlock;
 use objc2::runtime::Bool;
 use objc2_foundation::{MainThreadMarker, NSBundle, NSError, NSString, NSUUID};
@@ -10,24 +11,6 @@ use std::time::Duration;
 
 fn has_valid_bundle_context() -> bool {
     NSBundle::mainBundle().bundleIdentifier().is_some()
-}
-
-#[repr(i32)]
-pub enum NotificationPermissionResult {
-    Granted,
-    Denied,
-    TimedOut,
-    NoBundleContext,
-}
-
-#[repr(i32)]
-pub enum SendNotificationResult {
-    Sent = 0,
-    NotAuthorized = 1,
-    InvalidUtf8 = 2,
-    NoBundleContext = 3,
-    TimedOut = 4,
-    OsError = 5,
 }
 
 pub fn request_notification_permission() -> i32 {

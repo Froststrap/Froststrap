@@ -1,3 +1,6 @@
+pub mod data_types;
+#[cfg(target_os = "linux")]
+pub mod linux;
 #[cfg(target_os = "macos")]
 pub mod macos;
 #[cfg(target_os = "windows")]
@@ -5,18 +8,24 @@ pub mod win;
 
 use std::{ffi::CStr, os::raw::c_char};
 
-use crate::notify::macos::SendNotificationResult;
+use crate::notify::data_types::SendNotificationResult;
 
 /// macOS only- No-op on other platforms.
 /// Will still execute on other systems to provide
 /// a simple ABI, and it's usage.
 #[unsafe(no_mangle)]
+#[cfg(not(target_os = "macos"))]
 pub fn request_notificaiton_permission() -> i32 {
-    if cfg!(target_os = "macos") {
-        macos::request_notification_permission()
-    } else {
-        0
-    }
+    0
+}
+
+/// macOS only- No-op on other platforms.
+/// Will still execute on other systems to provide
+/// a simple ABI, and it's usage.
+#[unsafe(no_mangle)]
+#[cfg(target_os = "macos")]
+pub fn request_notificaiton_permission() -> i32 {
+    macos::request_notification_permission()
 }
 
 #[unsafe(no_mangle)]
@@ -46,7 +55,11 @@ pub unsafe extern "C" fn send_notification_message(
         return SendNotificationResult::InvalidUtf8 as i32;
     };
 
-    macos::send_notification(title, description)
+    #[cfg(target_os = "macos")]
+    return macos::send_notification(title, description);
+
+    #[cfg(target_os = "linux")]
+    return linux::send_notification(title, description);
 }
 
 unsafe fn c_str_to_string(ptr: *const c_char) -> Option<String> {
