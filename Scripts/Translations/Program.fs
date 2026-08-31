@@ -33,7 +33,6 @@ module DeepLXTranslator =
 
     let createConfig () =
         let scriptDir = __SOURCE_DIRECTORY__
-    
         let projectRoot = Path.GetFullPath(Path.Combine(scriptDir, "..", ".."))
         let resourcesDir = Path.Combine(projectRoot, "Froststrap", "Resources")
         let baseDir = AppContext.BaseDirectory
@@ -114,7 +113,7 @@ module DeepLXTranslator =
             match cache.TryFind(cacheKey) with
             | Some cached -> (cached, cache)
             | None ->
-                let rec attemptLoop retryCount =
+                let rec attemptLoop retryCount waitTime =
                     if retryCount >= maxRetries then (text, cache)
                     else
                         try
@@ -127,29 +126,30 @@ module DeepLXTranslator =
 
                             match int response.StatusCode with
                             | 400 ->
-                                if retryCount < maxRetries - 1 then System.Threading.Thread.Sleep(1000); attemptLoop (retryCount + 1)
+                                if retryCount < maxRetries - 1 then System.Threading.Thread.Sleep(1500); attemptLoop (retryCount + 1) waitTime
                                 else (text, cache)
                             | 429 ->
-                                printfn "    Rate limited, waiting 5s..."
-                                System.Threading.Thread.Sleep(5000)
-                                attemptLoop retryCount
+                                printfn "    Rate limited (429). Backing off for %d seconds..." waitTime
+                                System.Threading.Thread.Sleep(waitTime * 1000)
+                                let nextWait = Math.Min(waitTime * 2, 60)
+                                attemptLoop (retryCount + 1) nextWait
                             | status when status >= 500 ->
-                                if retryCount < maxRetries - 1 then System.Threading.Thread.Sleep(3000); attemptLoop (retryCount + 1)
+                                if retryCount < maxRetries - 1 then System.Threading.Thread.Sleep(3000); attemptLoop (retryCount + 1) waitTime
                                 else (text, cache)
                             | 200 ->
                                 let respBody = response.Content.ReadAsStringAsync().GetAwaiter().GetResult()
                                 let result = JsonSerializer.Deserialize<DeepLXResponse>(respBody)
                                 
                                 if box result = null || result.Code <> 200 then
-                                    if retryCount < maxRetries - 1 then System.Threading.Thread.Sleep(1000); attemptLoop (retryCount + 1)
+                                    if retryCount < maxRetries - 1 then System.Threading.Thread.Sleep(2000); attemptLoop (retryCount + 1) waitTime
                                     else (text, cache)
                                 else
                                     let translated = if String.IsNullOrEmpty(result.Data) then text else result.Data
                                     if translated = text && text.Length > 3 then
                                         if retryCount = 0 then
                                             printfn "    Retrying once (translation failed)..."
-                                            System.Threading.Thread.Sleep(2000)
-                                            attemptLoop (retryCount + 1)
+                                            System.Threading.Thread.Sleep(3000)
+                                            attemptLoop (retryCount + 1) waitTime
                                         else (text, cache)
                                     else
                                         let updatedCache = cache.Add(cacheKey, translated)
@@ -159,10 +159,10 @@ module DeepLXTranslator =
                         with _ ->
                             if retryCount = maxRetries - 1 then (text, cache)
                             else
-                                System.Threading.Thread.Sleep(2000)
-                                attemptLoop (retryCount + 1)
+                                System.Threading.Thread.Sleep(3000)
+                                attemptLoop (retryCount + 1) waitTime
 
-                attemptLoop 0
+                attemptLoop 0 10
 
     let translateBatch (config: Config) (cache: Map<string, string>) (texts: string list) (targetLang: string) =
         if List.isEmpty texts then (Map.empty, cache)
@@ -186,16 +186,16 @@ module DeepLXTranslator =
                 
                 for i = 0 to uncachedList.Length - 1 do
                     let text = uncachedList.[i]
-                    if i > 0 && i % 10 = 0 then
-                        printfn "    Progress: %d/%d" i uncachedList.Length
-                        System.Threading.Thread.Sleep(1000)
+                    if i > 0 && i % 5 = 0 then
+                        printfn "    Progress: %d/%d (Cooling down 2s...)" i uncachedList.Length
+                        System.Threading.Thread.Sleep(2000)
 
-                    let (translated, newCache) = translateWithRetry config currentCache text targetLang 2
+                    let (translated, newCache) = translateWithRetry config currentCache text targetLang 4
                     currentCache <- newCache
                     results <- results.Add(text, translated)
 
                     if i < uncachedList.Length - 1 then
-                        System.Threading.Thread.Sleep(300)
+                        System.Threading.Thread.Sleep(1200)
 
                 saveCache config.CacheFile currentCache
 
@@ -459,8 +459,8 @@ module DeepLXTranslator =
                 totalStats <- totalStats + changes
 
                 if i < config.Languages.Length - 1 then
-                    printfn "  Waiting 3 seconds before next language..."
-                    System.Threading.Thread.Sleep(3000)
+                    printfn "  Language complete. Cooling down 5 seconds before next language..."
+                    System.Threading.Thread.Sleep(5000)
             )
 
             printfn "\nComplete. Processed %d changes across %d languages" totalStats config.Languages.Length
