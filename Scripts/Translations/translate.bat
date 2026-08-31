@@ -15,7 +15,7 @@ if errorlevel 1 (
 )
 
 REM Run translation (will auto-start DeepLX if needed)
-python translate_deeplx.py
+dotnet run
 
 if errorlevel 1 (
     echo.
