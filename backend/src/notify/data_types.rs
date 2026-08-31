@@ -17,3 +17,9 @@ pub enum SendNotificationResult {
     CallFailed,
     ConnectionFailed,
 }
+
+#[repr(i32)]
+pub enum SetApplicationResult {
+    Set,
+    InvalidUtf8,
+}
