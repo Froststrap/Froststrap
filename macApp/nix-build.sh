@@ -53,6 +53,17 @@ dotnet publish "$PROJECT_FILE" \
     -o "$OUTPUT_DIR/x64" \
     --configfile "$SRCROOT/../nuget.config"
 
+if [ -d "./virtualdisplay/.build/out" ]; then
+  BUILD_DIR="out"
+elif [ -d "./virtualdisplay/.build/apple" ]; then
+  BUILD_DIR="apple"
+else
+  echo "error: neither .build/out nor .build/apple exists" >&2
+  exit 1
+fi
+
+cp "./virtualdisplay/.build/$BUILD_DIR/Products/Release/libvirtualdisplay.dylib" "$OUTPUT_DIR/libvirtualdisplay.dylib"
+
 lipo -create \
     "$OUTPUT_DIR/arm64/Froststrap" \
     "$OUTPUT_DIR/x64/Froststrap" \
