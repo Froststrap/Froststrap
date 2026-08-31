@@ -1,69 +1,34 @@
-use std::ffi::CStr;
-use std::os::raw::c_char;
+#[cfg(target_os = "macos")]
+pub mod macos;
+#[cfg(target_os = "windows")]
+pub mod win;
 
-use image::DynamicImage;
-use notify_rust::Notification;
+use std::{ffi::CStr, os::raw::c_char};
 
-#[cfg(not(target_os = "linux"))]
-const APP_ID: &'static str = "xyz.froststrap.desktop";
-#[cfg(target_os = "linux")]
-const APP_ID: &'static str = "Froststrap";
+use crate::notify::macos::SendNotificationResult;
 
+/// macOS only- No-op on other platforms.
+/// Will still execute on other systems to provide
+/// a simple ABI, and it's usage.
 #[unsafe(no_mangle)]
-pub unsafe extern "C" fn set_application() -> i32 {
-    #[cfg(target_os = "macos")]
-    match notify_rust::set_application(APP_ID) {
-        Ok(_) => (),
-        Err(e) => {
-            eprintln!("{e}");
-            return -4;
-        }
-    };
-
-    0
+pub fn request_notificaiton_permission() -> i32 {
+    if cfg!(target_os = "macos") {
+        macos::request_notification_permission()
+    } else {
+        0
+    }
 }
 
 #[unsafe(no_mangle)]
-pub unsafe extern "C" fn send_notification(
-    title: *const c_char,
-    description: *const c_char,
-    image_data: *const u8,
-    image_len: usize,
-) -> i32 {
-    let title = unsafe { CStr::from_ptr(title) }.to_string_lossy();
-    let description = unsafe { CStr::from_ptr(description) }.to_string_lossy();
-    let buffer = unsafe { std::slice::from_raw_parts(image_data, image_len) };
-    let dynamic_image: DynamicImage = match image::load_from_memory(buffer) {
-        Ok(img) => img,
-        Err(e) => {
-            eprintln!("image decode failed: {e:?}");
-            return -1;
-        }
-    };
+#[cfg(target_os = "windows")]
+pub fn set_application(b: *const c_char) -> i32 {
+    win::set_application(b)
+}
 
-    let temp_path =
-        std::env::temp_dir().join(format!("froststrap-notif-{}.png", std::process::id()));
-    if let Err(_) = dynamic_image.save(&temp_path) {
-        return -2;
-    }
-
-    let mut notification = Notification::new();
-    notification.summary(&title).body(&description);
-    notification.image_path(temp_path.to_string_lossy().as_ref());
-
-    #[cfg(target_os = "windows")]
-    notification.app_id(APP_ID);
-
-    #[cfg(target_os = "linux")]
-    notification.appname(APP_ID);
-
-    let result = match notification.show() {
-        Ok(_) => 0,
-        Err(_) => -3,
-    };
-
-    let _ = std::fs::remove_file(&temp_path);
-    result
+#[unsafe(no_mangle)]
+#[cfg(not(target_os = "windows"))]
+pub fn set_application(_b: *const c_char) -> i32 {
+    0
 }
 
 #[unsafe(no_mangle)]
@@ -72,22 +37,24 @@ pub unsafe extern "C" fn send_notification_message(
     description: *const c_char,
     duration: i32,
 ) -> i32 {
-    let title = unsafe { CStr::from_ptr(title) }.to_string_lossy();
-    let description = unsafe { CStr::from_ptr(description) }.to_string_lossy();
-    let mut notification = Notification::new();
-    notification
-        .summary(&title)
-        .body(&description)
-        .timeout(duration);
+    let _ = duration;
 
-    #[cfg(target_os = "windows")]
-    notification.app_id(APP_ID);
+    let Some(title) = (unsafe { c_str_to_string(title) }) else {
+        return SendNotificationResult::InvalidUtf8 as i32;
+    };
+    let Some(description) = (unsafe { c_str_to_string(description) }) else {
+        return SendNotificationResult::InvalidUtf8 as i32;
+    };
 
-    #[cfg(target_os = "linux")]
-    notification.appname(APP_ID);
+    macos::send_notification(title, description)
+}
 
-    match notification.show() {
-        Ok(_) => 0,
-        Err(_) => -3,
+unsafe fn c_str_to_string(ptr: *const c_char) -> Option<String> {
+    if ptr.is_null() {
+        return None;
     }
+    unsafe { CStr::from_ptr(ptr) }
+        .to_str()
+        .ok()
+        .map(str::to_owned)
 }
