@@ -21,14 +21,18 @@ internal partial class INNotify
         "rbackend",
         EntryPoint = "set_application"
     )]
-    public static partial int SetApplication();
+    public static partial int SetApplication(
+        [MarshalAs(UnmanagedType.LPUTF8Str)] string bundleIdentifier
+    );
 }
 
 /// A native notifier
 public class NNotify
 {
-    private static readonly Lazy<int> _appInit = new(() => INNotify.SetApplication());
-
+    public static void InitRing() {
+        INNotify.SetApplication("xyz.froststrap.desktop");    
+    }
+    
     public static void SendMessage(
         string title,
         string description,
@@ -37,7 +41,6 @@ public class NNotify
     {
         Task.Run(() =>
         {
-            _ = _appInit.Value;
             INNotify.SendMessage(title, description, duration);
         });
     }

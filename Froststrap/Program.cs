@@ -3,6 +3,7 @@ using Avalonia;
 using CommandLine;
 using CommandLine.Text;
 using System.Reflection;
+using Froststrap.Backend;
 #if WINDOWS
 using System.Runtime.InteropServices;
 #endif
@@ -90,6 +91,7 @@ sealed class Program
         try
         {
             Logger.Debug($"Log file: {Logging.FileLocation}");
+            NNotify.InitRing();
             AppInitializer.InitializeNativeResolvers();
             BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
         }
