@@ -206,33 +206,31 @@ namespace Froststrap.UI.Elements.Settings
 
             string pageTag = _viewModel?.SelectedPage ?? "";
             Control? view = ResolveViewForViewModel(viewModel);
+            if (view == null) return;
 
-            if (view != null)
+            if (view.DataContext == viewModel) return;
+
+            view.DataContext = viewModel;
+            pageControl.Content = view;
+
+            Dispatcher.UIThread.Post(() =>
             {
-                view.DataContext = viewModel;
-                pageControl.Content = view;
-
-                Dispatcher.UIThread.Post(() =>
+                if (!string.IsNullOrEmpty(pageTag) && _pageInfo.TryGetValue(pageTag, out var info)
+                    &&!_indexedPageTags.Contains(pageTag))
                 {
-                    if (!string.IsNullOrEmpty(pageTag) && _pageInfo.TryGetValue(pageTag, out var info))
-                    {
-                        if (!_indexedPageTags.Contains(pageTag))
-                        {
-                            IndexPage(view, pageTag, info.Title, info.Icon);
-                            _indexedPageTags.Add(pageTag);
-                        }
-                    }
+                    IndexPage(view, pageTag, info.Title, info.Icon);
+                    _indexedPageTags.Add(pageTag);
+                }
 
-                    if (_pendingSearchScrollItem != null)
+                if (_pendingSearchScrollItem != null)
+                {
+                    Dispatcher.UIThread.Post(() =>
                     {
-                        Dispatcher.UIThread.Post(() =>
-                        {
-                            ScrollToSearchItem(_pendingSearchScrollItem);
-                            _pendingSearchScrollItem = null;
-                        }, DispatcherPriority.Render);
-                    }
-                }, DispatcherPriority.Background);
-            }
+                        ScrollToSearchItem(_pendingSearchScrollItem);
+                        _pendingSearchScrollItem = null;
+                    }, DispatcherPriority.Render);
+                }
+            }, DispatcherPriority.Background);
         }
 
         private void NavView_ItemInvoked(object? sender, FANavigationViewItemInvokedEventArgs e)
@@ -242,6 +240,11 @@ namespace Froststrap.UI.Elements.Settings
                 if (tag == "about")
                 {
                     _viewModel?.OpenAboutCommand.Execute(null);
+                    return;
+                }
+
+                if (_viewModel != null && _viewModel.SelectedPage == tag)
+                {
                     return;
                 }
 
