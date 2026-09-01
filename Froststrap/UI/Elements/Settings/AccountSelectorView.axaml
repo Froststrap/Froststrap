@@ -179,9 +179,9 @@
 
                                         <Grid ColumnDefinitions="*,Auto" HorizontalAlignment="Stretch" VerticalAlignment="Center">
                                             <!-- Account info -->
-                                            <Grid Grid.Column="0" ColumnDefinitions="Auto,*" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                                            <Grid Grid.Column="0" ColumnDefinitions="Auto,*,Auto" HorizontalAlignment="Stretch" VerticalAlignment="Center">
                                                 <!-- Avatar -->
-                                                <Border Width="32" Height="32" CornerRadius="16"
+                                                <Border Grid.Column="0" Width="32" Height="32" CornerRadius="16"
                                                         Background="{DynamicResource ControlFillColorSecondaryBrush}"
                                                         ClipToBounds="True">
                                                     <Panel>
@@ -200,13 +200,17 @@
 
                                                 <!-- Name / username -->
                                                 <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center" Spacing="2">
-                                                    <TextBlock Text="{Binding DisplayName}"
-                                                               FontSize="12"
-                                                               FontWeight="SemiBold"
-                                                               TextTrimming="CharacterEllipsis"/>
-                                                    <TextBlock Text="{Binding Username, StringFormat='@{0}'}"
-                                                               FontSize="10"
-                                                               TextTrimming="CharacterEllipsis"/>
+                                                    <TextBlock Text="{Binding DisplayName}" FontSize="12" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                                                    <TextBlock Text="{Binding Username, StringFormat='@{0}'}" FontSize="10" TextTrimming="CharacterEllipsis"/>
+                                                </StackPanel>
+
+                                                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="4" Margin="8,0,0,0" VerticalAlignment="Center">
+                                                    <Ellipse Width="10" Height="10"
+                                                             Fill="{Binding PresenceBrush}"
+                                                             ToolTip.Tip="{Binding PresenceStatus}"
+                                                             IsVisible="{Binding PresenceStatus, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+
+                                                    <TextBlock Text="{Binding PresenceStatus}" FontSize="10" Foreground="{Binding PresenceBrush}" />
                                                 </StackPanel>
                                             </Grid>
 

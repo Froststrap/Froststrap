@@ -51,7 +51,13 @@ namespace Froststrap.UI.ViewModels.Settings
         public bool IsDropdownOpen
         {
             get => _isDropdownOpen;
-            set => SetProperty(ref _isDropdownOpen, value);
+            set
+            {
+                if (SetProperty(ref _isDropdownOpen, value) && value)
+                {
+                    _ = RefreshAllPresencesAsync();
+                }
+            }
         }
 
         private bool _isAddingAccount;
@@ -212,6 +218,8 @@ namespace Froststrap.UI.ViewModels.Settings
                     var url = _accountAvatarUrls.TryGetValue(account.UserId, out var u) ? u : null;
                     Accounts.Add(new AccountWithAvatar(account, url));
                 }
+
+                await RefreshAllPresencesAsync();
             }
             catch (Exception ex)
             {
@@ -274,6 +282,41 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 App.Logger.Error($"Failed to refresh presence: {ex.Message}");
             }
+        }
+
+        private async Task RefreshAllPresencesAsync()
+        {
+            var tasks = Accounts.Select(async item =>
+            {
+                try
+                {
+                    var presence = await AccountManager.GetUserPresenceAsync(item.UserId);
+                    await Dispatcher.UIThread.InvokeAsync(() =>
+                    {
+                        item.PresenceStatus = presence?.UserPresenceType switch
+                        {
+                            0 => "Offline",
+                            1 => "Online",
+                            2 => "In Game",
+                            3 => "In Studio",
+                            _ => "Unknown"
+                        };
+                        item.PresenceBrush = presence?.UserPresenceType switch
+                        {
+                            0 => Brushes.Gray,
+                            1 => Brushes.DodgerBlue,
+                            2 => Brushes.LimeGreen,
+                            3 => Brushes.Orange,
+                            _ => Brushes.Gray
+                        };
+                    });
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.Error($"Failed to fetch presence for user {item.UserId}: {ex.Message}");
+                }
+            });
+            await Task.WhenAll(tasks);
         }
 
 
@@ -452,14 +495,34 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        internal class AccountWithAvatar(AccountManagerAccount account, string? avatarUrl)
+        internal class AccountWithAvatar : NotifyPropertyChangedViewModel
         {
-            public AccountManagerAccount Account { get; } = account;
-            public string? AvatarUrl { get; } = avatarUrl;
+            public AccountManagerAccount Account { get; }
+            public string? AvatarUrl { get; }
 
             public string Username => Account.Username;
             public string DisplayName => Account.DisplayName;
             public long UserId => Account.UserId;
+
+            private string _presenceStatus = "Unknown";
+            public string PresenceStatus
+            {
+                get => _presenceStatus;
+                set => SetProperty(ref _presenceStatus, value);
+            }
+
+            private IBrush _presenceBrush = Brushes.Gray;
+            public IBrush PresenceBrush
+            {
+                get => _presenceBrush;
+                set => SetProperty(ref _presenceBrush, value);
+            }
+
+            public AccountWithAvatar(AccountManagerAccount account, string? avatarUrl)
+            {
+                Account = account;
+                AvatarUrl = avatarUrl;
+            }
         }
 
         public string? GetAccountAvatarUrl(long userId)
