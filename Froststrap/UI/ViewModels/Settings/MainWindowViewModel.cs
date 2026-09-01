@@ -129,7 +129,6 @@ namespace Froststrap.UI.ViewModels.Settings
         public ICommand SaveSettingsCommand { get; }
         public ICommand SaveAndLaunchSettingsCommand { get; }
         public ICommand RestartAppCommand { get; }
-        public ICommand CloseWindowCommand { get; }
         public ICommand BreadcrumbItemClickedCommand { get; }
 
         public EventHandler? RequestSaveNoticeEvent;
@@ -149,7 +148,6 @@ namespace Froststrap.UI.ViewModels.Settings
             SaveSettingsCommand = new RelayCommand(SaveSettings);
             SaveAndLaunchSettingsCommand = new RelayCommand(SaveAndLaunchSettings);
             RestartAppCommand = new RelayCommand(RestartApp);
-            CloseWindowCommand = new RelayCommand(CloseWindow);
             BreadcrumbItemClickedCommand = new RelayCommand<BreadcrumbItemModel>(HandleBreadcrumbItemClicked);
             SearchBar = new();
 
