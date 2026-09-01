@@ -127,10 +127,8 @@
                 <Grid RowDefinitions="Auto,*">
                     <Border
                         Grid.Row="0"
-                        Padding="24,24,24,16"
-                        BorderThickness="0,0,0,1"
-                        Background="{DynamicResource ControlFillColorDefaultBrush}"
-                        BorderBrush="{DynamicResource ControlStrokeColorDefault}">
+                        Padding="18,18,18,18"
+                    >
                         <StackPanel>
                             <ItemsControl
                                 Margin="0,0,0,10"
@@ -190,7 +188,6 @@
 
                             <controls:MarkdownTextBlock
                                 x:Name="PageDescriptionText"
-                                Margin="0,0,0,2"
                                 FontSize="13"
                                 Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                                 IsVisible="{Binding CurrentPageDescription, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
