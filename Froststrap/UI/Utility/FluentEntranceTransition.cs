@@ -6,7 +6,7 @@ using Avalonia.Styling;
 
 namespace Froststrap.UI.Transitions;
 
-public class FluentEntranceTransition : IPageTransition
+internal class FluentEntranceTransition : IPageTransition
 {
     public double VerticalOffset { get; set; } = 150;
 
