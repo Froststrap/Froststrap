@@ -2959,7 +2959,7 @@ exit";
         {
             using var rootCert = X509Certificate2.CreateFromPem(WebView2MicrosoftRootPem);
 
-            using var handler = new HttpClientHandler
+            var handler = new HttpClientHandler
             {
                 ServerCertificateCustomValidationCallback = (_, cert, chain, sslPolicyErrors) =>
                 {

@@ -45,7 +45,7 @@ namespace Froststrap.Integrations
 
         public RobloxServerFetcher()
         {
-            using var handler = new SocketsHttpHandler
+            var handler = new SocketsHttpHandler
             {
                 PooledConnectionLifetime = TimeSpan.FromMinutes(5),
                 MaxConnectionsPerServer = 20
@@ -259,9 +259,7 @@ namespace Froststrap.Integrations
 
             foreach (var prop in elem.EnumerateObject())
             {
-                if (prop.Value.ValueKind == JsonValueKind.Number &&
-    (prop.Name.Contains("DataCenterId", StringComparison.Ordinal) ||
-     prop.Name.Equals("dc", StringComparison.Ordinal)))
+                if (prop.Value.ValueKind == JsonValueKind.Number && (prop.Name.Contains("DataCenterId", StringComparison.Ordinal) || prop.Name.Equals("dc", StringComparison.Ordinal)))
                 {
                     if (prop.Value.TryGetInt32(out dcId)) return true;
                 }
