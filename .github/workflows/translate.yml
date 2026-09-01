@@ -1,9 +1,9 @@
 name: Synchronize Translations
 
-on:
-  push:
-    branches: ["**"]
-  workflow_dispatch:
+# on:
+#   push:
+#     branches: ["**"]
+#   workflow_dispatch:
 
 jobs:
   translate:
