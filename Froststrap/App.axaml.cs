@@ -165,7 +165,7 @@ internal partial class App : Application
 
     public static async Task FinalizeExceptionHandling(Exception ex, bool log = true)
     {
-        if (log) Logger.Error($"Unhandled exception {ex.Message}");
+        if (log) Logger.Error(ex, "Unhandled exception");
 
         // IOException wrapping SocketException(125 = ECANCELED). This is normal shutdown, not an error.
         if (ex is IOException && ex.InnerException is System.Net.Sockets.SocketException se && se.ErrorCode == 125)
