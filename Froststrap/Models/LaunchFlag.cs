@@ -1,11 +1,10 @@
 ﻿namespace Froststrap.Models
 {
-    public class LaunchFlag(string identifiers)
+    internal class LaunchFlag(string identifiers)
     {
         public string Identifiers { get; private set; } = identifiers;
 
-        public bool Active = false;
-
+        public bool Active;
         public string? Data;
     }
 }

@@ -6,9 +6,9 @@ using Froststrap.UI.ViewModels.Settings;
 
 namespace Froststrap.UI.Elements.Settings.Pages
 {
-    public partial class RegionSelectorPage : UserControl
+    internal partial class RegionSelectorPage : UserControl
     {
-        private bool _windowBindingsAttached = false;
+        private bool _windowBindingsAttached;
 
         public RegionSelectorPage()
         {

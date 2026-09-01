@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Enums
 {
-    public enum BootstrapperIcon
+    internal enum BootstrapperIcon
     {
         [EnumName(StaticName = "Froststrap")]
         IconFroststrap,

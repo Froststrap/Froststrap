@@ -2,7 +2,7 @@
 
 namespace Froststrap.Models
 {
-    public class GlobalSetting : NotifyPropertyChangedViewModel
+    internal class GlobalSetting : NotifyPropertyChangedViewModel
     {
         private string _name = string.Empty;
         private string _value = string.Empty;

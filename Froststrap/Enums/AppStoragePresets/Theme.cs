@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Enums.AppStoragePresets
 {
-    public enum Theme
+    internal enum Theme
     {
         Light,
         Dark

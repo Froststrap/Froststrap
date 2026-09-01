@@ -3,7 +3,7 @@
     /// <summary>
     /// Roblox.Web.Responses.Thumbnails.ThumbnailResponse
     /// </summary>
-    public class ThumbnailResponse
+    internal class ThumbnailResponse
     {
         [JsonPropertyName("requestId")]
         public string RequestId { get; set; } = null!;

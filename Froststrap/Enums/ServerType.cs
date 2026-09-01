@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Enums
 {
-    public enum ServerType
+    internal enum ServerType
     {
         Public,
         Private,

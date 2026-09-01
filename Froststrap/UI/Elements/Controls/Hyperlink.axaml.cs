@@ -3,7 +3,7 @@ using Avalonia.Controls;
 
 namespace Froststrap.UI.Elements.Controls
 {
-    public class Hyperlink : Button
+    internal class Hyperlink : Button
     {
         public static readonly StyledProperty<string?> UrlProperty =
             AvaloniaProperty.Register<Hyperlink, string?>(nameof(Url));

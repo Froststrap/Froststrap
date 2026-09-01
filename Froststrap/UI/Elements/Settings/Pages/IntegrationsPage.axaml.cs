@@ -4,7 +4,7 @@ using Froststrap.UI.ViewModels.Settings;
 
 namespace Froststrap.UI.Elements.Settings.Pages
 {
-    public partial class IntegrationsPage : UserControl
+    internal partial class IntegrationsPage : UserControl
     {
         public IntegrationsPage()
         {

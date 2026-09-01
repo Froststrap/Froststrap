@@ -1,12 +1,9 @@
-﻿using System;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
-using System.Threading;
-using Froststrap.Enums;
 
 namespace Froststrap.Integrations
 {
-    public sealed class Softkey : IDisposable
+    internal sealed class Softkey : IDisposable
     {
         private uint _keyUp;
         private uint _keyLeft;
@@ -32,16 +29,16 @@ namespace Froststrap.Integrations
         private IntPtr _hookHandle = IntPtr.Zero;
         private LowLevelKeyboardProc? _hookProc;
 
-        private bool _physLeft = false;
-        private bool _physRight = false;
+        private bool _physLeft;
+        private bool _physRight;
         private ActiveHorizontal _activeHorizontal = ActiveHorizontal.None;
 
-        private bool _physUp = false;
-        private bool _physDown = false;
+        private bool _physUp;
+        private bool _physDown;
         private ActiveVertical _activeVertical = ActiveVertical.None;
 
         private bool _isEnabled = true;
-        private bool _isDisposed = false;
+        private bool _isDisposed;
 
         public Softkey(int robloxPid)
         {
@@ -148,7 +145,7 @@ namespace Froststrap.Integrations
                     return CallNextHookEx(_hookHandle, nCode, wParam, lParam);
 
                 IntPtr fgWindow = GetForegroundWindow();
-                GetWindowThreadProcessId(fgWindow, out uint fgPid);
+                _ = GetWindowThreadProcessId(fgWindow, out uint fgPid);
 
                 if (fgPid != _robloxPid)
                 {
@@ -396,8 +393,6 @@ namespace Froststrap.Integrations
 
                 App.Logger.Info("Keyboard hook removed");
             }
-
-            GC.SuppressFinalize(this);
         }
 
         private const uint INPUT_KEYBOARD = 1;
@@ -479,45 +474,59 @@ namespace Froststrap.Integrations
             public int pt_y;
         }
 
-        [DllImport("user32.dll")]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        [DllImport("user32.dll", ExactSpelling = true)]
         private static extern IntPtr GetForegroundWindow();
 
-        [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        [DllImport("user32.dll", ExactSpelling = true, SetLastError = true)]
         private static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
 
-        [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        [DllImport("user32.dll", ExactSpelling = true, SetLastError = true)]
         private static extern IntPtr SetWindowsHookEx(int idHook, LowLevelKeyboardProc lpfn, IntPtr hMod, uint dwThreadId);
 
-        [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        [DllImport("user32.dll", ExactSpelling = true, SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool UnhookWindowsHookEx(IntPtr hhk);
 
-        [DllImport("user32.dll")]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        [DllImport("user32.dll", ExactSpelling = true)]
         private static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
 
-        [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        [DllImport("user32.dll", ExactSpelling = true, SetLastError = true)]
         private static extern uint SendInput(uint nInputs, INPUT[] pInputs, int cbSize);
 
-        [DllImport("user32.dll")]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        [DllImport("user32.dll", ExactSpelling = true)]
         private static extern uint MapVirtualKey(uint uCode, uint uMapType);
 
-        [DllImport("kernel32.dll")]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        [DllImport("kernel32.dll", ExactSpelling = true)]
         private static extern uint GetCurrentThreadId();
 
-        [DllImport("user32.dll")]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        [DllImport("user32.dll", ExactSpelling = true)]
         private static extern int GetMessage(out MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax);
 
-        [DllImport("user32.dll")]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        [DllImport("user32.dll", ExactSpelling = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool TranslateMessage(ref MSG lpMsg);
 
-        [DllImport("user32.dll")]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        [DllImport("user32.dll", ExactSpelling = true)]
         private static extern IntPtr DispatchMessage(ref MSG lpMsg);
 
-        [DllImport("user32.dll")]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        [DllImport("user32.dll", ExactSpelling = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool PostThreadMessage(uint idThread, uint Msg, IntPtr wParam, IntPtr lParam);
 
-        [DllImport("user32.dll")]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        [DllImport("user32.dll", ExactSpelling = true)]
         private static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, UIntPtr dwExtraInfo);
     }
 }

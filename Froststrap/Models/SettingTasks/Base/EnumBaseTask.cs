@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Models.SettingTasks.Base
 {
-    public abstract class EnumBaseTask<T> : BaseTask where T : struct, Enum
+    internal abstract class EnumBaseTask<T> : BaseTask where T : struct, Enum
     {
         private T _originalState = default!;
 
@@ -35,8 +35,8 @@
         public override bool Changed => !_newState.Equals(OriginalState);
 
         public IEnumerable<T> Selections { get; private set; }
-            = Enum.GetValues(typeof(T)).Cast<T>().OrderBy(x =>
-                {
+            = Enum.GetValues<T>().OrderBy(x =>
+            {
                     var attributes = x.GetType().GetMember(x.ToString())[0].GetCustomAttributes(typeof(EnumSortAttribute), false);
 
                     if (attributes.Length > 0)
@@ -46,7 +46,7 @@
                     }
 
                     return 0;
-                });
+            });
 
         public EnumBaseTask(string prefix, string name) : base(prefix, name) { }
     }

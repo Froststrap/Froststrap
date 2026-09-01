@@ -1,9 +1,8 @@
-﻿using System.Text.RegularExpressions;
-using System.Web;
+﻿using System.Web;
 
 namespace Froststrap
 {
-    public class GameJoin
+    internal class GameJoin
     {
         private static long RegexMatchLong(string url, string query, string pattern)
         {

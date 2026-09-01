@@ -3,7 +3,7 @@ using Avalonia.Controls;
 
 namespace Froststrap.UI.Elements.Base
 {
-    public class BackgroundHostPanel : Panel
+    internal class BackgroundHostPanel : Panel
     {
         protected override Size MeasureOverride(Size availableSize)
         {

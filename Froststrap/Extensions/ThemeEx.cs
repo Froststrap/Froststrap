@@ -1,10 +1,9 @@
 ﻿using Avalonia;
-using Avalonia.Styling;
 using Avalonia.Platform;
 
 namespace Froststrap.Extensions
 {
-    public static class ThemeEx
+    internal static class ThemeEx
     {
         public static Theme GetFinal(this Theme dialogTheme)
         {

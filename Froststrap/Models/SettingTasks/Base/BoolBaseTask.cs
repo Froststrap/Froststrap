@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Froststrap.Models.SettingTasks.Base
+﻿namespace Froststrap.Models.SettingTasks.Base
 {
-    public abstract class BoolBaseTask : BaseTask
+    internal abstract class BoolBaseTask : BaseTask
     {
         private bool _originalState;
 

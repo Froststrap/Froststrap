@@ -4,7 +4,7 @@ using Avalonia.Metadata;
 
 namespace Froststrap.UI.Elements.Controls
 {
-    public class SquareCard : TemplatedControl
+    internal class SquareCard : TemplatedControl
     {
         public static readonly StyledProperty<string> HeaderProperty =
             AvaloniaProperty.Register<SquareCard, string>(nameof(Header));

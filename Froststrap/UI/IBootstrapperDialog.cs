@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.UI
 {
-    public interface IBootstrapperDialog
+    internal interface IBootstrapperDialog
     {
         public Bootstrapper? Bootstrapper { get; set; }
         string Message { get; set; }

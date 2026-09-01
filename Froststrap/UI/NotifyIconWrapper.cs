@@ -7,9 +7,9 @@ using Froststrap.UI.Elements.ContextMenu;
 
 namespace Froststrap.UI
 {
-    public class NotifyIconWrapper : IDisposable
+    internal class NotifyIconWrapper : IDisposable
     {
-        private bool _isDisposed = false;
+        private bool _isDisposed;
         private readonly TrayIcon _trayIcon;
         private readonly MenuContainer _menuContainer;
         private readonly Watcher _watcher;
@@ -124,7 +124,7 @@ namespace Froststrap.UI
             {
                 App.Logger.Error("Couldn't connect to ipinfo.io");
                 ShowAlert(
-                    string.Format(Strings.Dialog_Connectivity_UnableToConnect, "ipinfo.io"),
+                    string.Format(CultureInfo.InvariantCulture, Strings.Dialog_Connectivity_UnableToConnect, "ipinfo.io"),
                     Strings.ActivityWatcher_LocationQueryFailed,
                     5
                 );
@@ -134,7 +134,7 @@ namespace Froststrap.UI
             if (!App.Settings.Prop.ShowServerUptime)
             {
                 string? serverID = ActivityWatcher.Data.JobId;
-                ShowAlert(title, string.Format(Strings.ContextMenu_ServerDetails_Notification_Text_ServerID, serverLocation, serverID));
+                ShowAlert(title, string.Format(CultureInfo.InvariantCulture, Strings.ContextMenu_ServerDetails_Notification_Text_ServerID, serverLocation, serverID));
             }
             else
             {
@@ -143,7 +143,7 @@ namespace Froststrap.UI
                     ? Strings.Common_JustStarted
                     : Time.FormatTimeSpan(_serverUptime);
 
-                ShowAlert(title, string.Format(Strings.ContextMenu_ServerDetails_Notification_Text, serverLocation, serverUptime));
+                ShowAlert(title, string.Format(CultureInfo.InvariantCulture, Strings.ContextMenu_ServerDetails_Notification_Text, serverLocation, serverUptime));
             }
         }
 
@@ -176,14 +176,14 @@ namespace Froststrap.UI
                     trayIcons?.Remove(_trayIcon);
 
                     _menuContainer.Close();
-
-                    _trayIcon.Dispose();
                 }
                 catch (Exception ex)
                 {
                     App.Logger.Error($"Error during cleanup: {ex.Message}");
                 }
             });
+
+            _trayIcon.Dispose();
 
             if (ActivityWatcher is not null)
             {

@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Models.Manifest
 {
-    public class ManifestFile
+    internal class ManifestFile
     {
         public string Name { get; set; } = "";
         public string Signature { get; set; } = "";

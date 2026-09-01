@@ -1,8 +1,6 @@
-﻿using Froststrap.Integrations;
-
-namespace Froststrap.Models
+﻿namespace Froststrap.Models
 {
-    public class AccountManagerData
+    internal class AccountManagerData
     {
         [JsonPropertyName("accounts")]
         public List<AccountManagerAccount> Accounts { get; set; } = [];

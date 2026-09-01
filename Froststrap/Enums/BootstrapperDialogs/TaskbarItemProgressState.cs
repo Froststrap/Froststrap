@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Enums.BootstrapperDialogs
 {
-    public enum TaskbarItemProgressState
+    internal enum TaskbarItemProgressState
     {
         None,
         Indeterminate,

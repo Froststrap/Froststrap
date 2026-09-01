@@ -1,11 +1,12 @@
 ﻿using Froststrap.UI.ViewModels.Dialogs;
+using System.Security.Cryptography;
 
 namespace Froststrap.UI.Elements.Dialogs
 {
     /// <summary>
     /// Interaction logic for LaunchMenuDialog.axaml
     /// </summary>
-    public partial class LaunchMenuDialog : Base.AvaloniaWindow
+    internal partial class LaunchMenuDialog : Base.AvaloniaWindow
     {
         public NextAction CloseAction = NextAction.Terminate;
 
@@ -23,8 +24,8 @@ namespace Froststrap.UI.Elements.Dialogs
 
             DataContext = viewModel;
 
-            Random Chance = new();
-            if (Chance.Next(0, 10000) == 1)
+            int randomNumber = RandomNumberGenerator.GetInt32(0, 10000);
+            if (randomNumber == 1)
             {
                 LaunchTitle.Text = "Cartistrap";
             }

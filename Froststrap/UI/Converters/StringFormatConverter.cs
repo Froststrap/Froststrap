@@ -1,9 +1,8 @@
-﻿using System.Globalization;
-using Avalonia.Data.Converters;
+﻿using Avalonia.Data.Converters;
 
 namespace Froststrap.UI.Converters
 {
-    public class StringFormatConverter : IValueConverter
+    internal class StringFormatConverter : IValueConverter
     {
         private static readonly char[] Separator = ['|'];
 
@@ -17,7 +16,7 @@ namespace Froststrap.UI.Converters
 
             string[] args = parameterStr.Split(Separator);
 
-            return string.Format(valueStr, (object[])args);
+            return string.Format(CultureInfo.CurrentCulture, valueStr, (object[])args);
         }
 
         public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)

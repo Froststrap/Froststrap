@@ -3,10 +3,10 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace Froststrap.UI.ViewModels.Onboarding
 {
-    public class MainWindowViewModel : NotifyPropertyChangedViewModel
+    internal class MainWindowViewModel : NotifyPropertyChangedViewModel
     {
         public string NextButtonText { get; private set; } = Strings.Common_Next;
-        private bool _backButtonEnabled = false;
+        private bool _backButtonEnabled;
         public bool BackButtonEnabled
         {
             get => _backButtonEnabled;
@@ -16,7 +16,7 @@ namespace Froststrap.UI.ViewModels.Onboarding
                 OnPropertyChanged(nameof(BackButtonEnabled));
             }
         }
-        public int ButtonWidth { get; } = Locale.CurrentCulture.Name.StartsWith("bg") ? 112 : 96;
+        public int ButtonWidth { get; } = Locale.CurrentCulture.Name.StartsWith("bg", StringComparison.Ordinal) ? 112 : 96;
 
         public ICommand BackPageCommand => new RelayCommand(BackPage);
 

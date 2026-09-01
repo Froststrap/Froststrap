@@ -2,7 +2,7 @@
 
 namespace Froststrap.Models.APIs.Roblox
 {
-    public class OmniSearchContent
+    internal class OmniSearchContent
     {
         [JsonPropertyName("universeId")]
         public ulong UniverseId { get; set; }

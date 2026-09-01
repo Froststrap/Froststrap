@@ -5,7 +5,7 @@ using Froststrap.UI.ViewModels.Settings;
 
 namespace Froststrap.UI.Elements.Settings.Pages
 {
-    public partial class ShortcutsPage : UserControl
+    internal partial class ShortcutsPage : UserControl
     {
         public ShortcutsPage()
         {

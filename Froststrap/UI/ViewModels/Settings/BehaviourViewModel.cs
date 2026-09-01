@@ -1,9 +1,9 @@
 ﻿namespace Froststrap.UI.ViewModels.Settings
 {
-    public class BehaviourViewModel : NotifyPropertyChangedViewModel
+    internal class BehaviourViewModel : NotifyPropertyChangedViewModel
     {
         private List<string> _availableRegions = [];
-        private bool _isLoadingRegions = false;
+        private bool _isLoadingRegions;
 
         private string _selectedSortOrder;
         private SortOrderComboBoxItem _selectedSortOrderItem;
@@ -80,8 +80,8 @@
                 CookieLoadingFailed = state is not (CookieState.Success or CookieState.Unknown);
 
             _selectedSortOrder = App.Settings.Prop.SelectedServerSortOrder ?? "BestLatency";
-            SelectedSortOrderItem = SortOrderOptions.FirstOrDefault(x => x.Tag == _selectedSortOrder)
-                                    ?? SortOrderOptions.First();
+            _selectedSortOrderItem = SortOrderOptions.FirstOrDefault(x => x.Tag == _selectedSortOrder)
+                                     ?? SortOrderOptions.First();
 
             _ = LoadAvailableRegionsAsync();
         }

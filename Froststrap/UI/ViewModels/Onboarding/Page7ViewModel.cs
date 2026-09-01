@@ -4,7 +4,7 @@ using Froststrap.UI.Elements.Onboarding;
 
 namespace Froststrap.UI.ViewModels.Onboarding
 {
-    public class Page7ViewModel : NotifyPropertyChangedViewModel
+    internal class Page7ViewModel : NotifyPropertyChangedViewModel
     {
         public ICommand LaunchRobloxCommand { get; }
         public ICommand LaunchSettingsCommand { get; }

@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Models.Persistable
 {
-    public class AppState
+    internal class AppState
     {
         public string VersionGuid { get; set; } = string.Empty;
 

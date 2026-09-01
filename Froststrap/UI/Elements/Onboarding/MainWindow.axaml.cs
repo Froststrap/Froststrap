@@ -4,7 +4,7 @@ using Froststrap.UI.ViewModels.Onboarding;
 
 namespace Froststrap.UI.Elements.Onboarding
 {
-    public partial class MainWindow : AvaloniaWindow
+    internal partial class MainWindow : AvaloniaWindow
     {
         public static MainWindow? Instance { get; private set; }
         internal readonly MainWindowViewModel _viewModel = new();

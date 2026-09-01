@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Enums
 {
-    enum VersionComparison
+    internal enum VersionComparison
     {
         LessThan = -1,
         Equal = 0,

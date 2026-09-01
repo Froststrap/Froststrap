@@ -16,7 +16,7 @@ using System.Net.Sockets;
 
 namespace Froststrap.Integrations
 {
-    public class StudioDiscordRichPresence : IDisposable
+    internal class StudioDiscordRichPresence : IDisposable
     {
         private readonly DiscordRpcClient? _rpcClient;
         private readonly ActivityWatcher _activityWatcher;
@@ -28,7 +28,7 @@ namespace Froststrap.Integrations
 
         private bool _visible = true;
         private bool _rpcEnabled = true;
-        private bool _disposed = false;
+        private bool _disposed;
 
         public StudioDiscordRichPresence(ActivityWatcher activityWatcher)
         {
@@ -191,11 +191,11 @@ namespace Froststrap.Integrations
 
             if (!string.IsNullOrEmpty(presenceData.ScriptType) && App.Settings.Prop.StudioThumbnailChanging)
             {
-                largeImageKey = presenceData.ScriptType.ToLower() switch
+                largeImageKey = presenceData.ScriptType.ToUpperInvariant() switch
                 {
-                    "server script" => "studio_server",
-                    "local script" => "studio_client",
-                    "module" or "server module" or "client module" => "studio_module",
+                    "SERVER SCRIPT" => "studio_server",
+                    "LOCAL SCRIPT" => "studio_client",
+                    "MODULE" or "SERVER MODULE" or "CLIENT MODULE" => "studio_module",
                     _ => "roblox_studio"
                 };
 

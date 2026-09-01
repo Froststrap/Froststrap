@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Enums
 {
-    public enum ProcessPriorityOption
+    internal enum ProcessPriorityOption
     {
         [EnumName(FromTranslation = "Enums.ProcessPriorityOption.Low")]
         Low,

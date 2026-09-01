@@ -12,7 +12,7 @@ using Froststrap.RobloxInterfaces;
 
 namespace Froststrap.Models.Entities
 {
-    public static class GameSearching
+    internal static class GameSearching
     {
         public static async Task<List<OmniSearchContent>> GetGameSearchResultsAsync(string searchQuery)
         {

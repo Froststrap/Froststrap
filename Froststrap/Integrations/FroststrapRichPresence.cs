@@ -3,14 +3,14 @@ using DiscordRPC;
 
 namespace Froststrap.Integrations
 {
-    public class FroststrapRichPresence : IDisposable
+    internal class FroststrapRichPresence : IDisposable
     {
         private readonly DiscordRpcClient? _rpcClient;
         private readonly Timestamps _startTimestamps;
         private readonly Stopwatch _uptimeStopwatch;
-        private bool _disposed = false;
+        private bool _disposed;
         private string _currentPage = "Idle";
-        private string? _currentDialog = null;
+        private string? _currentDialog;
         private string _lastState = "";
         private readonly bool _isMacOS;
 

@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Models.SettingTasks.Base
 {
-    public abstract class BaseTask
+    internal abstract class BaseTask
     {
         public string Name { get; private set; }
 

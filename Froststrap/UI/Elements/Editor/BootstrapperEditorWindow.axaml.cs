@@ -23,7 +23,7 @@ using System.Xml;
 
 namespace Froststrap.UI.Elements.Editor
 {
-    public partial class BootstrapperEditorWindow : AvaloniaWindow
+    internal partial class BootstrapperEditorWindow : AvaloniaWindow, IDisposable
     {
         private static class CustomBootstrapperSchema
         {
@@ -35,15 +35,15 @@ namespace Froststrap.UI.Elements.Editor
 
             private class Element
             {
-                public string? SuperClass { get; set; } = null;
-                public bool IsCreatable { get; set; } = false;
+                public string? SuperClass { get; set; }
+                public bool IsCreatable { get; set; }
                 public Dictionary<string, string> Attributes { get; set; } = [];
             }
 
-            public class Type
+            internal class Type
             {
-                public bool CanHaveElement { get; set; } = false;
-                public List<string>? Values { get; set; } = null;
+                public bool CanHaveElement { get; set; }
+                public List<string>? Values { get; set; }
             }
 
             private static Schema? _schema;
@@ -59,7 +59,7 @@ namespace Froststrap.UI.Elements.Editor
                 try
                 {
                     string json = Resource.GetString("CustomBootstrapperSchema.json").GetAwaiter().GetResult();
-                    _schema = JsonSerializer.Deserialize<Schema>(json) ?? throw new Exception("Schema deserialization failed.");
+                    _schema = JsonSerializer.Deserialize<Schema>(json) ?? throw new InvalidOperationException("Schema deserialization failed.");
 
                     foreach (var type in _schema.Types)
                         Types.Add(type.Key, type.Value);
@@ -91,7 +91,7 @@ namespace Froststrap.UI.Elements.Editor
                     }
                     else
                     {
-                        throw new Exception($"Schema for type {attribute.Value} is missing. Blame Matt!");
+                        throw new InvalidOperationException($"Schema for type {attribute.Value} is missing. Blame Matt!");
                     }
                 }
 
@@ -134,8 +134,9 @@ namespace Froststrap.UI.Elements.Editor
         }
 
         private readonly BootstrapperEditorWindowViewModel _viewModel = null!;
-        private CompletionWindow? _completionWindow = null;
+        private CompletionWindow? _completionWindow;
         private bool _isInitialLoad = true;
+        private bool _disposed;
 
         public BootstrapperEditorWindow()
         {
@@ -154,7 +155,7 @@ namespace Froststrap.UI.Elements.Editor
                 Directory = directory,
                 Name = name,
                 Code = ToCRLF(themeContents),
-                Title = string.Format(Strings.CustomTheme_Editor_Title, name)
+                Title = string.Format(CultureInfo.InvariantCulture, Strings.CustomTheme_Editor_Title, name)
             };
 
             DataContext = _viewModel;
@@ -228,7 +229,7 @@ namespace Froststrap.UI.Elements.Editor
 
         private Border? _currentNotification;
         private CancellationTokenSource? _notificationCts;
-        private bool _isAnimatingOut = false;
+        private bool _isAnimatingOut;
 
         private void ShowSaveNotice()
         {
@@ -424,7 +425,7 @@ namespace Froststrap.UI.Elements.Editor
             });
         }
 
-        private static string ToCRLF(string text) => text.Replace("\r\n", "\n").Replace("\r", "\n").Replace("\n", "\r\n");
+        private static string ToCRLF(string text) => text.Replace("\r\n", "\n", StringComparison.Ordinal).Replace('\r', '\n').Replace('\n', '\r');
 
         private void OnCodeChanged(object? sender, EventArgs e)
         {
@@ -446,7 +447,7 @@ namespace Froststrap.UI.Elements.Editor
             e.Cancel = true;
 
             var result = await Frontend.ShowMessageBox(
-                string.Format(Strings.CustomTheme_Editor_ConfirmSave, _viewModel.Name),
+                string.Format(CultureInfo.InvariantCulture, Strings.CustomTheme_Editor_ConfirmSave, _viewModel.Name),
                 MessageBoxImage.Information,
                 MessageBoxButton.YesNoCancel
             );
@@ -505,7 +506,7 @@ namespace Froststrap.UI.Elements.Editor
             if (endIdx > startIdx && endIdx < int.MaxValue)
             {
                 string element = xml.Substring(startIdx + 1, endIdx - startIdx - 1);
-                return element.StartsWith("!--") ? null : element;
+                return element.StartsWith("!--", StringComparison.Ordinal) ? null : element;
             }
             return null;
         }
@@ -636,9 +637,40 @@ namespace Froststrap.UI.Elements.Editor
         {
             this.Close();
         }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+                return;
+
+            if (disposing)
+            {
+                _completionWindow?.Close();
+                _completionWindow = null;
+
+                _notificationCts?.Cancel();
+                _notificationCts?.Dispose();
+                _notificationCts = null;
+
+                if (_currentNotification != null)
+                {
+                    var parent = _currentNotification.Parent as Panel;
+                    parent?.Children.Remove(_currentNotification);
+                    _currentNotification = null;
+                }
+            }
+
+            _disposed = true;
+        }
     }
 
-    public class ElementCompletionData(string text) : ICompletionData
+    internal class ElementCompletionData(string text) : ICompletionData
     {
         public IImage? Image => null;
         public string Text { get; } = text;
@@ -649,7 +681,7 @@ namespace Froststrap.UI.Elements.Editor
             => textArea.Document.Replace(completionSegment, this.Text);
     }
 
-    public class AttributeCompletionData(string text, Action openValueAction) : ICompletionData
+    internal class AttributeCompletionData(string text, Action openValueAction) : ICompletionData
     {
         public IImage? Image => null;
         public string Text { get; } = text;
@@ -664,7 +696,7 @@ namespace Froststrap.UI.Elements.Editor
         }
     }
 
-    public class TypeValueCompletionData(string text) : ICompletionData
+    internal class TypeValueCompletionData(string text) : ICompletionData
     {
         public IImage? Image => null;
         public string Text { get; } = text;

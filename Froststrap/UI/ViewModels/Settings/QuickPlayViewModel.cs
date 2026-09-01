@@ -6,7 +6,7 @@ using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
-    public record PrivateServerInfo(
+    internal record PrivateServerInfo(
         long VipServerId,
         string AccessCode,
         string Name,
@@ -16,7 +16,7 @@ namespace Froststrap.UI.ViewModels.Settings
         int MaxPlayers,
         int CurrentPlayers);
 
-    public class QuickPlayViewModel : NotifyPropertyChangedViewModel
+    internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
     {
         private bool _isLoading;
         private bool _isOverlayVisible;
@@ -442,7 +442,7 @@ namespace Froststrap.UI.ViewModels.Settings
             var needDetails = games.Where(g => g.OriginalDetails == null && g.UniverseId > 0).ToList();
             if (needDetails.Count > 0)
             {
-                var ids = needDetails.Select(g => g.UniverseId.ToString()).ToList();
+                var ids = needDetails.Select(g => g.UniverseId.ToString(CultureInfo.InvariantCulture)).ToList();
                 await UniverseDetails.FetchBulk(string.Join(",", ids));
                 foreach (var game in needDetails)
                 {
@@ -742,7 +742,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private static async Task<List<ServerInfo>> FetchServersForGameAsync(long placeId)
         {
-            var fetcher = new RobloxServerFetcher();
+            using var fetcher = new RobloxServerFetcher();
             var result = await fetcher.FetchServerInstancesAsync(placeId);
             if (result.Servers == null || result.Servers.Count == 0)
                 return [];

@@ -5,7 +5,7 @@
     /// Roblox.Games.Api.Models.Response.GameDetailResponse
     /// Response model for getting the game detail
     /// </summary>
-    public class GameDetailResponse
+    internal class GameDetailResponse
     {
         /// <summary>
         /// The game universe id

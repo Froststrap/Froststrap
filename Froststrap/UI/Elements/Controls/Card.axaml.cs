@@ -2,7 +2,7 @@
 
 namespace Froststrap.UI.Elements.Controls
 {
-    public class Card : ContentControl
+    internal class Card : ContentControl
     {
 
     }

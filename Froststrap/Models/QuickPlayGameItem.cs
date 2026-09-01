@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Models
 {
-    public class QuickPlayGameItem
+    internal class QuickPlayGameItem
     {
         public long UniverseId { get; set; }
         public long PlaceId { get; set; }

@@ -2,7 +2,7 @@ using Avalonia.Controls;
 
 namespace Froststrap.UI.Elements.Settings.Pages
 {
-    public partial class QuickPlayPage : UserControl
+    internal partial class QuickPlayPage : UserControl
     {
         public QuickPlayPage()
         {

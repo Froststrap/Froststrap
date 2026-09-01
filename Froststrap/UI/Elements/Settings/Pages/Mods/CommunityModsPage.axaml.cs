@@ -15,7 +15,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.Mods
         public void OpenModGenerator() => _mainVm.NavigateToModGeneratorCommand.Execute(null);
     }
 
-    public partial class CommunityModsPage : UserControl
+    internal partial class CommunityModsPage : UserControl
     {
         private CommunityModsDialogService? _dialogService;
 

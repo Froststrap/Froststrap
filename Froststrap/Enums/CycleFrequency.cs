@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Enums
 {
-    public enum CycleFrequency
+    internal enum CycleFrequency
     {
         [EnumName(FromTranslation = "Enums.CycleFrequency.EveryLaunch")]
         EveryLaunch,

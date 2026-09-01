@@ -9,10 +9,13 @@ using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
-    public class ChannelViewModel : NotifyPropertyChangedViewModel
+    internal class ChannelViewModel : NotifyPropertyChangedViewModel, IDisposable
     {
         private CancellationTokenSource? _playerCts;
         private CancellationTokenSource? _studioCts;
+        private CancellationTokenSource? _studioHashCts;
+        private CancellationTokenSource? _playerHashCts;
+        private bool _disposed;
 
         private bool _isMoving;
 
@@ -182,12 +185,12 @@ namespace Froststrap.UI.ViewModels.Settings
             var cts = new CancellationTokenSource();
             if (isStudio)
             {
-                _studioCts?.Cancel();
+                await _studioCts!.CancelAsync();
                 _studioCts = cts;
             }
             else
             {
-                _playerCts?.Cancel();
+                await _playerCts!.CancelAsync();
                 _playerCts = cts;
             }
 
@@ -237,7 +240,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 {
                     Version = info.Version,
                     VersionGuid = isPrivate ? "version-private" : info.VersionGuid,
-                    Timestamp = info.Timestamp?.ToLocalTime().ToString() ?? "?"
+                    Timestamp = info.Timestamp?.ToLocalTime().ToString(CultureInfo.InvariantCulture) ?? "?"
                 };
 
                 if (isStudio)
@@ -530,11 +533,10 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public enum VersionHashValidationState { Idle, Checking, Valid, Invalid }
+        internal enum VersionHashValidationState { Idle, Checking, Valid, Invalid }
 
         private VersionHashValidationState _studioHashState = VersionHashValidationState.Idle;
         private string _studioHashMessage = string.Empty;
-        private CancellationTokenSource? _studioHashCts;
 
         public VersionHashValidationState StudioHashValidationState
         {
@@ -573,7 +575,6 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private VersionHashValidationState _playerHashState = VersionHashValidationState.Idle;
         private string _playerHashMessage = string.Empty;
-        private CancellationTokenSource? _playerHashCts;
 
         public VersionHashValidationState PlayerHashValidationState
         {
@@ -697,7 +698,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private async Task ValidateStudioVersionHashAsync(string hash)
         {
-            _studioHashCts?.Cancel();
+            await _studioHashCts!.CancelAsync();
             _studioHashCts = new CancellationTokenSource();
             var token = _studioHashCts.Token;
 
@@ -711,7 +712,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private async Task ValidatePlayerVersionHashAsync(string hash)
         {
-            _playerHashCts?.Cancel();
+            await _playerHashCts!.CancelAsync();
             _playerHashCts = new CancellationTokenSource();
             var token = _playerHashCts.Token;
 
@@ -760,7 +761,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
 
             var confirm = await Frontend.ShowMessageBox(
-                string.Format(Strings.Menu_Deployment_MoveInstallation_Confirm, currentDir, newDir),
+                string.Format(CultureInfo.InvariantCulture, Strings.Menu_Deployment_MoveInstallation_Confirm, currentDir, newDir),
                 MessageBoxImage.Question,
                 MessageBoxButton.YesNo);
 
@@ -794,7 +795,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
             catch (Exception ex)
             {
-                await Frontend.ShowMessageBox(string.Format(Strings.Menu_Deployment_MoveInstallation_Failed, ex.Message), MessageBoxImage.Error);
+                await Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Menu_Deployment_MoveInstallation_Failed, ex.Message), MessageBoxImage.Error);
                 App.Logger.Error("Unhandled exception: ", ex);
             }
             finally
@@ -813,6 +814,39 @@ namespace Froststrap.UI.ViewModels.Settings
             if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
                 return desktop.MainWindow;
             return null;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+                return;
+
+            if (disposing)
+            {
+                _playerCts?.Cancel();
+                _playerCts?.Dispose();
+                _playerCts = null;
+
+                _studioCts?.Cancel();
+                _studioCts?.Dispose();
+                _studioCts = null;
+
+                _studioHashCts?.Cancel();
+                _studioHashCts?.Dispose();
+                _studioHashCts = null;
+
+                _playerHashCts?.Cancel();
+                _playerHashCts?.Dispose();
+                _playerHashCts = null;
+            }
+
+            _disposed = true;
         }
     }
 }

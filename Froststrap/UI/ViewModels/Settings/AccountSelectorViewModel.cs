@@ -8,7 +8,7 @@ using System.Collections.ObjectModel;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
-    public partial class AccountSelectorViewModel : NotifyPropertyChangedViewModel, IDisposable
+    internal partial class AccountSelectorViewModel : NotifyPropertyChangedViewModel, IDisposable
     {
         private readonly AccountManager _accountManager = null!;
         private readonly Dictionary<long, string?> _accountAvatarUrls = [];
@@ -174,7 +174,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 App.Logger.Info($"Removed expired/invalid account: {account.Username}");
 
                 await Dispatcher.UIThread.InvokeAsync(() =>
-                    Frontend.ShowMessageBox(string.Format(Strings.Menu_AccountSelector_AccountRemoved, account.Username)));
+                    Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Menu_AccountSelector_AccountRemoved, account.Username)));
             }
 
             if (invalidAccounts.Count > 0)
@@ -306,7 +306,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 if (SelectedAddMethod == Strings.Menu_Dialog_QuickSignIn_Title)
                 {
                     var dialog = new QuickSignCodeDialog();
-                    var cts = new CancellationTokenSource();
+                    using var cts = new CancellationTokenSource();
 
                     dialog.Closed += (_, _) => cts.Cancel();
                     dialog.Show();
@@ -359,7 +359,7 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 _accountManager.SetActiveAccount(existing.UserId);
                 IsDropdownOpen = false;
-                await Frontend.ShowMessageBox(string.Format(Strings.Menu_AccountSelector_AlreadyLoggedIn, existing.Username), MessageBoxImage.Information);
+                await Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Menu_AccountSelector_AlreadyLoggedIn, existing.Username), MessageBoxImage.Information);
                 return true;
             }
             return false;
@@ -444,15 +444,15 @@ namespace Froststrap.UI.ViewModels.Settings
             bool success = AccountManager.WriteCookieFileForAccount(item.Account);
             if (success)
             {
-                _ = Frontend.ShowMessageBox(string.Format(Strings.AccountManager_Replace_Success, item.Username));
+                _ = Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.AccountManager_Replace_Success, item.Username));
             }
             else
             {
-                _ = Frontend.ShowMessageBox(string.Format(Strings.AccountManager_Replace_Failed, item.Username), MessageBoxImage.Error);
+                _ = Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.AccountManager_Replace_Failed, item.Username), MessageBoxImage.Error);
             }
         }
 
-        public class AccountWithAvatar(AccountManagerAccount account, string? avatarUrl)
+        internal class AccountWithAvatar(AccountManagerAccount account, string? avatarUrl)
         {
             public AccountManagerAccount Account { get; } = account;
             public string? AvatarUrl { get; } = avatarUrl;

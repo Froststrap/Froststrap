@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Enums
 {
-    public enum StudioRenderer
+    internal enum StudioRenderer
     {
         DXVK,
         D3D11,

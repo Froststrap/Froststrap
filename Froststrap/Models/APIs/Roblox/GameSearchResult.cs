@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Models.APIs.Roblox
 {
-    public class GameSearchResult
+    internal class GameSearchResult
     {
         [JsonPropertyName("rootPlaceId")]
         public long RootPlaceId { get; set; }
@@ -11,6 +11,6 @@
         [JsonPropertyName("playerCount")]
         public int? PlayerCount { get; set; }
 
-        public override string ToString() => string.IsNullOrWhiteSpace(Name) ? RootPlaceId.ToString() : $"{Name} ({RootPlaceId})";
+        public override string ToString() => string.IsNullOrWhiteSpace(Name) ? RootPlaceId.ToString(CultureInfo.InvariantCulture) : $"{Name} ({RootPlaceId})";
     }
 }

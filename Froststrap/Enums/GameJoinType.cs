@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Enums
 {
-    public enum GameJoinType
+    internal enum GameJoinType
     {
         Unknown, // fallback
         RequestGame,

@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Enums
 {
-    public enum CustomThemeTemplate
+    internal enum CustomThemeTemplate
     {
         Blank,
         Simple

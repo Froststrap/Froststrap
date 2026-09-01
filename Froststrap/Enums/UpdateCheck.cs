@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Enums
 {
-    public enum UpdateCheck
+    internal enum UpdateCheck
     {
         Disabled,
         Stable,

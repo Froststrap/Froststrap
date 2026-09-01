@@ -3,11 +3,8 @@ using LucideAvalonia.Enum;
 
 namespace Froststrap
 {
-    public class FastFlagManager : JsonManager<Dictionary<string, object>>
+    internal class FastFlagManager : JsonManager<Dictionary<string, object>>
     {
-        private static readonly JsonSerializerOptions _jsonOptions = new() { WriteIndented = true };
-        private static readonly JsonSerializerOptions _jsonReadOptions = new() { ReadCommentHandling = JsonCommentHandling.Skip };
-
         private Dictionary<string, object> OriginalProp = [];
 
         public override string ClassName => nameof(FastFlagManager);
@@ -106,7 +103,7 @@ namespace Froststrap
             { QualityLevel.Level21, "21" }
         };
 
-        public bool suspendUndoSnapshot = false;
+        public bool suspendUndoSnapshot;
 
         public void SetValue(string key, object? value)
         {

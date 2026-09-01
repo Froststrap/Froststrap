@@ -1,6 +1,6 @@
 namespace Froststrap.Models.APIs
 {
-    public class IPInfoResponse
+    internal class IPInfoResponse
     {
         [JsonPropertyName("city")]
         public string City { get; set; } = null!;

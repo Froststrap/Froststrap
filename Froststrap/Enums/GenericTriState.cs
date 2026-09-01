@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Enums
 {
-    public enum GenericTriState
+    internal enum GenericTriState
     {
         Successful,
         Failed,

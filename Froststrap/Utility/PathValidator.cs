@@ -2,7 +2,7 @@
 {
     internal static class PathValidator
     {
-        public enum ValidationResult
+        internal enum ValidationResult
         {
             Ok,
             IllegalCharacter,

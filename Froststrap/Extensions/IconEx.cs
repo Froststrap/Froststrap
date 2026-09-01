@@ -4,20 +4,24 @@ using Avalonia.Media;
 
 namespace Froststrap.Extensions
 {
-    public static class IconEx
+    internal static class IconHelpers
     {
         public static Bitmap GetSized(this Bitmap bitmap, int width, int height)
         {
+            ArgumentNullException.ThrowIfNull(bitmap);
             return bitmap.CreateScaledBitmap(new PixelSize(width, height));
         }
 
         public static IImage GetImageSource(this Bitmap bitmap)
         {
+            ArgumentNullException.ThrowIfNull(bitmap);
             return bitmap;
         }
 
         public static async Task<Bitmap> GetBitmapFromStream(Stream stream, bool handleException = true)
         {
+            ArgumentNullException.ThrowIfNull(stream);
+
             if (handleException)
             {
                 try
@@ -28,7 +32,11 @@ namespace Froststrap.Extensions
                 catch (Exception ex)
                 {
                     App.Logger.Error("Unhandled exception: ", ex);
-                    await Frontend.ShowMessageBox(string.Format(Strings.Dialog_IconLoadFailed, ex.Message));
+                    await Frontend.ShowMessageBox(
+                        string.Format(
+                            CultureInfo.CurrentCulture,
+                            Strings.Dialog_IconLoadFailed,
+                            ex.Message));
                     return BootstrapperIcon.IconFroststrap.GetIcon();
                 }
             }

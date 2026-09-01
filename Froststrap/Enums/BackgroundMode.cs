@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Enums
 {
-    public enum BackgroundMode
+    internal enum BackgroundMode
     {
         [EnumName(FromTranslation = "Enums.BackgroundMode.Gradient")]
         Gradient,

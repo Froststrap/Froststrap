@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Models.Persistable
 {
-    public class WindowState
+    internal class WindowState
     {
         public double Width { get; set; }
 

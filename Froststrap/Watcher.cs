@@ -3,7 +3,7 @@ using Froststrap.Integrations;
 
 namespace Froststrap
 {
-    public class Watcher : IDisposable
+    internal class Watcher : IDisposable
     {
         private readonly InterProcessLock _lock = new("Watcher");
 
@@ -21,7 +21,7 @@ namespace Froststrap
         public readonly StudioDiscordRichPresence? StudioRichPresence;
 
         private readonly CancellationTokenSource _cancellationTokenSource = new();
-        private bool _isDisposed = false;
+        private bool _isDisposed;
         private int _gameModeHandle = -1;
 
         public static int? ProcessId { get; private set; }
@@ -41,13 +41,13 @@ namespace Froststrap
 #if DEBUG
                 string path = new RobloxPlayerData().ExecutablePath;
                 if (!File.Exists(path))
-                    throw new ApplicationException("Roblox player has not been installed");
+                    throw new InvalidOperationException("Roblox player has not been installed");
 
                 using var gameClientProcess = Process.Start(path);
 
                 _watcherData = new() { ProcessId = gameClientProcess.Id, LaunchMode = LaunchMode.Player };
 #else
-                throw new Exception("Watcher data not specified");
+                throw new InvalidOperationException("Watcher data not specified");
 #endif
             }
             else
@@ -56,7 +56,7 @@ namespace Froststrap
             }
 
             if (_watcherData is null)
-                throw new Exception("Watcher data is invalid");
+                throw new InvalidOperationException("Watcher data is invalid");
 
             ProcessId = _watcherData.ProcessId;
 
@@ -65,7 +65,7 @@ namespace Froststrap
                 _ = Task.Run(async () =>
                 {
                     await Task.Delay(1000);
-                    _gameModeHandle = await RegisterGameModeWithDbusSendAsync(_watcherData.ProcessId);
+                    _gameModeHandle = await RegisterGameModeWithDbusSendAsync(_watcherData.ProcessId, _cancellationTokenSource.Token);
                 });
             }
 
@@ -151,7 +151,7 @@ namespace Froststrap
             }
         }
 
-        private static async Task<int> RegisterGameModeWithDbusSendAsync(int pid)
+        private static async Task<int> RegisterGameModeWithDbusSendAsync(int pid, CancellationToken cancellationToken)
         {
             const string GameModePortalService = "org.freedesktop.portal.Desktop";
             const string GameModePortalPath = "/org/freedesktop/portal/desktop";
@@ -175,7 +175,23 @@ namespace Froststrap
                 };
 
                 using var whichProcess = Process.Start(whichPsi);
-                if (whichProcess == null || !whichProcess.WaitForExit(1000) || whichProcess.ExitCode != 0)
+                if (whichProcess == null)
+                {
+                    App.Logger.Info("Failed to start 'which' command, GameMode registration skipped");
+                    return -1;
+                }
+
+                var exitTask = whichProcess.WaitForExitAsync(cancellationToken);
+                var timeoutTask = Task.Delay(1000, cancellationToken);
+                var completedTask = await Task.WhenAny(exitTask, timeoutTask);
+
+                if (completedTask == timeoutTask)
+                {
+                    App.Logger.Info("'which' command timed out, GameMode registration skipped");
+                    return -1;
+                }
+
+                if (whichProcess.ExitCode != 0)
                 {
                     App.Logger.Info("dbus-send not found, GameMode registration skipped");
                     return -1;
@@ -198,9 +214,11 @@ namespace Froststrap
                     return -1;
                 }
 
+#pragma warning disable CA2016 // ReadToEndAsync doesn't support cancellation tokens
                 string output = await process.StandardOutput.ReadToEndAsync();
                 string error = await process.StandardError.ReadToEndAsync();
-                await process.WaitForExitAsync();
+#pragma warning restore CA2016
+                await process.WaitForExitAsync(cancellationToken);
 
                 if (process.ExitCode != 0)
                 {
@@ -215,7 +233,7 @@ namespace Froststrap
                     return -1;
                 }
 
-                int handle = int.Parse(match.Groups[1].Value);
+                int handle = int.Parse(match.Groups[1].Value, CultureInfo.InvariantCulture);
 
                 if (handle < 0)
                 {
@@ -365,6 +383,7 @@ namespace Froststrap
             StudioRichPresence?.Dispose();
             ActivityWatcher?.Dispose();
             _cancellationTokenSource.Dispose();
+            _lock.Dispose();
 
             _isDisposed = true;
             GC.SuppressFinalize(this);

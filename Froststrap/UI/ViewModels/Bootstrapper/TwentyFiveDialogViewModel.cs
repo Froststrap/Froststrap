@@ -1,8 +1,6 @@
-﻿using Avalonia.Media;
-
-namespace Froststrap.UI.ViewModels.Bootstrapper
+﻿namespace Froststrap.UI.ViewModels.Bootstrapper
 {
-    public class TwentyFiveDialogViewModel(IBootstrapperDialog dialog) : BootstrapperDialogViewModel(dialog)
+    internal class TwentyFiveDialogViewModel(IBootstrapperDialog dialog) : BootstrapperDialogViewModel(dialog)
     {
         public bool CancelButtonVisibility => CancelEnabled;
     }

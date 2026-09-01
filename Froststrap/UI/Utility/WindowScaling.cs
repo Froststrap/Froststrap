@@ -4,7 +4,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 
 namespace Froststrap.UI.Utility
 {
-    public static class WindowScaling
+    internal static class WindowScaling
     {
         private static Window? _mainWindow;
 

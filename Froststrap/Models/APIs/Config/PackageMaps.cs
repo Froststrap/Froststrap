@@ -3,7 +3,7 @@
 
     // those are the default directories
     // these should still be updated since remote data could fail to load
-    public class PackageMaps
+    internal class PackageMaps
     {
         [JsonPropertyName("common")]
         public Dictionary<string, string> CommonPackageMap { get; set; } = new Dictionary<string, string>()

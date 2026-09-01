@@ -6,7 +6,7 @@ using Froststrap.UI.ViewModels;
 
 namespace Froststrap.Models
 {
-    public class ServerEntry : NotifyPropertyChangedViewModel
+    internal class ServerEntry : NotifyPropertyChangedViewModel
     {
         private static readonly SemaphoreSlim _thumbnailSemaphore = new(10);
 

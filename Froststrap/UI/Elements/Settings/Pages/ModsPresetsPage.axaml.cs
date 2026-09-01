@@ -12,7 +12,7 @@ namespace Froststrap.UI.Elements.Settings.Pages
         public void OpenModGenerator() => _mainVm.NavigateToModGeneratorCommand.Execute(null);
     }
 
-    public partial class ModsPresetsPage : UserControl
+    internal partial class ModsPresetsPage : UserControl
     {
         private PresetModsDialogService? _dialogService;
 

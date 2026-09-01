@@ -2,12 +2,12 @@
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using Froststrap.UI.ViewModels.Dialogs;
-using Froststrap.UI.Elements.Base;
 using ICSharpCode.SharpZipLib.Zip;
+using System.Security.Cryptography;
 
 namespace Froststrap.UI.Elements.Dialogs
 {
-    public partial class AddCustomThemeDialog : Base.AvaloniaWindow
+    internal partial class AddCustomThemeDialog : Base.AvaloniaWindow
     {
         private const int CreateNewTabId = 0;
         private readonly AddCustomThemeViewModel _viewModel;
@@ -39,10 +39,10 @@ namespace Froststrap.UI.Elements.Dialogs
         {
             int count = Directory.GetDirectories(Paths.CustomThemes).Length;
             int i = count + 1;
-            string name = string.Format(Strings.CustomTheme_DefaultName, i);
+            string name = string.Format(CultureInfo.CurrentCulture, Strings.CustomTheme_DefaultName, i);
 
             if (File.Exists(GetThemePath(name)))
-                name = string.Format(Strings.CustomTheme_DefaultName, $"{i}-{Random.Shared.Next(1, 100000)}");
+                name = string.Format(CultureInfo.CurrentCulture, Strings.CustomTheme_DefaultName, $"{i}-{RandomNumberGenerator.GetInt32(1, 100000)}");
 
             return name;
         }
@@ -61,7 +61,7 @@ namespace Froststrap.UI.Elements.Dialogs
                     return newName;
             }
 
-            return $"{name}_{Random.Shared.Next(maxTries + 1, 1_000_000)}";
+            return $"{name}_{RandomNumberGenerator.GetInt32(maxTries + 1, 1_000_000)}";
         }
 
         private static async Task CreateCustomTheme(string name, CustomThemeTemplate template)

@@ -15,7 +15,7 @@ using Color = Avalonia.Media.Color;
 
 namespace Froststrap.Integrations
 {
-    public static class ModGenerator
+    internal static class ModGenerator
     {
         private const string ModGeneratorVersionApiUrl = "https://api.github.com/repos/Froststrap/mod-generator/releases/latest";
         private static string ModGeneratorVersionCacheFile => Path.Combine(Paths.Cache, "ModGeneratorVersion.json");
@@ -32,9 +32,9 @@ namespace Froststrap.Integrations
             Strict = ["gradient/gradient_0_100"]
         };
 
-        public record GradientStop(float Stop, Color Color);
+        internal record GradientStop(float Stop, Color Color);
 
-        public record SpriteDef(string Name, int X, int Y, int W, int H);
+        internal record SpriteDef(string Name, int X, int Y, int W, int H);
 
         private class SpriteBlacklist
         {
@@ -127,7 +127,7 @@ namespace Froststrap.Integrations
         {
             var release = await GetLatestModGeneratorRelease();
 
-            _ = release ?? throw new Exception("Failed to fetch latest mod-generator release.");
+            _ = release ?? throw new InvalidOperationException("Failed to fetch latest mod-generator release.");
 
             string assetName = GetModGeneratorAssetName();
             var asset = release.Assets?.FirstOrDefault(a => a.Name.Equals(assetName, StringComparison.OrdinalIgnoreCase));
@@ -135,7 +135,7 @@ namespace Froststrap.Integrations
             if (string.IsNullOrEmpty(downloadUrl))
                 downloadUrl = $"https://github.com/Froststrap/mod-generator/releases/latest/download/{assetName}";
 
-            byte[] data = await App.HttpClient.GetByteArrayAsync(downloadUrl);
+            byte[] data = await App.HttpClient.GetByteArrayAsync(new Uri(downloadUrl));
             string exePath = GetModGeneratorExePath();
             await File.WriteAllBytesAsync(exePath, data);
 
@@ -228,40 +228,42 @@ namespace Froststrap.Integrations
                 App.Logger.Info($"Processing sheet: {sheetPath} with {sprites.Count} sprites");
                 if (!File.Exists(sheetPath)) continue;
 
-                using var sheet = LoadAsRgba8888(sheetPath);
-                bool modified = false;
-
-                if (!string.IsNullOrEmpty(customLogoPath) && File.Exists(customLogoPath))
-                    modified |= ReplaceCustomSprite(sheet, sprites, "icons/logo/block", customLogoPath);
-                if (!string.IsNullOrEmpty(customSpinnerPath) && File.Exists(customSpinnerPath))
-                    modified |= ReplaceCustomSprite(sheet, sprites, "icons/graphic/loadingspinner", customSpinnerPath);
-
-                foreach (var sprite in sprites)
+                using (var sheet = LoadAsRgba8888(sheetPath))
                 {
-                    if (sprite.W <= 0 || sprite.H <= 0) continue;
-                    if (SpriteBlacklistInstance.IsBlacklisted(sprite.Name)) continue;
+                    bool modified = false;
 
-                    if (string.Equals(sprite.Name, "icons/logo/block", StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(customLogoPath))
-                        continue;
-                    if (string.Equals(sprite.Name, "icons/graphic/loadingspinner", StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(customSpinnerPath))
-                        continue;
+                    if (!string.IsNullOrEmpty(customLogoPath) && File.Exists(customLogoPath))
+                        modified |= ReplaceCustomSprite(sheet, sprites, "icons/logo/block", customLogoPath);
+                    if (!string.IsNullOrEmpty(customSpinnerPath) && File.Exists(customSpinnerPath))
+                        modified |= ReplaceCustomSprite(sheet, sprites, "icons/graphic/loadingspinner", customSpinnerPath);
 
-                    using var cropped = ExtractSprite(sheet, sprite.X, sprite.Y, sprite.W, sprite.H);
-                    using var recolored = ApplyMaskToBitmap(cropped, solidColor, gradient, gradientAngleDeg);
+                    foreach (var sprite in sprites)
+                    {
+                        if (sprite.W <= 0 || sprite.H <= 0) continue;
+                        if (SpriteBlacklistInstance.IsBlacklisted(sprite.Name)) continue;
 
-                    for (int y = 0; y < sprite.H; y++)
-                        for (int x = 0; x < sprite.W; x++)
-                            sheet.SetPixel(sprite.X + x, sprite.Y + y, recolored.GetPixel(x, y));
+                        if (string.Equals(sprite.Name, "icons/logo/block", StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(customLogoPath))
+                            continue;
+                        if (string.Equals(sprite.Name, "icons/graphic/loadingspinner", StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(customSpinnerPath))
+                            continue;
 
-                    modified = true;
-                }
+                        using var cropped = ExtractSprite(sheet, sprite.X, sprite.Y, sprite.W, sprite.H);
+                        using var recolored = ApplyMaskToBitmap(cropped, solidColor, gradient, gradientAngleDeg);
 
-                if (modified)
-                {
-                    string tempPath = sheetPath + ".tmp";
-                    SaveBitmapAsPng(sheet, tempPath);
-                    ReplaceFileWithRetry(sheetPath, tempPath);
-                    App.Logger.Info($"Recolored sprite sheet: {sheetPath}");
+                        for (int y = 0; y < sprite.H; y++)
+                            for (int x = 0; x < sprite.W; x++)
+                                sheet.SetPixel(sprite.X + x, sprite.Y + y, recolored.GetPixel(x, y));
+
+                        modified = true;
+                    }
+
+                    if (modified)
+                    {
+                        string tempPath = sheetPath + ".tmp";
+                        SaveBitmapAsPng(sheet, tempPath);
+                        ReplaceFileWithRetry(sheetPath, tempPath);
+                        App.Logger.Info($"Recolored sprite sheet: {sheetPath}");
+                    }
                 }
             }
         }
@@ -472,7 +474,7 @@ namespace Froststrap.Integrations
                 foreach (string tableName in tableNames)
                 {
                     string startPattern = $"function make_{tableName}() {tableName} = {{";
-                    int startIdx = text.IndexOf(startPattern);
+                    int startIdx = text.IndexOf(startPattern, StringComparison.Ordinal);
                     if (startIdx == -1) continue;
 
                     int braceStart = text.IndexOf('{', startIdx);
@@ -487,10 +489,10 @@ namespace Froststrap.Integrations
                     foreach (Match match in matches)
                     {
                         string name = match.Groups[1].Value;
-                        int x = int.Parse(match.Groups[2].Value);
-                        int y = int.Parse(match.Groups[3].Value);
-                        int w = int.Parse(match.Groups[4].Value);
-                        int h = int.Parse(match.Groups[5].Value);
+                        int x = int.Parse(match.Groups[2].Value, CultureInfo.InvariantCulture);
+                        int y = int.Parse(match.Groups[3].Value, CultureInfo.InvariantCulture);
+                        int w = int.Parse(match.Groups[4].Value, CultureInfo.InvariantCulture);
+                        int h = int.Parse(match.Groups[5].Value, CultureInfo.InvariantCulture);
                         string imageSet = match.Groups[6].Value + ".png";
 
                         string luaDir = Path.GetDirectoryName(luaPath)!;
@@ -552,10 +554,10 @@ namespace Froststrap.Integrations
         {
             Uri clientVersionUrl = UrlBuilder.BuildApiUrl("clientsettingscdn", "v2/client-version/WindowsStudio64", secure: true);
             var clientInfo = await Http.GetJson<ClientVersion>(clientVersionUrl);
-            string hash = clientInfo.VersionGuid.Replace("version-", "");
+            string hash = clientInfo.VersionGuid.Replace("version-", "", StringComparison.Ordinal);
             string tempPath = Path.Combine(Path.GetTempPath(), "Froststrap");
             Directory.CreateDirectory(tempPath);
-            foreach (var file in Directory.GetFiles(tempPath, "*.zip").Where(f => !f.Contains(hash)))
+            foreach (var file in Directory.GetFiles(tempPath, "*.zip").Where(f => !f.Contains(hash, StringComparison.OrdinalIgnoreCase)))
                 try { File.Delete(file); } catch { }
 
             async Task<string> DownloadOne(string type)
@@ -563,7 +565,7 @@ namespace Froststrap.Integrations
                 string url = $"https://setup.rbxcdn.com/version-{hash}-{type}.zip";
                 string path = Path.Combine(tempPath, $"{type}-{hash}.zip");
                 if (!overwrite && File.Exists(path) && new FileInfo(path).Length > 0) return path;
-                var data = await App.HttpClient.GetByteArrayAsync(url);
+                var data = await App.HttpClient.GetByteArrayAsync(new Uri(url));
                 await File.WriteAllBytesAsync(path, data);
                 return path;
             }

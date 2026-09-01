@@ -4,7 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace Froststrap.UI.ViewModels.Onboarding
 {
-    public class FaqItem : NotifyPropertyChangedViewModel
+    internal class FaqItem : NotifyPropertyChangedViewModel
     {
         private bool _isExpanded;
 
@@ -34,7 +34,7 @@ namespace Froststrap.UI.ViewModels.Onboarding
         }
     }
 
-    public class Page6ViewModel : NotifyPropertyChangedViewModel
+    internal class Page6ViewModel : NotifyPropertyChangedViewModel
     {
         public ObservableCollection<FaqItem> FaqItems { get; } = [];
 

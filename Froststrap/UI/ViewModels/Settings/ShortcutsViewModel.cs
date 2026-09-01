@@ -1,12 +1,12 @@
 ﻿/*
-*  Froststrap
-*  Copyright (c) Froststrap Team
-*
-*  This file is part of Froststrap and is distributed under the terms of the
-*  GNU Affero General Public License, version 3 or later.
-*
-*  SPDX-License-Identifier: AGPL-3.0-or-later
-*/
+ *  Froststrap
+ *  Copyright (c) Froststrap Team
+ *
+ *  This file is part of Froststrap and is distributed under the terms of the
+ *  GNU Affero General Public License, version 3 or later.
+ *
+ *  SPDX-License-Identifier: AGPL-3.0-or-later
+ */
 
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.Input;
@@ -15,7 +15,7 @@ using Avalonia.Media.Imaging;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
-    public class ShortcutsViewModel : NotifyPropertyChangedViewModel
+    internal class ShortcutsViewModel : NotifyPropertyChangedViewModel, IDisposable
     {
         // Use .lnk as the canonical name.
         // Shortcut.cs resolves the correct filename internally
@@ -39,7 +39,8 @@ namespace Froststrap.UI.ViewModels.Settings
         private bool _isSearchFlyoutOpen;
         private OmniSearchContent? _selectedSearchResult;
         private CancellationTokenSource? _searchDebounceCts;
-        private bool _isProcessingSelection = false;
+        private bool _isProcessingSelection;
+        private bool _disposed;
         #endregion
 
         #region Properties
@@ -126,7 +127,7 @@ namespace Froststrap.UI.ViewModels.Settings
         public ShortcutsViewModel()
         {
             PreviewName = Strings.Menu_Shortcuts_NoGameSelected;
-            PreviewId = string.Format(Strings.Menu_RegionSelector_ID, 0);
+            PreviewId = string.Format(CultureInfo.CurrentCulture, Strings.Menu_RegionSelector_ID, 0);
             ShortcutStatus = Strings.Menu_Shortcuts_Ready;
 
             CreateGameShortcutCommand = new AsyncRelayCommand(CreateGameShortcut);
@@ -183,7 +184,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
                 if (long.TryParse(value, out long id))
                 {
-                    PlaceId = id.ToString();
+                    PlaceId = id.ToString(CultureInfo.InvariantCulture);
                     await FetchInfoForId(id, token);
                 }
                 else if (!string.IsNullOrWhiteSpace(value))
@@ -194,13 +195,13 @@ namespace Froststrap.UI.ViewModels.Settings
             catch (OperationCanceledException) { }
         }
 
-        private async Task<Bitmap?> LoadBitmapFromUrl(string? url, CancellationToken token = default)
+        private static async Task<Bitmap?> LoadBitmapFromUrl(string? url, CancellationToken token = default)
         {
             if (string.IsNullOrEmpty(url)) return null;
 
             try
             {
-                var response = await App.HttpClient.GetByteArrayAsync(url, token);
+                var response = await App.HttpClient.GetByteArrayAsync(new Uri(url), token);
                 using var ms = new MemoryStream(response);
                 return new Bitmap(ms);
             }
@@ -217,10 +218,10 @@ namespace Froststrap.UI.ViewModels.Settings
 
             _isProcessingSelection = true;
 
-            PlaceId = value.RootPlaceId.ToString();
+            PlaceId = value.RootPlaceId.ToString(CultureInfo.InvariantCulture);
             SearchQuery = PlaceId;
             PreviewName = value.Name!;
-            PreviewId = string.Format(Strings.Menu_RegionSelector_ID, value.RootPlaceId);
+            PreviewId = string.Format(CultureInfo.CurrentCulture, Strings.Menu_RegionSelector_ID, value.RootPlaceId);
             PreviewIcon = value.ThumbnailBitmap;
             ShortcutStatus = Strings.Menu_Shortcuts_ReadyToCreate;
 
@@ -234,25 +235,25 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 ShortcutStatus = Strings.Menu_Shortcuts_UpdatingPreview;
 
-                await UniverseDetails.FetchBulk(id.ToString());
+                await UniverseDetails.FetchBulk(id.ToString(CultureInfo.InvariantCulture));
                 var details = UniverseDetails.LoadFromCache(id);
 
                 if (details != null)
                 {
                     PreviewName = details.Data.Name;
-                    PreviewId = string.Format(Strings.Menu_RegionSelector_ID, id);
+                    PreviewId = string.Format(CultureInfo.CurrentCulture, Strings.Menu_RegionSelector_ID, id);
                     PreviewIcon = await LoadBitmapFromUrl(details.Thumbnail.ImageUrl, token);
                 }
                 else
                 {
-                    PreviewName = string.Format(Strings.Menu_Shortcuts_Game, id);
-                    PreviewId = string.Format(Strings.Menu_RegionSelector_ID, id);
+                    PreviewName = string.Format(CultureInfo.CurrentCulture, Strings.Menu_Shortcuts_Game, id);
+                    PreviewId = string.Format(CultureInfo.CurrentCulture, Strings.Menu_RegionSelector_ID, id);
                     PreviewIcon = null;
                 }
             }
             catch (Exception)
             {
-                PreviewName = string.Format(Strings.Menu_Shortcuts_Game, id);
+                PreviewName = string.Format(CultureInfo.CurrentCulture, Strings.Menu_Shortcuts_Game, id);
                 ShortcutStatus = Strings.Menu_Shortcuts_ReadyWithManualId;
             }
         }
@@ -289,7 +290,7 @@ namespace Froststrap.UI.ViewModels.Settings
                         {
                             try
                             {
-                                var response = await App.HttpClient.GetByteArrayAsync(fetchedUrls[i]);
+                                var response = await App.HttpClient.GetByteArrayAsync(new Uri(fetchedUrls[i]!));
                                 using var ms = new MemoryStream(response);
                                 results[i].ThumbnailBitmap = new Bitmap(ms);
                             }
@@ -317,5 +318,28 @@ namespace Froststrap.UI.ViewModels.Settings
                 IsGameSearchLoading = false;
             }
         }
+
+        #region IDisposable Implementation
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+                return;
+
+            if (disposing)
+            {
+                _searchDebounceCts?.Cancel();
+                _searchDebounceCts?.Dispose();
+                _searchDebounceCts = null;
+            }
+
+            _disposed = true;
+        }
+        #endregion
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Enums.FlagPresets
 {
-    public enum QualityLevel
+    internal enum QualityLevel
     {
         [EnumName(FromTranslation = "Common.Disabled")]
         Disabled,

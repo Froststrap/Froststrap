@@ -6,7 +6,7 @@ using Froststrap.UI.Elements.Base;
 
 namespace Froststrap.UI.Elements.Dialogs
 {
-    public partial class QuickSignCodeDialog : AvaloniaWindow
+    internal partial class QuickSignCodeDialog : AvaloniaWindow
     {
         public bool SignInSuccessful { get; private set; }
         private DispatcherTimer? _autoCloseTimer;
@@ -72,7 +72,7 @@ namespace Froststrap.UI.Elements.Dialogs
                         {
                             StatusText.Text = Strings.Menu_QuickSignIn_Waitting;
                         });
-                    });
+                    },TaskScheduler.Default);
                 }
             }
             catch

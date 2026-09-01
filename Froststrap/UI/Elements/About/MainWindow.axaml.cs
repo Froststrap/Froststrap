@@ -1,14 +1,12 @@
 using System.ComponentModel;
 using System.Reflection;
 using Avalonia.Controls;
-using Avalonia.Interactivity;
 using FluentAvalonia.UI.Controls;
 using Froststrap.UI.ViewModels.About;
-using Froststrap.UI.Elements.Controls;
 
 namespace Froststrap.UI.Elements.About
 {
-    public partial class MainWindow : Base.AvaloniaWindow
+    internal partial class MainWindow : Base.AvaloniaWindow
     {
         private readonly MainWindowViewModel? _viewModel;
 
@@ -68,7 +66,7 @@ namespace Froststrap.UI.Elements.About
         {
             var actualViewModelType = viewModel.GetType();
             var viewModelName = actualViewModelType.Name;
-            var viewName = viewModelName.Replace("ViewModel", "");
+            var viewName = viewModelName.Replace("ViewModel", "", StringComparison.Ordinal);
 
             var viewTypeNames = new[]
             {

@@ -6,14 +6,14 @@ using Windows.Win32.UI.WindowsAndMessaging;
 namespace Froststrap.Integrations
 {
     [SupportedOSPlatform("windows")]
-    public class IntegrationWatcher : IDisposable
+    internal class IntegrationWatcher : IDisposable
     {
         private static unsafe bool IsHandleValid(HWND hwnd) => hwnd.Value != null;
 
         private readonly ActivityWatcher _activityWatcher;
         private readonly Dictionary<int, CustomIntegration> _activeIntegrations = [];
 
-        private HWND _robloxWindowHandle = default;
+        private HWND _robloxWindowHandle;
 
         private DestroyIconSafeHandle? _customGameIconSmallHandle;
         private DestroyIconSafeHandle? _customGameIconBigHandle;
@@ -126,7 +126,7 @@ namespace Froststrap.Integrations
 
             foreach (var integration in App.Settings.Prop.CustomIntegrations)
             {
-                if (!integration.SpecifyGame || integration.GameID != currentGameId.ToString())
+                if (!integration.SpecifyGame || integration.GameID != currentGameId.ToString(CultureInfo.InvariantCulture))
                     continue;
 
                 LaunchIntegration(integration);
@@ -243,7 +243,7 @@ namespace Froststrap.Integrations
                     return;
                 }
 
-                using var response = await App.HttpClient.GetAsync(iconUrl);
+                using var response = await App.HttpClient.GetAsync(new Uri(iconUrl));
                 response.EnsureSuccessStatusCode();
 
                 using var stream = await response.Content.ReadAsStreamAsync();
@@ -259,8 +259,7 @@ namespace Froststrap.Integrations
                 _customGameIconSmallHandle = PInvoke.CreateIconFromResourceEx(pngBytes, true, 0x00030000, smallWidth, smallHeight, IMAGE_FLAGS.LR_DEFAULTCOLOR);
                 _customGameIconBigHandle = PInvoke.CreateIconFromResourceEx(pngBytes, true, 0x00030000, bigWidth, bigHeight, IMAGE_FLAGS.LR_DEFAULTCOLOR);
 
-                if (_customGameIconSmallHandle != null && !_customGameIconSmallHandle.IsInvalid &&
-                    _customGameIconBigHandle != null && !_customGameIconBigHandle.IsInvalid)
+                if (!_customGameIconSmallHandle.IsInvalid && !_customGameIconBigHandle.IsInvalid)
                 {
                     PInvoke.SendMessage(_robloxWindowHandle, WM_SETICON, (WPARAM)ICON_SMALL, _customGameIconSmallHandle.DangerousGetHandle());
                     PInvoke.SendMessage(_robloxWindowHandle, WM_SETICON, (WPARAM)ICON_BIG, _customGameIconBigHandle.DangerousGetHandle());
@@ -308,7 +307,7 @@ namespace Froststrap.Integrations
                 {
                     long playing = activity.UniverseDetails.Data.Playing;
                     var converter = new UI.Converters.NumberAbbreviationConverter();
-                    string abbreviated = converter.Convert(playing, typeof(string), null, CultureInfo.CurrentCulture) as string ?? playing.ToString();
+                    string abbreviated = converter.Convert(playing, typeof(string), null, CultureInfo.CurrentCulture) as string ?? playing.ToString(CultureInfo.InvariantCulture);
                     title = $"{gameName} ({abbreviated} playing)";
                 }
 
@@ -327,7 +326,7 @@ namespace Froststrap.Integrations
                 var process = Process.Start(new ProcessStartInfo
                 {
                     FileName = integration.Location,
-                    Arguments = integration.LaunchArgs.Replace("\r\n", " "),
+                    Arguments = integration.LaunchArgs.Replace("\r\n", " ", StringComparison.Ordinal),
                     WorkingDirectory = Path.GetDirectoryName(integration.Location),
                     UseShellExecute = true
                 });

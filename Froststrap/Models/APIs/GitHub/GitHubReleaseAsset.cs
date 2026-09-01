@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Models.APIs.GitHub
 {
-    public class GithubReleaseAsset
+    internal class GithubReleaseAsset
     {
         [JsonPropertyName("browser_download_url")]
         public string BrowserDownloadUrl { get; set; } = null!;

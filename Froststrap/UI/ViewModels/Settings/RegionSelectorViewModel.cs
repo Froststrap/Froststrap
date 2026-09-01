@@ -16,13 +16,13 @@ using System.Collections.ObjectModel;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
-    public class SortOrderComboBoxItem
+    internal class SortOrderComboBoxItem
     {
         public string Content { get; set; } = "";
-        public string Tag { get; set; }
+        public string Tag { get; set; } = "";
     }
 
-    public class RegionSelectorViewModel : NotifyPropertyChangedViewModel
+    internal class RegionSelectorViewModel : NotifyPropertyChangedViewModel, IDisposable
     {
         private const int MaxServers = 20;
 
@@ -30,6 +30,7 @@ namespace Froststrap.UI.ViewModels.Settings
         private RobloxServerFetcher? _fetcher;
         private Dictionary<int, string>? _dcMap;
         private CancellationTokenSource? _searchDebounceCts;
+        private bool _disposed;
 
         #region Fields
         private bool _hasSearched;
@@ -239,7 +240,7 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 OnPropertyChanged(nameof(IsServerListEmpty));
                 OnPropertyChanged(nameof(IsServerListEmptyAndNotLoading));
-                LoadMoreCommand.NotifyCanExecuteChanged(); // Update LoadMore button state when server count changes
+                LoadMoreCommand!.NotifyCanExecuteChanged(); // Update LoadMore button state when server count changes
             };
 
             SearchCommand = new AsyncRelayCommand(SearchAsync, () => !IsLoading && !string.IsNullOrWhiteSpace(PlaceId) && HasValidCookies);
@@ -273,8 +274,8 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             if (value == null) return;
 
-            PlaceId = value.RootPlaceId.ToString();
-            SearchQuery = value.RootPlaceId.ToString();
+            PlaceId = value.RootPlaceId.ToString(CultureInfo.InvariantCulture);
+            SearchQuery = value.RootPlaceId.ToString(CultureInfo.InvariantCulture);
             IsSearchFlyoutOpen = false;
         }
 
@@ -344,7 +345,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 var (regions, dcMap) = apiResult.Value;
                 PopulateRegions(regions, dcMap);
                 await SaveDatacentersToCacheAsync(dcMap);
-                LoadingMessage = string.Format(Strings.Menu_RegionSelector_LoadedRegions, Regions.Count);
+                LoadingMessage = string.Format(CultureInfo.InvariantCulture, Strings.Menu_RegionSelector_LoadedRegions, Regions.Count);
                 IsLoading = false;
                 await Task.Delay(800);
                 LoadingMessage = "";
@@ -623,7 +624,7 @@ namespace Froststrap.UI.ViewModels.Settings
                     {
                         try
                         {
-                            var response = await App.HttpClient.GetByteArrayAsync(fetchedUrls[i], token);
+                            var response = await App.HttpClient.GetByteArrayAsync(new Uri(fetchedUrls[i]!), token);
                             using var ms = new MemoryStream(response);
                             results[i].ThumbnailBitmap = new Bitmap(ms);
                         }
@@ -640,6 +641,30 @@ namespace Froststrap.UI.ViewModels.Settings
             }
             catch (Exception ex) { App.Logger.Error($"Search error: {ex.Message}"); }
             finally { IsGameSearchLoading = false; }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+                return;
+
+            if (disposing)
+            {
+                _fetcher?.Dispose();
+                _fetcher = null;
+
+                _searchDebounceCts?.Cancel();
+                _searchDebounceCts?.Dispose();
+                _searchDebounceCts = null;
+            }
+
+            _disposed = true;
         }
     }
 }

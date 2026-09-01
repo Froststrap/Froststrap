@@ -16,10 +16,11 @@ using System.Runtime.CompilerServices;
 
 namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
 {
-    public partial class FastFlagEditor : UserControl, INotifyPropertyChanged
+    internal partial class FastFlagEditor : UserControl, INotifyPropertyChanged, IDisposable
     {
         private readonly ObservableCollection<FastFlag> _fastFlagList = [];
         private bool _showPresets = true;
+        private bool _disposed;
         private string _searchFilter = string.Empty;
         private CancellationTokenSource? _searchCancellationTokenSource;
 
@@ -240,7 +241,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
             if (!base64Flags.Contains(name))
             {
                 var result = await Frontend.ShowMessageBox(
-                    string.Format(Strings.Menu_FastFlagEditor_NotInWhiteList, name),
+                    string.Format(CultureInfo.InvariantCulture, Strings.Menu_FastFlagEditor_NotInWhiteList, name),
                     MessageBoxImage.Warning,
                     MessageBoxButton.YesNo);
 
@@ -285,12 +286,12 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
             try
             {
                 list = JsonSerializer.Deserialize<Dictionary<string, object>>(json, _jsonOptions);
-                _ = list ?? throw new Exception("JSON returned null");
+                _ = list ?? throw new InvalidOperationException("JSON returned null");
             }
             catch (Exception ex)
             {
                 _ = Frontend.ShowMessageBox(
-                    string.Format(Strings.Menu_FastFlagEditor_InvalidJSON, ex.Message),
+                    string.Format(CultureInfo.InvariantCulture, Strings.Menu_FastFlagEditor_InvalidJSON, ex.Message),
                     MessageBoxImage.Error,
                     MessageBoxButton.OK
                 );
@@ -307,6 +308,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
             if (conflictingFlags.Count > 0)
             {
                 string message = string.Format(
+                    CultureInfo.InvariantCulture,
                     Strings.Menu_FastFlagEditor_ConflictingImport,
                     conflictingFlags.Count,
                     string.Join(", ", conflictingFlags.Take(25))
@@ -338,7 +340,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
             if (invalidFlags.Count > 0)
             {
                 var result = await Frontend.ShowMessageBox(
-                    string.Format(Strings.Menu_FastFlagEditor_NotInWhiteList, invalidFlags.Count),
+                    string.Format(CultureInfo.InvariantCulture, Strings.Menu_FastFlagEditor_NotInWhiteList, invalidFlags.Count),
                     MessageBoxImage.Warning,
                     MessageBoxButton.YesNo);
 
@@ -589,7 +591,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
                 }
 
                 await Frontend.ShowMessageBox(
-                    string.Format(Strings.Menu_FastFlagEditor_HaveBeenRemoved, totalChanges),
+                    string.Format(CultureInfo.InvariantCulture, Strings.Menu_FastFlagEditor_HaveBeenRemoved, totalChanges),
                     MessageBoxImage.Information);
 
                 ReloadList();
@@ -613,7 +615,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
 
             try
             {
-                var cleanBase64 = base64.Trim().Replace("\n", "").Replace("\r", "");
+                var cleanBase64 = base64.Trim().Replace("\n", "", StringComparison.Ordinal).Replace("\r", "", StringComparison.Ordinal);
                 var bytes = Convert.FromBase64String(cleanBase64);
                 var jsonText = Encoding.UTF8.GetString(bytes);
 
@@ -783,7 +785,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
                 .Select(f => f.TryGetLocalPath())
                 .Where(p => !string.IsNullOrEmpty(p))
                 .Select(p => p!)
-                .Where(p => supportedExtensions.Contains(Path.GetExtension(p).ToLowerInvariant()))
+                .Where(p => supportedExtensions.Contains(Path.GetExtension(p), StringComparer.OrdinalIgnoreCase))
                 .ToList();
 
             if (filePaths.Count == 0)
@@ -804,6 +806,27 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
                     await Frontend.ShowMessageBox($"Failed to read/import '{Path.GetFileName(path!)}': {ex.Message}", MessageBoxImage.Error);
                 }
             }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+                return;
+
+            if (disposing)
+            {
+                _searchCancellationTokenSource?.Cancel();
+                _searchCancellationTokenSource?.Dispose();
+                _searchCancellationTokenSource = null;
+            }
+
+            _disposed = true;
         }
     }
 }

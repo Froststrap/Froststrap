@@ -7,15 +7,15 @@ using System.Reflection;
 
 namespace Froststrap.UI.Elements.Dialogs
 {
-    public partial class FlagProfilesDialog : AvaloniaWindow
+    internal partial class FlagProfilesDialog : AvaloniaWindow
     {
         public MessageBoxResult Result = MessageBoxResult.Cancel;
 
         private static readonly JsonSerializerOptions _jsonOptions = new() { WriteIndented = true };
         private readonly ObservableCollection<string> _placeIds = [];
-        private string? _currentProfile = null;
-        private bool _isUpdatingPlaceIds = false;
-        private bool _isRemoving = false;
+        private string? _currentProfile;
+        private bool _isUpdatingPlaceIds;
+        private bool _isRemoving;
 
         public FlagProfilesDialog()
         {
@@ -247,9 +247,9 @@ namespace Froststrap.UI.Elements.Dialogs
 
             foreach (var c in Path.GetInvalidFileNameChars())
             {
-                if (newName.Contains(c))
+                if (newName.Contains(c, StringComparison.Ordinal))
                 {
-                    _ = Frontend.ShowMessageBox(string.Format(Strings.Menu_FlagProfiles_InvalidCharacter, c), MessageBoxImage.Error, MessageBoxButton.OK);
+                    _ = Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Menu_FlagProfiles_InvalidCharacter, c), MessageBoxImage.Error, MessageBoxButton.OK);
                     return;
                 }
             }
@@ -281,7 +281,7 @@ namespace Froststrap.UI.Elements.Dialogs
             }
             catch (Exception ex)
             {
-                _ = Frontend.ShowMessageBox(string.Format(Strings.Menu_FlagProfiles_RenameFailed, ex.Message), MessageBoxImage.Error, MessageBoxButton.OK);
+                _ = Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Menu_FlagProfiles_RenameFailed, ex.Message), MessageBoxImage.Error, MessageBoxButton.OK);
             }
         }
 
@@ -361,7 +361,7 @@ namespace Froststrap.UI.Elements.Dialogs
             }
             catch (Exception ex)
             {
-                _ = Frontend.ShowMessageBox(string.Format(Strings.Menu_FlagProfiles_CopyFailed, ex.Message), MessageBoxImage.Error, MessageBoxButton.OK);
+                _ = Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Menu_FlagProfiles_CopyFailed, ex.Message), MessageBoxImage.Error, MessageBoxButton.OK);
             }
         }
 
@@ -394,7 +394,7 @@ namespace Froststrap.UI.Elements.Dialogs
             }
             catch (Exception ex)
             {
-                _ = Frontend.ShowMessageBox(string.Format(Strings.Menu_FlagProfiles_UpdateFailed, ex.Message), MessageBoxImage.Error, MessageBoxButton.OK);
+                _ = Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Menu_FlagProfiles_UpdateFailed, ex.Message), MessageBoxImage.Error, MessageBoxButton.OK);
             }
         }
 
@@ -405,7 +405,7 @@ namespace Froststrap.UI.Elements.Dialogs
             var assembly = Assembly.GetExecutingAssembly();
             string resourcePrefix = "Froststrap.Resources.PresetFlags.";
             var resourceNames = assembly.GetManifestResourceNames();
-            var profiles = resourceNames.Where(r => r.StartsWith(resourcePrefix));
+            var profiles = resourceNames.Where(r => r.StartsWith(resourcePrefix, StringComparison.Ordinal));
 
             foreach (var resourceName in profiles)
             {

@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Enums
 {
-    public enum Theme
+    internal enum Theme
     {
         [EnumName(FromTranslation = "Common.SystemDefault")]
         Default,

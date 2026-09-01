@@ -3,7 +3,7 @@ using System.Runtime.Versioning;
 namespace Froststrap.Utility;
 
 [SupportedOSPlatform("linux")]
-public static class LinuxRegistry
+internal static class LinuxRegistry
 {
     private static readonly string DesktopEntryDir = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
@@ -49,7 +49,7 @@ public static class LinuxRegistry
         sb.AppendLine("[Desktop Entry]");
         sb.AppendLine("Type=Application");
         sb.AppendLine($"Name={App.ProjectName}");
-        sb.AppendLine($"Exec={Paths.Application} %u");
+        sb.AppendLine(CultureInfo.InvariantCulture, $"Exec={Paths.Application} %u");
         sb.AppendLine("StartupNotify=true");
         sb.AppendLine("Terminal=false");
         var allMimeTypes = Schemes.Select(s => $"x-scheme-handler/{s}")
@@ -121,9 +121,9 @@ public static class LinuxRegistry
         {
             string ext = kv.Key.TrimStart('.');
             string mime = kv.Value;
-            xml.AppendLine($"  <mime-type type=\"{mime}\">");
-            xml.AppendLine($"    <comment>Roblox Studio {kv.Key} file</comment>");
-            xml.AppendLine($"    <glob pattern=\"*{kv.Key}\"/>");
+            xml.AppendLine(CultureInfo.InvariantCulture, $"  <mime-type type=\"{mime}\">");
+            xml.AppendLine(CultureInfo.InvariantCulture, $"    <comment>Roblox Studio {kv.Key} file</comment>");
+            xml.AppendLine(CultureInfo.InvariantCulture, $"    <glob pattern=\"*{kv.Key}\"/>");
             xml.AppendLine($"  </mime-type>");
         }
 

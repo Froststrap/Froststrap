@@ -11,7 +11,7 @@ using MarkdigInline = Markdig.Syntax.Inlines.Inline;
 
 namespace Froststrap.UI.Elements.Controls
 {
-    public class MarkdownTextBlock : TextBlock
+    internal class MarkdownTextBlock : TextBlock
     {
         private static readonly MarkdownPipeline _markdownPipeline = new MarkdownPipelineBuilder()
             .UseEmphasisExtras(Markdig.Extensions.EmphasisExtras.EmphasisExtraOptions.Marked)

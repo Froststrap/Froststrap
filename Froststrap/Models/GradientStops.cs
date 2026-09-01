@@ -3,7 +3,7 @@ using Froststrap.UI.ViewModels;
 
 namespace Froststrap.Models
 {
-    public class GradientStops : NotifyPropertyChangedViewModel
+    internal class GradientStops : NotifyPropertyChangedViewModel
     {
         private double _offset;
         public double Offset

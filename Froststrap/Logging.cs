@@ -4,7 +4,7 @@ using NLog.Targets.Wrappers;
 
 namespace Froststrap
 {
-    public static class Logging
+    internal static class Logging
     {
         public static bool Initialized => LogManager.Configuration != null;
 

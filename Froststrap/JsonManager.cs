@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace Froststrap
 {
-    public class JsonManager<T>(string? className = null) where T : class, new()
+    internal class JsonManager<T>(string? className = null) where T : class, new()
     {
         private static readonly JsonSerializerOptions _jsonOptions = new()
         {
@@ -21,7 +21,7 @@ namespace Froststrap
 
         public string? LastFileHash { get; private set; }
 
-        public bool Loaded { get; protected set; } = false;
+        public bool Loaded { get; protected set; }
 
         public virtual string ClassName { get; } = string.IsNullOrEmpty(className) ? typeof(T).Name : className;
 
@@ -38,7 +38,7 @@ namespace Froststrap
         protected virtual string ComputeHash(T obj)
         {
             string json = JsonSerializer.Serialize(obj, _jsonOptions);
-            return MD5Hash.FromString(json);
+            return SHA256Hash.FromString(json);
         }
 
         public bool HasUnsavedChanges
@@ -65,7 +65,7 @@ namespace Froststrap
 
                     _prop = settings;
                     Loaded = true;
-                    LastFileHash = MD5Hash.FromString(contents);
+                    LastFileHash = SHA256Hash.FromString(contents);
                     _savedHash = ComputeHash(_prop);
 
                     App.Logger.Info("Loaded successfully!");
@@ -129,7 +129,7 @@ namespace Froststrap
 
                 File.WriteAllText(FileLocation, contents);
 
-                LastFileHash = MD5Hash.FromString(contents);
+                LastFileHash = SHA256Hash.FromString(contents);
                 _savedHash = ComputeHash(Prop);
             }
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
@@ -137,7 +137,7 @@ namespace Froststrap
                 App.Logger.Error("Failed to save");
                 App.Logger.Error(ex);
 
-                string errorMessage = string.Format(Strings.Bootstrapper_JsonManagerSaveFailed, ClassName, ex.Message);
+                string errorMessage = string.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_JsonManagerSaveFailed, ClassName, ex.Message);
                 await Frontend.ShowMessageBox(errorMessage, MessageBoxImage.Warning);
 
                 return;
@@ -187,7 +187,7 @@ namespace Froststrap
 
                 string contents = existingJson.ToJsonString(_jsonOptions);
                 File.WriteAllText(FileLocation, contents);
-                LastFileHash = MD5Hash.FromString(contents);
+                LastFileHash = SHA256Hash.FromString(contents);
                 _savedHash = ComputeHash(Prop);
                 App.Logger.Info("SaveSetting complete!");
             }
@@ -393,7 +393,7 @@ namespace Froststrap
             if (string.IsNullOrEmpty(LastFileHash) && File.Exists(FileLocation))
                 return true;
 
-            return LastFileHash != MD5Hash.FromFile(FileLocation);
+            return LastFileHash != SHA256Hash.FromFile(FileLocation);
         }
     }
 
@@ -401,7 +401,7 @@ namespace Froststrap
     /// <see cref="JsonManager{T}"/> that will automatically load in the JSON if it has not been already
     /// </summary>
     /// <typeparam name="T">Class</typeparam>
-    public class LazyJsonManager<T>(string? className) : JsonManager<T>(className) where T : class, new()
+    internal class LazyJsonManager<T>(string? className) : JsonManager<T>(className) where T : class, new()
     {
         public override T Prop
         {

@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Enums
 {
-    public enum ThumbnailType
+    internal enum ThumbnailType
     {
         Avatar,
         AvatarHeadShot,

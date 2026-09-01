@@ -3,7 +3,7 @@ using Froststrap.UI.ViewModels;
 
 namespace Froststrap.Models
 {
-    public class BootstrapperIconEntry : NotifyPropertyChangedViewModel
+    internal class BootstrapperIconEntry : NotifyPropertyChangedViewModel
     {
         public BootstrapperIcon IconType { get; set; }
         public IImage ImageSource => IconType.GetIcon().GetImageSource();

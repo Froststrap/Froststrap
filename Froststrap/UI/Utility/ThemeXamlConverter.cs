@@ -2,7 +2,7 @@ using System.Xml.Linq;
 
 namespace Froststrap.UI.Utility
 {
-    public static class ThemeXamlConverter
+    internal static class ThemeXamlConverter
     {
         private static readonly Dictionary<string, string> PropertyRenameMap = new()
         {
@@ -52,7 +52,7 @@ namespace Froststrap.UI.Utility
                 var insetAttr = element.Attribute("IgnoreTitleBarInset");
                 if (insetAttr != null)
                 {
-                    element.SetAttributeValue("IgnoreTitleBarInset", insetAttr.Value.ToLower());
+                    element.SetAttributeValue("IgnoreTitleBarInset", insetAttr.Value.ToUpperInvariant());
                 }
 
                 var backgroundType = element.Attribute("BackgroundType");

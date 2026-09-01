@@ -1,6 +1,6 @@
 ﻿namespace Froststrap
 {
-    public static class StudioPluginManager
+    internal static class StudioPluginManager
     {
         private const string VersionApiUrl = "https://api.github.com/repos/Froststrap/FroststrapStudioRPC/releases/latest";
 
@@ -55,23 +55,23 @@
 
         private static async Task DownloadPluginAsync(GithubRelease release)
         {
-            var asset = release.Assets?.FirstOrDefault(x => x.Name.EndsWith(".rbxmx"));
+            var asset = release.Assets?.FirstOrDefault(x => x.Name.EndsWith(".rbxmx", StringComparison.Ordinal));
             if (asset is null) return;
 
-            byte[] data = await App.HttpClient.GetByteArrayAsync(asset.BrowserDownloadUrl);
+            byte[] data = await App.HttpClient.GetByteArrayAsync(new Uri(asset.BrowserDownloadUrl));
 
             Directory.CreateDirectory(Path.GetDirectoryName(PluginFile)!);
             await File.WriteAllBytesAsync(PluginFile, data);
 
             var state = new { Version = release.TagName, UpdatedAt = DateTime.Now };
-            File.WriteAllText(VersionCacheFile, JsonSerializer.Serialize(state));
+            await File.WriteAllTextAsync(VersionCacheFile, JsonSerializer.Serialize(state));
         }
 
         private static async Task<GithubRelease?> GetLatestRelease()
         {
             try
             {
-                var response = await App.HttpClient.GetStringAsync(VersionApiUrl);
+                var response = await App.HttpClient.GetStringAsync(new Uri(VersionApiUrl));
                 return JsonSerializer.Deserialize<GithubRelease>(response);
             }
             catch { return null; }

@@ -2,7 +2,7 @@
 
 namespace Froststrap.UI.Converters
 {
-    public class NumberAbbreviationConverter : IValueConverter
+    internal class NumberAbbreviationConverter : IValueConverter
     {
         public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {

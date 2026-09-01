@@ -4,7 +4,7 @@ using System.Collections.Concurrent;
 
 namespace Froststrap.UI.Converters
 {
-    public class UrlToBitmapConverter : IValueConverter
+    internal class UrlToBitmapConverter : IValueConverter
     {
         private static readonly ConcurrentDictionary<string, Bitmap?> _imageCache = new();
         private static readonly ConcurrentDictionary<string, string> _tokenToUrlCache = new();
@@ -19,7 +19,7 @@ namespace Froststrap.UI.Converters
                 if (_imageCache.TryGetValue(url, out var cachedBitmap))
                     return cachedBitmap;
 
-                using var response = App.HttpClient.GetAsync(url).Result;
+                using var response = App.HttpClient.GetAsync(new Uri(url)).Result;
 
                 Bitmap? bitmap = null;
                 if (response.IsSuccessStatusCode)
@@ -60,7 +60,7 @@ namespace Froststrap.UI.Converters
 
             try
             {
-                var response = await App.HttpClient.GetAsync(url);
+                var response = await App.HttpClient.GetAsync(new Uri(url));
                 if (!response.IsSuccessStatusCode)
                 {
                     _imageCache.TryAdd(url, null);

@@ -2,7 +2,7 @@
 
 namespace Froststrap.Utility
 {
-    public static class UrlBuilder
+    internal static class UrlBuilder
     {
         private const string PlacelauncherBaseUrl = "https://www.roblox.com/Game/PlaceLauncher.ashx";
 

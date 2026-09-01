@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Models.SettingTasks.Base
 {
-    public abstract class StringBaseTask : BaseTask
+    internal abstract class StringBaseTask : BaseTask
     {
         private string _originalState = "";
 

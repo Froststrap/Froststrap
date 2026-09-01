@@ -3,7 +3,7 @@ using Froststrap.RobloxInterfaces;
 
 namespace Froststrap.Models.Entities
 {
-    public class UserDetails
+    internal class UserDetails
     {
         private static List<UserDetails> Cache { get; set; } = [];
 
@@ -16,18 +16,14 @@ namespace Froststrap.Models.Entities
             Uri userUrl = UrlBuilder.BuildApiUrl("users", "v1/users/" + id);
             Uri thumbnailsUrl = UrlBuilder.BuildApiUrl("thumbnails", $"v1/users/avatar-headshot?userIds={id}&size=180x180&format=Png&isCircular=false");
 
-            var cacheQuery = Cache.Where(x => x.Data?.Id == id);
-
-            if (cacheQuery.Any())
-                return cacheQuery.First();
+            var cached = Cache.FirstOrDefault(x => x.Data?.Id == id);
+            if (cached != null)
+                return cached;
 
             var userResponse = await Http.GetJson<GetUserResponse>(userUrl);
-
             _ = userResponse ?? throw new InvalidHTTPResponseException("Roblox API for User Details returned invalid data");
 
-            // we can remove '-headshot' from the url if we want a full avatar picture
             var thumbnailResponse = await Http.GetJson<ApiArrayResponse<ThumbnailResponse>>(thumbnailsUrl);
-
             if (thumbnailResponse is null || !thumbnailResponse.Data.Any())
                 throw new InvalidHTTPResponseException("Roblox API for Thumbnails returned invalid data");
 
@@ -38,7 +34,6 @@ namespace Froststrap.Models.Entities
             };
 
             Cache.Add(details);
-
             return details;
         }
     }

@@ -2,17 +2,10 @@
 
 namespace Froststrap.Integrations
 {
-    public class ActivityWatcher : IDisposable
+    internal class ActivityWatcher : IDisposable
     {
         private const string GameMessageEntry = "[FLog::CreatorOutput] [BloxstrapRPC]";
         private const string GameJoiningEntry = "[FLog::Output] ! Joining game";
-
-        // these entries are technically volatile!
-        // they only get printed depending on their configured FLog level, which could change at any time
-        // while levels being changed is fairly rare, please limit the number of varying number of FLog types you have to use, if possible
-
-        // TODO: enums exist for a reason.
-
         private const string GameTeleportingEntry = "[FLog::UgcExperienceController] UgcExperienceController: doTeleport: joinScriptUrl";
         private const string GameLaunchEventEntry = "[FLog::NewWebView2Browser] Webview handles hybrid javascript event";
         private const string GameJoiningUniverseEntry = "[FLog::GameJoinLoadTime] Report game_join_loadtime:";
@@ -39,10 +32,10 @@ namespace Froststrap.Integrations
         private const string GameDisconnectReasonPattern = @"Sending disconnect with reason: (\d+)";
         private const string GameServerUptimePattern = @"Server Prefix:.+_(\d{8}T\d{6}Z)_RCC_[0-9a-z]+";
 
-        private int _logEntriesRead = 0;
-        private bool _teleportMarker = false;
-        private bool _reservedTeleportMarker = false;
-        private bool _shouldAutoRejoin = false;
+        private int _logEntriesRead;
+        private bool _teleportMarker;
+        private bool _reservedTeleportMarker;
+        private bool _shouldAutoRejoin;
 
         private static readonly string GameHistoryCachePath = Path.Combine(Paths.Cache, "GameHistory.json");
 
@@ -69,9 +62,9 @@ namespace Froststrap.Integrations
 
         public string LogLocation = null!;
 
-        public bool InGame = false;
-        public bool InStudioPlace = false;
-        public bool InRobloxStudio = false;
+        public bool InGame;
+        public bool InStudioPlace;
+        public bool InRobloxStudio;
 
         private const int HttpPort = 4875;
         private HttpListener? _httpListener;
@@ -84,7 +77,7 @@ namespace Froststrap.Integrations
         /// </summary>
         public List<ActivityData> History = [];
 
-        public bool IsDisposed = false;
+        public bool IsDisposed;
 
         public static void CloseProcess(int pid)
         {
@@ -124,17 +117,6 @@ namespace Froststrap.Integrations
 
         public async void Start()
         {
-            // okay, here's the process:
-            //
-            // - tail the latest log file from %localappdata%\roblox\logs
-            // - check for specific lines to determine player's game activity as shown below:
-            //
-            // - get the place id, job id and machine address from '! Joining game '{{JOBID}}' place {{PLACEID}} at {{MACHINEADDRESS}}' entry
-            // - confirm place join with 'serverId: {{MACHINEADDRESS}}|{{MACHINEPORT}}' entry
-            // - check for leaves/disconnects with 'Time to disconnect replication data: {{TIME}}' entry
-            //
-            // we'll tail the log file continuously, monitoring for any log entries that we need to determine the current game activity
-
             FileInfo logFileInfo;
 
             if (String.IsNullOrEmpty(LogLocation))
@@ -143,10 +125,6 @@ namespace Froststrap.Integrations
 
                 if (!Directory.Exists(logDirectory))
                     return;
-
-                // we need to make sure we're fetching the absolute latest log file
-                // if roblox doesn't start quickly enough, we can wind up fetching the previous log file
-                // good rule of thumb is to find a log file that was created in the last 15 seconds or so
 
                 App.Logger.Info("Opening Roblox log file...");
 
@@ -210,8 +188,6 @@ namespace Froststrap.Integrations
 
             _logEntriesRead += 1;
 
-            // debug stats to ensure that the log reader is working correctly
-            // if more than 1000 log entries have been read, only log per 100 to save on spam
             if (_logEntriesRead <= 1000 && _logEntriesRead % 50 == 0)
                 App.Logger.Info($"Read {_logEntriesRead} log entries");
             else if (_logEntriesRead % 100 == 0)
@@ -250,7 +226,7 @@ namespace Froststrap.Integrations
             if (tokenIndex >= 0)
                 return entry[tokenIndex..];
 
-            int logMessageIdx = entry.IndexOf(' ');
+            int logMessageIdx = entry.IndexOf(' ', StringComparison.Ordinal);
             if (logMessageIdx == -1)
                 return null;
 
@@ -259,16 +235,14 @@ namespace Froststrap.Integrations
 
         private void ProcessStudioLogEntry(string logMessage)
         {
-            // incase this got called and InRobloxStudio is still false
             if (!InRobloxStudio)
             {
                 InRobloxStudio = true;
             }
 
-            // i need to find more logs stuff for studio lowkey
             if (!InStudioPlace)
             {
-                if (logMessage.StartsWith(StudioPlaceOpenEntry))
+                if (logMessage.StartsWith(StudioPlaceOpenEntry, StringComparison.Ordinal))
                 {
                     App.Logger.Info("Studio place opened");
                     InStudioPlace = true;
@@ -278,7 +252,7 @@ namespace Froststrap.Integrations
             }
             else if (InStudioPlace)
             {
-                if (logMessage.StartsWith(StudioPlaceCloseEntry))
+                if (logMessage.StartsWith(StudioPlaceCloseEntry, StringComparison.Ordinal))
                 {
                     App.Logger.Info("Studio place closed");
                     InStudioPlace = false;
@@ -290,7 +264,9 @@ namespace Froststrap.Integrations
 
         private async void ProcessPlayerLogEntry(string logMessage)
         {
-            if (logMessage.StartsWith(GameLeavingEntry) || logMessage.StartsWith(GameLeavingEntrySober) || logMessage.StartsWith(AppCloseEntrySober))
+            if (logMessage.StartsWith(GameLeavingEntry, StringComparison.Ordinal) ||
+                logMessage.StartsWith(GameLeavingEntrySober, StringComparison.Ordinal) ||
+                logMessage.StartsWith(AppCloseEntrySober, StringComparison.Ordinal))
             {
                 App.Logger.Debug("User is back into the desktop app");
 
@@ -305,12 +281,12 @@ namespace Froststrap.Integrations
                 return;
             }
 
-            if (logMessage.StartsWith(GameDisconnectReasonEntry))
+            if (logMessage.StartsWith(GameDisconnectReasonEntry, StringComparison.Ordinal))
             {
                 var match = Regex.Match(logMessage, GameDisconnectReasonPattern);
                 if (match.Success && match.Groups.Count == 2)
                 {
-                    int reasonCode = int.Parse(match.Groups[1].Value);
+                    int reasonCode = int.Parse(match.Groups[1].Value, CultureInfo.InvariantCulture);
 
                     if (reasonCode == 1)
                     {
@@ -331,9 +307,7 @@ namespace Froststrap.Integrations
 
             if (!InGame && Data.PlaceId == 0)
             {
-                // We are not in a game, nor are in the process of joining one
-
-                if (logMessage.StartsWith(GameJoiningEntry))
+                if (logMessage.StartsWith(GameJoiningEntry, StringComparison.Ordinal))
                 {
                     Match match = Regex.Match(logMessage, GameJoiningEntryPattern);
 
@@ -344,7 +318,7 @@ namespace Froststrap.Integrations
                     }
 
                     InGame = false;
-                    Data.PlaceId = long.Parse(match.Groups[2].Value);
+                    Data.PlaceId = long.Parse(match.Groups[2].Value, CultureInfo.InvariantCulture);
                     Data.JobId = match.Groups[1].Value;
                     Data.MachineAddress = match.Groups[3].Value;
 
@@ -362,9 +336,9 @@ namespace Froststrap.Integrations
 
                     App.Logger.Info($"Joining Game ({Data})");
                 }
-                else if (logMessage.StartsWith(GameLaunchEventEntry))
+                else if (logMessage.StartsWith(GameLaunchEventEntry, StringComparison.Ordinal))
                 {
-                    int jsonStart = logMessage.IndexOf('{');
+                    int jsonStart = logMessage.IndexOf('{', StringComparison.Ordinal);
                     string jsonString = logMessage[jsonStart..];
                     using JsonDocument doc = JsonDocument.Parse(jsonString);
                     if (doc.RootElement.TryGetProperty("params", out JsonElement paramsElement) && paramsElement.TryGetProperty("request", out JsonElement requestElement))
@@ -387,21 +361,18 @@ namespace Froststrap.Integrations
             }
             else if (!InGame && Data.PlaceId != 0)
             {
-                // We are not confirmed to be in a game, but we are in the process of joining one
-
-                if (logMessage.Contains(GameJoiningUniverseEntry))
+                if (logMessage.Contains(GameJoiningUniverseEntry, StringComparison.Ordinal))
                 {
-                    // on linux the log goes referalpage, userid then universe id, on windows its diffrent, thats why we split all these
                     var universeMatch = Regex.Match(logMessage, GameJoiningUniversePattern, RegexOptions.IgnoreCase);
                     if (universeMatch.Success)
                     {
-                        Data.UniverseId = Int64.Parse(universeMatch.Groups[1].Value);
+                        Data.UniverseId = long.Parse(universeMatch.Groups[1].Value, CultureInfo.InvariantCulture);
                     }
 
                     var userMatch = Regex.Match(logMessage, GameJoiningUniverseUserIDPattern, RegexOptions.IgnoreCase);
                     if (userMatch.Success)
                     {
-                        Data.UserId = Int64.Parse(userMatch.Groups[1].Value);
+                        Data.UserId = long.Parse(userMatch.Groups[1].Value, CultureInfo.InvariantCulture);
                     }
 
                     if (Data.UniverseId == 0)
@@ -430,7 +401,7 @@ namespace Froststrap.Integrations
                         }
                     }
                 }
-                else if (logMessage.StartsWith(GameJoiningUDMUXEntry))
+                else if (logMessage.StartsWith(GameJoiningUDMUXEntry, StringComparison.Ordinal))
                 {
                     var match = Regex.Match(logMessage, GameJoiningUDMUXPattern);
 
@@ -450,9 +421,9 @@ namespace Froststrap.Integrations
 
                     App.Logger.Info($"Server is UDMUX protected ({Data})");
                 }
-                else if (logMessage.StartsWith(GameJoinedEntry))
+                else if (logMessage.StartsWith(GameJoinedEntry, StringComparison.Ordinal))
                 {
-                    if (logMessage.Contains("UNASSIGNED_SYSTEM_ADDRESS"))
+                    if (logMessage.Contains("UNASSIGNED_SYSTEM_ADDRESS", StringComparison.Ordinal))
                         return;
 
                     Match match = Regex.Match(logMessage, GameJoinedEntryPattern);
@@ -479,9 +450,7 @@ namespace Froststrap.Integrations
             }
             else if (InGame && Data.PlaceId != 0)
             {
-                // We are confirmed to be in a game
-
-                if (logMessage.StartsWith(GameDisconnectedEntry))
+                if (logMessage.StartsWith(GameDisconnectedEntry, StringComparison.Ordinal))
                 {
                     App.Logger.Info($"Disconnected from Game ({Data})");
 
@@ -500,8 +469,6 @@ namespace Froststrap.Integrations
                         if (_shouldAutoRejoin)
                         {
                             autoRejoinData.RejoinServer(false);
-
-                            // we use this because can you imagine having 5 accs open and we close all of them cuz 1 dced ?
                             CloseProcess(_robloxPID);
                         }
                         else
@@ -512,13 +479,13 @@ namespace Froststrap.Integrations
 
                     _shouldAutoRejoin = false;
                 }
-                else if (logMessage.StartsWith(GameTeleportingEntry))
+                else if (logMessage.StartsWith(GameTeleportingEntry, StringComparison.Ordinal))
                 {
                     App.Logger.Info($"Initiating teleport to server ({Data})");
                     _teleportMarker = true;
 
                     var joinTypeMatch = Regex.Match(logMessage, GameTeleportJoinTypePattern);
-                    if (joinTypeMatch.Success && int.TryParse(joinTypeMatch.Groups[1].Value, out int joinTypeId))
+                    if (joinTypeMatch.Success && int.TryParse(joinTypeMatch.Groups[1].Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int joinTypeId))
                     {
                         var joinType = (ServerSessionJoinType)joinTypeId;
                         App.Logger.Info($"Teleport JoinTypeId: {joinTypeId}");
@@ -532,7 +499,7 @@ namespace Froststrap.Integrations
                     else
                         App.Logger.Error("Failed to detect teleport type");
                 }
-                else if (logMessage.StartsWith(GameMessageEntry))
+                else if (logMessage.StartsWith(GameMessageEntry, StringComparison.Ordinal))
                 {
                     var match = Regex.Match(logMessage, GameMessageEntryPattern);
 
@@ -608,7 +575,7 @@ namespace Froststrap.Integrations
 
                     LastRPCRequest = DateTime.Now;
                 }
-                else if (logMessage.StartsWith(GameServerUptimeEntry))
+                else if (logMessage.StartsWith(GameServerUptimeEntry, StringComparison.Ordinal))
                 {
                     Match match = Regex.Match(logMessage, GameServerUptimePattern);
 
@@ -843,6 +810,7 @@ namespace Froststrap.Integrations
             IsDisposed = true;
             if (InRobloxStudio)
                 StopHTTPServer();
+            _httpCancellationTokenSource?.Dispose();
             GC.SuppressFinalize(this);
         }
     }

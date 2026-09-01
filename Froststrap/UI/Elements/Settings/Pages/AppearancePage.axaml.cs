@@ -5,7 +5,7 @@ using Froststrap.UI.ViewModels.Settings;
 
 namespace Froststrap.UI.Elements.Settings.Pages;
 
-public partial class AppearancePage : UserControl
+internal partial class AppearancePage : UserControl
 {
     public AppearancePage()
     {
@@ -14,7 +14,7 @@ public partial class AppearancePage : UserControl
         App.FrostRPC?.SetPage("Appearance");
     }
 
-    private bool _isWindowsBackdropInitialized = false;
+    private bool _isWindowsBackdropInitialized;
 
     private async void WindowsBackdropChangeSelectionChanged(object sender, SelectionChangedEventArgs e)
     {

@@ -18,7 +18,7 @@ using Avalonia.Controls.Shapes;
 
 namespace Froststrap.UI.Elements.Settings
 {
-    public partial class MainWindow : Base.AvaloniaWindow
+    internal partial class MainWindow : Base.AvaloniaWindow
     {
         protected override bool ApplyTopPadding => false;
         public static MainWindow? Instance { get; private set; }
@@ -287,7 +287,7 @@ namespace Froststrap.UI.Elements.Settings
         private static Control? ResolveViewForViewModel(object viewModel)
         {
             var viewModelName = viewModel.GetType().Name;
-            var viewName = viewModelName.Replace("ViewModel", "");
+            var viewName = viewModelName.Replace("ViewModel", "", StringComparison.Ordinal);
 
             var viewTypeNames = new[]
             {

@@ -12,17 +12,17 @@ using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
-    public record NavigationPaneDisplayModeChangedMessage(NavigationViewPaneDisplayMode NewMode);
-    public record NavigationEntry(string PageId, string Title, string Description, object ViewModel, ObservableCollection<BreadcrumbItemModel>? Breadcrumbs);
+    internal record NavigationPaneDisplayModeChangedMessage(NavigationViewPaneDisplayMode NewMode);
+    internal record NavigationEntry(string PageId, string Title, string Description, object ViewModel, ObservableCollection<BreadcrumbItemModel>? Breadcrumbs);
 
-    public class BreadcrumbItemModel
+    internal class BreadcrumbItemModel
     {
         public string Content { get; set; } = string.Empty;
         public string? Tag { get; set; }
         public bool IsLast { get; set; }
     }
 
-    public class MainWindowViewModel : ObservableObject
+    internal class MainWindowViewModel : ObservableObject
     {
         private object? _currentPage;
         public object? CurrentPage

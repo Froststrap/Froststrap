@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Models.FroststrapStudioRPC
 {
-    public class StudioRichPresence
+    internal class StudioRichPresence
     {
         [JsonPropertyName("details")]
         public string Details { get; set; } = "";

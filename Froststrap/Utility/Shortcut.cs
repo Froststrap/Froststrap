@@ -64,7 +64,7 @@ namespace Froststrap.Utility
         {
             if (OperatingSystem.IsLinux())
                 return Path.ChangeExtension(lnkPath, ".desktop");
-            if (OperatingSystem.IsMacOS() && !lnkPath.EndsWith(".app"))
+            if (OperatingSystem.IsMacOS() && !lnkPath.EndsWith(".app", StringComparison.Ordinal))
                 return lnkPath + ".app";
             return lnkPath;
         }
@@ -279,7 +279,7 @@ namespace Froststrap.Utility
         // idk if these will work at all
         private static void CreateMacOsShortcut(string exePath, string exeArgs, string appBundlePath)
         {
-            if (!appBundlePath.EndsWith(".app"))
+            if (!appBundlePath.EndsWith(".app", StringComparison.OrdinalIgnoreCase))
                 appBundlePath += ".app";
 
             string contentsDir = Path.Combine(appBundlePath, "Contents");

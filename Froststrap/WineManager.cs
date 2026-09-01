@@ -1,6 +1,6 @@
 ﻿namespace Froststrap;
 
-public class WineManager(string baseWineDir)
+internal class WineManager(string baseWineDir)
 {
     private readonly string _wineRoot = Path.Combine(baseWineDir, "kombucha");
     private readonly string _prefixDir = Path.Combine(baseWineDir, "prefixes", "studio");
@@ -40,7 +40,7 @@ public class WineManager(string baseWineDir)
                 psi.EnvironmentVariables[kv.Key] = kv.Value;
 
         using var process = Process.Start(psi);
-        _ = process ?? throw new Exception($"Failed to start Wine with {exePath}");
+        _ = process ?? throw new InvalidOperationException($"Failed to start Wine with {exePath}");
         await process.WaitForExitAsync(cancellationToken);
         return process.ExitCode;
     }
@@ -72,7 +72,7 @@ public class WineManager(string baseWineDir)
         var lines = output.Split('\n');
         foreach (var line in lines)
         {
-            if (line.Contains(valueName) && line.Contains("REG_SZ"))
+            if (line.Contains(valueName, StringComparison.Ordinal) && line.Contains("REG_SZ", StringComparison.Ordinal))
             {
                 var parts = line.Split([' ', '\t'], StringSplitOptions.RemoveEmptyEntries);
                 if (parts.Length >= 3)
@@ -113,7 +113,7 @@ public class WineManager(string baseWineDir)
                 psi.EnvironmentVariables[kv.Key] = kv.Value;
 
         using var process = Process.Start(psi);
-        _ = process ?? throw new Exception($"Failed to start Wine with {exePath}");
+        _ = process ?? throw new InvalidOperationException($"Failed to start Wine with {exePath}");
         var output = await process.StandardOutput.ReadToEndAsync(cancellationToken);
         await process.WaitForExitAsync(cancellationToken);
         return (process.ExitCode, output);

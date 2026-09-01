@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Models
 {
-    public class GameHistoryEntry
+    internal class GameHistoryEntry
     {
         [JsonPropertyName("universeId")]
         public long UniverseId { get; set; }

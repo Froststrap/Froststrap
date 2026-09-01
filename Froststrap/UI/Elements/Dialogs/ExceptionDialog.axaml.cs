@@ -4,7 +4,7 @@ using System.Web;
 
 namespace Froststrap.UI.Elements.Dialogs
 {
-    public partial class ExceptionDialog : Base.AvaloniaWindow
+    internal partial class ExceptionDialog : Base.AvaloniaWindow
     {
         const int MAX_GITHUB_URL_LENGTH = 8192;
 
@@ -40,13 +40,13 @@ namespace Froststrap.UI.Elements.Dialogs
                     issueUrl = $"{repoUrl}/issues/new?template=bug_report.yaml";
             }
 
-            string helpMessage = String.Format(Strings.Dialog_Exception_Info_2, wikiUrl, issueUrl);
+            string helpMessage = String.Format(CultureInfo.InvariantCulture, Strings.Dialog_Exception_Info_2, wikiUrl, issueUrl);
 
             if (!App.IsActionBuild)
-                helpMessage = String.Format(Strings.Dialog_Exception_Info_2_Alt, wikiUrl);
+                helpMessage = String.Format(CultureInfo.InvariantCulture, Strings.Dialog_Exception_Info_2_Alt, wikiUrl);
 
             HelpMessageMarkdown.MarkdownText = helpMessage;
-            VersionText.Text = String.Format(Strings.Menu_About_Version, App.Version);
+            VersionText.Text = String.Format(CultureInfo.InvariantCulture, Strings.Menu_About_Version, App.Version);
 
             ReportExceptionButton.Click += (_, _) => Utilities.ShellExecute(issueUrl);
 
@@ -88,12 +88,12 @@ namespace Froststrap.UI.Elements.Dialogs
             var sb = new StringBuilder();
 
             if (!inner)
-                sb.AppendLine($"{exception.GetType()}: {exception.Message}");
+                sb.AppendLine(CultureInfo.InvariantCulture, $"{exception.GetType()}: {exception.Message}");
             else
-                sb.AppendLine($"[Inner Exception]\n{exception.GetType()}: {exception.Message}");
+                sb.AppendLine(CultureInfo.InvariantCulture, $"[Inner Exception]\n{exception.GetType()}: {exception.Message}");
 
             if (exception.StackTrace != null)
-                sb.AppendLine($"\nStack Trace:\n{exception.StackTrace}");
+                sb.AppendLine(CultureInfo.InvariantCulture, $"\nStack Trace:\n{exception.StackTrace}");
 
             if (exception.InnerException != null)
             {
@@ -107,12 +107,12 @@ namespace Froststrap.UI.Elements.Dialogs
         private static void AddExceptionToBuilder(Exception exception, StringBuilder sb, bool inner = false)
         {
             if (inner)
-                sb.AppendLine($"[Inner Exception]\n{exception.GetType()}: {exception.Message}");
+                sb.AppendLine(CultureInfo.InvariantCulture, $"[Inner Exception]\n{exception.GetType()}: {exception.Message}");
             else
-                sb.AppendLine($"{exception.GetType()}: {exception.Message}");
+                sb.AppendLine(CultureInfo.InvariantCulture, $"{exception.GetType()}: {exception.Message}");
 
             if (exception.StackTrace != null)
-                sb.AppendLine($"\nStack Trace:\n{exception.StackTrace}");
+                sb.AppendLine(CultureInfo.InvariantCulture, $"\nStack Trace:\n{exception.StackTrace}");
 
             if (exception.InnerException != null)
             {

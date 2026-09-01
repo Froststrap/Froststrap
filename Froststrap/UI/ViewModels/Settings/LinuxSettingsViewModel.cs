@@ -4,7 +4,7 @@ using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
-    public class LinuxSettingsViewModel : NotifyPropertyChangedViewModel
+    internal class LinuxSettingsViewModel : NotifyPropertyChangedViewModel
     {
         public static bool SoberEnabled => App.SoberSettings.Loaded;
 
@@ -98,7 +98,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
             catch (Exception ex)
             {
-                _ = Frontend.ShowMessageBox(string.Format(Strings.Menu_LinuxSettings_FailedToStartWineCfg, ex.Message), MessageBoxImage.Error);
+                _ = Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Menu_LinuxSettings_FailedToStartWineCfg, ex.Message), MessageBoxImage.Error);
             }
         }
 
@@ -172,7 +172,7 @@ namespace Froststrap.UI.ViewModels.Settings
         public ObservableCollection<EnvEntry> StudioEnvEntries { get; set; }
         public ICommand AddStudioEnvCommand { get; }
 
-        public class EnvEntry : NotifyPropertyChangedViewModel
+        internal class EnvEntry : NotifyPropertyChangedViewModel
         {
             private string _key;
             private string _value;

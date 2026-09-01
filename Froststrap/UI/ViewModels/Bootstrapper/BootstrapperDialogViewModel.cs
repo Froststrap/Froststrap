@@ -4,7 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace Froststrap.UI.ViewModels.Bootstrapper
 {
-    public class BootstrapperDialogViewModel : NotifyPropertyChangedViewModel
+    internal class BootstrapperDialogViewModel : NotifyPropertyChangedViewModel
     {
         private readonly IBootstrapperDialog _dialog;
 
@@ -14,13 +14,13 @@ namespace Froststrap.UI.ViewModels.Bootstrapper
         public IImage Icon { get; set; } = App.Settings.Prop.BootstrapperIcon.GetIcon().GetImageSource();
         public string Message { get; set; } = "Please wait...";
         public bool ProgressIndeterminate { get; set; } = true;
-        public int ProgressMaximum { get; set; } = 0;
-        public int ProgressValue { get; set; } = 0;
+        public int ProgressMaximum { get; set; }
+        public int ProgressValue { get; set; }
 
         public TaskbarItemProgressState TaskbarProgressState { get; set; } = TaskbarItemProgressState.Indeterminate;
-        public double TaskbarProgressValue { get; set; } = 0;
+        public double TaskbarProgressValue { get; set; }
 
-        public bool CancelEnabled { get; set; } = false;
+        public bool CancelEnabled { get; set; }
         public bool CancelButtonVisible => CancelEnabled;
 
         [Obsolete("Do not use this! This is for the designer only.", true)]

@@ -3,7 +3,7 @@ using Avalonia.Media;
 
 namespace Froststrap.UI.Utility
 {
-    public static class Rendering
+    internal static class Rendering
     {
         public static double GetTextWidth(TextBlock textBlock)
         {

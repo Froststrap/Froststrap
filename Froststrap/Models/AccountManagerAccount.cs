@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Models
 {
-    public record AccountManagerAccount
+    internal record AccountManagerAccount
     {
         public string SecurityToken { get; init; }
         public long UserId { get; init; }

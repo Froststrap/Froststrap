@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Enums.Messagebox
 {
-    public enum MessageBoxImage
+    internal enum MessageBoxImage
     {
         None,
         Error,

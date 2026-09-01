@@ -6,7 +6,7 @@ using Avalonia.Layout;
 
 namespace Froststrap.UI.Elements.Controls
 {
-    public class CardExpander : ContentControl
+    internal class CardExpander : ContentControl
     {
         public static readonly StyledProperty<object?> HeaderProperty =
             AvaloniaProperty.Register<CardExpander, object?>(nameof(Header));

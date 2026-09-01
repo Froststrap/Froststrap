@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Models
 {
-    public class DatacentersCache
+    internal class DatacentersCache
     {
         [JsonPropertyName("regions")]
         public Dictionary<string, List<int>> Regions { get; set; } = [];

@@ -2,11 +2,17 @@
 
 namespace Froststrap.Utility
 {
-    public static class MD5Hash
+    internal static class SHA256Hash
     {
         public static string FromBytes(byte[] data)
         {
-            byte[] hash = MD5.HashData(data);
+            byte[] hash = SHA256.HashData(data);
+            return Stringify(hash);
+        }
+
+        public static string FromBytes(ReadOnlySpan<byte> data)
+        {
+            byte[] hash = SHA256.HashData(data);
             return Stringify(hash);
         }
 
@@ -14,7 +20,7 @@ namespace Froststrap.Utility
         {
             stream.Seek(0, SeekOrigin.Begin);
 
-            byte[] hash = MD5.HashData(stream);
+            byte[] hash = SHA256.HashData(stream);
             return Stringify(hash);
         }
 

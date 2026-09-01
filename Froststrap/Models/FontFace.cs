@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Models
 {
-    public class FontFace
+    internal class FontFace
     {
         [JsonPropertyName("name")]
         public string Name { get; set; } = null!;

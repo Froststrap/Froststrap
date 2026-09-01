@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Models.SettingTasks
 {
-    public class EnumModPresetTask<T> : EnumBaseTask<T> where T : struct, Enum
+    internal class EnumModPresetTask<T> : EnumBaseTask<T> where T : struct, Enum
     {
         private readonly Dictionary<T, Dictionary<string, ModPresetFileData>> _fileDataMap = [];
 

@@ -5,7 +5,7 @@ namespace Froststrap.Models.Entities
     /// <summary>
     /// Explicit loading. Load from cache before and after a fetch.
     /// </summary>
-    public class UniverseDetails
+    internal class UniverseDetails
     {
         private static List<UniverseDetails> Cache { get; set; } = [];
 
@@ -21,7 +21,7 @@ namespace Froststrap.Models.Entities
             return Cache.FirstOrDefault(x => x.Data?.Id == id);
         }
 
-        public static Task FetchSingle(long id) => FetchBulk(id.ToString());
+        public static Task FetchSingle(long id) => FetchBulk(id.ToString(CultureInfo.InvariantCulture));
 
         public static async Task FetchBulk(string ids)
         {
@@ -46,7 +46,7 @@ namespace Froststrap.Models.Entities
 
             foreach (string strId in ids.Split(','))
             {
-                long id = long.Parse(strId);
+                long id = long.Parse(strId, CultureInfo.InvariantCulture);
 
                 Cache.Add(new UniverseDetails
                 {

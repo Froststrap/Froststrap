@@ -8,7 +8,7 @@ using FontFamily = Avalonia.Media.FontFamily;
 
 namespace Froststrap.UI.Elements.Bootstrapper
 {
-    public partial class CustomDialog
+    internal partial class CustomDialog
     {
         private struct GetImageSourceDataResult
         {
@@ -43,7 +43,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
                     return (T)converter.ConvertFromInvariantString(attribute.Value)!;
                 }
 
-                return (T)Convert.ChangeType(attribute.Value, typeof(T));
+                return (T)Convert.ChangeType(attribute.Value, typeof(T), CultureInfo.InvariantCulture);
             }
             catch
             {
@@ -82,18 +82,18 @@ namespace Froststrap.UI.Elements.Bootstrapper
         {
             string value = element.Attribute("FontWeight")?.Value ?? "Normal";
 
-            return value.ToLowerInvariant() switch
+            return value.ToUpperInvariant() switch
             {
-                "thin" => FontWeight.Thin,
-                "extralight" or "ultralight" => FontWeight.ExtraLight,
-                "light" => FontWeight.Light,
-                "normal" or "regular" => FontWeight.Normal,
-                "medium" => FontWeight.Medium,
-                "demibold" or "semibold" => FontWeight.SemiBold,
-                "bold" => FontWeight.Bold,
-                "extrabold" or "ultrabold" => FontWeight.ExtraBold,
-                "black" or "heavy" => FontWeight.Black,
-                "extrablack" or "ultrablack" => FontWeight.ExtraBlack,
+                "THIN" => FontWeight.Thin,
+                "EXTRALIGHT" or "ULTRALIGHT" => FontWeight.ExtraLight,
+                "LIGHT" => FontWeight.Light,
+                "NORMAL" or "REGULAR" => FontWeight.Normal,
+                "MEDIUM" => FontWeight.Medium,
+                "DEMIBOLD" or "SEMIBOLD" => FontWeight.SemiBold,
+                "BOLD" => FontWeight.Bold,
+                "EXTRABOLD" or "ULTRABOLD" => FontWeight.ExtraBold,
+                "BLACK" or "HEAVY" => FontWeight.Black,
+                "EXTRABLACK" or "ULTRABLACK" => FontWeight.ExtraBlack, //i just noticed ExtraBlack was mispelled :joy:
                 _ => throw new CustomThemeException("CustomTheme.Errors.UnknownEnumValue", element.Name, "FontWeight", value)
             };
         }
@@ -102,11 +102,11 @@ namespace Froststrap.UI.Elements.Bootstrapper
         {
             string value = element.Attribute("FontStyle")?.Value ?? "Normal";
 
-            return value.ToLowerInvariant() switch
+            return value.ToUpperInvariant() switch
             {
-                "normal" => FontStyle.Normal,
-                "italic" => FontStyle.Italic,
-                "oblique" => FontStyle.Oblique,
+                "NORMAL" => FontStyle.Normal,
+                "ITALIC" => FontStyle.Italic,
+                "OBLIQUE" => FontStyle.Oblique,
                 _ => throw new CustomThemeException("CustomTheme.Errors.UnknownEnumValue", element.Name, "FontStyle", value)
             };
         }
@@ -117,12 +117,12 @@ namespace Froststrap.UI.Elements.Bootstrapper
             if (string.IsNullOrEmpty(value))
                 return null;
 
-            return value.ToLowerInvariant() switch
+            return value.ToUpperInvariant() switch
             {
-                "underline" => TextDecorations.Underline,
-                "strikethrough" => TextDecorations.Strikethrough,
-                "overline" => TextDecorations.Overline,
-                "baseline" => TextDecorations.Baseline,
+                "UNDERLINE" => TextDecorations.Underline,
+                "STRIKETHROUGH" => TextDecorations.Strikethrough,
+                "OVERLINE" => TextDecorations.Overline,
+                "BASELINE" => TextDecorations.Baseline,
                 _ => throw new CustomThemeException("CustomTheme.Errors.UnknownEnumValue", element.Name, "TextDecorations", value)
             };
         }
@@ -136,14 +136,14 @@ namespace Froststrap.UI.Elements.Bootstrapper
             if (resourceName == "Version")
                 return App.Version;
 
-            return Strings.ResourceManager.GetStringSafe(resourceName);
+            return Strings.ResourceManager.GetString(resourceName, CultureInfo.CurrentCulture) ?? resourceName;
         }
 
         private static string? GetFullPath(CustomDialog dialog, string? sourcePath)
         {
             if (sourcePath == null) return null;
 
-            if (sourcePath.StartsWith("file://"))
+            if (sourcePath.StartsWith("file://", StringComparison.Ordinal))
             {
                 string pathWithoutFile = sourcePath["file://".Length..];
                 if (pathWithoutFile.StartsWith('/'))
@@ -154,7 +154,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
                 return Path.GetFullPath(pathWithoutFile);
             }
 
-            if (sourcePath.StartsWith("theme://"))
+            if (sourcePath.StartsWith("theme://", StringComparison.Ordinal))
             {
                 string relativePath = sourcePath["theme://".Length..];
                 string fullPath = Path.Combine(dialog.ThemeDir, relativePath);
@@ -269,9 +269,9 @@ namespace Froststrap.UI.Elements.Bootstrapper
 
                 try
                 {
-                    string key = "fonts:froststrap-" + Convert.ToHexString(MD5.HashData(Encoding.UTF8.GetBytes(path)));
+                    string key = "fonts:froststrap-" + Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(path)));
 
-                    var collection = new EmbeddedFontCollection(new Uri(key, UriKind.Absolute), new Uri(path, UriKind.Absolute));
+                    using var collection = new EmbeddedFontCollection(new Uri(key, UriKind.Absolute), new Uri(path, UriKind.Absolute));
                     FontManager.Current.AddFontCollection(collection);
 
                     string? familyName = collection.Select(f => f.Name).FirstOrDefault();
@@ -290,11 +290,11 @@ namespace Froststrap.UI.Elements.Bootstrapper
 
         private static string? FindFontFamilyInDirectory(string directory, string familyName)
         {
-            string lowerName = familyName.ToLowerInvariant();
+            string upperName = familyName.ToUpperInvariant();
 
             foreach (var ext in _fontFileExtensions)
             {
-                string candidate = Path.Combine(directory, lowerName + ext);
+                string candidate = Path.Combine(directory, upperName + ext);
                 if (File.Exists(candidate))
                     return LoadSingleFontFile(candidate)?.Reference;
             }
@@ -338,9 +338,9 @@ namespace Froststrap.UI.Elements.Bootstrapper
                 return true;
 
             string ext = Path.GetExtension(locationPart);
-            return ext.Equals(".ttf", StringComparison.OrdinalIgnoreCase) ||
-                   ext.Equals(".otf", StringComparison.OrdinalIgnoreCase) ||
-                   ext.Equals(".ttc", StringComparison.OrdinalIgnoreCase);
+            return ext.Equals(".TTF", StringComparison.OrdinalIgnoreCase) ||
+                   ext.Equals(".OTF", StringComparison.OrdinalIgnoreCase) ||
+                   ext.Equals(".TTC", StringComparison.OrdinalIgnoreCase);
         }
 
         private static string? ResolveFontFileSegment(CustomDialog dialog, string segment)

@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Enums
 {
-    public enum NextAction
+    internal enum NextAction
     {
         Terminate,
         LaunchSettings,

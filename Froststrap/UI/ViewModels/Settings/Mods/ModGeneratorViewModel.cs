@@ -13,7 +13,7 @@ using Color = Avalonia.Media.Color;
 
 namespace Froststrap.UI.ViewModels.Settings.Mods
 {
-    public partial class ModGeneratorViewModel : NotifyPropertyChangedViewModel
+    internal partial class ModGeneratorViewModel : NotifyPropertyChangedViewModel
     {
         private Color _solidColor = Colors.White;
 
@@ -81,10 +81,10 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             }
         }
 
-        private double _progress = 0;
+        private double _progress;
         public double Progress { get => _progress; set => SetProperty(ref _progress, value); }
 
-        private bool _isProgressVisible = false;
+        private bool _isProgressVisible;
         public bool IsProgressVisible { get => _isProgressVisible; set => SetProperty(ref _isProgressVisible, value); }
 
         private bool _isNotGeneratingMod = true;
@@ -101,13 +101,13 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
         private string _statusText = "";
         public string StatusText { get => _statusText; set => SetProperty(ref _statusText, value); }
 
-        private bool _colorCursors = false;
+        private bool _colorCursors;
         public bool ColorCursors { get => _colorCursors; set => SetProperty(ref _colorCursors, value); }
 
-        private bool _colorShiftlock = false;
+        private bool _colorShiftlock;
         public bool ColorShiftlock { get => _colorShiftlock; set => SetProperty(ref _colorShiftlock, value); }
 
-        private bool _colorEmoteWheel = false;
+        private bool _colorEmoteWheel;
         public bool ColorEmoteWheel { get => _colorEmoteWheel; set => SetProperty(ref _colorEmoteWheel, value); }
 
         private bool _includeModifications = true;
@@ -197,7 +197,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             }
         }
 
-        private bool _dontColorPlayIcon = false;
+        private bool _dontColorPlayIcon;
         public bool DontColorPlayIcon
         {
             get => _dontColorPlayIcon;
@@ -627,7 +627,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                         }
 
                         Progress = 100;
-                        StatusText = string.Format(Strings.Menu_ModGenerator_AppliedModifications, copiedFiles);
+                        StatusText = string.Format(CultureInfo.InvariantCulture, Strings.Menu_ModGenerator_AppliedModifications, copiedFiles);
                     }
                     else
                     {
@@ -648,7 +648,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                             {
                                 ModGenerator.ZipResult(TempRoot, file.Path.LocalPath);
                                 Progress = 100;
-                                StatusText = string.Format(Strings.Menu_ModGenerator_SavedTo, Path.GetFileName(file.Path.LocalPath));
+                                StatusText = string.Format(CultureInfo.InvariantCulture, Strings.Menu_ModGenerator_SavedTo, Path.GetFileName(file.Path.LocalPath));
                             }
                             else
                             {

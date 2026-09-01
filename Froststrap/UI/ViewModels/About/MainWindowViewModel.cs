@@ -1,9 +1,8 @@
 using CommunityToolkit.Mvvm.Input;
-using Froststrap.UI.ViewModels.Onboarding;
 
 namespace Froststrap.UI.ViewModels.About
 {
-    public partial class MainWindowViewModel : NotifyPropertyChangedViewModel
+    internal partial class MainWindowViewModel : NotifyPropertyChangedViewModel
     {
         private object? _currentPage;
         public object? CurrentPage

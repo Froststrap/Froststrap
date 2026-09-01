@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Models.APIs.Roblox
 {
-    public class PrivateServerData
+    internal class PrivateServerData
     {
         [JsonPropertyName("vipServerId")]
         public long VipServerId { get; set; }

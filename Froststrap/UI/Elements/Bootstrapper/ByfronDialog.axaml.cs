@@ -7,7 +7,7 @@ using Froststrap.UI.ViewModels.Bootstrapper;
 
 namespace Froststrap.UI.Elements.Bootstrapper
 {
-    public partial class ByfronDialog : AvaloniaDialogBase
+    internal partial class ByfronDialog : AvaloniaDialogBase
     {
         private readonly ByfronDialogViewModel _viewModel;
 

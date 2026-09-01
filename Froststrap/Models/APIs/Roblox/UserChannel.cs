@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Models.APIs.Roblox
 {
-    public class UserChannel
+    internal class UserChannel
     {
         [JsonPropertyName("channelName")]
         public string Channel { get; set; } = "production";

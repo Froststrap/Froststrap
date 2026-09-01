@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Models
 {
-    public class GameJoinData
+    internal class GameJoinData
     {
         public GameJoinType JoinType = GameJoinType.Unknown;
 

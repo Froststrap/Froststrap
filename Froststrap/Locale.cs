@@ -2,15 +2,14 @@
 using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Styling;
-using Froststrap.UI.Elements.Base;
 
 namespace Froststrap
 {
-    public static class Locale
+    internal static class Locale
     {
         public static CultureInfo CurrentCulture { get; private set; } = CultureInfo.InvariantCulture;
 
-        public static bool RightToLeft { get; private set; } = false;
+        public static bool RightToLeft { get; private set; }
 
         private static readonly List<string> _rtlLocales = ["ar", "he"];
 
@@ -102,7 +101,7 @@ namespace Froststrap
             {
                 window.FlowDirection = FlowDirection.RightToLeft;
             }
-            else if (CurrentCulture.Name.StartsWith("th"))
+            else if (CurrentCulture.Name.StartsWith("th", StringComparison.Ordinal))
             {
                 Application.Current?.Resources["ContentFontFamily"] =
                     new Avalonia.Media.FontFamily("Noto Sans Thai");
