@@ -37,7 +37,7 @@ namespace Froststrap.Utility
         /// <summary>
         /// Registers Roblox Player protocols for Froststrap
         /// </summary>
-        public static void RegisterPlayer() => RegisterPlayer(Paths.Application, "-player \"%1\"");
+        public static void RegisterPlayer() => RegisterPlayer(Paths.Process, "-player \"%1\"");
 
         public static void RegisterPlayer(string handler, string handlerParam)
         {
@@ -56,8 +56,8 @@ namespace Froststrap.Utility
             if (!OperatingSystem.IsWindows())
                 return;
 
-            RegisterStudioProtocol(Paths.Application, "-studio \"%1\"");
-            RegisterStudioFileClass(Paths.Application, "-studio \"%1\"");
+            RegisterStudioProtocol(Paths.Process, "-studio \"%1\"");
+            RegisterStudioFileClass(Paths.Process, "-studio \"%1\"");
             RegisterStudioFileTypes();
         }
 
