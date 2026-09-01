@@ -28,8 +28,8 @@ body:
     id: os
     attributes:
       label: Operating System
-      description: "What OS are you using?"
-      placeholder: "E.g. Windows 11 25H2, macOS Tahoe 26.6.2"
+      description: "Build number, version, and type. E.g Windows 22H2, macOS Tahoe 26.6.2, or Ubuntu 24.04"
+      placeholder: "Windows 11 22H2"
     validations:
       required: true
   - type: textarea
