@@ -228,6 +228,12 @@ namespace Froststrap.UI.Elements.ContextMenu
         {
             if (ActivityWatcher is null) return;
 
+            Backend.NativeNotify.SendMessage(
+                "Searching for server",
+                "Looking for the best server in your region...",
+                5
+            );
+
             using var fetcher = new RobloxServerFetcher();
             await fetcher.JoinBestServerAsync(
                 ActivityWatcher.Data.PlaceId,
