@@ -28,6 +28,8 @@ namespace Froststrap.UI.Elements.Settings
         private static Models.Persistable.WindowState State => App.State.Prop.SettingsWindow;
         private readonly MainWindowViewModel? _viewModel;
 
+        public NextAction CloseAction => _viewModel?.CloseAction ?? NextAction.Terminate;
+
         private bool _isIndexingMissing;
         private readonly HashSet<string> _indexedPageTags = [];
         private readonly SearchIndexBuilder _searchIndexBuilder = new();
@@ -742,11 +744,6 @@ namespace Froststrap.UI.Elements.Settings
         private void MainWindow_Closed(object? sender, EventArgs e)
         {
             NotificationManager = null;
-
-            if (App.LaunchSettings.TestModeFlag.Active)
-                LaunchHandler.LaunchRoblox(LaunchMode.Player);
-            else
-                App.SoftTerminate();
 
             App.Logger.Info("Settings window closed");
         }
