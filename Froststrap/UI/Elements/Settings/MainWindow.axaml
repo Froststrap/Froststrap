@@ -118,12 +118,12 @@
             </ui:FANavigationView.MenuItems>
 
             <ui:FANavigationView.FooterMenuItems>
-				<ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_About_Title}" Tag="about">
-					<ui:FANavigationViewItem.Icon>
-						<ic:Lucide Icon="CircleAlert" />
-					</ui:FANavigationViewItem.Icon>
-				</ui:FANavigationViewItem>
-			</ui:FANavigationView.FooterMenuItems>
+                <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_About_Title}" Tag="about">
+                    <ui:FANavigationViewItem.Icon>
+                        <ic:Lucide Icon="CircleAlert" />
+                    </ui:FANavigationViewItem.Icon>
+                </ui:FANavigationViewItem>
+            </ui:FANavigationView.FooterMenuItems>
 
             <ui:FANavigationView.Content>
                 <Grid RowDefinitions="Auto,*">
