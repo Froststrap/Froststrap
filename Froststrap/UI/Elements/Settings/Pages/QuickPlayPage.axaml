@@ -263,7 +263,7 @@
                             <Grid ColumnDefinitions="*, Auto">
                                 <StackPanel Orientation="Horizontal" Spacing="10">
                                     <ic:Lucide Icon="Layers" Height="18" Width="18" />
-                                    <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_AvailableSubplaces}" FontWeight="Bold" Height="18" Width="18" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_AvailableSubplaces}" FontWeight="Bold" VerticalAlignment="Center"/>
                                 </StackPanel>
                                 <Button Grid.Column="1" Command="{Binding CloseSubplacesCommand}" Background="Transparent" BorderThickness="0">
                                     <ic:Lucide Icon="X" Height="16" Width="16" />
@@ -337,7 +337,7 @@
                             <Grid ColumnDefinitions="*, Auto">
                                 <StackPanel Orientation="Horizontal" Spacing="10">
                                     <ic:Lucide Icon="LockKeyholeOpen" Height="18" Width="18" />
-                                    <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_PrivateServers}" FontWeight="Bold" Height="18" Width="18" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_PrivateServers}" FontWeight="Bold" VerticalAlignment="Center"/>
                                 </StackPanel>
                                 <Button Grid.Column="1" Command="{Binding ClosePrivateServersCommand}" Background="Transparent" BorderThickness="0">
                                     <ic:Lucide Icon="X" Height="16" Width="16" />
