@@ -1,13 +1,14 @@
 name: Synchronize Translations
 
-# on:
-#   push:
-#     branches: ["**"]
-#   workflow_dispatch:
+on:
+  push:
+  #   branches: ["**"]
+  # workflow_dispatch:
 
 jobs:
   translate:
     runs-on: ubuntu-latest
+    if: false
     permissions:
       contents: write
       pull-requests: write
