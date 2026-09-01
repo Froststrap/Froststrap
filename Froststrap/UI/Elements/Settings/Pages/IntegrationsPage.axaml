@@ -15,14 +15,18 @@
 
     <ScrollViewer>
         <StackPanel Margin="14">
+            <TextBlock
+                FontSize="20"
+                FontWeight="Bold"
+                Text="{x:Static resources:Strings.Menu_Integrations_ActivityTracking}"
+            />
 
-            <TextBlock FontSize="20"
-                       FontWeight="Bold"
-                       Text="{x:Static resources:Strings.Menu_Integrations_ActivityTracking}" />
-
-            <controls:MarkdownTextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                        MarkdownText="{x:Static resources:Strings.Menu_Integrations_ActivityTracking_Description}"
-                                        TextWrapping="Wrap" />
+            <controls:MarkdownTextBlock
+                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                MarkdownText="{x:Static resources:Strings.Menu_Integrations_ActivityTracking_Description}"
+                TextWrapping="Wrap"
+                Margin="0,2,0,10"
+            />
 
             <controls:OptionControl
                 x:Name="ActivityTrackingOption"
@@ -157,17 +161,23 @@
                 </StackPanel>
             </controls:CardExpander>
 
-            <Separator IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}" Margin="0,8" />
+            <Separator IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}" Margin="0,12" />
 
-            <TextBlock IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}"
-                       FontSize="20"
-                       FontWeight="Bold"
-                       Text="{x:Static resources:Strings.Common_DiscordRichPresence}" />
+            <TextBlock
+                IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}"
+                FontSize="20"
+                FontWeight="Bold"
+                Text="{x:Static resources:Strings.Common_DiscordRichPresence}"
+                Margin="0,10,0,0"
+            />
 
-            <controls:MarkdownTextBlock IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}"
-                                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                        MarkdownText="{Binding Source={x:Static resources:Strings.Menu_Integrations_RequiresActivityTracking}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://github.com/bloxstraplabs/bloxstrap/wiki/What-is-activity-tracking%3F#discord-rich-presence'}"
-                                        TextWrapping="Wrap" />
+            <controls:MarkdownTextBlock
+                IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}"
+                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                MarkdownText="{Binding Source={x:Static resources:Strings.Menu_Integrations_RequiresActivityTracking}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://github.com/bloxstraplabs/bloxstrap/wiki/What-is-activity-tracking%3F#discord-rich-presence'}"
+                TextWrapping="Wrap"
+                Margin="0,2,0,10"
+            />
 
             <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}"
                                     Description="{x:Static resources:Strings.Menu_Integrations_FroststrapRPC_Description}"
@@ -177,13 +187,14 @@
 
             <TextBlock IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}"
                        FontSize="20"
-                       Margin="0,16,0,0"
                        FontWeight="Bold"
+                       Margin="0,10,0,0"
                        Text="{x:Static resources:Strings.Common_Player}" />
 
             <controls:MarkdownTextBlock IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}"
                                         Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                                         MarkdownText="{x:Static resources:Strings.Menu_Integrations_RPC_Player_Description}"
+                                        Margin="0,2,0,10"
                                         TextWrapping="Wrap" />
 
             <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}"
@@ -268,15 +279,17 @@
                 <ToggleSwitch IsChecked="{Binding StudioGameButton, Mode=TwoWay}" />
             </controls:OptionControl>
 
-            <Separator Margin="0,8,0,8" />
+            <Separator Margin="0,12" />
 
             <TextBlock
                 FontSize="20"
                 FontWeight="Bold"
+                Margin="0,16,0,0"
                 Text="{x:Static resources:Strings.Menu_Integrations_Custom_Title}" />
             <TextBlock
                 Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                 Text="{x:Static resources:Strings.Menu_Integrations_Custom_Description}"
+                Margin="0,2,0,10"
                 TextWrapping="Wrap" />
 
             <Grid MinHeight="325" Margin="0,8,0,0" RowDefinitions="*, Auto" ColumnDefinitions="250, *">
