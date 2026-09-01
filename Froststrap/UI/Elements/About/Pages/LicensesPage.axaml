@@ -119,10 +119,22 @@
                                CommandParameter="https://github.com/NLog/NLog" />
 
                 <ui:CardAction Margin="4" Icon="Copyright"
-                               Header="notify_rust"
-                               Description="MIT OR Apache-2.0"
+                               Header="objc2"
+                               Description="Zlib OR Apache-2.0 OR MIT License"
                                Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
-                               CommandParameter="https://github.com/hoodie/notify-rust" />
+                               CommandParameter="https://github.com/madsmtm/objc2" />
+
+                <ui:CardAction Margin="4" Icon="Copyright"
+                               Header="zbus"
+                               Description="MIT License"
+                               Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+                               CommandParameter="https://github.com/z-galaxy/zbus" />
+
+                <ui:CardAction Margin="4" Icon="Copyright"
+                               Header="windows_rs"
+                               Description="Apache-2.0 OR MIT License"
+                               Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+                               CommandParameter="https://github.com/microsoft/windows-rs" />
             </UniformGrid>
         </StackPanel>
     </ScrollViewer>
