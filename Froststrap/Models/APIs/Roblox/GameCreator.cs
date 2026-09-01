@@ -4,7 +4,7 @@
     /// Roblox.Games.Api.Models.Response.GameCreator
     /// Response model for getting the game creator
     /// </summary>
-    public class GameCreator
+    internal class GameCreator
     {
         /// <summary>
         /// The game creator id

@@ -22,10 +22,10 @@
                     break;
 
                 foreach (var item in remainingRequests)
-                    item.Data.RequestId = item.OriginalIndex.ToString();
+                    item.Data.RequestId = item.OriginalIndex.ToString(CultureInfo.InvariantCulture);
 
                 var currentPayloadData = remainingRequests.Select(x => x.Data).ToList();
-                var payload = new StringContent(JsonSerializer.Serialize(currentPayloadData));
+                using var payload = new StringContent(JsonSerializer.Serialize(currentPayloadData));
 
                 Uri apiUrl = UrlBuilder.BuildApiUrl("thumbnails", "v1/batch");
 
@@ -36,7 +36,7 @@
 
                 foreach (var item in json.Data)
                 {
-                    int originalIndex = int.Parse(item.RequestId!);
+                    int originalIndex = int.Parse(item.RequestId!, CultureInfo.InvariantCulture);
 
                     if (item.State == "Completed")
                     {

@@ -5,7 +5,7 @@ using Froststrap.UI.ViewModels.Bootstrapper;
 
 namespace Froststrap.UI.Elements.Bootstrapper
 {
-    public partial class ClassicFluentDialog : AvaloniaDialogBase
+    internal partial class ClassicFluentDialog : AvaloniaDialogBase
     {
         private readonly ClassicFluentDialogViewModel _viewModel;
 

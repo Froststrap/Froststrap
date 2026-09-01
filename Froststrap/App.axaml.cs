@@ -12,7 +12,7 @@ using System.Security.Cryptography;
 
 namespace Froststrap;
 
-public partial class App : Application
+internal partial class App : Application
 {
     private const string MockReleaseTagEnvironmentVariable = "MOCK_RELEASE_TAG";
     private const string MockCurrentVersionEnvironmentVariable = "MOCK_CURRENT_VERSION";
@@ -94,7 +94,7 @@ public partial class App : Application
 
     public static readonly HttpClient HttpClient = new(new HttpClientLoggingHandler(new HttpClientHandler { AutomaticDecompression = DecompressionMethods.All }));
 
-    private static bool _showingExceptionDialog = false;
+    private static bool _showingExceptionDialog;
     private static readonly Lock ActivationLock = new();
     private static string? _pendingActivationUri;
     private static bool _launchArgsProcessed;
@@ -437,7 +437,7 @@ public partial class App : Application
             }
 
             NLog.GlobalDiagnosticsContext.Set("logRoot", Paths.Logs);
-            NLog.GlobalDiagnosticsContext.Set("startTime", DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss"));
+            NLog.GlobalDiagnosticsContext.Set("startTime", DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss", CultureInfo.InvariantCulture));
 
             Logger.Debug($"Starting {ProjectName} v{Version}");
             Logger.Debug($"OS Description: {RuntimeInformation.OSDescription}");
@@ -456,7 +456,7 @@ public partial class App : Application
 #if QA_BUILD
             userAgent.Append(" (QA)");
 #else
-                userAgent.Append($" (Build {Convert.ToBase64String(Encoding.UTF8.GetBytes(BuildMetadata.Machine))})");
+                userAgent.Append(string.Format(CultureInfo.InvariantCulture, " (Build {0})", Convert.ToBase64String(Encoding.UTF8.GetBytes(BuildMetadata.Machine))));
 #endif
             }
 
@@ -478,7 +478,7 @@ public partial class App : Application
             {
                 if (OperatingSystem.IsLinux() || OperatingSystem.IsMacOS())
                 {
-                    string escapedProcessPath = Paths.Process.Replace("\"", "\\\"");
+                    string escapedProcessPath = Paths.Process.Replace("\"", "\\\"", StringComparison.Ordinal);
                     string launcherScript = $"#!/bin/sh\nexec \"{escapedProcessPath}\" \"$@\"\n";
 
                     bool needsUpdate = !File.Exists(Paths.Application)
@@ -548,7 +548,7 @@ public partial class App : Application
             lock (ActivationLock)
                 _launchArgsProcessed = true;
 
-            LaunchHandler.ProcessLaunchArgs();
+            await LaunchHandler.ProcessLaunchArgs();
         }
 
         base.OnFrameworkInitializationCompleted();

@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Models.APIs.Roblox
 {
-    public class RecentlyVisitedGame
+    internal class RecentlyVisitedGame
     {
         [JsonPropertyName("universeId")]
         public long UniverseId { get; set; }

@@ -1,8 +1,8 @@
 ﻿namespace Froststrap.UI.ViewModels.About
 {
-    public class AboutViewModel : NotifyPropertyChangedViewModel
+    internal class AboutViewModel : NotifyPropertyChangedViewModel
     {
-        public static string Version => string.Format(Strings.Menu_About_Version, App.Version);
+        public static string Version => string.Format(CultureInfo.InvariantCulture, Strings.Menu_About_Version, App.Version);
 
         public static BuildMetadataAttribute BuildMetadata => App.BuildMetadata;
 

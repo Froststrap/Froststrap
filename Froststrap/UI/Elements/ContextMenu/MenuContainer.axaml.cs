@@ -7,7 +7,7 @@ using Froststrap.Integrations;
 
 namespace Froststrap.UI.Elements.ContextMenu
 {
-    public partial class MenuContainer : Base.AvaloniaWindow
+    internal partial class MenuContainer : Base.AvaloniaWindow
     {
         private readonly Watcher? _watcher;
         private ActivityWatcher? ActivityWatcher => _watcher?.ActivityWatcher;
@@ -19,7 +19,7 @@ namespace Froststrap.UI.Elements.ContextMenu
         private readonly TimeSpan _accumulatedTotalPlaytime = TimeSpan.Zero;
 
         private DispatcherTimer? _playtimeTimer;
-        private DateTime? _studioPlaceJoinTime = null;
+        private DateTime? _studioPlaceJoinTime;
 
         private NativeMenuItem? VersionMenuItem;
         private NativeMenuItem? PlaytimeMenuItem;
@@ -228,7 +228,7 @@ namespace Froststrap.UI.Elements.ContextMenu
         {
             if (ActivityWatcher is null) return;
 
-            var fetcher = new RobloxServerFetcher();
+            using var fetcher = new RobloxServerFetcher();
             await fetcher.JoinBestServerAsync(
                 ActivityWatcher.Data.PlaceId,
                 App.Settings.Prop.BestRegionAmounts,

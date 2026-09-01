@@ -2,10 +2,10 @@
 
 namespace Froststrap.Models
 {
-    public class ModConfig : NotifyPropertyChangedViewModel
+    internal class ModConfig : NotifyPropertyChangedViewModel
     {
         private string _folderName = "";
-        private int _priority = 0;
+        private int _priority;
         private ModTarget _target = ModTarget.Both;
         private bool _enabled = true;
 

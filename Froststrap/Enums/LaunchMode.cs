@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Enums
 {
-    public enum LaunchMode
+    internal enum LaunchMode
     {
         None,
         /// <summary>

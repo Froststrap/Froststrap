@@ -2,7 +2,7 @@
 
 namespace Froststrap.UI.Elements.Dialogs
 {
-    public partial class ManualCookieDialog : Base.AvaloniaWindow
+    internal partial class ManualCookieDialog : Base.AvaloniaWindow
     {
         public ManualCookieDialogViewModel ViewModel { get; }
 

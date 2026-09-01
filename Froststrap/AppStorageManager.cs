@@ -1,6 +1,6 @@
 ﻿namespace Froststrap;
 
-public class AppStorageManager : JsonManager<Dictionary<string, object>>
+internal class AppStorageManager : JsonManager<Dictionary<string, object>>
 {
     private static readonly JsonSerializerOptions _writeOptions = new() { WriteIndented = true, Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
     private static readonly JsonSerializerOptions _readOptions = new() { ReadCommentHandling = JsonCommentHandling.Skip, AllowTrailingCommas = true };

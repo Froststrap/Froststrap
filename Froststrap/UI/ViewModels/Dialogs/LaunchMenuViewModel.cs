@@ -3,7 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace Froststrap.UI.ViewModels.Dialogs
 {
-    public class LaunchMenuViewModel : NotifyPropertyChangedViewModel
+    internal class LaunchMenuViewModel : NotifyPropertyChangedViewModel
     {
         private LaunchMode _selectedLaunchMode = LaunchMode.Player;
         public LaunchMode SelectedLaunchMode
@@ -89,6 +89,6 @@ namespace Froststrap.UI.ViewModels.Dialogs
             CloseWindowRequest?.Invoke(this, action);
         }
 
-        public static string Version => string.Format(Strings.Menu_About_Version, App.Version);
+        public static string Version => string.Format(CultureInfo.InvariantCulture, Strings.Menu_About_Version, App.Version);
     }
 }

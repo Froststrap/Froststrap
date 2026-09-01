@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Models
 {
-    public class CommunityModCacheInfo
+    internal class CommunityModCacheInfo
     {
         public string Url { get; set; } = null!;
         public DateTime LastUpdated { get; set; }

@@ -14,7 +14,7 @@ using System.Xml.Linq;
 
 namespace Froststrap.UI.Elements.Bootstrapper
 {
-    public partial class CustomDialog
+    internal partial class CustomDialog
     {
         private readonly List<Image> _animatedImages = [];
 
@@ -66,7 +66,9 @@ namespace Froststrap.UI.Elements.Bootstrapper
             };
         }
 
+#pragma warning disable CA1859 //i aint doing all that for 1 singular warning
         private static object HandleXmlElement_DropShadowEffect(CustomDialog dialog, XElement xmlElement)
+#pragma warning restore CA1859
         {
             double blurRadius = ParseXmlAttribute<double>(xmlElement, "BlurRadius", 5);
             double direction = ParseXmlAttribute<double>(xmlElement, "Direction", 315);
@@ -285,7 +287,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
             if (name != null)
             {
                 if (dialog.UsedNames.Contains(name))
-                    throw new Exception($"{xmlElement.Name} has duplicate name {name}");
+                    throw new InvalidOperationException($"{xmlElement.Name} has duplicate name {name}");
 
                 dialog.UsedNames.Add(name);
 
@@ -323,17 +325,17 @@ namespace Froststrap.UI.Elements.Bootstrapper
             string? visibility = xmlElement.Attribute("Visibility")?.Value;
             if (!string.IsNullOrEmpty(visibility))
             {
-                switch (visibility.ToLower())
+                switch (visibility.ToUpperInvariant())
                 {
-                    case "collapsed":
+                    case "COLLAPSED":
                         uiElement.IsVisible = false;
                         break;
-                    case "hidden":
+                    case "HIDDEN":
                         uiElement.IsVisible = true;
                         uiElement.Opacity = 0;
                         uiElement.IsHitTestVisible = false;
                         break;
-                    case "visible":
+                    case "VISIBLE":
                     default:
                         uiElement.IsVisible = true;
                         break;
@@ -347,13 +349,8 @@ namespace Froststrap.UI.Elements.Bootstrapper
 
             if (uiElement is TemplatedControl templatedControl)
             {
-                object? padding = GetThicknessFromXElement(xmlElement, "Padding");
-                if (padding != null)
-                    templatedControl.Padding = (Thickness)padding;
-
-                object? borderThickness = GetThicknessFromXElement(xmlElement, "BorderThickness");
-                if (borderThickness != null)
-                    templatedControl.BorderThickness = (Thickness)borderThickness;
+                templatedControl.Padding = GetThicknessFromXElement(xmlElement, "Padding").GetValueOrDefault();
+                templatedControl.BorderThickness = GetThicknessFromXElement(xmlElement, "BorderThickness").GetValueOrDefault();
 
                 ApplyBrush_UIElement(dialog, templatedControl, "Foreground", TemplatedControl.ForegroundProperty, xmlElement);
                 ApplyBrush_UIElement(dialog, templatedControl, "Background", TemplatedControl.BackgroundProperty, xmlElement);
@@ -482,7 +479,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
 
         private static Control HandleXmlElement_BloxstrapCustomBootstrapper_Fake(CustomDialog dialog, XElement xmlElement)
         {
-            throw new Exception($"{xmlElement.Parent!.Name} cannot have a child of {xmlElement.Name}");
+            throw new InvalidOperationException($"{xmlElement.Parent!.Name} cannot have a child of {xmlElement.Name}");
         }
 
         private static DummyControl HandleXmlElement_TitleBar(CustomDialog dialog, XElement xmlElement)
@@ -557,13 +554,8 @@ namespace Froststrap.UI.Elements.Bootstrapper
 
             progressBar.IsIndeterminate = ParseXmlAttribute<bool>(xmlElement, "IsIndeterminate", false);
 
-            object? cornerRadius = GetCornerRadiusFromXElement(xmlElement, "CornerRadius");
-            if (cornerRadius != null)
-                ProgressBarHelper.SetCornerRadius(progressBar, (CornerRadius)cornerRadius);
-
-            object? indicatorCornerRadius = GetCornerRadiusFromXElement(xmlElement, "IndicatorCornerRadius");
-            if (indicatorCornerRadius != null)
-                ProgressBarHelper.SetIndicatorCornerRadius(progressBar, (CornerRadius)indicatorCornerRadius);
+            ProgressBarHelper.SetCornerRadius(progressBar, GetCornerRadiusFromXElement(xmlElement, "CornerRadius").GetValueOrDefault());
+            ProgressBarHelper.SetIndicatorCornerRadius(progressBar, GetCornerRadiusFromXElement(xmlElement, "IndicatorCornerRadius").GetValueOrDefault());
 
             if (xmlElement.Attribute("Name")?.Value == "PrimaryProgressBar")
             {
@@ -628,9 +620,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
 
             ApplyFontFamily(dialog, textBlock, xmlElement);
 
-            object? padding = GetThicknessFromXElement(xmlElement, "Padding");
-            if (padding != null)
-                textBlock.Padding = (Thickness)padding;
+            textBlock.Padding = GetThicknessFromXElement(xmlElement, "Padding").GetValueOrDefault();
         }
 
         private static TextBlock HandleXmlElement_TextBlock(CustomDialog dialog, XElement xmlElement)
@@ -772,7 +762,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
 
                     HandleXmlElement_Grid_ColumnDefinitions(grid, dialog, element);
                 }
-                else if (element.Name.ToString().StartsWith("Grid."))
+                else if (element.Name.ToString().StartsWith("Grid.", StringComparison.Ordinal))
                 {
                     continue;
                 }
@@ -808,19 +798,14 @@ namespace Froststrap.UI.Elements.Bootstrapper
 
             HandleXmlElement_FrameworkElement(dialog, border, xmlElement);
 
-            object? padding = GetThicknessFromXElement(xmlElement, "Padding");
-            if (padding != null) border.Padding = (Thickness)padding;
-
-            object? borderThickness = GetThicknessFromXElement(xmlElement, "BorderThickness");
-            if (borderThickness != null) border.BorderThickness = (Thickness)borderThickness;
-
-            object? cornerRadius = GetCornerRadiusFromXElement(xmlElement, "CornerRadius");
-            if (cornerRadius != null) border.CornerRadius = (CornerRadius)cornerRadius;
+            border.Padding = GetThicknessFromXElement(xmlElement, "Padding").GetValueOrDefault();
+            border.BorderThickness = GetThicknessFromXElement(xmlElement, "BorderThickness").GetValueOrDefault();
+            border.CornerRadius = GetCornerRadiusFromXElement(xmlElement, "CornerRadius").GetValueOrDefault();
 
             ApplyBrush_UIElement(dialog, border, "Background", Avalonia.Controls.Border.BackgroundProperty, xmlElement);
             ApplyBrush_UIElement(dialog, border, "BorderBrush", Avalonia.Controls.Border.BorderBrushProperty, xmlElement);
 
-            var childElements = xmlElement.Elements().Where(e => !e.Name.LocalName.Contains('.')).ToList();
+            var childElements = xmlElement.Elements().Where(e => !e.Name.LocalName.Contains('.', StringComparison.Ordinal)).ToList();
             var firstChild = childElements.FirstOrDefault();
             if (firstChild != null)
             {

@@ -3,7 +3,7 @@ using Avalonia.Controls;
 
 namespace Froststrap.UI.Elements.Bootstrapper
 {
-    public partial class CustomDialog
+    internal partial class CustomDialog
     {
         const int Version = 1;
 
@@ -11,7 +11,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
 
         private const int MaxElements = 150;
 
-        private bool _initialised = false;
+        private bool _initialised;
 
         // prevent users from creating elements with the same name multiple times
         private readonly List<string> UsedNames = [];
@@ -70,7 +70,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
 
         private static void AddXml(CustomDialog dialog, XElement xmlElement)
         {
-            if (xmlElement.Name.ToString().Contains('.'))
+            if (xmlElement.Name.ToString().Contains('.', StringComparison.Ordinal))
                 return; // not an xml element (it's a property element like Grid.RowDefinitions)
 
             var control = HandleXml<Control>(dialog, xmlElement);

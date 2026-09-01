@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Models.APIs.GitHub
 {
-    public class GithubRelease
+    internal class GithubRelease
     {
         [JsonPropertyName("tag_name")]
         public string TagName { get; set; } = null!;

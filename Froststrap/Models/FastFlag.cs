@@ -3,7 +3,7 @@ using LucideAvalonia.Enum;
 
 namespace Froststrap.Models
 {
-    public class FastFlag : NotifyPropertyChangedViewModel
+    internal class FastFlag : NotifyPropertyChangedViewModel
     {
         // public bool Enabled { get; set; }
         private LucideIconNames _preset = LucideIconNames.CircleCheck;

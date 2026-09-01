@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Enums.FlagPresets
 {
-    public enum TextureQuality
+    internal enum TextureQuality
     {
         [EnumName(FromTranslation = "Enums.TextureQuality.Default")]
         Default,

@@ -8,7 +8,7 @@ using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.ContextMenu;
 
-public class ServerInformationViewModel : NotifyPropertyChangedViewModel
+internal class ServerInformationViewModel : NotifyPropertyChangedViewModel
 {
     private ActivityWatcher? _activityWatcher;
     private string _serverType = string.Empty;
@@ -16,7 +16,7 @@ public class ServerInformationViewModel : NotifyPropertyChangedViewModel
     private string _accessCode = string.Empty;
     private string _location = string.Empty;
     private string _uptime = string.Empty;
-    private bool _hasServerData = false;
+    private bool _hasServerData;
 
     private DispatcherTimer? _uptimeTimer;
     private bool _isTimerRunning;

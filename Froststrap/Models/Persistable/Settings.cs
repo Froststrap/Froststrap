@@ -2,44 +2,44 @@
 
 namespace Froststrap.Models.Persistable
 {
-    public class Settings
+    internal class Settings
     {
 
         // Integration Page
         public bool EnableActivityTracking { get; set; } = true;
         public bool ShowServerDetails { get; set; } = true;
         public bool ShowServerUptime { get; set; } = true;
-        public bool AutoRejoin { get; set; } = false;
+        public bool AutoRejoin { get; set; }
         public bool ShowGameHistoryMenu { get; set; } = true;
         public bool PlaytimeCounter { get; set; } = true;
         public TrayDoubleClickAction DoubleClickAction { get; set; } = TrayDoubleClickAction.ServerInfo;
-        public bool UseDisableAppPatch { get; set; } = false;
+        public bool UseDisableAppPatch { get; set; }
         public bool AutoChangeTitle { get; set; } = true;
         public bool AutoChangeTitleWithPlayerCount { get; set; } = true;
-        public bool AutoChangeIcon { get; set; } = false;
+        public bool AutoChangeIcon { get; set; }
         public bool ShowUsingFroststrapRPC { get; set; } = true;
         public bool UseDiscordRichPresence { get; set; } = true;
         public bool HideRPCButtons { get; set; } = true;
         public bool EnableCustomStatusDisplay { get; set; } = true;
-        public bool ShowAccountOnRichPresence { get; set; } = false;
-        public bool StudioRPC { get; set; } = false;
-        public bool StudioThumbnailChanging { get; set; } = false;
-        public bool StudioEditingInfo { get; set; } = false;
-        public bool StudioWorkspaceInfo { get; set; } = false;
-        public bool StudioShowTesting { get; set; } = false;
-        public bool StudioGameButton { get; set; } = false;
+        public bool ShowAccountOnRichPresence { get; set; }
+        public bool StudioRPC { get; set; }
+        public bool StudioThumbnailChanging { get; set; }
+        public bool StudioEditingInfo { get; set; }
+        public bool StudioWorkspaceInfo { get; set; }
+        public bool StudioShowTesting { get; set; }
+        public bool StudioGameButton { get; set; }
         public ObservableCollection<CustomIntegration> CustomIntegrations { get; set; } = [];
 
         // Bootstrapper Page
         public bool ConfirmLaunches { get; set; } = true;
-        public bool AllowCookieAccess { get; set; } = false;
-        public bool AutoCloseCrashHandler { get; set; } = false;
+        public bool AllowCookieAccess { get; set; }
+        public bool AutoCloseCrashHandler { get; set; }
         public CleanerOptions CleanerOptions { get; set; } = CleanerOptions.Never;
         public List<string> CleanerDirectories { get; set; } = [];
-        public bool BackgroundUpdatesEnabled { get; set; } = false;
-        public bool SoftKeyEnabled { get; set; } = false;
+        public bool BackgroundUpdatesEnabled { get; set; }
+        public bool SoftKeyEnabled { get; set; }
         public SoftKeyProfile SoftKeyProfile { get; set; } = SoftKeyProfile.WASD;
-        public bool EnableBetterMatchmaking { get; set; } = false;
+        public bool EnableBetterMatchmaking { get; set; }
         public string SelectedServerSortOrder { get; set; } = "BestLatency";
         public int BestRegionAmounts { get; set; } = 5;
         public int MaxServerCheck { get; set; } = 25;
@@ -52,7 +52,7 @@ namespace Froststrap.Models.Persistable
 
         // Appearance Page
         public BootstrapperStyle BootstrapperStyle { get; set; } = BootstrapperStyle.FluentAeroDialog;
-        public string? SelectedCustomTheme { get; set; } = null;
+        public string? SelectedCustomTheme { get; set; }
         public bool CycleEnabled { get; set; }
         public CycleFrequency CycleFrequency { get; set; } = CycleFrequency.EveryLaunch;
         public int CycleIntervalValue { get; set; } = 1;
@@ -85,13 +85,13 @@ namespace Froststrap.Models.Persistable
         public bool UpdateRoblox { get; set; } = true;
         public bool AutomaticallyUpdateSober { get; set; } = true;
         public string RobloxDomain { get; set; } = RobloxInterfaces.Deployment.DefaultRobloxDomain;
-        public bool StaticDirectory { get; set; } = false;
+        public bool StaticDirectory { get; set; }
         public string PlayerChannel { get; set; } = RobloxInterfaces.Deployment.DefaultChannel;
         public string StudioChannel { get; set; } = RobloxInterfaces.Deployment.DefaultChannel;
         public ChannelChangeMode ChannelChangeMode { get; set; } = ChannelChangeMode.Prompt;
-        public bool StudioVersionOverrideEnabled { get; set; } = false;
+        public bool StudioVersionOverrideEnabled { get; set; }
         public string StudioVersionOverrideHash { get; set; } = string.Empty;
-        public bool PlayerVersionOverrideEnabled { get; set; } = false;
+        public bool PlayerVersionOverrideEnabled { get; set; }
         public string PlayerVersionOverrideHash { get; set; } = string.Empty;
 
         // Linux Settings page
@@ -99,12 +99,12 @@ namespace Froststrap.Models.Persistable
         public string? StudioVirtualDesktop { get; set; } = string.Empty;
         public string? StudioLauncher { get; set; } = string.Empty;
         public StudioRenderer StudioRenderer { get; set; } = StudioRenderer.DXVK;
-        public bool StudioGameMode { get; set; } = false;
-        public bool StudioDebug { get; set; } = false;
+        public bool StudioGameMode { get; set; }
+        public bool StudioDebug { get; set; }
         public Dictionary<string, string> StudioEnvironmentVariables { get; set; } = [];
 
         // Misc Stuff
-        public bool ForceLocalData { get; set; } = false;
-        public bool DebugDisableVersionPackageCleanup { get; set; } = false;
+        public bool ForceLocalData { get; set; }
+        public bool DebugDisableVersionPackageCleanup { get; set; }
     }
 }

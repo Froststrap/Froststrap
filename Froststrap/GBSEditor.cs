@@ -4,7 +4,7 @@ using System.Xml.XPath;
 
 namespace Froststrap
 {
-    public class GBSEditor
+    internal class GBSEditor
     {
         public XDocument? Document { get; set; } = null!;
 
@@ -66,7 +66,7 @@ namespace Froststrap
             { PlayerListLayOut.x1, "1" }
         };
 
-        public bool Loaded { get; set; } = false;
+        public bool Loaded { get; set; }
 
         public static string FileLocation => OperatingSystem.IsLinux() ?
                 Path.Combine(Paths.Roblox, "data", "sober", "appData", "GlobalBasicSettings_13.xml") :
@@ -79,7 +79,7 @@ namespace Froststrap
         private string ComputeHash()
         {
             if (Document == null) return string.Empty;
-            return MD5Hash.FromString(Document.ToString());
+            return SHA256Hash.FromString(Document.ToString());
         }
 
         public bool HasUnsavedChanges
@@ -93,7 +93,7 @@ namespace Froststrap
 
         public void SetPreset(string prefix, object? value)
         {
-            foreach (var pair in PresetPaths.Where(x => x.Key.StartsWith(prefix)))
+            foreach (var pair in PresetPaths.Where(x => x.Key.StartsWith(prefix, StringComparison.Ordinal)))
                 SetValue(pair.Value, value);
         }
 

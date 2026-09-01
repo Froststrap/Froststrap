@@ -1,6 +1,6 @@
 namespace Froststrap;
 
-public class SoberSettingsManager : JsonManager<Dictionary<string, object>>
+internal class SoberSettingsManager : JsonManager<Dictionary<string, object>>
 {
     private static readonly JsonSerializerOptions _writeOptions = new() { WriteIndented = true };
     private static readonly JsonSerializerOptions _readOptions = new() { ReadCommentHandling = JsonCommentHandling.Skip, AllowTrailingCommas = true };
@@ -70,8 +70,8 @@ public class SoberSettingsManager : JsonManager<Dictionary<string, object>>
             return val switch
             {
                 bool b => b ? "true" : "false",
-                int i => i.ToString(),
-                long l => l.ToString(),
+                int i => i.ToString(CultureInfo.InvariantCulture),
+                long l => l.ToString(CultureInfo.InvariantCulture),
                 double d => d.ToString(CultureInfo.InvariantCulture),
                 string s => s,
                 _ => val.ToString()
@@ -147,7 +147,7 @@ public class SoberSettingsManager : JsonManager<Dictionary<string, object>>
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
         {
             App.Logger.Error($"Failed to save {ex}");
-            _ = Frontend.ShowMessageBox(string.Format(Strings.Bootstrapper_JsonManagerSaveFailed, ClassName, ex.Message), MessageBoxImage.Warning);
+            _ = Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_JsonManagerSaveFailed, ClassName, ex.Message), MessageBoxImage.Warning);
         }
     }
 

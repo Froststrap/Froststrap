@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Enums
 {
-    public enum ServerSessionJoinType
+    internal enum ServerSessionJoinType
     {
         NewGameNoAvailableSlots = 1,
         NewGameSinglePlayer = 2,

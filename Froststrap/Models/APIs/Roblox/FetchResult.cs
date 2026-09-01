@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Models.APIs.Roblox
 {
-    public class FetchResult
+    internal class FetchResult
     {
         [JsonPropertyName("data")]
         public List<ServerInstance> Servers { get; set; } = new();

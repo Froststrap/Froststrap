@@ -3,7 +3,7 @@
     /// <summary>
     /// Roblox.Users.Api.GetUserResponse
     /// </summary>
-    public class GetUserResponse
+    internal class GetUserResponse
     {
         /// <summary>
         /// The user description.

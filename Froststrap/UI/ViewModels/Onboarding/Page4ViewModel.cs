@@ -2,18 +2,18 @@
 
 namespace Froststrap.UI.ViewModels.Onboarding
 {
-    public class Page4ViewModel : NotifyPropertyChangedViewModel
+    internal class Page4ViewModel : NotifyPropertyChangedViewModel
     {
         private List<string> _availableRegions = [];
-        private bool _isLoadingRegions = false;
+        private bool _isLoadingRegions;
         private string _selectedSortOrder;
         private SortOrderComboBoxItem _selectedSortOrderItem;
 
         public Page4ViewModel()
         {
             _selectedSortOrder = App.Settings.Prop.SelectedServerSortOrder ?? "BestLatency";
-            SelectedSortOrderItem = SortOrderOptions.FirstOrDefault(x => x.Tag == _selectedSortOrder)
-                                    ?? SortOrderOptions.First();
+            _selectedSortOrderItem = SortOrderOptions.FirstOrDefault(x => x.Tag == _selectedSortOrder)
+                                     ?? SortOrderOptions.First();
             Task.Run(LoadAvailableRegionsAsync);
         }
 

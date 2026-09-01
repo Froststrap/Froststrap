@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Enums
 {
-    public enum CursorType
+    internal enum CursorType
     {
         [EnumSort(Order = 1)]
         [EnumName(FromTranslation = "Common.Default")]

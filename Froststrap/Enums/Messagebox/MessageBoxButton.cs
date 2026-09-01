@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Enums.Messagebox
 {
-    public enum MessageBoxButton
+    internal enum MessageBoxButton
     {
         OK,
         OKCancel,

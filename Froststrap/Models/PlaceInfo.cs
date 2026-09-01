@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Models
 {
-    public class PlaceInfo(long id, long universeId, string name, string? thumbnailUrl)
+    internal class PlaceInfo(long id, long universeId, string name, string? thumbnailUrl)
     {
         public long Id { get; set; } = id;
         public long UniverseId { get; set; } = universeId;

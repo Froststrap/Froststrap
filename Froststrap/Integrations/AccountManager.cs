@@ -19,7 +19,7 @@ using System.Web;
 
 namespace Froststrap.Integrations
 {
-    public class AccountManager
+    internal class AccountManager
     {
         private const string AccountsFile = "AccountManager.json";
 
@@ -130,198 +130,235 @@ namespace Froststrap.Integrations
         }
 
         // https://devforum.roblox.com/t/how-to-generate-a-roblosecurity-token-from-quick-login/3147931
-        public static async Task<AccountManagerAccount?> AddAccountByQuickSignInAsync(QuickSignCodeDialog dialog, CancellationToken cancellationToken)
+        public static async Task<AccountManagerAccount?> AddAccountByQuickSignInAsync(
+            QuickSignCodeDialog dialog,
+            CancellationToken cancellationToken)
         {
             try
             {
                 using var client = new HttpClient();
 
+                // --- Step 1: Create sign-in code ---
                 var createUrl = UrlBuilder.BuildApiUrl("apis", "auth-token-service/v1/login/create", secure: true);
-                var createResponse = await client.PostAsync(createUrl,
-                    new StringContent("{}", Encoding.UTF8, "application/json"), cancellationToken);
-                createResponse.EnsureSuccessStatusCode();
+                using var createContent = new StringContent("{}", Encoding.UTF8, "application/json");
 
-                var createJson = JObject.Parse(await createResponse.Content.ReadAsStringAsync(cancellationToken));
-                string code = createJson["code"]!.Value<string>()!;
-                string privateKey = createJson["privateKey"]!.Value<string>()!;
-                DateTime expirationTime = createJson["expirationTime"]!.Value<DateTime>();
-
-                await Dispatcher.UIThread.InvokeAsync(() => dialog.StartNewSignIn(code));
-
-                var statusUrl = UrlBuilder.BuildApiUrl("apis", "auth-token-service/v1/login/status", secure: true);
-                string? status = null;
-
-                while (!cancellationToken.IsCancellationRequested)
+                HttpResponseMessage? createResponse = null;
+                try
                 {
-                    await Task.Delay(4000, cancellationToken);
+                    createResponse = await client.PostAsync(createUrl, createContent, cancellationToken);
+                    createResponse.EnsureSuccessStatusCode();
 
-                    var statusPayload = new { code, privateKey };
-                    var statusContent = new StringContent(
-                        JsonConvert.SerializeObject(statusPayload), Encoding.UTF8, "application/json");
+                    var createJson = JObject.Parse(await createResponse.Content.ReadAsStringAsync(cancellationToken));
+                    string code = createJson["code"]!.Value<string>()!;
+                    string privateKey = createJson["privateKey"]!.Value<string>()!;
+                    DateTime expirationTime = createJson["expirationTime"]!.Value<DateTime>();
 
-                    HttpResponseMessage statusResponse = await client.PostAsync(statusUrl, statusContent, cancellationToken);
+                    await Dispatcher.UIThread.InvokeAsync(() => dialog.StartNewSignIn(code));
 
-                    if ((statusResponse.StatusCode == HttpStatusCode.Forbidden ||
-                         statusResponse.StatusCode == HttpStatusCode.BadRequest) &&
-                        statusResponse.Headers.TryGetValues("x-csrf-token", out var csrfVals))
+                    // --- Step 2: Poll for status ---
+                    var statusUrl = UrlBuilder.BuildApiUrl("apis", "auth-token-service/v1/login/status", secure: true);
+                    string? status = null;
+
+                    while (!cancellationToken.IsCancellationRequested)
                     {
-                        string csrfToken = csrfVals.First();
-                        var retryRequest = new HttpRequestMessage(HttpMethod.Post, statusUrl)
+                        await Task.Delay(4000, cancellationToken);
+
+                        var statusPayload = new { code, privateKey };
+                        using var statusContent = new StringContent(
+                            JsonConvert.SerializeObject(statusPayload), Encoding.UTF8, "application/json");
+
+                        HttpResponseMessage? statusResponse = null;
+                        try
                         {
-                            Content = statusContent
-                        };
-                        retryRequest.Headers.Add("x-csrf-token", csrfToken);
-                        statusResponse = await client.SendAsync(retryRequest, cancellationToken);
+                            statusResponse = await client.PostAsync(statusUrl, statusContent, cancellationToken);
+
+                            // Retry with CSRF token if needed
+                            if ((statusResponse.StatusCode == HttpStatusCode.Forbidden ||
+                                 statusResponse.StatusCode == HttpStatusCode.BadRequest) &&
+                                statusResponse.Headers.TryGetValues("x-csrf-token", out var csrfVals))
+                            {
+                                string csrfToken = csrfVals.First();
+                                using var retryRequest = new HttpRequestMessage(HttpMethod.Post, statusUrl)
+                                {
+                                    Content = statusContent
+                                };
+                                retryRequest.Headers.Add("x-csrf-token", csrfToken);
+                                statusResponse.Dispose();
+                                statusResponse = await client.SendAsync(retryRequest, cancellationToken);
+                            }
+
+                            string body = await statusResponse.Content.ReadAsStringAsync(cancellationToken);
+
+                            // ---- Process response ----
+                            if (statusResponse.StatusCode == HttpStatusCode.BadRequest)
+                            {
+                                if (body.Trim().StartsWith('{'))
+                                {
+                                    var errJson = JObject.Parse(body);
+                                    var errorMsg = errJson["errors"]?[0]?["message"]?.Value<string>() ?? "Unknown error";
+                                    App.Logger.Error($"Status API returned error: {errorMsg}");
+                                    await Dispatcher.UIThread.InvokeAsync(() => dialog.UpdateStatus("Cancelled"));
+                                }
+                                else if (body.Trim().Equals("\"CodeInvalid\"", StringComparison.OrdinalIgnoreCase) ||
+                                         body.Trim().Equals("CodeInvalid", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    App.Logger.Info("Code invalid/expired.");
+                                    await Dispatcher.UIThread.InvokeAsync(() => dialog.UpdateStatus("Cancelled"));
+                                }
+                                else
+                                {
+                                    App.Logger.Warn($"Unexpected 400 response: {body}");
+                                    await Dispatcher.UIThread.InvokeAsync(() => dialog.UpdateStatus("Error: unexpected response"));
+                                }
+                                return null;
+                            }
+
+                            JObject statusJson;
+                            try
+                            {
+                                statusJson = JObject.Parse(body);
+                            }
+                            catch (JsonReaderException)
+                            {
+                                App.Logger.Warn($"Status endpoint returned non‑JSON: {body}");
+                                await Dispatcher.UIThread.InvokeAsync(() => dialog.UpdateStatus("Error: invalid response"));
+                                return null;
+                            }
+
+                            status = (string?)statusJson["status"];
+                            string? accountName = (string?)statusJson["accountName"];
+
+                            if (string.IsNullOrEmpty(status))
+                            {
+                                var errors = statusJson["errors"] as JArray;
+                                if (errors is { Count: > 0 })
+                                {
+                                    var errorMessage = errors[0]?["message"]?.Value<string>() ?? "Unknown error";
+                                    App.Logger.Warn($"API error: {errorMessage}");
+                                    await Dispatcher.UIThread.InvokeAsync(() => dialog.UpdateStatus($"Error: {errorMessage}"));
+                                    return null;
+                                }
+
+                                App.Logger.Warn($"Missing 'status' field in response: {body}");
+                                await Dispatcher.UIThread.InvokeAsync(() => dialog.UpdateStatus("Error: unexpected status"));
+                                return null;
+                            }
+
+                            await Dispatcher.UIThread.InvokeAsync(() =>
+                            {
+                                switch (status)
+                                {
+                                    case "Created":
+                                        dialog.UpdateStatus("Waiting for Quick Sign-In...");
+                                        break;
+                                    case "UserLinked":
+                                        dialog.UpdateStatus("UserLinked", accountName);
+                                        break;
+                                    case "Validated":
+                                        dialog.UpdateStatus("Validated", accountName);
+                                        break;
+                                    case "Cancelled":
+                                        dialog.UpdateStatus("Cancelled");
+                                        break;
+                                    default:
+                                        dialog.UpdateStatus(status, accountName);
+                                        break;
+                                }
+                            });
+
+                            if (status == "Validated" || status == "Cancelled")
+                                break;
+
+                            if (DateTime.UtcNow > expirationTime)
+                            {
+                                App.Logger.Info("Code timed out.");
+                                await Dispatcher.UIThread.InvokeAsync(() => dialog.UpdateStatus("TimedOut"));
+                                return null;
+                            }
+                        }
+                        finally
+                        {
+                            statusResponse?.Dispose();
+                        }
                     }
 
-                    string body = await statusResponse.Content.ReadAsStringAsync(cancellationToken);
-
-                    if (statusResponse.StatusCode == HttpStatusCode.BadRequest)
-                    {
-                        if (body.Trim().StartsWith('{'))
-                        {
-                            var errJson = JObject.Parse(body);
-                            var errorMsg = errJson["errors"]?[0]?["message"]?.Value<string>() ?? "Unknown error";
-                            App.Logger.Error($"Status API returned error: {errorMsg}");
-                            await Dispatcher.UIThread.InvokeAsync(() => dialog.UpdateStatus("Cancelled"));
-                        }
-                        else if (body.Trim().Equals("\"CodeInvalid\"", StringComparison.OrdinalIgnoreCase) ||
-                                 body.Trim().Equals("CodeInvalid", StringComparison.OrdinalIgnoreCase))
-                        {
-                            App.Logger.Info("Code invalid/expired.");
-                            await Dispatcher.UIThread.InvokeAsync(() => dialog.UpdateStatus("Cancelled"));
-                        }
-                        else
-                        {
-                            App.Logger.Warn($"Unexpected 400 response: {body}");
-                            await Dispatcher.UIThread.InvokeAsync(() => dialog.UpdateStatus("Error: unexpected response"));
-                        }
+                    // ---- If cancelled or invalid ----
+                    if (cancellationToken.IsCancellationRequested || status == "Cancelled")
                         return null;
-                    }
 
-                    JObject statusJson;
+                    // --- Step 3: Final login ---
+                    var loginUrl = UrlBuilder.BuildApiUrl("auth", "v2/login", secure: true);
+                    var loginData = new
+                    {
+                        ctype = "AuthToken",
+                        cvalue = code,
+                        password = privateKey
+                    };
+                    using var loginContent = new StringContent(
+                        JsonConvert.SerializeObject(loginData), Encoding.UTF8, "application/json");
+
+                    using var cookieHandler = new HttpClientHandler
+                    {
+                        CookieContainer = new CookieContainer(),
+                        UseCookies = true,
+                        CheckCertificateRevocationList = true
+                    };
+                    using var loginClient = new HttpClient(cookieHandler);
+
+                    HttpResponseMessage? loginResponse = null;
                     try
                     {
-                        statusJson = JObject.Parse(body);
-                    }
-                    catch (JsonReaderException)
-                    {
-                        App.Logger.Warn($"Status endpoint returned non‑JSON: {body}");
-                        await Dispatcher.UIThread.InvokeAsync(() => dialog.UpdateStatus("Error: invalid response"));
-                        return null;
-                    }
+                        loginResponse = await loginClient.PostAsync(loginUrl, loginContent, cancellationToken);
 
-                    status = (string?)statusJson["status"];
-                    string? accountName = (string?)statusJson["accountName"];
-
-                    if (string.IsNullOrEmpty(status))
-                    {
-                        var errors = statusJson["errors"] as JArray;
-                        if (errors is { Count: > 0 })
+                        // Retry with CSRF token if needed
+                        if ((loginResponse.StatusCode == HttpStatusCode.Forbidden ||
+                             loginResponse.StatusCode == HttpStatusCode.BadRequest) &&
+                            loginResponse.Headers.TryGetValues("x-csrf-token", out var csrfValues))
                         {
-                            var errorMessage = errors[0]?["message"]?.Value<string>() ?? "Unknown error";
-                            App.Logger.Warn($"API error: {errorMessage}");
-                            await Dispatcher.UIThread.InvokeAsync(() => dialog.UpdateStatus($"Error: {errorMessage}"));
+                            string csrfToken = csrfValues.First();
+                            using var retryRequest = new HttpRequestMessage(HttpMethod.Post, loginUrl)
+                            {
+                                Content = loginContent
+                            };
+                            retryRequest.Headers.Add("x-csrf-token", csrfToken);
+                            loginResponse.Dispose();
+                            loginResponse = await loginClient.SendAsync(retryRequest, cancellationToken);
+                        }
+
+                        loginResponse.EnsureSuccessStatusCode();
+
+                        var cookies = cookieHandler.CookieContainer.GetCookies(new Uri("https://roblox.com"));
+                        string? robloSecurity = cookies[".ROBLOSECURITY"]?.Value;
+
+                        if (string.IsNullOrEmpty(robloSecurity))
+                        {
+                            App.Logger.Warn("No .ROBLOSECURITY cookie in response.");
+                            await Dispatcher.UIThread.InvokeAsync(() =>
+                                dialog.UpdateStatus("Failed: no cookie received"));
                             return null;
                         }
 
-                        App.Logger.Warn($"Missing 'status' field in response: {body}");
-                        await Dispatcher.UIThread.InvokeAsync(() => dialog.UpdateStatus("Error: unexpected status"));
-                        return null;
-                    }
-
-                    await Dispatcher.UIThread.InvokeAsync(() =>
-                    {
-                        switch (status)
+                        var account = await GetAccountInfoFromCookie(robloSecurity);
+                        if (account == null)
                         {
-                            case "Created":
-                                dialog.UpdateStatus("Waiting for Quick Sign-In...");
-                                break;
-                            case "UserLinked":
-                                dialog.UpdateStatus("UserLinked", accountName);
-                                break;
-                            case "Validated":
-                                dialog.UpdateStatus("Validated", accountName);
-                                break;
-                            case "Cancelled":
-                                dialog.UpdateStatus("Cancelled");
-                                break;
-                            default:
-                                dialog.UpdateStatus(status, accountName);
-                                break;
+                            App.Logger.Warn("Failed: invalid account");
+                            await Dispatcher.UIThread.InvokeAsync(() =>
+                                dialog.UpdateStatus("Failed: invalid account"));
+                            return null;
                         }
-                    });
 
-                    if (status == "Validated" || status == "Cancelled")
-                        break;
-
-                    if (DateTime.UtcNow > expirationTime)
+                        await Dispatcher.UIThread.InvokeAsync(() => dialog.CompleteSignIn());
+                        return account;
+                    }
+                    finally
                     {
-                        App.Logger.Info("Code timed out.");
-                        await Dispatcher.UIThread.InvokeAsync(() => dialog.UpdateStatus("TimedOut"));
-                        return null;
+                        loginResponse?.Dispose();
                     }
                 }
-
-                if (cancellationToken.IsCancellationRequested || status == "Cancelled")
-                    return null;
-
-                var loginUrl = UrlBuilder.BuildApiUrl("auth", "v2/login", secure: true);
-                var loginData = new
+                finally
                 {
-                    ctype = "AuthToken",
-                    cvalue = code,
-                    password = privateKey
-                };
-                var loginContent = new StringContent(
-                    JsonConvert.SerializeObject(loginData), Encoding.UTF8, "application/json");
-
-                using var cookieHandler = new HttpClientHandler
-                {
-                    CookieContainer = new CookieContainer(),
-                    UseCookies = true
-                };
-                using var loginClient = new HttpClient(cookieHandler);
-
-                HttpResponseMessage loginResponse = await loginClient.PostAsync(loginUrl, loginContent, cancellationToken);
-
-                if ((loginResponse.StatusCode == HttpStatusCode.Forbidden ||
-                     loginResponse.StatusCode == HttpStatusCode.BadRequest) &&
-                    loginResponse.Headers.TryGetValues("x-csrf-token", out var csrfValues))
-                {
-                    string csrfToken = csrfValues.First();
-                    var retryRequest = new HttpRequestMessage(HttpMethod.Post, loginUrl)
-                    {
-                        Content = loginContent
-                    };
-                    retryRequest.Headers.Add("x-csrf-token", csrfToken);
-                    loginResponse = await loginClient.SendAsync(retryRequest, cancellationToken);
+                    createResponse?.Dispose();
                 }
-
-                loginResponse.EnsureSuccessStatusCode();
-
-                var cookies = cookieHandler.CookieContainer.GetCookies(new Uri("https://roblox.com"));
-                string? robloSecurity = cookies[".ROBLOSECURITY"]?.Value;
-
-                if (string.IsNullOrEmpty(robloSecurity))
-                {
-                    App.Logger.Warn("No .ROBLOSECURITY cookie in response.");
-                    await Dispatcher.UIThread.InvokeAsync(() =>
-                        dialog.UpdateStatus("Failed: no cookie received"));
-                    return null;
-                }
-
-                var account = await GetAccountInfoFromCookie(robloSecurity);
-                if (account == null)
-                {
-                    App.Logger.Warn("Failed: invalid account");
-                    await Dispatcher.UIThread.InvokeAsync(() =>
-                        dialog.UpdateStatus("Failed: invalid account"));
-                    return null;
-                }
-
-                await Dispatcher.UIThread.InvokeAsync(() => dialog.CompleteSignIn());
-                return account;
             }
             catch (OperationCanceledException)
             {
@@ -685,7 +722,11 @@ namespace Froststrap.Integrations
         {
             try
             {
-                var handler = new HttpClientHandler { CookieContainer = new System.Net.CookieContainer() };
+                using var handler = new HttpClientHandler
+                {
+                    CookieContainer = new System.Net.CookieContainer(),
+                    CheckCertificateRevocationList = true
+                };
                 handler.CookieContainer.Add(new System.Net.Cookie(".ROBLOSECURITY", securityCookie, "/", ".roblox.com"));
 
                 using var client = new HttpClient(handler);
@@ -708,7 +749,7 @@ namespace Froststrap.Integrations
                     username = jo["name"]?.Value<string>() ?? string.Empty;
                     displayName = jo["displayName"]?.Value<string>() ?? string.Empty;
                 }
-                catch (HttpRequestException ex) when (ex.InnerException is System.Net.Sockets.SocketException || ex.Message.Contains("canceled"))
+                catch (HttpRequestException ex) when (ex.InnerException is System.Net.Sockets.SocketException || ex.Message.Contains("canceled", StringComparison.OrdinalIgnoreCase))
                 {
                     App.Logger.Info("Network socket not ready or canceled. skipping info fetch.");
                     return null;
@@ -755,7 +796,11 @@ namespace Froststrap.Integrations
                     return false;
                 }
 
-                var handler = new HttpClientHandler { CookieContainer = new CookieContainer() };
+                using var handler = new HttpClientHandler
+                {
+                    CookieContainer = new CookieContainer(),
+                    CheckCertificateRevocationList = true
+                };
                 handler.CookieContainer.Add(new Cookie(".ROBLOSECURITY", decryptedCookie, "/", ".roblox.com"));
 
                 using var client = new HttpClient(handler);
@@ -1093,7 +1138,7 @@ namespace Froststrap.Integrations
 
         private static string GenerateTrackerData()
         {
-            string createDate = DateTime.UtcNow.ToString("MM/dd/yyyy HH:mm:ss");
+            string createDate = DateTime.UtcNow.ToString("MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
             long browserId = GenerateRandomBrowserId();
             return $"CreateDate={createDate}&rbxid=&rbxuid=&browserid={browserId};";
         }

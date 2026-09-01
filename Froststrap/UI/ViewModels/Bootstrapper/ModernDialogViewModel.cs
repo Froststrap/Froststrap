@@ -1,11 +1,9 @@
 ﻿using Avalonia;
 using Avalonia.Media;
-using Avalonia.Media.Imaging;
-using Avalonia.Platform;
 
 namespace Froststrap.UI.ViewModels.Bootstrapper
 {
-    public class ModernDialogViewModel(IBootstrapperDialog dialog, string version) : BootstrapperDialogViewModel(dialog)
+    internal class ModernDialogViewModel(IBootstrapperDialog dialog, string version) : BootstrapperDialogViewModel(dialog)
     {
         public Thickness DialogBorder { get; set; } = new(0);
 

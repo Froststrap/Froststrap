@@ -16,7 +16,7 @@ namespace Froststrap.UI.Elements.Settings.Pages
         }
     }
 
-    public partial class GlobalSettingsPage : UserControl
+    internal partial class GlobalSettingsPage : UserControl
     {
         public GlobalSettingsPage()
         {

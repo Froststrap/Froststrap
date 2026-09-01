@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.RobloxInterfaces
 {
-    public static class Deployment
+    internal static class Deployment
     {
         public const string DefaultRobloxDomain = "roblox.com";
 
@@ -73,7 +73,7 @@
         public static async Task<Exception?> InitializeConnectivity()
         {
             const string FALLBACK_URL = "https://setup.rbxcdn.com";
-            var tokenSource = new CancellationTokenSource();
+            using var tokenSource = new CancellationTokenSource();
 
             var tasks = BaseUrls.Select(url => GetLatency(url, tokenSource.Token)).ToList();
 
@@ -92,13 +92,13 @@
                 {
                     BaseUrl = url;
                     App.Logger.Info($"Optimal BaseUrl: {BaseUrl} ({latency}ms)");
-                    tokenSource.Cancel();
+                    await tokenSource.CancelAsync();
                     return null;
                 }
 
                 BaseUrl = FALLBACK_URL;
                 App.Logger.Warn($"No mirrors responded. Falling back to default: {BaseUrl}");
-                return new Exception("No regional mirrors were responsive.");
+                return new InvalidOperationException("No regional mirrors were responsive.");
             }
             catch (Exception ex)
             {
@@ -186,7 +186,7 @@
                 else
                 {
                     location = GetLocation($"/{version}-rbxPkgManifest.txt");
-                    var response = await App.HttpClient.GetAsync(location);
+                    var response = await App.HttpClient.GetAsync(new Uri(location));
                     response.EnsureSuccessStatusCode();
 
                     if (response.Content.Headers.TryGetValues(header, out var values))
@@ -210,14 +210,14 @@
             if (string.IsNullOrEmpty(channel))
                 channel = Channel;
 
-            bool isDefaultChannel = string.Compare(channel, DefaultChannel, StringComparison.OrdinalIgnoreCase) == 0;
+            bool isDefaultChannel = string.Equals(channel, DefaultChannel, StringComparison.OrdinalIgnoreCase);
 
             App.Logger.Info($"Getting deploy info for channel {channel}");
 
             string activeBinaryType = binaryTypeOverride ?? BinaryType;
             string cacheKey = $"{channel}-{activeBinaryType}";
 
-            HttpRequestMessage request = new() { Method = HttpMethod.Get };
+            using var request = new HttpRequestMessage() { Method = HttpMethod.Get };
 
             if (!string.IsNullOrEmpty(ChannelToken))
             {
@@ -252,7 +252,7 @@
                     App.Logger.Error($"Failed to contact clientsettingscdn! {ex}");
                     App.Logger.Warn("Falling back to clientsettings...");
 
-                    HttpRequestMessage fallbackRequest = new()
+                    using var fallbackRequest = new HttpRequestMessage()
                     {
                         Method = HttpMethod.Get,
                         RequestUri = UrlBuilder.BuildApiUrl("clientsettings", path)

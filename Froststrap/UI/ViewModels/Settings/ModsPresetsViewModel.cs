@@ -1,5 +1,4 @@
-﻿using Avalonia;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
@@ -8,14 +7,13 @@ using CommunityToolkit.Mvvm.Input;
 using Froststrap.AppData;
 using System.Collections.ObjectModel;
 using System.IO.Compression;
-using System.Runtime.InteropServices;
 using System.Windows.Input;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
-    public class ModsPresetsViewModel : NotifyPropertyChangedViewModel
+    internal class ModsPresetsViewModel : NotifyPropertyChangedViewModel
     {
         public event EventHandler? OpenModsEvent;
         public event EventHandler? OpenCommunityModsEvent;
@@ -27,11 +25,11 @@ namespace Froststrap.UI.ViewModels.Settings
         public ICommand OpenCommunityModsCommand { get; }
         public ICommand OpenModGeneratorCommand { get; }
 
-        private static readonly Dictionary<string, byte[]> FontHeaders = new()
+        private static readonly Dictionary<string, byte[]> FontHeaders = new(StringComparer.OrdinalIgnoreCase)
         {
-            { "ttf", [0x00, 0x01, 0x00, 0x00] },
-            { "otf", "OTTO"u8.ToArray() },
-            { "ttc", "ttcf"u8.ToArray() }
+            { "TTF", [0x00, 0x01, 0x00, 0x00] },
+            { "OTF", "OTTO"u8.ToArray() },
+            { "TTC", "ttcf"u8.ToArray() }
         };
 
         public ModsPresetsViewModel()
@@ -91,7 +89,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
             try
             {
-                string extension = Path.GetExtension(filePath).TrimStart('.').ToLowerInvariant();
+                string extension = Path.GetExtension(filePath).TrimStart('.').ToUpperInvariant();
 
                 byte[] headerSnippet = new byte[4];
 
@@ -482,7 +480,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
                 if (File.Exists(destinationPath)) File.Delete(destinationPath);
 
-                ZipFile.CreateFromDirectory(SelectedCustomCursorSet.FolderPath, destinationPath);
+                await ZipFile.CreateFromDirectoryAsync(SelectedCustomCursorSet.FolderPath, destinationPath);
 
                 Utilities.ShellExecute(destinationPath, select: true);
             }
@@ -515,7 +513,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
                 string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
 
-                ZipFile.ExtractToDirectory(zipPath, tempPath);
+                await ZipFile.ExtractToDirectoryAsync(zipPath, tempPath);
 
                 foreach (string file in Directory.GetFiles(tempPath, "*.png", SearchOption.AllDirectories))
                 {

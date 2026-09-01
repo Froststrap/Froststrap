@@ -17,11 +17,23 @@
             switch (template)
             {
                 case CustomThemeTemplate.Blank:
-                    string moreTextBlank = string.Format(Strings.CustomTheme_Templates_Blank_MoreExamples, EXAMPLES_URL);
-                    return contents.Replace("{0}", Strings.CustomTheme_Templates_Blank_UIElements).Replace("{1}", moreTextBlank);
+                    string moreTextBlank = string.Format(
+                        CultureInfo.InvariantCulture,
+                        Strings.CustomTheme_Templates_Blank_MoreExamples,
+                        EXAMPLES_URL);
+
+                    return contents
+                        .Replace("{0}", Strings.CustomTheme_Templates_Blank_UIElements, StringComparison.Ordinal)
+                        .Replace("{1}", moreTextBlank, StringComparison.Ordinal);
+
                 case CustomThemeTemplate.Simple:
-                    string moreTextSimple = string.Format(Strings.CustomTheme_Templates_Simple_MoreExamples, EXAMPLES_URL);
-                    return contents.Replace("{0}", moreTextSimple);
+                    string moreTextSimple = string.Format(
+                        CultureInfo.InvariantCulture,
+                        Strings.CustomTheme_Templates_Simple_MoreExamples,
+                        EXAMPLES_URL);
+
+                    return contents.Replace("{0}", moreTextSimple, StringComparison.Ordinal);
+
                 default:
                     return contents;
             }

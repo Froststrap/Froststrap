@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Models.FroststrapStudioRPC;
 
-public class StudioMessage
+internal class StudioMessage
 {
     [JsonPropertyName("command")]
     public string StudioCommand { get; set; } = null!;

@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Enums.FlagPresets
 {
-    public enum RenderingMode
+    internal enum RenderingMode
     {
         Default,
         Direct3D,

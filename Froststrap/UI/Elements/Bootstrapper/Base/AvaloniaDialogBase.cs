@@ -6,7 +6,7 @@ using Avalonia.Media;
 
 namespace Froststrap.UI.Elements.Bootstrapper.Base
 {
-    public class AvaloniaDialogBase : Window, IBootstrapperDialog
+    internal class AvaloniaDialogBase : Window, IBootstrapperDialog
     {
         public const int TaskbarProgressMaximum = 100;
         public Froststrap.Bootstrapper? Bootstrapper { get; set; }

@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.UI.ViewModels.Onboarding
 {
-    public class Page1ViewModel : NotifyPropertyChangedViewModel
+    internal class Page1ViewModel : NotifyPropertyChangedViewModel
     {
         public Page1ViewModel() { }
 

@@ -8,7 +8,7 @@ using WindowState = Avalonia.Controls.WindowState;
 
 namespace Froststrap.UI.Elements.Controls
 {
-    public class TitleBar : TemplatedControl
+    internal class TitleBar : TemplatedControl
     {
         public static readonly StyledProperty<string?> TitleProperty =
             AvaloniaProperty.Register<TitleBar, string?>(nameof(Title));

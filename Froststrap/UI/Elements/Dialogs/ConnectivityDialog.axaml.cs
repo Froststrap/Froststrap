@@ -1,11 +1,9 @@
-﻿using Avalonia.Controls;
-using Avalonia.Input.Platform;
-using Avalonia.Media.Imaging;
+﻿using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 
 namespace Froststrap.UI.Elements.Dialogs
 {
-    public partial class ConnectivityDialog : Base.AvaloniaWindow
+    internal partial class ConnectivityDialog : Base.AvaloniaWindow
     {
         public ConnectivityDialog()
         {
@@ -53,7 +51,7 @@ namespace Froststrap.UI.Elements.Dialogs
 
             AddException(exception);
 
-            VersionText.Text = String.Format(Strings.Menu_About_Version, App.Version);
+            VersionText.Text = String.Format(CultureInfo.InvariantCulture, Strings.Menu_About_Version, App.Version);
 
             CloseButton.Click += (_, _) => Close();
 
@@ -70,12 +68,12 @@ namespace Froststrap.UI.Elements.Dialogs
             var sb = new StringBuilder();
 
             if (!inner)
-                sb.AppendLine($"{exception.GetType()}: {exception.Message}");
+                sb.AppendLine(CultureInfo.InvariantCulture, $"{exception.GetType()}: {exception.Message}");
             else
-                sb.AppendLine($"[Inner Exception]\n{exception.GetType()}: {exception.Message}");
+                sb.AppendLine(CultureInfo.InvariantCulture, $"[Inner Exception]\n{exception.GetType()}: {exception.Message}");
 
             if (exception.StackTrace != null)
-                sb.AppendLine($"\nStack Trace:\n{exception.StackTrace}");
+                sb.AppendLine(CultureInfo.InvariantCulture, $"\nStack Trace:\n{exception.StackTrace}");
 
             if (exception.InnerException != null)
             {
@@ -89,12 +87,12 @@ namespace Froststrap.UI.Elements.Dialogs
         private static void AddExceptionToBuilder(Exception exception, StringBuilder sb, bool inner = false)
         {
             if (inner)
-                sb.AppendLine($"[Inner Exception]\n{exception.GetType()}: {exception.Message}");
+                sb.AppendLine(CultureInfo.InvariantCulture, $"[Inner Exception]\n{exception.GetType()}: {exception.Message}");
             else
-                sb.AppendLine($"{exception.GetType()}: {exception.Message}");
+                sb.AppendLine(CultureInfo.InvariantCulture, $"{exception.GetType()}: {exception.Message}");
 
             if (exception.StackTrace != null)
-                sb.AppendLine($"\nStack Trace:\n{exception.StackTrace}");
+                sb.AppendLine(CultureInfo.InvariantCulture, $"\nStack Trace:\n{exception.StackTrace}");
 
             if (exception.InnerException != null)
             {

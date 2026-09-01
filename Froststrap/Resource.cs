@@ -9,7 +9,7 @@ namespace Froststrap
 
         public static Stream GetStream(string name)
         {
-            string path = resourceNames.Single(str => str.EndsWith(name));
+            string path = resourceNames.Single(str => str.EndsWith(name, StringComparison.Ordinal));
             return assembly.GetManifestResourceStream(path)!;
         }
 

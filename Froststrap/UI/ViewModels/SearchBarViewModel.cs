@@ -1,12 +1,12 @@
 ﻿/*
-*  Froststrap
-*  Copyright (c) Froststrap Team
-*
-*  This file is part of Froststrap and is distributed under the terms of the
-*  GNU Affero General Public License, version 3 or later.
-*
-*  SPDX-License-Identifier: AGPL-3.0-or-later
-*/
+ *  Froststrap
+ *  Copyright (c) Froststrap Team
+ *
+ *  This file is part of Froststrap and is distributed under the terms of the
+ *  GNU Affero General Public License, version 3 or later.
+ *
+ *  SPDX-License-Identifier: AGPL-3.0-or-later
+ */
 
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
@@ -19,7 +19,7 @@ using System.Collections.ObjectModel;
 
 namespace Froststrap.UI.ViewModels
 {
-    public partial class SearchBarViewModel : NotifyPropertyChangedViewModel
+    internal partial class SearchBarViewModel : NotifyPropertyChangedViewModel, IDisposable
     {
         private string _searchQuery = string.Empty;
         public string SearchQuery
@@ -37,7 +37,6 @@ namespace Froststrap.UI.ViewModels
                 }
             }
         }
-
 
         private ObservableCollection<OmniSearchContent> _gameSearchResults = [];
         public ObservableCollection<OmniSearchContent> GameSearchResults
@@ -89,6 +88,7 @@ namespace Froststrap.UI.ViewModels
         public bool CanLoadMore => !string.IsNullOrEmpty(NextPageCursor) && !IsGameSearchLoading;
 
         private CancellationTokenSource? _searchDebounceCts;
+        private bool _disposed;
 
         private ObservableCollection<SearchBarItem> _filteredSearchResults = [];
         public ObservableCollection<SearchBarItem> FilteredSearchResults
@@ -105,7 +105,7 @@ namespace Froststrap.UI.ViewModels
         public event EventHandler<SearchBarItem>? SearchResultSelected;
         public event EventHandler? SearchStarted;
 
-        private bool _isRefreshing = false;
+        private bool _isRefreshing;
 
         public SearchBarViewModel()
         {
@@ -165,7 +165,7 @@ namespace Froststrap.UI.ViewModels
                         {
                             Query = $"placeIds={placeId}"
                         };
-                        var placeReq = new HttpRequestMessage(HttpMethod.Get, uriBuilder.Uri);
+                        using var placeReq = new HttpRequestMessage(HttpMethod.Get, uriBuilder.Uri);
                         var account = AccountManager.Shared.ActiveAccount;
                         if (account != null)
                         {
@@ -246,7 +246,7 @@ namespace Froststrap.UI.ViewModels
                                         await semaphore.WaitAsync(token);
                                         try
                                         {
-                                            var response = await App.HttpClient.GetByteArrayAsync(fetchedUrls[index], token);
+                                            var response = await App.HttpClient.GetByteArrayAsync(new Uri(fetchedUrls[index]!), token);
                                             using var ms = new MemoryStream(response);
                                             var bitmap = new Bitmap(ms);
                                             results[index].ThumbnailBitmap = bitmap;
@@ -341,7 +341,7 @@ namespace Froststrap.UI.ViewModels
                                             await semaphore.WaitAsync();
                                             try
                                             {
-                                                var response = await App.HttpClient.GetByteArrayAsync(fetchedUrls[index]);
+                                                var response = await App.HttpClient.GetByteArrayAsync(new Uri(fetchedUrls[index]!));
                                                 using var ms = new MemoryStream(response);
                                                 var bitmap = new Bitmap(ms);
                                                 results[index].ThumbnailBitmap = bitmap;
@@ -457,7 +457,7 @@ namespace Froststrap.UI.ViewModels
 
             MainWindow.ShowGlobalNotification(
             Strings.Menu_SearchBar_JoiningGame,
-            string.Format(Strings.Menu_SearchBar_JoiningName, content.Name),
+            string.Format(CultureInfo.InvariantCulture, Strings.Menu_SearchBar_JoiningName, content.Name),
             FAInfoBarSeverity.Success,
             5000,
             LucideIconNames.Globe
@@ -482,7 +482,7 @@ namespace Froststrap.UI.ViewModels
 
             try
             {
-                var fetcher = new RobloxServerFetcher();
+                using var fetcher = new RobloxServerFetcher();
 
                 bool success = await fetcher.JoinBestServerAsync(
                     content.RootPlaceId,
@@ -517,12 +517,35 @@ namespace Froststrap.UI.ViewModels
                 App.Logger.Error($"Unhandled exception: {ex.Message}");
                 MainWindow.ShowGlobalNotification(
                     Strings.Common_Error,
-                    string.Format(Strings.Menu_SearchBar_JoinError, ex.Message),
+                    string.Format(CultureInfo.InvariantCulture, Strings.Menu_SearchBar_JoinError, ex.Message),
                     FAInfoBarSeverity.Error,
                     5000,
                     LucideIconNames.TriangleAlert
                 );
             }
         }
+
+        #region IDisposable Implementation
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+                return;
+
+            if (disposing)
+            {
+                _searchDebounceCts?.Cancel();
+                _searchDebounceCts?.Dispose();
+                _searchDebounceCts = null;
+            }
+
+            _disposed = true;
+        }
+        #endregion
     }
 }

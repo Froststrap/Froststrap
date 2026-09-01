@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Models
 {
-    public class ServerInfo
+    internal class ServerInfo
     {
         [JsonPropertyName("jobId")]
         public string JobId { get; set; } = string.Empty;

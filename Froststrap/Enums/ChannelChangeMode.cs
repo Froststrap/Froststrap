@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Enums
 {
-    public enum ChannelChangeMode
+    internal enum ChannelChangeMode
     {
         Automatic,
         Prompt,

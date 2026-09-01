@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Models.APIs.Roblox
 {
-    public class UserPresence
+    internal class UserPresence
     {
         [JsonPropertyName("userPresenceType")]
         public int UserPresenceType { get; set; }

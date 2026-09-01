@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Models.APIs.Roblox
 {
-    public class SortGroup
+    internal class SortGroup
     {
         [JsonPropertyName("sortId")]
         public string SortId { get; set; } = "";

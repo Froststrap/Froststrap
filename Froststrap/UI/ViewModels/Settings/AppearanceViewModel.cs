@@ -13,9 +13,8 @@ using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
-    public partial class AppearanceViewModel : NotifyPropertyChangedViewModel
+    internal partial class AppearanceViewModel : NotifyPropertyChangedViewModel
     {
-        private static readonly string[] _icoFilter = ["*.ico"];
         private static readonly string[] _zipFilter = ["*.zip"];
         private static readonly string[] JsonPatterns = ["*.json"];
         private static readonly JsonSerializerOptions SerializationOptions = new() { WriteIndented = true };
@@ -363,7 +362,10 @@ namespace Froststrap.UI.ViewModels.Settings
             if (topLevel is not Window parentWindow) return;
 
             App.FrostRPC?.SetDialog("Editing Custom Theme");
-            await new BootstrapperEditorWindow(SelectedCustomTheme).ShowDialog(parentWindow);
+            using (var editor = new BootstrapperEditorWindow(SelectedCustomTheme))
+            {
+                await editor.ShowDialog(parentWindow);
+            }
             App.FrostRPC?.ClearDialog();
         }
 
@@ -396,9 +398,9 @@ namespace Froststrap.UI.ViewModels.Settings
                     string relativePath = Path.GetRelativePath(themeDir, filePath);
                     var entry = new ZipEntry(relativePath) { DateTime = DateTime.Now };
 
-                    zipStream.PutNextEntry(entry);
+                    await zipStream.PutNextEntryAsync(entry);
                     using var fileStream = File.OpenRead(filePath);
-                    fileStream.CopyTo(zipStream);
+                    await fileStream.CopyToAsync(zipStream);
                     zipStream.CloseEntry();
                 }
 
@@ -420,7 +422,7 @@ namespace Froststrap.UI.ViewModels.Settings
             catch (Exception ex)
             {
                 App.Logger.Error($"Unhandled exception: {ex.Message}");
-                await Frontend.ShowMessageBox(string.Format(Strings.Menu_Appearance_CustomThemes_DeleteFailed, themeToDelete, ex.Message), MessageBoxImage.Error);
+                await Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Menu_Appearance_CustomThemes_DeleteFailed, themeToDelete, ex.Message), MessageBoxImage.Error);
                 return;
             }
 
@@ -900,7 +902,7 @@ namespace Froststrap.UI.ViewModels.Settings
         #endregion
     }
 
-    public class CustomThemeCycleSelectionWrapper : NotifyPropertyChangedViewModel
+    internal class CustomThemeCycleSelectionWrapper : NotifyPropertyChangedViewModel
     {
         private bool _isSelected;
         private string _themeName = string.Empty;

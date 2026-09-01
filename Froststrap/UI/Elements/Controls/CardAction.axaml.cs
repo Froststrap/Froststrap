@@ -1,13 +1,10 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
-using Avalonia.Threading;
-using Avalonia.VisualTree;
 using LucideAvalonia.Enum;
 
 namespace Froststrap.UI.Elements.Controls
 {
-    public class CardAction : Button
+    internal class CardAction : Button
     {
         public static readonly StyledProperty<string> HeaderProperty =
             AvaloniaProperty.Register<CardAction, string>(nameof(Header));

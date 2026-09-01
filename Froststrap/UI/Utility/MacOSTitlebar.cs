@@ -6,7 +6,7 @@ using Avalonia.Threading;
 
 namespace Froststrap.UI.Utility;
 
-public static class MacOSTitleBar
+internal static class MacOSTitleBar
 {
     // ── attached property ──────────────────────────────────
 
@@ -228,10 +228,10 @@ public static class MacOSTitleBar
     // because objc_msgSend uses the C calling convention and the marshaller
     // needs to know the exact types at compile time.
 
-    [DllImport("/usr/lib/libobjc.A.dylib")]
+    [DllImport("/usr/lib/libobjc.A.dylib", CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
     private static extern IntPtr objc_getClass(string name);
 
-    [DllImport("/usr/lib/libobjc.A.dylib")]
+    [DllImport("/usr/lib/libobjc.A.dylib", CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
     private static extern IntPtr sel_registerName(string name);
 
     [DllImport("/usr/lib/libobjc.A.dylib", EntryPoint = "objc_msgSend")]

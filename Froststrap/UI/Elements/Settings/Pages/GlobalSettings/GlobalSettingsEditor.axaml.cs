@@ -6,7 +6,7 @@ using System.Xml.XPath;
 
 namespace Froststrap.UI.Elements.Settings.Pages.GlobalSettings
 {
-    public partial class GlobalSettingsEditor : UserControl
+    internal partial class GlobalSettingsEditor : UserControl, IDisposable
     {
         // This all could of been done better but meh
 
@@ -16,6 +16,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.GlobalSettings
         private readonly ObservableCollection<GlobalSetting> _globalSettingsList = [];
         private string _searchFilter = string.Empty;
         private CancellationTokenSource? _searchCancellationTokenSource;
+        private bool _disposed;
 
         public GlobalSettingsEditor()
         {
@@ -119,6 +120,27 @@ namespace Froststrap.UI.Elements.Settings.Pages.GlobalSettings
                 entry.Value = newText;
                 App.GlobalSettings.Document?.XPathSelectElement(dynamicPath)?.SetValue(newText);
             }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+                return;
+
+            if (disposing)
+            {
+                _searchCancellationTokenSource?.Cancel();
+                _searchCancellationTokenSource?.Dispose();
+                _searchCancellationTokenSource = null;
+            }
+
+            _disposed = true;
         }
     }
 }

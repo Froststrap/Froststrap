@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Enums
 {
-    public enum BackgroundStretch
+    internal enum BackgroundStretch
     {
         [EnumName(FromTranslation = "Enums.BackgroundStretch.None")]
         None,

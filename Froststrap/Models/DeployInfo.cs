@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Models
 {
-    public class DeployInfo
+    internal class DeployInfo
     {
         public string Timestamp { get; set; } = null!;
         public string Version { get; set; } = null!;

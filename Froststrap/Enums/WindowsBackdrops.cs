@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Enums
 {
-    public enum WindowsBackdrops
+    internal enum WindowsBackdrops
     {
         Mica,
         Acrylic,

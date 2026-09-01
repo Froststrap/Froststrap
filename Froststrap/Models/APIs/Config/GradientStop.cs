@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Models.APIs.Config
 {
-    public class GradientStop
+    internal class GradientStop
     {
         [JsonPropertyName("offset")]
         public double Offset { get; set; }

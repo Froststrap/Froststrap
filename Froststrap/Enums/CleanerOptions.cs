@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Enums
 {
-    public enum CleanerOptions
+    internal enum CleanerOptions
     {
         Never,
         OneDay,

@@ -7,7 +7,7 @@ using Avalonia;
 
 namespace Froststrap
 {
-    public static class LaunchHandler
+    internal static class LaunchHandler
     {
         public static void ProcessNextAction(NextAction action)
         {
@@ -35,7 +35,7 @@ namespace Froststrap
             }
         }
 
-        public static void ProcessLaunchArgs()
+        public static async Task ProcessLaunchArgs()
         {
             // this order is specific
             if (App.LaunchSettings.OnboardingFlag.Active)
@@ -56,7 +56,7 @@ namespace Froststrap
             else if (App.LaunchSettings.BackgroundUpdaterFlag.Active)
             {
                 App.Logger.Info("Opening background updater");
-                LaunchBackgroundUpdater();
+                await LaunchBackgroundUpdater();
             }
             else if (App.LaunchSettings.RobloxLaunchMode != LaunchMode.None)
             {
@@ -82,7 +82,7 @@ namespace Froststrap
 
         public static void LaunchSettings()
         {
-            var interlock = new InterProcessLock("Settings");
+            using var interlock = new InterProcessLock("Settings");
 
             if (!interlock.IsAcquired)
             {
@@ -220,7 +220,7 @@ namespace Froststrap
                 }
 
                 App.Terminate();
-            });
+            },TaskScheduler.Default);
 
             if ((OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) && !App.LaunchSettings.QuietFlag.Active)
             {
@@ -243,7 +243,7 @@ namespace Froststrap
             //    - discord rich presence tasks: handles querying and displaying of game information, invoked on activity watcher events
             // - watcher task: runs activity watcher + waiting for roblox to close, terminates when it has
 
-            var watcher = new Watcher();
+            using var watcher = new Watcher();
 
             Task watcherTask = Task.Run(watcher.Run);
 
@@ -266,7 +266,7 @@ namespace Froststrap
                     Cleaner.DoCleaning();
 
                 App.Terminate();
-            });
+            }, TaskScheduler.Default);
         }
 
         public static void LaunchBloxshadeConfig()
@@ -277,7 +277,7 @@ namespace Froststrap
             App.SoftTerminate();
         }
 
-        public static void LaunchBackgroundUpdater()
+        public static async Task LaunchBackgroundUpdater()
         {
             // Activate some LaunchFlags we need
             App.LaunchSettings.QuietFlag.Active = true;
@@ -290,9 +290,9 @@ namespace Froststrap
                 QuitIfLockExists = true
             };
 
-            CancellationTokenSource cts = new();
+            using var cts = new CancellationTokenSource();
 
-            Task.Run(() =>
+            await Task.Run(() =>
             {
                 App.Logger.Info("Started event waiter");
                 using (EventWaitHandle handle = new(false, EventResetMode.AutoReset, "Froststrap-BackgroundUpdaterKillEvent"))
@@ -302,10 +302,10 @@ namespace Froststrap
                 App.Bootstrapper.Cancel();
             }, cts.Token);
 
-            Task.Run(App.Bootstrapper.Run).ContinueWith(async t =>
+            await Task.Run(App.Bootstrapper.Run).ContinueWith(async t =>
             {
                 App.Logger.Info("Bootstrapper task has finished");
-                cts.Cancel(); // stop event waiter
+                await cts.CancelAsync(); // stop event waiter
 
                 if (t.IsFaulted)
                 {
@@ -316,7 +316,7 @@ namespace Froststrap
                 }
 
                 App.Terminate();
-            });
+            }, TaskScheduler.Default);
 
             App.Logger.Info("Exiting");
         }

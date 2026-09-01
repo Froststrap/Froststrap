@@ -14,7 +14,7 @@ using System.Net.Http.Headers;
 
 namespace Froststrap.Integrations
 {
-    public class RobloxServerFetcher
+    internal class RobloxServerFetcher : IDisposable
     {
         private readonly HttpClient _client;
         private Dictionary<int, string>? _datacenterIdToRegion;
@@ -25,13 +25,15 @@ namespace Froststrap.Integrations
 
         private const string DatacenterUrl = "https://apis.rovalra.com/v1/datacenters/list";
 
-        public class RegionDistance
+        private bool _disposed;
+
+        internal class RegionDistance
         {
             public string Region { get; set; } = "";
             public double DistanceKm { get; set; }
         }
 
-        public class ServerSelectionResult
+        internal class ServerSelectionResult
         {
             public string? ServerId { get; set; }
             public string? Region { get; set; }
@@ -43,7 +45,7 @@ namespace Froststrap.Integrations
 
         public RobloxServerFetcher()
         {
-            var handler = new SocketsHttpHandler
+            using var handler = new SocketsHttpHandler
             {
                 PooledConnectionLifetime = TimeSpan.FromMinutes(5),
                 MaxConnectionsPerServer = 20
@@ -79,7 +81,7 @@ namespace Froststrap.Integrations
         {
             try
             {
-                var response = await _client.GetAsync($"https://apis.rovalra.com/v1/servers/details?place_id={placeId}&server_ids={jobId}");
+                var response = await _client.GetAsync(new Uri($"https://apis.rovalra.com/v1/servers/details?place_id={placeId}&server_ids={jobId}"));
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -121,8 +123,8 @@ namespace Froststrap.Integrations
                     cancellationToken.ThrowIfCancellationRequested();
 
                     var serverIdsParam = string.Join(",", batch);
-                    var response = await _client.GetAsync(
-                        $"https://apis.rovalra.com/v1/servers/details?place_id={placeId}&server_ids={Uri.EscapeDataString(serverIdsParam)}",
+                    var response = await _client.GetAsync(new Uri(
+                        $"https://apis.rovalra.com/v1/servers/details?place_id={placeId}&server_ids={Uri.EscapeDataString(serverIdsParam)}"),
                         cancellationToken
                     );
 
@@ -166,7 +168,7 @@ namespace Froststrap.Integrations
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var json = await _client.GetStringAsync(DatacenterUrl, cancellationToken);
+                var json = await _client.GetStringAsync(new Uri(DatacenterUrl), cancellationToken);
                 var datacenterEntries = JsonSerializer.Deserialize<List<DatacenterEntry>>(json);
 
                 if (datacenterEntries == null) return null;
@@ -212,7 +214,7 @@ namespace Froststrap.Integrations
             while (true)
             {
                 attempt++;
-                var joinReq = new HttpRequestMessage(HttpMethod.Post, UrlBuilder.BuildApiUrl("gamejoin", "v1/join-game-instance", secure: true));
+                using var joinReq = new HttpRequestMessage(HttpMethod.Post, UrlBuilder.BuildApiUrl("gamejoin", "v1/join-game-instance", secure: true));
                 joinReq.Headers.Add("Referer", $"https://roblox.com/games/{placeId}");
                 joinReq.Headers.Add("Origin", "https://roblox.com");
                 joinReq.Headers.Add("Cookie", $".ROBLOSECURITY={roblosecurity}");
@@ -257,7 +259,9 @@ namespace Froststrap.Integrations
 
             foreach (var prop in elem.EnumerateObject())
             {
-                if (prop.Value.ValueKind == JsonValueKind.Number && (prop.Name.Contains("DataCenterId") || prop.Name.Equals("dc")))
+                if (prop.Value.ValueKind == JsonValueKind.Number &&
+    (prop.Name.Contains("DataCenterId", StringComparison.Ordinal) ||
+     prop.Name.Equals("dc", StringComparison.Ordinal)))
                 {
                     if (prop.Value.TryGetInt32(out dcId)) return true;
                 }
@@ -275,7 +279,7 @@ namespace Froststrap.Integrations
             {
                 if (string.IsNullOrWhiteSpace(roblosecurityCookie)) return false;
 
-                var request = new HttpRequestMessage(HttpMethod.Get, UrlBuilder.BuildApiUrl("users", "v1/users/authenticated", secure: true));
+                using var request = new HttpRequestMessage(HttpMethod.Get, UrlBuilder.BuildApiUrl("users", "v1/users/authenticated", secure: true));
                 request.Headers.Add("Cookie", $".ROBLOSECURITY={roblosecurityCookie}");
 
                 var response = await _client.SendAsync(request);
@@ -356,7 +360,7 @@ namespace Froststrap.Integrations
                 Query = $"sortOrder=Desc&excludeFullGames=true&limit=100&orderBy={sortOrder}&cursor={cursor}"
             }.Uri;
 
-            var req = new HttpRequestMessage(HttpMethod.Get, url);
+            using var req = new HttpRequestMessage(HttpMethod.Get, url);
             req.Headers.Add("Cookie", $".ROBLOSECURITY={roblosecurity}");
 
             var response = await _client.SendAsync(req, cancellationToken).ConfigureAwait(false);
@@ -491,7 +495,7 @@ namespace Froststrap.Integrations
 
                 using var httpClient = new HttpClient();
                 httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("Froststrap/1.0");
-                var ipinfoJson = await httpClient.GetStringAsync("https://ipinfo.io/json", cancellationToken);
+                var ipinfoJson = await httpClient.GetStringAsync(new Uri("https://ipinfo.io/json"), cancellationToken);
                 var ipinfo = JsonSerializer.Deserialize<IPInfoResponse>(ipinfoJson);
 
                 if (string.IsNullOrEmpty(ipinfo?.Loc))
@@ -501,7 +505,7 @@ namespace Froststrap.Integrations
                 double userLat = double.Parse(location[0], CultureInfo.InvariantCulture);
                 double userLon = double.Parse(location[1], CultureInfo.InvariantCulture);
 
-                var datacentersJson = await httpClient.GetStringAsync("https://apis.rovalra.com/v1/datacenters/list", cancellationToken);
+                var datacentersJson = await httpClient.GetStringAsync(new Uri("https://apis.rovalra.com/v1/datacenters/list"), cancellationToken);
                 var datacenters = JsonSerializer.Deserialize<List<DatacenterEntry>>(datacentersJson);
 
                 if (datacenters == null || datacenters.Count == 0)
@@ -708,7 +712,7 @@ namespace Froststrap.Integrations
 
                 while (!string.IsNullOrEmpty(nextCursor) && pagesFetched < maxPages && serversChecked < maxServerCheck)
                 {
-                    var result = await FetchServerInstancesAsync(placeId, nextCursor ?? "", sortOrder, cookie, cancellationToken);
+                    var result = await FetchServerInstancesAsync(placeId, nextCursor, sortOrder, cookie, cancellationToken);
 
                     if (result?.Servers == null || result.Servers.Count == 0)
                     {
@@ -861,6 +865,24 @@ namespace Froststrap.Integrations
             {
                 App.Logger.Error("Unhandled exception:", ex);
                 return false;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    _client?.Dispose();
+                }
+                _disposed = true;
             }
         }
     }

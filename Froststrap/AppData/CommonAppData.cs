@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.AppData
 {
-    public abstract class CommonAppData
+    internal abstract class CommonAppData
     {
         public virtual string ExecutableName { get; } = null!;
 
@@ -19,6 +19,6 @@
 
         public DistributionState DistributionState => DistributionStateManager.Prop;
 
-        public List<string> ModManifest => DistributionState.ModManifest;
+        public IReadOnlyList<string> ModManifest => DistributionState.ModManifest;
     }
 }

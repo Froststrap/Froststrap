@@ -1,6 +1,6 @@
-﻿using Microsoft.Win32;
+﻿using System.Security.Cryptography;
+using Microsoft.Win32;
 using System.Runtime.Versioning;
-using System.Security.Cryptography;
 
 namespace Froststrap
 {
@@ -56,14 +56,14 @@ namespace Froststrap
                 return;
 
             bool isAutoUpgrade = App.LaunchSettings.UpgradeFlag.Active
-                || Paths.Process.StartsWith(Path.Combine(Paths.Base, "Updates"))
-                || Paths.Process.StartsWith(Path.Combine(Paths.Temp, "Updates"))
-                || Paths.Process.StartsWith(Paths.TempUpdates);
+                || Paths.Process.StartsWith(Path.Combine(Paths.Base, "Updates"), StringComparison.OrdinalIgnoreCase)
+                || Paths.Process.StartsWith(Path.Combine(Paths.Temp, "Updates"), StringComparison.OrdinalIgnoreCase)
+                || Paths.Process.StartsWith(Paths.TempUpdates, StringComparison.OrdinalIgnoreCase);
 
             var existingVer = GetVersionInfo(Paths.Application);
             var currentVer = GetVersionInfo(Paths.Process);
 
-            if (MD5Hash.FromFile(Paths.Process) == MD5Hash.FromFile(Paths.Application))
+            if (SHA256Hash.FromFile(Paths.Process) == SHA256Hash.FromFile(Paths.Application))
                 return;
 
             if (currentVer is not null && existingVer is not null)
@@ -118,7 +118,7 @@ namespace Froststrap
             else if (!isAutoUpgrade)
             {
                 await Frontend.ShowMessageBox(
-                    string.Format(Strings.InstallChecker_Updated, currentVer ?? App.Version),
+                    string.Format(CultureInfo.InvariantCulture, Strings.InstallChecker_Updated, currentVer ?? App.Version),
                     MessageBoxImage.Information
                 );
             }
@@ -261,7 +261,8 @@ namespace Froststrap
                     await File.WriteAllTextAsync(versionFile, App.Version);
 
                     string desktopFile = Path.Combine(Paths.UserProfile, ".local", "share", "applications",
-                        $"{App.ProjectName.ToLower()}.desktop");
+                       $"{App.ProjectName.ToUpperInvariant()}.desktop");
+
                     if (File.Exists(desktopFile))
                     {
                         var content = await File.ReadAllTextAsync(desktopFile);
@@ -571,9 +572,9 @@ namespace Froststrap
                     {
                         var buffer = new byte[1024 * 1024];
                         int read = await srcFs.ReadAsync(buffer);
-                        srcHash = MD5.HashData(buffer.AsSpan(0, read));
+                        srcHash = SHA256.HashData(buffer.AsSpan(0, read));
                         read = await dstFs.ReadAsync(buffer);
-                        dstHash = MD5.HashData(buffer.AsSpan(0, read));
+                        dstHash = SHA256.HashData(buffer.AsSpan(0, read));
                     }
                     if (!srcHash.SequenceEqual(dstHash))
                         throw new IOException("Hash mismatch after copy.");

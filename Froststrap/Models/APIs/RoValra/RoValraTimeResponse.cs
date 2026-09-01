@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Models.APIs.RoValra
 {
-    public class RoValraTimeResponse
+    internal class RoValraTimeResponse
     {
         [JsonPropertyName("servers")]
         public List<RoValrasServer>? Servers { get; set; } = null!;

@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Enums.Messagebox
 {
-    public enum MessageBoxResult
+    internal enum MessageBoxResult
     {
         None,
         OK,

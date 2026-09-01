@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Models.APIs.Roblox
 {
-    public class ClientVersion
+    internal class ClientVersion
     {
         [JsonPropertyName("version")]
         public string Version { get; set; } = null!;
@@ -13,6 +13,6 @@
 
         public DateTime? Timestamp { get; set; }
 
-        public bool IsBehindDefaultChannel { get; set; } = false;
+        public bool IsBehindDefaultChannel { get; set; }
     }
 }

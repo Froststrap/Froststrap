@@ -6,9 +6,10 @@ using Froststrap.UI.ViewModels.Settings;
 
 namespace Froststrap.UI.Elements.Settings
 {
-    public partial class AccountSelectorView : UserControl
+    internal partial class AccountSelectorView : UserControl, IDisposable
     {
         private readonly AccountSelectorViewModel? _viewModel;
+        private bool _disposed;
 
         public AccountSelectorView()
         {
@@ -76,6 +77,25 @@ namespace Froststrap.UI.Elements.Settings
         {
             _viewModel?.OnManualAddRequested -= HandleManualAddRequested;
             base.OnUnloaded(e);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+                return;
+
+            if (disposing)
+            {
+                _viewModel?.Dispose();
+            }
+
+            _disposed = true;
         }
     }
 }

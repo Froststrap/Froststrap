@@ -79,7 +79,7 @@ namespace Froststrap.UI.ViewModels.ContextMenu
                         {
                             try
                             {
-                                var response = await App.HttpClient.GetByteArrayAsync(fetchedUrls[i]);
+                                var response = await App.HttpClient.GetByteArrayAsync(new Uri(fetchedUrls[i]!));
                                 using var ms = new MemoryStream(response);
                                 processedHistory[i].ThumbnailBitmap = new Bitmap(ms);
                             }

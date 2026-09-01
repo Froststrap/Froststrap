@@ -6,7 +6,7 @@
 
 namespace Froststrap.Models.Manifest
 {
-    public class Package
+    internal class Package
     {
         public string Name { get; set; } = "";
 

@@ -2,7 +2,7 @@
 
 namespace Froststrap.Models
 {
-    public class CustomIntegration : NotifyPropertyChangedViewModel
+    internal class CustomIntegration : NotifyPropertyChangedViewModel
     {
         private string _name = "";
         public string Name
@@ -18,7 +18,7 @@ namespace Froststrap.Models
             set { _location = value; OnPropertyChanged(nameof(Location)); }
         }
 
-        private bool _specifyGame = false;
+        private bool _specifyGame;
         public bool SpecifyGame
         {
             get => _specifyGame;
@@ -31,8 +31,8 @@ namespace Froststrap.Models
         public string LaunchArgs { get; set; } = "";
         public string GameID { get; set; } = "";
         public bool AutoCloseOnGame { get; set; } = true;
-        public int Delay { get; set; } = 0;
-        public bool PreLaunch { get; set; } = false;
+        public int Delay { get; set; }
+        public bool PreLaunch { get; set; }
         public bool AutoClose { get; set; } = true;
     }
 }

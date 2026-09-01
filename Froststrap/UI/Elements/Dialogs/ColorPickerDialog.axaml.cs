@@ -5,9 +5,9 @@ using Froststrap.UI.Elements.Base;
 
 namespace Froststrap.UI.Elements.Dialogs
 {
-    public partial class ColorPickerDialog : AvaloniaWindow
+    internal partial class ColorPickerDialog : AvaloniaWindow
     {
-        private bool _isUpdating = false;
+        private bool _isUpdating;
 
         public ColorPickerDialog()
         {
@@ -21,7 +21,7 @@ namespace Froststrap.UI.Elements.Dialogs
             if (!string.IsNullOrEmpty(initialHex) && Color.TryParse(initialHex, out var color))
             {
                 UpdatePickerFromColor(color);
-                Part_HexBox.Text = initialHex.ToUpper();
+                Part_HexBox.Text = initialHex.ToUpperInvariant();
             }
         }
 

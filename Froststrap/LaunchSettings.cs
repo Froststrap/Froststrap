@@ -1,8 +1,6 @@
-using System.Reflection;
-
 namespace Froststrap
 {
-    public class LaunchSettings
+    internal class LaunchSettings
     {
         public LaunchFlag MenuFlag { get; } = new("preferences,menu,settings");
         public LaunchFlag WatcherFlag { get; } = new("watcher");
@@ -106,7 +104,7 @@ namespace Froststrap
                     RobloxLaunchArgs = arg;
                     startIdx = 1;
                 }
-                else if (arg.StartsWith("version-"))
+                else if (arg.StartsWith("version-", StringComparison.Ordinal))
                 {
                     App.Logger.Info("Got version argument");
                     VersionFlag.Active = true;
@@ -249,12 +247,12 @@ namespace Froststrap
                 return;
             }
 
-            if (data.StartsWith("roblox-studio:"))
+            if (data.StartsWith("roblox-studio:", StringComparison.Ordinal))
             {
                 App.Logger.Info("Got Roblox Studio launch arguments");
                 RobloxLaunchArgs = data;
             }
-            else if (data.StartsWith("roblox-studio-auth:"))
+            else if (data.StartsWith("roblox-studio-auth:", StringComparison.Ordinal))
             {
                 App.Logger.Info("Got Roblox Studio Auth launch arguments");
                 RobloxLaunchMode = LaunchMode.StudioAuth;

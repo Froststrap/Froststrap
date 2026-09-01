@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Models.BloxstrapRPC
 {
-    public class Message
+    internal class Message
     {
         [JsonPropertyName("command")]
         public string Command { get; set; } = null!;

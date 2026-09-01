@@ -1,6 +1,7 @@
 ﻿namespace Froststrap.UI.ViewModels.About
 {
-    public class LicensesViewModel : NotifyPropertyChangedViewModel
+    internal class LicensesViewModel : NotifyPropertyChangedViewModel
     {
+        //Why do we have this ?
     }
 }

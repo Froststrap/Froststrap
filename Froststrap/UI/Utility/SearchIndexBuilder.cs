@@ -10,7 +10,7 @@ namespace Froststrap.UI.Utility
     /// Scans majoirty of elements in search page (OptionControls, CardExpanders, CardActions, TextBlocks) etc.
     /// Should be fairly competent at doing its job.
     /// </summary>
-    public partial class SearchIndexBuilder
+    internal partial class SearchIndexBuilder
     {
         private readonly Dictionary<string, List<SearchBarItem>> _pageIndexCache = [];
         private List<SearchBarItem>? _navigationItemsCache;
@@ -206,7 +206,7 @@ namespace Froststrap.UI.Utility
                     var text = tb.Text;
                     return !string.IsNullOrWhiteSpace(text) &&
                            text.Length is > 3 and < 100 &&
-                           !text.Contains('\n') &&
+                           !text.Contains('\n', StringComparison.Ordinal) &&
                            tb.FontWeight == Avalonia.Media.FontWeight.Bold;
                 })
                 .DistinctBy(tb => tb.Text);
@@ -245,7 +245,7 @@ namespace Froststrap.UI.Utility
 
         private static string NormalizeTag(string text)
         {
-            return Regex.Replace(text.ToLower(), @"[^a-z0-9]+", "-").Trim('-');
+            return Regex.Replace(text.ToUpperInvariant(), @"[^a-z0-9]+", "-").Trim('-');
         }
     }
 }

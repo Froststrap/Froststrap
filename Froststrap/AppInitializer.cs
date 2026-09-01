@@ -2,7 +2,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using Froststrap;
 
-public static class AppInitializer
+internal static class AppInitializer
 {
     public static void InitializeNativeResolvers()
     {
@@ -28,8 +28,8 @@ public static class AppInitializer
             fileName = $"lib{libraryName}.dylib";
         }
 
-        string[] candidatePaths = new[]
-        {
+        string[] candidatePaths =
+        [
             // Same folder as executable
             Path.Combine(baseDir, fileName),
             Path.Combine(baseDir, libraryName),
@@ -37,7 +37,7 @@ public static class AppInitializer
             // Bundle Frameworks
             Path.Combine(baseDir, "..", "Frameworks", fileName),
             Path.Combine(baseDir, "..", "Frameworks", libraryName)
-        };
+        ];
 
         foreach (string relativePath in candidatePaths)
         {

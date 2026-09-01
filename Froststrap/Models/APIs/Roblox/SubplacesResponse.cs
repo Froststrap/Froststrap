@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Models.APIs.Roblox
 {
-    public class SubplacesResponse
+    internal class SubplacesResponse
     {
         [JsonPropertyName("previousPageCursor")]
         public string? PreviousPageCursor { get; set; }
@@ -9,6 +9,6 @@
         public string? NextPageCursor { get; set; }
 
         [JsonPropertyName("data")]
-        public List<SubplaceData> Data { get; set; } = new();
+        public List<SubplaceData> Data { get; set; } = [];
     }
 }

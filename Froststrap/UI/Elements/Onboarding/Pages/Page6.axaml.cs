@@ -3,7 +3,7 @@ using Froststrap.UI.ViewModels.Onboarding;
 
 namespace Froststrap.UI.Elements.Onboarding.Pages
 {
-    public partial class Page6 : UserControl
+    internal partial class Page6 : UserControl
     {
         public Page6()
         {

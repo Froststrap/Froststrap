@@ -12,7 +12,7 @@ using Froststrap.UI.Utility;
 
 namespace Froststrap.UI.Elements.Base
 {
-    public abstract class AvaloniaWindow : Window
+    internal abstract class AvaloniaWindow : Window
     {
         private static IStyle? _activeColorStyle;
         private static ResourceDictionary? _activeThemeDictionary;

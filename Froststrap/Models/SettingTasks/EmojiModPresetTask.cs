@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Models.SettingTasks
 {
-    public class EmojiModPresetTask : EnumBaseTask<EmojiType>
+    internal class EmojiModPresetTask : EnumBaseTask<EmojiType>
     {
         private static string FilePath => Path.Combine(Paths.Modifications, "content", "fonts", "TwemojiMozilla.ttf");
 
@@ -10,7 +10,7 @@
                 return null;
 
             using var fileStream = File.OpenRead(FilePath);
-            string hash = MD5Hash.Stringify(App.SHA256Provider.ComputeHash(fileStream));
+            string hash = SHA256Hash.Stringify(App.SHA256Provider.ComputeHash(fileStream));
 
             return EmojiTypeEx.Hashes.Where(x => x.Value == hash);
         }
@@ -27,31 +27,32 @@
         {
             var query = QueryCurrentValue();
 
-            if (NewState != EmojiType.Default && (query is null || query.FirstOrDefault().Key != NewState))
+            if (NewState != EmojiType.Default)
             {
-                try
+                var first = query?.FirstOrDefault();
+                if (first?.Key != NewState)
                 {
-                    var response = await App.HttpClient.GetAsync(NewState.GetUrl());
+                    try
+                    {
+                        var response = await App.HttpClient.GetAsync(new Uri(NewState.GetUrl()));
+                        response.EnsureSuccessStatusCode();
 
-                    response.EnsureSuccessStatusCode();
+                        Directory.CreateDirectory(Path.GetDirectoryName(FilePath)!);
+                        await using var fileStream = new FileStream(FilePath, FileMode.Create);
+                        await response.Content.CopyToAsync(fileStream);
 
-                    Directory.CreateDirectory(Path.GetDirectoryName(FilePath)!);
-
-                    await using var fileStream = new FileStream(FilePath, FileMode.Create);
-                    await response.Content.CopyToAsync(fileStream);
-
-                    OriginalState = NewState;
-                }
-                catch (Exception ex)
-                {
-                    App.Logger.Error("Unhandled exception: ", ex);
-
-                    await Frontend.ShowConnectivityDialog(
-                        String.Format(Strings.Dialog_Connectivity_UnableToConnect, "GitHub"),
-                        $"{Strings.Menu_PresetMods_Presets_EmojiType_Error}\n\n{Strings.Dialog_Connectivity_TryAgainLater}",
-                        MessageBoxImage.Warning,
-                        ex
-                    );
+                        OriginalState = NewState;
+                    }
+                    catch (Exception ex)
+                    {
+                        App.Logger.Error("Unhandled exception: ", ex);
+                        await Frontend.ShowConnectivityDialog(
+                            string.Format(CultureInfo.CurrentCulture, Strings.Dialog_Connectivity_UnableToConnect, "GitHub"),
+                            $"{Strings.Menu_PresetMods_Presets_EmojiType_Error}\n\n{Strings.Dialog_Connectivity_TryAgainLater}",
+                            MessageBoxImage.Warning,
+                            ex
+                        );
+                    }
                 }
             }
             else if (query is not null && query.Any())

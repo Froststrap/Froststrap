@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Utility
 {
-    public static class ThemeCycler
+    internal static class ThemeCycler
     {
         public static void HandleLaunchCycle()
         {

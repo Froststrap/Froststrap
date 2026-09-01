@@ -26,6 +26,6 @@
 
         DistributionState DistributionState { get; }
 
-        List<string> ModManifest { get; }
+        IReadOnlyList<string> ModManifest { get; }
     }
 }

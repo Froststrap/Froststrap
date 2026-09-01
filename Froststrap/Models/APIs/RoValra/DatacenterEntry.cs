@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Models.APIs.RoValra
 {
-    public class DatacenterEntry
+    internal class DatacenterEntry
     {
         [JsonPropertyName("location")]
         public DatacenterLocation Location { get; set; } = new();

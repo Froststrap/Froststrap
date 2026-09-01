@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Enums.GBSPresets
 {
-    public enum FontSize
+    internal enum FontSize
     {
         [EnumName(FromTranslation = "Enums.FontSize.x1")]
         x1,

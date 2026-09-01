@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Integrations
 {
-    public class Cleaner
+    internal class Cleaner
     {
         private const int MaxFiles = 200;
 
@@ -89,19 +89,26 @@
             if (File.GetCreationTime(file) > threshold)
                 return false;
 
-            if (!file.Contains("Roblox") && !file.Contains(App.ProjectName) && !file.Contains(Paths.Base))
-                throw new Exception($"{file} was in disallowed directory");
+            if (!file.Contains("Roblox", StringComparison.OrdinalIgnoreCase) &&
+                !file.Contains(App.ProjectName, StringComparison.OrdinalIgnoreCase) &&
+                !file.Contains(Paths.Base, StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidOperationException($"{file} was in disallowed directory");
+            }
 
-            if (file.Contains("Windows"))
-                throw new Exception($"{file} was in Windows directory");
+            if (file.Contains("Windows", StringComparison.OrdinalIgnoreCase))
+                throw new InvalidOperationException($"{file} was in Windows directory");
 
             return true;
         }
 
         private static string[] RecursivlyGetFiles(string folder)
         {
-            if (string.IsNullOrEmpty(folder) || !Directory.Exists(folder))
-                throw new Exception("Folder was not found");
+            if (string.IsNullOrEmpty(folder))
+                throw new ArgumentNullException(nameof(folder), "Folder path is null or empty.");
+
+            if (!Directory.Exists(folder))
+                throw new DirectoryNotFoundException($"Folder '{folder}' was not found.");
 
             return [.. Directory.EnumerateFiles(folder, "*.*", SearchOption.AllDirectories)];
         }

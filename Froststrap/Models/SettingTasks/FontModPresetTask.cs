@@ -1,6 +1,6 @@
 namespace Froststrap.Models.SettingTasks
 {
-    public class FontModPresetTask : StringBaseTask
+    internal class FontModPresetTask : StringBaseTask
     {
         private const string CustomFontAssetId = "rbxasset://fonts/CustomFont.ttf";
         private static readonly JsonSerializerOptions SerializerOptions = new() { WriteIndented = true };
@@ -68,7 +68,7 @@ namespace Froststrap.Models.SettingTasks
                 return null;
 
             using var fileStream = File.OpenRead(Paths.CustomFont);
-            return MD5Hash.Stringify(App.SHA256Provider.ComputeHash(fileStream));
+            return SHA256Hash.Stringify(App.SHA256Provider.ComputeHash(fileStream));
         }
 
         public FontModPresetTask() : base("ModPreset", "TextFont")
@@ -81,7 +81,7 @@ namespace Froststrap.Models.SettingTasks
         {
             if (!String.IsNullOrEmpty(NewState))
             {
-                if (String.Compare(NewState, Paths.CustomFont, StringComparison.InvariantCultureIgnoreCase) != 0 && File.Exists(NewState))
+                if (!string.Equals(NewState, Paths.CustomFont, StringComparison.OrdinalIgnoreCase) && File.Exists(NewState))
                 {
                     Directory.CreateDirectory(Path.GetDirectoryName(Paths.CustomFont)!);
 

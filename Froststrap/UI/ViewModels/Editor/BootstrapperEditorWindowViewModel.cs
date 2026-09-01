@@ -1,14 +1,12 @@
 ﻿using Froststrap.UI.Elements.Bootstrapper;
 using CommunityToolkit.Mvvm.Input;
 using System.Windows.Input;
-using System.IO;
-using System.Diagnostics;
 
 namespace Froststrap.UI.ViewModels.Editor
 {
-    public partial class BootstrapperEditorWindowViewModel : NotifyPropertyChangedViewModel
+    internal partial class BootstrapperEditorWindowViewModel : NotifyPropertyChangedViewModel
     {
-        private CustomDialog? _dialog = null;
+        private CustomDialog? _dialog;
 
         public ICommand PreviewCommand => new RelayCommand(Preview);
         public ICommand SaveCommand => new RelayCommand(Save);
@@ -20,7 +18,7 @@ namespace Froststrap.UI.ViewModels.Editor
         public string Name { get; set; } = "";
         public string Title { get; set; } = "Editing \"Custom Theme\"";
         public string Code { get; set; } = "";
-        public bool CodeChanged { get; set; } = false;
+        public bool CodeChanged { get; set; }
 
         private void Preview()
         {
@@ -40,7 +38,7 @@ namespace Froststrap.UI.ViewModels.Editor
             {
                 App.Logger.Error("Unhandled exception: ", ex);
                 _ = Frontend.ShowMessageBox(
-                    string.Format(Strings.CustomTheme_Editor_Errors_PreviewFailed, ex.Message),
+                    string.Format(CultureInfo.InvariantCulture, Strings.CustomTheme_Editor_Errors_PreviewFailed, ex.Message),
                     MessageBoxImage.Error,
                     MessageBoxButton.OK
                 );

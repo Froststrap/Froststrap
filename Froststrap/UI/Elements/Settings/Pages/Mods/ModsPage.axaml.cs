@@ -30,9 +30,9 @@ namespace Froststrap.UI.Elements.Settings.Pages.Mods
         }
     }
 
-    public partial class ModsPage : UserControl
+    internal partial class ModsPage : UserControl
     {
-        private bool _viewModelSetUp = false;
+        private bool _viewModelSetUp;
 
         public ModsPage()
         {

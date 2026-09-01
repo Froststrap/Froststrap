@@ -3,7 +3,7 @@ using Froststrap.UI.ViewModels;
 
 namespace Froststrap.Models.APIs.Config
 {
-    public partial class CommunityMod : NotifyPropertyChangedViewModel
+    internal partial class CommunityMod : NotifyPropertyChangedViewModel
     {
         [JsonPropertyName("id")]
         public string Id { get; set; } = null!;
@@ -118,7 +118,7 @@ namespace Froststrap.Models.APIs.Config
 
             try
             {
-                using var response = await App.HttpClient.GetAsync(ThumbnailUrl);
+                using var response = await App.HttpClient.GetAsync(new Uri(ThumbnailUrl));
                 if (!response.IsSuccessStatusCode) return;
 
                 await using var stream = await response.Content.ReadAsStreamAsync();

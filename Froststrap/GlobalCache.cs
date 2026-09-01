@@ -1,6 +1,6 @@
 ﻿namespace Froststrap
 {
-    public static class GlobalCache
+    internal static class GlobalCache
     {
         public static readonly Dictionary<string, string?> ServerLocation = [];
     }

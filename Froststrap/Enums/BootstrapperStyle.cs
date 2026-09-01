@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Enums
 {
-    public enum BootstrapperStyle
+    internal enum BootstrapperStyle
     {
         ClassicFluentDialog,
         TwentyFiveDialog,

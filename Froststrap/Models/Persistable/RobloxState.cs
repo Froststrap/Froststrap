@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Models.Persistable
 {
-    public class RobloxState
+    internal class RobloxState
     {
         public AppState Player { get; set; } = new();
 

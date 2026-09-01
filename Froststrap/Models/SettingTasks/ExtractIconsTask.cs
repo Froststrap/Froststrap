@@ -2,7 +2,7 @@
 
 namespace Froststrap.Models.SettingTasks
 {
-    public class ExtractIconsTask : BoolBaseTask
+    internal class ExtractIconsTask : BoolBaseTask
     {
         private static string IconPath => Path.Combine(Paths.Base, Strings.Paths_Icons);
 

@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Enums
 {
-    public enum SoftKeyProfile
+    internal enum SoftKeyProfile
     {
         WASD,
         AZERTY,

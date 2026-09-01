@@ -2,7 +2,7 @@
 
 namespace Froststrap.UI.Elements.Dialogs
 {
-    public partial class BloxshadeDialog : Base.AvaloniaWindow
+    internal partial class BloxshadeDialog : Base.AvaloniaWindow
     {
         public NextAction CloseAction = NextAction.Terminate;
 

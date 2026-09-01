@@ -67,7 +67,7 @@ namespace Froststrap.UI.Utility
                 TaskbarItemProgressState.Normal => TaskbarStates.Normal,
                 TaskbarItemProgressState.Error => TaskbarStates.Error,
                 TaskbarItemProgressState.Paused => TaskbarStates.Paused,
-                _ => throw new Exception($"Unrecognised TaskbarItemProgressState: {state}")
+                _ => throw new InvalidOperationException($"Unrecognised TaskbarItemProgressState: {state}")
             };
         }
 

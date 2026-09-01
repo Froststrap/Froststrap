@@ -4,7 +4,7 @@ using Froststrap.RobloxInterfaces;
 
 namespace Froststrap.UI.ViewModels.Bootstrapper
 {
-    public class FluentDialogViewModel : BootstrapperDialogViewModel
+    internal class FluentDialogViewModel : BootstrapperDialogViewModel
     {
         public List<WindowTransparencyLevel> WindowBackdropType { get; set; }
         public IBrush BackgroundColourBrush { get; set; } = Brushes.Transparent;

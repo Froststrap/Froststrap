@@ -3,7 +3,7 @@ using System.Net.Sockets;
 
 namespace Froststrap.Integrations
 {
-    public class PlayerDiscordRichPresence : IDisposable
+    internal class PlayerDiscordRichPresence : IDisposable
     {
         private readonly DiscordRpcClient? _rpcClient;
         private readonly ActivityWatcher _activityWatcher;
@@ -15,12 +15,12 @@ namespace Froststrap.Integrations
 
         private readonly FixedSizeList<ThumbnailCacheEntry> _thumbnailCache = new(20);
 
-        private ulong? _smallImgBeingFetched = null;
-        private ulong? _largeImgBeingFetched = null;
+        private ulong? _smallImgBeingFetched;
+        private ulong? _largeImgBeingFetched;
         private CancellationTokenSource? _fetchThumbnailsToken;
 
         private bool _visible = true;
-        private bool _disposed = false;
+        private bool _disposed;
 
         public PlayerDiscordRichPresence(ActivityWatcher activityWatcher)
         {

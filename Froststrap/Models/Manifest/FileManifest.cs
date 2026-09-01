@@ -2,7 +2,7 @@
 
 namespace Froststrap.Models.Manifest
 {
-    public class FileManifest : List<ManifestFile>
+    internal class FileManifest : List<ManifestFile>
     {
         private FileManifest(string data)
         {
@@ -27,7 +27,7 @@ namespace Froststrap.Models.Manifest
         public static async Task<FileManifest> Get(string versionGuid)
         {
             string pkgManifestUrl = Deployment.GetLocation($"/{versionGuid}-rbxManifest.txt");
-            var pkgManifestData = await App.HttpClient.GetStringAsync(pkgManifestUrl);
+            var pkgManifestData = await App.HttpClient.GetStringAsync(new Uri(pkgManifestUrl));
 
             return new FileManifest(pkgManifestData);
         }

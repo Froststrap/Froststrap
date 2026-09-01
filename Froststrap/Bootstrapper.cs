@@ -29,7 +29,7 @@ using System.Web;
 
 namespace Froststrap
 {
-    public class Bootstrapper
+    internal class Bootstrapper : IDisposable
     {
         #region Constants
 
@@ -98,7 +98,7 @@ namespace Froststrap
         private LaunchMode _launchMode;
 
         private string _launchCommandLine = App.LaunchSettings.RobloxLaunchArgs;
-        private Version? _latestVersion = null;
+        private Version? _latestVersion;
         private string _latestVersionGuid = null!;
         private string _latestVersionDirectory = null!;
         private PackageManifest _versionPackageManifest = null!;
@@ -112,28 +112,29 @@ namespace Froststrap
             || (OperatingSystem.IsWindows() && !IsStudioLaunch && !File.Exists(Path.Combine(_latestVersionDirectory, "WebView2Loader.dll")))
             || (OperatingSystem.IsWindows() && !IsStudioLaunch && !File.Exists(Path.Combine(_latestVersionDirectory, "RobloxPlayerBeta.dll")));
 
-        private bool _isInstalling = false;
+        private bool _isInstalling;
         private double _progressIncrement;
         private double _taskbarProgressIncrement;
         private double _taskbarProgressMaximum;
-        private long _totalDownloadedBytes = 0;
-        private long _totalPackagedBytes = 0;
+        private long _totalDownloadedBytes;
+        private long _totalPackagedBytes;
         private bool _packageExtractionSuccess = true;
 
-        private bool _matchmakingInProgress = false;
-        private bool _skipMatchmaking = false;
+        private bool _matchmakingInProgress;
+        private bool _skipMatchmaking;
         private CancellationTokenSource? _matchmakingCts;
 
-        private bool _noConnection = false;
+        private bool _noConnection;
 
         private InterProcessLock? _appLock;
-        private int _appPid = 0;
+        private int _appPid;
+        private bool _disposed;
 
-        public IBootstrapperDialog? Dialog = null;
+        public IBootstrapperDialog? Dialog;
         public bool IsStudioLaunch => _launchMode != LaunchMode.Player;
         public string LockName { get; set; } = "Bootstrapper";
 
-        public bool QuitIfLockExists { get; set; } = false;
+        public bool QuitIfLockExists { get; set; }
 
         #endregion
 
@@ -211,7 +212,7 @@ namespace Froststrap
 
         private void SetStatus(string message)
         {
-            message = message.Replace("{product}", AppData.ProductName);
+            message = message.Replace("{product}", AppData.ProductName, StringComparison.Ordinal);
             Dialog?.Message = message;
         }
 
@@ -237,7 +238,7 @@ namespace Froststrap
 
             if (updateStatus)
             {
-                SetStatus(string.Format(
+                SetStatus(string.Format(CultureInfo.InvariantCulture,
                     Strings.Bootstrapper_Status_DownloadingPackages,
                     FormatBytes(current),
                     FormatBytes(_totalPackagedBytes)
@@ -266,7 +267,7 @@ namespace Froststrap
 
             // https://gist.github.com/pizzaboxer/4b58303589ee5b14cc64397460a8f386
             if (ex is HttpRequestException && ex.InnerException is null)
-                message = String.Format(Strings.Dialog_Connectivity_RobloxDown, "[status.roblox.com](https://status.roblox.com)");
+                message = String.Format(CultureInfo.InvariantCulture, Strings.Dialog_Connectivity_RobloxDown, "[status.roblox.com](https://status.roblox.com)");
 
             if (MustUpgrade)
                 message += $"\n\n{Strings.Dialog_Connectivity_RobloxUpgradeNeeded}\n\n{Strings.Dialog_Connectivity_TryAgainLater}";
@@ -274,7 +275,7 @@ namespace Froststrap
                 message += $"\n\n{Strings.Dialog_Connectivity_RobloxUpgradeSkip}";
 
             await Frontend.ShowConnectivityDialog(
-                String.Format(Strings.Dialog_Connectivity_UnableToConnect, "Roblox"),
+                String.Format(CultureInfo.InvariantCulture, Strings.Dialog_Connectivity_UnableToConnect, "Roblox"),
                 message,
                 MustUpgrade ? MessageBoxImage.Error : MessageBoxImage.Warning,
                 ex);
@@ -556,9 +557,11 @@ namespace Froststrap
                 App.Settings.Save();
             }
 
+#pragma warning disable CA1308
             string enrolledChannel = match.Groups.Count == 2
                 ? match.Groups[1].Value.ToLowerInvariant()
                 : Deployment.DefaultChannel;
+#pragma warning restore CA1308
 
             bool behindProductionCheck = App.Settings.Prop.ChannelChangeMode == ChannelChangeMode.Prompt;
 
@@ -610,7 +613,7 @@ namespace Froststrap
                             : Deployment.DefaultChannel;
 
                         var promptResult = await Frontend.ShowMessageBox(
-                            String.Format(Strings.Bootstrapper_Bootstrapper_Dialog_PromptChannelChange, displayChannel, Deployment.Channel),
+                            String.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_Bootstrapper_Dialog_PromptChannelChange, displayChannel, Deployment.Channel),
                             MessageBoxImage.Question,
                             MessageBoxButton.YesNo
                         );
@@ -660,7 +663,7 @@ namespace Froststrap
                     if (!App.LaunchSettings.QuietFlag.Active)
                     {
                         await Frontend.ShowMessageBox(
-                            string.Format(Strings.Bootstrapper_Status_InvalidOverride, overrideHash, error),
+                            string.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_Status_InvalidOverride, overrideHash, error),
                             MessageBoxImage.Warning,
                             MessageBoxButton.OK
                         );
@@ -696,7 +699,7 @@ namespace Froststrap
                         if (App.Settings.Prop.ChannelChangeMode != ChannelChangeMode.Automatic)
                         {
                             await Frontend.ShowMessageBox(
-                                String.Format(
+                                String.Format(CultureInfo.InvariantCulture,
                                     Strings.Boostrapper_Dialog_UnauthorizedChannel,
                                     Deployment.Channel,
                                     Deployment.DefaultChannel
@@ -717,7 +720,7 @@ namespace Froststrap
                 if (clientVersion.IsBehindDefaultChannel && App.Settings.Prop.ChannelChangeMode == ChannelChangeMode.Prompt)
                 {
                     MessageBoxResult action = await Frontend.ShowMessageBox(
-                            String.Format(Strings.Bootstrapper_Dialog_ChannelOutOfDate, Deployment.Channel, Deployment.DefaultChannel),
+                            String.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_Dialog_ChannelOutOfDate, Deployment.Channel, Deployment.DefaultChannel),
                             MessageBoxImage.Warning,
                             MessageBoxButton.YesNo
                         );
@@ -778,7 +781,7 @@ namespace Froststrap
             else
             {
                 string pkgManifestUrl = Deployment.GetLocation($"/{_latestVersionGuid}-rbxPkgManifest.txt");
-                var pkgManifestData = await App.HttpClient.GetStringAsync(pkgManifestUrl);
+                var pkgManifestData = await App.HttpClient.GetStringAsync(new Uri(pkgManifestUrl));
                 _versionPackageManifest = new(pkgManifestData);
             }
 
@@ -883,12 +886,12 @@ namespace Froststrap
             {
                 App.Logger.Debug($"User selected specific region: {selectedRegion}, sort order: {sortOrder}");
 
-                var selectedRegionFetcher = new Integrations.RobloxServerFetcher();
+                using var selectedRegionFetcher = new Integrations.RobloxServerFetcher();
                 string? selectedRegionCookie = await selectedRegionFetcher.ResolveCookieAsync();
                 if (string.IsNullOrEmpty(selectedRegionCookie))
                     throw new HttpRequestException("Could not obtain a valid .ROBLOSECURITY cookie");
 
-                SetStatus(string.Format(Strings.Bootstrapper_Status_SearchingServers, selectedRegion));
+                SetStatus(string.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_Status_SearchingServers, selectedRegion));
 
                 var selectedRegionResult = await selectedRegionFetcher.FindBestServerInSelectedRegionAsync(
                     (long)_joinData.PlaceId!,
@@ -915,12 +918,12 @@ namespace Froststrap
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            var autoFetcher = new Integrations.RobloxServerFetcher();
+            using var autoFetcher = new Integrations.RobloxServerFetcher();
 
             if (cancellationToken.IsCancellationRequested)
                 return "";
 
-            SetStatus(string.Format(Strings.Bootstrapper_Status_FindingTopRegions, App.Settings.Prop.BestRegionAmounts));
+            SetStatus(string.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_Status_FindingTopRegions, App.Settings.Prop.BestRegionAmounts));
 
             var topRegions = await autoFetcher.GetClosestRegionsForAutoModeAsync(App.Settings.Prop.BestRegionAmounts, cancellationToken);
 
@@ -966,7 +969,7 @@ namespace Froststrap
 
         private static async Task<string?> GetServerRegionAsync(string jobId, long placeId, CancellationToken cancellationToken = default)
         {
-            var fetcher = new Integrations.RobloxServerFetcher();
+            using var fetcher = new Integrations.RobloxServerFetcher();
             string? cookie = await fetcher.ResolveCookieAsync();
             if (string.IsNullOrEmpty(cookie))
                 return null;
@@ -976,7 +979,7 @@ namespace Froststrap
                 return null;
 
             var url = UrlBuilder.BuildApiUrl("gamejoin", "v1/join-game-instance");
-            var request = new HttpRequestMessage(HttpMethod.Post, url);
+            using var request = new HttpRequestMessage(HttpMethod.Post, url);
             request.Headers.Add("Cookie", $".ROBLOSECURITY={cookie}");
             request.Content = new StringContent(
                 JsonSerializer.Serialize(new { placeId, isTeleport = false, gameId = jobId, gameJoinAttemptId = jobId }),
@@ -1009,7 +1012,7 @@ namespace Froststrap
 
                 App.Logger.Info($"Join Type: {_joinData.JoinType}");
                 App.Logger.Info($"Join Origin: {_joinData.JoinOrigin ?? "null"}");
-                App.Logger.Info($"Place ID: {_joinData.PlaceId?.ToString() ?? "null"}");
+                App.Logger.Info($"Place ID: {_joinData.PlaceId?.ToString(CultureInfo.InvariantCulture) ?? "null"}");
                 App.Logger.Info($"Job ID: {_joinData.JobId ?? "null"}");
                 App.Logger.Info($"Access Code: {_joinData.AccessCode ?? "null"}");
 
@@ -1028,7 +1031,7 @@ namespace Froststrap
                         App.Logger.Debug("User is trying to join a friend, showing dialog");
 
                         var result = await Frontend.ShowMessageBox(
-                            String.Format(Strings.Menu_Bootstrapper_Experimental_BetterMatchmaking_FollowUser),
+                            String.Format(CultureInfo.InvariantCulture, Strings.Menu_Bootstrapper_Experimental_BetterMatchmaking_FollowUser),
                             MessageBoxImage.Question,
                             MessageBoxButton.YesNo
                         );
@@ -1072,7 +1075,7 @@ namespace Froststrap
                     catch (HttpRequestException ex)
                     {
                         _ = Frontend.ShowConnectivityDialog(
-                            String.Format(Strings.Dialog_Connectivity_UnableToConnect, "rovalra.com"),
+                            String.Format(CultureInfo.InvariantCulture, Strings.Dialog_Connectivity_UnableToConnect, "rovalra.com"),
                             Strings.Dialog_Connectivity_MatchmakingFailed,
                             MessageBoxImage.Warning,
                             ex
@@ -1089,7 +1092,7 @@ namespace Froststrap
                     if (!matchmakingCancelled && !string.IsNullOrEmpty(serverid) && _joinData.PlaceId is not null)
                     {
                         string placeLauncherUrl = UrlBuilder.BuildPlacelauncherUrl((long)_joinData.PlaceId, serverid);
-                        _launchCommandLine = _launchCommandLine.Replace(_joinData.PlaceLauncherUrl, HttpUtility.UrlEncode(placeLauncherUrl));
+                        _launchCommandLine = _launchCommandLine.Replace(_joinData.PlaceLauncherUrl, HttpUtility.UrlEncode(placeLauncherUrl), StringComparison.Ordinal);
                     }
                 }
 
@@ -1218,7 +1221,7 @@ namespace Froststrap
 
             App.Logger.Info($"Join Type: {_joinData.JoinType}");
             App.Logger.Info($"Join Origin: {_joinData.JoinOrigin ?? "null"}");
-            App.Logger.Info($"Place ID: {_joinData.PlaceId?.ToString() ?? "null"}");
+            App.Logger.Info($"Place ID: {_joinData.PlaceId?.ToString(CultureInfo.InvariantCulture) ?? "null"}");
             App.Logger.Info($"Job ID: {_joinData.JobId ?? "null"}");
             App.Logger.Info($"Access Code: {_joinData.AccessCode ?? "null"}");
 
@@ -1237,7 +1240,7 @@ namespace Froststrap
                     App.Logger.Debug("User is trying to join a friend, showing dialog");
 
                     var result = await Frontend.ShowMessageBox(
-                        String.Format(Strings.Menu_Bootstrapper_Experimental_BetterMatchmaking_FollowUser),
+                        String.Format(CultureInfo.InvariantCulture, Strings.Menu_Bootstrapper_Experimental_BetterMatchmaking_FollowUser),
                         MessageBoxImage.Question,
                         MessageBoxButton.YesNo
                     );
@@ -1281,7 +1284,7 @@ namespace Froststrap
                 catch (HttpRequestException ex)
                 {
                     _ = Frontend.ShowConnectivityDialog(
-                        String.Format(Strings.Dialog_Connectivity_UnableToConnect, "rovalra.com"),
+                        String.Format(CultureInfo.InvariantCulture, Strings.Dialog_Connectivity_UnableToConnect, "rovalra.com"),
                         Strings.Dialog_Connectivity_MatchmakingFailed,
                         MessageBoxImage.Warning,
                         ex
@@ -1298,7 +1301,7 @@ namespace Froststrap
                 if (!matchmakingCancelled && !string.IsNullOrEmpty(serverid) && _joinData.PlaceId is not null)
                 {
                     string placeLauncherUrl = UrlBuilder.BuildPlacelauncherUrl((long)_joinData.PlaceId, serverid);
-                    _launchCommandLine = _launchCommandLine.Replace(_joinData.PlaceLauncherUrl, HttpUtility.UrlEncode(placeLauncherUrl));
+                    _launchCommandLine = _launchCommandLine.Replace(_joinData.PlaceLauncherUrl, HttpUtility.UrlEncode(placeLauncherUrl), StringComparison.Ordinal);
                 }
             }
 
@@ -1399,7 +1402,7 @@ namespace Froststrap
                 App.Logger.Error($"Unhandled Exception - Failed to launch Sober via flatpak! {ex}");
                 string detailsPart = string.IsNullOrWhiteSpace(ex.Message) ? "" : $"\n\n{ex.Message}";
                 await Frontend.ShowMessageBox(
-                    string.Format(Strings.Sober_LaunchFailed, SoberFlatpakId, detailsPart),
+                    string.Format(CultureInfo.InvariantCulture, Strings.Sober_LaunchFailed, SoberFlatpakId, detailsPart),
                     MessageBoxImage.Error
                 );
                 App.Terminate(ErrorCode.ERROR_CANCELLED);
@@ -1479,7 +1482,7 @@ namespace Froststrap
                 var process = Process.Start(new ProcessStartInfo
                 {
                     FileName = integration.Location,
-                    Arguments = integration.LaunchArgs.Replace("\r\n", " "),
+                    Arguments = integration.LaunchArgs.Replace("\r\n", " ", StringComparison.Ordinal),
                     WorkingDirectory = Path.GetDirectoryName(integration.Location),
                     UseShellExecute = true
                 })!;
@@ -1501,7 +1504,7 @@ namespace Froststrap
 
         private static async Task<int> GetRobloxProcessIdAsync(string expectedName, TimeSpan timeout)
         {
-            string processName = expectedName.Replace(".app", "");
+            string processName = expectedName.Replace(".app", "", StringComparison.Ordinal);
             var startTime = DateTime.Now;
 
             while (DateTime.Now - startTime < timeout)
@@ -1668,7 +1671,7 @@ namespace Froststrap
                     App.Logger.Debug("Update detected, prompting user to manually update");
 
                     var results = await Frontend.ShowMessageBox(
-                        string.Format(Strings.Update_Linux_Available, releaseVer),
+                        string.Format(CultureInfo.InvariantCulture, Strings.Update_Linux_Available, releaseVer),
                         MessageBoxImage.Information,
                         MessageBoxButton.YesNo
                     );
@@ -1691,7 +1694,7 @@ namespace Froststrap
                 {
                     App.Logger.Warn("No suitable asset found for this platform");
                     await Frontend.ShowMessageBox(
-                        string.Format(Strings.Update_NoPackageAvailable, GetPlatformName()),
+                        string.Format(CultureInfo.InvariantCulture, Strings.Update_NoPackageAvailable, GetPlatformName()),
                         MessageBoxImage.Warning
                     );
                     Utilities.ShellExecute(App.ProjectDownloadLink);
@@ -1705,7 +1708,7 @@ namespace Froststrap
                     string releaseType = releaseInfo.Prerelease ? "pre-release" : "stable";
                     string newlinePart = "\n\nWould you like to update now?";
                     var result = await Frontend.ShowMessageBox(
-                        string.Format(Strings.Update_Available, releaseType, releaseVer, newlinePart),
+                        string.Format(CultureInfo.InvariantCulture, Strings.Update_Available, releaseType, releaseVer, newlinePart),
                         MessageBoxImage.Question,
                         MessageBoxButton.YesNo
                     );
@@ -1717,7 +1720,7 @@ namespace Froststrap
                     }
                 }
 
-                SetStatus(string.Format(Strings.Bootstrapper_Status_DownloadingUpdate, releaseVer));
+                SetStatus(string.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_Status_DownloadingUpdate, releaseVer));
 
                 string downloadPath = Path.Combine(Paths.TempUpdates, asset.Name);
                 Directory.CreateDirectory(Paths.TempUpdates);
@@ -1731,7 +1734,7 @@ namespace Froststrap
                 Dialog?.ProgressIndeterminate = true;
                 Dialog?.TaskbarProgressState = TaskbarItemProgressState.Indeterminate;
 
-                SetStatus(string.Format(Strings.Bootstrapper_Status_InstallingUpdate, releaseVer));
+                SetStatus(string.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_Status_InstallingUpdate, releaseVer));
 
                 bool updateApplied = await ApplyUpdate(downloadPath);
 
@@ -1739,7 +1742,7 @@ namespace Froststrap
                 {
                     App.Logger.Info("Update application failed");
                     await Frontend.ShowMessageBox(
-                        string.Format(Strings.Bootstrapper_AutoUpdateFailed, releaseVer),
+                        string.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_AutoUpdateFailed, releaseVer),
                         MessageBoxImage.Information
                     );
                     Utilities.ShellExecute(App.ProjectDownloadLink);
@@ -2179,7 +2182,7 @@ exit";
             // from largest to smallest, this is so larger packages (which need more time) get queued first
             var packages = _versionPackageManifest.Where(p => p.Name != "RobloxPlayerInstaller.exe").OrderByDescending(p => p.PackedSize);
 
-            SemaphoreSlim downloadSemaphore = new(App.Settings.Prop.MaxThreadDownload > 0 ? App.Settings.Prop.MaxThreadDownload : 1);
+            using var downloadSemaphore = new SemaphoreSlim(App.Settings.Prop.MaxThreadDownload > 0 ? App.Settings.Prop.MaxThreadDownload : 1);
             foreach (var package in packages)
             {
                 await downloadSemaphore.WaitAsync(_cancelTokenSource.Token);
@@ -2279,7 +2282,8 @@ exit";
                             fileInfo.UnixFileMode |= UnixFileMode.UserExecute | UnixFileMode.GroupExecute | UnixFileMode.OtherExecute;
                         }
                     }
-                    Process.Start("xattr", $"-dr com.apple.quarantine \"{appPath}\"")?.WaitForExit();
+                    using var process = Process.Start("xattr", $"-dr com.apple.quarantine \"{appPath}\"");
+                    await process!.WaitForExitAsync();
                 }
             }
 
@@ -2475,7 +2479,7 @@ exit";
             {
                 string details = string.Join('\n', errorLines.TakeLast(8));
                 string detailsPart = string.IsNullOrWhiteSpace(details) ? "" : $"\n\n{details}";
-                string message = string.Format(Strings.Sober_FlatpakInstallFailed, SoberFlatpakId, detailsPart);
+                string message = string.Format(CultureInfo.InvariantCulture, Strings.Sober_FlatpakInstallFailed, SoberFlatpakId, detailsPart);
                 await Frontend.ShowMessageBox(message, MessageBoxImage.Error);
                 App.Terminate(ErrorCode.ERROR_CANCELLED);
                 return false;
@@ -2513,7 +2517,7 @@ exit";
             Process? updateProcess = null;
 
             var timeout = TimeSpan.FromMinutes(20);
-            var cts = new CancellationTokenSource(timeout);
+            using var cts = new CancellationTokenSource(timeout);
 
             using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(
                 cts.Token,
@@ -2560,15 +2564,15 @@ exit";
                                 int current = 0, total = 0;
                                 if (progressMatch.Success)
                                 {
-                                    current = int.Parse(progressMatch.Groups["current"].Value);
-                                    total = int.Parse(progressMatch.Groups["total"].Value);
+                                    current = int.Parse(progressMatch.Groups["current"].Value, CultureInfo.InvariantCulture);
+                                    total = int.Parse(progressMatch.Groups["total"].Value, CultureInfo.InvariantCulture);
                                 }
 
                                 var percentMatch = percentRegex.Match(line);
                                 int percent = -1;
                                 if (percentMatch.Success)
                                 {
-                                    percent = int.Parse(percentMatch.Groups["percent"].Value);
+                                    percent = int.Parse(percentMatch.Groups["percent"].Value, CultureInfo.InvariantCulture);
                                 }
 
                                 if (progressMatch.Success && percentMatch.Success)
@@ -2587,7 +2591,7 @@ exit";
                                     {
                                         Dialog.ProgressValue = overallPercent;
                                         Dialog.TaskbarProgressValue = overallPercent / 100.0;
-                                        SetStatus(string.Format(Strings.Bootstrapper_Status_UpdatingSoberProgress, current, total, percent));
+                                        SetStatus(string.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_Status_UpdatingSoberProgress, current, total, percent));
                                     }
 
                                 }
@@ -2602,7 +2606,7 @@ exit";
                                     {
                                         Dialog.ProgressValue = overallPercent;
                                         Dialog.TaskbarProgressValue = overallPercent / 100.0;
-                                        SetStatus(string.Format(Strings.Bootstrapper_Status_UpdatingSoberBasic, current, total));
+                                        SetStatus(string.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_Status_UpdatingSoberBasic, current, total));
                                     }
                                 }
                                 else
@@ -2706,12 +2710,12 @@ exit";
                 RedirectStandardOutput = true,
             };
             using var process = Process.Start(psi);
-            _ = process ?? throw new Exception("Failed to start tar");
+            _ = process ?? throw new InvalidOperationException("Failed to start tar");
             await process.WaitForExitAsync(cancellationToken);
             if (process.ExitCode != 0)
             {
                 var err = await process.StandardError.ReadToEndAsync(cancellationToken);
-                throw new Exception($"tar extraction failed: {err}");
+                throw new InvalidOperationException($"tar extraction failed: {err}");
             }
         }
 
@@ -2788,7 +2792,7 @@ exit";
                 {
                     if (entry.IsDirectory) continue;
                     string entryName = entry.Name.Replace('\\', '/');
-                    if (entryName.Contains("/x64/") && entryName.EndsWith(".dll"))
+                    if (entryName.Contains("/x64/", StringComparison.OrdinalIgnoreCase) && entryName.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
                     {
                         string fileName = Path.GetFileName(entryName);
                         if (DxvkDlls.Contains(fileName))
@@ -2836,7 +2840,7 @@ exit";
             }
 
             var rendererFlags = App.FastFlags.Prop
-                .Where(kv => kv.Key.StartsWith("FFlagDebugGraphicsPrefer") || kv.Key.StartsWith("FFlagDebugGraphicsDisable"))
+                .Where(kv => kv.Key.StartsWith("FFlagDebugGraphicsPrefer", StringComparison.Ordinal) || kv.Key.StartsWith("FFlagDebugGraphicsDisable", StringComparison.Ordinal))
                 .ToDictionary(kv => kv.Key, kv => kv.Value);
 
             foreach (var kv in rendererFlags)
@@ -2953,9 +2957,9 @@ exit";
 
         private static HttpClient CreateWebView2HttpClient()
         {
-            var rootCert = X509Certificate2.CreateFromPem(WebView2MicrosoftRootPem);
+            using var rootCert = X509Certificate2.CreateFromPem(WebView2MicrosoftRootPem);
 
-            var handler = new HttpClientHandler
+            using var handler = new HttpClientHandler
             {
                 ServerCertificateCustomValidationCallback = (_, cert, chain, sslPolicyErrors) =>
                 {
@@ -2985,7 +2989,7 @@ exit";
                     "{\"targetingAttributes\":{\"Updater\":\"MicrosoftEdgeUpdate\"}}",
                     Encoding.UTF8, "application/json");
 
-                using var response = await _webView2HttpClient.Value.PostAsync(requestUrl, content, _cancelTokenSource.Token);
+                using var response = await _webView2HttpClient.Value.PostAsync(new Uri(requestUrl), content, _cancelTokenSource.Token);
                 if (!response.IsSuccessStatusCode)
                 {
                     App.Logger.Warn($"Bad status: {(int)response.StatusCode} {response.StatusCode}");
@@ -3007,7 +3011,7 @@ exit";
             try
             {
                 string requestUrl = $"https://msedge.api.cdp.microsoft.com/api/v1.1/contents/Browser/namespaces/Default/names/msedge-stable-win-x64/versions/{version}/files?action=GenerateDownloadInfo";
-                using var response = await _webView2HttpClient.Value.PostAsync(requestUrl, null, _cancelTokenSource.Token);
+                using var response = await _webView2HttpClient.Value.PostAsync(new Uri(requestUrl), null, _cancelTokenSource.Token);
                 if (!response.IsSuccessStatusCode)
                 {
                     App.Logger.Warn($"Bad status: {(int)response.StatusCode} {response.StatusCode}");
@@ -3058,10 +3062,10 @@ exit";
                 App.Logger.Info("Wine not found – downloading Kombucha.");
 
                 var release = await GetLatestKombuchaReleaseAsync();
-                _ = release ?? throw new Exception("Could not fetch latest Kombucha release.");
+                _ = release ?? throw new InvalidOperationException("Could not fetch latest Kombucha release.");
 
-                var asset = release.Assets?.FirstOrDefault(a => a.Name?.EndsWith(".tar.xz") == true);
-                _ = asset ?? throw new Exception("No .tar.xz asset found in Kombucha release.");
+                var asset = release.Assets?.FirstOrDefault(a => a.Name?.EndsWith(".tar.xz", StringComparison.Ordinal) == true);
+                _ = asset ?? throw new InvalidOperationException("No .tar.xz asset found in Kombucha release.");
 
                 SetStatus(Strings.Bootstrapper_Status_DownloadingWine);
 
@@ -3101,7 +3105,7 @@ exit";
                     if (proc.ExitCode != 0)
                     {
                         var err = await proc.StandardError.ReadToEndAsync(_cancelTokenSource.Token);
-                        throw new Exception($"Symlink creation failed: {err}");
+                        throw new InvalidOperationException($"Symlink creation failed: {err}");
                     }
 
                     App.Logger.Info($"Kombucha {versionTag} installed.");
@@ -3160,7 +3164,7 @@ exit";
             string? customLauncher = App.Settings.Prop.StudioLauncher;
             if (!string.IsNullOrEmpty(customLauncher))
             {
-                finalCommand = customLauncher.Replace("%command%", finalCommand);
+                finalCommand = customLauncher.Replace("%command%", finalCommand, StringComparison.Ordinal);
             }
 
             var startInfo = new ProcessStartInfo
@@ -3216,7 +3220,7 @@ exit";
 
         private async Task DownloadFileWithProgressAsync(string url, string destination)
         {
-            using var response = await App.HttpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
+            using var response = await App.HttpClient.GetAsync(new Uri(url), HttpCompletionOption.ResponseHeadersRead);
             response.EnsureSuccessStatusCode();
 
             long totalBytes = response.Content.Headers.ContentLength ?? -1;
@@ -3362,7 +3366,7 @@ exit";
                     string modFilepath = Path.Combine(fontFamiliesFolder, jsonFilename);
                     if (File.Exists(modFilepath))
                         continue;
-                    var fontFamilyData = JsonSerializer.Deserialize<FontFamily>(File.ReadAllText(jsonFilePath));
+                    var fontFamilyData = JsonSerializer.Deserialize<FontFamily>(await File.ReadAllTextAsync(jsonFilePath));
                     if (fontFamilyData is null)
                         continue;
                     bool shouldWrite = false;
@@ -3375,7 +3379,7 @@ exit";
                         }
                     }
                     if (shouldWrite)
-                        File.WriteAllText(modFilepath, JsonSerializer.Serialize(fontFamilyData, _indentedJsonOptions));
+                        await File.WriteAllTextAsync(modFilepath, JsonSerializer.Serialize(fontFamilyData, _indentedJsonOptions));
                 }
                 App.Logger.Info("End font check");
             }
@@ -3395,7 +3399,7 @@ exit";
                 Directory.CreateDirectory(_latestVersionDirectory);
                 await File.WriteAllTextAsync(
                     Path.Combine(_latestVersionDirectory, "AppSettings.xml"),
-                    AppSettings.Replace("roblox.com", Deployment.RobloxDomain)
+                    AppSettings.Replace("roblox.com", Deployment.RobloxDomain, StringComparison.Ordinal)
                 );
             }
 
@@ -3410,10 +3414,10 @@ exit";
                     string relativeFile = Path.GetFileName(file);
                     if (relativeFile == "README.txt" ||
                         relativeFile == "info.json" ||
-                        relativeFile.EndsWith(".lock") ||
-                        relativeFile.EndsWith(".dll") ||
-                        relativeFile.EndsWith(".exe") ||
-                        relativeFile.StartsWith("ClientSettings\\"))
+                        relativeFile.EndsWith(".lock", StringComparison.Ordinal) ||
+                        relativeFile.EndsWith(".dll", StringComparison.Ordinal) ||
+                        relativeFile.EndsWith(".exe", StringComparison.Ordinal) ||
+                        relativeFile.StartsWith("ClientSettings\\", StringComparison.Ordinal))
                         continue;
 
                     var info = new FileInfo(file);
@@ -3431,10 +3435,10 @@ exit";
                         string relativeFile = Path.GetRelativePath(Paths.Modifications, file);
                         if (relativeFile == "README.txt" ||
                             relativeFile == "info.json" ||
-                            relativeFile.EndsWith(".lock") ||
-                            relativeFile.EndsWith(".dll") ||
-                            relativeFile.EndsWith(".exe") ||
-                            relativeFile.StartsWith("ClientSettings\\"))
+                            relativeFile.EndsWith(".lock", StringComparison.Ordinal) ||
+                            relativeFile.EndsWith(".dll", StringComparison.Ordinal) ||
+                            relativeFile.EndsWith(".exe", StringComparison.Ordinal) ||
+                            relativeFile.StartsWith("ClientSettings\\", StringComparison.Ordinal))
                             continue;
 
                         var info = new FileInfo(file);
@@ -3459,13 +3463,13 @@ exit";
                     string relativeFile = Path.GetRelativePath(modSource, file);
 
                     if (relativeFile == "README.txt" ||
-                        relativeFile.EndsWith("info.json") ||
-                        relativeFile.EndsWith(".lock") ||
-                        relativeFile.StartsWith("ClientSettings\\"))
+                        relativeFile.EndsWith("info.json", StringComparison.Ordinal) ||
+                        relativeFile.EndsWith(".lock", StringComparison.Ordinal) ||
+                        relativeFile.StartsWith("ClientSettings\\", StringComparison.Ordinal))
                         continue;
 
                     string? fileNameWithoutExt = Path.GetFileNameWithoutExtension(relativeFile);
-                    if (fileNameWithoutExt != null && fileNameWithoutExt.EndsWith("_Delete"))
+                    if (fileNameWithoutExt != null && fileNameWithoutExt.EndsWith("_Delete", StringComparison.Ordinal))
                         continue;
 
                     var info = new FileInfo(file);
@@ -3485,7 +3489,7 @@ exit";
                     string relativeFile = Path.GetRelativePath(modSource, file);
                     string actualFile = relativeFile;
                     string? fileNameWithoutExt = Path.GetFileNameWithoutExtension(relativeFile);
-                    if (fileNameWithoutExt != null && fileNameWithoutExt.EndsWith("_Delete"))
+                    if (fileNameWithoutExt != null && fileNameWithoutExt.EndsWith("_Delete", StringComparison.Ordinal))
                     {
                         string directory = Path.GetDirectoryName(relativeFile) ?? "";
                         string originalName = fileNameWithoutExt[..^7];
@@ -3553,8 +3557,8 @@ exit";
                             }
                             else
                             {
-                                string sourceHash = await Task.Run(() => MD5Hash.FromFile(sourceFile));
-                                string targetHash = await Task.Run(() => MD5Hash.FromFile(fileVersionFolder));
+                                string sourceHash = await Task.Run(() => SHA256Hash.FromFile(sourceFile));
+                                string targetHash = await Task.Run(() => SHA256Hash.FromFile(fileVersionFolder));
 
                                 if (sourceHash == targetHash)
                                 {
@@ -3625,7 +3629,7 @@ exit";
                             try
                             {
                                 bool match = File.Exists(dest) &&
-                                    (await Task.Run(() => MD5Hash.FromFile(source)) == await Task.Run(() => MD5Hash.FromFile(dest)));
+                                    (await Task.Run(() => SHA256Hash.FromFile(source)) == await Task.Run(() => SHA256Hash.FromFile(dest)));
                                 if (!match)
                                 {
                                     Directory.CreateDirectory(Path.GetDirectoryName(dest)!);
@@ -3671,7 +3675,7 @@ exit";
                 string actualFile = fileLocation;
                 string? fileNameWithoutExt = Path.GetFileNameWithoutExtension(fileLocation);
 
-                if (fileNameWithoutExt != null && fileNameWithoutExt.EndsWith("_Delete") && OperatingSystem.IsLinux() && !IsStudioLaunch)
+                if (fileNameWithoutExt != null && fileNameWithoutExt.EndsWith("_Delete", StringComparison.Ordinal) && OperatingSystem.IsLinux() && !IsStudioLaunch)
                     continue;
 
                 if (OperatingSystem.IsMacOS())
@@ -3816,7 +3820,7 @@ exit";
                 string profileName = kvp.Key;
                 List<string> placeIds = kvp.Value;
 
-                if (placeIds.Contains(placeId.ToString()))
+                if (placeIds.Contains(placeId.ToString(CultureInfo.InvariantCulture)))
                 {
                     App.Logger.Info($"Found matching profile '{profileName}' for place ID {placeId}");
 
@@ -3914,7 +3918,7 @@ exit";
 
             if (File.Exists(package.DownloadPath))
             {
-                string calculatedMD5 = MD5Hash.FromFile(package.DownloadPath);
+                string calculatedMD5 = SHA256Hash.FromFile(package.DownloadPath);
 
                 // Skip hash validation for macOS as the mock manifest lacks actual signature MD5s
                 if (!OperatingSystem.IsMacOS() && calculatedMD5 != package.Signature)
@@ -3964,7 +3968,7 @@ exit";
 
                 try
                 {
-                    var response = await App.HttpClient.GetAsync(packageUrl, HttpCompletionOption.ResponseHeadersRead, _cancelTokenSource.Token);
+                    var response = await App.HttpClient.GetAsync(new Uri(packageUrl), HttpCompletionOption.ResponseHeadersRead, _cancelTokenSource.Token);
                     await using var stream = await response.Content.ReadAsStreamAsync(_cancelTokenSource.Token);
                     await using var fileStream = new FileStream(package.DownloadPath, FileMode.CreateNew, FileAccess.ReadWrite, FileShare.Delete);
 
@@ -3990,7 +3994,7 @@ exit";
                         UpdateProgressBar();
                     }
 
-                    string hash = MD5Hash.FromStream(fileStream);
+                    string hash = SHA256Hash.FromStream(fileStream);
 
                     if (!OperatingSystem.IsMacOS() && hash != package.Signature)
                         throw new ChecksumFailedException($"Failed to verify download of {packageUrl}\n\nExpected hash: {package.Signature}\nGot hash: {hash}");
@@ -4006,7 +4010,7 @@ exit";
                     {
                         await Frontend.ShowConnectivityDialog(
                             Strings.Dialog_Connectivity_UnableToDownload,
-                            String.Format(Strings.Dialog_Connectivity_UnableToDownloadReason, "[https://github.com/bloxstraplabs/bloxstrap/wiki/Bloxstrap-is-unable-to-download-Roblox](https://github.com/bloxstraplabs/bloxstrap/wiki/Bloxstrap-is-unable-to-download-Roblox)"),
+                            String.Format(CultureInfo.InvariantCulture, Strings.Dialog_Connectivity_UnableToDownloadReason, "[https://github.com/bloxstraplabs/bloxstrap/wiki/Bloxstrap-is-unable-to-download-Roblox](https://github.com/bloxstraplabs/bloxstrap/wiki/Bloxstrap-is-unable-to-download-Roblox)"),
                             MessageBoxImage.Error,
                             ex
                         );
@@ -4025,10 +4029,10 @@ exit";
                     // attempt download over HTTP
                     // this isn't actually that unsafe - signatures were fetched earlier over HTTPS
                     // so we've already established that our signatures are legit, and that there's very likely no MITM anyway
-                    if (ex.GetType() == typeof(IOException) && !packageUrl.StartsWith("http://"))
+                    if (ex.GetType() == typeof(IOException) && !packageUrl.StartsWith("http://", StringComparison.Ordinal))
                     {
                         App.Logger.Info("Retrying download over HTTP...");
-                        packageUrl = packageUrl.Replace("https://", "http://");
+                        packageUrl = packageUrl.Replace("https://", "http://", StringComparison.Ordinal);
                     }
                 }
             }
@@ -4130,7 +4134,7 @@ exit";
                     }
 
                     App.Logger.Info("Retrying download...");
-                    SetStatus(string.Format(Strings.Bootstrapper_Status_RetryingPackage, package.Name));
+                    SetStatus(string.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_Status_RetryingPackage, package.Name));
                     await Task.Delay(1000);
                     await DownloadPackage(package);
                 }
@@ -4177,6 +4181,27 @@ exit";
                     stream.CopyTo(fileStream);
                 }
             }, cancellationToken);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+                return;
+
+            if (disposing)
+            {
+                _cancelTokenSource?.Dispose();
+                _matchmakingCts?.Dispose();
+                _appLock?.Dispose();
+            }
+
+            _disposed = true;
         }
         #endregion
     }

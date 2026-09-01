@@ -1,7 +1,6 @@
 ﻿namespace Froststrap.UI.ViewModels.Dialogs;
 
-
-public class AddCustomThemeViewModel : NotifyPropertyChangedViewModel
+internal class AddCustomThemeViewModel : NotifyPropertyChangedViewModel
 {
     public static CustomThemeTemplate[] Templates => Enum.GetValues<CustomThemeTemplate>();
 
@@ -33,7 +32,7 @@ public class AddCustomThemeViewModel : NotifyPropertyChangedViewModel
     }
     public bool HasFilePath => !string.IsNullOrEmpty(FilePath);
 
-    public int SelectedTab { get; set; } = 0;
+    public int SelectedTab { get; set; }
 
     private string _nameError = "";
     public string NameError

@@ -1,12 +1,13 @@
 ﻿using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.Enums.GBSPresets;
+using System.Globalization;
 using System.Windows.Input;
 using System.Xml.Linq;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
-    public interface IDialogServiceGlobal
+    internal interface IDialogServiceGlobal
     {
         Task OpenGlobalSettingsEditorAsync();
     }
@@ -19,7 +20,7 @@ namespace Froststrap.UI.ViewModels.Settings
         }
     }
 
-    public class GlobalSettingsViewModel(IDialogServiceGlobal dialogService) : NotifyPropertyChangedViewModel
+    internal class GlobalSettingsViewModel(IDialogServiceGlobal dialogService) : NotifyPropertyChangedViewModel
     {
         private readonly IDialogServiceGlobal _dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
 
@@ -71,7 +72,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
                 if (success)
                 {
-                    _ = Frontend.ShowMessageBox(string.Format(Strings.Menu_GlobalSettings_Export_Success, localPath), MessageBoxImage.Information);
+                    _ = Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Menu_GlobalSettings_Export_Success, localPath), MessageBoxImage.Information);
                 }
                 else
                 {
@@ -220,7 +221,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public bool Fullscreen
         {
-            get => App.GlobalSettings.GetPreset("Rendering.Fullscreen")?.ToLower() == "true";
+            get => App.GlobalSettings.GetPreset("Rendering.Fullscreen")?.ToUpperInvariant() == "TRUE";
             set
             {
                 App.GlobalSettings.SetPreset("Rendering.Fullscreen", value);
@@ -231,7 +232,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public bool MaxQualityEnabled
         {
-            get => App.GlobalSettings.GetPreset("Rendering.MaxQualityEnabled")?.ToLower() == "true";
+            get => App.GlobalSettings.GetPreset("Rendering.MaxQualityEnabled")?.ToUpperInvariant() == "TRUE";
             set
             {
                 App.GlobalSettings.SetPreset("Rendering.MaxQualityEnabled", value);
@@ -244,14 +245,14 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             get
             {
-                bool setting1 = App.GlobalSettings.GetPreset("Rendering.VignetteEnabled")?.ToLower() == "true";
-                bool setting2 = App.GlobalSettings.GetPreset("Rendering.VignetteEnableOption")?.ToLower() == "true";
+                bool setting1 = App.GlobalSettings.GetPreset("Rendering.VignetteEnabled")?.ToUpperInvariant() == "TRUE";
+                bool setting2 = App.GlobalSettings.GetPreset("Rendering.VignetteEnableOption")?.ToUpperInvariant() == "TRUE";
 
                 return setting1 && setting2;
             }
             set
             {
-                string val = value.ToString().ToLower();
+                string val = value.ToString().ToUpperInvariant();
 
                 App.GlobalSettings.SetPreset("Rendering.VignetteEnabled", val);
                 App.GlobalSettings.SetPreset("Rendering.VignetteEnableOption", val);
@@ -331,7 +332,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public static bool CameraYInverted
         {
-            get => App.GlobalSettings.GetPreset("User.CameraYInverted")?.ToLower() == "true";
+            get => App.GlobalSettings.GetPreset("User.CameraYInverted")?.ToUpperInvariant() == "TRUE";
             set => App.GlobalSettings.SetPreset("User.CameraYInverted", value);
         }
 
@@ -353,7 +354,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public static bool ReducedMotion
         {
-            get => App.GlobalSettings.GetPreset("UI.ReducedMotion")?.ToLower() == "true";
+            get => App.GlobalSettings.GetPreset("UI.ReducedMotion")?.ToUpperInvariant() == "TRUE";
             set => App.GlobalSettings.SetPreset("UI.ReducedMotion", value);
         }
 
@@ -373,25 +374,25 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public static bool PerformanceStatsVisible
         {
-            get => App.GlobalSettings.GetPreset("Misc.PerformanceStatsVisible")?.ToLower() == "true";
+            get => App.GlobalSettings.GetPreset("Misc.PerformanceStatsVisible")?.ToUpperInvariant() == "TRUE";
             set => App.GlobalSettings.SetPreset("Misc.PerformanceStatsVisible", value);
         }
 
         public static bool ChatTranslationEnabled
         {
-            get => App.GlobalSettings.GetPreset("Misc.ChatTranslationEnabled")?.ToLower() == "true";
+            get => App.GlobalSettings.GetPreset("Misc.ChatTranslationEnabled")?.ToUpperInvariant() == "TRUE";
             set => App.GlobalSettings.SetPreset("Misc.ChatTranslationEnabled", value);
         }
 
         public static bool ChatTranslationFTUXShown
         {
-            get => App.GlobalSettings.GetPreset("Misc.ChatTranslationFTUXShown")?.ToLower() == "true";
+            get => App.GlobalSettings.GetPreset("Misc.ChatTranslationFTUXShown")?.ToUpperInvariant() == "TRUE";
             set => App.GlobalSettings.SetPreset("Misc.ChatTranslationFTUXShown", value);
         }
 
         public static bool VREnabled
         {
-            get => App.GlobalSettings.GetPreset("User.VREnabled")?.ToLower() == "true";
+            get => App.GlobalSettings.GetPreset("User.VREnabled")?.ToUpperInvariant() == "TRUE";
             set => App.GlobalSettings.SetPreset("User.VREnabled", value);
         }
     }

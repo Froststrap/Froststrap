@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Enums
 {
-    public enum DeeplinkType
+    internal enum DeeplinkType
     {
         Froststrap,
         RobloxProtocol,

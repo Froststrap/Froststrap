@@ -4,7 +4,7 @@ using Froststrap.UI.Elements.Base;
 
 namespace Froststrap.UI.ViewModels.Dialogs
 {
-    public partial class ManualCookieDialogViewModel(AvaloniaWindow window) : NotifyPropertyChangedViewModel
+    internal partial class ManualCookieDialogViewModel(AvaloniaWindow window) : NotifyPropertyChangedViewModel
     {
         private string _cookieInput = string.Empty;
         public string CookieInput
@@ -74,12 +74,12 @@ namespace Froststrap.UI.ViewModels.Dialogs
             try
             {
                 var cookieContainer = new CookieContainer();
-                using HttpClientHandler handler = new() { CookieContainer = cookieContainer };
+                using HttpClientHandler handler = new() { CookieContainer = cookieContainer, CheckCertificateRevocationList = true };
                 using HttpClient client = new(handler);
 
-                string rawValue = cookie.Contains(".ROBLOSECURITY=")
-                    ? cookie.Split(".ROBLOSECURITY=")[1].Split(';')[0].Trim()
-                    : cookie.Trim();
+                string rawValue = cookie.Contains(".ROBLOSECURITY=", StringComparison.Ordinal)
+                                    ? cookie.Split(".ROBLOSECURITY=")[1].Split(';')[0].Trim()
+                                    : cookie.Trim();
 
                 cookieContainer.Add(new Uri("https://roblox.com"), new Cookie(".ROBLOSECURITY", rawValue, "/", ".roblox.com"));
 

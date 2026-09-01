@@ -1,15 +1,10 @@
-﻿using System;
-using System.IO;
-using System.Net.Http;
-using System.Security;
-using System.Text.Json;
-using System.Threading.Tasks;
+﻿using System.Security;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Crypto.Signers;
 
 namespace Froststrap
 {
-    public class RemoteDataManager : JsonManager<RemoteDataBase>
+    internal class RemoteDataManager : JsonManager<RemoteDataBase>
     {
         public override string ClassName => nameof(RemoteDataManager);
 

@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Models.APIs.Roblox
 {
-    public class ServerInstance
+    internal class ServerInstance
     {
         [JsonPropertyName("id")]
         public string Id { get; set; } = string.Empty;

@@ -1,10 +1,8 @@
 using Avalonia.Controls;
-using Avalonia.Interactivity;
-using Froststrap.UI.Elements.Dialogs;
 
 namespace Froststrap.UI.Elements.Settings.Pages;
 
-public partial class ChannelPage : UserControl
+internal partial class ChannelPage : UserControl
 {
     public ChannelPage()
     {

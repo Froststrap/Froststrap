@@ -5,13 +5,13 @@ using Froststrap.UI.ViewModels.About;
 
 namespace Froststrap.UI.Elements.About.Pages
 {
-    public partial class AboutPage : UserControl
+    internal partial class AboutPage : UserControl
     {
         private readonly Queue<Key> _keys = new();
 
         private readonly List<Key> _expectedKeys = [Key.M, Key.A, Key.T, Key.T, Key.LeftShift, Key.D1];
 
-        private bool _triggered = false;
+        private bool _triggered;
 
         public AboutPage()
         {

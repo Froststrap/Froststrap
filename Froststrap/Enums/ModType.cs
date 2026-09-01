@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Enums
 {
-    public enum ModType
+    internal enum ModType
     {
         MiscMod = 0,
         ColorMod = 1,

@@ -8,7 +8,7 @@ using AvaFontFamily = Avalonia.Media.FontFamily;
 
 namespace Froststrap.UI.ViewModels.Dialogs
 {
-    public partial class CommunityModInfoViewModel(CommunityMod mod, AvaloniaWindow window) : NotifyPropertyChangedViewModel
+    internal partial class CommunityModInfoViewModel(CommunityMod mod, AvaloniaWindow window) : NotifyPropertyChangedViewModel
     {
         private string _colorDisplayText = string.Empty;
         public string ColorDisplayText
@@ -77,7 +77,7 @@ namespace Froststrap.UI.ViewModels.Dialogs
             if (IsGradientMode)
             {
                 var stops = Mod.GradientStops!;
-                ColorDisplayText = string.Join(" → ", stops.Select(s => s.Color.ToUpper()));
+                ColorDisplayText = string.Join(" → ", stops.Select(s => s.Color.ToUpperInvariant()));
 
                 if (stops.Count > 0 && Color.TryParse(stops[0].Color, out var firstColor))
                     PreviewBrush = new SolidColorBrush(firstColor);

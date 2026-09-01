@@ -3,7 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace Froststrap.UI.ViewModels
 {
-    public static class GlobalViewModel
+    internal static class GlobalViewModel
     {
         public static bool IsWindows => OperatingSystem.IsWindows();
         public static bool IsMacOS => OperatingSystem.IsMacOS();

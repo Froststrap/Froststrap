@@ -9,10 +9,11 @@ using System.IO.Compression;
 
 namespace Froststrap.UI.ViewModels.Settings.Mods
 {
-    public partial class CommunityModsViewModel : NotifyPropertyChangedViewModel
+    internal partial class CommunityModsViewModel : NotifyPropertyChangedViewModel, IDisposable
     {
         private List<CommunityMod> _allMods = [];
         private CancellationTokenSource? _searchCts;
+        private bool _disposed;
 
         public event EventHandler? OpenModsEvent;
         public event EventHandler? OpenModGeneratorEvent;
@@ -115,7 +116,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
         private void ApplyFilters()
         {
-            var query = SearchQuery.ToLower().Trim();
+            var query = SearchQuery.ToUpperInvariant().Trim();
 
             var filtered = _allMods.Where(mod =>
                 (ActiveFilter == null || mod.ModType == ActiveFilter) &&
@@ -141,7 +142,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
         [RelayCommand]
         private async Task SearchModsAsync()
         {
-            _searchCts?.Cancel();
+            await _searchCts!.CancelAsync();
             _searchCts = new CancellationTokenSource();
             try
             {
@@ -175,7 +176,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                     if (Directory.Exists(themePath))
                     {
                         var result = await Frontend.ShowMessageBox(
-                            string.Format(Strings.Menu_CommunityMods_Overwrite, baseName),
+                            string.Format(CultureInfo.InvariantCulture, Strings.Menu_CommunityMods_Overwrite, baseName),
                             MessageBoxImage.Question,
                             MessageBoxButton.YesNo);
 
@@ -199,7 +200,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                     App.Settings.Prop.BootstrapperStyle = BootstrapperStyle.CustomDialog;
                     App.Settings.Save();
 
-                    _ = Frontend.ShowMessageBox(string.Format(Strings.Menu_CommunityMods_ThemeInstalled, finalName), MessageBoxImage.Information);
+                    _ = Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Menu_CommunityMods_ThemeInstalled, finalName), MessageBoxImage.Information);
                 }
                 else
                 {
@@ -208,7 +209,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                     if (Directory.Exists(installPath))
                     {
                         var result = await Frontend.ShowMessageBox(
-                            string.Format(Strings.Menu_CommunityMods_Overwrite, baseName),
+                            string.Format(CultureInfo.InvariantCulture, Strings.Menu_CommunityMods_Overwrite, baseName),
                             MessageBoxImage.Question,
                             MessageBoxButton.YesNo);
 
@@ -251,7 +252,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                     }
 
                     App.State.SaveSetting("Mods");
-                    _ = Frontend.ShowMessageBox(string.Format(Strings.Menu_CommunityMods_ModInstalled, finalName), MessageBoxImage.Information);
+                    _ = Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Menu_CommunityMods_ModInstalled, finalName), MessageBoxImage.Information);
                 }
             }
             catch (Exception ex)
@@ -370,7 +371,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
         private static async Task DownloadFileAsync(string url, string path, IProgress<double> progress)
         {
-            using var response = await App.HttpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
+            using var response = await App.HttpClient.GetAsync(new Uri(url), HttpCompletionOption.ResponseHeadersRead);
             response.EnsureSuccessStatusCode();
             var totalBytes = response.Content.Headers.ContentLength ?? -1L;
 
@@ -386,6 +387,27 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                 totalRead += read;
                 if (totalBytes != -1) progress.Report((double)totalRead / totalBytes * 100);
             }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+                return;
+
+            if (disposing)
+            {
+                _searchCts?.Cancel();
+                _searchCts?.Dispose();
+                _searchCts = null;
+            }
+
+            _disposed = true;
         }
     }
 }

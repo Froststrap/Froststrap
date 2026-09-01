@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Enums.FlagPresets
 {
-    public enum MSAAMode
+    internal enum MSAAMode
     {
         [EnumName(StaticName = "0x (Default)")]
         Default,

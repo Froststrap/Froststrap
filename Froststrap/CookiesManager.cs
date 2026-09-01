@@ -3,7 +3,7 @@ using System.Security.Cryptography;
 
 namespace Froststrap
 {
-    public class CookiesManager
+    internal class CookiesManager
     {
         private CookieState _state = CookieState.Unknown;
 
@@ -22,9 +22,7 @@ namespace Froststrap
 
         private string AuthCookie = string.Empty;
         private const string AuthCookieName = ".ROBLOSECURITY";
-        private const string SupportedVersion = "1";
         private const string AuthPattern = $@"\t{AuthCookieName}\t(.+?)(;|$)";
-        private const string MacAuthPattern = @"_\|WARNING:-DO-NOT-SHARE-.*?\|_[A-Za-z0-9+\-_\.]+";
 
         public string GetAuthCookie() => AuthCookie;
 
@@ -47,14 +45,23 @@ namespace Froststrap
                 throw new HttpRequestException($"Host must end with Roblox domain ({Deployment.RobloxDomain})");
 
             if (!Enabled)
-                throw new NullReferenceException("Cookie access is not enabled");
+                throw new InvalidOperationException("Cookie access is not enabled");
 
             request.Headers.Add("Cookie", $".ROBLOSECURITY={AuthCookie}");
             return await App.HttpClient.SendAsync(request);
         }
 
-        public async Task<HttpResponseMessage> AuthGet(Uri? uri) => await AuthRequest(new HttpRequestMessage { RequestUri = uri, Method = HttpMethod.Get });
-        public async Task<HttpResponseMessage> AuthPost(Uri? uri, HttpContent? content) => await AuthRequest(new HttpRequestMessage { RequestUri = uri, Content = content, Method = HttpMethod.Post });
+        public async Task<HttpResponseMessage> AuthGet(Uri? uri)
+        {
+            using var request = new HttpRequestMessage { RequestUri = uri, Method = HttpMethod.Get };
+            return await AuthRequest(request);
+        }
+
+        public async Task<HttpResponseMessage> AuthPost(Uri? uri, HttpContent? content)
+        {
+            using var request = new HttpRequestMessage { RequestUri = uri, Content = content, Method = HttpMethod.Post };
+            return await AuthRequest(request);
+        }
 
         public async Task<AuthenticatedUser?> GetAuthenticated()
         {
@@ -163,7 +170,7 @@ namespace Froststrap
             foreach (var part in cookieParts)
             {
                 var trimmed = part.Trim();
-                int eqIndex = trimmed.IndexOf('=');
+                int eqIndex = trimmed.IndexOf('=', StringComparison.Ordinal);
                 if (eqIndex > 0)
                 {
                     string name = trimmed[..eqIndex].Trim();
@@ -192,7 +199,7 @@ namespace Froststrap
             int offset = 0;
 
             if (data.Length < 4 || data[0] != 0x63 || data[1] != 0x6F || data[2] != 0x6F || data[3] != 0x6B)
-                throw new Exception("Not a binarycookies file");
+                throw new InvalidOperationException("Not a binarycookies file");
 
             offset += 4;
             int numPages = ReadBigEndianInt32(data, ref offset);
@@ -290,7 +297,7 @@ namespace Froststrap
         {
             var cookie = cookies.FirstOrDefault(c =>
                 c.Name == ".ROBLOSECURITY" &&
-                c.Domain.Contains(".roblox.com"));
+                c.Domain.Contains(".roblox.com", StringComparison.Ordinal));
             return cookie.Value;
         }
     }

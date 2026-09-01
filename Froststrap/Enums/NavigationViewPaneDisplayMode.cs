@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Enums
 {
-    public enum NavigationViewPaneDisplayMode
+    internal enum NavigationViewPaneDisplayMode
     {
         //Made custom enum cuz i dont wanna add left minimal, its buggy with our ui
         [EnumName(FromTranslation = "Common.Auto")]

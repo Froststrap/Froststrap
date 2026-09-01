@@ -8,7 +8,7 @@ using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Onboarding
 {
-    public class Page2ViewModel : NotifyPropertyChangedViewModel
+    internal class Page2ViewModel : NotifyPropertyChangedViewModel
     {
         private static readonly string[] JsonPatterns = ["*.json"];
         private static readonly JsonSerializerOptions SerializationOptions = new() { WriteIndented = true };

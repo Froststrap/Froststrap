@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Enums
 {
-    public enum EmojiType
+    internal enum EmojiType
     {
         Default,
         Catmoji,

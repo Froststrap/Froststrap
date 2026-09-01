@@ -6,7 +6,7 @@
 
 namespace Froststrap.Models.Manifest
 {
-    public class PackageManifest : List<Package>
+    internal class PackageManifest : List<Package>
     {
         public PackageManifest(string data)
         {
@@ -34,8 +34,8 @@ namespace Froststrap.Models.Manifest
                 if (fileName == "RobloxPlayerLauncher.exe")
                     break;
 
-                int packedSize = int.Parse(rawPackedSize);
-                int size = int.Parse(rawSize);
+                int packedSize = int.Parse(rawPackedSize, CultureInfo.InvariantCulture);
+                int size = int.Parse(rawSize, CultureInfo.InvariantCulture);
 
                 Add(new Package
                 {

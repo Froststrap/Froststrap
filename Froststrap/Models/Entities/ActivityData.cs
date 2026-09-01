@@ -3,17 +3,16 @@ using Avalonia.Controls;
 using Avalonia.Input.Platform;
 using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.Input;
-using Froststrap;
-using Froststrap.Models.APIs;
 using System.Web;
-using System.Windows;
 using System.Windows.Input;
 
 namespace Froststrap.Models.Entities
 {
-    public class ActivityData
+    internal sealed class ActivityData : IDisposable
     {
-        private long _universeId = 0;
+        private long _universeId;
+        private readonly SemaphoreSlim _serverQuerySemaphore = new(1, 1);
+        private bool _disposed;
 
         /// <summary>
         /// If the current activity stems from an in-universe teleport, then this will be
@@ -27,7 +26,7 @@ namespace Froststrap.Models.Entities
             set => _universeId = value;
         }
 
-        public long PlaceId { get; set; } = 0;
+        public long PlaceId { get; set; }
 
         public string JobId { get; set; } = string.Empty;
 
@@ -38,13 +37,13 @@ namespace Froststrap.Models.Entities
         /// </summary>
         public string AccessCode { get; set; } = string.Empty;
 
-        public long UserId { get; set; } = 0;
+        public long UserId { get; set; }
 
         public string MachineAddress { get; set; } = string.Empty;
 
-        public bool MachineAddressValid => !string.IsNullOrEmpty(MachineAddress) && !MachineAddress.StartsWith("10.");
+        public bool MachineAddressValid => !string.IsNullOrEmpty(MachineAddress) && !MachineAddress.StartsWith("10.", StringComparison.Ordinal);
 
-        public bool IsTeleport { get; set; } = false;
+        public bool IsTeleport { get; set; }
 
         public ServerType ServerType { get; set; } = ServerType.Public;
 
@@ -67,7 +66,6 @@ namespace Froststrap.Models.Entities
 
         public Bitmap? ThumbnailBitmap { get; set; }
 
-
         public event EventHandler<string>? OnDeleteRequested;
 
         public ICommand RejoinServerCommand => new RelayCommand(() => RejoinServer(true));
@@ -75,7 +73,7 @@ namespace Froststrap.Models.Entities
         public ICommand CopyServerIdCommand => new RelayCommand<Visual>(CopyServerId);
         public ICommand DeleteHistoryCommand => new RelayCommand(DeleteHistory);
 
-        private readonly SemaphoreSlim serverQuerySemaphore = new(1, 1);
+        // Removed the separate SemaphoreSlim field; using the one defined above.
 
         public string GetInviteDeeplink(bool launchData = true, DeeplinkType type = DeeplinkType.RobloxProtocol)
         {
@@ -98,7 +96,6 @@ namespace Froststrap.Models.Entities
                 deeplink += "&gameInstanceId=" + JobId;
             }
 
-            // Handle launch data
             if (launchData && !string.IsNullOrEmpty(RPCLaunchData))
             {
                 deeplink += "&launchData=" + HttpUtility.UrlEncode(RPCLaunchData);
@@ -112,11 +109,11 @@ namespace Froststrap.Models.Entities
             if (!MachineAddressValid)
                 throw new InvalidOperationException($"Machine address is invalid ({MachineAddress})");
 
-            await serverQuerySemaphore.WaitAsync();
+            await _serverQuerySemaphore.WaitAsync();
 
             if (GlobalCache.ServerLocation.TryGetValue(MachineAddress, out string? location))
             {
-                serverQuerySemaphore.Release();
+                _serverQuerySemaphore.Release();
                 return location;
             }
 
@@ -134,21 +131,14 @@ namespace Froststrap.Models.Entities
                     location = $"{ipInfo.City}, {ipInfo.Region}, {ipInfo.Country}";
 
                 GlobalCache.ServerLocation[MachineAddress] = location;
-                serverQuerySemaphore.Release();
+                _serverQuerySemaphore.Release();
             }
             catch (Exception ex)
             {
                 App.Logger.Error($"Failed to get server location for {MachineAddress}: {ex.Message}");
 
                 GlobalCache.ServerLocation[MachineAddress] = location;
-                serverQuerySemaphore.Release();
-
-                /*Frontend.ShowConnectivityDialog(
-                    string.Format(Strings.Dialog_Connectivity_UnableToConnect, "ipinfo.io"),
-                    Strings.ActivityWatcher_LocationQueryFailed,
-                    MessageBoxImage.Warning,
-                    ex
-                );*/
+                _serverQuerySemaphore.Release();
             }
 
             return location;
@@ -207,7 +197,6 @@ namespace Froststrap.Models.Entities
             }
         }
 
-        //Froststrap deeplink type when it works, for now use roblox one
         private async void CopyDeeplink(Visual? visual)
         {
             var topLevel = TopLevel.GetTopLevel(visual);
@@ -233,6 +222,24 @@ namespace Froststrap.Models.Entities
             if (!string.IsNullOrEmpty(jobIdToDelete))
             {
                 OnDeleteRequested?.Invoke(this, jobIdToDelete);
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    _serverQuerySemaphore?.Dispose();
+                }
+                _disposed = true;
             }
         }
     }

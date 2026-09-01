@@ -8,7 +8,7 @@ using Froststrap.UI.Utility;
 
 namespace Froststrap.UI
 {
-    public static class Frontend
+    internal static class Frontend
     {
         public static async Task<MessageBoxResult> ShowMessageBox(string message, MessageBoxImage icon = MessageBoxImage.Information, MessageBoxButton buttons = MessageBoxButton.OK, MessageBoxResult defaultResult = MessageBoxResult.None)
         {
@@ -28,7 +28,7 @@ namespace Froststrap.UI
 
             string topLine = crash ? Strings.Dialog_PlayerError_Crash : Strings.Dialog_PlayerError_FailedLaunch;
 
-            string info = string.Format(
+            string info = string.Format(CultureInfo.InvariantCulture,
                 Strings.Dialog_PlayerError_HelpInformation,
                 $"https://github.com/{App.ProjectRepository}/wiki/Roblox-crashes-or-does-not-launch",
                 $"https://github.com/{App.ProjectRepository}/wiki/Switching-between-Roblox-and-Bloxstrap"
@@ -102,7 +102,7 @@ namespace Froststrap.UI
             try
             {
                 if (App.Settings.Prop.SelectedCustomTheme == null)
-                    throw new Exception("No custom theme selected");
+                    throw new InvalidOperationException("No custom theme selected");
 
                 var dialog = new CustomDialog();
                 dialog.ApplyCustomTheme(App.Settings.Prop.SelectedCustomTheme);

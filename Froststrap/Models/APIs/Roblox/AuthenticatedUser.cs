@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Models.APIs.Roblox
 {
-    public class AuthenticatedUser
+    internal class AuthenticatedUser
     {
         [JsonPropertyName("id")]
         public long Id { get; set; } = 0;

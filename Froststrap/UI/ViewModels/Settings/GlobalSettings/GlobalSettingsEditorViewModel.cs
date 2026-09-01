@@ -4,7 +4,7 @@ using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Settings.GlobalSettings
 {
-    public class GlobalSettingsEditorViewModel : ObservableObject
+    internal class GlobalSettingsEditorViewModel : ObservableObject
     {
         private readonly MainWindowViewModel _mainWindowViewModel;
         public ICommand BackCommand { get; }

@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Enums
 {
-    public enum TrayDoubleClickAction
+    internal enum TrayDoubleClickAction
     {
         [EnumName(FromTranslation = "Enums.TrayDoubleClickAction.ServerInfo")]
         ServerInfo,

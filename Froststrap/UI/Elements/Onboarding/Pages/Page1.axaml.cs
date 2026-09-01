@@ -5,13 +5,14 @@ using LucideAvalonia.Enum;
 
 namespace Froststrap.UI.Elements.Onboarding.Pages
 {
-    public partial class Page1 : UserControl
+    internal partial class Page1 : UserControl, IDisposable
     {
         private static readonly LucideIconNames[] IconCycle = [LucideIconNames.Languages, LucideIconNames.Globe];
         private static readonly TimeSpan HoldDuration = TimeSpan.FromSeconds(5);
         private static readonly TimeSpan FadeDuration = TimeSpan.FromSeconds(1);
 
         private CancellationTokenSource? _cts;
+        private bool _disposed;
 
         public Page1()
         {
@@ -29,9 +30,7 @@ namespace Froststrap.UI.Elements.Onboarding.Pages
 
         private void OnUnloaded(object? sender, RoutedEventArgs e)
         {
-            _cts?.Cancel();
-            _cts?.Dispose();
-            _cts = null;
+            Dispose();
         }
 
         private async Task RunIconCycleAsync(CancellationToken token)
@@ -54,6 +53,30 @@ namespace Froststrap.UI.Elements.Onboarding.Pages
                 }
             }
             catch (TaskCanceledException) { }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+                return;
+
+            if (disposing)
+            {
+                if (_cts != null)
+                {
+                    _cts.Cancel();
+                    _cts.Dispose();
+                    _cts = null;
+                }
+            }
+
+            _disposed = true;
         }
     }
 }

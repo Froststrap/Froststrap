@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Enums
 {
-    public enum ModTarget
+    internal enum ModTarget
     {
         Both,
         Player,

@@ -14,7 +14,7 @@ sealed class Program
 {
     /// Here for arg parser, helpful to also know all
     /// possible arguments within Froststrap.
-    public class Options
+    internal class Options
     {
 #if WINDOWS
         [Option('c', "console", HelpText = "Attaches a console window for debugging.")]
@@ -27,7 +27,8 @@ sealed class Program
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
 #if WINDOWS
-    [DllImport("kernel32.dll")]
+    [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+    [DllImport("kernel32.dll", ExactSpelling = true)]
     private static extern bool AllocConsole();
 #endif
 
@@ -37,9 +38,9 @@ sealed class Program
         var assembly = typeof(App).Assembly;
         LogManager.Setup().LoadConfigurationFromAssemblyResource(assembly, "NLog.config");
         GlobalDiagnosticsContext.Set("logRoot", Paths.Logs);
-        GlobalDiagnosticsContext.Set("startTime", DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss"));
+        GlobalDiagnosticsContext.Set("startTime", DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss", CultureInfo.InvariantCulture));
 
-        var parser = new Parser(settings =>
+        using var parser = new Parser(settings =>
         {
             settings.AutoHelp = true;
             settings.AutoVersion = true;

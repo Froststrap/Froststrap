@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Enums
 {
-    public enum CookieState
+    internal enum CookieState
     {
         Success,
         NotAllowed,

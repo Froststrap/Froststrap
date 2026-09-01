@@ -4,7 +4,7 @@ using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
-    public interface IFastFlagsService
+    internal interface IFastFlagsService
     {
         string? GetPreset(string key);
         void SetPreset(string key, string? value);
@@ -14,17 +14,17 @@ namespace Froststrap.UI.ViewModels.Settings
         void SetAllPresets(IReadOnlyDictionary<string, object> presets);
     }
 
-    public interface ISettingsService
+    internal interface ISettingsService
     {
         bool UseFastFlagManager { get; set; }
     }
 
-    public interface IDialogService
+    internal interface IDialogService
     {
         Task OpenFastFlagEditorAsync();
     }
 
-    public class FastFlagsViewModel(
+    internal class FastFlagsViewModel(
         IFastFlagsService flagsService,
         ISettingsService settingsService,
         IDialogService dialogService) : NotifyPropertyChangedViewModel
@@ -108,10 +108,10 @@ namespace Froststrap.UI.ViewModels.Settings
                     levels[i] = (baseValues[i] * clamped) / 9;
                 }
 
-                _flagsService.SetPreset("Rendering.LowPolyMeshes1", levels[0].ToString());
-                _flagsService.SetPreset("Rendering.LowPolyMeshes2", levels[1].ToString());
-                _flagsService.SetPreset("Rendering.LowPolyMeshes3", levels[2].ToString());
-                _flagsService.SetPreset("Rendering.LowPolyMeshes4", levels[3].ToString());
+                _flagsService.SetPreset("Rendering.LowPolyMeshes1", levels[0].ToString(CultureInfo.InvariantCulture));
+                _flagsService.SetPreset("Rendering.LowPolyMeshes2", levels[1].ToString(CultureInfo.InvariantCulture));
+                _flagsService.SetPreset("Rendering.LowPolyMeshes3", levels[2].ToString(CultureInfo.InvariantCulture));
+                _flagsService.SetPreset("Rendering.LowPolyMeshes4", levels[3].ToString(CultureInfo.InvariantCulture));
 
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(LowPolyMeshesEnabled));

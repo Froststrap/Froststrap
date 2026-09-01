@@ -1,6 +1,6 @@
 ﻿namespace Froststrap.Models
 {
-    public class RobloxCookies
+    internal class RobloxCookies
     {
         [JsonPropertyName("CookiesVersion")]
         public string Version { get; set; } = null!;

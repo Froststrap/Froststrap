@@ -75,11 +75,11 @@ namespace Froststrap
             if (version.StartsWith('v'))
                 version = version[1..];
 
-            int idx = version.IndexOf('+');
+            int idx = version.IndexOf('+', StringComparison.Ordinal);
             if (idx != -1)
                 version = version[..idx];
 
-            int dashIdx = version.IndexOf('-');
+            int dashIdx = version.IndexOf('-', StringComparison.Ordinal);
             if (dashIdx != -1)
                 version = version[..dashIdx];
 
@@ -129,12 +129,12 @@ namespace Froststrap
             if (version.StartsWith('v'))
                 version = version[1..];
 
-            int idx = version.IndexOf('+');
+            int idx = version.IndexOf('+', StringComparison.Ordinal);
             if (idx != -1)
                 version = version[..idx];
 
             string? prerelease = null;
-            int dashIdx = version.IndexOf('-');
+            int dashIdx = version.IndexOf('-', StringComparison.Ordinal);
             if (dashIdx != -1)
             {
                 prerelease = version[(dashIdx + 1)..];
@@ -219,7 +219,7 @@ namespace Froststrap
             if (versionInfo.ProductVersion is null)
                 return "";
 
-            return versionInfo.ProductVersion.Replace(", ", ".");
+            return versionInfo.ProductVersion.Replace(", ", ".", StringComparison.Ordinal);
         }
 
         public static string GetRobloxVersionStr(bool studio)

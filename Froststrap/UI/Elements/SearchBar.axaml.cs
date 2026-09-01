@@ -4,7 +4,7 @@ using Froststrap.UI.ViewModels;
 
 namespace Froststrap.UI.Elements;
 
-public partial class SearchBar : UserControl
+internal partial class SearchBar : UserControl
 {
     public SearchBar()
     {
