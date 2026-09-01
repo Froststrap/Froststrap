@@ -12,6 +12,7 @@
     xmlns:enums="using:Froststrap.Enums"
     xmlns:resources="using:Froststrap.Resources"
     xmlns:av="using:Avalonia.Controls"
+    xmlns:transitions="clr-namespace:Froststrap.UI.Transitions"
     xmlns:ui="using:FluentAvalonia.UI.Controls"
     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
     Title="{x:Static resources:Strings.Menu_Title}"
@@ -209,7 +210,7 @@
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Stretch">
                             <TransitioningContentControl.PageTransition>
-                                <CrossFade Duration="0:0:0.35" />
+                                <transitions:FluentEntranceTransition VerticalOffset="150" Duration="0:0:0.35" />
                             </TransitioningContentControl.PageTransition>
                         </TransitioningContentControl>
                     </Panel>
