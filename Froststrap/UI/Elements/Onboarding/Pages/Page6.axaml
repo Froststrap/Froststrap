@@ -31,8 +31,6 @@
                             HorizontalAlignment="Stretch"
                             HorizontalContentAlignment="Stretch"
                             CornerRadius="6"
-                            BorderBrush="#333342"
-                            BorderThickness="1"
                             Margin="0,0,0,8"
                             >
                             <Expander.Header>
@@ -50,7 +48,7 @@
                                 Padding="4"
                                 CornerRadius="4"
                                 Margin="0,4,0,0"
-                            >
+                                >
                                 <controls:MarkdownTextBlock
                                     MarkdownText="{Binding Answer}"
                                     TextWrapping="Wrap"
