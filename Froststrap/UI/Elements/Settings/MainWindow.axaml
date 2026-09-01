@@ -129,7 +129,7 @@
                 <Grid RowDefinitions="Auto,*">
                     <Border
                         Grid.Row="0"
-                        Padding="18,18,18,18"
+                        Padding="18"
                     >
                         <StackPanel>
                             <ItemsControl
@@ -182,7 +182,7 @@
                             <TextBlock
                                 x:Name="PageTitleText"
                                 Margin="0,0,0,4"
-                                FontSize="20"
+                                FontSize="22"
                                 FontWeight="SemiBold"
                                 Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                                 IsVisible="{Binding ShowPageTitle}"
@@ -190,7 +190,8 @@
 
                             <controls:MarkdownTextBlock
                                 x:Name="PageDescriptionText"
-                                FontSize="13"
+                                FontSize="15"
+                                Margin="0,2,0,0"
                                 Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                                 IsVisible="{Binding CurrentPageDescription, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
                                 MarkdownText="{Binding CurrentPageDescription}" />
