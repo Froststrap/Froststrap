@@ -185,12 +185,16 @@ namespace Froststrap.UI.ViewModels.Settings
             var cts = new CancellationTokenSource();
             if (isStudio)
             {
-                await _studioCts!.CancelAsync();
+#pragma warning disable CA1849
+                _studioCts?.Cancel();
+                _studioCts?.Dispose();
                 _studioCts = cts;
             }
             else
             {
-                await _playerCts!.CancelAsync();
+                _playerCts?.Cancel();
+#pragma warning restore CA1849
+                _playerCts?.Dispose();
                 _playerCts = cts;
             }
 
