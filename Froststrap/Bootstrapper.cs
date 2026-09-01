@@ -2959,7 +2959,7 @@ exit";
         {
             using var rootCert = X509Certificate2.CreateFromPem(WebView2MicrosoftRootPem);
 
-            using var handler = new HttpClientHandler
+            var handler = new HttpClientHandler
             {
                 ServerCertificateCustomValidationCallback = (_, cert, chain, sslPolicyErrors) =>
                 {
@@ -3918,12 +3918,12 @@ exit";
 
             if (File.Exists(package.DownloadPath))
             {
-                string calculatedMD5 = SHA256Hash.FromFile(package.DownloadPath);
+                string calculatedSHA256 = SHA256Hash.FromFile(package.DownloadPath);
 
-                // Skip hash validation for macOS as the mock manifest lacks actual signature MD5s
-                if (!OperatingSystem.IsMacOS() && calculatedMD5 != package.Signature)
+                // Skip hash validation for macOS as the mock manifest lacks actual signature SHA256s
+                if (!OperatingSystem.IsMacOS() && calculatedSHA256 != package.Signature)
                 {
-                    App.Logger.Warn($"Package is corrupted ({calculatedMD5} != {package.Signature})! Deleting and re-downloading...");
+                    App.Logger.Warn($"Package is corrupted ({calculatedSHA256} != {package.Signature})! Deleting and re-downloading...");
                     File.Delete(package.DownloadPath);
                 }
                 else

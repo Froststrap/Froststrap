@@ -93,4 +93,60 @@
         <Setter Property="BorderThickness" Value="0" />
     </Style>
 
+    <Style Selector="controls|CardExpander.NoUserExpansion">
+        <Setter Property="Background" Value="{DynamicResource ControlFillColorDefaultBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ControlElevationBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <controls:Card Name="ContentBorder" Background="{TemplateBinding Background}"
+                               BorderBrush="{TemplateBinding BorderBrush}"
+                               BorderThickness="{TemplateBinding BorderThickness}"
+                               Padding="0" Margin="0,2">
+                    <StackPanel>
+                        <Border Padding="16,12" Background="Transparent">
+                            <Grid ColumnDefinitions="*, Auto">
+                                <StackPanel Grid.Column="0" VerticalAlignment="Center" Spacing="3">
+                                    <ContentPresenter Content="{TemplateBinding Header}"
+                                                      FontSize="14"
+                                                      FontWeight="SemiBold"
+                                                      Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                                    <controls:MarkdownTextBlock MarkdownText="{TemplateBinding Description}"
+                                                                FontSize="12"
+                                                                TextWrapping="Wrap"
+                                                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                                                IsVisible="{TemplateBinding Description, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                                </StackPanel>
+                                <ContentPresenter Grid.Column="1"
+                                                  Content="{TemplateBinding HeaderContent}"
+                                                  VerticalAlignment="Center"
+                                                  HorizontalAlignment="Right"
+                                                  Margin="16,0,0,0" />
+                            </Grid>
+                        </Border>
+
+                        <Border Name="PART_ContentContainer"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                ClipToBounds="True">
+                            <Border.Transitions>
+                                <Transitions>
+                                    <DoubleTransition Property="Height" Duration="0:0:0.25" Easing="CubicEaseOut" />
+                                </Transitions>
+                            </Border.Transitions>
+                            <ContentPresenter Name="PART_ContentPresenter" Content="{TemplateBinding Content}" Padding="16" />
+                        </Border>
+                    </StackPanel>
+                </controls:Card>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="controls|CardExpander.NoUserExpansion[IsExpanded=True] Border#PART_ContentContainer">
+        <Setter Property="BorderThickness" Value="0,1,0,0" />
+    </Style>
+
+    <Style Selector="controls|CardExpander.NoUserExpansion[IsExpanded=False] Border#PART_ContentContainer">
+        <Setter Property="Height" Value="0" />
+        <Setter Property="BorderThickness" Value="0" />
+    </Style>
 </Styles>

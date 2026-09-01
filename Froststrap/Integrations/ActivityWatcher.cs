@@ -59,6 +59,7 @@ namespace Froststrap.Integrations
 
         private readonly LaunchMode _launchMode;
         private readonly int _robloxPID;
+        private int? _lastDisconnectReason;
 
         public string LogLocation = null!;
 
@@ -287,16 +288,12 @@ namespace Froststrap.Integrations
                 if (match.Success && match.Groups.Count == 2)
                 {
                     int reasonCode = int.Parse(match.Groups[1].Value, CultureInfo.InvariantCulture);
+                    _lastDisconnectReason = reasonCode;
 
-                    if (reasonCode == 1)
+                    if (reasonCode == 1 || reasonCode == 277)
                     {
                         _shouldAutoRejoin = true;
-                        App.Logger.Info($"Inactivity timeout detected (reason code: {reasonCode})");
-                    }
-                    if (reasonCode == 277)
-                    {
-                        _shouldAutoRejoin = true;
-                        App.Logger.Info($"Internet Disconnection detected (reason code: {reasonCode})");
+                        App.Logger.Info($"Inactivity/Internet disconnect detected (reason: {reasonCode})");
                     }
                     else
                     {
@@ -452,6 +449,13 @@ namespace Froststrap.Integrations
             {
                 if (logMessage.StartsWith(GameDisconnectedEntry, StringComparison.Ordinal))
                 {
+                    if (_lastDisconnectReason == 285)
+                    {
+                        App.Logger.Info("Ignored false disconnect (reason 285) – user did not actually leave.");
+                        _lastDisconnectReason = null;
+                        return;
+                    }
+
                     App.Logger.Info($"Disconnected from Game ({Data})");
 
                     InGame = false;
@@ -462,22 +466,16 @@ namespace Froststrap.Integrations
                     var autoRejoinData = Data;
                     Data = new();
 
-                    if (App.Settings.Prop.AutoRejoin)
+                    if (App.Settings.Prop.AutoRejoin && _shouldAutoRejoin)
                     {
                         await Task.Delay(3000);
 
-                        if (_shouldAutoRejoin)
-                        {
-                            autoRejoinData.RejoinServer(false);
-                            CloseProcess(_robloxPID);
-                        }
-                        else
-                        {
-                            App.Logger.Warn("No inactivity detected within 3 seconds, skipping auto-rejoin");
-                        }
+                        autoRejoinData.RejoinServer(false);
+                        CloseProcess(_robloxPID);
                     }
 
                     _shouldAutoRejoin = false;
+                    _lastDisconnectReason = null;
                 }
                 else if (logMessage.StartsWith(GameTeleportingEntry, StringComparison.Ordinal))
                 {
