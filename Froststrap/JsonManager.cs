@@ -38,7 +38,7 @@ namespace Froststrap
         protected virtual string ComputeHash(T obj)
         {
             string json = JsonSerializer.Serialize(obj, _jsonOptions);
-            return SHA256Hash.FromString(json);
+            return FastHash.FromString(json);
         }
 
         public bool HasUnsavedChanges
@@ -65,7 +65,7 @@ namespace Froststrap
 
                     _prop = settings;
                     Loaded = true;
-                    LastFileHash = SHA256Hash.FromString(contents);
+                    LastFileHash = FastHash.FromString(contents);
                     _savedHash = ComputeHash(_prop);
 
                     App.Logger.Info("Loaded successfully!");
@@ -129,7 +129,7 @@ namespace Froststrap
 
                 File.WriteAllText(FileLocation, contents);
 
-                LastFileHash = SHA256Hash.FromString(contents);
+                LastFileHash = FastHash.FromString(contents);
                 _savedHash = ComputeHash(Prop);
             }
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
@@ -187,7 +187,7 @@ namespace Froststrap
 
                 string contents = existingJson.ToJsonString(_jsonOptions);
                 File.WriteAllText(FileLocation, contents);
-                LastFileHash = SHA256Hash.FromString(contents);
+                LastFileHash = FastHash.FromString(contents);
                 _savedHash = ComputeHash(Prop);
                 App.Logger.Info("SaveSetting complete!");
             }
@@ -393,7 +393,7 @@ namespace Froststrap
             if (string.IsNullOrEmpty(LastFileHash) && File.Exists(FileLocation))
                 return true;
 
-            return LastFileHash != SHA256Hash.FromFile(FileLocation);
+            return LastFileHash != FastHash.FromFile(FileLocation);
         }
     }
 

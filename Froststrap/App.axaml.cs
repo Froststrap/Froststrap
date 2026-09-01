@@ -64,8 +64,6 @@ internal partial class App : Application
 
     public static readonly RobloxStudioData StudioData = new();
 
-    public static readonly SHA256 SHA256Provider = SHA256.Create();
-
     public static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
     public static readonly Dictionary<string, BaseTask> PendingSettingTasks = [];
@@ -380,176 +378,171 @@ internal partial class App : Application
 
     public override async void OnFrameworkInitializationCompleted()
     {
-        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-        {
-            string? installLocation = null;
+        if (ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+            return;
 
-            if (OperatingSystem.IsWindows())
+        string? installLocation = null;
+
+        if (OperatingSystem.IsWindows())
+        {
+            using var uninstallKey = Registry.CurrentUser.OpenSubKey(UninstallKey);
+            if (uninstallKey?.GetValue("InstallLocation") is string installLocValue)
             {
-                using var uninstallKey = Registry.CurrentUser.OpenSubKey(UninstallKey);
-                if (uninstallKey?.GetValue("InstallLocation") is string installLocValue)
+                if (Directory.Exists(installLocValue))
                 {
-                    if (Directory.Exists(installLocValue))
+                    installLocation = installLocValue;
+                }
+                else
+                {
+                    var match = Regex.Match(installLocValue, @"^[a-zA-Z]:\\Users\\([^\\]+)", RegexOptions.IgnoreCase);
+                    if (match.Success)
                     {
-                        installLocation = installLocValue;
-                    }
-                    else
-                    {
-                        var match = Regex.Match(installLocValue, @"^[a-zA-Z]:\\Users\\([^\\]+)", RegexOptions.IgnoreCase);
-                        if (match.Success)
+                        string newLocation = installLocValue.Replace(match.Value, Paths.UserProfile, StringComparison.InvariantCultureIgnoreCase);
+                        if (Directory.Exists(newLocation))
                         {
-                            string newLocation = installLocValue.Replace(match.Value, Paths.UserProfile, StringComparison.InvariantCultureIgnoreCase);
-                            if (Directory.Exists(newLocation))
-                            {
-                                installLocation = newLocation;
-                            }
+                            installLocation = newLocation;
                         }
                     }
                 }
             }
-
-            if (installLocation == null && Directory.GetParent(Paths.Process)?.FullName is string processDir)
-            {
-                var files = Directory.GetFiles(processDir).Select(Path.GetFileName).ToArray();
-                if (files.Length <= 3 && files.Contains("Settings.json") && files.Contains("State.json"))
-                {
-                    installLocation = processDir;
-                }
-            }
-
-            if (installLocation == null)
-            {
-                installLocation = Directory.GetParent(Paths.Process)?.FullName;
-
-                if (string.IsNullOrWhiteSpace(installLocation))
-                {
-                    Logger.Error("No install location could be resolved, terminating.");
-                    Terminate();
-                    return;
-                }
-
-                Paths.Initialize(installLocation);
-                Logger.Debug($"Not installed, running in portable mode from '{installLocation}'");
-            }
-            else
-            {
-                Paths.Initialize(installLocation);
-            }
-
-            NLog.GlobalDiagnosticsContext.Set("logRoot", Paths.Logs);
-            NLog.GlobalDiagnosticsContext.Set("startTime", DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss", CultureInfo.InvariantCulture));
-
-            Logger.Debug($"Starting {ProjectName} v{Version}");
-            Logger.Debug($"OS Description: {RuntimeInformation.OSDescription}");
-            Logger.Debug($"OS Architecture: {RuntimeInformation.OSArchitecture}");
-
-            var userAgent = new StringBuilder($"{ProjectName}/{Version}");
-
-            if (IsActionBuild)
-            {
-                Logger.Debug($"Compiled {BuildMetadata.Timestamp.ToFriendlyString()} from commit {BuildMetadata.CommitHash} ({BuildMetadata.CommitRef})");
-                userAgent.Append(IsProductionBuild ? " (Production)" : $" (Artifact {BuildMetadata.CommitHash}, {BuildMetadata.CommitRef})");
-            }
-            else
-            {
-                Logger.Debug($"Compiled {BuildMetadata.Timestamp.ToFriendlyString()}");
-#if QA_BUILD
-            userAgent.Append(" (QA)");
-#else
-                userAgent.Append(string.Format(CultureInfo.InvariantCulture, " (Build {0})", Convert.ToBase64String(Encoding.UTF8.GetBytes(BuildMetadata.Machine))));
-#endif
-            }
-
-            Logger.Debug($"Loaded from {Paths.Process}");
-
-            HttpClient.Timeout = TimeSpan.FromSeconds(60);
-            if (HttpClient.DefaultRequestHeaders.UserAgent.Count == 0)
-                HttpClient.DefaultRequestHeaders.Add("User-Agent", userAgent.ToString());
-
-            LaunchSettings = new LaunchSettings(Environment.GetCommandLineArgs());
-
-            lock (ActivationLock)
-            {
-                if (LaunchSettings.RobloxLaunchMode == LaunchMode.None && _pendingActivationUri is not null)
-                    LaunchSettings.TryResolveRobloxUri([_pendingActivationUri]);
-            }
-
-            if (Paths.Process != Paths.Application)
-            {
-                if (OperatingSystem.IsLinux() || OperatingSystem.IsMacOS())
-                {
-                    string escapedProcessPath = Paths.Process.Replace("\"", "\\\"", StringComparison.Ordinal);
-                    string launcherScript = $"#!/bin/sh\nexec \"{escapedProcessPath}\" \"$@\"\n";
-
-                    bool needsUpdate = !File.Exists(Paths.Application)
-                        || File.ReadAllText(Paths.Application) != launcherScript;
-
-                    if (needsUpdate)
-                        File.WriteAllText(Paths.Application, launcherScript);
-
-                    Process.Start("chmod", $"+x \"{Paths.Application}\"")?.WaitForExit();
-                }
-                else if (!File.Exists(Paths.Application))
-                {
-                    File.Copy(Paths.Process, Paths.Application);
-                }
-            }
-
-            _ = Task.Run(RemoteData.LoadData);
-            Settings.Load();
-            State.Load();
-            FastFlags.Load();
-            AppStorage.Load();
-            GlobalSettings.Load();
-
-            if (OperatingSystem.IsLinux())
-                SoberSettings.Load();
-
-            if (Settings.Prop.Theme > Theme.Custom)
-            {
-                Settings.Prop.Theme = Theme.Dark;
-                Settings.Save();
-            }
-
-            AvaloniaWindow.ApplyTheme();
-            Locale.Set(Settings.Prop.Locale);
-
-            await AssertWindowsOSVersionAsync();
-            await AssertWindowsAUMIDAsync();
-
-            await Installer.RunMigrations();
-
-            if (!LaunchSettings.BypassUpdateCheck && !OperatingSystem.IsLinux())
-                await Installer.HandleUpgrade();
-
-            if (Settings.Prop.AllowCookieAccess)
-                await Task.Run(Cookies.LoadCookies);
-
-            if (OperatingSystem.IsLinux())
-            {
-                LinuxRegistry.RegisterAll();
-            }
-
-            PlatformSettings?.ColorValuesChanged += (sender, args) =>
-            {
-                Dispatcher.UIThread.InvokeAsync(() =>
-                {
-                    AvaloniaWindow.ApplyTheme();
-                });
-            };
-
-            // Should we disable onboarding until it actually looks good ? cuz it lowkey looks ass rn.
-            if (State.Prop.IsFirstLaunch)
-            {
-                LaunchSettings.OnboardingFlag.Active = true;
-                Logger.Info("First launch detected, launching onboarding.");
-            }
-
-            lock (ActivationLock)
-                _launchArgsProcessed = true;
-
-            await LaunchHandler.ProcessLaunchArgs();
         }
+
+        if (installLocation == null && Directory.GetParent(Paths.Process)?.FullName is string processDir)
+        {
+            var files = Directory.GetFiles(processDir).Select(Path.GetFileName).ToArray();
+            if (files.Length <= 3 && files.Contains("Settings.json") && files.Contains("State.json"))
+            {
+                installLocation = processDir;
+            }
+        }
+
+        if (installLocation == null)
+        {
+            installLocation = Directory.GetParent(Paths.Process)?.FullName;
+            if (string.IsNullOrWhiteSpace(installLocation))
+            {
+                Logger.Error("No install location could be resolved, terminating.");
+                Terminate();
+                return;
+            }
+            Paths.Initialize(installLocation);
+            Logger.Debug($"Not installed, running in portable mode from '{installLocation}'");
+        }
+        else
+        {
+            Paths.Initialize(installLocation);
+        }
+
+        NLog.GlobalDiagnosticsContext.Set("logRoot", Paths.Logs);
+        NLog.GlobalDiagnosticsContext.Set("startTime", DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss", CultureInfo.InvariantCulture));
+
+        Logger.Debug($"Starting {ProjectName} v{Version}");
+        Logger.Debug($"OS Description: {RuntimeInformation.OSDescription}");
+        Logger.Debug($"OS Architecture: {RuntimeInformation.OSArchitecture}");
+
+        var userAgent = new StringBuilder($"{ProjectName}/{Version}");
+        if (IsActionBuild)
+        {
+            Logger.Debug($"Compiled {BuildMetadata.Timestamp.ToFriendlyString()} from commit {BuildMetadata.CommitHash} ({BuildMetadata.CommitRef})");
+            userAgent.Append(IsProductionBuild ? " (Production)" : $" (Artifact {BuildMetadata.CommitHash}, {BuildMetadata.CommitRef})");
+        }
+        else
+        {
+            Logger.Debug($"Compiled {BuildMetadata.Timestamp.ToFriendlyString()}");
+#if QA_BUILD
+        userAgent.Append(" (QA)");
+#else
+            userAgent.Append(string.Format(CultureInfo.InvariantCulture, " (Build {0})", Convert.ToBase64String(Encoding.UTF8.GetBytes(BuildMetadata.Machine))));
+#endif
+        }
+        Logger.Debug($"Loaded from {Paths.Process}");
+
+        HttpClient.Timeout = TimeSpan.FromSeconds(60);
+        if (HttpClient.DefaultRequestHeaders.UserAgent.Count == 0)
+            HttpClient.DefaultRequestHeaders.Add("User-Agent", userAgent.ToString());
+
+        LaunchSettings = new LaunchSettings(Environment.GetCommandLineArgs());
+
+        lock (ActivationLock)
+        {
+            if (LaunchSettings.RobloxLaunchMode == LaunchMode.None && _pendingActivationUri is not null)
+                LaunchSettings.TryResolveRobloxUri([_pendingActivationUri]);
+        }
+
+        if (Paths.Process != Paths.Application)
+        {
+            if (OperatingSystem.IsLinux() || OperatingSystem.IsMacOS())
+            {
+                string escapedProcessPath = Paths.Process.Replace("\"", "\\\"", StringComparison.Ordinal);
+                string launcherScript = $"#!/bin/sh\nexec \"{escapedProcessPath}\" \"$@\"\n";
+                bool needsUpdate = !File.Exists(Paths.Application) || File.ReadAllText(Paths.Application) != launcherScript;
+                if (needsUpdate)
+                    File.WriteAllText(Paths.Application, launcherScript);
+                Process.Start("chmod", $"+x \"{Paths.Application}\"")?.WaitForExit();
+            }
+            else if (!File.Exists(Paths.Application))
+            {
+                File.Copy(Paths.Process, Paths.Application);
+            }
+        }
+
+        _ = Task.Run(RemoteData.LoadData);
+
+        Settings.Load();
+        State.Load();
+
+        if (Settings.Prop.Theme > Theme.Custom)
+        {
+            Settings.Prop.Theme = Theme.Dark;
+            Settings.Save();
+        }
+        AvaloniaWindow.ApplyTheme();
+        Locale.Set(Settings.Prop.Locale);
+
+        if (State.Prop.IsFirstLaunch)
+        {
+            LaunchSettings.OnboardingFlag.Active = true;
+            Logger.Info("First launch detected, launching onboarding.");
+        }
+
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                await Task.WhenAll(
+                    Task.Run(() => FastFlags.Load()),
+                    Task.Run(() => AppStorage.Load()),
+                    Task.Run(() => GlobalSettings.Load())
+                );
+
+                if (!State.Prop.AumidRegistered)
+                {
+                    await AssertWindowsAUMIDAsync();
+                    State.Prop.AumidRegistered = true;
+                    State.Save();
+                }
+
+                await Installer.RunMigrations();
+
+                if (!LaunchSettings.BypassUpdateCheck && !OperatingSystem.IsLinux())
+                    await Installer.HandleUpgrade();
+
+                if (Settings.Prop.AllowCookieAccess)
+                    await Cookies.LoadCookies();
+
+                if (OperatingSystem.IsLinux())
+                    LinuxRegistry.RegisterAll();
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex, "Background initialisation failed");
+            }
+        });
+
+        lock (ActivationLock)
+            _launchArgsProcessed = true;
+
+        await LaunchHandler.ProcessLaunchArgs();
 
         base.OnFrameworkInitializationCompleted();
     }

@@ -4,6 +4,8 @@
     {
         public bool TestModeWarningShown { get; set; }
 
+        public bool AumidRegistered { get; set; }
+
         public bool IgnoreOutdatedChannel { get; set; }
 
         public bool PromptWebView2Install { get; set; } = true;
