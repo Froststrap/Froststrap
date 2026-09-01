@@ -3557,8 +3557,8 @@ exit";
                             }
                             else
                             {
-                                string sourceHash = await Task.Run(() => SHA256Hash.FromFile(sourceFile));
-                                string targetHash = await Task.Run(() => SHA256Hash.FromFile(fileVersionFolder));
+                                string sourceHash = FastHash.FromFile(sourceFile);
+                                string targetHash = FastHash.FromFile(fileVersionFolder);
 
                                 if (sourceHash == targetHash)
                                 {
@@ -3629,7 +3629,7 @@ exit";
                             try
                             {
                                 bool match = File.Exists(dest) &&
-                                    (await Task.Run(() => SHA256Hash.FromFile(source)) == await Task.Run(() => SHA256Hash.FromFile(dest)));
+                                    (await Task.Run(() => FastHash.FromFile(source)) == await Task.Run(() => FastHash.FromFile(dest)));
                                 if (!match)
                                 {
                                     Directory.CreateDirectory(Path.GetDirectoryName(dest)!);
@@ -3918,12 +3918,12 @@ exit";
 
             if (File.Exists(package.DownloadPath))
             {
-                string calculatedSHA256 = SHA256Hash.FromFile(package.DownloadPath);
+                string calculatedFastHash = FastHash.FromFile(package.DownloadPath);
 
-                // Skip hash validation for macOS as the mock manifest lacks actual signature SHA256s
-                if (!OperatingSystem.IsMacOS() && calculatedSHA256 != package.Signature)
+                // Skip hash validation for macOS as the mock manifest lacks actual signature FastHashs
+                if (!OperatingSystem.IsMacOS() && calculatedFastHash != package.Signature)
                 {
-                    App.Logger.Warn($"Package is corrupted ({calculatedSHA256} != {package.Signature})! Deleting and re-downloading...");
+                    App.Logger.Warn($"Package is corrupted ({calculatedFastHash} != {package.Signature})! Deleting and re-downloading...");
                     File.Delete(package.DownloadPath);
                 }
                 else
@@ -3994,7 +3994,7 @@ exit";
                         UpdateProgressBar();
                     }
 
-                    string hash = SHA256Hash.FromStream(fileStream);
+                    string hash = FastHash.FromStream(fileStream);
 
                     if (!OperatingSystem.IsMacOS() && hash != package.Signature)
                         throw new ChecksumFailedException($"Failed to verify download of {packageUrl}\n\nExpected hash: {package.Signature}\nGot hash: {hash}");

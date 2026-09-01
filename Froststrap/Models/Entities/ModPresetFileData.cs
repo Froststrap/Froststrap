@@ -12,11 +12,10 @@
 
         public Stream ResourceStream => Resource.GetStream(ResourceIdentifier);
 
-        public byte[] ResourceHash { get; private set; }
+        public string ResourceHash { get; private set; }
 
         public ModPresetFileData(string contentPath, string resource)
         {
-            //Why does linux do this bro, pisses me off
             if (OperatingSystem.IsLinux())
             {
                 var parts = contentPath.Split(['\\', '/'], StringSplitOptions.RemoveEmptyEntries);
@@ -28,7 +27,7 @@
             }
             ResourceIdentifier = resource;
             using var stream = ResourceStream;
-            ResourceHash = App.SHA256Provider.ComputeHash(stream);
+            ResourceHash = FastHash.FromStream(stream);
         }
 
         public bool HashMatches()
@@ -37,9 +36,9 @@
                 return false;
 
             using var fileStream = FileStream;
-            var fileHash = App.SHA256Provider.ComputeHash(fileStream);
+            var fileHash = FastHash.FromStream(fileStream);
 
-            return fileHash.SequenceEqual(ResourceHash);
+            return fileHash == ResourceHash;
         }
     }
 }

@@ -10,7 +10,7 @@
                 return null;
 
             using var fileStream = File.OpenRead(FilePath);
-            string hash = SHA256Hash.Stringify(App.SHA256Provider.ComputeHash(fileStream));
+            string hash = FastHash.FromStream(fileStream);
 
             return EmojiTypeEx.Hashes.Where(x => x.Value == hash);
         }

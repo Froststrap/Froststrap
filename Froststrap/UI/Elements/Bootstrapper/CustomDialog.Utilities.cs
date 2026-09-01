@@ -269,7 +269,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
 
                 try
                 {
-                    string key = "fonts:froststrap-" + Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(path)));
+                    string key = "fonts:froststrap-" + FastHash.FromString(path);
 
                     using var collection = new EmbeddedFontCollection(new Uri(key, UriKind.Absolute), new Uri(path, UriKind.Absolute));
                     FontManager.Current.AddFontCollection(collection);

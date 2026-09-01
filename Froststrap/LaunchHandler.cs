@@ -96,18 +96,18 @@ namespace Froststrap
                 return;
             }
 
-            if (!App.PlayerState.Loaded)
-                _ = App.PlayerState.Load();
-            if (!App.StudioState.Loaded)
-                _ = App.StudioState.Load();
-
-            if (App.Settings.Prop.ShowUsingFroststrapRPC && App.FrostRPC == null)
-            {
-                App.FrostRPC = new FroststrapRichPresence();
-            }
+            _ = Task.Run(() => App.PlayerState.Load());
+            _ = Task.Run(() => App.StudioState.Load());
 
             var window = new UI.Elements.Settings.MainWindow(false);
-            App.FrostRPC?.SetPage("Settings");
+
+            window.Loaded += (s, e) =>
+            {
+                if (App.Settings.Prop.ShowUsingFroststrapRPC && App.FrostRPC == null)
+                {
+                    _ = Task.Run(() => App.FrostRPC = new FroststrapRichPresence());
+                }
+            };
 
             window.Closed += (s, e) =>
             {

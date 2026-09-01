@@ -68,7 +68,7 @@ namespace Froststrap.Models.SettingTasks
                 return null;
 
             using var fileStream = File.OpenRead(Paths.CustomFont);
-            return SHA256Hash.Stringify(App.SHA256Provider.ComputeHash(fileStream));
+            return FastHash.FromStream(fileStream);
         }
 
         public FontModPresetTask() : base("ModPreset", "TextFont")

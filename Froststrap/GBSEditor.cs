@@ -79,7 +79,7 @@ namespace Froststrap
         private string ComputeHash()
         {
             if (Document == null) return string.Empty;
-            return SHA256Hash.FromString(Document.ToString());
+            return FastHash.FromString(Document.ToString());
         }
 
         public bool HasUnsavedChanges

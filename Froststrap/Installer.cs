@@ -12,44 +12,6 @@ namespace Froststrap
         /// </summary>
         private const bool OpenReleaseNotes = false;
 
-        [SupportedOSPlatform("windows")]
-        private static void RestoreRobloxRegistryHandlers()
-        {
-            using var playerKey = Registry.CurrentUser.OpenSubKey(
-                @"Software\Microsoft\Windows\CurrentVersion\Uninstall\roblox-player");
-            var playerFolder = playerKey?.GetValue("InstallLocation");
-
-            if (playerKey is null || playerFolder is not string playerFolderStr)
-            {
-                WindowsRegistry.Unregister("roblox");
-                WindowsRegistry.Unregister("roblox-player");
-            }
-            else
-            {
-                string playerPath = Path.Combine(playerFolderStr, App.RobloxPlayerAppName);
-                WindowsRegistry.RegisterPlayer(playerPath, "%1");
-            }
-
-            using var studioKey = Registry.CurrentUser.OpenSubKey(
-                @"Software\Microsoft\Windows\CurrentVersion\Uninstall\roblox-studio");
-            var studioFolder = studioKey?.GetValue("InstallLocation");
-
-            if (studioKey is null || studioFolder is not string studioFolderStr)
-            {
-                WindowsRegistry.Unregister("roblox-studio");
-                WindowsRegistry.Unregister("roblox-studio-auth");
-                WindowsRegistry.Unregister("Roblox.Place");
-                WindowsRegistry.Unregister(".rbxl");
-                WindowsRegistry.Unregister(".rbxlx");
-            }
-            else
-            {
-                string studioPath = Path.Combine(studioFolderStr, App.RobloxStudioAppName);
-                WindowsRegistry.RegisterStudioProtocol(studioPath, "%1");
-                WindowsRegistry.RegisterStudioFileClass(studioPath, "-ide \"%1\"");
-            }
-        }
-
         public static async Task HandleUpgrade()
         {
             if (!File.Exists(Paths.Application) || Paths.Process == Paths.Application)
@@ -63,7 +25,7 @@ namespace Froststrap
             var existingVer = GetVersionInfo(Paths.Application);
             var currentVer = GetVersionInfo(Paths.Process);
 
-            if (SHA256Hash.FromFile(Paths.Process) == SHA256Hash.FromFile(Paths.Application))
+            if (FastHash.FromFile(Paths.Process) == FastHash.FromFile(Paths.Application))
                 return;
 
             if (currentVer is not null && existingVer is not null)
@@ -388,7 +350,7 @@ namespace Froststrap
             uninstallKey.SetValueSafe("URLUpdateInfo", App.ProjectDownloadLink);
         }
 
-        [System.Runtime.Versioning.SupportedOSPlatform("linux")]
+        [SupportedOSPlatform("linux")]
         private static void SetupSoberSymlink()
         {
             string flatpakId = "org.vinegarhq.Sober";
@@ -440,7 +402,7 @@ namespace Froststrap
             App.Logger.Info($"Created symlink: {flatpakDataPath} -> {soberTarget}");
         }
 
-        [System.Runtime.Versioning.SupportedOSPlatform("linux")]
+        [SupportedOSPlatform("linux")]
         private static bool IsSymlink(string path)
         {
             if (!Path.Exists(path))
@@ -454,7 +416,7 @@ namespace Froststrap
             catch { return false; }
         }
 
-        [System.Runtime.Versioning.SupportedOSPlatform("linux")]
+        [SupportedOSPlatform("linux")]
         private static bool IsSymlinkPointingAt(string path, string expectedTarget)
         {
             if (!IsSymlink(path))
@@ -566,17 +528,9 @@ namespace Froststrap
                     if (srcInfo.Length != dstInfo.Length)
                         throw new IOException("Size mismatch after copy.");
 
-                    byte[] srcHash, dstHash;
-                    using (var srcFs = new FileStream(oldExePath, FileMode.Open, FileAccess.Read, FileShare.Read))
-                    using (var dstFs = new FileStream(newExePath, FileMode.Open, FileAccess.Read, FileShare.Read))
-                    {
-                        var buffer = new byte[1024 * 1024];
-                        int read = await srcFs.ReadAsync(buffer);
-                        srcHash = SHA256.HashData(buffer.AsSpan(0, read));
-                        read = await dstFs.ReadAsync(buffer);
-                        dstHash = SHA256.HashData(buffer.AsSpan(0, read));
-                    }
-                    if (!srcHash.SequenceEqual(dstHash))
+                    string srcHash = FastHash.FromFile(oldExePath);
+                    string dstHash = FastHash.FromFile(newExePath);
+                    if (srcHash != dstHash)
                         throw new IOException("Hash mismatch after copy.");
 
                     copied = true;

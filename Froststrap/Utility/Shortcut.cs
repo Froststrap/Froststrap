@@ -376,8 +376,7 @@ namespace Froststrap.Utility
 
         private static string ComputeHash(byte[] data)
         {
-            byte[] hash = SHA256.HashData(data);
-            return Convert.ToHexStringLower(hash);
+            return FastHash.FromBytes(data);
         }
     }
 }
