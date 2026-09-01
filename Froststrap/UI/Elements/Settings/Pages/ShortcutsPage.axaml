@@ -19,13 +19,14 @@
                 <ToggleSwitch IsChecked="{Binding ExtractIconsTask.NewState, Mode=TwoWay}" />
             </controls:OptionControl>
 
-            <Separator Margin="0,6,0,4" />
+            <Separator Margin="0,12" />
 
             <TextBlock
                 FontSize="20"
                 FontWeight="Bold"
+                Margin="0,10,0,0"
                 Text="{x:Static resources:Strings.Menu_Shortcuts_General_Title}" />
-            <TextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="{x:Static resources:Strings.Menu_Shortcuts_General_Description}" />
+            <TextBlock Margin="0,2,0,10" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="{x:Static resources:Strings.Menu_Shortcuts_General_Description}" />
 
             <Grid x:Name="ShortcutsGrid" ColumnDefinitions="*, *">
                 <controls:OptionControl
@@ -46,13 +47,14 @@
                 </controls:OptionControl>
             </Grid>
 
-            <Separator Margin="0,8,0,4" />
+            <Separator Margin="0,12" />
 
             <TextBlock
                 FontSize="20"
                 FontWeight="Bold"
+                Margin="0,10,0,0"
                 Text="{x:Static resources:Strings.Menu_Shortcuts_Function_Title}" />
-            <TextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="{x:Static resources:Strings.Menu_Shortcuts_Function_Description}" />
+            <TextBlock Margin="0,2,0,10" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="{x:Static resources:Strings.Menu_Shortcuts_Function_Description}" />
 
             <Grid ColumnDefinitions="*,*,*">
                 <controls:OptionControl
@@ -77,15 +79,17 @@
                 </controls:OptionControl>
             </Grid>
 
-            <Separator Margin="0,8,0,4" />
+            <Separator Margin="0,12" />
 
             <TextBlock
                 FontSize="20"
                 FontWeight="Bold"
+                Margin="0,10,0,0"
                 Text="{x:Static resources:Strings.Common_Miscellaneous}" />
 
             <controls:MarkdownTextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                                         MarkdownText="{x:Static resources:Strings.Menu_Shortcuts_Misc_Description}"
+                                        Margin="0,2,0,10"
                                         TextWrapping="Wrap" />
 
             <controls:CardExpander Header="{x:Static resources:Strings.Menu_Shortcuts_GameShortcut_Title}" IsExpanded="True">
@@ -213,7 +217,7 @@
                         </StackPanel>
                     </Grid>
 
-                    <Separator Margin="0,8"/>
+                    <Separator Margin="0,12"/>
 
                     <DockPanel>
                         <controls:IconButton Command="{Binding CreateGameShortcutCommand}" Content="{x:Static resources:Strings.Menu_Shortcuts_CreateShortcut}" Icon="Plus" />
