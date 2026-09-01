@@ -1,7 +1,6 @@
 ﻿using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.Enums.GBSPresets;
-using System.Runtime.InteropServices;
 using System.Windows.Input;
 using System.Xml.Linq;
 
@@ -136,7 +135,44 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public static bool ReadOnly
+        public bool IsWarningVisible
+        {
+            get
+            {
+                return !ReadOnly && (Fullscreen || MaxQualityEnabled || VignetteEnabled || FramerateCap != -1);
+            }
+        }
+
+        public string WarningTooltipText
+        {
+            get
+            {
+                if (ReadOnly) return string.Empty;
+
+                var activeSettings = new List<string>();
+        
+                if (Fullscreen) activeSettings.Add("Fullscreen");
+                if (MaxQualityEnabled) activeSettings.Add("Max Quality");
+                if (VignetteEnabled) activeSettings.Add("Vignette");
+                if (FramerateCap != -1) activeSettings.Add("Framerate Cap");
+
+                if (activeSettings.Count == 0) return string.Empty;
+
+                string settingsList = activeSettings.Count > 1 
+                    ? string.Join(", ", activeSettings.Take(activeSettings.Count - 1)) + " and " + activeSettings.Last() 
+                    : activeSettings[0];
+
+                return $"Read-only must be enabled for {settingsList} to not be forgotten";
+            }
+        }
+
+        private void UpdateWarningState()
+        {
+            OnPropertyChanged(nameof(IsWarningVisible));
+            OnPropertyChanged(nameof(WarningTooltipText));
+        }
+
+        public bool ReadOnly
         {
             get => GBSEditor.GetReadOnly();
             set
@@ -145,19 +181,18 @@ namespace Froststrap.UI.ViewModels.Settings
                     _ = Frontend.ShowMessageBox(Strings.Menu_GlobalSettings_ReadonlyMessage, MessageBoxImage.Warning);
 
                 App.GlobalSettings.SetReadOnly(value);
+                OnPropertyChanged(nameof(ReadOnly));
+                UpdateWarningState();
             }
         }
 
-        public static int FramerateCap
+        public int FramerateCap
         {
             get
             {
                 if (int.TryParse(App.GlobalSettings.GetPreset("Rendering.FramerateCap"), out int framerate))
                 {
-                    if (framerate < 1)
-                        return 60;
-                    else
-                        return framerate;
+                    return framerate;
                 }
                 else
                     return 60;
@@ -168,6 +203,8 @@ namespace Froststrap.UI.ViewModels.Settings
                     value = -1;
 
                 App.GlobalSettings.SetPreset("Rendering.FramerateCap", value);
+                OnPropertyChanged(nameof(FramerateCap));
+                UpdateWarningState();
             }
         }
 
@@ -181,16 +218,26 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public static bool Fullscreen
+        public bool Fullscreen
         {
             get => App.GlobalSettings.GetPreset("Rendering.Fullscreen")?.ToLower() == "true";
-            set => App.GlobalSettings.SetPreset("Rendering.Fullscreen", value);
+            set
+            {
+                App.GlobalSettings.SetPreset("Rendering.Fullscreen", value);
+                OnPropertyChanged(nameof(Fullscreen));
+                UpdateWarningState();
+            }
         }
 
-        public static bool MaxQualityEnabled
+        public bool MaxQualityEnabled
         {
             get => App.GlobalSettings.GetPreset("Rendering.MaxQualityEnabled")?.ToLower() == "true";
-            set => App.GlobalSettings.SetPreset("Rendering.MaxQualityEnabled", value);
+            set
+            {
+                App.GlobalSettings.SetPreset("Rendering.MaxQualityEnabled", value);
+                OnPropertyChanged(nameof(MaxQualityEnabled));
+                UpdateWarningState();
+            }
         }
 
         public bool VignetteEnabled
@@ -210,6 +257,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 App.GlobalSettings.SetPreset("Rendering.VignetteEnableOption", val);
 
                 OnPropertyChanged(nameof(VignetteEnabled));
+                UpdateWarningState();
             }
         }
 

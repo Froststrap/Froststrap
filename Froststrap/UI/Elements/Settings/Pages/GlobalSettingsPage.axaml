@@ -42,7 +42,20 @@
             </Grid>
 
             <controls:OptionControl Description="{x:Static resources:Strings.Menu_GBSEditor_ReadOnly_Description}" Header="{x:Static resources:Strings.Menu_GBSEditor_ReadOnly_Title}">
-                <ToggleSwitch Margin="5,0,0,0" IsChecked="{Binding ReadOnly}" />
+                <Grid ColumnDefinitions="Auto,*">
+                    <TextBlock
+                        Grid.Column="0"
+                        FontSize="20"
+                        Text="⚠"
+                        Padding="0,10,10,0"
+                        VerticalAlignment="Stretch"
+                        HorizontalAlignment="Center"
+                        Foreground="#FACC00"
+                        IsVisible="{Binding IsWarningVisible}"
+                        ToolTip.Tip="{Binding WarningTooltipText}"
+                    />
+                    <ToggleSwitch Grid.Column="1" Margin="5,0,0,0" IsChecked="{Binding ReadOnly}" />
+                </Grid>
             </controls:OptionControl>
 
             <StackPanel>
