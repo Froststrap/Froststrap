@@ -218,7 +218,6 @@
                     </StackPanel>
                     <Button
                         Grid.Column="1"
-                        Margin="0,16,0,0"
                         HorizontalAlignment="Stretch"
                         Command="{Binding PreviewBootstrapperCommand}"
                         Content="{x:Static resources:Strings.Menu_Appearance_Preview}" />
@@ -226,7 +225,6 @@
 
 
                 <controls:CardExpander Classes="NoUserExpansion"
-                                       Margin="0,8,0,0"
                                        IsExpanded="{Binding CustomThemesExpanded, Mode=OneWay}"
                                        Header="{x:Static resources:Strings.Menu_Appearance_Launcher_Title}"
                                        Description="{x:Static resources:Strings.Menu_Appearance_Launcher_Description}">
