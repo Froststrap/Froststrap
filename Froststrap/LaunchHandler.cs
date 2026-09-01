@@ -243,7 +243,7 @@ namespace Froststrap
             //    - discord rich presence tasks: handles querying and displaying of game information, invoked on activity watcher events
             // - watcher task: runs activity watcher + waiting for roblox to close, terminates when it has
 
-            using var watcher = new Watcher();
+            var watcher = new Watcher();
 
             Task watcherTask = Task.Run(watcher.Run);
 
