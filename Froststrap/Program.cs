@@ -27,8 +27,7 @@ sealed class Program
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
 #if WINDOWS
-    [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-    [DllImport("kernel32.dll", ExactSpelling = true)]
+    [DllImport("kernel32.dll")]
     private static extern bool AllocConsole();
 #endif
 
