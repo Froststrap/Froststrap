@@ -114,7 +114,7 @@ namespace Froststrap
                 interlock.Dispose();
                 App.FrostRPC?.Dispose();
                 App.FrostRPC = null;
-                App.Terminate();
+                ProcessNextAction(window.CloseAction);
             };
 
             window.Show();

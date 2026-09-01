@@ -137,6 +137,8 @@ namespace Froststrap.UI.ViewModels.Settings
         public event EventHandler? SettingsSaved;
         public bool GBSEnabled = App.GlobalSettings.Loaded;
 
+        public NextAction CloseAction { get; private set; } = NextAction.Terminate;
+
         public MainWindowViewModel()
         {
             _breadcrumbItems.CollectionChanged += OnBreadcrumbsChanged;
@@ -352,6 +354,7 @@ namespace Froststrap.UI.ViewModels.Settings
         public void SaveAndLaunchSettings()
         {
             SaveSettings();
+
             if (!App.LaunchSettings.TestModeFlag.Active)
             {
                 string arg = SelectedLaunchMode == LaunchMode.Player ? "-player" : "-studio";
@@ -359,6 +362,9 @@ namespace Froststrap.UI.ViewModels.Settings
             }
             else
             {
+                CloseAction = SelectedLaunchMode == LaunchMode.Player
+                    ? NextAction.LaunchRoblox
+                    : NextAction.LaunchRobloxStudio;
                 CloseWindow();
             }
         }
