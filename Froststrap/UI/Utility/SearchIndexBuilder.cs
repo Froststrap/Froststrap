@@ -7,7 +7,7 @@ namespace Froststrap.UI.Utility
 {
     /// <summary>
     /// Utility for building search indexes from UI elements.
-    /// Scans majoirty of elements in search page (OptionControls, CardExpanders, CardActions, TextBlocks) etc.
+    /// Scans majoirty of elements in search page (OptionControls, CardExpanders, CardActions) etc.
     /// Should be fairly competent at doing its job.
     /// </summary>
     internal partial class SearchIndexBuilder
@@ -84,7 +84,6 @@ namespace Froststrap.UI.Utility
                 ScanForOptionControls(pageView, pageTag, "", newItems);
                 ScanForCardActions(pageView, pageTag, "", newItems);
                 ScanForSquareCards(pageView, pageTag, "", newItems);
-                ScanForTextLabels(pageView, pageTag, "", newItems);
 
                 if (newItems.Count > 0)
                 {
@@ -99,8 +98,6 @@ namespace Froststrap.UI.Utility
                 return newItems;
             }
         }
-
-        private static Control? FindPageView(object _) => null;
 
         private static void ScanForCardExpanders(Control pageView, string pageTag, string pageTitle, List<SearchBarItem> searchIndex)
         {
@@ -192,39 +189,6 @@ namespace Froststrap.UI.Utility
                         PageTitle = pageTitle,
                         Category = "Card",
                         Description = card.Description as string
-                    });
-                }
-            }
-        }
-
-        private static void ScanForTextLabels(Control pageView, string pageTag, string pageTitle, List<SearchBarItem> searchIndex)
-        {
-            var textBlocks = pageView.GetVisualDescendants()
-                .OfType<TextBlock>()
-                .Where(tb =>
-                {
-                    var text = tb.Text;
-                    return !string.IsNullOrWhiteSpace(text) &&
-                           text.Length is > 3 and < 100 &&
-                           !text.Contains('\n', StringComparison.Ordinal) &&
-                           tb.FontWeight == Avalonia.Media.FontWeight.Bold;
-                })
-                .DistinctBy(tb => tb.Text);
-
-            foreach (var textBlock in textBlocks)
-            {
-                var text = textBlock.Text;
-                if (text is null) continue;
-
-                if (!searchIndex.Any(item => item.DisplayName.Equals(text, StringComparison.OrdinalIgnoreCase)))
-                {
-                    searchIndex.Add(new SearchBarItem
-                    {
-                        DisplayName = text,
-                        Tag = NormalizeTag(text),
-                        PageTag = pageTag,
-                        PageTitle = pageTitle,
-                        Category = "Label"
                     });
                 }
             }
