@@ -25,7 +25,9 @@
                          VerticalAlignment="Center">
             <AutoCompleteBox.ItemTemplate>
                 <DataTemplate DataType="models:SearchBarItem">
-                    <Grid ColumnDefinitions="Auto,*,Auto" Margin="0,4">
+                    <Grid ColumnDefinitions="Auto,*,Auto"
+                          Margin="0,4"
+                          MaxWidth="370">
                         <ic:Lucide Grid.Column="0"
                                    Icon="{Binding IconSymbol, FallbackValue=Settings}"
                                    Height="20" Width="20"
@@ -39,7 +41,7 @@
                                        FontSize="13"
                                        FontWeight="SemiBold"
                                        TextTrimming="CharacterEllipsis" />
-                            <TextBlock Text="{Binding PageName}"
+                            <TextBlock Text="{Binding Description}"
                                        FontSize="11"
                                        Opacity="0.6"
                                        TextTrimming="CharacterEllipsis" />
