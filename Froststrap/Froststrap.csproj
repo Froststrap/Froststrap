@@ -15,7 +15,8 @@
     <AssemblyName>Froststrap</AssemblyName>
     <RootNamespace>Froststrap</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-	<PublishReadyToRun>true</PublishReadyToRun>
+    <PublishTrimmed>true</PublishTrimmed>
+    <TrimMode>full</TrimMode>
 	<NeutralLanguage>en</NeutralLanguage>
     <Description>Froststrap - A Fishstrap fork</Description>
     <ApplicationIcon>Froststrap.ico</ApplicationIcon>
