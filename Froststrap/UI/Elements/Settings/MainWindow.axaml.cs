@@ -29,8 +29,6 @@ namespace Froststrap.UI.Elements.Settings
         private readonly MainWindowViewModel? _viewModel;
 
         public NextAction CloseAction => _viewModel?.CloseAction ?? NextAction.Terminate;
-
-        private bool _isIndexingMissing;
         private readonly HashSet<string> _indexedPageTags = [];
         private readonly SearchIndexBuilder _searchIndexBuilder = new();
 
@@ -71,6 +69,8 @@ namespace Froststrap.UI.Elements.Settings
 
             LoadState();
 
+            Dispatcher.UIThread.Post(async () => await IndexMissingPagesAsync(), DispatcherPriority.Background);
+
             App.RemoteData.Subscribe((_, _) => Dispatcher.UIThread.Post(() =>
             {
                 var data = App.RemoteData.Prop;
@@ -94,19 +94,9 @@ namespace Froststrap.UI.Elements.Settings
             {
                 UpdateSelectedNavigationViewItem(_viewModel.SelectedPage);
             }, DispatcherPriority.Loaded);
-
-            _viewModel.SearchBar.SearchStarted += async (s, e) =>
-            {
-                if (!_isIndexingMissing)
-                {
-                    _isIndexingMissing = true;
-                    await IndexMissingPagesAsync();
-                    _isIndexingMissing = false;
-                }
-            };
         }
 
-        protected override void OnOpened(System.EventArgs e)
+        protected override async void OnOpened(EventArgs e)
         {
             base.OnOpened(e);
 
@@ -115,6 +105,8 @@ namespace Froststrap.UI.Elements.Settings
                 Position = NotificationPosition.TopRight,
                 MaxItems = 3
             };
+
+            await IndexMissingPagesAsync();
         }
 
         private void TitleBarGrid_PointerPressed(object sender, PointerPressedEventArgs e)
