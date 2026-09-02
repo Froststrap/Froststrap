@@ -1,27 +1,18 @@
-﻿/*
- *  Froststrap
- *  Copyright (c) Froststrap Team
- *
- *  This file is part of Froststrap and is distributed under the terms of the
- *  GNU Affero General Public License, version 3 or later.
- *
- *  SPDX-License-Identifier: AGPL-3.0-or-later
- */
-
-using Avalonia.Media.Imaging;
-using Avalonia.Threading;
+﻿using Avalonia.Threading;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using FluentAvalonia.UI.Controls;
-using Froststrap.Integrations;
-using Froststrap.UI.Elements.Settings;
 using LucideAvalonia.Enum;
 using System.Collections.ObjectModel;
 
 namespace Froststrap.UI.ViewModels
 {
-    internal partial class SearchBarViewModel : NotifyPropertyChangedViewModel, IDisposable
+    internal partial class SearchBarViewModel : ObservableObject, IDisposable
     {
         private string _searchQuery = string.Empty;
+        private CancellationTokenSource? _debounceCts;
+        private bool _isDropDownOpen;
+        private bool _disposed;
+
         public string SearchQuery
         {
             get => _searchQuery;
@@ -29,503 +20,109 @@ namespace Froststrap.UI.ViewModels
             {
                 if (SetProperty(ref _searchQuery, value))
                 {
-                    FilterSearchResults();
+                    _debounceCts?.Cancel();
+                    _debounceCts = new CancellationTokenSource();
+                    var token = _debounceCts.Token;
 
-                    TriggerGameSearch(value);
-                    GameSearchResults.Clear();
-                    IsGameSearchLoading = false;
+                    _ = Task.Run(async () =>
+                    {
+                        await Task.Delay(150, token);
+                        if (!token.IsCancellationRequested)
+                            FilterSearchResults();
+                    }, token);
                 }
             }
         }
 
-        private ObservableCollection<OmniSearchContent> _gameSearchResults = [];
-        public ObservableCollection<OmniSearchContent> GameSearchResults
+        public bool IsDropDownOpen
         {
-            get => _gameSearchResults;
-            set => SetProperty(ref _gameSearchResults, value);
+            get => _isDropDownOpen;
+            set => SetProperty(ref _isDropDownOpen, value);
         }
-
-        private bool _isGameSearchLoading;
-        public bool IsGameSearchLoading
-        {
-            get => _isGameSearchLoading;
-            set
-            {
-                if (SetProperty(ref _isGameSearchLoading, value))
-                {
-                    OnPropertyChanged(nameof(CanLoadMore));
-                }
-            }
-        }
-
-        private string _nextPageCursor = "";
-        public string NextPageCursor
-        {
-            get => _nextPageCursor;
-            set
-            {
-                if (SetProperty(ref _nextPageCursor, value))
-                {
-                    OnPropertyChanged(nameof(CanLoadMore));
-                }
-            }
-        }
-
-        private bool _isSearchFlyoutOpen;
-        public bool IsSearchFlyoutOpen
-        {
-            get => _isSearchFlyoutOpen;
-            set => SetProperty(ref _isSearchFlyoutOpen, value);
-        }
-
-        private string? _roblosecurity;
-        public string? Roblosecurity
-        {
-            get => _roblosecurity;
-            set => SetProperty(ref _roblosecurity, value);
-        }
-
-        public bool CanLoadMore => !string.IsNullOrEmpty(NextPageCursor) && !IsGameSearchLoading;
-
-        private CancellationTokenSource? _searchDebounceCts;
-        private bool _disposed;
 
         private ObservableCollection<SearchBarItem> _filteredSearchResults = [];
         public ObservableCollection<SearchBarItem> FilteredSearchResults
         {
             get => _filteredSearchResults;
-            private set => SetProperty(ref _filteredSearchResults, value);
+            private set
+            {
+                SetProperty(ref _filteredSearchResults, value);
+                // Auto‑open when results exist and query not empty
+                IsDropDownOpen = !string.IsNullOrWhiteSpace(SearchQuery) && value.Count > 0;
+            }
         }
 
         private List<SearchBarItem> _searchIndex = [];
 
-        public IRelayCommand ClearSearchCommand { get; }
         public IRelayCommand<SearchBarItem> SearchResultSelectedCommand { get; }
+        public IRelayCommand ClearSearchCommand { get; }
+        public IRelayCommand ToggleSearchListCommand { get; }
 
         public event EventHandler<SearchBarItem>? SearchResultSelected;
-        public event EventHandler? SearchStarted;
-
-        private bool _isRefreshing;
 
         public SearchBarViewModel()
         {
-            ClearSearchCommand = new RelayCommand(Clear);
             SearchResultSelectedCommand = new RelayCommand<SearchBarItem>(HandleSearchResultSelected);
+            ClearSearchCommand = new RelayCommand(Clear);
+            ToggleSearchListCommand = new RelayCommand(ToggleDropdown);
         }
 
-        private void TriggerGameSearch(string query)
+        private void ToggleDropdown() => IsDropDownOpen = !IsDropDownOpen;
+
+        public void SetSearchIndex(List<SearchBarItem> searchIndex)
         {
-            if (!App.Settings.Prop.GameSearch)
-            {
-                Dispatcher.UIThread.Post(() =>
-                {
-                    GameSearchResults.Clear();
-                    IsSearchFlyoutOpen = FilteredSearchResults.Count > 0;
-                    OnPropertyChanged(nameof(HasAnyResults));
-                });
-                return;
-            }
-
-            _searchDebounceCts?.Cancel();
-            _searchDebounceCts = new CancellationTokenSource();
-            var token = _searchDebounceCts.Token;
-
-            _ = SearchGamesAsync(query, token);
+            _searchIndex = searchIndex ?? [];
+            FilterSearchResults();
         }
 
-        private async Task SearchGamesAsync(string query, CancellationToken token)
+        public List<SearchBarItem> GetSearchIndex() => _searchIndex;
+
+        public void RefreshSearchResults() => FilterSearchResults();
+
+        private void FilterSearchResults()
         {
-            if (!App.Settings.Prop.GameSearch) return;
+            var query = SearchQuery;
 
             if (string.IsNullOrWhiteSpace(query))
             {
                 Dispatcher.UIThread.Post(() =>
                 {
-                    GameSearchResults.Clear();
-                    IsSearchFlyoutOpen = false;
+                    FilteredSearchResults.Clear();
+                    IsDropDownOpen = false;
                 });
                 return;
             }
 
-            try
+            var filtered = _searchIndex
+                .Where(item => item.DisplayName.Contains(query, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            Dispatcher.UIThread.Post(() =>
             {
-                await Task.Delay(500, token);
-                if (token.IsCancellationRequested) return;
-
-                IsGameSearchLoading = true;
-                IsSearchFlyoutOpen = true;
-
-                List<OmniSearchContent> results = [];
-
-                if (long.TryParse(query, out long placeId))
-                {
-                    try
-                    {
-                        var uriBuilder = new UriBuilder(UrlBuilder.BuildApiUrl("games", "v1/games/multiget-place-details", secure: true))
-                        {
-                            Query = $"placeIds={placeId}"
-                        };
-                        using var placeReq = new HttpRequestMessage(HttpMethod.Get, uriBuilder.Uri);
-                        var account = AccountManager.Shared.ActiveAccount;
-                        if (account != null)
-                        {
-                            var cookie = AccountManager.Shared.GetRoblosecurityForUser(account.UserId);
-                            if (!string.IsNullOrEmpty(cookie))
-                                placeReq.Headers.Add("Cookie", $".ROBLOSECURITY={cookie}");
-                        }
-
-                        var placeResp = await App.HttpClient.SendAsync(placeReq, token);
-                        if (placeResp.IsSuccessStatusCode)
-                        {
-                            var placeBody = await placeResp.Content.ReadAsStringAsync(token);
-                            using var doc = JsonDocument.Parse(placeBody);
-                            if (doc.RootElement.ValueKind == JsonValueKind.Array && doc.RootElement.GetArrayLength() > 0)
-                            {
-                                var placeElement = doc.RootElement[0];
-                                results.Add(new OmniSearchContent
-                                {
-                                    RootPlaceId = placeId,
-                                    UniverseId = (ulong)placeElement.GetProperty("universeId").GetInt64(),
-                                    Name = placeElement.GetProperty("name").GetString() ?? $"Place {placeId}",
-                                    PlayerCount = 0
-                                });
-                            }
-                        }
-                    }
-                    catch { /* Fallback to standard search */ }
-                }
-
-                if (results.Count == 0)
-                {
-                    var (searchResults, nextCursor) = await GameSearching.GetDetailedGameSearchResultsAsync(query);
-                    if (searchResults != null)
-                        results.AddRange(searchResults);
-                    NextPageCursor = nextCursor;
-                }
-
-                if (token.IsCancellationRequested) return;
-
-                Dispatcher.UIThread.Post(() =>
-                {
-                    if (token.IsCancellationRequested) return;
-
-                    GameSearchResults.Clear();
-                    foreach (var res in results)
-                        GameSearchResults.Add(res);
-
-                    IsSearchFlyoutOpen = HasAnyResults;
-
-                    OnPropertyChanged(nameof(HasAnyResults));
-                    OnPropertyChanged(nameof(CanLoadMore));
-                }, DispatcherPriority.Background);
-
-                _ = Task.Run(async () =>
-                {
-                    try
-                    {
-                        var thumbRequests = results.Select(r => new ThumbnailRequest
-                        {
-                            Type = ThumbnailType.GameIcon,
-                            TargetId = r.UniverseId,
-                            Size = "128x128"
-                        }).ToList();
-
-                        var fetchedUrls = await Thumbnails.GetThumbnailUrlsAsync(thumbRequests, token);
-                        if (fetchedUrls != null && !token.IsCancellationRequested)
-                        {
-                            using var semaphore = new SemaphoreSlim(4);
-                            var downloadTasks = new List<Task>();
-
-                            for (int i = 0; i < results.Count; i++)
-                            {
-                                if (i < fetchedUrls.Length && !string.IsNullOrEmpty(fetchedUrls[i]))
-                                {
-                                    int index = i;
-                                    downloadTasks.Add(Task.Run(async () =>
-                                    {
-                                        await semaphore.WaitAsync(token);
-                                        try
-                                        {
-                                            var response = await App.HttpClient.GetByteArrayAsync(new Uri(fetchedUrls[index]!), token);
-                                            using var ms = new MemoryStream(response);
-                                            var bitmap = new Bitmap(ms);
-                                            results[index].ThumbnailBitmap = bitmap;
-                                        }
-                                        catch { }
-                                        finally { semaphore.Release(); }
-                                    }, token));
-                                }
-                            }
-                            await Task.WhenAll(downloadTasks);
-                        }
-                    }
-                    catch (OperationCanceledException) { /* Ignore */ }
-
-                    if (token.IsCancellationRequested) return;
-
-                    Dispatcher.UIThread.Post(() =>
-                    {
-                        if (token.IsCancellationRequested) return;
-
-                        GameSearchResults.Clear();
-                        foreach (var res in results)
-                            GameSearchResults.Add(res);
-
-                        IsSearchFlyoutOpen = HasAnyResults;
-                        OnPropertyChanged(nameof(HasAnyResults));
-                        OnPropertyChanged(nameof(CanLoadMore));
-                    }, DispatcherPriority.Background);
-                }, token);
-            }
-            catch (TaskCanceledException) { }
-            finally
-            {
-                IsGameSearchLoading = false;
-            }
+                FilteredSearchResults = new ObservableCollection<SearchBarItem>(filtered);
+                IsDropDownOpen = filtered.Count > 0;
+            });
         }
 
-        [RelayCommand]
-        public void ToggleSearchList()
+        private void HandleSearchResultSelected(SearchBarItem? item)
         {
-            IsSearchFlyoutOpen = !IsSearchFlyoutOpen;
-        }
-
-        [RelayCommand]
-        private async Task LoadMoreGamesAsync()
-        {
-            if (!App.Settings.Prop.GameSearch || string.IsNullOrWhiteSpace(NextPageCursor) || string.IsNullOrWhiteSpace(SearchQuery) || IsGameSearchLoading)
-                return;
-
-            try
-            {
-                IsGameSearchLoading = true;
-                OnPropertyChanged(nameof(CanLoadMore));
-
-                var (results, nextCursor) = await GameSearching.GetDetailedGameSearchResultsAsync(SearchQuery, NextPageCursor);
-                NextPageCursor = nextCursor;
-
-                if (results != null && results.Count != 0)
-                {
-                    await Dispatcher.UIThread.InvokeAsync(() =>
-                    {
-                        foreach (var res in results)
-                            GameSearchResults.Add(res);
-
-                        OnPropertyChanged(nameof(CanLoadMore));
-                    }, DispatcherPriority.Background);
-
-                    _ = Task.Run(async () =>
-                    {
-                        try
-                        {
-                            var thumbRequests = results.Select(r => new ThumbnailRequest
-                            {
-                                Type = ThumbnailType.GameIcon,
-                                TargetId = r.UniverseId,
-                                Size = "128x128"
-                            }).ToList();
-
-                            var fetchedUrls = await Thumbnails.GetThumbnailUrlsAsync(thumbRequests, CancellationToken.None);
-                            if (fetchedUrls != null)
-                            {
-                                using var semaphore = new SemaphoreSlim(4);
-                                var downloadTasks = new List<Task>();
-
-                                for (int i = 0; i < results.Count; i++)
-                                {
-                                    if (i < fetchedUrls.Length && !string.IsNullOrEmpty(fetchedUrls[i]))
-                                    {
-                                        int index = i;
-                                        downloadTasks.Add(Task.Run(async () =>
-                                        {
-                                            await semaphore.WaitAsync();
-                                            try
-                                            {
-                                                var response = await App.HttpClient.GetByteArrayAsync(new Uri(fetchedUrls[index]!));
-                                                using var ms = new MemoryStream(response);
-                                                var bitmap = new Bitmap(ms);
-                                                results[index].ThumbnailBitmap = bitmap;
-                                            }
-                                            catch { }
-                                            finally { semaphore.Release(); }
-                                        }));
-                                    }
-                                }
-                                await Task.WhenAll(downloadTasks);
-                            }
-                        }
-                        catch { /* Ignore */ }
-
-                        await Dispatcher.UIThread.InvokeAsync(() =>
-                        {
-                            foreach (var res in results)
-                                GameSearchResults.Add(res);
-
-                            OnPropertyChanged(nameof(CanLoadMore));
-                        }, DispatcherPriority.Background);
-                    });
-                }
-                else
-                {
-                    NextPageCursor = "";
-                    OnPropertyChanged(nameof(CanLoadMore));
-                }
-            }
-            catch (Exception ex)
-            {
-                App.Logger.Error($"Load more error: {ex.Message}");
-            }
-            finally
-            {
-                IsGameSearchLoading = false;
-                OnPropertyChanged(nameof(CanLoadMore));
-            }
+            if (item == null) return;
+            SearchQuery = string.Empty;
+            IsDropDownOpen = false;
+            SearchResultSelected?.Invoke(this, item);
         }
 
         public void Clear()
         {
             SearchQuery = string.Empty;
-            GameSearchResults.Clear();
-        }
-
-        public bool HasAnyResults => FilteredSearchResults.Count > 0 || GameSearchResults.Count > 0;
-
-        public void SetSearchIndex(List<SearchBarItem> searchIndex)
-        {
-            _searchIndex = searchIndex ?? [];
-        }
-
-        public List<SearchBarItem> GetSearchIndex()
-        {
-            return _searchIndex;
-        }
-
-        public void RefreshSearchResults()
-        {
-            _isRefreshing = true;
-            FilterSearchResults();
-            _isRefreshing = false;
-        }
-
-        private void HandleSearchResultSelected(SearchBarItem? item)
-        {
-            if (item == null)
-                return;
-
-            Clear();
-            SearchResultSelected?.Invoke(this, item);
-            item.NavigateAction?.Invoke();
-        }
-
-        private void FilterSearchResults()
-        {
-            if (string.IsNullOrWhiteSpace(SearchQuery))
+            Dispatcher.UIThread.Post(() =>
             {
-                FilteredSearchResults = [];
-                if (GameSearchResults.Count == 0) IsSearchFlyoutOpen = false;
-
-                OnPropertyChanged(nameof(HasAnyResults));
-                return;
-            }
-
-            if (!_isRefreshing)
-                SearchStarted?.Invoke(this, EventArgs.Empty);
-
-            var filtered = _searchIndex
-                .Where(item => item.DisplayName.Contains(SearchQuery, StringComparison.OrdinalIgnoreCase))
-                .ToList();
-
-            FilteredSearchResults = new ObservableCollection<SearchBarItem>(filtered);
-
-            if (FilteredSearchResults.Count > 0)
-                IsSearchFlyoutOpen = true;
-
-            OnPropertyChanged(nameof(HasAnyResults));
-        }
-
-        [RelayCommand]
-        private async Task PlayGame(OmniSearchContent content)
-        {
-            if (content == null) return;
-            Clear();
-
-            Process.Start(new ProcessStartInfo
-            {
-                FileName = $"roblox://experiences/start?placeId={content.RootPlaceId}",
-                UseShellExecute = true
+                FilteredSearchResults.Clear();
+                IsDropDownOpen = false;
             });
-
-            MainWindow.ShowGlobalNotification(
-            Strings.Menu_SearchBar_JoiningGame,
-            string.Format(CultureInfo.InvariantCulture, Strings.Menu_SearchBar_JoiningName, content.Name),
-            FAInfoBarSeverity.Success,
-            5000,
-            LucideIconNames.Globe
-            );
         }
 
-        [RelayCommand]
-        private async Task RegionJoinGame(OmniSearchContent content)
-        {
-            if (content == null) return;
-
-            Clear();
-            IsSearchFlyoutOpen = false;
-
-            MainWindow.ShowGlobalNotification(
-                Strings.Menu_SearchBar_JoiningGame,
-                Strings.Menu_SearchBar_AutoJoin,
-                FAInfoBarSeverity.Informational,
-                5000,
-                LucideIconNames.Globe
-            );
-
-            try
-            {
-                using var fetcher = new RobloxServerFetcher();
-
-                bool success = await fetcher.JoinBestServerAsync(
-                    content.RootPlaceId,
-                    App.Settings.Prop.BestRegionAmounts,
-                    App.Settings.Prop.MaxServerCheck,
-                    showConfirmation: false
-                );
-
-                if (success)
-                {
-                    MainWindow.ShowGlobalNotification(
-                        Strings.Menu_SearchBar_ServerFound,
-                        Strings.Menu_SearchBar_JoiningBest,
-                        FAInfoBarSeverity.Success,
-                        3000,
-                        LucideIconNames.Check
-                    );
-                }
-                else
-                {
-                    MainWindow.ShowGlobalNotification(
-                        Strings.Common_NotFound,
-                        Strings.Menu_SearchBar_NoSuitableServer,
-                        FAInfoBarSeverity.Warning,
-                        5000,
-                        LucideIconNames.TriangleAlert
-                    );
-                }
-            }
-            catch (Exception ex)
-            {
-                App.Logger.Error($"Unhandled exception: {ex.Message}");
-                MainWindow.ShowGlobalNotification(
-                    Strings.Common_Error,
-                    string.Format(CultureInfo.InvariantCulture, Strings.Menu_SearchBar_JoinError, ex.Message),
-                    FAInfoBarSeverity.Error,
-                    5000,
-                    LucideIconNames.TriangleAlert
-                );
-            }
-        }
-
-        #region IDisposable Implementation
+        #region IDisposable
         public void Dispose()
         {
             Dispose(true);
@@ -534,16 +131,13 @@ namespace Froststrap.UI.ViewModels
 
         protected virtual void Dispose(bool disposing)
         {
-            if (_disposed)
-                return;
-
+            if (_disposed) return;
             if (disposing)
             {
-                _searchDebounceCts?.Cancel();
-                _searchDebounceCts?.Dispose();
-                _searchDebounceCts = null;
+                _debounceCts?.Cancel();
+                _debounceCts?.Dispose();
+                _debounceCts = null;
             }
-
             _disposed = true;
         }
         #endregion

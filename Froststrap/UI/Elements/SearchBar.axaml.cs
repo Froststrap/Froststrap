@@ -1,5 +1,4 @@
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
 using Froststrap.UI.ViewModels;
 
 namespace Froststrap.UI.Elements;
@@ -9,56 +8,16 @@ internal partial class SearchBar : UserControl
     public SearchBar()
     {
         InitializeComponent();
-
-        DataContextChanged += (s, e) =>
-        {
-            if (DataContext is SearchBarViewModel vm)
-            {
-                vm.PropertyChanged -= OnViewModelPropertyChanged;
-                vm.PropertyChanged += OnViewModelPropertyChanged;
-            }
-        };
+        SearchAutoCompleteBox.SelectionChanged += OnSelectionChanged;
     }
 
-    private void OnViewModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    private void OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
-        if (e.PropertyName == nameof(SearchBarViewModel.IsSearchFlyoutOpen) &&
-            sender is SearchBarViewModel vm)
+        if (DataContext is SearchBarViewModel vm &&
+            e.AddedItems.Count > 0 &&
+            e.AddedItems[0] is SearchBarItem item)
         {
-            var flyout = FlyoutBase.GetAttachedFlyout(SearchTextBox);
-            if (flyout == null) return;
-
-            if (vm.IsSearchFlyoutOpen)
-            {
-                if (!flyout.IsOpen)
-                    FlyoutBase.ShowAttachedFlyout(SearchTextBox);
-            }
-            else
-            {
-                flyout.Hide();
-            }
-        }
-    }
-
-    private void OnSearchIconClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-    {
-        if (DataContext is SearchBarViewModel vm)
-            vm.IsSearchFlyoutOpen = true;
-        else
-            FlyoutBase.ShowAttachedFlyout(SearchTextBox);
-    }
-
-    private void OnScrollChanged(object? sender, ScrollChangedEventArgs e)
-    {
-        if (sender is ScrollViewer scrollViewer)
-        {
-            if (scrollViewer.Offset.Y >= scrollViewer.Extent.Height - scrollViewer.Viewport.Height - 50)
-            {
-                if (DataContext is SearchBarViewModel vm && vm.CanLoadMore && !vm.IsGameSearchLoading)
-                {
-                    vm.LoadMoreGamesCommand.Execute(null);
-                }
-            }
+            vm.SearchResultSelectedCommand?.Execute(item);
         }
     }
 }
