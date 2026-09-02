@@ -240,7 +240,6 @@ namespace Froststrap.UI.ViewModels.Settings
                 CurrentPageDescription = description;
                 BreadcrumbItems = customBreadcrumbs ?? [];
                 CurrentPage = viewModel;
-                SearchBar.Clear();
             }
             catch (Exception ex)
             {
