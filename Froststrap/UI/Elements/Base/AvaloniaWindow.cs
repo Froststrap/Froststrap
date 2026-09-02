@@ -303,10 +303,6 @@ namespace Froststrap.UI.Elements.Base
         protected override void OnOpened(EventArgs e)
         {
             base.OnOpened(e);
-#if QA_BUILD            
-            this.BorderBrush = Brushes.Red;
-            this.BorderThickness = new Thickness(4);
-#endif
 
             ApplyWindowBackground();
             UpdateBackdropForAllWindows();

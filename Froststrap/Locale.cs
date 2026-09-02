@@ -106,11 +106,6 @@ namespace Froststrap
                 Application.Current?.Resources["ContentFontFamily"] =
                     new Avalonia.Media.FontFamily("Noto Sans Thai");
             }
-
-#if QA_BUILD
-            window.BorderBrush = Brushes.Red;
-            window.BorderThickness = new Thickness(4);
-#endif
         }
 
         private static void ApplyLocaleToApplication()
