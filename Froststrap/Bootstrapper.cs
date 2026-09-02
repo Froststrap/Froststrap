@@ -312,7 +312,7 @@ namespace Froststrap
                     await HandleConnectionError(connectionResult);
             }
 
-#if (!DEBUG || DEBUG_UPDATER) && !QA_BUILD
+#if (!DEBUG || DEBUG_UPDATER)
             if (!App.LaunchSettings.BypassUpdateCheck && !App.LaunchSettings.UpgradeFlag.Active && App.Settings.Prop.UpdateChecks != UpdateCheck.Disabled)
             {
                 bool updatePresent = await CheckForUpdates();
@@ -1639,7 +1639,7 @@ namespace Froststrap
             {
                 bool includePreRelease = false;
 
-#if QA_BUILD || DEBUG
+#if DEBUG
                 includePreRelease = true;
 #endif
 

@@ -17,11 +17,7 @@ internal partial class App : Application
     private const string MockReleaseTagEnvironmentVariable = "MOCK_RELEASE_TAG";
     private const string MockCurrentVersionEnvironmentVariable = "MOCK_CURRENT_VERSION";
 
-#if QA_BUILD
-    public const string ProjectName = "Froststrap-QA";
-#else
     public const string ProjectName = "Froststrap";
-#endif
     public const string ProjectOwner = "Froststrap";
     public const string ProjectRepository = "Froststrap/Froststrap";
     public const string ProjectDownloadLink = "https://github.com/Froststrap/Froststrap/releases";
@@ -449,11 +445,7 @@ internal partial class App : Application
         else
         {
             Logger.Debug($"Compiled {BuildMetadata.Timestamp.ToFriendlyString()}");
-#if QA_BUILD
-        userAgent.Append(" (QA)");
-#else
             userAgent.Append(string.Format(CultureInfo.InvariantCulture, " (Build {0})", Convert.ToBase64String(Encoding.UTF8.GetBytes(BuildMetadata.Machine))));
-#endif
         }
         Logger.Debug($"Loaded from {Paths.Process}");
 
