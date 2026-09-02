@@ -43,13 +43,15 @@
                             <ic:Lucide Icon="Copyright" Width="20" Height="20" />
                         </ui:FANavigationViewItem.Icon>
                     </ui:FANavigationViewItem>
+                </ui:FANavigationView.MenuItems>
 
+                <ui:FANavigationView.FooterMenuItems>
                     <ui:FANavigationViewItem Tag="onboarding" Content="{x:Static resources:Strings.About_Onboarding_Title}">
                         <ui:FANavigationViewItem.Icon>
                             <ic:Lucide Icon="Rocket" Width="20" Height="20" />
                         </ui:FANavigationViewItem.Icon>
                     </ui:FANavigationViewItem>
-                </ui:FANavigationView.MenuItems>
+                </ui:FANavigationView.FooterMenuItems>
 
                 <ui:FANavigationView.Content>
                     <TransitioningContentControl
