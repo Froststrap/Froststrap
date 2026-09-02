@@ -89,6 +89,13 @@ internal class AppStorageManager : JsonManager<Dictionary<string, object>>
     // using jsonmanager save messes up  app theme formatting
     public override void Save()
     {
+        var propHash = ComputeHash(Prop);
+
+        if (ComputeHash(Prop) == _savedHash) {
+            App.Logger.Warn("No changes, bailing save.");
+            return;
+        }
+
         if (!File.Exists(FileLocation))
         {
             App.Logger.Info("Save skipped – file does not exist.");
@@ -105,7 +112,7 @@ internal class AppStorageManager : JsonManager<Dictionary<string, object>>
 
             string contents = JsonSerializer.Serialize(Prop, _writeOptions);
             File.WriteAllText(FileLocation, contents);
-            _savedHash = ComputeHash(Prop);
+            _savedHash = propHash;
             App.Logger.Info("Save Complete!");
         }
         catch (Exception ex)

@@ -237,6 +237,11 @@ namespace Froststrap
         {
             App.Logger.Info($"Saving to {FileLocation}...");
 
+            if (ComputeHash() == _savedHash) {
+                App.Logger.Warn("No changes, bailing save.");
+                return;
+            }
+
             try
             {
                 SetReadOnly(false, true);

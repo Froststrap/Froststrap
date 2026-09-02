@@ -128,6 +128,11 @@ internal class SoberSettingsManager : JsonManager<Dictionary<string, object>>
 
     public override void Save()
     {
+        if (ComputeHash(Prop) == _savedHash) {
+            App.Logger.Warn("No changes, bailing save.");
+            return;
+        }
+
         if (!Loaded)
         {
             App.Logger.Warn("Save skipped – settings not loaded (non‑Linux or file missing/invalid).");
