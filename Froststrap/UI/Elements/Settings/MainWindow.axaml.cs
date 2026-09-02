@@ -70,7 +70,6 @@ namespace Froststrap.UI.Elements.Settings
             gbs.IsEnabled = _viewModel.GBSEnabled;
 
             LoadState();
-            LoadNavigationPaneState();
 
             App.RemoteData.Subscribe((_, _) => Dispatcher.UIThread.Post(() =>
             {
@@ -417,12 +416,14 @@ namespace Froststrap.UI.Elements.Settings
             Grid.SetColumn(closeButton, 2);
             contentGrid.Children.Add(closeButton);
 
-            var transform = new TranslateTransform(NotificationSlideDistance, 0);
-            transform.Transitions =
-            [
-                new DoubleTransition { Property = TranslateTransform.XProperty, Duration = TimeSpan.FromMilliseconds(350), Easing = new QuarticEaseOut() },
-                new DoubleTransition { Property = TranslateTransform.YProperty, Duration = TimeSpan.FromMilliseconds(300), Easing = new QuarticEaseOut() }
-            ];
+            var transform = new TranslateTransform(NotificationSlideDistance, 0)
+            {
+                Transitions =
+                [
+                    new DoubleTransition { Property = TranslateTransform.XProperty, Duration = TimeSpan.FromMilliseconds(350), Easing = new QuarticEaseOut() },
+                    new DoubleTransition { Property = TranslateTransform.YProperty, Duration = TimeSpan.FromMilliseconds(300), Easing = new QuarticEaseOut() }
+                ]
+            };
 
             var notification = new Border
             {
@@ -696,15 +697,6 @@ namespace Froststrap.UI.Elements.Settings
                 App.State.SaveSetting("LastPage");
             }
         }
-
-        private void LoadNavigationPaneState()
-        {
-            var navView = this.FindControl<FANavigationView>("NavView");
-            if (navView == null) return;
-
-            navView.IsPaneOpen = App.State.Prop.IsNavigationPaneOpen;
-        }
-
         #region Event Handlers
 
         private async void MainWindow_Closing(object? sender, CancelEventArgs e)
@@ -733,13 +725,6 @@ namespace Froststrap.UI.Elements.Settings
             State.Height = this.Height;
             State.Left = this.Position.X;
             State.Top = this.Position.Y;
-
-            var navView = this.FindControl<FANavigationView>("NavView");
-            if (navView != null)
-            {
-                App.State.Prop.IsNavigationPaneOpen = navView.IsPaneOpen;
-                App.State.SaveSetting("IsNavigationPaneOpen");
-            }
 
             SaveCurrentPage();
         }
