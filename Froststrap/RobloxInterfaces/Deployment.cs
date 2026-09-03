@@ -217,14 +217,6 @@
             string activeBinaryType = binaryTypeOverride ?? BinaryType;
             string cacheKey = $"{channel}-{activeBinaryType}";
 
-            using var request = new HttpRequestMessage() { Method = HttpMethod.Get };
-
-            if (!string.IsNullOrEmpty(ChannelToken))
-            {
-                App.Logger.Info("Got Roblox-Channel-Token");
-                request.Headers.Add("Roblox-Channel-Token", ChannelToken);
-            }
-
             ClientVersion clientVersion;
 
             if (ClientVersionCache.TryGetValue(cacheKey, out var value))
@@ -240,7 +232,10 @@
 
                 try
                 {
-                    request.RequestUri = UrlBuilder.BuildApiUrl("clientsettingscdn", path);
+                    using var request = new HttpRequestMessage(HttpMethod.Get, UrlBuilder.BuildApiUrl("clientsettingscdn", path));
+                    if (!string.IsNullOrEmpty(ChannelToken))
+                        request.Headers.Add("Roblox-Channel-Token", ChannelToken);
+
                     clientVersion = await Http.SendJson<ClientVersion>(request);
                 }
                 catch (HttpRequestException httpEx) when (!isDefaultChannel && BadChannelCodes.Contains(httpEx.StatusCode))
@@ -252,16 +247,12 @@
                     App.Logger.Error($"Failed to contact clientsettingscdn! {ex}");
                     App.Logger.Warn("Falling back to clientsettings...");
 
-                    using var fallbackRequest = new HttpRequestMessage()
-                    {
-                        Method = HttpMethod.Get,
-                        RequestUri = UrlBuilder.BuildApiUrl("clientsettings", path)
-                    };
-                    if (!string.IsNullOrEmpty(ChannelToken))
-                        fallbackRequest.Headers.Add("Roblox-Channel-Token", ChannelToken);
-
                     try
                     {
+                        using var fallbackRequest = new HttpRequestMessage(HttpMethod.Get, UrlBuilder.BuildApiUrl("clientsettings", path));
+                        if (!string.IsNullOrEmpty(ChannelToken))
+                            fallbackRequest.Headers.Add("Roblox-Channel-Token", ChannelToken);
+
                         clientVersion = await Http.SendJson<ClientVersion>(fallbackRequest);
                     }
                     catch (HttpRequestException httpEx) when (!isDefaultChannel && BadChannelCodes.Contains(httpEx.StatusCode))
