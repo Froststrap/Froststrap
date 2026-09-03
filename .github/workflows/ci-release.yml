@@ -23,6 +23,7 @@ jobs:
         run: |
           winget install --id Nushell.Nushell --exact --accept-source-agreements --accept-package-agreements
           $nuPath = Join-Path $env:LOCALAPPDATA "Microsoft\WinGet\Links"
+          refreshenv
           echo $nuPath >> $env:GITHUB_PATH
           
       - name: Install NSIS
