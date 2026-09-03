@@ -94,7 +94,7 @@
                 <ItemsControl Grid.Row="2" ItemsSource="{Binding Mods}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <UniformGrid Columns="3" />
+                            <ui:UniformWrapPanel MinItemWidth="270" />
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
 
@@ -103,6 +103,7 @@
                             <controls:Card VerticalAlignment="Top"
                                            Height="270"
                                            Margin="4"
+                                           HorizontalAlignment="Stretch"
                                            Padding="0"
                                            CornerRadius="8"
                                            ClipToBounds="True">
