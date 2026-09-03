@@ -1,5 +1,9 @@
 {
+  rpm,
+  lib,
+  dpkg,
   typos,
+  stdenv,
   nushell,
   callPackage
 }:
@@ -10,5 +14,8 @@ mkFragment {
   buildInputs = [
     nushell
     typos
+  ] ++ lib.optionals stdenv.hostPlatform.isLinux [
+    rpm
+    dpkg
   ];
 }

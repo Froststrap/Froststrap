@@ -20,7 +20,6 @@
   dotnetCorePackages,
   glib,
   omnisharp-roslyn,
-  create-dmg,
   callPackage,
 }:
 let
@@ -52,8 +51,6 @@ mkFragment (finalAttrs: {
     omnisharp-roslyn # lsp
   ] ++ lib.optionals stdenv.hostPlatform.isLinux [
     glib
-  ] ++ lib.optionals stdenv.hostPlatform.isDarwin [
-    create-dmg
   ];
 
   nativeBuildInputs = lib.optionals stdenv.hostPlatform.isLinux [
