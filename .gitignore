@@ -6,10 +6,8 @@ build/
 [Bb]in/
 [Oo]bj/
 publish/
-__pycache__/
-*.pyc
 DerivedData/
-# .DS_Store
+.DS_Store
 
 # IDE stuff
 .vs/
