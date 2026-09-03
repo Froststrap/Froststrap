@@ -1,7 +1,7 @@
 def main [
-  --project: string = "Froststrap/Froststrap.csproj"
-  --build-dir: string = "build"
-  --config: string = "Release"
+  project: string = "Froststrap/Froststrap.csproj"
+  build_dir: string = "build"
+  config: string = "Release"
 ] {
   mkdir $build_dir
   let temp_publish = $"($build_dir)/temp-contained"
