@@ -5,6 +5,7 @@
              xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
              xmlns:models="using:Froststrap.Models"
              xmlns:controls="using:Froststrap.UI.Elements.Controls"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
              xmlns:resources="using:Froststrap.Resources"
              xmlns:vm="clr-namespace:Froststrap.UI.ViewModels"
              mc:Ignorable="d"
@@ -12,8 +13,8 @@
              d:DesignHeight="450"
              x:Class="Froststrap.UI.Elements.SearchBar"
              x:DataType="vm:SearchBarViewModel">
-    <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="400">
-        <AutoCompleteBox x:Name="SearchAutoCompleteBox"
+	<Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="400">
+		<AutoCompleteBox x:Name="SearchAutoCompleteBox"
                          Theme="{StaticResource SearchBarAutoCompleteBoxTheme}"
                          PlaceholderText="{x:Static resources:Strings.Menu_SearchBar_SearchSomething}"
                          Text="{Binding SearchQuery, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -23,54 +24,61 @@
                          MaxDropDownHeight="325"
                          IsDropDownOpen="{Binding IsDropDownOpen, Mode=TwoWay}"
                          VerticalAlignment="Center">
-            <AutoCompleteBox.ItemTemplate>
-                <DataTemplate DataType="models:SearchBarItem">
-                    <Grid ColumnDefinitions="Auto,*,Auto"
+			<AutoCompleteBox.ItemTemplate>
+				<DataTemplate DataType="models:SearchBarItem">
+					<Grid ColumnDefinitions="Auto,*,Auto"
                           Margin="0,4"
                           MaxWidth="370">
-                        <ic:Lucide Grid.Column="0"
+						<ic:Lucide Grid.Column="0"
                                    Icon="{Binding IconSymbol, FallbackValue=Settings}"
                                    Height="20" Width="20"
                                    Opacity="0.8"
                                    Margin="0,0,12,0"
                                    VerticalAlignment="Center" />
-                        <StackPanel Grid.Column="1"
+						<StackPanel Grid.Column="1"
                                     VerticalAlignment="Center"
                                     Spacing="2">
-                            <TextBlock Text="{Binding DisplayName}"
+							<TextBlock Text="{Binding DisplayName}"
                                        FontSize="13"
                                        FontWeight="SemiBold"
                                        TextTrimming="CharacterEllipsis" />
-                            <TextBlock Text="{Binding Description}"
+							<TextBlock Text="{Binding Description}"
                                        FontSize="11"
                                        Opacity="0.6"
                                        TextTrimming="CharacterEllipsis" />
-                        </StackPanel>
-                    </Grid>
-                </DataTemplate>
-            </AutoCompleteBox.ItemTemplate>
+						</StackPanel>
+					</Grid>
+				</DataTemplate>
+			</AutoCompleteBox.ItemTemplate>
 
-            <AutoCompleteBox.InnerLeftContent>
-                <ic:Lucide Icon="Search"
+			<AutoCompleteBox.InnerLeftContent>
+				<ic:Lucide Icon="Search"
                            Width="14"
                            Height="14"
                            VerticalAlignment="Center"
                            Margin="8,0,0,0"/>
-            </AutoCompleteBox.InnerLeftContent>
+			</AutoCompleteBox.InnerLeftContent>
 
-            <AutoCompleteBox.InnerRightContent>
-                <controls:IconButton Command="{Binding ClearSearchCommand}"
-                                     IsVisible="{Binding SearchQuery, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-                                     Icon="X"
-                                     IconSize="14"
-                                     Background="Transparent"
-                                     BorderThickness="0"
-                                     Width="28"
-                                     Height="28"
-                                     VerticalAlignment="Center"
-                                     Margin="0,0,2,0"
-                                     Padding="8"/>
-            </AutoCompleteBox.InnerRightContent>
-        </AutoCompleteBox>
-    </Grid>
+			<AutoCompleteBox.InnerRightContent>
+				<StackPanel Orientation="Horizontal" Spacing="4">
+					<ui:FAProgressRing IsIndeterminate="True"
+                                       Width="20"
+                                       Height="20"
+                                       VerticalAlignment="Center"
+                                       IsVisible="{Binding IsIndexing}" />
+					<controls:IconButton Command="{Binding ClearSearchCommand}"
+                                         IsVisible="{Binding SearchQuery, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                         Icon="X"
+                                         IconSize="14"
+                                         Background="Transparent"
+                                         BorderThickness="0"
+                                         Width="28"
+                                         Height="28"
+                                         VerticalAlignment="Center"
+                                         Margin="0,0,2,0"
+                                         Padding="8"/>
+				</StackPanel>
+			</AutoCompleteBox.InnerRightContent>
+		</AutoCompleteBox>
+	</Grid>
 </UserControl>

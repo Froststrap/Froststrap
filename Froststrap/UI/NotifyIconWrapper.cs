@@ -10,7 +10,9 @@ namespace Froststrap.UI
     internal class NotifyIconWrapper : IDisposable
     {
         private bool _isDisposed;
+#pragma warning disable CA2213
         private readonly TrayIcon _trayIcon;
+#pragma warning restore CA2213
         private readonly MenuContainer _menuContainer;
         private readonly Watcher _watcher;
         private ActivityWatcher? ActivityWatcher => _watcher.ActivityWatcher;

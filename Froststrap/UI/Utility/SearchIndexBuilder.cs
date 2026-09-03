@@ -1,4 +1,3 @@
-using System.Text.RegularExpressions;
 using Avalonia.Controls;
 using Avalonia.VisualTree;
 using Froststrap.UI.Elements.Controls;
@@ -31,15 +30,15 @@ namespace Froststrap.UI.Utility
 
             var navigationItems = new[]
             {
-                new { Display = Resources.Strings.Menu_Integrations_Title, Tag = "integrations" },
-                new { Display = Resources.Strings.Menu_Behaviour_Title, Tag = "behaviour" },
-                new { Display = "Preset Mods", Tag = "mods" },
-                new { Display = Resources.Strings.Menu_FastFlags_Title, Tag = "fastflags" },
-                new { Display = Resources.Strings.Menu_Appearance_Title, Tag = "appearance" },
-                new { Display = Resources.Strings.Menu_RegionSelector_Title, Tag = "regionselector" },
-                new { Display = Resources.Strings.Menu_GlobalSettings_Title, Tag = "globalsettings" },
-                new { Display = Resources.Strings.Common_Shortcuts, Tag = "shortcuts" },
-                new { Display = Resources.Strings.Common_Deployment, Tag = "channels" }
+                new { Display = Strings.Menu_Integrations_Title, Tag = "integrations" },
+                new { Display = Strings.Menu_Behaviour_Title, Tag = "behaviour" },
+                new { Display = Strings.Menu_PresetMods_Title, Tag = "mods" },
+                new { Display = Strings.Menu_FastFlags_Title, Tag = "fastflags" },
+                new { Display = Strings.Menu_Appearance_Title, Tag = "appearance" },
+                new { Display = Strings.Menu_RegionSelector_Title, Tag = "regionselector" },
+                new { Display = Strings.Menu_GlobalSettings_Title, Tag = "globalsettings" },
+                new { Display = Strings.Common_Shortcuts, Tag = "shortcuts" },
+                new { Display = Strings.Common_Deployment, Tag = "channels" }
             };
 
             _navigationItemsCache = [];

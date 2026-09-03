@@ -1,7 +1,6 @@
 ﻿using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using LucideAvalonia.Enum;
 using System.Collections.ObjectModel;
 
 namespace Froststrap.UI.ViewModels
@@ -12,6 +11,7 @@ namespace Froststrap.UI.ViewModels
         private CancellationTokenSource? _debounceCts;
         private bool _isDropDownOpen;
         private bool _disposed;
+        private bool _isIndexing;
 
         public string SearchQuery
         {
@@ -40,6 +40,12 @@ namespace Froststrap.UI.ViewModels
             set => SetProperty(ref _isDropDownOpen, value);
         }
 
+        public bool IsIndexing
+        {
+            get => _isIndexing;
+            set => SetProperty(ref _isIndexing, value);
+        }
+
         private ObservableCollection<SearchBarItem> _filteredSearchResults = [];
         public ObservableCollection<SearchBarItem> FilteredSearchResults
         {
@@ -47,7 +53,6 @@ namespace Froststrap.UI.ViewModels
             private set
             {
                 SetProperty(ref _filteredSearchResults, value);
-                // Auto‑open when results exist and query not empty
                 IsDropDownOpen = !string.IsNullOrWhiteSpace(SearchQuery) && value.Count > 0;
             }
         }
