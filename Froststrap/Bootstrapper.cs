@@ -3971,7 +3971,6 @@ exit";
                     var response = await App.HttpClient.GetAsync(new Uri(packageUrl), HttpCompletionOption.ResponseHeadersRead, _cancelTokenSource.Token);
                     await using var stream = await response.Content.ReadAsStreamAsync(_cancelTokenSource.Token);
                     await using var fileStream = new FileStream(package.DownloadPath, FileMode.CreateNew, FileAccess.ReadWrite, FileShare.Delete);
-
                     while (true)
                     {
                         if (_cancelTokenSource.IsCancellationRequested)
@@ -3993,7 +3992,9 @@ exit";
                         _totalDownloadedBytes += bytesRead;
                         UpdateProgressBar();
                     }
-
+                    await fileStream.FlushAsync(); 
+                    fileStream.Position = 0;
+                    
                     string hash = FastHash.FromStream(fileStream);
 
                     if (!OperatingSystem.IsMacOS() && hash != package.Signature)
