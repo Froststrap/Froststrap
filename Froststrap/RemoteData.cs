@@ -70,9 +70,11 @@ namespace Froststrap
 
                     App.Logger.Info("Fetching remote Data.json and signature...");
 
-                    using var client = new HttpClient();
-                    byte[] dataBytes = await client.GetByteArrayAsync(remoteDataUri);
-                    byte[] sigBytes = await client.GetByteArrayAsync(remoteSigUri);
+                    Task<byte[]> dataTask = App.HttpClient.GetByteArrayAsync(remoteDataUri);
+                    Task<byte[]> sigTask = App.HttpClient.GetByteArrayAsync(remoteSigUri);
+                    await Task.WhenAll(dataTask, sigTask);
+                    byte[] dataBytes = await dataTask;
+                    byte[] sigBytes = await sigTask;
 
                     if (sigBytes.Length != Ed25519SignatureLength || !VerifyEd25519(dataBytes, sigBytes, ConfigPublicKey))
                     {

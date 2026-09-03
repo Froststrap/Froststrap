@@ -96,13 +96,13 @@ namespace Froststrap
                 return;
             }
 
-            _ = Task.Run(() => App.PlayerState.Load());
-            _ = Task.Run(() => App.StudioState.Load());
-
             var window = new UI.Elements.Settings.MainWindow(false);
 
             window.Loaded += (s, e) =>
             {
+                _ = Task.Run(() => App.PlayerState.Load());
+                _ = Task.Run(() => App.StudioState.Load());
+
                 if (App.Settings.Prop.ShowUsingFroststrapRPC && App.FrostRPC == null)
                 {
                     _ = Task.Run(() => App.FrostRPC = new FroststrapRichPresence());
@@ -122,13 +122,16 @@ namespace Froststrap
 
         public static void LaunchMenu()
         {
-            if (App.Settings.Prop.ShowUsingFroststrapRPC && App.FrostRPC == null)
-            {
-                App.FrostRPC = new FroststrapRichPresence();
-            }
-
             var dialog = new LaunchMenuDialog();
-            App.FrostRPC?.SetPage("Launch Menu");
+
+            dialog.Loaded += (s, e) =>
+            {
+                if (App.Settings.Prop.ShowUsingFroststrapRPC && App.FrostRPC == null)
+                {
+                    App.FrostRPC = new FroststrapRichPresence();
+                    App.FrostRPC.SetPage("Launch Menu");
+                }
+            };
 
             dialog.Closed += (sender, e) =>
             {
@@ -142,18 +145,19 @@ namespace Froststrap
 
         public static void LaunchOnboarding()
         {
-            if (App.Settings.Prop.ShowUsingFroststrapRPC && App.FrostRPC == null)
-            {
-                App.FrostRPC = new FroststrapRichPresence();
-            }
-
-            App.FrostRPC?.SetPage("Onboarding");
-
             var mainWindow = new MainWindow();
             if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop2)
-            {
                 desktop2.MainWindow = mainWindow;
-            }
+
+            mainWindow.Loaded += (s, e) =>
+            {
+                if (App.Settings.Prop.ShowUsingFroststrapRPC && App.FrostRPC == null)
+                {
+                    App.FrostRPC = new FroststrapRichPresence();
+                    App.FrostRPC.SetPage("Onboarding");
+                }
+            };
+
             mainWindow.Show();
 
             mainWindow.Closed += (s, ev) =>

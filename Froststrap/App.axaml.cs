@@ -32,7 +32,8 @@ internal partial class App : Application
     public const string UninstallKey = $@"Software\Microsoft\Windows\CurrentVersion\Uninstall\{ProjectName}";
 
     public const string ApisKey = $"Software\\{ProjectName}";
-    public static LaunchSettings LaunchSettings { get; private set; } = null!;
+
+    public static LaunchSettings LaunchSettings { get; internal set; } = null!;
 
     public static readonly BuildMetadataAttribute BuildMetadata = Assembly.GetExecutingAssembly().GetCustomAttribute<BuildMetadataAttribute>()!;
 
@@ -452,8 +453,6 @@ internal partial class App : Application
         HttpClient.Timeout = TimeSpan.FromSeconds(60);
         if (HttpClient.DefaultRequestHeaders.UserAgent.Count == 0)
             HttpClient.DefaultRequestHeaders.Add("User-Agent", userAgent.ToString());
-
-        LaunchSettings = new LaunchSettings(Environment.GetCommandLineArgs());
 
         lock (ActivationLock)
         {

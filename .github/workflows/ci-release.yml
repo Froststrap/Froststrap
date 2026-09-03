@@ -37,7 +37,7 @@ jobs:
           "SHORT_SHA=$("${{ github.sha }}".Substring(0, 7))" >> $env:GITHUB_ENV
 
       - name: Build and package
-        run: nu ./Scripts/main.nu publish
+        run: nu ./main.nu publish
 
       - uses: actions/upload-artifact@v7
         with:
@@ -93,7 +93,7 @@ jobs:
           APP_STORE_CONNECT_P8_CONTENT: ${{ secrets.APP_STORE_CONNECT_P8_CONTENT }}
           APPLE_KEY_ID: ${{ secrets.APPLE_KEY_ID }}
           APPLE_ISSUER_ID: ${{ secrets.APPLE_ISSUER_ID }}
-        run: nix develop --accept-flake-config -c nu ./Scripts/main.nu publish
+        run: nix develop --accept-flake-config -c nu ./main.nu publish
 
       - uses: actions/upload-artifact@v7
         with:
@@ -133,7 +133,7 @@ jobs:
       - uses: DeterminateSystems/magic-nix-cache-action@v14
 
       - name: Build and package binaries
-        run: nu ./Scripts/main.nu publish
+        run: nu ./main.nu publish
 
       - uses: actions/upload-artifact@v7
         with:
