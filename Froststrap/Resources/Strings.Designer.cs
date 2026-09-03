@@ -3825,6 +3825,24 @@ namespace Froststrap.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Virtual Display.
+        /// </summary>
+        public static string Menu_Behaviour_EnableVirtualDisplay_Title {
+            get {
+                return ResourceManager.GetString("Menu.Behaviour.EnableVirtualDisplay.Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to When Roblox launches, open AppleBlox's VirtualDisplay to have a fake 240Hz display for Roblox to VSync to.
+        /// </summary>
+        public static string Menu_Behaviour_EnableVirtualDisplay_Description {
+            get {
+                return ResourceManager.GetString("Menu.Behaviour.EnableVirtualDisplay.Description", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Window Backdrop.
         /// </summary>
         public static string Menu_Appearance_WindowsBackdrop_Title {

@@ -88,6 +88,16 @@
 
         public static IEnumerable<SoftKeyProfile> SoftKeyProfiles => Enum.GetValues<SoftKeyProfile>();
 
+        public bool LaunchWithVirtualDisplay
+        {
+            get => App.Settings.Prop.LaunchWithVirtualDisplay; 
+            set
+            {
+                App.Settings.Prop.LaunchWithVirtualDisplay = value;
+                OnPropertyChanged(nameof(LaunchWithVirtualDisplay));
+            }
+        }
+
         public bool SoftKeyEnabled
         {
             get => App.Settings.Prop.SoftKeyEnabled;
