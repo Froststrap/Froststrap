@@ -48,7 +48,7 @@ def debug [] {
     "Linux" => {
       dotnet publish $project_file -r linux-x64 -c Debug --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true --configfile nuget.config
     }
-    "windows" => {
+    $s if ($s | str contains "Windows") => {
       dotnet publish $project_file -r win-x64 -c Debug --self-contained true -p:PublishSingleFile=true --configfile nuget.config
     }
     _ => {}
