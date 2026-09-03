@@ -5,6 +5,46 @@ using System.Runtime.InteropServices;
 
 namespace Froststrap.Backend;
 
+/// A Virtual Display mechanism for macOS
+internal partial class InternalVirtualDisplay
+{
+    [LibraryImport(
+        "virtualdisplay",
+        EntryPoint = "start_display"
+    )]
+    public static partial int Start(
+        int width,
+        int height,
+        [MarshalAs(UnmanagedType.I1)] bool showMenu
+    );
+    [LibraryImport(
+        "virtualdisplay",
+        EntryPoint = "end_display"
+    )]
+    public static partial int End();
+}
+
+/// A Virtual Display mechanism for macOS
+public class VirtualDisplay
+{
+    /// High-level wrapper around starting the virtual display,
+    /// with no dictation on specs of the virtual display
+    public static void Start() {
+        var result = InternalVirtualDisplay.Start(
+            1920,
+            1080,
+            false
+        );
+
+        Console.WriteLine($"Virtual display started: {result}");
+    }
+
+    /// Instructs the Swift ABI to shut up the NSApplication worker thread
+    public static void End() {
+        InternalVirtualDisplay.End();
+    }
+}
+
 /// A native notifier
 internal partial class InternalNativeNotify
 {

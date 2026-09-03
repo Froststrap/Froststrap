@@ -1,4 +1,5 @@
-﻿using System.IO.Hashing;
+﻿using System.Security.Cryptography;
+using System.Text;
 
 namespace Froststrap.Utility
 {
@@ -6,28 +7,25 @@ namespace Froststrap.Utility
     {
         public static string FromBytes(byte[] data)
         {
-            ulong hash = XxHash64.HashToUInt64(data);
-            return Stringify(hash);
+            byte[] hashBytes = MD5.HashData(data);
+            return Stringify(hashBytes);
         }
 
         public static string FromBytes(ReadOnlySpan<byte> data)
         {
-            ulong hash = XxHash64.HashToUInt64(data);
-            return Stringify(hash);
+            Span<byte> hashBytes = stackalloc byte[16];
+            MD5.HashData(data, hashBytes);
+            return Stringify(hashBytes);
         }
 
         public static string FromStream(Stream stream)
         {
             stream.Seek(0, SeekOrigin.Begin);
-            var hasher = new XxHash64();
-            byte[] buffer = new byte[8192];
-            int read;
-            while ((read = stream.Read(buffer, 0, buffer.Length)) > 0)
-            {
-                hasher.Append(buffer.AsSpan(0, read));
-            }
-            ulong hash = hasher.GetCurrentHashAsUInt64();
-            return Stringify(hash);
+
+            using var md5 = MD5.Create();
+            byte[] hashBytes = md5.ComputeHash(stream);
+            
+            return Stringify(hashBytes);
         }
 
         public static string FromFile(string filename)
@@ -41,9 +39,14 @@ namespace Froststrap.Utility
             return FromBytes(Encoding.UTF8.GetBytes(str));
         }
 
-        private static string Stringify(ulong hash)
+        private static string Stringify(byte[] hash)
         {
-            return hash.ToString("x16", CultureInfo.InvariantCulture);
+            return Convert.ToHexString(hash);
+        }
+
+        private static string Stringify(ReadOnlySpan<byte> hash)
+        {
+            return Convert.ToHexString(hash);
         }
     }
 }
