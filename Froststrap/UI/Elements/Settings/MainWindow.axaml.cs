@@ -31,6 +31,7 @@ namespace Froststrap.UI.Elements.Settings
         public NextAction CloseAction => _viewModel?.CloseAction ?? NextAction.Terminate;
         private readonly HashSet<string> _indexedPageTags = [];
         private readonly SearchIndexBuilder _searchIndexBuilder = new();
+        private bool _isIndexingAllPagesStarted;
 
         private const double NotificationHeight = 80;
         private const double NotificationSpacing = 15;
@@ -59,6 +60,17 @@ namespace Froststrap.UI.Elements.Settings
             _viewModel.RequestCloseWindowEvent += (_, _) => Close();
             _viewModel.SearchBar.SearchResultSelected += (_, item) => OnSearchResultSelected(item);
 
+            _viewModel.SearchBar.PropertyChanged += (sender, e) =>
+            {
+                if (e.PropertyName == nameof(UI.ViewModels.SearchBarViewModel.SearchQuery))
+                {
+                    if (!string.IsNullOrWhiteSpace(_viewModel.SearchBar.SearchQuery))
+                    {
+                        StartIndexingAllPagesIfNeeded();
+                    }
+                }
+            };
+
             App.Logger.Debug("Initializing settings window");
 
             if (showAlreadyRunningWarning)
@@ -69,7 +81,6 @@ namespace Froststrap.UI.Elements.Settings
 
             LoadState();
 
-            Dispatcher.UIThread.Post(async () => await IndexMissingPagesAsync(), DispatcherPriority.Background);
 
             App.RemoteData.Subscribe((_, _) => Dispatcher.UIThread.Post(() =>
             {
@@ -105,8 +116,13 @@ namespace Froststrap.UI.Elements.Settings
                 Position = NotificationPosition.TopRight,
                 MaxItems = 3
             };
+        }
 
-            await IndexMissingPagesAsync();
+        public void StartIndexingAllPagesIfNeeded()
+        {
+            if (_isIndexingAllPagesStarted) return;
+            _isIndexingAllPagesStarted = true;
+            _ = IndexMissingPagesAsync();
         }
 
         private void TitleBarGrid_PointerPressed(object sender, PointerPressedEventArgs e)
@@ -185,7 +201,7 @@ namespace Froststrap.UI.Elements.Settings
             ["appearance"] = (Strings.Menu_Appearance_Title, LucideIconNames.Palette),
             ["globalsettings"] = (Strings.Menu_GlobalSettings_Title, LucideIconNames.PenLine),
             ["shortcuts"] = (Strings.Common_Shortcuts, LucideIconNames.Link2),
-            ["channels"] = (Strings.Common_Deployment, LucideIconNames.HardDriveUpload),
+            ["channels"] = (Strings.Common_Deployment, LucideIconNames.HardDriveUpload)
         };
 
         private void UpdatePageView(object? viewModel)
@@ -207,7 +223,7 @@ namespace Froststrap.UI.Elements.Settings
             Dispatcher.UIThread.Post(() =>
             {
                 if (!string.IsNullOrEmpty(pageTag) && _pageInfo.TryGetValue(pageTag, out var info)
-                    &&!_indexedPageTags.Contains(pageTag))
+                    && !_indexedPageTags.Contains(pageTag))
                 {
                     IndexPage(view, pageTag, info.Title, info.Icon);
                     _indexedPageTags.Add(pageTag);
@@ -508,14 +524,16 @@ namespace Froststrap.UI.Elements.Settings
             {
                 "integrations",
                 "behaviour",
-                "linuxsettings",
+                "channels",
                 "mods",
-                "fastflags",
                 "appearance",
+                "fastflags",
                 "globalsettings",
-                "shortcuts",
-                "channels"
+                "shortcuts"
             };
+
+            if (OperatingSystem.IsLinux())
+                allPageTags.Add("linuxsettings");
 
             if (!_viewModel.GBSEnabled)
                 allPageTags.Remove("globalsettings");
@@ -523,60 +541,76 @@ namespace Froststrap.UI.Elements.Settings
             var pagesToIndex = allPageTags.Where(tag => !_indexedPageTags.Contains(tag)).ToList();
             if (pagesToIndex.Count == 0) return;
 
+            Dispatcher.UIThread.Post(() => _viewModel.SearchBar.IsIndexing = true);
+
             var stagingArea = this.FindControl<Border>("OffscreenIndexingCanvas");
             if (stagingArea == null)
             {
                 App.Logger.Error("OffscreenIndexingCanvas not found");
+                Dispatcher.UIThread.Post(() => _viewModel.SearchBar.IsIndexing = false);
                 return;
             }
 
             stagingArea.IsVisible = true;
 
-            foreach (var pageTag in pagesToIndex)
+            try
             {
-                try
+                foreach (var pageTag in pagesToIndex)
                 {
-                    object? vm = pageTag switch
+                    try
                     {
-                        "integrations" => new IntegrationsViewModel(),
-                        "behaviour" => new BehaviourViewModel(),
-                        "linuxsettings" => new LinuxSettingsViewModel(),
-                        "mods" => new ModsPresetsViewModel(),
-                        "fastflags" => new FastFlagsViewModel(),
-                        "appearance" => new AppearanceViewModel(),
-                        "globalsettings" => new GlobalSettingsViewModel(),
-                        "shortcuts" => new ShortcutsViewModel(),
-                        "channels" => new ChannelViewModel(),
-                        _ => null
-                    };
+                        object? vm = pageTag switch
+                        {
+                            "integrations" => new IntegrationsViewModel(),
+                            "behaviour" => new BehaviourViewModel(),
+                            "linuxsettings" => new LinuxSettingsViewModel(),
+                            "mods" => new ModsPresetsViewModel(),
+                            "fastflags" => new FastFlagsViewModel(),
+                            "appearance" => new AppearanceViewModel(),
+                            "globalsettings" => new GlobalSettingsViewModel(),
+                            "shortcuts" => new ShortcutsViewModel(),
+                            "channels" => new ChannelViewModel(),
+                            _ => null
+                        };
 
-                    if (vm == null) continue;
+                        if (vm == null) continue;
 
-                    var view = ResolveViewForViewModel(vm);
-                    if (view == null) continue;
+                        var view = ResolveViewForViewModel(vm);
+                        if (view == null) continue;
 
-                    view.DataContext = vm;
-                    stagingArea.Child = view;
+                        view.DataContext = vm;
 
-                    await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Render);
-                    await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Background);
+                        var container = new Border { Child = view };
+                        stagingArea.Child = container;
 
-                    var (title, icon) = _pageInfo[pageTag];
-                    IndexPage(view, pageTag, title, icon);
-                    _indexedPageTags.Add(pageTag);
+                        await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Render);
+                        await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Background);
 
-                    view.DataContext = null;
-                    stagingArea.Child = null;
-                    await Task.Delay(30);
-                }
-                catch (Exception ex)
-                {
-                    App.Logger.Error($"Error indexing {pageTag}: {ex.Message}");
+                        var (title, icon) = _pageInfo[pageTag];
+                        IndexPage(view, pageTag, title, icon);
+                        _indexedPageTags.Add(pageTag);
+
+                        container.Child = null;
+                        stagingArea.Child = null;
+                        view.DataContext = null;
+                        stagingArea.UpdateLayout();
+                        await Task.Delay(30);
+                    }
+                    catch (Exception ex)
+                    {
+                        App.Logger.Error($"Error indexing {pageTag}: {ex.Message}");
+                    }
                 }
             }
-
-            stagingArea.IsVisible = false;
-            _viewModel?.SearchBar.RefreshSearchResults();
+            finally
+            {
+                stagingArea.IsVisible = false;
+                Dispatcher.UIThread.Post(() =>
+                {
+                    _viewModel.SearchBar.IsIndexing = false;
+                    _viewModel.SearchBar.RefreshSearchResults();
+                });
+            }
         }
 
         private void IndexPage(Control pageView, string pageTag, string pageTitle, LucideIconNames pageIcon)
