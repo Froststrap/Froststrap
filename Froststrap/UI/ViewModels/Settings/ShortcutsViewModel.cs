@@ -175,10 +175,6 @@ namespace Froststrap.UI.ViewModels.Settings
             SelectedSearchResult = null;
         }
 
-        #endregion
-
-        #region Search Logic (matching RegionSelector behavior)
-
         private void OnSearchQueryChanged(string value)
         {
             if (_isProcessingSelection) return;
