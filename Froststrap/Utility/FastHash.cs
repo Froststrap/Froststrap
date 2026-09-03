@@ -13,7 +13,6 @@ namespace Froststrap.Utility
 
         public static string FromBytes(ReadOnlySpan<byte> data)
         {
-            // MD5 hashes are always 16 bytes long
             Span<byte> hashBytes = stackalloc byte[16];
             MD5.HashData(data, hashBytes);
             return Stringify(hashBytes);
@@ -23,15 +22,10 @@ namespace Froststrap.Utility
         {
             stream.Seek(0, SeekOrigin.Begin);
 
-            // ComputeHash handles reading the stream to the end automatically
             using var md5 = MD5.Create();
             byte[] hashBytes = md5.ComputeHash(stream);
             
             return Stringify(hashBytes);
-            
-            // Note: If you are targeting .NET 7 or newer, you can replace the two lines above with:
-            // byte[] hashBytes = MD5.HashData(stream);
-            // return Stringify(hashBytes);
         }
 
         public static string FromFile(string filename)
