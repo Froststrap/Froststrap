@@ -22,9 +22,11 @@ jobs:
         shell: pwsh
         run: |
           winget install --id Nushell.Nushell --exact --accept-source-agreements --accept-package-agreements
-          $nuPath = Join-Path $env:LOCALAPPDATA "Microsoft\WinGet\Links"
-          refreshenv
-          echo $nuPath >> $env:GITHUB_PATH
+          $nuDir = Split-Path (Get-Command nu.exe -ErrorAction SilentlyContinue).Path
+          if (-not $nuDir) {
+            $nuDir = "$env:LOCALAPPDATA\Microsoft\WinGet\Links"
+          }
+          echo $nuDir >> $env:GITHUB_PATH
           
       - name: Install NSIS
         uses: negrutiu/nsis-install@v2
