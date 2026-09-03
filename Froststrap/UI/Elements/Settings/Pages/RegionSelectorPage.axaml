@@ -6,6 +6,7 @@
     xmlns:ui="using:FluentAvalonia.UI.Controls"
     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
     xmlns:models="clr-namespace:Froststrap.Models"
+    xmlns:apis="clr-namespace:Froststrap.Models.APIs.Roblox"
     xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
     xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
     x:DataType="vm:RegionSelectorViewModel">
@@ -14,78 +15,69 @@
         <Border Grid.Row="0" Margin="0,0,0,16" Padding="16" CornerRadius="8">
             <StackPanel Spacing="12">
                 <StackPanel Orientation="Horizontal" Spacing="8">
-                    <TextBox
-                        x:Name="SearchTextBox"
-                        MinWidth="250"
-                        MaxWidth="300"
-                        VerticalAlignment="Center"
-                        Text="{Binding SearchQuery, Mode=TwoWay}"
-                        PlaceholderText="{x:Static resources:Strings.Menu_RegionSelector_FindGame}">
+                    <AutoCompleteBox x:Name="GameSearchAutoCompleteBox"
+                                     Width="300"
+                                     VerticalAlignment="Center"
+                                     Text="{Binding SearchQuery, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                     ItemsSource="{Binding SearchResults}"
+                                     FilterMode="None"
+                                     IsDropDownOpen="{Binding IsSearchFlyoutOpen, Mode=TwoWay}"
+                                     PlaceholderText="{x:Static resources:Strings.Menu_RegionSelector_FindGame}">
+                        <AutoCompleteBox.ItemTemplate>
+                            <DataTemplate DataType="apis:OmniSearchContent">
+                                <Grid ColumnDefinitions="Auto,*,Auto" MaxWidth="270">
+                                    <Border Grid.Column="0" Width="44" Height="44"
+                                            Background="#10FFFFFF" ClipToBounds="True" CornerRadius="4">
+                                        <Image RenderOptions.BitmapInterpolationMode="HighQuality"
+                                               Source="{Binding ThumbnailBitmap}" Stretch="UniformToFill" />
+                                    </Border>
+                                    <StackPanel Grid.Column="1" Margin="10,0" VerticalAlignment="Center">
+                                        <TextBlock FontWeight="SemiBold" FontSize="16"
+                                                   Text="{Binding Name}" TextTrimming="CharacterEllipsis" />
+                                        <TextBlock FontSize="10" Opacity="0.5"
+                                                   Text="{Binding RootPlaceId, StringFormat='ID: {0}'}" />
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2" VerticalAlignment="Center"
+                                                Orientation="Horizontal" Spacing="4">
+                                        <ic:Lucide Margin="0,2,0,0" Height="12" Width="12"
+                                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                                   Icon="Users"/>
+                                        <TextBlock VerticalAlignment="Center" FontSize="12"
+                                                   Text="{Binding PlayerCount, Converter={StaticResource NumberAbbreviationConverter}}" />
+                                    </StackPanel>
+                                </Grid>
+                            </DataTemplate>
+                        </AutoCompleteBox.ItemTemplate>
 
-                        <TextBox.InnerRightContent>
-                            <controls:IconButton
-                                Command="{Binding SearchGamesCommand}"
-                                Icon="Search"
-                                IconSize="16"
-                                Click="OnSearchButtonClick"
-                                Background="Transparent"
-                                BorderBrush="Transparent"
-                                BorderThickness="0"/>
-                        </TextBox.InnerRightContent>
+                        <AutoCompleteBox.InnerLeftContent>
+                            <ic:Lucide Icon="Search"
+                                       Height="14"
+                                       Width="14"
+                                       VerticalAlignment="Center"
+                                       Margin="8,0,0,0"/>
+                        </AutoCompleteBox.InnerLeftContent>
 
-                        <FlyoutBase.AttachedFlyout>
-                            <Flyout Placement="Bottom" ShowMode="Transient">
-                                <Border HorizontalAlignment="Stretch"
-                                        MaxHeight="450"
-                                        Background="{DynamicResource SolidBackgroundFillColorQuarternaryBrush}"
-                                        BorderBrush="{DynamicResource ControlStrokeColorDefault}"
-                                        BorderThickness="1"
-                                        CornerRadius="8"
-                                        BoxShadow="0 8 32 0 #40000000"
-                                        Margin="0,4,0,0">
-                                    <Panel>
-                                        <ListBox
-                                            MaxWidth="300"
-                                            MinWidth="275"
-                                            MaxHeight="400"
-                                            Background="Transparent"
-                                            ItemsSource="{Binding SearchResults}"
-                                            SelectedItem="{Binding SelectedSearchResult, Mode=TwoWay}"
-                                            ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                                            <ListBox.ItemTemplate>
-                                                <DataTemplate>
-                                                    <Grid ColumnDefinitions="Auto,*,Auto">
-                                                        <Border Grid.Column="0" Width="44" Height="44"
-                                                                Background="#10FFFFFF" ClipToBounds="True" CornerRadius="4">
-                                                            <Image RenderOptions.BitmapInterpolationMode="HighQuality"
-                                                                   Source="{Binding ThumbnailBitmap}" Stretch="UniformToFill" />
-                                                        </Border>
-                                                        <StackPanel Grid.Column="1" Margin="10,0" VerticalAlignment="Center">
-                                                            <TextBlock FontWeight="SemiBold" FontSize="16"
-                                                                       Text="{Binding Name}" TextTrimming="CharacterEllipsis" />
-                                                            <TextBlock FontSize="10" Opacity="0.5"
-                                                                       Text="{Binding RootPlaceId, Converter={StaticResource StringFormatConverter}, ConverterParameter='{x:Static resources:Strings.Menu_RegionSelector_ID}'}" />
-                                                        </StackPanel>
-                                                        <StackPanel Grid.Column="2" VerticalAlignment="Center"
-                                                                    Orientation="Horizontal" Spacing="4">
-                                                            <ic:Lucide Margin="0,2,0,0" Height="12" Width="12"
-                                                                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                                                       Icon="Users"/>
-                                                            <TextBlock VerticalAlignment="Center" FontSize="12"
-                                                                       Text="{Binding PlayerCount, Converter={StaticResource NumberAbbreviationConverter}}" />
-                                                        </StackPanel>
-                                                    </Grid>
-                                                </DataTemplate>
-                                            </ListBox.ItemTemplate>
-                                        </ListBox>
-
-                                        <ProgressBar VerticalAlignment="Top" IsIndeterminate="True"
-                                                     IsVisible="{Binding IsGameSearchLoading}" />
-                                    </Panel>
-                                </Border>
-                            </Flyout>
-                        </FlyoutBase.AttachedFlyout>
-                    </TextBox>
+                        <AutoCompleteBox.InnerRightContent>
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <ui:FAProgressRing IsIndeterminate="True"
+                                                   Width="20"
+                                                   Height="20"
+                                                   VerticalAlignment="Center"
+                                                   IsVisible="{Binding IsGameSearchLoading}" />
+                                <controls:IconButton Command="{Binding ClearSearchCommand}"
+                                                     IsVisible="{Binding SearchQuery, Converter={x:Static StringConverters.IsNotNullOrEmpty}, FallbackValue=False}"
+                                                     Icon="X"
+                                                     IconSize="14"
+                                                     Background="Transparent"
+                                                     BorderThickness="0"
+                                                     Width="28"
+                                                     Height="28"
+                                                     VerticalAlignment="Center"
+                                                     Margin="0,0,2,0"
+                                                     Padding="8"/>
+                            </StackPanel>
+                        </AutoCompleteBox.InnerRightContent>
+                    </AutoCompleteBox>
 
                     <TextBlock Margin="8,0,0,0" VerticalAlignment="Center"
                                Text="{x:Static resources:Strings.Menu_RegionSelector_ServerSize}" />

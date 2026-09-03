@@ -22,9 +22,9 @@ namespace Froststrap.UI.ViewModels.Settings
         public string Tag { get; set; } = "";
     }
 
-    internal class RegionSelectorViewModel : NotifyPropertyChangedViewModel, IDisposable
+    internal partial class RegionSelectorViewModel : NotifyPropertyChangedViewModel, IDisposable
     {
-        private const int MaxServers = 20;
+        private const int MaxServers = 15;
 
         private readonly HashSet<string> _displayedServerIds = [];
         private RobloxServerFetcher? _fetcher;
@@ -228,6 +228,7 @@ namespace Froststrap.UI.ViewModels.Settings
         public IAsyncRelayCommand SearchCommand { get; }
         public IAsyncRelayCommand LoadMoreCommand { get; }
         public IAsyncRelayCommand SearchGamesCommand { get; }
+        public IRelayCommand ClearSearchCommand { get; }
 
         public bool IsRegionSelectionEnabled => SelectedSortOrder != "BestLatency";
 
@@ -247,8 +248,17 @@ namespace Froststrap.UI.ViewModels.Settings
             SearchGamesCommand = new AsyncRelayCommand(SearchGamesAsync, () => !IsLoading && !IsGameSearchLoading && !string.IsNullOrWhiteSpace(SearchQuery) && HasValidCookies);
             LoadMoreCommand = new AsyncRelayCommand(LoadMoreServersAsync, () => !IsLoading && !string.IsNullOrWhiteSpace(NextCursor) && Servers.Count < MaxServers);
 
+            ClearSearchCommand = new RelayCommand(ClearSearch);
+
             _ = InitializeCookiesAsync();
             SelectedSortOrderItem = SortOrderOptions.FirstOrDefault(x => x.Tag == "BestLatency");
+        }
+
+        private void ClearSearch()
+        {
+            SearchQuery = string.Empty;
+            SearchResults.Clear();
+            IsSearchFlyoutOpen = false;
         }
 
         private void OnSearchQueryChanged(string value)
@@ -306,6 +316,10 @@ namespace Froststrap.UI.ViewModels.Settings
                 if (!token.IsCancellationRequested && !IsLoading && !string.IsNullOrWhiteSpace(SearchQuery))
                 {
                     await SearchGamesAsync(token);
+                    Dispatcher.UIThread.Post(() =>
+                    {
+                        IsSearchFlyoutOpen = SearchResults.Count > 0 && !string.IsNullOrWhiteSpace(SearchQuery);
+                    });
                 }
             }
             catch (OperationCanceledException) { }
