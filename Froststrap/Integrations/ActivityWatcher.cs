@@ -59,7 +59,6 @@ namespace Froststrap.Integrations
 
         private readonly LaunchMode _launchMode;
         private readonly int _robloxPID;
-        private int? _lastDisconnectReason;
 
         public string LogLocation = null!;
 
@@ -288,7 +287,6 @@ namespace Froststrap.Integrations
                 if (match.Success && match.Groups.Count == 2)
                 {
                     int reasonCode = int.Parse(match.Groups[1].Value, CultureInfo.InvariantCulture);
-                    _lastDisconnectReason = reasonCode;
 
                     if (reasonCode == 1 || reasonCode == 277)
                     {
@@ -449,13 +447,6 @@ namespace Froststrap.Integrations
             {
                 if (logMessage.StartsWith(GameDisconnectedEntry, StringComparison.Ordinal))
                 {
-                    if (_lastDisconnectReason == 285)
-                    {
-                        App.Logger.Info("Ignored false disconnect (reason 285) – user did not actually leave.");
-                        _lastDisconnectReason = null;
-                        return;
-                    }
-
                     App.Logger.Info($"Disconnected from Game ({Data})");
 
                     InGame = false;
@@ -475,7 +466,6 @@ namespace Froststrap.Integrations
                     }
 
                     _shouldAutoRejoin = false;
-                    _lastDisconnectReason = null;
                 }
                 else if (logMessage.StartsWith(GameTeleportingEntry, StringComparison.Ordinal))
                 {
