@@ -187,14 +187,13 @@ namespace Froststrap.UI
                     trayIcons?.Remove(_trayIcon);
 
                     _menuContainer.Close();
+                    _trayIcon.Dispose();
                 }
                 catch (Exception ex)
                 {
                     App.Logger.Error($"Error during cleanup: {ex.Message}");
                 }
             });
-
-            _trayIcon.Dispose();
 
             if (ActivityWatcher is not null)
             {
