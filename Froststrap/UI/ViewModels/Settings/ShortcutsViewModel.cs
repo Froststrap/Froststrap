@@ -122,6 +122,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public IAsyncRelayCommand CreateGameShortcutCommand { get; }
         public IAsyncRelayCommand SearchGamesCommand { get; }
+        public IRelayCommand ClearSearchCommand { get; }
         #endregion
 
         public ShortcutsViewModel()
@@ -132,6 +133,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
             CreateGameShortcutCommand = new AsyncRelayCommand(CreateGameShortcut);
             SearchGamesCommand = new AsyncRelayCommand(SearchGamesAsync);
+            ClearSearchCommand = new RelayCommand(ClearSearch);
         }
 
         private async Task CreateGameShortcut()
@@ -165,66 +167,69 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
+        private void ClearSearch()
+        {
+            SearchQuery = string.Empty;
+            SearchResults.Clear();
+            IsSearchFlyoutOpen = false;
+            SelectedSearchResult = null;
+        }
+
+        #endregion
+
+        #region Search Logic (matching RegionSelector behavior)
+
         private void OnSearchQueryChanged(string value)
         {
             if (_isProcessingSelection) return;
+
+            if (long.TryParse(value, out var id))
+            {
+                PlaceId = id.ToString(CultureInfo.InvariantCulture);
+                _ = FetchInfoForId(id, CancellationToken.None);
+            }
 
             _searchDebounceCts?.Cancel();
             _searchDebounceCts?.Dispose();
             _searchDebounceCts = new CancellationTokenSource();
 
-            _ = HandleQueryInputAsync(value, _searchDebounceCts.Token);
+            _ = DebouncedSearchTriggerAsync(_searchDebounceCts.Token);
         }
 
-        private async Task HandleQueryInputAsync(string value, CancellationToken token)
+        private async Task DebouncedSearchTriggerAsync(CancellationToken token)
         {
             try
             {
                 await Task.Delay(600, token);
-
-                if (long.TryParse(value, out long id))
+                if (!token.IsCancellationRequested && !IsGameSearchLoading && !string.IsNullOrWhiteSpace(SearchQuery))
                 {
-                    PlaceId = id.ToString(CultureInfo.InvariantCulture);
-                    await FetchInfoForId(id, token);
-                }
-                else if (!string.IsNullOrWhiteSpace(value))
-                {
-                    await SearchGamesAsync();
+                    if (!long.TryParse(SearchQuery, out _))
+                    {
+                        await SearchGamesAsync();
+                    }
                 }
             }
             catch (OperationCanceledException) { }
         }
 
-        private static async Task<Bitmap?> LoadBitmapFromUrl(string? url, CancellationToken token = default)
-        {
-            if (string.IsNullOrEmpty(url)) return null;
-
-            try
-            {
-                var response = await App.HttpClient.GetByteArrayAsync(new Uri(url), token);
-                using var ms = new MemoryStream(response);
-                return new Bitmap(ms);
-            }
-            catch (Exception ex)
-            {
-                App.Logger.Error($"Failed to load preview bitmap: {ex.Message}");
-                return null;
-            }
-        }
-
         private void OnSelectedSearchResultChanged(OmniSearchContent? value)
         {
-            if (value is null) return;
+            if (value is null)
+            {
+                PreviewName = Strings.Menu_Shortcuts_NoGameSelected;
+                PreviewId = string.Format(CultureInfo.CurrentCulture, Strings.Menu_RegionSelector_ID, 0);
+                PreviewIcon = null;
+                ShortcutStatus = Strings.Menu_Shortcuts_Ready;
+                return;
+            }
 
             _isProcessingSelection = true;
-
             PlaceId = value.RootPlaceId.ToString(CultureInfo.InvariantCulture);
             SearchQuery = PlaceId;
             PreviewName = value.Name!;
             PreviewId = string.Format(CultureInfo.CurrentCulture, Strings.Menu_RegionSelector_ID, value.RootPlaceId);
             PreviewIcon = value.ThumbnailBitmap;
             ShortcutStatus = Strings.Menu_Shortcuts_ReadyToCreate;
-
             _isProcessingSelection = false;
             IsSearchFlyoutOpen = false;
         }
@@ -319,7 +324,23 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        #region IDisposable Implementation
+        private static async Task<Bitmap?> LoadBitmapFromUrl(string? url, CancellationToken token = default)
+        {
+            if (string.IsNullOrEmpty(url)) return null;
+
+            try
+            {
+                var response = await App.HttpClient.GetByteArrayAsync(new Uri(url), token);
+                using var ms = new MemoryStream(response);
+                return new Bitmap(ms);
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error($"Failed to load preview bitmap: {ex.Message}");
+                return null;
+            }
+        }
+
         public void Dispose()
         {
             Dispose(true);
@@ -340,6 +361,5 @@ namespace Froststrap.UI.ViewModels.Settings
 
             _disposed = true;
         }
-        #endregion
     }
 }
