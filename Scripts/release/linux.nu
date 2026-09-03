@@ -11,7 +11,7 @@ def main [
   # Clean and Publish .NET
   rm -rf $build_dir
   mkdir $build_dir
-  dotnet publish $project_file -c $config -p:PublishProfile=$publish_profile -o $"($build_dir)/linux-temp" --configfile $"($repo_root)/nuget.config"
+  dotnet publish $project_file -c $config -p:PublishProfile=($publish_profile) -o $"($build_dir)/linux-temp" --configfile $"($repo_root)/nuget.config"
   if $env.LAST_EXIT_CODE != 0 {
     print -e "dotnet publish failed"
     exit 1
@@ -76,7 +76,11 @@ exec \"$HERE/usr/bin/Froststrap\" \"$@\"
 
   rpmbuild -bb $"($repo_root)/Scripts/fedora/froststrap-rpm.spec" --define $"_topdir ($rpm_topdir)" --define $"_froststrap_appdir ($repo_root)/($app_dir)" --define $"froststrap_version ($rpm_version)"
 
-  let rpm_output = (ls -a ($rpm_topdir | path join "RPMS" "**" "*.rpm") | sort-by modified | get name | first)
+  let rpm_output = (
+    glob ($rpm_topdir | path join "RPMS" "**" "*.rpm")
+    | sort-by modified
+    | last
+  )
   cp $rpm_output $"($build_dir)/Froststrap-linux-x64.rpm"
 
   # Build Debian Package

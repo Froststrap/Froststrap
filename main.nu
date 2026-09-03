@@ -24,7 +24,7 @@ def publish [] {
     "Darwin" => {
       nu ($script_dir | path join "Scripts/release/macos.nu")
     }
-    "Linux" => {
+    $s if ($s | str contains "Linux") => {
       nu ($script_dir | path join "Scripts/release/linux.nu") $project_file $build_dir "Publish-linux-x64"
     }
     $s if ($s | str contains "Windows") => {
@@ -45,7 +45,7 @@ def debug [] {
     "Darwin" => {
       dotnet publish $project_file -r osx-arm64 -c Debug --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true --configfile nuget.config
     }
-    "Linux" => {
+    $s if ($s | str contains "Linux") => {
       dotnet publish $project_file -r linux-x64 -c Debug --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true --configfile nuget.config
     }
     $s if ($s | str contains "Windows") => {
