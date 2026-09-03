@@ -18,7 +18,10 @@ jobs:
         with:
           dotnet-version: "10.0.x"
 
-      - uses: extractions/setup-just@v4
+      - name: Install Nushell
+        shell: pwsh
+        run: |
+          winget install --id Nushell.Nushell --exact --accept-source-agreements --accept-package-agreements
 
       - name: Install NSIS
         uses: negrutiu/nsis-install@v2
@@ -29,7 +32,7 @@ jobs:
           "SHORT_SHA=$("${{ github.sha }}".Substring(0, 7))" >> $env:GITHUB_ENV
 
       - name: Build and package
-        run: just ci-publish-windows
+        run: nu ./Scripts/main.nu publish
 
       - uses: actions/upload-artifact@v7
         with:
@@ -85,7 +88,7 @@ jobs:
           APP_STORE_CONNECT_P8_CONTENT: ${{ secrets.APP_STORE_CONNECT_P8_CONTENT }}
           APPLE_KEY_ID: ${{ secrets.APPLE_KEY_ID }}
           APPLE_ISSUER_ID: ${{ secrets.APPLE_ISSUER_ID }}
-        run: nix develop --accept-flake-config -c just ci-publish-macos
+        run: nix develop --accept-flake-config -c nu ./Scripts/main.nu publish
 
       - uses: actions/upload-artifact@v7
         with:
@@ -108,14 +111,24 @@ jobs:
         with:
           dotnet-version: "10.0.x"
 
-      - uses: extractions/setup-just@v4
+      - name: Install Nushell
+        shell: bash
+        run: |
+          wget -qO- https://apt.fury.io/nushell/gpg.key |
+            sudo gpg --dearmor -o /etc/apt/keyrings/fury-nushell.gpg
+
+          echo "deb [signed-by=/etc/apt/keyrings/fury-nushell.gpg] https://apt.fury.io/nushell/ /" |
+            sudo tee /etc/apt/sources.list.d/fury-nushell.list
+
+          sudo apt-get update
+          sudo apt-get install -y nushell
 
       - uses: DeterminateSystems/nix-installer-action@v22
 
       - uses: DeterminateSystems/magic-nix-cache-action@v14
 
       - name: Build and package binaries
-        run: just ci-publish-linux
+        run: nu ./Scripts/main.nu publish
 
       - uses: actions/upload-artifact@v7
         with:
