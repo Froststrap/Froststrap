@@ -3997,7 +3997,7 @@ exit";
                     
                     string hash = FastHash.FromStream(fileStream);
 
-                    if (!OperatingSystem.IsMacOS() && hash != package.Signature)
+                    if (!OperatingSystem.IsMacOS() && !string.Equals(hash, package.Signature, StringComparison.OrdinalIgnoreCase))
                         throw new ChecksumFailedException($"Failed to verify download of {packageUrl}\n\nExpected hash: {package.Signature}\nGot hash: {hash}");
 
                     App.Logger.Info($"Finished downloading! ({totalBytesRead} bytes total)");

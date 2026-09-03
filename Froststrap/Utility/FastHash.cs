@@ -41,12 +41,12 @@ namespace Froststrap.Utility
 
         private static string Stringify(byte[] hash)
         {
-            return Convert.ToHexString(hash).ToLowerInvariant();
+            return Convert.ToHexString(hash);
         }
 
         private static string Stringify(ReadOnlySpan<byte> hash)
         {
-            return Convert.ToHexString(hash).ToLowerInvariant();
+            return Convert.ToHexString(hash);
         }
     }
 }
