@@ -10,8 +10,8 @@ namespace Froststrap
         public LaunchFlag NoLaunchFlag { get; } = new("nolaunch");
         public LaunchFlag TestModeFlag { get; } = new("testmode");
         public LaunchFlag UpgradeFlag { get; } = new("upgrade");
-        public LaunchFlag PlayerFlag { get; } = new("player");
-        public LaunchFlag StudioFlag { get; } = new("studio");
+        public LaunchFlag PlayerFlag { get; } = new("p,player");
+        public LaunchFlag StudioFlag { get; } = new("s,studio");
         public LaunchFlag VersionFlag { get; } = new("version");
         public LaunchFlag ChannelFlag { get; } = new("channel");
         public LaunchFlag ForceFlag { get; } = new("force");

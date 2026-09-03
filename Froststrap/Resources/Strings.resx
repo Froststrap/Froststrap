@@ -1684,7 +1684,7 @@ The app will close this window when sign-in completes.</value>
     <value>Official built-in mods.</value>
   </data>
   <data name="Menu.QuickPlay.Description" xml:space="preserve">
-    <value>Jump back into your recently played games, Logging into account will add more games.</value>
+    <value>Jump back into your recently played games, Logging into account in account manager will add more of your recently played games.</value>
   </data>
   <data name="Common.Editor" xml:space="preserve">
     <value>Editor</value>
