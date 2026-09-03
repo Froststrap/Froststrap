@@ -378,11 +378,6 @@ internal partial class App : Application
         if (ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
             return;
 
-        Dispatcher.UIThread.Post(() =>
-        {
-            if (Settings.Prop.LaunchWithVirtualDisplay) VirtualDisplay.Start();
-        });
-
         desktop.ShutdownRequested += (_, _) =>
         {
             VirtualDisplay.End();
