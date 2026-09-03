@@ -11,11 +11,14 @@ jobs:
       - uses: actions/setup-dotnet@v5
         with:
           dotnet-version: "10.0.x"
-      - uses: extractions/setup-just@v3
+      - name: Install Nushell
+        shell: pwsh
+        run: |
+          winget install --id Nushell.Nushell --exact --accept-source-agreements --accept-package-agreements
       - name: Set short SHA
         run: echo "SHORT_SHA=$("${{ github.sha }}".Substring(0, 7))" >> $env:GITHUB_ENV
       - name: Publish
-        run: just debug-windows
+        run: nu ./Scripts/main.nu debug
       - uses: actions/upload-artifact@v6
         with:
           name: froststrap-debug-win-x64-${{ env.SHORT_SHA }}
@@ -32,7 +35,7 @@ jobs:
         run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
       - uses: DeterminateSystems/nix-installer-action@v14
       - name: Publish
-        run: nix develop -c just debug-macos
+        run: nix develop -c nu ./Scripts/main.nu debug
       - uses: actions/upload-artifact@v6
         with:
           name: froststrap-debug-macos-arm64-${{ env.SHORT_SHA }}
@@ -49,7 +52,7 @@ jobs:
         run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
       - uses: DeterminateSystems/nix-installer-action@v14
       - name: Publish
-        run: nix develop -c just debug-linux
+        run: nix develop -c nu ./Scripts/main.nu debug
       - uses: actions/upload-artifact@v6
         with:
           name: froststrap-debug-linux-x64-${{ env.SHORT_SHA }}

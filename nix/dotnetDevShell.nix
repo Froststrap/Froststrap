@@ -18,7 +18,6 @@
   xcbutil,
   libxcursor,
   dotnetCorePackages,
-  just,
   glib,
   omnisharp-roslyn,
   create-dmg,
@@ -51,7 +50,6 @@ mkFragment (finalAttrs: {
   buildInputs = [
     dotnetCorePackages.sdk_10_0-bin
     omnisharp-roslyn # lsp
-    just
   ] ++ lib.optionals stdenv.hostPlatform.isLinux [
     glib
   ] ++ lib.optionals stdenv.hostPlatform.isDarwin [
