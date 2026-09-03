@@ -104,7 +104,7 @@
     Name="BuildVirtualDisplayDylib"
     BeforeTargets="BeforeBuild"
     Condition="$([MSBuild]::IsOSPlatform('OSX'))">
-    <Exec Command="sh output_dylib.sh"
+    <Exec Command="nu output_dylib.nu"
           WorkingDirectory="$(MSBuildProjectDirectory)/../macApp/virtualdisplay" />
     <PropertyGroup>
       <VirtualDisplayBuildDir Condition="Exists('$(MSBuildProjectDirectory)/../macApp/virtualdisplay/.build/out')">out</VirtualDisplayBuildDir>
