@@ -118,14 +118,6 @@
             }
         }
 
-        public static IEnumerable<ProcessPriorityOption> ProcessPriorityOptions => Enum.GetValues<ProcessPriorityOption>();
-
-        public static ProcessPriorityOption SelectedPriority
-        {
-            get => App.Settings.Prop.SelectedProcessPriority;
-            set => App.Settings.Prop.SelectedProcessPriority = value;
-        }
-
         public static bool LaunchAtStartup
         {
             get => App.AppStorage.GetBoolPreset("System.LaunchAtStartup");

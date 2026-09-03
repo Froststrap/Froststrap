@@ -112,29 +112,6 @@ namespace Froststrap
 
                     try
                     {
-                        var processes = Process.GetProcessesByName("RobloxPlayerBeta");
-
-                        foreach (var proc in processes)
-                        {
-                            if (proc.HasExited) continue;
-
-                            if (App.Settings.Prop.SelectedProcessPriority != ProcessPriorityOption.Normal)
-                            {
-                                ProcessPriorityClass priorityClass = App.Settings.Prop.SelectedProcessPriority switch
-                                {
-                                    ProcessPriorityOption.Low => ProcessPriorityClass.Idle,
-                                    ProcessPriorityOption.BelowNormal => ProcessPriorityClass.BelowNormal,
-                                    ProcessPriorityOption.AboveNormal => ProcessPriorityClass.AboveNormal,
-                                    ProcessPriorityOption.High => ProcessPriorityClass.High,
-                                    ProcessPriorityOption.RealTime => ProcessPriorityClass.RealTime,
-                                    _ => ProcessPriorityClass.Normal
-                                };
-
-                                proc.PriorityClass = priorityClass;
-                                App.Logger.Info($"Set priority for {proc.Id} to {priorityClass}");
-                            }
-                        }
-
                         if (App.Settings.Prop.AutoCloseCrashHandler)
                         {
                             foreach (var crashProc in Process.GetProcessesByName("RobloxCrashHandler"))

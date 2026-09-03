@@ -18,21 +18,6 @@
     <ScrollViewer>
         <StackPanel Margin="14">
             <controls:OptionControl
-                Header="{x:Static resources:Strings.Menu_Behaviour_EnableVirtualDisplay_Title}"
-                Description="{x:Static resources:Strings.Menu_Behaviour_EnableVirtualDisplay_Description}"
-                IsVisible="{x:Static gv:GlobalViewModel.IsMacOS}"
-            >
-            <StackPanel Orientation="Horizontal" Spacing="12">
-                <Border Margin="8,0,0,0" Padding="6,1" CornerRadius="4"
-                        Background="{DynamicResource ControlFillColorDefaultBrush}"
-                        BorderBrush="{DynamicResource SystemFillColorCautionBrush}" BorderThickness="1"
-                        VerticalAlignment="Center">
-                    <TextBlock FontSize="10" FontWeight="Bold" Foreground="{DynamicResource SystemFillColorCautionBrush}" Text="Experimental" />
-                </Border>
-                <ToggleSwitch IsChecked="{Binding LaunchWithVirtualDisplay, Mode=TwoWay}" />
-                </StackPanel>
-            </controls:OptionControl>
-            <controls:OptionControl
                 Header="{x:Static resources:Strings.Menu_Behaviour_ConfirmLaunches_Title}"
                 Description="{x:Static resources:Strings.Menu_Behaviour_ConfirmLaunches_Description}">
                 <ToggleSwitch IsChecked="{Binding ConfirmLaunches, Mode=TwoWay}" />
@@ -42,7 +27,13 @@
                 Header="{x:Static resources:Strings.Menu_Behaviour_EnableVirtualDisplay_Title}"
                 Description="{x:Static resources:Strings.Menu_Behaviour_EnableVirtualDisplay_Description}"
                 IsVisible="{x:Static gv:GlobalViewModel.IsMacOS}">
-                <ToggleSwitch IsChecked="{Binding LaunchWithVirtualDisplay, Mode=TwoWay}" />
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <ic:Lucide Icon="CircleAlert"
+                               VerticalAlignment="Center"
+                               StrokeBrush="Orange"
+                               ToolTip.Tip="This feature is experimental and may not work as expected."/>
+                    <ToggleSwitch IsChecked="{Binding LaunchWithVirtualDisplay, Mode=TwoWay}" />
+                </StackPanel>
             </controls:OptionControl>
 
             <controls:OptionControl
@@ -57,22 +48,6 @@
                 Description="{x:Static resources:Strings.Menu_Behaviour_BackgroundUpdates_Description}"
                 IsVisible="{x:Static gv:GlobalViewModel.IsWindows}">
                 <ToggleSwitch IsChecked="{Binding BackgroundUpdates, Mode=TwoWay}" />
-            </controls:OptionControl>
-
-            <controls:OptionControl
-                Header="{x:Static resources:Strings.Menu_Behaviour_ProcessPriority_Title}"
-                Description="{x:Static resources:Strings.Menu_Behaviour_ProcessPriority_Description}"
-                IsVisible="{x:Static gv:GlobalViewModel.IsWindows}">
-                <ComboBox
-                    MinWidth="200"
-                    ItemsSource="{Binding ProcessPriorityOptions}"
-                    SelectedItem="{Binding SelectedPriority, Mode=TwoWay}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Converter={StaticResource EnumNameConverter}}" />
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
             </controls:OptionControl>
 
             <controls:OptionControl

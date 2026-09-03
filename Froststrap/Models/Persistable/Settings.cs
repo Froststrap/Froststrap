@@ -45,7 +45,6 @@ namespace Froststrap.Models.Persistable
         public int BestRegionAmounts { get; set; } = 5;
         public int MaxServerCheck { get; set; } = 25;
         public string SelectedRegion { get; set; } = Strings.Common_Auto;
-        public ProcessPriorityOption SelectedProcessPriority { get; set; } = ProcessPriorityOption.Normal;
 
         // FastFlag Editor/Settings
         public bool UseFastFlagManager { get; set; } = true;
