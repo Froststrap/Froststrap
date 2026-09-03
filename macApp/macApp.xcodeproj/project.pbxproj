@@ -11,16 +11,6 @@
 		75D1464C303C424900912A00 /* Froststrap in CopyFiles */ = {isa = PBXBuildFile; fileRef = 75D1464B303C424900912A00 /* Froststrap */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		75D14640303C3ECA00912A00 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 000000000000000000000000 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 75521DAC303B336000747566;
-			remoteInfo = "froststrap nix";
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXCopyFilesBuildPhase section */
 		7586052D3042B91600F953E7 /* Copy Files */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -78,32 +68,17 @@
 		};
 /* End PBXGroup section */
 
-/* Begin PBXLegacyTarget section */
-		75521DAC303B336000747566 /* froststrap nix */ = {
-			isa = PBXLegacyTarget;
-			buildArgumentsString = "$(SRCROOT)/nix-build.sh $(CONFIGURATION)";
-			buildConfigurationList = 75521DAD303B336000747566 /* Build configuration list for PBXLegacyTarget "froststrap nix" */;
-			buildToolPath = /bin/sh;
-			buildWorkingDirectory = .;
-			name = "froststrap nix";
-			passBuildSettingsInEnvironment = 1;
-			productName = "froststrap nix";
-		};
-/* End PBXLegacyTarget section */
-
 /* Begin PBXNativeTarget section */
 		75521DB3303B33DD00747566 /* Froststrap */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 75521DBC303B33DE00747566 /* Build configuration list for PBXNativeTarget "Froststrap" */;
 			buildPhases = (
+				75B1A1243049AD3F004C47A8 /* ShellScript */,
 				75521DB2303B33DD00747566 /* Resources */,
 				75D14647303C41B400912A00 /* CopyFiles */,
 				7586052D3042B91600F953E7 /* Copy Files */,
 			);
 			buildRules = (
-			);
-			dependencies = (
-				75D14641303C3ECA00912A00 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				75521DB5303B33DD00747566 /* desktop */,
@@ -123,9 +98,6 @@
 				LastSwiftUpdateCheck = 2700;
 				LastUpgradeCheck = 2700;
 				TargetAttributes = {
-					75521DAC303B336000747566 = {
-						CreatedOnToolsVersion = 27.0;
-					};
 					75521DB3303B33DD00747566 = {
 						CreatedOnToolsVersion = 27.0;
 					};
@@ -145,7 +117,6 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				75521DAC303B336000747566 /* froststrap nix */,
 				75521DB3303B33DD00747566 /* Froststrap */,
 			);
 		};
@@ -159,13 +130,93 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
-/* Begin PBXTargetDependency section */
-		75D14641303C3ECA00912A00 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 75521DAC303B336000747566 /* froststrap nix */;
-			targetProxy = 75D14640303C3ECA00912A00 /* PBXContainerItemProxy */;
+/* Begin PBXShellScriptBuildPhase section */
+		75B1A1243049AD3F004C47A8 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			shellPath = /bin/sh;
+			shellScript = (
+				"#!/bin/bash",
+				"set -e",
+				"",
+				"if [ -z \"${SRCROOT:-}\" ]; then",
+				"  SCRIPT_DIR=\"$(cd \"$(dirname \"$0\")\" && pwd)\"",
+				"  SRCROOT=\"$(cd \"$SCRIPT_DIR/..\" && pwd)\"",
+				"fi",
+				"export SRCROOT",
+				"",
+				"if [ -z \"${IN_NIX_SHELL:-}\" ]; then",
+				"  if [ -n \"$SKIP_DOTNET_BUILD\" ]; then",
+				"    echo \"SKIP_DOTNET_BUILD set — skipping build\"",
+				"    exit 0",
+				"  fi",
+				"  cd \"$SRCROOT\" 2>/dev/null || true",
+				"  NIX_BIN=\"\"",
+				"  for candidate in \\",
+				"    /run/current-system/sw/bin/nix \\",
+				"    /nix/var/nix/profiles/default/bin/nix \\",
+				"    /usr/local/bin/nix \\",
+				"    \"$(command -v nix 2>/dev/null)\"",
+				"  do",
+				"    if [ -x \"$candidate\" ]; then",
+				"      NIX_BIN=\"$candidate\"",
+				"      break",
+				"    fi",
+				"  done",
+				"  if [ -z \"$NIX_BIN\" ]; then",
+				"    echo \"error: could not locate nix binary\" >&2",
+				"    exit 1",
+				"  fi",
+				"",
+				"  exec \"$NIX_BIN\" develop --accept-flake-config --command \"$0\" \"$@\"",
+				"fi",
+				"",
+				"CONFIG=\"${1:-Release}\"",
+				"PROJECT_FILE=\"${2:-\"$SRCROOT/../Froststrap/Froststrap.csproj\"}\"",
+				"OUTPUT_DIR=\"$SRCROOT/build/dotnet\"",
+				"",
+				"unset TARGETNAME TARGET_NAME",
+				"rm -rf \"$OUTPUT_DIR\"",
+				"mkdir -p \"$OUTPUT_DIR\"",
+				"",
+				"dotnet publish \"$PROJECT_FILE\" \\",
+				"    -c \"$CONFIG\" \\",
+				"    -p:PublishProfile=\"Publish-osx-arm64\" \\",
+				"    -o \"$OUTPUT_DIR/arm64\" \\",
+				"    --configfile \"$SRCROOT/../nuget.config\"",
+				"",
+				"dotnet publish \"$PROJECT_FILE\" \\",
+				"    -c \"$CONFIG\" \\",
+				"    -p:PublishProfile=\"Publish-osx-x64\" \\",
+				"    -o \"$OUTPUT_DIR/x64\" \\",
+				"    --configfile \"$SRCROOT/../nuget.config\"",
+				"",
+				"if [ -d \"./virtualdisplay/.build/out\" ]; then",
+				"  BUILD_DIR=\"out\"",
+				"elif [ -d \"./virtualdisplay/.build/apple\" ]; then",
+				"  BUILD_DIR=\"apple\"",
+				"else",
+				"  echo \"error: neither .build/out nor .build/apple exists\" >&2",
+				"  exit 1",
+				"fi",
+				"",
+				"cp \"./virtualdisplay/.build/$BUILD_DIR/Products/Release/libvirtualdisplay.dylib\" \"$OUTPUT_DIR/libvirtualdisplay.dylib\"",
+				"",
+				"lipo -create \\",
+				"    \"$OUTPUT_DIR/arm64/Froststrap\" \\",
+				"    \"$OUTPUT_DIR/x64/Froststrap\" \\",
+				"    -output \"$OUTPUT_DIR/Froststrap\"",
+				"",
+				"if [ -f \"$OUTPUT_DIR/Froststrap\" ]; then",
+				"    chmod +x \"$OUTPUT_DIR/Froststrap\"",
+				"    echo \"Successfully built binary at: $OUTPUT_DIR/Froststrap\"",
+				"else",
+				"    echo \"error: expected binary not found at $OUTPUT_DIR/Froststrap\" >&2",
+				"    exit 1",
+				"fi",
+				"",
+			);
 		};
-/* End PBXTargetDependency section */
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
 		000000000000000011000000 /* Debug configuration for PBXProject "macApp" */ = {
@@ -300,31 +351,6 @@
 			};
 			name = Release;
 		};
-		75521DAE303B336000747566 /* Debug configuration for PBXLegacyTarget "froststrap nix" */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				DEBUGGING_SYMBOLS = YES;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Debug;
-		};
-		75521DAF303B336000747566 /* Release configuration for PBXLegacyTarget "froststrap nix" */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Release;
-		};
 		75521DBD303B33DE00747566 /* Debug configuration for PBXNativeTarget "Froststrap" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -411,14 +437,6 @@
 			buildConfigurations = (
 				000000000000000011000000 /* Debug configuration for PBXProject "macApp" */,
 				000000000000000012000000 /* Release configuration for PBXProject "macApp" */,
-			);
-			defaultConfigurationName = Release;
-		};
-		75521DAD303B336000747566 /* Build configuration list for PBXLegacyTarget "froststrap nix" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				75521DAE303B336000747566 /* Debug configuration for PBXLegacyTarget "froststrap nix" */,
-				75521DAF303B336000747566 /* Release configuration for PBXLegacyTarget "froststrap nix" */,
 			);
 			defaultConfigurationName = Release;
 		};
