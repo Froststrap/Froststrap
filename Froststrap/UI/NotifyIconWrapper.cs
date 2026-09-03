@@ -19,7 +19,14 @@ namespace Froststrap.UI
         private const int DoubleClickThresholdMs = 300;
 
         public NotifyIconWrapper(Watcher watcher)
-        {
+        {  
+#if __APPLE__
+            if (App.Settings.Prop.LaunchWithVirtualDisplay) Dispatcher.UIThread.Post(() =>
+            {
+                App.Logger.Debug("Starting Virtual display");
+                Froststrap.Backend.VirtualDisplay.Start();
+            });
+#endif
             App.Logger.Info("Initializing Avalonia TrayIcon");
 
             _watcher = watcher;
@@ -164,6 +171,10 @@ namespace Froststrap.UI
             if (_isDisposed) return;
             _isDisposed = true;
 
+#if __APPLE__
+            App.Logger.Debug("Exiting Virtual Display (if there is one)");
+            Froststrap.Backend.VirtualDisplay.End();
+#endif
             App.Logger.Info("Cleaning up TrayIcon and MenuContainer");
 
             Dispatcher.UIThread.Post(() =>
@@ -176,14 +187,13 @@ namespace Froststrap.UI
                     trayIcons?.Remove(_trayIcon);
 
                     _menuContainer.Close();
+                    _trayIcon.Dispose();
                 }
                 catch (Exception ex)
                 {
                     App.Logger.Error($"Error during cleanup: {ex.Message}");
                 }
             });
-
-            _trayIcon.Dispose();
 
             if (ActivityWatcher is not null)
             {

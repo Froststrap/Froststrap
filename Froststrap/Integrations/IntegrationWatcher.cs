@@ -135,8 +135,7 @@ namespace Froststrap.Integrations
 
         private unsafe void OnGameLeave(object? sender, EventArgs e)
         {
-
-            if (!IsHandleValid(_robloxWindowHandle) || OperatingSystem.IsWindows())
+            if (!IsHandleValid(_robloxWindowHandle) && OperatingSystem.IsWindows())
             {
                 try
                 {

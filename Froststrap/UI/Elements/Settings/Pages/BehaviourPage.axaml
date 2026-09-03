@@ -18,6 +18,21 @@
     <ScrollViewer>
         <StackPanel Margin="14">
             <controls:OptionControl
+                Header="{x:Static resources:Strings.Menu_Behaviour_EnableVirtualDisplay_Title}"
+                Description="{x:Static resources:Strings.Menu_Behaviour_EnableVirtualDisplay_Description}"
+                IsVisible="{x:Static gv:GlobalViewModel.IsMacOS}"
+            >
+            <StackPanel Orientation="Horizontal" Spacing="12">
+                <Border Margin="8,0,0,0" Padding="6,1" CornerRadius="4"
+                        Background="{DynamicResource ControlFillColorDefaultBrush}"
+                        BorderBrush="{DynamicResource SystemFillColorCautionBrush}" BorderThickness="1"
+                        VerticalAlignment="Center">
+                    <TextBlock FontSize="10" FontWeight="Bold" Foreground="{DynamicResource SystemFillColorCautionBrush}" Text="Experimental" />
+                </Border>
+                <ToggleSwitch IsChecked="{Binding LaunchWithVirtualDisplay, Mode=TwoWay}" />
+                </StackPanel>
+            </controls:OptionControl>
+            <controls:OptionControl
                 Header="{x:Static resources:Strings.Menu_Behaviour_ConfirmLaunches_Title}"
                 Description="{x:Static resources:Strings.Menu_Behaviour_ConfirmLaunches_Description}">
                 <ToggleSwitch IsChecked="{Binding ConfirmLaunches, Mode=TwoWay}" />

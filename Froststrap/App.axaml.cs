@@ -8,7 +8,7 @@ using Froststrap.UI.Elements.Base;
 using Microsoft.Win32;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Security.Cryptography;
+using Froststrap.Backend;
 
 namespace Froststrap;
 
@@ -124,6 +124,9 @@ internal partial class App : Application
 
         Logger.Debug($"Terminating with exit code {exitCodeNum} ({exitCode})");
 
+#if __APPLE__
+        VirtualDisplay.End();
+#endif
         Environment.Exit(exitCodeNum);
     }
 
@@ -377,6 +380,13 @@ internal partial class App : Application
     {
         if (ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
             return;
+
+#if __APPLE__
+        desktop.ShutdownRequested += (_, _) =>
+        {
+            VirtualDisplay.End();
+        };
+#endif
 
         string? installLocation = null;
 

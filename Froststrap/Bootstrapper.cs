@@ -3971,7 +3971,6 @@ exit";
                     var response = await App.HttpClient.GetAsync(new Uri(packageUrl), HttpCompletionOption.ResponseHeadersRead, _cancelTokenSource.Token);
                     await using var stream = await response.Content.ReadAsStreamAsync(_cancelTokenSource.Token);
                     await using var fileStream = new FileStream(package.DownloadPath, FileMode.CreateNew, FileAccess.ReadWrite, FileShare.Delete);
-
                     while (true)
                     {
                         if (_cancelTokenSource.IsCancellationRequested)
@@ -3993,10 +3992,12 @@ exit";
                         _totalDownloadedBytes += bytesRead;
                         UpdateProgressBar();
                     }
-
+                    await fileStream.FlushAsync(); 
+                    fileStream.Position = 0;
+                    
                     string hash = FastHash.FromStream(fileStream);
 
-                    if (!OperatingSystem.IsMacOS() && hash != package.Signature)
+                    if (!OperatingSystem.IsMacOS() && !string.Equals(hash, package.Signature, StringComparison.OrdinalIgnoreCase))
                         throw new ChecksumFailedException($"Failed to verify download of {packageUrl}\n\nExpected hash: {package.Signature}\nGot hash: {hash}");
 
                     App.Logger.Info($"Finished downloading! ({totalBytesRead} bytes total)");
