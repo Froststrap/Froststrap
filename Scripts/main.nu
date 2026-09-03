@@ -27,7 +27,7 @@ def publish [] {
     "Linux" => {
       nu ([$script_dir, "/release/linux.nu"] | str join) $project_file $build_dir "Publish-linux-x64"
     }
-    "windows" => {
+    $s if ($s | str contains "Windows") => {
       nu ([$script_dir "/release/windows.nu"] | str join) $project_file $build_dir
     }
     _ => {}
