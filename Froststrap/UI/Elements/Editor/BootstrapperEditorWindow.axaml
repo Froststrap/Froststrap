@@ -18,7 +18,7 @@
             Grid.Row="0"
             Grid.RowSpan="3"
             HorizontalAlignment="Stretch"
-            VerticalAlignment="Bottom"
+            VerticalAlignment="Top"
             ZIndex="1000" />
 
         <Ae:TextEditor Name="UIXML"

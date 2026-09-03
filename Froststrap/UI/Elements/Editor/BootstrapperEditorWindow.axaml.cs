@@ -2,7 +2,6 @@ using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
-using Avalonia.Controls.Notifications;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Media;
@@ -17,9 +16,9 @@ using FluentAvalonia.UI.Controls;
 using Froststrap.UI.Elements.Base;
 using Froststrap.UI.Elements.Controls;
 using Froststrap.UI.ViewModels.Editor;
-using LucideAvalonia;
 using LucideAvalonia.Enum;
 using System.Xml;
+using Avalonia.Controls.Shapes;
 
 namespace Froststrap.UI.Elements.Editor
 {
@@ -138,6 +137,14 @@ namespace Froststrap.UI.Elements.Editor
         private bool _isInitialLoad = true;
         private bool _disposed;
 
+        private readonly List<NotificationEntry> _notifications = [];
+        private sealed class NotificationEntry
+        {
+            public required Border Element { get; init; }
+            public required TranslateTransform Transform { get; init; }
+            public CancellationTokenSource? TimeoutCts { get; set; }
+        }
+
         public BootstrapperEditorWindow()
         {
             InitializeComponent();
@@ -147,8 +154,8 @@ namespace Froststrap.UI.Elements.Editor
         {
             CustomBootstrapperSchema.ParseSchema();
 
-            string directory = Path.Combine(Paths.CustomThemes, name);
-            string themeContents = File.ReadAllText(Path.Combine(directory, "Theme.xml"));
+            string directory = System.IO.Path.Combine(Paths.CustomThemes, name);
+            string themeContents = File.ReadAllText(System.IO.Path.Combine(directory, "Theme.xml"));
 
             _viewModel = new BootstrapperEditorWindowViewModel
             {
@@ -169,7 +176,11 @@ namespace Froststrap.UI.Elements.Editor
             {
                 if (success)
                 {
-                    Dispatcher.UIThread.Post(ShowSaveNotice);
+                    Dispatcher.UIThread.Post(() => ShowNotification(
+                        Strings.Menu_SettingsSaved_Title,
+                        Strings.Menu_SettingsSaved_Message,
+                        FAInfoBarSeverity.Success,
+                        3000));
                 }
                 else
                 {
@@ -227,72 +238,7 @@ namespace Froststrap.UI.Elements.Editor
             }
         }
 
-        private Border? _currentNotification;
-        private CancellationTokenSource? _notificationCts;
-        private bool _isAnimatingOut;
-
-        private void ShowSaveNotice()
-        {
-            ShowNotification(
-                Strings.Menu_SettingsSaved_Title,
-                Strings.Menu_SettingsSaved_Message,
-                FAInfoBarSeverity.Success,
-                3000);
-        }
-
         public void ShowNotification(string title, string subtitle, FAInfoBarSeverity type, int timeout, LucideIconNames? customIcon = null)
-        {
-            var notificationPanel = this.FindControl<Panel>("NotificationPanel");
-            if (notificationPanel == null) return;
-
-            if (_isAnimatingOut)
-            {
-                Task.Run(async () =>
-                {
-                    while (_isAnimatingOut)
-                    {
-                        await Task.Delay(50);
-                    }
-                    Dispatcher.UIThread.Post(() => ShowNotification(title, subtitle, type, timeout, customIcon));
-                });
-                return;
-            }
-
-            _notificationCts?.Cancel();
-            _notificationCts?.Dispose();
-            _notificationCts = new CancellationTokenSource();
-            var token = _notificationCts.Token;
-
-            if (_currentNotification != null && notificationPanel.Children.Contains(_currentNotification))
-            {
-                _isAnimatingOut = true;
-                var oldNotification = _currentNotification;
-
-                oldNotification.Opacity = 0;
-                oldNotification.RenderTransform = new TranslateTransform(0, 40);
-
-                Task.Run(async () =>
-                {
-                    await Task.Delay(350);
-                    Dispatcher.UIThread.Post(() =>
-                    {
-                        if (notificationPanel.Children.Contains(oldNotification))
-                        {
-                            notificationPanel.Children.Remove(oldNotification);
-                        }
-                        _isAnimatingOut = false;
-                        _currentNotification = null;
-
-                        ShowNotificationInternal(title, subtitle, type, timeout, customIcon);
-                    });
-                });
-                return;
-            }
-
-            ShowNotificationInternal(title, subtitle, type, timeout, customIcon);
-        }
-
-        private void ShowNotificationInternal(string title, string subtitle, FAInfoBarSeverity type, int timeout, LucideIconNames? customIcon = null)
         {
             var notificationPanel = this.FindControl<Panel>("NotificationPanel");
             if (notificationPanel == null) return;
@@ -308,27 +254,21 @@ namespace Froststrap.UI.Elements.Editor
                 Margin = new Thickness(0)
             };
 
-            var icon = new Lucide
+            var icon = new Ellipse
             {
-                Icon = iconSymbol,
-                Width = 28,
-                Height = 28,
-                StrokeBrush = new SolidColorBrush(Color.Parse(accentColor)),
-                StrokeThickness = 2.5,
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
-                Margin = new Thickness(16, 0, 12, 0)
+                Width = 12,
+                Height = 12,
+                Margin = new Thickness(25),
+                Fill = new SolidColorBrush(Color.Parse(accentColor)),
             };
             Grid.SetColumn(icon, 0);
             contentGrid.Children.Add(icon);
 
             var textPanel = new StackPanel { VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center, Spacing = 2 };
-
-            var titleText = new TextBlock { Text = title, FontWeight = FontWeight.SemiBold, FontSize = 14 };
+            var titleText = new TextBlock { Text = title, FontWeight = FontWeight.SemiBold, FontSize = 16, Margin = new Thickness(0, 2) };
             titleText.Bind(TextBlock.ForegroundProperty, new DynamicResourceExtension("TextFillColorPrimaryBrush"));
-
-            var subtitleText = new TextBlock { Text = subtitle, FontSize = 12, TextWrapping = TextWrapping.Wrap };
+            var subtitleText = new TextBlock { Text = subtitle, FontSize = 12, TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 2) };
             subtitleText.Bind(TextBlock.ForegroundProperty, new DynamicResourceExtension("TextFillColorSecondaryBrush"));
-
             textPanel.Children.Add(titleText);
             textPanel.Children.Add(subtitleText);
             Grid.SetColumn(textPanel, 1);
@@ -337,92 +277,92 @@ namespace Froststrap.UI.Elements.Editor
             var closeButton = new IconButton
             {
                 Icon = LucideIconNames.X,
-                IconSize = 16,
+                IconSize = 12,
+                CornerRadius = new CornerRadius(0, 10, 10, 0),
                 Background = Brushes.Transparent,
                 BorderThickness = new Thickness(0),
                 Padding = new Thickness(8, 4, 8, 4),
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right,
-                Width = 32,
-                Height = 32,
-                Margin = new Thickness(0, 0, 12, 0)
+                Margin = new Thickness(20, 0, 0, 0),
+                Width = 50,
             };
-
             closeButton.Bind(IconButton.ForegroundProperty, new DynamicResourceExtension("TextFillColorSecondaryBrush"));
-
             Grid.SetColumn(closeButton, 2);
             contentGrid.Children.Add(closeButton);
 
+            var transform = new TranslateTransform(500, 0)
+            {
+                Transitions =
+                [
+                    new DoubleTransition { Property = TranslateTransform.XProperty, Duration = TimeSpan.FromMilliseconds(350), Easing = new QuarticEaseOut() },
+                    new DoubleTransition { Property = TranslateTransform.YProperty, Duration = TimeSpan.FromMilliseconds(300), Easing = new QuarticEaseOut() }
+                ]
+            };
+
             var notification = new Border
             {
-                BorderBrush = new SolidColorBrush(Color.Parse(accentColor)),
-                BorderThickness = new Thickness(1),
-                Padding = new Thickness(0, 12, 0, 12),
-                Margin = new Thickness(125, 0, 125, 40),
+                Margin = new Thickness(0, 15, 15, 0),
                 MinWidth = 350,
                 Height = 80,
-                CornerRadius = new CornerRadius(6),
-                Opacity = 0,
-                RenderTransform = new TranslateTransform(0, 40),
+                CornerRadius = new CornerRadius(10),
+                RenderTransform = transform,
                 Child = contentGrid,
                 BoxShadow = new BoxShadows(new BoxShadow { Blur = 10, OffsetY = 4, Color = Color.Parse("#40000000") }),
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right,
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top
             };
-
             notification.Bind(Border.BackgroundProperty, new DynamicResourceExtension("NotificationBackgroundColor"));
 
-            notification.Transitions =
-            [
-                new TransformOperationsTransition { Property = Border.RenderTransformProperty, Duration = TimeSpan.FromMilliseconds(350), Easing = new QuarticEaseOut() },
-                new DoubleTransition { Property = Border.OpacityProperty, Duration = TimeSpan.FromMilliseconds(250) }
-            ];
+            var entry = new NotificationEntry { Element = notification, Transform = transform };
 
-            async void Dismiss()
-            {
-                if (_notificationCts?.Token.IsCancellationRequested ?? false) return;
-                if (!notificationPanel.Children.Contains(notification)) return;
-                notification.Opacity = 0;
-                notification.RenderTransform = new TranslateTransform(0, 40);
-                await Task.Delay(350);
-                if (notificationPanel.Children.Contains(notification))
-                {
-                    notificationPanel.Children.Remove(notification);
-                }
-                if (_currentNotification == notification)
-                {
-                    _currentNotification = null;
-                }
-            }
+            void Dismiss() => DismissNotification(entry);
 
-            closeButton.Click += (s, e) =>
-            {
-                e.Handled = true;
-                Dismiss();
-            };
+            closeButton.Click += (s, e) => { e.Handled = true; Dismiss(); };
+            notification.PointerPressed += (s, e) => { if (e.Source is IconButton) return; Dismiss(); };
 
-            notification.PointerPressed += (s, e) =>
-            {
-                if (e.Source is IconButton) return;
-                Dismiss();
-            };
-
-            _currentNotification = notification;
+            _notifications.Insert(0, entry);
             notificationPanel.Children.Add(notification);
+
+            while (_notifications.Count > 3)
+                DismissNotification(_notifications[^1]);
+
+            RepositionNotifications();
+
+            var cts = new CancellationTokenSource();
+            entry.TimeoutCts = cts;
 
             Dispatcher.UIThread.InvokeAsync(async () =>
             {
-                if (_notificationCts?.Token.IsCancellationRequested ?? false) return;
                 await Task.Delay(50);
-                if (_notificationCts?.Token.IsCancellationRequested ?? false) return;
-                notification.Opacity = 1;
-                notification.RenderTransform = new TranslateTransform(0, 0);
+                if (cts.IsCancellationRequested) return;
+                transform.X = 0;
 
                 await Task.Delay(timeout);
-                if (!(_notificationCts?.Token.IsCancellationRequested ?? false))
-                {
+                if (!cts.IsCancellationRequested)
                     Dismiss();
-                }
             });
+        }
+
+        private async void DismissNotification(NotificationEntry entry)
+        {
+            if (!_notifications.Remove(entry)) return;
+
+            entry.TimeoutCts?.Cancel();
+            RepositionNotifications();
+
+            entry.Transform.X = 500;
+            await Task.Delay(350);
+
+            var notificationPanel = this.FindControl<Panel>("NotificationPanel");
+            if (notificationPanel != null && notificationPanel.Children.Contains(entry.Element))
+                notificationPanel.Children.Remove(entry.Element);
+        }
+
+        private void RepositionNotifications()
+        {
+            for (var i = 0; i < _notifications.Count; i++)
+                _notifications[i].Transform.Y = i * (80 + 15);
         }
 
         private static string ToCRLF(string text) => text.Replace("\r\n", "\n", StringComparison.Ordinal).Replace('\r', '\n').Replace('\n', '\r');
@@ -654,16 +594,14 @@ namespace Froststrap.UI.Elements.Editor
                 _completionWindow?.Close();
                 _completionWindow = null;
 
-                _notificationCts?.Cancel();
-                _notificationCts?.Dispose();
-                _notificationCts = null;
-
-                if (_currentNotification != null)
+                foreach (var entry in _notifications)
                 {
-                    var parent = _currentNotification.Parent as Panel;
-                    parent?.Children.Remove(_currentNotification);
-                    _currentNotification = null;
+                    entry.TimeoutCts?.Cancel();
+                    entry.TimeoutCts?.Dispose();
+                    var parent = entry.Element.Parent as Panel;
+                    parent?.Children.Remove(entry.Element);
                 }
+                _notifications.Clear();
             }
 
             _disposed = true;
