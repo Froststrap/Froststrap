@@ -30,6 +30,7 @@ namespace Froststrap.UI.ViewModels.Settings
         private RobloxServerFetcher? _fetcher;
         private Dictionary<int, string>? _dcMap;
         private CancellationTokenSource? _searchDebounceCts;
+        private CancellationTokenSource? _thumbnailCts;
         private bool _disposed;
 
         #region Fields
@@ -433,8 +434,114 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
+        private async Task<Dictionary<string, string?>> FetchAllThumbnailUrlsAsync(CancellationToken token)
+        {
+            var allTokens = Servers
+                .SelectMany(s => s.PlayerTokens)
+                .Distinct()
+                .ToList();
+
+            if (allTokens.Count == 0)
+                return [];
+
+            const int batchSize = 100;
+            var tokenToUrl = new Dictionary<string, string?>();
+
+            var chunks = allTokens
+                .Select((t, i) => new { Token = t, Index = i })
+                .GroupBy(x => x.Index / batchSize)
+                .Select(g => g.Select(x => x.Token).ToList())
+                .ToList();
+
+            foreach (var chunk in chunks)
+            {
+                if (token.IsCancellationRequested)
+                    return tokenToUrl;
+
+                var requests = chunk.Select(token => new ThumbnailRequest
+                {
+                    Token = token,
+                    Type = ThumbnailType.AvatarHeadShot,
+                    Size = "60x60",
+                    Format = ThumbnailFormat.Png,
+                    IsCircular = true
+                }).ToList();
+
+                var urls = await Thumbnails.GetThumbnailUrlsAsync(requests, token);
+                for (int i = 0; i < chunk.Count && i < urls.Length; i++)
+                {
+                    tokenToUrl[chunk[i]] = urls[i];
+                }
+            }
+
+            return tokenToUrl;
+        }
+
+        private async Task LoadAllServerThumbnailsAsync(CancellationToken token)
+        {
+            var tokenToUrl = await FetchAllThumbnailUrlsAsync(token);
+            if (token.IsCancellationRequested) return;
+
+            using var semaphore = new SemaphoreSlim(15);
+            var tasks = Servers.Select(async server =>
+            {
+                if (token.IsCancellationRequested) return;
+
+                await semaphore.WaitAsync(token);
+                try
+                {
+                    var bitmaps = new List<Bitmap>();
+                    foreach (var playerToken in server.PlayerTokens)
+                    {
+                        if (tokenToUrl.TryGetValue(playerToken, out var url) && !string.IsNullOrEmpty(url))
+                        {
+                            try
+                            {
+                                var bytes = await App.HttpClient.GetByteArrayAsync(new Uri(url), token);
+                                using var ms = new MemoryStream(bytes);
+                                var bmp = new Bitmap(ms);
+                                bitmaps.Add(bmp);
+                            }
+                            catch { /* skip failed downloads */ }
+                        }
+                    }
+
+                    await Dispatcher.UIThread.InvokeAsync(() =>
+                    {
+                        server.PlayerAvatarThumbnails.Clear();
+                        foreach (var bmp in bitmaps)
+                            server.PlayerAvatarThumbnails.Add(bmp);
+
+                        int extra = server.PlayingCount - bitmaps.Count;
+                        if (extra > 0)
+                        {
+                            server.ExtraPlayersText = $"+{extra}";
+                            server.HasExtraPlayers = true;
+                        }
+                        else
+                        {
+                            server.HasExtraPlayers = false;
+                        }
+                    }, DispatcherPriority.Background);
+                }
+                finally
+                {
+                    semaphore.Release();
+                }
+            });
+
+            await Task.WhenAll(tasks);
+        }
+
         private async Task SearchAsync()
         {
+#pragma warning disable CA1849
+            _thumbnailCts?.Cancel();
+#pragma warning restore CA1849
+            _thumbnailCts?.Dispose();
+            _thumbnailCts = new CancellationTokenSource();
+            var token = _thumbnailCts.Token;
+
             if (!IsAutoSortOrder && string.IsNullOrWhiteSpace(SelectedRegion))
             {
                 _ = Frontend.ShowMessageBox(Strings.Menu_RegionSelector_PleaseSelectRegion, MessageBoxImage.Warning);
@@ -457,6 +564,8 @@ namespace Froststrap.UI.ViewModels.Settings
                 if (string.IsNullOrWhiteSpace(NextCursor) || Servers.Count >= MaxServers)
                     break;
             }
+
+            await LoadAllServerThumbnailsAsync(token);
 
             IsLoading = false;
             await Task.Delay(800);
@@ -507,8 +616,6 @@ namespace Froststrap.UI.ViewModels.Settings
                         };
 
                         Servers.Add(serverEntry);
-
-                        _ = serverEntry.LoadThumbnailsAsync();
                     }
                 }
             }
@@ -676,6 +783,10 @@ namespace Froststrap.UI.ViewModels.Settings
                 _searchDebounceCts?.Cancel();
                 _searchDebounceCts?.Dispose();
                 _searchDebounceCts = null;
+
+                _thumbnailCts?.Cancel();
+                _thumbnailCts?.Dispose();
+                _thumbnailCts = null;
             }
 
             _disposed = true;
