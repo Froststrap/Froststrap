@@ -650,6 +650,12 @@ Would you like to upgrade your currently installed version?</value>
   <data name="Menu.Behaviour.AutoUpdate.Title" xml:space="preserve">
     <value>Automatically Update Froststrap</value>
   </data>
+  <data name="Menu.Behaviour.EnableVirtualDisplay.Title" xml:space="preserve">
+    <value>Virtual Display</value>
+  </data>
+  <data name="Menu.Behaviour.EnableVirtualDisplay.Description" xml:space="preserve">
+    <value>When Roblox launches, open AppleBlox's VirtualDisplay to have a fake 240Hz display for Roblox to VSync to.</value>
+  </data>
   <data name="Menu.Behaviour.ConfirmLaunches.Description" xml:space="preserve">
     <value>Prevents closures of your existing game when accidentally launching another Roblox Instance.</value>
   </data>

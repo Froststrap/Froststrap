@@ -37,6 +37,7 @@ namespace Froststrap.Models.Persistable
         public CleanerOptions CleanerOptions { get; set; } = CleanerOptions.Never;
         public List<string> CleanerDirectories { get; set; } = [];
         public bool BackgroundUpdatesEnabled { get; set; }
+        public bool LaunchWithVirtualDisplay { get; set; }
         public bool SoftKeyEnabled { get; set; }
         public SoftKeyProfile SoftKeyProfile { get; set; } = SoftKeyProfile.WASD;
         public bool EnableBetterMatchmaking { get; set; }
