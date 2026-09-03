@@ -1,5 +1,6 @@
 {
   typos,
+  nushell,
   callPackage
 }:
 let
@@ -7,6 +8,7 @@ let
 in
 mkFragment {
   buildInputs = [
+    nushell
     typos
   ];
 }
