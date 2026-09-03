@@ -35,7 +35,7 @@ public class VirtualDisplay
         var result = InternalVirtualDisplay.Start(
             1920,
             1080,
-            true
+            false
         );
 
         Console.WriteLine($"Virtual display started: {result}");
