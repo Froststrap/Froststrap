@@ -56,7 +56,6 @@ namespace Froststrap.UI.ViewModels
 
         public IRelayCommand<SearchBarItem> SearchResultSelectedCommand { get; }
         public IRelayCommand ClearSearchCommand { get; }
-        public IRelayCommand ToggleSearchListCommand { get; }
 
         public event EventHandler<SearchBarItem>? SearchResultSelected;
 
@@ -64,10 +63,7 @@ namespace Froststrap.UI.ViewModels
         {
             SearchResultSelectedCommand = new RelayCommand<SearchBarItem>(HandleSearchResultSelected);
             ClearSearchCommand = new RelayCommand(Clear);
-            ToggleSearchListCommand = new RelayCommand(ToggleDropdown);
         }
-
-        private void ToggleDropdown() => IsDropDownOpen = !IsDropDownOpen;
 
         public void SetSearchIndex(List<SearchBarItem> searchIndex)
         {

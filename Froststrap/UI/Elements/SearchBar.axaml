@@ -51,16 +51,11 @@
             </AutoCompleteBox.ItemTemplate>
 
             <AutoCompleteBox.InnerLeftContent>
-                <controls:IconButton Command="{Binding ToggleSearchListCommand}"
-                                     Icon="Search"
-                                     IconSize="14"
-                                     Background="Transparent"
-                                     BorderThickness="0"
-                                     Width="28"
-                                     Height="28"
-                                     VerticalAlignment="Center"
-                                     Margin="2,0,0,0"
-                                     Padding="8"/>
+                <ic:Lucide Icon="Search"
+                           Width="14"
+                           Height="14"
+                           VerticalAlignment="Center"
+                           Margin="8,0,0,0"/>
             </AutoCompleteBox.InnerLeftContent>
 
             <AutoCompleteBox.InnerRightContent>
