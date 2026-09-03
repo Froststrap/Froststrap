@@ -8188,7 +8188,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Jump back into your recently played games, Logging into account will add more games..
+        ///   Looks up a localized string similar to Jump back into your recently played games, Logging into account in account manager will add more of your recently played games..
         /// </summary>
         public static string Menu_QuickPlay_Description {
             get {
