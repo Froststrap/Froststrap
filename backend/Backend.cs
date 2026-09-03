@@ -27,8 +27,6 @@ internal partial class InternalVirtualDisplay
 /// A Virtual Display mechanism for macOS
 public class VirtualDisplay
 {
-    private static Thread? _virtualDisplayThread;
-
     /// High-level wrapper around starting the virtual display,
     /// with no dictation on specs of the virtual display
     public static void Start() {
