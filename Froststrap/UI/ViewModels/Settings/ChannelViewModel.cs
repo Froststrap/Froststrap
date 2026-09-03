@@ -662,8 +662,8 @@ namespace Froststrap.UI.ViewModels.Settings
                     if (!timestamp.HasValue)
                         return (false, "Could not verify version date.");
 
-                    if ((DateTime.UtcNow - timestamp.Value).TotalDays > 90)
-                        return (false, "Version is older than 3 months.");
+                    if ((DateTime.UtcNow - timestamp.Value).TotalDays > 365)
+                        return (false, "Version is older than 1 year.");
                 }
 
                 return (true, string.Empty);
