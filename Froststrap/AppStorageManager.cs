@@ -92,7 +92,7 @@ internal class AppStorageManager : JsonManager<Dictionary<string, object>>
         var propHash = ComputeHash(Prop);
 
         if (ComputeHash(Prop) == _savedHash) {
-            App.Logger.Warn("No changes, bailing save.");
+            App.Logger.Info("No changes, bailing save.");
             return;
         }
 
