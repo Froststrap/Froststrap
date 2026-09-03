@@ -129,12 +129,6 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public static bool GameSearch
-        {
-            get => App.Settings.Prop.GameSearch;
-            set => App.Settings.Prop.GameSearch = value;
-        }
-
         private async Task HandleTestModeConfirmation()
         {
             var result = await Frontend.ShowMessageBox(Strings.Menu_TestMode_Prompt, MessageBoxImage.Information, MessageBoxButton.YesNo);
