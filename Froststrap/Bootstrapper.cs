@@ -3430,6 +3430,12 @@ exit";
                     if (allModFolderNames.Contains(dirName, StringComparer.OrdinalIgnoreCase))
                         continue;
 
+                    if (!Directory.Exists(dir))
+                    {
+                        App.Logger.Warn($"Skipping missing directory: {dir}");
+                        continue;
+                    }
+
                     foreach (string file in Directory.GetFiles(dir, "*.*", SearchOption.AllDirectories))
                     {
                         string relativeFile = Path.GetRelativePath(Paths.Modifications, file);
