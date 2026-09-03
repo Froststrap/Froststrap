@@ -23,7 +23,7 @@ jobs:
       - name: Set short SHA
         run: echo "SHORT_SHA=$("${{ github.sha }}".Substring(0, 7))" >> $env:GITHUB_ENV
       - name: Publish
-        run: nu ./Scripts/main.nu debug
+        run: nu ./main.nu debug
       - uses: actions/upload-artifact@v6
         with:
           name: froststrap-debug-win-x64-${{ env.SHORT_SHA }}
@@ -40,7 +40,7 @@ jobs:
         run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
       - uses: DeterminateSystems/nix-installer-action@v14
       - name: Publish
-        run: nix develop -c nu ./Scripts/main.nu debug
+        run: nix develop -c nu ./main.nu debug
       - uses: actions/upload-artifact@v6
         with:
           name: froststrap-debug-macos-arm64-${{ env.SHORT_SHA }}
@@ -57,7 +57,7 @@ jobs:
         run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
       - uses: DeterminateSystems/nix-installer-action@v14
       - name: Publish
-        run: nix develop -c nu ./Scripts/main.nu debug
+        run: nix develop -c nu ./main.nu debug
       - uses: actions/upload-artifact@v6
         with:
           name: froststrap-debug-linux-x64-${{ env.SHORT_SHA }}

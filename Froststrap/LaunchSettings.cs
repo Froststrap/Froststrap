@@ -18,6 +18,8 @@ namespace Froststrap
         public LaunchFlag BloxshadeFlag { get; } = new("bloxshade");
         public LaunchFlag GameShortcutFlag { get; } = new("gameshortcut");
         public LaunchFlag NsisFlag { get; } = new("nsis");
+        public LaunchFlag ConsoleFlag { get; } = new("c,console");
+        public LaunchFlag NoGpuFlag { get; } = new("g,nogpu");
 
 #if DEBUG
         public static bool BypassUpdateCheck => true;
@@ -34,7 +36,9 @@ namespace Froststrap
         /// </summary>
         public string[] Args { get; private set; }
 
-        private static readonly string[] StudioFileExtensions = [".rbxl", ".rbxlx", ".rbxm", ".rbxmx"];
+        private static readonly HashSet<string> StudioFileExtensions = new(
+            [".rbxl", ".rbxlx", ".rbxm", ".rbxmx"],
+            StringComparer.OrdinalIgnoreCase);
 
         private static bool IsRobloxStudioFile(string path)
         {
@@ -42,10 +46,36 @@ namespace Froststrap
             try
             {
                 var ext = Path.GetExtension(path);
-                return StudioFileExtensions.Contains(ext, StringComparer.OrdinalIgnoreCase);
+                return StudioFileExtensions.Contains(ext);
             }
             catch { return false; }
         }
+
+        private Dictionary<string, LaunchFlag> BuildFlagLookup()
+        {
+            LaunchFlag[] allFlags =
+            [
+                MenuFlag, WatcherFlag, BackgroundUpdaterFlag, OnboardingFlag, QuietFlag,
+                NoLaunchFlag, TestModeFlag, UpgradeFlag, PlayerFlag, StudioFlag, VersionFlag,
+                ChannelFlag, ForceFlag, BloxshadeFlag, GameShortcutFlag, NsisFlag,
+                ConsoleFlag, NoGpuFlag
+            ];
+
+            var lookup = new Dictionary<string, LaunchFlag>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (var flag in allFlags)
+                foreach (var identifier in flag.Identifiers.Split(','))
+                    lookup[identifier] = flag;
+
+            return lookup;
+        }
+
+        private readonly Dictionary<string, LaunchFlag> _flagLookup;
+
+        private LaunchFlag? GetFlag(string identifier) =>
+            _flagLookup.TryGetValue(identifier, out var flag) ? flag : null;
+
+        private (LaunchMode Mode, string Args)? _resolvedRoblox;
 
         public LaunchSettings(string[] args)
         {
@@ -53,23 +83,10 @@ namespace Froststrap
             App.Logger.Info($"Launched with arguments: {string.Join(' ', args)}");
 #endif
 
+            _flagLookup = BuildFlagLookup();
+
             Args = args;
             string? entryAssemblyPath = AppContext.BaseDirectory;
-
-            Dictionary<string, LaunchFlag> flagMap = [];
-
-            // build flag map
-            foreach (var prop in this.GetType().GetProperties())
-            {
-                if (prop.PropertyType != typeof(LaunchFlag))
-                    continue;
-
-                if (prop.GetValue(this) is not LaunchFlag flag)
-                    continue;
-
-                foreach (string identifier in flag.Identifiers.Split(','))
-                    flagMap.Add(identifier, flag);
-            }
 
             int startIdx = 0;
 
@@ -131,9 +148,10 @@ namespace Froststrap
                     continue;
                 }
 
-                string identifier = arg[1..];
+                string identifier = arg.TrimStart('-');
+                LaunchFlag? flag = GetFlag(identifier);
 
-                if (!flagMap.TryGetValue(identifier, out LaunchFlag? flag) || flag is null)
+                if (flag is null)
                 {
                     App.Logger.Warn($"Unknown argument: {identifier}");
                     continue;
@@ -160,7 +178,7 @@ namespace Froststrap
             }
 
             if (VersionFlag.Active)
-                RobloxLaunchMode = LaunchMode.Unknown; // determine in bootstrapper
+                RobloxLaunchMode = LaunchMode.Unknown;
 
             if (PlayerFlag.Active)
                 ParsePlayer(PlayerFlag.Data);
@@ -176,6 +194,13 @@ namespace Froststrap
 
         public bool TryResolveRobloxUri(IEnumerable<string>? args = null)
         {
+            if (_resolvedRoblox.HasValue)
+            {
+                RobloxLaunchMode = _resolvedRoblox.Value.Mode;
+                RobloxLaunchArgs = _resolvedRoblox.Value.Args;
+                return true;
+            }
+
             foreach (string arg in args ?? Args)
             {
                 if (arg.StartsWith("roblox:", StringComparison.OrdinalIgnoreCase)
@@ -184,6 +209,7 @@ namespace Froststrap
                     App.Logger.Info("Found Roblox player URI outside first argument");
                     RobloxLaunchMode = LaunchMode.Player;
                     RobloxLaunchArgs = arg;
+                    _resolvedRoblox = (RobloxLaunchMode, RobloxLaunchArgs);
                     return true;
                 }
                 else if (arg.StartsWith("roblox-studio-auth:", StringComparison.OrdinalIgnoreCase))
@@ -191,6 +217,7 @@ namespace Froststrap
                     App.Logger.Info("Found Roblox Studio Auth URI outside first argument");
                     RobloxLaunchMode = LaunchMode.StudioAuth;
                     RobloxLaunchArgs = arg;
+                    _resolvedRoblox = (RobloxLaunchMode, RobloxLaunchArgs);
                     return true;
                 }
                 else if (arg.StartsWith("roblox-studio:", StringComparison.OrdinalIgnoreCase))
@@ -198,6 +225,7 @@ namespace Froststrap
                     App.Logger.Info("Found Roblox Studio URI outside first argument");
                     RobloxLaunchMode = LaunchMode.Studio;
                     RobloxLaunchArgs = arg;
+                    _resolvedRoblox = (RobloxLaunchMode, RobloxLaunchArgs);
                     return true;
                 }
             }
@@ -210,13 +238,14 @@ namespace Froststrap
             if (string.IsNullOrWhiteSpace(arg))
                 return false;
 
-            if (!Path.IsPathRooted(arg))
-                return false;
-
-            if (string.Equals(arg, entryAssemblyPath, StringComparison.OrdinalIgnoreCase))
+            if (arg.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
                 return true;
 
-            if (arg.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
+            if (!string.IsNullOrEmpty(entryAssemblyPath) &&
+                string.Equals(arg, entryAssemblyPath, StringComparison.OrdinalIgnoreCase))
+                return true;
+
+            if (Path.IsPathRooted(arg))
                 return true;
 
             return false;
@@ -260,7 +289,6 @@ namespace Froststrap
             }
             else
             {
-                // likely a local path
                 App.Logger.Info("Got Roblox Studio local place file");
                 RobloxLaunchArgs = $"-task EditFile -localPlaceFile \"{data}\"";
             }
