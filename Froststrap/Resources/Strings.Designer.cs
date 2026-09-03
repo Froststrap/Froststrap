@@ -2811,60 +2811,6 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Above Normal.
-        /// </summary>
-        public static string Enums_ProcessPriorityOption_AboveNormal {
-            get {
-                return ResourceManager.GetString("Enums.ProcessPriorityOption.AboveNormal", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Below Normal.
-        /// </summary>
-        public static string Enums_ProcessPriorityOption_BelowNormal {
-            get {
-                return ResourceManager.GetString("Enums.ProcessPriorityOption.BelowNormal", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to High.
-        /// </summary>
-        public static string Enums_ProcessPriorityOption_High {
-            get {
-                return ResourceManager.GetString("Enums.ProcessPriorityOption.High", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Low.
-        /// </summary>
-        public static string Enums_ProcessPriorityOption_Low {
-            get {
-                return ResourceManager.GetString("Enums.ProcessPriorityOption.Low", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Normal.
-        /// </summary>
-        public static string Enums_ProcessPriorityOption_Normal {
-            get {
-                return ResourceManager.GetString("Enums.ProcessPriorityOption.Normal", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Real Time.
-        /// </summary>
-        public static string Enums_ProcessPriorityOption_RealTime {
-            get {
-                return ResourceManager.GetString("Enums.ProcessPriorityOption.RealTime", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Level 1.
         /// </summary>
         public static string Enums_QualityLevel_Level1 {
@@ -3965,24 +3911,6 @@ namespace Froststrap.Resources {
         public static string Menu_Behaviour_ForceRobloxReinstall_Title {
             get {
                 return ResourceManager.GetString("Menu.Behaviour.ForceRobloxReinstall.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Selects the CPU priority for Roblox..
-        /// </summary>
-        public static string Menu_Behaviour_ProcessPriority_Description {
-            get {
-                return ResourceManager.GetString("Menu.Behaviour.ProcessPriority.Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Roblox Process Priority.
-        /// </summary>
-        public static string Menu_Behaviour_ProcessPriority_Title {
-            get {
-                return ResourceManager.GetString("Menu.Behaviour.ProcessPriority.Title", resourceCulture);
             }
         }
         

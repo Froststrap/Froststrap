@@ -1360,12 +1360,6 @@ Would you like to switch your preferred channel to {0}?</value>
   <data name="Menu.Behaviour.CloseCrashHandler.Title" xml:space="preserve">
     <value>Close Crash Handler</value>
   </data>
-  <data name="Menu.Behaviour.ProcessPriority.Description" xml:space="preserve">
-    <value>Selects the CPU priority for Roblox.</value>
-  </data>
-  <data name="Menu.Behaviour.ProcessPriority.Title" xml:space="preserve">
-    <value>Roblox Process Priority</value>
-  </data>
   <data name="Menu.BottomButtons.ResetSettingsToDefault" xml:space="preserve">
     <value>Reset Settings To Default</value>
   </data>
@@ -2806,24 +2800,6 @@ Do you want to install the plugin?</value>
   </data>
   <data name="Enums.CycleFrequency.Days" xml:space="preserve">
     <value>Days</value>
-  </data>
-  <data name="Enums.ProcessPriorityOption.Low" xml:space="preserve">
-    <value>Low</value>
-  </data>
-  <data name="Enums.ProcessPriorityOption.BelowNormal" xml:space="preserve">
-    <value>Below Normal</value>
-  </data>
-  <data name="Enums.ProcessPriorityOption.Normal" xml:space="preserve">
-    <value>Normal</value>
-  </data>
-  <data name="Enums.ProcessPriorityOption.AboveNormal" xml:space="preserve">
-    <value>Above Normal</value>
-  </data>
-  <data name="Enums.ProcessPriorityOption.High" xml:space="preserve">
-    <value>High</value>
-  </data>
-  <data name="Enums.ProcessPriorityOption.RealTime" xml:space="preserve">
-    <value>Real Time</value>
   </data>
   <data name="Enums.TrayDoubleClickAction.ServerInfo" xml:space="preserve">
     <value>Server Information</value>
