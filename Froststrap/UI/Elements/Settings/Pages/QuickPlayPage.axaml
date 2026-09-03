@@ -15,7 +15,7 @@
                 <ItemsControl ItemsSource="{Binding RecentGames}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <WrapPanel Orientation="Horizontal" />
+                            <ui:UniformWrapPanel MinItemWidth="190" />
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
@@ -84,21 +84,21 @@
                                     </MenuFlyout>
                                 </Button.Flyout>
 
-                                <controls:Card Width="190" CornerRadius="12,12,4,4" Padding="0" ClipToBounds="True">
+                                <controls:Card MinWidth="190" CornerRadius="12,12,4,4" Padding="0" ClipToBounds="True">
                                     <Panel>
                                         <StackPanel>
                                             <Border CornerRadius="12,12,0,0" ClipToBounds="True">
-                                                <Image Source="{Binding ThumbnailUrl, Converter={StaticResource UrlToBitmapConverter}}" Height="190" Width="190" Stretch="UniformToFill" RenderOptions.BitmapInterpolationMode="HighQuality"/>
+                                                <Image Source="{Binding ThumbnailUrl, Converter={StaticResource UrlToBitmapConverter}}" Height="190" MinWidth="190" Stretch="Fill" VerticalAlignment="Center" HorizontalAlignment="Center" RenderOptions.BitmapInterpolationMode="HighQuality"/>
                                             </Border>
                                             <StackPanel Spacing="2" Margin="8">
                                                 <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
                                                 <TextBlock Text="{Binding Creator}" FontSize="11" Opacity="0.6" TextTrimming="CharacterEllipsis"/>
-                                                <Grid ColumnDefinitions="*, *" Margin="0,5,0,0">
+                                                <Grid ColumnDefinitions="*, Auto, *" Margin="0,5,0,0">
                                                     <StackPanel Orientation="Horizontal" Spacing="4">
                                                         <TextBlock Text="{Binding Playing, Converter={StaticResource NumberAbbreviationConverter}}" FontSize="10" FontWeight="Medium"/>
                                                         <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_Active}" FontSize="10" Opacity="0.5"/>
                                                     </StackPanel>
-                                                    <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="4">
+                                                    <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="4">
                                                         <TextBlock Text="{Binding Visits, Converter={StaticResource NumberAbbreviationConverter}}" FontSize="10" FontWeight="Medium"/>
                                                         <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_Visits}" FontSize="10" Opacity="0.5"/>
                                                     </StackPanel>
