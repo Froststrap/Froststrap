@@ -193,7 +193,7 @@ namespace Froststrap.Resources {
         
         /// <summary>
         ///   Looks up a localized string similar to Upgrades were disabled with missing client.
-        ///	To prevent issues upgrading will continue..
+        ///To prevent issues upgrading will continue..
         /// </summary>
         public static string Bootstrapper_Dialog_NoUpgradeWithoutClient {
             get {
@@ -9123,63 +9123,63 @@ namespace Froststrap.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Change how the app looks like using custom gradients, images and windows backdrops..
         /// </summary>
-        public static string Onboarding_Page1 {
+        public static string Onboarding_Page2 {
             get {
-                return ResourceManager.GetString("Onboarding.Page1", resourceCulture);
+                return ResourceManager.GetString("Onboarding.Page2", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Some of our features like Better MatchMaking and Region Selector require a Roblox cookie, It is recommended to log into our built in account manager..
         /// </summary>
-        public static string Onboarding_Page2_Text1 {
+        public static string Onboarding_Page3_Text1 {
             get {
-                return ResourceManager.GetString("Onboarding.Page2.Text1", resourceCulture);
+                return ResourceManager.GetString("Onboarding.Page3.Text1", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Or you can turn on account permission instead, as it uses your local cookie, You need to be logged in on the app to use, supported on every OS..
         /// </summary>
-        public static string Onboarding_Page2_Text2 {
+        public static string Onboarding_Page3_Text2 {
             get {
-                return ResourceManager.GetString("Onboarding.Page2.Text2", resourceCulture);
+                return ResourceManager.GetString("Onboarding.Page3.Text2", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Check out our built in Better MatchMaking system, it changes the server your joinning to give you the best region, This feature requires a roblox cookie, Login to &apos;Account Manager&apos; or turn on &apos;Account Permission&apos;..
         /// </summary>
-        public static string Onboarding_Page3 {
+        public static string Onboarding_Page4 {
             get {
-                return ResourceManager.GetString("Onboarding.Page3", resourceCulture);
+                return ResourceManager.GetString("Onboarding.Page4", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Roblox has not been installed yet, that will happen the next time you launch Roblox with Froststrap, However before you do that, you may want to configure your settings..
         /// </summary>
-        public static string Onboarding_Page5_Text1 {
+        public static string Onboarding_Page7_Text1 {
             get {
-                return ResourceManager.GetString("Onboarding.Page5.Text1", resourceCulture);
+                return ResourceManager.GetString("Onboarding.Page7.Text1", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Also, avoid using the &quot;Roblox Player&quot; shortcut to launch Roblox, as Froststrap won&apos;t launch with Roblox. If you don&apos;t see Froststrap show when launching from the website, simply launch Roblox with Froststrap once from the desktop to fix it..
         /// </summary>
-        public static string Onboarding_Page5_Text2 {
+        public static string Onboarding_Page7_Text2 {
             get {
-                return ResourceManager.GetString("Onboarding.Page5.Text2", resourceCulture);
+                return ResourceManager.GetString("Onboarding.Page7.Text2", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to What would you like to do?.
         /// </summary>
-        public static string Onboarding_Page5_Text3 {
+        public static string Onboarding_Page7_Text3 {
             get {
-                return ResourceManager.GetString("Onboarding.Page5.Text3", resourceCulture);
+                return ResourceManager.GetString("Onboarding.Page7.Text3", resourceCulture);
             }
         }
         
