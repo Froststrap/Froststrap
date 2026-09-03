@@ -20,7 +20,7 @@
     <Description>Froststrap - A Fishstrap fork</Description>
     <ApplicationIcon>Froststrap.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <NoWarn>$(NoWarn);CA1416;CA2007;CA1863;CA1031;CA1019;CA2000;CA1852;CA2216;CA1812;CA5392;SYSLIB1045;SYSLIB1054</NoWarn>
+    <NoWarn>$(NoWarn);CA1416;CA2007;CA1863;CA1031;CA1019;CA2000;CA1852;CA2216;CA1812;CA5392;SYSLIB1045;SYSLIB1054;CA5351</NoWarn>
     <DefineConstants Condition="$([MSBuild]::IsOSPlatform('Windows'))">$(DefineConstants);WINDOWS</DefineConstants>
     <DefineConstants Condition="$([MSBuild]::IsOSPlatform('MacOS'))">$(DefineConstants);__APPLE__</DefineConstants>
   </PropertyGroup>
