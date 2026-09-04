@@ -63,11 +63,6 @@ namespace Froststrap
                 App.Logger.Info($"Opening bootstrapper ({App.LaunchSettings.RobloxLaunchMode})");
                 LaunchRoblox(App.LaunchSettings.RobloxLaunchMode);
             }
-            else if (App.LaunchSettings.BloxshadeFlag.Active)
-            {
-                App.Logger.Info("Opening Bloxshade");
-                LaunchBloxshadeConfig();
-            }
             else if (!App.LaunchSettings.QuietFlag.Active)
             {
                 App.Logger.Info("Opening menu");
@@ -269,14 +264,6 @@ namespace Froststrap
 
                 App.Terminate();
             }, TaskScheduler.Default);
-        }
-
-        public static void LaunchBloxshadeConfig()
-        {
-            App.Logger.Info("Showing unsupported warning");
-
-            new BloxshadeDialog().Show();
-            App.SoftTerminate();
         }
 
         public static async Task LaunchBackgroundUpdater()

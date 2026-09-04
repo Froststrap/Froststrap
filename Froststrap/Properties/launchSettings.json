@@ -42,10 +42,6 @@
     "Froststrap (Watcher)": {
       "commandName": "Project",
       "commandLineArgs": "-watcher"
-    },
-    "Froststrap (Bloxshade)": {
-      "commandName": "Project",
-      "commandLineArgs": "-bloxshade"
     }
   }
 }
