@@ -128,9 +128,10 @@ internal class SoberSettingsManager : JsonManager<Dictionary<string, object>>
 
     public override bool Save()
     {
-        if (ComputeHash(Prop) == _savedHash) {
-            App.Logger.Warn("No changes, bailing save.");
-            return true;
+        if (!HasUnsavedChanges)
+        {
+            App.Logger.Info("No changes, skipping save.");
+            return false;
         }
 
         if (!Loaded)
@@ -143,17 +144,20 @@ internal class SoberSettingsManager : JsonManager<Dictionary<string, object>>
 
         try
         {
-            Directory.CreateDirectory(Path.GetDirectoryName(FileLocation)!);
+            string? directory = Path.GetDirectoryName(FileLocation);
+            if (!string.IsNullOrEmpty(directory))
+                Directory.CreateDirectory(directory);
+
             string contents = JsonSerializer.Serialize(Prop, _writeOptions);
             File.WriteAllText(FileLocation, contents);
             _savedHash = ComputeHash(Prop);
-            App.Logger.Debug("Save complete!");
+            App.Logger.Info("Save Complete!");
             return true;
         }
-        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        catch (Exception ex)
         {
-            App.Logger.Error($"Failed to save {ex}");
-            _ = Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_JsonManagerSaveFailed, ClassName, ex.Message), MessageBoxImage.Warning);
+            App.Logger.Error("Failed to save appStorage.json");
+            App.Logger.Error(ex);
             return false;
         }
     }
