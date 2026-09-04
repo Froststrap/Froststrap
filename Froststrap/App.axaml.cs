@@ -1,14 +1,16 @@
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using Avalonia.Styling;
 using Avalonia.Threading;
 using Froststrap.AppData;
+using Froststrap.Backend;
 using Froststrap.Integrations;
 using Froststrap.UI.Elements.Base;
 using Microsoft.Win32;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using Froststrap.Backend;
 
 namespace Froststrap;
 
@@ -93,6 +95,7 @@ internal partial class App : Application
     private static readonly Lock ActivationLock = new();
     private static string? _pendingActivationUri;
     private static bool _launchArgsProcessed;
+    private static List<Style>? _disableAnimationStyles;
 
     private static string? GetEnvironmentVariable(params string[] names)
     {
@@ -282,6 +285,44 @@ internal partial class App : Application
             Logger.Error("Couldn't create key, uninstallKey doesnt exist.");
         }
         AUMIDKey.Close();
+    }
+
+    public static void ApplyAnimationSettings()
+    {
+        var app = Application.Current;
+        if (app == null) return;
+
+        RemoveAnimationSettings();
+
+        _disableAnimationStyles = new List<Style>();
+
+        var styleTransitions = new Style(x => x.OfType<Control>());
+        styleTransitions.Setters.Add(new Setter(Control.TransitionsProperty, null));
+        _disableAnimationStyles.Add(styleTransitions);
+        app.Styles.Add(styleTransitions);
+
+        app.Resources["FadeDuration"] = TimeSpan.Zero;
+        app.Resources["SlideDuration"] = TimeSpan.Zero;
+
+        Logger.Debug("Animations disabled globally.");
+    }
+
+    public static void RemoveAnimationSettings()
+    {
+        var app = Application.Current;
+        if (app == null) return;
+
+        if (_disableAnimationStyles != null)
+        {
+            foreach (var style in _disableAnimationStyles)
+                app.Styles.Remove(style);
+            _disableAnimationStyles = null;
+        }
+
+        app.Resources.Remove("FadeDuration");
+        app.Resources.Remove("SlideDuration");
+
+        Logger.Debug("Animations re‑enabled.");
     }
 
     public override void Initialize()
@@ -497,8 +538,12 @@ internal partial class App : Application
             Settings.Prop.Theme = Theme.Dark;
             Settings.Save();
         }
+
         AvaloniaWindow.ApplyTheme();
         Locale.Set(Settings.Prop.Locale);
+
+        if (Settings.Prop.DisableAnimations)
+            ApplyAnimationSettings();
 
         if (State.Prop.IsFirstLaunch)
         {

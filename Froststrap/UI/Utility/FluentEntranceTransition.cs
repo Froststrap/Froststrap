@@ -16,6 +16,25 @@ internal class FluentEntranceTransition : IPageTransition
         if (cancellationToken.IsCancellationRequested)
             return;
 
+        if (App.Settings.Prop.DisableAnimations)
+        {
+            if (from != null)
+            {
+                from.IsVisible = false;
+                from.Opacity = 1;
+                if (from.RenderTransform is TranslateTransform tt)
+                    tt.Y = 0;
+            }
+            if (to != null)
+            {
+                to.IsVisible = true;
+                to.Opacity = 1;
+                if (to.RenderTransform is TranslateTransform tt)
+                    tt.Y = 0;
+            }
+            return;
+        }
+
         if (from != null)
         {
             var fadeOut = new Animation
@@ -90,6 +109,25 @@ internal class FluentSlideTransition : IPageTransition
     {
         if (cancellationToken.IsCancellationRequested)
             return;
+
+        if (App.Settings.Prop.DisableAnimations)
+        {
+            if (from != null)
+            {
+                from.IsVisible = false;
+                from.Opacity = 1;
+                if (from.RenderTransform is TranslateTransform tt)
+                    tt.X = 0;
+            }
+            if (to != null)
+            {
+                to.IsVisible = true;
+                to.Opacity = 1;
+                if (to.RenderTransform is TranslateTransform tt)
+                    tt.X = 0;
+            }
+            return;
+        }
 
         double offsetSign = Direction == SlideDirection.Right ? 1 : -1;
         double startOffset = offsetSign * HorizontalOffset;
