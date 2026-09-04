@@ -276,7 +276,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
                         new Uri(path, UriKind.Absolute)
                     );
                     FontManager.Current.AddFontCollection(collection);
-                    _fontCollections.Add(collection);
+                    // _fontCollections.Add(collection);
 
                     string? familyName = collection.Select(f => f.Name).FirstOrDefault();
                     if (familyName != null)
