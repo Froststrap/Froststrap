@@ -3258,4 +3258,10 @@ All files will be moved, shortcuts updated, and the application will restart.</v
   <data name="Menu.Integrations.GameHistory.View" xml:space="preserve">
     <value>View Game History</value>
   </data>
+  <data name="Menu.Deployment.DisableAnimations.Title" xml:space="preserve">
+    <value>Disable Animations</value>
+  </data>
+  <data name="Menu.Deployment.DisableAnimations.Description" xml:space="preserve">
+    <value>Turn off all UI animations for improved performance.</value>
+  </data>
 </root>

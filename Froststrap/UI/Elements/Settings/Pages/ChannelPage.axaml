@@ -94,6 +94,12 @@
             </controls:OptionControl>
 
             <controls:OptionControl
+                Header="{x:Static resources:Strings.Menu_Deployment_DisableAnimations_Title}"
+                Description="{x:Static resources:Strings.Menu_Deployment_DisableAnimations_Description}">
+                <ToggleSwitch IsChecked="{Binding DisableAnimations, Mode=TwoWay}" />
+            </controls:OptionControl>
+
+            <controls:OptionControl
                 Description="{x:Static resources:Strings.Menu_TestMode_Description}"
                 Header="{x:Static resources:Strings.Menu_TestMode}">
                 <ToggleSwitch IsChecked="{Binding TestModeEnabled, Mode=TwoWay}"/>

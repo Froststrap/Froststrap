@@ -363,6 +363,20 @@ namespace Froststrap.UI.ViewModels.Settings
             set => App.Settings.Prop.StaticDirectory = value;
         }
 
+        public static bool DisableAnimations
+        {
+            get => App.Settings.Prop.DisableAnimations;
+            set
+            {
+                App.Settings.Prop.DisableAnimations = value;
+                App.Settings.Save();
+                if (value)
+                    App.ApplyAnimationSettings();
+                else
+                    App.RemoveAnimationSettings();
+            }
+        }
+
         private async Task ImportSettingsAsync(object? parameter)
         {
             var topLevel = parameter as Control != null ? TopLevel.GetTopLevel(parameter as Control) : GetMainWindow();

@@ -4608,6 +4608,24 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Turn off all UI animations for improved performance..
+        /// </summary>
+        public static string Menu_Deployment_DisableAnimations_Description {
+            get {
+                return ResourceManager.GetString("Menu.Deployment.DisableAnimations.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disable Animations.
+        /// </summary>
+        public static string Menu_Deployment_DisableAnimations_Title {
+            get {
+                return ResourceManager.GetString("Menu.Deployment.DisableAnimations.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You entered an invalid domain
         ///
         ///Please dont mess with this if you dont know what your doing.
