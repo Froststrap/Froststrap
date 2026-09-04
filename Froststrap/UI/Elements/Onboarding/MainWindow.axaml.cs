@@ -1,5 +1,6 @@
 using Froststrap.UI.Elements.Base;
 using Froststrap.UI.Elements.Onboarding.Pages;
+using Froststrap.UI.Utility;
 using Froststrap.UI.ViewModels.Onboarding;
 
 namespace Froststrap.UI.Elements.Onboarding
@@ -9,6 +10,7 @@ namespace Froststrap.UI.Elements.Onboarding
         public static MainWindow? Instance { get; private set; }
         internal readonly MainWindowViewModel _viewModel = new();
         private Type _currentPage = typeof(Page1);
+        private bool _isInitialLoad = true;
 
         private readonly List<Type> _pages =
         [
@@ -42,17 +44,13 @@ namespace Froststrap.UI.Elements.Onboarding
             };
 
             Navigate(typeof(Page1));
-
             App.Logger.Debug("Initializing onboarding window");
         }
 
         async void NextPage()
         {
-            if (NextPageCallback is not null)
-            {
-                if (!await NextPageCallback())
-                    return;
-            }
+            if (NextPageCallback is not null && !await NextPageCallback())
+                return;
 
             if (_currentPage == _pages.Last())
             {
@@ -73,7 +71,6 @@ namespace Froststrap.UI.Elements.Onboarding
 
             var prevPageIndex = _pages.IndexOf(_currentPage) - 1;
             var page = _pages[prevPageIndex];
-
             Navigate(page);
         }
 
@@ -83,6 +80,25 @@ namespace Froststrap.UI.Elements.Onboarding
 
         public bool Navigate(Type pageType)
         {
+            int currentIndex = _pages.IndexOf(_currentPage);
+            int newIndex = _pages.IndexOf(pageType);
+            bool goingForward = newIndex > currentIndex;
+
+            if (!_isInitialLoad)
+            {
+                RootFrame.PageTransition = new FluentSlideTransition
+                {
+                    Direction = goingForward ? SlideDirection.Right : SlideDirection.Left,
+                    HorizontalOffset = 150,
+                    Duration = TimeSpan.FromMilliseconds(300)
+                };
+            }
+            else
+            {
+                RootFrame.PageTransition = null;
+                _isInitialLoad = false;
+            }
+
             _currentPage = pageType;
             NextPageCallback = null;
 
