@@ -16,15 +16,15 @@ namespace Froststrap
         public LaunchFlag ChannelFlag { get; } = new("channel");
         public LaunchFlag ForceFlag { get; } = new("force");
         public LaunchFlag BloxshadeFlag { get; } = new("bloxshade");
+        //Keep for backward compatibility
         public LaunchFlag GameShortcutFlag { get; } = new("gameshortcut");
-        public LaunchFlag NsisFlag { get; } = new("nsis");
         public LaunchFlag ConsoleFlag { get; } = new("c,console");
         public LaunchFlag NoGpuFlag { get; } = new("g,nogpu");
 
 #if DEBUG
         public static bool BypassUpdateCheck => true;
 #else
-        public bool BypassUpdateCheck => WatcherFlag.Active || BackgroundUpdaterFlag.Active || NsisFlag.Active;
+        public bool BypassUpdateCheck => WatcherFlag.Active || BackgroundUpdaterFlag.Active;
 #endif
 
         public LaunchMode RobloxLaunchMode { get; set; } = LaunchMode.None;
@@ -57,8 +57,7 @@ namespace Froststrap
             [
                 MenuFlag, WatcherFlag, BackgroundUpdaterFlag, OnboardingFlag, QuietFlag,
                 NoLaunchFlag, TestModeFlag, UpgradeFlag, PlayerFlag, StudioFlag, VersionFlag,
-                ChannelFlag, ForceFlag, BloxshadeFlag, GameShortcutFlag, NsisFlag,
-                ConsoleFlag, NoGpuFlag
+                ChannelFlag, ForceFlag, BloxshadeFlag, GameShortcutFlag, ConsoleFlag, NoGpuFlag
             ];
 
             var lookup = new Dictionary<string, LaunchFlag>(StringComparer.OrdinalIgnoreCase);

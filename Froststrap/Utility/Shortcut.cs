@@ -9,7 +9,6 @@
 */
 
 using System.Runtime.InteropServices;
-using System.Security.Cryptography;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 
@@ -199,9 +198,11 @@ namespace Froststrap.Utility
             string lnkPath,
             Action<string>? onStatus)
         {
-            string argData = placeId;
-            if (!string.IsNullOrEmpty(jobId)) argData += $";{jobId}";
-            if (!string.IsNullOrEmpty(accessCode)) argData += $";{accessCode}";
+            string deeplink = $"roblox://experiences/start?placeId={placeId}";
+            if (!string.IsNullOrEmpty(accessCode))
+                deeplink += $"&accessCode={accessCode}";
+            else if (!string.IsNullOrEmpty(jobId))
+                deeplink += $"&gameInstanceId={jobId}";
 
             string? finalIconPath = null;
 
@@ -237,7 +238,7 @@ namespace Froststrap.Utility
             }
 
             onStatus?.Invoke("Creating...");
-            Create(appPath, $"-gameshortcut \"{argData}\"", lnkPath, finalIconPath);
+            Create(appPath, $"-p \"{deeplink}\"", lnkPath, finalIconPath);
         }
 
         private static void CreateWindowsShortcut(

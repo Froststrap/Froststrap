@@ -3,7 +3,6 @@ using Avalonia.Media.Fonts;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using System.Xml.Linq;
-using System.Security.Cryptography;
 using FontFamily = Avalonia.Media.FontFamily;
 
 namespace Froststrap.UI.Elements.Bootstrapper
@@ -276,7 +275,6 @@ namespace Froststrap.UI.Elements.Bootstrapper
                         new Uri(path, UriKind.Absolute)
                     );
                     FontManager.Current.AddFontCollection(collection);
-                    // _fontCollections.Add(collection);
 
                     string? familyName = collection.Select(f => f.Name).FirstOrDefault();
                     if (familyName != null)
