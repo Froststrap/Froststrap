@@ -41,6 +41,7 @@ namespace Froststrap
         public const string BackgroundUpdaterLockName = "BackgroundUpdater";
         private static readonly string[] DxvkDlls = ["d3d9.dll", "d3d10core.dll", "d3d11.dll", "dxgi.dll"];
 
+        // TODO: move this somewhere else
         private const string WebView2MicrosoftRootPem = """
             -----BEGIN CERTIFICATE-----
             MIIF7TCCA9WgAwIBAgIQP4vItfyfspZDtWnWbELhRDANBgkqhkiG9w0BAQsFADCB
@@ -91,6 +92,10 @@ namespace Froststrap
 
         private readonly FastZipEvents _fastZipEvents = new();
         private static readonly JsonSerializerOptions _indentedJsonOptions = new() { WriteIndented = true };
+
+        // might slightly increase the ram usage a bit, it's worth it, tho, since it reduces the cpu usage and is much better overrall
+        private static readonly Regex FlatpakProgressRegex = new(@"Updating\s+(?<current>\d+)/(?<total>\d+)…", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex FlatpakPercentRegex = new(@"(?<percent>\d+)%", RegexOptions.Compiled);
         private readonly CancellationTokenSource _cancelTokenSource = new();
 
         private IAppData AppData = default!;
@@ -107,7 +112,7 @@ namespace Froststrap
         private static bool AutomaticallyUpdateSober => OperatingSystem.IsLinux() && App.Settings.Prop.AutomaticallyUpdateSober;
         private bool MustUpgrade => App.LaunchSettings.ForceFlag.Active
             || App.State.Prop.ForceReinstall
-            || ((!OperatingSystem.IsLinux() || (OperatingSystem.IsLinux() && IsStudioLaunch)) && (String.IsNullOrEmpty(AppData.DistributionState.VersionGuid)
+            || ((!OperatingSystem.IsLinux() || IsStudioLaunch) && (string.IsNullOrEmpty(AppData.DistributionState.VersionGuid)
             || (OperatingSystem.IsMacOS() ? !Directory.Exists(AppData.ExecutablePath) : !File.Exists(AppData.ExecutablePath))))
             || (OperatingSystem.IsWindows() && !IsStudioLaunch && !File.Exists(Path.Combine(_latestVersionDirectory, "WebView2Loader.dll")))
             || (OperatingSystem.IsWindows() && !IsStudioLaunch && !File.Exists(Path.Combine(_latestVersionDirectory, "RobloxPlayerBeta.dll")));
@@ -121,7 +126,7 @@ namespace Froststrap
         private bool _packageExtractionSuccess = true;
 
         private bool _matchmakingInProgress;
-        private bool _skipMatchmaking;
+        private volatile bool _skipMatchmaking;
         private CancellationTokenSource? _matchmakingCts;
 
         private bool _noConnection;
@@ -936,7 +941,7 @@ namespace Froststrap
             if (!string.IsNullOrEmpty(_joinData.JobId))
             {
                 string? defaultRegion = await GetServerRegionAsync(_joinData.JobId, (long)_joinData.PlaceId!, cancellationToken);
-                if (defaultRegion != null && topRegions.Count > 0 &&
+                if (defaultRegion != null &&
                     defaultRegion.Equals(topRegions[0], StringComparison.OrdinalIgnoreCase))
                 {
                     App.Logger.Info($"Default server is already in the closest region. Keeping it.");
@@ -1018,7 +1023,7 @@ namespace Froststrap
 
                 bool isRobloxUri = _launchCommandLine.StartsWith("roblox://", StringComparison.Ordinal);
                 if (isRobloxUri)
-                    App.Logger.Info("Joining through roblox:// URI - skipping Better Matchmaking");
+                    App.Logger.Info("Joining through roblox:// URI, skipping Better Matchmaking");
                 else
                 {
                     bool isFollowUser = false;
@@ -1069,7 +1074,7 @@ namespace Froststrap
                     }
                     catch (OperationCanceledException)
                     {
-                        App.Logger.Debug("Better Matchmaking was Skipped, joining original server.");
+                        App.Logger.Debug("Better Matchmaking was skipped, joining original server.");
                         matchmakingCancelled = true;
                     }
                     catch (HttpRequestException ex)
@@ -1142,7 +1147,7 @@ namespace Froststrap
             foreach (var integration in App.Settings.Prop.CustomIntegrations)
             {
                 if (integration?.PreLaunch == true)
-                    LaunchIntegration(integration, autoclosePids);
+                    await LaunchIntegrationAsync(integration, autoclosePids);
             }
 
             // v2.2.0 - byfron will trip if we keep a process handle open for over a minute, so we're doing this now
@@ -1190,7 +1195,7 @@ namespace Froststrap
                     if (integration == null || integration.PreLaunch || integration.SpecifyGame)
                         continue;
 
-                    LaunchIntegration(integration, autoclosePids);
+                    await LaunchIntegrationAsync(integration, autoclosePids);
                 }
             }
 
@@ -1227,7 +1232,7 @@ namespace Froststrap
 
             bool isRobloxUri = _launchCommandLine.StartsWith("roblox://", StringComparison.Ordinal);
             if (isRobloxUri)
-                App.Logger.Info("Joining through roblox:// URI - skipping Better Matchmaking");
+                App.Logger.Info("Joining through roblox:// URI, skipping Better Matchmaking");
             else
             {
                 bool isFollowUser = false;
@@ -1365,15 +1370,15 @@ namespace Froststrap
                                 await Task.Delay(pollIntervalMs);
                                 continue;
                             }
-                            if (soberReadySignals.Any(line.Contains))
+                            if (soberReadySignals.Any(signal => line.Contains(signal, StringComparison.Ordinal)))
                             {
-                                App.Logger.Debug("Sober window ready — closing bootstrapper dialog.");
+                                App.Logger.Debug("Sober window ready, closing bootstrapper dialog.");
                                 Dialog?.CloseBootstrapper();
                                 return;
                             }
                         }
 
-                        App.Logger.Warn("Timed out waiting for Sober ready signal — closing dialog.");
+                        App.Logger.Warn("Timed out waiting for Sober ready signal, closing dialog.");
                     }
                     catch (Exception ex)
                     {
@@ -1385,21 +1390,23 @@ namespace Froststrap
                     }
                 });
 
-                await Task.Run(async () =>
+                while (!_cancelTokenSource.IsCancellationRequested)
                 {
-                    while (!_cancelTokenSource.IsCancellationRequested)
-                    {
-                        await Task.Delay(2500);
-                        if (Process.GetProcessesByName("sober").Length == 0)
-                            break;
-                    }
-                });
+                    await Task.Delay(2500, _cancelTokenSource.Token);
+
+                    var soberProcesses = Process.GetProcessesByName("sober");
+                    bool isRunning = soberProcesses.Length > 0;
+                    foreach (var p in soberProcesses) p.Dispose();
+
+                    if (!isRunning)
+                        break;
+                }
 
                 App.Logger.Info("Sober process exited");
             }
             catch (Exception ex)
             {
-                App.Logger.Error($"Unhandled Exception - Failed to launch Sober via flatpak! {ex}");
+                App.Logger.Error($"Failed to launch Sober via flatpak! {ex}");
                 string detailsPart = string.IsNullOrWhiteSpace(ex.Message) ? "" : $"\n\n{ex.Message}";
                 await Frontend.ShowMessageBox(
                     string.Format(CultureInfo.InvariantCulture, Strings.Sober_LaunchFailed, SoberFlatpakId, detailsPart),
@@ -1471,7 +1478,7 @@ namespace Froststrap
             Process.Start(Paths.Process, args);
         }
 
-        private static void LaunchIntegration(CustomIntegration integration, List<int> autoclosePids)
+        private static async Task LaunchIntegrationAsync(CustomIntegration integration, List<int> autoclosePids)
         {
             App.Logger.Info($"Launching custom integration '{integration.Name}' ({integration.Location} {integration.LaunchArgs} - autoclose is {integration.AutoClose})");
 
@@ -1498,8 +1505,7 @@ namespace Froststrap
                 autoclosePids.Add(pid);
 
             if (integration.Delay != 0)
-                Thread.Sleep(integration.Delay);
-
+                await Task.Delay(integration.Delay);
         }
 
         private static async Task<int> GetRobloxProcessIdAsync(string expectedName, TimeSpan timeout)
@@ -1512,20 +1518,27 @@ namespace Froststrap
                 var processes = Process.GetProcessesByName(processName);
                 Process? target = null;
                 DateTime latestStartTime = DateTime.MinValue;
-                
-                foreach (var p in processes) try {
-                    if (p.StartTime > latestStartTime)
+
+                foreach (var p in processes)
+                {
+                    try
                     {
-                        latestStartTime = p.StartTime;
-                        target = p;
+                        if (p.StartTime > latestStartTime)
+                        {
+                            latestStartTime = p.StartTime;
+                            target = p;
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        // process might have exited between enumeration and accessing StartTime 
                     }
                 }
-                catch (Exception ex) {
-                    App.Logger.Error("Unhandled exception: ", ex);
+
+                if (target != null)
+                {
+                    return target.Id;
                 }
-
-                if (target != null) return target.Id;
-
                 await Task.Delay(100);
             }
             return 0;
@@ -1593,7 +1606,10 @@ namespace Froststrap
                     using var process = Process.GetProcessById(_appPid);
                     process.Kill();
                 }
-                catch (Exception) { }
+                catch (Exception ex)
+                {
+                    App.Logger.Warn($"Failed to kill process {_appPid}: {ex.Message}");
+                }
             }
 
             if (OperatingSystem.IsLinux())
@@ -1960,8 +1976,7 @@ exit";
                 string path = Path.Combine(dir, exe);
 
                 bool exists = OperatingSystem.IsMacOS() ? Directory.Exists(path) : File.Exists(path);
-                if (!exists)
-                    return true;
+                if (!exists) continue;
 
                 try
                 {
@@ -2214,8 +2229,7 @@ exit";
             }
             await Task.WhenAll(packageTasks);
 
-            if (_cancelTokenSource.IsCancellationRequested)
-                return;
+            if (_cancelTokenSource.IsCancellationRequested) return;
 
             if (Dialog is not null)
             {
@@ -2299,7 +2313,6 @@ exit";
             }
 
             // finishing and cleanup
-
             MigrateCompatibilityFlags();
 
             AppData.DistributionState.VersionGuid = _latestVersionGuid;
@@ -2340,9 +2353,7 @@ exit";
             App.State.Save();
             AppData.DistributionStateManager.Save();
 
-            if (!IsStudioLaunch)
-                InitializeModFolders();
-
+            if (!IsStudioLaunch) InitializeModFolders();
             _isInstalling = false;
         }
 
@@ -2525,8 +2536,6 @@ exit";
                 CreateNoWindow = true
             };
 
-            Process? updateProcess = null;
-
             var timeout = TimeSpan.FromMinutes(20);
             using var cts = new CancellationTokenSource(timeout);
 
@@ -2537,25 +2546,8 @@ exit";
 
             try
             {
-                using var process = Process.Start(updateStartInfo);
-                updateProcess = process;
-                if (updateProcess is null)
-                {
-                    App.Logger.Error("Failed to start flatpak update process.");
-                    return;
-                }
-
-                var progressRegex = new Regex(
-                    @"Updating\s+(?<current>\d+)/(?<total>\d+)…",
-                    RegexOptions.Compiled | RegexOptions.IgnoreCase
-                );
-                var percentRegex = new Regex(
-                    @"(?<percent>\d+)%",
-                    RegexOptions.Compiled
-                );
-
-                int totalUpdates = 0;
-                int currentUpdate = 0;
+                using var process = Process.Start(updateStartInfo)
+                    ?? throw new InvalidOperationException("Failed to start flatpak update process.");
 
                 var outputTask = Task.Run(async () =>
                 {
@@ -2563,7 +2555,7 @@ exit";
                     {
                         while (!linkedCts.Token.IsCancellationRequested)
                         {
-                            string? line = await updateProcess.StandardOutput.ReadLineAsync();
+                            string? line = await process.StandardOutput.ReadLineAsync();
                             if (line is null)
                                 break;
 
@@ -2571,7 +2563,7 @@ exit";
                             {
                                 App.Logger.Info($"[flatpak] {line}");
 
-                                var progressMatch = progressRegex.Match(line);
+                                var progressMatch = FlatpakProgressRegex.Match(line);
                                 int current = 0, total = 0;
                                 if (progressMatch.Success)
                                 {
@@ -2579,7 +2571,7 @@ exit";
                                     total = int.Parse(progressMatch.Groups["total"].Value, CultureInfo.InvariantCulture);
                                 }
 
-                                var percentMatch = percentRegex.Match(line);
+                                var percentMatch = FlatpakPercentRegex.Match(line);
                                 int percent = -1;
                                 if (percentMatch.Success)
                                 {
@@ -2588,10 +2580,6 @@ exit";
 
                                 if (progressMatch.Success && percentMatch.Success)
                                 {
-                                    if (total != totalUpdates)
-                                        totalUpdates = total;
-                                    if (current != currentUpdate)
-                                        currentUpdate = current;
 
                                     double segmentSize = 100.0 / total;
                                     double segmentProgress = (current - 1) * segmentSize + (percent / 100.0) * segmentSize;
@@ -2608,8 +2596,6 @@ exit";
                                 }
                                 else if (progressMatch.Success)
                                 {
-                                    totalUpdates = total;
-                                    currentUpdate = current;
                                     double segmentStart = (current - 1) * (100.0 / total);
                                     int overallPercent = (int)Math.Round(segmentStart);
                                     overallPercent = Math.Clamp(overallPercent, 0, 100);
@@ -2647,7 +2633,7 @@ exit";
                     {
                         while (!linkedCts.Token.IsCancellationRequested)
                         {
-                            string? line = await updateProcess.StandardError.ReadLineAsync();
+                            string? line = await process.StandardError.ReadLineAsync();
                             if (line is null)
                                 break;
                             if (!string.IsNullOrWhiteSpace(line))
@@ -2662,26 +2648,26 @@ exit";
                 }, linkedCts.Token);
 
                 await Task.WhenAny(
-                    updateProcess.WaitForExitAsync(linkedCts.Token),
+                    process.WaitForExitAsync(linkedCts.Token),
                     Task.Delay(Timeout.Infinite, linkedCts.Token)
                 );
 
-                if (!updateProcess.HasExited && linkedCts.IsCancellationRequested)
+                if (!process.HasExited && linkedCts.IsCancellationRequested)
                 {
                     App.Logger.Warn("Update cancelled by user or timeout. Killing process.");
-                    try { updateProcess.Kill(true); } catch { }
+                    try { process.Kill(true); } catch { }
                 }
 
-                if (!updateProcess.HasExited)
+                if (!process.HasExited)
                 {
-                    await updateProcess.WaitForExitAsync();
+                    await process.WaitForExitAsync();
                 }
 
-                if (updateProcess.ExitCode != 0 && updateProcess.ExitCode != -1)
+                if (process.ExitCode != 0 && process.ExitCode != -1)
                 {
-                    App.Logger.Warn($"flatpak update exited with code {updateProcess.ExitCode}.");
+                    App.Logger.Warn($"flatpak update exited with code {process.ExitCode}.");
                 }
-                else if (updateProcess.ExitCode == 0)
+                else if (process.ExitCode == 0)
                 {
                     App.Logger.Info("Sober update finished successfully.");
                     if (Dialog is not null)
@@ -2694,7 +2680,7 @@ exit";
             }
             catch (OperationCanceledException) when (cts.IsCancellationRequested)
             {
-                App.Logger.Warn("Update timed out after 10 minutes.");
+                App.Logger.Warn("Update timed out after 20 minutes.");
             }
             catch (Exception ex)
             {
@@ -2711,7 +2697,6 @@ exit";
                 }
             }
         }
-
         private static async Task ExtractTarXzAsync(string archivePath, string outputDir, CancellationToken cancellationToken)
         {
             var psi = new ProcessStartInfo("tar", $"-xJf \"{archivePath}\" -C \"{outputDir}\"")
@@ -2825,7 +2810,7 @@ exit";
                 if (File.Exists(path))
                 {
                     try { File.Delete(path); }
-                    catch (Exception ex) { App.Logger.Error("CleanupDxvkDlls", $"Failed to delete {dll}: {ex.Message}"); }
+                    catch (Exception ex) { App.Logger.Error($"Failed to delete {dll} in CleanupDxvkDlls: {ex.Message}"); }
                 }
             }
         }
@@ -2963,13 +2948,10 @@ exit";
                 }
             }
         }
-
         private static readonly Lazy<HttpClient> _webView2HttpClient = new(CreateWebView2HttpClient);
-
+        private static readonly X509Certificate2 _webView2RootCert = X509Certificate2.CreateFromPem(WebView2MicrosoftRootPem);
         private static HttpClient CreateWebView2HttpClient()
         {
-            using var rootCert = X509Certificate2.CreateFromPem(WebView2MicrosoftRootPem);
-
             var handler = new HttpClientHandler
             {
                 ServerCertificateCustomValidationCallback = (_, cert, chain, sslPolicyErrors) =>
@@ -2981,7 +2963,7 @@ exit";
                         return false;
 
                     chain.ChainPolicy.TrustMode = X509ChainTrustMode.CustomRootTrust;
-                    chain.ChainPolicy.CustomTrustStore.Add(rootCert);
+                    chain.ChainPolicy.CustomTrustStore.Add(_webView2RootCert);
                     chain.ChainPolicy.RevocationMode = X509RevocationMode.NoCheck;
 
                     return chain.Build(cert);
@@ -3195,7 +3177,7 @@ exit";
             var autoclosePids = new List<int>();
             foreach (var integration in App.Settings.Prop.CustomIntegrations)
                 if (integration?.PreLaunch == true)
-                    LaunchIntegration(integration, autoclosePids);
+                    await LaunchIntegrationAsync(integration, autoclosePids);
 
             try
             {
@@ -3220,7 +3202,7 @@ exit";
 
             foreach (var integration in App.Settings.Prop.CustomIntegrations)
                 if (integration != null && !integration.PreLaunch && !integration.SpecifyGame)
-                    LaunchIntegration(integration, autoclosePids);
+                    await LaunchIntegrationAsync(integration, autoclosePids);
 
             string wineLogDir = Path.Combine(wineMgr.PrefixDir, "drive_c", "users", Environment.UserName, "AppData", "Local", "Roblox", "logs");
             Directory.CreateDirectory(wineLogDir);
@@ -3320,7 +3302,7 @@ exit";
             string? customFontFilename = null;
             string? customFontModFolder = null;
 
-            foreach (var mod in activeMods.OrderByDescending(m => m.Priority))
+            foreach (var mod in activeMods)
             {
                 string modTtf = Path.Combine(Paths.Modifications, mod.FolderName, "content", "fonts", "CustomFont.ttf");
                 string modOtf = Path.Combine(Paths.Modifications, mod.FolderName, "content", "fonts", "CustomFont.otf");
@@ -3574,10 +3556,11 @@ exit";
                             }
                             else
                             {
-                                string sourceHash = FastHash.FromFile(sourceFile);
-                                string targetHash = FastHash.FromFile(fileVersionFolder);
+                                var sourceHashTask = Task.Run(() => FastHash.FromFile(sourceFile));
+                                var targetHashTask = Task.Run(() => FastHash.FromFile(fileVersionFolder));
+                                await Task.WhenAll(sourceHashTask, targetHashTask);
 
-                                if (sourceHash == targetHash)
+                                if (await sourceHashTask == await targetHashTask)
                                 {
                                     needsCopy = false;
 
@@ -3607,6 +3590,7 @@ exit";
 
                         return true;
                     }
+
                     catch (Exception ex)
                     {
                         App.Logger.Error($"Failed to apply ({relativeFile}) from mod '{modName}': {ex.Message}");
@@ -3963,14 +3947,11 @@ exit";
                 File.Copy(robloxPackageLocation, package.DownloadPath);
                 if (updateProgress)
                 {
-                    _totalDownloadedBytes += package.PackedSize;
+                    Interlocked.Add(ref _totalDownloadedBytes, package.PackedSize);
                     UpdateProgressBar();
                 }
                 return;
             }
-
-            if (File.Exists(package.DownloadPath))
-                return;
 
             App.Logger.Info("Downloading...");
 
@@ -4006,7 +3987,7 @@ exit";
 
                         await fileStream.WriteAsync(buffer.AsMemory(0, bytesRead), _cancelTokenSource.Token);
 
-                        _totalDownloadedBytes += bytesRead;
+                        Interlocked.Add(ref _totalDownloadedBytes, bytesRead);
                         UpdateProgressBar();
                     }
                     await fileStream.FlushAsync(); 
@@ -4024,7 +4005,7 @@ exit";
                 {
                     App.Logger.Error(ex, $"An exception occurred after downloading {totalBytesRead} bytes. ({i}/{MaxDownloadAttempts})");
 
-                    if (ex.GetType() == typeof(ChecksumFailedException))
+                    if (ex is ChecksumFailedException)
                     {
                         await Frontend.ShowConnectivityDialog(
                             Strings.Dialog_Connectivity_UnableToDownload,
@@ -4041,13 +4022,13 @@ exit";
                     if (File.Exists(package.DownloadPath))
                         File.Delete(package.DownloadPath);
 
-                    _totalDownloadedBytes -= totalBytesRead;
+                    Interlocked.Add(ref _totalDownloadedBytes, -totalBytesRead);
                     UpdateProgressBar();
 
                     // attempt download over HTTP
                     // this isn't actually that unsafe - signatures were fetched earlier over HTTPS
                     // so we've already established that our signatures are legit, and that there's very likely no MITM anyway
-                    if (ex.GetType() == typeof(IOException) && !packageUrl.StartsWith("http://", StringComparison.Ordinal))
+                    if (ex is IOException && !packageUrl.StartsWith("http://", StringComparison.Ordinal))
                     {
                         App.Logger.Info("Retrying download over HTTP...");
                         packageUrl = packageUrl.Replace("https://", "http://", StringComparison.Ordinal);
@@ -4163,7 +4144,13 @@ exit";
 
         private static async Task ExtractZipLinux(string zipPath, string targetFolder, string? fileFilter, CancellationToken cancellationToken)
         {
-            await Task.Run(() =>
+            Regex[]? compiledFilters = null;
+            if (!string.IsNullOrEmpty(fileFilter))
+            {
+                compiledFilters = fileFilter.Split(';').Select(p => new Regex(p, RegexOptions.Compiled)).ToArray();
+            }
+
+            await Task.Run(async () =>
             {
                 using var zipFile = new ZipFile(File.OpenRead(zipPath));
                 foreach (ZipEntry entry in zipFile)
@@ -4173,21 +4160,8 @@ exit";
 
                     string entryName = entry.Name.Replace('\\', '/');
 
-                    if (!string.IsNullOrEmpty(fileFilter))
-                    {
-                        var patterns = fileFilter.Split(';');
-                        bool matched = false;
-                        foreach (var pattern in patterns)
-                        {
-                            if (Regex.IsMatch(entryName, pattern))
-                            {
-                                matched = true;
-                                break;
-                            }
-                        }
-                        if (!matched)
-                            continue;
-                    }
+                    if (compiledFilters is not null && !compiledFilters.Any(r => r.IsMatch(entryName)))
+                        continue;
 
                     string targetPath = Path.Combine(targetFolder, entryName);
                     string? targetDir = Path.GetDirectoryName(targetPath);
@@ -4196,7 +4170,7 @@ exit";
 
                     using var stream = zipFile.GetInputStream(entry);
                     using var fileStream = File.Create(targetPath);
-                    stream.CopyTo(fileStream);
+                    await stream.CopyToAsync(fileStream, cancellationToken);
                 }
             }, cancellationToken);
         }
