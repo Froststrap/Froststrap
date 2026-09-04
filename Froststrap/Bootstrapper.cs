@@ -1510,11 +1510,22 @@ namespace Froststrap
             while (DateTime.Now - startTime < timeout)
             {
                 var processes = Process.GetProcessesByName(processName);
-                var target = processes.OrderByDescending(p => p.StartTime).FirstOrDefault();
-                if (target != null)
-                {
-                    return target.Id;
+                Process? target = null;
+                DateTime latestStartTime = DateTime.MinValue;
+                
+                foreach (var p in processes) try {
+                    if (p.StartTime > latestStartTime)
+                    {
+                        latestStartTime = p.StartTime;
+                        target = p;
+                    }
                 }
+                catch (Exception ex) {
+                    App.Logger.Error("Unhandled exception: ", ex);
+                }
+
+                if (target != null) return target.Id;
+
                 await Task.Delay(100);
             }
             return 0;
