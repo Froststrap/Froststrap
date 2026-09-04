@@ -1,110 +1,52 @@
-<?xml version="1.0" encoding="utf-8"?>
-<root>
-  <!-- 
-    Microsoft ResX Schema 
-    
-    Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
-    associated with the data types.
-    
-    Example:
-    
-    ... ado.net/XML headers & schema ...
-    <resheader name="resmimetype">text/microsoft-resx</resheader>
-    <resheader name="version">2.0</resheader>
-    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        <value>[base64 mime encoded serialized .NET Framework object]</value>
-    </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-        <comment>This is a comment</comment>
-    </data>
-                
-    There are any number of "resheader" rows that contain simple 
-    name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
-    mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
-    extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
-    read any of the formats listed below.
-    
-    mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
-            : and then encoded with base64 encoding.
-    
-    mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
-            : using a System.ComponentModel.TypeConverter
-            : and then encoded with base64 encoding.
-    -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xsd:element name="root" msdata:IsDataSet="true">
-      <xsd:complexType>
-        <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
-              </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="assembly">
-            <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="data">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="resheader">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
-            </xsd:complexType>
-          </xsd:element>
-        </xsd:choice>
-      </xsd:complexType>
-    </xsd:element>
-  </xsd:schema>
+<?xml version='1.0' encoding='utf-8'?>
+<root xmlns:ns1="urn:schemas-microsoft-com:xml-msdata" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  
+  <xs:schema id="root">
+    <xs:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xs:element name="root" ns1:IsDataSet="true">
+      <xs:complexType>
+        <xs:choice maxOccurs="unbounded">
+          <xs:element name="metadata">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" />
+              </xs:sequence>
+              <xs:attribute name="name" use="required" type="xsd:string" />
+              <xs:attribute name="type" type="xsd:string" />
+              <xs:attribute name="mimetype" type="xsd:string" />
+              <xs:attribute ref="xml:space" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="assembly">
+            <xs:complexType>
+              <xs:attribute name="alias" type="xsd:string" />
+              <xs:attribute name="name" type="xsd:string" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="data">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
+                <xs:element name="comment" type="xsd:string" minOccurs="0" ns1:Ordinal="2" />
+              </xs:sequence>
+              <xs:attribute name="name" type="xsd:string" use="required" ns1:Ordinal="1" />
+              <xs:attribute name="type" type="xsd:string" ns1:Ordinal="3" />
+              <xs:attribute name="mimetype" type="xsd:string" ns1:Ordinal="4" />
+              <xs:attribute ref="xml:space" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="resheader">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
+              </xs:sequence>
+              <xs:attribute name="name" type="xsd:string" use="required" />
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+    </xs:element>
+  </xs:schema>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
   </resheader>
@@ -1183,13 +1125,6 @@ Froststrap은 "{1}"에 설치되었습니다.</value>
     <value>클라이언트가 없어 업그레이드가 비활성화되었습니다.
     문제를 방지하기 위해 업그레이드는 계속 진행됩니다.</value>
   </data>
-  <data name="Dialog.Bloxshade.ThankYou" xml:space="preserve">
-    <value>죄송합니다</value>
-  </data>
-  <data name="Dialog.Bloxshade.Setting" xml:space="preserve">
-    <value>Froststrap은 더 이상 Bloxshade를 지원하지 않습니다.
-자세한 내용은 Bloxshade 디스코드 서버에 가입하여 확인해 주세요.</value>
-  </data>
   <data name="Common.Profiles" xml:space="preserve">
     <value>프로필</value>
   </data>
@@ -1311,12 +1246,6 @@ Froststrap은 "{1}"에 설치되었습니다.</value>
   </data>
   <data name="Menu.Behaviour.CloseCrashHandler.Title" xml:space="preserve">
     <value>충돌 처리기 닫기</value>
-  </data>
-  <data name="Menu.Behaviour.ProcessPriority.Description" xml:space="preserve">
-    <value>Roblox의 CPU 우선순위를 선택합니다.</value>
-  </data>
-  <data name="Menu.Behaviour.ProcessPriority.Title" xml:space="preserve">
-    <value>Roblox 프로세스 우선순위</value>
   </data>
   <data name="Menu.BottomButtons.ResetSettingsToDefault" xml:space="preserve">
     <value>설정을 기본값으로 재설정</value>
@@ -2052,12 +1981,6 @@ Froststrap은 "{1}"에 설치되었습니다.</value>
   <data name="Menu.TestMode.Description" xml:space="preserve">
     <value>Roblox를 실행할 때 설정 창을 자동으로 숨기고, Roblox가 종료되면 다시 표시합니다.</value>
   </data>
-  <data name="Menu.Deployment.GameSearch.Title" xml:space="preserve">
-    <value>게임 검색</value>
-  </data>
-  <data name="Menu.Deployment.GameSearch.Description" xml:space="preserve">
-    <value>상단의 검색창을 사용하여 게임을 검색하세요.</value>
-  </data>
   <data name="Menu.Deployment.AutoUpdateSober" xml:space="preserve">
     <value>Sober 자동 업데이트</value>
   </data>
@@ -2735,24 +2658,6 @@ Froststrap은 "{1}"에 설치되었습니다.</value>
   <data name="Enums.CycleFrequency.Days" xml:space="preserve">
     <value>일</value>
   </data>
-  <data name="Enums.ProcessPriorityOption.Low" xml:space="preserve">
-    <value>낮음</value>
-  </data>
-  <data name="Enums.ProcessPriorityOption.BelowNormal" xml:space="preserve">
-    <value>평균 이하</value>
-  </data>
-  <data name="Enums.ProcessPriorityOption.Normal" xml:space="preserve">
-    <value>일반</value>
-  </data>
-  <data name="Enums.ProcessPriorityOption.AboveNormal" xml:space="preserve">
-    <value>평년보다 높음</value>
-  </data>
-  <data name="Enums.ProcessPriorityOption.High" xml:space="preserve">
-    <value>높음</value>
-  </data>
-  <data name="Enums.ProcessPriorityOption.RealTime" xml:space="preserve">
-    <value>실시간</value>
-  </data>
   <data name="Enums.TrayDoubleClickAction.ServerInfo" xml:space="preserve">
     <value>서버 정보</value>
   </data>
@@ -2930,31 +2835,4 @@ Froststrap은 "{1}"에 설치되었습니다.</value>
   <data name="Menu.FlagProfiles.CurrentPlaceIds" xml:space="preserve">
     <value>현재 위치 ID</value>
   </data>
-  <data name="Bootstrapper.Status.CheckingDependencies" xml:space="preserve">
-    <value>의존성 확인</value>
-  </data>
-  <data name="Bootstrapper.Status.CompilingVulkanLayer" xml:space="preserve">
-    <value>Vulkan 레이어 컴파일 중...</value>
-  </data>
-  <data name="Bootstrapper.Status.DownloadingDXVKSarek" xml:space="preserve">
-    <value>DXVK-Sarek 다운로드 중...</value>
-  </data>
-  <data name="Bootstrapper.Status.ExtractingDXVKSarek" xml:space="preserve">
-    <value>DXVK-Sarek 추출 중...</value>
-  </data>
-  <data name="Bootstrapper.Status.SettingUpDXVK" xml:space="preserve">
-    <value>DXVK 설정 중...</value>
-  </data>
-  <data name="Bootstrapper.Status.StartingStudioWine" xml:space="preserve">
-    <value>Wine을 사용하여 Roblox Studio 실행하기...</value>
-  </data>
-  <data name="Enums.RenderingMode.Default" xml:space="preserve">
-    <value>Direct3D 11 (기본값)</value>
-  </data>
-  <data name="Menu.FlagProfiles.ManagingPlaceIds" xml:space="preserve">
-    <value>다음에 대한 장소 ID 관리: {0} ({1}개의 ID)</value>
-  </data>
-  <data name="Menu.Shortcut.GameShortcut.Description" xml:space="preserve">
-    <value>이를 통해 특정 게임에 빠르게 참여할 수 있는 바로가기를 만들 수 있습니다.</value>
-  </data>
-</root>
+  </root>

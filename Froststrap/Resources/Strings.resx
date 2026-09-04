@@ -1230,13 +1230,6 @@ Would you like to enable Test Mode?</value>
     <value>Upgrades were disabled with missing client.
 To prevent issues upgrading will continue.</value>
   </data>
-  <data name="Dialog.Bloxshade.ThankYou" xml:space="preserve">
-    <value>Sorry</value>
-  </data>
-  <data name="Dialog.Bloxshade.Setting" xml:space="preserve">
-    <value>Froststrap no longer supports Bloxshade.
-For more information join Bloxshade discord server.</value>
-  </data>
   <data name="Common.Profiles" xml:space="preserve">
     <value>Profiles</value>
   </data>

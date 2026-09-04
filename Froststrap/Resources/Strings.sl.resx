@@ -1,110 +1,52 @@
-<?xml version="1.0" encoding="utf-8"?>
-<root>
-  <!-- 
-    Microsoft ResX Schema 
-    
-    Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
-    associated with the data types.
-    
-    Example:
-    
-    ... ado.net/XML headers & schema ...
-    <resheader name="resmimetype">text/microsoft-resx</resheader>
-    <resheader name="version">2.0</resheader>
-    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        <value>[base64 mime encoded serialized .NET Framework object]</value>
-    </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-        <comment>This is a comment</comment>
-    </data>
-                
-    There are any number of "resheader" rows that contain simple 
-    name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
-    mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
-    extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
-    read any of the formats listed below.
-    
-    mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
-            : and then encoded with base64 encoding.
-    
-    mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
-            : using a System.ComponentModel.TypeConverter
-            : and then encoded with base64 encoding.
-    -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xsd:element name="root" msdata:IsDataSet="true">
-      <xsd:complexType>
-        <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
-              </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="assembly">
-            <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="data">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="resheader">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
-            </xsd:complexType>
-          </xsd:element>
-        </xsd:choice>
-      </xsd:complexType>
-    </xsd:element>
-  </xsd:schema>
+<?xml version='1.0' encoding='utf-8'?>
+<root xmlns:ns1="urn:schemas-microsoft-com:xml-msdata" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  
+  <xs:schema id="root">
+    <xs:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xs:element name="root" ns1:IsDataSet="true">
+      <xs:complexType>
+        <xs:choice maxOccurs="unbounded">
+          <xs:element name="metadata">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" />
+              </xs:sequence>
+              <xs:attribute name="name" use="required" type="xsd:string" />
+              <xs:attribute name="type" type="xsd:string" />
+              <xs:attribute name="mimetype" type="xsd:string" />
+              <xs:attribute ref="xml:space" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="assembly">
+            <xs:complexType>
+              <xs:attribute name="alias" type="xsd:string" />
+              <xs:attribute name="name" type="xsd:string" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="data">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
+                <xs:element name="comment" type="xsd:string" minOccurs="0" ns1:Ordinal="2" />
+              </xs:sequence>
+              <xs:attribute name="name" type="xsd:string" use="required" ns1:Ordinal="1" />
+              <xs:attribute name="type" type="xsd:string" ns1:Ordinal="3" />
+              <xs:attribute name="mimetype" type="xsd:string" ns1:Ordinal="4" />
+              <xs:attribute ref="xml:space" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="resheader">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
+              </xs:sequence>
+              <xs:attribute name="name" type="xsd:string" use="required" />
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+    </xs:element>
+  </xs:schema>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
   </resheader>
@@ -1168,13 +1110,6 @@ Ali želite omogočiti testni način?</value>
     <value>Nadgradnje so bile onemogočene zaradi manjkajočega odjemalca.
     Da bi preprečili težave, se bo nadgradnja nadaljevala.</value>
   </data>
-  <data name="Dialog.Bloxshade.ThankYou" xml:space="preserve">
-    <value>Oprostite</value>
-  </data>
-  <data name="Dialog.Bloxshade.Setting" xml:space="preserve">
-    <value>Froststrap ne podpira več Bloxshade.
-Za več informacij se pridružite Discord strežniku Bloxshade.</value>
-  </data>
   <data name="Common.Profiles" xml:space="preserve">
     <value>Profil</value>
   </data>
@@ -1296,12 +1231,6 @@ Ali želite preklopiti na privzeti kanal ({1})?</value>
   </data>
   <data name="Menu.Behaviour.CloseCrashHandler.Title" xml:space="preserve">
     <value>Zapri obdelovalnik napak</value>
-  </data>
-  <data name="Menu.Behaviour.ProcessPriority.Description" xml:space="preserve">
-    <value>Izbere prednost procesorja za Roblox.</value>
-  </data>
-  <data name="Menu.Behaviour.ProcessPriority.Title" xml:space="preserve">
-    <value>Prednost procesov v Robloxu</value>
   </data>
   <data name="Menu.BottomButtons.ResetSettingsToDefault" xml:space="preserve">
     <value>Ponastavi nastavitve na privzete</value>
@@ -2028,12 +1957,6 @@ Vsebovati mora vsaj eno od naslednjih map: content, ExtraContent, PlatformConten
   <data name="Menu.TestMode.Description" xml:space="preserve">
     <value>Ob zagonu programa Roblox samodejno skrij okno z nastavitvami in ga ponovno prikaži ob zaprtju programa Roblox.</value>
   </data>
-  <data name="Menu.Deployment.GameSearch.Title" xml:space="preserve">
-    <value>Iskanje iger</value>
-  </data>
-  <data name="Menu.Deployment.GameSearch.Description" xml:space="preserve">
-    <value>Iščite igre z iskalno vrstico na vrhu strani.</value>
-  </data>
   <data name="Menu.Deployment.AutoUpdateSober" xml:space="preserve">
     <value>Samodejna posodobitev programa Sober</value>
   </data>
@@ -2711,24 +2634,6 @@ Ali želite namestiti vtičnik?</value>
   <data name="Enums.CycleFrequency.Days" xml:space="preserve">
     <value>Dnevi</value>
   </data>
-  <data name="Enums.ProcessPriorityOption.Low" xml:space="preserve">
-    <value>Nizka</value>
-  </data>
-  <data name="Enums.ProcessPriorityOption.BelowNormal" xml:space="preserve">
-    <value>Pod povprečjem</value>
-  </data>
-  <data name="Enums.ProcessPriorityOption.Normal" xml:space="preserve">
-    <value>Normalno</value>
-  </data>
-  <data name="Enums.ProcessPriorityOption.AboveNormal" xml:space="preserve">
-    <value>Nad normalno</value>
-  </data>
-  <data name="Enums.ProcessPriorityOption.High" xml:space="preserve">
-    <value>Visoko</value>
-  </data>
-  <data name="Enums.ProcessPriorityOption.RealTime" xml:space="preserve">
-    <value>V realnem času</value>
-  </data>
   <data name="Enums.TrayDoubleClickAction.ServerInfo" xml:space="preserve">
     <value>Podatki o strežniku</value>
   </data>
@@ -2906,31 +2811,4 @@ Ali želite namestiti vtičnik?</value>
   <data name="Menu.FlagProfiles.CurrentPlaceIds" xml:space="preserve">
     <value>Trenutne identifikacijske številke lokacij</value>
   </data>
-  <data name="Bootstrapper.Status.CheckingDependencies" xml:space="preserve">
-    <value>Preverjanje odvisnosti</value>
-  </data>
-  <data name="Bootstrapper.Status.CompilingVulkanLayer" xml:space="preserve">
-    <value>Zbiranje sloja Vulkan...</value>
-  </data>
-  <data name="Bootstrapper.Status.DownloadingDXVKSarek" xml:space="preserve">
-    <value>Prenos programa DXVK-Sarek...</value>
-  </data>
-  <data name="Bootstrapper.Status.ExtractingDXVKSarek" xml:space="preserve">
-    <value>Izvleček DXVK-Sarek...</value>
-  </data>
-  <data name="Bootstrapper.Status.SettingUpDXVK" xml:space="preserve">
-    <value>Nastavljanje DXVK...</value>
-  </data>
-  <data name="Bootstrapper.Status.StartingStudioWine" xml:space="preserve">
-    <value>Zagon programa Roblox Studio z Wine...</value>
-  </data>
-  <data name="Enums.RenderingMode.Default" xml:space="preserve">
-    <value>Direct3D11 (privzeto)</value>
-  </data>
-  <data name="Menu.FlagProfiles.ManagingPlaceIds" xml:space="preserve">
-    <value>Upravljanje identifikatorjev lokacij za: {0} ({1} identifikatorjev)</value>
-  </data>
-  <data name="Menu.Shortcut.GameShortcut.Description" xml:space="preserve">
-    <value>Tako lahko ustvarite bližnjice, s katerimi se lahko hitro pridružite določenim igram.</value>
-  </data>
-</root>
+  </root>

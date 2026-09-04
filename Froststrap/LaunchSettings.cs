@@ -15,8 +15,6 @@ namespace Froststrap
         public LaunchFlag VersionFlag { get; } = new("version");
         public LaunchFlag ChannelFlag { get; } = new("channel");
         public LaunchFlag ForceFlag { get; } = new("force");
-        public LaunchFlag BloxshadeFlag { get; } = new("bloxshade");
-        //Keep for backward compatibility
         public LaunchFlag GameShortcutFlag { get; } = new("gameshortcut");
         public LaunchFlag ConsoleFlag { get; } = new("c,console");
         public LaunchFlag NoGpuFlag { get; } = new("g,nogpu");
@@ -57,7 +55,11 @@ namespace Froststrap
             [
                 MenuFlag, WatcherFlag, BackgroundUpdaterFlag, OnboardingFlag, QuietFlag,
                 NoLaunchFlag, TestModeFlag, UpgradeFlag, PlayerFlag, StudioFlag, VersionFlag,
-                ChannelFlag, ForceFlag, BloxshadeFlag, GameShortcutFlag, ConsoleFlag, NoGpuFlag
+
+                ChannelFlag, ForceFlag, GameShortcutFlag, ConsoleFlag, NoGpuFlag,
+
+                ChannelFlag, ForceFlag, GameShortcutFlag,
+                ConsoleFlag, NoGpuFlag
             ];
 
             var lookup = new Dictionary<string, LaunchFlag>(StringComparer.OrdinalIgnoreCase);
