@@ -3073,10 +3073,10 @@ Would you like to visit the releases page now?</value>
     <value>Change how the app looks like using custom gradients, images and windows backdrops.</value>
   </data>
   <data name="Onboarding.Page3.Text1" xml:space="preserve">
-    <value>Some of our features like Better MatchMaking and Region Selector require a Roblox cookie, It is recommended to log into our built in account manager.</value>
+    <value>Some of our features like Better MatchMaking and Region Selector require a Roblox cookie, It is recommended to enable 'Froststrap Account Permission' to use these features.</value>
   </data>
   <data name="Onboarding.Page3.Text2" xml:space="preserve">
-    <value>Or you can turn on account permission instead, as it uses your local cookie, You need to be logged in on the app to use, supported on every OS.</value>
+    <value>Or you can log in using our account manager, Which will also allow you to quickly swap between accounts and give you better game history in Quick Play.</value>
   </data>
   <data name="Onboarding.Page4" xml:space="preserve">
     <value>Check out our built in Better MatchMaking system, it changes the server your joinning to give you the best region, This feature requires a roblox cookie, Login to 'Account Manager' or turn on 'Account Permission'.</value>
@@ -3263,5 +3263,8 @@ All files will be moved, shortcuts updated, and the application will restart.</v
   </data>
   <data name="Menu.Deployment.DisableAnimations.Description" xml:space="preserve">
     <value>Turn off all UI animations for improved performance.</value>
+  </data>
+  <data name="Common.AccountManager" xml:space="preserve">
+    <value>Account Manager</value>
   </data>
 </root>

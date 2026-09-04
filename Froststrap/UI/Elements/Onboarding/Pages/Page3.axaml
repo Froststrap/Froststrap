@@ -12,20 +12,49 @@
              x:Class="Froststrap.UI.Elements.Onboarding.Pages.Page3"
              x:DataType="vm:Page3ViewModel">
 
-	<StackPanel Spacing="16">
-		<TextBlock Text="{x:Static resources:Strings.Onboarding_Page3_Text1}" TextWrapping="Wrap" />
-		<account:AccountSelectorView/>
-		<TextBlock Text="{x:Static resources:Strings.Onboarding_Page3_Text2}" TextWrapping="Wrap" />
-		<controls:OptionControl
-            Header="{x:Static resources:Strings.Menu_Behaviour_AllowCookieAccess_Title}"
-            Description="{Binding Source={x:Static resources:Strings.Menu_Behaviour_AllowCookieAccess_Description}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://github.com/fishstrap/fishstrap/wiki/Account-Access#what-will-fishstrap-access-with-your-account'}">
-			<StackPanel Orientation="Horizontal" Spacing="8">
-				<ic:Lucide Icon="TriangleAlert"
-                           VerticalAlignment="Center"
-                           StrokeBrush="Orange"
-                           IsVisible="{Binding CookieLoadingFailed}" />
-				<ToggleSwitch IsChecked="{Binding CookieAccess, Mode=TwoWay}" />
-			</StackPanel>
-		</controls:OptionControl>
-	</StackPanel>
+    <ScrollViewer>
+        <StackPanel Margin="12" Spacing="12">
+            <StackPanel Orientation="Vertical" Spacing="8" HorizontalAlignment="Center" Margin="0,0,0,12">
+                <ic:Lucide x:Name="HeaderIcon"
+                           Icon="User"
+                           Width="70"
+                           Height="70"
+                           HorizontalAlignment="Center"
+                           StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}"
+                           StrokeThickness="1.5">
+                    <ic:Lucide.Transitions>
+                        <Transitions>
+                            <DoubleTransition Property="Opacity" Duration="0:0:0.5" Easing="CubicEaseInOut" />
+                        </Transitions>
+                    </ic:Lucide.Transitions>
+                </ic:Lucide>
+                <TextBlock Text="{x:Static resources:Strings.Common_AccountManager}"
+                           FontSize="20"
+                           FontWeight="SemiBold"
+                           HorizontalAlignment="Center" />
+            </StackPanel>
+
+            <TextBlock Text="{x:Static resources:Strings.Onboarding_Page3_Text1}" HorizontalAlignment="Center" VerticalAlignment="Center"
+                       TextWrapping="Wrap" />
+
+            <controls:OptionControl
+                Header="{x:Static resources:Strings.Menu_Behaviour_AllowCookieAccess_Title}"
+                Description="{Binding Source={x:Static resources:Strings.Menu_Behaviour_AllowCookieAccess_Description},
+                Converter={StaticResource StringFormatConverter},
+                ConverterParameter='https://github.com/fishstrap/fishstrap/wiki/Account-Access#what-will-fishstrap-access-with-your-account'}">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <ic:Lucide Icon="TriangleAlert"
+                               VerticalAlignment="Center"
+                               StrokeBrush="Orange"
+                               IsVisible="{Binding CookieLoadingFailed}" />
+                    <ToggleSwitch IsChecked="{Binding CookieAccess, Mode=TwoWay}" />
+                </StackPanel>
+            </controls:OptionControl>
+
+            <TextBlock Text="{x:Static resources:Strings.Onboarding_Page3_Text2}" HorizontalAlignment="Center" VerticalAlignment="Center"
+                       TextWrapping="Wrap" />
+			
+            <account:AccountSelectorView Background="{DynamicResource ControlFillColorDefaultBrush}" BorderBrush="{DynamicResource ControlElevationBorderBrush}" BorderThickness="1" CornerRadius="6"/>
+        </StackPanel>
+    </ScrollViewer>
 </UserControl>

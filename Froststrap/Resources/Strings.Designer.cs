@@ -647,6 +647,15 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Account Manager.
+        /// </summary>
+        public static string Common_AccountManager {
+            get {
+                return ResourceManager.GetString("Common.AccountManager", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add.
         /// </summary>
         public static string Common_Add {
@@ -9076,7 +9085,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Some of our features like Better MatchMaking and Region Selector require a Roblox cookie, It is recommended to log into our built in account manager..
+        ///   Looks up a localized string similar to Some of our features like Better MatchMaking and Region Selector require a Roblox cookie, It is recommended to enable &apos;Froststrap Account Permission&apos; to use these features..
         /// </summary>
         public static string Onboarding_Page3_Text1 {
             get {
@@ -9085,7 +9094,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Or you can turn on account permission instead, as it uses your local cookie, You need to be logged in on the app to use, supported on every OS..
+        ///   Looks up a localized string similar to Or you can log in using our account manager, Which will also allow you to quickly swap between accounts and give you better game history in Quick Play..
         /// </summary>
         public static string Onboarding_Page3_Text2 {
             get {

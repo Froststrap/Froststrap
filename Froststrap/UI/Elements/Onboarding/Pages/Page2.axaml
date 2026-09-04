@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
+             xmlns:gv="using:Froststrap.UI.ViewModels"
              xmlns:models="using:Froststrap.Models"
              xmlns:vm="using:Froststrap.UI.ViewModels.Onboarding"
              xmlns:lucideAvalonia="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
@@ -12,17 +13,16 @@
              x:Class="Froststrap.UI.Elements.Onboarding.Pages.Page2"
              x:DataType="vm:Page2ViewModel">
 
-
     <ScrollViewer>
         <StackPanel Grid.Row="0" Margin="12">
             <StackPanel Orientation="Vertical" Spacing="8" HorizontalAlignment="Center" Margin="0,0,0,12">
-                <lucideAvalonia:Lucide x:Name="HeaderIcon" Icon="Palette" Width="70" Height="70"
-                       HorizontalAlignment="Center"
-                       StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}"
-                       StrokeThickness="1.5">
+                <lucideAvalonia:Lucide x:Name="HeaderIcon" Icon="Sparkles" Width="70" Height="70"
+                                       HorizontalAlignment="Center"
+                                       StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}"
+                                       StrokeThickness="1.5">
                     <lucideAvalonia:Lucide.Transitions>
                         <Transitions>
-                            <DoubleTransition Property="Opacity" Duration="0:0:1" Easing="CubicEaseInOut" />
+                            <DoubleTransition Property="Opacity" Duration="0:0:0.5" Easing="CubicEaseInOut" />
                         </Transitions>
                     </lucideAvalonia:Lucide.Transitions>
                 </lucideAvalonia:Lucide>
@@ -33,7 +33,8 @@
             <TextBlock Text="{x:Static resources:Strings.Onboarding_Page2}" HorizontalAlignment="Center" TextWrapping="Wrap" Margin="0,0,0,16" />
             <controls:OptionControl
                 Header="{x:Static resources:Strings.Menu_Appearance_WindowsBackdrop_Title}"
-                Description="{x:Static resources:Strings.Menu_Appearance_WindowsBackdrop_Description}">
+                Description="{x:Static resources:Strings.Menu_Appearance_WindowsBackdrop_Description}"
+                IsVisible="{x:Static gv:GlobalViewModel.IsWindows}">
                 <ComboBox
                     MinWidth="200"
                     Margin="5,0,0,0"

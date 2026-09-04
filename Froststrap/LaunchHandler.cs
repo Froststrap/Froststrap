@@ -162,11 +162,9 @@ namespace Froststrap
 
             mainWindow.Closed += (s, ev) =>
             {
-                if (App.State.Prop.IsFirstLaunch)
-                {
-                    App.State.Prop.IsFirstLaunch = false;
-                    App.State.Save();
-                }
+                App.State.Prop.IsFirstLaunch = false;
+                App.State.Save();
+                App.Settings.Save();
                 ProcessNextAction(mainWindow.CloseAction);
             };
         }

@@ -294,7 +294,7 @@ internal partial class App : Application
 
         RemoveAnimationSettings();
 
-        _disableAnimationStyles = new List<Style>();
+        _disableAnimationStyles = [];
 
         var styleTransitions = new Style(x => x.OfType<Control>());
         styleTransitions.Setters.Add(new Setter(Control.TransitionsProperty, null));

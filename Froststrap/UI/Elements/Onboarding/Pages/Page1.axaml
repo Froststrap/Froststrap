@@ -20,7 +20,7 @@
                        StrokeThickness="1.5">
                     <lucideAvalonia:Lucide.Transitions>
                         <Transitions>
-                            <DoubleTransition Property="Opacity" Duration="0:0:1" Easing="CubicEaseInOut" />
+                            <DoubleTransition Property="Opacity" Duration="0:0:0.5" Easing="CubicEaseInOut" />
                         </Transitions>
                     </lucideAvalonia:Lucide.Transitions>
                 </lucideAvalonia:Lucide>
