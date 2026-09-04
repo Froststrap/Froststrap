@@ -7,6 +7,7 @@ using Froststrap.UI.ViewModels.Settings.FastFlags;
 using Froststrap.UI.ViewModels.Settings.GlobalSettings;
 using Froststrap.UI.ViewModels.Settings.Mods;
 using System.Collections.ObjectModel;
+using LucideAvalonia.Enum;
 using System.Collections.Specialized;
 using System.Windows.Input;
 
@@ -24,11 +25,38 @@ namespace Froststrap.UI.ViewModels.Settings
 
     internal class MainWindowViewModel : ObservableObject
     {
+        private static readonly Dictionary<string, LucideIconNames> _pageIconMap = new()
+        {
+            ["integrations"] = LucideIconNames.Plus,
+            ["behaviour"] = LucideIconNames.Play,
+            ["linuxsettings"] = LucideIconNames.Settings,
+            ["mods"] = LucideIconNames.BookOpen,
+            ["fastflags"] = LucideIconNames.Flag,
+            ["appearance"] = LucideIconNames.Palette,
+            ["regionselector"] = LucideIconNames.Globe,
+            ["globalsettings"] = LucideIconNames.PenLine,
+            ["shortcuts"] = LucideIconNames.Link2,
+            ["quickplay"] = LucideIconNames.Gamepad2,
+            ["channels"] = LucideIconNames.HardDriveUpload,
+            ["globalsettingseditor"] = LucideIconNames.FilePenLine,
+            ["fastflageditor"] = LucideIconNames.FilePenLine,
+            ["communitymods"] = LucideIconNames.House,
+            ["custommods"] = LucideIconNames.List,
+            ["modgenerator"] = LucideIconNames.PaintbrushVertical,
+        };
+
         private object? _currentPage;
         public object? CurrentPage
         {
             get => _currentPage;
             set => SetProperty(ref _currentPage, value);
+        }
+
+        private LucideIconNames _currentPageIcon;
+        public LucideIconNames CurrentPageIcon
+        {
+            get => _currentPageIcon;
+            set => SetProperty(ref _currentPageIcon, value);
         }
 
         public static bool HasUnsavedChanges =>
@@ -240,6 +268,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 SelectedPage = pageId;
                 CurrentPageTitle = title;
                 CurrentPageDescription = description;
+                CurrentPageIcon = _pageIconMap.TryGetValue(pageId, out var icon) ? icon : LucideIconNames.CircleQuestionMark;
                 BreadcrumbItems = customBreadcrumbs ?? [];
                 CurrentPage = viewModel;
             }
