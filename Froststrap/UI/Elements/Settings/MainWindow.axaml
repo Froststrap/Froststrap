@@ -235,6 +235,7 @@
                     Grid.Column="0"
                     Margin="8,0,0,0" />
                 <controls:IconButton Grid.Column="2"
+                                     FontWeight="SemiBold"
                                      Height="36"
                                      Padding="20,0"
                                      Classes="DropDownButton Primary"
@@ -258,6 +259,7 @@
                     </controls:IconButton.Flyout>
                 </controls:IconButton>
                 <Button
+                    FontWeight="SemiBold"
                     Grid.Column="3"
                     Height="36"
                     Padding="20,0"
@@ -265,6 +267,7 @@
                     Command="{Binding RestartAppCommand}"
                     Content="{x:Static resources:Strings.Menu_Restart}" />
                 <Button
+                    FontWeight="SemiBold"
                     Grid.Column="4"
                     Height="36"
                     Padding="20,0"
@@ -272,6 +275,7 @@
                     Command="{Binding SaveSettingsCommand}"
                     Content="{x:Static resources:Strings.Menu_Save}" />
                 <Button
+                    FontWeight="SemiBold"
                     Grid.Column="5"
                     Height="36"
                     Padding="20,0"
