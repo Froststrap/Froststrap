@@ -42,20 +42,14 @@
             </Grid>
 
             <controls:OptionControl Description="{x:Static resources:Strings.Menu_GBSEditor_ReadOnly_Description}" Header="{x:Static resources:Strings.Menu_GBSEditor_ReadOnly_Title}">
-                <Grid ColumnDefinitions="Auto,*">
-                    <TextBlock
-                        Grid.Column="0"
-                        FontSize="20"
-                        Text="⚠"
-                        Padding="0,10,10,0"
-                        VerticalAlignment="Stretch"
-                        HorizontalAlignment="Center"
-                        Foreground="#FACC00"
-                        IsVisible="{Binding IsWarningVisible}"
-                        ToolTip.Tip="{Binding WarningTooltipText}"
-                    />
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <ic:Lucide Icon="TriangleAlert"
+                               VerticalAlignment="Center"
+                               StrokeBrush="Orange"
+                               IsVisible="{Binding IsWarningVisible}"
+                               ToolTip.Tip="{Binding WarningTooltipText}" />
                     <ToggleSwitch Grid.Column="1" Margin="5,0,0,0" IsChecked="{Binding ReadOnly}" />
-                </Grid>
+                </StackPanel>
             </controls:OptionControl>
 
             <StackPanel>
@@ -65,7 +59,7 @@
                     FontWeight="Bold"
                     Text="{x:Static resources:Strings.Menu_GlobalSettings_GraphicsSettings_Title}"
                     Margin="0,10,0,10"
-                />
+                    />
                 <StackPanel>
                     <controls:OptionControl Header="{x:Static resources:Strings.Menu_GlobalSettings_FramerateLimit_Title}" Description="{x:Static resources:Strings.Menu_GlobalSettings_FramerateLimit_Description}">
                         <TextBox Width="150" Text="{Binding FramerateCap, Mode=TwoWay}" />
@@ -94,7 +88,7 @@
                     FontWeight="Bold"
                     Text="{x:Static resources:Strings.Menu_GlobalSettings_AudioSettings_Title}"
                     Margin="0,10,0,10"
-                />
+                    />
                 <StackPanel>
                     <controls:OptionControl Header="{x:Static resources:Strings.Menu_GlobalSettings_MasterVolume_Title}" Description="{x:Static resources:Strings.Menu_GlobalSettings_MasterVolume_Description}">
                         <fa:ShowValueSlider Width="250" Minimum="0" Maximum="1" TickFrequency="0.1" IsSnapToTickEnabled="True" Value="{Binding MasterVolume}" ShowValue="True" />
@@ -113,7 +107,7 @@
                     FontWeight="Bold"
                     Text="{x:Static resources:Strings.Menu_GlobalSettings_InputSettings_Title}"
                     Margin="0,10,0,10"
-                />
+                    />
                 <StackPanel>
                     <controls:OptionControl Header="{x:Static resources:Strings.Menu_GlobalSettings_Sensitivity_Title}" Description="{x:Static resources:Strings.Menu_GlobalSettings_Sensitivity_Description}">
                         <TextBox Width="150" Text="{Binding MouseSensitivity}" />
@@ -154,7 +148,7 @@
                     FontWeight="Bold"
                     Text="{x:Static resources:Strings.Menu_GlobalSettings_Accessibility_Title}"
                     Margin="0,10,0,10"
-                />
+                    />
                 <StackPanel>
                     <controls:OptionControl Header="{x:Static resources:Strings.Menu_GlobalSettings_UITransparency_Title}" Description="{x:Static resources:Strings.Menu_GlobalSettings_UITransparency_Description}">
                         <TextBox Width="150" Text="{Binding UITransparency}" />
