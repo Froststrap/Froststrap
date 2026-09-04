@@ -93,28 +93,40 @@ namespace Froststrap
 
         public void SetPreset(string prefix, object? value)
         {
-            foreach (var pair in PresetPaths.Where(x => x.Key.StartsWith(prefix, StringComparison.Ordinal)))
+            var matchingPaths = PresetPaths.Where(x => x.Key.StartsWith(prefix, StringComparison.Ordinal)).ToList();
+            if (matchingPaths.Count == 0)
+            {
+                App.Logger.Warn($"SetPreset: No preset paths found for prefix '{prefix}'");
+                return;
+            }
+
+            foreach (var pair in matchingPaths)
                 SetValue(pair.Value, value);
         }
 
         public string? GetPreset(string prefix)
         {
             if (PresetPaths.TryGetValue(prefix, out string? path))
-            {
                 return GetValue(path);
-            }
             return null;
         }
 
         public void SetValue(string path, object? value)
         {
             path = ResolvePath(path, RootPaths);
-
             XElement? element = Document?.XPathSelectElement(path);
             if (element is null)
+            {
+                App.Logger.Warn($"SetValue: Element not found for path '{path}'. Changes will not be applied.");
                 return;
+            }
 
-            element.Value = value?.ToString()!;
+            string newValue = value?.ToString() ?? string.Empty;
+            if (element.Value != newValue)
+            {
+                App.Logger.Debug($"SetValue: Changing '{path}' from '{element.Value}' to '{newValue}'");
+                element.Value = newValue;
+            }
         }
 
         public string? GetValue(string path)
@@ -233,40 +245,75 @@ namespace Froststrap
             }
         }
 
-        public virtual void Save()
+        public virtual bool Save()
         {
             App.Logger.Info($"Saving to {FileLocation}...");
 
-            if (!HasUnsavedChanges) 
+            if (!HasUnsavedChanges)
             {
                 App.Logger.Info("No changes, skipping save.");
-                return;
+                return false;
+            }
+
+            if (!Loaded || Document == null)
+            {
+                App.Logger.Error("Save failed – document not loaded.");
+                return false;
             }
 
             try
             {
-                SetReadOnly(false, true);
-                Document?.Save(FileLocation);
-                SetReadOnly(previousReadOnlyState);
-                _savedHash = ComputeHash();
+                string? dir = Path.GetDirectoryName(FileLocation);
+                if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
+                    Directory.CreateDirectory(dir);
             }
             catch (Exception ex)
             {
-                App.Logger.Error("Failed to save");
-                App.Logger.Error(ex);
-                return;
+                App.Logger.Error($"Failed to create directory: {ex.Message}");
+                return false;
             }
 
-            App.Logger.Info("Save complete!");
-        }
+            bool wasReadOnly = GetReadOnly();
+            if (wasReadOnly)
+            {
+                App.Logger.Debug("File is read‑only; attempting to remove read‑only flag.");
+                SetReadOnly(false, true);
+            }
 
+            try
+            {
+                string tempFile = FileLocation + ".tmp";
+                Document.Save(tempFile);
+
+                File.Copy(tempFile, FileLocation, true);
+                File.Delete(tempFile);
+
+                _savedHash = ComputeHash();
+                App.Logger.Info("Save complete!");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error($"Failed to save: {ex.Message}");
+                App.Logger.Error(ex);
+                return false;
+            }
+            finally
+            {
+                if (wasReadOnly)
+                {
+                    App.Logger.Debug("Restoring read‑only flag.");
+                    SetReadOnly(true, true);
+                }
+            }
+        }
 
         private static string ResolvePath(string rawPath, Dictionary<string, string> rootPaths)
         {
             return Regex.Replace(rawPath, @"\{(.+?)\}", match =>
             {
                 string key = match.Groups[1].Value;
-                return rootPaths.TryGetValue(key, out var value) ? value : match.Value; ;
+                return rootPaths.TryGetValue(key, out var value) ? value : match.Value;
             });
         }
 
@@ -283,9 +330,7 @@ namespace Froststrap
             XElement? vectorElement = Document?.XPathSelectElement(basePath);
 
             if (vectorElement?.Element(axis) is XElement axisElement)
-            {
                 axisElement.Value = value;
-            }
         }
 
         public static bool ExportSettings(string exportPath)
