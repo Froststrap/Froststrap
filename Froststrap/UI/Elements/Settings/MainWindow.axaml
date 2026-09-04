@@ -12,7 +12,7 @@
     xmlns:enums="using:Froststrap.Enums"
     xmlns:resources="using:Froststrap.Resources"
     xmlns:av="using:Avalonia.Controls"
-    xmlns:transitions="clr-namespace:Froststrap.UI.Transitions"
+    xmlns:transitions="clr-namespace:Froststrap.UI.Utility"
     xmlns:ui="using:FluentAvalonia.UI.Controls"
     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
     Title="{x:Static resources:Strings.Menu_Title}"
