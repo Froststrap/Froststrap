@@ -8,8 +8,8 @@ namespace Froststrap.UI.Elements.Onboarding.Pages
     internal partial class Page1 : UserControl, IDisposable
     {
         private static readonly LucideIconNames[] IconCycle = [LucideIconNames.Languages, LucideIconNames.Globe];
-        private static readonly TimeSpan HoldDuration = TimeSpan.FromSeconds(5);
-        private static readonly TimeSpan FadeDuration = TimeSpan.FromSeconds(1);
+        private static readonly TimeSpan HoldDuration = TimeSpan.FromSeconds(2.5);
+        private static readonly TimeSpan FadeDuration = TimeSpan.FromSeconds(0.5);
 
         private CancellationTokenSource? _cts;
         private bool _disposed;
