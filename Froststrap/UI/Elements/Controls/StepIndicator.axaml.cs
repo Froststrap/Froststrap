@@ -58,9 +58,15 @@ namespace Froststrap.UI.Elements.Controls
             if (trackWidth <= 0)
                 return;
 
-            var fraction = PageCount <= 0
-                ? 0d
-                : Math.Clamp((CurrentIndex + 1) / (double)PageCount, 0d, 1d);
+            double fraction;
+            if (PageCount <= 1)
+            {
+                fraction = 1.0;
+            }
+            else
+            {
+                fraction = Math.Clamp(CurrentIndex / (double)(PageCount - 1), 0d, 1d);
+            }
 
             FillBar.Width = trackWidth * fraction;
         }
