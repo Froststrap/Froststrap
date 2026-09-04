@@ -12,10 +12,7 @@ internal partial class InternalVirtualDisplay
         "virtualdisplay",
         EntryPoint = "start_display"
     )]
-    public static partial int Start(
-        int width,
-        int height
-    );
+    public static partial int Start();
     [LibraryImport(
         "virtualdisplay",
         EntryPoint = "end_display"
@@ -26,13 +23,9 @@ internal partial class InternalVirtualDisplay
 /// A Virtual Display mechanism for macOS
 public class VirtualDisplay
 {
-    /// High-level wrapper around starting the virtual display,
-    /// with no dictation on specs of the virtual display
+    /// Wrapper around starting the virtual display
     public static void Start() {
-        var result = InternalVirtualDisplay.Start(
-            1920,
-            1080
-        );
+        var result = InternalVirtualDisplay.Start();
 
         Console.WriteLine($"Virtual display started: {result}");
     }
