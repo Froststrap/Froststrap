@@ -188,17 +188,21 @@ namespace Froststrap
 
         public static bool IsPreset(string flag) => PresetFlags.Values.Any(v => string.Equals(v, flag, StringComparison.OrdinalIgnoreCase));
 
-        public override void Save()
+        public override bool Save()
         {
             foreach (var key in Prop.Keys.ToList())
                 Prop[key] = Prop[key].ToString()!;
 
-            base.Save();
+            bool saved = base.Save();
 
-            OriginalProp = new(Prop);
+            if (saved)
+            {
+                OriginalProp = new(Prop);
+                if (OperatingSystem.IsLinux())
+                    SyncToSoberConfig();
+            }
 
-            if (OperatingSystem.IsLinux())
-                SyncToSoberConfig();
+            return saved;
         }
 
         [System.Runtime.Versioning.SupportedOSPlatform("linux")]

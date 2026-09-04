@@ -33,7 +33,7 @@ namespace Froststrap
 
         public bool IsSaved => File.Exists(FileLocation);
 
-        public string? _savedHash;
+        protected string? _savedHash;
 
         protected virtual string ComputeHash(T obj)
         {
@@ -45,7 +45,7 @@ namespace Froststrap
         {
             get
             {
-                if (_savedHash == null) return false;
+                if (_savedHash == null) return true;
                 return ComputeHash(Prop) != _savedHash;
             }
         }
@@ -69,14 +69,12 @@ namespace Froststrap
                     _savedHash = ComputeHash(_prop);
 
                     App.Logger.Info("Loaded successfully!");
-
                     return true;
                 }
                 else
                 {
                     App.Logger.Error($"Could not find {FileLocation}.");
                     Loaded = true;
-
                     _savedHash = ComputeHash(_prop);
                     return false;
                 }
@@ -117,8 +115,14 @@ namespace Froststrap
             }
         }
 
-        public virtual async void Save()
+        public virtual bool Save()
         {
+            if (!HasUnsavedChanges)
+            {
+                App.Logger.Info("No changes, skipping save.");
+                return false;
+            }
+
             App.Logger.Info($"Saving to {FileLocation}...");
 
             Directory.CreateDirectory(Path.GetDirectoryName(FileLocation)!);
@@ -131,6 +135,8 @@ namespace Froststrap
 
                 LastFileHash = FastHash.FromString(contents);
                 _savedHash = ComputeHash(Prop);
+                App.Logger.Info("Save complete!");
+                return true;
             }
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
             {
@@ -138,12 +144,10 @@ namespace Froststrap
                 App.Logger.Error(ex);
 
                 string errorMessage = string.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_JsonManagerSaveFailed, ClassName, ex.Message);
-                await Frontend.ShowMessageBox(errorMessage, MessageBoxImage.Warning);
+                _ = Frontend.ShowMessageBox(errorMessage, MessageBoxImage.Warning);
 
-                return;
+                return false;
             }
-
-            App.Logger.Info("Save complete!");
         }
 
         public virtual void SaveSetting(string SettingName)
