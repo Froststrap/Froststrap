@@ -126,17 +126,17 @@ internal class SoberSettingsManager : JsonManager<Dictionary<string, object>>
         }
     }
 
-    public override void Save()
+    public override bool Save()
     {
         if (ComputeHash(Prop) == _savedHash) {
             App.Logger.Warn("No changes, bailing save.");
-            return;
+            return true;
         }
 
         if (!Loaded)
         {
             App.Logger.Warn("Save skipped – settings not loaded (non‑Linux or file missing/invalid).");
-            return;
+            return true;
         }
 
         App.Logger.Info($"Saving to {FileLocation}...");
@@ -148,11 +148,13 @@ internal class SoberSettingsManager : JsonManager<Dictionary<string, object>>
             File.WriteAllText(FileLocation, contents);
             _savedHash = ComputeHash(Prop);
             App.Logger.Debug("Save complete!");
+            return true;
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
         {
             App.Logger.Error($"Failed to save {ex}");
             _ = Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_JsonManagerSaveFailed, ClassName, ex.Message), MessageBoxImage.Warning);
+            return false;
         }
     }
 
