@@ -237,8 +237,9 @@ namespace Froststrap
         {
             App.Logger.Info($"Saving to {FileLocation}...");
 
-            if (ComputeHash() == _savedHash) {
-                App.Logger.Info("No changes, bailing save.");
+            if (!HasUnsavedChanges) 
+            {
+                App.Logger.Info("No changes, skipping save.");
                 return;
             }
 
