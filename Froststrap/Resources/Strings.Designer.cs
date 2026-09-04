@@ -962,6 +962,15 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Finished.
+        /// </summary>
+        public static string Common_Finished {
+            get {
+                return ResourceManager.GetString("Common.Finished", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Game.
         /// </summary>
         public static string Common_Game {
@@ -9103,7 +9112,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Check out our built in Better MatchMaking system, it changes the server your joinning to give you the best region, This feature requires a roblox cookie, Login to &apos;Account Manager&apos; or turn on &apos;Account Permission&apos;..
+        ///   Looks up a localized string similar to Automatically join the best regions for you when launching through browser..
         /// </summary>
         public static string Onboarding_Page4 {
             get {
@@ -9112,7 +9121,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Roblox has not been installed yet, that will happen the next time you launch Roblox with Froststrap, However before you do that, you may want to configure your settings..
+        ///   Looks up a localized string similar to Roblox has not been installed yet, that will happen the next time you launch Roblox with Froststrap..
         /// </summary>
         public static string Onboarding_Page7_Text1 {
             get {
@@ -9121,7 +9130,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Also, avoid using the &quot;Roblox Player&quot; shortcut to launch Roblox, as Froststrap won&apos;t launch with Roblox. If you don&apos;t see Froststrap show when launching from the website, simply launch Roblox with Froststrap once from the desktop to fix it..
+        ///   Looks up a localized string similar to Also, avoid using the &quot;Roblox Player&quot; shortcut to launch Roblox, If you don&apos;t see Froststrap when launching from the website, simply launch Roblox with Froststrap once from the desktop to fix..
         /// </summary>
         public static string Onboarding_Page7_Text2 {
             get {
