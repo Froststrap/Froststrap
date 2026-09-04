@@ -7,15 +7,45 @@
              xmlns:vm="using:Froststrap.UI.ViewModels.Onboarding"
              xmlns:resources="using:Froststrap.Resources"
              xmlns:controls="using:Froststrap.UI.Elements.Controls"
+             xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
              x:Class="Froststrap.UI.Elements.Onboarding.Pages.Page4"
              x:DataType="vm:Page4ViewModel">
+
     <ScrollViewer>
-        <StackPanel Spacing="16" Margin="0,0,16,0">
-            <TextBlock Text="{x:Static resources:Strings.Onboarding_Page4}" TextWrapping="Wrap" />
+        <StackPanel Margin="8">
+            <StackPanel Orientation="Vertical" Spacing="8" HorizontalAlignment="Center" Margin="0,0,0,12">
+                <ic:Lucide x:Name="HeaderIcon"
+                           Icon="Earth"
+                           Width="70"
+                           Height="70"
+                           HorizontalAlignment="Center"
+                           StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}"
+                           StrokeThickness="1.5">
+                    <ic:Lucide.Transitions>
+                        <Transitions>
+                            <DoubleTransition Property="Opacity" Duration="0:0:0.5" Easing="CubicEaseInOut" />
+                        </Transitions>
+                    </ic:Lucide.Transitions>
+                </ic:Lucide>
+                <TextBlock Text="{x:Static resources:Strings.Menu_Bootstrapper_Experimental_BetterMatchmaking_Title}"
+                           FontSize="20"
+                           FontWeight="SemiBold"
+                           HorizontalAlignment="Center"
+                           Margin="0,10,0,0" />
+            </StackPanel>
+
+            <TextBlock Text="{x:Static resources:Strings.Onboarding_Page4}"
+                       TextAlignment="Center"
+                       Margin="0,0,0,16"
+                       TextWrapping="Wrap"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center" />
+
             <controls:CardExpander Header="{x:Static resources:Strings.Menu_Bootstrapper_Experimental_BetterMatchmaking_Title}"
                                    Description="{x:Static resources:Strings.Menu_Bootstrapper_Experimental_BetterMatchmaking_Description}"
-                                   Classes="NoUserExpansion" IsExpanded="{Binding EnableBetterMatchmaking, Mode=OneWay}">
+                                   Classes="NoUserExpansion"
+                                   IsExpanded="{Binding EnableBetterMatchmaking, Mode=OneWay}">
                 <controls:CardExpander.HeaderContent>
                     <ToggleSwitch IsChecked="{Binding EnableBetterMatchmaking, Mode=TwoWay}" />
                 </controls:CardExpander.HeaderContent>
@@ -38,13 +68,12 @@
                     <controls:OptionControl
                         Header="{x:Static resources:Strings.Menu_Bootstrapper_PreferredRegion_Title}"
                         Description="{x:Static resources:Strings.Menu_Bootstrapper_PreferredRegion_Description}">
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="8">
                             <ui:FAProgressRing
                                 IsActive="{Binding IsLoadingRegions}"
                                 Width="20"
                                 Height="20"
-                                Margin="0,0,8,0"
-                                IsVisible="{Binding IsLoadingRegions}"/>
+                                IsVisible="{Binding IsLoadingRegions}" />
                             <ComboBox
                                 MinWidth="200"
                                 ItemsSource="{Binding AvailableRegions}"

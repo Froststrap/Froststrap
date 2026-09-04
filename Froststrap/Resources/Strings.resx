@@ -3066,6 +3066,9 @@ Would you like to visit the releases page now?</value>
   <data name="Common.Finish" xml:space="preserve">
     <value>Finish</value>
   </data>
+  <data name="Common.Finished" xml:space="preserve">
+    <value>Finished</value>
+  </data>
   <data name="Onboarding.Title" xml:space="preserve">
     <value>Froststrap Setup</value>
   </data>
@@ -3079,13 +3082,13 @@ Would you like to visit the releases page now?</value>
     <value>Or you can log in using our account manager, Which will also allow you to quickly swap between accounts and give you better game history in Quick Play.</value>
   </data>
   <data name="Onboarding.Page4" xml:space="preserve">
-    <value>Check out our built in Better MatchMaking system, it changes the server your joinning to give you the best region, This feature requires a roblox cookie, Login to 'Account Manager' or turn on 'Account Permission'.</value>
+    <value>Automatically join the best regions for you when launching through browser.</value>
   </data>
   <data name="Onboarding.Page7.Text1" xml:space="preserve">
-    <value>Roblox has not been installed yet, that will happen the next time you launch Roblox with Froststrap, However before you do that, you may want to configure your settings.</value>
+    <value>Roblox has not been installed yet, that will happen the next time you launch Roblox with Froststrap.</value>
   </data>
   <data name="Onboarding.Page7.Text2" xml:space="preserve">
-    <value>Also, avoid using the "Roblox Player" shortcut to launch Roblox, as Froststrap won't launch with Roblox. If you don't see Froststrap show when launching from the website, simply launch Roblox with Froststrap once from the desktop to fix it.</value>
+    <value>Also, avoid using the "Roblox Player" shortcut to launch Roblox, If you don't see Froststrap when launching from the website, simply launch Roblox with Froststrap once from the desktop to fix.</value>
   </data>
   <data name="Onboarding.Page7.Text3" xml:space="preserve">
     <value>What would you like to do?</value>

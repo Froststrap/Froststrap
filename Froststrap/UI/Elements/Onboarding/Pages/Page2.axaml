@@ -14,7 +14,7 @@
              x:DataType="vm:Page2ViewModel">
 
     <ScrollViewer>
-        <StackPanel Grid.Row="0" Margin="12">
+        <StackPanel Margin="8">
             <StackPanel Orientation="Vertical" Spacing="8" HorizontalAlignment="Center" Margin="0,0,0,12">
                 <lucideAvalonia:Lucide x:Name="HeaderIcon" Icon="Sparkles" Width="70" Height="70"
                                        HorizontalAlignment="Center"
@@ -30,7 +30,7 @@
                            FontSize="20" FontWeight="SemiBold"
                            HorizontalAlignment="Center" />
             </StackPanel>
-            <TextBlock Text="{x:Static resources:Strings.Onboarding_Page2}" HorizontalAlignment="Center" TextWrapping="Wrap" Margin="0,0,0,16" />
+            <TextBlock Text="{x:Static resources:Strings.Onboarding_Page2}" HorizontalAlignment="Center" TextAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" Margin="0,0,0,16" />
             <controls:OptionControl
                 Header="{x:Static resources:Strings.Menu_Appearance_WindowsBackdrop_Title}"
                 Description="{x:Static resources:Strings.Menu_Appearance_WindowsBackdrop_Description}"
@@ -84,7 +84,7 @@
                             </StackPanel>
 
                             <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
-                                <Button Content="{x:Static resources:Strings.Common_Export}" Command="{Binding ExportGradientCommand}" CommandParameter="{Binding $parent[TopLevel]}" Margin="0,4,0,0"/>
+                                <Button Content="{x:Static resources:Strings.Common_Export}" Command="{Binding ExportGradientCommand}" CommandParameter="{Binding $parent[TopLevel]}" Margin="8,4,0,0"/>
                                 <Button Content="{x:Static resources:Strings.Common_Import}" Command="{Binding ImportGradientCommand}" CommandParameter="{Binding $parent[TopLevel]}" Margin="0,4,0,0"/>
                             </StackPanel>
 

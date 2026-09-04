@@ -12,12 +12,12 @@
              x:Class="Froststrap.UI.Elements.Onboarding.Pages.Page1"
              x:DataType="vm:Page1ViewModel">
     <ScrollViewer>
-        <StackPanel Grid.Row="0" Margin="12">
+        <StackPanel Margin="8">
             <StackPanel Orientation="Vertical" Spacing="8" HorizontalAlignment="Center" Margin="0,0,0,12">
                 <lucideAvalonia:Lucide x:Name="HeaderIcon" Icon="Languages" Width="70" Height="70"
-                       HorizontalAlignment="Center"
-                       StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}"
-                       StrokeThickness="1.5">
+                                       HorizontalAlignment="Center"
+                                       StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}"
+                                       StrokeThickness="1.5">
                     <lucideAvalonia:Lucide.Transitions>
                         <Transitions>
                             <DoubleTransition Property="Opacity" Duration="0:0:0.5" Easing="CubicEaseInOut" />
@@ -32,7 +32,7 @@
                      ItemsSource="{Binding Languages, Mode=OneTime}"
                      SelectedItem="{Binding SelectedLanguage, Mode=TwoWay}"
                      Width = "350"
-                     MaxHeight="250"
+                     MaxHeight="265"
                      Background="Transparent"
                      BorderThickness="0"
                      Padding="0">
