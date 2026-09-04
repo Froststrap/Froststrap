@@ -2036,25 +2036,6 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Froststrap no longer supports Bloxshade.
-        ///For more information join Bloxshade discord server..
-        /// </summary>
-        public static string Dialog_Bloxshade_Setting {
-            get {
-                return ResourceManager.GetString("Dialog.Bloxshade.Setting", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Sorry.
-        /// </summary>
-        public static string Dialog_Bloxshade_ThankYou {
-            get {
-                return ResourceManager.GetString("Dialog.Bloxshade.ThankYou", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Froststrap was unable to create shortcut. Try creating them later through the settings..
         /// </summary>
         public static string Dialog_CannotCreateShortcuts {
