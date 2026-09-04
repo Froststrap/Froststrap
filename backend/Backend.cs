@@ -14,8 +14,7 @@ internal partial class InternalVirtualDisplay
     )]
     public static partial int Start(
         int width,
-        int height,
-        [MarshalAs(UnmanagedType.I1)] bool showMenu
+        int height
     );
     [LibraryImport(
         "virtualdisplay",
@@ -32,8 +31,7 @@ public class VirtualDisplay
     public static void Start() {
         var result = InternalVirtualDisplay.Start(
             1920,
-            1080,
-            false
+            1080
         );
 
         Console.WriteLine($"Virtual display started: {result}");
