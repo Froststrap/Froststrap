@@ -7,6 +7,3 @@
 [submodule "LucideAvalonia"]
 	path = LucideAvalonia
 	url = https://github.com/Froststrap/LucideAvalonia.git
-[submodule "macApp/virtualdisplay"]
-	path = macApp/virtualdisplay
-	url = https://github.com/Froststrap/virtualdisplay
