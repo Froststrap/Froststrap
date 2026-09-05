@@ -54,7 +54,7 @@
                 <Button Margin="0,0,8,8"
                         Content="{x:Static resources:Strings.Menu_About_HelpInformation}"
                         Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
-                        CommandParameter="https://github.com/bloxstraplabs/bloxstrap/wiki" />
+                        CommandParameter="https://bloxstraplabs.com/wiki/" />
 
                 <Button Margin="0,0,8,8"
                         Content="{x:Static resources:Strings.Menu_About_ReportIssue}"
