@@ -14,7 +14,6 @@ using Froststrap.UI.Utility;
 using Froststrap.UI.ViewModels.Settings;
 using LucideAvalonia.Enum;
 using System.ComponentModel;
-using Avalonia.Controls.Shapes;
 
 namespace Froststrap.UI.Elements.Settings
 {
@@ -376,7 +375,6 @@ namespace Froststrap.UI.Elements.Settings
             var notificationPanel = this.FindControl<Panel>("NotificationPanel");
             if (notificationPanel == null) return;
 
-            var accentColor = type == FAInfoBarSeverity.Success ? "#00D084" : "#FFB900";
             var iconSymbol = customIcon ?? (type == FAInfoBarSeverity.Success
                 ? LucideIconNames.CircleCheck
                 : LucideIconNames.TriangleAlert);
@@ -386,13 +384,18 @@ namespace Froststrap.UI.Elements.Settings
                 ColumnDefinitions = new ColumnDefinitions("Auto,*,Auto"),
                 Margin = new Thickness(0)
             };
-
-            var icon = new Ellipse
+            var icon = new LucideAvalonia.Lucide
             {
-                Width = 12,
-                Height = 12,
-                Margin = new Thickness(25),
-                Fill = new SolidColorBrush(Color.Parse(accentColor)),
+                Icon = type == FAInfoBarSeverity.Success ? LucideIconNames.Check : LucideIconNames.X,
+                StrokeBrush = new SolidColorBrush(
+                    type == FAInfoBarSeverity.Success
+                        ? Color.Parse("#00D084")
+                        : Color.Parse("#FFB900")
+                ),
+                Margin = new Thickness(25, 15, 20, 15),
+                FontSize = 20,
+                Width = 20,
+                Height = 20,
             };
             Grid.SetColumn(icon, 0);
             contentGrid.Children.Add(icon);
