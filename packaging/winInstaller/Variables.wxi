@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Include xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <?define AppName = "Froststrap" ?>
+  <?define AppExe = "Froststrap.exe" ?>
+  <?define UpgradeCode = "7845a74c-d336-46c9-85ed-edd69e2dbc53" ?>
+</Include>

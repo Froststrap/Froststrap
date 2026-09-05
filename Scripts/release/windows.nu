@@ -5,7 +5,8 @@ def main [
 ] {
   mkdir $build_dir
   let temp_publish = $"($build_dir)/temp-contained"
-  let version = (git describe --tags --abbrev=0 | str trim | str replace -r '^v' '')
+  let raw_version = (git describe --tags --abbrev=0 | str trim)
+  let version = (to-msi-version $raw_version)
   let nuget_config = $"($env.CURRENT_FILE | path dirname)/../../nuget.config"
 
   dotnet publish $project /p:PublishProfile=Publish-windows-x64 -c $config -o $temp_publish --configfile $nuget_config
@@ -28,4 +29,16 @@ def main [
 
   rm -r -f $temp_publish
   print $"(ansi green)Windows installer complete: ($build_dir)/Froststrap-Setup.msi(ansi reset)"
+}
+
+def to-msi-version [semver: string] {
+  let clean = ($semver | str replace -r '^v' '')
+  let parts = ($clean | split row '-')
+  let base = ($parts | first)
+  let revision = if ($parts | length) > 1 {
+    $parts | last | split row '.' | last
+  } else {
+    "0"
+  }
+  $"($base).($revision)"
 }
