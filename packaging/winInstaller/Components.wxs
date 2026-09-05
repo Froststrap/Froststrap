@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Fragment>
+    <ComponentGroup Id="AppFiles" Directory="INSTALLFOLDER">
+      <Component Id="AppExeComponent" Guid="*">
+        <File Id="AppExeFile" Source="$(PublishDir)\Froststrap.exe" KeyPath="yes" />
+      </Component>
+
+      <Component Id="FluentAvaloniaXmlComponent" Guid="*">
+        <File Source="$(PublishDir)\FluentAvalonia.xml" />
+      </Component>
+
+      <Component Id="AppIconComponent" Guid="*">
+        <File Id="IconFile" Source="..\..\Froststrap\Froststrap.ico" />
+      </Component>
+
+      <Component Id="AppPathRegistry" Guid="*">
+        <RegistryKey Root="HKCU" Key="Software\Froststrap">
+          <RegistryValue Name="InstallLocation" Type="string" Value="[INSTALLFOLDER]" />
+          <RegistryValue Name="AppPath" Type="string" Value="[INSTALLFOLDER]Froststrap.exe" KeyPath="yes" />
+        </RegistryKey>
+        <RegistryKey Root="HKCU" Key="Software\Microsoft\Windows\CurrentVersion\App Paths\Froststrap.exe">
+          <RegistryValue Value="[INSTALLFOLDER]Froststrap.exe" Type="string" />
+        </RegistryKey>
+      </Component>
+    </ComponentGroup>
+
+    <ComponentGroup Id="ShortcutComponents">
+      <Component Id="DesktopShortcutComponent" Directory="DesktopFolder" Guid="*">
+        <Shortcut Id="DesktopShortcut"
+                  Name="Froststrap"
+                  Target="[INSTALLFOLDER]Froststrap.exe"
+                  Icon="AppIcon.ico" />
+        <RegistryValue Root="HKCU" Key="Software\Froststrap" Name="DesktopShortcutInstalled"
+                        Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+
+      <Component Id="StartMenuShortcutComponent" Directory="AppProgramMenuFolder" Guid="*">
+        <Shortcut Id="StartMenuShortcut"
+                  Name="Froststrap"
+                  Target="[INSTALLFOLDER]Froststrap.exe"
+                  Icon="AppIcon.ico" />
+        <RemoveFolder Id="RemoveAppProgramMenuFolder" On="uninstall" />
+        <RegistryValue Root="HKCU" Key="Software\Froststrap" Name="StartMenuShortcutInstalled"
+                        Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+</Wix>
