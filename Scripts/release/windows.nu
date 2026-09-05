@@ -17,7 +17,7 @@ def main [
   let publish_dir_abs = ($temp_publish | path expand)
   let wix_project = "packaging/winInstaller/Froststrap.wixproj"
 
-  dotnet build $wix_project -c $config -p:PublishDir=$publish_dir_abs -p:AppVersion=$version
+  dotnet build $wix_project -c $config $"-p:PublishDir=($publish_dir_abs)" $"-p:AppVersion=($version)"
   if $env.LAST_EXIT_CODE != 0 {
     print -e $"WiX build failed with exit code ($env.LAST_EXIT_CODE)"
     exit $env.LAST_EXIT_CODE
