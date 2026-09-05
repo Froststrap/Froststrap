@@ -2,18 +2,21 @@
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
   <Fragment>
     <ComponentGroup Id="AppFiles" Directory="INSTALLFOLDER">
-      <Component Id="AppExeComponent" Guid="*">
-        <File Id="AppExeFile" Source="$(PublishDir)\Froststrap.exe" KeyPath="yes" />
+      <Component Id="AppExeComponent" Guid="4c5b6bf8-eb90-47e8-a671-b622d6c233c5">
+        <File Id="AppExeFile" Source="$(PublishDir)\Froststrap.exe" />
+        <RegistryValue Root="HKCU" Key="Software\Froststrap\Components"
+                       Name="AppExeComponent" Type="integer" Value="1" KeyPath="yes" />
       </Component>
-
-      <Component Id="FluentAvaloniaXmlComponent" Guid="*">
+      <Component Id="FluentAvaloniaXmlComponent" Guid="0e3d6196-9cea-4663-8668-99093da1d5cc">
         <File Source="$(PublishDir)\FluentAvalonia.xml" />
+        <RegistryValue Root="HKCU" Key="Software\Froststrap\Components"
+                       Name="FluentAvaloniaXmlComponent" Type="integer" Value="1" KeyPath="yes" />
       </Component>
-
-      <Component Id="AppIconComponent" Guid="*">
+      <Component Id="AppIconComponent" Guid="6120e03d-d858-4491-9cdf-2b8d17849a23">
         <File Id="IconFile" Source="..\..\Froststrap\Froststrap.ico" />
+        <RegistryValue Root="HKCU" Key="Software\Froststrap\Components"
+                       Name="AppIconComponent" Type="integer" Value="1" KeyPath="yes" />
       </Component>
-
       <Component Id="AppPathRegistry" Guid="*">
         <RegistryKey Root="HKCU" Key="Software\Froststrap">
           <RegistryValue Name="InstallLocation" Type="string" Value="[INSTALLFOLDER]" />
@@ -23,8 +26,14 @@
           <RegistryValue Value="[INSTALLFOLDER]Froststrap.exe" Type="string" />
         </RegistryKey>
       </Component>
+      <!-- ICE64: per-user INSTALLFOLDER must have an explicit RemoveFile/RemoveFolder sweep -->
+      <Component Id="RemoveInstallFolderComponent" Guid="*">
+        <RegistryValue Root="HKCU" Key="Software\Froststrap\Components"
+                       Name="RemoveInstallFolderComponent" Type="integer" Value="1" KeyPath="yes" />
+        <RemoveFile Id="RemoveAllInstallFiles" Name="*.*" On="uninstall" />
+        <RemoveFolder Id="RemoveInstallFolderOnUninstall" On="uninstall" />
+      </Component>
     </ComponentGroup>
-
     <ComponentGroup Id="ShortcutComponents">
       <Component Id="DesktopShortcutComponent" Directory="DesktopFolder" Guid="*">
         <Shortcut Id="DesktopShortcut"
@@ -34,7 +43,6 @@
         <RegistryValue Root="HKCU" Key="Software\Froststrap" Name="DesktopShortcutInstalled"
                         Type="integer" Value="1" KeyPath="yes" />
       </Component>
-
       <Component Id="StartMenuShortcutComponent" Directory="AppProgramMenuFolder" Guid="*">
         <Shortcut Id="StartMenuShortcut"
                   Name="Froststrap"
