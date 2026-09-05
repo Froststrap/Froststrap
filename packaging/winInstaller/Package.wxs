@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui"
+     xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util">
+  <Package Name="$(AppName)"
+            Manufacturer="Froststrap"
+            Version="$(AppVersion)"
+            UpgradeCode="$(UpgradeCode)"
+            Scope="perUser"
+            Language="1033">
+
+    <SummaryInformation Keywords="Installer" />
+
+    <MajorUpgrade
+        DowngradeErrorMessage="A newer version of $(AppName) is already installed."
+        Schedule="afterInstallExecute" />
+
+    <MediaTemplate EmbedCab="yes" CompressionLevel="high" />
+
+    <Property Id="ARPHELPLINK" Value="https://github.com/Froststrap/Froststrap/wiki" />
+    <Property Id="ARPURLINFOABOUT" Value="https://github.com/Froststrap/Froststrap/issues/new" />
+    <Property Id="ARPURLUPDATEINFO" Value="https://github.com/Froststrap/Froststrap/releases" />
+    <Property Id="ARPNOREPAIR" Value="1" />
+    <Property Id="ARPPRODUCTICON" Value="AppIcon.ico" />
+
+    <Icon Id="AppIcon.ico" SourceFile="..\..\Froststrap\Froststrap.ico" />
+
+    <StandardDirectory Id="LocalAppDataFolder">
+      <Directory Id="INSTALLFOLDER" Name="Froststrap" />
+    </StandardDirectory>
+    <StandardDirectory Id="DesktopFolder" />
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="AppProgramMenuFolder" Name="Froststrap" />
+    </StandardDirectory>
+
+    <Feature Id="MainApplication" Title="Froststrap" Level="1" AllowAbsent="no">
+      <ComponentGroupRef Id="AppFiles" />
+      <ComponentRef Id="AppPathRegistry" />
+    </Feature>
+
+    <Feature Id="DesktopShortcutFeature" Title="Desktop Shortcut" Level="1">
+      <ComponentRef Id="DesktopShortcutComponent" />
+    </Feature>
+
+    <Feature Id="StartMenuShortcutFeature" Title="Start Menu Shortcut" Level="1">
+      <ComponentRef Id="StartMenuShortcutComponent" />
+    </Feature>
+
+    <CustomAction Id="RunAppUninstall"
+                  ExeCommand="-uninstall -quiet -nsis"
+                  FileRef="AppExeFile"
+                  Execute="deferred"
+                  Return="ignore"
+                  Impersonate="yes" />
+
+    <InstallExecuteSequence>
+      <Custom Action="RunAppUninstall" Before="RemoveFiles">REMOVE~="ALL"</Custom>
+    </InstallExecuteSequence>
+
+    <ui:WixUI Id="WixUI_FeatureTree" />
+  </Package>
+</Wix>
