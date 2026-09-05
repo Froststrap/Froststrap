@@ -32,14 +32,14 @@
                 x:Name="ActivityTrackingOption"
                 Description="{x:Static resources:Strings.Menu_Integrations_EnableActivityTracking_Description}"
                 Header="{x:Static resources:Strings.Menu_Integrations_EnableActivityTracking_Title}"
-                HelpLink="https://github.com/bloxstraplabs/bloxstrap/wiki/What-is-activity-tracking%3F">
+                HelpLink="https://bloxstraplabs.com/wiki/features/activity-tracking/">
                 <ToggleSwitch IsChecked="{Binding ActivityTrackingEnabled, Mode=TwoWay}" />
             </controls:OptionControl>
 
             <controls:OptionControl
                 Description="{x:Static resources:Strings.Menu_Integrations_QueryServerLocation_Description}"
                 Header="{x:Static resources:Strings.Menu_Integrations_QueryServerLocation_Title}"
-                HelpLink="https://github.com/bloxstraplabs/bloxstrap/wiki/What-is-activity-tracking%3F#server-location-querying"
+                HelpLink="https://bloxstraplabs.com/wiki/features/server-location-hints/"
                 IsEnabled="{Binding ActivityTrackingEnabled}">
                 <ToggleSwitch IsChecked="{Binding ShowServerDetailsEnabled, Mode=TwoWay}" />
             </controls:OptionControl>
@@ -140,9 +140,9 @@
             <controls:CardExpander Header="{x:Static resources:Strings.Menu_Integrations_BlockCardExpander_Title}" Description="{x:Static resources:Strings.Menu_Integrations_BlockCardExpander_Description}" IsExpanded="True">
                 <StackPanel>
                     <controls:OptionControl
-                        Description="{Binding Source={x:Static resources:Strings.Menu_Integrations_DesktopApp_Description}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://github.com/bloxstraplabs/bloxstrap/wiki/What-is-activity-tracking%3F#dont-exit-to-desktop-app'}"
+                        Description="{Binding Source={x:Static resources:Strings.Menu_Integrations_DesktopApp_Description}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://bloxstraplabs.com/wiki/features/dont-exit-to-desktop-app/'}"
                         Header="{x:Static resources:Strings.Menu_Integrations_DesktopApp_Title}"
-                        HelpLink="https://github.com/bloxstraplabs/bloxstrap/wiki/What-is-activity-tracking%3F#dont-exit-to-desktop-app"
+                        HelpLink="https://bloxstraplabs.com/wiki/features/dont-exit-to-desktop-app/"
                         IsEnabled="{Binding ActivityTrackingEnabled}">
                         <ToggleSwitch IsChecked="{Binding DisableAppPatchEnabled, Mode=TwoWay}" />
                     </controls:OptionControl>
@@ -174,7 +174,7 @@
             <controls:MarkdownTextBlock
                 IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}"
                 Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                MarkdownText="{Binding Source={x:Static resources:Strings.Menu_Integrations_RequiresActivityTracking}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://github.com/bloxstraplabs/bloxstrap/wiki/What-is-activity-tracking%3F#discord-rich-presence'}"
+                MarkdownText="{Binding Source={x:Static resources:Strings.Menu_Integrations_RequiresActivityTracking}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://bloxstraplabs.com/wiki/features/discord-rich-presence/'}"
                 TextWrapping="Wrap"
                 Margin="0,2,0,10"
             />
@@ -199,7 +199,7 @@
 
             <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}"
                                     x:Name="DiscordActivityOption"
-                                    Description="{Binding Source={x:Static resources:Strings.Menu_Integrations_ShowGameActivity_Description}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://github.com/bloxstraplabs/bloxstrap/wiki/Discord-Rich-Presence-does-not-work'}"
+                                    Description="{Binding Source={x:Static resources:Strings.Menu_Integrations_ShowGameActivity_Description}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://bloxstraplabs.com/wiki/help/discord-rich-presence-not-working/'}"
                                     Header="{x:Static resources:Strings.Menu_Integrations_ShowGameActivity_Title}"
                                     IsEnabled="{Binding ActivityTrackingEnabled}">
                 <ToggleSwitch IsChecked="{Binding DiscordActivityEnabled, Mode=TwoWay}" />
