@@ -16,7 +16,7 @@ def main [
   }
 
   let publish_dir_abs = ($temp_publish | path expand)
-  let wix_project = "packaging/winInstaller/Froststrap.wixproj"
+  let wix_project = "packaging/winInstaller/winInstaller.wixproj"
 
   dotnet build $wix_project -c $config $"-p:PublishDir=($publish_dir_abs)" $"-p:AppVersion=($version)"
   if $env.LAST_EXIT_CODE != 0 {
