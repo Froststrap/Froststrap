@@ -1,7 +1,7 @@
 def main [
   --sign
 ] {
-  let xcode_project_dir = "macApp"
+  let xcode_project_dir = "packaging/macApp"
   let xcode_project = "macApp.xcodeproj"
   let xcode_scheme = "Froststrap"
   let entitlements_path = $"($xcode_project_dir)/Froststrap.entitlements"
