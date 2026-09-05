@@ -14,9 +14,9 @@
     <ScrollViewer>
         <StackPanel Margin="14">
             <controls:OptionControl
-                Description="{Binding Source={x:Static resources:Strings.Menu_Shortcuts_ExtractIcons_Description}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://github.com/bloxstraplabs/bloxstrap/wiki/Using-Roblox-icons-for-your-shortcuts'}"
+                Description="{Binding Source={x:Static resources:Strings.Menu_Shortcuts_ExtractIcons_Description}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://bloxstraplabs.com/wiki/info/using-roblox-icons-for-shortcuts/'}"
                 Header="{x:Static resources:Strings.Menu_Shortcuts_ExtractIcons_Title}"
-                HelpLink="https://github.com/bloxstraplabs/bloxstrap/wiki/Using-Roblox-icons-for-your-shortcuts">
+                HelpLink="https://bloxstraplabs.com/wiki/info/using-roblox-icons-for-shortcuts/">
                 <ToggleSwitch IsChecked="{Binding ExtractIconsTask.NewState, Mode=TwoWay}" />
             </controls:OptionControl>
 
