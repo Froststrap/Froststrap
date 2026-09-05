@@ -1,5 +1,4 @@
 <Project Sdk="WixToolset.Sdk/5.0.0">
-
   <PropertyGroup>
     <OutputType>Package</OutputType>
     <OutputName>Froststrap-Setup</OutputName>
