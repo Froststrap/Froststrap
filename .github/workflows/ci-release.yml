@@ -69,7 +69,7 @@ jobs:
 
       - uses: cachix/cachix-action@v14
         with:
-          name: mycache
+          name: invra
           authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
 
       - name: Remove stale signing keychain
