@@ -57,6 +57,9 @@ sealed class Program
     {
         var builder = AppBuilder.Configure<App>()
             .UsePlatformDetect()
+#if DEBUG
+            .WithDeveloperTools()
+#endif
             .LogToTrace();
 
         if (OperatingSystem.IsLinux() &&
