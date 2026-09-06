@@ -24,11 +24,11 @@ def main [
     exit $env.LAST_EXIT_CODE
   }
 
-  let wix_output = "packaging/winInstaller/bin/Release/Froststrap-Setup.msi"
-  cp $wix_output $"($build_dir)/Froststrap-Setup.msi"
+  let wix_output = "packaging/winInstaller/bin/Release/Froststrap-windows.msi"
+  cp $wix_output $"($build_dir)/Froststrap-windows.msi"
 
   rm -r -f $temp_publish
-  print $"(ansi green)Windows installer complete: ($build_dir)/Froststrap-Setup.msi(ansi reset)"
+  print $"(ansi green)Windows installer complete: ($build_dir)/Froststrap-windows.msi(ansi reset)"
 }
 
 def to-msi-version [semver: string] {
