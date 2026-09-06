@@ -43,13 +43,13 @@
     BeforeTargets="BeforeBuild"
     Condition="$([MSBuild]::IsOSPlatform('OSX'))">
     <Exec Command="nu output_dylib.nu"
-          WorkingDirectory="$(MSBuildProjectDirectory)/../packaging/macApp/virtualdisplay" />
+          WorkingDirectory="$(MSBuildProjectDirectory)/virtualdisplay" />
     <PropertyGroup>
-      <VirtualDisplayBuildDir Condition="Exists('$(MSBuildProjectDirectory)/../packaging/macApp/virtualdisplay/.build/out')">out</VirtualDisplayBuildDir>
-      <VirtualDisplayBuildDir Condition="Exists('$(MSBuildProjectDirectory)/../packaging/macApp/virtualdisplay/.build/apple')">apple</VirtualDisplayBuildDir>
+      <VirtualDisplayBuildDir Condition="Exists('$(MSBuildProjectDirectory)/virtualdisplay/.build/out')">out</VirtualDisplayBuildDir>
+      <VirtualDisplayBuildDir Condition="Exists('$(MSBuildProjectDirectory)/virtualdisplay/.build/apple')">apple</VirtualDisplayBuildDir>
     </PropertyGroup>
     <ItemGroup>
-      <Content Include="$(MSBuildProjectDirectory)/../packaging/macApp/virtualdisplay/.build/$(VirtualDisplayBuildDir)/Products/Release/libvirtualdisplay.dylib">
+      <Content Include="$(MSBuildProjectDirectory)/virtualdisplay/.build/$(VirtualDisplayBuildDir)/Products/Release/libvirtualdisplay.dylib">
         <Link>libvirtualdisplay.dylib</Link>
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         <Visible>false</Visible>
