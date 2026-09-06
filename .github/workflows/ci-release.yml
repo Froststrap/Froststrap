@@ -28,9 +28,6 @@ jobs:
           }
           echo $nuDir >> $env:GITHUB_PATH
           
-      - name: Install NSIS
-        uses: negrutiu/nsis-install@v2
-
       - name: Set short SHA
         shell: pwsh
         run: |
