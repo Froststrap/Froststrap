@@ -73,7 +73,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 75521DBC303B33DE00747566 /* Build configuration list for PBXNativeTarget "Froststrap" */;
 			buildPhases = (
-				75B1A1243049AD3F004C47A8 /* ShellScript */,
+				75B1A1243049AD3F004C47A8 /* Run Script */,
 				75521DB2303B33DD00747566 /* Resources */,
 				75D14647303C41B400912A00 /* CopyFiles */,
 				7586052D3042B91600F953E7 /* Copy Files */,
@@ -131,8 +131,9 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		75B1A1243049AD3F004C47A8 /* ShellScript */ = {
+		75B1A1243049AD3F004C47A8 /* Run Script */ = {
 			isa = PBXShellScriptBuildPhase;
+			name = "Run Script";
 			shellPath = /bin/sh;
 			shellScript = (
 				"#!/bin/bash",
@@ -199,16 +200,16 @@
 				"    -o \"$OUTPUT_DIR/$TARGET_ARCH\" \\",
 				"    --configfile \"$SRCROOT/../../nuget.config\"",
 				"",
-				"if [ -d \"./virtualdisplay/.build/out\" ]; then",
+				"if [ -d \"../../backend/virtualdisplay/.build/out\" ]; then",
 				"  BUILD_DIR=\"out\"",
-				"elif [ -d \"./virtualdisplay/.build/apple\" ]; then",
+				"elif [ -d \"../../backend/virtualdisplay/.build/apple\" ]; then",
 				"  BUILD_DIR=\"apple\"",
 				"else",
 				"  echo \"error: neither .build/out nor .build/apple exists\" >&2",
 				"  exit 1",
 				"fi",
 				"",
-				"cp \"./virtualdisplay/.build/$BUILD_DIR/Products/Release/libvirtualdisplay.dylib\" \"$OUTPUT_DIR/libvirtualdisplay.dylib\"",
+				"cp \"../../backend/virtualdisplay/.build/$BUILD_DIR/Products/Release/libvirtualdisplay.dylib\" \"$OUTPUT_DIR/libvirtualdisplay.dylib\"",
 				"",
 				"cp \"$OUTPUT_DIR/$TARGET_ARCH/Froststrap\" \"$OUTPUT_DIR/Froststrap\"",
 				"",
