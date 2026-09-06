@@ -2820,7 +2820,11 @@ exit";
             if (string.IsNullOrEmpty(_latestVersionDirectory))
                 return;
 
-            string clientSettingsDir = Path.Combine(_latestVersionDirectory, "ClientSettings");
+            string clientSettingsRoot = OperatingSystem.IsMacOS()
+                ? Path.Combine(_latestVersionDirectory, AppData.ExecutableName, "Contents", "MacOS")
+                : _latestVersionDirectory;
+
+            string clientSettingsDir = Path.Combine(clientSettingsRoot, "ClientSettings");
             Directory.CreateDirectory(clientSettingsDir);
             string destPath = Path.Combine(clientSettingsDir, "ClientAppSettings.json");
 
@@ -3287,8 +3291,12 @@ exit";
                 .OrderByDescending(x => x.Priority)
                 .ToList();
 
+            string appBundleContentsDirectory = Path.Combine(_latestVersionDirectory, AppData.ExecutableName, "Contents");
             string contentDirectory = OperatingSystem.IsMacOS()
-                ? Path.Combine(_latestVersionDirectory, AppData.ExecutableName, "Contents", "Resources")
+                ? Path.Combine(appBundleContentsDirectory, "Resources")
+                : _latestVersionDirectory;
+            string clientSettingsBaseDirectory = OperatingSystem.IsMacOS()
+                ? Path.Combine(appBundleContentsDirectory, "MacOS")
                 : _latestVersionDirectory;
 
             if (OperatingSystem.IsMacOS())
@@ -3344,7 +3352,7 @@ exit";
                 App.Logger.Info($"Begin font check using '{customFontFilename}' from '{customFontPath}' saving to '{fontFamiliesFolder}'");
                 Directory.CreateDirectory(fontFamiliesFolder);
 
-                string contentFolder = Path.Combine(_latestVersionDirectory, "content");
+                string contentFolder = Path.Combine(contentDirectory, "content");
                 Directory.CreateDirectory(contentFolder);
                 string fontsFolder = Path.Combine(contentFolder, "fonts");
                 Directory.CreateDirectory(fontsFolder);
@@ -3410,7 +3418,7 @@ exit";
                         relativeFile.EndsWith(".lock", StringComparison.Ordinal) ||
                         relativeFile.EndsWith(".dll", StringComparison.Ordinal) ||
                         relativeFile.EndsWith(".exe", StringComparison.Ordinal) ||
-                        relativeFile.StartsWith("ClientSettings\\", StringComparison.Ordinal))
+                        IsClientSettingsRelativePath(relativeFile))
                         continue;
 
                     var info = new FileInfo(file);
@@ -3437,7 +3445,7 @@ exit";
                             relativeFile.EndsWith(".lock", StringComparison.Ordinal) ||
                             relativeFile.EndsWith(".dll", StringComparison.Ordinal) ||
                             relativeFile.EndsWith(".exe", StringComparison.Ordinal) ||
-                            relativeFile.StartsWith("ClientSettings\\", StringComparison.Ordinal))
+                            IsClientSettingsRelativePath(relativeFile))
                             continue;
 
                         var info = new FileInfo(file);
@@ -3464,7 +3472,7 @@ exit";
                     if (relativeFile == "README.txt" ||
                         relativeFile.EndsWith("info.json", StringComparison.Ordinal) ||
                         relativeFile.EndsWith(".lock", StringComparison.Ordinal) ||
-                        relativeFile.StartsWith("ClientSettings\\", StringComparison.Ordinal))
+                        IsClientSettingsRelativePath(relativeFile))
                         continue;
 
                     string? fileNameWithoutExt = Path.GetFileNameWithoutExtension(relativeFile);
@@ -3608,11 +3616,11 @@ exit";
                 bool profileApplied = false;
                 string source = Path.Combine(Paths.Modifications, "ClientSettings", "ClientAppSettings.json");
                 string rel = Path.Combine("ClientSettings", "ClientAppSettings.json");
-                string dest = Path.Combine(contentDirectory, rel);
+                string dest = Path.Combine(clientSettingsBaseDirectory, rel);
 
                 if (_joinData.PlaceId.HasValue && _joinData.PlaceId.Value > 0)
                 {
-                    profileApplied = await ApplyFastFlagsBasedOnPlaceId(_joinData.PlaceId.Value, contentDirectory);
+                    profileApplied = await ApplyFastFlagsBasedOnPlaceId(_joinData.PlaceId.Value, clientSettingsBaseDirectory);
                     if (profileApplied && File.Exists(dest))
                     {
                         var destInfo = new FileInfo(dest);
@@ -3653,7 +3661,7 @@ exit";
             else
             {
                 string rel = Path.Combine("ClientSettings", "ClientAppSettings.json");
-                string dest = Path.Combine(contentDirectory, rel);
+                string dest = Path.Combine(clientSettingsBaseDirectory, rel);
                 if (File.Exists(dest))
                 {
                     try
@@ -3681,9 +3689,13 @@ exit";
 
                 if (OperatingSystem.IsMacOS())
                 {
+                    bool isClientSettingsFile = IsClientSettingsRelativePath(actualFile);
                     string backupDir = GetResourcesBackupPath(_latestVersionGuid);
                     string sourceFile = Path.Combine(backupDir, actualFile);
-                    string destFile = Path.Combine(contentDirectory, actualFile);
+                    string targetRoot = isClientSettingsFile
+                        ? clientSettingsBaseDirectory
+                        : contentDirectory;
+                    string destFile = Path.Combine(targetRoot, actualFile);
                     if (File.Exists(sourceFile))
                     {
                         Directory.CreateDirectory(Path.GetDirectoryName(destFile)!);
@@ -3692,7 +3704,15 @@ exit";
                     }
                     else
                     {
-                        App.Logger.Warn($"Backup file not found: {actualFile}");
+                        if (isClientSettingsFile && File.Exists(destFile))
+                        {
+                            File.Delete(destFile);
+                            App.Logger.Info($"Deleted stale ClientSettings file '{actualFile}'");
+                        }
+                        else
+                        {
+                            App.Logger.Warn($"Backup file not found: {actualFile}");
+                        }
                     }
                     continue;
                 }
@@ -3809,7 +3829,7 @@ exit";
             App.Logger.Info("Mod folder initialization complete.");
         }
 
-        private static async Task<bool> ApplyFastFlagsBasedOnPlaceId(long placeId, string contentDirectory)
+        private static async Task<bool> ApplyFastFlagsBasedOnPlaceId(long placeId, string clientSettingsBaseDirectory)
         {
             if (placeId <= 0 || !App.Settings.Prop.UseFastFlagManager)
                 return false;
@@ -3844,8 +3864,8 @@ exit";
                             return false;
                         }
 
-                        Directory.CreateDirectory(Path.Combine(contentDirectory, "ClientSettings"));
-                        string destPath = Path.Combine(contentDirectory, "ClientSettings", "ClientAppSettings.json");
+                        Directory.CreateDirectory(Path.Combine(clientSettingsBaseDirectory, "ClientSettings"));
+                        string destPath = Path.Combine(clientSettingsBaseDirectory, "ClientSettings", "ClientAppSettings.json");
 
                         await File.WriteAllTextAsync(destPath, profileJson);
 
@@ -3862,6 +3882,12 @@ exit";
 
             App.Logger.Info($"No FastFlag profile found for place ID {placeId}");
             return false;
+        }
+
+        private static bool IsClientSettingsRelativePath(string relativePath)
+        {
+            string normalizedPath = relativePath.Replace('\\', '/');
+            return normalizedPath.StartsWith("ClientSettings/", StringComparison.OrdinalIgnoreCase);
         }
 
         private static string GetResourcesBackupPath(string versionGuid)
