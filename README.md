@@ -26,7 +26,7 @@
 </div>
 
 > [!CAUTION]
-> The repo, [Froststrap/Froststrap](https://github.com/Froststrap/Froststrap.git), and [our website](https://froststrap.github.io), are the **ONLY PLACES** you should
+> The repo, [Froststrap/Froststrap](https://github.com/Froststrap/Froststrap.git), and [our website](https://froststrap.xyz/), are the **ONLY PLACES** you should
 > download the binary/executable from, as any other source is **NOT** affiliated with us, and is a potential threat. 
 
 >[!NOTE]
