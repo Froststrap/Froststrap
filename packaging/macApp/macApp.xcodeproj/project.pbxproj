@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		752C3D6E304D7E9F0076F31A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 752C3D6D304D7E9F0076F31A /* Assets.xcassets */; };
 		75BBCE743045F59600254A5F /* libvirtualdisplay.dylib in Copy Files */ = {isa = PBXBuildFile; fileRef = 75BBCE733045F59500254A5F /* libvirtualdisplay.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		75D1464C303C424900912A00 /* Froststrap in CopyFiles */ = {isa = PBXBuildFile; fileRef = 75D1464B303C424900912A00 /* Froststrap */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 /* End PBXBuildFile section */
@@ -32,19 +33,12 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		752C3D6D304D7E9F0076F31A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		75BBCE733045F59500254A5F /* libvirtualdisplay.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libvirtualdisplay.dylib; path = build/dotnet/libvirtualdisplay.dylib; sourceTree = "<group>"; };
 		75CC751D30414A8B0000EA4A /* Froststrap.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Froststrap.entitlements; sourceTree = "<group>"; };
 		75D1464A303C41FC00912A00 /* Froststrap.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Froststrap.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		75D1464B303C424900912A00 /* Froststrap */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = Froststrap; path = build/dotnet/Froststrap; sourceTree = "<group>"; };
 /* End PBXFileReference section */
-
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		75521DB5303B33DD00747566 /* desktop */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = desktop;
-			sourceTree = "<group>";
-		};
-/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXGroup section */
 		000000000000000000000001 = {
@@ -53,7 +47,7 @@
 				75BBCE733045F59500254A5F /* libvirtualdisplay.dylib */,
 				75CC751D30414A8B0000EA4A /* Froststrap.entitlements */,
 				75D1464B303C424900912A00 /* Froststrap */,
-				75521DB5303B33DD00747566 /* desktop */,
+				752C3D6D304D7E9F0076F31A /* Assets.xcassets */,
 				000000000000000000000020 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -79,9 +73,6 @@
 				7586052D3042B91600F953E7 /* Copy Files */,
 			);
 			buildRules = (
-			);
-			fileSystemSynchronizedGroups = (
-				75521DB5303B33DD00747566 /* desktop */,
 			);
 			name = Froststrap;
 			productName = desktop;
@@ -126,6 +117,7 @@
 		75521DB2303B33DD00747566 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			files = (
+				752C3D6E304D7E9F0076F31A /* Assets.xcassets in Resources */,
 			);
 		};
 /* End PBXResourcesBuildPhase section */
