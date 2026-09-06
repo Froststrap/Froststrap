@@ -1814,11 +1814,17 @@ namespace Froststrap
         {
             if (OperatingSystem.IsWindows())
             {
-                return ["Froststrap-Setup.exe", "-Setup.exe"];
+                return ["Froststrap-windows.msi", "-windows.msi"];
             }
-            else if (OperatingSystem.IsMacOS())
-            {
-                return ["Froststrap.pkg", ".pkg"];
+            else if (OperatingSystem.IsMacOS() && OperatingSytem) {
+                if (RuntimeInformation.OSArchitecture == Architecture.X64)
+                {
+                    return ["Froststrap-macos-x64.pkg", "-macos-x64.pkg"];
+                }
+                else
+                {
+                    return ["Froststrap-macos-arm64.pkg", "-macos-arm64.pkg"];
+                }
             }
 
             return [];

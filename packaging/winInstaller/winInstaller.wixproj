@@ -1,7 +1,7 @@
 <Project Sdk="WixToolset.Sdk/5.0.0">
   <PropertyGroup>
     <OutputType>Package</OutputType>
-    <OutputName>Froststrap-Setup</OutputName>
+    <OutputName>Froststrap-windows</OutputName>
     <AppVersion Condition="'$(AppVersion)' == ''">0.0.0</AppVersion>
     <PublishDir Condition="'$(PublishDir)' == ''">..\..\build</PublishDir>
     <DefineConstants>PublishDir=$(PublishDir);AppVersion=$(AppVersion)</DefineConstants>
