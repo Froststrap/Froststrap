@@ -25,6 +25,7 @@ using System.Data;
 using System.Net.Http.Json;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
+using System.Runtime.InteropServices;
 using System.Web;
 
 namespace Froststrap
@@ -1816,7 +1817,7 @@ namespace Froststrap
             {
                 return ["Froststrap-windows.msi", "-windows.msi"];
             }
-            else if (OperatingSystem.IsMacOS() && OperatingSytem) {
+            else if (OperatingSystem.IsMacOS()) {
                 if (RuntimeInformation.OSArchitecture == Architecture.X64)
                 {
                     return ["Froststrap-macos-x64.pkg", "-macos-x64.pkg"];
