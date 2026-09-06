@@ -135,6 +135,12 @@
                                Description="Apache-2.0 OR MIT License"
                                Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
                                CommandParameter="https://github.com/microsoft/windows-rs" />
+
+                <ui:CardAction Margin="4" Icon="Copyright"
+                               Header="WiX Toolset"
+                               Description="MS-RL License"
+                               Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+                               CommandParameter="https://github.com/wixtoolset/wix" />
             </UniformGrid>
         </StackPanel>
     </ScrollViewer>
