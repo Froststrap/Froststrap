@@ -24,6 +24,7 @@
 }:
 let
   inherit (callPackage ./devshell-tools.nix {}) mkFragment;
+  avdt = callPackage ./avdt.nix {};
 in
 mkFragment (finalAttrs: {
   runtimeLibs = lib.optionals stdenv.hostPlatform.isLinux [
@@ -49,6 +50,7 @@ mkFragment (finalAttrs: {
   buildInputs = [
     dotnetCorePackages.sdk_10_0-bin
     omnisharp-roslyn # lsp
+    avdt # devtools for avalonia
   ] ++ lib.optionals stdenv.hostPlatform.isLinux [
     glib
   ];
