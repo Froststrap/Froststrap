@@ -1,0 +1,44 @@
+﻿<base:AvaloniaWindow x:Class="Froststrap.UI.Elements.Dialogs.VersionOverrideDialog"
+                     xmlns="https://github.com/avaloniaui"
+                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                     xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+                     xmlns:local="clr-namespace:Froststrap.UI.Elements.Dialogs"
+                     xmlns:resources="clr-namespace:Froststrap.Resources"
+                     mc:Ignorable="d"
+                     x:DataType="local:VersionOverrideDialog"
+                     Title="Available Version"
+                     Width="750"
+                     Height="500"
+                     WindowStartupLocation="CenterScreen">
+
+	<Grid RowDefinitions="*,Auto">
+		<Grid Grid.Row="0" Margin="16">
+			<DataGrid x:Name="VersionsDataGrid"
+                      ItemsSource="{Binding Versions}"
+                      AutoGenerateColumns="False"
+                      CanUserReorderColumns="False"
+                      CanUserResizeColumns="False"
+                      CanUserSortColumns="True"
+                      IsReadOnly="True"
+                      SelectionMode="Single"
+                      RowHeight="40">
+				<DataGrid.Columns>
+					<DataGridTextColumn Header="Version" Binding="{Binding Version}" Width="150" />
+					<DataGridTextColumn Header="Hash" Binding="{Binding Hash}" Width="4*" />
+					<DataGridTextColumn Header="Release Date" Binding="{Binding Date}" Width="200" />
+				</DataGrid.Columns>
+			</DataGrid>
+		</Grid>
+
+		<Border Grid.Row="1" Padding="15"
+                Background="{DynamicResource ControlFillColorDefaultBrush}">
+			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="6">
+				<Button x:Name="CopyHashButton" Content="Copy Version Hash" IsEnabled="False" />
+				<Button x:Name="RefreshButton" Content="Refetch" />
+				<Button x:Name="CloseButton" Content="Close" />
+			</StackPanel>
+		</Border>
+	</Grid>
+</base:AvaloniaWindow>

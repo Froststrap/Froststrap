@@ -5,6 +5,7 @@ using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.RobloxInterfaces;
 using Microsoft.Win32;
+using Froststrap.UI.Elements.Dialogs;
 using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Settings
@@ -25,6 +26,9 @@ namespace Froststrap.UI.ViewModels.Settings
             _ = LoadChannelDeployInfo(App.Settings.Prop.StudioChannel, true);
             BrowseInstallDirectoryCommand = new AsyncRelayCommand<object?>(BrowseInstallDirectoryAsync);
             MoveInstallDirectoryCommand = new AsyncRelayCommand<object?>(MoveInstallDirectoryAsync, CanMove);
+
+            BrowsePlayerVersionHashCommand = new AsyncRelayCommand<object?>(BrowsePlayerVersionHashAsync);
+            BrowseStudioVersionHashCommand = new AsyncRelayCommand<object?>(BrowseStudioVersionHashAsync);
         }
 
         public static IEnumerable<UpdateCheck> UpdateCheckValues => Enum.GetValues<UpdateCheck>();
@@ -81,6 +85,8 @@ namespace Froststrap.UI.ViewModels.Settings
         public ICommand ResetSettingsToDefaultCommand => new RelayCommand(ResetSettingsToDefault);
         public IAsyncRelayCommand BrowseInstallDirectoryCommand { get; }
         public IAsyncRelayCommand MoveInstallDirectoryCommand { get; }
+        public IAsyncRelayCommand<object?> BrowsePlayerVersionHashCommand { get; }
+        public IAsyncRelayCommand<object?> BrowseStudioVersionHashCommand { get; }
 
         public bool PreReleaseUpdatesEnabled
         {
@@ -823,6 +829,24 @@ namespace Froststrap.UI.ViewModels.Settings
                 _isMoving = false;
                 MoveInstallDirectoryCommand.NotifyCanExecuteChanged();
             }
+        }
+
+        private async Task BrowsePlayerVersionHashAsync(object? parameter)
+        {
+            var topLevel = GetTopLevel(parameter);
+            if (topLevel == null) return;
+
+            var dialog = new VersionOverrideDialog(LaunchMode.Player);
+            await dialog.ShowDialog((Window)topLevel);
+        }
+
+        private async Task BrowseStudioVersionHashAsync(object? parameter)
+        {
+            var topLevel = GetTopLevel(parameter);
+            if (topLevel == null) return;
+
+            var dialog = new VersionOverrideDialog(LaunchMode.Studio);
+            await dialog.ShowDialog((Window)topLevel);
         }
 
         private bool CanMove(object? parameter) => !_isMoving;
