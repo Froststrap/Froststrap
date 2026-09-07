@@ -1,0 +1,1 @@
+LICENSES/MPL-2.0.txt

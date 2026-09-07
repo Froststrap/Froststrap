@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Unlicense
+# SPDX-License-Identifier: MPL-2.0
 
 {
   description = "Flake for Froststrap";
