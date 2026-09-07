@@ -12,24 +12,12 @@ namespace Froststrap.Integrations
         private string _currentPage = "Idle";
         private string? _currentDialog;
         private string _lastState = "";
-        private readonly bool _isMacOS;
 
         public bool IsConnected => _rpcClient?.IsInitialized == true;
 
         public FroststrapRichPresence()
         {
-            _isMacOS = OperatingSystem.IsMacOS();
-
-            if (_isMacOS)
-            {
-                App.Logger.Warn("Skipping Discord RPC initialization on macOS");
-                _rpcClient = null!;
-                _startTimestamps = new Timestamps { Start = DateTime.UtcNow };
-                _uptimeStopwatch = Stopwatch.StartNew();
-                return;
-            }
-
-            _rpcClient = new DiscordRpcClient("1399535282713399418")
+            _rpcClient = new DiscordRpcClient("1399535282713399418", -1, null, true, DiscordIpcPipeClient.Create())
             {
                 SkipIdenticalPresence = true
             };
@@ -55,7 +43,7 @@ namespace Froststrap.Integrations
 
         private void OnReady(object sender, DiscordRPC.Message.ReadyMessage args)
         {
-            if (_disposed || _isMacOS) return;
+            if (_disposed) return;
 
             App.Logger.Info($"Connected as {args.User.Username}");
 
@@ -65,7 +53,7 @@ namespace Froststrap.Integrations
 
         public void SetPage(string pageName)
         {
-            if (_disposed || _isMacOS) return;
+            if (_disposed) return;
 
             _currentPage = pageName;
             _currentDialog = null;
@@ -74,7 +62,7 @@ namespace Froststrap.Integrations
 
         public void SetDialog(string dialogName)
         {
-            if (_disposed || _isMacOS) return;
+            if (_disposed) return;
 
             _currentDialog = dialogName;
             UpdatePresence();
@@ -82,7 +70,7 @@ namespace Froststrap.Integrations
 
         public void ClearDialog()
         {
-            if (_disposed || _isMacOS) return;
+            if (_disposed) return;
 
             _currentDialog = null;
             UpdatePresence();
@@ -90,7 +78,7 @@ namespace Froststrap.Integrations
 
         public void UpdatePresence()
         {
-            if (_disposed || _isMacOS || _rpcClient == null || !_rpcClient.IsInitialized)
+            if (_disposed || _rpcClient == null || !_rpcClient.IsInitialized)
                 return;
 
             string state = !string.IsNullOrEmpty(_currentDialog)
@@ -127,7 +115,7 @@ namespace Froststrap.Integrations
             }
             catch (IOException ex) when (ex.InnerException is SocketException)
             {
-                App.Logger.Error("Socket interrupted (Operation Canceled). This is expected on macOS.");
+                App.Logger.Error("Socket interrupted (Operation Canceled).");
             }
             catch (Exception ex)
             {

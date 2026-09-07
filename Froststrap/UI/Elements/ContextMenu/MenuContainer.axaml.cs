@@ -104,8 +104,7 @@ namespace Froststrap.UI.Elements.ContextMenu
                         SoftkeyMenuItem?.IsChecked = true;
                     }
 
-                    //TODO: Fix Discord RPC on MACOS so we can remove the check here
-                    if (RichPresenceMenuItem != null && !OperatingSystem.IsMacOS())
+                    if (RichPresenceMenuItem != null)
                     {
                         RichPresenceMenuItem.IsVisible = (_watcher?.PlayerRichPresence is not null || _watcher?.StudioRichPresence is not null);
 
