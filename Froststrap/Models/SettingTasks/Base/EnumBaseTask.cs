@@ -37,15 +37,15 @@
         public IEnumerable<T> Selections { get; private set; }
             = Enum.GetValues<T>().OrderBy(x =>
             {
-                    var attributes = x.GetType().GetMember(x.ToString())[0].GetCustomAttributes(typeof(EnumSortAttribute), false);
+                var attributes = x.GetType().GetMember(x.ToString())[0].GetCustomAttributes(typeof(EnumSortAttribute), false);
 
-                    if (attributes.Length > 0)
-                    {
-                        var attribute = (EnumSortAttribute)attributes[0];
-                        return attribute.Order;
-                    }
+                if (attributes.Length > 0)
+                {
+                    var attribute = (EnumSortAttribute)attributes[0];
+                    return attribute.Order;
+                }
 
-                    return 0;
+                return 0;
             });
 
         public EnumBaseTask(string prefix, string name) : base(prefix, name) { }

@@ -6,18 +6,19 @@ internal static class AppInitializer
 {
     public static void InitializeNativeResolvers()
     {
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        {
             App.Logger.Debug("Initializing Dll Native Resolvers");
             NativeLibrary.SetDllImportResolver(
-                Assembly.GetExecutingAssembly(), 
+                Assembly.GetExecutingAssembly(),
                 ResolveBundleFramework
             );
         }
     }
 
     private static IntPtr ResolveBundleFramework(
-        string libraryName, 
-        Assembly assembly, 
+        string libraryName,
+        Assembly assembly,
         DllImportSearchPath? searchPath)
     {
         string baseDir = AppContext.BaseDirectory;
@@ -42,7 +43,7 @@ internal static class AppInitializer
         foreach (string relativePath in candidatePaths)
         {
             string fullPath = Path.GetFullPath(relativePath);
-            
+
             if (File.Exists(fullPath) && NativeLibrary.TryLoad(fullPath, out IntPtr handle)) return handle;
         }
 

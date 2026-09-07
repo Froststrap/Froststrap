@@ -358,7 +358,7 @@ namespace Froststrap.Integrations
                 }
             };
 
-            uint result = SendInput(1, [ input ], Marshal.SizeOf<INPUT>());
+            uint result = SendInput(1, [input], Marshal.SizeOf<INPUT>());
 
             if (result == 0)
             {

@@ -3583,9 +3583,9 @@ internal partial class Bootstrapper : IDisposable
                     Interlocked.Add(ref _totalDownloadedBytes, bytesRead);
                     UpdateProgressBar();
                 }
-                await fileStream.FlushAsync(); 
+                await fileStream.FlushAsync();
                 fileStream.Position = 0;
-                
+
                 string hash = FastHash.FromStream(fileStream);
 
                 if (!OperatingSystem.IsMacOS() && !string.Equals(hash, package.Signature, StringComparison.OrdinalIgnoreCase))

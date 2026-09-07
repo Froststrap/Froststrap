@@ -21,7 +21,7 @@ namespace Froststrap.UI
         private const int DoubleClickThresholdMs = 300;
 
         public NotifyIconWrapper(Watcher watcher)
-        {  
+        {
 #if __APPLE__
             if (App.Settings.Prop.LaunchWithVirtualDisplay) Dispatcher.UIThread.Post(() =>
             {

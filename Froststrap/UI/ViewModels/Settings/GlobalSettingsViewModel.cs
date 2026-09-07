@@ -153,7 +153,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 if (ReadOnly) return string.Empty;
 
                 var activeSettings = new List<string>();
-        
+
                 if (Fullscreen) activeSettings.Add("Fullscreen");
                 if (MaxQualityEnabled) activeSettings.Add("Max Quality");
                 if (VignetteEnabled) activeSettings.Add("Vignette");
@@ -161,8 +161,8 @@ namespace Froststrap.UI.ViewModels.Settings
 
                 if (activeSettings.Count == 0) return string.Empty;
 
-                string settingsList = activeSettings.Count > 1 
-                    ? string.Join(", ", activeSettings.Take(activeSettings.Count - 1)) + " and " + activeSettings.Last() 
+                string settingsList = activeSettings.Count > 1
+                    ? string.Join(", ", activeSettings.Take(activeSettings.Count - 1)) + " and " + activeSettings.Last()
                     : activeSettings[0];
 
                 return $"Read-only must be enabled for {settingsList} to not be forgotten";

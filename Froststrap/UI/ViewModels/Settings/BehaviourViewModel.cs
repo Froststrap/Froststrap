@@ -90,7 +90,7 @@
 
         public bool LaunchWithVirtualDisplay
         {
-            get => App.Settings.Prop.LaunchWithVirtualDisplay; 
+            get => App.Settings.Prop.LaunchWithVirtualDisplay;
             set
             {
                 App.Settings.Prop.LaunchWithVirtualDisplay = value;
