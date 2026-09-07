@@ -84,14 +84,8 @@ More features are planned! You can also suggest new features in the Issues secti
 
 ## Licensing
 
-Froststrap uses a **multi-license model** depending on the type of code:
+All new code revisions are under [MPL-2.0](https://opensource.org/license/MPL-2.0).
 
-| Code                         | Location                                                                      | License                                                   |
-|------------------------------|-------------------------------------------------------------------------------|-----------------------------------------------------------|
-| Upstream code from Fishstrap | `n/a` - Can be found anywhere before we touched                               | [MIT](https://opensource.org/licenses/MIT)                |
-| Code written by Froststrap   | `n/a` - Can be found anywhere else                                            | [AGPL-3.0](https://opensource.org/license/agpl-3-0)       |
-| Rust + F# code               | [`./backend`](./backend), [`./Scripts/Translations`](./Scripts/Translations)  | [MPL-2.0](https://opensource.org/license/MPL-2.0)         |
-| Nix code                     | [`./nix`](./nix), [`./flake.nix`](flake.nix), [`./flake.lock`](./flake.lock)  | [Unlicense](https://unlicense.org/)                       |
 
 When in doubt about which license applies to a specific file, check the file header, or refer to table above.
 
