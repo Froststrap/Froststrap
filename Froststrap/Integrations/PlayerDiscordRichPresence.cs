@@ -333,36 +333,50 @@ namespace Froststrap.Integrations
             }
 
             var activity = _activityWatcher.Data;
+            if (activity == null)
+            {
+                App.Logger.Warn("Activity data is null; skipping presence update.");
+                return false;
+            }
+
             App.Logger.Info($"Setting presence for Place ID {activity.PlaceId}");
 
             var timeStarted = activity.RootActivity?.TimeJoined ?? activity.TimeJoined;
 
             if (activity.UniverseDetails is null)
             {
-                try { await UniverseDetails.FetchSingle(activity.UniverseId); }
+                try
+                {
+                    await UniverseDetails.FetchSingle(activity.UniverseId);
+                    activity.UniverseDetails = UniverseDetails.LoadFromCache(activity.UniverseId);
+                }
                 catch (Exception ex)
                 {
-                    App.Logger.Error(ex);
+                    App.Logger.Error($"Failed to fetch universe details: {ex}");
                     return false;
                 }
-                activity.UniverseDetails = UniverseDetails.LoadFromCache(activity.UniverseId);
             }
 
-            var universeDetails = activity.UniverseDetails!;
+            var universeDetails = activity.UniverseDetails;
+            if (universeDetails == null)
+            {
+                App.Logger.Error($"Universe details not available for UniverseId {activity.UniverseId}");
+                return false;
+            }
 
-            string icon = universeDetails.Thumbnail.ImageUrl!;
+            if (!_activityWatcher.InGame || activity.PlaceId != _activityWatcher.Data.PlaceId)
+                return false;
+
+            string icon = universeDetails.Thumbnail.ImageUrl ?? "roblox";
             string smallImage = "roblox";
             string smallImageText = "Roblox";
 
             if (App.Settings.Prop.ShowAccountOnRichPresence)
             {
                 var userDetails = await UserDetails.Fetch(activity.UserId);
-                smallImage = userDetails.Thumbnail.ImageUrl!;
+                smallImage = userDetails.Thumbnail.ImageUrl ?? "roblox";
                 smallImageText = $"Playing on {userDetails.Data.DisplayName} (@{userDetails.Data.Name})";
             }
-
-            if (!_activityWatcher.InGame || activity.PlaceId != _activityWatcher.Data.PlaceId)
-                return false;
 
             string status = activity.ServerType switch
             {
