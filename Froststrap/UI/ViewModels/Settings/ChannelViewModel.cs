@@ -710,7 +710,11 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private async Task ValidateStudioVersionHashAsync(string hash)
         {
-            await _studioHashCts!.CancelAsync();
+            if (_studioHashCts != null)
+            {
+                await _studioHashCts.CancelAsync();
+                _studioHashCts.Dispose();
+            }
             _studioHashCts = new CancellationTokenSource();
             var token = _studioHashCts.Token;
 
@@ -724,7 +728,11 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private async Task ValidatePlayerVersionHashAsync(string hash)
         {
-            await _playerHashCts!.CancelAsync();
+            if (_playerHashCts != null)
+            {
+                await _playerHashCts.CancelAsync();
+                _playerHashCts.Dispose();
+            }
             _playerHashCts = new CancellationTokenSource();
             var token = _playerHashCts.Token;
 
