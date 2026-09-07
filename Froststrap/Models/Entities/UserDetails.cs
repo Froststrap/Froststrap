@@ -1,4 +1,8 @@
-﻿using Froststrap.Models.RobloxApi;
+﻿// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
+using Froststrap.Models.RobloxApi;
 using Froststrap.RobloxInterfaces;
 
 namespace Froststrap.Models.Entities

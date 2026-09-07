@@ -1,4 +1,8 @@
-﻿using System.Runtime.InteropServices;
+﻿// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
+using System.Runtime.InteropServices;
 
 namespace Froststrap.UI.Utility
 {

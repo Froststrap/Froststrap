@@ -1,12 +1,7 @@
-﻿/*
-*  Froststrap
-*  Copyright (c) Froststrap Team
-*
-*  This file is part of Froststrap and is distributed under the terms of the
-*  Mozilla Public License 2.0.
-*
-*  SPDX-License-Identifier: MPL-2.0
-*/
+﻿// SPDX-FileCopyrightText: 2026 Froststrap
+// Copyright (C) Froststrap Team
+//
+// SPDX-License-Identifier: MPL-2.0
 
 using System.IO.Compression;
 using System.Reflection;

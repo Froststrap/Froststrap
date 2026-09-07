@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
 use crate::notify::data_types::SendNotificationResult;
 use std::collections::HashMap;
 use zbus::blocking::Connection;

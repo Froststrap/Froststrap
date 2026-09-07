@@ -1,4 +1,8 @@
-﻿using Avalonia.Media.Imaging;
+﻿// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
+using Avalonia.Media.Imaging;
 using Froststrap.UI.ViewModels;
 
 namespace Froststrap.Models.APIs.Config

@@ -1,4 +1,8 @@
-﻿using System.Xml.Linq;
+﻿// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
+using System.Xml.Linq;
 using Avalonia.Controls;
 
 namespace Froststrap.UI.Elements.Bootstrapper

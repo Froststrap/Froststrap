@@ -1,4 +1,8 @@
-﻿namespace Froststrap.Enums
+﻿// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
+namespace Froststrap.Enums
 {
     // https://learn.microsoft.com/en-us/windows/win32/msi/error-codes
     // https://i-logic.com/serial/errorcodes.htm

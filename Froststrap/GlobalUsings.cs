@@ -1,4 +1,8 @@
-﻿global using System;
+﻿// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
+global using System;
 global using System.Collections.Generic;
 global using System.Diagnostics;
 global using System.Globalization;

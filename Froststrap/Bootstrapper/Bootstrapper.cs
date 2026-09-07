@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
 // To debug the automatic updater:
 // - Uncomment the definition below
 // - Publish the executable
