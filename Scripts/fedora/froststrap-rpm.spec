@@ -3,7 +3,7 @@ Version:        %{?froststrap_version}%{!?froststrap_version:2.0.0}
 Release:        1%{?dist}
 Summary:        %description
 
-License:        AGPL-3.0
+License:        MPL-2.0
 URL:            https://github.com/Froststrap/Froststrap
 BuildArch:      x86_64
 Requires:       libicu
