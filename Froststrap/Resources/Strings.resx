@@ -3270,4 +3270,22 @@ All files will be moved, shortcuts updated, and the application will restart.</v
   <data name="Common.AccountManager" xml:space="preserve">
     <value>Account Manager</value>
   </data>
+  <data name="Menu.QuickPlay.ContinuePlaying" xml:space="preserve">
+    <value>Continue Playing</value>
+  </data>
+  <data name="Menu.QuickPlay.NoRecentGames" xml:space="preserve">
+    <value>No recent games found.</value>
+  </data>
+  <data name="Menu.QuickPlay.Favorites" xml:space="preserve">
+    <value>Favorites</value>
+  </data>
+  <data name="Menu.QuickPlay.LoadingFavorites" xml:space="preserve">
+    <value>Loading favorite games…</value>
+  </data>
+  <data name="Menu.QuickPlay.NoFavoriteGames" xml:space="preserve">
+    <value>No favorite games yet.</value>
+  </data>
+  <data name="Menu.QuickPlay.LoginToSeeFavorites" xml:space="preserve">
+    <value>Please log in to account manager see your favorite games.</value>
+  </data>
 </root>

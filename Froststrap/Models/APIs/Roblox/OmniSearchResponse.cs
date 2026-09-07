@@ -2,11 +2,16 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-namespace Froststrap.Models.APIs.Roblox
+namespace Froststrap.Models.APIs.Roblox;
+
+internal class OmniSearchResponse
 {
-    internal class OmniSearchResponse
-    {
-        [JsonPropertyName("searchResults")]
-        public List<OmniSearchGroup>? SearchResults { get; set; }
-    }
+    [JsonPropertyName("searchResults")]
+    public List<OmniSearchGroup>? SearchResults { get; set; }
+}
+
+internal class OmniSearchGroup
+{
+    [JsonPropertyName("contents")]
+    public List<OmniSearchContent>? Contents { get; set; }
 }

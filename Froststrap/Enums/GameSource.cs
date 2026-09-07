@@ -6,6 +6,7 @@ namespace Froststrap.Enums
 {
     internal enum GameSource
     {
+        None = 0,
         Tracked,
         RobloxApi
     }

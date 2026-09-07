@@ -8228,11 +8228,29 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Continue Playing.
+        /// </summary>
+        public static string Menu_QuickPlay_ContinuePlaying {
+            get {
+                return ResourceManager.GetString("Menu.QuickPlay.ContinuePlaying", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Jump back into your recently played games, Logging into account in account manager will add more of your recently played games..
         /// </summary>
         public static string Menu_QuickPlay_Description {
             get {
                 return ResourceManager.GetString("Menu.QuickPlay.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Favorites.
+        /// </summary>
+        public static string Menu_QuickPlay_Favorites {
+            get {
+                return ResourceManager.GetString("Menu.QuickPlay.Favorites", resourceCulture);
             }
         }
         
@@ -8282,6 +8300,15 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Loading favorite games….
+        /// </summary>
+        public static string Menu_QuickPlay_LoadingFavorites {
+            get {
+                return ResourceManager.GetString("Menu.QuickPlay.LoadingFavorites", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Loading private servers....
         /// </summary>
         public static string Menu_QuickPlay_LoadingPrivateServers {
@@ -8318,11 +8345,38 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please log in to account manager see your favorite games..
+        /// </summary>
+        public static string Menu_QuickPlay_LoginToSeeFavorites {
+            get {
+                return ResourceManager.GetString("Menu.QuickPlay.LoginToSeeFavorites", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No favorite games yet..
+        /// </summary>
+        public static string Menu_QuickPlay_NoFavoriteGames {
+            get {
+                return ResourceManager.GetString("Menu.QuickPlay.NoFavoriteGames", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No private servers found.
         /// </summary>
         public static string Menu_QuickPlay_NoPrivateServersFound {
             get {
                 return ResourceManager.GetString("Menu.QuickPlay.NoPrivateServersFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No recent games found..
+        /// </summary>
+        public static string Menu_QuickPlay_NoRecentGames {
+            get {
+                return ResourceManager.GetString("Menu.QuickPlay.NoRecentGames", resourceCulture);
             }
         }
         
