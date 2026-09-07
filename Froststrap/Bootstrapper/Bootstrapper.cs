@@ -5,9 +5,6 @@
 // - Launch Roblox (for testing web launches, run it from the command prompt)
 // - To re-test the same executable, delete it from the installation folder
 
-// Brother why does this file have both core AND UI logic in it
-// TODO: Split this file into Core and UI parts
-
 // #define DEBUG_UPDATER
 
 #if DEBUG_UPDATER
@@ -30,7 +27,7 @@ using System.Web;
 
 namespace Froststrap
 {
-    internal class Bootstrapper : IDisposable
+    internal partial class Bootstrapper : IDisposable
     {
         #region Constants
 
@@ -119,11 +116,6 @@ namespace Froststrap
             || (OperatingSystem.IsWindows() && !IsStudioLaunch && !File.Exists(Path.Combine(_latestVersionDirectory, "RobloxPlayerBeta.dll")));
 
         private bool _isInstalling;
-        private double _progressIncrement;
-        private double _taskbarProgressIncrement;
-        private double _taskbarProgressMaximum;
-        private long _totalDownloadedBytes;
-        private long _totalPackagedBytes;
         private bool _packageExtractionSuccess = true;
 
         private bool _matchmakingInProgress;
@@ -136,7 +128,6 @@ namespace Froststrap
         private int _appPid;
         private bool _disposed;
 
-        public IBootstrapperDialog? Dialog;
         public bool IsStudioLaunch => _launchMode != LaunchMode.Player;
         public string LockName { get; set; } = "Bootstrapper";
 
@@ -214,50 +205,6 @@ namespace Froststrap
                         PackageDirectoryMap[key] = PackageDirectoryMap[key].Replace('\\', '/');
                 }
             }
-        }
-
-        private void SetStatus(string message)
-        {
-            message = message.Replace("{product}", AppData.ProductName, StringComparison.Ordinal);
-            Dialog?.Message = message;
-        }
-
-        private static string FormatBytes(long bytes)
-        {
-            // How funny would it be if i just kept going up to quettabytes lol
-            string[] sizes = ["B", "KB", "MB", "GB"];
-            double len = bytes;
-            int order = 0;
-            while (len >= 1024 && order < sizes.Length - 1)
-            {
-                order++;
-                len /= 1024;
-            }
-            return $"{len:0.##} {sizes[order]}";
-        }
-
-        private void UpdateProgressBar(bool updateStatus = true)
-        {
-            long current = Interlocked.Read(ref _totalDownloadedBytes);
-            if (Dialog is null)
-                return;
-
-            if (updateStatus)
-            {
-                SetStatus(string.Format(CultureInfo.InvariantCulture,
-                    Strings.Bootstrapper_Status_DownloadingPackages,
-                    FormatBytes(current),
-                    FormatBytes(_totalPackagedBytes)
-                ));
-            }
-
-            int progressValue = (int)Math.Floor(_progressIncrement * current);
-            progressValue = Math.Clamp(progressValue, 0, ProgressBarMaximum);
-            Dialog.ProgressValue = progressValue;
-
-            double taskbarProgressValue = _taskbarProgressIncrement * current;
-            taskbarProgressValue = Math.Clamp(taskbarProgressValue, 0, _taskbarProgressMaximum);
-            Dialog.TaskbarProgressValue = taskbarProgressValue;
         }
 
         private async Task HandleConnectionError(Exception ex)
