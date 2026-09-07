@@ -202,7 +202,7 @@
                             Command="{Binding BrowsePlayerVersionHashCommand}"
                             CommandParameter="{Binding $parent[UserControl]}"
                             IsEnabled="{Binding PlayerVersionOverrideEnabled}"
-                            Content="Open Versions Window"/>
+                            Content="Show Available Versions"/>
                     </controls:OptionControl>
                 </StackPanel>
             </controls:CardExpander>
@@ -411,7 +411,7 @@
                             Command="{Binding BrowseStudioVersionHashCommand}"
                             CommandParameter="{Binding $parent[UserControl]}"
                             IsEnabled="{Binding StudioVersionOverrideEnabled}"
-                            Content="Open Versions Window"/>
+                            Content="Show Available Versions"/>
                     </controls:OptionControl>
                 </StackPanel>
             </controls:CardExpander>

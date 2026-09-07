@@ -9,168 +9,206 @@
              xmlns:resources="clr-namespace:Froststrap.Resources"
              x:Name="RootPage"
              x:DataType="vm:QuickPlayViewModel">
+
+    <UserControl.Resources>
+        <!-- Reusable game card template -->
+        <DataTemplate x:Key="GameCardTemplate" x:DataType="models:QuickPlayGameItem">
+            <Button Background="Transparent" BorderThickness="0" Padding="0" Margin="5" ClickMode="Press">
+                <Button.Styles>
+                    <Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+                        <Setter Property="Background" Value="Transparent" />
+                    </Style>
+                </Button.Styles>
+                <Button.Flyout>
+                    <MenuFlyout Placement="Pointer">
+                        <MenuItem Header="{x:Static resources:Strings.Menu_QuickPlay_JoinGame}" Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).JoinGameCommand}" CommandParameter="{Binding}">
+                            <MenuItem.Icon>
+                                <ic:Lucide Icon="Play" Height="16" Width="16" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="{x:Static resources:Strings.Menu_QuickPlay_RejoinLastServer}" Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).RejoinLastServerCommand}" CommandParameter="{Binding}">
+                            <MenuItem.Icon>
+                                <ic:Lucide Icon="RotateCcwClock" Height="16" Width="16" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="{x:Static resources:Strings.Menu_QuickPlay_JoinBestRegion}"
+                                  Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).JoinBestRegionCommand}"
+                                  CommandParameter="{Binding}"
+                                  IsEnabled="{Binding DataContext.CanJoinBestRegion, ElementName=RootPage}">
+                            <MenuItem.Icon>
+                                <ic:Lucide Icon="Globe" Height="16" Width="16" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <Separator />
+                        <MenuItem Header="{Binding ServerCount, StringFormat='{x:Static resources:Strings.Menu_QuickPlay_TrackedServers}'}"
+                                  Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).ViewServersCommand}"
+                                  CommandParameter="{Binding}"
+                                  IsVisible="{Binding Source, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Tracked}">
+                            <MenuItem.Icon>
+                                <ic:Lucide Icon="FileCode" Height="16" Width="16" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="{x:Static resources:Strings.Menu_QuickPlay_RobloxServers}"
+                                  Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).ViewRobloxServersCommand}"
+                                  CommandParameter="{Binding}">
+                            <MenuItem.Icon>
+                                <ic:Lucide Icon="Server" Height="16" Width="16" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="{x:Static resources:Strings.Menu_QuickPlay_PrivateServers}"
+                                  IsVisible="{Binding DataContext.HasActiveAccount, ElementName=RootPage}"
+                                  Command="{Binding DataContext.ShowPrivateServersCommand, ElementName=RootPage}"
+                                  CommandParameter="{Binding}">
+                            <MenuItem.Icon>
+                                <ic:Lucide Icon="LockKeyholeOpen" Height="16" Width="16" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="{x:Static resources:Strings.Menu_QuickPlay_ViewSubplaces}" Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).ViewSubplacesCommand}" CommandParameter="{Binding}">
+                            <MenuItem.Icon>
+                                <ic:Lucide Icon="Layers" Height="16" Width="16" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <Separator />
+                        <MenuItem Header="{x:Static resources:Strings.Menu_QuickPlay_VisitPage}" Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).VisitPageCommand}" CommandParameter="{Binding}">
+                            <MenuItem.Icon>
+                                <ic:Lucide Icon="ExternalLink" Height="16" Width="16" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </MenuFlyout>
+                </Button.Flyout>
+
+                <controls:Card MinWidth="190" CornerRadius="12,12,4,4" Padding="0" ClipToBounds="True">
+                    <Panel>
+                        <StackPanel>
+                            <Border CornerRadius="12,12,0,0" ClipToBounds="True">
+                                <Image Source="{Binding ThumbnailUrl, Converter={StaticResource UrlToBitmapConverter}}" Height="190" MinWidth="190" Stretch="Fill" VerticalAlignment="Center" HorizontalAlignment="Center" RenderOptions.BitmapInterpolationMode="HighQuality"/>
+                            </Border>
+                            <StackPanel Spacing="2" Margin="8">
+                                <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                                <TextBlock Text="{Binding Creator}" FontSize="11" Opacity="0.6" TextTrimming="CharacterEllipsis"/>
+                                <Grid ColumnDefinitions="*, Auto, *" Margin="0,5,0,0">
+                                    <StackPanel Orientation="Horizontal" Spacing="4">
+                                        <TextBlock Text="{Binding Playing, Converter={StaticResource NumberAbbreviationConverter}}" FontSize="10" FontWeight="Medium"/>
+                                        <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_Active}" FontSize="10" Opacity="0.5"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="4">
+                                        <TextBlock Text="{Binding Visits, Converter={StaticResource NumberAbbreviationConverter}}" FontSize="10" FontWeight="Medium"/>
+                                        <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_Visits}" FontSize="10" Opacity="0.5"/>
+                                    </StackPanel>
+                                </Grid>
+                            </StackPanel>
+                        </StackPanel>
+                        <Border VerticalAlignment="Top" HorizontalAlignment="Right" Margin="8" Padding="6,2" CornerRadius="8" Background="Black" IsVisible="{Binding Source, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Tracked}">
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <ic:Lucide Icon="Server" Height="10" Width="10"/>
+                                <TextBlock Text="{Binding ServerCount}" FontSize="10" FontWeight="Bold"/>
+                            </StackPanel>
+                        </Border>
+                        <Grid VerticalAlignment="Top" HorizontalAlignment="Left" Margin="8">
+                            <Border Padding="6,2" CornerRadius="6" Background="#22C55E"
+                                    IsVisible="{Binding Source, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Tracked}">
+                                <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_Tracked}" FontSize="10" FontWeight="Bold"/>
+                            </Border>
+                            <Border Padding="6,2" CornerRadius="6" Background="#3B82F6"
+                                    IsVisible="{Binding Source, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=RobloxApi}">
+                                <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_RobloxAPI}" FontSize="10" FontWeight="Bold"/>
+                            </Border>
+                        </Grid>
+                    </Panel>
+                </controls:Card>
+            </Button>
+        </DataTemplate>
+    </UserControl.Resources>
+
     <Grid>
         <ScrollViewer IsEnabled="{Binding !IsOverlayVisible}">
             <StackPanel Margin="14">
-                <ItemsControl ItemsSource="{Binding RecentGames}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <ui:UniformWrapPanel MinItemWidth="190" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate x:DataType="models:QuickPlayGameItem">
-                            <Button Background="Transparent" BorderThickness="0" Padding="0" Margin="5" ClickMode="Press">
-                                <Button.Styles>
-                                    <Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
-                                        <Setter Property="Background" Value="Transparent" />
-                                    </Style>
-                                </Button.Styles>
-                                <Button.Flyout>
-                                    <MenuFlyout Placement="Pointer">
-                                        <MenuItem Header="{x:Static resources:Strings.Menu_QuickPlay_JoinGame}" Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).JoinGameCommand}" CommandParameter="{Binding}">
-                                            <MenuItem.Icon>
-                                                <ic:Lucide Icon="Play" Height="16" Width="16" />
-                                            </MenuItem.Icon>
-                                        </MenuItem>
-                                        <MenuItem Header="{x:Static resources:Strings.Menu_QuickPlay_RejoinLastServer}" Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).RejoinLastServerCommand}" CommandParameter="{Binding}">
-                                            <MenuItem.Icon>
-                                                <ic:Lucide Icon="RotateCcwClock" Height="16" Width="16" />
-                                            </MenuItem.Icon>
-                                        </MenuItem>
-                                        <MenuItem Header="{x:Static resources:Strings.Menu_QuickPlay_JoinBestRegion}"
-                                                  Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).JoinBestRegionCommand}"
-                                                  CommandParameter="{Binding}"
-                                                  IsEnabled="{Binding DataContext.CanJoinBestRegion, ElementName=RootPage}">
-                                            <MenuItem.Icon>
-                                                <ic:Lucide Icon="Globe" Height="16" Width="16" />
-                                            </MenuItem.Icon>
-                                        </MenuItem>
-                                        <Separator />
-                                        <MenuItem Header="{Binding ServerCount, StringFormat='{x:Static resources:Strings.Menu_QuickPlay_TrackedServers}'}"
-                                                  Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).ViewServersCommand}"
-                                                  CommandParameter="{Binding}"
-                                                  IsVisible="{Binding Source, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Tracked}">
-                                            <MenuItem.Icon>
-                                                <ic:Lucide Icon="FileCode" Height="16" Width="16" />
-                                            </MenuItem.Icon>
-                                        </MenuItem>
-                                        <MenuItem Header="{x:Static resources:Strings.Menu_QuickPlay_RobloxServers}"
-                                                  Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).ViewRobloxServersCommand}"
-                                                  CommandParameter="{Binding}">
-                                            <MenuItem.Icon>
-                                                <ic:Lucide Icon="Server" Height="16" Width="16" />
-                                            </MenuItem.Icon>
-                                        </MenuItem>
-                                        <MenuItem Header="{x:Static resources:Strings.Menu_QuickPlay_PrivateServers}"
-                                                  IsVisible="{Binding DataContext.HasActiveAccount, ElementName=RootPage}"
-                                                  Command="{Binding DataContext.ShowPrivateServersCommand, ElementName=RootPage}"
-                                                  CommandParameter="{Binding}">
-                                            <MenuItem.Icon>
-                                                <ic:Lucide Icon="LockKeyholeOpen" Height="16" Width="16" />
-                                            </MenuItem.Icon>
-                                        </MenuItem>
-                                        <MenuItem Header="{x:Static resources:Strings.Menu_QuickPlay_ViewSubplaces}" Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).ViewSubplacesCommand}" CommandParameter="{Binding}">
-                                            <MenuItem.Icon>
-                                                <ic:Lucide Icon="Layers" Height="16" Width="16" />
-                                            </MenuItem.Icon>
-                                        </MenuItem>
-                                        <Separator />
-                                        <MenuItem Header="{x:Static resources:Strings.Menu_QuickPlay_VisitPage}" Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).VisitPageCommand}" CommandParameter="{Binding}">
-                                            <MenuItem.Icon>
-                                                <ic:Lucide Icon="ExternalLink" Height="16" Width="16" />
-                                            </MenuItem.Icon>
-                                        </MenuItem>
-                                    </MenuFlyout>
-                                </Button.Flyout>
+                <TabControl SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay}">
+                    <!-- Continue Playing Tab -->
+                    <TabItem Header="{x:Static resources:Strings.Menu_QuickPlay_ContinuePlaying}">
+                        <Grid>
+                            <ScrollViewer>
+                                <ItemsControl ItemsSource="{Binding RecentGames}"
+                                              ItemTemplate="{StaticResource GameCardTemplate}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <ui:UniformWrapPanel MinItemWidth="190" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                </ItemsControl>
+                            </ScrollViewer>
+                            <!-- Empty state – only when not loading and no games -->
+                            <Grid IsVisible="{Binding ShowRecentEmpty}" Background="Transparent">
+                                <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_NoRecentGames}"
+                                           VerticalAlignment="Center" HorizontalAlignment="Center" Opacity="0.6"/>
+                            </Grid>
+                        </Grid>
+                    </TabItem>
 
-                                <controls:Card MinWidth="190" CornerRadius="12,12,4,4" Padding="0" ClipToBounds="True">
-                                    <Panel>
-                                        <StackPanel>
-                                            <Border CornerRadius="12,12,0,0" ClipToBounds="True">
-                                                <Image Source="{Binding ThumbnailUrl, Converter={StaticResource UrlToBitmapConverter}}" Height="190" MinWidth="190" Stretch="Fill" VerticalAlignment="Center" HorizontalAlignment="Center" RenderOptions.BitmapInterpolationMode="HighQuality"/>
-                                            </Border>
-                                            <StackPanel Spacing="2" Margin="8">
-                                                <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
-                                                <TextBlock Text="{Binding Creator}" FontSize="11" Opacity="0.6" TextTrimming="CharacterEllipsis"/>
-                                                <Grid ColumnDefinitions="*, Auto, *" Margin="0,5,0,0">
-                                                    <StackPanel Orientation="Horizontal" Spacing="4">
-                                                        <TextBlock Text="{Binding Playing, Converter={StaticResource NumberAbbreviationConverter}}" FontSize="10" FontWeight="Medium"/>
-                                                        <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_Active}" FontSize="10" Opacity="0.5"/>
-                                                    </StackPanel>
-                                                    <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="4">
-                                                        <TextBlock Text="{Binding Visits, Converter={StaticResource NumberAbbreviationConverter}}" FontSize="10" FontWeight="Medium"/>
-                                                        <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_Visits}" FontSize="10" Opacity="0.5"/>
-                                                    </StackPanel>
-                                                </Grid>
-                                            </StackPanel>
-                                        </StackPanel>
-                                        <Border VerticalAlignment="Top" HorizontalAlignment="Right" Margin="8" Padding="6,2" CornerRadius="8" Background="Black" IsVisible="{Binding Source, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Tracked}">
-                                            <StackPanel Orientation="Horizontal" Spacing="4">
-                                                <ic:Lucide Icon="Server" Height="10" Width="10"/>
-                                                <TextBlock Text="{Binding ServerCount}" FontSize="10" FontWeight="Bold"/>
-                                            </StackPanel>
-                                        </Border>
-
-                                        <Grid VerticalAlignment="Top" HorizontalAlignment="Left" Margin="8">
-                                            <Border Padding="6,2" CornerRadius="6" Background="#22C55E"
-                                                    IsVisible="{Binding Source, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Tracked}">
-                                                <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_Tracked}" FontSize="10" FontWeight="Bold"/>
-                                            </Border>
-                                            <Border Padding="6,2" CornerRadius="6" Background="#3B82F6"
-                                                    IsVisible="{Binding Source, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=RobloxApi}">
-                                                <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_RobloxAPI}" FontSize="10" FontWeight="Bold"/>
-                                            </Border>
-                                        </Grid>
-                                    </Panel>
-                                </controls:Card>
-                            </Button>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+                    <!-- Favorites Tab -->
+                    <TabItem Header="{x:Static resources:Strings.Menu_QuickPlay_Favorites}">
+                        <Grid>
+                            <ScrollViewer>
+                                <ItemsControl ItemsSource="{Binding FavoriteGames}"
+                                              ItemTemplate="{StaticResource GameCardTemplate}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <ui:UniformWrapPanel MinItemWidth="190" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                </ItemsControl>
+                            </ScrollViewer>
+                            <!-- Loading overlay (inside tab) -->
+                            <Grid IsVisible="{Binding IsFavoritesLoading}" Background="#99000000">
+                                <StackPanel Spacing="16" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                    <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_LoadingFavorites}"
+                                               HorizontalAlignment="Center" FontSize="14" FontWeight="SemiBold" Opacity="0.9"/>
+                                    <ui:FAProgressRing IsActive="{Binding IsFavoritesLoading}" Width="48" Height="48"
+                                                       Foreground="{DynamicResource SystemAccentColor}"/>
+                                </StackPanel>
+                            </Grid>
+                            <!-- Empty / Not logged in – perfectly centered -->
+                            <Grid IsVisible="{Binding !IsFavoritesLoading}" Background="Transparent">
+                                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="8">
+                                    <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_NoFavoriteGames}"
+                                               Opacity="0.6" HorizontalAlignment="Center"
+                                               IsVisible="{Binding IsLoggedIn}"/>
+                                    <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_LoginToSeeFavorites}"
+                                               Opacity="0.6" HorizontalAlignment="Center"
+                                               IsVisible="{Binding !IsLoggedIn}"/>
+                                </StackPanel>
+                            </Grid>
+                        </Grid>
+                    </TabItem>
+                </TabControl>
             </StackPanel>
         </ScrollViewer>
 
+        <!-- Global loading overlay – covers the entire page, fixed position -->
         <Grid IsVisible="{Binding IsLoading}" ZIndex="200" Background="#99000000">
             <StackPanel Spacing="16" VerticalAlignment="Center" HorizontalAlignment="Center">
                 <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_LoadingRecentGames}"
-                           HorizontalAlignment="Center"
-                           FontSize="14"
-                           FontWeight="SemiBold"
-                           Opacity="0.9"/>
-
-                <ui:FAProgressRing IsActive="{Binding IsLoading}"
-                                   Width="48"
-                                   Height="48"
+                           HorizontalAlignment="Center" FontSize="14" FontWeight="SemiBold" Opacity="0.9"/>
+                <ui:FAProgressRing IsActive="{Binding IsLoading}" Width="48" Height="48"
                                    Foreground="{DynamicResource SystemAccentColor}"/>
-
                 <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_FetchingGameInfo}"
-                           HorizontalAlignment="Center"
-                           FontSize="12"
-                           Opacity="0.6"/>
+                           HorizontalAlignment="Center" FontSize="12" Opacity="0.6"/>
             </StackPanel>
         </Grid>
 
+        <!-- Joining Best Region Overlay -->
         <Grid IsVisible="{Binding IsJoiningBestRegion}" ZIndex="200" Background="#99000000">
             <StackPanel Spacing="16" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_FindingBestServer}"
-                           HorizontalAlignment="Center"
-                           FontSize="14"
-                           FontWeight="SemiBold"
-                           Opacity="0.9"/>
-
-                <ui:FAProgressRing IsActive="{Binding IsJoiningBestRegion}"
-                                   Width="48"
-                                   Height="48"
+                           HorizontalAlignment="Center" FontSize="14" FontWeight="SemiBold" Opacity="0.9"/>
+                <ui:FAProgressRing IsActive="{Binding IsJoiningBestRegion}" Width="48" Height="48"
                                    Foreground="{DynamicResource SystemAccentColor}"/>
-
                 <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_CheckingServers}"
-                           HorizontalAlignment="Center"
-                           FontSize="12"
-                           Opacity="0.7"/>
+                           HorizontalAlignment="Center" FontSize="12" Opacity="0.7"/>
             </StackPanel>
         </Grid>
 
+        <!-- Server List Overlay -->
         <Border Background="#99000000" IsVisible="{Binding IsOverlayVisible}" ZIndex="100">
             <Border BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
                     Background="{DynamicResource SolidBackgroundFillColorBaseBrush}"
@@ -218,20 +256,17 @@
                                                     <StackPanel Orientation="Horizontal" Spacing="8">
                                                         <ic:Lucide Icon="Globe" Height="14" Width="14" />
                                                         <TextBlock Text="{Binding Region}" FontWeight="SemiBold" VerticalAlignment="Center"/>
-
                                                         <Border Margin="4,0,0,0" Padding="5,1" CornerRadius="4"
                                                                 Background="{DynamicResource AccentButtonBackground}"
                                                                 IsVisible="{Binding IsLatest}">
                                                             <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_Latest}" Foreground="{DynamicResource AccentButtonForeground}" FontSize="8" FontWeight="Medium"/>
                                                         </Border>
                                                     </StackPanel>
-
                                                     <StackPanel Orientation="Horizontal" Spacing="10" IsVisible="{Binding #RootPage.DataContext.IsTrackedGame}">
                                                         <ic:Lucide Icon="Timer" Height="12" Width="12" Opacity="0.5" />
                                                         <TextBlock Text="{Binding DurationText}" FontSize="11" Opacity="0.6"/>
                                                     </StackPanel>
                                                 </StackPanel>
-
                                                 <controls:IconButton Grid.Column="1" Classes="Primary" VerticalAlignment="Center"
                                                                      Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).RejoinLastServerCommand}"
                                                                      CommandParameter="{Binding}"
@@ -247,6 +282,7 @@
             </Border>
         </Border>
 
+        <!-- Subplaces Overlay -->
         <Border Background="#99000000" IsVisible="{Binding IsSubplacesOverlayVisible}" ZIndex="101">
             <Grid>
                 <Border BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
@@ -272,16 +308,10 @@
                         </Border>
 
                         <Grid IsVisible="{Binding IsLoadingSubplaces}" Height="450">
-                            <StackPanel Spacing="16"
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center">
-                                <ui:FAProgressRing IsActive="{Binding IsLoadingSubplaces}"
-                                                   Width="40"
-                                                   Height="40"
+                            <StackPanel Spacing="16" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <ui:FAProgressRing IsActive="{Binding IsLoadingSubplaces}" Width="40" Height="40"
                                                    Foreground="{DynamicResource SystemAccentColor}"/>
-                                <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_LoadingSubplaces}"
-                                           FontSize="12"
-                                           Opacity="0.7"/>
+                                <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_LoadingSubplaces}" FontSize="12" Opacity="0.7"/>
                             </StackPanel>
                         </Grid>
 
@@ -321,6 +351,7 @@
             </Grid>
         </Border>
 
+        <!-- Private Servers Overlay -->
         <Border Background="#99000000" IsVisible="{Binding IsPrivateServersOverlayVisible}" ZIndex="102">
             <Grid>
                 <Border BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
@@ -366,7 +397,6 @@
                                                             <Image Source="{Binding OwnerAvatarUrl, Converter={StaticResource UrlToBitmapConverter}}"
                                                                    Stretch="UniformToFill" />
                                                         </Border>
-
                                                         <StackPanel Grid.Column="1" Margin="8,0">
                                                             <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
                                                             <TextBlock Text="{Binding OwnerName}" FontSize="11" Opacity="0.6" />
@@ -378,7 +408,6 @@
                                                                 <Run Text="{x:Static resources:Strings.Menu_QuickPlay_Players}" />
                                                             </TextBlock>
                                                         </StackPanel>
-
                                                         <controls:IconButton Grid.Column="2" VerticalAlignment="Center" Content="Join" Icon="Play"
                                                                              Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).JoinPrivateServerCommand}"
                                                                              CommandParameter="{Binding AccessCode}"
@@ -391,9 +420,7 @@
                                 </ScrollViewer>
 
                                 <StackPanel IsVisible="{Binding ArePrivateServersEmpty}"
-                                            HorizontalAlignment="Center"
-                                            VerticalAlignment="Center"
-                                            Spacing="8">
+                                            HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="8">
                                     <ic:Lucide Icon="LockKeyhole" Height="36" Width="36" Opacity="0.5" />
                                     <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_NoPrivateServersFound}" FontSize="13" Opacity="0.7"/>
                                 </StackPanel>
