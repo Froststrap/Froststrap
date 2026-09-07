@@ -24,7 +24,7 @@ namespace Froststrap.Utility
 
             using var md5 = MD5.Create();
             byte[] hashBytes = md5.ComputeHash(stream);
-            
+
             return Stringify(hashBytes);
         }
 

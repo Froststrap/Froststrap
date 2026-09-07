@@ -217,7 +217,7 @@ namespace Froststrap
                 }
 
                 App.Terminate();
-            },TaskScheduler.Default);
+            }, TaskScheduler.Default);
 
             if ((OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) && !App.LaunchSettings.QuietFlag.Active)
             {

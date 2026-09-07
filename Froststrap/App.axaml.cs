@@ -276,12 +276,15 @@ internal partial class App : Application
 
         using var AUMIDKey = Microsoft.Win32.Registry.CurrentUser.CreateSubKey(@"Software\Classes\AppUserModelId\xyz.froststrap.desktop");
         using var uninstallKey = Registry.CurrentUser.OpenSubKey(UninstallKey);
-        if (uninstallKey?.GetValue("InstallLocation") is string installLocValue) {
+        if (uninstallKey?.GetValue("InstallLocation") is string installLocValue)
+        {
             AUMIDKey.SetValue("DisplayName", "Froststrap");
             AUMIDKey.SetValue("IconBackgroundColor", "FFDDDDDD");
             AUMIDKey.SetValue("IconUri", iconPath);
             Logger.Info("Created keys");
-        } else {
+        }
+        else
+        {
             Logger.Error("Couldn't create key, uninstallKey doesnt exist.");
         }
         AUMIDKey.Close();

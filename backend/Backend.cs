@@ -24,14 +24,16 @@ internal partial class InternalVirtualDisplay
 public class VirtualDisplay
 {
     /// Wrapper around starting the virtual display
-    public static void Start() {
+    public static void Start()
+    {
         var result = InternalVirtualDisplay.Start();
 
         Console.WriteLine($"Virtual display started: {result}");
     }
 
     /// Instructs the Swift ABI to shut up the NSApplication worker thread
-    public static void End() {
+    public static void End()
+    {
         InternalVirtualDisplay.End();
     }
 }
@@ -60,10 +62,11 @@ internal partial class InternalNativeNotify
 /// A native notifier
 public class NativeNotify
 {
-    public static void InitRing() {
-        InternalNativeNotify.SetApplication("xyz.froststrap.desktop");    
+    public static void InitRing()
+    {
+        InternalNativeNotify.SetApplication("xyz.froststrap.desktop");
     }
-    
+
     public static void SendMessage(
         string title,
         string description,

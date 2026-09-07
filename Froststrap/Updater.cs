@@ -2,7 +2,8 @@ using System.Runtime.InteropServices;
 
 namespace Froststrap;
 
-internal class Updater {
+internal class Updater
+{
     public static Bootstrapper? Bootstrapper { get; set; } = null!;
 
     public static async Task<bool> CheckForUpdates()
@@ -115,13 +116,15 @@ internal class Updater {
 
             App.Logger.Info($"Downloading update from {asset.BrowserDownloadUrl}");
 
-            if (Bootstrapper is not null) {
+            if (Bootstrapper is not null)
+            {
                 await Bootstrapper.DownloadFileWithProgressAsync(asset.BrowserDownloadUrl, downloadPath);
             }
 
             App.Logger.Info($"Download complete: {downloadPath}");
 
-            if (Bootstrapper is not null) {
+            if (Bootstrapper is not null)
+            {
                 Bootstrapper.Dialog?.ProgressIndeterminate = true;
                 Bootstrapper.Dialog?.TaskbarProgressState = TaskbarItemProgressState.Indeterminate;
                 Bootstrapper.SetStatus(string.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_Status_InstallingUpdate, releaseVer));
@@ -181,7 +184,8 @@ internal class Updater {
         {
             return ["Froststrap-windows.msi", "-windows.msi"];
         }
-        else if (OperatingSystem.IsMacOS()) {
+        else if (OperatingSystem.IsMacOS())
+        {
             if (RuntimeInformation.OSArchitecture == Architecture.X64)
             {
                 return ["Froststrap-macos-x64.pkg", "-macos-x64.pkg"];

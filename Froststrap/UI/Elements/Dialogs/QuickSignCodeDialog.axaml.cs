@@ -72,7 +72,7 @@ namespace Froststrap.UI.Elements.Dialogs
                         {
                             StatusText.Text = Strings.Menu_QuickSignIn_Waitting;
                         });
-                    },TaskScheduler.Default);
+                    }, TaskScheduler.Default);
                 }
             }
             catch
