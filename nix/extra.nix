@@ -6,6 +6,7 @@
   lib,
   dpkg,
   typos,
+  reuse,
   stdenv,
   nushell,
   callPackage
@@ -16,6 +17,7 @@ in
 mkFragment {
   buildInputs = [
     nushell
+    reuse
     typos
   ] ++ lib.optionals stdenv.hostPlatform.isLinux [
     rpm
