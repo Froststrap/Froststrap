@@ -1,7 +1,7 @@
-﻿using Avalonia.Platform.Storage;
+﻿using Avalonia.Controls;
+using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.Enums.GBSPresets;
-using System.Globalization;
 using System.Windows.Input;
 using System.Xml.Linq;
 
@@ -45,18 +45,20 @@ namespace Froststrap.UI.ViewModels.Settings
 
             Utilities.ShellExecute(targetPath);
         });
-        public ICommand ExportCommand => new RelayCommand(ExportSettings);
         public ICommand ImportCommand => new RelayCommand(ImportSettings);
+        public static IAsyncRelayCommand ExportCommand => new AsyncRelayCommand<Control>(async c => await ExportSettings(c));
 
-        private async void ExportSettings()
+        private static async Task ExportSettings(Control? control)
         {
-            var visualRoot = Avalonia.Application.Current?.ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop
-                             ? desktop.MainWindow
-                             : null;
+            App.Logger.Info("Exporting settings");
+            if (control is null) return;
 
-            if (visualRoot == null) return;
+            var topLevel = TopLevel.GetTopLevel(control);
+            if (topLevel is not Window parentWindow) return;
 
-            var file = await visualRoot.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+            var storageProvider = parentWindow.StorageProvider;
+
+            var file = await storageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
             {
                 Title = "Export GBS Settings",
                 SuggestedFileName = "GlobalBasicSettings_13.xml",
