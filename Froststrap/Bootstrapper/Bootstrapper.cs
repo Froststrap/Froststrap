@@ -209,7 +209,7 @@ internal partial class Bootstrapper : IDisposable
 #if (!DEBUG || DEBUG_UPDATER)
         if (!App.LaunchSettings.BypassUpdateCheck && !App.LaunchSettings.UpgradeFlag.Active && App.Settings.Prop.UpdateChecks != UpdateCheck.Disabled)
         {
-            bool updatePresent = await CheckForUpdates();
+            bool updatePresent = await Updater.CheckForUpdates();
             if (updatePresent)
                 return;
         }
