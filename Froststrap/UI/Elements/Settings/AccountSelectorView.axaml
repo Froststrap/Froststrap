@@ -179,41 +179,41 @@
 
                                         <Grid ColumnDefinitions="*,Auto" HorizontalAlignment="Stretch" VerticalAlignment="Center">
                                             <!-- Account info -->
-                                            <Grid Grid.Column="0" ColumnDefinitions="Auto,*,Auto" HorizontalAlignment="Stretch" VerticalAlignment="Center">
-                                                <!-- Avatar -->
-                                                <Border Grid.Column="0" Width="32" Height="32" CornerRadius="16"
-                                                        Background="{DynamicResource ControlFillColorSecondaryBrush}"
-                                                        ClipToBounds="True">
-                                                    <Panel>
-                                                        <ic:Lucide Icon="User"
-                                                                   Height="16"
-                                                                   Width="16"
-                                                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                                                   HorizontalAlignment="Center"
-                                                                   VerticalAlignment="Center"
-                                                                   IsVisible="{Binding AvatarUrl, Converter={x:Static StringConverters.IsNullOrEmpty}}" />
-                                                        <Image Source="{Binding AvatarUrl, Converter={StaticResource UrlToBitmapConverter}}"
-                                                               Stretch="UniformToFill"
-                                                               IsVisible="{Binding AvatarUrl, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
-                                                    </Panel>
-                                                </Border>
+                                            <Grid Grid.Column="0" ColumnDefinitions="Auto,*" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                                                <Grid Grid.Column="0" Width="32" Height="32">
+                                                    <Border CornerRadius="16"
+                                                            Background="{DynamicResource ControlFillColorSecondaryBrush}"
+                                                            ClipToBounds="True">
+                                                        <Panel>
+                                                            <ic:Lucide Icon="User"
+                                                                       Height="16"
+                                                                       Width="16"
+                                                                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                                                       HorizontalAlignment="Center"
+                                                                       VerticalAlignment="Center"
+                                                                       IsVisible="{Binding AvatarUrl, Converter={x:Static StringConverters.IsNullOrEmpty}}" />
+                                                            <Image Source="{Binding AvatarUrl, Converter={StaticResource UrlToBitmapConverter}}"
+                                                                   Stretch="UniformToFill"
+                                                                   IsVisible="{Binding AvatarUrl, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                                                        </Panel>
+                                                    </Border>
 
-                                                <!-- Name / username -->
-                                                <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center" Spacing="2">
-                                                    <TextBlock Text="{Binding DisplayName}" FontSize="12" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
-                                                    <TextBlock Text="{Binding Username, StringFormat='@{0}'}" FontSize="10" TextTrimming="CharacterEllipsis"/>
-                                                </StackPanel>
-
-                                                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="4" Margin="8,0,0,0" VerticalAlignment="Center">
                                                     <Ellipse Width="10" Height="10"
-                                                             Fill="{Binding PresenceBrush}"
+                                                             HorizontalAlignment="Right"
+                                                             VerticalAlignment="Bottom"
+                                                             Margin="0,0,-2,-2"
                                                              ToolTip.Tip="{Binding PresenceStatus}"
-                                                             IsVisible="{Binding PresenceStatus, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+                                                             Fill="{Binding PresenceBrush}"
+                                                             IsVisible="{Binding PresenceStatus, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                                                </Grid>
 
-                                                    <TextBlock Text="{Binding PresenceStatus}" FontSize="10" Foreground="{Binding PresenceBrush}" />
+                                                <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center" Spacing="2">
+                                                    <TextBlock Text="{Binding DisplayName}" FontSize="12" MaxWidth="150" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                                                    <TextBlock Text="{Binding Username, StringFormat='@{0}'}" FontSize="10" MaxWidth="125" TextTrimming="CharacterEllipsis"/>
                                                 </StackPanel>
                                             </Grid>
 
+                                            <!-- Action buttons -->
                                             <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="4" Margin="12,0,0,0">
                                                 <controls:IconButton Width="32"
                                                                      Height="32"
