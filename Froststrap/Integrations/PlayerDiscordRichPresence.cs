@@ -8,7 +8,6 @@ namespace Froststrap.Integrations
         private readonly DiscordRpcClient? _rpcClient;
         private readonly ActivityWatcher _activityWatcher;
         private readonly Queue<Message> _messageQueue = new();
-        private readonly bool _isMacOS;
 
         private DiscordRPC.RichPresence? _currentPresence;
         private DiscordRPC.RichPresence? _originalPresence;
@@ -24,17 +23,7 @@ namespace Froststrap.Integrations
 
         public PlayerDiscordRichPresence(ActivityWatcher activityWatcher)
         {
-            _isMacOS = OperatingSystem.IsMacOS();
-
-            if (_isMacOS)
-            {
-                App.Logger.Info("Skipping Discord RPC initialization on macOS");
-                _rpcClient = null!;
-                _activityWatcher = activityWatcher;
-                return;
-            }
-
-            _rpcClient = new DiscordRpcClient("363445589247131668");
+            _rpcClient = new DiscordRpcClient("363445589247131668", -1, null, true, DiscordIpcPipeClient.Create());
             _activityWatcher = activityWatcher;
 
             _activityWatcher.OnGameJoin += (_, _) => Task.Run(() => SetCurrentGame());
@@ -67,7 +56,7 @@ namespace Froststrap.Integrations
 
         public void ProcessRPCMessage(Message message, bool implicitUpdate = true)
         {
-            if (_isMacOS || _disposed) return;
+            if (_disposed) return;
 
             if (message.Command != "SetRichPresence" && message.Command != "SetLaunchData")
                 return;
@@ -100,7 +89,7 @@ namespace Froststrap.Integrations
 
         private async Task UpdatePresenceIconsAsync(ulong? smallImg, ulong? largeImg, bool implicitUpdate, CancellationToken token)
         {
-            if (_isMacOS || _disposed) return;
+            if (_disposed) return;
 
             Debug.Assert(smallImg != null || largeImg != null);
 
@@ -174,7 +163,7 @@ namespace Froststrap.Integrations
 
         private void ProcessSetRichPresence(Message message, bool implicitUpdate)
         {
-            if (_isMacOS || _disposed) return;
+            if (_disposed) return;
 
             Models.BloxstrapRPC.RichPresence? presenceData;
 
@@ -318,7 +307,7 @@ namespace Froststrap.Integrations
 
         public void SetVisibility(bool visible)
         {
-            if (_isMacOS || _disposed) return;
+            if (_disposed) return;
 
             App.Logger.Info($"Setting presence visibility ({visible})");
 
@@ -332,7 +321,7 @@ namespace Froststrap.Integrations
 
         public async Task<bool> SetCurrentGame()
         {
-            if (_isMacOS || _disposed) return false;
+            if (_disposed) return false;
 
             if (!_activityWatcher.InGame)
             {
@@ -449,7 +438,7 @@ namespace Froststrap.Integrations
 
         public void UpdatePresence()
         {
-            if (_isMacOS || _disposed || _rpcClient == null) return;
+            if (_disposed || _rpcClient == null) return;
 
             if (!_rpcClient.IsInitialized)
                 return;
@@ -477,7 +466,7 @@ namespace Froststrap.Integrations
             }
             catch (IOException ex) when (ex.InnerException is SocketException)
             {
-                App.Logger.Error("Socket interrupted (Operation Canceled). This is expected on macOS.");
+                App.Logger.Error("Socket interrupted (Operation Canceled).");
             }
             catch (Exception ex)
             {

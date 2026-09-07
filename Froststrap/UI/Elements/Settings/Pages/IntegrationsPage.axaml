@@ -161,10 +161,9 @@
                 </StackPanel>
             </controls:CardExpander>
 
-            <Separator IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}" Margin="0,12" />
+            <Separator Margin="0,12" />
 
             <TextBlock
-                IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}"
                 FontSize="20"
                 FontWeight="Bold"
                 Text="{x:Static resources:Strings.Common_DiscordRichPresence}"
@@ -172,32 +171,31 @@
             />
 
             <controls:MarkdownTextBlock
-                IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}"
                 Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                 MarkdownText="{Binding Source={x:Static resources:Strings.Menu_Integrations_RequiresActivityTracking}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://bloxstraplabs.com/wiki/features/discord-rich-presence/'}"
                 TextWrapping="Wrap"
                 Margin="0,2,0,10"
             />
 
-            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}"
+            <controls:OptionControl
                                     Description="{x:Static resources:Strings.Menu_Integrations_FroststrapRPC_Description}"
                                     Header="{x:Static resources:Strings.Menu_Integrations_FroststrapRPC_Title}">
                 <ToggleSwitch IsChecked="{Binding ShowUsingFroststrapRPC, Mode=TwoWay}" />
             </controls:OptionControl>
 
-            <TextBlock IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}"
+            <TextBlock
                        FontSize="20"
                        FontWeight="Bold"
                        Margin="0,10,0,0"
                        Text="{x:Static resources:Strings.Common_Player}" />
 
-            <controls:MarkdownTextBlock IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}"
+            <controls:MarkdownTextBlock
                                         Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                                         MarkdownText="{x:Static resources:Strings.Menu_Integrations_RPC_Player_Description}"
                                         Margin="0,2,0,10"
                                         TextWrapping="Wrap" />
 
-            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}"
+            <controls:OptionControl
                                     x:Name="DiscordActivityOption"
                                     Description="{Binding Source={x:Static resources:Strings.Menu_Integrations_ShowGameActivity_Description}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://bloxstraplabs.com/wiki/help/discord-rich-presence-not-working/'}"
                                     Header="{x:Static resources:Strings.Menu_Integrations_ShowGameActivity_Title}"
@@ -205,74 +203,74 @@
                 <ToggleSwitch IsChecked="{Binding DiscordActivityEnabled, Mode=TwoWay}" />
             </controls:OptionControl>
 
-            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}"
+            <controls:OptionControl
                                     Description="{x:Static resources:Strings.Menu_Integrations_CustomStatusDisplay_Description}"
                                     Header="{x:Static resources:Strings.Menu_Integrations_CustomStatusDisplay_Title}"
                                     IsEnabled="{Binding DiscordActivityEnabled}">
                 <ToggleSwitch IsChecked="{Binding EnableCustomStatusDisplay, Mode=TwoWay}" />
             </controls:OptionControl>
 
-            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}"
+            <controls:OptionControl
                                     Description="{x:Static resources:Strings.Menu_Integrations_AllowActivityJoining_Description}"
                                     Header="{x:Static resources:Strings.Menu_Integrations_AllowActivityJoining_Title}"
                                     IsEnabled="{Binding DiscordActivityEnabled}">
                 <ToggleSwitch IsChecked="{Binding DiscordActivityJoinEnabled, Mode=TwoWay}" />
             </controls:OptionControl>
 
-            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}"
+            <controls:OptionControl
                                     Description="{x:Static resources:Strings.Menu_Integrations_ShowAccountOnProfile_Description}"
                                     Header="{x:Static resources:Strings.Menu_Integrations_ShowAccountOnProfile_Title}"
                                     IsEnabled="{Binding DiscordActivityEnabled}">
                 <ToggleSwitch IsChecked="{Binding DiscordAccountOnProfile, Mode=TwoWay}" />
             </controls:OptionControl>
 
-            <TextBlock IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}"
+            <TextBlock
                        FontSize="20"
                        Margin="0,16,0,0"
                        FontWeight="Bold"
                        Text="{x:Static resources:Strings.Common_Studio}"/>
 
-            <controls:MarkdownTextBlock IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}"
+            <controls:MarkdownTextBlock
                                         Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                                         MarkdownText="{x:Static resources:Strings.Menu_Integrations_RPC_Studio_Description}"
                                         TextWrapping="Wrap" />
 
-            <controls:OptionControl x:Name="StudioActivityOption" IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}"
+            <controls:OptionControl x:Name="StudioActivityOption"
                                     Header="{x:Static resources:Strings.Menu_Integrations_StudioActivity_Title}"
                                     Description="{x:Static resources:Strings.Menu_Integrations_StudioActivity_Description}"
                                     IsEnabled="{Binding ActivityTrackingEnabled}">
                 <ToggleSwitch IsChecked="{Binding StudioRPCEnabled, Mode=TwoWay}" />
             </controls:OptionControl>
 
-            <controls:OptionControl  IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}"
+            <controls:OptionControl
                                     Header="{x:Static resources:Strings.Menu_Integrations_DynamicThumbnail_Title}"
                                     Description="{x:Static resources:Strings.Menu_Integrations_DynamicThumbnail_Description}"
                                     IsEnabled="{Binding StudioRPCEnabled}">
                 <ToggleSwitch IsChecked="{Binding ThumbnailChanging, Mode=TwoWay}" />
             </controls:OptionControl>
 
-            <controls:OptionControl  IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}"
+            <controls:OptionControl
                                     Header="{x:Static resources:Strings.Menu_Integrations_EditingInfo_Title}"
                                     Description="{x:Static resources:Strings.Menu_Integrations_EditingInfo_Description}"
                                     IsEnabled="{Binding StudioRPCEnabled}">
                 <ToggleSwitch IsChecked="{Binding EditingInfo, Mode=TwoWay}" />
             </controls:OptionControl>
 
-            <controls:OptionControl  IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}"
+            <controls:OptionControl
                                     Header="{x:Static resources:Strings.Menu_Integrations_WorkspaceInfo_Title}"
                                     Description="{x:Static resources:Strings.Menu_Integrations_WorkspaceInfo_Description}"
                                     IsEnabled="{Binding StudioRPCEnabled}">
                 <ToggleSwitch IsChecked="{Binding WorkspaceInfo, Mode=TwoWay}" />
             </controls:OptionControl>
 
-            <controls:OptionControl  IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}"
+            <controls:OptionControl
                                     Header="{x:Static resources:Strings.Menu_Integrations_ShowTesting_Title}"
                                     Description="{x:Static resources:Strings.Menu_Integrations_ShowTesting_Description}"
                                     IsEnabled="{Binding StudioRPCEnabled}">
                 <ToggleSwitch IsChecked="{Binding ShowTesting, Mode=TwoWay}" />
             </controls:OptionControl>
 
-            <controls:OptionControl  IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}"
+            <controls:OptionControl
                                     Header="{x:Static resources:Strings.Menu_Integrations_JoinButton_Title}"
                                     Description="{x:Static resources:Strings.Menu_Integrations_JoinButton_Description}"
                                     IsEnabled="{Binding StudioRPCEnabled}">

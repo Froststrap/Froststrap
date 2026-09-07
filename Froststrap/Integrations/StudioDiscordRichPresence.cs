@@ -21,7 +21,6 @@ namespace Froststrap.Integrations
         private readonly DiscordRpcClient? _rpcClient;
         private readonly ActivityWatcher _activityWatcher;
         private readonly Queue<StudioMessage> _messageQueue = [];
-        private readonly bool _isMacOS;
 
         private DiscordRPC.RichPresence? _currentPresence;
         private DiscordRPC.RichPresence? _originalPresence;
@@ -32,17 +31,7 @@ namespace Froststrap.Integrations
 
         public StudioDiscordRichPresence(ActivityWatcher activityWatcher)
         {
-            _isMacOS = OperatingSystem.IsMacOS();
-
-            if (_isMacOS)
-            {
-                App.Logger.Info("Skipping Discord RPC initialization on macOS");
-                _rpcClient = null!;
-                _activityWatcher = activityWatcher;
-                return;
-            }
-
-            _rpcClient = new DiscordRpcClient("1454451301130960896");
+            _rpcClient = new DiscordRpcClient("1454451301130960896", -1, null, true, DiscordIpcPipeClient.Create());
             _activityWatcher = activityWatcher;
 
             _activityWatcher.OnStudioRPCMessage += (_, message) => ProcessRPCMessage(message);
@@ -82,7 +71,7 @@ namespace Froststrap.Integrations
 
         private void HandleStudioPlaceClosed()
         {
-            if (_isMacOS || _disposed) return;
+            if (_disposed) return;
 
             App.Logger.Info("Studio place closed");
 
@@ -92,7 +81,7 @@ namespace Froststrap.Integrations
 
         public void ProcessRPCMessage(StudioMessage message, bool implicitUpdate = true)
         {
-            if (_isMacOS || _disposed) return;
+            if (_disposed) return;
 
             if (message.StudioCommand == "SetRichPresence")
             {
@@ -107,7 +96,7 @@ namespace Froststrap.Integrations
 
         private void InitializeStudioPresence()
         {
-            if (_isMacOS || _disposed || _rpcClient == null) return;
+            if (_disposed || _rpcClient == null) return;
 
             App.Logger.Info("Initializing Studio presence");
 
@@ -135,7 +124,7 @@ namespace Froststrap.Integrations
 
         private void ResetStudioPresence()
         {
-            if (_isMacOS || _disposed || _rpcClient == null) return;
+            if (_disposed || _rpcClient == null) return;
 
             App.Logger.Info("Resetting Studio presence");
 
@@ -160,7 +149,7 @@ namespace Froststrap.Integrations
 
         private void ProcessStudioRichPresence(StudioMessage message, bool implicitUpdate)
         {
-            if (_isMacOS || _disposed || _rpcClient == null) return;
+            if (_disposed || _rpcClient == null) return;
 
             StudioRichPresence? presenceData;
 
@@ -227,7 +216,7 @@ namespace Froststrap.Integrations
 
         public void SetVisibility(bool visible)
         {
-            if (_isMacOS || _disposed || _rpcClient == null) return;
+            if (_disposed || _rpcClient == null) return;
 
             App.Logger.Info($"Setting presence visibility ({visible})");
 
@@ -241,7 +230,7 @@ namespace Froststrap.Integrations
 
         public void UpdatePresence()
         {
-            if (_isMacOS || _disposed || _rpcClient == null) return;
+            if (_disposed || _rpcClient == null) return;
 
             if (_currentPresence is null || !_rpcClient.IsInitialized)
                 return;
@@ -253,7 +242,7 @@ namespace Froststrap.Integrations
             }
             catch (IOException ex) when (ex.InnerException is SocketException)
             {
-                App.Logger.Error("Socket interrupted on macOS. Suppressed.");
+                App.Logger.Error("Socket interrupted (Operation Canceled).");
             }
             catch (Exception ex)
             {
