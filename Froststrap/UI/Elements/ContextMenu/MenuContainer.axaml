@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 Froststrap
+
+SPDX-License-Identifier: MPL-2.0
+-->
+
 <Window
     x:Class="Froststrap.UI.Elements.ContextMenu.MenuContainer"
     xmlns="https://github.com/avaloniaui"

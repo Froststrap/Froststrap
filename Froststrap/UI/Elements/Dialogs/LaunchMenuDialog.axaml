@@ -1,4 +1,10 @@
-﻿<base:AvaloniaWindow x:Class="Froststrap.UI.Elements.Dialogs.LaunchMenuDialog"
+﻿<!--
+SPDX-FileCopyrightText: 2026 Froststrap
+
+SPDX-License-Identifier: MPL-2.0
+-->
+
+<base:AvaloniaWindow x:Class="Froststrap.UI.Elements.Dialogs.LaunchMenuDialog"
                      xmlns="https://github.com/avaloniaui"
                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                      xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"

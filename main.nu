@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Froststrap
+#
+# SPDX-License-Identifier: MPL-2.0
+
 const project_file: string = "Froststrap/Froststrap.csproj"
 const build_dir: string = "build"
 const release_config: string = "Release"
