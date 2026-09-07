@@ -43,11 +43,6 @@
     * Change the Studio RPC thumbnail depending on the script that is open
     * Show script type, name, and number of lines of code
 
-### Bootstrapper
-- Change the Roblox process priority
-- Automatically close the Roblox Crash Handler to reduce memory usage
-- Integrated cleaner tool to remove leftover files
-
 ### Mods
 - Multi-mod system that allows you to download many mods at once
 - Select when to apply the mod (player/studio)
