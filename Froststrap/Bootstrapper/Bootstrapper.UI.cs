@@ -10,7 +10,7 @@ internal partial class Bootstrapper
     private long _totalDownloadedBytes;
     private long _totalPackagedBytes;
 
-    private void SetStatus(string message)
+    public void SetStatus(string message)
     {
         message = message.Replace("{product}", AppData.ProductName, StringComparison.Ordinal);
         Dialog?.Message = message;
