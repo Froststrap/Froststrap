@@ -1,4 +1,8 @@
-﻿using System.Net.Http.Json;
+﻿// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
+using System.Net.Http.Json;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.UI.Elements.Base;
 

@@ -1,4 +1,8 @@
-﻿using System.Windows.Input;
+﻿// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
+using System.Windows.Input;
 using Avalonia.Media;
 using CommunityToolkit.Mvvm.Input;
 

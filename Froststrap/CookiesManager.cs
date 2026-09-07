@@ -1,4 +1,8 @@
-﻿using Froststrap.RobloxInterfaces;
+﻿// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
+using Froststrap.RobloxInterfaces;
 using System.Security.Cryptography;
 
 namespace Froststrap

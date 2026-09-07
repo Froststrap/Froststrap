@@ -1,4 +1,8 @@
-﻿using Avalonia.Controls;
+﻿// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
+using Avalonia.Controls;
 using Froststrap.Integrations;
 using Avalonia.Controls.ApplicationLifetimes;
 using Froststrap.UI.Elements.Dialogs;

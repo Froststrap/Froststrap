@@ -1,4 +1,8 @@
-﻿using Avalonia.Media;
+﻿// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
+using Avalonia.Media;
 using Avalonia.Media.Fonts;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;

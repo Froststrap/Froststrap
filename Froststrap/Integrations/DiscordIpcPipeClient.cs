@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
 using System.Buffers.Binary;
 using System.Collections.Concurrent;
 using System.Net.Sockets;

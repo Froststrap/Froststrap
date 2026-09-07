@@ -1,4 +1,8 @@
-﻿using Froststrap.UI.Elements.Bootstrapper;
+﻿// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
+using Froststrap.UI.Elements.Bootstrapper;
 using CommunityToolkit.Mvvm.Input;
 using System.Windows.Input;
 

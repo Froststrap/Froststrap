@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
 using CommunityToolkit.Mvvm.Input;
 
 namespace Froststrap.UI.ViewModels.About

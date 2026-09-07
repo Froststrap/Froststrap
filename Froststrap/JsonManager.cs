@@ -1,4 +1,8 @@
-﻿using System.Text.Json.Nodes;
+﻿// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
+using System.Text.Json.Nodes;
 using System.Reflection;
 
 namespace Froststrap

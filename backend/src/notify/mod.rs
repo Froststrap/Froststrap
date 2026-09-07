@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
 pub mod data_types;
 #[cfg(target_os = "linux")]
 pub mod linux;

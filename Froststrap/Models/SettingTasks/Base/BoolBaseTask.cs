@@ -1,4 +1,8 @@
-﻿namespace Froststrap.Models.SettingTasks.Base
+﻿// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
+namespace Froststrap.Models.SettingTasks.Base
 {
     internal abstract class BoolBaseTask : BaseTask
     {

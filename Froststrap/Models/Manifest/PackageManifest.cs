@@ -1,8 +1,7 @@
-﻿/*
- * Roblox Studio Mod Manager (ProjectSrc/Utility/PackageManifest.cs)
- * MIT License
- * Copyright (c) 2015-present MaximumADHD
-*/
+﻿// Copyright (C) 2015-present MaximumADHD
+// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
 
 namespace Froststrap.Models.Manifest
 {

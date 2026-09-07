@@ -1,4 +1,8 @@
-﻿namespace Froststrap.UI.ViewModels.Bootstrapper
+﻿// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
+namespace Froststrap.UI.ViewModels.Bootstrapper
 {
     internal class ClassicFluentDialogViewModel(IBootstrapperDialog dialog) : BootstrapperDialogViewModel(dialog)
     {

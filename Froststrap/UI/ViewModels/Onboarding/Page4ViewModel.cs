@@ -1,4 +1,8 @@
-﻿using Froststrap.UI.ViewModels.Settings;
+﻿// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
+using Froststrap.UI.ViewModels.Settings;
 
 namespace Froststrap.UI.ViewModels.Onboarding
 {

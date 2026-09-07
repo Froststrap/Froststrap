@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
 using Avalonia.Data.Converters;
 using Avalonia.Media.Imaging;
 using System.Collections.Concurrent;

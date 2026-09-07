@@ -1,4 +1,8 @@
-﻿using Froststrap.Enums.FlagPresets;
+﻿// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
+using Froststrap.Enums.FlagPresets;
 using LucideAvalonia.Enum;
 
 namespace Froststrap

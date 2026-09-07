@@ -1,4 +1,8 @@
-﻿using System.Windows.Input;
+﻿// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
+using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 
 namespace Froststrap.UI.ViewModels.Dialogs

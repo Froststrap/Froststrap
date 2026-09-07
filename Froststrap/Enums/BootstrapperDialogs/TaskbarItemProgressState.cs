@@ -1,4 +1,8 @@
-﻿namespace Froststrap.Enums.BootstrapperDialogs
+﻿// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
+namespace Froststrap.Enums.BootstrapperDialogs
 {
     internal enum TaskbarItemProgressState
     {
