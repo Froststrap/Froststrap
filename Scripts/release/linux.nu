@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Froststrap
+#
+# SPDX-License-Identifier: MPL-2.0
+
 def main [
   project_file: string = "Froststrap/Froststrap.csproj"
   build_dir: string = "build"

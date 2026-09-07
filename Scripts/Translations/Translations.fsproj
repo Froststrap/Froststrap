@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 Froststrap
+
+SPDX-License-Identifier: MPL-2.0
+-->
+
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Version>1.0.0</Version>

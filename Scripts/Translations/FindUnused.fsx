@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
 open System
 open System.IO
 open System.Text.RegularExpressions

@@ -1,4 +1,10 @@
-﻿<base:AvaloniaWindow
+﻿<!--
+SPDX-FileCopyrightText: 2026 Froststrap
+
+SPDX-License-Identifier: MPL-2.0
+-->
+
+<base:AvaloniaWindow
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     x:Class="Froststrap.UI.Elements.Dialogs.ColorPickerDialog"
