@@ -17,7 +17,6 @@ SPDX-License-Identifier: MPL-2.0
              x:DataType="vm:QuickPlayViewModel">
 
     <UserControl.Resources>
-        <!-- Reusable game card template -->
         <DataTemplate x:Key="GameCardTemplate" x:DataType="models:QuickPlayGameItem">
             <Button Background="Transparent" BorderThickness="0" Padding="0" Margin="5" ClickMode="Press">
                 <Button.Styles>
@@ -82,7 +81,6 @@ SPDX-License-Identifier: MPL-2.0
                         </MenuItem>
                     </MenuFlyout>
                 </Button.Flyout>
-
                 <controls:Card MinWidth="190" CornerRadius="12,12,4,4" Padding="0" ClipToBounds="True">
                     <Panel>
                         <StackPanel>
@@ -130,7 +128,6 @@ SPDX-License-Identifier: MPL-2.0
         <ScrollViewer IsEnabled="{Binding !IsOverlayVisible}">
             <StackPanel Margin="14">
                 <TabControl SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay}">
-                    <!-- Continue Playing Tab -->
                     <TabItem Header="{x:Static resources:Strings.Menu_QuickPlay_ContinuePlaying}">
                         <Grid>
                             <ScrollViewer>
@@ -143,15 +140,12 @@ SPDX-License-Identifier: MPL-2.0
                                     </ItemsControl.ItemsPanel>
                                 </ItemsControl>
                             </ScrollViewer>
-                            <!-- Empty state – only when not loading and no games -->
-                            <Grid IsVisible="{Binding ShowRecentEmpty}" Background="Transparent">
+                            <Grid IsVisible="{Binding ShowRecentEmpty}" Background="Transparent" IsHitTestVisible="False">
                                 <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_NoRecentGames}"
                                            VerticalAlignment="Center" HorizontalAlignment="Center" Opacity="0.6"/>
                             </Grid>
                         </Grid>
                     </TabItem>
-
-                    <!-- Favorites Tab -->
                     <TabItem Header="{x:Static resources:Strings.Menu_QuickPlay_Favorites}">
                         <Grid>
                             <ScrollViewer>
@@ -164,17 +158,7 @@ SPDX-License-Identifier: MPL-2.0
                                     </ItemsControl.ItemsPanel>
                                 </ItemsControl>
                             </ScrollViewer>
-                            <!-- Loading overlay (inside tab) -->
-                            <Grid IsVisible="{Binding IsFavoritesLoading}" Background="#99000000">
-                                <StackPanel Spacing="16" VerticalAlignment="Center" HorizontalAlignment="Center">
-                                    <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_LoadingFavorites}"
-                                               HorizontalAlignment="Center" FontSize="14" FontWeight="SemiBold" Opacity="0.9"/>
-                                    <ui:FAProgressRing IsActive="{Binding IsFavoritesLoading}" Width="48" Height="48"
-                                                       Foreground="{DynamicResource SystemAccentColor}"/>
-                                </StackPanel>
-                            </Grid>
-                            <!-- Empty / Not logged in – perfectly centered -->
-                            <Grid IsVisible="{Binding !IsFavoritesLoading}" Background="Transparent">
+                            <Grid IsVisible="{Binding !IsFavoritesLoading}" Background="Transparent" IsHitTestVisible="False">
                                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="8">
                                     <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_NoFavoriteGames}"
                                                Opacity="0.6" HorizontalAlignment="Center"
@@ -190,7 +174,6 @@ SPDX-License-Identifier: MPL-2.0
             </StackPanel>
         </ScrollViewer>
 
-        <!-- Global loading overlay – covers the entire page, fixed position -->
         <Grid IsVisible="{Binding IsLoading}" ZIndex="200" Background="#99000000">
             <StackPanel Spacing="16" VerticalAlignment="Center" HorizontalAlignment="Center">
                 <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_LoadingRecentGames}"
@@ -202,7 +185,17 @@ SPDX-License-Identifier: MPL-2.0
             </StackPanel>
         </Grid>
 
-        <!-- Joining Best Region Overlay -->
+        <Grid IsVisible="{Binding IsFavoritesLoading}" ZIndex="200" Background="#99000000">
+            <StackPanel Spacing="16" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_LoadingFavorites}"
+                           HorizontalAlignment="Center" FontSize="14" FontWeight="SemiBold" Opacity="0.9"/>
+                <ui:FAProgressRing IsActive="{Binding IsFavoritesLoading}" Width="48" Height="48"
+                                   Foreground="{DynamicResource SystemAccentColor}"/>
+                <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_FetchingGameInfo}"
+                           HorizontalAlignment="Center" FontSize="12" Opacity="0.6"/>
+            </StackPanel>
+        </Grid>
+
         <Grid IsVisible="{Binding IsJoiningBestRegion}" ZIndex="200" Background="#99000000">
             <StackPanel Spacing="16" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_FindingBestServer}"
@@ -214,7 +207,6 @@ SPDX-License-Identifier: MPL-2.0
             </StackPanel>
         </Grid>
 
-        <!-- Server List Overlay -->
         <Border Background="#99000000" IsVisible="{Binding IsOverlayVisible}" ZIndex="100">
             <Border BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
                     Background="{DynamicResource SolidBackgroundFillColorBaseBrush}"
@@ -242,7 +234,6 @@ SPDX-License-Identifier: MPL-2.0
                             </Button>
                         </Grid>
                     </Border>
-
                     <Grid>
                         <Grid IsVisible="{Binding IsLoadingServers}" Height="350" Background="#80000000" ZIndex="1">
                             <StackPanel Spacing="16" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -251,7 +242,6 @@ SPDX-License-Identifier: MPL-2.0
                                 <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_LoadingServers}" FontSize="12" Opacity="0.7"/>
                             </StackPanel>
                         </Grid>
-
                         <ScrollViewer Height="350" IsVisible="{Binding !IsLoadingServers}">
                             <ItemsControl ItemsSource="{Binding SelectedGameServers}" Padding="10">
                                 <ItemsControl.ItemTemplate>
@@ -288,7 +278,6 @@ SPDX-License-Identifier: MPL-2.0
             </Border>
         </Border>
 
-        <!-- Subplaces Overlay -->
         <Border Background="#99000000" IsVisible="{Binding IsSubplacesOverlayVisible}" ZIndex="101">
             <Grid>
                 <Border BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
@@ -312,7 +301,6 @@ SPDX-License-Identifier: MPL-2.0
                                 </Button>
                             </Grid>
                         </Border>
-
                         <Grid IsVisible="{Binding IsLoadingSubplaces}" Height="450">
                             <StackPanel Spacing="16" HorizontalAlignment="Center" VerticalAlignment="Center">
                                 <ui:FAProgressRing IsActive="{Binding IsLoadingSubplaces}" Width="40" Height="40"
@@ -320,7 +308,6 @@ SPDX-License-Identifier: MPL-2.0
                                 <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_LoadingSubplaces}" FontSize="12" Opacity="0.7"/>
                             </StackPanel>
                         </Grid>
-
                         <ScrollViewer Height="450" IsVisible="{Binding !IsLoadingSubplaces}">
                             <ItemsControl ItemsSource="{Binding Subplaces}" Padding="10">
                                 <ItemsControl.ItemsPanel>
@@ -357,7 +344,6 @@ SPDX-License-Identifier: MPL-2.0
             </Grid>
         </Border>
 
-        <!-- Private Servers Overlay -->
         <Border Background="#99000000" IsVisible="{Binding IsPrivateServersOverlayVisible}" ZIndex="102">
             <Grid>
                 <Border BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
@@ -381,7 +367,6 @@ SPDX-License-Identifier: MPL-2.0
                                 </Button>
                             </Grid>
                         </Border>
-
                         <Grid Height="350">
                             <Grid IsVisible="{Binding IsLoadingPrivateServers}">
                                 <StackPanel Spacing="16" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -390,7 +375,6 @@ SPDX-License-Identifier: MPL-2.0
                                     <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_LoadingPrivateServers}" FontSize="12" Opacity="0.7"/>
                                 </StackPanel>
                             </Grid>
-
                             <Grid IsVisible="{Binding !IsLoadingPrivateServers}">
                                 <ScrollViewer IsVisible="{Binding !ArePrivateServersEmpty}">
                                     <ItemsControl ItemsSource="{Binding PrivateServers}" Padding="10">
@@ -424,7 +408,6 @@ SPDX-License-Identifier: MPL-2.0
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>
                                 </ScrollViewer>
-
                                 <StackPanel IsVisible="{Binding ArePrivateServersEmpty}"
                                             HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="8">
                                     <ic:Lucide Icon="LockKeyhole" Height="36" Width="36" Opacity="0.5" />

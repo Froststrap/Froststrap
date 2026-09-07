@@ -1,5 +1,4 @@
 ﻿// SPDX-FileCopyrightText: 2026 Froststrap
-//
 // SPDX-License-Identifier: MPL-2.0
 
 using Avalonia.Threading;
@@ -26,7 +25,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
     internal enum QuickPlayTab
     {
         Continue,
-        Favorites 
+        Favorites
     }
 
     private bool _isLoading;
@@ -47,6 +46,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
     private bool _isJoiningBestRegion;
     private bool _isFavoritesLoading;
     private QuickPlayTab _selectedTab = QuickPlayTab.Continue;
+    private bool _favoritesLoaded;
 
     private readonly ObservableCollection<PrivateServerInfo> _privateServers = [];
 
@@ -129,7 +129,13 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
     public QuickPlayTab SelectedTab
     {
         get => _selectedTab;
-        set => SetProperty(ref _selectedTab, value);
+        set
+        {
+            if (SetProperty(ref _selectedTab, value) && value == QuickPlayTab.Favorites && !_favoritesLoaded)
+            {
+                _ = LoadFavoriteGamesAsync();
+            }
+        }
     }
 
     public int SelectedTabIndex
@@ -140,7 +146,9 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
 
     public bool HasRecentGames => RecentGames.Count > 0;
     public bool HasFavoriteGames => FavoriteGames.Count > 0;
-    public static bool IsLoggedIn => AccountManager.Shared?.ActiveAccount != null;
+#pragma warning disable CA1822
+    public bool IsLoggedIn => AccountManager.Shared?.ActiveAccount != null;
+#pragma warning restore CA1822
     public bool ShowRecentEmpty => !IsLoading && !HasRecentGames;
 
     public ObservableCollection<PlaceInfo> Subplaces => _subplaces;
@@ -323,7 +331,6 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
         if (HasActiveAccount)
         {
             await LoadApiGamesAndMerge();
-            _ = LoadFavoriteGamesAsync();
             _ = RefreshApiGamesInBackground();
         }
 
@@ -460,6 +467,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
                 FavoriteGames.Clear();
                 OnPropertyChanged(nameof(HasFavoriteGames));
             });
+            _favoritesLoaded = true;
             return;
         }
 
@@ -475,10 +483,12 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
                     FavoriteGames.Add(g);
                 OnPropertyChanged(nameof(HasFavoriteGames));
             });
+            _favoritesLoaded = true;
         }
         catch (Exception ex)
         {
             App.Logger.Error($"Failed to load favorite games: {ex.Message}");
+            _favoritesLoaded = false;
         }
         finally
         {
@@ -858,7 +868,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
                 if (account != null)
                 {
                     await LoadApiGamesAndMerge();
-                    _ = LoadFavoriteGamesAsync();
+                    _favoritesLoaded = false;
                     _ = RefreshApiGamesInBackground();
                 }
                 else
