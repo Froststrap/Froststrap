@@ -49,7 +49,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
             Utilities.ShellExecute(targetPath);
         });
-        public ICommand ImportCommand => new RelayCommand(ImportSettings);
+        public static IAsyncRelayCommand ImportCommand => new AsyncRelayCommand<Control>(async c => await ImportSettings(c));
         public static IAsyncRelayCommand ExportCommand => new AsyncRelayCommand<Control>(async c => await ExportSettings(c));
 
         private static async Task ExportSettings(Control? control)
@@ -59,7 +59,6 @@ namespace Froststrap.UI.ViewModels.Settings
 
             var topLevel = TopLevel.GetTopLevel(control);
             if (topLevel is not Window parentWindow) return;
-
             var storageProvider = parentWindow.StorageProvider;
 
             var file = await storageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
@@ -87,15 +86,16 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        private async void ImportSettings()
+        private static async Task ImportSettings(Control? control)
         {
-            var visualRoot = Avalonia.Application.Current?.ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop
-                             ? desktop.MainWindow
-                             : null;
+            App.Logger.Info("Importing settings");
+            if (control is null) return;
 
-            if (visualRoot == null) return;
+            var topLevel = TopLevel.GetTopLevel(control);
+            if (topLevel is not Window parentWindow) return;
+            var storageProvider = parentWindow.StorageProvider;
 
-            var result = await visualRoot.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+            var result = await storageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
             {
                 Title = "Import GBS Settings",
                 AllowMultiple = false,
