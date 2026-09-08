@@ -4,7 +4,6 @@
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.Integrations;
-using Froststrap.Models.APIs.Roblox;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -25,6 +24,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
     internal enum QuickPlayTab
     {
         Continue,
+        Recommended,
         Favorites
     }
 
@@ -47,11 +47,14 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
     private bool _isFavoritesLoading;
     private QuickPlayTab _selectedTab = QuickPlayTab.Continue;
     private bool _favoritesLoaded;
+    private bool _isRecommendedLoading;
+    private bool _recommendationsLoaded;
 
     private readonly ObservableCollection<PrivateServerInfo> _privateServers = [];
 
     public ObservableCollection<QuickPlayGameItem> RecentGames { get; } = [];
     public ObservableCollection<QuickPlayGameItem> FavoriteGames { get; } = [];
+    public ObservableCollection<QuickPlayGameItem> RecommendedGames { get; } = [];
     public ObservableCollection<ServerInfo> SelectedGameServers { get; } = [];
 
     public UniverseDetails? SelectedUniverseDetails
@@ -69,7 +72,11 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
     public bool IsLoading
     {
         get => _isLoading;
-        set => SetProperty(ref _isLoading, value);
+        set
+        {
+            if (SetProperty(ref _isLoading, value))
+                OnPropertyChanged(nameof(ShowRecentEmpty));
+        }
     }
 
     public bool IsSubplacesOverlayVisible
@@ -126,14 +133,38 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
         set => SetProperty(ref _isFavoritesLoading, value);
     }
 
+    public bool IsRecommendedLoading
+    {
+        get => _isRecommendedLoading;
+        set
+        {
+            if (SetProperty(ref _isRecommendedLoading, value))
+                OnPropertyChanged(nameof(ShowRecommendedEmpty));
+        }
+    }
+
     public QuickPlayTab SelectedTab
     {
         get => _selectedTab;
         set
         {
-            if (SetProperty(ref _selectedTab, value) && value == QuickPlayTab.Favorites && !_favoritesLoaded)
+            if (SetProperty(ref _selectedTab, value))
             {
-                _ = LoadFavoriteGamesAsync();
+                if (value == QuickPlayTab.Recommended && !_recommendationsLoaded)
+                {
+                    IsRecommendedLoading = true;
+                    RecommendedGames.Clear();
+                    OnPropertyChanged(nameof(HasRecommendedGames));
+                    OnPropertyChanged(nameof(ShowRecommendedEmpty));
+                    _ = LoadRecommendedGamesAsync();
+                }
+                else if (value == QuickPlayTab.Favorites && !_favoritesLoaded)
+                {
+                    IsFavoritesLoading = true;
+                    FavoriteGames.Clear();
+                    OnPropertyChanged(nameof(HasFavoriteGames));
+                    _ = LoadFavoriteGamesAsync();
+                }
             }
         }
     }
@@ -146,10 +177,13 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
 
     public bool HasRecentGames => RecentGames.Count > 0;
     public bool HasFavoriteGames => FavoriteGames.Count > 0;
+    public bool HasRecommendedGames => RecommendedGames.Count > 0;
+    public bool ShowRecentEmpty => !IsLoading && !HasRecentGames;
+    public bool ShowRecommendedEmpty => !IsRecommendedLoading && !HasRecommendedGames;
+
 #pragma warning disable CA1822
     public bool IsLoggedIn => AccountManager.Shared?.ActiveAccount != null;
 #pragma warning restore CA1822
-    public bool ShowRecentEmpty => !IsLoading && !HasRecentGames;
 
     public ObservableCollection<PlaceInfo> Subplaces => _subplaces;
     public ObservableCollection<PrivateServerInfo> PrivateServers => _privateServers;
@@ -373,6 +407,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
             RecentGames.Clear();
             foreach (var game in localGames) RecentGames.Add(game);
             OnPropertyChanged(nameof(HasRecentGames));
+            OnPropertyChanged(nameof(ShowRecentEmpty));
         });
     }
 
@@ -395,6 +430,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
             RecentGames.Clear();
             foreach (var game in merged) RecentGames.Add(game);
             OnPropertyChanged(nameof(HasRecentGames));
+            OnPropertyChanged(nameof(ShowRecentEmpty));
         });
     }
 
@@ -468,10 +504,10 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
                 OnPropertyChanged(nameof(HasFavoriteGames));
             });
             _favoritesLoaded = true;
+            IsFavoritesLoading = false;
             return;
         }
 
-        IsFavoritesLoading = true;
         try
         {
             var games = await FetchFavoritesFromApiAsync(AccountManager.Shared!.ActiveAccount!.UserId);
@@ -494,6 +530,124 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
         {
             IsFavoritesLoading = false;
         }
+    }
+
+    private async Task LoadRecommendedGamesAsync()
+    {
+        if (!HasActiveAccount)
+        {
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                RecommendedGames.Clear();
+                OnPropertyChanged(nameof(HasRecommendedGames));
+                OnPropertyChanged(nameof(ShowRecommendedEmpty));
+            });
+            _recommendationsLoaded = true;
+            IsRecommendedLoading = false;
+            return;
+        }
+
+        try
+        {
+            var games = await FetchRecommendedFromApiAsync();
+            if (games.Count > 50)
+                games = [.. games.Take(50)];
+
+            await EnrichGamesWithDetails(games);
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                RecommendedGames.Clear();
+                foreach (var g in games)
+                    RecommendedGames.Add(g);
+                OnPropertyChanged(nameof(HasRecommendedGames));
+                OnPropertyChanged(nameof(ShowRecommendedEmpty));
+            });
+            _recommendationsLoaded = true;
+        }
+        catch (Exception ex)
+        {
+            App.Logger.Error($"Failed to load recommended games: {ex.Message}");
+            _recommendationsLoaded = false;
+        }
+        finally
+        {
+            IsRecommendedLoading = false;
+        }
+    }
+
+    private static async Task<List<QuickPlayGameItem>> FetchRecommendedFromApiAsync()
+    {
+        var accountManager = AccountManager.Shared;
+        if (accountManager?.ActiveAccount == null) return [];
+
+        string? cookie = accountManager.GetRoblosecurityForUser(accountManager.ActiveAccount.UserId);
+        if (string.IsNullOrEmpty(cookie)) return [];
+
+        var url = "https://apis.roblox.com/discovery-api/omni-recommendation";
+
+        var payload = new
+        {
+            pageType = "Home",
+            sessionId = Guid.NewGuid().ToString(),
+            supportedTreatmentTypes = new[] { "SortlessGrid" },
+            sduiTreatmentTypes = new[] { "Carousel", "HeroUnit" },
+            cpuCores = Environment.ProcessorCount,
+            maxResolution = "2560x1440",
+            maxMemory = 32768,
+            networkType = "4g"
+        };
+
+        var jsonPayload = JsonSerializer.Serialize(payload);
+
+        using var request = new HttpRequestMessage(HttpMethod.Post, url)
+        {
+            Content = new StringContent(jsonPayload, Encoding.UTF8, "application/json")
+        };
+        request.Headers.Add("Cookie", $".ROBLOSECURITY={cookie}");
+        request.Headers.Add("User-Agent", "Roblox/WinInet");
+        request.Headers.Add("Referer", "https://www.roblox.com/home");
+
+        var response = await Http.SendJson<OmniRecommendationResponse>(request);
+        if (response?.Sorts == null) return [];
+
+        var recommendedSort = response.Sorts
+            .FirstOrDefault(s => s.TopicId == 100000000 &&
+                                 s.TreatmentType == "SortlessGrid" &&
+                                 s.RecommendationList != null);
+
+        if (recommendedSort?.RecommendationList == null) return [];
+
+        var gameItems = new List<QuickPlayGameItem>();
+        foreach (var rec in recommendedSort.RecommendationList)
+        {
+            if (rec.ContentType != "Game") continue;
+            if (response.ContentMetadata?.Game != null &&
+                response.ContentMetadata.Game.TryGetValue(rec.ContentId.ToString(CultureInfo.InvariantCulture), out var details))
+            {
+                gameItems.Add(new QuickPlayGameItem
+                {
+                    UniverseId = rec.ContentId,
+                    PlaceId = details.RootPlaceId,
+                    Name = details.Name ?? Strings.Menu_QuickPlay_UnknownGame,
+                    Creator = "Unknown",
+                    Playing = details.PlayerCount,
+                    Visits = details.TotalUpVotes + details.TotalDownVotes,
+                    Source = GameSource.None
+                });
+            }
+            else
+            {
+                gameItems.Add(new QuickPlayGameItem
+                {
+                    UniverseId = rec.ContentId,
+                    PlaceId = rec.ContentId,
+                    Name = Strings.Menu_QuickPlay_UnknownGame,
+                    Source = GameSource.None
+                });
+            }
+        }
+
+        return gameItems;
     }
 
     private static async Task<List<QuickPlayGameItem>> FetchFavoritesFromApiAsync(long userId)
@@ -536,6 +690,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
                     if (string.IsNullOrEmpty(game.Name)) game.Name = details.Data.Name ?? Strings.Menu_QuickPlay_UnknownGame;
                     game.Playing = details.Data.Playing;
                     game.Visits = details.Data.Visits;
+                    if (game.PlaceId == 0) game.PlaceId = details.Data.RootPlaceId;
                 }
             }
         }
@@ -681,6 +836,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
                 RecentGames.Clear();
                 foreach (var game in merged) RecentGames.Add(game);
                 OnPropertyChanged(nameof(HasRecentGames));
+                OnPropertyChanged(nameof(ShowRecentEmpty));
             });
         }
         catch (Exception ex)
@@ -869,12 +1025,19 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
                 {
                     await LoadApiGamesAndMerge();
                     _favoritesLoaded = false;
+                    _recommendationsLoaded = false;
+                    RecommendedGames.Clear();
+                    OnPropertyChanged(nameof(HasRecommendedGames));
+                    OnPropertyChanged(nameof(ShowRecommendedEmpty));
                     _ = RefreshApiGamesInBackground();
                 }
                 else
                 {
                     FavoriteGames.Clear();
+                    RecommendedGames.Clear();
                     OnPropertyChanged(nameof(HasFavoriteGames));
+                    OnPropertyChanged(nameof(HasRecommendedGames));
+                    OnPropertyChanged(nameof(ShowRecommendedEmpty));
                 }
                 OnPropertyChanged(nameof(IsLoggedIn));
             }

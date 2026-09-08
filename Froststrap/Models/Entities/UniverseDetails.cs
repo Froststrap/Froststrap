@@ -2,8 +2,6 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-using Froststrap.RobloxInterfaces;
-
 namespace Froststrap.Models.Entities
 {
     /// <summary>
@@ -29,35 +27,66 @@ namespace Froststrap.Models.Entities
 
         public static async Task FetchBulk(string ids)
         {
-            Uri gameDetailsUrl = UrlBuilder.BuildApiUrl("games", $"v1/games?universeIds={ids}");
-            Uri thumbnailsUrl = UrlBuilder.BuildApiUrl("thumbnails", $"v1/games/icons?universeIds={ids}&returnPolicy=PlaceHolder&size=128x128&format=Png&isCircular=false");
-
-            ApiArrayResponse<GameDetailResponse> gameDetailResponse;
-
-            // some universes can't be viewed by logged out user (ex. 18+)
-            if (App.Cookies.Loaded)
-                gameDetailResponse = await Http.AuthGetJson<ApiArrayResponse<GameDetailResponse>>(gameDetailsUrl);
-            else
-                gameDetailResponse = await Http.GetJson<ApiArrayResponse<GameDetailResponse>>(gameDetailsUrl);
-
-            if (!gameDetailResponse.Data.Any())
+            if (string.IsNullOrWhiteSpace(ids))
                 return;
 
-            var universeThumbnailResponse = await Http.GetJson<ApiArrayResponse<ThumbnailResponse>>(thumbnailsUrl);
+            var idList = ids.Split(',')
+                .Where(id => long.TryParse(id, CultureInfo.InvariantCulture, out _))
+                .Select(long.Parse)
+                .Distinct()
+                .ToList();
 
-            if (!universeThumbnailResponse.Data.Any())
-                throw new InvalidHTTPResponseException("Roblox API for Game Thumbnails returned invalid data");
+            if (idList.Count == 0)
+                return;
 
-            foreach (string strId in ids.Split(','))
+            const int chunkSize = 50;
+            var chunks = idList
+                .Select((id, index) => new { id, index })
+                .GroupBy(x => x.index / chunkSize)
+                .Select(g => string.Join(",", g.Select(x => x.id)))
+                .ToList();
+
+            var gameDetailResults = new List<GameDetailResponse>();
+            var thumbnailResults = new List<ThumbnailResponse>();
+
+            foreach (var chunk in chunks)
             {
-                long id = long.Parse(strId, CultureInfo.InvariantCulture);
+                Uri gameDetailsUrl = UrlBuilder.BuildApiUrl("games", $"v1/games?universeIds={chunk}");
+                Uri thumbnailsUrl = UrlBuilder.BuildApiUrl("thumbnails", $"v1/games/icons?universeIds={chunk}&returnPolicy=PlaceHolder&size=128x128&format=Png&isCircular=false");
 
-                Cache.Add(new UniverseDetails
+                ApiArrayResponse<GameDetailResponse> gameDetailResponse;
+                if (App.Cookies.Loaded)
+                    gameDetailResponse = await Http.AuthGetJson<ApiArrayResponse<GameDetailResponse>>(gameDetailsUrl);
+                else
+                    gameDetailResponse = await Http.GetJson<ApiArrayResponse<GameDetailResponse>>(gameDetailsUrl);
+
+                if (gameDetailResponse.Data.Any())
+                    gameDetailResults.AddRange(gameDetailResponse.Data);
+
+                var universeThumbnailResponse = await Http.GetJson<ApiArrayResponse<ThumbnailResponse>>(thumbnailsUrl);
+                if (universeThumbnailResponse.Data.Any())
+                    thumbnailResults.AddRange(universeThumbnailResponse.Data);
+            }
+
+            var newCacheEntries = new List<UniverseDetails>();
+            foreach (var game in gameDetailResults)
+            {
+                var existing = Cache.FirstOrDefault(x => x.Data?.Id == game.Id);
+                if (existing != null)
+                    continue;
+
+                var thumb = thumbnailResults.FirstOrDefault(t => t.TargetId == game.Id)
+                            ?? new ThumbnailResponse { TargetId = game.Id, ImageUrl = "" };
+
+                newCacheEntries.Add(new UniverseDetails
                 {
-                    Data = gameDetailResponse.Data.FirstOrDefault(x => x.Id == id) ?? gameDetailResponse.Data.First(),
-                    Thumbnail = universeThumbnailResponse.Data.FirstOrDefault(x => x.TargetId == id) ?? universeThumbnailResponse.Data.First(),
+                    Data = game,
+                    Thumbnail = thumb
                 });
             }
+
+            if (newCacheEntries.Count > 0)
+                Cache.AddRange(newCacheEntries);
         }
     }
 }
