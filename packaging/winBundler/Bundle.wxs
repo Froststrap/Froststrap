@@ -1,0 +1,49 @@
+<Wix
+  xmlns="http://wixtoolset.org/schemas/v4/wxs"
+  xmlns:bal="http://wixtoolset.org/schemas/v4/wxs/bal"
+  xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util"
+>
+  <Bundle
+    Name="Froststrap"
+    Version="2.0.0.0"
+    Manufacturer="Froststrap"
+    UpgradeCode="ec3f7487-4802-4a7c-9d0d-5e40070e077f"
+  >
+    <BootstrapperApplication>
+      <bal:WixStandardBootstrapperApplication
+        LicenseUrl=""
+        Theme="hyperlinkLicense"
+      />
+    </BootstrapperApplication>
+
+    <Chain>
+      <ExePackage
+        Id="VcRedist_x64"
+        Permanent="yes"
+        SourceFile="redist/vc_redist.x64.exe"
+        Vital="yes"
+        InstallArguments="/install /quiet /norestart"
+        RepairArguments="/repair /quiet /norestart"
+        UninstallArguments="/uninstall /quiet /norestart"
+        DetectCondition="VCRUNTIME140_1_X64"
+      />
+
+      <ExePackage
+        Id="DotNetDesktopRuntime"
+        SourceFile="redist/windowsdesktop-runtime-10-win-x64.exe"
+        DisplayName=".NET Desktop Runtime"
+        InstallArguments="/install /quiet /norestart"
+        RepairArguments="/repair /quiet /norestart"
+        UninstallArguments="/uninstall /quiet /norestart"
+        Permanent="yes"
+        Vital="yes"
+        DetectCondition="WIX_IS_NETFRAMEWORK_LATEST_OR_LATER_INSTALLED OR NETCORE_DESKTOP_X64_LATEST"
+      />
+
+      <MsiPackage SourceFile="$(var.winInstaller.TargetPath)"
+        DisplayName="Froststrap"
+        Vital="yes"
+      />
+    </Chain>
+  </Bundle>
+</Wix>
