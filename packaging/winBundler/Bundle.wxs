@@ -42,7 +42,7 @@
 
       <MsiPackage SourceFile="$(var.winInstaller.TargetPath)"
         DisplayName="Froststrap"
-        Vital="yes"
+        Vital="no"
       />
     </Chain>
   </Bundle>
