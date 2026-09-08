@@ -213,9 +213,9 @@ SPDX-License-Identifier: MPL-2.0
                                                              IsVisible="{Binding PresenceStatus, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
                                                 </Grid>
 
-                                                <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center" Spacing="2">
-                                                    <TextBlock Text="{Binding DisplayName}" FontSize="12" MaxWidth="150" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
-                                                    <TextBlock Text="{Binding Username, StringFormat='@{0}'}" FontSize="10" MaxWidth="125" TextTrimming="CharacterEllipsis"/>
+                                                <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center" Spacing="2" MaxWidth="125">
+                                                    <TextBlock Text="{Binding DisplayName}" FontSize="12" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                                                    <TextBlock Text="{Binding Username, StringFormat='@{0}'}" FontSize="10" TextTrimming="CharacterEllipsis"/>
                                                 </StackPanel>
                                             </Grid>
 

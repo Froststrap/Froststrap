@@ -8323,6 +8323,15 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Loading Recommended games….
+        /// </summary>
+        public static string Menu_QuickPlay_LoadingRecommended {
+            get {
+                return ResourceManager.GetString("Menu.QuickPlay.LoadingRecommended", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Loading servers....
         /// </summary>
         public static string Menu_QuickPlay_LoadingServers {
@@ -8350,6 +8359,15 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please log in to account manager see your Recommended games..
+        /// </summary>
+        public static string Menu_QuickPlay_LoginToSeeRecommended {
+            get {
+                return ResourceManager.GetString("Menu.QuickPlay.LoginToSeeRecommended", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No favorite games yet..
         /// </summary>
         public static string Menu_QuickPlay_NoFavoriteGames {
@@ -8373,6 +8391,15 @@ namespace Froststrap.Resources {
         public static string Menu_QuickPlay_NoRecentGames {
             get {
                 return ResourceManager.GetString("Menu.QuickPlay.NoRecentGames", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No Recommended games yet..
+        /// </summary>
+        public static string Menu_QuickPlay_NoRecommendedGames {
+            get {
+                return ResourceManager.GetString("Menu.QuickPlay.NoRecommendedGames", resourceCulture);
             }
         }
         
@@ -8409,6 +8436,15 @@ namespace Froststrap.Resources {
         public static string Menu_QuickPlay_PrivateServers {
             get {
                 return ResourceManager.GetString("Menu.QuickPlay.PrivateServers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Recommended.
+        /// </summary>
+        public static string Menu_QuickPlay_Recommended {
+            get {
+                return ResourceManager.GetString("Menu.QuickPlay.Recommended", resourceCulture);
             }
         }
         

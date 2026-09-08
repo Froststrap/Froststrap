@@ -3288,4 +3288,16 @@ All files will be moved, shortcuts updated, and the application will restart.</v
   <data name="Menu.QuickPlay.LoginToSeeFavorites" xml:space="preserve">
     <value>Please log in to account manager see your favorite games.</value>
   </data>
+  <data name="Menu.QuickPlay.Recommended" xml:space="preserve">
+    <value>Recommended</value>
+  </data>
+  <data name="Menu.QuickPlay.LoadingRecommended" xml:space="preserve">
+    <value>Loading Recommended games…</value>
+  </data>
+  <data name="Menu.QuickPlay.NoRecommendedGames" xml:space="preserve">
+    <value>No Recommended games yet.</value>
+  </data>
+  <data name="Menu.QuickPlay.LoginToSeeRecommended" xml:space="preserve">
+    <value>Please log in to account manager see your Recommended games.</value>
+  </data>
 </root>
