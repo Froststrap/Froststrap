@@ -37,7 +37,9 @@ SPDX-License-Identifier: MPL-2.0
                                      Margin="4,0,0,0"
                                      Icon="ArrowRightFromLine"
                                      Header="{x:Static resources:Strings.Common_Export}"
-                                     Command="{Binding ExportCommand}"/>
+                                     Command="{Binding ExportCommand}"
+                                     CommandParameter="{Binding $self}"
+                 />
                 <controls:CardAction Grid.ColumnSpan="3"
                                      Grid.Row="1"
                                      Margin="0,0,4,0"
