@@ -62,14 +62,17 @@ jobs:
       - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: "10.0.x"
+      - name: Remove stupid failing stuff for apt, thanks GitHub
+        shell: bash
+        run: sudo rm -f /etc/apt/sources.list.d/google-chrome.list
       - name: Install Nushell
         shell: bash
         run: |
           wget -qO- https://apt.fury.io/nushell/gpg.key |
-            sudo gpg --dearmor -o /etc/apt/keyrings/fury-nushell.gpg
+          sudo gpg --dearmor -o /etc/apt/keyrings/fury-nushell.gpg
 
           echo "deb [signed-by=/etc/apt/keyrings/fury-nushell.gpg] https://apt.fury.io/nushell/ /" |
-            sudo tee /etc/apt/sources.list.d/fury-nushell.list
+          sudo tee /etc/apt/sources.list.d/fury-nushell.list
 
           sudo apt-get update
           sudo apt-get install -y nushell
