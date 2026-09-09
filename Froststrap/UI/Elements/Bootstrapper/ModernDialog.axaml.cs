@@ -19,7 +19,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
         {
             InitializeComponent();
 
-            string version = Utilities.GetRobloxVersionStr(Bootstrapper?.IsStudioLaunch ?? false);
+            string version = Froststrap.Utility.Versioning.GetRobloxVersionStr(Bootstrapper?.IsStudioLaunch ?? false);
             _viewModel = new ModernDialogViewModel(this, version);
             DataContext = _viewModel;
 

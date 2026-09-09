@@ -410,7 +410,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
                 zipStream.Finish();
             });
-            Utilities.ShellExecute(file.Path.LocalPath, select: true);
+            Froststrap.Utility.Threading.ShellExecute(file.Path.LocalPath, select: true);
         }
 
         private async void DeleteCustomTheme()

@@ -42,7 +42,7 @@ namespace Froststrap
                     string cachedVersion = GetCachedVersion();
                     bool needsUpdate = !File.Exists(PluginFile) ||
                                       !File.Exists(VersionCacheFile) ||
-                                      Utilities.CompareVersions(release.TagName, cachedVersion) == VersionComparison.GreaterThan;
+                                      Utility.Versioning.CompareVersions(release.TagName, cachedVersion) == VersionComparison.GreaterThan;
 
                     if (needsUpdate)
                     {

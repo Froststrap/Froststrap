@@ -47,7 +47,7 @@ namespace Froststrap.UI.ViewModels.Settings
             else
                 targetPath = Paths.Roblox;
 
-            Utilities.ShellExecute(targetPath);
+            Froststrap.Utility.Threading.ShellExecute(targetPath);
         });
         public static IAsyncRelayCommand ImportCommand => new AsyncRelayCommand<Control>(async c => await ImportSettings(c));
         public static IAsyncRelayCommand ExportCommand => new AsyncRelayCommand<Control>(async c => await ExportSettings(c));

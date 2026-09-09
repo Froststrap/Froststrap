@@ -37,7 +37,7 @@ namespace Froststrap.UI.Elements.Controls
             base.OnClick();
             if (!string.IsNullOrEmpty(Url))
             {
-                Utilities.ShellExecute(Url);
+                Froststrap.Utility.Threading.ShellExecute(Url);
             }
         }
     }

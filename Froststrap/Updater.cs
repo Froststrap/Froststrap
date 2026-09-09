@@ -61,7 +61,7 @@ internal class Updater
 
             string currentVer = App.Version;
             string releaseVer = releaseInfo.TagName;
-            var versionComparison = Utilities.CompareVersions(currentVer, releaseVer);
+            var versionComparison = Utility.Versioning.CompareVersions(currentVer, releaseVer);
 
             if (versionComparison == VersionComparison.Equal || versionComparison == VersionComparison.GreaterThan)
             {
@@ -84,7 +84,7 @@ internal class Updater
                 if (results == MessageBoxResult.Yes)
                 {
                     App.Logger.Debug("User chose to visit releases page");
-                    Utilities.ShellExecute(App.ProjectDownloadLink);
+                    Utility.Threading.ShellExecute(App.ProjectDownloadLink);
                 }
                 else
                 {
@@ -102,7 +102,7 @@ internal class Updater
                     string.Format(CultureInfo.InvariantCulture, Strings.Update_NoPackageAvailable, GetPlatformName()),
                     MessageBoxImage.Warning
                 );
-                Utilities.ShellExecute(App.ProjectDownloadLink);
+                Utility.Threading.ShellExecute(App.ProjectDownloadLink);
                 return false;
             }
 
@@ -156,7 +156,7 @@ internal class Updater
                     string.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_AutoUpdateFailed, releaseVer),
                     MessageBoxImage.Information
                 );
-                Utilities.ShellExecute(App.ProjectDownloadLink);
+                Utility.Threading.ShellExecute(App.ProjectDownloadLink);
                 return false;
             }
 
@@ -282,7 +282,7 @@ start "" "" ""{processPath}""
 exit";
 
             await File.WriteAllTextAsync(scriptPath, scriptContent);
-            await Utilities.RunAsync(scriptPath, "");
+            await Utility.Threading.RunAsync(scriptPath, "");
             App.Terminate();
             return true;
         }
@@ -317,8 +317,8 @@ open /Applications/{appName}.app
 exit";
 
             await File.WriteAllTextAsync(scriptPath, scriptContent);
-            await Utilities.RunAsync("chmod", $"+x \"{scriptPath}\"");
-            await Utilities.RunAsync(scriptPath, "");
+            await Utility.Threading.RunAsync("chmod", $"+x \"{scriptPath}\"");
+            await Utility.Threading.RunAsync(scriptPath, "");
             App.Terminate();
             return true;
         }
@@ -347,7 +347,7 @@ exit";
 
         if (currentVer is not null && existingVer is not null)
         {
-            var comparison = Utilities.CompareVersions(currentVer, existingVer);
+            var comparison = Utility.Versioning.CompareVersions(currentVer, existingVer);
 
             if (comparison == VersionComparison.LessThan)
             {
@@ -392,7 +392,7 @@ exit";
 
         if (isAutoUpgrade && OpenReleaseNotes)
         {
-            Utilities.ShellExecute($"https://github.com/{App.ProjectRepository}/releases/tag/{currentVer ?? App.Version}");
+            Utility.Threading.ShellExecute($"https://github.com/{App.ProjectRepository}/releases/tag/{currentVer ?? App.Version}");
         }
         else if (!isAutoUpgrade)
         {
@@ -450,7 +450,7 @@ exit";
                 if (File.Exists(Paths.Application))
                 {
                     var fileInfo = new FileInfo(Paths.Application) { IsReadOnly = false };
-                    if (OperatingSystem.IsLinux()) await Utilities.RunAsync("chmod", $"+w \"{Paths.Application}\"");
+                    if (OperatingSystem.IsLinux()) await Utility.Threading.RunAsync("chmod", $"+w \"{Paths.Application}\"");
                 }
             }
 
@@ -459,7 +459,7 @@ exit";
                 try
                 {
                     File.Copy(Paths.Process, Paths.Application, true);
-                    if (OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) await Utilities.RunAsync("chmod", $"+x \"{Paths.Application}\"");
+                    if (OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) await Utility.Threading.RunAsync("chmod", $"+x \"{Paths.Application}\"");
                     return true;
                 }
                 catch (Exception ex)
@@ -559,7 +559,7 @@ exit";
             existingVer = "0.0.0";
         }
 
-        if (Utilities.CompareVersions(existingVer, currentVer) != VersionComparison.LessThan)
+        if (Utility.Versioning.CompareVersions(existingVer, currentVer) != VersionComparison.LessThan)
         {
             App.Logger.Info($"Migrations up to date (last={existingVer}, current={currentVer})");
             return;
@@ -567,7 +567,7 @@ exit";
 
         App.Logger.Info($"Running migrations: {existingVer} -> {currentVer}");
 
-        if (Utilities.CompareVersions(existingVer, "1.4.0.0") == VersionComparison.LessThan)
+        if (Utility.Versioning.CompareVersions(existingVer, "1.4.0.0") == VersionComparison.LessThan)
         {
             JsonManager<RobloxState> legacyRobloxState = new();
 
@@ -591,7 +591,7 @@ exit";
 
             TryDelete(Path.Combine(Paths.Cache, "GameHistory.json"));
         }
-        if (Utilities.CompareVersions(existingVer, "1.4.2") == VersionComparison.LessThan)
+        if (Utility.Versioning.CompareVersions(existingVer, "1.4.2") == VersionComparison.LessThan)
         {
             string genCacheDir = Path.Combine(Path.GetTempPath(), "Froststrap", "mod-generator");
             string pluginCacheDir = Path.Combine(Paths.Roblox, "Plugins", "FroststrapStudioRPC.rbxmx");
@@ -613,7 +613,7 @@ exit";
             TryDelete(Path.Combine(Paths.Cache, "datacenters_cache.json"));
         }
 
-        if (Utilities.CompareVersions(existingVer, "1.5.1") == VersionComparison.LessThan)
+        if (Utility.Versioning.CompareVersions(existingVer, "1.5.1") == VersionComparison.LessThan)
         {
             App.Settings.Prop.BootstrapperStyle = BootstrapperStyle.FluentAeroDialog;
             App.Settings.Prop.SelectedBackdrop = WindowsBackdrops.None;
@@ -648,10 +648,10 @@ exit";
         if (Directory.Exists(flatpakDataPath) && !IsSymlink(flatpakDataPath))
         {
             App.Logger.Info($"Copying existing Sober data from {flatpakDataPath} to {soberTarget}");
-            await Utilities.RunAsync("cp", $"-a \"{flatpakDataPath}/.\" \"{soberTarget}/\"");
+            await Utility.Threading.RunAsync("cp", $"-a \"{flatpakDataPath}/.\" \"{soberTarget}/\"");
 
             App.Logger.Info($"Removing original Sober data directory at {flatpakDataPath}");
-            await Utilities.RunAsync("rm", $"-rf \"{flatpakDataPath}\"");
+            await Utility.Threading.RunAsync("rm", $"-rf \"{flatpakDataPath}\"");
         }
         else if (IsSymlink(flatpakDataPath))
         {
