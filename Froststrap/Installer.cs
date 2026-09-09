@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-using System.Security.Cryptography;
 using Microsoft.Win32;
 using System.Runtime.Versioning;
 
@@ -137,16 +136,7 @@ namespace Froststrap
                     if (File.Exists(Paths.Application))
                     {
                         var fileInfo = new FileInfo(Paths.Application) { IsReadOnly = false };
-                        if (OperatingSystem.IsLinux())
-                        {
-                            var psi = new ProcessStartInfo("chmod", $"+w \"{Paths.Application}\"")
-                            {
-                                UseShellExecute = false,
-                                CreateNoWindow = true
-                            };
-                            using var process = Process.Start(psi);
-                            await process!.WaitForExitAsync();
-                        }
+                        if (OperatingSystem.IsLinux()) await RunAsync("chmod", $"+w \"{Paths.Application}\"");
                     }
                 }
 
@@ -155,18 +145,7 @@ namespace Froststrap
                     try
                     {
                         File.Copy(Paths.Process, Paths.Application, true);
-
-                        if (OperatingSystem.IsLinux() || OperatingSystem.IsMacOS())
-                        {
-                            var psi = new ProcessStartInfo("chmod", $"+x \"{Paths.Application}\"")
-                            {
-                                UseShellExecute = false,
-                                CreateNoWindow = true
-                            };
-                            using var process = Process.Start(psi);
-                            await process!.WaitForExitAsync();
-                        }
-
+                        if (OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) await RunAsync("chmod", $"+x \"{Paths.Application}\"");
                         return true;
                     }
                     catch (Exception ex)
@@ -228,11 +207,6 @@ namespace Froststrap
 
                     string desktopFile = Path.Combine(Paths.UserProfile, ".local", "share", "applications",
                        $"{App.ProjectName.ToUpperInvariant()}.desktop");
-
-                    if (File.Exists(desktopFile))
-                    {
-                        var content = await File.ReadAllTextAsync(desktopFile);
-                    }
                 }
 
                 App.Logger.Info($"Version info updated to {App.Version}");
@@ -241,6 +215,12 @@ namespace Froststrap
             {
                 App.Logger.Error($"Failed to update version info: {ex}");
             }
+        }
+
+        private static async Task RunAsync(string cmd, string args)
+        {
+            using var p = Process.Start(new ProcessStartInfo(cmd, args) { UseShellExecute = false, CreateNoWindow = true });
+            await p!.WaitForExitAsync();
         }
 
         public static async Task RunMigrations(string? previousVersion = null)
@@ -341,17 +321,6 @@ namespace Froststrap
             if (App.StudioState.Loaded) App.StudioState.Save();
 
             App.Logger.Info($"Migrations complete — LastMigratedVersion set to {currentVer}");
-        }
-
-        [SupportedOSPlatform("windows")]
-        public static void UpdateUninstallRegistryVersion()
-        {
-            using var uninstallKey = Registry.CurrentUser.CreateSubKey(App.UninstallKey);
-            uninstallKey.SetValueSafe("DisplayVersion", App.Version);
-            uninstallKey.SetValueSafe("Publisher", App.ProjectOwner);
-            uninstallKey.SetValueSafe("HelpLink", App.ProjectHelpLink);
-            uninstallKey.SetValueSafe("URLInfoAbout", App.ProjectSupportLink);
-            uninstallKey.SetValueSafe("URLUpdateInfo", App.ProjectDownloadLink);
         }
 
         [SupportedOSPlatform("linux")]
