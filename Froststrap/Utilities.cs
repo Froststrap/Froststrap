@@ -10,6 +10,12 @@ namespace Froststrap
 {
     static partial class Utilities
     {
+        public static async Task RunAsync(string cmd, string args)
+        {
+            using var p = Process.Start(new ProcessStartInfo(cmd, args) { UseShellExecute = false, CreateNoWindow = true });
+            await p!.WaitForExitAsync();
+        }
+
         public static void ShellExecute(string path, bool select = false)
         {
             try
