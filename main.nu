@@ -26,13 +26,13 @@ def publish [] {
   print "Running publish"
   match (uname | get operating-system) {
     "Darwin" => {
-      nu ($script_dir | path join "Scripts/release/macos.nu")
+      nu ($script_dir | path join "packaging/macos.nu")
     }
     $s if ($s | str contains "Linux") => {
-      nu ($script_dir | path join "Scripts/release/linux.nu") $project_file $build_dir "Publish-linux-x64"
+      nu ($script_dir | path join "packaging/linux.nu") $project_file $build_dir "Publish-linux-x64"
     }
     $s if ($s | str contains "Windows") => {
-      nu ($script_dir | path join "Scripts/release/windows.nu") $project_file $build_dir
+      nu ($script_dir | path join "packaging/windows.nu") $project_file $build_dir
     }
     _ => {}
   }
