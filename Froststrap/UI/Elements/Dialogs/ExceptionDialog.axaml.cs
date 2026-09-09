@@ -52,13 +52,13 @@ namespace Froststrap.UI.Elements.Dialogs
             HelpMessageMarkdown.MarkdownText = helpMessage;
             VersionText.Text = String.Format(CultureInfo.InvariantCulture, Strings.Menu_About_Version, App.Version);
 
-            ReportExceptionButton.Click += (_, _) => Utilities.ShellExecute(issueUrl);
+            ReportExceptionButton.Click += (_, _) => Froststrap.Utility.Threading.ShellExecute(issueUrl);
 
             LocateLogFileButton.Click += async delegate
             {
                 if (Logging.Initialized && !String.IsNullOrEmpty(Logging.FileLocation))
                 {
-                    Utilities.ShellExecute(Logging.FileLocation);
+                    Froststrap.Utility.Threading.ShellExecute(Logging.FileLocation);
                 }
                 else
                 {

@@ -23,7 +23,7 @@ namespace Froststrap.UI.ViewModels
             if (string.IsNullOrEmpty(location))
                 return;
 
-            Utilities.ShellExecute(location);
+            Froststrap.Utility.Threading.ShellExecute(location);
         }
     }
 }

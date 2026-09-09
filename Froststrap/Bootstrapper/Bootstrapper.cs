@@ -301,7 +301,7 @@ internal partial class Bootstrapper : IDisposable
                     if (backgroundUpdaterLockOpen && MustUpgrade)
                     {
                         // I am Forced Upgrade, killer of Background Updates
-                        Utilities.KillBackgroundUpdater();
+                        Utility.Processes.KillBackgroundUpdater();
                         backgroundUpdaterLockOpen = false;
                     }
 
@@ -639,7 +639,7 @@ internal partial class Bootstrapper : IDisposable
             }
 
             _latestVersionGuid = clientVersion.VersionGuid;
-            _latestVersion = Utilities.ParseVersionSafe(clientVersion.Version);
+            _latestVersion = Utility.Versioning.ParseVersionSafe(clientVersion.Version);
         }
         else if (!overrideUsed)
         {
@@ -649,7 +649,7 @@ internal partial class Bootstrapper : IDisposable
                 App.Logger.Error("VersionFlag.Data was unexpectedly null or empty. Falling back to default channel.");
                 var fallbackInfo = await Deployment.GetInfo(Deployment.DefaultChannel, false, false, AppData.BinaryType);
                 _latestVersionGuid = fallbackInfo.VersionGuid;
-                _latestVersion = Utilities.ParseVersionSafe(fallbackInfo.Version);
+                _latestVersion = Utility.Versioning.ParseVersionSafe(fallbackInfo.Version);
             }
             else
             {
@@ -743,7 +743,7 @@ internal partial class Bootstrapper : IDisposable
             return false;
         }
 
-        Version? currentVersion = Utilities.GetRobloxVersion(AppData);
+        Version? currentVersion = Utility.Versioning.GetRobloxVersion(AppData);
         if (currentVersion == default)
         {
             App.Logger.Info("Not eligible: Current version is undefined");
@@ -1205,7 +1205,7 @@ internal partial class Bootstrapper : IDisposable
 
         SetStatus(Strings.Bootstrapper_Status_StartingSober);
 
-        Utilities.KillSober();
+        Utility.Processes.KillSober();
         App.Logger.Debug($"Launching Sober via flatpak with args: {_launchCommandLine}");
 
         var startInfo = new ProcessStartInfo

@@ -202,7 +202,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        private void OpenModsFolder() => Utilities.ShellExecute(Paths.Modifications);
+        private void OpenModsFolder() => Froststrap.Utility.Threading.ShellExecute(Paths.Modifications);
 
         private static string CursorPath => Path.Combine(Paths.Modifications, "content", "textures", "Cursors", "KeyboardMouse");
         private static string ShiftlockPath => Path.Combine(Paths.Modifications, "content", "textures");
@@ -486,7 +486,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
                 await ZipFile.CreateFromDirectoryAsync(SelectedCustomCursorSet.FolderPath, destinationPath);
 
-                Utilities.ShellExecute(destinationPath, select: true);
+                Froststrap.Utility.Threading.ShellExecute(destinationPath, select: true);
             }
             catch (Exception ex)
             {

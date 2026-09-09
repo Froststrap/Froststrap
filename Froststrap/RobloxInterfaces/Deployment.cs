@@ -268,7 +268,7 @@ namespace Froststrap.RobloxInterfaces
                 if (!isDefaultChannel && behindProductionCheck)
                 {
                     var defaultClientVersion = await GetInfo(DefaultChannel);
-                    if (Utilities.CompareVersions(clientVersion.Version, defaultClientVersion.Version) == VersionComparison.LessThan)
+                    if (Utility.Versioning.CompareVersions(clientVersion.Version, defaultClientVersion.Version) == VersionComparison.LessThan)
                         clientVersion.IsBehindDefaultChannel = true;
                 }
                 else

@@ -20,7 +20,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
 
         public FluentDialog(bool aero) : this()
         {
-            string version = Utilities.GetRobloxVersionStr(Bootstrapper?.IsStudioLaunch ?? false);
+            string version = Froststrap.Utility.Versioning.GetRobloxVersionStr(Bootstrapper?.IsStudioLaunch ?? false);
             _viewModel = new FluentDialogViewModel(this, aero, version);
             DataContext = _viewModel;
 

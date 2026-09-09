@@ -99,7 +99,7 @@ namespace Froststrap.Integrations
                 var release = await GetLatestModGeneratorRelease();
                 if (release != null)
                 {
-                    bool needsUpdate = Utilities.CompareVersions(release.TagName, cachedVersion) == VersionComparison.GreaterThan;
+                    bool needsUpdate = Utility.Versioning.CompareVersions(release.TagName, cachedVersion) == VersionComparison.GreaterThan;
                     if (!needsUpdate)
                         return exePath;
                 }

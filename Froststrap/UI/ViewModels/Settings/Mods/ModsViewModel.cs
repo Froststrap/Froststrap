@@ -192,7 +192,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             if (mod == null) return;
             string folderPath = Path.Combine(Paths.Modifications, mod.FolderName);
             if (Directory.Exists(folderPath))
-                Utilities.ShellExecute(folderPath);
+                Froststrap.Utility.Threading.ShellExecute(folderPath);
             else
                 _ = Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Menu_Mods_FolderDosentExist, mod.FolderName), MessageBoxImage.Error, MessageBoxButton.OK);
         }
