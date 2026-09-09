@@ -575,10 +575,10 @@ internal partial class App : Application
                     State.Save();
                 }
 
-                await Installer.RunMigrations();
+                await Updater.RunMigrations();
 
                 if (!LaunchSettings.BypassUpdateCheck && !OperatingSystem.IsLinux())
-                    await Installer.HandleUpgrade();
+                    await Updater.HandleUpgrade();
 
                 if (Settings.Prop.AllowCookieAccess)
                     await Cookies.LoadCookies();
