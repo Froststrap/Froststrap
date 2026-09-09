@@ -471,7 +471,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
         }
     }
 
-    private async Task<List<QuickPlayGameItem>> GetApiGamesAsync()
+    private static async Task<List<QuickPlayGameItem>> GetApiGamesAsync()
     {
         var apiGames = await GetCachedApiGamesAsync();
         if (apiGames.Count == 0)
@@ -492,30 +492,44 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
         if (string.IsNullOrEmpty(cookie)) return [];
 
         var url = UrlBuilder.BuildApiUrl("apis", "search-landing-page-api/v1?sessionId=Meddsam");
+
         using var request = new HttpRequestMessage(HttpMethod.Get, url);
         request.Headers.Add("Cookie", $".ROBLOSECURITY={cookie}");
 
-        var response = await Http.SendJson<SearchLandingResponse>(request);
-        var recentSort = response?.Sorts?.FirstOrDefault(s => s.SortId == "RecentlyVisited");
-        if (recentSort?.Games == null) return [];
-
-        var games = new List<QuickPlayGameItem>();
-        long baseTicks = DateTime.UtcNow.Ticks;
-        for (int i = 0; i < recentSort.Games.Count; i++)
+        try
         {
-            var apiGame = recentSort.Games[i];
-            if (apiGame.UniverseId == 0) continue;
-            games.Add(new QuickPlayGameItem
+            using var client = new HttpClient();
+            var response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            string json = await response.Content.ReadAsStringAsync();
+
+            var result = JsonSerializer.Deserialize<SearchLandingResponse>(json);
+            var recentSort = result?.Sorts?.FirstOrDefault(s => s.SortId == "RecentlyVisited");
+            if (recentSort?.Games == null) return [];
+
+            var games = new List<QuickPlayGameItem>();
+            long baseTicks = DateTime.UtcNow.Ticks;
+            for (int i = 0; i < recentSort.Games.Count; i++)
             {
-                UniverseId = apiGame.UniverseId,
-                PlaceId = apiGame.RootPlaceId,
-                Name = apiGame.Name ?? Strings.Menu_QuickPlay_UnknownGame,
-                Playing = apiGame.PlayerCount,
-                Source = GameSource.RobloxApi,
-                LastPlayedTicks = baseTicks - i
-            });
+                var apiGame = recentSort.Games[i];
+                if (apiGame.UniverseId == 0) continue;
+                games.Add(new QuickPlayGameItem
+                {
+                    UniverseId = apiGame.UniverseId,
+                    PlaceId = apiGame.RootPlaceId,
+                    Name = apiGame.Name ?? Strings.Menu_QuickPlay_UnknownGame,
+                    Playing = apiGame.PlayerCount,
+                    Source = GameSource.RobloxApi,
+                    LastPlayedTicks = baseTicks - i
+                });
+            }
+            return games;
         }
-        return games;
+        catch (Exception ex)
+        {
+            App.Logger.Error($"Failed to fetch recent games API: {ex.Message}");
+            return [];
+        }
     }
 
     private static async Task<List<QuickPlayGameItem>> GetCachedApiGamesAsync()
