@@ -78,7 +78,7 @@ exec \"$HERE/usr/bin/Froststrap\" \"$@\"
   let rpm_topdir = $"($repo_root)/($build_dir)/rpmbuild"
   mkdir $"($rpm_topdir)/BUILD" $"($rpm_topdir)/BUILDROOT" $"($rpm_topdir)/RPMS" $"($rpm_topdir)/SOURCES" $"($rpm_topdir)/SPECS" $"($rpm_topdir)/SRPMS"
 
-  rpmbuild -bb $"($repo_root)/Scripts/fedora/froststrap-rpm.spec" --define $"_topdir ($rpm_topdir)" --define $"_froststrap_appdir ($repo_root)/($app_dir)" --define $"froststrap_version ($rpm_version)"
+  rpmbuild -bb ./fedora/froststrap-rpm.spec --define $"_topdir ($rpm_topdir)" --define $"_froststrap_appdir ($repo_root)/($app_dir)" --define $"froststrap_version ($rpm_version)"
 
   let rpm_output = (
     glob ($rpm_topdir | path join "RPMS" "**" "*.rpm")
