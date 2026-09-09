@@ -39,21 +39,18 @@ SPDX-License-Identifier: MPL-2.0
                     <Style Selector="TabItem">
                         <Setter Property="HorizontalAlignment" Value="Stretch" />
                         <Setter Property="HorizontalContentAlignment" Value="Center" />
-                        <Setter Property="FontSize" Value="20" />
+                        <Setter Property="FontSize" Value="18" />
                     </Style>
                 </TabControl.Styles>
 
                 <TabItem Header="{x:Static resources:Strings.Common_PresetFlagLists}">
-                    <StackPanel Spacing="12" Margin="0,0,0,24">
-                        <Separator Margin="-12,8" />
+                    <StackPanel Spacing="12" Margin="0,0,0,8">
                         <ListBox x:Name="LoadPresetProfile" Height="200" SelectionChanged="LoadPresetProfile_SelectionChanged" />
                     </StackPanel>
                 </TabItem>
 
                 <TabItem Header="{x:Static resources:Strings.Menu_FlagProfiles_PlaceIdsTab}">
-                    <StackPanel Spacing="12" Margin="0,0,0,24">
-                        <Separator Margin="-12,8" />
-
+                    <StackPanel Spacing="12" Margin="0,0,0,8">
                         <Grid x:Name="PlaceProfileGrid" ColumnDefinitions="Auto,*" ColumnSpacing="8" IsVisible="False">
                             <TextBlock Text="{x:Static resources:Strings.Menu_FlagProfiles_SelectProfileLabel}" VerticalAlignment="Center" />
                             <ComboBox x:Name="PlaceProfile" Grid.Column="1" HorizontalAlignment="Stretch" SelectionChanged="PlaceProfile_SelectionChanged" />
@@ -81,15 +78,13 @@ SPDX-License-Identifier: MPL-2.0
                 </TabItem>
 
                 <TabItem Header="{x:Static resources:Strings.Menu_Save}">
-                    <StackPanel Spacing="12" Margin="0,0,0,24">
-                        <Separator Margin="-12,8" />
+                    <StackPanel Spacing="12" Margin="0,0,0,8">
                         <TextBox x:Name="SaveProfile" PlaceholderText="Profile Name" />
                     </StackPanel>
                 </TabItem>
 
                 <TabItem Header="{x:Static resources:Strings.Menu_Load}">
-                    <StackPanel Spacing="12" Margin="0,0,0,24">
-                        <Separator Margin="-12,8" />
+                    <StackPanel Spacing="12" Margin="0,0,0,8">
                         <StackPanel Spacing="12">
                             <Grid x:Name="RenamePanel" ColumnDefinitions="*,Auto,Auto,Auto" ColumnSpacing="8">
                                 <TextBox Grid.Column="0" x:Name="RenameTextBox" PlaceholderText="Rename Profile" />

@@ -34,13 +34,12 @@ SPDX-License-Identifier: MPL-2.0
                     <Style Selector="TabItem">
                         <Setter Property="HorizontalAlignment" Value="Stretch" />
                         <Setter Property="HorizontalContentAlignment" Value="Center" />
-                        <Setter Property="FontSize" Value="20" />
+                        <Setter Property="FontSize" Value="18" />
                     </Style>
                 </TabControl.Styles>
 
                 <TabItem Header="{x:Static resources:Strings.Common_AddSingle}">
-                    <StackPanel Spacing="12" Margin="0,0,0,24">
-                        <Separator Margin="-12,8" />
+                    <StackPanel Spacing="12" Margin="0,0,0,8">
                         <Grid ColumnDefinitions="75, *" RowDefinitions="Auto" ColumnSpacing="12">
                             <TextBlock Grid.Column="0"
                                        VerticalAlignment="Center"
@@ -62,8 +61,7 @@ SPDX-License-Identifier: MPL-2.0
                 </TabItem>
 
                 <TabItem Header="{x:Static resources:Strings.Common_ImportJson}">
-                    <StackPanel Spacing="12" Margin="0,0,0,24">
-                        <Separator Margin="-12,8" />
+                    <StackPanel Spacing="12" Margin="0,0,0,8">
                         <TextBox x:Name="JsonTextBox"
                                  AcceptsReturn="True"
                                  AcceptsTab="True"
