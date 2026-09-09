@@ -58,16 +58,15 @@ jobs:
           submodules: true
           fetch-depth: 0
 
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Install Nushell
+        run: brew install nushell
+
       - name: Set short SHA
         run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> "$GITHUB_ENV"
-
-      - uses: DeterminateSystems/nix-installer-action@v22
-      - uses: DeterminateSystems/magic-nix-cache-action@v14
-
-      - uses: cachix/cachix-action@v14
-        with:
-          name: invra
-          authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
 
       - name: Remove stale signing keychain
         if: startsWith(github.ref, 'refs/tags/v')
@@ -98,7 +97,7 @@ jobs:
           APP_STORE_CONNECT_P8_CONTENT: ${{ secrets.APP_STORE_CONNECT_P8_CONTENT }}
           APPLE_KEY_ID: ${{ secrets.APPLE_KEY_ID }}
           APPLE_ISSUER_ID: ${{ secrets.APPLE_ISSUER_ID }}
-        run: nix develop --accept-flake-config -c nu ./main.nu publish
+        run: nu ./main.nu publish
 
       - name: Rename package for architecture
         run: mv build/Froststrap.pkg build/Froststrap-macos-${{ matrix.arch }}.pkg
@@ -135,10 +134,6 @@ jobs:
 
           sudo apt-get update
           sudo apt-get install -y nushell
-
-      - uses: DeterminateSystems/nix-installer-action@v22
-
-      - uses: DeterminateSystems/magic-nix-cache-action@v14
 
       - name: Build and package binaries
         run: nu ./main.nu publish
