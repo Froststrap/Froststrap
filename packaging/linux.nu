@@ -10,7 +10,7 @@ def main [
   let config = "Release"
   let app_dir = $"($build_dir)/AppDir"
   let script_dir = ($env.CURRENT_FILE | path dirname)
-  let repo_root = ($script_dir | path join ".." ".." | path expand)
+  let repo_root = ($script_dir | path join ".." | path expand)
 
   # Clean and Publish .NET
   rm -rf $build_dir
