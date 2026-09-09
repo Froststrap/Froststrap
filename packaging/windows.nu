@@ -11,7 +11,7 @@ def main [
   let temp_publish = $"($build_dir)/temp-contained"
   let raw_version = (git describe --tags --abbrev=0 | str trim)
   let version = (to-msi-version $raw_version)
-  let nuget_config = $"($env.CURRENT_FILE | path dirname)/../../nuget.config"
+  let nuget_config = $"($env.CURRENT_FILE | path dirname)/../nuget.config"
 
   dotnet publish $project /p:PublishProfile=Publish-windows-x64 -c $config -o $temp_publish --configfile $nuget_config
   if $env.LAST_EXIT_CODE != 0 {
