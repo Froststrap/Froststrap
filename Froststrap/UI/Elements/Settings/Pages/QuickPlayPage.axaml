@@ -128,8 +128,10 @@ SPDX-License-Identifier: MPL-2.0
         <ScrollViewer IsEnabled="{Binding !IsOverlayVisible}">
             <StackPanel Margin="0,14,14,14">
                 <TabControl SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay}">
+
+                    <!-- Continue Playing -->
                     <TabItem Header="{x:Static resources:Strings.Menu_QuickPlay_ContinuePlaying}">
-                        <Grid>
+                        <Grid ClipToBounds="True">
                             <ScrollViewer>
                                 <ItemsControl ItemsSource="{Binding RecentGames}"
                                               ItemTemplate="{StaticResource GameCardTemplate}">
@@ -144,7 +146,7 @@ SPDX-License-Identifier: MPL-2.0
                                 <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_NoRecentGames}"
                                            VerticalAlignment="Center" HorizontalAlignment="Center" Opacity="0.6"/>
                             </Grid>
-                            <Grid IsVisible="{Binding IsLoading}" Background="#99000000">
+                            <Grid IsVisible="{Binding IsLoading}" Background="#99000000" ZIndex="1">
                                 <StackPanel Spacing="16" Margin="0,16" VerticalAlignment="Center" HorizontalAlignment="Center">
                                     <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_LoadingRecentGames}"
                                                HorizontalAlignment="Center" FontSize="14" FontWeight="SemiBold" Opacity="0.9"/>
@@ -157,8 +159,9 @@ SPDX-License-Identifier: MPL-2.0
                         </Grid>
                     </TabItem>
 
+                    <!-- Recommended -->
                     <TabItem Header="{x:Static resources:Strings.Menu_QuickPlay_Recommended}">
-                        <Grid>
+                        <Grid ClipToBounds="True">
                             <ScrollViewer>
                                 <ItemsControl ItemsSource="{Binding RecommendedGames}"
                                               ItemTemplate="{StaticResource GameCardTemplate}">
@@ -179,7 +182,7 @@ SPDX-License-Identifier: MPL-2.0
                                                IsVisible="{Binding !IsLoggedIn}"/>
                                 </StackPanel>
                             </Grid>
-                            <Grid IsVisible="{Binding IsRecommendedLoading}" Background="#99000000">
+                            <Grid IsVisible="{Binding IsRecommendedLoading}" Background="#99000000" ZIndex="1">
                                 <StackPanel Spacing="16" Margin="0,16" VerticalAlignment="Center" HorizontalAlignment="Center">
                                     <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_LoadingRecommended}"
                                                HorizontalAlignment="Center" FontSize="14" FontWeight="SemiBold" Opacity="0.9"/>
@@ -192,8 +195,9 @@ SPDX-License-Identifier: MPL-2.0
                         </Grid>
                     </TabItem>
 
+                    <!-- Favorites -->
                     <TabItem Header="{x:Static resources:Strings.Menu_QuickPlay_Favorites}">
-                        <Grid>
+                        <Grid ClipToBounds="True">
                             <ScrollViewer>
                                 <ItemsControl ItemsSource="{Binding FavoriteGames}"
                                               ItemTemplate="{StaticResource GameCardTemplate}">
@@ -204,7 +208,7 @@ SPDX-License-Identifier: MPL-2.0
                                     </ItemsControl.ItemsPanel>
                                 </ItemsControl>
                             </ScrollViewer>
-                            <Grid IsVisible="{Binding !IsFavoritesLoading}" Background="Transparent" IsHitTestVisible="False">
+                            <Grid IsVisible="{Binding ShowFavoritesEmpty}" Background="Transparent" IsHitTestVisible="False">
                                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="16" Margin="0,16">
                                     <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_NoFavoriteGames}"
                                                Opacity="0.6" HorizontalAlignment="Center"
@@ -214,7 +218,7 @@ SPDX-License-Identifier: MPL-2.0
                                                IsVisible="{Binding !IsLoggedIn}"/>
                                 </StackPanel>
                             </Grid>
-                            <Grid IsVisible="{Binding IsFavoritesLoading}" Background="#99000000">
+                            <Grid IsVisible="{Binding IsFavoritesLoading}" Background="#99000000" ZIndex="1">
                                 <StackPanel Spacing="16" Margin="0,16" VerticalAlignment="Center" HorizontalAlignment="Center">
                                     <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_LoadingFavorites}"
                                                HorizontalAlignment="Center" FontSize="14" FontWeight="SemiBold" Opacity="0.9"/>

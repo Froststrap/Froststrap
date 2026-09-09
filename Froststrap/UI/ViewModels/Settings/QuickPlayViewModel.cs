@@ -50,6 +50,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
     private bool _favoritesLoaded;
     private bool _isRecommendedLoading;
     private bool _recommendationsLoaded;
+    private bool _recentGamesLoaded;
 
     private readonly ObservableCollection<PrivateServerInfo> _privateServers = [];
 
@@ -131,7 +132,11 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
     public bool IsFavoritesLoading
     {
         get => _isFavoritesLoading;
-        set => SetProperty(ref _isFavoritesLoading, value);
+        set
+        {
+            if (SetProperty(ref _isFavoritesLoading, value))
+                OnPropertyChanged(nameof(ShowFavoritesEmpty));
+        }
     }
 
     public bool IsRecommendedLoading
@@ -151,7 +156,15 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
         {
             if (SetProperty(ref _selectedTab, value))
             {
-                if (value == QuickPlayTab.Recommended && !_recommendationsLoaded)
+                if (value == QuickPlayTab.Continue && !_recentGamesLoaded)
+                {
+                    IsLoading = true;
+                    RecentGames.Clear();
+                    OnPropertyChanged(nameof(HasRecentGames));
+                    OnPropertyChanged(nameof(ShowRecentEmpty));
+                    _ = LoadRecentGamesAsync();
+                }
+                else if (value == QuickPlayTab.Recommended && !_recommendationsLoaded)
                 {
                     IsRecommendedLoading = true;
                     RecommendedGames.Clear();
@@ -181,6 +194,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
     public bool HasRecommendedGames => RecommendedGames.Count > 0;
     public bool ShowRecentEmpty => !IsLoading && !HasRecentGames;
     public bool ShowRecommendedEmpty => !IsRecommendedLoading && !HasRecommendedGames;
+    public bool ShowFavoritesEmpty => !IsFavoritesLoading && !HasFavoriteGames;
 
 #pragma warning disable CA1822
     public bool IsLoggedIn => AccountManager.Shared?.ActiveAccount != null;
@@ -358,21 +372,42 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
 
     private async Task Initialize()
     {
-        IsLoading = true;
-
         _allHistory = LoadLocalHistory(_cachePath);
-        await LoadLocalGamesIntoList();
-
-        if (HasActiveAccount)
+        _recentGamesLoaded = false;
+        if (SelectedTab == QuickPlayTab.Continue)
         {
-            await LoadApiGamesAndMerge();
-            _ = RefreshApiGamesInBackground();
+            IsLoading = true;
+            await LoadRecentGamesAsync();
         }
-
-        IsLoading = false;
     }
 
-    private async Task LoadLocalGamesIntoList()
+    private async Task LoadRecentGamesAsync()
+    {
+        try
+        {
+            var localGames = await LoadLocalGamesAsync();
+
+            List<QuickPlayGameItem> apiGames = [];
+            if (HasActiveAccount)
+            {
+                apiGames = await GetApiGamesAsync();
+                _ = RefreshApiGamesInBackground();
+            }
+
+            await SetRecentGamesFromSources(localGames, apiGames);
+            _recentGamesLoaded = true;
+        }
+        catch (Exception ex)
+        {
+            App.Logger.Error($"Failed to load recent games: {ex.Message}");
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    private async Task<List<QuickPlayGameItem>> LoadLocalGamesAsync()
     {
         var universeIds = _allHistory.Select(x => x.UniverseId).Where(id => id > 0).Distinct().ToList();
         if (universeIds.Count > 0)
@@ -401,18 +436,42 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
             });
         }
 
-        await FetchThumbnailsForGames(localGames);
-
-        await Dispatcher.UIThread.InvokeAsync(() =>
-        {
-            RecentGames.Clear();
-            foreach (var game in localGames) RecentGames.Add(game);
-            OnPropertyChanged(nameof(HasRecentGames));
-            OnPropertyChanged(nameof(ShowRecentEmpty));
-        });
+        return localGames;
     }
 
-    private async Task LoadApiGamesAndMerge()
+    private static List<GameHistoryEntry> LoadLocalHistory(string cachePath)
+    {
+        try
+        {
+            if (!File.Exists(cachePath)) return [];
+
+            string json = File.ReadAllText(cachePath);
+            var entries = JsonSerializer.Deserialize<List<GameHistoryEntry>>(json) ?? [];
+
+            var validEntries = entries.Where(e => e.UniverseId > 0).ToList();
+            if (validEntries.Count != entries.Count)
+            {
+                try
+                {
+                    var cleanJson = JsonSerializer.Serialize(validEntries);
+                    File.WriteAllText(cachePath, cleanJson);
+                    App.Logger.Info("Cleaned GameHistory.json by removing entries with UniverseId = 0");
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.Error($"Failed to rewrite cleaned cache: {ex.Message}");
+                }
+            }
+            return validEntries;
+        }
+        catch (Exception ex)
+        {
+            App.Logger.Error($"Error loading history: {ex.Message}");
+            return [];
+        }
+    }
+
+    private async Task<List<QuickPlayGameItem>> GetApiGamesAsync()
     {
         var apiGames = await GetCachedApiGamesAsync();
         if (apiGames.Count == 0)
@@ -421,18 +480,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
             if (apiGames.Count > 0)
                 await SetCachedApiGamesAsync(apiGames);
         }
-
-        var currentLocal = RecentGames.ToList();
-        var merged = MergeByApiOrder(currentLocal, apiGames);
-        await EnrichGamesWithDetails(merged);
-
-        await Dispatcher.UIThread.InvokeAsync(() =>
-        {
-            RecentGames.Clear();
-            foreach (var game in merged) RecentGames.Add(game);
-            OnPropertyChanged(nameof(HasRecentGames));
-            OnPropertyChanged(nameof(ShowRecentEmpty));
-        });
+        return apiGames;
     }
 
     private static async Task<List<QuickPlayGameItem>> FetchRecentlyVisitedFromApiAsync()
@@ -470,6 +518,38 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
         return games;
     }
 
+    private static async Task<List<QuickPlayGameItem>> GetCachedApiGamesAsync()
+    {
+        try
+        {
+            string cachePath = GetApiGamesCachePath();
+            if (!File.Exists(cachePath)) return [];
+            var json = await File.ReadAllTextAsync(cachePath);
+            return JsonSerializer.Deserialize<List<QuickPlayGameItem>>(json) ?? [];
+        }
+        catch { return []; }
+    }
+
+    private static async Task SetCachedApiGamesAsync(List<QuickPlayGameItem> games)
+    {
+        try
+        {
+            string cachePath = GetApiGamesCachePath();
+            var json = JsonSerializer.Serialize(games);
+            await File.WriteAllTextAsync(cachePath, json);
+        }
+        catch (Exception ex) { App.Logger.Error($"Failed to cache API games: {ex.Message}"); }
+    }
+
+    private static string GetApiGamesCachePath()
+    {
+        var activeUserId = AccountManager.Shared?.ActiveAccount?.UserId;
+        if (activeUserId.HasValue)
+            return Path.Combine(Paths.Cache, $"ApiRecentGames_{activeUserId.Value}.json");
+        else
+            return Path.Combine(Paths.Cache, "ApiRecentGames_empty.json");
+    }
+
     private static List<QuickPlayGameItem> MergeByApiOrder(List<QuickPlayGameItem> localGames, List<QuickPlayGameItem> apiGames)
     {
         var validLocal = localGames.Where(g => g.UniverseId != 0).ToList();
@@ -484,15 +564,163 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
         foreach (var apiGame in validApi)
         {
             if (localByUniverse.TryGetValue(apiGame.UniverseId, out var localGame))
+            {
+                localGame.LastPlayedTicks = Math.Max(localGame.LastPlayedTicks, apiGame.LastPlayedTicks);
                 result.Add(localGame);
+                localByUniverse.Remove(apiGame.UniverseId);
+            }
             else
+            {
                 result.Add(apiGame);
+            }
         }
 
         var apiUniverseIds = new HashSet<long>(validApi.Select(g => g.UniverseId));
         result.AddRange(validLocal.Where(g => !apiUniverseIds.Contains(g.UniverseId)));
 
         return result;
+    }
+
+    private static async Task EnrichGamesWithDetails(List<QuickPlayGameItem> games)
+    {
+        var needDetails = games.Where(g => g.OriginalDetails == null && g.UniverseId > 0).ToList();
+        if (needDetails.Count > 0)
+        {
+            var ids = needDetails.Select(g => g.UniverseId.ToString(CultureInfo.InvariantCulture)).ToList();
+            await UniverseDetails.FetchBulk(string.Join(",", ids));
+            foreach (var game in needDetails)
+            {
+                var details = UniverseDetails.LoadFromCache(game.UniverseId);
+                if (details?.Data != null)
+                {
+                    game.OriginalDetails = details;
+                    game.Creator = details.Data.Creator?.Name ?? Strings.Common_Unknown;
+                    if (string.IsNullOrEmpty(game.Name)) game.Name = details.Data.Name ?? Strings.Menu_QuickPlay_UnknownGame;
+                    game.Playing = details.Data.Playing;
+                    game.Visits = details.Data.Visits;
+                    if (game.PlaceId == 0) game.PlaceId = details.Data.RootPlaceId;
+                }
+            }
+        }
+
+        var needThumb = games.Where(g => string.IsNullOrEmpty(g.ThumbnailUrl)).ToList();
+        if (needThumb.Count > 0)
+            await FetchThumbnailsForGames(needThumb);
+    }
+
+    private static async Task FetchThumbnailsForGames(List<QuickPlayGameItem> games)
+    {
+        var thumbRequests = games
+            .Where(item => item.UniverseId != 0)
+            .Select(item => new ThumbnailRequest
+            {
+                TargetId = (ulong)item.UniverseId,
+                Type = ThumbnailType.GameIcon,
+                Size = "150x150",
+                Format = ThumbnailFormat.Png
+            }).ToList();
+
+        try
+        {
+            var urls = await Thumbnails.GetThumbnailUrlsAsync(thumbRequests, CancellationToken.None);
+            for (int i = 0; i < games.Count; i++)
+            {
+                string? url = urls.ElementAtOrDefault(i);
+                if (!string.IsNullOrEmpty(url))
+                    games[i].ThumbnailUrl = url;
+            }
+        }
+        catch (Exception ex) { App.Logger.Error($"Thumbnail fetch failed: {ex.Message}"); }
+    }
+
+    private async Task SetRecentGamesFromSources(List<QuickPlayGameItem> localGames, List<QuickPlayGameItem> apiGames)
+    {
+        var merged = MergeByApiOrder(localGames, apiGames);
+        await EnrichGamesWithDetails(merged);
+
+        await Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            RecentGames.Clear();
+            foreach (var game in merged)
+                RecentGames.Add(game);
+            OnPropertyChanged(nameof(HasRecentGames));
+            OnPropertyChanged(nameof(ShowRecentEmpty));
+        });
+    }
+
+    private async Task RefreshApiGamesInBackground()
+    {
+        if (!HasActiveAccount) return;
+
+        try
+        {
+            var freshApiGames = await FetchRecentlyVisitedFromApiAsync();
+            if (freshApiGames.Count == 0) return;
+
+            await SetCachedApiGamesAsync(freshApiGames);
+
+            if (SelectedTab == QuickPlayTab.Continue && _recentGamesLoaded)
+            {
+                var localGames = await LoadLocalGamesAsync();
+                await SetRecentGamesFromSources(localGames, freshApiGames);
+            }
+        }
+        catch (Exception ex)
+        {
+            App.Logger.Error($"Background refresh failed: {ex.Message}");
+        }
+    }
+
+    private async void OnActiveAccountChanged(AccountManagerAccount? account)
+    {
+        await Dispatcher.UIThread.InvokeAsync(async () =>
+        {
+            _recentGamesLoaded = false;
+            _favoritesLoaded = false;
+            _recommendationsLoaded = false;
+
+            RecentGames.Clear();
+            FavoriteGames.Clear();
+            RecommendedGames.Clear();
+            OnPropertyChanged(nameof(HasRecentGames));
+            OnPropertyChanged(nameof(HasFavoriteGames));
+            OnPropertyChanged(nameof(HasRecommendedGames));
+            OnPropertyChanged(nameof(ShowRecentEmpty));
+            OnPropertyChanged(nameof(ShowRecommendedEmpty));
+
+            _allHistory = LoadLocalHistory(_cachePath);
+
+            if (account != null)
+            {
+                _ = RefreshApiGamesInBackground();
+
+                if (SelectedTab == QuickPlayTab.Continue)
+                {
+                    IsLoading = true;
+                    await LoadRecentGamesAsync();
+                }
+                else if (SelectedTab == QuickPlayTab.Favorites)
+                {
+                    IsFavoritesLoading = true;
+                    await LoadFavoriteGamesAsync();
+                }
+                else if (SelectedTab == QuickPlayTab.Recommended)
+                {
+                    IsRecommendedLoading = true;
+                    await LoadRecommendedGamesAsync();
+                }
+            }
+            else
+            {
+                if (SelectedTab == QuickPlayTab.Continue)
+                {
+                    IsLoading = true;
+                    await LoadRecentGamesAsync();
+                }
+            }
+
+            OnPropertyChanged(nameof(IsLoggedIn));
+        });
     }
 
     private async Task LoadFavoriteGamesAsync()
@@ -519,6 +747,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
                 foreach (var g in games)
                     FavoriteGames.Add(g);
                 OnPropertyChanged(nameof(HasFavoriteGames));
+                OnPropertyChanged(nameof(ShowFavoritesEmpty));
             });
             _favoritesLoaded = true;
         }
@@ -531,6 +760,39 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
         {
             IsFavoritesLoading = false;
         }
+    }
+
+    private static async Task<List<QuickPlayGameItem>> FetchFavoritesFromApiAsync(long userId)
+    {
+        var accountManager = AccountManager.Shared;
+        if (accountManager?.ActiveAccount == null) return [];
+
+        string? cookie = accountManager.GetRoblosecurityForUser(accountManager.ActiveAccount.UserId);
+        if (string.IsNullOrEmpty(cookie)) return [];
+
+        var url = UrlBuilder.BuildApiUrl("games", $"v2/users/{userId}/favorite/games?accessFilter=0&limit=100&sortOrder=Desc");
+
+        using var request = new HttpRequestMessage(HttpMethod.Get, url);
+        request.Headers.Add("Cookie", $".ROBLOSECURITY={cookie}");
+
+        var response = await Http.SendJson<FavoriteGamesResponse>(request);
+        if (response?.Data == null) return [];
+
+        var games = new List<QuickPlayGameItem>();
+        foreach (var fav in response.Data)
+        {
+            if (fav.Id == 0 || fav.RootPlace == null || fav.RootPlace.Id == 0) continue;
+            games.Add(new QuickPlayGameItem
+            {
+                UniverseId = fav.Id,
+                PlaceId = fav.RootPlace.Id,
+                Name = fav.Name ?? Strings.Menu_QuickPlay_UnknownGame,
+                Creator = fav.Creator?.Name ?? Strings.Common_Unknown,
+                Visits = fav.PlaceVisits,
+                Source = GameSource.None
+            });
+        }
+        return games;
     }
 
     private async Task LoadRecommendedGamesAsync()
@@ -649,201 +911,6 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
         }
 
         return gameItems;
-    }
-
-    private static async Task<List<QuickPlayGameItem>> FetchFavoritesFromApiAsync(long userId)
-    {
-        var url = UrlBuilder.BuildApiUrl("games", $"v2/users/{userId}/favorite/games?accessFilter=1&limit=100&sortOrder=Desc");
-        var response = await Http.GetJson<FavoriteGamesResponse>(url);
-        if (response?.Data == null) return [];
-
-        var games = new List<QuickPlayGameItem>();
-        foreach (var fav in response.Data)
-        {
-            if (fav.Id == 0 || fav.RootPlace == null || fav.RootPlace.Id == 0) continue;
-            games.Add(new QuickPlayGameItem
-            {
-                UniverseId = fav.Id,
-                PlaceId = fav.RootPlace.Id,
-                Name = fav.Name ?? Strings.Menu_QuickPlay_UnknownGame,
-                Creator = fav.Creator?.Name ?? Strings.Common_Unknown,
-                Visits = fav.PlaceVisits,
-                Source = GameSource.None
-            });
-        }
-        return games;
-    }
-
-    private static async Task EnrichGamesWithDetails(List<QuickPlayGameItem> games)
-    {
-        var needDetails = games.Where(g => g.OriginalDetails == null && g.UniverseId > 0).ToList();
-        if (needDetails.Count > 0)
-        {
-            var ids = needDetails.Select(g => g.UniverseId.ToString(CultureInfo.InvariantCulture)).ToList();
-            await UniverseDetails.FetchBulk(string.Join(",", ids));
-            foreach (var game in needDetails)
-            {
-                var details = UniverseDetails.LoadFromCache(game.UniverseId);
-                if (details?.Data != null)
-                {
-                    game.OriginalDetails = details;
-                    game.Creator = details.Data.Creator?.Name ?? Strings.Common_Unknown;
-                    if (string.IsNullOrEmpty(game.Name)) game.Name = details.Data.Name ?? Strings.Menu_QuickPlay_UnknownGame;
-                    game.Playing = details.Data.Playing;
-                    game.Visits = details.Data.Visits;
-                    if (game.PlaceId == 0) game.PlaceId = details.Data.RootPlaceId;
-                }
-            }
-        }
-
-        var needThumb = games.Where(g => string.IsNullOrEmpty(g.ThumbnailUrl)).ToList();
-        if (needThumb.Count > 0)
-            await FetchThumbnailsForGames(needThumb);
-    }
-
-    private static async Task FetchThumbnailsForGames(List<QuickPlayGameItem> games)
-    {
-        var thumbRequests = games
-            .Where(item => item.UniverseId != 0)
-            .Select(item => new ThumbnailRequest
-            {
-                TargetId = (ulong)item.UniverseId,
-                Type = ThumbnailType.GameIcon,
-                Size = "150x150",
-                Format = ThumbnailFormat.Png
-            }).ToList();
-
-        try
-        {
-            var urls = await Thumbnails.GetThumbnailUrlsAsync(thumbRequests, CancellationToken.None);
-            for (int i = 0; i < games.Count; i++)
-            {
-                string? url = urls.ElementAtOrDefault(i);
-                if (!string.IsNullOrEmpty(url))
-                    games[i].ThumbnailUrl = url;
-            }
-        }
-        catch (Exception ex) { App.Logger.Error($"Thumbnail fetch failed: {ex.Message}"); }
-    }
-
-    private static List<GameHistoryEntry> LoadLocalHistory(string cachePath)
-    {
-        try
-        {
-            if (!File.Exists(cachePath)) return [];
-
-            string json = File.ReadAllText(cachePath);
-            var entries = JsonSerializer.Deserialize<List<GameHistoryEntry>>(json) ?? [];
-
-            var validEntries = entries.Where(e => e.UniverseId > 0).ToList();
-            if (validEntries.Count != entries.Count)
-            {
-                try
-                {
-                    var cleanJson = JsonSerializer.Serialize(validEntries);
-                    File.WriteAllText(cachePath, cleanJson);
-                    App.Logger.Info("Cleaned GameHistory.json by removing entries with UniverseId = 0");
-                }
-                catch (Exception ex)
-                {
-                    App.Logger.Error($"Failed to rewrite cleaned cache: {ex.Message}");
-                }
-            }
-            return validEntries;
-        }
-        catch (Exception ex)
-        {
-            App.Logger.Error($"Error loading history: {ex.Message}");
-            return [];
-        }
-    }
-
-    private static async Task<List<QuickPlayGameItem>> GetCachedApiGamesAsync()
-    {
-        try
-        {
-            string cachePath = GetApiGamesCachePath();
-            if (!File.Exists(cachePath)) return [];
-            var json = await File.ReadAllTextAsync(cachePath);
-            return JsonSerializer.Deserialize<List<QuickPlayGameItem>>(json) ?? [];
-        }
-        catch { return []; }
-    }
-
-    private static async Task SetCachedApiGamesAsync(List<QuickPlayGameItem> games)
-    {
-        try
-        {
-            string cachePath = GetApiGamesCachePath();
-            var json = JsonSerializer.Serialize(games);
-            await File.WriteAllTextAsync(cachePath, json);
-        }
-        catch (Exception ex) { App.Logger.Error($"Failed to cache API games: {ex.Message}"); }
-    }
-
-    private static string GetApiGamesCachePath()
-    {
-        var activeUserId = AccountManager.Shared?.ActiveAccount?.UserId;
-        if (activeUserId.HasValue)
-            return Path.Combine(Paths.Cache, $"ApiRecentGames_{activeUserId.Value}.json");
-        else
-            return Path.Combine(Paths.Cache, "ApiRecentGames_empty.json");
-    }
-
-    private async Task RefreshApiGamesInBackground()
-    {
-        if (!HasActiveAccount) return;
-
-        try
-        {
-            var freshApiGames = await FetchRecentlyVisitedFromApiAsync();
-            if (freshApiGames.Count == 0) return;
-
-            await SetCachedApiGamesAsync(freshApiGames);
-
-            _allHistory = LoadLocalHistory(_cachePath);
-            var universeIds = _allHistory.Select(x => x.UniverseId).Where(id => id > 0).Distinct().ToList();
-            if (universeIds.Count > 0)
-                await UniverseDetails.FetchBulk(string.Join(",", universeIds));
-
-            var localGames = new List<QuickPlayGameItem>();
-            foreach (var entry in _allHistory)
-            {
-                if (entry.UniverseId == 0) continue;
-
-                var details = UniverseDetails.LoadFromCache(entry.UniverseId);
-                var lastSession = entry.Servers.OrderByDescending(s => s.JoinedAt).FirstOrDefault();
-                localGames.Add(new QuickPlayGameItem
-                {
-                    UniverseId = entry.UniverseId,
-                    PlaceId = entry.PlaceId,
-                    Name = details?.Data?.Name ?? Strings.Menu_QuickPlay_UnknownGame,
-                    Creator = details?.Data?.Creator?.Name ?? Strings.Common_Unknown,
-                    Playing = details?.Data?.Playing ?? 0,
-                    Visits = details?.Data?.Visits ?? 0,
-                    ServerCount = entry.Servers.Count,
-                    LastJobId = lastSession?.JobId,
-                    OriginalDetails = details,
-                    Source = GameSource.Tracked,
-                    LastPlayedTicks = lastSession?.JoinedAt.Ticks ?? 0
-                });
-            }
-
-            var merged = MergeByApiOrder(localGames, freshApiGames);
-            await EnrichGamesWithDetails(merged);
-
-            await Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                RecentGames.Clear();
-                foreach (var game in merged) RecentGames.Add(game);
-                OnPropertyChanged(nameof(HasRecentGames));
-                OnPropertyChanged(nameof(ShowRecentEmpty));
-            });
-        }
-        catch (Exception ex)
-        {
-            App.Logger.Error($"Background refresh failed: {ex.Message}");
-        }
     }
 
     private async Task FetchSubplacesAsync(long universeId)
@@ -1010,43 +1077,6 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
             JoinedAt = s.FirstSeen ?? DateTime.UtcNow,
             IsLatest = false
         })];
-    }
-
-    private async void OnActiveAccountChanged(AccountManagerAccount? account)
-    {
-        await Dispatcher.UIThread.InvokeAsync(async () =>
-        {
-            IsLoading = true;
-            try
-            {
-                _allHistory = LoadLocalHistory(_cachePath);
-                await LoadLocalGamesIntoList();
-
-                if (account != null)
-                {
-                    await LoadApiGamesAndMerge();
-                    _favoritesLoaded = false;
-                    _recommendationsLoaded = false;
-                    RecommendedGames.Clear();
-                    OnPropertyChanged(nameof(HasRecommendedGames));
-                    OnPropertyChanged(nameof(ShowRecommendedEmpty));
-                    _ = RefreshApiGamesInBackground();
-                }
-                else
-                {
-                    FavoriteGames.Clear();
-                    RecommendedGames.Clear();
-                    OnPropertyChanged(nameof(HasFavoriteGames));
-                    OnPropertyChanged(nameof(HasRecommendedGames));
-                    OnPropertyChanged(nameof(ShowRecommendedEmpty));
-                }
-                OnPropertyChanged(nameof(IsLoggedIn));
-            }
-            finally
-            {
-                IsLoading = false;
-            }
-        });
     }
 
     private static void LaunchRoblox(long placeId, string? jobId = null, string? accessCode = null)
