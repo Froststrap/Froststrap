@@ -36,11 +36,15 @@ jobs:
         with:
           submodules: true
           fetch-depth: 0
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: "10.0.x"
+      - name: Install Nushell
+        run: brew install nushell
       - name: Set short SHA
         run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
-      - uses: DeterminateSystems/nix-installer-action@v14
       - name: Publish
-        run: nix develop --accept-flake-config -c nu ./main.nu debug
+        run: nu ./main.nu debug
       - uses: actions/upload-artifact@v6
         with:
           name: froststrap-debug-macos-arm64-${{ env.SHORT_SHA }}
@@ -55,7 +59,20 @@ jobs:
           fetch-depth: 0
       - name: Set short SHA
         run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
-      - uses: DeterminateSystems/nix-installer-action@v14
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: "10.0.x"
+      - name: Install Nushell
+        shell: bash
+        run: |
+          wget -qO- https://apt.fury.io/nushell/gpg.key |
+            sudo gpg --dearmor -o /etc/apt/keyrings/fury-nushell.gpg
+
+          echo "deb [signed-by=/etc/apt/keyrings/fury-nushell.gpg] https://apt.fury.io/nushell/ /" |
+            sudo tee /etc/apt/sources.list.d/fury-nushell.list
+
+          sudo apt-get update
+          sudo apt-get install -y nushell
       - name: Publish
         run: nix develop --accept-flake-config -c nu ./main.nu debug
       - uses: actions/upload-artifact@v6
