@@ -74,7 +74,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y nushell
       - name: Publish
-        run: nix develop --accept-flake-config -c nu ./main.nu debug
+        run: nu ./main.nu debug
       - uses: actions/upload-artifact@v6
         with:
           name: froststrap-debug-linux-x64-${{ env.SHORT_SHA }}
