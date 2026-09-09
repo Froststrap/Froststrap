@@ -282,15 +282,7 @@ start "" "" ""{processPath}""
 exit";
 
             await File.WriteAllTextAsync(scriptPath, scriptContent);
-
-            var startInfo = new ProcessStartInfo
-            {
-                FileName = scriptPath,
-                UseShellExecute = true,
-                WindowStyle = ProcessWindowStyle.Hidden
-            };
-
-            Process.Start(startInfo);
+            await Utilities.RunAsync(scriptPath, "");
             App.Terminate();
             return true;
         }
@@ -325,25 +317,8 @@ open /Applications/{appName}.app
 exit";
 
             await File.WriteAllTextAsync(scriptPath, scriptContent);
-
-            var chmodInfo = new ProcessStartInfo
-            {
-                FileName = "chmod",
-                Arguments = $"+x \"{scriptPath}\"",
-                UseShellExecute = false,
-                CreateNoWindow = true
-            };
-            using (var chmod = Process.Start(chmodInfo))
-                await chmod!.WaitForExitAsync();
-
-            var startInfo = new ProcessStartInfo
-            {
-                FileName = scriptPath,
-                UseShellExecute = false,
-                CreateNoWindow = true
-            };
-
-            Process.Start(startInfo);
+            await Utilities.RunAsync("chmod", $"+x \"{scriptPath}\"");
+            await Utilities.RunAsync(scriptPath, "");
             App.Terminate();
             return true;
         }
@@ -543,9 +518,6 @@ exit";
             {
                 string versionFile = Path.Combine(Paths.Base, ".version");
                 await File.WriteAllTextAsync(versionFile, App.Version);
-
-                string desktopFile = Path.Combine(Paths.UserProfile, ".local", "share", "applications",
-                   $"{App.ProjectName.ToUpperInvariant()}.desktop");
             }
 
             App.Logger.Info($"Version info updated to {App.Version}");
@@ -657,7 +629,7 @@ exit";
     }
 
     [SupportedOSPlatform("linux")]
-    private static void SetupSoberSymlink()
+    private static async void SetupSoberSymlink()
     {
         string flatpakId = "org.vinegarhq.Sober";
         string flatpakDataPath = Path.Combine(Paths.UserProfile, ".var", "app", flatpakId);
@@ -676,25 +648,10 @@ exit";
         if (Directory.Exists(flatpakDataPath) && !IsSymlink(flatpakDataPath))
         {
             App.Logger.Info($"Copying existing Sober data from {flatpakDataPath} to {soberTarget}");
-
-            var cp = new ProcessStartInfo("cp", $"-a \"{flatpakDataPath}/.\" \"{soberTarget}/\"")
-            {
-                UseShellExecute = false,
-                CreateNoWindow = true
-            };
-            using (var proc = Process.Start(cp))
-                proc?.WaitForExit();
+            await Utilities.RunAsync("cp", $"-a \"{flatpakDataPath}/.\" \"{soberTarget}/\"");
 
             App.Logger.Info($"Removing original Sober data directory at {flatpakDataPath}");
-
-            // rm -rf handles locked subdirs that Directory.Delete can't remove.
-            var rm = new ProcessStartInfo("rm", $"-rf \"{flatpakDataPath}\"")
-            {
-                UseShellExecute = false,
-                CreateNoWindow = true
-            };
-            using (var proc = Process.Start(rm))
-                proc?.WaitForExit();
+            await Utilities.RunAsync("rm", $"-rf \"{flatpakDataPath}\"");
         }
         else if (IsSymlink(flatpakDataPath))
         {
