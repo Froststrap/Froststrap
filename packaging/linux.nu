@@ -97,7 +97,7 @@ Depends: libicu-dev
 Description: Roblox bootstrapper and mod manager
 " | save -f $"($app_dir)/DEBIAN/control"
 
-  cp Scripts/debian/postinst $"($app_dir)/DEBIAN/postinst"
+  cp packaging/debian/postinst $"($app_dir)/DEBIAN/postinst"
   chmod 755 $"($app_dir)/DEBIAN/postinst"
 
   dpkg-deb --build $app_dir $"($build_dir)/Froststrap-linux-x64.deb"
