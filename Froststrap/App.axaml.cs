@@ -256,42 +256,58 @@ internal partial class App : Application
         }
     }
 
-    public static string ExtractToTemp(string name, string fileName)
+    public static string ExtractIcon(string name, string fileName)
     {
-        string tempFilePath = Path.Combine(Paths.Temp, fileName);
+        string baseFilePath = Path.Combine(Paths.Base, fileName);
 
-        if (!File.Exists(tempFilePath))
+        if (!File.Exists(baseFilePath))
         {
             using var stream = Resource.GetStream(name);
-            Directory.CreateDirectory(Path.GetDirectoryName(tempFilePath)!);
-            using var fileStream = File.Create(tempFilePath);
+            Directory.CreateDirectory(Path.GetDirectoryName(baseFilePath)!);
+            using var fileStream = File.Create(baseFilePath);
             stream.CopyTo(fileStream);
         }
-        return tempFilePath;
+        return baseFilePath;
     }
 
-    // verifies and makes sure the registry exists
     public static async Task AssertWindowsAUMIDAsync()
     {
         if (!OperatingSystem.IsWindows()) return;
         Logger.Debug("Verifying AUMID creation");
 
-        string iconPath = ExtractToTemp("IconFroststrap.ico", "IconFroststrap.ico");
+        string iconPath = ExtractIcon("IconFroststrap.ico", "IconFroststrap.ico");
 
-        using var AUMIDKey = Microsoft.Win32.Registry.CurrentUser.CreateSubKey(@"Software\Classes\AppUserModelId\xyz.froststrap.desktop");
-        using var uninstallKey = Registry.CurrentUser.OpenSubKey(UninstallKey);
-        if (uninstallKey?.GetValue("InstallLocation") is string installLocValue)
+        const string aumidKeyPath = @"Software\Classes\AppUserModelId\xyz.froststrap.desktop";
+        using var baseKey = Registry.CurrentUser;
+
+        bool keyExists = baseKey.GetSubKeyNames().Contains("AppUserModelId") &&
+                         baseKey.OpenSubKey("AppUserModelId")?.GetSubKeyNames().Contains("xyz.froststrap.desktop") == true;
+
+        if (!keyExists)
         {
-            AUMIDKey.SetValue("DisplayName", "Froststrap");
-            AUMIDKey.SetValue("IconBackgroundColor", "FFDDDDDD");
-            AUMIDKey.SetValue("IconUri", iconPath);
-            Logger.Info("Created keys");
+            using var aumidKey = baseKey.CreateSubKey(aumidKeyPath);
+            aumidKey.SetValue("DisplayName", "Froststrap");
+            aumidKey.SetValue("IconBackgroundColor", "FFDDDDDD");
+            aumidKey.SetValue("IconUri", iconPath);
+            Logger.Info("Created AUMID registry key.");
         }
         else
         {
-            Logger.Error("Couldn't create key, uninstallKey doesnt exist.");
+            using var aumidKey = baseKey.OpenSubKey(aumidKeyPath, writable: true);
+            if (aumidKey != null)
+            {
+                string? currentIconUri = aumidKey.GetValue("IconUri") as string;
+                if (currentIconUri == null || !string.Equals(currentIconUri, iconPath, StringComparison.OrdinalIgnoreCase))
+                {
+                    aumidKey.SetValue("IconUri", iconPath);
+                    Logger.Info($"Updated IconUri from '{currentIconUri}' to '{iconPath}'.");
+                }
+            }
+            else
+            {
+                Logger.Warn("Could not open existing AUMID key for writing.");
+            }
         }
-        AUMIDKey.Close();
     }
 
     public static void ApplyAnimationSettings()
@@ -562,18 +578,13 @@ internal partial class App : Application
         {
             try
             {
-                await Task.WhenAll(
+                _ = Task.WhenAll(
                     Task.Run(() => FastFlags.Load()),
                     Task.Run(() => AppStorage.Load()),
                     Task.Run(() => GlobalSettings.Load())
                 );
 
-                if (!State.Prop.AumidRegistered)
-                {
-                    await AssertWindowsAUMIDAsync();
-                    State.Prop.AumidRegistered = true;
-                    State.Save();
-                }
+                _ = AssertWindowsAUMIDAsync();
 
                 await Updater.RunMigrations();
 
