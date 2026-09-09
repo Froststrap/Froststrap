@@ -1053,14 +1053,12 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
     {
         if (placeId == 0) return;
         string deeplink = $"roblox://experiences/start?placeId={placeId}";
+
         if (!string.IsNullOrEmpty(accessCode))
-        {
             deeplink += "&accessCode=" + Uri.EscapeDataString(accessCode);
-        }
         else if (!string.IsNullOrEmpty(jobId))
-        {
             deeplink += "&gameInstanceId=" + Uri.EscapeDataString(jobId);
-        }
+
         Process.Start(new ProcessStartInfo(deeplink) { UseShellExecute = true });
     }
 }
