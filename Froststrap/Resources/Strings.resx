@@ -1659,7 +1659,6 @@ Would you like to switch your preferred channel to {0}?</value>
   </data>
   <data name="Menu.QuickSignIn.Waitting" xml:space="preserve">
     <value>Waiting for Quick Sign-In...
-
 The app will close this window when sign-in completes.</value>
   </data>
   <data name="Menu.QuickSignIn.Complete" xml:space="preserve">
