@@ -775,14 +775,15 @@ internal partial class Bootstrapper : IDisposable
     {
         string selectedRegion = App.Settings.Prop.SelectedRegion ?? "";
 
+        using var fetcher = new Integrations.RobloxServerFetcher();
+
         if (!string.IsNullOrEmpty(selectedRegion) &&
-            !selectedRegion.Equals("Auto", StringComparison.OrdinalIgnoreCase))
+            !selectedRegion.Equals(Strings.Common_Auto, StringComparison.OrdinalIgnoreCase))
         {
             App.Logger.Debug($"User selected specific region: {selectedRegion}");
 
             SetStatus(string.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_Status_SearchingServers, selectedRegion));
 
-            using var fetcher = new Integrations.RobloxServerFetcher();
             var result = await fetcher.FindBestServerInSelectedRegionAsync(
                 (long)_joinData.PlaceId!,
                 selectedRegion,
@@ -805,16 +806,9 @@ internal partial class Bootstrapper : IDisposable
 
         cancellationToken.ThrowIfCancellationRequested();
 
-        using var autoFetcher = new Integrations.RobloxServerFetcher();
+        SetStatus(Strings.Bootstrapper_Status_FindingTopRegions);
 
-        if (cancellationToken.IsCancellationRequested)
-            return "";
-
-        SetStatus(string.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_Status_FindingTopRegions, App.Settings.Prop.BestRegionAmounts));
-
-        var topRegions = await autoFetcher.GetClosestRegionsForAutoModeAsync(
-            App.Settings.Prop.BestRegionAmounts,
-            cancellationToken);
+        var topRegions = await fetcher.GetClosestRegionsForAutoModeAsync(cancellationToken);
 
         if (cancellationToken.IsCancellationRequested)
             return "";
@@ -824,7 +818,7 @@ internal partial class Bootstrapper : IDisposable
 
         SetStatus(Strings.Bootstrapper_Status_SearchingNearbyServers);
 
-        var autoResult = await autoFetcher.FindBestServerInRegionAsync(
+        var autoResult = await fetcher.FindBestServerInRegionAsync(
             (long)_joinData.PlaceId!,
             topRegions,
             cancellationToken: cancellationToken);
@@ -835,7 +829,7 @@ internal partial class Bootstrapper : IDisposable
             return autoResult.ServerId!;
         }
 
-        App.Logger.Warn("No server found in any of the top regions.");
+        App.Logger.Warn("No server found in any region within timeout.");
         return "";
     }
 

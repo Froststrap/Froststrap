@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+﻿﻿using System.Collections.Concurrent;
 using System.Net.Http.Headers;
 
 namespace Froststrap.Integrations
@@ -21,6 +21,7 @@ namespace Froststrap.Integrations
         private const string IpInfoUrl = "https://ipinfo.io/json";
 
         private static readonly TimeSpan IpInfoCacheDuration = TimeSpan.FromHours(6);
+        private static readonly TimeSpan MatchmakingTimeout = TimeSpan.FromSeconds(20);
 
         private bool _disposed;
 
@@ -268,7 +269,6 @@ namespace Froststrap.Integrations
             var placeCache = _serverCache.GetOrAdd(placeId, _ => []);
 
             var serverInfos = new List<(string jobId, int playing, int maxPlayers, List<string> playerTokens)>();
-            var serverIdsToFetch = new List<string>();
 
             foreach (var serverElem in dataElement.EnumerateArray())
             {
@@ -303,7 +303,6 @@ namespace Froststrap.Integrations
                 }
 
                 serverInfos.Add((jobId, playing, maxPlayers, playerTokens));
-                serverIdsToFetch.Add(jobId);
             }
 
             var regionTasks = new List<Task<(string jobId, int? dcId)>>();
@@ -316,12 +315,6 @@ namespace Froststrap.Integrations
 
             var regionResults = await Task.WhenAll(regionTasks);
 
-            Dictionary<string, DateTime?> uptimeResults = null!;
-            if (serverIdsToFetch.Count > 0)
-            {
-                uptimeResults = await GetServerUptimesBatchAsync(serverIdsToFetch, placeId, cancellationToken);
-            }
-
             for (int i = 0; i < serverInfos.Count; i++)
             {
                 var (jobId, playing, maxPlayers, playerTokens) = serverInfos[i];
@@ -333,8 +326,6 @@ namespace Froststrap.Integrations
                     ? mapped
                     : "Unknown";
 
-                DateTime? uptime = uptimeResults != null && uptimeResults.TryGetValue(jobId, out var up) ? up : null;
-
                 var server = new ServerInstance
                 {
                     Id = jobId,
@@ -342,7 +333,7 @@ namespace Froststrap.Integrations
                     MaxPlayers = maxPlayers,
                     Region = region,
                     DataCenterId = dcId,
-                    FirstSeen = uptime,
+                    FirstSeen = null,
                     PlayerTokens = playerTokens
                 };
 
@@ -355,63 +346,6 @@ namespace Froststrap.Integrations
                 Servers = [.. instances],
                 NextCursor = nextCursor
             };
-        }
-
-        public async Task<Dictionary<string, DateTime?>> GetServerUptimesBatchAsync(List<string> jobIds, long placeId, CancellationToken cancellationToken = default)
-        {
-            var result = new Dictionary<string, DateTime?>();
-
-            if (jobIds == null || jobIds.Count == 0)
-                return result;
-
-            try
-            {
-                const int batchSize = 50;
-                var batches = jobIds
-                    .Select((id, index) => new { id, index })
-                    .GroupBy(x => x.index / batchSize)
-                    .Select(g => g.Select(x => x.id).ToList())
-                    .ToList();
-
-                foreach (var batch in batches)
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-
-                    var serverIdsParam = string.Join(",", batch);
-                    var response = await _client.GetAsync(new Uri(
-                        $"https://apis.rovalra.com/v1/servers/details?place_id={placeId}&server_ids={Uri.EscapeDataString(serverIdsParam)}"),
-                        cancellationToken
-                    );
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var content = await response.Content.ReadAsStringAsync(cancellationToken);
-                        var serverTimeRaw = JsonSerializer.Deserialize<RoValraTimeResponse>(content);
-
-                        if (serverTimeRaw?.Servers != null)
-                        {
-                            foreach (var server in serverTimeRaw.Servers)
-                            {
-                                result[server.ServerId!] = server.FirstSeen;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        foreach (var id in batch)
-                        {
-                            result[id] = null;
-                        }
-                    }
-                }
-
-                return result;
-            }
-            catch (Exception ex)
-            {
-                App.Logger.Error("Unhandled exception:", ex);
-                return result;
-            }
         }
 
         private async Task<(string jobId, int? dcId)> FetchServerRegionAsync(long placeId, string jobId, string roblosecurity, CancellationToken cancellationToken)
@@ -577,12 +511,38 @@ namespace Froststrap.Integrations
             try
             {
                 using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-                cts.CancelAfter(TimeSpan.FromSeconds(2));
+                cts.CancelAfter(TimeSpan.FromMilliseconds(1500));
 
                 var response = await SendJoinRequestWithRetriesAsync(placeId, jobId, roblosecurity, cts.Token);
-                return response.StatusCode != HttpStatusCode.Unauthorized &&
-                       response.StatusCode != HttpStatusCode.Forbidden &&
-                       (response.IsSuccessStatusCode || (int)response.StatusCode == 429);
+
+                if (response.StatusCode == HttpStatusCode.Unauthorized ||
+                    response.StatusCode == HttpStatusCode.Forbidden)
+                    return false;
+
+                if ((int)response.StatusCode == 429)
+                    return true;
+
+                if (!response.IsSuccessStatusCode)
+                    return false;
+
+                string body;
+                try
+                {
+                    body = await response.Content.ReadAsStringAsync(cts.Token);
+                }
+                catch
+                {
+                    return false;
+                }
+
+                using var doc = JsonDocument.Parse(body);
+
+                if (!doc.RootElement.TryGetProperty("status", out var statusProp) ||
+                    statusProp.ValueKind != JsonValueKind.Number ||
+                    !statusProp.TryGetInt32(out int status))
+                    return false;
+
+                return status == 2;
             }
             catch (OperationCanceledException)
             {
@@ -631,7 +591,7 @@ namespace Froststrap.Integrations
             }
         }
 
-        public async Task<List<string>> GetClosestRegionsForAutoModeAsync(int topCount, CancellationToken cancellationToken = default)
+        public async Task<List<string>> GetClosestRegionsForAutoModeAsync(CancellationToken cancellationToken = default)
         {
             try
             {
@@ -671,14 +631,13 @@ namespace Froststrap.Integrations
                         regionDistances[regionKey] = distance;
                 }
 
-                var topRegions = regionDistances
+                var sortedRegions = regionDistances
                     .OrderBy(kvp => kvp.Value)
                     .Select(kvp => kvp.Key)
-                    .Take(topCount)
                     .ToList();
 
-                App.Logger.Info($"Top {topRegions.Count} regions (by distance): {string.Join(", ", topRegions)}");
-                return topRegions;
+                App.Logger.Info($"Sorted {sortedRegions.Count} regions by distance: {string.Join(", ", sortedRegions.Take(5))}...");
+                return sortedRegions;
             }
             catch (OperationCanceledException)
             {
@@ -693,70 +652,84 @@ namespace Froststrap.Integrations
 
         public async Task<ServerSelectionResult> FindBestServerInRegionAsync(
             long placeId,
-            List<string> topRegions,
+            List<string> regions,
             CancellationToken cancellationToken = default)
         {
+            var startedAtUtc = DateTime.UtcNow;
+
             try
             {
-                App.Logger.Info($"Searching in top {topRegions.Count} regions: {string.Join(", ", topRegions)}");
+                App.Logger.Info($"Searching for alive server across {regions.Count} regions (timeout {MatchmakingTimeout.TotalSeconds}s)");
 
                 string? cookie = await ResolveCookieAsync();
                 if (string.IsNullOrEmpty(cookie))
-                {
                     App.Logger.Warn("No valid cookie for server liveliness checks.");
-                }
-
-                var allServers = await FetchServersForRegionsAsync(placeId, topRegions, cancellationToken);
-                var valid = allServers.Where(s => !string.IsNullOrEmpty(s.Region) && s.Region != "Unknown").ToList();
-
-                if (valid.Count == 0)
-                    return new ServerSelectionResult();
 
                 var regionRank = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
-                for (int i = 0; i < topRegions.Count; i++)
-                    regionRank[topRegions[i]] = i + 1;
+                for (int i = 0; i < regions.Count; i++)
+                    regionRank[regions[i]] = i + 1;
 
-                var sorted = valid
-                    .OrderBy(s => regionRank.TryGetValue(s.Region, out int rank) ? rank : int.MaxValue)
-                    .ThenBy(s => s.FirstSeen)
-                    .ToList();
+                int probesDone = 0;
 
-                if (!string.IsNullOrEmpty(cookie))
+                foreach (var region in regions)
                 {
-                    const int maxCheck = 10;
-                    int checkedCount = 0;
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    if (DateTime.UtcNow - startedAtUtc >= MatchmakingTimeout)
+                    {
+                        App.Logger.Warn($"Matchmaking timeout reached after {probesDone} probe(s).");
+                        return new ServerSelectionResult();
+                    }
+
+                    var (servers, _) = await FetchServersByRegionAsync(placeId, region, null, cancellationToken);
+                    if (servers.Count == 0) continue;
+
+                    var sorted = servers.OrderBy(s => s.FirstSeen).ToList();
+
+                    if (string.IsNullOrEmpty(cookie))
+                    {
+                        var best = sorted[0];
+                        return new ServerSelectionResult
+                        {
+                            ServerId = best.Id,
+                            Region = best.Region,
+                            Rank = regionRank.TryGetValue(best.Region, out int r) ? r : int.MaxValue,
+                            FirstSeen = best.FirstSeen
+                        };
+                    }
+
                     foreach (var server in sorted)
                     {
-                        if (checkedCount >= maxCheck) break;
+                        cancellationToken.ThrowIfCancellationRequested();
+
+                        if (DateTime.UtcNow - startedAtUtc >= MatchmakingTimeout)
+                        {
+                            App.Logger.Warn($"Matchmaking timeout reached after {probesDone} probe(s).");
+                            return new ServerSelectionResult();
+                        }
+
+                        probesDone++;
                         bool alive = await IsServerAliveAsync(placeId, server.Id, cookie, cancellationToken);
                         if (alive)
                         {
-                            int bestRank = regionRank.TryGetValue(server.Region, out int r) ? r : int.MaxValue;
+                            App.Logger.Info($"Found alive server after {probesDone} probe(s) in {(DateTime.UtcNow - startedAtUtc).TotalSeconds:F1}s.");
                             return new ServerSelectionResult
                             {
                                 ServerId = server.Id,
                                 Region = server.Region,
-                                Rank = bestRank,
+                                Rank = regionRank.TryGetValue(server.Region, out int r) ? r : int.MaxValue,
                                 FirstSeen = server.FirstSeen
                             };
                         }
-                        checkedCount++;
                     }
-                    App.Logger.Warn("No alive server found among checked candidates.");
-                    return new ServerSelectionResult();
                 }
-                else
-                {
-                    var best = sorted.First();
-                    int bestRank = regionRank.TryGetValue(best.Region, out int r) ? r : int.MaxValue;
-                    return new ServerSelectionResult
-                    {
-                        ServerId = best.Id,
-                        Region = best.Region,
-                        Rank = bestRank,
-                        FirstSeen = best.FirstSeen
-                    };
-                }
+
+                App.Logger.Warn($"No alive server found after {probesDone} probe(s) across {regions.Count} regions.");
+                return new ServerSelectionResult();
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
             }
             catch (Exception ex)
             {
@@ -770,52 +743,28 @@ namespace Froststrap.Integrations
             string selectedRegion,
             CancellationToken cancellationToken = default)
         {
+            var startedAtUtc = DateTime.UtcNow;
+
             try
             {
                 if (string.IsNullOrEmpty(selectedRegion))
                     return new ServerSelectionResult();
 
-                App.Logger.Info($"Searching for servers in selected region: {selectedRegion}");
+                App.Logger.Info($"Searching for alive server in {selectedRegion} (timeout {MatchmakingTimeout.TotalSeconds}s)");
 
                 string? cookie = await ResolveCookieAsync();
                 if (string.IsNullOrEmpty(cookie))
-                {
                     App.Logger.Warn("No valid cookie for server liveliness checks.");
-                }
 
                 var (servers, _) = await FetchServersByRegionAsync(placeId, selectedRegion, null, cancellationToken);
-
                 if (servers.Count == 0)
                     return new ServerSelectionResult();
 
                 var sorted = servers.OrderBy(s => s.FirstSeen).ToList();
 
-                if (!string.IsNullOrEmpty(cookie))
+                if (string.IsNullOrEmpty(cookie))
                 {
-                    const int maxCheck = 10;
-                    int checkedCount = 0;
-                    foreach (var server in sorted)
-                    {
-                        if (checkedCount >= maxCheck) break;
-                        bool alive = await IsServerAliveAsync(placeId, server.Id, cookie, cancellationToken);
-                        if (alive)
-                        {
-                            return new ServerSelectionResult
-                            {
-                                ServerId = server.Id,
-                                Region = server.Region,
-                                Rank = 1,
-                                FirstSeen = server.FirstSeen
-                            };
-                        }
-                        checkedCount++;
-                    }
-                    App.Logger.Warn("No alive server found in selected region.");
-                    return new ServerSelectionResult();
-                }
-                else
-                {
-                    var best = sorted.First();
+                    var best = sorted[0];
                     return new ServerSelectionResult
                     {
                         ServerId = best.Id,
@@ -824,6 +773,39 @@ namespace Froststrap.Integrations
                         FirstSeen = best.FirstSeen
                     };
                 }
+
+                int probesDone = 0;
+                foreach (var server in sorted)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    if (DateTime.UtcNow - startedAtUtc >= MatchmakingTimeout)
+                    {
+                        App.Logger.Warn($"Matchmaking timeout reached in {selectedRegion} after {probesDone} probe(s).");
+                        return new ServerSelectionResult();
+                    }
+
+                    probesDone++;
+                    bool alive = await IsServerAliveAsync(placeId, server.Id, cookie, cancellationToken);
+                    if (alive)
+                    {
+                        App.Logger.Info($"Found alive server in {selectedRegion} after {probesDone} probe(s) in {(DateTime.UtcNow - startedAtUtc).TotalSeconds:F1}s.");
+                        return new ServerSelectionResult
+                        {
+                            ServerId = server.Id,
+                            Region = server.Region,
+                            Rank = 1,
+                            FirstSeen = server.FirstSeen
+                        };
+                    }
+                }
+
+                App.Logger.Warn($"No alive server found in {selectedRegion} after {probesDone} probe(s).");
+                return new ServerSelectionResult();
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
             }
             catch (Exception ex)
             {
@@ -834,7 +816,6 @@ namespace Froststrap.Integrations
 
         public async Task<bool> JoinBestServerAsync(
             long placeId,
-            int bestRegionAmounts = 3,
             bool showConfirmation = true,
             CancellationToken cancellationToken = default)
         {
@@ -843,7 +824,7 @@ namespace Froststrap.Integrations
                 string selectedRegion = App.Settings.Prop.SelectedRegion ?? "";
 
                 if (!string.IsNullOrEmpty(selectedRegion) &&
-                    !selectedRegion.Equals("Auto", StringComparison.OrdinalIgnoreCase))
+                    !selectedRegion.Equals(Strings.Common_Auto, StringComparison.OrdinalIgnoreCase))
                 {
                     var result = await FindBestServerInSelectedRegionAsync(
                         placeId,
@@ -872,7 +853,7 @@ namespace Froststrap.Integrations
                     }
                 }
 
-                var topRegions = await GetClosestRegionsForAutoModeAsync(bestRegionAmounts, cancellationToken);
+                var topRegions = await GetClosestRegionsForAutoModeAsync(cancellationToken);
                 if (topRegions.Count == 0)
                 {
                     await Frontend.ShowMessageBox("Could not determine your location for Auto mode. Please try again later.", MessageBoxImage.Warning);
@@ -886,7 +867,7 @@ namespace Froststrap.Integrations
 
                 if (!autoResult.Found)
                 {
-                    await Frontend.ShowMessageBox($"Could not find a suitable server after checking servers in {topRegions.Count} regions.", MessageBoxImage.Information);
+                    await Frontend.ShowMessageBox($"Could not find a suitable server within {MatchmakingTimeout.TotalSeconds} seconds.", MessageBoxImage.Information);
                     return false;
                 }
 

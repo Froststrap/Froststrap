@@ -213,12 +213,6 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public static int BestRegionAmounts
-        {
-            get => App.Settings.Prop.BestRegionAmounts;
-            set => App.Settings.Prop.BestRegionAmounts = value;
-        }
-
         public string SelectedRegion
         {
             get => App.Settings.Prop.SelectedRegion;

@@ -312,10 +312,9 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
             IsJoiningBestRegion = true;
             try
             {
-                var fetcher = new RobloxServerFetcher();
+                using var fetcher = new RobloxServerFetcher();
                 bool success = await fetcher.JoinBestServerAsync(
                     item.PlaceId,
-                    App.Settings.Prop.BestRegionAmounts,
                     showConfirmation: false
                 );
 

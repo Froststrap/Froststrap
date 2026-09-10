@@ -240,7 +240,6 @@ namespace Froststrap.UI.Elements.ContextMenu
             using var fetcher = new RobloxServerFetcher();
             await fetcher.JoinBestServerAsync(
                 ActivityWatcher.Data.PlaceId,
-                App.Settings.Prop.BestRegionAmounts,
                 showConfirmation: true
             );
         }
