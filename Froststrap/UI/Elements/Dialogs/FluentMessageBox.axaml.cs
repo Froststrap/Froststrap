@@ -106,11 +106,6 @@ namespace Froststrap.UI.Elements.Dialogs
             {
                 desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
             }
-
-            Loaded += (s, e) =>
-            {
-                // avalonia dosent have this so we will skip it for now
-            };
         }
 
         private static string GetTextForResult(MessageBoxResult result)
