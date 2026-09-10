@@ -13,9 +13,6 @@ namespace Froststrap.Integrations
         private IPInfoResponse? _ipinfoCache;
         private DateTime _ipinfoCachedAtUtc;
 
-        private readonly string _serverCacheFilePath = Path.Combine(Paths.Cache, "server_cache.json");
-        private readonly ConcurrentDictionary<long, ConcurrentDictionary<string, ServerInstance>> _serverCache = [];
-
         private const string DatacenterUrl = "https://apis.rovalra.com/v1/datacenters/list";
         private const string RegionServersUrl = "https://apis.rovalra.com/v1/servers/region";
         private const string IpInfoUrl = "https://ipinfo.io/json";
@@ -47,27 +44,6 @@ namespace Froststrap.Integrations
             _client = new HttpClient(handler);
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             _client.DefaultRequestHeaders.UserAgent.ParseAdd("Roblox/Froststrap");
-
-            try
-            {
-                Directory.CreateDirectory(Paths.Cache);
-
-                if (File.Exists(_serverCacheFilePath))
-                {
-                    using FileStream fs = File.OpenRead(_serverCacheFilePath);
-                    var loadedCache = JsonSerializer.Deserialize<ConcurrentDictionary<long, ConcurrentDictionary<string, ServerInstance>>>(fs);
-
-                    if (loadedCache != null)
-                    {
-                        _serverCache = loadedCache;
-                        App.Logger.Info($"Loaded {_serverCache.Count} games from disk.");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                App.Logger.Error("Unhandled exception:", ex);
-            }
         }
 
         private static string BuildRegionKey(string? city, string? country)
@@ -191,13 +167,6 @@ namespace Froststrap.Integrations
                     results.Add(server);
                 }
 
-                var placeCache = _serverCache.GetOrAdd(placeId, _ => []);
-                foreach (var server in results)
-                {
-                    if (server.Region != "Unknown")
-                        placeCache[server.Id] = server;
-                }
-
                 return (results, regionResponse.NextCursor);
             }
             catch (Exception ex)
@@ -266,8 +235,6 @@ namespace Froststrap.Integrations
             string nextCursor = jsonDoc.RootElement.TryGetProperty("nextPageCursor", out var cElem) ? cElem.GetString() ?? "" : "";
 
             var instances = new ConcurrentBag<ServerInstance>();
-            var placeCache = _serverCache.GetOrAdd(placeId, _ => []);
-
             var serverInfos = new List<(string jobId, int playing, int maxPlayers, List<string> playerTokens)>();
 
             foreach (var serverElem in dataElement.EnumerateArray())
@@ -283,24 +250,6 @@ namespace Froststrap.Integrations
                                       .ToList();
 
                 if (playing >= maxPlayers) continue;
-
-                if (placeCache.TryGetValue(jobId, out var cached) && cached.Region != "Unknown")
-                {
-                    var refreshed = new ServerInstance
-                    {
-                        Id = jobId,
-                        Playing = playing,
-                        MaxPlayers = maxPlayers,
-                        Region = cached.Region,
-                        DataCenterId = cached.DataCenterId,
-                        FirstSeen = cached.FirstSeen,
-                        PlayerTokens = playerTokens
-                    };
-
-                    placeCache[jobId] = refreshed;
-                    instances.Add(refreshed);
-                    continue;
-                }
 
                 serverInfos.Add((jobId, playing, maxPlayers, playerTokens));
             }
@@ -337,7 +286,6 @@ namespace Froststrap.Integrations
                     PlayerTokens = playerTokens
                 };
 
-                if (region != "Unknown") placeCache[jobId] = server;
                 instances.Add(server);
             }
 
