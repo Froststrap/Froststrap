@@ -806,7 +806,7 @@ internal partial class Bootstrapper : IDisposable
 
         cancellationToken.ThrowIfCancellationRequested();
 
-        SetStatus(Strings.Bootstrapper_Status_FindingTopRegions);
+        SetStatus(Strings.Bootstrapper_Status_SearchingNearbyServers);
 
         var topRegions = await fetcher.GetClosestRegionsForAutoModeAsync(cancellationToken);
 
@@ -815,8 +815,6 @@ internal partial class Bootstrapper : IDisposable
 
         if (topRegions.Count == 0)
             throw new HttpRequestException("No regions found from datacenter list");
-
-        SetStatus(Strings.Bootstrapper_Status_SearchingNearbyServers);
 
         var autoResult = await fetcher.FindBestServerInRegionAsync(
             (long)_joinData.PlaceId!,

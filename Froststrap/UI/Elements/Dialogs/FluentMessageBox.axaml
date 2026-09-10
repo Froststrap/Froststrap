@@ -10,7 +10,7 @@ SPDX-License-Identifier: MPL-2.0
         xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
         xmlns:md="clr-namespace:Froststrap.UI.Elements.Controls"
         Title="Froststrap"
-        MinWidth="320" MaxWidth="480" SizeToContent="WidthAndHeight" CanResize="False"
+        Width="320" MaxWidth="480" SizeToContent="WidthAndHeight" CanResize="False"
         WindowStartupLocation="CenterScreen">
 
     <Grid RowDefinitions="*,Auto">
