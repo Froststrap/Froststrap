@@ -353,12 +353,27 @@ namespace Froststrap.UI.ViewModels.Settings
                 if (SelectedAddMethod == Strings.Menu_Dialog_QuickSignIn_Title)
                 {
                     var dialog = new QuickSignCodeDialog();
-                    using var cts = new CancellationTokenSource();
+                    var cts = new CancellationTokenSource();
 
-                    dialog.Closed += (_, _) => cts.Cancel();
+                    void OnDialogClosed(object? _, EventArgs __)
+                    {
+                        dialog.Closed -= OnDialogClosed;
+                        try { cts.Cancel(); }
+                        catch (ObjectDisposedException) { }
+                    }
+
+                    dialog.Closed += OnDialogClosed;
                     dialog.Show();
 
-                    newAccount = await AccountManager.AddAccountByQuickSignInAsync(dialog, cts.Token);
+                    try
+                    {
+                        newAccount = await AccountManager.AddAccountByQuickSignInAsync(dialog, cts.Token);
+                    }
+                    finally
+                    {
+                        dialog.Closed -= OnDialogClosed;
+                        cts.Dispose();
+                    }
                 }
                 else if (SelectedAddMethod == Strings.Common_Browser)
                 {
