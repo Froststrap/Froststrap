@@ -70,8 +70,8 @@ SPDX-License-Identifier: MPL-2.0
 
                 <StackPanel Margin="0,8,0,0">
                     <controls:OptionControl
-                        Description="{x:Static resources:Strings.Menu_Integrations_TitleChangePlayer_Title}"
-                        Header="{x:Static resources:Strings.Menu_Integrations_TitleChangePlayer_Description}"
+                        Description="{x:Static resources:Strings.Menu_Integrations_TitleChangePlayer_Description}"
+                        Header="{x:Static resources:Strings.Menu_Integrations_TitleChangePlayer_Title}"
                         IsEnabled="{Binding AutoChangeTitle}">
                         <ToggleSwitch IsChecked="{Binding AutoChangeTitlePlayerCounter, Mode=TwoWay}" />
                     </controls:OptionControl>

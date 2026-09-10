@@ -388,7 +388,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
             List<QuickPlayGameItem> apiGames = [];
             if (HasActiveAccount)
             {
-                apiGames = await GetApiGamesAsync();
+                apiGames = await FetchRecentlyVisitedFromApiAsync();
                 _ = RefreshApiGamesInBackground();
             }
 
@@ -469,18 +469,6 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
         }
     }
 
-    private static async Task<List<QuickPlayGameItem>> GetApiGamesAsync()
-    {
-        var apiGames = await GetCachedApiGamesAsync();
-        if (apiGames.Count == 0)
-        {
-            apiGames = await FetchRecentlyVisitedFromApiAsync();
-            if (apiGames.Count > 0)
-                await SetCachedApiGamesAsync(apiGames);
-        }
-        return apiGames;
-    }
-
     private static async Task<List<QuickPlayGameItem>> FetchRecentlyVisitedFromApiAsync()
     {
         var accountManager = AccountManager.Shared;
@@ -528,38 +516,6 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
             App.Logger.Error($"Failed to fetch recent games API: {ex.Message}");
             return [];
         }
-    }
-
-    private static async Task<List<QuickPlayGameItem>> GetCachedApiGamesAsync()
-    {
-        try
-        {
-            string cachePath = GetApiGamesCachePath();
-            if (!File.Exists(cachePath)) return [];
-            var json = await File.ReadAllTextAsync(cachePath);
-            return JsonSerializer.Deserialize<List<QuickPlayGameItem>>(json) ?? [];
-        }
-        catch { return []; }
-    }
-
-    private static async Task SetCachedApiGamesAsync(List<QuickPlayGameItem> games)
-    {
-        try
-        {
-            string cachePath = GetApiGamesCachePath();
-            var json = JsonSerializer.Serialize(games);
-            await File.WriteAllTextAsync(cachePath, json);
-        }
-        catch (Exception ex) { App.Logger.Error($"Failed to cache API games: {ex.Message}"); }
-    }
-
-    private static string GetApiGamesCachePath()
-    {
-        var activeUserId = AccountManager.Shared?.ActiveAccount?.UserId;
-        if (activeUserId.HasValue)
-            return Path.Combine(Paths.Cache, $"ApiRecentGames_{activeUserId.Value}.json");
-        else
-            return Path.Combine(Paths.Cache, "ApiRecentGames_empty.json");
     }
 
     private static List<QuickPlayGameItem> MergeByApiOrder(List<QuickPlayGameItem> localGames, List<QuickPlayGameItem> apiGames)
@@ -668,8 +624,6 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
         {
             var freshApiGames = await FetchRecentlyVisitedFromApiAsync();
             if (freshApiGames.Count == 0) return;
-
-            await SetCachedApiGamesAsync(freshApiGames);
 
             if (SelectedTab == QuickPlayTab.Continue && _recentGamesLoaded)
             {
