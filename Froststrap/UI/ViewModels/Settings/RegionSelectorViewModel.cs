@@ -8,7 +8,7 @@ namespace Froststrap.UI.ViewModels.Settings
 {
     internal partial class RegionSelectorViewModel : NotifyPropertyChangedViewModel, IDisposable
     {
-        private const int MaxServers = 15;
+        private const int AutoModeRegionCount = 3;
 
         private readonly HashSet<string> _displayedServerIds = [];
         private readonly CancellationTokenSource _disposeCts = new();
@@ -21,11 +21,10 @@ namespace Froststrap.UI.ViewModels.Settings
         #region Fields
         private bool _hasSearched;
         private string _placeId = "";
-        private string _selectedRegion = "";
+        private string _selectedRegion = Strings.Common_Auto;
         private bool _isLoading;
         private bool _isGameSearchLoading;
         private string _loadingMessage = "";
-        private string _nextCursor = "";
         private bool _hasValidCookies;
         private string _searchQuery = "";
         private OmniSearchContent? _selectedSearchResult;
@@ -33,7 +32,7 @@ namespace Froststrap.UI.ViewModels.Settings
         private string? _thumbnailUrl;
         private string? _selectedRegionInput;
         private bool _isSearchFlyoutOpen;
-        private int? _currentCursor;
+        private List<string> _regions = [];
         #endregion
 
         #region Properties
@@ -64,7 +63,6 @@ namespace Froststrap.UI.ViewModels.Settings
                     OnPropertyChanged(nameof(IsServerListEmptyAndNotLoading));
                     OnPropertyChanged(nameof(ShowLoadingIndicator));
                     SearchCommand.NotifyCanExecuteChanged();
-                    LoadMoreCommand.NotifyCanExecuteChanged();
                     SearchGamesCommand.NotifyCanExecuteChanged();
                 }
             }
@@ -87,16 +85,6 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             get => _loadingMessage;
             set => SetProperty(ref _loadingMessage, value);
-        }
-
-        public string NextCursor
-        {
-            get => _nextCursor;
-            set
-            {
-                if (SetProperty(ref _nextCursor, value))
-                    LoadMoreCommand.NotifyCanExecuteChanged();
-            }
         }
 
         public bool HasValidCookies
@@ -160,7 +148,12 @@ namespace Froststrap.UI.ViewModels.Settings
             set => SetProperty(ref _isSearchFlyoutOpen, value);
         }
 
-        public ObservableCollection<string> Regions { get; } = [];
+        public List<string> Regions
+        {
+            get => _regions;
+            private set => SetProperty(ref _regions, value);
+        }
+
         public ObservableCollection<ServerEntry> Servers { get; } = [];
         public ObservableCollection<OmniSearchContent> SearchResults { get; } = [];
 
@@ -174,7 +167,6 @@ namespace Froststrap.UI.ViewModels.Settings
             IsServerListEmpty ? (LastFetchProcessedCount == 0 ? Strings.Menu_RegionSelector_NoPublicServers : Strings.Menu_RegionSelector_NoServersForRegion) : "";
 
         public IAsyncRelayCommand SearchCommand { get; }
-        public IAsyncRelayCommand LoadMoreCommand { get; }
         public IAsyncRelayCommand SearchGamesCommand { get; }
         public IRelayCommand ClearSearchCommand { get; }
         #endregion
@@ -185,12 +177,10 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 OnPropertyChanged(nameof(IsServerListEmpty));
                 OnPropertyChanged(nameof(IsServerListEmptyAndNotLoading));
-                LoadMoreCommand?.NotifyCanExecuteChanged();
             };
 
             SearchCommand = new AsyncRelayCommand(SearchAsync, () => !IsLoading && !string.IsNullOrWhiteSpace(PlaceId) && HasValidCookies);
             SearchGamesCommand = new AsyncRelayCommand(SearchGamesAsync, () => !IsLoading && !IsGameSearchLoading && !string.IsNullOrWhiteSpace(SearchQuery) && HasValidCookies);
-            LoadMoreCommand = new AsyncRelayCommand(LoadMoreServersAsync, () => !IsLoading && !string.IsNullOrEmpty(NextCursor) && Servers.Count < MaxServers);
 
             ClearSearchCommand = new RelayCommand(ClearSearch);
 
@@ -328,17 +318,18 @@ namespace Froststrap.UI.ViewModels.Settings
                 .OrderBy(r => r, StringComparer.OrdinalIgnoreCase)
                 .ToList();
 
-            Regions.Clear();
-            foreach (var r in sorted)
-                Regions.Add(r);
+            var list = new List<string> { Strings.Common_Auto };
+            list.AddRange(sorted);
 
             _dcMap = dcMap;
 
-            Dispatcher.UIThread.Post(() =>
-            {
-                var preferred = Regions.FirstOrDefault(r => r.Equals(_selectedRegion, StringComparison.OrdinalIgnoreCase));
-                SelectedRegion = preferred ?? Regions.FirstOrDefault();
-            }, DispatcherPriority.Background);
+            var desired = string.IsNullOrEmpty(_selectedRegion) ? Strings.Common_Auto : _selectedRegion;
+            var match = list.FirstOrDefault(r => r.Equals(desired, StringComparison.OrdinalIgnoreCase))
+                        ?? Strings.Common_Auto;
+
+            SelectedRegion = "";
+            Regions = list;
+            Dispatcher.UIThread.Post(() => SelectedRegion = match, DispatcherPriority.Background);
         }
 
         private async Task SearchAsync()
@@ -355,8 +346,6 @@ namespace Froststrap.UI.ViewModels.Settings
             LoadingMessage = Strings.Menu_RegionSelector_SearchingServers;
             Servers.Clear();
             _displayedServerIds.Clear();
-            NextCursor = "";
-            _currentCursor = null;
             LastFetchProcessedCount = 0;
 
             if (!long.TryParse(PlaceId, out var placeId))
@@ -370,35 +359,25 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 List<ServerInstance> allServers = [];
 
-                if (!string.IsNullOrEmpty(SelectedRegion) && !SelectedRegion.Equals("Auto", StringComparison.OrdinalIgnoreCase))
+                if (!string.IsNullOrEmpty(SelectedRegion) && !SelectedRegion.Equals(Strings.Common_Auto, StringComparison.OrdinalIgnoreCase))
                 {
-                    var (servers, nextCursor) = await _fetcher!.FetchServersByRegionAsync(placeId, SelectedRegion, null, token);
+                    var (servers, _) = await _fetcher!.FetchServersByRegionAsync(placeId, SelectedRegion, null, token);
                     allServers = servers;
-                    if (nextCursor.HasValue)
-                    {
-                        _currentCursor = nextCursor.Value;
-                        NextCursor = nextCursor.Value.ToString(CultureInfo.InvariantCulture);
-                    }
-                    else
-                    {
-                        NextCursor = "";
-                    }
                 }
                 else
                 {
-                    var topRegions = await _fetcher!.GetClosestRegionsForAutoModeAsync(3, token);
-                    if (topRegions.Count == 0)
+                    allServers = await FetchFromNearestNonEmptyRegionsAsync(placeId, AutoModeRegionCount, token);
+
+                    if (allServers.Count == 0)
                     {
-                        await Frontend.ShowMessageBox("Could not determine your location. Please select a region manually.", MessageBoxImage.Warning);
+                        await Frontend.ShowMessageBox("Could not find any servers in nearby regions. Please select a region manually.", MessageBoxImage.Warning);
                         IsLoading = false;
                         return;
                     }
-                    allServers = await _fetcher.FetchServersForRegionsAsync(placeId, topRegions, token);
-                    NextCursor = "";
                 }
 
                 int number = 1;
-                foreach (var s in allServers.Take(MaxServers))
+                foreach (var s in allServers)
                 {
                     if (_displayedServerIds.Add(s.Id))
                     {
@@ -433,6 +412,45 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
+        private async Task<List<ServerInstance>> FetchFromNearestNonEmptyRegionsAsync(
+            long placeId,
+            int regionCount,
+            CancellationToken token)
+        {
+            var allServers = new List<ServerInstance>();
+            var seenIds = new HashSet<string>();
+
+            var sortedRegions = await _fetcher!.GetClosestRegionsForAutoModeAsync(token);
+            if (sortedRegions.Count == 0)
+                return allServers;
+
+            int regionsWithServers = 0;
+            foreach (var region in sortedRegions)
+            {
+                if (token.IsCancellationRequested)
+                    break;
+
+                if (regionsWithServers >= regionCount)
+                    break;
+
+                var (servers, _) = await _fetcher.FetchServersByRegionAsync(placeId, region, null, token);
+
+                if (servers.Count == 0)
+                    continue;
+
+                regionsWithServers++;
+
+                foreach (var s in servers)
+                {
+                    if (seenIds.Add(s.Id))
+                        allServers.Add(s);
+                }
+            }
+
+            App.Logger.Info($"Auto-mode search collected {allServers.Count} server(s) from {regionsWithServers} non-empty region(s).");
+            return allServers;
+        }
+
         private void JoinServer(string serverId)
         {
             if (!long.TryParse(PlaceId, out var placeId)) return;
@@ -445,63 +463,6 @@ namespace Froststrap.UI.ViewModels.Settings
                 });
             }
             catch (Exception ex) { App.Logger.Error(ex); }
-        }
-
-        private async Task LoadMoreServersAsync()
-        {
-            if (!_currentCursor.HasValue || string.IsNullOrEmpty(NextCursor) || Servers.Count >= MaxServers)
-                return;
-
-            if (!long.TryParse(PlaceId, out var placeId) || string.IsNullOrEmpty(SelectedRegion) || SelectedRegion.Equals("Auto", StringComparison.OrdinalIgnoreCase))
-                return;
-
-            IsLoading = true;
-            try
-            {
-                var (servers, nextCursor) = await _fetcher!.FetchServersByRegionAsync(
-                    placeId, SelectedRegion, _currentCursor.Value, _disposeCts.Token);
-
-                int number = Servers.Count + 1;
-                foreach (var s in servers)
-                {
-                    if (Servers.Count >= MaxServers)
-                        break;
-
-                    if (_displayedServerIds.Add(s.Id))
-                    {
-                        var entry = new ServerEntry
-                        {
-                            Number = number++,
-                            ServerId = s.Id,
-                            Region = s.Region,
-                            DataCenterId = s.DataCenterId,
-                            Uptime = s.UptimeDisplay,
-                            JoinCommand = new RelayCommand(() => JoinServer(s.Id))
-                        };
-                        Servers.Add(entry);
-                    }
-                }
-
-                if (nextCursor.HasValue)
-                {
-                    _currentCursor = nextCursor.Value;
-                    NextCursor = nextCursor.Value.ToString(CultureInfo.InvariantCulture);
-                }
-                else
-                {
-                    _currentCursor = null;
-                    NextCursor = "";
-                }
-            }
-            catch (OperationCanceledException) { }
-            catch (Exception ex)
-            {
-                App.Logger.Error($"Load more error: {ex}");
-            }
-            finally
-            {
-                IsLoading = false;
-            }
         }
 
         private async Task SearchGamesAsync(CancellationToken token = default)

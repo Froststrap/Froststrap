@@ -6,54 +6,29 @@ namespace Froststrap.UI.ViewModels.Onboarding
 {
     internal class Page4ViewModel : NotifyPropertyChangedViewModel
     {
-        private bool _enableBetterMatchmaking;
-        private string _selectedRegion = "";
-        private int _bestRegionAmounts = 3;
         private List<string> _availableRegions = [];
         private bool _isLoadingRegions;
 
         public Page4ViewModel()
         {
             EnableBetterMatchmaking = App.Settings.Prop.EnableBetterMatchmaking;
-            SelectedRegion = App.Settings.Prop.SelectedRegion;
-            BestRegionAmounts = App.Settings.Prop.BestRegionAmounts;
             _ = LoadAvailableRegionsAsync();
         }
 
         public bool EnableBetterMatchmaking
         {
-            get => _enableBetterMatchmaking;
+            get => App.Settings.Prop.EnableBetterMatchmaking;
             set
             {
-                if (SetProperty(ref _enableBetterMatchmaking, value))
-                {
-                    App.Settings.Prop.EnableBetterMatchmaking = value;
-                }
+                App.Settings.Prop.EnableBetterMatchmaking = value;
+                OnPropertyChanged(nameof(EnableBetterMatchmaking));
             }
         }
 
-        public string SelectedRegion
+        public static string SelectedRegion
         {
-            get => _selectedRegion;
-            set
-            {
-                if (SetProperty(ref _selectedRegion, value))
-                {
-                    App.Settings.Prop.SelectedRegion = value;
-                }
-            }
-        }
-
-        public int BestRegionAmounts
-        {
-            get => _bestRegionAmounts;
-            set
-            {
-                if (SetProperty(ref _bestRegionAmounts, value))
-                {
-                    App.Settings.Prop.BestRegionAmounts = value;
-                }
-            }
+            get => App.Settings.Prop.SelectedRegion;
+            set => App.Settings.Prop.SelectedRegion = value;
         }
 
         public List<string> AvailableRegions
@@ -148,7 +123,7 @@ namespace Froststrap.UI.ViewModels.Onboarding
             await SyncSelectedRegionAfterLoad();
         }
 
-        private List<string> BuildAvailableRegionsWithCurrent(IEnumerable<string> baseRegions)
+        private static List<string> BuildAvailableRegionsWithCurrent(IEnumerable<string> baseRegions)
         {
             var list = new List<string>
             {
