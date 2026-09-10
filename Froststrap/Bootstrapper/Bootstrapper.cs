@@ -773,36 +773,25 @@ internal partial class Bootstrapper : IDisposable
 
     private async Task<string> GetBetterMatchmakingServerID(CancellationToken cancellationToken = default)
     {
-        string sortOrder = App.Settings.Prop.SelectedServerSortOrder ?? "BestLatency";
         string selectedRegion = App.Settings.Prop.SelectedRegion ?? "";
 
-        bool shouldUseRegion = sortOrder != "BestLatency" &&
-                               !string.IsNullOrEmpty(selectedRegion) &&
-                               !selectedRegion.Equals("Auto", StringComparison.OrdinalIgnoreCase);
-
-        if (shouldUseRegion)
+        if (!string.IsNullOrEmpty(selectedRegion) &&
+            !selectedRegion.Equals("Auto", StringComparison.OrdinalIgnoreCase))
         {
-            App.Logger.Debug($"User selected specific region: {selectedRegion}, sort order: {sortOrder}");
-
-            using var selectedRegionFetcher = new Integrations.RobloxServerFetcher();
-            string? selectedRegionCookie = await selectedRegionFetcher.ResolveCookieAsync();
-            if (string.IsNullOrEmpty(selectedRegionCookie))
-                throw new HttpRequestException("Could not obtain a valid .ROBLOSECURITY cookie");
+            App.Logger.Debug($"User selected specific region: {selectedRegion}");
 
             SetStatus(string.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_Status_SearchingServers, selectedRegion));
 
-            var selectedRegionResult = await selectedRegionFetcher.FindBestServerInSelectedRegionAsync(
+            using var fetcher = new Integrations.RobloxServerFetcher();
+            var result = await fetcher.FindBestServerInSelectedRegionAsync(
                 (long)_joinData.PlaceId!,
                 selectedRegion,
-                sortOrder,
-                App.Settings.Prop.MaxServerCheck,
-                cookie: selectedRegionCookie,
                 cancellationToken: cancellationToken);
 
-            if (selectedRegionResult.Found)
+            if (result.Found)
             {
-                App.Logger.Info($"Found server in selected region {selectedRegion}: {selectedRegionResult.ServerId} (players: {selectedRegionResult.Players})");
-                return selectedRegionResult.ServerId!;
+                App.Logger.Info($"Found server in selected region {selectedRegion}: {result.ServerId}");
+                return result.ServerId!;
             }
 
             App.Logger.Info($"No servers found in selected region {selectedRegion}. Falling back to Auto mode.");
@@ -823,7 +812,9 @@ internal partial class Bootstrapper : IDisposable
 
         SetStatus(string.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_Status_FindingTopRegions, App.Settings.Prop.BestRegionAmounts));
 
-        var topRegions = await autoFetcher.GetClosestRegionsForAutoModeAsync(App.Settings.Prop.BestRegionAmounts, cancellationToken);
+        var topRegions = await autoFetcher.GetClosestRegionsForAutoModeAsync(
+            App.Settings.Prop.BestRegionAmounts,
+            cancellationToken);
 
         if (cancellationToken.IsCancellationRequested)
             return "";
@@ -831,74 +822,21 @@ internal partial class Bootstrapper : IDisposable
         if (topRegions.Count == 0)
             throw new HttpRequestException("No regions found from datacenter list");
 
-        if (!string.IsNullOrEmpty(_joinData.JobId))
-        {
-            string? defaultRegion = await GetServerRegionAsync(_joinData.JobId, (long)_joinData.PlaceId!, cancellationToken);
-            if (defaultRegion != null &&
-                defaultRegion.Equals(topRegions[0], StringComparison.OrdinalIgnoreCase))
-            {
-                App.Logger.Info($"Default server is already in the closest region. Keeping it.");
-                return _joinData.JobId;
-            }
-        }
-
         SetStatus(Strings.Bootstrapper_Status_SearchingNearbyServers);
-        string? autoCookie = await autoFetcher.ResolveCookieAsync();
-        if (string.IsNullOrEmpty(autoCookie))
-            throw new HttpRequestException("Could not obtain a valid .ROBLOSECURITY cookie");
 
         var autoResult = await autoFetcher.FindBestServerInRegionAsync(
             (long)_joinData.PlaceId!,
             topRegions,
-            "BestLatency",
-            App.Settings.Prop.MaxServerCheck,
-            cookie: autoCookie,
             cancellationToken: cancellationToken);
 
         if (autoResult.Found)
         {
-            App.Logger.Info($"Selected best server in {autoResult.Region} (rank {autoResult.Rank}, players: {autoResult.Players})");
+            App.Logger.Info($"Selected best server in {autoResult.Region} (rank {autoResult.Rank})");
             return autoResult.ServerId!;
         }
 
         App.Logger.Warn("No server found in any of the top regions.");
         return "";
-    }
-
-    private static async Task<string?> GetServerRegionAsync(string jobId, long placeId, CancellationToken cancellationToken = default)
-    {
-        using var fetcher = new Integrations.RobloxServerFetcher();
-        string? cookie = await fetcher.ResolveCookieAsync();
-        if (string.IsNullOrEmpty(cookie))
-            return null;
-
-        var datacentersResult = await fetcher.GetDatacentersAsync(cancellationToken);
-        if (datacentersResult == null)
-            return null;
-
-        var url = UrlBuilder.BuildApiUrl("gamejoin", "v1/join-game-instance");
-        using var request = new HttpRequestMessage(HttpMethod.Post, url);
-        request.Headers.Add("Cookie", $".ROBLOSECURITY={cookie}");
-        request.Content = new StringContent(
-            JsonSerializer.Serialize(new { placeId, isTeleport = false, gameId = jobId, gameJoinAttemptId = jobId }),
-            Encoding.UTF8,
-            "application/json"
-        );
-
-        var response = await App.HttpClient.SendAsync(request, cancellationToken);
-        if (!response.IsSuccessStatusCode)
-            return null;
-
-        string json = await response.Content.ReadAsStringAsync(cancellationToken);
-        using var doc = JsonDocument.Parse(json);
-
-        if (doc.RootElement.TryGetProperty("DataCenterId", out var dcElem) && dcElem.TryGetInt32(out int dcId))
-        {
-            var (_, dcMap) = datacentersResult.Value;
-            if (dcMap.TryGetValue(dcId, out string? region))
-                return region;
-        }
-        return null;
     }
 
     private async Task StartRoblox()
@@ -3744,7 +3682,7 @@ internal partial class Bootstrapper : IDisposable
         Regex[]? compiledFilters = null;
         if (!string.IsNullOrEmpty(fileFilter))
         {
-            compiledFilters = fileFilter.Split(';').Select(p => new Regex(p, RegexOptions.Compiled)).ToArray();
+            compiledFilters = [.. fileFilter.Split(';').Select(p => new Regex(p, RegexOptions.Compiled))];
         }
 
         await Task.Run(async () =>

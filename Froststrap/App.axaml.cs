@@ -275,7 +275,7 @@ internal partial class App : Application
         if (!OperatingSystem.IsWindows()) return;
         Logger.Debug("Verifying AUMID creation");
 
-        string iconPath = ExtractIcon("IconFroststrap.ico", "IconFroststrap.ico");
+        string iconPath = ExtractIcon("IconFroststrap.ico", "Froststrap.ico");
 
         const string aumidKeyPath = @"Software\Classes\AppUserModelId\xyz.froststrap.desktop";
         using var baseKey = Registry.CurrentUser;

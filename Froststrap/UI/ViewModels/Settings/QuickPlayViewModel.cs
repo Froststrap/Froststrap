@@ -316,7 +316,6 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
                 bool success = await fetcher.JoinBestServerAsync(
                     item.PlaceId,
                     App.Settings.Prop.BestRegionAmounts,
-                    App.Settings.Prop.MaxServerCheck,
                     showConfirmation: false
                 );
 

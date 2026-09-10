@@ -1,9 +1,4 @@
-﻿// SPDX-FileCopyrightText: 2026 Froststrap
-// Copyright (C) Froststrap Team
-//
-// SPDX-License-Identifier: MPL-2.0
-
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Net.Http.Headers;
 
 namespace Froststrap.Integrations
@@ -13,29 +8,32 @@ namespace Froststrap.Integrations
         private readonly HttpClient _client;
         private Dictionary<int, string>? _datacenterIdToRegion;
         private List<string>? _regionList;
+        private List<DatacenterEntry>? _datacenterEntries;
+
+        private IPInfoResponse? _ipinfoCache;
+        private DateTime _ipinfoCachedAtUtc;
 
         private readonly string _serverCacheFilePath = Path.Combine(Paths.Cache, "server_cache.json");
         private readonly ConcurrentDictionary<long, ConcurrentDictionary<string, ServerInstance>> _serverCache = [];
 
         private const string DatacenterUrl = "https://apis.rovalra.com/v1/datacenters/list";
+        private const string RegionServersUrl = "https://apis.rovalra.com/v1/servers/region";
+        private const string IpInfoUrl = "https://ipinfo.io/json";
+
+        private static readonly TimeSpan IpInfoCacheDuration = TimeSpan.FromHours(6);
 
         private bool _disposed;
-
-        internal class RegionDistance
-        {
-            public string Region { get; set; } = "";
-            public double DistanceKm { get; set; }
-        }
 
         internal class ServerSelectionResult
         {
             public string? ServerId { get; set; }
             public string? Region { get; set; }
             public int Rank { get; set; }
-            public int Players { get; set; }
-            public int MaxPlayers { get; set; }
+            public DateTime? FirstSeen { get; set; }
             public bool Found => !string.IsNullOrEmpty(ServerId);
         }
+
+        private static readonly char[] _regionSeparators = [','];
 
         public RobloxServerFetcher()
         {
@@ -71,29 +69,292 @@ namespace Froststrap.Integrations
             }
         }
 
-        public async Task<DateTime?> GetServerUptime(string jobId, long placeId)
+        private static string BuildRegionKey(string? city, string? country)
         {
+            if (string.IsNullOrWhiteSpace(city) && string.IsNullOrWhiteSpace(country))
+                return "Unknown";
+
+            return $"{city}, {country}".Trim().Trim(',', ' ');
+        }
+
+        public async Task<(List<string> regions, Dictionary<int, string> datacenterMap)?> GetDatacentersAsync(CancellationToken cancellationToken = default)
+        {
+            if (_datacenterIdToRegion != null && _regionList != null)
+                return (_regionList, _datacenterIdToRegion);
+
             try
             {
-                var response = await _client.GetAsync(new Uri($"https://apis.rovalra.com/v1/servers/details?place_id={placeId}&server_ids={jobId}"));
+                cancellationToken.ThrowIfCancellationRequested();
 
-                if (response.IsSuccessStatusCode)
+                var json = await _client.GetStringAsync(new Uri(DatacenterUrl), cancellationToken);
+                var datacenterEntries = JsonSerializer.Deserialize<List<DatacenterEntry>>(json);
+
+                if (datacenterEntries == null) return null;
+
+                var map = new Dictionary<int, string>();
+                var regions = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+                foreach (var entry in datacenterEntries)
                 {
-                    var content = await response.Content.ReadAsStringAsync();
-                    var serverTimeRaw = JsonSerializer.Deserialize<RoValraTimeResponse>(content);
+                    string regionKey = BuildRegionKey(entry.Location?.City, entry.Location?.Country);
+                    regions.Add(regionKey);
 
-                    if (serverTimeRaw?.Servers is { Count: > 0 })
+                    foreach (var id in entry.DataCenterIds)
                     {
-                        return serverTimeRaw.Servers[0].FirstSeen;
+                        map[id] = regionKey;
                     }
                 }
+
+                _regionList = [.. regions.OrderBy(r => r, StringComparer.OrdinalIgnoreCase)];
+                _datacenterIdToRegion = map;
+                _datacenterEntries = datacenterEntries;
+
+                return (_regionList, _datacenterIdToRegion);
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
             }
             catch (Exception ex)
             {
-                App.Logger.Error($"Unhandled exception: {ex}");
+                App.Logger.Error("Unhandled exception:", ex);
+                return null;
+            }
+        }
+
+        private static (string? city, string? country) ParseRegionString(string region)
+        {
+            if (string.IsNullOrEmpty(region))
+                return (null, null);
+
+            var parts = region.Split(_regionSeparators, StringSplitOptions.RemoveEmptyEntries);
+            if (parts.Length == 2)
+            {
+                string city = parts[0].Trim();
+                string country = parts[1].Trim();
+                return (city, country);
             }
 
-            return null;
+            if (region.Length == 2 && region.All(char.IsLetter))
+                return (null, region.ToUpperInvariant());
+
+            return (null, null);
+        }
+
+        public async Task<(List<ServerInstance> Servers, int? NextCursor)> FetchServersByRegionAsync(
+            long placeId, string region, int? cursor = null, CancellationToken cancellationToken = default)
+        {
+            const int limit = 100;
+            var results = new List<ServerInstance>();
+
+            try
+            {
+                var (city, country) = ParseRegionString(region);
+                var query = $"place_id={placeId}&limit={limit}";
+
+                if (!string.IsNullOrEmpty(country))
+                    query += $"&country={country}";
+                if (!string.IsNullOrEmpty(city))
+                    query += $"&city={Uri.EscapeDataString(city)}";
+
+                if (string.IsNullOrEmpty(country) && string.IsNullOrEmpty(city) && !string.IsNullOrEmpty(region))
+                    query += $"&region={Uri.EscapeDataString(region)}";
+
+                if (cursor.HasValue)
+                    query += $"&cursor={cursor.Value}";
+
+                var url = new UriBuilder(RegionServersUrl) { Query = query }.Uri;
+
+                var response = await _client.GetAsync(url, cancellationToken);
+                if (!response.IsSuccessStatusCode) return (results, null);
+
+                var content = await response.Content.ReadAsStringAsync(cancellationToken);
+                var regionResponse = JsonSerializer.Deserialize<RoValraRegionResponse>(content);
+
+                if (regionResponse?.Servers == null) return (results, null);
+
+                foreach (var s in regionResponse.Servers)
+                {
+                    string displayRegion = ResolveRegionDisplay(s.DatacenterId, s.City, s.RegionCode, s.Country);
+
+                    var server = new ServerInstance
+                    {
+                        Id = s.ServerId!,
+                        Region = displayRegion,
+                        DataCenterId = s.DatacenterId,
+                        FirstSeen = s.FirstSeen,
+                        Playing = 0,
+                        MaxPlayers = 0,
+                        PlayerTokens = []
+                    };
+                    results.Add(server);
+                }
+
+                var placeCache = _serverCache.GetOrAdd(placeId, _ => []);
+                foreach (var server in results)
+                {
+                    if (server.Region != "Unknown")
+                        placeCache[server.Id] = server;
+                }
+
+                return (results, regionResponse.NextCursor);
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error($"Error fetching servers for region {region}: {ex}");
+                return (results, null);
+            }
+        }
+
+        private string ResolveRegionDisplay(int datacenterId, string? city, string? regionCode, string? country)
+        {
+            if (_datacenterIdToRegion != null && _datacenterIdToRegion.TryGetValue(datacenterId, out var cachedRegion))
+                return cachedRegion;
+
+            if (!string.IsNullOrEmpty(city) && !string.IsNullOrEmpty(regionCode))
+                return $"{city}, {regionCode}";
+
+            if (!string.IsNullOrEmpty(country))
+                return country;
+
+            return "Unknown";
+        }
+
+        public async Task<List<ServerInstance>> FetchServersForRegionsAsync(long placeId, List<string> regions, CancellationToken cancellationToken = default)
+        {
+            var allServers = new List<ServerInstance>();
+            var seenIds = new HashSet<string>();
+
+            foreach (var region in regions)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                var (servers, _) = await FetchServersByRegionAsync(placeId, region, null, cancellationToken);
+
+                foreach (var s in servers)
+                {
+                    if (seenIds.Add(s.Id))
+                        allServers.Add(s);
+                }
+            }
+
+            return allServers;
+        }
+
+        public async Task<FetchResult> FetchServerInstancesAsync(long placeId, string cursor = "", string? optionalCookie = null, CancellationToken cancellationToken = default)
+        {
+            string? roblosecurity = !string.IsNullOrWhiteSpace(optionalCookie) ? optionalCookie : await ResolveCookieAsync();
+            if (string.IsNullOrWhiteSpace(roblosecurity)) return new FetchResult();
+
+            if (_datacenterIdToRegion == null) await GetDatacentersAsync(cancellationToken);
+
+            var baseUri = UrlBuilder.BuildApiUrl("games", $"v2/games/{placeId}/servers/Public", secure: true);
+            var url = new UriBuilder(baseUri)
+            {
+                Query = $"sortOrder=Desc&excludeFullGames=true&limit=100&orderBy=BestLatency&cursor={cursor}"
+            }.Uri;
+
+            using var req = new HttpRequestMessage(HttpMethod.Get, url);
+            req.Headers.Add("Cookie", $".ROBLOSECURITY={roblosecurity}");
+
+            var response = await _client.SendAsync(req, cancellationToken).ConfigureAwait(false);
+            if (!response.IsSuccessStatusCode) return new FetchResult();
+
+            using var jsonDoc = JsonDocument.Parse(await response.Content.ReadAsStringAsync(cancellationToken));
+            if (!jsonDoc.RootElement.TryGetProperty("data", out var dataElement)) return new FetchResult();
+
+            string nextCursor = jsonDoc.RootElement.TryGetProperty("nextPageCursor", out var cElem) ? cElem.GetString() ?? "" : "";
+
+            var instances = new ConcurrentBag<ServerInstance>();
+            var placeCache = _serverCache.GetOrAdd(placeId, _ => []);
+
+            var serverInfos = new List<(string jobId, int playing, int maxPlayers, List<string> playerTokens)>();
+            var serverIdsToFetch = new List<string>();
+
+            foreach (var serverElem in dataElement.EnumerateArray())
+            {
+                string jobId = serverElem.GetProperty("id").GetString() ?? "";
+                int playing = serverElem.GetProperty("playing").GetInt32();
+                int maxPlayers = serverElem.GetProperty("maxPlayers").GetInt32();
+
+                var playerTokensElement = serverElem.GetProperty("playerTokens");
+                var playerTokens = playerTokensElement.EnumerateArray()
+                                      .Select(x => x.GetString() ?? "")
+                                      .Where(s => !string.IsNullOrEmpty(s))
+                                      .ToList();
+
+                if (playing >= maxPlayers) continue;
+
+                if (placeCache.TryGetValue(jobId, out var cached) && cached.Region != "Unknown")
+                {
+                    var refreshed = new ServerInstance
+                    {
+                        Id = jobId,
+                        Playing = playing,
+                        MaxPlayers = maxPlayers,
+                        Region = cached.Region,
+                        DataCenterId = cached.DataCenterId,
+                        FirstSeen = cached.FirstSeen,
+                        PlayerTokens = playerTokens
+                    };
+
+                    placeCache[jobId] = refreshed;
+                    instances.Add(refreshed);
+                    continue;
+                }
+
+                serverInfos.Add((jobId, playing, maxPlayers, playerTokens));
+                serverIdsToFetch.Add(jobId);
+            }
+
+            var regionTasks = new List<Task<(string jobId, int? dcId)>>();
+            foreach (var (jobId, playing, maxPlayers, _) in serverInfos)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                var regionTask = FetchServerRegionAsync(placeId, jobId, roblosecurity, cancellationToken);
+                regionTasks.Add(regionTask);
+            }
+
+            var regionResults = await Task.WhenAll(regionTasks);
+
+            Dictionary<string, DateTime?> uptimeResults = null!;
+            if (serverIdsToFetch.Count > 0)
+            {
+                uptimeResults = await GetServerUptimesBatchAsync(serverIdsToFetch, placeId, cancellationToken);
+            }
+
+            for (int i = 0; i < serverInfos.Count; i++)
+            {
+                var (jobId, playing, maxPlayers, playerTokens) = serverInfos[i];
+                var (_, dcId) = regionResults[i];
+
+                string region = (dcId.HasValue &&
+                                 _datacenterIdToRegion != null &&
+                                 _datacenterIdToRegion.TryGetValue(dcId.Value, out var mapped))
+                    ? mapped
+                    : "Unknown";
+
+                DateTime? uptime = uptimeResults != null && uptimeResults.TryGetValue(jobId, out var up) ? up : null;
+
+                var server = new ServerInstance
+                {
+                    Id = jobId,
+                    Playing = playing,
+                    MaxPlayers = maxPlayers,
+                    Region = region,
+                    DataCenterId = dcId,
+                    FirstSeen = uptime,
+                    PlayerTokens = playerTokens
+                };
+
+                if (region != "Unknown") placeCache[jobId] = server;
+                instances.Add(server);
+            }
+
+            return new FetchResult
+            {
+                Servers = [.. instances],
+                NextCursor = nextCursor
+            };
         }
 
         public async Task<Dictionary<string, DateTime?>> GetServerUptimesBatchAsync(List<string> jobIds, long placeId, CancellationToken cancellationToken = default)
@@ -153,50 +414,22 @@ namespace Froststrap.Integrations
             }
         }
 
-        public async Task<(List<string> regions, Dictionary<int, string> datacenterMap)?> GetDatacentersAsync(CancellationToken cancellationToken = default)
+        private async Task<(string jobId, int? dcId)> FetchServerRegionAsync(long placeId, string jobId, string roblosecurity, CancellationToken cancellationToken)
         {
-            if (_datacenterIdToRegion != null && _regionList != null)
-                return (_regionList, _datacenterIdToRegion);
-
             try
             {
-                cancellationToken.ThrowIfCancellationRequested();
+                var joinResp = await SendJoinRequestWithRetriesAsync(placeId, jobId, roblosecurity, cancellationToken);
+                using var parsed = JsonDocument.Parse(await joinResp.Content.ReadAsStringAsync(cancellationToken));
 
-                var json = await _client.GetStringAsync(new Uri(DatacenterUrl), cancellationToken);
-                var datacenterEntries = JsonSerializer.Deserialize<List<DatacenterEntry>>(json);
+                int? dcId = null;
+                if (TryExtractDataCenterId(parsed.RootElement, out int extracted))
+                    dcId = extracted;
 
-                if (datacenterEntries == null) return null;
-
-                var map = new Dictionary<int, string>();
-                var regions = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-
-                foreach (var entry in datacenterEntries)
-                {
-                    string regionKey = string.IsNullOrWhiteSpace(entry.Location?.City) && string.IsNullOrWhiteSpace(entry.Location?.Country)
-                        ? "Unknown"
-                        : $"{entry.Location.City}, {entry.Location.Country}".Trim().Trim(',', ' ');
-
-                    regions.Add(regionKey);
-
-                    foreach (var id in entry.DataCenterIds)
-                    {
-                        map[id] = regionKey;
-                    }
-                }
-
-                _regionList = [.. regions.OrderBy(r => r, StringComparer.OrdinalIgnoreCase)];
-                _datacenterIdToRegion = map;
-
-                return (_regionList, _datacenterIdToRegion);
+                return (jobId, dcId);
             }
-            catch (OperationCanceledException)
+            catch
             {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                App.Logger.Error("Unhandled exception:", ex);
-                return null;
+                return (jobId, null);
             }
         }
 
@@ -283,23 +516,23 @@ namespace Froststrap.Integrations
             }
         }
 
-        private static async Task<string?> GetCookieFromAccountManagerAsync()
+        private static Task<string?> GetCookieFromAccountManagerAsync()
         {
             try
             {
                 if (AccountManager.Shared?.ActiveAccount != null)
                 {
-                    return AccountManager.Shared.ActiveAccount.SecurityToken;
+                    return Task.FromResult<string?>(AccountManager.Shared.ActiveAccount.SecurityToken);
                 }
             }
             catch (Exception ex)
             {
                 App.Logger.Error("Unhandled exception:", ex);
             }
-            return null;
+            return Task.FromResult<string?>(null);
         }
 
-        private static async Task<string?> GetCookieFromCookiesManagerAsync()
+        private static Task<string?> GetCookieFromCookiesManagerAsync()
         {
             try
             {
@@ -308,7 +541,7 @@ namespace Froststrap.Integrations
                     var field = typeof(CookiesManager).GetField("AuthCookie", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
                     if (field != null)
                     {
-                        return field.GetValue(App.Cookies) as string;
+                        return Task.FromResult(field.GetValue(App.Cookies) as string);
                     }
                 }
             }
@@ -316,7 +549,7 @@ namespace Froststrap.Integrations
             {
                 App.Logger.Error("Unhandled exception:", ex);
             }
-            return null;
+            return Task.FromResult<string?>(null);
         }
 
         public async Task<string?> ResolveCookieAsync()
@@ -335,135 +568,35 @@ namespace Froststrap.Integrations
                 return cookiesManagerCookie;
             }
 
-            App.Logger.Error("Failed to resolve any valid .ROBLOSECURITY cookie.");
+            App.Logger.Warn("No valid .ROBLOSECURITY cookie could be resolved.");
             return null;
         }
 
-        public async Task<FetchResult> FetchServerInstancesAsync(long placeId, string cursor = "", string sortOrder = "BestLatency", string? optionalCookie = null, CancellationToken cancellationToken = default)
-        {
-            string? roblosecurity = !string.IsNullOrWhiteSpace(optionalCookie) ? optionalCookie : await ResolveCookieAsync();
-            if (string.IsNullOrWhiteSpace(roblosecurity)) return new FetchResult();
-
-            if (_datacenterIdToRegion == null) await GetDatacentersAsync(cancellationToken);
-
-            var baseUri = UrlBuilder.BuildApiUrl("games", $"v2/games/{placeId}/servers/Public", secure: true);
-            var url = new UriBuilder(baseUri)
-            {
-                Query = $"sortOrder=Desc&excludeFullGames=true&limit=100&orderBy={sortOrder}&cursor={cursor}"
-            }.Uri;
-
-            using var req = new HttpRequestMessage(HttpMethod.Get, url);
-            req.Headers.Add("Cookie", $".ROBLOSECURITY={roblosecurity}");
-
-            var response = await _client.SendAsync(req, cancellationToken).ConfigureAwait(false);
-            if (!response.IsSuccessStatusCode) return new FetchResult();
-
-            using var jsonDoc = JsonDocument.Parse(await response.Content.ReadAsStringAsync(cancellationToken));
-            if (!jsonDoc.RootElement.TryGetProperty("data", out var dataElement)) return new FetchResult();
-
-            string nextCursor = jsonDoc.RootElement.TryGetProperty("nextPageCursor", out var cElem) ? cElem.GetString() ?? "" : "";
-
-            var instances = new ConcurrentBag<ServerInstance>();
-            var placeCache = _serverCache.GetOrAdd(placeId, _ => []);
-
-            var serverInfos = new List<(string jobId, int playing, int maxPlayers, List<string> playerTokens)>();
-            var serverIdsToFetch = new List<string>();
-
-            foreach (var serverElem in dataElement.EnumerateArray())
-            {
-                string jobId = serverElem.GetProperty("id").GetString() ?? "";
-                int playing = serverElem.GetProperty("playing").GetInt32();
-                int maxPlayers = serverElem.GetProperty("maxPlayers").GetInt32();
-
-                var playerTokensElement = serverElem.GetProperty("playerTokens");
-                var playerTokens = playerTokensElement.EnumerateArray()
-                                      .Select(x => x.GetString() ?? "")
-                                      .Where(s => !string.IsNullOrEmpty(s))
-                                      .ToList();
-
-                if (playing >= maxPlayers) continue;
-
-                if (placeCache.TryGetValue(jobId, out var cached) && cached.Region != "Unknown")
-                {
-                    instances.Add(cached);
-                    continue;
-                }
-
-                serverInfos.Add((jobId, playing, maxPlayers, playerTokens));
-                serverIdsToFetch.Add(jobId);
-            }
-
-            var regionTasks = new List<Task<(string jobId, int? dcId)>>();
-            var uptimeTasks = new Dictionary<string, Task<DateTime?>>();
-
-            foreach (var (jobId, playing, maxPlayers, _) in serverInfos)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-
-                var regionTask = FetchServerRegionAsync(placeId, jobId, roblosecurity, cancellationToken);
-                regionTasks.Add(regionTask);
-            }
-
-            var regionResults = await Task.WhenAll(regionTasks);
-
-            Dictionary<string, DateTime?> uptimeResults = null!;
-            if (serverIdsToFetch.Count > 0)
-            {
-                uptimeResults = await GetServerUptimesBatchAsync(serverIdsToFetch, placeId, cancellationToken);
-            }
-
-            for (int i = 0; i < serverInfos.Count; i++)
-            {
-                var (jobId, playing, maxPlayers, playerTokens) = serverInfos[i];
-                var (_, dcId) = regionResults[i];
-
-                string region = (dcId.HasValue && _datacenterIdToRegion!.TryGetValue(dcId.Value, out var mapped)) ? mapped : "Unknown";
-                DateTime? uptime = uptimeResults != null && uptimeResults.TryGetValue(jobId, out var up) ? up : null;
-
-                var server = new ServerInstance
-                {
-                    Id = jobId,
-                    Playing = playing,
-                    MaxPlayers = maxPlayers,
-                    Region = region,
-                    DataCenterId = dcId,
-                    FirstSeen = uptime,
-                    PlayerTokens = playerTokens
-                };
-
-                if (region != "Unknown") placeCache[jobId] = server;
-                instances.Add(server);
-            }
-
-            return new FetchResult
-            {
-                Servers = [.. instances],
-                NextCursor = nextCursor
-            };
-        }
-
-        private async Task<(string jobId, int? dcId)> FetchServerRegionAsync(long placeId, string jobId, string roblosecurity, CancellationToken cancellationToken)
+        private async Task<bool> IsServerAliveAsync(long placeId, string jobId, string roblosecurity, CancellationToken cancellationToken)
         {
             try
             {
-                var joinResp = await SendJoinRequestWithRetriesAsync(placeId, jobId, roblosecurity, cancellationToken);
-                using var parsed = JsonDocument.Parse(await joinResp.Content.ReadAsStringAsync(cancellationToken));
+                using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+                cts.CancelAfter(TimeSpan.FromSeconds(2));
 
-                int? dcId = null;
-                if (TryExtractDataCenterId(parsed.RootElement, out int extracted))
-                    dcId = extracted;
-
-                return (jobId, dcId);
+                var response = await SendJoinRequestWithRetriesAsync(placeId, jobId, roblosecurity, cts.Token);
+                return response.StatusCode != HttpStatusCode.Unauthorized &&
+                       response.StatusCode != HttpStatusCode.Forbidden &&
+                       (response.IsSuccessStatusCode || (int)response.StatusCode == 429);
+            }
+            catch (OperationCanceledException)
+            {
+                return false;
             }
             catch
             {
-                return (jobId, null);
+                return false;
             }
         }
 
-        public static double Deg2Rad(double deg) => deg * (Math.PI / 180.0);
+        private static double Deg2Rad(double deg) => deg * (Math.PI / 180.0);
 
-        public static double GetDistance(double lat1, double lon1, double lat2, double lon2)
+        private static double GetDistance(double lat1, double lon1, double lat2, double lon2)
         {
             const double R = 6371;
             double dLat = Deg2Rad(lat2 - lat1);
@@ -475,37 +608,51 @@ namespace Froststrap.Integrations
             return R * c;
         }
 
+        private async Task<IPInfoResponse?> GetIpInfoCachedAsync(CancellationToken cancellationToken)
+        {
+            if (_ipinfoCache != null && DateTime.UtcNow - _ipinfoCachedAtUtc < IpInfoCacheDuration)
+                return _ipinfoCache;
+
+            try
+            {
+                var ipinfoJson = await _client.GetStringAsync(new Uri(IpInfoUrl), cancellationToken);
+                _ipinfoCache = JsonSerializer.Deserialize<IPInfoResponse>(ipinfoJson);
+                _ipinfoCachedAtUtc = DateTime.UtcNow;
+                return _ipinfoCache;
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error("Failed to resolve IP info:", ex);
+                return _ipinfoCache;
+            }
+        }
+
         public async Task<List<string>> GetClosestRegionsForAutoModeAsync(int topCount, CancellationToken cancellationToken = default)
         {
             try
             {
                 var datacentersResult = await GetDatacentersAsync(cancellationToken);
-                if (datacentersResult == null)
+                if (datacentersResult == null || _datacenterEntries == null || _datacenterEntries.Count == 0)
                     return [];
 
-                var (_, dcMap) = datacentersResult.Value;
-
-                using var httpClient = new HttpClient();
-                httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("Froststrap/1.0");
-                var ipinfoJson = await httpClient.GetStringAsync(new Uri("https://ipinfo.io/json"), cancellationToken);
-                var ipinfo = JsonSerializer.Deserialize<IPInfoResponse>(ipinfoJson);
-
+                var ipinfo = await GetIpInfoCachedAsync(cancellationToken);
                 if (string.IsNullOrEmpty(ipinfo?.Loc))
                     return [];
 
                 string[] location = ipinfo.Loc.Split(',');
-                double userLat = double.Parse(location[0], CultureInfo.InvariantCulture);
-                double userLon = double.Parse(location[1], CultureInfo.InvariantCulture);
+                if (location.Length < 2) return [];
 
-                var datacentersJson = await httpClient.GetStringAsync(new Uri("https://apis.rovalra.com/v1/datacenters/list"), cancellationToken);
-                var datacenters = JsonSerializer.Deserialize<List<DatacenterEntry>>(datacentersJson);
-
-                if (datacenters == null || datacenters.Count == 0)
+                if (!double.TryParse(location[0], NumberStyles.Float, CultureInfo.InvariantCulture, out double userLat) ||
+                    !double.TryParse(location[1], NumberStyles.Float, CultureInfo.InvariantCulture, out double userLon))
                     return [];
 
-                var regionDistance = new Dictionary<string, double>(StringComparer.OrdinalIgnoreCase);
+                var regionDistances = new Dictionary<string, double>(StringComparer.OrdinalIgnoreCase);
 
-                foreach (var dc in datacenters)
+                foreach (var dc in _datacenterEntries)
                 {
                     if (dc.Location == null || dc.Location.LatLong == null || dc.Location.LatLong.Length < 2)
                         continue;
@@ -516,35 +663,26 @@ namespace Froststrap.Integrations
 
                     double distance = GetDistance(userLat, userLon, lat, lon);
 
-                    string? regionKey = null;
-                    foreach (var dcId in dc.DataCenterIds)
-                    {
-                        if (dcMap.TryGetValue(dcId, out string? region))
-                        {
-                            regionKey = region;
-                            break;
-                        }
-                    }
+                    string regionKey = BuildRegionKey(dc.Location.City, dc.Location.Country);
+                    if (string.IsNullOrEmpty(regionKey) || regionKey.Equals("Unknown", StringComparison.OrdinalIgnoreCase))
+                        continue;
 
-                    if (string.IsNullOrEmpty(regionKey))
-                    {
-                        regionKey = $"{dc.Location.City}, {dc.Location.Country}".TrimStart(',').Trim();
-                        if (string.IsNullOrEmpty(regionKey))
-                            regionKey = "Unknown";
-                    }
-
-                    if (!regionDistance.TryGetValue(regionKey, out double existingDistance) || distance < existingDistance)
-                        regionDistance[regionKey] = distance;
+                    if (!regionDistances.TryGetValue(regionKey, out double existingDistance) || distance < existingDistance)
+                        regionDistances[regionKey] = distance;
                 }
 
-                var closestRegions = regionDistance
+                var topRegions = regionDistances
                     .OrderBy(kvp => kvp.Value)
-                    .Take(topCount)
                     .Select(kvp => kvp.Key)
+                    .Take(topCount)
                     .ToList();
 
-                App.Logger.Info($"Top {closestRegions.Count} regions: {string.Join(", ", closestRegions)}");
-                return closestRegions;
+                App.Logger.Info($"Top {topRegions.Count} regions (by distance): {string.Join(", ", topRegions)}");
+                return topRegions;
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
             }
             catch (Exception ex)
             {
@@ -556,99 +694,69 @@ namespace Froststrap.Integrations
         public async Task<ServerSelectionResult> FindBestServerInRegionAsync(
             long placeId,
             List<string> topRegions,
-            string sortOrder = "BestLatency",
-            int maxServerCheck = 100,
-            int maxPages = 5,
-            string? cookie = null,
             CancellationToken cancellationToken = default)
         {
             try
             {
+                App.Logger.Info($"Searching in top {topRegions.Count} regions: {string.Join(", ", topRegions)}");
+
+                string? cookie = await ResolveCookieAsync();
                 if (string.IsNullOrEmpty(cookie))
                 {
-                    cookie = await ResolveCookieAsync();
-                    if (string.IsNullOrEmpty(cookie))
-                        return new ServerSelectionResult();
+                    App.Logger.Warn("No valid cookie for server liveliness checks.");
                 }
 
-                var datacentersResult = await GetDatacentersAsync(cancellationToken);
-                if (datacentersResult == null)
-                    return new ServerSelectionResult();
+                var allServers = await FetchServersForRegionsAsync(placeId, topRegions, cancellationToken);
+                var valid = allServers.Where(s => !string.IsNullOrEmpty(s.Region) && s.Region != "Unknown").ToList();
 
-                var (_, dcMap) = datacentersResult.Value;
+                if (valid.Count == 0)
+                    return new ServerSelectionResult();
 
                 var regionRank = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
                 for (int i = 0; i < topRegions.Count; i++)
                     regionRank[topRegions[i]] = i + 1;
 
-                App.Logger.Info($"Searching in top {topRegions.Count} regions: {string.Join(", ", topRegions)} with sort order: {sortOrder}");
-
-                string? nextCursor = null;
-                int serversChecked = 0;
-                int pagesFetched = 0;
-
-                var allServers = new List<ServerInstance>();
-
-                while (pagesFetched < maxPages && serversChecked < maxServerCheck)
-                {
-                    var result = await FetchServerInstancesAsync(placeId, nextCursor ?? "", sortOrder, cookie, cancellationToken);
-
-                    if (result?.Servers == null || result.Servers.Count == 0)
-                    {
-                        if (pagesFetched == 0 && string.IsNullOrEmpty(result?.NextCursor))
-                            break;
-
-                        if (!string.IsNullOrEmpty(result?.NextCursor))
-                        {
-                            await Task.Delay(500, cancellationToken);
-                            nextCursor = result.NextCursor;
-                            continue;
-                        }
-                        break;
-                    }
-
-                    foreach (var server in result.Servers)
-                    {
-                        if (serversChecked >= maxServerCheck) break;
-
-                        if (!server.DataCenterId.HasValue) continue;
-                        if (!dcMap.TryGetValue(server.DataCenterId.Value, out var serverRegion)) continue;
-                        if (server.Playing >= server.MaxPlayers) continue;
-                        if (!regionRank.TryGetValue(serverRegion, out _)) continue;
-
-                        allServers.Add(server);
-                        serversChecked++;
-                    }
-
-                    pagesFetched++;
-                    nextCursor = result.NextCursor;
-                    if (string.IsNullOrEmpty(nextCursor))
-                        break;
-
-                    await Task.Delay(100, cancellationToken);
-                }
-
-                App.Logger.Info($"Collected {allServers.Count} servers from {pagesFetched} pages");
-
-                if (allServers.Count == 0)
-                    return new ServerSelectionResult();
-
-                var sorted = allServers
-                    .OrderBy(s => regionRank[dcMap[s.DataCenterId!.Value]])
-                    .ThenBy(s => sortOrder == "OccupancyDesc" ? -s.Playing : s.Playing)
+                var sorted = valid
+                    .OrderBy(s => regionRank.TryGetValue(s.Region, out int rank) ? rank : int.MaxValue)
+                    .ThenBy(s => s.FirstSeen)
                     .ToList();
 
-                var best = sorted.First();
-                int bestRank = regionRank[dcMap[best.DataCenterId!.Value]];
-
-                return new ServerSelectionResult
+                if (!string.IsNullOrEmpty(cookie))
                 {
-                    ServerId = best.Id,
-                    Region = dcMap[best.DataCenterId.Value],
-                    Rank = bestRank,
-                    Players = best.Playing,
-                    MaxPlayers = best.MaxPlayers
-                };
+                    const int maxCheck = 10;
+                    int checkedCount = 0;
+                    foreach (var server in sorted)
+                    {
+                        if (checkedCount >= maxCheck) break;
+                        bool alive = await IsServerAliveAsync(placeId, server.Id, cookie, cancellationToken);
+                        if (alive)
+                        {
+                            int bestRank = regionRank.TryGetValue(server.Region, out int r) ? r : int.MaxValue;
+                            return new ServerSelectionResult
+                            {
+                                ServerId = server.Id,
+                                Region = server.Region,
+                                Rank = bestRank,
+                                FirstSeen = server.FirstSeen
+                            };
+                        }
+                        checkedCount++;
+                    }
+                    App.Logger.Warn("No alive server found among checked candidates.");
+                    return new ServerSelectionResult();
+                }
+                else
+                {
+                    var best = sorted.First();
+                    int bestRank = regionRank.TryGetValue(best.Region, out int r) ? r : int.MaxValue;
+                    return new ServerSelectionResult
+                    {
+                        ServerId = best.Id,
+                        Region = best.Region,
+                        Rank = bestRank,
+                        FirstSeen = best.FirstSeen
+                    };
+                }
             }
             catch (Exception ex)
             {
@@ -657,23 +765,9 @@ namespace Froststrap.Integrations
             }
         }
 
-        private static ServerInstance PickBestServer(List<ServerInstance> servers, string sortOrder)
-        {
-            if (sortOrder == "OccupancyDesc")
-                return servers.OrderByDescending(s => s.Playing).First();
-            else if (sortOrder == "OccupancyAsc")
-                return servers.OrderBy(s => s.Playing).First();
-            else
-                return servers.First();
-        }
-
         public async Task<ServerSelectionResult> FindBestServerInSelectedRegionAsync(
             long placeId,
             string selectedRegion,
-            string sortOrder = "BestLatency",
-            int maxServerCheck = 100,
-            int maxPages = 3,
-            string? cookie = null,
             CancellationToken cancellationToken = default)
         {
             try
@@ -681,73 +775,55 @@ namespace Froststrap.Integrations
                 if (string.IsNullOrEmpty(selectedRegion))
                     return new ServerSelectionResult();
 
+                App.Logger.Info($"Searching for servers in selected region: {selectedRegion}");
+
+                string? cookie = await ResolveCookieAsync();
                 if (string.IsNullOrEmpty(cookie))
                 {
-                    cookie = await ResolveCookieAsync();
-                    if (string.IsNullOrEmpty(cookie))
-                        return new ServerSelectionResult();
+                    App.Logger.Warn("No valid cookie for server liveliness checks.");
                 }
 
-                var datacentersResult = await GetDatacentersAsync(cancellationToken);
-                if (datacentersResult == null)
+                var (servers, _) = await FetchServersByRegionAsync(placeId, selectedRegion, null, cancellationToken);
+
+                if (servers.Count == 0)
                     return new ServerSelectionResult();
 
-                var (_, dcMap) = datacentersResult.Value;
+                var sorted = servers.OrderBy(s => s.FirstSeen).ToList();
 
-                App.Logger.Info($"Searching for servers in selected region: {selectedRegion} with sort order: {sortOrder}");
-
-                string? nextCursor = "";
-                int serversChecked = 0;
-                int pagesFetched = 0;
-
-                var allServers = new List<ServerInstance>();
-
-                while (!string.IsNullOrEmpty(nextCursor) && pagesFetched < maxPages && serversChecked < maxServerCheck)
+                if (!string.IsNullOrEmpty(cookie))
                 {
-                    var result = await FetchServerInstancesAsync(placeId, nextCursor, sortOrder, cookie, cancellationToken);
-
-                    if (result?.Servers == null || result.Servers.Count == 0)
+                    const int maxCheck = 10;
+                    int checkedCount = 0;
+                    foreach (var server in sorted)
                     {
-                        if (string.IsNullOrEmpty(nextCursor)) break;
-                        await Task.Delay(500, cancellationToken);
-                        continue;
+                        if (checkedCount >= maxCheck) break;
+                        bool alive = await IsServerAliveAsync(placeId, server.Id, cookie, cancellationToken);
+                        if (alive)
+                        {
+                            return new ServerSelectionResult
+                            {
+                                ServerId = server.Id,
+                                Region = server.Region,
+                                Rank = 1,
+                                FirstSeen = server.FirstSeen
+                            };
+                        }
+                        checkedCount++;
                     }
-
-                    foreach (var server in result.Servers)
-                    {
-                        if (serversChecked >= maxServerCheck) break;
-
-                        if (!server.DataCenterId.HasValue) continue;
-                        if (!dcMap.TryGetValue(server.DataCenterId.Value, out var serverRegion)) continue;
-                        if (server.Playing >= server.MaxPlayers) continue;
-
-                        if (!serverRegion.Equals(selectedRegion, StringComparison.OrdinalIgnoreCase))
-                            continue;
-
-                        allServers.Add(server);
-                        serversChecked++;
-                    }
-
-                    pagesFetched++;
-                    nextCursor = result.NextCursor;
-                    if (!string.IsNullOrEmpty(nextCursor))
-                        await Task.Delay(100, cancellationToken);
+                    App.Logger.Warn("No alive server found in selected region.");
+                    return new ServerSelectionResult();
                 }
-
-                App.Logger.Info($"Found {allServers.Count} servers in selected region from {pagesFetched} pages");
-
-                if (allServers.Count == 0)
-                    return new ServerSelectionResult();
-
-                var best = PickBestServer(allServers, sortOrder);
-                return new ServerSelectionResult
+                else
                 {
-                    ServerId = best.Id,
-                    Region = selectedRegion,
-                    Rank = 1,
-                    Players = best.Playing,
-                    MaxPlayers = best.MaxPlayers
-                };
+                    var best = sorted.First();
+                    return new ServerSelectionResult
+                    {
+                        ServerId = best.Id,
+                        Region = best.Region,
+                        Rank = 1,
+                        FirstSeen = best.FirstSeen
+                    };
+                }
             }
             catch (Exception ex)
             {
@@ -759,25 +835,12 @@ namespace Froststrap.Integrations
         public async Task<bool> JoinBestServerAsync(
             long placeId,
             int bestRegionAmounts = 3,
-            int maxServerCheck = 100,
             bool showConfirmation = true,
-            string? cookie = null,
             CancellationToken cancellationToken = default)
         {
             try
             {
-                string sortOrder = App.Settings.Prop.SelectedServerSortOrder ?? "BestLatency";
                 string selectedRegion = App.Settings.Prop.SelectedRegion ?? "";
-
-                if (string.IsNullOrEmpty(cookie))
-                {
-                    cookie = await ResolveCookieAsync();
-                    if (string.IsNullOrEmpty(cookie))
-                    {
-                        await Frontend.ShowMessageBox("No valid cookie found. Log in using account manager or turn on 'Froststrap Account Permission' to use this feature.", MessageBoxImage.Error);
-                        return false;
-                    }
-                }
 
                 if (!string.IsNullOrEmpty(selectedRegion) &&
                     !selectedRegion.Equals("Auto", StringComparison.OrdinalIgnoreCase))
@@ -785,18 +848,14 @@ namespace Froststrap.Integrations
                     var result = await FindBestServerInSelectedRegionAsync(
                         placeId,
                         selectedRegion,
-                        sortOrder,
-                        maxServerCheck,
-                        cookie: cookie,
-                        cancellationToken: cancellationToken);
+                        cancellationToken);
 
                     if (result.Found)
                     {
                         if (showConfirmation)
                         {
-                            string playerCount = $"{result.Players}/{result.MaxPlayers}";
                             var confirmResult = await Frontend.ShowMessageBox(
-                                $"Found server in {result.Region} with {playerCount} players.\nDo you want to join?",
+                                $"Found server in {result.Region}.\nDo you want to join?",
                                 MessageBoxImage.Question,
                                 MessageBoxButton.YesNo);
                             if (confirmResult != MessageBoxResult.Yes)
@@ -823,10 +882,7 @@ namespace Froststrap.Integrations
                 var autoResult = await FindBestServerInRegionAsync(
                     placeId,
                     topRegions,
-                    "BestLatency",
-                    maxServerCheck,
-                    cookie: cookie,
-                    cancellationToken: cancellationToken);
+                    cancellationToken);
 
                 if (!autoResult.Found)
                 {
@@ -836,9 +892,8 @@ namespace Froststrap.Integrations
 
                 if (showConfirmation)
                 {
-                    string playerCount = $"{autoResult.Players}/{autoResult.MaxPlayers}";
                     var confirmResult = await Frontend.ShowMessageBox(
-                        $"Found server in {autoResult.Region} with {playerCount} players.\nDo you want to join?",
+                        $"Found server in {autoResult.Region}.\nDo you want to join?",
                         MessageBoxImage.Question,
                         MessageBoxButton.YesNo);
                     if (confirmResult != MessageBoxResult.Yes)

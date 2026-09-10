@@ -241,7 +241,6 @@ namespace Froststrap.UI.Elements.ContextMenu
             await fetcher.JoinBestServerAsync(
                 ActivityWatcher.Data.PlaceId,
                 App.Settings.Prop.BestRegionAmounts,
-                App.Settings.Prop.MaxServerCheck,
                 showConfirmation: true
             );
         }

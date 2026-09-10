@@ -102,21 +102,6 @@ SPDX-License-Identifier: MPL-2.0
                 </controls:CardExpander.HeaderContent>
                 <StackPanel>
                     <controls:OptionControl
-                        Header="Sort Order"
-                        Description="Select how to serve the servers, could affect how fast it takes to find a server.">
-                        <ComboBox
-                            MinWidth="200"
-                            ItemsSource="{Binding SortOrderOptions}"
-                            SelectedItem="{Binding SelectedSortOrderItem, Mode=TwoWay}">
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Content}" />
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
-                    </controls:OptionControl>
-
-                    <controls:OptionControl
                         Header="{x:Static resources:Strings.Menu_Bootstrapper_PreferredRegion_Title}"
                         Description="{x:Static resources:Strings.Menu_Bootstrapper_PreferredRegion_Description}">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
@@ -129,27 +114,10 @@ SPDX-License-Identifier: MPL-2.0
                             <ComboBox
                                 MinWidth="200"
                                 ItemsSource="{Binding AvailableRegions}"
-                                SelectedItem="{Binding SelectedRegion, Mode=TwoWay}"
-                                IsEnabled="{Binding IsRegionSelectionEnabled}">
-                                <ComboBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding}" />
-                                    </DataTemplate>
-                                </ComboBox.ItemTemplate>
-                            </ComboBox>
+                                SelectedItem="{Binding SelectedRegion, Mode=TwoWay}" />
                         </StackPanel>
                     </controls:OptionControl>
-
-                    <controls:OptionControl
-                        Header="{x:Static resources:Strings.Menu_Bootstrapper_MaxServerCheck_Title}"
-                        Description="{x:Static resources:Strings.Menu_Bootstrapper_MaxServerCheck_Description}">
-                        <TextBox
-                            Width="200"
-                            Margin="8,0,0,0"
-                            Padding="10,5"
-                            Text="{Binding MaxServerCheck, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                    </controls:OptionControl>
-
+                    
                     <controls:OptionControl
                         Header="{x:Static resources:Strings.Menu_Bootstrapper_BestRegionAmount_Title}"
                         Description="{x:Static resources:Strings.Menu_Bootstrapper_BestRegionAmount_Description}">
