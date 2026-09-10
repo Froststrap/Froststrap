@@ -25,23 +25,23 @@ SPDX-License-Identifier: MPL-2.0
             <Grid ColumnDefinitions="*,*,*" ColumnSpacing="6">
                 <controls:CardAction
                     Grid.Column="0"
-                    Icon="ArrowRightToLine"
+                    Icon="Import"
                     Header="{x:Static resources:Strings.Menu_BottomButtons_ImportSettings}"
                     Command="{Binding ImportSettingsCommand}"
                     CommandParameter="{Binding $parent[UserControl]}" />
 
                 <controls:CardAction
                     Grid.Column="1"
+                    Icon="RotateCcw"
+                    Header="{x:Static resources:Strings.Menu_BottomButtons_ResetSettingsToDefault}"
+                    Command="{Binding ResetSettingsToDefaultCommand}" />
+
+                <controls:CardAction
+                    Grid.Column="2"
                     Icon="ArrowRightFromLine"
                     Header="{x:Static resources:Strings.Menu_BottomButtons_ExportSettings}"
                     Command="{Binding ExportSettingsCommand}"
                     CommandParameter="{Binding $parent[UserControl]}" />
-
-                <controls:CardAction
-                    Grid.Column="2"
-                    Icon="RotateCcw"
-                    Header="{x:Static resources:Strings.Menu_BottomButtons_ResetSettingsToDefault}"
-                    Command="{Binding ResetSettingsToDefaultCommand}" />
             </Grid>
 
             <Separator Margin="0,12,0,12" />

@@ -2,127 +2,91 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-using Froststrap.UI.ViewModels.Settings;
-
 namespace Froststrap.UI.ViewModels.Onboarding
 {
     internal class Page4ViewModel : NotifyPropertyChangedViewModel
     {
+        private bool _enableBetterMatchmaking;
+        private string _selectedRegion = "";
+        private int _bestRegionAmounts = 3;
         private List<string> _availableRegions = [];
         private bool _isLoadingRegions;
-        private string _selectedSortOrder;
-        private SortOrderComboBoxItem _selectedSortOrderItem;
 
         public Page4ViewModel()
         {
-            _selectedSortOrder = App.Settings.Prop.SelectedServerSortOrder ?? "BestLatency";
-            _selectedSortOrderItem = SortOrderOptions.FirstOrDefault(x => x.Tag == _selectedSortOrder)
-                                     ?? SortOrderOptions.First();
-            Task.Run(LoadAvailableRegionsAsync);
+            EnableBetterMatchmaking = App.Settings.Prop.EnableBetterMatchmaking;
+            SelectedRegion = App.Settings.Prop.SelectedRegion;
+            BestRegionAmounts = App.Settings.Prop.BestRegionAmounts;
+            _ = LoadAvailableRegionsAsync();
         }
 
         public bool EnableBetterMatchmaking
         {
-            get => App.Settings.Prop.EnableBetterMatchmaking;
+            get => _enableBetterMatchmaking;
             set
             {
-                App.Settings.Prop.EnableBetterMatchmaking = value;
-                OnPropertyChanged(nameof(EnableBetterMatchmaking));
+                if (SetProperty(ref _enableBetterMatchmaking, value))
+                {
+                    App.Settings.Prop.EnableBetterMatchmaking = value;
+                }
             }
-        }
-
-
-        public static int MaxServerCheck
-        {
-            get => App.Settings.Prop.MaxServerCheck;
-            set => App.Settings.Prop.MaxServerCheck = value;
-        }
-
-        public static int BestRegionAmounts
-        {
-            get => App.Settings.Prop.BestRegionAmounts;
-            set => App.Settings.Prop.BestRegionAmounts = value;
         }
 
         public string SelectedRegion
         {
-            get => App.Settings.Prop.SelectedRegion;
+            get => _selectedRegion;
             set
             {
-                App.Settings.Prop.SelectedRegion = value;
-                OnPropertyChanged(nameof(SelectedRegion));
+                if (SetProperty(ref _selectedRegion, value))
+                {
+                    App.Settings.Prop.SelectedRegion = value;
+                }
+            }
+        }
+
+        public int BestRegionAmounts
+        {
+            get => _bestRegionAmounts;
+            set
+            {
+                if (SetProperty(ref _bestRegionAmounts, value))
+                {
+                    App.Settings.Prop.BestRegionAmounts = value;
+                }
             }
         }
 
         public List<string> AvailableRegions
         {
             get => _availableRegions;
-            set
-            {
-                _availableRegions = value;
-                OnPropertyChanged(nameof(AvailableRegions));
-            }
+            set => SetProperty(ref _availableRegions, value);
         }
 
         public bool IsLoadingRegions
         {
             get => _isLoadingRegions;
-            set
-            {
-                _isLoadingRegions = value;
-                OnPropertyChanged(nameof(IsLoadingRegions));
-            }
+            set => SetProperty(ref _isLoadingRegions, value);
         }
-
-        public List<SortOrderComboBoxItem> SortOrderOptions { get; } =
-        [
-            new() { Content = Strings.Common_Auto, Tag = "BestLatency" },
-            new() { Content = Strings.Menu_RegionSelector_LargeServers, Tag = "OccupancyDesc" },
-            new() { Content = Strings.Menu_RegionSelector_SmallServers, Tag = "OccupancyAsc" }
-        ];
-
-        public string SelectedSortOrder
-        {
-            get => _selectedSortOrder;
-            set
-            {
-                if (_selectedSortOrder != value)
-                {
-                    _selectedSortOrder = value;
-                    App.Settings.Prop.SelectedServerSortOrder = value;
-                    OnPropertyChanged(nameof(SelectedSortOrder));
-                    OnPropertyChanged(nameof(IsRegionSelectionEnabled));
-                }
-            }
-        }
-
-        public SortOrderComboBoxItem SelectedSortOrderItem
-        {
-            get => _selectedSortOrderItem;
-            set
-            {
-                if (_selectedSortOrderItem != value)
-                {
-                    _selectedSortOrderItem = value;
-                    OnPropertyChanged(nameof(SelectedSortOrderItem));
-                    if (value != null)
-                        SelectedSortOrder = value.Tag;
-                }
-            }
-        }
-
-        public bool IsRegionSelectionEnabled => SelectedSortOrder != "BestLatency";
 
         private async Task LoadAvailableRegionsAsync()
         {
+            List<string> baseRegions;
+
+            var cacheResult = await LoadDatacentersFromCacheAsync();
+            if (cacheResult != null)
+            {
+                baseRegions = cacheResult.Value.regions;
+                AvailableRegions = BuildAvailableRegionsWithCurrent(baseRegions);
+                await SyncSelectedRegionAfterLoad();
+                return;
+            }
+
+            IsLoadingRegions = true;
+
             try
             {
-                IsLoadingRegions = true;
-
                 var datacenters = await Http.GetJson<List<DatacenterEntry>>(
                     new Uri("https://apis.rovalra.com/v1/datacenters/list"));
-
-                List<string> baseRegions = [];
 
                 if (datacenters != null && datacenters.Count > 0)
                 {
@@ -143,27 +107,53 @@ namespace Froststrap.UI.ViewModels.Onboarding
                         }
                     }
 
-                    baseRegions = regions.OrderBy(r => r, StringComparer.OrdinalIgnoreCase).ToList();
-                }
+                    baseRegions = [.. regions.OrderBy(r => r, StringComparer.OrdinalIgnoreCase)];
 
-                AvailableRegions = BuildAvailableRegionsWithCurrent(baseRegions);
+                    var map = new Dictionary<int, string>();
+                    foreach (var dc in datacenters)
+                    {
+                        string regionKey = string.IsNullOrWhiteSpace(dc.Location?.City) && string.IsNullOrWhiteSpace(dc.Location?.Country)
+                            ? "Unknown"
+                            : $"{dc.Location.City}, {dc.Location.Country}".Trim().Trim(',', ' ');
+                        foreach (var id in dc.DataCenterIds)
+                            map[id] = regionKey;
+                    }
+                    await SaveDatacentersToCacheAsync(map);
+                }
+                else
+                {
+                    baseRegions = [];
+                }
             }
             catch (Exception ex)
             {
-                App.Logger.Error(ex);
-                AvailableRegions = BuildAvailableRegionsWithCurrent([]);
+                App.Logger.Error("Unhandled exception: ", ex);
+
+                var stale = await LoadDatacentersFromCacheAsync(allowExpired: true);
+                if (stale != null)
+                {
+                    baseRegions = stale.Value.regions;
+                }
+                else
+                {
+                    baseRegions = [];
+                }
             }
             finally
             {
                 IsLoadingRegions = false;
             }
 
+            AvailableRegions = BuildAvailableRegionsWithCurrent(baseRegions);
             await SyncSelectedRegionAfterLoad();
         }
 
         private List<string> BuildAvailableRegionsWithCurrent(IEnumerable<string> baseRegions)
         {
-            var list = new List<string>();
+            var list = new List<string>
+            {
+                "Auto"
+            };
 
             foreach (var region in baseRegions)
             {
@@ -192,8 +182,7 @@ namespace Froststrap.UI.ViewModels.Onboarding
 
             string current = SelectedRegion;
 
-            if (string.Equals(current, "Auto", StringComparison.OrdinalIgnoreCase) ||
-                !AvailableRegions.Any(r => string.Equals(r?.Trim(), current?.Trim(), StringComparison.OrdinalIgnoreCase)))
+            if (!AvailableRegions.Any(r => string.Equals(r?.Trim(), current?.Trim(), StringComparison.OrdinalIgnoreCase)))
             {
                 SelectedRegion = AvailableRegions.FirstOrDefault() ?? string.Empty;
             }
@@ -213,6 +202,72 @@ namespace Froststrap.UI.ViewModels.Onboarding
                     SelectedRegion = original;
                 }
             }
+        }
+
+        private static string GetCachePath() => Path.Combine(Paths.Cache, "DataCentersCache.json");
+
+        private static async Task<(List<string> regions, Dictionary<int, string> datacenterMap)?> LoadDatacentersFromCacheAsync(bool allowExpired = false)
+        {
+            try
+            {
+                if (!File.Exists(GetCachePath())) return null;
+
+                var json = await File.ReadAllTextAsync(GetCachePath());
+                var cache = JsonSerializer.Deserialize<DatacentersCache>(json);
+
+                if (cache == null) return null;
+
+                if (!allowExpired && cache.LastUpdated < DateTime.UtcNow.AddDays(-7))
+                    return null;
+
+                var map = new Dictionary<int, string>();
+                var regions = new List<string>();
+
+                foreach (var kvp in cache.Regions)
+                {
+                    regions.Add(kvp.Key);
+                    foreach (var id in kvp.Value)
+                        map[id] = kvp.Key;
+                }
+
+                return (regions, map);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private static async Task SaveDatacentersToCacheAsync(Dictionary<int, string> datacenterMap)
+        {
+            try
+            {
+                var regionDict = new Dictionary<string, List<int>>();
+                foreach (var kvp in datacenterMap)
+                {
+                    if (!regionDict.TryGetValue(kvp.Value, out var list))
+                    {
+                        list = [];
+                        regionDict[kvp.Value] = list;
+                    }
+                    list.Add(kvp.Key);
+                }
+
+                var sortedDict = regionDict
+                    .OrderBy(kvp => kvp.Key, StringComparer.OrdinalIgnoreCase)
+                    .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+
+                var cache = new DatacentersCache
+                {
+                    Regions = sortedDict,
+                    LastUpdated = DateTime.UtcNow
+                };
+
+                Directory.CreateDirectory(Paths.Cache);
+                var json = JsonSerializer.Serialize(cache);
+                await File.WriteAllTextAsync(GetCachePath(), json);
+            }
+            catch { /* ignore */ }
         }
     }
 }

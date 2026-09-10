@@ -45,9 +45,7 @@ namespace Froststrap.Models.Persistable
         public bool SoftKeyEnabled { get; set; }
         public SoftKeyProfile SoftKeyProfile { get; set; } = SoftKeyProfile.WASD;
         public bool EnableBetterMatchmaking { get; set; }
-        public string SelectedServerSortOrder { get; set; } = "BestLatency";
         public int BestRegionAmounts { get; set; } = 5;
-        public int MaxServerCheck { get; set; } = 25;
         public string SelectedRegion { get; set; } = Strings.Common_Auto;
 
         // FastFlag Editor/Settings

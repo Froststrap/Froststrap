@@ -9,9 +9,6 @@ namespace Froststrap.UI.ViewModels.Settings
         private List<string> _availableRegions = [];
         private bool _isLoadingRegions;
 
-        private string _selectedSortOrder;
-        private SortOrderComboBoxItem _selectedSortOrderItem;
-
         private static string GetCachePath() => Path.Combine(Paths.Cache, "DataCentersCache.json");
 
         private static async Task SaveDatacentersToCacheAsync(Dictionary<int, string> datacenterMap)
@@ -82,10 +79,6 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             App.Cookies.StateChanged += (_, state) =>
                 CookieLoadingFailed = state is not (CookieState.Success or CookieState.Unknown);
-
-            _selectedSortOrder = App.Settings.Prop.SelectedServerSortOrder ?? "BestLatency";
-            _selectedSortOrderItem = SortOrderOptions.FirstOrDefault(x => x.Tag == _selectedSortOrder)
-                                     ?? SortOrderOptions.First();
 
             _ = LoadAvailableRegionsAsync();
         }
@@ -220,12 +213,6 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public static int MaxServerCheck
-        {
-            get => App.Settings.Prop.MaxServerCheck;
-            set => App.Settings.Prop.MaxServerCheck = value;
-        }
-
         public static int BestRegionAmounts
         {
             get => App.Settings.Prop.BestRegionAmounts;
@@ -261,45 +248,6 @@ namespace Froststrap.UI.ViewModels.Settings
                 OnPropertyChanged(nameof(IsLoadingRegions));
             }
         }
-
-        public List<SortOrderComboBoxItem> SortOrderOptions { get; } =
-        [
-            new() { Content = Strings.Common_Auto, Tag = "BestLatency" },
-            new() { Content = Strings.Menu_RegionSelector_LargeServers, Tag = "OccupancyDesc" },
-            new() { Content = Strings.Menu_RegionSelector_SmallServers, Tag = "OccupancyAsc" }
-        ];
-
-        public string SelectedSortOrder
-        {
-            get => _selectedSortOrder;
-            set
-            {
-                if (_selectedSortOrder != value)
-                {
-                    _selectedSortOrder = value;
-                    App.Settings.Prop.SelectedServerSortOrder = value;
-                    OnPropertyChanged(nameof(SelectedSortOrder));
-                    OnPropertyChanged(nameof(IsRegionSelectionEnabled));
-                }
-            }
-        }
-
-        public SortOrderComboBoxItem SelectedSortOrderItem
-        {
-            get => _selectedSortOrderItem;
-            set
-            {
-                if (_selectedSortOrderItem != value)
-                {
-                    _selectedSortOrderItem = value;
-                    OnPropertyChanged(nameof(SelectedSortOrderItem));
-                    if (value != null)
-                        SelectedSortOrder = value.Tag;
-                }
-            }
-        }
-
-        public bool IsRegionSelectionEnabled => SelectedSortOrder != "BestLatency";
 
         private async Task LoadAvailableRegionsAsync()
         {
@@ -383,7 +331,10 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private List<string> BuildAvailableRegionsWithCurrent(IEnumerable<string> baseRegions)
         {
-            var list = new List<string>();
+            var list = new List<string>
+            {
+                "Auto"
+            };
 
             foreach (var region in baseRegions)
             {
@@ -412,8 +363,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
             string current = SelectedRegion;
 
-            if (string.Equals(current, "Auto", StringComparison.OrdinalIgnoreCase) ||
-                !AvailableRegions.Any(r => string.Equals(r?.Trim(), current?.Trim(), StringComparison.OrdinalIgnoreCase)))
+            if (!AvailableRegions.Any(r => string.Equals(r?.Trim(), current?.Trim(), StringComparison.OrdinalIgnoreCase)))
             {
                 SelectedRegion = AvailableRegions.FirstOrDefault() ?? string.Empty;
             }

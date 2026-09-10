@@ -1,9 +1,4 @@
-﻿// SPDX-FileCopyrightText: 2026 Froststrap
-// Copyright (C) Froststrap Team
-//
-// SPDX-License-Identifier: MPL-2.0
-
-using Avalonia.Media.Imaging;
+﻿using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.Integrations;
@@ -11,21 +6,16 @@ using System.Collections.ObjectModel;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
-    internal class SortOrderComboBoxItem
-    {
-        public string Content { get; set; } = "";
-        public string Tag { get; set; } = "";
-    }
-
     internal partial class RegionSelectorViewModel : NotifyPropertyChangedViewModel, IDisposable
     {
         private const int MaxServers = 15;
 
         private readonly HashSet<string> _displayedServerIds = [];
+        private readonly CancellationTokenSource _disposeCts = new();
         private RobloxServerFetcher? _fetcher;
         private Dictionary<int, string>? _dcMap;
         private CancellationTokenSource? _searchDebounceCts;
-        private CancellationTokenSource? _thumbnailCts;
+        private CancellationTokenSource? _searchCts;
         private bool _disposed;
 
         #region Fields
@@ -36,16 +26,14 @@ namespace Froststrap.UI.ViewModels.Settings
         private bool _isGameSearchLoading;
         private string _loadingMessage = "";
         private string _nextCursor = "";
-        private string? _roblosecurity;
         private bool _hasValidCookies;
         private string _searchQuery = "";
         private OmniSearchContent? _selectedSearchResult;
-        private string _selectedSortOrder = "BestLatency";
-        private SortOrderComboBoxItem? _selectedSortOrderItem;
         private int _lastFetchProcessedCount;
         private string? _thumbnailUrl;
         private string? _selectedRegionInput;
         private bool _isSearchFlyoutOpen;
+        private int? _currentCursor;
         #endregion
 
         #region Properties
@@ -111,12 +99,6 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public string? Roblosecurity
-        {
-            get => _roblosecurity;
-            set => SetProperty(ref _roblosecurity, value);
-        }
-
         public bool HasValidCookies
         {
             get => _hasValidCookies;
@@ -154,29 +136,6 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public string SelectedSortOrder
-        {
-            get => _selectedSortOrder;
-            set
-            {
-                if (SetProperty(ref _selectedSortOrder, value))
-                {
-                    OnPropertyChanged(nameof(IsRegionSelectionEnabled));
-                    SearchCommand.NotifyCanExecuteChanged();
-                }
-            }
-        }
-
-        public SortOrderComboBoxItem? SelectedSortOrderItem
-        {
-            get => _selectedSortOrderItem;
-            set
-            {
-                if (SetProperty(ref _selectedSortOrderItem, value))
-                    OnSelectedSortOrderItemChanged(value);
-            }
-        }
-
         public int LastFetchProcessedCount
         {
             get => _lastFetchProcessedCount;
@@ -205,13 +164,6 @@ namespace Froststrap.UI.ViewModels.Settings
         public ObservableCollection<ServerEntry> Servers { get; } = [];
         public ObservableCollection<OmniSearchContent> SearchResults { get; } = [];
 
-        public List<SortOrderComboBoxItem> SortOrderOptions { get; } =
-        [
-            new() { Content = Strings.Common_Auto, Tag = "BestLatency" },
-            new() { Content = Strings.Menu_RegionSelector_LargeServers, Tag = "OccupancyDesc" },
-            new() { Content = Strings.Menu_RegionSelector_SmallServers, Tag = "OccupancyAsc" }
-        ];
-
         public bool IsServerListEmpty => Servers.Count == 0;
         public bool IsServerListEmptyAndNotLoading => IsServerListEmpty && !IsLoading;
         public bool ShowLoadingIndicator => IsLoading && !IsGameSearchLoading;
@@ -225,10 +177,6 @@ namespace Froststrap.UI.ViewModels.Settings
         public IAsyncRelayCommand LoadMoreCommand { get; }
         public IAsyncRelayCommand SearchGamesCommand { get; }
         public IRelayCommand ClearSearchCommand { get; }
-
-        public bool IsRegionSelectionEnabled => SelectedSortOrder != "BestLatency";
-
-        private bool IsAutoSortOrder => SelectedSortOrder == "BestLatency";
         #endregion
 
         public RegionSelectorViewModel()
@@ -237,17 +185,16 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 OnPropertyChanged(nameof(IsServerListEmpty));
                 OnPropertyChanged(nameof(IsServerListEmptyAndNotLoading));
-                LoadMoreCommand!.NotifyCanExecuteChanged(); // Update LoadMore button state when server count changes
+                LoadMoreCommand?.NotifyCanExecuteChanged();
             };
 
             SearchCommand = new AsyncRelayCommand(SearchAsync, () => !IsLoading && !string.IsNullOrWhiteSpace(PlaceId) && HasValidCookies);
             SearchGamesCommand = new AsyncRelayCommand(SearchGamesAsync, () => !IsLoading && !IsGameSearchLoading && !string.IsNullOrWhiteSpace(SearchQuery) && HasValidCookies);
-            LoadMoreCommand = new AsyncRelayCommand(LoadMoreServersAsync, () => !IsLoading && !string.IsNullOrWhiteSpace(NextCursor) && Servers.Count < MaxServers);
+            LoadMoreCommand = new AsyncRelayCommand(LoadMoreServersAsync, () => !IsLoading && !string.IsNullOrEmpty(NextCursor) && Servers.Count < MaxServers);
 
             ClearSearchCommand = new RelayCommand(ClearSearch);
 
-            _ = InitializeCookiesAsync();
-            SelectedSortOrderItem = SortOrderOptions.FirstOrDefault(x => x.Tag == "BestLatency");
+            _ = InitializeAsync();
         }
 
         private void ClearSearch()
@@ -263,6 +210,7 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 IsSearchFlyoutOpen = false;
                 SearchResults.Clear();
+                return;
             }
 
             if (long.TryParse(value, out _))
@@ -283,14 +231,6 @@ namespace Froststrap.UI.ViewModels.Settings
             PlaceId = value.RootPlaceId.ToString(CultureInfo.InvariantCulture);
             SearchQuery = value.RootPlaceId.ToString(CultureInfo.InvariantCulture);
             IsSearchFlyoutOpen = false;
-        }
-
-        private void OnSelectedSortOrderItemChanged(SortOrderComboBoxItem? value)
-        {
-            if (value != null)
-            {
-                SelectedSortOrder = value.Tag;
-            }
         }
 
         public string? SelectedRegion
@@ -321,17 +261,13 @@ namespace Froststrap.UI.ViewModels.Settings
             catch (OperationCanceledException) { }
         }
 
-        private async Task InitializeCookiesAsync()
+        private async Task InitializeAsync()
         {
             try
             {
                 _fetcher = new RobloxServerFetcher();
-                Roblosecurity = await _fetcher.ResolveCookieAsync();
-
-                HasValidCookies = !string.IsNullOrWhiteSpace(Roblosecurity);
-
-                if (HasValidCookies)
-                    await LoadRegionsAsync();
+                HasValidCookies = true;
+                await LoadRegionsAsync();
             }
             catch (Exception ex) { App.Logger.Error(ex); }
         }
@@ -343,6 +279,14 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 var (regions, dcMap) = cacheResult.Value;
                 PopulateRegions(regions, dcMap);
+
+                _ = Task.Run(async () =>
+                {
+                    try { await _fetcher!.GetDatacentersAsync(_disposeCts.Token); }
+                    catch (OperationCanceledException) { }
+                    catch (Exception ex) { App.Logger.Error(ex); }
+                });
+
                 return;
             }
 
@@ -397,151 +341,14 @@ namespace Froststrap.UI.ViewModels.Settings
             }, DispatcherPriority.Background);
         }
 
-        private static async Task<(List<string> regions, Dictionary<int, string> datacenterMap)?> LoadDatacentersFromCacheAsync(bool allowExpired = false)
-        {
-            try
-            {
-                if (!File.Exists(GetCachePath())) return null;
-
-                var json = await File.ReadAllTextAsync(GetCachePath());
-                var cache = JsonSerializer.Deserialize<DatacentersCache>(json);
-
-                if (cache == null) return null;
-
-                if (!allowExpired && cache.LastUpdated < DateTime.UtcNow.AddDays(-7))
-                    return null;
-
-                var map = new Dictionary<int, string>();
-                var regions = new List<string>();
-
-                foreach (var kvp in cache.Regions)
-                {
-                    regions.Add(kvp.Key);
-                    foreach (var id in kvp.Value)
-                        map[id] = kvp.Key;
-                }
-
-                return (regions, map);
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        private async Task<Dictionary<string, string?>> FetchAllThumbnailUrlsAsync(CancellationToken token)
-        {
-            var allTokens = Servers
-                .SelectMany(s => s.PlayerTokens)
-                .Distinct()
-                .ToList();
-
-            if (allTokens.Count == 0)
-                return [];
-
-            const int batchSize = 100;
-            var tokenToUrl = new Dictionary<string, string?>();
-
-            var chunks = allTokens
-                .Select((t, i) => new { Token = t, Index = i })
-                .GroupBy(x => x.Index / batchSize)
-                .Select(g => g.Select(x => x.Token).ToList())
-                .ToList();
-
-            foreach (var chunk in chunks)
-            {
-                if (token.IsCancellationRequested)
-                    return tokenToUrl;
-
-                var requests = chunk.Select(token => new ThumbnailRequest
-                {
-                    Token = token,
-                    Type = ThumbnailType.AvatarHeadShot,
-                    Size = "60x60",
-                    Format = ThumbnailFormat.Png,
-                    IsCircular = true
-                }).ToList();
-
-                var urls = await Thumbnails.GetThumbnailUrlsAsync(requests, token);
-                for (int i = 0; i < chunk.Count && i < urls.Length; i++)
-                {
-                    tokenToUrl[chunk[i]] = urls[i];
-                }
-            }
-
-            return tokenToUrl;
-        }
-
-        private async Task LoadAllServerThumbnailsAsync(CancellationToken token)
-        {
-            var tokenToUrl = await FetchAllThumbnailUrlsAsync(token);
-            if (token.IsCancellationRequested) return;
-
-            using var semaphore = new SemaphoreSlim(15);
-            var tasks = Servers.Select(async server =>
-            {
-                if (token.IsCancellationRequested) return;
-
-                await semaphore.WaitAsync(token);
-                try
-                {
-                    var bitmaps = new List<Bitmap>();
-                    foreach (var playerToken in server.PlayerTokens)
-                    {
-                        if (tokenToUrl.TryGetValue(playerToken, out var url) && !string.IsNullOrEmpty(url))
-                        {
-                            try
-                            {
-                                var bytes = await App.HttpClient.GetByteArrayAsync(new Uri(url), token);
-                                using var ms = new MemoryStream(bytes);
-                                var bmp = new Bitmap(ms);
-                                bitmaps.Add(bmp);
-                            }
-                            catch { /* skip failed downloads */ }
-                        }
-                    }
-
-                    await Dispatcher.UIThread.InvokeAsync(() =>
-                    {
-                        server.PlayerAvatarThumbnails.Clear();
-                        foreach (var bmp in bitmaps)
-                            server.PlayerAvatarThumbnails.Add(bmp);
-
-                        int extra = server.PlayingCount - bitmaps.Count;
-                        if (extra > 0)
-                        {
-                            server.ExtraPlayersText = $"+{extra}";
-                            server.HasExtraPlayers = true;
-                        }
-                        else
-                        {
-                            server.HasExtraPlayers = false;
-                        }
-                    }, DispatcherPriority.Background);
-                }
-                finally
-                {
-                    semaphore.Release();
-                }
-            });
-
-            await Task.WhenAll(tasks);
-        }
-
         private async Task SearchAsync()
         {
 #pragma warning disable CA1849
-            _thumbnailCts?.Cancel();
+            _searchCts?.Cancel();
 #pragma warning restore CA1849
-            _thumbnailCts?.Dispose();
-            _thumbnailCts = new CancellationTokenSource();
-            var token = _thumbnailCts.Token;
-
-            if (!IsAutoSortOrder && string.IsNullOrWhiteSpace(SelectedRegion))
-            {
-                _ = Frontend.ShowMessageBox(Strings.Menu_RegionSelector_PleaseSelectRegion, MessageBoxImage.Warning);
-                return;
-            }
+            _searchCts?.Dispose();
+            _searchCts = CancellationTokenSource.CreateLinkedTokenSource(_disposeCts.Token);
+            var token = _searchCts.Token;
 
             HasSearched = true;
             IsLoading = true;
@@ -549,74 +356,81 @@ namespace Froststrap.UI.ViewModels.Settings
             Servers.Clear();
             _displayedServerIds.Clear();
             NextCursor = "";
+            _currentCursor = null;
             LastFetchProcessedCount = 0;
 
-            int pagesChecked = 0;
-            while (pagesChecked < 3)
+            if (!long.TryParse(PlaceId, out var placeId))
             {
-                await LoadServersAsync(pagesChecked == 0);
-                pagesChecked++;
-                if (string.IsNullOrWhiteSpace(NextCursor) || Servers.Count >= MaxServers)
-                    break;
+                IsLoading = false;
+                await Frontend.ShowMessageBox("Invalid place ID.", MessageBoxImage.Error);
+                return;
             }
 
-            await LoadAllServerThumbnailsAsync(token);
-
-            IsLoading = false;
-            await Task.Delay(800);
-            LoadingMessage = "";
-        }
-
-        private async Task LoadServersAsync(bool resetCursor = false)
-        {
-            if (string.IsNullOrWhiteSpace(PlaceId) || string.IsNullOrWhiteSpace(Roblosecurity)) return;
-            if (!IsAutoSortOrder && string.IsNullOrWhiteSpace(SelectedRegion)) return;
-
-            if (resetCursor) NextCursor = "";
-            if (!long.TryParse(PlaceId, out var placeIdLong)) return;
-
-            var result = await _fetcher!.FetchServerInstancesAsync(placeIdLong, NextCursor, SelectedSortOrder, Roblosecurity);
-            if (result == null) return;
-
-            int number = Servers.Count + 1;
-            bool shouldFilterByRegion = !IsAutoSortOrder;
-
-            foreach (var s in result.Servers)
+            try
             {
-                // Stop adding if we've reached the max
-                if (Servers.Count >= MaxServers)
-                    break;
+                List<ServerInstance> allServers = [];
 
-                if (_displayedServerIds.Add(s.Id) && s.DataCenterId.HasValue)
+                if (!string.IsNullOrEmpty(SelectedRegion) && !SelectedRegion.Equals("Auto", StringComparison.OrdinalIgnoreCase))
                 {
-                    bool regionMatches = true;
-                    if (shouldFilterByRegion)
+                    var (servers, nextCursor) = await _fetcher!.FetchServersByRegionAsync(placeId, SelectedRegion, null, token);
+                    allServers = servers;
+                    if (nextCursor.HasValue)
                     {
-                        regionMatches = _dcMap!.TryGetValue(s.DataCenterId.Value, out var mappedRegion) && mappedRegion == SelectedRegion;
+                        _currentCursor = nextCursor.Value;
+                        NextCursor = nextCursor.Value.ToString(CultureInfo.InvariantCulture);
                     }
-
-                    if (regionMatches)
+                    else
                     {
-                        var serverEntry = new ServerEntry
+                        NextCursor = "";
+                    }
+                }
+                else
+                {
+                    var topRegions = await _fetcher!.GetClosestRegionsForAutoModeAsync(3, token);
+                    if (topRegions.Count == 0)
+                    {
+                        await Frontend.ShowMessageBox("Could not determine your location. Please select a region manually.", MessageBoxImage.Warning);
+                        IsLoading = false;
+                        return;
+                    }
+                    allServers = await _fetcher.FetchServersForRegionsAsync(placeId, topRegions, token);
+                    NextCursor = "";
+                }
+
+                int number = 1;
+                foreach (var s in allServers.Take(MaxServers))
+                {
+                    if (_displayedServerIds.Add(s.Id))
+                    {
+                        var entry = new ServerEntry
                         {
                             Number = number++,
                             ServerId = s.Id,
-                            Players = $"{s.Playing}/{s.MaxPlayers}",
-                            PlayingCount = s.Playing,
                             Region = s.Region,
                             DataCenterId = s.DataCenterId,
                             Uptime = s.UptimeDisplay,
-                            PlayerTokens = s.PlayerTokens,
                             JoinCommand = new RelayCommand(() => JoinServer(s.Id))
                         };
-
-                        Servers.Add(serverEntry);
+                        Servers.Add(entry);
                     }
                 }
-            }
 
-            LastFetchProcessedCount = result.Servers.Count;
-            NextCursor = result.NextCursor;
+                LastFetchProcessedCount = allServers.Count;
+            }
+            catch (OperationCanceledException)
+            {
+                // superseded by a newer search
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error($"Search error: {ex}");
+            }
+            finally
+            {
+                IsLoading = false;
+                await Task.Delay(800);
+                LoadingMessage = "";
+            }
         }
 
         private void JoinServer(string serverId)
@@ -635,17 +449,104 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private async Task LoadMoreServersAsync()
         {
-            if (Servers.Count >= MaxServers)
+            if (!_currentCursor.HasValue || string.IsNullOrEmpty(NextCursor) || Servers.Count >= MaxServers)
+                return;
+
+            if (!long.TryParse(PlaceId, out var placeId) || string.IsNullOrEmpty(SelectedRegion) || SelectedRegion.Equals("Auto", StringComparison.OrdinalIgnoreCase))
                 return;
 
             IsLoading = true;
-
-            for (int i = 0; i < 5 && !string.IsNullOrWhiteSpace(NextCursor) && Servers.Count < MaxServers; i++)
+            try
             {
-                await LoadServersAsync();
-            }
+                var (servers, nextCursor) = await _fetcher!.FetchServersByRegionAsync(
+                    placeId, SelectedRegion, _currentCursor.Value, _disposeCts.Token);
 
-            IsLoading = false;
+                int number = Servers.Count + 1;
+                foreach (var s in servers)
+                {
+                    if (Servers.Count >= MaxServers)
+                        break;
+
+                    if (_displayedServerIds.Add(s.Id))
+                    {
+                        var entry = new ServerEntry
+                        {
+                            Number = number++,
+                            ServerId = s.Id,
+                            Region = s.Region,
+                            DataCenterId = s.DataCenterId,
+                            Uptime = s.UptimeDisplay,
+                            JoinCommand = new RelayCommand(() => JoinServer(s.Id))
+                        };
+                        Servers.Add(entry);
+                    }
+                }
+
+                if (nextCursor.HasValue)
+                {
+                    _currentCursor = nextCursor.Value;
+                    NextCursor = nextCursor.Value.ToString(CultureInfo.InvariantCulture);
+                }
+                else
+                {
+                    _currentCursor = null;
+                    NextCursor = "";
+                }
+            }
+            catch (OperationCanceledException) { }
+            catch (Exception ex)
+            {
+                App.Logger.Error($"Load more error: {ex}");
+            }
+            finally
+            {
+                IsLoading = false;
+            }
+        }
+
+        private async Task SearchGamesAsync(CancellationToken token = default)
+        {
+            if (string.IsNullOrWhiteSpace(SearchQuery) || long.TryParse(SearchQuery, out _)) return;
+
+            IsGameSearchLoading = true;
+            try
+            {
+                var results = await GameSearching.GetGameSearchResultsAsync(SearchQuery);
+                if (token.IsCancellationRequested || results == null || results.Count == 0) return;
+
+                var thumbRequests = results.Select(r => new ThumbnailRequest
+                {
+                    Type = ThumbnailType.GameIcon,
+                    TargetId = r.UniverseId,
+                    Size = "128x128"
+                }).ToList();
+
+                var fetchedUrls = await Thumbnails.GetThumbnailUrlsAsync(thumbRequests, token);
+                if (token.IsCancellationRequested) return;
+
+                for (int i = 0; i < results.Count; i++)
+                {
+                    if (fetchedUrls != null && i < fetchedUrls.Length && !string.IsNullOrEmpty(fetchedUrls[i]))
+                    {
+                        try
+                        {
+                            var response = await App.HttpClient.GetByteArrayAsync(new Uri(fetchedUrls[i]!), token);
+                            using var ms = new MemoryStream(response);
+                            results[i].ThumbnailBitmap = new Bitmap(ms);
+                        }
+                        catch { }
+                    }
+                }
+
+                Dispatcher.UIThread.Post(() =>
+                {
+                    SearchResults.Clear();
+                    foreach (var res in results) SearchResults.Add(res);
+                    IsSearchFlyoutOpen = SearchResults.Count > 0 && !string.IsNullOrWhiteSpace(SearchQuery);
+                }, DispatcherPriority.Background);
+            }
+            catch (Exception ex) { App.Logger.Error($"Search error: {ex.Message}"); }
+            finally { IsGameSearchLoading = false; }
         }
 
         private static string GetCachePath() => Path.Combine(Paths.Cache, "DataCentersCache.json");
@@ -681,10 +582,10 @@ namespace Froststrap.UI.ViewModels.Settings
                 var json = JsonSerializer.Serialize(cache);
                 await File.WriteAllTextAsync(GetCachePath(), json);
             }
-            catch { /* ignore cache save errors */ }
+            catch { }
         }
 
-        private static async Task<(List<string> regions, Dictionary<int, string> datacenterMap)?> LoadDatacentersFromCacheAsync()
+        private static async Task<(List<string> regions, Dictionary<int, string> datacenterMap)?> LoadDatacentersFromCacheAsync(bool allowExpired = false)
         {
             try
             {
@@ -693,7 +594,9 @@ namespace Froststrap.UI.ViewModels.Settings
                 var json = await File.ReadAllTextAsync(GetCachePath());
                 var cache = JsonSerializer.Deserialize<DatacentersCache>(json);
 
-                if (cache == null || cache.LastUpdated < DateTime.UtcNow.AddDays(-7))
+                if (cache == null) return null;
+
+                if (!allowExpired && cache.LastUpdated < DateTime.UtcNow.AddDays(-7))
                     return null;
 
                 var map = new Dictionary<int, string>();
@@ -714,51 +617,6 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        private async Task SearchGamesAsync(CancellationToken token = default)
-        {
-            if (string.IsNullOrWhiteSpace(SearchQuery) || long.TryParse(SearchQuery, out _)) return;
-
-            IsGameSearchLoading = true;
-            try
-            {
-                var results = await GameSearching.GetGameSearchResultsAsync(SearchQuery);
-                if (token.IsCancellationRequested || results == null || results.Count == 0) return;
-
-                var thumbRequests = results.Select(r => new ThumbnailRequest
-                {
-                    Type = ThumbnailType.GameIcon,
-                    TargetId = r.UniverseId,
-                    Size = "128x128"
-                }).ToList();
-
-                var fetchedUrls = await Thumbnails.GetThumbnailUrlsAsync(thumbRequests, token);
-                if (token.IsCancellationRequested) return;
-
-                for (int i = 0; i < results.Count; i++)
-                {
-                    if (fetchedUrls != null && i < fetchedUrls.Length && !string.IsNullOrEmpty(fetchedUrls[i]))
-                    {
-                        try
-                        {
-                            var response = await App.HttpClient.GetByteArrayAsync(new Uri(fetchedUrls[i]!), token);
-                            using var ms = new MemoryStream(response);
-                            results[i].ThumbnailBitmap = new Bitmap(ms);
-                        }
-                        catch { /* Handle failed image load silently */ }
-                    }
-                }
-
-                Dispatcher.UIThread.Post(() =>
-                {
-                    SearchResults.Clear();
-                    foreach (var res in results) SearchResults.Add(res);
-                    IsSearchFlyoutOpen = SearchResults.Count > 0 && !string.IsNullOrWhiteSpace(SearchQuery);
-                }, DispatcherPriority.Background);
-            }
-            catch (Exception ex) { App.Logger.Error($"Search error: {ex.Message}"); }
-            finally { IsGameSearchLoading = false; }
-        }
-
         public void Dispose()
         {
             Dispose(true);
@@ -772,6 +630,9 @@ namespace Froststrap.UI.ViewModels.Settings
 
             if (disposing)
             {
+                _disposeCts.Cancel();
+                _disposeCts.Dispose();
+
                 _fetcher?.Dispose();
                 _fetcher = null;
 
@@ -779,9 +640,9 @@ namespace Froststrap.UI.ViewModels.Settings
                 _searchDebounceCts?.Dispose();
                 _searchDebounceCts = null;
 
-                _thumbnailCts?.Cancel();
-                _thumbnailCts?.Dispose();
-                _thumbnailCts = null;
+                _searchCts?.Cancel();
+                _searchCts?.Dispose();
+                _searchCts = null;
             }
 
             _disposed = true;
