@@ -107,27 +107,37 @@ internal static class AccountSecurity
         }
     }
 
-    public static string Unprotect(string text)
+    public static bool TryUnprotect(string text, out string unprotected)
     {
-        if (string.IsNullOrEmpty(text))
-            return string.Empty;
+        unprotected = string.Empty;
 
+        if (string.IsNullOrEmpty(text))
+            return false;
+
+        // Legacy Linux/macOS credentials were stored as plaintext.
         if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            return text;
+        {
+            unprotected = text;
+            return true;
+        }
 
         try
         {
-            return Encoding.UTF8.GetString(
-                ProtectedData.Unprotect(
-                    Convert.FromBase64String(text),
-                    null,
-                    DataProtectionScope.CurrentUser
-                )
+            byte[] protectedData = Convert.FromBase64String(text);
+
+            byte[] decryptedData = ProtectedData.Unprotect(
+                protectedData,
+                null,
+                DataProtectionScope.CurrentUser
             );
+
+            unprotected = Encoding.UTF8.GetString(decryptedData);
+
+            return !string.IsNullOrEmpty(unprotected);
         }
         catch
         {
-            return text;
+            return false;
         }
     }
 }

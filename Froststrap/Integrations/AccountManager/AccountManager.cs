@@ -85,7 +85,7 @@ namespace Froststrap.Integrations.AccountManager
 
                 bool foundLegacyCredentials = false;
 
-                foreach (var account in accounts)
+                foreach (JObject account in accounts.OfType<JObject>())
                 {
                     var userIdToken = account["UserId"];
                     var securityToken = account["SecurityToken"]?.Value<string>();
@@ -97,10 +97,10 @@ namespace Froststrap.Integrations.AccountManager
 
                     long userId = userIdToken.Value<long>();
 
-                    // Decrypt the credential from the old storage format.
-                    string unprotectedToken = AccountSecurity.Unprotect(securityToken);
-
-                    if (string.IsNullOrEmpty(unprotectedToken))
+                    if (!AccountSecurity.TryUnprotect(
+                            securityToken,
+                            out string unprotectedToken
+                        ))
                     {
                         throw new InvalidOperationException(
                             $"Failed to decrypt credential for account {userId}."

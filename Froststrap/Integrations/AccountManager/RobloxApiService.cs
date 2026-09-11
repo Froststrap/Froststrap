@@ -65,11 +65,13 @@ namespace Froststrap.Integrations.AccountManager
         {
             try
             {
-                string decryptedCookie = AccountSecurity.Unprotect(account.SecurityToken);
-                if (string.IsNullOrEmpty(decryptedCookie)) return false;
+                string cookie = account.SecurityToken;
+
+                if (string.IsNullOrEmpty(cookie))
+                    return false;
 
                 using var handler = new HttpClientHandler { CookieContainer = new CookieContainer() };
-                handler.CookieContainer.Add(new Cookie(".ROBLOSECURITY", decryptedCookie, "/", ".roblox.com"));
+                handler.CookieContainer.Add(new Cookie(".ROBLOSECURITY", cookie, "/", ".roblox.com"));
                 using var client = new HttpClient(handler);
 
                 var response = await client.GetAsync(UrlBuilder.BuildApiUrl("users", "v1/users/authenticated", secure: true));
