@@ -48,6 +48,12 @@ class Build : FalloutBuild
     Target Restore => _ => _
         .Executes(() =>
         {
+            var process = new Process();
+            process.StartInfo.FileName = "dotnet";
+            process.StartInfo.Arguments = "restore";         
+            process.StartInfo.UseShellExecute = false;            
+            process.Start();
+            process.WaitForExit();
         });
 
     Target Publish => _ => _
@@ -63,10 +69,6 @@ class Build : FalloutBuild
             Log.Information("Publishing {Value}...", project.Path);
             Log.Information("Artifacts will output to: {Value}", outputDirectory);
 
-            string os = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "win" :
-                         RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? "linux" :
-                         RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? "osx" : null;
-
             string arch = RuntimeInformation.OSArchitecture switch
             {
                 Architecture.X64 => "x64",
@@ -74,13 +76,20 @@ class Build : FalloutBuild
                 _ => null
             };
 
-            if (os == null || arch == null)
+            string rid = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? $"win-{arch}" :
+                        RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? $"linux-{arch}" :
+                        RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? $"osx-{arch}" : null;
+
+            string publish = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? $"windows-{arch}" :
+                        RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? $"linux-{arch}" :
+                        RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? $"osx-{arch}" : null;
+
+            if (rid == null || arch == null || publish == null)
             {
                 throw new PlatformNotSupportedException("Unsupported OS or Architecture for publishing.");
             }
 
-            string rid = $"{os}-{arch}";
-            string publishProfile = $"Publish-{rid}";
+            string publishProfile = $"Publish-{publish}";
 
             Log.Information("Publishing for {Rid} using profile {Profile}", rid, publishProfile);
 
