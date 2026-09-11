@@ -20,6 +20,7 @@
   libxcb,
   xcbutil,
   libxcursor,
+  libsecret,
   dotnetCorePackages,
   glib,
   omnisharp-roslyn,
@@ -38,6 +39,7 @@ mkFragment (finalAttrs: {
     vulkan-loader
     wayland
     libxkbcommon
+    libsecret
 
     # X11 libs
     libX11
