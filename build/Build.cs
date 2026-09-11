@@ -1,18 +1,13 @@
 using System;
 using System.Diagnostics;
-using System.Linq;
 using Fallout.Common;
-using Fallout.Common.CI;
-using Fallout.Common.Execution;
 using Fallout.Common.IO;
 using Fallout.Solutions;
-using Fallout.Common.Tooling;
-using Fallout.Common.Utilities.Collections;
-using static Fallout.Common.EnvironmentInfo;
-using static Fallout.Common.IO.PathConstruction;
 using Microsoft.Build.Locator;
 using Fallout.Common.Git;
 using Serilog;
+using System.Runtime.InteropServices;
+using System.IO;
 
 class Build : FalloutBuild
 {
@@ -53,6 +48,86 @@ class Build : FalloutBuild
     Target Restore => _ => _
         .Executes(() =>
         {
+        });
+
+    Target Publish => _ => _
+        .DependsOn(Restore)
+        .DependsOn(BuildDebug)
+        .Executes(() => {
+            string outputDirectory = System.IO.Path.Combine(OutputRoot, "publish");
+            System.IO.Directory.CreateDirectory(outputDirectory);
+            System.IO.File.WriteAllText(System.IO.Path.Combine(OutputRoot, ".gitignore"), "*");
+            
+            var project = Solution.GetProject("Froststrap");
+            Log.Information("Froststrap path: {Value}", project.Directory);
+            Log.Information("Publishing {Value}...", project.Path);
+            Log.Information("Artifacts will output to: {Value}", outputDirectory);
+
+            string os = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "win" :
+                         RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? "linux" :
+                         RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? "osx" : null;
+
+            string arch = RuntimeInformation.OSArchitecture switch
+            {
+                Architecture.X64 => "x64",
+                Architecture.Arm64 => "arm64",
+                _ => null
+            };
+
+            if (os == null || arch == null)
+            {
+                throw new PlatformNotSupportedException("Unsupported OS or Architecture for publishing.");
+            }
+
+            string rid = $"{os}-{arch}";
+            string publishProfile = $"Publish-{rid}";
+
+            Log.Information("Publishing for {Rid} using profile {Profile}", rid, publishProfile);
+
+            var process = new Process();
+            process.StartInfo.FileName = "dotnet";
+
+            process.StartInfo.Arguments = $"publish \"{project.Path}\" " +
+                                          $"-c {Configuration} " +
+                                          $"-r {rid} " +
+                                          $"-o \"{outputDirectory}\" " +
+                                          $"--configfile \"{GitRoot}/nuget.config\" " +
+                                          $"-p:PublishProfile=\"{publishProfile}\" " +
+                                          $"--nologo";
+                                          
+            process.StartInfo.UseShellExecute = false;
+            
+            process.Start();
+            process.WaitForExit();
+
+            AbsolutePath virtualbackendBuildRoot = $"{GitRoot}/backend/virtualdisplay/.build";
+
+            if (File.Exists($"{virtualbackendBuildRoot}/out/Products/Release/libvirtualdisplay.dylib"))
+            {
+                AbsolutePath source = $"{virtualbackendBuildRoot}/out/Products/Release/libvirtualdisplay.dylib";
+                Log.Information("Copying over {Source} into {OutDir}", source, OutputRoot);
+                File.Copy(source, (AbsolutePath)outputDirectory / "libvirtualdisplay.dylib");
+            }
+            if (File.Exists($"{virtualbackendBuildRoot}/apple/Products/Release/libvirtualdisplay.dylib"))
+            {
+                AbsolutePath source = $"{virtualbackendBuildRoot}/apple/Products/Release/libvirtualdisplay.dylib";
+                Log.Information("Copying over {Source} into {OutDir}", source, OutputRoot);
+                File.Copy(source, (AbsolutePath)outputDirectory / "libvirtualdisplay.dylib");
+            }
+
+            foreach (string file in Directory.EnumerateFiles(outputDirectory))
+            {
+                // delete these, debug outputs aren't needed
+                if (file.EndsWith(".pdb")) {
+                    Log.Information("Deleting debug file {FileName}...", file);
+                    File.Delete(file);
+                }
+            }
+
+            if (process.ExitCode != 0)
+            {
+                throw new Exception($"Publish failed for {rid} with exit code {process.ExitCode}");
+            }
         });
 
     Target Compile => _ => _
