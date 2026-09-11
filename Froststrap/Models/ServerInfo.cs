@@ -2,29 +2,65 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-namespace Froststrap.Models
+using Avalonia.Media.Imaging;
+using System.Collections.ObjectModel;
+
+namespace Froststrap.Models;
+
+internal class ServerInfo
 {
-    internal class ServerInfo
+    [JsonPropertyName("jobId")]
+    public string JobId { get; set; } = "";
+
+    [JsonPropertyName("region")]
+    public string Region { get; set; } = "";
+
+    [JsonPropertyName("joinedAt")]
+    public DateTime JoinedAt { get; set; }
+
+    [JsonPropertyName("isLatest")]
+    public bool IsLatest { get; set; }
+
+    [JsonPropertyName("playing")]
+    public int Playing { get; set; }
+
+    [JsonPropertyName("maxPlayers")]
+    public int MaxPlayers { get; set; }
+
+    [JsonIgnore]
+    public string PlayerCount => $"{Playing}/{MaxPlayers}";
+
+    [JsonPropertyName("uptime")]
+    public string Uptime { get; set; } = "";
+
+    [JsonPropertyName("serverType")]
+    public ServerType ServerType { get; set; } = ServerType.Public;
+
+    [JsonPropertyName("timeLeft")]
+    public DateTime? TimeLeft { get; set; }
+
+    [JsonIgnore]
+    public ObservableCollection<Bitmap> PlayerAvatarThumbnails { get; } = [];
+
+    [JsonIgnore]
+    public Collection<string> PlayerTokens { get; } = [];
+
+    [JsonIgnore]
+    public string ExtraPlayersText { get; set; } = "";
+
+    [JsonIgnore]
+    public bool HasExtraPlayers { get; set; }
+
+    public string DurationText
     {
-        [JsonPropertyName("jobId")]
-        public string JobId { get; set; } = string.Empty;
-
-        [JsonPropertyName("joinedAt")]
-        public DateTime JoinedAt { get; set; }
-
-        [JsonPropertyName("timeLeft")]
-        public DateTime? TimeLeft { get; set; }
-
-        [JsonPropertyName("ServerType")]
-        public ServerType ServerType { get; set; }
-
-        [JsonPropertyName("region")]
-        public string Region { get; set; } = string.Empty;
-
-        [JsonIgnore]
-        public bool IsLatest { get; set; }
-
-        [JsonIgnore]
-        public string DurationText => $"From {JoinedAt:HH:mm} to {TimeLeft:HH:mm}";
+        get
+        {
+            if (JoinedAt == default) return "";
+            string start = JoinedAt.ToString("HH:mm", CultureInfo.InvariantCulture);
+            string end = TimeLeft.HasValue
+                ? TimeLeft.Value.ToString("HH:mm", CultureInfo.InvariantCulture)
+                : "…";
+            return $"From {start} to {end}";
+        }
     }
 }

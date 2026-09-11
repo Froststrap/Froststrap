@@ -43,7 +43,7 @@ namespace Froststrap.Integrations
 
         private static readonly string GameHistoryCachePath = Path.Combine(Paths.Cache, "GameHistory.json");
 
-        private static readonly JsonSerializerOptions _loadOptions = new() { PropertyNamingPolicy = null };
+        private static readonly JsonSerializerOptions _loadOptions = new() { PropertyNameCaseInsensitive = true };
         private static readonly JsonSerializerOptions _saveOptions = new() { WriteIndented = true, PropertyNamingPolicy = JsonNamingPolicy.CamelCase, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull };
 
         public event EventHandler? OnHistoryUpdated;

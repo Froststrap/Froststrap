@@ -1,6 +1,5 @@
 ﻿using System.Collections.Concurrent;
 using System.Net.Http.Headers;
-using Froststrap.Integrations;
 
 namespace Froststrap.Integrations
 {
@@ -135,10 +134,8 @@ namespace Froststrap.Integrations
                     query += $"&country={country}";
                 if (!string.IsNullOrEmpty(city))
                     query += $"&city={Uri.EscapeDataString(city)}";
-
                 if (string.IsNullOrEmpty(country) && string.IsNullOrEmpty(city) && !string.IsNullOrEmpty(region))
                     query += $"&region={Uri.EscapeDataString(region)}";
-
                 if (cursor.HasValue)
                     query += $"&cursor={cursor.Value}";
 
@@ -212,7 +209,7 @@ namespace Froststrap.Integrations
             return allServers;
         }
 
-        public async Task<FetchResult> FetchServerInstancesAsync(long placeId, string cursor = "", string? optionalCookie = null, CancellationToken cancellationToken = default)
+        public async Task<FetchResult> FetchServerInstancesAsync(long placeId, string cursor = "", string? optionalCookie = null, int? maxServers = null, CancellationToken cancellationToken = default)
         {
             string? roblosecurity = !string.IsNullOrWhiteSpace(optionalCookie) ? optionalCookie : await ResolveCookieAsync();
             if (string.IsNullOrWhiteSpace(roblosecurity)) return new FetchResult();
@@ -241,6 +238,9 @@ namespace Froststrap.Integrations
 
             foreach (var serverElem in dataElement.EnumerateArray())
             {
+                if (maxServers.HasValue && serverInfos.Count >= maxServers.Value)
+                    break;
+
                 string jobId = serverElem.GetProperty("id").GetString() ?? "";
                 int playing = serverElem.GetProperty("playing").GetInt32();
                 int maxPlayers = serverElem.GetProperty("maxPlayers").GetInt32();
