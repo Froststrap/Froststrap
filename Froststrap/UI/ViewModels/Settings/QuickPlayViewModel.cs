@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.Integrations;
@@ -37,6 +38,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
     private readonly ObservableCollection<PlaceInfo> _subplaces = [];
     private UniverseDetails? _selectedUniverseDetails;
     private readonly string _cachePath = Path.Combine(Paths.Cache, "GameHistory.json");
+    private static readonly JsonSerializerOptions HistoryLoadOptions = new() { PropertyNameCaseInsensitive = true };
     private List<GameHistoryEntry> _allHistory = [];
 
     private bool _isPrivateServersOverlayVisible;
@@ -121,8 +123,19 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
     public bool IsCurrentGameApi
     {
         get => _isCurrentGameApi;
-        set => SetProperty(ref _isCurrentGameApi, value);
+        set
+        {
+            if (SetProperty(ref _isCurrentGameApi, value))
+            {
+                OnPropertyChanged(nameof(IsTrackedGame));
+                OnPropertyChanged(nameof(OverlayMinWidth));
+                OnPropertyChanged(nameof(OverlayMaxWidth));
+            }
+        }
     }
+
+    public double OverlayMinWidth => IsCurrentGameApi ? 750 : 450;
+    public double OverlayMaxWidth => IsCurrentGameApi ? 1000 : 550;
 
     public bool IsJoiningBestRegion
     {
@@ -431,7 +444,8 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
                 LastJobId = lastSession?.JobId,
                 OriginalDetails = details,
                 Source = GameSource.Tracked,
-                LastPlayedTicks = lastSession?.JoinedAt.Ticks ?? 0
+                LastPlayedTicks = lastSession?.JoinedAt.Ticks ?? 0,
+                IsVerified = details?.Data?.Creator?.HasVerifiedBadge ?? false
             });
         }
 
@@ -445,14 +459,14 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
             if (!File.Exists(cachePath)) return [];
 
             string json = File.ReadAllText(cachePath);
-            var entries = JsonSerializer.Deserialize<List<GameHistoryEntry>>(json) ?? [];
+            var entries = JsonSerializer.Deserialize<List<GameHistoryEntry>>(json, HistoryLoadOptions) ?? [];
 
             var validEntries = entries.Where(e => e.UniverseId > 0).ToList();
             if (validEntries.Count != entries.Count)
             {
                 try
                 {
-                    var cleanJson = JsonSerializer.Serialize(validEntries);
+                    var cleanJson = JsonSerializer.Serialize(validEntries, HistoryLoadOptions);
                     File.WriteAllText(cachePath, cleanJson);
                     App.Logger.Info("Cleaned GameHistory.json by removing entries with UniverseId = 0");
                 }
@@ -568,6 +582,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
                     game.Playing = details.Data.Playing;
                     game.Visits = details.Data.Visits;
                     if (game.PlaceId == 0) game.PlaceId = details.Data.RootPlaceId;
+                    game.IsVerified = details.Data.Creator?.HasVerifiedBadge ?? false;
                 }
             }
         }
@@ -1033,17 +1048,121 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
     private static async Task<List<ServerInfo>> FetchServersForGameAsync(long placeId)
     {
         using var fetcher = new RobloxServerFetcher();
-        var result = await fetcher.FetchServerInstancesAsync(placeId);
+        var result = await fetcher.FetchServerInstancesAsync(placeId, maxServers: 15);
         if (result.Servers == null || result.Servers.Count == 0)
             return [];
 
-        return [.. result.Servers.Select(s => new ServerInfo
+        var servers = new List<ServerInfo>(result.Servers.Count);
+        foreach (var s in result.Servers)
         {
-            JobId = s.Id,
-            Region = s.Region,
-            JoinedAt = s.FirstSeen ?? DateTime.UtcNow,
-            IsLatest = false
-        })];
+            if (string.IsNullOrEmpty(s.Region) ||
+                s.Region.Equals("Unknown", StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            var si = new ServerInfo
+            {
+                JobId = s.Id,
+                Region = s.Region,
+                JoinedAt = s.FirstSeen ?? DateTime.UtcNow,
+                IsLatest = false,
+                Playing = s.Playing,
+                MaxPlayers = s.MaxPlayers,
+                Uptime = s.UptimeDisplay,
+            };
+
+            if (s.PlayerTokens is { Count: > 0 })
+                foreach (var t in s.PlayerTokens)
+                    si.PlayerTokens.Add(t);
+
+            servers.Add(si);
+        }
+
+        await LoadPlayerThumbnailsAsync(servers);
+        return servers;
+    }
+
+    private static async Task LoadPlayerThumbnailsAsync(List<ServerInfo> servers)
+    {
+        var allTokens = servers
+            .SelectMany(s => s.PlayerTokens)
+            .Where(t => !string.IsNullOrEmpty(t))
+            .Distinct()
+            .ToList();
+
+        if (allTokens.Count == 0) return;
+
+        const int batchSize = 100;
+        var tokenToUrl = new Dictionary<string, string?>();
+
+        var chunks = allTokens
+            .Select((t, i) => new { Token = t, Index = i })
+            .GroupBy(x => x.Index / batchSize)
+            .Select(g => g.Select(x => x.Token).ToList())
+            .ToList();
+
+        foreach (var chunk in chunks)
+        {
+            var requests = chunk.Select(token => new ThumbnailRequest
+            {
+                Token = token,
+                Type = ThumbnailType.AvatarHeadShot,
+                Size = "60x60",
+                Format = ThumbnailFormat.Png,
+                IsCircular = true
+            }).ToList();
+
+            var urls = await Thumbnails.GetThumbnailUrlsAsync(requests, CancellationToken.None);
+            for (int i = 0; i < chunk.Count && i < urls.Length; i++)
+                tokenToUrl[chunk[i]] = urls[i];
+        }
+
+        using var semaphore = new SemaphoreSlim(15);
+        var tasks = servers.Select(async server =>
+        {
+            await semaphore.WaitAsync();
+            try
+            {
+                var bitmaps = new List<Bitmap>();
+                foreach (var playerToken in server.PlayerTokens)
+                {
+                    if (tokenToUrl.TryGetValue(playerToken, out var url) &&
+                        !string.IsNullOrEmpty(url))
+                    {
+                        try
+                        {
+                            var bytes = await App.HttpClient.GetByteArrayAsync(new Uri(url));
+                            using var ms = new MemoryStream(bytes);
+                            bitmaps.Add(new Bitmap(ms));
+                        }
+                        catch { }
+                    }
+                }
+
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    server.PlayerAvatarThumbnails.Clear();
+                    foreach (var bmp in bitmaps)
+                        server.PlayerAvatarThumbnails.Add(bmp);
+
+                    int extra = server.Playing - bitmaps.Count;
+                    if (extra > 0)
+                    {
+                        server.ExtraPlayersText = $"+{extra}";
+                        server.HasExtraPlayers = true;
+                    }
+                    else
+                    {
+                        server.HasExtraPlayers = false;
+                    }
+                }, DispatcherPriority.Background);
+            }
+            finally
+            {
+                semaphore.Release();
+            }
+        });
+
+        await Task.WhenAll(tasks);
     }
 
     private static void LaunchRoblox(long placeId, string? jobId = null, string? accessCode = null)

@@ -81,23 +81,44 @@ SPDX-License-Identifier: MPL-2.0
                         </MenuItem>
                     </MenuFlyout>
                 </Button.Flyout>
-                <controls:Card MinWidth="190" CornerRadius="12,12,4,4" Padding="0" ClipToBounds="True">
+                <controls:Card MaxWidth="190" CornerRadius="12,12,4,4" Padding="0" ClipToBounds="True">
                     <Panel>
                         <StackPanel>
                             <Border CornerRadius="12,12,0,0" ClipToBounds="True">
                                 <Image Source="{Binding ThumbnailUrl, Converter={StaticResource UrlToBitmapConverter}}" Height="190" MinWidth="190" Stretch="Fill" VerticalAlignment="Center" HorizontalAlignment="Center" RenderOptions.BitmapInterpolationMode="HighQuality"/>
                             </Border>
                             <StackPanel Spacing="2" Margin="8">
-                                <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
-                                <TextBlock Text="{Binding Creator}" FontSize="11" Opacity="0.6" TextTrimming="CharacterEllipsis"/>
+
+                                <TextBlock Text="{Binding Name}"
+                                           FontWeight="SemiBold"
+                                           TextTrimming="CharacterEllipsis"/>
+
+                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                    <TextBlock Text="{Binding Creator, StringFormat='By {0}'}"
+                                               FontSize="11" Opacity="0.6"
+                                               TextTrimming="CharacterEllipsis"
+                                               VerticalAlignment="Center"/>
+                                    <Image Source="avares://Froststrap/Resources/RobloxVerified.png"
+                                           Width="12" Height="12"
+                                           VerticalAlignment="Center"
+                                           IsVisible="{Binding IsVerified}"/>
+                                </StackPanel>
+
                                 <Grid ColumnDefinitions="*, Auto, *" Margin="0,5,0,0">
                                     <StackPanel Orientation="Horizontal" Spacing="4">
-                                        <TextBlock Text="{Binding Playing, Converter={StaticResource NumberAbbreviationConverter}}" FontSize="10" FontWeight="Medium"/>
-                                        <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_Active}" FontSize="10" Opacity="0.5"/>
+                                        <ic:Lucide Icon="Users" Height="12" Width="12" VerticalAlignment="Center"/>
+                                        <TextBlock Text="{Binding Playing, Converter={StaticResource NumberAbbreviationConverter}}"
+                                                   FontSize="10" FontWeight="Medium"/>
+                                        <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_Active}"
+                                                   FontSize="10" Opacity="0.5"/>
                                     </StackPanel>
-                                    <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="4">
-                                        <TextBlock Text="{Binding Visits, Converter={StaticResource NumberAbbreviationConverter}}" FontSize="10" FontWeight="Medium"/>
-                                        <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_Visits}" FontSize="10" Opacity="0.5"/>
+                                    <StackPanel Grid.Column="2" Orientation="Horizontal"
+                                                HorizontalAlignment="Right" Spacing="4">
+                                        <ic:Lucide Icon="Eye" Height="12" Width="12" VerticalAlignment="Center"/>
+                                        <TextBlock Text="{Binding Visits, Converter={StaticResource NumberAbbreviationConverter}}"
+                                                   FontSize="10" FontWeight="Medium"/>
+                                        <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_Visits}"
+                                                   FontSize="10" Opacity="0.5"/>
                                     </StackPanel>
                                 </Grid>
                             </StackPanel>
@@ -125,22 +146,25 @@ SPDX-License-Identifier: MPL-2.0
     </UserControl.Resources>
 
     <Grid>
-        <ScrollViewer IsEnabled="{Binding !IsOverlayVisible}">
+        <ScrollViewer IsEnabled="{Binding !IsOverlayVisible}"
+                      HorizontalScrollBarVisibility="Disabled"
+                      VerticalScrollBarVisibility="Auto">
             <StackPanel Margin="14">
                 <TabControl SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay}">
 
                     <!-- Continue Playing -->
                     <TabItem Header="{x:Static resources:Strings.Menu_QuickPlay_ContinuePlaying}">
                         <ui:TabItemHelper.Icon>
-                            <ic:Lucide Icon="Play" />
+                            <ic:Lucide Icon="RotateCcwClock" />
                         </ui:TabItemHelper.Icon>
                         <Grid ClipToBounds="True">
-                            <ScrollViewer>
+                            <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                                          VerticalScrollBarVisibility="Auto">
                                 <ItemsControl ItemsSource="{Binding RecentGames}"
                                               ItemTemplate="{StaticResource GameCardTemplate}">
                                     <ItemsControl.ItemsPanel>
                                         <ItemsPanelTemplate>
-                                            <ui:UniformWrapPanel MinItemWidth="190" />
+                                            <WrapPanel />
                                         </ItemsPanelTemplate>
                                     </ItemsControl.ItemsPanel>
                                 </ItemsControl>
@@ -164,13 +188,17 @@ SPDX-License-Identifier: MPL-2.0
 
                     <!-- Recommended -->
                     <TabItem Header="{x:Static resources:Strings.Menu_QuickPlay_Recommended}">
+                        <ui:TabItemHelper.Icon>
+                            <ic:Lucide Icon="GamepadDirectional" />
+                        </ui:TabItemHelper.Icon>
                         <Grid ClipToBounds="True">
-                            <ScrollViewer>
+                            <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                                          VerticalScrollBarVisibility="Auto">
                                 <ItemsControl ItemsSource="{Binding RecommendedGames}"
                                               ItemTemplate="{StaticResource GameCardTemplate}">
                                     <ItemsControl.ItemsPanel>
                                         <ItemsPanelTemplate>
-                                            <ui:UniformWrapPanel MinItemWidth="190" />
+                                            <WrapPanel />
                                         </ItemsPanelTemplate>
                                     </ItemsControl.ItemsPanel>
                                 </ItemsControl>
@@ -200,13 +228,17 @@ SPDX-License-Identifier: MPL-2.0
 
                     <!-- Favorites -->
                     <TabItem Header="{x:Static resources:Strings.Menu_QuickPlay_Favorites}">
+                        <ui:TabItemHelper.Icon>
+                            <ic:Lucide Icon="Star" />
+                        </ui:TabItemHelper.Icon>
                         <Grid ClipToBounds="True">
-                            <ScrollViewer>
+                            <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                                          VerticalScrollBarVisibility="Auto">
                                 <ItemsControl ItemsSource="{Binding FavoriteGames}"
                                               ItemTemplate="{StaticResource GameCardTemplate}">
                                     <ItemsControl.ItemsPanel>
                                         <ItemsPanelTemplate>
-                                            <ui:UniformWrapPanel MinItemWidth="190" />
+                                            <WrapPanel />
                                         </ItemsPanelTemplate>
                                     </ItemsControl.ItemsPanel>
                                 </ItemsControl>
@@ -256,8 +288,8 @@ SPDX-License-Identifier: MPL-2.0
                     BorderThickness="1"
                     VerticalAlignment="Center"
                     HorizontalAlignment="Center"
-                    MinWidth="450"
-                    MaxWidth="550"
+                    MinWidth="{Binding OverlayMinWidth}"
+                    MaxWidth="{Binding OverlayMaxWidth}"
                     Padding="0"
                     CornerRadius="12"
                     ClipToBounds="True">
@@ -285,28 +317,95 @@ SPDX-License-Identifier: MPL-2.0
                                 <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_LoadingServers}" FontSize="12" Opacity="0.7"/>
                             </StackPanel>
                         </Grid>
-                        <ScrollViewer Height="350" IsVisible="{Binding !IsLoadingServers}">
+                        <ScrollViewer Height="350"
+                                      IsVisible="{Binding !IsLoadingServers}"
+                                      HorizontalScrollBarVisibility="Disabled"
+                                      VerticalScrollBarVisibility="Auto">
                             <ItemsControl ItemsSource="{Binding SelectedGameServers}" Padding="10">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate x:DataType="models:ServerInfo">
-                                        <Border Padding="12" Margin="0,2" Background="{DynamicResource ControlFillColorDefaultBrush}" CornerRadius="8">
-                                            <Grid ColumnDefinitions="*, Auto">
-                                                <StackPanel Spacing="4">
+                                        <Border Padding="12" Margin="0,2"
+                                                Background="{DynamicResource ControlFillColorDefaultBrush}"
+                                                CornerRadius="8">
+                                            <Grid ColumnDefinitions="Auto,Auto,*,Auto">
+                                                <StackPanel Grid.Column="0" MinWidth="150"
+                                                            VerticalAlignment="Center" Spacing="4">
                                                     <StackPanel Orientation="Horizontal" Spacing="8">
                                                         <ic:Lucide Icon="Globe" Height="14" Width="14" />
-                                                        <TextBlock Text="{Binding Region}" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                                        <TextBlock Text="{Binding Region}" FontWeight="SemiBold"
+                                                                   VerticalAlignment="Center"/>
                                                         <Border Margin="4,0,0,0" Padding="5,1" CornerRadius="4"
                                                                 Background="{DynamicResource AccentButtonBackground}"
                                                                 IsVisible="{Binding IsLatest}">
-                                                            <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_Latest}" Foreground="{DynamicResource AccentButtonForeground}" FontSize="8" FontWeight="Medium"/>
+                                                            <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_Latest}"
+                                                                       Foreground="{DynamicResource AccentButtonForeground}"
+                                                                       FontSize="8" />
                                                         </Border>
                                                     </StackPanel>
-                                                    <StackPanel Orientation="Horizontal" Spacing="10" IsVisible="{Binding #RootPage.DataContext.IsTrackedGame}">
-                                                        <ic:Lucide Icon="Timer" Height="12" Width="12" Opacity="0.5" />
-                                                        <TextBlock Text="{Binding DurationText}" FontSize="11" Opacity="0.6"/>
+
+                                                    <StackPanel Orientation="Horizontal" Spacing="12">
+
+                                                        <StackPanel Orientation="Horizontal" Spacing="4"
+                                                                    IsVisible="{Binding #RootPage.DataContext.IsCurrentGameApi}">
+                                                            <ic:Lucide Icon="Users" Height="12" Width="12" Opacity="0.5"/>
+                                                            <TextBlock Text="{Binding PlayerCount}" FontSize="11" Opacity="0.7"/>
+                                                        </StackPanel>
+
+                                                        <StackPanel Orientation="Horizontal" Spacing="4"
+                                                                    IsVisible="{Binding #RootPage.DataContext.IsCurrentGameApi}">
+                                                            <ic:Lucide Icon="Timer" Height="12" Width="12" Opacity="0.5"/>
+                                                            <TextBlock Text="{Binding Uptime}" FontSize="11" Opacity="0.7"/>
+                                                        </StackPanel>
+
+                                                        <StackPanel Orientation="Horizontal" Spacing="4"
+                                                                    IsVisible="{Binding #RootPage.DataContext.IsTrackedGame}">
+                                                            <ic:Lucide Icon="Timer" Height="12" Width="12" Opacity="0.5"/>
+                                                            <TextBlock Text="{Binding DurationText}" FontSize="11" Opacity="0.6"/>
+                                                        </StackPanel>
                                                     </StackPanel>
                                                 </StackPanel>
-                                                <controls:IconButton Grid.Column="1" Classes="Primary" VerticalAlignment="Center"
+
+                                                <Border Grid.Column="1" Width="1" Margin="16,4"
+                                                        Background="{DynamicResource DividerStrokeColorDefaultBrush}"
+                                                        IsVisible="{Binding #RootPage.DataContext.IsCurrentGameApi}"/>
+
+                                                <Border Grid.Column="2"
+                                                        HorizontalAlignment="Left" VerticalAlignment="Center"
+                                                        Background="{DynamicResource SolidBackgroundFillColorSecondaryBrush}"
+                                                        CornerRadius="22" Padding="8,4" Margin="4,0,16,0"
+                                                        IsVisible="{Binding #RootPage.DataContext.IsCurrentGameApi}">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <ItemsControl ItemsSource="{Binding PlayerAvatarThumbnails}">
+                                                            <ItemsControl.ItemsPanel>
+                                                                <ItemsPanelTemplate>
+                                                                    <WrapPanel Orientation="Horizontal"/>
+                                                                </ItemsPanelTemplate>
+                                                            </ItemsControl.ItemsPanel>
+                                                            <ItemsControl.ItemTemplate>
+                                                                <DataTemplate>
+                                                                    <Border Width="32" Height="32" Margin="0,0,4,0"
+                                                                            ClipToBounds="True" CornerRadius="16">
+                                                                        <Image Source="{Binding}" Stretch="UniformToFill"/>
+                                                                    </Border>
+                                                                </DataTemplate>
+                                                            </ItemsControl.ItemTemplate>
+                                                        </ItemsControl>
+
+                                                        <Border Width="32" Height="32" CornerRadius="16"
+                                                                Background="{DynamicResource ControlFillColorDefaultBrush}"
+                                                                BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                                                                BorderThickness="1"
+                                                                IsVisible="{Binding HasExtraPlayers}">
+                                                            <TextBlock Text="{Binding ExtraPlayersText}"
+                                                                       VerticalAlignment="Center" HorizontalAlignment="Center"
+                                                                       FontSize="11" FontWeight="SemiBold"
+                                                                       Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
+                                                        </Border>
+                                                    </StackPanel>
+                                                </Border>
+
+                                                <controls:IconButton Grid.Column="3" Classes="Primary"
+                                                                     VerticalAlignment="Center"
                                                                      Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).RejoinLastServerCommand}"
                                                                      CommandParameter="{Binding}"
                                                                      Content="Join" Icon="Play"/>
@@ -352,7 +451,10 @@ SPDX-License-Identifier: MPL-2.0
                                 <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_LoadingSubplaces}" FontSize="12" Opacity="0.7"/>
                             </StackPanel>
                         </Grid>
-                        <ScrollViewer Height="450" IsVisible="{Binding !IsLoadingSubplaces}">
+                        <ScrollViewer Height="450"
+                                      IsVisible="{Binding !IsLoadingSubplaces}"
+                                      HorizontalScrollBarVisibility="Disabled"
+                                      VerticalScrollBarVisibility="Auto">
                             <ItemsControl ItemsSource="{Binding Subplaces}" Padding="10">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
@@ -421,7 +523,9 @@ SPDX-License-Identifier: MPL-2.0
                                 </StackPanel>
                             </Grid>
                             <Grid IsVisible="{Binding !IsLoadingPrivateServers}">
-                                <ScrollViewer IsVisible="{Binding !ArePrivateServersEmpty}">
+                                <ScrollViewer IsVisible="{Binding !ArePrivateServersEmpty}"
+                                              HorizontalScrollBarVisibility="Disabled"
+                                              VerticalScrollBarVisibility="Auto">
                                     <ItemsControl ItemsSource="{Binding PrivateServers}" Padding="10">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate x:DataType="vm:PrivateServerInfo">

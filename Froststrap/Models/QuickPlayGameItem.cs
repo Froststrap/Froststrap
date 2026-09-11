@@ -10,6 +10,7 @@ namespace Froststrap.Models
         public long PlaceId { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Creator { get; set; } = string.Empty;
+        public bool IsVerified { get; set; }
         public string ThumbnailUrl { get; set; } = string.Empty;
         public long Playing { get; set; }
         public long Visits { get; set; }
