@@ -7,6 +7,7 @@ using Avalonia.Media;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.Integrations;
+using Froststrap.Integrations.AccountManager;
 using Froststrap.UI.Elements.Dialogs;
 using System.Collections.ObjectModel;
 
@@ -377,7 +378,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 }
                 else if (SelectedAddMethod == Strings.Common_Browser)
                 {
-                    newAccount = await _accountManager.AddAccountByBrowser();
+                    newAccount = await _accountManager.AddAccountByBrowserAsync();
                 }
                 else if (SelectedAddMethod == Strings.Common_Manual)
                 {

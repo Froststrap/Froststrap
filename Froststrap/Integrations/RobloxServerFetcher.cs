@@ -1,10 +1,12 @@
-﻿﻿using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Net.Http.Headers;
+using Froststrap.Integrations;
 
 namespace Froststrap.Integrations
 {
     internal class RobloxServerFetcher : IDisposable
     {
+        private static readonly AccountManager.AccountManager _accountManager = null;
         private readonly HttpClient _client;
         private Dictionary<int, string>? _datacenterIdToRegion;
         private List<string>? _regionList;
@@ -402,9 +404,9 @@ namespace Froststrap.Integrations
         {
             try
             {
-                if (AccountManager.Shared?.ActiveAccount != null)
+                if (_accountManager?.ActiveAccount != null)
                 {
-                    return Task.FromResult<string?>(AccountManager.Shared.ActiveAccount.SecurityToken);
+                    return Task.FromResult<string?>(_accountManager.ActiveAccount.SecurityToken);
                 }
             }
             catch (Exception ex)
