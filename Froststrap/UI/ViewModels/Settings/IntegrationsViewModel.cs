@@ -261,7 +261,6 @@ namespace Froststrap.UI.ViewModels.Settings
                 }
                 else
                 {
-                    App.FrostRPC?.Dispose();
                     App.FrostRPC = null;
                 }
             }

@@ -104,14 +104,13 @@ namespace Froststrap
 
                 if (App.Settings.Prop.ShowUsingFroststrapRPC && App.FrostRPC == null)
                 {
-                    _ = Task.Run(() => App.FrostRPC = new FroststrapRichPresence());
+                    App.FrostRPC = new FroststrapRichPresence();
                 }
             };
 
             window.Closed += (s, e) =>
             {
                 interlock.Dispose();
-                App.FrostRPC?.Dispose();
                 App.FrostRPC = null;
                 ProcessNextAction(window.CloseAction);
             };
@@ -134,7 +133,6 @@ namespace Froststrap
 
             dialog.Closed += (sender, e) =>
             {
-                App.FrostRPC?.Dispose();
                 App.FrostRPC = null;
                 ProcessNextAction(dialog.CloseAction);
             };
