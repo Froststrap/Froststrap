@@ -24,6 +24,7 @@
     "ExecutableTarget": {
       "type": "string",
       "enum": [
+        "BuildDebug",
         "Clean",
         "Compile",
         "Restore"
@@ -114,6 +115,10 @@
             "Release"
           ],
           "description": "Configuration to build - Default is 'Debug' (local) or 'Release' (server)"
+        },
+        "Solution": {
+          "type": "string",
+          "description": "Path to a solution file that is automatically loaded"
         }
       }
     },
