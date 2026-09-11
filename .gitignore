@@ -8,6 +8,7 @@ build/
 publish/
 DerivedData/
 .DS_Store
+.fallout/temp
 
 # IDE stuff
 .vs/
