@@ -33,6 +33,7 @@ namespace Froststrap
         public static string Application { get; private set; } = "";
 
         public static string SoberAssetOverlay { get; private set; } = "";
+        public static string SoberData { get; private set; } = "";
         public static string SoberConfig { get; private set; } = "";
 
         public static string CustomFont => Path.Combine(Modifications, "content", "fonts", "CustomFont.ttf");
@@ -95,6 +96,8 @@ namespace Froststrap
 
                 // Sober data lives under Versions/Sober (symlink target managed by Installer)
                 Roblox = Path.Combine(DataRoot, "Versions", "Sober");
+
+                SoberData = Path.Combine(Roblox, "data", "sober");
 
                 SoberAssetOverlay = Path.Combine(Roblox, "data", "sober", "asset_overlay");
 

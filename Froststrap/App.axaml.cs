@@ -593,11 +593,12 @@ internal partial class App : Application
         {
             try
             {
-                _ = Task.WhenAll(
-                    Task.Run(() => FastFlags.Load()),
-                    Task.Run(() => AppStorage.Load()),
-                    Task.Run(() => GlobalSettings.Load())
-                );
+                FastFlags.Load();
+                AppStorage.Load();
+                GlobalSettings.Load();
+
+                if (OperatingSystem.IsLinux())
+                    SoberSettings.Load(alertFailure: false);
 
                 _ = AssertWindowsAUMIDAsync();
 
