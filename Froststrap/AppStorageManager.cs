@@ -11,7 +11,7 @@ internal class AppStorageManager : JsonManager<Dictionary<string, object>>
 
     public override string ClassName => nameof(AppStorageManager);
     public override string FileName => "appStorage.json";
-    public override string FileLocation => Path.Combine(Paths.Roblox, "LocalStorage", FileName);
+    public override string FileLocation => Path.Combine(Paths.SoberData, "appData", "LocalStorage", FileName);
 
     public static readonly IReadOnlyDictionary<string, string> PresetKeys = new Dictionary<string, string>
     {
@@ -133,9 +133,10 @@ internal class AppStorageManager : JsonManager<Dictionary<string, object>>
 
         if (!File.Exists(FileLocation))
         {
-            App.Logger.Error("File does not exist. No storage loaded.");
+            App.Logger.Info("File does not exist. Initialising empty storage.");
             Loaded = false;
             Prop = [];
+            _savedHash = ComputeHash(Prop);
             return false;
         }
 
