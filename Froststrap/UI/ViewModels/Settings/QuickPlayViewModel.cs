@@ -5,6 +5,7 @@
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.Integrations;
+using Froststrap.Integrations.AccountManager;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
