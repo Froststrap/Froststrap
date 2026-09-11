@@ -1227,6 +1227,10 @@ internal partial class Bootstrapper : IDisposable
 
             App.Logger.Info("Sober process exited");
         }
+        catch (OperationCanceledException)
+        {
+            App.Logger.Info("Sober launch cancelled by user.");
+        }
         catch (Exception ex)
         {
             App.Logger.Error($"Failed to launch Sober via flatpak! {ex}");
@@ -1354,7 +1358,7 @@ internal partial class Bootstrapper : IDisposable
                 }
                 catch (Exception)
                 {
-                    // process might have exited between enumeration and accessing StartTime 
+                    // process might have exited between enumeration and accessing StartTime
                 }
             }
 
