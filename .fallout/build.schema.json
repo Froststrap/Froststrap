@@ -27,6 +27,7 @@
         "BuildDebug",
         "Clean",
         "Compile",
+        "Publish",
         "Restore"
       ]
     },
