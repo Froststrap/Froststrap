@@ -47,7 +47,7 @@ internal partial class App : Application
 
     public static Bootstrapper? Bootstrapper { get; set; } = null!;
 
-    public FroststrapRichPresence RichPresence { get; private set; } = null!;
+    public FroststrapRichPresence? RichPresence { get; private set; }
 
     public static bool IsActionBuild => !String.IsNullOrEmpty(BuildMetadata.CommitRef);
 
@@ -392,7 +392,17 @@ internal partial class App : Application
     public static FroststrapRichPresence? FrostRPC
     {
         get => (Current as App)?.RichPresence;
-        set { if (Current is App app) app.RichPresence = value!; }
+        set
+        {
+            if (Current is not App app)
+                return;
+
+            if (ReferenceEquals(app.RichPresence, value))
+                return;
+
+            app.RichPresence?.Dispose();
+            app.RichPresence = value;
+        }
     }
 
     public static async Task<GithubRelease?> GetLatestRelease(bool includePreRelease = false)
@@ -444,6 +454,11 @@ internal partial class App : Application
     {
         if (ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
             return;
+
+        desktop.Exit += (_, _) =>
+        {
+            FrostRPC = null;
+        };
 
 #if __APPLE__
         desktop.ShutdownRequested += (_, _) =>
