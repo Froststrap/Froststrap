@@ -195,7 +195,7 @@ jobs:
           draft: true
           fail_on_unmatched_files: true
           files: |
-            release/Froststrap-windows.msi
+            release/Froststrap-windows-x64.exe
             release/Froststrap-macos-arm64.pkg
             release/Froststrap-macos-x64.pkg
             release/Froststrap-linux-x64.AppImage
