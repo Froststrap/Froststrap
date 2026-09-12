@@ -27,9 +27,9 @@ Name "Froststrap"
 !endif
 
 !ifdef SELFCONTAINED
-  OutFile "..\build\Froststrap-Setup.exe"
+  OutFile "..\build\Froststrap-windows-x64.exe"
 !else
-  OutFile "${PUBLISH_DIR}\Froststrap-Setup.exe"
+  OutFile "${PUBLISH_DIR}\Froststrap-windows-x64.exe"
 !endif
 
 Icon "..\Froststrap\Froststrap.ico"
