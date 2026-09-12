@@ -109,6 +109,9 @@ SPDX-License-Identifier: MPL-2.0
                     <controls:OptionControl Header="{x:Static resources:Strings.Menu_GlobalSettings_PartyVolume_Title}" Description="{x:Static resources:Strings.Menu_GlobalSettings_PartyVolume_Description}">
                         <fa:ShowValueSlider Width="250" Minimum="0" Maximum="1" TickFrequency="0.1" IsSnapToTickEnabled="True" Value="{Binding PartyVoiceVolume}" ShowValue="True" />
                     </controls:OptionControl>
+                    <controls:OptionControl Header="{x:Static resources:Strings.Menu_GlobalSettings_VoiceChatVolume_Title}" Description="{x:Static resources:Strings.Menu_GlobalSettings_VoiceChatVolume_Description}">
+                        <fa:ShowValueSlider Width="250" Minimum="0" Maximum="1" TickFrequency="0.1" IsSnapToTickEnabled="True" Value="{Binding VoiceChatVolume}" ShowValue="True" />
+                    </controls:OptionControl>
                 </StackPanel>
 
                 <Separator Margin="0,12,0,12" />

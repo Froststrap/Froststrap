@@ -26,6 +26,7 @@ namespace Froststrap
             { "Audio.MasterVolume", "{UserSettings}/float[@name='MasterVolume']" },
             { "Audio.MasterVolumeStudio", "{UserSettings}/float[@name='MasterVolumeStudio']" },
             { "Audio.PartyVoiceVolume", "{UserSettings}/float[@name='PartyVoiceVolume']" },
+            { "Audio.VoiceChatVolume", "{UserSettings}/float[@name='VoiceChatVolume']" },
 
             // Input Settings
             { "User.MouseSensitivity", "{UserSettings}/float[@name='MouseSensitivity']" },
@@ -73,7 +74,7 @@ namespace Froststrap
         public bool Loaded { get; set; }
 
         public static string FileLocation => OperatingSystem.IsLinux() ?
-                Path.Combine(Paths.Roblox, "data", "sober", "appData", "GlobalBasicSettings_13.xml") :
+                Path.Combine(Paths.SoberData, "appData", "GlobalBasicSettings_13.xml") :
                     OperatingSystem.IsMacOS() ?
                         Path.Combine(Paths.UserProfile, "Library", "Roblox", "GlobalBasicSettings_13.xml") :
                             Path.Combine(Paths.Roblox, "GlobalBasicSettings_13.xml");

@@ -2192,8 +2192,14 @@ Please dont mess with this if you dont know what your doing</value>
   <data name="Menu.GlobalSettings.PartyVolume.Title" xml:space="preserve">
     <value>Party Volume</value>
   </data>
+  <data name="Menu.GlobalSettings.VoiceChatVolume.Title" xml:space="preserve">
+    <value>Voice Chat Volume</value>
+  </data>
   <data name="Menu.GlobalSettings.PartyVolume.Description" xml:space="preserve">
     <value>Volume for party voice mode.</value>
+  </data>
+  <data name="Menu.GlobalSettings.VoiceChatVolume.Description" xml:space="preserve">
+    <value>Volume for voice chat.</value>
   </data>
   <data name="Menu.GlobalSettings.Sensitivity.Title" xml:space="preserve">
     <value>Sensitivity</value>
