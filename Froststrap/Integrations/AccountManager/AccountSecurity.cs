@@ -5,7 +5,6 @@
 
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
-using System.Text;
 using ktsu.CredentialCache;
 using ktsu.Semantics.Strings;
 
@@ -27,7 +26,7 @@ internal static class AccountSecurity
             if (ktsu.CredentialCache.CredentialCache.Instance.TryGet(persona, out Credential? credential)
                 && credential is CredentialWithToken token)
             {
-                return token.Token.ToString();
+                return token.Token.ToString(CultureInfo.InvariantCulture);
             }
         }
         catch

@@ -3183,7 +3183,7 @@ Would you like to visit the releases page now?</value>
     <value>Create shortcuts that allows you to join specific games/servers quickly.</value>
   </data>
   <data name="Menu.RegionSelector.Description" xml:space="preserve">
-    <value>Select a region to join into.</value>
+    <value>Pick a region to join. Login to Account Manager is recommended.</value>
   </data>
   <data name="Menu.Deployment.PlayerOverrideHash.Title" xml:space="preserve">
     <value>Override Player Version</value>
@@ -3304,5 +3304,8 @@ All files will be moved, shortcuts updated, and the application will restart.</v
   </data>
   <data name="Menu.QuickPlay.LoginToSeeRecommended" xml:space="preserve">
     <value>Please log in to account manager see your Recommended games.</value>
+  </data>
+  <data name="Menu.RegionSelector.LoadingMore" xml:space="preserve">
+    <value>Loading more servers</value>
   </data>
 </root>

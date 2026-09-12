@@ -5,7 +5,6 @@ namespace Froststrap.Integrations
 {
     internal class RobloxServerFetcher : IDisposable
     {
-        private static readonly AccountManager.AccountManager _accountManager = null;
         private readonly HttpClient _client;
         private Dictionary<int, string>? _datacenterIdToRegion;
         private List<string>? _regionList;
@@ -120,9 +119,8 @@ namespace Froststrap.Integrations
         }
 
         public async Task<(List<ServerInstance> Servers, int? NextCursor)> FetchServersByRegionAsync(
-            long placeId, string region, int? cursor = null, CancellationToken cancellationToken = default)
+            long placeId, string region, int? cursor = null, int limit = 100, CancellationToken cancellationToken = default)
         {
-            const int limit = 100;
             var results = new List<ServerInstance>();
 
             try
@@ -197,7 +195,7 @@ namespace Froststrap.Integrations
             foreach (var region in regions)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                var (servers, _) = await FetchServersByRegionAsync(placeId, region, null, cancellationToken);
+                var (servers, _) = await FetchServersByRegionAsync(placeId, region, null, cancellationToken: cancellationToken);
 
                 foreach (var s in servers)
                 {
@@ -404,15 +402,16 @@ namespace Froststrap.Integrations
         {
             try
             {
-                if (_accountManager?.ActiveAccount != null)
-                {
-                    return Task.FromResult<string?>(_accountManager.ActiveAccount.SecurityToken);
-                }
+                var active = AccountManager.AccountManager.Shared?.ActiveAccount;
+
+                if (active != null && !string.IsNullOrWhiteSpace(active.SecurityToken))
+                    return Task.FromResult<string?>(active.SecurityToken);
             }
             catch (Exception ex)
             {
                 App.Logger.Error("Unhandled exception:", ex);
             }
+
             return Task.FromResult<string?>(null);
         }
 
@@ -456,7 +455,7 @@ namespace Froststrap.Integrations
             return null;
         }
 
-        private async Task<bool> IsServerAliveAsync(long placeId, string jobId, string roblosecurity, CancellationToken cancellationToken)
+        public async Task<bool> IsServerAliveAsync(long placeId, string jobId, string roblosecurity, CancellationToken cancellationToken)
         {
             try
             {
@@ -631,7 +630,7 @@ namespace Froststrap.Integrations
                         return new ServerSelectionResult();
                     }
 
-                    var (servers, _) = await FetchServersByRegionAsync(placeId, region, null, cancellationToken);
+                    var (servers, _) = await FetchServersByRegionAsync(placeId, region, null, cancellationToken :cancellationToken);
                     if (servers.Count == 0) continue;
 
                     var sorted = servers.OrderBy(s => s.FirstSeen).ToList();
@@ -706,7 +705,7 @@ namespace Froststrap.Integrations
                 if (string.IsNullOrEmpty(cookie))
                     App.Logger.Warn("No valid cookie for server liveliness checks.");
 
-                var (servers, _) = await FetchServersByRegionAsync(placeId, selectedRegion, null, cancellationToken);
+                var (servers, _) = await FetchServersByRegionAsync(placeId, selectedRegion, null, cancellationToken: cancellationToken);
                 if (servers.Count == 0)
                     return new ServerSelectionResult();
 
