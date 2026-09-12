@@ -224,9 +224,7 @@ SPDX-License-Identifier: MPL-2.0
                                              HorizontalAlignment="Stretch"
                                              Height="40"
                                              Icon="Play"
-                                             Background="{DynamicResource SystemAccentColor}"
-                                             Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}"
-                                             Classes="accent"/>
+                                             Classes="Primary"/>
 
                         <TextBlock Text="{Binding StatusText}"
                                    Margin="0,12,0,0"
