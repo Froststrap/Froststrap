@@ -18,6 +18,9 @@ jobs:
         with:
           dotnet-version: "10.0.x"
 
+      - name: Install NSIS
+        uses: negrutiu/nsis-install@v2
+
       - name: Install Nushell
         shell: pwsh
         run: |
