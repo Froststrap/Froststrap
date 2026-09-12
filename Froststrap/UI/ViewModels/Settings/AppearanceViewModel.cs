@@ -22,11 +22,11 @@ namespace Froststrap.UI.ViewModels.Settings
         private static readonly string[] _zipFilter = ["*.zip"];
         private static readonly string[] JsonPatterns = ["*.json"];
         private static readonly JsonSerializerOptions SerializationOptions = new() { WriteIndented = true };
-
         private CustomThemeCycleSelectionWrapper? _selectedThemeWrapper;
 
         public ICommand PreviewBootstrapperCommand => new RelayCommand(PreviewBootstrapper);
         public IAsyncRelayCommand BrowseCustomIconLocationCommand => new AsyncRelayCommand<Control>(async c => await BrowseCustomIconLocation(c));
+        public IAsyncRelayCommand BrowseCustomRobloxIconLocationCommand => new AsyncRelayCommand<Control>(async c => await BrowseCustomRobloxIconLocation(c));
 
         public ICommand AddCustomThemeCommand => new RelayCommand<Control>(async c => await AddCustomTheme(c));
         public ICommand EditCustomThemeCommand => new RelayCommand<Control>(async c => await EditCustomTheme(c));
@@ -70,6 +70,29 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 CustomIconLocation = files[0].Path.LocalPath;
                 OnPropertyChanged(nameof(CustomIconLocation));
+            }
+        }
+
+        private async Task BrowseCustomRobloxIconLocation(Control? control)
+        {
+            if (control is null) return;
+
+            var topLevel = TopLevel.GetTopLevel(control);
+            if (topLevel is not Window parentWindow) return;
+
+            var storageProvider = parentWindow.StorageProvider;
+
+            var files = await storageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+            {
+                Title = "Select Roblox Icon File",
+                AllowMultiple = false,
+                FileTypeFilter = [new FilePickerFileType("Icons") { Patterns = ["*.ico"] }]
+            });
+
+            if (files.Count > 0)
+            {
+                CustomRobloxIconLocation = files[0].Path.LocalPath;
+                OnPropertyChanged(nameof(CustomRobloxIconLocation));
             }
         }
 
@@ -119,6 +142,20 @@ namespace Froststrap.UI.ViewModels.Settings
         }
 
         public static bool IsCustomIconSelected => App.Settings.Prop.BootstrapperIcon == BootstrapperIcon.IconCustom;
+
+        public ObservableCollection<RobloxIconEntry> RobloxIcons { get; set; } = [];
+
+        public RobloxIcon RobloxIcon
+        {
+            get => App.Settings.Prop.RobloxIcon;
+            set
+            {
+                App.Settings.Prop.RobloxIcon = value;
+                OnPropertyChanged(nameof(IsCustomRobloxIconSelected));
+            }
+        }
+
+        public static bool IsCustomRobloxIconSelected => App.Settings.Prop.RobloxIcon == RobloxIcon.IconCustom;
 
         public static IEnumerable<WindowsBackdrops> BackdropOptions => Enum.GetValues<WindowsBackdrops>().Where(IsBackdropSupported);
 
@@ -180,6 +217,99 @@ namespace Froststrap.UI.ViewModels.Settings
 
                 OnPropertyChanged(nameof(Icon));
                 OnPropertyChanged(nameof(Icons));
+
+                if (!App.Settings.Prop.EnableActivityTracking && App.Settings.Prop.EnableWindowManipulation)
+                {
+                    App.Settings.Prop.EnableWindowManipulation = true;
+                    WindowManipulationEnabled = false;
+                }
+            }
+        }
+
+        public bool WindowManipulationEnabled
+        {
+            get => ActivityTrackingEnabled && App.Settings.Prop.EnableWindowManipulation;
+            set
+            {
+                if (value && !ActivityTrackingEnabled)
+                    return;
+
+                if (App.Settings.Prop.EnableWindowManipulation == value)
+                    return;
+
+                App.Settings.Prop.EnableWindowManipulation = value;
+
+                if (!value)
+                {
+                    App.Settings.Prop.RobloxTitle = "Roblox";
+                    App.Settings.Prop.RobloxIcon = RobloxIcon.IconDefault;
+                    App.Settings.Prop.RobloxIconCustomLocation = "";
+                    App.Settings.Prop.AutoChangeTitle = false;
+                    App.Settings.Prop.AutoChangeTitleWithPlayerCount = false;
+                    App.Settings.Prop.AutoChangeIcon = false;
+
+                    OnPropertyChanged(nameof(WindowTitle));
+                    OnPropertyChanged(nameof(RobloxIcon));
+                    OnPropertyChanged(nameof(CustomRobloxIconLocation));
+                    OnPropertyChanged(nameof(IsCustomRobloxIconSelected));
+                    OnPropertyChanged(nameof(AutoChangeTitle));
+                    OnPropertyChanged(nameof(AutoChangeTitlePlayerCounter));
+                    OnPropertyChanged(nameof(AutoChangeIcon));
+                }
+
+                OnPropertyChanged(nameof(WindowManipulationEnabled));
+            }
+        }
+
+        public bool ActivityTrackingEnabled
+        {
+            get => App.Settings.Prop.EnableActivityTracking;
+            set
+            {
+                if (App.Settings.Prop.EnableActivityTracking == value)
+                    return;
+
+                App.Settings.Prop.EnableActivityTracking = value;
+                OnPropertyChanged(nameof(ActivityTrackingEnabled));
+
+                if (!value)
+                    WindowManipulationEnabled = false;
+            }
+        }
+
+        public string CustomRobloxIconLocation
+        {
+            get => App.Settings.Prop.RobloxIconCustomLocation;
+            set
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    if (App.Settings.Prop.RobloxIcon == RobloxIcon.IconCustom)
+                        App.Settings.Prop.RobloxIcon = RobloxIcon.IconDefault;
+                }
+                else
+                {
+                    App.Settings.Prop.RobloxIcon = RobloxIcon.IconCustom;
+                }
+
+                App.Settings.Prop.RobloxIconCustomLocation = value;
+                RobloxIconEx.InvalidateCustomIcon();
+
+                var customEntry = RobloxIcons.FirstOrDefault(e => e.IconType == RobloxIcon.IconCustom);
+                customEntry?.RefreshImage();
+
+                OnPropertyChanged(nameof(RobloxIcon));
+                OnPropertyChanged(nameof(RobloxIcons));
+            }
+        }
+
+        public string WindowTitle
+        {
+            get => App.Settings.Prop.RobloxTitle;
+            set
+            {
+                App.Settings.Prop.RobloxTitle = value;
+                OnPropertyChanged(nameof(WindowTitle));
             }
         }
 
@@ -188,10 +318,50 @@ namespace Froststrap.UI.ViewModels.Settings
             foreach (var entry in BootstrapperIconEx.Selections)
                 Icons.Add(new() { IconType = entry });
 
+            foreach (var entry in RobloxIconEx.Selections)
+                RobloxIcons.Add(new() { IconType = entry });
+
             PopulateCustomThemes();
             InitializeGradientStops();
         }
 
+        public bool AutoChangeTitle
+        {
+            get => App.Settings.Prop.AutoChangeTitle;
+            set
+            {
+                App.Settings.Prop.AutoChangeTitle = value;
+
+                if (!value)
+                {
+                    AutoChangeTitlePlayerCounter = false;
+                    OnPropertyChanged(nameof(AutoChangeTitlePlayerCounter));
+                }
+
+                OnPropertyChanged(nameof(AutoChangeTitle));
+            }
+        }
+
+        public bool AutoChangeTitlePlayerCounter
+        {
+            get => App.Settings.Prop.AutoChangeTitleWithPlayerCount;
+            set
+            {
+                App.Settings.Prop.AutoChangeTitleWithPlayerCount = value;
+                OnPropertyChanged(nameof(AutoChangeTitlePlayerCounter));
+            }
+        }
+
+        public bool AutoChangeIcon
+        {
+            get => App.Settings.Prop.AutoChangeIcon;
+            set
+            {
+                App.Settings.Prop.AutoChangeIcon = value;
+                OnPropertyChanged(nameof(AutoChangeIcon));
+            }
+        }
+        
         public IEnumerable<NavigationViewPaneDisplayMode> PaneDisplayModes { get; } = Enum.GetValues<NavigationViewPaneDisplayMode>();
 
         private NavigationViewPaneDisplayMode _selectedPaneDisplayMode = App.Settings.Prop.NavigationPaneDisplayMode;

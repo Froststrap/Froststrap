@@ -103,8 +103,6 @@ namespace Froststrap.UI.ViewModels.Settings
                     AutoRejoinEnabled = false;
                     PlaytimeCounterEnabled = false;
                     DisableAppPatchEnabled = false;
-                    AutoChangeTitle = false;
-                    AutoChangeIcon = false;
                     DiscordActivityEnabled = false;
                     DiscordActivityJoinEnabled = false;
                     StudioRPCEnabled = false;
@@ -113,8 +111,6 @@ namespace Froststrap.UI.ViewModels.Settings
                     OnPropertyChanged(nameof(ShowGameHistoryEnabled));
                     OnPropertyChanged(nameof(AutoRejoinEnabled));
                     OnPropertyChanged(nameof(PlaytimeCounterEnabled));
-                    OnPropertyChanged(nameof(AutoChangeTitle));
-                    OnPropertyChanged(nameof(AutoChangeIcon));
                     OnPropertyChanged(nameof(DisableAppPatchEnabled));
                     OnPropertyChanged(nameof(DiscordActivityEnabled));
                     OnPropertyChanged(nameof(DiscordActivityJoinEnabled));
@@ -169,35 +165,6 @@ namespace Froststrap.UI.ViewModels.Settings
                 App.Settings.Prop.ShowGameHistoryMenu = value;
                 OnPropertyChanged(nameof(ShowGameHistoryEnabled));
             }
-        }
-
-        public bool AutoChangeTitle
-        {
-            get => App.Settings.Prop.AutoChangeTitle;
-            set
-            {
-                App.Settings.Prop.AutoChangeTitle = value;
-
-                if (!value)
-                {
-                    AutoChangeTitlePlayerCounter = false;
-                    OnPropertyChanged(nameof(AutoChangeTitlePlayerCounter));
-                }
-
-                OnPropertyChanged(nameof(AutoChangeTitle));
-            }
-        }
-
-        public static bool AutoChangeTitlePlayerCounter
-        {
-            get => App.Settings.Prop.AutoChangeTitleWithPlayerCount;
-            set => App.Settings.Prop.AutoChangeTitleWithPlayerCount = value;
-        }
-
-        public static bool AutoChangeIcon
-        {
-            get => App.Settings.Prop.AutoChangeIcon;
-            set => App.Settings.Prop.AutoChangeIcon = value;
         }
 
         private async void OpenGameHistory()

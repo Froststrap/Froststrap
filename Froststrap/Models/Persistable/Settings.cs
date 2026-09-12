@@ -79,6 +79,10 @@ namespace Froststrap.Models.Persistable
         public string BootstrapperIconCustomLocation { get; set; } = "";
         public int MaxThreadDownload { get; set; } = 3;
         public Theme Theme { get; set; } = Theme.Default;
+        public bool EnableWindowManipulation { get; set; }
+        public RobloxIcon RobloxIcon { get; set; } = RobloxIcon.IconDefault;
+        public string RobloxTitle { get; set; } = "Roblox";
+        public string RobloxIconCustomLocation { get; set; } = "";
 
         // Deployment Page
         public UpdateCheck UpdateChecks { get; set; } = UpdateCheck.Stable;

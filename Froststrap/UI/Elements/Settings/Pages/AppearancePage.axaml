@@ -13,7 +13,7 @@ SPDX-License-Identifier: MPL-2.0
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:colorPicker="clr-namespace:ColorPicker;assembly=ColorPicker.AvaloniaUI"
     xmlns:resources="using:Froststrap.Resources"
-	xmlns:gv="using:Froststrap.UI.ViewModels"
+    xmlns:gv="using:Froststrap.UI.ViewModels"
     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
     d:DesignHeight="2500"
     d:DesignWidth="1200"
@@ -173,7 +173,7 @@ SPDX-License-Identifier: MPL-2.0
                 <controls:OptionControl
                     Header="{x:Static resources:Strings.Menu_Appearance_WindowsBackdrop_Title}"
                     Description="{x:Static resources:Strings.Menu_Appearance_WindowsBackdrop_Description}"
-					IsVisible="{x:Static gv:GlobalViewModel.IsWindows}">
+                    IsVisible="{x:Static gv:GlobalViewModel.IsWindows}">
                     <ComboBox
                         MinWidth="200"
                         Margin="5,0,0,0"
@@ -206,6 +206,111 @@ SPDX-License-Identifier: MPL-2.0
                         ItemsSource="{Binding Languages, Mode=OneTime}"
                         SelectedItem="{Binding SelectedLanguage, Mode=TwoWay}" />
                 </controls:OptionControl>
+
+                <Separator Margin="0,12" />
+
+				<StackPanel Margin="0,8,0,0" VerticalAlignment="Bottom">
+					<TextBlock
+						FontSize="20"
+						FontWeight="Bold"
+						Text="Roblox" />
+					<TextBlock
+						Margin="0,4,0,10"
+						Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+						Text="Customize how the Roblox window looks like."
+						TextWrapping="Wrap" />
+				</StackPanel>
+
+				<controls:CardExpander
+					Classes="NoUserExpansion"
+					IsExpanded="{Binding WindowManipulationEnabled, Mode=OneWay}"
+					Header="Window Manipulation"
+					Description="Allow Froststrap to customize the Roblox window (title, icon, etc.)."
+					IsVisible="{x:Static gv:GlobalViewModel.IsWindows}">
+					<controls:CardExpander.HeaderContent>
+						<ToggleSwitch
+							IsChecked="{Binding WindowManipulationEnabled, Mode=TwoWay}"
+							IsEnabled="{Binding ActivityTrackingEnabled}" />
+					</controls:CardExpander.HeaderContent>
+
+					<StackPanel IsEnabled="{Binding WindowManipulationEnabled}">
+
+						<controls:OptionControl
+							Header="{x:Static resources:Strings.Menu_Appearance_RobloxTitle_Title}"
+							Description="{x:Static resources:Strings.Menu_Appearance_RobloxTitle_Description}">
+							<TextBox
+								Width="200"
+								PlaceholderText="Roblox"
+								Text="{Binding WindowTitle, Mode=TwoWay}" />
+						</controls:OptionControl>
+
+						<controls:OptionControl
+							Header="{x:Static resources:Strings.Menu_Appearance_RobloxIcon_Title}"
+							Description="{x:Static resources:Strings.Menu_Appearance_RobloxIcon_Description}"
+							HelpLink="https://wiki.fishstrap.app/manual/appearance/#custom-icons">
+							<Grid Width="200"
+								  HorizontalAlignment="Right"
+								  ColumnDefinitions="*, Auto">
+								<ComboBox
+									HorizontalAlignment="Stretch"
+									Padding="10,5,10,5"
+									ItemsSource="{Binding RobloxIcons, Mode=OneWay}"
+									SelectedValue="{Binding RobloxIcon, Mode=TwoWay}"
+									SelectedValueBinding="{Binding IconType}">
+									<ComboBox.ItemTemplate>
+										<DataTemplate>
+											<Grid ColumnDefinitions="16,*">
+												<Image
+													Height="16"
+													RenderOptions.BitmapInterpolationMode="HighQuality"
+													Source="{Binding ImageSource, Mode=OneWay}" />
+												<TextBlock
+													Grid.Column="1"
+													Margin="8,0,0,0"
+													Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+													Text="{Binding Path=IconType, Converter={StaticResource EnumNameConverter}}" />
+											</Grid>
+										</DataTemplate>
+									</ComboBox.ItemTemplate>
+								</ComboBox>
+
+								<controls:IconButton
+									Grid.Column="1"
+									Margin="4,0,0,0"
+									Icon="Folder"
+									ToolTip.Tip="{Binding CustomRobloxIconLocation, Mode=OneWay}"
+									Command="{Binding BrowseCustomRobloxIconLocationCommand}"
+									CommandParameter="{Binding $self}"
+									IsEnabled="{Binding IsCustomRobloxIconSelected}" />
+							</Grid>
+						</controls:OptionControl>
+
+						<controls:CardExpander
+							Classes="NoUserExpansion"
+							IsExpanded="{Binding AutoChangeTitle, Mode=OneWay}"
+							Description="{x:Static resources:Strings.Menu_Integrations_TitleChange_Description}"
+							Header="{x:Static resources:Strings.Menu_Integrations_TitleChange_Title}">
+							<controls:CardExpander.HeaderContent>
+								<ToggleSwitch IsChecked="{Binding AutoChangeTitle, Mode=TwoWay}" />
+							</controls:CardExpander.HeaderContent>
+
+							<StackPanel Margin="0,8,0,0">
+								<controls:OptionControl
+									Description="{x:Static resources:Strings.Menu_Integrations_TitleChangePlayer_Description}"
+									Header="{x:Static resources:Strings.Menu_Integrations_TitleChangePlayer_Title}"
+									IsEnabled="{Binding AutoChangeTitle}">
+									<ToggleSwitch IsChecked="{Binding AutoChangeTitlePlayerCounter, Mode=TwoWay}" />
+								</controls:OptionControl>
+							</StackPanel>
+						</controls:CardExpander>
+
+						<controls:OptionControl
+							Header="{x:Static resources:Strings.Menu_Integrations_IconChange_Title}"
+							Description="{x:Static resources:Strings.Menu_Integrations_IconChange_Description}">
+							<ToggleSwitch IsChecked="{Binding AutoChangeIcon, Mode=TwoWay}" />
+						</controls:OptionControl>
+					</StackPanel>
+				</controls:CardExpander>
 
                 <Separator Margin="0,12" />
 

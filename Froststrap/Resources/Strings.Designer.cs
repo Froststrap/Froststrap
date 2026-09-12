@@ -3744,6 +3744,42 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Choose what icon Roblox should display on the taskbar..
+        /// </summary>
+        public static string Menu_Appearance_RobloxIcon_Description {
+            get {
+                return ResourceManager.GetString("Menu.Appearance.RobloxIcon.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Roblox icon.
+        /// </summary>
+        public static string Menu_Appearance_RobloxIcon_Title {
+            get {
+                return ResourceManager.GetString("Menu.Appearance.RobloxIcon.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose what title Roblox window should have..
+        /// </summary>
+        public static string Menu_Appearance_RobloxTitle_Description {
+            get {
+                return ResourceManager.GetString("Menu.Appearance.RobloxTitle.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Roblox title.
+        /// </summary>
+        public static string Menu_Appearance_RobloxTitle_Title {
+            get {
+                return ResourceManager.GetString("Menu.Appearance.RobloxTitle.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Stretch Mode:.
         /// </summary>
         public static string Menu_Appearance_StretchMode {
@@ -3776,6 +3812,15 @@ namespace Froststrap.Resources {
         public static string Menu_Appearance_Title {
             get {
                 return ResourceManager.GetString("Menu.Appearance.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This feature requires window manipulation.
+        /// </summary>
+        public static string Menu_Appearance_WindowManipulationAlert {
+            get {
+                return ResourceManager.GetString("Menu.Appearance.WindowManipulationAlert", resourceCulture);
             }
         }
         
@@ -6425,6 +6470,24 @@ namespace Froststrap.Resources {
         public static string Menu_Integrations_EnableActivityTracking_Title {
             get {
                 return ResourceManager.GetString("Menu.Integrations.EnableActivityTracking.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allows Fishstrap to access Roblox&apos;s window handle allowing for better customization and features..
+        /// </summary>
+        public static string Menu_Integrations_EnableWindowManipulation_Description {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.EnableWindowManipulation.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable window manipulation.
+        /// </summary>
+        public static string Menu_Integrations_EnableWindowManipulation_Title {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.EnableWindowManipulation.Title", resourceCulture);
             }
         }
         

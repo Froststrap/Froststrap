@@ -19,6 +19,8 @@ namespace Froststrap
 
         public readonly IntegrationWatcher? IntegrationWatcher;
 
+        public readonly WindowManipulation? WindowManipulation;
+
         public readonly Softkey? Softkey;
 
         public readonly PlayerDiscordRichPresence? PlayerRichPresence;
@@ -64,6 +66,9 @@ namespace Froststrap
 
             ProcessId = _watcherData.ProcessId;
 
+            if (OperatingSystem.IsWindows() && App.Settings.Prop.EnableWindowManipulation && App.Settings.Prop.EnableActivityTracking)
+                WindowManipulation = new(_watcherData.ProcessId);
+
             if (OperatingSystem.IsLinux() && App.Settings.Prop.StudioGameMode && (_watcherData.LaunchMode == LaunchMode.Studio || _watcherData.LaunchMode == LaunchMode.StudioAuth))
             {
                 _ = Task.Run(async () =>
@@ -100,7 +105,7 @@ namespace Froststrap
                     PlayerRichPresence = new(ActivityWatcher);
 
                 if (_watcherData.LaunchMode == LaunchMode.Player)
-                    IntegrationWatcher = new IntegrationWatcher(ActivityWatcher, _watcherData.ProcessId);
+                    IntegrationWatcher = new IntegrationWatcher(ActivityWatcher, WindowManipulation);
 
                 if (_watcherData.LaunchMode == LaunchMode.Player && App.Settings.Prop.SoftKeyEnabled)
                     Softkey = new Softkey(_watcherData.ProcessId);
@@ -302,6 +307,7 @@ namespace Froststrap
                 return;
 
             ActivityWatcher?.Start();
+            WindowManipulation?.Start();
 
             try
             {
@@ -358,6 +364,7 @@ namespace Froststrap
             }
 
             IntegrationWatcher?.Dispose();
+            WindowManipulation?.Dispose();
             Softkey?.Dispose();
             _notifyIcon?.Dispose();
             PlayerRichPresence?.Dispose();
