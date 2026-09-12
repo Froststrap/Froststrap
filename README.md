@@ -3,7 +3,7 @@
 </h1>
 
 <p align="center">
-    Froststrap is a cross-platform Roblox booststrapper which started from <a href="https://github.com/fishstrap/fishstrap.git"><strong>Fishstrap</strong></a>.
+    Froststrap is a cross-platform Roblox bootstrapper derived from <a href="https://github.com/fishstrap/fishstrap.git"><strong>Fishstrap</strong></a>.
 </p>
 
 <p align="center">
@@ -26,8 +26,7 @@
 </div>
 
 > [!CAUTION]
-> The repo, [Froststrap/Froststrap](https://github.com/Froststrap/Froststrap.git), and [our website](https://froststrap.xyz), are the **ONLY PLACES** you should
-> download the binary/executable from, as any other source is **NOT** affiliated with us, and is a potential threat. 
+> The official repository [Froststrap/Froststrap](https://github.com/Froststrap/Froststrap.git) and [our website](https://froststrap.xyz) are the **ONLY PLACES** where you should download the binary/executable. Any other source is **NOT** affiliated with us and poses a potential security threat.
 
 ---
 
@@ -45,14 +44,14 @@
 
 ### Mods
 - Multi-mod system that allows you to download many mods at once
-- Select when to apply the mod (player/studio)
+- Select where to apply the mod (Player/Studio)
 - Download community-made mods directly from within the app
-- Generate mods using a hex code, with the option to also color the cursor, Shift Lock, or Emote Wheel
+- Generate mods using hex codes, with options to color the cursor, Shift Lock, or Emote Wheel
 - Change the cursor, Shift Lock, death sound, and game font by selecting a file
 - Use custom cursor sets to change between your cursors faster
 
 ### FastFlag Enhancements
-- Automatic message when applying FastFlags that are not in the Roblox FastFlag Allowlist
+- Automatic notification when applying FastFlags that are not in the Roblox FastFlag Allowlist
 - Create or use FastFlag profiles
 - Change all Roblox FastFlags in the allowlist via the FastFlag settings
 - Click 'Clean List' to remove flags that are not in the Roblox FastFlag Allowlist
@@ -76,7 +75,6 @@
 - Join servers in your region more easily using the region selector
 - Join servers in your selected region through the system tray while playing
 - Built-in account manager
-    * Region selector
 
 More features are planned! You can also suggest new features in the Issues section.
 
@@ -85,9 +83,7 @@ More features are planned! You can also suggest new features in the Issues secti
 ## Licensing
 
 All new code revisions are under [MPL-2.0](https://opensource.org/license/MPL-2.0).
-
-
-When in doubt about which license applies to a specific file, check the file header, or refer to table above.
+When in doubt about which license applies to a specific file, check the file header.
 
 ## Star History
 
