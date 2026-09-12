@@ -5,7 +5,6 @@
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Net;
 
 namespace Froststrap.Integrations.AccountManager
 {
@@ -15,7 +14,11 @@ namespace Froststrap.Integrations.AccountManager
         {
             try
             {
-                using var handler = new HttpClientHandler { CookieContainer = new CookieContainer() };
+                using var handler = new HttpClientHandler
+                {
+                    CookieContainer = new CookieContainer(),
+                    CheckCertificateRevocationList = true
+                };
                 handler.CookieContainer.Add(new Cookie(".ROBLOSECURITY", securityCookie, "/", ".roblox.com"));
                 using var client = new HttpClient(handler);
 
@@ -70,7 +73,11 @@ namespace Froststrap.Integrations.AccountManager
                 if (string.IsNullOrEmpty(cookie))
                     return false;
 
-                using var handler = new HttpClientHandler { CookieContainer = new CookieContainer() };
+                using var handler = new HttpClientHandler
+                {
+                    CookieContainer = new CookieContainer(),
+                    CheckCertificateRevocationList = true
+                };
                 handler.CookieContainer.Add(new Cookie(".ROBLOSECURITY", cookie, "/", ".roblox.com"));
                 using var client = new HttpClient(handler);
 
