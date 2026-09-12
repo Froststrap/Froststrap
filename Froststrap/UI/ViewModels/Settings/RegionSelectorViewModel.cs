@@ -8,14 +8,24 @@ namespace Froststrap.UI.ViewModels.Settings
 {
     internal partial class RegionSelectorViewModel : NotifyPropertyChangedViewModel, IDisposable
     {
-        private const int AutoModeRegionCount = 3;
+        private const int ApiPageSize = 100;
+        private const int SpecificRegionBatchSize = 12;
+        private const int AutoRegionBatchSize = 4;
+        private const int AutoMaxRegions = 3;
+        private const int AlivenessConcurrency = 4;
 
         private readonly HashSet<string> _displayedServerIds = [];
+        private readonly Dictionary<string, int?> _regionCursors = new(StringComparer.OrdinalIgnoreCase);
+        private readonly Dictionary<string, Queue<ServerInstance>> _regionBuffers = new(StringComparer.OrdinalIgnoreCase);
+        private readonly List<string> _activeAutoRegions = [];
         private readonly CancellationTokenSource _disposeCts = new();
         private RobloxServerFetcher? _fetcher;
         private Dictionary<int, string>? _dcMap;
         private CancellationTokenSource? _searchDebounceCts;
         private CancellationTokenSource? _searchCts;
+        private List<string> _sortedAutoRegions = [];
+        private string? _resolvedCookie;
+        private bool _isAutoMode;
         private bool _disposed;
 
         #region Fields
@@ -33,13 +43,22 @@ namespace Froststrap.UI.ViewModels.Settings
         private string? _selectedRegionInput;
         private bool _isSearchFlyoutOpen;
         private List<string> _regions = [];
+        private bool _hasMoreServers;
+        private bool _isLoadingMore;
         #endregion
 
         #region Properties
         public bool HasSearched
         {
             get => _hasSearched;
-            set => SetProperty(ref _hasSearched, value);
+            set
+            {
+                if (SetProperty(ref _hasSearched, value))
+                {
+                    OnPropertyChanged(nameof(ShowLoadMoreButton));
+                    LoadMoreCommand.NotifyCanExecuteChanged();
+                }
+            }
         }
 
         public string PlaceId
@@ -62,8 +81,37 @@ namespace Froststrap.UI.ViewModels.Settings
                     OnPropertyChanged(nameof(ServerListMessage));
                     OnPropertyChanged(nameof(IsServerListEmptyAndNotLoading));
                     OnPropertyChanged(nameof(ShowLoadingIndicator));
+                    OnPropertyChanged(nameof(ShowLoadMoreButton));
                     SearchCommand.NotifyCanExecuteChanged();
                     SearchGamesCommand.NotifyCanExecuteChanged();
+                    LoadMoreCommand.NotifyCanExecuteChanged();
+                }
+            }
+        }
+
+        public bool IsLoadingMore
+        {
+            get => _isLoadingMore;
+            private set
+            {
+                if (SetProperty(ref _isLoadingMore, value))
+                {
+                    OnPropertyChanged(nameof(ShowLoadMoreButton));
+                    SearchCommand.NotifyCanExecuteChanged();
+                    LoadMoreCommand.NotifyCanExecuteChanged();
+                }
+            }
+        }
+
+        public bool HasMoreServers
+        {
+            get => _hasMoreServers;
+            private set
+            {
+                if (SetProperty(ref _hasMoreServers, value))
+                {
+                    OnPropertyChanged(nameof(ShowLoadMoreButton));
+                    LoadMoreCommand.NotifyCanExecuteChanged();
                 }
             }
         }
@@ -161,6 +209,9 @@ namespace Froststrap.UI.ViewModels.Settings
         public bool IsServerListEmptyAndNotLoading => IsServerListEmpty && !IsLoading;
         public bool ShowLoadingIndicator => IsLoading && !IsGameSearchLoading;
 
+        public bool ShowLoadMoreButton =>
+            HasSearched && !IsLoading && !IsLoadingMore && Servers.Count > 0 && HasMoreServers;
+
         public string ServerListMessage => !HasValidCookies ? Strings.Menu_RegionSelector_LoginRequired :
             IsLoading ? "" :
             !HasSearched ? Strings.Menu_RegionSelector_EnterPlaceId :
@@ -168,6 +219,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public IAsyncRelayCommand SearchCommand { get; }
         public IAsyncRelayCommand SearchGamesCommand { get; }
+        public IAsyncRelayCommand LoadMoreCommand { get; }
         public IRelayCommand ClearSearchCommand { get; }
         #endregion
 
@@ -177,10 +229,15 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 OnPropertyChanged(nameof(IsServerListEmpty));
                 OnPropertyChanged(nameof(IsServerListEmptyAndNotLoading));
+                OnPropertyChanged(nameof(ShowLoadMoreButton));
+                LoadMoreCommand?.NotifyCanExecuteChanged();
             };
 
-            SearchCommand = new AsyncRelayCommand(SearchAsync, () => !IsLoading && !string.IsNullOrWhiteSpace(PlaceId) && HasValidCookies);
-            SearchGamesCommand = new AsyncRelayCommand(SearchGamesAsync, () => !IsLoading && !IsGameSearchLoading && !string.IsNullOrWhiteSpace(SearchQuery) && HasValidCookies);
+            SearchCommand = new AsyncRelayCommand(SearchAsync,
+                () => !IsLoading && !IsLoadingMore && !string.IsNullOrWhiteSpace(PlaceId) && HasValidCookies);
+            SearchGamesCommand = new AsyncRelayCommand(SearchGamesAsync,
+                () => !IsLoading && !IsGameSearchLoading && !string.IsNullOrWhiteSpace(SearchQuery) && HasValidCookies);
+            LoadMoreCommand = new AsyncRelayCommand(LoadMoreAsync, () => ShowLoadMoreButton);
 
             ClearSearchCommand = new RelayCommand(ClearSearch);
 
@@ -204,9 +261,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
 
             if (long.TryParse(value, out _))
-            {
                 PlaceId = value;
-            }
 
             _searchDebounceCts?.Cancel();
             _searchDebounceCts?.Dispose();
@@ -217,7 +272,6 @@ namespace Froststrap.UI.ViewModels.Settings
         private void OnSelectedSearchResultChanged(OmniSearchContent? value)
         {
             if (value == null) return;
-
             PlaceId = value.RootPlaceId.ToString(CultureInfo.InvariantCulture);
             SearchQuery = value.RootPlaceId.ToString(CultureInfo.InvariantCulture);
             IsSearchFlyoutOpen = false;
@@ -314,10 +368,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private void PopulateRegions(List<string> regions, Dictionary<int, string> dcMap)
         {
-            var sorted = regions
-                .OrderBy(r => r, StringComparer.OrdinalIgnoreCase)
-                .ToList();
-
+            var sorted = regions.OrderBy(r => r, StringComparer.OrdinalIgnoreCase).ToList();
             var list = new List<string> { Strings.Common_Auto };
             list.AddRange(sorted);
 
@@ -346,7 +397,12 @@ namespace Froststrap.UI.ViewModels.Settings
             LoadingMessage = Strings.Menu_RegionSelector_SearchingServers;
             Servers.Clear();
             _displayedServerIds.Clear();
+            _regionCursors.Clear();
+            _regionBuffers.Clear();
+            _activeAutoRegions.Clear();
+            _sortedAutoRegions.Clear();
             LastFetchProcessedCount = 0;
+            HasMoreServers = false;
 
             if (!long.TryParse(PlaceId, out var placeId))
             {
@@ -357,98 +413,233 @@ namespace Froststrap.UI.ViewModels.Settings
 
             try
             {
-                List<ServerInstance> allServers = [];
+                _isAutoMode = string.IsNullOrEmpty(SelectedRegion) ||
+                              SelectedRegion.Equals(Strings.Common_Auto, StringComparison.OrdinalIgnoreCase);
 
-                if (!string.IsNullOrEmpty(SelectedRegion) && !SelectedRegion.Equals(Strings.Common_Auto, StringComparison.OrdinalIgnoreCase))
+                if (string.IsNullOrEmpty(_resolvedCookie))
                 {
-                    var (servers, _) = await _fetcher!.FetchServersByRegionAsync(placeId, SelectedRegion, null, token);
-                    allServers = servers;
+                    try { _resolvedCookie = await _fetcher!.ResolveCookieAsync(); }
+                    catch (Exception ex) { App.Logger.Error("Failed to resolve cookie:", ex); }
                 }
-                else
-                {
-                    allServers = await FetchFromNearestNonEmptyRegionsAsync(placeId, AutoModeRegionCount, token);
 
-                    if (allServers.Count == 0)
+                List<ServerInstance> servers;
+
+                if (_isAutoMode)
+                {
+                    _sortedAutoRegions = await _fetcher!.GetClosestRegionsForAutoModeAsync(token) ?? [];
+                    if (_sortedAutoRegions.Count == 0)
                     {
-                        await Frontend.ShowMessageBox("Could not find any servers in nearby regions. Please select a region manually.", MessageBoxImage.Warning);
+                        await Frontend.ShowMessageBox(
+                            "Could not determine your location for Auto mode. Please try again later.",
+                            MessageBoxImage.Warning);
+                        IsLoading = false;
+                        return;
+                    }
+
+                    servers = await FetchAutoBatchAsync(placeId, isLoadMore: false, token);
+
+                    if (servers.Count == 0)
+                    {
+                        await Frontend.ShowMessageBox(
+                            "Could not find any servers in nearby regions. Please select a region manually.",
+                            MessageBoxImage.Warning);
                         IsLoading = false;
                         return;
                     }
                 }
-
-                int number = 1;
-                foreach (var s in allServers)
+                else
                 {
-                    if (_displayedServerIds.Add(s.Id))
-                    {
-                        var entry = new ServerEntry
-                        {
-                            Number = number++,
-                            ServerId = s.Id,
-                            Region = s.Region,
-                            DataCenterId = s.DataCenterId,
-                            Uptime = s.UptimeDisplay,
-                            JoinCommand = new RelayCommand(() => JoinServer(s.Id))
-                        };
-                        Servers.Add(entry);
-                    }
+                    servers = await TakeFromRegionAsync(placeId, SelectedRegion ?? "", SpecificRegionBatchSize, token);
                 }
 
-                LastFetchProcessedCount = allServers.Count;
+                AppendServers(servers);
+                LastFetchProcessedCount = servers.Count;
+                HasMoreServers = ComputeHasMoreServers();
             }
-            catch (OperationCanceledException)
-            {
-                // superseded by a newer search
-            }
-            catch (Exception ex)
-            {
-                App.Logger.Error($"Search error: {ex}");
-            }
+            catch (OperationCanceledException) { }
+            catch (Exception ex) { App.Logger.Error($"Search error: {ex}"); }
             finally
             {
                 IsLoading = false;
-                await Task.Delay(800);
+                await Task.Delay(500);
                 LoadingMessage = "";
             }
         }
 
-        private async Task<List<ServerInstance>> FetchFromNearestNonEmptyRegionsAsync(
-            long placeId,
-            int regionCount,
-            CancellationToken token)
+        private async Task LoadMoreAsync()
         {
-            var allServers = new List<ServerInstance>();
-            var seenIds = new HashSet<string>();
+            if (!HasSearched || IsLoading || IsLoadingMore || !HasMoreServers) return;
+            if (_searchCts == null || _searchCts.IsCancellationRequested) return;
+            if (!long.TryParse(PlaceId, out var placeId)) return;
 
-            var sortedRegions = await _fetcher!.GetClosestRegionsForAutoModeAsync(token);
-            if (sortedRegions.Count == 0)
-                return allServers;
+            var token = _searchCts.Token;
+            IsLoadingMore = true;
 
-            int regionsWithServers = 0;
-            foreach (var region in sortedRegions)
+            try
             {
-                if (token.IsCancellationRequested)
-                    break;
+                var servers = _isAutoMode
+                    ? await FetchAutoBatchAsync(placeId, isLoadMore: true, token)
+                    : await TakeFromRegionAsync(placeId, SelectedRegion ?? "", SpecificRegionBatchSize, token);
 
-                if (regionsWithServers >= regionCount)
-                    break;
+                AppendServers(servers);
+                HasMoreServers = ComputeHasMoreServers();
+            }
+            catch (OperationCanceledException) { }
+            catch (Exception ex) { App.Logger.Error($"Load more error: {ex}"); }
+            finally
+            {
+                IsLoadingMore = false;
+            }
+        }
 
-                var (servers, _) = await _fetcher.FetchServersByRegionAsync(placeId, region, null, token);
+        private async Task<List<ServerInstance>> FetchAutoBatchAsync(long placeId, bool isLoadMore, CancellationToken token)
+        {
+            var result = new List<ServerInstance>();
+            var seen = new HashSet<string>();
 
-                if (servers.Count == 0)
-                    continue;
-
-                regionsWithServers++;
-
-                foreach (var s in servers)
+            if (!isLoadMore)
+            {
+                foreach (var region in _sortedAutoRegions)
                 {
-                    if (seenIds.Add(s.Id))
-                        allServers.Add(s);
+                    if (token.IsCancellationRequested) break;
+                    if (_activeAutoRegions.Count >= AutoMaxRegions) break;
+
+                    var taken = await TakeFromRegionAsync(placeId, region, AutoRegionBatchSize, token);
+                    if (taken.Count == 0) continue;
+
+                    _activeAutoRegions.Add(region);
+                    foreach (var s in taken)
+                        if (seen.Add(s.Id)) result.Add(s);
+                }
+            }
+            else
+            {
+                foreach (var region in _activeAutoRegions)
+                {
+                    if (token.IsCancellationRequested) break;
+
+                    var taken = await TakeFromRegionAsync(placeId, region, AutoRegionBatchSize, token);
+                    foreach (var s in taken)
+                        if (seen.Add(s.Id)) result.Add(s);
                 }
             }
 
-            App.Logger.Info($"Auto-mode search collected {allServers.Count} server(s) from {regionsWithServers} non-empty region(s).");
-            return allServers;
+            return result;
+        }
+
+        private async Task<List<ServerInstance>> TakeFromRegionAsync(long placeId, string region, int wanted, CancellationToken token)
+        {
+            bool hasCookie = !string.IsNullOrEmpty(_resolvedCookie);
+            int effectiveWanted = hasCookie ? wanted : ApiPageSize;
+
+            if (!_regionBuffers.TryGetValue(region, out var buffer))
+                _regionBuffers[region] = buffer = new Queue<ServerInstance>();
+
+            var taken = new List<ServerInstance>();
+
+            while (!token.IsCancellationRequested && taken.Count < effectiveWanted)
+            {
+                if (buffer.Count > 0)
+                {
+                    if (!hasCookie)
+                    {
+                        while (buffer.Count > 0 && taken.Count < effectiveWanted)
+                            taken.Add(buffer.Dequeue());
+                    }
+                    else
+                    {
+                        int needed = effectiveWanted - taken.Count;
+                        var candidates = new List<ServerInstance>();
+                        while (buffer.Count > 0 && candidates.Count < needed)
+                            candidates.Add(buffer.Dequeue());
+
+                        var alive = await FilterAliveAsync(placeId, candidates, token);
+                        taken.AddRange(alive);
+                    }
+                    continue;
+                }
+
+                bool cursorInitialized = _regionCursors.TryGetValue(region, out int? cursor);
+                if (cursorInitialized && cursor == null) break;
+
+                var (pageServers, nextCursor) = await _fetcher!.FetchServersByRegionAsync(
+                    placeId, region, cursorInitialized ? cursor : null, limit: ApiPageSize, cancellationToken: token);
+
+                _regionCursors[region] = nextCursor;
+
+                if (pageServers.Count == 0) break;
+
+                foreach (var s in pageServers)
+                    buffer.Enqueue(s);
+            }
+
+            return taken;
+        }
+
+        private bool ComputeHasMoreServers()
+        {
+            if (_isAutoMode)
+            {
+                return _activeAutoRegions.Any(r =>
+                {
+                    if (_regionBuffers.TryGetValue(r, out var buf) && buf.Count > 0) return true;
+                    if (_regionCursors.TryGetValue(r, out var c) && c != null) return true;
+                    return false;
+                });
+            }
+
+            var region = SelectedRegion ?? "";
+            if (_regionBuffers.TryGetValue(region, out var buffer) && buffer.Count > 0) return true;
+            if (_regionCursors.TryGetValue(region, out var cursor) && cursor != null) return true;
+            return false;
+        }
+
+        private async Task<List<ServerInstance>> FilterAliveAsync(long placeId, List<ServerInstance> servers, CancellationToken token)
+        {
+            if (servers.Count == 0) return servers;
+
+            var aliveFlags = new bool[servers.Count];
+            using var semaphore = new SemaphoreSlim(AlivenessConcurrency);
+
+            var tasks = Enumerable.Range(0, servers.Count).Select(async i =>
+            {
+                await semaphore.WaitAsync(token).ConfigureAwait(false);
+                try
+                {
+                    aliveFlags[i] = await _fetcher!
+                        .IsServerAliveAsync(placeId, servers[i].Id, _resolvedCookie!, token)
+                        .ConfigureAwait(false);
+                }
+                finally
+                {
+                    semaphore.Release();
+                }
+            });
+
+            await Task.WhenAll(tasks).ConfigureAwait(false);
+
+            return [.. servers.Where((_, i) => aliveFlags[i])];
+        }
+
+        private void AppendServers(List<ServerInstance> servers)
+        {
+            int number = Servers.Count + 1;
+            foreach (var s in servers)
+            {
+                if (_displayedServerIds.Add(s.Id))
+                {
+                    var entry = new ServerEntry
+                    {
+                        Number = number++,
+                        ServerId = s.Id,
+                        Region = s.Region,
+                        DataCenterId = s.DataCenterId,
+                        Uptime = s.UptimeDisplay,
+                        JoinCommand = new RelayCommand(() => JoinServer(s.Id))
+                    };
+                    Servers.Add(entry);
+                }
+            }
         }
 
         private void JoinServer(string serverId)
@@ -529,9 +720,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
                 var sortedRegionDict = new Dictionary<string, List<int>>();
                 foreach (var region in regionDict.Keys.OrderBy(r => r, StringComparer.OrdinalIgnoreCase))
-                {
                     sortedRegionDict[region] = regionDict[region];
-                }
 
                 var cache = new DatacentersCache
                 {
@@ -556,19 +745,14 @@ namespace Froststrap.UI.ViewModels.Settings
                 var cache = JsonSerializer.Deserialize<DatacentersCache>(json);
 
                 if (cache == null) return null;
-
-                if (!allowExpired && cache.LastUpdated < DateTime.UtcNow.AddDays(-7))
-                    return null;
+                if (!allowExpired && cache.LastUpdated < DateTime.UtcNow.AddDays(-7)) return null;
 
                 var map = new Dictionary<int, string>();
-                var regions = new List<string>();
+                var regions = cache.Regions.Keys.ToList();
 
                 foreach (var kvp in cache.Regions)
-                {
-                    regions.Add(kvp.Key);
                     foreach (var id in kvp.Value)
                         map[id] = kvp.Key;
-                }
 
                 return (regions, map);
             }
@@ -586,8 +770,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
         protected virtual void Dispose(bool disposing)
         {
-            if (_disposed)
-                return;
+            if (_disposed) return;
 
             if (disposing)
             {

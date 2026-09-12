@@ -96,6 +96,12 @@ SPDX-License-Identifier: MPL-2.0
                     <Button Width="100" VerticalAlignment="Center" Classes="accent"
                             Command="{Binding SearchCommand}"
                             Content="{x:Static resources:Strings.Common_Search}" />
+
+                    <Button IsVisible="{Binding ShowLoadMoreButton}"
+                            Command="{Binding LoadMoreCommand}"
+                            VerticalAlignment="Center"
+                            Padding="16,4"
+                            Content="{x:Static resources:Strings.Menu_RegionSelector_LoadMore}" />
                 </StackPanel>
             </StackPanel>
         </Border>
@@ -174,6 +180,26 @@ SPDX-License-Identifier: MPL-2.0
                                    FontWeight="SemiBold"
                                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                                    Text="{Binding LoadingMessage}" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <Border IsVisible="{Binding IsLoadingMore}"
+                    CornerRadius="12"
+                    Background="{DynamicResource SolidBackgroundFillColorTertiaryBrush}"
+                    Opacity="0.8">
+                <Grid>
+                    <StackPanel HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Spacing="16">
+                        <ui:FAProgressRing IsIndeterminate="True"
+                                           Width="100" Height="100"
+                                           HorizontalAlignment="Center" />
+                        <TextBlock HorizontalAlignment="Center"
+                                   FontSize="14"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                   Text="{x:Static resources:Strings.Menu_RegionSelector_LoadingMore}" />
                     </StackPanel>
                 </Grid>
             </Border>

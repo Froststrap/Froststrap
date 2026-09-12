@@ -54,7 +54,7 @@ namespace Froststrap.Integrations.AccountManager
                         .. data.Accounts.Select(account => account with
                         {
                             SecurityToken = AccountSecurity.GetCredential(
-                                account.UserId.ToString()
+                                account.UserId.ToString(CultureInfo.InvariantCulture)
                             ) ?? string.Empty
                         })
                     ];
@@ -78,17 +78,16 @@ namespace Froststrap.Integrations.AccountManager
             try
             {
                 var root = JObject.Parse(json);
-                var accounts = root["Accounts"] as JArray;
 
-                if (accounts == null)
+                if (root[nameof(AccountManagerData.Accounts)] is not JArray accounts)
                     return json;
 
                 bool foundLegacyCredentials = false;
 
                 foreach (JObject account in accounts.OfType<JObject>())
                 {
-                    var userIdToken = account["UserId"];
-                    var securityToken = account["SecurityToken"]?.Value<string>();
+                    var userIdToken = account[nameof(AccountManagerAccount.UserId)];
+                    var securityToken = account[nameof(AccountManagerAccount.SecurityToken)]?.Value<string>();
 
                     if (userIdToken == null || string.IsNullOrEmpty(securityToken))
                         continue;
@@ -97,10 +96,7 @@ namespace Froststrap.Integrations.AccountManager
 
                     long userId = userIdToken.Value<long>();
 
-                    if (!AccountSecurity.TryUnprotect(
-                            securityToken,
-                            out string unprotectedToken
-                        ))
+                    if (!AccountSecurity.TryUnprotect(securityToken, out string unprotectedToken))
                     {
                         throw new InvalidOperationException(
                             $"Failed to decrypt credential for account {userId}."
@@ -108,38 +104,30 @@ namespace Froststrap.Integrations.AccountManager
                     }
 
                     if (!AccountSecurity.SetCredential(
-                            userId.ToString(),
-                            unprotectedToken
-                        ))
+                            userId.ToString(CultureInfo.InvariantCulture),
+                            unprotectedToken))
                     {
                         throw new InvalidOperationException(
                             $"Failed to store credential for account {userId}."
                         );
                     }
 
-                    account.Remove("SecurityToken");
+                    account.Remove(nameof(AccountManagerAccount.SecurityToken));
                 }
 
                 if (!foundLegacyCredentials)
                     return json;
 
                 var migratedJson = root.ToString(Formatting.Indented);
-
                 File.WriteAllText(_accountsLocation, migratedJson);
 
-                App.Logger.Info(
-                    "Successfully migrated account credentials to the OS credential store."
-                );
+                App.Logger.Info("Successfully migrated account credentials to the OS credential store.");
 
                 return migratedJson;
             }
             catch (Exception ex)
             {
-                App.Logger.Error(
-                    $"Failed to migrate account credentials: {ex}"
-                );
-
-                // Keep the original JSON if migration fails.
+                App.Logger.Error($"Failed to migrate account credentials: {ex}");
                 return json;
             }
         }
@@ -154,7 +142,7 @@ namespace Froststrap.Integrations.AccountManager
                         continue;
 
                     if (!AccountSecurity.SetCredential(
-                        account.UserId.ToString(),
+                        account.UserId.ToString(CultureInfo.InvariantCulture),
                         account.SecurityToken
                     ))
                     {
@@ -213,7 +201,7 @@ namespace Froststrap.Integrations.AccountManager
                 if (removed > 0)
                 {
                     AccountSecurity.DeleteCredential(
-                        account.UserId.ToString()
+                        account.UserId.ToString(CultureInfo.InvariantCulture)
                     );
 
                     if (wasActive)
@@ -240,8 +228,8 @@ namespace Froststrap.Integrations.AccountManager
             }
         }
 
-        public string? GetRoblosecurityForUser(long userId) =>
-            AccountSecurity.GetCredential(userId.ToString());
+        public static string? GetRoblosecurityForUser(long userId) =>
+            AccountSecurity.GetCredential(userId.ToString(CultureInfo.InvariantCulture));
 
         public static Task<AccountManagerAccount?> AddAccountByQuickSignInAsync(
             QuickSignCodeDialog dialog,

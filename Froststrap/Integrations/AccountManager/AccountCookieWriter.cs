@@ -115,26 +115,15 @@ namespace Froststrap.Integrations.AccountManager
             return true;
         }
 
-        private struct BinaryCookie
+        private struct BinaryCookie(string name, string value, bool isSecure = false)
         {
-            public string Name { get; set; }
-            public string Value { get; set; }
-            public string Domain { get; set; }
-            public string Path { get; set; }
-            public int Flags { get; set; }
+            public string Name { get; set; } = name;
+            public string Value { get; set; } = value;
+            public string Domain { get; set; } = ".roblox.com";
+            public string Path { get; set; } = "/";
+            public int Flags { get; set; } = isSecure ? 1 : 0;
             public double? Expiry { get; set; }
             public double? Creation { get; set; }
-
-            public BinaryCookie(string name, string value, bool isSecure = false)
-            {
-                Name = name;
-                Value = value;
-                Domain = ".roblox.com";
-                Path = "/";
-                Flags = isSecure ? 1 : 0;
-                Expiry = null;
-                Creation = null;
-            }
         }
 
         private static byte[] SerializeBinaryCookies(List<BinaryCookie> cookies)
