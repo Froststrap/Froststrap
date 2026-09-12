@@ -35,7 +35,6 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
     private bool _isOverlayVisible;
     private bool _isSubplacesOverlayVisible;
     private bool _isLoadingSubplaces;
-    private readonly ObservableCollection<PlaceInfo> _subplaces = [];
     private UniverseDetails? _selectedUniverseDetails;
     private readonly string _cachePath = Path.Combine(Paths.Cache, "GameHistory.json");
     private static readonly JsonSerializerOptions HistoryLoadOptions = new() { PropertyNameCaseInsensitive = true };
@@ -66,13 +65,55 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
     private OmniSearchContent? _selectedSearchResult;
     private bool _disposed;
 
-    private readonly ObservableCollection<PrivateServerInfo> _privateServers = [];
+    private ObservableCollection<QuickPlayGameItem> _recentGames = [];
+    private ObservableCollection<QuickPlayGameItem> _favoriteGames = [];
+    private ObservableCollection<QuickPlayGameItem> _recommendedGames = [];
+    private ObservableCollection<ServerInfo> _selectedGameServers = [];
+    private ObservableCollection<OmniSearchContent> _searchResults = [];
+    private ObservableCollection<PlaceInfo> _subplaces = [];
+    private ObservableCollection<PrivateServerInfo> _privateServers = [];
 
-    public ObservableCollection<QuickPlayGameItem> RecentGames { get; } = [];
-    public ObservableCollection<QuickPlayGameItem> FavoriteGames { get; } = [];
-    public ObservableCollection<QuickPlayGameItem> RecommendedGames { get; } = [];
-    public ObservableCollection<ServerInfo> SelectedGameServers { get; } = [];
-    public ObservableCollection<OmniSearchContent> SearchResults { get; } = [];
+    public ObservableCollection<QuickPlayGameItem> RecentGames
+    {
+        get => _recentGames;
+        private set => SetProperty(ref _recentGames, value);
+    }
+
+    public ObservableCollection<QuickPlayGameItem> FavoriteGames
+    {
+        get => _favoriteGames;
+        private set => SetProperty(ref _favoriteGames, value);
+    }
+
+    public ObservableCollection<QuickPlayGameItem> RecommendedGames
+    {
+        get => _recommendedGames;
+        private set => SetProperty(ref _recommendedGames, value);
+    }
+
+    public ObservableCollection<ServerInfo> SelectedGameServers
+    {
+        get => _selectedGameServers;
+        private set => SetProperty(ref _selectedGameServers, value);
+    }
+
+    public ObservableCollection<OmniSearchContent> SearchResults
+    {
+        get => _searchResults;
+        private set => SetProperty(ref _searchResults, value);
+    }
+
+    public ObservableCollection<PlaceInfo> Subplaces
+    {
+        get => _subplaces;
+        private set => SetProperty(ref _subplaces, value);
+    }
+
+    public ObservableCollection<PrivateServerInfo> PrivateServers
+    {
+        get => _privateServers;
+        private set => SetProperty(ref _privateServers, value);
+    }
 
     public UniverseDetails? SelectedUniverseDetails
     {
@@ -257,7 +298,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
                 if (value == QuickPlayTab.Continue && !_recentGamesLoaded)
                 {
                     IsLoading = true;
-                    RecentGames.Clear();
+                    RecentGames = [];
                     OnPropertyChanged(nameof(HasRecentGames));
                     OnPropertyChanged(nameof(ShowRecentEmpty));
                     _ = LoadRecentGamesAsync();
@@ -265,7 +306,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
                 else if (value == QuickPlayTab.Recommended && !_recommendationsLoaded)
                 {
                     IsRecommendedLoading = true;
-                    RecommendedGames.Clear();
+                    RecommendedGames = [];
                     OnPropertyChanged(nameof(HasRecommendedGames));
                     OnPropertyChanged(nameof(ShowRecommendedEmpty));
                     _ = LoadRecommendedGamesAsync();
@@ -273,7 +314,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
                 else if (value == QuickPlayTab.Favorites && !_favoritesLoaded)
                 {
                     IsFavoritesLoading = true;
-                    FavoriteGames.Clear();
+                    FavoriteGames = [];
                     OnPropertyChanged(nameof(HasFavoriteGames));
                     _ = LoadFavoriteGamesAsync();
                 }
@@ -293,20 +334,17 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
     public bool ShowRecentEmpty => !IsLoading && !HasRecentGames;
     public bool ShowRecommendedEmpty => !IsRecommendedLoading && !HasRecommendedGames;
     public bool ShowFavoritesEmpty => !IsFavoritesLoading && !HasFavoriteGames;
-
 #pragma warning disable CA1822
     public bool IsLoggedIn => AccountManager.Shared?.ActiveAccount != null;
 #pragma warning restore CA1822
 
-    public ObservableCollection<PlaceInfo> Subplaces => _subplaces;
-    public ObservableCollection<PrivateServerInfo> PrivateServers => _privateServers;
-
     public bool HasSubplaces => Subplaces.Count > 0;
     public bool ShowSubplacesEmpty => !IsLoadingSubplaces && !HasSubplaces;
-
-    public static bool HasActiveAccount => AccountManager.Shared?.ActiveAccount != null;
+#pragma warning disable CA1822
+    public bool HasActiveAccount => AccountManager.Shared?.ActiveAccount != null;
+#pragma warning restore CA1822
     public bool IsTrackedGame => !IsCurrentGameApi;
-    public bool CanJoinBestRegion => !IsJoiningBestRegion;
+    public bool CanJoinBestRegion => HasActiveAccount && !IsJoiningBestRegion;
 
     public ICommand JoinGameCommand { get; }
     public ICommand RejoinLastServerCommand { get; }
@@ -372,7 +410,11 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
 
             SelectedUniverseDetails = item.OriginalDetails;
             IsOverlayVisible = true;
-            SelectedGameServers.Clear();
+
+            var old = SelectedGameServers;
+            SelectedGameServers = [];
+            DisposeServerThumbnails(old);
+
             IsLoadingServers = true;
             IsCurrentGameApi = false;
 
@@ -384,8 +426,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
                     var sortedServers = entry.Servers.OrderByDescending(x => x.JoinedAt).ToList();
                     foreach (var s in sortedServers) s.IsLatest = false;
                     if (sortedServers.Count > 0) sortedServers[0].IsLatest = true;
-                    foreach (var s in sortedServers)
-                        SelectedGameServers.Add(s);
+                    SelectedGameServers = new ObservableCollection<ServerInfo>(sortedServers);
                 }
             }
             finally
@@ -420,6 +461,14 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
         {
             if (item == null || item.PlaceId == 0 || IsJoiningBestRegion) return;
 
+            if (!HasActiveAccount)
+            {
+                await Frontend.ShowMessageBox(
+                    Strings.Menu_QuickPlay_PleaseSelectAccount,
+                    MessageBoxImage.Warning);
+                return;
+            }
+
             IsJoiningBestRegion = true;
             try
             {
@@ -446,7 +495,11 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
 
             SelectedUniverseDetails = item.OriginalDetails;
             IsOverlayVisible = true;
-            SelectedGameServers.Clear();
+
+            var old = SelectedGameServers;
+            SelectedGameServers = [];
+            DisposeServerThumbnails(old);
+
             IsLoadingServers = true;
             IsCurrentGameApi = true;
 
@@ -456,11 +509,9 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
                 if (servers.Count > 0)
                 {
                     servers = [.. servers.OrderByDescending(s => s.JoinedAt)];
-                    foreach (var s in servers)
-                        SelectedGameServers.Add(s);
+                    SelectedGameServers = new ObservableCollection<ServerInfo>(servers);
                 }
                 item.ServerCount = servers.Count;
-                OnPropertyChanged(nameof(RecentGames));
             }
             finally
             {
@@ -485,19 +536,31 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
             },
             () => HasCurrentSearchPlace);
 
-        Subplaces.CollectionChanged += (_, _) =>
-        {
-            OnPropertyChanged(nameof(HasSubplaces));
-            OnPropertyChanged(nameof(ShowSubplacesEmpty));
-        };
-
         AccountManager.Shared.ActiveAccountChanged += _ =>
         {
-            Dispatcher.UIThread.InvokeAsync(() => OnPropertyChanged(nameof(HasActiveAccount)));
+            Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                OnPropertyChanged(nameof(HasActiveAccount));
+                OnPropertyChanged(nameof(CanJoinBestRegion));
+                OnPropertyChanged(nameof(IsLoggedIn));
+                JoinBestRegionFromSearchCommand.NotifyCanExecuteChanged();
+            });
         };
 
         AccountManager.Shared.ActiveAccountChanged += OnActiveAccountChanged;
-        _ = Initialize();
+        _ = SafeInitializeAsync();
+    }
+
+    private async Task SafeInitializeAsync()
+    {
+        try
+        {
+            await Initialize();
+        }
+        catch (Exception ex)
+        {
+            App.Logger.Error($"QuickPlay initialization failed: {ex.Message}");
+        }
     }
 
     private async Task Initialize()
@@ -514,7 +577,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
     private void ClearSearch()
     {
         SearchQuery = string.Empty;
-        SearchResults.Clear();
+        SwapSearchResults([]);
         SelectedSearchResult = null;
         IsSearchFlyoutOpen = false;
     }
@@ -527,7 +590,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
         if (string.IsNullOrWhiteSpace(value))
         {
             IsSearchFlyoutOpen = false;
-            SearchResults.Clear();
+            SwapSearchResults([]);
             ClearSelectedGame();
             SelectedSearchResult = null;
             return;
@@ -536,7 +599,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
         if (long.TryParse(value, out var placeId))
         {
             IsSearchFlyoutOpen = false;
-            SearchResults.Clear();
+            SwapSearchResults([]);
             SelectedSearchResult = null;
             _ = LoadSelectedGameInfoAsync(placeId);
             return;
@@ -561,7 +624,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
         long.TryParse(SearchQuery, out _);
 
     private bool CanJoinBestRegionFromSearch =>
-        long.TryParse(SearchQuery, out _);
+        HasActiveAccount && long.TryParse(SearchQuery, out _);
 
     private void JoinServerById()
     {
@@ -575,6 +638,14 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
     {
         if (!long.TryParse(SearchQuery, out var placeId)) return;
         if (IsJoiningBestRegion) return;
+
+        if (!HasActiveAccount)
+        {
+            await Frontend.ShowMessageBox(
+                Strings.Menu_QuickPlay_PleaseSelectAccount,
+                MessageBoxImage.Warning);
+            return;
+        }
 
         IsJoiningBestRegion = true;
         try
@@ -625,7 +696,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
         }
         else
         {
-            Subplaces.Clear();
+            Subplaces = [];
             IsLoadingSubplaces = false;
             OnPropertyChanged(nameof(HasSubplaces));
             OnPropertyChanged(nameof(ShowSubplacesEmpty));
@@ -749,9 +820,10 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
                 {
                     try
                     {
-                        var response = await App.HttpClient.GetByteArrayAsync(new Uri(fetchedUrls[i]!), token);
-                        using var ms = new MemoryStream(response);
-                        results[i].ThumbnailBitmap = new Bitmap(ms);
+                        var bytes = await App.HttpClient.GetByteArrayAsync(new Uri(fetchedUrls[i]!), token);
+                        if (token.IsCancellationRequested) return;
+                        using var ms = new MemoryStream(bytes);
+                        results[i].ThumbnailBitmap = Bitmap.DecodeToWidth(ms, 44, BitmapInterpolationMode.LowQuality);
                     }
                     catch { }
                 }
@@ -759,8 +831,8 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
 
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
-                SearchResults.Clear();
-                foreach (var res in results) SearchResults.Add(res);
+                if (token.IsCancellationRequested) return;
+                SwapSearchResults([.. results]);
                 IsSearchFlyoutOpen = SearchResults.Count > 0 && !string.IsNullOrWhiteSpace(SearchQuery);
             }, DispatcherPriority.Background, token);
         }
@@ -778,7 +850,6 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
             if (HasActiveAccount)
             {
                 apiGames = await FetchRecentlyVisitedFromApiAsync();
-                _ = Task.Delay(2000).ContinueWith(_ => RefreshApiGamesInBackground(), TaskScheduler.Default);
             }
 
             await SetRecentGamesFromSources(localGames, apiGames);
@@ -879,8 +950,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
 
         try
         {
-            using var client = new HttpClient();
-            var response = await client.SendAsync(request);
+            using var response = await App.HttpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
             string json = await response.Content.ReadAsStringAsync();
 
@@ -1002,24 +1072,11 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
         var merged = await Task.Run(() => MergeByApiOrder(localGames, apiGames));
         await EnrichGamesWithDetails(merged);
 
-        const int batchSize = 6;
-
-        await Dispatcher.UIThread.InvokeAsync(RecentGames.Clear, DispatcherPriority.Background);
-
-        for (int i = 0; i < merged.Count; i += batchSize)
-        {
-            var batch = merged.Skip(i).Take(batchSize).ToList();
-            await Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                foreach (var game in batch)
-                    RecentGames.Add(game);
-            }, DispatcherPriority.Background);
-
-            await Task.Yield();
-        }
+        var newCollection = new ObservableCollection<QuickPlayGameItem>(merged);
 
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
+            RecentGames = newCollection;
             OnPropertyChanged(nameof(HasRecentGames));
             OnPropertyChanged(nameof(ShowRecentEmpty));
         }, DispatcherPriority.Background);
@@ -1048,54 +1105,61 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
 
     private async void OnActiveAccountChanged(AccountManagerAccount? account)
     {
-        await Dispatcher.UIThread.InvokeAsync(async () =>
+        try
         {
-            _recentGamesLoaded = false;
-            _favoritesLoaded = false;
-            _recommendationsLoaded = false;
-
-            RecentGames.Clear();
-            FavoriteGames.Clear();
-            RecommendedGames.Clear();
-            OnPropertyChanged(nameof(HasRecentGames));
-            OnPropertyChanged(nameof(HasFavoriteGames));
-            OnPropertyChanged(nameof(HasRecommendedGames));
-            OnPropertyChanged(nameof(ShowRecentEmpty));
-            OnPropertyChanged(nameof(ShowRecommendedEmpty));
-
-            _allHistory = await Task.Run(() => LoadLocalHistory(_cachePath));
-
-            if (account != null)
+            await Dispatcher.UIThread.InvokeAsync(async () =>
             {
-                _ = Task.Delay(2000).ContinueWith(_ => RefreshApiGamesInBackground(), TaskScheduler.Default);
+                _recentGamesLoaded = false;
+                _favoritesLoaded = false;
+                _recommendationsLoaded = false;
 
-                if (SelectedTab == QuickPlayTab.Continue)
-                {
-                    IsLoading = true;
-                    await LoadRecentGamesAsync();
-                }
-                else if (SelectedTab == QuickPlayTab.Favorites)
-                {
-                    IsFavoritesLoading = true;
-                    await LoadFavoriteGamesAsync();
-                }
-                else if (SelectedTab == QuickPlayTab.Recommended)
-                {
-                    IsRecommendedLoading = true;
-                    await LoadRecommendedGamesAsync();
-                }
-            }
-            else
-            {
-                if (SelectedTab == QuickPlayTab.Continue)
-                {
-                    IsLoading = true;
-                    await LoadRecentGamesAsync();
-                }
-            }
+                RecentGames = [];
+                FavoriteGames = [];
+                RecommendedGames = [];
+                OnPropertyChanged(nameof(HasRecentGames));
+                OnPropertyChanged(nameof(HasFavoriteGames));
+                OnPropertyChanged(nameof(HasRecommendedGames));
+                OnPropertyChanged(nameof(ShowRecentEmpty));
+                OnPropertyChanged(nameof(ShowRecommendedEmpty));
 
-            OnPropertyChanged(nameof(IsLoggedIn));
-        });
+                _allHistory = await Task.Run(() => LoadLocalHistory(_cachePath));
+
+                if (account != null)
+                {
+                    _ = RefreshApiGamesInBackground();
+
+                    if (SelectedTab == QuickPlayTab.Continue)
+                    {
+                        IsLoading = true;
+                        await LoadRecentGamesAsync();
+                    }
+                    else if (SelectedTab == QuickPlayTab.Favorites)
+                    {
+                        IsFavoritesLoading = true;
+                        await LoadFavoriteGamesAsync();
+                    }
+                    else if (SelectedTab == QuickPlayTab.Recommended)
+                    {
+                        IsRecommendedLoading = true;
+                        await LoadRecommendedGamesAsync();
+                    }
+                }
+                else
+                {
+                    if (SelectedTab == QuickPlayTab.Continue)
+                    {
+                        IsLoading = true;
+                        await LoadRecentGamesAsync();
+                    }
+                }
+
+                OnPropertyChanged(nameof(IsLoggedIn));
+            });
+        }
+        catch (Exception ex)
+        {
+            App.Logger.Error($"Account change handler failed: {ex.Message}");
+        }
     }
 
     private async Task LoadFavoriteGamesAsync()
@@ -1104,8 +1168,9 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
         {
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
-                FavoriteGames.Clear();
+                FavoriteGames = [];
                 OnPropertyChanged(nameof(HasFavoriteGames));
+                OnPropertyChanged(nameof(ShowFavoritesEmpty));
             });
             _favoritesLoaded = true;
             IsFavoritesLoading = false;
@@ -1116,11 +1181,10 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
         {
             var games = await FetchFavoritesFromApiAsync(AccountManager.Shared!.ActiveAccount!.UserId);
             await EnrichGamesWithDetails(games);
+            var newCollection = new ObservableCollection<QuickPlayGameItem>(games);
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
-                FavoriteGames.Clear();
-                foreach (var g in games)
-                    FavoriteGames.Add(g);
+                FavoriteGames = newCollection;
                 OnPropertyChanged(nameof(HasFavoriteGames));
                 OnPropertyChanged(nameof(ShowFavoritesEmpty));
             });
@@ -1176,7 +1240,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
         {
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
-                RecommendedGames.Clear();
+                RecommendedGames = [];
                 OnPropertyChanged(nameof(HasRecommendedGames));
                 OnPropertyChanged(nameof(ShowRecommendedEmpty));
             });
@@ -1192,11 +1256,10 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
                 games = [.. games.Take(50)];
 
             await EnrichGamesWithDetails(games);
+            var newCollection = new ObservableCollection<QuickPlayGameItem>(games);
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
-                RecommendedGames.Clear();
-                foreach (var g in games)
-                    RecommendedGames.Add(g);
+                RecommendedGames = newCollection;
                 OnPropertyChanged(nameof(HasRecommendedGames));
                 OnPropertyChanged(nameof(ShowRecommendedEmpty));
             });
@@ -1295,7 +1358,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
             if (token.IsCancellationRequested) return;
 
             IsLoadingSubplaces = true;
-            Subplaces.Clear();
+            Subplaces = [];
             OnPropertyChanged(nameof(HasSubplaces));
             OnPropertyChanged(nameof(ShowSubplacesEmpty));
 
@@ -1336,7 +1399,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
                 }
 
                 if (token.IsCancellationRequested) return;
-                foreach (var p in tempSubplaces) Subplaces.Add(p);
+                Subplaces = new ObservableCollection<PlaceInfo>(tempSubplaces);
             }
         }
         catch (OperationCanceledException) { }
@@ -1375,7 +1438,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
 
         IsLoadingPrivateServers = true;
         IsPrivateServersOverlayVisible = true;
-        PrivateServers.Clear();
+        PrivateServers = [];
         ArePrivateServersEmpty = false;
 
         try
@@ -1435,8 +1498,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
 
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
-                foreach (var server in servers)
-                    PrivateServers.Add(server);
+                PrivateServers = new ObservableCollection<PrivateServerInfo>(servers);
                 ArePrivateServersEmpty = servers.Count == 0;
             });
         }
@@ -1538,7 +1600,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
                         {
                             var bytes = await App.HttpClient.GetByteArrayAsync(new Uri(url));
                             using var ms = new MemoryStream(bytes);
-                            bitmaps.Add(new Bitmap(ms));
+                            bitmaps.Add(Bitmap.DecodeToWidth(ms, 32, BitmapInterpolationMode.LowQuality));
                         }
                         catch { }
                     }
@@ -1584,6 +1646,27 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
         Process.Start(new ProcessStartInfo(deeplink) { UseShellExecute = true });
     }
 
+    private void SwapSearchResults(ObservableCollection<OmniSearchContent> next)
+    {
+        var old = _searchResults;
+        SearchResults = next;
+        if (!ReferenceEquals(old, next))
+            DisposeSearchThumbnails(old);
+    }
+
+    private static void DisposeSearchThumbnails(IEnumerable<OmniSearchContent> items)
+    {
+        foreach (var item in items)
+            item.ThumbnailBitmap?.Dispose();
+    }
+
+    private static void DisposeServerThumbnails(IEnumerable<ServerInfo> servers)
+    {
+        foreach (var server in servers)
+            foreach (var bmp in server.PlayerAvatarThumbnails)
+                bmp.Dispose();
+    }
+
     public void Dispose()
     {
         Dispose(true);
@@ -1596,11 +1679,9 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
 
         if (disposing)
         {
-#pragma warning disable CA1849
             _searchDebounceCts?.Cancel();
             _gameInfoCts?.Cancel();
             _subplacesCts?.Cancel();
-#pragma warning restore CA1849
             _searchDebounceCts?.Dispose();
             _searchDebounceCts = null;
 
@@ -1609,6 +1690,9 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
 
             _subplacesCts?.Dispose();
             _subplacesCts = null;
+
+            DisposeSearchThumbnails(_searchResults);
+            DisposeServerThumbnails(_selectedGameServers);
 
             AccountManager.Shared.ActiveAccountChanged -= OnActiveAccountChanged;
         }
