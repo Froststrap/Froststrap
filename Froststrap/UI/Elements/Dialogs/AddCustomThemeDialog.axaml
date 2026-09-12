@@ -11,6 +11,8 @@ SPDX-License-Identifier: MPL-2.0
     xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+    xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
+    xmlns:ui="using:FluentAvalonia.UI.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:resources="clr-namespace:Froststrap.Resources"
     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Dialogs"
@@ -45,6 +47,9 @@ SPDX-License-Identifier: MPL-2.0
                 </TabControl.Styles>
 
                 <TabItem Header="{x:Static resources:Strings.Common_CreateNew}">
+					<ui:TabItemHelper.Icon>
+						<ic:Lucide Icon="Plus" />
+					</ui:TabItemHelper.Icon>
                     <StackPanel Spacing="12" Margin="0,0,0,8">
                         <Grid ColumnDefinitions="75,*" RowDefinitions="*,Auto" ColumnSpacing="12">
                             <TextBlock Text="{x:Static resources:Strings.Common_Name}"
@@ -77,6 +82,9 @@ SPDX-License-Identifier: MPL-2.0
                 </TabItem>
 
                 <TabItem Header="{x:Static resources:Strings.Common_Import}">
+					<ui:TabItemHelper.Icon>
+						<ic:Lucide Icon="FolderDown" />
+					</ui:TabItemHelper.Icon>
                     <StackPanel Spacing="12" Margin="0,0,0,8">
                         <TextBlock Text="{Binding FilePath}"
                                    IsVisible="{Binding HasFilePath}"

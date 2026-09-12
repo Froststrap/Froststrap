@@ -227,9 +227,10 @@ namespace Froststrap.Integrations.AccountManager
                 return false;
             }
         }
-
-        public static string? GetRoblosecurityForUser(long userId) =>
+#pragma warning disable CA1822
+        public string? GetRoblosecurityForUser(long userId) =>
             AccountSecurity.GetCredential(userId.ToString(CultureInfo.InvariantCulture));
+#pragma warning restore CA1822
 
         public static Task<AccountManagerAccount?> AddAccountByQuickSignInAsync(
             QuickSignCodeDialog dialog,
