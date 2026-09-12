@@ -22,7 +22,7 @@ internal record PrivateServerInfo(
     int MaxPlayers,
     int CurrentPlayers);
 
-internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
+internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
 {
     internal enum QuickPlayTab
     {
@@ -55,12 +55,22 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
     private bool _recommendationsLoaded;
     private bool _recentGamesLoaded;
 
+    private string _searchQuery = "";
+    private string _serverId = "";
+    private bool _isSearchFlyoutOpen;
+    private bool _isGameSearchLoading;
+    private CancellationTokenSource? _searchDebounceCts;
+    private CancellationTokenSource? _gameInfoCts;
+    private QuickPlayGameItem? _selectedGame;
+    private bool _disposed;
+
     private readonly ObservableCollection<PrivateServerInfo> _privateServers = [];
 
     public ObservableCollection<QuickPlayGameItem> RecentGames { get; } = [];
     public ObservableCollection<QuickPlayGameItem> FavoriteGames { get; } = [];
     public ObservableCollection<QuickPlayGameItem> RecommendedGames { get; } = [];
     public ObservableCollection<ServerInfo> SelectedGameServers { get; } = [];
+    public ObservableCollection<OmniSearchContent> SearchResults { get; } = [];
 
     public UniverseDetails? SelectedUniverseDetails
     {
@@ -163,6 +173,46 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
         }
     }
 
+    public string SearchQuery
+    {
+        get => _searchQuery;
+        set
+        {
+            if (SetProperty(ref _searchQuery, value))
+                OnSearchQueryChanged(value);
+        }
+    }
+
+    public string ServerId
+    {
+        get => _serverId;
+        set => SetProperty(ref _serverId, value);
+    }
+
+    public bool IsSearchFlyoutOpen
+    {
+        get => _isSearchFlyoutOpen;
+        set => SetProperty(ref _isSearchFlyoutOpen, value);
+    }
+
+    public bool IsGameSearchLoading
+    {
+        get => _isGameSearchLoading;
+        set => SetProperty(ref _isGameSearchLoading, value);
+    }
+
+    public QuickPlayGameItem? SelectedGame
+    {
+        get => _selectedGame;
+        private set
+        {
+            if (SetProperty(ref _selectedGame, value))
+                OnPropertyChanged(nameof(HasSelectedGame));
+        }
+    }
+
+    public bool HasSelectedGame => SelectedGame != null;
+
     public QuickPlayTab SelectedTab
     {
         get => _selectedTab;
@@ -234,6 +284,9 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
     public ICommand JoinPrivateServerCommand { get; }
     public ICommand ClosePrivateServersCommand { get; }
     public ICommand JoinBestRegionCommand { get; }
+    public ICommand ClearSearchCommand { get; }
+    public IRelayCommand JoinServerByIdCommand { get; }
+    public IAsyncRelayCommand JoinBestRegionFromSearchCommand { get; }
 
     public QuickPlayViewModel()
     {
@@ -373,6 +426,10 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
 
         ClosePrivateServersCommand = new RelayCommand(() => IsPrivateServersOverlayVisible = false);
 
+        ClearSearchCommand = new RelayCommand(ClearSearch);
+        JoinServerByIdCommand = new RelayCommand(JoinServerById, () => CanJoinServerById);
+        JoinBestRegionFromSearchCommand = new AsyncRelayCommand(JoinBestRegionFromSearchAsync, () => CanJoinBestRegionFromSearch);
+
         AccountManager.Shared.ActiveAccountChanged += _ =>
         {
             Dispatcher.UIThread.InvokeAsync(() => OnPropertyChanged(nameof(HasActiveAccount)));
@@ -384,13 +441,232 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
 
     private async Task Initialize()
     {
-        _allHistory = LoadLocalHistory(_cachePath);
+        _allHistory = await Task.Run(() => LoadLocalHistory(_cachePath));
         _recentGamesLoaded = false;
         if (SelectedTab == QuickPlayTab.Continue)
         {
             IsLoading = true;
             await LoadRecentGamesAsync();
         }
+    }
+
+    private void ClearSearch()
+    {
+        SearchQuery = string.Empty;
+        SearchResults.Clear();
+        IsSearchFlyoutOpen = false;
+    }
+
+    private void OnSearchQueryChanged(string value)
+    {
+        JoinServerByIdCommand.NotifyCanExecuteChanged();
+        JoinBestRegionFromSearchCommand.NotifyCanExecuteChanged();
+
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            IsSearchFlyoutOpen = false;
+            SearchResults.Clear();
+            ClearSelectedGame();
+            return;
+        }
+
+        if (long.TryParse(value, out var placeId))
+        {
+            IsSearchFlyoutOpen = false;
+            SearchResults.Clear();
+            _ = LoadSelectedGameInfoAsync(placeId);
+            return;
+        }
+
+        ClearSelectedGame();
+
+        _searchDebounceCts?.Cancel();
+        _searchDebounceCts?.Dispose();
+        _searchDebounceCts = new CancellationTokenSource();
+        _ = DebouncedSearchTriggerAsync(_searchDebounceCts.Token);
+    }
+
+    private bool CanJoinServerById =>
+        long.TryParse(SearchQuery, out _);
+
+    private bool CanJoinBestRegionFromSearch =>
+        long.TryParse(SearchQuery, out _);
+
+    private void JoinServerById()
+    {
+        if (!long.TryParse(SearchQuery, out var placeId)) return;
+
+        var jobId = string.IsNullOrWhiteSpace(ServerId) ? null : ServerId.Trim();
+        LaunchRoblox(placeId, jobId);
+    }
+
+    private async Task JoinBestRegionFromSearchAsync()
+    {
+        if (!long.TryParse(SearchQuery, out var placeId)) return;
+        if (IsJoiningBestRegion) return;
+
+        IsJoiningBestRegion = true;
+        try
+        {
+            using var fetcher = new RobloxServerFetcher();
+            bool success = await fetcher.JoinBestServerAsync(
+                placeId,
+                showConfirmation: false
+            );
+
+            if (!success)
+            {
+                await Frontend.ShowMessageBox(Strings.Menu_QuickPlay_NoSuitableServer, MessageBoxImage.Information);
+            }
+        }
+        finally
+        {
+            IsJoiningBestRegion = false;
+        }
+    }
+
+    private void ClearSelectedGame()
+    {
+        _gameInfoCts?.Cancel();
+        _gameInfoCts?.Dispose();
+        _gameInfoCts = null;
+        SelectedGame = null;
+    }
+
+    private async Task LoadSelectedGameInfoAsync(long placeId)
+    {
+#pragma warning disable CA1849
+        _gameInfoCts?.Cancel();
+#pragma warning restore CA1849
+        _gameInfoCts?.Dispose();
+        _gameInfoCts = new CancellationTokenSource();
+        var token = _gameInfoCts.Token;
+
+        SelectedGame = null;
+
+        try
+        {
+            var url = UrlBuilder.BuildApiUrl("apis", $"universes/v1/places/{placeId}/universe");
+            using var request = new HttpRequestMessage(HttpMethod.Get, url);
+            using var response = await App.HttpClient.SendAsync(request, token);
+            if (!response.IsSuccessStatusCode) return;
+
+            var json = await response.Content.ReadAsStringAsync(token);
+            using var doc = JsonDocument.Parse(json);
+            if (!doc.RootElement.TryGetProperty("universeId", out var universeIdElement) ||
+                !universeIdElement.TryGetInt64(out var universeId))
+                return;
+
+            if (token.IsCancellationRequested) return;
+
+            await UniverseDetails.FetchBulk(universeId.ToString(CultureInfo.InvariantCulture));
+            if (token.IsCancellationRequested) return;
+
+            var details = UniverseDetails.LoadFromCache(universeId);
+
+            var item = new QuickPlayGameItem
+            {
+                UniverseId = universeId,
+                PlaceId = placeId,
+                Name = details?.Data?.Name ?? Strings.Menu_QuickPlay_UnknownGame,
+                Creator = details?.Data?.Creator?.Name ?? Strings.Common_Unknown,
+                Playing = details?.Data?.Playing ?? 0,
+                Visits = details?.Data?.Visits ?? 0,
+                OriginalDetails = details,
+                Source = GameSource.None,
+                IsVerified = details?.Data?.Creator?.HasVerifiedBadge ?? false
+            };
+
+            var thumbRequests = new List<ThumbnailRequest>
+            {
+                new()
+                {
+                    TargetId = (ulong)universeId,
+                    Type = ThumbnailType.GameIcon,
+                    Size = "150x150",
+                    Format = ThumbnailFormat.Png
+                }
+            };
+
+            var urls = await Thumbnails.GetThumbnailUrlsAsync(thumbRequests, token);
+            if (token.IsCancellationRequested) return;
+            if (urls.Length > 0 && !string.IsNullOrEmpty(urls[0]))
+                item.ThumbnailUrl = urls[0]!;
+
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                if (!token.IsCancellationRequested)
+                    SelectedGame = item;
+            }, DispatcherPriority.Background, token);
+        }
+        catch (OperationCanceledException) { }
+        catch (Exception ex)
+        {
+            App.Logger.Error($"Failed to load selected game info: {ex.Message}");
+        }
+    }
+
+    private async Task DebouncedSearchTriggerAsync(CancellationToken token)
+    {
+        try
+        {
+            await Task.Delay(600, token);
+            if (!token.IsCancellationRequested && !string.IsNullOrWhiteSpace(SearchQuery))
+            {
+                await SearchGamesAsync(token);
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    IsSearchFlyoutOpen = SearchResults.Count > 0 && !string.IsNullOrWhiteSpace(SearchQuery);
+                }, DispatcherPriority.Background, token);
+            }
+        }
+        catch (OperationCanceledException) { }
+    }
+
+    private async Task SearchGamesAsync(CancellationToken token = default)
+    {
+        if (string.IsNullOrWhiteSpace(SearchQuery)) return;
+        if (long.TryParse(SearchQuery, out _)) return;
+
+        IsGameSearchLoading = true;
+        try
+        {
+            var results = await GameSearching.GetGameSearchResultsAsync(SearchQuery);
+            if (token.IsCancellationRequested || results == null || results.Count == 0) return;
+
+            var thumbRequests = results.Select(r => new ThumbnailRequest
+            {
+                Type = ThumbnailType.GameIcon,
+                TargetId = r.UniverseId,
+                Size = "128x128"
+            }).ToList();
+
+            var fetchedUrls = await Thumbnails.GetThumbnailUrlsAsync(thumbRequests, token);
+            if (token.IsCancellationRequested) return;
+
+            for (int i = 0; i < results.Count; i++)
+            {
+                if (fetchedUrls != null && i < fetchedUrls.Length && !string.IsNullOrEmpty(fetchedUrls[i]))
+                {
+                    try
+                    {
+                        var response = await App.HttpClient.GetByteArrayAsync(new Uri(fetchedUrls[i]!), token);
+                        using var ms = new MemoryStream(response);
+                        results[i].ThumbnailBitmap = new Bitmap(ms);
+                    }
+                    catch { }
+                }
+            }
+
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                SearchResults.Clear();
+                foreach (var res in results) SearchResults.Add(res);
+                IsSearchFlyoutOpen = SearchResults.Count > 0 && !string.IsNullOrWhiteSpace(SearchQuery);
+            }, DispatcherPriority.Background, token);
+        }
+        catch (Exception ex) { App.Logger.Error($"Search error: {ex.Message}"); }
+        finally { IsGameSearchLoading = false; }
     }
 
     private async Task LoadRecentGamesAsync()
@@ -403,7 +679,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
             if (HasActiveAccount)
             {
                 apiGames = await FetchRecentlyVisitedFromApiAsync();
-                _ = RefreshApiGamesInBackground();
+                _ = Task.Delay(2000).ContinueWith(_ => RefreshApiGamesInBackground(), TaskScheduler.Default);
             }
 
             await SetRecentGamesFromSources(localGames, apiGames);
@@ -425,29 +701,34 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
         if (universeIds.Count > 0)
             await UniverseDetails.FetchBulk(string.Join(",", universeIds));
 
-        var localGames = new List<QuickPlayGameItem>();
-        foreach (var entry in _allHistory)
+        var history = _allHistory;
+        var localGames = await Task.Run(() =>
         {
-            if (entry.UniverseId == 0) continue;
-
-            var details = UniverseDetails.LoadFromCache(entry.UniverseId);
-            var lastSession = entry.Servers.OrderByDescending(s => s.JoinedAt).FirstOrDefault();
-            localGames.Add(new QuickPlayGameItem
+            var list = new List<QuickPlayGameItem>();
+            foreach (var entry in history)
             {
-                UniverseId = entry.UniverseId,
-                PlaceId = entry.PlaceId,
-                Name = details?.Data?.Name ?? Strings.Menu_QuickPlay_UnknownGame,
-                Creator = details?.Data?.Creator?.Name ?? Strings.Common_Unknown,
-                Playing = details?.Data?.Playing ?? 0,
-                Visits = details?.Data?.Visits ?? 0,
-                ServerCount = entry.Servers.Count,
-                LastJobId = lastSession?.JobId,
-                OriginalDetails = details,
-                Source = GameSource.Tracked,
-                LastPlayedTicks = lastSession?.JoinedAt.Ticks ?? 0,
-                IsVerified = details?.Data?.Creator?.HasVerifiedBadge ?? false
-            });
-        }
+                if (entry.UniverseId == 0) continue;
+
+                var details = UniverseDetails.LoadFromCache(entry.UniverseId);
+                var lastSession = entry.Servers.OrderByDescending(s => s.JoinedAt).FirstOrDefault();
+                list.Add(new QuickPlayGameItem
+                {
+                    UniverseId = entry.UniverseId,
+                    PlaceId = entry.PlaceId,
+                    Name = details?.Data?.Name ?? Strings.Menu_QuickPlay_UnknownGame,
+                    Creator = details?.Data?.Creator?.Name ?? Strings.Common_Unknown,
+                    Playing = details?.Data?.Playing ?? 0,
+                    Visits = details?.Data?.Visits ?? 0,
+                    ServerCount = entry.Servers.Count,
+                    LastJobId = lastSession?.JobId,
+                    OriginalDetails = details,
+                    Source = GameSource.Tracked,
+                    LastPlayedTicks = lastSession?.JoinedAt.Ticks ?? 0,
+                    IsVerified = details?.Data?.Creator?.HasVerifiedBadge ?? false
+                });
+            }
+            return list;
+        });
 
         return localGames;
     }
@@ -619,17 +900,30 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
 
     private async Task SetRecentGamesFromSources(List<QuickPlayGameItem> localGames, List<QuickPlayGameItem> apiGames)
     {
-        var merged = MergeByApiOrder(localGames, apiGames);
+        var merged = await Task.Run(() => MergeByApiOrder(localGames, apiGames));
         await EnrichGamesWithDetails(merged);
+
+        const int batchSize = 6;
+
+        await Dispatcher.UIThread.InvokeAsync(RecentGames.Clear, DispatcherPriority.Background);
+
+        for (int i = 0; i < merged.Count; i += batchSize)
+        {
+            var batch = merged.Skip(i).Take(batchSize).ToList();
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                foreach (var game in batch)
+                    RecentGames.Add(game);
+            }, DispatcherPriority.Background);
+
+            await Task.Yield();
+        }
 
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
-            RecentGames.Clear();
-            foreach (var game in merged)
-                RecentGames.Add(game);
             OnPropertyChanged(nameof(HasRecentGames));
             OnPropertyChanged(nameof(ShowRecentEmpty));
-        });
+        }, DispatcherPriority.Background);
     }
 
     private async Task RefreshApiGamesInBackground()
@@ -670,11 +964,11 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
             OnPropertyChanged(nameof(ShowRecentEmpty));
             OnPropertyChanged(nameof(ShowRecommendedEmpty));
 
-            _allHistory = LoadLocalHistory(_cachePath);
+            _allHistory = await Task.Run(() => LoadLocalHistory(_cachePath));
 
             if (account != null)
             {
-                _ = RefreshApiGamesInBackground();
+                _ = Task.Delay(2000).ContinueWith(_ => RefreshApiGamesInBackground(), TaskScheduler.Default);
 
                 if (SelectedTab == QuickPlayTab.Continue)
                 {
@@ -1176,5 +1470,33 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel
             deeplink += "&gameInstanceId=" + Uri.EscapeDataString(jobId);
 
         Process.Start(new ProcessStartInfo(deeplink) { UseShellExecute = true });
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (_disposed) return;
+
+        if (disposing)
+        {
+#pragma warning disable CA1849
+            _searchDebounceCts?.Cancel();
+            _gameInfoCts?.Cancel();
+#pragma warning restore CA1849
+            _searchDebounceCts?.Dispose();
+            _searchDebounceCts = null;
+
+            _gameInfoCts?.Dispose();
+            _gameInfoCts = null;
+
+            AccountManager.Shared.ActiveAccountChanged -= OnActiveAccountChanged;
+        }
+
+        _disposed = true;
     }
 }
