@@ -41,6 +41,7 @@ SPDX-License-Identifier: MPL-2.0
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                         <ic:Lucide Icon="{TemplateBinding Icon}"
                                    StrokeBrush="{TemplateBinding Foreground}"
+                                   IsFilled="{TemplateBinding IsFilled}"
                                    Height="{TemplateBinding IconSize}"
                                    Width="{TemplateBinding IconSize}"
                                    VerticalAlignment="Center"
@@ -139,6 +140,7 @@ SPDX-License-Identifier: MPL-2.0
                                     Spacing="8">
                             <ic:Lucide Icon="{TemplateBinding Icon}"
                                        StrokeBrush="{TemplateBinding Foreground}"
+                                       IsFilled="{TemplateBinding IsFilled}"
                                        Height="{TemplateBinding IconSize}"
                                        Width="{TemplateBinding IconSize}"
                                        VerticalAlignment="Center"

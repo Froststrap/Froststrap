@@ -17,6 +17,9 @@ namespace Froststrap.UI.Elements.Controls
         public static readonly StyledProperty<LucideIconNames?> IconProperty =
             AvaloniaProperty.Register<IconButton, LucideIconNames?>(nameof(Icon), null);
 
+        public static readonly StyledProperty<bool> IsFilledProperty =
+            AvaloniaProperty.Register<IconButton, bool>(nameof(IsFilled), false);
+
         public static new readonly StyledProperty<FlyoutBase?> FlyoutProperty =
             AvaloniaProperty.Register<IconButton, FlyoutBase?>(nameof(Flyout), null);
 
@@ -32,6 +35,12 @@ namespace Froststrap.UI.Elements.Controls
         {
             get => GetValue(IconProperty);
             set => SetValue(IconProperty, value);
+        }
+
+        public bool IsFilled
+        {
+            get => GetValue(IsFilledProperty);
+            set => SetValue(IsFilledProperty, value);
         }
 
         public new FlyoutBase? Flyout
