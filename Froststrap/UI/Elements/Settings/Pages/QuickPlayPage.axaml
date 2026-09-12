@@ -165,7 +165,7 @@ SPDX-License-Identifier: MPL-2.0
                                    FontSize="18"
                                    VerticalAlignment="Center"/>
 
-                        <Grid ColumnDefinitions="Auto,Auto,*" ColumnSpacing="16">
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="16">
 
                             <Border Grid.Column="0"
                                     Width="190"
@@ -240,7 +240,6 @@ SPDX-License-Identifier: MPL-2.0
                             </Border>
 
                             <StackPanel Grid.Column="1"
-                                        Width="420"
                                         Spacing="4"
                                         VerticalAlignment="Top">
                                 <TextBlock Text="Place ID"
@@ -358,14 +357,140 @@ SPDX-License-Identifier: MPL-2.0
                                 </Grid>
                             </StackPanel>
 
-                            <Panel Grid.Column="2" />
+                            <Border Grid.Column="2"
+                                    MinWidth="240"
+                                    MaxWidth="320"
+                                    MaxHeight="265"
+                                    HorizontalAlignment="Left"
+                                    CornerRadius="12,12,4,4"
+                                    ClipToBounds="True"
+                                    Background="{DynamicResource ControlFillColorSecondaryBrush}"
+                                    BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                                    BorderThickness="1">
+                                <Grid RowDefinitions="Auto,*">
+
+                                    <Border Grid.Row="0"
+                                            Background="{DynamicResource ControlFillColorDefaultBrush}"
+                                            Padding="12,10"
+                                            BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}"
+                                            BorderThickness="0,0,0,1">
+                                        <Grid ColumnDefinitions="*,Auto">
+                                            <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                                                <ic:Lucide Icon="Layers" Height="14" Width="14" VerticalAlignment="Center"/>
+                                                <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_ViewSubplaces}"
+                                                           FontWeight="SemiBold"
+                                                           FontSize="13"
+                                                           VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                            <Border Grid.Column="1"
+                                                    Padding="6,1"
+                                                    CornerRadius="8"
+                                                    VerticalAlignment="Center"
+                                                    Background="{DynamicResource AccentButtonBackground}"
+                                                    IsVisible="{Binding HasSubplaces}">
+                                                <TextBlock Text="{Binding Subplaces.Count}"
+                                                           FontSize="10"
+                                                           FontWeight="Bold"
+                                                           Foreground="{DynamicResource AccentButtonForeground}"/>
+                                            </Border>
+                                        </Grid>
+                                    </Border>
+
+                                    <Grid Grid.Row="1">
+
+                                        <ScrollViewer Padding="8"
+                                                      IsVisible="{Binding HasSubplaces}"
+                                                      HorizontalScrollBarVisibility="Disabled"
+                                                      VerticalScrollBarVisibility="Auto">
+                                            <ItemsControl ItemsSource="{Binding Subplaces}">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate x:DataType="models:PlaceInfo">
+                                                        <Border Padding="6"
+                                                                Margin="0,0,0,6"
+                                                                CornerRadius="8"
+                                                                Background="{DynamicResource ControlFillColorDefaultBrush}">
+                                                            <Grid ColumnDefinitions="44,*,Auto" ColumnSpacing="8">
+                                                                <Border Grid.Column="0"
+                                                                        Width="40" Height="40"
+                                                                        CornerRadius="6"
+                                                                        ClipToBounds="True"
+                                                                        Background="{DynamicResource ControlFillColorSecondaryBrush}">
+                                                                    <Image Source="{Binding ThumbnailUrl, Converter={StaticResource UrlToBitmapConverter}}"
+                                                                           Stretch="UniformToFill"
+                                                                           RenderOptions.BitmapInterpolationMode="HighQuality"/>
+                                                                </Border>
+                                                                <TextBlock Grid.Column="1"
+                                                                           Text="{Binding Name}"
+                                                                           FontWeight="SemiBold"
+                                                                           FontSize="12"
+                                                                           VerticalAlignment="Center"
+                                                                           TextTrimming="CharacterEllipsis"
+                                                                           ToolTip.Tip="{Binding Name}"/>
+                                                                <controls:IconButton Grid.Column="2"
+                                                                                     Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).JoinSubplaceCommand}"
+                                                                                     CommandParameter="{Binding}"
+                                                                                     Icon="Play"
+                                                                                     IconSize="12"
+                                                                                     Classes="Primary"
+                                                                                     Width="30"
+                                                                                     Height="30"
+                                                                                     Padding="0"
+                                                                                     VerticalAlignment="Center"
+                                                                                     HorizontalContentAlignment="Center"
+                                                                                     VerticalContentAlignment="Center"
+                                                                                     ToolTip.Tip="{x:Static resources:Strings.Menu_QuickPlay_JoinGame}"/>
+                                                            </Grid>
+                                                        </Border>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </ScrollViewer>
+
+                                        <StackPanel IsVisible="{Binding IsLoadingSubplaces}"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center"
+                                                    Spacing="12"
+                                                    Margin="16">
+                                            <ui:FAProgressRing IsActive="{Binding IsLoadingSubplaces}"
+                                                               Width="32" Height="32"
+                                                               Foreground="{DynamicResource SystemAccentColor}"/>
+                                            <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_LoadingSubplaces}"
+                                                       FontSize="11"
+                                                       Opacity="0.6"
+                                                       HorizontalAlignment="Center"/>
+                                        </StackPanel>
+
+                                        <StackPanel IsVisible="{Binding ShowSubplacesEmpty}"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center"
+                                                    Spacing="10"
+                                                    Margin="16">
+                                            <ic:Lucide Icon="Layers"
+                                                       Height="32" Width="32"
+                                                       HorizontalAlignment="Center"
+                                                       Opacity="0.4"/>
+                                            <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_NoSubplacesSelected}"
+                                                       FontSize="11"
+                                                       Opacity="0.6"
+                                                       TextAlignment="Center"
+                                                       TextWrapping="Wrap"
+                                                       IsVisible="{Binding !HasCurrentSearchPlace}"/>
+                                            <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_NoSubplacesFound}"
+                                                       FontSize="11"
+                                                       Opacity="0.6"
+                                                       TextAlignment="Center"
+                                                       TextWrapping="Wrap"
+                                                       IsVisible="{Binding HasCurrentSearchPlace}"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </Grid>
+                            </Border>
                         </Grid>
                     </StackPanel>
                 </Border>
 
                 <TabControl SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay}">
 
-                    <!-- Continue Playing -->
                     <TabItem Header="{x:Static resources:Strings.Menu_QuickPlay_ContinuePlaying}">
                         <ui:TabItemHelper.Icon>
                             <ic:Lucide Icon="RotateCcwClock" />
@@ -399,7 +524,6 @@ SPDX-License-Identifier: MPL-2.0
                         </Grid>
                     </TabItem>
 
-                    <!-- Recommended -->
                     <TabItem Header="{x:Static resources:Strings.Menu_QuickPlay_Recommended}">
                         <ui:TabItemHelper.Icon>
                             <ic:Lucide Icon="GamepadDirectional" />
@@ -439,7 +563,6 @@ SPDX-License-Identifier: MPL-2.0
                         </Grid>
                     </TabItem>
 
-                    <!-- Favorites -->
                     <TabItem Header="{x:Static resources:Strings.Menu_QuickPlay_Favorites}">
                         <ui:TabItemHelper.Icon>
                             <ic:Lucide Icon="Star" />
@@ -482,7 +605,6 @@ SPDX-License-Identifier: MPL-2.0
             </StackPanel>
         </ScrollViewer>
 
-        <!-- Joining best region overlay -->
         <Grid IsVisible="{Binding IsJoiningBestRegion}" ZIndex="200" Background="#99000000">
             <StackPanel Spacing="16" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_FindingBestServer}"
@@ -494,7 +616,6 @@ SPDX-License-Identifier: MPL-2.0
             </StackPanel>
         </Grid>
 
-        <!-- Servers overlay -->
         <Border Background="#99000000" IsVisible="{Binding IsOverlayVisible}" ZIndex="100">
             <Border BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
                     Background="{DynamicResource SolidBackgroundFillColorBaseBrush}"
@@ -633,7 +754,6 @@ SPDX-License-Identifier: MPL-2.0
             </Border>
         </Border>
 
-        <!-- Subplaces overlay -->
         <Border Background="#99000000" IsVisible="{Binding IsSubplacesOverlayVisible}" ZIndex="101">
             <Grid>
                 <Border BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
@@ -703,7 +823,6 @@ SPDX-License-Identifier: MPL-2.0
             </Grid>
         </Border>
 
-        <!-- Private Servers overlay -->
         <Border Background="#99000000" IsVisible="{Binding IsPrivateServersOverlayVisible}" ZIndex="102">
             <Grid>
                 <Border BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"

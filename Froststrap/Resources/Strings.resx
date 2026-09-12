@@ -3329,4 +3329,10 @@ All files will be moved, shortcuts updated, and the application will restart.</v
   <data name="Menu.Appearance.RobloxIcon.Description" xml:space="preserve">
     <value>Choose what icon Roblox should display on the taskbar.</value>
   </data>
+  <data name="Menu.QuickPlay.NoSubplacesFound" xml:space="preserve">
+    <value>No Subplace Available</value>
+  </data>
+  <data name="Menu.QuickPlay.NoSubplacesSelected" xml:space="preserve">
+    <value>Select a game to view subplaces</value>
+  </data>
 </root>

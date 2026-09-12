@@ -61,6 +61,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
     private bool _isGameSearchLoading;
     private CancellationTokenSource? _searchDebounceCts;
     private CancellationTokenSource? _gameInfoCts;
+    private CancellationTokenSource? _subplacesCts;
     private QuickPlayGameItem? _selectedGame;
     private OmniSearchContent? _selectedSearchResult;
     private bool _disposed;
@@ -104,7 +105,11 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
     public bool IsLoadingSubplaces
     {
         get => _isLoadingSubplaces;
-        set => SetProperty(ref _isLoadingSubplaces, value);
+        set
+        {
+            if (SetProperty(ref _isLoadingSubplaces, value))
+                OnPropertyChanged(nameof(ShowSubplacesEmpty));
+        }
     }
 
     public bool IsPrivateServersOverlayVisible
@@ -213,6 +218,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
                 OnPropertyChanged(nameof(CurrentSearchPlaceId));
                 OnPropertyChanged(nameof(HasCurrentSearchPlace));
                 ShowPrivateServersFromSearchCommand.NotifyCanExecuteChanged();
+                RefreshSubplacesForCurrentSelection();
             }
         }
     }
@@ -229,6 +235,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
                 OnPropertyChanged(nameof(CurrentSearchPlaceId));
                 OnPropertyChanged(nameof(HasCurrentSearchPlace));
                 ShowPrivateServersFromSearchCommand.NotifyCanExecuteChanged();
+                RefreshSubplacesForCurrentSelection();
             }
         }
     }
@@ -294,6 +301,9 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
     public ObservableCollection<PlaceInfo> Subplaces => _subplaces;
     public ObservableCollection<PrivateServerInfo> PrivateServers => _privateServers;
 
+    public bool HasSubplaces => Subplaces.Count > 0;
+    public bool ShowSubplacesEmpty => !IsLoadingSubplaces && !HasSubplaces;
+
     public static bool HasActiveAccount => AccountManager.Shared?.ActiveAccount != null;
     public bool IsTrackedGame => !IsCurrentGameApi;
     public bool CanJoinBestRegion => !IsJoiningBestRegion;
@@ -342,7 +352,13 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
 
             SelectedUniverseDetails = item.OriginalDetails;
             IsSubplacesOverlayVisible = true;
-            await FetchSubplacesAsync(item.UniverseId);
+
+#pragma warning disable CA1849
+            _subplacesCts?.Cancel();
+#pragma warning restore CA1849
+            _subplacesCts?.Dispose();
+            _subplacesCts = new CancellationTokenSource();
+            await FetchSubplacesAsync(item.UniverseId, _subplacesCts.Token);
         });
 
         JoinSubplaceCommand = new RelayCommand<PlaceInfo>(subplace =>
@@ -469,6 +485,12 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
             },
             () => HasCurrentSearchPlace);
 
+        Subplaces.CollectionChanged += (_, _) =>
+        {
+            OnPropertyChanged(nameof(HasSubplaces));
+            OnPropertyChanged(nameof(ShowSubplacesEmpty));
+        };
+
         AccountManager.Shared.ActiveAccountChanged += _ =>
         {
             Dispatcher.UIThread.InvokeAsync(() => OnPropertyChanged(nameof(HasActiveAccount)));
@@ -576,10 +598,38 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
 
     private void ClearSelectedGame()
     {
+#pragma warning disable CA1849
         _gameInfoCts?.Cancel();
+#pragma warning restore CA1849
         _gameInfoCts?.Dispose();
         _gameInfoCts = null;
         SelectedGame = null;
+    }
+
+    private void RefreshSubplacesForCurrentSelection()
+    {
+#pragma warning disable CA1849
+        _subplacesCts?.Cancel();
+#pragma warning restore CA1849
+        _subplacesCts?.Dispose();
+        _subplacesCts = new CancellationTokenSource();
+        var token = _subplacesCts.Token;
+
+        long universeId = SelectedSearchResult != null
+            ? (long)SelectedSearchResult.UniverseId
+            : SelectedGame?.UniverseId ?? 0;
+
+        if (universeId > 0)
+        {
+            _ = FetchSubplacesAsync(universeId, token);
+        }
+        else
+        {
+            Subplaces.Clear();
+            IsLoadingSubplaces = false;
+            OnPropertyChanged(nameof(HasSubplaces));
+            OnPropertyChanged(nameof(ShowSubplacesEmpty));
+        }
     }
 
     private async Task LoadSelectedGameInfoAsync(long placeId)
@@ -1238,12 +1288,16 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
         return gameItems;
     }
 
-    private async Task FetchSubplacesAsync(long universeId)
+    private async Task FetchSubplacesAsync(long universeId, CancellationToken token = default)
     {
         try
         {
+            if (token.IsCancellationRequested) return;
+
             IsLoadingSubplaces = true;
             Subplaces.Clear();
+            OnPropertyChanged(nameof(HasSubplaces));
+            OnPropertyChanged(nameof(ShowSubplacesEmpty));
 
             Uri url = UrlBuilder.BuildApiUrl(
                 "develop",
@@ -1251,6 +1305,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
             );
 
             var subplacesResponse = await Http.GetJson<SubplacesResponse>(url);
+            if (token.IsCancellationRequested) return;
 
             if (subplacesResponse?.Data != null && subplacesResponse.Data.Count > 0)
             {
@@ -1269,6 +1324,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
                 try
                 {
                     var urls = await Thumbnails.GetThumbnailUrlsAsync(thumbRequests, CancellationToken.None);
+                    if (token.IsCancellationRequested) return;
                     for (int i = 0; i < tempSubplaces.Count; i++)
                     {
                         tempSubplaces[i].ThumbnailUrl = urls.ElementAtOrDefault(i) ?? "";
@@ -1279,16 +1335,23 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
                     App.Logger.Error($"Subplace thumbnail fetch failed: {ex.Message}");
                 }
 
+                if (token.IsCancellationRequested) return;
                 foreach (var p in tempSubplaces) Subplaces.Add(p);
             }
         }
+        catch (OperationCanceledException) { }
         catch (Exception ex)
         {
             App.Logger.Error($"Subplace fetch failed: {ex.Message}");
         }
         finally
         {
-            IsLoadingSubplaces = false;
+            if (!token.IsCancellationRequested)
+            {
+                IsLoadingSubplaces = false;
+                OnPropertyChanged(nameof(HasSubplaces));
+                OnPropertyChanged(nameof(ShowSubplacesEmpty));
+            }
         }
     }
 
@@ -1536,12 +1599,16 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
 #pragma warning disable CA1849
             _searchDebounceCts?.Cancel();
             _gameInfoCts?.Cancel();
+            _subplacesCts?.Cancel();
 #pragma warning restore CA1849
             _searchDebounceCts?.Dispose();
             _searchDebounceCts = null;
 
             _gameInfoCts?.Dispose();
             _gameInfoCts = null;
+
+            _subplacesCts?.Dispose();
+            _subplacesCts = null;
 
             AccountManager.Shared.ActiveAccountChanged -= OnActiveAccountChanged;
         }

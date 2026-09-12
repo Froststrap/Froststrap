@@ -8485,6 +8485,24 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No Subplace Available.
+        /// </summary>
+        public static string Menu_QuickPlay_NoSubplacesFound {
+            get {
+                return ResourceManager.GetString("Menu.QuickPlay.NoSubplacesFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select a game to view subplaces.
+        /// </summary>
+        public static string Menu_QuickPlay_NoSubplacesSelected {
+            get {
+                return ResourceManager.GetString("Menu.QuickPlay.NoSubplacesSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No suitable server found..
         /// </summary>
         public static string Menu_QuickPlay_NoSuitableServer {
