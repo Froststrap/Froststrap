@@ -11,6 +11,8 @@ SPDX-License-Identifier: MPL-2.0
                      xmlns:resources="clr-namespace:Froststrap.Resources"
                      xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
                      xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+                     xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
+                     xmlns:ui="using:FluentAvalonia.UI.Controls"
                      x:Class="Froststrap.UI.Elements.Dialogs.FlagProfilesDialog"
                      Title="{x:Static resources:Strings.Menu_FlagProfiles_Title}"
                      Width="540"
@@ -44,12 +46,18 @@ SPDX-License-Identifier: MPL-2.0
                 </TabControl.Styles>
 
                 <TabItem Header="{x:Static resources:Strings.Common_PresetFlagLists}">
+                    <ui:TabItemHelper.Icon>
+                        <ic:Lucide Icon="BookOpenText" />
+                    </ui:TabItemHelper.Icon>
                     <StackPanel Spacing="12" Margin="0,0,0,8">
                         <ListBox x:Name="LoadPresetProfile" Height="200" SelectionChanged="LoadPresetProfile_SelectionChanged" />
                     </StackPanel>
                 </TabItem>
 
                 <TabItem Header="{x:Static resources:Strings.Menu_FlagProfiles_PlaceIdsTab}">
+                    <ui:TabItemHelper.Icon>
+                        <ic:Lucide Icon="Gamepad2" />
+                    </ui:TabItemHelper.Icon>
                     <StackPanel Spacing="12" Margin="0,0,0,8">
                         <Grid x:Name="PlaceProfileGrid" ColumnDefinitions="Auto,*" ColumnSpacing="8" IsVisible="False">
                             <TextBlock Text="{x:Static resources:Strings.Menu_FlagProfiles_SelectProfileLabel}" VerticalAlignment="Center" />
@@ -78,12 +86,18 @@ SPDX-License-Identifier: MPL-2.0
                 </TabItem>
 
                 <TabItem Header="{x:Static resources:Strings.Menu_Save}">
+                    <ui:TabItemHelper.Icon>
+                        <ic:Lucide Icon="Plus" />
+                    </ui:TabItemHelper.Icon>
                     <StackPanel Spacing="12" Margin="0,0,0,8">
                         <TextBox x:Name="SaveProfile" PlaceholderText="Profile Name" />
                     </StackPanel>
                 </TabItem>
 
                 <TabItem Header="{x:Static resources:Strings.Menu_Load}">
+                    <ui:TabItemHelper.Icon>
+                        <ic:Lucide Icon="List" />
+                    </ui:TabItemHelper.Icon>
                     <StackPanel Spacing="12" Margin="0,0,0,8">
                         <StackPanel Spacing="12">
                             <Grid x:Name="RenamePanel" ColumnDefinitions="*,Auto,Auto,Auto" ColumnSpacing="8">
