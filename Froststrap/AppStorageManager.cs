@@ -11,7 +11,10 @@ internal class AppStorageManager : JsonManager<Dictionary<string, object>>
 
     public override string ClassName => nameof(AppStorageManager);
     public override string FileName => "appStorage.json";
-    public override string FileLocation => Path.Combine(Paths.SoberData, "appData", "LocalStorage", FileName);
+    public override string FileLocation =>
+        OperatingSystem.IsLinux()
+            ? Path.Combine(Paths.SoberData, "appData", "LocalStorage", FileName)
+            : Path.Combine(Paths.Roblox, "LocalStorage", FileName);
 
     public static readonly IReadOnlyDictionary<string, string> PresetKeys = new Dictionary<string, string>
     {
