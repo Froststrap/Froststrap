@@ -62,6 +62,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
     private CancellationTokenSource? _searchDebounceCts;
     private CancellationTokenSource? _gameInfoCts;
     private QuickPlayGameItem? _selectedGame;
+    private OmniSearchContent? _selectedSearchResult;
     private bool _disposed;
 
     private readonly ObservableCollection<PrivateServerInfo> _privateServers = [];
@@ -207,11 +208,37 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
         private set
         {
             if (SetProperty(ref _selectedGame, value))
+            {
                 OnPropertyChanged(nameof(HasSelectedGame));
+                OnPropertyChanged(nameof(CurrentSearchPlaceId));
+                OnPropertyChanged(nameof(HasCurrentSearchPlace));
+                ShowPrivateServersFromSearchCommand.NotifyCanExecuteChanged();
+            }
         }
     }
 
     public bool HasSelectedGame => SelectedGame != null;
+
+    public OmniSearchContent? SelectedSearchResult
+    {
+        get => _selectedSearchResult;
+        set
+        {
+            if (SetProperty(ref _selectedSearchResult, value))
+            {
+                OnPropertyChanged(nameof(CurrentSearchPlaceId));
+                OnPropertyChanged(nameof(HasCurrentSearchPlace));
+                ShowPrivateServersFromSearchCommand.NotifyCanExecuteChanged();
+            }
+        }
+    }
+
+    public long CurrentSearchPlaceId =>
+        SelectedGame?.PlaceId
+        ?? SelectedSearchResult?.RootPlaceId
+        ?? 0;
+
+    public bool HasCurrentSearchPlace => CurrentSearchPlaceId != 0;
 
     public QuickPlayTab SelectedTab
     {
@@ -287,6 +314,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
     public ICommand ClearSearchCommand { get; }
     public IRelayCommand JoinServerByIdCommand { get; }
     public IAsyncRelayCommand JoinBestRegionFromSearchCommand { get; }
+    public IRelayCommand ShowPrivateServersFromSearchCommand { get; }
 
     public QuickPlayViewModel()
     {
@@ -430,6 +458,17 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
         JoinServerByIdCommand = new RelayCommand(JoinServerById, () => CanJoinServerById);
         JoinBestRegionFromSearchCommand = new AsyncRelayCommand(JoinBestRegionFromSearchAsync, () => CanJoinBestRegionFromSearch);
 
+        ShowPrivateServersFromSearchCommand = new RelayCommand(
+            async () =>
+            {
+                long placeId = CurrentSearchPlaceId;
+                if (placeId == 0) return;
+
+                _currentPrivateServersPlaceId = placeId;
+                await ShowPrivateServersForGameAsync();
+            },
+            () => HasCurrentSearchPlace);
+
         AccountManager.Shared.ActiveAccountChanged += _ =>
         {
             Dispatcher.UIThread.InvokeAsync(() => OnPropertyChanged(nameof(HasActiveAccount)));
@@ -454,6 +493,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
     {
         SearchQuery = string.Empty;
         SearchResults.Clear();
+        SelectedSearchResult = null;
         IsSearchFlyoutOpen = false;
     }
 
@@ -467,6 +507,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
             IsSearchFlyoutOpen = false;
             SearchResults.Clear();
             ClearSelectedGame();
+            SelectedSearchResult = null;
             return;
         }
 
@@ -474,11 +515,19 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
         {
             IsSearchFlyoutOpen = false;
             SearchResults.Clear();
+            SelectedSearchResult = null;
             _ = LoadSelectedGameInfoAsync(placeId);
             return;
         }
 
+        if (SelectedSearchResult != null &&
+            string.Equals(value, SelectedSearchResult.Name, StringComparison.Ordinal))
+        {
+            return;
+        }
+
         ClearSelectedGame();
+        SelectedSearchResult = null;
 
         _searchDebounceCts?.Cancel();
         _searchDebounceCts?.Dispose();
