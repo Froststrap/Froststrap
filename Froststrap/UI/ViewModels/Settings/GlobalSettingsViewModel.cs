@@ -285,6 +285,11 @@ namespace Froststrap.UI.ViewModels.Settings
             get => App.GlobalSettings.GetPreset("Audio.PartyVoiceVolume")!;
             set => App.GlobalSettings.SetPreset("Audio.PartyVoiceVolume", value);
         }
+        public static string VoiceChatVolume
+        {
+            get => App.GlobalSettings.GetPreset("Audio.VoiceChatVolume")!;
+            set => App.GlobalSettings.SetPreset("Audio.VoiceChatVolume", value);
+        }
         public static string MouseSensitivity
         {
             get => App.GlobalSettings.GetPreset("User.MouseSensitivity")!;

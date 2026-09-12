@@ -13,6 +13,7 @@
 			<float name="MasterVolume">1</float>
 			<float name="MasterVolumeStudio">1</float>
 			<float name="PartyVoiceVolume">1</float>
+			<float name="PartyVoiceVolume">1</float>
 			<float name="MouseSensitivity">1</float>
 			<token name="ControlMode">0</token>
 			<Vector2 name="MouseSensitivityFirstPerson">
