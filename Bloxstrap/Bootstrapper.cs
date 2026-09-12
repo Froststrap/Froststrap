@@ -1127,7 +1127,15 @@ namespace Bloxstrap
                     return false;
                 }
 
-                var asset = releaseInfo.Assets[0];
+                var asset = releaseInfo.Assets.FirstOrDefault(x => x.Name.Equals("Froststrap-windows-x64.exe", StringComparison.OrdinalIgnoreCase))
+                            ?? releaseInfo.Assets.FirstOrDefault(x => x.Name.EndsWith(".exe", StringComparison.OrdinalIgnoreCase));
+
+                if (asset is null)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Release found but no .exe asset was available for download.");
+                    return false;
+                }
+
                 string downloadLocation = Path.Combine(Paths.TempUpdates, asset.Name);
                 Directory.CreateDirectory(Paths.TempUpdates);
 
@@ -1149,6 +1157,8 @@ namespace Bloxstrap
                 {
                     UseShellExecute = true,
                 };
+
+                startInfo.ArgumentList.Add("/S");
 
                 startInfo.ArgumentList.Add("-upgrade");
 
