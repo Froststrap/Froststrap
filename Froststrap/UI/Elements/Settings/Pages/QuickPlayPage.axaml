@@ -223,7 +223,7 @@ SPDX-License-Identifier: MPL-2.0
                                                    HorizontalAlignment="Center"
                                                    VerticalAlignment="Center"
                                                    Opacity="0.4"/>
-                                        <TextBlock Text="No game selected"
+                                        <TextBlock Text="Search up a game for info."
                                                    HorizontalAlignment="Center"
                                                    FontSize="11"
                                                    Opacity="0.6"

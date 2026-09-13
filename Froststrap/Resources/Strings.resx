@@ -3333,6 +3333,6 @@ All files will be moved, shortcuts updated, and the application will restart.</v
     <value>No Subplace Available</value>
   </data>
   <data name="Menu.QuickPlay.NoSubplacesSelected" xml:space="preserve">
-    <value>Select a game to view subplaces</value>
+    <value>Search up a game to view subplaces</value>
   </data>
 </root>
