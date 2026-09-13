@@ -25,6 +25,7 @@
   glib,
   omnisharp-roslyn,
   callPackage,
+  nspr,
 }:
 let
   inherit (callPackage ./devshell-tools.nix {}) mkFragment;
@@ -36,6 +37,7 @@ mkFragment (finalAttrs: {
     fontconfig
     freetype
     libGL
+    nspr
     vulkan-loader
     wayland
     libxkbcommon
@@ -50,6 +52,7 @@ mkFragment (finalAttrs: {
     libxcursor
     libxcb
     xcbutil
+    glib
   ];
 
   buildInputs = [
