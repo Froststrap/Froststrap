@@ -292,7 +292,6 @@ namespace Froststrap.UI.Elements.Base
                     {
                         WindowsBackdrops.Acrylic => [WindowTransparencyLevel.AcrylicBlur, WindowTransparencyLevel.None],
                         WindowsBackdrops.Mica => [WindowTransparencyLevel.Mica, WindowTransparencyLevel.None],
-                        WindowsBackdrops.Aero => [WindowTransparencyLevel.Blur, WindowTransparencyLevel.None],
                         _ => [WindowTransparencyLevel.None]
                     };
                     window.Background = Brushes.Transparent;

@@ -400,11 +400,6 @@ namespace Froststrap.UI.Elements.Bootstrapper
                     transparencyLevels.Add(WindowTransparencyLevel.Mica);
                     break;
 
-                case WindowsBackdrops.Aero:
-                    transparencyLevels.Add(WindowTransparencyLevel.Blur);
-                    transparencyLevels.Add(WindowTransparencyLevel.AcrylicBlur);
-                    break;
-
                 case WindowsBackdrops.None:
                 default:
                     transparencyLevels.Add(WindowTransparencyLevel.None);
@@ -421,7 +416,6 @@ namespace Froststrap.UI.Elements.Bootstrapper
                 {
                     WindowsBackdrops.Mica => (byte)200,
                     WindowsBackdrops.Acrylic => (byte)128,
-                    WindowsBackdrops.Aero => (byte)64,
                     _ => (byte)180
                 };
 

@@ -183,7 +183,6 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 WindowsBackdrops.Mica => OperatingSystem.IsWindowsVersionAtLeast(10, 0, 22000),
                 WindowsBackdrops.Acrylic => OperatingSystem.IsWindowsVersionAtLeast(10, 0, 17763),
-                WindowsBackdrops.Aero => OperatingSystem.IsWindowsVersionAtLeast(10, 0, 10240),
                 _ => true
             };
         }
