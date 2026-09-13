@@ -946,9 +946,9 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             List<GradientStops> defaultStops =
             [
-                new() { Offset = 0.0, Color = "#4D5560" },
-                new() { Offset = 0.5, Color = "#383F47" },
-                new() { Offset = 1.0, Color = "#252A30" }
+                new() { Offset = 0.0, Color = "#8025304A" },
+                new() { Offset = 0.5, Color = "#80272F48" },
+                new() { Offset = 1.0, Color = "#80202C36" }
             ];
 
             foreach (var stop in GradientStops) stop.PropertyChanged -= OnGradientStopPropertyChanged;

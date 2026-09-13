@@ -66,18 +66,17 @@ namespace Froststrap.Models.Persistable
         public string Locale { get; set; } = "nil";
         public List<GradientStops> CustomGradientStops { get; set; } =
         [
-            new GradientStops { Offset = 0.0, Color = "#4D5560" },
-            new GradientStops { Offset = 0.5, Color = "#383F47" },
-            new GradientStops { Offset = 1.0, Color = "#252A30" }
+            new GradientStops { Offset = 0.0, Color = "#8025304A" },
+            new GradientStops { Offset = 0.5, Color = "#80272F48" },
+            new GradientStops { Offset = 1.0, Color = "#80202C36" }
         ];
-        public double? GradientAngle { get; set; } = 0;
+        public double? GradientAngle { get; set; } = 45;
         public BackgroundMode BackgroundType { get; set; } = BackgroundMode.Gradient;
         public string? BackgroundImagePath { get; set; } = "";
-        public BackgroundStretch BackgroundStretch { get; set; } = BackgroundStretch.UniformToFill;
+        public BackgroundStretch BackgroundStretch { get; set; } = BackgroundStretch.Fill;
         public double BackgroundOpacity { get; set; } = 1.0;
         public string BootstrapperTitle { get; set; } = App.ProjectName;
         public string BootstrapperIconCustomLocation { get; set; } = "";
-        public int MaxThreadDownload { get; set; } = 3;
         public Theme Theme { get; set; } = Theme.Default;
         public bool EnableWindowManipulation { get; set; }
         public RobloxIcon RobloxIcon { get; set; } = RobloxIcon.IconDefault;
@@ -89,6 +88,7 @@ namespace Froststrap.Models.Persistable
         public bool DisableAnimations { get; set; }
         public bool UpdateRoblox { get; set; } = true;
         public bool AutomaticallyUpdateSober { get; set; } = true;
+        public int MaxThreadDownload { get; set; } = 3;
         public string RobloxDomain { get; set; } = RobloxInterfaces.Deployment.DefaultRobloxDomain;
         public bool StaticDirectory { get; set; }
         public string PlayerChannel { get; set; } = RobloxInterfaces.Deployment.DefaultChannel;
