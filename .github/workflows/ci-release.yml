@@ -100,15 +100,15 @@ jobs:
           APP_STORE_CONNECT_P8_CONTENT: ${{ secrets.APP_STORE_CONNECT_P8_CONTENT }}
           APPLE_KEY_ID: ${{ secrets.APPLE_KEY_ID }}
           APPLE_ISSUER_ID: ${{ secrets.APPLE_ISSUER_ID }}
-        run: nu ./main.nu publish
+        run: ./build.sh publish
 
       - name: Rename package for architecture
-        run: mv build/Froststrap.pkg build/Froststrap-macos-${{ matrix.arch }}.pkg
+        run: mv .build/publish/Froststrap.pkg .build/publish/Froststrap-macos-${{ matrix.arch }}.pkg
 
       - uses: actions/upload-artifact@v7
         with:
           name: froststrap-release-macos-${{ matrix.arch }}-${{ env.SHORT_SHA }}
-          path: build/Froststrap-macos-${{ matrix.arch }}.pkg
+          path: .build/publish/Froststrap-macos-${{ matrix.arch }}.pkg
 
   build-linux:
     runs-on: ubuntu-latest

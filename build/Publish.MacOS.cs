@@ -1,16 +1,19 @@
+using System;
 using System.Diagnostics;
 using System.IO;
+using System.Text.RegularExpressions;
 using Fallout.Common;
 using Fallout.Common.IO;
 using Serilog;
 
 public partial class Build : FalloutBuild
 {
-    void PublishMacOS(string outputDirectory)
-	{
+    void PublishMacOS(string outputDirectory, bool sign = false)
+    {
         AbsolutePath virtualbackendBuildRoot = GitRoot / "backend" / "virtualdisplay" / ".build";
         AbsolutePath macAppLocation = GitRoot / "packaging" / "macApp";
         AbsolutePath xcodeProjectLocation = macAppLocation / "macApp.xcodeproj";
+        AbsolutePath entitlementsPath = macAppLocation / "Froststrap.entitlements";
 
         if (!File.Exists((AbsolutePath)outputDirectory / "libvirtualdisplay.dylib")
             && File.Exists($"{virtualbackendBuildRoot}/out/Products/Release/libvirtualdisplay.dylib"))
@@ -18,7 +21,8 @@ public partial class Build : FalloutBuild
             AbsolutePath source = $"{virtualbackendBuildRoot}/out/Products/Release/libvirtualdisplay.dylib";
             Log.Information("Copying over {Source} into {OutDir}", source, OutputRoot);
             File.Copy(source, (AbsolutePath)outputDirectory / "libvirtualdisplay.dylib");
-        } else if (File.Exists($"{virtualbackendBuildRoot}/apple/Products/Release/libvirtualdisplay.dylib"))
+        }
+        else if (File.Exists($"{virtualbackendBuildRoot}/apple/Products/Release/libvirtualdisplay.dylib"))
         {
             AbsolutePath source = $"{virtualbackendBuildRoot}/apple/Products/Release/libvirtualdisplay.dylib";
             Log.Information("Copying over {Source} into {OutDir}", source, OutputRoot);
@@ -28,28 +32,153 @@ public partial class Build : FalloutBuild
         Log.Information("Building {xcproj} with xcodebuild", xcodeProjectLocation);
         var xcbProc = new Process();
         xcbProc.StartInfo.FileName = "xcodebuild";
-
         xcbProc.StartInfo.Arguments = $"-project {xcodeProjectLocation} " +
                                       "-target Froststrap " +
                                       $"-configuration {Configuration} " +
                                       "build";
-
         xcbProc.StartInfo.UseShellExecute = false;
-
         xcbProc.Start();
         xcbProc.WaitForExit();
+
+        if (xcbProc.ExitCode != 0)
+        {
+            Log.Error("xcodebuild failed with exit code {ExitCode}", xcbProc.ExitCode);
+            throw new Exception("xcodebuild failed");
+        }
 
         var src = (AbsolutePath)macAppLocation / "build" / Configuration / "Froststrap.app";
         var dest = (AbsolutePath)outputDirectory / "Froststrap.app";
         Log.Information("Copying {src} artifact to {OutDir}", src, dest);
-        
+
         var copyProc = new Process();
         copyProc.StartInfo.FileName = "cp";
         copyProc.StartInfo.Arguments = $"-r \"{(string)src}\" \"{(string)dest}\"";
         copyProc.StartInfo.UseShellExecute = false;
-
         copyProc.Start();
         copyProc.WaitForExit();
-	}
-}
 
+        if (sign)
+        {
+            SignAndNotarizeMacApp(dest, entitlementsPath, outputDirectory);
+        }
+        else
+        {
+            BuildUnsignedPkg(dest, outputDirectory);
+        }
+    }
+
+    void SignAndNotarizeMacApp(AbsolutePath appPath, AbsolutePath entitlementsPath, string outputDirectory)
+    {
+        string developerIdApp = EnvironmentInfo.GetVariable<string>("DEVELOPER_ID_APP");
+        string developerIdInstaller = EnvironmentInfo.GetVariable<string>("DEVELOPER_ID_INSTALLER");
+        string appleKeyId = EnvironmentInfo.GetVariable<string>("APPLE_KEY_ID");
+        string appleIssuerId = EnvironmentInfo.GetVariable<string>("APPLE_ISSUER_ID");
+
+        AbsolutePath payloadDir = (AbsolutePath)outputDirectory / "payload";
+        AbsolutePath payloadApplications = payloadDir / "Applications";
+        AbsolutePath unsignedPkg = (AbsolutePath)outputDirectory / "Froststrap-unsigned.pkg";
+        AbsolutePath finalPkg = (AbsolutePath)outputDirectory / "Froststrap.pkg";
+
+        Log.Information("Signing .app with {DeveloperIdApp}", developerIdApp);
+        RunProcess("codesign", $"--force --deep --options runtime --entitlements \"{entitlementsPath}\" --sign \"{developerIdApp}\" \"{appPath}\"");
+        RunProcess("codesign", $"--verify --verbose=4 \"{appPath}\"");
+
+        Directory.CreateDirectory(payloadApplications);
+        RunProcess("cp", $"-r \"{appPath}\" \"{payloadApplications / "Froststrap.app"}\"");
+
+        RunProcess("pkgbuild", $"--root \"{payloadDir}\" --install-location / --identifier xyz.froststrap.desktop \"{unsignedPkg}\"");
+
+        Log.Information("Signing PKG with {DeveloperIdInstaller}", developerIdInstaller);
+        RunProcess("productsign", $"--sign \"{developerIdInstaller}\" \"{unsignedPkg}\" \"{finalPkg}\"");
+
+        Log.Information("Submitting for notarization...");
+        AbsolutePath keysDir = (AbsolutePath)Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) / ".private_keys";
+        Directory.CreateDirectory(keysDir);
+        AbsolutePath keyPath = keysDir / $"AuthKey_{appleKeyId}.p8";
+
+        string p8Content = EnvironmentInfo.GetVariable<string>("APP_STORE_CONNECT_P8_CONTENT");
+        File.WriteAllText(keyPath, p8Content);
+
+        var (exitCode, stdout, stderr) = RunProcessCaptured(
+            "xcrun",
+            $"notarytool submit \"{finalPkg}\" --key-id {appleKeyId} --issuer {appleIssuerId} --key \"{keyPath}\" --wait");
+
+        string submissionOutput = stdout + stderr;
+        Log.Information(submissionOutput);
+
+        if (exitCode != 0)
+        {
+            Log.Error("notarytool exited with status {ExitCode} (see output above)", exitCode);
+            throw new Exception("notarytool failed");
+        }
+
+        var idMatch = Regex.Match(submissionOutput, @"id:\s*(?<id>[a-f0-9-]+)");
+        string submissionId = idMatch.Success ? idMatch.Groups["id"].Value : null;
+
+        if (submissionOutput.Contains("status: Invalid"))
+        {
+            Log.Error("Notarization failed. Fetching detailed log...");
+            RunProcess("xcrun", $"notarytool log {submissionId} --key-id {appleKeyId} --issuer {appleIssuerId} --key \"{keyPath}\"");
+            throw new Exception("Notarization failed");
+        }
+
+        RunProcess("xcrun", $"stapler staple \"{finalPkg}\"");
+
+        File.Delete(keyPath);
+        Directory.Delete(payloadDir, recursive: true);
+        File.Delete(unsignedPkg);
+
+        Log.Information("macOS build complete: {PkgPath}", finalPkg);
+    }
+
+    void BuildUnsignedPkg(AbsolutePath appPath, string outputDirectory)
+    {
+        Log.Information("Building unsigned PKG (skipping signing)");
+
+        AbsolutePath payloadDir = (AbsolutePath)outputDirectory / "payload";
+        AbsolutePath payloadApplications = payloadDir / "Applications";
+        AbsolutePath finalPkg = (AbsolutePath)outputDirectory / "Froststrap.pkg";
+
+        Directory.CreateDirectory(payloadApplications);
+        RunProcess("cp", $"-r \"{appPath}\" \"{payloadApplications / "Froststrap.app"}\"");
+
+        RunProcess("pkgbuild", $"--root \"{payloadDir}\" --install-location / --identifier xyz.froststrap.desktop \"{finalPkg}\"");
+
+        Directory.Delete(payloadDir, recursive: true);
+
+        Log.Information("macOS build complete: {PkgPath}", finalPkg);
+    }
+
+    void RunProcess(string fileName, string arguments)
+    {
+        var proc = new Process();
+        proc.StartInfo.FileName = fileName;
+        proc.StartInfo.Arguments = arguments;
+        proc.StartInfo.UseShellExecute = false;
+        proc.Start();
+        proc.WaitForExit();
+
+        if (proc.ExitCode != 0)
+        {
+            Log.Error("{FileName} exited with code {ExitCode}", fileName, proc.ExitCode);
+            throw new Exception($"{fileName} failed with exit code {proc.ExitCode}");
+        }
+    }
+
+    (int ExitCode, string Stdout, string Stderr) RunProcessCaptured(string fileName, string arguments)
+    {
+        var proc = new Process();
+        proc.StartInfo.FileName = fileName;
+        proc.StartInfo.Arguments = arguments;
+        proc.StartInfo.UseShellExecute = false;
+        proc.StartInfo.RedirectStandardOutput = true;
+        proc.StartInfo.RedirectStandardError = true;
+        proc.Start();
+
+        string stdout = proc.StandardOutput.ReadToEnd();
+        string stderr = proc.StandardError.ReadToEnd();
+        proc.WaitForExit();
+
+        return (proc.ExitCode, stdout, stderr);
+    }
+}
