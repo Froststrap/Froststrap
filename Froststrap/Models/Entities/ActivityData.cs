@@ -83,7 +83,7 @@ namespace Froststrap.Models.Entities
         {
             string baseUrl = type switch
             {
-                DeeplinkType.Froststrap => "http://froststrap.github.io/invite",
+                DeeplinkType.Froststrap => "http://froststrap.xyz/invite",
                 DeeplinkType.RobloxWeb => "https://www.roblox.com/games/start",
                 _ => "roblox://experiences/start"
             };
