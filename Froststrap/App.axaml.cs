@@ -119,10 +119,11 @@ internal partial class App : Application
         if (e.ExceptionObject is Exception ex) await FinalizeExceptionHandling(ex);
     }
 
-    private async void OnUnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
+    private void OnUnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
     {
         e.SetObserved();
-        await FinalizeExceptionHandling(e.Exception);
+
+        Logger.Error(e.Exception, "Unobserved task exception (ignored, not fatal)");
     }
 
     public static void Terminate(ErrorCode exitCode = ErrorCode.ERROR_SUCCESS)
