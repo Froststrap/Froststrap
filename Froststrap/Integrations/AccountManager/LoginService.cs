@@ -210,6 +210,7 @@ namespace Froststrap.Integrations.AccountManager
 
                 _browser.Disconnected += (s, e) => completionSource.TrySetResult(null);
                 mainPage.Close += (s, e) => completionSource.TrySetResult(null);
+                mainPage.Response += (_, e) => ObserveRedirectBody(e.Response);
 
                 _ = Task.Run(async () =>
                 {
@@ -269,6 +270,18 @@ namespace Froststrap.Integrations.AccountManager
                     _browser = null;
                 }
             }
+        }
+
+        private static void ObserveRedirectBody(IResponse response)
+        {
+            if ((int)response.Status is < 300 or >= 400)
+                return;
+
+            _ = Task.Run(async () =>
+            {
+                try { await response.BufferAsync(); }
+                catch { /* expected: the body is unavailable for redirect responses */ }
+            });
         }
 
         private static string? GetSystemBrowserPath()
