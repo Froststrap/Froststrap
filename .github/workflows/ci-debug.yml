@@ -44,7 +44,7 @@ jobs:
       - name: Set short SHA
         run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
       - name: Publish
-        run: ./build.sh compile
+        run: dotnet run --project build -- Publish --configuration Debug
       - uses: actions/upload-artifact@v6
         with:
           name: froststrap-debug-macos-arm64-${{ env.SHORT_SHA }}

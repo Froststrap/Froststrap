@@ -100,7 +100,7 @@ jobs:
           APP_STORE_CONNECT_P8_CONTENT: ${{ secrets.APP_STORE_CONNECT_P8_CONTENT }}
           APPLE_KEY_ID: ${{ secrets.APPLE_KEY_ID }}
           APPLE_ISSUER_ID: ${{ secrets.APPLE_ISSUER_ID }}
-        run: ./build.sh publish
+        run: dotnet run --project build -- Publish --configuration Release
 
       - name: Rename package for architecture
         run: mv .build/publish/Froststrap.pkg .build/publish/Froststrap-macos-${{ matrix.arch }}.pkg
