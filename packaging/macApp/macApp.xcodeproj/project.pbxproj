@@ -7,9 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7506F8A230571C1F0036253B /* Froststrap in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7506F8A130571C1F0036253B /* Froststrap */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		7506F8A430571C4D0036253B /* libvirtualdisplay.dylib in Copy Files */ = {isa = PBXBuildFile; fileRef = 7506F8A330571C4D0036253B /* libvirtualdisplay.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		752C3D6E304D7E9F0076F31A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 752C3D6D304D7E9F0076F31A /* Assets.xcassets */; };
-		75BBCE743045F59600254A5F /* libvirtualdisplay.dylib in Copy Files */ = {isa = PBXBuildFile; fileRef = 75BBCE733045F59500254A5F /* libvirtualdisplay.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		75D1464C303C424900912A00 /* Froststrap in CopyFiles */ = {isa = PBXBuildFile; fileRef = 75D1464B303C424900912A00 /* Froststrap */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -18,7 +18,7 @@
 			dstPath = "";
 			dstSubfolder = Frameworks;
 			files = (
-				75BBCE743045F59600254A5F /* libvirtualdisplay.dylib in Copy Files */,
+				7506F8A430571C4D0036253B /* libvirtualdisplay.dylib in Copy Files */,
 			);
 			name = "Copy Files";
 		};
@@ -27,26 +27,26 @@
 			dstPath = "";
 			dstSubfolder = Executables;
 			files = (
-				75D1464C303C424900912A00 /* Froststrap in CopyFiles */,
+				7506F8A230571C1F0036253B /* Froststrap in CopyFiles */,
 			);
 		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		7506F8A130571C1F0036253B /* Froststrap */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = Froststrap; path = ../../.build/publish/Froststrap; sourceTree = "<group>"; };
+		7506F8A330571C4D0036253B /* libvirtualdisplay.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libvirtualdisplay.dylib; path = ../../.build/publish/libvirtualdisplay.dylib; sourceTree = "<group>"; };
 		752C3D6D304D7E9F0076F31A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		75BBCE733045F59500254A5F /* libvirtualdisplay.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libvirtualdisplay.dylib; path = build/dotnet/libvirtualdisplay.dylib; sourceTree = "<group>"; };
 		75CC751D30414A8B0000EA4A /* Froststrap.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Froststrap.entitlements; sourceTree = "<group>"; };
 		75D1464A303C41FC00912A00 /* Froststrap.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Froststrap.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		75D1464B303C424900912A00 /* Froststrap */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = Froststrap; path = build/dotnet/Froststrap; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
 		000000000000000000000001 = {
 			isa = PBXGroup;
 			children = (
-				75BBCE733045F59500254A5F /* libvirtualdisplay.dylib */,
+				7506F8A330571C4D0036253B /* libvirtualdisplay.dylib */,
+				7506F8A130571C1F0036253B /* Froststrap */,
 				75CC751D30414A8B0000EA4A /* Froststrap.entitlements */,
-				75D1464B303C424900912A00 /* Froststrap */,
 				752C3D6D304D7E9F0076F31A /* Assets.xcassets */,
 				000000000000000000000020 /* Products */,
 			);
@@ -67,7 +67,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 75521DBC303B33DE00747566 /* Build configuration list for PBXNativeTarget "Froststrap" */;
 			buildPhases = (
-				75B1A1243049AD3F004C47A8 /* Run Script */,
 				75521DB2303B33DD00747566 /* Resources */,
 				75D14647303C41B400912A00 /* CopyFiles */,
 				7586052D3042B91600F953E7 /* Copy Files */,
@@ -121,102 +120,6 @@
 			);
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		75B1A1243049AD3F004C47A8 /* Run Script */ = {
-			isa = PBXShellScriptBuildPhase;
-			name = "Run Script";
-			shellPath = /bin/sh;
-			shellScript = (
-				"#!/bin/bash",
-				"set -e",
-				"",
-				"if [ -z \"${SRCROOT:-}\" ]; then",
-				"  SCRIPT_DIR=\"$(cd \"$(dirname \"$0\")\" && pwd)\"",
-				"  SRCROOT=\"$(cd \"$SCRIPT_DIR/..\" && pwd)\"",
-				"fi",
-				"export SRCROOT",
-				"",
-				"if [ -z \"${IN_NIX_SHELL:-}\" ] && [ -z \"${SKIP_NIX:-}\" ]; then",
-				"  if [ -n \"$SKIP_DOTNET_BUILD\" ]; then",
-				"    echo \"SKIP_DOTNET_BUILD set — skipping build\"",
-				"    exit 0",
-				"  fi",
-				"",
-				"  cd \"$SRCROOT\" 2>/dev/null || true",
-				"  NIX_BIN=\"\"",
-				"  for candidate in \\",
-				"    /run/current-system/sw/bin/nix \\",
-				"    /nix/var/nix/profiles/default/bin/nix \\",
-				"    /usr/local/bin/nix \\",
-				"    \"$(command -v nix 2>/dev/null)\"",
-				"  do",
-				"    if [ -x \"$candidate\" ]; then",
-				"      NIX_BIN=\"$candidate\"",
-				"      break",
-				"    fi",
-				"  done",
-				"",
-				"  if [ -n \"$NIX_BIN\" ]; then",
-				"    exec \"$NIX_BIN\" develop --accept-flake-config --command \"$0\" \"$@\"",
-				"  else",
-				"    echo \"nix not found — continuing without it, using tools on PATH\"",
-				"  fi",
-				"fi",
-				"",
-				"CONFIG=\"${1:-Release}\"",
-				"PROJECT_FILE=\"${2:-\"$SRCROOT/../../Froststrap/Froststrap.csproj\"}\"",
-				"OUTPUT_DIR=\"$SRCROOT/build/dotnet\"",
-				"",
-				"unset TARGETNAME TARGET_NAME",
-				"rm -rf \"$OUTPUT_DIR\"",
-				"mkdir -p \"$OUTPUT_DIR\"",
-				"",
-				"HOST_ARCH=$(uname -m)",
-				"",
-				"if [ \"$HOST_ARCH\" = \"arm64\" ]; then",
-				"  TARGET_ARCH=\"arm64\"",
-				"  PUBLISH_PROFILE=\"Publish-osx-arm64\"",
-				"elif [ \"$HOST_ARCH\" = \"x86_64\" ]; then",
-				"  TARGET_ARCH=\"x64\"",
-				"  PUBLISH_PROFILE=\"Publish-osx-x64\"",
-				"else",
-				"  echo \"error: unsupported host architecture '$HOST_ARCH'. Expected arm64 or x86_64.\" >&2",
-				"  exit 1",
-				"fi",
-				"",
-				"echo \"Detected architecture: $HOST_ARCH. Building for $TARGET_ARCH...\"",
-				"",
-				"dotnet publish \"$PROJECT_FILE\" \\",
-				"    -c \"$CONFIG\" \\",
-				"    -p:PublishProfile=\"$PUBLISH_PROFILE\" \\",
-				"    -o \"$OUTPUT_DIR/$TARGET_ARCH\" \\",
-				"    --configfile \"$SRCROOT/../../nuget.config\"",
-				"",
-				"if [ -d \"../../backend/virtualdisplay/.build/out\" ]; then",
-				"  BUILD_DIR=\"out\"",
-				"elif [ -d \"../../backend/virtualdisplay/.build/apple\" ]; then",
-				"  BUILD_DIR=\"apple\"",
-				"else",
-				"  echo \"error: neither .build/out nor .build/apple exists\" >&2",
-				"  exit 1",
-				"fi",
-				"",
-				"cp \"../../backend/virtualdisplay/.build/$BUILD_DIR/Products/Release/libvirtualdisplay.dylib\" \"$OUTPUT_DIR/libvirtualdisplay.dylib\"",
-				"",
-				"cp \"$OUTPUT_DIR/$TARGET_ARCH/Froststrap\" \"$OUTPUT_DIR/Froststrap\"",
-				"",
-				"if [ -f \"$OUTPUT_DIR/Froststrap\" ]; then",
-				"    chmod +x \"$OUTPUT_DIR/Froststrap\"",
-				"    echo \"Successfully built $TARGET_ARCH binary at: $OUTPUT_DIR/Froststrap\"",
-				"else",
-				"    echo \"error: expected binary not found at $OUTPUT_DIR/Froststrap\" >&2",
-				"    exit 1",
-				"fi",
-				"",
-			);
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
 		000000000000000011000000 /* Debug configuration for PBXProject "macApp" */ = {
