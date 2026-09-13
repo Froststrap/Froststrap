@@ -25,13 +25,6 @@ let commands = [
 def publish [] {
   print "Running publish"
   match (uname | get operating-system) {
-    "Darwin" => {
-      if $env.SIGN == "true" {
-        nu ($script_dir | path join "packaging/macos.nu") --sign
-      } else {
-        nu ($script_dir | path join "packaging/macos.nu")
-      }
-    }
     $s if ($s | str contains "Linux") => {
       nu ($script_dir | path join "packaging/linux.nu") $project_file $build_dir "Publish-linux-x64"
     }
@@ -50,9 +43,6 @@ def build [] {
 def debug [] {
   print "Running debug"
   match (uname | get operating-system) {
-    "Darwin" => {
-      dotnet publish $project_file -r osx-arm64 -c Debug --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true --configfile nuget.config
-    }
     $s if ($s | str contains "Linux") => {
       dotnet publish $project_file -r linux-x64 -c Debug --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true --configfile nuget.config
     }
