@@ -39,12 +39,10 @@ jobs:
       - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: "10.0.x"
-      - name: Install Nushell
-        run: brew install nushell
       - name: Set short SHA
         run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
       - name: Publish
-        run: nu ./main.nu debug
+        run: ./build.sh compile
       - uses: actions/upload-artifact@v6
         with:
           name: froststrap-debug-macos-arm64-${{ env.SHORT_SHA }}

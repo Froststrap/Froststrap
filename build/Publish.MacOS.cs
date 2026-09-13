@@ -35,6 +35,7 @@ public partial class Build : FalloutBuild
         xcbProc.StartInfo.Arguments = $"-project {xcodeProjectLocation} " +
                                       "-target Froststrap " +
                                       $"-configuration {Configuration} " +
+                                      "CODE_SIGNING_ALLOWED=NO " +
                                       "build";
         xcbProc.StartInfo.UseShellExecute = false;
         xcbProc.Start();
