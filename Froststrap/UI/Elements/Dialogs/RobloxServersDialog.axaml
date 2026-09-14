@@ -1,0 +1,173 @@
+<!--
+SPDX-FileCopyrightText: 2026 Froststrap
+
+SPDX-License-Identifier: MPL-2.0
+-->
+
+<base:AvaloniaWindow
+    x:Class="Froststrap.UI.Elements.Dialogs.RobloxServersDialog"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+    xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
+    xmlns:ui="using:FluentAvalonia.UI.Controls"
+    xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+    xmlns:models="clr-namespace:Froststrap.Models"
+    xmlns:dialogsVm="clr-namespace:Froststrap.UI.ViewModels.Dialogs"
+    xmlns:resources="clr-namespace:Froststrap.Resources"
+    x:Name="RootDialog"
+    x:DataType="dialogsVm:RobloxServersDialogViewModel"
+    Title="{Binding GameName, FallbackValue='Servers'}"
+    Width="900"
+    Height="500"
+    MinWidth="650"
+	WindowDecorations="None"
+    MinHeight="400"
+    WindowStartupLocation="CenterOwner"
+    CanResize="True"
+    ShowInTaskbar="False">
+
+	<Border BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+            Background="Transparent"
+            BorderThickness="1"
+            ClipToBounds="True">
+		<Grid RowDefinitions="Auto,*">
+			<Border Grid.Row="0"
+                    Background="#33000000"
+                    Padding="16"
+                    PointerPressed="OnHeaderPointerPressed">
+				<Grid ColumnDefinitions="Auto, *, Auto">
+					<Border CornerRadius="8" ClipToBounds="True" Width="40" Height="40">
+						<Image Source="{Binding GameThumbnailUrl, Converter={StaticResource UrlToBitmapConverter}}"
+                               Stretch="UniformToFill"
+                               RenderOptions.BitmapInterpolationMode="LowQuality"/>
+					</Border>
+					<StackPanel Grid.Column="1" Margin="12,0" VerticalAlignment="Center">
+						<TextBlock Text="{Binding GameName}"
+                                   FontWeight="Bold" FontSize="16"
+                                   TextTrimming="CharacterEllipsis"/>
+						<TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_SessionHistory}"
+                                   FontSize="12" Opacity="0.6"
+                                   IsVisible="{Binding !IsCurrentGameApi}"/>
+						<TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_RobloxServers}"
+                                   FontSize="12" Opacity="0.6"
+                                   IsVisible="{Binding IsCurrentGameApi}"/>
+					</StackPanel>
+					<Button Grid.Column="2" Click="OnCloseClicked"
+                            Background="Transparent" BorderThickness="0">
+						<ic:Lucide Icon="X" Height="16" Width="16" />
+					</Button>
+				</Grid>
+			</Border>
+
+			<Grid Grid.Row="1">
+				<Grid IsVisible="{Binding IsLoading}" Background="#40000000" ZIndex="1">
+					<StackPanel Spacing="16" HorizontalAlignment="Center" VerticalAlignment="Center">
+						<ui:FAProgressRing IsActive="{Binding IsLoading}" Width="40" Height="40"
+                                           Foreground="{DynamicResource SystemAccentColor}"/>
+						<TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_LoadingServers}"
+                                   FontSize="12" Opacity="0.7"/>
+					</StackPanel>
+				</Grid>
+				<ScrollViewer IsVisible="{Binding !IsLoading}"
+                              Background="Transparent"
+                              HorizontalScrollBarVisibility="Disabled"
+                              VerticalScrollBarVisibility="Auto">
+					<ItemsControl ItemsSource="{Binding Servers}" Padding="10">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate x:DataType="models:ServerInfo">
+								<Border Padding="12" Margin="0,2"
+                                        Background="#33000000"
+                                        CornerRadius="8">
+									<Grid ColumnDefinitions="Auto,Auto,*,Auto">
+										<StackPanel Grid.Column="0" MinWidth="150"
+                                                    VerticalAlignment="Center" Spacing="4">
+											<StackPanel Orientation="Horizontal" Spacing="8">
+												<ic:Lucide Icon="Globe" Height="14" Width="14" />
+												<TextBlock Text="{Binding Region}" FontWeight="SemiBold"
+                                                           VerticalAlignment="Center"/>
+												<Border Margin="4,0,0,0" Padding="5,1" CornerRadius="4"
+                                                        Background="{DynamicResource AccentButtonBackground}"
+                                                        IsVisible="{Binding IsLatest}">
+													<TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_Latest}"
+                                                               Foreground="{DynamicResource AccentButtonForeground}"
+                                                               FontSize="8" />
+												</Border>
+											</StackPanel>
+
+											<StackPanel Orientation="Horizontal" Spacing="12">
+												<StackPanel Orientation="Horizontal" Spacing="4"
+                                                            IsVisible="{Binding #RootDialog.DataContext.IsCurrentGameApi}">
+													<ic:Lucide Icon="Users" Height="12" Width="12" Opacity="0.5"/>
+													<TextBlock Text="{Binding PlayerCount}" FontSize="11" Opacity="0.7"/>
+												</StackPanel>
+
+												<StackPanel Orientation="Horizontal" Spacing="4"
+                                                            IsVisible="{Binding #RootDialog.DataContext.IsCurrentGameApi}">
+													<ic:Lucide Icon="Timer" Height="12" Width="12" Opacity="0.5"/>
+													<TextBlock Text="{Binding Uptime}" FontSize="11" Opacity="0.7"/>
+												</StackPanel>
+
+												<StackPanel Orientation="Horizontal" Spacing="4"
+                                                            IsVisible="{Binding #RootDialog.DataContext.IsTrackedGame}">
+													<ic:Lucide Icon="Timer" Height="12" Width="12" Opacity="0.5"/>
+													<TextBlock Text="{Binding DurationText}" FontSize="11" Opacity="0.6"/>
+												</StackPanel>
+											</StackPanel>
+										</StackPanel>
+
+										<Border Grid.Column="1" Width="1" Margin="16,4"
+                                                Background="{DynamicResource DividerStrokeColorDefaultBrush}"
+                                                IsVisible="{Binding #RootDialog.DataContext.IsCurrentGameApi}"/>
+
+										<Border Grid.Column="2"
+                                                HorizontalAlignment="Left" VerticalAlignment="Center"
+                                                Background="#33000000"
+                                                CornerRadius="22" Padding="8,4" Margin="4,0,16,0"
+                                                IsVisible="{Binding #RootDialog.DataContext.IsCurrentGameApi}">
+											<StackPanel Orientation="Horizontal">
+												<ItemsControl ItemsSource="{Binding PlayerAvatarThumbnails}">
+													<ItemsControl.ItemsPanel>
+														<ItemsPanelTemplate>
+															<WrapPanel Orientation="Horizontal"/>
+														</ItemsPanelTemplate>
+													</ItemsControl.ItemsPanel>
+													<ItemsControl.ItemTemplate>
+														<DataTemplate>
+															<Border Width="32" Height="32" Margin="0,0,4,0"
+                                                                    ClipToBounds="True" CornerRadius="16">
+																<Image Source="{Binding}" Stretch="UniformToFill"
+                                                                       RenderOptions.BitmapInterpolationMode="LowQuality"/>
+															</Border>
+														</DataTemplate>
+													</ItemsControl.ItemTemplate>
+												</ItemsControl>
+
+												<Border Width="32" Height="32" CornerRadius="16"
+                                                        Background="#33000000"
+                                                        BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                                                        BorderThickness="1"
+                                                        IsVisible="{Binding HasExtraPlayers}">
+													<TextBlock Text="{Binding ExtraPlayersText}"
+                                                               VerticalAlignment="Center" HorizontalAlignment="Center"
+                                                               FontSize="11" FontWeight="SemiBold"
+                                                               Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
+												</Border>
+											</StackPanel>
+										</Border>
+
+										<controls:IconButton Grid.Column="3" Classes="Primary"
+                                                             VerticalAlignment="Center"
+                                                             Command="{Binding #RootDialog.DataContext.RejoinServerCommand}"
+                                                             CommandParameter="{Binding}"
+                                                             Content="Join" Icon="Play"/>
+									</Grid>
+								</Border>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+				</ScrollViewer>
+			</Grid>
+		</Grid>
+	</Border>
+</base:AvaloniaWindow>

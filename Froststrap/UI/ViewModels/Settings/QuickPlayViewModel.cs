@@ -8,22 +8,14 @@ using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
 using Froststrap.Integrations;
 using Froststrap.Integrations.AccountManager;
+using Froststrap.UI.Elements.Dialogs;
 using Froststrap.UI.Elements.Settings;
+using Froststrap.UI.ViewModels.Dialogs;
 using LucideAvalonia.Enum;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Settings;
-
-internal record PrivateServerInfo(
-    long VipServerId,
-    string AccessCode,
-    string Name,
-    long OwnerId,
-    string OwnerName,
-    string? OwnerAvatarUrl,
-    int MaxPlayers,
-    int CurrentPlayers);
 
 internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
 {
@@ -35,20 +27,12 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
     }
 
     private bool _isLoading;
-    private bool _isOverlayVisible;
-    private bool _isSubplacesOverlayVisible;
     private bool _isLoadingSubplaces;
     private UniverseDetails? _selectedUniverseDetails;
     private readonly string _cachePath = Path.Combine(Paths.Cache, "GameHistory.json");
     private static readonly JsonSerializerOptions HistoryLoadOptions = new() { PropertyNameCaseInsensitive = true };
     private List<GameHistoryEntry> _allHistory = [];
 
-    private bool _isPrivateServersOverlayVisible;
-    private bool _arePrivateServersEmpty;
-    private bool _isLoadingPrivateServers;
-    private long _currentPrivateServersPlaceId;
-    private bool _isCurrentGameApi;
-    private bool _isLoadingServers;
     private bool _isJoiningBestRegion;
     private bool _isFavoritesLoading;
     private QuickPlayTab _selectedTab = QuickPlayTab.Continue;
@@ -71,10 +55,8 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
     private ObservableCollection<QuickPlayGameItem> _recentGames = [];
     private ObservableCollection<QuickPlayGameItem> _favoriteGames = [];
     private ObservableCollection<QuickPlayGameItem> _recommendedGames = [];
-    private ObservableCollection<ServerInfo> _selectedGameServers = [];
     private ObservableCollection<OmniSearchContent> _searchResults = [];
     private ObservableCollection<PlaceInfo> _subplaces = [];
-    private ObservableCollection<PrivateServerInfo> _privateServers = [];
 
     public ObservableCollection<QuickPlayGameItem> RecentGames
     {
@@ -94,12 +76,6 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
         private set => SetProperty(ref _recommendedGames, value);
     }
 
-    public ObservableCollection<ServerInfo> SelectedGameServers
-    {
-        get => _selectedGameServers;
-        private set => SetProperty(ref _selectedGameServers, value);
-    }
-
     public ObservableCollection<OmniSearchContent> SearchResults
     {
         get => _searchResults;
@@ -112,22 +88,10 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
         private set => SetProperty(ref _subplaces, value);
     }
 
-    public ObservableCollection<PrivateServerInfo> PrivateServers
-    {
-        get => _privateServers;
-        private set => SetProperty(ref _privateServers, value);
-    }
-
     public UniverseDetails? SelectedUniverseDetails
     {
         get => _selectedUniverseDetails;
         set => SetProperty(ref _selectedUniverseDetails, value);
-    }
-
-    public bool IsOverlayVisible
-    {
-        get => _isOverlayVisible;
-        set => SetProperty(ref _isOverlayVisible, value);
     }
 
     public bool IsLoading
@@ -140,12 +104,6 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
         }
     }
 
-    public bool IsSubplacesOverlayVisible
-    {
-        get => _isSubplacesOverlayVisible;
-        set => SetProperty(ref _isSubplacesOverlayVisible, value);
-    }
-
     public bool IsLoadingSubplaces
     {
         get => _isLoadingSubplaces;
@@ -155,47 +113,6 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
                 OnPropertyChanged(nameof(ShowSubplacesEmpty));
         }
     }
-
-    public bool IsPrivateServersOverlayVisible
-    {
-        get => _isPrivateServersOverlayVisible;
-        set => SetProperty(ref _isPrivateServersOverlayVisible, value);
-    }
-
-    public bool ArePrivateServersEmpty
-    {
-        get => _arePrivateServersEmpty;
-        set => SetProperty(ref _arePrivateServersEmpty, value);
-    }
-
-    public bool IsLoadingPrivateServers
-    {
-        get => _isLoadingPrivateServers;
-        set => SetProperty(ref _isLoadingPrivateServers, value);
-    }
-
-    public bool IsLoadingServers
-    {
-        get => _isLoadingServers;
-        set => SetProperty(ref _isLoadingServers, value);
-    }
-
-    public bool IsCurrentGameApi
-    {
-        get => _isCurrentGameApi;
-        set
-        {
-            if (SetProperty(ref _isCurrentGameApi, value))
-            {
-                OnPropertyChanged(nameof(IsTrackedGame));
-                OnPropertyChanged(nameof(OverlayMinWidth));
-                OnPropertyChanged(nameof(OverlayMaxWidth));
-            }
-        }
-    }
-
-    public double OverlayMinWidth => IsCurrentGameApi ? 750 : 450;
-    public double OverlayMaxWidth => IsCurrentGameApi ? 1000 : 550;
 
     public bool IsJoiningBestRegion
     {
@@ -260,6 +177,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
             {
                 OnPropertyChanged(nameof(HasSelectedGame));
                 OnPropertyChanged(nameof(CurrentSearchPlaceId));
+                OnPropertyChanged(nameof(CurrentSearchUniverseId));
                 OnPropertyChanged(nameof(HasCurrentSearchPlace));
                 ShowPrivateServersFromSearchCommand.NotifyCanExecuteChanged();
                 RefreshSubplacesForCurrentSelection();
@@ -277,6 +195,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
             if (SetProperty(ref _selectedSearchResult, value))
             {
                 OnPropertyChanged(nameof(CurrentSearchPlaceId));
+                OnPropertyChanged(nameof(CurrentSearchUniverseId));
                 OnPropertyChanged(nameof(HasCurrentSearchPlace));
                 ShowPrivateServersFromSearchCommand.NotifyCanExecuteChanged();
                 RefreshSubplacesForCurrentSelection();
@@ -288,6 +207,10 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
         SelectedGame?.PlaceId
         ?? SelectedSearchResult?.RootPlaceId
         ?? 0;
+
+    public long CurrentSearchUniverseId =>
+        SelectedGame?.UniverseId
+        ?? (long)(SelectedSearchResult?.UniverseId ?? 0);
 
     public bool HasCurrentSearchPlace => CurrentSearchPlaceId != 0;
 
@@ -346,21 +269,17 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
 #pragma warning disable CA1822
     public bool HasActiveAccount => AccountManager.Shared?.ActiveAccount != null;
 #pragma warning restore CA1822
-    public bool IsTrackedGame => !IsCurrentGameApi;
     public bool CanJoinBestRegion => HasActiveAccount && !IsJoiningBestRegion;
 
     public ICommand JoinGameCommand { get; }
     public ICommand RejoinLastServerCommand { get; }
     public ICommand ViewServersCommand { get; }
     public ICommand ViewRobloxServersCommand { get; }
-    public ICommand CloseOverlayCommand { get; }
-    public ICommand CloseSubplacesCommand { get; }
     public ICommand VisitPageCommand { get; }
     public ICommand ViewSubplacesCommand { get; }
     public ICommand JoinSubplaceCommand { get; }
     public ICommand ShowPrivateServersCommand { get; }
     public ICommand JoinPrivateServerCommand { get; }
-    public ICommand ClosePrivateServersCommand { get; }
     public ICommand JoinBestRegionCommand { get; }
     public ICommand ClearSearchCommand { get; }
     public IRelayCommand JoinServerByIdCommand { get; }
@@ -374,32 +293,28 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
             if (item != null) LaunchRoblox(item.PlaceId);
         });
 
-        RejoinLastServerCommand = new RelayCommand<object>(param =>
+        RejoinLastServerCommand = new RelayCommand<QuickPlayGameItem>(item =>
         {
-            if (param is QuickPlayGameItem item)
-            {
+            if (item != null)
                 LaunchRoblox(item.PlaceId, item.LastJobId);
-            }
-            else if (param is ServerInfo server)
-            {
-                var entry = _allHistory.FirstOrDefault(x => x.UniverseId == SelectedUniverseDetails?.Data?.Id);
-                if (entry != null) LaunchRoblox(entry.PlaceId, server.JobId);
-            }
+        });
+
+        ViewServersCommand = new RelayCommand<QuickPlayGameItem>(async item =>
+        {
+            if (item == null) return;
+            await ShowRobloxServersDialogAsync(item.PlaceId, item.UniverseId, item.OriginalDetails, isTracked: true);
+        });
+
+        ViewRobloxServersCommand = new RelayCommand<QuickPlayGameItem>(async item =>
+        {
+            if (item == null) return;
+            await ShowRobloxServersDialogAsync(item.PlaceId, item.UniverseId, item.OriginalDetails, isTracked: false);
         });
 
         ViewSubplacesCommand = new RelayCommand<QuickPlayGameItem>(async item =>
         {
             if (item == null || item.UniverseId == 0) return;
-
-            SelectedUniverseDetails = item.OriginalDetails;
-            IsSubplacesOverlayVisible = true;
-
-#pragma warning disable CA1849
-            _subplacesCts?.Cancel();
-#pragma warning restore CA1849
-            _subplacesCts?.Dispose();
-            _subplacesCts = new CancellationTokenSource();
-            await FetchSubplacesAsync(item.UniverseId, _subplacesCts.Token);
+            await ShowSubplaceJoinDialogAsync(item.UniverseId);
         });
 
         JoinSubplaceCommand = new RelayCommand<PlaceInfo>(subplace =>
@@ -407,57 +322,21 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
             if (subplace != null) LaunchRoblox(subplace.Id);
         });
 
-        ViewServersCommand = new RelayCommand<QuickPlayGameItem>(async item =>
-        {
-            if (item == null || item.Source != GameSource.Tracked) return;
-
-            SelectedUniverseDetails = item.OriginalDetails;
-            IsOverlayVisible = true;
-
-            var old = SelectedGameServers;
-            SelectedGameServers = [];
-            DisposeServerThumbnails(old);
-
-            IsLoadingServers = true;
-            IsCurrentGameApi = false;
-
-            try
-            {
-                var entry = _allHistory.FirstOrDefault(x => x.UniverseId == item.UniverseId);
-                if (entry != null)
-                {
-                    var sortedServers = entry.Servers.OrderByDescending(x => x.JoinedAt).ToList();
-                    foreach (var s in sortedServers) s.IsLatest = false;
-                    if (sortedServers.Count > 0) sortedServers[0].IsLatest = true;
-                    SelectedGameServers = new ObservableCollection<ServerInfo>(sortedServers);
-                }
-            }
-            finally
-            {
-                IsLoadingServers = false;
-            }
-        });
-
-        CloseOverlayCommand = new RelayCommand(() => IsOverlayVisible = false);
-        CloseSubplacesCommand = new RelayCommand(() => IsSubplacesOverlayVisible = false);
-
-        VisitPageCommand = new RelayCommand<QuickPlayGameItem>(item =>
-        {
-            if (item != null) Process.Start(new ProcessStartInfo($"https://www.roblox.com/games/{item.PlaceId}") { UseShellExecute = true });
-        });
-
         ShowPrivateServersCommand = new RelayCommand<QuickPlayGameItem>(async item =>
         {
             if (item == null || item.PlaceId == 0) return;
-            _currentPrivateServersPlaceId = item.PlaceId;
-            await ShowPrivateServersForGameAsync();
+            await ShowPrivateServerJoinDialogAsync(item.PlaceId);
         });
 
         JoinPrivateServerCommand = new RelayCommand<string>(accessCode =>
         {
             if (string.IsNullOrWhiteSpace(accessCode)) return;
-            LaunchRoblox(_currentPrivateServersPlaceId, accessCode: accessCode);
-            IsPrivateServersOverlayVisible = false;
+            LaunchRoblox(CurrentSearchPlaceId, accessCode: accessCode);
+        });
+
+        VisitPageCommand = new RelayCommand<QuickPlayGameItem>(item =>
+        {
+            if (item != null) Process.Start(new ProcessStartInfo($"https://www.roblox.com/games/{item.PlaceId}") { UseShellExecute = true });
         });
 
         JoinBestRegionCommand = new RelayCommand<QuickPlayGameItem>(async item =>
@@ -500,38 +379,6 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
             }
         });
 
-        ViewRobloxServersCommand = new RelayCommand<QuickPlayGameItem>(async item =>
-        {
-            if (item == null) return;
-
-            SelectedUniverseDetails = item.OriginalDetails;
-            IsOverlayVisible = true;
-
-            var old = SelectedGameServers;
-            SelectedGameServers = [];
-            DisposeServerThumbnails(old);
-
-            IsLoadingServers = true;
-            IsCurrentGameApi = true;
-
-            try
-            {
-                var servers = await FetchServersForGameAsync(item.PlaceId);
-                if (servers.Count > 0)
-                {
-                    servers = [.. servers.OrderByDescending(s => s.JoinedAt)];
-                    SelectedGameServers = new ObservableCollection<ServerInfo>(servers);
-                }
-                item.ServerCount = servers.Count;
-            }
-            finally
-            {
-                IsLoadingServers = false;
-            }
-        });
-
-        ClosePrivateServersCommand = new RelayCommand(() => IsPrivateServersOverlayVisible = false);
-
         ClearSearchCommand = new RelayCommand(ClearSearch);
         JoinServerByIdCommand = new RelayCommand(JoinServerById, () => CanJoinServerById);
         JoinBestRegionFromSearchCommand = new AsyncRelayCommand(JoinBestRegionFromSearchAsync, () => CanJoinBestRegionFromSearch);
@@ -541,9 +388,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
             {
                 long placeId = CurrentSearchPlaceId;
                 if (placeId == 0) return;
-
-                _currentPrivateServersPlaceId = placeId;
-                await ShowPrivateServersForGameAsync();
+                await ShowPrivateServerJoinDialogAsync(placeId);
             },
             () => HasCurrentSearchPlace);
 
@@ -560,6 +405,37 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
 
         AccountManager.Shared.ActiveAccountChanged += OnActiveAccountChanged;
         _ = SafeInitializeAsync();
+    }
+
+    private static async Task ShowRobloxServersDialogAsync(long placeId, long universeId, UniverseDetails? details, bool isTracked)
+    {
+        if (MainWindow.Instance is not { } owner) return;
+        var vm = new RobloxServersDialogViewModel(placeId, universeId, details, isTracked);
+        var dialog = new RobloxServersDialog { DataContext = vm };
+        await dialog.ShowDialog(owner);
+    }
+
+    private static async Task ShowSubplaceJoinDialogAsync(long universeId)
+    {
+        if (MainWindow.Instance is not { } owner) return;
+        var vm = new SubplaceJoinDialogViewModel(universeId);
+        var dialog = new SubplaceJoinDialog { DataContext = vm };
+        await dialog.ShowDialog(owner);
+    }
+
+    private static async Task ShowPrivateServerJoinDialogAsync(long placeId)
+    {
+        var accountManager = AccountManager.Shared;
+        if (accountManager?.ActiveAccount == null)
+        {
+            await Frontend.ShowMessageBox(Strings.Menu_QuickPlay_PleaseSelectAccount, MessageBoxImage.Warning);
+            return;
+        }
+
+        if (MainWindow.Instance is not { } owner) return;
+        var vm = new PrivateServerJoinDialogViewModel(placeId);
+        var dialog = new PrivateServerJoinDialog { DataContext = vm };
+        await dialog.ShowDialog(owner);
     }
 
     private async Task SafeInitializeAsync()
@@ -705,9 +581,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
         _subplacesCts = new CancellationTokenSource();
         var token = _subplacesCts.Token;
 
-        long universeId = SelectedSearchResult != null
-            ? (long)SelectedSearchResult.UniverseId
-            : SelectedGame?.UniverseId ?? 0;
+        long universeId = CurrentSearchUniverseId;
 
         if (universeId > 0)
         {
@@ -719,6 +593,73 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
             IsLoadingSubplaces = false;
             OnPropertyChanged(nameof(HasSubplaces));
             OnPropertyChanged(nameof(ShowSubplacesEmpty));
+        }
+    }
+
+    private async Task FetchSubplacesAsync(long universeId, CancellationToken token = default)
+    {
+        try
+        {
+            if (token.IsCancellationRequested) return;
+
+            IsLoadingSubplaces = true;
+            Subplaces = [];
+            OnPropertyChanged(nameof(HasSubplaces));
+            OnPropertyChanged(nameof(ShowSubplacesEmpty));
+
+            Uri url = UrlBuilder.BuildApiUrl(
+                "develop",
+                $"v1/universes/{universeId}/places?isUniverseCreation=false&limit=100&sortOrder=Asc"
+            );
+
+            var subplacesResponse = await Http.GetJson<SubplacesResponse>(url);
+            if (token.IsCancellationRequested) return;
+
+            if (subplacesResponse?.Data != null && subplacesResponse.Data.Count > 0)
+            {
+                var tempSubplaces = subplacesResponse.Data
+                    .Select(place => new PlaceInfo(place.Id, place.UniverseId, place.Name, ""))
+                    .ToList();
+
+                var thumbRequests = tempSubplaces.Select(p => new ThumbnailRequest
+                {
+                    TargetId = (ulong)p.Id,
+                    Type = ThumbnailType.PlaceIcon,
+                    Size = "150x150",
+                    Format = ThumbnailFormat.Png
+                }).ToList();
+
+                try
+                {
+                    var urls = await Thumbnails.GetThumbnailUrlsAsync(thumbRequests, CancellationToken.None);
+                    if (token.IsCancellationRequested) return;
+                    for (int i = 0; i < tempSubplaces.Count; i++)
+                    {
+                        tempSubplaces[i].ThumbnailUrl = urls.ElementAtOrDefault(i) ?? "";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.Error($"Subplace thumbnail fetch failed: {ex.Message}");
+                }
+
+                if (token.IsCancellationRequested) return;
+                Subplaces = new ObservableCollection<PlaceInfo>(tempSubplaces);
+            }
+        }
+        catch (OperationCanceledException) { }
+        catch (Exception ex)
+        {
+            App.Logger.Error($"Subplace fetch failed: {ex.Message}");
+        }
+        finally
+        {
+            if (!token.IsCancellationRequested)
+            {
+                IsLoadingSubplaces = false;
+                OnPropertyChanged(nameof(HasSubplaces));
+                OnPropertyChanged(nameof(ShowSubplacesEmpty));
+            }
         }
     }
 
@@ -1370,288 +1311,6 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
         return gameItems;
     }
 
-    private async Task FetchSubplacesAsync(long universeId, CancellationToken token = default)
-    {
-        try
-        {
-            if (token.IsCancellationRequested) return;
-
-            IsLoadingSubplaces = true;
-            Subplaces = [];
-            OnPropertyChanged(nameof(HasSubplaces));
-            OnPropertyChanged(nameof(ShowSubplacesEmpty));
-
-            Uri url = UrlBuilder.BuildApiUrl(
-                "develop",
-                $"v1/universes/{universeId}/places?isUniverseCreation=false&limit=100&sortOrder=Asc"
-            );
-
-            var subplacesResponse = await Http.GetJson<SubplacesResponse>(url);
-            if (token.IsCancellationRequested) return;
-
-            if (subplacesResponse?.Data != null && subplacesResponse.Data.Count > 0)
-            {
-                var tempSubplaces = subplacesResponse.Data
-                    .Select(place => new PlaceInfo(place.Id, place.UniverseId, place.Name, ""))
-                    .ToList();
-
-                var thumbRequests = tempSubplaces.Select(p => new ThumbnailRequest
-                {
-                    TargetId = (ulong)p.Id,
-                    Type = ThumbnailType.PlaceIcon,
-                    Size = "150x150",
-                    Format = ThumbnailFormat.Png
-                }).ToList();
-
-                try
-                {
-                    var urls = await Thumbnails.GetThumbnailUrlsAsync(thumbRequests, CancellationToken.None);
-                    if (token.IsCancellationRequested) return;
-                    for (int i = 0; i < tempSubplaces.Count; i++)
-                    {
-                        tempSubplaces[i].ThumbnailUrl = urls.ElementAtOrDefault(i) ?? "";
-                    }
-                }
-                catch (Exception ex)
-                {
-                    App.Logger.Error($"Subplace thumbnail fetch failed: {ex.Message}");
-                }
-
-                if (token.IsCancellationRequested) return;
-                Subplaces = new ObservableCollection<PlaceInfo>(tempSubplaces);
-            }
-        }
-        catch (OperationCanceledException) { }
-        catch (Exception ex)
-        {
-            App.Logger.Error($"Subplace fetch failed: {ex.Message}");
-        }
-        finally
-        {
-            if (!token.IsCancellationRequested)
-            {
-                IsLoadingSubplaces = false;
-                OnPropertyChanged(nameof(HasSubplaces));
-                OnPropertyChanged(nameof(ShowSubplacesEmpty));
-            }
-        }
-    }
-
-    private async Task ShowPrivateServersForGameAsync()
-    {
-        if (_currentPrivateServersPlaceId == 0) return;
-
-        var accountManager = AccountManager.Shared;
-        if (accountManager is null)
-        {
-            _ = Frontend.ShowMessageBox(Strings.Menu_QuickPlay_AccountManagerNotAvailable, MessageBoxImage.Error);
-            return;
-        }
-
-        var activeAccount = accountManager.ActiveAccount;
-        if (activeAccount == null)
-        {
-            _ = Frontend.ShowMessageBox(Strings.Menu_QuickPlay_PleaseSelectAccount, MessageBoxImage.Warning);
-            return;
-        }
-
-        IsLoadingPrivateServers = true;
-        IsPrivateServersOverlayVisible = true;
-        PrivateServers = [];
-        ArePrivateServersEmpty = false;
-
-        try
-        {
-            string? cookie = accountManager.GetRoblosecurityForUser(activeAccount.UserId);
-            if (string.IsNullOrEmpty(cookie))
-            {
-                _ = Frontend.ShowMessageBox(Strings.Menu_QuickPlay_UnableToAuthenticate, MessageBoxImage.Warning);
-                return;
-            }
-
-            Uri url = UrlBuilder.BuildApiUrl(
-                "games",
-                $"v1/games/{_currentPrivateServersPlaceId}/private-servers?excludeFriendServers=false&sortOrder=Asc"
-            );
-
-            using var request = new HttpRequestMessage(HttpMethod.Get, url);
-            request.Headers.Add("Cookie", $".ROBLOSECURITY={cookie}");
-            request.Headers.Add("Origin", "https://www.roblox.com");
-            request.Headers.Add("Referrer", "https://www.roblox.com");
-
-            var response = await Http.SendJson<PrivateServersResponse>(request);
-            if (response?.Data == null || response.Data.Count == 0)
-            {
-                ArePrivateServersEmpty = true;
-                return;
-            }
-
-            var ownerIds = response.Data
-                .Select(s => s.Owner.Id)
-                .Where(id => id != 0)
-                .Distinct()
-                .ToList();
-
-            var avatarUrls = new Dictionary<long, string?>();
-            if (ownerIds.Count > 0)
-            {
-                var results = await accountManager.GetAvatarUrlsBulkAsync(ownerIds);
-                avatarUrls = results;
-            }
-
-            var servers = new List<PrivateServerInfo>();
-            foreach (var server in response.Data)
-            {
-                string? avatarUrl = avatarUrls.GetValueOrDefault(server.Owner.Id);
-                servers.Add(new PrivateServerInfo(
-                    server.VipServerId,
-                    server.AccessCode,
-                    server.Name,
-                    server.Owner.Id,
-                    server.Owner.Name,
-                    avatarUrl,
-                    server.MaxPlayers,
-                    server.Players.Count
-                ));
-            }
-
-            await Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                PrivateServers = new ObservableCollection<PrivateServerInfo>(servers);
-                ArePrivateServersEmpty = servers.Count == 0;
-            });
-        }
-        catch (Exception ex)
-        {
-            App.Logger.Error($"Exception in ShowPrivateServersForGameAsync: {ex.Message}");
-            await Dispatcher.UIThread.InvokeAsync(() => ArePrivateServersEmpty = true);
-        }
-        finally
-        {
-            await Dispatcher.UIThread.InvokeAsync(() => IsLoadingPrivateServers = false);
-        }
-    }
-
-    private static async Task<List<ServerInfo>> FetchServersForGameAsync(long placeId)
-    {
-        using var fetcher = new RobloxServerFetcher();
-        var result = await fetcher.FetchServerInstancesAsync(placeId, maxServers: 15);
-        if (result.Servers == null || result.Servers.Count == 0)
-            return [];
-
-        var servers = new List<ServerInfo>(result.Servers.Count);
-        foreach (var s in result.Servers)
-        {
-            if (string.IsNullOrEmpty(s.Region) ||
-                s.Region.Equals("Unknown", StringComparison.OrdinalIgnoreCase))
-                continue;
-
-            var si = new ServerInfo
-            {
-                JobId = s.Id,
-                Region = s.Region,
-                JoinedAt = s.FirstSeen ?? DateTime.UtcNow,
-                IsLatest = false,
-                Playing = s.Playing,
-                MaxPlayers = s.MaxPlayers,
-                Uptime = s.UptimeDisplay,
-            };
-
-            if (s.PlayerTokens is { Count: > 0 })
-                foreach (var t in s.PlayerTokens)
-                    si.PlayerTokens.Add(t);
-
-            servers.Add(si);
-        }
-
-        await LoadPlayerThumbnailsAsync(servers);
-        return servers;
-    }
-
-    private static async Task LoadPlayerThumbnailsAsync(List<ServerInfo> servers)
-    {
-        var allTokens = servers
-            .SelectMany(s => s.PlayerTokens)
-            .Where(t => !string.IsNullOrEmpty(t))
-            .Distinct()
-            .ToList();
-
-        if (allTokens.Count == 0) return;
-
-        const int batchSize = 100;
-        var tokenToUrl = new Dictionary<string, string?>();
-
-        var chunks = allTokens
-            .Select((t, i) => new { Token = t, Index = i })
-            .GroupBy(x => x.Index / batchSize)
-            .Select(g => g.Select(x => x.Token).ToList())
-            .ToList();
-
-        foreach (var chunk in chunks)
-        {
-            var requests = chunk.Select(token => new ThumbnailRequest
-            {
-                Token = token,
-                Type = ThumbnailType.AvatarHeadShot,
-                Size = "60x60",
-                Format = ThumbnailFormat.Png,
-                IsCircular = true
-            }).ToList();
-
-            var urls = await Thumbnails.GetThumbnailUrlsAsync(requests, CancellationToken.None);
-            for (int i = 0; i < chunk.Count && i < urls.Length; i++)
-                tokenToUrl[chunk[i]] = urls[i];
-        }
-
-        using var semaphore = new SemaphoreSlim(15);
-        var tasks = servers.Select(async server =>
-        {
-            await semaphore.WaitAsync();
-            try
-            {
-                var bitmaps = new List<Bitmap>();
-                foreach (var playerToken in server.PlayerTokens)
-                {
-                    if (tokenToUrl.TryGetValue(playerToken, out var url) &&
-                        !string.IsNullOrEmpty(url))
-                    {
-                        try
-                        {
-                            var bytes = await App.HttpClient.GetByteArrayAsync(new Uri(url));
-                            using var ms = new MemoryStream(bytes);
-                            bitmaps.Add(Bitmap.DecodeToWidth(ms, 32, BitmapInterpolationMode.LowQuality));
-                        }
-                        catch { }
-                    }
-                }
-
-                await Dispatcher.UIThread.InvokeAsync(() =>
-                {
-                    server.PlayerAvatarThumbnails.Clear();
-                    foreach (var bmp in bitmaps)
-                        server.PlayerAvatarThumbnails.Add(bmp);
-
-                    int extra = server.Playing - bitmaps.Count;
-                    if (extra > 0)
-                    {
-                        server.ExtraPlayersText = $"+{extra}";
-                        server.HasExtraPlayers = true;
-                    }
-                    else
-                    {
-                        server.HasExtraPlayers = false;
-                    }
-                }, DispatcherPriority.Background);
-            }
-            finally
-            {
-                semaphore.Release();
-            }
-        });
-
-        await Task.WhenAll(tasks);
-    }
-
     private static void LaunchRoblox(long placeId, string? jobId = null, string? accessCode = null)
     {
         if (placeId == 0) return;
@@ -1679,13 +1338,6 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
             item.ThumbnailBitmap?.Dispose();
     }
 
-    private static void DisposeServerThumbnails(IEnumerable<ServerInfo> servers)
-    {
-        foreach (var server in servers)
-            foreach (var bmp in server.PlayerAvatarThumbnails)
-                bmp.Dispose();
-    }
-
     public void Dispose()
     {
         Dispose(true);
@@ -1711,7 +1363,6 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
             _subplacesCts = null;
 
             DisposeSearchThumbnails(_searchResults);
-            DisposeServerThumbnails(_selectedGameServers);
 
             AccountManager.Shared.ActiveAccountChanged -= OnActiveAccountChanged;
         }
