@@ -41,7 +41,7 @@ static class Versioning {
             var (version1, prerelease1) = GetVersionParts(versionStr1);
             var (version2, prerelease2) = GetVersionParts(versionStr2);
 
-            var versionComparison = (VersionComparison)version1.CompareTo(version2);
+            var versionComparison = (VersionComparison)NormalizeVersion(version1).CompareTo(NormalizeVersion(version2));
 
             if (versionComparison != VersionComparison.Equal)
                 return versionComparison;
@@ -60,6 +60,13 @@ static class Versioning {
             throw;
         }
     }
+
+    private static Version NormalizeVersion(Version v) => new(
+        Math.Max(v.Major, 0),
+        Math.Max(v.Minor, 0),
+        Math.Max(v.Build, 0),
+        Math.Max(v.Revision, 0)
+    );
 
     private static (Version Version, string? Prerelease) GetVersionParts(string version)
     {
