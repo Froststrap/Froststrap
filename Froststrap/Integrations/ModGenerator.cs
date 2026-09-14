@@ -19,6 +19,14 @@ namespace Froststrap.Integrations
         private static readonly string[] ShiftlockFiles = ["MouseLockedCursor.png"];
         private static readonly string[] EmoteWheelFiles = ["SelectedGradient.png", "SelectedGradient@2x.png", "SelectedGradient@3x.png", "SelectedLine.png", "SelectedLine@2x.png", "SelectedLine@3x.png"];
 
+        private static readonly HttpClient DownloadClient = new(new HttpClientHandler
+        {
+            AutomaticDecompression = DecompressionMethods.All
+        })
+        {
+            Timeout = TimeSpan.FromMinutes(5)
+        };
+
         private static readonly SpriteBlacklist SpriteBlacklistInstance = new()
         {
             Prefixes = ["chat_bubble/", "component_assets/", "icons/controls/voice/", "icons/graphic/", "squircles/"],
@@ -130,7 +138,7 @@ namespace Froststrap.Integrations
             if (string.IsNullOrEmpty(downloadUrl))
                 downloadUrl = $"https://github.com/Froststrap/mod-generator/releases/latest/download/{assetName}";
 
-            byte[] data = await App.HttpClient.GetByteArrayAsync(new Uri(downloadUrl));
+            byte[] data = await DownloadClient.GetByteArrayAsync(new Uri(downloadUrl));
             string exePath = GetModGeneratorExePath();
             await File.WriteAllBytesAsync(exePath, data);
 
@@ -560,7 +568,7 @@ namespace Froststrap.Integrations
                 string url = $"https://setup.rbxcdn.com/version-{hash}-{type}.zip";
                 string path = Path.Combine(tempPath, $"{type}-{hash}.zip");
                 if (!overwrite && File.Exists(path) && new FileInfo(path).Length > 0) return path;
-                var data = await App.HttpClient.GetByteArrayAsync(new Uri(url));
+                var data = await DownloadClient.GetByteArrayAsync(new Uri(url));
                 await File.WriteAllBytesAsync(path, data);
                 return path;
             }
