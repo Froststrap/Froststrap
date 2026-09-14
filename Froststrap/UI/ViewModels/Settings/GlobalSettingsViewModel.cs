@@ -217,7 +217,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public string GraphicsQuality
         {
-            get => App.GlobalSettings.GetPreset("Rendering.SavedQualityLevel")!;
+            get => App.GlobalSettings.GetPreset("Rendering.SavedQualityLevel") ?? "1";
             set
             {
                 App.GlobalSettings.SetPreset("Rendering.SavedQualityLevel", value);
@@ -270,29 +270,29 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public static string MasterVolume
         {
-            get => App.GlobalSettings.GetPreset("Audio.MasterVolume")!;
+            get => App.GlobalSettings.GetPreset("Audio.MasterVolume") ?? "1";
             set => App.GlobalSettings.SetPreset("Audio.MasterVolume", value);
         }
 
         public static string MasterVolumeStudio
         {
-            get => App.GlobalSettings.GetPreset("Audio.MasterVolumeStudio")!;
+            get => App.GlobalSettings.GetPreset("Audio.MasterVolumeStudio") ?? "1";
             set => App.GlobalSettings.SetPreset("Audio.MasterVolumeStudio", value);
         }
 
         public static string PartyVoiceVolume
         {
-            get => App.GlobalSettings.GetPreset("Audio.PartyVoiceVolume")!;
+            get => App.GlobalSettings.GetPreset("Audio.PartyVoiceVolume") ?? "1";
             set => App.GlobalSettings.SetPreset("Audio.PartyVoiceVolume", value);
         }
         public static string VoiceChatVolume
         {
-            get => App.GlobalSettings.GetPreset("Audio.VoiceChatVolume")!;
+            get => App.GlobalSettings.GetPreset("Audio.VoiceChatVolume") ?? "1";
             set => App.GlobalSettings.SetPreset("Audio.VoiceChatVolume", value);
         }
         public static string MouseSensitivity
         {
-            get => App.GlobalSettings.GetPreset("User.MouseSensitivity")!;
+            get => App.GlobalSettings.GetPreset("User.MouseSensitivity") ?? "1";
             set => App.GlobalSettings.SetPreset("User.MouseSensitivity", value);
         }
 
@@ -349,13 +349,13 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public static string HapticStrength
         {
-            get => App.GlobalSettings.GetPreset("User.HapticStrength")!;
+            get => App.GlobalSettings.GetPreset("User.HapticStrength") ?? "1";
             set => App.GlobalSettings.SetPreset("User.HapticStrength", value);
         }
 
         public string UITransparency
         {
-            get => App.GlobalSettings.GetPreset("UI.Transparency")!;
+            get => App.GlobalSettings.GetPreset("UI.Transparency") ?? "1";
             set
             {
                 App.GlobalSettings.SetPreset("UI.Transparency", value.Length >= 3 ? value[..3] : value);

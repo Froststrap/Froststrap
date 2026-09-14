@@ -120,13 +120,39 @@ namespace Froststrap
         {
             path = ResolvePath(path, RootPaths);
             XElement? element = Document?.XPathSelectElement(path);
+
             if (element is null)
             {
-                App.Logger.Warn($"SetValue: Element not found for path '{path}'. Changes will not be applied.");
+                var match = Regex.Match(path, @"/([a-zA-Z0-9_]+)\[@name='([^']+)'\]$");
+                if (match.Success)
+                {
+                    string elementType = match.Groups[1].Value;
+                    string elementName = match.Groups[2].Value;
+                    string parentPath = path.Substring(0, match.Index);
+
+                    XElement? parentElement = Document?.XPathSelectElement(parentPath);
+                    if (parentElement != null)
+                    {
+                        element = new XElement(elementType, new XAttribute("name", elementName));
+                        parentElement.Add(element);
+                        App.Logger.Info($"SetValue: Created missing element '{elementType}' with name '{elementName}' at path '{path}'");
+                    }
+                }
+            }
+
+            if (element is null)
+            {
+                App.Logger.Warn($"SetValue: Element not found or could not be created for path '{path}'. Changes will not be applied.");
                 return;
             }
 
             string newValue = value?.ToString() ?? string.Empty;
+
+            if (element.Name.LocalName == "bool")
+            {
+                newValue = newValue.ToLowerInvariant();
+            }
+
             if (element.Value != newValue)
             {
                 App.Logger.Debug($"SetValue: Changing '{path}' from '{element.Value}' to '{newValue}'");
@@ -334,8 +360,17 @@ namespace Froststrap
             string basePath = ResolvePath(PresetPaths[vectorName], RootPaths);
             XElement? vectorElement = Document?.XPathSelectElement(basePath);
 
-            if (vectorElement?.Element(axis) is XElement axisElement)
+            if (vectorElement != null)
+            {
+                XElement? axisElement = vectorElement.Element(axis);
+                if (axisElement == null)
+                {
+                    axisElement = new XElement(axis);
+                    vectorElement.Add(axisElement);
+                    App.Logger.Info($"SetVectorValue: Created missing axis '{axis}' for vector '{vectorName}'");
+                }
                 axisElement.Value = value;
+            }
         }
 
         public static bool ExportSettings(string exportPath)
