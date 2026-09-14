@@ -1,8 +1,0 @@
-{
-  "FIntDebugForceMSAASamples": "4",
-  "FFlagHandleAltEnterFullscreenManually": "False",
-  "FFlagDebugGraphicsPreferD3D11": "False",
-  "DFIntTextureQualityOverride": "3",
-  "DFFlagTextureQualityOverrideEnabled": "True",
-  "DFFlagDisableDPIScale": "True"
-}

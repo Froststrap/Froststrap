@@ -1,0 +1,120 @@
+﻿<!--
+SPDX-FileCopyrightText: 2026 Froststrap
+
+SPDX-License-Identifier: MPL-2.0
+-->
+
+<base:AvaloniaWindow
+    x:Class="Froststrap.UI.Elements.Dialogs.AddCustomThemeDialog"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+    xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
+    xmlns:ui="using:FluentAvalonia.UI.Controls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:resources="clr-namespace:Froststrap.Resources"
+    xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Dialogs"
+    x:DataType="vm:AddCustomThemeViewModel"
+    Title="{x:Static resources:Strings.AddCustomTheme_Title}"
+    Width="480"
+    CanResize="False"
+    SizeToContent="Height"
+    WindowStartupLocation="CenterScreen"
+    mc:Ignorable="d">
+
+    <Grid RowDefinitions="*,Auto">
+        <Border Grid.Row="0"
+                Margin="16"
+                CornerRadius="8"
+                BorderThickness="1"
+                BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                Background="{DynamicResource ControlFillColorDefaultBrush}">
+            <TabControl x:Name="Tabs" SelectedIndex="{Binding SelectedTab}">
+                <TabControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="2" />
+                    </ItemsPanelTemplate>
+                </TabControl.ItemsPanel>
+
+                <TabControl.Styles>
+                    <Style Selector="TabItem">
+                        <Setter Property="HorizontalAlignment" Value="Stretch" />
+                        <Setter Property="HorizontalContentAlignment" Value="Center" />
+                        <Setter Property="FontSize" Value="18" />
+                    </Style>
+                </TabControl.Styles>
+
+                <TabItem Header="{x:Static resources:Strings.Common_CreateNew}">
+					<ui:TabItemHelper.Icon>
+						<ic:Lucide Icon="Plus" />
+					</ui:TabItemHelper.Icon>
+                    <StackPanel Spacing="12" Margin="0,0,0,8">
+                        <Grid ColumnDefinitions="75,*" RowDefinitions="*,Auto" ColumnSpacing="12">
+                            <TextBlock Text="{x:Static resources:Strings.Common_Name}"
+                                       VerticalAlignment="Center" />
+                            <TextBox Grid.Column="1"
+                                     Text="{Binding Name}"
+                                     PlaceholderText="Enter theme name" />
+                            <TextBlock IsVisible="{Binding HasNameError}"
+                                       Text="{Binding NameError}" Grid.Row="1" Grid.Column="1"
+                                       Foreground="{DynamicResource SystemFillColorCriticalBrush}"
+                                       FontSize="12"
+                                       HorizontalAlignment="Left"/>
+                        </Grid>
+
+                        <Grid ColumnDefinitions="75,*" ColumnSpacing="12">
+                            <TextBlock Text="{x:Static resources:Strings.Common_Template}"
+                                       VerticalAlignment="Center" />
+                            <ComboBox Grid.Column="1"
+                                      HorizontalAlignment="Stretch"
+                                      ItemsSource="{Binding Templates}"
+                                      SelectedItem="{Binding Template}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Converter={StaticResource EnumNameConverter}}"/>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </Grid>
+                    </StackPanel>
+                </TabItem>
+
+                <TabItem Header="{x:Static resources:Strings.Common_Import}">
+					<ui:TabItemHelper.Icon>
+						<ic:Lucide Icon="FolderDown" />
+					</ui:TabItemHelper.Icon>
+                    <StackPanel Spacing="12" Margin="0,0,0,8">
+                        <TextBlock Text="{Binding FilePath}"
+                                   IsVisible="{Binding HasFilePath}"
+                                   TextAlignment="Center"
+                                   TextWrapping="Wrap"/>
+                        <controls:IconButton Content="{x:Static resources:Strings.Common_ImportFromFile}"
+                                             Icon="FolderArchive"
+                                             HorizontalAlignment="Stretch"
+                                             Click="OnImportButtonClicked"/>
+                        <TextBlock IsVisible="{Binding HasFileError}"
+                                   Text="{Binding FileError}"
+                                   Foreground="{DynamicResource SystemFillColorCriticalBrush}"
+                                   TextAlignment="Center"/>
+                    </StackPanel>
+                </TabItem>
+            </TabControl>
+        </Border>
+
+        <Border Grid.Row="1"
+                Padding="15"
+                Background="{DynamicResource ControlFillColorDefaultBrush}">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="12">
+                <Button Content="{x:Static resources:Strings.Common_OK}"
+                        Click="OnOkButtonClicked"
+                        Width="100"/>
+
+                <Button Content="{x:Static resources:Strings.Common_Cancel}"
+                        Click="OnCancelButtonClicked"
+                        Width="100" />
+            </StackPanel>
+        </Border>
+    </Grid>
+</base:AvaloniaWindow>

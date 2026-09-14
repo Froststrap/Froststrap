@@ -1,0 +1,269 @@
+// SPDX-FileCopyrightText: 2026 Froststrap
+// Copyright (C) Froststrap Team
+//
+// SPDX-License-Identifier: MPL-2.0
+
+using DiscordRPC;
+using System.Net.Sockets;
+
+namespace Froststrap.Integrations
+{
+    internal class StudioDiscordRichPresence : IDisposable
+    {
+        private readonly DiscordRpcClient? _rpcClient;
+        private readonly ActivityWatcher _activityWatcher;
+        private readonly Queue<StudioMessage> _messageQueue = [];
+
+        private DiscordRPC.RichPresence? _currentPresence;
+        private DiscordRPC.RichPresence? _originalPresence;
+
+        private bool _visible = true;
+        private bool _rpcEnabled = true;
+        private bool _disposed;
+
+        public StudioDiscordRichPresence(ActivityWatcher activityWatcher)
+        {
+            _rpcClient = new DiscordRpcClient("1454451301130960896", -1, null, true, DiscordIpcPipeClient.Create());
+            _activityWatcher = activityWatcher;
+
+            _activityWatcher.OnStudioRPCMessage += (_, message) => ProcessRPCMessage(message);
+            _activityWatcher.OnStudioPlaceOpened += (_, _) => HandleStudioPlaceOpened();
+            _activityWatcher.OnStudioPlaceClosed += (_, _) => HandleStudioPlaceClosed();
+
+            _rpcClient.OnReady += (_, e) =>
+            {
+                App.Logger.Info($"Received ready from user {e.User} ({e.User.ID})");
+                if (!_disposed) InitializeStudioPresence();
+            };
+
+            _rpcClient.OnConnectionEstablished += (_, e) =>
+                App.Logger.Info("Established connection with Discord RPC");
+
+            _rpcClient.OnClose += (_, e) =>
+                App.Logger.Info($"Lost connection to Discord RPC - {e.Reason} ({e.Code})");
+
+            _rpcClient.OnError += (_, e) =>
+                App.Logger.Info($"An RPC error occurred - {e.Message}");
+
+            try
+            {
+                _rpcClient.Initialize();
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error($"Failed to init RPC: {ex.Message}");
+            }
+        }
+
+        // for future use
+        private static void HandleStudioPlaceOpened()
+        {
+            App.Logger.Info("Studio place opened");
+        }
+
+        private void HandleStudioPlaceClosed()
+        {
+            if (_disposed) return;
+
+            App.Logger.Info("Studio place closed");
+
+            ResetStudioPresence();
+            _rpcEnabled = true;
+        }
+
+        public void ProcessRPCMessage(StudioMessage message, bool implicitUpdate = true)
+        {
+            if (_disposed) return;
+
+            if (message.StudioCommand == "SetRichPresence")
+            {
+                if (!_rpcEnabled) return;
+
+                if (_currentPresence is null || _originalPresence is null)
+                    InitializeStudioPresence();
+
+                ProcessStudioRichPresence(message, implicitUpdate);
+            }
+        }
+
+        private void InitializeStudioPresence()
+        {
+            if (_disposed || _rpcClient == null) return;
+
+            App.Logger.Info("Initializing Studio presence");
+
+            _currentPresence = new DiscordRPC.RichPresence
+            {
+                Timestamps = new Timestamps { Start = DateTime.UtcNow },
+                Assets = new Assets
+                {
+                    LargeImageKey = "roblox_studio",
+                    LargeImageText = "Roblox Studio",
+                    SmallImageKey = null,
+                    SmallImageText = null
+                },
+            };
+
+            _originalPresence = _currentPresence.Clone();
+
+            while (_messageQueue.Count > 0)
+            {
+                ProcessRPCMessage(_messageQueue.Dequeue(), false);
+            }
+
+            UpdatePresence();
+        }
+
+        private void ResetStudioPresence()
+        {
+            if (_disposed || _rpcClient == null) return;
+
+            App.Logger.Info("Resetting Studio presence");
+
+            DateTime? existingTimestamp = _currentPresence?.Timestamps?.Start;
+
+            _currentPresence = new DiscordRPC.RichPresence
+            {
+                Timestamps = existingTimestamp.HasValue
+                    ? new Timestamps { Start = existingTimestamp.Value }
+                    : new Timestamps { Start = DateTime.UtcNow },
+                Assets = new Assets
+                {
+                    LargeImageKey = "roblox_studio",
+                    LargeImageText = "Roblox Studio",
+                    SmallImageKey = null,
+                    SmallImageText = null
+                },
+            };
+
+            UpdatePresence();
+        }
+
+        private void ProcessStudioRichPresence(StudioMessage message, bool implicitUpdate)
+        {
+            if (_disposed || _rpcClient == null) return;
+
+            StudioRichPresence? presenceData;
+
+            try
+            {
+                presenceData = message.Data.Deserialize<StudioRichPresence>();
+            }
+            catch (Exception)
+            {
+                App.Logger.Error("Failed to parse studio message!");
+                return;
+            }
+
+            if (presenceData is null) return;
+
+            if (!string.IsNullOrEmpty(presenceData.Details) && App.Settings.Prop.StudioWorkspaceInfo)
+            {
+                _currentPresence!.Details = presenceData.DevCount > 1
+                    ? $"{presenceData.Details} ({presenceData.DevCount} Developers)"
+                    : presenceData.Details;
+            }
+
+            if (!string.IsNullOrEmpty(presenceData.State) && App.Settings.Prop.StudioEditingInfo)
+                _currentPresence!.State = presenceData.State;
+
+            string largeImageKey = "roblox_studio";
+            string largeImageText = "Roblox Studio";
+
+            if (!string.IsNullOrEmpty(presenceData.ScriptType) && App.Settings.Prop.StudioThumbnailChanging)
+            {
+                largeImageKey = presenceData.ScriptType.ToUpperInvariant() switch
+                {
+                    "SERVER SCRIPT" => "studio_server",
+                    "LOCAL SCRIPT" => "studio_client",
+                    "MODULE" or "SERVER MODULE" or "CLIENT MODULE" => "studio_module",
+                    _ => "roblox_studio"
+                };
+
+                largeImageText = $"Editing {presenceData.ScriptType}";
+            }
+
+            string? smallImageKey = null;
+            if (presenceData.Testing && App.Settings.Prop.StudioShowTesting)
+                smallImageKey = "play_icon";
+
+            _currentPresence!.Assets = new Assets
+            {
+                LargeImageKey = largeImageKey,
+                LargeImageText = largeImageText,
+                SmallImageKey = smallImageKey ?? string.Empty,
+                SmallImageText = presenceData.Testing && App.Settings.Prop.StudioShowTesting ? "Currently Testing" : null
+            };
+
+            if (App.Settings.Prop.StudioGameButton && presenceData.PlaceId > 0 && presenceData.IsPublic)
+                _currentPresence.Buttons = [new Button { Label = "Open Roblox Game", Url = $"https://www.roblox.com/games/{presenceData.PlaceId}" }];
+            else
+                _currentPresence.Buttons = null;
+
+            if (_rpcEnabled) _originalPresence = _currentPresence.Clone();
+
+            if (implicitUpdate)
+                UpdatePresence();
+        }
+
+        public void SetVisibility(bool visible)
+        {
+            if (_disposed || _rpcClient == null) return;
+
+            App.Logger.Info($"Setting presence visibility ({visible})");
+
+            _visible = visible;
+
+            if (_visible)
+                UpdatePresence();
+            else
+                _rpcClient.ClearPresence();
+        }
+
+        public void UpdatePresence()
+        {
+            if (_disposed || _rpcClient == null) return;
+
+            if (_currentPresence is null || !_rpcClient.IsInitialized)
+                return;
+
+            try
+            {
+                if (_visible)
+                    _rpcClient.SetPresence(_currentPresence);
+            }
+            catch (IOException ex) when (ex.InnerException is SocketException)
+            {
+                App.Logger.Error("Socket interrupted (Operation Canceled).");
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error(ex);
+            }
+        }
+
+        public void Dispose()
+        {
+            if (_disposed) return;
+            _disposed = true;
+
+            App.Logger.Info("Cleaning up Discord RPC");
+
+            if (_rpcClient != null)
+            {
+                try
+                {
+                    if (_rpcClient.IsInitialized)
+                    {
+                        try { _rpcClient.ClearPresence(); } catch (IOException) { }
+                    }
+                    _rpcClient.Dispose();
+                }
+                catch (IOException ex) when (ex.InnerException is SocketException) { }
+                catch (Exception ex) { App.Logger.Error(ex); }
+            }
+
+            GC.SuppressFinalize(this);
+        }
+    }
+}

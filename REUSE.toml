@@ -1,0 +1,75 @@
+# SPDX-FileCopyrightText: 2026 Froststrap
+#
+# SPDX-License-Identifier: MPL-2.0
+
+version = 1
+
+[[annotations]]
+path = "packaging/macApp/**"
+SPDX-FileCopyrightText = "NONE"
+SPDX-License-Identifier = "MPL-2.0"
+
+[[annotations]]
+path = ".git*"
+SPDX-FileCopyrightText = "NONE"
+SPDX-License-Identifier = "MPL-2.0"
+
+[[annotations]]
+path = "*.md"
+SPDX-FileCopyrightText = "NONE"
+SPDX-License-Identifier = "MPL-2.0"
+
+[[annotations]]
+path = "**/**/*.json"
+SPDX-FileCopyrightText = "NONE"
+SPDX-License-Identifier = "MPL-2.0"
+
+[[annotations]]
+path = ".github/**"
+SPDX-FileCopyrightText = "NONE"
+SPDX-License-Identifier = "MPL-2.0"
+
+[[annotations]]
+path = ".resources/**"
+SPDX-FileCopyrightText = "NONE"
+SPDX-License-Identifier = "MPL-2.0"
+
+[[annotations]]
+path = "**/**/Resources/**"
+SPDX-FileCopyrightText = "NONE"
+SPDX-License-Identifier = "MPL-2.0"
+
+[[annotations]]
+path = "*.lock"
+SPDX-FileCopyrightText = "NONE"
+SPDX-License-Identifier = "MPL-2.0"
+
+[[annotations]]
+path = "**/*.ico"
+SPDX-FileCopyrightText = "NONE"
+SPDX-License-Identifier = "MPL-2.0"
+
+[[annotations]]
+path = "**/*.png"
+SPDX-FileCopyrightText = "NONE"
+SPDX-License-Identifier = "MPL-2.0"
+
+[[annotations]]
+path = "**/*.jpeg"
+SPDX-FileCopyrightText = "NONE"
+SPDX-License-Identifier = "MPL-2.0"
+
+[[annotations]]
+path = "**/**/**/*.txt"
+SPDX-FileCopyrightText = "NONE"
+SPDX-License-Identifier = "MPL-2.0"
+
+[[annotations]]
+path = "**/**/**/*.config"
+SPDX-FileCopyrightText = "NONE"
+SPDX-License-Identifier = "MPL-2.0"
+
+[[annotations]]
+path = "**/**/**/*.config"
+SPDX-FileCopyrightText = "NONE"
+SPDX-License-Identifier = "MPL-2.0"

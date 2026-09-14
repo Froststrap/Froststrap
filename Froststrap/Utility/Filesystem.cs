@@ -1,0 +1,42 @@
+﻿// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
+namespace Froststrap.Utility
+{
+    internal static class Filesystem
+    {
+        internal static long GetFreeDiskSpace(string path)
+        {
+            foreach (var drive in DriveInfo.GetDrives())
+            {
+                // https://github.com/Bloxstraplabs/Bloxstrap/issues/1648#issuecomment-2192571030
+                if (path.StartsWith(drive.Name, StringComparison.OrdinalIgnoreCase))
+                    return drive.AvailableFreeSpace;
+            }
+
+            return -1;
+        }
+
+        internal static void AssertReadOnly(string filePath)
+        {
+            var fileInfo = new FileInfo(filePath);
+
+            if (!fileInfo.Exists || !fileInfo.IsReadOnly)
+                return;
+
+            fileInfo.IsReadOnly = false;
+            App.Logger.Info($"The following file was set as read-only: {filePath}");
+        }
+
+        internal static void AssertReadOnlyDirectory(string directoryPath)
+        {
+            var directory = new DirectoryInfo(directoryPath) { Attributes = FileAttributes.Normal };
+
+            foreach (var info in directory.GetFileSystemInfos("*", SearchOption.AllDirectories))
+                info.Attributes = FileAttributes.Normal;
+
+            App.Logger.Info($"The following directory was set as read-only: {directoryPath}");
+        }
+    }
+}

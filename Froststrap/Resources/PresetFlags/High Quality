@@ -1,0 +1,6 @@
+{
+  "DFFlagDisableDPIScale": "True",
+  "DFIntDebugFRMQualityLevelOverride": "21",
+  "FFlagHandleAltEnterFullscreenManually": "False",
+  "FIntDebugForceMSAASamples": "4"
+}

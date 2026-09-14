@@ -1,0 +1,313 @@
+<!--
+SPDX-FileCopyrightText: 2026 Froststrap
+
+SPDX-License-Identifier: MPL-2.0
+-->
+
+<base:AvaloniaWindow
+    x:Class="Froststrap.UI.Elements.Settings.MainWindow"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+    xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+    xmlns:elements="clr-namespace:Froststrap.UI.Elements"
+    xmlns:gv="using:Froststrap.UI.ViewModels"
+    xmlns:ico="using:FluentIcons.Avalonia.Fluent"
+    xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
+    xmlns:local="clr-namespace:Froststrap.UI.Elements.Settings"
+    xmlns:enums="using:Froststrap.Enums"
+    xmlns:resources="using:Froststrap.Resources"
+    xmlns:av="using:Avalonia.Controls"
+    xmlns:transitions="clr-namespace:Froststrap.UI.Utility"
+    xmlns:ui="using:FluentAvalonia.UI.Controls"
+    xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
+    Title="{x:Static resources:Strings.Menu_Title}"
+    Width="1125"
+    Height="700"
+    MinWidth="750"
+    MinHeight="415"
+    x:DataType="vm:MainWindowViewModel"
+    CanResize="True"
+    WindowStartupLocation="CenterScreen">
+
+    <Grid RowDefinitions="48,*,56">
+        <Grid Grid.Row="0" Background="{DynamicResource ControlFillColorDefaultBrush}" PointerPressed="TitleBarGrid_PointerPressed">
+            <elements:SearchBar
+                Grid.Column="1"
+                Width="400"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                DataContext="{Binding SearchBar}" />
+        </Grid>
+
+        <ui:FANavigationView
+            Name="NavView"
+            Grid.Row="1"
+            Background="{DynamicResource ControlFillColorDefaultBrush}"
+            IsBackButtonVisible="False"
+            IsSettingsVisible="False"
+            ItemInvoked="NavView_ItemInvoked"
+            OpenPaneLength="220"
+            PaneDisplayMode="{Binding NavigationPaneDisplayMode}">
+            <ui:FANavigationView.MenuItems>
+                <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_Integrations_Title}" Tag="integrations">
+                    <ui:FANavigationViewItem.Icon>
+                        <ic:Lucide Icon="Plus" />
+                    </ui:FANavigationViewItem.Icon>
+                </ui:FANavigationViewItem>
+
+                <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_Behaviour_Title}" Tag="behaviour">
+                    <ui:FANavigationViewItem.Icon>
+                        <ic:Lucide Icon="Play" />
+                    </ui:FANavigationViewItem.Icon>
+                </ui:FANavigationViewItem>
+
+                <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_QuickPlay_Title}" Tag="quickplay">
+                    <ui:FANavigationViewItem.Icon>
+                        <ic:Lucide Icon="Gamepad2" />
+                    </ui:FANavigationViewItem.Icon>
+                </ui:FANavigationViewItem>
+
+                <ui:FANavigationViewItem Content="{x:Static resources:Strings.Common_Deployment}" Tag="channels">
+                    <ui:FANavigationViewItem.Icon>
+                        <ic:Lucide Icon="HardDriveUpload" />
+                    </ui:FANavigationViewItem.Icon>
+                </ui:FANavigationViewItem>
+
+                <ui:FANavigationViewItemSeparator />
+
+                <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_PresetMods_Title}" Tag="mods">
+                    <ui:FANavigationViewItem.Icon>
+                        <ic:Lucide Icon="BookOpen" />
+                    </ui:FANavigationViewItem.Icon>
+                </ui:FANavigationViewItem>
+
+                <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_Appearance_Title}" Tag="appearance">
+                    <ui:FANavigationViewItem.Icon>
+                        <ic:Lucide Icon="Palette" />
+                    </ui:FANavigationViewItem.Icon>
+                </ui:FANavigationViewItem>
+
+                <ui:FANavigationViewItemSeparator />
+
+                <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_FastFlags_Title}" Tag="fastflags">
+                    <ui:FANavigationViewItem.Icon>
+                        <ic:Lucide Icon="Flag" />
+                    </ui:FANavigationViewItem.Icon>
+                </ui:FANavigationViewItem>
+
+                <ui:FANavigationViewItem Name="gbs" Content="{x:Static resources:Strings.Menu_GlobalSettings_Title}" Tag="globalsettings">
+                    <ui:FANavigationViewItem.Icon>
+                        <ic:Lucide Icon="PenLine" />
+                    </ui:FANavigationViewItem.Icon>
+                </ui:FANavigationViewItem>
+
+                <ui:FANavigationViewItem Name="linux" IsVisible="{x:Static gv:GlobalViewModel.IsLinux}" Content="{x:Static resources:Strings.Menu_LinuxSettings_Title}" Tag="linuxsettings">
+                    <ui:FANavigationViewItem.Icon>
+                        <ic:Lucide Icon="Settings" />
+                    </ui:FANavigationViewItem.Icon>
+                </ui:FANavigationViewItem>
+
+                <ui:FANavigationViewItemSeparator />
+
+                <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_RegionSelector_Title}" Tag="regionselector">
+                    <ui:FANavigationViewItem.Icon>
+                        <ic:Lucide Icon="Globe" />
+                    </ui:FANavigationViewItem.Icon>
+                </ui:FANavigationViewItem>
+
+                <ui:FANavigationViewItem Content="{x:Static resources:Strings.Common_Shortcuts}" Tag="shortcuts">
+                    <ui:FANavigationViewItem.Icon>
+                        <ic:Lucide Icon="Link2" />
+                    </ui:FANavigationViewItem.Icon>
+                </ui:FANavigationViewItem>
+            </ui:FANavigationView.MenuItems>
+
+            <ui:FANavigationView.FooterMenuItems>
+                <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_About_Title}" Tag="about">
+                    <ui:FANavigationViewItem.Icon>
+                        <ic:Lucide Icon="CircleAlert" />
+                    </ui:FANavigationViewItem.Icon>
+                </ui:FANavigationViewItem>
+            </ui:FANavigationView.FooterMenuItems>
+
+            <ui:FANavigationView.Content>
+                <Grid RowDefinitions="Auto,*">
+                    <Border Grid.Row="0" Padding="18">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
+                                <ic:Lucide
+                                    Icon="{Binding CurrentPageIcon}"
+                                    Width="26"
+                                    Height="26"
+                                    Margin="0,0,8,0"
+                                    VerticalAlignment="Bottom" />
+
+                                <ItemsControl
+                                    IsVisible="{Binding HasBreadcrumbs}"
+                                    ItemsSource="{Binding BreadcrumbItems}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel
+                                                VerticalAlignment="Center"
+                                                Orientation="Horizontal"
+                                                Spacing="8" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate DataType="vm:BreadcrumbItemModel">
+                                            <StackPanel
+                                                VerticalAlignment="Center"
+                                                Orientation="Horizontal"
+                                                Spacing="8">
+                                                <Button
+                                                    Padding="0"
+                                                    Background="Transparent"
+                                                    BorderThickness="0"
+                                                    Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).BreadcrumbItemClickedCommand}"
+                                                    CommandParameter="{Binding}"
+                                                    Content="{Binding Content}"
+                                                    FontSize="22"
+                                                    FontWeight="SemiBold"
+                                                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                                    IsVisible="{Binding !IsLast}" />
+                                                <TextBlock
+                                                    VerticalAlignment="Center"
+                                                    FontSize="22"
+                                                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                                    IsVisible="{Binding !IsLast}"
+                                                    Text="›" />
+                                                <TextBlock
+                                                    VerticalAlignment="Center"
+                                                    FontSize="22"
+                                                    FontWeight="SemiBold"
+                                                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                                    IsVisible="{Binding IsLast}"
+                                                    Text="{Binding Content}" />
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+
+                                <TextBlock
+                                    x:Name="PageTitleText"
+                                    FontSize="22"
+                                    FontWeight="SemiBold"
+                                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                    Text="{Binding CurrentPageTitle}"
+                                    IsVisible="{Binding ShowPageTitle}" />
+                            </StackPanel>
+
+                            <controls:MarkdownTextBlock
+                                x:Name="PageDescriptionText"
+                                FontSize="15"
+                                Margin="0,2,0,0"
+                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                IsVisible="{Binding CurrentPageDescription, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                MarkdownText="{Binding CurrentPageDescription}" />
+
+                            <ui:FAInfoBar
+                                x:Name="AlertBar"
+                                Margin="0,8,0,0"
+                                IsVisible="False"
+                                Severity="Warning" />
+                        </StackPanel>
+                    </Border>
+
+                    <Panel Grid.Row="1">
+                        <TransitioningContentControl
+                            x:Name="PageContentControl"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch">
+                            <TransitioningContentControl.PageTransition>
+                                <transitions:FluentEntranceTransition VerticalOffset="150" Duration="0:0:0.35" />
+                            </TransitioningContentControl.PageTransition>
+                        </TransitioningContentControl>
+                    </Panel>
+                </Grid>
+            </ui:FANavigationView.Content>
+        </ui:FANavigationView>
+
+        <Border
+            Grid.Row="2"
+            Height="56"
+            Padding="0,0,16,0"
+            Background="{DynamicResource ControlFillColorDefaultBrush}"
+            BorderBrush="{DynamicResource ControlStrokeColorDefault}"
+            BorderThickness="0,1,0,0">
+            <Grid ColumnDefinitions="Auto, *, Auto, Auto, Auto, Auto" ColumnSpacing="8">
+                <local:AccountSelectorView
+                    x:Name="AccountSelectorView"
+                    Grid.Column="0"
+                    Margin="8,0,0,0" />
+                <controls:IconButton Grid.Column="2"
+                                     FontWeight="SemiBold"
+                                     Height="36"
+                                     Padding="20,0"
+                                     Classes="DropDownButton Primary"
+                                     Command="{Binding SaveAndLaunchSettingsCommand}"
+                                     Content="{Binding LaunchButtonText}">
+                    <controls:IconButton.Flyout>
+                        <MenuFlyout Placement="TopEdgeAlignedRight">
+                            <MenuItem Header="{Binding PlayerMenuItemText}" Command="{Binding SetLaunchModeCommand}"
+                                      CommandParameter="{x:Static enums:LaunchMode.Player}">
+                                <MenuItem.Icon>
+                                    <ic:Lucide Icon="Gamepad2" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="{x:Static resources:Strings.Common_Studio}" Command="{Binding SetLaunchModeCommand}"
+                                      CommandParameter="{x:Static enums:LaunchMode.Studio}">
+                                <MenuItem.Icon>
+                                    <ic:Lucide Icon="Wrench" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                        </MenuFlyout>
+                    </controls:IconButton.Flyout>
+                </controls:IconButton>
+                <Button
+                    FontWeight="SemiBold"
+                    Grid.Column="3"
+                    Height="36"
+                    Padding="20,0"
+                    Classes="accent"
+                    Command="{Binding RestartAppCommand}"
+                    Content="{x:Static resources:Strings.Menu_Restart}" />
+                <Button
+                    FontWeight="SemiBold"
+                    Grid.Column="4"
+                    Height="36"
+                    Padding="20,0"
+                    Classes="accent"
+                    Command="{Binding SaveSettingsCommand}"
+                    Content="{x:Static resources:Strings.Menu_Save}" />
+                <Button
+                    FontWeight="SemiBold"
+                    Grid.Column="5"
+                    Height="36"
+                    Padding="20,0"
+                    Command="{Binding CloseWindowCommand}"
+                    Content="{x:Static resources:Strings.Common_Close}" />
+            </Grid>
+        </Border>
+
+        <Panel
+            Name="NotificationPanel"
+            Grid.Row="0"
+            Grid.RowSpan="3"
+            Margin="0,50,0,0"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Top"
+            ZIndex="1000" />
+
+        <Border
+            x:Name="OffscreenIndexingCanvas"
+            Grid.Row="1"
+            Grid.Column="1"
+            Width="905"
+            Height="700"
+            IsHitTestVisible="False"
+            IsVisible="False"
+            Opacity="0"
+            ZIndex="-1000" />
+    </Grid>
+</base:AvaloniaWindow>

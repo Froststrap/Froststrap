@@ -1,0 +1,57 @@
+<!--
+SPDX-FileCopyrightText: 2026 Froststrap
+
+SPDX-License-Identifier: MPL-2.0
+-->
+
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="using:FluentAvalonia.UI.Controls"
+        xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+        xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
+        xmlns:converters="clr-namespace:Froststrap.UI.Converters">
+
+    <Style Selector="controls|CardAction">
+        <Setter Property="Background" Value="{DynamicResource ControlFillColorDefaultBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ControlElevationBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding" Value="16,12" />
+        <Setter Property="CornerRadius" Value="{DynamicResource ControlCornerRadius}" />
+        <Setter Property="IconSize" Value="24" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <controls:Card Name="PART_RootCard"
+                               Padding="{TemplateBinding Padding}"
+                               Background="{TemplateBinding Background}"
+                               BorderBrush="{TemplateBinding BorderBrush}"
+                               BorderThickness="{TemplateBinding BorderThickness}"
+                               Margin="0,4"
+                               CornerRadius="{TemplateBinding CornerRadius}">
+                    <Grid ColumnDefinitions="Auto,*">
+                        <ic:Lucide StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}"
+                                   Icon="{TemplateBinding Icon}"
+                                   Grid.Column="0"
+                                   Width="{TemplateBinding IconSize}"
+                                   Height="{TemplateBinding IconSize}"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" />
+                        <StackPanel Grid.Column="1"
+                                    VerticalAlignment="Center"
+                                    Margin="16,0,0,0"
+                                    Spacing="2">
+                            <TextBlock Text="{TemplateBinding Header}"
+                                       FontSize="14"
+                                       FontWeight="SemiBold"
+                                       Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                            <controls:MarkdownTextBlock MarkdownText="{TemplateBinding Description}"
+                                                        FontSize="12"
+                                                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                                        TextWrapping="Wrap"
+                                                        IsVisible="{TemplateBinding Description, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                        </StackPanel>
+                    </Grid>
+                </controls:Card>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+</Styles>

@@ -1,0 +1,36 @@
+<!--
+SPDX-FileCopyrightText: 2026 Froststrap
+
+SPDX-License-Identifier: MPL-2.0
+-->
+
+<Styles
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls">
+
+    <Style Selector="controls|Hyperlink">
+        <Setter Property="ClipToBounds" Value="False" />
+        <Setter Property="Foreground" Value="{DynamicResource AccentButtonBackground}" />
+        <Setter Property="Cursor"     Value="Hand" />
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Foreground" Duration="0:0:0.15" />
+            </Transitions>
+        </Setter>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <ContentPresenter
+                    Name="PART_ContentPresenter"
+                    Content="{TemplateBinding Content}"
+                    ContentTemplate="{TemplateBinding ContentTemplate}"
+                    Background="Transparent"
+                    Foreground="{TemplateBinding Foreground}"/>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="controls|Hyperlink:pointerover">
+        <Setter Property="Foreground" Value="{DynamicResource AccentButtonBackgroundPointerOver}" />
+    </Style>
+</Styles>

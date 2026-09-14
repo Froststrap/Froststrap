@@ -1,0 +1,402 @@
+﻿// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
+using Froststrap.Enums.GBSPresets;
+using System.Xml.Linq;
+using System.Xml.XPath;
+
+namespace Froststrap
+{
+    internal class GBSEditor
+    {
+        public XDocument? Document { get; set; } = null!;
+
+        public Dictionary<string, string> PresetPaths = new()
+        {
+            // Graphics Settings
+            { "Rendering.FramerateCap", "{UserSettings}/int[@name='FramerateCap']" },
+            { "Rendering.SavedQualityLevel", "{UserSettings}/token[@name='SavedQualityLevel']" },
+            { "Rendering.Fullscreen", "{UserSettings}/bool[@name='Fullscreen']" },
+            { "Rendering.MaxQualityEnabled", "{UserSettings}/bool[@name='MaxQualityEnabled']" },
+            { "Rendering.VignetteEnabled", "{UserSettings}/bool[@name='VignetteEnabled']" },
+            { "Rendering.VignetteEnableOption", "{UserSettings}/bool[@name='VignetteEnabledCustomOption']" },
+
+            // Audio Settings
+            { "Audio.MasterVolume", "{UserSettings}/float[@name='MasterVolume']" },
+            { "Audio.MasterVolumeStudio", "{UserSettings}/float[@name='MasterVolumeStudio']" },
+            { "Audio.PartyVoiceVolume", "{UserSettings}/float[@name='PartyVoiceVolume']" },
+            { "Audio.VoiceChatVolume", "{UserSettings}/float[@name='VoiceChatVolume']" },
+
+            // Input Settings
+            { "User.MouseSensitivity", "{UserSettings}/float[@name='MouseSensitivity']" },
+            { "User.ShiftLock", "{UserSettings}/token[@name='ControlMode']" },
+            { "User.MouseSensitivityFirstPerson", "{UserSettings}/Vector2[@name='MouseSensitivityFirstPerson']" },
+            { "User.MouseSensitivityThirdPerson", "{UserSettings}/Vector2[@name='MouseSensitivityThirdPerson']" },
+            { "User.CameraYInverted", "{UserSettings}/bool[@name='CameraYInverted']" },
+            { "User.HapticStrength", "{UserSettings}/float[@name='HapticStrength']" },
+
+            // Accessibility
+            { "UI.Transparency", "{UserSettings}/float[@name='PreferredTransparency']" },
+            { "UI.ReducedMotion", "{UserSettings}/bool[@name='ReducedMotion']" },
+            { "UI.FontSize", "{UserSettings}/token[@name='PreferredTextSize']" },
+            { "UI.PlayerListLayOut", "{UserSettings}/token[@name='PeoplePageLayout']" },
+
+            // Miscellaneous Settings
+            { "Misc.PerformanceStatsVisible", "{UserSettings}/bool[@name='PerformanceStatsVisible']" },
+            { "Misc.ChatTranslationEnabled", "{UserSettings}/bool[@name='ChatTranslationEnabled']" },
+            { "Misc.ChatTranslationFTUXShown", "{UserSettings}/bool[@name='ChatTranslationFTUXShown']" },
+            { "User.VREnabled", "{UserSettings}/bool[@name='VREnabled']" }
+        };
+
+        // we are making it easier for ourselves
+        // basically replacing {...} with a path
+        // might expand in the future (studio support)
+        public Dictionary<string, string> RootPaths = new()
+        {
+            { "UserSettings", "//Item[@class='UserGameSettings']/Properties" },
+        };
+
+        public static IReadOnlyDictionary<FontSize, string?> FontSizes => new Dictionary<FontSize, string?>
+        {
+            { FontSize.x1, "1" },
+            { FontSize.x2, "2" },
+            { FontSize.x3, "3" },
+            { FontSize.x4, "4" }
+        };
+
+        public static IReadOnlyDictionary<PlayerListLayOut, string?> PlayerListLayOuts => new Dictionary<PlayerListLayOut, string?>
+        {
+            { PlayerListLayOut.x0, "0" },
+            { PlayerListLayOut.x1, "1" }
+        };
+
+        public bool Loaded { get; set; }
+
+        public static string FileLocation => OperatingSystem.IsLinux() ?
+                Path.Combine(Paths.SoberData, "appData", "GlobalBasicSettings_13.xml") :
+                    OperatingSystem.IsMacOS() ?
+                        Path.Combine(Paths.UserProfile, "Library", "Roblox", "GlobalBasicSettings_13.xml") :
+                            Path.Combine(Paths.Roblox, "GlobalBasicSettings_13.xml");
+
+        private string? _savedHash;
+
+        private string ComputeHash()
+        {
+            if (Document == null) return string.Empty;
+            return FastHash.FromString(Document.ToString());
+        }
+
+        public bool HasUnsavedChanges
+        {
+            get
+            {
+                if (_savedHash == null) return false;
+                return ComputeHash() != _savedHash;
+            }
+        }
+
+        public void SetPreset(string prefix, object? value)
+        {
+            var matchingPaths = PresetPaths.Where(x => x.Key.StartsWith(prefix, StringComparison.Ordinal)).ToList();
+            if (matchingPaths.Count == 0)
+            {
+                App.Logger.Warn($"SetPreset: No preset paths found for prefix '{prefix}'");
+                return;
+            }
+
+            foreach (var pair in matchingPaths)
+                SetValue(pair.Value, value);
+        }
+
+        public string? GetPreset(string prefix)
+        {
+            if (PresetPaths.TryGetValue(prefix, out string? path))
+                return GetValue(path);
+            return null;
+        }
+
+        public void SetValue(string path, object? value)
+        {
+            path = ResolvePath(path, RootPaths);
+            XElement? element = Document?.XPathSelectElement(path);
+
+            if (element is null)
+            {
+                var match = Regex.Match(path, @"/([a-zA-Z0-9_]+)\[@name='([^']+)'\]$");
+                if (match.Success)
+                {
+                    string elementType = match.Groups[1].Value;
+                    string elementName = match.Groups[2].Value;
+                    string parentPath = path.Substring(0, match.Index);
+
+                    XElement? parentElement = Document?.XPathSelectElement(parentPath);
+                    if (parentElement != null)
+                    {
+                        element = new XElement(elementType, new XAttribute("name", elementName));
+                        parentElement.Add(element);
+                        App.Logger.Info($"SetValue: Created missing element '{elementType}' with name '{elementName}' at path '{path}'");
+                    }
+                }
+            }
+
+            if (element is null)
+            {
+                App.Logger.Warn($"SetValue: Element not found or could not be created for path '{path}'. Changes will not be applied.");
+                return;
+            }
+
+            string newValue = value?.ToString() ?? string.Empty;
+
+            if (element.Name.LocalName == "bool")
+            {
+                newValue = newValue.ToLowerInvariant();
+            }
+
+            if (element.Value != newValue)
+            {
+                App.Logger.Debug($"SetValue: Changing '{path}' from '{element.Value}' to '{newValue}'");
+                element.Value = newValue;
+            }
+        }
+
+        public string? GetValue(string path)
+        {
+            path = ResolvePath(path, RootPaths);
+            return Document?.XPathSelectElement(path)?.Value;
+        }
+
+        public bool previousReadOnlyState;
+
+        public void SetReadOnly(bool readOnly, bool preserveState = false)
+        {
+            if (!File.Exists(FileLocation))
+                return;
+
+            try
+            {
+                FileAttributes attributes = File.GetAttributes(FileLocation);
+
+                if (readOnly)
+                    attributes |= FileAttributes.ReadOnly;
+                else
+                    attributes &= ~FileAttributes.ReadOnly;
+
+                File.SetAttributes(FileLocation, attributes);
+
+                if (!preserveState)
+                    previousReadOnlyState = readOnly;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error($"Failed to set read-only on {FileLocation}", ex);
+            }
+        }
+
+        public static bool GetReadOnly()
+        {
+            if (!File.Exists(FileLocation))
+                return false;
+
+            return File.GetAttributes(FileLocation).HasFlag(FileAttributes.ReadOnly);
+        }
+
+        public void CreateTemplate()
+        {
+            App.Logger.Info($"Creating template at {FileLocation}...");
+
+            try
+            {
+                string? directory = Path.GetDirectoryName(FileLocation);
+                if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                    App.Logger.Info($"Created directory: {directory}");
+                }
+
+                var uri = new Uri("avares://Froststrap/Resources/GlobalBasicSettings_Template.xml");
+                using var resourceStream = Avalonia.Platform.AssetLoader.Open(uri);
+                using var fileStream = File.Create(FileLocation);
+                resourceStream.CopyTo(fileStream);
+
+                previousReadOnlyState = GetReadOnly();
+                App.Logger.Info("Template created successfully!");
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error($"Failed to create template at {FileLocation}", ex);
+            }
+        }
+
+        public void Load()
+        {
+            App.Logger.Info($"Loading from {FileLocation}...");
+
+            try
+            {
+                string? directory = Path.GetDirectoryName(FileLocation);
+                if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                    App.Logger.Info($"Created directory: {directory}");
+                }
+
+                Document = XDocument.Load(FileLocation);
+                Loaded = true;
+                previousReadOnlyState = GetReadOnly();
+                _savedHash = ComputeHash();
+                App.Logger.Info("Loaded successfully!");
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error("Failed to load, recreating template...", ex);
+
+                if (File.Exists(FileLocation))
+                {
+                    try { File.Delete(FileLocation); }
+                    catch { /* Ignore delete errors */ }
+                }
+
+                CreateTemplate();
+
+                try
+                {
+                    Document = XDocument.Load(FileLocation);
+                    Loaded = true;
+                    previousReadOnlyState = GetReadOnly();
+                    _savedHash = ComputeHash();
+                    App.Logger.Info("Recreated and loaded successfully!");
+                }
+                catch (Exception retryEx)
+                {
+                    App.Logger.Error("Failed even after recreating!");
+                    App.Logger.Error(retryEx);
+                    Loaded = false;
+                }
+            }
+        }
+
+        public virtual bool Save()
+        {
+            App.Logger.Info($"Saving to {FileLocation}...");
+
+            if (!HasUnsavedChanges)
+            {
+                App.Logger.Info("No changes, skipping save.");
+                return false;
+            }
+
+            if (!Loaded || Document == null)
+            {
+                App.Logger.Error("Save failed – document not loaded.");
+                return false;
+            }
+
+            try
+            {
+                string? dir = Path.GetDirectoryName(FileLocation);
+                if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
+                    Directory.CreateDirectory(dir);
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error($"Failed to create directory: {ex.Message}");
+                return false;
+            }
+
+            bool wasReadOnly = GetReadOnly();
+            if (wasReadOnly)
+            {
+                App.Logger.Debug("File is read‑only; attempting to remove read‑only flag.");
+                SetReadOnly(false, true);
+            }
+
+            try
+            {
+                string tempFile = FileLocation + ".tmp";
+                Document.Save(tempFile);
+
+                File.Copy(tempFile, FileLocation, true);
+                File.Delete(tempFile);
+
+                _savedHash = ComputeHash();
+                App.Logger.Info("Save complete!");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error($"Failed to save: {ex.Message}");
+                App.Logger.Error(ex);
+                return false;
+            }
+            finally
+            {
+                if (wasReadOnly)
+                {
+                    App.Logger.Debug("Restoring read‑only flag.");
+                    SetReadOnly(true, true);
+                }
+            }
+        }
+
+        private static string ResolvePath(string rawPath, Dictionary<string, string> rootPaths)
+        {
+            return Regex.Replace(rawPath, @"\{(.+?)\}", match =>
+            {
+                string key = match.Groups[1].Value;
+                return rootPaths.TryGetValue(key, out var value) ? value : match.Value;
+            });
+        }
+
+        public string GetVectorValue(string vectorName, string axis)
+        {
+            string basePath = ResolvePath(PresetPaths[vectorName], RootPaths);
+            XElement? vectorElement = Document?.XPathSelectElement(basePath);
+            return vectorElement?.Element(axis)?.Value ?? "0";
+        }
+
+        public void SetVectorValue(string vectorName, string axis, string value)
+        {
+            string basePath = ResolvePath(PresetPaths[vectorName], RootPaths);
+            XElement? vectorElement = Document?.XPathSelectElement(basePath);
+
+            if (vectorElement != null)
+            {
+                XElement? axisElement = vectorElement.Element(axis);
+                if (axisElement == null)
+                {
+                    axisElement = new XElement(axis);
+                    vectorElement.Add(axisElement);
+                    App.Logger.Info($"SetVectorValue: Created missing axis '{axis}' for vector '{vectorName}'");
+                }
+                axisElement.Value = value;
+            }
+        }
+
+        public static bool ExportSettings(string exportPath)
+        {
+            try
+            {
+                if (!File.Exists(FileLocation)) return false;
+                string? dir = Path.GetDirectoryName(exportPath);
+                if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
+                File.Copy(FileLocation, exportPath, true);
+                return true;
+            }
+            catch { return false; }
+        }
+
+        public bool ImportSettings(string importPath)
+        {
+            try
+            {
+                if (!File.Exists(importPath)) return false;
+                SetReadOnly(false, true);
+                File.Copy(importPath, FileLocation, true);
+                Load();
+                return true;
+            }
+            catch { return false; }
+        }
+    }
+}

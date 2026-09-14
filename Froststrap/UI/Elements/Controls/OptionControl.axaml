@@ -1,0 +1,67 @@
+<!--
+SPDX-FileCopyrightText: 2026 Froststrap
+
+SPDX-License-Identifier: MPL-2.0
+-->
+
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="using:FluentAvalonia.UI.Controls"
+        xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+        xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia">
+
+    <Style Selector="controls|OptionControl">
+        <Setter Property="Background" Value="{DynamicResource ControlFillColorDefaultBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ControlElevationBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding" Value="16,12" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <controls:Card Name="PART_RootCard"
+                               Background="{TemplateBinding Background}"
+                               BorderBrush="{TemplateBinding BorderBrush}"
+                               BorderThickness="{TemplateBinding BorderThickness}"
+                               Padding="{TemplateBinding Padding}"
+                               Margin="0,4">
+
+                    <Grid ColumnDefinitions="*,Auto">
+                        <StackPanel Grid.Column="0" VerticalAlignment="Center" Spacing="3">
+
+                            <WrapPanel Orientation="Horizontal">
+                                <TextBlock Text="{TemplateBinding Header}"
+                                           FontSize="14"
+                                           FontWeight="SemiBold"
+                                           VerticalAlignment="Center"
+                                           TextWrapping="Wrap"
+                                           Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+
+                                <controls:Hyperlink Url="{TemplateBinding HelpLink}"
+                                                    IsVisible="{TemplateBinding HelpLink, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                                    VerticalAlignment="Center"
+                                                    Margin="6,0,0,0">
+                                    <ic:Lucide Icon="CircleQuestionMark"
+                                               Width="16" Height="16"
+                                               StrokeBrush="{Binding Foreground, RelativeSource={RelativeSource AncestorType=controls:Hyperlink}}" />
+                                </controls:Hyperlink>
+                            </WrapPanel>
+
+                            <controls:MarkdownTextBlock MarkdownText="{TemplateBinding Description}"
+                                                        FontSize="12"
+                                                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                                        Background="Transparent"
+                                                        IsHitTestVisible="True"
+                                                        TextWrapping="Wrap"
+                                                        IsVisible="{TemplateBinding Description, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                        </StackPanel>
+
+                        <ContentPresenter Grid.Column="1"
+                                          Content="{TemplateBinding InnerContent}"
+                                          VerticalAlignment="Center"
+                                          HorizontalAlignment="Right"
+                                          Margin="16,0,0,0" />
+                    </Grid>
+                </controls:Card>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+</Styles>

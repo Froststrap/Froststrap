@@ -1,0 +1,14 @@
+﻿// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
+namespace Froststrap.Models
+{
+    internal class PlaceInfo(long id, long universeId, string name, string? thumbnailUrl)
+    {
+        public long Id { get; set; } = id;
+        public long UniverseId { get; set; } = universeId;
+        public string Name { get; set; } = name;
+        public string? ThumbnailUrl { get; set; } = thumbnailUrl;
+    }
+}

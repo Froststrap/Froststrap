@@ -1,0 +1,208 @@
+<!--
+SPDX-FileCopyrightText: 2026 Froststrap
+
+SPDX-License-Identifier: MPL-2.0
+-->
+
+<UserControl
+    x:Class="Froststrap.UI.Elements.Settings.Pages.RegionSelectorPage"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:resources="using:Froststrap.Resources"
+    xmlns:ui="using:FluentAvalonia.UI.Controls"
+    xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
+    xmlns:models="clr-namespace:Froststrap.Models"
+    xmlns:apis="clr-namespace:Froststrap.Models.APIs.Roblox"
+    xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+    xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
+    x:DataType="vm:RegionSelectorViewModel">
+
+    <Grid Margin="14" RowDefinitions="Auto,*">
+        <Border Grid.Row="0" Margin="0,0,0,16" Padding="16" CornerRadius="8">
+            <StackPanel Spacing="12">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <AutoCompleteBox x:Name="GameSearchAutoCompleteBox"
+                                     Width="300"
+                                     VerticalAlignment="Center"
+                                     Text="{Binding SearchQuery, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                     ItemsSource="{Binding SearchResults}"
+                                     FilterMode="None"
+                                     IsDropDownOpen="{Binding IsSearchFlyoutOpen, Mode=TwoWay}"
+                                     PlaceholderText="{x:Static resources:Strings.Menu_RegionSelector_FindGame}">
+                        <AutoCompleteBox.ItemTemplate>
+                            <DataTemplate DataType="apis:OmniSearchContent">
+                                <Grid ColumnDefinitions="Auto,*,Auto" MaxWidth="270">
+                                    <Border Grid.Column="0" Width="44" Height="44"
+                                            Background="#10FFFFFF" ClipToBounds="True" CornerRadius="4">
+                                        <Image RenderOptions.BitmapInterpolationMode="HighQuality"
+                                               Source="{Binding ThumbnailBitmap}" Stretch="UniformToFill" />
+                                    </Border>
+                                    <StackPanel Grid.Column="1" Margin="10,0" VerticalAlignment="Center">
+                                        <TextBlock FontWeight="SemiBold" FontSize="16"
+                                                   Text="{Binding Name}" TextTrimming="CharacterEllipsis" />
+                                        <TextBlock FontSize="10" Opacity="0.5"
+                                                   Text="{Binding RootPlaceId, StringFormat='ID: {0}'}" />
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2" VerticalAlignment="Center"
+                                                Orientation="Horizontal" Spacing="4">
+                                        <ic:Lucide Margin="0,2,0,0" Height="12" Width="12"
+                                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                                   Icon="Users"/>
+                                        <TextBlock VerticalAlignment="Center" FontSize="12"
+                                                   Text="{Binding PlayerCount, Converter={StaticResource NumberAbbreviationConverter}}" />
+                                    </StackPanel>
+                                </Grid>
+                            </DataTemplate>
+                        </AutoCompleteBox.ItemTemplate>
+
+                        <AutoCompleteBox.InnerLeftContent>
+                            <ic:Lucide Icon="Search"
+                                       Height="14"
+                                       Width="14"
+                                       VerticalAlignment="Center"
+                                       Margin="8,0,0,0"/>
+                        </AutoCompleteBox.InnerLeftContent>
+
+                        <AutoCompleteBox.InnerRightContent>
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <ui:FAProgressRing IsIndeterminate="True"
+                                                   Width="20"
+                                                   Height="20"
+                                                   VerticalAlignment="Center"
+                                                   IsVisible="{Binding IsGameSearchLoading}" />
+                                <controls:IconButton Command="{Binding ClearSearchCommand}"
+                                                     IsVisible="{Binding SearchQuery, Converter={x:Static StringConverters.IsNotNullOrEmpty}, FallbackValue=False}"
+                                                     Icon="X"
+                                                     IconSize="14"
+                                                     Background="Transparent"
+                                                     BorderThickness="0"
+                                                     Width="28"
+                                                     Height="28"
+                                                     VerticalAlignment="Center"
+                                                     Margin="0,0,2,0"
+                                                     Padding="8"/>
+                            </StackPanel>
+                        </AutoCompleteBox.InnerRightContent>
+                    </AutoCompleteBox>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <TextBlock VerticalAlignment="Center" Text="{x:Static resources:Strings.Menu_RegionSelector_Region}" />
+
+                    <ComboBox Width="200" VerticalAlignment="Center"
+                              ItemsSource="{Binding Regions}"
+                              SelectedItem="{Binding SelectedRegion, Mode=TwoWay}" />
+
+                    <Button Width="100" VerticalAlignment="Center" Classes="accent"
+                            Command="{Binding SearchCommand}"
+                            Content="{x:Static resources:Strings.Common_Search}" />
+
+                    <Button IsVisible="{Binding ShowLoadMoreButton}"
+                            Command="{Binding LoadMoreCommand}"
+                            VerticalAlignment="Center"
+                            Padding="16,4"
+                            Content="{x:Static resources:Strings.Menu_RegionSelector_LoadMore}" />
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <Grid Grid.Row="1">
+            <ScrollViewer CornerRadius="8">
+                <ItemsControl ItemsSource="{Binding Servers}" Padding="8">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="models:ServerEntry">
+                            <Border Padding="12,8"
+                                    Margin="0,0,0,4"
+                                    Background="{DynamicResource SolidBackgroundFillColorTertiaryBrush}"
+                                    CornerRadius="6">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <StackPanel Grid.Column="0"
+                                                VerticalAlignment="Center"
+                                                Spacing="2">
+                                        <TextBlock FontWeight="SemiBold"
+                                                   FontSize="14"
+                                                   Text="{Binding Region}" />
+                                        <TextBlock FontSize="12"
+                                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}">
+                                            <Run Text="{x:Static resources:Strings.ContextMenu_ServerInformation_Uptime}" />
+                                            <Run Text="{Binding Uptime}" />
+                                        </TextBlock>
+                                    </StackPanel>
+
+                                    <Button Grid.Column="1"
+                                            Width="100"
+                                            VerticalAlignment="Center"
+                                            Classes="accent"
+                                            Command="{Binding JoinCommand}"
+                                            Content="{x:Static resources:Strings.Menu_RegionSelector_Join}" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+
+            <Border IsVisible="{Binding IsServerListEmptyAndNotLoading}"
+                    CornerRadius="12"
+                    Background="{DynamicResource SolidBackgroundFillColorTertiaryBrush}"
+                    Opacity="0.8">
+                <StackPanel HorizontalAlignment="Center"
+                            VerticalAlignment="Center" Spacing="12">
+                    <ic:Lucide Width="48" Height="48"
+                               HorizontalAlignment="Center"
+                               Opacity="0.5"
+                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                               Icon="Search"/>
+                    <TextBlock HorizontalAlignment="Center"
+                               Margin="0,0,0,8"
+                               FontSize="16"
+                               FontWeight="Medium"
+                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                               Text="{Binding ServerListMessage}"
+                               TextAlignment="Center"
+                               TextWrapping="Wrap" />
+                </StackPanel>
+            </Border>
+
+            <Border IsVisible="{Binding ShowLoadingIndicator}"
+                    CornerRadius="12"
+                    Background="{DynamicResource SolidBackgroundFillColorTertiaryBrush}"
+                    Opacity="0.8">
+                <Grid>
+                    <StackPanel HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Spacing="16">
+                        <ui:FAProgressRing IsIndeterminate="True"
+                                           Width="100" Height="100"
+                                           HorizontalAlignment="Center" />
+                        <TextBlock HorizontalAlignment="Center"
+                                   FontSize="14"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                   Text="{Binding LoadingMessage}" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <Border IsVisible="{Binding IsLoadingMore}"
+                    CornerRadius="12"
+                    Background="{DynamicResource SolidBackgroundFillColorTertiaryBrush}"
+                    Opacity="0.8">
+                <Grid>
+                    <StackPanel HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Spacing="16">
+                        <ui:FAProgressRing IsIndeterminate="True"
+                                           Width="100" Height="100"
+                                           HorizontalAlignment="Center" />
+                        <TextBlock HorizontalAlignment="Center"
+                                   FontSize="14"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                   Text="{x:Static resources:Strings.Menu_RegionSelector_LoadingMore}" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

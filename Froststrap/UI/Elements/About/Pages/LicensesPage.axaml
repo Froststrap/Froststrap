@@ -1,0 +1,153 @@
+<!--
+SPDX-FileCopyrightText: 2026 Froststrap
+
+SPDX-License-Identifier: MPL-2.0
+-->
+
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ui="clr-namespace:Froststrap.UI.Elements.Controls"
+             xmlns:models="clr-namespace:Froststrap.UI.ViewModels"
+             xmlns:resources="clr-namespace:Froststrap.Resources"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="1500"
+             x:Class="Froststrap.UI.Elements.About.Pages.LicensesPage">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="14">
+            <TextBlock Margin="0,0,0,16"
+                       FontSize="24"
+                       FontWeight="Bold"
+                       Text="{x:Static resources:Strings.About_Licenses_Title}" />
+
+            <UniformGrid Columns="3">
+                <ui:CardAction Margin="4" Icon="Copyright"
+                               Header="Bloxstrap"
+                               Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
+                               Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+                               CommandParameter="https://github.com/bloxstraplabs/bloxstrap" />
+
+                <ui:CardAction Margin="4" Icon="Copyright"
+                               Header="Fishstrap"
+                               Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
+                               Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+                               CommandParameter="https://github.com/Fishstrap/Fishstrap" />
+
+                <ui:CardAction Margin="4" Icon="Copyright"
+                               Header="AppleBlox"
+                               Description="GPL-3.0"
+                               Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+                               CommandParameter="https://github.com/AppleBlox/appleblox" />
+
+                <ui:CardAction Margin="4" Icon="Copyright"
+                               Header="Sober/Vinegar"
+                               Description="GPL-3.0"
+                               Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+                               CommandParameter="https://github.com/vinegarhq/vinegar" />
+
+                <ui:CardAction Margin="4" Icon="Copyright"
+                               Header="Avalonia"
+                               Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
+                               Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+                               CommandParameter="https://github.com/AvaloniaUI/Avalonia" />
+
+                <ui:CardAction Margin="4" Icon="Copyright"
+                               Header="AnimatedImage"
+                               Description="{x:Static resources:Strings.Menu_About_Licenses_Apache}"
+                               Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+                               CommandParameter="https://github.com/whistyun/AnimatedImage" />
+
+                <ui:CardAction Margin="4" Icon="Copyright"
+                               Header="Avalonia Edit"
+                               Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
+                               Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+                               CommandParameter="https://github.com/AvaloniaUI/AvaloniaEdit" />
+
+                <ui:CardAction Margin="4" Icon="Copyright"
+                               Header="Fluent Avalonia"
+                               Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
+                               Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+                               CommandParameter="https://github.com/amwx/FluentAvalonia" />
+
+                <ui:CardAction Margin="4" Icon="Copyright"
+                               Header="LucideAvalonia"
+                               Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
+                               Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+                               CommandParameter="https://github.com/MarwanFr/LucideAvaloniaUI" />
+
+                <ui:CardAction Margin="4" Icon="Copyright"
+                               Header="Pixi ColorPicker"
+                               Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
+                               Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+                               CommandParameter="https://github.com/PixiEditor/ColorPicker" />
+
+                <ui:CardAction Margin="4" Icon="Copyright"
+                               Header="CommunityToolKit MVVM"
+                               Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
+                               Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+                               CommandParameter="https://github.com/CommunityToolkit/dotnet" />
+
+                <ui:CardAction Margin="4" Icon="Copyright"
+                               Header="Discord Rich Presence"
+                               Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
+                               Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+                               CommandParameter="https://github.com/Lachee/discord-rpc-csharp" />
+
+                <ui:CardAction Margin="4" Icon="Copyright"
+                               Header="MarkDig"
+                               Description="BSD 2-Clause License"
+                               Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+                               CommandParameter="https://github.com/xoofx/markdig" />
+
+                <ui:CardAction Margin="4" Icon="Copyright"
+                               Header="SharpZipLib"
+                               Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
+                               Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+                               CommandParameter="https://github.com/icsharpcode/SharpZipLib" />
+
+                <ui:CardAction Margin="4" Icon="Copyright"
+                               Header="Puppeteer Sharp"
+                               Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
+                               Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+                               CommandParameter="https://github.com/hardkoded/puppeteer-sharp" />
+
+                <ui:CardAction Margin="4" Icon="Copyright"
+                               Header="Puppeteer Sharp Extra"
+                               Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
+                               Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+                               CommandParameter="https://github.com/Overmiind/Puppeteer-sharp-extra" />
+
+                <ui:CardAction Margin="4" Icon="Copyright"
+                               Header="NLog"
+                               Description="BSD 3-Clause License"
+                               Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+                               CommandParameter="https://github.com/NLog/NLog" />
+
+                <ui:CardAction Margin="4" Icon="Copyright"
+                               Header="objc2"
+                               Description="Zlib OR Apache-2.0 OR MIT License"
+                               Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+                               CommandParameter="https://github.com/madsmtm/objc2" />
+
+                <ui:CardAction Margin="4" Icon="Copyright"
+                               Header="zbus"
+                               Description="MIT License"
+                               Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+                               CommandParameter="https://github.com/z-galaxy/zbus" />
+
+                <ui:CardAction Margin="4" Icon="Copyright"
+                               Header="windows_rs"
+                               Description="Apache-2.0 OR MIT License"
+                               Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+                               CommandParameter="https://github.com/microsoft/windows-rs" />
+
+                <ui:CardAction Margin="4" Icon="Copyright"
+                               Header="WiX Toolset"
+                               Description="MS-RL License"
+                               Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+                               CommandParameter="https://github.com/wixtoolset/wix" />
+            </UniformGrid>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

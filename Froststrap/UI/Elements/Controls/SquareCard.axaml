@@ -1,0 +1,53 @@
+﻿<!--
+SPDX-FileCopyrightText: 2026 Froststrap
+
+SPDX-License-Identifier: MPL-2.0
+-->
+
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls">
+
+    
+	<Style Selector="controls|SquareCard">
+		<Setter Property="Background" Value="{DynamicResource ControlFillColorDefaultBrush}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource ControlElevationBorderBrush}" />
+		<Setter Property="BorderThickness" Value="1" />
+		<Setter Property="Padding" Value="14" />
+
+		<Setter Property="Template">
+			<ControlTemplate>
+				<controls:Card Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        Padding="{TemplateBinding Padding}"
+                        Margin="0,6,6,6"
+                        CornerRadius="4">
+
+					<Grid MinHeight="140" RowDefinitions="Auto,Auto,*">
+						<TextBlock Grid.Row="0"
+                                   FontSize="18"
+                                   TextWrapping="Wrap"
+                                   Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                   Text="{TemplateBinding Header}"
+                                   IsVisible="{TemplateBinding Header, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+
+						<controls:MarkdownTextBlock Grid.Row="1"
+                                              FontSize="14"
+                                              TextWrapping="Wrap"
+                                              Margin="0,6,0,0"
+                                              Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                              MarkdownText="{TemplateBinding Description}"
+                                              IsVisible="{TemplateBinding Description, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+
+						<ContentPresenter Grid.Row="2"
+                                          Content="{TemplateBinding InnerContent}"
+                                          VerticalAlignment="Bottom"
+                                          HorizontalAlignment="Stretch"
+                                          Margin="0,8,0,0"/>
+					</Grid>
+				</controls:Card>
+			</ControlTemplate>
+		</Setter>
+	</Style>
+</Styles>

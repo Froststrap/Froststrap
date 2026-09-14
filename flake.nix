@@ -1,61 +1,66 @@
-#   SPDX-License-Identifier: Unlicense
+# SPDX-FileCopyrightText: 2026 Froststrap
+#
+# SPDX-License-Identifier: MPL-2.0
 
 {
   description = "Flake for Froststrap";
 
+  nixConfig = {
+    extra-substituters = [ "https://invra.cachix.org" ];
+    extra-trusted-public-keys = [ "invra.cachix.org-1:5lB/b5n5iQVLCbAYfnH5f5ASzqlVB6uKfINHge7lVvk=" ];
+  };
+
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    fenix = {
+      url = "github:nix-community/fenix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     flake-utils.url = "github:numtide/flake-utils";
+    nixpkgs.url = "github:nixos/nixpkgs/26.05";
     treefmt-nix.url = "github:numtide/treefmt-nix";
-    csharp-ls.url = "github:invra/csharp-language-server";
+    self.submodules = true;
   };
 
   outputs =
     {
-      nixpkgs,
       flake-utils,
+      nixpkgs,
       treefmt-nix,
-      csharp-ls,
       ...
-    }:
-    flake-utils.lib.eachDefaultSystem (
-      system:
-      let
-        pkgs = import nixpkgs {
-          inherit system;
-          overlays = [ csharp-ls.overlays.default ];
+    }@inputs: flake-utils.lib.eachDefaultSystem(system: let
+      pkgs = import nixpkgs { inherit system; };
+    in {
+      devShells = let
+        inherit (pkgs.callPackage ./nix/devshell-tools.nix {}) mkComposedShell;
+        dotnetFrag = pkgs.callPackage ./nix/dotnetDevShell.nix { };
+        extraFrag = pkgs.callPackage ./nix/extra.nix { };
+        rustFrag = pkgs.callPackage ./nix/rustDevShell.nix { inherit inputs; };
+        swiftFrag = pkgs.callPackage ./nix/swift.nix { };
+      in {
+        default = mkComposedShell [ dotnetFrag rustFrag extraFrag swiftFrag ];
+        dotnet = mkComposedShell [ dotnetFrag ];
+        rust = mkComposedShell [ rustFrag ];
+      };
+      packages = rec {
+        debug = pkgs.callPackage ./nix/build.nix {};
+        default = debug;
+      };
+      formatter = (treefmt-nix.lib.evalModule pkgs (_: {
+        projectRootFile = "flake.nix";
+        programs = {
+          nixfmt.enable = true;
+          nixf-diagnose.enable = true;
         };
-
-        formatters =
-          (treefmt-nix.lib.evalModule pkgs (_: {
-            projectRootFile = ".git/config";
-            programs = {
-              nixfmt.enable = true;
-              nixf-diagnose.enable = true;
-              toml-sort.enable = true;
-              rustfmt.enable = true;
-            };
-            settings.formatter = {
-              dotnet-format = {
-                command = "${pkgs.dotnetCorePackages.sdk_10_0-bin}/bin/dotnet";
-                options = [
-                  "format"
-                ];
-                includes = [ "*.csproj" ];
-              };
-            };
-          })).config.build;
-      in
-      {
-        devShells.default = pkgs.mkShell {
-          meta.license = pkgs.lib.licenses.unlicense;
-          buildInputs = with pkgs; [
-            dotnetCorePackages.sdk_10_0-bin
-            csharp-language-server
-            just
-          ];
+        settings.formatter = {
+          dotnet-format = {
+            command = "${pkgs.dotnetCorePackages.sdk_10_0-bin}/bin/dotnet";
+            options = [
+              "format"
+            ];
+            includes = [ "*.csproj" ];
+          };
         };
-      }
-    );
+      })).config.build;
+    }
+  );
 }
-

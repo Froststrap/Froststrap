@@ -1,0 +1,35 @@
+﻿<!--
+SPDX-FileCopyrightText: 2026 Froststrap
+
+SPDX-License-Identifier: MPL-2.0
+-->
+
+<base:AvaloniaWindow x:Class="Froststrap.UI.Elements.Dialogs.FluentMessageBox"
+        xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+        xmlns:md="clr-namespace:Froststrap.UI.Elements.Controls"
+        Title="Froststrap"
+        Width="320" MaxWidth="480" SizeToContent="WidthAndHeight" CanResize="False"
+        WindowStartupLocation="CenterScreen">
+
+    <Grid RowDefinitions="*,Auto">
+        <Grid Grid.Row="0" Margin="20" ColumnDefinitions="Auto,*">
+            <Image x:Name="IconImage" Grid.Column="0" Width="32" Height="32"
+                   Margin="0,0,15,0" VerticalAlignment="Top" />
+
+            <md:MarkdownTextBlock x:Name="MessageMarkdownTextBlock" Grid.Column="1"
+                                     VerticalAlignment="Center"
+                                     TextWrapping="Wrap"
+                                     Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+        </Grid>
+
+        <Border Grid.Row="1" Padding="15" Background="{DynamicResource ControlFillColorDefaultBrush}">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button x:Name="ButtonOne" MinWidth="80" Content="Button 1" IsVisible="False" />
+                <Button x:Name="ButtonTwo" MinWidth="80" Margin="12,0,0,0" Content="Button 2" IsVisible="False" />
+                <Button x:Name="ButtonThree" MinWidth="80" Margin="12,0,0,0" Content="Button 3" IsVisible="False" />
+            </StackPanel>
+        </Border>
+    </Grid>
+</base:AvaloniaWindow>

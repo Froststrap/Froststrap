@@ -1,0 +1,71 @@
+name: Synchronize Translations
+
+on:
+  push:
+  #   branches: ["**"]
+  # workflow_dispatch:
+
+jobs:
+  translate:
+    runs-on: ubuntu-latest
+    if: false
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Restore DeepLX translation cache
+        uses: actions/cache@v3
+        with:
+          path: Scripts/Translations/deeplx_cache.json
+          key: deeplx-cache-${{ hashFiles('Froststrap/Resources/Strings.resx') }}
+          restore-keys: |
+            deeplx-cache-
+
+      - name: Crowdin sync
+        uses: crowdin/github-action@v2
+        env:
+          GH_TOKEN: ${{ secrets.PR_GITHUB }}
+        with:
+          project_id: ${{ secrets.CROWDIN_PROJECT_ID }}
+          token: ${{ secrets.CROWDIN_PAT }}
+          source: 'Froststrap/Resources/Strings.resx'
+          translation: 'Froststrap/Resources/Strings.%android_code%.resx'
+          upload_sources: true
+          download_translations: true
+          create_pull_request: false
+          push_translations: false
+
+      - name: Start DeepLX
+        run: |
+          docker run -d --name deeplx -p 1188:1188 ghcr.io/owo-network/deeplx:latest
+          sleep 5
+
+      - name: Run DeepLX translation
+        run: dotnet run --project Scripts/Translations
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.PR_GITHUB }}
+          commit-message: "chore: update translations from Crowdin and DeepLX"
+          title: "Update translations (Crowdin + DeepLX)"
+          body: |
+            This PR includes translations from:
+            - Crowdin – human-reviewed translations
+            - DeepLX – auto-translated for new or changed strings (fallback)
+
+            Please review and merge.
+          branch: l10n_crowdin_translations
+          base: ${{ github.ref_name }}
+          delete-branch: true
+          labels: automated, translation
+          author: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
+          committer: github-actions[bot] <github-actions[bot]@users.noreply.github.com>

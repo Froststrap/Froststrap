@@ -1,0 +1,45 @@
+﻿// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
+namespace Froststrap.Models.SettingTasks.Base
+{
+    internal abstract class BoolBaseTask : BaseTask
+    {
+        private bool _originalState;
+
+        private bool _newState;
+
+        public virtual bool OriginalState
+        {
+            get => _originalState;
+
+            set
+            {
+                _originalState = value;
+                _newState = value;
+            }
+        }
+
+        public virtual bool NewState
+        {
+            get => _newState;
+
+            set
+            {
+                _newState = value;
+
+                if (Changed)
+                    App.PendingSettingTasks[Name] = this;
+                else
+                    App.PendingSettingTasks.Remove(Name);
+            }
+        }
+
+        public override bool Changed => _newState != OriginalState;
+
+        public BoolBaseTask(string prefix, string name) : base(prefix, name) { }
+
+        public BoolBaseTask(string name) : base(name) { }
+    }
+}

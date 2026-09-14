@@ -1,0 +1,120 @@
+﻿// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
+namespace Froststrap.Integrations
+{
+    internal class Cleaner
+    {
+        private const int MaxFiles = 200;
+
+        public static readonly IReadOnlyDictionary<string, string?> Directories = new Dictionary<string, string?>
+        {
+            { "FroststrapLogs", Paths.Logs },
+            { "FroststrapCache", Paths.Downloads },
+            { "RobloxLogs", Paths.RobloxLogs },
+            { "RobloxCache", Paths.RobloxCache }
+        };
+
+        public static void DoCleaning()
+        {
+            App.Logger.Debug("Cleaner has started");
+
+            var maxFileAge = App.Settings.Prop.CleanerOptions switch
+            {
+                CleanerOptions.OneDay => 1,
+                CleanerOptions.OneWeek => 7,
+                CleanerOptions.OneMonth => 30,
+                CleanerOptions.TwoMonths => 60,
+                CleanerOptions.Never => int.MaxValue,
+                _ => int.MaxValue,
+            };
+
+            var threshold = DateTime.Now.AddHours(-maxFileAge);
+
+            foreach (var directory in Directories)
+            {
+                string? folder = directory.Value;
+                string type = directory.Key;
+
+                int deletedItems = 0;
+
+                if (!App.Settings.Prop.CleanerDirectories.Contains(type))
+                {
+                    App.Logger.Info($"Skipping {type}");
+                    continue;
+                }
+
+                if (string.IsNullOrEmpty(folder) || !Directory.Exists(folder))
+                    continue;
+
+                try
+                {
+                    string[] files = RecursivlyGetFiles(folder);
+
+                    App.Logger.Info($"Running cleaner in {type}, {files.Length} files found");
+
+                    foreach (string file in files)
+                    {
+                        if (!VerifyFile(file, threshold))
+                            continue;
+
+                        if (deletedItems >= MaxFiles)
+                        {
+                            App.Logger.Info($"Reached file threshold in {type}, continuing to next directory");
+                            break;
+                        }
+
+                        try
+                        {
+                            File.Delete(file);
+                            deletedItems++;
+                        }
+                        catch (Exception ex)
+                        {
+                            App.Logger.Error($"Unable to delete {file}: {ex}");
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.Error($"Failed to clean up {folder}: {ex}");
+                }
+            }
+
+            App.Logger.Info("Cleaner finished");
+        }
+
+        private static bool VerifyFile(string file, DateTime threshold)
+        {
+            if (!File.Exists(file))
+                return false;
+
+            if (File.GetCreationTime(file) > threshold)
+                return false;
+
+            if (!file.Contains("Roblox", StringComparison.OrdinalIgnoreCase) &&
+                !file.Contains(App.ProjectName, StringComparison.OrdinalIgnoreCase) &&
+                !file.Contains(Paths.Base, StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidOperationException($"{file} was in disallowed directory");
+            }
+
+            if (file.Contains("Windows", StringComparison.OrdinalIgnoreCase))
+                throw new InvalidOperationException($"{file} was in Windows directory");
+
+            return true;
+        }
+
+        private static string[] RecursivlyGetFiles(string folder)
+        {
+            if (string.IsNullOrEmpty(folder))
+                throw new ArgumentNullException(nameof(folder), "Folder path is null or empty.");
+
+            if (!Directory.Exists(folder))
+                throw new DirectoryNotFoundException($"Folder '{folder}' was not found.");
+
+            return [.. Directory.EnumerateFiles(folder, "*.*", SearchOption.AllDirectories)];
+        }
+    }
+}

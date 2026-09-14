@@ -1,0 +1,203 @@
+name: Build (Release)
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: true
+          fetch-depth: 0
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Install NSIS
+        uses: negrutiu/nsis-install@v2
+
+      - name: Install Nushell
+        shell: pwsh
+        run: |
+          winget install --id Nushell.Nushell --exact --accept-source-agreements --accept-package-agreements
+          $nuDir = Split-Path (Get-Command nu.exe -ErrorAction SilentlyContinue).Path
+          if (-not $nuDir) {
+            $nuDir = "$env:LOCALAPPDATA\Microsoft\WinGet\Links"
+          }
+          echo $nuDir >> $env:GITHUB_PATH
+          
+      - name: Set short SHA
+        shell: pwsh
+        run: |
+          "SHORT_SHA=$("${{ github.sha }}".Substring(0, 7))" >> $env:GITHUB_ENV
+
+      - name: Build and package
+        run: nu ./main.nu publish
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: froststrap-release-win-x64-${{ env.SHORT_SHA }}
+          path: build/*
+
+  build-macos:
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: macos-26
+            arch: arm64
+          - runner: macos-26-intel
+            arch: x64
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: true
+          fetch-depth: 0
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Install Nushell
+        run: brew install nushell
+
+      - name: Set short SHA
+        run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> "$GITHUB_ENV"
+
+      - name: Remove stale signing keychain
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: security delete-keychain signing_temp.keychain || true
+
+      - name: Import app cert
+        id: import_app_cert
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: apple-actions/import-codesign-certs@v7
+        with:
+          p12-file-base64: ${{ secrets.CERT_P12_BASE64 }}
+          p12-password: ${{ secrets.P12_PASSWORD }}
+
+      - name: Import installer cert
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: apple-actions/import-codesign-certs@v7
+        with:
+          p12-file-base64: ${{ secrets.CERT_P12_INSTALLER_BASE64 }}
+          p12-password: ${{ secrets.P12_PASSWORD }}
+          create-keychain: false
+          keychain-password: ${{ steps.import_app_cert.outputs.keychain-password }}
+
+      - name: Build, sign (if release), and package
+        env:
+          SIGN: ${{ startsWith(github.ref, 'refs/tags/v') && 'true' || 'false' }}
+          DEVELOPER_ID_APP: ${{ secrets.DEVELOPER_ID_APP }}
+          DEVELOPER_ID_INSTALLER: ${{ secrets.DEVELOPER_ID_INSTALLER }}
+          APP_STORE_CONNECT_P8_CONTENT: ${{ secrets.APP_STORE_CONNECT_P8_CONTENT }}
+          APPLE_KEY_ID: ${{ secrets.APPLE_KEY_ID }}
+          APPLE_ISSUER_ID: ${{ secrets.APPLE_ISSUER_ID }}
+        run: nu ./main.nu publish
+
+      - name: Rename package for architecture
+        run: mv build/Froststrap.pkg build/Froststrap-macos-${{ matrix.arch }}.pkg
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: froststrap-release-macos-${{ matrix.arch }}-${{ env.SHORT_SHA }}
+          path: build/Froststrap-macos-${{ matrix.arch }}.pkg
+
+  build-linux:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: true
+          fetch-depth: 0
+
+      - name: Set short SHA
+        run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> "$GITHUB_ENV"
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Install Nushell
+        shell: bash
+        run: |
+          wget -qO- https://apt.fury.io/nushell/gpg.key |
+          sudo gpg --dearmor -o /etc/apt/keyrings/fury-nushell.gpg
+
+          echo "deb [signed-by=/etc/apt/keyrings/fury-nushell.gpg] https://apt.fury.io/nushell/ /" |
+          sudo tee /etc/apt/sources.list.d/fury-nushell.list
+
+          sudo apt-get update || true
+          sudo apt-get install -y nushell
+
+      - name: Build and package binaries
+        run: nu ./main.nu publish
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: froststrap-release-linux-x64-${{ env.SHORT_SHA }}
+          path: build/*
+
+  release:
+    needs:
+      - build-windows
+      - build-linux
+      - build-macos
+
+    runs-on: ubuntu-latest
+
+    if: startsWith(github.ref, 'refs/tags/v')
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Set short SHA
+        run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> "$GITHUB_ENV"
+
+      - name: Download Windows artifact
+        uses: actions/download-artifact@v7
+        with:
+          name: froststrap-release-win-x64-${{ env.SHORT_SHA }}
+          path: release
+
+      - name: Download macOS ARM64 artifact
+        uses: actions/download-artifact@v7
+        with:
+          name: froststrap-release-macos-arm64-${{ env.SHORT_SHA }}
+          path: release
+
+      - name: Download macOS x64 artifact
+        uses: actions/download-artifact@v7
+        with:
+          name: froststrap-release-macos-x64-${{ env.SHORT_SHA }}
+          path: release
+
+      - name: Download Linux artifact
+        uses: actions/download-artifact@v7
+        with:
+          name: froststrap-release-linux-x64-${{ env.SHORT_SHA }}
+          path: release
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Froststrap ${{ github.ref_name }}
+          prerelease: ${{ contains(github.ref_name, '-') }}
+          draft: true
+          fail_on_unmatched_files: true
+          files: |
+            release/Froststrap-windows-x64.exe
+            release/Froststrap-macos-arm64.pkg
+            release/Froststrap-macos-x64.pkg
+            release/Froststrap-linux-x64.AppImage
+            release/Froststrap-linux-x64.deb
+            release/Froststrap-linux-x64.rpm

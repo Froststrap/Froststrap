@@ -1,0 +1,11 @@
+﻿<BloxstrapCustomBootstrapper Version="1" Height="280" Width="500" IgnoreTitleBarInset="True" Theme="Default" >
+	<!-- {0} -->
+	<StackPanel HorizontalAlignment="Center">
+		<TitleBar Visibility="Collapsed"/>
+
+		<Image Source="{Icon}" Height="80" Width="80" HorizontalAlignment="Center" Margin="0,45,0,0" />
+		<TextBlock HorizontalAlignment="Center" Name="StatusText" FontSize="18" Margin="0,50,0,0" />
+		<ProgressBar Width="450" Height="10" Name="PrimaryProgressBar" HorizontalAlignment="Center" Margin="0,10,0,0" />
+		<Button Content="{Common.Cancel}" Name="CancelButton" HorizontalAlignment="Center" Margin="0,15,0,0" Height="30" Width="120" />
+	</StackPanel>
+</BloxstrapCustomBootstrapper>

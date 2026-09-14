@@ -1,0 +1,113 @@
+<!--
+SPDX-FileCopyrightText: 2026 Froststrap
+
+SPDX-License-Identifier: MPL-2.0
+-->
+
+<base:AvaloniaWindow
+    x:Class="Froststrap.UI.Elements.Dialogs.PrivateServerJoinDialog"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+    xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
+    xmlns:ui="using:FluentAvalonia.UI.Controls"
+    xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+    xmlns:dialogsVm="clr-namespace:Froststrap.UI.ViewModels.Dialogs"
+    xmlns:resources="clr-namespace:Froststrap.Resources"
+    x:Name="RootDialog"
+    x:DataType="dialogsVm:PrivateServerJoinDialogViewModel"
+    Title="{x:Static resources:Strings.Menu_QuickPlay_PrivateServers}"
+    Width="600"
+    Height="500"
+    MinWidth="450"
+    MinHeight="350"
+	WindowDecorations="None"
+    WindowStartupLocation="CenterOwner"
+    CanResize="True"
+    ShowInTaskbar="False">
+
+	<Border BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+            Background="Transparent"
+            BorderThickness="1"
+            ClipToBounds="True">
+		<Grid RowDefinitions="Auto,*">
+			<Border Grid.Row="0"
+                    Background="#33000000"
+                    Padding="16"
+                    PointerPressed="OnHeaderPointerPressed">
+				<Grid ColumnDefinitions="*, Auto">
+					<StackPanel Orientation="Horizontal" Spacing="10">
+						<ic:Lucide Icon="LockKeyholeOpen" Height="18" Width="18" />
+						<TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_PrivateServers}"
+                                   FontWeight="Bold" VerticalAlignment="Center"/>
+					</StackPanel>
+					<Button Grid.Column="1" Click="OnCloseClicked"
+                            Background="Transparent" BorderThickness="0">
+						<ic:Lucide Icon="X" Height="16" Width="16" />
+					</Button>
+				</Grid>
+			</Border>
+
+			<Grid Grid.Row="1">
+				<Grid IsVisible="{Binding IsLoading}">
+					<StackPanel Spacing="16" HorizontalAlignment="Center" VerticalAlignment="Center">
+						<ui:FAProgressRing IsActive="{Binding IsLoading}" Width="40" Height="40"
+                                           Foreground="{DynamicResource SystemAccentColor}"/>
+						<TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_LoadingPrivateServers}"
+                                   FontSize="12" Opacity="0.7"/>
+					</StackPanel>
+				</Grid>
+				<Grid IsVisible="{Binding !IsLoading}">
+					<ScrollViewer IsVisible="{Binding !IsEmpty}"
+                                  Background="Transparent"
+                                  HorizontalScrollBarVisibility="Disabled"
+                                  VerticalScrollBarVisibility="Auto">
+						<ItemsControl ItemsSource="{Binding Servers}" Padding="10">
+							<ItemsControl.ItemTemplate>
+								<DataTemplate x:DataType="dialogsVm:PrivateServerInfo">
+									<Border Margin="0,0,0,8" Padding="10"
+                                            Background="#33000000"
+                                            CornerRadius="6">
+										<Grid ColumnDefinitions="48, *, Auto">
+											<Border Grid.Column="0" Width="40" Height="40"
+                                                    CornerRadius="20" ClipToBounds="True"
+                                                    Background="#33000000">
+												<Image Source="{Binding OwnerAvatarUrl, Converter={StaticResource UrlToBitmapConverter}}"
+                                                       Stretch="UniformToFill"
+                                                       RenderOptions.BitmapInterpolationMode="LowQuality"/>
+											</Border>
+											<StackPanel Grid.Column="1" Margin="8,0">
+												<TextBlock Text="{Binding Name}" FontWeight="SemiBold"
+                                                           TextTrimming="CharacterEllipsis" />
+												<TextBlock Text="{Binding OwnerName}" FontSize="11" Opacity="0.6" />
+												<TextBlock Margin="0,4,0,0" FontSize="11">
+													<Run Text="{Binding CurrentPlayers}" />
+													<Run Text="/" />
+													<Run Text="{Binding MaxPlayers}" />
+													<Run Text=" " />
+													<Run Text="{x:Static resources:Strings.Menu_QuickPlay_Players}" />
+												</TextBlock>
+											</StackPanel>
+											<controls:IconButton Grid.Column="2"
+                                                                 VerticalAlignment="Center"
+                                                                 Content="Join" Icon="Play"
+                                                                 Command="{Binding #RootDialog.DataContext.JoinPrivateServerCommand}"
+                                                                 CommandParameter="{Binding AccessCode}"
+                                                                 Classes="Primary"/>
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+					</ScrollViewer>
+					<StackPanel IsVisible="{Binding IsEmpty}"
+                                HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="8">
+						<ic:Lucide Icon="LockKeyhole" Height="36" Width="36" Opacity="0.5" />
+						<TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_NoPrivateServersFound}"
+                                   FontSize="13" Opacity="0.7"/>
+					</StackPanel>
+				</Grid>
+			</Grid>
+		</Grid>
+	</Border>
+</base:AvaloniaWindow>

@@ -1,0 +1,34 @@
+﻿// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
+using System.Reflection;
+
+namespace Froststrap
+{
+    static class Resource
+    {
+        static readonly Assembly assembly = Assembly.GetExecutingAssembly();
+        static readonly string[] resourceNames = assembly.GetManifestResourceNames();
+
+        public static Stream GetStream(string name)
+        {
+            string path = resourceNames.Single(str => str.EndsWith(name, StringComparison.Ordinal));
+            return assembly.GetManifestResourceStream(path)!;
+        }
+
+        public static async Task<byte[]> Get(string name)
+        {
+            using var stream = GetStream(name);
+            using var memoryStream = new MemoryStream();
+
+            await stream.CopyToAsync(memoryStream);
+            return memoryStream.ToArray();
+        }
+
+        public static async Task<string> GetString(string name)
+        {
+            return Encoding.UTF8.GetString(await Get(name));
+        }
+    }
+}

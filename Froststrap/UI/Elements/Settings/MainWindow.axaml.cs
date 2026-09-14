@@ -1,0 +1,774 @@
+// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
+using Avalonia;
+using Avalonia.Animation;
+using Avalonia.Animation.Easings;
+using Avalonia.Controls;
+using Avalonia.Controls.Notifications;
+using Avalonia.Markup.Xaml.MarkupExtensions;
+using Avalonia.Media;
+using Avalonia.Input;
+using Avalonia.Threading;
+using Avalonia.VisualTree;
+using FluentAvalonia.UI.Controls;
+using Froststrap.UI.Elements.Controls;
+using Froststrap.UI.Utility;
+using Froststrap.UI.ViewModels.Settings;
+using LucideAvalonia.Enum;
+using System.ComponentModel;
+
+namespace Froststrap.UI.Elements.Settings
+{
+    internal partial class MainWindow : Base.AvaloniaWindow
+    {
+        protected override bool ApplyTopPadding => false;
+        public static MainWindow? Instance { get; private set; }
+
+        public static WindowNotificationManager? NotificationManager { get; private set; }
+
+        private static Models.Persistable.WindowState State => App.State.Prop.SettingsWindow;
+        private readonly MainWindowViewModel? _viewModel;
+
+        public NextAction CloseAction => _viewModel?.CloseAction ?? NextAction.Terminate;
+        private readonly HashSet<string> _indexedPageTags = [];
+        private readonly SearchIndexBuilder _searchIndexBuilder = new();
+        private bool _isIndexingAllPagesStarted;
+
+        private const double NotificationHeight = 80;
+        private const double NotificationSpacing = 15;
+        private const double NotificationSlideDistance = 500;
+        private const int MaxVisibleNotifications = 3;
+        private readonly List<NotificationEntry> _notifications = [];
+        private sealed class NotificationEntry
+        {
+            public required Border Element { get; init; }
+            public required TranslateTransform Transform { get; init; }
+            public CancellationTokenSource? TimeoutCts { get; set; }
+        }
+
+        public MainWindow()
+        {
+            Instance = this;
+            InitializeComponent();
+        }
+
+        public MainWindow(bool showAlreadyRunningWarning) : this()
+        {
+            _viewModel = new MainWindowViewModel();
+            DataContext = _viewModel;
+
+            _viewModel.RequestSaveNoticeEvent += (_, _) => ShowSaveNotification();
+            _viewModel.RequestCloseWindowEvent += (_, _) => Close();
+            _viewModel.SearchBar.SearchResultSelected += (_, item) => OnSearchResultSelected(item);
+
+            _viewModel.SearchBar.PropertyChanged += (sender, e) =>
+            {
+                if (e.PropertyName == nameof(UI.ViewModels.SearchBarViewModel.SearchQuery))
+                {
+                    if (!string.IsNullOrWhiteSpace(_viewModel.SearchBar.SearchQuery))
+                    {
+                        StartIndexingAllPagesIfNeeded();
+                    }
+                }
+            };
+
+            App.Logger.Debug("Initializing settings window");
+
+            if (showAlreadyRunningWarning)
+                ShowAlreadyRunningNotification();
+
+            gbs.Opacity = _viewModel.GBSEnabled ? 1 : 0.5;
+            gbs.IsEnabled = _viewModel.GBSEnabled;
+
+            LoadState();
+
+
+            App.RemoteData.Subscribe((_, _) => Dispatcher.UIThread.Post(() =>
+            {
+                var data = App.RemoteData.Prop;
+
+                if (AlertBar is not null)
+                {
+                    AlertBar.IsVisible = data.AlertEnabled;
+                    AlertBar.Message = data.AlertContent;
+                    AlertBar.Severity = data.AlertSeverity;
+                }
+            }));
+
+            _viewModel.PropertyChanged += OnViewModelPropertyChanged;
+
+            this.Closing += MainWindow_Closing;
+            this.Closed += MainWindow_Closed;
+
+            UpdatePageView(_viewModel.CurrentPage);
+
+            Dispatcher.UIThread.Post(() =>
+            {
+                UpdateSelectedNavigationViewItem(_viewModel.SelectedPage);
+            }, DispatcherPriority.Loaded);
+        }
+
+        protected override async void OnOpened(EventArgs e)
+        {
+            base.OnOpened(e);
+
+            NotificationManager = new WindowNotificationManager(TopLevel.GetTopLevel(this))
+            {
+                Position = NotificationPosition.TopRight,
+                MaxItems = 3
+            };
+        }
+
+        public void StartIndexingAllPagesIfNeeded()
+        {
+            if (_isIndexingAllPagesStarted) return;
+            _isIndexingAllPagesStarted = true;
+            _ = IndexMissingPagesAsync();
+        }
+
+        private void TitleBarGrid_PointerPressed(object sender, PointerPressedEventArgs e)
+        {
+            if (!e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
+                return;
+
+            if (e.Source is Visual hit)
+            {
+                if (hit.FindAncestorOfType<SearchBar>() != null)
+                    return;
+            }
+
+            this.BeginMoveDrag(e);
+        }
+
+        private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (_viewModel == null) return;
+
+            if (e.PropertyName == nameof(MainWindowViewModel.CurrentPage))
+            {
+                UpdatePageView(_viewModel.CurrentPage);
+            }
+            else if (e.PropertyName == nameof(MainWindowViewModel.SelectedPage))
+            {
+                UpdateSelectedNavigationViewItem(_viewModel.SelectedPage);
+            }
+        }
+
+        private SearchBarItem? _pendingSearchScrollItem;
+
+        private void OnSearchResultSelected(SearchBarItem item)
+        {
+            _pendingSearchScrollItem = item;
+
+            if (_viewModel?.SelectedPage != item.PageTag)
+            {
+                SaveCurrentPage();
+
+                var action = GetNavigationAction(item.PageTag ?? "");
+                action?.Invoke();
+            }
+            else
+            {
+                ScrollToSearchItem(item);
+            }
+        }
+
+        private Action? GetNavigationAction(string pageTag)
+        {
+            return pageTag switch
+            {
+                "integrations" => () => _viewModel?.NavigateToIntegrationsCommand.Execute(null),
+                "behaviour" => () => _viewModel?.NavigateToBehaviourCommand.Execute(null),
+                "linuxsettings" => () => _viewModel?.NavigateToLinuxSettingsCommand.Execute(null),
+                "mods" => () => _viewModel?.NavigateToPresetModsCommand.Execute(null),
+                "fastflags" => () => _viewModel?.NavigateToFastFlagsCommand.Execute(null),
+                "appearance" => () => _viewModel?.NavigateToAppearanceCommand.Execute(null),
+                "regionselector" => () => _viewModel?.NavigateToRegionSelectorCommand.Execute(null),
+                "globalsettings" => () => _viewModel?.NavigateToGlobalSettingsCommand.Execute(null),
+                "shortcuts" => () => _viewModel?.NavigateToShortcutsCommand.Execute(null),
+                "quickplay" => () => _viewModel?.NavigateToQuickPlayCommand.Execute(null),
+                "channels" => () => _viewModel?.NavigateToChannelsCommand.Execute(null),
+                _ => null
+            };
+        }
+
+        private readonly Dictionary<string, (string Title, LucideIconNames Icon)> _pageInfo = new()
+        {
+            ["integrations"] = (Strings.Menu_Integrations_Title, LucideIconNames.Plus),
+            ["behaviour"] = (Strings.Menu_Behaviour_Title, LucideIconNames.Play),
+            ["linuxsettings"] = (Strings.Menu_LinuxSettings_Title, LucideIconNames.Settings),
+            ["mods"] = (Strings.Menu_PresetMods_Title, LucideIconNames.BookOpen),
+            ["fastflags"] = (Strings.Menu_FastFlags_Title, LucideIconNames.Flag),
+            ["appearance"] = (Strings.Menu_Appearance_Title, LucideIconNames.Palette),
+            ["globalsettings"] = (Strings.Menu_GlobalSettings_Title, LucideIconNames.PenLine),
+            ["shortcuts"] = (Strings.Common_Shortcuts, LucideIconNames.Link2),
+            ["channels"] = (Strings.Common_Deployment, LucideIconNames.HardDriveUpload)
+        };
+
+        private void UpdatePageView(object? viewModel)
+        {
+            SaveCurrentPage();
+
+            var pageControl = this.FindControl<TransitioningContentControl>("PageContentControl");
+            if (pageControl == null || viewModel == null) return;
+
+            string pageTag = _viewModel?.SelectedPage ?? "";
+            Control? view = ResolveViewForViewModel(viewModel);
+            if (view == null) return;
+
+            if (view.DataContext == viewModel) return;
+
+            view.DataContext = viewModel;
+            pageControl.Content = view;
+
+            Dispatcher.UIThread.Post(() =>
+            {
+                if (!string.IsNullOrEmpty(pageTag) && _pageInfo.TryGetValue(pageTag, out var info)
+                    && !_indexedPageTags.Contains(pageTag))
+                {
+                    IndexPage(view, pageTag, info.Title, info.Icon);
+                    _indexedPageTags.Add(pageTag);
+                }
+
+                if (_pendingSearchScrollItem != null)
+                {
+                    Dispatcher.UIThread.Post(() =>
+                    {
+                        ScrollToSearchItem(_pendingSearchScrollItem);
+                        _pendingSearchScrollItem = null;
+                    }, DispatcherPriority.Render);
+                }
+            }, DispatcherPriority.Background);
+        }
+
+        private void NavView_ItemInvoked(object? sender, FANavigationViewItemInvokedEventArgs e)
+        {
+            if (e.InvokedItemContainer is FANavigationViewItem navItem && navItem.Tag is string tag)
+            {
+                if (tag == "about")
+                {
+                    _viewModel?.OpenAboutCommand.Execute(null);
+                    return;
+                }
+
+                if (_viewModel != null && _viewModel.SelectedPage == tag)
+                {
+                    return;
+                }
+
+                SaveCurrentPage();
+
+                var action = GetNavigationAction(tag);
+                action?.Invoke();
+            }
+        }
+
+        private void UpdateSelectedNavigationViewItem(string selectedPage)
+        {
+            var navView = this.FindControl<FANavigationView>("NavView");
+            if (navView == null) return;
+
+            foreach (var item in navView.MenuItems)
+            {
+                if (item is FANavigationViewItem navItem && navItem.Tag is string tag)
+                {
+                    if (tag == selectedPage)
+                    {
+                        navView.SelectedItem = navItem;
+                        return;
+                    }
+                }
+            }
+            foreach (var item in navView.FooterMenuItems)
+            {
+                if (item is FANavigationViewItem navItem && navItem.Tag is string tag)
+                {
+                    if (tag == selectedPage)
+                    {
+                        navView.SelectedItem = navItem;
+                        return;
+                    }
+                }
+            }
+        }
+
+        private static Control? ResolveViewForViewModel(object viewModel)
+        {
+            var viewModelName = viewModel.GetType().Name;
+            var viewName = viewModelName.Replace("ViewModel", "", StringComparison.Ordinal);
+
+            var viewTypeNames = new[]
+            {
+                $"Froststrap.UI.Elements.Settings.Pages.GlobalSettings.{viewName}",
+                $"Froststrap.UI.Elements.Settings.Pages.FastFlags.{viewName}",
+                $"Froststrap.UI.Elements.Settings.Pages.Mods.{viewName}Page",
+                $"Froststrap.UI.Elements.Settings.Pages.{viewName}Page",
+                $"Froststrap.UI.Elements.Settings.Pages.{viewName}",
+                $"Froststrap.UI.Elements.Settings.{viewName}Page",
+                $"Froststrap.UI.Elements.Settings.{viewName}"
+            };
+
+            foreach (var viewTypeName in viewTypeNames)
+            {
+                var viewType = Type.GetType(viewTypeName) ??
+                               System.Reflection.Assembly.GetExecutingAssembly().GetType(viewTypeName);
+
+                if (viewType != null && typeof(Control).IsAssignableFrom(viewType))
+                {
+                    try
+                    {
+                        return Activator.CreateInstance(viewType) as Control;
+                    }
+                    catch (Exception ex)
+                    {
+                        App.Logger.Error($"Failed to create view {viewTypeName}: {ex.Message}");
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        public void LoadState()
+        {
+            var screen = Screens.Primary?.Bounds;
+            if (screen != null)
+            {
+                if (State.Left > screen.Value.Width) State.Left = 0;
+                if (State.Top > screen.Value.Height) State.Top = 0;
+            }
+
+            if (State.Width > 0) this.Width = State.Width;
+            if (State.Height > 0) this.Height = State.Height;
+
+            if (State.Left > 0 && State.Top > 0)
+            {
+                this.WindowStartupLocation = WindowStartupLocation.Manual;
+                this.Position = new PixelPoint((int)State.Left, (int)State.Top);
+            }
+        }
+
+        private void ShowSaveNotification()
+        {
+            ShowNotification(
+                Strings.Menu_SettingsSaved_Title,
+                Strings.Menu_SettingsSaved_Message,
+                FAInfoBarSeverity.Success,
+                3000);
+        }
+
+        private async void ShowAlreadyRunningNotification()
+        {
+            await Task.Delay(500);
+            ShowNotification(
+                Strings.Menu_AlreadyRunning_Title,
+                Strings.Menu_AlreadyRunning_Caption,
+                FAInfoBarSeverity.Warning,
+                5000);
+        }
+
+        public static void ShowGlobalNotification(string title, string subtitle, FAInfoBarSeverity type, int timeout = 3000, LucideIconNames? icon = null)
+        {
+            Dispatcher.UIThread.Post(() => Instance?.ShowNotification(title, subtitle, type, timeout, icon));
+        }
+
+        public void ShowNotification(string title, string subtitle, FAInfoBarSeverity type, int timeout, LucideIconNames? customIcon = null)
+        {
+            var notificationPanel = this.FindControl<Panel>("NotificationPanel");
+            if (notificationPanel == null) return;
+
+            var iconSymbol = customIcon ?? (type == FAInfoBarSeverity.Success
+                ? LucideIconNames.CircleCheck
+                : LucideIconNames.TriangleAlert);
+
+            var contentGrid = new Grid
+            {
+                ColumnDefinitions = new ColumnDefinitions("Auto,*,Auto"),
+                Margin = new Thickness(0)
+            };
+            var icon = new LucideAvalonia.Lucide
+            {
+                Icon = type == FAInfoBarSeverity.Success ? LucideIconNames.Check : LucideIconNames.X,
+                StrokeBrush = new SolidColorBrush(
+                    type == FAInfoBarSeverity.Success
+                        ? Color.Parse("#00D084")
+                        : Color.Parse("#FFB900")
+                ),
+                Margin = new Thickness(25, 15, 20, 15),
+                FontSize = 20,
+                Width = 20,
+                Height = 20,
+            };
+            Grid.SetColumn(icon, 0);
+            contentGrid.Children.Add(icon);
+
+            var textPanel = new StackPanel { VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center, Spacing = 2 };
+            var titleText = new TextBlock { Text = title, FontWeight = FontWeight.SemiBold, FontSize = 16, Margin = new Thickness(0, 2) };
+            titleText.Bind(TextBlock.ForegroundProperty, new DynamicResourceExtension("TextFillColorPrimaryBrush"));
+            var subtitleText = new TextBlock { Text = subtitle, FontSize = 12, TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 2) };
+            subtitleText.Bind(TextBlock.ForegroundProperty, new DynamicResourceExtension("TextFillColorSecondaryBrush"));
+            textPanel.Children.Add(titleText);
+            textPanel.Children.Add(subtitleText);
+            Grid.SetColumn(textPanel, 1);
+            contentGrid.Children.Add(textPanel);
+
+            var closeButton = new IconButton
+            {
+                Icon = LucideIconNames.X,
+                IconSize = 12,
+                CornerRadius = new CornerRadius(0, 10, 10, 0),
+                Background = Brushes.Transparent,
+                BorderThickness = new Thickness(0),
+                Padding = new Thickness(8, 4, 8, 4),
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right,
+                Margin = new Thickness(20, 0, 0, 0),
+                Width = 50,
+            };
+            closeButton.Bind(IconButton.ForegroundProperty, new DynamicResourceExtension("TextFillColorSecondaryBrush"));
+            Grid.SetColumn(closeButton, 2);
+            contentGrid.Children.Add(closeButton);
+
+            var transform = new TranslateTransform(NotificationSlideDistance, 0)
+            {
+                Transitions =
+                [
+                    new DoubleTransition { Property = TranslateTransform.XProperty, Duration = TimeSpan.FromMilliseconds(350), Easing = new QuarticEaseOut() },
+                    new DoubleTransition { Property = TranslateTransform.YProperty, Duration = TimeSpan.FromMilliseconds(300), Easing = new QuarticEaseOut() }
+                ]
+            };
+
+            var notification = new Border
+            {
+                Margin = new Thickness(0, 15, 15, 0),
+                MinWidth = 350,
+                Height = NotificationHeight,
+                CornerRadius = new CornerRadius(10),
+                RenderTransform = transform,
+                Child = contentGrid,
+                BoxShadow = new BoxShadows(new BoxShadow { Blur = 10, OffsetY = 4, Color = Color.Parse("#40000000") }),
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right,
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top
+            };
+            notification.Bind(Border.BackgroundProperty, new DynamicResourceExtension("NotificationBackgroundColor"));
+
+            var entry = new NotificationEntry { Element = notification, Transform = transform };
+
+            void Dismiss() => DismissNotification(entry);
+
+            closeButton.Click += (s, e) => { e.Handled = true; Dismiss(); };
+            notification.PointerPressed += (s, e) => { if (e.Source is IconButton) return; Dismiss(); };
+
+            _notifications.Insert(0, entry);
+            notificationPanel.Children.Add(notification);
+
+            while (_notifications.Count > MaxVisibleNotifications)
+                DismissNotification(_notifications[^1]);
+
+            RepositionNotifications();
+
+            var cts = new CancellationTokenSource();
+            entry.TimeoutCts = cts;
+
+            Dispatcher.UIThread.InvokeAsync(async () =>
+            {
+                await Task.Delay(50);
+                if (cts.IsCancellationRequested) return;
+                transform.X = 0;
+
+                await Task.Delay(timeout);
+                if (!cts.IsCancellationRequested)
+                    Dismiss();
+            });
+        }
+
+        private async void DismissNotification(NotificationEntry entry)
+        {
+            if (!_notifications.Remove(entry)) return;
+
+            entry.TimeoutCts?.Cancel();
+            RepositionNotifications();
+
+            entry.Transform.X = NotificationSlideDistance;
+            await Task.Delay(350);
+
+            var notificationPanel = this.FindControl<Panel>("NotificationPanel");
+            if (notificationPanel != null && notificationPanel.Children.Contains(entry.Element))
+                notificationPanel.Children.Remove(entry.Element);
+        }
+
+        private void RepositionNotifications()
+        {
+            for (var i = 0; i < _notifications.Count; i++)
+                _notifications[i].Transform.Y = i * (NotificationHeight + NotificationSpacing);
+        }
+
+        public void ShowLoading(string message = "Loading...")
+        {
+            var loadingOverlay = this.FindControl<Grid>("LoadingOverlay");
+            var loadingText = this.FindControl<TextBlock>("LoadingOverlayText");
+
+            if (loadingOverlay != null && loadingText != null)
+            {
+                loadingText.Text = message;
+                loadingOverlay.IsVisible = true;
+            }
+        }
+
+        public void HideLoading()
+        {
+            var loadingOverlay = this.FindControl<Grid>("LoadingOverlay");
+            loadingOverlay?.IsVisible = false;
+        }
+
+        private async Task IndexMissingPagesAsync()
+        {
+            if (_viewModel == null) return;
+
+            var allPageTags = new List<string>
+            {
+                "integrations",
+                "behaviour",
+                "channels",
+                "mods",
+                "appearance",
+                "fastflags",
+                "globalsettings",
+                "shortcuts"
+            };
+
+            if (OperatingSystem.IsLinux())
+                allPageTags.Add("linuxsettings");
+
+            if (!_viewModel.GBSEnabled)
+                allPageTags.Remove("globalsettings");
+
+            var pagesToIndex = allPageTags.Where(tag => !_indexedPageTags.Contains(tag)).ToList();
+            if (pagesToIndex.Count == 0) return;
+
+            Dispatcher.UIThread.Post(() => _viewModel.SearchBar.IsIndexing = true);
+
+            var stagingArea = this.FindControl<Border>("OffscreenIndexingCanvas");
+            if (stagingArea == null)
+            {
+                App.Logger.Error("OffscreenIndexingCanvas not found");
+                Dispatcher.UIThread.Post(() => _viewModel.SearchBar.IsIndexing = false);
+                return;
+            }
+
+            stagingArea.IsVisible = true;
+
+            try
+            {
+                foreach (var pageTag in pagesToIndex)
+                {
+                    try
+                    {
+                        object? vm = pageTag switch
+                        {
+                            "integrations" => new IntegrationsViewModel(),
+                            "behaviour" => new BehaviourViewModel(),
+                            "linuxsettings" => new LinuxSettingsViewModel(),
+                            "mods" => new ModsPresetsViewModel(),
+                            "fastflags" => new FastFlagsViewModel(),
+                            "appearance" => new AppearanceViewModel(),
+                            "globalsettings" => new GlobalSettingsViewModel(),
+                            "shortcuts" => new ShortcutsViewModel(),
+                            "channels" => new ChannelViewModel(),
+                            _ => null
+                        };
+
+                        if (vm == null) continue;
+
+                        var view = ResolveViewForViewModel(vm);
+                        if (view == null) continue;
+
+                        view.DataContext = vm;
+
+                        var container = new Border { Child = view };
+                        stagingArea.Child = container;
+
+                        await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Render);
+                        await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Background);
+
+                        var (title, icon) = _pageInfo[pageTag];
+                        IndexPage(view, pageTag, title, icon);
+                        _indexedPageTags.Add(pageTag);
+
+                        container.Child = null;
+                        stagingArea.Child = null;
+                        view.DataContext = null;
+                        stagingArea.UpdateLayout();
+                        await Task.Delay(30);
+                    }
+                    catch (Exception ex)
+                    {
+                        App.Logger.Error($"Error indexing {pageTag}: {ex.Message}");
+                    }
+                }
+            }
+            finally
+            {
+                stagingArea.IsVisible = false;
+                Dispatcher.UIThread.Post(() =>
+                {
+                    _viewModel.SearchBar.IsIndexing = false;
+                    _viewModel.SearchBar.RefreshSearchResults();
+                });
+            }
+        }
+
+        private void IndexPage(Control pageView, string pageTag, string pageTitle, LucideIconNames pageIcon)
+        {
+            if (_viewModel == null) return;
+
+            try
+            {
+                var addedItems = _searchIndexBuilder.ScanRenderedPageForElements(pageView, pageTag);
+
+                if (addedItems.Count > 0)
+                {
+                    var navAction = GetNavigationAction(pageTag);
+                    foreach (var item in addedItems)
+                    {
+                        item.PageName = pageTitle;
+                        item.IconSymbol = pageIcon;
+                        if (navAction != null)
+                            item.NavigateAction = navAction;
+                    }
+
+                    var hiddenControlHeaders = pageView.GetVisualDescendants()
+                        .Where(c => !c.IsVisible)
+                        .Select(c =>
+                        {
+                            if (c is OptionControl oc) return oc.Header?.ToString();
+                            if (c is CardExpander ce) return ce.Header?.ToString();
+                            if (c is CardAction ca) return ca.Header?.ToString();
+                            if (c is TextBlock tb) return tb.Text;
+                            return null;
+                        })
+                        .Where(name => !string.IsNullOrEmpty(name))
+                        .ToHashSet();
+
+                    var filteredItems = addedItems
+                        .Where(item => !hiddenControlHeaders.Contains(item.DisplayName))
+                        .ToList();
+
+                    if (filteredItems.Count > 0)
+                    {
+                        var currentIndex = _viewModel.SearchBar.GetSearchIndex();
+                        currentIndex.AddRange(filteredItems);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error($"Failed to scan page {pageTag}: {ex.Message}");
+            }
+        }
+
+        private void ScrollToSearchItem(SearchBarItem item)
+        {
+            try
+            {
+                var pageControl = this.FindControl<TransitioningContentControl>("PageContentControl");
+                if (pageControl?.Content is not Control pageView) return;
+
+                if (!string.IsNullOrWhiteSpace(item.ParentSectionName))
+                {
+                    var parentExpander = pageView.GetVisualDescendants()
+                        .OfType<CardExpander>()
+                        .FirstOrDefault(ce => (ce.Header as string) == item.ParentSectionName);
+
+                    parentExpander?.IsExpanded = true;
+                }
+
+                Control? targetControl = null;
+
+                switch (item.Category)
+                {
+                    case "Section":
+                        targetControl = pageView.GetVisualDescendants()
+                            .OfType<CardExpander>()
+                            .FirstOrDefault(ce => (ce.Header as string) == item.DisplayName);
+                        break;
+
+                    case "Setting":
+                        targetControl = pageView.GetVisualDescendants()
+                            .OfType<OptionControl>()
+                            .FirstOrDefault(oc => oc.Header == item.DisplayName);
+                        break;
+
+                    case "Action":
+                        targetControl = pageView.GetVisualDescendants()
+                            .OfType<CardAction>()
+                            .FirstOrDefault(ca => (ca.Content as string) == item.DisplayName);
+                        break;
+
+                    case "Label":
+                        targetControl = pageView.GetVisualDescendants()
+                            .OfType<TextBlock>()
+                            .FirstOrDefault(tb => tb.Text == item.DisplayName);
+                        break;
+                }
+
+                targetControl?.BringIntoView();
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error($"Failed scrolling to item: {ex.Message}");
+            }
+        }
+
+        private void SaveCurrentPage()
+        {
+            if (_viewModel?.CurrentPage != null)
+            {
+                App.State.Prop.LastPage = _viewModel.CurrentPage.GetType().FullName;
+                App.State.SaveSetting("LastPage");
+            }
+        }
+        #region Event Handlers
+
+        private async void MainWindow_Closing(object? sender, CancelEventArgs e)
+        {
+            if (MainWindowViewModel.HasUnsavedChanges)
+            {
+                e.Cancel = true;
+
+                var result = await Frontend.ShowMessageBox(
+                    Strings.Menu_UnsavedChangesPrompt,
+                    MessageBoxImage.Warning,
+                    MessageBoxButton.YesNoCancel
+                );
+
+                if (result == MessageBoxResult.Yes)
+                    _viewModel?.SaveSettings();
+                else if (result == MessageBoxResult.Cancel)
+                    return;
+
+                this.Closing -= MainWindow_Closing;
+                this.Close();
+                return;
+            }
+
+            State.Width = this.Width;
+            State.Height = this.Height;
+            State.Left = this.Position.X;
+            State.Top = this.Position.Y;
+
+            SaveCurrentPage();
+        }
+
+        private void MainWindow_Closed(object? sender, EventArgs e)
+        {
+            NotificationManager = null;
+
+            App.Logger.Info("Settings window closed");
+        }
+
+        #endregion
+    }
+}

@@ -1,0 +1,99 @@
+﻿<!--
+SPDX-FileCopyrightText: 2026 Froststrap
+
+SPDX-License-Identifier: MPL-2.0
+-->
+
+<base:AvaloniaWindow x:Class="Froststrap.UI.Elements.Dialogs.LaunchMenuDialog"
+                     xmlns="https://github.com/avaloniaui"
+                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                     xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                     xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+                     xmlns:resources="clr-namespace:Froststrap.Resources"
+                     xmlns:models="clr-namespace:Froststrap.UI.ViewModels"
+                     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Dialogs"
+                     xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
+                     xmlns:lucideEnums="clr-namespace:LucideAvalonia.Enum;assembly=LucideAvalonia"
+                     xmlns:enums="clr-namespace:Froststrap.Enums"
+                     x:DataType="vm:LaunchMenuViewModel"
+                     Title="Froststrap"
+                     Width="420"
+                     SizeToContent="Height"
+                     CanResize="False"
+                     WindowStartupLocation="CenterScreen"
+                     mc:Ignorable="d">
+
+    <Grid>
+        <StackPanel Margin="32,0,32,32">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="16" Margin="0,8,0,24">
+                <Image Width="64" Height="64" Source="avares://Froststrap/Froststrap.png"
+                       RenderOptions.BitmapInterpolationMode="HighQuality"/>
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock Name="LaunchTitle" Text="Froststrap" FontSize="28" FontWeight="Bold" />
+                    <TextBlock Text="{Binding Version}"
+                               FontSize="13"
+                               Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+                </StackPanel>
+            </StackPanel>
+
+            <controls:IconButton Classes="DropDownButton"
+                                 Margin="0,0,0,8"
+                                 HorizontalAlignment="Stretch"
+                                 Height="52"
+                                 CornerRadius="8"
+                                 FontWeight="SemiBold"
+                                 FontSize="14"
+                                 Command="{Binding LaunchCommand}"
+                                 IconSize="24"
+                                 Icon="{Binding LaunchButtonIcon}"
+                                 Content="{Binding LaunchButtonText}"
+                                 Padding="16,0">
+                <controls:IconButton.Flyout>
+                    <MenuFlyout Placement="BottomEdgeAlignedRight">
+                        <MenuItem Header="{Binding PlayerMenuItemText}"
+                                  Command="{Binding SetLaunchModeCommand}"
+                                  CommandParameter="{x:Static enums:LaunchMode.Player}">
+                            <MenuItem.Icon>
+                                <ic:Lucide Icon="Gamepad2" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="{x:Static resources:Strings.Common_Studio}"
+                                  Command="{Binding SetLaunchModeCommand}"
+                                  CommandParameter="{x:Static enums:LaunchMode.Studio}">
+                            <MenuItem.Icon>
+                                <ic:Lucide Icon="Wrench" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </MenuFlyout>
+                </controls:IconButton.Flyout>
+            </controls:IconButton>
+
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
+                <controls:IconButton
+                    Grid.Column="0"
+                    Icon="Settings"
+                    Content="{x:Static resources:Strings.Common_Settings}"
+                    CornerRadius="8"
+                    BorderThickness="0"
+                    Height="56"
+                    Command="{Binding LaunchSettingsCommand}"
+                    IconSize="24"
+                    Padding="12,10" />
+
+                <controls:IconButton
+                    Grid.Column="1"
+                    Icon="MessageCircleMore"
+                    Content="Discord"
+                    CornerRadius="8"
+                    Height="56"
+                    BorderThickness="0"
+                    IconSize="24"
+                    Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+                    CommandParameter="https://discord.gg/KdR9vpRcUN"
+                    Padding="12,10" />
+            </Grid>
+        </StackPanel>
+    </Grid>
+</base:AvaloniaWindow>

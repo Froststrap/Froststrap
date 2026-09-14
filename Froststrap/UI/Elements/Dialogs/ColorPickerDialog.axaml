@@ -1,0 +1,55 @@
+﻿<!--
+SPDX-FileCopyrightText: 2026 Froststrap
+
+SPDX-License-Identifier: MPL-2.0
+-->
+
+<base:AvaloniaWindow
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="Froststrap.UI.Elements.Dialogs.ColorPickerDialog"
+    xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+    xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+    xmlns:colorPicker="clr-namespace:ColorPicker;assembly=ColorPicker.AvaloniaUI"
+    xmlns:resources="clr-namespace:Froststrap.Resources"
+    Title="{x:Static resources:Strings.Common_ColorPicker}"
+    Width="400"
+    Height="450"
+    CanResize="True"
+    WindowStartupLocation="CenterOwner">
+
+    <Grid RowDefinitions="*,Auto">
+        <StackPanel Grid.Row="0" Margin="20" Spacing="20">
+            <Border CornerRadius="4" ClipToBounds="True">
+                <colorPicker:SquarePicker x:Name="Part_SquarePicker"
+                                          Height="220"
+                                          HorizontalAlignment="Stretch"/>
+            </Border>
+
+            <StackPanel Spacing="8">
+                <TextBlock Text="{x:Static resources:Strings.Common_HexCode}"
+                           FontSize="12"
+                           FontWeight="SemiBold"
+                           Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+                <TextBox x:Name="Part_HexBox"
+                         PlaceholderText="#RRGGBB"
+                         VerticalContentAlignment="Center"
+                         TextChanged="Part_HexBox_TextChanged"/>
+            </StackPanel>
+        </StackPanel>
+
+        <Border Grid.Row="1" Padding="15" Background="{DynamicResource ControlFillColorDefaultBrush}">
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        Spacing="12">
+                <Button Content="{x:Static resources:Strings.Common_Confirm}"
+                        Width="100"
+                        Click="OnConfirm_Click"
+                        Classes="accent" />
+                <Button Content="{x:Static resources:Strings.Common_Cancel}"
+                        Width="100"
+                        Click="OnCancel_Click" />
+            </StackPanel>
+        </Border>
+    </Grid>
+</base:AvaloniaWindow>

@@ -1,7 +1,12 @@
-[submodule "wpfui"]
-	path = wpfui
-	url = https://github.com/RealMeddsam/wpfui.git
-
 [submodule "ColorPicker"]
 	path = ColorPicker
 	url = https://github.com/Froststrap/ColorPicker
+[submodule "FluentAvalonia"]
+	path = FluentAvalonia
+	url = https://github.com/Froststrap/FluentAvalonia.git
+[submodule "LucideAvalonia"]
+	path = LucideAvalonia
+	url = https://github.com/Froststrap/LucideAvalonia.git
+[submodule "backend/virtualdisplay"]
+	path = backend/virtualdisplay
+	url = https://github.com/Froststrap/virtualdisplay

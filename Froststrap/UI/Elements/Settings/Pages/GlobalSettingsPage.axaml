@@ -1,0 +1,200 @@
+<!--
+SPDX-FileCopyrightText: 2026 Froststrap
+
+SPDX-License-Identifier: MPL-2.0
+-->
+
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+             xmlns:resources="clr-namespace:Froststrap.Resources"
+             xmlns:models="clr-namespace:Froststrap.Models.APIs.Config"
+             xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
+             xmlns:enums="clr-namespace:LucideAvalonia.Enum;assembly=LucideAvalonia"
+             xmlns:fa="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+             x:Class="Froststrap.UI.Elements.Settings.Pages.GlobalSettingsPage"
+             xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
+             x:DataType="vm:GlobalSettingsViewModel"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="1500">
+    <ScrollViewer>
+        <StackPanel Margin="14">
+            <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto">
+                <controls:CardAction Grid.Column="0" Grid.Row="0"
+                                     Margin="0,0,4,0"
+                                     Icon="Import"
+                                     Header="{x:Static resources:Strings.Common_Import}"
+                                     Command="{Binding ImportCommand}"
+                                     CommandParameter="{Binding $self}"
+                />
+
+                <controls:CardAction Grid.Column="1"  Grid.Row="0"
+                                     Margin="4,0,4,0"
+                                     Icon="FolderOpen"
+                                     Header="{x:Static resources:Strings.Menu_GlobalSettings_OpenRobloxFolder}"
+                                     Command="{Binding OpenRobloxFolderCommand}"/>
+
+                <controls:CardAction Grid.Column="2"  Grid.Row="0"
+                                     Margin="4,0,0,0"
+                                     Icon="ArrowRightFromLine"
+                                     Header="{x:Static resources:Strings.Common_Export}"
+                                     Command="{Binding ExportCommand}"
+                                     CommandParameter="{Binding $self}"
+                 />
+                <controls:CardAction Grid.ColumnSpan="3"
+                                     Grid.Row="1"
+                                     Margin="0,0,4,0"
+                                     Icon="FilePenLine"
+                                     Header="{x:Static resources:Strings.Menu_GBSEditor_Title}"
+                                     Description="{x:Static resources:Strings.Menu_GlobalSettingsEditor_Description}"
+                                     Command="{Binding OpenGlobalSettingsEditorCommand}"/>
+            </Grid>
+
+            <controls:OptionControl Description="{x:Static resources:Strings.Menu_GBSEditor_ReadOnly_Description}" Header="{x:Static resources:Strings.Menu_GBSEditor_ReadOnly_Title}">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <ic:Lucide Icon="TriangleAlert"
+                               VerticalAlignment="Center"
+                               StrokeBrush="Orange"
+                               IsVisible="{Binding IsWarningVisible}"
+                               ToolTip.Tip="{Binding WarningTooltipText}" />
+                    <ToggleSwitch Grid.Column="1" Margin="5,0,0,0" IsChecked="{Binding ReadOnly}" />
+                </StackPanel>
+            </controls:OptionControl>
+
+            <StackPanel>
+                <Separator Margin="0,12,0,12" />
+                <TextBlock
+                    FontSize="20"
+                    FontWeight="Bold"
+                    Text="{x:Static resources:Strings.Menu_GlobalSettings_GraphicsSettings_Title}"
+                    Margin="0,10,0,10"
+                    />
+                <StackPanel>
+                    <controls:OptionControl Header="{x:Static resources:Strings.Menu_GlobalSettings_FramerateLimit_Title}" Description="{x:Static resources:Strings.Menu_GlobalSettings_FramerateLimit_Description}">
+                        <TextBox Width="150" Text="{Binding FramerateCap, Mode=TwoWay}" />
+                    </controls:OptionControl>
+
+                    <controls:OptionControl Header="{x:Static resources:Strings.Menu_GlobalSettings_StartQuality_Title}" Description="{x:Static resources:Strings.Menu_GlobalSettings_StartQuality_Description}">
+                        <fa:ShowValueSlider Minimum="0" Maximum="10" Width="250" TickFrequency="1" IsSnapToTickEnabled="True" Value="{Binding GraphicsQuality}" ShowValue="True" />
+                    </controls:OptionControl>
+
+                    <controls:OptionControl Header="{x:Static resources:Strings.Menu_GlobalSettings_Fullscreen_Title}" Description="{x:Static resources:Strings.Menu_GlobalSettings_Fullscreen_Description}">
+                        <ToggleSwitch Margin="5,0,0,0" IsChecked="{Binding Fullscreen, Mode=TwoWay}" />
+                    </controls:OptionControl>
+
+                    <controls:OptionControl Header="{x:Static resources:Strings.Menu_GlobalSettings_MaxQuality_Title}" Description="{x:Static resources:Strings.Menu_GlobalSettings_MaxQuality_Description}">
+                        <ToggleSwitch IsChecked="{Binding MaxQualityEnabled, Mode=TwoWay}" />
+                    </controls:OptionControl>
+
+                    <controls:OptionControl Header="{x:Static resources:Strings.Menu_GlobalSettings_Vignette_Title}" Description="{x:Static resources:Strings.Menu_GlobalSettings_Vignette_Description}">
+                        <ToggleSwitch IsChecked="{Binding VignetteEnabled, Mode=TwoWay}" />
+                    </controls:OptionControl>
+                </StackPanel>
+
+                <Separator Margin="0,12,0,12" />
+                <TextBlock
+                    FontSize="20"
+                    FontWeight="Bold"
+                    Text="{x:Static resources:Strings.Menu_GlobalSettings_AudioSettings_Title}"
+                    Margin="0,10,0,10"
+                    />
+                <StackPanel>
+                    <controls:OptionControl Header="{x:Static resources:Strings.Menu_GlobalSettings_MasterVolume_Title}" Description="{x:Static resources:Strings.Menu_GlobalSettings_MasterVolume_Description}">
+                        <fa:ShowValueSlider Width="250" Minimum="0" Maximum="1" TickFrequency="0.1" IsSnapToTickEnabled="True" Value="{Binding MasterVolume}" ShowValue="True" />
+                    </controls:OptionControl>
+                    <controls:OptionControl Header="{x:Static resources:Strings.Menu_GlobalSettings_StudioVolume_Title}" Description="{x:Static resources:Strings.Menu_GlobalSettings_StudioVolume_Description}">
+                        <fa:ShowValueSlider Width="250" Minimum="0" Maximum="1" TickFrequency="0.1" IsSnapToTickEnabled="True" Value="{Binding MasterVolumeStudio}" ShowValue="True" />
+                    </controls:OptionControl>
+                    <controls:OptionControl Header="{x:Static resources:Strings.Menu_GlobalSettings_PartyVolume_Title}" Description="{x:Static resources:Strings.Menu_GlobalSettings_PartyVolume_Description}">
+                        <fa:ShowValueSlider Width="250" Minimum="0" Maximum="1" TickFrequency="0.1" IsSnapToTickEnabled="True" Value="{Binding PartyVoiceVolume}" ShowValue="True" />
+                    </controls:OptionControl>
+                    <controls:OptionControl Header="{x:Static resources:Strings.Menu_GlobalSettings_VoiceChatVolume_Title}" Description="{x:Static resources:Strings.Menu_GlobalSettings_VoiceChatVolume_Description}">
+                        <fa:ShowValueSlider Width="250" Minimum="0" Maximum="1" TickFrequency="0.1" IsSnapToTickEnabled="True" Value="{Binding VoiceChatVolume}" ShowValue="True" />
+                    </controls:OptionControl>
+                </StackPanel>
+
+                <Separator Margin="0,12,0,12" />
+                <TextBlock
+                    FontSize="20"
+                    FontWeight="Bold"
+                    Text="{x:Static resources:Strings.Menu_GlobalSettings_InputSettings_Title}"
+                    Margin="0,10,0,10"
+                    />
+                <StackPanel>
+                    <controls:OptionControl Header="{x:Static resources:Strings.Menu_GlobalSettings_Sensitivity_Title}" Description="{x:Static resources:Strings.Menu_GlobalSettings_Sensitivity_Description}">
+                        <TextBox Width="150" Text="{Binding MouseSensitivity}" />
+                    </controls:OptionControl>
+                    <controls:OptionControl Header="{x:Static resources:Strings.Menu_GlobalSettings_ShiftLock_Title}" Description="{x:Static resources:Strings.Menu_GlobalSettings_ShiftLock_Description}">
+                        <ToggleSwitch IsChecked="{Binding ShiftLock, Mode=TwoWay}" />
+                    </controls:OptionControl>
+
+                    <controls:OptionControl Header="{x:Static resources:Strings.Menu_GlobalSettings_FirstPersonSensitivity_Title}" Description="{x:Static resources:Strings.Menu_GlobalSettings_FirstPersonSensitivity_Description}">
+                        <Grid Margin="0,0,0,4" ColumnDefinitions="Auto,*,Auto,*">
+                            <TextBlock Grid.Column="0" Text="X:" VerticalAlignment="Center" Margin="0,0,4,0" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                            <TextBox Width="150" Grid.Column="1" Margin="0,0,8,0" Text="{Binding MouseSensitivityFirstPersonX, Mode=TwoWay}" />
+                            <TextBlock Grid.Column="2" Text="Y:" VerticalAlignment="Center" Margin="0,0,4,0" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                            <TextBox Width="150" Grid.Column="3" Text="{Binding MouseSensitivityFirstPersonY, Mode=TwoWay}" />
+                        </Grid>
+                    </controls:OptionControl>
+
+                    <controls:OptionControl Header="{x:Static resources:Strings.Menu_GlobalSettings_ThirdPersonSensitivity_Title}" Description="{x:Static resources:Strings.Menu_GlobalSettings_ThirdPersonSensitivity_Description}">
+                        <Grid Margin="0,0,0,4" ColumnDefinitions="Auto,*,Auto,*">
+                            <TextBlock Grid.Column="0" Text="X:" VerticalAlignment="Center" Margin="0,0,4,0" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                            <TextBox Width="150" Grid.Column="1" Margin="0,0,8,0" Text="{Binding MouseSensitivityThirdPersonX, Mode=TwoWay}" />
+                            <TextBlock Grid.Column="2" Text="Y:" VerticalAlignment="Center" Margin="0,0,4,0" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                            <TextBox Width="150" Grid.Column="3" Text="{Binding MouseSensitivityThirdPersonY, Mode=TwoWay}" />
+                        </Grid>
+                    </controls:OptionControl>
+
+                    <controls:OptionControl Header="{x:Static resources:Strings.Menu_GlobalSettings_InvertY_Title}" Description="{x:Static resources:Strings.Menu_GlobalSettings_InvertY_Description}">
+                        <ToggleSwitch IsChecked="{Binding CameraYInverted}" />
+                    </controls:OptionControl>
+                    <controls:OptionControl Header="{x:Static resources:Strings.Menu_GlobalSettings_HapticStrength_Title}" Description="{x:Static resources:Strings.Menu_GlobalSettings_HapticStrength_Description}">
+                        <fa:ShowValueSlider Width="250" Minimum="0" Maximum="1" TickFrequency="0.1" IsSnapToTickEnabled="True" Value="{Binding HapticStrength}" ShowValue="True" />
+                    </controls:OptionControl>
+                </StackPanel>
+
+                <Separator Margin="0,12,0,12" />
+                <TextBlock
+                    FontSize="20"
+                    FontWeight="Bold"
+                    Text="{x:Static resources:Strings.Menu_GlobalSettings_Accessibility_Title}"
+                    Margin="0,10,0,10"
+                    />
+                <StackPanel>
+                    <controls:OptionControl Header="{x:Static resources:Strings.Menu_GlobalSettings_UITransparency_Title}" Description="{x:Static resources:Strings.Menu_GlobalSettings_UITransparency_Description}">
+                        <TextBox Width="150" Text="{Binding UITransparency}" />
+                    </controls:OptionControl>
+                    <controls:OptionControl Header="{x:Static resources:Strings.Menu_GlobalSettings_PlayerListLayout_Title}" Description="{x:Static resources:Strings.Menu_GlobalSettings_PlayerListLayout_Description}">
+                        <ComboBox Width="150" Margin="4,0" Padding="10,5" HorizontalAlignment="Stretch" ItemsSource="{Binding PlayerListLayOuts.Keys, Mode=OneTime}" SelectedValue="{Binding SelectedPlayerListLayOut, Mode=TwoWay}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Path=., Converter={StaticResource EnumNameConverter}}" />
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </controls:OptionControl>
+                    <controls:OptionControl Header="{x:Static resources:Strings.Menu_GlobalSettings_TextSize_Title}" Description="{x:Static resources:Strings.Menu_GlobalSettings_TextSize_Description}">
+                        <ComboBox Width="150" Margin="4,0" Padding="10,5" HorizontalAlignment="Stretch" ItemsSource="{Binding FontSizes.Keys, Mode=OneTime}" SelectedValue="{Binding SelectedFontSize, Mode=TwoWay}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Path=., Converter={StaticResource EnumNameConverter}}" />
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </controls:OptionControl>
+                    <controls:OptionControl Header="{x:Static resources:Strings.Menu_GlobalSettings_ReducedMotion_Title}" Description="{x:Static resources:Strings.Menu_GlobalSettings_ReducedMotion_Description}">
+                        <ToggleSwitch IsChecked="{Binding ReducedMotion}" />
+                    </controls:OptionControl>
+                    <controls:OptionControl Header="{x:Static resources:Strings.Menu_GlobalSettings_PerfStats_Title}" Description="{x:Static resources:Strings.Menu_GlobalSettings_PerfStats_Description}">
+                        <ToggleSwitch IsChecked="{Binding PerformanceStatsVisible}" />
+                    </controls:OptionControl>
+                    <controls:OptionControl Header="{x:Static resources:Strings.Menu_GlobalSettings_VRMode_Title}" Description="{x:Static resources:Strings.Menu_GlobalSettings_VRMode_Description}">
+                        <ToggleSwitch IsChecked="{Binding VREnabled}" />
+                    </controls:OptionControl>
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

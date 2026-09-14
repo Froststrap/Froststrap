@@ -1,0 +1,78 @@
+<!--
+SPDX-FileCopyrightText: 2026 Froststrap
+
+SPDX-License-Identifier: MPL-2.0
+-->
+
+<base:AvaloniaDialogBase
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="using:Froststrap.UI.ViewModels.Bootstrapper"
+    xmlns:base="clr-namespace:Froststrap.UI.Elements.Bootstrapper.Base"
+    xmlns:gv="using:Froststrap.UI.ViewModels"
+    xmlns:resources="using:Froststrap.Resources"
+    xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+    mc:Ignorable="d"
+    x:Class="Froststrap.UI.Elements.Bootstrapper.FluentDialog"
+    x:DataType="vm:FluentDialogViewModel"
+    Width="500"
+    Height="280"
+    MinHeight="0"
+    CanResize="False"
+    Title="Froststrap"
+    WindowStartupLocation="CenterScreen"
+    ExtendClientAreaToDecorationsHint="True"
+    TransparencyLevelHint="{Binding WindowBackdropType}"
+    Background="{Binding BackgroundColourBrush}">
+
+    <Grid>
+        <TextBlock Margin="5" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="11" FontFamily="{StaticResource Rubik}" Text="{Binding VersionText}" Foreground="{DynamicResource TextFillColorSecondaryBrush}" IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOS}"/>
+        <TextBlock Margin="5" VerticalAlignment="Top" HorizontalAlignment="Right" FontSize="11" FontFamily="{StaticResource Rubik}" Text="{Binding ChannelText}" Foreground="{DynamicResource TextFillColorSecondaryBrush}" IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOS}"/>
+        <controls:TitleBar
+            VerticalAlignment="Top"
+            ShowClose="False"
+            Title=""
+            Icon="{x:Null}"
+            ShowMaximize="False"
+            ShowMinimize="False" />
+
+
+        <StackPanel>
+            <Image
+                Width="80"
+                Height="80"
+                Margin="0,45,0,0"
+                HorizontalAlignment="Center"
+                Source="{Binding Icon}"
+                RenderOptions.BitmapInterpolationMode="HighQuality"/>
+
+            <TextBlock
+                Margin="0,50,0,0"
+                HorizontalAlignment="Center"
+                TextAlignment="Center"
+                FontSize="18"
+                TextTrimming="CharacterEllipsis" 
+                Text="{Binding Message}"/>
+
+            <ProgressBar
+                Width="450"
+                Height="10"
+                Margin="0,10,0,15"
+                CornerRadius="50"
+                IsIndeterminate="{Binding ProgressIndeterminate}"
+                Maximum="{Binding ProgressMaximum}"
+                Value="{Binding ProgressValue}"/>
+
+            <Button
+                Width="120"
+                Height="30"
+                HorizontalAlignment="Center"
+                Command="{Binding CancelInstallCommand}"
+                Content="{Binding CancelButtonText}"
+                FontSize="14"
+                IsEnabled="{Binding CancelEnabled}"/>
+        </StackPanel>
+    </Grid>
+</base:AvaloniaDialogBase>

@@ -1,0 +1,14 @@
+<Project Sdk="WixToolset.Sdk/5.0.0">
+	<PropertyGroup>
+		<OutputType>Bundle</OutputType>
+		<OutputName>Froststrap-windows-x64-bundle</OutputName>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="WixToolset.Bal.wixext" Version="5.0.0" />
+		<PackageReference Include="WixToolset.NetFx.wixext" Version="5.0.0" />
+		<PackageReference Include="WixToolset.Util.wixext" Version="5.0.0" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="../winInstaller/winInstaller.wixproj" />
+	</ItemGroup>
+</Project>

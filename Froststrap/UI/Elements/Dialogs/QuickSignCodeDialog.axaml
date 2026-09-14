@@ -1,0 +1,129 @@
+<!--
+SPDX-FileCopyrightText: 2026 Froststrap
+
+SPDX-License-Identifier: MPL-2.0
+-->
+
+<base:AvaloniaWindow x:Class="Froststrap.UI.Elements.Dialogs.QuickSignCodeDialog"
+                     xmlns="https://github.com/avaloniaui"
+                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                     xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                     xmlns:ui="using:FluentAvalonia.UI.Controls"
+                     xmlns:resources="clr-namespace:Froststrap.Resources"
+                     xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
+                     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Dialogs"
+                     xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+                     Title="{x:Static resources:Strings.Menu_Dialog_QuickSignIn_Title}"
+                     Width="450"
+                     Height="345"
+                     MinWidth="450"
+                     MinHeight="345"
+                     CanResize="True"
+                     WindowStartupLocation="CenterOwner"
+                     mc:Ignorable="d">
+
+    <Grid RowDefinitions="*,Auto">
+        <Grid Grid.Row="0" Margin="20,16,20,16" RowDefinitions="Auto,Auto,Auto,Auto,*">
+            <StackPanel
+                Grid.Row="0"
+                Margin="0,0,0,16"
+                Orientation="Horizontal">
+                <ic:Lucide
+                    Margin="0,0,8,0"
+                    FontSize="20"
+                    Icon="Link2" />
+                <TextBlock
+                    FontSize="18"
+                    FontWeight="SemiBold"
+                    Text="{x:Static resources:Strings.Menu_Dialog_QuickSignIn_Title}" />
+            </StackPanel>
+
+            <controls:MarkdownTextBlock
+                x:Name="InstructionsText"
+                Grid.Row="1"
+                Margin="0,0,0,12"
+                FontSize="14"
+                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                MarkdownText="{Binding Source={x:Static resources:Strings.Menu_QuickSignIn_Instruction}, Converter={StaticResource StringFormatConverter}, ConverterParameter=https://www.roblox.com/crossdevicelogin/ConfirmCode}"
+                TextWrapping="Wrap"
+                IsVisible="True" />
+
+            <Border
+                x:Name="CodeBox"
+                Grid.Row="2"
+                Margin="0,0,0,16"
+                Padding="16,12"
+                Background="{DynamicResource ControlFillColorSecondaryBrush}"
+                BorderBrush="{DynamicResource ControlElevationBorderBrush}"
+                BorderThickness="1"
+                CornerRadius="6"
+                IsVisible="False">
+                <TextBox
+                    x:Name="CodeTextBox"
+                    HorizontalAlignment="Stretch"
+                    VerticalContentAlignment="Center"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    FontFamily="Consolas"
+                    FontSize="20"
+                    FontWeight="Bold"
+                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                    IsReadOnly="True"
+                    TextAlignment="Center"
+                    TextWrapping="NoWrap" />
+            </Border>
+
+            <Border
+                Grid.Row="3"
+                Background="{DynamicResource SystemFillColorAttentionBackgroundBrush}"
+                BorderBrush="{DynamicResource SystemFillColorAttentionBrush}"
+                BorderThickness="1"
+                CornerRadius="6"
+                Padding="12,10">
+                <StackPanel Orientation="Horizontal">
+                    <ic:Lucide
+                        Icon="Info"
+                        FontSize="16"
+                        Margin="0,0,8,0"
+                        Foreground="{DynamicResource SystemFillColorAttentionBrush}"/>
+                    <TextBlock
+                        x:Name="StatusText"
+                        Text="{x:Static resources:Strings.Menu_QuickSignIn_Waitting}"
+                        TextWrapping="Wrap"
+                        FontSize="13"
+                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                        VerticalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+
+            <Rectangle Grid.Row="4" Fill="Transparent" />
+        </Grid>
+
+        <Border
+            Grid.Row="1"
+            Background="{DynamicResource ControlFillColorDefaultBrush}"
+            BorderBrush="{DynamicResource ControlElevationBorderBrush}"
+            BorderThickness="1,1,0,0">
+            <Grid Margin="20,16" ColumnDefinitions="*,Auto,Auto">
+                <Rectangle Grid.Column="0" Fill="Transparent" />
+
+                <Button
+                    Grid.Column="1"
+                    MinWidth="100"
+                    Margin="0,0,8,0"
+                    HorizontalAlignment="Right"
+                    Click="Copy_Click"
+                    Content="{x:Static resources:Strings.Common_Copy}"/>
+
+                <Button
+                    Grid.Column="2"
+                    MinWidth="100"
+                    HorizontalAlignment="Right"
+                    Click="Close_Click"
+                    Content="{x:Static resources:Strings.Common_Close}"/>
+            </Grid>
+        </Border>
+    </Grid>
+</base:AvaloniaWindow>

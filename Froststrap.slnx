@@ -1,7 +1,10 @@
 <Solution>
-  <Project Path="Bloxstrap/Bloxstrap.csproj" />
-  <Project Path="wpfui/src/Wpf.Ui/Wpf.Ui.csproj" />
-  <Project Path="ColorPicker/src/ColorPicker/ColorPicker.csproj" />
+  <Project Path="Froststrap/Froststrap.csproj" />
+  <Project Path="ColorPicker/ColorPicker.AvaloniaUI/ColorPicker.AvaloniaUI.csproj" />
+  <Project Path="LucideAvalonia/LucideAvalonia/LucideAvalonia.csproj" />
+  <Project Path="FluentAvalonia/src/FluentAvalonia/FluentAvalonia.csproj" />
+  <Project Path="./backend/backend.csproj" />
+  <Project Path="./packaging/winInstaller/winInstaller.wixproj" />
   <Properties Name="ExtensibilityGlobals" Scope="PostLoad">
     <Property Name="RESX_NeutralResourcesLanguage" Value="en-GB" />
   </Properties>

@@ -1,0 +1,39 @@
+﻿// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
+using Froststrap.RobloxInterfaces;
+
+namespace Froststrap.Models.Manifest
+{
+    internal class FileManifest : List<ManifestFile>
+    {
+        private FileManifest(string data)
+        {
+            using StringReader reader = new(data);
+
+            while (true)
+            {
+                string? fileName = reader.ReadLine();
+                string? signature = reader.ReadLine();
+
+                if (string.IsNullOrEmpty(fileName) || string.IsNullOrEmpty(signature))
+                    break;
+
+                Add(new ManifestFile
+                {
+                    Name = fileName,
+                    Signature = signature
+                });
+            }
+        }
+
+        public static async Task<FileManifest> Get(string versionGuid)
+        {
+            string pkgManifestUrl = Deployment.GetLocation($"/{versionGuid}-rbxManifest.txt");
+            var pkgManifestData = await App.HttpClient.GetStringAsync(new Uri(pkgManifestUrl));
+
+            return new FileManifest(pkgManifestData);
+        }
+    }
+}

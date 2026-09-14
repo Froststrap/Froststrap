@@ -1,0 +1,14 @@
+{
+  "DFFlagDebugPauseVoxelizer": "True",
+  "DFIntCSGLevelOfDetailSwitchingDistanceL34": "0",
+  "DFIntCSGLevelOfDetailSwitchingDistanceL23": "0",
+  "DFIntCSGLevelOfDetailSwitchingDistanceL12": "0",
+  "DFIntCSGLevelOfDetailSwitchingDistance": "0",
+  "DFIntDebugFRMQualityLevelOverride": "1",
+  "FFlagHandleAltEnterFullscreenManually": "False",
+  "FFlagDebugSkyGray": "True",
+  "FIntGrassMovementReducedMotionFactor": "0",
+  "FIntDebugForceMSAASamples": "1",
+  "FIntFRMMaxGrassDistance": "0",
+  "FIntFRMMinGrassDistance": "0"
+}

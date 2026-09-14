@@ -1,0 +1,100 @@
+﻿// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
+namespace Froststrap
+{
+    internal static class StudioPluginManager
+    {
+        private const string VersionApiUrl = "https://api.github.com/repos/Froststrap/FroststrapStudioRPC/releases/latest";
+
+        public static string? OverridePluginDirectory { get; set; }
+
+        private static string PluginFile
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(OverridePluginDirectory))
+                    return Path.Combine(OverridePluginDirectory, "FroststrapStudioRPC.rbxmx");
+
+                // not sure if this works for macos
+                return Path.Combine(Paths.Roblox, "Plugins", "FroststrapStudioRPC.rbxmx");
+            }
+        }
+
+        private static string VersionCacheFile => Path.Combine(Paths.Cache, "StudioRPCVersion.json");
+
+        public static void Sync()
+        {
+            if (!App.Settings.Prop.StudioRPC)
+            {
+                Uninstall();
+                return;
+            }
+
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var release = await GetLatestRelease();
+                    if (release is null) return;
+
+                    string cachedVersion = GetCachedVersion();
+                    bool needsUpdate = !File.Exists(PluginFile) ||
+                                      !File.Exists(VersionCacheFile) ||
+                                      Utility.Versioning.CompareVersions(release.TagName, cachedVersion) == VersionComparison.GreaterThan;
+
+                    if (needsUpdate)
+                    {
+                        App.Logger.Info($"Syncing plugin (Local: {cachedVersion}, Remote: {release.TagName})");
+                        await DownloadPluginAsync(release);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.Error($"Failed to sync Studio RPC plugin: {ex}");
+                }
+            });
+        }
+
+        private static async Task DownloadPluginAsync(GithubRelease release)
+        {
+            var asset = release.Assets?.FirstOrDefault(x => x.Name.EndsWith(".rbxmx", StringComparison.Ordinal));
+            if (asset is null) return;
+
+            byte[] data = await App.HttpClient.GetByteArrayAsync(new Uri(asset.BrowserDownloadUrl));
+
+            Directory.CreateDirectory(Path.GetDirectoryName(PluginFile)!);
+            await File.WriteAllBytesAsync(PluginFile, data);
+
+            var state = new { Version = release.TagName, UpdatedAt = DateTime.Now };
+            await File.WriteAllTextAsync(VersionCacheFile, JsonSerializer.Serialize(state));
+        }
+
+        private static async Task<GithubRelease?> GetLatestRelease()
+        {
+            try
+            {
+                var response = await App.HttpClient.GetStringAsync(new Uri(VersionApiUrl));
+                return JsonSerializer.Deserialize<GithubRelease>(response);
+            }
+            catch { return null; }
+        }
+
+        private static string GetCachedVersion()
+        {
+            try
+            {
+                using var doc = JsonDocument.Parse(File.ReadAllText(VersionCacheFile));
+                return doc.RootElement.GetProperty("Version").GetString() ?? "0.0.0";
+            }
+            catch { return "0.0.0"; }
+        }
+
+        public static void Uninstall()
+        {
+            if (File.Exists(PluginFile)) File.Delete(PluginFile);
+            if (File.Exists(VersionCacheFile)) File.Delete(VersionCacheFile);
+        }
+    }
+}

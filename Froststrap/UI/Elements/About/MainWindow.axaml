@@ -1,0 +1,72 @@
+﻿<!--
+SPDX-FileCopyrightText: 2026 Froststrap
+
+SPDX-License-Identifier: MPL-2.0
+-->
+
+<base:AvaloniaWindow xmlns="https://github.com/avaloniaui"
+                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                     xmlns:pages="clr-namespace:Froststrap.UI.Elements.About.Pages"
+                     xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+                     xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+                     xmlns:resources="clr-namespace:Froststrap.Resources"
+                     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.About"
+                     xmlns:ui="using:FluentAvalonia.UI.Controls"
+                     xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
+                     mc:Ignorable="d"
+                     x:Class="Froststrap.UI.Elements.About.MainWindow"
+                     x:DataType="vm:MainWindowViewModel"
+                     Title="{x:Static resources:Strings.About_Title}"
+                     MinWidth="740" Width="740" Height="440"
+                     WindowStartupLocation="CenterScreen" CanResize="True">
+
+    <Grid RowDefinitions="Auto,*">
+        <Border Background="{DynamicResource ControlFillColorDefaultBrush}" Height="40" IsHitTestVisible="False"/>
+
+        <Grid Grid.Row="1" Name="MainGrid">
+            <ui:FANavigationView Name="NavView"
+                                 Background="{DynamicResource ControlFillColorDefaultBrush}"
+                                 PaneDisplayMode="Left"
+                                 IsSettingsVisible="False"
+                                 OpenPaneLength="160"
+                                 ItemInvoked="NavView_ItemInvoked">
+                <ui:FANavigationView.Styles>
+                    <Style Selector="ui|FANavigationView /template/ ScrollViewer#MenuItemsScrollViewer">
+                        <Setter Property="VerticalScrollBarVisibility" Value="Hidden"/>
+                    </Style>
+                </ui:FANavigationView.Styles>
+                <ui:FANavigationView.MenuItems>
+                    <ui:FANavigationViewItem Tag="about" Content="{x:Static resources:Strings.Menu_About_Title}">
+                        <ui:FANavigationViewItem.Icon>
+                            <ic:Lucide Icon="CircleAlert" Width="20" Height="20" />
+                        </ui:FANavigationViewItem.Icon>
+                    </ui:FANavigationViewItem>
+
+                    <ui:FANavigationViewItem Tag="licenses" Content="{x:Static resources:Strings.About_Licenses_Title}">
+                        <ui:FANavigationViewItem.Icon>
+                            <ic:Lucide Icon="Copyright" Width="20" Height="20" />
+                        </ui:FANavigationViewItem.Icon>
+                    </ui:FANavigationViewItem>
+                </ui:FANavigationView.MenuItems>
+
+                <ui:FANavigationView.FooterMenuItems>
+                    <ui:FANavigationViewItem Tag="onboarding" Content="{x:Static resources:Strings.About_Onboarding_Title}">
+                        <ui:FANavigationViewItem.Icon>
+                            <ic:Lucide Icon="Rocket" Width="20" Height="20" />
+                        </ui:FANavigationViewItem.Icon>
+                    </ui:FANavigationViewItem>
+                </ui:FANavigationView.FooterMenuItems>
+
+                <ui:FANavigationView.Content>
+                    <TransitioningContentControl
+                        x:Name="PageContentControl"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Background="{DynamicResource LayerFillColorDefaultBrush}" />
+                </ui:FANavigationView.Content>
+            </ui:FANavigationView>
+        </Grid>
+    </Grid>
+</base:AvaloniaWindow>

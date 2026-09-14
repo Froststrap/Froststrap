@@ -1,0 +1,35 @@
+﻿// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
+namespace Froststrap.AppData
+{
+    internal interface IAppData
+    {
+        string ProductName { get; }
+
+        string BinaryType { get; }
+
+        string RegistryName { get; }
+
+        string ProcessName { get; }
+
+        string ExecutableName { get; }
+
+        string StaticDirectory { get; }
+
+        string DynamicDirectory { get; }
+
+        string Directory { get; }
+
+        bool IsInstalled { get; }
+
+        string ExecutablePath { get; }
+
+        JsonManager<DistributionState> DistributionStateManager { get; }
+
+        DistributionState DistributionState { get; }
+
+        IReadOnlyList<string> ModManifest { get; }
+    }
+}

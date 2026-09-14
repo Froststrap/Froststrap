@@ -1,0 +1,27 @@
+﻿// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
+namespace Froststrap.Models.APIs.GitHub
+{
+    internal class GithubRelease
+    {
+        [JsonPropertyName("tag_name")]
+        public string TagName { get; set; } = null!;
+
+        [JsonPropertyName("name")]
+        public string Name { get; set; } = null!;
+
+        [JsonPropertyName("body")]
+        public string Body { get; set; } = null!;
+
+        [JsonPropertyName("prerelease")]
+        public bool Prerelease { get; set; }
+
+        [JsonPropertyName("created_at")]
+        public string CreatedAt { get; set; } = null!;
+
+        [JsonPropertyName("assets")]
+        public List<GithubReleaseAsset>? Assets { get; set; }
+    }
+}

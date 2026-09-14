@@ -2,34 +2,12 @@ name: Bug Report
 title: "[BUG] "
 description: Report a problem you're having
 body:
-  - type: checkboxes
-    id: ack
-    attributes:
-      label: Acknowledgement
-      description: If you tick any of these wrong, you may receive punishment in return
-      options:
-        - label: I have checked that this issue I am reporting doesn't exist in closed or open issues.
-          required: false
-        - label: I agree that I have just ticked all the boxes without actually reading
-          required: false
-        - label: I have given all relevant, detailed information with no placeholder text remaining
-          required: false
-        - label: I agree that false information ticked above could result in a temporary block in contributing
-          required: true
   - type: input
     id: version
     attributes:
       label: Froststrap Version
       description: "What version of Froststrap are you using?"
-      placeholder: "v1.2.3"
-    validations:
-      required: true
-  - type: input
-    id: os
-    attributes:
-      label: Operating System
-      description: "Build number, version, and type. E.g Windows 22H2, macOS Tahoe 26.6.2, or Ubuntu 24.04"
-      placeholder: "Windows 11 22H2"
+      placeholder: "v2.0.0"
     validations:
       required: true
   - type: textarea
@@ -53,6 +31,12 @@ body:
     id: log
     attributes:
       label: Froststrap Log
-      description: If you're getting a Froststrap Exception error, upload your log file here. Otherwise, just leave it empty.
+      description: |
+        If you're getting an exception, please copy the log content and paste it here.
+        You can find the log file at:
+          - Windows: `%localappdata%\Froststrap\Logs\Froststrap_*.log` (the most recent file is the latest)
+          - macOS: `~/Library/Application Support/Froststrap/Logs/Froststrap_*.log`
+          - Linux: `~/.local/share/Froststrap/Logs/Froststrap_*.log`
+        **Alternatively**, click the **“Copy Log to Clipboard”** button inside the exception window and paste it below.
       value: "N/A"
       render: text

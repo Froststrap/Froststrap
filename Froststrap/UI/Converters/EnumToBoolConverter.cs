@@ -1,0 +1,23 @@
+﻿// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
+using Avalonia.Data;
+using Avalonia.Data.Converters;
+
+namespace Froststrap.UI.Converters
+{
+    internal class EnumToBoolConverter : IValueConverter
+    {
+        public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            if (value == null || parameter == null) return false;
+            return value.ToString() == parameter.ToString();
+        }
+
+        public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            return value?.Equals(true) == true ? parameter : BindingOperations.DoNothing;
+        }
+    }
+}

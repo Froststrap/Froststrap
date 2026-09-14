@@ -1,0 +1,108 @@
+﻿<!--
+SPDX-FileCopyrightText: 2026 Froststrap
+
+SPDX-License-Identifier: MPL-2.0
+-->
+
+<base:AvaloniaWindow xmlns="https://github.com/avaloniaui"
+                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                     xmlns:resources="clr-namespace:Froststrap.Resources"
+                     xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+                     xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+                     xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
+                     xmlns:ui="using:FluentAvalonia.UI.Controls"
+                     x:Class="Froststrap.UI.Elements.Dialogs.AddFastFlagDialog"
+                     Title="{x:Static resources:Strings.Dialog_AddFastFlag_Title}"
+                     Width="480"
+                     SizeToContent="Height"
+                     CanResize="False"
+                     WindowStartupLocation="CenterScreen">
+
+    <Grid RowDefinitions="*,Auto">
+        <Border Grid.Row="0"
+                Margin="16"
+                CornerRadius="8"
+                BorderThickness="1"
+                BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                Background="{DynamicResource ControlFillColorDefaultBrush}">
+            <TabControl x:Name="Tabs">
+                <TabControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="2" />
+                    </ItemsPanelTemplate>
+                </TabControl.ItemsPanel>
+
+                <TabControl.Styles>
+                    <Style Selector="TabItem">
+                        <Setter Property="HorizontalAlignment" Value="Stretch" />
+                        <Setter Property="HorizontalContentAlignment" Value="Center" />
+                        <Setter Property="FontSize" Value="18" />
+                    </Style>
+                </TabControl.Styles>
+
+                <TabItem Header="{x:Static resources:Strings.Common_AddSingle}">
+					<ui:TabItemHelper.Icon>
+						<ic:Lucide Icon="Plus" />
+					</ui:TabItemHelper.Icon>
+                    <StackPanel Spacing="12" Margin="0,0,0,8">
+                        <Grid ColumnDefinitions="75, *" RowDefinitions="Auto" ColumnSpacing="12">
+                            <TextBlock Grid.Column="0"
+                                       VerticalAlignment="Center"
+                                       Text="{x:Static resources:Strings.Common_Name}" />
+                            <TextBox Grid.Column="1"
+                                     x:Name="FlagNameTextBox"
+                                     PlaceholderText="FFlagExample" />
+                        </Grid>
+
+                        <Grid ColumnDefinitions="75, *" ColumnSpacing="12">
+                            <TextBlock Grid.Column="0"
+                                       VerticalAlignment="Center"
+                                       Text="{x:Static resources:Strings.Common_Value}" />
+                            <TextBox Grid.Column="1"
+                                     x:Name="FlagValueTextBox"
+                                     PlaceholderText="True" />
+                        </Grid>
+                    </StackPanel>
+                </TabItem>
+
+                <TabItem Header="{x:Static resources:Strings.Common_ImportJson}">
+					<ui:TabItemHelper.Icon>
+						<ic:Lucide Icon="FileBraces" />
+					</ui:TabItemHelper.Icon>
+                    <StackPanel Spacing="12" Margin="0,0,0,8">
+                        <TextBox x:Name="JsonTextBox"
+                                 AcceptsReturn="True"
+                                 AcceptsTab="True"
+                                 MinHeight="120"
+                                 MaxHeight="300"
+                                 TextWrapping="Wrap"
+                                 BorderThickness="0"
+                                 VerticalContentAlignment="Center"
+                                 PlaceholderText="{}{&#10;    &quot;FFlagDebugDisplayFPS&quot;: &quot;True&quot;&#10;}" />
+
+                        <controls:IconButton Content="{x:Static resources:Strings.Common_ImportFromFile}"
+                                             Icon="FileText"
+                                             HorizontalAlignment="Stretch"
+                                             Click="ImportButton_Click"/>
+                    </StackPanel>
+                </TabItem>
+            </TabControl>
+        </Border>
+
+        <Border Grid.Row="1"
+                Padding="15"
+                Background="{DynamicResource ControlFillColorDefaultBrush}">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="12">
+                <Button x:Name="OkButton"
+                        Content="{x:Static resources:Strings.Common_OK}"
+                        Click="OKButton_Click"
+                        Width="100"
+                        IsEnabled="False" />
+
+                <Button Content="{x:Static resources:Strings.Common_Cancel}"
+                        Click="CancelButton_Click"
+                        Width="100" />
+            </StackPanel>
+        </Border>
+    </Grid>
+</base:AvaloniaWindow>

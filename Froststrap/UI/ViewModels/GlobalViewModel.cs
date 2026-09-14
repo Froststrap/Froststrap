@@ -1,0 +1,29 @@
+﻿// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
+using System.Windows.Input;
+using CommunityToolkit.Mvvm.Input;
+
+namespace Froststrap.UI.ViewModels
+{
+    internal static class GlobalViewModel
+    {
+        public static bool IsWindows => OperatingSystem.IsWindows();
+        public static bool IsMacOS => OperatingSystem.IsMacOS();
+        public static bool IsLinux => OperatingSystem.IsLinux();
+
+        public static bool IsWindowsOrLinux => IsWindows || IsLinux;
+        public static bool IsWindowsOrMacOS => IsWindows || IsMacOS;
+
+        public static ICommand OpenWebpageCommand => new RelayCommand<string>(OpenWebpage);
+
+        private static void OpenWebpage(string? location)
+        {
+            if (string.IsNullOrEmpty(location))
+                return;
+
+            Froststrap.Utility.Threading.ShellExecute(location);
+        }
+    }
+}
