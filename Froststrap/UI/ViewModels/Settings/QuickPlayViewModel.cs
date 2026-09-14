@@ -5,8 +5,11 @@
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
+using FluentAvalonia.UI.Controls;
 using Froststrap.Integrations;
 using Froststrap.Integrations.AccountManager;
+using Froststrap.UI.Elements.Settings;
+using LucideAvalonia.Enum;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -478,9 +481,17 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
                     showConfirmation: false
                 );
 
-                if (!success)
+                if (success)
                 {
-                    await Frontend.ShowMessageBox(Strings.Menu_QuickPlay_NoSuitableServer, MessageBoxImage.Information);
+                    MainWindow.ShowGlobalNotification(
+                        Strings.Menu_QuickPlay_BestRegionJoined_Title,
+                        string.Format(
+                            CultureInfo.InvariantCulture,
+                            Strings.Menu_QuickPlay_BestRegionJoined_Message,
+                            item.Name),
+                        FAInfoBarSeverity.Success,
+                        4000,
+                        LucideIconNames.Globe);
                 }
             }
             finally
@@ -656,9 +667,17 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
                 showConfirmation: false
             );
 
-            if (!success)
+            if (success)
             {
-                await Frontend.ShowMessageBox(Strings.Menu_QuickPlay_NoSuitableServer, MessageBoxImage.Information);
+                MainWindow.ShowGlobalNotification(
+                    Strings.Menu_QuickPlay_BestRegionJoined_Title,
+                    string.Format(
+                        CultureInfo.InvariantCulture,
+                        Strings.Menu_QuickPlay_BestRegionJoined_Message,
+                        placeId),
+                    FAInfoBarSeverity.Success,
+                    4000,
+                    LucideIconNames.Globe);
             }
         }
         finally

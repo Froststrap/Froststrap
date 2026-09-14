@@ -8296,6 +8296,24 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Joining best region for {0}....
+        /// </summary>
+        public static string Menu_QuickPlay_BestRegionJoined_Message {
+            get {
+                return ResourceManager.GetString("Menu.QuickPlay.BestRegionJoined.Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Server found.
+        /// </summary>
+        public static string Menu_QuickPlay_BestRegionJoined_Title {
+            get {
+                return ResourceManager.GetString("Menu.QuickPlay.BestRegionJoined.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Checking servers....
         /// </summary>
         public static string Menu_QuickPlay_CheckingServers {
@@ -8494,7 +8512,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select a game to view subplaces.
+        ///   Looks up a localized string similar to Search up a game to view subplaces.
         /// </summary>
         public static string Menu_QuickPlay_NoSubplacesSelected {
             get {
