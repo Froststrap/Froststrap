@@ -26,7 +26,11 @@ def publish [] {
   print "Running publish"
   match (uname | get operating-system) {
     "Darwin" => {
-      nu ($script_dir | path join "packaging/macos.nu")
+      if $env.SIGN == "true" {
+        nu ($script_dir | path join "packaging/macos.nu") --sign
+      } else {
+        nu ($script_dir | path join "packaging/macos.nu")
+      }
     }
     $s if ($s | str contains "Linux") => {
       nu ($script_dir | path join "packaging/linux.nu") $project_file $build_dir "Publish-linux-x64"
