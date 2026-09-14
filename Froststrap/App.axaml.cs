@@ -608,7 +608,7 @@ internal partial class App : Application
 
                 await Updater.RunMigrations();
 
-                if (!LaunchSettings.BypassUpdateCheck && !OperatingSystem.IsLinux())
+                if (!LaunchSettings.BypassUpdateCheck && !OperatingSystem.IsLinux() && !OperatingSystem.IsMacOS())
                     await Updater.HandleUpgrade();
 
                 if (Settings.Prop.AllowCookieAccess)
