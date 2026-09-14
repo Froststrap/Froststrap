@@ -367,7 +367,16 @@ namespace Froststrap.Utility
         {
             foreach (char c in Path.GetInvalidFileNameChars())
                 name = name.Replace(c, '_');
-            return name.Trim();
+
+            var sb = new System.Text.StringBuilder(name.Length);
+            foreach (char c in name)
+            {
+                if (c >= ' ' && c <= '~')
+                    sb.Append(c);
+            }
+
+            string result = sb.ToString().Trim().TrimEnd('.');
+            return string.IsNullOrWhiteSpace(result) ? "Shortcut" : result;
         }
 
         private static string ComputeHash(byte[] data)
