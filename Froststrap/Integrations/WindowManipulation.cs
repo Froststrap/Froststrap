@@ -1,5 +1,6 @@
 ﻿// Credits to fishstrap for originally making this
 
+using Avalonia.Threading;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.UI.Accessibility;
@@ -15,12 +16,13 @@ namespace Froststrap.Integrations
         private const uint WM_SETICON = 0x0080;
         private const int ICON_SMALL = 0;
         private const int ICON_BIG = 1;
+        private const int OBJID_WINDOW = 0;
 
         private const int ResolveTimeoutMs = 30_000;
         private const int ResolvePollMs = 750;
         private const int PostResolveDelayMs = 2_000;
 
-        private WINEVENTPROC? _setTitleHook;
+        private readonly WINEVENTPROC _setTitleHook;
         private bool _titleHookInstalled;
 
         private HWND _hWnd;
@@ -28,12 +30,16 @@ namespace Froststrap.Integrations
         private bool _disposed;
 
         private string _currentTitle = "Roblox";
+        private string _gameTitle = "";
+        private string _configuredTitle = "Roblox";
+        private bool _inGame;
 
         public WindowManipulation(long robloxProcessId)
         {
             App.Logger.Info(LOG_IDENT, $"Got Roblox PID {robloxProcessId}");
 
             _robloxPID = unchecked((uint)robloxProcessId);
+            _setTitleHook = SetWindowTitleHook;
         }
 
         public bool HasWindow => _hWnd != HWND.Null;
@@ -53,7 +59,6 @@ namespace Froststrap.Integrations
                 if (_disposed)
                     return;
 
-                _setTitleHook = new(SetWindowTitleHook);
                 ApplyConfiguredIcon();
                 ApplyConfiguredTitle();
             });
@@ -62,8 +67,6 @@ namespace Froststrap.Integrations
         public void ApplyWindowModifications()
         {
             App.Logger.Info(LOG_IDENT, "Applying window modifications");
-
-            _setTitleHook = new(SetWindowTitleHook);
 
             ApplyConfiguredIcon();
             ApplyConfiguredTitle();
@@ -100,13 +103,20 @@ namespace Froststrap.Integrations
             if (!HasWindow)
                 return;
 
-            string robloxTitle = App.Settings.Prop.RobloxTitle;
-            _currentTitle = robloxTitle;
+            _configuredTitle = App.Settings.Prop.RobloxTitle;
 
-            App.Logger.Info(LOG_IDENT, $"Applying configured Roblox title: {robloxTitle}");
-            PInvoke.SetWindowText(_hWnd, robloxTitle);
+            if (_inGame)
+            {
+                App.Logger.Info(LOG_IDENT, "In-game, keeping current title instead of applying configured title.");
+                return;
+            }
 
-            if (robloxTitle != "Roblox")
+            _currentTitle = _configuredTitle;
+
+            App.Logger.Info(LOG_IDENT, $"Applying configured Roblox title: {_configuredTitle}");
+            PInvoke.SetWindowText(_hWnd, _configuredTitle);
+
+            if (_configuredTitle != "Roblox")
                 EnsureTitleHook();
         }
 
@@ -149,7 +159,10 @@ namespace Froststrap.Integrations
             if (!HasWindow)
                 return;
 
+            _inGame = true;
+            _gameTitle = title;
             _currentTitle = title;
+
             EnsureTitleHook();
 
             App.Logger.Info(LOG_IDENT, $"Applying game title to Roblox window: {title}");
@@ -159,6 +172,9 @@ namespace Froststrap.Integrations
         public void ResetToConfigured()
         {
             App.Logger.Info(LOG_IDENT, "Resetting Roblox window back to configured state");
+
+            _inGame = false;
+            _gameTitle = "";
 
             if (App.Settings.Prop.AutoChangeIcon)
                 ApplyConfiguredIcon();
@@ -214,20 +230,24 @@ namespace Froststrap.Integrations
             if (_titleHookInstalled)
                 return;
 
-            WINEVENTPROC? hook = _setTitleHook;
-            if (hook is null)
-                return;
+            Dispatcher.UIThread.Post(() =>
+            {
+                if (_titleHookInstalled || _disposed)
+                    return;
 
-            _titleHookInstalled = true;
+                _titleHookInstalled = true;
 
-            PInvoke.SetWinEventHook(
-                EVENT_OBJECT_NAMECHANGE,
-                EVENT_OBJECT_NAMECHANGE,
-                null,
-                hook,
-                0,
-                0,
-                WINEVENT_OUTOFCONTEXT);
+                PInvoke.SetWinEventHook(
+                    EVENT_OBJECT_NAMECHANGE,
+                    EVENT_OBJECT_NAMECHANGE,
+                    null,
+                    _setTitleHook,
+                    0,
+                    0,
+                    WINEVENT_OUTOFCONTEXT);
+
+                App.Logger.Info(LOG_IDENT, "Title change hook installed.");
+            });
         }
 
         private void SetWindowTitleHook(
@@ -239,6 +259,9 @@ namespace Froststrap.Integrations
             uint dwEventThread,
             uint dwmsEventTime)
         {
+            if (idObject != OBJID_WINDOW || idChild != 0)
+                return;
+
             if (!HasWindow || hWnd != _hWnd)
                 return;
 
