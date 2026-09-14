@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+using Avalonia.Media.Imaging;
+
 namespace Froststrap.Models
 {
     internal class QuickPlayGameItem
@@ -12,6 +14,7 @@ namespace Froststrap.Models
         public string Creator { get; set; } = string.Empty;
         public bool IsVerified { get; set; }
         public string ThumbnailUrl { get; set; } = string.Empty;
+        public Bitmap? ThumbnailBitmap { get; set; }
         public long Playing { get; set; }
         public long Visits { get; set; }
         public int ServerCount { get; set; }

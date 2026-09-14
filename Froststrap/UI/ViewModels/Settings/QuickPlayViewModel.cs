@@ -9,6 +9,7 @@ using FluentAvalonia.UI.Controls;
 using Froststrap.Integrations;
 using Froststrap.Integrations.AccountManager;
 using Froststrap.UI.Elements.Dialogs;
+using Froststrap.UI.Converters;
 using Froststrap.UI.Elements.Settings;
 using Froststrap.UI.ViewModels.Dialogs;
 using LucideAvalonia.Enum;
@@ -51,6 +52,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
     private QuickPlayGameItem? _selectedGame;
     private OmniSearchContent? _selectedSearchResult;
     private bool _disposed;
+    private readonly Action<AccountManagerAccount?> _onAccountChangedUiRefresh;
 
     private ObservableCollection<QuickPlayGameItem> _recentGames = [];
     private ObservableCollection<QuickPlayGameItem> _favoriteGames = [];
@@ -392,7 +394,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
             },
             () => HasCurrentSearchPlace);
 
-        AccountManager.Shared.ActiveAccountChanged += _ =>
+        _onAccountChangedUiRefresh = _ =>
         {
             Dispatcher.UIThread.InvokeAsync(() =>
             {
@@ -402,6 +404,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
                 JoinBestRegionFromSearchCommand.NotifyCanExecuteChanged();
             });
         };
+        AccountManager.Shared.ActiveAccountChanged += _onAccountChangedUiRefresh;
 
         AccountManager.Shared.ActiveAccountChanged += OnActiveAccountChanged;
         _ = SafeInitializeAsync();
@@ -721,7 +724,11 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
             var urls = await Thumbnails.GetThumbnailUrlsAsync(thumbRequests, token);
             if (token.IsCancellationRequested) return;
             if (urls.Length > 0 && !string.IsNullOrEmpty(urls[0]))
+            {
                 item.ThumbnailUrl = urls[0]!;
+                item.ThumbnailBitmap = await UrlToBitmapConverter.GetBitmapFromCacheOrDownloadAsync(urls[0]!);
+                if (token.IsCancellationRequested) return;
+            }
 
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
@@ -1004,8 +1011,10 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
 
     private static async Task FetchThumbnailsForGames(List<QuickPlayGameItem> games)
     {
-        var thumbRequests = games
-            .Where(item => item.UniverseId != 0)
+        var eligibleGames = games.Where(item => item.UniverseId != 0).ToList();
+        if (eligibleGames.Count == 0) return;
+
+        var thumbRequests = eligibleGames
             .Select(item => new ThumbnailRequest
             {
                 TargetId = (ulong)item.UniverseId,
@@ -1017,12 +1026,17 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
         try
         {
             var urls = await Thumbnails.GetThumbnailUrlsAsync(thumbRequests, CancellationToken.None);
-            for (int i = 0; i < games.Count; i++)
+
+            var downloadTasks = eligibleGames.Select(async (game, i) =>
             {
                 string? url = urls.ElementAtOrDefault(i);
-                if (!string.IsNullOrEmpty(url))
-                    games[i].ThumbnailUrl = url;
-            }
+                if (string.IsNullOrEmpty(url)) return;
+
+                game.ThumbnailUrl = url;
+                game.ThumbnailBitmap = await UrlToBitmapConverter.GetBitmapFromCacheOrDownloadAsync(url);
+            });
+
+            await Task.WhenAll(downloadTasks);
         }
         catch (Exception ex) { App.Logger.Error($"Thumbnail fetch failed: {ex.Message}"); }
     }
@@ -1364,6 +1378,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
 
             DisposeSearchThumbnails(_searchResults);
 
+            AccountManager.Shared.ActiveAccountChanged -= _onAccountChangedUiRefresh;
             AccountManager.Shared.ActiveAccountChanged -= OnActiveAccountChanged;
         }
 
