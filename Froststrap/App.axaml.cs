@@ -123,7 +123,10 @@ internal partial class App : Application
     {
         e.SetObserved();
 
-        Logger.Error(e.Exception, "Unobserved task exception (ignored, not fatal)");
+        Logger.Error(
+            e.Exception,
+            "An unobserved background task exception occurred."
+        );
     }
 
     public static void Terminate(ErrorCode exitCode = ErrorCode.ERROR_SUCCESS)

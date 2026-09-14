@@ -4,7 +4,6 @@
 // SPDX-License-Identifier: MPL-2.0
 
 using Avalonia.Threading;
-using Froststrap.UI.Elements.Dialogs;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PuppeteerSharp;
@@ -12,6 +11,9 @@ using System.Diagnostics;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
+using FluentAvalonia.UI.Controls;
+using Froststrap.UI.Elements.Dialogs;
+using Froststrap.UI.Elements.Settings;
 
 namespace Froststrap.Integrations.AccountManager
 {
@@ -167,6 +169,15 @@ namespace Froststrap.Integrations.AccountManager
                 App.Logger.Info("Launching browser for account login...");
                 string? executablePath = GetSystemBrowserPath();
 
+                if (executablePath != null)
+                {
+                    MainWindow.ShowGlobalNotification(
+                        "Compatible browser found!",
+                        "Launching browser for login.",
+                        FAInfoBarSeverity.Success
+                    );
+                }
+
                 if (executablePath == null)
                 {
                     var fetcher = new BrowserFetcher();
@@ -175,17 +186,12 @@ namespace Froststrap.Integrations.AccountManager
 
                     if (executablePath == null)
                     {
-                        var specificPath = Path.Combine(Paths.LocalAppData, "PuppeteerSharp");
-                        if (Directory.Exists(specificPath))
-                        {
-                            var chromeFiles = Directory.GetFiles(specificPath, "chrome.exe", SearchOption.AllDirectories);
-                            if (chromeFiles.Length > 0) executablePath = chromeFiles[0];
-                        }
-                    }
-
-                    if (executablePath == null)
-                    {
                         App.Logger.Info("No browser found, downloading Chromium...");
+                        MainWindow.ShowGlobalNotification(
+                            "No compatible browser found",
+                            "Please wait while we download Chromium for login.",
+                            FAInfoBarSeverity.Warning
+                        );
                         var browserInfo = await fetcher.DownloadAsync();
                         executablePath = browserInfo.GetExecutablePath();
                     }
@@ -284,84 +290,306 @@ namespace Froststrap.Integrations.AccountManager
             });
         }
 
+        private static readonly string[] CompatibleBrowsers =
+        [
+            "chrome",
+            "google-chrome",
+            "google-chrome-stable",
+            "chromium",
+            "chromium-browser",
+            "brave",
+            "brave-browser",
+            "edge",
+            "msedge",
+            "microsoft-edge",
+            "vivaldi",
+            "opera",
+            "opera-stable",
+            "helium",
+            "thorium",
+        ];
+
+        private static bool IsCompatibleBrowser(string? executablePath)
+        {
+            if (string.IsNullOrWhiteSpace(executablePath) || !File.Exists(executablePath))
+                return false;
+
+            string executableName = Path.GetFileNameWithoutExtension(executablePath);
+
+            return CompatibleBrowsers.Any(browser =>
+                executableName.Equals(browser, StringComparison.OrdinalIgnoreCase));
+        }
+
         private static string? GetSystemBrowserPath()
         {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) return GetWindowsBrowserPath();
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) return GetLinuxBrowserPath();
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) return GetMacOsBrowserPath();
-            return null;
+            string? browserPath = null;
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                browserPath = GetWindowsBrowserPath();
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                browserPath = GetLinuxBrowserPath();
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                browserPath = GetMacOsBrowserPath();
+
+            return IsCompatibleBrowser(browserPath) ? browserPath : null;
         }
 
         private static string? GetWindowsBrowserPath()
         {
-            string pf = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
-            string pfx86 = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
-            string local = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            try
+            {
+                using var key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(
+                    @"Software\Microsoft\Windows\Shell\Associations\UrlAssociations\http\UserChoice");
 
-            string[] paths =
-            [
-                Path.Combine(pf, "Google", "Chrome", "Application", "chrome.exe"),
-                Path.Combine(pfx86, "Google", "Chrome", "Application", "chrome.exe"),
-                Path.Combine(local, "Google", "Chrome", "Application", "chrome.exe"),
-                Path.Combine(pf, "Microsoft", "Edge", "Application", "msedge.exe"),
-                Path.Combine(pfx86, "Microsoft", "Edge", "Application", "msedge.exe"),
-                Path.Combine(pf, "BraveSoftware", "Brave-Browser", "Application", "brave.exe"),
-                Path.Combine(local, "BraveSoftware", "Brave-Browser", "Application", "brave.exe"),
-                Path.Combine(pf, "Vivaldi", "Application", "vivaldi.exe"),
-                Path.Combine(local, "Programs", "Opera", "opera.exe"),
-                Path.Combine(local, "Programs", "Opera GX", "opera.exe"),
-                Path.Combine(local, "Programs", "Arc", "Arc.exe"),
-            ];
+                string? progId = key?.GetValue("ProgId")?.ToString();
 
-            return paths.FirstOrDefault(File.Exists);
+                if (string.IsNullOrWhiteSpace(progId))
+                    return null;
+
+                using var commandKey = Microsoft.Win32.Registry.ClassesRoot.OpenSubKey(
+                    $@"{progId}\shell\open\command");
+
+                string? command = commandKey?.GetValue(null)?.ToString();
+
+                return GetExecutableFromCommand(command);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         private static string? GetLinuxBrowserPath()
         {
-            string[] candidates = ["google-chrome", "google-chrome-stable", "chromium", "chromium-browser", "microsoft-edge", "brave-browser", "vivaldi", "opera"];
-
-            foreach (var candidate in candidates)
+            try
             {
-                try
+                using var process = Process.Start(new ProcessStartInfo
                 {
-                    var result = Process.Start(new ProcessStartInfo
-                    {
-                        FileName = "which",
-                        Arguments = candidate,
-                        RedirectStandardOutput = true,
-                        UseShellExecute = false,
-                        CreateNoWindow = true
-                    });
+                    FileName = "xdg-mime",
+                    Arguments = "query default x-scheme-handler/http",
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                });
 
-                    if (result != null)
-                    {
-                        string output = result.StandardOutput.ReadToEnd().Trim();
-                        result.WaitForExit();
-                        if (!string.IsNullOrEmpty(output) && File.Exists(output)) return output;
-                    }
+                if (process == null)
+                    return null;
+
+                string desktopFile = process.StandardOutput.ReadToEnd().Trim();
+                process.WaitForExit();
+
+                if (string.IsNullOrWhiteSpace(desktopFile))
+                    return null;
+
+                string[] dataDirectories =
+                [
+                    Environment.GetEnvironmentVariable("XDG_DATA_HOME")
+                        ?? Path.Combine(
+                            Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                            ".local",
+                            "share"),
+
+                    ..(Environment.GetEnvironmentVariable("XDG_DATA_DIRS")
+                        ?? "/usr/local/share:/usr/share")
+                        .Split(':', StringSplitOptions.RemoveEmptyEntries)
+                ];
+
+                foreach (string directory in dataDirectories)
+                {
+                    string desktopPath = Path.Combine(directory, "applications", desktopFile);
+
+                    if (!File.Exists(desktopPath))
+                        continue;
+
+                    string? exec = File.ReadLines(desktopPath)
+                        .Select(line => line.Trim())
+                        .FirstOrDefault(line =>
+                            line.StartsWith("Exec=", StringComparison.OrdinalIgnoreCase));
+
+                    string? executable = GetExecutableFromCommand(
+                        exec?["Exec=".Length..]);
+
+                    if (executable != null)
+                        return executable;
                 }
-                catch { }
+            }
+            catch
+            {
             }
 
-            string[] fixedPaths = ["/usr/bin/google-chrome", "/usr/bin/chromium", "/usr/bin/microsoft-edge", "/usr/bin/brave-browser", "/snap/bin/chromium"];
-            return fixedPaths.FirstOrDefault(File.Exists);
+            return null;
         }
 
         private static string? GetMacOsBrowserPath()
         {
-            string userHome = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-            string[] paths =
-            [
-                "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
-                Path.Combine(userHome, "Applications", "Google Chrome.app", "Contents", "MacOS", "Google Chrome"),
-                "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge",
-                "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser",
-                "/Applications/Vivaldi.app/Contents/MacOS/Vivaldi",
-                "/Applications/Opera.app/Contents/MacOS/Opera",
-                "/Applications/Arc.app/Contents/MacOS/Arc"
-            ];
+            try
+            {
+                using var process = Process.Start(new ProcessStartInfo
+                {
+                    FileName = "defaults",
+                    Arguments = "read com.apple.LaunchServices/com.apple.launchservices.secure LSHandlers",
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                });
 
-            return paths.FirstOrDefault(File.Exists);
+                if (process == null)
+                    return null;
+
+                string output = process.StandardOutput.ReadToEnd();
+                process.WaitForExit();
+
+                string? bundleIdentifier = null;
+                bool isHttpHandler = false;
+
+                foreach (string line in output.Split('\n'))
+                {
+                    string trimmed = line.Trim();
+
+                    if (trimmed.Contains(
+                            "\"LSHandlerURLScheme\" = http",
+                            StringComparison.Ordinal))
+                    {
+                        isHttpHandler = true;
+                    }
+                    else if (isHttpHandler &&
+                             trimmed.StartsWith(
+                                 "LSHandlerRoleAll = ",
+                                 StringComparison.Ordinal))
+                    {
+                        bundleIdentifier = trimmed
+                            .Replace(
+                                "LSHandlerRoleAll = ",
+                                "",
+                                StringComparison.Ordinal)
+                            .Trim()
+                            .TrimEnd(';')
+                            .Trim('"');
+
+                        break;
+                    }
+                }
+
+                if (string.IsNullOrWhiteSpace(bundleIdentifier))
+                    return null;
+
+                using var findProcess = Process.Start(new ProcessStartInfo
+                {
+                    FileName = "mdfind",
+                    Arguments = $"kMDItemCFBundleIdentifier == '{bundleIdentifier}'",
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                });
+
+                if (findProcess == null)
+                    return null;
+
+                string applicationPath = findProcess.StandardOutput
+                    .ReadToEnd()
+                    .Split('\n', StringSplitOptions.RemoveEmptyEntries)
+                    .FirstOrDefault() ?? "";
+
+                findProcess.WaitForExit();
+
+                if (string.IsNullOrWhiteSpace(applicationPath))
+                    return null;
+
+                string? executableName = GetPlistValue(
+                    Path.Combine(applicationPath, "Contents", "Info.plist"),
+                    "CFBundleExecutable");
+
+                if (string.IsNullOrWhiteSpace(executableName))
+                    return null;
+
+                string executablePath = Path.Combine(
+                    applicationPath,
+                    "Contents",
+                    "MacOS",
+                    executableName);
+
+                return File.Exists(executablePath) ? executablePath : null;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private static string? GetExecutableFromCommand(string? command)
+        {
+            if (string.IsNullOrWhiteSpace(command))
+                return null;
+
+            command = command.Trim();
+
+            string executable;
+
+            if (command.StartsWith('"'))
+            {
+                int endQuote = command.IndexOf('"', 1);
+
+                if (endQuote <= 1)
+                    return null;
+
+                executable = command[1..endQuote];
+            }
+            else
+            {
+                executable = command
+                    .Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                    .FirstOrDefault() ?? "";
+            }
+
+            if (string.IsNullOrWhiteSpace(executable))
+                return null;
+
+            if (executable.Equals("flatpak", StringComparison.OrdinalIgnoreCase) ||
+                executable.Equals("snap", StringComparison.OrdinalIgnoreCase))
+                return null;
+
+            if (Path.IsPathFullyQualified(executable))
+                return File.Exists(executable) ? executable : null;
+
+            string? path = Environment.GetEnvironmentVariable("PATH");
+
+            if (string.IsNullOrWhiteSpace(path))
+                return null;
+
+            foreach (string directory in path.Split(
+                Path.PathSeparator,
+                StringSplitOptions.RemoveEmptyEntries))
+            {
+                string executablePath = Path.Combine(directory, executable);
+
+                if (File.Exists(executablePath))
+                    return executablePath;
+            }
+
+            return null;
+        }
+
+        private static string? GetPlistValue(string plistPath, string key)
+        {
+            if (!File.Exists(plistPath))
+                return null;
+
+            using var process = Process.Start(new ProcessStartInfo
+            {
+                FileName = "defaults",
+                Arguments = $"read \"{plistPath}\" {key}",
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            });
+
+            if (process == null)
+                return null;
+
+            string value = process.StandardOutput.ReadToEnd().Trim();
+            process.WaitForExit();
+
+            return string.IsNullOrWhiteSpace(value) ? null : value;
         }
     }
 }
