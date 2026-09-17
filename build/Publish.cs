@@ -70,6 +70,7 @@ public partial class Build : FalloutBuild
 
         if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) PublishMacOS(outputDirectory);
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) PublishWindows(outputDirectory);
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) PublishLinux(outputDirectory);
 
         if (process.ExitCode != 0)
         {
