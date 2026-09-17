@@ -11,19 +11,10 @@ jobs:
       - uses: actions/setup-dotnet@v5
         with:
           dotnet-version: "10.0.x"
-      - name: Install Nushell
-        shell: pwsh
-        run: |
-          winget install --id Nushell.Nushell --exact --accept-source-agreements --accept-package-agreements
-          $nuDir = Split-Path (Get-Command nu.exe -ErrorAction SilentlyContinue).Path
-          if (-not $nuDir) {
-            $nuDir = "$env:LOCALAPPDATA\Microsoft\WinGet\Links"
-          }
-          echo $nuDir >> $env:GITHUB_PATH
       - name: Set short SHA
         run: echo "SHORT_SHA=$("${{ github.sha }}".Substring(0, 7))" >> $env:GITHUB_ENV
       - name: Publish
-        run: nu ./main.nu debug
+        run: dotnet run --project build -- Publish --configuration Debug
       - uses: actions/upload-artifact@v6
         with:
           name: froststrap-debug-win-x64-${{ env.SHORT_SHA }}
@@ -62,19 +53,8 @@ jobs:
       - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: "10.0.x"
-      - name: Install Nushell
-        shell: bash
-        run: |
-          wget -qO- https://apt.fury.io/nushell/gpg.key |
-          sudo gpg --dearmor -o /etc/apt/keyrings/fury-nushell.gpg
-
-          echo "deb [signed-by=/etc/apt/keyrings/fury-nushell.gpg] https://apt.fury.io/nushell/ /" |
-          sudo tee /etc/apt/sources.list.d/fury-nushell.list
-
-          sudo apt-get update || true
-          sudo apt-get install -y nushell
       - name: Publish
-        run: nu ./main.nu debug
+        run: dotnet run --project build -- Publish --configuration Debug
       - uses: actions/upload-artifact@v6
         with:
           name: froststrap-debug-linux-x64-${{ env.SHORT_SHA }}
