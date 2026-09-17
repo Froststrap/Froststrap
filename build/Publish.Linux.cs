@@ -1,0 +1,164 @@
+using System;
+using System.IO;
+using System.Linq;
+using Fallout.Common;
+using Fallout.Common.IO;
+using Serilog;
+
+public partial class Build : FalloutBuild
+{
+    string GetVersion()
+    {
+        var (_, stdout, _) = RunProcessCaptured("git", "describe --tags --always --dirty");
+        var raw = stdout.Trim();
+        if (string.IsNullOrEmpty(raw))
+            raw = "1.0.0";
+        return raw.TrimStart('v').Replace('-', '~');
+    }
+
+    void PublishLinux(string outputDirectory)
+    {
+        var version = GetVersion();
+        var rpmVersion = version.Replace('+', '_');
+        Log.Debug("Detected build version as {ver}", version);
+        Log.Debug("Detected RPM version as {ver}", rpmVersion);
+
+        AbsolutePath packaging = GitRoot / "packaging";
+        AbsolutePath buildDir  = packaging;
+        AbsolutePath appDir    = buildDir / "AppDir";
+        AbsolutePath publishDir = (AbsolutePath)outputDirectory;
+
+        if (Directory.Exists(appDir))
+            Directory.Delete(appDir, recursive: true);
+
+        Directory.CreateDirectory(appDir / "usr" / "bin");
+        Directory.CreateDirectory(appDir / "usr" / "share" / "applications");
+        Directory.CreateDirectory(appDir / "usr" / "share" / "icons" / "hicolor" / "512x512" / "apps");
+
+        AbsolutePath icon = GitRoot / "Froststrap" / "Froststrap.png";
+
+        File.Copy(publishDir / "Froststrap", appDir / "usr" / "bin" / "Froststrap", overwrite: true);
+        File.Copy(icon, appDir / "froststrap.png", overwrite: true);
+        File.Copy(icon, appDir / "usr" / "share" / "icons" / "hicolor" / "512x512" / "apps" / "froststrap.png", overwrite: true);
+
+        RunProcess("chmod", $"+x \"{appDir / "usr" / "bin" / "Froststrap"}\"");
+
+        var desktopEntry = $"""
+            [Desktop Entry]
+            Type=Application
+            Name=Froststrap
+            Comment=A fork of Fishstrap, focused on performance and customization
+            Exec=Froststrap %u
+            TryExec=Froststrap
+            Icon=froststrap
+            Terminal=false
+            Categories=Game;
+            MimeType=x-scheme-handler/roblox;x-scheme-handler/roblox-player;
+            X-AppImage-Version={version}
+            """;
+
+        File.WriteAllText(appDir / "Froststrap.desktop", desktopEntry);
+        File.Copy(appDir / "Froststrap.desktop",
+                  appDir / "usr" / "share" / "applications" / "Froststrap.desktop",
+                  overwrite: true);
+
+        var appRun = """
+            #!/bin/sh
+            HERE="$(dirname "$(readlink -f "$0")")"
+            exec "$HERE/usr/bin/Froststrap" "$@"
+            """;
+
+        File.WriteAllText(appDir / "AppRun", appRun);
+        RunProcess("chmod", $"+x \"{appDir / "AppRun"}\"");
+
+        BuildAppImage(buildDir, appDir);
+        BuildRpm(buildDir, appDir, rpmVersion);
+        BuildDeb(buildDir, appDir, packaging, version);
+
+        Directory.Delete(appDir, recursive: true);
+        File.Delete(buildDir / "appimagetool.AppImage");
+        Directory.Delete(buildDir / "rpmbuild", recursive: true);
+
+        Log.Information("Linux builds complete");
+    }
+
+    void BuildAppImage(AbsolutePath buildDir, AbsolutePath appDir)
+    {
+        string tool = "appimagetool";
+
+        if (!IsOnPath("appimagetool"))
+        {
+            AbsolutePath toolPath = buildDir / "appimagetool.AppImage";
+            Log.Information("appimagetool not found on PATH, downloading to {path}", toolPath);
+            RunProcess("curl",
+                $"-L --fail -o \"{toolPath}\" " +
+                "https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage");
+            RunProcess("chmod", $"+x \"{toolPath}\"");
+            tool = toolPath;
+        }
+
+        Environment.SetEnvironmentVariable("ARCH", "x86_64");
+        Environment.SetEnvironmentVariable("SOURCE_DATE_EPOCH", null);
+
+        Log.Information("Building AppImage");
+        RunProcess(tool,
+            $"--appimage-extract-and-run \"{appDir}\" \"{buildDir / "Froststrap-linux-x64.AppImage"}\"");
+    }
+
+    void BuildRpm(AbsolutePath buildDir, AbsolutePath appDir, string rpmVersion)
+    {
+        AbsolutePath topDir = buildDir / "rpmbuild";
+
+        foreach (var sub in new[] { "BUILD", "BUILDROOT", "RPMS", "SOURCES", "SPECS", "SRPMS" })
+            Directory.CreateDirectory(topDir / sub);
+
+        AbsolutePath spec = GitRoot / "packaging" / "fedora" / "froststrap-rpm.spec";
+
+        Log.Information("Building RPM from {spec}", spec);
+        RunProcess("rpmbuild",
+            $"-bb \"{spec}\" " +
+            $"--define \"_topdir {topDir}\" " +
+            $"--define \"_froststrap_appdir {appDir}\" " +
+            $"--define \"froststrap_version {rpmVersion}\"");
+
+        var rpm = Directory
+            .EnumerateFiles(topDir / "RPMS", "*.rpm", SearchOption.AllDirectories)
+            .OrderBy(File.GetLastWriteTimeUtc)
+            .LastOrDefault();
+
+        if (rpm is null)
+            throw new InvalidOperationException($"rpmbuild produced no .rpm under {topDir / "RPMS"}");
+
+        File.Copy(rpm, buildDir / "Froststrap-linux-x64.rpm", overwrite: true);
+    }
+
+    void BuildDeb(AbsolutePath buildDir, AbsolutePath appDir, AbsolutePath packaging, string version)
+    {
+        AbsolutePath debianDir = appDir / "DEBIAN";
+        Directory.CreateDirectory(debianDir);
+
+        var control = $"""
+            Package: froststrap
+            Version: {version}
+            Architecture: amd64
+            Maintainer: Froststrap-Dev
+            Depends: libicu-dev
+            Description: Roblox bootstrapper and mod manager
+
+            """;
+
+        File.WriteAllText(debianDir / "control", control);
+
+        File.Copy(packaging / "debian" / "postinst", debianDir / "postinst", overwrite: true);
+        RunProcess("chmod", $"755 \"{debianDir / "postinst"}\"");
+
+        Log.Information("Building .deb");
+        RunProcess("dpkg-deb", $"--build \"{appDir}\" \"{buildDir / "Froststrap-linux-x64.deb"}\"");
+    }
+
+    static bool IsOnPath(string exe) =>
+        (Environment.GetEnvironmentVariable("PATH") ?? "")
+            .Split(Path.PathSeparator)
+            .Where(d => !string.IsNullOrWhiteSpace(d))
+            .Any(d => File.Exists(Path.Combine(d, exe)));
+}

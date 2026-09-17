@@ -32,7 +32,7 @@ jobs:
       - uses: actions/upload-artifact@v7
         with:
           name: froststrap-release-win-x64-${{ env.SHORT_SHA }}
-          path: build/*
+          path: .build/publish/*
 
   build-macos:
     runs-on: ${{ matrix.runner }}
@@ -116,25 +116,13 @@ jobs:
         with:
           dotnet-version: "10.0.x"
 
-      - name: Install Nushell
-        shell: bash
-        run: |
-          wget -qO- https://apt.fury.io/nushell/gpg.key |
-          sudo gpg --dearmor -o /etc/apt/keyrings/fury-nushell.gpg
-
-          echo "deb [signed-by=/etc/apt/keyrings/fury-nushell.gpg] https://apt.fury.io/nushell/ /" |
-          sudo tee /etc/apt/sources.list.d/fury-nushell.list
-
-          sudo apt-get update || true
-          sudo apt-get install -y nushell
-
       - name: Build and package binaries
-        run: nu ./main.nu publish
+        run: dotnet run --project build -- Publish --configuration Release
 
       - uses: actions/upload-artifact@v7
         with:
           name: froststrap-release-linux-x64-${{ env.SHORT_SHA }}
-          path: build/*
+          path: .build/publish/*
 
   release:
     needs:
