@@ -21,9 +21,15 @@ namespace Froststrap.Integrations
 
         public FroststrapRichPresence()
         {
-            _rpcClient = new DiscordRpcClient("1399535282713399418", -1, null, true, DiscordIpcPipeClient.Create())
+            _rpcClient = new DiscordRpcClient(
+                "1399535282713399418",
+                -1,
+                null,
+                true,
+                DiscordIpcPipeClient.Create())
             {
-                SkipIdenticalPresence = true
+                SkipIdenticalPresence = true,
+                ShutdownOnly = true
             };
 
             _rpcClient.OnReady += OnReady;
@@ -127,9 +133,12 @@ namespace Froststrap.Integrations
             }
         }
 
+        // i have refixed this fucking code 3 times now it BETTER not get removed
         public void Dispose()
         {
-            if (_disposed) return;
+            if (_disposed)
+                return;
+
             _disposed = true;
 
             App.Logger.Info("Cleaning up Discord RPC");
@@ -139,21 +148,11 @@ namespace Froststrap.Integrations
                 try
                 {
                     _rpcClient.OnReady -= OnReady;
-
-                    if (_rpcClient.IsInitialized)
-                    {
-                        try
-                        {
-                            _rpcClient.ClearPresence();
-                        }
-                        catch (IOException) { /* Ignore pipe closure issues */ }
-                    }
-
                     _rpcClient.Dispose();
                 }
                 catch (IOException ex) when (ex.InnerException is SocketException)
                 {
-                    // Ignore
+                    // Ignore pipe closure issues.
                 }
                 catch (Exception ex)
                 {
