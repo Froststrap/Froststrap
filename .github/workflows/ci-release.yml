@@ -20,16 +20,6 @@ jobs:
 
       - name: Install NSIS
         uses: negrutiu/nsis-install@v2
-
-      - name: Install Nushell
-        shell: pwsh
-        run: |
-          winget install --id Nushell.Nushell --exact --accept-source-agreements --accept-package-agreements
-          $nuDir = Split-Path (Get-Command nu.exe -ErrorAction SilentlyContinue).Path
-          if (-not $nuDir) {
-            $nuDir = "$env:LOCALAPPDATA\Microsoft\WinGet\Links"
-          }
-          echo $nuDir >> $env:GITHUB_PATH
           
       - name: Set short SHA
         shell: pwsh
@@ -37,7 +27,7 @@ jobs:
           "SHORT_SHA=$("${{ github.sha }}".Substring(0, 7))" >> $env:GITHUB_ENV
 
       - name: Build and package
-        run: nu ./main.nu publish
+        run: dotnet run --project build -- Publish --configuration Release
 
       - uses: actions/upload-artifact@v7
         with:
