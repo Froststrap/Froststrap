@@ -8,7 +8,7 @@ using Serilog;
 
 public partial class Build : FalloutBuild
 {
-    void PublishMacOS(string outputDirectory, bool sign = false)
+    void PublishMacOS(string outputDirectory)
     {
         AbsolutePath virtualbackendBuildRoot = GitRoot / "backend" / "virtualdisplay" / ".build";
         AbsolutePath macAppLocation = GitRoot / "packaging" / "macApp";
@@ -57,6 +57,12 @@ public partial class Build : FalloutBuild
         copyProc.StartInfo.UseShellExecute = false;
         copyProc.Start();
         copyProc.WaitForExit();
+
+        bool sign = string.Equals(
+            Environment.GetEnvironmentVariable("SIGN"),
+            "true",
+            StringComparison.OrdinalIgnoreCase
+        );
 
         if (sign)
         {
