@@ -23,10 +23,10 @@ public partial class Build : FalloutBuild
         Log.Debug("Detected build version as {ver}", version);
         Log.Debug("Detected RPM version as {ver}", rpmVersion);
 
-        AbsolutePath packaging = GitRoot / "packaging";
-        AbsolutePath buildDir  = packaging;
-        AbsolutePath appDir    = buildDir / "AppDir";
-        AbsolutePath publishDir = (AbsolutePath)outputDirectory;
+        AbsolutePath outputDir      = outputDirectory;
+        AbsolutePath sourcePackaging = GitRoot / "packaging";
+        AbsolutePath appDir         = outputDir / "AppDir";
+        AbsolutePath publishDir     = outputDir;
 
         if (Directory.Exists(appDir))
             Directory.Delete(appDir, recursive: true);
@@ -71,13 +71,13 @@ public partial class Build : FalloutBuild
         File.WriteAllText(appDir / "AppRun", appRun);
         RunProcess("chmod", $"+x \"{appDir / "AppRun"}\"");
 
-        BuildAppImage(buildDir, appDir);
-        BuildRpm(buildDir, appDir, rpmVersion);
-        BuildDeb(buildDir, appDir, packaging, version);
+        BuildAppImage(outputDir, appDir);
+        BuildRpm(outputDir, appDir, sourcePackaging, rpmVersion);
+        BuildDeb(outputDir, appDir, sourcePackaging, version);
 
         Directory.Delete(appDir, recursive: true);
-        File.Delete(buildDir / "appimagetool.AppImage");
-        Directory.Delete(buildDir / "rpmbuild", recursive: true);
+        File.Delete(outputDir / "appimagetool.AppImage");
+        Directory.Delete(outputDir / "rpmbuild", recursive: true);
 
         Log.Information("Linux builds complete");
     }
@@ -105,14 +105,14 @@ public partial class Build : FalloutBuild
             $"--appimage-extract-and-run \"{appDir}\" \"{buildDir / "Froststrap-linux-x64.AppImage"}\"");
     }
 
-    void BuildRpm(AbsolutePath buildDir, AbsolutePath appDir, string rpmVersion)
+    void BuildRpm(AbsolutePath outputDir, AbsolutePath appDir, AbsolutePath sourcePackaging, string rpmVersion)
     {
-        AbsolutePath topDir = buildDir / "rpmbuild";
+        AbsolutePath topDir = outputDir / "rpmbuild";
 
         foreach (var sub in new[] { "BUILD", "BUILDROOT", "RPMS", "SOURCES", "SPECS", "SRPMS" })
             Directory.CreateDirectory(topDir / sub);
 
-        AbsolutePath spec = GitRoot / "packaging" / "fedora" / "froststrap-rpm.spec";
+        AbsolutePath spec = sourcePackaging / "fedora" / "froststrap-rpm.spec";
 
         Log.Information("Building RPM from {spec}", spec);
         RunProcess("rpmbuild",
@@ -129,10 +129,10 @@ public partial class Build : FalloutBuild
         if (rpm is null)
             throw new InvalidOperationException($"rpmbuild produced no .rpm under {topDir / "RPMS"}");
 
-        File.Copy(rpm, buildDir / "Froststrap-linux-x64.rpm", overwrite: true);
+        File.Copy(rpm, outputDir / "Froststrap-linux-x64.rpm", overwrite: true);
     }
 
-    void BuildDeb(AbsolutePath buildDir, AbsolutePath appDir, AbsolutePath packaging, string version)
+    void BuildDeb(AbsolutePath outputDir, AbsolutePath appDir, AbsolutePath sourcePackaging, string version)
     {
         AbsolutePath debianDir = appDir / "DEBIAN";
         Directory.CreateDirectory(debianDir);
@@ -149,13 +149,13 @@ public partial class Build : FalloutBuild
 
         File.WriteAllText(debianDir / "control", control);
 
-        File.Copy(packaging / "debian" / "postinst", debianDir / "postinst", overwrite: true);
+        File.Copy(sourcePackaging / "debian" / "postinst", debianDir / "postinst", overwrite: true);
         RunProcess("chmod", $"755 \"{debianDir / "postinst"}\"");
 
         Log.Information("Building .deb");
-        RunProcess("dpkg-deb", $"--build \"{appDir}\" \"{buildDir / "Froststrap-linux-x64.deb"}\"");
+        RunProcess("dpkg-deb", $"--build \"{appDir}\" \"{outputDir / "Froststrap-linux-x64.deb"}\"");
     }
-
+    
     static bool IsOnPath(string exe) =>
         (Environment.GetEnvironmentVariable("PATH") ?? "")
             .Split(Path.PathSeparator)
