@@ -27,7 +27,7 @@ Name "Froststrap"
 !endif
 
 !ifdef SELFCONTAINED
-  OutFile "..\build\Froststrap-windows-x64.exe"
+  OutFile "..\.build\publish\Froststrap-windows-x64.exe"
 !else
   OutFile "${PUBLISH_DIR}\Froststrap-windows-x64.exe"
 !endif
