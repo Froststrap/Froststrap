@@ -1958,7 +1958,7 @@ internal partial class Bootstrapper : IDisposable
         var installStartInfo = new ProcessStartInfo
         {
             FileName = "flatpak",
-            Arguments = $"install --assumeyes --noninteractive --user flathub {SoberFlatpakId}",
+            Arguments = $"install --noninteractive flathub {SoberFlatpakId}",
             UseShellExecute = false,
             RedirectStandardOutput = true,
             RedirectStandardError = true,
