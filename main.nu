@@ -24,15 +24,7 @@ let commands = [
 
 def publish [] {
   print "Running publish"
-  match (uname | get operating-system) {
-    $s if ($s | str contains "Linux") => {
-      nu ($script_dir | path join "packaging/linux.nu") $project_file $build_dir "Publish-linux-x64"
-    }
-    $s if ($s | str contains "Windows") => {
-      nu ($script_dir | path join "packaging/windows.nu") $project_file $build_dir
-    }
-    _ => {}
-  }
+  nu ($script_dir | path join "packaging/linux.nu") $project_file $build_dir "Publish-linux-x64"
 }
 
 def build [] {
@@ -42,15 +34,7 @@ def build [] {
 
 def debug [] {
   print "Running debug"
-  match (uname | get operating-system) {
-    $s if ($s | str contains "Linux") => {
-      dotnet publish $project_file -r linux-x64 -c Debug --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true --configfile nuget.config
-    }
-    $s if ($s | str contains "Windows") => {
-      dotnet publish $project_file -r win-x64 -c Debug --self-contained true -p:PublishSingleFile=true --configfile nuget.config
-    }
-    _ => {}
-  }
+  dotnet publish $project_file -r linux-x64 -c Debug --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true --configfile nuget.config
 }
 
 def sayHelp [] {
