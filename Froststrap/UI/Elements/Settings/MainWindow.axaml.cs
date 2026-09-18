@@ -63,17 +63,6 @@ namespace Froststrap.UI.Elements.Settings
             _viewModel.RequestCloseWindowEvent += (_, _) => Close();
             _viewModel.SearchBar.SearchResultSelected += (_, item) => OnSearchResultSelected(item);
 
-            _viewModel.SearchBar.PropertyChanged += (sender, e) =>
-            {
-                if (e.PropertyName == nameof(UI.ViewModels.SearchBarViewModel.SearchQuery))
-                {
-                    if (!string.IsNullOrWhiteSpace(_viewModel.SearchBar.SearchQuery))
-                    {
-                        StartIndexingAllPagesIfNeeded();
-                    }
-                }
-            };
-
             App.Logger.Debug("Initializing settings window");
 
             if (showAlreadyRunningWarning)
@@ -136,12 +125,6 @@ namespace Froststrap.UI.Elements.Settings
         {
             if (!e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
                 return;
-
-            if (e.Source is Visual hit)
-            {
-                if (hit.FindAncestorOfType<SearchBar>() != null)
-                    return;
-            }
 
             this.BeginMoveDrag(e);
         }
@@ -267,6 +250,16 @@ namespace Froststrap.UI.Elements.Settings
                 var action = GetNavigationAction(tag);
                 action?.Invoke();
             }
+        }
+
+        private async void OpenSearchDialog(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            if (_viewModel == null) return;
+
+            StartIndexingAllPagesIfNeeded();
+
+            var dialog = new SearchDialog(_viewModel.SearchBar);
+            await dialog.ShowDialog(this);
         }
 
         private void UpdateSelectedNavigationViewItem(string selectedPage)

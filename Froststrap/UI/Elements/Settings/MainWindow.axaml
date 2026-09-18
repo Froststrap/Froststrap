@@ -30,15 +30,8 @@ SPDX-License-Identifier: MPL-2.0
     CanResize="True"
     WindowStartupLocation="CenterScreen">
 
-    <Grid RowDefinitions="48,*,56">
-        <Grid Grid.Row="0" Background="{DynamicResource ControlFillColorDefaultBrush}" PointerPressed="TitleBarGrid_PointerPressed">
-            <elements:SearchBar
-                Grid.Column="1"
-                Width="400"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                DataContext="{Binding SearchBar}" />
-        </Grid>
+    <Grid RowDefinitions="36,*,56">
+        <Panel Grid.Row="0" Background="{DynamicResource ControlFillColorDefaultBrush}" PointerPressed="TitleBarGrid_PointerPressed"/>
 
         <ui:FANavigationView
             Name="NavView"
@@ -49,6 +42,39 @@ SPDX-License-Identifier: MPL-2.0
             ItemInvoked="NavView_ItemInvoked"
             OpenPaneLength="220"
             PaneDisplayMode="Left">
+
+            <ui:FANavigationView.PaneToggleRowContent>
+                <controls:IconButton Icon="Search"
+                                     Click="OpenSearchDialog"
+                                     Width="40"
+                                     Height="36"
+                                     Padding="0"
+                                     Margin="4,2"
+                                     Background="{DynamicResource NavigationViewItemBackground}"
+                                     Foreground="{DynamicResource NavigationViewItemForeground}"
+                                     BorderThickness="0"
+                                     BorderBrush="Transparent"
+                                     CornerRadius="{DynamicResource ControlCornerRadius}"
+                                     IconSize="14">
+                    <controls:IconButton.Styles>
+                        <Style Selector="controls|IconButton">
+                            <Style Selector="^:pointerover">
+                                <Setter Property="Foreground" Value="{DynamicResource NavigationViewButtonForegroundPointerOver}" />
+                            </Style>
+                            <Style Selector="^:pointerover /template/ Border#PART_LayoutRoot">
+                                <Setter Property="Background" Value="{DynamicResource NavigationViewButtonBackgroundPointerOver}" />
+                            </Style>
+                            <Style Selector="^:pressed">
+                                <Setter Property="Foreground" Value="{DynamicResource NavigationViewButtonForegroundPressed}" />
+                            </Style>
+                            <Style Selector="^:pressed /template/ Border#PART_LayoutRoot">
+                                <Setter Property="Background" Value="{DynamicResource NavigationViewButtonBackgroundPressed}" />
+                            </Style>
+                        </Style>
+                    </controls:IconButton.Styles>
+                </controls:IconButton>
+            </ui:FANavigationView.PaneToggleRowContent>
+
             <ui:FANavigationView.MenuItems>
                 <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_Integrations_Title}" Tag="integrations">
                     <ui:FANavigationViewItem.Icon>

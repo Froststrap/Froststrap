@@ -1,0 +1,218 @@
+<!--
+SPDX-FileCopyrightText: 2026 Froststrap
+
+SPDX-License-Identifier: MPL-2.0
+-->
+
+<Window
+    x:Class="Froststrap.UI.Elements.SearchDialog"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+    xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
+    xmlns:models="using:Froststrap.Models"
+    xmlns:ui="using:FluentAvalonia.UI.Controls"
+    xmlns:vm="clr-namespace:Froststrap.UI.ViewModels"
+    x:DataType="vm:SearchBarViewModel"
+    Title="Search"
+    Width="1125"
+    Height="700"
+    CanResize="False"
+    ShowInTaskbar="False"
+    WindowStartupLocation="Manual"
+    WindowDecorations="None"
+    TransparencyLevelHint="Transparent"
+    Background="Transparent">
+
+    <Grid>
+        <Border Background="#99000000"
+                PointerPressed="Overlay_PointerPressed" />
+
+        <Border CornerRadius="12"
+                Width="640"
+                MaxHeight="600"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Background="{DynamicResource SolidBackgroundFillColorBaseBrush}"
+                BorderBrush="{DynamicResource ControlElevationBorderBrush}"
+                BorderThickness="1"
+                ClipToBounds="True">
+            <Grid RowDefinitions="Auto,1,*">
+
+                <Border Grid.Row="0"
+                        Padding="20,20,20,16"
+                        PointerPressed="Header_PointerPressed">
+                    <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
+                            BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                            BorderThickness="1"
+                            CornerRadius="8"
+                            Height="48">
+                        <Panel>
+                            <ic:Lucide Icon="Search"
+                                       Width="18"
+                                       Height="18"
+                                       HorizontalAlignment="Left"
+                                       VerticalAlignment="Center"
+                                       Margin="16,0,0,0"
+                                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                       IsHitTestVisible="False" />
+
+                            <TextBox x:Name="SearchBox"
+                                     Text="{Binding SearchQuery, Mode=TwoWay}"
+                                     PlaceholderText="Search across all settings..."
+                                     BorderThickness="0"
+                                     Background="Transparent"
+                                     FontSize="15"
+                                     Padding="44,0,44,0"
+                                     VerticalContentAlignment="Center" />
+
+                            <controls:IconButton Icon="X"
+                                                 Command="{Binding ClearSearchCommand}"
+                                                 IsVisible="{Binding SearchQuery, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                                 Width="32"
+                                                 Height="32"
+                                                 Padding="0"
+                                                 HorizontalAlignment="Right"
+                                                 VerticalAlignment="Center"
+                                                 Margin="0,0,8,0"
+                                                 Background="Transparent"
+                                                 BorderThickness="0"
+                                                 IconSize="14" />
+                        </Panel>
+                    </Border>
+                </Border>
+
+                <Border Grid.Row="1"
+                        Background="{DynamicResource DividerStrokeColorDefaultBrush}" />
+
+                <Panel Grid.Row="2" MinHeight="320">
+
+                    <ScrollViewer Padding="12,8,12,16"
+                                  IsVisible="{Binding ShowResults}"
+                                  HorizontalScrollBarVisibility="Disabled"
+                                  VerticalScrollBarVisibility="Auto">
+                        <StackPanel Spacing="12">
+                            <TextBlock Text="{Binding ResultsCountText}"
+                                       Margin="8,4,0,0"
+                                       FontSize="12"
+                                       Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+
+                            <ItemsControl ItemsSource="{Binding GroupedSearchResults}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate DataType="vm:SearchResultGroup">
+                                        <Border Background="{DynamicResource LayerFillColorDefaultBrush}"
+                                                BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                                                BorderThickness="1"
+                                                CornerRadius="8"
+                                                Margin="0,0,0,8"
+                                                ClipToBounds="True">
+                                            <StackPanel>
+                                                <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
+                                                        Padding="14,10">
+                                                    <StackPanel Orientation="Horizontal" Spacing="10">
+                                                        <ic:Lucide Icon="{Binding IconSymbol}"
+                                                                   Width="18" Height="18"
+                                                                   VerticalAlignment="Center" />
+                                                        <TextBlock Text="{Binding PageName}"
+                                                                   FontWeight="SemiBold"
+                                                                   FontSize="14"
+                                                                   VerticalAlignment="Center" />
+                                                    </StackPanel>
+                                                </Border>
+
+                                                <ItemsControl ItemsSource="{Binding Items}">
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate DataType="vm:SearchResultEntry">
+                                                            <Button Classes="SearchItem"
+                                                                    HorizontalAlignment="Stretch"
+                                                                    HorizontalContentAlignment="Stretch"
+                                                                    Padding="0"
+                                                                    Background="Transparent"
+                                                                    BorderThickness="0"
+                                                                    Command="{Binding $parent[Window].((vm:SearchBarViewModel)DataContext).SearchResultSelectedCommand}"
+                                                                    CommandParameter="{Binding Item}">
+                                                                <Grid ColumnDefinitions="28,*" MinHeight="52">
+
+                                                                    <Grid Grid.Column="0" Width="28" ClipToBounds="True">
+                                                                        <Border Width="1"
+                                                                                HorizontalAlignment="Right"
+                                                                                Margin="0,0,14,0"
+                                                                                Background="{DynamicResource DividerStrokeColorDefaultBrush}"
+                                                                                VerticalAlignment="Stretch"
+                                                                                IsVisible="{Binding !IsLastInGroup}" />
+
+                                                                        <Border Width="1"
+                                                                                HorizontalAlignment="Right"
+                                                                                Margin="0,0,14,0"
+                                                                                Background="{DynamicResource DividerStrokeColorDefaultBrush}"
+                                                                                VerticalAlignment="Top"
+                                                                                Height="26"
+                                                                                IsVisible="{Binding IsLastInGroup}" />
+
+                                                                        <Border Height="1"
+                                                                                Width="14"
+                                                                                HorizontalAlignment="Right"
+                                                                                VerticalAlignment="Top"
+                                                                                Margin="0,26,0,0"
+                                                                                Background="{DynamicResource DividerStrokeColorDefaultBrush}" />
+                                                                    </Grid>
+
+                                                                    <StackPanel Grid.Column="1" Margin="4,10,14,10" Spacing="2">
+                                                                        <TextBlock Text="{Binding DisplayName}"
+                                                                                   FontWeight="SemiBold"
+                                                                                   FontSize="13"
+                                                                                   TextTrimming="CharacterEllipsis" />
+                                                                        <TextBlock Text="{Binding Description}"
+                                                                                   FontSize="12"
+                                                                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                                                                   TextTrimming="CharacterEllipsis"
+                                                                                   IsVisible="{Binding HasDescription}" />
+                                                                    </StackPanel>
+                                                                </Grid>
+                                                            </Button>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </ScrollViewer>
+
+                    <StackPanel VerticalAlignment="Center"
+                                HorizontalAlignment="Center"
+                                Spacing="12"
+                                IsVisible="{Binding ShowEmptyState}">
+                        <ic:Lucide Icon="Search" Width="32" Height="32" Opacity="0.4" />
+                        <TextBlock Text="Start typing to search across all settings"
+                                   FontSize="14"
+                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                    </StackPanel>
+
+                    <StackPanel VerticalAlignment="Center"
+                                HorizontalAlignment="Center"
+                                Spacing="12"
+                                IsVisible="{Binding IsIndexing}">
+                        <ui:FAProgressRing IsIndeterminate="True" Width="32" Height="32" />
+                        <TextBlock Text="Indexing pages..."
+                                   FontSize="14"
+                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                    </StackPanel>
+
+                    <StackPanel VerticalAlignment="Center"
+                                HorizontalAlignment="Center"
+                                Spacing="12"
+                                IsVisible="{Binding ShowNoResults}">
+                        <ic:Lucide Icon="SearchX" Width="32" Height="32" Opacity="0.4" />
+                        <TextBlock Text="No results found"
+                                   FontSize="14"
+                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                    </StackPanel>
+
+                </Panel>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

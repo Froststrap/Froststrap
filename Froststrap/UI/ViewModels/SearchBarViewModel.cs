@@ -5,10 +5,29 @@
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using LucideAvalonia.Enum;
 using System.Collections.ObjectModel;
 
 namespace Froststrap.UI.ViewModels
 {
+    internal class SearchResultEntry
+    {
+        public required SearchBarItem Item { get; init; }
+        public required bool IsLastInGroup { get; init; }
+
+        public string Connector => IsLastInGroup ? "└" : "├";
+        public string DisplayName => Item.DisplayName;
+        public string Description => Item.Description ?? string.Empty;
+        public bool HasDescription => !string.IsNullOrEmpty(Item.Description);
+    }
+
+    internal class SearchResultGroup
+    {
+        public string PageName { get; init; } = string.Empty;
+        public LucideIconNames IconSymbol { get; init; }
+        public ObservableCollection<SearchResultEntry> Items { get; init; } = [];
+    }
+
     internal partial class SearchBarViewModel : ObservableObject, IDisposable
     {
         private string _searchQuery = string.Empty;
@@ -47,7 +66,15 @@ namespace Froststrap.UI.ViewModels
         public bool IsIndexing
         {
             get => _isIndexing;
-            set => SetProperty(ref _isIndexing, value);
+            set
+            {
+                if (SetProperty(ref _isIndexing, value))
+                {
+                    OnPropertyChanged(nameof(ShowEmptyState));
+                    OnPropertyChanged(nameof(ShowNoResults));
+                    OnPropertyChanged(nameof(ShowResults));
+                }
+            }
         }
 
         private ObservableCollection<SearchBarItem> _filteredSearchResults = [];
@@ -58,6 +85,40 @@ namespace Froststrap.UI.ViewModels
             {
                 SetProperty(ref _filteredSearchResults, value);
                 IsDropDownOpen = !string.IsNullOrWhiteSpace(SearchQuery) && value.Count > 0;
+            }
+        }
+
+        private ObservableCollection<SearchResultGroup> _groupedSearchResults = [];
+        public ObservableCollection<SearchResultGroup> GroupedSearchResults
+        {
+            get => _groupedSearchResults;
+            private set
+            {
+                SetProperty(ref _groupedSearchResults, value);
+                OnPropertyChanged(nameof(HasResults));
+                OnPropertyChanged(nameof(ResultsCountText));
+                OnPropertyChanged(nameof(ShowNoResults));
+                OnPropertyChanged(nameof(ShowResults));
+            }
+        }
+
+        public bool HasResults => GroupedSearchResults.Count > 0;
+        public bool HasQuery => !string.IsNullOrWhiteSpace(SearchQuery);
+        public bool ShowEmptyState => !HasQuery && !IsIndexing;
+        public bool ShowNoResults => HasQuery && !HasResults && !IsIndexing;
+        public bool ShowResults => HasResults && !IsIndexing;
+
+        public string ResultsCountText
+        {
+            get
+            {
+                if (!HasQuery) return string.Empty;
+
+                int count = _searchIndex.Count(item =>
+                    item.DisplayName.Contains(SearchQuery, StringComparison.OrdinalIgnoreCase));
+
+                string word = count == 1 ? "result" : "results";
+                return $"{count} {word} for {SearchQuery}";
             }
         }
 
@@ -93,7 +154,12 @@ namespace Froststrap.UI.ViewModels
                 Dispatcher.UIThread.Post(() =>
                 {
                     FilteredSearchResults.Clear();
+                    GroupedSearchResults.Clear();
                     IsDropDownOpen = false;
+                    OnPropertyChanged(nameof(ResultsCountText));
+                    OnPropertyChanged(nameof(ShowEmptyState));
+                    OnPropertyChanged(nameof(ShowNoResults));
+                    OnPropertyChanged(nameof(ShowResults));
                 });
                 return;
             }
@@ -102,10 +168,34 @@ namespace Froststrap.UI.ViewModels
                 .Where(item => item.DisplayName.Contains(query, StringComparison.OrdinalIgnoreCase))
                 .ToList();
 
+            var groups = filtered
+                .GroupBy(item => item.PageName ?? "Other")
+                .Select(g =>
+                {
+                    var items = g.ToList();
+                    return new SearchResultGroup
+                    {
+                        PageName = g.Key,
+                        IconSymbol = g.First().IconSymbol ?? LucideIconNames.CircleQuestionMark,
+                        Items = new ObservableCollection<SearchResultEntry>(
+                            items.Select((item, i) => new SearchResultEntry
+                            {
+                                Item = item,
+                                IsLastInGroup = i == items.Count - 1
+                            }))
+                    };
+                })
+                .ToList();
+
             Dispatcher.UIThread.Post(() =>
             {
                 FilteredSearchResults = new ObservableCollection<SearchBarItem>(filtered);
+                GroupedSearchResults = new ObservableCollection<SearchResultGroup>(groups);
                 IsDropDownOpen = filtered.Count > 0;
+                OnPropertyChanged(nameof(ResultsCountText));
+                OnPropertyChanged(nameof(ShowEmptyState));
+                OnPropertyChanged(nameof(ShowNoResults));
+                OnPropertyChanged(nameof(ShowResults));
             });
         }
 
@@ -123,6 +213,7 @@ namespace Froststrap.UI.ViewModels
             Dispatcher.UIThread.Post(() =>
             {
                 FilteredSearchResults.Clear();
+                GroupedSearchResults.Clear();
                 IsDropDownOpen = false;
             });
         }
