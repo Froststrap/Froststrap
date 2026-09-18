@@ -3,31 +3,21 @@ on: [push, pull_request]
 jobs:
   build-windows:
     runs-on: windows-latest
-
     steps:
       - uses: actions/checkout@v7
         with:
           submodules: true
           fetch-depth: 0
-
       - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: "10.0.x"
-
       - name: Install NSIS
         uses: negrutiu/nsis-install@v2
-          
-      - name: Set short SHA
-        shell: pwsh
-        run: |
-          "SHORT_SHA=$("${{ github.sha }}".Substring(0, 7))" >> $env:GITHUB_ENV
-
       - name: Build and package
         run: dotnet run --project build -- compile
-
       - uses: actions/upload-artifact@v7
         with:
-          name: froststrap-release-win-x64-${{ env.SHORT_SHA }}
+          name: froststrap-release-win-x64-${{ github.sha }}
           path: .build/msbuild/*
 
   build-macos:
@@ -42,13 +32,11 @@ jobs:
       - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: "10.0.x"
-      - name: Set short SHA
-        run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
       - name: Publish
         run: dotnet run --project build -- compile
       - uses: actions/upload-artifact@v6
         with:
-          name: froststrap-debug-macos-arm64-${{ env.SHORT_SHA }}
+          name: froststrap-debug-macos-arm64-${{ github.sha }}
           path: .build/msbuild/*
 
   build-linux:
@@ -58,8 +46,6 @@ jobs:
         with:
           submodules: true
           fetch-depth: 0
-      - name: Set short SHA
-        run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
       - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: "10.0.x"
@@ -67,5 +53,5 @@ jobs:
         run: dotnet run --project build -- compile
       - uses: actions/upload-artifact@v6
         with:
-          name: froststrap-debug-linux-x64-${{ env.SHORT_SHA }}
+          name: froststrap-debug-linux-x64-${{ github.sha }}
           path: .build/msbuild/*
