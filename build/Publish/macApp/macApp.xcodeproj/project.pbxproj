@@ -7,9 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		7506F8A230571C1F0036253B /* Froststrap in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7506F8A130571C1F0036253B /* Froststrap */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		7506F8A430571C4D0036253B /* libvirtualdisplay.dylib in Copy Files */ = {isa = PBXBuildFile; fileRef = 7506F8A330571C4D0036253B /* libvirtualdisplay.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		752C3D6E304D7E9F0076F31A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 752C3D6D304D7E9F0076F31A /* Assets.xcassets */; };
+		75CE7733305D86A700BA931B /* Froststrap in CopyFiles */ = {isa = PBXBuildFile; fileRef = 75CE7732305D86A700BA931B /* Froststrap */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		75CE7735305D86BC00BA931B /* libvirtualdisplay.dylib in Copy Files */ = {isa = PBXBuildFile; fileRef = 75CE7734305D86BC00BA931B /* libvirtualdisplay.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -18,7 +18,7 @@
 			dstPath = "";
 			dstSubfolder = Frameworks;
 			files = (
-				7506F8A430571C4D0036253B /* libvirtualdisplay.dylib in Copy Files */,
+				75CE7735305D86BC00BA931B /* libvirtualdisplay.dylib in Copy Files */,
 			);
 			name = "Copy Files";
 		};
@@ -27,16 +27,16 @@
 			dstPath = "";
 			dstSubfolder = Executables;
 			files = (
-				7506F8A230571C1F0036253B /* Froststrap in CopyFiles */,
+				75CE7733305D86A700BA931B /* Froststrap in CopyFiles */,
 			);
 		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		7506F8A130571C1F0036253B /* Froststrap */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = Froststrap; path = ../../.build/publish/Froststrap; sourceTree = "<group>"; };
-		7506F8A330571C4D0036253B /* libvirtualdisplay.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libvirtualdisplay.dylib; path = ../../.build/publish/libvirtualdisplay.dylib; sourceTree = "<group>"; };
 		752C3D6D304D7E9F0076F31A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		75CC751D30414A8B0000EA4A /* Froststrap.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Froststrap.entitlements; sourceTree = "<group>"; };
+		75CE7732305D86A700BA931B /* Froststrap */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = Froststrap; path = ../../../.build/publish/Froststrap; sourceTree = "<group>"; };
+		75CE7734305D86BC00BA931B /* libvirtualdisplay.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libvirtualdisplay.dylib; path = ../../../.build/publish/libvirtualdisplay.dylib; sourceTree = "<group>"; };
 		75D1464A303C41FC00912A00 /* Froststrap.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Froststrap.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -44,8 +44,8 @@
 		000000000000000000000001 = {
 			isa = PBXGroup;
 			children = (
-				7506F8A330571C4D0036253B /* libvirtualdisplay.dylib */,
-				7506F8A130571C1F0036253B /* Froststrap */,
+				75CE7734305D86BC00BA931B /* libvirtualdisplay.dylib */,
+				75CE7732305D86A700BA931B /* Froststrap */,
 				75CC751D30414A8B0000EA4A /* Froststrap.entitlements */,
 				752C3D6D304D7E9F0076F31A /* Assets.xcassets */,
 				000000000000000000000020 /* Products */,
