@@ -50,7 +50,7 @@ public partial class Build : FalloutBuild
                                       $"-c {Configuration} " +
                                       $"-r {rid} " +
                                       $"-o \"{outputDirectory}\" " +
-                                      $"--configfile \"{GitRoot}/nuget.config\" " +
+                                      // $"--configfile \"{GitRoot}/nuget.config\" " +
                                       $"-p:PublishProfile=\"{publishProfile}\" " +
                                       $"--nologo";
 
