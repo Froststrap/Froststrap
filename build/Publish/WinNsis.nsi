@@ -15,11 +15,11 @@ Var IsExistingInstall     ; 1 if Froststrap is already installed
 
 Name "Froststrap"
 
-!define MUI_ICON "..\Froststrap\Froststrap.ico"
-!define MUI_UNICON "..\Froststrap\Froststrap.ico"
+!define MUI_ICON "..\..\Froststrap\Froststrap.ico"
+!define MUI_UNICON "..\..\Froststrap\Froststrap.ico"
 
 !ifndef PUBLISH_DIR
-  !define PUBLISH_DIR "..\build"
+  !define PUBLISH_DIR "..\..\.build"
 !endif
 
 !ifndef APP_VERSION
@@ -27,13 +27,13 @@ Name "Froststrap"
 !endif
 
 !ifdef SELFCONTAINED
-  OutFile "..\.build\publish\Froststrap-windows-x64.exe"
+  OutFile "..\..\.build\publish\Froststrap-windows-x64.exe"
 !else
   OutFile "${PUBLISH_DIR}\Froststrap-windows-x64.exe"
 !endif
 
-Icon "..\Froststrap\Froststrap.ico"
-UninstallIcon "..\Froststrap\Froststrap.ico"
+Icon "..\..\Froststrap\Froststrap.ico"
+UninstallIcon "..\..\Froststrap\Froststrap.ico"
 InstallDir "$LOCALAPPDATA\Froststrap"
 InstallDirRegKey HKCU "Software\Froststrap" "InstallLocation"
 RequestExecutionLevel user
@@ -162,7 +162,7 @@ Section "Froststrap"
     SetOutPath "$INSTDIR"
     File /r "${PUBLISH_DIR}\Froststrap.exe"
     File /r "${PUBLISH_DIR}\FluentAvalonia.xml"
-    File /r "..\Froststrap\Froststrap.ico"
+    File /r "..\..\Froststrap\Froststrap.ico"
 
     ; Froststrap app registry keys (used by the app to locate itself)
     WriteRegStr HKCU "Software\Froststrap" "InstallLocation" "$INSTDIR"
