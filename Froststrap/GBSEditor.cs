@@ -128,7 +128,7 @@ namespace Froststrap
                 {
                     string elementType = match.Groups[1].Value;
                     string elementName = match.Groups[2].Value;
-                    string parentPath = path.Substring(0, match.Index);
+                    string parentPath = path[..match.Index];
 
                     XElement? parentElement = Document?.XPathSelectElement(parentPath);
                     if (parentElement != null)
@@ -150,7 +150,9 @@ namespace Froststrap
 
             if (element.Name.LocalName == "bool")
             {
+#pragma warning disable CA1308
                 newValue = newValue.ToLowerInvariant();
+#pragma warning restore CA1308
             }
 
             if (element.Value != newValue)

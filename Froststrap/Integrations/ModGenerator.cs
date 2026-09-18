@@ -21,7 +21,8 @@ namespace Froststrap.Integrations
 
         private static readonly HttpClient DownloadClient = new(new HttpClientHandler
         {
-            AutomaticDecompression = DecompressionMethods.All
+            AutomaticDecompression = DecompressionMethods.All,
+            CheckCertificateRevocationList = true
         })
         {
             Timeout = TimeSpan.FromMinutes(5)
