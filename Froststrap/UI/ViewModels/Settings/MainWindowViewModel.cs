@@ -2,8 +2,6 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-using FluentAvalonia.UI.Controls;
-using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.UI.Elements.Settings.Pages;
@@ -17,9 +15,6 @@ using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
-    internal record NavigationPaneDisplayModeChangedMessage(NavigationViewPaneDisplayMode NewMode);
-    internal record NavigationEntry(string PageId, string Title, string Description, object ViewModel, ObservableCollection<BreadcrumbItemModel>? Breadcrumbs);
-
     internal class BreadcrumbItemModel
     {
         public string Content { get; set; } = string.Empty;
@@ -97,32 +92,6 @@ namespace Froststrap.UI.ViewModels.Settings
                 _breadcrumbItems?.CollectionChanged += OnBreadcrumbsChanged;
 
                 UpdateBreadcrumbVisibility();
-            }
-        }
-
-        private NavigationViewPaneDisplayMode _navigationPaneDisplayMode;
-
-        public FANavigationViewPaneDisplayMode NavigationPaneDisplayMode
-        {
-            get
-            {
-                return _navigationPaneDisplayMode switch
-                {
-                    NavigationViewPaneDisplayMode.Auto => FANavigationViewPaneDisplayMode.Auto,
-                    NavigationViewPaneDisplayMode.Left => FANavigationViewPaneDisplayMode.Left,
-                    NavigationViewPaneDisplayMode.Top => FANavigationViewPaneDisplayMode.Top,
-                    NavigationViewPaneDisplayMode.LeftCompact => FANavigationViewPaneDisplayMode.LeftCompact,
-                    _ => FANavigationViewPaneDisplayMode.Left
-                };
-            }
-        }
-
-        private void UpdateNavigationPaneDisplayMode(NavigationViewPaneDisplayMode mode)
-        {
-            if (_navigationPaneDisplayMode != mode)
-            {
-                _navigationPaneDisplayMode = mode;
-                OnPropertyChanged(nameof(NavigationPaneDisplayMode));
             }
         }
 
@@ -256,12 +225,6 @@ namespace Froststrap.UI.ViewModels.Settings
                 NavigateToIntegrationsCommand.Execute(null);
 
             SelectedLaunchMode = App.State.Prop.LastLaunchMode;
-            _navigationPaneDisplayMode = App.Settings.Prop.NavigationPaneDisplayMode;
-
-            WeakReferenceMessenger.Default.Register<NavigationPaneDisplayModeChangedMessage>(this, (_, m) =>
-            {
-                UpdateNavigationPaneDisplayMode(m.NewMode);
-            });
         }
 
         private void Navigate(string pageId, string title, string description, object viewModel, ObservableCollection<BreadcrumbItemModel>? customBreadcrumbs = null)

@@ -182,24 +182,7 @@ SPDX-License-Identifier: MPL-2.0
                         ItemsSource="{Binding BackdropOptions}"
                         SelectedItem="{Binding SelectedBackdrop, Mode=TwoWay}"/>
                 </controls:OptionControl>
-
-                <controls:OptionControl
-                    Header="{x:Static resources:Strings.Menu_Appearance_PaneMode_Title}"
-                    Description="{x:Static resources:Strings.Menu_Appearance_PaneMode_Description}">
-                    <ComboBox
-                        MinWidth="200"
-                        Margin="5,0,0,0"
-                        Padding="10,5,10,5"
-                        ItemsSource="{Binding PaneDisplayModes}"
-                        SelectedItem="{Binding SelectedPaneDisplayMode, Mode=TwoWay}">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Converter={StaticResource EnumNameConverter}}" />
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
-                </controls:OptionControl>
-
+				
                 <controls:OptionControl Description="{x:Static resources:Strings.Menu_Appearance_Language_Description}" Header="{x:Static resources:Strings.Menu_Appearance_Language_Title}">
                     <ComboBox
                         MinWidth="200"

@@ -48,7 +48,7 @@ SPDX-License-Identifier: MPL-2.0
             IsSettingsVisible="False"
             ItemInvoked="NavView_ItemInvoked"
             OpenPaneLength="220"
-            PaneDisplayMode="{Binding NavigationPaneDisplayMode}">
+            PaneDisplayMode="Left">
             <ui:FANavigationView.MenuItems>
                 <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_Integrations_Title}" Tag="integrations">
                     <ui:FANavigationViewItem.Icon>

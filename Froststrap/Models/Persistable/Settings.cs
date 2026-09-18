@@ -65,7 +65,6 @@ namespace Froststrap.Models.Persistable
         public DateTime CycleLastCycleTime { get; set; } = DateTime.MinValue;
         public BootstrapperIcon BootstrapperIcon { get; set; } = BootstrapperIcon.IconFroststrap;
         public WindowsBackdrops SelectedBackdrop { get; set; } = WindowsBackdrops.None;
-        public NavigationViewPaneDisplayMode NavigationPaneDisplayMode { get; set; } = NavigationViewPaneDisplayMode.Auto;
         public string Locale { get; set; } = "nil";
         public List<GradientStops> CustomGradientStops { get; set; } =
         [

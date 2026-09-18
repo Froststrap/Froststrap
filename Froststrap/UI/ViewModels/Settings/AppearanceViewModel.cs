@@ -361,22 +361,6 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
         
-        public IEnumerable<NavigationViewPaneDisplayMode> PaneDisplayModes { get; } = Enum.GetValues<NavigationViewPaneDisplayMode>();
-
-        private NavigationViewPaneDisplayMode _selectedPaneDisplayMode = App.Settings.Prop.NavigationPaneDisplayMode;
-        public NavigationViewPaneDisplayMode SelectedPaneDisplayMode
-        {
-            get => _selectedPaneDisplayMode;
-            set
-            {
-                if (SetProperty(ref _selectedPaneDisplayMode, value))
-                {
-                    App.Settings.Prop.NavigationPaneDisplayMode = value;
-                    WeakReferenceMessenger.Default.Send(new NavigationPaneDisplayModeChangedMessage(value));
-                }
-            }
-        }
-
         public IEnumerable<BootstrapperStyle> Dialogs { get; } = BootstrapperStyleEx.Selections;
 
         public BootstrapperStyle Dialog
