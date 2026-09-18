@@ -133,83 +133,89 @@ SPDX-License-Identifier: MPL-2.0
 
             <ui:FANavigationView.Content>
                 <Grid RowDefinitions="Auto,*">
-                    <Border Grid.Row="0" Padding="18">
+                    <Border Grid.Row="0"
+                            BorderBrush="{DynamicResource ControlElevationBorderBrush}"
+                            BorderThickness="0,0,0,2">
                         <StackPanel>
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
-                                <ic:Lucide
-                                    Icon="{Binding CurrentPageIcon}"
-                                    Width="26"
-                                    Height="26"
-                                    Margin="0,0,8,0"
-                                    VerticalAlignment="Bottom" />
+                            <StackPanel Margin="18">
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
+                                    <ic:Lucide
+                                        Icon="{Binding CurrentPageIcon}"
+                                        Width="26"
+                                        Height="26"
+                                        Margin="0,0,8,0"
+                                        VerticalAlignment="Bottom" />
 
-                                <ItemsControl
-                                    IsVisible="{Binding HasBreadcrumbs}"
-                                    ItemsSource="{Binding BreadcrumbItems}">
-                                    <ItemsControl.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <StackPanel
-                                                VerticalAlignment="Center"
-                                                Orientation="Horizontal"
-                                                Spacing="8" />
-                                        </ItemsPanelTemplate>
-                                    </ItemsControl.ItemsPanel>
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate DataType="vm:BreadcrumbItemModel">
-                                            <StackPanel
-                                                VerticalAlignment="Center"
-                                                Orientation="Horizontal"
-                                                Spacing="8">
-                                                <Button
-                                                    Padding="0"
-                                                    Background="Transparent"
-                                                    BorderThickness="0"
-                                                    Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).BreadcrumbItemClickedCommand}"
-                                                    CommandParameter="{Binding}"
-                                                    Content="{Binding Content}"
-                                                    FontSize="22"
-                                                    FontWeight="SemiBold"
-                                                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                                                    IsVisible="{Binding !IsLast}" />
-                                                <TextBlock
+                                    <ItemsControl
+                                        IsVisible="{Binding HasBreadcrumbs}"
+                                        ItemsSource="{Binding BreadcrumbItems}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <StackPanel
                                                     VerticalAlignment="Center"
-                                                    FontSize="22"
-                                                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                                    IsVisible="{Binding !IsLast}"
-                                                    Text="›" />
-                                                <TextBlock
+                                                    Orientation="Horizontal"
+                                                    Spacing="8" />
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate DataType="vm:BreadcrumbItemModel">
+                                                <StackPanel
                                                     VerticalAlignment="Center"
-                                                    FontSize="22"
-                                                    FontWeight="SemiBold"
-                                                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                                                    IsVisible="{Binding IsLast}"
-                                                    Text="{Binding Content}" />
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
+                                                    Orientation="Horizontal"
+                                                    Spacing="8">
+                                                    <Button
+                                                        Padding="0"
+                                                        Background="Transparent"
+                                                        BorderThickness="0"
+                                                        Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).BreadcrumbItemClickedCommand}"
+                                                        CommandParameter="{Binding}"
+                                                        Content="{Binding Content}"
+                                                        FontSize="22"
+                                                        FontWeight="SemiBold"
+                                                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                                        IsVisible="{Binding !IsLast}" />
+                                                    <TextBlock
+                                                        VerticalAlignment="Center"
+                                                        FontSize="22"
+                                                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                                        IsVisible="{Binding !IsLast}"
+                                                        Text="›" />
+                                                    <TextBlock
+                                                        VerticalAlignment="Center"
+                                                        FontSize="22"
+                                                        FontWeight="SemiBold"
+                                                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                                        IsVisible="{Binding IsLast}"
+                                                        Text="{Binding Content}" />
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
 
-                                <TextBlock
-                                    x:Name="PageTitleText"
-                                    FontSize="22"
-                                    FontWeight="SemiBold"
-                                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                                    Text="{Binding CurrentPageTitle}"
-                                    IsVisible="{Binding ShowPageTitle}" />
+                                    <TextBlock
+                                        x:Name="PageTitleText"
+                                        FontSize="22"
+                                        FontWeight="SemiBold"
+                                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                        Text="{Binding CurrentPageTitle}"
+                                        IsVisible="{Binding ShowPageTitle}" />
+                                </StackPanel>
+
+                                <controls:MarkdownTextBlock
+                                    x:Name="PageDescriptionText"
+                                    FontSize="15"
+                                    Margin="0,2,0,0"
+                                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                    IsVisible="{Binding CurrentPageDescription, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                    MarkdownText="{Binding CurrentPageDescription}" />
                             </StackPanel>
-
-                            <controls:MarkdownTextBlock
-                                x:Name="PageDescriptionText"
-                                FontSize="15"
-                                Margin="0,2,0,0"
-                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                IsVisible="{Binding CurrentPageDescription, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-                                MarkdownText="{Binding CurrentPageDescription}" />
 
                             <ui:FAInfoBar
                                 x:Name="AlertBar"
-                                Margin="0,8,0,0"
-                                Severity="Warning" />
+                                Margin="12,4,12,8"
+                                IsOpen="False"
+                                IsClosable="False"
+                                Severity="Informational" />
                         </StackPanel>
                     </Border>
 
