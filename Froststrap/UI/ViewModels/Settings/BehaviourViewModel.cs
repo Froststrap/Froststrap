@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+using Froststrap.Enums.AppStoragePresets;
+
 namespace Froststrap.UI.ViewModels.Settings
 {
     internal class BehaviourViewModel : NotifyPropertyChangedViewModel
@@ -115,49 +117,19 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public static bool LaunchAtStartup
+        public static bool EnableRobloxBackgroundApp
         {
-            get => App.AppStorage.GetBoolPreset("System.LaunchAtStartup");
-            set => App.AppStorage.SetBoolPreset("System.LaunchAtStartup", value);
+            get => App.Settings.Prop.EnableRobloxBackgroundApp;
+            set => App.Settings.Prop.EnableRobloxBackgroundApp = value;
         }
 
-        public static bool MinimizeToTray
+        public IReadOnlyCollection<RobloxTheme> RobloxThemes { get; } = RobloxThemeEx.Selections;
+
+        public static RobloxTheme RobloxTheme
         {
-            get => App.AppStorage.GetBoolPreset("System.MinimizeToTray");
-            set => App.AppStorage.SetBoolPreset("System.MinimizeToTray", value);
+            get => App.Settings.Prop.RobloxTheme;
+            set => App.Settings.Prop.RobloxTheme = value;
         }
-
-        public static IEnumerable<Enums.AppStoragePresets.Theme> AppThemeOptions => Enum.GetValues<Enums.AppStoragePresets.Theme>();
-
-        public static Enums.AppStoragePresets.Theme SelectedTheme
-        {
-            get
-            {
-                string? json = App.AppStorage.GetPreset("UI.Theme");
-                if (string.IsNullOrEmpty(json))
-                    return Enums.AppStoragePresets.Theme.Dark;
-
-                try
-                {
-                    var dict = JsonSerializer.Deserialize<Dictionary<string, string>>(json);
-                    string? themeValue = dict?.Values.FirstOrDefault();
-                    return themeValue == "light" ? Enums.AppStoragePresets.Theme.Light : Enums.AppStoragePresets.Theme.Dark;
-                }
-                catch
-                {
-                    return Enums.AppStoragePresets.Theme.Dark;
-                }
-            }
-            set
-            {
-                string userId = App.AppStorage.GetValue("UserId") ?? "0";
-                string themeValue = AppStorageManager.ThemeValues[value];
-                string themeObject = $"{{\"{userId}\":\"{themeValue}\"}}";
-                App.AppStorage.SetPreset("UI.Theme", themeObject);
-            }
-        }
-
-        public static bool IsAppStorageVisible => App.AppStorage.Loaded;
 
         public static bool BackgroundUpdates
         {

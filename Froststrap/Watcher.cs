@@ -338,6 +338,8 @@ namespace Froststrap
                 await UnregisterGameModeWithDbusSendAsync(_gameModeHandle);
             }
 
+            AppStorageManager.Apply();
+
             if (_watcherData.AutoclosePids is not null)
             {
                 foreach (int pid in _watcherData.AutoclosePids)

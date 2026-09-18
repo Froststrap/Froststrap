@@ -2,172 +2,179 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-namespace Froststrap;
+using System.Text.Encodings.Web;
+using Froststrap.Enums.AppStoragePresets;
+using System.Text.Json.Nodes;
 
-internal class AppStorageManager : JsonManager<Dictionary<string, object>>
+namespace Froststrap
 {
-    private static readonly JsonSerializerOptions _writeOptions = new() { WriteIndented = true, Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
-    private static readonly JsonSerializerOptions _readOptions = new() { ReadCommentHandling = JsonCommentHandling.Skip, AllowTrailingCommas = true };
-
-    public override string ClassName => nameof(AppStorageManager);
-    public override string FileName => "appStorage.json";
-    public override string FileLocation =>
-        OperatingSystem.IsLinux()
-            ? Path.Combine(Paths.SoberData, "appData", "LocalStorage", FileName)
-            : Path.Combine(Paths.Roblox, "LocalStorage", FileName);
-
-    public static readonly IReadOnlyDictionary<string, string> PresetKeys = new Dictionary<string, string>
+    internal static class AppStorageManager
     {
-        { "System.LaunchAtStartup", "LaunchAtStartup" },
-        { "System.MinimizeToTray", "MinimizeToTray" },
-        { "UI.Theme", "DeviceLevelTheme" },
-        { "User.UserId", "UserId" },
-    };
+        public static string FileLocation => Path.Combine(Paths.Roblox, "LocalStorage", "appStorage.json");
 
-    public static IReadOnlyDictionary<Enums.AppStoragePresets.Theme, string> ThemeValues => new Dictionary<Enums.AppStoragePresets.Theme, string>
-    {
-        { Enums.AppStoragePresets.Theme.Light, "light" },
-        { Enums.AppStoragePresets.Theme.Dark, "dark" }
-    };
-
-    public void SetValue(string key, object? value)
-    {
-        if (value is null)
+        private static readonly JsonSerializerOptions SerializerOptions = new()
         {
-            if (Prop.ContainsKey(key))
-                App.Logger.Info($"Deletion of '{key}' pending");
-            Prop.Remove(key);
-        }
-        else
+            // default encoder inflates file by like 30% so we're not gonna use it lol
+            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+        };
+
+        public static void Apply()
         {
-            string newVal = value.ToString()!;
-            if (Prop.TryGetValue(key, out object? existing) && existing?.ToString() == newVal)
-                return;
+            bool background = App.Settings.Prop.EnableRobloxBackgroundApp;
 
-            App.Logger.Info($"Setting '{key}' to '{newVal}'");
-            Prop[key] = newVal;
-        }
-    }
-
-    public void SetPreset(string friendlyName, object? value)
-    {
-        if (!PresetKeys.TryGetValue(friendlyName, out string? actualKey))
-        {
-            App.Logger.Error($"Unknown preset '{friendlyName}'");
-            return;
-        }
-        SetValue(actualKey, value);
-    }
-
-    public string? GetPreset(string friendlyName)
-    {
-        if (!PresetKeys.TryGetValue(friendlyName, out string? actualKey))
-        {
-            App.Logger.Error($"Unknown preset '{friendlyName}'");
-            return null;
-        }
-        return GetValue(actualKey);
-    }
-
-    public void SetRawValue(string key, object? value)
-    {
-        if (value is null)
-        {
-            if (Prop.ContainsKey(key))
-                App.Logger.Info($"Deletion of '{key}' pending");
-            Prop.Remove(key);
-        }
-        else
-        {
-            if (Prop.TryGetValue(key, out object? existing) && Equals(existing, value))
-                return;
-            App.Logger.Info($"Setting '{key}' (raw)");
-            Prop[key] = value;
-        }
-    }
-
-    public string? GetValue(string key) => Prop.TryGetValue(key, out object? val) ? val?.ToString() : null;
-    public T? GetRawValue<T>(string key) where T : class => Prop.TryGetValue(key, out object? val) ? val as T : null;
-
-    public void SetBoolPreset(string friendlyName, bool value) => SetPreset(friendlyName, value ? "true" : "false");
-
-    public bool GetBoolPreset(string friendlyName) => string.Equals(GetPreset(friendlyName), "true", StringComparison.OrdinalIgnoreCase);
-
-    // using jsonmanager save messes up  app theme formatting
-    public override bool Save()
-    {
-        if (!HasUnsavedChanges)
-        {
-            App.Logger.Info("No changes, skipping save.");
-            return false;
-        }
-
-        if (!File.Exists(FileLocation))
-        {
-            App.Logger.Info("Save skipped – file does not exist.");
-            return false;
-        }
-
-        App.Logger.Info($"Saving to {FileLocation}...");
-
-        try
-        {
-            string? directory = Path.GetDirectoryName(FileLocation);
-            if (!string.IsNullOrEmpty(directory))
-                Directory.CreateDirectory(directory);
-
-            string contents = JsonSerializer.Serialize(Prop, _writeOptions);
-            File.WriteAllText(FileLocation, contents);
-            _savedHash = ComputeHash(Prop);
-            App.Logger.Info("Save Complete!");
-            return true;
-        }
-        catch (Exception ex)
-        {
-            App.Logger.Error("Failed to save appStorage.json");
-            App.Logger.Error(ex);
-            return false;
-        }
-    }
-
-    public override bool Load(bool alertFailure = true)
-    {
-        App.Logger.Info($"Loading from {FileLocation}...");
-
-        if (!File.Exists(FileLocation))
-        {
-            App.Logger.Info("File does not exist. Initialising empty storage.");
-            Loaded = false;
-            Prop = [];
-            _savedHash = ComputeHash(Prop);
-            return false;
-        }
-
-        try
-        {
-            string contents = File.ReadAllText(FileLocation);
-            var settings = JsonSerializer.Deserialize<Dictionary<string, object>>(contents, _readOptions)
-                           ?? [];
-
-            Prop = settings;
-            Loaded = true;
-            _savedHash = ComputeHash(Prop);
-            App.Logger.Info("Loaded successfully!");
-            return true;
-        }
-        catch (Exception ex)
-        {
-            App.Logger.Error("Failed to load!");
-            App.Logger.Error(ex);
-            Loaded = false;
-            Prop = [];
-
-            if (alertFailure)
+            Mutate(storage =>
             {
-                string message = Strings.JsonManager_SettingsLoadFailed;
-                _ = Frontend.ShowMessageBox($"{message}\n\n{ex.Message}", MessageBoxImage.Warning);
+                ApplyBackgroundApp(storage, background);
+                ApplyTheme(storage);
+            });
+
+            // clear registry
+            if (!background)
+                WindowsRegistry.RemoveRobloxStartupEntry();
+        }
+
+        private static void ApplyBackgroundApp(JsonObject storage, bool enabled)
+        {
+            string state = enabled ? "true" : "false";
+
+            // controls whether roblox launches on startup
+            storage["LaunchAtStartup"] = state;
+
+            // keeps the client active in the tray
+            storage["MinimizeToTray"] = state;
+
+            storage["SystemTrayModalShown"] = "true";
+        }
+
+        private static void ApplyTheme(JsonObject storage)
+        {
+            const string LOG_IDENT = "AppStorageManager::ApplyTheme";
+
+            var theme = App.Settings.Prop.RobloxTheme;
+
+            if (theme == RobloxTheme.Default)
+                return;
+
+            string value = theme == RobloxTheme.Dark ? "dark" : "light";
+
+            storage["AuthenticatedTheme"] = value;
+
+            // theme is stored per user, so we need to read the user id and update the map accordingly
+            try
+            {
+                if (storage["UserId"] is not JsonValue idNode
+                    || !idNode.TryGetValue(out string? userId)
+                    || String.IsNullOrEmpty(userId))
+                    return;
+
+                JsonObject map = [];
+
+                if (storage["DeviceLevelTheme"] is JsonValue mapNode
+                    && mapNode.TryGetValue(out string? raw)
+                    && !String.IsNullOrWhiteSpace(raw)
+                    && JsonNode.Parse(raw) is JsonObject parsed)
+                    map = parsed;
+
+                map[userId] = value;
+
+                // it's stored as a json string inside the json, not as a nested object
+                storage["DeviceLevelTheme"] = map.ToJsonString(SerializerOptions);
             }
-            return false;
+            catch (Exception ex)
+            {
+                App.Logger.Error($"{LOG_IDENT}: Failed to update the per-account theme cache");
+                App.Logger.Error(ex);
+            }
+        }
+
+        private static void Mutate(Action<JsonObject> mutate)
+        {
+            const string LOG_IDENT = "AppStorageManager::Mutate";
+
+            string path = FileLocation;
+
+            if (!File.Exists(path))
+            {
+                Create(path, mutate);
+                return;
+            }
+
+            string? tempPath = null;
+
+            try
+            {
+                path = new FileInfo(path).ResolveLinkTarget(true)?.FullName ?? path;
+
+                string contents = File.ReadAllText(path);
+
+                if (String.IsNullOrWhiteSpace(contents))
+                {
+                    App.Logger.Info($"{LOG_IDENT}: File is empty, leaving it alone");
+                    return;
+                }
+
+                if (JsonNode.Parse(contents) is not JsonObject storage)
+                {
+                    App.Logger.Info($"{LOG_IDENT}: File is not a JSON object, leaving it alone");
+                    return;
+                }
+
+                string original = storage.ToJsonString(SerializerOptions);
+
+                mutate(storage);
+
+                string output = storage.ToJsonString(SerializerOptions);
+
+                if (output == original)
+                {
+                    App.Logger.Info($"{LOG_IDENT}: Already up to date");
+                    return;
+                }
+
+                tempPath = path + ".froststrap-tmp";
+                File.WriteAllText(tempPath, output, new UTF8Encoding(false));
+
+                Filesystem.AssertReadOnly(path);
+                File.Replace(tempPath, path, null);
+                tempPath = null;
+
+                App.Logger.Info($"{LOG_IDENT}: Saved successfully");
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error($"{LOG_IDENT}: Failed to patch {path}");
+                App.Logger.Error(ex);
+            }
+            finally
+            {
+                if (tempPath is not null)
+                {
+                    try { File.Delete(tempPath); }
+                    catch (Exception ex) { App.Logger.Error(ex); }
+                }
+            }
+        }
+
+        private static void Create(string path, Action<JsonObject> mutate)
+        {
+            const string LOG_IDENT = "AppStorageManager::Create";
+
+            try
+            {
+                var storage = new JsonObject();
+
+                mutate(storage);
+
+                Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+                File.WriteAllText(path, storage.ToJsonString(SerializerOptions), new UTF8Encoding(false));
+
+                App.Logger.Info($"{LOG_IDENT}: Seeded {path}");
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error($"{LOG_IDENT}: Failed to seed {path}");
+                App.Logger.Error(ex);
+            }
         }
     }
 }

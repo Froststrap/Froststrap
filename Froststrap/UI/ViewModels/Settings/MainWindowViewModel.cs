@@ -67,7 +67,6 @@ namespace Froststrap.UI.ViewModels.Settings
             App.Settings.HasUnsavedChanges ||
             App.State.HasUnsavedChanges ||
             App.FastFlags.HasUnsavedChanges ||
-            App.AppStorage.HasUnsavedChanges ||
             (OperatingSystem.IsLinux() && App.SoberSettings.HasUnsavedChanges) ||
             App.GlobalSettings.HasUnsavedChanges ||
             App.PendingSettingTasks.Count > 0;
@@ -363,7 +362,6 @@ namespace Froststrap.UI.ViewModels.Settings
             App.State.Save();
             App.FastFlags.Save();
             App.GlobalSettings.Save();
-            App.AppStorage.Save();
 
             if (OperatingSystem.IsLinux())
                 App.SoberSettings.Save();

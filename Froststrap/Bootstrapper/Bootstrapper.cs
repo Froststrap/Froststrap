@@ -835,6 +835,9 @@ internal partial class Bootstrapper : IDisposable
     {
         if (_launchMode == LaunchMode.Player)
         {
+            // reapplied on every launch because roblox can reset the file on its own.
+            AppStorageManager.Apply();
+
             if (_joinData.JoinType == GameJoinType.Unknown)
                 App.Logger.Warn("Unable to get join data");
 
@@ -1043,6 +1046,9 @@ internal partial class Bootstrapper : IDisposable
             App.SoberSettings.SetPreset("CloseOnLeave", "false");
 
         App.SoberSettings.Save();
+
+        // reapplied on every launch because roblox can reset the file on its own.
+        AppStorageManager.Apply();
 
         if (_joinData.JoinType == GameJoinType.Unknown)
             App.Logger.Warn("Unable to get join data");

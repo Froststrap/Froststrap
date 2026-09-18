@@ -4,8 +4,9 @@
 
 namespace Froststrap.Enums.AppStoragePresets
 {
-    internal enum Theme
+    internal enum RobloxTheme
     {
+        Default,
         Light,
         Dark
     }

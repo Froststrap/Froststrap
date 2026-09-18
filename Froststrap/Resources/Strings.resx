@@ -2076,24 +2076,6 @@ It must contain at least one of the following folders: content, ExtraContent, Pl
   <data name="Menu.Bootstrapper.AppStorage.Description" xml:space="preserve">
     <value>Configure internal Roblox application settings stored.</value>
   </data>
-  <data name="Menu.Bootstrapper.RobloxTheme.Title" xml:space="preserve">
-    <value>Roblox App Theme</value>
-  </data>
-  <data name="Menu.Bootstrapper.RobloxTheme.Description" xml:space="preserve">
-    <value>Changes the visual theme for Roblox.</value>
-  </data>
-  <data name="Menu.Bootstrapper.Startup.Title" xml:space="preserve">
-    <value>Launch at Startup</value>
-  </data>
-  <data name="Menu.Bootstrapper.Startup.Description" xml:space="preserve">
-    <value>Automatically launch the Roblox app when you start your PC.</value>
-  </data>
-  <data name="Menu.Bootstrapper.Tray.Title" xml:space="preserve">
-    <value>Minimize to Tray</value>
-  </data>
-  <data name="Menu.Bootstrapper.Tray.Description" xml:space="preserve">
-    <value>Sends the app to the system tray instead of closing it fully.</value>
-  </data>
   <data name="Menu.Deployment.AutoPreReleaseUpdate.Title" xml:space="preserve">
     <value>Update to Pre Releases</value>
   </data>
@@ -3340,5 +3322,26 @@ All files will be moved, shortcuts updated, and the application will restart.</v
   </data>
   <data name="Menu.QuickPlay.BestRegionJoined.Message" xml:space="preserve">
     <value>Joining best region for {0}...</value>
+  </data>
+  <data name="Enums.AppStoragePresets.RobloxTheme.Default" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="Enums.AppStoragePresets.RobloxTheme.Light" xml:space="preserve">
+    <value>Light</value>
+  </data>
+  <data name="Enums.AppStoragePresets.RobloxTheme.Dark" xml:space="preserve">
+    <value>Dark</value>
+  </data>
+  <data name="Menu.Bootstrapper.EnableRobloxBackgroundApp.Title" xml:space="preserve">
+    <value>Let Roblox run in the background</value>
+  </data>
+  <data name="Menu.Bootstrapper.EnableRobloxBackgroundApp.Description" xml:space="preserve">
+    <value>Lets Roblox start up with Windows and stay in the notification area after you close it.</value>
+  </data>
+  <data name="Menu.Bootstrapper.RobloxTheme.Title" xml:space="preserve">
+    <value>Roblox app theme</value>
+  </data>
+  <data name="Menu.Bootstrapper.RobloxTheme.Description" xml:space="preserve">
+    <value>The theme used by the Roblox app.</value>
   </data>
 </root>

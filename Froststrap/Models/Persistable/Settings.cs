@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+using Froststrap.Enums.AppStoragePresets;
 using System.Collections.ObjectModel;
 
 namespace Froststrap.Models.Persistable
@@ -46,6 +47,8 @@ namespace Froststrap.Models.Persistable
         public SoftKeyProfile SoftKeyProfile { get; set; } = SoftKeyProfile.WASD;
         public bool EnableBetterMatchmaking { get; set; }
         public string SelectedRegion { get; set; } = Strings.Common_Auto;
+        public bool EnableRobloxBackgroundApp { get; set; }
+        public RobloxTheme RobloxTheme { get; set; } = RobloxTheme.Default;
 
         // FastFlag Editor/Settings
         public bool UseFastFlagManager { get; set; } = true;

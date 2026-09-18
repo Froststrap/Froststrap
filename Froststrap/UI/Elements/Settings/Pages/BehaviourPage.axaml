@@ -123,7 +123,6 @@ SPDX-License-Identifier: MPL-2.0
             <controls:CardExpander
                 Header="{x:Static resources:Strings.Menu_Bootstrapper_AppStorage_Title}"
                 Description="{x:Static resources:Strings.Menu_Bootstrapper_AppStorage_Description}"
-                IsVisible="{Binding IsAppStorageVisible}"
                 IsExpanded="True">
 
                 <StackPanel Margin="0,8,0,0">
@@ -133,26 +132,20 @@ SPDX-License-Identifier: MPL-2.0
                         Description="{x:Static resources:Strings.Menu_Bootstrapper_RobloxTheme_Description}">
                         <ComboBox
                             MinWidth="200"
-                            ItemsSource="{Binding AppThemeOptions}"
-                            SelectedItem="{Binding SelectedTheme, Mode=TwoWay}">
+                            ItemsSource="{Binding RobloxThemes}"
+                            SelectedItem="{Binding RobloxTheme, Mode=TwoWay}">
                             <ComboBox.ItemTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding}" />
+                                    <TextBlock Text="{Binding, Converter={StaticResource EnumNameConverter}}" />
                                 </DataTemplate>
                             </ComboBox.ItemTemplate>
                         </ComboBox>
                     </controls:OptionControl>
 
                     <controls:OptionControl
-                        Header="{x:Static resources:Strings.Menu_Bootstrapper_Startup_Title}"
-                        Description="{x:Static resources:Strings.Menu_Bootstrapper_Startup_Description}">
-                        <ToggleSwitch IsChecked="{Binding LaunchAtStartup, Mode=TwoWay}" />
-                    </controls:OptionControl>
-
-                    <controls:OptionControl
-                        Header="{x:Static resources:Strings.Menu_Bootstrapper_Tray_Title}"
-                        Description="{x:Static resources:Strings.Menu_Bootstrapper_Tray_Description}">
-                        <ToggleSwitch IsChecked="{Binding MinimizeToTray, Mode=TwoWay}" />
+                        Header="{x:Static resources:Strings.Menu_Bootstrapper_EnableRobloxBackgroundApp_Title}"
+                        Description="{x:Static resources:Strings.Menu_Bootstrapper_EnableRobloxBackgroundApp_Description}">
+                        <ToggleSwitch IsChecked="{Binding EnableRobloxBackgroundApp, Mode=TwoWay}" />
                     </controls:OptionControl>
                 </StackPanel>
             </controls:CardExpander>

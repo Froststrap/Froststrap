@@ -77,8 +77,6 @@ internal partial class App : Application
 
     public static readonly JsonManager<State> State = new();
 
-    public static readonly AppStorageManager AppStorage = new();
-
     public static readonly SoberSettingsManager SoberSettings = new();
 
     public static readonly LazyJsonManager<DistributionState> PlayerState = new(nameof(PlayerState));
@@ -598,7 +596,6 @@ internal partial class App : Application
             try
             {
                 FastFlags.Load();
-                AppStorage.Load();
                 GlobalSettings.Load();
 
                 if (OperatingSystem.IsLinux())

@@ -209,5 +209,37 @@ namespace Froststrap.Utility
                 App.Logger.Error($"Failed to update size: {ex.Message}");
             }
         }
+
+        /// <summary>
+        /// Removes the autostart entry the Roblox player registers for itself when LaunchAtStartup is on
+        /// </summary>
+        public static void RemoveRobloxStartupEntry()
+        {
+            const string LOG_IDENT = "WindowsRegistry::RemoveRobloxStartupEntry";
+            const string valueName = "RobloxPlayerBeta";
+
+            try
+            {
+                using var runKey = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run", true);
+
+                if (runKey?.GetValue(valueName) is not string entry)
+                    return;
+
+                // make sure we only ever delete roblox's own entry
+                if (!entry.Contains(App.RobloxPlayerAppName, StringComparison.OrdinalIgnoreCase))
+                {
+                    App.Logger.Info(LOG_IDENT, $"Leaving '{valueName}' alone, it doesn't point at Roblox");
+                    return;
+                }
+
+                App.Logger.Info(LOG_IDENT, $"Removing startup entry '{entry}'");
+                runKey.DeleteValue(valueName);
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error(LOG_IDENT, "Failed to remove startup entry");
+                App.Logger.Error(LOG_IDENT, ex);
+            }
+        }
     }
 }

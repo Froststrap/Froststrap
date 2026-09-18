@@ -2316,6 +2316,33 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dark.
+        /// </summary>
+        public static string Enums_AppStoragePresets_RobloxTheme_Dark {
+            get {
+                return ResourceManager.GetString("Enums.AppStoragePresets.RobloxTheme.Dark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Default.
+        /// </summary>
+        public static string Enums_AppStoragePresets_RobloxTheme_Default {
+            get {
+                return ResourceManager.GetString("Enums.AppStoragePresets.RobloxTheme.Default", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Light.
+        /// </summary>
+        public static string Enums_AppStoragePresets_RobloxTheme_Light {
+            get {
+                return ResourceManager.GetString("Enums.AppStoragePresets.RobloxTheme.Light", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Gradients.
         /// </summary>
         public static string Enums_BackgroundMode_Gradient {
@@ -4113,6 +4140,24 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Lets Roblox start up with Windows and stay in the notification area after you close it..
+        /// </summary>
+        public static string Menu_Bootstrapper_EnableRobloxBackgroundApp_Description {
+            get {
+                return ResourceManager.GetString("Menu.Bootstrapper.EnableRobloxBackgroundApp.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Let Roblox run in the background.
+        /// </summary>
+        public static string Menu_Bootstrapper_EnableRobloxBackgroundApp_Title {
+            get {
+                return ResourceManager.GetString("Menu.Bootstrapper.EnableRobloxBackgroundApp.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Let Froststrap decide which servers you join. Prioritizes the server with the shortest distance to you..
         /// </summary>
         public static string Menu_Bootstrapper_Experimental_BetterMatchmaking_Description {
@@ -4176,7 +4221,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Changes the visual theme for Roblox..
+        ///   Looks up a localized string similar to The theme used by the Roblox app..
         /// </summary>
         public static string Menu_Bootstrapper_RobloxTheme_Description {
             get {
@@ -4185,7 +4230,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Roblox App Theme.
+        ///   Looks up a localized string similar to Roblox app theme.
         /// </summary>
         public static string Menu_Bootstrapper_RobloxTheme_Title {
             get {
@@ -4244,42 +4289,6 @@ namespace Froststrap.Resources {
         public static string Menu_Bootstrapper_SoftKeyProfile_Title {
             get {
                 return ResourceManager.GetString("Menu.Bootstrapper.SoftKeyProfile.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Automatically launch the Roblox app when you start your PC..
-        /// </summary>
-        public static string Menu_Bootstrapper_Startup_Description {
-            get {
-                return ResourceManager.GetString("Menu.Bootstrapper.Startup.Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Launch at Startup.
-        /// </summary>
-        public static string Menu_Bootstrapper_Startup_Title {
-            get {
-                return ResourceManager.GetString("Menu.Bootstrapper.Startup.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Sends the app to the system tray instead of closing it fully..
-        /// </summary>
-        public static string Menu_Bootstrapper_Tray_Description {
-            get {
-                return ResourceManager.GetString("Menu.Bootstrapper.Tray.Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Minimize to Tray.
-        /// </summary>
-        public static string Menu_Bootstrapper_Tray_Title {
-            get {
-                return ResourceManager.GetString("Menu.Bootstrapper.Tray.Title", resourceCulture);
             }
         }
         

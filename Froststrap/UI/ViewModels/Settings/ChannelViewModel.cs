@@ -806,7 +806,6 @@ namespace Froststrap.UI.ViewModels.Settings
                 App.State.Save();
                 App.FastFlags.Save();
                 App.GlobalSettings.Save();
-                App.AppStorage.Save();
                 if (OperatingSystem.IsLinux())
                     App.SoberSettings.Save();
 
