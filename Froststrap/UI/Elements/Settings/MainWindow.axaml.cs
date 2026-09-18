@@ -88,10 +88,14 @@ namespace Froststrap.UI.Elements.Settings
             App.RemoteData.Subscribe((_, _) => Dispatcher.UIThread.Post(() =>
             {
                 var data = App.RemoteData.Prop;
+                if (data is null) return;
 
-                if (AlertBar is not null)
+                bool show = data.AlertEnabled && !string.IsNullOrWhiteSpace(data.AlertContent);
+
+                AlertBar.IsOpen = show;
+
+                if (show)
                 {
-                    AlertBar.IsVisible = data.AlertEnabled;
                     AlertBar.Message = data.AlertContent;
                     AlertBar.Severity = data.AlertSeverity;
                 }
