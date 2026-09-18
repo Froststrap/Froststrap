@@ -5,7 +5,6 @@ packaging/macApp/build/
 .build/
 [Bb]in/
 [Oo]bj/
-publish/
 DerivedData/
 .DS_Store
 .fallout/temp
