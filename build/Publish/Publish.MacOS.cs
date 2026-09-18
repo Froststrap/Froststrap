@@ -11,7 +11,7 @@ public partial class Build : FalloutBuild
     void PublishMacOS(string outputDirectory)
     {
         AbsolutePath virtualbackendBuildRoot = GitRoot / "backend" / "virtualdisplay" / ".build";
-        AbsolutePath macAppLocation = GitRoot / "packaging" / "macApp";
+        AbsolutePath macAppLocation = FalloutRoot / "Publish" / "macApp";
         AbsolutePath xcodeProjectLocation = macAppLocation / "macApp.xcodeproj";
         AbsolutePath entitlementsPath = macAppLocation / "Froststrap.entitlements";
 

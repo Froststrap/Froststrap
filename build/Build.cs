@@ -23,6 +23,7 @@ public partial class Build : FalloutBuild
     readonly Solution Solution;
 
     AbsolutePath GitRoot => Repository.LocalDirectory;
+    AbsolutePath FalloutRoot => GitRoot / "build";
     AbsolutePath OutputRoot => GitRoot / ".build";
 
     Target BuildDebug => _ => _

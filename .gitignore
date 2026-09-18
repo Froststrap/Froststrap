@@ -1,7 +1,7 @@
 # Build artifacts
 target
 result
-packaging/macApp/build/
+build/Publish/macApp/build
 .build/
 [Bb]in/
 [Oo]bj/

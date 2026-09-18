@@ -24,7 +24,6 @@ public partial class Build : FalloutBuild
         Log.Debug("Detected RPM version as {ver}", rpmVersion);
 
         AbsolutePath outputDir      = outputDirectory;
-        AbsolutePath sourcePackaging = GitRoot / "packaging";
         AbsolutePath appDir         = outputDir / "AppDir";
         AbsolutePath publishDir     = outputDir;
 
@@ -72,8 +71,8 @@ public partial class Build : FalloutBuild
         RunProcess("chmod", $"+x \"{appDir / "AppRun"}\"");
 
         BuildAppImage(outputDir, appDir);
-        BuildRpm(outputDir, appDir, sourcePackaging, rpmVersion);
-        BuildDeb(outputDir, appDir, sourcePackaging, version);
+        BuildRpm(outputDir, appDir, rpmVersion);
+        BuildDeb(outputDir, appDir,  version);
 
         Directory.Delete(appDir, recursive: true);
         File.Delete(outputDir / "appimagetool.AppImage");
@@ -105,14 +104,14 @@ public partial class Build : FalloutBuild
             $"--appimage-extract-and-run \"{appDir}\" \"{buildDir / "Froststrap-linux-x64.AppImage"}\"");
     }
 
-    void BuildRpm(AbsolutePath outputDir, AbsolutePath appDir, AbsolutePath sourcePackaging, string rpmVersion)
+    void BuildRpm(AbsolutePath outputDir, AbsolutePath appDir, string rpmVersion)
     {
         AbsolutePath topDir = outputDir / "rpmbuild";
 
         foreach (var sub in new[] { "BUILD", "BUILDROOT", "RPMS", "SOURCES", "SPECS", "SRPMS" })
             Directory.CreateDirectory(topDir / sub);
 
-        AbsolutePath spec = sourcePackaging / "fedora" / "froststrap-rpm.spec";
+        AbsolutePath spec = FalloutRoot / "Publish" / "fedora" / "froststrap-rpm.spec";
 
         Log.Information("Building RPM from {spec}", spec);
         RunProcess("rpmbuild",
@@ -132,7 +131,7 @@ public partial class Build : FalloutBuild
         File.Copy(rpm, outputDir / "Froststrap-linux-x64.rpm", overwrite: true);
     }
 
-    void BuildDeb(AbsolutePath outputDir, AbsolutePath appDir, AbsolutePath sourcePackaging, string version)
+    void BuildDeb(AbsolutePath outputDir, AbsolutePath appDir, string version)
     {
         AbsolutePath debianDir = appDir / "DEBIAN";
         Directory.CreateDirectory(debianDir);
@@ -149,7 +148,7 @@ public partial class Build : FalloutBuild
 
         File.WriteAllText(debianDir / "control", control);
 
-        File.Copy(sourcePackaging / "debian" / "postinst", debianDir / "postinst", overwrite: true);
+        File.Copy(FalloutRoot / "Publish" / "debian" / "postinst", debianDir / "postinst", overwrite: true);
         RunProcess("chmod", $"755 \"{debianDir / "postinst"}\"");
 
         Log.Information("Building .deb");

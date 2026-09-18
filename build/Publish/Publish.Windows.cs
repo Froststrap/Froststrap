@@ -10,7 +10,7 @@ public partial class Build : FalloutBuild
 {
     void PublishWindows(string outputDirectory)
     {
-        AbsolutePath nsiLocation = GitRoot / "packaging" / "WinNsis.nsi";
+        AbsolutePath nsiLocation = FalloutRoot / "Publish" / "WinNsis.nsi";
 
         var (_, versionStdout, _) = RunProcessCaptured(
             "git",
