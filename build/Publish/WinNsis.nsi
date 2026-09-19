@@ -151,6 +151,43 @@ Function un.OptionsPageLeave
 FunctionEnd
 
 ; ---------------------------------------------------------------------------
+; Visual C++ Redistributable (x64)
+; ---------------------------------------------------------------------------
+
+; Sets $0 to 1 if the x64 VC++ 2015-2022 runtime is already installed.
+Function IsVCRedistInstalled
+    SetRegView 64
+    ReadRegDWORD $0 HKLM "SOFTWARE\Microsoft\VisualStudio\14.0\VC\Runtimes\x64" "Installed"
+    SetRegView 32
+FunctionEnd
+
+Function InstallVCRedist
+    Call IsVCRedistInstalled
+    ${If} $0 == 1
+        Return
+    ${EndIf}
+
+!ifdef VCREDIST
+    InitPluginsDir
+    StrCpy $1 "$PLUGINSDIR\vc_redist.x64.exe"
+    File "/oname=$PLUGINSDIR\vc_redist.x64.exe" "${VCREDIST}"
+
+    DetailPrint "Installing Microsoft Visual C++ Redistributable..."
+    ExecShellWait "runas" "$1" "/install /passive /norestart" SW_SHOWNORMAL
+    Delete "$1"
+
+    Call IsVCRedistInstalled
+!endif
+
+    ${If} $0 != 1
+        DetailPrint "Microsoft Visual C++ Redistributable was not installed."
+        MessageBox MB_OK|MB_ICONEXCLAMATION \
+            "The Microsoft Visual C++ Redistributable could not be installed.$\nFroststrap may not start until you install it from https://aka.ms/vc14/vc_redist.x64.exe" \
+            /SD IDOK
+    ${EndIf}
+FunctionEnd
+
+; ---------------------------------------------------------------------------
 ; Install section
 ; ---------------------------------------------------------------------------
 
@@ -163,6 +200,8 @@ Section "Froststrap"
     File /r "${PUBLISH_DIR}\Froststrap.exe"
     File /r "${PUBLISH_DIR}\FluentAvalonia.xml"
     File /r "..\..\Froststrap\Froststrap.ico"
+
+    Call InstallVCRedist
 
     ; Froststrap app registry keys (used by the app to locate itself)
     WriteRegStr HKCU "Software\Froststrap" "InstallLocation" "$INSTDIR"
