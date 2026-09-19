@@ -162,7 +162,7 @@ SPDX-License-Identifier: MPL-2.0
                                                                                    FontWeight="SemiBold"
                                                                                    FontSize="13"
                                                                                    TextTrimming="CharacterEllipsis" />
-                                                                        <TextBlock Text="{Binding Description}"
+                                                                        <controls:MarkdownTextBlock MarkdownText="{Binding Description}"
                                                                                    FontSize="12"
                                                                                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                                                                                    TextTrimming="CharacterEllipsis"
