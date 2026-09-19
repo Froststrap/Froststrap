@@ -63,6 +63,13 @@ namespace Froststrap.UI.Elements.Settings
             _viewModel.RequestCloseWindowEvent += (_, _) => Close();
             _viewModel.SearchBar.SearchResultSelected += (_, item) => OnSearchResultSelected(item);
 
+            var overlay = this.FindControl<SearchDialog>("SearchOverlay");
+            if (overlay != null)
+            {
+                overlay.Subscribe(_viewModel.SearchBar);
+                overlay.Dismissed += (_, _) => overlay.Hide();
+            }
+
             App.Logger.Debug("Initializing settings window");
 
             if (showAlreadyRunningWarning)
@@ -147,6 +154,8 @@ namespace Froststrap.UI.Elements.Settings
 
         private void OnSearchResultSelected(SearchBarItem item)
         {
+            this.FindControl<SearchDialog>("SearchOverlay")?.Hide();
+
             _pendingSearchScrollItem = item;
 
             if (_viewModel?.SelectedPage != item.PageTag)
@@ -252,14 +261,13 @@ namespace Froststrap.UI.Elements.Settings
             }
         }
 
-        private async void OpenSearchDialog(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        private void OpenSearchOverlay(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
             if (_viewModel == null) return;
 
             StartIndexingAllPagesIfNeeded();
 
-            var dialog = new SearchDialog(_viewModel.SearchBar);
-            await dialog.ShowDialog(this);
+            this.FindControl<SearchDialog>("SearchOverlay")?.Show();
         }
 
         private void UpdateSelectedNavigationViewItem(string selectedPage)

@@ -45,7 +45,7 @@ SPDX-License-Identifier: MPL-2.0
 
             <ui:FANavigationView.PaneToggleRowContent>
                 <controls:IconButton Icon="Search"
-                                     Click="OpenSearchDialog"
+                                     Click="OpenSearchOverlay"
                                      Width="40"
                                      Height="36"
                                      Padding="0"
@@ -340,5 +340,11 @@ SPDX-License-Identifier: MPL-2.0
             IsVisible="False"
             Opacity="0"
             ZIndex="-1000" />
+
+        <elements:SearchDialog
+            x:Name="SearchOverlay"
+            Grid.Row="0"
+            Grid.RowSpan="3"
+            ZIndex="2000" />
     </Grid>
 </base:AvaloniaWindow>
