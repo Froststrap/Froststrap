@@ -11,4 +11,5 @@ jobs:
       - uses: vedantmgoyal9/winget-releaser@main
         with:
           identifier: Froststrap.Froststrap
+          installers-regex: '\.exe$'
           token: ${{ secrets.WINGET_TOKEN }}
