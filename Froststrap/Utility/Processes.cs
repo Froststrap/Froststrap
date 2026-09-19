@@ -32,13 +32,20 @@ static class Processes
 
     public static void KillSober()
     {
-        Process[] processes = GetProcessesSafe();
-        foreach (var p in processes)
+        try
         {
-            if (p.ProcessName == "sober")
+            using Process? process = Process.Start(new ProcessStartInfo
             {
-                try { p.Kill(); p.WaitForExit(1000); } catch { }
-            }
+                FileName = "flatpak",
+                Arguments = "kill org.vinegarhq.Sober",
+                UseShellExecute = false,
+                CreateNoWindow = true
+            });
+
+            process?.WaitForExit(1000);
+        }
+        catch
+        {
         }
     }
 
