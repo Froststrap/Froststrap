@@ -2,9 +2,87 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>xyz.froststrap.roblox</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>roblox</string>
+				<string>roblox-player</string>
+				<string>roblox-studio</string>
+				<string>roblox-studio-auth</string>
+			</array>
+		</dict>
+	</array>
+
 	<key>UTExportedTypeDeclarations</key>
 	<array>
-		<dict/>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>xyz.froststrap.roblox.place</string>
+			<key>UTTypeDescription</key>
+			<string>Roblox Place</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>rbxl</string>
+					<string>rbxlx</string>
+				</array>
+			</dict>
+		</dict>
+
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>xyz.froststrap.roblox.model</string>
+			<key>UTTypeDescription</key>
+			<string>Roblox Model</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>rbxm</string>
+					<string>rbxmx</string>
+				</array>
+			</dict>
+		</dict>
+	</array>
+
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>Roblox Place</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>xyz.froststrap.roblox.place</string>
+			</array>
+		</dict>
+
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>Roblox Model</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>xyz.froststrap.roblox.model</string>
+			</array>
+		</dict>
 	</array>
 </dict>
 </plist>
