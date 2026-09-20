@@ -151,6 +151,32 @@ Function un.OptionsPageLeave
 FunctionEnd
 
 ; ---------------------------------------------------------------------------
+; Undo BlockState()
+; ---------------------------------------------------------------------------
+
+Function un.UndoBlockState
+    Exch $R0
+
+    IfFileExists "$R0\*.*" done
+
+    IfFileExists "$R0" 0 checkBackup
+
+    System::Call 'kernel32::GetFileAttributesW(w "$R0") i .R1'
+    IntOp $R2 $R1 & 1
+    StrCmp $R2 0 done
+
+    SetFileAttributes "$R0" NORMAL
+    Delete "$R0"
+
+checkBackup:
+    IfFileExists "$R0 (Before Blocking)\*.*" 0 done
+    Rename "$R0 (Before Blocking)" "$R0"
+
+done:
+    Pop $R0
+FunctionEnd
+
+; ---------------------------------------------------------------------------
 ; Visual C++ Redistributable (x64)
 ; ---------------------------------------------------------------------------
 
@@ -249,7 +275,14 @@ Section "Uninstall"
     ; Step 1: let the app kill Roblox and restore protocol handlers.
     ExecWait '"$INSTDIR\${APP_EXE}" -uninstall -quiet -nsis' $0
 
-    ; Step 2: NSIS cleans up what it owns
+    ; Step 2: undo any BlockState() the app applied. Roblox folders that were
+    Push "$PROFILE\Videos\Roblox"
+    Call un.UndoBlockState
+
+    Push "$PROFILE\Pictures\Roblox"
+    Call un.UndoBlockState
+
+    ; Step 3: NSIS cleans up what it owns
 
     ; Shortcuts
     Delete "$DESKTOP\Froststrap.lnk"
@@ -262,7 +295,7 @@ Section "Uninstall"
     DeleteRegValue HKCU "Software\Froststrap" "AppPath"
     DeleteRegKey /IfEmpty HKCU "Software\Froststrap"
 
-    ; Step 3: remove the install directory.
+    ; Step 4: remove the install directory.
     ${If} $KeepUserData == ${BST_CHECKED}
         Delete "$INSTDIR\${APP_EXE}"
         Delete "$INSTDIR\Uninstall.exe"
