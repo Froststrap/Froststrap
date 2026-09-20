@@ -3006,54 +3006,6 @@ internal partial class Bootstrapper : IDisposable
 
         var allModFiles = new Dictionary<string, (string SourcePath, int Priority, string ModName, FileInfo Info)>(StringComparer.OrdinalIgnoreCase);
 
-        if (Directory.Exists(Paths.Modifications))
-        {
-            App.Logger.Info("Processing PresetModifications (Flat folder)...");
-
-            foreach (string file in Directory.GetFiles(Paths.Modifications))
-            {
-                string relativeFile = Path.GetFileName(file);
-                if (relativeFile == "README.txt" ||
-                    relativeFile == "info.json" ||
-                    relativeFile.EndsWith(".lock", StringComparison.Ordinal) ||
-                    relativeFile.EndsWith(".dll", StringComparison.Ordinal) ||
-                    relativeFile.EndsWith(".exe", StringComparison.Ordinal) ||
-                    IsClientSettingsRelativePath(relativeFile))
-                    continue;
-
-                var info = new FileInfo(file);
-                allModFiles[relativeFile] = (file, int.MinValue, "BaseModification", info);
-            }
-
-            foreach (string dir in Directory.GetDirectories(Paths.Modifications))
-            {
-                string dirName = Path.GetFileName(dir);
-                if (allModFolderNames.Contains(dirName, StringComparer.OrdinalIgnoreCase))
-                    continue;
-
-                if (!Directory.Exists(dir))
-                {
-                    App.Logger.Warn($"Skipping missing directory: {dir}");
-                    continue;
-                }
-
-                foreach (string file in Directory.GetFiles(dir, "*.*", SearchOption.AllDirectories))
-                {
-                    string relativeFile = Path.GetRelativePath(Paths.Modifications, file);
-                    if (relativeFile == "README.txt" ||
-                        relativeFile == "info.json" ||
-                        relativeFile.EndsWith(".lock", StringComparison.Ordinal) ||
-                        relativeFile.EndsWith(".dll", StringComparison.Ordinal) ||
-                        relativeFile.EndsWith(".exe", StringComparison.Ordinal) ||
-                        IsClientSettingsRelativePath(relativeFile))
-                        continue;
-
-                    var info = new FileInfo(file);
-                    allModFiles[relativeFile] = (file, int.MinValue, "BaseModification", info);
-                }
-            }
-        }
-
         foreach (var mod in activeMods)
         {
             string modSource = Path.Combine(Paths.Modifications, mod.FolderName);
@@ -3082,6 +3034,54 @@ internal partial class Bootstrapper : IDisposable
                 var info = new FileInfo(file);
 
                 allModFiles[relativeFile] = (file, mod.Priority, mod.FolderName, info);
+            }
+        }
+
+        if (Directory.Exists(Paths.Modifications))
+        {
+            App.Logger.Info("Processing PresetModifications (Flat folder)...");
+
+            foreach (string file in Directory.GetFiles(Paths.Modifications))
+            {
+                string relativeFile = Path.GetFileName(file);
+                if (relativeFile == "README.txt" ||
+                    relativeFile == "info.json" ||
+                    relativeFile.EndsWith(".lock", StringComparison.Ordinal) ||
+                    relativeFile.EndsWith(".dll", StringComparison.Ordinal) ||
+                    relativeFile.EndsWith(".exe", StringComparison.Ordinal) ||
+                    IsClientSettingsRelativePath(relativeFile))
+                    continue;
+
+                var info = new FileInfo(file);
+                allModFiles[relativeFile] = (file, int.MaxValue, "BaseModification", info);
+            }
+
+            foreach (string dir in Directory.GetDirectories(Paths.Modifications))
+            {
+                string dirName = Path.GetFileName(dir);
+                if (allModFolderNames.Contains(dirName, StringComparer.OrdinalIgnoreCase))
+                    continue;
+
+                if (!Directory.Exists(dir))
+                {
+                    App.Logger.Warn($"Skipping missing directory: {dir}");
+                    continue;
+                }
+
+                foreach (string file in Directory.GetFiles(dir, "*.*", SearchOption.AllDirectories))
+                {
+                    string relativeFile = Path.GetRelativePath(Paths.Modifications, file);
+                    if (relativeFile == "README.txt" ||
+                        relativeFile == "info.json" ||
+                        relativeFile.EndsWith(".lock", StringComparison.Ordinal) ||
+                        relativeFile.EndsWith(".dll", StringComparison.Ordinal) ||
+                        relativeFile.EndsWith(".exe", StringComparison.Ordinal) ||
+                        IsClientSettingsRelativePath(relativeFile))
+                        continue;
+
+                    var info = new FileInfo(file);
+                    allModFiles[relativeFile] = (file, int.MaxValue, "BaseModification", info);
+                }
             }
         }
 
