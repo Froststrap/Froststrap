@@ -454,6 +454,7 @@ namespace Froststrap.Integrations
                 }
                 catch (Exception ex) when (ex is IOException || ex is UnauthorizedAccessException)
                 {
+                    // https://stackoverflow.com/questions/1305089/can-you-catch-more-than-one-type-of-exception-with-each-block
                     attempts++;
                     if (attempts > 5) throw;
                     Thread.Sleep(50);
