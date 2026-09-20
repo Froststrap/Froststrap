@@ -24,7 +24,7 @@ namespace Froststrap.Integrations
 
         private readonly WINEVENTPROC _setTitleHook;
         private bool _titleHookInstalled;
-        private HWINEVENTHOOK _titleHook;
+        private UnhookWinEventSafeHandle? _titleHook;
 
         private HWND _hWnd;
         private readonly uint _robloxPID;
@@ -258,14 +258,11 @@ namespace Froststrap.Integrations
 
             try
             {
-                if (_titleHook != HWINEVENTHOOK.Null)
-                {
-                    PInvoke.UnhookWinEvent(_titleHook);
-                }
+                _titleHook?.Dispose();
             }
             catch { }
 
-            _titleHook = HWINEVENTHOOK.Null;
+            _titleHook = null;
             _titleHookInstalled = false;
 
             App.Logger.Info(LOG_IDENT, "Title change hook removed.");
