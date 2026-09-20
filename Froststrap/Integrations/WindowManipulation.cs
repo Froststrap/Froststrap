@@ -24,6 +24,7 @@ namespace Froststrap.Integrations
 
         private readonly WINEVENTPROC _setTitleHook;
         private bool _titleHookInstalled;
+        private HWINEVENTHOOK _titleHook;
 
         private HWND _hWnd;
         private readonly uint _robloxPID;
@@ -237,7 +238,7 @@ namespace Froststrap.Integrations
 
                 _titleHookInstalled = true;
 
-                PInvoke.SetWinEventHook(
+                _titleHook = PInvoke.SetWinEventHook(
                     EVENT_OBJECT_NAMECHANGE,
                     EVENT_OBJECT_NAMECHANGE,
                     null,
@@ -248,6 +249,26 @@ namespace Froststrap.Integrations
 
                 App.Logger.Info(LOG_IDENT, "Title change hook installed.");
             });
+        }
+
+        private void UnhookTitleHook()
+        {
+            if (!_titleHookInstalled)
+                return;
+
+            try
+            {
+                if (_titleHook != HWINEVENTHOOK.Null)
+                {
+                    PInvoke.UnhookWinEvent(_titleHook);
+                }
+            }
+            catch { }
+
+            _titleHook = HWINEVENTHOOK.Null;
+            _titleHookInstalled = false;
+
+            App.Logger.Info(LOG_IDENT, "Title change hook removed.");
         }
 
         private void SetWindowTitleHook(
@@ -283,6 +304,13 @@ namespace Froststrap.Integrations
                 return;
 
             _disposed = true;
+
+            if (_inGame)
+            {
+                ApplyConfiguredIcon();
+            }
+
+            UnhookTitleHook();
 
             GC.SuppressFinalize(this);
         }
