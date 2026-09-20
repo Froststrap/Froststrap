@@ -73,8 +73,9 @@ namespace Froststrap.Integrations
             {
                 return await Http.GetJson<GithubRelease>(new Uri(ModGeneratorVersionApiUrl));
             }
-            catch
+            catch (Exception ex)
             {
+                App.Logger.Warn($"GetLatestModGeneratorRelease failed: {ex.Message}");
                 return null;
             }
         }
@@ -451,7 +452,7 @@ namespace Froststrap.Integrations
                     File.Move(tempPath, originalPath);
                     break;
                 }
-                catch (IOException)
+                catch (Exception ex) when (ex is IOException || ex is UnauthorizedAccessException)
                 {
                     attempts++;
                     if (attempts > 5) throw;
@@ -561,8 +562,6 @@ namespace Froststrap.Integrations
             string hash = clientInfo.VersionGuid.Replace("version-", "", StringComparison.Ordinal);
             string tempPath = Path.Combine(Path.GetTempPath(), "Froststrap");
             Directory.CreateDirectory(tempPath);
-            foreach (var file in Directory.GetFiles(tempPath, "*.zip").Where(f => !f.Contains(hash, StringComparison.OrdinalIgnoreCase)))
-                try { File.Delete(file); } catch { }
 
             async Task<string> DownloadOne(string type)
             {
@@ -575,6 +574,8 @@ namespace Froststrap.Integrations
             }
 
             var results = await Task.WhenAll(DownloadOne("extracontent-luapackages"), DownloadOne("extracontent-textures"), DownloadOne("content-textures2"));
+            foreach (var file in Directory.GetFiles(tempPath, "*.zip").Where(f => !f.Contains(hash, StringComparison.OrdinalIgnoreCase)))
+                try { File.Delete(file); } catch { }
             return (results[0], results[1], results[2], hash, clientInfo.Version);
         }
 
