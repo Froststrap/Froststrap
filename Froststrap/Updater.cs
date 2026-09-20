@@ -198,7 +198,12 @@ internal class Updater
     {
         if (OperatingSystem.IsWindows())
         {
-            return ["Froststrap-windows.msi", "-windows.msi"];
+            if (RuntimeInformation.OSArchitecture == Architecture.X64)
+            {
+                return ["Froststrap-windows-x64.exe", "-windows-x64.msi"];
+            } else {
+                return ["Froststrap-windows-arm64.exe", "-windows-arm64.exe"];
+            }
         }
         else if (OperatingSystem.IsMacOS())
         {
