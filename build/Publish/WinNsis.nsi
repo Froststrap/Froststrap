@@ -218,6 +218,14 @@ FunctionEnd
 ; ---------------------------------------------------------------------------
 
 Section "Froststrap"
+    ${If} $CreateDesktopShortcut == ""
+        StrCpy $CreateDesktopShortcut ${BST_CHECKED}
+    ${EndIf}
+
+    ${If} $CreateStartMenuShortcut == ""
+        StrCpy $CreateStartMenuShortcut ${BST_CHECKED}
+    ${EndIf}
+
     ${If} $ExistingInstallChoice == 1
         RMDir /r "$INSTDIR"
     ${EndIf}
@@ -248,8 +256,7 @@ Section "Froststrap"
     WriteRegDWORD HKCU "${APP_UNINSTALL_KEY}" "NoRepair"       1
 
     ${If} $CreateStartMenuShortcut == ${BST_CHECKED}
-        CreateDirectory "$SMPROGRAMS\Froststrap"
-        CreateShortCut "$SMPROGRAMS\Froststrap\Froststrap.lnk" "$INSTDIR\${APP_EXE}"
+        CreateShortCut "$SMPROGRAMS\Froststrap.lnk" "$INSTDIR\${APP_EXE}"
     ${EndIf}
     ${If} $CreateDesktopShortcut == ${BST_CHECKED}
         CreateShortCut "$DESKTOP\Froststrap.lnk" "$INSTDIR\${APP_EXE}"
@@ -286,8 +293,7 @@ Section "Uninstall"
 
     ; Shortcuts
     Delete "$DESKTOP\Froststrap.lnk"
-    Delete "$SMPROGRAMS\Froststrap\Froststrap.lnk"
-    RMDir  "$SMPROGRAMS\Froststrap"
+    Delete "$SMPROGRAMS\Froststrap.lnk"
 
     ; Registry keys written by NSIS
     DeleteRegKey   HKCU "${APP_UNINSTALL_KEY}"
