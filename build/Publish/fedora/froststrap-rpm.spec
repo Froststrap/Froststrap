@@ -1,5 +1,5 @@
 Name:           Froststrap
-Version:        %{?froststrap_version}%{!?froststrap_version:2.0.0}
+Version:        %{?froststrap_version}%{!?froststrap_version:2.0.1}
 Release:        1%{?dist}
 Summary:        %description
 
