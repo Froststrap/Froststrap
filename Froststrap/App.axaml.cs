@@ -372,7 +372,7 @@ internal partial class App : Application
         if (e is not ProtocolActivatedEventArgs { Kind: ActivationKind.OpenUri } protocolArgs)
             return;
 
-        string uri = protocolArgs.Uri.ToString();
+        string uri = protocolArgs.Uri.OriginalString;
 
         lock (ActivationLock)
         {

@@ -90,17 +90,23 @@ namespace Froststrap.RobloxInterfaces
                 var finished = await Task.WhenAny(pending);
                 pending.Remove(finished);
 
-                if (finished.IsCompletedSuccessfully)
-                {
-                    BaseUrl = finished.Result;
-                    App.Logger.Info($"Optimal BaseUrl: {BaseUrl}");
+                string url;
 
-                    await tokenSource.CancelAsync();
-                    return null;
+                try
+                {
+                    url = await finished;
+                }
+                catch (Exception ex)
+                {
+                    lastError = ex;
+                    continue;
                 }
 
-                if (finished.Exception?.GetBaseException() is { } error)
-                    lastError = error;
+                BaseUrl = url;
+                App.Logger.Info($"Optimal BaseUrl: {BaseUrl}");
+
+                await tokenSource.CancelAsync();
+                return null;
             }
 
             BaseUrl = FALLBACK_URL;

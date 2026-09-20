@@ -992,10 +992,35 @@ internal partial class Bootstrapper : IDisposable
 
         App.Logger.Info($"Resolved Roblox path: {expectedPath}");
 
+        string launchArguments = _launchCommandLine;
+
+        if (OperatingSystem.IsMacOS())
+        {
+            string launch = _launchCommandLine.Trim();
+
+            if (launch.Length == 0 && !IsStudioLaunch)
+                launch = "roblox-player:";
+
+            if (launch.Length == 0)
+            {
+                launchArguments = $"-n \"{expectedPath}\"";
+            }
+            else if (launch.StartsWith('-'))
+            {
+                launchArguments = $"-n \"{expectedPath}\" --args {launch}";
+            }
+            else
+            {
+                App.Logger.Info("Delivering the launch url to Roblox through Launch Services");
+                string safeUrl = launch.Replace("\"", "%22", StringComparison.Ordinal);
+                launchArguments = $"-n -a \"{expectedPath}\" \"{safeUrl}\"";
+            }
+        }
+
         var startInfo = new ProcessStartInfo()
         {
             FileName = OperatingSystem.IsMacOS() ? "open" : expectedPath,
-            Arguments = OperatingSystem.IsMacOS() ? $"-n \"{expectedPath}\" --args {_launchCommandLine}" : _launchCommandLine,
+            Arguments = launchArguments,
             WorkingDirectory = AppData.Directory,
             UseShellExecute = OperatingSystem.IsMacOS()
         };
