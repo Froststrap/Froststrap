@@ -35,9 +35,7 @@ sealed class Program
         GlobalDiagnosticsContext.Set("logRoot", Paths.Logs);
         GlobalDiagnosticsContext.Set("startTime", DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss", CultureInfo.InvariantCulture));
 
-        App.LaunchSettings = new LaunchSettings(Environment.GetCommandLineArgs());
-
-        if (App.LaunchSettings.NoGpuFlag.Active) Environment.SetEnvironmentVariable("AVALONIA_GPU", "0");
+        App.LaunchSettings = new LaunchSettings(args);
 
         try
         {
@@ -66,6 +64,14 @@ sealed class Program
 #endif
             .LogToTrace();
 
+        if (OperatingSystem.IsWindows() && App.LaunchSettings?.NoGpuFlag.Active == true)
+        {
+            builder = builder.With(new Win32PlatformOptions
+            {
+                RenderingMode = [Win32RenderingMode.Software]
+            });
+        }
+
         if (OperatingSystem.IsLinux() &&
             !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("FROSTSTRAP_FORCE_WAYLAND")))
         {
@@ -76,10 +82,6 @@ sealed class Program
                 {
                     UseDmabufSwapchain = true
                 });
-        }
-        else
-        {
-            builder = builder.UsePlatformDetect();
         }
 
         return builder;

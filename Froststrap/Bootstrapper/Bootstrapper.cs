@@ -50,15 +50,19 @@ internal partial class Bootstrapper : IDisposable
     private string _latestVersionGuid = null!;
     private string _latestVersionDirectory = null!;
     private PackageManifest _versionPackageManifest = null!;
+
+    private readonly System.Collections.Concurrent.ConcurrentDictionary<string, byte> _sizedFromResponse = new();
     private readonly GameJoinData _joinData = null!;
 
     private static bool AutomaticallyUpdateSober => OperatingSystem.IsLinux() && App.Settings.Prop.AutomaticallyUpdateSober;
+    private string CurrentDirectory => _latestVersionDirectory ?? AppData.Directory;
+
     private bool MustUpgrade => App.LaunchSettings.ForceFlag.Active
         || App.State.Prop.ForceReinstall
         || ((!OperatingSystem.IsLinux() || IsStudioLaunch) && (string.IsNullOrEmpty(AppData.DistributionState.VersionGuid)
         || (OperatingSystem.IsMacOS() ? !Directory.Exists(AppData.ExecutablePath) : !File.Exists(AppData.ExecutablePath))))
-        || (OperatingSystem.IsWindows() && !IsStudioLaunch && !File.Exists(Path.Combine(_latestVersionDirectory, "WebView2Loader.dll")))
-        || (OperatingSystem.IsWindows() && !IsStudioLaunch && !File.Exists(Path.Combine(_latestVersionDirectory, "RobloxPlayerBeta.dll")));
+        || (OperatingSystem.IsWindows() && !IsStudioLaunch && !File.Exists(Path.Combine(CurrentDirectory, "WebView2Loader.dll")))
+        || (OperatingSystem.IsWindows() && !IsStudioLaunch && !File.Exists(Path.Combine(CurrentDirectory, "RobloxPlayerBeta.dll")));
 
     private bool _isInstalling;
     private bool _packageExtractionSuccess = true;
@@ -155,6 +159,9 @@ internal partial class Bootstrapper : IDisposable
     private async Task HandleConnectionError(Exception ex)
     {
         _noConnection = true;
+
+        if (App.Settings.Prop.StaticDirectory || !string.IsNullOrEmpty(AppData.DistributionState.VersionGuid))
+            _latestVersionDirectory = AppData.Directory;
 
         App.Logger.Warn($"Connectivity check failed: {ex}");
 
@@ -372,7 +379,6 @@ internal partial class Bootstrapper : IDisposable
                 }
 
                 WindowsRegistry.RegisterClientLocation(IsStudioLaunch, _latestVersionDirectory); // if it for some reason doesnt exist
-                WindowsRegistry.UpdateEstimatedSize();
             }
             else
             {
@@ -448,6 +454,7 @@ internal partial class Bootstrapper : IDisposable
         void RevertChannel()
         {
             Deployment.Channel = Deployment.DefaultChannel;
+            Deployment.ChannelToken = string.Empty;
             if (IsStudioLaunch)
                 App.Settings.Prop.StudioChannel = Deployment.DefaultChannel;
             else
@@ -464,9 +471,11 @@ internal partial class Bootstrapper : IDisposable
         bool behindProductionCheck = App.Settings.Prop.ChannelChangeMode == ChannelChangeMode.Prompt;
 
         // Private channels
+        string? tokenChannel = null;
+
         if (App.Cookies.Loaded)
         {
-            UserChannel? userChannel = await Deployment.GetUserChannel(Deployment.BinaryType);
+            UserChannel? userChannel = await Deployment.GetUserChannel(AppData.BinaryType);
 
             if (
                 userChannel?.Token is not null &&
@@ -482,6 +491,7 @@ internal partial class Bootstrapper : IDisposable
                         StringComparison.OrdinalIgnoreCase);
 
                 Deployment.ChannelToken = userChannel.Token;
+                tokenChannel = userChannel.Channel;
                 enrolledChannel = userChannel.Channel;
             }
         }
@@ -533,6 +543,13 @@ internal partial class Bootstrapper : IDisposable
                 App.Logger.Debug($"Forcing channel {channelFlagData}");
                 EnrollChannel(channelFlagData);
             }
+        }
+
+        if (!string.IsNullOrEmpty(Deployment.ChannelToken)
+            && !string.Equals(Deployment.Channel, tokenChannel, StringComparison.OrdinalIgnoreCase))
+        {
+            App.Logger.Info($"Dropping channel token for '{tokenChannel}' because the active channel is '{Deployment.Channel}'");
+            Deployment.ChannelToken = string.Empty;
         }
 
         bool overrideUsed = false;
@@ -632,12 +649,6 @@ internal partial class Bootstrapper : IDisposable
                 }
             }
 
-            if (OperatingSystem.IsWindows())
-            {
-                using var key = Registry.CurrentUser.CreateSubKey($"SOFTWARE\\ROBLOX Corporation\\Environments\\{AppData.RegistryName}\\Channel");
-                key.SetValueSafe("www." + Deployment.RobloxDomain, Deployment.IsDefaultChannel ? "" : Deployment.Channel);
-            }
-
             _latestVersionGuid = clientVersion.VersionGuid;
             _latestVersion = Utility.Versioning.ParseVersionSafe(clientVersion.Version);
         }
@@ -657,6 +668,8 @@ internal partial class Bootstrapper : IDisposable
                 _latestVersionGuid = versionData;
             }
         }
+
+        SyncLaunchChannel();
 
         if (App.Settings.Prop.StaticDirectory)
             _latestVersionDirectory = AppData.StaticDirectory;
@@ -693,6 +706,37 @@ internal partial class Bootstrapper : IDisposable
 
             _launchMode = isPlayer ? LaunchMode.Player : LaunchMode.Studio;
             SetupAppData(); // we need to set it up again
+        }
+    }
+
+    private void SyncLaunchChannel()
+    {
+        string launchChannel = Deployment.IsDefaultChannel ? Deployment.DefaultChannel : Deployment.Channel;
+
+        if (!string.IsNullOrEmpty(_launchCommandLine))
+        {
+            string synced = Regex.Replace(
+                _launchCommandLine,
+                "channel:[a-zA-Z0-9-_]+",
+                $"channel:{launchChannel}",
+                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+
+            if (!string.Equals(synced, _launchCommandLine, StringComparison.Ordinal))
+            {
+                App.Logger.Info($"Launch arguments carried a different channel than the one installed, using '{launchChannel}'");
+                _launchCommandLine = synced;
+            }
+        }
+
+        if (OperatingSystem.IsWindows())
+        {
+            using var key = Registry.CurrentUser.CreateSubKey($"SOFTWARE\\ROBLOX Corporation\\Environments\\{AppData.RegistryName}\\Channel");
+            key.SetValueSafe("www." + Deployment.RobloxDomain, Deployment.IsDefaultChannel ? "" : Deployment.Channel);
+        }
+
+        if (OperatingSystem.IsMacOS())
+        {
+            Utility.MacChannelStore.Apply(AppData.RegistryName, Deployment.RobloxDomain, Deployment.IsDefaultChannel ? null : Deployment.Channel);
         }
     }
 
@@ -1008,7 +1052,18 @@ internal partial class Bootstrapper : IDisposable
         catch (Exception)
         {
             // attempt a reinstall on next launch
-            File.Delete(AppData.ExecutablePath);
+            try
+            {
+                if (OperatingSystem.IsMacOS())
+                    Directory.Delete(AppData.ExecutablePath, true);
+                else
+                    File.Delete(AppData.ExecutablePath);
+            }
+            catch (Exception cleanupEx)
+            {
+                App.Logger.Warn($"Failed to remove client to force a reinstall: {cleanupEx.Message}");
+            }
+
             throw;
         }
 
@@ -1728,13 +1783,18 @@ internal partial class Bootstrapper : IDisposable
 
             var task = Task.Run(async () =>
             {
-                await DownloadPackage(package);
+                try
+                {
+                    await DownloadPackage(package);
 
-                // we'll extract the runtime installer later if we need to
-                if (package.Name != "WebView2RuntimeInstaller.zip")
-                    await ExtractPackage(package);
-
-                downloadSemaphore.Release();
+                    // we'll extract the runtime installer later if we need to
+                    if (package.Name != "WebView2RuntimeInstaller.zip")
+                        await ExtractPackage(package);
+                }
+                finally
+                {
+                    downloadSemaphore.Release();
+                }
             }, _cancelTokenSource.Token);
 
             packageTasks.Add(task);
@@ -1864,6 +1924,9 @@ internal partial class Bootstrapper : IDisposable
         App.State.Prop.ForceReinstall = false;
         App.State.Save();
         AppData.DistributionStateManager.Save();
+
+        if (OperatingSystem.IsWindows())
+            WindowsRegistry.UpdateEstimatedSize();
 
         if (!IsStudioLaunch) InitializeModFolders();
         _isInstalling = false;
@@ -3263,14 +3326,23 @@ internal partial class Bootstrapper : IDisposable
             App.Logger.Info($"Restoring '{internalZipPath}' from package {packageName}");
         }
 
-        if (!OperatingSystem.IsLinux() || IsStudioLaunch)
+        if ((!OperatingSystem.IsLinux() || IsStudioLaunch) && fileRestoreMap.Count > 0)
         {
+            long restoreBytes = fileRestoreMap.Keys
+                .Select(name => _versionPackageManifest.Find(x => x.Name == name))
+                .Where(p => p is not null)
+                .Sum(p => (long)p!.PackedSize);
+
+            BeginDownloadProgress(restoreBytes);
+
             foreach (var entry in fileRestoreMap)
             {
                 var package = _versionPackageManifest.Find(x => x.Name == entry.Key);
                 if (package is not null)
                 {
-                    await DownloadPackage(package, updateProgress: false);
+                    await DownloadPackage(package);
+
+                    SetStatus(Strings.Bootstrapper_Status_ApplyingModifications);
                     await ExtractPackage(package, entry.Value);
                 }
             }
@@ -3443,6 +3515,22 @@ internal partial class Bootstrapper : IDisposable
             : "/mac";
     }
 
+    private void BeginDownloadProgress(long totalBytes)
+    {
+        Interlocked.Exchange(ref _totalDownloadedBytes, 0);
+        Interlocked.Exchange(ref _totalPackagedBytes, Math.Max(0, totalBytes));
+        RecalculateProgressIncrements();
+
+        if (Dialog is null)
+            return;
+
+        Dialog.ProgressIndeterminate = false;
+        Dialog.TaskbarProgressState = TaskbarItemProgressState.Normal;
+        Dialog.ProgressMaximum = ProgressBarMaximum;
+        Dialog.ProgressValue = 0;
+        Dialog.TaskbarProgressValue = 0.0;
+    }
+
     private async Task DownloadPackage(Package package, bool updateProgress = true)
     {
         if (_cancelTokenSource.IsCancellationRequested)
@@ -3504,7 +3592,17 @@ internal partial class Bootstrapper : IDisposable
 
             try
             {
-                var response = await App.HttpClient.GetAsync(new Uri(packageUrl), HttpCompletionOption.ResponseHeadersRead, _cancelTokenSource.Token);
+                using var response = await App.HttpClient.GetAsync(new Uri(packageUrl), HttpCompletionOption.ResponseHeadersRead, _cancelTokenSource.Token);
+                response.EnsureSuccessStatusCode();
+
+                if (updateProgress
+                    && package.PackedSize <= 0
+                    && response.Content.Headers.ContentLength is long contentLength and > 0
+                    && _sizedFromResponse.TryAdd(package.Name, 0))
+                {
+                    AddProgressTotal(contentLength);
+                }
+
                 await using var stream = await response.Content.ReadAsStreamAsync(_cancelTokenSource.Token);
                 await using var fileStream = new FileStream(package.DownloadPath, FileMode.CreateNew, FileAccess.ReadWrite, FileShare.Delete);
                 while (true)
@@ -3525,8 +3623,11 @@ internal partial class Bootstrapper : IDisposable
 
                     await fileStream.WriteAsync(buffer.AsMemory(0, bytesRead), _cancelTokenSource.Token);
 
-                    Interlocked.Add(ref _totalDownloadedBytes, bytesRead);
-                    UpdateProgressBar();
+                    if (updateProgress)
+                    {
+                        Interlocked.Add(ref _totalDownloadedBytes, bytesRead);
+                        UpdateProgressBar();
+                    }
                 }
                 await fileStream.FlushAsync();
                 fileStream.Position = 0;
@@ -3560,8 +3661,11 @@ internal partial class Bootstrapper : IDisposable
                 if (File.Exists(package.DownloadPath))
                     File.Delete(package.DownloadPath);
 
-                Interlocked.Add(ref _totalDownloadedBytes, -totalBytesRead);
-                UpdateProgressBar();
+                if (updateProgress)
+                {
+                    Interlocked.Add(ref _totalDownloadedBytes, -totalBytesRead);
+                    UpdateProgressBar();
+                }
 
                 // attempt download over HTTP
                 // this isn't actually that unsafe - signatures were fetched earlier over HTTPS
@@ -3650,7 +3754,7 @@ internal partial class Bootstrapper : IDisposable
                 }
 
                 string? retryDir = PackageDirectoryMap.GetValueOrDefault(package.Name);
-                if (retryDir != null)
+                if (files is null && !string.IsNullOrEmpty(retryDir))
                 {
                     string retryTargetFolder = Path.Combine(_latestVersionDirectory, retryDir);
                     try
@@ -3673,6 +3777,8 @@ internal partial class Bootstrapper : IDisposable
                 App.Logger.Info("Retrying download...");
                 SetStatus(string.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_Status_RetryingPackage, package.Name));
                 await Task.Delay(1000);
+
+                Interlocked.Add(ref _totalDownloadedBytes, -(long)package.PackedSize);
                 await DownloadPackage(package);
             }
         }

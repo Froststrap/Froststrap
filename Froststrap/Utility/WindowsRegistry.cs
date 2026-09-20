@@ -148,16 +148,11 @@ namespace Froststrap.Utility
                 apisKey.SetValueSafe("ApplicationPath", Paths.Application);
                 apisKey.SetValueSafe("InstallationPath", Paths.Base);
             }
-            ;
 
-            var currentApis = Registry.CurrentUser.OpenSubKey(App.ApisKey, false);
+            using var currentApis = Registry.CurrentUser.OpenSubKey(App.ApisKey, false);
 
             if (currentApis == null)
-            {
                 Register();
-            }
-            ;
-            currentApis?.Dispose();
         }
 
         public static void RegisterClientLocation(bool isStudio, string? clientPath)
@@ -192,22 +187,32 @@ namespace Froststrap.Utility
             if (!OperatingSystem.IsWindows())
                 return;
 
-            try
+            _ = Task.Run(() =>
             {
-                long totalBytes = 0;
-                var files = Directory.GetFiles(Paths.Base, "*", SearchOption.AllDirectories);
-                foreach (var file in files)
-                    totalBytes += new FileInfo(file).Length;
+                try
+                {
+                    long totalBytes = 0;
 
-                int totalKB = (int)(totalBytes / 1024);
-                using var uninstallKey = Registry.CurrentUser.CreateSubKey(App.UninstallKey);
-                uninstallKey?.SetValueSafe("EstimatedSize", totalKB);
-                App.Logger.Info($"Updated EstimatedSize to {totalKB} KB");
-            }
-            catch (Exception ex)
-            {
-                App.Logger.Error($"Failed to update size: {ex.Message}");
-            }
+                    var options = new EnumerationOptions
+                    {
+                        RecurseSubdirectories = true,
+                        IgnoreInaccessible = true,
+                        AttributesToSkip = FileAttributes.ReparsePoint
+                    };
+
+                    foreach (var file in new DirectoryInfo(Paths.Base).EnumerateFiles("*", options))
+                        totalBytes += file.Length;
+
+                    int totalKB = (int)Math.Min(totalBytes / 1024, int.MaxValue);
+                    using var uninstallKey = Registry.CurrentUser.CreateSubKey(App.UninstallKey);
+                    uninstallKey?.SetValueSafe("EstimatedSize", totalKB);
+                    App.Logger.Info($"Updated EstimatedSize to {totalKB} KB");
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.Error($"Failed to update size: {ex.Message}");
+                }
+            });
         }
 
         /// <summary>
@@ -228,17 +233,16 @@ namespace Froststrap.Utility
                 // make sure we only ever delete roblox's own entry
                 if (!entry.Contains(App.RobloxPlayerAppName, StringComparison.OrdinalIgnoreCase))
                 {
-                    App.Logger.Info(LOG_IDENT, $"Leaving '{valueName}' alone, it doesn't point at Roblox");
+                    App.Logger.Info($"{LOG_IDENT}: Leaving '{valueName}' alone, it doesn't point at Roblox");
                     return;
                 }
 
-                App.Logger.Info(LOG_IDENT, $"Removing startup entry '{entry}'");
+                App.Logger.Info($"{LOG_IDENT}: Removing startup entry '{entry}'");
                 runKey.DeleteValue(valueName);
             }
             catch (Exception ex)
             {
-                App.Logger.Error(LOG_IDENT, "Failed to remove startup entry");
-                App.Logger.Error(LOG_IDENT, ex);
+                App.Logger.Error($"{LOG_IDENT}: Failed to remove startup entry: {ex}");
             }
         }
     }

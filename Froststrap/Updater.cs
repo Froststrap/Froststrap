@@ -200,7 +200,7 @@ internal class Updater
         {
             if (RuntimeInformation.OSArchitecture == Architecture.X64)
             {
-                return ["Froststrap-windows-x64.exe", "-windows-x64.msi"];
+                return ["Froststrap-windows-x64.exe", "-windows-x64.exe"];
             } else {
                 return ["Froststrap-windows-arm64.exe", "-windows-arm64.exe"];
             }

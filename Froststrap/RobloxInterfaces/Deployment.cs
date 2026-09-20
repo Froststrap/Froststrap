@@ -53,21 +53,18 @@ namespace Froststrap.RobloxInterfaces
             "https://s3.amazonaws.com/setup.roblox.com"
         ];
 
-        private static async Task<(string url, long latency)> GetLatency(string url, CancellationToken token)
+        private const int SecondaryMirrorDelayMs = 300;
+
+        private static async Task<string> ProbeMirror(string url, int delayMs, CancellationToken token)
         {
-            var stopwatch = Stopwatch.StartNew();
-            try
-            {
-                using var request = new HttpRequestMessage(HttpMethod.Head, $"{url}/versionStudio");
-                using var response = await App.HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, token);
-                response.EnsureSuccessStatusCode();
-                stopwatch.Stop();
-                return (url, stopwatch.ElapsedMilliseconds);
-            }
-            catch
-            {
-                return (url, long.MaxValue);
-            }
+            if (delayMs > 0)
+                await Task.Delay(delayMs, token);
+
+            using var request = new HttpRequestMessage(HttpMethod.Get, $"{url}/versionStudio");
+            using var response = await App.HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, token);
+            response.EnsureSuccessStatusCode();
+
+            return url;
         }
 
         /// <summary>
@@ -77,39 +74,39 @@ namespace Froststrap.RobloxInterfaces
         public static async Task<Exception?> InitializeConnectivity()
         {
             const string FALLBACK_URL = "https://setup.rbxcdn.com";
-            using var tokenSource = new CancellationTokenSource();
 
-            var tasks = BaseUrls.Select(url => GetLatency(url, tokenSource.Token)).ToList();
+            using var tokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+
+            var pending = BaseUrls
+                .Select((url, index) => ProbeMirror(url, index == 0 ? 0 : SecondaryMirrorDelayMs, tokenSource.Token))
+                .ToList();
 
             App.Logger.Info("Testing for best regional download mirror...");
 
-            try
+            Exception? lastError = null;
+
+            while (pending.Count > 0)
             {
-                var results = await Task.WhenAll(tasks);
+                var finished = await Task.WhenAny(pending);
+                pending.Remove(finished);
 
-                var (url, latency) = results
-                    .Where(r => r.latency != long.MaxValue)
-                    .OrderBy(r => r.latency)
-                    .FirstOrDefault();
-
-                if (url != null)
+                if (finished.IsCompletedSuccessfully)
                 {
-                    BaseUrl = url;
-                    App.Logger.Info($"Optimal BaseUrl: {BaseUrl} ({latency}ms)");
+                    BaseUrl = finished.Result;
+                    App.Logger.Info($"Optimal BaseUrl: {BaseUrl}");
+
                     await tokenSource.CancelAsync();
                     return null;
                 }
 
-                BaseUrl = FALLBACK_URL;
-                App.Logger.Warn($"No mirrors responded. Falling back to default: {BaseUrl}");
-                return new InvalidOperationException("No regional mirrors were responsive.");
+                if (finished.Exception?.GetBaseException() is { } error)
+                    lastError = error;
             }
-            catch (Exception ex)
-            {
-                BaseUrl = FALLBACK_URL;
-                App.Logger.Error("Unhandled exception: ", ex);
-                return ex;
-            }
+
+            BaseUrl = FALLBACK_URL;
+            App.Logger.Warn($"No mirrors responded. Falling back to default: {BaseUrl}");
+
+            return lastError ?? new InvalidOperationException("No regional mirrors were responsive.");
         }
 
         public static string GetLocation(string resource)
@@ -267,7 +264,7 @@ namespace Froststrap.RobloxInterfaces
 
                 if (!isDefaultChannel && behindProductionCheck)
                 {
-                    var defaultClientVersion = await GetInfo(DefaultChannel);
+                    var defaultClientVersion = await GetInfo(DefaultChannel, binaryTypeOverride: activeBinaryType);
                     if (Utility.Versioning.CompareVersions(clientVersion.Version, defaultClientVersion.Version) == VersionComparison.LessThan)
                         clientVersion.IsBehindDefaultChannel = true;
                 }

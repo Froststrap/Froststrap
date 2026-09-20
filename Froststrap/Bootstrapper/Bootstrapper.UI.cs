@@ -22,23 +22,56 @@ internal partial class Bootstrapper
 
     private void UpdateProgressBar(bool updateStatus = true)
     {
-        long current = Interlocked.Read(ref _totalDownloadedBytes);
         if (Dialog is null) return;
 
-        if (updateStatus)
+        long current = Math.Max(0, Interlocked.Read(ref _totalDownloadedBytes));
+        long total = Interlocked.Read(ref _totalPackagedBytes);
+
+        if (updateStatus && total > 0)
         {
             SetStatus(string.Format(CultureInfo.InvariantCulture,
                 Strings.Bootstrapper_Status_DownloadingPackages,
-                FormatBytes(current), FormatBytes(_totalPackagedBytes)));
+                FormatBytes(Math.Min(current, total)), FormatBytes(total)));
         }
 
-        int progressValue = (int)Math.Floor(_progressIncrement * current);
-        progressValue = Math.Clamp(progressValue, 0, ProgressBarMaximum);
-        Dialog.ProgressValue = progressValue;
+        if (double.IsFinite(_progressIncrement))
+        {
+            int progressValue = (int)Math.Floor(_progressIncrement * current);
+            progressValue = Math.Clamp(progressValue, 0, ProgressBarMaximum);
+            Dialog.ProgressValue = progressValue;
+        }
 
-        double taskbarProgressValue = _taskbarProgressIncrement * current;
-        taskbarProgressValue = Math.Clamp(taskbarProgressValue, 0, _taskbarProgressMaximum);
-        Dialog.TaskbarProgressValue = taskbarProgressValue;
+        if (double.IsFinite(_taskbarProgressIncrement))
+        {
+            double taskbarProgressValue = _taskbarProgressIncrement * current;
+            taskbarProgressValue = Math.Clamp(taskbarProgressValue, 0, _taskbarProgressMaximum);
+            Dialog.TaskbarProgressValue = taskbarProgressValue;
+        }
+    }
+
+    private void RecalculateProgressIncrements()
+    {
+        long total = Interlocked.Read(ref _totalPackagedBytes);
+
+        _taskbarProgressMaximum = TaskbarProgressMaximum;
+
+        if (total <= 0)
+        {
+            _progressIncrement = 0;
+            _taskbarProgressIncrement = 0;
+            return;
+        }
+
+        _progressIncrement = (double)ProgressBarMaximum / total;
+        _taskbarProgressIncrement = _taskbarProgressMaximum / total;
+    }
+
+    private void AddProgressTotal(long bytes)
+    {
+        if (bytes <= 0) return;
+
+        Interlocked.Add(ref _totalPackagedBytes, bytes);
+        RecalculateProgressIncrements();
     }
 
     private static string FormatBytes(long bytes)

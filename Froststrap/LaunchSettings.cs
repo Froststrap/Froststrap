@@ -88,54 +88,52 @@ namespace Froststrap
             _flagLookup = BuildFlagLookup();
 
             Args = args;
-            string? entryAssemblyPath = AppContext.BaseDirectory;
 
             int startIdx = 0;
 
-            // infer roblox launch uris
-            if (Args.Length >= 1)
-            {
-                string arg = Args[0];
+            if (Args.Length >= 1 && ShouldSkipHostArgument(Args[0]))
+                startIdx = 1;
 
-                if (ShouldSkipHostArgument(arg, entryAssemblyPath))
-                {
-                    startIdx = 1;
-                }
-                else if (arg.StartsWith("roblox:", StringComparison.OrdinalIgnoreCase)
+            // infer roblox launch uris
+            if (Args.Length > startIdx)
+            {
+                string arg = Args[startIdx];
+
+                if (arg.StartsWith("roblox:", StringComparison.OrdinalIgnoreCase)
                     || arg.StartsWith("roblox-player:", StringComparison.OrdinalIgnoreCase))
                 {
                     App.Logger.Info("Got Roblox player argument");
                     RobloxLaunchMode = LaunchMode.Player;
                     RobloxLaunchArgs = arg;
-                    startIdx = 1;
+                    startIdx++;
                 }
                 else if (arg.StartsWith("roblox-studio-auth:", StringComparison.OrdinalIgnoreCase))
                 {
                     App.Logger.Info("Got Roblox Studio Auth argument");
                     RobloxLaunchMode = LaunchMode.StudioAuth;
                     RobloxLaunchArgs = arg;
-                    startIdx = 1;
+                    startIdx++;
                 }
                 else if (arg.StartsWith("roblox-studio:", StringComparison.OrdinalIgnoreCase))
                 {
                     App.Logger.Info("Got Roblox Studio argument");
                     RobloxLaunchMode = LaunchMode.Studio;
                     RobloxLaunchArgs = arg;
-                    startIdx = 1;
+                    startIdx++;
                 }
                 else if (arg.StartsWith("version-", StringComparison.Ordinal))
                 {
                     App.Logger.Info("Got version argument");
                     VersionFlag.Active = true;
                     VersionFlag.Data = arg;
-                    startIdx = 1;
+                    startIdx++;
                 }
                 else if (IsRobloxStudioFile(arg))
                 {
                     App.Logger.Info("Got Roblox Studio file argument");
                     RobloxLaunchMode = LaunchMode.Studio;
                     RobloxLaunchArgs = $"-task EditFile -localPlaceFile \"{arg}\"";
-                    startIdx = 1;
+                    startIdx++;
                 }
             }
 
@@ -196,7 +194,7 @@ namespace Froststrap
 
         public bool TryResolveRobloxUri(IEnumerable<string>? args = null)
         {
-            if (_resolvedRoblox.HasValue)
+            if (args is null && _resolvedRoblox.HasValue)
             {
                 RobloxLaunchMode = _resolvedRoblox.Value.Mode;
                 RobloxLaunchArgs = _resolvedRoblox.Value.Args;
@@ -235,7 +233,7 @@ namespace Froststrap
             return false;
         }
 
-        private static bool ShouldSkipHostArgument(string arg, string? entryAssemblyPath)
+        private static bool ShouldSkipHostArgument(string arg)
         {
             if (string.IsNullOrWhiteSpace(arg))
                 return false;
@@ -243,11 +241,14 @@ namespace Froststrap
             if (arg.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
                 return true;
 
-            if (!string.IsNullOrEmpty(entryAssemblyPath) &&
-                string.Equals(arg, entryAssemblyPath, StringComparison.OrdinalIgnoreCase))
+            string? processPath = Environment.ProcessPath;
+            if (!string.IsNullOrEmpty(processPath) &&
+                string.Equals(arg, processPath, StringComparison.OrdinalIgnoreCase))
                 return true;
 
-            if (Path.IsPathRooted(arg))
+            string? firstCommandLineArg = Environment.GetCommandLineArgs().FirstOrDefault();
+            if (!string.IsNullOrEmpty(firstCommandLineArg) &&
+                string.Equals(arg, firstCommandLineArg, StringComparison.OrdinalIgnoreCase))
                 return true;
 
             return false;

@@ -199,11 +199,20 @@ namespace Froststrap
 
             if (!App.LaunchSettings.QuietFlag.Active)
             {
-                App.Logger.Info("Initializing bootstrapper dialog");
-                ThemeCycler.HandleLaunchCycle();
-                dialog = await App.Settings.Prop.BootstrapperStyle.GetNew();
-                App.Bootstrapper.Dialog = dialog;
-                dialog.Bootstrapper = App.Bootstrapper;
+                try
+                {
+                    App.Logger.Info("Initializing bootstrapper dialog");
+                    ThemeCycler.HandleLaunchCycle();
+                    dialog = await App.Settings.Prop.BootstrapperStyle.GetNew();
+                    App.Bootstrapper.Dialog = dialog;
+                    dialog.Bootstrapper = App.Bootstrapper;
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.Error(ex, "Failed to create the bootstrapper dialog, launching without one");
+                    App.Bootstrapper.Dialog = null;
+                    dialog = null;
+                }
             }
 
             _ = Task.Run(App.Bootstrapper.Run).ContinueWith(async t =>
@@ -228,7 +237,15 @@ namespace Froststrap
                     desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
             }
 
-            dialog?.ShowBootstrapper();
+            try
+            {
+                dialog?.ShowBootstrapper();
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error(ex, "Failed to show the bootstrapper dialog, continuing without it");
+                App.Bootstrapper.Dialog = null;
+            }
 
             App.Logger.Info("Exiting");
         }
