@@ -61,6 +61,11 @@ internal partial class InternalNativeNotify
     public static partial int SetApplication(
         [MarshalAs(UnmanagedType.LPUTF8Str)] string bundleIdentifier
     );
+    [LibraryImport(
+        "rbackend",
+        EntryPoint = "request_notificaiton_permission"
+    )]
+    public static partial int RequestPermission();    
 }
 
 /// A native notifier
@@ -68,6 +73,7 @@ public class NativeNotify
 {
     public static void InitRing()
     {
+        InternalNativeNotify.RequestPermission();
         InternalNativeNotify.SetApplication("xyz.froststrap.desktop");
     }
 

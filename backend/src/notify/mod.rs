@@ -57,7 +57,12 @@ pub unsafe extern "C" fn send_notification_message(
     };
 
     #[cfg(target_os = "macos")]
-    return macos::send_notification(title, description);
+    {
+        
+        let r = macos::send_notification(title, description);
+        println!("{r}");
+        r
+    }
 
     #[cfg(target_os = "linux")]
     return linux::send_notification(title, description);
