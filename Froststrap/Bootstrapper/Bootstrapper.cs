@@ -833,6 +833,7 @@ internal partial class Bootstrapper : IDisposable
 
     private async Task StartRoblox()
     {
+        App.Logger.Info("Starting Roblox");
         if (_launchMode == LaunchMode.Player)
         {
             // reapplied on every launch because roblox can reset the file on its own.
