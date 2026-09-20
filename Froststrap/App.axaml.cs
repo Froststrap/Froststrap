@@ -457,6 +457,8 @@ internal partial class App : Application
         if (ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
             return;
 
+        desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+
         desktop.Exit += (_, _) =>
         {
             FrostRPC = null;

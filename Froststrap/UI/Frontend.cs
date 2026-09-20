@@ -16,10 +16,10 @@ namespace Froststrap.UI
     {
         public static async Task<MessageBoxResult> ShowMessageBox(string message, MessageBoxImage icon = MessageBoxImage.Information, MessageBoxButton buttons = MessageBoxButton.OK, MessageBoxResult defaultResult = MessageBoxResult.None)
         {
-            App.Logger.Info(message);
-
             if (App.LaunchSettings.QuietFlag.Active)
                 return defaultResult;
+
+            App.Logger.Info(message);
 
             return await ShowFluentMessageBox(message, icon, buttons);
         }

@@ -24,12 +24,12 @@ namespace Froststrap
 
                 case NextAction.LaunchRoblox:
                     App.Logger.Info("Opening Roblox");
-                    LaunchRoblox(LaunchMode.Player);
+                    _ = LaunchRoblox(LaunchMode.Player);
                     break;
 
                 case NextAction.LaunchRobloxStudio:
                     App.Logger.Info("Opening Roblox Studio");
-                    LaunchRoblox(LaunchMode.Studio);
+                    _ = LaunchRoblox(LaunchMode.Studio);
                     break;
 
                 default:
@@ -65,7 +65,7 @@ namespace Froststrap
             else if (App.LaunchSettings.RobloxLaunchMode != LaunchMode.None)
             {
                 App.Logger.Info($"Opening bootstrapper ({App.LaunchSettings.RobloxLaunchMode})");
-                LaunchRoblox(App.LaunchSettings.RobloxLaunchMode);
+                _ = LaunchRoblox(App.LaunchSettings.RobloxLaunchMode);
             }
             else if (!App.LaunchSettings.QuietFlag.Active)
             {
@@ -166,7 +166,7 @@ namespace Froststrap
             };
         }
 
-        public static async void LaunchRoblox(LaunchMode launchMode)
+        public static async Task LaunchRoblox(LaunchMode launchMode)
         {
             if (launchMode == LaunchMode.None)
                 throw new InvalidOperationException("No Roblox launch mode set");
@@ -230,12 +230,6 @@ namespace Froststrap
                 App.Terminate();
             }, TaskScheduler.Default);
 
-            if ((OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) && !App.LaunchSettings.QuietFlag.Active)
-            {
-                if (Avalonia.Application.Current?.ApplicationLifetime is
-                    Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop)
-                    desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
-            }
 
             try
             {
@@ -347,7 +341,7 @@ namespace Froststrap
 
             var mode = App.LaunchSettings.RobloxLaunchMode;
             App.Logger.Info($"Handling activation URI as a Roblox launch ({mode})");
-            Avalonia.Threading.Dispatcher.UIThread.Post(() => LaunchRoblox(mode));
+            Avalonia.Threading.Dispatcher.UIThread.Post(() => _ = LaunchRoblox(mode));
         }
     }
 }
