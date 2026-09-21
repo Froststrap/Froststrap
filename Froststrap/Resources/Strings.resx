@@ -298,7 +298,7 @@ Server ID: {1}</value>
     <value>Copy log contents</value>
   </data>
   <data name="Dialog.Exception.Info.1" xml:space="preserve">
-    <value>An exception occurred while running Froststrap.</value>
+    <value>An exception occurred while running Froststrap</value>
   </data>
   <data name="Dialog.Exception.Info.2" xml:space="preserve">
     <value>Check the [Froststrap Wiki]({0}) first to see if this problem has already been addressed with a fix.
