@@ -2112,7 +2112,7 @@ It must contain at least one of the following folders: content, ExtraContent, Pl
   <data name="Menu.Deployment.DomainValidation" xml:space="preserve">
     <value>You entered an invalid domain
 
-Please dont mess with this if you dont know what your doing</value>
+Please dont mess with this if you dont know what you're doing</value>
   </data>
   <data name="Menu.Deployment.FailedToLoadChannelData" xml:space="preserve">
     <value>Failed to load channel data.</value>
@@ -2343,7 +2343,7 @@ Please dont mess with this if you dont know what your doing</value>
     <value>Adds a small button to join the game your working on.</value>
   </data>
   <data name="Menu.Integrations.StudioRPC.PluginConfirmation" xml:space="preserve">
-    <value>This works by adding a custom made froststrap plugin that will log what your doing.
+    <value>This works by adding a custom-made froststrap plugin, which will log what you're doing.
 
 Do you want to install the plugin?</value>
   </data>
