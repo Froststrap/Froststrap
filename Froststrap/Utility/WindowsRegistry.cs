@@ -137,24 +137,6 @@ namespace Froststrap.Utility
                 uriKey.SetValueSafe("", RobloxPlaceKey);
         }
 
-        public static void RegisterApis()
-        {
-            if (!OperatingSystem.IsWindows())
-                return;
-
-            static void Register()
-            {
-                using var apisKey = Registry.CurrentUser.CreateSubKey(App.ApisKey);
-                apisKey.SetValueSafe("ApplicationPath", Paths.Application);
-                apisKey.SetValueSafe("InstallationPath", Paths.Base);
-            }
-
-            using var currentApis = Registry.CurrentUser.OpenSubKey(App.ApisKey, false);
-
-            if (currentApis == null)
-                Register();
-        }
-
         public static void RegisterClientLocation(bool isStudio, string? clientPath)
         {
             if (!OperatingSystem.IsWindows())

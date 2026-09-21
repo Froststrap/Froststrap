@@ -21,7 +21,7 @@ namespace Froststrap.Models.SettingTasks
         public override void Execute()
         {
             if (NewState)
-                Shortcut.Create(Paths.Application, _exeFlags, _shortcutPath);
+                Shortcut.Create(Paths.Process, _exeFlags, _shortcutPath);
             else
                 Shortcut.Delete(_shortcutPath);
 

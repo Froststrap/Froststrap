@@ -144,7 +144,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 ShortcutStatus = Strings.Menu_Shortcuts_Processing;
 
                 await Shortcut.CreateGameShortcut(
-                    appPath: Paths.Application,
+                    appPath: Paths.Process,
                     displayName: PreviewName,
                     placeId: PlaceId,
                     jobId: JobId,
