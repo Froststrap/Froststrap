@@ -47,8 +47,8 @@ public partial class Build : FalloutBuild
             Type=Application
             Name=Froststrap
             Comment=A fork of Fishstrap, focused on performance and customization
-            Exec=Froststrap %u
-            TryExec=Froststrap
+            Exec=froststrap %u
+            TryExec=froststrap
             Icon=froststrap
             Terminal=false
             Categories=Game;
@@ -154,7 +154,7 @@ public partial class Build : FalloutBuild
         Log.Information("Building .deb");
         RunProcess("dpkg-deb", $"--build \"{appDir}\" \"{outputDir / "Froststrap-linux-x64.deb"}\"");
     }
-    
+
     static bool IsOnPath(string exe) =>
         (Environment.GetEnvironmentVariable("PATH") ?? "")
             .Split(Path.PathSeparator)
