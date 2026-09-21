@@ -553,23 +553,6 @@ internal partial class App : Application
                 LaunchSettings.TryResolveRobloxUri([_pendingActivationUri]);
         }
 
-        if (Paths.Process != Paths.Application)
-        {
-            if (OperatingSystem.IsLinux() || OperatingSystem.IsMacOS())
-            {
-                string escapedProcessPath = Paths.Process.Replace("\"", "\\\"", StringComparison.Ordinal);
-                string launcherScript = $"#!/bin/sh\nexec \"{escapedProcessPath}\" \"$@\"\n";
-                bool needsUpdate = !File.Exists(Paths.Application) || File.ReadAllText(Paths.Application) != launcherScript;
-                if (needsUpdate)
-                    File.WriteAllText(Paths.Application, launcherScript);
-                Process.Start("chmod", $"+x \"{Paths.Application}\"")?.WaitForExit();
-            }
-            else if (!File.Exists(Paths.Application))
-            {
-                File.Copy(Paths.Process, Paths.Application);
-            }
-        }
-
         _ = Task.Run(RemoteData.LoadData);
 
         Settings.Load();

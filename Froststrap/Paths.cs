@@ -30,7 +30,6 @@ namespace Froststrap
         public static string RobloxLogs { get; private set; } = "";
         public static string RobloxCache { get; private set; } = "";
         public static string CustomCursors { get; private set; } = "";
-        public static string Application { get; private set; } = "";
 
         public static string SoberAssetOverlay { get; private set; } = "";
         public static string SoberData { get; private set; } = "";
@@ -105,7 +104,6 @@ namespace Froststrap
 
                 // Set cache and logs to XDG locations
                 Cache = Path.Combine(xdgCache, App.ProjectName);
-                Application = Path.Combine(xdgBin, App.ProjectName);
             }
 
             SavedFlagProfiles = Path.Combine(ConfigRoot, "SavedFlagProfiles");
@@ -137,14 +135,6 @@ namespace Froststrap
             }
 
             string exeName = OperatingSystem.IsWindows() ? $"{App.ProjectName}.exe" : App.ProjectName;
-
-            if (!OperatingSystem.IsLinux())
-                Application = Path.Combine(DataRoot, exeName);
-
-            if (OperatingSystem.IsLinux())
-            {
-                Directory.CreateDirectory(Path.GetDirectoryName(Application) ?? Application);
-            }
 
             Directory.CreateDirectory(ConfigRoot);
             Directory.CreateDirectory(DataRoot);
