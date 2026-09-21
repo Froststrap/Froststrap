@@ -8,7 +8,6 @@
   typos,
   reuse,
   stdenv,
-  nushell,
   callPackage
 }:
 let
@@ -16,7 +15,6 @@ let
 in
 mkFragment {
   buildInputs = [
-    nushell
     reuse
     typos
   ] ++ lib.optionals stdenv.hostPlatform.isLinux [

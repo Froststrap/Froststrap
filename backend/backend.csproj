@@ -42,7 +42,7 @@
     Name="BuildVirtualDisplayDylib"
     BeforeTargets="BeforeBuild"
     Condition="$([MSBuild]::IsOSPlatform('OSX'))">
-    <Exec Command="nu output_dylib.nu"
+    <Exec Command="swift build -c release"
           WorkingDirectory="$(MSBuildProjectDirectory)/virtualdisplay" />
     <PropertyGroup>
       <VirtualDisplayBuildDir Condition="Exists('$(MSBuildProjectDirectory)/virtualdisplay/.build/out')">out</VirtualDisplayBuildDir>
