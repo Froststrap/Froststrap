@@ -76,16 +76,6 @@ internal static class LinuxRegistry
     {
         if (!OperatingSystem.IsLinux()) return;
 
-        if (File.Exists(DesktopFilePath))
-        {
-            File.Delete(DesktopFilePath);
-            try
-            {
-                Process.Start("update-desktop-database", DesktopEntryDir)?.WaitForExit();
-            }
-            catch { }
-        }
-
         if (File.Exists(MimeXmlPath))
         {
             File.Delete(MimeXmlPath);
