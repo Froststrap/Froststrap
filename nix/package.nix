@@ -5,11 +5,11 @@
 }:
 
 let
-  version = "2.0.0";
+  version = "2.0.2";
 
   src = fetchurl {
     url = "https://github.com/Froststrap/Froststrap/releases/download/v${version}/Froststrap-linux-x64.AppImage";
-    hash = "sha256-zq/SV9PjeZ28MHJkbvWlzqtiKV6BmyF8LKQdSAkEbXY=";
+    hash = "sha256-KajUNB3vgzslBOTvL/GWTwRLZmbc+XKvtkyRQAz0ktE=";
   };
 
   appimageContents = appimageTools.extractType2 {
@@ -31,15 +31,11 @@ appimageTools.wrapType2 {
 
     install -Dm644 ${appimageContents}/usr/share/icons/hicolor/512x512/apps/froststrap.png \
         $out/share/icons/hicolor/512x512/apps/froststrap.png
-
-    substituteInPlace $out/share/applications/Froststrap.desktop \
-        --replace-fail "Exec=Froststrap %u" "Exec=froststrap %u" \
-        --replace-fail "TryExec=Froststrap" "TryExec=froststrap"
   '';
 
   meta = {
     description = "A cross-platform Roblox bootstrapper, focused on performance and customization.";
-    homepage = "https://github.com/Froststrap/Froststrap";
+    homepage = "https://froststrap.xyz/";
     license = lib.licenses.mpl20;
     platforms = [ "x86_64-linux" ];
     mainProgram = "froststrap";
