@@ -2,10 +2,6 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-// TODO:
-// All the "Installer" logic to do with updating, has been moved in here.
-// This file now is a rats net of code, so try to clean this up at some point.
-
 using Microsoft.Win32;
 using System.Runtime.Versioning;
 using System.Runtime.InteropServices;
@@ -336,58 +332,16 @@ exit";
 
     public static async Task HandleUpgrade()
     {
-        if (!File.Exists(Paths.Application) || Paths.Process == Paths.Application)
+        string? previousVer = App.State.Prop.LastMigratedVersion;
+
+        if (previousVer is not null && Utility.Versioning.CompareVersions(previousVer, App.Version) == VersionComparison.Equal)
             return;
 
-        bool isAutoUpgrade = App.LaunchSettings.UpgradeFlag.Active
-            || Paths.Process.StartsWith(Path.Combine(Paths.Base, "Updates"), StringComparison.OrdinalIgnoreCase)
-            || Paths.Process.StartsWith(Path.Combine(Paths.Temp, "Updates"), StringComparison.OrdinalIgnoreCase)
-            || Paths.Process.StartsWith(Paths.TempUpdates, StringComparison.OrdinalIgnoreCase);
-
-        var existingVer = GetVersionInfo(Paths.Application);
-        var currentVer = GetVersionInfo(Paths.Process);
-
-        if (FastHash.FromFile(Paths.Process) == FastHash.FromFile(Paths.Application))
-            return;
-
-        if (currentVer is not null && existingVer is not null)
-        {
-            var comparison = Utility.Versioning.CompareVersions(currentVer, existingVer);
-
-            if (comparison == VersionComparison.LessThan)
-            {
-                var result = await Frontend.ShowMessageBox(
-                    Strings.InstallChecker_VersionLessThanInstalled,
-                    MessageBoxImage.Question,
-                    MessageBoxButton.YesNo
-                );
-
-                if (result != MessageBoxResult.Yes)
-                    return;
-            }
-        }
-
-        if (!isAutoUpgrade)
-        {
-            var result = await Frontend.ShowMessageBox(
-                Strings.InstallChecker_VersionDifferentThanInstalled,
-                MessageBoxImage.Question,
-                MessageBoxButton.YesNo
-            );
-
-            if (result != MessageBoxResult.Yes)
-                return;
-        }
-
-        App.Logger.Info("Starting upgrade process...");
-
-        bool copySuccess = await CopyExecutableWithRetry();
-        if (!copySuccess)
-            return;
+        App.Logger.Info("Version changed since last run, starting upgrade process...");
 
         await UpdateVersionInfo();
 
-        await RunMigrations(existingVer);
+        await RunMigrations();
 
         App.Settings.Save();
         App.FastFlags.Save();
@@ -395,97 +349,13 @@ exit";
         App.PlayerState.Save();
         App.StudioState.Save();
 
-        if (isAutoUpgrade && OpenReleaseNotes)
-        {
-            Utility.Threading.ShellExecute($"https://github.com/{App.ProjectRepository}/releases/tag/{currentVer ?? App.Version}");
-        }
-        else if (!isAutoUpgrade)
-        {
-            await Frontend.ShowMessageBox(
-                string.Format(CultureInfo.InvariantCulture, Strings.InstallChecker_Updated, currentVer ?? App.Version),
-                MessageBoxImage.Information
-            );
-        }
+        bool upgraded = previousVer is not null
+            && Utility.Versioning.CompareVersions(previousVer, App.Version) == VersionComparison.LessThan;
+
+        if (upgraded && OpenReleaseNotes)
+            Utility.Threading.ShellExecute($"https://github.com/{App.ProjectRepository}/releases/tag/{App.Version}");
 
         App.Logger.Info("Upgrade completed successfully");
-    }
-
-    private static string? GetVersionInfo(string filePath)
-    {
-        try
-        {
-            if (!File.Exists(filePath))
-                return null;
-
-            var versionInfo = FileVersionInfo.GetVersionInfo(filePath);
-
-            if (!string.IsNullOrEmpty(versionInfo.ProductVersion))
-                return versionInfo.ProductVersion;
-
-            if (!string.IsNullOrEmpty(versionInfo.FileVersion))
-                return versionInfo.FileVersion;
-
-            if (OperatingSystem.IsMacOS())
-            {
-                string infoPlist = Path.Combine(Path.GetDirectoryName(filePath) ?? "", "..", "Info.plist");
-                if (File.Exists(infoPlist))
-                {
-                    var plist = new System.Xml.XmlDocument();
-                    plist.Load(infoPlist);
-                    var node = plist.SelectSingleNode("//key[text()='CFBundleShortVersionString']/following-sibling::string");
-                    if (node != null)
-                        return node.InnerText;
-                }
-            }
-
-            return null;
-        }
-        catch
-        {
-            return null;
-        }
-    }
-
-    private static async Task<bool> CopyExecutableWithRetry()
-    {
-        try
-        {
-            if (OperatingSystem.IsLinux() || OperatingSystem.IsMacOS())
-            {
-                if (File.Exists(Paths.Application))
-                {
-                    var fileInfo = new FileInfo(Paths.Application) { IsReadOnly = false };
-                    if (OperatingSystem.IsLinux()) await Utility.Threading.RunAsync("chmod", $"+w \"{Paths.Application}\"");
-                }
-            }
-
-            for (int i = 1; i <= 10; i++)
-            {
-                try
-                {
-                    File.Copy(Paths.Process, Paths.Application, true);
-                    if (OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) await Utility.Threading.RunAsync("chmod", $"+x \"{Paths.Application}\"");
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    if (i == 10)
-                    {
-                        App.Logger.Error($"Failed to copy after 10 attempts: {ex}");
-                        return false;
-                    }
-
-                    await Task.Delay(500);
-                }
-            }
-
-            return false;
-        }
-        catch (Exception ex)
-        {
-            App.Logger.Error($"Failed to copy executable: {ex}");
-            return false;
-        }
     }
 
     private static async Task UpdateVersionInfo()
@@ -503,7 +373,7 @@ exit";
             }
             else if (OperatingSystem.IsMacOS())
             {
-                string appPath = Paths.Application;
+                string appPath = Paths.Process;
                 string infoPlist = Path.Combine(Path.GetDirectoryName(appPath) ?? "", "..", "Info.plist");
 
                 if (File.Exists(infoPlist))
