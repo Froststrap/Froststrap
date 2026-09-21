@@ -198,7 +198,7 @@ internal class Updater
     {
         if (OperatingSystem.IsWindows())
         {
-            if (RuntimeInformation.OSArchitecture == Architecture.X64)
+            if (RuntimeInformation.ProcessArchitecture == Architecture.X64)
             {
                 return ["Froststrap-windows-x64.exe", "-windows-x64.exe"];
             } else {
