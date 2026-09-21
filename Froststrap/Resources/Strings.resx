@@ -3078,40 +3078,39 @@ Would you like to visit the releases page now?</value>
     <value>Profile name...</value>
   </data>
   <data name="Menu.Onboarding.Page6.Q1" xml:space="preserve">
-    <value>Why isn't there multi instancing?</value>
+    <value>Why was multi-instancing removed?</value>
   </data>
   <data name="Menu.Onboarding.Page6.A1" xml:space="preserve">
-    <value>Long story short: Roblox considers multi instancing exploiting and has been actively trying to patch it for a while now. Froststrap will no longer offer the feature nor support its use.</value>
+    <value>Roblox considers multi-instancing a form of exploiting and has been actively trying to patch it for a while now. Because of this, Froststrap no longer offers the feature or supports its use.</value>
   </data>
   <data name="Menu.Onboarding.Page6.Q2" xml:space="preserve">
-    <value>Why is there so few FastFlags?</value>
+    <value>Why are there so few FastFlags?</value>
   </data>
   <data name="Menu.Onboarding.Page6.A2" xml:space="preserve">
-    <value>Roblox has implemented a fflag allowlist, preventing the use of majority of fflags. This was done to prevent people from using exploitable fflags, and to add bogus fflags that could cause bugs. To see the whitelist, go [here](https://devforum.roblox.com/t/allowlist-for-local-client-configuration-via-fast-flags/3966569)</value>
-  </data>
+    <value>Roblox has implemented a FFlag allowlist, which blocks the use of most FFlags. This was done to prevent people from using exploitable flags and to avoid FFlags that could cause bugs. You can view the whitelist [here](https://devforum.roblox.com/t/allowlist-for-local-client-configuration-via-fast-flags/3966569).</value>  </data>
   <data name="Menu.Onboarding.Page6.Q3" xml:space="preserve">
-    <value>Help! I enabled some fflags and now my lighting doesn't work!</value>
+    <value>I enabled some FFlags and now my lighting is broken!</value>
   </data>
   <data name="Menu.Onboarding.Page6.A3" xml:space="preserve">
-    <value>You enabled the Pause Voxelizer fflag (DFFlagDebugPauseVoxelizer), disable it to fix the issue.</value>
+    <value>You likely enabled the Pause Voxelizer FFlag (DFFlagDebugPauseVoxelizer), disable it to fix the issue.</value>
   </data>
   <data name="Menu.Onboarding.Page6.Q4" xml:space="preserve">
-    <value>Whenever I launch Roblox via. Froststrap, I constantly get signed out of Roblox and am forced to resignin everytime.</value>
+    <value>Whenever I launch Roblox via Froststrap, I keep getting signed out of my account and have to sign in every time.</value>
   </data>
   <data name="Menu.Onboarding.Page6.A4" xml:space="preserve">
-    <value>Delete RobloxCookies.dat inside %localappdata%\Roblox\LocalStorage, which should fix the issue majority of the time. We do not know what causes this issue.</value>
+    <value>Delete RobloxCookies.dat inside %localappdata%\Roblox\LocalStorage, which should fix the issue majority of the time. We currently do not know what causes this issue.</value>
   </data>
   <data name="Menu.Onboarding.Page6.Q5" xml:space="preserve">
-    <value>How can I get blurry/no textures?</value>
+    <value>How can I get blurry or no textures?</value>
   </data>
   <data name="Menu.Onboarding.Page6.A5" xml:space="preserve">
-    <value>You don't. You may be able to achieve this with alternative software but we do not guarantee safety nor practicality.</value>
+    <value>You can't. While you might achieve this using third-party software, we cannot guarantee its safety or functionality.</value>
   </data>
   <data name="Menu.Onboarding.Page6.Q6" xml:space="preserve">
-    <value>How do I reduce ping/increase fps with fflags?</value>
+    <value>How do I reduce ping or increase fps with FFlags?</value>
   </data>
   <data name="Menu.Onboarding.Page6.A6" xml:space="preserve">
-    <value>You don't, again. You may try to use some fflags to achieve higher fps on higher render distances, however lowering ping via fflags is not possible.</value>
+    <value>FFlags cannot reduce network ping. However, certain FFlags may help increase FPS at higher render distances.</value>
   </data>
   <data name="Menu.GlobalSettings.ReadonlyMessage" xml:space="preserve">
     <value>Turning on Read-Only will force your settings like sensitivity, volume, etc. to the current values, even if you change them inside the Roblox app.</value>
