@@ -18,13 +18,13 @@ internal static class LinuxRegistry
         MimePackagesDir, "froststrap-mime.xml"
     );
 
-    private static readonly string[] Schemes =
-    [
-        "roblox",
-        "roblox-player",
-        "roblox-studio",
-        "roblox-studio-auth"
-    ];
+    // private static readonly string[] Schemes =
+    // [
+    //     "roblox",
+    //     "roblox-player",
+    //     "roblox-studio",
+    //     "roblox-studio-auth"
+    // ];
 
     private static readonly Dictionary<string, string> ExtensionToMime = new(StringComparer.OrdinalIgnoreCase)
     {
