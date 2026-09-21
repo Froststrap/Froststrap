@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
@@ -14,19 +15,14 @@ public partial class Build : FalloutBuild
         AbsolutePath macAppLocation = FalloutRoot / "Publish" / "macApp";
         AbsolutePath xcodeProjectLocation = macAppLocation / "macApp.xcodeproj";
         AbsolutePath entitlementsPath = macAppLocation / "Froststrap.entitlements";
+        AbsolutePath virtualDisplayDir = GitRoot / "backend" / "virtualdisplay";
+        AbsolutePath dylibDest = (AbsolutePath)outputDirectory / "libvirtualdisplay.dylib";
 
-        if (!File.Exists((AbsolutePath)outputDirectory / "libvirtualdisplay.dylib")
-            && File.Exists($"{virtualbackendBuildRoot}/out/Products/Release/libvirtualdisplay.dylib"))
+        if (!File.Exists(dylibDest))
         {
-            AbsolutePath source = $"{virtualbackendBuildRoot}/out/Products/Release/libvirtualdisplay.dylib";
-            Log.Information("Copying over {Source} into {OutDir}", source, OutputRoot);
-            File.Copy(source, (AbsolutePath)outputDirectory / "libvirtualdisplay.dylib");
-        }
-        else if (File.Exists($"{virtualbackendBuildRoot}/apple/Products/Release/libvirtualdisplay.dylib"))
-        {
-            AbsolutePath source = $"{virtualbackendBuildRoot}/apple/Products/Release/libvirtualdisplay.dylib";
-            Log.Information("Copying over {Source} into {OutDir}", source, OutputRoot);
-            File.Copy(source, (AbsolutePath)outputDirectory / "libvirtualdisplay.dylib");
+            var source = FindVirtualDisplayDylib(virtualDisplayDir);
+            Log.Information("Copying {Source} into {OutDir}", source, outputDirectory);
+            File.Copy(source, dylibDest, overwrite: true);
         }
 
         Log.Information("Building {xcproj} with xcodebuild", xcodeProjectLocation);
@@ -72,6 +68,30 @@ public partial class Build : FalloutBuild
         {
             BuildUnsignedPkg(dest, outputDirectory);
         }
+    }
+
+    AbsolutePath FindVirtualDisplayDylib(AbsolutePath packageDir)
+    {
+        var (exitCode, stdout, _) = RunProcessCaptured(
+            "swift", $"build -c release --show-bin-path --package-path \"{packageDir}\"");
+
+        if (exitCode == 0)
+        {
+            var binPath = stdout
+                .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .LastOrDefault();
+            var candidate = binPath is null ? null : Path.Combine(binPath, "libvirtualdisplay.dylib");
+            if (candidate is not null && File.Exists(candidate))
+                return (AbsolutePath)candidate;
+        }
+
+        var found = Directory
+            .EnumerateFiles(packageDir / ".build", "libvirtualdisplay.dylib", SearchOption.AllDirectories)
+            .FirstOrDefault(p => p.Contains("release", StringComparison.OrdinalIgnoreCase));
+
+        return found is not null
+            ? (AbsolutePath)found
+            : throw new Exception($"libvirtualdisplay.dylib not found under {packageDir / ".build"}");
     }
 
     void SignAndNotarizeMacApp(AbsolutePath appPath, AbsolutePath entitlementsPath, string outputDirectory)
