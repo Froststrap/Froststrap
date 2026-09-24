@@ -50,11 +50,15 @@ internal partial class App : Application
 
     public static LaunchSettings LaunchSettings { get; internal set; } = null!;
 
-    public static readonly BuildMetadataAttribute BuildMetadata = Assembly.GetExecutingAssembly().GetCustomAttribute<BuildMetadataAttribute>()!;
+    public static readonly BuildMetadataAttribute BuildMetadata = Assembly.GetExecutingAssembly()
+        .GetCustomAttribute<BuildMetadataAttribute>()!;
 
     public static readonly string Version = (System.Reflection.Assembly.GetExecutingAssembly()
         .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion
         ?? "unknown+asteo").Split("+")[0];
+
+    public static readonly string InternalVersion = Assembly.GetExecutingAssembly()
+        .GetName().Version!.ToString()[..^2];
 
     public static Bootstrapper? Bootstrapper { get; set; } = null!;
 

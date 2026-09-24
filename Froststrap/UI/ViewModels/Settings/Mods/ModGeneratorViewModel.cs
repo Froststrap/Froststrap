@@ -568,7 +568,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                     string infoPath = Path.Combine(TempRoot, "info.json");
                     var infoData = new
                     {
-                        FroststrapVersion = App.Version,
+                        FroststrapVersion = App.InternalVersion,
                         RobloxVersion = vName,
                         RobloxVersionHash = vHash,
                         ColorsUsed = IsGradientMode

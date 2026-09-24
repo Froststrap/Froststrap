@@ -55,7 +55,7 @@ internal class Updater
                 return false;
             }
 
-            string currentVer = App.Version;
+            string currentVer = App.InternalVersion;
             string releaseVer = releaseInfo.TagName;
             var versionComparison = Utility.Versioning.CompareVersions(currentVer, releaseVer);
 
@@ -334,7 +334,7 @@ exit";
     {
         string? previousVer = App.State.Prop.LastMigratedVersion;
 
-        if (previousVer is not null && Utility.Versioning.CompareVersions(previousVer, App.Version) == VersionComparison.Equal)
+        if (previousVer is not null && Utility.Versioning.CompareVersions(previousVer, App.InternalVersion) == VersionComparison.Equal)
             return;
 
         App.Logger.Info("Version changed since last run, starting upgrade process...");
@@ -350,10 +350,10 @@ exit";
         App.StudioState.Save();
 
         bool upgraded = previousVer is not null
-            && Utility.Versioning.CompareVersions(previousVer, App.Version) == VersionComparison.LessThan;
+            && Utility.Versioning.CompareVersions(previousVer, App.InternalVersion) == VersionComparison.LessThan;
 
         if (upgraded && OpenReleaseNotes)
-            Utility.Threading.ShellExecute($"https://github.com/{App.ProjectRepository}/releases/tag/{App.Version}");
+            Utility.Threading.ShellExecute($"https://github.com/{App.ProjectRepository}/releases/tag/{App.InternalVersion}");
 
         App.Logger.Info("Upgrade completed successfully");
     }
@@ -365,7 +365,7 @@ exit";
             if (OperatingSystem.IsWindows())
             {
                 using var uninstallKey = Registry.CurrentUser.CreateSubKey(App.UninstallKey);
-                uninstallKey.SetValueSafe("DisplayVersion", App.Version);
+                uninstallKey.SetValueSafe("DisplayVersion", App.InternalVersion);
                 uninstallKey.SetValueSafe("Publisher", App.ProjectOwner);
                 uninstallKey.SetValueSafe("HelpLink", App.ProjectHelpLink);
                 uninstallKey.SetValueSafe("URLInfoAbout", App.ProjectSupportLink);
@@ -384,7 +384,7 @@ exit";
                     var versionNode = plist.SelectSingleNode("//key[text()='CFBundleShortVersionString']/following-sibling::string");
                     if (versionNode != null)
                     {
-                        versionNode.InnerText = App.Version;
+                        versionNode.InnerText = App.InternalVersion;
                         plist.Save(infoPlist);
                     }
                 }
@@ -392,10 +392,10 @@ exit";
             else if (OperatingSystem.IsLinux())
             {
                 string versionFile = Path.Combine(Paths.Base, ".version");
-                await File.WriteAllTextAsync(versionFile, App.Version);
+                await File.WriteAllTextAsync(versionFile, App.InternalVersion);
             }
 
-            App.Logger.Info($"Version info updated to {App.Version}");
+            App.Logger.Info($"Version info updated to {App.InternalVersion}");
         }
         catch (Exception ex)
         {
@@ -408,7 +408,7 @@ exit";
         if (OperatingSystem.IsLinux())
             SetupSoberSymlink();
 
-        string currentVer = App.Version;
+        string currentVer = App.InternalVersion;
         string? existingVer = previousVersion ?? App.State.Prop.LastMigratedVersion;
 
         if (existingVer is null && !App.Settings.IsSaved)
