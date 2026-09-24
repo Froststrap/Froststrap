@@ -13,7 +13,20 @@ SPDX-License-Identifier: MPL-2.0
     xmlns:sty="using:FluentAvalonia.Styling"
     xmlns:converters="using:Froststrap.UI.Converters"
     xmlns:ui="using:FluentAvalonia.UI.Controls"
-    RequestedThemeVariant="Dark">
+    RequestedThemeVariant="Dark"
+>
+    <NativeMenu.Menu>
+        <NativeMenu>
+            <NativeMenuItem
+                Header="About Froststrap"
+                Click="About_OnClick"
+            />
+            <NativeMenuItem
+                Header="Settings"
+                Gesture="Meta+,"
+            />
+        </NativeMenu>
+    </NativeMenu.Menu>
 
     <Application.Styles>
         <sty:FluentAvaloniaTheme PreferSystemTheme="True" PreferUserAccentColor="True" />
