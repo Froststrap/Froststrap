@@ -471,57 +471,7 @@ internal partial class App : Application
         };
 #endif
 
-        string? installLocation = null;
-
-        if (OperatingSystem.IsWindows())
-        {
-            using var uninstallKey = Registry.CurrentUser.OpenSubKey(UninstallKey);
-            if (uninstallKey?.GetValue("InstallLocation") is string installLocValue)
-            {
-                if (Directory.Exists(installLocValue))
-                {
-                    installLocation = installLocValue;
-                }
-                else
-                {
-                    var match = Regex.Match(installLocValue, @"^[a-zA-Z]:\\Users\\([^\\]+)", RegexOptions.IgnoreCase);
-                    if (match.Success)
-                    {
-                        string newLocation = installLocValue.Replace(match.Value, Paths.UserProfile, StringComparison.InvariantCultureIgnoreCase);
-                        if (Directory.Exists(newLocation))
-                        {
-                            installLocation = newLocation;
-                        }
-                    }
-                }
-            }
-        }
-
-        if (installLocation == null && Directory.GetParent(Paths.Process)?.FullName is string processDir)
-        {
-            var files = Directory.GetFiles(processDir).Select(Path.GetFileName).ToArray();
-            if (files.Length <= 3 && files.Contains("Settings.json") && files.Contains("State.json"))
-            {
-                installLocation = processDir;
-            }
-        }
-
-        if (installLocation == null)
-        {
-            installLocation = Directory.GetParent(Paths.Process)?.FullName;
-            if (string.IsNullOrWhiteSpace(installLocation))
-            {
-                Logger.Error("No install location could be resolved, terminating.");
-                Terminate();
-                return;
-            }
-            Paths.Initialize(installLocation);
-            Logger.Debug($"Not installed, running in portable mode from '{installLocation}'");
-        }
-        else
-        {
-            Paths.Initialize(installLocation);
-        }
+        Paths.Initialize();
 
         NLog.GlobalDiagnosticsContext.Set("logRoot", Paths.Logs);
         NLog.GlobalDiagnosticsContext.Set("startTime", DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss", CultureInfo.InvariantCulture));

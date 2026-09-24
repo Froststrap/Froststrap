@@ -171,7 +171,7 @@ namespace Froststrap
             if (launchMode == LaunchMode.None)
                 throw new InvalidOperationException("No Roblox launch mode set");
 
-            if (OperatingSystem.IsWindows() && !File.Exists(Path.Combine(Paths.System, "mfplat.dll")))
+            if (OperatingSystem.IsWindows() && !File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "mfplat.dll")))
             {
                 await Frontend.ShowMessageBox(Strings.Bootstrapper_WMFNotFound, MessageBoxImage.Error);
 

@@ -11,7 +11,6 @@ namespace Froststrap
         public static string LocalAppData => Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
         public static string Desktop => Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
         public static string WindowsStartMenu => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.StartMenu), "Programs");
-        public static string System => Environment.GetFolderPath(Environment.SpecialFolder.System);
         public static string Process => Environment.ProcessPath!;
 
         public static string TempUpdates => Path.Combine(Temp, "Updates");
@@ -66,19 +65,21 @@ namespace Froststrap
         public static string Base => DataRoot;
         public static bool Initialized => !String.IsNullOrEmpty(DataRoot);
 
-        public static void Initialize(string baseDirectory)
+        public static void Initialize()
         {
             if (OperatingSystem.IsWindows())
             {
-                ConfigRoot = baseDirectory;
-                DataRoot = baseDirectory;
+                var rootPath = Path.Combine(LocalAppData, App.ProjectName);
+                ConfigRoot = rootPath;
+                DataRoot = rootPath;
                 Roblox = Path.Combine(LocalAppData, "Roblox");
             }
             else if (OperatingSystem.IsMacOS())
             {
                 string libraryPath = Path.Combine(UserProfile, "Library");
-                ConfigRoot = Path.Combine(libraryPath, "Application Support", App.ProjectName);
-                DataRoot = Path.Combine(libraryPath, "Application Support", App.ProjectName);
+                var rootPath = Path.Combine(libraryPath, "Application Support", App.ProjectName);
+                ConfigRoot = rootPath;
+                DataRoot = rootPath;
 
                 Roblox = Path.Combine(libraryPath, "Application Support", "Roblox");
             }
