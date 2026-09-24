@@ -7,7 +7,7 @@ using Fallout.Solutions;
 using Serilog;
 
 public partial class Build : FalloutBuild
-{
+{   
     void PublishMain()
     {
         string outputDirectory = Path.Combine(OutputRoot, "publish");
@@ -51,6 +51,7 @@ public partial class Build : FalloutBuild
                                       $"-r {rid} " +
                                       $"-o \"{outputDirectory}\" " +
                                       $"-p:PublishProfile=\"{publishProfile}\" " +
+                                      $"-p:AppVersion=\"{GitTag.TrimStart('v')}\" " +
                                       $"--nologo";
 
         process.StartInfo.UseShellExecute = false;

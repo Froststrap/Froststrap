@@ -11,6 +11,7 @@ public partial class Build : FalloutBuild
 {
     void PublishMacOS(string outputDirectory)
     {
+        var version = GitTag.TrimStart('v');
         AbsolutePath virtualbackendBuildRoot = GitRoot / "backend" / "virtualdisplay" / ".build";
         AbsolutePath macAppLocation = FalloutRoot / "Publish" / "macApp";
         AbsolutePath xcodeProjectLocation = macAppLocation / "macApp.xcodeproj";
@@ -31,6 +32,8 @@ public partial class Build : FalloutBuild
         xcbProc.StartInfo.Arguments = $"-project {xcodeProjectLocation} " +
                                       "-target Froststrap " +
                                       $"-configuration {Configuration} " +
+                                      $"MARKETING_VERSION=\"{version}\" " +
+                                      $"CURRENT_PROJECT_VERSION=\"{version.Replace(".", "")}\" " +
                                       "CODE_SIGNING_ALLOWED=NO " +
                                       "build";
         xcbProc.StartInfo.UseShellExecute = false;

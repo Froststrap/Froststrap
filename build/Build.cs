@@ -5,9 +5,19 @@ using Fallout.Solutions;
 using Microsoft.Build.Locator;
 using Fallout.Common.Git;
 using Serilog;
+using System;
+using System.Linq;
 
 public partial class Build : FalloutBuild
 {
+    [GitRepository]
+    readonly GitRepository Repository;
+
+    AbsolutePath GitRoot => Repository.LocalDirectory;
+    AbsolutePath FalloutRoot => GitRoot / "build";
+    AbsolutePath OutputRoot => GitRoot / ".build";
+    string GitTag;
+
     public static int Main() {
         MSBuildLocator.RegisterDefaults();
         return Execute<Build>(x => x.Compile);
@@ -16,21 +26,45 @@ public partial class Build : FalloutBuild
     [Parameter("Configuration to build - Default is 'Debug' (local) or 'Release' (server)")]
     readonly Configuration Configuration = IsLocalBuild ? Configuration.Debug : Configuration.Release;
     
-    [GitRepository]
-    readonly GitRepository Repository;
-
     [Solution]
     readonly Solution Solution;
 
-    AbsolutePath GitRoot => Repository.LocalDirectory;
-    AbsolutePath FalloutRoot => GitRoot / "build";
-    AbsolutePath OutputRoot => GitRoot / ".build";
-
     Target BuildDebug => _ => _
-        .Executes(() => {
+        .Executes(() =>
+        {
+            var process = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = "git",
+                    Arguments = "tag",
+                    WorkingDirectory = GitRoot,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                }
+            };
+
+            process.Start();
+
+            var output = process.StandardOutput.ReadToEnd();
+            var error = process.StandardError.ReadToEnd();
+
+            process.WaitForExit();
+
+            var tags = output
+                .Split(
+                    '\n',
+                    StringSplitOptions.RemoveEmptyEntries |
+                    StringSplitOptions.TrimEntries);
+
+            GitTag = tags.LastOrDefault();
+
             Log.Information("Git commit: {Value}", Repository.Commit);
             Log.Information("Git branch: {Value}", Repository.Branch);
             Log.Information("Git local dir: {Value}", GitRoot);
+            Log.Information("Git tag: {Value}", GitTag ?? "");
         });
 
     Target Clean => _ => _
