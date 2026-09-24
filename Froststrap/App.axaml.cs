@@ -20,7 +20,7 @@ namespace Froststrap;
 
 internal partial class App : Application
 {
-    public static bool AboutOpen = false;
+    public static bool AboutOpen;
     private void About_OnClick(object? sender, EventArgs e)
     {
         if (AboutOpen) return;
