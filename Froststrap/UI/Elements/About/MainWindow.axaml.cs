@@ -20,6 +20,7 @@ namespace Froststrap.UI.Elements.About
         {
             _viewModel = new MainWindowViewModel();
             DataContext = _viewModel;
+            Closed += (_, _) => App.AboutOpen = false;
 
             InitializeComponent();
 

@@ -307,9 +307,13 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private void OpenAbout()
         {
+            if (App.AboutOpen) return;
+            
             App.FrostRPC?.SetDialog("About");
             new Elements.About.MainWindow().Show();
             App.FrostRPC?.ClearDialog();
+
+            App.AboutOpen = true;
         }
 
         private void CloseWindow() => RequestCloseWindowEvent?.Invoke(this, EventArgs.Empty);

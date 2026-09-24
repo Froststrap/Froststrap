@@ -20,9 +20,13 @@ namespace Froststrap;
 
 internal partial class App : Application
 {
+    public static bool AboutOpen = false;
     private void About_OnClick(object? sender, EventArgs e)
     {
+        if (AboutOpen) return;
+
         new Froststrap.UI.Elements.About.MainWindow().Show();
+        AboutOpen = true;
     }
 
     private const string MockReleaseTagEnvironmentVariable = "MOCK_RELEASE_TAG";
