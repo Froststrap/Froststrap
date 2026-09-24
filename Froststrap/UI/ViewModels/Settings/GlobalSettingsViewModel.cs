@@ -268,10 +268,12 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public static string MasterVolume
+        public static double MasterVolume
         {
-            get => App.GlobalSettings.GetPreset("Audio.MasterVolume") ?? "1";
-            set => App.GlobalSettings.SetPreset("Audio.MasterVolume", value);
+            get => double.TryParse(App.GlobalSettings.GetPreset("Audio.MasterVolume"),
+                NumberStyles.Float, CultureInfo.InvariantCulture, out var v) ? v : 1.0;;
+            set => App.GlobalSettings.SetPreset("Audio.MasterVolume",
+                value.ToString(CultureInfo.InvariantCulture));
         }
 
         public static string MasterVolumeStudio
