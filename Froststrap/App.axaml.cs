@@ -476,9 +476,9 @@ internal partial class App : Application
         NLog.GlobalDiagnosticsContext.Set("logRoot", Paths.Logs);
         NLog.GlobalDiagnosticsContext.Set("startTime", DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss", CultureInfo.InvariantCulture));
 
-        Logger.Debug($"Starting {ProjectName} v{Version}");
+        Logger.Debug($"Starting {ProjectName} {Version} ({Paths.Process})");
         Logger.Debug($"OS Description: {RuntimeInformation.OSDescription}");
-        Logger.Debug($"OS Architecture: {RuntimeInformation.OSArchitecture}");
+        Logger.Debug($"Built for RID: {RuntimeInformation.RuntimeIdentifier}");
 
         var userAgent = new StringBuilder($"{ProjectName}/{Version}");
         if (IsActionBuild)
@@ -491,7 +491,6 @@ internal partial class App : Application
             Logger.Debug($"Compiled {BuildMetadata.Timestamp.ToFriendlyString()}");
             userAgent.Append(string.Format(CultureInfo.InvariantCulture, " (Build {0})", Convert.ToBase64String(Encoding.UTF8.GetBytes(BuildMetadata.Machine))));
         }
-        Logger.Debug($"Loaded from {Paths.Process}");
 
         HttpClient.Timeout = TimeSpan.FromSeconds(60);
         if (HttpClient.DefaultRequestHeaders.UserAgent.Count == 0)
