@@ -52,7 +52,9 @@ internal partial class App : Application
 
     public static readonly BuildMetadataAttribute BuildMetadata = Assembly.GetExecutingAssembly().GetCustomAttribute<BuildMetadataAttribute>()!;
 
-    public static readonly string Version = Assembly.GetExecutingAssembly().GetName().Version!.ToString()[..^2];
+    public static readonly string Version = (System.Reflection.Assembly.GetExecutingAssembly()
+        .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion
+        ?? "unknown+asteo").Split("+")[0];
 
     public static Bootstrapper? Bootstrapper { get; set; } = null!;
 

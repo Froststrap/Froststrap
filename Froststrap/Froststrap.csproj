@@ -6,6 +6,8 @@ SPDX-License-Identifier: MPL-2.0
 
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+    <InfAppVersion Condition="'$(AppVersion)' == ''">dev</InfAppVersion>
+    <AppVersion Condition="'$(AppVersion)' == ''">0.0.0</AppVersion>
     <OutputType Condition="!$([MSBuild]::IsOSPlatform('Windows'))">Exe</OutputType>
     <OutputType Condition="$([MSBuild]::IsOSPlatform('Windows'))">WinExe</OutputType>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
@@ -14,15 +16,16 @@ SPDX-License-Identifier: MPL-2.0
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
-    <Version>2.0.2</Version>
-    <FileVersion>2.0.2</FileVersion>
+    <Version>$(AppVersion)</Version>
+    <FileVersion>$(AppVersion)</FileVersion>
+    <InformationalVersion>$(AppVersion)</InformationalVersion>
     <Company>Froststrap</Company>
     <Product>$(AssemblyName)</Product>
     <AssemblyName>Froststrap</AssemblyName>
     <RootNamespace>Froststrap</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-	<PublishReadyToRun>true</PublishReadyToRun>
-	<NeutralLanguage>en</NeutralLanguage>
+  	<PublishReadyToRun>true</PublishReadyToRun>
+  	<NeutralLanguage>en</NeutralLanguage>
     <Description>Froststrap - A Fishstrap fork</Description>
     <ApplicationIcon>Froststrap.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
