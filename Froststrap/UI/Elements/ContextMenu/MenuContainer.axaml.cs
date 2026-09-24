@@ -116,7 +116,7 @@ namespace Froststrap.UI.Elements.ContextMenu
                         _watcher?.StudioRichPresence?.SetVisibility(RichPresenceMenuItem.IsChecked);
                     }
 
-                    VersionMenuItem?.SetValue(NativeMenuItem.HeaderProperty, $"{App.ProjectName} v{App.Version}");
+                    VersionMenuItem?.SetValue(NativeMenuItem.HeaderProperty, $"{App.ProjectName} {App.Version}");
                 });
             }
         }

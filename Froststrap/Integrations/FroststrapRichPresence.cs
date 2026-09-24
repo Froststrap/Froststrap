@@ -110,7 +110,7 @@ namespace Froststrap.Integrations
                     LargeImageKey = "froststrap",
                     LargeImageText = "Froststrap",
                     SmallImageKey = "checkmark",
-                    SmallImageText = $"v{App.Version}"
+                    SmallImageText = $"{App.Version}"
                 },
                 Buttons =
                 [
