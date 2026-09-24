@@ -215,12 +215,14 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public string GraphicsQuality
+        public int GraphicsQuality
         {
-            get => App.GlobalSettings.GetPreset("Rendering.SavedQualityLevel") ?? "1";
+            get => int.TryParse(App.GlobalSettings.GetPreset("Rendering.SavedQualityLevel"),
+                NumberStyles.Integer, CultureInfo.InvariantCulture, out var v) ? v : 1;
             set
             {
-                App.GlobalSettings.SetPreset("Rendering.SavedQualityLevel", value);
+                App.GlobalSettings.SetPreset("Audio.MasterVolumeStudio",
+                    value.ToString(CultureInfo.InvariantCulture));
                 OnPropertyChanged(nameof(GraphicsQuality));
             }
         }
@@ -275,27 +277,34 @@ namespace Froststrap.UI.ViewModels.Settings
             set => App.GlobalSettings.SetPreset("Audio.MasterVolume",
                 value.ToString(CultureInfo.InvariantCulture));
         }
-
-        public static string MasterVolumeStudio
+        public static double MasterVolumeStudio
         {
-            get => App.GlobalSettings.GetPreset("Audio.MasterVolumeStudio") ?? "1";
-            set => App.GlobalSettings.SetPreset("Audio.MasterVolumeStudio", value);
+            get => double.TryParse(App.GlobalSettings.GetPreset("Audio.MasterVolumeStudio"),
+                NumberStyles.Float, CultureInfo.InvariantCulture, out var v) ? v : 1.0;
+            set => App.GlobalSettings.SetPreset("Audio.MasterVolumeStudio",
+                value.ToString(CultureInfo.InvariantCulture));
+        }
+        public static double PartyVoiceVolume
+        {
+            get => double.TryParse(App.GlobalSettings.GetPreset("Audio.PartyChatVolume"),
+                NumberStyles.Float, CultureInfo.InvariantCulture, out var v) ? v : 1.0;
+            set => App.GlobalSettings.SetPreset("Audio.PartyChatVolume",
+                value.ToString(CultureInfo.InvariantCulture));
+        }
+        public static double VoiceChatVolume
+        {
+            get => double.TryParse(App.GlobalSettings.GetPreset("Audio.VoiceChatVolume"),
+                NumberStyles.Float, CultureInfo.InvariantCulture, out var v) ? v : 1.0;
+            set => App.GlobalSettings.SetPreset("Audio.VoiceChatVolume",
+                value.ToString(CultureInfo.InvariantCulture));
         }
 
-        public static string PartyVoiceVolume
+        public static int MouseSensitivity
         {
-            get => App.GlobalSettings.GetPreset("Audio.PartyVoiceVolume") ?? "1";
-            set => App.GlobalSettings.SetPreset("Audio.PartyVoiceVolume", value);
-        }
-        public static string VoiceChatVolume
-        {
-            get => App.GlobalSettings.GetPreset("Audio.VoiceChatVolume") ?? "1";
-            set => App.GlobalSettings.SetPreset("Audio.VoiceChatVolume", value);
-        }
-        public static string MouseSensitivity
-        {
-            get => App.GlobalSettings.GetPreset("User.MouseSensitivity") ?? "1";
-            set => App.GlobalSettings.SetPreset("User.MouseSensitivity", value);
+            get => int.TryParse(App.GlobalSettings.GetPreset("User.MouseSensitivity"),
+                NumberStyles.Integer, CultureInfo.InvariantCulture, out var v) ? v : 1;
+            set => App.GlobalSettings.SetPreset("User.MouseSensitivity",
+                value.ToString(CultureInfo.InvariantCulture));
         }
 
         public static bool ShiftLock
@@ -349,18 +358,23 @@ namespace Froststrap.UI.ViewModels.Settings
             set => App.GlobalSettings.SetPreset("User.CameraYInverted", value);
         }
 
-        public static string HapticStrength
+        public static int HapticStrength
         {
-            get => App.GlobalSettings.GetPreset("User.HapticStrength") ?? "1";
-            set => App.GlobalSettings.SetPreset("User.HapticStrength", value);
+            get => int.TryParse(App.GlobalSettings.GetPreset("User.HapticStrength"),
+                NumberStyles.Integer, CultureInfo.InvariantCulture, out var v) ? v : 1;
+            set => App.GlobalSettings.SetPreset("User.HapticStrength",
+                value.ToString(CultureInfo.InvariantCulture));
         }
 
-        public string UITransparency
+        public int UITransparency
         {
-            get => App.GlobalSettings.GetPreset("UI.Transparency") ?? "1";
+        
+            get => int.TryParse(App.GlobalSettings.GetPreset("UI.Transparency"),
+                NumberStyles.Integer, CultureInfo.InvariantCulture, out var v) ? v : 1;
             set
             {
-                App.GlobalSettings.SetPreset("UI.Transparency", value.Length >= 3 ? value[..3] : value);
+                App.GlobalSettings.SetPreset("UI.Transparency",
+                    value.ToString(CultureInfo.InvariantCulture));
                 OnPropertyChanged(nameof(UITransparency));
             }
         }
