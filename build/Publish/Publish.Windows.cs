@@ -57,12 +57,7 @@ public partial class Build : FalloutBuild
         AbsolutePath nsiLocation = FalloutRoot / "Publish" / "WinNsis.nsi";
         string vcRedistPath = DownloadVCRedist();
 
-        var (_, versionStdout, _) = RunProcessCaptured(
-            "git",
-            "describe --tags --abbrev=0"
-        );
-
-        var version = versionStdout.Trim().TrimStart('v');
+        var version = GitTag.TrimStart('v');
         Log.Debug("Detected build version as {ver}", version);
 
         Log.Information("Building {nsi} with makensis", nsiLocation);

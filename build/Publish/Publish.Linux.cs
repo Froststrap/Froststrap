@@ -7,18 +7,9 @@ using Serilog;
 
 public partial class Build : FalloutBuild
 {
-    string GetVersion()
-    {
-        var (_, stdout, _) = RunProcessCaptured("git", "describe --tags --always --dirty");
-        var raw = stdout.Trim();
-        if (string.IsNullOrEmpty(raw))
-            raw = "1.0.0";
-        return raw.TrimStart('v').Replace('-', '~');
-    }
-
     void PublishLinux(string outputDirectory)
     {
-        var version = GetVersion();
+        var version = GitTag.TrimStart('v');
         var rpmVersion = version.Replace('+', '_');
         Log.Debug("Detected build version as {ver}", version);
         Log.Debug("Detected RPM version as {ver}", rpmVersion);
