@@ -18,7 +18,7 @@ SPDX-License-Identifier: MPL-2.0
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
     <Version>$(AppVersion)</Version>
     <FileVersion>$(AppVersion)</FileVersion>
-    <InformationalVersion>$(AppVersion)</InformationalVersion>
+    <InformationalVersion>$(InfAppVersion)</InformationalVersion>
     <Company>Froststrap</Company>
     <Product>$(AssemblyName)</Product>
     <AssemblyName>Froststrap</AssemblyName>
