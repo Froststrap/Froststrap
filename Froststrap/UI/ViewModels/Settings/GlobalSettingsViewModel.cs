@@ -271,7 +271,7 @@ namespace Froststrap.UI.ViewModels.Settings
         public static double MasterVolume
         {
             get => double.TryParse(App.GlobalSettings.GetPreset("Audio.MasterVolume"),
-                NumberStyles.Float, CultureInfo.InvariantCulture, out var v) ? v : 1.0;;
+                NumberStyles.Float, CultureInfo.InvariantCulture, out var v) ? v : 1.0;
             set => App.GlobalSettings.SetPreset("Audio.MasterVolume",
                 value.ToString(CultureInfo.InvariantCulture));
         }
