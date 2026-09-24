@@ -35,7 +35,6 @@ Name "Froststrap"
 Icon "..\..\Froststrap\Froststrap.ico"
 UninstallIcon "..\..\Froststrap\Froststrap.ico"
 InstallDir "$LOCALAPPDATA\Froststrap"
-InstallDirRegKey HKCU "Software\Froststrap" "InstallLocation"
 RequestExecutionLevel user
 
 !define APP_NAME "Froststrap"
@@ -237,10 +236,6 @@ Section "Froststrap"
 
     Call InstallVCRedist
 
-    ; Froststrap app registry keys (used by the app to locate itself)
-    WriteRegStr HKCU "Software\Froststrap" "InstallLocation" "$INSTDIR"
-    WriteRegStr HKCU "Software\Froststrap" "AppPath" "$INSTDIR\${APP_EXE}"
-
     ; Programs & Features / winget uninstall entry
     WriteRegStr HKCU "${APP_UNINSTALL_KEY}" "DisplayName"      "${APP_NAME}"
     WriteRegStr HKCU "${APP_UNINSTALL_KEY}" "DisplayVersion"   "${APP_VERSION}"
@@ -297,8 +292,6 @@ Section "Uninstall"
 
     ; Registry keys written by NSIS
     DeleteRegKey   HKCU "${APP_UNINSTALL_KEY}"
-    DeleteRegValue HKCU "Software\Froststrap" "InstallLocation"
-    DeleteRegValue HKCU "Software\Froststrap" "AppPath"
     DeleteRegKey /IfEmpty HKCU "Software\Froststrap"
 
     ; Step 4: remove the install directory.

@@ -22,14 +22,10 @@ namespace Froststrap.UI.ViewModels.Settings
         private CancellationTokenSource? _playerHashCts;
         private bool _disposed;
 
-        private bool _isMoving;
-
         public ChannelViewModel()
         {
             _ = LoadChannelDeployInfo(App.Settings.Prop.PlayerChannel, false);
             _ = LoadChannelDeployInfo(App.Settings.Prop.StudioChannel, true);
-            BrowseInstallDirectoryCommand = new AsyncRelayCommand<object?>(BrowseInstallDirectoryAsync);
-            MoveInstallDirectoryCommand = new AsyncRelayCommand<object?>(MoveInstallDirectoryAsync, CanMove);
 
             BrowsePlayerVersionHashCommand = new AsyncRelayCommand<object?>(BrowsePlayerVersionHashAsync);
             BrowseStudioVersionHashCommand = new AsyncRelayCommand<object?>(BrowseStudioVersionHashAsync);
@@ -58,25 +54,6 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public string InstallDirectory
-        {
-            get
-            {
-                using var key = Registry.CurrentUser.OpenSubKey(App.UninstallKey);
-                if (key?.GetValue("InstallLocation") is string location && Directory.Exists(location))
-                    return location;
-
-                return Paths.Base;
-            }
-            set
-            {
-                using var key = Registry.CurrentUser.CreateSubKey(App.UninstallKey);
-                key?.SetValue("InstallLocation", value);
-
-                OnPropertyChanged();
-            }
-        }
-
         private static Window? GetMainWindow()
         {
             if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
@@ -87,8 +64,6 @@ namespace Froststrap.UI.ViewModels.Settings
         public ICommand ImportSettingsCommand => new AsyncRelayCommand<object?>(ImportSettingsAsync);
         public ICommand ExportSettingsCommand => new AsyncRelayCommand<object?>(ExportSettingsAsync);
         public ICommand ResetSettingsToDefaultCommand => new RelayCommand(ResetSettingsToDefault);
-        public IAsyncRelayCommand BrowseInstallDirectoryCommand { get; }
-        public IAsyncRelayCommand MoveInstallDirectoryCommand { get; }
         public IAsyncRelayCommand<object?> BrowsePlayerVersionHashCommand { get; }
         public IAsyncRelayCommand<object?> BrowseStudioVersionHashCommand { get; }
 
@@ -754,86 +729,6 @@ namespace Froststrap.UI.ViewModels.Settings
                 binaryType: GetBinaryType(false));
         }
 
-        private async Task BrowseInstallDirectoryAsync(object? parameter)
-        {
-            var topLevel = GetTopLevel(parameter);
-            if (topLevel == null) return;
-
-            var folders = await topLevel.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions
-            {
-                Title = "Select New Installation Directory"
-            });
-            if (folders.Count > 0)
-            {
-                var path = folders[0].TryGetLocalPath();
-                if (!string.IsNullOrEmpty(path))
-                    InstallDirectory = path;
-            }
-        }
-
-        private async Task MoveInstallDirectoryAsync(object? parameter)
-        {
-            if (_isMoving) return;
-
-            string newDir = InstallDirectory;
-            string currentDir = Paths.Base;
-
-            if (string.Equals(newDir, currentDir, StringComparison.OrdinalIgnoreCase))
-            {
-                await Frontend.ShowMessageBox(Strings.Menu_Deployment_MoveInstallation_SameDirectory, MessageBoxImage.Information);
-                return;
-            }
-
-            if (string.IsNullOrWhiteSpace(newDir))
-            {
-                await Frontend.ShowMessageBox(Strings.Menu_Deployment_MoveInstallation_InvalidDirectory, MessageBoxImage.Warning);
-                return;
-            }
-
-            var confirm = await Frontend.ShowMessageBox(
-                string.Format(CultureInfo.InvariantCulture, Strings.Menu_Deployment_MoveInstallation_Confirm, currentDir, newDir),
-                MessageBoxImage.Question,
-                MessageBoxButton.YesNo);
-
-            if (confirm != MessageBoxResult.Yes) return;
-
-            try
-            {
-                _isMoving = true;
-                MoveInstallDirectoryCommand.NotifyCanExecuteChanged();
-
-                App.Settings.Save();
-                App.State.Save();
-                App.FastFlags.Save();
-                App.GlobalSettings.Save();
-                if (OperatingSystem.IsLinux())
-                    App.SoberSettings.Save();
-
-                await Task.Run(() => Installer.MoveInstallation(newDir));
-
-                InstallDirectory = newDir;
-
-                await Frontend.ShowMessageBox(Strings.Menu_Deployment_MoveInstallation_Success, MessageBoxImage.Information);
-
-                Process.Start(new ProcessStartInfo
-                {
-                    FileName = Paths.Process,
-                    UseShellExecute = true
-                });
-                App.Terminate();
-            }
-            catch (Exception ex)
-            {
-                await Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Menu_Deployment_MoveInstallation_Failed, ex.Message), MessageBoxImage.Error);
-                App.Logger.Error("Unhandled exception: ", ex);
-            }
-            finally
-            {
-                _isMoving = false;
-                MoveInstallDirectoryCommand.NotifyCanExecuteChanged();
-            }
-        }
-
         private async Task BrowsePlayerVersionHashAsync(object? parameter)
         {
             var topLevel = GetTopLevel(parameter);
@@ -851,8 +746,6 @@ namespace Froststrap.UI.ViewModels.Settings
             var dialog = new VersionOverrideDialog(LaunchMode.Studio);
             await dialog.ShowDialog((Window)topLevel);
         }
-
-        private bool CanMove(object? parameter) => !_isMoving;
 
         private static TopLevel? GetTopLevel(object? parameter)
         {

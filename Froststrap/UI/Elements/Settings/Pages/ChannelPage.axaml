@@ -78,28 +78,6 @@ SPDX-License-Identifier: MPL-2.0
             </controls:CardExpander>
 
             <controls:OptionControl
-                Header="{x:Static resources:Strings.Menu_Deployment_MoveInstallation_Title}"
-                Description="{x:Static resources:Strings.Menu_Deployment_MoveInstallation_Description}"
-                IsVisible="{x:Static gv:GlobalViewModel.IsWindows}">
-                <Grid ColumnDefinitions="*,Auto" RowDefinitions="*,Auto" RowSpacing="6" ColumnSpacing="4" Width="200">
-                    <TextBox
-                        Text="{Binding InstallDirectory, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                    <controls:IconButton
-                        Grid.Column="1"
-                        Command="{Binding BrowseInstallDirectoryCommand}"
-                        CommandParameter="{Binding $parent[UserControl]}"
-                        Icon="Folder" />
-                    <Button
-                        Command="{Binding MoveInstallDirectoryCommand}"
-                        CommandParameter="{Binding $parent[UserControl]}"
-                        HorizontalAlignment="Stretch"
-                        Grid.ColumnSpan="2"
-                        Grid.Row="1"
-                        Content="{x:Static resources:Strings.Menu_Deployment_MoveInstallation}" />
-                </Grid>
-            </controls:OptionControl>
-
-            <controls:OptionControl
                 Header="{x:Static resources:Strings.Menu_Deployment_DisableAnimations_Title}"
                 Description="{x:Static resources:Strings.Menu_Deployment_DisableAnimations_Description}">
                 <ToggleSwitch IsChecked="{Binding DisableAnimations, Mode=TwoWay}" />
