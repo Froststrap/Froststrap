@@ -45,7 +45,7 @@ Publish
 
 Publishing is going to create installers, and other important stuff making it publishable online.
 
-.. source-code:: bash
+.. code-block:: bash
 
    dotnet run --project build -- publish --configuration Release
 
@@ -54,11 +54,11 @@ Build
 
 Going to be useful for debug builds, and there's mulitple ways to do so.
 
-.. source-code:: bash
+.. code-block:: bash
 
    dotnet run --project build -- compile --configuration Release
 
-.. source-code:: bash
+.. code-block:: bash
 
    dotnet build
 
@@ -67,10 +67,10 @@ Clean
 
 Cleaning out stale stuff- should run both of these.
 
-.. source-code:: bash
+.. code-block:: bash
 
    dotnet run --project build -- clean --configuration Release
 
-.. source-code:: bash
+.. code-block:: bash
 
    dotnet clean
