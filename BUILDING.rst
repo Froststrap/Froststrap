@@ -80,3 +80,12 @@ Cleaning out stale stuff- should run both of these.
 .. code-block:: bash
 
    dotnet clean
+
+Directories
+-----------
+
+Most likely your at this section to figure out where fallout build stuff goes-
+and that is **/.build/**.
+
+- **.build/publish** - a publish output dir where evrything gets put into
+- **.build/msbuild** - a directory for non-publish builds– named after the fact it uses msbuild directly
