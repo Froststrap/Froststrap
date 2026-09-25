@@ -12,6 +12,9 @@ internal class OmniSearchResponse
 
 internal class OmniSearchGroup
 {
+    [JsonPropertyName("contentGroupType")]
+    public string ContentGroupType { get; set; } = String.Empty;
+
     [JsonPropertyName("contents")]
     public List<OmniSearchContent>? Contents { get; set; }
 }

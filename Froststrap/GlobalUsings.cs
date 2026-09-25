@@ -34,6 +34,7 @@ global using Froststrap.Models.BloxstrapRPC;
 global using Froststrap.Models.Entities;
 global using Froststrap.Models.FroststrapStudioRPC;
 global using Froststrap.Models.Manifest;
+global using Froststrap.Models.Overlay;
 global using Froststrap.Models.Persistable;
 global using Froststrap.Models.SettingTasks;
 global using Froststrap.Models.SettingTasks.Base;
