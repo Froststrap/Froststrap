@@ -189,6 +189,9 @@
   <data name="Common.Delete" xml:space="preserve">
     <value>Delete</value>
   </data>
+  <data name="Common.Default" xml:space="preserve">
+    <value>Default</value>
+  </data>
   <data name="Common.DiscordRichPresence" xml:space="preserve">
     <value>Discord Rich Presence</value>
   </data>
@@ -3299,15 +3302,6 @@ All files will be moved, shortcuts updated, and the application will restart.</v
   </data>
   <data name="Menu.QuickPlay.BestRegionJoined.Message" xml:space="preserve">
     <value>Joining best region for {0}...</value>
-  </data>
-  <data name="Enums.AppStoragePresets.RobloxTheme.Default" xml:space="preserve">
-    <value>Default</value>
-  </data>
-  <data name="Enums.AppStoragePresets.RobloxTheme.Light" xml:space="preserve">
-    <value>Light</value>
-  </data>
-  <data name="Enums.AppStoragePresets.RobloxTheme.Dark" xml:space="preserve">
-    <value>Dark</value>
   </data>
   <data name="Menu.Bootstrapper.EnableRobloxBackgroundApp.Title" xml:space="preserve">
     <value>Let Roblox run in the background</value>
