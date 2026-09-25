@@ -4,11 +4,10 @@
   <Project Path="./libs/LucideAvalonia/LucideAvalonia/LucideAvalonia.csproj" />
   <Project Path="./libs/FluentAvalonia/src/FluentAvalonia/FluentAvalonia.csproj" />
   <Project Path="./backend/backend.csproj" />
-  <Project Path="./packaging/winInstaller/winInstaller.wixproj" />
-  <Properties Name="ExtensibilityGlobals" Scope="PostLoad">
-    <Property Name="RESX_NeutralResourcesLanguage" Value="en-GB" />
-  </Properties>
   <Project Path="./build/_build.csproj">
     <Build Project="false" />
   </Project>
+  <Properties Name="ExtensibilityGlobals" Scope="PostLoad">
+    <Property Name="RESX_NeutralResourcesLanguage" Value="en-GB" />
+  </Properties>
 </Solution>
