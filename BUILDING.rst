@@ -11,7 +11,7 @@ but more so the acknowlegable ones.
 
 It is way easier if you are on macOS or Linux to just use Nix, and enter the flake devshell with
 
-.. code-block::
+.. code-block:: bash
 
    nix develop
 
@@ -45,7 +45,7 @@ Publish
 
 Publishing is going to create installers, and other important stuff making it publishable online.
 
-.. source-code::
+.. source-code:: bash
 
    dotnet run --project build -- publish --configuration Release
 
@@ -54,11 +54,11 @@ Build
 
 Going to be useful for debug builds, and there's mulitple ways to do so.
 
-.. source-code::
+.. source-code:: bash
 
    dotnet run --project build -- compile --configuration Release
 
-.. source-code::
+.. source-code:: bash
 
    dotnet build
 
@@ -67,10 +67,10 @@ Clean
 
 Cleaning out stale stuff- should run both of these.
 
-.. source-code::
+.. source-code:: bash
 
    dotnet run --project build -- clean --configuration Release
 
-.. source-code::
+.. source-code:: bash
 
    dotnet clean
