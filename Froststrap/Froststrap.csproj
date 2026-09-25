@@ -79,9 +79,9 @@ SPDX-License-Identifier: MPL-2.0
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../ColorPicker/ColorPicker.AvaloniaUI/ColorPicker.AvaloniaUI.csproj" />
-    <ProjectReference Include="../LucideAvalonia/LucideAvalonia/LucideAvalonia.csproj" />
-    <ProjectReference Include="../FluentAvalonia/src/FluentAvalonia/FluentAvalonia.csproj" />
+    <ProjectReference Include="../libs/ColorPicker/ColorPicker.AvaloniaUI/ColorPicker.AvaloniaUI.csproj" />
+    <ProjectReference Include="../libs/LucideAvalonia/LucideAvalonia/LucideAvalonia.csproj" />
+    <ProjectReference Include="../libs/FluentAvalonia/src/FluentAvalonia/FluentAvalonia.csproj" />
     <ProjectReference Include="../backend/backend.csproj" />
   </ItemGroup>
 
