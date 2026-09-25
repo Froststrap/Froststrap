@@ -4,7 +4,7 @@
 
 use std::sync::RwLock;
 
-use crate::notify::data_types::SendNotificationResult;
+use crate::data_types::SendNotificationResult;
 use windows::Data::Xml::Dom::XmlDocument;
 use windows::UI::Notifications::{ToastNotification, ToastNotificationManager, ToastTemplateType};
 use windows::core::HSTRING;

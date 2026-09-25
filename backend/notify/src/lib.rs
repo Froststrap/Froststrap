@@ -7,10 +7,11 @@ pub mod data_types;
 pub mod linux;
 #[cfg(target_os = "macos")]
 pub mod macos;
+pub mod test;
 #[cfg(target_os = "windows")]
 pub mod win;
 
-use crate::notify::data_types::SendNotificationResult;
+use crate::data_types::SendNotificationResult;
 use std::{ffi::CStr, os::raw::c_char};
 
 /// macOS only- No-op on other platforms.
@@ -58,9 +59,8 @@ pub unsafe extern "C" fn send_notification_message(
 
     #[cfg(target_os = "macos")]
     {
-        
         let r = macos::send_notification(title, description);
-        println!("{r}");
+        println!("Send notify result={r}");
         r
     }
 
