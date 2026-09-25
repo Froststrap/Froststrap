@@ -12,6 +12,7 @@ namespace Froststrap.Models.Persistable
 
         // Integration Page
         public bool EnableActivityTracking { get; set; } = true;
+        public bool EnableOverlay { get; set; }
         public bool ShowServerDetails { get; set; } = true;
         public bool ShowServerUptime { get; set; } = true;
         public bool AutoRejoin { get; set; }

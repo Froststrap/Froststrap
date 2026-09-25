@@ -156,7 +156,7 @@ namespace Froststrap.Integrations
                         Id = s.ServerId!,
                         Region = displayRegion,
                         DataCenterId = s.DatacenterId,
-                        FirstSeen = s.FirstSeen,
+                        FirstSeen = s.FirstSeenUtc,
                         Playing = 0,
                         MaxPlayers = 0,
                         PlayerTokens = []

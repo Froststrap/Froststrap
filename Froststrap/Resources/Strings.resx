@@ -3315,4 +3315,250 @@ All files will be moved, shortcuts updated, and the application will restart.</v
   <data name="Menu.Bootstrapper.RobloxTheme.Description" xml:space="preserve">
     <value>The theme used by the Roblox app.</value>
   </data>
+  <data name="Menu.Integrations.Overlay.Title" xml:space="preserve">
+    <value>Overlay</value>
+  </data>
+  <data name="Menu.Integrations.EnableOverlay.Title" xml:space="preserve">
+    <value>Enable in-game overlay</value>
+  </data>
+  <data name="Menu.Integrations.EnableOverlay.Description" xml:space="preserve">
+    <value>Enable an Overlay with QOL features. Press Ctrl+Alt+L in game to open it. Requires borderless or windowed mode.</value>
+  </data>
+  <data name="Menu.Overlay.Tab.Messages" xml:space="preserve">
+    <value>Messages</value>
+  </data>
+  <data name="Menu.Overlay.Tab.Badges" xml:space="preserve">
+    <value>Badges</value>
+  </data>
+  <data name="Menu.Overlay.Tab.Servers" xml:space="preserve">
+    <value>Servers</value>
+  </data>
+  <data name="Menu.Overlay.Refresh" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="Menu.Overlay.NotInGame" xml:space="preserve">
+    <value>Not in an experience</value>
+  </data>
+  <data name="Menu.Overlay.Session" xml:space="preserve">
+    <value>Session</value>
+  </data>
+  <data name="Menu.Overlay.Badges.Progress" xml:space="preserve">
+    <value>{0} of {1} earned</value>
+  </data>
+  <data name="Menu.Overlay.Badges.Empty" xml:space="preserve">
+    <value>This experience has no badges.</value>
+  </data>
+  <data name="Menu.Overlay.Badges.NotInGame" xml:space="preserve">
+    <value>Join an experience to see its badges.</value>
+  </data>
+  <data name="Menu.Overlay.Badges.EarnedOn" xml:space="preserve">
+    <value>Earned {0}</value>
+  </data>
+  <data name="Menu.Overlay.Tab.Games" xml:space="preserve">
+    <value>Games</value>
+  </data>
+  <data name="Menu.Overlay.Games.Search" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="Menu.Overlay.Games.Favorites" xml:space="preserve">
+    <value>Favorites</value>
+  </data>
+  <data name="Menu.Overlay.Games.SearchPlaceholder" xml:space="preserve">
+    <value>Search experiences</value>
+  </data>
+  <data name="Menu.Overlay.Games.SearchPrompt" xml:space="preserve">
+    <value>Search for an experience to jump into.</value>
+  </data>
+  <data name="Menu.Overlay.Games.NoResults" xml:space="preserve">
+    <value>Nothing found for "{0}".</value>
+  </data>
+  <data name="Menu.Overlay.Games.NoFavorites" xml:space="preserve">
+    <value>No favorites yet. Favorite an experience on Roblox and it'll show up here.</value>
+  </data>
+  <data name="Menu.Overlay.Games.NoAccount" xml:space="preserve">
+    <value>Join a game, or allow cookie access, to see your favorites.</value>
+  </data>
+  <data name="Menu.Overlay.Games.Failed" xml:space="preserve">
+    <value>Couldn't reach Roblox. Try again in a moment.</value>
+  </data>
+  <data name="Menu.Overlay.Games.Playing" xml:space="preserve">
+    <value>{0} playing</value>
+  </data>
+  <data name="Menu.Overlay.Games.Joining" xml:space="preserve">
+    <value>Joining {0}…</value>
+  </data>
+  <data name="Menu.Overlay.Servers.UptimeExact" xml:space="preserve">
+    <value>Up {0}</value>
+  </data>
+  <data name="Menu.Overlay.Servers.UptimeEstimate" xml:space="preserve">
+    <value>Up ~{0}</value>
+  </data>
+  <data name="Menu.Overlay.Servers.Hop" xml:space="preserve">
+    <value>Server hop</value>
+  </data>
+  <data name="Menu.Overlay.Servers.HopTooltip" xml:space="preserve">
+    <value>Join a random other server that has room</value>
+  </data>
+  <data name="Menu.Overlay.Servers.NoHopTarget" xml:space="preserve">
+    <value>No other server with room</value>
+  </data>
+  <data name="Menu.Overlay.Servers.Hopping" xml:space="preserve">
+    <value>Hopping servers…</value>
+  </data>
+  <data name="Menu.Overlay.Servers.IdCopied" xml:space="preserve">
+    <value>Instance ID copied</value>
+  </data>
+  <data name="Menu.Overlay.Privacy.Title" xml:space="preserve">
+    <value>Who can see you're online</value>
+  </data>
+  <data name="Menu.Overlay.Privacy.Hint" xml:space="preserve">
+    <value>Changes your Roblox account setting. Anyone who can't see you're online can't join you either.</value>
+  </data>
+  <data name="Menu.Overlay.Privacy.Tooltip" xml:space="preserve">
+    <value>Choose who can see you're online</value>
+  </data>
+  <data name="Menu.Overlay.Privacy.Everyone" xml:space="preserve">
+    <value>Everyone</value>
+  </data>
+  <data name="Menu.Overlay.Privacy.FriendsFollowingAndFollowers" xml:space="preserve">
+    <value>Friends, followers &amp; following</value>
+  </data>
+  <data name="Menu.Overlay.Privacy.FriendsAndFollowing" xml:space="preserve">
+    <value>Friends &amp; following</value>
+  </data>
+  <data name="Menu.Overlay.Privacy.Friends" xml:space="preserve">
+    <value>Friends</value>
+  </data>
+  <data name="Menu.Overlay.Privacy.TrustedFriends" xml:space="preserve">
+    <value>Trusted friends</value>
+  </data>
+  <data name="Menu.Overlay.Privacy.NoOne" xml:space="preserve">
+    <value>No one</value>
+  </data>
+  <data name="Menu.Overlay.Privacy.Loading" xml:space="preserve">
+    <value>Checking your settings…</value>
+  </data>
+  <data name="Menu.Overlay.Privacy.Saving" xml:space="preserve">
+    <value>Saving…</value>
+  </data>
+  <data name="Menu.Overlay.Privacy.Saved" xml:space="preserve">
+    <value>Saved.</value>
+  </data>
+  <data name="Menu.Overlay.Privacy.JoinNarrowed" xml:space="preserve">
+    <value>Saved. Who can join you was narrowed to match.</value>
+  </data>
+  <data name="Menu.Overlay.Privacy.Rejected" xml:space="preserve">
+    <value>Roblox didn't accept that: {0}</value>
+  </data>
+  <data name="Menu.Overlay.Privacy.SaveFailed" xml:space="preserve">
+    <value>Roblox didn't accept that. What's ticked is what your account has now.</value>
+  </data>
+  <data name="Menu.Overlay.Privacy.LoadFailed" xml:space="preserve">
+    <value>Couldn't read your settings from Roblox. Try again in a moment.</value>
+  </data>
+  <data name="Menu.Overlay.Privacy.NeedsCookies" xml:space="preserve">
+    <value>Allow cookie access in Froststrap's settings to change this from here.</value>
+  </data>
+  <data name="Menu.Overlay.Servers.CopyLink" xml:space="preserve">
+    <value>Copy invite link</value>
+  </data>
+  <data name="Menu.Overlay.Servers.LinkCopied" xml:space="preserve">
+    <value>Link copied</value>
+  </data>
+  <data name="Menu.Overlay.Servers.CopyFailed" xml:space="preserve">
+    <value>Couldn't copy</value>
+  </data>
+  <data name="Menu.Overlay.Badges.NotEarned" xml:space="preserve">
+    <value>Not earned</value>
+  </data>
+  <data name="Menu.Overlay.Badges.Earned" xml:space="preserve">
+    <value>Earned</value>
+  </data>
+  <data name="Menu.Overlay.Badges.ProgressUnknown" xml:space="preserve">
+    <value>{0} badges, progress unavailable</value>
+  </data>
+  <data name="Menu.Overlay.Badges.Rarity" xml:space="preserve">
+    <value>Rarity</value>
+  </data>
+  <data name="Menu.Overlay.Badges.Today" xml:space="preserve">
+    <value>Today</value>
+  </data>
+  <data name="Menu.Overlay.Badges.Total" xml:space="preserve">
+    <value>Total</value>
+  </data>
+  <data name="Menu.Overlay.Servers.Empty" xml:space="preserve">
+    <value>No public servers found.</value>
+  </data>
+  <data name="Menu.Overlay.Servers.NotInGame" xml:space="preserve">
+    <value>Join an experience to browse its servers.</value>
+  </data>
+  <data name="Menu.Overlay.Servers.Summary" xml:space="preserve">
+    <value>{0} servers</value>
+  </data>
+  <data name="Menu.Overlay.Servers.Join" xml:space="preserve">
+    <value>Join</value>
+  </data>
+  <data name="Menu.Overlay.Servers.Current" xml:space="preserve">
+    <value>You're here</value>
+  </data>
+  <data name="Menu.Overlay.Servers.SortByPlayers" xml:space="preserve">
+    <value>Sort by players</value>
+  </data>
+  <data name="Menu.Overlay.Servers.HideFull" xml:space="preserve">
+    <value>Hide full servers</value>
+  </data>
+  <data name="Menu.Overlay.Messages.Search" xml:space="preserve">
+    <value>Search conversations</value>
+  </data>
+  <data name="Menu.Overlay.Messages.Send" xml:space="preserve">
+    <value>Send</value>
+  </data>
+  <data name="Menu.Overlay.Messages.Empty" xml:space="preserve">
+    <value>No conversations.</value>
+  </data>
+  <data name="Menu.Overlay.Messages.PickConversation" xml:space="preserve">
+    <value>Select a conversation to start chatting.</value>
+  </data>
+  <data name="Menu.Overlay.Messages.Write" xml:space="preserve">
+    <value>Write a message</value>
+  </data>
+  <data name="Enums.Overlay.Order.Ascending" xml:space="preserve">
+    <value>Fewest players</value>
+  </data>
+  <data name="Enums.Overlay.Order.Descending" xml:space="preserve">
+    <value>Most players</value>
+  </data>
+  <data name="Menu.Overlay.Tab.Notes" xml:space="preserve">
+    <value>Notes</value>
+  </data>
+  <data name="Menu.Overlay.Notes.Placeholder" xml:space="preserve">
+    <value>The quick brown fox jumps over the lazy dog</value>
+  </data>
+  <data name="Menu.Overlay.Notes.SavedAt" xml:space="preserve">
+    <value>Saved at {0}</value>
+  </data>
+  <data name="Menu.Overlay.Notes.Unsaved" xml:space="preserve">
+    <value>Unsaved changes</value>
+  </data>
+  <data name="Menu.Overlay.Notes.SaveFailed" xml:space="preserve">
+    <value>Could not save</value>
+  </data>
+  <data name="Menu.Overlay.Servers.AllRegions" xml:space="preserve">
+    <value>All regions</value>
+  </data>
+  <data name="Menu.Overlay.Servers.Region" xml:space="preserve">
+    <value>Region</value>
+  </data>
+  <data name="Menu.Overlay.Servers.EmptyRegion" xml:space="preserve">
+    <value>No servers running in {0} right now.</value>
+  </data>
+  <data name="Boostrapper.Dialog.UnauthorizedChannel" xml:space="preserve">
+    <value>The channel you're currently on ({0}) has now been restricted from public use. You will now be on the default channel ({1}).</value>
+  </data>
+  <data name="Bootstrapper.Bootstrapper.Dialog.PromptChannelChange" xml:space="preserve">
+    <value>Roblox is attempting to set your channel to {0}, however your current preferred channel is {1}.
+
+
+Would you like to switch your preferred channel to {0}?</value>
+  </data>
 </root>

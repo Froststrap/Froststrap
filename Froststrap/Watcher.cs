@@ -21,6 +21,8 @@ namespace Froststrap
 
         public readonly WindowManipulation? WindowManipulation;
 
+        public readonly Overlay? Overlay;
+
         public readonly Softkey? Softkey;
 
         public readonly PlayerDiscordRichPresence? PlayerRichPresence;
@@ -109,6 +111,9 @@ namespace Froststrap
 
                 if (_watcherData.LaunchMode == LaunchMode.Player && App.Settings.Prop.SoftKeyEnabled)
                     Softkey = new Softkey(_watcherData.ProcessId);
+
+                if (App.Settings.Prop.EnableOverlay && _watcherData.Handle != 0)
+                    Overlay = new(_watcherData.Handle, _watcherData.ProcessId, ActivityWatcher);
 
                 _notifyIcon = new(this);
             }
@@ -308,6 +313,7 @@ namespace Froststrap
 
             ActivityWatcher?.Start();
             WindowManipulation?.Start();
+            Overlay?.Start();
 
             try
             {
@@ -338,6 +344,7 @@ namespace Froststrap
                 await UnregisterGameModeWithDbusSendAsync(_gameModeHandle);
             }
 
+            Overlay?.Dispose();
             AppStorageManager.Apply();
 
             if (_watcherData.AutoclosePids is not null)

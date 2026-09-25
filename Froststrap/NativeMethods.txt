@@ -15,6 +15,15 @@ LookupIconIdFromDirectoryEx
 CreateIconFromResourceEx
 MoveWindow
 GetWindowRect
+RegisterHotKey
+UnregisterHotKey
+IsIconic
+IsZoomed
+GetForegroundWindow
+GetWindowThreadProcessId
+DwmGetWindowAttribute
+GetClientRect
+ClientToScreen
 SetLayeredWindowAttributes
 DwmSetWindowAttribute
 UpdateWindow

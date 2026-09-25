@@ -109,17 +109,12 @@ SPDX-License-Identifier: MPL-2.0
     </Compile>
   </ItemGroup>
 
-  <Target Name="CopyVirtualDisplayFromBackend"
-          AfterTargets="Build"
-          Condition="$([MSBuild]::IsOSPlatform('OSX'))">
+  <Target Name="CopyVirtualDisplayFromBackend" AfterTargets="Build" Condition="$([MSBuild]::IsOSPlatform('OSX'))">
 
     <PropertyGroup>
       <BackendOutDir>$(MSBuildProjectDirectory)/../backend/bin/$(Configuration)/$(TargetFramework)/</BackendOutDir>
     </PropertyGroup>
 
-    <Copy SourceFiles="$(BackendOutDir)libvirtualdisplay.dylib"
-          DestinationFolder="$(OutDir)"
-          SkipUnchangedFiles="true"
-          Condition="Exists('$(BackendOutDir)libvirtualdisplay.dylib')" />
+    <Copy SourceFiles="$(BackendOutDir)libvirtualdisplay.dylib" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" Condition="Exists('$(BackendOutDir)libvirtualdisplay.dylib')" />
   </Target>
 </Project>

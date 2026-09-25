@@ -102,7 +102,7 @@ namespace Froststrap.UI.Elements.ContextMenu
                     {
                         if (App.Settings.Prop.PlaytimeCounter) StartTotalPlaytimeTimer();
 
-                        GameHistoryMenuItem?.SetValue(MenuItem.IsVisibleProperty, App.Settings.Prop.ShowGameHistoryMenu);
+                        GameHistoryMenuItem?.SetValue(MenuItem.IsVisibleProperty, App.Settings.Prop.ShowGameHistoryMenu && _watcher.Overlay is not null);
 
                         SoftkeyMenuItem?.IsVisible = App.Settings.Prop.SoftKeyEnabled && _watcher?.Softkey != null && OperatingSystem.IsWindows();
                         SoftkeyMenuItem?.IsChecked = true;

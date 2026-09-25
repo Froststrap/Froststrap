@@ -88,7 +88,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to login to {0} in Roblox App..
+        ///   Looks up a localized string similar to Failed to log in to {0} in Roblox App..
         /// </summary>
         public static string AccountManager_Replace_Failed {
             get {
@@ -192,12 +192,32 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Upgrades were disabled with missing client.
-        ///To prevent issues upgrading will continue..
+        ///   Looks up a localized string similar to Upgrades were disabled because the client is missing.
+        ///To prevent issues, upgrading will continue..
         /// </summary>
         public static string Bootstrapper_Dialog_NoUpgradeWithoutClient {
             get {
                 return ResourceManager.GetString("Bootstrapper.Dialog.NoUpgradeWithoutClient", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Roblox is attempting to set your channel to {0}, however your current preferred channel is {1}.
+        ///
+        ///Would you like to switch your preferred channel to {0}?.
+        /// </summary>
+        public static string Bootstrapper_Dialog_PromptChannelChange {
+            get {
+                return ResourceManager.GetString("Bootstrapper.Dialog.PromptChannelChange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The channel you&apos;re currently on ({0}) has now been restricted from public use. You will now be on the default channel ({1})..
+        /// </summary>
+        public static string Bootstrapper_Dialog_UnauthorizedChannel {
+            get {
+                return ResourceManager.GetString("Bootstrapper.Dialog.UnauthorizedChannel", resourceCulture);
             }
         }
         
@@ -283,7 +303,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Checking for updates.
+        ///   Looks up a localized string similar to Checking for updates....
         /// </summary>
         public static string Bootstrapper_Status_CheckingUpdates {
             get {
@@ -593,7 +613,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Style preview - Click the X button at the top right to close.
+        ///   Looks up a localized string similar to Style preview - Click the X button at the top right to close..
         /// </summary>
         public static string Bootstrapper_StylePreview_ImageCancel {
             get {
@@ -602,7 +622,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Style preview - Click Cancel to close.
+        ///   Looks up a localized string similar to Style preview - Click Cancel to close..
         /// </summary>
         public static string Bootstrapper_StylePreview_TextCancel {
             get {
@@ -611,7 +631,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Froststrap has successfully uninstalled.
+        ///   Looks up a localized string similar to Froststrap has been successfully uninstalled..
         /// </summary>
         public static string Bootstrapper_SuccessfullyUninstalled {
             get {
@@ -1927,7 +1947,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to setup custom bootstrapper: {0}.
+        ///   Looks up a localized string similar to Failed to set up custom bootstrapper: {0}.
         ///Defaulting to {1}..
         /// </summary>
         public static string CustomTheme_Errors_SetupFailed {
@@ -2009,7 +2029,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Examples of custom bootstrappers can be found at {0}.
+        ///   Looks up a localized string similar to Examples of custom bootstrappers can be found at {0}..
         /// </summary>
         public static string CustomTheme_Templates_Blank_MoreExamples {
             get {
@@ -2027,7 +2047,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Find more custom bootstrapper examples at {0}.
+        ///   Looks up a localized string similar to Find more custom bootstrapper examples at {0}..
         /// </summary>
         public static string CustomTheme_Templates_Simple_MoreExamples {
             get {
@@ -2054,26 +2074,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Froststrap no longer supports Bloxshade.
-        ///For more information join Bloxshade discord server..
-        /// </summary>
-        public static string Dialog_Bloxshade_Setting {
-            get {
-                return ResourceManager.GetString("Dialog.Bloxshade.Setting", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Sorry.
-        /// </summary>
-        public static string Dialog_Bloxshade_ThankYou {
-            get {
-                return ResourceManager.GetString("Dialog.Bloxshade.ThankYou", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Froststrap was unable to create shortcut. Try creating them later through the settings..
+        ///   Looks up a localized string similar to Froststrap was unable to create shortcuts. Try creating them later through the settings..
         /// </summary>
         public static string Dialog_CannotCreateShortcuts {
             get {
@@ -2163,7 +2164,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Froststrap is unable to download Roblox.
+        ///   Looks up a localized string similar to Froststrap is unable to download Roblox..
         /// </summary>
         public static string Dialog_Connectivity_UnableToDownload {
             get {
@@ -2199,7 +2200,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An exception occurred while running Froststrap/Froststrap.
+        ///   Looks up a localized string similar to An exception occurred while running Froststrap.
         /// </summary>
         public static string Dialog_Exception_Info_1 {
             get {
@@ -2221,7 +2222,7 @@ namespace Froststrap.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Check the [Froststrap Wiki]({0}) first to see if this problem has already been addressed with a fix.
         ///
-        ///If not, then please report this exception to the maintainers of this fork. Do NOT report this to Froststrap&apos;s GitHub issues, as this is an unoffical build..
+        ///If not, then please report this exception to the maintainers of this fork. Do NOT report this to Froststrap&apos;s GitHub issues, as this is an unofficial build..
         /// </summary>
         public static string Dialog_Exception_Info_2_Alt {
             get {
@@ -2259,7 +2260,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Choose preferred language.
+        ///   Looks up a localized string similar to Choose your preferred language.
         /// </summary>
         public static string Dialog_LanguageSelector_Header {
             get {
@@ -2269,7 +2270,7 @@ namespace Froststrap.Resources {
         
         /// <summary>
         ///   Looks up a localized string similar to Choose a language before continuing with installation.
-        ///Some text might not be translated to preferred language..
+        ///Some text might not be translated into your preferred language..
         /// </summary>
         public static string Dialog_LanguageSelector_Subtext {
             get {
@@ -2312,33 +2313,6 @@ namespace Froststrap.Resources {
         public static string Dialog_RegistryWriteError {
             get {
                 return ResourceManager.GetString("Dialog.RegistryWriteError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Dark.
-        /// </summary>
-        public static string Enums_AppStoragePresets_RobloxTheme_Dark {
-            get {
-                return ResourceManager.GetString("Enums.AppStoragePresets.RobloxTheme.Dark", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Default.
-        /// </summary>
-        public static string Enums_AppStoragePresets_RobloxTheme_Default {
-            get {
-                return ResourceManager.GetString("Enums.AppStoragePresets.RobloxTheme.Default", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Light.
-        /// </summary>
-        public static string Enums_AppStoragePresets_RobloxTheme_Light {
-            get {
-                return ResourceManager.GetString("Enums.AppStoragePresets.RobloxTheme.Light", resourceCulture);
             }
         }
         
@@ -2811,20 +2785,38 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Fewest players.
+        /// </summary>
+        public static string Enums_Overlay_Order_Ascending {
+            get {
+                return ResourceManager.GetString("Enums.Overlay.Order.Ascending", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Most players.
+        /// </summary>
+        public static string Enums_Overlay_Order_Descending {
+            get {
+                return ResourceManager.GetString("Enums.Overlay.Order.Descending", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Square.
         /// </summary>
-        public static string Enums_PlayerListLayOut_x0 {
+        public static string Enums_PlayerListLayout_x0 {
             get {
-                return ResourceManager.GetString("Enums.PlayerListLayOut.x0", resourceCulture);
+                return ResourceManager.GetString("Enums.PlayerListLayout.x0", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Normal.
         /// </summary>
-        public static string Enums_PlayerListLayOut_x1 {
+        public static string Enums_PlayerListLayout_x1 {
             get {
-                return ResourceManager.GetString("Enums.PlayerListLayOut.x1", resourceCulture);
+                return ResourceManager.GetString("Enums.PlayerListLayout.x1", resourceCulture);
             }
         }
         
@@ -3198,7 +3190,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Zip archive.
+        ///   Looks up a localized string similar to ZIP archive.
         /// </summary>
         public static string FileTypes_ZipArchive {
             get {
@@ -3207,7 +3199,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Froststrap has been upgraded to v{0}.
+        ///   Looks up a localized string similar to Froststrap has been upgraded to v{0}..
         /// </summary>
         public static string InstallChecker_Updated {
             get {
@@ -3273,7 +3265,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No log file will be written for this launch because Froststrap is unable to write to the folder at &apos;{0}&apos;.
+        ///   Looks up a localized string similar to No log file will be written for this launch because Froststrap is unable to write to the folder at &apos;{0}&apos;..
         /// </summary>
         public static string Logger_NoWriteMode {
             get {
@@ -3327,7 +3319,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to These are all of the people who have made notable contributions to Froststrap and Froststrap, shaping them into what they are today..
+        ///   Looks up a localized string similar to These are all of the people who have made notable contributions to Fishstrap and Froststrap, shaping them into what they are today..
         /// </summary>
         public static string Menu_About_Contributors_Description {
             get {
@@ -3338,9 +3330,9 @@ namespace Froststrap.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Inspirations.
         /// </summary>
-        public static string Menu_About_Contributors_Insipirations {
+        public static string Menu_About_Contributors_Inspirations {
             get {
-                return ResourceManager.GetString("Menu.About.Contributors.Insipirations", resourceCulture);
+                return ResourceManager.GetString("Menu.About.Contributors.Inspirations", resourceCulture);
             }
         }
         
@@ -3519,7 +3511,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please note that not all your changes will immediately apply until you close all currently open Roblox instances..
+        ///   Looks up a localized string similar to Please note that some changes won&apos;t apply until you close all currently open Roblox instances..
         /// </summary>
         public static string Menu_AlreadyRunning_Caption {
             get {
@@ -3627,7 +3619,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Customize how Froststrap UI looks using wide variety of options..
+        ///   Looks up a localized string similar to Customize how Froststrap UI looks using a wide variety of options..
         /// </summary>
         public static string Menu_Appearance_Froststrap_Description {
             get {
@@ -3663,7 +3655,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A relaunch is required for changes to take effect. Some text might not be translated to preferred language..
+        ///   Looks up a localized string similar to A relaunch is required for changes to take effect. Some text might not be translated into your preferred language..
         /// </summary>
         public static string Menu_Appearance_Language_Description {
             get {
@@ -3681,7 +3673,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Choose a launch screen style. Note: Dark theme isn’t supported for Legacy or Vista, For more custom launchers, visit the official Froststrap Discord server..
+        ///   Looks up a localized string similar to Choose a launch screen style. Note: Dark theme isn’t supported for Legacy or Vista. For more custom launchers, visit the official Froststrap Discord server..
         /// </summary>
         public static string Menu_Appearance_Launcher_Description {
             get {
@@ -3744,7 +3736,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Choose what title Roblox window should have..
+        ///   Looks up a localized string similar to Choose what title the Roblox window should have..
         /// </summary>
         public static string Menu_Appearance_RobloxTitle_Description {
             get {
@@ -3798,7 +3790,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This feature requires window manipulation.
+        ///   Looks up a localized string similar to This feature requires window manipulation..
         /// </summary>
         public static string Menu_Appearance_WindowManipulationAlert {
             get {
@@ -3807,7 +3799,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Choose a window backdrop effect. Requires dark theme and a restart of the app, Some backdrops may not work on diffrent OSes, Use with dark theme..
+        ///   Looks up a localized string similar to Choose a window backdrop effect. Requires the dark theme and an app restart. Some backdrops may not work on different operating systems..
         /// </summary>
         public static string Menu_Appearance_WindowsBackdrop_Description {
             get {
@@ -3843,7 +3835,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Froststrap will automatically check and update itself to a stable version when launching Roblox, Will only notify users on linux..
+        ///   Looks up a localized string similar to Froststrap will automatically check and update itself to a stable version when launching Roblox. It will only notify users on Linux..
         /// </summary>
         public static string Menu_Behaviour_AutoUpdate_Description {
             get {
@@ -3879,7 +3871,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Automatically closes the RobloxCrashHandler.exe process on launch to free up some system usage..
+        ///   Looks up a localized string similar to Automatically closes the RobloxCrashHandler.exe process on launch to free up some system resources..
         /// </summary>
         public static string Menu_Behaviour_CloseCrashHandler_Description {
             get {
@@ -3897,7 +3889,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Prevents closures of your existing game when accidentally launching another Roblox Instance..
+        ///   Looks up a localized string similar to Prevents closing your existing game when accidentally launching another Roblox instance..
         /// </summary>
         public static string Menu_Behaviour_ConfirmLaunches_Description {
             get {
@@ -3969,7 +3961,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Configure internal Roblox application settings stored..
+        ///   Looks up a localized string similar to Configure stored internal Roblox application settings..
         /// </summary>
         public static string Menu_Bootstrapper_AppStorage_Description {
             get {
@@ -3987,7 +3979,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select the amount of regions to check for, helps if it cant find your best regions..
+        ///   Looks up a localized string similar to Select the number of regions to check. This helps if it can&apos;t find your best regions..
         /// </summary>
         public static string Menu_Bootstrapper_BestRegionAmount_Description {
             get {
@@ -4140,7 +4132,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select how many servers to check, the more the longer it might take..
+        ///   Looks up a localized string similar to Select how many servers to check. The more servers you check, the longer it may take..
         /// </summary>
         public static string Menu_Bootstrapper_MaxServerCheck_Description {
             get {
@@ -4194,7 +4186,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Join smaller servers when joining through play button..
+        ///   Looks up a localized string similar to Join smaller servers when joining through the Play button..
         /// </summary>
         public static string Menu_Bootstrapper_SmallerServer_Description {
             get {
@@ -4338,7 +4330,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to When disabled, Roblox client won&apos;t upgrade to newer versions..
+        ///   Looks up a localized string similar to When disabled, the Roblox client won&apos;t upgrade to newer versions..
         /// </summary>
         public static string Menu_Channel_RobloxUpgrades_Description {
             get {
@@ -4347,7 +4339,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Switch from version-xxx to BinaryType based install directories, only affects studio on linux..
+        ///   Looks up a localized string similar to Switch from version-xxx to BinaryType-based install directories. Only affects Studio on Linux..
         /// </summary>
         public static string Menu_Channel_StaticDirectory_Description {
             get {
@@ -4374,7 +4366,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The specified channel either doesn&apos;t exist or is private.
+        ///   Looks up a localized string similar to The specified channel either doesn&apos;t exist or is private..
         /// </summary>
         public static string Menu_Channel_Switcher_Unauthorized {
             get {
@@ -4473,11 +4465,11 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SkyBox.
+        ///   Looks up a localized string similar to Skybox.
         /// </summary>
-        public static string Menu_CommunityMods_SkyBox {
+        public static string Menu_CommunityMods_Skybox {
             get {
-                return ResourceManager.GetString("Menu.CommunityMods.SkyBox", resourceCulture);
+                return ResourceManager.GetString("Menu.CommunityMods.Skybox", resourceCulture);
             }
         }
         
@@ -4590,7 +4582,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Froststrap will automatically check and update itself to a test version when launching Roblox, Will only notify user on linux..
+        ///   Looks up a localized string similar to Froststrap will automatically check and update itself to a test version when launching Roblox. It will only notify the user on Linux..
         /// </summary>
         public static string Menu_Deployment_AutoPreReleaseUpdate_Description {
             get {
@@ -4617,7 +4609,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Choose deployment channel, Don&apos;t change unless you know what you&apos;re doing..
+        ///   Looks up a localized string similar to Choose a deployment channel. Don&apos;t change unless you know what you&apos;re doing..
         /// </summary>
         public static string Menu_Deployment_Channel_Description {
             get {
@@ -4653,9 +4645,9 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You entered an invalid domain
+        ///   Looks up a localized string similar to You entered an invalid domain.
         ///
-        ///Please dont mess with this if you dont know what your doing.
+        ///Don&apos;t mess with this if you don&apos;t know what you&apos;re doing..
         /// </summary>
         public static string Menu_Deployment_DomainValidation {
             get {
@@ -4756,7 +4748,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Specify the thread amount used for downloading, Only affects studio on linux..
+        ///   Looks up a localized string similar to Specify the number of threads used for downloading. Only affects Studio on Linux..
         /// </summary>
         public static string Menu_Deployment_MultiThread_Description {
             get {
@@ -4975,7 +4967,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} have been removed due to not being in Roblox Allow List..
+        ///   Looks up a localized string similar to {0} have been removed due to not being in the FFlag allowlist..
         /// </summary>
         public static string Menu_FastFlagEditor_HaveBeenRemoved {
             get {
@@ -5331,7 +5323,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Delete Selected.
+        ///   Looks up a localized string similar to Delete selected.
         /// </summary>
         public static string Menu_FlagProfiles_DeleteSelected {
             get {
@@ -5358,7 +5350,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Profile name contains invalid character &apos;{0}&apos;..
+        ///   Looks up a localized string similar to Profile name contains an invalid character &apos;{0}&apos;..
         /// </summary>
         public static string Menu_FlagProfiles_InvalidCharacter {
             get {
@@ -5412,7 +5404,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Place ID must be interger..
+        ///   Looks up a localized string similar to Place ID must be an integer..
         /// </summary>
         public static string Menu_FlagProfiles_PlaceIdNumeric {
             get {
@@ -5475,7 +5467,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select a profile to manage place IDs.
+        ///   Looks up a localized string similar to Select a profile to manage place IDs..
         /// </summary>
         public static string Menu_FlagProfiles_SelectProfile {
             get {
@@ -5628,7 +5620,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Settings exported successfully to {0}.
+        ///   Looks up a localized string similar to Settings exported successfully to {0}..
         /// </summary>
         public static string Menu_GlobalSettings_Export_Success {
             get {
@@ -5871,7 +5863,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Change esc Player List between square and normal ui..
+        ///   Looks up a localized string similar to Change the Esc player list between square and normal UI..
         /// </summary>
         public static string Menu_GlobalSettings_PlayerListLayout_Description {
             get {
@@ -5934,7 +5926,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable shiftlock Automatically..
+        ///   Looks up a localized string similar to Enable ShiftLock Automatically..
         /// </summary>
         public static string Menu_GlobalSettings_ShiftLock_Description {
             get {
@@ -6123,7 +6115,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Options that require reading Roblox logs, requires the app to stay open in System Tray / Menu Bar..
+        ///   Looks up a localized string similar to Options that require reading Roblox logs require the app to stay open in the system tray / menu bar..
         /// </summary>
         public static string Menu_Integrations_ActivityTracking_Description {
             get {
@@ -6132,7 +6124,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Allows for anybody to join the game you&apos;re currently in through your Discord profile..
+        ///   Looks up a localized string similar to Allows anybody to join the game you&apos;re currently in through your Discord profile..
         /// </summary>
         public static string Menu_Integrations_AllowActivityJoining_Description {
             get {
@@ -6438,7 +6430,25 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Allows Fishstrap to access Roblox&apos;s window handle allowing for better customization and features..
+        ///   Looks up a localized string similar to Enable an Overlay with QOL features. Press Ctrl+Alt+L in game to open it. Requires borderless or windowed mode..
+        /// </summary>
+        public static string Menu_Integrations_EnableOverlay_Description {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.EnableOverlay.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable in-game overlay.
+        /// </summary>
+        public static string Menu_Integrations_EnableOverlay_Title {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.EnableOverlay.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allows Froststrap to access Roblox&apos;s window handle, allowing for better customization and features..
         /// </summary>
         public static string Menu_Integrations_EnableWindowManipulation_Description {
             get {
@@ -6510,7 +6520,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Auto change the roblox game titlebar and taskbar icon to the current game icon..
+        ///   Looks up a localized string similar to Automatically changes the Roblox game title bar and taskbar icon to the current game icon..
         /// </summary>
         public static string Menu_Integrations_IconChange_Description {
             get {
@@ -6528,7 +6538,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Adds a small button to join the game your working on..
+        ///   Looks up a localized string similar to Adds a small button to join the game you&apos;re working on..
         /// </summary>
         public static string Menu_Integrations_JoinButton_Description {
             get {
@@ -6542,6 +6552,15 @@ namespace Froststrap.Resources {
         public static string Menu_Integrations_JoinButton_Title {
             get {
                 return ResourceManager.GetString("Menu.Integrations.JoinButton.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Overlay.
+        /// </summary>
+        public static string Menu_Integrations_Overlay_Title {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.Overlay.Title", resourceCulture);
             }
         }
         
@@ -6582,7 +6601,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to These feature requires activity tracking to be enabled and the Discord desktop app to be installed and running. [Find out more]({0})..
+        ///   Looks up a localized string similar to These features require activity tracking to be enabled and the Discord desktop app to be installed and running. [Find out more]({0})..
         /// </summary>
         public static string Menu_Integrations_RequiresActivityTracking {
             get {
@@ -6609,7 +6628,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show you how long the server has been running for, Will delay server info notification until loaded..
+        ///   Looks up a localized string similar to Shows you how long the server has been running. It will delay the server info notification until it has loaded..
         /// </summary>
         public static string Menu_Integrations_ServerUptime_Description {
             get {
@@ -6699,7 +6718,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This works by adding a custom made froststrap plugin that will log what your doing.
+        ///   Looks up a localized string similar to This works by adding a custom-made Froststrap plugin, which will log what you&apos;re doing.
         ///
         ///Do you want to install the plugin?.
         /// </summary>
@@ -6719,7 +6738,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Changes Roblox titlebar title to the game name..
+        ///   Looks up a localized string similar to Changes the Roblox title bar to the game name..
         /// </summary>
         public static string Menu_Integrations_TitleChange_Description {
             get {
@@ -6944,7 +6963,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Wrap the Studio command (e.g. gamescope -- %command%).
+        ///   Looks up a localized string similar to Wrap the Studio command (e.g. gamescope -- %command%)..
         /// </summary>
         public static string Menu_LinuxSettings_LauncherCommand_Description {
             get {
@@ -7034,7 +7053,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Create an isolated window for each instance.
+        ///   Looks up a localized string similar to Create an isolated window for each instance..
         /// </summary>
         public static string Menu_LinuxSettings_VirtualDesktops_Description {
             get {
@@ -7052,7 +7071,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Used for certain UI elements and logging in.
+        ///   Looks up a localized string similar to Used for certain UI elements and logging in..
         /// </summary>
         public static string Menu_LinuxSettings_WebPages_Description {
             get {
@@ -7232,7 +7251,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The higher the number, the higher quality but it takes longer, Max is 512, Default is 32..
+        ///   Looks up a localized string similar to The higher the number, the higher the quality, but it takes longer. Max is 512; default is 32..
         /// </summary>
         public static string Menu_ModGenerator_BandInfo {
             get {
@@ -7286,7 +7305,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dont Color Play Icon.
+        ///   Looks up a localized string similar to Don&apos;t color the play icon.
         /// </summary>
         public static string Menu_ModGenerator_DontColorPlay {
             get {
@@ -7297,9 +7316,9 @@ namespace Froststrap.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Downloading required assets....
         /// </summary>
-        public static string Menu_ModGenerator_Downnloading {
+        public static string Menu_ModGenerator_Downloading {
             get {
-                return ResourceManager.GetString("Menu.ModGenerator.Downnloading", resourceCulture);
+                return ResourceManager.GetString("Menu.ModGenerator.Downloading", resourceCulture);
             }
         }
         
@@ -7459,9 +7478,9 @@ namespace Froststrap.Resources {
         /// <summary>
         ///   Looks up a localized string similar to A mod named &apos;{0}&apos; already exists..
         /// </summary>
-        public static string Menu_Mods_AlreadyExist {
+        public static string Menu_Mods_AlreadyExists {
             get {
-                return ResourceManager.GetString("Menu.Mods.AlreadyExist", resourceCulture);
+                return ResourceManager.GetString("Menu.Mods.AlreadyExists", resourceCulture);
             }
         }
         
@@ -7567,9 +7586,9 @@ namespace Froststrap.Resources {
         /// <summary>
         ///   Looks up a localized string similar to The folder for &apos;{0}&apos; no longer exists..
         /// </summary>
-        public static string Menu_Mods_FolderDosentExist {
+        public static string Menu_Mods_FolderDoesntExist {
             get {
-                return ResourceManager.GetString("Menu.Mods.FolderDosentExist", resourceCulture);
+                return ResourceManager.GetString("Menu.Mods.FolderDoesntExist", resourceCulture);
             }
         }
         
@@ -7601,7 +7620,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Import mods by dragging the mod or importing, mods with lower priority get applied last making it win conflicts with other mods..
+        ///   Looks up a localized string similar to Import mods by dragging them in or using Import. Mods with lower priority are applied last, so they win conflicts with other mods..
         /// </summary>
         public static string Menu_Mods_InfoBar {
             get {
@@ -7675,7 +7694,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Preview loaded.
+        ///   Looks up a localized string similar to Preview loaded..
         /// </summary>
         public static string Menu_Mods_Preview_Loaded {
             get {
@@ -7711,7 +7730,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No color information found in this mod.
+        ///   Looks up a localized string similar to No color information found in this mod..
         /// </summary>
         public static string Menu_Mods_Preview_NoColor {
             get {
@@ -7774,7 +7793,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Long story short: Roblox considers multi instancing exploiting and has been actively trying to patch it for a while now. Froststrap will no longer offer the feature nor support its use..
+        ///   Looks up a localized string similar to Roblox considers multi-instancing a form of exploiting and has been actively trying to patch it for a while now. Because of this, Froststrap no longer offers the feature or supports its use..
         /// </summary>
         public static string Menu_Onboarding_Page6_A1 {
             get {
@@ -7783,7 +7802,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Roblox has implemented a fflag allowlist, preventing the use of majority of fflags. This was done to prevent people from using exploitable fflags, and to add bogus fflags that could cause bugs. To see the whitelist, go [here](https://devforum.roblox.com/t/allowlist-for-local-client-configuration-via-fast-flags/3966569).
+        ///   Looks up a localized string similar to Roblox has implemented a FFlag allowlist, which blocks the use of most FFlags. This was done to prevent people from using exploitable flags and to avoid FFlags that could cause bugs. You can view the allowlist [here](https://devforum.roblox.com/t/allowlist-for-local-client-configuration-via-fast-flags/3966569)..
         /// </summary>
         public static string Menu_Onboarding_Page6_A2 {
             get {
@@ -7792,7 +7811,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You enabled the Pause Voxelizer fflag (DFFlagDebugPauseVoxelizer), disable it to fix the issue..
+        ///   Looks up a localized string similar to You likely enabled the Pause Voxelizer FFlag (DFFlagDebugPauseVoxelizer). Disable it to fix the issue..
         /// </summary>
         public static string Menu_Onboarding_Page6_A3 {
             get {
@@ -7801,7 +7820,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Delete RobloxCookies.dat inside %localappdata%\Roblox\LocalStorage, which should fix the issue majority of the time. We do not know what causes this issue..
+        ///   Looks up a localized string similar to Delete RobloxCookies.dat inside %localappdata%\Roblox\LocalStorage, which should fix the issue the majority of the time. We currently do not know what causes this issue..
         /// </summary>
         public static string Menu_Onboarding_Page6_A4 {
             get {
@@ -7810,7 +7829,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You don&apos;t. You may be able to achieve this with alternative software but we do not guarantee safety nor practicality..
+        ///   Looks up a localized string similar to You can&apos;t. While you might achieve this using third-party software, we cannot guarantee its safety or functionality..
         /// </summary>
         public static string Menu_Onboarding_Page6_A5 {
             get {
@@ -7819,7 +7838,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You don&apos;t, again. You may try to use some fflags to achieve higher fps on higher render distances, however lowering ping via fflags is not possible..
+        ///   Looks up a localized string similar to FFlags cannot reduce network ping. However, certain FFlags may help increase FPS at higher render distances..
         /// </summary>
         public static string Menu_Onboarding_Page6_A6 {
             get {
@@ -7828,7 +7847,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Why isn&apos;t there multi instancing?.
+        ///   Looks up a localized string similar to Why was multi-instancing removed?.
         /// </summary>
         public static string Menu_Onboarding_Page6_Q1 {
             get {
@@ -7837,7 +7856,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Why is there so few FastFlags?.
+        ///   Looks up a localized string similar to Why are there so few FastFlags?.
         /// </summary>
         public static string Menu_Onboarding_Page6_Q2 {
             get {
@@ -7846,7 +7865,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Help! I enabled some fflags and now my lighting doesn&apos;t work!.
+        ///   Looks up a localized string similar to I enabled some FFlags and now my lighting is broken!.
         /// </summary>
         public static string Menu_Onboarding_Page6_Q3 {
             get {
@@ -7855,7 +7874,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Whenever I launch Roblox via. Froststrap, I constantly get signed out of Roblox and am forced to resignin everytime..
+        ///   Looks up a localized string similar to Whenever I launch Roblox via Froststrap, I keep getting signed out of my account and have to sign in every time..
         /// </summary>
         public static string Menu_Onboarding_Page6_Q4 {
             get {
@@ -7864,7 +7883,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to How can I get blurry/no textures?.
+        ///   Looks up a localized string similar to How can I get blurry or no textures?.
         /// </summary>
         public static string Menu_Onboarding_Page6_Q5 {
             get {
@@ -7873,11 +7892,677 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to How do I reduce ping/increase fps with fflags?.
+        ///   Looks up a localized string similar to How do I reduce ping or increase FPS with FFlags?.
         /// </summary>
         public static string Menu_Onboarding_Page6_Q6 {
             get {
                 return ResourceManager.GetString("Menu.Onboarding.Page6.Q6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Earned.
+        /// </summary>
+        public static string Menu_Overlay_Badges_Earned {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Badges.Earned", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Earned {0}.
+        /// </summary>
+        public static string Menu_Overlay_Badges_EarnedOn {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Badges.EarnedOn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This experience has no badges..
+        /// </summary>
+        public static string Menu_Overlay_Badges_Empty {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Badges.Empty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not earned.
+        /// </summary>
+        public static string Menu_Overlay_Badges_NotEarned {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Badges.NotEarned", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Join an experience to see its badges..
+        /// </summary>
+        public static string Menu_Overlay_Badges_NotInGame {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Badges.NotInGame", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} of {1} earned.
+        /// </summary>
+        public static string Menu_Overlay_Badges_Progress {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Badges.Progress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} badges, progress unavailable.
+        /// </summary>
+        public static string Menu_Overlay_Badges_ProgressUnknown {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Badges.ProgressUnknown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rarity.
+        /// </summary>
+        public static string Menu_Overlay_Badges_Rarity {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Badges.Rarity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Today.
+        /// </summary>
+        public static string Menu_Overlay_Badges_Today {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Badges.Today", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total.
+        /// </summary>
+        public static string Menu_Overlay_Badges_Total {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Badges.Total", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Couldn&apos;t reach Roblox. Try again in a moment..
+        /// </summary>
+        public static string Menu_Overlay_Games_Failed {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Games.Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Favorites.
+        /// </summary>
+        public static string Menu_Overlay_Games_Favorites {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Games.Favorites", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Joining {0}….
+        /// </summary>
+        public static string Menu_Overlay_Games_Joining {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Games.Joining", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Join a game, or allow cookie access, to see your favorites..
+        /// </summary>
+        public static string Menu_Overlay_Games_NoAccount {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Games.NoAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No favorites yet. Favorite an experience on Roblox and it&apos;ll show up here..
+        /// </summary>
+        public static string Menu_Overlay_Games_NoFavorites {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Games.NoFavorites", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nothing found for &quot;{0}&quot;..
+        /// </summary>
+        public static string Menu_Overlay_Games_NoResults {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Games.NoResults", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} playing.
+        /// </summary>
+        public static string Menu_Overlay_Games_Playing {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Games.Playing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search.
+        /// </summary>
+        public static string Menu_Overlay_Games_Search {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Games.Search", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search experiences.
+        /// </summary>
+        public static string Menu_Overlay_Games_SearchPlaceholder {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Games.SearchPlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search for an experience to jump into..
+        /// </summary>
+        public static string Menu_Overlay_Games_SearchPrompt {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Games.SearchPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No conversations..
+        /// </summary>
+        public static string Menu_Overlay_Messages_Empty {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Messages.Empty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select a conversation to start chatting..
+        /// </summary>
+        public static string Menu_Overlay_Messages_PickConversation {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Messages.PickConversation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search conversations.
+        /// </summary>
+        public static string Menu_Overlay_Messages_Search {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Messages.Search", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Send.
+        /// </summary>
+        public static string Menu_Overlay_Messages_Send {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Messages.Send", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Write a message.
+        /// </summary>
+        public static string Menu_Overlay_Messages_Write {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Messages.Write", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The quick brown fox jumps over the lazy dog.
+        /// </summary>
+        public static string Menu_Overlay_Notes_Placeholder {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Notes.Placeholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Saved at {0}.
+        /// </summary>
+        public static string Menu_Overlay_Notes_SavedAt {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Notes.SavedAt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not save.
+        /// </summary>
+        public static string Menu_Overlay_Notes_SaveFailed {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Notes.SaveFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unsaved changes.
+        /// </summary>
+        public static string Menu_Overlay_Notes_Unsaved {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Notes.Unsaved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not in an experience.
+        /// </summary>
+        public static string Menu_Overlay_NotInGame {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.NotInGame", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Everyone.
+        /// </summary>
+        public static string Menu_Overlay_Privacy_Everyone {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Privacy.Everyone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Friends.
+        /// </summary>
+        public static string Menu_Overlay_Privacy_Friends {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Privacy.Friends", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Friends &amp; following.
+        /// </summary>
+        public static string Menu_Overlay_Privacy_FriendsAndFollowing {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Privacy.FriendsAndFollowing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Friends, followers &amp; following.
+        /// </summary>
+        public static string Menu_Overlay_Privacy_FriendsFollowingAndFollowers {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Privacy.FriendsFollowingAndFollowers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Changes your Roblox account setting. Anyone who can&apos;t see you&apos;re online can&apos;t join you either..
+        /// </summary>
+        public static string Menu_Overlay_Privacy_Hint {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Privacy.Hint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Saved. Who can join you was narrowed to match..
+        /// </summary>
+        public static string Menu_Overlay_Privacy_JoinNarrowed {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Privacy.JoinNarrowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Couldn&apos;t read your settings from Roblox. Try again in a moment..
+        /// </summary>
+        public static string Menu_Overlay_Privacy_LoadFailed {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Privacy.LoadFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Checking your settings….
+        /// </summary>
+        public static string Menu_Overlay_Privacy_Loading {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Privacy.Loading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allow cookie access in Froststrap&apos;s settings to change this from here..
+        /// </summary>
+        public static string Menu_Overlay_Privacy_NeedsCookies {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Privacy.NeedsCookies", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No one.
+        /// </summary>
+        public static string Menu_Overlay_Privacy_NoOne {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Privacy.NoOne", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Roblox didn&apos;t accept that: {0}.
+        /// </summary>
+        public static string Menu_Overlay_Privacy_Rejected {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Privacy.Rejected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Saved..
+        /// </summary>
+        public static string Menu_Overlay_Privacy_Saved {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Privacy.Saved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Roblox didn&apos;t accept that. What&apos;s ticked is what your account has now..
+        /// </summary>
+        public static string Menu_Overlay_Privacy_SaveFailed {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Privacy.SaveFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Saving….
+        /// </summary>
+        public static string Menu_Overlay_Privacy_Saving {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Privacy.Saving", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Who can see you&apos;re online.
+        /// </summary>
+        public static string Menu_Overlay_Privacy_Title {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Privacy.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose who can see you&apos;re online.
+        /// </summary>
+        public static string Menu_Overlay_Privacy_Tooltip {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Privacy.Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trusted friends.
+        /// </summary>
+        public static string Menu_Overlay_Privacy_TrustedFriends {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Privacy.TrustedFriends", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refresh.
+        /// </summary>
+        public static string Menu_Overlay_Refresh {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Refresh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All regions.
+        /// </summary>
+        public static string Menu_Overlay_Servers_AllRegions {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Servers.AllRegions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Couldn&apos;t copy.
+        /// </summary>
+        public static string Menu_Overlay_Servers_CopyFailed {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Servers.CopyFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copy invite link.
+        /// </summary>
+        public static string Menu_Overlay_Servers_CopyLink {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Servers.CopyLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You&apos;re here.
+        /// </summary>
+        public static string Menu_Overlay_Servers_Current {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Servers.Current", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No public servers found..
+        /// </summary>
+        public static string Menu_Overlay_Servers_Empty {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Servers.Empty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No servers running in {0} right now..
+        /// </summary>
+        public static string Menu_Overlay_Servers_EmptyRegion {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Servers.EmptyRegion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide full servers.
+        /// </summary>
+        public static string Menu_Overlay_Servers_HideFull {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Servers.HideFull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Server hop.
+        /// </summary>
+        public static string Menu_Overlay_Servers_Hop {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Servers.Hop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hopping servers….
+        /// </summary>
+        public static string Menu_Overlay_Servers_Hopping {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Servers.Hopping", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Join a random other server that has room.
+        /// </summary>
+        public static string Menu_Overlay_Servers_HopTooltip {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Servers.HopTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Instance ID copied.
+        /// </summary>
+        public static string Menu_Overlay_Servers_IdCopied {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Servers.IdCopied", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Join.
+        /// </summary>
+        public static string Menu_Overlay_Servers_Join {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Servers.Join", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Link copied.
+        /// </summary>
+        public static string Menu_Overlay_Servers_LinkCopied {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Servers.LinkCopied", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No other server with room.
+        /// </summary>
+        public static string Menu_Overlay_Servers_NoHopTarget {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Servers.NoHopTarget", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Join an experience to browse its servers..
+        /// </summary>
+        public static string Menu_Overlay_Servers_NotInGame {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Servers.NotInGame", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Region.
+        /// </summary>
+        public static string Menu_Overlay_Servers_Region {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Servers.Region", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sort by players.
+        /// </summary>
+        public static string Menu_Overlay_Servers_SortByPlayers {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Servers.SortByPlayers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} servers.
+        /// </summary>
+        public static string Menu_Overlay_Servers_Summary {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Servers.Summary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Up ~{0}.
+        /// </summary>
+        public static string Menu_Overlay_Servers_UptimeEstimate {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Servers.UptimeEstimate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Up {0}.
+        /// </summary>
+        public static string Menu_Overlay_Servers_UptimeExact {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Servers.UptimeExact", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Session.
+        /// </summary>
+        public static string Menu_Overlay_Session {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Session", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Badges.
+        /// </summary>
+        public static string Menu_Overlay_Tab_Badges {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Tab.Badges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Games.
+        /// </summary>
+        public static string Menu_Overlay_Tab_Games {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Tab.Games", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Messages.
+        /// </summary>
+        public static string Menu_Overlay_Tab_Messages {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Tab.Messages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Notes.
+        /// </summary>
+        public static string Menu_Overlay_Tab_Notes {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Tab.Notes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Servers.
+        /// </summary>
+        public static string Menu_Overlay_Tab_Servers {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Tab.Servers", resourceCulture);
             }
         }
         
@@ -8008,7 +8693,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Have multiple cursor sets ready to go for use..
+        ///   Looks up a localized string similar to Have multiple cursor sets ready to use..
         /// </summary>
         public static string Menu_PresetMods_Misc_CustomCursorSet_Description {
             get {
@@ -8134,7 +8819,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mods that require files from your pc..
+        ///   Looks up a localized string similar to Mods that require files from your PC..
         /// </summary>
         public static string Menu_PresetMods_Misc_Description {
             get {
@@ -8161,7 +8846,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Choose which type of emoji should Roblox use..
+        ///   Looks up a localized string similar to Choose which type of emoji Roblox should use..
         /// </summary>
         public static string Menu_PresetMods_Presets_EmojiType_Description {
             get {
@@ -8170,7 +8855,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The emoji mod can not be applied at this time..
+        ///   Looks up a localized string similar to The emoji mod cannot be applied at this time..
         /// </summary>
         public static string Menu_PresetMods_Presets_EmojiType_Error {
             get {
@@ -8188,7 +8873,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Choose between using multiple Roblox cursors..
+        ///   Looks up a localized string similar to Choose between multiple Roblox cursors..
         /// </summary>
         public static string Menu_PresetMods_Presets_MouseCursor_Description {
             get {
@@ -8233,7 +8918,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Account manager is not available..
+        ///   Looks up a localized string similar to Account Manager is not available..
         /// </summary>
         public static string Menu_QuickPlay_AccountManagerNotAvailable {
             get {
@@ -8296,7 +8981,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Jump back into your recently played games, Logging into an account in account manager is recommended..
+        ///   Looks up a localized string similar to Jump back into your recently played games. Logging into an account in Account Manager is recommended..
         /// </summary>
         public static string Menu_QuickPlay_Description {
             get {
@@ -8314,7 +8999,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Fetching game information.
+        ///   Looks up a localized string similar to Fetching game information....
         /// </summary>
         public static string Menu_QuickPlay_FetchingGameInfo {
             get {
@@ -8386,7 +9071,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Loading Recommended games….
+        ///   Looks up a localized string similar to Loading recommended games….
         /// </summary>
         public static string Menu_QuickPlay_LoadingRecommended {
             get {
@@ -8413,7 +9098,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please log in to account manager see your favorite games..
+        ///   Looks up a localized string similar to Please log in to Account Manager to see your favorite games..
         /// </summary>
         public static string Menu_QuickPlay_LoginToSeeFavorites {
             get {
@@ -8422,7 +9107,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please log in to account manager see your Recommended games..
+        ///   Looks up a localized string similar to Please log in to Account Manager to see your recommended games..
         /// </summary>
         public static string Menu_QuickPlay_LoginToSeeRecommended {
             get {
@@ -8440,7 +9125,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No private servers found.
+        ///   Looks up a localized string similar to No private servers found..
         /// </summary>
         public static string Menu_QuickPlay_NoPrivateServersFound {
             get {
@@ -8458,7 +9143,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No Recommended games yet..
+        ///   Looks up a localized string similar to No recommended games yet..
         /// </summary>
         public static string Menu_QuickPlay_NoRecommendedGames {
             get {
@@ -8467,7 +9152,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No Subplace Available.
+        ///   Looks up a localized string similar to No Subplaces Available.
         /// </summary>
         public static string Menu_QuickPlay_NoSubplacesFound {
             get {
@@ -8476,7 +9161,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Search up a game to view subplaces.
+        ///   Looks up a localized string similar to Search for a game to view subplaces..
         /// </summary>
         public static string Menu_QuickPlay_NoSubplacesSelected {
             get {
@@ -8686,14 +9371,14 @@ namespace Froststrap.Resources {
         ///   Looks up a localized string similar to Waiting for Quick Sign-In...
         ///The app will close this window when sign-in completes..
         /// </summary>
-        public static string Menu_QuickSignIn_Waitting {
+        public static string Menu_QuickSignIn_Waiting {
             get {
-                return ResourceManager.GetString("Menu.QuickSignIn.Waitting", resourceCulture);
+                return ResourceManager.GetString("Menu.QuickSignIn.Waiting", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Pick a region to join. Login to Account Manager is recommended..
+        ///   Looks up a localized string similar to Pick a region to join. Logging in to Account Manager is recommended..
         /// </summary>
         public static string Menu_RegionSelector_Description {
             get {
@@ -8774,7 +9459,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Loading more servers.
+        ///   Looks up a localized string similar to Loading more servers....
         /// </summary>
         public static string Menu_RegionSelector_LoadingMore {
             get {
@@ -8792,7 +9477,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Log in to &apos;Account Manager&apos; or turn on &apos;Froststrap Account Permission&apos; in bootstrapper page to use..
+        ///   Looks up a localized string similar to Log in to &apos;Account Manager&apos; or turn on &apos;Froststrap Account Permissions&apos; in the Bootstrapper page to use..
         /// </summary>
         public static string Menu_RegionSelector_LoginRequired {
             get {
@@ -8810,7 +9495,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No servers found for specified region..
+        ///   Looks up a localized string similar to No servers found for the specified region..
         /// </summary>
         public static string Menu_RegionSelector_NoServersForRegion {
             get {
@@ -8891,7 +9576,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Using cached datacenter data (offline).
+        ///   Looks up a localized string similar to Using cached datacenter data (offline)..
         /// </summary>
         public static string Menu_RegionSelector_UsingCachedData {
             get {
@@ -8972,7 +9657,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Search up something and it may show up here....
+        ///   Looks up a localized string similar to Search for something and it may show up here....
         /// </summary>
         public static string Menu_SearchBar_SearchSomething {
             get {
@@ -9107,7 +9792,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Create shortcuts that allows you to join specific games/servers quickly..
+        ///   Looks up a localized string similar to Create shortcuts that allow you to join specific games/servers quickly..
         /// </summary>
         public static string Menu_Shortcuts_Misc_Description {
             get {
@@ -9152,7 +9837,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ready to create.
+        ///   Looks up a localized string similar to Ready to create..
         /// </summary>
         public static string Menu_Shortcuts_ReadyToCreate {
             get {
@@ -9264,7 +9949,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Change how the app looks like using custom gradients, images and windows backdrops..
+        ///   Looks up a localized string similar to Change how the app looks using custom gradients, images and window backdrops..
         /// </summary>
         public static string Onboarding_Page2 {
             get {
@@ -9273,7 +9958,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Some of our features like Better MatchMaking and Region Selector require a Roblox cookie, It is recommended to enable &apos;Froststrap Account Permission&apos; to use these features..
+        ///   Looks up a localized string similar to Some of our features, like Better Matchmaking and Region Selector, require a Roblox cookie. It is recommended to enable &apos;Froststrap Account Permissions&apos; to use these features..
         /// </summary>
         public static string Onboarding_Page3_Text1 {
             get {
@@ -9282,7 +9967,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Or you can log in using our account manager, Which will also allow you to quickly swap between accounts and give you better game history in Quick Play..
+        ///   Looks up a localized string similar to Or you can log in using our Account Manager, which will also allow you to quickly swap between accounts and give you better game history in Quick Play..
         /// </summary>
         public static string Onboarding_Page3_Text2 {
             get {
@@ -9291,7 +9976,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Automatically join the best regions for you when launching through browser..
+        ///   Looks up a localized string similar to Automatically join the best regions for you when launching through the browser..
         /// </summary>
         public static string Onboarding_Page4 {
             get {
@@ -9300,7 +9985,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Roblox has not been installed yet, that will happen the next time you launch Roblox with Froststrap..
+        ///   Looks up a localized string similar to Roblox has not been installed yet. That will happen the next time you launch Roblox with Froststrap..
         /// </summary>
         public static string Onboarding_Page7_Text1 {
             get {
@@ -9309,7 +9994,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Also, avoid using the &quot;Roblox Player&quot; shortcut to launch Roblox, If you don&apos;t see Froststrap when launching from the website, simply launch Roblox with Froststrap once from the desktop to fix..
+        ///   Looks up a localized string similar to Also, avoid using the &quot;Roblox Player&quot; shortcut to launch Roblox. If you don&apos;t see Froststrap when launching from the website, simply launch Roblox with Froststrap once from the desktop to fix it..
         /// </summary>
         public static string Onboarding_Page7_Text2 {
             get {
@@ -9354,7 +10039,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to install {0} via Flatpak.{1}.
+        ///   Looks up a localized string similar to Failed to install {0} via Flatpak. {1}.
         /// </summary>
         public static string Sober_FlatpakInstallFailed {
             get {
@@ -9363,7 +10048,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to launch Sober. Make sure Flatpak and {0} are installed.{1}.
+        ///   Looks up a localized string similar to Failed to launch Sober. Make sure Flatpak and {0} are installed. {1}.
         /// </summary>
         public static string Sober_LaunchFailed {
             get {
@@ -9394,7 +10079,7 @@ namespace Froststrap.Resources {
         ///
         ///If you&apos;re uninstalling or reinstalling because you are having issues with Roblox, read [this help page]({0}) first.
         ///
-        ///The uninstall process may not be able to fully clean up itself, so you may need to manually clean up leftover files where Froststrap was installed.
+        ///The uninstall process may not be able to fully clean up after itself, so you may need to manually clean up leftover files where Froststrap was installed.
         ///
         ///Froststrap was installed at &quot;{1}&quot;..
         /// </summary>
@@ -9423,7 +10108,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A new {0} version {1} is available.{2}.
+        ///   Looks up a localized string similar to A new {0} version {1} is available. {2}.
         /// </summary>
         public static string Update_Available {
             get {

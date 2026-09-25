@@ -9,16 +9,19 @@ namespace Froststrap.Models.APIs.Roblox;
 internal class OmniSearchContent
 {
     [JsonPropertyName("universeId")]
-    public ulong UniverseId { get; set; }
+    public long UniverseId { get; set; }
 
     [JsonPropertyName("rootPlaceId")]
     public long RootPlaceId { get; set; }
 
     [JsonPropertyName("name")]
-    public string? Name { get; set; }
+    public string Name { get; set; } = String.Empty;
 
     [JsonPropertyName("playerCount")]
-    public int? PlayerCount { get; set; }
+    public long PlayerCount { get; set; }
+
+    [JsonPropertyName("isSponsored")]
+    public bool IsSponsored { get; set; }
 
     private string? _thumbnailUrl;
     public string? ThumbnailUrl
