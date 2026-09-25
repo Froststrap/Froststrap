@@ -400,6 +400,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "notify"
+version = "0.1.0"
+dependencies = [
+ "block2",
+ "objc2",
+ "objc2-foundation",
+ "objc2-user-notifications",
+ "windows",
+ "zbus",
+]
+
+[[package]]
 name = "objc2"
 version = "0.6.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -551,12 +563,7 @@ checksum = "f8dcc9c7d52a811697d2151c701e0d08956f92b0e24136cf4cf27b57a6a0d9bf"
 name = "rbackend"
 version = "0.1.0"
 dependencies = [
- "block2",
- "objc2",
- "objc2-foundation",
- "objc2-user-notifications",
- "windows",
- "zbus",
+ "notify",
 ]
 
 [[package]]

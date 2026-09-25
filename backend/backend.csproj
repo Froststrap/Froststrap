@@ -20,7 +20,7 @@
     <NativeLibExt Condition="$([MSBuild]::IsOSPlatform('Linux'))">so</NativeLibExt>
 
     <NativeLibFileName>$(NativeLibPrefix)$(RustCrateName).$(NativeLibExt)</NativeLibFileName>
-    <NativeLibSourcePath>$(RustProjectDir)/../target/$(RustProfile)/$(NativeLibFileName)</NativeLibSourcePath>
+    <NativeLibSourcePath>$(RustProjectDir)/target/$(RustProfile)/$(NativeLibFileName)</NativeLibSourcePath>
   </PropertyGroup>
 
   <Target Name="BuildBackend" BeforeTargets="BeforeBuild">
