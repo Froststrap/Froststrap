@@ -34,14 +34,14 @@ sealed class Program
         LogManager.Setup().LoadConfigurationFromAssemblyResource(assembly, "NLog.config");
         GlobalDiagnosticsContext.Set("logRoot", Paths.Logs);
         GlobalDiagnosticsContext.Set("startTime", DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss", CultureInfo.InvariantCulture));
+        Logger.Debug($"Log file: {Logging.FileLocation}");
+        AppInitializer.InitializeNativeResolvers();
 
         App.LaunchSettings = new LaunchSettings(args);
 
         try
         {
-            Logger.Debug($"Log file: {Logging.FileLocation}");
             NativeNotify.InitRing();
-            AppInitializer.InitializeNativeResolvers();
             BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
         }
         catch (Exception ex)
