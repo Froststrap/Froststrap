@@ -52,8 +52,9 @@ public partial class Build : FalloutBuild
         return destination;
     }
 
-    void PublishWindows(string outputDirectory)
+    void PublishWindows(string outputDirectory, bool noInstallers)
     {
+        if (noInstallers) return;
         AbsolutePath nsiLocation = FalloutRoot / "Publish" / "WinNsis.nsi";
         string vcRedistPath = DownloadVCRedist();
 

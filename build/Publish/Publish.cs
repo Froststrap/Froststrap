@@ -8,7 +8,7 @@ using Serilog;
 
 public partial class Build : FalloutBuild
 {   
-    void PublishMain()
+    void PublishMain(bool noInstallers)
     {
         string outputDirectory = Path.Combine(OutputRoot, "publish");
         Directory.CreateDirectory(outputDirectory);
@@ -68,13 +68,15 @@ public partial class Build : FalloutBuild
             }
         }
 
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) PublishMacOS(outputDirectory);
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) PublishWindows(outputDirectory);
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) PublishLinux(outputDirectory);
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) PublishMacOS(outputDirectory, noInstallers);
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) PublishWindows(outputDirectory, noInstallers);
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) PublishLinux(outputDirectory, noInstallers);
 
         if (process.ExitCode != 0)
         {
             throw new Exception($"Publish failed for {rid} with exit code {process.ExitCode}");
+        } else {
+            Log.Information("Build complete");
         }
     }
 }

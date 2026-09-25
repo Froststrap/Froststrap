@@ -7,8 +7,10 @@ using Serilog;
 
 public partial class Build : FalloutBuild
 {
-    void PublishLinux(string outputDirectory)
+    void PublishLinux(string outputDirectory, bool noInstallers)
     {
+        if (noInstallers) return;
+
         var version = GitTag.TrimStart('v');
         var rpmVersion = version.Replace('+', '_');
         Log.Debug("Detected build version as {ver}", version);
@@ -68,8 +70,6 @@ public partial class Build : FalloutBuild
         Directory.Delete(appDir, recursive: true);
         File.Delete(outputDir / "appimagetool.AppImage");
         Directory.Delete(outputDir / "rpmbuild", recursive: true);
-
-        Log.Information("Linux builds complete");
     }
 
     void BuildAppImage(AbsolutePath buildDir, AbsolutePath appDir)
