@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: MPL-2.0
 
 // Big ass file with all mappings
-// Licence: MPL-2.0
 
 using System.Runtime.InteropServices;
 
