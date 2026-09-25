@@ -3307,7 +3307,7 @@ All files will be moved, shortcuts updated, and the application will restart.</v
     <value>Let Roblox run in the background</value>
   </data>
   <data name="Menu.Bootstrapper.EnableRobloxBackgroundApp.Description" xml:space="preserve">
-    <value>Let's Roblox start up with Windows and stay in the notification area after you close it.</value>
+    <value>Lets Roblox start up with Windows and stay in the notification area after you close it.</value>
   </data>
   <data name="Menu.Bootstrapper.RobloxTheme.Title" xml:space="preserve">
     <value>Roblox app theme</value>
