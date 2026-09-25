@@ -49,6 +49,12 @@ Publishing is going to create installers, and other important stuff making it pu
 
    dotnet run --project build -- publish --configuration Release
 
+and to publish without the installers- e.g packaging for your own system which doesn't need them
+
+.. code-block:: bash
+
+   dotnet run --project build -- publish --no-installers --configuration Release
+
 Build
 ~~~~~
 

@@ -9,7 +9,7 @@ using Serilog;
 
 public partial class Build : FalloutBuild
 {
-    void PublishMacOS(string outputDirectory)
+    void PublishMacOS(string outputDirectory, bool noInstallers)
     {
         var version = GitTag.TrimStart('v');
         AbsolutePath virtualbackendBuildRoot = GitRoot / "backend" / "virtualdisplay" / ".build";
@@ -56,6 +56,8 @@ public partial class Build : FalloutBuild
         copyProc.StartInfo.UseShellExecute = false;
         copyProc.Start();
         copyProc.WaitForExit();
+
+        if (noInstallers) return;
 
         bool sign = string.Equals(
             Environment.GetEnvironmentVariable("SIGN"),
@@ -157,8 +159,6 @@ public partial class Build : FalloutBuild
         File.Delete(keyPath);
         Directory.Delete(payloadDir, recursive: true);
         File.Delete(unsignedPkg);
-
-        Log.Information("macOS build complete: {PkgPath}", finalPkg);
     }
 
     void BuildUnsignedPkg(AbsolutePath appPath, string outputDirectory)
@@ -175,7 +175,5 @@ public partial class Build : FalloutBuild
         RunProcess("pkgbuild", $"--root \"{payloadDir}\" --install-location / --identifier xyz.froststrap.desktop \"{finalPkg}\"");
 
         Directory.Delete(payloadDir, recursive: true);
-
-        Log.Information("macOS build complete: {PkgPath}", finalPkg);
     }
 }

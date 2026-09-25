@@ -10,6 +10,9 @@ using System.Linq;
 
 public partial class Build : FalloutBuild
 {
+    [Parameter("Skip building installers")]
+    readonly bool NoInstallers;
+
     [GitRepository]
     readonly GitRepository Repository;
 
@@ -65,6 +68,8 @@ public partial class Build : FalloutBuild
             Log.Information("Git branch: {Value}", Repository.Branch);
             Log.Information("Git local dir: {Value}", GitRoot);
             Log.Information("Git tag: {Value}", GitTag ?? "");
+            Console.WriteLine(); // seperator
+            Log.Information("No Installers: {Value}", NoInstallers);
         });
 
     Target Clean => _ => _
@@ -88,7 +93,7 @@ public partial class Build : FalloutBuild
     Target Publish => _ => _
         .DependsOn(Restore)
         .DependsOn(BuildDebug)
-        .Executes(() => PublishMain());
+        .Executes(() => PublishMain(NoInstallers));
 
     Target Compile => _ => _
         .DependsOn(Restore)
