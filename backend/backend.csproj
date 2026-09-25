@@ -41,8 +41,8 @@
   <Target
     Name="BuildVirtualDisplayDylib"
     BeforeTargets="BeforeBuild"
-    Condition="$([MSBuild]::IsOSPlatform('OSX'))">
-
+    Condition="$([MSBuild]::IsOSPlatform('OSX'))"
+  >
     <PropertyGroup>
       <VirtualDisplayDir>$(MSBuildProjectDirectory)/virtualdisplay</VirtualDisplayDir>
     </PropertyGroup>
@@ -59,12 +59,8 @@
     <Error Condition="!Exists('$(VirtualDisplayBinPath)/libvirtualdisplay.dylib')"
            Text="libvirtualdisplay.dylib not found in '$(VirtualDisplayBinPath)'." />
 
-    <ItemGroup>
-      <Content Include="$(VirtualDisplayBinPath)/libvirtualdisplay.dylib">
-        <Link>libvirtualdisplay.dylib</Link>
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        <Visible>false</Visible>
-      </Content>
-    </ItemGroup>
+    <Copy SourceFiles="$(VirtualDisplayBinPath)/libvirtualdisplay.dylib"
+          DestinationFolder="$(OutDir)"
+          SkipUnchangedFiles="true" />
   </Target>
 </Project>
