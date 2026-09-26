@@ -7,16 +7,16 @@ using Serilog;
 
 public partial class Build : FalloutBuild
 {
-    void PublishLinux(string outputDirectory, bool noInstallers)
+    void PublishLinux()
     {
-        if (noInstallers) return;
+        if (NoInstallers) return;
 
         var version = GitTag.TrimStart('v');
         var rpmVersion = version.Replace('+', '_');
         Log.Debug("Detected build version as {ver}", version);
         Log.Debug("Detected RPM version as {ver}", rpmVersion);
 
-        AbsolutePath outputDir      = outputDirectory;
+        AbsolutePath outputDir      = DotnetPublishArtifactsDir;
         AbsolutePath appDir         = outputDir / "AppDir";
         AbsolutePath publishDir     = outputDir;
 
@@ -134,12 +134,24 @@ public partial class Build : FalloutBuild
             Maintainer: Froststrap-Dev
             Depends: libicu-dev
             Description: Roblox bootstrapper and mod manager
-
             """;
 
         File.WriteAllText(debianDir / "control", control);
 
-        File.Copy(FalloutRoot / "Publish" / "debian" / "postinst", debianDir / "postinst", overwrite: true);
+        File.WriteAllText("""
+        #!/bin/sh
+        set -e
+
+        if command -v update-desktop-database >/dev/null 2>&1; then
+            update-desktop-database -q /usr/share/applications || :
+        fi
+
+        if command -v gtk-update-icon-cache >/dev/null 2>&1; then
+            gtk-update-icon-cache -q /usr/share/icons/hicolor || :
+        fi
+
+        /usr/bin/Froststrap --register-mime-types 2>/dev/null || :
+        """, debianDir / "postinst");
         RunProcess("chmod", $"755 \"{debianDir / "postinst"}\"");
 
         Log.Information("Building .deb");

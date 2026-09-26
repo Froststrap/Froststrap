@@ -8,16 +8,14 @@ using Serilog;
 
 public partial class Build : FalloutBuild
 {   
-    void PublishMain(bool noInstallers)
+    void PublishMain()
     {
-        string outputDirectory = Path.Combine(OutputRoot, "publish");
-        Directory.CreateDirectory(outputDirectory);
+        Directory.CreateDirectory(DotnetPublishArtifactsDir);
         File.WriteAllText(Path.Combine(OutputRoot, ".gitignore"), "*");
 
         var project = Solution.GetProject("Froststrap");
         Log.Information("Froststrap path: {Value}", project.Directory);
-        Log.Information("Publishing {Value}...", project.Path);
-        Log.Information("Artifacts will output to: {Value}", outputDirectory);
+        Log.Information("Publishing {Value} to {Value}...", project.Path, DotnetPublishArtifactsDir);
 
         string arch = RuntimeInformation.OSArchitecture switch
         {
@@ -49,7 +47,7 @@ public partial class Build : FalloutBuild
         process.StartInfo.Arguments = $"publish \"{project.Path}\" " +
                                       $"-c {Configuration} " +
                                       $"-r {rid} " +
-                                      $"-o \"{outputDirectory}\" " +
+                                      $"-o \"{DotnetPublishArtifactsDir}\" " +
                                       $"-p:PublishProfile=\"{publishProfile}\" " +
                                       $"-p:AppVersion=\"{GitTag.TrimStart('v')}\" " +
                                       $"--nologo";
@@ -59,7 +57,7 @@ public partial class Build : FalloutBuild
         process.Start();
         process.WaitForExit();
 
-        foreach (string file in Directory.EnumerateFiles(outputDirectory))
+        foreach (string file in Directory.EnumerateFiles(DotnetPublishArtifactsDir))
         {
             if (file.EndsWith(".pdb"))
             {
@@ -68,9 +66,9 @@ public partial class Build : FalloutBuild
             }
         }
 
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) PublishMacOS(outputDirectory, noInstallers);
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) PublishWindows(outputDirectory, noInstallers);
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) PublishLinux(outputDirectory, noInstallers);
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) PublishMacOS();
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) PublishWindows();
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) PublishLinux();
 
         if (process.ExitCode != 0)
         {

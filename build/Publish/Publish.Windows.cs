@@ -52,9 +52,9 @@ public partial class Build : FalloutBuild
         return destination;
     }
 
-    void PublishWindows(string outputDirectory, bool noInstallers)
+    void PublishWindows()
     {
-        if (noInstallers) return;
+        if (NoInstallers) return;
         AbsolutePath nsiLocation = FalloutRoot / "Publish" / "WinNsis.nsi";
         string vcRedistPath = DownloadVCRedist();
 
@@ -64,7 +64,7 @@ public partial class Build : FalloutBuild
         Log.Information("Building {nsi} with makensis", nsiLocation);
         RunProcess(
             "makensis",
-            $"/DPUBLISH_DIR=\"{outputDirectory}\" /DAPP_VERSION=\"{version}\" /DVCREDIST=\"{vcRedistPath}\" /DSELFCONTAINED=1 \"{nsiLocation}\""
+            $"/DPUBLISH_DIR=\"{DotnetPublishArtifactsDir}\" /DAPP_VERSION=\"{version}\" /DVCREDIST=\"{vcRedistPath}\" /DSELFCONTAINED=1 \"{nsiLocation}\""
         );
     }
 }

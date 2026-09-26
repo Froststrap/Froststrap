@@ -12,6 +12,7 @@ public partial class Build : FalloutBuild
 {
     [Parameter("Skip building installers")]
     readonly bool NoInstallers;
+    string GitTag;
 
     [GitRepository]
     readonly GitRepository Repository;
@@ -19,7 +20,11 @@ public partial class Build : FalloutBuild
     AbsolutePath GitRoot => Repository.LocalDirectory;
     AbsolutePath FalloutRoot => GitRoot / "build";
     AbsolutePath OutputRoot => GitRoot / ".build";
-    string GitTag;
+
+    AbsolutePath DotnetPublishArtifactsDir => OutputRoot / "publish";
+    AbsolutePath DotnetBuildArtifactsDir => OutputRoot / "build";
+    AbsolutePath BundlingArtifactsDir => OutputRoot / "bundling";
+    AbsolutePath DistributionDir => OutputRoot / "dist";
 
     public static int Main() {
         MSBuildLocator.RegisterDefaults();
@@ -93,7 +98,7 @@ public partial class Build : FalloutBuild
     Target Publish => _ => _
         .DependsOn(Restore)
         .DependsOn(BuildDebug)
-        .Executes(() => PublishMain(NoInstallers));
+        .Executes(() => PublishMain());
 
     Target Compile => _ => _
         .DependsOn(Restore)
