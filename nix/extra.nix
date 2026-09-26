@@ -2,13 +2,13 @@
 #
 # SPDX-License-Identifier: MPL-2.0
 {
-  rpm,
   lib,
-  dpkg,
+  nfpm,
   typos,
   reuse,
   stdenv,
-  callPackage
+  callPackage,
+  linuxdeploy,
 }:
 let
   inherit (callPackage ./devshell-tools.nix {}) mkFragment;
@@ -18,7 +18,7 @@ mkFragment {
     reuse
     typos
   ] ++ lib.optionals stdenv.hostPlatform.isLinux [
-    rpm
-    dpkg
+    linuxdeploy
+    nfpm
   ];
 }

@@ -9,7 +9,7 @@ using Serilog;
 
 public partial class Build : FalloutBuild
 {
-    void PublishMacOS(string outputDirectory, bool noInstallers)
+    void PublishMacOS()
     {
         var version = GitTag.TrimStart('v');
         AbsolutePath virtualbackendBuildRoot = GitRoot / "backend" / "virtualdisplay" / ".build";
@@ -17,12 +17,12 @@ public partial class Build : FalloutBuild
         AbsolutePath xcodeProjectLocation = macAppLocation / "macApp.xcodeproj";
         AbsolutePath entitlementsPath = macAppLocation / "Froststrap.entitlements";
         AbsolutePath virtualDisplayDir = GitRoot / "backend" / "virtualdisplay";
-        AbsolutePath dylibDest = (AbsolutePath)outputDirectory / "libvirtualdisplay.dylib";
+        AbsolutePath dylibDest = (AbsolutePath)DotnetPublishArtifactsDir / "libvirtualdisplay.dylib";
 
         if (!File.Exists(dylibDest))
         {
             var source = FindVirtualDisplayDylib(virtualDisplayDir);
-            Log.Information("Copying {Source} into {OutDir}", source, outputDirectory);
+            Log.Information("Copying {Source} into {OutDir}", source, DotnetPublishArtifactsDir);
             File.Copy(source, dylibDest, overwrite: true);
         }
 
@@ -47,7 +47,7 @@ public partial class Build : FalloutBuild
         }
 
         var src = (AbsolutePath)macAppLocation / "build" / Configuration / "Froststrap.app";
-        var dest = (AbsolutePath)outputDirectory / "Froststrap.app";
+        var dest = (AbsolutePath)DotnetPublishArtifactsDir / "Froststrap.app";
         Log.Information("Copying {src} artifact to {OutDir}", src, dest);
 
         var copyProc = new Process();
@@ -57,7 +57,7 @@ public partial class Build : FalloutBuild
         copyProc.Start();
         copyProc.WaitForExit();
 
-        if (noInstallers) return;
+        if (NoInstallers) return;
 
         bool sign = string.Equals(
             Environment.GetEnvironmentVariable("SIGN"),
@@ -67,11 +67,11 @@ public partial class Build : FalloutBuild
 
         if (sign)
         {
-            SignAndNotarizeMacApp(dest, entitlementsPath, outputDirectory);
+            SignAndNotarizeMacApp(dest, entitlementsPath, DotnetPublishArtifactsDir);
         }
         else
         {
-            BuildUnsignedPkg(dest, outputDirectory);
+            BuildUnsignedPkg(dest, DotnetPublishArtifactsDir);
         }
     }
 
