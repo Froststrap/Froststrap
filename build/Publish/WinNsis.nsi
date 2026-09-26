@@ -22,14 +22,18 @@ Name "Froststrap"
   !define PUBLISH_DIR "..\..\.build"
 !endif
 
+!ifndef OUT_DIR
+  !define OUT_DIR "..\..\.build\dist"
+!endif
+
 !ifndef APP_VERSION
   !define APP_VERSION "Unknown"
 !endif
 
 !ifdef SELFCONTAINED
-  OutFile "..\..\.build\publish\Froststrap-windows-x64.exe"
+  OutFile "${OUT_DIR}\Froststrap-windows-x64.exe"
 !else
-  OutFile "${PUBLISH_DIR}\Froststrap-windows-x64.exe"
+  OutFile "${OUT_DIR}\Froststrap-windows-x64.exe"
 !endif
 
 Icon "..\..\Froststrap\Froststrap.ico"

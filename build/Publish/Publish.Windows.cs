@@ -64,7 +64,7 @@ public partial class Build : FalloutBuild
         Log.Information("Building {nsi} with makensis", nsiLocation);
         RunProcess(
             "makensis",
-            $"/DPUBLISH_DIR=\"{DotnetPublishArtifactsDir}\" /DAPP_VERSION=\"{version}\" /DVCREDIST=\"{vcRedistPath}\" /DSELFCONTAINED=1 \"{nsiLocation}\""
+            $"/DPUBLISH_DIR=\"{DotnetPublishArtifactsDir}\" /DOUT_DIR=\"{DistributionDir}\" /DAPP_VERSION=\"{version}\" /DVCREDIST=\"{vcRedistPath}\" /DSELFCONTAINED=1 \"{nsiLocation}\""
         );
     }
 }

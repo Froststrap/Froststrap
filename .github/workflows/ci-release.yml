@@ -27,7 +27,7 @@ jobs:
       - uses: actions/upload-artifact@v7
         with:
           name: froststrap-release-win-x64-${{ github.sha }}
-          path: .build/publish/*
+          path: .build/dist/*
 
   build-macos:
     runs-on: ${{ matrix.runner }}
@@ -82,12 +82,12 @@ jobs:
         run: dotnet run --project build -- Publish --configuration Release
 
       - name: Rename package for architecture
-        run: mv .build/publish/Froststrap.pkg .build/publish/Froststrap-macos-${{ matrix.arch }}.pkg
+        run: mv .build/dist/Froststrap.pkg .build/dist/Froststrap-macos-${{ matrix.arch }}.pkg
 
       - uses: actions/upload-artifact@v7
         with:
           name: froststrap-release-macos-${{ matrix.arch }}-${{ github.sha }}
-          path: .build/publish/Froststrap-macos-${{ matrix.arch }}.pkg
+          path: .build/dist/Froststrap-macos-${{ matrix.arch }}.pkg
 
   build-linux:
     runs-on: ubuntu-latest
@@ -108,7 +108,7 @@ jobs:
       - uses: actions/upload-artifact@v7
         with:
           name: froststrap-release-linux-x64-${{ github.sha }}
-          path: .build/publish/*
+          path: .build/dist/*
 
   release:
     needs:

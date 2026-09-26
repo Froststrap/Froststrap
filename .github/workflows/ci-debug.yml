@@ -35,7 +35,7 @@ jobs:
       - uses: actions/upload-artifact@v6
         with:
           name: froststrap-debug-macos-arm64-${{ github.sha }}
-          path: .build/msbuild/*
+          path: .build/build/*
 
   build-linux:
     runs-on: ubuntu-latest
@@ -52,4 +52,4 @@ jobs:
       - uses: actions/upload-artifact@v6
         with:
           name: froststrap-debug-linux-x64-${{ github.sha }}
-          path: .build/msbuild/*
+          path: .build/build/*
