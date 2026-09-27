@@ -75,6 +75,24 @@ namespace Froststrap.UI.ViewModels.Overlay
             set => Set(ref _timePlayed, value, nameof(TimePlayed));
         }
 
+        private string _currentRegion = String.Empty;
+        public string CurrentRegion
+        {
+            get => _currentRegion;
+            set
+            {
+                if (_currentRegion == value)
+                    return;
+
+                _currentRegion = value;
+
+                OnPropertyChanged(nameof(CurrentRegion));
+                OnPropertyChanged(nameof(HasCurrentRegion));
+            }
+        }
+
+        public bool HasCurrentRegion => !String.IsNullOrEmpty(_currentRegion);
+
         private bool _isInGame;
         public bool IsInGame
         {
@@ -283,10 +301,33 @@ namespace Froststrap.UI.ViewModels.Overlay
 
                 Game = activity.UniverseDetails?.Data.Name ?? String.Empty;
                 GameIcon = activity.UniverseDetails?.Thumbnail.ImageUrl ?? String.Empty;
+
+                _ = LoadCurrentRegionAsync(activity);
             }
             catch (Exception ex)
             {
                 App.Logger.Error("Failed to load the current experience");
+                App.Logger.Error(ex);
+            }
+        }
+
+        private async Task LoadCurrentRegionAsync(ActivityData activity)
+        {
+            try
+            {
+                if (!activity.MachineAddressValid)
+                    return;
+
+                string? location = await activity.QueryServerLocation();
+
+                if (String.IsNullOrEmpty(location))
+                    return;
+
+                await Dispatcher.UIThread.InvokeAsync(() => CurrentRegion = location);
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error("Failed to load the current server region");
                 App.Logger.Error(ex);
             }
         }
@@ -298,6 +339,7 @@ namespace Froststrap.UI.ViewModels.Overlay
             Game = Strings.Menu_Overlay_NotInGame;
             GameIcon = String.Empty;
             TimePlayed = String.Empty;
+            CurrentRegion = String.Empty;
             IsInGame = false;
         }
 
@@ -353,11 +395,8 @@ namespace Froststrap.UI.ViewModels.Overlay
 
             Rect rect = bounds.Rect;
 
-            // The bounds come from Win32 in physical pixels, and Avalonia's Window.Position
-            // is also physical pixels — so the top-left maps directly with no scaling.
             _window.Position = new PixelPoint((int)rect.Left, (int)rect.Top);
 
-            // Width/Height are DIPs, so scale the pixel dimensions down by RenderScaling.
             double scaling = _window.RenderScaling;
             if (scaling <= 0)
                 scaling = 1;
