@@ -159,6 +159,5 @@ jobs:
             release/Froststrap-windows-x64.exe
             release/Froststrap-macos-arm64.pkg
             release/Froststrap-macos-x64.pkg
-            release/Froststrap-linux-x64.AppImage
             release/Froststrap-linux-x64.deb
             release/Froststrap-linux-x64.rpm

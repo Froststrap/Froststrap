@@ -12,36 +12,22 @@ public partial class Build : FalloutBuild
         if (NoInstallers) return;
 
         var version = GitTag.TrimStart('v');
-        var rpmVersion = version.Replace('+', '_');
         Log.Debug("Detected build version as {ver}", version);
-        Log.Debug("Detected RPM version as {ver}", rpmVersion);
 
-        AbsolutePath outputDir      = DotnetPublishArtifactsDir;
-        AbsolutePath appDir         = outputDir / "AppDir";
-        AbsolutePath publishDir     = outputDir;
+        AbsolutePath outputDir = DotnetPublishArtifactsDir;
+        AbsolutePath appDir    = DistributionDir / "AppDir";
+        AbsolutePath icon      = GitRoot / "Froststrap" / "Froststrap.png";
+        AbsolutePath desktop   = DistributionDir / "Froststrap.desktop";
 
-        if (Directory.Exists(appDir))
-            Directory.Delete(appDir, recursive: true);
-
-        Directory.CreateDirectory(appDir / "usr" / "bin");
-        Directory.CreateDirectory(appDir / "usr" / "share" / "applications");
-        Directory.CreateDirectory(appDir / "usr" / "share" / "icons" / "hicolor" / "512x512" / "apps");
-
-        AbsolutePath icon = GitRoot / "Froststrap" / "Froststrap.png";
-
-        File.Copy(publishDir / "Froststrap", appDir / "usr" / "bin" / "Froststrap", overwrite: true);
-        File.Copy(icon, appDir / "froststrap.png", overwrite: true);
-        File.Copy(icon, appDir / "usr" / "share" / "icons" / "hicolor" / "512x512" / "apps" / "froststrap.png", overwrite: true);
-
-        RunProcess("chmod", $"+x \"{appDir / "usr" / "bin" / "Froststrap"}\"");
+        Directory.CreateDirectory(DistributionDir);
 
         var desktopEntry = $"""
             [Desktop Entry]
             Type=Application
             Name=Froststrap
             Comment=A fork of Fishstrap, focused on performance and customization
-            Exec=froststrap %u
-            TryExec=froststrap
+            Exec=Froststrap %u
+            TryExec=Froststrap
             Icon=froststrap
             Terminal=false
             Categories=Game;
@@ -49,113 +35,65 @@ public partial class Build : FalloutBuild
             X-AppImage-Version={version}
             """;
 
-        File.WriteAllText(appDir / "Froststrap.desktop", desktopEntry);
-        File.Copy(appDir / "Froststrap.desktop",
-                  appDir / "usr" / "share" / "applications" / "Froststrap.desktop",
-                  overwrite: true);
+        File.WriteAllText(desktop, desktopEntry);
 
-        var appRun = """
-            #!/bin/sh
-            HERE="$(dirname "$(readlink -f "$0")")"
-            exec "$HERE/usr/bin/Froststrap" "$@"
-            """;
-
-        File.WriteAllText(appDir / "AppRun", appRun);
-        RunProcess("chmod", $"+x \"{appDir / "AppRun"}\"");
-
-        BuildAppImage(outputDir, appDir);
-        BuildRpm(outputDir, appDir, rpmVersion);
-        BuildDeb(outputDir, appDir,  version);
-
-        Directory.Delete(appDir, recursive: true);
-        File.Delete(outputDir / "appimagetool.AppImage");
-        Directory.Delete(outputDir / "rpmbuild", recursive: true);
+        BuildDebRpm(outputDir, version, desktop, icon);
     }
 
-    void BuildAppImage(AbsolutePath buildDir, AbsolutePath appDir)
+    void BuildDebRpm(AbsolutePath outputDir, string version, AbsolutePath desktop, AbsolutePath icon)
     {
-        string tool = "appimagetool";
+        string nfpm = EnsureTool(outputDir, "nfpm",
+            "https://github.com/goreleaser/nfpm/releases/latest/download/nfpm_amd64.deb", extractDeb: true);
 
-        if (!IsOnPath("appimagetool"))
+        AbsolutePath binary = outputDir / "Froststrap";
+        AbsolutePath config = DistributionDir / "nfpm.yaml";
+
+        var nfpmYaml = $"""
+            name: froststrap
+            arch: amd64
+            platform: linux
+            version: {version}
+            maintainer: Froststrap-Dev
+            description: Roblox bootstrapper and mod manager
+            depends:
+              - libicu-dev
+
+            contents:
+              - src: {binary}
+                dst: /usr/bin/Froststrap
+                file_info:
+                  mode: 0755
+              - src: {icon}
+                dst: /usr/share/icons/hicolor/512x512/apps/froststrap.png
+              - src: {desktop}
+                dst: /usr/share/applications/Froststrap.desktop
+
+            scripts:
+              postinstall: {FalloutRoot / "Publish" / "nfpm-postinstall.sh"}
+            """;
+
+        File.WriteAllText(config, nfpmYaml);
+
+        foreach (var packager in new[] { "deb", "rpm" })
         {
-            AbsolutePath toolPath = buildDir / "appimagetool.AppImage";
-            Log.Information("appimagetool not found on PATH, downloading to {path}", toolPath);
-            RunProcess("curl",
-                $"-L --fail -o \"{toolPath}\" " +
-                "https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage");
-            RunProcess("chmod", $"+x \"{toolPath}\"");
-            tool = toolPath;
+            Log.Information("Building .{pkg} via nFPM", packager);
+            RunProcess(nfpm,
+                $"pkg --packager {packager} -f \"{config}\" " +
+                $"-t \"{DistributionDir / $"Froststrap-linux-x64.{packager}"}\"");
         }
-
-        Environment.SetEnvironmentVariable("ARCH", "x86_64");
-        Environment.SetEnvironmentVariable("SOURCE_DATE_EPOCH", null);
-
-        Log.Information("Building AppImage");
-        RunProcess(tool,
-            $"--appimage-extract-and-run \"{appDir}\" \"{buildDir / "Froststrap-linux-x64.AppImage"}\"");
     }
-
-    void BuildRpm(AbsolutePath outputDir, AbsolutePath appDir, string rpmVersion)
+    string EnsureTool(AbsolutePath buildDir, string name, string url, bool extractDeb = false)
     {
-        AbsolutePath topDir = outputDir / "rpmbuild";
+        if (IsOnPath(name)) return name;
 
-        foreach (var sub in new[] { "BUILD", "BUILDROOT", "RPMS", "SOURCES", "SPECS", "SRPMS" })
-            Directory.CreateDirectory(topDir / sub);
-
-        AbsolutePath spec = FalloutRoot / "Publish" / "fedora" / "froststrap-rpm.spec";
-
-        Log.Information("Building RPM from {spec}", spec);
-        RunProcess("rpmbuild",
-            $"-bb \"{spec}\" " +
-            $"--define \"_topdir {topDir}\" " +
-            $"--define \"_froststrap_appdir {appDir}\" " +
-            $"--define \"froststrap_version {rpmVersion}\"");
-
-        var rpm = Directory
-            .EnumerateFiles(topDir / "RPMS", "*.rpm", SearchOption.AllDirectories)
-            .OrderBy(File.GetLastWriteTimeUtc)
-            .LastOrDefault();
-
-        if (rpm is null)
-            throw new InvalidOperationException($"rpmbuild produced no .rpm under {topDir / "RPMS"}");
-
-        File.Copy(rpm, outputDir / "Froststrap-linux-x64.rpm", overwrite: true);
-    }
-
-    void BuildDeb(AbsolutePath outputDir, AbsolutePath appDir, string version)
-    {
-        AbsolutePath debianDir = appDir / "DEBIAN";
-        Directory.CreateDirectory(debianDir);
-
-        var control = $"""
-            Package: froststrap
-            Version: {version}
-            Architecture: amd64
-            Maintainer: Froststrap-Dev
-            Depends: libicu-dev
-            Description: Roblox bootstrapper and mod manager
-            """;
-
-        File.WriteAllText(debianDir / "control", control);
-
-        File.WriteAllText("""
-        #!/bin/sh
-        set -e
-
-        if command -v update-desktop-database >/dev/null 2>&1; then
-            update-desktop-database -q /usr/share/applications || :
-        fi
-
-        if command -v gtk-update-icon-cache >/dev/null 2>&1; then
-            gtk-update-icon-cache -q /usr/share/icons/hicolor || :
-        fi
-
-        /usr/bin/Froststrap --register-mime-types 2>/dev/null || :
-        """, debianDir / "postinst");
-        RunProcess("chmod", $"755 \"{debianDir / "postinst"}\"");
-
-        Log.Information("Building .deb");
-        RunProcess("dpkg-deb", $"--build \"{appDir}\" \"{outputDir / "Froststrap-linux-x64.deb"}\"");
+        AbsolutePath toolPath = buildDir / name;
+        if (!File.Exists(toolPath))
+        {
+            Log.Information("{tool} not found on PATH, downloading to {path}", name, toolPath);
+            RunProcess("curl", $"-L --fail -o \"{toolPath}\" \"{url}\"");
+            RunProcess("chmod", $"+x \"{toolPath}\"");
+        }
+        return toolPath;
     }
 
     static bool IsOnPath(string exe) =>

@@ -1,0 +1,21 @@
+name: froststrap
+arch: amd64
+platform: linux
+version: ${FROSTSTRAP_VERSION}
+maintainer: Froststrap-Dev
+description: Roblox bootstrapper and mod manager
+depends:
+  - libicu-dev
+
+contents:
+  - src: ${FROSTSTRAP_PUBLISH_DIR}/Froststrap
+    dst: /usr/bin/Froststrap
+    file_info:
+      mode: 0755
+  - src: ${FROSTSTRAP_ICON}
+    dst: /usr/share/icons/hicolor/512x512/apps/froststrap.png
+  - src: ${FROSTSTRAP_DESKTOP_FILE}
+    dst: /usr/share/applications/Froststrap.desktop
+
+scripts:
+  postinstall: ./nfpm-postinstall.sh

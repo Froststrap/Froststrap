@@ -9,6 +9,7 @@
   stdenv,
   callPackage,
   linuxdeploy,
+  imagemagick,
 }:
 let
   inherit (callPackage ./devshell-tools.nix {}) mkFragment;
@@ -18,6 +19,7 @@ mkFragment {
     reuse
     typos
   ] ++ lib.optionals stdenv.hostPlatform.isLinux [
+    imagemagick
     linuxdeploy
     nfpm
   ];
