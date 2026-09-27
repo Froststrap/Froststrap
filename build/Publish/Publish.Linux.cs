@@ -10,9 +10,7 @@ public partial class Build : FalloutBuild
     void PublishLinux()
     {
         if (NoInstallers) return;
-
         var version = GitTag.TrimStart('v');
-        Log.Debug("Detected build version as {ver}", version);
 
         AbsolutePath outputDir = DotnetPublishArtifactsDir;
         AbsolutePath appDir    = DistributionDir / "AppDir";
@@ -37,10 +35,11 @@ public partial class Build : FalloutBuild
 
         File.WriteAllText(desktop, desktopEntry);
 
-        BuildDebRpm(outputDir, version, desktop, icon);
+        BuildNFPM(outputDir, version, desktop, icon);
+        BuildAppImage(outputDir, appDir, desktop, icon, version);
     }
 
-    void BuildDebRpm(AbsolutePath outputDir, string version, AbsolutePath desktop, AbsolutePath icon)
+    void BuildNFPM(AbsolutePath outputDir, string version, AbsolutePath desktop, AbsolutePath icon)
     {
         string nfpm = EnsureTool(outputDir, "nfpm",
             "https://github.com/goreleaser/nfpm/releases/latest/download/nfpm_amd64.deb", extractDeb: true);
@@ -82,6 +81,66 @@ public partial class Build : FalloutBuild
                 $"-t \"{DistributionDir / $"Froststrap-linux-x64.{packager}"}\"");
         }
     }
+
+    void BuildAppImage(AbsolutePath outputDir, AbsolutePath appDir, AbsolutePath desktop, AbsolutePath icon, string version)
+    {
+        if (IsNix())
+        {
+            Log.Warning("Nix detected, appimagetool doesn't fare well here, so skipping this step.");
+            return;
+        }
+
+        if (Directory.Exists(appDir))
+            Directory.Delete(appDir, recursive: true);
+
+        Directory.CreateDirectory(appDir / "usr" / "bin");
+        Directory.CreateDirectory(appDir / "usr" / "share" / "applications");
+        Directory.CreateDirectory(appDir / "usr" / "share" / "icons" / "hicolor" / "512x512" / "apps");
+
+        File.Copy(outputDir / "Froststrap", appDir / "usr" / "bin" / "Froststrap", overwrite: true);
+        RunProcess("chmod", $"+x \"{appDir / "usr" / "bin" / "Froststrap"}\"");
+
+        AbsolutePath icon512 = DistributionDir / "froststrap-512.png";
+        RunProcess("magick", $"\"{icon}\" -resize 512x512 \"{icon512}\"");
+
+        File.Copy(icon512, appDir / "froststrap.png", overwrite: true);
+        File.Copy(icon512, appDir / "usr" / "share" / "icons" / "hicolor" / "512x512" / "apps" / "froststrap.png", overwrite: true);
+
+        File.Copy(desktop, appDir / "Froststrap.desktop", overwrite: true);
+        File.Copy(desktop, appDir / "usr" / "share" / "applications" / "Froststrap.desktop", overwrite: true);
+
+        var appRun = """
+        #!/bin/sh
+        HERE="$(dirname "$(readlink -f "$0")")"
+        exec "$HERE/usr/bin/Froststrap" "$@"
+        """;
+
+        File.WriteAllText(appDir / "AppRun", appRun);
+        RunProcess("chmod", $"+x \"{appDir / "AppRun"}\"");
+
+        string tool = "appimagetool";
+
+        if (!IsOnPath("appimagetool"))
+        {
+            AbsolutePath toolPath = DistributionDir / "appimagetool.AppImage";
+            Log.Information("appimagetool not found on PATH, downloading to {path}", toolPath);
+            RunProcess("curl",
+                $"-L --fail -o \"{toolPath}\" " +
+                "https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage");
+            RunProcess("chmod", $"+x \"{toolPath}\"");
+            tool = toolPath;
+        }
+
+        Environment.SetEnvironmentVariable("ARCH", "x86_64");
+        Environment.SetEnvironmentVariable("SOURCE_DATE_EPOCH", null);
+
+        Log.Information("Building AppImage");
+        RunProcess(tool,
+            $"--appimage-extract-and-run \"{appDir}\" \"{DistributionDir / "Froststrap-linux-x64.AppImage"}\"");
+
+        Directory.Delete(appDir, recursive: true);
+    }
+
     string EnsureTool(AbsolutePath buildDir, string name, string url, bool extractDeb = false)
     {
         if (IsOnPath(name)) return name;
@@ -101,4 +160,8 @@ public partial class Build : FalloutBuild
             .Split(Path.PathSeparator)
             .Where(d => !string.IsNullOrWhiteSpace(d))
             .Any(d => File.Exists(Path.Combine(d, exe)));
+
+    static bool IsNix() =>
+        !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("IN_NIX_SHELL"))
+        || Directory.Exists("/nix/store");
 }
