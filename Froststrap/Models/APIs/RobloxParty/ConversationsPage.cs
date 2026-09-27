@@ -3,6 +3,6 @@
     internal class ConversationsPage : Page
     {
         [JsonPropertyName("conversations")]
-        public List<Conversation> Conversations { get; set; } = new();
+        public List<Conversation> Conversations { get; set; } = [];
     }
 }

@@ -1513,6 +1513,15 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No game history yet..
+        /// </summary>
+        public static string ContextMenu_GameHistory_Empty {
+            get {
+                return ResourceManager.GetString("ContextMenu.GameHistory.Empty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rejoin.
         /// </summary>
         public static string ContextMenu_GameHistory_Rejoin {

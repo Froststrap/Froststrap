@@ -144,7 +144,7 @@ SPDX-License-Identifier: MPL-2.0
                     </StackPanel>
                 </Expander>
 
-                <Expander Grid.Column="2" Margin="4,0,0,0" Header="{x:Static resources:Strings.Menu_About_Contributors_Insipirations}" IsExpanded="True">
+                <Expander Grid.Column="2" Margin="4,0,0,0" Header="{x:Static resources:Strings.Menu_About_Contributors_Inspirations}" IsExpanded="True">
                     <StackPanel>
                         <controls:MarkdownTextBlock MarkdownText="[Bloxstrap](https://github.com/bloxstraplabs/bloxstrap)" />
                         <controls:MarkdownTextBlock MarkdownText="[Fishstrap](https://github.com/fishstrap/fishstrap)" />

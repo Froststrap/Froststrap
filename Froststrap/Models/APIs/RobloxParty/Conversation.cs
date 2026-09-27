@@ -12,7 +12,7 @@
         public string Type { get; set; } = "one_to_one";
 
         [JsonPropertyName("participant_user_ids")]
-        public long[] Participants { get; set; } = Array.Empty<long>();
+        public long[] Participants { get; set; } = [];
 
         [JsonPropertyName("unread_message_count")]
         public int UnreadMessagesCount { get; set; }

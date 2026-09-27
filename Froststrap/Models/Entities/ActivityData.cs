@@ -7,6 +7,7 @@ using Avalonia.Controls;
 using Avalonia.Input.Platform;
 using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.Input;
+using Froststrap.AppData;
 using System.Web;
 using System.Windows.Input;
 
@@ -18,10 +19,6 @@ namespace Froststrap.Models.Entities
         private readonly SemaphoreSlim _serverQuerySemaphore = new(1, 1);
         private bool _disposed;
 
-        /// <summary>
-        /// If the current activity stems from an in-universe teleport, then this will be
-        /// set to the activity that corresponds to the initial game join
-        /// </summary>
         public ActivityData? RootActivity { get; set; }
 
         public long UniverseId
@@ -36,9 +33,6 @@ namespace Froststrap.Models.Entities
 
         public string Region { get; set; } = string.Empty;
 
-        /// <summary>
-        /// This will be empty unless the server joined is a private server
-        /// </summary>
         public string AccessCode { get; set; } = string.Empty;
 
         public long UserId { get; set; }
@@ -57,11 +51,26 @@ namespace Froststrap.Models.Entities
 
         public DateTime? StartTime { get; set; }
 
-        // everything below here is optional strictly for bloxstraprpc, discord rich presence, or game history
+        public string GameHistoryDescription
+        {
+            get
+            {
+                string desc = string.Format(
+                    Locale.CurrentCulture,
+                    "{0} • {1} {2} {3}",
+                    UniverseDetails?.Data.Creator.Name,
+                    TimeJoined.ToString("t", Locale.CurrentCulture),
+                    Locale.CurrentCulture.Name.StartsWith("ja", StringComparison.OrdinalIgnoreCase) ? '~' : '-',
+                    TimeLeft?.ToString("t", Locale.CurrentCulture)
+                );
 
-        /// <summary>
-        /// This is intended only for other people to use, i.e. context menu invite link, rich presence joining
-        /// </summary>
+                if (ServerType != ServerType.Public)
+                    desc += " • " + ServerType.ToTranslatedString();
+
+                return desc;
+            }
+        }
+
         public string RPCLaunchData { get; set; } = string.Empty;
 
         public UniverseDetails? UniverseDetails { get; set; }
@@ -72,12 +81,10 @@ namespace Froststrap.Models.Entities
 
         public event EventHandler<string>? OnDeleteRequested;
 
-        public ICommand RejoinServerCommand => new RelayCommand(() => RejoinServer(true));
+        public ICommand RejoinServerCommand => new RelayCommand(RejoinServer);
         public ICommand CopyDeeplinkCommand => new RelayCommand<Visual>(CopyDeeplink);
         public ICommand CopyServerIdCommand => new RelayCommand<Visual>(CopyServerId);
         public ICommand DeleteHistoryCommand => new RelayCommand(DeleteHistory);
-
-        // Removed the separate SemaphoreSlim field; using the one defined above.
 
         public string GetInviteDeeplink(bool launchData = true, DeeplinkType type = DeeplinkType.RobloxProtocol)
         {
@@ -148,7 +155,7 @@ namespace Froststrap.Models.Entities
             return location;
         }
 
-        public void RejoinServer(bool CloseRoblox = true)
+        public void RejoinServer()
         {
             try
             {
@@ -156,14 +163,22 @@ namespace Froststrap.Models.Entities
 
                 string robloxUri = GetInviteDeeplink(true);
 
-                Process.Start(new ProcessStartInfo
+                if (Processes.IsRobloxRunning())
                 {
-                    FileName = robloxUri,
-                    UseShellExecute = true
-                });
+                    App.Logger.Info("Roblox is running, launching via player executable");
 
-                if (CloseRoblox)
-                    CloseRobloxProcesses();
+                    Process.Start(new RobloxPlayerData().ExecutablePath, robloxUri);
+                }
+                else
+                {
+                    App.Logger.Info("Roblox is not running, launching via protocol handler");
+
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = robloxUri,
+                        UseShellExecute = true
+                    });
+                }
             }
             catch (Exception ex)
             {

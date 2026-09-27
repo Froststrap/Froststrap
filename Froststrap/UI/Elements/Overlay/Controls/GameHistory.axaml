@@ -1,0 +1,186 @@
+<!--
+SPDX-FileCopyrightText: 2026 Froststrap
+
+SPDX-License-Identifier: MPL-2.0
+-->
+
+<UserControl x:Class="Froststrap.UI.Elements.Overlay.Controls.GameHistory"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:resources="using:Froststrap.Resources"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+             xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+             xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Overlay.Controls"
+             x:DataType="vm:GameHistoryViewModel"
+             mc:Ignorable="d"
+             d:DesignHeight="440" d:DesignWidth="580">
+
+    <UserControl.Styles>
+        <Style Selector="TextBlock.errorView">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="TextBlock.errorView[Tag=Failed]">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+
+        <Style Selector="Border.loadingView">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="Border.loadingView[Tag=Unknown]">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+
+        <Style Selector="ListBox.contentView">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="ListBox.contentView[Tag=Successful]">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+
+        <Style Selector="TextBlock.emptyView">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="TextBlock.emptyView[Tag=Successful]">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+    </UserControl.Styles>
+
+    <Grid RowDefinitions="Auto,*">
+
+        <TextBlock Grid.Row="0"
+                   Text="{x:Static resources:Strings.ContextMenu_GameHistory_Description}"
+                   FontSize="12"
+                   TextWrapping="Wrap"
+                   Margin="2,0,2,8"
+                   Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+
+        <Grid Grid.Row="1">
+
+            <Border Classes="loadingView"
+                    Tag="{Binding LoadState}">
+                <ui:FAProgressRing IsIndeterminate="True"
+                                   Width="32" Height="32"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Center" />
+            </Border>
+
+            <TextBlock Classes="errorView"
+                       Tag="{Binding LoadState}"
+                       Text="{Binding Error, Mode=OneWay}"
+                       FontSize="13"
+                       TextWrapping="Wrap"
+                       TextAlignment="Center"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"
+                       MaxWidth="320"
+                       Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+
+            <ScrollViewer VerticalScrollBarVisibility="Auto"
+                          Margin="0,0,-8,0"
+                          Padding="0,0,8,0">
+                <ListBox Classes="contentView"
+                         Tag="{Binding LoadState}"
+                         ItemsSource="{Binding GameHistory, Mode=OneWay}"
+                         Background="Transparent"
+                         BorderThickness="0"
+                         SelectionMode="Single">
+                    <ListBox.Styles>
+                        <Style Selector="ListBoxItem">
+                            <Setter Property="Padding" Value="0" />
+                            <Setter Property="Margin" Value="0" />
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="CornerRadius" Value="8" />
+                        </Style>
+                        <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+                            <Setter Property="Background" Value="Transparent" />
+                        </Style>
+                        <Style Selector="ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
+                            <Setter Property="Background" Value="Transparent" />
+                        </Style>
+                    </ListBox.Styles>
+
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel />
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border Margin="0,0,0,6"
+                                    Padding="10"
+                                    CornerRadius="8"
+                                    Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                                    BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                                    BorderThickness="1">
+                                <Grid ColumnDefinitions="Auto,*,Auto">
+
+                                    <Border Grid.Column="0"
+                                            Width="56" Height="56"
+                                            CornerRadius="6"
+                                            Background="{DynamicResource ControlFillColorDefaultBrush}"
+                                            ClipToBounds="True">
+                                        <Image Source="{Binding ThumbnailBitmap}"
+                                               Stretch="UniformToFill"
+                                               Width="56" Height="56"
+                                               RenderOptions.BitmapInterpolationMode="LowQuality" />
+                                    </Border>
+
+                                    <StackPanel Grid.Column="1"
+                                                Margin="12,0,12,0"
+                                                VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding UniverseDetails.Data.Name}"
+                                                   FontSize="14"
+                                                   FontWeight="SemiBold"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+
+                                        <TextBlock Text="{Binding GameHistoryDescription}"
+                                                   FontSize="12"
+                                                   Margin="0,3,0,0"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+
+                                        <TextBlock Text="{Binding Region}"
+                                                   FontSize="11"
+                                                   Margin="0,2,0,0"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                                   IsVisible="{Binding Region, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="2"
+                                                Orientation="Horizontal"
+                                                Spacing="8"
+                                                VerticalAlignment="Center">
+
+                                        <controls:IconButton Icon="Play"
+                                                             Content="{x:Static resources:Strings.ContextMenu_GameHistory_Rejoin}"
+                                                             Command="{Binding RejoinServerCommand}"
+                                                             Classes="Primary" />
+
+                                        <controls:IconButton Icon="Link2"
+                                                             Content="{x:Static resources:Strings.Common_Deeplink}"
+                                                             Command="{Binding CopyDeeplinkCommand}"
+                                                             CommandParameter="{Binding $self}" />
+
+                                        <controls:IconButton Icon="Clipboard"
+                                                             Content="{x:Static resources:Strings.Common_ServerID}"
+                                                             Command="{Binding CopyServerIdCommand}"
+                                                             CommandParameter="{Binding $self}" />
+
+                                        <controls:IconButton Icon="Trash2"
+                                                             Command="{Binding DeleteHistoryCommand}"
+                                                             Classes="Danger" />
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+</UserControl>

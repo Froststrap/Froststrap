@@ -31,7 +31,7 @@ namespace Froststrap.Models.Entities
                     return results;
                 }
 
-                var seenUniverses = new HashSet<ulong>();
+                var seenUniverses = new HashSet<long>();
 
                 foreach (var group in response.SearchResults)
                 {
@@ -88,7 +88,7 @@ namespace Froststrap.Models.Entities
                         nextCursor = nextCursorProp.GetString() ?? "";
                     }
 
-                    var seenUniverses = new HashSet<ulong>();
+                    var seenUniverses = new HashSet<long>();
 
                     foreach (var group in groupsArray.EnumerateArray())
                     {
@@ -96,7 +96,7 @@ namespace Froststrap.Models.Entities
                         {
                             foreach (var item in contentsArray.EnumerateArray())
                             {
-                                ulong universeId = item.TryGetProperty("universeId", out var u) ? (ulong)u.GetInt64() : 0;
+                                long universeId = item.TryGetProperty("universeId", out var u) ? u.GetInt64() : 0;
                                 long placeId = item.TryGetProperty("rootPlaceId", out var p) ? p.GetInt64() : 0;
                                 string name = item.TryGetProperty("name", out var n) ? (n.GetString() ?? $"Game {universeId}") : $"Game {universeId}";
                                 int playerCount = item.TryGetProperty("playerCount", out var pc) ? pc.GetInt32() : 0;

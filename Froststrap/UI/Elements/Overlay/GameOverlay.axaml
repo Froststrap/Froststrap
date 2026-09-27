@@ -1,0 +1,268 @@
+<!--
+SPDX-FileCopyrightText: 2026 Froststrap
+
+SPDX-License-Identifier: MPL-2.0
+-->
+
+<Window x:Class="Froststrap.UI.Elements.Overlay.GameOverlay"
+        xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:control="clr-namespace:Froststrap.UI.Elements.Overlay.Controls"
+        xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+        xmlns:resources="using:Froststrap.Resources"
+        xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
+        xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Overlay"
+        x:DataType="vm:GameOverlayViewModel"
+        mc:Ignorable="d"
+        Title="Froststrap Overlay"
+        Background="Transparent"
+        TransparencyLevelHint="Blur,AcrylicBlur,Transparent"
+        WindowDecorations="None"
+        CanResize="False"
+        ShowInTaskbar="False"
+        ShowActivated="False"
+        IsVisible="False"
+        WindowStartupLocation="Manual"
+        SizeChanged="Window_SizeChanged"
+        Loaded="Window_Loaded"
+        d:DesignWidth="1280"
+        d:DesignHeight="720">
+
+    <Window.Styles>
+        <Style Selector="ToggleButton.panelToggle">
+            <Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
+            <Setter Property="Margin" Value="2,0" />
+            <Setter Property="Padding" Value="12,0" />
+            <Setter Property="Height" Value="40" />
+            <Setter Property="MinWidth" Value="40" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Name="PART_Bd"
+                            Background="Transparent"
+                            CornerRadius="20"
+                            Padding="{TemplateBinding Padding}">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <!-- FIX: explicit Content binding -->
+                            <ContentPresenter Content="{TemplateBinding Content}"
+                                              VerticalAlignment="Center" />
+
+                            <Border Name="PART_Reveal"
+                                    Width="0"
+                                    Opacity="0"
+                                    ClipToBounds="True"
+                                    VerticalAlignment="Center">
+                                <TextBlock Text="{TemplateBinding Tag}"
+                                           FontSize="14"
+                                           Margin="8,0,2,0"
+                                           HorizontalAlignment="Left"
+                                           VerticalAlignment="Center"
+                                           TextWrapping="NoWrap" />
+                            </Border>
+                        </StackPanel>
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+
+        <Style Selector="ToggleButton.panelToggle:pointerover /template/ Border#PART_Bd">
+            <Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
+        </Style>
+        <Style Selector="ToggleButton.panelToggle:checked /template/ Border#PART_Bd">
+            <Setter Property="Background" Value="{DynamicResource AccentFillColorDefaultBrush}" />
+        </Style>
+        <Style Selector="ToggleButton.panelToggle:checked">
+            <Setter Property="Foreground" Value="{DynamicResource TextOnAccentFillColorPrimaryBrush}" />
+        </Style>
+    </Window.Styles>
+
+    <Border x:Name="Scrim"
+            Background="#66000000"
+            CornerRadius="{Binding ScrimCornerRadius}"
+            PointerPressed="ScrimClicked">
+        <Grid>
+            <Canvas x:Name="PanelSurface"
+                    Margin="16,16,16,112"
+                    ClipToBounds="True">
+
+                <control:OverlayPanel x:Name="MessagesPanel"
+                                      Title="{x:Static resources:Strings.Menu_Overlay_Tab_Messages}"
+                                      Icon="MessageSquare"
+                                      ContentPadding="0"
+                                      IsVisible="{Binding IsMessagesVisible}"
+                                      CloseCommand="{Binding ClosePanelCommand}"
+                                      CloseCommandParameter="Messages">
+                    <control:OverlayPanel.PanelContent>
+                        <control:FriendActivity />
+                    </control:OverlayPanel.PanelContent>
+                </control:OverlayPanel>
+
+                <control:OverlayPanel x:Name="BadgesPanel"
+                                      Title="{x:Static resources:Strings.Menu_Overlay_Tab_Badges}"
+                                      Icon="Trophy"
+                                      IsVisible="{Binding IsBadgesVisible}"
+                                      CloseCommand="{Binding ClosePanelCommand}"
+                                      CloseCommandParameter="Badges">
+                    <control:OverlayPanel.PanelContent>
+                        <control:BadgeTracker />
+                    </control:OverlayPanel.PanelContent>
+                </control:OverlayPanel>
+
+                <control:OverlayPanel x:Name="ServersPanel"
+                                      Title="{x:Static resources:Strings.Menu_Overlay_Tab_Servers}"
+                                      Icon="Server"
+                                      IsVisible="{Binding IsServersVisible}"
+                                      CloseCommand="{Binding ClosePanelCommand}"
+                                      CloseCommandParameter="Servers">
+                    <control:OverlayPanel.PanelContent>
+                        <control:ServerBrowser />
+                    </control:OverlayPanel.PanelContent>
+                </control:OverlayPanel>
+
+                <control:OverlayPanel x:Name="GamesPanel"
+                                      Title="{x:Static resources:Strings.Menu_Overlay_Tab_Games}"
+                                      Icon="Gamepad2"
+                                      IsVisible="{Binding IsGamesVisible}"
+                                      CloseCommand="{Binding ClosePanelCommand}"
+                                      CloseCommandParameter="Games">
+                    <control:OverlayPanel.PanelContent>
+                        <control:GameBrowser />
+                    </control:OverlayPanel.PanelContent>
+                </control:OverlayPanel>
+
+                <control:OverlayPanel x:Name="HistoryPanel"
+                                      Title="{x:Static resources:Strings.ContextMenu_GameHistory_Title}"
+                                      Icon="Clock"
+                                      IsVisible="{Binding IsHistoryVisible}"
+                                      CloseCommand="{Binding ClosePanelCommand}"
+                                      CloseCommandParameter="History">
+                    <control:OverlayPanel.PanelContent>
+                        <control:GameHistory />
+                    </control:OverlayPanel.PanelContent>
+                </control:OverlayPanel>
+
+                <control:OverlayPanel x:Name="NotesPanel"
+                                      Title="{x:Static resources:Strings.Menu_Overlay_Tab_Notes}"
+                                      Icon="NotebookPen"
+                                      IsVisible="{Binding IsNotesVisible}"
+                                      CloseCommand="{Binding ClosePanelCommand}"
+                                      CloseCommandParameter="Notes">
+                    <control:OverlayPanel.PanelContent>
+                        <control:Notes />
+                    </control:OverlayPanel.PanelContent>
+                </control:OverlayPanel>
+            </Canvas>
+
+            <Border ZIndex="10"
+                    Height="68"
+                    CornerRadius="34"
+                    Padding="10,0,10,0"
+                    Margin="0,0,0,28"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Bottom"
+                    Background="{DynamicResource SolidBackgroundFillColorSecondaryBrush}"
+                    BorderBrush="{DynamicResource SurfaceStrokeColorDefaultBrush}"
+                    BorderThickness="1">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="28"
+                                      OffsetX="0" OffsetY="6"
+                                      Opacity="0.5"
+                                      Color="Black" />
+                </Border.Effect>
+
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <control:UserCard Margin="8,0,0,0" VerticalAlignment="Center" />
+
+                    <Rectangle Width="1" Height="32" Margin="16,0"
+                               Fill="{DynamicResource DividerStrokeColorDefaultBrush}" />
+
+                    <ToggleButton Classes="panelToggle"
+                                  Tag="{x:Static resources:Strings.Menu_Overlay_Tab_Messages}"
+                                  IsChecked="{Binding IsMessagesVisible, Mode=OneWay}"
+                                  Command="{Binding TogglePanelCommand}"
+                                  CommandParameter="Messages">
+                        <ic:Lucide Icon="MessageSquare"
+                                   Width="16" Height="16"
+                                   StrokeBrush="{DynamicResource TextFillColorSecondaryBrush}" />
+                    </ToggleButton>
+
+                    <ToggleButton Classes="panelToggle"
+                                  Tag="{x:Static resources:Strings.Menu_Overlay_Tab_Badges}"
+                                  IsChecked="{Binding IsBadgesVisible, Mode=OneWay}"
+                                  Command="{Binding TogglePanelCommand}"
+                                  CommandParameter="Badges">
+                        <ic:Lucide Icon="Trophy"
+                                   Width="16" Height="16"
+                                   StrokeBrush="{DynamicResource TextFillColorSecondaryBrush}" />
+                    </ToggleButton>
+
+                    <ToggleButton Classes="panelToggle"
+                                  Tag="{x:Static resources:Strings.Menu_Overlay_Tab_Servers}"
+                                  IsChecked="{Binding IsServersVisible, Mode=OneWay}"
+                                  Command="{Binding TogglePanelCommand}"
+                                  CommandParameter="Servers">
+                        <ic:Lucide Icon="Server"
+                                   Width="16" Height="16"
+                                   StrokeBrush="{DynamicResource TextFillColorSecondaryBrush}" />
+                    </ToggleButton>
+
+                    <ToggleButton Classes="panelToggle"
+                                  Tag="{x:Static resources:Strings.Menu_Overlay_Tab_Games}"
+                                  IsChecked="{Binding IsGamesVisible, Mode=OneWay}"
+                                  Command="{Binding TogglePanelCommand}"
+                                  CommandParameter="Games">
+                        <ic:Lucide Icon="Gamepad2"
+                                   Width="16" Height="16"
+                                   StrokeBrush="{DynamicResource TextFillColorSecondaryBrush}" />
+                    </ToggleButton>
+
+                    <ToggleButton Classes="panelToggle"
+                                  Tag="{x:Static resources:Strings.ContextMenu_GameHistory_Title}"
+                                  IsChecked="{Binding IsHistoryVisible, Mode=OneWay}"
+                                  Command="{Binding TogglePanelCommand}"
+                                  CommandParameter="History">
+                        <ic:Lucide Icon="Clock"
+                                   Width="16" Height="16"
+                                   StrokeBrush="{DynamicResource TextFillColorSecondaryBrush}" />
+                    </ToggleButton>
+
+                    <ToggleButton Classes="panelToggle"
+                                  Tag="{x:Static resources:Strings.Menu_Overlay_Tab_Notes}"
+                                  IsChecked="{Binding IsNotesVisible, Mode=OneWay}"
+                                  Command="{Binding TogglePanelCommand}"
+                                  CommandParameter="Notes">
+                        <ic:Lucide Icon="NotebookPen"
+                                   Width="16" Height="16"
+                                   StrokeBrush="{DynamicResource TextFillColorSecondaryBrush}" />
+                    </ToggleButton>
+
+                    <Rectangle Width="1" Height="32" Margin="16,0"
+                               Fill="{DynamicResource DividerStrokeColorDefaultBrush}" />
+
+                    <controls:IconButton Width="40" Height="40"
+                                         Margin="0,0,4,0"
+                                         Padding="0"
+                                         VerticalAlignment="Center"
+                                         CornerRadius="24"
+                                         IconSize="14"
+                                         Icon="{Binding ShareIcon}"
+                                         Command="{Binding ShareCommand}"
+                                         IsVisible="{Binding IsInGame}"
+                                         ToolTip.Tip="{x:Static resources:Strings.Menu_Overlay_Servers_CopyLink}" />
+
+                    <controls:IconButton Width="40" Height="40"
+                                         Margin="0,0,4,0"
+                                         Padding="0"
+                                         VerticalAlignment="Center"
+                                         CornerRadius="24"
+                                         IconSize="14"
+                                         Icon="X"
+                                         Command="{Binding CloseCommand}"
+                                         ToolTip.Tip="{x:Static resources:Strings.Common_Close}" />
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Border>
+</Window>

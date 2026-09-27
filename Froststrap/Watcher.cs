@@ -112,8 +112,8 @@ namespace Froststrap
                 if (_watcherData.LaunchMode == LaunchMode.Player && App.Settings.Prop.SoftKeyEnabled)
                     Softkey = new Softkey(_watcherData.ProcessId);
 
-                if (App.Settings.Prop.EnableOverlay && _watcherData.Handle != 0)
-                    Overlay = new(_watcherData.Handle, _watcherData.ProcessId, ActivityWatcher);
+                if (App.Settings.Prop.EnableOverlay && _watcherData.ProcessId > 0)
+                    Overlay = new(_watcherData.ProcessId, ActivityWatcher);
 
                 _notifyIcon = new(this);
             }
@@ -372,6 +372,7 @@ namespace Froststrap
                 _gameModeHandle = -1;
             }
 
+            Overlay?.Dispose();
             IntegrationWatcher?.Dispose();
             WindowManipulation?.Dispose();
             Softkey?.Dispose();

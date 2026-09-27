@@ -669,7 +669,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 var thumbRequests = results.Select(r => new ThumbnailRequest
                 {
                     Type = ThumbnailType.GameIcon,
-                    TargetId = r.UniverseId,
+                    TargetId = (ulong)r.UniverseId,
                     Size = "128x128"
                 }).ToList();
 

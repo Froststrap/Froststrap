@@ -1,0 +1,143 @@
+<UserControl x:Class="Froststrap.UI.Elements.Overlay.Controls.BadgeTracker"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:resources="using:Froststrap.Resources"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+             xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
+             xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+             mc:Ignorable="d"
+             d:DesignHeight="560" d:DesignWidth="820"
+             x:CompileBindings="False">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <Grid Grid.Row="0" Margin="0,0,0,8" ColumnDefinitions="*,Auto">
+            <TextBlock Grid.Column="0"
+                       Text="{Binding CompletionText}"
+                       FontSize="13"
+                       VerticalAlignment="Center"
+                       Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+
+            <controls:IconButton Grid.Column="1"
+                                 Icon="RefreshCw"
+                                 Content="{x:Static resources:Strings.Menu_Overlay_Refresh}"
+                                 VerticalAlignment="Center"
+                                 Command="{Binding RefreshCommand}"
+                                 IsEnabled="{Binding CanRefresh}" />
+        </Grid>
+
+        <ProgressBar Grid.Row="0"
+                     VerticalAlignment="Bottom"
+                     Height="3"
+                     Margin="0,0,0,2"
+                     Value="{Binding CompletionPercentage, Mode=OneWay}"
+                     Maximum="100" />
+
+        <Grid Grid.Row="1">
+            <ui:FAProgressRing IsIndeterminate="True"
+                               Width="32" Height="32"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Center"
+                               IsVisible="{Binding IsBusy}" />
+
+            <TextBlock Text="{Binding EmptyText}"
+                       FontSize="13"
+                       TextAlignment="Center"
+                       TextWrapping="Wrap"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"
+                       MaxWidth="320"
+                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                       IsVisible="{Binding ShowEmptyState}" />
+
+            <ScrollViewer VerticalScrollBarVisibility="Auto"
+                          Margin="0,0,-8,0"
+                          Padding="0,0,8,0">
+                <ItemsControl ItemsSource="{Binding Badges}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Margin="0,0,0,6"
+                                    Padding="10"
+                                    CornerRadius="8"
+                                    Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                                    BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                                    BorderThickness="1">
+                                <Grid ColumnDefinitions="Auto,*,Auto">
+
+                                    <Border Grid.Column="0"
+                                            Width="56" Height="56"
+                                            CornerRadius="6"
+                                            VerticalAlignment="Top"
+                                            Background="{DynamicResource ControlFillColorDefaultBrush}"
+                                            ClipToBounds="True">
+                                        <Image Source="{Binding IconUrl, Converter={StaticResource UrlToBitmapConverter}}"
+                                               Stretch="UniformToFill"
+                                               Width="56" Height="56"
+                                               RenderOptions.BitmapInterpolationMode="LowQuality" />
+                                    </Border>
+
+                                    <StackPanel Grid.Column="1" Margin="12,0,12,0" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Name}"
+                                                   FontSize="14"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                                   TextTrimming="CharacterEllipsis" />
+
+                                        <TextBlock Text="{Binding Description}"
+                                                   FontSize="12"
+                                                   Margin="0,4,0,0"
+                                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                                   TextWrapping="Wrap"
+                                                   MaxHeight="34"
+                                                   TextTrimming="CharacterEllipsis" />
+
+                                        <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                                            <TextBlock FontSize="11" Foreground="{DynamicResource TextFillColorTertiaryBrush}">
+                                                <Run Text="{x:Static resources:Strings.Menu_Overlay_Badges_Rarity}" />
+                                                <Run Text="{Binding RarityText, Mode=OneWay}" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                                            </TextBlock>
+                                            <TextBlock FontSize="11" Margin="16,0,0,0" Foreground="{DynamicResource TextFillColorTertiaryBrush}">
+                                                <Run Text="{x:Static resources:Strings.Menu_Overlay_Badges_Today}" />
+                                                <Run Text="{Binding PastDayAwardedText, Mode=OneWay}" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                                            </TextBlock>
+                                            <TextBlock FontSize="11" Margin="16,0,0,0" Foreground="{DynamicResource TextFillColorTertiaryBrush}">
+                                                <Run Text="{x:Static resources:Strings.Menu_Overlay_Badges_Total}" />
+                                                <Run Text="{Binding AwardedCountText, Mode=OneWay}" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                                            </TextBlock>
+                                        </StackPanel>
+                                    </StackPanel>
+
+                                    <Border Grid.Column="2"
+                                            VerticalAlignment="Center"
+                                            Padding="8,4"
+                                            CornerRadius="4"
+                                            Background="{DynamicResource ControlFillColorDefaultBrush}"
+                                            IsVisible="{Binding AwardedKnown}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <ic:Lucide Icon="Trophy"
+                                                       Width="12" Height="12"
+                                                       Margin="0,0,6,0"
+                                                       StrokeBrush="{Binding AwardedIconBrush}" />
+                                            <TextBlock Text="{Binding StatusText}"
+                                                       FontSize="11"
+                                                       VerticalAlignment="Center"
+                                                       Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                                        </StackPanel>
+                                    </Border>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+</UserControl>

@@ -58,7 +58,7 @@ namespace Froststrap.RobloxInterfaces
 
         private static async Task PopulateAwardedAsync(List<Badge> badges, long userId)
         {
-            if (userId == 0 || !badges.Any())
+            if (userId == 0 || badges.Count == 0)
                 return;
 
             if (!await SignedInAsync())
@@ -112,7 +112,7 @@ namespace Froststrap.RobloxInterfaces
 
         private static async Task PopulateIconsAsync(List<Badge> badges)
         {
-            if (!badges.Any())
+            if (badges.Count == 0)
                 return;
 
             try
@@ -129,8 +129,7 @@ namespace Froststrap.RobloxInterfaces
                     {
                         Badge? badge = badges.FirstOrDefault(x => x.Id == thumbnail.TargetId);
 
-                        if (badge is not null)
-                            badge.IconUrl = thumbnail.ImageUrl;
+                        badge?.IconUrl = thumbnail.ImageUrl;
                     }
                 }
             }
@@ -157,7 +156,7 @@ namespace Froststrap.RobloxInterfaces
                 batch = new List<long>(PageSize);
             }
 
-            if (batch.Any())
+            if (batch.Count > 0)
                 yield return batch;
         }
     }

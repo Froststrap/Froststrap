@@ -1,0 +1,223 @@
+<UserControl x:Class="Froststrap.UI.Elements.Overlay.Controls.GameBrowser"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:resources="using:Froststrap.Resources"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+             xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
+             xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Overlay.Controls"
+             mc:Ignorable="d"
+             d:DesignHeight="520" d:DesignWidth="720"
+             x:CompileBindings="False">
+
+    <UserControl.Styles>
+        <Style Selector="RadioButton.tabToggle">
+            <Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
+            <Setter Property="Padding" Value="14,5" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Name="PART_Bd"
+                            Background="Transparent"
+                            CornerRadius="6"
+                            Padding="{TemplateBinding Padding}">
+                        <!-- FIX: explicit Content binding -->
+                        <ContentPresenter Content="{TemplateBinding Content}"
+                                          VerticalAlignment="Center"
+                                          HorizontalAlignment="Center" />
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="RadioButton.tabToggle:pointerover /template/ Border#PART_Bd">
+            <Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
+        </Style>
+        <Style Selector="RadioButton.tabToggle:checked /template/ Border#PART_Bd">
+            <Setter Property="Background" Value="{DynamicResource ControlFillColorDefaultBrush}" />
+        </Style>
+        <Style Selector="RadioButton.tabToggle:checked">
+            <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+        </Style>
+
+        <Style Selector="Button.gameTileButton">
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Name="PART_Bd"
+                            Background="Transparent"
+                            CornerRadius="8"
+                            Padding="6">
+                        <!-- FIX: explicit Content binding -->
+                        <ContentPresenter Content="{TemplateBinding Content}" />
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="Button.gameTileButton:pointerover /template/ Border#PART_Bd">
+            <Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
+        </Style>
+        <Style Selector="Button.gameTileButton:pressed /template/ Border#PART_Bd">
+            <Setter Property="Background" Value="{DynamicResource SubtleFillColorTertiaryBrush}" />
+        </Style>
+
+        <Style Selector="Button.gameTileButton Border.playBadge">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="Button.gameTileButton:pointerover Border.playBadge">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+    </UserControl.Styles>
+
+    <Grid RowDefinitions="Auto,Auto,*">
+
+        <Grid Grid.Row="0" Margin="0,0,0,8" ColumnDefinitions="Auto,*">
+
+            <Border Grid.Column="0"
+                    Padding="3"
+                    CornerRadius="8"
+                    VerticalAlignment="Center"
+                    Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}"
+                    BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1">
+                <StackPanel Orientation="Horizontal">
+                    <RadioButton Classes="tabToggle"
+                                 GroupName="GameBrowserTab"
+                                 IsChecked="{Binding ShowingSearch, Mode=TwoWay}">
+                        <StackPanel Orientation="Horizontal">
+                            <ic:Lucide Icon="Search"
+                                       Width="14" Height="14"
+                                       Margin="0,0,6,0"
+                                       VerticalAlignment="Center"
+                                       StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}" />
+                            <TextBlock Text="{x:Static resources:Strings.Menu_Overlay_Games_Search}"
+                                       FontSize="13"
+                                       VerticalAlignment="Center"
+                                       Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                        </StackPanel>
+                    </RadioButton>
+
+                    <RadioButton Classes="tabToggle"
+                                 GroupName="GameBrowserTab"
+                                 Margin="2,0,0,0"
+                                 IsChecked="{Binding ShowingFavorites, Mode=TwoWay}">
+                        <StackPanel Orientation="Horizontal">
+                            <ic:Lucide Icon="Star"
+                                       Width="14" Height="14"
+                                       Margin="0,0,6,0"
+                                       VerticalAlignment="Center"
+                                       StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}" />
+                            <TextBlock Text="{x:Static resources:Strings.Menu_Overlay_Games_Favorites}"
+                                       FontSize="13"
+                                       VerticalAlignment="Center"
+                                       Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                        </StackPanel>
+                    </RadioButton>
+                </StackPanel>
+            </Border>
+
+            <TextBox Grid.Column="1"
+                     Margin="10,0,0,0"
+                     FontSize="13"
+                     VerticalAlignment="Center"
+                     PlaceholderText="{x:Static resources:Strings.Menu_Overlay_Games_SearchPlaceholder}"
+                     Text="{Binding Query, UpdateSourceTrigger=PropertyChanged}"
+                     IsVisible="{Binding ShowingSearch}" />
+        </Grid>
+
+        <TextBlock Grid.Row="1"
+                   Text="{Binding StatusText}"
+                   FontSize="12"
+                   Margin="2,0,0,8"
+                   Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                   IsVisible="{Binding HasStatus}" />
+
+        <Grid Grid.Row="2">
+            <ui:FAProgressRing IsIndeterminate="True"
+                               Width="32" Height="32"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Center"
+                               IsVisible="{Binding IsBusy}" />
+
+            <TextBlock Text="{Binding EmptyText}"
+                       FontSize="13"
+                       TextAlignment="Center"
+                       TextWrapping="Wrap"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"
+                       MaxWidth="320"
+                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                       IsVisible="{Binding ShowEmptyState}" />
+
+            <ScrollViewer VerticalScrollBarVisibility="Auto"
+                          Margin="0,0,-8,0"
+                          Padding="0,0,8,0">
+                <ItemsControl ItemsSource="{Binding ActiveTiles}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Classes="gameTileButton"
+                                    Width="148"
+                                    Margin="0,0,4,4"
+                                    Command="{Binding $parent[ItemsControl].((vm:GameBrowserViewModel)DataContext).JoinCommand}"
+                                    CommandParameter="{Binding Mode=OneTime}"
+                                    ToolTip.Tip="{Binding Name}">
+                                <StackPanel>
+                                    <Grid Width="136" Height="136">
+                                        <Border CornerRadius="8"
+                                                Background="{DynamicResource ControlFillColorDefaultBrush}"
+                                                ClipToBounds="True">
+                                            <Image Source="{Binding IconUrl, Converter={StaticResource UrlToBitmapConverter}}"
+                                                   Stretch="UniformToFill"
+                                                   Width="136" Height="136"
+                                                   RenderOptions.BitmapInterpolationMode="LowQuality" />
+                                        </Border>
+
+                                        <Border Classes="playBadge"
+                                                Width="44" Height="44"
+                                                CornerRadius="22"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Background="{DynamicResource AccentFillColorDefaultBrush}">
+                                            <Border.Effect>
+                                                <DropShadowEffect BlurRadius="12"
+                                                                  OffsetX="0" OffsetY="2"
+                                                                  Opacity="0.5"
+                                                                  Color="Black" />
+                                            </Border.Effect>
+                                            <ic:Lucide Icon="Play"
+                                                       Width="20" Height="20"
+                                                       Margin="2,0,0,0"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"
+                                                       StrokeBrush="{DynamicResource TextOnAccentFillColorPrimaryBrush}" />
+                                        </Border>
+                                    </Grid>
+
+                                    <TextBlock Text="{Binding Name}"
+                                               FontSize="13"
+                                               FontWeight="SemiBold"
+                                               Margin="0,6,0,0"
+                                               TextWrapping="Wrap"
+                                               MaxHeight="36"
+                                               TextTrimming="CharacterEllipsis"
+                                               Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+
+                                    <TextBlock Text="{Binding PlayingText}"
+                                               FontSize="11"
+                                               Margin="0,2,0,0"
+                                               Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+                                </StackPanel>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+</UserControl>

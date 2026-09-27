@@ -121,7 +121,7 @@ namespace Froststrap.UI
 
         public async void ShowNotification(object? sender, EventArgs e)
         {
-            App.Logger.Debug("Dispatching event notfification");
+            App.Logger.Debug("Dispatching event notification");
             if (ActivityWatcher?.Data == null) return;
 
             string title = ActivityWatcher.Data.ServerType switch
@@ -137,27 +137,41 @@ namespace Froststrap.UI
             {
                 App.Logger.Error("Couldn't connect to ipinfo.io");
                 ShowAlert(
-                    string.Format(CultureInfo.InvariantCulture, Strings.Dialog_Connectivity_UnableToConnect, "ipinfo.io"),
+                    String.Format(CultureInfo.InvariantCulture, Strings.Dialog_Connectivity_UnableToConnect, "ipinfo.io"),
                     Strings.ActivityWatcher_LocationQueryFailed,
-                    5
-                );
+                    5);
                 return;
             }
+
+            string message;
 
             if (!App.Settings.Prop.ShowServerUptime)
             {
                 string? serverID = ActivityWatcher.Data.JobId;
-                ShowAlert(title, string.Format(CultureInfo.InvariantCulture, Strings.ContextMenu_ServerDetails_Notification_Text_ServerID, serverLocation, serverID));
+                message = String.Format(
+                    CultureInfo.InvariantCulture,
+                    Strings.ContextMenu_ServerDetails_Notification_Text_ServerID,
+                    serverLocation,
+                    serverID);
             }
             else
             {
-                TimeSpan _serverUptime = DateTime.UtcNow - (ActivityWatcher.Data.StartTime ?? DateTime.UtcNow);
-                string serverUptime = _serverUptime.TotalMinutes < 1
+                TimeSpan serverUptime = DateTime.UtcNow - (ActivityWatcher.Data.StartTime ?? DateTime.UtcNow);
+                string uptimeText = serverUptime.TotalMinutes < 1
                     ? Strings.Common_JustStarted
-                    : Time.FormatTimeSpan(_serverUptime);
+                    : Time.FormatTimeSpan(serverUptime);
 
-                ShowAlert(title, string.Format(CultureInfo.InvariantCulture, Strings.ContextMenu_ServerDetails_Notification_Text, serverLocation, serverUptime));
+                message = String.Format(
+                    CultureInfo.InvariantCulture,
+                    Strings.ContextMenu_ServerDetails_Notification_Text,
+                    serverLocation,
+                    uptimeText);
             }
+
+            if (_watcher.Overlay?.ShowToast(title, message) == true)
+                return;
+
+            ShowAlert(title, message);
         }
 
         private void ShowAlert(string title, string message, int duration = 5)

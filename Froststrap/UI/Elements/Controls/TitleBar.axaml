@@ -7,7 +7,8 @@ SPDX-License-Identifier: MPL-2.0
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ui="using:FluentAvalonia.UI.Controls"
-        xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls">
+        xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+        xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia">
 
     <Style Selector="controls|TitleBar">
         <Setter Property="Background" Value="Transparent" />
@@ -18,32 +19,40 @@ SPDX-License-Identifier: MPL-2.0
                       Height="{TemplateBinding Height}"
                       Background="{TemplateBinding Background}">
 
-                    <StackPanel Grid.Column="0" Name="PART_LeftPanel" Margin="0,4,0,0" Orientation="Horizontal" IsHitTestVisible="True" VerticalAlignment="Top">
+                    <StackPanel Grid.Column="0" Name="PART_LeftPanel"
+                                Margin="0,0,0,0" Orientation="Horizontal"
+                                IsHitTestVisible="False" VerticalAlignment="Center">
+
                         <Image Source="{TemplateBinding Icon}"
-                               IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"
+                               IsVisible="{Binding Icon, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static ObjectConverters.IsNotNull}}"
                                Width="16" Height="16"
-                               Margin="8,4,0,0"
+                               Margin="8,0,0,0"
                                VerticalAlignment="Center"
-                               RenderOptions.BitmapInterpolationMode="HighQuality"
-                               IsHitTestVisible="False" />
+                               RenderOptions.BitmapInterpolationMode="HighQuality" />
+
+                        <ic:Lucide Icon="{TemplateBinding LucideIcon}"
+                                   IsVisible="{Binding LucideIcon, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static ObjectConverters.IsNotNull}}"
+                                   Width="16" Height="16"
+                                   Margin="8,0,0,0"
+                                   VerticalAlignment="Center"
+                                   StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}" />
 
                         <TextBlock Text="{TemplateBinding Title}"
                                    VerticalAlignment="Center"
                                    FontSize="12"
-                                   Margin="4,0,0,0"
+                                   Margin="8,0,0,0"
                                    FontWeight="Normal"
-                                   Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                                   IsHitTestVisible="False" />
+                                   Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
                     </StackPanel>
 
                     <Panel Grid.Column="1"
                            Name="PART_DragLayer"
-                           WindowDecorationProperties.ElementRole="TitleBar"
                            Background="Transparent"
                            VerticalAlignment="Stretch"
                            HorizontalAlignment="Stretch" />
 
-                    <StackPanel Grid.Column="2" Name="PART_RightPanel" Orientation="Horizontal" VerticalAlignment="Stretch">
+                    <StackPanel Grid.Column="2" Name="PART_RightPanel"
+                                Orientation="Horizontal" VerticalAlignment="Stretch">
                         <controls:IconButton Name="PART_MinimizeButton"
                                              Classes="TitleBarButton"
                                              Icon="Minus"

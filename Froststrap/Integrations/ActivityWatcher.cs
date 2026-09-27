@@ -465,7 +465,7 @@ namespace Froststrap.Integrations
                     {
                         await Task.Delay(3000);
 
-                        autoRejoinData.RejoinServer(false);
+                        autoRejoinData.RejoinServer();
                         CloseProcess(_robloxPID);
                     }
 

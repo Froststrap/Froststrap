@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Net.Http.Headers;
+using Froststrap.AppData;
 
 namespace Froststrap.Integrations
 {
@@ -52,6 +53,24 @@ namespace Froststrap.Integrations
                 return "Unknown";
 
             return $"{city}, {country}".Trim().Trim(',', ' ');
+        }
+
+        private static void LaunchRoblox(string deeplink)
+        {
+            if (Processes.IsRobloxRunning())
+            {
+                App.Logger.Info("Roblox is running, launching via player executable");
+                Process.Start(new RobloxPlayerData().ExecutablePath, deeplink);
+            }
+            else
+            {
+                App.Logger.Info("Roblox is not running, launching via protocol handler");
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = deeplink,
+                    UseShellExecute = true
+                });
+            }
         }
 
         public async Task<(List<string> regions, Dictionary<int, string> datacenterMap)?> GetDatacentersAsync(CancellationToken cancellationToken = default)
@@ -793,11 +812,7 @@ namespace Froststrap.Integrations
                         }
 
                         string robloxUri = $"roblox://experiences/start?placeId={placeId}&gameInstanceId={result.ServerId}";
-                        Process.Start(new ProcessStartInfo
-                        {
-                            FileName = robloxUri,
-                            UseShellExecute = true
-                        });
+                        LaunchRoblox(robloxUri);
                         return true;
                     }
                 }
@@ -831,11 +846,7 @@ namespace Froststrap.Integrations
                 }
 
                 string robloxUriAuto = $"roblox://experiences/start?placeId={placeId}&gameInstanceId={autoResult.ServerId}";
-                Process.Start(new ProcessStartInfo
-                {
-                    FileName = robloxUriAuto,
-                    UseShellExecute = true
-                });
+                LaunchRoblox(robloxUriAuto);
                 return true;
             }
             catch (Exception ex)

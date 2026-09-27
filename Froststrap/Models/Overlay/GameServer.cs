@@ -22,7 +22,7 @@ namespace Froststrap.Models.Overlay
 
         public bool IsCurrent { get; set; }
 
-        public List<string> PlayerTokens { get; set; } = new();
+        public List<string> PlayerTokens { get; set; } = [];
 
         public DateTime? StartedAt { get; set; }
 
@@ -46,11 +46,13 @@ namespace Froststrap.Models.Overlay
                     : up.TotalHours >= 1 ? $"{(int)up.TotalHours}h {up.Minutes}m"
                     : $"{Math.Max(up.Minutes, 1)}m";
 
-                return String.Format(UptimeIsEstimate ? Strings.Menu_Overlay_Servers_UptimeEstimate : Strings.Menu_Overlay_Servers_UptimeExact, span);
+                return String.Format(Locale.CurrentCulture,
+                    UptimeIsEstimate ? Strings.Menu_Overlay_Servers_UptimeEstimate : Strings.Menu_Overlay_Servers_UptimeExact,
+                    span);
             }
         }
 
-        public List<string> PlayerIcons { get; } = new();
+        public List<string> PlayerIcons { get; } = [];
 
         public int OverflowCount => HasStats ? Math.Max(Playing!.Value - PlayerIcons.Count, 0) : 0;
 
@@ -76,10 +78,19 @@ namespace Froststrap.Models.Overlay
         {
             get
             {
-                if (String.IsNullOrEmpty(City))
-                    return String.Empty;
+                bool hasCity = !String.IsNullOrWhiteSpace(City);
+                bool hasRegion = !String.IsNullOrWhiteSpace(Region);
 
-                return String.IsNullOrEmpty(Region) || Region == City ? City : $"{City}, {Region}";
+                if (!hasCity && !hasRegion)
+                    return Strings.Common_Unknown;
+
+                if (!hasCity)
+                    return Region!;
+
+                if (!hasRegion || Region == City)
+                    return City!;
+
+                return $"{City}, {Region}";
             }
         }
 

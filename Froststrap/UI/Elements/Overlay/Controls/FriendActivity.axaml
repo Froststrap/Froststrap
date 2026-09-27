@@ -1,0 +1,148 @@
+<UserControl x:Class="Froststrap.UI.Elements.Overlay.Controls.FriendActivity"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:resources="using:Froststrap.Resources"
+             mc:Ignorable="d"
+             d:DesignHeight="560" d:DesignWidth="820"
+             x:CompileBindings="False"
+             Loaded="OnLoaded">
+
+    <UserControl.Styles>
+        <Style Selector="ListBox.conversations ListBoxItem">
+            <Setter Property="Padding" Value="8" />
+            <Setter Property="Margin" Value="0,0,0,2" />
+            <Setter Property="CornerRadius" Value="4" />
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+        <Style Selector="ListBox.conversations ListBoxItem:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
+            <Setter Property="CornerRadius" Value="4" />
+        </Style>
+        <Style Selector="ListBox.conversations ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource SubtleFillColorTertiaryBrush}" />
+            <Setter Property="CornerRadius" Value="4" />
+        </Style>
+    </UserControl.Styles>
+
+    <Grid ColumnDefinitions="260,Auto,*">
+
+        <Grid Grid.Column="0" Margin="8,8,6,8" RowDefinitions="Auto,*">
+
+            <TextBox Grid.Row="0"
+                     Margin="0,0,0,6"
+                     FontSize="13"
+                     PlaceholderText="{x:Static resources:Strings.Menu_Overlay_Messages_Search}"
+                     Text="{Binding SearchTextBoxContent, UpdateSourceTrigger=PropertyChanged}" />
+
+            <Grid Grid.Row="1">
+                <TextBlock Text="{x:Static resources:Strings.Menu_Overlay_Messages_Empty}"
+                           FontSize="12"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Center"
+                           TextAlignment="Center"
+                           Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                           IsVisible="{Binding ShowEmptyState}" />
+
+                <ListBox Classes="conversations"
+                         ItemsSource="{Binding FriendsList}"
+                         Background="Transparent"
+                         BorderThickness="0"
+                         ScrollViewer.VerticalScrollBarVisibility="Auto"
+                         SelectionChanged="ConversationsSelectionChanged">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Height="40" ColumnDefinitions="Auto,*">
+                                <Border Grid.Column="0"
+                                        Width="36" Height="36"
+                                        CornerRadius="18"
+                                        Margin="0,0,10,0"
+                                        Background="{DynamicResource ControlFillColorDefaultBrush}"
+                                        ClipToBounds="True">
+                                    <Image Source="{Binding ProfileImage, Converter={StaticResource UrlToBitmapConverter}}"
+                                           Stretch="UniformToFill"
+                                           Width="36" Height="36"
+                                           RenderOptions.BitmapInterpolationMode="LowQuality" />
+                                </Border>
+
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Username}"
+                                               FontSize="13"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                               TextTrimming="CharacterEllipsis" />
+                                    <TextBlock Text="{Binding StatusText}"
+                                               FontSize="11"
+                                               Margin="0,1,0,0"
+                                               Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                               TextTrimming="CharacterEllipsis" />
+                                </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+        </Grid>
+
+        <Rectangle Grid.Column="1" Width="1"
+                   Fill="{DynamicResource DividerStrokeColorDefaultBrush}" />
+
+        <Grid Grid.Column="2" RowDefinitions="*,Auto">
+
+            <TextBlock Grid.Row="0"
+                       Text="{x:Static resources:Strings.Menu_Overlay_Messages_PickConversation}"
+                       FontSize="13"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"
+                       TextAlignment="Center"
+                       Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                       IsVisible="{Binding ShowConversationPlaceholder}" />
+
+            <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" Margin="10,10,4,0">
+                <ItemsControl ItemsSource="{Binding MessagesList}" Margin="0,0,6,0">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="0,0,0,6" HorizontalAlignment="{Binding Alignment}">
+                                <Border CornerRadius="8"
+                                        Padding="12,8"
+                                        MaxWidth="420"
+                                        Background="{Binding Background}"
+                                        Opacity="{Binding Opacity}">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Sender}"
+                                                   FontSize="11"
+                                                   Margin="0,0,0,3"
+                                                   IsVisible="{Binding SenderVisibility}"
+                                                   Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+                                        <TextBlock Name="Body"
+                                                   Text="{Binding Text}"
+                                                   FontSize="13"
+                                                   TextWrapping="Wrap"
+                                                   Foreground="{Binding BodyForeground}" />
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+
+            <Grid Grid.Row="1" Margin="10,8,10,10" ColumnDefinitions="*,Auto">
+                <TextBox x:Name="MessageTextBox"
+                         Grid.Column="0"
+                         FontSize="13"
+                         Margin="0,0,6,0"
+                         PlaceholderText="{x:Static resources:Strings.Menu_Overlay_Messages_Write}"
+                         Text="{Binding MessageTextBoxContent, UpdateSourceTrigger=PropertyChanged}"
+                         KeyDown="MessageTextBoxKeyDown" />
+
+                <Button Grid.Column="1"
+                        MinWidth="76"
+                        Classes="accent"
+                        Content="{x:Static resources:Strings.Menu_Overlay_Messages_Send}"
+                        Command="{Binding SendMessageCommand}" />
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

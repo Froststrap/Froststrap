@@ -6,8 +6,9 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Media;
-using Avalonia.Metadata;
 using LucideAvalonia.Enum;
+using System;
+using System.Windows.Input;
 using WindowState = Avalonia.Controls.WindowState;
 
 namespace Froststrap.UI.Elements.Controls
@@ -29,6 +30,15 @@ namespace Froststrap.UI.Elements.Controls
         public static readonly StyledProperty<IImage?> IconProperty =
             AvaloniaProperty.Register<TitleBar, IImage?>(nameof(Icon), defaultValue: null);
 
+        public static readonly StyledProperty<LucideIconNames?> LucideIconProperty =
+            AvaloniaProperty.Register<TitleBar, LucideIconNames?>(nameof(LucideIcon), defaultValue: null);
+
+        public static readonly StyledProperty<ICommand?> CloseCommandProperty =
+            AvaloniaProperty.Register<TitleBar, ICommand?>(nameof(CloseCommand));
+
+        public static readonly StyledProperty<object?> CloseCommandParameterProperty =
+            AvaloniaProperty.Register<TitleBar, object?>(nameof(CloseCommandParameter));
+
         public static readonly StyledProperty<WindowState> WindowStateProperty =
             AvaloniaProperty.Register<TitleBar, WindowState>(nameof(WindowState), defaultValue: WindowState.Normal);
 
@@ -37,6 +47,9 @@ namespace Froststrap.UI.Elements.Controls
         public bool ShowMaximize { get => GetValue(ShowMaximizeProperty); set => SetValue(ShowMaximizeProperty, value); }
         public bool ShowClose { get => GetValue(ShowCloseProperty); set => SetValue(ShowCloseProperty, value); }
         public IImage? Icon { get => GetValue(IconProperty); set => SetValue(IconProperty, value); }
+        public LucideIconNames? LucideIcon { get => GetValue(LucideIconProperty); set => SetValue(LucideIconProperty, value); }
+        public ICommand? CloseCommand { get => GetValue(CloseCommandProperty); set => SetValue(CloseCommandProperty, value); }
+        public object? CloseCommandParameter { get => GetValue(CloseCommandParameterProperty); set => SetValue(CloseCommandParameterProperty, value); }
         public WindowState WindowState { get => GetValue(WindowStateProperty); set => SetValue(WindowStateProperty, value); }
 
         private Window? _window;
@@ -49,7 +62,6 @@ namespace Froststrap.UI.Elements.Controls
             base.OnApplyTemplate(e);
 
             _window = TopLevel.GetTopLevel(this) as Window;
-            if (_window == null) return;
 
             foreach (var it in new[] { "PART_LeftPanel", "PART_RightPanel" })
             {
@@ -57,7 +69,8 @@ namespace Froststrap.UI.Elements.Controls
                 ctrl?.IsVisible = !OperatingSystem.IsMacOS();
             }
 
-            _window.PropertyChanged += OnWindowPropertyChanged;
+            if (_window is not null)
+                _window.PropertyChanged += OnWindowPropertyChanged;
 
             _minBtn = e.NameScope.Find<IconButton>("PART_MinimizeButton");
             _maxBtn = e.NameScope.Find<IconButton>("PART_MaximizeButton");
@@ -104,6 +117,14 @@ namespace Froststrap.UI.Elements.Controls
 
         private void OnCloseClick(object? sender, EventArgs e)
         {
+            if (CloseCommand is not null)
+            {
+                if (CloseCommand.CanExecute(CloseCommandParameter))
+                    CloseCommand.Execute(CloseCommandParameter);
+
+                return;
+            }
+
             _window?.Close();
         }
 
@@ -111,7 +132,9 @@ namespace Froststrap.UI.Elements.Controls
         {
             base.OnDetachedFromVisualTree(e);
 
-            _window?.PropertyChanged -= OnWindowPropertyChanged;
+            if (_window is not null)
+                _window.PropertyChanged -= OnWindowPropertyChanged;
+
             _minBtn?.Click -= OnMinimizeClick;
             _maxBtn?.Click -= OnMaximizeClick;
             _closeBtn?.Click -= OnCloseClick;

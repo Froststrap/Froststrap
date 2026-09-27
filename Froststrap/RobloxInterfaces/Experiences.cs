@@ -19,9 +19,9 @@ namespace Froststrap.RobloxInterfaces
             var response = await Http.GetJson<OmniSearchResponse>(UrlBuilder.BuildApiUrl("apis",
                 $"search-api/omni-search?searchQuery={Uri.EscapeDataString(query)}&pageType=all&sessionId={SearchSession}"));
 
-            var tiles = response.SearchResults
+            var tiles = (response.SearchResults ?? [])
                 .Where(x => x.ContentGroupType == "Game")
-                .SelectMany(x => x.Contents)
+                .SelectMany(x => x.Contents ?? [])
                 .Where(x => !x.IsSponsored && x.RootPlaceId != 0)
                 .GroupBy(x => x.UniverseId)
                 .Select(x => x.First())
@@ -41,7 +41,7 @@ namespace Froststrap.RobloxInterfaces
 
         public static async Task<List<GameTile>> FavoritesAsync(long userId)
         {
-            var response = await Http.GetJson<ApiPageResponse<FavoriteGameResponse>>(UrlBuilder.BuildApiUrl("games",
+            var response = await Http.GetJson<ApiPageResponse<FavoriteGameData>>(UrlBuilder.BuildApiUrl("games",
                 $"v2/users/{userId}/favorite/games?limit={FavoritesLimit}&sortOrder=Desc"));
 
             var tiles = response.Data
@@ -50,7 +50,7 @@ namespace Froststrap.RobloxInterfaces
                 {
                     UniverseId = x.Id,
                     PlaceId = x.RootPlace!.Id,
-                    Name = x.Name
+                    Name = x.Name ?? Strings.Menu_QuickPlay_UnknownGame
                 })
                 .ToList();
 
@@ -79,8 +79,7 @@ namespace Froststrap.RobloxInterfaces
                     {
                         GameTile? tile = chunk.FirstOrDefault(x => x.UniverseId == detail.Id);
 
-                        if (tile is not null)
-                            tile.Playing = detail.Playing;
+                        tile?.Playing = detail.Playing;
                     }
                 }
             }
@@ -107,8 +106,7 @@ namespace Froststrap.RobloxInterfaces
                     {
                         GameTile? tile = chunk.FirstOrDefault(x => x.UniverseId == thumbnail.TargetId);
 
-                        if (tile is not null)
-                            tile.IconUrl = thumbnail.ImageUrl;
+                        tile?.IconUrl = thumbnail.ImageUrl;
                     }
                 }
             }

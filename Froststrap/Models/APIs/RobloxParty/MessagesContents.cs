@@ -6,6 +6,6 @@
         public string ConversationId { get; set; } = String.Empty;
 
         [JsonPropertyName("messages")]
-        public MessageContent[] Messages { get; set; } = Array.Empty<MessageContent>();
+        public MessageContent[] Messages { get; set; } = [];
     }
 }

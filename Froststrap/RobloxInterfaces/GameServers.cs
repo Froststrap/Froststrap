@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 
 namespace Froststrap.RobloxInterfaces
@@ -97,8 +98,11 @@ namespace Froststrap.RobloxInterfaces
             }
             else
             {
-                foreach (RoValraServer server in await FetchRegionIndexAsync(placeId, region.Code))
+                foreach (RoValraRegionServer server in await FetchRegionIndexAsync(placeId, region.Code))
                 {
+                    if (String.IsNullOrEmpty(server.ServerId))
+                        continue;
+
                     stats.TryGetValue(server.ServerId, out GameServerResponse? stat);
 
                     servers.Add(new GameServer
@@ -108,7 +112,7 @@ namespace Froststrap.RobloxInterfaces
                         MaxPlayers = stat?.MaxPlayers,
                         Fps = stat?.Fps,
                         Ping = stat?.Ping,
-                        PlayerTokens = stat?.PlayerTokens ?? new List<string>(),
+                        PlayerTokens = stat?.PlayerTokens ?? [],
                         City = server.City,
                         Region = server.Region,
                         StartedAt = server.FirstSeenUtc,
@@ -121,8 +125,8 @@ namespace Froststrap.RobloxInterfaces
                 servers.RemoveAll(x => x.IsFull && !x.IsCurrent);
 
             servers = order == Order.Ascending
-                ? servers.OrderBy(x => x.HasStats ? 0 : 1).ThenBy(x => x.Playing ?? 0).ToList()
-                : servers.OrderBy(x => x.HasStats ? 0 : 1).ThenByDescending(x => x.Playing ?? 0).ToList();
+                ? [.. servers.OrderBy(x => x.HasStats ? 0 : 1).ThenBy(x => x.Playing ?? 0)]
+                : [.. servers.OrderBy(x => x.HasStats ? 0 : 1).ThenByDescending(x => x.Playing ?? 0)];
 
             return servers;
         }
@@ -134,18 +138,19 @@ namespace Froststrap.RobloxInterfaces
 
             try
             {
-                List<string> tokens = servers
+                List<string> tokens = [
+                    .. servers
                     .SelectMany(x => x.PlayerTokens.Take(MaxFaces))
                     .Distinct(StringComparer.Ordinal)
-                    .ToList();
+                ];
 
                 Dictionary<string, string> real = tokens.Count > 0
                     ? await PlayerThumbnails.FetchByTokenAsync(tokens)
-                    : new Dictionary<string, string>();
+                    : [];
 
                 IReadOnlyList<string> pool = servers.Any(x => Faces(x, real).Count == 0)
                     ? await PlayerThumbnails.FetchPoolAsync()
-                    : Array.Empty<string>();
+                    : [];
 
                 foreach (GameServer server in servers)
                 {
@@ -164,20 +169,21 @@ namespace Froststrap.RobloxInterfaces
         }
 
         private static List<string> Faces(GameServer server, Dictionary<string, string> resolved) =>
-            server.PlayerTokens
+        [
+            .. server.PlayerTokens
                 .Take(MaxFaces)
                 .Select(token => resolved.TryGetValue(token, out string? url) ? url : null)
                 .Where(x => !String.IsNullOrEmpty(x))
                 .Select(x => x!)
-                .ToList();
+        ];
 
         private static IEnumerable<string> Filler(GameServer server, IReadOnlyList<string> pool)
         {
             if (pool.Count == 0)
-                return Array.Empty<string>();
+                return [];
 
             int count = Math.Clamp(server.Playing ?? MaxFaces, 1, MaxFaces);
-            int offset = (server.JobId.GetHashCode() & Int32.MaxValue) % pool.Count;
+            int offset = (StringComparer.Ordinal.GetHashCode(server.JobId) & Int32.MaxValue) % pool.Count;
 
             return Enumerable.Range(0, count).Select(i => pool[(offset + i) % pool.Count]);
         }
@@ -201,11 +207,14 @@ namespace Froststrap.RobloxInterfaces
             {
                 try
                 {
-                    var response = await Http.GetJson<RoValraServers>(new Uri(
+                    var response = await Http.GetJson<RoValraRegionResponse>(new Uri(
                         $"https://apis.rovalra.com/v1/servers/details?place_id={placeId}&server_ids={String.Join(',', batch.Select(x => x.JobId))}"));
 
-                    foreach (RoValraServer detail in response?.Servers ?? new List<RoValraServer>())
+                    foreach (RoValraRegionServer detail in response?.Servers ?? [])
                     {
+                        if (String.IsNullOrEmpty(detail.ServerId))
+                            continue;
+
                         if (!byId.TryGetValue(detail.ServerId, out GameServer? server))
                             continue;
 
@@ -237,7 +246,7 @@ namespace Froststrap.RobloxInterfaces
             if (candidates.Count == 0)
                 candidates = open;
 
-            return candidates.Count == 0 ? null : candidates[Random.Shared.Next(candidates.Count)];
+            return candidates.Count == 0 ? null : candidates[RandomNumberGenerator.GetInt32(candidates.Count)];
         }
 
         private static async Task<List<GameServerResponse>> FetchLiveAsync(long placeId)
@@ -272,9 +281,9 @@ namespace Froststrap.RobloxInterfaces
             return servers;
         }
 
-        private static async Task<List<RoValraServer>> FetchRegionIndexAsync(long placeId, string region)
+        private static async Task<List<RoValraRegionServer>> FetchRegionIndexAsync(long placeId, string region)
         {
-            var index = new List<RoValraServer>();
+            var index = new List<RoValraRegionServer>();
             var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
             int? cursor = null;
@@ -288,12 +297,12 @@ namespace Froststrap.RobloxInterfaces
                     if (cursor is not null)
                         query += $"&cursor={cursor}";
 
-                    var response = await Http.GetJson<RoValraServers>(new Uri(query));
+                    var response = await Http.GetJson<RoValraRegionResponse>(new Uri(query));
 
                     if (response?.Servers is null)
                         break;
 
-                    foreach (RoValraServer server in response.Servers)
+                    foreach (RoValraRegionServer server in response.Servers)
                     {
                         if (!String.IsNullOrEmpty(server.ServerId) && seen.Add(server.ServerId))
                             index.Add(server);

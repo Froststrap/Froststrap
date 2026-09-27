@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-namespace Froststrap.Models.RobloxApi
+namespace Froststrap.Models.APIs.Roblox
 {
     /// <summary>
     /// Roblox.Users.Api.GetUserResponse

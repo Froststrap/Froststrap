@@ -51,7 +51,7 @@
 
                 return AwardedDate is null
                     ? Strings.Menu_Overlay_Badges_Earned
-                    : String.Format(Strings.Menu_Overlay_Badges_EarnedOn, AwardedDate.Value.ToLocalTime().ToString("d", Locale.CurrentCulture));
+                    : String.Format(Locale.CurrentCulture, Strings.Menu_Overlay_Badges_EarnedOn, AwardedDate.Value.ToLocalTime().ToString("d", Locale.CurrentCulture));
             }
         }
     }

@@ -1,11 +1,11 @@
 ﻿namespace Froststrap.Models.Persistable
 {
-    public class OverlayLayout
+    internal class OverlayLayout
     {
-        public Dictionary<string, OverlayPanelLayout> Panels { get; set; } = new();
+        public Dictionary<string, OverlayPanelLayout> Panels { get; set; } = [];
     }
 
-    public class OverlayPanelLayout
+    internal class OverlayPanelLayout
     {
         public bool Open { get; set; }
 

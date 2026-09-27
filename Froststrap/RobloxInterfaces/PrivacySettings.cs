@@ -14,9 +14,9 @@ namespace Froststrap.RobloxInterfaces
 
         private static readonly Uri UpdateUrl = new("https://apis.roblox.com/user-settings-api/v1/user-settings");
 
-        public static readonly IReadOnlyList<string> OnlineLevels = new[] { "AllUsers", "FriendsFollowingAndFollowers", "FriendsAndFollowing", "Friends", "TrustedFriends", "NoOne" };
+        public static readonly IReadOnlyList<string> OnlineLevels = [ "AllUsers", "FriendsFollowingAndFollowers", "FriendsAndFollowing", "Friends", "TrustedFriends", "NoOne" ];
 
-        private static readonly IReadOnlyList<string> JoinLevels = new[] { "All", "Followers", "Following", "Friends", "TrustedFriends", "NoOne" };
+        private static readonly string[] JoinLevels = [ "All", "Followers", "Following", "Friends", "TrustedFriends", "NoOne" ];
 
         public static async Task<(string? Online, string? Join)> FetchAsync()
         {

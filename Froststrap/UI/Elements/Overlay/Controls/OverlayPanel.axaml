@@ -1,0 +1,101 @@
+<!--
+SPDX-FileCopyrightText: 2026 Froststrap
+
+SPDX-License-Identifier: MPL-2.0
+-->
+
+<UserControl x:Class="Froststrap.UI.Elements.Overlay.Controls.OverlayPanel"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+             mc:Ignorable="d"
+             x:Name="Root"
+             d:DesignHeight="420" d:DesignWidth="620">
+
+    <UserControl.Styles>
+        <Style Selector="Thumb.panelResizeGrip">
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Background="Transparent" />
+                </ControlTemplate>
+            </Setter>
+        </Style>
+    </UserControl.Styles>
+
+    <Grid>
+
+        <Border CornerRadius="8"
+                Background="{DynamicResource SolidBackgroundFillColorBaseBrush}"
+                BorderBrush="{DynamicResource SurfaceStrokeColorDefaultBrush}"
+                BorderThickness="1">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="24"
+                                  OffsetX="0" OffsetY="4"
+                                  Opacity="0.45"
+                                  Color="Black" />
+            </Border.Effect>
+
+            <Grid x:Name="Body" SizeChanged="BodySizeChanged" RowDefinitions="Auto,*">
+
+                <controls:TitleBar x:Name="TitleBar"
+                                   Grid.Row="0"
+                                   Title="{Binding Title, ElementName=Root}"
+                                   LucideIcon="{Binding Icon, ElementName=Root}"
+                                   ShowMinimize="False"
+                                   ShowMaximize="False"
+                                   ShowClose="True"
+                                   CloseCommand="{Binding CloseCommand, ElementName=Root}"
+                                   CloseCommandParameter="{Binding CloseCommandParameter, ElementName=Root}"
+                                   PointerPressed="TitleBarPointerPressed"
+                                   PointerMoved="TitleBarPointerMoved"
+                                   PointerReleased="TitleBarPointerReleased" />
+
+                <ContentPresenter Grid.Row="1"
+                                  Margin="{Binding ContentPadding, ElementName=Root}"
+                                  Content="{Binding PanelContent, ElementName=Root}" />
+            </Grid>
+        </Border>
+
+        <Thumb Classes="panelResizeGrip" Tag="Left" Width="6" Margin="-3,10,0,10"
+               HorizontalAlignment="Left" VerticalAlignment="Stretch" Cursor="SizeWestEast"
+               DragDelta="ResizeDragDelta" />
+        <Thumb Classes="panelResizeGrip" Tag="Right" Width="6" Margin="0,10,-3,10"
+               HorizontalAlignment="Right" VerticalAlignment="Stretch" Cursor="SizeWestEast"
+               DragDelta="ResizeDragDelta" />
+        <Thumb Classes="panelResizeGrip" Tag="Top" Height="6" Margin="10,-3,10,0"
+               HorizontalAlignment="Stretch" VerticalAlignment="Top" Cursor="SizeNorthSouth"
+               DragDelta="ResizeDragDelta" />
+        <Thumb Classes="panelResizeGrip" Tag="Bottom" Height="6" Margin="10,0,10,-3"
+               HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Cursor="SizeNorthSouth"
+               DragDelta="ResizeDragDelta" />
+
+        <Thumb Classes="panelResizeGrip" Tag="TopLeft" Width="12" Height="12" Margin="-3,-3,0,0"
+               HorizontalAlignment="Left" VerticalAlignment="Top" Cursor="TopLeftCorner"
+               DragDelta="ResizeDragDelta" />
+        <Thumb Classes="panelResizeGrip" Tag="TopRight" Width="12" Height="12" Margin="0,-3,-3,0"
+               HorizontalAlignment="Right" VerticalAlignment="Top" Cursor="TopRightCorner"
+               DragDelta="ResizeDragDelta" />
+        <Thumb Classes="panelResizeGrip" Tag="BottomLeft" Width="12" Height="12" Margin="-3,0,0,-3"
+               HorizontalAlignment="Left" VerticalAlignment="Bottom" Cursor="BottomLeftCorner"
+               DragDelta="ResizeDragDelta" />
+
+        <Thumb Classes="panelResizeGrip" Tag="BottomRight" Width="16" Height="16" Margin="0,0,-2,-2"
+               HorizontalAlignment="Right" VerticalAlignment="Bottom" Cursor="BottomRightCorner"
+               DragDelta="ResizeDragDelta">
+            <Thumb.Template>
+                <ControlTemplate>
+                    <Grid Background="Transparent">
+                        <Path Data="M 14,14 L 14,6 M 14,14 L 6,14 M 14,10 L 10,14"
+                              Stroke="{DynamicResource TextFillColorTertiaryBrush}"
+                              StrokeThickness="1.5"
+                              HorizontalAlignment="Right"
+                              VerticalAlignment="Bottom"
+                              Margin="0,0,3,3" />
+                    </Grid>
+                </ControlTemplate>
+            </Thumb.Template>
+        </Thumb>
+    </Grid>
+</UserControl>

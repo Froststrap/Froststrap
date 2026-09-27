@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Security.Cryptography;
 
 namespace Froststrap.RobloxInterfaces
 {
@@ -17,8 +15,6 @@ namespace Froststrap.RobloxInterfaces
         private static readonly Uri BatchUrl = new("https://thumbnails.roblox.com/v1/batch");
 
         private static readonly SemaphoreSlim _poolLock = new(1, 1);
-
-        private static readonly Random _random = new();
 
         private static IReadOnlyList<string>? _pool;
 
@@ -77,13 +73,10 @@ namespace Froststrap.RobloxInterfaces
 
             try
             {
-                if (_pool is not null)
-                    return _pool;
-
                 var ids = new HashSet<long>();
 
                 while (ids.Count < PoolAttempts)
-                    ids.Add(_random.Next(1, HighestUserId));
+                    ids.Add(RandomNumberGenerator.GetInt32(1, HighestUserId));
 
                 var icons = new List<string>();
 
@@ -97,7 +90,7 @@ namespace Froststrap.RobloxInterfaces
                         .Select(x => x.ImageUrl!));
                 }
 
-                List<string> pool = icons.Distinct(StringComparer.Ordinal).ToList();
+                List<string> pool = [.. icons.Distinct(StringComparer.Ordinal)];
 
                 _pool = pool;
 
@@ -110,7 +103,7 @@ namespace Froststrap.RobloxInterfaces
                 App.Logger.Warn("Failed to pool filler thumbnails");
                 App.Logger.Error(ex);
 
-                return Array.Empty<string>();
+                return [];
             }
             finally
             {

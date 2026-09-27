@@ -1,9 +1,13 @@
-﻿using Avalonia;
+﻿// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
+using Avalonia;
 using Avalonia.Threading;
 using Froststrap.Integrations.OverlayModules;
 using Froststrap.UI.Elements.Overlay;
 using Froststrap;
-using Froststrap.Integrations;
+using System.Drawing;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.UI.Accessibility;
@@ -20,6 +24,9 @@ namespace Froststrap.Integrations
         private const uint EVENT_OBJECT_LOCATIONCHANGE = 0x800B;
         private const uint WINEVENT_OUTOFCONTEXT = 0x0000;
 
+        private const int ResolveTimeoutMs = 30_000;
+        private const int ResolvePollMs = 500;
+
         public event EventHandler<OverlayBounds>? BoundsChanged;
         public event EventHandler<bool>? GameVisibilityChanged;
         public event EventHandler? WindowClosed;
@@ -27,8 +34,8 @@ namespace Froststrap.Integrations
         public readonly RealtimeMessaging Messaging = new();
         public readonly ActivityWatcher? ActivityWatcher;
 
-        private readonly HWND _robloxWindow;
         private readonly uint _robloxProcessId;
+        private HWND _robloxWindow;
 
         private WINEVENTPROC? _systemCallback;
         private WINEVENTPROC? _objectCallback;
@@ -41,25 +48,40 @@ namespace Froststrap.Integrations
         private OverlayBounds? _lastBounds;
         private bool _disposed;
 
-        public Overlay(long windowHandle, long robloxProcessId, ActivityWatcher? activityWatcher)
+        public Overlay(int robloxProcessId, ActivityWatcher? activityWatcher)
         {
-            _robloxWindow = (HWND)(IntPtr)windowHandle;
             _robloxProcessId = (uint)robloxProcessId;
             ActivityWatcher = activityWatcher;
+
+            _robloxWindow = FindMainWindow(_robloxProcessId);
         }
 
         public void Start()
         {
-            if (_robloxWindow == IntPtr.Zero)
+            _ = StartAsync();
+        }
+
+        private async Task StartAsync()
+        {
+            if (_robloxWindow == HWND.Null)
+                _robloxWindow = await WaitForWindowAsync();
+
+            if (_disposed)
+                return;
+
+            if (_robloxWindow == HWND.Null)
             {
-                App.Logger.Warn("No window handle, not starting");
+                App.Logger.Warn($"No window found for process {_robloxProcessId}, not starting overlay");
                 return;
             }
 
             App.Logger.Info($"Attaching to window {(IntPtr)_robloxWindow}");
 
-            Dispatcher.UIThread.Invoke(() =>
+            await Dispatcher.UIThread.InvokeAsync(() =>
             {
+                if (_disposed)
+                    return;
+
                 _window = new GameOverlay(this);
                 _window.PrepareHidden();
 
@@ -75,8 +97,56 @@ namespace Froststrap.Integrations
                     null, _objectCallback, _robloxProcessId, 0, WINEVENT_OUTOFCONTEXT);
             });
 
+            if (_disposed)
+                return;
+
             SyncBounds();
             Messaging.ConnectToUserhub();
+        }
+
+        private async Task<HWND> WaitForWindowAsync()
+        {
+            int elapsed = 0;
+
+            while (!_disposed && elapsed < ResolveTimeoutMs)
+            {
+                HWND hwnd = FindMainWindow(_robloxProcessId);
+                if (hwnd != HWND.Null)
+                    return hwnd;
+
+                await Task.Delay(ResolvePollMs);
+                elapsed += ResolvePollMs;
+            }
+
+            return HWND.Null;
+        }
+
+        private static HWND FindMainWindow(uint processId)
+        {
+            HWND found = HWND.Null;
+
+            BOOL Callback(HWND hWnd, LPARAM lParam)
+            {
+                PInvoke.GetWindowThreadProcessId(hWnd, out uint pid);
+
+                if (pid != processId)
+                    return true;
+
+                if (!PInvoke.IsWindowVisible(hWnd))
+                    return true;
+
+                if (!PInvoke.GetClientRect(hWnd, out RECT rect))
+                    return true;
+
+                if (rect.right - rect.left <= 0 || rect.bottom - rect.top <= 0)
+                    return true;
+
+                found = hWnd;
+                return false;
+            }
+
+            PInvoke.EnumWindows(Callback, 0);
+            return found;
         }
 
         public void SyncBounds()
@@ -89,7 +159,7 @@ namespace Froststrap.Integrations
 
         public void AnchorAboveGame(IntPtr overlayHandle)
         {
-            if (overlayHandle == IntPtr.Zero || _robloxWindow == IntPtr.Zero)
+            if (overlayHandle == IntPtr.Zero || _robloxWindow == HWND.Null)
                 return;
 
             PInvoke.SetWindowPos(
@@ -103,7 +173,7 @@ namespace Froststrap.Integrations
 
         public bool ShowToast(string title, string message)
         {
-            if (_disposed || _window is null || _robloxWindow == IntPtr.Zero)
+            if (_disposed || _window is null || _robloxWindow == HWND.Null)
             {
                 App.Logger.Warn("No overlay to show it in");
                 return false;
@@ -127,7 +197,7 @@ namespace Froststrap.Integrations
                         return false;
                     }
 
-                    App.Logger.Info($"{title}: {message.Replace("\n", "\\n")}");
+                    App.Logger.Info($"{title}: {message.Replace("\n", "\\n", StringComparison.Ordinal)}");
 
                     _toast ??= new OverlayToast();
                     _toast.Present(title, message, bounds.Rect);
@@ -145,18 +215,25 @@ namespace Froststrap.Integrations
 
         public void DismissToast() => _toast?.Dismiss();
 
-        public bool IsGameMinimised() => PInvoke.IsIconic(_robloxWindow);
+        public bool IsGameMinimised() => _robloxWindow != HWND.Null && PInvoke.IsIconic(_robloxWindow);
 
-        public bool IsGameForeground() => PInvoke.GetForegroundWindow() == _robloxWindow;
+        public bool IsGameForeground() => _robloxWindow != HWND.Null && PInvoke.GetForegroundWindow() == _robloxWindow;
 
-        public void FocusGame() => PInvoke.SetForegroundWindow(_robloxWindow);
+        public void FocusGame()
+        {
+            if (_robloxWindow != HWND.Null)
+                PInvoke.SetForegroundWindow(_robloxWindow);
+        }
 
         private OverlayBounds GetBounds()
         {
+            if (_robloxWindow == HWND.Null)
+                return new OverlayBounds(default, false);
+
             if (!PInvoke.GetClientRect(_robloxWindow, out RECT client))
                 return new OverlayBounds(default, false);
 
-            POINT origin = new() { X = client.left, Y = client.top };
+            System.Drawing.Point origin = new(client.left, client.top);
 
             if (!PInvoke.ClientToScreen(_robloxWindow, ref origin))
                 return new OverlayBounds(default, false);
@@ -246,7 +323,7 @@ namespace Froststrap.Integrations
                 _window?.Close();
             });
 
-            _ = Messaging.DisposeAsync();
+            _ = Messaging.DisposeAsync().AsTask();
             GC.SuppressFinalize(this);
         }
     }

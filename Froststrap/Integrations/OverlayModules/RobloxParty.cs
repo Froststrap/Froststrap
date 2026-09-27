@@ -29,7 +29,7 @@ namespace Froststrap.Integrations.OverlayModules
         private void OnIncomingMessage(object? sender, MessageEvent message) =>
             IncomingMessage?.Invoke(this, message);
 
-        public async Task<ConversationsPage?> GetConversations(int pageSize = 20, string? cursor = null)
+        public static async Task<ConversationsPage?> GetConversations(int pageSize = 20, string? cursor = null)
         {
             Uri url = UrlBuilder.BuildApiUrl(ApiService,
                 $"{ApiPath}/get-user-conversations?pageSize={pageSize}&include_user_data=true&cursor={cursor}");
@@ -47,7 +47,7 @@ namespace Froststrap.Integrations.OverlayModules
             return null;
         }
 
-        public async Task<UserMessagesPage?> GetMessages(Conversation conversation, string? cursor = null)
+        public static async Task<UserMessagesPage?> GetMessages(Conversation conversation, string? cursor = null)
         {
             if (String.IsNullOrEmpty(conversation.Id))
                 return null;
@@ -68,12 +68,12 @@ namespace Froststrap.Integrations.OverlayModules
             return null;
         }
 
-        public async Task SendMessage(string conversationId, string messageContent)
+        public static async Task SendMessage(string conversationId, string messageContent)
         {
             var payload = new MessagesContents
             {
                 ConversationId = conversationId,
-                Messages = new[] { new MessageContent { Content = messageContent } }
+                Messages = [ new MessageContent { Content = messageContent } ]
             };
 
             var content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
@@ -101,7 +101,7 @@ namespace Froststrap.Integrations.OverlayModules
             }
         }
 
-        public async Task UpdateTypingStatus(Conversation conversation)
+        public static async Task UpdateTypingStatus(Conversation conversation)
         {
             var payload = new ConversationPayload { Id = conversation.Id };
             var content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");

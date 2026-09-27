@@ -84,7 +84,9 @@ namespace Froststrap.Integrations.OverlayModules
         {
             App.Logger.Info("Disconnecting from userhub");
 
+#pragma warning disable CA1849
             _cancellation?.Cancel();
+#pragma warning restore CA1849
 
             foreach (Task? task in new[] { _receiveTask, _pingTask })
             {
@@ -133,17 +135,17 @@ namespace Froststrap.Integrations.OverlayModules
 
                     using (var stream = new MemoryStream())
                     {
-                        WebSocketReceiveResult result;
+                        ValueWebSocketReceiveResult result;
                         byte[] buffer = new byte[4096];
 
                         do
                         {
-                            result = await _webSocket!.ReceiveAsync(new ArraySegment<byte>(buffer), token);
+                            result = await _webSocket!.ReceiveAsync(buffer.AsMemory(), token);
 
                             if (result.MessageType == WebSocketMessageType.Close)
                                 return;
 
-                            await stream.WriteAsync(buffer, 0, result.Count, token);
+                            await stream.WriteAsync(buffer.AsMemory(0, result.Count), token);
                         }
                         while (!result.EndOfMessage);
 
@@ -242,10 +244,8 @@ namespace Froststrap.Integrations.OverlayModules
                 switch (target)
                 {
                     case "CommunicationChannels":
-                        var message = JsonSerializer.Deserialize<MessageEvent>(payload);
-
-                        if (message is null)
-                            throw new JsonException("Deserialised MessageEvent is null");
+                        var message = JsonSerializer.Deserialize<MessageEvent>(payload)
+                            ?? throw new JsonException("Deserialised MessageEvent is null");
 
                         PartyChat?.Invoke(this, message);
                         break;

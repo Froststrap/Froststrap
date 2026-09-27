@@ -22,6 +22,6 @@ namespace Froststrap.Models.APIs.Roblox
         public int Ping { get; set; }
 
         [JsonPropertyName("playerTokens")]
-        public List<string> PlayerTokens { get; set; } = new();
+        public List<string> PlayerTokens { get; set; } = [];
     }
 }

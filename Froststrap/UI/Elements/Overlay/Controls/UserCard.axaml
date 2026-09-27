@@ -1,0 +1,218 @@
+<!--
+SPDX-FileCopyrightText: 2026 Froststrap
+
+SPDX-License-Identifier: MPL-2.0
+-->
+
+<UserControl x:Class="Froststrap.UI.Elements.Overlay.Controls.UserCard"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:resources="using:Froststrap.Resources"
+             xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
+             xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Overlay"
+             x:DataType="vm:GameOverlayViewModel"
+             mc:Ignorable="d"
+             d:DesignHeight="56" d:DesignWidth="700"
+             Background="Transparent">
+
+	<UserControl.Styles>
+		<Style Selector="Button.accountButton">
+			<Setter Property="Cursor" Value="Hand" />
+			<Setter Property="IsHitTestVisible" Value="{Binding !OnlineStatus.IsOpen}" />
+			<Setter Property="Template">
+				<ControlTemplate>
+					<Border Name="PART_Bd"
+                            Background="Transparent"
+                            CornerRadius="24"
+                            Padding="4,4,12,4">
+						<ContentPresenter Content="{TemplateBinding Content}" />
+					</Border>
+				</ControlTemplate>
+			</Setter>
+		</Style>
+		<Style Selector="Button.accountButton:pointerover /template/ Border#PART_Bd">
+			<Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
+		</Style>
+
+		<Style Selector="Button.optionRow">
+			<Setter Property="Cursor" Value="Hand" />
+			<Setter Property="HorizontalAlignment" Value="Stretch" />
+			<Setter Property="HorizontalContentAlignment" Value="Stretch" />
+			<Setter Property="Template">
+				<ControlTemplate>
+					<Border Name="PART_Bd"
+                            Background="Transparent"
+                            CornerRadius="6"
+                            Padding="8,7">
+						<ContentPresenter Content="{TemplateBinding Content}"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" />
+					</Border>
+				</ControlTemplate>
+			</Setter>
+		</Style>
+		<Style Selector="Button.optionRow:pointerover /template/ Border#PART_Bd">
+			<Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
+		</Style>
+		<Style Selector="Button.optionRow:disabled /template/ Border#PART_Bd">
+			<Setter Property="Opacity" Value="0.5" />
+		</Style>
+
+		<Style Selector="ItemsControl.privacyOptions > ContentPresenter">
+			<Setter Property="HorizontalAlignment" Value="Stretch" />
+		</Style>
+	</UserControl.Styles>
+
+	<StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+
+		<Button Name="AccountButton"
+                Classes="accountButton"
+                Command="{Binding OnlineStatus.OpenCommand}"
+                ToolTip.Tip="{x:Static resources:Strings.Menu_Overlay_Privacy_Tooltip}">
+			<StackPanel Orientation="Horizontal">
+				<Border Width="40" Height="40"
+                        CornerRadius="20"
+                        Background="{DynamicResource ControlFillColorDefaultBrush}"
+                        ClipToBounds="True">
+					<Image Source="{Binding ProfileIcon, Converter={StaticResource UrlToBitmapConverter}}"
+                           Stretch="UniformToFill"
+                           Width="40" Height="40"
+                           RenderOptions.BitmapInterpolationMode="LowQuality" />
+				</Border>
+
+				<StackPanel Margin="12,0,0,0" VerticalAlignment="Center">
+					<TextBlock Text="{Binding DisplayName}"
+                               FontSize="14"
+                               FontWeight="SemiBold"
+                               Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                               TextTrimming="CharacterEllipsis" />
+					<TextBlock Text="{Binding Username}"
+                               FontSize="12"
+                               Margin="0,1,0,0"
+                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                               TextTrimming="CharacterEllipsis" />
+				</StackPanel>
+
+				<ic:Lucide Icon="ChevronUp"
+                           Width="12" Height="12"
+                           Margin="10,0,0,0"
+                           VerticalAlignment="Center"
+                           StrokeBrush="{DynamicResource TextFillColorTertiaryBrush}" />
+			</StackPanel>
+		</Button>
+
+		<Popup Name="PrivacyPopup"
+               IsOpen="{Binding OnlineStatus.IsOpen, Mode=TwoWay}"
+               PlacementTarget="{Binding #AccountButton}"
+               Placement="Top"
+               VerticalOffset="-6"
+               HorizontalOffset="0"
+               IsLightDismissEnabled="True">
+			<Border DataContext="{Binding OnlineStatus}"
+                    Width="300"
+                    Margin="12"
+                    Padding="10,12,10,10"
+                    CornerRadius="10"
+                    Background="{DynamicResource SolidBackgroundFillColorTertiaryBrush}"
+                    BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1">
+				<Border.Effect>
+					<DropShadowEffect BlurRadius="24"
+                                      OffsetX="0" OffsetY="4"
+                                      Opacity="0.5"
+                                      Color="Black" />
+				</Border.Effect>
+
+				<StackPanel>
+					<TextBlock Text="{x:Static resources:Strings.Menu_Overlay_Privacy_Title}"
+                               FontSize="14"
+                               FontWeight="SemiBold"
+                               Margin="8,0,8,0"
+                               Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+					<TextBlock Text="{x:Static resources:Strings.Menu_Overlay_Privacy_Hint}"
+                               FontSize="12"
+                               TextWrapping="Wrap"
+                               Margin="8,3,8,8"
+                               Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+
+					<ItemsControl Classes="privacyOptions"
+                                  ItemsSource="{Binding Options}"
+                                  IsEnabled="{Binding CanChange}">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<Button Classes="optionRow"
+                                        Command="{Binding $parent[ItemsControl].DataContext.SetCommand}"
+                                        CommandParameter="{Binding Value}">
+									<Grid ColumnDefinitions="*,Auto">
+
+										<TextBlock Grid.Column="0"
+                                                   Text="{Binding Label}"
+                                                   FontSize="13"
+                                                   VerticalAlignment="Center"
+                                                   Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+
+										<ic:Lucide Grid.Column="1"
+                                                   Icon="Check"
+                                                   Width="14" Height="14"
+                                                   VerticalAlignment="Center"
+                                                   HorizontalAlignment="Right"
+                                                   StrokeBrush="{DynamicResource AccentFillColorDefaultBrush}"
+                                                   IsVisible="{Binding IsCurrent}" />
+									</Grid>
+								</Button>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+
+					<TextBlock Text="{Binding StatusText}"
+                               FontSize="12"
+                               TextWrapping="Wrap"
+                               Margin="8,8,8,0"
+                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                               IsVisible="{Binding HasStatus}" />
+				</StackPanel>
+			</Border>
+		</Popup>
+
+		<StackPanel Orientation="Horizontal"
+                    VerticalAlignment="Center"
+                    IsVisible="{Binding IsInGame}">
+
+			<Rectangle Width="1"
+                       Height="28"
+                       Margin="20,0"
+                       Fill="{DynamicResource DividerStrokeColorDefaultBrush}" />
+
+			<Border Width="36" Height="36"
+                    CornerRadius="6"
+                    Background="{DynamicResource ControlFillColorDefaultBrush}"
+                    ClipToBounds="True">
+				<Image Source="{Binding GameIcon, Converter={StaticResource UrlToBitmapConverter}}"
+                       Stretch="UniformToFill"
+                       Width="36" Height="36"
+                       RenderOptions.BitmapInterpolationMode="LowQuality" />
+			</Border>
+
+			<StackPanel Margin="12,0,0,0" VerticalAlignment="Center">
+				<TextBlock Text="{Binding Game}"
+                           FontSize="14"
+                           FontWeight="SemiBold"
+                           MaxWidth="260"
+                           Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                           TextTrimming="CharacterEllipsis" />
+				<StackPanel Orientation="Horizontal" Margin="0,1,0,0">
+					<TextBlock Text="{x:Static resources:Strings.Menu_Overlay_Session}"
+                               FontSize="12"
+                               Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+					<TextBlock Text="{Binding TimePlayed}"
+                               FontSize="12"
+                               Margin="6,0,0,0"
+                               FontFamily="{StaticResource CascadiaCode}"
+                               Foreground="Lime" />
+				</StackPanel>
+			</StackPanel>
+		</StackPanel>
+	</StackPanel>
+</UserControl>

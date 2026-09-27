@@ -9,6 +9,6 @@
         public string? NextPageCursor { get; set; }
 
         [JsonPropertyName("data")]
-        public List<T> Data { get; set; } = new();
+        public List<T> Data { get; set; } = [];
     }
 }

@@ -18,7 +18,7 @@ namespace Froststrap.Models.Overlay
 
         public string PlayingText => Playing is null
             ? String.Empty
-            : String.Format(Strings.Menu_Overlay_Games_Playing, Compact(Playing.Value));
+            : String.Format(Locale.CurrentCulture, Strings.Menu_Overlay_Games_Playing, Compact(Playing.Value));
 
         private static string Compact(long value) => value switch
         {

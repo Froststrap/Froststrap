@@ -81,7 +81,7 @@ SPDX-License-Identifier: MPL-2.0
                                   CommandParameter="{x:Static enums:ModType.MiscMod}"
                                   IsChecked="{Binding ActiveFilter, Mode=OneWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static enums:ModType.MiscMod}}"/>
 
-                    <ToggleButton Content="{x:Static resources:Strings.Menu_CommunityMods_SkyBox}"
+                    <ToggleButton Content="{x:Static resources:Strings.Menu_CommunityMods_Skybox}"
                                   Command="{Binding SetFilterCommand}"
                                   CommandParameter="{x:Static enums:ModType.SkyBox}"
                                   IsChecked="{Binding ActiveFilter, Mode=OneWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static enums:ModType.SkyBox}}"/>

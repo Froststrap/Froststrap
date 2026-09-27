@@ -90,7 +90,7 @@ SPDX-License-Identifier: MPL-2.0
                         Foreground="{DynamicResource SystemFillColorAttentionBrush}"/>
                     <TextBlock
                         x:Name="StatusText"
-                        Text="{x:Static resources:Strings.Menu_QuickSignIn_Waitting}"
+                        Text="{x:Static resources:Strings.Menu_QuickSignIn_Waiting}"
                         TextWrapping="Wrap"
                         FontSize="13"
                         Foreground="{DynamicResource TextFillColorPrimaryBrush}"

@@ -145,6 +145,13 @@ namespace Froststrap.UI.ViewModels.Settings
             set => App.Settings.Prop.ShowServerUptime = value;
         }
 
+        public static bool EnableOverlay
+        {
+            get => App.Settings.Prop.EnableOverlay;
+            set => App.Settings.Prop.EnableOverlay = value;
+        }
+
+
         public static bool PlaytimeCounterEnabled
         {
             get => App.Settings.Prop.PlaytimeCounter;

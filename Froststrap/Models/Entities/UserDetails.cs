@@ -2,9 +2,6 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-using Froststrap.Models.RobloxApi;
-using Froststrap.RobloxInterfaces;
-
 namespace Froststrap.Models.Entities
 {
     internal class UserDetails
@@ -56,26 +53,24 @@ namespace Froststrap.Models.Entities
                     missing.Add(userId);
             }
 
-            if (!missing.Any())
+            if (missing.Count == 0)
                 return users;
 
             var payload = new UserDetailsBatchRequest { UserIds = missing };
 
             var usersResponse = await Http.SendJson<ApiArrayResponse<GetUserResponse>>(new HttpRequestMessage
             {
-                RequestUri = new Uri("https://users.roblox.com/v1/users"),
+                RequestUri = UrlBuilder.BuildApiUrl("users", "v1/users"),
                 Method = HttpMethod.Post,
                 Content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json")
-            });
+            }) ?? throw new InvalidHTTPResponseException("Roblox API for User Details returned invalid data");
 
-            if (usersResponse is null)
-                throw new InvalidHTTPResponseException("Roblox API for User Details returned invalid data");
+            Uri thumbnailsUrl = UrlBuilder.BuildApiUrl(
+                "thumbnails",
+                $"v1/users/avatar-headshot?userIds={String.Join(',', missing)}&size=180x180&format=Png&isCircular=false");
 
-            var thumbnailResponse = await Http.GetJson<ApiArrayResponse<ThumbnailResponse>>(
-                new Uri($"https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds={String.Join(',', missing)}&size=180x180&format=Png&isCircular=false"));
-
-            if (thumbnailResponse is null)
-                throw new InvalidHTTPResponseException("Roblox API for Thumbnails returned invalid data");
+            var thumbnailResponse = await Http.GetJson<ApiArrayResponse<ThumbnailResponse>>(thumbnailsUrl)
+                ?? throw new InvalidHTTPResponseException("Roblox API for Thumbnails returned invalid data");
 
             foreach (var user in usersResponse.Data)
             {
@@ -92,6 +87,5 @@ namespace Froststrap.Models.Entities
 
             return users;
         }
-
     }
 }

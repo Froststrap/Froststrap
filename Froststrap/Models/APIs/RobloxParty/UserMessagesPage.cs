@@ -7,6 +7,6 @@ namespace Froststrap.Models.APIs.RobloxParty
     internal class UserMessagesPage : Page
     {
         [JsonPropertyName("messages")]
-        public List<UserMessage> Messages { get; set; } = new();
+        public List<UserMessage> Messages { get; set; } = [];
     }
 }

@@ -89,7 +89,7 @@ namespace Froststrap
         public void AuthWebsocket(ClientWebSocket webSocket)
         {
             if (!Enabled)
-                throw new NullReferenceException("Cookie access is not enabled");
+                throw new InvalidOperationException("Cookie access is not enabled");
 
             webSocket.Options.SetRequestHeader("Cookie", $".ROBLOSECURITY={AuthCookie}");
         }
@@ -101,12 +101,16 @@ namespace Froststrap
 
             try
             {
-                using var handler = new HttpClientHandler { UseCookies = false };
+                using var handler = new HttpClientHandler
+                {
+                    UseCookies = false,
+                    CheckCertificateRevocationList = true
+                };
                 using var client = new HttpClient(handler);
 
                 client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36");
 
-                using var response = await client.GetAsync($"https://www.{Deployment.RobloxDomain}/");
+                using var response = await client.GetAsync(new Uri($"https://www.{Deployment.RobloxDomain}/"));
 
                 string? tracker = null;
 
