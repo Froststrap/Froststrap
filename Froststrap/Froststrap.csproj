@@ -25,6 +25,7 @@ SPDX-License-Identifier: MPL-2.0
     <RootNamespace>Froststrap</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   	<PublishReadyToRun>true</PublishReadyToRun>
+  	<!-- <PublishTrimmed>true</PublishTrimmed> -->
   	<NeutralLanguage>en</NeutralLanguage>
     <Description>Froststrap - A Fishstrap fork</Description>
     <ApplicationIcon>Froststrap.ico</ApplicationIcon>
