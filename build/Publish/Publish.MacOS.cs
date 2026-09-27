@@ -46,8 +46,9 @@ public partial class Build : FalloutBuild
             throw new Exception("xcodebuild failed");
         }
 
+        System.IO.Directory.CreateDirectory(DistributionDir);
         var src = (AbsolutePath)macAppLocation / "build" / Configuration / "Froststrap.app";
-        var dest = (AbsolutePath)DotnetPublishArtifactsDir / "Froststrap.app";
+        var dest = (AbsolutePath)DistributionDir / "Froststrap.app";
         Log.Information("Copying {src} artifact to {OutDir}", src, dest);
 
         var copyProc = new Process();
@@ -67,11 +68,11 @@ public partial class Build : FalloutBuild
 
         if (sign)
         {
-            SignAndNotarizeMacApp(dest, entitlementsPath, DotnetPublishArtifactsDir);
+            SignAndNotarizeMacApp(dest, entitlementsPath, DistributionDir);
         }
         else
         {
-            BuildUnsignedPkg(dest, DotnetPublishArtifactsDir);
+            BuildUnsignedPkg(dest, DistributionDir);
         }
     }
 
