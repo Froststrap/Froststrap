@@ -1301,7 +1301,7 @@ Froststrap 安裝於 "{1}" 位置。</value>
     <value>Froststrap 帳戶權限</value>
   </data>
   <data name="Menu.Behaviour.AllowCookieAccess.Description" xml:space="preserve">
-    <value>透過您的驗證 Cookie 存取 RobloxAPI。[Froststrap 將存取哪些內容？]({0})</value>
+    <value>透過您的驗證 Cookie 存取 Roblox API。[Froststrap 將存取哪些內容？]({0})</value>
   </data>
   <data name="Menu.Appearance.WindowsBackdrop.Title" xml:space="preserve">
     <value>視窗背景</value>
