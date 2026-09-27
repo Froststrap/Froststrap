@@ -31,8 +31,8 @@ public partial class Build : FalloutBuild
         return Execute<Build>(x => x.Compile);
     }
 
-    [Parameter("Configuration to build - Default is 'Debug' (local) or 'Release' (server)")]
-    readonly Configuration Configuration = IsLocalBuild ? Configuration.Debug : Configuration.Release;
+    [Parameter("Configuration to build - Default is Release")]
+    readonly Configuration Configuration = Configuration.Release;
     
     [Solution]
     readonly Solution Solution;
@@ -75,6 +75,7 @@ public partial class Build : FalloutBuild
             Log.Information("Git tag: {Value}", GitTag ?? "");
             Console.WriteLine(); // seperator
             Log.Information("No Installers: {Value}", NoInstallers);
+            Log.Information("Configuration: {Value}", Configuration);
         });
 
     Target Clean => _ => _

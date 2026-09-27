@@ -47,13 +47,13 @@ Publishing is going to create installers, and other important stuff making it pu
 
 .. code-block:: bash
 
-   dotnet run --project build -- publish --configuration Release
+   dotnet run --project build -- publish
 
 and to publish without the installers- e.g packaging for your own system which doesn't need them
 
 .. code-block:: bash
 
-   dotnet run --project build -- publish --no-installers --configuration Release
+   dotnet run --project build -- publish --no-installers
 
 Build
 ~~~~~
@@ -62,7 +62,7 @@ Going to be useful for debug builds, and there's mulitple ways to do so.
 
 .. code-block:: bash
 
-   dotnet run --project build -- compile --configuration Release
+   dotnet run --project build -- compile
 
 .. code-block:: bash
 
@@ -75,7 +75,7 @@ Cleaning out stale stuff- should run both of these.
 
 .. code-block:: bash
 
-   dotnet run --project build -- clean --configuration Release
+   dotnet run --project build -- clean
 
 .. code-block:: bash
 
