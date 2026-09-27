@@ -87,5 +87,6 @@ Directories
 Most likely your at this section to figure out where fallout build stuff goes-
 and that is **/.build/**.
 
-- **.build/publish** - a publish output dir where evrything gets put into
-- **.build/msbuild** - a directory for non-publish builds– named after the fact it uses msbuild directly
+- **.build/publish** - a publish artifact dir where from **dotnet publish** everything useful gets put into
+- **.build/build** - a directory for non-publish builds
+- **.build/dist** - a directory for all things that can be distributed (macOS does have .app in there though, which is never signed)
