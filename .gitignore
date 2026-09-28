@@ -9,6 +9,10 @@ DerivedData/
 .DS_Store
 .fallout/temp
 
+# Velopack folders
+Releases/
+publish/
+
 # IDE stuff
 .vs/
 .idea/
