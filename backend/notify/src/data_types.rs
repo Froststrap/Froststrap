@@ -2,13 +2,14 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-use std::{collections::HashMap, num::NonZeroU32};
-
 #[cfg(target_os = "linux")]
-use rustbus::{
-    Marshal, Signature,
-    message_builder::MarshalledMessage,
-    wire::{errors::MarshalError, marshal::traits::Variant},
+use {
+    rustbus::{
+        Marshal, Signature,
+        message_builder::MarshalledMessage,
+        wire::{errors::MarshalError, marshal::traits::Variant},
+    },
+    std::{collections::HashMap, num::NonZeroU32},
 };
 
 #[repr(i32)]
