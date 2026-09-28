@@ -294,10 +294,13 @@ checksum = "e6e4313cd5fcd3dad5cafa179702e2b244f760991f45397d14d4ebf38247da75"
 name = "virtualdisplay"
 version = "0.1.0"
 dependencies = [
+ "block2",
  "dispatch2",
  "libc",
+ "objc2",
  "objc2-core-foundation",
  "objc2-core-graphics",
+ "objc2-foundation",
 ]
 
 [[package]]
