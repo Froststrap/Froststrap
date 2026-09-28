@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-use super::data_types::NSString;
+use super::data_types::{NSString, opts};
 use super::runtime::class;
 use block2::RcBlock;
 use objc2::rc::Retained;
@@ -10,10 +10,6 @@ use objc2::runtime::{AnyObject, Bool};
 use objc2::{class, msg_send};
 use std::sync::mpsc::{RecvTimeoutError, channel};
 use std::time::Duration;
-
-const OPT_BADGE: usize = 1 << 0;
-const OPT_SOUND: usize = 1 << 1;
-const OPT_ALERT: usize = 1 << 2;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(isize)]
@@ -82,7 +78,7 @@ impl NotificationCenter {
         unsafe {
             let _: () = msg_send![
                 &*self.0,
-                requestAuthorizationWithOptions: OPT_ALERT | OPT_SOUND | OPT_BADGE,
+                requestAuthorizationWithOptions: opts::ALERT | opts::SOUND | opts::BADGE,
                 completionHandler: &*handler,
             ];
         }
