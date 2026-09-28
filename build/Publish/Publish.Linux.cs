@@ -46,6 +46,23 @@ public partial class Build : FalloutBuild
 
         AbsolutePath binary = outputDir / "Froststrap";
         AbsolutePath config = DistributionDir / "nfpm.yaml";
+        string postinstallPath = DistributionDir / "nfpm-postinstall.sh";
+
+        string postinstall = """
+            #!/bin/sh
+            set -e
+
+            if command -v update-desktop-database >/dev/null 2>&1; then
+              update-desktop-database -q /usr/share/applications || :
+            fi
+
+            if command -v gtk-update-icon-cache >/dev/null 2>&1; then
+              gtk-update-icon-cache -q /usr/share/icons/hicolor || :
+            fi
+
+            /usr/bin/Froststrap --register-mime-types 2>/dev/null || :
+            """;
+        File.WriteAllText(postinstallPath, postinstall);
 
         var nfpmYaml = $"""
             name: froststrap
@@ -68,7 +85,7 @@ public partial class Build : FalloutBuild
                 dst: /usr/share/applications/Froststrap.desktop
 
             scripts:
-              postinstall: {FalloutRoot / "Publish" / "nfpm-postinstall.sh"}
+              postinstall: {postinstallPath}
             """;
 
         File.WriteAllText(config, nfpmYaml);
