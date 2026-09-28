@@ -1,5 +1,7 @@
 ﻿using System.Windows.Input;
 
+using Avalonia.Threading;
+
 using CommunityToolkit.Mvvm.Input;
 
 using Froststrap.RobloxInterfaces;
@@ -63,7 +65,21 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
         {
             OpenCommand = new RelayCommand(() => IsOpen = !IsOpen);
             SetCommand = new AsyncRelayCommand<string?>(SetAsync);
+
+            App.Cookies.WatchAccount(this, static vm => vm.OnAccountChanged());
         }
+
+        private void OnAccountChanged() => Dispatcher.UIThread.Post(() =>
+        {
+            _online = null;
+            _join = null;
+
+            Show(null);
+            Refreshed();
+
+            if (_isOpen)
+                _ = LoadAsync();
+        });
 
         private async Task LoadAsync()
         {

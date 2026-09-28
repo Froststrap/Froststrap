@@ -294,6 +294,8 @@ namespace Froststrap.UI.Elements.Overlay
 
             _overlay?.DismissToast();
 
+            _ = _viewModel.SyncAccountAsync();
+
             if (_overlay?.IsGameForeground() == false)
                 _overlay.FocusGame();
 

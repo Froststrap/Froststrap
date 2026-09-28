@@ -43,6 +43,8 @@ namespace Froststrap.UI.ViewModels.Overlay
 
         public Controls.OnlineStatusViewModel OnlineStatus { get; } = new();
 
+        private long _shownUserId;
+
         private string _username = String.Empty;
         public string Username
         {
@@ -223,6 +225,8 @@ namespace Froststrap.UI.ViewModels.Overlay
             CloseCommand = new RelayCommand(window.Dismiss);
             ShareCommand = new AsyncRelayCommand(ShareAsync);
 
+            App.Cookies.WatchAccount(this, static vm => vm.OnAccountChanged());
+
             foreach ((string name, OverlayPanelLayout panel) in App.OverlayLayout.Prop.Panels)
             {
                 if (panel.Open && Enum.TryParse(name, out OverlayPanelKind kind))
@@ -251,6 +255,21 @@ namespace Froststrap.UI.ViewModels.Overlay
             if (_activityWatcher?.InGame == true)
                 OnGameJoin();
 
+            await LoadAccountAsync();
+        }
+
+        private void OnAccountChanged() => Dispatcher.UIThread.Post(() => _ = SyncAccountAsync());
+
+        public async Task SyncAccountAsync()
+        {
+            await App.Cookies.RefreshAsync();
+
+            if ((App.Cookies.CurrentUser?.Id ?? 0) != _shownUserId)
+                await LoadAccountAsync();
+        }
+
+        private async Task LoadAccountAsync()
+        {
             if (!App.Settings.Prop.AllowCookieAccess)
                 return;
 
@@ -262,13 +281,22 @@ namespace Froststrap.UI.ViewModels.Overlay
                 AuthenticatedUser? current = App.Cookies.CurrentUser;
 
                 if (current is null)
+                {
+                    _shownUserId = 0;
+                    DisplayName = String.Empty;
+                    Username = String.Empty;
+                    ProfileIcon = String.Empty;
                     return;
+                }
 
                 UserDetails details = await UserDetails.Fetch(current.Id);
 
                 DisplayName = details.Data.DisplayName;
                 Username = $"@{details.Data.Name}";
                 ProfileIcon = details.Thumbnail.ImageUrl ?? String.Empty;
+                _shownUserId = current.Id;
+
+                App.Logger.Info($"Showing account {current.Id}");
             }
             catch (Exception ex)
             {

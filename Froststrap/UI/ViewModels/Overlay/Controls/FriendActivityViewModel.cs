@@ -19,6 +19,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
         private AuthenticatedUser? _current;
         private FriendItem? _selected;
+        private bool _conversationsLoaded;
 
         public ObservableCollection<ChatMessage> MessagesList { get; } = [];
 
@@ -71,7 +72,25 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             SendMessageCommand = new AsyncRelayCommand(SendMessage);
 
             _party?.IncomingMessage += OnIncomingMessage;
+
+            App.Cookies.WatchAccount(this, static vm => vm.OnAccountChanged());
         }
+
+        private void OnAccountChanged() => Dispatcher.UIThread.Post(() =>
+        {
+            _current = null;
+            _selected = null;
+
+            _allFriends.Clear();
+            FriendsList.Clear();
+            MessagesList.Clear();
+
+            OnPropertyChanged(nameof(ShowEmptyState));
+            OnPropertyChanged(nameof(ShowConversationPlaceholder));
+
+            if (_conversationsLoaded)
+                _ = LoadConversations();
+        });
 
         private void ApplyFriendFilter()
         {
@@ -99,6 +118,8 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
         {
             if (_party is null || !App.Settings.Prop.AllowCookieAccess)
                 return;
+
+            _conversationsLoaded = true;
 
             try
             {

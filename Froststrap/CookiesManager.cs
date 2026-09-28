@@ -8,7 +8,7 @@ using System.Security.Cryptography;
 
 namespace Froststrap
 {
-    internal class CookiesManager
+    internal class CookiesManager : IDisposable
     {
         private CookieState _state = CookieState.Unknown;
 
@@ -28,6 +28,34 @@ namespace Froststrap
         public AuthenticatedUser? CurrentUser { get; private set; }
 
         public bool IsAuthenticated => CurrentUser is not null;
+
+        private event EventHandler? AccountChanged;
+
+        private const int RefreshDelayMs = 1500;
+
+        private readonly SemaphoreSlim _loadLock = new(1, 1);
+        private FileSystemWatcher? _watcher;
+        private string _watchedPath = string.Empty;
+        private CancellationTokenSource? _debounce;
+        private DateTime _stampWrite;
+        private long _stampLength = -1;
+        private bool _hasLoaded;
+
+        public void WatchAccount<T>(T subscriber, Action<T> handler) where T : class
+        {
+            var weak = new WeakReference<T>(subscriber);
+            EventHandler? wrapper = null;
+
+            wrapper = (_, _) =>
+            {
+                if (weak.TryGetTarget(out T? target))
+                    handler(target);
+                else
+                    AccountChanged -= wrapper;
+            };
+
+            AccountChanged += wrapper;
+        }
 
         private string AuthCookie = string.Empty;
         private const string AuthCookieName = ".ROBLOSECURITY";
@@ -162,7 +190,67 @@ namespace Froststrap
 
         public async Task LoadCookies()
         {
-            // we use the status to infrom user about it in the menu
+            bool accountChanged;
+
+            await _loadLock.WaitAsync();
+
+            try
+            {
+                accountChanged = await LoadTracked(false);
+            }
+            finally
+            {
+                _loadLock.Release();
+            }
+
+            if (accountChanged)
+                NotifyAccountChanged();
+        }
+
+        public async Task RefreshAsync()
+        {
+            if (!Enabled || !_hasLoaded)
+                return;
+
+            bool accountChanged = false;
+
+            await _loadLock.WaitAsync();
+
+            try
+            {
+                if (!HasFileChanged())
+                    return;
+
+                accountChanged = await LoadTracked(true);
+            }
+            finally
+            {
+                _loadLock.Release();
+            }
+
+            if (accountChanged)
+                NotifyAccountChanged();
+        }
+
+        private async Task<bool> LoadTracked(bool reload)
+        {
+            bool hadLoaded = _hasLoaded;
+            long previousUser = CurrentUser?.Id ?? 0;
+
+            await LoadCookiesCore(reload);
+
+            return hadLoaded && (CurrentUser?.Id ?? 0) != previousUser;
+        }
+
+        private void NotifyAccountChanged()
+        {
+            App.Logger.Info("Signed-in account changed");
+
+            AccountChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        private async Task LoadCookiesCore(bool reload)
+        {
             if (!Enabled)
             {
                 State = CookieState.NotAllowed;
@@ -170,14 +258,22 @@ namespace Froststrap
                 return;
             }
 
-            if (!string.IsNullOrEmpty(AuthCookie))
+            if (!reload && !string.IsNullOrEmpty(AuthCookie))
             {
                 App.Logger.Error("Cookie was already loaded!");
                 return;
             }
 
+            _hasLoaded = true;
+
+            StartWatching();
+            RecordStamp();
+
             if (!File.Exists(CookiesPath))
             {
+                if (reload)
+                    Forget();
+
                 State = CookieState.NotFound;
                 App.Logger.Error("Cookie file not found");
                 return;
@@ -202,21 +298,20 @@ namespace Froststrap
 
                 if (string.IsNullOrEmpty(result.AuthCookie))
                 {
+                    if (reload)
+                        Forget();
+
                     State = CookieState.Invalid;
                     return;
                 }
 
                 AuthCookie = result.AuthCookie;
+                BrowserTracker = result.BrowserTracker;
 
                 if (!string.IsNullOrEmpty(result.BrowserTracker))
-                {
-                    BrowserTracker = result.BrowserTracker;
                     App.Logger.Info("Found a browser tracker");
-                }
                 else
-                {
                     App.Logger.Info("No browser tracker in the cookie store");
-                }
 
                 AuthenticatedUser? user = await GetAuthenticated();
                 State = (user != null && user.Id != 0) ? CookieState.Success : CookieState.Invalid;
@@ -226,12 +321,122 @@ namespace Froststrap
             {
                 App.Logger.Error($"Failed to load cookies: {ex.Message}");
                 State = CookieState.Failed;
+                _stampLength = -1;
             }
+        }
+
+        public void Dispose()
+        {
+            _watcher?.Dispose();
+            _debounce?.Cancel();
+            _debounce?.Dispose();
+            _loadLock.Dispose();
+
+            GC.SuppressFinalize(this);
+        }
+
+        private void Forget()
+        {
+            AuthCookie = string.Empty;
+            BrowserTracker = string.Empty;
+            CurrentUser = null;
+        }
+
+        private void RecordStamp()
+        {
+            var info = new FileInfo(CookiesPath);
+
+            _stampWrite = info.Exists ? info.LastWriteTimeUtc : default;
+            _stampLength = info.Exists ? info.Length : -1;
+        }
+
+        private bool HasFileChanged()
+        {
+            var info = new FileInfo(CookiesPath);
+
+            DateTime write = info.Exists ? info.LastWriteTimeUtc : default;
+            long length = info.Exists ? info.Length : -1;
+
+            return write != _stampWrite || length != _stampLength;
+        }
+
+        private void StartWatching()
+        {
+            try
+            {
+                string path = CookiesPath;
+                string? directory = Path.GetDirectoryName(path);
+
+                if (string.IsNullOrEmpty(directory) || !Directory.Exists(directory))
+                    return;
+
+                if (_watcher is not null && _watchedPath == path)
+                    return;
+
+                _watcher?.Dispose();
+
+                _watcher = new FileSystemWatcher(directory, Path.GetFileName(path))
+                {
+                    NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.Size | NotifyFilters.FileName | NotifyFilters.CreationTime
+                };
+
+                _watcher.Changed += (_, _) => ScheduleRefresh();
+                _watcher.Created += (_, _) => ScheduleRefresh();
+                _watcher.Deleted += (_, _) => ScheduleRefresh();
+                _watcher.Renamed += (_, _) => ScheduleRefresh();
+
+                _watcher.EnableRaisingEvents = true;
+                _watchedPath = path;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Warn("Failed to watch the cookie file");
+                App.Logger.Error(ex);
+            }
+        }
+
+        private void ScheduleRefresh()
+        {
+            var source = new CancellationTokenSource();
+
+            Interlocked.Exchange(ref _debounce, source)?.Cancel();
+
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    await Task.Delay(RefreshDelayMs, source.Token);
+                    await RefreshAsync();
+                }
+                catch (OperationCanceledException) { }
+                catch (Exception ex)
+                {
+                    App.Logger.Error(ex);
+                }
+            });
+        }
+
+        private static async Task<string> ReadTextShared(string path)
+        {
+            using var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
+            using var reader = new StreamReader(stream);
+
+            return await reader.ReadToEndAsync();
+        }
+
+        private static async Task<byte[]> ReadBytesShared(string path)
+        {
+            using var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
+            using var buffer = new MemoryStream();
+
+            await stream.CopyToAsync(buffer);
+
+            return buffer.ToArray();
         }
 
         private static async Task<CookieLoadResult> LoadWindowsCookies()
         {
-            string content = await File.ReadAllTextAsync(CookiesPath);
+            string content = await ReadTextShared(CookiesPath);
             var cookies = JsonSerializer.Deserialize<RobloxCookies>(content)!;
 
             byte[] encryptedData = Convert.FromBase64String(cookies.Cookies);
@@ -250,7 +455,7 @@ namespace Froststrap
 
         private static async Task<CookieLoadResult> LoadMacCookies()
         {
-            byte[] fileBytes = await File.ReadAllBytesAsync(CookiesPath);
+            byte[] fileBytes = await ReadBytesShared(CookiesPath);
             var cookies = ParseBinaryCookies(fileBytes);
 
             string authCookie = ExtractRoblosecurity(cookies) ?? string.Empty;
@@ -265,7 +470,7 @@ namespace Froststrap
 
         private static async Task<CookieLoadResult> LoadLinuxCookies()
         {
-            string cookieText = await File.ReadAllTextAsync(CookiesPath);
+            string cookieText = await ReadTextShared(CookiesPath);
             if (string.IsNullOrWhiteSpace(cookieText))
                 return new CookieLoadResult(string.Empty, string.Empty);
 

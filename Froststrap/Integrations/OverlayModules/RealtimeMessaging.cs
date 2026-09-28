@@ -21,6 +21,7 @@ namespace Froststrap.Integrations.OverlayModules
 
         private Task? _receiveTask;
         private Task? _pingTask;
+        private bool _disposed;
 
         public event EventHandler<MessageEvent>? PartyChat;
         public event EventHandler<SignalrMessage>? MessageReceived;
@@ -34,6 +35,19 @@ namespace Froststrap.Integrations.OverlayModules
         {
             Party = new RobloxParty(this);
             MessageReceived += ProcessEvent;
+
+            App.Cookies.WatchAccount(this, static m => m.OnAccountChanged());
+        }
+
+        private void OnAccountChanged()
+        {
+            if (_disposed)
+                return;
+
+            if (App.Cookies.IsAuthenticated)
+                ConnectToUserhub();
+            else
+                _ = DisconnectFromUserhub();
         }
 
         #region Connection
@@ -117,6 +131,8 @@ namespace Froststrap.Integrations.OverlayModules
 
         public async ValueTask DisposeAsync()
         {
+            _disposed = true;
+
             await DisconnectFromUserhub();
             GC.SuppressFinalize(this);
         }

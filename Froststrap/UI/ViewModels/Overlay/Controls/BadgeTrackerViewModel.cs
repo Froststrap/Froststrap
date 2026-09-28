@@ -65,6 +65,8 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
         {
             _activityWatcher = activityWatcher;
 
+            App.Cookies.WatchAccount(this, static vm => vm.OnAccountChanged());
+
             if (_activityWatcher is null)
                 return;
 
@@ -81,6 +83,9 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                 App.Current?.Dispatcher.Invoke(Clear);
             };
         }
+
+        private void OnAccountChanged() =>
+            Avalonia.Threading.Dispatcher.UIThread.Post(() => _ = LoadAsync(true));
 
         public async Task LoadAsync(bool force = false)
         {

@@ -173,7 +173,22 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
                 await SearchAsync(Query);
             };
+
+            App.Cookies.WatchAccount(this, static vm => vm.OnAccountChanged());
         }
+
+        private void OnAccountChanged() => Dispatcher.UIThread.Post(() =>
+        {
+            _favoritesLoaded = false;
+            _favoritesFailed = false;
+
+            Favorites.Clear();
+
+            Refreshed();
+
+            if (ShowingFavorites)
+                _ = LoadFavoritesAsync();
+        });
 
         private async Task SearchAsync(string query)
         {
