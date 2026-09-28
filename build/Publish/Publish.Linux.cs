@@ -42,7 +42,7 @@ public partial class Build : FalloutBuild
     void BuildNFPM(AbsolutePath outputDir, string version, AbsolutePath desktop, AbsolutePath icon)
     {
         string nfpm = EnsureTool(outputDir, "nfpm",
-            "https://github.com/goreleaser/nfpm/releases/download/v2.47.0/nfpm_2.47.0_amd64.deb", extractDeb: true);
+            "https://github.com/goreleaser/nfpm/releases/download/v2.47.0/nfpm_2.47.0_Linux_x86_64.tar.gz", extractTarGz: true);
 
         AbsolutePath binary = outputDir / "Froststrap";
         AbsolutePath config = DistributionDir / "nfpm.yaml";
@@ -141,17 +141,37 @@ public partial class Build : FalloutBuild
         Directory.Delete(appDir, recursive: true);
     }
 
-    string EnsureTool(AbsolutePath buildDir, string name, string url, bool extractDeb = false)
+    string EnsureTool(AbsolutePath buildDir, string name, string url, bool extractTarGz = false)
     {
         if (IsOnPath(name)) return name;
 
         AbsolutePath toolPath = buildDir / name;
-        if (!File.Exists(toolPath))
+        if (File.Exists(toolPath))
+            return toolPath;
+
+        if (extractTarGz)
+        {
+            AbsolutePath archivePath = buildDir / $"{name}.tar.gz";
+            AbsolutePath extractDir  = buildDir / $"{name}-extracted";
+
+            Log.Information("{tool} not found on PATH, downloading archive to {path}", name, archivePath);
+            RunProcess("curl", $"-L --fail -o \"{archivePath}\" \"{url}\"");
+
+            Directory.CreateDirectory(extractDir);
+            RunProcess("tar", $"-xzf \"{archivePath}\" -C \"{extractDir}\"");
+
+            File.Copy(extractDir / name, toolPath, overwrite: true);
+            File.Delete(archivePath);
+            Directory.Delete(extractDir, recursive: true);
+        }
+        else
         {
             Log.Information("{tool} not found on PATH, downloading to {path}", name, toolPath);
             RunProcess("curl", $"-L --fail -o \"{toolPath}\" \"{url}\"");
-            RunProcess("chmod", $"+x \"{toolPath}\"");
         }
+
+        RunProcess("chmod", $"+x \"{toolPath}\"");
+
         return toolPath;
     }
 
