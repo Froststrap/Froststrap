@@ -26,6 +26,7 @@
   omnisharp-roslyn,
   callPackage,
   nspr,
+  squashfsTools,
 }:
 let
   inherit (callPackage ./devshell-tools.nix { }) mkFragment;
@@ -71,6 +72,8 @@ mkFragment (finalAttrs: {
     libxcb
     xcbutil
     libxkbcommon
+
+    squashfsTools
   ];
 
   shellHook = ''
