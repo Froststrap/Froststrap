@@ -117,15 +117,43 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public static List<string> ClientDistributions => Distributions.GetDistributions();
 
+        private string _selectedDistribution = Distributions.ClientDistributions[App.Settings.Prop.DistributorType];
+
         public string SelectedDistribution
         {
-            get => Distributions.ClientDistributions[App.Settings.Prop.DistributorType];
+            get => _selectedDistribution;
             set
             {
+                string previous = _selectedDistribution;
+
+                if (value == previous)
+                    return;
+
                 DistributorType distributor = Distributions.GetDistributionFromName(value);
 
-                Distributions.Set(distributor);
-                OnPropertyChanged(nameof(RobloxDomain));
+                _selectedDistribution = value;
+                OnPropertyChanged(nameof(SelectedDistribution));
+
+                _ = Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(async () =>
+                {
+                    if (distributor == DistributorType.VNGGames)
+                    {
+                        var result = await Frontend.ShowMessageBox(
+                            Strings.Dialog_DistributorSelector_VNGWarning,
+                            MessageBoxImage.Warning,
+                            MessageBoxButton.OKCancel);
+
+                        if (result != MessageBoxResult.OK)
+                        {
+                            _selectedDistribution = previous;
+                            OnPropertyChanged(nameof(SelectedDistribution));
+                            return;
+                        }
+                    }
+
+                    Distributions.Set(distributor);
+                    OnPropertyChanged(nameof(RobloxDomain));
+                });
             }
         }
 

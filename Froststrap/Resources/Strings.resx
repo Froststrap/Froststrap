@@ -3562,13 +3562,13 @@ Would you like to switch your preferred channel to {0}?</value>
     <value>Choose Roblox version</value>
   </data>
   <data name="Dialog.DistributorSelector.Subtext" xml:space="preserve">
-    <value>Choose which client distribution Fishstrap should use.</value>
+    <value>Choose which client distribution Froststrap should use.</value>
   </data>
   <data name="Menu.Channel.ClientDistribution.Title" xml:space="preserve">
     <value>Roblox version</value>
   </data>
 	<data name="Menu.Channel.ClientDistribution.Description" xml:space="preserve">
-    <value>Choose the client deployment Fishstrap should use. Please note, you may not be able to revert your account status after agreeing to the terms shown by Roblox.</value>
+    <value>Choose the client deployment Froststrap should use. Please note, you may not be able to revert your account status after agreeing to the terms shown by Roblox.</value>
   </data>
   <data name="Dialog.DistributorSelector.VNGWarning" xml:space="preserve">
     <value>Using VNG distribution outside Vietnam is not recommended.
