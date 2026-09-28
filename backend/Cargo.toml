@@ -6,10 +6,12 @@
 resolver = "3"
 members = [
   "backend",
-  "notify"
+  "notify",
+  "virtualdisplay",
 ]
 default-members = [
-  "backend"
+  "backend",
+  "virtualdisplay"
 ]
 
 [workspace.package]
@@ -23,6 +25,7 @@ authors = [
 ]
 
 [workspace.dependencies]
+libc = "0.2"
 objc2 = "0.6"
 block2 = "0.6"
 objc2-foundation = "0.3"

@@ -8,59 +8,33 @@
 
   <PropertyGroup>
     <RustProjectDir>$(MSBuildProjectDirectory)</RustProjectDir>
-    <RustCrateName>rbackend</RustCrateName>
-
     <RustProfile Condition="'$(Configuration)' == 'Release'">release</RustProfile>
     <RustProfile Condition="'$(Configuration)' != 'Release'">debug</RustProfile>
     <RustCargoFlags Condition="'$(Configuration)' == 'Release'">--release</RustCargoFlags>
+    <RustTargetDir>$(RustProjectDir)/target/$(RustProfile)</RustTargetDir>
 
     <NativeLibPrefix Condition="!$([MSBuild]::IsOSPlatform('Windows'))">lib</NativeLibPrefix>
     <NativeLibExt Condition="$([MSBuild]::IsOSPlatform('Windows'))">dll</NativeLibExt>
     <NativeLibExt Condition="$([MSBuild]::IsOSPlatform('OSX'))">dylib</NativeLibExt>
     <NativeLibExt Condition="$([MSBuild]::IsOSPlatform('Linux'))">so</NativeLibExt>
-
-    <NativeLibFileName>$(NativeLibPrefix)$(RustCrateName).$(NativeLibExt)</NativeLibFileName>
-    <NativeLibSourcePath>$(RustProjectDir)/target/$(RustProfile)/$(NativeLibFileName)</NativeLibSourcePath>
   </PropertyGroup>
 
+  <ItemGroup>
+    <NativeLib Include="$(RustTargetDir)/$(NativeLibPrefix)rbackend.$(NativeLibExt)" />
+    <NativeLib Include="$(RustTargetDir)/libvirtualdisplay.dylib"
+               Condition="$([MSBuild]::IsOSPlatform('OSX'))" />
+  </ItemGroup>
+
   <Target Name="BuildBackend" BeforeTargets="BeforeBuild">
-    <Exec Command="cargo build $(RustCargoFlags)" WorkingDirectory="$(RustProjectDir)" />
-
-    <Error Condition="!Exists('$(NativeLibSourcePath)')" Text="Expected cargo output not found at $(NativeLibSourcePath)" />
-
-    <Copy SourceFiles="$(NativeLibSourcePath)" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" />
+    <Exec Command="cargo build --workspace $(RustCargoFlags)" WorkingDirectory="$(RustProjectDir)" />
+    <Error Condition="!Exists('%(NativeLib.FullPath)')"
+           Text="Expected cargo output not found at %(NativeLib.FullPath)" />
   </Target>
 
   <ItemGroup>
-    <Content Include="$(NativeLibSourcePath)" Link="$(NativeLibFileName)">
+    <Content Include="@(NativeLib)" Link="%(Filename)%(Extension)">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Visible>false</Visible>
     </Content>
   </ItemGroup>
-
-  <Target
-    Name="BuildVirtualDisplayDylib"
-    BeforeTargets="BeforeBuild"
-    Condition="$([MSBuild]::IsOSPlatform('OSX'))"
-  >
-    <PropertyGroup>
-      <VirtualDisplayDir>$(MSBuildProjectDirectory)/virtualdisplay</VirtualDisplayDir>
-    </PropertyGroup>
-
-    <Exec Command="swift build -c release" WorkingDirectory="$(VirtualDisplayDir)" />
-
-    <Exec Command="swift build -c release --show-bin-path 2&gt;/dev/null"
-          WorkingDirectory="$(VirtualDisplayDir)"
-          ConsoleToMSBuild="true"
-          StandardOutputImportance="low">
-      <Output TaskParameter="ConsoleOutput" PropertyName="VirtualDisplayBinPath" />
-    </Exec>
-
-    <Error Condition="!Exists('$(VirtualDisplayBinPath)/libvirtualdisplay.dylib')"
-           Text="libvirtualdisplay.dylib not found in '$(VirtualDisplayBinPath)'." />
-
-    <Copy SourceFiles="$(VirtualDisplayBinPath)/libvirtualdisplay.dylib"
-          DestinationFolder="$(OutDir)"
-          SkipUnchangedFiles="true" />
-  </Target>
 </Project>

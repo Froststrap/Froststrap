@@ -12,19 +12,15 @@ public partial class Build : FalloutBuild
     void PublishMacOS()
     {
         var version = GitTag.TrimStart('v');
-        AbsolutePath virtualbackendBuildRoot = GitRoot / "backend" / "virtualdisplay" / ".build";
+        AbsolutePath backendBuildRoot = GitRoot / "backend" / "target";
         AbsolutePath macAppLocation = FalloutRoot / "Publish" / "macApp";
         AbsolutePath xcodeProjectLocation = macAppLocation / "macApp.xcodeproj";
         AbsolutePath entitlementsPath = macAppLocation / "Froststrap.entitlements";
-        AbsolutePath virtualDisplayDir = GitRoot / "backend" / "virtualdisplay";
         AbsolutePath dylibDest = (AbsolutePath)DotnetPublishArtifactsDir / "libvirtualdisplay.dylib";
 
-        if (!File.Exists(dylibDest))
-        {
-            var source = FindVirtualDisplayDylib(virtualDisplayDir);
-            Log.Information("Copying {Source} into {OutDir}", source, DotnetPublishArtifactsDir);
-            File.Copy(source, dylibDest, overwrite: true);
-        }
+        var source = FindVirtualDisplayDylib(backendBuildRoot);
+        Log.Information("Copying {Source} into {OutDir}", source, DotnetPublishArtifactsDir);
+        File.Copy(source, dylibDest, overwrite: true);
 
         Log.Information("Building {xcproj} with xcodebuild", xcodeProjectLocation);
         var xcbProc = new Process();
@@ -50,13 +46,7 @@ public partial class Build : FalloutBuild
         var src = (AbsolutePath)macAppLocation / "build" / Configuration / "Froststrap.app";
         var dest = (AbsolutePath)DistributionDir / "Froststrap.app";
         Log.Information("Copying {src} artifact to {OutDir}", src, dest);
-
-        var copyProc = new Process();
-        copyProc.StartInfo.FileName = "cp";
-        copyProc.StartInfo.Arguments = $"-r \"{(string)src}\" \"{(string)dest}\"";
-        copyProc.StartInfo.UseShellExecute = false;
-        copyProc.Start();
-        copyProc.WaitForExit();
+        Ditto(src, dest);
 
         if (NoInstallers) return;
 
@@ -76,28 +66,16 @@ public partial class Build : FalloutBuild
         }
     }
 
-    AbsolutePath FindVirtualDisplayDylib(AbsolutePath packageDir)
+    AbsolutePath FindVirtualDisplayDylib(AbsolutePath cargoTargetDir)
     {
-        var (exitCode, stdout, _) = RunProcessCaptured(
-            "swift", $"build -c release --show-bin-path --package-path \"{packageDir}\"");
+        var profile = Configuration.ToString().Equals("Release", StringComparison.OrdinalIgnoreCase)
+            ? "release" : "debug";
+        var path = cargoTargetDir / profile / "libvirtualdisplay.dylib";
 
-        if (exitCode == 0)
-        {
-            var binPath = stdout
-                .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-                .LastOrDefault();
-            var candidate = binPath is null ? null : Path.Combine(binPath, "libvirtualdisplay.dylib");
-            if (candidate is not null && File.Exists(candidate))
-                return (AbsolutePath)candidate;
-        }
+        if (!File.Exists(path))
+            throw new Exception($"{path} not found - did `cargo build` run for the {profile} profile?");
 
-        var found = Directory
-            .EnumerateFiles(packageDir / ".build", "libvirtualdisplay.dylib", SearchOption.AllDirectories)
-            .FirstOrDefault(p => p.Contains("release", StringComparison.OrdinalIgnoreCase));
-
-        return found is not null
-            ? (AbsolutePath)found
-            : throw new Exception($"libvirtualdisplay.dylib not found under {packageDir / ".build"}");
+        return path;
     }
 
     void SignAndNotarizeMacApp(AbsolutePath appPath, AbsolutePath entitlementsPath, string outputDirectory)
@@ -117,7 +95,7 @@ public partial class Build : FalloutBuild
         RunProcess("codesign", $"--verify --verbose=4 \"{appPath}\"");
 
         Directory.CreateDirectory(payloadApplications);
-        RunProcess("cp", $"-r \"{appPath}\" \"{payloadApplications / "Froststrap.app"}\"");
+        Ditto(appPath, payloadApplications / "Froststrap.app");
 
         RunProcess("pkgbuild", $"--root \"{payloadDir}\" --install-location / --identifier xyz.froststrap.desktop \"{unsignedPkg}\"");
 
@@ -171,10 +149,20 @@ public partial class Build : FalloutBuild
         AbsolutePath finalPkg = (AbsolutePath)outputDirectory / "Froststrap.pkg";
 
         Directory.CreateDirectory(payloadApplications);
-        RunProcess("cp", $"-r \"{appPath}\" \"{payloadApplications / "Froststrap.app"}\"");
+        Ditto(appPath, payloadApplications / "Froststrap.app");
 
         RunProcess("pkgbuild", $"--root \"{payloadDir}\" --install-location / --identifier xyz.froststrap.desktop \"{finalPkg}\"");
 
         Directory.Delete(payloadDir, recursive: true);
     }
+
+    void Ditto(AbsolutePath src, AbsolutePath dest)
+    {
+        if (Directory.Exists(dest))
+            Directory.Delete(dest, recursive: true);
+
+        Directory.CreateDirectory(Path.GetDirectoryName((string)dest)!);
+        RunProcess("ditto", $"\"{src}\" \"{dest}\"");
+    }
 }
+
