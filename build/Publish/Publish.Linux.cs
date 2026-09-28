@@ -101,7 +101,7 @@ public partial class Build : FalloutBuild
         RunProcess("chmod", $"+x \"{appDir / "usr" / "bin" / "Froststrap"}\"");
 
         AbsolutePath icon512 = DistributionDir / "froststrap-512.png";
-        RunProcess("magick", $"\"{icon}\" -resize 512x512 \"{icon512}\"");
+        RunProcess("ffmpeg", $"-y -i \"{icon}\" -vf scale=512:512 \"{icon512}\"");
 
         File.Copy(icon512, appDir / "froststrap.png", overwrite: true);
         File.Copy(icon512, appDir / "usr" / "share" / "icons" / "hicolor" / "512x512" / "apps" / "froststrap.png", overwrite: true);

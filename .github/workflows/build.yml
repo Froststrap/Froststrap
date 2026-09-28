@@ -102,11 +102,6 @@ jobs:
         with:
           dotnet-version: "10.0.x"
 
-      - name: Install deps
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y imagemagick
-
       - name: Publish
         run: dotnet run --project build -- Publish
 
