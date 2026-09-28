@@ -104,21 +104,18 @@ internal class Updater
 
             App.Logger.Info($"Found matching asset: {asset.Name}");
 
-            if (!App.LaunchSettings.QuietFlag.Active)
-            {
-                string releaseType = releaseInfo.Prerelease ? "pre-release" : "stable";
-                string newlinePart = "\n\nWould you like to update now?";
-                var result = await Frontend.ShowMessageBox(
-                    string.Format(CultureInfo.InvariantCulture, Strings.Update_Available, releaseType, releaseVer, newlinePart),
-                    MessageBoxImage.Question,
-                    MessageBoxButton.YesNo
-                );
+            string releaseType = releaseInfo.Prerelease ? "pre-release" : "stable";
+            string newlinePart = "\n\nWould you like to update now?";
+            var result = await Frontend.ShowMessageBox(
+                string.Format(CultureInfo.InvariantCulture, Strings.Update_Available, releaseType, releaseVer, newlinePart),
+                MessageBoxImage.Question,
+                MessageBoxButton.YesNo
+            );
 
-                if (result != MessageBoxResult.Yes)
-                {
-                    App.Logger.Debug("User declined the update");
-                    return false;
-                }
+            if (result != MessageBoxResult.Yes)
+            {
+                App.Logger.Debug("User declined the update");
+                return false;
             }
 
             Bootstrapper?.SetStatus(string.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_Status_DownloadingUpdate, releaseVer));
@@ -162,12 +159,7 @@ internal class Updater
         catch (Exception ex)
         {
             App.Logger.Error(ex, "An exception occurred during update check");
-
-            if (!App.LaunchSettings.QuietFlag.Active)
-            {
-                await Frontend.ShowMessageBox(Strings.Bootstrapper_AutoUpdateFailed, MessageBoxImage.Information);
-            }
-
+            await Frontend.ShowMessageBox(Strings.Bootstrapper_AutoUpdateFailed, MessageBoxImage.Information);
             return false;
         }
     }

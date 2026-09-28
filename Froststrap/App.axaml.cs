@@ -587,8 +587,7 @@ internal partial class App : Application
         if (LaunchSettings.RobloxLaunchMode != LaunchMode.None
             || State.Prop.IsFirstLaunch
             || LaunchSettings.SettingsFlag.Active
-            || LaunchSettings.BackgroundUpdaterFlag.Active
-            || LaunchSettings.QuietFlag.Active)
+            || LaunchSettings.BackgroundUpdaterFlag.Active)
             return;
 
         Logger.Debug("Waiting for a possible cold-start URL activation");

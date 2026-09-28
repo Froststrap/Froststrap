@@ -64,14 +64,9 @@ namespace Froststrap
                 App.Logger.Info($"Opening bootstrapper ({App.LaunchSettings.RobloxLaunchMode})");
                 _ = LaunchRoblox(App.LaunchSettings.RobloxLaunchMode);
             }
-            else if (!App.LaunchSettings.QuietFlag.Active)
-            {
-                App.Logger.Info("Opening menu");
-                LaunchMenu();
-            }
             else
             {
-                App.Logger.Info("Closing - quiet flag active");
+                App.Logger.Error("Unknown flag!");
                 App.Terminate();
             }
         }
@@ -291,8 +286,7 @@ namespace Froststrap
             {
                 await Frontend.ShowMessageBox(Strings.Bootstrapper_WMFNotFound, MessageBoxImage.Error);
 
-                if (!App.LaunchSettings.QuietFlag.Active)
-                    Utility.Threading.ShellExecute("https://support.microsoft.com/en-us/topic/media-feature-pack-list-for-windows-n-editions-c1c6fffa-d052-8338-7a79-a4bb980a700a");
+                Utility.Threading.ShellExecute("https://support.microsoft.com/en-us/topic/media-feature-pack-list-for-windows-n-editions-c1c6fffa-d052-8338-7a79-a4bb980a700a");
 
                 App.Terminate(ErrorCode.ERROR_FILE_NOT_FOUND);
             }
@@ -313,22 +307,19 @@ namespace Froststrap
             App.Bootstrapper = new Bootstrapper(launchMode);
             IBootstrapperDialog? dialog = null;
 
-            if (!App.LaunchSettings.QuietFlag.Active)
+            try
             {
-                try
-                {
-                    App.Logger.Info("Initializing bootstrapper dialog");
-                    ThemeCycler.HandleLaunchCycle();
-                    dialog = await App.Settings.Prop.BootstrapperStyle.GetNew();
-                    App.Bootstrapper.Dialog = dialog;
-                    dialog.Bootstrapper = App.Bootstrapper;
-                }
-                catch (Exception ex)
-                {
-                    App.Logger.Error(ex, "Failed to create the bootstrapper dialog, launching without one");
-                    App.Bootstrapper.Dialog = null;
-                    dialog = null;
-                }
+                App.Logger.Info("Initializing bootstrapper dialog");
+                ThemeCycler.HandleLaunchCycle();
+                dialog = await App.Settings.Prop.BootstrapperStyle.GetNew();
+                App.Bootstrapper.Dialog = dialog;
+                dialog.Bootstrapper = App.Bootstrapper;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error(ex, "Failed to create the bootstrapper dialog, launching without one");
+                App.Bootstrapper.Dialog = null;
+                dialog = null;
             }
 
             _ = Task.Run(App.Bootstrapper.Run).ContinueWith(async t =>
@@ -435,8 +426,6 @@ namespace Froststrap
 
         public static async Task LaunchBackgroundUpdater()
         {
-            // Activate some LaunchFlags we need
-            App.LaunchSettings.QuietFlag.Active = true;
             App.LaunchSettings.NoLaunchFlag.Active = true;
 
             App.Logger.Info("Initializing bootstrapper");

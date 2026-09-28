@@ -8,7 +8,6 @@ namespace Froststrap
     {
         public LaunchFlag SettingsFlag { get; } = new("settings");
         public LaunchFlag BackgroundUpdaterFlag { get; } = new("backgroundupdater");
-        public LaunchFlag QuietFlag { get; } = new("quiet");
         public LaunchFlag NoLaunchFlag { get; } = new("nolaunch");
         public LaunchFlag TestModeFlag { get; } = new("testmode");
         public LaunchFlag UpgradeFlag { get; } = new("upgrade");
@@ -56,7 +55,7 @@ namespace Froststrap
         {
             LaunchFlag[] allFlags =
             [
-                SettingsFlag, BackgroundUpdaterFlag, QuietFlag,
+                SettingsFlag, BackgroundUpdaterFlag,
                 NoLaunchFlag, TestModeFlag, UpgradeFlag, PlayerFlag, StudioFlag, VersionFlag,
                 ChannelFlag, ForceFlag, GameShortcutFlag, ConsoleFlag, NoGpuFlag
             ];

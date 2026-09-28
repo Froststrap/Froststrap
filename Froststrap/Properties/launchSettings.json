@@ -7,10 +7,6 @@
       "commandName": "Project",
       "commandLineArgs": "-settings"
     },
-    "Froststrap (Quiet Launch)": {
-      "commandName": "Project",
-      "commandLineArgs": "-quiet"
-    },
     "Froststrap (Deeplink)": {
       "commandName": "Project",
       "commandLineArgs": "-player \"roblox://experiences/start?placeId=1818\""

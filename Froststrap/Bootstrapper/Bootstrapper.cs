@@ -393,14 +393,11 @@ internal partial class Bootstrapper : IDisposable
 
             if (!App.LaunchSettings.NoLaunchFlag.Active && !_cancelTokenSource.IsCancellationRequested)
             {
-                if (!App.LaunchSettings.QuietFlag.Active)
-                {
-                    // show tips
-                    if (!_packageExtractionSuccess)
-                        Backend.NativeNotify.SendMessage(Strings.Bootstrapper_ExtractionFailed_Title, Strings.Bootstrapper_ExtractionFailed_Message);
-                    else if (!allModificationsApplied)
-                        Backend.NativeNotify.SendMessage(Strings.Bootstrapper_ModificationsFailed_Title, Strings.Bootstrapper_ModificationsFailed_Message);
-                }
+                // show tips
+                if (!_packageExtractionSuccess)
+                    Backend.NativeNotify.SendMessage(Strings.Bootstrapper_ExtractionFailed_Title, Strings.Bootstrapper_ExtractionFailed_Message);
+                else if (!allModificationsApplied)
+                    Backend.NativeNotify.SendMessage(Strings.Bootstrapper_ModificationsFailed_Title, Strings.Bootstrapper_ModificationsFailed_Message);
 
                 if (!OperatingSystem.IsLinux())
                 {
@@ -577,14 +574,11 @@ internal partial class Bootstrapper : IDisposable
             {
                 App.Logger.Warn($"Player version override invalid: {error}. Falling back to channel.");
 
-                if (!App.LaunchSettings.QuietFlag.Active)
-                {
-                    await Frontend.ShowMessageBox(
-                        string.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_Status_InvalidOverride, overrideHash, error),
-                        MessageBoxImage.Warning,
-                        MessageBoxButton.OK
-                    );
-                }
+                await Frontend.ShowMessageBox(
+                    string.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_Status_InvalidOverride, overrideHash, error),
+                    MessageBoxImage.Warning,
+                    MessageBoxButton.OK
+                );
 
                 App.Settings.Prop.PlayerVersionOverrideEnabled = false;
                 App.Settings.Prop.PlayerVersionOverrideHash = string.Empty;
