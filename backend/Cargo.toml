@@ -5,12 +5,11 @@
 [workspace]
 resolver = "3"
 members = [
-  "backend",
   "notify",
   "virtualdisplay",
 ]
 default-members = [
-  "backend"
+  "notify",
 ]
 
 [workspace.package]
@@ -36,9 +35,6 @@ features = ["CGDirectDisplay", "CGDisplayConfiguration"]
 [workspace.dependencies.rustbus]
 version = "0.19.3"
 default-features = false
-
-[workspace.dependencies.notify]
-path = "notify"
 
 [workspace.dependencies.windows]
 version = "0.62.2"

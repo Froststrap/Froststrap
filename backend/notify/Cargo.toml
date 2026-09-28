@@ -9,6 +9,9 @@ version.workspace = true
 authors.workspace = true
 license.workspace = true
 
+[lib]
+crate-type = ["cdylib"]
+
 [target.'cfg(target_os = "linux")'.dependencies]
 rustbus.workspace = true
 

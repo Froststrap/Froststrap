@@ -18,12 +18,12 @@
     <NativeLibExt Condition="$([MSBuild]::IsOSPlatform('OSX'))">dylib</NativeLibExt>
     <NativeLibExt Condition="$([MSBuild]::IsOSPlatform('Linux'))">so</NativeLibExt>
 
-    <PackageFlags>-p rbackend</PackageFlags>
-    <PackageFlags Condition="$([MSBuild]::IsOSPlatform('OSX'))">-p rbackend -p virtualdisplay</PackageFlags>
+    <PackageFlags>-p notify</PackageFlags>
+    <PackageFlags Condition="$([MSBuild]::IsOSPlatform('OSX'))">-p notify -p virtualdisplay</PackageFlags>
   </PropertyGroup>
 
   <ItemGroup>
-    <NativeLib Include="$(RustTargetDir)/$(NativeLibPrefix)rbackend.$(NativeLibExt)" />
+    <NativeLib Include="$(RustTargetDir)/$(NativeLibPrefix)notify.$(NativeLibExt)" />
     <NativeLib Include="$(RustTargetDir)/libvirtualdisplay.dylib"
                Condition="$([MSBuild]::IsOSPlatform('OSX'))" />
   </ItemGroup>

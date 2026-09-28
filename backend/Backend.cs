@@ -45,7 +45,7 @@ public class VirtualDisplay
 internal partial class InternalNativeNotify
 {
     [LibraryImport(
-        "rbackend",
+        "notify",
         EntryPoint = "send_notification_message"
     )]
     public static partial int SendMessage(
@@ -54,14 +54,14 @@ internal partial class InternalNativeNotify
         int duration
     );
     [LibraryImport(
-        "rbackend",
+        "notify",
         EntryPoint = "set_application"
     )]
     public static partial int SetApplication(
         [MarshalAs(UnmanagedType.LPUTF8Str)] string bundleIdentifier
     );
     [LibraryImport(
-        "rbackend",
+        "notify",
         EntryPoint = "request_notificaiton_permission"
     )]
     public static partial int RequestPermission();    
