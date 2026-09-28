@@ -29,7 +29,12 @@ objc2 = "0.6"
 block2 = "0.6"
 dispatch2 = "0.3"
 objc2-foundation = "0.3"
+objc2-core-foundation = "0.3"
 objc2-user-notifications = "0.3"
+
+[workspace.dependencies.objc2-core-graphics]
+version = "0.3"
+features = ["CGDirectDisplay", "CGDisplayConfiguration"]
 
 [workspace.dependencies.rustbus]
 version = "0.19.3"
