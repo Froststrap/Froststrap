@@ -10,7 +10,7 @@ authors.workspace = true
 license.workspace = true
 
 [target.'cfg(target_os = "linux")'.dependencies]
-zbus.workspace = true
+rustbus.workspace = true
 
 [target.'cfg(target_os = "windows")'.dependencies]
 windows.workspace = true

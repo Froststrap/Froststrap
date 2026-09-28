@@ -3,11 +3,12 @@
 // SPDX-License-Identifier: MPL-2.0
 
 use crate::data_types::SendNotificationResult;
-use std::collections::HashMap;
-use zbus::blocking::Connection;
-use zbus::zvariant::Value;
+use rustbus::{
+    MessageBuilder, RpcConn, connection::Timeout, message_builder::MarshalledMessage,
+    message_builder::MessageType, wire::errors::MarshalError, wire::marshal::traits::Variant,
+};
+use std::{collections::HashMap, time::Duration};
 
-#[derive(Clone, Debug)]
 struct NotificationMeta {
     pub app_name: String,
     /// 0 = new notification
@@ -18,38 +19,32 @@ struct NotificationMeta {
     /// Body of notif
     pub body: String,
     pub actions: Vec<String>,
-    pub hints: HashMap<String, Value<'static>>,
+    pub hints: HashMap<String, Variant<String>>,
     pub timeout: i32,
 }
 
 impl NotificationMeta {
-    pub fn into_zbus_meta(
-        &self,
-    ) -> (
-        String,
-        u32,
-        String,
-        String,
-        String,
-        Vec<String>,
-        HashMap<String, Value<'static>>,
-        i32,
-    ) {
-        (
-            self.app_name.clone(),
-            self.replaces_id.clone(),
-            self.app_icon.clone(),
-            self.summary.clone(),
-            self.body.clone(),
-            self.actions.clone(),
-            self.hints.clone(),
-            self.timeout,
-        )
+    fn write_body(&self, msg: &mut MarshalledMessage) -> Result<(), MarshalError> {
+        let actions: Vec<&str> = self.actions.iter().map(String::as_str).collect();
+        let hints: HashMap<&str, &Variant<String>> =
+            self.hints.iter().map(|(k, v)| (k.as_str(), v)).collect();
+
+        msg.body.push_param(self.app_name.as_str())?;
+        msg.body.push_param(self.replaces_id)?;
+        msg.body.push_param(self.app_icon.as_str())?;
+        msg.body.push_param(self.summary.as_str())?;
+        msg.body.push_param(self.body.as_str())?;
+        msg.body.push_param(&actions[..])?;
+        msg.body.push_param(&hints)?;
+        msg.body.push_param(self.timeout)?;
+        Ok(())
     }
 }
 
 pub fn send_notification(title: String, description: String) -> i32 {
-    let connection = match Connection::session() {
+    let timeout = Timeout::Duration(Duration::from_secs(2));
+
+    let mut conn = match RpcConn::session_conn(timeout) {
         Ok(c) => c,
         Err(_) => return SendNotificationResult::ConnectionFailed as i32,
     };
@@ -65,15 +60,27 @@ pub fn send_notification(title: String, description: String) -> i32 {
         timeout: 3000,
     };
 
-    let result = connection.call_method(
-        Some("org.freedesktop.Notifications"),
-        "/org/freedesktop/Notifications",
-        Some("org.freedesktop.Notifications"),
-        "Notify",
-        &meta.into_zbus_meta(),
-    );
+    let mut msg = MessageBuilder::new()
+        .call("Notify")
+        .with_interface("org.freedesktop.Notifications")
+        .on("/org/freedesktop/Notifications")
+        .at("org.freedesktop.Notifications")
+        .build();
 
-    match result {
+    if meta.write_body(&mut msg).is_err() {
+        return SendNotificationResult::CallFailed as i32;
+    }
+
+    let id = match conn
+        .send_message(&mut msg)
+        .and_then(|ctx| ctx.write_all().map_err(|e| e.1))
+    {
+        Ok(id) => id,
+        Err(_) => return SendNotificationResult::CallFailed as i32,
+    };
+
+    match conn.wait_response(id, timeout) {
+        Ok(reply) if reply.typ == MessageType::Error => SendNotificationResult::CallFailed as i32,
         Ok(_) => SendNotificationResult::Sent as i32,
         Err(_) => SendNotificationResult::CallFailed as i32,
     }
