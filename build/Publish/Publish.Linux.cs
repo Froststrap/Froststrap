@@ -42,7 +42,7 @@ public partial class Build : FalloutBuild
     void BuildNFPM(AbsolutePath outputDir, string version, AbsolutePath desktop, AbsolutePath icon)
     {
         string nfpm = EnsureTool(outputDir, "nfpm",
-            "https://github.com/goreleaser/nfpm/releases/latest/download/nfpm_amd64.deb", extractDeb: true);
+            "https://github.com/goreleaser/nfpm/releases/download/v2.47.0/nfpm_2.47.0_amd64.deb", extractDeb: true);
 
         AbsolutePath binary = outputDir / "Froststrap";
         AbsolutePath config = DistributionDir / "nfpm.yaml";
