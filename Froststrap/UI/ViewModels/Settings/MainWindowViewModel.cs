@@ -134,7 +134,6 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public EventHandler? RequestSaveNoticeEvent;
         public EventHandler? RequestCloseWindowEvent;
-        public event EventHandler? SettingsSaved;
         public bool GBSEnabled = App.GlobalSettings.Loaded;
 
         public NextAction CloseAction { get; private set; } = NextAction.Terminate;
@@ -419,20 +418,11 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        private async void RestartApp()
+        public void RestartApp()
         {
             SaveSettings();
-            SettingsSaved?.Invoke(this, EventArgs.Empty);
 
-            await Task.Delay(750);
-
-            var startInfo = new ProcessStartInfo(Environment.ProcessPath!)
-            {
-                Arguments = "-menu"
-            };
-
-            Process.Start(startInfo);
-            App.FrostRPC = null;
+            CloseAction = NextAction.LaunchSettings;
             CloseWindow();
         }
 

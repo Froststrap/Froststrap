@@ -770,6 +770,8 @@ namespace Froststrap.UI.Elements.Settings
         private void MainWindow_Closed(object? sender, EventArgs e)
         {
             NotificationManager = null;
+            Instance = null;
+            App.SettingsOpen = false;
 
             App.Logger.Info("Settings window closed");
         }

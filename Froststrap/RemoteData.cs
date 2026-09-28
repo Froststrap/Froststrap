@@ -59,7 +59,7 @@ namespace Froststrap
 
         public async Task LoadData()
         {
-            if (App.Settings.Prop.ForceLocalData || App.LaunchSettings.WatcherFlag.Active)
+            if (App.Settings.Prop.ForceLocalData)
             {
                 App.Logger.Info("Force loading local data");
                 LoadLocalVerifiedData();

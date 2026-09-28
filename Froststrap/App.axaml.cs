@@ -29,6 +29,14 @@ internal partial class App : Application
         AboutOpen = true;
     }
 
+    public static bool SettingsOpen;
+    private void Settings_OnClick(object? sender, EventArgs e)
+    {
+        if (SettingsOpen) return;
+
+        LaunchHandler.LaunchSettings();
+    }
+
     private const string MockReleaseTagEnvironmentVariable = "MOCK_RELEASE_TAG";
     private const string MockCurrentVersionEnvironmentVariable = "MOCK_CURRENT_VERSION";
 
@@ -110,8 +118,11 @@ internal partial class App : Application
 
     private static bool _showingExceptionDialog;
     private static readonly Lock ActivationLock = new();
+    private static readonly ManualResetEventSlim ActivationReceived = new(false);
+    private static readonly TimeSpan ColdStartActivationTimeout = TimeSpan.FromMilliseconds(250);
     private static string? _pendingActivationUri;
     private static bool _launchArgsProcessed;
+    private static DateTime _waitStart;
     private static List<Style>? _disableAnimationStyles;
 
     private static string? GetEnvironmentVariable(params string[] names)
@@ -371,6 +382,8 @@ internal partial class App : Application
 
         string uri = protocolArgs.Uri.OriginalString;
 
+        ActivationReceived.Set();
+
         lock (ActivationLock)
         {
             if (!_launchArgsProcessed)
@@ -557,10 +570,42 @@ internal partial class App : Application
         });
 
         lock (ActivationLock)
+        {
+            if (LaunchSettings.RobloxLaunchMode == LaunchMode.None && _pendingActivationUri is not null)
+                LaunchSettings.TryResolveRobloxUri([_pendingActivationUri]);
+        }
+
+        await WaitForColdStartActivationAsync();
+
+        lock (ActivationLock)
             _launchArgsProcessed = true;
 
         await LaunchHandler.ProcessLaunchArgs();
 
         base.OnFrameworkInitializationCompleted();
+    }
+
+    private static async Task WaitForColdStartActivationAsync()
+    {
+        if (!OperatingSystem.IsMacOS())
+            return;
+
+        if (LaunchSettings.RobloxLaunchMode != LaunchMode.None
+            || LaunchSettings.OnboardingFlag.Active
+            || LaunchSettings.MenuFlag.Active
+            || LaunchSettings.BackgroundUpdaterFlag.Active
+            || LaunchSettings.QuietFlag.Active)
+            return;
+
+        Logger.Debug("Waiting for a possible cold-start URL activation");
+
+        _waitStart = DateTime.Now;
+
+        bool signalled = await Task.Run(() => ActivationReceived.Wait(ColdStartActivationTimeout));
+
+        if (LaunchSettings.RobloxLaunchMode != LaunchMode.None)
+            Logger.Debug($"Cold-start activation resolved to {LaunchSettings.RobloxLaunchMode} in {(DateTime.Now - _waitStart).TotalMilliseconds:F0}ms, skipping the launch menu");
+        else if (!signalled)
+            Logger.Debug($"No cold-start activation within {ColdStartActivationTimeout.TotalMilliseconds:F0}ms, opening the launch menu");
     }
 }

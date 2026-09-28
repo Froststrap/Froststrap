@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
 using Avalonia.Controls;
+using Avalonia.Threading;
 using Froststrap.Integrations;
 using Avalonia.Controls.ApplicationLifetimes;
 using Froststrap.UI.Elements.Dialogs;
@@ -50,12 +51,7 @@ namespace Froststrap
             else if (App.LaunchSettings.MenuFlag.Active)
             {
                 App.Logger.Info("Opening settings");
-                LaunchSettings();
-            }
-            else if (App.LaunchSettings.WatcherFlag.Active)
-            {
-                App.Logger.Info("Opening watcher");
-                LaunchWatcher();
+                LaunchSettings(quitIfAlreadyRunning: true);
             }
             else if (App.LaunchSettings.BackgroundUpdaterFlag.Active)
             {
@@ -79,8 +75,14 @@ namespace Froststrap
             }
         }
 
-        public static void LaunchSettings()
+        public static void LaunchSettings(bool quitIfAlreadyRunning = false)
         {
+            if (App.SettingsOpen)
+            {
+                App.Logger.Info("Settings window is already open, ignoring the request");
+                return;
+            }
+
             using var interlock = new InterProcessLock("Settings");
 
             if (!interlock.IsAcquired)
@@ -91,10 +93,13 @@ namespace Froststrap
                 using var activateEvent = new EventWaitHandle(false, EventResetMode.AutoReset, "Froststrap-ActivateSettingsEvent");
                 activateEvent.Set();
 
-                App.Terminate();
+                if (quitIfAlreadyRunning)
+                    App.Terminate();
+
                 return;
             }
 
+            App.SettingsOpen = true;
             var window = new UI.Elements.Settings.MainWindow(false);
 
             window.Loaded += (s, e) =>
@@ -118,9 +123,14 @@ namespace Froststrap
             window.Show();
         }
 
+        private static LaunchMenuDialog? _launchMenu;
+        private static bool _suppressMenuCloseAction;
+
         public static void LaunchMenu()
         {
             var dialog = new LaunchMenuDialog();
+
+            _launchMenu = dialog;
 
             dialog.Loaded += (s, e) =>
             {
@@ -133,11 +143,37 @@ namespace Froststrap
 
             dialog.Closed += (sender, e) =>
             {
+                _launchMenu = null;
                 App.FrostRPC = null;
+
+                if (_suppressMenuCloseAction)
+                    return;
+
                 ProcessNextAction(dialog.CloseAction);
             };
 
             dialog.Show();
+        }
+
+        public static void CloseAutoRaisedMenu()
+        {
+            var dialog = _launchMenu;
+
+            if (dialog is null)
+                return;
+
+            _launchMenu = null;
+            _suppressMenuCloseAction = true;
+
+            try
+            {
+                App.Logger.Info("Closing the auto-raised launch menu for a cold-start activation");
+                dialog.Close();
+            }
+            finally
+            {
+                _suppressMenuCloseAction = false;
+            }
         }
 
         public static void LaunchOnboarding()
@@ -227,7 +263,24 @@ namespace Froststrap
                         await App.FinalizeExceptionHandling(t.Exception);
                 }
 
-                App.Terminate();
+                WatcherData? watcherData = App.Bootstrapper.PendingWatcherData;
+
+                if (watcherData is null)
+                {
+                    App.Terminate();
+                    return;
+                }
+
+                App.Logger.Info("Handing off to the watcher");
+
+                App.Bootstrapper.Dispose();
+                App.Bootstrapper = null;
+
+                // the watcher owns this process from here on, so only bail out of it if it refused to start
+                bool handedOff = await Dispatcher.UIThread.InvokeAsync(() => LaunchWatcher(watcherData));
+
+                if (!handedOff)
+                    App.Terminate();
             }, TaskScheduler.Default);
 
 
@@ -241,19 +294,36 @@ namespace Froststrap
                 App.Bootstrapper.Dialog = null;
             }
 
-            App.Logger.Info("Exiting");
+            App.Logger.Info("Bootstrapper started, this process may hand off to the watcher when it finishes");
         }
 
-        public static void LaunchWatcher()
-        {
-            // this whole topology is a bit confusing, bear with me:
-            // main thread: strictly UI only, handles showing of the notification area icon, context menu, server details dialog
-            // - server information task: queries server location, invoked if either the explorer notification is shown or the server details dialog is opened
-            // - discord rpc thread: handles rpc connection with discord
-            //    - discord rich presence tasks: handles querying and displaying of game information, invoked on activity watcher events
-            // - watcher task: runs activity watcher + waiting for roblox to close, terminates when it has
+        private static Watcher? _activeWatcher;
 
-            var watcher = new Watcher();
+        public static bool LaunchWatcher(WatcherData data)
+        {
+            if (Volatile.Read(ref _activeWatcher) is not null)
+            {
+                App.Logger.Error("A watcher is already running in this process, ignoring the handoff");
+                return true;
+            }
+
+            var watcher = new Watcher(data);
+
+            if (!watcher.IsActive)
+            {
+                App.Logger.Error("Another process is already watching Roblox, not starting another watcher");
+                watcher.Dispose();
+                return false;
+            }
+
+            if (Interlocked.CompareExchange(ref _activeWatcher, watcher, null) is not null)
+            {
+                App.Logger.Error("A watcher is already running in this process, ignoring the handoff");
+                watcher.Dispose();
+                return true;
+            }
+
+            App.Logger.Info("Watcher started");
 
             Task watcherTask = Task.Run(watcher.Run);
 
@@ -262,6 +332,8 @@ namespace Froststrap
                 App.Logger.Info("Watcher task has finished");
 
                 watcher.Dispose();
+
+                Interlocked.CompareExchange(ref _activeWatcher, null, watcher);
 
                 if (t.IsFaulted)
                 {
@@ -277,6 +349,8 @@ namespace Froststrap
 
                 App.Terminate();
             }, TaskScheduler.Default);
+
+            return true;
         }
 
         public static async Task LaunchBackgroundUpdater()
@@ -341,6 +415,7 @@ namespace Froststrap
 
             var mode = App.LaunchSettings.RobloxLaunchMode;
             App.Logger.Info($"Handling activation URI as a Roblox launch ({mode})");
+            CloseAutoRaisedMenu();
             Avalonia.Threading.Dispatcher.UIThread.Post(() => _ = LaunchRoblox(mode));
         }
     }

@@ -7,7 +7,6 @@ namespace Froststrap
     internal class LaunchSettings
     {
         public LaunchFlag MenuFlag { get; } = new("preferences,menu,settings");
-        public LaunchFlag WatcherFlag { get; } = new("watcher");
         public LaunchFlag BackgroundUpdaterFlag { get; } = new("backgroundupdater");
         public LaunchFlag OnboardingFlag { get; } = new("onboarding");
         public LaunchFlag QuietFlag { get; } = new("quiet");
@@ -27,7 +26,7 @@ namespace Froststrap
 #if DEBUG
         public static bool BypassUpdateCheck => true;
 #else
-        public bool BypassUpdateCheck => WatcherFlag.Active || BackgroundUpdaterFlag.Active;
+        public bool BypassUpdateCheck => BackgroundUpdaterFlag.Active;
 #endif
 
         public LaunchMode RobloxLaunchMode { get; set; } = LaunchMode.None;
@@ -58,7 +57,7 @@ namespace Froststrap
         {
             LaunchFlag[] allFlags =
             [
-                MenuFlag, WatcherFlag, BackgroundUpdaterFlag, OnboardingFlag, QuietFlag,
+                MenuFlag, BackgroundUpdaterFlag, OnboardingFlag, QuietFlag,
                 NoLaunchFlag, TestModeFlag, UpgradeFlag, PlayerFlag, StudioFlag, VersionFlag,
                 ChannelFlag, ForceFlag, GameShortcutFlag, ConsoleFlag, NoGpuFlag
             ];

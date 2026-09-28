@@ -38,10 +38,6 @@
     "Froststrap (Studio Launch)": {
       "commandName": "Project",
       "commandLineArgs": "-studio"
-    },
-    "Froststrap (Watcher)": {
-      "commandName": "Project",
-      "commandLineArgs": "-watcher"
     }
   }
 }

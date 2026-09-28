@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-using Froststrap.AppData;
 using Froststrap.Integrations;
 
 namespace Froststrap
@@ -32,7 +31,9 @@ namespace Froststrap
 
         public static int? ProcessId { get; private set; }
 
-        public Watcher()
+        public bool IsActive => _lock.IsAcquired;
+
+        public Watcher(WatcherData watcherData)
         {
             if (!_lock.IsAcquired)
             {
@@ -40,29 +41,7 @@ namespace Froststrap
                 return;
             }
 
-            string? watcherDataArg = App.LaunchSettings.WatcherFlag.Data;
-
-            if (String.IsNullOrEmpty(watcherDataArg))
-            {
-#if DEBUG
-                string path = new RobloxPlayerData().ExecutablePath;
-                if (!File.Exists(path))
-                    throw new InvalidOperationException("Roblox player has not been installed");
-
-                using var gameClientProcess = Process.Start(path);
-
-                _watcherData = new() { ProcessId = gameClientProcess.Id, LaunchMode = LaunchMode.Player };
-#else
-                throw new InvalidOperationException("Watcher data not specified");
-#endif
-            }
-            else
-            {
-                _watcherData = JsonSerializer.Deserialize<WatcherData>(Encoding.UTF8.GetString(Convert.FromBase64String(watcherDataArg)));
-            }
-
-            if (_watcherData is null)
-                throw new InvalidOperationException("Watcher data is invalid");
+            _watcherData = watcherData;
 
             ProcessId = _watcherData.ProcessId;
 

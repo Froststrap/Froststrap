@@ -21,8 +21,12 @@ SPDX-License-Identifier: MPL-2.0
                 Header="About Froststrap"
                 Click="About_OnClick"
             />
+
+            <NativeMenuItemSeparator />
+
             <NativeMenuItem
                 Header="Settings"
+                Click="Settings_OnClick"
                 Gesture="Meta+,"
             />
         </NativeMenu>
