@@ -3,25 +3,13 @@
     "Froststrap (Launch)": {
       "commandName": "Project"
     },
-    "Froststrap (Menu)": {
+    "Froststrap (Settings)": {
       "commandName": "Project",
-      "commandLineArgs": "-menu"
-    },
-    "Froststrap (Onboarding)": {
-      "commandName": "Project",
-      "commandLineArgs": "-onboarding"
+      "commandLineArgs": "-settings"
     },
     "Froststrap (Quiet Launch)": {
       "commandName": "Project",
       "commandLineArgs": "-quiet"
-    },
-    "Froststrap (Uninstall)": {
-      "commandName": "Project",
-      "commandLineArgs": "-uninstall"
-    },
-    "Froststrap (Quiet Uninstall)": {
-      "commandName": "Project",
-      "commandLineArgs": "-uninstall -quiet"
     },
     "Froststrap (Deeplink)": {
       "commandName": "Project",

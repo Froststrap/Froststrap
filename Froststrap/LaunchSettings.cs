@@ -6,9 +6,8 @@ namespace Froststrap
 {
     internal class LaunchSettings
     {
-        public LaunchFlag MenuFlag { get; } = new("preferences,menu,settings");
+        public LaunchFlag SettingsFlag { get; } = new("settings");
         public LaunchFlag BackgroundUpdaterFlag { get; } = new("backgroundupdater");
-        public LaunchFlag OnboardingFlag { get; } = new("onboarding");
         public LaunchFlag QuietFlag { get; } = new("quiet");
         public LaunchFlag NoLaunchFlag { get; } = new("nolaunch");
         public LaunchFlag TestModeFlag { get; } = new("testmode");
@@ -57,7 +56,7 @@ namespace Froststrap
         {
             LaunchFlag[] allFlags =
             [
-                MenuFlag, BackgroundUpdaterFlag, OnboardingFlag, QuietFlag,
+                SettingsFlag, BackgroundUpdaterFlag, QuietFlag,
                 NoLaunchFlag, TestModeFlag, UpgradeFlag, PlayerFlag, StudioFlag, VersionFlag,
                 ChannelFlag, ForceFlag, GameShortcutFlag, ConsoleFlag, NoGpuFlag
             ];

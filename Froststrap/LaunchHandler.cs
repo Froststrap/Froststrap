@@ -42,13 +42,14 @@ namespace Froststrap
 
         public static async Task ProcessLaunchArgs()
         {
-            // this order is specific
-            if (App.LaunchSettings.OnboardingFlag.Active)
+            if (App.State.Prop.IsFirstLaunch)
             {
-                App.Logger.Info("Opening onboarding");
+                App.Logger.Info("First launch detected, launching onboarding");
                 LaunchOnboarding();
+                return;
             }
-            else if (App.LaunchSettings.MenuFlag.Active)
+
+            if (App.LaunchSettings.SettingsFlag.Active)
             {
                 App.Logger.Info("Opening settings");
                 LaunchSettings(quitIfAlreadyRunning: true);
@@ -83,15 +84,13 @@ namespace Froststrap
                 return;
             }
 
-            using var interlock = new InterProcessLock("Settings");
+            var interlock = new InterProcessLock("Settings");
 
             if (!interlock.IsAcquired)
             {
-                interlock.Dispose();
-                App.Logger.Info("Found an already existing menu window");
+                App.Logger.Info("Found an already existing settings window");
 
-                using var activateEvent = new EventWaitHandle(false, EventResetMode.AutoReset, "Froststrap-ActivateSettingsEvent");
-                activateEvent.Set();
+                RequestSettingsActivation();
 
                 if (quitIfAlreadyRunning)
                     App.Terminate();
@@ -113,14 +112,95 @@ namespace Froststrap
                 }
             };
 
+            var activationCts = new CancellationTokenSource();
+            CancellationToken activationToken = activationCts.Token;
+
             window.Closed += (s, e) =>
             {
+                activationCts.Cancel();
+                activationCts.Dispose();
                 interlock.Dispose();
                 App.FrostRPC = null;
                 ProcessNextAction(window.CloseAction);
             };
 
             window.Show();
+
+            _ = Task.Run(() => WaitForActivationRequestsAsync(window, activationToken), activationToken);
+        }
+
+        private static string ActivationRequestPath => Path.Combine(
+            string.IsNullOrEmpty(Paths.Base) ? Path.GetTempPath() : Paths.Base,
+            "Locks",
+            "Froststrap-SettingsActivate.request");
+
+        private static void RequestSettingsActivation()
+        {
+            try
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(ActivationRequestPath)!);
+                File.WriteAllText(ActivationRequestPath, DateTime.UtcNow.Ticks.ToString());
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error(ex, "Failed to signal the settings activation request");
+            }
+        }
+
+        private static async Task WaitForActivationRequestsAsync(Window window, CancellationToken token)
+        {
+            try
+            {
+                long? lastSeen = ReadActivationRequest();
+
+                while (!token.IsCancellationRequested)
+                {
+                    await Task.Delay(250, token);
+
+                    long? request = ReadActivationRequest();
+
+                    if (request is null || request == lastSeen)
+                        continue;
+
+                    lastSeen = request;
+                    App.Logger.Info("Settings activation requested by another process");
+                    await Dispatcher.UIThread.InvokeAsync(() => RaiseWindow(window), DispatcherPriority.Normal);
+                }
+            }
+            catch (OperationCanceledException) { }
+            catch (Exception ex)
+            {
+                App.Logger.Error(ex, "Settings activation listener stopped unexpectedly");
+            }
+        }
+
+        private static long? ReadActivationRequest()
+        {
+            try
+            {
+                return File.Exists(ActivationRequestPath)
+                    ? long.Parse(File.ReadAllText(ActivationRequestPath))
+                    : null;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+
+        private static void RaiseWindow(Window window)
+        {
+            if (!window.IsVisible)
+            {
+                App.Logger.Info("Settings window is not visible, showing it again");
+                window.Show();
+            }
+
+            if (window.WindowState == Avalonia.Controls.WindowState.Minimized)
+                window.WindowState = Avalonia.Controls.WindowState.Normal;
+
+            window.Activate();
         }
 
         private static LaunchMenuDialog? _launchMenu;

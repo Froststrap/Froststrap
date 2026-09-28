@@ -534,12 +534,6 @@ internal partial class App : Application
         if (Settings.Prop.DisableAnimations)
             ApplyAnimationSettings();
 
-        if (State.Prop.IsFirstLaunch)
-        {
-            LaunchSettings.OnboardingFlag.Active = true;
-            Logger.Info("First launch detected, launching onboarding.");
-        }
-
         _ = Task.Run(async () =>
         {
             try
@@ -591,8 +585,8 @@ internal partial class App : Application
             return;
 
         if (LaunchSettings.RobloxLaunchMode != LaunchMode.None
-            || LaunchSettings.OnboardingFlag.Active
-            || LaunchSettings.MenuFlag.Active
+            || State.Prop.IsFirstLaunch
+            || LaunchSettings.SettingsFlag.Active
             || LaunchSettings.BackgroundUpdaterFlag.Active
             || LaunchSettings.QuietFlag.Active)
             return;
