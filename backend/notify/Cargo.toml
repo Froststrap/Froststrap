@@ -4,8 +4,8 @@
 
 [package]
 name = "notify"
+version = "1.0.0"
 edition.workspace = true
-version.workspace = true
 authors.workspace = true
 license.workspace = true
 
