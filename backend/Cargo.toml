@@ -25,9 +25,12 @@ authors = [
 [workspace.dependencies]
 objc2 = "0.6"
 block2 = "0.6"
-rustbus = "0.19.3"
 objc2-foundation = "0.3"
 objc2-user-notifications = "0.3"
+
+[workspace.dependencies.rustbus]
+version = "0.19.3"
+default-features = false
 
 [workspace.dependencies.notify]
 path = "notify"
