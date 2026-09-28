@@ -103,7 +103,7 @@ jobs:
           dotnet-version: "10.0.x"
 
       - name: Install deps
-        run: apt-get install -y imagemagick
+        run: sudo apt-get install -y imagemagick
 
       - name: Build and package binaries
         run: dotnet run --project build -- Publish --configuration Release
