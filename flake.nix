@@ -51,14 +51,12 @@
             rustFrag = pkgs.callPackage ./nix/rustDevShell.nix {
               inherit inputs;
             };
-            swiftFrag = pkgs.callPackage ./nix/swift.nix { };
           in
           {
             default = mkComposedShell [
               dotnetFrag
               rustFrag
               extraFrag
-              swiftFrag
             ];
 
             dotnet = mkComposedShell [
