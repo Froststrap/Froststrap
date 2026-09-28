@@ -10,8 +10,7 @@ members = [
   "virtualdisplay",
 ]
 default-members = [
-  "backend",
-  "virtualdisplay"
+  "backend"
 ]
 
 [workspace.package]

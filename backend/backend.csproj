@@ -17,6 +17,9 @@
     <NativeLibExt Condition="$([MSBuild]::IsOSPlatform('Windows'))">dll</NativeLibExt>
     <NativeLibExt Condition="$([MSBuild]::IsOSPlatform('OSX'))">dylib</NativeLibExt>
     <NativeLibExt Condition="$([MSBuild]::IsOSPlatform('Linux'))">so</NativeLibExt>
+
+    <PackageFlags>-p rbackend</PackageFlags>
+    <PackageFlags Condition="$([MSBuild]::IsOSPlatform('OSX'))">-p rbackend -p virtualdisplay</PackageFlags>
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,7 +29,7 @@
   </ItemGroup>
 
   <Target Name="BuildBackend" BeforeTargets="BeforeBuild">
-    <Exec Command="cargo build --workspace $(RustCargoFlags)" WorkingDirectory="$(RustProjectDir)" />
+    <Exec Command="cargo build $(PackageFlags) $(RustCargoFlags)" WorkingDirectory="$(RustProjectDir)" />
     <Error Condition="!Exists('%(NativeLib.FullPath)')"
            Text="Expected cargo output not found at %(NativeLib.FullPath)" />
   </Target>
