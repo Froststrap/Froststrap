@@ -5,11 +5,17 @@
 use crate::data_types::{NotificationPermissionResult, SendNotificationResult};
 use block2::RcBlock;
 use objc2::rc::{Allocated, Retained};
-use objc2::runtime::{AnyObject, Bool};
+use objc2::runtime::{AnyClass, AnyObject, Bool};
 use objc2::{class, msg_send};
-use std::ffi::c_void;
-use std::sync::{Arc, Condvar, Mutex};
+use std::ffi::{c_char, c_int, c_void};
+use std::sync::{Arc, Condvar, Mutex, Once};
 use std::time::Duration;
+
+unsafe extern "C" {
+    fn dlopen(path: *const c_char, mode: c_int) -> *mut c_void;
+}
+
+const RTLD_LAZY: c_int = 0x1;
 
 const UN_OPT_BADGE: usize = 1 << 0;
 const UN_OPT_SOUND: usize = 1 << 1;
@@ -41,6 +47,20 @@ fn wait_for<T: Copy>(slot: &Slot<T>, secs: u64) -> Option<T> {
     *guard
 }
 
+fn ensure_frameworks() {
+    static ONCE: Once = Once::new();
+    ONCE.call_once(|| unsafe {
+        dlopen(
+            c"/System/Library/Frameworks/Foundation.framework/Foundation".as_ptr(),
+            RTLD_LAZY,
+        );
+        dlopen(
+            c"/System/Library/Frameworks/UserNotifications.framework/UserNotifications".as_ptr(),
+            RTLD_LAZY,
+        );
+    });
+}
+
 fn ns_string(s: &str) -> Retained<AnyObject> {
     unsafe {
         let alloc: Allocated<AnyObject> = msg_send![class!(NSString), alloc];
@@ -53,11 +73,14 @@ fn ns_string(s: &str) -> Retained<AnyObject> {
     }
 }
 
-fn notification_center() -> Retained<AnyObject> {
-    unsafe { msg_send![class!(UNUserNotificationCenter), currentNotificationCenter] }
+fn notification_center() -> Option<Retained<AnyObject>> {
+    ensure_frameworks();
+    let cls = AnyClass::get(c"UNUserNotificationCenter")?;
+    unsafe { msg_send![cls, currentNotificationCenter] }
 }
 
 fn has_valid_bundle_context() -> bool {
+    ensure_frameworks();
     unsafe {
         let bundle: Retained<AnyObject> = msg_send![class!(NSBundle), mainBundle];
         let id: Option<Retained<AnyObject>> = msg_send![&*bundle, bundleIdentifier];
@@ -70,7 +93,9 @@ pub fn request_notification_permission() -> i32 {
         return NotificationPermissionResult::NoBundleContext as i32;
     }
 
-    let center = notification_center();
+    let Some(center) = notification_center() else {
+        return NotificationPermissionResult::NoBundleContext as i32;
+    };
     let options = UN_OPT_ALERT | UN_OPT_SOUND | UN_OPT_BADGE;
 
     let slot = new_slot::<bool>();
@@ -120,7 +145,9 @@ pub fn send_notification(title: String, body: String) -> i32 {
         return SendNotificationResult::NoBundleContext as i32;
     }
 
-    let center = notification_center();
+    let Some(center) = notification_center() else {
+        return SendNotificationResult::NoBundleContext as i32;
+    };
 
     match current_authorization_status(&center) {
         Some(UN_STATUS_AUTHORIZED) | Some(UN_STATUS_PROVISIONAL) => {}
@@ -128,8 +155,15 @@ pub fn send_notification(title: String, body: String) -> i32 {
         None => return SendNotificationResult::TimedOut as i32,
     }
 
+    let (Some(content_cls), Some(request_cls)) = (
+        AnyClass::get(c"UNMutableNotificationContent"),
+        AnyClass::get(c"UNNotificationRequest"),
+    ) else {
+        return SendNotificationResult::OsError as i32;
+    };
+
     let request: Retained<AnyObject> = unsafe {
-        let content: Retained<AnyObject> = msg_send![class!(UNMutableNotificationContent), new];
+        let content: Retained<AnyObject> = msg_send![content_cls, new];
         let _: () = msg_send![&*content, setTitle: &*ns_string(&title)];
         let _: () = msg_send![&*content, setBody: &*ns_string(&body)];
 
@@ -137,7 +171,7 @@ pub fn send_notification(title: String, body: String) -> i32 {
         let identifier: Retained<AnyObject> = msg_send![&*uuid, UUIDString];
 
         msg_send![
-            class!(UNNotificationRequest),
+            request_cls,
             requestWithIdentifier: &*identifier,
             content: &*content,
             trigger: None::<&AnyObject>,
