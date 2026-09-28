@@ -4,6 +4,7 @@
 
 using NLog;
 using Avalonia;
+using Velopack;
 using Froststrap.Backend;
 #if WINDOWS
 using System.Runtime.InteropServices;
@@ -23,6 +24,7 @@ sealed class Program
     [STAThread]
     public static void Main(string[] args)
     {
+        VelopackApp.Build().Run();
         ThreadPool.SetMinThreads(Environment.ProcessorCount * 2, Environment.ProcessorCount * 2);
 
 #if WINDOWS
