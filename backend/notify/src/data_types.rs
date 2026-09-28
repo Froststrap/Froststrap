@@ -37,6 +37,7 @@ pub enum SetApplicationResult {
     InvalidUtf8,
 }
 
+#[cfg(target_os = "linux")]
 pub struct NotificationMeta {
     pub app_name: String,
     /// 0 = new notification
@@ -52,11 +53,13 @@ pub struct NotificationMeta {
 }
 
 #[derive(Clone, Copy)]
+#[cfg(target_os = "linux")]
 pub enum ReplacesId {
     New,
     Val(NonZeroU32),
 }
 
+#[cfg(target_os = "linux")]
 impl Signature for ReplacesId {
     fn signature() -> rustbus::signature::Type {
         u32::signature()
@@ -67,6 +70,7 @@ impl Signature for ReplacesId {
     }
 }
 
+#[cfg(target_os = "linux")]
 impl From<u32> for ReplacesId {
     fn from(f: u32) -> Self {
         match f {
@@ -76,6 +80,7 @@ impl From<u32> for ReplacesId {
     }
 }
 
+#[cfg(target_os = "linux")]
 impl Marshal for ReplacesId {
     fn marshal(
         &self,
@@ -89,6 +94,7 @@ impl Marshal for ReplacesId {
     }
 }
 
+#[cfg(target_os = "linux")]
 impl NotificationMeta {
     pub fn write_body(&self, msg: &mut MarshalledMessage) -> Result<(), MarshalError> {
         let actions: Vec<&str> = self.actions.iter().map(String::as_str).collect();
