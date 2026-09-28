@@ -3,24 +3,25 @@
 // SPDX-License-Identifier: MPL-2.0
 
 use super::runtime::{NSString, class};
-use super::slot::{fulfill, new_slot, wait_for};
 use block2::RcBlock;
 use objc2::rc::Retained;
 use objc2::runtime::{AnyObject, Bool};
 use objc2::{class, msg_send};
-use std::sync::Arc;
+use std::sync::mpsc::{RecvTimeoutError, channel};
+use std::time::Duration;
 
 const OPT_BADGE: usize = 1 << 0;
 const OPT_SOUND: usize = 1 << 1;
 const OPT_ALERT: usize = 1 << 2;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[repr(isize)]
 pub(super) enum AuthStatus {
-    NotDetermined,
-    Denied,
-    Authorized,
-    Provisional,
-    Ephemeral,
+    NotDetermined = 0,
+    Denied = 1,
+    Authorized = 2,
+    Provisional = 3,
+    Ephemeral = 4,
     Unknown(isize),
 }
 
@@ -43,12 +44,24 @@ impl AuthStatus {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub(super) enum PostError {
     Unavailable,
     Os,
     TimedOut,
 }
+
+impl std::fmt::Display for PostError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Unavailable => write!(f, "User notifications framework unavailable"),
+            Self::Os => write!(f, "OS failed to deliver notification request"),
+            Self::TimedOut => write!(f, "Notification request timed out"),
+        }
+    }
+}
+
+impl std::error::Error for PostError {}
 
 pub(super) struct NotificationCenter(Retained<AnyObject>);
 
@@ -59,12 +72,12 @@ impl NotificationCenter {
         obj.map(Self)
     }
 
-    pub fn request_authorization(&self, timeout_secs: u64) -> Option<bool> {
-        let slot = new_slot::<bool>();
-        let tx = Arc::clone(&slot);
-        let handler = RcBlock::new(move |granted: Bool, _err: *mut AnyObject| {
-            fulfill(&tx, granted.as_bool());
+    pub fn request_authorization(&self, timeout: Duration) -> Option<bool> {
+        let (tx, rx) = channel();
+        let handler = RcBlock::new(move |granted: Bool, _err: Option<&AnyObject>| {
+            let _ = tx.send(granted.as_bool());
         });
+
         unsafe {
             let _: () = msg_send![
                 &*self.0,
@@ -72,33 +85,30 @@ impl NotificationCenter {
                 completionHandler: &*handler,
             ];
         }
-        wait_for(&slot, timeout_secs)
+
+        rx.recv_timeout(timeout).ok()
     }
 
-    pub fn authorization_status(&self, timeout_secs: u64) -> Option<AuthStatus> {
-        let slot = new_slot::<isize>();
-        let tx = Arc::clone(&slot);
-        let handler = RcBlock::new(move |settings: *mut AnyObject| {
-            if settings.is_null() {
-                return;
+    pub fn authorization_status(&self, timeout: Duration) -> Option<AuthStatus> {
+        let (tx, rx) = channel();
+        let handler = RcBlock::new(move |settings: Option<&AnyObject>| {
+            if let Some(settings) = settings {
+                let raw: isize = unsafe { msg_send![settings, authorizationStatus] };
+                let _ = tx.send(raw);
             }
-            let raw: isize = unsafe { msg_send![&*settings, authorizationStatus] };
-            fulfill(&tx, raw);
         });
+
         unsafe {
             let _: () =
                 msg_send![&*self.0, getNotificationSettingsWithCompletionHandler: &*handler];
         }
-        wait_for(&slot, timeout_secs).map(AuthStatus::from)
+
+        rx.recv_timeout(timeout).ok().map(AuthStatus::from)
     }
 
-    pub fn post(&self, title: &str, body: &str, timeout_secs: u64) -> Result<(), PostError> {
-        let (Some(content_cls), Some(request_cls)) = (
-            class(c"UNMutableNotificationContent"),
-            class(c"UNNotificationRequest"),
-        ) else {
-            return Err(PostError::Unavailable);
-        };
+    pub fn post(&self, title: &str, body: &str, timeout: Duration) -> Result<(), PostError> {
+        let content_cls = class(c"UNMutableNotificationContent").ok_or(PostError::Unavailable)?;
+        let request_cls = class(c"UNNotificationRequest").ok_or(PostError::Unavailable)?;
 
         let request: Retained<AnyObject> = unsafe {
             let content: Retained<AnyObject> = msg_send![content_cls, new];
@@ -116,9 +126,11 @@ impl NotificationCenter {
             ]
         };
 
-        let slot = new_slot::<bool>();
-        let tx = Arc::clone(&slot);
-        let completion = RcBlock::new(move |err: *mut AnyObject| fulfill(&tx, err.is_null()));
+        let (tx, rx) = channel();
+        let completion = RcBlock::new(move |err: Option<&AnyObject>| {
+            let _ = tx.send(err.is_none());
+        });
+
         unsafe {
             let _: () = msg_send![
                 &*self.0,
@@ -127,10 +139,12 @@ impl NotificationCenter {
             ];
         }
 
-        match wait_for(&slot, timeout_secs) {
-            Some(true) => Ok(()),
-            Some(false) => Err(PostError::Os),
-            None => Err(PostError::TimedOut),
+        match rx.recv_timeout(timeout) {
+            Ok(true) => Ok(()),
+            Ok(false) => Err(PostError::Os),
+            Err(RecvTimeoutError::Timeout | RecvTimeoutError::Disconnected) => {
+                Err(PostError::TimedOut)
+            }
         }
     }
 }
