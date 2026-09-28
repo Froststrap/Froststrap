@@ -149,7 +149,8 @@ SPDX-License-Identifier: MPL-2.0
 
 			<controls:OptionControl
 	Header="{x:Static resources:Strings.Menu_Integrations_EnableOverlay_Title}"
-	Description="{x:Static resources:Strings.Menu_Integrations_EnableOverlay_Description}">
+	Description="{x:Static resources:Strings.Menu_Integrations_EnableOverlay_Description}"
+                                IsVisible="{x:Static gv:GlobalViewModel.IsWindows}">
 				<ToggleSwitch IsChecked="{Binding EnableOverlay, Mode=TwoWay}" />
 			</controls:OptionControl>
 

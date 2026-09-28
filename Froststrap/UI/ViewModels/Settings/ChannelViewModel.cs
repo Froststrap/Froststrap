@@ -114,6 +114,21 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
+
+        public static List<string> ClientDistributions => Distributions.GetDistributions();
+
+        public string SelectedDistribution
+        {
+            get => Distributions.ClientDistributions[App.Settings.Prop.DistributorType];
+            set
+            {
+                DistributorType distributor = Distributions.GetDistributionFromName(value);
+
+                Distributions.Set(distributor);
+                OnPropertyChanged(nameof(RobloxDomain));
+            }
+        }
+
         private async Task HandleTestModeConfirmation()
         {
             var result = await Frontend.ShowMessageBox(Strings.Menu_TestMode_Prompt, MessageBoxImage.Information, MessageBoxButton.YesNo);
@@ -618,9 +633,9 @@ namespace Froststrap.UI.ViewModels.Settings
 
             try
             {
-                string baseUrl = string.IsNullOrEmpty(Deployment.BaseUrl)
+                string baseUrl = string.IsNullOrEmpty(Deployment.CdnUrl)
                     ? "https://setup.rbxcdn.com"
-                    : Deployment.BaseUrl;
+                    : Deployment.CdnUrl;
 
                 string resourceUrl;
 

@@ -41,6 +41,7 @@ internal partial class Bootstrapper : IDisposable
     private static readonly Regex FlatpakPercentRegex = new(@"(?<percent>\d+)%", RegexOptions.Compiled);
     private readonly CancellationTokenSource _cancelTokenSource = new();
 
+    private IDistribution Distribution = default!;
     private IAppData AppData = default!;
     private Dictionary<string, string> PackageDirectoryMap = null!;
     private LaunchMode _launchMode;
@@ -59,6 +60,7 @@ internal partial class Bootstrapper : IDisposable
 
     private bool MustUpgrade => App.LaunchSettings.ForceFlag.Active
         || App.State.Prop.ForceReinstall
+        || (!IsStudioLaunch && AppData.DistributionState.DistributorType != App.Settings.Prop.DistributorType)
         || ((!OperatingSystem.IsLinux() || IsStudioLaunch) && (string.IsNullOrEmpty(AppData.DistributionState.VersionGuid)
         || (OperatingSystem.IsMacOS() ? !Directory.Exists(AppData.ExecutablePath) : !File.Exists(AppData.ExecutablePath))))
         || (OperatingSystem.IsWindows() && !IsStudioLaunch && !File.Exists(Path.Combine(CurrentDirectory, "WebView2Loader.dll")))
@@ -103,7 +105,7 @@ internal partial class Bootstrapper : IDisposable
         _fastZipEvents.DirectoryFailure += (_, e) => throw e.Exception;
         _fastZipEvents.ProcessFile += (_, e) => e.ContinueRunning = !_cancelTokenSource.IsCancellationRequested;
 
-        SetupAppData();
+        SetupData();
 
         Deployment.Channel = IsStudioLaunch ? App.Settings.Prop.StudioChannel : App.Settings.Prop.PlayerChannel;
 
@@ -112,9 +114,11 @@ internal partial class Bootstrapper : IDisposable
         _joinData = GameJoin.GetJoinDataByLaunchCommand(_launchCommandLine);
     }
 
-    private void SetupAppData()
+    private void SetupData()
     {
-        AppData = IsStudioLaunch ? new RobloxStudioData() : new RobloxPlayerData();
+        Distribution = App.Distribution;
+
+        AppData = IsStudioLaunch ? Distribution.RobloxStudioData : Distribution.RobloxPlayerData;
     }
 
     private async Task SetupPackageDictionaries()
@@ -596,7 +600,7 @@ internal partial class Bootstrapper : IDisposable
 
             try
             {
-                clientVersion = await Deployment.GetInfo(Deployment.Channel, behindProductionCheck, false, AppData.BinaryType);
+                clientVersion = await Deployment.GetInfo(AppData.SupportsCustomDeployments ? Deployment.Channel : Deployment.DefaultChannel, behindProductionCheck, false, AppData.BinaryType);
             }
             catch (InvalidChannelException ex)
             {
@@ -691,7 +695,7 @@ internal partial class Bootstrapper : IDisposable
         }
         else
         {
-            string pkgManifestUrl = Deployment.GetLocation($"/{_latestVersionGuid}-rbxPkgManifest.txt");
+            string pkgManifestUrl = Deployment.GetLocation($"{AppData.CdnExtension}/{_latestVersionGuid}-rbxPkgManifest.txt");
             var pkgManifestData = await App.HttpClient.GetStringAsync(new Uri(pkgManifestUrl));
             _versionPackageManifest = new(pkgManifestData);
         }
@@ -705,7 +709,7 @@ internal partial class Bootstrapper : IDisposable
             App.Logger.Info($"isPlayer={isPlayer}");
 
             _launchMode = isPlayer ? LaunchMode.Player : LaunchMode.Studio;
-            SetupAppData(); // we need to set it up again
+            SetupData(); // we need to set it up again
         }
     }
 
@@ -1911,6 +1915,7 @@ internal partial class Bootstrapper : IDisposable
         MigrateCompatibilityFlags();
 
         AppData.DistributionState.VersionGuid = _latestVersionGuid;
+        AppData.DistributionState.DistributorType = App.Settings.Prop.DistributorType;
 
         AppData.DistributionState.PackageHashes.Clear();
 
@@ -3561,10 +3566,11 @@ internal partial class Bootstrapper : IDisposable
 
         Directory.CreateDirectory(Paths.Downloads);
 
-        string packageUrl = OperatingSystem.IsMacOS()
-            ? Deployment.GetLocation($"{GetMacArchPath()}/{_latestVersionGuid}-{package.Name}")
-            : Deployment.GetLocation($"/{_latestVersionGuid}-{package.Name}");
-        string robloxPackageLocation = Path.Combine(Paths.LocalAppData, "Roblox", "Downloads", package.Signature);
+        string packageUrl = Deployment.GetLocation(
+            OperatingSystem.IsMacOS()
+                ? $"{GetMacArchPath()}{AppData.CdnExtension}/{_latestVersionGuid}-{package.Name}"
+                : $"{AppData.CdnExtension}/{_latestVersionGuid}-{package.Name}");
+        string robloxPackageLocation = Path.Combine(AppData.AppDataDirectory, "Downloads", package.Signature);
 
         if (File.Exists(package.DownloadPath))
         {

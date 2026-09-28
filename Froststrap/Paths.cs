@@ -24,15 +24,28 @@ namespace Froststrap
         public static string SavedFlagProfiles { get; private set; } = "";
         public static string Versions { get; private set; } = "";
         public static string Modifications { get; private set; } = "";
-        public static string Roblox { get; private set; } = "";
         public static string CustomThemes { get; private set; } = "";
-        public static string RobloxLogs { get; private set; } = "";
-        public static string RobloxCache { get; private set; } = "";
         public static string CustomCursors { get; private set; } = "";
 
         public static string SoberAssetOverlay { get; private set; } = "";
         public static string SoberData { get; private set; } = "";
         public static string SoberConfig { get; private set; } = "";
+
+        // different distributions have different appdatas
+        private static string _roblox = "";
+        public static string Roblox
+        {
+            get => OperatingSystem.IsWindows() ? App.Distribution.RobloxPlayerData.AppDataDirectory : _roblox;
+            private set => _roblox = value;
+        }
+        public static string RobloxStudio => App.Distribution.RobloxStudioData.AppDataDirectory;
+        private static string _robloxLogs = "";
+        public static string RobloxLogs
+        {
+            get => OperatingSystem.IsWindows() ? Path.Combine(Roblox, "logs") : _robloxLogs;
+            private set => _robloxLogs = value;
+        }
+        public static string RobloxCache { get; private set; } = "";
 
         public static string CustomFont => Path.Combine(Modifications, "content", "fonts", "CustomFont.ttf");
 
@@ -72,7 +85,6 @@ namespace Froststrap
                 var rootPath = Path.Combine(LocalAppData, App.ProjectName);
                 ConfigRoot = rootPath;
                 DataRoot = rootPath;
-                Roblox = Path.Combine(LocalAppData, "Roblox");
             }
             else if (OperatingSystem.IsMacOS())
             {
@@ -131,7 +143,6 @@ namespace Froststrap
             }
             else
             {
-                RobloxLogs = Path.Combine(Roblox, "logs");
                 RobloxCache = Path.Combine(Path.GetTempPath(), "Roblox");
             }
 

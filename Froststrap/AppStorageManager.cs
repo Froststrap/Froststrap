@@ -5,6 +5,7 @@
 using System.Text.Encodings.Web;
 using Froststrap.Enums.AppStoragePresets;
 using System.Text.Json.Nodes;
+using Froststrap.RobloxInterfaces;
 
 namespace Froststrap
 {
@@ -13,7 +14,7 @@ namespace Froststrap
         public static string FileLocation =>
             OperatingSystem.IsLinux()
                 ? Path.Combine(Paths.SoberData, "appData", "LocalStorage", "appStorage.json")
-                : Path.Combine(Paths.Roblox, "LocalStorage", "appStorage.json");
+                : Path.Combine(Paths.Roblox, "LocalStorage", Deployment.IsDefaultRobloxDomain ? "appStorage.json" : $"{Deployment.RobloxDomain}_appStorage.json");
 
         private static readonly JsonSerializerOptions SerializerOptions = new()
         {

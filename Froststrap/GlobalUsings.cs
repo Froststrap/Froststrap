@@ -31,6 +31,7 @@ global using Froststrap.Models.APIs.RoValra;
 global using Froststrap.Models.APIs.WebView2;
 global using Froststrap.Models.Attributes;
 global using Froststrap.Models.BloxstrapRPC;
+global using Froststrap.Models.Distribution;
 global using Froststrap.Models.Entities;
 global using Froststrap.Models.FroststrapStudioRPC;
 global using Froststrap.Models.Manifest;

@@ -10,6 +10,8 @@ namespace Froststrap.AppData
 
         public virtual string BinaryType { get; } = null!;
 
+        public virtual string AppDataDirectory { get; } = Path.Combine(Paths.LocalAppData, "Roblox");
+
         public string StaticDirectory => Path.Combine(Paths.Versions, BinaryType);
         public string DynamicDirectory => Path.Combine(Paths.Versions, DistributionState.VersionGuid);
 
@@ -18,6 +20,10 @@ namespace Froststrap.AppData
         public bool IsInstalled => DistributionStateManager.IsSaved && !string.IsNullOrEmpty(DistributionState.VersionGuid) && System.IO.Directory.Exists(Directory);
 
         public string ExecutablePath => Path.Combine(Directory, ExecutableName);
+
+        public virtual string CdnExtension { get; } = string.Empty;
+
+        public virtual bool SupportsCustomDeployments { get; } = true;
 
         public virtual JsonManager<DistributionState> DistributionStateManager { get; } = null!;
 

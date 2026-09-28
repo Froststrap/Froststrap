@@ -34,7 +34,7 @@ namespace Froststrap.RobloxInterfaces
 
         public static bool IsDefaultRobloxDomain => RobloxDomain.Equals(DefaultRobloxDomain, StringComparison.OrdinalIgnoreCase);
 
-        public static string BaseUrl { get; private set; } = null!;
+        public static string CdnUrl { get; private set; } = null!;
 
         public static readonly List<HttpStatusCode?> BadChannelCodes = [
             HttpStatusCode.Unauthorized,
@@ -43,15 +43,6 @@ namespace Froststrap.RobloxInterfaces
         ];
 
         private static readonly Dictionary<string, ClientVersion> ClientVersionCache = [];
-
-        private static readonly List<string> BaseUrls =
-        [
-            "https://setup.rbxcdn.com",
-            "https://setup-ak.rbxcdn.com",
-            "https://setup-aws.rbxcdn.com",
-            "https://setup-cfly.rbxcdn.com",
-            "https://s3.amazonaws.com/setup.roblox.com"
-        ];
 
         private const int SecondaryMirrorDelayMs = 300;
 
@@ -77,7 +68,7 @@ namespace Froststrap.RobloxInterfaces
 
             using var tokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(10));
 
-            var pending = BaseUrls
+            var pending = App.Distribution.CdnUrls
                 .Select((url, index) => ProbeMirror(url, index == 0 ? 0 : SecondaryMirrorDelayMs, tokenSource.Token))
                 .ToList();
 
@@ -102,22 +93,22 @@ namespace Froststrap.RobloxInterfaces
                     continue;
                 }
 
-                BaseUrl = url;
-                App.Logger.Info($"Optimal BaseUrl: {BaseUrl}");
+                CdnUrl = url;
+                App.Logger.Info($"Optimal BaseUrl: {CdnUrl}");
 
                 await tokenSource.CancelAsync();
                 return null;
             }
 
-            BaseUrl = FALLBACK_URL;
-            App.Logger.Warn($"No mirrors responded. Falling back to default: {BaseUrl}");
+            CdnUrl = FALLBACK_URL;
+            App.Logger.Warn($"No mirrors responded. Falling back to default: {CdnUrl}");
 
             return lastError ?? new InvalidOperationException("No regional mirrors were responsive.");
         }
 
         public static string GetLocation(string resource)
         {
-            string location = BaseUrl;
+            string location = CdnUrl;
             if (!IsDefaultChannel)
                 location += "/channel/common";
             location += resource;
@@ -168,7 +159,7 @@ namespace Froststrap.RobloxInterfaces
         {
             const string header = "last-modified";
 
-            if (string.IsNullOrEmpty(BaseUrl))
+            if (string.IsNullOrEmpty(CdnUrl))
                 await InitializeConnectivity();
 
             try

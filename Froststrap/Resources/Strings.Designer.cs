@@ -1513,15 +1513,6 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No game history yet..
-        /// </summary>
-        public static string ContextMenu_GameHistory_Empty {
-            get {
-                return ResourceManager.GetString("ContextMenu.GameHistory.Empty", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Rejoin.
         /// </summary>
         public static string ContextMenu_GameHistory_Rejoin {
@@ -2187,6 +2178,36 @@ namespace Froststrap.Resources {
         public static string Dialog_Connectivity_UnableToDownloadReason {
             get {
                 return ResourceManager.GetString("Dialog.Connectivity.UnableToDownloadReason", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose Roblox version.
+        /// </summary>
+        public static string Dialog_DistributorSelector_Header {
+            get {
+                return ResourceManager.GetString("Dialog.DistributorSelector.Header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose which client distribution Fishstrap should use..
+        /// </summary>
+        public static string Dialog_DistributorSelector_Subtext {
+            get {
+                return ResourceManager.GetString("Dialog.DistributorSelector.Subtext", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Using VNG distribution outside Vietnam is not recommended.
+        ///Agreeing VNGGames terms could cause irreversible changes to your Roblox account.
+        ///
+        ///Press cancel to go back..
+        /// </summary>
+        public static string Dialog_DistributorSelector_VNGWarning {
+            get {
+                return ResourceManager.GetString("Dialog.DistributorSelector.VNGWarning", resourceCulture);
             }
         }
         
@@ -4317,6 +4338,24 @@ namespace Froststrap.Resources {
         public static string Menu_Channel_ChangeAction_Title {
             get {
                 return ResourceManager.GetString("Menu.Channel.ChangeAction.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose the client deployment Fishstrap should use. Please note, you may not be able to revert your account status after agreeing to the terms shown by Roblox..
+        /// </summary>
+        public static string Menu_Channel_ClientDistribution_Description {
+            get {
+                return ResourceManager.GetString("Menu.Channel.ClientDistribution.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Roblox version.
+        /// </summary>
+        public static string Menu_Channel_ClientDistribution_Title {
+            get {
+                return ResourceManager.GetString("Menu.Channel.ClientDistribution.Title", resourceCulture);
             }
         }
         

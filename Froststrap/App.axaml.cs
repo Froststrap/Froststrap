@@ -111,6 +111,8 @@ internal partial class App : Application
 
     public static readonly CookiesManager Cookies = new();
 
+    public static IDistribution Distribution => Distributions.Get();
+
     public static readonly HttpClient HttpClient = new(new HttpClientLoggingHandler(new HttpClientHandler { AutomaticDecompression = DecompressionMethods.All }));
 
     private static bool _showingExceptionDialog;
@@ -526,6 +528,8 @@ internal partial class App : Application
 
         Settings.Load();
         State.Load();
+
+        Logger.Info($"Distributor: {Settings.Prop.DistributorType}");
 
         if (Settings.Prop.Theme > Theme.Custom)
         {

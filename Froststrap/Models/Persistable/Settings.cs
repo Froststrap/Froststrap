@@ -91,6 +91,7 @@ namespace Froststrap.Models.Persistable
         public bool DisableAnimations { get; set; }
         public bool UpdateRoblox { get; set; } = true;
         public bool AutomaticallyUpdateSober { get; set; } = true;
+        public DistributorType DistributorType { get; set; } = DistributorType.Global;
         public int MaxThreadDownload { get; set; } = 3;
         public string RobloxDomain { get; set; } = RobloxInterfaces.Deployment.DefaultRobloxDomain;
         public bool StaticDirectory { get; set; }

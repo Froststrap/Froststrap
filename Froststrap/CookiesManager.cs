@@ -257,7 +257,7 @@ namespace Froststrap
 
             var trackerCookie = cookies.FirstOrDefault(c =>
                 c.Name == TrackerCookieName &&
-                c.Domain.Contains(".roblox.com", StringComparison.Ordinal));
+                c.Domain.Contains("." + Deployment.RobloxDomain, StringComparison.Ordinal));
             string tracker = trackerCookie.Value ?? string.Empty;
 
             return new CookieLoadResult(authCookie, tracker);
@@ -407,7 +407,7 @@ namespace Froststrap
         {
             var cookie = cookies.FirstOrDefault(c =>
                 c.Name == ".ROBLOSECURITY" &&
-                c.Domain.Contains(".roblox.com", StringComparison.Ordinal));
+                c.Domain.Contains("." + Deployment.RobloxDomain, StringComparison.Ordinal));
             return cookie.Value;
         }
     }

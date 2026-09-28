@@ -10,6 +10,8 @@ namespace Froststrap.AppData
 
         string BinaryType { get; }
 
+        string AppDataDirectory { get; }
+
         string RegistryName { get; }
 
         string ProcessName { get; }
@@ -25,6 +27,10 @@ namespace Froststrap.AppData
         bool IsInstalled { get; }
 
         string ExecutablePath { get; }
+
+        string CdnExtension { get; }
+
+        bool SupportsCustomDeployments { get; }
 
         JsonManager<DistributionState> DistributionStateManager { get; }
 
