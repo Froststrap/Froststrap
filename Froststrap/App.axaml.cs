@@ -57,6 +57,11 @@ internal partial class App : Application
         .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion
         ?? "unknown+asteo").Split("+")[0];
 
+    static App()
+    {
+        Logger.Info($"App.Version = '{Version}'");
+    }
+
     public static readonly string InternalVersion = Assembly.GetExecutingAssembly()
         .GetName().Version!.ToString()[..^2];
 

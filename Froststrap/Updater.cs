@@ -43,6 +43,7 @@ internal class Updater
             existingVer = "0.0.0";
         }
 
+        App.Logger.Info($"Comparing migration versions: existing='{existingVer}', current='{currentVer}'");
         if (Utility.Versioning.CompareVersions(existingVer, currentVer) != VersionComparison.LessThan)
         {
             App.Logger.Info($"Migrations up to date (last={existingVer}, current={currentVer})");
