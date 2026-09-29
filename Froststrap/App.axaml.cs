@@ -255,24 +255,6 @@ internal partial class App : Application
         return false;
     }
 
-    /// TODO: remove this,useless function
-    public static async Task AssertWindowsOSVersionAsync()
-    {
-        if (!OperatingSystem.IsWindows())
-            return;
-
-        int major = Environment.OSVersion.Version.Major;
-        if (major < 10)
-        {
-            Logger.Error($"Detected unsupported Windows version ({Environment.OSVersion.Version}).");
-
-            if (!LaunchSettings.QuietFlag.Active)
-                await Frontend.ShowMessageBox(Strings.App_OSDeprecation_Win7_81, MessageBoxImage.Error);
-
-            Terminate(ErrorCode.ERROR_INVALID_FUNCTION);
-        }
-    }
-
     public static string ExtractIcon(string name, string fileName)
     {
         string baseFilePath = Path.Combine(Paths.Base, fileName);
