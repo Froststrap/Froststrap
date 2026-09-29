@@ -22,7 +22,6 @@ macOS Specific
 
 - Xcode (.app is preferred as it has the whole toolchain which is needed)
 - Xcode Command Line Tools
-- Swift compiler (should come with Xcode Command Line Utils)
 
 Windows Specific
 ~~~~~~~~~~~~~~~~
