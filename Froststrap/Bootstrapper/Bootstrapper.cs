@@ -1688,6 +1688,7 @@ internal partial class Bootstrapper : IDisposable
             try
             {
                 process.Kill();
+                process.WaitForExit();
             }
             catch (Exception ex)
             {
@@ -1725,7 +1726,7 @@ internal partial class Bootstrapper : IDisposable
         _isInstalling = true;
 
         // make sure nothing is running before continuing upgrade
-        if (!App.LaunchSettings.BackgroundUpdaterFlag.Active && !IsStudioLaunch) // TODO: wait for studio processes to close before updating to prevent data loss
+        if (!App.LaunchSettings.BackgroundUpdaterFlag.Active && !IsStudioLaunch)
             KillRobloxPlayers();
 
         // get a fully clean install
