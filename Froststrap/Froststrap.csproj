@@ -6,8 +6,8 @@ SPDX-License-Identifier: MPL-2.0
 
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <InfAppVersion Condition="'$(AppVersion)' == ''">preversion</InfAppVersion>
-    <AppVersion Condition="'$(AppVersion)' == ''">0.0.0</AppVersion>
+  	<AppVersion Condition="'$(AppVersion)' == ''">0.0.0</AppVersion>
+  	<InfAppVersion Condition="'$(InfAppVersion)' == ''">$(AppVersion)</InfAppVersion>
     <OutputType Condition="!$([MSBuild]::IsOSPlatform('Windows'))">Exe</OutputType>
     <OutputType Condition="$([MSBuild]::IsOSPlatform('Windows'))">WinExe</OutputType>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>

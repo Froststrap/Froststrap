@@ -60,6 +60,13 @@ SPDX-License-Identifier: MPL-2.0
                 TextWrapping="Wrap"
                 />
 
+            <controls:OptionControl
+                Header="Automatically update Froststrap"
+                Description="Automatically download and install Froststrap updates when they are available."
+                >
+                <ToggleSwitch IsChecked="{Binding AutomaticallyUpdateFroststrap, Mode=TwoWay}" />
+            </controls:OptionControl>
+
             <controls:CardExpander
                 Header="{x:Static resources:Strings.Menu_Behaviour_AutoUpdate_Title}"
                 Description="{x:Static resources:Strings.Menu_Behaviour_AutoUpdate_Description}"
