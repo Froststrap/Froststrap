@@ -117,7 +117,7 @@ SPDX-License-Identifier: MPL-2.0
     </Compile>
   </ItemGroup>
 
-  <Target Name="CopyVirtualDisplayFromBackend"
+  <Target Name="CopyMacLibsFromBackend"
           AfterTargets="Build"
           Condition="$([MSBuild]::IsOSPlatform('OSX'))">
 
@@ -129,5 +129,26 @@ SPDX-License-Identifier: MPL-2.0
           DestinationFolder="$(OutDir)"
           SkipUnchangedFiles="true"
           Condition="Exists('$(BackendOutDir)libvirtualdisplay.dylib')" />
+
+    <Copy SourceFiles="$(BackendOutDir)libmobileappreg.dylib"
+          DestinationFolder="$(OutDir)"
+          SkipUnchangedFiles="true"
+          Condition="Exists('$(BackendOutDir)libmobileappreg.dylib')" />
+
+    <Copy SourceFiles="$(BackendOutDir)libnotify.dylib"
+          DestinationFolder="$(OutDir)"
+          SkipUnchangedFiles="true"
+          Condition="Exists('$(BackendOutDir)libnotify.dylib')" />
+  </Target>
+
+  <Target Name="KeepDylibsOutOfBundle"
+          AfterTargets="ComputeResolvedFilesToPublishList"
+          Condition="$([MSBuild]::IsOSPlatform('OSX'))">
+    <ItemGroup>
+      <ResolvedFileToPublish Remove="@(ResolvedFileToPublish)"
+                             Condition="'%(Filename)%(Extension)' == 'libnotify.dylib'
+                                     Or '%(Filename)%(Extension)' == 'libvirtualdisplay.dylib'
+                                     Or '%(Filename)%(Extension)' == 'libmobileappreg.dylib'" />
+    </ItemGroup>
   </Target>
 </Project>

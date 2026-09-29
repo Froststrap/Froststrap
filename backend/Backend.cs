@@ -88,3 +88,20 @@ public class NativeNotify
         });
     }
 }
+
+internal partial class InternalMobileAppReg
+{
+    [LibraryImport(
+        "mobileappreg",
+        EntryPoint = "init"
+    )]
+    public static partial int Init();
+}
+
+public class MobileAppReg
+{
+    public static void Init()
+    {
+        InternalMobileAppReg.Init();
+    }
+}

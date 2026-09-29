@@ -472,6 +472,11 @@ internal partial class App : Application
         if (ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
             return;
 
+#if __APPLE__
+        Logger.Info("Forcing Mobile App URI to be handled by us");
+        Backend.MobileAppReg.Init();
+#endif
+
         desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
 
         desktop.Exit += (_, _) =>
