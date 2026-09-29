@@ -28,8 +28,8 @@
   nspr,
 }:
 let
-  inherit (callPackage ./devshell-tools.nix {}) mkFragment;
-  avdt = callPackage ./avdt.nix {};
+  inherit (callPackage ./devshell-tools.nix { }) mkFragment;
+  avdt = callPackage ./avdt.nix { };
   dotnet-tc = dotnetCorePackages.sdk_10_0-bin;
 in
 mkFragment (finalAttrs: {
@@ -60,7 +60,8 @@ mkFragment (finalAttrs: {
     omnisharp-roslyn # lsp
     dotnet-tc
     avdt # devtools for avalonia
-  ] ++ lib.optionals stdenv.hostPlatform.isLinux [
+  ]
+  ++ lib.optionals stdenv.hostPlatform.isLinux [
     glib
   ];
 
