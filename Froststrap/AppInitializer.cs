@@ -12,10 +12,10 @@ internal static class AppInitializer
     {
         if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
         {
-            var assembly = typeof(Froststrap.Backend.VirtualDisplay).Assembly;
-            App.Logger.Debug($"Registering resolver for {assembly.FullName}");
+            var backendAssembly = typeof(Froststrap.Backend.VirtualDisplay).Assembly;
+            App.Logger.Debug($"Registering resolver for {backendAssembly.FullName}");
             NativeLibrary.SetDllImportResolver(
-                assembly,
+                backendAssembly,
                 ResolveBundleFramework
             );
         }
