@@ -31,10 +31,8 @@ namespace Froststrap
 
         public string RobloxLaunchArgs { get; set; } = "";
 
-        /// <summary>
-        /// Original launch arguments
-        /// </summary>
         public string[] Args { get; private set; }
+        public List<string> UnknownArgs { get; } = [];
 
         private static readonly HashSet<string> StudioFileExtensions = new(
             [".rbxl", ".rbxlx", ".rbxm", ".rbxmx"],
@@ -142,6 +140,7 @@ namespace Froststrap
                 if (!arg.StartsWith('-'))
                 {
                     App.Logger.Error($"Invalid argument: {arg}");
+                    UnknownArgs.Add(arg);
                     continue;
                 }
 
@@ -151,6 +150,7 @@ namespace Froststrap
                 if (flag is null)
                 {
                     App.Logger.Warn($"Unknown argument: {identifier}");
+                    UnknownArgs.Add(arg);
                     continue;
                 }
 
