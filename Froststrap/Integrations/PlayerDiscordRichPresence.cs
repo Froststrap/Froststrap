@@ -105,14 +105,14 @@ namespace Froststrap.Integrations
                     {
                         TargetId = (ulong)smallImg,
                         Type = ThumbnailType.Asset,
-                        Size = "512x512",
+                        Size = ThumbnailSize.Cyberpunk,
                         IsCircular = false
                     },
                     new()
                     {
                         TargetId = (ulong)largeImg,
                         Type = ThumbnailType.Asset,
-                        Size = "512x512",
+                        Size = ThumbnailSize.Cyberpunk,
                         IsCircular = false
                     }
                 ], token);
@@ -135,7 +135,7 @@ namespace Froststrap.Integrations
                 {
                     TargetId = (ulong)smallImg,
                     Type = ThumbnailType.Asset,
-                    Size = "512x512",
+                    Size = ThumbnailSize.Cyberpunk,
                     IsCircular = false
                 }, token);
 
@@ -149,7 +149,7 @@ namespace Froststrap.Integrations
                 {
                     TargetId = (ulong)largeImg,
                     Type = ThumbnailType.Asset,
-                    Size = "512x512",
+                    Size = ThumbnailSize.Cyberpunk,
                     IsCircular = false
                 }, token);
 

@@ -90,7 +90,7 @@ namespace Froststrap.Integrations
                 var request = new ThumbnailRequest
                 {
                     TargetId = (ulong)activity.UniverseId,
-                    Size = "150x150",
+                    Size = ThumbnailSize.Detailed,
                     Type = ThumbnailType.GameIcon,
                     Format = ThumbnailFormat.Png
                 };
