@@ -17,24 +17,16 @@ public partial class Build : FalloutBuild
         Log.Information("Froststrap path: {Value}", project.Directory);
         Log.Information("Publishing {Value} to {Value}...", project.Path, DotnetPublishArtifactsDir);
 
-        string arch = TargetArch;
+        string rid = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? $"win-{TargetArch}" :
+                    RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? $"linux-{TargetArch}" :
+                    RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? $"osx-{TargetArch}" : null;
 
-        string rid = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? $"win-{arch}" :
-                    RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? $"linux-{arch}" :
-                    RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? $"osx-{arch}" : null;
-
-        string publish = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? $"windows-{arch}" :
-                    RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? $"linux-{arch}" :
-                    RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? $"osx-{arch}" : null;
-
-        if (rid == null || arch == null || publish == null)
+        if (rid == null)
         {
             throw new PlatformNotSupportedException("Unsupported OS or Architecture for publishing.");
         }
 
-        string publishProfile = $"Publish-{publish}";
-
-        Log.Information("Publishing for {Rid} using profile {Profile}", rid, publishProfile);
+        Log.Information("Publishing for {Rid}", rid);
 
         var process = new Process();
         process.StartInfo.FileName = "dotnet";
@@ -43,7 +35,6 @@ public partial class Build : FalloutBuild
                                       $"-c {Configuration} " +
                                       $"-r {rid} " +
                                       $"-o \"{DotnetPublishArtifactsDir}\" " +
-                                      $"-p:PublishProfile=\"{publishProfile}\" " +
                                       $"-p:RustTargetTriple={RustTargetTriple} " +
                                       $"-p:AppVersion=\"{GitTag.TrimStart('v')}\" " +
                                       $"--nologo";
