@@ -68,8 +68,8 @@ namespace Froststrap
             }
             else
             {
-                App.Logger.Error("No known launch mode was resolved, exiting");
-                App.Terminate();
+                App.Logger.Info($"Opening menu");
+                LaunchMenu();
             }
         }
 
@@ -80,7 +80,8 @@ namespace Froststrap
             if (unknown.Count == 0)
                 return;
 
-            App.Logger.Warn($"Ignoring {unknown.Count} unrecognized argument(s): {string.Join(", ", unknown)}");
+            App.Logger.Error($"{unknown.Count} unrecognized argument(s): {string.Join(", ", unknown)}");
+            App.Terminate(ErrorCode.ERROR_CANCELLED);
         }
 
         public static void LaunchSettings(bool quitIfAlreadyRunning = false)
