@@ -22,6 +22,7 @@ public partial class Build : FalloutBuild
         process.StartInfo.Arguments = $"msbuild \"{project.Path}\" " +
                                       $"-p:Configuration={Configuration} " +
                                       $"-p:OutputPath=\"{DotnetBuildArtifactsDir}\" " +
+                                      $"-p:RustTargetTriple={RustTargetTriple} " +
                                       $"-nologo";
                                       
         process.StartInfo.UseShellExecute = false;

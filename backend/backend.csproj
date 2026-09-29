@@ -11,7 +11,17 @@
     <RustProfile Condition="'$(Configuration)' == 'Release'">release</RustProfile>
     <RustProfile Condition="'$(Configuration)' != 'Release'">debug</RustProfile>
     <RustCargoFlags Condition="'$(Configuration)' == 'Release'">--release</RustCargoFlags>
+
+    <RustTargetTriple Condition="'$(RustTargetTriple)' == '' and '$(RuntimeIdentifier)' == 'osx-x64'">x86_64-apple-darwin</RustTargetTriple>
+    <RustTargetTriple Condition="'$(RustTargetTriple)' == '' and '$(RuntimeIdentifier)' == 'osx-arm64'">aarch64-apple-darwin</RustTargetTriple>
+    <RustTargetTriple Condition="'$(RustTargetTriple)' == '' and '$(RuntimeIdentifier)' == 'linux-x64'">x86_64-unknown-linux-gnu</RustTargetTriple>
+    <RustTargetTriple Condition="'$(RustTargetTriple)' == '' and '$(RuntimeIdentifier)' == 'linux-arm64'">aarch64-unknown-linux-gnu</RustTargetTriple>
+    <RustTargetTriple Condition="'$(RustTargetTriple)' == '' and '$(RuntimeIdentifier)' == 'win-x64'">x86_64-pc-windows-msvc</RustTargetTriple>
+    <RustTargetTriple Condition="'$(RustTargetTriple)' == '' and '$(RuntimeIdentifier)' == 'win-arm64'">aarch64-pc-windows-msvc</RustTargetTriple>
+
     <RustTargetDir>$(RustProjectDir)/target/$(RustProfile)</RustTargetDir>
+    <RustTargetDir Condition="'$(RustTargetTriple)' != ''">$(RustProjectDir)/target/$(RustTargetTriple)/$(RustProfile)</RustTargetDir>
+    <RustCargoTargetArg Condition="'$(RustTargetTriple)' != ''">--target $(RustTargetTriple)</RustCargoTargetArg>
 
     <NativeLibPrefix Condition="!$([MSBuild]::IsOSPlatform('Windows'))">lib</NativeLibPrefix>
     <NativeLibExt Condition="$([MSBuild]::IsOSPlatform('Windows'))">dll</NativeLibExt>
@@ -29,7 +39,7 @@
   </ItemGroup>
 
   <Target Name="BuildBackend" BeforeTargets="BeforeBuild">
-    <Exec Command="cargo build $(PackageFlags) $(RustCargoFlags)" WorkingDirectory="$(RustProjectDir)" />
+    <Exec Command="cargo build $(PackageFlags) $(RustCargoFlags) $(RustCargoTargetArg)" WorkingDirectory="$(RustProjectDir)" />
     <Error Condition="!Exists('%(NativeLib.FullPath)')"
            Text="Expected cargo output not found at %(NativeLib.FullPath)" />
   </Target>

@@ -66,7 +66,7 @@ public partial class Build : FalloutBuild
 
         var nfpmYaml = $"""
             name: froststrap
-            arch: amd64
+            arch: {(TargetArch == "arm64" ? "arm64" : "amd64")}
             platform: linux
             version: {version}
             maintainer: Froststrap-Dev
@@ -95,7 +95,7 @@ public partial class Build : FalloutBuild
             Log.Information("Building .{pkg} via nFPM", packager);
             RunProcess(nfpm,
                 $"pkg --packager {packager} -f \"{config}\" " +
-                $"-t \"{DistributionDir / $"Froststrap-linux-x64.{packager}"}\"");
+                $"-t \"{DistributionDir / $"Froststrap-linux-{TargetArch}.{packager}"}\"");
         }
     }
 
@@ -148,12 +148,12 @@ public partial class Build : FalloutBuild
             tool = toolPath;
         }
 
-        Environment.SetEnvironmentVariable("ARCH", "x86_64");
+        Environment.SetEnvironmentVariable("ARCH", TargetArch == "arm64" ? "aarch64" : "x86_64");
         Environment.SetEnvironmentVariable("SOURCE_DATE_EPOCH", null);
 
         Log.Information("Building AppImage");
         RunProcess(tool,
-            $"--appimage-extract-and-run \"{appDir}\" \"{DistributionDir / "Froststrap-linux-x64.AppImage"}\"");
+            $"--appimage-extract-and-run \"{appDir}\" \"{DistributionDir / $"Froststrap-linux-{TargetArch}.AppImage"}\"");
 
         Directory.Delete(appDir, recursive: true);
     }

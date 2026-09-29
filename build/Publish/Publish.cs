@@ -17,12 +17,7 @@ public partial class Build : FalloutBuild
         Log.Information("Froststrap path: {Value}", project.Directory);
         Log.Information("Publishing {Value} to {Value}...", project.Path, DotnetPublishArtifactsDir);
 
-        string arch = RuntimeInformation.OSArchitecture switch
-        {
-            Architecture.X64 => "x64",
-            Architecture.Arm64 => "arm64",
-            _ => null
-        };
+        string arch = TargetArch;
 
         string rid = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? $"win-{arch}" :
                     RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? $"linux-{arch}" :
@@ -49,6 +44,7 @@ public partial class Build : FalloutBuild
                                       $"-r {rid} " +
                                       $"-o \"{DotnetPublishArtifactsDir}\" " +
                                       $"-p:PublishProfile=\"{publishProfile}\" " +
+                                      $"-p:RustTargetTriple={RustTargetTriple} " +
                                       $"-p:AppVersion=\"{GitTag.TrimStart('v')}\" " +
                                       $"--nologo";
 

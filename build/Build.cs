@@ -33,6 +33,9 @@ public partial class Build : FalloutBuild
 
     [Parameter("Configuration to build - Default is Release")]
     readonly Configuration Configuration = Configuration.Release;
+
+    [Parameter("Override the target architecture for cross-compiling (x64 or arm64)")]
+    readonly string OverrideArch;
     
     [Solution]
     readonly Solution Solution;
@@ -76,6 +79,9 @@ public partial class Build : FalloutBuild
             Console.WriteLine(); // seperator
             Log.Information("No Installers: {Value}", NoInstallers);
             Log.Information("Configuration: {Value}", Configuration);
+            Log.Information("Override Arch: {Value}", OverrideArch ?? "(host)");
+            Log.Information("Target Arch: {Value}", TargetArch);
+            Log.Information("Rust Target: {Value}", RustTargetTriple);
         });
 
     Target Clean => _ => _

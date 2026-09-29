@@ -121,6 +121,10 @@
           "type": "boolean",
           "description": "Skip building installers"
         },
+        "OverrideArch": {
+          "type": "string",
+          "description": "Override the target architecture for cross-compiling (x64 or arm64)"
+        },
         "Solution": {
           "type": "string",
           "description": "Path to a solution file that is automatically loaded"

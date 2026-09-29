@@ -23,6 +23,8 @@ public partial class Build : FalloutBuild
         File.Copy(source, dylibDest, overwrite: true);
 
         Log.Information("Building {xcproj} with xcodebuild", xcodeProjectLocation);
+        string xcodeArch = TargetArch == "x64" ? "x86_64" : "arm64";
+
         var xcbProc = new Process();
         xcbProc.StartInfo.FileName = "xcodebuild";
         xcbProc.StartInfo.Arguments = $"-project {xcodeProjectLocation} " +
@@ -31,6 +33,8 @@ public partial class Build : FalloutBuild
                                       $"MARKETING_VERSION=\"{version}\" " +
                                       $"CURRENT_PROJECT_VERSION=\"{version.Replace(".", "")}\" " +
                                       "CODE_SIGNING_ALLOWED=NO " +
+                                      $"ARCHS={xcodeArch} " +
+                                      "ONLY_ACTIVE_ARCH=NO " +
                                       "build";
         xcbProc.StartInfo.UseShellExecute = false;
         xcbProc.Start();
@@ -70,10 +74,10 @@ public partial class Build : FalloutBuild
     {
         var profile = Configuration.ToString().Equals("Release", StringComparison.OrdinalIgnoreCase)
             ? "release" : "debug";
-        var path = cargoTargetDir / profile / "libvirtualdisplay.dylib";
+        var path = cargoTargetDir / RustTargetTriple / profile / "libvirtualdisplay.dylib";
 
         if (!File.Exists(path))
-            throw new Exception($"{path} not found - did `cargo build` run for the {profile} profile?");
+            throw new Exception($"{path} not found - did `cargo build` run for the {profile} profile on {RustTargetTriple}?");
 
         return path;
     }

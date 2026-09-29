@@ -55,6 +55,20 @@ and to publish without the installers- e.g packaging for your own system which d
 
    dotnet run --project build -- publish --no-installers
 
+Cross-compiling
+~~~~~~~~~~~~~~~
+
+``publish`` and ``compile`` take an ``--override-arch`` flag (``x64`` or ``arm64``) which
+forces the entire build to target that architecture instead of the hosts one- so dotnet
+gets the matching runtime identifier, the rust backend gets built for the matching target
+triple, and the Xcode macOS app is built with the matching ``ARCHS``.
+
+.. code-block:: bash
+
+   dotnet run --project build -- publish --override-arch x64
+
+This is how the Intel package is produced from an Apple Silicon machine, and vice versa.
+
 Build
 ~~~~~
 

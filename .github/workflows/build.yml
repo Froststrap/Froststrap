@@ -30,15 +30,15 @@ jobs:
           path: .build/dist/*
 
   build-macos:
-    runs-on: ${{ matrix.runner }}
+    runs-on: macos-26
     strategy:
       fail-fast: false
       matrix:
         include:
-          - runner: macos-26
-            arch: arm64
-          - runner: macos-26-intel
-            arch: x64
+          - arch: arm64
+            rust-target: aarch64-apple-darwin
+          - arch: x64
+            rust-target: x86_64-apple-darwin
 
     steps:
       - uses: actions/checkout@v7
@@ -49,6 +49,9 @@ jobs:
       - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: "10.0.x"
+
+      - name: Add Rust target
+        run: rustup target add ${{ matrix.rust-target }}
 
       - name: Remove stale signing keychain
         if: startsWith(github.ref, 'refs/tags/v')
@@ -79,7 +82,7 @@ jobs:
           APP_STORE_CONNECT_P8_CONTENT: ${{ secrets.APP_STORE_CONNECT_P8_CONTENT }}
           APPLE_KEY_ID: ${{ secrets.APPLE_KEY_ID }}
           APPLE_ISSUER_ID: ${{ secrets.APPLE_ISSUER_ID }}
-        run: dotnet run --project build -- Publish
+        run: dotnet run --project build -- Publish --override-arch ${{ matrix.arch }}
 
       - name: Rename package for architecture
         run: mv .build/dist/Froststrap.pkg .build/dist/Froststrap-macos-${{ matrix.arch }}.pkg
