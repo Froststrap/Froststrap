@@ -5,6 +5,7 @@
   inputs,
   stdenv,
   callPackage,
+  cargo-bloat,
 }:
 let
   inherit (callPackage ./devshell-tools.nix { }) mkFragment;
@@ -18,5 +19,6 @@ in
 mkFragment {
   buildInputs = [
     toolchain
+    cargo-bloat
   ];
 }
