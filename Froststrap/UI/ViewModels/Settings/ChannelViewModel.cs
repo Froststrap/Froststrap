@@ -95,7 +95,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 if (ValidateDomain(value))
                     App.Settings.Prop.RobloxDomain = value;
                 else
-                    _ = Frontend.ShowMessageBox(Strings.Menu_Deployment_DomainValidation, MessageBoxImage.Warning, MessageBoxButton.OK);
+                    _ = Frontend.ShowMessageBox(Strings.Menu_Channel_RobloxDomain_InvalidDomain, MessageBoxImage.Warning, MessageBoxButton.OK);
             }
         }
 

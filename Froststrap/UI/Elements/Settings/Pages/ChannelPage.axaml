@@ -121,12 +121,23 @@ SPDX-License-Identifier: MPL-2.0
                 <ToggleSwitch IsChecked="{Binding UpdateRoblox, Mode=TwoWay}" />
             </controls:OptionControl>
 
-			<controls:OptionControl
-	            Header="{x:Static resources:Strings.Menu_Channel_ClientDistribution_Title}"
-	            Description="{x:Static resources:Strings.Menu_Channel_ClientDistribution_Description}"
-				IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOS}">
-				<ComboBox Width="200" Padding="10,5,10,5" ItemsSource="{Binding ClientDistributions, Mode=OneTime}" SelectedItem="{Binding SelectedDistribution, Mode=TwoWay}" />
-			</controls:OptionControl>
+	    <controls:OptionControl
+	        Header="{x:Static resources:Strings.Menu_Channel_ClientDistribution_Title}"
+	        Description="{x:Static resources:Strings.Menu_Channel_ClientDistribution_Description}"
+		IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOS}">
+		<ComboBox Width="200" Padding="10,5,10,5" ItemsSource="{Binding ClientDistributions, Mode=OneTime}" SelectedItem="{Binding SelectedDistribution, Mode=TwoWay}" />
+	    </controls:OptionControl>
+
+            <controls:OptionControl
+                Header="{x:Static resources:Strings.Menu_Channel_RobloxDomain_Title}"
+                Description="{x:Static resources:Strings.Menu_Channel_RobloxDomain_Description}"
+                IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOS}">
+                <TextBox
+                    Width="200"
+                    Padding="10,5"
+                    PlaceholderText="roblox.com"
+                    Text="{Binding RobloxDomain, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+            </controls:OptionControl>
 
             <controls:CardExpander
                 Header="{x:Static resources:Strings.Menu_Deployment_PlayerOverrideHash_Title}"

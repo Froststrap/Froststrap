@@ -2191,7 +2191,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Choose which client distribution Fishstrap should use..
+        ///   Looks up a localized string similar to Choose which client distribution Froststrap should use..
         /// </summary>
         public static string Dialog_DistributorSelector_Subtext {
             get {
@@ -4342,7 +4342,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Choose the client deployment Fishstrap should use. Please note, you may not be able to revert your account status after agreeing to the terms shown by Roblox..
+        ///   Looks up a localized string similar to Choose the client deployment Froststrap should use. Please note, you may not be able to revert your account status after agreeing to the terms shown by Roblox..
         /// </summary>
         public static string Menu_Channel_ClientDistribution_Description {
             get {
@@ -4365,6 +4365,34 @@ namespace Froststrap.Resources {
         public static string Menu_Channel_Description {
             get {
                 return ResourceManager.GetString("Menu.Channel.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set what domain Roblox and Fishstrap will use. Enter only trusted domains..
+        /// </summary>
+        public static string Menu_Channel_RobloxDomain_Description {
+            get {
+                return ResourceManager.GetString("Menu.Channel.RobloxDomain.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The domain you&apos;ve enter appears to be invalid.
+        ///Please don&apos;t change this setting unless you know what you&apos;re doing..
+        /// </summary>
+        public static string Menu_Channel_RobloxDomain_InvalidDomain {
+            get {
+                return ResourceManager.GetString("Menu.Channel.RobloxDomain.InvalidDomain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Roblox domain.
+        /// </summary>
+        public static string Menu_Channel_RobloxDomain_Title {
+            get {
+                return ResourceManager.GetString("Menu.Channel.RobloxDomain.Title", resourceCulture);
             }
         }
         
@@ -4689,17 +4717,6 @@ namespace Froststrap.Resources {
         public static string Menu_Deployment_DisableAnimations_Title {
             get {
                 return ResourceManager.GetString("Menu.Deployment.DisableAnimations.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to You entered an invalid domain.
-        ///
-        ///Don&apos;t mess with this if you don&apos;t know what you&apos;re doing..
-        /// </summary>
-        public static string Menu_Deployment_DomainValidation {
-            get {
-                return ResourceManager.GetString("Menu.Deployment.DomainValidation", resourceCulture);
             }
         }
         

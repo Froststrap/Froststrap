@@ -168,9 +168,6 @@ namespace Froststrap.UI
                     uptimeText);
             }
 
-            if (_watcher.Overlay?.ShowToast(title, message) == true)
-                return;
-
             ShowAlert(title, message);
         }
 

@@ -2101,10 +2101,15 @@ It must contain at least one of the following folders: content, ExtraContent, Pl
   <data name="Menu.Deployment.VersionHash.Description" xml:space="preserve">
     <value>Enter the Roblox Studio version GUID (e.g. version-xxxxxxxxxxxxxxxx). Only applies to Studio launches.</value>
   </data>
-  <data name="Menu.Deployment.DomainValidation" xml:space="preserve">
-    <value>You entered an invalid domain.
-
-Don't mess with this if you don't know what you're doing.</value>
+  <data name="Menu.Channel.RobloxDomain.InvalidDomain" xml:space="preserve">
+    <value>The domain you've enter appears to be invalid.
+Please don't change this setting unless you know what you're doing.</value>
+  </data>
+  <data name="Menu.Channel.RobloxDomain.Title" xml:space="preserve">
+    <value>Roblox domain</value>
+  </data>
+  <data name="Menu.Channel.RobloxDomain.Description" xml:space="preserve">
+    <value>Set what domain Roblox and Fishstrap will use. Enter only trusted domains.</value>
   </data>
   <data name="Menu.Deployment.FailedToLoadChannelData" xml:space="preserve">
     <value>Failed to load channel data.</value>
