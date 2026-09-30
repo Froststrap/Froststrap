@@ -18,6 +18,7 @@ jobs:
       - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: "10.0.x"
+          cache: true
 
       - name: Install NSIS
         uses: negrutiu/nsis-install@v2
@@ -51,6 +52,7 @@ jobs:
       - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: "10.0.x"
+          cache: true
 
       - name: Add Rust target
         run: rustup target add ${{ matrix.rust-target }}
@@ -110,6 +112,7 @@ jobs:
       - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: "10.0.x"
+          cache: true
 
       - name: Publish
         run: dotnet run --project build -- Publish
