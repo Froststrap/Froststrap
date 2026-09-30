@@ -31,7 +31,7 @@ namespace Froststrap.RobloxInterfaces
                 {
                     string requestId = $"{i}:{chunk[i]}:AvatarHeadShot:{Size}:png:regular";
 
-                    requests.Add(new ThumbnailRequest { RequestId = requestId, Token = chunk[i], Size = Size });
+                    requests.Add(new ThumbnailRequest { RequestId = requestId, Token = chunk[i], Size = Size.ToThumbnailSize() });
 
                     byRequestId[requestId] = chunk[i];
                 }

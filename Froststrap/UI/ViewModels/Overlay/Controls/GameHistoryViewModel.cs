@@ -78,7 +78,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                         {
                             Type = ThumbnailType.GameIcon,
                             TargetId = (ulong)x.UniverseId,
-                            Size = "128x128"
+                            Size = ThumbnailSize.Large
                         })
                         .ToList();
 
