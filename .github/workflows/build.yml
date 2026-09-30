@@ -104,10 +104,13 @@ jobs:
           fetch-tags : true
           fetch-depth: 200
 
-      - name: Install FFmpeg
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y ffmpeg
+      - name: Setup FFmpeg
+        uses: federicocarboni/setup-ffmpeg@v3.1
+
+      # - name: Install FFmpeg
+      #   run: |
+      #     sudo apt-get update
+      #     sudo apt-get install -y ffmpeg
 
       - uses: actions/setup-dotnet@v6
         with:
