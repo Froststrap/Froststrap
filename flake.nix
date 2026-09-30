@@ -49,21 +49,13 @@
             extraFrag = pkgs.callPackage ./nix/extra.nix { };
             rustFrag = (pkgs.callPackage ./nix/rustDevShell.nix { }) inputs;
           in
-          {
-            default = mkComposedShell [
-              dotnetFrag
-              rustFrag
-              extraFrag
-            ];
-
-            dotnet = mkComposedShell [
-              dotnetFrag
-            ];
-
-            rust = mkComposedShell [
-              rustFrag
-            ];
-          };
+          mkComposedShell [ rustFrag ] { }
+          // mkComposedShell [ dotnetFrag ] { }
+          // mkComposedShell [
+            dotnetFrag
+            rustFrag
+            extraFrag
+          ] { nameOverride = "default"; };
 
         packages = {
           debug = pkgs.callPackage ./nix/build.nix { };

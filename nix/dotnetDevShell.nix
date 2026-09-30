@@ -33,6 +33,7 @@ let
   dotnet-tc = dotnetCorePackages.sdk_10_0-bin;
 in
 mkFragment (finalAttrs: {
+  name = "dotnet";
   runtimeLibs = lib.optionals stdenv.hostPlatform.isLinux [
     expat
     fontconfig
