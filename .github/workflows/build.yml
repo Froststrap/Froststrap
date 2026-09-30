@@ -19,6 +19,7 @@ jobs:
         with:
           dotnet-version: "10.0.x"
           cache: true
+          cache-dependency-path: '**/**/**/packages.lock.json'
 
       - name: Install NSIS
         uses: negrutiu/nsis-install@v2
@@ -53,6 +54,7 @@ jobs:
         with:
           dotnet-version: "10.0.x"
           cache: true
+          cache-dependency-path: '**/**/**/packages.lock.json'
 
       - name: Add Rust target
         run: rustup target add ${{ matrix.rust-target }}
@@ -113,6 +115,7 @@ jobs:
         with:
           dotnet-version: "10.0.x"
           cache: true
+          cache-dependency-path: '**/**/**/packages.lock.json'
 
       - name: Publish
         run: dotnet run --project build -- Publish
