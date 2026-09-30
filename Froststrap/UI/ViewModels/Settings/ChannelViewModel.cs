@@ -67,12 +67,6 @@ namespace Froststrap.UI.ViewModels.Settings
         public IAsyncRelayCommand<object?> BrowsePlayerVersionHashCommand { get; }
         public IAsyncRelayCommand<object?> BrowseStudioVersionHashCommand { get; }
 
-        public static bool AutomaticallyUpdateFroststrap
-        {
-            get => App.Settings.Prop.AutomaticallyUpdateFroststrap;
-            set => App.Settings.Prop.AutomaticallyUpdateFroststrap = value;
-        }
-
         public bool PreReleaseUpdatesEnabled
         {
             get => SelectedUpdateCheck is UpdateCheck.Test or UpdateCheck.Both;
@@ -438,7 +432,6 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private void RefreshBindings()
         {
-            OnPropertyChanged(nameof(AutomaticallyUpdateFroststrap));
             OnPropertyChanged(nameof(AutomaticUpdatesEnabled));
             OnPropertyChanged(nameof(PreReleaseUpdatesEnabled));
             OnPropertyChanged(nameof(SelectedUpdateCheck));
