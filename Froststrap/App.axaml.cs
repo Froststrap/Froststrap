@@ -567,6 +567,38 @@ internal partial class App : Application
             }
         });
 
+        _ = Task.Run(async () =>
+        {
+            if (Settings.Prop.UpdateChecks == UpdateCheck.Disabled)
+                return;
+
+            try
+            {
+                bool includePrerelease = Settings.Prop.UpdateChecks is UpdateCheck.Test or UpdateCheck.Both;
+                var updater = new UpdaterManager(includePrerelease);
+
+                // package-manager installs and dev builds aren't Velopack-managed
+                if (!updater.IsInstalled)
+                    return;
+
+                // never restart the app in the middle of a Roblox launch
+                if (LaunchSettings.RobloxLaunchMode != LaunchMode.None)
+                    return;
+
+                var update = await updater.CheckForUpdatesAsync();
+
+                if (update is null)
+                    return;
+
+                await updater.DownloadUpdatesAsync(update);
+                updater.ApplyUpdatesAndRestart(update);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex, "Automatic update check failed");
+            }
+        });
+
         lock (ActivationLock)
             _launchArgsProcessed = true;
 

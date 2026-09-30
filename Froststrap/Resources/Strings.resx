@@ -653,6 +653,30 @@ Would you like to upgrade your currently installed version?</value>
   <data name="Menu.Behaviour.AutoUpdate.Title" xml:space="preserve">
     <value>Automatically Update Froststrap</value>
   </data>
+  <data name="Menu.Deployment.CheckForUpdates.Title" xml:space="preserve">
+    <value>Check for Froststrap Updates</value>
+  </data>
+  <data name="Menu.Deployment.CheckForUpdates.Description" xml:space="preserve">
+    <value>Manually check for a newer version of Froststrap, even if automatic updates are disabled.</value>
+  </data>
+  <data name="Menu.Deployment.CheckForUpdates.Button" xml:space="preserve">
+    <value>Check for Updates</value>
+  </data>
+  <data name="Menu.Deployment.CheckForUpdates.Checking" xml:space="preserve">
+    <value>Checking for updates...</value>
+  </data>
+  <data name="Menu.Deployment.CheckForUpdates.UpToDate" xml:space="preserve">
+    <value>Froststrap is up to date.</value>
+  </data>
+  <data name="Menu.Deployment.CheckForUpdates.Downloading" xml:space="preserve">
+    <value>Downloading Froststrap {0}...</value>
+  </data>
+  <data name="Menu.Deployment.CheckForUpdates.NotSupported" xml:space="preserve">
+    <value>This installation of Froststrap can't be updated from here.</value>
+  </data>
+  <data name="Menu.Deployment.CheckForUpdates.Failed" xml:space="preserve">
+    <value>Failed to check for updates.</value>
+  </data>
   <data name="Menu.Behaviour.EnableVirtualDisplay.Title" xml:space="preserve">
     <value>Virtual Display</value>
   </data>

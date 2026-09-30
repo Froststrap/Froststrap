@@ -7,19 +7,14 @@ using Velopack.Sources;
 
 namespace Froststrap;
 
-internal sealed class UpdaterManager
+internal sealed class UpdaterManager(bool includePrerelease = false)
 {
     // Maybe will change to our own API backend at some point in the future
     private const string UpdateRepository = "https://github.com/Froststrap/packages";
 
-    private readonly UpdateManager manager;
-
-    public UpdaterManager()
-    {
-        manager = new UpdateManager(
-            new GithubSource(UpdateRepository, null, false)
-        );
-    }
+    private readonly UpdateManager manager = new(
+        new GithubSource(UpdateRepository, null, includePrerelease)
+    );
 
     public bool IsInstalled => manager.IsInstalled;
 
