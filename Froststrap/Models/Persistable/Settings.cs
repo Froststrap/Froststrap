@@ -91,7 +91,6 @@ namespace Froststrap.Models.Persistable
         public string RobloxIconCustomLocation { get; set; } = "";
 
         // Deployment Page
-        public bool AutomaticallyUpdateFroststrap { get; set; } = true;
         public UpdateCheck UpdateChecks { get; set; } = UpdateCheck.Stable;
         public bool DisableAnimations { get; set; }
         public bool UpdateRoblox { get; set; } = true;
