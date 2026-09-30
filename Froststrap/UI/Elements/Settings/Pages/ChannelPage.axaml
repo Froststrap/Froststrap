@@ -46,6 +46,29 @@ SPDX-License-Identifier: MPL-2.0
 
             <Separator Margin="0,12,0,12" />
 
+            <controls:OptionControl
+                Margin="0,12,0,0"
+                Header="{x:Static resources:Strings.Menu_Deployment_CheckForUpdates_Title}"
+                Description="{x:Static resources:Strings.Menu_Deployment_CheckForUpdates_Description}">
+                <StackPanel Spacing="6" HorizontalAlignment="Right">
+                    <Button
+                        Classes="accent"
+                        HorizontalAlignment="Right"
+                        Command="{Binding CheckForUpdatesCommand}"
+                        IsEnabled="{Binding CanCheckForUpdates}"
+                        Content="{x:Static resources:Strings.Menu_Deployment_CheckForUpdates_Button}" />
+
+                    <TextBlock
+                        HorizontalAlignment="Right"
+                        TextWrapping="Wrap"
+                        IsVisible="{Binding HasUpdateStatus}"
+                        Text="{Binding UpdateStatus}"
+                        Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                </StackPanel>
+            </controls:OptionControl>
+
+            <Separator Margin="0,12,0,12" />
+
             <TextBlock
                 FontSize="20"
                 FontWeight="Bold"
