@@ -2,7 +2,9 @@ name: Build & Package
 
 on:
   push:
+    branches: ['**']
   pull_request:
+  workflow_call:
 
 jobs:
   build-windows:
@@ -121,56 +123,3 @@ jobs:
         with:
           name: froststrap-release-linux-x64-${{ github.sha }}
           path: .build/dist/*
-
-  release:
-    needs:
-      - build-windows
-      - build-linux
-      - build-macos
-
-    runs-on: ubuntu-latest
-
-    if: startsWith(github.ref, 'refs/tags/v')
-
-    permissions:
-      contents: write
-
-    steps:
-      - name: Download Windows artifact
-        uses: actions/download-artifact@v7
-        with:
-          name: froststrap-release-win-x64-${{ github.sha }}
-          path: release
-
-      - name: Download macOS ARM64 artifact
-        uses: actions/download-artifact@v7
-        with:
-          name: froststrap-release-macos-arm64-${{ github.sha }}
-          path: release
-
-      - name: Download macOS x64 artifact
-        uses: actions/download-artifact@v7
-        with:
-          name: froststrap-release-macos-x64-${{ github.sha }}
-          path: release
-
-      - name: Download Linux artifact
-        uses: actions/download-artifact@v7
-        with:
-          name: froststrap-release-linux-x64-${{ github.sha }}
-          path: release
-
-      - name: Create release
-        uses: softprops/action-gh-release@v2
-        with:
-          name: Froststrap ${{ github.ref_name }}
-          prerelease: ${{ contains(github.ref_name, '-') }}
-          draft: true
-          fail_on_unmatched_files: true
-          files: |
-            release/Froststrap-windows-x64.exe
-            release/Froststrap-macos-arm64.pkg
-            release/Froststrap-macos-x64.pkg
-            release/Froststrap-linux-x64.AppImage
-            release/Froststrap-linux-x64.deb
-            release/Froststrap-linux-x64.rpm
