@@ -13,7 +13,7 @@ jobs:
         with:
           submodules: true
           fetch-tags : true
-          fetch-depth: 200
+          fetch-depth: 1
 
       - uses: actions/setup-dotnet@v6
         with:
@@ -46,7 +46,7 @@ jobs:
         with:
           submodules: true
           fetch-tags : true
-          fetch-depth: 200
+          fetch-depth: 1
 
       - uses: actions/setup-dotnet@v6
         with:
@@ -102,15 +102,10 @@ jobs:
         with:
           submodules: true
           fetch-tags : true
-          fetch-depth: 200
+          fetch-depth: 1
 
       - name: Setup FFmpeg
         uses: federicocarboni/setup-ffmpeg@v3.1
-
-      # - name: Install FFmpeg
-      #   run: |
-      #     sudo apt-get update
-      #     sudo apt-get install -y ffmpeg
 
       - uses: actions/setup-dotnet@v6
         with:
