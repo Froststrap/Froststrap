@@ -3,6 +3,7 @@ name: Prepare Release
 on:
   push:
     tags: ['v*']
+  workflow_dispatch:
 
 jobs:
   build:
