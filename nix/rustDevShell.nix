@@ -19,6 +19,7 @@ let
     ];
 in
 mkFragment {
+  name = "rust";
   buildInputs = [
     toolchain
     cargo-bloat
