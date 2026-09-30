@@ -27,7 +27,6 @@
     {
       flake-utils,
       nixpkgs,
-      treefmt-nix,
       ...
     }@inputs:
     flake-utils.lib.eachDefaultSystem (
@@ -48,9 +47,7 @@
 
             dotnetFrag = pkgs.callPackage ./nix/dotnetDevShell.nix { };
             extraFrag = pkgs.callPackage ./nix/extra.nix { };
-            rustFrag = pkgs.callPackage ./nix/rustDevShell.nix {
-              inherit inputs;
-            };
+            rustFrag = (pkgs.callPackage ./nix/rustDevShell.nix { }) inputs;
           in
           {
             default = mkComposedShell [
@@ -74,15 +71,7 @@
           default = froststrap;
         };
 
-        formatter =
-          (treefmt-nix.lib.evalModule pkgs (_: {
-            projectRootFile = "flake.nix";
-
-            programs = {
-              nixfmt.enable = true;
-              nixf-diagnose.enable = true;
-            };
-          })).config.build.wrapper;
+        formatter = (pkgs.callPackage ./nix/formatter.nix { }) inputs;
       }
     );
 }
