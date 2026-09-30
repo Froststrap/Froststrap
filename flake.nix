@@ -27,7 +27,6 @@
     {
       flake-utils,
       nixpkgs,
-      treefmt-nix,
       ...
     }@inputs:
     flake-utils.lib.eachDefaultSystem (
@@ -48,25 +47,15 @@
 
             dotnetFrag = pkgs.callPackage ./nix/dotnetDevShell.nix { };
             extraFrag = pkgs.callPackage ./nix/extra.nix { };
-            rustFrag = pkgs.callPackage ./nix/rustDevShell.nix {
-              inherit inputs;
-            };
+            rustFrag = (pkgs.callPackage ./nix/rustDevShell.nix { }) inputs;
           in
-          {
-            default = mkComposedShell [
-              dotnetFrag
-              rustFrag
-              extraFrag
-            ];
-
-            dotnet = mkComposedShell [
-              dotnetFrag
-            ];
-
-            rust = mkComposedShell [
-              rustFrag
-            ];
-          };
+          mkComposedShell [ rustFrag ] { }
+          // mkComposedShell [ dotnetFrag ] { }
+          // mkComposedShell [
+            dotnetFrag
+            rustFrag
+            extraFrag
+          ] { nameOverride = "default"; };
 
         packages = {
           debug = pkgs.callPackage ./nix/build.nix { };
@@ -74,25 +63,7 @@
           default = froststrap;
         };
 
-        formatter =
-          (treefmt-nix.lib.evalModule pkgs (_: {
-            projectRootFile = "flake.nix";
-
-            programs = {
-              nixfmt.enable = true;
-              nixf-diagnose.enable = true;
-            };
-
-            settings.formatter = {
-              dotnet-format = {
-                command = "${pkgs.dotnetCorePackages.sdk_10_0-bin}/bin/dotnet";
-                options = [
-                  "format"
-                ];
-                includes = [ "*.csproj" ];
-              };
-            };
-          })).config.build;
+        formatter = (pkgs.callPackage ./nix/formatter.nix { }) inputs;
       }
     );
 }

@@ -197,7 +197,7 @@ internal class RobloxServersDialogViewModel : NotifyPropertyChangedViewModel, ID
             {
                 Token = token,
                 Type = ThumbnailType.AvatarHeadShot,
-                Size = "60x60",
+                Size = ThumbnailSize.Medium,
                 Format = ThumbnailFormat.Png,
                 IsCircular = true
             }).ToList();

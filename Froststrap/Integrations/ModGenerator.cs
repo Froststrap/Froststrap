@@ -3,6 +3,9 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+// TODO: Clean up this, possible rip apart code and do
+//       class seperation using partial implemntations
+
 using System.IO.Compression;
 using System.Reflection;
 using SkiaSharp;

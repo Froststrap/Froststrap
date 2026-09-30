@@ -273,7 +273,7 @@ namespace Froststrap.UI.ViewModels.Settings
                     {
                         TargetId = (ulong)x.RootPlaceId,
                         Type = ThumbnailType.PlaceIcon,
-                        Size = "128x128",
+                        Size = ThumbnailSize.Large,
                         Format = ThumbnailFormat.Png,
                         IsCircular = false
                     }).ToList();

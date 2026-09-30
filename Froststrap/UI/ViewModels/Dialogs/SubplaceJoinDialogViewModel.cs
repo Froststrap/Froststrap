@@ -61,7 +61,7 @@ internal class SubplaceJoinDialogViewModel : NotifyPropertyChangedViewModel
             {
                 TargetId = (ulong)p.Id,
                 Type = ThumbnailType.PlaceIcon,
-                Size = "150x150",
+                Size = ThumbnailSize.Detailed,
                 Format = ThumbnailFormat.Png
             }).ToList();
 

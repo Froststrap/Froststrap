@@ -4,6 +4,9 @@
 
 namespace Froststrap.Models.APIs.Roblox
 {
+    /// <summary>
+    /// List of valid types can be found at https://thumbnails.roblox.com//docs/index.html
+    /// </summary>
     internal class ThumbnailRequest
     {
         [JsonPropertyName("requestId")]
@@ -16,23 +19,13 @@ namespace Froststrap.Models.APIs.Roblox
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public string? Token { get; set; }
 
-        /// <summary>
-        /// List of valid types can be found at https://thumbnails.roblox.com//docs/index.html
-        /// </summary>
         [JsonPropertyName("type")]
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public ThumbnailType Type { get; set; } = ThumbnailType.Avatar;
 
-        /// <summary>
-        /// TODO: Make it an Enum
-        /// List of valid sizes can be found at https://thumbnails.roblox.com//docs/index.html
-        /// </summary>
         [JsonPropertyName("size")]
-        public string Size { get; set; } = "30x30";
+        public ThumbnailSize Size { get; set; } = ThumbnailSize.Small;
 
-        /// <summary>
-        /// List of valid types can be found at https://thumbnails.roblox.com//docs/index.html
-        /// </summary>
         [JsonPropertyName("format")]
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public ThumbnailFormat Format { get; set; } = ThumbnailFormat.Png;

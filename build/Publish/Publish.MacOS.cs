@@ -12,15 +12,22 @@ public partial class Build : FalloutBuild
     void PublishMacOS()
     {
         var version = GitTag.TrimStart('v');
-        AbsolutePath backendBuildRoot = GitRoot / "backend" / "target";
         AbsolutePath macAppLocation = FalloutRoot / "Publish" / "macApp";
         AbsolutePath xcodeProjectLocation = macAppLocation / "macApp.xcodeproj";
         AbsolutePath entitlementsPath = macAppLocation / "Froststrap.entitlements";
         AbsolutePath dylibDest = (AbsolutePath)DotnetPublishArtifactsDir / "libvirtualdisplay.dylib";
 
-        var source = FindVirtualDisplayDylib(backendBuildRoot);
-        Log.Information("Copying {Source} into {OutDir}", source, DotnetPublishArtifactsDir);
-        File.Copy(source, dylibDest, overwrite: true);
+        var VDLib = FindDylib("libvirtualdisplay.dylib");
+        Log.Information("Copying {Source} into {OutDir}", VDLib, DotnetPublishArtifactsDir);
+        File.Copy(VDLib, (AbsolutePath)DotnetPublishArtifactsDir / "libvirtualdisplay.dylib", overwrite: true);
+
+        var MARLib = FindDylib("libmobileappreg.dylib");
+        Log.Information("Copying {Source} into {OutDir}", MARLib, DotnetPublishArtifactsDir);
+        File.Copy(MARLib, (AbsolutePath)DotnetPublishArtifactsDir / "libmobileappreg.dylib", overwrite: true);
+
+        var notifyLib = FindDylib("libnotify.dylib");
+        Log.Information("Copying {Source} into {OutDir}", notifyLib, DotnetPublishArtifactsDir);
+        File.Copy(notifyLib, (AbsolutePath)DotnetPublishArtifactsDir / "libnotify.dylib", overwrite: true);
 
         Log.Information("Building {xcproj} with xcodebuild", xcodeProjectLocation);
         string xcodeArch = TargetArch == "x64" ? "x86_64" : "arm64";
@@ -70,11 +77,12 @@ public partial class Build : FalloutBuild
         }
     }
 
-    AbsolutePath FindVirtualDisplayDylib(AbsolutePath cargoTargetDir)
+    AbsolutePath FindDylib(string fileName)
     {
+        var cargoTargetDir = GitRoot / "backend" / "target";
         var profile = Configuration.ToString().Equals("Release", StringComparison.OrdinalIgnoreCase)
             ? "release" : "debug";
-        var path = cargoTargetDir / RustTargetTriple / profile / "libvirtualdisplay.dylib";
+        var path = cargoTargetDir / RustTargetTriple / profile / fileName;
 
         if (!File.Exists(path))
             throw new Exception($"{path} not found - did `cargo build` run for the {profile} profile on {RustTargetTriple}?");

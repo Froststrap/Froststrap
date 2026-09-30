@@ -6,6 +6,7 @@
 resolver = "3"
 members = [
   "notify",
+  "mobileappreg",
   "virtualdisplay",
 ]
 default-members = [
@@ -21,10 +22,19 @@ authors = [
   "RealMeddsam <meddsamreal@gmail.com>"
 ]
 
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+strip = "symbols"
+panic = "abort"
+incremental = false
+
 [workspace.dependencies]
 objc2 = "0.6"
 block2 = "0.6"
 dispatch2 = "0.3"
+objc2-core-services = "0.3"
 objc2-core-foundation = "0.3"
 
 [workspace.dependencies.objc2-core-graphics]

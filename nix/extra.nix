@@ -11,13 +11,15 @@
   linuxdeploy,
 }:
 let
-  inherit (callPackage ./devshell-tools.nix {}) mkFragment;
+  inherit (callPackage ./devshell-tools.nix { }) mkFragment;
 in
 mkFragment {
+  name = "extra";
   buildInputs = [
     reuse
     typos
-  ] ++ lib.optionals stdenv.hostPlatform.isLinux [
+  ]
+  ++ lib.optionals stdenv.hostPlatform.isLinux [
     linuxdeploy
     nfpm
   ];

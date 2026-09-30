@@ -628,7 +628,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
                 {
                     TargetId = (ulong)p.Id,
                     Type = ThumbnailType.PlaceIcon,
-                    Size = "150x150",
+                    Size = ThumbnailSize.Detailed,
                     Format = ThumbnailFormat.Png
                 }).ToList();
 
@@ -716,7 +716,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
                 {
                     TargetId = (ulong)universeId,
                     Type = ThumbnailType.GameIcon,
-                    Size = "150x150",
+                    Size = ThumbnailSize.Detailed,
                     Format = ThumbnailFormat.Png
                 }
             };
@@ -775,7 +775,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
             {
                 Type = ThumbnailType.GameIcon,
                 TargetId = (ulong)r.UniverseId,
-                Size = "128x128"
+                Size = ThumbnailSize.Large
             }).ToList();
 
             var fetchedUrls = await Thumbnails.GetThumbnailUrlsAsync(thumbRequests, token);
@@ -1019,7 +1019,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
             {
                 TargetId = (ulong)item.UniverseId,
                 Type = ThumbnailType.GameIcon,
-                Size = "150x150",
+                Size = ThumbnailSize.Detailed,
                 Format = ThumbnailFormat.Png
             }).ToList();
 

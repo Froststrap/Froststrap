@@ -70,7 +70,7 @@ namespace Froststrap.UI.ViewModels.ContextMenu
                 {
                     Type = ThumbnailType.GameIcon,
                     TargetId = (ulong)r.UniverseId,
-                    Size = "128x128"
+                    Size = ThumbnailSize.Large
                 }).ToList();
 
                 var fetchedUrls = await Thumbnails.GetThumbnailUrlsAsync(thumbRequests, CancellationToken.None);

@@ -10,6 +10,8 @@
 		752C3D6E304D7E9F0076F31A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 752C3D6D304D7E9F0076F31A /* Assets.xcassets */; };
 		75CE7733305D86A700BA931B /* Froststrap in CopyFiles */ = {isa = PBXBuildFile; fileRef = 75CE7732305D86A700BA931B /* Froststrap */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		75CE7735305D86BC00BA931B /* libvirtualdisplay.dylib in Copy Files */ = {isa = PBXBuildFile; fileRef = 75CE7734305D86BC00BA931B /* libvirtualdisplay.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		75EC2B89306C291A00FC0DFA /* libmobileappreg.dylib in Copy Files */ = {isa = PBXBuildFile; fileRef = 75EC2B87306C291A00FC0DFA /* libmobileappreg.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		75EC2B8A306C291A00FC0DFA /* libnotify.dylib in Copy Files */ = {isa = PBXBuildFile; fileRef = 75EC2B88306C291A00FC0DFA /* libnotify.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -19,6 +21,8 @@
 			dstSubfolder = Frameworks;
 			files = (
 				75CE7735305D86BC00BA931B /* libvirtualdisplay.dylib in Copy Files */,
+				75EC2B89306C291A00FC0DFA /* libmobileappreg.dylib in Copy Files */,
+				75EC2B8A306C291A00FC0DFA /* libnotify.dylib in Copy Files */,
 			);
 			name = "Copy Files";
 		};
@@ -38,6 +42,8 @@
 		75CE7732305D86A700BA931B /* Froststrap */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = Froststrap; path = ../../../.build/publish/Froststrap; sourceTree = "<group>"; };
 		75CE7734305D86BC00BA931B /* libvirtualdisplay.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libvirtualdisplay.dylib; path = ../../../.build/publish/libvirtualdisplay.dylib; sourceTree = "<group>"; };
 		75D1464A303C41FC00912A00 /* Froststrap.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Froststrap.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		75EC2B87306C291A00FC0DFA /* libmobileappreg.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmobileappreg.dylib; path = ../../../.build/publish/libmobileappreg.dylib; sourceTree = "<group>"; };
+		75EC2B88306C291A00FC0DFA /* libnotify.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libnotify.dylib; path = ../../../.build/publish/libnotify.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -48,6 +54,7 @@
 				75CE7732305D86A700BA931B /* Froststrap */,
 				75CC751D30414A8B0000EA4A /* Froststrap.entitlements */,
 				752C3D6D304D7E9F0076F31A /* Assets.xcassets */,
+				75EC2B86306C291A00FC0DFA /* Frameworks */,
 				000000000000000000000020 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -58,6 +65,15 @@
 				75D1464A303C41FC00912A00 /* Froststrap.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		75EC2B86306C291A00FC0DFA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				75EC2B87306C291A00FC0DFA /* libmobileappreg.dylib */,
+				75EC2B88306C291A00FC0DFA /* libnotify.dylib */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
