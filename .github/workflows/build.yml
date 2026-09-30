@@ -108,9 +108,6 @@ jobs:
           fetch-tags : true
           fetch-depth: 1
 
-      - name: Setup FFmpeg
-        uses: federicocarboni/setup-ffmpeg@v3.1
-
       - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: "10.0.x"
