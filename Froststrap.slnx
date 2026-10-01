@@ -1,6 +1,6 @@
 ﻿<Solution>
   <Project Path="./Froststrap/Froststrap.csproj" />
-  <Project Path="./libs/ColorPicker/ColorPicker.AvaloniaUI/ColorPicker.AvaloniaUI.csproj" />
+  <Project Path="./libs/ColorPicker/ColorPicker.csproj" />
   <Project Path="./libs/LucideAvalonia/LucideAvalonia/LucideAvalonia.csproj" />
   <Project Path="./libs/FluentAvalonia/src/FluentAvalonia/FluentAvalonia.csproj" />
   <Project Path="./backend/backend.csproj" />
