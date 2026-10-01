@@ -48,9 +48,9 @@ SPDX-License-Identifier: MPL-2.0
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceInclude Source="avares://ColorPicker.AvaloniaUI/Templates/HueSlider.axaml" />
-                <ResourceInclude Source="avares://ColorPicker.AvaloniaUI/Templates/SquareSlider.axaml" />
-                <ResourceInclude Source="avares://ColorPicker.AvaloniaUI/Templates/SquarePicker.axaml" />
+                <ResourceInclude Source="avares://ColorPicker/Templates/HueSlider.axaml" />
+                <ResourceInclude Source="avares://ColorPicker/Templates/SquareSlider.axaml" />
+                <ResourceInclude Source="avares://ColorPicker/Templates/SquarePicker.axaml" />
                 <ResourceInclude Source="avares://LucideAvalonia/Lucide/ResourcesIcons.axaml" />
             </ResourceDictionary.MergedDictionaries>
 
