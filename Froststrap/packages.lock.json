@@ -454,6 +454,13 @@
       "backend": {
         "type": "Project"
       },
+      "colorpicker": {
+        "type": "Project",
+        "dependencies": {
+          "Avalonia": "[12.0.5, )",
+          "Xaml.Behaviors": "[12.0.0.1, )"
+        }
+      },
       "FluentAvaloniaUI": {
         "type": "Project",
         "dependencies": {
@@ -469,13 +476,6 @@
         "type": "Project",
         "dependencies": {
           "Avalonia": "[12.0.5, )"
-        }
-      },
-      "PixiEditor.ColorPicker": {
-        "type": "Project",
-        "dependencies": {
-          "Avalonia": "[12.0.5, )",
-          "Xaml.Behaviors": "[12.0.0.1, )"
         }
       }
     }
