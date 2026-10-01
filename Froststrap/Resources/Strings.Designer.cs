@@ -3935,6 +3935,33 @@ namespace Froststrap.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Found new version: {0}. Would you like to update and restart?.
+        /// </summary>
+        public static string Menu_Deployment_CheckForUpdates_Found {
+            get {
+                return ResourceManager.GetString("Menu.Deployment.CheckForUpdates.Found", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to What's new in {0}.
+        /// </summary>
+        public static string Menu_Deployment_ReleaseNotes_Title {
+            get {
+                return ResourceManager.GetString("Menu.Deployment.ReleaseNotes.Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Close.
+        /// </summary>
+        public static string Menu_Deployment_ReleaseNotes_Close {
+            get {
+                return ResourceManager.GetString("Menu.Deployment.ReleaseNotes.Close", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Update Roblox in the background instead of waiting. Not recommended for slow networks. At least 3GB of free storage space is required for this feature to work..
         /// </summary>
         public static string Menu_Behaviour_BackgroundUpdates_Description {

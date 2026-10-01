@@ -15,6 +15,7 @@ using Froststrap.UI.Elements.Base;
 using Microsoft.Win32;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using Velopack;
 
 namespace Froststrap;
 
@@ -112,6 +113,42 @@ internal partial class App : Application
     public static readonly CookiesManager Cookies = new();
 
     public static readonly HttpClient HttpClient = new(new HttpClientLoggingHandler(new HttpClientHandler { AutomaticDecompression = DecompressionMethods.All }));
+
+    public static void SavePendingUpdateNotes(UpdateInfo update)
+    {
+        string notes = update.TargetFullRelease.NotesMarkdown ?? string.Empty;
+        State.Prop.PendingUpdateVersion = notes.Length == 0 ? null : update.TargetFullRelease.Version.ToString();
+        State.Prop.PendingUpdateReleaseNotes = notes.Length == 0 ? null : notes;
+        State.Save();
+    }
+
+    private static async Task ShowPendingUpdateNotesAsync()
+    {
+        string? version = State.Prop.PendingUpdateVersion;
+        string? notes = State.Prop.PendingUpdateReleaseNotes;
+
+        if (version is null || string.IsNullOrWhiteSpace(notes))
+            return;
+
+        if (LaunchSettings.QuietFlag.Active)
+            return;
+
+        if (LaunchSettings.RobloxLaunchMode != LaunchMode.None || !string.Equals(version, Version, StringComparison.OrdinalIgnoreCase))
+        {
+            State.Prop.PendingUpdateVersion = null;
+            State.Prop.PendingUpdateReleaseNotes = null;
+            State.Save();
+            return;
+        }
+
+        State.Prop.PendingUpdateVersion = null;
+        State.Prop.PendingUpdateReleaseNotes = null;
+        State.Save();
+
+        await Frontend.ShowReleaseNotesDialog(
+            string.Format(CultureInfo.CurrentCulture, Strings.Menu_Deployment_ReleaseNotes_Title, version),
+            notes);
+    }
 
     private static bool _showingExceptionDialog;
     private static readonly Lock ActivationLock = new();
@@ -582,6 +619,7 @@ internal partial class App : Application
                     return;
 
                 await updater.DownloadUpdatesAsync(update);
+                SavePendingUpdateNotes(update);
                 updater.ApplyUpdatesAndRestart(update);
             }
             catch (Exception ex)
@@ -594,6 +632,7 @@ internal partial class App : Application
             _launchArgsProcessed = true;
 
         await LaunchHandler.ProcessLaunchArgs();
+        await ShowPendingUpdateNotesAsync();
 
         base.OnFrameworkInitializationCompleted();
     }
