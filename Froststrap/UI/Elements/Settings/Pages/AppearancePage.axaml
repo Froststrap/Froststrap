@@ -11,7 +11,7 @@ SPDX-License-Identifier: MPL-2.0
     xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:colorPicker="clr-namespace:ColorPicker;assembly=ColorPicker.AvaloniaUI"
+    xmlns:colorPicker="clr-namespace:ColorPicker;assembly=ColorPicker"
     xmlns:resources="using:Froststrap.Resources"
     xmlns:gv="using:Froststrap.UI.ViewModels"
     xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
