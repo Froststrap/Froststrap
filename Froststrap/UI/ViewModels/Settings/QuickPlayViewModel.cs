@@ -277,6 +277,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
     public ICommand RejoinLastServerCommand { get; }
     public ICommand ViewServersCommand { get; }
     public ICommand ViewRobloxServersCommand { get; }
+    public ICommand ViewReviewsCommand { get; }
     public ICommand VisitPageCommand { get; }
     public ICommand ViewSubplacesCommand { get; }
     public ICommand JoinSubplaceCommand { get; }
@@ -311,6 +312,13 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
         {
             if (item == null) return;
             await ShowRobloxServersDialogAsync(item.PlaceId, item.UniverseId, item.OriginalDetails, isTracked: false);
+        });
+
+        ViewReviewsCommand = new RelayCommand<QuickPlayGameItem>(async item =>
+        {
+            if (item == null || MainWindow.Instance is not { } owner) return;
+            var dialog = new RoReviewsDialog(item.PlaceId, item.Name);
+            await dialog.ShowDialog(owner);
         });
 
         ViewSubplacesCommand = new RelayCommand<QuickPlayGameItem>(async item =>

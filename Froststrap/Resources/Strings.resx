@@ -2396,6 +2396,9 @@ Do you want to install the plugin?</value>
   <data name="Menu.QuickPlay.RobloxServers" xml:space="preserve">
     <value>Roblox Servers</value>
   </data>
+  <data name="Menu.QuickPlay.Reviews" xml:space="preserve">
+    <value>Reviews</value>
+  </data>
   <data name="Menu.QuickPlay.PrivateServers" xml:space="preserve">
     <value>Private Servers</value>
   </data>
@@ -3335,5 +3338,41 @@ All files will be moved, shortcuts updated, and the application will restart.</v
   </data>
   <data name="Menu.Bootstrapper.RobloxTheme.Description" xml:space="preserve">
     <value>The theme used by the Roblox app.</value>
+  </data>
+  <data name="RoReviews.Authorize" xml:space="preserve">
+    <value>Authorize with RoReviews</value>
+  </data>
+  <data name="RoReviews.AuthorizePrompt" xml:space="preserve">
+    <value>Authorize to read and write reviews.</value>
+  </data>
+  <data name="RoReviews.AuthorizeToSend" xml:space="preserve">
+    <value>Authorize to send a message</value>
+  </data>
+  <data name="RoReviews.AuthorizationFailed" xml:space="preserve">
+    <value>Authorization could not start.</value>
+  </data>
+  <data name="RoReviews.AuthorizationExpired" xml:space="preserve">
+    <value>Authorization session expired.</value>
+  </data>
+  <data name="RoReviews.Edited" xml:space="preserve">
+    <value>(edited)</value>
+  </data>
+  <data name="RoReviews.InputWatermark" xml:space="preserve">
+    <value>Write a review...</value>
+  </data>
+  <data name="RoReviews.Submit" xml:space="preserve">
+    <value>Submit</value>
+  </data>
+  <data name="RoReviews.PoweredBy" xml:space="preserve">
+    <value>Powered by </value>
+  </data>
+  <data name="RoReviews.Name" xml:space="preserve">
+    <value>RoReview</value>
+  </data>
+  <data name="RoReviews.UnknownAuthor" xml:space="preserve">
+    <value>Unknown author</value>
+  </data>
+  <data name="RoReviews.SignOut" xml:space="preserve">
+    <value>Sign out</value>
   </data>
 </root>

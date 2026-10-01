@@ -60,6 +60,58 @@ namespace Froststrap.Resources {
             }
         }
 
+        public static string Menu_QuickPlay_Reviews {
+            get { return ResourceManager.GetString("Menu.QuickPlay.Reviews", resourceCulture); }
+        }
+
+        public static string RoReviews_Authorize {
+            get { return ResourceManager.GetString("RoReviews.Authorize", resourceCulture); }
+        }
+
+        public static string RoReviews_AuthorizePrompt {
+            get { return ResourceManager.GetString("RoReviews.AuthorizePrompt", resourceCulture); }
+        }
+
+        public static string RoReviews_AuthorizeToSend {
+            get { return ResourceManager.GetString("RoReviews.AuthorizeToSend", resourceCulture); }
+        }
+
+        public static string RoReviews_AuthorizationFailed {
+            get { return ResourceManager.GetString("RoReviews.AuthorizationFailed", resourceCulture); }
+        }
+
+        public static string RoReviews_AuthorizationExpired {
+            get { return ResourceManager.GetString("RoReviews.AuthorizationExpired", resourceCulture); }
+        }
+
+        public static string RoReviews_Edited {
+            get { return ResourceManager.GetString("RoReviews.Edited", resourceCulture); }
+        }
+
+        public static string RoReviews_InputWatermark {
+            get { return ResourceManager.GetString("RoReviews.InputWatermark", resourceCulture); }
+        }
+
+        public static string RoReviews_Submit {
+            get { return ResourceManager.GetString("RoReviews.Submit", resourceCulture); }
+        }
+
+        public static string RoReviews_PoweredBy {
+            get { return ResourceManager.GetString("RoReviews.PoweredBy", resourceCulture); }
+        }
+
+        public static string RoReviews_Name {
+            get { return ResourceManager.GetString("RoReviews.Name", resourceCulture); }
+        }
+
+        public static string RoReviews_UnknownAuthor {
+            get { return ResourceManager.GetString("RoReviews.UnknownAuthor", resourceCulture); }
+        }
+
+        public static string RoReviews_SignOut {
+            get { return ResourceManager.GetString("RoReviews.SignOut", resourceCulture); }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Licenses.
         /// </summary>
