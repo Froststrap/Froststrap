@@ -147,12 +147,33 @@ SPDX-License-Identifier: MPL-2.0
                 Margin="0,10,0,0"
             />
 
-			<controls:OptionControl
-	Header="{x:Static resources:Strings.Menu_Integrations_EnableOverlay_Title}"
-	Description="{x:Static resources:Strings.Menu_Integrations_EnableOverlay_Description}"
-                                IsVisible="{x:Static gv:GlobalViewModel.IsWindows}">
-				<ToggleSwitch IsChecked="{Binding EnableOverlay, Mode=TwoWay}" />
-			</controls:OptionControl>
+            <controls:CardExpander
+                Classes="NoUserExpansion"
+                IsVisible="{x:Static gv:GlobalViewModel.IsWindows}"
+                IsExpanded="{Binding EnableOverlay, Mode=OneWay}"
+                Header="{x:Static resources:Strings.Menu_Integrations_EnableOverlay_Title}"
+                Description="{x:Static resources:Strings.Menu_Integrations_EnableOverlay_Description}">
+                <controls:CardExpander.HeaderContent>
+                    <ToggleSwitch IsChecked="{Binding EnableOverlay, Mode=TwoWay}" />
+                </controls:CardExpander.HeaderContent>
+
+                <StackPanel Margin="0,8,0,0">
+                    <controls:OptionControl
+                        Header="{x:Static resources:Strings.Menu_Integrations_OverlayHotkey_Title}"
+                        Description="{x:Static resources:Strings.Menu_Integrations_OverlayHotkey_Description}">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <controls:HotkeyBox
+                                Modifiers="{Binding OverlayHotkeyModifiers, Mode=TwoWay}"
+                                Key="{Binding OverlayHotkeyKey, Mode=TwoWay}"
+                                IsRecording="{Binding IsRecordingHotkey, Mode=OneWayToSource}" />
+                            <controls:IconButton
+                                Command="{Binding ResetHotkeyCommand, Mode=OneTime}"
+                                Content="{x:Static resources:Strings.Menu_Integrations_OverlayHotkey_Reset}"
+                                Icon="RotateCcw" />
+                        </StackPanel>
+                    </controls:OptionControl>
+                </StackPanel>
+            </controls:CardExpander>
 
             <Separator Margin="0,12" />
 

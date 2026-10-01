@@ -116,6 +116,7 @@ namespace Froststrap.RobloxInterfaces
                         City = server.City,
                         Region = server.Region,
                         StartedAt = server.FirstSeenUtc,
+                        PlaceVersion = server.PlaceVersion,
                         IsCurrent = server.ServerId.Equals(currentJobId, StringComparison.OrdinalIgnoreCase)
                     });
                 }
@@ -192,7 +193,7 @@ namespace Froststrap.RobloxInterfaces
         {
             var wanted = servers
                 .Take(DetailsReach)
-                .Where(x => x.StartedAt is null && !String.IsNullOrEmpty(x.JobId))
+                .Where(x => (x.StartedAt is null || x.PlaceVersion is null) && !String.IsNullOrEmpty(x.JobId))
                 .ToList();
 
             if (placeId == 0 || wanted.Count == 0)
@@ -220,6 +221,8 @@ namespace Froststrap.RobloxInterfaces
 
                         server.StartedAt ??= detail.FirstSeenUtc;
 
+                        server.PlaceVersion ??= detail.PlaceVersion;
+
                         if (String.IsNullOrEmpty(server.City))
                         {
                             server.City = detail.City;
@@ -235,6 +238,79 @@ namespace Froststrap.RobloxInterfaces
             }
 
             await Task.WhenAll(wanted.Chunk(DetailsBatchSize).Select(FetchBatch));
+        }
+
+        public static async Task<HashSet<string>> StillRunningAsync(long placeId, IEnumerable<string> jobIds)
+        {
+            var running = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            var ids = jobIds
+                .Where(x => !String.IsNullOrEmpty(x))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            if (placeId == 0 || ids.Count == 0)
+                return running;
+
+            foreach (string[] batch in ids.Chunk(DetailsBatchSize))
+            {
+                try
+                {
+                    var response = await Http.GetJson<RoValraRegionResponse>(new Uri(
+                        $"https://apis.rovalra.com/v1/servers/details?place_id={placeId}&server_ids={String.Join(',', batch)}"));
+
+                    foreach (RoValraRegionServer server in response?.Servers ?? [])
+                    {
+                        if (!String.IsNullOrEmpty(server.ServerId))
+                            running.Add(server.ServerId);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.Error($"Failed to check whether {batch.Length} servers are still running");
+                    App.Logger.Error(ex);
+                }
+            }
+
+            return running;
+        }
+
+        public static async Task<(GameServer? Server, bool AlreadyClosest)> FindClosestAsync(long placeId, string currentJobId)
+        {
+            if (placeId == 0)
+                return (null, false);
+
+            try
+            {
+                var response = await Http.AuthGetJson<ApiPageResponse<GameServerResponse>>(
+                    UrlBuilder.BuildApiUrl("games",
+                        $"v2/games/{placeId}/servers/Public?cursor=&sortOrder=Desc&excludeFullGames=true&orderBy=BestLatency"));
+
+                GameServerResponse? best = response?.Data?
+                    .FirstOrDefault(x => !String.IsNullOrEmpty(x.Id) && x.Playing < x.MaxPlayers);
+
+                if (best is null)
+                    return (null, false);
+
+                if (best.Id.Equals(currentJobId, StringComparison.OrdinalIgnoreCase))
+                    return (null, true);
+
+                return (new GameServer
+                {
+                    JobId = best.Id,
+                    Playing = best.Playing,
+                    MaxPlayers = best.MaxPlayers,
+                    Fps = best.Fps,
+                    Ping = best.Ping
+                }, false);
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error($"Failed to find the closest server for {placeId}");
+                App.Logger.Error(ex);
+
+                throw;
+            }
         }
 
         public static GameServer? PickHopTarget(IEnumerable<GameServer> servers)

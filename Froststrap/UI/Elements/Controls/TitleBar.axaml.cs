@@ -27,6 +27,9 @@ namespace Froststrap.UI.Elements.Controls
         public static readonly StyledProperty<bool> ShowCloseProperty =
             AvaloniaProperty.Register<TitleBar, bool>(nameof(ShowClose), true);
 
+        public static readonly StyledProperty<bool> ShowPinProperty =
+            AvaloniaProperty.Register<TitleBar, bool>(nameof(ShowPin), defaultValue: false);
+
         public static readonly StyledProperty<IImage?> IconProperty =
             AvaloniaProperty.Register<TitleBar, IImage?>(nameof(Icon), defaultValue: null);
 
@@ -39,6 +42,15 @@ namespace Froststrap.UI.Elements.Controls
         public static readonly StyledProperty<object?> CloseCommandParameterProperty =
             AvaloniaProperty.Register<TitleBar, object?>(nameof(CloseCommandParameter));
 
+        public static readonly StyledProperty<bool> IsPinnedProperty =
+            AvaloniaProperty.Register<TitleBar, bool>(nameof(IsPinned), defaultValue: false);
+
+        public static readonly StyledProperty<ICommand?> PinCommandProperty =
+            AvaloniaProperty.Register<TitleBar, ICommand?>(nameof(PinCommand));
+
+        public static readonly StyledProperty<object?> PinCommandParameterProperty =
+            AvaloniaProperty.Register<TitleBar, object?>(nameof(PinCommandParameter));
+
         public static readonly StyledProperty<WindowState> WindowStateProperty =
             AvaloniaProperty.Register<TitleBar, WindowState>(nameof(WindowState), defaultValue: WindowState.Normal);
 
@@ -46,16 +58,21 @@ namespace Froststrap.UI.Elements.Controls
         public bool ShowMinimize { get => GetValue(ShowMinimizeProperty); set => SetValue(ShowMinimizeProperty, value); }
         public bool ShowMaximize { get => GetValue(ShowMaximizeProperty); set => SetValue(ShowMaximizeProperty, value); }
         public bool ShowClose { get => GetValue(ShowCloseProperty); set => SetValue(ShowCloseProperty, value); }
+        public bool ShowPin { get => GetValue(ShowPinProperty); set => SetValue(ShowPinProperty, value); }
         public IImage? Icon { get => GetValue(IconProperty); set => SetValue(IconProperty, value); }
         public LucideIconNames? LucideIcon { get => GetValue(LucideIconProperty); set => SetValue(LucideIconProperty, value); }
         public ICommand? CloseCommand { get => GetValue(CloseCommandProperty); set => SetValue(CloseCommandProperty, value); }
         public object? CloseCommandParameter { get => GetValue(CloseCommandParameterProperty); set => SetValue(CloseCommandParameterProperty, value); }
+        public bool IsPinned { get => GetValue(IsPinnedProperty); set => SetValue(IsPinnedProperty, value); }
+        public ICommand? PinCommand { get => GetValue(PinCommandProperty); set => SetValue(PinCommandProperty, value); }
+        public object? PinCommandParameter { get => GetValue(PinCommandParameterProperty); set => SetValue(PinCommandParameterProperty, value); }
         public WindowState WindowState { get => GetValue(WindowStateProperty); set => SetValue(WindowStateProperty, value); }
 
         private Window? _window;
         private IconButton? _minBtn;
         private IconButton? _maxBtn;
         private IconButton? _closeBtn;
+        private IconButton? _pinBtn;
 
         protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
         {
@@ -75,12 +92,22 @@ namespace Froststrap.UI.Elements.Controls
             _minBtn = e.NameScope.Find<IconButton>("PART_MinimizeButton");
             _maxBtn = e.NameScope.Find<IconButton>("PART_MaximizeButton");
             _closeBtn = e.NameScope.Find<IconButton>("PART_CloseButton");
+            _pinBtn = e.NameScope.Find<IconButton>("PART_PinButton");
 
             _minBtn?.Click += OnMinimizeClick;
             _maxBtn?.Click += OnMaximizeClick;
             _closeBtn?.Click += OnCloseClick;
 
             UpdateMaximizeIcon();
+            UpdatePinIcon();
+        }
+
+        protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+        {
+            base.OnPropertyChanged(change);
+
+            if (change.Property == IsPinnedProperty)
+                UpdatePinIcon();
         }
 
         private void OnWindowPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
@@ -100,6 +127,21 @@ namespace Froststrap.UI.Elements.Controls
                     ? LucideIconNames.Minimize
                     : LucideIconNames.Maximize;
             }
+        }
+
+        private void UpdatePinIcon()
+        {
+            if (_pinBtn is null)
+                return;
+
+            _pinBtn.Icon = IsPinned ? LucideIconNames.Pin : LucideIconNames.PinOff;
+
+            string? tooltip = IsPinned
+                ? Strings.Menu_Overlay_Unpin
+                : Strings.Menu_Overlay_Pin;
+
+            if (!String.IsNullOrEmpty(tooltip))
+                ToolTip.SetTip(_pinBtn, tooltip);
         }
 
         private void OnMinimizeClick(object? sender, EventArgs e)

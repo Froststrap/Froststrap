@@ -53,6 +53,15 @@ SPDX-License-Identifier: MPL-2.0
 
                     <StackPanel Grid.Column="2" Name="PART_RightPanel"
                                 Orientation="Horizontal" VerticalAlignment="Stretch">
+
+                        <controls:IconButton Name="PART_PinButton"
+                                             Classes="TitleBarButton Pin"
+                                             Classes.pinned="{TemplateBinding IsPinned}"
+                                             Icon="PinOff"
+                                             IsVisible="{TemplateBinding ShowPin}"
+                                             Command="{TemplateBinding PinCommand}"
+                                             CommandParameter="{TemplateBinding PinCommandParameter}"/>
+
                         <controls:IconButton Name="PART_MinimizeButton"
                                              Classes="TitleBarButton"
                                              Icon="Minus"
@@ -90,5 +99,14 @@ SPDX-License-Identifier: MPL-2.0
 
     <Style Selector="controls|IconButton.TitleBarButton:disabled">
         <Setter Property="Opacity" Value="{DynamicResource ThemeDisabledOpacity}" />
+    </Style>
+
+    <Style Selector="controls|IconButton.TitleBarButton.Pin">
+        <Setter Property="IconSize" Value="16" />
+        <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+    </Style>
+
+    <Style Selector="controls|IconButton.TitleBarButton.Pin.pinned">
+        <Setter Property="Foreground" Value="{DynamicResource AccentFillColorDefaultBrush}" />
     </Style>
 </Styles>

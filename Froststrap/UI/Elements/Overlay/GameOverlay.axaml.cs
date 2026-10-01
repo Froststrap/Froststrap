@@ -1,13 +1,18 @@
-﻿using Avalonia.Controls;
+﻿using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.Win32.Input;
 using Froststrap.Enums.Overlay;
+using Froststrap.Models.Overlay;
 using Froststrap.UI.Elements.Overlay.Controls;
 using Froststrap.UI.ViewModels.Overlay;
+using System.Collections.Generic;
 using Windows.Win32;
 using Windows.Win32.Foundation;
+using Windows.Win32.Graphics.Gdi;
 using Windows.Win32.UI.Input.KeyboardAndMouse;
 using Windows.Win32.UI.WindowsAndMessaging;
 using WindowState = Avalonia.Controls.WindowState;
@@ -22,6 +27,18 @@ namespace Froststrap.UI.Elements.Overlay
 
         private const double CascadeStep = 44;
 
+        private static readonly WindowTransparencyLevel[] BlurLevels =
+        [
+            WindowTransparencyLevel.Blur,
+            WindowTransparencyLevel.AcrylicBlur,
+            WindowTransparencyLevel.Transparent
+        ];
+
+        private static readonly WindowTransparencyLevel[] NoBlurLevels =
+        [
+            WindowTransparencyLevel.Transparent
+        ];
+
         private readonly GameOverlayViewModel _viewModel;
         private readonly Integrations.Overlay? _overlay;
 
@@ -31,8 +48,15 @@ namespace Froststrap.UI.Elements.Overlay
 
         private int _placed;
         private bool _presenting;
+        private bool _panelsWired;
 
         private string? _savedLayout;
+
+        private bool _pinnedMode;
+        private IBrush? _scrimBrush;
+
+        private DispatcherTimer? _regionTimer;
+        private int _draggingPanels;
 
         private FriendActivity ChatWindow => (FriendActivity)MessagesPanel.PanelContent!;
         private BadgeTracker BadgeTracker => (BadgeTracker)BadgesPanel.PanelContent!;
@@ -67,9 +91,15 @@ namespace Froststrap.UI.Elements.Overlay
 
             ChatWindow.Attach(overlay?.Messaging.Party);
             BadgeTracker.Attach(overlay?.ActivityWatcher);
+            BadgeTracker.BadgeEarned += OnBadgeEarned;
             ServerBrowser.Attach(overlay?.ActivityWatcher);
             GameBrowser.Attach(overlay?.ActivityWatcher);
             GameHistory.Attach(overlay?.ActivityWatcher);
+        }
+
+        private void OnBadgeEarned(object? sender, Badge badge)
+        {
+            App.Logger.Info($"Badge earned: {badge.Name} ({badge.RarityText})");
         }
 
         private OverlayPanel PanelFor(OverlayPanelKind kind) => kind switch
@@ -81,6 +111,38 @@ namespace Froststrap.UI.Elements.Overlay
             OverlayPanelKind.History => HistoryPanel,
             _ => MessagesPanel
         };
+
+        private void WirePanelEvents()
+        {
+            if (_panelsWired)
+                return;
+
+            _panelsWired = true;
+
+            foreach (OverlayPanelKind kind in Enum.GetValues<OverlayPanelKind>())
+            {
+                OverlayPanel panel = PanelFor(kind);
+                panel.PinChanged += OnPanelPinChanged;
+                panel.PropertyChanged += OnPanelPropertyChanged;
+                panel.DragStateChanged += OnPanelDragStateChanged;
+            }
+        }
+
+        private void UnwirePanelEvents()
+        {
+            if (!_panelsWired)
+                return;
+
+            _panelsWired = false;
+
+            foreach (OverlayPanelKind kind in Enum.GetValues<OverlayPanelKind>())
+            {
+                OverlayPanel panel = PanelFor(kind);
+                panel.PinChanged -= OnPanelPinChanged;
+                panel.PropertyChanged -= OnPanelPropertyChanged;
+                panel.DragStateChanged -= OnPanelDragStateChanged;
+            }
+        }
 
         private void Place(OverlayPanelKind kind)
         {
@@ -117,10 +179,15 @@ namespace Froststrap.UI.Elements.Overlay
                 return false;
 
             if (saved.Width < OverlayPanel.MinPanelWidth || saved.Height < OverlayPanel.MinPanelHeight)
+            {
+                panel.IsPinned = saved.Pinned;
                 return false;
+            }
 
             double scaleX = Scale(PanelSurface.Bounds.Width, saved.SurfaceWidth);
             double scaleY = Scale(PanelSurface.Bounds.Height, saved.SurfaceHeight);
+
+            panel.IsPinned = saved.Pinned;
 
             panel.PlaceAt(saved.Left * scaleX, saved.Top * scaleY, saved.Width, saved.Height);
 
@@ -160,6 +227,7 @@ namespace Froststrap.UI.Elements.Overlay
                         if (Saved(kind) is OverlayPanelLayout previous)
                         {
                             previous.Open = false;
+                            previous.Pinned = panel.IsPinned;
                             panels[name] = previous;
                         }
 
@@ -169,6 +237,7 @@ namespace Froststrap.UI.Elements.Overlay
                     panels[name] = new OverlayPanelLayout
                     {
                         Open = panel.IsVisible,
+                        Pinned = panel.IsPinned,
                         Left = panel.Position.X,
                         Top = panel.Position.Y,
                         Width = panel.PanelSize.Width,
@@ -211,6 +280,13 @@ namespace Froststrap.UI.Elements.Overlay
 
         public void Toggle()
         {
+            if (_pinnedMode)
+            {
+                App.Logger.Info("Toggle while pinned -> presenting full overlay");
+                Present();
+                return;
+            }
+
             bool visible = IsVisible;
             bool inFront = IsInFront();
             bool minimised = _overlay?.IsGameMinimised() == true;
@@ -234,8 +310,20 @@ namespace Froststrap.UI.Elements.Overlay
         public void Dismiss()
         {
             NotesPad.Flush();
-
             SaveLayout();
+
+            if (_pinnedMode)
+            {
+                Hide();
+                ExitPinnedMode();
+                return;
+            }
+
+            if (AnyPinnedPanels())
+            {
+                EnterPinnedMode();
+                return;
+            }
 
             Hide();
         }
@@ -268,6 +356,12 @@ namespace Froststrap.UI.Elements.Overlay
             if (_presenting)
                 return;
 
+            if (_pinnedMode)
+            {
+                RefreshPinned();
+                return;
+            }
+
             if (IsOwnProcessForeground())
                 return;
 
@@ -292,6 +386,13 @@ namespace Froststrap.UI.Elements.Overlay
         {
             _presenting = true;
 
+            if (_pinnedMode)
+            {
+                ExitPinnedMode();
+            }
+
+            SetBlur(true);
+
             _overlay?.DismissToast();
 
             _ = _viewModel.SyncAccountAsync();
@@ -314,8 +415,31 @@ namespace Froststrap.UI.Elements.Overlay
 
         public void Reanchor()
         {
+            RefreshPinned();
+
             if (OperatingSystem.IsWindows())
                 _overlay?.AnchorAboveGame((IntPtr)_hwnd);
+        }
+
+        public void RefreshPinned()
+        {
+            if (_presenting)
+                return;
+
+            bool gameOrOverlayInFront = _overlay?.IsGameForeground() == true || IsOwnProcessForeground();
+            bool shouldShow = AnyPinnedPanels()
+                && gameOrOverlayInFront
+                && _overlay?.IsGameMinimised() != true;
+
+            if (shouldShow)
+            {
+                if (!IsVisible)
+                    Show();
+            }
+            else if (_pinnedMode && IsVisible)
+            {
+                Hide();
+            }
         }
 
         private void Window_SizeChanged(object? sender, SizeChangedEventArgs e)
@@ -326,9 +450,13 @@ namespace Froststrap.UI.Elements.Overlay
 
         private async void Window_Loaded(object? sender, RoutedEventArgs e)
         {
+            WirePanelEvents();
+
             foreach (OverlayPanelKind kind in Enum.GetValues<OverlayPanelKind>())
             {
-                if (PanelFor(kind).IsVisible)
+                OverlayPanel panel = PanelFor(kind);
+
+                if (panel.IsVisible)
                     Place(kind);
             }
 
@@ -353,15 +481,9 @@ namespace Froststrap.UI.Elements.Overlay
             int exStyle = PInvoke.GetWindowLong(_hwnd, WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE);
             _ = PInvoke.SetWindowLong(_hwnd, WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE, exStyle | WS_EX_TOOLWINDOW);
 
-            var modifiers = HOT_KEY_MODIFIERS.MOD_CONTROL |
-                            HOT_KEY_MODIFIERS.MOD_ALT |
-                            HOT_KEY_MODIFIERS.MOD_NOREPEAT;
-
-            _hotkeyRegistered = PInvoke.RegisterHotKey(
-                _hwnd, ToggleHotkeyId, modifiers, (uint)KeyInterop.VirtualKeyFromKey(Key.L));
-
-            if (!_hotkeyRegistered)
-                App.Logger.Warn("Could not register the overlay hotkey, something else owns Ctrl+Alt+L");
+            RegisterToggleHotkey();
+            OverlayHotkey.Changed += OnHotkeySettingChanged;
+            OverlayHotkey.SuspendedChanged += OnHotkeySuspended;
 
             _win32Initialised = true;
         }
@@ -378,14 +500,298 @@ namespace Froststrap.UI.Elements.Overlay
             return IntPtr.Zero;
         }
 
+        private void OnHotkeySettingChanged(object? sender, EventArgs e) => RegisterToggleHotkey();
+
+        private void OnHotkeySuspended(object? sender, bool suspended)
+        {
+            if (suspended)
+                UnregisterToggleHotkey();
+            else
+                RegisterToggleHotkey();
+        }
+
+        private void UnregisterToggleHotkey()
+        {
+            if (_hotkeyRegistered && OperatingSystem.IsWindows())
+                PInvoke.UnregisterHotKey(_hwnd, ToggleHotkeyId);
+
+            _hotkeyRegistered = false;
+        }
+
+        private void RegisterToggleHotkey()
+        {
+            if (!OperatingSystem.IsWindows() || _hwnd == HWND.Null)
+                return;
+
+            UnregisterToggleHotkey();
+
+            if (OverlayHotkey.IsSuspended)
+                return;
+
+            KeyModifiers modifiers = App.Settings.Prop.OverlayHotkeyModifiers;
+            Key key = App.Settings.Prop.OverlayHotkeyKey;
+
+            if (!OverlayHotkey.IsAllowed(modifiers, key))
+            {
+                App.Logger.Warn($"The saved overlay hotkey ({OverlayHotkey.Describe(modifiers, key)}) isn't usable, falling back to the default");
+
+                modifiers = OverlayHotkey.DefaultModifiers;
+                key = OverlayHotkey.DefaultKey;
+            }
+
+            var native = HOT_KEY_MODIFIERS.MOD_NOREPEAT;
+
+            if (modifiers.HasFlag(KeyModifiers.Control)) native |= HOT_KEY_MODIFIERS.MOD_CONTROL;
+            if (modifiers.HasFlag(KeyModifiers.Alt)) native |= HOT_KEY_MODIFIERS.MOD_ALT;
+            if (modifiers.HasFlag(KeyModifiers.Shift)) native |= HOT_KEY_MODIFIERS.MOD_SHIFT;
+            if (modifiers.HasFlag(KeyModifiers.Meta)) native |= HOT_KEY_MODIFIERS.MOD_WIN;
+
+            string shortcut = OverlayHotkey.Describe(modifiers, key);
+
+            _hotkeyRegistered = PInvoke.RegisterHotKey(
+                _hwnd, ToggleHotkeyId, native, (uint)KeyInterop.VirtualKeyFromKey(key));
+
+            if (_hotkeyRegistered)
+                App.Logger.Info($"Overlay hotkey is {shortcut}");
+            else
+                App.Logger.Warn($"Could not register the overlay hotkey, something else owns {shortcut}");
+        }
+
+        #region Window region (click-through)
+
+        private void StartRegionTimer()
+        {
+            _regionTimer ??= new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(50) };
+            _regionTimer.Tick -= OnRegionTimerTick;
+            _regionTimer.Tick += OnRegionTimerTick;
+            _regionTimer.Start();
+        }
+
+        private void StopRegionTimer() => _regionTimer?.Stop();
+
+        private void OnRegionTimerTick(object? sender, EventArgs e)
+        {
+            if (_draggingPanels > 0)
+                return;
+
+            UpdateWindowRegion();
+        }
+
+        private void UpdateWindowRegion()
+        {
+            if (!OperatingSystem.IsWindows() || !_win32Initialised)
+                return;
+
+            if (!_pinnedMode)
+            {
+                _ = PInvoke.SetWindowRgn(_hwnd, HRGN.Null, true);
+                return;
+            }
+
+            var rects = new List<HRGN>();
+            double scaling = RenderScaling > 0 ? RenderScaling : 1;
+
+            foreach (var child in PanelSurface.Children)
+            {
+                if (child is not OverlayPanel panel)
+                    continue;
+
+                if (!panel.IsPinned || !panel.IsVisible)
+                    continue;
+
+                Point? topLeft = panel.TranslatePoint(default, this);
+                if (topLeft is null)
+                    continue;
+
+                int left = (int)Math.Round(topLeft.Value.X * scaling);
+                int top = (int)Math.Round(topLeft.Value.Y * scaling);
+                int right = (int)Math.Round((topLeft.Value.X + panel.Bounds.Width) * scaling);
+                int bottom = (int)Math.Round((topLeft.Value.Y + panel.Bounds.Height) * scaling);
+
+                if (right <= left || bottom <= top)
+                    continue;
+
+                rects.Add(PInvoke.CreateRectRgn(left, top, right, bottom));
+            }
+
+            if (rects.Count == 0)
+            {
+                _ = PInvoke.SetWindowRgn(_hwnd, HRGN.Null, true);
+                return;
+            }
+
+            HRGN combined = rects[0];
+
+            for (int i = 1; i < rects.Count; i++)
+            {
+                _ = PInvoke.CombineRgn(combined, combined, rects[i], RGN_COMBINE_MODE.RGN_OR);
+                _ = PInvoke.DeleteObject(rects[i]);
+            }
+
+            if (PInvoke.SetWindowRgn(_hwnd, combined, true) == 0)
+            {
+                App.Logger.Warn("SetWindowRgn failed");
+                _ = PInvoke.DeleteObject(combined);
+            }
+        }
+
+        private void OnPanelDragStateChanged(object? sender, bool dragging)
+        {
+            _draggingPanels += dragging ? 1 : -1;
+
+            if (_draggingPanels < 0)
+                _draggingPanels = 0;
+
+            if (_draggingPanels > 0)
+            {
+                if (OperatingSystem.IsWindows() && _win32Initialised)
+                    _ = PInvoke.SetWindowRgn(_hwnd, HRGN.Null, true);
+            }
+            else
+            {
+                UpdateWindowRegion();
+            }
+        }
+
+        #endregion
+
+        #region Pinned mode
+
+        private bool AnyPinnedPanels() =>
+            Enum.GetValues<OverlayPanelKind>()
+                .Any(kind =>
+                {
+                    OverlayPanel panel = PanelFor(kind);
+                    return panel.IsPinned && panel.IsVisible;
+                });
+
+        private void EnterPinnedMode()
+        {
+            if (_pinnedMode)
+                return;
+
+            if (!AnyPinnedPanels())
+                return;
+
+            _pinnedMode = true;
+
+            _scrimBrush ??= Scrim.Background;
+            Scrim.Background = null;
+
+            ChromeDock.IsVisible = false;
+
+            foreach (OverlayPanelKind kind in Enum.GetValues<OverlayPanelKind>())
+            {
+                OverlayPanel panel = PanelFor(kind);
+
+                if (panel.IsPinned)
+                    continue;
+
+                panel.Opacity = 0;
+                panel.IsHitTestVisible = false;
+            }
+
+            SetBlur(false);
+
+            UpdateWindowRegion();
+            StartRegionTimer();
+        }
+
+        private void ExitPinnedMode()
+        {
+            if (!_pinnedMode)
+                return;
+
+            _pinnedMode = false;
+
+            StopRegionTimer();
+            UpdateWindowRegion();
+
+            Scrim.Background = _scrimBrush ?? new SolidColorBrush(Color.FromArgb(0x66, 0, 0, 0));
+
+            ChromeDock.IsVisible = true;
+
+            foreach (OverlayPanelKind kind in Enum.GetValues<OverlayPanelKind>())
+            {
+                OverlayPanel panel = PanelFor(kind);
+
+                panel.Opacity = 1;
+                panel.IsHitTestVisible = true;
+            }
+
+            SetBlur(true);
+        }
+
+        private void SetBlur(bool blur)
+        {
+            var wanted = blur ? BlurLevels : NoBlurLevels;
+
+            if (TransparencyLevelHint is not null && TransparencyLevelHint.SequenceEqual(wanted))
+                return;
+
+            TransparencyLevelHint = wanted;
+        }
+
+        private void OnPanelPinChanged(object? sender, EventArgs e)
+        {
+            if (sender is not OverlayPanel panel)
+                return;
+
+            SaveLayout();
+
+            if (!_pinnedMode)
+                return;
+
+            if (!panel.IsPinned)
+            {
+                panel.Opacity = 0;
+                panel.IsHitTestVisible = false;
+            }
+
+            if (!AnyPinnedPanels())
+            {
+                Hide();
+                ExitPinnedMode();
+                return;
+            }
+
+            UpdateWindowRegion();
+        }
+
+        private void OnPanelPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
+        {
+            if (e.Property != Visual.IsVisibleProperty)
+                return;
+
+            if (!_pinnedMode)
+                return;
+
+            if (AnyPinnedPanels())
+            {
+                UpdateWindowRegion();
+                return;
+            }
+
+            Hide();
+            ExitPinnedMode();
+        }
+
+        #endregion
+
         protected override void OnClosed(EventArgs e)
         {
             NotesPad.Flush();
 
             SaveLayout();
 
-            if (OperatingSystem.IsWindows() && _hotkeyRegistered)
-                PInvoke.UnregisterHotKey(_hwnd, ToggleHotkeyId);
+            UnwirePanelEvents();
+
+            StopRegionTimer();
+
+            OverlayHotkey.Changed -= OnHotkeySettingChanged;
+            OverlayHotkey.SuspendedChanged -= OnHotkeySuspended;
+
+            UnregisterToggleHotkey();
 
             base.OnClosed(e);
         }

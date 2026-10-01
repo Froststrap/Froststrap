@@ -39,9 +39,11 @@ namespace Froststrap.Integrations
 
         private WINEVENTPROC? _systemCallback;
         private WINEVENTPROC? _objectCallback;
+        private WINEVENTPROC? _foregroundCallback;
 
         private UnhookWinEventSafeHandle? _systemHook;
         private UnhookWinEventSafeHandle? _objectHook;
+        private UnhookWinEventSafeHandle? _foregroundHook;
 
         private GameOverlay? _window;
         private OverlayToast? _toast;
@@ -87,6 +89,7 @@ namespace Froststrap.Integrations
 
                 _systemCallback = new WINEVENTPROC(OnSystemEvent);
                 _objectCallback = new WINEVENTPROC(OnObjectEvent);
+                _foregroundCallback = new WINEVENTPROC(OnForegroundEvent);
 
                 _systemHook = PInvoke.SetWinEventHook(
                     EVENT_SYSTEM_FOREGROUND, EVENT_SYSTEM_MINIMIZEEND,
@@ -95,6 +98,10 @@ namespace Froststrap.Integrations
                 _objectHook = PInvoke.SetWinEventHook(
                     EVENT_OBJECT_DESTROY, EVENT_OBJECT_LOCATIONCHANGE,
                     null, _objectCallback, _robloxProcessId, 0, WINEVENT_OUTOFCONTEXT);
+
+                _foregroundHook = PInvoke.SetWinEventHook(
+                    EVENT_SYSTEM_FOREGROUND, EVENT_SYSTEM_FOREGROUND,
+                    null, _foregroundCallback, 0, 0, WINEVENT_OUTOFCONTEXT);
             });
 
             if (_disposed)
@@ -264,9 +271,22 @@ namespace Froststrap.Integrations
                     break;
 
                 case EVENT_SYSTEM_FOREGROUND:
-                    Dispatcher.UIThread.Post(() => _window?.Reanchor());
+                    Dispatcher.UIThread.Post(() =>
+                    {
+                        _window?.Reanchor();
+                        _window?.RefreshPinned();
+                    });
                     break;
             }
+        }
+
+        private void OnForegroundEvent(HWINEVENTHOOK hook, uint iEvent, HWND hWnd, int idObject, int idChild, uint thread, uint time)
+        {
+            Dispatcher.UIThread.Post(() =>
+            {
+                _window?.Reanchor();
+                _window?.RefreshPinned();
+            });
         }
 
         private void OnObjectEvent(HWINEVENTHOOK hook, uint iEvent, HWND hWnd, int idObject, int idChild, uint thread, uint time)
@@ -312,10 +332,15 @@ namespace Froststrap.Integrations
 
             _systemHook?.Dispose();
             _objectHook?.Dispose();
+            _foregroundHook?.Dispose();
+
             _systemHook = null;
             _objectHook = null;
+            _foregroundHook = null;
+
             _systemCallback = null;
             _objectCallback = null;
+            _foregroundCallback = null;
 
             Dispatcher.UIThread.Post(() =>
             {

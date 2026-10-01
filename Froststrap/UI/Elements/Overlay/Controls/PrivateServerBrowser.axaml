@@ -1,0 +1,312 @@
+<UserControl x:Class="Froststrap.UI.Elements.Overlay.Controls.PrivateServerBrowser"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
+             xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+             xmlns:resources="using:Froststrap.Resources"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+             xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Overlay.Controls"
+             x:DataType="vm:PrivateServersViewModel"
+             mc:Ignorable="d"
+             d:DesignHeight="560" d:DesignWidth="760">
+
+    <UserControl.Styles>
+        <Style Selector="Border.Card">
+            <Setter Property="Margin" Value="0,0,0,10"/>
+            <Setter Property="Padding" Value="16,14"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Background" Value="{DynamicResource CardBackgroundFillColorDefaultBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource CardStrokeColorDefaultBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+        <Style Selector="TextBlock.Heading">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}"/>
+        </Style>
+        <Style Selector="TextBlock.Label">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}"/>
+        </Style>
+        <Style Selector="Rectangle.Divider">
+            <Setter Property="Height" Value="1"/>
+            <Setter Property="Margin" Value="0,12"/>
+            <Setter Property="Fill" Value="{DynamicResource DividerStrokeColorDefaultBrush}"/>
+        </Style>
+        <Style Selector="Button.cardAction">
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        </Style>
+    </UserControl.Styles>
+
+    <Grid RowDefinitions="*,Auto">
+
+        <Grid Grid.Row="0" IsVisible="{Binding ListVisible}">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,0,-8,0" Padding="0,0,8,0">
+                <StackPanel>
+                    <ItemsControl ItemsSource="{Binding Servers}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,0,0,12" ColumnDefinitions="Auto,*,260">
+                                    <Border Grid.Column="0" Width="40" Height="40" CornerRadius="20" VerticalAlignment="Center"
+                                            Background="{DynamicResource ControlFillColorDefaultBrush}"
+                                            ClipToBounds="True">
+                                        <Image Source="{Binding OwnerAvatar, Converter={StaticResource UrlToBitmapConverter}}"
+                                               Stretch="UniformToFill"
+                                               RenderOptions.BitmapInterpolationMode="LowQuality"/>
+                                    </Border>
+
+                                    <WrapPanel Grid.Column="1" Margin="14,0,12,0" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Name}" Classes="Heading" Margin="0,0,10,0" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Text="{Binding CapacityText}" Classes="Label"/>
+                                        <TextBlock Text="{x:Static resources:Strings.Menu_Overlay_Servers_Current}"
+                                                   Margin="10,0,0,0" Classes="Label"
+                                                   IsVisible="{Binding IsCurrent}"
+                                                   Foreground="{DynamicResource AccentFillColorDefaultBrush}"/>
+                                    </WrapPanel>
+
+                                    <Button Grid.Column="2"
+                                            Classes="cardAction"
+                                            Content="{x:Static resources:Strings.Menu_Overlay_Servers_Join}"
+                                            IsEnabled="{Binding CanJoin}"
+                                            IsVisible="{Binding !IsMine}"
+                                            Command="{Binding $parent[ItemsControl].((vm:PrivateServersViewModel)DataContext).JoinCommand}"
+                                            CommandParameter="{Binding}"/>
+
+                                    <StackPanel Grid.Column="2" IsVisible="{Binding IsMine}" VerticalAlignment="Center">
+                                        <Grid ColumnDefinitions="Auto,*">
+                                            <controls:IconButton Grid.Column="0" Width="34" Height="34" Icon="Pencil" IconSize="14"
+                                                                 Command="{Binding $parent[ItemsControl].((vm:PrivateServersViewModel)DataContext).ConfigureCommand}"
+                                                                 CommandParameter="{Binding}"
+                                                                 ToolTip.Tip="{x:Static resources:Strings.Menu_Overlay_PrivateServers_Configure}"/>
+                                            <Button Grid.Column="1" Margin="6,0,0,0"
+                                                    Classes="cardAction"
+                                                    Content="{x:Static resources:Strings.Menu_Overlay_Servers_Join}"
+                                                    IsEnabled="{Binding CanJoin}"
+                                                    Command="{Binding $parent[ItemsControl].((vm:PrivateServersViewModel)DataContext).JoinCommand}"
+                                                    CommandParameter="{Binding}"/>
+                                        </Grid>
+
+                                        <Grid Margin="0,6,0,0" ColumnDefinitions="*,*" IsEnabled="{Binding IsIdle}">
+                                            <Button Grid.Column="0" Margin="0,0,3,0" FontSize="12"
+                                                    Classes="cardAction"
+                                                    Content="{x:Static resources:Strings.Menu_Overlay_PrivateServers_GenerateLink}"
+                                                    Command="{Binding $parent[ItemsControl].((vm:PrivateServersViewModel)DataContext).GenerateRowLinkCommand}"
+                                                    CommandParameter="{Binding}"/>
+                                            <Button Grid.Column="1" Margin="3,0,0,0" FontSize="12"
+                                                    Classes="cardAction"
+                                                    Content="{x:Static resources:Strings.Menu_Overlay_PrivateServers_CopyLink}"
+                                                    IsEnabled="{Binding HasLink}"
+                                                    Command="{Binding $parent[ItemsControl].((vm:PrivateServersViewModel)DataContext).CopyRowLinkCommand}"
+                                                    CommandParameter="{Binding}"/>
+                                        </Grid>
+
+                                        <Grid Margin="2,2,0,0" ColumnDefinitions="*,Auto" IsEnabled="{Binding IsIdle}">
+                                            <TextBlock Text="{x:Static resources:Strings.Menu_Overlay_PrivateServers_AllowJoining}"
+                                                       FontSize="12" VerticalAlignment="Center"
+                                                       Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
+                                            <ToggleSwitch Grid.Column="1" VerticalAlignment="Center"
+                                                          IsChecked="{Binding IsActive}"
+                                                          Command="{Binding $parent[ItemsControl].((vm:PrivateServersViewModel)DataContext).ToggleRowActiveCommand}"
+                                                          CommandParameter="{Binding}"/>
+                                        </Grid>
+                                    </StackPanel>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <Button HorizontalAlignment="Left" Margin="0,2,0,6"
+                            Content="{x:Static resources:Strings.Menu_Overlay_PrivateServers_LoadMore}"
+                            IsVisible="{Binding HasMore}"
+                            Command="{Binding LoadMoreCommand}"/>
+
+                    <ui:FAProgressRing IsIndeterminate="True" Width="22" Height="22"
+                                       HorizontalAlignment="Left" Margin="8,4,0,6"
+                                       IsVisible="{Binding IsLoadingMore}"/>
+                </StackPanel>
+            </ScrollViewer>
+
+            <ui:FAProgressRing IsIndeterminate="True" Width="32" Height="32"
+                               HorizontalAlignment="Center" VerticalAlignment="Center"
+                               IsVisible="{Binding IsBusy}"/>
+
+            <TextBlock Text="{Binding EmptyText}" FontSize="13" TextAlignment="Center" TextWrapping="Wrap"
+                       MaxWidth="320" HorizontalAlignment="Center" VerticalAlignment="Center"
+                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                       IsVisible="{Binding ShowEmptyState}"/>
+        </Grid>
+
+        <Grid Grid.Row="0" IsVisible="{Binding ManageVisible}" RowDefinitions="Auto,*">
+            <Grid Grid.Row="0" Margin="0,0,0,14" ColumnDefinitions="*,Auto">
+                <TextBlock Text="{x:Static resources:Strings.Menu_Overlay_PrivateServers_ConfigureTitle}"
+                           FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center"
+                           Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
+                <Button Grid.Column="1" Command="{Binding BackCommand}" Background="Transparent">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{x:Static resources:Strings.Menu_Overlay_PrivateServers_BackToList}" FontSize="12" VerticalAlignment="Center"/>
+                        <ic:Lucide Icon="ArrowRight" Width="12" Height="12" Margin="4,0,0,0"/>
+                    </StackPanel>
+                </Button>
+            </Grid>
+
+            <ui:FAProgressRing Grid.Row="1" IsIndeterminate="True" Width="32" Height="32"
+                               HorizontalAlignment="Center" VerticalAlignment="Center"
+                               IsVisible="{Binding IsBusy}"/>
+
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,0,-8,0" Padding="0,0,8,0">
+                <StackPanel IsEnabled="{Binding CanEdit}">
+                    <Grid Margin="0,0,0,14" ColumnDefinitions="Auto,*">
+                        <Border Width="150" Height="150" CornerRadius="8" VerticalAlignment="Top"
+                                Background="{DynamicResource ControlFillColorDefaultBrush}" ClipToBounds="True">
+                            <Image Source="{Binding GameIcon, Converter={StaticResource UrlToBitmapConverter}}"
+                                   Stretch="UniformToFill"
+                                   RenderOptions.BitmapInterpolationMode="LowQuality"/>
+                        </Border>
+
+                        <StackPanel Grid.Column="1" Margin="16,2,0,0">
+                            <Grid MinHeight="30" ColumnDefinitions="140,*">
+                                <TextBlock Text="{x:Static resources:Strings.Menu_Overlay_PrivateServers_ServerName}" Classes="Label"/>
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center"
+                                            IsVisible="{Binding IsShowingName}">
+                                    <TextBlock Text="{Binding ServerName}" Classes="Heading" TextTrimming="CharacterEllipsis" MaxWidth="260"/>
+                                    <controls:IconButton Margin="6,0,0,0" Icon="Pencil" IconSize="14"
+                                                         Command="{Binding EditNameCommand}"
+                                                         ToolTip.Tip="{x:Static resources:Strings.Menu_Overlay_PrivateServers_Rename}"/>
+                                </StackPanel>
+
+                                <Grid Grid.Column="1" ColumnDefinitions="*,Auto,Auto" IsVisible="{Binding IsEditingName}">
+                                    <TextBox Grid.Column="0" FontSize="13" MaxLength="50" Text="{Binding EditName}"/>
+                                    <Button Grid.Column="1" Margin="6,0,0,0"
+                                            Content="{x:Static resources:Strings.Menu_Overlay_PrivateServers_Save}"
+                                            Command="{Binding SaveNameCommand}"/>
+                                    <Button Grid.Column="2" Margin="6,0,0,0"
+                                            Content="{x:Static resources:Strings.Menu_Overlay_PrivateServers_Cancel}"
+                                            Command="{Binding CancelNameCommand}"/>
+                                </Grid>
+                            </Grid>
+
+                            <Rectangle Classes="Divider" Margin="0,8"/>
+
+                            <Grid MinHeight="26" ColumnDefinitions="140,*">
+                                <TextBlock Text="{x:Static resources:Strings.Menu_Overlay_PrivateServers_Experience}" Classes="Label"/>
+                                <TextBlock Grid.Column="1" Text="{Binding GameName}" FontSize="13" VerticalAlignment="Center"
+                                           TextTrimming="CharacterEllipsis"
+                                           Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
+                            </Grid>
+
+                            <Rectangle Classes="Divider" Margin="0,8"/>
+
+                            <Grid MinHeight="26" ColumnDefinitions="140,*">
+                                <TextBlock Text="{x:Static resources:Strings.Menu_Overlay_PrivateServers_Price}" Classes="Label"/>
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding PriceText}" FontSize="13"
+                                               Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
+                                    <TextBlock Text="{Binding RenewalText}" FontSize="11" Margin="0,2,0,0"
+                                               Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                               IsVisible="{Binding HasRenewal}"/>
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </Grid>
+
+                    <Border Classes="Card">
+                        <StackPanel>
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBlock Text="{x:Static resources:Strings.Menu_Overlay_PrivateServers_AllowJoining}" Classes="Heading"/>
+                                <ToggleSwitch Grid.Column="1" VerticalAlignment="Center" IsChecked="{Binding IsActive}"/>
+                            </Grid>
+                            <TextBlock Text="{x:Static resources:Strings.Menu_Overlay_PrivateServers_AllowJoiningHint}"
+                                       FontSize="13" Margin="0,8,0,0" TextWrapping="Wrap"
+                                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Classes="Card">
+                        <StackPanel>
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBlock Text="{x:Static resources:Strings.Menu_Overlay_PrivateServers_FriendsAllowed}" Classes="Heading"/>
+                                <ToggleSwitch Grid.Column="1" VerticalAlignment="Center" IsChecked="{Binding FriendsAllowed}"/>
+                            </Grid>
+
+                            <Rectangle Classes="Divider"/>
+
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBlock Text="{x:Static resources:Strings.Menu_Overlay_PrivateServers_Members}" Classes="Heading"/>
+                                <Button Grid.Column="1"
+                                        Content="{x:Static resources:Strings.Menu_Overlay_PrivateServers_AddPeople}"
+                                        Command="{Binding AddPeopleCommand}"/>
+                            </Grid>
+
+                            <Grid Margin="0,10,0,0" ColumnDefinitions="*,Auto" IsVisible="{Binding IsAddingPeople}">
+                                <TextBox Grid.Column="0" FontSize="13"
+                                         PlaceholderText="{x:Static resources:Strings.Menu_Overlay_PrivateServers_AddPlaceholder}"
+                                         Text="{Binding AddUsername}"/>
+                                <Button Grid.Column="1" Margin="6,0,0,0"
+                                        Content="{x:Static resources:Strings.Menu_Overlay_PrivateServers_Add}"
+                                        Command="{Binding AddUserCommand}"/>
+                            </Grid>
+
+                            <TextBlock Text="{x:Static resources:Strings.Menu_Overlay_PrivateServers_MembersNone}"
+                                       FontSize="13" Margin="0,10,0,0"
+                                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                       IsVisible="{Binding HasNoAllowedUsers}"/>
+
+                            <ItemsControl ItemsSource="{Binding AllowedUsers}" Margin="0,6,0,0">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Margin="0,4,0,0" ColumnDefinitions="*,Auto">
+                                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding DisplayName}" FontSize="13"
+                                                           Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
+                                                <TextBlock Text="{Binding Name, StringFormat=@{0}}" FontSize="12" Margin="8,0,0,0"
+                                                           Foreground="{DynamicResource TextFillColorTertiaryBrush}"/>
+                                            </StackPanel>
+                                            <controls:IconButton Grid.Column="1" Icon="X" IconSize="12"
+                                                                 Command="{Binding $parent[ItemsControl].((vm:PrivateServersViewModel)DataContext).RemoveUserCommand}"
+                                                                 CommandParameter="{Binding}"
+                                                                 ToolTip.Tip="{x:Static resources:Strings.Menu_Overlay_PrivateServers_Remove}"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                            <Rectangle Classes="Divider"/>
+
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBlock Text="{x:Static resources:Strings.Menu_Overlay_PrivateServers_Link}" Classes="Heading"/>
+                                <Button Grid.Column="1"
+                                        Content="{x:Static resources:Strings.Menu_Overlay_PrivateServers_Regenerate}"
+                                        Command="{Binding RegenerateLinkCommand}"/>
+                            </Grid>
+
+                            <Border Margin="0,10,0,0" Padding="12,4,4,4" CornerRadius="6"
+                                    Background="{DynamicResource ControlFillColorDefaultBrush}"
+                                    BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                                    BorderThickness="1">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <TextBlock Text="{Binding Link}" FontSize="13" VerticalAlignment="Center"
+                                               TextTrimming="CharacterEllipsis"
+                                               Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
+                                    <controls:IconButton Grid.Column="1" Margin="8,0,0,0"
+                                                         Icon="Copy" IconSize="14"
+                                                         IsEnabled="{Binding HasLink}"
+                                                         Command="{Binding CopyLinkCommand}"
+                                                         ToolTip.Tip="{x:Static resources:Strings.Menu_Overlay_PrivateServers_CopyLink}"/>
+                                </Grid>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+
+        <TextBlock Grid.Row="1" Text="{Binding StatusText}" FontSize="12" Margin="2,6,0,0" TextWrapping="Wrap"
+                   Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                   IsVisible="{Binding HasStatus}"/>
+    </Grid>
+</UserControl>

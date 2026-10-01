@@ -30,3 +30,7 @@ UpdateWindow
 RECT
 IsWindowVisible
 EnumWindows
+SetWindowRgn
+CreateRectRgn
+CombineRgn
+DeleteObject

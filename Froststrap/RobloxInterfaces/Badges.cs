@@ -69,34 +69,43 @@ namespace Froststrap.RobloxInterfaces
 
             try
             {
-                foreach (var chunk in Chunk(badges.Select(x => x.Id)))
-                {
-                    var response = await Http.AuthGetJson<ApiArrayResponse<BadgeAwardedDate>>(
-                        UrlBuilder.BuildApiUrl("badges", $"v1/users/{userId}/badges/awarded-dates?badgeIds={String.Join(',', chunk)}"));
-
-                    if (response?.Data is null)
-                        continue;
-
-                    foreach (BadgeAwardedDate awarded in response.Data)
-                    {
-                        Badge? badge = badges.FirstOrDefault(x => x.Id == awarded.BadgeId);
-
-                        if (badge is null)
-                            continue;
-
-                        badge.Awarded = true;
-                        badge.AwardedDate = awarded.AwardedDate;
-                    }
-                }
+                var awarded = await AwardedDatesAsync(userId, badges.Select(x => x.Id));
 
                 foreach (Badge badge in badges)
+                {
+                    if (awarded.TryGetValue(badge.Id, out DateTime date))
+                    {
+                        badge.Awarded = true;
+                        badge.AwardedDate = date;
+                    }
+
                     badge.AwardedKnown = true;
+                }
             }
             catch (Exception ex)
             {
                 App.Logger.Error("Failed to fetch awarded dates");
                 App.Logger.Error(ex);
             }
+        }
+
+        public static async Task<Dictionary<long, DateTime>> AwardedDatesAsync(long userId, IEnumerable<long> badgeIds)
+        {
+            var awarded = new Dictionary<long, DateTime>();
+
+            foreach (var chunk in Chunk(badgeIds))
+            {
+                var response = await Http.AuthGetJson<ApiArrayResponse<BadgeAwardedDate>>(
+                    UrlBuilder.BuildApiUrl("badges", $"v1/users/{userId}/badges/awarded-dates?badgeIds={String.Join(',', chunk)}"));
+
+                if (response?.Data is null)
+                    continue;
+
+                foreach (BadgeAwardedDate date in response.Data)
+                    awarded[date.BadgeId] = date.AwardedDate;
+            }
+
+            return awarded;
         }
 
         private static async Task<bool> SignedInAsync()

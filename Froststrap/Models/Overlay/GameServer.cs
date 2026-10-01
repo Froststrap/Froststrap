@@ -1,31 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.ComponentModel;
+using System.Globalization;
+using System.Linq;
+using Froststrap.Resources;
 
 namespace Froststrap.Models.Overlay
 {
-    internal class GameServer
+    internal class GameServer : INotifyPropertyChanged
     {
+        private const int AvatarSlots = 6;
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
         public string JobId { get; set; } = String.Empty;
-
         public int? Playing { get; set; }
-
         public int? MaxPlayers { get; set; }
-
         public double? Fps { get; set; }
-
         public int? Ping { get; set; }
-
         public string? City { get; set; }
-
         public string? Region { get; set; }
-
+        public int? PlaceVersion { get; set; }
         public bool IsCurrent { get; set; }
-
         public List<string> PlayerTokens { get; set; } = [];
-
         public DateTime? StartedAt { get; set; }
-
         public bool UptimeIsEstimate { get; set; } = true;
 
         public bool HasUptime => StartedAt is not null;
@@ -34,66 +32,70 @@ namespace Froststrap.Models.Overlay
         {
             get
             {
-                if (StartedAt is null)
-                    return String.Empty;
+                if (StartedAt is null) return String.Empty;
 
                 TimeSpan up = DateTime.UtcNow - StartedAt.Value;
+                if (up < TimeSpan.Zero) up = TimeSpan.Zero;
 
-                if (up < TimeSpan.Zero)
-                    up = TimeSpan.Zero;
+                string span = up.TotalDays >= 1 ? $"{(int)up.TotalDays}d {up.Hours}h {up.Minutes}m {up.Seconds}s"
+                    : up.TotalHours >= 1 ? $"{up.Hours}h {up.Minutes}m {up.Seconds}s"
+                    : up.TotalMinutes >= 1 ? $"{up.Minutes}m {up.Seconds}s"
+                    : $"{up.Seconds}s";
 
-                string span = up.TotalDays >= 1 ? $"{(int)up.TotalDays}d {up.Hours}h"
-                    : up.TotalHours >= 1 ? $"{(int)up.TotalHours}h {up.Minutes}m"
-                    : $"{Math.Max(up.Minutes, 1)}m";
-
-                return String.Format(Locale.CurrentCulture,
-                    UptimeIsEstimate ? Strings.Menu_Overlay_Servers_UptimeEstimate : Strings.Menu_Overlay_Servers_UptimeExact,
-                    span);
+                return UptimeIsEstimate
+                    ? String.Format(Locale.CurrentCulture, Strings.Menu_Overlay_Servers_UptimeEstimate, span)
+                    : span;
             }
         }
 
-        public List<string> PlayerIcons { get; } = [];
+        public int? Performance => Fps is null ? null : (int)Math.Min(100, Math.Round(Fps.Value / 60 * 100));
+        public bool HasPerformance => Performance is not null;
+        public bool IsLowPerformance => Performance < 50;
+        public string PerformanceText => String.Format(Locale.CurrentCulture, Strings.Menu_Overlay_Servers_Performance, Performance);
 
+        public bool HasVersion => PlaceVersion is not null;
+        public string VersionText => String.Format(Locale.CurrentCulture, Strings.Menu_Overlay_Servers_Version, PlaceVersion);
+
+        public List<string> PlayerIcons { get; } = [];
         public int OverflowCount => HasStats ? Math.Max(Playing!.Value - PlayerIcons.Count, 0) : 0;
 
-        public bool HasOverflow => OverflowCount > 0;
+        public IReadOnlyList<ServerAvatar> Avatars
+        {
+            get
+            {
+                int overflow = OverflowCount;
+                int faces = overflow > 0 ? AvatarSlots - 1 : AvatarSlots;
 
-        public string OverflowText => $"+{OverflowCount}";
+                var avatars = PlayerIcons
+                    .Take(faces)
+                    .Select(url => new ServerAvatar(url, null))
+                    .ToList();
+
+                int hidden = HasStats ? Playing!.Value - avatars.Count : 0;
+                if (hidden > 0)
+                    avatars.Add(new ServerAvatar(null, $"+{hidden}"));
+
+                return avatars;
+            }
+        }
 
         public bool HasStats => Playing is not null && MaxPlayers is not null;
-
         public bool IsFull => HasStats && Playing >= MaxPlayers;
 
-        public string PlayersText => HasStats ? $"{Playing}/{MaxPlayers}" : "—";
+        public string CapacityText => HasStats
+            ? String.Format(Locale.CurrentCulture, Strings.Menu_Overlay_Servers_Capacity, Playing, MaxPlayers)
+            : Strings.Menu_Overlay_Servers_CapacityUnknown;
 
         public double FillPercentage => HasStats && MaxPlayers > 0
             ? (double)Playing!.Value / MaxPlayers!.Value * 100
             : 0;
 
-        public string FpsText => Fps is null ? String.Empty : $"{Math.Round(Fps.Value)} FPS";
+        public string IdText => String.Format(Locale.CurrentCulture, Strings.Menu_Overlay_Servers_Id, JobId);
 
-        public string PingText => Ping is null ? String.Empty : $"{Ping} ms";
-
-        public string LocationText
+        public void Tick()
         {
-            get
-            {
-                bool hasCity = !String.IsNullOrWhiteSpace(City);
-                bool hasRegion = !String.IsNullOrWhiteSpace(Region);
-
-                if (!hasCity && !hasRegion)
-                    return Strings.Common_Unknown;
-
-                if (!hasCity)
-                    return Region!;
-
-                if (!hasRegion || Region == City)
-                    return City!;
-
-                return $"{City}, {Region}";
-            }
+            if (HasUptime)
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(UptimeText)));
         }
-
-        public string ShortId => JobId.Length > 8 ? JobId[..8] : JobId;
     }
 }

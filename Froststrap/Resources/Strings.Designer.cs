@@ -6630,6 +6630,51 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Change the key combination that opens the overlay..
+        /// </summary>
+        public static string Menu_Integrations_OverlayHotkey_Description {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.OverlayHotkey.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add Ctrl, Alt or Win.
+        /// </summary>
+        public static string Menu_Integrations_OverlayHotkey_NeedsModifier {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.OverlayHotkey.NeedsModifier", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Press a shortcut….
+        /// </summary>
+        public static string Menu_Integrations_OverlayHotkey_Recording {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.OverlayHotkey.Recording", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset shortcut.
+        /// </summary>
+        public static string Menu_Integrations_OverlayHotkey_Reset {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.OverlayHotkey.Reset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Overlay shortcut.
+        /// </summary>
+        public static string Menu_Integrations_OverlayHotkey_Title {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.OverlayHotkey.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Displays your total playtime and current session time while in a game or Studio place..
         /// </summary>
         public static string Menu_Integrations_PlaytimeCounter_Description {
@@ -8236,6 +8281,15 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Pin over the game.
+        /// </summary>
+        public static string Menu_Overlay_Pin {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Pin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Everyone.
         /// </summary>
         public static string Menu_Overlay_Privacy_Everyone {
@@ -8389,6 +8443,447 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add.
+        /// </summary>
+        public static string Menu_Overlay_PrivateServers_Add {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.PrivateServers.Add", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Added {0}.
+        /// </summary>
+        public static string Menu_Overlay_PrivateServers_Added {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.PrivateServers.Added", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add People.
+        /// </summary>
+        public static string Menu_Overlay_PrivateServers_AddPeople {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.PrivateServers.AddPeople", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add someone by username.
+        /// </summary>
+        public static string Menu_Overlay_PrivateServers_AddPlaceholder {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.PrivateServers.AddPlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allow Joining.
+        /// </summary>
+        public static string Menu_Overlay_PrivateServers_AllowJoining {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.PrivateServers.AllowJoining", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Turning this off stops you and anyone you&apos;ve invited from joining, and the current link stops working. You can turn it back on at any time..
+        /// </summary>
+        public static string Menu_Overlay_PrivateServers_AllowJoiningHint {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.PrivateServers.AllowJoiningHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} can already join.
+        /// </summary>
+        public static string Menu_Overlay_PrivateServers_AlreadyAdded {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.PrivateServers.AlreadyAdded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Back to Private Servers.
+        /// </summary>
+        public static string Menu_Overlay_PrivateServers_BackToList {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.PrivateServers.BackToList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        public static string Menu_Overlay_PrivateServers_Cancel {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.PrivateServers.Cancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} of {1} people max.
+        /// </summary>
+        public static string Menu_Overlay_PrivateServers_Capacity {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.PrivateServers.Capacity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Configure.
+        /// </summary>
+        public static string Menu_Overlay_PrivateServers_Configure {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.PrivateServers.Configure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Configure Private Server.
+        /// </summary>
+        public static string Menu_Overlay_PrivateServers_ConfigureTitle {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.PrivateServers.ConfigureTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copy Link.
+        /// </summary>
+        public static string Menu_Overlay_PrivateServers_CopyLink {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.PrivateServers.CopyLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create.
+        /// </summary>
+        public static string Menu_Overlay_PrivateServers_Create {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.PrivateServers.Create", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Opens on roblox.com.
+        /// </summary>
+        public static string Menu_Overlay_PrivateServers_CreateHint {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.PrivateServers.CreateHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Opened this experience&apos;s servers on roblox.com.
+        /// </summary>
+        public static string Menu_Overlay_PrivateServers_CreateOpened {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.PrivateServers.CreateOpened", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create a private server.
+        /// </summary>
+        public static string Menu_Overlay_PrivateServers_CreateTitle {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.PrivateServers.CreateTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not available in this experience.
+        /// </summary>
+        public static string Menu_Overlay_PrivateServers_CreateUnavailable {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.PrivateServers.CreateUnavailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ends {0}.
+        /// </summary>
+        public static string Menu_Overlay_PrivateServers_Ends {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.PrivateServers.Ends", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Experience.
+        /// </summary>
+        public static string Menu_Overlay_PrivateServers_Experience {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.PrivateServers.Experience", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Subscription expired.
+        /// </summary>
+        public static string Menu_Overlay_PrivateServers_Expired {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.PrivateServers.Expired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Free.
+        /// </summary>
+        public static string Menu_Overlay_PrivateServers_Free {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.PrivateServers.Free", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Friends Allowed.
+        /// </summary>
+        public static string Menu_Overlay_PrivateServers_FriendsAllowed {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.PrivateServers.FriendsAllowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Generate Link.
+        /// </summary>
+        public static string Menu_Overlay_PrivateServers_GenerateLink {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.PrivateServers.GenerateLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Private Server Link.
+        /// </summary>
+        public static string Menu_Overlay_PrivateServers_Link {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.PrivateServers.Link", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Link copied.
+        /// </summary>
+        public static string Menu_Overlay_PrivateServers_LinkCopied {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.PrivateServers.LinkCopied", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Couldn&apos;t load private servers. Try again in a moment..
+        /// </summary>
+        public static string Menu_Overlay_PrivateServers_LoadFailed {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.PrivateServers.LoadFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Load More.
+        /// </summary>
+        public static string Menu_Overlay_PrivateServers_LoadMore {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.PrivateServers.LoadMore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Server Members.
+        /// </summary>
+        public static string Menu_Overlay_PrivateServers_Members {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.PrivateServers.Members", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to None.
+        /// </summary>
+        public static string Menu_Overlay_PrivateServers_MembersNone {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.PrivateServers.MembersNone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allow cookie access in Froststrap&apos;s settings to see private servers here..
+        /// </summary>
+        public static string Menu_Overlay_PrivateServers_NeedsCookies {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.PrivateServers.NeedsCookies", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New link made. The old one no longer works..
+        /// </summary>
+        public static string Menu_Overlay_PrivateServers_NewLinkMade {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.PrivateServers.NewLinkMade", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You don&apos;t have any private servers for this experience..
+        /// </summary>
+        public static string Menu_Overlay_PrivateServers_None {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.PrivateServers.None", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No one&apos;s called {0}.
+        /// </summary>
+        public static string Menu_Overlay_PrivateServers_NoSuchUser {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.PrivateServers.NoSuchUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Subscription Price.
+        /// </summary>
+        public static string Menu_Overlay_PrivateServers_Price {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.PrivateServers.Price", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} Robux.
+        /// </summary>
+        public static string Menu_Overlay_PrivateServers_PriceRobux {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.PrivateServers.PriceRobux", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Regenerate.
+        /// </summary>
+        public static string Menu_Overlay_PrivateServers_Regenerate {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.PrivateServers.Regenerate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Roblox didn&apos;t accept that: {0}.
+        /// </summary>
+        public static string Menu_Overlay_PrivateServers_Rejected {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.PrivateServers.Rejected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove.
+        /// </summary>
+        public static string Menu_Overlay_PrivateServers_Remove {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.PrivateServers.Remove", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Removed {0}.
+        /// </summary>
+        public static string Menu_Overlay_PrivateServers_Removed {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.PrivateServers.Removed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rename.
+        /// </summary>
+        public static string Menu_Overlay_PrivateServers_Rename {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.PrivateServers.Rename", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Renews {0}.
+        /// </summary>
+        public static string Menu_Overlay_PrivateServers_Renews {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.PrivateServers.Renews", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save.
+        /// </summary>
+        public static string Menu_Overlay_PrivateServers_Save {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.PrivateServers.Save", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Saved.
+        /// </summary>
+        public static string Menu_Overlay_PrivateServers_Saved {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.PrivateServers.Saved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Couldn&apos;t save that. Try again in a moment..
+        /// </summary>
+        public static string Menu_Overlay_PrivateServers_SaveFailed {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.PrivateServers.SaveFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Server Name.
+        /// </summary>
+        public static string Menu_Overlay_PrivateServers_ServerName {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.PrivateServers.ServerName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Joining turned off.
+        /// </summary>
+        public static string Menu_Overlay_PrivateServers_TurnedOff {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.PrivateServers.TurnedOff", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Joining turned on.
+        /// </summary>
+        public static string Menu_Overlay_PrivateServers_TurnedOn {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.PrivateServers.TurnedOn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Untitled server.
+        /// </summary>
+        public static string Menu_Overlay_PrivateServers_Untitled {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.PrivateServers.Untitled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Refresh.
         /// </summary>
         public static string Menu_Overlay_Refresh {
@@ -8403,6 +8898,87 @@ namespace Froststrap.Resources {
         public static string Menu_Overlay_Servers_AllRegions {
             get {
                 return ResourceManager.GetString("Menu.Overlay.Servers.AllRegions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} of {1} people max.
+        /// </summary>
+        public static string Menu_Overlay_Servers_Capacity {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Servers.Capacity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Player count unknown.
+        /// </summary>
+        public static string Menu_Overlay_Servers_CapacityUnknown {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Servers.CapacityUnknown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Closest server.
+        /// </summary>
+        public static string Menu_Overlay_Servers_Closest {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Servers.Closest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You&apos;re already in the closest server.
+        /// </summary>
+        public static string Menu_Overlay_Servers_ClosestAlready {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Servers.ClosestAlready", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Couldn&apos;t reach Roblox. Try again in a moment..
+        /// </summary>
+        public static string Menu_Overlay_Servers_ClosestFailed {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Servers.ClosestFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Joining the closest server.
+        /// </summary>
+        public static string Menu_Overlay_Servers_ClosestJoining {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Servers.ClosestJoining", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allow cookie access in Froststrap&apos;s settings to find the closest server.
+        /// </summary>
+        public static string Menu_Overlay_Servers_ClosestNeedsCookies {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Servers.ClosestNeedsCookies", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Couldn&apos;t find a server with room.
+        /// </summary>
+        public static string Menu_Overlay_Servers_ClosestNone {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Servers.ClosestNone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Join the server with the lowest ping for you.
+        /// </summary>
+        public static string Menu_Overlay_Servers_ClosestTooltip {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Servers.ClosestTooltip", resourceCulture);
             }
         }
         
@@ -8452,6 +9028,15 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Full.
+        /// </summary>
+        public static string Menu_Overlay_Servers_Full {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Servers.Full", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hide full servers.
         /// </summary>
         public static string Menu_Overlay_Servers_HideFull {
@@ -8484,6 +9069,15 @@ namespace Froststrap.Resources {
         public static string Menu_Overlay_Servers_HopTooltip {
             get {
                 return ResourceManager.GetString("Menu.Overlay.Servers.HopTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ID: {0}.
+        /// </summary>
+        public static string Menu_Overlay_Servers_Id {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Servers.Id", resourceCulture);
             }
         }
         
@@ -8533,11 +9127,47 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Server Performance {0}%.
+        /// </summary>
+        public static string Menu_Overlay_Servers_Performance {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Servers.Performance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Private.
+        /// </summary>
+        public static string Menu_Overlay_Servers_PrivateTab {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Servers.PrivateTab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Public.
+        /// </summary>
+        public static string Menu_Overlay_Servers_PublicTab {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Servers.PublicTab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Region.
         /// </summary>
         public static string Menu_Overlay_Servers_Region {
             get {
                 return ResourceManager.GetString("Menu.Overlay.Servers.Region", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Share.
+        /// </summary>
+        public static string Menu_Overlay_Servers_Share {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Servers.Share", resourceCulture);
             }
         }
         
@@ -8560,7 +9190,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Up ~{0}.
+        ///   Looks up a localized string similar to ~{0}.
         /// </summary>
         public static string Menu_Overlay_Servers_UptimeEstimate {
             get {
@@ -8574,6 +9204,15 @@ namespace Froststrap.Resources {
         public static string Menu_Overlay_Servers_UptimeExact {
             get {
                 return ResourceManager.GetString("Menu.Overlay.Servers.UptimeExact", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Version {0}.
+        /// </summary>
+        public static string Menu_Overlay_Servers_Version {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Servers.Version", resourceCulture);
             }
         }
         
@@ -8628,6 +9267,15 @@ namespace Froststrap.Resources {
         public static string Menu_Overlay_Tab_Servers {
             get {
                 return ResourceManager.GetString("Menu.Overlay.Tab.Servers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unpin.
+        /// </summary>
+        public static string Menu_Overlay_Unpin {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Unpin", resourceCulture);
             }
         }
         

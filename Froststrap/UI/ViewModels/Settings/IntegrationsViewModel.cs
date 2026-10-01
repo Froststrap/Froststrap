@@ -3,9 +3,11 @@
 // SPDX-License-Identifier: MPL-2.0
 
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.Integrations;
+using Froststrap.Models.Overlay;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -145,11 +147,67 @@ namespace Froststrap.UI.ViewModels.Settings
             set => App.Settings.Prop.ShowServerUptime = value;
         }
 
-        public static bool EnableOverlay
+        public bool EnableOverlay
         {
             get => App.Settings.Prop.EnableOverlay;
-            set => App.Settings.Prop.EnableOverlay = value;
+            set
+            {
+                App.Settings.Prop.EnableOverlay = value;
+                OnPropertyChanged(nameof(EnableOverlay));
+            }
         }
+
+        public KeyModifiers OverlayHotkeyModifiers
+        {
+            get => App.Settings.Prop.OverlayHotkeyModifiers;
+            set
+            {
+                if (App.Settings.Prop.OverlayHotkeyModifiers == value)
+                    return;
+
+                App.Settings.Prop.OverlayHotkeyModifiers = value;
+                OnPropertyChanged(nameof(OverlayHotkeyModifiers));
+                OverlayHotkey.NotifyChanged();
+            }
+        }
+
+        public Key OverlayHotkeyKey
+        {
+            get => App.Settings.Prop.OverlayHotkeyKey;
+            set
+            {
+                if (App.Settings.Prop.OverlayHotkeyKey == value)
+                    return;
+
+                App.Settings.Prop.OverlayHotkeyKey = value;
+                OnPropertyChanged(nameof(OverlayHotkeyKey));
+                OverlayHotkey.NotifyChanged();
+            }
+        }
+
+        private bool _isRecordingHotkey;
+
+        // Bound OneWayToSource from the HotkeyBox. While recording, the live registration steps aside
+        // so pressing the current combination reaches the box instead of toggling the overlay.
+        public bool IsRecordingHotkey
+        {
+            get => _isRecordingHotkey;
+            set
+            {
+                if (_isRecordingHotkey == value)
+                    return;
+
+                _isRecordingHotkey = value;
+                OnPropertyChanged(nameof(IsRecordingHotkey));
+                OverlayHotkey.SetSuspended(value);
+            }
+        }
+
+        public ICommand ResetHotkeyCommand => new RelayCommand(() =>
+        {
+            OverlayHotkeyModifiers = OverlayHotkey.DefaultModifiers;
+            OverlayHotkeyKey = OverlayHotkey.DefaultKey;
+        });
 
 
         public static bool PlaytimeCounterEnabled

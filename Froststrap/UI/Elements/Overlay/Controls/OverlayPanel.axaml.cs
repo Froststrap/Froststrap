@@ -4,6 +4,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using CommunityToolkit.Mvvm.Input;
 using LucideAvalonia.Enum;
 using System;
 using System.Windows.Input;
@@ -71,6 +72,20 @@ namespace Froststrap.UI.Elements.Overlay.Controls
             set => SetValue(CloseCommandParameterProperty, value);
         }
 
+        public static readonly StyledProperty<bool> IsPinnedProperty =
+            AvaloniaProperty.Register<OverlayPanel, bool>(nameof(IsPinned));
+
+        public bool IsPinned
+        {
+            get => GetValue(IsPinnedProperty);
+            set => SetValue(IsPinnedProperty, value);
+        }
+
+        public ICommand TogglePinCommand { get; }
+
+        public event EventHandler? PinChanged;
+        public event EventHandler<bool>? DragStateChanged;
+
         private Point _dragStart;
         private Point _dragOrigin;
         private bool _dragging;
@@ -78,8 +93,18 @@ namespace Froststrap.UI.Elements.Overlay.Controls
 
         public OverlayPanel()
         {
+            TogglePinCommand = new RelayCommand(() => IsPinned = !IsPinned);
+
             InitializeComponent();
             AddHandler(PointerPressedEvent, OnPointerPressedTunnel, RoutingStrategies.Tunnel);
+        }
+
+        protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+        {
+            base.OnPropertyChanged(change);
+
+            if (change.Property == IsPinnedProperty)
+                PinChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private void OnPointerPressedTunnel(object? sender, PointerPressedEventArgs e)
@@ -139,6 +164,8 @@ namespace Froststrap.UI.Elements.Overlay.Controls
             _capturedPointer = e.Pointer;
             e.Pointer.Capture(TitleBar);
             e.Handled = true;
+
+            DragStateChanged?.Invoke(this, true);
         }
 
         private void TitleBarPointerMoved(object? sender, PointerEventArgs e)
@@ -163,6 +190,8 @@ namespace Froststrap.UI.Elements.Overlay.Controls
 
             _capturedPointer?.Capture(null);
             _capturedPointer = null;
+
+            DragStateChanged?.Invoke(this, false);
         }
 
         #endregion

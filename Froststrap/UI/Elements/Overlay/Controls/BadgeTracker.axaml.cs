@@ -1,4 +1,5 @@
-﻿using Avalonia.Controls;
+﻿using System;
+using Avalonia.Controls;
 using Froststrap.Integrations;
 using Froststrap.UI.ViewModels.Overlay.Controls;
 
@@ -8,18 +9,19 @@ namespace Froststrap.UI.Elements.Overlay.Controls
     {
         private BadgeTrackerViewModel _viewModel;
 
+        public event EventHandler<Badge>? BadgeEarned;
+
         public BadgeTracker()
         {
             _viewModel = new BadgeTrackerViewModel(null);
-
             DataContext = _viewModel;
-
             InitializeComponent();
         }
 
         public void Attach(ActivityWatcher? activityWatcher)
         {
             _viewModel = new BadgeTrackerViewModel(activityWatcher);
+            _viewModel.BadgeEarned += (_, badge) => BadgeEarned?.Invoke(this, badge);
 
             DataContext = _viewModel;
 

@@ -2,7 +2,9 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+using Avalonia.Input;
 using Froststrap.Enums.AppStoragePresets;
+using Froststrap.Models.Overlay;
 using System.Collections.ObjectModel;
 
 namespace Froststrap.Models.Persistable
@@ -13,6 +15,8 @@ namespace Froststrap.Models.Persistable
         // Integration Page
         public bool EnableActivityTracking { get; set; } = true;
         public bool EnableOverlay { get; set; }
+        public KeyModifiers OverlayHotkeyModifiers { get; set; } = OverlayHotkey.DefaultModifiers;
+        public Key OverlayHotkeyKey { get; set; } = OverlayHotkey.DefaultKey;
         public bool ShowServerDetails { get; set; } = true;
         public bool ShowServerUptime { get; set; } = true;
         public bool AutoRejoin { get; set; }

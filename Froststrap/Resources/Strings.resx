@@ -3393,7 +3393,7 @@ All files will be moved, shortcuts updated, and the application will restart.</v
     <value>Up {0}</value>
   </data>
   <data name="Menu.Overlay.Servers.UptimeEstimate" xml:space="preserve">
-    <value>Up ~{0}</value>
+    <value>~{0}</value>
   </data>
   <data name="Menu.Overlay.Servers.Hop" xml:space="preserve">
     <value>Server hop</value>
@@ -3580,5 +3580,221 @@ Would you like to switch your preferred channel to {0}?</value>
 Agreeing VNGGames terms could cause irreversible changes to your Roblox account.
 
 Press cancel to go back.</value>
+  </data>
+  <data name="Menu.Overlay.Pin" xml:space="preserve">
+    <value>Pin over the game</value>
+  </data>
+  <data name="Menu.Overlay.Unpin" xml:space="preserve">
+    <value>Unpin</value>
+  </data>
+  <data name="Menu.Overlay.Servers.PublicTab" xml:space="preserve">
+    <value>Public</value>
+  </data>
+  <data name="Menu.Overlay.Servers.PrivateTab" xml:space="preserve">
+    <value>Private</value>
+  </data>
+  <data name="Menu.Overlay.Servers.Capacity" xml:space="preserve">
+    <value>{0} of {1} people max</value>
+  </data>
+  <data name="Menu.Overlay.Servers.CapacityUnknown" xml:space="preserve">
+    <value>Player count unknown</value>
+  </data>
+  <data name="Menu.Overlay.Servers.Performance" xml:space="preserve">
+    <value>Server Performance {0}%</value>
+  </data>
+  <data name="Menu.Overlay.Servers.Version" xml:space="preserve">
+    <value>Version {0}</value>
+  </data>
+  <data name="Menu.Overlay.Servers.Share" xml:space="preserve">
+    <value>Share</value>
+  </data>
+  <data name="Menu.Overlay.Servers.Id" xml:space="preserve">
+    <value>ID: {0}</value>
+  </data>
+  <data name="Menu.Overlay.Servers.Full" xml:space="preserve">
+    <value>Full</value>
+  </data>
+  <data name="Menu.Overlay.Servers.Closest" xml:space="preserve">
+    <value>Closest server</value>
+  </data>
+  <data name="Menu.Overlay.Servers.ClosestTooltip" xml:space="preserve">
+    <value>Join the server with the lowest ping for you</value>
+  </data>
+  <data name="Menu.Overlay.Servers.ClosestJoining" xml:space="preserve">
+    <value>Joining the closest server</value>
+  </data>
+  <data name="Menu.Overlay.Servers.ClosestAlready" xml:space="preserve">
+    <value>You're already in the closest server</value>
+  </data>
+  <data name="Menu.Overlay.Servers.ClosestNone" xml:space="preserve">
+    <value>Couldn't find a server with room</value>
+  </data>
+  <data name="Menu.Overlay.Servers.ClosestNeedsCookies" xml:space="preserve">
+    <value>Allow cookie access in Froststrap's settings to find the closest server</value>
+  </data>
+  <data name="Menu.Overlay.Servers.ClosestFailed" xml:space="preserve">
+    <value>Couldn't reach Roblox. Try again in a moment.</value>
+  </data>
+  <data name="Menu.Overlay.PrivateServers.NeedsCookies" xml:space="preserve">
+    <value>Allow cookie access in Froststrap's settings to see private servers here.</value>
+  </data>
+  <data name="Menu.Overlay.PrivateServers.None" xml:space="preserve">
+    <value>You don't have any private servers for this experience.</value>
+  </data>
+  <data name="Menu.Overlay.PrivateServers.LoadFailed" xml:space="preserve">
+    <value>Couldn't load private servers. Try again in a moment.</value>
+  </data>
+  <data name="Menu.Overlay.PrivateServers.Untitled" xml:space="preserve">
+    <value>Untitled server</value>
+  </data>
+  <data name="Menu.Overlay.PrivateServers.Capacity" xml:space="preserve">
+    <value>{0} of {1} people max</value>
+  </data>
+  <data name="Menu.Overlay.PrivateServers.Configure" xml:space="preserve">
+    <value>Configure</value>
+  </data>
+  <data name="Menu.Overlay.PrivateServers.GenerateLink" xml:space="preserve">
+    <value>Generate Link</value>
+  </data>
+  <data name="Menu.Overlay.PrivateServers.CopyLink" xml:space="preserve">
+    <value>Copy Link</value>
+  </data>
+  <data name="Menu.Overlay.PrivateServers.AllowJoining" xml:space="preserve">
+    <value>Allow Joining</value>
+  </data>
+  <data name="Menu.Overlay.PrivateServers.LoadMore" xml:space="preserve">
+    <value>Load More</value>
+  </data>
+  <data name="Menu.Overlay.PrivateServers.CreateTitle" xml:space="preserve">
+    <value>Create a private server</value>
+  </data>
+  <data name="Menu.Overlay.PrivateServers.Create" xml:space="preserve">
+    <value>Create</value>
+  </data>
+  <data name="Menu.Overlay.PrivateServers.CreateHint" xml:space="preserve">
+    <value>Opens on roblox.com</value>
+  </data>
+  <data name="Menu.Overlay.PrivateServers.CreateUnavailable" xml:space="preserve">
+    <value>Not available in this experience</value>
+  </data>
+  <data name="Menu.Overlay.PrivateServers.CreateOpened" xml:space="preserve">
+    <value>Opened this experience's servers on roblox.com</value>
+  </data>
+  <data name="Menu.Overlay.PrivateServers.ConfigureTitle" xml:space="preserve">
+    <value>Configure Private Server</value>
+  </data>
+  <data name="Menu.Overlay.PrivateServers.BackToList" xml:space="preserve">
+    <value>Back to Private Servers</value>
+  </data>
+  <data name="Menu.Overlay.PrivateServers.ServerName" xml:space="preserve">
+    <value>Server Name</value>
+  </data>
+  <data name="Menu.Overlay.PrivateServers.Rename" xml:space="preserve">
+    <value>Rename</value>
+  </data>
+  <data name="Menu.Overlay.PrivateServers.Experience" xml:space="preserve">
+    <value>Experience</value>
+  </data>
+  <data name="Menu.Overlay.PrivateServers.Price" xml:space="preserve">
+    <value>Subscription Price</value>
+  </data>
+  <data name="Menu.Overlay.PrivateServers.Free" xml:space="preserve">
+    <value>Free</value>
+  </data>
+  <data name="Menu.Overlay.PrivateServers.PriceRobux" xml:space="preserve">
+    <value>{0} Robux</value>
+  </data>
+  <data name="Menu.Overlay.PrivateServers.AllowJoiningHint" xml:space="preserve">
+    <value>Turning this off stops you and anyone you've invited from joining, and the current link stops working. You can turn it back on at any time.</value>
+  </data>
+  <data name="Menu.Overlay.PrivateServers.FriendsAllowed" xml:space="preserve">
+    <value>Friends Allowed</value>
+  </data>
+  <data name="Menu.Overlay.PrivateServers.Members" xml:space="preserve">
+    <value>Server Members</value>
+  </data>
+  <data name="Menu.Overlay.PrivateServers.AddPeople" xml:space="preserve">
+    <value>Add People</value>
+  </data>
+  <data name="Menu.Overlay.PrivateServers.AddPlaceholder" xml:space="preserve">
+    <value>Add someone by username</value>
+  </data>
+  <data name="Menu.Overlay.PrivateServers.Add" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="Menu.Overlay.PrivateServers.Remove" xml:space="preserve">
+    <value>Remove</value>
+  </data>
+  <data name="Menu.Overlay.PrivateServers.MembersNone" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="Menu.Overlay.PrivateServers.Link" xml:space="preserve">
+    <value>Private Server Link</value>
+  </data>
+  <data name="Menu.Overlay.PrivateServers.Regenerate" xml:space="preserve">
+    <value>Regenerate</value>
+  </data>
+  <data name="Menu.Overlay.PrivateServers.Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="Menu.Overlay.PrivateServers.Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="Menu.Overlay.PrivateServers.TurnedOn" xml:space="preserve">
+    <value>Joining turned on</value>
+  </data>
+  <data name="Menu.Overlay.PrivateServers.TurnedOff" xml:space="preserve">
+    <value>Joining turned off</value>
+  </data>
+  <data name="Menu.Overlay.PrivateServers.LinkCopied" xml:space="preserve">
+    <value>Link copied</value>
+  </data>
+  <data name="Menu.Overlay.PrivateServers.NewLinkMade" xml:space="preserve">
+    <value>New link made. The old one no longer works.</value>
+  </data>
+  <data name="Menu.Overlay.PrivateServers.Added" xml:space="preserve">
+    <value>Added {0}</value>
+  </data>
+  <data name="Menu.Overlay.PrivateServers.Removed" xml:space="preserve">
+    <value>Removed {0}</value>
+  </data>
+  <data name="Menu.Overlay.PrivateServers.NoSuchUser" xml:space="preserve">
+    <value>No one's called {0}</value>
+  </data>
+  <data name="Menu.Overlay.PrivateServers.AlreadyAdded" xml:space="preserve">
+    <value>{0} can already join</value>
+  </data>
+  <data name="Menu.Overlay.PrivateServers.Saved" xml:space="preserve">
+    <value>Saved</value>
+  </data>
+  <data name="Menu.Overlay.PrivateServers.SaveFailed" xml:space="preserve">
+    <value>Couldn't save that. Try again in a moment.</value>
+  </data>
+  <data name="Menu.Overlay.PrivateServers.Rejected" xml:space="preserve">
+    <value>Roblox didn't accept that: {0}</value>
+  </data>
+  <data name="Menu.Overlay.PrivateServers.Renews" xml:space="preserve">
+    <value>Renews {0}</value>
+  </data>
+  <data name="Menu.Overlay.PrivateServers.Ends" xml:space="preserve">
+    <value>Ends {0}</value>
+  </data>
+  <data name="Menu.Overlay.PrivateServers.Expired" xml:space="preserve">
+    <value>Subscription expired</value>
+  </data>
+  <data name="Menu.Integrations.OverlayHotkey.Title" xml:space="preserve">
+    <value>Overlay shortcut</value>
+  </data>
+  <data name="Menu.Integrations.OverlayHotkey.Description" xml:space="preserve">
+    <value>Change the key combination that opens the overlay.</value>
+  </data>
+  <data name="Menu.Integrations.OverlayHotkey.Recording" xml:space="preserve">
+    <value>Press a shortcut…</value>
+  </data>
+  <data name="Menu.Integrations.OverlayHotkey.NeedsModifier" xml:space="preserve">
+    <value>Add Ctrl, Alt or Win</value>
+  </data>
+ <data name="Menu.Integrations.OverlayHotkey.Reset" xml:space="preserve">
+    <value>Reset shortcut</value>
   </data>
 </root>

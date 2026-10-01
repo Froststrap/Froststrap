@@ -11,5 +11,8 @@ namespace Froststrap.Models.APIs.RoValra
 
         [JsonPropertyName("server_id")]
         public string? ServerId { get; set; }
+
+        [JsonPropertyName("place_version")]
+        public int? PlaceVersion { get; set; }
     }
 }

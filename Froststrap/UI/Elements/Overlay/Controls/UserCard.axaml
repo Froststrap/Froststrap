@@ -11,6 +11,7 @@ SPDX-License-Identifier: MPL-2.0
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:resources="using:Froststrap.Resources"
              xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
+             xmlns:control="clr-namespace:Froststrap.UI.Elements.Overlay.Controls"
              xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Overlay"
              x:DataType="vm:GameOverlayViewModel"
              mc:Ignorable="d"
@@ -70,7 +71,7 @@ SPDX-License-Identifier: MPL-2.0
         <Button Name="AccountButton"
                 Classes="accountButton"
                 Command="{Binding OnlineStatus.OpenCommand}"
-                ToolTip.Tip="{x:Static resources:Strings.Menu_Overlay_Privacy_Tooltip}">
+                control:DockHintLayer.Text="{x:Static resources:Strings.Menu_Overlay_Privacy_Tooltip}">
             <StackPanel Orientation="Horizontal">
                 <Border Width="40" Height="40"
                         CornerRadius="20"

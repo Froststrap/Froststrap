@@ -145,4 +145,18 @@ SPDX-License-Identifier: MPL-2.0
             </Style>
         </Style>
     </Style>
+
+    <Style Selector="controls|HotkeyBox">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Button Name="PART_Recorder"
+                        MinWidth="170"
+                        Padding="12,7"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center">
+                    <TextBlock Name="PART_ShortcutText" />
+                </Button>
+            </ControlTemplate>
+        </Setter>
+    </Style>
 </Styles>

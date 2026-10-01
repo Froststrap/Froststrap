@@ -1,28 +1,41 @@
-﻿using CommunityToolkit.Mvvm.Input;
-using Froststrap.Integrations;
+using System;
 using System.Collections.ObjectModel;
+using System.Globalization;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
+
+using Avalonia.Threading;
+
+using CommunityToolkit.Mvvm.Input;
+
+using Froststrap.Integrations;
+
 using BadgesApi = Froststrap.RobloxInterfaces.Badges;
 
 namespace Froststrap.UI.ViewModels.Overlay.Controls
 {
     internal class BadgeTrackerViewModel : NotifyPropertyChangedViewModel
     {
+        private static readonly TimeSpan AwardCheckInterval = TimeSpan.FromSeconds(60);
+
         private readonly ActivityWatcher? _activityWatcher;
+        private readonly DispatcherTimer _awardTimer = new() { Interval = AwardCheckInterval };
 
         private long _loadedUniverseId;
+        private bool _checkingAwards;
+
+        public event EventHandler<Badge>? BadgeEarned;
 
         public ObservableCollection<Badge> Badges { get; } = [];
 
         private bool _isBusy;
-
         public bool IsBusy
         {
             get => _isBusy;
             private set
             {
                 _isBusy = value;
-
                 OnPropertyChanged(nameof(IsBusy));
                 OnPropertyChanged(nameof(CanRefresh));
             }
@@ -34,13 +47,15 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
         private bool ProgressKnown => Badges.Any(x => x.AwardedKnown);
 
-        public double CompletionPercentage => Badges.Any() && ProgressKnown ? (double)EarnedCount / Badges.Count * 100 : 0;
+        public double CompletionPercentage => Badges.Count > 0 && ProgressKnown
+            ? (double)EarnedCount / Badges.Count * 100
+            : 0;
 
         public string CompletionText
         {
             get
             {
-                if (!Badges.Any())
+                if (Badges.Count == 0)
                     return String.Empty;
 
                 return ProgressKnown
@@ -49,9 +64,8 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             }
         }
 
-        public bool HasBadges => Badges.Any();
-
-        public bool ShowEmptyState => !IsBusy && !Badges.Any();
+        public bool HasBadges => Badges.Count > 0;
+        public bool ShowEmptyState => !IsBusy && Badges.Count == 0;
 
         public string EmptyText => InGame
             ? Strings.Menu_Overlay_Badges_Empty
@@ -70,22 +84,21 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             if (_activityWatcher is null)
                 return;
 
+            _awardTimer.Tick += async (_, _) => await CheckForAwardsAsync();
+
             _activityWatcher.OnGameJoin += async (_, _) =>
             {
-                var app = App.Current;
-                if (app is null) return;
-
-                await app.Dispatcher.InvokeAsync(async () => await LoadAsync());
+                await Dispatcher.UIThread.InvokeAsync(async () => await LoadAsync());
             };
 
             _activityWatcher.OnGameLeave += (_, _) =>
             {
-                App.Current?.Dispatcher.Invoke(Clear);
+                Dispatcher.UIThread.Post(Clear);
             };
         }
 
         private void OnAccountChanged() =>
-            Avalonia.Threading.Dispatcher.UIThread.Post(() => _ = LoadAsync(true));
+            Dispatcher.UIThread.Post(() => _ = LoadAsync(true));
 
         public async Task LoadAsync(bool force = false)
         {
@@ -100,7 +113,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
             long universeId = _activityWatcher!.Data.UniverseId;
 
-            if (!force && universeId == _loadedUniverseId && Badges.Any())
+            if (!force && universeId == _loadedUniverseId && Badges.Count > 0)
                 return;
 
             IsBusy = true;
@@ -109,12 +122,14 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             {
                 var badges = await BadgesApi.FetchAsync(universeId, _activityWatcher.Data.UserId);
 
-                Badges.Clear();
-
-                foreach (Badge badge in badges.OrderBy(x => x.Awarded).ThenByDescending(x => x.WinRatePercentage))
-                    Badges.Add(badge);
+                Show(badges);
 
                 _loadedUniverseId = universeId;
+
+                if (Badges.Any(x => x.AwardedKnown && !x.Awarded))
+                    _awardTimer.Start();
+                else
+                    _awardTimer.Stop();
             }
             catch (Exception ex)
             {
@@ -124,15 +139,84 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             finally
             {
                 IsBusy = false;
-
                 Refreshed();
             }
         }
 
-        private void Clear()
+        public async Task CheckForAwardsAsync()
         {
+            if (_checkingAwards || IsBusy || !InGame)
+                return;
+
+            var unearned = Badges.Where(x => x.AwardedKnown && !x.Awarded).ToList();
+
+            if (unearned.Count == 0)
+            {
+                _awardTimer.Stop();
+                return;
+            }
+
+            long universeId = _loadedUniverseId;
+
+            _checkingAwards = true;
+
+            try
+            {
+                var awarded = await BadgesApi.AwardedDatesAsync(
+                    _activityWatcher!.Data.UserId,
+                    unearned.Select(x => x.Id));
+
+                if (universeId != _loadedUniverseId)
+                    return;
+
+                var earned = unearned.Where(x => awarded.ContainsKey(x.Id)).ToList();
+
+                if (earned.Count == 0)
+                    return;
+
+                foreach (Badge badge in earned)
+                {
+                    badge.Awarded = true;
+                    badge.AwardedDate = awarded[badge.Id];
+                }
+
+                App.Logger.Info($"Earned {earned.Count} badge(s) since the last check");
+
+                Show(Badges.ToList());
+                Refreshed();
+
+                foreach (Badge badge in earned)
+                    BadgeEarned?.Invoke(this, badge);
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Warn("Failed to check for new badges");
+                App.Logger.Error(ex);
+            }
+            finally
+            {
+                _checkingAwards = false;
+            }
+        }
+
+        private void Show(IEnumerable<Badge> badges)
+        {
+            var ordered = badges
+                .OrderBy(x => x.Awarded)
+                .ThenByDescending(x => x.WinRatePercentage)
+                .ToList();
+
             Badges.Clear();
 
+            foreach (Badge badge in ordered)
+                Badges.Add(badge);
+        }
+
+        private void Clear()
+        {
+            _awardTimer.Stop();
+
+            Badges.Clear();
             _loadedUniverseId = 0;
 
             Refreshed();
