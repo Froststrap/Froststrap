@@ -24,7 +24,7 @@ sealed class Program
     [STAThread]
     public static void Main(string[] args)
     {
-        VelopackApp.Build().Run();
+        VelopackApp.Build().SetAutoApplyOnStartup(false).Run();
         ThreadPool.SetMinThreads(Environment.ProcessorCount * 2, Environment.ProcessorCount * 2);
 
 #if WINDOWS

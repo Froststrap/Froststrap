@@ -24,6 +24,30 @@ namespace Froststrap.UI
             return await ShowFluentMessageBox(message, icon, buttons);
         }
 
+        public static async Task ShowReleaseNotesDialog(string title, string releaseNotes)
+        {
+            if (App.LaunchSettings.QuietFlag.Active)
+                return;
+
+            await Dispatcher.UIThread.InvokeAsync(async () =>
+            {
+                var dialog = new FluentMessageBox(title, releaseNotes, Strings.Menu_Deployment_ReleaseNotes_Close);
+                Window? owner = null;
+                if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+                    owner = desktop.Windows.FirstOrDefault(w => w.IsActive) ?? desktop.MainWindow;
+
+                if (owner != null)
+                    await dialog.ShowDialog(owner);
+                else
+                {
+                    var tcs = new TaskCompletionSource<bool>();
+                    dialog.Closed += (s, e) => tcs.TrySetResult(true);
+                    dialog.Show();
+                    await tcs.Task;
+                }
+            });
+        }
+
         //Were supposed to show this when watcher fails to launch but we lowkey dont anymore idk why
         public static async Task ShowPlayerErrorDialog(bool crash = false)
         {

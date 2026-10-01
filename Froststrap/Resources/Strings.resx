@@ -627,7 +627,7 @@ Would you like to upgrade your currently installed version?</value>
     <value>App Themes</value>
   </data>
   <data name="Menu.Appearance.Custom.Theme.Description" xml:space="preserve">
-    <value>Customize Froststrap themes easily with presets or create your own unique look.</value>
+      <value>Froststrap will automatically check for updates when it starts, then download and install stable versions in the background and restart.</value>
   </data>
   <data name="Menu.Appearance.Icon.Description" xml:space="preserve">
     <value>Choose what icon Froststrap should use.</value>
@@ -676,6 +676,15 @@ Would you like to upgrade your currently installed version?</value>
   </data>
   <data name="Menu.Deployment.CheckForUpdates.Failed" xml:space="preserve">
     <value>Failed to check for updates.</value>
+  </data>
+  <data name="Menu.Deployment.CheckForUpdates.Found" xml:space="preserve">
+    <value>Found new version: {0}. Would you like to update and restart?</value>
+  </data>
+  <data name="Menu.Deployment.ReleaseNotes.Title" xml:space="preserve">
+    <value>What's new in {0}</value>
+  </data>
+  <data name="Menu.Deployment.ReleaseNotes.Close" xml:space="preserve">
+    <value>Close</value>
   </data>
   <data name="Menu.Behaviour.EnableVirtualDisplay.Title" xml:space="preserve">
     <value>Virtual Display</value>
@@ -2096,7 +2105,7 @@ It must contain at least one of the following folders: content, ExtraContent, Pl
     <value>Update to Pre Releases</value>
   </data>
   <data name="Menu.Deployment.AutoPreReleaseUpdate.Description" xml:space="preserve">
-    <value>Froststrap will automatically check and update itself to a test version when launching Roblox. It will only notify the user on Linux.</value>
+      <value>Also include test versions when Froststrap automatically checks for updates.</value>
   </data>
   <data name="Menu.TestMode.Description" xml:space="preserve">
     <value>Automatically hide the settings window when launching Roblox and restore it when Roblox closes.</value>

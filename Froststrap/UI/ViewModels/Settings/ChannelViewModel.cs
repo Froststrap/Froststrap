@@ -126,12 +126,24 @@ namespace Froststrap.UI.ViewModels.Settings
                     return;
                 }
 
+                var result = await Frontend.ShowMessageBox(
+                    string.Format(CultureInfo.CurrentCulture, Strings.Menu_Deployment_CheckForUpdates_Found, update.TargetFullRelease.Version),
+                    MessageBoxImage.Question,
+                    MessageBoxButton.YesNo);
+
+                if (result != MessageBoxResult.Yes)
+                {
+                    UpdateStatus = Strings.Menu_Deployment_CheckForUpdates_UpToDate;
+                    return;
+                }
+
                 UpdateStatus = string.Format(
                     CultureInfo.CurrentCulture,
                     Strings.Menu_Deployment_CheckForUpdates_Downloading,
                     update.TargetFullRelease.Version);
 
                 await updater.DownloadUpdatesAsync(update);
+                App.SavePendingUpdateNotes(update);
                 updater.ApplyUpdatesAndRestart(update);
             }
             catch (Exception ex)
