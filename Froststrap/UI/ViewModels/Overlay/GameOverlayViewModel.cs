@@ -4,15 +4,16 @@
 
 using Avalonia;
 using Avalonia.Input.Platform;
+using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.Enums.Overlay;
 using Froststrap.Integrations;
 using Froststrap.UI.Elements.Overlay;
+using Froststrap.Utility;
 using LucideAvalonia.Enum;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Runtime.CompilerServices;
 using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Overlay
@@ -31,26 +32,89 @@ namespace Froststrap.UI.ViewModels.Overlay
         public string ProfileIcon
         {
             get => _profileIcon;
-            set => Set(ref _profileIcon, value, nameof(ProfileIcon));
+            set
+            {
+                if (!SetProperty(ref _profileIcon, value))
+                    return;
+
+                _ = LoadProfileBitmapAsync();
+            }
+        }
+
+        private Bitmap? _profileBitmap;
+        public Bitmap? ProfileBitmap
+        {
+            get => _profileBitmap;
+            private set => SetProperty(ref _profileBitmap, value);
+        }
+
+        private bool _loadingProfileBitmap;
+        private string? _loadedProfileBitmapUrl;
+
+        private async Task LoadProfileBitmapAsync()
+        {
+            string url = _profileIcon;
+
+            if (_loadingProfileBitmap || String.IsNullOrEmpty(url) || _loadedProfileBitmapUrl == url)
+                return;
+
+            _loadingProfileBitmap = true;
+
+            try
+            {
+                Bitmap? bitmap = await ImageLoader.LoadAsync(url, 80);
+
+                if (bitmap is null)
+                    return;
+
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    if (_profileIcon == url)
+                    {
+                        ProfileBitmap = bitmap;
+                        _loadedProfileBitmapUrl = url;
+                    }
+                });
+            }
+            finally
+            {
+                _loadingProfileBitmap = false;
+            }
         }
 
         private string _displayName = String.Empty;
         public string DisplayName
         {
             get => _displayName;
-            set => Set(ref _displayName, value, nameof(DisplayName));
+            set
+            {
+                if (!SetProperty(ref _displayName, value))
+                    return;
+
+                OnPropertyChanged(nameof(HasProfileName));
+            }
         }
 
         public Controls.OnlineStatusViewModel OnlineStatus { get; } = new();
-
-        private long _shownUserId;
 
         private string _username = String.Empty;
         public string Username
         {
             get => _username;
-            set => Set(ref _username, value, nameof(Username));
+            set
+            {
+                if (!SetProperty(ref _username, value))
+                    return;
+
+                OnPropertyChanged(nameof(HasProfileName));
+            }
         }
+
+        public bool HasProfileName => !String.IsNullOrEmpty(_displayName) || !String.IsNullOrEmpty(_username);
+
+        private long _profileId;
+        private bool _profileLoaded;
+        private bool _profileLoading;
 
         #endregion
 
@@ -60,21 +124,68 @@ namespace Froststrap.UI.ViewModels.Overlay
         public string GameIcon
         {
             get => _gameIcon;
-            set => Set(ref _gameIcon, value, nameof(GameIcon));
+            set
+            {
+                if (!SetProperty(ref _gameIcon, value))
+                    return;
+
+                _ = LoadGameBitmapAsync();
+            }
+        }
+
+        private Bitmap? _gameBitmap;
+        public Bitmap? GameBitmap
+        {
+            get => _gameBitmap;
+            private set => SetProperty(ref _gameBitmap, value);
+        }
+
+        private bool _loadingGameBitmap;
+        private string? _loadedGameBitmapUrl;
+
+        private async Task LoadGameBitmapAsync()
+        {
+            string url = _gameIcon;
+
+            if (_loadingGameBitmap || String.IsNullOrEmpty(url) || _loadedGameBitmapUrl == url)
+                return;
+
+            _loadingGameBitmap = true;
+
+            try
+            {
+                Bitmap? bitmap = await ImageLoader.LoadAsync(url, 72);
+
+                if (bitmap is null)
+                    return;
+
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    if (_gameIcon == url)
+                    {
+                        GameBitmap = bitmap;
+                        _loadedGameBitmapUrl = url;
+                    }
+                });
+            }
+            finally
+            {
+                _loadingGameBitmap = false;
+            }
         }
 
         private string _game = Strings.Menu_Overlay_NotInGame;
         public string Game
         {
             get => _game;
-            set => Set(ref _game, value, nameof(Game));
+            set => SetProperty(ref _game, value);
         }
 
         private string _timePlayed = String.Empty;
         public string TimePlayed
         {
             get => _timePlayed;
-            set => Set(ref _timePlayed, value, nameof(TimePlayed));
+            set => SetProperty(ref _timePlayed, value);
         }
 
         private string _currentRegion = String.Empty;
@@ -83,12 +194,9 @@ namespace Froststrap.UI.ViewModels.Overlay
             get => _currentRegion;
             set
             {
-                if (_currentRegion == value)
+                if (!SetProperty(ref _currentRegion, value))
                     return;
 
-                _currentRegion = value;
-
-                OnPropertyChanged(nameof(CurrentRegion));
                 OnPropertyChanged(nameof(HasCurrentRegion));
             }
         }
@@ -99,7 +207,7 @@ namespace Froststrap.UI.ViewModels.Overlay
         public bool IsInGame
         {
             get => _isInGame;
-            set => Set(ref _isInGame, value, nameof(IsInGame));
+            set => SetProperty(ref _isInGame, value);
         }
 
         #endregion
@@ -139,7 +247,6 @@ namespace Froststrap.UI.ViewModels.Overlay
                 return;
 
             _open.Remove(panel);
-
             NotifyPanels();
         }
 
@@ -163,7 +270,7 @@ namespace Froststrap.UI.ViewModels.Overlay
         public LucideIconNames ShareIcon
         {
             get => _shareIcon;
-            set => Set(ref _shareIcon, value, nameof(ShareIcon));
+            set => SetProperty(ref _shareIcon, value);
         }
 
         private DispatcherTimer? _shareTimer;
@@ -201,7 +308,6 @@ namespace Froststrap.UI.ViewModels.Overlay
         private void ResetShareIcon(object? sender, EventArgs e)
         {
             _shareTimer?.Stop();
-
             ShareIcon = LucideIconNames.Share2;
         }
 
@@ -211,7 +317,7 @@ namespace Froststrap.UI.ViewModels.Overlay
         public CornerRadius ScrimCornerRadius
         {
             get => _scrimCornerRadius;
-            set => Set(ref _scrimCornerRadius, value, nameof(ScrimCornerRadius));
+            set => SetProperty(ref _scrimCornerRadius, value);
         }
 
         public GameOverlayViewModel(GameOverlay window, Integrations.Overlay? overlay)
@@ -255,7 +361,7 @@ namespace Froststrap.UI.ViewModels.Overlay
             if (_activityWatcher?.InGame == true)
                 OnGameJoin();
 
-            await LoadAccountAsync();
+            await LoadProfileAsync();
         }
 
         private void OnAccountChanged() => Dispatcher.UIThread.Post(() => _ = SyncAccountAsync());
@@ -263,45 +369,68 @@ namespace Froststrap.UI.ViewModels.Overlay
         public async Task SyncAccountAsync()
         {
             await App.Cookies.RefreshAsync();
-
-            if ((App.Cookies.CurrentUser?.Id ?? 0) != _shownUserId)
-                await LoadAccountAsync();
+            await LoadProfileAsync();
         }
 
-        private async Task LoadAccountAsync()
+        public async Task LoadProfileAsync()
         {
-            if (!App.Settings.Prop.AllowCookieAccess)
+            const string LOG_IDENT = "GameOverlayViewModel::LoadProfileAsync";
+
+            long playing = _activityWatcher?.InGame == true ? _activityWatcher.Data.UserId : 0;
+
+            if (_profileLoading || (_profileLoaded && (playing == 0 || playing == _profileId)))
                 return;
+
+            _profileLoading = true;
 
             try
             {
-                if (!App.Cookies.Loaded)
-                    await Task.Run(App.Cookies.LoadCookies);
+                var local = await Task.Run(AppStorageManager.ReadAccount);
+                long id = playing;
 
-                AuthenticatedUser? current = App.Cookies.CurrentUser;
+                if (id == 0 && await App.Cookies.EnsureLoadedAsync())
+                    id = App.Cookies.CurrentUser?.Id ?? 0;
 
-                if (current is null)
+                if (id == 0)
+                    id = local?.Id ?? 0;
+
+                if (id == 0)
                 {
-                    _shownUserId = 0;
-                    DisplayName = String.Empty;
-                    Username = String.Empty;
-                    ProfileIcon = String.Empty;
+                    App.Logger.Info($"{LOG_IDENT}: Couldn't tell which account is signed in");
                     return;
                 }
 
-                UserDetails details = await UserDetails.Fetch(current.Id);
+                if (id != _profileId)
+                {
+                    _profileId = id;
+                    _profileLoaded = false;
+
+                    var known = local?.Id == id ? local : null;
+
+                    DisplayName = known?.DisplayName ?? known?.Name ?? String.Empty;
+                    Username = known?.Name is string name ? $"@{name}" : String.Empty;
+                    ProfileIcon = String.Empty;
+                    ProfileBitmap = null;
+                }
+
+                UserDetails details = await UserDetails.Fetch(id);
 
                 DisplayName = details.Data.DisplayName;
                 Username = $"@{details.Data.Name}";
                 ProfileIcon = details.Thumbnail.ImageUrl ?? String.Empty;
-                _shownUserId = current.Id;
 
-                App.Logger.Info($"Showing account {current.Id}");
+                _profileLoaded = true;
+
+                App.Logger.Info($"{LOG_IDENT}: Showing account {id}");
             }
             catch (Exception ex)
             {
-                App.Logger.Error("Failed to load the signed-in user");
+                App.Logger.Error($"{LOG_IDENT}: Failed to load the signed-in user");
                 App.Logger.Error(ex);
+            }
+            finally
+            {
+                _profileLoading = false;
             }
         }
 
@@ -310,8 +439,9 @@ namespace Froststrap.UI.ViewModels.Overlay
             IsInGame = true;
 
             UpdateSession();
-
             _sessionTimer.Start();
+
+            _ = LoadProfileAsync();
 
             ActivityData? activity = _activityWatcher?.Data;
 
@@ -320,15 +450,10 @@ namespace Froststrap.UI.ViewModels.Overlay
 
             try
             {
-                if (activity.UniverseDetails is null)
-                {
-                    await UniverseDetails.FetchSingle(activity.UniverseId);
+                UniverseDetails? universe = await activity.EnsureUniverseDetailsAsync();
 
-                    activity.UniverseDetails = UniverseDetails.LoadFromCache(activity.UniverseId);
-                }
-
-                Game = activity.UniverseDetails?.Data.Name ?? String.Empty;
-                GameIcon = activity.UniverseDetails?.Thumbnail.ImageUrl ?? String.Empty;
+                Game = universe?.Data.Name ?? String.Empty;
+                GameIcon = universe?.Thumbnail.ImageUrl ?? String.Empty;
 
                 _ = LoadCurrentRegionAsync(activity);
             }
@@ -366,6 +491,8 @@ namespace Froststrap.UI.ViewModels.Overlay
 
             Game = Strings.Menu_Overlay_NotInGame;
             GameIcon = String.Empty;
+            GameBitmap = null;
+            _loadedGameBitmapUrl = null;
             TimePlayed = String.Empty;
             CurrentRegion = String.Empty;
             IsInGame = false;
@@ -442,18 +569,7 @@ namespace Froststrap.UI.ViewModels.Overlay
         private void OnWindowClosed(object? sender, EventArgs e)
         {
             _sessionTimer.Stop();
-
             _window.Close();
-        }
-
-        private void Set<T>(ref T field, T value, string name)
-        {
-            if (EqualityComparer<T>.Default.Equals(field, value))
-                return;
-
-            field = value;
-
-            OnPropertyChanged(name);
         }
     }
 }

@@ -393,10 +393,6 @@ namespace Froststrap.UI.Elements.Overlay
 
             SetBlur(true);
 
-            _overlay?.DismissToast();
-
-            _ = _viewModel.SyncAccountAsync();
-
             if (_overlay?.IsGameForeground() == false)
                 _overlay.FocusGame();
 
@@ -409,6 +405,8 @@ namespace Froststrap.UI.Elements.Overlay
             Reanchor();
 
             Activate();
+
+            Dispatcher.UIThread.Post(() => _ = _viewModel.SyncAccountAsync(), DispatcherPriority.Background);
 
             Dispatcher.UIThread.Post(() => _presenting = false, DispatcherPriority.ApplicationIdle);
         }

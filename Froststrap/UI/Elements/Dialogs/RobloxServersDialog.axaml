@@ -38,7 +38,7 @@ SPDX-License-Identifier: MPL-2.0
                     PointerPressed="OnHeaderPointerPressed">
 				<Grid ColumnDefinitions="Auto, *, Auto">
 					<Border CornerRadius="8" ClipToBounds="True" Width="40" Height="40">
-						<Image Source="{Binding GameThumbnailUrl, Converter={StaticResource UrlToBitmapConverter}}"
+						<Image Source="{Binding GameThumbnailBitmap}"
                                Stretch="UniformToFill"
                                RenderOptions.BitmapInterpolationMode="LowQuality"/>
 					</Border>

@@ -1,4 +1,6 @@
+using Avalonia.Media.Imaging;
 using Froststrap.UI.ViewModels;
+using Froststrap.Utility;
 using System.Collections.ObjectModel;
 
 namespace Froststrap.Models.Overlay
@@ -14,13 +16,28 @@ namespace Froststrap.Models.Overlay
 
     internal record ChatSystemLine(string Text);
 
-    internal class ChatMessageGroup
+    internal class ChatMessageGroup : NotifyPropertyChangedViewModel
     {
         public long SenderId { get; init; }
 
         public string Sender { get; init; } = String.Empty;
 
         public string? Avatar { get; init; }
+
+        private Bitmap? _avatarBitmap;
+        public Bitmap? AvatarBitmap
+        {
+            get => _avatarBitmap;
+            private set
+            {
+                if (_avatarBitmap == value)
+                    return;
+
+                _avatarBitmap = value;
+
+                OnPropertyChanged(nameof(AvatarBitmap));
+            }
+        }
 
         public bool IsMine { get; init; }
 
@@ -31,6 +48,28 @@ namespace Froststrap.Models.Overlay
         public string TimeText => StartedAt?.ToLocalTime().ToString("t", Locale.CurrentCulture) ?? String.Empty;
 
         public ObservableCollection<ChatLine> Lines { get; } = [];
+
+        private bool _loadingAvatar;
+
+        public async Task LoadAvatarAsync()
+        {
+            if (_loadingAvatar || String.IsNullOrEmpty(Avatar))
+                return;
+
+            _loadingAvatar = true;
+
+            try
+            {
+                Bitmap? bitmap = await ImageLoader.LoadAsync(Avatar, 68);
+
+                if (bitmap is not null)
+                    AvatarBitmap = bitmap;
+            }
+            finally
+            {
+                _loadingAvatar = false;
+            }
+        }
     }
 
     internal class ChatLine : NotifyPropertyChangedViewModel

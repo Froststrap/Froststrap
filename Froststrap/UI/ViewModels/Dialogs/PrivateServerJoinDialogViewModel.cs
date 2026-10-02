@@ -2,24 +2,101 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.Integrations;
 using Froststrap.Integrations.AccountManager;
+using Froststrap.Utility;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Dialogs;
 
-internal record PrivateServerInfo(
-    long VipServerId,
-    string AccessCode,
-    string Name,
-    long OwnerId,
-    string OwnerName,
-    string? OwnerAvatarUrl,
-    int MaxPlayers,
-    int CurrentPlayers);
+internal class PrivateServerInfo : NotifyPropertyChangedViewModel
+{
+    public PrivateServerInfo(
+        long vipServerId,
+        string accessCode,
+        string name,
+        long ownerId,
+        string ownerName,
+        string? ownerAvatarUrl,
+        int maxPlayers,
+        int currentPlayers)
+    {
+        VipServerId = vipServerId;
+        AccessCode = accessCode;
+        Name = name;
+        OwnerId = ownerId;
+        OwnerName = ownerName;
+        OwnerAvatarUrl = ownerAvatarUrl;
+        MaxPlayers = maxPlayers;
+        CurrentPlayers = currentPlayers;
+    }
+
+    public long VipServerId { get; }
+    public string AccessCode { get; }
+    public string Name { get; }
+    public long OwnerId { get; }
+    public string OwnerName { get; }
+    public int MaxPlayers { get; }
+    public int CurrentPlayers { get; }
+
+    private string? _ownerAvatarUrl;
+    public string? OwnerAvatarUrl
+    {
+        get => _ownerAvatarUrl;
+        set
+        {
+            if (!SetProperty(ref _ownerAvatarUrl, value))
+                return;
+
+            _ = LoadOwnerAvatarBitmapAsync();
+        }
+    }
+
+    private Bitmap? _ownerAvatarBitmap;
+    public Bitmap? OwnerAvatarBitmap
+    {
+        get => _ownerAvatarBitmap;
+        private set => SetProperty(ref _ownerAvatarBitmap, value);
+    }
+
+    private bool _loadingOwnerAvatar;
+    private string? _loadedOwnerAvatarUrl;
+
+    private async Task LoadOwnerAvatarBitmapAsync()
+    {
+        string? url = _ownerAvatarUrl;
+
+        if (_loadingOwnerAvatar || String.IsNullOrEmpty(url) || _loadedOwnerAvatarUrl == url)
+            return;
+
+        _loadingOwnerAvatar = true;
+
+        try
+        {
+            Bitmap? bitmap = await ImageLoader.LoadAsync(url, 80);
+
+            if (bitmap is null)
+                return;
+
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                if (_ownerAvatarUrl == url)
+                {
+                    OwnerAvatarBitmap = bitmap;
+                    _loadedOwnerAvatarUrl = url;
+                }
+            });
+        }
+        finally
+        {
+            _loadingOwnerAvatar = false;
+        }
+    }
+}
 
 internal class PrivateServerJoinDialogViewModel : NotifyPropertyChangedViewModel
 {

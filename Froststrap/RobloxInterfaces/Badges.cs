@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Froststrap;
 
 namespace Froststrap.RobloxInterfaces
 {
@@ -61,7 +60,7 @@ namespace Froststrap.RobloxInterfaces
             if (userId == 0 || badges.Count == 0)
                 return;
 
-            if (!await SignedInAsync())
+            if (!await App.Cookies.EnsureLoadedAsync())
             {
                 App.Logger.Info("No session to ask with, leaving badge progress unknown");
                 return;
@@ -93,7 +92,7 @@ namespace Froststrap.RobloxInterfaces
         {
             var awarded = new Dictionary<long, DateTime>();
 
-            foreach (var chunk in Chunk(badgeIds))
+            foreach (long[] chunk in badgeIds.Chunk(PageSize))
             {
                 var response = await Http.AuthGetJson<ApiArrayResponse<BadgeAwardedDate>>(
                     UrlBuilder.BuildApiUrl("badges", $"v1/users/{userId}/badges/awarded-dates?badgeIds={String.Join(',', chunk)}"));
@@ -108,17 +107,6 @@ namespace Froststrap.RobloxInterfaces
             return awarded;
         }
 
-        private static async Task<bool> SignedInAsync()
-        {
-            if (!App.Settings.Prop.AllowCookieAccess)
-                return false;
-
-            if (!App.Cookies.Loaded)
-                await Task.Run(App.Cookies.LoadCookies);
-
-            return App.Cookies.Loaded;
-        }
-
         private static async Task PopulateIconsAsync(List<Badge> badges)
         {
             if (badges.Count == 0)
@@ -126,7 +114,7 @@ namespace Froststrap.RobloxInterfaces
 
             try
             {
-                foreach (var chunk in Chunk(badges.Select(x => x.Id)))
+                foreach (long[] chunk in badges.Select(x => x.Id).Chunk(PageSize))
                 {
                     var response = await Http.GetJson<ApiArrayResponse<ThumbnailResponse>>(
                         UrlBuilder.BuildApiUrl("thumbnails", $"v1/badges/icons?badgeIds={String.Join(',', chunk)}&size=150x150&format=Png&isCircular=false"));
@@ -137,7 +125,6 @@ namespace Froststrap.RobloxInterfaces
                     foreach (ThumbnailResponse thumbnail in response.Data)
                     {
                         Badge? badge = badges.FirstOrDefault(x => x.Id == thumbnail.TargetId);
-
                         badge?.IconUrl = thumbnail.ImageUrl;
                     }
                 }
@@ -147,26 +134,6 @@ namespace Froststrap.RobloxInterfaces
                 App.Logger.Error("Failed to fetch badge icons");
                 App.Logger.Error(ex);
             }
-        }
-
-        private static IEnumerable<List<long>> Chunk(IEnumerable<long> ids)
-        {
-            var batch = new List<long>(PageSize);
-
-            foreach (long id in ids)
-            {
-                batch.Add(id);
-
-                if (batch.Count < PageSize)
-                    continue;
-
-                yield return batch;
-
-                batch = new List<long>(PageSize);
-            }
-
-            if (batch.Count > 0)
-                yield return batch;
         }
     }
 }

@@ -1,23 +1,14 @@
-using System;
-using System.Collections.Generic;
+using Avalonia.Input.Platform;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Globalization;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
-using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Input.Platform;
+using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 
 using CommunityToolkit.Mvvm.Input;
 
 using Froststrap.Integrations;
-using Froststrap.Models.APIs.Roblox;
-using Froststrap.Models.Overlay;
 using Froststrap.RobloxInterfaces;
 
 namespace Froststrap.UI.ViewModels.Overlay.Controls
@@ -26,9 +17,8 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
     {
         private readonly ActivityWatcher? _activityWatcher;
         private readonly Dictionary<long, PrivateServerDetails> _ownDetails = new();
+        private readonly FlashMessage _flash;
 
-        private DispatcherTimer? _statusTimer;
-        private string? _status;
         private bool _visible;
         private long _loadedPlaceId;
         private bool _failed;
@@ -102,8 +92,8 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             }
         }
 
-        public string StatusText => _status ?? String.Empty;
-        public bool HasStatus => _status is not null;
+        public string StatusText => _flash.Text ?? String.Empty;
+        public bool HasStatus => _flash.Text is not null;
 
         private string _serverName = String.Empty;
         public string ServerName
@@ -133,8 +123,61 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             get => _gameIcon;
             private set
             {
+                if (_gameIcon == value)
+                    return;
+
                 _gameIcon = value;
                 OnPropertyChanged(nameof(GameIcon));
+
+                _ = LoadGameIconAsync();
+            }
+        }
+
+        private Bitmap? _gameIconBitmap;
+        public Bitmap? GameIconBitmap
+        {
+            get => _gameIconBitmap;
+            private set
+            {
+                if (_gameIconBitmap == value)
+                    return;
+
+                _gameIconBitmap = value;
+                OnPropertyChanged(nameof(GameIconBitmap));
+            }
+        }
+
+        private bool _loadingGameIcon;
+        private string? _loadedGameIconUrl;
+
+        private async Task LoadGameIconAsync()
+        {
+            string? url = _gameIcon;
+
+            if (_loadingGameIcon || String.IsNullOrEmpty(url) || _loadedGameIconUrl == url)
+                return;
+
+            _loadingGameIcon = true;
+
+            try
+            {
+                Bitmap? bitmap = await ImageLoader.LoadAsync(url, 300);
+
+                if (bitmap is null)
+                    return;
+
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    if (_gameIcon == url)
+                    {
+                        GameIconBitmap = bitmap;
+                        _loadedGameIconUrl = url;
+                    }
+                });
+            }
+            finally
+            {
+                _loadingGameIcon = false;
             }
         }
 
@@ -262,11 +305,17 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
         private bool InGame => _activityWatcher?.InGame == true && _activityWatcher.Data.PlaceId != 0;
         private long PlaceId => _activityWatcher?.Data.PlaceId ?? 0;
-        private static bool SignedIn => App.Settings.Prop.AllowCookieAccess && App.Cookies.Loaded;
+        private static bool SignedIn => App.Cookies.Loaded;
 
         public PrivateServersViewModel(ActivityWatcher? activityWatcher)
         {
             _activityWatcher = activityWatcher;
+
+            _flash = new FlashMessage(TimeSpan.FromSeconds(4), () =>
+            {
+                OnPropertyChanged(nameof(StatusText));
+                OnPropertyChanged(nameof(HasStatus));
+            });
 
             RefreshCommand = new AsyncRelayCommand(LoadAsync);
             LoadMoreCommand = new AsyncRelayCommand(LoadMoreAsync);
@@ -424,7 +473,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
         private async Task LoadPageAsync(int generation, long placeId, string? cursor, bool first)
         {
-            PrivateServersPage page = await PrivateServers.ListPageAsync(placeId, cursor);
+            ApiPageResponse<PrivateServerEntry> page = await PrivateServers.ListPageAsync(placeId, cursor);
 
             if (generation != _generation)
                 return;
@@ -479,13 +528,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             if (activity is null || activity.UniverseId == 0)
                 return null;
 
-            if (activity.UniverseDetails is null)
-            {
-                await UniverseDetails.FetchSingle(activity.UniverseId);
-                activity.UniverseDetails = UniverseDetails.LoadFromCache(activity.UniverseId);
-            }
-
-            return activity.UniverseDetails;
+            return await activity.EnsureUniverseDetailsAsync();
         }
 
         private static async Task LoadAvatarsAsync(IReadOnlyList<PrivateServerItem> items)
@@ -842,6 +885,9 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             IsAddingPeople = false;
             AllowedUsers.Clear();
 
+            GameIconBitmap = null;
+            _loadedGameIconUrl = null;
+
             NotifyManage();
         }
 
@@ -864,30 +910,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             Refreshed();
         }
 
-        private void Flash(string message)
-        {
-            _status = message;
-
-            OnPropertyChanged(nameof(StatusText));
-            OnPropertyChanged(nameof(HasStatus));
-
-            _statusTimer ??= new DispatcherTimer { Interval = TimeSpan.FromSeconds(4) };
-            _statusTimer.Tick -= ClearStatus;
-            _statusTimer.Tick += ClearStatus;
-
-            _statusTimer.Stop();
-            _statusTimer.Start();
-        }
-
-        private void ClearStatus(object? sender, EventArgs e)
-        {
-            _statusTimer?.Stop();
-
-            _status = null;
-
-            OnPropertyChanged(nameof(StatusText));
-            OnPropertyChanged(nameof(HasStatus));
-        }
+        private void Flash(string message) => _flash.Show(message);
 
         private void Refreshed()
         {

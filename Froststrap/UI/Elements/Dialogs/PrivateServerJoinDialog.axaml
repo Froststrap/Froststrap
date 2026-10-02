@@ -72,7 +72,7 @@ SPDX-License-Identifier: MPL-2.0
 											<Border Grid.Column="0" Width="40" Height="40"
                                                     CornerRadius="20" ClipToBounds="True"
                                                     Background="#33000000">
-												<Image Source="{Binding OwnerAvatarUrl, Converter={StaticResource UrlToBitmapConverter}}"
+												<Image Source="{Binding OwnerAvatarBitmap}"
                                                        Stretch="UniformToFill"
                                                        RenderOptions.BitmapInterpolationMode="LowQuality"/>
 											</Border>

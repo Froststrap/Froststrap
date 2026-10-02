@@ -90,7 +90,7 @@ namespace Froststrap.Integrations.OverlayModules
 
         public async Task PollAsync()
         {
-            if (App.Cookies.CurrentUser is not AuthenticatedUser me)
+            if (!await App.Cookies.EnsureLoadedAsync() || App.Cookies.CurrentUser is not AuthenticatedUser me)
                 return;
 
             if (DateTime.UtcNow - _friendsFetched > FriendsRefresh)

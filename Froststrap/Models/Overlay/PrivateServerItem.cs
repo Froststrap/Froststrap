@@ -1,4 +1,6 @@
 using System.ComponentModel;
+using Avalonia.Media.Imaging;
+using Froststrap.Utility;
 
 namespace Froststrap.Models.Overlay
 {
@@ -45,7 +47,64 @@ namespace Froststrap.Models.Overlay
         public string? OwnerAvatar
         {
             get => _ownerAvatar;
-            set { _ownerAvatar = value; Changed(nameof(OwnerAvatar)); }
+            set
+            {
+                if (_ownerAvatar == value)
+                    return;
+
+                _ownerAvatar = value;
+                Changed(nameof(OwnerAvatar));
+
+                _ = LoadOwnerAvatarAsync();
+            }
+        }
+
+        private Bitmap? _ownerAvatarBitmap;
+        public Bitmap? OwnerAvatarBitmap
+        {
+            get => _ownerAvatarBitmap;
+            private set
+            {
+                if (_ownerAvatarBitmap == value)
+                    return;
+
+                _ownerAvatarBitmap = value;
+                Changed(nameof(OwnerAvatarBitmap));
+            }
+        }
+
+        private bool _loadingOwnerAvatar;
+        private string? _loadedOwnerAvatarUrl;
+
+        private async Task LoadOwnerAvatarAsync()
+        {
+            string? url = _ownerAvatar;
+
+            if (_loadingOwnerAvatar || String.IsNullOrEmpty(url) || _loadedOwnerAvatarUrl == url)
+                return;
+
+            _loadingOwnerAvatar = true;
+
+            try
+            {
+                Bitmap? bitmap = await ImageLoader.LoadAsync(url, 80);
+
+                if (bitmap is null)
+                    return;
+
+                await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    if (_ownerAvatar == url)
+                    {
+                        OwnerAvatarBitmap = bitmap;
+                        _loadedOwnerAvatarUrl = url;
+                    }
+                });
+            }
+            finally
+            {
+                _loadingOwnerAvatar = false;
+            }
         }
 
         private void Changed(string name) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));

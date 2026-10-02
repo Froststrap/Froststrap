@@ -6,6 +6,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.Integrations;
+using Froststrap.Utility;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -49,7 +50,59 @@ internal class RobloxServersDialogViewModel : NotifyPropertyChangedViewModel, ID
 
     public string GameName { get; }
 
-    public string? GameThumbnailUrl { get; }
+    private string? _gameThumbnailUrl;
+    public string? GameThumbnailUrl
+    {
+        get => _gameThumbnailUrl;
+        set
+        {
+            if (!SetProperty(ref _gameThumbnailUrl, value))
+                return;
+
+            _ = LoadGameThumbnailBitmapAsync();
+        }
+    }
+
+    private Bitmap? _gameThumbnailBitmap;
+    public Bitmap? GameThumbnailBitmap
+    {
+        get => _gameThumbnailBitmap;
+        private set => SetProperty(ref _gameThumbnailBitmap, value);
+    }
+
+    private bool _loadingGameThumbnail;
+    private string? _loadedGameThumbnailUrl;
+
+    private async Task LoadGameThumbnailBitmapAsync()
+    {
+        string? url = _gameThumbnailUrl;
+
+        if (_loadingGameThumbnail || String.IsNullOrEmpty(url) || _loadedGameThumbnailUrl == url)
+            return;
+
+        _loadingGameThumbnail = true;
+
+        try
+        {
+            Bitmap? bitmap = await ImageLoader.LoadAsync(url, 80);
+
+            if (bitmap is null)
+                return;
+
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                if (_gameThumbnailUrl == url)
+                {
+                    GameThumbnailBitmap = bitmap;
+                    _loadedGameThumbnailUrl = url;
+                }
+            });
+        }
+        finally
+        {
+            _loadingGameThumbnail = false;
+        }
+    }
 
     public bool IsCurrentGameApi
     {

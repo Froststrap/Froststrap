@@ -4,11 +4,13 @@
 
 using Avalonia.Controls;
 using Avalonia.Media;
+using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.Integrations;
 using Froststrap.Integrations.AccountManager;
 using Froststrap.UI.Elements.Dialogs;
+using Froststrap.Utility;
 using System.Collections.ObjectModel;
 
 namespace Froststrap.UI.ViewModels.Settings
@@ -35,7 +37,54 @@ namespace Froststrap.UI.ViewModels.Settings
         public string? CurrentAccountAvatarUrl
         {
             get => _currentAccountAvatarUrl;
-            set => SetProperty(ref _currentAccountAvatarUrl, value);
+            set
+            {
+                if (!SetProperty(ref _currentAccountAvatarUrl, value))
+                    return;
+
+                _ = LoadCurrentAccountAvatarBitmapAsync();
+            }
+        }
+
+        private Bitmap? _currentAccountAvatarBitmap;
+        public Bitmap? CurrentAccountAvatarBitmap
+        {
+            get => _currentAccountAvatarBitmap;
+            private set => SetProperty(ref _currentAccountAvatarBitmap, value);
+        }
+
+        private bool _loadingCurrentAccountAvatar;
+        private string? _loadedCurrentAccountAvatarUrl;
+
+        private async Task LoadCurrentAccountAvatarBitmapAsync()
+        {
+            string? url = _currentAccountAvatarUrl;
+
+            if (_loadingCurrentAccountAvatar || String.IsNullOrEmpty(url) || _loadedCurrentAccountAvatarUrl == url)
+                return;
+
+            _loadingCurrentAccountAvatar = true;
+
+            try
+            {
+                Bitmap? bitmap = await ImageLoader.LoadAsync(url, 64);
+
+                if (bitmap is null)
+                    return;
+
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    if (_currentAccountAvatarUrl == url)
+                    {
+                        CurrentAccountAvatarBitmap = bitmap;
+                        _loadedCurrentAccountAvatarUrl = url;
+                    }
+                });
+            }
+            finally
+            {
+                _loadingCurrentAccountAvatar = false;
+            }
         }
 
         private ObservableCollection<AccountWithAvatar> _accounts = [];
@@ -518,7 +567,60 @@ namespace Froststrap.UI.ViewModels.Settings
         internal class AccountWithAvatar : NotifyPropertyChangedViewModel
         {
             public AccountManagerAccount Account { get; }
-            public string? AvatarUrl { get; }
+
+            private string? _avatarUrl;
+            public string? AvatarUrl
+            {
+                get => _avatarUrl;
+                private set
+                {
+                    if (!SetProperty(ref _avatarUrl, value))
+                        return;
+
+                    _ = LoadAvatarBitmapAsync();
+                }
+            }
+
+            private Bitmap? _avatarBitmap;
+            public Bitmap? AvatarBitmap
+            {
+                get => _avatarBitmap;
+                private set => SetProperty(ref _avatarBitmap, value);
+            }
+
+            private bool _loadingAvatar;
+            private string? _loadedAvatarUrl;
+
+            private async Task LoadAvatarBitmapAsync()
+            {
+                string? url = _avatarUrl;
+
+                if (_loadingAvatar || String.IsNullOrEmpty(url) || _loadedAvatarUrl == url)
+                    return;
+
+                _loadingAvatar = true;
+
+                try
+                {
+                    Bitmap? bitmap = await ImageLoader.LoadAsync(url, 64);
+
+                    if (bitmap is null)
+                        return;
+
+                    await Dispatcher.UIThread.InvokeAsync(() =>
+                    {
+                        if (_avatarUrl == url)
+                        {
+                            AvatarBitmap = bitmap;
+                            _loadedAvatarUrl = url;
+                        }
+                    });
+                }
+                finally
+                {
+                    _loadingAvatar = false;
+                }
+            }
 
             public string Username => Account.Username;
             public string DisplayName => Account.DisplayName;

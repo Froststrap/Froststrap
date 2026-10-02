@@ -1,5 +1,8 @@
+using Avalonia.Media.Imaging;
+using Avalonia.Threading;
 using Froststrap.Enums.Overlay;
 using Froststrap.UI.ViewModels;
+using Froststrap.Utility;
 
 namespace Froststrap.Models.Overlay
 {
@@ -59,6 +62,57 @@ namespace Froststrap.Models.Overlay
                 _headshot = value;
 
                 OnPropertyChanged(nameof(Headshot));
+
+                _ = LoadHeadshotAsync();
+            }
+        }
+
+        private Bitmap? _headshotBitmap;
+        public Bitmap? HeadshotBitmap
+        {
+            get => _headshotBitmap;
+            private set
+            {
+                if (_headshotBitmap == value)
+                    return;
+
+                _headshotBitmap = value;
+
+                OnPropertyChanged(nameof(HeadshotBitmap));
+            }
+        }
+
+        private bool _loadingHeadshot;
+        private string? _loadedHeadshotUrl;
+
+        private async Task LoadHeadshotAsync()
+        {
+            string? url = _headshot;
+
+            if (_loadingHeadshot || String.IsNullOrEmpty(url) || _loadedHeadshotUrl == url)
+                return;
+
+            _loadingHeadshot = true;
+
+            try
+            {
+                Bitmap? bitmap = await ImageLoader.LoadAsync(url, 72);
+
+                if (bitmap is null)
+                    return;
+
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    if (_headshot == url)
+                    {
+                        HeadshotBitmap = bitmap;
+                        _loadedHeadshotUrl = url;
+                    }
+                });
+            }
+            finally
+            {
+                _loadingHeadshot = false;
             }
         }
 

@@ -78,7 +78,7 @@
                                             VerticalAlignment="Top"
                                             Background="{DynamicResource ControlFillColorDefaultBrush}"
                                             ClipToBounds="True">
-                                        <Image Source="{Binding IconUrl, Converter={StaticResource UrlToBitmapConverter}}"
+                                        <Image Source="{Binding IconBitmap}"
                                                Stretch="UniformToFill"
                                                Width="56" Height="56"
                                                RenderOptions.BitmapInterpolationMode="LowQuality" />

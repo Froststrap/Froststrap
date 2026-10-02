@@ -16,27 +16,19 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
         private static readonly TimeSpan SearchDelay = TimeSpan.FromMilliseconds(400);
 
         private readonly ActivityWatcher? _activityWatcher;
-
         private readonly DispatcherTimer _searchTimer;
-
-        private DispatcherTimer? _statusTimer;
+        private readonly FlashMessage _flash;
 
         private int _searchGeneration;
-
         private bool _favoritesLoaded;
-
         private bool _favoritesFailed;
-
         private bool _searchFailed;
 
         public ObservableCollection<GameTile> SearchResults { get; } = [];
-
         public ObservableCollection<GameTile> Favorites { get; } = [];
-
         public ObservableCollection<GameTile> ActiveTiles => ShowingFavorites ? Favorites : SearchResults;
 
         private bool _showingFavorites;
-
         public bool ShowingFavorites
         {
             get => _showingFavorites;
@@ -65,7 +57,6 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
         }
 
         private string _query = String.Empty;
-
         public string Query
         {
             get => _query;
@@ -89,7 +80,6 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
                     IsBusy = false;
                     Refreshed();
-
                     return;
                 }
 
@@ -98,7 +88,6 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
         }
 
         private bool _isBusy;
-
         public bool IsBusy
         {
             get => _isBusy;
@@ -108,16 +97,12 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                     return;
 
                 _isBusy = value;
-
                 OnPropertyChanged(nameof(IsBusy));
             }
         }
 
-        private string? _status;
-
-        public string StatusText => _status ?? String.Empty;
-
-        public bool HasStatus => _status is not null;
+        public string StatusText => _flash.Text ?? String.Empty;
+        public bool HasStatus => _flash.Text is not null;
 
         public bool ShowEmptyState => !IsBusy && ActiveTiles.Count == 0;
 
@@ -164,13 +149,18 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
         {
             _activityWatcher = activityWatcher;
 
+            _flash = new FlashMessage(TimeSpan.FromSeconds(4), () =>
+            {
+                OnPropertyChanged(nameof(StatusText));
+                OnPropertyChanged(nameof(HasStatus));
+            });
+
             JoinCommand = new RelayCommand<GameTile>(Join);
 
             _searchTimer = new DispatcherTimer { Interval = SearchDelay };
             _searchTimer.Tick += async (_, _) =>
             {
                 _searchTimer.Stop();
-
                 await SearchAsync(Query);
             };
 
@@ -183,7 +173,6 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             _favoritesFailed = false;
 
             Favorites.Clear();
-
             Refreshed();
 
             if (ShowingFavorites)
@@ -196,7 +185,6 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
             IsBusy = true;
             _searchFailed = false;
-
             Refreshed();
 
             try
@@ -209,7 +197,10 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                 SearchResults.Clear();
 
                 foreach (GameTile tile in results)
+                {
                     SearchResults.Add(tile);
+                    _ = tile.LoadIconAsync();
+                }
             }
             catch (Exception ex)
             {
@@ -220,7 +211,6 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                 App.Logger.Error(ex);
 
                 SearchResults.Clear();
-
                 _searchFailed = true;
             }
             finally
@@ -245,7 +235,6 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
             IsBusy = true;
             _favoritesFailed = false;
-
             Refreshed();
 
             try
@@ -255,7 +244,10 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                 Favorites.Clear();
 
                 foreach (GameTile tile in favorites)
+                {
                     Favorites.Add(tile);
+                    _ = tile.LoadIconAsync();
+                }
 
                 _favoritesLoaded = true;
             }
@@ -269,7 +261,6 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             finally
             {
                 IsBusy = false;
-
                 Refreshed();
             }
         }
@@ -295,30 +286,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             }
         }
 
-        private void Flash(string message)
-        {
-            _status = message;
-
-            OnPropertyChanged(nameof(StatusText));
-            OnPropertyChanged(nameof(HasStatus));
-
-            _statusTimer ??= new DispatcherTimer { Interval = TimeSpan.FromSeconds(4) };
-            _statusTimer.Tick -= ClearStatus;
-            _statusTimer.Tick += ClearStatus;
-
-            _statusTimer.Stop();
-            _statusTimer.Start();
-        }
-
-        private void ClearStatus(object? sender, EventArgs e)
-        {
-            _statusTimer?.Stop();
-
-            _status = null;
-
-            OnPropertyChanged(nameof(StatusText));
-            OnPropertyChanged(nameof(HasStatus));
-        }
+        private void Flash(string message) => _flash.Show(message);
 
         private void Refreshed()
         {

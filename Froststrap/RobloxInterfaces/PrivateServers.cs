@@ -1,13 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-
-using Froststrap.AppData;
 
 namespace Froststrap.RobloxInterfaces
 {
@@ -15,17 +13,17 @@ namespace Froststrap.RobloxInterfaces
     {
         private const int PageSize = 25;
 
-        private static Uri ServerUrl(long id) => new($"https://games.roblox.com/v1/vip-servers/{id}");
-        private static Uri PermissionsUrl(long id) => new($"https://games.roblox.com/v1/vip-servers/{id}/permissions");
+        private static Uri ServerUrl(long id) => UrlBuilder.BuildApiUrl("games", $"v1/vip-servers/{id}");
+        private static Uri PermissionsUrl(long id) => UrlBuilder.BuildApiUrl("games", $"v1/vip-servers/{id}/permissions");
 
-        public static Task<PrivateServersPage> ListPageAsync(long placeId, string? cursor)
+        public static Task<ApiPageResponse<PrivateServerEntry>> ListPageAsync(long placeId, string? cursor)
         {
-            string url = $"https://games.roblox.com/v1/games/{placeId}/private-servers?limit={PageSize}&sortOrder=Desc";
+            string path = $"v1/games/{placeId}/private-servers?limit={PageSize}&sortOrder=Desc";
 
             if (!String.IsNullOrEmpty(cursor))
-                url += $"&cursor={Uri.EscapeDataString(cursor)}";
+                path += $"&cursor={Uri.EscapeDataString(cursor)}";
 
-            return Http.AuthGetJson<PrivateServersPage>(new Uri(url));
+            return Http.AuthGetJson<ApiPageResponse<PrivateServerEntry>>(UrlBuilder.BuildApiUrl("games", path));
         }
 
         public static Task<PrivateServerDetails> DetailsAsync(long id) =>
@@ -45,12 +43,12 @@ namespace Froststrap.RobloxInterfaces
 
         public static Task AddUserAsync(PrivateServerDetails current, PrivateServerUser user) =>
             UpdatePermissionsAsync(current, "usersToAdd",
-                user.Id.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                user.Id.ToString(CultureInfo.InvariantCulture),
                 null, user.Id, null);
 
         public static Task RemoveUserAsync(PrivateServerDetails current, PrivateServerUser user) =>
             UpdatePermissionsAsync(current, "usersToRemove",
-                user.Id.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                user.Id.ToString(CultureInfo.InvariantCulture),
                 null, null, user.Id);
 
         public static async Task<PrivateServerUser?> FindUserAsync(string username)
@@ -61,22 +59,21 @@ namespace Froststrap.RobloxInterfaces
                 ["excludeBannedUsers"] = true
             };
 
-            var request = new HttpRequestMessage(HttpMethod.Post, "https://users.roblox.com/v1/usernames/users")
+            var request = new HttpRequestMessage(HttpMethod.Post, UrlBuilder.BuildApiUrl("users", "v1/usernames/users"))
             {
                 Content = new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json")
             };
 
-            var response = await Http.SendJson<UsernameLookupResponse>(request);
+            var response = await Http.SendJson<ApiArrayResponse<PrivateServerUser>>(request);
 
-            return response.Data.FirstOrDefault();
+            return response.Data?.FirstOrDefault();
         }
 
         public static void Join(long placeId, string accessCode)
         {
             App.Logger.Info($"Joining a private server of {placeId}");
 
-            Process.Start(new RobloxPlayerData().ExecutablePath,
-                $"roblox://experiences/start?placeId={placeId}&accessCode={Uri.EscapeDataString(accessCode)}");
+            GameServers.Launch($"placeId={placeId}&accessCode={Uri.EscapeDataString(accessCode)}");
         }
 
         private static Task UpdateAsync(PrivateServerDetails current, string setting, string value,

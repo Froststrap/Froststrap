@@ -1,7 +1,6 @@
 ﻿using Froststrap.AppData;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -78,7 +77,6 @@ namespace Froststrap.RobloxInterfaces
                     foreach (GameDetailResponse detail in response.Data)
                     {
                         GameTile? tile = chunk.FirstOrDefault(x => x.UniverseId == detail.Id);
-
                         tile?.Playing = detail.Playing;
                     }
                 }
@@ -105,7 +103,6 @@ namespace Froststrap.RobloxInterfaces
                     foreach (ThumbnailResponse thumbnail in response.Data)
                     {
                         GameTile? tile = chunk.FirstOrDefault(x => x.UniverseId == thumbnail.TargetId);
-
                         tile?.IconUrl = thumbnail.ImageUrl;
                     }
                 }
@@ -121,8 +118,7 @@ namespace Froststrap.RobloxInterfaces
         {
             App.Logger.Info($"Joining {tile.Name} ({tile.PlaceId})");
 
-            Process.Start(new RobloxPlayerData().ExecutablePath,
-                $"roblox://experiences/start?placeId={tile.PlaceId}");
+            GameServers.Launch($"placeId={tile.PlaceId}");
         }
     }
 }

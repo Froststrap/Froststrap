@@ -621,7 +621,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
             if (subplacesResponse?.Data != null && subplacesResponse.Data.Count > 0)
             {
                 var tempSubplaces = subplacesResponse.Data
-                    .Select(place => new PlaceInfo(place.Id, place.UniverseId, place.Name, ""))
+                    .Select(place => new PlaceInfo(place.Id, place.UniverseId, place.Name, "", thumbnailDecodeWidth: 80))
                     .ToList();
 
                 var thumbRequests = tempSubplaces.Select(p => new ThumbnailRequest
@@ -726,7 +726,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
             if (urls.Length > 0 && !string.IsNullOrEmpty(urls[0]))
             {
                 item.ThumbnailUrl = urls[0]!;
-                item.ThumbnailBitmap = await UrlToBitmapConverter.GetBitmapFromCacheOrDownloadAsync(urls[0]!);
+                item.ThumbnailBitmap = await ImageLoader.LoadAsync(urls[0]!, 380);
                 if (token.IsCancellationRequested) return;
             }
 
@@ -1033,7 +1033,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
                 if (string.IsNullOrEmpty(url)) return;
 
                 game.ThumbnailUrl = url;
-                game.ThumbnailBitmap = await UrlToBitmapConverter.GetBitmapFromCacheOrDownloadAsync(url);
+                game.ThumbnailBitmap = await ImageLoader.LoadAsync(url, 380);
             });
 
             await Task.WhenAll(downloadTasks);

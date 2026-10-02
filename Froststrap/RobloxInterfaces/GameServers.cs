@@ -275,7 +275,7 @@ namespace Froststrap.RobloxInterfaces
             return running;
         }
 
-        public static async Task<(GameServer? Server, bool AlreadyClosest)> FindClosestAsync(long placeId, string currentJobId)
+        public static async Task<(string? JobId, bool AlreadyClosest)> FindClosestAsync(long placeId, string currentJobId)
         {
             if (placeId == 0)
                 return (null, false);
@@ -295,14 +295,7 @@ namespace Froststrap.RobloxInterfaces
                 if (best.Id.Equals(currentJobId, StringComparison.OrdinalIgnoreCase))
                     return (null, true);
 
-                return (new GameServer
-                {
-                    JobId = best.Id,
-                    Playing = best.Playing,
-                    MaxPlayers = best.MaxPlayers,
-                    Fps = best.Fps,
-                    Ping = best.Ping
-                }, false);
+                return (best.Id, false);
             }
             catch (Exception ex)
             {
@@ -403,8 +396,12 @@ namespace Froststrap.RobloxInterfaces
         {
             App.Logger.Info($"Joining {placeId}/{jobId}");
 
-            Process.Start(new RobloxPlayerData().ExecutablePath,
-                $"roblox://experiences/start?placeId={placeId}&gameInstanceId={jobId}");
+            Launch($"placeId={placeId}&gameInstanceId={jobId}");
         }
+
+        public static void Launch(string query) =>
+            Process.Start(new RobloxPlayerData().ExecutablePath, $"roblox://experiences/start?{query}");
+
+        public static Uri GamePage(long placeId) => UrlBuilder.BuildApiUrl("www", $"games/{placeId}");
     }
 }

@@ -86,6 +86,18 @@ namespace Froststrap.Models.Entities
         public ICommand CopyServerIdCommand => new RelayCommand<Visual>(CopyServerId);
         public ICommand DeleteHistoryCommand => new RelayCommand(DeleteHistory);
 
+        public async Task<UniverseDetails?> EnsureUniverseDetailsAsync()
+        {
+            if (UniverseDetails is null)
+            {
+                await UniverseDetails.FetchSingle(UniverseId);
+
+                UniverseDetails = UniverseDetails.LoadFromCache(UniverseId);
+            }
+
+            return UniverseDetails;
+        }
+
         public string GetInviteDeeplink(bool launchData = true, DeeplinkType type = DeeplinkType.RobloxProtocol)
         {
             string baseUrl = type switch

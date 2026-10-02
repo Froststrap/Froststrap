@@ -1,20 +1,23 @@
 <!--
-SPDX-FileCopyrightText: 2026 Froststrap
-
-SPDX-License-Identifier: MPL-2.0
+    SPDX-FileCopyrightText: 2026 Froststrap
+    
+    SPDX-License-Identifier: MPL-2.0
 -->
 
-<UserControl xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
-             xmlns:resources="clr-namespace:Froststrap.Resources"
-             xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
-             xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
-             x:Class="Froststrap.UI.Elements.Settings.AccountSelectorView"
-             x:DataType="vm:AccountSelectorViewModel"
-             mc:Ignorable="d" d:DesignHeight="220" d:DesignWidth="450">
+<UserControl
+    x:Class="Froststrap.UI.Elements.Settings.AccountSelectorView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:resources="clr-namespace:Froststrap.Resources"
+    xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
+    d:DesignHeight="220"
+    d:DesignWidth="450"
+    x:DataType="vm:AccountSelectorViewModel"
+    mc:Ignorable="d">
 
     <UserControl.Styles>
         <Style Selector="Button#AccountButton">
@@ -37,116 +40,138 @@ SPDX-License-Identifier: MPL-2.0
     </UserControl.Styles>
 
     <Grid HorizontalAlignment="Stretch">
-        <Button Name="AccountButton"
-                Classes="nav-button"
-                HorizontalAlignment="Stretch"
-                HorizontalContentAlignment="Left"
-                VerticalContentAlignment="Center"
-                Command="{Binding ToggleDropdownCommand}">
+        <Button
+            Name="AccountButton"
+            HorizontalAlignment="Stretch"
+            HorizontalContentAlignment="Left"
+            VerticalContentAlignment="Center"
+            Classes="nav-button"
+            Command="{Binding ToggleDropdownCommand}">
             <Button.Styles>
                 <Style Selector="Button:pointerover /template/ ContentPresenter">
-                    <Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}"/>
+                    <Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
                 </Style>
             </Button.Styles>
             <StackPanel Orientation="Horizontal" Spacing="8">
                 <Grid Width="32" Height="32">
-                    <Border CornerRadius="16"
-                            Background="{DynamicResource ControlFillColorDefaultBrush}"
-                            BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
-                            BorderThickness="1" />
+                    <Border
+                        Background="{DynamicResource ControlFillColorDefaultBrush}"
+                        BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                        BorderThickness="1"
+                        CornerRadius="16" />
 
-                    <Border CornerRadius="16" ClipToBounds="True">
+                    <Border ClipToBounds="True" CornerRadius="16">
                         <Panel>
-                            <ic:Lucide Icon="User"
-                                       Height="18"
-                                       Width="18"
-                                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"
-                                       IsVisible="{Binding CurrentAccountAvatarUrl, Converter={x:Static StringConverters.IsNullOrEmpty}}"/>
-                            <Image Source="{Binding CurrentAccountAvatarUrl, Converter={StaticResource UrlToBitmapConverter}}"
-                                   Stretch="UniformToFill"
-                                   IsVisible="{Binding CurrentAccountAvatarUrl, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+                            <ic:Lucide
+                                Width="18"
+                                Height="18"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                Icon="User"
+                                IsVisible="{Binding CurrentAccountAvatarUrl, Converter={x:Static StringConverters.IsNullOrEmpty}}" />
+                            <Image
+                                IsVisible="{Binding CurrentAccountAvatarUrl, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                Source="{Binding CurrentAccountAvatarBitmap}"
+                                Stretch="UniformToFill" />
                         </Panel>
                     </Border>
 
-                    <Ellipse Width="10" Height="10"
-                             HorizontalAlignment="Right"
-                             VerticalAlignment="Bottom"
-                             Margin="0,0,-2,-2"
-                             ToolTip.Tip="{Binding PresenceTooltip}"
-                             Fill="{Binding PresenceBrush}"
-                             IsVisible="{Binding CurrentAccount, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                    <Ellipse
+                        Width="10"
+                        Height="10"
+                        Margin="0,0,-2,-2"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Bottom"
+                        Fill="{Binding PresenceBrush}"
+                        IsVisible="{Binding CurrentAccount, Converter={x:Static ObjectConverters.IsNotNull}}"
+                        ToolTip.Tip="{Binding PresenceTooltip}" />
                 </Grid>
 
-                <!-- Account Info -->
-                <StackPanel Orientation="Vertical" VerticalAlignment="Center" Spacing="1" HorizontalAlignment="Stretch"
-                            IsVisible="{Binding CurrentAccount, Converter={x:Static ObjectConverters.IsNotNull}}">
-                    <TextBlock Text="{Binding CurrentAccount.DisplayName}"
-                               FontSize="11"
-                               FontWeight="SemiBold"
-                               Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                               TextTrimming="CharacterEllipsis"/>
-                    <TextBlock Text="{Binding CurrentAccountDisplayName}"
-                               FontSize="9"
-                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                               TextTrimming="CharacterEllipsis"/>
+                <!--  Account Info  -->
+                <StackPanel
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Center"
+                    IsVisible="{Binding CurrentAccount, Converter={x:Static ObjectConverters.IsNotNull}}"
+                    Orientation="Vertical"
+                    Spacing="1">
+                    <TextBlock
+                        FontSize="11"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                        Text="{Binding CurrentAccount.DisplayName}"
+                        TextTrimming="CharacterEllipsis" />
+                    <TextBlock
+                        FontSize="9"
+                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                        Text="{Binding CurrentAccountDisplayName}"
+                        TextTrimming="CharacterEllipsis" />
                 </StackPanel>
 
-                <TextBlock Text="{x:Static resources:Strings.Menu_AccountSelector_NotLoggedIn}"
-                           FontSize="11"
-                           FontWeight="SemiBold"
-                           Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                           VerticalAlignment="Center"
-                           IsVisible="{Binding CurrentAccount, Converter={x:Static ObjectConverters.IsNull}}"/>
+                <TextBlock
+                    VerticalAlignment="Center"
+                    FontSize="11"
+                    FontWeight="SemiBold"
+                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                    IsVisible="{Binding CurrentAccount, Converter={x:Static ObjectConverters.IsNull}}"
+                    Text="{x:Static resources:Strings.Menu_AccountSelector_NotLoggedIn}" />
             </StackPanel>
         </Button>
 
-        <!-- Account Dropdown Popup -->
-        <Popup Name="AccountDropdown"
-               IsOpen="{Binding IsDropdownOpen}"
-               Placement="Bottom"
-               PlacementTarget="{Binding #AccountButton}"
-               VerticalOffset="6"
-               IsLightDismissEnabled="True"
-               MaxHeight="450">
-            <Border MinWidth="260"
-                    MaxHeight="420"
-                    Background="#2D2D2D"
-                    BorderBrush="{DynamicResource FrostBorderDefault}"
-                    BorderThickness="1"
-                    CornerRadius="6"
-                    BoxShadow="0 8 32 0 #20000000">
+        <!--  Account Dropdown Popup  -->
+        <Popup
+            Name="AccountDropdown"
+            MaxHeight="450"
+            IsLightDismissEnabled="True"
+            IsOpen="{Binding IsDropdownOpen}"
+            Placement="Bottom"
+            PlacementTarget="{Binding #AccountButton}"
+            VerticalOffset="6">
+            <Border
+                MinWidth="260"
+                MaxHeight="420"
+                Background="#2D2D2D"
+                BorderBrush="{DynamicResource FrostBorderDefault}"
+                BorderThickness="1"
+                BoxShadow="0 8 32 0 #20000000"
+                CornerRadius="6">
                 <Grid RowDefinitions="Auto,*">
-                    <!-- Add Account Section -->
-                    <Border Grid.Row="0"
-                            Padding="12,12,12,12"
-                            Background="{DynamicResource ControlFillColorSecondaryBrush}"
-                            BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
-                            BorderThickness="0,0,0,1">
+                    <!--  Add Account Section  -->
+                    <Border
+                        Grid.Row="0"
+                        Padding="12,12,12,12"
+                        Background="{DynamicResource ControlFillColorSecondaryBrush}"
+                        BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                        BorderThickness="0,0,0,1">
                         <Grid ColumnDefinitions="*,Auto">
-                            <Button Grid.Column="0"
-                                    Content="{x:Static resources:Strings.Menu_AccountSelector_AddAccount}"
-                                    Command="{Binding AddAccountCommand}"
-                                    IsEnabled="{Binding !IsAddingAccount}"
-                                    Height="32"
-                                    Margin="0,0,4,0"
-                                    HorizontalAlignment="Stretch"/>
+                            <Button
+                                Grid.Column="0"
+                                Height="32"
+                                Margin="0,0,4,0"
+                                HorizontalAlignment="Stretch"
+                                Command="{Binding AddAccountCommand}"
+                                Content="{x:Static resources:Strings.Menu_AccountSelector_AddAccount}"
+                                IsEnabled="{Binding !IsAddingAccount}" />
 
-                            <Border Grid.Column="1"
-                                    Width="36" Height="32"
+                            <Border
+                                Grid.Column="1"
+                                Width="36"
+                                Height="32"
+                                ClipToBounds="True"
+                                CornerRadius="6">
+                                <ComboBox
+                                    Width="36"
+                                    Height="32"
+                                    MinWidth="0"
+                                    Padding="0"
+                                    HorizontalContentAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                                    BorderThickness="1"
                                     CornerRadius="6"
-                                    ClipToBounds="True">
-                                <ComboBox ItemsSource="{Binding AddMethods}"
-                                          SelectedItem="{Binding SelectedAddMethod}"
-                                          IsEnabled="{Binding !IsAddingAccount}"
-                                          Width="36" Height="32"
-                                          MinWidth="0" Padding="0"
-                                          HorizontalContentAlignment="Center"
-                                          VerticalContentAlignment="Center"
-                                          CornerRadius="6"
-                                          BorderThickness="1"
-                                          BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}">
+                                    IsEnabled="{Binding !IsAddingAccount}"
+                                    ItemsSource="{Binding AddMethods}"
+                                    SelectedItem="{Binding SelectedAddMethod}">
                                     <ComboBox.Styles>
                                         <Style Selector="ComboBox /template/ ContentPresenter">
                                             <Setter Property="Opacity" Value="0" />
@@ -160,85 +185,123 @@ SPDX-License-Identifier: MPL-2.0
                         </Grid>
                     </Border>
 
-                    <!-- Accounts List or Empty State -->
-                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" MaxHeight="175" IsVisible="{Binding Accounts.Count}">
+                    <!--  Accounts List or Empty State  -->
+                    <ScrollViewer
+                        Grid.Row="1"
+                        MaxHeight="175"
+                        IsVisible="{Binding Accounts.Count}"
+                        VerticalScrollBarVisibility="Auto">
                         <ItemsControl ItemsSource="{Binding Accounts}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
-                                    <StackPanel Spacing="0"/>
+                                    <StackPanel Spacing="0" />
                                 </ItemsPanelTemplate>
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Button Background="Transparent"
-                                            BorderThickness="0"
-                                            Padding="12,10,12,10"
-                                            HorizontalAlignment="Stretch"
-                                            HorizontalContentAlignment="Stretch"
-                                            Command="{Binding $parent[ItemsControl].((vm:AccountSelectorViewModel)DataContext).SelectAccountCommand}"
-                                            CommandParameter="{Binding}">
+                                    <Button
+                                        Padding="12,10,12,10"
+                                        HorizontalAlignment="Stretch"
+                                        HorizontalContentAlignment="Stretch"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Command="{Binding $parent[ItemsControl].((vm:AccountSelectorViewModel)DataContext).SelectAccountCommand}"
+                                        CommandParameter="{Binding}">
                                         <Button.Styles>
                                             <Style Selector="Button:pointerover /template/ ContentPresenter">
-                                                <Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}"/>
+                                                <Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
                                             </Style>
                                         </Button.Styles>
 
-                                        <Grid ColumnDefinitions="*,Auto" HorizontalAlignment="Stretch" VerticalAlignment="Center">
-                                            <!-- Account info -->
-                                            <Grid Grid.Column="0" ColumnDefinitions="Auto,*" HorizontalAlignment="Stretch" VerticalAlignment="Center">
-                                                <Grid Grid.Column="0" Width="32" Height="32">
-                                                    <Border CornerRadius="16"
-                                                            Background="{DynamicResource ControlFillColorSecondaryBrush}"
-                                                            ClipToBounds="True">
+                                        <Grid
+                                            HorizontalAlignment="Stretch"
+                                            VerticalAlignment="Center"
+                                            ColumnDefinitions="*,Auto">
+                                            <!--  Account info  -->
+                                            <Grid
+                                                Grid.Column="0"
+                                                HorizontalAlignment="Stretch"
+                                                VerticalAlignment="Center"
+                                                ColumnDefinitions="Auto,*">
+                                                <Grid
+                                                    Grid.Column="0"
+                                                    Width="32"
+                                                    Height="32">
+                                                    <Border
+                                                        Background="{DynamicResource ControlFillColorSecondaryBrush}"
+                                                        ClipToBounds="True"
+                                                        CornerRadius="16">
                                                         <Panel>
-                                                            <ic:Lucide Icon="User"
-                                                                       Height="16"
-                                                                       Width="16"
-                                                                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                                                       HorizontalAlignment="Center"
-                                                                       VerticalAlignment="Center"
-                                                                       IsVisible="{Binding AvatarUrl, Converter={x:Static StringConverters.IsNullOrEmpty}}" />
-                                                            <Image Source="{Binding AvatarUrl, Converter={StaticResource UrlToBitmapConverter}}"
-                                                                   Stretch="UniformToFill"
-                                                                   IsVisible="{Binding AvatarUrl, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                                                            <ic:Lucide
+                                                                Width="16"
+                                                                Height="16"
+                                                                HorizontalAlignment="Center"
+                                                                VerticalAlignment="Center"
+                                                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                                                Icon="User"
+                                                                IsVisible="{Binding AvatarUrl, Converter={x:Static StringConverters.IsNullOrEmpty}}" />
+                                                            <Image
+                                                                IsVisible="{Binding AvatarUrl, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                                                Source="{Binding AvatarBitmap}"
+                                                                Stretch="UniformToFill" />
                                                         </Panel>
                                                     </Border>
 
-                                                    <Ellipse Width="10" Height="10"
-                                                             HorizontalAlignment="Right"
-                                                             VerticalAlignment="Bottom"
-                                                             Margin="0,0,-2,-2"
-                                                             ToolTip.Tip="{Binding PresenceStatus}"
-                                                             Fill="{Binding PresenceBrush}"
-                                                             IsVisible="{Binding PresenceStatus, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                                                    <Ellipse
+                                                        Width="10"
+                                                        Height="10"
+                                                        Margin="0,0,-2,-2"
+                                                        HorizontalAlignment="Right"
+                                                        VerticalAlignment="Bottom"
+                                                        Fill="{Binding PresenceBrush}"
+                                                        IsVisible="{Binding PresenceStatus, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                                        ToolTip.Tip="{Binding PresenceStatus}" />
                                                 </Grid>
 
-                                                <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center" Spacing="2" MaxWidth="125">
-                                                    <TextBlock Text="{Binding DisplayName}" FontSize="12" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
-                                                    <TextBlock Text="{Binding Username, StringFormat='@{0}'}" FontSize="10" TextTrimming="CharacterEllipsis"/>
+                                                <StackPanel
+                                                    Grid.Column="1"
+                                                    MaxWidth="125"
+                                                    Margin="12,0,0,0"
+                                                    VerticalAlignment="Center"
+                                                    Spacing="2">
+                                                    <TextBlock
+                                                        FontSize="12"
+                                                        FontWeight="SemiBold"
+                                                        Text="{Binding DisplayName}"
+                                                        TextTrimming="CharacterEllipsis" />
+                                                    <TextBlock
+                                                        FontSize="10"
+                                                        Text="{Binding Username, StringFormat='@{0}'}"
+                                                        TextTrimming="CharacterEllipsis" />
                                                 </StackPanel>
                                             </Grid>
 
-                                            <!-- Action buttons -->
-                                            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="4" Margin="12,0,0,0">
-                                                <controls:IconButton Width="32"
-                                                                     Height="32"
-                                                                     Padding="4"
-                                                                     Icon="ArrowLeftRight"
-                                                                     IconSize="14"
-                                                                     ToolTip.Tip="Use this account"
-                                                                     Command="{Binding $parent[ItemsControl].((vm:AccountSelectorViewModel)DataContext).ApplyAccountCommand}"
-                                                                     CommandParameter="{Binding}"/>
+                                            <!--  Action buttons  -->
+                                            <StackPanel
+                                                Grid.Column="1"
+                                                Margin="12,0,0,0"
+                                                Orientation="Horizontal"
+                                                Spacing="4">
+                                                <controls:IconButton
+                                                    Width="32"
+                                                    Height="32"
+                                                    Padding="4"
+                                                    Command="{Binding $parent[ItemsControl].((vm:AccountSelectorViewModel)DataContext).ApplyAccountCommand}"
+                                                    CommandParameter="{Binding}"
+                                                    Icon="ArrowLeftRight"
+                                                    IconSize="14"
+                                                    ToolTip.Tip="Use this account" />
 
-                                                <controls:IconButton Width="32"
-                                                                     Height="32"
-                                                                     Padding="4"
-                                                                     Icon="Trash2"
-                                                                     IconSize="14"
-                                                                     Classes="Danger"
-                                                                     ToolTip.Tip="Remove this account"
-                                                                     Command="{Binding $parent[ItemsControl].((vm:AccountSelectorViewModel)DataContext).DeleteAccountCommand}"
-                                                                     CommandParameter="{Binding}"/>
+                                                <controls:IconButton
+                                                    Width="32"
+                                                    Height="32"
+                                                    Padding="4"
+                                                    Classes="Danger"
+                                                    Command="{Binding $parent[ItemsControl].((vm:AccountSelectorViewModel)DataContext).DeleteAccountCommand}"
+                                                    CommandParameter="{Binding}"
+                                                    Icon="Trash2"
+                                                    IconSize="14"
+                                                    ToolTip.Tip="Remove this account" />
                                             </StackPanel>
                                         </Grid>
                                     </Button>
@@ -247,15 +310,16 @@ SPDX-License-Identifier: MPL-2.0
                         </ItemsControl>
                     </ScrollViewer>
 
-                    <!-- Empty State -->
-                    <TextBlock Grid.Row="1"
-                               Text="{x:Static resources:Strings.Menu_AccountSelector_AskToAddAccount}"
-                               FontSize="12"
-                               TextAlignment="Center"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               Padding="16,24"
-                               IsVisible="{Binding !Accounts.Count}"/>
+                    <!--  Empty State  -->
+                    <TextBlock
+                        Grid.Row="1"
+                        Padding="16,24"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        FontSize="12"
+                        IsVisible="{Binding !Accounts.Count}"
+                        Text="{x:Static resources:Strings.Menu_AccountSelector_AskToAddAccount}"
+                        TextAlignment="Center" />
                 </Grid>
             </Border>
         </Popup>

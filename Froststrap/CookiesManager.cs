@@ -167,6 +167,17 @@ namespace Froststrap
             }
         }
 
+        public async Task<bool> EnsureLoadedAsync()
+        {
+            if (!Enabled)
+                return false;
+
+            if (!Loaded)
+                await Task.Run(LoadCookies);
+
+            return Loaded;
+        }
+
         public async Task<AuthenticatedUser?> GetAuthenticated()
         {
             try

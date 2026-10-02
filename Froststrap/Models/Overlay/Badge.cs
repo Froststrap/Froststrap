@@ -1,6 +1,11 @@
-﻿namespace Froststrap.Models.Overlay
+﻿using Avalonia.Media.Imaging;
+using Avalonia.Threading;
+using Froststrap.UI.ViewModels;
+using Froststrap.Utility;
+
+namespace Froststrap.Models.Overlay
 {
-    internal class Badge
+    internal class Badge : NotifyPropertyChangedViewModel
     {
         public long Id { get; set; }
 
@@ -8,7 +13,19 @@
 
         public string Description { get; set; } = String.Empty;
 
-        public string? IconUrl { get; set; }
+        private string? _iconUrl;
+        public string? IconUrl
+        {
+            get => _iconUrl;
+            set => SetProperty(ref _iconUrl, value);
+        }
+
+        private Bitmap? _iconBitmap;
+        public Bitmap? IconBitmap
+        {
+            get => _iconBitmap;
+            private set => SetProperty(ref _iconBitmap, value);
+        }
 
         public bool Awarded { get; set; }
 
@@ -21,6 +38,39 @@
         public long PastDayAwardedCount { get; set; }
 
         public long AwardedCount { get; set; }
+
+        private bool _loadingIcon;
+        private string? _loadedIconUrl;
+
+        public async Task LoadIconAsync()
+        {
+            if (_loadingIcon || String.IsNullOrEmpty(IconUrl) || _loadedIconUrl == IconUrl)
+                return;
+
+            _loadingIcon = true;
+
+            try
+            {
+                string url = IconUrl;
+                Bitmap? bitmap = await ImageLoader.LoadAsync(url, 150);
+
+                if (bitmap is null)
+                    return;
+
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    if (IconUrl == url)
+                    {
+                        IconBitmap = bitmap;
+                        _loadedIconUrl = url;
+                    }
+                });
+            }
+            finally
+            {
+                _loadingIcon = false;
+            }
+        }
 
         public string RarityText
         {

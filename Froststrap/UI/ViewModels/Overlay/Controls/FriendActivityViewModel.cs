@@ -1,3 +1,4 @@
+using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.Enums.Overlay;
@@ -94,6 +95,21 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
         public string? MyAvatar => _myAvatar;
 
+        private Bitmap? _myAvatarBitmap;
+        public Bitmap? MyAvatarBitmap
+        {
+            get => _myAvatarBitmap;
+            private set
+            {
+                if (_myAvatarBitmap == value)
+                    return;
+
+                _myAvatarBitmap = value;
+
+                OnPropertyChanged(nameof(MyAvatarBitmap));
+            }
+        }
+
         public string ListStatus => _listStatus ?? String.Empty;
 
         public bool ShowListStatus => !String.IsNullOrEmpty(_listStatus);
@@ -151,6 +167,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
             MyName = String.Empty;
             MyHandle = String.Empty;
+            MyAvatarBitmap = null;
 
             OnPropertyChanged(nameof(MyName));
             OnPropertyChanged(nameof(MyHandle));
@@ -182,8 +199,11 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
             try
             {
-                if (!App.Cookies.Loaded)
-                    await Task.Run(App.Cookies.LoadCookies);
+                if (!await App.Cookies.EnsureLoadedAsync())
+                {
+                    SetListStatus(Strings.Menu_Overlay_Messages_NeedsCookies);
+                    return;
+                }
 
                 _me = App.Cookies.CurrentUser;
 
@@ -224,6 +244,8 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                 OnPropertyChanged(nameof(MyName));
                 OnPropertyChanged(nameof(MyHandle));
                 OnPropertyChanged(nameof(MyAvatar));
+
+                _ = LoadMyAvatarBitmapAsync();
 
                 ids.Remove(_me.Id);
 
@@ -288,6 +310,20 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             {
                 _loading = false;
             }
+        }
+
+        private async Task LoadMyAvatarBitmapAsync()
+        {
+            if (String.IsNullOrEmpty(_myAvatar))
+            {
+                MyAvatarBitmap = null;
+                return;
+            }
+
+            Bitmap? bitmap = await ImageLoader.LoadAsync(_myAvatar, 84);
+
+            if (bitmap is not null)
+                MyAvatarBitmap = bitmap;
         }
 
         private static bool IsOneToOne(Conversation conversation) =>
@@ -504,6 +540,8 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                 };
 
                 tab.Rows.Add(group);
+
+                _ = group.LoadAvatarAsync();
             }
 
             group!.LastAt = at ?? group.LastAt;
@@ -646,7 +684,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                 {
                     long place = friend.RootPlaceId > 0 ? friend.RootPlaceId : friend.PlaceId;
 
-                    Threading.ShellExecute($"https://www.{Deployment.RobloxDomain}/games/{place}");
+                    Threading.ShellExecute(GameServers.GamePage(place).ToString());
                 }
             }
             catch (Exception ex)

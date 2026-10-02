@@ -5,7 +5,6 @@ using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.Enums.Overlay;
 using Froststrap.Integrations;
-using Froststrap.Models.Overlay;
 using Froststrap.RobloxInterfaces;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
@@ -18,6 +17,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
         private const string RobloxWebDeeplinkBase = "https://www.roblox.com/games/start";
 
         private readonly ActivityWatcher? _activityWatcher;
+        private readonly FlashMessage _flash;
 
         public ObservableCollection<GameServer> Servers { get; } = [];
 
@@ -95,14 +95,11 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             }
         }
 
-        private string? _status;
-        private DispatcherTimer? _statusTimer;
-
         public string SummaryText
         {
             get
             {
-                if (_status is not null) return _status;
+                if (_flash.Text is not null) return _flash.Text;
                 return Servers.Count > 0
                     ? String.Format(Locale.CurrentCulture, Strings.Menu_Overlay_Servers_Summary, Servers.Count)
                     : String.Empty;
@@ -233,34 +230,25 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
             if (!CanJoinClosest) return;
 
-            if (!App.Settings.Prop.AllowCookieAccess)
-            {
-                Flash(Strings.Menu_Overlay_Servers_ClosestNeedsCookies);
-                return;
-            }
-
             _findingClosest = true;
             OnPropertyChanged(nameof(CanJoinClosest));
 
             try
             {
-                if (!App.Cookies.Loaded)
-                    await Task.Run(App.Cookies.LoadCookies);
-
-                if (!App.Cookies.Loaded)
+                if (!await App.Cookies.EnsureLoadedAsync())
                 {
                     Flash(Strings.Menu_Overlay_Servers_ClosestNeedsCookies);
                     return;
                 }
 
                 long placeId = _activityWatcher!.Data.PlaceId;
-                var (server, alreadyClosest) = await GameServers.FindClosestAsync(placeId, _activityWatcher.Data.JobId);
+                var (jobId, alreadyClosest) = await GameServers.FindClosestAsync(placeId, _activityWatcher.Data.JobId);
 
                 if (alreadyClosest) { Flash(Strings.Menu_Overlay_Servers_ClosestAlready); return; }
-                if (server is null) { Flash(Strings.Menu_Overlay_Servers_ClosestNone); return; }
+                if (jobId is null) { Flash(Strings.Menu_Overlay_Servers_ClosestNone); return; }
 
-                App.Logger.Info($"{LOG_IDENT}: joining {server.JobId}");
-                GameServers.Join(placeId, server.JobId);
+                App.Logger.Info($"{LOG_IDENT}: joining {jobId}");
+                GameServers.Join(placeId, jobId);
                 Flash(Strings.Menu_Overlay_Servers_ClosestJoining);
             }
             catch (Exception ex)
@@ -281,6 +269,8 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
         public ServerBrowserViewModel(ActivityWatcher? activityWatcher)
         {
             _activityWatcher = activityWatcher;
+
+            _flash = new FlashMessage(TimeSpan.FromSeconds(2), () => OnPropertyChanged(nameof(SummaryText)));
 
             RefreshCommand = new AsyncRelayCommand(LoadAsync);
             JoinCommand = new RelayCommand<GameServer>(Join);
@@ -419,25 +409,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             }
         }
 
-        private void Flash(string message)
-        {
-            _status = message;
-            OnPropertyChanged(nameof(SummaryText));
-
-            _statusTimer ??= new DispatcherTimer { Interval = TimeSpan.FromSeconds(2) };
-            _statusTimer.Tick -= ClearStatus;
-            _statusTimer.Tick += ClearStatus;
-
-            _statusTimer.Stop();
-            _statusTimer.Start();
-        }
-
-        private void ClearStatus(object? sender, EventArgs e)
-        {
-            _statusTimer?.Stop();
-            _status = null;
-            OnPropertyChanged(nameof(SummaryText));
-        }
+        private void Flash(string message) => _flash.Show(message);
 
         private void Clear()
         {

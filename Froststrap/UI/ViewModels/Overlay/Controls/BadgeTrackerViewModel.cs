@@ -209,7 +209,10 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             Badges.Clear();
 
             foreach (Badge badge in ordered)
+            {
                 Badges.Add(badge);
+                _ = badge.LoadIconAsync();
+            }
         }
 
         private void Clear()
