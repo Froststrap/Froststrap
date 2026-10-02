@@ -125,6 +125,10 @@
           "type": "string",
           "description": "Override the target architecture for cross-compiling (x64 or arm64)"
         },
+        "ReleaseNotes": {
+          "type": "string",
+          "description": "Markdown release notes file embedded into the Velopack feed"
+        },
         "Solution": {
           "type": "string",
           "description": "Path to a solution file that is automatically loaded"
