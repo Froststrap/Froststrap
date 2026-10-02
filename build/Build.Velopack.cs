@@ -25,43 +25,51 @@ public partial class Build : FalloutBuild
     {
         packDir ??= DotnetPublishArtifactsDir;
         string version = GitTag.TrimStart('v');
-        bool win = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
-        bool mac = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
-        string channel = win && TargetArch == "x64" ? "windows-x64" :
-                         mac && (TargetArch is "x64" or "arm64") ? $"macos-{TargetArch}" :
-                         !win && !mac && TargetArch == "x64" ? "linux-x64" :
-                         throw new PlatformNotSupportedException(
-                             $"Velopack does not support channel for {RuntimeInformation.OSDescription} {TargetArch}.");
+        string os = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "windows"
+                  : RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? "macos"
+                  : "linux";
+
+        string channel = (os, TargetArch) switch
+        {
+            ("windows", "x64") => "windows-x64",
+            ("macos", "x64" or "arm64") => $"macos-{TargetArch}",
+            ("linux", "x64") => "linux-x64",
+            _ => throw new PlatformNotSupportedException(
+                $"Velopack does not support channel for {RuntimeInformation.OSDescription} {TargetArch}.")
+        };
 
         Directory.CreateDirectory(VelopackDir);
 
         var args = new StringBuilder();
         args.Append($"pack --packId Froststrap --packTitle Froststrap --packAuthors Froststrap ");
         args.Append($"--packVersion \"{version}\" --packDir \"{packDir}\" --outputDir \"{VelopackDir}\" ");
-        args.Append($"--mainExe {(win ? "Froststrap.exe" : "Froststrap")} --channel {channel} ");
+        args.Append($"--mainExe {(os == "windows" ? "Froststrap.exe" : "Froststrap")} --channel {channel} ");
 
         if (!string.IsNullOrEmpty(ReleaseNotes) && File.Exists(ReleaseNotes))
             args.Append($"--releaseNotes \"{ReleaseNotes}\" ");
 
-        if (win)
+        switch (os)
         {
-            args.Append($"--icon \"{GitRoot / "Froststrap" / "Froststrap.ico"}\" ");
-            args.Append("--framework vcredist143-x64 "); // replaces the NSIS VC++ redist logic
-        }
-        else if (mac)
-        {
-            args.Append("--bundleId xyz.froststrap.desktop ");
-            if (string.Equals(Environment.GetEnvironmentVariable("SIGN"), "true", StringComparison.OrdinalIgnoreCase))
-            {
-                args.Append($"--signAppIdentity \"{EnvironmentInfo.GetVariable<string>("DEVELOPER_ID_APP")}\" ");
-                args.Append($"--signInstallIdentity \"{EnvironmentInfo.GetVariable<string>("DEVELOPER_ID_INSTALLER")}\" ");
-                args.Append($"--signEntitlements \"{FalloutRoot / "Publish" / "macApp" / "Froststrap.entitlements"}\" ");
-                args.Append("--notaryProfile froststrap-notary ");
-            }
-        }
-        else
-        {
-            args.Append($"--icon \"{FalloutRoot / "icon512.png"}\" ");
+            case "windows":
+                args.Append($"--icon \"{GitRoot / "Froststrap" / "Froststrap.ico"}\" ");
+                args.Append("--framework vcredist143-x64 "); // replaces the NSIS VC++ redist logic
+                args.Append("--msi "); // lowkey the exe format is way too minimal
+                break;
+
+            case "macos":
+                args.Append("--bundleId xyz.froststrap.desktop ");
+                if (string.Equals(Environment.GetEnvironmentVariable("SIGN"), "true", StringComparison.OrdinalIgnoreCase))
+                {
+                    args.Append($"--signAppIdentity \"{EnvironmentInfo.GetVariable<string>("DEVELOPER_ID_APP")}\" ");
+                    args.Append($"--signInstallIdentity \"{EnvironmentInfo.GetVariable<string>("DEVELOPER_ID_INSTALLER")}\" ");
+                    args.Append($"--signEntitlements \"{FalloutRoot / "Publish" / "macApp" / "Froststrap.entitlements"}\" ");
+                    args.Append("--notaryProfile froststrap-notary ");
+                }
+                break;
+
+            case "linux":
+                args.Append($"--icon \"{FalloutRoot / "icon512.png"}\" ");
+                break;
         }
 
         Log.Information("Packing with vpk on channel {Channel}", channel);
