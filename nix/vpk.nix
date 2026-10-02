@@ -16,7 +16,7 @@ let
       if stdenv.hostPlatform.isDarwin then
         "sha256-rJvnOEbZp6dkg/hoSr0VA81QcDuZJydCnc3ARVicXgg="
       else if stdenv.hostPlatform.isLinux then
-        ""
+        "sha256-rJvnOEbZp6dkg/hoSr0VA81QcDuZJydCnc3ARVicXgg="
       else
         "";
     nugetName =
