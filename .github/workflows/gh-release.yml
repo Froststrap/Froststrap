@@ -30,8 +30,8 @@ jobs:
           draft: true
           fail_on_unmatched_files: true
           files: |
-            release/*.msi
-            release/*.pkg
-            release/*.AppImage
-            release/*.deb
-            release/*.rpm
+            release/**/*.msi
+            release/**/*.pkg
+            release/**/*.AppImage
+            release/**/*.deb
+            release/**/*.rpm
