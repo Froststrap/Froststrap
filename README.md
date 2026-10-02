@@ -7,7 +7,7 @@
 </p>
 
 <p align="center">
-    <img src="./.resources/froststrap.png" height=200 alt="logo"/>
+    <img src="./.resources/froststrap.webp" height=200 alt="logo"/>
 </p>
 
 <p align="center">
