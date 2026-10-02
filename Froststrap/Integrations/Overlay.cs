@@ -33,27 +33,28 @@ namespace Froststrap.Integrations
 
         public readonly RealtimeMessaging Messaging = new();
         public readonly ActivityWatcher? ActivityWatcher;
+        public readonly FriendPresence Friends;
 
         private readonly uint _robloxProcessId;
         private HWND _robloxWindow;
 
         private WINEVENTPROC? _systemCallback;
         private WINEVENTPROC? _objectCallback;
-        private WINEVENTPROC? _foregroundCallback;
 
         private UnhookWinEventSafeHandle? _systemHook;
         private UnhookWinEventSafeHandle? _objectHook;
-        private UnhookWinEventSafeHandle? _foregroundHook;
 
         private GameOverlay? _window;
         private OverlayToast? _toast;
         private OverlayBounds? _lastBounds;
+        private bool _friendsWatched;
         private bool _disposed;
 
         public Overlay(int robloxProcessId, ActivityWatcher? activityWatcher)
         {
             _robloxProcessId = (uint)robloxProcessId;
             ActivityWatcher = activityWatcher;
+            Friends = new FriendPresence(activityWatcher);
 
             _robloxWindow = FindMainWindow(_robloxProcessId);
         }
@@ -61,6 +62,16 @@ namespace Froststrap.Integrations
         public void Start()
         {
             _ = StartAsync();
+        }
+
+        public void WatchFriendsForPanel()
+        {
+            if (_friendsWatched || _disposed)
+                return;
+
+            _friendsWatched = true;
+
+            Friends.Start();
         }
 
         private async Task StartAsync()
@@ -89,7 +100,6 @@ namespace Froststrap.Integrations
 
                 _systemCallback = new WINEVENTPROC(OnSystemEvent);
                 _objectCallback = new WINEVENTPROC(OnObjectEvent);
-                _foregroundCallback = new WINEVENTPROC(OnForegroundEvent);
 
                 _systemHook = PInvoke.SetWinEventHook(
                     EVENT_SYSTEM_FOREGROUND, EVENT_SYSTEM_MINIMIZEEND,
@@ -98,10 +108,6 @@ namespace Froststrap.Integrations
                 _objectHook = PInvoke.SetWinEventHook(
                     EVENT_OBJECT_DESTROY, EVENT_OBJECT_LOCATIONCHANGE,
                     null, _objectCallback, _robloxProcessId, 0, WINEVENT_OUTOFCONTEXT);
-
-                _foregroundHook = PInvoke.SetWinEventHook(
-                    EVENT_SYSTEM_FOREGROUND, EVENT_SYSTEM_FOREGROUND,
-                    null, _foregroundCallback, 0, 0, WINEVENT_OUTOFCONTEXT);
             });
 
             if (_disposed)
@@ -271,22 +277,9 @@ namespace Froststrap.Integrations
                     break;
 
                 case EVENT_SYSTEM_FOREGROUND:
-                    Dispatcher.UIThread.Post(() =>
-                    {
-                        _window?.Reanchor();
-                        _window?.RefreshPinned();
-                    });
+                    Dispatcher.UIThread.Post(() => _window?.Reanchor());
                     break;
             }
-        }
-
-        private void OnForegroundEvent(HWINEVENTHOOK hook, uint iEvent, HWND hWnd, int idObject, int idChild, uint thread, uint time)
-        {
-            Dispatcher.UIThread.Post(() =>
-            {
-                _window?.Reanchor();
-                _window?.RefreshPinned();
-            });
         }
 
         private void OnObjectEvent(HWINEVENTHOOK hook, uint iEvent, HWND hWnd, int idObject, int idChild, uint thread, uint time)
@@ -332,15 +325,12 @@ namespace Froststrap.Integrations
 
             _systemHook?.Dispose();
             _objectHook?.Dispose();
-            _foregroundHook?.Dispose();
-
             _systemHook = null;
             _objectHook = null;
-            _foregroundHook = null;
-
             _systemCallback = null;
             _objectCallback = null;
-            _foregroundCallback = null;
+
+            Friends.Dispose();
 
             Dispatcher.UIThread.Post(() =>
             {

@@ -161,14 +161,14 @@ SPDX-License-Identifier: MPL-2.0
                     <controls:OptionControl
                         Header="{x:Static resources:Strings.Menu_Integrations_OverlayHotkey_Title}"
                         Description="{x:Static resources:Strings.Menu_Integrations_OverlayHotkey_Description}">
-                        <StackPanel Orientation="Horizontal" Spacing="8">
+                        <StackPanel Orientation="Horizontal" Spacing="4" Margin="0,0,16,0" Width="200">
                             <controls:HotkeyBox
                                 Modifiers="{Binding OverlayHotkeyModifiers, Mode=TwoWay}"
+								HorizontalAlignment="Stretch"
                                 Key="{Binding OverlayHotkeyKey, Mode=TwoWay}"
                                 IsRecording="{Binding IsRecordingHotkey, Mode=OneWayToSource}" />
                             <controls:IconButton
                                 Command="{Binding ResetHotkeyCommand, Mode=OneTime}"
-                                Content="{x:Static resources:Strings.Menu_Integrations_OverlayHotkey_Reset}"
                                 Icon="RotateCcw" />
                         </StackPanel>
                     </controls:OptionControl>

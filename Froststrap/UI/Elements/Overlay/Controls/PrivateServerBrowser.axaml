@@ -79,7 +79,7 @@
 
                                     <StackPanel Grid.Column="2" IsVisible="{Binding IsMine}" VerticalAlignment="Center">
                                         <Grid ColumnDefinitions="Auto,*">
-                                            <controls:IconButton Grid.Column="0" Width="34" Height="34" Icon="Pencil" IconSize="14"
+                                            <controls:IconButton Grid.Column="0" Icon="Pencil" IconSize="14"
                                                                  Command="{Binding $parent[ItemsControl].((vm:PrivateServersViewModel)DataContext).ConfigureCommand}"
                                                                  CommandParameter="{Binding}"
                                                                  ToolTip.Tip="{x:Static resources:Strings.Menu_Overlay_PrivateServers_Configure}"/>
@@ -175,6 +175,8 @@
                                             IsVisible="{Binding IsShowingName}">
                                     <TextBlock Text="{Binding ServerName}" Classes="Heading" TextTrimming="CharacterEllipsis" MaxWidth="260"/>
                                     <controls:IconButton Margin="6,0,0,0" Icon="Pencil" IconSize="14"
+                                                         Background="Transparent"
+                                                         BorderBrush="Transparent"
                                                          Command="{Binding EditNameCommand}"
                                                          ToolTip.Tip="{x:Static resources:Strings.Menu_Overlay_PrivateServers_Rename}"/>
                                 </StackPanel>

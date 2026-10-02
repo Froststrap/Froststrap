@@ -89,7 +89,7 @@ namespace Froststrap.UI.Elements.Overlay
 
             Deactivated += OnDeactivated;
 
-            ChatWindow.Attach(overlay?.Messaging.Party);
+            ChatWindow.Attach(overlay);
             BadgeTracker.Attach(overlay?.ActivityWatcher);
             BadgeTracker.BadgeEarned += OnBadgeEarned;
             ServerBrowser.Attach(overlay?.ActivityWatcher);

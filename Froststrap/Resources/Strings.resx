@@ -3794,7 +3794,88 @@ Press cancel to go back.</value>
   <data name="Menu.Integrations.OverlayHotkey.NeedsModifier" xml:space="preserve">
     <value>Add Ctrl, Alt or Win</value>
   </data>
- <data name="Menu.Integrations.OverlayHotkey.Reset" xml:space="preserve">
+  <data name="Menu.Integrations.OverlayHotkey.Reset" xml:space="preserve">
     <value>Reset shortcut</value>
+  </data>
+  <data name="Menu.Overlay.Messages.SectionInGame" xml:space="preserve">
+    <value>In game</value>
+  </data>
+  <data name="Menu.Overlay.Messages.SectionOnline" xml:space="preserve">
+    <value>Online</value>
+  </data>
+  <data name="Menu.Overlay.Messages.SectionOffline" xml:space="preserve">
+    <value>Offline</value>
+  </data>
+  <data name="Menu.Overlay.Messages.SectionGroups" xml:space="preserve">
+    <value>Group chats</value>
+  </data>
+  <data name="Menu.Overlay.Messages.Members" xml:space="preserve">
+    <value>{0} members</value>
+  </data>
+  <data name="Menu.Overlay.Messages.InAGame" xml:space="preserve">
+    <value>In a game</value>
+  </data>
+  <data name="Menu.Overlay.Messages.Playing" xml:space="preserve">
+    <value>Playing {0}</value>
+  </data>
+  <data name="Menu.Overlay.Messages.InStudio" xml:space="preserve">
+    <value>In Studio</value>
+  </data>
+  <data name="Menu.Overlay.Messages.Online" xml:space="preserve">
+    <value>Online</value>
+  </data>
+  <data name="Menu.Overlay.Messages.Offline" xml:space="preserve">
+    <value>Offline</value>
+  </data>
+  <data name="Menu.Overlay.Messages.NeedsCookies" xml:space="preserve">
+    <value>Allow cookie access in Froststrap's settings to see your friends and chats.</value>
+  </data>
+  <data name="Menu.Overlay.Messages.Loading" xml:space="preserve">
+    <value>Loading friends…</value>
+  </data>
+  <data name="Menu.Overlay.Messages.LoadFailed" xml:space="preserve">
+    <value>Couldn't load your friends. Try again in a moment.</value>
+  </data>
+  <data name="Menu.Overlay.Messages.UnnamedGroup" xml:space="preserve">
+    <value>Group chat</value>
+  </data>
+  <data name="Menu.Overlay.Messages.NoMatches" xml:space="preserve">
+    <value>No one matches “{0}”</value>
+  </data>
+  <data name="Menu.Overlay.Messages.NoHistory" xml:space="preserve">
+    <value>No messages with {0} yet.</value>
+  </data>
+  <data name="Menu.Overlay.Messages.You" xml:space="preserve">
+    <value>You</value>
+  </data>
+  <data name="Menu.Overlay.Messages.Today" xml:space="preserve">
+    <value>Today</value>
+  </data>
+  <data name="Menu.Overlay.Messages.Yesterday" xml:space="preserve">
+    <value>Yesterday</value>
+  </data>
+  <data name="Menu.Overlay.Messages.CouldntStart" xml:space="preserve">
+    <value>Couldn't start a chat with {0}.</value>
+  </data>
+  <data name="Menu.Overlay.Messages.Moderated" xml:space="preserve">
+    <value>Roblox didn't allow this message.</value>
+  </data>
+  <data name="Menu.Overlay.Messages.NotSent" xml:space="preserve">
+    <value>Not sent. Try again in a moment.</value>
+  </data>
+  <data name="Menu.Overlay.Messages.Join" xml:space="preserve">
+    <value>Join</value>
+  </data>
+  <data name="Menu.Overlay.Messages.ViewGame" xml:space="preserve">
+    <value>View game</value>
+  </data>
+  <data name="Menu.Overlay.Messages.CloseTab" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="Menu.Overlay.Servers.Credit" xml:space="preserve">
+    <value>Server details from</value>
+  </data>
+  <data name="Menu.Overlay.Servers.CreditTooltip" xml:space="preserve">
+    <value>Visit rovalra.com</value>
   </data>
 </root>

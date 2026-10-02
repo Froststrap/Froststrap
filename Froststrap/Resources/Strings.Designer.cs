@@ -8191,11 +8191,146 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Close.
+        /// </summary>
+        public static string Menu_Overlay_Messages_CloseTab {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Messages.CloseTab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Couldn&apos;t start a chat with {0}..
+        /// </summary>
+        public static string Menu_Overlay_Messages_CouldntStart {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Messages.CouldntStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No conversations..
         /// </summary>
         public static string Menu_Overlay_Messages_Empty {
             get {
                 return ResourceManager.GetString("Menu.Overlay.Messages.Empty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to In a game.
+        /// </summary>
+        public static string Menu_Overlay_Messages_InAGame {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Messages.InAGame", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to In Studio.
+        /// </summary>
+        public static string Menu_Overlay_Messages_InStudio {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Messages.InStudio", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Join.
+        /// </summary>
+        public static string Menu_Overlay_Messages_Join {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Messages.Join", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Couldn&apos;t load your friends. Try again in a moment..
+        /// </summary>
+        public static string Menu_Overlay_Messages_LoadFailed {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Messages.LoadFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading friends….
+        /// </summary>
+        public static string Menu_Overlay_Messages_Loading {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Messages.Loading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} members.
+        /// </summary>
+        public static string Menu_Overlay_Messages_Members {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Messages.Members", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Roblox didn&apos;t allow this message..
+        /// </summary>
+        public static string Menu_Overlay_Messages_Moderated {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Messages.Moderated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allow cookie access in Froststrap&apos;s settings to see your friends and chats..
+        /// </summary>
+        public static string Menu_Overlay_Messages_NeedsCookies {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Messages.NeedsCookies", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No messages with {0} yet..
+        /// </summary>
+        public static string Menu_Overlay_Messages_NoHistory {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Messages.NoHistory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No one matches “{0}”.
+        /// </summary>
+        public static string Menu_Overlay_Messages_NoMatches {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Messages.NoMatches", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not sent. Try again in a moment..
+        /// </summary>
+        public static string Menu_Overlay_Messages_NotSent {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Messages.NotSent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Offline.
+        /// </summary>
+        public static string Menu_Overlay_Messages_Offline {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Messages.Offline", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Online.
+        /// </summary>
+        public static string Menu_Overlay_Messages_Online {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Messages.Online", resourceCulture);
             }
         }
         
@@ -8209,11 +8344,56 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Playing {0}.
+        /// </summary>
+        public static string Menu_Overlay_Messages_Playing {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Messages.Playing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Search conversations.
         /// </summary>
         public static string Menu_Overlay_Messages_Search {
             get {
                 return ResourceManager.GetString("Menu.Overlay.Messages.Search", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Group chats.
+        /// </summary>
+        public static string Menu_Overlay_Messages_SectionGroups {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Messages.SectionGroups", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to In game.
+        /// </summary>
+        public static string Menu_Overlay_Messages_SectionInGame {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Messages.SectionInGame", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Offline.
+        /// </summary>
+        public static string Menu_Overlay_Messages_SectionOffline {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Messages.SectionOffline", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Online.
+        /// </summary>
+        public static string Menu_Overlay_Messages_SectionOnline {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Messages.SectionOnline", resourceCulture);
             }
         }
         
@@ -8227,11 +8407,56 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Today.
+        /// </summary>
+        public static string Menu_Overlay_Messages_Today {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Messages.Today", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Group chat.
+        /// </summary>
+        public static string Menu_Overlay_Messages_UnnamedGroup {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Messages.UnnamedGroup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View game.
+        /// </summary>
+        public static string Menu_Overlay_Messages_ViewGame {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Messages.ViewGame", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Write a message.
         /// </summary>
         public static string Menu_Overlay_Messages_Write {
             get {
                 return ResourceManager.GetString("Menu.Overlay.Messages.Write", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yesterday.
+        /// </summary>
+        public static string Menu_Overlay_Messages_Yesterday {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Messages.Yesterday", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You.
+        /// </summary>
+        public static string Menu_Overlay_Messages_You {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Messages.You", resourceCulture);
             }
         }
         
@@ -8997,6 +9222,24 @@ namespace Froststrap.Resources {
         public static string Menu_Overlay_Servers_CopyLink {
             get {
                 return ResourceManager.GetString("Menu.Overlay.Servers.CopyLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Server details from.
+        /// </summary>
+        public static string Menu_Overlay_Servers_Credit {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Servers.Credit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Visit rovalra.com.
+        /// </summary>
+        public static string Menu_Overlay_Servers_CreditTooltip {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Servers.CreditTooltip", resourceCulture);
             }
         }
         

@@ -10,6 +10,7 @@
              xmlns:resources="using:Froststrap.Resources"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
              xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Overlay.Controls"
+             xmlns:vms="clr-namespace:Froststrap.UI.ViewModels"
              x:DataType="vm:ServerBrowserViewModel"
              mc:Ignorable="d"
              d:DesignHeight="560" d:DesignWidth="820">
@@ -50,9 +51,26 @@
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
         </Style>
+
+        <Style Selector="Button.creditLink">
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Name="PART_Bd"
+                            Background="Transparent"
+                            CornerRadius="6"
+                            Padding="8,4">
+                        <ContentPresenter Content="{TemplateBinding Content}" />
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="Button.creditLink:pointerover /template/ Border#PART_Bd">
+            <Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
+        </Style>
     </UserControl.Styles>
 
-    <Grid RowDefinitions="Auto,*">
+    <Grid RowDefinitions="Auto,*,Auto">
 
         <Border Grid.Row="0" Margin="0,0,0,10" Padding="3" CornerRadius="8" HorizontalAlignment="Left"
                 Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}"
@@ -307,5 +325,29 @@
                 </ScrollViewer>
             </Grid>
         </Grid>
+
+        <Button Grid.Row="2"
+                Classes="creditLink"
+                HorizontalAlignment="Right"
+                Margin="0,6,0,0"
+                ToolTip.Tip="{x:Static resources:Strings.Menu_Overlay_Servers_CreditTooltip}"
+                Command="{x:Static vms:GlobalViewModel.OpenWebpageCommand}"
+                CommandParameter="https://www.rovalra.com/">
+            <StackPanel Orientation="Horizontal" Spacing="4">
+                <TextBlock Text="{x:Static resources:Strings.Menu_Overlay_Servers_Credit}"
+                           FontSize="12"
+                           VerticalAlignment="Center"
+                           Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+                <TextBlock Text="RoValra"
+                           FontSize="12"
+                           FontWeight="SemiBold"
+                           VerticalAlignment="Center"
+                           Foreground="{DynamicResource AccentFillColorDefaultBrush}" />
+                <ic:Lucide Icon="ExternalLink"
+                           Width="11" Height="11"
+                           VerticalAlignment="Center"
+                           StrokeBrush="{DynamicResource AccentFillColorDefaultBrush}" />
+            </StackPanel>
+        </Button>
     </Grid>
 </UserControl>

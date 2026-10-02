@@ -10,6 +10,7 @@ namespace Froststrap.Models.Overlay
     internal class GameServer : INotifyPropertyChanged
     {
         private const int AvatarSlots = 6;
+        private const int ShortIdLength = 8;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -53,11 +54,26 @@ namespace Froststrap.Models.Overlay
         public bool IsLowPerformance => Performance < 50;
         public string PerformanceText => String.Format(Locale.CurrentCulture, Strings.Menu_Overlay_Servers_Performance, Performance);
 
+        public string FpsText => Fps is null
+            ? String.Empty
+            : String.Format(Locale.CurrentCulture, "{0:0} FPS", Fps.Value);
+
+        public string PingText => Ping is null
+            ? String.Empty
+            : String.Format(Locale.CurrentCulture, "{0} ms", Ping.Value);
+
         public bool HasVersion => PlaceVersion is not null;
         public string VersionText => String.Format(Locale.CurrentCulture, Strings.Menu_Overlay_Servers_Version, PlaceVersion);
 
         public List<string> PlayerIcons { get; } = [];
+
         public int OverflowCount => HasStats ? Math.Max(Playing!.Value - PlayerIcons.Count, 0) : 0;
+
+        public bool HasOverflow => OverflowCount > 0;
+
+        public string OverflowText => OverflowCount > 0
+            ? String.Format(Locale.CurrentCulture, "+{0}", OverflowCount)
+            : String.Empty;
 
         public IReadOnlyList<ServerAvatar> Avatars
         {
@@ -82,6 +98,8 @@ namespace Froststrap.Models.Overlay
         public bool HasStats => Playing is not null && MaxPlayers is not null;
         public bool IsFull => HasStats && Playing >= MaxPlayers;
 
+        public string PlayersText => CapacityText;
+
         public string CapacityText => HasStats
             ? String.Format(Locale.CurrentCulture, Strings.Menu_Overlay_Servers_Capacity, Playing, MaxPlayers)
             : Strings.Menu_Overlay_Servers_CapacityUnknown;
@@ -89,6 +107,25 @@ namespace Froststrap.Models.Overlay
         public double FillPercentage => HasStats && MaxPlayers > 0
             ? (double)Playing!.Value / MaxPlayers!.Value * 100
             : 0;
+
+        public string LocationText
+        {
+            get
+            {
+                bool hasCity = !String.IsNullOrWhiteSpace(City);
+                bool hasRegion = !String.IsNullOrWhiteSpace(Region);
+
+                if (hasCity && hasRegion) return $"{City}, {Region}";
+                if (hasCity) return City!;
+                if (hasRegion) return Region!;
+
+                return String.Empty;
+            }
+        }
+
+        public string ShortId => String.IsNullOrEmpty(JobId)
+            ? String.Empty
+            : JobId.Length > ShortIdLength ? JobId[..ShortIdLength] : JobId;
 
         public string IdText => String.Format(Locale.CurrentCulture, Strings.Menu_Overlay_Servers_Id, JobId);
 

@@ -6,6 +6,10 @@ namespace Froststrap.Models.APIs.Roblox
 {
     internal class UserPresence
     {
+        public const int OnlineType = 1;
+        public const int InGameType = 2;
+        public const int InStudioType = 3;
+
         [JsonPropertyName("userPresenceType")]
         public int UserPresenceType { get; set; }
 
@@ -31,18 +35,18 @@ namespace Froststrap.Models.APIs.Roblox
 
         public string ToolTipText => UserPresenceType switch
         {
-            1 => "Online",
-            2 => $"Playing: {LastLocation}",
-            3 => "In Studio",
+            OnlineType => "Online",
+            InGameType => $"Playing: {LastLocation}",
+            InStudioType => "In Studio",
             _ => "Offline"
         };
 
         private static string GetStatusColor(int type) => type switch
         {
-            1 => "#00A2FF", // Online (Blue)
-            2 => "#02B75A", // In Game (Green)
-            3 => "#F68802", // Studio (Orange)
-            _ => "#808080"  // Offline (Grey)
+            OnlineType => "#00A2FF",
+            InGameType => "#02B75A",
+            InStudioType => "#F68802",
+            _ => "#808080"
         };
     }
 }
