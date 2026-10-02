@@ -71,5 +71,24 @@ namespace Froststrap.UI.Elements.Overlay.Controls
             if (_viewModel.SendCommand.CanExecute(null))
                 _viewModel.SendCommand.Execute(null);
         }
+
+        private void TabScroller_PointerWheelChanged(object? sender, PointerWheelEventArgs e)
+        {
+            if (e.Handled || sender is not ScrollViewer scroller)
+                return;
+
+            if (scroller.ScrollBarMaximum.X <= 0)
+                return;
+
+            double next = scroller.Offset.X - (e.Delta.Y * 60);
+
+            next = Math.Clamp(next, 0, scroller.ScrollBarMaximum.X);
+
+            if (Math.Abs(next - scroller.Offset.X) < 0.5)
+                return;
+
+            scroller.Offset = new Vector(next, scroller.Offset.Y);
+            e.Handled = true;
+        }
     }
 }

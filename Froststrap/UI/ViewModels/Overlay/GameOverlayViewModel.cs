@@ -287,7 +287,7 @@ namespace Froststrap.UI.ViewModels.Overlay
                 if (clipboard is null)
                     return;
 
-                await clipboard.SetTextAsync(_activityWatcher.Data.GetInviteDeeplink());
+                await clipboard.SetTextAsync(_activityWatcher.Data.GetInviteDeeplink(type: DeeplinkType.Froststrap));
 
                 ShareIcon = LucideIconNames.Check;
 

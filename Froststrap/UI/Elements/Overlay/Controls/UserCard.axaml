@@ -197,51 +197,59 @@ SPDX-License-Identifier: MPL-2.0
 			</Border>
 
 			<StackPanel Margin="12,0,0,0" VerticalAlignment="Center">
-				<TextBlock Text="{Binding Game}"
+				<TextBlock x:Name="GameNameText"
+                           Text="{Binding Game}"
                            FontSize="14"
                            FontWeight="SemiBold"
                            MaxWidth="260"
                            Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                            TextTrimming="CharacterEllipsis" />
 
-				<StackPanel Orientation="Horizontal" Margin="0,1,0,0" VerticalAlignment="Center">
+				<Grid ColumnDefinitions="Auto,Auto,Auto,Auto,*"
+                      HorizontalAlignment="Left"
+                      Margin="0,1,0,0"
+                      MaxWidth="{Binding #GameNameText.Bounds.Width}">
 
-					<TextBlock Text="{x:Static resources:Strings.Menu_Overlay_Session}"
+					<TextBlock Grid.Column="0"
+                               Text="{x:Static resources:Strings.Menu_Overlay_Session}"
                                FontSize="12"
                                VerticalAlignment="Center"
                                Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
 
-					<TextBlock Text="{Binding TimePlayed}"
+					<TextBlock Grid.Column="1"
+                               Text="{Binding TimePlayed}"
                                FontSize="12"
                                Margin="6,0,0,0"
                                VerticalAlignment="Center"
                                FontFamily="{StaticResource CascadiaCode}"
                                Foreground="Lime" />
 
-					<TextBlock Text="·"
+					<TextBlock Grid.Column="2"
+                               Text="·"
                                FontSize="12"
                                Margin="8,0,0,0"
                                VerticalAlignment="Center"
                                Foreground="{DynamicResource TextFillColorTertiaryBrush}"
                                IsVisible="{Binding HasCurrentRegion}" />
 
-					<ic:Lucide Icon="MapPin"
+					<ic:Lucide Grid.Column="3"
+                               Icon="MapPin"
                                Width="12" Height="12"
                                Margin="6,0,0,0"
                                VerticalAlignment="Center"
                                StrokeBrush="{DynamicResource TextFillColorTertiaryBrush}"
                                IsVisible="{Binding HasCurrentRegion}" />
 
-					<TextBlock Text="{Binding CurrentRegion}"
+					<TextBlock Grid.Column="4"
+                               Text="{Binding CurrentRegion}"
                                FontSize="12"
                                Margin="4,0,0,0"
                                VerticalAlignment="Center"
-                               MaxWidth="240"
                                TextTrimming="CharacterEllipsis"
                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                                IsVisible="{Binding HasCurrentRegion}"
                                ToolTip.Tip="{Binding CurrentRegion}" />
-				</StackPanel>
+				</Grid>
 			</StackPanel>
 		</StackPanel>
 	</StackPanel>

@@ -75,7 +75,7 @@ SPDX-License-Identifier: MPL-2.0
 
                 <control:OverlayPanel x:Name="MessagesPanel"
                                       Title="{x:Static resources:Strings.Menu_Overlay_Tab_Messages}"
-                                      Icon="MessageSquare"
+                                      Icon="MessageSquareMore"
                                       ContentPadding="0"
                                       IsVisible="{Binding IsMessagesVisible}"
                                       CloseCommand="{Binding ClosePanelCommand}"
@@ -87,7 +87,7 @@ SPDX-License-Identifier: MPL-2.0
 
                 <control:OverlayPanel x:Name="BadgesPanel"
                                       Title="{x:Static resources:Strings.Menu_Overlay_Tab_Badges}"
-                                      Icon="Trophy"
+                                      Icon="Award"
                                       IsVisible="{Binding IsBadgesVisible}"
                                       CloseCommand="{Binding ClosePanelCommand}"
                                       CloseCommandParameter="Badges">
@@ -120,7 +120,7 @@ SPDX-License-Identifier: MPL-2.0
 
                 <control:OverlayPanel x:Name="HistoryPanel"
                                       Title="{x:Static resources:Strings.ContextMenu_GameHistory_Title}"
-                                      Icon="Clock"
+                                      Icon="RotateCcwClock"
                                       IsVisible="{Binding IsHistoryVisible}"
                                       CloseCommand="{Binding ClosePanelCommand}"
                                       CloseCommandParameter="History">
@@ -170,7 +170,7 @@ SPDX-License-Identifier: MPL-2.0
                                   IsChecked="{Binding IsMessagesVisible, Mode=OneWay}"
                                   Command="{Binding TogglePanelCommand}"
                                   CommandParameter="Messages">
-                        <ic:Lucide Icon="MessageSquare"
+                        <ic:Lucide Icon="MessageSquareMore"
                                    Width="16" Height="16"
                                    StrokeBrush="{DynamicResource TextFillColorSecondaryBrush}" />
                     </ToggleButton>
@@ -180,7 +180,7 @@ SPDX-License-Identifier: MPL-2.0
                                   IsChecked="{Binding IsBadgesVisible, Mode=OneWay}"
                                   Command="{Binding TogglePanelCommand}"
                                   CommandParameter="Badges">
-                        <ic:Lucide Icon="Trophy"
+                        <ic:Lucide Icon="Award"
                                    Width="16" Height="16"
                                    StrokeBrush="{DynamicResource TextFillColorSecondaryBrush}" />
                     </ToggleButton>
@@ -210,7 +210,7 @@ SPDX-License-Identifier: MPL-2.0
                                   IsChecked="{Binding IsHistoryVisible, Mode=OneWay}"
                                   Command="{Binding TogglePanelCommand}"
                                   CommandParameter="History">
-                        <ic:Lucide Icon="Clock"
+                        <ic:Lucide Icon="RotateCcwClock"
                                    Width="16" Height="16"
                                    StrokeBrush="{DynamicResource TextFillColorSecondaryBrush}" />
                     </ToggleButton>
