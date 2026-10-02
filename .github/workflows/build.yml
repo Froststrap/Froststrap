@@ -2,64 +2,91 @@ name: Build & Package
 
 on:
   push:
-    branches: ['**']
+    branches: ["**"]
   pull_request:
   workflow_call:
 
-jobs:
-  build-windows:
-    runs-on: windows-latest
+env:
+  VPK_VERSION: "1.2.161"
+  PACKAGES_REPO: https://github.com/Froststrap/packages
 
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create draft release in packages repo
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ secrets.PACKAGES_TOKEN }}
+        run: |
+          PRE=""; [[ "$GITHUB_REF_NAME" == *-* ]] && PRE="--prerelease"
+          gh release view "$GITHUB_REF_NAME" --repo Froststrap/packages >/dev/null 2>&1 || \
+            gh release create "$GITHUB_REF_NAME" --repo Froststrap/packages --draft --title "$GITHUB_REF_NAME" --notes "" $PRE
+
+  build-windows:
+    needs: prepare
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
     steps:
       - uses: actions/checkout@v7
-        with:
-          submodules: true
-          fetch-tags : true
-          fetch-depth: 1
+        with: { submodules: true, fetch-tags: true, fetch-depth: 1 }
 
       - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: "10.0.x"
           cache: true
-          cache-dependency-path: '**/**/**/packages.lock.json'
+          cache-dependency-path: "**/**/**/packages.lock.json"
 
-      - name: Install NSIS
-        uses: negrutiu/nsis-install@v2
-          
+      - run: dotnet tool install -g vpk --version $VPK_VERSION
+
+      - name: Fetch previous release (for deltas)
+        if: startsWith(github.ref, 'refs/tags/v')
+        continue-on-error: true # first release has nothing to download
+        run: vpk download github --repoUrl $PACKAGES_REPO --token ${{ secrets.PACKAGES_TOKEN }} --channel windows-x64 --outputDir .build/velopack
+
+      - name: Release notes
+        if: startsWith(github.ref, 'refs/tags/v')
+        continue-on-error: true
+        env: { GH_TOKEN: "${{ github.token }}" }
+        run: gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --json body -q .body > notes.md
+
       - name: Publish
-        run: dotnet run --project build -- Publish
+        run: dotnet run --project build -- Publish --release-notes "$PWD/notes.md"
+
+      - name: Upload to packages release
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          PRE=""; [[ "$GITHUB_REF_NAME" == *-* ]] && PRE="--pre"
+          vpk upload github --repoUrl $PACKAGES_REPO --token ${{ secrets.PACKAGES_TOKEN }} --channel windows-x64 --outputDir .build/velopack --tag "$GITHUB_REF_NAME" --releaseName "$GITHUB_REF_NAME" --merge $PRE
 
       - uses: actions/upload-artifact@v7
         with:
           name: froststrap-release-win-x64-${{ github.sha }}
-          path: .build/dist/*
+          path: .build/velopack/*
 
   build-macos:
+    needs: prepare
     runs-on: macos-26
     strategy:
       fail-fast: false
       matrix:
         include:
-          - arch: arm64
-            rust-target: aarch64-apple-darwin
-          - arch: x64
-            rust-target: x86_64-apple-darwin
-
+          - { arch: arm64, rust-target: aarch64-apple-darwin }
+          - { arch: x64, rust-target: x86_64-apple-darwin }
     steps:
       - uses: actions/checkout@v7
-        with:
-          submodules: true
-          fetch-tags : true
-          fetch-depth: 1
+        with: { submodules: true, fetch-tags: true, fetch-depth: 1 }
 
       - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: "10.0.x"
           cache: true
-          cache-dependency-path: '**/**/**/packages.lock.json'
+          cache-dependency-path: "**/**/**/packages.lock.json"
 
-      - name: Add Rust target
-        run: rustup target add ${{ matrix.rust-target }}
+      - run: rustup target add ${{ matrix.rust-target }}
+      - run: dotnet tool install -g vpk --version $VPK_VERSION
 
       - name: Remove stale signing keychain
         if: startsWith(github.ref, 'refs/tags/v')
@@ -82,44 +109,95 @@ jobs:
           create-keychain: false
           keychain-password: ${{ steps.import_app_cert.outputs.keychain-password }}
 
+      - name: Store notary profile
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          P8: ${{ secrets.APP_STORE_CONNECT_P8_CONTENT }}
+          APPLE_KEY_ID: ${{ secrets.APPLE_KEY_ID }}
+          APPLE_ISSUER_ID: ${{ secrets.APPLE_ISSUER_ID }}
+        run: |
+          printf '%s' "$P8" > "$RUNNER_TEMP/AuthKey.p8"
+          xcrun notarytool store-credentials froststrap-notary --key "$RUNNER_TEMP/AuthKey.p8" --key-id "$APPLE_KEY_ID" --issuer "$APPLE_ISSUER_ID" --keychain ~/Library/Keychains/signing_temp.keychain-db
+          rm "$RUNNER_TEMP/AuthKey.p8"
+
+      - name: Fetch previous release (for deltas)
+        if: startsWith(github.ref, 'refs/tags/v')
+        continue-on-error: true
+        run: vpk download github --repoUrl $PACKAGES_REPO --token ${{ secrets.PACKAGES_TOKEN }} --channel macos-${{ matrix.arch }} --outputDir .build/velopack
+
+      - name: Release notes
+        if: startsWith(github.ref, 'refs/tags/v')
+        continue-on-error: true
+        env: { GH_TOKEN: "${{ github.token }}" }
+        run: gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --json body -q .body > notes.md
+
       - name: Publish
         env:
           SIGN: ${{ startsWith(github.ref, 'refs/tags/v') && 'true' || 'false' }}
           DEVELOPER_ID_APP: ${{ secrets.DEVELOPER_ID_APP }}
           DEVELOPER_ID_INSTALLER: ${{ secrets.DEVELOPER_ID_INSTALLER }}
-          APP_STORE_CONNECT_P8_CONTENT: ${{ secrets.APP_STORE_CONNECT_P8_CONTENT }}
-          APPLE_KEY_ID: ${{ secrets.APPLE_KEY_ID }}
-          APPLE_ISSUER_ID: ${{ secrets.APPLE_ISSUER_ID }}
-        run: dotnet run --project build -- Publish --override-arch ${{ matrix.arch }}
+        run: dotnet run --project build -- Publish --override-arch ${{ matrix.arch }} --release-notes "$PWD/notes.md"
 
-      - name: Rename package for architecture
-        run: mv .build/dist/Froststrap.pkg .build/dist/Froststrap-macos-${{ matrix.arch }}.pkg
+      - name: Upload to packages release
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          PRE=""; [[ "$GITHUB_REF_NAME" == *-* ]] && PRE="--pre"
+          vpk upload github --repoUrl $PACKAGES_REPO --token ${{ secrets.PACKAGES_TOKEN }} --channel macos-${{ matrix.arch }} --outputDir .build/velopack --tag "$GITHUB_REF_NAME" --releaseName "$GITHUB_REF_NAME" --merge $PRE
 
       - uses: actions/upload-artifact@v7
         with:
           name: froststrap-release-macos-${{ matrix.arch }}-${{ github.sha }}
-          path: .build/dist/Froststrap-macos-${{ matrix.arch }}.pkg
+          path: .build/velopack/*
 
   build-linux:
+    needs: prepare
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v7
-        with:
-          submodules: true
-          fetch-tags : true
-          fetch-depth: 1
+        with: { submodules: true, fetch-tags: true, fetch-depth: 1 }
 
       - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: "10.0.x"
           cache: true
-          cache-dependency-path: '**/**/**/packages.lock.json'
+          cache-dependency-path: "**/**/**/packages.lock.json"
+
+      - run: dotnet tool install -g vpk --version $VPK_VERSION
+
+      - name: Fetch previous release (for deltas)
+        if: startsWith(github.ref, 'refs/tags/v')
+        continue-on-error: true
+        run: vpk download github --repoUrl $PACKAGES_REPO --token ${{ secrets.PACKAGES_TOKEN }} --channel linux-x64 --outputDir .build/velopack
+
+      - name: Release notes
+        if: startsWith(github.ref, 'refs/tags/v')
+        continue-on-error: true
+        env: { GH_TOKEN: "${{ github.token }}" }
+        run: gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --json body -q .body > notes.md
 
       - name: Publish
-        run: dotnet run --project build -- Publish
+        run: dotnet run --project build -- Publish --release-notes "$PWD/notes.md"
+
+      - name: Upload to packages release
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          PRE=""; [[ "$GITHUB_REF_NAME" == *-* ]] && PRE="--pre"
+          vpk upload github --repoUrl $PACKAGES_REPO --token ${{ secrets.PACKAGES_TOKEN }} --channel linux-x64 --outputDir .build/velopack --tag "$GITHUB_REF_NAME" --releaseName "$GITHUB_REF_NAME" --merge $PRE
 
       - uses: actions/upload-artifact@v7
         with:
           name: froststrap-release-linux-x64-${{ github.sha }}
-          path: .build/dist/*
+          path: |
+            .build/velopack/*
+            .build/dist/*.deb
+            .build/dist/*.rpm
+
+  publish-release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [build-windows, build-macos, build-linux]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Publish the draft
+        env:
+          GH_TOKEN: ${{ secrets.PACKAGES_TOKEN }}
+        run: gh release edit "$GITHUB_REF_NAME" --repo Froststrap/packages --draft=false

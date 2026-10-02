@@ -6,7 +6,6 @@ using Microsoft.Build.Locator;
 using Fallout.Common.Git;
 using Serilog;
 using System;
-using System.Linq;
 
 public partial class Build : FalloutBuild
 {
@@ -40,37 +39,30 @@ public partial class Build : FalloutBuild
     [Solution]
     readonly Solution Solution;
 
+    string ResolveGitTag()
+    {
+        string tag;
+        if (Environment.GetEnvironmentVariable("GITHUB_REF_TYPE") == "tag")
+        {
+            tag = Environment.GetEnvironmentVariable("GITHUB_REF_NAME");
+        }
+        else
+        {
+            var (exitCode, stdout, _) = RunProcessCaptured("git", "describe --tags --abbrev=0");
+            tag = exitCode == 0 ? stdout.Trim() : "v0.0.0";
+
+            string runNumber = Environment.GetEnvironmentVariable("GITHUB_RUN_NUMBER");
+            if (!string.IsNullOrWhiteSpace(runNumber))
+                tag = $"{tag}-ci.{runNumber}";
+        }
+
+        return string.IsNullOrWhiteSpace(tag) ? "v0.0.0" : tag;
+    }
+
     Target BuildDebug => _ => _
         .Executes(() =>
         {
-            var process = new Process
-            {
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = "git",
-                    Arguments = "tag",
-                    WorkingDirectory = GitRoot,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                }
-            };
-
-            process.Start();
-
-            var output = process.StandardOutput.ReadToEnd();
-            var error = process.StandardError.ReadToEnd();
-
-            process.WaitForExit();
-
-            var tags = output
-                .Split(
-                    '\n',
-                    StringSplitOptions.RemoveEmptyEntries |
-                    StringSplitOptions.TrimEntries);
-
-            GitTag = tags.LastOrDefault();
+            GitTag = ResolveGitTag();
 
             Log.Information("Git commit: {Value}", Repository.Commit);
             Log.Information("Git branch: {Value}", Repository.Branch);
