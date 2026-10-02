@@ -9,30 +9,3 @@ jobs:
   build:
     uses: ./.github/workflows/build.yml
     secrets: inherit
-
-  release:
-    needs: build
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-
-    steps:
-      - uses: actions/download-artifact@v7
-        with:
-          pattern: froststrap-release-*-${{ github.sha }}
-          merge-multiple: true
-          path: release
-
-      - uses: softprops/action-gh-release@v3
-        with:
-          name: Froststrap ${{ github.ref_name }}
-          prerelease: ${{ contains(github.ref_name, '-') }}
-          draft: true
-          fail_on_unmatched_files: true
-          files: |
-            release/Froststrap-windows-x64.exe
-            release/Froststrap-macos-arm64.pkg
-            release/Froststrap-macos-x64.pkg
-            release/Froststrap-linux-x64.AppImage
-            release/Froststrap-linux-x64.deb
-            release/Froststrap-linux-x64.rpm

@@ -13,6 +13,7 @@ public partial class Build : FalloutBuild
         var proc = new Process();
         proc.StartInfo.FileName = fileName;
         proc.StartInfo.Arguments = arguments;
+        proc.StartInfo.WorkingDirectory = GitRoot;
         proc.StartInfo.UseShellExecute = false;
         proc.Start();
         proc.WaitForExit();
@@ -29,6 +30,7 @@ public partial class Build : FalloutBuild
         var proc = new Process();
         proc.StartInfo.FileName = fileName;
         proc.StartInfo.Arguments = arguments;
+        proc.StartInfo.WorkingDirectory = GitRoot;
         proc.StartInfo.UseShellExecute = false;
         proc.StartInfo.RedirectStandardOutput = true;
         proc.StartInfo.RedirectStandardError = true;
