@@ -49,14 +49,14 @@ public partial class Build : FalloutBuild
         else
         {
             var (exitCode, stdout, _) = RunProcessCaptured("git", "describe --tags --abbrev=0");
-            tag = exitCode == 0 ? stdout.Trim() : "v0.0.0";
+            tag = exitCode == 0 ? stdout.Trim() : "v0.0.2";
 
             string runNumber = Environment.GetEnvironmentVariable("GITHUB_RUN_NUMBER");
             if (!string.IsNullOrWhiteSpace(runNumber))
                 tag = $"{tag}-ci.{runNumber}";
         }
 
-        return string.IsNullOrWhiteSpace(tag) ? "v0.0.0" : tag;
+        return string.IsNullOrWhiteSpace(tag) ? "v0.0.2" : tag;
     }
 
     Target BuildDebug => _ => _
