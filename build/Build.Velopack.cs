@@ -52,8 +52,8 @@ public partial class Build : FalloutBuild
         {
             case "windows":
                 args.Append($"--icon \"{GitRoot / "Froststrap" / "Froststrap.ico"}\" ");
-                args.Append("--framework vcredist143-x64 "); // replaces the NSIS VC++ redist logic
-                args.Append("--msi "); // lowkey the exe format is way too minimal
+                args.Append("--framework net10.0-x64-runtime,vcredist143-x64 "); // replaces the NSIS VC++ redist logic
+                args.Append("--msi"); // lowkey the exe format is way too minimal
                 break;
 
             case "macos":
