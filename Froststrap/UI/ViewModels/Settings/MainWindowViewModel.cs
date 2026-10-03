@@ -24,6 +24,9 @@ namespace Froststrap.UI.ViewModels.Settings
 
     internal class MainWindowViewModel : ObservableObject
     {
+        private bool _isNotLinux = !OperatingSystem.IsLinux();
+        public bool IsNotLinux { get => _isNotLinux; }
+
         private static readonly Dictionary<string, LucideIconNames> _pageIconMap = new()
         {
             ["integrations"] = LucideIconNames.Plus,

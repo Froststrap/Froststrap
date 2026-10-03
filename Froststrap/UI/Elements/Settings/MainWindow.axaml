@@ -30,8 +30,14 @@ SPDX-License-Identifier: MPL-2.0
     CanResize="True"
     WindowStartupLocation="CenterScreen">
 
-    <Grid RowDefinitions="36,*,56">
-        <Panel Grid.Row="0" Background="{DynamicResource ControlFillColorDefaultBrush}" PointerPressed="TitleBarGrid_PointerPressed"/>
+    <Grid RowDefinitions="Auto,*,56">
+        <Panel
+            Grid.Row="0"
+            Height="36"
+            Background="{DynamicResource ControlFillColorDefaultBrush}"
+            PointerPressed="TitleBarGrid_PointerPressed"
+            IsVisible="{Binding IsNotLinux}"
+        />
 
         <ui:FANavigationView
             Name="NavView"
