@@ -11,12 +11,16 @@
 }:
 let
   inherit (callPackage ./devshell-tools.nix { }) mkFragment;
+  avdt = callPackage ./avdt.nix { };
+  vpk = callPackage ./vpk.nix { };
 in
 mkFragment {
   name = "extra";
   buildInputs = [
     reuse
     typos
+    avdt # avalonia devtools
+    vpk # velopack tooling
   ]
   ++ lib.optionals stdenv.hostPlatform.isLinux [
     nfpm
