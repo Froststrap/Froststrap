@@ -2,6 +2,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.Enums.Overlay;
+using Froststrap.Integrations;
 using Froststrap.Integrations.OverlayModules;
 using Froststrap.Models.APIs.RobloxParty;
 using Froststrap.Models.APIs.RobloxParty.Events;
@@ -20,7 +21,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
         private static readonly TimeSpan GroupGap = TimeSpan.FromMinutes(5);
 
-        private readonly Integrations.Overlay? _overlay;
+        private readonly IOverlayHost? _overlay;
         private readonly RobloxParty? _party;
         private readonly FriendPresence? _presence;
 
@@ -121,7 +122,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
         public ICommand SendCommand { get; }
         public ICommand JoinCommand { get; }
 
-        public FriendActivityViewModel(Integrations.Overlay? overlay)
+        public FriendActivityViewModel(IOverlayHost? overlay)
         {
             _overlay = overlay;
             _party = overlay?.Messaging.Party;

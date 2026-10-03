@@ -15,7 +15,7 @@ using Windows.Win32.UI.WindowsAndMessaging;
 
 namespace Froststrap.Integrations
 {
-    internal class Overlay : IDisposable
+    internal class WindowsOverlayHost : IOverlayHost
     {
         private const uint EVENT_SYSTEM_FOREGROUND = 0x0003;
         private const uint EVENT_SYSTEM_MINIMIZEEND = 0x0017;
@@ -31,9 +31,9 @@ namespace Froststrap.Integrations
         public event EventHandler<bool>? GameVisibilityChanged;
         public event EventHandler? WindowClosed;
 
-        public readonly RealtimeMessaging Messaging = new();
-        public readonly ActivityWatcher? ActivityWatcher;
-        public readonly FriendPresence Friends;
+        public RealtimeMessaging Messaging { get; } = new();
+        public ActivityWatcher? ActivityWatcher { get; }
+        public FriendPresence Friends { get; }
 
         private readonly uint _robloxProcessId;
         private HWND _robloxWindow;
@@ -45,11 +45,12 @@ namespace Froststrap.Integrations
         private UnhookWinEventSafeHandle? _objectHook;
 
         private GameOverlay? _window;
+        private OverlayToast? _toast;
         private OverlayBounds? _lastBounds;
         private bool _friendsWatched;
         private bool _disposed;
 
-        public Overlay(int robloxProcessId, ActivityWatcher? activityWatcher)
+        public WindowsOverlayHost(int robloxProcessId, ActivityWatcher? activityWatcher)
         {
             _robloxProcessId = (uint)robloxProcessId;
             ActivityWatcher = activityWatcher;
@@ -183,6 +184,50 @@ namespace Froststrap.Integrations
                 SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE);
         }
 
+        public bool ShowToast(string title, string message)
+        {
+            if (_disposed || _window is null || _robloxWindow == HWND.Null)
+            {
+                App.Logger.Warn("No overlay to show it in");
+                return false;
+            }
+
+            if (IsGameMinimised() || !IsGameForeground())
+            {
+                App.Logger.Info("Game isn't in front, leaving it to the desktop notification");
+                return false;
+            }
+
+            return Dispatcher.UIThread.Invoke(() =>
+            {
+                try
+                {
+                    OverlayBounds bounds = GetBounds();
+
+                    if (bounds.Rect.Width <= 0 || bounds.Rect.Height <= 0)
+                    {
+                        App.Logger.Warn("Could not measure the game window");
+                        return false;
+                    }
+
+                    App.Logger.Info($"{title}: {message.Replace("\n", "\\n", StringComparison.Ordinal)}");
+
+                    _toast ??= new OverlayToast();
+                    _toast.Present(title, message, bounds.Rect);
+
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.Error("Failed to show a toast");
+                    App.Logger.Error(ex);
+                    return false;
+                }
+            });
+        }
+
+        public void DismissToast() => _toast?.Dismiss();
+
         public bool IsGameMinimised() => _robloxWindow != HWND.Null && PInvoke.IsIconic(_robloxWindow);
 
         public bool IsGameForeground() => _robloxWindow != HWND.Null && PInvoke.GetForegroundWindow() == _robloxWindow;
@@ -289,6 +334,7 @@ namespace Froststrap.Integrations
 
             Dispatcher.UIThread.Post(() =>
             {
+                _toast?.Close();
                 _window?.Close();
             });
 

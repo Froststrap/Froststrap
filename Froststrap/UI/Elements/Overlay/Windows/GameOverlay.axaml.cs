@@ -6,6 +6,7 @@ using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.Win32.Input;
 using Froststrap.Enums.Overlay;
+using Froststrap.Integrations;
 using Froststrap.Models.Overlay;
 using Froststrap.UI.Elements.Overlay.Controls;
 using Froststrap.UI.ViewModels.Overlay;
@@ -40,7 +41,7 @@ namespace Froststrap.UI.Elements.Overlay
         ];
 
         private readonly GameOverlayViewModel _viewModel;
-        private readonly Integrations.Overlay? _overlay;
+        private readonly IOverlayHost? _overlay;
 
         private HWND _hwnd;
         private bool _win32Initialised;
@@ -65,7 +66,7 @@ namespace Froststrap.UI.Elements.Overlay
         private GameBrowser GameBrowser => (GameBrowser)GamesPanel.PanelContent!;
         private GameHistory GameHistory => (GameHistory)HistoryPanel.PanelContent!;
 
-        public GameOverlay(Integrations.Overlay? overlay)
+        public GameOverlay(IOverlayHost? overlay)
         {
             try
             {

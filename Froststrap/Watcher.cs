@@ -21,7 +21,7 @@ namespace Froststrap
 
         public readonly WindowManipulation? WindowManipulation;
 
-        public readonly Overlay? Overlay;
+        public readonly IOverlayHost? Overlay;
 
         public readonly Softkey? Softkey;
 
@@ -112,8 +112,8 @@ namespace Froststrap
                 if (_watcherData.LaunchMode == LaunchMode.Player && App.Settings.Prop.SoftKeyEnabled)
                     Softkey = new Softkey(_watcherData.ProcessId);
 
-                if (App.Settings.Prop.EnableOverlay && _watcherData.ProcessId > 0)
-                    Overlay = new(_watcherData.ProcessId, ActivityWatcher);
+                if (OperatingSystem.IsWindows() && App.Settings.Prop.EnableOverlay && _watcherData.ProcessId > 0)
+                    Overlay = OverlayHostFactory.Create(_watcherData.ProcessId, ActivityWatcher);
 
                 _notifyIcon = new(this);
             }

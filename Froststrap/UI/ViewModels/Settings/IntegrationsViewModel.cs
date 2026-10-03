@@ -149,10 +149,10 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public bool EnableOverlay
         {
-            get => App.Settings.Prop.EnableOverlay;
+            get => OperatingSystem.IsWindows() && App.Settings.Prop.EnableOverlay;
             set
             {
-                App.Settings.Prop.EnableOverlay = value;
+                App.Settings.Prop.EnableOverlay = OperatingSystem.IsWindows() && value;
                 OnPropertyChanged(nameof(EnableOverlay));
             }
         }

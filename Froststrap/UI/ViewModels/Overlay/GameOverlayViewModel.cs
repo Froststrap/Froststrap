@@ -21,7 +21,7 @@ namespace Froststrap.UI.ViewModels.Overlay
     internal class GameOverlayViewModel : NotifyPropertyChangedViewModel
     {
         private readonly GameOverlay _window;
-        private readonly Integrations.Overlay? _overlay;
+        private readonly IOverlayHost? _overlay;
         private readonly ActivityWatcher? _activityWatcher;
 
         private readonly DispatcherTimer _sessionTimer;
@@ -320,7 +320,7 @@ namespace Froststrap.UI.ViewModels.Overlay
             set => SetProperty(ref _scrimCornerRadius, value);
         }
 
-        public GameOverlayViewModel(GameOverlay window, Integrations.Overlay? overlay)
+        public GameOverlayViewModel(GameOverlay window, IOverlayHost? overlay)
         {
             _window = window;
             _overlay = overlay;

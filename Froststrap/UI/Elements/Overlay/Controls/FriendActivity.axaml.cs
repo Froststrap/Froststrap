@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
+using Froststrap.Integrations;
 using Froststrap.UI.ViewModels.Overlay.Controls;
 using System.ComponentModel;
 
@@ -22,7 +23,7 @@ namespace Froststrap.UI.Elements.Overlay.Controls
             DataContext = _viewModel;
         }
 
-        public void Attach(Integrations.Overlay? overlay)
+        public void Attach(IOverlayHost? overlay)
         {
             _viewModel.MessagesAdded -= OnMessagesAdded;
             _viewModel.PropertyChanged -= OnViewModelChanged;
