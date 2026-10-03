@@ -8,7 +8,6 @@
   reuse,
   stdenv,
   callPackage,
-  linuxdeploy,
 }:
 let
   inherit (callPackage ./devshell-tools.nix { }) mkFragment;
@@ -20,7 +19,6 @@ mkFragment {
     typos
   ]
   ++ lib.optionals stdenv.hostPlatform.isLinux [
-    linuxdeploy
     nfpm
   ];
 }
