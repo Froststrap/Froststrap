@@ -34,7 +34,7 @@ public class VirtualDisplay
         Console.WriteLine($"Virtual display started: {result}");
     }
 
-    /// Instructs the Swift ABI to shut up the NSApplication worker thread
+    /// Instructs to shut up the NSApplication worker thread
     public static void End()
     {
         InternalVirtualDisplay.End();
@@ -55,25 +55,17 @@ internal partial class InternalNativeNotify
     );
     [LibraryImport(
         "notify",
-        EntryPoint = "set_application"
+        EntryPoint = "init"
     )]
-    public static partial int SetApplication(
-        [MarshalAs(UnmanagedType.LPUTF8Str)] string bundleIdentifier
-    );
-    [LibraryImport(
-        "notify",
-        EntryPoint = "request_notificaiton_permission"
-    )]
-    public static partial int RequestPermission();    
+    public static partial int Init();
 }
 
 /// A native notifier
 public class NativeNotify
 {
-    public static void InitRing()
+    public static void Init()
     {
-        InternalNativeNotify.RequestPermission();
-        InternalNativeNotify.SetApplication("xyz.froststrap.desktop");
+        InternalNativeNotify.Init();
     }
 
     public static void SendMessage(
