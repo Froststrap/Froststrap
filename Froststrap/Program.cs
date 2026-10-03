@@ -43,7 +43,7 @@ sealed class Program
 
         try
         {
-            NativeNotify.InitRing();
+            NativeNotify.Init();
             BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
         }
         catch (Exception ex)
