@@ -15,6 +15,7 @@ using Froststrap.UI.Elements.Base;
 using Microsoft.Win32;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using Velopack;
 
 namespace Froststrap;
 
@@ -56,6 +57,11 @@ internal partial class App : Application
     public static readonly string Version = (System.Reflection.Assembly.GetExecutingAssembly()
         .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion
         ?? "unknown+asteo").Split("+")[0];
+
+    static App()
+    {
+        Logger.Info($"App.Version = '{Version}'");
+    }
 
     public static readonly string InternalVersion = Assembly.GetExecutingAssembly()
         .GetName().Version!.ToString()[..^2];
@@ -107,6 +113,42 @@ internal partial class App : Application
     public static readonly CookiesManager Cookies = new();
 
     public static readonly HttpClient HttpClient = new(new HttpClientLoggingHandler(new HttpClientHandler { AutomaticDecompression = DecompressionMethods.All }));
+
+    public static void SavePendingUpdateNotes(UpdateInfo update)
+    {
+        string notes = update.TargetFullRelease.NotesMarkdown ?? string.Empty;
+        State.Prop.PendingUpdateVersion = notes.Length == 0 ? null : update.TargetFullRelease.Version.ToString();
+        State.Prop.PendingUpdateReleaseNotes = notes.Length == 0 ? null : notes;
+        State.Save();
+    }
+
+    private static async Task ShowPendingUpdateNotesAsync()
+    {
+        string? version = State.Prop.PendingUpdateVersion;
+        string? notes = State.Prop.PendingUpdateReleaseNotes;
+
+        if (version is null || string.IsNullOrWhiteSpace(notes))
+            return;
+
+        if (LaunchSettings.QuietFlag.Active)
+            return;
+
+        if (LaunchSettings.RobloxLaunchMode != LaunchMode.None || !string.Equals(version, Version, StringComparison.OrdinalIgnoreCase))
+        {
+            State.Prop.PendingUpdateVersion = null;
+            State.Prop.PendingUpdateReleaseNotes = null;
+            State.Save();
+            return;
+        }
+
+        State.Prop.PendingUpdateVersion = null;
+        State.Prop.PendingUpdateReleaseNotes = null;
+        State.Save();
+
+        await Frontend.ShowReleaseNotesDialog(
+            string.Format(CultureInfo.CurrentCulture, Strings.Menu_Deployment_ReleaseNotes_Title, version),
+            notes);
+    }
 
     private static bool _showingExceptionDialog;
     private static readonly Lock ActivationLock = new();
@@ -541,9 +583,6 @@ internal partial class App : Application
 
                 await Updater.RunMigrations();
 
-                if (!LaunchSettings.BypassUpdateCheck && !OperatingSystem.IsLinux() && !OperatingSystem.IsMacOS())
-                    await Updater.HandleUpgrade();
-
                 if (Settings.Prop.AllowCookieAccess)
                     await Cookies.LoadCookies();
 
@@ -556,10 +595,44 @@ internal partial class App : Application
             }
         });
 
+        _ = Task.Run(async () =>
+        {
+            if (Settings.Prop.UpdateChecks == UpdateCheck.Disabled)
+                return;
+
+            try
+            {
+                bool includePrerelease = Settings.Prop.UpdateChecks is UpdateCheck.Test or UpdateCheck.Both;
+                var updater = new UpdaterManager(includePrerelease);
+
+                // package-manager installs and dev builds aren't Velopack-managed
+                if (!updater.IsInstalled)
+                    return;
+
+                // never restart the app in the middle of a Roblox launch
+                if (LaunchSettings.RobloxLaunchMode != LaunchMode.None)
+                    return;
+
+                var update = await updater.CheckForUpdatesAsync();
+
+                if (update is null)
+                    return;
+
+                await updater.DownloadUpdatesAsync(update);
+                SavePendingUpdateNotes(update);
+                updater.ApplyUpdatesAndRestart(update);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex, "Automatic update check failed");
+            }
+        });
+
         lock (ActivationLock)
             _launchArgsProcessed = true;
 
         await LaunchHandler.ProcessLaunchArgs();
+        await ShowPendingUpdateNotesAsync();
 
         base.OnFrameworkInitializationCompleted();
     }

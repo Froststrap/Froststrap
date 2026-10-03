@@ -6,8 +6,8 @@ SPDX-License-Identifier: MPL-2.0
 
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <InfAppVersion Condition="'$(AppVersion)' == ''">preversion</InfAppVersion>
-    <AppVersion Condition="'$(AppVersion)' == ''">0.0.0</AppVersion>
+  	<AppVersion Condition="'$(AppVersion)' == ''">0.0.0</AppVersion>
+  	<InfAppVersion Condition="'$(InfAppVersion)' == ''">$(AppVersion)</InfAppVersion>
     <OutputType Condition="!$([MSBuild]::IsOSPlatform('Windows'))">Exe</OutputType>
     <OutputType Condition="$([MSBuild]::IsOSPlatform('Windows'))">WinExe</OutputType>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
@@ -48,14 +48,12 @@ SPDX-License-Identifier: MPL-2.0
     <AvaloniaResource Include="UI/AppThemes/EditorThemes/*.xshd" />
     <AvaloniaResource Include="Froststrap.ico" />
     <AvaloniaResource Include="Froststrap.png" />
-    <AvaloniaResource Include="FroststrapTray.ico" />
     <AvaloniaResource Include="UI\Elements\Base\BackgroundPanel.axaml" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Froststrap.ico" />
     <EmbeddedResource Include="Froststrap.png" />
-    <EmbeddedResource Include="FroststrapTray.ico" />
     <EmbeddedResource Include="Resources\**\*.*" Exclude="Resources\**\*.resx" />
     <EmbeddedResource Include="NLog.config">
       <LogicalName>NLog.config</LogicalName>
@@ -65,10 +63,11 @@ SPDX-License-Identifier: MPL-2.0
   <!-- NuGet packages -->
   <ItemGroup>
     <PackageReference Include="AnimatedImage.Avalonia" Version="2.1.4" />
-    <PackageReference Include="Avalonia" Version="12.1.2" />
+    <PackageReference Include="Avalonia" Version="12.1.3" />
     <PackageReference Include="Avalonia.AvaloniaEdit" Version="12.0.0" />
-    <PackageReference Include="Avalonia.Desktop" Version="12.1.2" />
-    <PackageReference Include="Avalonia.Wayland" Version="12.1.2" />
+    <PackageReference Include="Avalonia.Desktop" Version="12.1.3" />
+    <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="12.1.3" />
+    <PackageReference Include="Avalonia.Wayland" Version="12.1.3" />
     <PackageReference Include="AvaloniaUI.DiagnosticsSupport" Version="2.2.3">
       <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
       <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
@@ -76,6 +75,7 @@ SPDX-License-Identifier: MPL-2.0
     <PackageReference Include="BouncyCastle.Cryptography" Version="2.7.0" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
     <PackageReference Include="DiscordRichPresence" Version="1.6.1.70" />
+    <PackageReference Include="HotAvalonia" Version="3.1.5" />
     <PackageReference Include="ktsu.CredentialCache" Version="1.3.40" />
     <PackageReference Include="Markdig" Version="1.3.2" />
     <PackageReference Include="NLog" Version="6.2.0" />
@@ -84,6 +84,7 @@ SPDX-License-Identifier: MPL-2.0
     <PackageReference Include="PuppeteerExtraSharp" Version="3.1.1" />
     <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="10.0.8" />
     <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.321" PrivateAssets="all" />
+    <PackageReference Include="Velopack" Version="1.2.161" />
   </ItemGroup>
 
   <ItemGroup>
@@ -117,38 +118,22 @@ SPDX-License-Identifier: MPL-2.0
     </Compile>
   </ItemGroup>
 
-  <Target Name="CopyMacLibsFromBackend"
-          AfterTargets="Build"
-          Condition="$([MSBuild]::IsOSPlatform('OSX'))">
+  <Target Name="CopyMacLibsFromBackend" AfterTargets="Build" Condition="$([MSBuild]::IsOSPlatform('OSX'))">
 
     <PropertyGroup>
       <BackendOutDir>$(MSBuildProjectDirectory)/../backend/bin/$(Configuration)/$(TargetFramework)/</BackendOutDir>
     </PropertyGroup>
 
-    <Copy SourceFiles="$(BackendOutDir)libvirtualdisplay.dylib"
-          DestinationFolder="$(OutDir)"
-          SkipUnchangedFiles="true"
-          Condition="Exists('$(BackendOutDir)libvirtualdisplay.dylib')" />
+    <Copy SourceFiles="$(BackendOutDir)libvirtualdisplay.dylib" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" Condition="Exists('$(BackendOutDir)libvirtualdisplay.dylib')" />
 
-    <Copy SourceFiles="$(BackendOutDir)libmobileappreg.dylib"
-          DestinationFolder="$(OutDir)"
-          SkipUnchangedFiles="true"
-          Condition="Exists('$(BackendOutDir)libmobileappreg.dylib')" />
+    <Copy SourceFiles="$(BackendOutDir)libmobileappreg.dylib" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" Condition="Exists('$(BackendOutDir)libmobileappreg.dylib')" />
 
-    <Copy SourceFiles="$(BackendOutDir)libnotify.dylib"
-          DestinationFolder="$(OutDir)"
-          SkipUnchangedFiles="true"
-          Condition="Exists('$(BackendOutDir)libnotify.dylib')" />
+    <Copy SourceFiles="$(BackendOutDir)libnotify.dylib" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" Condition="Exists('$(BackendOutDir)libnotify.dylib')" />
   </Target>
 
-  <Target Name="KeepDylibsOutOfBundle"
-          AfterTargets="ComputeResolvedFilesToPublishList"
-          Condition="$([MSBuild]::IsOSPlatform('OSX'))">
+  <Target Name="KeepDylibsOutOfBundle" AfterTargets="ComputeResolvedFilesToPublishList" Condition="$([MSBuild]::IsOSPlatform('OSX'))">
     <ItemGroup>
-      <ResolvedFileToPublish Remove="@(ResolvedFileToPublish)"
-                             Condition="'%(Filename)%(Extension)' == 'libnotify.dylib'
-                                     Or '%(Filename)%(Extension)' == 'libvirtualdisplay.dylib'
-                                     Or '%(Filename)%(Extension)' == 'libmobileappreg.dylib'" />
+      <ResolvedFileToPublish Remove="@(ResolvedFileToPublish)" Condition="'%(Filename)%(Extension)' == 'libnotify.dylib'&#xA;                                     Or '%(Filename)%(Extension)' == 'libvirtualdisplay.dylib'&#xA;                                     Or '%(Filename)%(Extension)' == 'libmobileappreg.dylib'" />
     </ItemGroup>
   </Target>
 </Project>

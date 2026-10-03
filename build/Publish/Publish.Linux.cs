@@ -13,7 +13,6 @@ public partial class Build : FalloutBuild
         var version = GitTag.TrimStart('v');
 
         AbsolutePath outputDir = DotnetPublishArtifactsDir;
-        AbsolutePath appDir    = DistributionDir / "AppDir";
         AbsolutePath icon      = FalloutRoot / "icon512.png";
         AbsolutePath desktop   = DistributionDir / "Froststrap.desktop";
 
@@ -36,12 +35,12 @@ public partial class Build : FalloutBuild
         File.WriteAllText(desktop, desktopEntry);
 
         BuildNFPM(outputDir, version, desktop, icon);
-        BuildAppImage(outputDir, appDir, desktop, icon, version);
+        PackVelopack();
     }
 
     void BuildNFPM(AbsolutePath outputDir, string version, AbsolutePath desktop, AbsolutePath icon)
     {
-        string nfpm = EnsureTool(outputDir, "nfpm",
+        string nfpm = EnsureTool(DistributionDir, "nfpm",
             "https://github.com/goreleaser/nfpm/releases/download/v2.47.0/nfpm_2.47.0_Linux_x86_64.tar.gz", extractTarGz: true);
 
         AbsolutePath binary = outputDir / "Froststrap";
@@ -99,62 +98,6 @@ public partial class Build : FalloutBuild
         }
     }
 
-    void BuildAppImage(AbsolutePath outputDir, AbsolutePath appDir, AbsolutePath desktop, AbsolutePath icon, string version)
-    {
-        if (IsNix())
-        {
-            Log.Warning("Nix detected, appimagetool doesn't fare well here, so skipping this step.");
-            return;
-        }
-
-        if (Directory.Exists(appDir))
-            Directory.Delete(appDir, recursive: true);
-
-        Directory.CreateDirectory(appDir / "usr" / "bin");
-        Directory.CreateDirectory(appDir / "usr" / "share" / "applications");
-        Directory.CreateDirectory(appDir / "usr" / "share" / "icons" / "hicolor" / "512x512" / "apps");
-
-        File.Copy(outputDir / "Froststrap", appDir / "usr" / "bin" / "Froststrap", overwrite: true);
-        RunProcess("chmod", $"+x \"{appDir / "usr" / "bin" / "Froststrap"}\"");
-
-        File.Copy(icon, appDir / "froststrap.png", overwrite: true);
-        File.Copy(icon, appDir / "usr" / "share" / "icons" / "hicolor" / "512x512" / "apps" / "froststrap.png", overwrite: true);
-
-        File.Copy(desktop, appDir / "Froststrap.desktop", overwrite: true);
-        File.Copy(desktop, appDir / "usr" / "share" / "applications" / "Froststrap.desktop", overwrite: true);
-
-        var appRun = """
-        #!/bin/sh
-        HERE="$(dirname "$(readlink -f "$0")")"
-        exec "$HERE/usr/bin/Froststrap" "$@"
-        """;
-
-        File.WriteAllText(appDir / "AppRun", appRun);
-        RunProcess("chmod", $"+x \"{appDir / "AppRun"}\"");
-
-        string tool = "appimagetool";
-
-        if (!IsOnPath("appimagetool"))
-        {
-            AbsolutePath toolPath = DistributionDir / "appimagetool.AppImage";
-            Log.Information("appimagetool not found on PATH, downloading to {path}", toolPath);
-            RunProcess("curl",
-                $"-L --fail -o \"{toolPath}\" " +
-                "https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage");
-            RunProcess("chmod", $"+x \"{toolPath}\"");
-            tool = toolPath;
-        }
-
-        Environment.SetEnvironmentVariable("ARCH", TargetArch == "arm64" ? "aarch64" : "x86_64");
-        Environment.SetEnvironmentVariable("SOURCE_DATE_EPOCH", null);
-
-        Log.Information("Building AppImage");
-        RunProcess(tool,
-            $"--appimage-extract-and-run \"{appDir}\" \"{DistributionDir / $"Froststrap-linux-{TargetArch}.AppImage"}\"");
-
-        Directory.Delete(appDir, recursive: true);
-    }
-
     string EnsureTool(AbsolutePath buildDir, string name, string url, bool extractTarGz = false)
     {
         if (IsOnPath(name)) return name;
@@ -195,7 +138,4 @@ public partial class Build : FalloutBuild
             .Where(d => !string.IsNullOrWhiteSpace(d))
             .Any(d => File.Exists(Path.Combine(d, exe)));
 
-    static bool IsNix() =>
-        !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("IN_NIX_SHELL"))
-        || Directory.Exists("/nix/store");
 }

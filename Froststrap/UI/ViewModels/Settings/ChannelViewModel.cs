@@ -29,6 +29,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
             BrowsePlayerVersionHashCommand = new AsyncRelayCommand<object?>(BrowsePlayerVersionHashAsync);
             BrowseStudioVersionHashCommand = new AsyncRelayCommand<object?>(BrowseStudioVersionHashAsync);
+            CheckForUpdatesCommand = new AsyncRelayCommand(CheckForUpdatesAsync);
         }
 
         public static IEnumerable<UpdateCheck> UpdateCheckValues => Enum.GetValues<UpdateCheck>();
@@ -66,6 +67,95 @@ namespace Froststrap.UI.ViewModels.Settings
         public ICommand ResetSettingsToDefaultCommand => new RelayCommand(ResetSettingsToDefault);
         public IAsyncRelayCommand<object?> BrowsePlayerVersionHashCommand { get; }
         public IAsyncRelayCommand<object?> BrowseStudioVersionHashCommand { get; }
+
+        public IAsyncRelayCommand CheckForUpdatesCommand { get; }
+
+        private string _updateStatus = string.Empty;
+        private bool _isCheckingForUpdates;
+
+        public string UpdateStatus
+        {
+            get => _updateStatus;
+            private set
+            {
+                _updateStatus = value;
+                OnPropertyChanged(nameof(UpdateStatus));
+                OnPropertyChanged(nameof(HasUpdateStatus));
+            }
+        }
+
+        public bool HasUpdateStatus => !string.IsNullOrEmpty(UpdateStatus);
+
+        public bool IsCheckingForUpdates
+        {
+            get => _isCheckingForUpdates;
+            private set
+            {
+                _isCheckingForUpdates = value;
+                OnPropertyChanged(nameof(IsCheckingForUpdates));
+                OnPropertyChanged(nameof(CanCheckForUpdates));
+            }
+        }
+
+        public bool CanCheckForUpdates => !IsCheckingForUpdates;
+
+        private async Task CheckForUpdatesAsync()
+        {
+            if (IsCheckingForUpdates)
+                return;
+
+            IsCheckingForUpdates = true;
+
+            try
+            {
+                UpdateStatus = Strings.Menu_Deployment_CheckForUpdates_Checking;
+
+                var updater = new UpdaterManager(PreReleaseUpdatesEnabled);
+
+                if (!updater.IsInstalled)
+                {
+                    UpdateStatus = Strings.Menu_Deployment_CheckForUpdates_NotSupported;
+                    return;
+                }
+
+                var update = await updater.CheckForUpdatesAsync();
+
+                if (update is null)
+                {
+                    UpdateStatus = Strings.Menu_Deployment_CheckForUpdates_UpToDate;
+                    return;
+                }
+
+                var result = await Frontend.ShowMessageBox(
+                    string.Format(CultureInfo.CurrentCulture, Strings.Menu_Deployment_CheckForUpdates_Found, update.TargetFullRelease.Version),
+                    MessageBoxImage.Question,
+                    MessageBoxButton.YesNo);
+
+                if (result != MessageBoxResult.Yes)
+                {
+                    UpdateStatus = Strings.Menu_Deployment_CheckForUpdates_UpToDate;
+                    return;
+                }
+
+                UpdateStatus = string.Format(
+                    CultureInfo.CurrentCulture,
+                    Strings.Menu_Deployment_CheckForUpdates_Downloading,
+                    update.TargetFullRelease.Version);
+
+                await updater.DownloadUpdatesAsync(update);
+                App.SavePendingUpdateNotes(update);
+                updater.ApplyUpdatesAndRestart(update);
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error("Manual update check failed: ", ex);
+                UpdateStatus = Strings.Menu_Deployment_CheckForUpdates_Failed;
+            }
+            finally
+            {
+                IsCheckingForUpdates = false;
+            }
+        }
 
         public bool PreReleaseUpdatesEnabled
         {

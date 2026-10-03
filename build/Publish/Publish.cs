@@ -44,6 +44,9 @@ public partial class Build : FalloutBuild
         process.Start();
         process.WaitForExit();
 
+        if (process.ExitCode != 0)
+            throw new Exception($"Publish failed for {rid} with exit code {process.ExitCode}");
+
         foreach (string file in Directory.EnumerateFiles(DotnetPublishArtifactsDir))
         {
             if (file.EndsWith(".pdb"))
@@ -57,11 +60,6 @@ public partial class Build : FalloutBuild
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) PublishWindows();
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) PublishLinux();
 
-        if (process.ExitCode != 0)
-        {
-            throw new Exception($"Publish failed for {rid} with exit code {process.ExitCode}");
-        } else {
-            Log.Information("Build complete");
-        }
+        Log.Information("Build complete");
     }
 }

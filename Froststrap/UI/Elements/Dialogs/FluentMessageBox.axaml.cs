@@ -108,6 +108,19 @@ namespace Froststrap.UI.Elements.Dialogs
             }
         }
 
+        public FluentMessageBox(string title, string message, string buttonText) : this()
+        {
+            Title = title;
+            MessageMarkdownTextBlock.MarkdownText = message;
+            ButtonOne.IsVisible = true;
+            ButtonOne.Content = buttonText;
+            ButtonOne.Click += (_, _) =>
+            {
+                Result = MessageBoxResult.OK;
+                Close();
+            };
+        }
+
         private static string GetTextForResult(MessageBoxResult result)
         {
             switch (result)

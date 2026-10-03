@@ -9,12 +9,6 @@
 // - Launch Roblox (for testing web launches, run it from the command prompt)
 // - To re-test the same executable, delete it from the installation folder
 
-// #define DEBUG_UPDATER
-
-#if DEBUG_UPDATER
-#warning "Automatic updater debugging is enabled"
-#endif
-
 using Froststrap.AppData;
 using Froststrap.RobloxInterfaces;
 using ICSharpCode.SharpZipLib.GZip;
@@ -216,15 +210,6 @@ internal partial class Bootstrapper : IDisposable
             if (connectionResult is not null)
                 await HandleConnectionError(connectionResult);
         }
-
-#if (!DEBUG || DEBUG_UPDATER)
-        if (!App.LaunchSettings.BypassUpdateCheck && !App.LaunchSettings.UpgradeFlag.Active && App.Settings.Prop.UpdateChecks != UpdateCheck.Disabled)
-        {
-            bool updatePresent = await Updater.CheckForUpdates();
-            if (updatePresent)
-                return;
-        }
-#endif
 
         // ensure only one instance of the bootstrapper is running at the time
         // so that we don't have stuff like two updates happening simultaneously
