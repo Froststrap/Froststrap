@@ -30,8 +30,6 @@
 }:
 let
   inherit (callPackage ./devshell-tools.nix { }) mkFragment;
-  avdt = callPackage ./avdt.nix { };
-  vpk = callPackage ./vpk.nix { };
   dotnet-tc = dotnetCorePackages.sdk_10_0-bin;
 in
 mkFragment (finalAttrs: {
@@ -62,8 +60,6 @@ mkFragment (finalAttrs: {
   buildInputs = [
     omnisharp-roslyn # lsp
     dotnet-tc
-    avdt # devtools for avalonia
-    vpk # dotnet tool for velopack
   ]
   ++ lib.optionals stdenv.hostPlatform.isLinux [
     glib
