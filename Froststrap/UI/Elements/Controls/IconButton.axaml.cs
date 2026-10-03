@@ -53,6 +53,9 @@ namespace Froststrap.UI.Elements.Controls
         {
             base.OnApplyTemplate(e);
 
+            PseudoClasses.Set(":has-content", Content is not null);
+            UpdateIconOnlyPadding();
+
             _secondaryButton?.Click -= OnSecondaryButtonClick;
 
             _secondaryButton = e.NameScope.Find<Button>("PART_SecondaryButton");
@@ -76,13 +79,36 @@ namespace Froststrap.UI.Elements.Controls
             Flyout?.Closed -= OnFlyoutClosed;
         }
 
+        private void UpdateIconOnlyPadding()
+        {
+            if (Content is null)
+            {
+                var p = IconSize / 2;
+                Padding = new Thickness(p);
+            }
+            else
+            {
+                ClearValue(PaddingProperty);
+            }
+        }
+
         protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
         {
             base.OnPropertyChanged(change);
+
             if (change.Property == FlyoutProperty)
             {
                 if (change.OldValue is FlyoutBase oldFlyout)
                     oldFlyout.Closed -= OnFlyoutClosed;
+            }
+            else if (change.Property == ContentProperty)
+            {
+                PseudoClasses.Set(":has-content", change.NewValue is not null);
+                UpdateIconOnlyPadding();
+            }
+            else if (change.Property == IconSizeProperty)
+            {
+                UpdateIconOnlyPadding();
             }
         }
     }

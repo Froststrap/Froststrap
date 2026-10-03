@@ -14,179 +14,186 @@
     x:CompileBindings="False"
     mc:Ignorable="d">
 
-    <UserControl.Resources>
-        <SolidColorBrush x:Key="InGameRing" Color="#FF02B757" />
-        <SolidColorBrush x:Key="OnlineRing" Color="#FF00A2FF" />
-        <SolidColorBrush x:Key="StudioRing" Color="#FFF68802" />
-        <SolidColorBrush x:Key="InGameText" Color="#FF6BDB8C" />
-        <SolidColorBrush x:Key="OnlineText" Color="#FF5CB8FF" />
-        <SolidColorBrush x:Key="StudioText" Color="#FFFFAE5C" />
-    </UserControl.Resources>
+	<UserControl.Resources>
+		<SolidColorBrush x:Key="InGameRing" Color="#FF02B757" />
+		<SolidColorBrush x:Key="OnlineRing" Color="#FF00A2FF" />
+		<SolidColorBrush x:Key="StudioRing" Color="#FFF68802" />
+		<SolidColorBrush x:Key="InGameText" Color="#FF6BDB8C" />
+		<SolidColorBrush x:Key="OnlineText" Color="#FF5CB8FF" />
+		<SolidColorBrush x:Key="StudioText" Color="#FFFFAE5C" />
+	</UserControl.Resources>
 
-    <UserControl.Styles>
-        <Style Selector="Button.flat">
-            <Setter Property="Cursor" Value="Hand" />
-            <Setter Property="Padding" Value="8,5" />
-            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-            <Setter Property="Template">
-                <ControlTemplate>
-                    <Border
+	<UserControl.Styles>
+		<Style Selector="Button.flat">
+			<Setter Property="Cursor" Value="Hand" />
+			<Setter Property="Padding" Value="8,5" />
+			<Setter Property="HorizontalContentAlignment" Value="Stretch" />
+			<Setter Property="Template">
+				<ControlTemplate>
+					<Border
                         Name="PART_Bd"
                         Padding="{TemplateBinding Padding}"
                         Background="Transparent"
                         CornerRadius="6">
-                        <ContentPresenter
+						<ContentPresenter
                             HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                             VerticalAlignment="Center"
                             HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
                             Content="{TemplateBinding Content}" />
-                    </Border>
-                </ControlTemplate>
-            </Setter>
-        </Style>
-        <Style Selector="Button.flat:pointerover /template/ Border#PART_Bd">
-            <Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
-        </Style>
-        <Style Selector="Button.flat:pressed /template/ Border#PART_Bd">
-            <Setter Property="Background" Value="{DynamicResource SubtleFillColorTertiaryBrush}" />
-        </Style>
+					</Border>
+				</ControlTemplate>
+			</Setter>
+		</Style>
+		<Style Selector="Button.flat:pointerover /template/ Border#PART_Bd">
+			<Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
+		</Style>
+		<Style Selector="Button.flat:pressed /template/ Border#PART_Bd">
+			<Setter Property="Background" Value="{DynamicResource SubtleFillColorTertiaryBrush}" />
+		</Style>
 
-        <Style Selector=".presence Border.ring">
-            <Setter Property="BorderBrush" Value="{DynamicResource ControlStrongStrokeColorDisabledBrush}" />
-        </Style>
-        <Style Selector=".presence.ingame Border.ring">
-            <Setter Property="BorderBrush" Value="{DynamicResource InGameRing}" />
-        </Style>
-        <Style Selector=".presence.online Border.ring">
-            <Setter Property="BorderBrush" Value="{DynamicResource OnlineRing}" />
-        </Style>
-        <Style Selector=".presence.studio Border.ring">
-            <Setter Property="BorderBrush" Value="{DynamicResource StudioRing}" />
-        </Style>
-        <Style Selector=".presence.group Border.ring">
-            <Setter Property="BorderBrush" Value="Transparent" />
-        </Style>
+		<Style Selector="Button.flat.noHover:pointerover /template/ Border#PART_Bd">
+			<Setter Property="Background" Value="Transparent" />
+		</Style>
+		<Style Selector="Button.flat.noHover:pressed /template/ Border#PART_Bd">
+			<Setter Property="Background" Value="Transparent" />
+		</Style>
 
-        <Style Selector=".presence TextBlock.tint">
-            <Setter Property="Foreground" Value="{DynamicResource TextFillColorTertiaryBrush}" />
-        </Style>
-        <Style Selector=".presence.ingame TextBlock.tint">
-            <Setter Property="Foreground" Value="{DynamicResource InGameText}" />
-        </Style>
-        <Style Selector=".presence.online TextBlock.tint">
-            <Setter Property="Foreground" Value="{DynamicResource OnlineText}" />
-        </Style>
-        <Style Selector=".presence.studio TextBlock.tint">
-            <Setter Property="Foreground" Value="{DynamicResource StudioText}" />
-        </Style>
-        <Style Selector=".presence.group TextBlock.tint">
-            <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
-        </Style>
+		<Style Selector=".presence Border.ring">
+			<Setter Property="BorderBrush" Value="{DynamicResource ControlStrongStrokeColorDisabledBrush}" />
+		</Style>
+		<Style Selector=".presence.ingame Border.ring">
+			<Setter Property="BorderBrush" Value="{DynamicResource InGameRing}" />
+		</Style>
+		<Style Selector=".presence.online Border.ring">
+			<Setter Property="BorderBrush" Value="{DynamicResource OnlineRing}" />
+		</Style>
+		<Style Selector=".presence.studio Border.ring">
+			<Setter Property="BorderBrush" Value="{DynamicResource StudioRing}" />
+		</Style>
+		<Style Selector=".presence.group Border.ring">
+			<Setter Property="BorderBrush" Value="Transparent" />
+		</Style>
 
-        <Style Selector=".presence TextBlock.headerTint">
-            <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
-        </Style>
-        <Style Selector=".presence.ingame TextBlock.headerTint">
-            <Setter Property="Foreground" Value="{DynamicResource InGameText}" />
-        </Style>
-        <Style Selector=".presence.online TextBlock.headerTint">
-            <Setter Property="Foreground" Value="{DynamicResource OnlineText}" />
-        </Style>
-        <Style Selector=".presence.studio TextBlock.headerTint">
-            <Setter Property="Foreground" Value="{DynamicResource StudioText}" />
-        </Style>
+		<Style Selector=".presence TextBlock.tint">
+			<Setter Property="Foreground" Value="{DynamicResource TextFillColorTertiaryBrush}" />
+		</Style>
+		<Style Selector=".presence.ingame TextBlock.tint">
+			<Setter Property="Foreground" Value="{DynamicResource InGameText}" />
+		</Style>
+		<Style Selector=".presence.online TextBlock.tint">
+			<Setter Property="Foreground" Value="{DynamicResource OnlineText}" />
+		</Style>
+		<Style Selector=".presence.studio TextBlock.tint">
+			<Setter Property="Foreground" Value="{DynamicResource StudioText}" />
+		</Style>
+		<Style Selector=".presence.group TextBlock.tint">
+			<Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+		</Style>
 
-        <Style Selector=".presence TextBlock.stateTint">
-            <Setter Property="Foreground" Value="{DynamicResource TextFillColorTertiaryBrush}" />
-        </Style>
-        <Style Selector=".presence.ingame TextBlock.stateTint">
-            <Setter Property="Foreground" Value="{DynamicResource InGameText}" />
-        </Style>
+		<Style Selector=".presence TextBlock.headerTint">
+			<Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+		</Style>
+		<Style Selector=".presence.ingame TextBlock.headerTint">
+			<Setter Property="Foreground" Value="{DynamicResource InGameText}" />
+		</Style>
+		<Style Selector=".presence.online TextBlock.headerTint">
+			<Setter Property="Foreground" Value="{DynamicResource OnlineText}" />
+		</Style>
+		<Style Selector=".presence.studio TextBlock.headerTint">
+			<Setter Property="Foreground" Value="{DynamicResource StudioText}" />
+		</Style>
 
-        <Style Selector=".messageGroup TextBlock.sender">
-            <Setter Property="Foreground" Value="{DynamicResource OnlineText}" />
-        </Style>
-        <Style Selector=".messageGroup.mine TextBlock.sender">
-            <Setter Property="Foreground" Value="{DynamicResource AccentFillColorDefaultBrush}" />
-        </Style>
+		<Style Selector=".presence TextBlock.stateTint">
+			<Setter Property="Foreground" Value="{DynamicResource TextFillColorTertiaryBrush}" />
+		</Style>
+		<Style Selector=".presence.ingame TextBlock.stateTint">
+			<Setter Property="Foreground" Value="{DynamicResource InGameText}" />
+		</Style>
 
-        <Style Selector="StackPanel.line TextBlock.body">
-            <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
-        </Style>
-        <Style Selector="StackPanel.line TextBlock.failure">
-            <Setter Property="IsVisible" Value="False" />
-            <Setter Property="Foreground" Value="{DynamicResource SystemFillColorCriticalBrush}" />
-        </Style>
-        <Style Selector="StackPanel.line.pending">
-            <Setter Property="Opacity" Value="0.55" />
-        </Style>
-        <Style Selector="StackPanel.line.failed TextBlock.body">
-            <Setter Property="Foreground" Value="{DynamicResource SystemFillColorCriticalBrush}" />
-        </Style>
-        <Style Selector="StackPanel.line.failed TextBlock.failure">
-            <Setter Property="IsVisible" Value="True" />
-        </Style>
+		<Style Selector=".messageGroup TextBlock.sender">
+			<Setter Property="Foreground" Value="{DynamicResource OnlineText}" />
+		</Style>
+		<Style Selector=".messageGroup.mine TextBlock.sender">
+			<Setter Property="Foreground" Value="{DynamicResource AccentFillColorDefaultBrush}" />
+		</Style>
 
-        <Style Selector="Border.tab">
-            <Setter Property="BorderThickness" Value="0,0,0,2" />
-            <Setter Property="BorderBrush" Value="Transparent" />
-            <Setter Property="Background" Value="Transparent" />
-        </Style>
-        <Style Selector="Border.tab.selected">
-            <Setter Property="Background" Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
-            <Setter Property="BorderBrush" Value="{DynamicResource AccentFillColorDefaultBrush}" />
-        </Style>
-        <Style Selector="Border.tab TextBlock.tabName">
-            <Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
-        </Style>
-        <Style Selector="Border.tab.selected TextBlock.tabName">
-            <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
-        </Style>
-    </UserControl.Styles>
+		<Style Selector="StackPanel.line TextBlock.body">
+			<Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+		</Style>
+		<Style Selector="StackPanel.line TextBlock.failure">
+			<Setter Property="IsVisible" Value="False" />
+			<Setter Property="Foreground" Value="{DynamicResource SystemFillColorCriticalBrush}" />
+		</Style>
+		<Style Selector="StackPanel.line.pending">
+			<Setter Property="Opacity" Value="0.55" />
+		</Style>
+		<Style Selector="StackPanel.line.failed TextBlock.body">
+			<Setter Property="Foreground" Value="{DynamicResource SystemFillColorCriticalBrush}" />
+		</Style>
+		<Style Selector="StackPanel.line.failed TextBlock.failure">
+			<Setter Property="IsVisible" Value="True" />
+		</Style>
 
-    <UserControl.DataTemplates>
-        <DataTemplate DataType="models:FriendListHeader">
-            <Button
+		<Style Selector="Border.tab">
+			<Setter Property="BorderThickness" Value="0,0,0,2" />
+			<Setter Property="BorderBrush" Value="Transparent" />
+			<Setter Property="Background" Value="Transparent" />
+		</Style>
+		<Style Selector="Border.tab.selected">
+			<Setter Property="Background" Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
+			<Setter Property="BorderBrush" Value="{DynamicResource AccentFillColorDefaultBrush}" />
+		</Style>
+		<Style Selector="Border.tab TextBlock.tabName">
+			<Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
+		</Style>
+		<Style Selector="Border.tab.selected TextBlock.tabName">
+			<Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+		</Style>
+	</UserControl.Styles>
+
+	<UserControl.DataTemplates>
+		<DataTemplate DataType="models:FriendListHeader">
+			<Button
                 Margin="0,8,0,2"
                 Padding="6,4"
                 HorizontalAlignment="Stretch"
                 Classes="flat"
                 Command="{Binding $parent[ItemsControl].DataContext.ToggleSectionCommand}"
                 CommandParameter="{Binding}">
-                <StackPanel Orientation="Horizontal">
-                    <Panel
+				<StackPanel Orientation="Horizontal">
+					<Panel
                         Width="11"
                         Height="11"
                         Margin="0,0,8,0"
                         VerticalAlignment="Center">
-                        <ic:Lucide
+						<ic:Lucide
                             Width="11"
                             Height="11"
                             Icon="ChevronDown"
                             IsVisible="{Binding IsExpanded}"
                             StrokeBrush="{DynamicResource TextFillColorTertiaryBrush}" />
-                        <ic:Lucide
+						<ic:Lucide
                             Width="11"
                             Height="11"
                             Icon="ChevronRight"
                             IsVisible="{Binding !IsExpanded}"
                             StrokeBrush="{DynamicResource TextFillColorTertiaryBrush}" />
-                    </Panel>
-                    <TextBlock
+					</Panel>
+					<TextBlock
                         FontSize="13"
                         Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                         Text="{Binding Title}" />
-                    <TextBlock
+					<TextBlock
                         Margin="6,0,0,0"
                         FontSize="13"
                         Foreground="{DynamicResource TextFillColorTertiaryBrush}"
                         Text="{Binding CountText}" />
-                </StackPanel>
-            </Button>
-        </DataTemplate>
+				</StackPanel>
+			</Button>
+		</DataTemplate>
 
-        <DataTemplate DataType="models:ChatFriend">
-            <Button
+		<DataTemplate DataType="models:ChatFriend">
+			<Button
                 HorizontalAlignment="Stretch"
                 Classes="flat presence"
                 Classes.group="{Binding IsGroup}"
@@ -195,25 +202,25 @@
                 Classes.studio="{Binding IsInStudio}"
                 Command="{Binding $parent[ItemsControl].DataContext.OpenChatCommand}"
                 CommandParameter="{Binding}">
-                <Grid ColumnDefinitions="Auto,*,Auto">
-                    <Border
+				<Grid ColumnDefinitions="Auto,*,Auto">
+					<Border
                         Width="36"
                         Height="36"
                         Margin="0,0,10,0"
                         BorderThickness="2"
                         Classes="ring"
                         CornerRadius="18">
-                        <Border
+						<Border
                             Margin="1"
                             Background="{DynamicResource ControlFillColorSecondaryBrush}"
                             ClipToBounds="True"
                             CornerRadius="15">
-                            <Panel>
-                                <Image
+							<Panel>
+								<Image
                                     RenderOptions.BitmapInterpolationMode="LowQuality"
                                     Source="{Binding HeadshotBitmap}"
                                     Stretch="UniformToFill" />
-                                <ic:Lucide
+								<ic:Lucide
                                     Width="15"
                                     Height="15"
                                     HorizontalAlignment="Center"
@@ -221,26 +228,26 @@
                                     Icon="Users"
                                     IsVisible="{Binding IsGroup}"
                                     StrokeBrush="{DynamicResource TextFillColorSecondaryBrush}" />
-                            </Panel>
-                        </Border>
-                    </Border>
+							</Panel>
+						</Border>
+					</Border>
 
-                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                        <TextBlock
+					<StackPanel Grid.Column="1" VerticalAlignment="Center">
+						<TextBlock
                             Classes="tint"
                             FontSize="13"
                             FontWeight="SemiBold"
                             Text="{Binding DisplayName}"
                             TextTrimming="CharacterEllipsis" />
-                        <TextBlock
+						<TextBlock
                             Margin="0,1,0,0"
                             Classes="stateTint"
                             FontSize="11"
                             Text="{Binding StatusText}"
                             TextTrimming="CharacterEllipsis" />
-                    </StackPanel>
+					</StackPanel>
 
-                    <Border
+					<Border
                         Grid.Column="2"
                         Height="18"
                         MinWidth="18"
@@ -250,56 +257,56 @@
                         Background="{DynamicResource AccentFillColorDefaultBrush}"
                         CornerRadius="9"
                         IsVisible="{Binding HasUnread}">
-                        <TextBlock
+						<TextBlock
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             FontSize="10"
                             FontWeight="SemiBold"
                             Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}"
                             Text="{Binding UnreadText}" />
-                    </Border>
-                </Grid>
-            </Button>
-        </DataTemplate>
+					</Border>
+				</Grid>
+			</Button>
+		</DataTemplate>
 
-        <DataTemplate DataType="models:ChatDayDivider">
-            <Grid Margin="0,14,0,6" ColumnDefinitions="*,Auto,*">
-                <Rectangle
+		<DataTemplate DataType="models:ChatDayDivider">
+			<Grid Margin="0,14,0,6" ColumnDefinitions="*,Auto,*">
+				<Rectangle
                     Grid.Column="0"
                     Height="1"
                     VerticalAlignment="Center"
                     Fill="{DynamicResource DividerStrokeColorDefaultBrush}" />
-                <TextBlock
+				<TextBlock
                     Grid.Column="1"
                     Margin="12,0"
                     FontSize="11"
                     Foreground="{DynamicResource TextFillColorTertiaryBrush}"
                     Text="{Binding Text}" />
-                <Rectangle
+				<Rectangle
                     Grid.Column="2"
                     Height="1"
                     VerticalAlignment="Center"
                     Fill="{DynamicResource DividerStrokeColorDefaultBrush}" />
-            </Grid>
-        </DataTemplate>
+			</Grid>
+		</DataTemplate>
 
-        <DataTemplate DataType="models:ChatSystemLine">
-            <TextBlock
+		<DataTemplate DataType="models:ChatSystemLine">
+			<TextBlock
                 Margin="46,4,0,4"
                 FontSize="12"
                 FontStyle="Italic"
                 Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                 Text="{Binding Text}"
                 TextWrapping="Wrap" />
-        </DataTemplate>
+		</DataTemplate>
 
-        <DataTemplate DataType="models:ChatMessageGroup">
-            <Grid
+		<DataTemplate DataType="models:ChatMessageGroup">
+			<Grid
                 Margin="0,6,0,4"
                 Classes="messageGroup"
                 Classes.mine="{Binding IsMine}"
                 ColumnDefinitions="Auto,*">
-                <Border
+				<Border
                     Width="34"
                     Height="34"
                     Margin="0,2,12,0"
@@ -307,131 +314,131 @@
                     Background="{DynamicResource ControlFillColorSecondaryBrush}"
                     ClipToBounds="True"
                     CornerRadius="17">
-                    <Image
+					<Image
                         RenderOptions.BitmapInterpolationMode="LowQuality"
                         Source="{Binding AvatarBitmap}"
                         Stretch="UniformToFill" />
-                </Border>
+				</Border>
 
-                <StackPanel Grid.Column="1">
-                    <StackPanel Margin="0,0,0,2" Orientation="Horizontal">
-                        <TextBlock
+				<StackPanel Grid.Column="1">
+					<StackPanel Margin="0,0,0,2" Orientation="Horizontal">
+						<TextBlock
                             Classes="sender"
                             FontSize="13"
                             FontWeight="SemiBold"
                             Text="{Binding Sender}" />
-                        <TextBlock
+						<TextBlock
                             Margin="8,0,0,0"
                             VerticalAlignment="Bottom"
                             FontSize="11"
                             Foreground="{DynamicResource TextFillColorTertiaryBrush}"
                             Text="{Binding TimeText}" />
-                    </StackPanel>
+					</StackPanel>
 
-                    <ItemsControl Focusable="False" ItemsSource="{Binding Lines}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel
+					<ItemsControl Focusable="False" ItemsSource="{Binding Lines}">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<StackPanel
                                     Margin="0,1"
                                     Classes="line"
                                     Classes.failed="{Binding IsFailed}"
                                     Classes.pending="{Binding IsPending}">
-                                    <TextBlock
+									<TextBlock
                                         Classes="body"
                                         FontSize="13"
                                         Text="{Binding Text}"
                                         TextWrapping="Wrap" />
-                                    <TextBlock
+									<TextBlock
                                         Classes="failure"
                                         FontSize="11"
                                         Text="{Binding Failure}" />
-                                </StackPanel>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </StackPanel>
-            </Grid>
-        </DataTemplate>
-    </UserControl.DataTemplates>
+								</StackPanel>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+				</StackPanel>
+			</Grid>
+		</DataTemplate>
+	</UserControl.DataTemplates>
 
-    <Grid ColumnDefinitions="280,Auto,*">
+	<Grid ColumnDefinitions="280,Auto,*">
 
-        <Grid Grid.Column="0" RowDefinitions="Auto,Auto,*">
+		<Grid Grid.Column="0" RowDefinitions="Auto,Auto,*">
 
-            <Border
+			<Border
                 Grid.Row="0"
                 Padding="14,12"
                 Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}"
                 BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}"
                 BorderThickness="0,0,0,1">
-                <Grid ColumnDefinitions="Auto,*">
-                    <Border
+				<Grid ColumnDefinitions="Auto,*">
+					<Border
                         Width="42"
                         Height="42"
                         Margin="0,0,12,0"
                         BorderBrush="{DynamicResource OnlineRing}"
                         BorderThickness="2"
                         CornerRadius="21">
-                        <Border
+						<Border
                             Margin="1"
                             Background="{DynamicResource ControlFillColorSecondaryBrush}"
                             ClipToBounds="True"
                             CornerRadius="18">
-                            <Image
+							<Image
                                 RenderOptions.BitmapInterpolationMode="LowQuality"
                                 Source="{Binding MyAvatarBitmap}"
                                 Stretch="UniformToFill" />
-                        </Border>
-                    </Border>
+						</Border>
+					</Border>
 
-                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                        <TextBlock
+					<StackPanel Grid.Column="1" VerticalAlignment="Center">
+						<TextBlock
                             FontSize="15"
                             FontWeight="SemiBold"
                             Foreground="{DynamicResource OnlineText}"
                             Text="{Binding MyName}"
                             TextTrimming="CharacterEllipsis" />
-                        <TextBlock
+						<TextBlock
                             Margin="0,1,0,0"
                             FontSize="12"
                             Foreground="{DynamicResource TextFillColorTertiaryBrush}"
                             Text="{Binding MyHandle}"
                             TextTrimming="CharacterEllipsis" />
-                    </StackPanel>
-                </Grid>
-            </Border>
+					</StackPanel>
+				</Grid>
+			</Border>
 
-            <TextBox
+			<TextBox
                 Grid.Row="1"
                 Margin="10,10,10,2"
                 FontSize="13"
                 PlaceholderText="{x:Static resources:Strings.Menu_Overlay_Messages_Search}"
                 Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}">
-                <TextBox.InnerLeftContent>
-                    <ic:Lucide
+				<TextBox.InnerLeftContent>
+					<ic:Lucide
                         Width="14"
                         Height="14"
                         Margin="10,0,0,0"
                         Icon="Search"
                         StrokeBrush="{DynamicResource TextFillColorTertiaryBrush}" />
-                </TextBox.InnerLeftContent>
-            </TextBox>
+				</TextBox.InnerLeftContent>
+			</TextBox>
 
-            <Grid Grid.Row="2">
-                <ScrollViewer Padding="0,0,0,8" VerticalScrollBarVisibility="Auto">
-                    <ItemsControl
+			<Grid Grid.Row="2">
+				<ScrollViewer Padding="0,0,0,8" VerticalScrollBarVisibility="Auto">
+					<ItemsControl
                         Margin="6,0"
                         Focusable="False"
                         ItemsSource="{Binding Rows}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <VirtualizingStackPanel />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                    </ItemsControl>
-                </ScrollViewer>
+						<ItemsControl.ItemsPanel>
+							<ItemsPanelTemplate>
+								<VirtualizingStackPanel />
+							</ItemsPanelTemplate>
+						</ItemsControl.ItemsPanel>
+					</ItemsControl>
+				</ScrollViewer>
 
-                <TextBlock
+				<TextBlock
                     Margin="24,0"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
@@ -441,96 +448,96 @@
                     Text="{Binding ListStatus}"
                     TextAlignment="Center"
                     TextWrapping="Wrap" />
-            </Grid>
-        </Grid>
+			</Grid>
+		</Grid>
 
-        <Rectangle
+		<Rectangle
             Grid.Column="1"
             Width="1"
             Fill="{DynamicResource DividerStrokeColorDefaultBrush}" />
 
-        <Panel Grid.Column="2">
+		<Panel Grid.Column="2">
 
-            <StackPanel
+			<StackPanel
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 IsVisible="{Binding ShowPlaceholder}"
                 Spacing="10">
-                <ic:Lucide
+				<ic:Lucide
                     Width="36"
                     Height="36"
                     HorizontalAlignment="Center"
                     Icon="MessageSquare"
                     StrokeBrush="{DynamicResource TextFillColorDisabledBrush}" />
-                <TextBlock
+				<TextBlock
                     FontSize="13"
                     Foreground="{DynamicResource TextFillColorTertiaryBrush}"
                     Text="{x:Static resources:Strings.Menu_Overlay_Messages_PickConversation}"
                     TextAlignment="Center" />
-            </StackPanel>
+			</StackPanel>
 
-            <Grid IsVisible="{Binding HasTab}" RowDefinitions="Auto,Auto,*,Auto">
+			<Grid IsVisible="{Binding HasTab}" RowDefinitions="Auto,Auto,*,Auto">
 
-                <Border
+				<Border
                     Grid.Row="0"
                     Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}"
                     BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}"
                     BorderThickness="0,0,0,1">
-                    <ScrollViewer
+					<ScrollViewer
                         x:Name="TabScroller"
                         HorizontalScrollBarVisibility="Hidden"
                         PointerWheelChanged="TabScroller_PointerWheelChanged"
                         VerticalScrollBarVisibility="Disabled">
-                        <ItemsControl Focusable="False" ItemsSource="{Binding Tabs}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <StackPanel Orientation="Horizontal" />
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Border
+						<ItemsControl Focusable="False" ItemsSource="{Binding Tabs}">
+							<ItemsControl.ItemsPanel>
+								<ItemsPanelTemplate>
+									<StackPanel Orientation="Horizontal" />
+								</ItemsPanelTemplate>
+							</ItemsControl.ItemsPanel>
+							<ItemsControl.ItemTemplate>
+								<DataTemplate>
+									<Border
                                         Height="40"
                                         Classes="tab"
                                         Classes.selected="{Binding IsSelected}">
-                                        <StackPanel Orientation="Horizontal">
-                                            <Button
+										<StackPanel Orientation="Horizontal">
+											<Button
                                                 Height="38"
                                                 Padding="12,0,4,0"
-                                                Classes="flat"
+                                                Classes="flat noHover"
                                                 Command="{Binding $parent[ItemsControl].DataContext.SelectTabCommand}"
                                                 CommandParameter="{Binding}">
-                                                <StackPanel Orientation="Horizontal">
-                                                    <Border
+												<StackPanel Orientation="Horizontal">
+													<Border
                                                         Width="22"
                                                         Height="22"
                                                         Margin="0,0,8,0"
                                                         Background="{DynamicResource ControlFillColorSecondaryBrush}"
                                                         ClipToBounds="True"
                                                         CornerRadius="11">
-                                                        <Image
+														<Image
                                                             RenderOptions.BitmapInterpolationMode="LowQuality"
                                                             Source="{Binding Friend.HeadshotBitmap}"
                                                             Stretch="UniformToFill" />
-                                                    </Border>
-                                                    <TextBlock
+													</Border>
+													<TextBlock
                                                         MaxWidth="150"
                                                         VerticalAlignment="Center"
                                                         Classes="tabName"
                                                         FontSize="13"
                                                         Text="{Binding Friend.DisplayName}"
                                                         TextTrimming="CharacterEllipsis" />
-                                                    <Ellipse
+													<Ellipse
                                                         Width="7"
                                                         Height="7"
                                                         Margin="6,0,0,0"
                                                         VerticalAlignment="Center"
                                                         Fill="{DynamicResource AccentFillColorDefaultBrush}"
                                                         IsVisible="{Binding Friend.HasUnread}" />
-                                                </StackPanel>
-                                            </Button>
+												</StackPanel>
+											</Button>
 
-                                            <Button
+											<Button
                                                 Width="24"
                                                 Height="24"
                                                 Margin="2,0,6,0"
@@ -540,50 +547,50 @@
                                                 Command="{Binding $parent[ItemsControl].DataContext.CloseTabCommand}"
                                                 CommandParameter="{Binding}"
                                                 ToolTip.Tip="{x:Static resources:Strings.Menu_Overlay_Messages_CloseTab}">
-                                                <ic:Lucide
+												<ic:Lucide
                                                     Width="10"
                                                     Height="10"
                                                     HorizontalAlignment="Center"
                                                     Icon="X"
                                                     StrokeBrush="{DynamicResource TextFillColorTertiaryBrush}" />
-                                            </Button>
-                                        </StackPanel>
-                                    </Border>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </ScrollViewer>
-                </Border>
+											</Button>
+										</StackPanel>
+									</Border>
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+					</ScrollViewer>
+				</Border>
 
-                <Border
+				<Border
                     Grid.Row="1"
                     Margin="16,12,16,8"
                     DataContext="{Binding SelectedTab.Friend}">
-                    <Grid
+					<Grid
                         Classes="presence"
                         Classes.group="{Binding IsGroup}"
                         Classes.ingame="{Binding IsInGame}"
                         Classes.online="{Binding IsOnline}"
                         Classes.studio="{Binding IsInStudio}"
                         ColumnDefinitions="Auto,*,Auto">
-                        <Border
+						<Border
                             Width="40"
                             Height="40"
                             Margin="0,0,12,0"
                             BorderThickness="2"
                             Classes="ring"
                             CornerRadius="20">
-                            <Border
+							<Border
                                 Margin="1"
                                 Background="{DynamicResource ControlFillColorSecondaryBrush}"
                                 ClipToBounds="True"
                                 CornerRadius="17">
-                                <Panel>
-                                    <Image
+								<Panel>
+									<Image
                                         RenderOptions.BitmapInterpolationMode="LowQuality"
                                         Source="{Binding HeadshotBitmap}"
                                         Stretch="UniformToFill" />
-                                    <ic:Lucide
+									<ic:Lucide
                                         Width="16"
                                         Height="16"
                                         HorizontalAlignment="Center"
@@ -591,63 +598,63 @@
                                         Icon="Users"
                                         IsVisible="{Binding IsGroup}"
                                         StrokeBrush="{DynamicResource TextFillColorSecondaryBrush}" />
-                                </Panel>
-                            </Border>
-                        </Border>
+								</Panel>
+							</Border>
+						</Border>
 
-                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock
+						<StackPanel Grid.Column="1" VerticalAlignment="Center">
+							<StackPanel Orientation="Horizontal">
+								<TextBlock
                                     Classes="headerTint"
                                     FontSize="15"
                                     FontWeight="SemiBold"
                                     Text="{Binding DisplayName}"
                                     TextTrimming="CharacterEllipsis" />
-                                <TextBlock
+								<TextBlock
                                     Margin="8,0,0,1"
                                     VerticalAlignment="Bottom"
                                     FontSize="12"
                                     Foreground="{DynamicResource TextFillColorTertiaryBrush}"
                                     Text="{Binding Handle}" />
-                            </StackPanel>
-                            <TextBlock
+							</StackPanel>
+							<TextBlock
                                 Margin="0,2,0,0"
                                 Classes="stateTint"
                                 FontSize="12"
                                 Text="{Binding StatusText}"
                                 TextTrimming="CharacterEllipsis" />
-                        </StackPanel>
+						</StackPanel>
 
-                        <StackPanel
+						<StackPanel
                             Grid.Column="2"
                             VerticalAlignment="Center"
                             Orientation="Horizontal">
-                            <controls:IconButton
+							<controls:IconButton
                                 Margin="12,0,0,0"
                                 Classes="Primary"
                                 Command="{Binding $parent[UserControl].DataContext.JoinCommand}"
                                 Content="{x:Static resources:Strings.Menu_Overlay_Messages_Join}"
                                 Icon="Play"
                                 IsVisible="{Binding CanJoin}" />
-                            <controls:IconButton
+							<controls:IconButton
                                 Margin="12,0,0,0"
                                 Command="{Binding $parent[UserControl].DataContext.JoinCommand}"
                                 Content="{x:Static resources:Strings.Menu_Overlay_Messages_ViewGame}"
                                 Icon="ExternalLink"
                                 IsVisible="{Binding CanViewGame}" />
-                        </StackPanel>
-                    </Grid>
-                </Border>
+						</StackPanel>
+					</Grid>
+				</Border>
 
-                <Grid Grid.Row="2">
-                    <ScrollViewer
+				<Grid Grid.Row="2">
+					<ScrollViewer
                         x:Name="MessageScroller"
                         Padding="16,0,12,8"
                         VerticalScrollBarVisibility="Auto">
-                        <ItemsControl Focusable="False" ItemsSource="{Binding SelectedTab.Rows}" />
-                    </ScrollViewer>
+						<ItemsControl Focusable="False" ItemsSource="{Binding SelectedTab.Rows}" />
+					</ScrollViewer>
 
-                    <TextBlock
+					<TextBlock
                         Margin="24,0"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
@@ -658,20 +665,20 @@
                         TextAlignment="Center"
                         TextWrapping="Wrap" />
 
-                    <ui:FAProgressRing
+					<ui:FAProgressRing
                         Width="28"
                         Height="28"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         IsIndeterminate="True"
                         IsVisible="{Binding SelectedTab.IsLoading}" />
-                </Grid>
+				</Grid>
 
-                <Grid
+				<Grid
                     Grid.Row="3"
                     Margin="14,4,14,14"
                     ColumnDefinitions="*,Auto">
-                    <TextBox
+					<TextBox
                         x:Name="DraftBox"
                         Grid.Column="0"
                         MaxHeight="120"
@@ -681,7 +688,7 @@
                         Text="{Binding SelectedTab.Draft, UpdateSourceTrigger=PropertyChanged}"
                         TextWrapping="Wrap" />
 
-                    <controls:IconButton
+					<controls:IconButton
                         Grid.Column="1"
                         Width="40"
                         Height="34"
@@ -694,8 +701,8 @@
                         IconSize="14"
                         IsEnabled="{Binding SelectedTab.CanSend}"
                         ToolTip.Tip="{x:Static resources:Strings.Menu_Overlay_Messages_Send}" />
-                </Grid>
-            </Grid>
-        </Panel>
-    </Grid>
+				</Grid>
+			</Grid>
+		</Panel>
+	</Grid>
 </UserControl>

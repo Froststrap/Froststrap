@@ -84,7 +84,7 @@ SPDX-License-Identifier: MPL-2.0
 
                 <controls:IconButton
                     Grid.Column="1"
-                    Icon="MessageCircleMore"
+                    Icon="MessageSquareMore"
                     Content="Discord"
                     CornerRadius="8"
                     Height="56"

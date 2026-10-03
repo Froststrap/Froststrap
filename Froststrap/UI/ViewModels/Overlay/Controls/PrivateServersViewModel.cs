@@ -1,8 +1,9 @@
+using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Input.Platform;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
-using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 
@@ -334,7 +335,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                     PrivateServers.RegenerateLinkAsync,
                     _ => Strings.Menu_Overlay_PrivateServers_NewLinkMade));
 
-            CopyRowLinkCommand = new RelayCommand<PrivateServerItem>(item => CopyToClipboard(item?.Link));
+            CopyRowLinkCommand = new AsyncRelayCommand<Visual>(CopyRowLinkAsync);
             BackCommand = new RelayCommand(Back);
 
             EditNameCommand = new RelayCommand(() =>
@@ -359,7 +360,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                 ChangeAsync(PrivateServers.RegenerateLinkAsync,
                     Strings.Menu_Overlay_PrivateServers_NewLinkMade));
 
-            CopyLinkCommand = new RelayCommand(() => CopyToClipboard(Link));
+            CopyLinkCommand = new AsyncRelayCommand<Visual>(CopyManageLinkAsync);
 
             if (_activityWatcher is null)
                 return;
@@ -781,20 +782,44 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             }
         }
 
-        private void CopyToClipboard(string? link)
+        private async Task CopyRowLinkAsync(Visual? visual)
         {
-            if (String.IsNullOrEmpty(link))
+            if (visual?.DataContext is not PrivateServerItem item)
+                return;
+
+            if (String.IsNullOrEmpty(item.Link))
+            {
+                Flash(Strings.Menu_Overlay_PrivateServers_LoadFailed);
+                return;
+            }
+
+            try
+            {
+                var clipboard = TopLevel.GetTopLevel(visual)?.Clipboard;
+                if (clipboard is null) return;
+
+                await clipboard.SetTextAsync(item.Link);
+
+                Flash(Strings.Menu_Overlay_PrivateServers_LinkCopied);
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error("Failed to copy the link");
+                App.Logger.Error(ex);
+            }
+        }
+
+        private async Task CopyManageLinkAsync(Visual? visual)
+        {
+            if (String.IsNullOrEmpty(Link))
                 return;
 
             try
             {
-                var lifetime = App.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
-                var clipboard = lifetime?.MainWindow?.Clipboard;
+                var clipboard = TopLevel.GetTopLevel(visual)?.Clipboard;
+                if (clipboard is null) return;
 
-                if (clipboard is null)
-                    return;
-
-                _ = clipboard.SetTextAsync(link);
+                await clipboard.SetTextAsync(Link);
 
                 Flash(Strings.Menu_Overlay_PrivateServers_LinkCopied);
             }

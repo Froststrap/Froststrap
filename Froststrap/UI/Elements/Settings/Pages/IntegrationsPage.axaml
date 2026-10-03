@@ -1,7 +1,7 @@
 <!--
-SPDX-FileCopyrightText: 2026 Froststrap
-
-SPDX-License-Identifier: MPL-2.0
+    SPDX-FileCopyrightText: 2026 Froststrap
+    
+    SPDX-License-Identifier: MPL-2.0
 -->
 
 <UserControl
@@ -10,10 +10,10 @@ SPDX-License-Identifier: MPL-2.0
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:gv="using:Froststrap.UI.ViewModels"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:resources="using:Froststrap.Resources"
     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
-    xmlns:gv="using:Froststrap.UI.ViewModels"
     d:DesignHeight="2500"
     d:DesignWidth="1200"
     x:DataType="vm:IntegrationsViewModel"
@@ -24,15 +24,13 @@ SPDX-License-Identifier: MPL-2.0
             <TextBlock
                 FontSize="20"
                 FontWeight="Bold"
-                Text="{x:Static resources:Strings.Menu_Integrations_ActivityTracking}"
-            />
+                Text="{x:Static resources:Strings.Menu_Integrations_ActivityTracking}" />
 
             <controls:MarkdownTextBlock
+                Margin="0,2,0,10"
                 Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                 MarkdownText="{x:Static resources:Strings.Menu_Integrations_ActivityTracking_Description}"
-                TextWrapping="Wrap"
-                Margin="0,2,0,10"
-            />
+                TextWrapping="Wrap" />
 
             <controls:OptionControl
                 x:Name="ActivityTrackingOption"
@@ -74,8 +72,8 @@ SPDX-License-Identifier: MPL-2.0
             <controls:OptionControl
                 Description="{x:Static resources:Strings.Menu_Integrations_DoubleClickAction_Description}"
                 Header="{x:Static resources:Strings.Menu_Integrations_DoubleClickAction_Title}"
-                IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}"
-                IsEnabled="{Binding ActivityTrackingEnabled}">
+                IsEnabled="{Binding ActivityTrackingEnabled}"
+                IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}">
                 <ComboBox
                     MinWidth="200"
                     Margin="5,0,0,0"
@@ -91,11 +89,11 @@ SPDX-License-Identifier: MPL-2.0
             </controls:OptionControl>
 
             <controls:CardExpander
-                IsEnabled="{Binding ActivityTrackingEnabled}"
-                IsExpanded="{Binding ShowGameHistoryEnabled, Mode=OneWay}"
                 Classes="NoUserExpansion"
+                Description="{x:Static resources:Strings.Menu_Integrations_GameHistory_Description}"
                 Header="{x:Static resources:Strings.ContextMenu_GameHistory_Title}"
-                Description="{x:Static resources:Strings.Menu_Integrations_GameHistory_Description}">
+                IsEnabled="{Binding ActivityTrackingEnabled}"
+                IsExpanded="{Binding ShowGameHistoryEnabled, Mode=OneWay}">
                 <controls:CardExpander.HeaderContent>
                     <ToggleSwitch IsChecked="{Binding ShowGameHistoryEnabled, Mode=TwoWay}" />
                 </controls:CardExpander.HeaderContent>
@@ -109,12 +107,15 @@ SPDX-License-Identifier: MPL-2.0
                             Margin="0,8,0,0"
                             HorizontalAlignment="Left"
                             Command="{Binding OpenGameHistoryCommand}"
-                            Content="{x:Static resources:Strings.Menu_Integrations_GameHistory_View}"/>
+                            Content="{x:Static resources:Strings.Menu_Integrations_GameHistory_View}" />
                     </controls:OptionControl>
                 </StackPanel>
             </controls:CardExpander>
 
-            <controls:CardExpander Header="{x:Static resources:Strings.Menu_Integrations_BlockCardExpander_Title}" Description="{x:Static resources:Strings.Menu_Integrations_BlockCardExpander_Description}" IsExpanded="True">
+            <controls:CardExpander
+                Description="{x:Static resources:Strings.Menu_Integrations_BlockCardExpander_Description}"
+                Header="{x:Static resources:Strings.Menu_Integrations_BlockCardExpander_Title}"
+                IsExpanded="True">
                 <StackPanel>
                     <controls:OptionControl
                         Description="{Binding Source={x:Static resources:Strings.Menu_Integrations_DesktopApp_Description}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://bloxstraplabs.com/wiki/features/dont-exit-to-desktop-app/'}"
@@ -124,53 +125,18 @@ SPDX-License-Identifier: MPL-2.0
                         <ToggleSwitch IsChecked="{Binding DisableAppPatchEnabled, Mode=TwoWay}" />
                     </controls:OptionControl>
 
-                    <controls:OptionControl Description="{x:Static resources:Strings.Menu_Integrations_BlockVideoRecording_Description}"
-                                            Header="{x:Static resources:Strings.Menu_Integrations_BlockVideoRecording_Title}"
-                                            IsVisible="{x:Static gv:GlobalViewModel.IsWindows}">
+                    <controls:OptionControl
+                        Description="{x:Static resources:Strings.Menu_Integrations_BlockVideoRecording_Description}"
+                        Header="{x:Static resources:Strings.Menu_Integrations_BlockVideoRecording_Title}"
+                        IsVisible="{x:Static gv:GlobalViewModel.IsWindows}">
                         <ToggleSwitch IsChecked="{Binding DisableRobloxRecording, Mode=TwoWay}" />
                     </controls:OptionControl>
 
-                    <controls:OptionControl Description="{x:Static resources:Strings.Menu_Integrations_BlockScreenShots_Description}"
-                                            Header="{x:Static resources:Strings.Menu_Integrations_BlockScreenShots_Title}"
-                                            IsVisible="{x:Static gv:GlobalViewModel.IsWindows}">
-                        <ToggleSwitch IsChecked="{Binding DisableRobloxScreenshots, Mode=TwoWay}" />
-                    </controls:OptionControl>
-                </StackPanel>
-            </controls:CardExpander>
-
-			<Separator Margin="0,12" />
-
-			<TextBlock
-                FontSize="20"
-                FontWeight="Bold"
-                Text="{x:Static resources:Strings.Menu_Integrations_Overlay_Title}"
-                Margin="0,10,0,0"
-            />
-
-            <controls:CardExpander
-                Classes="NoUserExpansion"
-                IsVisible="{x:Static gv:GlobalViewModel.IsWindows}"
-                IsExpanded="{Binding EnableOverlay, Mode=OneWay}"
-                Header="{x:Static resources:Strings.Menu_Integrations_EnableOverlay_Title}"
-                Description="{x:Static resources:Strings.Menu_Integrations_EnableOverlay_Description}">
-                <controls:CardExpander.HeaderContent>
-                    <ToggleSwitch IsChecked="{Binding EnableOverlay, Mode=TwoWay}" />
-                </controls:CardExpander.HeaderContent>
-
-                <StackPanel Margin="0,8,0,0">
                     <controls:OptionControl
-                        Header="{x:Static resources:Strings.Menu_Integrations_OverlayHotkey_Title}"
-                        Description="{x:Static resources:Strings.Menu_Integrations_OverlayHotkey_Description}">
-                        <StackPanel Orientation="Horizontal" Spacing="4" Margin="0,0,16,0" Width="200">
-                            <controls:HotkeyBox
-                                Modifiers="{Binding OverlayHotkeyModifiers, Mode=TwoWay}"
-								HorizontalAlignment="Stretch"
-                                Key="{Binding OverlayHotkeyKey, Mode=TwoWay}"
-                                IsRecording="{Binding IsRecordingHotkey, Mode=OneWayToSource}" />
-                            <controls:IconButton
-                                Command="{Binding ResetHotkeyCommand, Mode=OneTime}"
-                                Icon="RotateCcw" />
-                        </StackPanel>
+                        Description="{x:Static resources:Strings.Menu_Integrations_BlockScreenShots_Description}"
+                        Header="{x:Static resources:Strings.Menu_Integrations_BlockScreenShots_Title}"
+                        IsVisible="{x:Static gv:GlobalViewModel.IsWindows}">
+                        <ToggleSwitch IsChecked="{Binding DisableRobloxScreenshots, Mode=TwoWay}" />
                     </controls:OptionControl>
                 </StackPanel>
             </controls:CardExpander>
@@ -178,133 +144,174 @@ SPDX-License-Identifier: MPL-2.0
             <Separator Margin="0,12" />
 
             <TextBlock
+                Margin="0,10,0,0"
                 FontSize="20"
                 FontWeight="Bold"
-                Text="{x:Static resources:Strings.Common_DiscordRichPresence}"
+                Text="{x:Static resources:Strings.Menu_Integrations_Overlay_Title}" />
+
+            <controls:CardExpander
+                Classes="NoUserExpansion"
+                Description="{x:Static resources:Strings.Menu_Integrations_EnableOverlay_Description}"
+                Header="{x:Static resources:Strings.Menu_Integrations_EnableOverlay_Title}"
+                IsExpanded="{Binding EnableOverlay, Mode=OneWay}"
+                IsVisible="{x:Static gv:GlobalViewModel.IsWindows}">
+                <controls:CardExpander.HeaderContent>
+                    <ToggleSwitch IsChecked="{Binding EnableOverlay, Mode=TwoWay}" />
+                </controls:CardExpander.HeaderContent>
+
+                <StackPanel Margin="0,8,0,0">
+                    <controls:OptionControl Description="{x:Static resources:Strings.Menu_Integrations_OverlayHotkey_Description}" Header="{x:Static resources:Strings.Menu_Integrations_OverlayHotkey_Title}">
+                        <Grid
+                            MinWidth="200"
+                            HorizontalAlignment="Right"
+                            ColumnDefinitions="*,Auto">
+                            <controls:HotkeyBox
+                                Key="{Binding OverlayHotkeyKey, Mode=TwoWay}"
+                                Grid.Column="0"
+                                HorizontalAlignment="Stretch"
+                                IsRecording="{Binding IsRecordingHotkey, Mode=OneWayToSource}"
+                                Modifiers="{Binding OverlayHotkeyModifiers, Mode=TwoWay}" />
+                            <controls:IconButton
+                                Grid.Column="1"
+                                Margin="4,0,0,0"
+                                Command="{Binding ResetHotkeyCommand, Mode=OneTime}"
+                                Icon="RotateCcw" />
+                        </Grid>
+                    </controls:OptionControl>
+                </StackPanel>
+            </controls:CardExpander>
+
+            <Separator Margin="0,12" />
+
+            <TextBlock
                 Margin="0,10,0,0"
-            />
+                FontSize="20"
+                FontWeight="Bold"
+                Text="{x:Static resources:Strings.Common_DiscordRichPresence}" />
 
             <controls:MarkdownTextBlock
+                Margin="0,2,0,10"
                 Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                 MarkdownText="{Binding Source={x:Static resources:Strings.Menu_Integrations_RequiresActivityTracking}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://bloxstraplabs.com/wiki/features/discord-rich-presence/'}"
-                TextWrapping="Wrap"
-                Margin="0,2,0,10"
-            />
+                TextWrapping="Wrap" />
 
-            <controls:OptionControl
-                                    Description="{x:Static resources:Strings.Menu_Integrations_FroststrapRPC_Description}"
-                                    Header="{x:Static resources:Strings.Menu_Integrations_FroststrapRPC_Title}">
+            <controls:OptionControl Description="{x:Static resources:Strings.Menu_Integrations_FroststrapRPC_Description}" Header="{x:Static resources:Strings.Menu_Integrations_FroststrapRPC_Title}">
                 <ToggleSwitch IsChecked="{Binding ShowUsingFroststrapRPC, Mode=TwoWay}" />
             </controls:OptionControl>
 
             <TextBlock
-                       FontSize="20"
-                       FontWeight="Bold"
-                       Margin="0,10,0,0"
-                       Text="{x:Static resources:Strings.Common_Player}" />
+                Margin="0,10,0,0"
+                FontSize="20"
+                FontWeight="Bold"
+                Text="{x:Static resources:Strings.Common_Player}" />
 
             <controls:MarkdownTextBlock
-                                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                        MarkdownText="{x:Static resources:Strings.Menu_Integrations_RPC_Player_Description}"
-                                        Margin="0,2,0,10"
-                                        TextWrapping="Wrap" />
+                Margin="0,2,0,10"
+                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                MarkdownText="{x:Static resources:Strings.Menu_Integrations_RPC_Player_Description}"
+                TextWrapping="Wrap" />
 
             <controls:OptionControl
-                                    x:Name="DiscordActivityOption"
-                                    Description="{Binding Source={x:Static resources:Strings.Menu_Integrations_ShowGameActivity_Description}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://bloxstraplabs.com/wiki/help/discord-rich-presence-not-working/'}"
-                                    Header="{x:Static resources:Strings.Menu_Integrations_ShowGameActivity_Title}"
-                                    IsEnabled="{Binding ActivityTrackingEnabled}">
+                x:Name="DiscordActivityOption"
+                Description="{Binding Source={x:Static resources:Strings.Menu_Integrations_ShowGameActivity_Description}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://bloxstraplabs.com/wiki/help/discord-rich-presence-not-working/'}"
+                Header="{x:Static resources:Strings.Menu_Integrations_ShowGameActivity_Title}"
+                IsEnabled="{Binding ActivityTrackingEnabled}">
                 <ToggleSwitch IsChecked="{Binding DiscordActivityEnabled, Mode=TwoWay}" />
             </controls:OptionControl>
 
             <controls:OptionControl
-                                    Description="{x:Static resources:Strings.Menu_Integrations_CustomStatusDisplay_Description}"
-                                    Header="{x:Static resources:Strings.Menu_Integrations_CustomStatusDisplay_Title}"
-                                    IsEnabled="{Binding DiscordActivityEnabled}">
+                Description="{x:Static resources:Strings.Menu_Integrations_CustomStatusDisplay_Description}"
+                Header="{x:Static resources:Strings.Menu_Integrations_CustomStatusDisplay_Title}"
+                IsEnabled="{Binding DiscordActivityEnabled}">
                 <ToggleSwitch IsChecked="{Binding EnableCustomStatusDisplay, Mode=TwoWay}" />
             </controls:OptionControl>
 
             <controls:OptionControl
-                                    Description="{x:Static resources:Strings.Menu_Integrations_AllowActivityJoining_Description}"
-                                    Header="{x:Static resources:Strings.Menu_Integrations_AllowActivityJoining_Title}"
-                                    IsEnabled="{Binding DiscordActivityEnabled}">
+                Description="{x:Static resources:Strings.Menu_Integrations_AllowActivityJoining_Description}"
+                Header="{x:Static resources:Strings.Menu_Integrations_AllowActivityJoining_Title}"
+                IsEnabled="{Binding DiscordActivityEnabled}">
                 <ToggleSwitch IsChecked="{Binding DiscordActivityJoinEnabled, Mode=TwoWay}" />
             </controls:OptionControl>
 
             <controls:OptionControl
-                                    Description="{x:Static resources:Strings.Menu_Integrations_ShowAccountOnProfile_Description}"
-                                    Header="{x:Static resources:Strings.Menu_Integrations_ShowAccountOnProfile_Title}"
-                                    IsEnabled="{Binding DiscordActivityEnabled}">
+                Description="{x:Static resources:Strings.Menu_Integrations_ShowAccountOnProfile_Description}"
+                Header="{x:Static resources:Strings.Menu_Integrations_ShowAccountOnProfile_Title}"
+                IsEnabled="{Binding DiscordActivityEnabled}">
                 <ToggleSwitch IsChecked="{Binding DiscordAccountOnProfile, Mode=TwoWay}" />
             </controls:OptionControl>
 
             <TextBlock
-                       FontSize="20"
-                       Margin="0,16,0,0"
-                       FontWeight="Bold"
-                       Text="{x:Static resources:Strings.Common_Studio}"/>
+                Margin="0,16,0,0"
+                FontSize="20"
+                FontWeight="Bold"
+                Text="{x:Static resources:Strings.Common_Studio}" />
 
             <controls:MarkdownTextBlock
-                                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                        MarkdownText="{x:Static resources:Strings.Menu_Integrations_RPC_Studio_Description}"
-                                        TextWrapping="Wrap" />
+                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                MarkdownText="{x:Static resources:Strings.Menu_Integrations_RPC_Studio_Description}"
+                TextWrapping="Wrap" />
 
-            <controls:OptionControl x:Name="StudioActivityOption"
-                                    Header="{x:Static resources:Strings.Menu_Integrations_StudioActivity_Title}"
-                                    Description="{x:Static resources:Strings.Menu_Integrations_StudioActivity_Description}"
-                                    IsEnabled="{Binding ActivityTrackingEnabled}">
+            <controls:OptionControl
+                x:Name="StudioActivityOption"
+                Description="{x:Static resources:Strings.Menu_Integrations_StudioActivity_Description}"
+                Header="{x:Static resources:Strings.Menu_Integrations_StudioActivity_Title}"
+                IsEnabled="{Binding ActivityTrackingEnabled}">
                 <ToggleSwitch IsChecked="{Binding StudioRPCEnabled, Mode=TwoWay}" />
             </controls:OptionControl>
 
             <controls:OptionControl
-                                    Header="{x:Static resources:Strings.Menu_Integrations_DynamicThumbnail_Title}"
-                                    Description="{x:Static resources:Strings.Menu_Integrations_DynamicThumbnail_Description}"
-                                    IsEnabled="{Binding StudioRPCEnabled}">
+                Description="{x:Static resources:Strings.Menu_Integrations_DynamicThumbnail_Description}"
+                Header="{x:Static resources:Strings.Menu_Integrations_DynamicThumbnail_Title}"
+                IsEnabled="{Binding StudioRPCEnabled}">
                 <ToggleSwitch IsChecked="{Binding ThumbnailChanging, Mode=TwoWay}" />
             </controls:OptionControl>
 
             <controls:OptionControl
-                                    Header="{x:Static resources:Strings.Menu_Integrations_EditingInfo_Title}"
-                                    Description="{x:Static resources:Strings.Menu_Integrations_EditingInfo_Description}"
-                                    IsEnabled="{Binding StudioRPCEnabled}">
+                Description="{x:Static resources:Strings.Menu_Integrations_EditingInfo_Description}"
+                Header="{x:Static resources:Strings.Menu_Integrations_EditingInfo_Title}"
+                IsEnabled="{Binding StudioRPCEnabled}">
                 <ToggleSwitch IsChecked="{Binding EditingInfo, Mode=TwoWay}" />
             </controls:OptionControl>
 
             <controls:OptionControl
-                                    Header="{x:Static resources:Strings.Menu_Integrations_WorkspaceInfo_Title}"
-                                    Description="{x:Static resources:Strings.Menu_Integrations_WorkspaceInfo_Description}"
-                                    IsEnabled="{Binding StudioRPCEnabled}">
+                Description="{x:Static resources:Strings.Menu_Integrations_WorkspaceInfo_Description}"
+                Header="{x:Static resources:Strings.Menu_Integrations_WorkspaceInfo_Title}"
+                IsEnabled="{Binding StudioRPCEnabled}">
                 <ToggleSwitch IsChecked="{Binding WorkspaceInfo, Mode=TwoWay}" />
             </controls:OptionControl>
 
             <controls:OptionControl
-                                    Header="{x:Static resources:Strings.Menu_Integrations_ShowTesting_Title}"
-                                    Description="{x:Static resources:Strings.Menu_Integrations_ShowTesting_Description}"
-                                    IsEnabled="{Binding StudioRPCEnabled}">
+                Description="{x:Static resources:Strings.Menu_Integrations_ShowTesting_Description}"
+                Header="{x:Static resources:Strings.Menu_Integrations_ShowTesting_Title}"
+                IsEnabled="{Binding StudioRPCEnabled}">
                 <ToggleSwitch IsChecked="{Binding ShowTesting, Mode=TwoWay}" />
             </controls:OptionControl>
 
             <controls:OptionControl
-                                    Header="{x:Static resources:Strings.Menu_Integrations_JoinButton_Title}"
-                                    Description="{x:Static resources:Strings.Menu_Integrations_JoinButton_Description}"
-                                    IsEnabled="{Binding StudioRPCEnabled}">
+                Description="{x:Static resources:Strings.Menu_Integrations_JoinButton_Description}"
+                Header="{x:Static resources:Strings.Menu_Integrations_JoinButton_Title}"
+                IsEnabled="{Binding StudioRPCEnabled}">
                 <ToggleSwitch IsChecked="{Binding StudioGameButton, Mode=TwoWay}" />
             </controls:OptionControl>
 
             <Separator Margin="0,12" />
 
             <TextBlock
+                Margin="0,16,0,0"
                 FontSize="20"
                 FontWeight="Bold"
-                Margin="0,16,0,0"
                 Text="{x:Static resources:Strings.Menu_Integrations_Custom_Title}" />
             <TextBlock
+                Margin="0,2,0,10"
                 Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                 Text="{x:Static resources:Strings.Menu_Integrations_Custom_Description}"
-                Margin="0,2,0,10"
                 TextWrapping="Wrap" />
 
-            <Grid MinHeight="325" Margin="0,8,0,0" RowDefinitions="*, Auto" ColumnDefinitions="250, *">
+            <Grid
+                MinHeight="325"
+                Margin="0,8,0,0"
+                ColumnDefinitions="250, *"
+                RowDefinitions="*, Auto">
                 <ListBox
                     x:Name="CustomIntegrationsListBox"
                     Grid.Row="0"
@@ -321,7 +328,11 @@ SPDX-License-Identifier: MPL-2.0
                     </ListBox.ItemTemplate>
                 </ListBox>
 
-                <Grid Grid.Row="1" Grid.Column="0" Margin="0,8,4,0" ColumnDefinitions="*, *">
+                <Grid
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Margin="0,8,4,0"
+                    ColumnDefinitions="*, *">
                     <controls:IconButton
                         Grid.Column="0"
                         Margin="0,0,4,0"
@@ -371,17 +382,42 @@ SPDX-License-Identifier: MPL-2.0
                     </Grid>
 
                     <Grid Margin="0,8,0,0" ColumnDefinitions="Auto, 1*, Auto, 2*">
-                        <TextBlock Grid.Column="0" FontSize="14" VerticalAlignment="Center" Margin="0,0,4,0" Text="Launch Delay" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
-                        <TextBox Grid.Column="1" Margin="0,0,16,0" PlaceholderText="200" Text="{Binding SelectedCustomIntegration.Delay}" />
+                        <TextBlock
+                            Grid.Column="0"
+                            Margin="0,0,4,0"
+                            VerticalAlignment="Center"
+                            FontSize="14"
+                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                            Text="Launch Delay" />
+                        <TextBox
+                            Grid.Column="1"
+                            Margin="0,0,16,0"
+                            PlaceholderText="200"
+                            Text="{Binding SelectedCustomIntegration.Delay}" />
 
-                        <TextBlock Grid.Column="2" FontSize="14" VerticalAlignment="Center" Margin="0,0,4,0" Text="{x:Static resources:Strings.Menu_Integrations_Custom_LaunchArgs}" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
-                        <TextBox Grid.Column="3" PlaceholderText="{Binding Source='/k echo {0}', Converter={StaticResource StringFormatConverter}, ConverterParameter={x:Static resources:Strings.Menu_Integrations_Custom_LaunchArgs_Placeholder}}" Text="{Binding SelectedCustomIntegration.LaunchArgs}" />
+                        <TextBlock
+                            Grid.Column="2"
+                            Margin="0,0,4,0"
+                            VerticalAlignment="Center"
+                            FontSize="14"
+                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                            Text="{x:Static resources:Strings.Menu_Integrations_Custom_LaunchArgs}" />
+                        <TextBox
+                            Grid.Column="3"
+                            PlaceholderText="{Binding Source='/k echo {0}', Converter={StaticResource StringFormatConverter}, ConverterParameter={x:Static resources:Strings.Menu_Integrations_Custom_LaunchArgs_Placeholder}}"
+                            Text="{Binding SelectedCustomIntegration.LaunchArgs}" />
                     </Grid>
 
                     <StackPanel Margin="0,8,0,0" Orientation="Horizontal">
                         <CheckBox Content="{x:Static resources:Strings.Menu_Integrations_Custom_AutoClose}" IsChecked="{Binding SelectedCustomIntegration.AutoClose}" />
-                        <CheckBox Margin="8,0,0,0" Content="Pre Roblox Launch" IsChecked="{Binding SelectedCustomIntegration.PreLaunch}" />
-                        <CheckBox Margin="8,0,0,0" Content="{x:Static resources:Strings.Menu_Integrations_Custom_SpecifyGame}" IsChecked="{Binding SelectedCustomIntegration.SpecifyGame, UpdateSourceTrigger=PropertyChanged}" />
+                        <CheckBox
+                            Margin="8,0,0,0"
+                            Content="Pre Roblox Launch"
+                            IsChecked="{Binding SelectedCustomIntegration.PreLaunch}" />
+                        <CheckBox
+                            Margin="8,0,0,0"
+                            Content="{x:Static resources:Strings.Menu_Integrations_Custom_SpecifyGame}"
+                            IsChecked="{Binding SelectedCustomIntegration.SpecifyGame, UpdateSourceTrigger=PropertyChanged}" />
                     </StackPanel>
 
                     <StackPanel IsVisible="{Binding SelectedCustomIntegration.SpecifyGame}">

@@ -294,6 +294,17 @@ SPDX-License-Identifier: MPL-2.0
                 </StackPanel>
             </StackPanel>
 
+            <StackPanel Spacing="8">
+                <TextBlock Text="Icon Only - Different Sizes" FontWeight="Bold" />
+                <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                    <controls:IconButton Icon="House" IconSize="12" />
+                    <controls:IconButton Icon="House" IconSize="16" />
+                    <controls:IconButton Icon="House" IconSize="20" />
+                    <controls:IconButton Icon="House" IconSize="24" />
+                    <controls:IconButton Icon="House" IconSize="32" />
+                </StackPanel>
+            </StackPanel>
+
             <StackPanel Spacing="8" Margin="0,16,0,0">
                 <TextBlock Text="DropDown Buttons (requires Flyout)" FontWeight="Bold" />
                 <StackPanel Orientation="Horizontal" Spacing="8">
