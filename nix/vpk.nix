@@ -18,9 +18,8 @@ let
       else if stdenv.hostPlatform.isLinux then
         "sha256-rJvnOEbZp6dkg/hoSr0VA81QcDuZJydCnc3ARVicXgg="
       else
-        "";
-    nugetName =
-      "vpk";
+        lib.fakeSha256;
+    nugetName = "vpk";
     dotnet-sdk = dotnet-sdk;
   };
 in

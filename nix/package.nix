@@ -13,7 +13,10 @@ let
     hash = "sha256-KajUNB3vgzslBOTvL/GWTwRLZmbc+XKvtkyRQAz0ktE=";
   };
 
-  appimageContents = appimageTools.extractType2 { inherit version src; pname = "froststrap"; };
+  appimageContents = appimageTools.extractType2 {
+    inherit version src;
+    pname = "froststrap";
+  };
 
   desktopItem = makeDesktopItem {
     name = "froststrap";
