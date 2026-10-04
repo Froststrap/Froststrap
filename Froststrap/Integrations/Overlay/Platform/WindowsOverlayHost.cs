@@ -13,7 +13,7 @@ using Windows.Win32.Foundation;
 using Windows.Win32.UI.Accessibility;
 using Windows.Win32.UI.WindowsAndMessaging;
 
-namespace Froststrap.Integrations
+namespace Froststrap.Integrations.Overlay.Platform
 {
     internal class WindowsOverlayHost : IOverlayHost
     {

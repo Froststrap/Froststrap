@@ -5,6 +5,7 @@ using Avalonia.Interactivity;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Froststrap.Integrations;
+using Froststrap.Integrations.Overlay;
 using Froststrap.Models.Overlay;
 using Froststrap.UI.ViewModels.Overlay.Controls;
 using System.ComponentModel;

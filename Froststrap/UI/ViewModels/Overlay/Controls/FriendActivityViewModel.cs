@@ -3,6 +3,7 @@ using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.Enums.Overlay;
 using Froststrap.Integrations;
+using Froststrap.Integrations.Overlay;
 using Froststrap.Integrations.OverlayModules;
 using Froststrap.Models.APIs.RobloxParty;
 using Froststrap.Models.APIs.RobloxParty.Events;

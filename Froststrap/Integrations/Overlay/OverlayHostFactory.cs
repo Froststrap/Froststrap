@@ -2,16 +2,15 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-namespace Froststrap.Integrations
+using Froststrap.Integrations.Overlay.Platform;
+
+namespace Froststrap.Integrations.Overlay
 {
     internal static class OverlayHostFactory
     {
         public static IOverlayHost? Create(int robloxProcessId, ActivityWatcher? activityWatcher)
         {
-            if (!OperatingSystem.IsWindows())
-                return null;
-
-            return new WindowsOverlayHost(robloxProcessId, activityWatcher);
+            return new PlatformOverlayHost(robloxProcessId, activityWatcher);
         }
     }
 }

@@ -9,6 +9,7 @@ using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.Enums.Overlay;
 using Froststrap.Integrations;
+using Froststrap.Integrations.Overlay;
 using Froststrap.UI.Elements.Overlay;
 using Froststrap.Utility;
 using LucideAvalonia.Enum;

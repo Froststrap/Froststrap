@@ -3,9 +3,8 @@
 // SPDX-License-Identifier: MPL-2.0
 
 using Froststrap.Integrations.OverlayModules;
-using Froststrap.Models.Overlay;
 
-namespace Froststrap.Integrations
+namespace Froststrap.Integrations.Overlay
 {
     internal interface IOverlayHost : IDisposable
     {

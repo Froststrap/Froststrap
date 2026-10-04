@@ -4,6 +4,7 @@
 
 using Froststrap.AppData;
 using Froststrap.Integrations;
+using Froststrap.Integrations.Overlay;
 
 namespace Froststrap
 {

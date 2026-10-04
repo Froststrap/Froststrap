@@ -7,6 +7,7 @@ using Avalonia.Threading;
 using Avalonia.Win32.Input;
 using Froststrap.Enums.Overlay;
 using Froststrap.Integrations;
+using Froststrap.Integrations.Overlay;
 using Froststrap.Models.Overlay;
 using Froststrap.UI.Elements.Overlay.Controls;
 using Froststrap.UI.ViewModels.Overlay;
