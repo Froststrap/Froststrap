@@ -23,7 +23,7 @@ jobs:
           gh release view "$GITHUB_REF_NAME" --repo Froststrap/packages >/dev/null 2>&1 || \
             gh release create "$GITHUB_REF_NAME" --repo Froststrap/packages --draft --title "$GITHUB_REF_NAME" --notes "" $PRE
 
-  build-windows:
+  windows:
     needs: prepare
     runs-on: windows-latest
     defaults:
@@ -66,7 +66,7 @@ jobs:
           name: froststrap-release-win-x64-${{ github.sha }}
           path: .build/velopack/*
 
-  build-macos:
+  macos:
     needs: prepare
     runs-on: macos-26
     strategy:
@@ -149,7 +149,7 @@ jobs:
           name: froststrap-release-macos-${{ matrix.arch }}-${{ github.sha }}
           path: .build/velopack/*
 
-  build-linux:
+  linux:
     needs: prepare
     runs-on: ubuntu-latest
     steps:
@@ -194,7 +194,7 @@ jobs:
 
   publish-release:
     if: startsWith(github.ref, 'refs/tags/v')
-    needs: [build-windows, build-macos, build-linux]
+    needs: [windows, macos, linux]
     runs-on: ubuntu-latest
     steps:
       - name: Publish the draft
