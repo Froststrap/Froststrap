@@ -36,7 +36,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public bool AutomaticUpdatesEnabled
         {
-            get => SelectedUpdateCheck != UpdateCheck.Disabled;
+            get => !UpdaterManager.IsCiBuild && SelectedUpdateCheck != UpdateCheck.Disabled;
             set
             {
                 if (value)
@@ -103,6 +103,12 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             if (IsCheckingForUpdates)
                 return;
+
+            if (UpdaterManager.IsCiBuild)
+            {
+                UpdateStatus = Strings.Menu_Deployment_CheckForUpdates_UpToDate;
+                return;
+            }
 
             IsCheckingForUpdates = true;
 

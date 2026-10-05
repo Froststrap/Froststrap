@@ -608,6 +608,9 @@ internal partial class App : Application
             if (Settings.Prop.UpdateChecks == UpdateCheck.Disabled)
                 return;
 
+            if (UpdaterManager.IsCiBuild)
+                return;
+
             try
             {
                 bool includePrerelease = Settings.Prop.UpdateChecks is UpdateCheck.Test or UpdateCheck.Both;
