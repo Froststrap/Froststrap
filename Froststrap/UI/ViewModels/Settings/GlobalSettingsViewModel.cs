@@ -368,7 +368,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public int UITransparency
         {
-        
+
             get => int.TryParse(App.GlobalSettings.GetPreset("UI.Transparency"),
                 NumberStyles.Integer, CultureInfo.InvariantCulture, out var v) ? v : 1;
             set

@@ -630,7 +630,7 @@ namespace Froststrap.Integrations
                         return new ServerSelectionResult();
                     }
 
-                    var (servers, _) = await FetchServersByRegionAsync(placeId, region, null, cancellationToken :cancellationToken);
+                    var (servers, _) = await FetchServersByRegionAsync(placeId, region, null, cancellationToken: cancellationToken);
                     if (servers.Count == 0) continue;
 
                     var sorted = servers.OrderBy(s => s.FirstSeen).ToList();

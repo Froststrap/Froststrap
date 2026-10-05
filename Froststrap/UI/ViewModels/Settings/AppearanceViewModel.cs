@@ -360,7 +360,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 OnPropertyChanged(nameof(AutoChangeIcon));
             }
         }
-        
+
         public IEnumerable<BootstrapperStyle> Dialogs { get; } = BootstrapperStyleEx.Selections;
 
         public BootstrapperStyle Dialog
