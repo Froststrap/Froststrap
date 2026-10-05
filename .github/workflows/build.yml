@@ -44,16 +44,12 @@ jobs:
       - name: Fetch previous release (for deltas)
         if: startsWith(github.ref, 'refs/tags/v')
         continue-on-error: true # first release has nothing to download
-        run: vpk download github --repoUrl $PACKAGES_REPO --token ${{ secrets.PACKAGE_TOKEN }} --channel windows-x64 --outputDir .build/velopack
-
-      - name: Release notes
-        if: startsWith(github.ref, 'refs/tags/v')
-        continue-on-error: true
-        env: { GH_TOKEN: "${{ github.token }}" }
-        run: gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --json body -q .body > notes.md
+        run: |
+          PRE=""; [[ "$GITHUB_REF_NAME" == *-* ]] && PRE="--pre"
+          vpk download github --repoUrl $PACKAGES_REPO --token ${{ secrets.PACKAGE_TOKEN }} --channel windows-x64 --outputDir .build/velopack $PRE
 
       - name: Publish
-        run: dotnet run --project build -- Publish --release-notes "$PWD/notes.md"
+        run: dotnet run --project build -- Publish
 
       - name: Upload to packages release
         if: startsWith(github.ref, 'refs/tags/v')
@@ -123,20 +119,16 @@ jobs:
       - name: Fetch previous release (for deltas)
         if: startsWith(github.ref, 'refs/tags/v')
         continue-on-error: true
-        run: vpk download github --repoUrl $PACKAGES_REPO --token ${{ secrets.PACKAGE_TOKEN }} --channel macos-${{ matrix.arch }} --outputDir .build/velopack
-
-      - name: Release notes
-        if: startsWith(github.ref, 'refs/tags/v')
-        continue-on-error: true
-        env: { GH_TOKEN: "${{ github.token }}" }
-        run: gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --json body -q .body > notes.md
+        run: |
+          PRE=""; [[ "$GITHUB_REF_NAME" == *-* ]] && PRE="--pre"
+          vpk download github --repoUrl $PACKAGES_REPO --token ${{ secrets.PACKAGE_TOKEN }} --channel macos-${{ matrix.arch }} --outputDir .build/velopack $PRE
 
       - name: Publish
         env:
           SIGN: ${{ startsWith(github.ref, 'refs/tags/v') && 'true' || 'false' }}
           DEVELOPER_ID_APP: ${{ secrets.DEVELOPER_ID_APP }}
           DEVELOPER_ID_INSTALLER: ${{ secrets.DEVELOPER_ID_INSTALLER }}
-        run: dotnet run --project build -- Publish --override-arch ${{ matrix.arch }} --release-notes "$PWD/notes.md"
+        run: dotnet run --project build -- Publish --override-arch ${{ matrix.arch }}
 
       - name: Upload to packages release
         if: startsWith(github.ref, 'refs/tags/v')
@@ -167,16 +159,12 @@ jobs:
       - name: Fetch previous release (for deltas)
         if: startsWith(github.ref, 'refs/tags/v')
         continue-on-error: true
-        run: vpk download github --repoUrl $PACKAGES_REPO --token ${{ secrets.PACKAGE_TOKEN }} --channel linux-x64 --outputDir .build/velopack
-
-      - name: Release notes
-        if: startsWith(github.ref, 'refs/tags/v')
-        continue-on-error: true
-        env: { GH_TOKEN: "${{ github.token }}" }
-        run: gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --json body -q .body > notes.md
+        run: |
+          PRE=""; [[ "$GITHUB_REF_NAME" == *-* ]] && PRE="--pre"
+          vpk download github --repoUrl $PACKAGES_REPO --token ${{ secrets.PACKAGE_TOKEN }} --channel linux-x64 --outputDir .build/velopack $PRE
 
       - name: Publish
-        run: dotnet run --project build -- Publish --release-notes "$PWD/notes.md"
+        run: dotnet run --project build -- Publish
 
       - name: Upload to packages release
         if: startsWith(github.ref, 'refs/tags/v')

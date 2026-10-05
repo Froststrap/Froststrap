@@ -8,9 +8,6 @@ using Serilog;
 
 public partial class Build : FalloutBuild
 {
-    [Parameter("Markdown release notes file embedded into the Velopack feed")]
-    readonly string ReleaseNotes;
-
     AbsolutePath VelopackDir => OutputRoot / "velopack";
 
     static string Vpk()
@@ -45,15 +42,12 @@ public partial class Build : FalloutBuild
         args.Append($"--packVersion \"{version}\" --packDir \"{packDir}\" --outputDir \"{VelopackDir}\" ");
         args.Append($"--mainExe {(os == "windows" ? "Froststrap.exe" : "Froststrap")} --channel {channel} ");
 
-        if (!string.IsNullOrEmpty(ReleaseNotes) && File.Exists(ReleaseNotes))
-            args.Append($"--releaseNotes \"{ReleaseNotes}\" ");
-
         switch (os)
         {
             case "windows":
                 args.Append($"--icon \"{GitRoot / "Froststrap" / "Froststrap.ico"}\" ");
-                args.Append("--framework net10.0-x64-runtime,vcredist143-x64 "); // replaces the NSIS VC++ redist logic
-                args.Append("--msi"); // lowkey the exe format is way too minimal
+                args.Append("--framework net10.0-x64-runtime,vcredist143-x64 ");
+                args.Append("--msi "); // lowkey the exe format is way too minimal
                 break;
 
             case "macos":
