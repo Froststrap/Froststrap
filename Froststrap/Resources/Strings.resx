@@ -3345,37 +3345,4 @@ All files will be moved, shortcuts updated, and the application will restart.</v
   <data name="Menu.Bootstrapper.RobloxTheme.Description" xml:space="preserve">
     <value>The theme used by the Roblox app.</value>
   </data>
-  <data name="Menu.Join" xml:space="preserve">
-    <value>Join</value>
-  </data>
-  <data name="Joiner.Title" xml:space="preserve">
-    <value>Froststrap Joiner</value>
-  </data>
-  <data name="Joiner.PasteInstructions" xml:space="preserve">
-    <value>Paste a Roblox link and press Enter:</value>
-  </data>
-  <data name="Joiner.Join" xml:space="preserve">
-    <value>Join</value>
-  </data>
-  <data name="Joiner.Ready" xml:space="preserve">
-    <value>Ready. Paste a link to join instantly.</value>
-  </data>
-  <data name="Joiner.InvalidLink" xml:space="preserve">
-    <value>Invalid link. Paste a Roblox link.</value>
-  </data>
-  <data name="Joiner.Joining" xml:space="preserve">
-    <value>Joining...</value>
-  </data>
-  <data name="Joiner.Resolving" xml:space="preserve">
-    <value>Resolving link...</value>
-  </data>
-  <data name="Joiner.JoinInstantlyOnPaste" xml:space="preserve">
-    <value>Join instantly on paste</value>
-  </data>
-  <data name="Joiner.CloseAfterJoining" xml:space="preserve">
-    <value>Close after joining</value>
-  </data>
-  <data name="Joiner.Settings" xml:space="preserve">
-    <value>Froststrap settings</value>
-  </data>
 </root>

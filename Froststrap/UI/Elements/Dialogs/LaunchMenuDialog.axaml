@@ -70,7 +70,7 @@ SPDX-License-Identifier: MPL-2.0
                 </controls:IconButton.Flyout>
             </controls:IconButton>
 
-            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
                 <controls:IconButton
                     Grid.Column="0"
                     Icon="Settings"
@@ -84,17 +84,6 @@ SPDX-License-Identifier: MPL-2.0
 
                 <controls:IconButton
                     Grid.Column="1"
-                    Icon="Link"
-                    Content="{x:Static resources:Strings.Menu_Join}"
-                    CornerRadius="8"
-                    BorderThickness="0"
-                    Height="56"
-                    Command="{Binding LaunchJoinerCommand}"
-                    IconSize="24"
-                    Padding="12,10" />
-
-                <controls:IconButton
-                    Grid.Column="2"
                     Icon="MessageCircleMore"
                     Content="Discord"
                     CornerRadius="8"
