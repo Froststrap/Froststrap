@@ -6,11 +6,12 @@
 }:
 
 let
-  version = "2.0.2";
+  version = "2.0.4";
 
   src = fetchurl {
     url = "https://github.com/Froststrap/Froststrap/releases/download/v${version}/Froststrap-linux-x64.AppImage";
-    hash = "sha256-KajUNB3vgzslBOTvL/GWTwRLZmbc+XKvtkyRQAz0ktE=";
+    # hash = "sha256-PZr5uprHgzzjTxNGpPDpH5KYdITbr6+ApO7CZUwdHCY=";
+    sha256 = "PZr5uprHgzzjTxNGpPDpH5KYdITbr6+ApO7CZUwdHCY=";
   };
 
   appimageContents = appimageTools.extractType2 {
@@ -43,7 +44,7 @@ appimageTools.wrapType2 {
     install -Dm644 ${desktopItem}/share/applications/froststrap.desktop \
         $out/share/applications/froststrap.desktop
 
-    install -Dm644 ${appimageContents}/usr/share/icons/hicolor/512x512/apps/froststrap.png \
+    install -Dm644 ${appimageContents}/usr/share/icons/hicolor/scalable/apps/Froststrap.png \
         $out/share/icons/hicolor/512x512/apps/froststrap.png
   '';
 
