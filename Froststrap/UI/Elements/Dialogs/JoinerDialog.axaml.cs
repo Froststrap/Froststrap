@@ -51,37 +51,45 @@ namespace Froststrap.UI.Elements.Dialogs
 
             _joining = true;
 
-            string? launchCommand = await GameJoin.GetLaunchCommandByLink(LinkBox.Text);
-
-            if (launchCommand is null)
+            try
             {
+                string? launchCommand = await GameJoin.GetLaunchCommandByLink(LinkBox.Text);
+
+                if (launchCommand is null)
+                {
+                    _joining = false;
+                    StatusText.Text = Strings.Joiner_InvalidLink;
+                    return;
+                }
+
+                if (!IsVisible)
+                {
+                    _joining = false;
+                    return;
+                }
+
+                LinkBox.IsEnabled = false;
+                JoinButton.IsEnabled = false;
+                StatusText.Text = Strings.Joiner_Joining;
+
+                App.Logger.Info($"Joining with launch command from pasted link: {launchCommand}");
+
+                App.LaunchSettings.RobloxLaunchArgs = launchCommand;
+
+                if (CloseAfterJoining.IsChecked.GetValueOrDefault())
+                {
+                    CloseAction = NextAction.LaunchRoblox;
+                    Close();
+                }
+                else
+                {
+                    _ = LaunchHandler.LaunchRoblox(LaunchMode.Player);
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error(ex, "Failed to join from pasted link");
                 _joining = false;
-                StatusText.Text = Strings.Joiner_InvalidLink;
-                return;
-            }
-
-            if (!IsVisible)
-            {
-                _joining = false;
-                return;
-            }
-
-            LinkBox.IsEnabled = false;
-            JoinButton.IsEnabled = false;
-            StatusText.Text = Strings.Joiner_Joining;
-
-            App.Logger.Info($"Joining with launch command from pasted link: {launchCommand}");
-
-            App.LaunchSettings.RobloxLaunchArgs = launchCommand;
-
-            if (CloseAfterJoining.IsChecked.GetValueOrDefault())
-            {
-                CloseAction = NextAction.LaunchRoblox;
-                Close();
-            }
-            else
-            {
-                _ = LaunchHandler.LaunchRoblox(LaunchMode.Player);
             }
         }
 
