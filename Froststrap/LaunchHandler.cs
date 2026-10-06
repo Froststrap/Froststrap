@@ -22,6 +22,11 @@ namespace Froststrap
                     LaunchSettings();
                     break;
 
+                case NextAction.LaunchJoiner:
+                    App.Logger.Info("Opening joiner");
+                    LaunchJoiner();
+                    break;
+
                 case NextAction.LaunchRoblox:
                     App.Logger.Info("Opening Roblox");
                     _ = LaunchRoblox(LaunchMode.Player);
@@ -46,6 +51,11 @@ namespace Froststrap
             {
                 App.Logger.Info("Opening onboarding");
                 LaunchOnboarding();
+            }
+            else if (App.LaunchSettings.JoinerFlag.Active)
+            {
+                App.Logger.Info("Opening joiner");
+                LaunchJoiner();
             }
             else if (App.LaunchSettings.MenuFlag.Active)
             {
@@ -128,6 +138,28 @@ namespace Froststrap
                 {
                     App.FrostRPC = new FroststrapRichPresence();
                     App.FrostRPC.SetPage("Launch Menu");
+                }
+            };
+
+            dialog.Closed += (sender, e) =>
+            {
+                App.FrostRPC = null;
+                ProcessNextAction(dialog.CloseAction);
+            };
+
+            dialog.Show();
+        }
+
+        public static void LaunchJoiner()
+        {
+            var dialog = new JoinerDialog();
+
+            dialog.Loaded += (s, e) =>
+            {
+                if (App.Settings.Prop.ShowUsingFroststrapRPC && App.FrostRPC == null)
+                {
+                    App.FrostRPC = new FroststrapRichPresence();
+                    App.FrostRPC.SetPage("Joiner");
                 }
             };
 

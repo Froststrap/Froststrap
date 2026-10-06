@@ -72,6 +72,7 @@ namespace Froststrap.UI.ViewModels.Dialogs
         public ICommand LaunchCommand { get; }
         public ICommand SetLaunchModeCommand { get; }
         public ICommand LaunchSettingsCommand { get; }
+        public ICommand LaunchJoinerCommand { get; }
 
         public event EventHandler<NextAction>? CloseWindowRequest;
 
@@ -80,6 +81,7 @@ namespace Froststrap.UI.ViewModels.Dialogs
             LaunchCommand = new RelayCommand(ExecuteLaunch);
             SetLaunchModeCommand = new RelayCommand<LaunchMode>(mode => SelectedLaunchMode = mode);
             LaunchSettingsCommand = new RelayCommand(() => CloseWindowRequest?.Invoke(this, NextAction.LaunchSettings));
+            LaunchJoinerCommand = new RelayCommand(() => CloseWindowRequest?.Invoke(this, NextAction.LaunchJoiner));
             SelectedLaunchMode = App.State.Prop.LastLaunchMode;
         }
 

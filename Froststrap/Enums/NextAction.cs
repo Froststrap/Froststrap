@@ -8,6 +8,7 @@ namespace Froststrap.Enums
     {
         Terminate,
         LaunchSettings,
+        LaunchJoiner,
         LaunchRoblox,
         LaunchRobloxStudio
     }

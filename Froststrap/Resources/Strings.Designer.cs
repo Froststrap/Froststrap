@@ -9553,5 +9553,95 @@ namespace Froststrap.Resources {
                 return ResourceManager.GetString("Update.NoPackageAvailable", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Join.
+        /// </summary>
+        public static string Menu_Join {
+            get {
+                return ResourceManager.GetString("Menu.Join", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Froststrap Joiner.
+        /// </summary>
+        public static string Joiner_Title {
+            get {
+                return ResourceManager.GetString("Joiner.Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Paste a Roblox link and press Enter:.
+        /// </summary>
+        public static string Joiner_PasteInstructions {
+            get {
+                return ResourceManager.GetString("Joiner.PasteInstructions", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Join.
+        /// </summary>
+        public static string Joiner_Join {
+            get {
+                return ResourceManager.GetString("Joiner.Join", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Ready. Paste a link to join instantly..
+        /// </summary>
+        public static string Joiner_Ready {
+            get {
+                return ResourceManager.GetString("Joiner.Ready", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid link. Paste a Roblox link..
+        /// </summary>
+        public static string Joiner_InvalidLink {
+            get {
+                return ResourceManager.GetString("Joiner.InvalidLink", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Joining....
+        /// </summary>
+        public static string Joiner_Joining {
+            get {
+                return ResourceManager.GetString("Joiner.Joining", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Join instantly on paste.
+        /// </summary>
+        public static string Joiner_JoinInstantlyOnPaste {
+            get {
+                return ResourceManager.GetString("Joiner.JoinInstantlyOnPaste", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Close after joining.
+        /// </summary>
+        public static string Joiner_CloseAfterJoining {
+            get {
+                return ResourceManager.GetString("Joiner.CloseAfterJoining", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Froststrap settings.
+        /// </summary>
+        public static string Joiner_Settings {
+            get {
+                return ResourceManager.GetString("Joiner.Settings", resourceCulture);
+            }
+        }
     }
 }

@@ -7,6 +7,7 @@ namespace Froststrap
     internal class LaunchSettings
     {
         public LaunchFlag MenuFlag { get; } = new("preferences,menu,settings");
+        public LaunchFlag JoinerFlag { get; } = new("joiner");
         public LaunchFlag WatcherFlag { get; } = new("watcher");
         public LaunchFlag BackgroundUpdaterFlag { get; } = new("backgroundupdater");
         public LaunchFlag OnboardingFlag { get; } = new("onboarding");
@@ -60,7 +61,7 @@ namespace Froststrap
             [
                 MenuFlag, WatcherFlag, BackgroundUpdaterFlag, OnboardingFlag, QuietFlag,
                 NoLaunchFlag, TestModeFlag, UpgradeFlag, PlayerFlag, StudioFlag, VersionFlag,
-                ChannelFlag, ForceFlag, GameShortcutFlag, ConsoleFlag, NoGpuFlag
+                ChannelFlag, ForceFlag, GameShortcutFlag, ConsoleFlag, NoGpuFlag, JoinerFlag
             ];
 
             var lookup = new Dictionary<string, LaunchFlag>(StringComparer.OrdinalIgnoreCase);
