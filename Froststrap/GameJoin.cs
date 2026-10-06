@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: 2026 Froststrap
+// SPDX-FileCopyrightText: 2026 Froststrap
 //
 // SPDX-License-Identifier: MPL-2.0
 
@@ -10,7 +10,7 @@ namespace Froststrap
     internal class GameJoin
     {
         /// Converts a pasted Roblox link into a launch command
-        public static string? GetLaunchCommandByLink(string link)
+        public static async Task<string?> GetLaunchCommandByLink(string link)
         {
             link = link.Trim();
             if (link.Length == 0)
@@ -50,11 +50,11 @@ namespace Froststrap
             {
                 string? mobile = GetQueryValue(uri, "af_dp") ?? GetQueryValue(uri, "deep_link_value");
                 if (!string.IsNullOrEmpty(mobile))
-                    return GetLaunchCommandByLink(mobile);
+                    return await GetLaunchCommandByLink(mobile);
 
                 string? web = GetQueryValue(uri, "af_web_dp");
                 if (!string.IsNullOrEmpty(web))
-                    return GetLaunchCommandByLink(web);
+                    return await GetLaunchCommandByLink(web);
 
                 return null;
             }
@@ -71,7 +71,7 @@ namespace Froststrap
                 && !segments[0].Equals("my", StringComparison.OrdinalIgnoreCase))
                 segments = segments.Skip(1).ToArray();
 
-            // new style private server share link (roblox.com/share?code=...&type=Server)
+            // private server share link (roblox.com/share?code=...&type=Server)
             if (segments.Length == 1 && segments[0].Equals("share", StringComparison.OrdinalIgnoreCase))
             {
                 string? code = GetQueryValue(uri, "code");
@@ -80,10 +80,58 @@ namespace Froststrap
                 if (string.IsNullOrEmpty(code) || !string.Equals(type, "Server", StringComparison.OrdinalIgnoreCase))
                     return null;
 
+                string deepLink = $"roblox://navigation/share_links?code={Uri.EscapeDataString(code)}&type=Server";
                 App.Logger.Info($"Converted share link to navigation/share_links deep link (code: {code})");
 
-                // the client resolves the code into the place id, server id and access code itself
-                return $"roblox://navigation/share_links?code={Uri.EscapeDataString(code)}&type=Server";
+                if (!App.Cookies.Loaded)
+                    return deepLink;
+
+                string? csrf = null;
+                for (int i = 0; i < 2; i++)
+                {
+                    using var request = new HttpRequestMessage(HttpMethod.Post, UrlBuilder.BuildApiUrl("apis", "sharelinks/v1/resolve-link", secure: true));
+                    request.Headers.Add("Cookie", $".ROBLOSECURITY={App.Cookies.GetAuthCookie()}");
+                    request.Content = new StringContent($"{{\"linkId\":\"{code}\",\"linkType\":\"Server\"}}", Encoding.UTF8, "application/json");
+                    if (csrf is not null)
+                        request.Headers.Add("X-CSRF-TOKEN", csrf);
+
+                    using var response = await App.HttpClient.SendAsync(request);
+
+                    if (response.StatusCode == HttpStatusCode.Forbidden && response.Headers.TryGetValues("x-csrf-token", out var token))
+                    {
+                        csrf = token.First();
+                        continue;
+                    }
+
+                    if (!response.IsSuccessStatusCode)
+                        return deepLink;
+
+                    string body = await response.Content.ReadAsStringAsync();
+                    using var json = JsonDocument.Parse(body);
+
+                    if (!json.RootElement.TryGetProperty("privateServerInviteData", out var data))
+                        return deepLink;
+
+                    if (data.TryGetProperty("status", out var status) && status.GetString() != "Valid")
+                        return deepLink;
+
+                    if (!data.TryGetProperty("placeId", out var placeIdProp))
+                        return deepLink;
+
+                    if (!placeIdProp.TryGetInt64(out long pid))
+                        return deepLink;
+
+                    if (!data.TryGetProperty("linkCode", out var linkCode))
+                        return deepLink;
+
+                    string? resolvedCode = linkCode.GetString();
+                    if (string.IsNullOrEmpty(resolvedCode))
+                        return deepLink;
+
+                    return $"roblox://experiences/start?placeId={pid}&linkCode={Uri.EscapeDataString(resolvedCode)}";
+                }
+
+                return deepLink;
             }
 
             // experience page (roblox.com/games/{placeId}/name[?privateServerLinkCode=...])

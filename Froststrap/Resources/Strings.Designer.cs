@@ -9618,6 +9618,15 @@ namespace Froststrap.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Resolving link...
+        /// </summary>
+        public static string Joiner_Resolving {
+            get {
+                return ResourceManager.GetString("Joiner.Resolving", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Join instantly on paste.
         /// </summary>
         public static string Joiner_JoinInstantlyOnPaste {

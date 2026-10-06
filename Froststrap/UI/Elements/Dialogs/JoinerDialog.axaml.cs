@@ -29,7 +29,7 @@ namespace Froststrap.UI.Elements.Dialogs
             if (e.Key == Key.Enter)
             {
                 e.Handled = true;
-                TryJoin();
+                _ = TryJoin();
             }
         }
 
@@ -39,31 +39,33 @@ namespace Froststrap.UI.Elements.Dialogs
                 return;
 
             if (JoinInstantlyOnPaste.IsChecked.GetValueOrDefault())
-                TryJoin();
+                _ = TryJoin();
         }
 
-        private void OnJoinClicked(object? sender, RoutedEventArgs e) => TryJoin();
+        private void OnJoinClicked(object? sender, RoutedEventArgs e) => _ = TryJoin();
 
-        private void OnSettingsClicked(object? sender, RoutedEventArgs e)
-        {
-            CloseAction = NextAction.LaunchSettings;
-            Close();
-        }
-
-        private void TryJoin()
+        private async Task TryJoin()
         {
             if (_joining)
                 return;
 
-            string? launchCommand = GameJoin.GetLaunchCommandByLink(LinkBox.Text);
+            _joining = true;
+
+            string? launchCommand = await GameJoin.GetLaunchCommandByLink(LinkBox.Text);
 
             if (launchCommand is null)
             {
+                _joining = false;
                 StatusText.Text = Strings.Joiner_InvalidLink;
                 return;
             }
 
-            _joining = true;
+            if (!IsVisible)
+            {
+                _joining = false;
+                return;
+            }
+
             LinkBox.IsEnabled = false;
             JoinButton.IsEnabled = false;
             StatusText.Text = Strings.Joiner_Joining;
@@ -81,6 +83,12 @@ namespace Froststrap.UI.Elements.Dialogs
             {
                 _ = LaunchHandler.LaunchRoblox(LaunchMode.Player);
             }
+        }
+
+        private void OnSettingsClicked(object? sender, RoutedEventArgs e)
+        {
+            CloseAction = NextAction.LaunchSettings;
+            Close();
         }
     }
 }
