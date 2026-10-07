@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
 using Avalonia;
+using System.Reflection;
 using Avalonia.Controls;
 using Avalonia.Platform;
 using Avalonia.Threading;
@@ -40,14 +41,34 @@ namespace Froststrap.UI
 
             var nativeMenu = NativeMenu.GetMenu(_menuContainer);
 
+            var iconUri = new Uri("avares://Froststrap/Froststrap.ico");
+            long iconBytes;
+            using (var s = AssetLoader.Open(iconUri)) iconBytes = s.Length;
+
             _trayIcon = new TrayIcon
             {
-                Icon = new WindowIcon(AssetLoader.Open(new Uri("avares://Froststrap/Froststrap.ico"))),
+                Icon = new WindowIcon(AssetLoader.Open(iconUri)),
                 ToolTipText = "Froststrap",
                 Menu = nativeMenu
             };
 
+            const BindingFlags NonPublic = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public;
+
+            var impl = typeof(TrayIcon).GetProperty("Impl", NonPublic)?.GetValue(_trayIcon);
+            var iconImpl = typeof(WindowIcon).GetProperty("PlatformImpl", NonPublic)?.GetValue(_trayIcon.Icon);
+
+            App.Logger.Debug(
+                $"Tray: impl={impl?.GetType().Name ?? "null"} " +
+                $"uiThread={Dispatcher.UIThread.CheckAccess()} " +
+                $"iconBytes={iconBytes} " +
+                $"iconImpl={iconImpl?.GetType().Name ?? "null"} " +
+                $"menu={(_trayIcon.Menu is null ? "null" : "set")} " +
+                $"exporter={(_trayIcon.NativeMenuExporter is null ? "null" : "set")} " +
+                $"iconsCollection={(TrayIcon.GetIcons(Application.Current!) is null ? "null" : "set")} " +
+                $"visible={_trayIcon.IsVisible}");
+
             _trayIcon.Clicked += OnTrayIconClicked;
+            App.Logger.Debug("Subscribed _trayIcon.Clicked to OnTrayIconClicked");
 
             if (ActivityWatcher is not null && App.Settings.Prop.ShowServerDetails)
             {
