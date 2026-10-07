@@ -12,7 +12,7 @@ going to be attributed as a contribution.
 
 
 - Fully AI changes, with not human intervention
-- Singular changes like changing a return of something that is type `()` to actually implicitly return type `()` - simply put, removing a `;` when it's the last line in a function
+- Singular changes like changing a return of something that is type ``()`` to actually implicitly return type ``()`` - simply put, removing a ``;`` when it's the last line in a function
 
 
 Things nedeed to do a contribution (PR/MR)
@@ -20,9 +20,9 @@ Things nedeed to do a contribution (PR/MR)
 
 Checks:
 
-- Spell checking (`typos` cli tool can be useful)
-- Code legal/licencing (`reuse` cli tool can be useful) 
-- Code formatting (`cargo fmt`, `nix fmt`, and `dotnet format`)
+- Spell checking (``typos`` cli tool can be useful)
+- Code legal/licencing (``reuse`` cli tool can be useful) 
+- Code formatting (``cargo fmt``, ``nix fmt``, and ``dotnet format``)
 
 Make sure anything you add tries to not impede on anything else:
 - Warnings
