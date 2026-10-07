@@ -45,8 +45,6 @@ namespace Froststrap
 
             // keeps the client active in the tray
             storage["MinimizeToTray"] = state;
-
-            storage["SystemTrayModalShown"] = "true";
         }
 
         private static void ApplyTheme(JsonObject storage)
