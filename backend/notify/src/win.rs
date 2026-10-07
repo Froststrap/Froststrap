@@ -16,8 +16,10 @@ pub fn set_application(aumid: String) -> i32 {
 
     *writer = Some(aumid);
 
-    0 // TODO: make this actually call a threaded function which Windows will
-    //// understand context of it in the thread rather than passing it every time.
+    // TODO: make this actually call a threaded function which Windows will
+    //       understand context of it in the thread rather than passing it every time.
+
+    0
 }
 
 pub fn send_notification(title: String, body: String) -> i32 {

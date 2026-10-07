@@ -5,6 +5,8 @@
   stdenv,
   callPackage,
   cargo-bloat,
+  pkg-config,
+  dbus
 }:
 {
   fenix,
@@ -25,5 +27,9 @@ mkFragment {
   buildInputs = [
     toolchain
     cargo-bloat
+  ];
+  nativeBuildInputs = [
+    pkg-config
+    dbus
   ];
 }
