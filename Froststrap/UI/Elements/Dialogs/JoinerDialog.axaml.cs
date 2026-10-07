@@ -53,9 +53,7 @@ namespace Froststrap.UI.Elements.Dialogs
 
             try
             {
-                string? launchCommand = await GameJoin.GetLaunchCommandByLink(LinkBox.Text);
-
-                if (launchCommand is null)
+                if ((await GameJoin.GetLaunchCommandByLink(LinkBox.Text ?? "")) is not string launchCommand)
                 {
                     _joining = false;
                     StatusText.Text = Strings.Joiner_InvalidLink;
