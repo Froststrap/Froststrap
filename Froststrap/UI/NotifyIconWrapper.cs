@@ -78,7 +78,14 @@ namespace Froststrap.UI
                     ActivityWatcher.OnGameJoin += ShowNotification;
             }
 
-            TrayIcon.GetIcons(Application.Current!)?.Add(_trayIcon);
+            var app = Application.Current!;
+            var icons = TrayIcon.GetIcons(app);
+            if (icons is null)
+            {
+                icons = new TrayIcons();
+                TrayIcon.SetIcons(app, icons);
+            }
+            icons.Add(_trayIcon);
         }
 
 
