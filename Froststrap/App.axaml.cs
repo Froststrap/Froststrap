@@ -605,11 +605,11 @@ internal partial class App : Application
 
         _ = Task.Run(async () =>
         {
-            if (Settings.Prop.UpdateChecks == UpdateCheck.Disabled)
-                return;
-
-            if (UpdaterManager.IsCiBuild)
-                return;
+            if (
+                Settings.Prop.UpdateChecks == UpdateCheck.Disabled
+                || UpdaterManager.IsCiBuild
+                || LaunchSettings.BypassUpdateCheck
+            ) return;
 
             try
             {
