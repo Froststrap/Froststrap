@@ -7,6 +7,7 @@
   typos,
   reuse,
   stdenv,
+  renovate,
   callPackage,
 }:
 let
@@ -17,10 +18,11 @@ in
 mkFragment {
   name = "extra";
   buildInputs = [
+    vpk # velopack tooling
+    avdt # avalonia devtools
     reuse
     typos
-    avdt # avalonia devtools
-    vpk # velopack tooling
+    renovate
   ]
   ++ lib.optionals stdenv.hostPlatform.isLinux [
     nfpm
