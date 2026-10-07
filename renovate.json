@@ -10,7 +10,7 @@
     "cargo"
   ],
   "schedule": [
-    "every day"
+    "* * * * *"
   ]
 }
 
