@@ -6,11 +6,11 @@
 }:
 
 let
-  version = "2.0.4";
+  version = "2.0.5";
 
   src = fetchurl {
     url = "https://github.com/Froststrap/Froststrap/releases/download/v${version}/Froststrap-linux-x64.AppImage";
-    hash = "sha256-PZr5uprHgzzjTxNGpPDpH5KYdITbr6+ApO7CZUwdHCY=";
+    sha256 = "1Dmx95czka04T3FtVpP2iMVQm2dXuQIhDx0flKOKyeg=";
   };
 
   appimageContents = appimageTools.extractType2 {
