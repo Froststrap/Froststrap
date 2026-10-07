@@ -26,6 +26,7 @@
   omnisharp-roslyn,
   callPackage,
   nspr,
+  dbus,
   squashfsTools,
 }:
 let
@@ -44,6 +45,7 @@ mkFragment (finalAttrs: {
     wayland
     libxkbcommon
     libsecret
+    dbus
 
     # X11 libs
     libX11

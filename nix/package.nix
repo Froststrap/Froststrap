@@ -37,7 +37,7 @@ appimageTools.wrapType2 {
   pname = "froststrap";
   inherit version src;
 
-  extraPkgs = pkgs: [ pkgs.icu ];
+  extraPkgs = pkgs: with pkgs; [ icu dbus ];
 
   # list values must end with ";". makeDesktopItem omits it.
   extraInstallCommands = ''
