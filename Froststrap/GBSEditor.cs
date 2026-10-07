@@ -41,7 +41,7 @@ internal class GBSEditor
         { "UI.Transparency", "{UserSettings}/float[@name='PreferredTransparency']" },
         { "UI.ReducedMotion", "{UserSettings}/bool[@name='ReducedMotion']" },
         { "UI.FontSize", "{UserSettings}/token[@name='PreferredTextSize']" },
-        { "UI.PlayerListLayOut", "{UserSettings}/token[@name='PeoplePageLayout']" },
+        { "UI.PlayerListLayout", "{UserSettings}/token[@name='PeoplePageLayout']" },
 
         // Miscellaneous Settings
         { "Misc.PerformanceStatsVisible", "{UserSettings}/bool[@name='PerformanceStatsVisible']" },
@@ -77,10 +77,10 @@ internal class GBSEditor
         { FontSize.x4, "4" }
     };
 
-    public static IReadOnlyDictionary<PlayerListLayOut, string?> PlayerListLayOuts => new Dictionary<PlayerListLayOut, string?>
+    public static IReadOnlyDictionary<PlayerListLayout, string?> PlayerListLayouts => new Dictionary<PlayerListLayout, string?>
     {
-        { PlayerListLayOut.x0, "0" },
-        { PlayerListLayOut.x1, "1" }
+        { PlayerListLayout.x0, "0" },
+        { PlayerListLayout.x1, "1" }
     };
 
     public bool Loaded { get; set; }

@@ -4,7 +4,7 @@
 
 namespace Froststrap.Enums.GBSPresets
 {
-    internal enum PlayerListLayOut
+    internal enum PlayerListLayout
     {
         [EnumName(FromTranslation = "Enums.PlayerListLayout.x0")]
         x0,

@@ -2813,18 +2813,18 @@ namespace Froststrap.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Square.
         /// </summary>
-        public static string Enums_PlayerListLayOut_x0 {
+        public static string Enums_PlayerListLayout_x0 {
             get {
-                return ResourceManager.GetString("Enums.PlayerListLayOut.x0", resourceCulture);
+                return ResourceManager.GetString("Enums.PlayerListLayout.x0", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to Normal.
         /// </summary>
-        public static string Enums_PlayerListLayOut_x1 {
+        public static string Enums_PlayerListLayout_x1 {
             get {
-                return ResourceManager.GetString("Enums.PlayerListLayOut.x1", resourceCulture);
+                return ResourceManager.GetString("Enums.PlayerListLayout.x1", resourceCulture);
             }
         }
 
