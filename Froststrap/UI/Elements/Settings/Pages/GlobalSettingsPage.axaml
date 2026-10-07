@@ -167,7 +167,7 @@ SPDX-License-Identifier: MPL-2.0
                         <TextBox Width="150" Text="{Binding UITransparency}" />
                     </controls:OptionControl>
                     <controls:OptionControl Header="{x:Static resources:Strings.Menu_GlobalSettings_PlayerListLayout_Title}" Description="{x:Static resources:Strings.Menu_GlobalSettings_PlayerListLayout_Description}">
-                        <ComboBox Width="150" Margin="4,0" Padding="10,5" HorizontalAlignment="Stretch" ItemsSource="{Binding PlayerListLayouts.Keys, Mode=OneTime}" SelectedValue="{Binding SelectedPlayerListLayout, Mode=TwoWay}">
+                        <ComboBox Width="150" Margin="4,0" Padding="10,5" HorizontalAlignment="Stretch" ItemsSource="{Binding PlayerListLayOuts.Keys, Mode=OneTime}" SelectedValue="{Binding SelectedPlayerListLayOut, Mode=TwoWay}">
                             <ComboBox.ItemTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding Path=., Converter={StaticResource EnumNameConverter}}" />
