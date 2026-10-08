@@ -39,6 +39,11 @@ jobs:
           cache: true
           cache-dependency-path: "**/**/**/packages.lock.json"
 
+      - name: Use nightly Rust
+        run: |
+          rustup toolchain install nightly --profile minimal
+          rustup default nightly
+
       - run: dotnet tool install -g vpk --version $VPK_VERSION
 
       - name: Fetch previous release (for deltas)
@@ -80,6 +85,12 @@ jobs:
           dotnet-version: "10.0.x"
           cache: true
           cache-dependency-path: "**/**/**/packages.lock.json"
+
+
+      - name: Use nightly Rust
+        run: |
+          rustup toolchain install nightly --profile minimal
+          rustup default nightly
 
       - run: rustup target add ${{ matrix.rust-target }}
       - run: dotnet tool install -g vpk --version $VPK_VERSION
@@ -153,6 +164,11 @@ jobs:
           dotnet-version: "10.0.x"
           cache: true
           cache-dependency-path: "**/**/**/packages.lock.json"
+
+      - name: Use nightly Rust
+        run: |
+          rustup toolchain install nightly --profile minimal
+          rustup default nightly
 
       - run: dotnet tool install -g vpk --version $VPK_VERSION
 
