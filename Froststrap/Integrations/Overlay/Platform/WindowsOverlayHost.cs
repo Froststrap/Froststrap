@@ -56,7 +56,7 @@ namespace Froststrap.Integrations.Overlay.Platform
         {
             _robloxProcessId = (uint)robloxProcessId;
             ActivityWatcher = activityWatcher;
-            Friends = new FriendPresence(activityWatcher);
+            Friends = new FriendPresence(activityWatcher, Messaging);
 
             _robloxWindow = FindMainWindow(_robloxProcessId);
         }

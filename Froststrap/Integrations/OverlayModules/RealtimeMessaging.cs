@@ -1,4 +1,5 @@
 ﻿using Froststrap.Models.APIs.RealtimeMessaging;
+using Froststrap.Models.APIs.Roblox;
 using Froststrap.Models.APIs.RobloxParty.Events;
 using Froststrap;
 using System.Net.WebSockets;
@@ -25,6 +26,7 @@ namespace Froststrap.Integrations.OverlayModules
 
         public event EventHandler<MessageEvent>? PartyChat;
         public event EventHandler<SignalrMessage>? MessageReceived;
+        public event EventHandler<IReadOnlyList<PresenceNotification>>? PresenceBulk;
         public event EventHandler? Connected;
 
         public readonly RobloxParty Party;
@@ -264,6 +266,13 @@ namespace Froststrap.Integrations.OverlayModules
                             ?? throw new JsonException("Deserialised MessageEvent is null");
 
                         PartyChat?.Invoke(this, message);
+                        break;
+
+                    case "PresenceBulkNotifications":
+                        var notifications = JsonSerializer.Deserialize<List<PresenceNotification>>(payload);
+
+                        if (notifications is { Count: > 0 })
+                            PresenceBulk?.Invoke(this, notifications);
                         break;
 
                     default:

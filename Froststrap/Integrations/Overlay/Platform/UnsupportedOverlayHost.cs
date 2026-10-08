@@ -33,7 +33,7 @@ namespace Froststrap.Integrations.Overlay.Platform
         public UnsupportedOverlayHost(int robloxProcessId, ActivityWatcher? activityWatcher)
         {
             ActivityWatcher = activityWatcher;
-            Friends = new FriendPresence(activityWatcher);
+            Friends = new FriendPresence(activityWatcher, Messaging);
         }
 
         public void Start() { }
