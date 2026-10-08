@@ -92,14 +92,9 @@ namespace Froststrap.UI
         // On macos simply clicking the icon instantly opens the menu so double click action isnt possible
         private void OnTrayIconClicked(object? sender, EventArgs e)
         {
-            if (OperatingSystem.IsMacOS())
+            if (!OperatingSystem.IsWindows())
                 return;
 
-            HandleWindowsDoubleClickLogic();
-        }
-
-        private void HandleWindowsDoubleClickLogic()
-        {
             DateTime now = DateTime.Now;
             double elapsed = (now - _lastClickTime).TotalMilliseconds;
 
