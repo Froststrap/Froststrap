@@ -488,7 +488,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                     if (sender == UserMessage.SystemSenderId)
                         AddSystemLine(tab, message.Content, message.CreatedAt);
                     else
-                        AddLine(tab, sender, message.Content, message.CreatedAt).MessageId = message.Id;
+                        AddLine(tab, sender, message.Content, message.CreatedAt);
 
                     added = true;
                 }
@@ -613,10 +613,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                 UserMessage? sent = await RobloxParty.SendMessage(tab.Friend.ConversationId!, text);
 
                 if (!String.IsNullOrEmpty(sent?.Id))
-                {
-                    line.MessageId = sent.Id;
                     tab.KnownMessages.Add(sent.Id);
-                }
 
                 line.State = ChatLineState.Sent;
             }

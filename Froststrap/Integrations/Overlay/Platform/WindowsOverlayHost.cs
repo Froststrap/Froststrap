@@ -24,6 +24,9 @@ namespace Froststrap.Integrations.Overlay.Platform
         private const uint EVENT_OBJECT_LOCATIONCHANGE = 0x800B;
         private const uint WINEVENT_OUTOFCONTEXT = 0x0000;
 
+        private const int OBJID_WINDOW = 0;
+        private const int CHILDID_SELF = 0;
+
         private const int ResolveTimeoutMs = 30_000;
         private const int ResolvePollMs = 500;
 
@@ -45,7 +48,6 @@ namespace Froststrap.Integrations.Overlay.Platform
         private UnhookWinEventSafeHandle? _objectHook;
 
         private GameOverlay? _window;
-        private OverlayToast? _toast;
         private OverlayBounds? _lastBounds;
         private bool _friendsWatched;
         private bool _disposed;
@@ -184,50 +186,6 @@ namespace Froststrap.Integrations.Overlay.Platform
                 SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE);
         }
 
-        public bool ShowToast(string title, string message)
-        {
-            if (_disposed || _window is null || _robloxWindow == HWND.Null)
-            {
-                App.Logger.Warn("No overlay to show it in");
-                return false;
-            }
-
-            if (IsGameMinimised() || !IsGameForeground())
-            {
-                App.Logger.Info("Game isn't in front, leaving it to the desktop notification");
-                return false;
-            }
-
-            return Dispatcher.UIThread.Invoke(() =>
-            {
-                try
-                {
-                    OverlayBounds bounds = GetBounds();
-
-                    if (bounds.Rect.Width <= 0 || bounds.Rect.Height <= 0)
-                    {
-                        App.Logger.Warn("Could not measure the game window");
-                        return false;
-                    }
-
-                    App.Logger.Info($"{title}: {message.Replace("\n", "\\n", StringComparison.Ordinal)}");
-
-                    _toast ??= new OverlayToast();
-                    _toast.Present(title, message, bounds.Rect);
-
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    App.Logger.Error("Failed to show a toast");
-                    App.Logger.Error(ex);
-                    return false;
-                }
-            });
-        }
-
-        public void DismissToast() => _toast?.Dismiss();
-
         public bool IsGameMinimised() => _robloxWindow != HWND.Null && PInvoke.IsIconic(_robloxWindow);
 
         public bool IsGameForeground() => _robloxWindow != HWND.Null && PInvoke.GetForegroundWindow() == _robloxWindow;
@@ -284,7 +242,7 @@ namespace Froststrap.Integrations.Overlay.Platform
 
         private void OnObjectEvent(HWINEVENTHOOK hook, uint iEvent, HWND hWnd, int idObject, int idChild, uint thread, uint time)
         {
-            if (hWnd != _robloxWindow)
+            if (hWnd != _robloxWindow || idObject != OBJID_WINDOW || idChild != CHILDID_SELF)
                 return;
 
             if (iEvent == EVENT_OBJECT_DESTROY)
@@ -332,11 +290,7 @@ namespace Froststrap.Integrations.Overlay.Platform
 
             Friends.Dispose();
 
-            Dispatcher.UIThread.Post(() =>
-            {
-                _toast?.Close();
-                _window?.Close();
-            });
+            Dispatcher.UIThread.Post(() => _window?.Close());
 
             _ = Messaging.DisposeAsync().AsTask();
             GC.SuppressFinalize(this);

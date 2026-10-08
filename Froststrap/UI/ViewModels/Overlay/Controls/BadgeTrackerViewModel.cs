@@ -21,9 +21,14 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
         private readonly ActivityWatcher? _activityWatcher;
         private readonly DispatcherTimer _awardTimer = new() { Interval = AwardCheckInterval };
+        private readonly FlashMessage _flash;
+        private readonly Dictionary<long, DateTime> _removedAt = new();
+
+        private Badge? _pending;
 
         private long _loadedUniverseId;
         private bool _checkingAwards;
+        private bool _isRemoving;
 
         public event EventHandler<Badge>? BadgeEarned;
 
@@ -35,13 +40,19 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             get => _isBusy;
             private set
             {
+                if (_isBusy == value)
+                    return;
+
                 _isBusy = value;
                 OnPropertyChanged(nameof(IsBusy));
                 OnPropertyChanged(nameof(CanRefresh));
+                OnPropertyChanged(nameof(ShowEmptyState));
             }
         }
 
-        public bool CanRefresh => !IsBusy;
+        public bool CanRefresh => !IsBusy && !_isRemoving;
+
+        public bool CanEdit => !_isRemoving;
 
         public int EarnedCount => Badges.Count(x => x.Awarded);
 
@@ -59,13 +70,28 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                     return String.Empty;
 
                 return ProgressKnown
-                    ? String.Format(CultureInfo.CurrentCulture, Strings.Menu_Overlay_Badges_Progress, EarnedCount, Badges.Count)
-                    : String.Format(CultureInfo.CurrentCulture, Strings.Menu_Overlay_Badges_ProgressUnknown, Badges.Count);
+                    ? String.Format(Locale.CurrentCulture, Strings.Menu_Overlay_Badges_Progress, EarnedCount, Badges.Count)
+                    : String.Format(Locale.CurrentCulture, Strings.Menu_Overlay_Badges_ProgressUnknown, Badges.Count);
             }
         }
 
-        public bool HasBadges => Badges.Count > 0;
-        public bool ShowEmptyState => !IsBusy && Badges.Count == 0;
+        public string HeaderText => _flash.Text ?? CompletionText;
+
+        public bool IsConfirming => _pending is not null && !_isRemoving;
+
+        public string ConfirmText => _pending is null
+            ? String.Empty
+            : String.Format(Locale.CurrentCulture, Strings.Menu_Overlay_Badges_ConfirmOne, _pending.Name);
+
+        public bool IsRemoving => _isRemoving;
+
+        public string RemovingText => _pending is null
+            ? String.Empty
+            : String.Format(Locale.CurrentCulture, Strings.Menu_Overlay_Badges_Removing, 1, 1);
+
+        public bool ShowSummary => !IsConfirming && !_isRemoving;
+
+        public bool ShowEmptyState => !IsBusy && !Badges.Any();
 
         public string EmptyText => InGame
             ? Strings.Menu_Overlay_Badges_Empty
@@ -75,9 +101,24 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
         public ICommand RefreshCommand => new RelayCommand(async () => await LoadAsync(true));
 
+        public ICommand RemoveCommand => new RelayCommand<Badge>(badge =>
+        {
+            if (badge?.CanRemove == true)
+                Ask(badge);
+        });
+
+        public ICommand ConfirmRemoveCommand => new RelayCommand(async () => await RemovePendingAsync());
+
+        public ICommand CancelRemoveCommand => new RelayCommand(() => Ask(null));
+
         public BadgeTrackerViewModel(ActivityWatcher? activityWatcher)
         {
             _activityWatcher = activityWatcher;
+
+            _flash = new FlashMessage(TimeSpan.FromSeconds(4), () =>
+            {
+                OnPropertyChanged(nameof(HeaderText));
+            });
 
             App.Cookies.WatchAccount(this, static vm => vm.OnAccountChanged());
 
@@ -102,7 +143,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
         public async Task LoadAsync(bool force = false)
         {
-            if (IsBusy)
+            if (IsBusy || _isRemoving)
                 return;
 
             if (!InGame)
@@ -121,6 +162,14 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             try
             {
                 var badges = await BadgesApi.FetchAsync(universeId, _activityWatcher.Data.UserId);
+
+                foreach (Badge badge in badges.Where(x => x.Awarded && !StillEarned(x.Id, x.AwardedDate)))
+                {
+                    badge.Awarded = false;
+                    badge.AwardedDate = null;
+                }
+
+                _pending = null;
 
                 Show(badges);
 
@@ -145,7 +194,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
         public async Task CheckForAwardsAsync()
         {
-            if (_checkingAwards || IsBusy || !InGame)
+            if (_checkingAwards || IsBusy || _isRemoving || !InGame)
                 return;
 
             var unearned = Badges.Where(x => x.AwardedKnown && !x.Awarded).ToList();
@@ -166,10 +215,10 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                     _activityWatcher!.Data.UserId,
                     unearned.Select(x => x.Id));
 
-                if (universeId != _loadedUniverseId)
+                if (universeId != _loadedUniverseId || _isRemoving)
                     return;
 
-                var earned = unearned.Where(x => awarded.ContainsKey(x.Id)).ToList();
+                var earned = unearned.Where(x => awarded.TryGetValue(x.Id, out DateTime at) && StillEarned(x.Id, at)).ToList();
 
                 if (earned.Count == 0)
                     return;
@@ -199,6 +248,67 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             }
         }
 
+        private bool StillEarned(long badgeId, DateTime? awardedAt) =>
+            !_removedAt.TryGetValue(badgeId, out DateTime removedAt) || (awardedAt is DateTime at && at.ToUniversalTime() > removedAt);
+
+        private void Ask(Badge? badge)
+        {
+            if (_isRemoving)
+                return;
+
+            _pending = badge;
+
+            RemovalChanged();
+        }
+
+        private async Task RemovePendingAsync()
+        {
+            if (_isRemoving || _pending is null)
+                return;
+
+            Badge target = _pending;
+
+            _isRemoving = true;
+
+            RemovalChanged();
+
+            try
+            {
+                await BadgesApi.RemoveAsync(target.Id);
+
+                _removedAt[target.Id] = DateTime.UtcNow;
+
+                target.Awarded = false;
+                target.AwardedDate = null;
+
+                App.Logger.Info($"Removed badge {target.Id}");
+
+                _isRemoving = false;
+                _pending = null;
+
+                Show(Badges.ToList());
+
+                Refreshed();
+
+                if (_activityWatcher is not null && Badges.Any(x => x.AwardedKnown && !x.Awarded))
+                    _awardTimer.Start();
+
+                _flash.Show(String.Format(Locale.CurrentCulture, Strings.Menu_Overlay_Badges_RemovedOne, target.Name));
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error($"Failed to remove badge {target.Id}");
+                App.Logger.Error(ex);
+
+                _isRemoving = false;
+                _pending = null;
+
+                Refreshed();
+
+                _flash.Show(String.Format(Locale.CurrentCulture, Strings.Menu_Overlay_Badges_RemoveFailed, 1, 1));
+            }
+        }
+
         private void Show(IEnumerable<Badge> badges)
         {
             var ordered = badges
@@ -220,9 +330,22 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             _awardTimer.Stop();
 
             Badges.Clear();
+
+            _pending = null;
             _loadedUniverseId = 0;
 
             Refreshed();
+        }
+
+        private void RemovalChanged()
+        {
+            OnPropertyChanged(nameof(IsConfirming));
+            OnPropertyChanged(nameof(ConfirmText));
+            OnPropertyChanged(nameof(IsRemoving));
+            OnPropertyChanged(nameof(RemovingText));
+            OnPropertyChanged(nameof(CanEdit));
+            OnPropertyChanged(nameof(CanRefresh));
+            OnPropertyChanged(nameof(ShowSummary));
         }
 
         private void Refreshed()
@@ -230,9 +353,11 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             OnPropertyChanged(nameof(EarnedCount));
             OnPropertyChanged(nameof(CompletionPercentage));
             OnPropertyChanged(nameof(CompletionText));
-            OnPropertyChanged(nameof(HasBadges));
+            OnPropertyChanged(nameof(HeaderText));
             OnPropertyChanged(nameof(ShowEmptyState));
             OnPropertyChanged(nameof(EmptyText));
+
+            RemovalChanged();
         }
     }
 }

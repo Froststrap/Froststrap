@@ -14,6 +14,13 @@ namespace Froststrap.RobloxInterfaces
             await EnsureAcceptedAsync(response, setting, value);
         }
 
+        public static async Task DeleteAsync(Uri url)
+        {
+            using var response = await SendWithTokenAsync(HttpMethod.Delete, url, null);
+
+            response.EnsureSuccessStatusCode();
+        }
+
         public static async Task<T> PostJsonAsync<T>(Uri url, object body)
         {
             using var response = await SendWithTokenAsync(HttpMethod.Post, url, body);
@@ -21,13 +28,13 @@ namespace Froststrap.RobloxInterfaces
             return JsonSerializer.Deserialize<T>(await response.Content.ReadAsStringAsync())!;
         }
 
-        private static async Task<HttpResponseMessage> SendWithTokenAsync(HttpMethod method, Uri url, object body)
+        private static async Task<HttpResponseMessage> SendWithTokenAsync(HttpMethod method, Uri url, object? body)
         {
-            string json = JsonSerializer.Serialize(body);
+            string? json = body is null ? null : JsonSerializer.Serialize(body);
 
             HttpRequestMessage Request() => new(method, url)
             {
-                Content = new StringContent(json, Encoding.UTF8, "application/json")
+                Content = json is null ? null : new StringContent(json, Encoding.UTF8, "application/json")
             };
 
             var first = await App.Cookies.AuthRequest(Request());

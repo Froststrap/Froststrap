@@ -39,6 +39,8 @@ namespace Froststrap.Models.Overlay
 
         public long AwardedCount { get; set; }
 
+        public bool CanRemove => Awarded && AwardedKnown;
+
         private bool _loadingIcon;
         private string? _loadedIconUrl;
 

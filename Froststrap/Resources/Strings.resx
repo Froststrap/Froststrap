@@ -2776,10 +2776,10 @@ Do you want to install the plugin?</value>
   <data name="Enums.FontSize.x4" xml:space="preserve">
     <value>Extra Large</value>
   </data>
-  <data name="Enums.PlayerListLayout.x0" xml:space="preserve">
+  <data name="Enums.PlayerListLayOut.x0" xml:space="preserve">
     <value>Square</value>
   </data>
-  <data name="Enums.PlayerListLayout.x1" xml:space="preserve">
+  <data name="Enums.PlayerListLayOut.x1" xml:space="preserve">
     <value>Normal</value>
   </data>
   <data name="Enums.BackgroundMode.Gradient" xml:space="preserve">
@@ -3480,7 +3480,7 @@ All files will be moved, shortcuts updated, and the application will restart.</v
     <value>Saved.</value>
   </data>
   <data name="Menu.Overlay.Privacy.JoinNarrowed" xml:space="preserve">
-    <value>Saved. Who can join you was narrowed to match.</value>
+    <value>Saved. Who can see and join your game was narrowed to match.</value>
   </data>
   <data name="Menu.Overlay.Privacy.Rejected" xml:space="preserve">
     <value>Roblox didn't accept that: {0}</value>
@@ -3910,5 +3910,56 @@ Press cancel to go back.</value>
   </data>
   <data name="Menu.Overlay.Servers.CreditTooltip" xml:space="preserve">
     <value>Visit rovalra.com</value>
+  </data>
+  <data name="Menu.Overlay.Badges.RemoveTooltip" xml:space="preserve">
+    <value>Remove from your inventory</value>
+  </data>
+  <data name="Menu.Overlay.Badges.SelectTooltip" xml:space="preserve">
+    <value>Select to remove several at once</value>
+  </data>
+  <data name="Menu.Overlay.Badges.Selected" xml:space="preserve">
+    <value>{0} selected</value>
+  </data>
+  <data name="Menu.Overlay.Badges.SelectAll" xml:space="preserve">
+    <value>Select all</value>
+  </data>
+  <data name="Menu.Overlay.Badges.ClearSelection" xml:space="preserve">
+    <value>Clear</value>
+  </data>
+  <data name="Menu.Overlay.Badges.RemoveSelected" xml:space="preserve">
+    <value>Remove selected</value>
+  </data>
+  <data name="Menu.Overlay.Badges.Remove" xml:space="preserve">
+    <value>Remove</value>
+  </data>
+  <data name="Menu.Overlay.Badges.ConfirmOne" xml:space="preserve">
+    <value>Remove "{0}" from your inventory? You'll have to earn it again to get it back.</value>
+  </data>
+  <data name="Menu.Overlay.Badges.ConfirmMany" xml:space="preserve">
+    <value>Remove {0} badges from your inventory? You'll have to earn them again to get them back.</value>
+  </data>
+  <data name="Menu.Overlay.Badges.Removing" xml:space="preserve">
+    <value>Removing {0} of {1}...</value>
+  </data>
+  <data name="Menu.Overlay.Badges.RemovedOne" xml:space="preserve">
+    <value>Removed "{0}" from your inventory.</value>
+  </data>
+  <data name="Menu.Overlay.Badges.RemovedMany" xml:space="preserve">
+    <value>Removed {0} badges from your inventory.</value>
+  </data>
+  <data name="Menu.Overlay.Badges.RemoveFailed" xml:space="preserve">
+    <value>{0} of {1} couldn't be removed. Try again in a moment.</value>
+  </data>
+  <data name="Menu.Overlay.Games.Continue" xml:space="preserve">
+    <value>Continue</value>
+  </data>
+  <data name="Menu.Overlay.GamePrivacy.Title" xml:space="preserve">
+    <value>Who can see and join your game</value>
+  </data>
+  <data name="Menu.Overlay.GamePrivacy.Hint" xml:space="preserve">
+    <value>Changes your Roblox account setting. It can't be wider than who can see you're online.</value>
+  </data>
+  <data name="Menu.Overlay.GamePrivacy.Tooltip" xml:space="preserve">
+    <value>Choose who can see and join your game</value>
   </data>
 </root>

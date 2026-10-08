@@ -18,8 +18,6 @@ namespace Froststrap.Integrations.Overlay
 
         void Start();
         void SyncBounds();
-        bool ShowToast(string title, string message);
-        void DismissToast();
         bool IsGameMinimised();
         bool IsGameForeground();
         void FocusGame();

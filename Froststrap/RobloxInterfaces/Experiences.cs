@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Froststrap.RobloxInterfaces
@@ -10,6 +12,7 @@ namespace Froststrap.RobloxInterfaces
     {
         private const int BatchSize = 50;
         private const int FavoritesLimit = 50;
+        private const int ContinueLimit = 24;
 
         private static readonly string SearchSession = Guid.NewGuid().ToString();
 
@@ -36,6 +39,54 @@ namespace Froststrap.RobloxInterfaces
             await PopulateIconsAsync(tiles);
 
             return tiles;
+        }
+
+        public static async Task<List<GameTile>> ContinueAsync()
+        {
+            const string LOG_IDENT = "Experiences::ContinueAsync";
+
+            string? cookie = App.Cookies.GetAuthCookie();
+
+            if (String.IsNullOrEmpty(cookie))
+                return [];
+
+            try
+            {
+                Uri url = UrlBuilder.BuildApiUrl("apis", $"search-landing-page-api/v1?sessionId={SearchSession}");
+
+                using var request = new HttpRequestMessage(HttpMethod.Get, url);
+                request.Headers.Add("Cookie", $".ROBLOSECURITY={cookie}");
+
+                var response = await Http.SendJson<SearchLandingResponse>(request);
+
+                SearchLandingSort? recentSort = response?.Sorts?.FirstOrDefault(x => x.SortId == "RecentlyVisited");
+
+                if (recentSort?.Games is null || recentSort.Games.Count == 0)
+                    return [];
+
+                var tiles = recentSort.Games
+                    .Where(x => x.UniverseId > 0 && x.RootPlaceId > 0)
+                    .Take(ContinueLimit)
+                    .Select(x => new GameTile
+                    {
+                        UniverseId = x.UniverseId,
+                        PlaceId = x.RootPlaceId,
+                        Name = x.Name ?? Strings.Menu_QuickPlay_UnknownGame,
+                        Playing = x.PlayerCount
+                    })
+                    .ToList();
+
+                await PopulateIconsAsync(tiles);
+
+                return tiles;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error($"{LOG_IDENT}: Failed to load the Continue list");
+                App.Logger.Error(ex);
+
+                return [];
+            }
         }
 
         public static async Task<List<GameTile>> FavoritesAsync(long userId)

@@ -98,6 +98,8 @@ namespace Froststrap.UI.ViewModels.Overlay
 
         public Controls.OnlineStatusViewModel OnlineStatus { get; } = new();
 
+        public Controls.GameStatusViewModel GameStatus { get; } = new();
+
         private string _username = String.Empty;
         public string Username
         {
@@ -496,6 +498,7 @@ namespace Froststrap.UI.ViewModels.Overlay
             _loadedGameBitmapUrl = null;
             TimePlayed = String.Empty;
             CurrentRegion = String.Empty;
+            GameStatus.IsOpen = false;
             IsInGame = false;
         }
 

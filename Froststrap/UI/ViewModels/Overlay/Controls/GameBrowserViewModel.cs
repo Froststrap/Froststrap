@@ -15,6 +15,8 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
     {
         private static readonly TimeSpan SearchDelay = TimeSpan.FromMilliseconds(400);
 
+        private static readonly TimeSpan ContinueRefresh = TimeSpan.FromMinutes(1);
+
         private readonly ActivityWatcher? _activityWatcher;
         private readonly DispatcherTimer _searchTimer;
         private readonly FlashMessage _flash;
@@ -24,9 +26,21 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
         private bool _favoritesFailed;
         private bool _searchFailed;
 
+        private bool _loadingContinue;
+        private DateTime _continueLoaded = DateTime.MinValue;
+
         public ObservableCollection<GameTile> SearchResults { get; } = [];
         public ObservableCollection<GameTile> Favorites { get; } = [];
-        public ObservableCollection<GameTile> ActiveTiles => ShowingFavorites ? Favorites : SearchResults;
+        public ObservableCollection<GameTile> ContinueTiles { get; } = [];
+
+        public ObservableCollection<GameTile> ActiveTiles =>
+            ShowingFavorites ? Favorites :
+            ShowingContinue ? ContinueTiles :
+            SearchResults;
+
+        public bool ShowingContinue => !ShowingFavorites && String.IsNullOrWhiteSpace(Query);
+
+        public bool ShowContinueLabel => ShowingContinue && ContinueTiles.Count > 0;
 
         private bool _showingFavorites;
         public bool ShowingFavorites
@@ -41,6 +55,8 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
                 OnPropertyChanged(nameof(ShowingFavorites));
                 OnPropertyChanged(nameof(ShowingSearch));
+                OnPropertyChanged(nameof(ShowingContinue));
+                OnPropertyChanged(nameof(ShowContinueLabel));
                 OnPropertyChanged(nameof(ActiveTiles));
 
                 Refreshed();
@@ -68,6 +84,9 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                 _query = value;
 
                 OnPropertyChanged(nameof(Query));
+                OnPropertyChanged(nameof(ShowingContinue));
+                OnPropertyChanged(nameof(ShowContinueLabel));
+                OnPropertyChanged(nameof(ActiveTiles));
 
                 _searchTimer.Stop();
 
@@ -98,6 +117,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
                 _isBusy = value;
                 OnPropertyChanged(nameof(IsBusy));
+                Refreshed();
             }
         }
 
@@ -119,6 +139,9 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                         ? Strings.Menu_Overlay_Games_NoAccount
                         : Strings.Menu_Overlay_Games_NoFavorites;
                 }
+
+                if (ShowingContinue)
+                    return Strings.Menu_Overlay_Games_SearchPrompt;
 
                 if (String.IsNullOrWhiteSpace(Query))
                     return Strings.Menu_Overlay_Games_SearchPrompt;
@@ -171,13 +194,68 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
         {
             _favoritesLoaded = false;
             _favoritesFailed = false;
+            _continueLoaded = DateTime.MinValue;
 
             Favorites.Clear();
+            ContinueTiles.Clear();
+
+            OnPropertyChanged(nameof(ShowContinueLabel));
+            OnPropertyChanged(nameof(ActiveTiles));
+
             Refreshed();
 
             if (ShowingFavorites)
                 _ = LoadFavoritesAsync();
+            else if (ShowingContinue)
+                _ = LoadContinueAsync(true);
         });
+
+        public async Task LoadContinueAsync(bool force = false)
+        {
+            if (_loadingContinue || (!force && DateTime.UtcNow - _continueLoaded < ContinueRefresh))
+                return;
+
+            _loadingContinue = true;
+
+            bool showBusy = ShowingContinue && ContinueTiles.Count == 0;
+
+            if (showBusy)
+            {
+                IsBusy = true;
+                Refreshed();
+            }
+
+            try
+            {
+                List<GameTile> tiles = await Experiences.ContinueAsync();
+
+                ContinueTiles.Clear();
+
+                foreach (GameTile tile in tiles)
+                {
+                    ContinueTiles.Add(tile);
+                    _ = tile.LoadIconAsync();
+                }
+
+                _continueLoaded = DateTime.UtcNow;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error("Failed to load the Continue list");
+                App.Logger.Error(ex);
+            }
+            finally
+            {
+                _loadingContinue = false;
+
+                if (showBusy)
+                    IsBusy = false;
+
+                OnPropertyChanged(nameof(ShowContinueLabel));
+                OnPropertyChanged(nameof(ActiveTiles));
+                Refreshed();
+            }
+        }
 
         private async Task SearchAsync(string query)
         {
@@ -292,6 +370,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
         {
             OnPropertyChanged(nameof(ShowEmptyState));
             OnPropertyChanged(nameof(EmptyText));
+            OnPropertyChanged(nameof(ShowContinueLabel));
         }
     }
 }

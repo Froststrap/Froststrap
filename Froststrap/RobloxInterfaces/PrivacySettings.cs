@@ -4,6 +4,8 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
+using Froststrap.Models.Entities;
+
 namespace Froststrap.RobloxInterfaces
 {
     internal class PrivacySettings
@@ -27,7 +29,7 @@ namespace Froststrap.RobloxInterfaces
             "NoOne"
         ];
 
-        private static readonly string[] JoinLevels =
+        public static readonly IReadOnlyList<string> JoinLevels =
         [
             "All",
             "Followers",
@@ -37,14 +39,20 @@ namespace Froststrap.RobloxInterfaces
             "NoOne"
         ];
 
-        public static async Task<(string? Online, string? Join)> FetchAsync()
+        public static async Task<PrivacyState> FetchAsync()
         {
             var response = await Http.AuthGetJson<UserSettingsResponse>(SettingsUrl);
 
-            return (response.OnlineStatus?.CurrentValue, response.JoinStatus?.CurrentValue);
+            return new PrivacyState
+            {
+                Online = response.OnlineStatus?.CurrentValue,
+                Join = response.JoinStatus?.CurrentValue,
+                OnlineOptions = response.OnlineStatus?.Available ?? [],
+                JoinOptions = response.JoinStatus?.Available ?? []
+            };
         }
 
-        private static int Rank(string? value)
+        public static int Rank(string? value)
         {
             if (value is null)
                 return -1;
@@ -77,6 +85,13 @@ namespace Froststrap.RobloxInterfaces
             return plan;
         }
 
+        public static bool GameVisibilityAllowed(string join, string? online)
+        {
+            int onlineRank = Rank(online);
+
+            return onlineRank < 0 || Rank(join) >= onlineRank;
+        }
+
         public static async Task<bool> SetOnlineVisibilityAsync(string online, string? join)
         {
             var plan = PlanOnlineVisibility(online, join);
@@ -90,6 +105,23 @@ namespace Froststrap.RobloxInterfaces
                 await PostAsync(setting, value);
 
             return plan.Count > 1;
+        }
+
+        public static async Task SetGameVisibilityAsync(string join, string? online)
+        {
+            const string LOG_IDENT = "PrivacySettings::SetGameVisibilityAsync";
+
+            if (!JoinLevels.Contains(join))
+                throw new ArgumentException($"Unknown game visibility '{join}'", nameof(join));
+
+            if (!GameVisibilityAllowed(join, online))
+                throw new ArgumentException($"Game visibility '{join}' is wider than online visibility '{online}'", nameof(join));
+
+            await App.Cookies.EnsureBrowserTrackerAsync();
+
+            App.Logger.Info($"{LOG_IDENT}: Setting game visibility to {join} with online at {online ?? "unreported"}");
+
+            await PostAsync(JoinSetting, join);
         }
 
         private static Task PostAsync(string setting, string value) =>

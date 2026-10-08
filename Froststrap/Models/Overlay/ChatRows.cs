@@ -76,8 +76,6 @@ namespace Froststrap.Models.Overlay
     {
         public string Text { get; init; } = String.Empty;
 
-        public string? MessageId { get; set; }
-
         private ChatLineState _state = ChatLineState.Sent;
         public ChatLineState State
         {

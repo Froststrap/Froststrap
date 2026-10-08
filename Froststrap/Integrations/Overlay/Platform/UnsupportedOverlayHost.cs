@@ -38,8 +38,6 @@ namespace Froststrap.Integrations.Overlay.Platform
 
         public void Start() { }
         public void SyncBounds() { }
-        public bool ShowToast(string title, string message) => false;
-        public void DismissToast() { }
         public bool IsGameMinimised() => false;
         public bool IsGameForeground() => false;
         public void FocusGame() { }

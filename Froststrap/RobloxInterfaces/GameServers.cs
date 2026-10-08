@@ -1,5 +1,6 @@
 ﻿using Froststrap.AppData;
 using Froststrap.Enums.Overlay;
+using Froststrap.Utility;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -18,6 +19,7 @@ namespace Froststrap.RobloxInterfaces
         private const int MaxFaces = 5;
         private const int DetailsBatchSize = 50;
         private const int DetailsReach = 100;
+        private const int AvatarDecodeWidth = 112;
 
         private static readonly Uri DatacentersUrl = new("https://apis.rovalra.com/v1/datacenters/list");
 
@@ -153,6 +155,8 @@ namespace Froststrap.RobloxInterfaces
                     ? await PlayerThumbnails.FetchPoolAsync()
                     : [];
 
+                var pending = new List<string>();
+
                 foreach (GameServer server in servers)
                 {
                     server.PlayerIcons.Clear();
@@ -160,12 +164,38 @@ namespace Froststrap.RobloxInterfaces
                     List<string> faces = Faces(server, real);
 
                     server.PlayerIcons.AddRange(faces.Count > 0 ? faces : Filler(server, pool));
+
+                    foreach (string url in server.PlayerIcons)
+                        pending.Add(url);
                 }
+
+                await PrefetchAsync(pending);
             }
             catch (Exception ex)
             {
                 App.Logger.Error("Failed to resolve server thumbnails");
                 App.Logger.Error(ex);
+            }
+        }
+
+        private static async Task PrefetchAsync(IEnumerable<string> urls)
+        {
+            var unique = urls
+                .Where(x => !String.IsNullOrEmpty(x))
+                .Distinct(StringComparer.Ordinal)
+                .ToList();
+
+            if (unique.Count == 0)
+                return;
+
+            var work = unique.Select(url => ImageLoader.LoadAsync(url, AvatarDecodeWidth));
+
+            try
+            {
+                await Task.WhenAll(work);
+            }
+            catch
+            {
             }
         }
 

@@ -35,9 +35,6 @@ namespace Froststrap.UI.Elements.Overlay.Controls
         private Control? _target;
         private bool _shown;
 
-        public bool IsShowing => _shown;
-        public string? ShowingText => _shown ? _label.Text : null;
-
         public DockHintLayer()
         {
             IsHitTestVisible = false;

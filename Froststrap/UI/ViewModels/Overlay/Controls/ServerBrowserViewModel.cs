@@ -19,7 +19,13 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
         private readonly ActivityWatcher? _activityWatcher;
         private readonly FlashMessage _flash;
 
-        public ObservableCollection<GameServer> Servers { get; } = [];
+        private ObservableCollection<GameServer> _servers = [];
+
+        public ObservableCollection<GameServer> Servers
+        {
+            get => _servers;
+            private set => SetProperty(ref _servers, value);
+        }
 
         public IEnumerable<Order> Orders { get; } = Enum.GetValues<Order>();
 
@@ -355,9 +361,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                     GameServers.PopulateIconsAsync(servers),
                     GameServers.PopulateDetailsAsync(_activityWatcher.Data.PlaceId, servers));
 
-                Servers.Clear();
-                foreach (GameServer server in servers)
-                    Servers.Add(server);
+                Servers = new ObservableCollection<GameServer>(servers);
             }
             catch (Exception ex)
             {
@@ -413,7 +417,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
         private void Clear()
         {
-            Servers.Clear();
+            Servers = [];
             Refreshed();
             RefreshCurrentServer();
         }

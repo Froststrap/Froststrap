@@ -75,10 +75,15 @@ namespace Froststrap.Models.Overlay
             ? String.Format(Locale.CurrentCulture, "+{0}", OverflowCount)
             : String.Empty;
 
+        private IReadOnlyList<ServerAvatar>? _avatars;
+
         public IReadOnlyList<ServerAvatar> Avatars
         {
             get
             {
+                if (_avatars is not null)
+                    return _avatars;
+
                 int overflow = OverflowCount;
                 int faces = overflow > 0 ? AvatarSlots - 1 : AvatarSlots;
 
@@ -91,7 +96,9 @@ namespace Froststrap.Models.Overlay
                 if (hidden > 0)
                     avatars.Add(new ServerAvatar(null, $"+{hidden}"));
 
-                return avatars;
+                _avatars = avatars;
+
+                return _avatars;
             }
         }
 

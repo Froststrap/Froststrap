@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Froststrap.RobloxInterfaces
@@ -9,6 +11,10 @@ namespace Froststrap.RobloxInterfaces
     {
         private const int PageSize = 100;
         private const int MaxPages = 5;
+
+        private const int RemoveAttempts = 3;
+
+        private static readonly TimeSpan RateLimitBackoff = TimeSpan.FromSeconds(2);
 
         public static async Task<List<Badge>> FetchAsync(long universeId, long userId)
         {
@@ -85,6 +91,24 @@ namespace Froststrap.RobloxInterfaces
             {
                 App.Logger.Error("Failed to fetch awarded dates");
                 App.Logger.Error(ex);
+            }
+        }
+
+        public static async Task RemoveAsync(long badgeId)
+        {
+            Uri url = UrlBuilder.BuildApiUrl("badges", $"v1/user/badges/{badgeId}");
+
+            for (int attempt = 1; ; attempt++)
+            {
+                try
+                {
+                    await AccountRequests.DeleteAsync(url);
+                    return;
+                }
+                catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.TooManyRequests && attempt < RemoveAttempts)
+                {
+                    await Task.Delay(RateLimitBackoff * attempt);
+                }
             }
         }
 

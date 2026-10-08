@@ -13,38 +13,83 @@
     x:CompileBindings="False"
     mc:Ignorable="d">
 
-    <Grid RowDefinitions="Auto,*">
+    <Grid RowDefinitions="Auto,Auto,*">
 
         <Grid
             Grid.Row="0"
-            Margin="0,0,0,8"
-            ColumnDefinitions="*,Auto">
-            <TextBlock
-                Grid.Column="0"
-                VerticalAlignment="Center"
-                FontSize="13"
-                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                Text="{Binding CompletionText}" />
+            MinHeight="32"
+            Margin="0,0,0,8">
 
-            <controls:IconButton
-                Grid.Column="1"
-                Margin="0,0,0,4"
+            <Grid ColumnDefinitions="*,Auto" IsVisible="{Binding ShowSummary}">
+                <TextBlock
+                    Grid.Column="0"
+                    VerticalAlignment="Center"
+                    FontSize="13"
+                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                    Text="{Binding HeaderText}"
+                    TextTrimming="CharacterEllipsis" />
+
+                <controls:IconButton
+                    Grid.Column="1"
+                    VerticalAlignment="Center"
+                    Command="{Binding RefreshCommand}"
+                    Content="{x:Static resources:Strings.Menu_Overlay_Refresh}"
+                    Icon="RefreshCw"
+                    IsEnabled="{Binding CanRefresh}" />
+            </Grid>
+
+            <Grid ColumnDefinitions="*,Auto,Auto" IsVisible="{Binding IsConfirming}">
+                <TextBlock
+                    Grid.Column="0"
+                    VerticalAlignment="Center"
+                    FontSize="13"
+                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                    Text="{Binding ConfirmText}"
+                    TextWrapping="Wrap" />
+
+                <controls:IconButton
+                    Grid.Column="1"
+                    Margin="12,0,0,0"
+                    VerticalAlignment="Center"
+                    Command="{Binding CancelRemoveCommand}"
+                    Content="{x:Static resources:Strings.Common_Cancel}"
+                    Icon="X" />
+
+                <controls:IconButton
+                    Grid.Column="2"
+                    Classes="Danger"
+                    Margin="8,0,0,0"
+                    VerticalAlignment="Center"
+                    Command="{Binding ConfirmRemoveCommand}"
+                    Content="{x:Static resources:Strings.Menu_Overlay_Badges_Remove}"
+                    Icon="Trash2" />
+            </Grid>
+
+            <StackPanel
+                Orientation="Horizontal"
                 VerticalAlignment="Center"
-                Command="{Binding RefreshCommand}"
-                Content="{x:Static resources:Strings.Menu_Overlay_Refresh}"
-                Icon="RefreshCw"
-                IsEnabled="{Binding CanRefresh}" />
+                IsVisible="{Binding IsRemoving}">
+                <ui:FAProgressRing
+                    Width="16"
+                    Height="16"
+                    Margin="0,0,10,0"
+                    IsIndeterminate="True" />
+                <TextBlock
+                    VerticalAlignment="Center"
+                    FontSize="13"
+                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                    Text="{Binding RemovingText}" />
+            </StackPanel>
         </Grid>
 
         <ProgressBar
-            Grid.Row="0"
+            Grid.Row="1"
             Height="3"
-            Margin="0,0,0,2"
-            VerticalAlignment="Bottom"
+            Margin="0,4,0,2"
             Maximum="100"
             Value="{Binding CompletionPercentage, Mode=OneWay}" />
 
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="2">
             <ui:FAProgressRing
                 Width="32"
                 Height="32"
@@ -84,7 +129,7 @@
                                 BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
                                 BorderThickness="1"
                                 CornerRadius="8">
-                                <Grid ColumnDefinitions="Auto,*,Auto">
+                                <Grid ColumnDefinitions="Auto,*,Auto,Auto">
 
                                     <Border
                                         Grid.Column="0"
@@ -165,6 +210,22 @@
                                                 Text="{Binding StatusText}" />
                                         </StackPanel>
                                     </Border>
+
+                                    <controls:IconButton
+                                        Grid.Column="3"
+                                        Classes="Danger"
+                                        Width="32"
+                                        Height="32"
+                                        Margin="8,0,0,0"
+                                        Padding="0"
+                                        VerticalAlignment="Center"
+                                        Command="{Binding $parent[ItemsControl].DataContext.RemoveCommand}"
+                                        CommandParameter="{Binding}"
+                                        Icon="Trash2"
+                                        IconSize="14"
+                                        IsEnabled="{Binding $parent[ItemsControl].DataContext.CanEdit}"
+                                        IsVisible="{Binding CanRemove}"
+                                        ToolTip.Tip="{x:Static resources:Strings.Menu_Overlay_Badges_RemoveTooltip}" />
                                 </Grid>
                             </Border>
                         </DataTemplate>
