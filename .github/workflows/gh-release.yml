@@ -35,6 +35,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           path: signing-input/Froststrap-windows-x64-unsigned.msi
+          archive: false
           if-no-files-found: error
 
       - name: Sign Windows MSI
@@ -47,6 +48,7 @@ jobs:
           github-artifact-id: ${{ steps.upload-unsigned-msi.outputs.artifact-id }}
           wait-for-completion: true
           output-artifact-directory: signed-msi
+          skip-decompress: true
 
       - name: Replace unsigned MSI with signed MSI
         run: |
