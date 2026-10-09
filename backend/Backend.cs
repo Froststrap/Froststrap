@@ -43,7 +43,7 @@ public class VirtualDisplay
     /// Which implies it's active or not
     public static bool Running()
     {
-        return InternalVirtualDisplay.IsRunning() != 0
+        return InternalVirtualDisplay.IsRunning() != 0;
     }
 
     /// Instructs to shut up the NSApplication worker thread
