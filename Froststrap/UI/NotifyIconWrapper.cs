@@ -201,8 +201,12 @@ namespace Froststrap.UI
             _isDisposed = true;
 
 #if __APPLE__
-            App.Logger.Debug("Exiting Virtual Display (if there is one)");
-            Froststrap.Backend.VirtualDisplay.End();
+            let vdr = Froststrap.Backend.VirtualDisplay.Running();
+            App.Logger.Info($"Virtual Display result = {vdr}");
+            if (vdr) {
+                App.Logger.Debug("Exiting Virtual Display");
+                Froststrap.Backend.VirtualDisplay.End();
+            }
 #endif
             App.Logger.Info("Cleaning up TrayIcon and MenuContainer");
 
