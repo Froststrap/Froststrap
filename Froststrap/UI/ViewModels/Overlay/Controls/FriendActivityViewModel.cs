@@ -1,10 +1,12 @@
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
+using Froststrap.Enums;
 using Froststrap.Enums.Overlay;
 using Froststrap.Integrations;
 using Froststrap.Integrations.Overlay;
 using Froststrap.Integrations.OverlayModules;
+using Froststrap.Models.APIs.Roblox;
 using Froststrap.Models.APIs.RobloxParty;
 using Froststrap.Models.APIs.RobloxParty.Events;
 using Froststrap.Models.Overlay;
@@ -53,8 +55,10 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                 if (_selectedTab == value)
                     return;
 
+#pragma warning disable IDE0031 // Cannot null-propagate an assignment
                 if (_selectedTab is not null)
                     _selectedTab.IsSelected = false;
+#pragma warning restore IDE0031
 
                 _selectedTab = value;
 
@@ -144,11 +148,13 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             SendCommand = new AsyncRelayCommand(SendAsync, AsyncRelayCommandOptions.AllowConcurrentExecutions);
             JoinCommand = new RelayCommand(Join);
 
+#pragma warning disable IDE0031 // Cannot null-propagate an event subscription
             if (_party is not null)
                 _party.IncomingMessage += OnIncomingMessage;
 
             if (_presence is not null)
                 _presence.Updated += (_, _) => Dispatcher.UIThread.Post(ApplyPresence);
+#pragma warning restore IDE0031
 
             App.Cookies.WatchAccount(this, static vm => vm.OnAccountChanged());
         }
@@ -220,7 +226,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                 if (_presence is not null && !_presence.HasLooked)
                     await _presence.PollAsync();
 
-                List<Conversation> conversations = _party is null ? new() : await RobloxParty.GetAllConversations();
+                List<Conversation> conversations = _party is null ? [] : await RobloxParty.GetAllConversations();
 
                 var ids = new HashSet<long>(_presence?.FriendIds ?? []);
 
@@ -337,7 +343,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
             foreach (long[] batch in ids.Chunk(DetailsBatch))
             {
-                foreach (var (id, user) in await UserDetails.FetchBatch(batch.ToList()))
+                foreach (var (id, user) in await UserDetails.FetchBatch([.. batch]))
                     details[id] = user;
             }
 
@@ -364,7 +370,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             {
                 (FriendSection.InGame, [.. _people.Values.Where(x => x.IsInGame && Shown(x))]),
                 (FriendSection.Online, [.. _people.Values.Where(x => (x.IsOnline || x.IsInStudio) && Shown(x))]),
-                (FriendSection.Offline, [.. _people.Values.Where(x => x.Status == FriendStatus.Offline && Shown(x))]),
+                (FriendSection.Offline, [.. _people.Values.Where(x => x.Status == UserPresenceType.Offline && Shown(x))]),
                 (FriendSection.Groups, [.. _groups.Where(Shown)])
             };
 

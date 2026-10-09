@@ -1,51 +1,57 @@
-using Froststrap.Enums.Overlay;
+using System.Diagnostics.CodeAnalysis;
+
+using Froststrap.Enums;
+using Froststrap.Models.APIs.RealtimeMessaging;
 using Froststrap.Models.APIs.Roblox;
 using Froststrap.RobloxInterfaces;
 
 namespace Froststrap.Integrations.OverlayModules
 {
-    internal class FriendPresence : IDisposable
+    internal class FriendPresence(ActivityWatcher? activityWatcher, RealtimeMessaging? messaging = null) : IDisposable
     {
         private const string LOG_IDENT = "FriendPresence";
 
-        private static readonly TimeSpan ReconcileInterval = TimeSpan.FromMinutes(5);
+        private static readonly TimeSpan ResyncInterval = TimeSpan.FromMinutes(10);
+        private static readonly TimeSpan OfflineInterval = TimeSpan.FromSeconds(45);
         private static readonly TimeSpan FriendsRefresh = TimeSpan.FromMinutes(10);
         private static readonly TimeSpan Cooldown = TimeSpan.FromMinutes(15);
 
         private const int BatchSize = 50;
-        private const int MaxPerPoll = 3;
-
-#pragma warning disable CA1823
-        private const int PresenceOffline = 0;
-        private const int PresenceOnline = 1;
-        private const int PresenceInGame = 2;
-        private const int PresenceInStudio = 3;
-#pragma warning restore CA1823
+        private const int MaxPerUpdate = 3;
 
         public event EventHandler<FriendPresenceChange>? Changed;
         public event EventHandler? Updated;
 
-        private readonly ActivityWatcher? _activityWatcher;
-        private readonly RealtimeMessaging? _messaging;
+        [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "Owned by the caller, not by FriendPresence.")]
+        private readonly ActivityWatcher? _activityWatcher = activityWatcher;
 
-        private readonly Dictionary<(long UserId, string Place), DateTime> _notified = new();
+        [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "Owned by the caller, not by FriendPresence.")]
+        private readonly RealtimeMessaging? _messaging = messaging;
 
-        private Dictionary<long, UserPresence> _last = new();
-        private List<long> _friends = new();
+        private readonly Lock _lock = new();
+
+        private readonly Dictionary<(long UserId, string Place), DateTime> _notified = [];
+
+        private Dictionary<long, UserPresence> _last = [];
+        private List<long> _friends = [];
+        private HashSet<long> _friendIds = [];
         private DateTime _friendsFetched = DateTime.MinValue;
 
         private CancellationTokenSource? _cancellation;
         private bool _seeded;
 
-        public IReadOnlyList<long> FriendIds => _friends.ToList();
-        public IReadOnlyDictionary<long, UserPresence> Presences => new Dictionary<long, UserPresence>(_last);
-        public bool HasLooked => _seeded;
+        public IReadOnlyList<long> FriendIds => [.. _friends];
 
-        public FriendPresence(ActivityWatcher? activityWatcher, RealtimeMessaging? messaging = null)
+        public IReadOnlyDictionary<long, UserPresence> Presences
         {
-            _activityWatcher = activityWatcher;
-            _messaging = messaging;
+            get
+            {
+                lock (_lock)
+                    return new Dictionary<long, UserPresence>(_last);
+            }
         }
+
+        public bool HasLooked => _seeded;
 
         public void Start()
         {
@@ -55,16 +61,14 @@ namespace Froststrap.Integrations.OverlayModules
             _cancellation = new CancellationTokenSource();
             CancellationToken token = _cancellation.Token;
 
-            if (_messaging is not null)
-                _messaging.PresenceBulk += OnPresenceBulk;
+            _messaging?.PresenceBulk += OnPresenceBulk;
 
             _ = Task.Run(() => RunAsync(token));
         }
 
         public void Stop()
         {
-            if (_messaging is not null)
-                _messaging.PresenceBulk -= OnPresenceBulk;
+            _messaging?.PresenceBulk -= OnPresenceBulk;
 
             _cancellation?.Cancel();
             _cancellation?.Dispose();
@@ -88,7 +92,9 @@ namespace Froststrap.Integrations.OverlayModules
             {
                 while (!token.IsCancellationRequested)
                 {
-                    await Task.Delay(ReconcileInterval, token);
+                    TimeSpan delay = _messaging?.IsConnected == true ? ResyncInterval : OfflineInterval;
+
+                    await Task.Delay(delay, token);
 
                     try
                     {
@@ -117,7 +123,8 @@ namespace Froststrap.Integrations.OverlayModules
                 var friends = await Http.GetJson<ApiArrayResponse<FriendResponse>>(
                     UrlBuilder.BuildApiUrl("friends", $"v1/users/{me.Id}/friends"));
 
-                _friends = friends?.Data?.Select(x => x.Id).Where(x => x > 0).Distinct().ToList() ?? new List<long>();
+                _friends = [.. friends?.Data?.Select(x => x.Id).Where(x => x > 0).Distinct() ?? []];
+                _friendIds = [.. _friends];
                 _friendsFetched = DateTime.UtcNow;
 
                 App.Logger.Info($"{LOG_IDENT}::PollAsync", $"Keeping an eye on {_friends.Count} friends");
@@ -137,66 +144,76 @@ namespace Froststrap.Integrations.OverlayModules
                 var response = await AccountRequests.PostJsonAsync<UserPresenceResponse>(
                     UrlBuilder.BuildApiUrl("presence", "v1/presence/users"), new { userIds = batch });
 
-                foreach (UserPresence presence in response?.UserPresences ?? new List<UserPresence>())
+                foreach (UserPresence presence in response?.UserPresences ?? [])
                     now[presence.UserId] = presence;
             }
 
-            List<FriendPresenceChange> changes = _seeded ? Compare(_last, now) : new List<FriendPresenceChange>();
+            List<FriendPresenceChange> changes;
 
-            _last = now;
-            _seeded = true;
+            lock (_lock)
+            {
+                changes = _seeded ? Compare(_last, now) : [];
 
-            Updated?.Invoke(this, EventArgs.Empty);
+                _last = now;
+                _seeded = true;
+            }
 
-            foreach (FriendPresenceChange change in changes.OrderBy(x => x.Kind).Take(MaxPerPoll))
-                Changed?.Invoke(this, change);
+            Publish(changes);
         }
 
         private void OnPresenceBulk(object? sender, IReadOnlyList<PresenceNotification> notifications)
         {
-            if (!_seeded)
-                return;
+            List<FriendPresenceChange> changes;
 
-            var updates = new Dictionary<long, UserPresence>();
-
-            foreach (PresenceNotification note in notifications)
+            lock (_lock)
             {
-                if (note.PresenceReport is null)
-                    continue;
+                if (!_seeded)
+                    return;
 
-                if (!String.Equals(note.Type, "PresenceChanged", StringComparison.OrdinalIgnoreCase))
+                var updates = new Dictionary<long, UserPresence>();
+
+                foreach (PresenceNotification note in notifications)
                 {
-                    App.Logger.Info($"{LOG_IDENT}::OnPresenceBulk: unhandled presence type {note.Type}");
-                    continue;
+                    if (note.PresenceReport is null)
+                        continue;
+
+                    if (!String.Equals(note.Type, PresenceNotification.PresenceChangedType, StringComparison.OrdinalIgnoreCase))
+                    {
+                        App.Logger.Info($"{LOG_IDENT}::OnPresenceBulk: unhandled presence type {note.Type}");
+                        continue;
+                    }
+
+                    long userId = note.PresenceReport.UserId != 0 ? note.PresenceReport.UserId : note.UserId;
+
+                    if (userId == 0)
+                        continue;
+
+                    if (_friendIds.Count > 0 && !_friendIds.Contains(userId))
+                        continue;
+
+                    if (_last.TryGetValue(userId, out UserPresence? existing) && SamePresence(existing, note.PresenceReport))
+                        continue;
+
+                    updates[userId] = note.PresenceReport;
                 }
 
-                long userId = note.PresenceReport.UserId != 0 ? note.PresenceReport.UserId : note.UserId;
+                if (updates.Count == 0)
+                    return;
 
-                if (userId == 0)
-                    continue;
+                changes = Compare(_last, updates);
 
-                if (_friends.Count > 0 && !_friends.Contains(userId))
-                    continue;
-
-                if (_last.TryGetValue(userId, out UserPresence? existing) && SamePresence(existing, note.PresenceReport))
-                    continue;
-
-                updates[userId] = note.PresenceReport;
+                foreach ((long userId, UserPresence presence) in updates)
+                    _last[userId] = presence;
             }
 
-            if (updates.Count == 0)
-                return;
+            Publish(changes);
+        }
 
-            Dictionary<long, UserPresence> snapshot = _last;
-
-            List<FriendPresenceChange> changes = Compare(snapshot, updates);
-
-            foreach ((long userId, UserPresence presence) in updates)
-                _last[userId] = presence;
-
+        private void Publish(List<FriendPresenceChange> changes)
+        {
             Updated?.Invoke(this, EventArgs.Empty);
 
-            foreach (FriendPresenceChange change in changes.OrderBy(x => x.Kind).Take(MaxPerPoll))
+            foreach (FriendPresenceChange change in changes.OrderBy(x => x.Kind).Take(MaxPerUpdate))
                 Changed?.Invoke(this, change);
         }
 
@@ -208,7 +225,7 @@ namespace Froststrap.Integrations.OverlayModules
             String.Equals(a.GameId, b.GameId, StringComparison.Ordinal) &&
             String.Equals(a.LastLocation, b.LastLocation, StringComparison.Ordinal);
 
-        private static bool InGame(UserPresence p) => p.UserPresenceType == PresenceInGame;
+        private static bool InGame(UserPresence p) => p.UserPresenceType == UserPresenceType.InGame;
 
         private List<FriendPresenceChange> Compare(
             Dictionary<long, UserPresence> before,

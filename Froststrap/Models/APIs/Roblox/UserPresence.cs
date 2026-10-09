@@ -1,20 +1,14 @@
-﻿// SPDX-FileCopyrightText: 2026 Froststrap
-//
-// SPDX-License-Identifier: MPL-2.0
+﻿using Froststrap.Enums;
 
 namespace Froststrap.Models.APIs.Roblox
 {
     internal class UserPresence
     {
-        public const int OnlineType = 1;
-        public const int InGameType = 2;
-        public const int InStudioType = 3;
-
         [JsonPropertyName("userPresenceType")]
-        public int UserPresenceType { get; set; }
+        public UserPresenceType UserPresenceType { get; set; }
 
         [JsonPropertyName("lastLocation")]
-        public string LastLocation { get; set; } = string.Empty;
+        public string LastLocation { get; set; } = String.Empty;
 
         [JsonPropertyName("placeId")]
         public long? PlaceId { get; set; }
@@ -31,21 +25,23 @@ namespace Froststrap.Models.APIs.Roblox
         [JsonPropertyName("userId")]
         public long UserId { get; set; }
 
+        public bool IsInGame => UserPresenceType == UserPresenceType.InGame && UniverseId is > 0;
+
         public string StatusColor => GetStatusColor(UserPresenceType);
 
         public string ToolTipText => UserPresenceType switch
         {
-            OnlineType => "Online",
-            InGameType => $"Playing: {LastLocation}",
-            InStudioType => "In Studio",
+            UserPresenceType.Online => "Online",
+            UserPresenceType.InGame => $"Playing: {LastLocation}",
+            UserPresenceType.InStudio => "In Studio",
             _ => "Offline"
         };
 
-        private static string GetStatusColor(int type) => type switch
+        private static string GetStatusColor(UserPresenceType type) => type switch
         {
-            OnlineType => "#00A2FF",
-            InGameType => "#02B75A",
-            InStudioType => "#F68802",
+            UserPresenceType.Online => "#00A2FF",
+            UserPresenceType.InGame => "#02B75A",
+            UserPresenceType.InStudio => "#F68802",
             _ => "#808080"
         };
     }

@@ -336,7 +336,7 @@ namespace Froststrap.UI.ViewModels.Overlay
 
             App.Cookies.WatchAccount(this, static vm => vm.OnAccountChanged());
 
-            foreach ((string name, OverlayPanelLayout panel) in App.OverlayLayout.Prop.Panels)
+            foreach ((string name, OverlayPanelLayout panel) in App.State.Prop.OverlayPanels)
             {
                 if (panel.Open && Enum.TryParse(name, out OverlayPanelKind kind))
                     _open.Add(kind);
@@ -388,14 +388,10 @@ namespace Froststrap.UI.ViewModels.Overlay
 
             try
             {
-                var local = await Task.Run(AppStorageManager.ReadAccount);
                 long id = playing;
 
                 if (id == 0 && await App.Cookies.EnsureLoadedAsync())
                     id = App.Cookies.CurrentUser?.Id ?? 0;
-
-                if (id == 0)
-                    id = local?.Id ?? 0;
 
                 if (id == 0)
                 {
@@ -408,10 +404,10 @@ namespace Froststrap.UI.ViewModels.Overlay
                     _profileId = id;
                     _profileLoaded = false;
 
-                    var known = local?.Id == id ? local : null;
+                    AuthenticatedUser? known = App.Cookies.CurrentUser?.Id == id ? App.Cookies.CurrentUser : null;
 
-                    DisplayName = known?.DisplayName ?? known?.Name ?? String.Empty;
-                    Username = known?.Name is string name ? $"@{name}" : String.Empty;
+                    DisplayName = known?.DisplayName ?? String.Empty;
+                    Username = known is null ? String.Empty : $"@{known.Username}";
                     ProfileIcon = String.Empty;
                     ProfileBitmap = null;
                 }

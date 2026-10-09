@@ -18,7 +18,7 @@ namespace Froststrap.RobloxInterfaces
 
         public static async Task<List<GameTile>> SearchAsync(string query)
         {
-            var response = await Http.GetJson<OmniSearchResponse>(UrlBuilder.BuildApiUrl("apis",
+            var response = await Http.GetJson<OmniSearchResponse>(UrlBuilder.BuildApisUrl(
                 $"search-api/omni-search?searchQuery={Uri.EscapeDataString(query)}&pageType=all&sessionId={SearchSession}"));
 
             var tiles = (response.SearchResults ?? [])
@@ -52,7 +52,7 @@ namespace Froststrap.RobloxInterfaces
 
             try
             {
-                Uri url = UrlBuilder.BuildApiUrl("apis", $"search-landing-page-api/v1?sessionId={SearchSession}");
+                Uri url = UrlBuilder.BuildApisUrl($"search-landing-page-api/v1?sessionId={SearchSession}");
 
                 using var request = new HttpRequestMessage(HttpMethod.Get, url);
                 request.Headers.Add("Cookie", $".ROBLOSECURITY={cookie}");

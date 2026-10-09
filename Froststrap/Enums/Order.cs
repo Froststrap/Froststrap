@@ -1,4 +1,4 @@
-﻿namespace Froststrap.Enums.Overlay
+﻿namespace Froststrap.Enums
 {
     internal enum Order
     {

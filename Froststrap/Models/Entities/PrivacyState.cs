@@ -2,12 +2,12 @@ namespace Froststrap.Models.Entities
 {
     internal class PrivacyState
     {
-        public string? Online { get; init; }
+        public PrivacyLevel? Online { get; init; }
 
-        public string? Join { get; init; }
+        public PrivacyLevel? Join { get; init; }
 
-        public IReadOnlyList<string> OnlineOptions { get; init; } = [];
+        public IReadOnlyList<PrivacyLevel> OnlineOptions { get; init; } = [];
 
-        public IReadOnlyList<string> JoinOptions { get; init; } = [];
+        public IReadOnlyList<PrivacyLevel> JoinOptions { get; init; } = [];
     }
 }

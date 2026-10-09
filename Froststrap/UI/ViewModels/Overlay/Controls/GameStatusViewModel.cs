@@ -1,3 +1,4 @@
+using Froststrap.Enums;
 using Froststrap.RobloxInterfaces;
 
 namespace Froststrap.UI.ViewModels.Overlay.Controls
@@ -10,15 +11,13 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
         protected override string SettingName => "game visibility";
 
-        protected override IReadOnlyList<string> Levels => PrivacySettings.JoinLevels;
+        protected override IReadOnlyList<PrivacyLevel> Available => State?.JoinOptions ?? [];
 
-        protected override IReadOnlyList<string> Available => State?.JoinOptions ?? [];
+        protected override PrivacyLevel? Current => State?.Join;
 
-        protected override string? Current => State?.Join;
+        protected override bool IsAllowed(PrivacyLevel value) => PrivacySettings.GameVisibilityAllowed(value, State?.Online);
 
-        protected override bool IsAllowed(string value) => PrivacySettings.GameVisibilityAllowed(value, State?.Online);
-
-        protected override async Task<string> ApplyAsync(string value)
+        protected override async Task<string> ApplyAsync(PrivacyLevel value)
         {
             const string LOG_IDENT = "GameStatusViewModel::ApplyAsync";
 

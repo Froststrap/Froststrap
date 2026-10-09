@@ -1,4 +1,5 @@
-﻿using Froststrap.RobloxInterfaces;
+﻿using Froststrap.Enums;
+using Froststrap.RobloxInterfaces;
 
 namespace Froststrap.UI.ViewModels.Overlay.Controls
 {
@@ -10,13 +11,11 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
         protected override string SettingName => "online visibility";
 
-        protected override IReadOnlyList<string> Levels => PrivacySettings.OnlineLevels;
+        protected override IReadOnlyList<PrivacyLevel> Available => State?.OnlineOptions ?? [];
 
-        protected override IReadOnlyList<string> Available => State?.OnlineOptions ?? [];
+        protected override PrivacyLevel? Current => State?.Online;
 
-        protected override string? Current => State?.Online;
-
-        protected override async Task<string> ApplyAsync(string value)
+        protected override async Task<string> ApplyAsync(PrivacyLevel value)
         {
             bool narrowed = await PrivacySettings.SetOnlineVisibilityAsync(value, State?.Join);
 

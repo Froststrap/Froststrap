@@ -1,5 +1,6 @@
 ﻿using Froststrap.Models.APIs.RobloxParty;
 using Froststrap.Models.APIs.RobloxParty.Events;
+using Froststrap.Utility;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -8,8 +9,7 @@ namespace Froststrap.Integrations.OverlayModules
 {
     internal class RobloxParty
     {
-        private const string ApiService = "apis";
-        private const string ApiPath = "platform-chat-api/v1";
+        private const string PlatformChatService = "platform-chat-api";
 
         public event EventHandler<MessageEvent>? IncomingMessage;
 
@@ -26,8 +26,8 @@ namespace Froststrap.Integrations.OverlayModules
 
         public static async Task<ConversationsPage?> GetConversations(int pageSize = 20, string? cursor = null)
         {
-            Uri url = UrlBuilder.BuildApiUrl(ApiService,
-                $"{ApiPath}/get-user-conversations?pageSize={pageSize}&include_user_data=true&cursor={cursor}");
+            Uri url = UrlBuilder.BuildApisUrl(
+                $"{PlatformChatService}/v1/get-user-conversations?pageSize={pageSize}&include_user_data=true&cursor={cursor}");
 
             try
             {
@@ -96,8 +96,8 @@ namespace Froststrap.Integrations.OverlayModules
             if (String.IsNullOrEmpty(conversation.Id))
                 return null;
 
-            Uri url = UrlBuilder.BuildApiUrl(ApiService,
-                $"{ApiPath}/get-conversation-messages?conversation_id={conversation.Id}&cursor={cursor}");
+            Uri url = UrlBuilder.BuildApisUrl(
+                $"{PlatformChatService}/v1/get-conversation-messages?conversation_id={conversation.Id}&cursor={cursor}");
 
             try
             {
@@ -117,7 +117,7 @@ namespace Froststrap.Integrations.OverlayModules
             var payload = new MessagesContents
             {
                 ConversationId = conversationId,
-                Messages = [ new MessageContent { Content = messageContent } ]
+                Messages = [new MessageContent { Content = messageContent }]
             };
 
             using var response = await PostAsync("send-messages", payload);
@@ -155,9 +155,8 @@ namespace Froststrap.Integrations.OverlayModules
         {
             var content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
 
-            string csrf = await App.Cookies.GetXCSRF();
-
-            return await App.Cookies.AuthPost(UrlBuilder.BuildApiUrl(ApiService, $"{ApiPath}/{endpoint}"), content, csrf);
+            return await App.Cookies.AuthPost(
+                UrlBuilder.BuildApisUrl($"{PlatformChatService}/v1/{endpoint}"), content);
         }
     }
 }

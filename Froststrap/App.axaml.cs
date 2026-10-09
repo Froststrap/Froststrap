@@ -100,8 +100,6 @@ internal partial class App : Application
 
     public static readonly JsonManager<OverlayNotes> OverlayNotes = new();
 
-    public static readonly JsonManager<OverlayLayout> OverlayLayout = new();
-
 
     public static readonly SoberSettingsManager SoberSettings = new();
 

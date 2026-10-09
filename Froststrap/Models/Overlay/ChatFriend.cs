@@ -1,6 +1,7 @@
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
-using Froststrap.Enums.Overlay;
+using Froststrap.Enums;
+using Froststrap.Models.APIs.Roblox;
 using Froststrap.UI.ViewModels;
 using Froststrap.Utility;
 
@@ -116,13 +117,13 @@ namespace Froststrap.Models.Overlay
             }
         }
 
-        public FriendStatus Status { get; private set; } = FriendStatus.Offline;
+        public UserPresenceType Status { get; private set; } = UserPresenceType.Offline;
 
-        public bool IsInGame => Status == FriendStatus.InGame;
+        public bool IsInGame => Status == UserPresenceType.InGame;
 
-        public bool IsInStudio => Status == FriendStatus.InStudio;
+        public bool IsInStudio => Status == UserPresenceType.InStudio;
 
-        public bool IsOnline => Status == FriendStatus.Online;
+        public bool IsOnline => Status == UserPresenceType.Online;
 
         public string? GameName { get; private set; }
 
@@ -145,11 +146,11 @@ namespace Froststrap.Models.Overlay
 
                 return Status switch
                 {
-                    FriendStatus.InGame => String.IsNullOrEmpty(GameName)
+                    UserPresenceType.InGame => String.IsNullOrEmpty(GameName)
                         ? Strings.Menu_Overlay_Messages_InAGame
                         : String.Format(Locale.CurrentCulture, Strings.Menu_Overlay_Messages_Playing, GameName),
-                    FriendStatus.InStudio => Strings.Menu_Overlay_Messages_InStudio,
-                    FriendStatus.Online => Strings.Menu_Overlay_Messages_Online,
+                    UserPresenceType.InStudio => Strings.Menu_Overlay_Messages_InStudio,
+                    UserPresenceType.Online => Strings.Menu_Overlay_Messages_Online,
                     _ => Strings.Menu_Overlay_Messages_Offline
                 };
             }
@@ -184,15 +185,13 @@ namespace Froststrap.Models.Overlay
 
         public void Update(UserPresence? presence)
         {
-            Status = presence?.UserPresenceType switch
-            {
-                UserPresence.InGameType => FriendStatus.InGame,
-                UserPresence.InStudioType => FriendStatus.InStudio,
-                UserPresence.OnlineType => FriendStatus.Online,
-                _ => FriendStatus.Offline
-            };
+            UserPresenceType status = presence?.UserPresenceType is UserPresenceType.InGame or UserPresenceType.InStudio or UserPresenceType.Online
+                ? presence.UserPresenceType
+                : UserPresenceType.Offline;
 
-            GameName = IsInGame && !String.IsNullOrWhiteSpace(presence?.LastLocation) ? presence!.LastLocation : null;
+            Status = status;
+
+            GameName = status == UserPresenceType.InGame && !String.IsNullOrWhiteSpace(presence?.LastLocation) ? presence!.LastLocation : null;
             PlaceId = presence?.PlaceId ?? 0;
             RootPlaceId = presence?.RootPlaceId ?? 0;
             ServerId = String.IsNullOrEmpty(presence?.GameId) ? null : presence!.GameId;

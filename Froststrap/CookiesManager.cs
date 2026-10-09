@@ -44,27 +44,29 @@ namespace Froststrap
         public void WatchAccount<T>(T subscriber, Action<T> handler) where T : class
         {
             var weak = new WeakReference<T>(subscriber);
-            EventHandler? wrapper = null;
 
-            wrapper = (_, _) =>
+            AccountChanged += Wrapper;
+
+            void Wrapper(object? sender, EventArgs e)
             {
                 if (weak.TryGetTarget(out T? target))
                     handler(target);
                 else
-                    AccountChanged -= wrapper;
-            };
-
-            AccountChanged += wrapper;
+                    AccountChanged -= Wrapper;
+            }
         }
 
         private string AuthCookie = string.Empty;
         private const string AuthCookieName = ".ROBLOSECURITY";
         private const string AuthPattern = $@"\t{AuthCookieName}\t(.+?)(;|$)";
 
+        private const string CsrfHeader = "x-csrf-token";
+
         private const string TrackerCookieName = "RBXEventTrackerV2";
         private const string TrackerPattern = $@"\t{TrackerCookieName}\t(.+?)(;|$)";
 
         private string BrowserTracker = string.Empty;
+        private string _csrfToken = string.Empty;
         public string GetAuthCookie() => AuthCookie;
 
         public static string CookiesPath => OperatingSystem.IsMacOS()
@@ -73,21 +75,7 @@ namespace Froststrap
                 ? Path.Combine(Paths.Roblox, "data", "sober", "cookies")
                 : Path.Combine(Paths.Roblox, "LocalStorage", Deployment.IsDefaultRobloxDomain ? "RobloxCookies.dat" : $"{Deployment.RobloxDomain}_RobloxCookies.dat");
 
-        public async Task<string> GetXCSRF()
-        {
-            Uri logoutUrl = UrlBuilder.BuildApiUrl("auth", "v2/logout");
-
-            HttpResponseMessage response = await AuthPost(logoutUrl, null);
-
-            response.Headers.TryGetValues("x-csrf-token", out IEnumerable<string>? values);
-
-            if (values is null)
-                throw new HttpRequestException("Failed to get x-csrf-token from response");
-
-            return values.First();
-        }
-
-        public async Task<HttpResponseMessage> AuthRequest(HttpRequestMessage request, string csrf = "")
+        public async Task<HttpResponseMessage> AuthRequest(HttpRequestMessage request)
         {
             string? host = request.RequestUri?.Host;
 
@@ -102,17 +90,53 @@ namespace Froststrap
             if (!Enabled)
                 throw new InvalidOperationException("Cookie access is not enabled");
 
-            if (!String.IsNullOrEmpty(csrf))
-                request.Headers.Add("x-csrf-token", csrf);
+            HttpResponseMessage response = await SendAuthenticated(request);
 
+            if (response.StatusCode != HttpStatusCode.Forbidden
+                || !response.Headers.TryGetValues(CsrfHeader, out IEnumerable<string>? tokens)
+                || tokens.FirstOrDefault() is not string token
+                || String.IsNullOrEmpty(token)
+                || token == _csrfToken)
+                return response;
+
+            _csrfToken = token;
+
+            response.Dispose();
+
+            return await SendAuthenticated(Repeat(request));
+        }
+
+        private async Task<HttpResponseMessage> SendAuthenticated(HttpRequestMessage request)
+        {
+            request.Headers.Remove(CsrfHeader);
+
+            if (!String.IsNullOrEmpty(_csrfToken))
+                request.Headers.Add(CsrfHeader, _csrfToken);
+
+            request.Headers.Remove("Cookie");
             request.Headers.Add("Cookie", String.IsNullOrEmpty(BrowserTracker)
                 ? $".ROBLOSECURITY={AuthCookie}"
                 : $".ROBLOSECURITY={AuthCookie}; {TrackerCookieName}={BrowserTracker}");
+
             return await App.HttpClient.SendAsync(request);
         }
 
-        public async Task<HttpResponseMessage> AuthGet(Uri? uri, string csrf = "") => await AuthRequest(new HttpRequestMessage { RequestUri = uri, Method = HttpMethod.Get }, csrf);
-        public async Task<HttpResponseMessage> AuthPost(Uri? uri, HttpContent? content, string csrf = "") => await AuthRequest(new HttpRequestMessage { RequestUri = uri, Content = content, Method = HttpMethod.Post }, csrf);
+        private static HttpRequestMessage Repeat(HttpRequestMessage request)
+        {
+            var repeat = new HttpRequestMessage(request.Method, request.RequestUri)
+            {
+                Content = request.Content,
+                Version = request.Version
+            };
+
+            foreach (KeyValuePair<string, IEnumerable<string>> header in request.Headers)
+                repeat.Headers.TryAddWithoutValidation(header.Key, header.Value);
+
+            return repeat;
+        }
+
+        public async Task<HttpResponseMessage> AuthGet(Uri? uri) => await AuthRequest(new HttpRequestMessage { RequestUri = uri, Method = HttpMethod.Get });
+        public async Task<HttpResponseMessage> AuthPost(Uri? uri, HttpContent? content) => await AuthRequest(new HttpRequestMessage { RequestUri = uri, Content = content, Method = HttpMethod.Post });
 
         public void AuthWebsocket(ClientWebSocket webSocket)
         {
@@ -120,51 +144,6 @@ namespace Froststrap
                 throw new InvalidOperationException("Cookie access is not enabled");
 
             webSocket.Options.SetRequestHeader("Cookie", $".ROBLOSECURITY={AuthCookie}");
-        }
-
-        public async Task EnsureBrowserTrackerAsync()
-        {
-            if (!String.IsNullOrEmpty(BrowserTracker))
-                return;
-
-            try
-            {
-                using var handler = new HttpClientHandler
-                {
-                    UseCookies = false,
-                    CheckCertificateRevocationList = true
-                };
-                using var client = new HttpClient(handler);
-
-                client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36");
-
-                using var response = await client.GetAsync(new Uri($"https://www.{Deployment.RobloxDomain}/"));
-
-                string? tracker = null;
-
-                if (response.Headers.TryGetValues("Set-Cookie", out IEnumerable<string>? cookies))
-                {
-                    tracker = cookies
-                        .Select(x => Regex.Match(x, $@"^{TrackerCookieName}=([^;]+)"))
-                        .FirstOrDefault(x => x.Success)?
-                        .Groups[1].Value;
-                }
-
-                if (String.IsNullOrEmpty(tracker))
-                {
-                    App.Logger.Warn("Roblox didn't issue a browser tracker");
-                    return;
-                }
-
-                BrowserTracker = tracker;
-
-                App.Logger.Info("Roblox issued a browser tracker");
-            }
-            catch (Exception ex)
-            {
-                App.Logger.Warn("Failed to get a browser tracker");
-                App.Logger.Error(ex);
-            }
         }
 
         public async Task<bool> EnsureLoadedAsync()

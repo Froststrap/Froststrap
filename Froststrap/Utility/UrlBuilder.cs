@@ -9,6 +9,7 @@ namespace Froststrap.Utility
     internal static class UrlBuilder
     {
         private const string PlacelauncherBaseUrl = "https://www.roblox.com/Game/PlaceLauncher.ashx";
+        public static Uri BuildApisUrl(string path, bool secure = true) => BuildApiUrl("apis", path, secure);
 
         public static Uri BuildApiUrl(string service, string path, bool secure = true)
         {

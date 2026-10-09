@@ -7,8 +7,10 @@ using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
+using Froststrap.Enums;
 using Froststrap.Integrations;
 using Froststrap.Integrations.AccountManager;
+using Froststrap.Models.APIs.Roblox;
 using Froststrap.UI.Elements.Dialogs;
 using Froststrap.Utility;
 using System.Collections.ObjectModel;
@@ -149,13 +151,12 @@ namespace Froststrap.UI.ViewModels.Settings
                 return;
             }
 
-            int type = CurrentPresence.UserPresenceType;
-            PresenceBrush = type switch
+            PresenceBrush = CurrentPresence.UserPresenceType switch
             {
-                0 => Brushes.Gray,
-                1 => Brushes.DodgerBlue,
-                2 => Brushes.LimeGreen,
-                3 => Brushes.Orange,
+                UserPresenceType.Offline => Brushes.Gray,
+                UserPresenceType.Online => Brushes.DodgerBlue,
+                UserPresenceType.InGame => Brushes.LimeGreen,
+                UserPresenceType.InStudio => Brushes.Orange,
                 _ => Brushes.Gray
             };
         }
@@ -165,12 +166,13 @@ namespace Froststrap.UI.ViewModels.Settings
             get
             {
                 if (CurrentPresence == null) return "Offline";
+
                 return CurrentPresence.UserPresenceType switch
                 {
-                    0 => Strings.Menu_AccountSelector_Presence_Offline,
-                    1 => Strings.Menu_AccountSelector_Presence_Online,
-                    2 => Strings.Menu_AccountSelector_Presence_InGame,
-                    3 => Strings.Menu_AccountSelector_Presence_InStudio,
+                    UserPresenceType.Offline => Strings.Menu_AccountSelector_Presence_Offline,
+                    UserPresenceType.Online => Strings.Menu_AccountSelector_Presence_Online,
+                    UserPresenceType.InGame => Strings.Menu_AccountSelector_Presence_InGame,
+                    UserPresenceType.InStudio => Strings.Menu_AccountSelector_Presence_InStudio,
                     _ => Strings.Common_Unknown
                 };
             }
@@ -349,18 +351,18 @@ namespace Froststrap.UI.ViewModels.Settings
                     {
                         item.PresenceStatus = presence?.UserPresenceType switch
                         {
-                            0 => "Offline",
-                            1 => "Online",
-                            2 => "In Game",
-                            3 => "In Studio",
+                            UserPresenceType.Offline => "Offline",
+                            UserPresenceType.Online => "Online",
+                            UserPresenceType.InGame => "In Game",
+                            UserPresenceType.InStudio => "In Studio",
                             _ => "Unknown"
                         };
                         item.PresenceBrush = presence?.UserPresenceType switch
                         {
-                            0 => Brushes.Gray,
-                            1 => Brushes.DodgerBlue,
-                            2 => Brushes.LimeGreen,
-                            3 => Brushes.Orange,
+                            UserPresenceType.Offline => Brushes.Gray,
+                            UserPresenceType.Online => Brushes.DodgerBlue,
+                            UserPresenceType.InGame => Brushes.LimeGreen,
+                            UserPresenceType.InStudio => Brushes.Orange,
                             _ => Brushes.Gray
                         };
                     });

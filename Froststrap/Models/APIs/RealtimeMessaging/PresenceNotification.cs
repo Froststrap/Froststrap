@@ -1,7 +1,9 @@
-namespace Froststrap.Models.APIs.Roblox
+namespace Froststrap.Models.APIs.RealtimeMessaging
 {
     internal class PresenceNotification
     {
+        public const string PresenceChangedType = "PresenceChanged";
+
         [JsonPropertyName("UserId")]
         public long UserId { get; set; }
 

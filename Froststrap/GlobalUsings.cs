@@ -20,6 +20,7 @@ global using System.Threading.Tasks;
 global using Froststrap.Enums;
 global using Froststrap.Enums.Messagebox;
 global using Froststrap.Enums.BootstrapperDialogs;
+global using Froststrap.Enums.Overlay;
 global using Froststrap.Exceptions;
 global using Froststrap.Extensions;
 global using Froststrap.Models;
