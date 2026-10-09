@@ -23,14 +23,16 @@ macOS Specific
 - Xcode (.app is preferred as it has the whole toolchain which is needed)
 - Xcode Command Line Tools
 
-Windows Specific
-~~~~~~~~~~~~~~~~
+Linux Specific
+~~~~~~~~~~~~~~
 
-- NSIS (need to add the NSIS compiler to PATH env, which can be found via searching "Edit System Environment Variables")
+- dbus (libdbus-1-3)
+- icu (libicu-dev)
 
 All other dependents
 ~~~~~~~~~~~~~~~~~~~~
 
+- Velopack dotnet tool for installers
 - Rust compiler (Rust 2024, and preferrably though rustup)
 - .NET 10 SDK (Need a C# compiller)
 - Fallout dotnet tool (build ochestration system)
