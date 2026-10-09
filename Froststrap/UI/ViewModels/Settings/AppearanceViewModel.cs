@@ -157,6 +157,20 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public static bool IsCustomRobloxIconSelected => App.Settings.Prop.RobloxIcon == RobloxIcon.IconCustom;
 
+        public static bool DisableAnimations
+        {
+            get => App.Settings.Prop.DisableAnimations;
+            set
+            {
+                App.Settings.Prop.DisableAnimations = value;
+                App.Settings.Save();
+                if (value)
+                    App.ApplyAnimationSettings();
+                else
+                    App.RemoveAnimationSettings();
+            }
+        }
+
         public static IEnumerable<WindowsBackdrops> BackdropOptions => Enum.GetValues<WindowsBackdrops>().Where(IsBackdropSupported);
 
         public WindowsBackdrops SelectedBackdrop
@@ -360,7 +374,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 OnPropertyChanged(nameof(AutoChangeIcon));
             }
         }
-        
+
         public IEnumerable<BootstrapperStyle> Dialogs { get; } = BootstrapperStyleEx.Selections;
 
         public BootstrapperStyle Dialog

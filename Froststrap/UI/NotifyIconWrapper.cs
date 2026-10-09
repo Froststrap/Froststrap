@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
 using Avalonia;
+using System.Reflection;
 using Avalonia.Controls;
 using Avalonia.Platform;
 using Avalonia.Threading;
@@ -40,14 +41,34 @@ namespace Froststrap.UI
 
             var nativeMenu = NativeMenu.GetMenu(_menuContainer);
 
+            var iconUri = new Uri("avares://Froststrap/Froststrap.ico");
+            long iconBytes;
+            using (var s = AssetLoader.Open(iconUri)) iconBytes = s.Length;
+
             _trayIcon = new TrayIcon
             {
-                Icon = new WindowIcon(AssetLoader.Open(new Uri("avares://Froststrap/Froststrap.ico"))),
+                Icon = new WindowIcon(AssetLoader.Open(iconUri)),
                 ToolTipText = "Froststrap",
                 Menu = nativeMenu
             };
 
+            const BindingFlags NonPublic = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public;
+
+            var impl = typeof(TrayIcon).GetProperty("Impl", NonPublic)?.GetValue(_trayIcon);
+            var iconImpl = typeof(WindowIcon).GetProperty("PlatformImpl", NonPublic)?.GetValue(_trayIcon.Icon);
+
+            App.Logger.Debug(
+                $"Tray: impl={impl?.GetType().Name ?? "null"} " +
+                $"uiThread={Dispatcher.UIThread.CheckAccess()} " +
+                $"iconBytes={iconBytes} " +
+                $"iconImpl={iconImpl?.GetType().Name ?? "null"} " +
+                $"menu={(_trayIcon.Menu is null ? "null" : "set")} " +
+                $"exporter={(_trayIcon.NativeMenuExporter is null ? "null" : "set")} " +
+                $"iconsCollection={(TrayIcon.GetIcons(Application.Current!) is null ? "null" : "set")} " +
+                $"visible={_trayIcon.IsVisible}");
+
             _trayIcon.Clicked += OnTrayIconClicked;
+            App.Logger.Debug("Subscribed _trayIcon.Clicked to OnTrayIconClicked");
 
             if (ActivityWatcher is not null && App.Settings.Prop.ShowServerDetails)
             {
@@ -57,21 +78,23 @@ namespace Froststrap.UI
                     ActivityWatcher.OnGameJoin += ShowNotification;
             }
 
-            TrayIcon.GetIcons(Application.Current!)?.Add(_trayIcon);
+            var app = Application.Current!;
+            var icons = TrayIcon.GetIcons(app);
+            if (icons is null)
+            {
+                icons = new TrayIcons();
+                TrayIcon.SetIcons(app, icons);
+            }
+            icons.Add(_trayIcon);
         }
 
 
         // On macos simply clicking the icon instantly opens the menu so double click action isnt possible
         private void OnTrayIconClicked(object? sender, EventArgs e)
         {
-            if (OperatingSystem.IsMacOS())
+            if (!OperatingSystem.IsWindows())
                 return;
 
-            HandleWindowsDoubleClickLogic();
-        }
-
-        private void HandleWindowsDoubleClickLogic()
-        {
             DateTime now = DateTime.Now;
             double elapsed = (now - _lastClickTime).TotalMilliseconds;
 
@@ -189,8 +212,12 @@ namespace Froststrap.UI
             _isDisposed = true;
 
 #if __APPLE__
-            App.Logger.Debug("Exiting Virtual Display (if there is one)");
-            Froststrap.Backend.VirtualDisplay.End();
+            var vdr = Froststrap.Backend.VirtualDisplay.Running();
+            App.Logger.Info($"Virtual Display result = {vdr}");
+            if (vdr) {
+                App.Logger.Debug("Exiting Virtual Display");
+                Froststrap.Backend.VirtualDisplay.End();
+            }
 #endif
             App.Logger.Info("Cleaning up TrayIcon and MenuContainer");
 

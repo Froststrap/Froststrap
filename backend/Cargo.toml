@@ -41,8 +41,8 @@ objc2-core-foundation = "0.3"
 version = "0.3"
 features = ["CGDirectDisplay", "CGDisplayConfiguration"]
 
-[workspace.dependencies.rustbus]
-version = "0.19.3"
+[workspace.dependencies.dbus]
+version = "0.9"
 default-features = false
 
 [workspace.dependencies.windows]

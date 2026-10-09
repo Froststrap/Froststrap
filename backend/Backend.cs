@@ -18,6 +18,11 @@ internal partial class InternalVirtualDisplay
     public static partial int Start();
     [LibraryImport(
         "virtualdisplay",
+        EntryPoint = "is_running"
+    )]
+    public static partial int IsRunning();
+    [LibraryImport(
+        "virtualdisplay",
         EntryPoint = "end_display"
     )]
     public static partial int End();
@@ -32,6 +37,13 @@ public class VirtualDisplay
         var result = InternalVirtualDisplay.Start();
 
         Console.WriteLine($"Virtual display started: {result}");
+    }
+
+    /// Checks with Rust implementation if the ring has `Some()`
+    /// Which implies it's active or not
+    public static bool Running()
+    {
+        return InternalVirtualDisplay.IsRunning() != 0;
     }
 
     /// Instructs to shut up the NSApplication worker thread

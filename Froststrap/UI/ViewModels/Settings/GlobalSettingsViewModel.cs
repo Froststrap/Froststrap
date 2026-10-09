@@ -299,10 +299,10 @@ namespace Froststrap.UI.ViewModels.Settings
                 value.ToString(CultureInfo.InvariantCulture));
         }
 
-        public static int MouseSensitivity
+        public static double MouseSensitivity
         {
-            get => int.TryParse(App.GlobalSettings.GetPreset("User.MouseSensitivity"),
-                NumberStyles.Integer, CultureInfo.InvariantCulture, out var v) ? v : 1;
+            get => double.TryParse(App.GlobalSettings.GetPreset("User.MouseSensitivity"),
+                NumberStyles.Float, CultureInfo.InvariantCulture, out var v) ? v : 1.0;
             set => App.GlobalSettings.SetPreset("User.MouseSensitivity",
                 value.ToString(CultureInfo.InvariantCulture));
         }
@@ -368,7 +368,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public int UITransparency
         {
-        
+
             get => int.TryParse(App.GlobalSettings.GetPreset("UI.Transparency"),
                 NumberStyles.Integer, CultureInfo.InvariantCulture, out var v) ? v : 1;
             set

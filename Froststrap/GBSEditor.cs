@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: MPL-2.0
 
 using Froststrap.Enums.GBSPresets;
-using System.Globalization;
 using System.Xml.Linq;
 using System.Xml.XPath;
 

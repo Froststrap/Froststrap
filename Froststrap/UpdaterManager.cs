@@ -53,6 +53,9 @@ internal sealed class UpdaterManager(bool includePrerelease = false)
 
     public bool IsInstalled => manager.IsInstalled;
 
+    // CI builds (e.g. 0.0.2-ci.106) must never update themselves, otherwise they jump straight to the latest release
+    public static bool IsCiBuild => App.Version.Contains("-ci.", StringComparison.OrdinalIgnoreCase);
+
     public UpdateInfo? LastUpdate { get; private set; }
 
     public async Task<UpdateInfo?> CheckForUpdatesAsync(

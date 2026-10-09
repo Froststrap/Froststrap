@@ -185,11 +185,19 @@ internal partial class App : Application
     {
         e.SetObserved();
 
+        if (e.Exception.Flatten().InnerExceptions.All(IsExpectedCancellationException))
+            return;
+
         Logger.Error(
             e.Exception,
             "An unobserved background task exception occurred."
         );
     }
+
+    private static bool IsExpectedCancellationException(Exception exception)
+        => exception is OperationCanceledException
+            || exception is IOException
+                && exception.InnerException is System.Net.Sockets.SocketException { ErrorCode: 125 };
 
     public static void Terminate(ErrorCode exitCode = ErrorCode.ERROR_SUCCESS)
     {
@@ -606,8 +614,11 @@ internal partial class App : Application
 
         _ = Task.Run(async () =>
         {
-            if (Settings.Prop.UpdateChecks == UpdateCheck.Disabled)
-                return;
+            if (
+                Settings.Prop.UpdateChecks == UpdateCheck.Disabled
+                || UpdaterManager.IsCiBuild
+                || LaunchSettings.BypassUpdateCheck
+            ) return;
 
             try
             {

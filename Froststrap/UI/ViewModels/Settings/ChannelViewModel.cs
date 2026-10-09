@@ -36,7 +36,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public bool AutomaticUpdatesEnabled
         {
-            get => SelectedUpdateCheck != UpdateCheck.Disabled;
+            get => !UpdaterManager.IsCiBuild && SelectedUpdateCheck != UpdateCheck.Disabled;
             set
             {
                 if (value)
@@ -103,6 +103,12 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             if (IsCheckingForUpdates)
                 return;
+
+            if (UpdaterManager.IsCiBuild)
+            {
+                UpdateStatus = Strings.Menu_Deployment_CheckForUpdates_UpToDate;
+                return;
+            }
 
             IsCheckingForUpdates = true;
 
@@ -479,20 +485,6 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             get => App.Settings.Prop.StaticDirectory;
             set => App.Settings.Prop.StaticDirectory = value;
-        }
-
-        public static bool DisableAnimations
-        {
-            get => App.Settings.Prop.DisableAnimations;
-            set
-            {
-                App.Settings.Prop.DisableAnimations = value;
-                App.Settings.Save();
-                if (value)
-                    App.ApplyAnimationSettings();
-                else
-                    App.RemoveAnimationSettings();
-            }
         }
 
         private async Task ImportSettingsAsync(object? parameter)
