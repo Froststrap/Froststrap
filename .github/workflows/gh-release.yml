@@ -1,3 +1,4 @@
+
 name: Prepare Release
 
 on:
@@ -14,6 +15,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     permissions:
+      actions: read
       contents: write
 
     steps:
@@ -23,7 +25,35 @@ jobs:
           merge-multiple: true
           path: release
 
-      - uses: softprops/action-gh-release@v3
+      - name: Prepare unsigned MSI
+        run: |
+          mkdir -p signing-input
+          cp release/Froststrap-windows-x64.msi signing-input/Froststrap-windows-x64-unsigned.msi
+
+      - name: Upload unsigned MSI for SignPath
+        id: upload-unsigned-msi
+        uses: actions/upload-artifact@v7
+        with:
+          path: signing-input/Froststrap-windows-x64-unsigned.msi
+          if-no-files-found: error
+
+      - name: Sign Windows MSI
+        uses: signpath/github-action-submit-signing-request@v3
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: 1622e650-cf1f-478c-adc1-470144bbd147
+          project-slug: Froststrap
+          signing-policy-slug: test-signing
+          github-artifact-id: ${{ steps.upload-unsigned-msi.outputs.artifact-id }}
+          wait-for-completion: true
+          output-artifact-directory: signed-msi
+
+      - name: Replace unsigned MSI with signed MSI
+        run: |
+          cp signed-msi/Froststrap-windows-x64-unsigned.msi release/Froststrap-windows-x64.msi
+
+      - name: Publish GitHub release
+        uses: softprops/action-gh-release@v3
         with:
           name: Froststrap ${{ github.ref_name }}
           prerelease: ${{ contains(github.ref_name, '-') }}
