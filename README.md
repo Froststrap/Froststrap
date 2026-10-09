@@ -80,6 +80,17 @@ More features are planned! You can also suggest new features in the Issues secti
 
 ---
 
+## Code Signing & Security
+
+Froststrap's release binaries are signed to help verify their authenticity and integrity.
+
+* **Windows:** Code signing is provided by the [SignPath Foundation](https://signpath.org/).
+* **macOS:** Applications are signed with an Apple Developer ID certificate and notarised by Apple.
+* **Linux:** Linux builds are distributed without code signing.
+
+### Acknowledgements
+We'd like to thank [SignPath](https://signpath.io/) for providing a free code signing service, and the [SignPath Foundation](https://signpath.org/) for supporting Froststrap's Windows code signing through its open-source programme.
+
 ## Licensing
 
 All new code revisions are under [MPL-2.0](https://opensource.org/license/MPL-2.0).
