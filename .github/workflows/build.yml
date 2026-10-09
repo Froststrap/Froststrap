@@ -48,7 +48,7 @@ jobs:
 
       - name: Fetch previous release (for deltas)
         if: startsWith(github.ref, 'refs/tags/v')
-        continue-on-error: true # first release has nothing to download
+        continue-on-error: true
         run: |
           PRE=""; [[ "$GITHUB_REF_NAME" == *-* ]] && PRE="--pre"
           vpk download github --repoUrl $PACKAGES_REPO --token ${{ secrets.PACKAGE_TOKEN }} --channel windows-x64 --outputDir .build/velopack $PRE
@@ -61,6 +61,39 @@ jobs:
         run: |
           PRE=""; [[ "$GITHUB_REF_NAME" == *-* ]] && PRE="--pre"
           vpk upload github --repoUrl $PACKAGES_REPO --token ${{ secrets.PACKAGE_TOKEN }} --channel windows-x64 --outputDir .build/velopack --tag "$GITHUB_REF_NAME" --releaseName "$GITHUB_REF_NAME" --merge $PRE
+
+      - name: Prepare unsigned MSI
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          mkdir -p signing-input
+          cp .build/velopack/Froststrap-windows-x64.msi signing-input/Froststrap-windows-x64-signpath.msi
+
+      - name: Upload unsigned MSI for SignPath
+        if: startsWith(github.ref, 'refs/tags/v')
+        id: upload-unsigned-msi
+        uses: actions/upload-artifact@v7
+        with:
+          path: signing-input/Froststrap-windows-x64-signpath.msi
+          archive: false
+          if-no-files-found: error
+
+      - name: Sign Windows MSI
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: signpath/github-action-submit-signing-request@v3
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: 1622e650-cf1f-478c-adc1-470144bbd147
+          project-slug: Froststrap
+          signing-policy-slug: test-signing
+          github-artifact-id: ${{ steps.upload-unsigned-msi.outputs.artifact-id }}
+          wait-for-completion: true
+          output-artifact-directory: signed-msi
+          skip-decompress: true
+
+      - name: Replace unsigned MSI with signed MSI
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          cp signed-msi/Froststrap-windows-x64-signpath.msi .build/velopack/Froststrap-windows-x64.msi
 
       - uses: actions/upload-artifact@v7
         with:
@@ -85,7 +118,6 @@ jobs:
           dotnet-version: "10.0.x"
           cache: true
           cache-dependency-path: "**/**/**/packages.lock.json"
-
 
       - name: Use nightly Rust
         run: |
