@@ -1,4 +1,4 @@
-<!--
+﻿<!--
 SPDX-FileCopyrightText: 2026 Froststrap
 
 SPDX-License-Identifier: MPL-2.0
@@ -110,7 +110,7 @@ SPDX-License-Identifier: MPL-2.0
                         <controls:IconButton Classes="Danger"
                                              Command="{Binding RemoveCustomFontCommand}"
                                              Content="{x:Static resources:Strings.Menu_PresetMods_Misc_CustomFont_Remove}"
-                                             Icon="Trash2"
+                                             Icon="Trash"
                                              IsVisible="{Binding IsCustomFontSet}" />
                     </Panel>
                 </controls:OptionControl>
@@ -125,7 +125,7 @@ SPDX-License-Identifier: MPL-2.0
                         <controls:IconButton Classes="Danger"
                                              Command="{Binding RemoveCustomDeathSoundCommand}"
                                              Content="{x:Static resources:Strings.Menu_PresetMods_Misc_CustomDeathSound_Remove}"
-                                             Icon="Trash2"
+                                             Icon="Trash"
                                              IsVisible="{Binding HasCustomDeathSound}" />
                     </Panel>
                 </controls:OptionControl>
@@ -143,7 +143,7 @@ SPDX-License-Identifier: MPL-2.0
                                                      IsVisible="{Binding !HasCustomCursors}" />
                                 <controls:IconButton Classes="Danger"
                                                      Command="{Binding RemoveCustomCursorModCommand}"
-                                                     Icon="Trash2"
+                                                     Icon="Trash"
                                                      Content="{x:Static resources:Strings.Menu_PresetMods_Misc_CustomCursor_Remove}"
                                                      IsVisible="{Binding HasCustomCursors}" />
                             </Panel>
@@ -162,7 +162,7 @@ SPDX-License-Identifier: MPL-2.0
                                 <controls:IconButton Classes="Danger"
                                                      Command="{Binding RemoveCustomShiftlockModCommand}"
                                                      Content="{x:Static resources:Strings.Menu_PresetMods_Misc_CustomShiftLock_Remove}"
-                                                     Icon="Trash2"
+                                                     Icon="Trash"
                                                      IsVisible="{Binding HasCustomShiftlock}" />
                             </StackPanel>
                         </controls:OptionControl>
@@ -194,7 +194,7 @@ SPDX-License-Identifier: MPL-2.0
                                                          Classes="Danger"
                                                          Command="{Binding DeleteCustomCursorSetCommand}"
                                                          Content="{x:Static resources:Strings.Common_Delete}"
-                                                         Icon="Trash2"
+                                                         Icon="Trash"
                                                          IsEnabled="{Binding IsCustomCursorSetSelected}" />
                                 </Grid>
 
@@ -224,7 +224,7 @@ SPDX-License-Identifier: MPL-2.0
                                                                      IsVisible="{Binding !HasShiftlockCursor}"
                                                                      HorizontalAlignment="Stretch" Height="32" />
                                                 <controls:IconButton Content="{x:Static resources:Strings.Common_Remove}"
-                                                                     Icon="Trash2"
+                                                                     Icon="Trash"
                                                                      Command="{Binding DeleteCursorCommand}"
                                                                      CommandParameter="MouseLockedCursor.png"
                                                                      IsVisible="{Binding HasShiftlockCursor}"
@@ -247,7 +247,7 @@ SPDX-License-Identifier: MPL-2.0
                                                                      IsVisible="{Binding !HasArrowCursor}"
                                                                      HorizontalAlignment="Stretch" Height="32" />
                                                 <controls:IconButton Content="{x:Static resources:Strings.Common_Remove}"
-                                                                     Icon="Trash2"
+                                                                     Icon="Trash"
                                                                      Command="{Binding DeleteCursorCommand}"
                                                                      CommandParameter="ArrowCursor.png"
                                                                      IsVisible="{Binding HasArrowCursor}"
@@ -270,7 +270,7 @@ SPDX-License-Identifier: MPL-2.0
                                                                      IsVisible="{Binding !HasArrowFarCursor}"
                                                                      HorizontalAlignment="Stretch" Height="32" />
                                                 <controls:IconButton Content="{x:Static resources:Strings.Common_Remove}"
-                                                                     Icon="Trash2"
+                                                                     Icon="Trash"
                                                                      Command="{Binding DeleteCursorCommand}"
                                                                      CommandParameter="ArrowFarCursor.png"
                                                                      IsVisible="{Binding HasArrowFarCursor}"
@@ -293,7 +293,7 @@ SPDX-License-Identifier: MPL-2.0
                                                                      IsVisible="{Binding !HasIBeamCursor}"
                                                                      HorizontalAlignment="Stretch" Height="32" />
                                                 <controls:IconButton Content="{x:Static resources:Strings.Common_Remove}"
-                                                                     Icon="Trash2"
+                                                                     Icon="Trash"
                                                                      Command="{Binding DeleteCursorCommand}"
                                                                      CommandParameter="IBeamCursor.png"
                                                                      IsVisible="{Binding HasIBeamCursor}"

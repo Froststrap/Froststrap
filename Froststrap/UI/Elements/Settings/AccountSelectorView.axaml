@@ -1,4 +1,4 @@
-<!--
+﻿<!--
 SPDX-FileCopyrightText: 2026 Froststrap
 
 SPDX-License-Identifier: MPL-2.0
@@ -234,7 +234,7 @@ SPDX-License-Identifier: MPL-2.0
                                                 <controls:IconButton Width="32"
                                                                      Height="32"
                                                                      Padding="4"
-                                                                     Icon="Trash2"
+                                                                     Icon="Trash"
                                                                      IconSize="14"
                                                                      Classes="Danger"
                                                                      ToolTip.Tip="Remove this account"

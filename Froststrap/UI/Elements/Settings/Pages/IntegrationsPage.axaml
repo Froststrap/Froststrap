@@ -1,4 +1,4 @@
-<!--
+﻿<!--
 SPDX-FileCopyrightText: 2026 Froststrap
 
 SPDX-License-Identifier: MPL-2.0
@@ -299,7 +299,7 @@ SPDX-License-Identifier: MPL-2.0
                         Classes="Danger"
                         Command="{Binding DeleteIntegrationCommand, Mode=OneTime}"
                         Content="{x:Static resources:Strings.Common_Delete}"
-                        Icon="Trash2"
+                        Icon="Trash"
                         IsEnabled="{Binding IsCustomIntegrationSelected, Mode=OneWay}" />
                 </Grid>
 

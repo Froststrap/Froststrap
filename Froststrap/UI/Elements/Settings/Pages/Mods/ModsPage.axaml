@@ -1,4 +1,4 @@
-<!--
+﻿<!--
 SPDX-FileCopyrightText: 2026 Froststrap
 
 SPDX-License-Identifier: MPL-2.0
@@ -180,7 +180,7 @@ SPDX-License-Identifier: MPL-2.0
 
                             <Grid ColumnDefinitions="*,*" Margin="0,4">
                                 <controls:IconButton Grid.Column="0"
-                                                     Icon="Trash2"
+                                                     Icon="Trash"
                                                      Content="{x:Static resources:Strings.Common_Delete}"
                                                      Classes="Danger"
                                                      Command="{Binding DeleteModCommand}"
