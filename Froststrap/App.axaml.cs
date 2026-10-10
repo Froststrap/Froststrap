@@ -669,24 +669,5 @@ internal partial class App : Application
         await ShowPendingUpdateNotesAsync();
 
         base.OnFrameworkInitializationCompleted();
-
-        Dispatcher.UIThread.Post(LoadIconResources, DispatcherPriority.Loaded);
-    }
-
-    private static void LoadIconResources()
-    {
-        try
-        {
-            var uri = new Uri("avares://LucideAvalonia/Lucide/ResourcesIcons.axaml");
-            if (AvaloniaXamlLoader.Load(uri) is ResourceDictionary icons)
-            {
-                Application.Current?.Resources.MergedDictionaries.Add(icons);
-                LucideAvalonia.Lucide.NotifyIconsChanged();
-            }
-        }
-        catch (Exception ex)
-        {
-            Logger.Error(ex, "Failed to load icon resources");
-        }
     }
 }
