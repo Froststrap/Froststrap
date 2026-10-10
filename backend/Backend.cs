@@ -13,6 +13,17 @@ internal partial class InternalVirtualDisplay
 {
     [LibraryImport(
         "virtualdisplay",
+        EntryPoint = "init"
+    )]
+    public unsafe static partial int Init(
+        [MarshalAs(UnmanagedType.LPUTF8Str)] string name,
+        nuint width,
+        nuint height,
+        double* item,
+        nuint capacity
+    );
+    [LibraryImport(
+        "virtualdisplay",
         EntryPoint = "start_display"
     )]
     public static partial int Start();
@@ -31,6 +42,28 @@ internal partial class InternalVirtualDisplay
 /// A Virtual Display mechanism for macOS
 public class VirtualDisplay
 {
+    /// Intiialize datapoints around being able to
+    /// create the virtual display
+    public unsafe static void Initialize(
+        string name,
+        int width,
+        int height,
+        double[] rates
+    )
+    {                    
+        fixed (double* ptr = rates)
+        {
+            var result = InternalVirtualDisplay.Init(
+                name,
+                (nuint)width,
+                (nuint)height,
+                ptr,
+                (nuint)rates.Length
+            );
+            Console.WriteLine($"Virtual display initialized: {result}");
+        }
+    }
+
     /// Wrapper around starting the virtual display
     public static void Start()
     {

@@ -31,6 +31,18 @@ namespace Froststrap.UI
             if (App.Settings.Prop.LaunchWithVirtualDisplay) Dispatcher.UIThread.Post(() =>
             {
                 App.Logger.Debug("Starting Virtual display");
+                // this currently will just emulate pretty much the old VDSP
+                // just different name and more modes
+                //
+                // TODO:
+                // make this read from config so we can config
+                // with new values.
+                Froststrap.Backend.VirtualDisplay.Initialize(
+                    "",
+                    0,
+                    0,
+                    [60.0, 120.0, 240.0]
+                );
                 Froststrap.Backend.VirtualDisplay.Start();
             });
 #endif
