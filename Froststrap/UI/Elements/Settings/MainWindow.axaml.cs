@@ -749,6 +749,7 @@ namespace Froststrap.UI.Elements.Settings
             if (_viewModel?.CurrentPage != null)
             {
                 App.State.Prop.LastPage = _viewModel.CurrentPage.GetType().FullName;
+                App.State.SaveSetting("LastPage");
             }
         }
         #region Event Handlers
@@ -781,7 +782,6 @@ namespace Froststrap.UI.Elements.Settings
             State.Top = this.Position.Y;
 
             SaveCurrentPage();
-            App.State.Save();
         }
 
         private void MainWindow_Closed(object? sender, EventArgs e)
