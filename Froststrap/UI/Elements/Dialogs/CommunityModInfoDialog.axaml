@@ -14,6 +14,7 @@ SPDX-License-Identifier: MPL-2.0
                      xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Dialogs"
                      xmlns:gi="clr-namespace:Froststrap.Models"
                      xmlns:resources="clr-namespace:Froststrap.Resources"
+                     xmlns:utility="clr-namespace:Froststrap.UI.Utility"
                      xmlns:ui="using:FluentAvalonia.UI.Controls"
                      x:DataType="vm:CommunityModInfoViewModel"
                      Title="{x:Static resources:Strings.Menu_CommunityModInfo_Title}"
@@ -27,7 +28,7 @@ SPDX-License-Identifier: MPL-2.0
         <StackPanel Grid.Column="0" Margin="0,0,16,0" Spacing="12">
             <md:Card Height="180" ClipToBounds="True">
                 <Panel>
-                    <Image Source="{Binding Mod.ThumbnailUrl, Converter={StaticResource UrlToBitmapConverter}}}"
+                    <Image utility:RemoteImage.SourceUrl="{Binding Mod.ThumbnailUrl}"
                            Stretch="UniformToFill"
                            RenderOptions.BitmapInterpolationMode="HighQuality"/>
                 </Panel>

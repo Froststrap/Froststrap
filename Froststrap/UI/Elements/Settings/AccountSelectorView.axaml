@@ -12,6 +12,7 @@ SPDX-License-Identifier: MPL-2.0
              xmlns:resources="clr-namespace:Froststrap.Resources"
              xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
              xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
+             xmlns:utility="clr-namespace:Froststrap.UI.Utility"
              x:Class="Froststrap.UI.Elements.Settings.AccountSelectorView"
              x:DataType="vm:AccountSelectorViewModel"
              mc:Ignorable="d" d:DesignHeight="220" d:DesignWidth="450">
@@ -64,7 +65,7 @@ SPDX-License-Identifier: MPL-2.0
                                        HorizontalAlignment="Center"
                                        VerticalAlignment="Center"
                                        IsVisible="{Binding CurrentAccountAvatarUrl, Converter={x:Static StringConverters.IsNullOrEmpty}}"/>
-                            <Image Source="{Binding CurrentAccountAvatarUrl, Converter={StaticResource UrlToBitmapConverter}}"
+                            <Image utility:RemoteImage.SourceUrl="{Binding CurrentAccountAvatarUrl}"
                                    Stretch="UniformToFill"
                                    IsVisible="{Binding CurrentAccountAvatarUrl, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
                         </Panel>
@@ -198,7 +199,7 @@ SPDX-License-Identifier: MPL-2.0
                                                                        HorizontalAlignment="Center"
                                                                        VerticalAlignment="Center"
                                                                        IsVisible="{Binding AvatarUrl, Converter={x:Static StringConverters.IsNullOrEmpty}}" />
-                                                            <Image Source="{Binding AvatarUrl, Converter={StaticResource UrlToBitmapConverter}}"
+                                                            <Image utility:RemoteImage.SourceUrl="{Binding AvatarUrl}"
                                                                    Stretch="UniformToFill"
                                                                    IsVisible="{Binding AvatarUrl, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
                                                         </Panel>

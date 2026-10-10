@@ -299,10 +299,25 @@ namespace Froststrap.UI.Elements.Settings
             }
         }
 
+        private static readonly Dictionary<string, Type> ViewTypeCache = new();
+
         private static Control? ResolveViewForViewModel(object viewModel)
         {
             var viewModelName = viewModel.GetType().Name;
             var viewName = viewModelName.Replace("ViewModel", "", StringComparison.Ordinal);
+
+            if (ViewTypeCache.TryGetValue(viewModelName, out var cachedViewType))
+            {
+                try
+                {
+                    return Activator.CreateInstance(cachedViewType) as Control;
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.Error($"Failed to create view {cachedViewType.Name}: {ex.Message}");
+                    return null;
+                }
+            }
 
             var viewTypeNames = new[]
             {
@@ -322,6 +337,8 @@ namespace Froststrap.UI.Elements.Settings
 
                 if (viewType != null && typeof(Control).IsAssignableFrom(viewType))
                 {
+                    ViewTypeCache[viewModelName] = viewType;
+
                     try
                     {
                         return Activator.CreateInstance(viewType) as Control;
@@ -732,7 +749,6 @@ namespace Froststrap.UI.Elements.Settings
             if (_viewModel?.CurrentPage != null)
             {
                 App.State.Prop.LastPage = _viewModel.CurrentPage.GetType().FullName;
-                App.State.SaveSetting("LastPage");
             }
         }
         #region Event Handlers
@@ -765,6 +781,7 @@ namespace Froststrap.UI.Elements.Settings
             State.Top = this.Position.Y;
 
             SaveCurrentPage();
+            App.State.Save();
         }
 
         private void MainWindow_Closed(object? sender, EventArgs e)

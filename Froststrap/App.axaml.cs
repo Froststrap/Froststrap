@@ -84,6 +84,26 @@ internal partial class App : Application
 
     public static bool IsStudioInstalled => StudioData.IsInstalled;
 
+    private static bool? _linuxPlayerInstalled;
+
+    public static bool LinuxPlayerInstalled
+    {
+        get
+        {
+            if (!OperatingSystem.IsLinux())
+                return false;
+
+            if (_linuxPlayerInstalled is not bool cached)
+            {
+                var clientPath = Path.Combine(Paths.Versions, "Sober", "data", "sober", "packages", "x86_64", "com.roblox.client");
+                cached = Directory.Exists(clientPath) && Directory.EnumerateFiles(clientPath, "*", SearchOption.AllDirectories).Any();
+                _linuxPlayerInstalled = cached;
+            }
+
+            return cached;
+        }
+    }
+
     public static readonly RobloxPlayerData PlayerData = new();
 
     public static readonly RobloxStudioData StudioData = new();
@@ -581,6 +601,9 @@ internal partial class App : Application
         {
             try
             {
+                UriHandler.EnsureRegistered();
+                _ = Integrations.AccountManager.AccountManager.Shared;
+
                 FastFlags.Load();
                 GlobalSettings.Load();
 
@@ -646,5 +669,24 @@ internal partial class App : Application
         await ShowPendingUpdateNotesAsync();
 
         base.OnFrameworkInitializationCompleted();
+
+        Dispatcher.UIThread.Post(LoadIconResources, DispatcherPriority.Loaded);
+    }
+
+    private static void LoadIconResources()
+    {
+        try
+        {
+            var uri = new Uri("avares://LucideAvalonia/Lucide/ResourcesIcons.axaml");
+            if (AvaloniaXamlLoader.Load(uri) is ResourceDictionary icons)
+            {
+                Application.Current?.Resources.MergedDictionaries.Add(icons);
+                LucideAvalonia.Lucide.NotifyIconsChanged();
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.Error(ex, "Failed to load icon resources");
+        }
     }
 }

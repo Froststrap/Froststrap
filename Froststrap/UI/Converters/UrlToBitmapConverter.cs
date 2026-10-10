@@ -11,6 +11,7 @@ namespace Froststrap.UI.Converters
     internal class UrlToBitmapConverter : IValueConverter
     {
         private static readonly ConcurrentDictionary<string, Bitmap?> _imageCache = new();
+        private static readonly ConcurrentDictionary<string, Task<Bitmap?>> _inFlight = new();
         private static readonly ConcurrentDictionary<string, string> _tokenToUrlCache = new();
 
         public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
@@ -18,38 +19,14 @@ namespace Froststrap.UI.Converters
             if (value is not string url || string.IsNullOrEmpty(url))
                 return null;
 
-            try
-            {
-                if (_imageCache.TryGetValue(url, out var cachedBitmap))
-                    return cachedBitmap;
-
-                using var response = App.HttpClient.GetAsync(new Uri(url)).Result;
-
-                Bitmap? bitmap = null;
-                if (response.IsSuccessStatusCode)
-                {
-                    using var stream = response.Content.ReadAsStreamAsync().Result;
-                    using var memoryStream = new MemoryStream();
-                    stream.CopyTo(memoryStream);
-                    memoryStream.Position = 0;
-                    bitmap = new Bitmap(memoryStream);
-                }
-
-                // Cache the result (even if null)
-                _imageCache.TryAdd(url, bitmap);
-                return bitmap;
-            }
-            catch (Exception ex)
-            {
-                App.Logger.Error($"Failed to load image from {url}: {ex.Message}");
-                _imageCache.TryAdd(url, null);
-            }
-
-            return null;
+            return TryGetCachedBitmap(url, out var cachedBitmap) ? cachedBitmap : null;
         }
 
         public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
             => throw new NotImplementedException();
+
+        public static bool TryGetCachedBitmap(string url, out Bitmap? bitmap)
+            => _imageCache.TryGetValue(url, out bitmap!);
 
         public static bool TryGetCachedUrl(string token, out string? url)
             => _tokenToUrlCache.TryGetValue(token, out url);
@@ -62,9 +39,22 @@ namespace Froststrap.UI.Converters
             if (_imageCache.TryGetValue(url, out var cached))
                 return cached;
 
+            var task = _inFlight.GetOrAdd(url, DownloadAsync);
             try
             {
-                var response = await App.HttpClient.GetAsync(new Uri(url));
+                return await task;
+            }
+            finally
+            {
+                _inFlight.TryRemove(url, out _);
+            }
+        }
+
+        private static async Task<Bitmap?> DownloadAsync(string url)
+        {
+            try
+            {
+                using var response = await App.HttpClient.GetAsync(new Uri(url));
                 if (!response.IsSuccessStatusCode)
                 {
                     _imageCache.TryAdd(url, null);
@@ -79,8 +69,9 @@ namespace Froststrap.UI.Converters
                 _imageCache.TryAdd(url, bitmap);
                 return bitmap;
             }
-            catch
+            catch (Exception ex)
             {
+                App.Logger.Error($"Failed to load image from {url}: {ex.Message}");
                 _imageCache.TryAdd(url, null);
                 return null;
             }

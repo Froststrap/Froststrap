@@ -388,14 +388,9 @@ namespace Froststrap.UI.ViewModels.Settings
             get
             {
                 if (OperatingSystem.IsLinux())
-                {
-                    var clientPath = Path.Combine(Paths.Versions, "Sober", "data", "sober", "packages", "x86_64", "com.roblox.client");
-                    return Directory.Exists(clientPath) && Directory.EnumerateFiles(clientPath, "*", SearchOption.AllDirectories).Any();
-                }
+                    return App.LinuxPlayerInstalled;
                 else
-                {
                     return App.IsPlayerInstalled;
-                }
             }
         }
 

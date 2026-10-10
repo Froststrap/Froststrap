@@ -15,6 +15,7 @@ SPDX-License-Identifier: MPL-2.0
     xmlns:models="clr-namespace:Froststrap.Models"
     xmlns:dialogsVm="clr-namespace:Froststrap.UI.ViewModels.Dialogs"
     xmlns:resources="clr-namespace:Froststrap.Resources"
+    xmlns:utility="clr-namespace:Froststrap.UI.Utility"
     x:Name="RootDialog"
     x:DataType="dialogsVm:RobloxServersDialogViewModel"
     Title="{Binding GameName, FallbackValue='Servers'}"
@@ -38,7 +39,7 @@ SPDX-License-Identifier: MPL-2.0
                     PointerPressed="OnHeaderPointerPressed">
 				<Grid ColumnDefinitions="Auto, *, Auto">
 					<Border CornerRadius="8" ClipToBounds="True" Width="40" Height="40">
-						<Image Source="{Binding GameThumbnailUrl, Converter={StaticResource UrlToBitmapConverter}}"
+						<Image utility:RemoteImage.SourceUrl="{Binding GameThumbnailUrl}"
                                Stretch="UniformToFill"
                                RenderOptions.BitmapInterpolationMode="LowQuality"/>
 					</Border>
