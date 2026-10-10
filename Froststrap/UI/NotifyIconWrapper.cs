@@ -88,8 +88,6 @@ namespace Froststrap.UI
             icons.Add(_trayIcon);
         }
 
-
-        // On macos simply clicking the icon instantly opens the menu so double click action isnt possible
         private void OnTrayIconClicked(object? sender, EventArgs e)
         {
             if (!OperatingSystem.IsWindows())
