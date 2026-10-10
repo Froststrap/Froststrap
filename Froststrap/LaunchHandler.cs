@@ -106,6 +106,8 @@ namespace Froststrap
                 {
                     App.FrostRPC = new FroststrapRichPresence();
                 }
+
+                RobloxServerFetcher.WarmUp();
             };
 
             window.Closed += (s, e) =>

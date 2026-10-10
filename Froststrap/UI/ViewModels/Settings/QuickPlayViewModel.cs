@@ -2,8 +2,7 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-using Avalonia.Media.Imaging;
-using Avalonia.Threading;
+﻿using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
 using Froststrap.Integrations;
@@ -12,6 +11,7 @@ using Froststrap.UI.Elements.Dialogs;
 using Froststrap.UI.Converters;
 using Froststrap.UI.Elements.Settings;
 using Froststrap.UI.ViewModels.Dialogs;
+using Froststrap.RobloxInterfaces;
 using LucideAvalonia.Enum;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
@@ -292,13 +292,13 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
     {
         JoinGameCommand = new RelayCommand<QuickPlayGameItem>(item =>
         {
-            if (item != null) LaunchRoblox(item.PlaceId);
+            if (item != null) GameServers.Join(item.PlaceId);
         });
 
         RejoinLastServerCommand = new RelayCommand<QuickPlayGameItem>(item =>
         {
             if (item != null)
-                LaunchRoblox(item.PlaceId, item.LastJobId);
+                GameServers.Join(item.PlaceId, item.LastJobId);
         });
 
         ViewServersCommand = new RelayCommand<QuickPlayGameItem>(async item =>
@@ -321,7 +321,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
 
         JoinSubplaceCommand = new RelayCommand<PlaceInfo>(subplace =>
         {
-            if (subplace != null) LaunchRoblox(subplace.Id);
+            if (subplace != null) GameServers.Join(subplace.Id);
         });
 
         ShowPrivateServersCommand = new RelayCommand<QuickPlayGameItem>(async item =>
@@ -333,53 +333,16 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
         JoinPrivateServerCommand = new RelayCommand<string>(accessCode =>
         {
             if (string.IsNullOrWhiteSpace(accessCode)) return;
-            LaunchRoblox(CurrentSearchPlaceId, accessCode: accessCode);
+            GameServers.Join(CurrentSearchPlaceId, accessCode: accessCode);
         });
 
         VisitPageCommand = new RelayCommand<QuickPlayGameItem>(item =>
         {
-            if (item != null) Process.Start(new ProcessStartInfo($"https://www.roblox.com/games/{item.PlaceId}") { UseShellExecute = true });
+            if (item != null) GameServers.OpenGamePage(item.PlaceId);
         });
 
-        JoinBestRegionCommand = new RelayCommand<QuickPlayGameItem>(async item =>
-        {
-            if (item == null || item.PlaceId == 0 || IsJoiningBestRegion) return;
-
-            if (!HasActiveAccount)
-            {
-                await Frontend.ShowMessageBox(
-                    Strings.Menu_QuickPlay_PleaseSelectAccount,
-                    MessageBoxImage.Warning);
-                return;
-            }
-
-            IsJoiningBestRegion = true;
-            try
-            {
-                using var fetcher = new RobloxServerFetcher();
-                bool success = await fetcher.JoinBestServerAsync(
-                    item.PlaceId,
-                    showConfirmation: false
-                );
-
-                if (success)
-                {
-                    MainWindow.ShowGlobalNotification(
-                        Strings.Menu_QuickPlay_BestRegionJoined_Title,
-                        string.Format(
-                            CultureInfo.InvariantCulture,
-                            Strings.Menu_QuickPlay_BestRegionJoined_Message,
-                            item.Name),
-                        FAInfoBarSeverity.Success,
-                        4000,
-                        LucideIconNames.Globe);
-                }
-            }
-            finally
-            {
-                IsJoiningBestRegion = false;
-            }
-        });
+        JoinBestRegionCommand = new AsyncRelayCommand<QuickPlayGameItem>(item =>
+            item == null ? Task.CompletedTask : JoinBestRegionAsync(item.PlaceId, item.Name));
 
         ClearSearchCommand = new RelayCommand(ClearSearch);
         JoinServerByIdCommand = new RelayCommand(JoinServerById, () => CanJoinServerById);
@@ -428,8 +391,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
 
     private static async Task ShowPrivateServerJoinDialogAsync(long placeId)
     {
-        var accountManager = AccountManager.Shared;
-        if (accountManager?.ActiveAccount == null)
+        if (AccountManager.Shared?.ActiveAccount == null)
         {
             await Frontend.ShowMessageBox(Strings.Menu_QuickPlay_PleaseSelectAccount, MessageBoxImage.Warning);
             return;
@@ -521,13 +483,19 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
         if (!long.TryParse(SearchQuery, out var placeId)) return;
 
         var jobId = string.IsNullOrWhiteSpace(ServerId) ? null : ServerId.Trim();
-        LaunchRoblox(placeId, jobId);
+        GameServers.Join(placeId, jobId);
     }
 
     private async Task JoinBestRegionFromSearchAsync()
     {
         if (!long.TryParse(SearchQuery, out var placeId)) return;
-        if (IsJoiningBestRegion) return;
+
+        await JoinBestRegionAsync(placeId, placeId.ToString(CultureInfo.InvariantCulture));
+    }
+
+    private async Task JoinBestRegionAsync(long placeId, string displayName)
+    {
+        if (placeId == 0 || IsJoiningBestRegion) return;
 
         if (!HasActiveAccount)
         {
@@ -553,7 +521,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
                     string.Format(
                         CultureInfo.InvariantCulture,
                         Strings.Menu_QuickPlay_BestRegionJoined_Message,
-                        placeId),
+                        displayName),
                     FAInfoBarSeverity.Success,
                     4000,
                     LucideIconNames.Globe);
@@ -615,7 +583,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
                 $"v1/universes/{universeId}/places?isUniverseCreation=false&limit=100&sortOrder=Asc"
             );
 
-            var subplacesResponse = await Http.GetJson<SubplacesResponse>(url);
+            var subplacesResponse = await Http.GetJson<ApiPageResponse<SubplaceData>>(url);
             if (token.IsCancellationRequested) return;
 
             if (subplacesResponse?.Data != null && subplacesResponse.Data.Count > 0)
@@ -685,10 +653,10 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
             if (!response.IsSuccessStatusCode) return;
 
             var json = await response.Content.ReadAsStringAsync(token);
-            using var doc = JsonDocument.Parse(json);
-            if (!doc.RootElement.TryGetProperty("universeId", out var universeIdElement) ||
-                !universeIdElement.TryGetInt64(out var universeId))
-                return;
+            var universe = JsonSerializer.Deserialize<UniverseIdResponse>(json);
+            if (universe is null || universe.UniverseId == 0) return;
+
+            long universeId = universe.UniverseId;
 
             if (token.IsCancellationRequested) return;
 
@@ -768,33 +736,8 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
         IsGameSearchLoading = true;
         try
         {
-            var results = await GameSearching.GetGameSearchResultsAsync(SearchQuery);
-            if (token.IsCancellationRequested || results == null || results.Count == 0) return;
-
-            var thumbRequests = results.Select(r => new ThumbnailRequest
-            {
-                Type = ThumbnailType.GameIcon,
-                TargetId = (ulong)r.UniverseId,
-                Size = ThumbnailSize.Large
-            }).ToList();
-
-            var fetchedUrls = await Thumbnails.GetThumbnailUrlsAsync(thumbRequests, token);
-            if (token.IsCancellationRequested) return;
-
-            for (int i = 0; i < results.Count; i++)
-            {
-                if (fetchedUrls != null && i < fetchedUrls.Length && !string.IsNullOrEmpty(fetchedUrls[i]))
-                {
-                    try
-                    {
-                        var bytes = await App.HttpClient.GetByteArrayAsync(new Uri(fetchedUrls[i]!), token);
-                        if (token.IsCancellationRequested) return;
-                        using var ms = new MemoryStream(bytes);
-                        results[i].ThumbnailBitmap = Bitmap.DecodeToWidth(ms, 44, BitmapInterpolationMode.LowQuality);
-                    }
-                    catch { }
-                }
-            }
+            var results = await Experiences.SuggestAsync(SearchQuery, token);
+            if (token.IsCancellationRequested || results.Count == 0) return;
 
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
@@ -902,26 +845,34 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
         }
     }
 
+    private static string? ActiveCookie()
+    {
+        var manager = AccountManager.Shared;
+
+        return manager?.ActiveAccount is { } account
+            ? manager.GetRoblosecurityForUser(account.UserId)
+            : null;
+    }
+
+    private static HttpRequestMessage CookieRequest(HttpMethod method, string url, string cookie)
+    {
+        var request = new HttpRequestMessage(method, url);
+        request.Headers.Add("Cookie", $".ROBLOSECURITY={cookie}");
+        return request;
+    }
+
     private static async Task<List<QuickPlayGameItem>> FetchRecentlyVisitedFromApiAsync()
     {
-        var accountManager = AccountManager.Shared;
-        if (accountManager?.ActiveAccount == null) return [];
-
-        string? cookie = accountManager.GetRoblosecurityForUser(accountManager.ActiveAccount.UserId);
+        string? cookie = ActiveCookie();
         if (string.IsNullOrEmpty(cookie)) return [];
 
         var url = UrlBuilder.BuildApiUrl("apis", "search-landing-page-api/v1?sessionId=Meddsam");
 
-        using var request = new HttpRequestMessage(HttpMethod.Get, url);
-        request.Headers.Add("Cookie", $".ROBLOSECURITY={cookie}");
+        using var request = CookieRequest(HttpMethod.Get, url.ToString(), cookie);
 
         try
         {
-            using var response = await App.HttpClient.SendAsync(request);
-            response.EnsureSuccessStatusCode();
-            string json = await response.Content.ReadAsStringAsync();
-
-            var result = JsonSerializer.Deserialize<SearchLandingResponse>(json);
+            var result = await Http.SendJson<SearchLandingResponse>(request);
             var recentSort = result?.Sorts?.FirstOrDefault(s => s.SortId == "RecentlyVisited");
             if (recentSort?.Games == null) return [];
 
@@ -1177,18 +1128,14 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
 
     private static async Task<List<QuickPlayGameItem>> FetchFavoritesFromApiAsync(long userId)
     {
-        var accountManager = AccountManager.Shared;
-        if (accountManager?.ActiveAccount == null) return [];
-
-        string? cookie = accountManager.GetRoblosecurityForUser(accountManager.ActiveAccount.UserId);
+        string? cookie = ActiveCookie();
         if (string.IsNullOrEmpty(cookie)) return [];
 
         var url = UrlBuilder.BuildApiUrl("games", $"v2/users/{userId}/favorite/games?accessFilter=0&limit=100&sortOrder=Desc");
 
-        using var request = new HttpRequestMessage(HttpMethod.Get, url);
-        request.Headers.Add("Cookie", $".ROBLOSECURITY={cookie}");
+        using var request = CookieRequest(HttpMethod.Get, url.ToString(), cookie);
 
-        var response = await Http.SendJson<FavoriteGamesResponse>(request);
+        var response = await Http.SendJson<ApiPageResponse<FavoriteGameData>>(request);
         if (response?.Data == null) return [];
 
         var games = new List<QuickPlayGameItem>();
@@ -1252,13 +1199,8 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
 
     private static async Task<List<QuickPlayGameItem>> FetchRecommendedFromApiAsync()
     {
-        var accountManager = AccountManager.Shared;
-        if (accountManager?.ActiveAccount == null) return [];
-
-        string? cookie = accountManager.GetRoblosecurityForUser(accountManager.ActiveAccount.UserId);
+        string? cookie = ActiveCookie();
         if (string.IsNullOrEmpty(cookie)) return [];
-
-        var url = "https://apis.roblox.com/discovery-api/omni-recommendation";
 
         var payload = new
         {
@@ -1272,13 +1214,8 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
             networkType = "4g"
         };
 
-        var jsonPayload = JsonSerializer.Serialize(payload);
-
-        using var request = new HttpRequestMessage(HttpMethod.Post, url)
-        {
-            Content = new StringContent(jsonPayload, Encoding.UTF8, "application/json")
-        };
-        request.Headers.Add("Cookie", $".ROBLOSECURITY={cookie}");
+        using var request = CookieRequest(HttpMethod.Post, "https://apis.roblox.com/discovery-api/omni-recommendation", cookie);
+        request.Content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
         request.Headers.Add("User-Agent", "Roblox/WinInet");
         request.Headers.Add("Referer", "https://www.roblox.com/home");
 
@@ -1323,19 +1260,6 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
         }
 
         return gameItems;
-    }
-
-    private static void LaunchRoblox(long placeId, string? jobId = null, string? accessCode = null)
-    {
-        if (placeId == 0) return;
-        string deeplink = $"roblox://experiences/start?placeId={placeId}";
-
-        if (!string.IsNullOrEmpty(accessCode))
-            deeplink += "&accessCode=" + Uri.EscapeDataString(accessCode);
-        else if (!string.IsNullOrEmpty(jobId))
-            deeplink += "&gameInstanceId=" + Uri.EscapeDataString(jobId);
-
-        Process.Start(new ProcessStartInfo(deeplink) { UseShellExecute = true });
     }
 
     private void SwapSearchResults(ObservableCollection<OmniSearchContent> next)

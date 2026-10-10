@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
@@ -11,6 +11,24 @@ namespace Froststrap.Models.Overlay
     {
         private const int AvatarSlots = 6;
         private const int ShortIdLength = 8;
+
+        private static readonly string[] AllPropertyNames =
+        [
+            nameof(JobId), nameof(Playing), nameof(MaxPlayers),
+            nameof(Fps), nameof(Ping), nameof(City), nameof(Region),
+            nameof(PlaceVersion), nameof(IsCurrent), nameof(PlayerTokens),
+            nameof(StartedAt), nameof(UptimeIsEstimate),
+            nameof(HasUptime), nameof(UptimeText),
+            nameof(Performance), nameof(HasPerformance), nameof(IsLowPerformance),
+            nameof(PerformanceText), nameof(FpsText), nameof(PingText), nameof(HasPing),
+            nameof(HasVersion), nameof(VersionText),
+            nameof(PlayerIcons), nameof(OverflowCount), nameof(HasOverflow),
+            nameof(OverflowText), nameof(Avatars),
+            nameof(HasStats), nameof(IsFull),
+            nameof(PlayersText), nameof(CapacityText), nameof(FillPercentage),
+            nameof(LocationText), nameof(HasLocation),
+            nameof(ShortId), nameof(IdText)
+        ];
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -61,6 +79,8 @@ namespace Froststrap.Models.Overlay
         public string PingText => Ping is null
             ? String.Empty
             : String.Format(Locale.CurrentCulture, "{0} ms", Ping.Value);
+
+        public bool HasPing => Ping is not null;
 
         public bool HasVersion => PlaceVersion is not null;
         public string VersionText => String.Format(Locale.CurrentCulture, Strings.Menu_Overlay_Servers_Version, PlaceVersion);
@@ -130,6 +150,8 @@ namespace Froststrap.Models.Overlay
             }
         }
 
+        public bool HasLocation => !String.IsNullOrEmpty(LocationText);
+
         public string ShortId => String.IsNullOrEmpty(JobId)
             ? String.Empty
             : JobId.Length > ShortIdLength ? JobId[..ShortIdLength] : JobId;
@@ -140,6 +162,14 @@ namespace Froststrap.Models.Overlay
         {
             if (HasUptime)
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(UptimeText)));
+        }
+
+        public void RaiseAllChanged()
+        {
+            _avatars = null;
+
+            foreach (string name in AllPropertyNames)
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
     }
 }

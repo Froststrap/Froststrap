@@ -1,15 +1,13 @@
-﻿using System.Windows.Input;
-using Froststrap.UI.ViewModels;
+﻿﻿using System.Windows.Input;
+using Froststrap.Models.Overlay;
 
 namespace Froststrap.Models
 {
-    internal class ServerEntry : NotifyPropertyChangedViewModel
+    internal class ServerEntry : GameServer
     {
         public int Number { get; set; }
-        public string ServerId { get; set; } = null!;
-        public string Region { get; set; } = null!;
         public int? DataCenterId { get; set; }
-        public string Uptime { get; set; } = "Loading...";
         public ICommand? JoinCommand { get; set; }
+        public ICommand? ShareCommand { get; set; }
     }
 }

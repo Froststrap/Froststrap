@@ -1,12 +1,29 @@
-﻿using System.Collections.Concurrent;
+﻿﻿using System.Collections.Concurrent;
 using System.Net.Http.Headers;
-using Froststrap.AppData;
+using Froststrap.RobloxInterfaces;
 
 namespace Froststrap.Integrations
 {
     internal class RobloxServerFetcher : IDisposable
     {
+        private static readonly Lazy<HttpClient> _sharedClient = new(CreateSharedClient);
+
+        private static HttpClient CreateSharedClient()
+        {
+            var handler = new SocketsHttpHandler
+            {
+                PooledConnectionLifetime = TimeSpan.FromMinutes(5),
+                MaxConnectionsPerServer = 20
+            };
+
+            var client = new HttpClient(handler);
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            client.DefaultRequestHeaders.UserAgent.ParseAdd("Roblox/Froststrap");
+            return client;
+        }
+
         private readonly HttpClient _client;
+
         private Dictionary<int, string>? _datacenterIdToRegion;
         private List<string>? _regionList;
         private List<DatacenterEntry>? _datacenterEntries;
@@ -36,15 +53,23 @@ namespace Froststrap.Integrations
 
         public RobloxServerFetcher()
         {
-            var handler = new SocketsHttpHandler
-            {
-                PooledConnectionLifetime = TimeSpan.FromMinutes(5),
-                MaxConnectionsPerServer = 20
-            };
+            _client = _sharedClient.Value;
+        }
 
-            _client = new HttpClient(handler);
-            _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            _client.DefaultRequestHeaders.UserAgent.ParseAdd("Roblox/Froststrap");
+        public static void WarmUp()
+        {
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(8));
+                    using var req = new HttpRequestMessage(HttpMethod.Head, new Uri(DatacenterUrl));
+                    using var resp = await _sharedClient.Value.SendAsync(req, cts.Token).ConfigureAwait(false);
+                }
+                catch
+                {
+                }
+            });
         }
 
         private static string BuildRegionKey(string? city, string? country)
@@ -53,24 +78,6 @@ namespace Froststrap.Integrations
                 return "Unknown";
 
             return $"{city}, {country}".Trim().Trim(',', ' ');
-        }
-
-        private static void LaunchRoblox(string deeplink)
-        {
-            if (Processes.IsRobloxRunning())
-            {
-                App.Logger.Info("Roblox is running, launching via player executable");
-                Process.Start(new RobloxPlayerData().ExecutablePath, deeplink);
-            }
-            else
-            {
-                App.Logger.Info("Roblox is not running, launching via protocol handler");
-                Process.Start(new ProcessStartInfo
-                {
-                    FileName = deeplink,
-                    UseShellExecute = true
-                });
-            }
         }
 
         public async Task<(List<string> regions, Dictionary<int, string> datacenterMap)?> GetDatacentersAsync(CancellationToken cancellationToken = default)
@@ -82,10 +89,22 @@ namespace Froststrap.Integrations
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var json = await _client.GetStringAsync(new Uri(DatacenterUrl), cancellationToken);
-                var datacenterEntries = JsonSerializer.Deserialize<List<DatacenterEntry>>(json);
+                using var resp = await _client
+                    .GetAsync(new Uri(DatacenterUrl), HttpCompletionOption.ResponseHeadersRead, cancellationToken)
+                    .ConfigureAwait(false);
 
-                if (datacenterEntries == null) return null;
+                resp.EnsureSuccessStatusCode();
+
+                await using var stream = await resp.Content
+                    .ReadAsStreamAsync(cancellationToken)
+                    .ConfigureAwait(false);
+
+                var datacenterEntries = await JsonSerializer
+                    .DeserializeAsync<List<DatacenterEntry>>(stream, cancellationToken: cancellationToken)
+                    .ConfigureAwait(false);
+
+                if (datacenterEntries == null)
+                    return null;
 
                 var map = new Dictionary<int, string>();
                 var regions = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -96,9 +115,7 @@ namespace Froststrap.Integrations
                     regions.Add(regionKey);
 
                     foreach (var id in entry.DataCenterIds)
-                    {
                         map[id] = regionKey;
-                    }
                 }
 
                 _regionList = [.. regions.OrderBy(r => r, StringComparer.OrdinalIgnoreCase)];
@@ -417,53 +434,33 @@ namespace Froststrap.Integrations
             }
         }
 
-        private static Task<string?> GetCookieFromAccountManagerAsync()
+        private static string? GetAccountManagerCookie()
         {
             try
             {
                 var active = AccountManager.AccountManager.Shared?.ActiveAccount;
 
                 if (active != null && !string.IsNullOrWhiteSpace(active.SecurityToken))
-                    return Task.FromResult<string?>(active.SecurityToken);
+                    return active.SecurityToken;
             }
             catch (Exception ex)
             {
                 App.Logger.Error("Unhandled exception:", ex);
             }
 
-            return Task.FromResult<string?>(null);
-        }
-
-        private static Task<string?> GetCookieFromCookiesManagerAsync()
-        {
-            try
-            {
-                if (App.Cookies != null)
-                {
-                    var field = typeof(CookiesManager).GetField("AuthCookie", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                    if (field != null)
-                    {
-                        return Task.FromResult(field.GetValue(App.Cookies) as string);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                App.Logger.Error("Unhandled exception:", ex);
-            }
-            return Task.FromResult<string?>(null);
+            return null;
         }
 
         public async Task<string?> ResolveCookieAsync()
         {
-            var accountManagerCookie = await GetCookieFromAccountManagerAsync();
+            string? accountManagerCookie = GetAccountManagerCookie();
             if (!string.IsNullOrWhiteSpace(accountManagerCookie) && await ValidateCookieAsync(accountManagerCookie))
             {
                 App.Logger.Info("Using valid cookie from Account Manager.");
                 return accountManagerCookie;
             }
 
-            var cookiesManagerCookie = await GetCookieFromCookiesManagerAsync();
+            string cookiesManagerCookie = App.Cookies.GetAuthCookie();
             if (!string.IsNullOrWhiteSpace(cookiesManagerCookie) && await ValidateCookieAsync(cookiesManagerCookie))
             {
                 App.Logger.Info("Using valid cookie from Cookies Manager.");
@@ -711,75 +708,25 @@ namespace Froststrap.Integrations
             string selectedRegion,
             CancellationToken cancellationToken = default)
         {
-            var startedAtUtc = DateTime.UtcNow;
-
-            try
-            {
-                if (string.IsNullOrEmpty(selectedRegion))
-                    return new ServerSelectionResult();
-
-                App.Logger.Info($"Searching for alive server in {selectedRegion} (timeout {MatchmakingTimeout.TotalSeconds}s)");
-
-                string? cookie = await ResolveCookieAsync();
-                if (string.IsNullOrEmpty(cookie))
-                    App.Logger.Warn("No valid cookie for server liveliness checks.");
-
-                var (servers, _) = await FetchServersByRegionAsync(placeId, selectedRegion, null, cancellationToken: cancellationToken);
-                if (servers.Count == 0)
-                    return new ServerSelectionResult();
-
-                var sorted = servers.OrderBy(s => s.FirstSeen).ToList();
-
-                if (string.IsNullOrEmpty(cookie))
-                {
-                    var best = sorted[0];
-                    return new ServerSelectionResult
-                    {
-                        ServerId = best.Id,
-                        Region = best.Region,
-                        Rank = 1,
-                        FirstSeen = best.FirstSeen
-                    };
-                }
-
-                int probesDone = 0;
-                foreach (var server in sorted)
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-
-                    if (DateTime.UtcNow - startedAtUtc >= MatchmakingTimeout)
-                    {
-                        App.Logger.Warn($"Matchmaking timeout reached in {selectedRegion} after {probesDone} probe(s).");
-                        return new ServerSelectionResult();
-                    }
-
-                    probesDone++;
-                    bool alive = await IsServerAliveAsync(placeId, server.Id, cookie, cancellationToken);
-                    if (alive)
-                    {
-                        App.Logger.Info($"Found alive server in {selectedRegion} after {probesDone} probe(s) in {(DateTime.UtcNow - startedAtUtc).TotalSeconds:F1}s.");
-                        return new ServerSelectionResult
-                        {
-                            ServerId = server.Id,
-                            Region = server.Region,
-                            Rank = 1,
-                            FirstSeen = server.FirstSeen
-                        };
-                    }
-                }
-
-                App.Logger.Warn($"No alive server found in {selectedRegion} after {probesDone} probe(s).");
+            if (string.IsNullOrEmpty(selectedRegion))
                 return new ServerSelectionResult();
-            }
-            catch (OperationCanceledException)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                App.Logger.Error("Unhandled exception:", ex);
-                return new ServerSelectionResult();
-            }
+
+            var result = await FindBestServerInRegionAsync(placeId, [selectedRegion], cancellationToken);
+
+            if (result.Found)
+                result.Rank = 1;
+
+            return result;
+        }
+
+        private static async Task<bool> ConfirmJoinAsync(string? region)
+        {
+            var answer = await Frontend.ShowMessageBox(
+                $"Found server in {region}.\nDo you want to join?",
+                MessageBoxImage.Question,
+                MessageBoxButton.YesNo);
+
+            return answer == MessageBoxResult.Yes;
         }
 
         public async Task<bool> JoinBestServerAsync(
@@ -790,63 +737,36 @@ namespace Froststrap.Integrations
             try
             {
                 string selectedRegion = App.Settings.Prop.SelectedRegion ?? "";
+                var result = new ServerSelectionResult();
 
                 if (!string.IsNullOrEmpty(selectedRegion) &&
                     !selectedRegion.Equals(Strings.Common_Auto, StringComparison.OrdinalIgnoreCase))
                 {
-                    var result = await FindBestServerInSelectedRegionAsync(
-                        placeId,
-                        selectedRegion,
-                        cancellationToken);
+                    result = await FindBestServerInSelectedRegionAsync(placeId, selectedRegion, cancellationToken);
+                }
 
-                    if (result.Found)
+                if (!result.Found)
+                {
+                    var topRegions = await GetClosestRegionsForAutoModeAsync(cancellationToken);
+                    if (topRegions.Count == 0)
                     {
-                        if (showConfirmation)
-                        {
-                            var confirmResult = await Frontend.ShowMessageBox(
-                                $"Found server in {result.Region}.\nDo you want to join?",
-                                MessageBoxImage.Question,
-                                MessageBoxButton.YesNo);
-                            if (confirmResult != MessageBoxResult.Yes)
-                                return false;
-                        }
+                        await Frontend.ShowMessageBox("Could not determine your location for Auto mode. Please try again later.", MessageBoxImage.Warning);
+                        return false;
+                    }
 
-                        string robloxUri = $"roblox://experiences/start?placeId={placeId}&gameInstanceId={result.ServerId}";
-                        LaunchRoblox(robloxUri);
-                        return true;
+                    result = await FindBestServerInRegionAsync(placeId, topRegions, cancellationToken);
+
+                    if (!result.Found)
+                    {
+                        await Frontend.ShowMessageBox($"Could not find a suitable server within {MatchmakingTimeout.TotalSeconds} seconds.", MessageBoxImage.Information);
+                        return false;
                     }
                 }
 
-                var topRegions = await GetClosestRegionsForAutoModeAsync(cancellationToken);
-                if (topRegions.Count == 0)
-                {
-                    await Frontend.ShowMessageBox("Could not determine your location for Auto mode. Please try again later.", MessageBoxImage.Warning);
+                if (showConfirmation && !await ConfirmJoinAsync(result.Region))
                     return false;
-                }
 
-                var autoResult = await FindBestServerInRegionAsync(
-                    placeId,
-                    topRegions,
-                    cancellationToken);
-
-                if (!autoResult.Found)
-                {
-                    await Frontend.ShowMessageBox($"Could not find a suitable server within {MatchmakingTimeout.TotalSeconds} seconds.", MessageBoxImage.Information);
-                    return false;
-                }
-
-                if (showConfirmation)
-                {
-                    var confirmResult = await Frontend.ShowMessageBox(
-                        $"Found server in {autoResult.Region}.\nDo you want to join?",
-                        MessageBoxImage.Question,
-                        MessageBoxButton.YesNo);
-                    if (confirmResult != MessageBoxResult.Yes)
-                        return false;
-                }
-
-                string robloxUriAuto = $"roblox://experiences/start?placeId={placeId}&gameInstanceId={autoResult.ServerId}";
-                LaunchRoblox(robloxUriAuto);
+                GameServers.Join(placeId, result.ServerId);
                 return true;
             }
             catch (Exception ex)
@@ -866,10 +786,6 @@ namespace Froststrap.Integrations
         {
             if (!_disposed)
             {
-                if (disposing)
-                {
-                    _client?.Dispose();
-                }
                 _disposed = true;
             }
         }

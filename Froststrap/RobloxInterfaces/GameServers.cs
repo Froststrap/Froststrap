@@ -1,4 +1,4 @@
-﻿using Froststrap.AppData;
+﻿﻿using Froststrap.AppData;
 using Froststrap.Enums.Overlay;
 using Froststrap.Utility;
 using System;
@@ -14,7 +14,8 @@ namespace Froststrap.RobloxInterfaces
     internal class GameServers
     {
         private const int PageSize = 100;
-        private const int MaxStatsPages = 5;
+        private const int DefaultStatsPages = 5;
+        private const int EnrichStatsPages = 25;
         private const int MaxRegionPages = 3;
         private const int MaxFaces = 5;
         private const int DetailsBatchSize = 50;
@@ -170,6 +171,9 @@ namespace Froststrap.RobloxInterfaces
                 }
 
                 await PrefetchAsync(pending);
+
+                foreach (GameServer server in servers)
+                    server.RaiseAllChanged();
             }
             catch (Exception ex)
             {
@@ -223,7 +227,7 @@ namespace Froststrap.RobloxInterfaces
         {
             var wanted = servers
                 .Take(DetailsReach)
-                .Where(x => (x.StartedAt is null || x.PlaceVersion is null) && !String.IsNullOrEmpty(x.JobId))
+                .Where(x => (x.StartedAt is null || x.PlaceVersion is null || x.City is null) && !String.IsNullOrEmpty(x.JobId))
                 .ToList();
 
             if (placeId == 0 || wanted.Count == 0)
@@ -254,10 +258,10 @@ namespace Froststrap.RobloxInterfaces
                         server.PlaceVersion ??= detail.PlaceVersion;
 
                         if (String.IsNullOrEmpty(server.City))
-                        {
                             server.City = detail.City;
+
+                        if (String.IsNullOrEmpty(server.Region))
                             server.Region = detail.Region;
-                        }
                     }
                 }
                 catch (Exception ex)
@@ -268,6 +272,9 @@ namespace Froststrap.RobloxInterfaces
             }
 
             await Task.WhenAll(wanted.Chunk(DetailsBatchSize).Select(FetchBatch));
+
+            foreach (GameServer server in wanted)
+                server.RaiseAllChanged();
         }
 
         public static async Task<HashSet<string>> StillRunningAsync(long placeId, IEnumerable<string> jobIds)
@@ -348,19 +355,22 @@ namespace Froststrap.RobloxInterfaces
             return candidates.Count == 0 ? null : candidates[RandomNumberGenerator.GetInt32(candidates.Count)];
         }
 
-        private static async Task<List<GameServerResponse>> FetchLiveAsync(long placeId)
+        internal static Task<List<GameServerResponse>> FetchLiveAsync(long placeId) =>
+            FetchLivePagesAsync(placeId, DefaultStatsPages);
+
+        internal static async Task<List<GameServerResponse>> FetchLivePagesAsync(long placeId, int maxPages)
         {
             var servers = new List<GameServerResponse>();
             string? cursor = null;
 
             try
             {
-                for (int page = 0; page < MaxStatsPages; page++)
+                for (int page = 0; page < maxPages; page++)
                 {
                     var response = await Http.GetJson<ApiPageResponse<GameServerResponse>>(
                         UrlBuilder.BuildApiUrl("games", $"v1/games/{placeId}/servers/Public?limit={PageSize}&sortOrder=Desc&cursor={cursor}"));
 
-                    if (response is null)
+                    if (response is null || response.Data is null || response.Data.Count == 0)
                         break;
 
                     servers.AddRange(response.Data);
@@ -378,6 +388,54 @@ namespace Froststrap.RobloxInterfaces
             }
 
             return servers;
+        }
+
+        internal static async Task EnrichAsync(long placeId, IReadOnlyList<GameServer> servers)
+        {
+            if (placeId == 0 || servers.Count == 0)
+                return;
+
+            int matched = 0;
+            int totalLive = 0;
+
+            try
+            {
+                List<GameServerResponse> live = await FetchLivePagesAsync(placeId, EnrichStatsPages).ConfigureAwait(false);
+
+                var statsById = new Dictionary<string, GameServerResponse>(StringComparer.OrdinalIgnoreCase);
+
+                foreach (GameServerResponse s in live)
+                {
+                    if (!String.IsNullOrEmpty(s.Id))
+                        statsById[s.Id] = s;
+                }
+
+                totalLive = statsById.Count;
+
+                foreach (GameServer server in servers)
+                {
+                    if (!statsById.TryGetValue(server.JobId, out GameServerResponse? stat))
+                        continue;
+
+                    server.Playing = stat.Playing;
+                    server.MaxPlayers = stat.MaxPlayers;
+                    server.Fps = stat.Fps;
+                    server.Ping = stat.Ping;
+                    server.PlayerTokens = stat.PlayerTokens ?? [];
+                    matched++;
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error("Failed to enrich server stats");
+                App.Logger.Error(ex);
+            }
+
+            App.Logger.Info($"Enriched {matched}/{servers.Count} servers from {totalLive} live entries");
+
+            await Task.WhenAll(
+                PopulateIconsAsync(servers),
+                PopulateDetailsAsync(placeId, servers)).ConfigureAwait(false);
         }
 
         private static async Task<List<RoValraRegionServer>> FetchRegionIndexAsync(long placeId, string region)
@@ -422,16 +480,42 @@ namespace Froststrap.RobloxInterfaces
             return index;
         }
 
-        public static void Join(long placeId, string jobId)
+        public static void Join(long placeId, string? jobId = null, string? accessCode = null)
         {
-            App.Logger.Info($"Joining {placeId}/{jobId}");
+            if (placeId == 0)
+                return;
 
-            Launch($"placeId={placeId}&gameInstanceId={jobId}");
+            string query = $"placeId={placeId}";
+
+            if (!String.IsNullOrEmpty(accessCode))
+                query += $"&accessCode={Uri.EscapeDataString(accessCode)}";
+            else if (!String.IsNullOrEmpty(jobId))
+                query += $"&gameInstanceId={Uri.EscapeDataString(jobId)}";
+
+            App.Logger.Info($"Joining {placeId}");
+
+            Launch(query);
         }
 
-        public static void Launch(string query) =>
-            Process.Start(new RobloxPlayerData().ExecutablePath, $"roblox://experiences/start?{query}");
+        public static void Launch(string query)
+        {
+            string deeplink = $"roblox://experiences/start?{query}";
+
+            if (Processes.IsRobloxRunning())
+            {
+                Process.Start(new RobloxPlayerData().ExecutablePath, deeplink);
+                return;
+            }
+
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = deeplink,
+                UseShellExecute = true
+            });
+        }
 
         public static Uri GamePage(long placeId) => UrlBuilder.BuildApiUrl("www", $"games/{placeId}");
+
+        public static void OpenGamePage(long placeId) => Threading.ShellExecute(GamePage(placeId).ToString());
     }
 }

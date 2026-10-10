@@ -1,7 +1,10 @@
-﻿using Avalonia.Media.Imaging;
+﻿﻿using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Input.Platform;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.Integrations;
+using Froststrap.RobloxInterfaces;
 using System.Collections.ObjectModel;
 
 namespace Froststrap.UI.ViewModels.Settings
@@ -138,13 +141,14 @@ namespace Froststrap.UI.ViewModels.Settings
         public bool HasValidCookies
         {
             get => _hasValidCookies;
-            set
+            private set
             {
                 if (SetProperty(ref _hasValidCookies, value))
                 {
                     OnPropertyChanged(nameof(ServerListMessage));
                     SearchCommand.NotifyCanExecuteChanged();
                     SearchGamesCommand.NotifyCanExecuteChanged();
+                    LoadMoreCommand.NotifyCanExecuteChanged();
                 }
             }
         }
@@ -241,6 +245,8 @@ namespace Froststrap.UI.ViewModels.Settings
 
             ClearSearchCommand = new RelayCommand(ClearSearch);
 
+            App.Cookies.WatchAccount(this, static vm => vm.OnAccountChanged());
+
             _ = InitializeAsync();
         }
 
@@ -310,13 +316,42 @@ namespace Froststrap.UI.ViewModels.Settings
             try
             {
                 _fetcher = new RobloxServerFetcher();
-                HasValidCookies = true;
-                await LoadRegionsAsync();
+
+                Task<(List<string> regions, Dictionary<int, string> datacenterMap)?> fetchTask =
+                    _fetcher.GetDatacentersAsync(_disposeCts.Token);
+
+                await RefreshCookieAsync();
+
+                await LoadRegionsAsync(fetchTask);
             }
-            catch (Exception ex) { App.Logger.Error(ex); }
+            catch (Exception ex)
+            {
+                App.Logger.Error(ex);
+            }
         }
 
-        private async Task LoadRegionsAsync()
+        private async Task RefreshCookieAsync()
+        {
+            if (_fetcher is null)
+                return;
+
+            try
+            {
+                _resolvedCookie = await _fetcher.ResolveCookieAsync();
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error("Failed to resolve cookie:", ex);
+                _resolvedCookie = null;
+            }
+
+            HasValidCookies = !string.IsNullOrEmpty(_resolvedCookie);
+        }
+
+        private void OnAccountChanged() =>
+            Dispatcher.UIThread.Post(() => _ = RefreshCookieAsync());
+
+        private async Task LoadRegionsAsync(Task<(List<string> regions, Dictionary<int, string> datacenterMap)?> fetchTask)
         {
             var cacheResult = await LoadDatacentersFromCacheAsync();
             if (cacheResult != null)
@@ -324,20 +359,14 @@ namespace Froststrap.UI.ViewModels.Settings
                 var (regions, dcMap) = cacheResult.Value;
                 PopulateRegions(regions, dcMap);
 
-                _ = Task.Run(async () =>
-                {
-                    try { await _fetcher!.GetDatacentersAsync(_disposeCts.Token); }
-                    catch (OperationCanceledException) { }
-                    catch (Exception ex) { App.Logger.Error(ex); }
-                });
-
+                _ = RefreshCacheFromApiAsync(fetchTask);
                 return;
             }
 
             IsLoading = true;
             LoadingMessage = Strings.Menu_RegionSelector_LoadingDatacenters;
 
-            var apiResult = await _fetcher!.GetDatacentersAsync();
+            var apiResult = await fetchTask;
             if (apiResult != null)
             {
                 var (regions, dcMap) = apiResult.Value;
@@ -366,6 +395,21 @@ namespace Froststrap.UI.ViewModels.Settings
             IsLoading = false;
         }
 
+        private async Task RefreshCacheFromApiAsync(Task<(List<string> regions, Dictionary<int, string> datacenterMap)?> fetchTask)
+        {
+            try
+            {
+                var apiResult = await fetchTask;
+                if (apiResult != null)
+                    await SaveDatacentersToCacheAsync(apiResult.Value.datacenterMap);
+            }
+            catch (OperationCanceledException) { }
+            catch (Exception ex)
+            {
+                App.Logger.Error(ex);
+            }
+        }
+
         private void PopulateRegions(List<string> regions, Dictionary<int, string> dcMap)
         {
             var sorted = regions.OrderBy(r => r, StringComparer.OrdinalIgnoreCase).ToList();
@@ -385,6 +429,9 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private async Task SearchAsync()
         {
+            if (!HasValidCookies)
+                return;
+
 #pragma warning disable CA1849
             _searchCts?.Cancel();
 #pragma warning restore CA1849
@@ -416,12 +463,6 @@ namespace Froststrap.UI.ViewModels.Settings
                 _isAutoMode = string.IsNullOrEmpty(SelectedRegion) ||
                               SelectedRegion.Equals(Strings.Common_Auto, StringComparison.OrdinalIgnoreCase);
 
-                if (string.IsNullOrEmpty(_resolvedCookie))
-                {
-                    try { _resolvedCookie = await _fetcher!.ResolveCookieAsync(); }
-                    catch (Exception ex) { App.Logger.Error("Failed to resolve cookie:", ex); }
-                }
-
                 List<ServerInstance> servers;
 
                 if (_isAutoMode)
@@ -452,7 +493,7 @@ namespace Froststrap.UI.ViewModels.Settings
                     servers = await TakeFromRegionAsync(placeId, SelectedRegion ?? "", SpecificRegionBatchSize, token);
                 }
 
-                AppendServers(servers);
+                await AppendServersAsync(servers, placeId);
                 LastFetchProcessedCount = servers.Count;
                 HasMoreServers = ComputeHasMoreServers();
             }
@@ -469,6 +510,7 @@ namespace Froststrap.UI.ViewModels.Settings
         private async Task LoadMoreAsync()
         {
             if (!HasSearched || IsLoading || IsLoadingMore || !HasMoreServers) return;
+            if (!HasValidCookies) return;
             if (_searchCts == null || _searchCts.IsCancellationRequested) return;
             if (!long.TryParse(PlaceId, out var placeId)) return;
 
@@ -481,7 +523,7 @@ namespace Froststrap.UI.ViewModels.Settings
                     ? await FetchAutoBatchAsync(placeId, isLoadMore: true, token)
                     : await TakeFromRegionAsync(placeId, SelectedRegion ?? "", SpecificRegionBatchSize, token);
 
-                AppendServers(servers);
+                await AppendServersAsync(servers, placeId);
                 HasMoreServers = ComputeHasMoreServers();
             }
             catch (OperationCanceledException) { }
@@ -529,33 +571,25 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private async Task<List<ServerInstance>> TakeFromRegionAsync(long placeId, string region, int wanted, CancellationToken token)
         {
-            bool hasCookie = !string.IsNullOrEmpty(_resolvedCookie);
-            int effectiveWanted = hasCookie ? wanted : ApiPageSize;
+            if (string.IsNullOrEmpty(_resolvedCookie))
+                return [];
 
             if (!_regionBuffers.TryGetValue(region, out var buffer))
                 _regionBuffers[region] = buffer = new Queue<ServerInstance>();
 
             var taken = new List<ServerInstance>();
 
-            while (!token.IsCancellationRequested && taken.Count < effectiveWanted)
+            while (!token.IsCancellationRequested && taken.Count < wanted)
             {
                 if (buffer.Count > 0)
                 {
-                    if (!hasCookie)
-                    {
-                        while (buffer.Count > 0 && taken.Count < effectiveWanted)
-                            taken.Add(buffer.Dequeue());
-                    }
-                    else
-                    {
-                        int needed = effectiveWanted - taken.Count;
-                        var candidates = new List<ServerInstance>();
-                        while (buffer.Count > 0 && candidates.Count < needed)
-                            candidates.Add(buffer.Dequeue());
+                    int needed = wanted - taken.Count;
+                    var candidates = new List<ServerInstance>();
+                    while (buffer.Count > 0 && candidates.Count < needed)
+                        candidates.Add(buffer.Dequeue());
 
-                        var alive = await FilterAliveAsync(placeId, candidates, token);
-                        taken.AddRange(alive);
-                    }
+                    var alive = await FilterAliveAsync(placeId, candidates, token);
+                    taken.AddRange(alive);
                     continue;
                 }
 
@@ -598,6 +632,10 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             if (servers.Count == 0) return servers;
 
+            string? cookie = _resolvedCookie;
+            if (string.IsNullOrEmpty(cookie))
+                return [];
+
             var aliveFlags = new bool[servers.Count];
             using var semaphore = new SemaphoreSlim(AlivenessConcurrency);
 
@@ -607,7 +645,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 try
                 {
                     aliveFlags[i] = await _fetcher!
-                        .IsServerAliveAsync(placeId, servers[i].Id, _resolvedCookie!, token)
+                        .IsServerAliveAsync(placeId, servers[i].Id, cookie, token)
                         .ConfigureAwait(false);
                 }
                 finally
@@ -621,74 +659,90 @@ namespace Froststrap.UI.ViewModels.Settings
             return [.. servers.Where((_, i) => aliveFlags[i])];
         }
 
-        private void AppendServers(List<ServerInstance> servers)
+        private async Task AppendServersAsync(List<ServerInstance> servers, long placeId)
         {
+            if (servers.Count == 0)
+                return;
+
+            var added = new List<ServerEntry>();
             int number = Servers.Count + 1;
+
             foreach (var s in servers)
             {
-                if (_displayedServerIds.Add(s.Id))
+                if (!_displayedServerIds.Add(s.Id))
+                    continue;
+
+                string jobId = s.Id;
+
+                var entry = new ServerEntry
                 {
-                    var entry = new ServerEntry
-                    {
-                        Number = number++,
-                        ServerId = s.Id,
-                        Region = s.Region,
-                        DataCenterId = s.DataCenterId,
-                        Uptime = s.UptimeDisplay,
-                        JoinCommand = new RelayCommand(() => JoinServer(s.Id))
-                    };
-                    Servers.Add(entry);
-                }
+                    Number = number++,
+                    JobId = jobId,
+                    Region = s.Region,
+                    DataCenterId = s.DataCenterId,
+                    StartedAt = s.FirstSeen,
+                    Playing = s.Playing > 0 ? s.Playing : null,
+                    MaxPlayers = s.MaxPlayers > 0 ? s.MaxPlayers : null,
+                    PlayerTokens = s.PlayerTokens ?? [],
+                    JoinCommand = new RelayCommand(() => JoinServer(jobId)),
+                    ShareCommand = new AsyncRelayCommand<Visual>(v => ShareServerAsync(v, jobId, placeId))
+                };
+
+                Servers.Add(entry);
+                added.Add(entry);
             }
+
+            if (added.Count > 0)
+            {
+                _ = GameServers.EnrichAsync(placeId, added);
+            }
+
+            await Task.CompletedTask;
         }
 
         private void JoinServer(string serverId)
         {
             if (!long.TryParse(PlaceId, out var placeId)) return;
+
             try
             {
-                Process.Start(new ProcessStartInfo
-                {
-                    FileName = $"roblox://experiences/start?placeId={placeId}&gameInstanceId={serverId}",
-                    UseShellExecute = true
-                });
+                GameServers.Join(placeId, serverId);
             }
             catch (Exception ex) { App.Logger.Error(ex); }
+        }
+
+        private static async Task ShareServerAsync(Visual? visual, string jobId, long placeId)
+        {
+            if (String.IsNullOrEmpty(jobId))
+                return;
+
+            try
+            {
+                string link = $"https://www.roblox.com/games/start?placeId={placeId}&gameInstanceId={jobId}";
+
+                var clipboard = TopLevel.GetTopLevel(visual)?.Clipboard;
+                if (clipboard is null)
+                    return;
+
+                await clipboard.SetTextAsync(link);
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error("Failed to copy server link");
+                App.Logger.Error(ex);
+            }
         }
 
         private async Task SearchGamesAsync(CancellationToken token = default)
         {
             if (string.IsNullOrWhiteSpace(SearchQuery) || long.TryParse(SearchQuery, out _)) return;
+            if (!HasValidCookies) return;
 
             IsGameSearchLoading = true;
             try
             {
-                var results = await GameSearching.GetGameSearchResultsAsync(SearchQuery);
-                if (token.IsCancellationRequested || results == null || results.Count == 0) return;
-
-                var thumbRequests = results.Select(r => new ThumbnailRequest
-                {
-                    Type = ThumbnailType.GameIcon,
-                    TargetId = (ulong)r.UniverseId,
-                    Size = ThumbnailSize.Large
-                }).ToList();
-
-                var fetchedUrls = await Thumbnails.GetThumbnailUrlsAsync(thumbRequests, token);
-                if (token.IsCancellationRequested) return;
-
-                for (int i = 0; i < results.Count; i++)
-                {
-                    if (fetchedUrls != null && i < fetchedUrls.Length && !string.IsNullOrEmpty(fetchedUrls[i]))
-                    {
-                        try
-                        {
-                            var response = await App.HttpClient.GetByteArrayAsync(new Uri(fetchedUrls[i]!), token);
-                            using var ms = new MemoryStream(response);
-                            results[i].ThumbnailBitmap = new Bitmap(ms);
-                        }
-                        catch { }
-                    }
-                }
+                var results = await Experiences.SuggestAsync(SearchQuery, token);
+                if (token.IsCancellationRequested || results.Count == 0) return;
 
                 Dispatcher.UIThread.Post(() =>
                 {

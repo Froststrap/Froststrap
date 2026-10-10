@@ -2504,7 +2504,7 @@ Do you want to install the plugin?</value>
     <value>Small Servers</value>
   </data>
   <data name="Menu.RegionSelector.LoginRequired" xml:space="preserve">
-    <value>Log in to 'Account Manager' or turn on 'Froststrap Account Permissions' in the Bootstrapper page to use.</value>
+    <value>Log in to 'Account Manager' or turn on 'Froststrap Account Permissions' to use.</value>
   </data>
   <data name="Menu.RegionSelector.EnterPlaceId" xml:space="preserve">
     <value>Enter a Place ID and click Search to view servers.</value>
@@ -3357,7 +3357,7 @@ All files will be moved, shortcuts updated, and the application will restart.</v
     <value>Enable in-game overlay</value>
   </data>
   <data name="Menu.Integrations.EnableOverlay.Description" xml:space="preserve">
-    <value>Enable an Overlay with QOL features. Press Ctrl+Alt+L in game to open it. Requires borderless or windowed mode.</value>
+    <value>Enable an Overlay with QOL features. Press the overlay shortcut to open it. Requires borderless or windowed mode.</value>
   </data>
   <data name="Menu.Overlay.Tab.Messages" xml:space="preserve">
     <value>Messages</value>
@@ -3557,10 +3557,10 @@ All files will be moved, shortcuts updated, and the application will restart.</v
   <data name="Menu.Overlay.Messages.Write" xml:space="preserve">
     <value>Write a message</value>
   </data>
-  <data name="Enums.Overlay.Order.Ascending" xml:space="preserve">
+  <data name="Enums.Order.Ascending" xml:space="preserve">
     <value>Fewest players</value>
   </data>
-  <data name="Enums.Overlay.Order.Descending" xml:space="preserve">
+  <data name="Enums.Order.Descending" xml:space="preserve">
     <value>Most players</value>
   </data>
   <data name="Menu.Overlay.Tab.Notes" xml:space="preserve">

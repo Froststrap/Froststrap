@@ -1,10 +1,4 @@
-﻿using Froststrap.AppData;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Froststrap.Enums;
 
 namespace Froststrap.RobloxInterfaces
 {
@@ -13,6 +7,7 @@ namespace Froststrap.RobloxInterfaces
         private const int BatchSize = 50;
         private const int FavoritesLimit = 50;
         private const int ContinueLimit = 24;
+        private const int SuggestionIconWidth = 88;
 
         private static readonly string SearchSession = Guid.NewGuid().ToString();
 
@@ -39,6 +34,49 @@ namespace Froststrap.RobloxInterfaces
             await PopulateIconsAsync(tiles);
 
             return tiles;
+        }
+
+        public static async Task<List<OmniSearchContent>> SuggestAsync(string query, CancellationToken token = default)
+        {
+            var results = await GameSearching.GetGameSearchResultsAsync(query);
+
+            if (results is null || results.Count == 0 || token.IsCancellationRequested)
+                return [];
+
+            var requests = results
+                .Select(x => new ThumbnailRequest
+                {
+                    Type = ThumbnailType.GameIcon,
+                    TargetId = (ulong)x.UniverseId,
+                    Size = ThumbnailSize.Large
+                })
+                .ToList();
+
+            var urls = await Thumbnails.GetThumbnailUrlsAsync(requests, token);
+
+            if (token.IsCancellationRequested)
+                return [];
+
+            await Task.WhenAll(results.Select(async (result, index) =>
+            {
+                string? url = urls.ElementAtOrDefault(index);
+
+                if (String.IsNullOrEmpty(url))
+                    return;
+
+                try
+                {
+                    result.ThumbnailUrl = url;
+                    result.ThumbnailBitmap = await ImageLoader.LoadAsync(url, SuggestionIconWidth);
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.Warn("Failed to load a search suggestion icon");
+                    App.Logger.Error(ex);
+                }
+            }));
+
+            return [.. results];
         }
 
         public static async Task<List<GameTile>> ContinueAsync()
@@ -169,7 +207,7 @@ namespace Froststrap.RobloxInterfaces
         {
             App.Logger.Info($"Joining {tile.Name} ({tile.PlaceId})");
 
-            GameServers.Launch($"placeId={tile.PlaceId}");
+            GameServers.Join(tile.PlaceId);
         }
     }
 }

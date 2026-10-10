@@ -2817,18 +2817,18 @@ namespace Froststrap.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Fewest players.
         /// </summary>
-        public static string Enums_Overlay_Order_Ascending {
+        public static string Enums_Order_Ascending {
             get {
-                return ResourceManager.GetString("Enums.Overlay.Order.Ascending", resourceCulture);
+                return ResourceManager.GetString("Enums.Order.Ascending", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Most players.
         /// </summary>
-        public static string Enums_Overlay_Order_Descending {
+        public static string Enums_Order_Descending {
             get {
-                return ResourceManager.GetString("Enums.Overlay.Order.Descending", resourceCulture);
+                return ResourceManager.GetString("Enums.Order.Descending", resourceCulture);
             }
         }
         

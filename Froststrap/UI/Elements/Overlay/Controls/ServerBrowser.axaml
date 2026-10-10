@@ -433,6 +433,17 @@
                                         <StackPanel Grid.Row="2">
                                             <StackPanel
                                                 Margin="0,0,0,6"
+                                                IsVisible="{Binding HasLocation}"
+                                                Orientation="Horizontal">
+                                                <ic:Lucide
+                                                    Width="18"
+                                                    Height="18"
+                                                    Margin="0,0,8,0"
+                                                    Icon="MapPin" />
+                                                <TextBlock Classes="StatText" Text="{Binding LocationText}" />
+                                            </StackPanel>
+                                            <StackPanel
+                                                Margin="0,0,0,6"
                                                 IsVisible="{Binding HasPerformance}"
                                                 Orientation="Horizontal">
                                                 <ic:Lucide
@@ -463,6 +474,17 @@
                                                     Margin="0,0,8,0"
                                                     Icon="Activity" />
                                                 <TextBlock Classes="StatText" Text="{Binding VersionText}" />
+                                            </StackPanel>
+                                            <StackPanel
+                                                Margin="0,0,0,6"
+                                                IsVisible="{Binding HasPing}"
+                                                Orientation="Horizontal">
+                                                <ic:Lucide
+                                                    Width="18"
+                                                    Height="18"
+                                                    Margin="0,0,8,0"
+                                                    Icon="Wifi" />
+                                                <TextBlock Classes="StatText" Text="{Binding PingText}" />
                                             </StackPanel>
                                         </StackPanel>
 
