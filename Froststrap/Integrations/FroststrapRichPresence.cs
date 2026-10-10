@@ -41,14 +41,17 @@ namespace Froststrap.Integrations
 
             _uptimeStopwatch = Stopwatch.StartNew();
 
-            try
+            _ = Task.Run(() =>
             {
-                _rpcClient.Initialize();
-            }
-            catch (Exception ex)
-            {
-                App.Logger.Error($"Failed to init RPC: {ex.Message}");
-            }
+                try
+                {
+                    _rpcClient.Initialize();
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.Error($"Failed to init RPC: {ex.Message}");
+                }
+            });
         }
 
         private void OnReady(object sender, DiscordRPC.Message.ReadyMessage args)

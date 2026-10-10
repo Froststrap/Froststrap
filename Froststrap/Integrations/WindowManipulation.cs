@@ -31,7 +31,6 @@ namespace Froststrap.Integrations
         private bool _disposed;
 
         private string _currentTitle = "Roblox";
-        private string _gameTitle = "";
         private string _configuredTitle = "Roblox";
         private bool _inGame;
 
@@ -161,7 +160,6 @@ namespace Froststrap.Integrations
                 return;
 
             _inGame = true;
-            _gameTitle = title;
             _currentTitle = title;
 
             EnsureTitleHook();
@@ -175,7 +173,6 @@ namespace Froststrap.Integrations
             App.Logger.Info(LOG_IDENT, "Resetting Roblox window back to configured state");
 
             _inGame = false;
-            _gameTitle = "";
 
             if (App.Settings.Prop.AutoChangeIcon)
                 ApplyConfiguredIcon();

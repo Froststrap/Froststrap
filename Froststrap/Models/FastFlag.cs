@@ -9,7 +9,6 @@ namespace Froststrap.Models
 {
     internal class FastFlag : NotifyPropertyChangedViewModel
     {
-        // public bool Enabled { get; set; }
         private LucideIconNames _preset = LucideIconNames.CircleCheck;
         private string _name = string.Empty;
         private string _value = string.Empty;

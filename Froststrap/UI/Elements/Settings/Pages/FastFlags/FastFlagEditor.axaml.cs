@@ -35,7 +35,6 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
         };
 
         private DataGrid? _dataGrid;
-        private TextBox? _searchTextBox;
 
         public new event PropertyChangedEventHandler? PropertyChanged;
 
@@ -62,7 +61,6 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
         {
             base.OnLoaded(e);
             _dataGrid = this.FindControl<DataGrid>("DataGrid");
-            _searchTextBox = this.FindControl<TextBox>("SearchTextBox");
 
             this.Focus();
 

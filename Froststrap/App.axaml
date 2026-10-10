@@ -51,7 +51,6 @@ SPDX-License-Identifier: MPL-2.0
                 <ResourceInclude Source="avares://ColorPicker/Templates/HueSlider.axaml" />
                 <ResourceInclude Source="avares://ColorPicker/Templates/SquareSlider.axaml" />
                 <ResourceInclude Source="avares://ColorPicker/Templates/SquarePicker.axaml" />
-                <ResourceInclude Source="avares://LucideAvalonia/Lucide/ResourcesIcons.axaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <StaticResource x:Key="ToolTipBackground" ResourceKey="ToolTipBackgroundBrush" />

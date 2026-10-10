@@ -32,9 +32,6 @@ sealed class Program
             .OnBeforeUninstallFastCallback(v => UriHandler.UnregisterProtocolHandlers())
             .Run();
 
-        // The FastCallbacks only fire on Windows, so Linux (and dev/portable builds) register on startup instead (Thanks Velopack)
-        UriHandler.EnsureRegistered();
-
         ThreadPool.SetMinThreads(Environment.ProcessorCount * 2, Environment.ProcessorCount * 2);
 
 #if WINDOWS

@@ -21,6 +21,10 @@ namespace Froststrap.UI.Elements.Base
         private static IStyle? _activeColorStyle;
         private static ResourceDictionary? _activeThemeDictionary;
 
+        private static string? _cachedThemeName;
+        private static ResourceDictionary? _cachedThemeDictionary;
+        private static Styles? _cachedThemeStyles;
+
         private static IBrush? _currentBackgroundBrush;
         private static Bitmap? _currentBackgroundBitmap;
         private static string? _currentBitmapPath;
@@ -163,23 +167,34 @@ namespace Froststrap.UI.Elements.Base
             {
                 try
                 {
-                    var themeUri = new Uri($"avares://Froststrap/UI/AppThemes/ResourceDictionarys/{themeName}.axaml");
-                    var loadedTheme = AvaloniaXamlLoader.Load(themeUri);
-                    if (loadedTheme is ResourceDictionary dict)
+                    if (_cachedThemeName != themeName || _cachedThemeDictionary == null || _cachedThemeStyles == null)
                     {
-                        _activeThemeDictionary = dict;
-                        Application.Current.Resources.MergedDictionaries.Add(dict);
+                        var themeUri = new Uri($"avares://Froststrap/UI/AppThemes/ResourceDictionarys/{themeName}.axaml");
+                        var loadedTheme = AvaloniaXamlLoader.Load(themeUri);
+                        if (loadedTheme is ResourceDictionary dict)
+                            _cachedThemeDictionary = dict;
 
-                        if (dict.TryGetValue("ApplicationBackgroundColor", out var themeBg))
+                        var styleUri = new Uri($"avares://Froststrap/UI/AppThemes/Styles/{themeName}.axaml");
+                        var loadedStyle = AvaloniaXamlLoader.Load(styleUri);
+                        if (loadedStyle is Styles loadedStyles)
+                            _cachedThemeStyles = loadedStyles;
+
+                        _cachedThemeName = themeName;
+                    }
+
+                    if (_cachedThemeDictionary != null)
+                    {
+                        _activeThemeDictionary = _cachedThemeDictionary;
+                        Application.Current.Resources.MergedDictionaries.Add(_cachedThemeDictionary);
+
+                        if (_cachedThemeDictionary.TryGetValue("ApplicationBackgroundColor", out var themeBg))
                             backgroundBrush = themeBg as IBrush;
                     }
 
-                    var styleUri = new Uri($"avares://Froststrap/UI/AppThemes/Styles/{themeName}.axaml");
-                    var loadedStyle = AvaloniaXamlLoader.Load(styleUri);
-                    if (loadedStyle is Styles loadedStyles)
+                    if (_cachedThemeStyles != null)
                     {
-                        _activeColorStyle = loadedStyles;
-                        Application.Current.Styles.Insert(1, loadedStyles);
+                        _activeColorStyle = _cachedThemeStyles;
+                        Application.Current.Styles.Insert(1, _cachedThemeStyles);
                     }
                 }
                 catch (Exception ex)
