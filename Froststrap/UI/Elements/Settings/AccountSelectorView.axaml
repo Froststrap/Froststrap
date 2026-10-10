@@ -1,4 +1,4 @@
-<!--
+﻿<!--
     SPDX-FileCopyrightText: 2026 Froststrap
     
     SPDX-License-Identifier: MPL-2.0
@@ -299,7 +299,7 @@
                                                     Classes="Danger"
                                                     Command="{Binding $parent[ItemsControl].((vm:AccountSelectorViewModel)DataContext).DeleteAccountCommand}"
                                                     CommandParameter="{Binding}"
-                                                    Icon="Trash2"
+                                                    Icon="Trash"
                                                     IconSize="14"
                                                     ToolTip.Tip="Remove this account" />
                                             </StackPanel>

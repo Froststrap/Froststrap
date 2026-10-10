@@ -1,4 +1,4 @@
-<!--
+﻿<!--
 SPDX-FileCopyrightText: 2026 Froststrap
 
 SPDX-License-Identifier: MPL-2.0
@@ -171,7 +171,7 @@ SPDX-License-Identifier: MPL-2.0
                                                              Command="{Binding CopyServerIdCommand}"
                                                              CommandParameter="{Binding $self}" />
 
-                                        <controls:IconButton Icon="Trash2"
+                                        <controls:IconButton Icon="Trash"
                                                              Command="{Binding DeleteHistoryCommand}"
                                                              Classes="Danger" />
                                     </StackPanel>

@@ -1,4 +1,4 @@
-<UserControl
+﻿<UserControl
     x:Class="Froststrap.UI.Elements.Overlay.Controls.BadgeTracker"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -62,7 +62,7 @@
                     VerticalAlignment="Center"
                     Command="{Binding ConfirmRemoveCommand}"
                     Content="{x:Static resources:Strings.Menu_Overlay_Badges_Remove}"
-                    Icon="Trash2" />
+                    Icon="Trash" />
             </Grid>
 
             <StackPanel
@@ -221,7 +221,7 @@
                                         VerticalAlignment="Center"
                                         Command="{Binding $parent[ItemsControl].DataContext.RemoveCommand}"
                                         CommandParameter="{Binding}"
-                                        Icon="Trash2"
+                                        Icon="Trash"
                                         IconSize="14"
                                         IsEnabled="{Binding $parent[ItemsControl].DataContext.CanEdit}"
                                         IsVisible="{Binding CanRemove}"
