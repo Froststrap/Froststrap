@@ -29,18 +29,58 @@ SPDX-License-Identifier: MPL-2.0
                 <ToggleSwitch IsChecked="{Binding ConfirmLaunches, Mode=TwoWay}" />
             </controls:OptionControl>
 
-            <controls:OptionControl
+            <controls:CardExpander
                 Header="{x:Static resources:Strings.Menu_Behaviour_EnableVirtualDisplay_Title}"
                 Description="{x:Static resources:Strings.Menu_Behaviour_EnableVirtualDisplay_Description}"
-                IsVisible="{x:Static gv:GlobalViewModel.IsMacOS}">
-                <StackPanel Orientation="Horizontal" Spacing="8">
-                    <ic:Lucide Icon="CircleAlert"
-                               VerticalAlignment="Center"
-                               StrokeBrush="Orange"
-                               ToolTip.Tip="This feature is experimental and may not work as expected."/>
-                    <ToggleSwitch IsChecked="{Binding LaunchWithVirtualDisplay, Mode=TwoWay}" />
+                IsExpanded="{Binding LaunchWithVirtualDisplay, Mode=TwoWay}"
+                Classes="NoUserExpansion"
+                IsVisible="{x:Static gv:GlobalViewModel.IsMacOS}"
+            >
+                <controls:CardExpander.HeaderContent>
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <ic:Lucide Icon="CircleAlert"
+                                   VerticalAlignment="Center"
+                                   StrokeBrush="Orange"
+                                   ToolTip.Tip="This feature is experimental and may not work as expected."/>
+                        <ToggleSwitch IsChecked="{Binding LaunchWithVirtualDisplay, Mode=TwoWay}"/>
+                    </StackPanel>
+                </controls:CardExpander.HeaderContent>
+
+                <StackPanel>
+                    <controls:OptionControl
+                        Header="Name"
+                        Description="Customise the metadata what Virtual Display is recognized as">
+                        <TextBox
+                            Width="200"
+                            PlaceholderText="Froststrap Virtual Display"
+                            Text="{Binding VirtualDisplayName, Mode=TwoWay}" />
+                    </controls:OptionControl>
+                    <controls:OptionControl
+                        Header="Width"
+                        Description="Customise the screen width (scale is implied to 1 if set, and 0 is default)">
+                        <TextBox
+                            Width="200"
+                            PlaceholderText="Froststrap Virtual Display"
+                            Text="{Binding VirtualDisplayWidth, Mode=TwoWay}" />
+                    </controls:OptionControl>
+                    <controls:OptionControl
+                        Header="Height"
+                        Description="Customise the screen height (scale is implied to 1 if set, and 0 is default)">
+                        <TextBox
+                            Width="200"
+                            PlaceholderText="Froststrap Virtual Display"
+                            Text="{Binding VirtualDisplayHeight, Mode=TwoWay}" />
+                    </controls:OptionControl>
+                    <!-- <controls:OptionControl -->
+                        <!-- Header="Display Name" -->
+                        <!-- Description="Customise the metadata what Virtual Display is recognized as"> -->
+                        <!-- <TextBox -->
+                            <!-- Width="200" -->
+                            <!-- PlaceholderText="Froststrap Virtual Display" -->
+                            <!-- Text="{Binding VirtualDisplayName, Mode=TwoWay}" /> -->
+                    <!-- </controls:OptionControl> -->
                 </StackPanel>
-            </controls:OptionControl>
+            </controls:CardExpander>
 
             <controls:OptionControl
                 Header="{x:Static resources:Strings.Menu_Behaviour_CloseCrashHandler_Title}"

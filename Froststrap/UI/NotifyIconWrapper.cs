@@ -38,9 +38,9 @@ namespace Froststrap.UI
                 // make this read from config so we can config
                 // with new values.
                 Froststrap.Backend.VirtualDisplay.Initialize(
-                    "",
-                    0,
-                    0,
+                    App.Settings.Prop.VirtualDisplayName,
+                    App.Settings.Prop.VirtualDisplayWidth,
+                    App.Settings.Prop.VirtualDisplayHeight,
                     [60.0, 120.0, 240.0]
                 );
                 Froststrap.Backend.VirtualDisplay.Start();
