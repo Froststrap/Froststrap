@@ -17,7 +17,6 @@ namespace Froststrap.UI.Elements.Dialogs
 
         private static readonly JsonSerializerOptions _jsonOptions = new() { WriteIndented = true };
         private readonly ObservableCollection<string> _placeIds = [];
-        private string? _currentProfile;
         private bool _isUpdatingPlaceIds;
         private bool _isRemoving;
 
@@ -110,7 +109,6 @@ namespace Froststrap.UI.Elements.Dialogs
             try
             {
                 string? selectedProfile = PlaceProfile.SelectedItem as string;
-                _currentProfile = selectedProfile;
 
                 bool hasProfiles = PlaceProfile.Items.Count > 0;
                 bool hasProfileSelected = selectedProfile != null;
