@@ -29,6 +29,8 @@ namespace Froststrap.UI.Elements.Overlay
 
         private const double CascadeStep = 44;
 
+        private static readonly PixelPoint Offscreen = new(-32000, -32000);
+
         private readonly GameOverlayViewModel _viewModel;
         private readonly IOverlayHost? _overlay;
 
@@ -39,6 +41,10 @@ namespace Froststrap.UI.Elements.Overlay
         private int _placed;
         private bool _presenting;
         private bool _panelsWired;
+        private bool _preloading = true;
+        private bool _warmScheduled;
+
+        private OverlayBounds? _lastBounds;
 
         private string? _savedLayout;
         private string _regionSignature = String.Empty;
@@ -71,6 +77,9 @@ namespace Froststrap.UI.Elements.Overlay
 
             Deactivated += OnDeactivated;
 
+            if (_overlay is not null)
+                _overlay.BoundsChanged += OnOverlayBoundsChanged;
+
             ChatWindow.Attach(overlay);
             BadgeTracker.Attach(overlay?.ActivityWatcher);
             BadgeTracker.BadgeEarned += OnBadgeEarned;
@@ -82,6 +91,27 @@ namespace Froststrap.UI.Elements.Overlay
         private void OnBadgeEarned(object? sender, Badge badge)
         {
             App.Logger.Info($"Badge earned: {badge.Name} ({badge.RarityText})");
+        }
+
+        private void OnOverlayBoundsChanged(object? sender, OverlayBounds bounds)
+        {
+            _lastBounds = bounds;
+
+            if (_preloading)
+            {
+                Position = Offscreen;
+
+                if (!_warmScheduled)
+                {
+                    _warmScheduled = true;
+                    Dispatcher.UIThread.Post(WarmUp, DispatcherPriority.Background);
+                }
+
+                return;
+            }
+
+            double scaling = RenderScaling > 0 ? RenderScaling : 1;
+            Position = new PixelPoint((int)bounds.Rect.Left, (int)bounds.Rect.Top);
         }
 
         private OverlayPanel PanelFor(OverlayPanelKind kind) => kind switch
@@ -269,15 +299,25 @@ namespace Froststrap.UI.Elements.Overlay
                 return;
 
             Opacity = 0;
+            Position = Offscreen;
+            Width = 1280;
+            Height = 720;
+
             Show();
-            Hide();
-            Opacity = 1;
+
+            Position = Offscreen;
 
             InitialiseWin32();
         }
 
         public void Toggle()
         {
+            if (_preloading)
+            {
+                App.Logger.Info("Toggle ignored - still preloading");
+                return;
+            }
+
             if (_pinnedMode)
             {
                 App.Logger.Info("Toggle while pinned -> presenting full overlay");
@@ -354,6 +394,9 @@ namespace Froststrap.UI.Elements.Overlay
             if (_presenting)
                 return;
 
+            if (_preloading)
+                return;
+
             if (_pinnedMode)
             {
                 RefreshPinned();
@@ -384,6 +427,22 @@ namespace Froststrap.UI.Elements.Overlay
         {
             _presenting = true;
 
+            if (_preloading)
+            {
+                _preloading = false;
+
+                if (_lastBounds is OverlayBounds bounds)
+                {
+                    double scaling = RenderScaling > 0 ? RenderScaling : 1;
+                    Position = new PixelPoint((int)bounds.Rect.Left, (int)bounds.Rect.Top);
+                }
+            }
+
+            bool wasHidden = !IsVisible || Opacity < 1;
+
+            if (wasHidden)
+                Opacity = 0;
+
             if (_pinnedMode)
             {
                 ExitPinnedMode();
@@ -392,7 +451,7 @@ namespace Froststrap.UI.Elements.Overlay
             if (_overlay?.IsGameForeground() == false)
                 _overlay.FocusGame();
 
-            if (!IsVisible)
+            if (wasHidden)
                 Show();
 
             if (WindowState == WindowState.Minimized)
@@ -400,11 +459,29 @@ namespace Froststrap.UI.Elements.Overlay
 
             Reanchor();
 
-            Activate();
+            if (wasHidden)
+            {
+                Dispatcher.UIThread.Post(() =>
+                {
+                    Dispatcher.UIThread.Post(() =>
+                    {
+                        Opacity = 1;
+                        Activate();
 
-            Dispatcher.UIThread.Post(() => _ = _viewModel.SyncAccountAsync(), DispatcherPriority.Background);
+                        Dispatcher.UIThread.Post(() => _ = _viewModel.SyncAccountAsync(), DispatcherPriority.Background);
 
-            Dispatcher.UIThread.Post(() => _presenting = false, DispatcherPriority.ApplicationIdle);
+                        Dispatcher.UIThread.Post(() => _presenting = false, DispatcherPriority.ApplicationIdle);
+                    }, DispatcherPriority.Background);
+                }, DispatcherPriority.Loaded);
+            }
+            else
+            {
+                Activate();
+
+                Dispatcher.UIThread.Post(() => _ = _viewModel.SyncAccountAsync(), DispatcherPriority.Background);
+
+                Dispatcher.UIThread.Post(() => _presenting = false, DispatcherPriority.ApplicationIdle);
+            }
         }
 
         public void Reanchor()
@@ -418,6 +495,9 @@ namespace Froststrap.UI.Elements.Overlay
         public void RefreshPinned()
         {
             if (_presenting)
+                return;
+
+            if (_preloading)
                 return;
 
             bool gameOrOverlayInFront = _overlay?.IsGameForeground() == true || IsOwnProcessForeground();
@@ -459,6 +539,27 @@ namespace Froststrap.UI.Elements.Overlay
             _savedLayout = JsonSerializer.Serialize(BuildLayout());
 
             await _viewModel.OnLoaded();
+        }
+
+        private async void WarmUp()
+        {
+            await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Loaded);
+            await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Render);
+            await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Loaded);
+
+            if (!_preloading)
+                return;
+
+            _preloading = false;
+
+            if (_lastBounds is OverlayBounds bounds)
+            {
+                double scaling = RenderScaling > 0 ? RenderScaling : 1;
+                Position = new PixelPoint((int)bounds.Rect.Left, (int)bounds.Rect.Top);
+            }
+
+            Hide();
+            Opacity = 1;
         }
 
         private void InitialiseWin32()
@@ -776,6 +877,9 @@ namespace Froststrap.UI.Elements.Overlay
             UnwirePanelEvents();
 
             StopRegionTimer();
+
+            if (_overlay is not null)
+                _overlay.BoundsChanged -= OnOverlayBoundsChanged;
 
             OverlayHotkey.Changed -= OnHotkeySettingChanged;
             OverlayHotkey.SuspendedChanged -= OnHotkeySuspended;

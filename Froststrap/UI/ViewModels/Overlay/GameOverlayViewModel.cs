@@ -1,8 +1,4 @@
-﻿// SPDX-FileCopyrightText: 2026 Froststrap
-//
-// SPDX-License-Identifier: MPL-2.0
-
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Input.Platform;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
@@ -556,8 +552,6 @@ namespace Froststrap.UI.ViewModels.Overlay
             ScrimCornerRadius = new CornerRadius(0, 0, radius, radius);
 
             Rect rect = bounds.Rect;
-
-            _window.Position = new PixelPoint((int)rect.Left, (int)rect.Top);
 
             double scaling = _window.RenderScaling;
             if (scaling <= 0)
