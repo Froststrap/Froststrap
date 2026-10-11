@@ -55,23 +55,35 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                 if (_selectedTab == value)
                     return;
 
-#pragma warning disable IDE0031 // Cannot null-propagate an assignment
-                if (_selectedTab is not null)
-                    _selectedTab.IsSelected = false;
-#pragma warning restore IDE0031
+                _selectedTab?.IsSelected = false;
 
                 _selectedTab = value;
 
                 if (value is not null)
                 {
                     value.IsSelected = true;
-                    value.Friend.Unread = 0;
+
+                    if (value.Friend.Unread > 0)
+                    {
+                        value.Friend.Unread = 0;
+
+                        if (value.Loaded)
+                            MarkAsRead(value);
+                    }
                 }
 
                 OnPropertyChanged(nameof(SelectedTab));
                 OnPropertyChanged(nameof(HasTab));
                 OnPropertyChanged(nameof(ShowPlaceholder));
             }
+        }
+
+        private void MarkAsRead(ChatTab tab)
+        {
+            if (_party is null || String.IsNullOrEmpty(tab.Friend.ConversationId))
+                return;
+
+            _ = RobloxParty.MarkAsRead(tab.Friend.ConversationId);
         }
 
         public bool HasTab => _selectedTab is not null;
@@ -500,6 +512,9 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                 }
 
                 tab.Loaded = true;
+
+                if (tab == _selectedTab && added)
+                    MarkAsRead(tab);
 
                 if (added)
                     MessagesAdded?.Invoke(this, EventArgs.Empty);

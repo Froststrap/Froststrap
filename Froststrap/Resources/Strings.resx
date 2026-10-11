@@ -3596,9 +3596,6 @@ All files will be moved, shortcuts updated, and the application will restart.</v
   <data name="Menu.Overlay.Servers.EmptyRegion" xml:space="preserve">
     <value>No servers running in {0} right now.</value>
   </data>
-  <data name="Bootstrapper.Dialog.UnauthorizedChannel" xml:space="preserve">
-    <value>The channel you're currently on ({0}) has now been restricted from public use. You will now be on the default channel ({1}).</value>
-  </data>
   <data name="Bootstrapper.Bootstrapper.Dialog.PromptChannelChange" xml:space="preserve">
     <value>Roblox is attempting to set your channel to {0}, however your current preferred channel is {1}.
 

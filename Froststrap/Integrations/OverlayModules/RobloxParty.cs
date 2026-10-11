@@ -158,5 +158,29 @@ namespace Froststrap.Integrations.OverlayModules
             return await App.Cookies.AuthPost(
                 UrlBuilder.BuildApisUrl($"{PlatformChatService}/v1/{endpoint}"), content);
         }
+
+        public static async Task MarkAsRead(params string[] conversationIds)
+        {
+            var ids = conversationIds
+                .Where(x => !String.IsNullOrEmpty(x))
+                .Distinct(StringComparer.Ordinal)
+                .ToArray();
+
+            if (ids.Length == 0)
+                return;
+
+            try
+            {
+                using var response = await PostAsync("mark-conversations",
+                    new { conversation_ids = ids });
+
+                response.EnsureSuccessStatusCode();
+            }
+            catch (HttpRequestException ex)
+            {
+                App.Logger.Error($"Failed to mark {ids.Length} conversation(s) as read");
+                App.Logger.Error(ex);
+            }
+        }
     }
 }
