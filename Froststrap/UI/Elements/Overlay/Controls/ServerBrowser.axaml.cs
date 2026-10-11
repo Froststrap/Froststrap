@@ -13,7 +13,8 @@ namespace Froststrap.UI.Elements.Overlay.Controls
         {
             InitializeComponent();
 
-            PublicView.PropertyChanged += OnPublicViewPropertyChanged;
+            PublicView.GetObservable(IsVisibleProperty)
+                .Subscribe(new AnonymousObserver<bool>(v => _viewModel?.SetVisible(v)));
         }
 
         public void Attach(ActivityWatcher? activityWatcher)
@@ -25,13 +26,7 @@ namespace Froststrap.UI.Elements.Overlay.Controls
 
             PrivateView.Attach(activityWatcher);
 
-            _viewModel.SetVisible(PublicView.IsEffectivelyVisible);
-        }
-
-        private void OnPublicViewPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
-        {
-            if (e.Property.Name == nameof(PublicView.IsEffectivelyVisible))
-                _viewModel?.SetVisible(PublicView.IsEffectivelyVisible);
+            _viewModel.SetVisible(PublicView.IsVisible);
         }
     }
 }

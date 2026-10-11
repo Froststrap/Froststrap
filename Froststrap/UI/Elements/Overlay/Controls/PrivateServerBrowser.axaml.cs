@@ -14,7 +14,8 @@ namespace Froststrap.UI.Elements.Overlay.Controls
         {
             InitializeComponent();
 
-            PropertyChanged += OnSelfPropertyChanged;
+            this.GetObservable(IsVisibleProperty)
+                .Subscribe(new AnonymousObserver<bool>(v => _viewModel?.SetVisible(v)));
         }
 
         public void Attach(ActivityWatcher? activityWatcher)
@@ -24,13 +25,7 @@ namespace Froststrap.UI.Elements.Overlay.Controls
             _viewModel = new PrivateServersViewModel(activityWatcher);
             DataContext = _viewModel;
 
-            _viewModel.SetVisible(IsEffectivelyVisible);
-        }
-
-        private void OnSelfPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
-        {
-            if (e.Property.Name == nameof(IsEffectivelyVisible))
-                _viewModel?.SetVisible(IsEffectivelyVisible);
+            _viewModel.SetVisible(IsVisible);
         }
     }
 
