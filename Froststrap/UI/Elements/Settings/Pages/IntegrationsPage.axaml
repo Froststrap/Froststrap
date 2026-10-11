@@ -1,6 +1,6 @@
 ﻿<!--
     SPDX-FileCopyrightText: 2026 Froststrap
-    
+
     SPDX-License-Identifier: MPL-2.0
 -->
 
@@ -154,7 +154,7 @@
                 Description="{x:Static resources:Strings.Menu_Integrations_EnableOverlay_Description}"
                 Header="{x:Static resources:Strings.Menu_Integrations_EnableOverlay_Title}"
                 IsExpanded="{Binding EnableOverlay, Mode=OneWay}"
-                IsVisible="{x:Static gv:GlobalViewModel.IsWindows}">
+                IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}">
                 <controls:CardExpander.HeaderContent>
                     <ToggleSwitch IsChecked="{Binding EnableOverlay, Mode=TwoWay}" />
                 </controls:CardExpander.HeaderContent>
