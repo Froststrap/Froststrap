@@ -1,0 +1,12 @@
+[package]
+name = "overlay_layer"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+name = "froststrap_overlay_layer"
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+smithay-client-toolkit = "0.19"
+tinyjson = "2.5.1"
