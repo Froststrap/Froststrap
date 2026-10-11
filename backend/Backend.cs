@@ -109,3 +109,52 @@ public class MobileAppReg
         InternalMobileAppReg.Init();
     }
 }
+
+internal partial class InternalOverlay
+{
+    [LibraryImport("froststrap_overlay_layer", EntryPoint = "overlay_init")]
+    public static partial int Init();
+
+    [LibraryImport("froststrap_overlay_layer", EntryPoint = "overlay_width")]
+    public static partial int Width();
+
+    [LibraryImport("froststrap_overlay_layer", EntryPoint = "overlay_height")]
+    public static partial int Height();
+
+    [LibraryImport("froststrap_overlay_layer", EntryPoint = "overlay_submit")]
+    public static partial int Submit(IntPtr pixels, int width, int height, int stride);
+
+    [LibraryImport("froststrap_overlay_layer", EntryPoint = "overlay_set_visible")]
+    public static partial void SetVisible(int visible);
+
+    [LibraryImport("froststrap_overlay_layer", EntryPoint = "overlay_shutdown")]
+    public static partial void Shutdown();
+}
+
+public class LinuxOverlay
+{
+    public static bool Init()
+    {
+        return InternalOverlay.Init() == 0;
+    }
+
+    public static (int Width, int Height) Size()
+    {
+        return (InternalOverlay.Width(), InternalOverlay.Height());
+    }
+
+    public static bool Submit(IntPtr pixels, int width, int height, int stride)
+    {
+        return InternalOverlay.Submit(pixels, width, height, stride) == 0;
+    }
+
+    public static void SetVisible(bool visible)
+    {
+        InternalOverlay.SetVisible(visible ? 1 : 0);
+    }
+
+    public static void Shutdown()
+    {
+        InternalOverlay.Shutdown();
+    }
+}

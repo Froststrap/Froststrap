@@ -30,6 +30,7 @@
 
     <PackageFlags>-p notify</PackageFlags>
     <PackageFlags Condition="$([MSBuild]::IsOSPlatform('OSX'))">-p notify -p mobileappreg -p virtualdisplay</PackageFlags>
+    <PackageFlags Condition="$([MSBuild]::IsOSPlatform('Linux'))">-p notify -p overlay_layer</PackageFlags> <!-- TODO: add macOS support for overlay -->
   </PropertyGroup>
 
   <ItemGroup>
@@ -38,6 +39,8 @@
                Condition="$([MSBuild]::IsOSPlatform('OSX'))" />
     <NativeLib Include="$(RustTargetDir)/libmobileappreg.dylib"
                Condition="$([MSBuild]::IsOSPlatform('OSX'))" />
+    <NativeLib Include="$(RustTargetDir)/libfroststrap_overlay_layer.so"
+               Condition="$([MSBuild]::IsOSPlatform('Linux'))" />
   </ItemGroup>
 
   <Target Name="BuildBackend" BeforeTargets="BeforeBuild">
