@@ -183,21 +183,37 @@ namespace Froststrap.Models.Overlay
             DisplayName.Contains(search, StringComparison.OrdinalIgnoreCase)
             || Username.Contains(search, StringComparison.OrdinalIgnoreCase);
 
-        public void Update(UserPresence? presence)
+        public bool Update(UserPresence? presence)
         {
             UserPresenceType status = presence?.UserPresenceType is UserPresenceType.InGame or UserPresenceType.InStudio or UserPresenceType.Online
                 ? presence.UserPresenceType
                 : UserPresenceType.Offline;
 
-            Status = status;
+            string? gameName = status == UserPresenceType.InGame && !String.IsNullOrWhiteSpace(presence?.LastLocation)
+                ? presence!.LastLocation
+                : null;
 
-            GameName = status == UserPresenceType.InGame && !String.IsNullOrWhiteSpace(presence?.LastLocation) ? presence!.LastLocation : null;
-            PlaceId = presence?.PlaceId ?? 0;
-            RootPlaceId = presence?.RootPlaceId ?? 0;
-            ServerId = String.IsNullOrEmpty(presence?.GameId) ? null : presence!.GameId;
+            long placeId = presence?.PlaceId ?? 0;
+            long rootPlaceId = presence?.RootPlaceId ?? 0;
+            string? serverId = String.IsNullOrEmpty(presence?.GameId) ? null : presence!.GameId;
+
+            if (Status == status
+                && GameName == gameName
+                && PlaceId == placeId
+                && RootPlaceId == rootPlaceId
+                && ServerId == serverId)
+                return false;
+
+            Status = status;
+            GameName = gameName;
+            PlaceId = placeId;
+            RootPlaceId = rootPlaceId;
+            ServerId = serverId;
 
             foreach (string name in PresenceProperties)
                 OnPropertyChanged(name);
+
+            return true;
         }
     }
 }

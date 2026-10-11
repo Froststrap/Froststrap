@@ -94,7 +94,6 @@ namespace Froststrap.RobloxInterfaces
                     Playing = x.Playing,
                     MaxPlayers = x.MaxPlayers,
                     Fps = x.Fps,
-                    Ping = x.Ping,
                     PlayerTokens = x.PlayerTokens,
                     IsCurrent = x.Id.Equals(currentJobId, StringComparison.OrdinalIgnoreCase)
                 }));
@@ -114,7 +113,6 @@ namespace Froststrap.RobloxInterfaces
                         Playing = stat?.Playing,
                         MaxPlayers = stat?.MaxPlayers,
                         Fps = stat?.Fps,
-                        Ping = stat?.Ping,
                         PlayerTokens = stat?.PlayerTokens ?? [],
                         City = server.City,
                         Region = server.Region,
@@ -420,7 +418,6 @@ namespace Froststrap.RobloxInterfaces
                     server.Playing = stat.Playing;
                     server.MaxPlayers = stat.MaxPlayers;
                     server.Fps = stat.Fps;
-                    server.Ping = stat.Ping;
                     server.PlayerTokens = stat.PlayerTokens ?? [];
                     matched++;
                 }

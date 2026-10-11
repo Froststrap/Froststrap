@@ -86,8 +86,7 @@ namespace Froststrap.UI.Elements.Controls
                 ctrl?.IsVisible = !OperatingSystem.IsMacOS();
             }
 
-            if (_window is not null)
-                _window.PropertyChanged += OnWindowPropertyChanged;
+            _window?.PropertyChanged += OnWindowPropertyChanged;
 
             _minBtn = e.NameScope.Find<IconButton>("PART_MinimizeButton");
             _maxBtn = e.NameScope.Find<IconButton>("PART_MaximizeButton");
@@ -174,8 +173,7 @@ namespace Froststrap.UI.Elements.Controls
         {
             base.OnDetachedFromVisualTree(e);
 
-            if (_window is not null)
-                _window.PropertyChanged -= OnWindowPropertyChanged;
+            _window?.PropertyChanged -= OnWindowPropertyChanged;
 
             _minBtn?.Click -= OnMinimizeClick;
             _maxBtn?.Click -= OnMaximizeClick;

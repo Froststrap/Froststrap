@@ -2,11 +2,13 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+using System.Collections.Concurrent;
+
 namespace Froststrap.Models.Entities
 {
     internal class UserDetails
     {
-        private static List<UserDetails> Cache { get; set; } = [];
+        private static ConcurrentDictionary<long, UserDetails> Cache { get; } = new();
 
         public GetUserResponse Data { get; set; } = null!;
 
@@ -14,12 +16,11 @@ namespace Froststrap.Models.Entities
 
         public static async Task<UserDetails> Fetch(long id)
         {
+            if (Cache.TryGetValue(id, out UserDetails? cached))
+                return cached;
+
             Uri userUrl = UrlBuilder.BuildApiUrl("users", "v1/users/" + id);
             Uri thumbnailsUrl = UrlBuilder.BuildApiUrl("thumbnails", $"v1/users/avatar-headshot?userIds={id}&size=180x180&format=Png&isCircular=false");
-
-            var cached = Cache.FirstOrDefault(x => x.Data?.Id == id);
-            if (cached != null)
-                return cached;
 
             var userResponse = await Http.GetJson<GetUserResponse>(userUrl);
             _ = userResponse ?? throw new InvalidHTTPResponseException("Roblox API for User Details returned invalid data");
@@ -34,7 +35,7 @@ namespace Froststrap.Models.Entities
                 Thumbnail = thumbnailResponse.Data.First()
             };
 
-            Cache.Add(details);
+            Cache.TryAdd(id, details);
             return details;
         }
 
@@ -45,9 +46,7 @@ namespace Froststrap.Models.Entities
 
             foreach (long userId in userIds.Distinct())
             {
-                var cached = Cache.FirstOrDefault(x => x.Data?.Id == userId);
-
-                if (cached is not null)
+                if (Cache.TryGetValue(userId, out UserDetails? cached))
                     users[userId] = cached;
                 else
                     missing.Add(userId);
@@ -82,7 +81,7 @@ namespace Froststrap.Models.Entities
                 var details = new UserDetails { Data = user, Thumbnail = thumbnail };
 
                 users[user.Id] = details;
-                Cache.Add(details);
+                Cache.TryAdd(user.Id, details);
             }
 
             return users;

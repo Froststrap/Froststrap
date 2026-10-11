@@ -27,6 +27,8 @@ namespace Froststrap.UI.ViewModels.Overlay
 
         private readonly DispatcherTimer _sessionTimer;
 
+        private DateTime _lastSync = DateTime.MinValue;
+
         #region Account
 
         private string _profileIcon = String.Empty;
@@ -367,10 +369,15 @@ namespace Froststrap.UI.ViewModels.Overlay
             await LoadProfileAsync();
         }
 
-        private void OnAccountChanged() => Dispatcher.UIThread.Post(() => _ = SyncAccountAsync());
+        private void OnAccountChanged() => Dispatcher.UIThread.Post(() => _ = SyncAccountAsync(force: true));
 
-        public async Task SyncAccountAsync()
+        public async Task SyncAccountAsync(bool force = false)
         {
+            if (!force && DateTime.UtcNow - _lastSync < TimeSpan.FromSeconds(60))
+                return;
+
+            _lastSync = DateTime.UtcNow;
+
             await App.Cookies.RefreshAsync();
             await LoadProfileAsync();
         }

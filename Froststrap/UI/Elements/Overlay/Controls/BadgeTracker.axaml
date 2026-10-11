@@ -109,129 +109,133 @@
                 TextAlignment="Center"
                 TextWrapping="Wrap" />
 
-            <ScrollViewer
+            <ItemsControl
                 Margin="0,4,-8,0"
-                Padding="0,0,8,0"
-                VerticalScrollBarVisibility="Auto">
-                <ItemsControl ItemsSource="{Binding Badges}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <VirtualizingStackPanel />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
+                ItemsSource="{Binding Badges}">
+                <ItemsControl.Template>
+                    <ControlTemplate>
+                        <ScrollViewer Padding="0,0,8,0" VerticalScrollBarVisibility="Auto">
+                            <ItemsPresenter ItemsPanel="{TemplateBinding ItemsPanel}" />
+                        </ScrollViewer>
+                    </ControlTemplate>
+                </ItemsControl.Template>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
 
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Border
-                                Margin="0,0,0,6"
-                                Padding="10"
-                                Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
-                                BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
-                                BorderThickness="1"
-                                CornerRadius="8">
-                                <Grid ColumnDefinitions="Auto,*,Auto,Auto">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border
+                            Margin="0,0,0,6"
+                            Padding="10"
+                            Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                            BorderThickness="1"
+                            CornerRadius="8">
+                            <Grid ColumnDefinitions="Auto,*,Auto,Auto">
 
-                                    <Border
-                                        Grid.Column="0"
+                                <Border
+                                    Grid.Column="0"
+                                    Width="56"
+                                    Height="56"
+                                    VerticalAlignment="Top"
+                                    Background="{DynamicResource ControlFillColorDefaultBrush}"
+                                    ClipToBounds="True"
+                                    CornerRadius="6">
+                                    <Image
                                         Width="56"
                                         Height="56"
-                                        VerticalAlignment="Top"
-                                        Background="{DynamicResource ControlFillColorDefaultBrush}"
-                                        ClipToBounds="True"
-                                        CornerRadius="6">
-                                        <Image
-                                            Width="56"
-                                            Height="56"
-                                            RenderOptions.BitmapInterpolationMode="LowQuality"
-                                            Source="{Binding IconBitmap}"
-                                            Stretch="UniformToFill" />
-                                    </Border>
+                                        RenderOptions.BitmapInterpolationMode="LowQuality"
+                                        Source="{Binding IconBitmap}"
+                                        Stretch="UniformToFill" />
+                                </Border>
 
-                                    <StackPanel
-                                        Grid.Column="1"
-                                        Margin="12,0,12,0"
-                                        VerticalAlignment="Center">
+                                <StackPanel
+                                    Grid.Column="1"
+                                    Margin="12,0,12,0"
+                                    VerticalAlignment="Center">
+                                    <TextBlock
+                                        FontSize="14"
+                                        FontWeight="SemiBold"
+                                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                        Text="{Binding Name}"
+                                        TextTrimming="CharacterEllipsis" />
+
+                                    <TextBlock
+                                        MaxHeight="34"
+                                        Margin="0,4,0,0"
+                                        FontSize="12"
+                                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                        Text="{Binding Description}"
+                                        TextTrimming="CharacterEllipsis"
+                                        TextWrapping="Wrap" />
+
+                                    <StackPanel Margin="0,8,0,0" Orientation="Horizontal">
+                                        <TextBlock FontSize="11" Foreground="{DynamicResource TextFillColorTertiaryBrush}">
+                                            <Run Text="{x:Static resources:Strings.Menu_Overlay_Badges_Rarity}" />
+                                            <Run Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="{Binding RarityText, Mode=OneWay}" />
+                                        </TextBlock>
                                         <TextBlock
-                                            FontSize="14"
-                                            FontWeight="SemiBold"
-                                            Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                                            Text="{Binding Name}"
-                                            TextTrimming="CharacterEllipsis" />
-
+                                            Margin="16,0,0,0"
+                                            FontSize="11"
+                                            Foreground="{DynamicResource TextFillColorTertiaryBrush}">
+                                            <Run Text="{x:Static resources:Strings.Menu_Overlay_Badges_Today}" />
+                                            <Run Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="{Binding PastDayAwardedText, Mode=OneWay}" />
+                                        </TextBlock>
                                         <TextBlock
-                                            MaxHeight="34"
-                                            Margin="0,4,0,0"
-                                            FontSize="12"
-                                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                            Text="{Binding Description}"
-                                            TextTrimming="CharacterEllipsis"
-                                            TextWrapping="Wrap" />
-
-                                        <StackPanel Margin="0,8,0,0" Orientation="Horizontal">
-                                            <TextBlock FontSize="11" Foreground="{DynamicResource TextFillColorTertiaryBrush}">
-                                                <Run Text="{x:Static resources:Strings.Menu_Overlay_Badges_Rarity}" />
-                                                <Run Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="{Binding RarityText, Mode=OneWay}" />
-                                            </TextBlock>
-                                            <TextBlock
-                                                Margin="16,0,0,0"
-                                                FontSize="11"
-                                                Foreground="{DynamicResource TextFillColorTertiaryBrush}">
-                                                <Run Text="{x:Static resources:Strings.Menu_Overlay_Badges_Today}" />
-                                                <Run Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="{Binding PastDayAwardedText, Mode=OneWay}" />
-                                            </TextBlock>
-                                            <TextBlock
-                                                Margin="16,0,0,0"
-                                                FontSize="11"
-                                                Foreground="{DynamicResource TextFillColorTertiaryBrush}">
-                                                <Run Text="{x:Static resources:Strings.Menu_Overlay_Badges_Total}" />
-                                                <Run Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="{Binding AwardedCountText, Mode=OneWay}" />
-                                            </TextBlock>
-                                        </StackPanel>
+                                            Margin="16,0,0,0"
+                                            FontSize="11"
+                                            Foreground="{DynamicResource TextFillColorTertiaryBrush}">
+                                            <Run Text="{x:Static resources:Strings.Menu_Overlay_Badges_Total}" />
+                                            <Run Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="{Binding AwardedCountText, Mode=OneWay}" />
+                                        </TextBlock>
                                     </StackPanel>
+                                </StackPanel>
 
-                                    <Border
-                                        Grid.Column="2"
-                                        Padding="8,4"
-                                        VerticalAlignment="Center"
-                                        Background="{DynamicResource ControlFillColorDefaultBrush}"
-                                        CornerRadius="4"
-                                        IsVisible="{Binding AwardedKnown}">
-                                        <StackPanel Orientation="Horizontal">
-                                            <ic:Lucide
-                                                Width="12"
-                                                Height="12"
-                                                Margin="0,0,6,0"
-                                                Icon="Trophy"
-                                                StrokeBrush="{Binding AwardedIconBrush}" />
-                                            <TextBlock
-                                                VerticalAlignment="Center"
-                                                FontSize="11"
-                                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                                Text="{Binding StatusText}" />
-                                        </StackPanel>
-                                    </Border>
+                                <Border
+                                    Grid.Column="2"
+                                    Padding="8,4"
+                                    VerticalAlignment="Center"
+                                    Background="{DynamicResource ControlFillColorDefaultBrush}"
+                                    CornerRadius="4"
+                                    IsVisible="{Binding AwardedKnown}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <ic:Lucide
+                                            Width="12"
+                                            Height="12"
+                                            Margin="0,0,6,0"
+                                            Icon="Trophy"
+                                            StrokeBrush="{Binding AwardedIconBrush}" />
+                                        <TextBlock
+                                            VerticalAlignment="Center"
+                                            FontSize="11"
+                                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                            Text="{Binding StatusText}" />
+                                    </StackPanel>
+                                </Border>
 
-                                    <controls:IconButton
-                                        Grid.Column="3"
-                                        Classes="Danger"
-                                        Width="32"
-                                        Height="32"
-                                        Margin="8,0,0,0"
-                                        Padding="0"
-                                        VerticalAlignment="Center"
-                                        Command="{Binding $parent[ItemsControl].DataContext.RemoveCommand}"
-                                        CommandParameter="{Binding}"
-                                        Icon="Trash"
-                                        IconSize="14"
-                                        IsEnabled="{Binding $parent[ItemsControl].DataContext.CanEdit}"
-                                        IsVisible="{Binding CanRemove}"
-                                        ToolTip.Tip="{x:Static resources:Strings.Menu_Overlay_Badges_RemoveTooltip}" />
-                                </Grid>
-                            </Border>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </ScrollViewer>
+                                <controls:IconButton
+                                    Grid.Column="3"
+                                    Classes="Danger"
+                                    Width="32"
+                                    Height="32"
+                                    Margin="8,0,0,0"
+                                    Padding="0"
+                                    VerticalAlignment="Center"
+                                    Command="{Binding $parent[ItemsControl].DataContext.RemoveCommand}"
+                                    CommandParameter="{Binding}"
+                                    Icon="Trash"
+                                    IconSize="14"
+                                    IsEnabled="{Binding $parent[ItemsControl].DataContext.CanEdit}"
+                                    IsVisible="{Binding CanRemove}"
+                                    ToolTip.Tip="{x:Static resources:Strings.Menu_Overlay_Badges_RemoveTooltip}" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </Grid>
     </Grid>
 </UserControl>

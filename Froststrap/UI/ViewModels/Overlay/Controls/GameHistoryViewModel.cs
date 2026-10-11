@@ -2,7 +2,6 @@ using Avalonia.Threading;
 using Froststrap.Enums;
 using Froststrap.Integrations;
 using Froststrap.Utility;
-using System.Collections.ObjectModel;
 
 namespace Froststrap.UI.ViewModels.Overlay.Controls
 {
@@ -12,7 +11,9 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
         private readonly ActivityWatcher? _activityWatcher;
 
-        public ObservableCollection<ActivityData> GameHistory { get; } = [];
+        private bool _loaded;
+
+        public BulkObservableCollection<ActivityData> GameHistory { get; } = new();
 
         private GenericTriState _loadState = GenericTriState.Unknown;
         public GenericTriState LoadState
@@ -40,8 +41,12 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
             _activityWatcher.OnGameLeave += (_, _) => _ = LoadAsync();
             _activityWatcher.OnHistoryUpdated += (_, _) => _ = LoadAsync();
+        }
 
-            _ = LoadAsync();
+        public void SetVisible(bool visible)
+        {
+            if (visible && !_loaded)
+                _ = LoadAsync();
         }
 
         private async Task LoadAsync()
@@ -49,11 +54,14 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             if (_activityWatcher is null)
                 return;
 
-            LoadState = GenericTriState.Unknown;
+            if (!_loaded)
+                LoadState = GenericTriState.Unknown;
 
             try
             {
-                var history = _activityWatcher.History
+                List<ActivityData> snapshot = [.. _activityWatcher.History];
+
+                var history = snapshot
                     .Where(x => x.UniverseId != 0 && x.TimeJoined > DateTime.Now.AddDays(-30))
                     .OrderByDescending(x => x.TimeJoined)
                     .Take(30)
@@ -70,12 +78,11 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
                 await Dispatcher.UIThread.InvokeAsync(() =>
                 {
-                    GameHistory.Clear();
-                    foreach (ActivityData entry in history)
-                        GameHistory.Add(entry);
+                    GameHistory.ReplaceAll(history);
 
                     Error = String.Empty;
                     LoadState = GenericTriState.Successful;
+                    _loaded = true;
                 });
             }
             catch (Exception ex)

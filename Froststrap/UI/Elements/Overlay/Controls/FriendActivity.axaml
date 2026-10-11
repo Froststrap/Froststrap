@@ -425,18 +425,23 @@
 			</TextBox>
 
 			<Grid Grid.Row="2">
-				<ScrollViewer Padding="0,0,0,8" VerticalScrollBarVisibility="Auto">
-					<ItemsControl
-                        Margin="6,0"
-                        Focusable="False"
-                        ItemsSource="{Binding Rows}">
-						<ItemsControl.ItemsPanel>
-							<ItemsPanelTemplate>
-								<VirtualizingStackPanel />
-							</ItemsPanelTemplate>
-						</ItemsControl.ItemsPanel>
-					</ItemsControl>
-				</ScrollViewer>
+				<ItemsControl
+                    Margin="6,0"
+                    Focusable="False"
+                    ItemsSource="{Binding Rows}">
+					<ItemsControl.Template>
+						<ControlTemplate>
+							<ScrollViewer Padding="0,0,0,8" VerticalScrollBarVisibility="Auto">
+								<ItemsPresenter ItemsPanel="{TemplateBinding ItemsPanel}" />
+							</ScrollViewer>
+						</ControlTemplate>
+					</ItemsControl.Template>
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<VirtualizingStackPanel />
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+				</ItemsControl>
 
 				<TextBlock
                     Margin="24,0"

@@ -15,21 +15,27 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
     internal class ServerBrowserViewModel : NotifyPropertyChangedViewModel
     {
         private const string RobloxWebDeeplinkBase = "https://www.roblox.com/games/start";
+        private const int PageSize = 60;
 
         private readonly ActivityWatcher? _activityWatcher;
         private readonly FlashMessage _flash;
 
-        private ObservableCollection<GameServer> _servers = [];
+        private List<GameServer> _allServers = [];
+        private int _shown;
+        private int _generation;
 
-        public ObservableCollection<GameServer> Servers
-        {
-            get => _servers;
-            private set => SetProperty(ref _servers, value);
-        }
+        private bool _visible;
+        private bool _initialised;
+        private bool _stale;
+        private bool _loadingMore;
+
+        public BulkObservableCollection<GameServer> Servers { get; } = new();
 
         public IEnumerable<Order> Orders { get; } = Enum.GetValues<Order>();
 
         public ObservableCollection<ServerRegion> Regions { get; } = [];
+
+        public bool HasMore => _shown < _allServers.Count;
 
         private ServerRegion? _selectedRegion;
         public ServerRegion? SelectedRegion
@@ -115,6 +121,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
         private bool InGame => _activityWatcher?.InGame == true && _activityWatcher.Data.PlaceId != 0;
 
         public ICommand RefreshCommand { get; }
+        public ICommand LoadMoreCommand { get; }
         public ICommand JoinCommand { get; }
         public ICommand CopyLinkCommand { get; }
 
@@ -279,6 +286,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             _flash = new FlashMessage(TimeSpan.FromSeconds(2), () => OnPropertyChanged(nameof(SummaryText)));
 
             RefreshCommand = new AsyncRelayCommand(LoadAsync);
+            LoadMoreCommand = new AsyncRelayCommand(LoadMoreAsync);
             JoinCommand = new RelayCommand<GameServer>(Join);
             CopyLinkCommand = new AsyncRelayCommand<Visual>(CopyLinkAsync);
             CopyInstanceIdCommand = new AsyncRelayCommand<Visual>(CopyInstanceIdAsync);
@@ -296,26 +304,61 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
             _currentServerTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(10) };
             _currentServerTimer.Tick += (_, _) => RefreshCurrentServer();
-            _currentServerTimer.Start();
 
-            _activityWatcher.OnGameJoin += async (_, _) =>
-                await Dispatcher.UIThread.InvokeAsync(async () =>
-                {
-                    _currentLocation = null;
-                    await LoadAsync();
-                });
-
-            _activityWatcher.OnGameLeave += (_, _) =>
-                Dispatcher.UIThread.Post(Clear);
+            _activityWatcher.OnGameJoin += (_, _) => Dispatcher.UIThread.Post(OnGameJoin);
+            _activityWatcher.OnGameLeave += (_, _) => Dispatcher.UIThread.Post(OnGameLeave);
         }
 
         public void SetVisible(bool visible)
         {
-            if (visible) _uptimeTimer.Start();
-            else _uptimeTimer.Stop();
+            _visible = visible;
+
+            if (!visible)
+            {
+                _uptimeTimer.Stop();
+                _currentServerTimer?.Stop();
+                return;
+            }
+
+            _uptimeTimer.Start();
+
+            if (InGame)
+                _currentServerTimer?.Start();
+
+            if (!_initialised)
+            {
+                _initialised = true;
+                _ = InitialiseAsync();
+            }
+            else if (_stale)
+            {
+                _ = LoadAsync();
+            }
+            else
+            {
+                RefreshCurrentServer();
+            }
         }
 
-        public async Task InitialiseAsync()
+        private void OnGameJoin()
+        {
+            _currentLocation = null;
+            _stale = true;
+
+            if (_visible && _initialised)
+                _ = LoadAsync();
+        }
+
+        private void OnGameLeave()
+        {
+            _generation++;
+            _stale = false;
+
+            _currentLocation = null;
+            Clear();
+        }
+
+        private async Task InitialiseAsync()
         {
             if (Regions.Count == 0)
             {
@@ -339,16 +382,23 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                 return;
             }
 
+            _stale = false;
+            int generation = ++_generation;
             IsBusy = true;
 
             try
             {
+                long placeId = _activityWatcher!.Data.PlaceId;
+
                 var servers = await GameServers.FetchAsync(
-                    _activityWatcher!.Data.PlaceId,
+                    placeId,
                     _activityWatcher.Data.JobId,
                     SelectedOrder,
                     ExcludeFull,
                     SelectedRegion);
+
+                if (generation != _generation)
+                    return;
 
                 if (servers.FirstOrDefault(x => x.IsCurrent) is GameServer current
                     && _activityWatcher.Data.StartTime is DateTime started)
@@ -357,11 +407,19 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                     current.UptimeIsEstimate = false;
                 }
 
-                await Task.WhenAll(
-                    GameServers.PopulateIconsAsync(servers),
-                    GameServers.PopulateDetailsAsync(_activityWatcher.Data.PlaceId, servers));
+                _allServers = servers;
+                _shown = Math.Min(PageSize, servers.Count);
 
-                Servers = new ObservableCollection<GameServer>(servers);
+                List<GameServer> visible = [.. servers.Take(_shown)];
+
+                await EnrichAsync(placeId, visible);
+
+                if (generation != _generation)
+                    return;
+
+                Servers.ReplaceAll(visible);
+
+                OnPropertyChanged(nameof(HasMore));
             }
             catch (Exception ex)
             {
@@ -370,10 +428,55 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             }
             finally
             {
-                IsBusy = false;
-                Refreshed();
-                RefreshCurrentServer();
+                if (generation == _generation)
+                {
+                    IsBusy = false;
+                    Refreshed();
+                    RefreshCurrentServer();
+                }
             }
+        }
+
+        private async Task LoadMoreAsync()
+        {
+            if (_loadingMore || !HasMore) return;
+
+            _loadingMore = true;
+
+            try
+            {
+                int next = Math.Min(_shown + PageSize, _allServers.Count);
+
+                List<GameServer> more = [.. _allServers.Skip(_shown).Take(next - _shown)];
+
+                _shown = next;
+
+                Servers.AddRange(more);
+
+                OnPropertyChanged(nameof(HasMore));
+                OnPropertyChanged(nameof(SummaryText));
+
+                await EnrichAsync(_activityWatcher!.Data.PlaceId, more);
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error("Failed to load more servers");
+                App.Logger.Error(ex);
+            }
+            finally
+            {
+                _loadingMore = false;
+            }
+        }
+
+        private static async Task EnrichAsync(long placeId, List<GameServer> servers)
+        {
+            if (servers.Count == 0)
+                return;
+
+            await Task.WhenAll(
+                GameServers.PopulateIconsAsync(servers),
+                GameServers.PopulateDetailsAsync(placeId, servers));
         }
 
         private void Join(GameServer? server)
@@ -417,7 +520,12 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
         private void Clear()
         {
-            Servers = [];
+            _allServers = [];
+            _shown = 0;
+
+            Servers.ReplaceAll([]);
+
+            OnPropertyChanged(nameof(HasMore));
             Refreshed();
             RefreshCurrentServer();
         }

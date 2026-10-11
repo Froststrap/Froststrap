@@ -3564,7 +3564,7 @@ All files will be moved, shortcuts updated, and the application will restart.</v
     <value>Most players</value>
   </data>
   <data name="Enums.FullscreenMode.Borderless" xml:space="preserve">
-    <value>Borderless Windowed Mode</value>
+    <value>Borderless Window</value>
   </data>
   <data name="Enums.FullscreenMode.Exclusive" xml:space="preserve">
     <value>Exclusive Fullscreen</value>

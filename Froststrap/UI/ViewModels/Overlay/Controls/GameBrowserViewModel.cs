@@ -1,5 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 
 using Avalonia.Threading;
 
@@ -29,11 +28,11 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
         private bool _loadingContinue;
         private DateTime _continueLoaded = DateTime.MinValue;
 
-        public ObservableCollection<GameTile> SearchResults { get; } = [];
-        public ObservableCollection<GameTile> Favorites { get; } = [];
-        public ObservableCollection<GameTile> ContinueTiles { get; } = [];
+        public BulkObservableCollection<GameTile> SearchResults { get; } = new();
+        public BulkObservableCollection<GameTile> Favorites { get; } = new();
+        public BulkObservableCollection<GameTile> ContinueTiles { get; } = new();
 
-        public ObservableCollection<GameTile> ActiveTiles =>
+        public BulkObservableCollection<GameTile> ActiveTiles =>
             ShowingFavorites ? Favorites :
             ShowingContinue ? ContinueTiles :
             SearchResults;
@@ -95,7 +94,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                     _searchGeneration++;
                     _searchFailed = false;
 
-                    SearchResults.Clear();
+                    SearchResults.ReplaceAll([]);
 
                     IsBusy = false;
                     Refreshed();
@@ -196,8 +195,8 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             _favoritesFailed = false;
             _continueLoaded = DateTime.MinValue;
 
-            Favorites.Clear();
-            ContinueTiles.Clear();
+            Favorites.ReplaceAll([]);
+            ContinueTiles.ReplaceAll([]);
 
             OnPropertyChanged(nameof(ShowContinueLabel));
             OnPropertyChanged(nameof(ActiveTiles));
@@ -229,13 +228,10 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             {
                 List<GameTile> tiles = await Experiences.ContinueAsync();
 
-                ContinueTiles.Clear();
+                ContinueTiles.ReplaceAll(tiles);
 
                 foreach (GameTile tile in tiles)
-                {
-                    ContinueTiles.Add(tile);
                     _ = tile.LoadIconAsync();
-                }
 
                 _continueLoaded = DateTime.UtcNow;
             }
@@ -272,13 +268,10 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                 if (generation != _searchGeneration)
                     return;
 
-                SearchResults.Clear();
+                SearchResults.ReplaceAll(results);
 
                 foreach (GameTile tile in results)
-                {
-                    SearchResults.Add(tile);
                     _ = tile.LoadIconAsync();
-                }
             }
             catch (Exception ex)
             {
@@ -288,7 +281,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                 App.Logger.Error("Game search failed");
                 App.Logger.Error(ex);
 
-                SearchResults.Clear();
+                SearchResults.ReplaceAll([]);
                 _searchFailed = true;
             }
             finally
@@ -319,13 +312,10 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             {
                 List<GameTile> favorites = await Experiences.FavoritesAsync(userId);
 
-                Favorites.Clear();
+                Favorites.ReplaceAll(favorites);
 
                 foreach (GameTile tile in favorites)
-                {
-                    Favorites.Add(tile);
                     _ = tile.LoadIconAsync();
-                }
 
                 _favoritesLoaded = true;
             }

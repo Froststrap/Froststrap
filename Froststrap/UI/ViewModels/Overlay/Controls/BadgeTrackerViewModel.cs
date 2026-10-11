@@ -1,5 +1,4 @@
 using System;
-using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
@@ -32,7 +31,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
         public event EventHandler<Badge>? BadgeEarned;
 
-        public ObservableCollection<Badge> Badges { get; } = [];
+        public BulkObservableCollection<Badge> Badges { get; } = new();
 
         private bool _isBusy;
         public bool IsBusy
@@ -99,21 +98,29 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
         private bool InGame => _activityWatcher?.InGame == true && _activityWatcher.Data.UniverseId != 0;
 
-        public ICommand RefreshCommand => new RelayCommand(async () => await LoadAsync(true));
+        public ICommand RefreshCommand { get; }
 
-        public ICommand RemoveCommand => new RelayCommand<Badge>(badge =>
-        {
-            if (badge?.CanRemove == true)
-                Ask(badge);
-        });
+        public ICommand RemoveCommand { get; }
 
-        public ICommand ConfirmRemoveCommand => new RelayCommand(async () => await RemovePendingAsync());
+        public ICommand ConfirmRemoveCommand { get; }
 
-        public ICommand CancelRemoveCommand => new RelayCommand(() => Ask(null));
+        public ICommand CancelRemoveCommand { get; }
 
         public BadgeTrackerViewModel(ActivityWatcher? activityWatcher)
         {
             _activityWatcher = activityWatcher;
+
+            RefreshCommand = new RelayCommand(async () => await LoadAsync(true));
+
+            RemoveCommand = new RelayCommand<Badge>(badge =>
+            {
+                if (badge?.CanRemove == true)
+                    Ask(badge);
+            });
+
+            ConfirmRemoveCommand = new RelayCommand(async () => await RemovePendingAsync());
+
+            CancelRemoveCommand = new RelayCommand(() => Ask(null));
 
             _flash = new FlashMessage(TimeSpan.FromSeconds(4), () =>
             {
@@ -316,20 +323,17 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                 .ThenByDescending(x => x.WinRatePercentage)
                 .ToList();
 
-            Badges.Clear();
+            Badges.ReplaceAll(ordered);
 
             foreach (Badge badge in ordered)
-            {
-                Badges.Add(badge);
                 _ = badge.LoadIconAsync();
-            }
         }
 
         private void Clear()
         {
             _awardTimer.Stop();
 
-            Badges.Clear();
+            Badges.ReplaceAll([]);
 
             _pending = null;
             _loadedUniverseId = 0;

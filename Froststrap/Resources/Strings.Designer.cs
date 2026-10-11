@@ -2806,7 +2806,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Borderless Windowed Mode.
+        ///   Looks up a localized string similar to Borderless Window.
         /// </summary>
         public static string Enums_FullscreenMode_Borderless {
             get {

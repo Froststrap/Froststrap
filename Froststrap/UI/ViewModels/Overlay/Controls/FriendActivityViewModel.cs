@@ -12,6 +12,7 @@ using Froststrap.Models.APIs.RobloxParty.Events;
 using Froststrap.Models.Overlay;
 using Froststrap.RobloxInterfaces;
 using Froststrap.Utility;
+using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -20,9 +21,11 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
     internal class FriendActivityViewModel : NotifyPropertyChangedViewModel
     {
         private const int DetailsBatch = 100;
+        private const int DetailConcurrency = 3;
         private const string OneToOne = "one_to_one";
 
         private static readonly TimeSpan GroupGap = TimeSpan.FromMinutes(5);
+        private static readonly SemaphoreSlim DetailLock = new(DetailConcurrency, DetailConcurrency);
 
         private readonly IOverlayHost? _overlay;
         private readonly RobloxParty? _party;
@@ -32,6 +35,10 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
         private readonly List<ChatFriend> _groups = [];
         private readonly Dictionary<FriendSection, FriendListHeader> _headers;
 
+        private readonly Lock _presenceLock = new();
+        private readonly HashSet<long> _pendingPresence = [];
+        private bool _presenceQueued;
+
         private AuthenticatedUser? _me;
         private string? _myAvatar;
         private string? _listStatus;
@@ -40,7 +47,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
         private bool _loaded;
         private bool _requested;
 
-        public ObservableCollection<object> Rows { get; } = [];
+        public BulkObservableCollection<object> Rows { get; } = new();
 
         public ObservableCollection<ChatTab> Tabs { get; } = [];
 
@@ -160,12 +167,12 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             SendCommand = new AsyncRelayCommand(SendAsync, AsyncRelayCommandOptions.AllowConcurrentExecutions);
             JoinCommand = new RelayCommand(Join);
 
-#pragma warning disable IDE0031 // Cannot null-propagate an event subscription
+#pragma warning disable IDE0031
             if (_party is not null)
                 _party.IncomingMessage += OnIncomingMessage;
 
             if (_presence is not null)
-                _presence.Updated += (_, _) => Dispatcher.UIThread.Post(ApplyPresence);
+                _presence.Updated += OnPresenceUpdated;
 #pragma warning restore IDE0031
 
             App.Cookies.WatchAccount(this, static vm => vm.OnAccountChanged());
@@ -181,7 +188,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             _groups.Clear();
 
             Tabs.Clear();
-            Rows.Clear();
+            Rows.ReplaceAll([]);
 
             SelectedTab = null;
 
@@ -235,24 +242,37 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
                 _overlay?.WatchFriendsForPanel();
 
+                Task<List<Conversation>> conversationsTask = _party is null
+                    ? Task.FromResult(new List<Conversation>())
+                    : RobloxParty.GetAllConversations();
+
                 if (_presence is not null && !_presence.HasLooked)
                     await _presence.PollAsync();
 
-                List<Conversation> conversations = _party is null ? [] : await RobloxParty.GetAllConversations();
+                var ids = new HashSet<long>(_presence?.FriendIds ?? []) { _me.Id };
 
-                var ids = new HashSet<long>(_presence?.FriendIds ?? []);
+                Task<Dictionary<long, UserDetails>> detailsTask = FetchDetailsAsync([.. ids]);
+
+                await Task.WhenAll(conversationsTask, detailsTask);
+
+                List<Conversation> conversations = await conversationsTask;
+                Dictionary<long, UserDetails> details = await detailsTask;
+
+                var strangers = new HashSet<long>();
 
                 foreach (Conversation conversation in conversations.Where(IsOneToOne))
                 {
                     long other = conversation.Participants.FirstOrDefault(x => x != _me.Id);
 
-                    if (other > 0)
-                        ids.Add(other);
+                    if (other > 0 && ids.Add(other))
+                        strangers.Add(other);
                 }
 
-                ids.Add(_me.Id);
-
-                var details = await FetchDetailsAsync([.. ids]);
+                if (strangers.Count > 0)
+                {
+                    foreach (var (id, user) in await FetchDetailsAsync([.. strangers]))
+                        details[id] = user;
+                }
 
                 details.TryGetValue(_me.Id, out UserDetails? mine);
 
@@ -316,7 +336,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
                 SetListStatus(null);
 
-                ApplyPresence();
+                ApplyPresence(null);
             }
             catch (Exception ex)
             {
@@ -351,25 +371,90 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
         private static async Task<Dictionary<long, UserDetails>> FetchDetailsAsync(List<long> ids)
         {
-            var details = new Dictionary<long, UserDetails>();
+            var details = new ConcurrentDictionary<long, UserDetails>();
 
-            foreach (long[] batch in ids.Chunk(DetailsBatch))
+            async Task FetchBatch(long[] batch)
             {
-                foreach (var (id, user) in await UserDetails.FetchBatch([.. batch]))
-                    details[id] = user;
+                await DetailLock.WaitAsync();
+
+                try
+                {
+                    foreach (var (id, user) in await UserDetails.FetchBatch([.. batch]))
+                        details[id] = user;
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.Error("Failed to fetch a batch of user details");
+                    App.Logger.Error(ex);
+                }
+                finally
+                {
+                    DetailLock.Release();
+                }
             }
 
-            return details;
+            await Task.WhenAll(ids.Chunk(DetailsBatch).Select(FetchBatch));
+
+            return new Dictionary<long, UserDetails>(details);
         }
 
-        private void ApplyPresence()
+        private void OnPresenceUpdated(object? sender, IReadOnlyCollection<long> changed)
         {
-            IReadOnlyDictionary<long, UserPresence> presences = _presence?.Presences ?? new Dictionary<long, UserPresence>();
+            if (changed.Count == 0)
+                return;
 
-            foreach ((long id, ChatFriend friend) in _people)
-                friend.Update(presences.GetValueOrDefault(id));
+            lock (_presenceLock)
+            {
+                foreach (long id in changed)
+                    _pendingPresence.Add(id);
 
-            Rebuild();
+                if (_presenceQueued)
+                    return;
+
+                _presenceQueued = true;
+            }
+
+            Dispatcher.UIThread.Post(FlushPresence, DispatcherPriority.Background);
+        }
+
+        private void FlushPresence()
+        {
+            long[] ids;
+
+            lock (_presenceLock)
+            {
+                ids = [.. _pendingPresence];
+                _pendingPresence.Clear();
+                _presenceQueued = false;
+            }
+
+            if (ids.Length == 0)
+                return;
+
+            ApplyPresence(ids);
+        }
+
+        private void ApplyPresence(IReadOnlyCollection<long>? ids)
+        {
+            if (ids is null)
+            {
+                foreach ((long id, ChatFriend friend) in _people)
+                    friend.Update(_presence?.GetPresence(id));
+
+                Rebuild();
+                return;
+            }
+
+            bool any = false;
+
+            foreach (long id in ids)
+            {
+                if (_people.TryGetValue(id, out ChatFriend? friend) && friend.Update(_presence?.GetPresence(id)))
+                    any = true;
+            }
+
+            if (any)
+                Rebuild();
         }
 
         private void Rebuild()
@@ -403,12 +488,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             }
 
             if (!rows.SequenceEqual(Rows))
-            {
-                Rows.Clear();
-
-                foreach (object row in rows)
-                    Rows.Add(row);
-            }
+                Rows.ReplaceAll(rows);
 
             if (!_loaded)
                 return;

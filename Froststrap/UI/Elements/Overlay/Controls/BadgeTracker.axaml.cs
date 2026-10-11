@@ -7,25 +7,28 @@ namespace Froststrap.UI.Elements.Overlay.Controls
 {
     internal partial class BadgeTracker : UserControl
     {
-        private BadgeTrackerViewModel _viewModel;
+        private BadgeTrackerViewModel? _viewModel;
 
         public event EventHandler<Badge>? BadgeEarned;
 
         public BadgeTracker()
         {
-            _viewModel = new BadgeTrackerViewModel(null);
-            DataContext = _viewModel;
             InitializeComponent();
         }
 
         public void Attach(ActivityWatcher? activityWatcher)
         {
+            if (_viewModel is not null)
+                _viewModel.BadgeEarned -= OnBadgeEarned;
+
             _viewModel = new BadgeTrackerViewModel(activityWatcher);
-            _viewModel.BadgeEarned += (_, badge) => BadgeEarned?.Invoke(this, badge);
+            _viewModel.BadgeEarned += OnBadgeEarned;
 
             DataContext = _viewModel;
 
             _ = _viewModel.LoadAsync();
         }
+
+        private void OnBadgeEarned(object? sender, Badge badge) => BadgeEarned?.Invoke(this, badge);
     }
 }

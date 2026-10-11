@@ -364,165 +364,163 @@
                     Margin="0,0,-8,0"
                     Padding="0,0,8,0"
                     VerticalScrollBarVisibility="Auto">
-                    <ItemsControl Margin="-4,-4,-4,0" ItemsSource="{Binding Servers}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <ui:UniformWrapPanel MinItemWidth="230" />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
+                    <StackPanel>
+                        <ItemsControl Margin="-4,-4,-4,0" ItemsSource="{Binding Servers}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <ui:UniformWrapPanel MinItemWidth="230" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
 
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate x:DataType="models:GameServer">
-                                <Border
-                                    Margin="4"
-                                    Padding="12"
-                                    Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
-                                    BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
-                                    BorderThickness="1"
-                                    CornerRadius="8">
-                                    <Grid RowDefinitions="Auto,Auto,*,Auto">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="models:GameServer">
+                                    <Border
+                                        Margin="4"
+                                        Padding="12"
+                                        Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                                        BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                                        BorderThickness="1"
+                                        CornerRadius="8">
+                                        <Grid RowDefinitions="Auto,Auto,*,Auto">
 
-                                        <ItemsControl
-                                            Grid.Row="0"
-                                            Height="124"
-                                            ItemsSource="{Binding Avatars}">
-                                            <ItemsControl.ItemsPanel>
-                                                <ItemsPanelTemplate>
-                                                    <UniformGrid Columns="3" Rows="2" />
-                                                </ItemsPanelTemplate>
-                                            </ItemsControl.ItemsPanel>
-                                            <ItemsControl.ItemTemplate>
-                                                <DataTemplate x:DataType="models:ServerAvatar">
-                                                    <Grid Width="56" Height="56">
-                                                        <Border
-                                                            x:Name="Backing"
-                                                            Background="{DynamicResource ControlStrongStrokeColorDisabledBrush}"
-                                                            CornerRadius="28" />
-                                                        <Border
-                                                            x:Name="Face"
-                                                            Background="{DynamicResource ControlFillColorDefaultBrush}"
-                                                            ClipToBounds="True"
-                                                            CornerRadius="28">
-                                                            <Image
-                                                                RenderOptions.BitmapInterpolationMode="LowQuality"
-                                                                Source="{Binding ImageBitmap}"
-                                                                Stretch="UniformToFill" />
-                                                        </Border>
-                                                        <TextBlock
-                                                            x:Name="More"
-                                                            HorizontalAlignment="Center"
-                                                            VerticalAlignment="Center"
-                                                            FontSize="17"
-                                                            FontWeight="SemiBold"
-                                                            Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                                                            IsVisible="{Binding IsOverflow}"
-                                                            Text="{Binding OverflowText}" />
-                                                    </Grid>
-                                                </DataTemplate>
-                                            </ItemsControl.ItemTemplate>
-                                        </ItemsControl>
-
-                                        <TextBlock
-                                            Grid.Row="1"
-                                            Margin="0,10,0,8"
-                                            FontSize="15"
-                                            Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                                            Text="{Binding CapacityText}"
-                                            TextTrimming="CharacterEllipsis" />
-
-                                        <StackPanel Grid.Row="2">
-                                            <StackPanel
-                                                Margin="0,0,0,6"
-                                                IsVisible="{Binding HasLocation}"
-                                                Orientation="Horizontal">
-                                                <ic:Lucide
-                                                    Width="18"
-                                                    Height="18"
-                                                    Margin="0,0,8,0"
-                                                    Icon="MapPin" />
-                                                <TextBlock Classes="StatText" Text="{Binding LocationText}" />
-                                            </StackPanel>
-                                            <StackPanel
-                                                Margin="0,0,0,6"
-                                                IsVisible="{Binding HasPerformance}"
-                                                Orientation="Horizontal">
-                                                <ic:Lucide
-                                                    Width="18"
-                                                    Height="18"
-                                                    Margin="0,0,8,0"
-                                                    Icon="TrendingUp" />
-                                                <TextBlock Classes="StatText" Text="{Binding PerformanceText}" />
-                                            </StackPanel>
-                                            <StackPanel
-                                                Margin="0,0,0,6"
-                                                IsVisible="{Binding HasUptime}"
-                                                Orientation="Horizontal">
-                                                <ic:Lucide
-                                                    Width="18"
-                                                    Height="18"
-                                                    Margin="0,0,8,0"
-                                                    Icon="Clock" />
-                                                <TextBlock Classes="StatText" Text="{Binding UptimeText}" />
-                                            </StackPanel>
-                                            <StackPanel
-                                                Margin="0,0,0,6"
-                                                IsVisible="{Binding HasVersion}"
-                                                Orientation="Horizontal">
-                                                <ic:Lucide
-                                                    Width="18"
-                                                    Height="18"
-                                                    Margin="0,0,8,0"
-                                                    Icon="Activity" />
-                                                <TextBlock Classes="StatText" Text="{Binding VersionText}" />
-                                            </StackPanel>
-                                            <StackPanel
-                                                Margin="0,0,0,6"
-                                                IsVisible="{Binding HasPing}"
-                                                Orientation="Horizontal">
-                                                <ic:Lucide
-                                                    Width="18"
-                                                    Height="18"
-                                                    Margin="0,0,8,0"
-                                                    Icon="Wifi" />
-                                                <TextBlock Classes="StatText" Text="{Binding PingText}" />
-                                            </StackPanel>
-                                        </StackPanel>
-
-                                        <StackPanel Grid.Row="3">
-                                            <ProgressBar
-                                                Height="4"
-                                                Margin="0,4,0,12"
-                                                Maximum="100"
-                                                Value="{Binding FillPercentage, Mode=OneWay}" />
-
-                                            <Button
-                                                x:Name="JoinButton"
-                                                Classes="cardAction"
-                                                Command="{Binding $parent[ItemsControl].((vm:ServerBrowserViewModel)DataContext).JoinCommand}"
-                                                CommandParameter="{Binding}"
-                                                Content="{x:Static resources:Strings.Menu_Overlay_Servers_Join}" />
-
-                                            <Button
-                                                Margin="0,6,0,0"
-                                                Classes="cardAction"
-                                                Command="{Binding $parent[ItemsControl].((vm:ServerBrowserViewModel)DataContext).CopyLinkCommand}"
-                                                CommandParameter="{Binding $self}"
-                                                Content="{x:Static resources:Strings.Menu_Overlay_Servers_Share}"
-                                                ToolTip.Tip="{x:Static resources:Strings.Menu_Overlay_Servers_CopyLink}" />
+                                            <ItemsControl
+                                                Grid.Row="0"
+                                                Height="124"
+                                                ItemsSource="{Binding Avatars}">
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <UniformGrid Columns="3" Rows="2" />
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate x:DataType="models:ServerAvatar">
+                                                        <Grid Width="56" Height="56">
+                                                            <Border
+                                                                x:Name="Backing"
+                                                                Background="{DynamicResource ControlStrongStrokeColorDisabledBrush}"
+                                                                CornerRadius="28" />
+                                                            <Border
+                                                                x:Name="Face"
+                                                                Background="{DynamicResource ControlFillColorDefaultBrush}"
+                                                                ClipToBounds="True"
+                                                                CornerRadius="28">
+                                                                <Image
+                                                                    RenderOptions.BitmapInterpolationMode="LowQuality"
+                                                                    Source="{Binding ImageBitmap}"
+                                                                    Stretch="UniformToFill" />
+                                                            </Border>
+                                                            <TextBlock
+                                                                x:Name="More"
+                                                                HorizontalAlignment="Center"
+                                                                VerticalAlignment="Center"
+                                                                FontSize="17"
+                                                                FontWeight="SemiBold"
+                                                                Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                                                IsVisible="{Binding IsOverflow}"
+                                                                Text="{Binding OverflowText}" />
+                                                        </Grid>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
 
                                             <TextBlock
-                                                Margin="0,8,0,0"
-                                                HorizontalAlignment="Center"
-                                                FontSize="10"
-                                                Foreground="{DynamicResource TextFillColorTertiaryBrush}"
-                                                Text="{Binding IdText}"
+                                                Grid.Row="1"
+                                                Margin="0,10,0,8"
+                                                FontSize="15"
+                                                Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                                Text="{Binding CapacityText}"
                                                 TextTrimming="CharacterEllipsis" />
-                                        </StackPanel>
-                                    </Grid>
-                                </Border>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
+
+                                            <StackPanel Grid.Row="2">
+                                                <StackPanel
+                                                    Margin="0,0,0,6"
+                                                    IsVisible="{Binding HasLocation}"
+                                                    Orientation="Horizontal">
+                                                    <ic:Lucide
+                                                        Width="18"
+                                                        Height="18"
+                                                        Margin="0,0,8,0"
+                                                        Icon="MapPin" />
+                                                    <TextBlock Classes="StatText" Text="{Binding LocationText}" />
+                                                </StackPanel>
+                                                <StackPanel
+                                                    Margin="0,0,0,6"
+                                                    IsVisible="{Binding HasPerformance}"
+                                                    Orientation="Horizontal">
+                                                    <ic:Lucide
+                                                        Width="18"
+                                                        Height="18"
+                                                        Margin="0,0,8,0"
+                                                        Icon="TrendingUp" />
+                                                    <TextBlock Classes="StatText" Text="{Binding PerformanceText}" />
+                                                </StackPanel>
+                                                <StackPanel
+                                                    Margin="0,0,0,6"
+                                                    IsVisible="{Binding HasUptime}"
+                                                    Orientation="Horizontal">
+                                                    <ic:Lucide
+                                                        Width="18"
+                                                        Height="18"
+                                                        Margin="0,0,8,0"
+                                                        Icon="Clock" />
+                                                    <TextBlock Classes="StatText" Text="{Binding UptimeText}" />
+                                                </StackPanel>
+                                                <StackPanel
+                                                    Margin="0,0,0,6"
+                                                    IsVisible="{Binding HasVersion}"
+                                                    Orientation="Horizontal">
+                                                    <ic:Lucide
+                                                        Width="18"
+                                                        Height="18"
+                                                        Margin="0,0,8,0"
+                                                        Icon="Activity" />
+                                                    <TextBlock Classes="StatText" Text="{Binding VersionText}" />
+                                                </StackPanel>
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Row="3">
+                                                <ProgressBar
+                                                    Height="4"
+                                                    Margin="0,4,0,12"
+                                                    Maximum="100"
+                                                    Value="{Binding FillPercentage, Mode=OneWay}" />
+
+                                                <Button
+                                                    x:Name="JoinButton"
+                                                    Classes="cardAction"
+                                                    Command="{Binding $parent[ItemsControl].((vm:ServerBrowserViewModel)DataContext).JoinCommand}"
+                                                    CommandParameter="{Binding}"
+                                                    Content="{x:Static resources:Strings.Menu_Overlay_Servers_Join}" />
+
+                                                <Button
+                                                    Margin="0,6,0,0"
+                                                    Classes="cardAction"
+                                                    Command="{Binding $parent[ItemsControl].((vm:ServerBrowserViewModel)DataContext).CopyLinkCommand}"
+                                                    CommandParameter="{Binding $self}"
+                                                    Content="{x:Static resources:Strings.Menu_Overlay_Servers_Share}"
+                                                    ToolTip.Tip="{x:Static resources:Strings.Menu_Overlay_Servers_CopyLink}" />
+
+                                                <TextBlock
+                                                    Margin="0,8,0,0"
+                                                    HorizontalAlignment="Center"
+                                                    FontSize="10"
+                                                    Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                                    Text="{Binding IdText}"
+                                                    TextTrimming="CharacterEllipsis" />
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <Button
+                            Margin="0,8,0,4"
+                            HorizontalAlignment="Center"
+                            Command="{Binding LoadMoreCommand}"
+                            Content="{x:Static resources:Strings.Menu_Overlay_PrivateServers_LoadMore}"
+                            IsVisible="{Binding HasMore}" />
+                    </StackPanel>
                 </ScrollViewer>
             </Grid>
         </Grid>

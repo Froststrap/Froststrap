@@ -30,13 +30,6 @@ SPDX-License-Identifier: MPL-2.0
                 Background="{DynamicResource SolidBackgroundFillColorBaseBrush}"
                 BorderBrush="{DynamicResource SurfaceStrokeColorDefaultBrush}"
                 BorderThickness="1">
-            <Border.Effect>
-                <DropShadowEffect BlurRadius="24"
-                                  OffsetX="0" OffsetY="4"
-                                  Opacity="0.45"
-                                  Color="Black" />
-            </Border.Effect>
-
             <Grid x:Name="Body" SizeChanged="BodySizeChanged" RowDefinitions="Auto,*">
 
                 <controls:TitleBar x:Name="TitleBar"

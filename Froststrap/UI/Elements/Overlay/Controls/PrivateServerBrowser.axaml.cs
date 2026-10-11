@@ -8,23 +8,29 @@ namespace Froststrap.UI.Elements.Overlay.Controls
 {
     internal partial class PrivateServerBrowser : UserControl
     {
-        private PrivateServersViewModel _viewModel;
+        private PrivateServersViewModel? _viewModel;
 
         public PrivateServerBrowser()
         {
-            _viewModel = new PrivateServersViewModel(null);
-            DataContext = _viewModel;
             InitializeComponent();
 
-            this.GetObservable(IsVisibleProperty)
-                .Subscribe(new AnonymousObserver<bool>(v => _viewModel.SetVisible(v)));
+            PropertyChanged += OnSelfPropertyChanged;
         }
 
         public void Attach(ActivityWatcher? activityWatcher)
         {
+            _viewModel?.SetVisible(false);
+
             _viewModel = new PrivateServersViewModel(activityWatcher);
             DataContext = _viewModel;
-            _viewModel.SetVisible(IsVisible);
+
+            _viewModel.SetVisible(IsEffectivelyVisible);
+        }
+
+        private void OnSelfPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
+        {
+            if (e.Property.Name == nameof(IsEffectivelyVisible))
+                _viewModel?.SetVisible(IsEffectivelyVisible);
         }
     }
 

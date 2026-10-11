@@ -229,14 +229,6 @@
                                             Background="{DynamicResource AccentFillColorDefaultBrush}"
                                             Classes="playBadge"
                                             CornerRadius="22">
-                                            <Border.Effect>
-                                                <DropShadowEffect
-                                                    BlurRadius="12"
-                                                    OffsetX="0"
-                                                    OffsetY="2"
-                                                    Opacity="0.5"
-                                                    Color="Black" />
-                                            </Border.Effect>
                                             <ic:Lucide
                                                 Width="20"
                                                 Height="20"

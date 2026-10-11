@@ -47,10 +47,7 @@ namespace Froststrap.Utility
                     using var response = await App.HttpClient.GetAsync(new Uri(url));
 
                     if (!response.IsSuccessStatusCode)
-                    {
-                        Memory[url] = null;
                         return null;
-                    }
 
                     bytes = await response.Content.ReadAsByteArrayAsync();
 
@@ -81,7 +78,6 @@ namespace Froststrap.Utility
             catch (Exception ex)
             {
                 App.Logger.Error($"Failed to load image from {url}: {ex.Message}");
-                Memory[url] = null;
                 return null;
             }
             finally

@@ -20,7 +20,7 @@ namespace Froststrap.Integrations.OverlayModules
         private const int MaxPerUpdate = 3;
 
         public event EventHandler<FriendPresenceChange>? Changed;
-        public event EventHandler? Updated;
+        public event EventHandler<IReadOnlyCollection<long>>? Updated;
 
         [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "Owned by the caller, not by FriendPresence.")]
         private readonly ActivityWatcher? _activityWatcher = activityWatcher;
@@ -52,6 +52,12 @@ namespace Froststrap.Integrations.OverlayModules
         }
 
         public bool HasLooked => _seeded;
+
+        public UserPresence? GetPresence(long userId)
+        {
+            lock (_lock)
+                return _last.GetValueOrDefault(userId);
+        }
 
         public void Start()
         {
@@ -109,7 +115,6 @@ namespace Froststrap.Integrations.OverlayModules
             }
             catch (OperationCanceledException)
             {
-                // expected on shutdown
             }
         }
 
@@ -133,7 +138,7 @@ namespace Froststrap.Integrations.OverlayModules
             if (_friends.Count == 0)
             {
                 _seeded = true;
-                Updated?.Invoke(this, EventArgs.Empty);
+                Updated?.Invoke(this, []);
                 return;
             }
 
@@ -149,21 +154,24 @@ namespace Froststrap.Integrations.OverlayModules
             }
 
             List<FriendPresenceChange> changes;
+            List<long> changed;
 
             lock (_lock)
             {
                 changes = _seeded ? Compare(_last, now) : [];
+                changed = Diff(_last, now);
 
                 _last = now;
                 _seeded = true;
             }
 
-            Publish(changes);
+            Publish(changes, changed);
         }
 
         private void OnPresenceBulk(object? sender, IReadOnlyList<PresenceNotification> notifications)
         {
             List<FriendPresenceChange> changes;
+            List<long> changed;
 
             lock (_lock)
             {
@@ -201,17 +209,38 @@ namespace Froststrap.Integrations.OverlayModules
                     return;
 
                 changes = Compare(_last, updates);
+                changed = [.. updates.Keys];
 
                 foreach ((long userId, UserPresence presence) in updates)
                     _last[userId] = presence;
             }
 
-            Publish(changes);
+            Publish(changes, changed);
         }
 
-        private void Publish(List<FriendPresenceChange> changes)
+        private static List<long> Diff(Dictionary<long, UserPresence> before, Dictionary<long, UserPresence> now)
         {
-            Updated?.Invoke(this, EventArgs.Empty);
+            var changed = new List<long>();
+
+            foreach ((long userId, UserPresence presence) in now)
+            {
+                if (!before.TryGetValue(userId, out UserPresence? was) || !SamePresence(was, presence))
+                    changed.Add(userId);
+            }
+
+            foreach (long userId in before.Keys)
+            {
+                if (!now.ContainsKey(userId))
+                    changed.Add(userId);
+            }
+
+            return changed;
+        }
+
+        private void Publish(List<FriendPresenceChange> changes, List<long> changed)
+        {
+            if (changed.Count > 0)
+                Updated?.Invoke(this, changed);
 
             foreach (FriendPresenceChange change in changes.OrderBy(x => x.Kind).Take(MaxPerUpdate))
                 Changed?.Invoke(this, change);

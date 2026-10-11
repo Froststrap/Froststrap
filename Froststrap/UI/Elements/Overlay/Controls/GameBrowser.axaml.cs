@@ -7,15 +7,11 @@ namespace Froststrap.UI.Elements.Overlay.Controls
 {
     internal partial class GameBrowser : UserControl
     {
-        private GameBrowserViewModel _viewModel;
+        private GameBrowserViewModel? _viewModel;
         private bool _attached;
 
         public GameBrowser()
         {
-            _viewModel = new GameBrowserViewModel(null);
-
-            DataContext = _viewModel;
-
             InitializeComponent();
         }
 
@@ -41,7 +37,7 @@ namespace Froststrap.UI.Elements.Overlay.Controls
         private void LoadContinue()
         {
             if (_attached && IsVisible)
-                _ = _viewModel.LoadContinueAsync();
+                _ = _viewModel!.LoadContinueAsync();
         }
     }
 }

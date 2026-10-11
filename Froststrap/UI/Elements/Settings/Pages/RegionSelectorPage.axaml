@@ -220,13 +220,6 @@ SPDX-License-Identifier: MPL-2.0
                                             <ic:Lucide Width="18" Height="18" Margin="0,0,8,0" Icon="Activity" />
                                             <TextBlock Classes="StatText" Text="{Binding VersionText}" />
                                         </StackPanel>
-                                        <StackPanel
-                                            Margin="0,0,0,6"
-                                            IsVisible="{Binding HasPing}"
-                                            Orientation="Horizontal">
-                                            <ic:Lucide Width="18" Height="18" Margin="0,0,8,0" Icon="Wifi" />
-                                            <TextBlock Classes="StatText" Text="{Binding PingText}" />
-                                        </StackPanel>
                                     </StackPanel>
 
                                     <StackPanel Grid.Row="4">

@@ -14,7 +14,7 @@ namespace Froststrap.UI.Elements.Overlay.Controls
 {
     internal partial class FriendActivity : UserControl
     {
-        private FriendActivityViewModel _viewModel;
+        private FriendActivityViewModel? _viewModel;
 
         private ChatTab? _dragTab;
         private Point _dragStart;
@@ -29,15 +29,15 @@ namespace Froststrap.UI.Elements.Overlay.Controls
             TabScroller.AddHandler(PointerPressedEvent, TabPointerPressed, RoutingStrategies.Tunnel);
             TabScroller.AddHandler(PointerMovedEvent, TabPointerMoved, RoutingStrategies.Tunnel);
             TabScroller.AddHandler(PointerReleasedEvent, TabPointerReleased, RoutingStrategies.Tunnel);
-
-            _viewModel = new FriendActivityViewModel(null);
-            DataContext = _viewModel;
         }
 
         public void Attach(IOverlayHost? overlay)
         {
-            _viewModel.MessagesAdded -= OnMessagesAdded;
-            _viewModel.PropertyChanged -= OnViewModelChanged;
+            if (_viewModel is not null)
+            {
+                _viewModel.MessagesAdded -= OnMessagesAdded;
+                _viewModel.PropertyChanged -= OnViewModelChanged;
+            }
 
             _viewModel = new FriendActivityViewModel(overlay);
             _viewModel.MessagesAdded += OnMessagesAdded;
@@ -54,7 +54,7 @@ namespace Froststrap.UI.Elements.Overlay.Controls
             base.OnPropertyChanged(change);
 
             if (change.Property.Name == nameof(IsEffectivelyVisible) && change.GetNewValue<bool>())
-                _ = _viewModel.LoadAsync();
+                _ = _viewModel?.LoadAsync();
         }
 
         private void OnViewModelChanged(object? sender, PropertyChangedEventArgs e)
@@ -64,7 +64,7 @@ namespace Froststrap.UI.Elements.Overlay.Controls
 
             ScrollToEnd();
 
-            if (_viewModel.HasTab)
+            if (_viewModel?.HasTab == true)
                 Dispatcher.UIThread.Post(() => DraftBox.Focus(), DispatcherPriority.Input);
         }
 
@@ -80,7 +80,7 @@ namespace Froststrap.UI.Elements.Overlay.Controls
 
             e.Handled = true;
 
-            if (_viewModel.SendCommand.CanExecute(null))
+            if (_viewModel?.SendCommand.CanExecute(null) == true)
                 _viewModel.SendCommand.Execute(null);
         }
 
@@ -120,7 +120,7 @@ namespace Froststrap.UI.Elements.Overlay.Controls
 
         private void TabPointerMoved(object? sender, PointerEventArgs e)
         {
-            if (_dragTab is null)
+            if (_dragTab is null || _viewModel is null)
                 return;
 
             if (!e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)

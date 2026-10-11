@@ -15,12 +15,12 @@ namespace Froststrap.Models.Overlay
         private static readonly string[] AllPropertyNames =
         [
             nameof(JobId), nameof(Playing), nameof(MaxPlayers),
-            nameof(Fps), nameof(Ping), nameof(City), nameof(Region),
+            nameof(Fps), nameof(City), nameof(Region),
             nameof(PlaceVersion), nameof(IsCurrent), nameof(PlayerTokens),
             nameof(StartedAt), nameof(UptimeIsEstimate),
             nameof(HasUptime), nameof(UptimeText),
             nameof(Performance), nameof(HasPerformance), nameof(IsLowPerformance),
-            nameof(PerformanceText), nameof(FpsText), nameof(PingText), nameof(HasPing),
+            nameof(PerformanceText), nameof(FpsText),
             nameof(HasVersion), nameof(VersionText),
             nameof(PlayerIcons), nameof(OverflowCount), nameof(HasOverflow),
             nameof(OverflowText), nameof(Avatars),
@@ -36,7 +36,6 @@ namespace Froststrap.Models.Overlay
         public int? Playing { get; set; }
         public int? MaxPlayers { get; set; }
         public double? Fps { get; set; }
-        public int? Ping { get; set; }
         public string? City { get; set; }
         public string? Region { get; set; }
         public int? PlaceVersion { get; set; }
@@ -75,12 +74,6 @@ namespace Froststrap.Models.Overlay
         public string FpsText => Fps is null
             ? String.Empty
             : String.Format(Locale.CurrentCulture, "{0:0} FPS", Fps.Value);
-
-        public string PingText => Ping is null
-            ? String.Empty
-            : String.Format(Locale.CurrentCulture, "{0} ms", Ping.Value);
-
-        public bool HasPing => Ping is not null;
 
         public bool HasVersion => PlaceVersion is not null;
         public string VersionText => String.Format(Locale.CurrentCulture, Strings.Menu_Overlay_Servers_Version, PlaceVersion);

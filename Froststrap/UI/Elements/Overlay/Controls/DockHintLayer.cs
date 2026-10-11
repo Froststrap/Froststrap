@@ -6,7 +6,6 @@ using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml.MarkupExtensions;
-using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 
@@ -57,14 +56,6 @@ namespace Froststrap.UI.Elements.Overlay.Controls
                         Property = Visual.OpacityProperty,
                         Duration = Fade
                     }
-                },
-                Effect = new DropShadowEffect
-                {
-                    BlurRadius = 12,
-                    OffsetX = 0,
-                    OffsetY = 2,
-                    Opacity = 0.4,
-                    Color = Colors.Black
                 }
             };
 
