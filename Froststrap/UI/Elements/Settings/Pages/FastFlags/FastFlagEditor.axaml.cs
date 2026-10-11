@@ -528,7 +528,6 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
             App.FrostRPC?.SetDialog("Profiles");
 
             var dialog = new FlagProfilesDialog();
-
             await dialog.ShowDialog(parentWindow);
 
             App.FrostRPC?.ClearDialog();
@@ -536,25 +535,6 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
             if (dialog.Result != MessageBoxResult.OK)
                 return;
 
-            if (dialog.Tabs.SelectedIndex == 0)
-            {
-                string profileName = dialog.SaveProfile.Text?.Trim() ?? string.Empty;
-
-                if (string.IsNullOrWhiteSpace(profileName))
-                    return;
-
-                App.FastFlags.SaveProfile(profileName);
-            }
-            else if (dialog.Tabs.SelectedIndex == 1)
-            {
-                var selectedValue = dialog.LoadProfile.SelectedValue?.ToString();
-                if (string.IsNullOrEmpty(selectedValue))
-                    return;
-
-                App.FastFlags.LoadProfile(selectedValue, dialog.ClearFlags.IsChecked ?? false);
-            }
-
-            await Task.Delay(1000);
             ReloadList();
         }
 

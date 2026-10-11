@@ -1878,13 +1878,13 @@ Remove it now?</value>
     <value>Misc Mods</value>
   </data>
   <data name="Menu.CommunityMods.Skybox" xml:space="preserve">
-    <value>Skybox</value>
+    <value>Skyboxes</value>
   </data>
   <data name="Menu.CommunityMods.Cursor" xml:space="preserve">
-    <value>Cursor</value>
+    <value>Cursors</value>
   </data>
   <data name="Menu.CommunityMods.AvatarEditor" xml:space="preserve">
-    <value>Avatar Editor</value>
+    <value>Avatar Editors</value>
   </data>
   <data name="Common.Download" xml:space="preserve">
     <value>Download</value>

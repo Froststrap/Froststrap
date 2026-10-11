@@ -4505,7 +4505,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Avatar Editor.
+        ///   Looks up a localized string similar to Avatar Editors.
         /// </summary>
         public static string Menu_CommunityMods_AvatarEditor {
             get {
@@ -4523,7 +4523,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cursor.
+        ///   Looks up a localized string similar to Cursors.
         /// </summary>
         public static string Menu_CommunityMods_Cursor {
             get {
@@ -4577,7 +4577,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Skybox.
+        ///   Looks up a localized string similar to Skyboxes.
         /// </summary>
         public static string Menu_CommunityMods_Skybox {
             get {

@@ -246,6 +246,16 @@ namespace Froststrap.UI.Elements.Settings
                 if (tag == "about")
                 {
                     _viewModel?.OpenAboutCommand.Execute(null);
+
+                    if (_viewModel != null)
+                    {
+                        string page = _viewModel.SelectedPage;
+
+                        Dispatcher.UIThread.Post(
+                            () => UpdateSelectedNavigationViewItem(page),
+                            DispatcherPriority.Loaded);
+                    }
+
                     return;
                 }
 
@@ -299,7 +309,7 @@ namespace Froststrap.UI.Elements.Settings
             }
         }
 
-        private static readonly Dictionary<string, Type> ViewTypeCache = new();
+        private static readonly Dictionary<string, Type> ViewTypeCache = [];
 
         private static Control? ResolveViewForViewModel(object viewModel)
         {
