@@ -4,7 +4,6 @@
 
 using Avalonia;
 using Avalonia.Controls;
-using LucideAvalonia.Enum;
 
 namespace Froststrap.UI.Elements.Controls
 {
@@ -16,8 +15,8 @@ namespace Froststrap.UI.Elements.Controls
         public static readonly StyledProperty<string> DescriptionProperty =
             AvaloniaProperty.Register<CardAction, string>(nameof(Description));
 
-        public static readonly StyledProperty<LucideIconNames> IconProperty =
-            AvaloniaProperty.Register<CardAction, LucideIconNames>(nameof(Icon));
+        public static readonly StyledProperty<object?> IconProperty =
+            AvaloniaProperty.Register<CardAction, object?>(nameof(Icon));
 
         public static readonly StyledProperty<double> IconSizeProperty =
             AvaloniaProperty.Register<CardAction, double>(nameof(IconSize), 24);
@@ -34,7 +33,7 @@ namespace Froststrap.UI.Elements.Controls
             set => SetValue(DescriptionProperty, value);
         }
 
-        public LucideIconNames Icon
+        public object? Icon
         {
             get => GetValue(IconProperty);
             set => SetValue(IconProperty, value);

@@ -33,8 +33,8 @@ namespace Froststrap.UI.Elements.Controls
         public static readonly StyledProperty<IImage?> IconProperty =
             AvaloniaProperty.Register<TitleBar, IImage?>(nameof(Icon), defaultValue: null);
 
-        public static readonly StyledProperty<LucideIconNames?> LucideIconProperty =
-            AvaloniaProperty.Register<TitleBar, LucideIconNames?>(nameof(LucideIcon), defaultValue: null);
+        public static readonly StyledProperty<object?> LucideIconProperty =
+            AvaloniaProperty.Register<TitleBar, object?>(nameof(LucideIcon), defaultValue: null);
 
         public static readonly StyledProperty<ICommand?> CloseCommandProperty =
             AvaloniaProperty.Register<TitleBar, ICommand?>(nameof(CloseCommand));
@@ -60,7 +60,7 @@ namespace Froststrap.UI.Elements.Controls
         public bool ShowClose { get => GetValue(ShowCloseProperty); set => SetValue(ShowCloseProperty, value); }
         public bool ShowPin { get => GetValue(ShowPinProperty); set => SetValue(ShowPinProperty, value); }
         public IImage? Icon { get => GetValue(IconProperty); set => SetValue(IconProperty, value); }
-        public LucideIconNames? LucideIcon { get => GetValue(LucideIconProperty); set => SetValue(LucideIconProperty, value); }
+        public object? LucideIcon { get => GetValue(LucideIconProperty); set => SetValue(LucideIconProperty, value); }
         public ICommand? CloseCommand { get => GetValue(CloseCommandProperty); set => SetValue(CloseCommandProperty, value); }
         public object? CloseCommandParameter { get => GetValue(CloseCommandParameterProperty); set => SetValue(CloseCommandParameterProperty, value); }
         public bool IsPinned { get => GetValue(IsPinnedProperty); set => SetValue(IsPinnedProperty, value); }

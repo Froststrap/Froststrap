@@ -5,7 +5,6 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using LucideAvalonia.Enum;
 
 namespace Froststrap.UI.Elements.Controls
 {
@@ -14,8 +13,8 @@ namespace Froststrap.UI.Elements.Controls
         public static readonly StyledProperty<double> IconSizeProperty =
             AvaloniaProperty.Register<IconButton, double>(nameof(IconSize), 12);
 
-        public static readonly StyledProperty<LucideIconNames?> IconProperty =
-            AvaloniaProperty.Register<IconButton, LucideIconNames?>(nameof(Icon), null);
+        public static readonly StyledProperty<object?> IconProperty =
+            AvaloniaProperty.Register<IconButton, object?>(nameof(Icon), null);
 
         public static readonly StyledProperty<bool> IsFilledProperty =
             AvaloniaProperty.Register<IconButton, bool>(nameof(IsFilled), false);
@@ -31,7 +30,7 @@ namespace Froststrap.UI.Elements.Controls
             set => SetValue(IconSizeProperty, value);
         }
 
-        public LucideIconNames? Icon
+        public object? Icon
         {
             get => GetValue(IconProperty);
             set => SetValue(IconProperty, value);
