@@ -133,15 +133,6 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The channel you&apos;re currently on ({0}) has now been restricted from public use. You will now be on the default channel ({1})..
-        /// </summary>
-        public static string Boostrapper_Dialog_UnauthorizedChannel {
-            get {
-                return ResourceManager.GetString("Boostrapper.Dialog.UnauthorizedChannel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Froststrap was unable to automatically update to version {0}. Please update it manually by downloading and running it from the website..
         /// </summary>
         public static string Bootstrapper_AutoUpdateFailed {
@@ -2815,6 +2806,33 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Borderless Windowed Mode.
+        /// </summary>
+        public static string Enums_FullscreenMode_Borderless {
+            get {
+                return ResourceManager.GetString("Enums.FullscreenMode.Borderless", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exclusive Fullscreen.
+        /// </summary>
+        public static string Enums_FullscreenMode_Exclusive {
+            get {
+                return ResourceManager.GetString("Enums.FullscreenMode.Exclusive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Normal Window.
+        /// </summary>
+        public static string Enums_FullscreenMode_Normal {
+            get {
+                return ResourceManager.GetString("Enums.FullscreenMode.Normal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Fewest players.
         /// </summary>
         public static string Enums_Order_Ascending {
@@ -3978,6 +3996,24 @@ namespace Froststrap.Resources {
         public static string Menu_Behaviour_ForceRobloxReinstall_Title {
             get {
                 return ResourceManager.GetString("Menu.Behaviour.ForceRobloxReinstall.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Toggle with Alt+Enter in-game. Exclusive gives the best performance but blocks overlays. Borderless lets overlays work..
+        /// </summary>
+        public static string Menu_Behaviour_FullscreenMode_Description {
+            get {
+                return ResourceManager.GetString("Menu_Behaviour_FullscreenMode_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fullscreen mode.
+        /// </summary>
+        public static string Menu_Behaviour_FullscreenMode_Title {
+            get {
+                return ResourceManager.GetString("Menu.Behaviour.FullscreenMode.Title", resourceCulture);
             }
         }
         
@@ -6594,7 +6630,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable an Overlay with QOL features. Press Ctrl+Alt+L in game to open it. Requires borderless or windowed mode..
+        ///   Looks up a localized string similar to Enable an Overlay with QOL features. Press the overlay shortcut to open it. Requires borderless or windowed mode..
         /// </summary>
         public static string Menu_Integrations_EnableOverlay_Description {
             get {
@@ -10685,7 +10721,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Log in to &apos;Account Manager&apos; or turn on &apos;Froststrap Account Permissions&apos; in the Bootstrapper page to use..
+        ///   Looks up a localized string similar to Log in to &apos;Account Manager&apos; or turn on &apos;Froststrap Account Permissions&apos; to use..
         /// </summary>
         public static string Menu_RegionSelector_LoginRequired {
             get {

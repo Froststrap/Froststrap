@@ -22,9 +22,28 @@ namespace Froststrap.Integrations
         private const int ResolvePollMs = 750;
         private const int PostResolveDelayMs = 2_000;
 
+        private const int WM_KEYDOWN = 0x0100;
+        private const int WM_SYSKEYDOWN = 0x0104;
+        private const uint VK_RETURN = 0x0D;
+        private const uint LLKHF_ALTDOWN = 0x20;
+
+        private const int GWL_STYLE = -16;
+
+        private const int WS_CAPTION = 0x00C00000;
+        private const int WS_THICKFRAME = 0x00040000;
+        private const int WS_MINIMIZEBOX = 0x00020000;
+        private const int WS_MAXIMIZEBOX = 0x00010000;
+        private const int WS_SYSMENU = 0x00080000;
+
+        private const int SM_CXSCREEN = 0;
+        private const int SM_CYSCREEN = 1;
+
         private readonly WINEVENTPROC _setTitleHook;
         private bool _titleHookInstalled;
         private UnhookWinEventSafeHandle? _titleHook;
+
+        private HOOKPROC? _keyboardProc;
+        private HHOOK? _keyboardHook;
 
         private HWND _hWnd;
         private readonly uint _robloxPID;
@@ -33,6 +52,12 @@ namespace Froststrap.Integrations
         private string _currentTitle = "Roblox";
         private string _configuredTitle = "Roblox";
         private bool _inGame;
+
+        private RECT _storedWindowedRect;
+        private bool _hasStoredWindowedRect;
+
+        private int _storedWindowedStyle;
+        private bool _hasStoredWindowedStyle;
 
         public WindowManipulation(long robloxProcessId)
         {
@@ -61,6 +86,9 @@ namespace Froststrap.Integrations
 
                 ApplyConfiguredIcon();
                 ApplyConfiguredTitle();
+
+                if (App.Settings.Prop.FullscreenMode == FullscreenMode.Borderless)
+                    InstallKeyboardHook();
             });
         }
 
@@ -292,12 +320,212 @@ namespace Froststrap.Integrations
             }
         }
 
+        private void InstallKeyboardHook()
+        {
+            if (_keyboardHook is not null || _disposed)
+                return;
+
+            Dispatcher.UIThread.Post(() =>
+            {
+                if (_keyboardHook is not null || _disposed)
+                    return;
+
+                _keyboardProc = OnKeyboardEvent;
+
+                _keyboardHook = PInvoke.SetWindowsHookEx(
+                    WINDOWS_HOOK_ID.WH_KEYBOARD_LL,
+                    _keyboardProc,
+                    HINSTANCE.Null,
+                    0);
+
+                if (_keyboardHook is null || _keyboardHook.Value == IntPtr.Zero)
+                {
+                    App.Logger.Warn(LOG_IDENT, "Failed to install keyboard hook for Alt+Enter handling");
+                    _keyboardHook = null;
+                    _keyboardProc = null;
+                }
+                else
+                {
+                    App.Logger.Info(LOG_IDENT, "Keyboard hook installed (borderless Alt+Enter interception)");
+                }
+            });
+        }
+
+        private void UninstallKeyboardHook()
+        {
+            if (_keyboardHook is null)
+                return;
+
+            Dispatcher.UIThread.Post(() =>
+            {
+                try
+                {
+                    if (_keyboardHook is not null && _keyboardHook.Value != IntPtr.Zero)
+                        PInvoke.UnhookWindowsHookEx(_keyboardHook.Value);
+                }
+                catch { }
+
+                _keyboardHook = null;
+                _keyboardProc = null;
+            });
+        }
+
+        private unsafe LRESULT OnKeyboardEvent(int nCode, WPARAM wParam, LPARAM lParam)
+        {
+            if (nCode < 0)
+                return PInvoke.CallNextHookEx(default, nCode, wParam, lParam);
+
+            uint msg = (uint)wParam.Value;
+            if (msg != WM_KEYDOWN && msg != WM_SYSKEYDOWN)
+                return PInvoke.CallNextHookEx(default, nCode, wParam, lParam);
+
+            if (!HasWindow
+                || App.Settings.Prop.FullscreenMode != FullscreenMode.Borderless
+                || PInvoke.GetForegroundWindow() != _hWnd)
+            {
+                return PInvoke.CallNextHookEx(default, nCode, wParam, lParam);
+            }
+
+            var kb = (KBDLLHOOKSTRUCT*)lParam.Value;
+
+            if (kb->vkCode != VK_RETURN)
+                return PInvoke.CallNextHookEx(default, nCode, wParam, lParam);
+
+            if (((uint)kb->flags & LLKHF_ALTDOWN) == 0)
+                return PInvoke.CallNextHookEx(default, nCode, wParam, lParam);
+
+            App.Logger.Info(LOG_IDENT, "Alt+Enter detected in borderless mode — toggling borderless fullscreen");
+
+            Dispatcher.UIThread.Post(ToggleBorderlessFullscreen);
+
+            return new LRESULT(1);
+        }
+
+        private bool IsCurrentlyBorderless()
+        {
+            if (!HasWindow)
+                return false;
+
+            int style = PInvoke.GetWindowLong(_hWnd, (WINDOW_LONG_PTR_INDEX)GWL_STYLE);
+            return (style & WS_CAPTION) == 0 && (style & WS_THICKFRAME) == 0;
+        }
+
+        private void ToggleBorderlessFullscreen()
+        {
+            if (!HasWindow)
+                return;
+
+            try
+            {
+                if (IsCurrentlyBorderless())
+                    MakeWindowed();
+                else
+                    MakeBorderless();
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error(LOG_IDENT, "Failed to toggle borderless fullscreen");
+                App.Logger.Error(ex);
+            }
+        }
+
+        private void MakeBorderless()
+        {
+            if (!HasWindow)
+                return;
+
+            int style = PInvoke.GetWindowLong(_hWnd, (WINDOW_LONG_PTR_INDEX)GWL_STYLE);
+
+            if (PInvoke.GetWindowRect(_hWnd, out RECT current))
+            {
+                _storedWindowedRect = current;
+                _hasStoredWindowedRect = true;
+            }
+
+            _storedWindowedStyle = style;
+            _hasStoredWindowedStyle = true;
+
+            int newStyle = style;
+            newStyle &= ~WS_CAPTION;
+            newStyle &= ~WS_THICKFRAME;
+            newStyle &= ~WS_MINIMIZEBOX;
+            newStyle &= ~WS_MAXIMIZEBOX;
+            newStyle &= ~WS_SYSMENU;
+
+            _ = PInvoke.SetWindowLong(_hWnd, (WINDOW_LONG_PTR_INDEX)GWL_STYLE, newStyle);
+
+            int screenW = PInvoke.GetSystemMetrics((SYSTEM_METRICS_INDEX)SM_CXSCREEN);
+            int screenH = PInvoke.GetSystemMetrics((SYSTEM_METRICS_INDEX)SM_CYSCREEN);
+
+            _ = PInvoke.SetWindowPos(
+                _hWnd,
+                default,
+                0,
+                0,
+                screenW,
+                screenH + 1,
+                SET_WINDOW_POS_FLAGS.SWP_FRAMECHANGED |
+                SET_WINDOW_POS_FLAGS.SWP_SHOWWINDOW |
+                SET_WINDOW_POS_FLAGS.SWP_NOZORDER);
+
+            App.Logger.Info(LOG_IDENT, "Borderless toggled → fullscreen");
+        }
+
+        private void MakeWindowed()
+        {
+            if (!HasWindow)
+                return;
+
+            int currentStyle = PInvoke.GetWindowLong(_hWnd, (WINDOW_LONG_PTR_INDEX)GWL_STYLE);
+            int restoreStyle = _hasStoredWindowedStyle ? _storedWindowedStyle : currentStyle;
+            _hasStoredWindowedStyle = false;
+
+            _ = PInvoke.SetWindowLong(_hWnd, (WINDOW_LONG_PTR_INDEX)GWL_STYLE, restoreStyle);
+
+            RECT target;
+            if (_hasStoredWindowedRect)
+            {
+                target = _storedWindowedRect;
+                _hasStoredWindowedRect = false;
+            }
+            else
+            {
+                int screenW = PInvoke.GetSystemMetrics((SYSTEM_METRICS_INDEX)SM_CXSCREEN);
+                int screenH = PInvoke.GetSystemMetrics((SYSTEM_METRICS_INDEX)SM_CYSCREEN);
+                const int width = 1280;
+                const int height = 720;
+                int x = Math.Max(0, (screenW - width) / 2);
+                int y = Math.Max(0, (screenH - height) / 2);
+                target = new RECT
+                {
+                    left = x,
+                    top = y,
+                    right = x + width,
+                    bottom = y + height
+                };
+            }
+
+            _ = PInvoke.SetWindowPos(
+                _hWnd,
+                default,
+                target.left,
+                target.top,
+                target.right - target.left,
+                target.bottom - target.top,
+                SET_WINDOW_POS_FLAGS.SWP_NOZORDER |
+                SET_WINDOW_POS_FLAGS.SWP_FRAMECHANGED);
+
+            App.Logger.Info(LOG_IDENT, "Borderless toggled → windowed");
+        }
+
         public void Dispose()
         {
             if (_disposed)
                 return;
 
             _disposed = true;
+
+            UninstallKeyboardHook();
 
             if (_inGame)
             {

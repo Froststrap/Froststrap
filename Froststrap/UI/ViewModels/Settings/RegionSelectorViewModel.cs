@@ -394,7 +394,7 @@ namespace Froststrap.UI.ViewModels.Settings
             IsLoading = false;
         }
 
-        private async Task RefreshCacheFromApiAsync(Task<(List<string> regions, Dictionary<int, string> datacenterMap)?> fetchTask)
+        private static async Task RefreshCacheFromApiAsync(Task<(List<string> regions, Dictionary<int, string> datacenterMap)?> fetchTask)
         {
             try
             {

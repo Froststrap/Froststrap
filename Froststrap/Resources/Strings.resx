@@ -3563,6 +3563,15 @@ All files will be moved, shortcuts updated, and the application will restart.</v
   <data name="Enums.Order.Descending" xml:space="preserve">
     <value>Most players</value>
   </data>
+  <data name="Enums.FullscreenMode.Borderless" xml:space="preserve">
+    <value>Borderless Windowed Mode</value>
+  </data>
+  <data name="Enums.FullscreenMode.Exclusive" xml:space="preserve">
+    <value>Exclusive Fullscreen</value>
+  </data>
+  <data name="Enums.FullscreenMode.Normal" xml:space="preserve">
+    <value>Normal Window</value>
+  </data>
   <data name="Menu.Overlay.Tab.Notes" xml:space="preserve">
     <value>Notes</value>
   </data>
@@ -3587,7 +3596,7 @@ All files will be moved, shortcuts updated, and the application will restart.</v
   <data name="Menu.Overlay.Servers.EmptyRegion" xml:space="preserve">
     <value>No servers running in {0} right now.</value>
   </data>
-  <data name="Boostrapper.Dialog.UnauthorizedChannel" xml:space="preserve">
+  <data name="Bootstrapper.Dialog.UnauthorizedChannel" xml:space="preserve">
     <value>The channel you're currently on ({0}) has now been restricted from public use. You will now be on the default channel ({1}).</value>
   </data>
   <data name="Bootstrapper.Bootstrapper.Dialog.PromptChannelChange" xml:space="preserve">
@@ -3961,5 +3970,11 @@ Press cancel to go back.</value>
   </data>
   <data name="Menu.Overlay.GamePrivacy.Tooltip" xml:space="preserve">
     <value>Choose who can see and join your game</value>
+  </data>
+  <data name="Menu.Behaviour.FullscreenMode.Title" xml:space="preserve">
+    <value>Fullscreen mode</value>
+  </data>
+  <data name="Menu_Behaviour_FullscreenMode_Description" xml:space="preserve">
+    <value>Toggle with Alt+Enter in-game. Exclusive gives the best performance but blocks overlays. Borderless lets overlays work.</value>
   </data>
 </root>

@@ -69,7 +69,7 @@ namespace Froststrap
 
             ProcessId = _watcherData.ProcessId;
 
-            if (OperatingSystem.IsWindows() && App.Settings.Prop.EnableWindowManipulation && App.Settings.Prop.EnableActivityTracking)
+            if (OperatingSystem.IsWindows() && (App.Settings.Prop.EnableWindowManipulation || App.Settings.Prop.FullscreenMode == FullscreenMode.Borderless) && App.Settings.Prop.EnableActivityTracking)
                 WindowManipulation = new(_watcherData.ProcessId);
 
             if (OperatingSystem.IsLinux() && App.Settings.Prop.StudioGameMode && (_watcherData.LaunchMode == LaunchMode.Studio || _watcherData.LaunchMode == LaunchMode.StudioAuth))

@@ -246,8 +246,22 @@ namespace Froststrap
             bool result = base.Load(alertFailure);
             OriginalProp = new(Prop);
 
-            if (GetPreset("Rendering.ManualFullscreen") != "False")
-                SetPreset("Rendering.ManualFullscreen", "False");
+            switch (App.Settings.Prop.FullscreenMode)
+            {
+                case FullscreenMode.Exclusive:
+                    if (GetPreset("Rendering.ManualFullscreen") != "False")
+                        SetPreset("Rendering.ManualFullscreen", "False");
+                    break;
+
+                case FullscreenMode.Borderless:
+                    if (GetPreset("Rendering.ManualFullscreen") is not null)
+                        SetPreset("Rendering.ManualFullscreen", null);
+                    break;
+
+                case FullscreenMode.Normal:
+                default:
+                    break;
+            }
 
             return result;
         }

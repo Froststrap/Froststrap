@@ -42,6 +42,7 @@ namespace Froststrap.Models.Persistable
 
         // Bootstrapper Page
         public bool ConfirmLaunches { get; set; } = true;
+        public FullscreenMode FullscreenMode { get; set; } = FullscreenMode.Exclusive;
         public bool AllowCookieAccess { get; set; }
         public bool AutoCloseCrashHandler { get; set; }
         public CleanerOptions CleanerOptions { get; set; } = CleanerOptions.Never;

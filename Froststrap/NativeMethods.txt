@@ -34,3 +34,7 @@ SetWindowRgn
 CreateRectRgn
 CombineRgn
 DeleteObject
+SetWindowsHookEx
+UnhookWindowsHookEx
+CallNextHookEx
+KBDLLHOOKSTRUCT

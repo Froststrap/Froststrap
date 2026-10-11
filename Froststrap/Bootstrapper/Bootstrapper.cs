@@ -604,7 +604,7 @@ internal partial class Bootstrapper : IDisposable
                     {
                         await Frontend.ShowMessageBox(
                             String.Format(CultureInfo.InvariantCulture,
-                                Strings.Boostrapper_Dialog_UnauthorizedChannel,
+                                Strings.Bootstrapper_Dialog_UnauthorizedChannel,
                                 Deployment.Channel,
                                 Deployment.DefaultChannel
                             ),
@@ -1321,7 +1321,7 @@ internal partial class Bootstrapper : IDisposable
 
     private async Task LaunchWatcherIfNeededAsync(List<int> autoclosePids, string? logFileName = null, string? logDirectory = null)
     {
-        if (!(App.Settings.Prop.EnableActivityTracking || App.Settings.Prop.EnableWindowManipulation || App.Settings.Prop.EnableOverlay || App.LaunchSettings.TestModeFlag.Active || autoclosePids.Count > 0))
+        if (!(App.Settings.Prop.EnableActivityTracking || App.Settings.Prop.EnableWindowManipulation || App.Settings.Prop.FullscreenMode == FullscreenMode.Borderless || App.Settings.Prop.EnableOverlay || App.LaunchSettings.TestModeFlag.Active || autoclosePids.Count > 0))
             return;
 
         try

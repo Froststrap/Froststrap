@@ -148,6 +148,35 @@ namespace Froststrap.UI.ViewModels.Settings
             get => App.Settings.Prop.ConfirmLaunches;
             set => App.Settings.Prop.ConfirmLaunches = value;
         }
+        public IEnumerable<FullscreenMode> FullscreenModes { get; } = Enum.GetValues<FullscreenMode>();
+
+        public static FullscreenMode FullscreenMode
+        {
+            get => App.Settings.Prop.FullscreenMode;
+            set
+            {
+                App.Settings.Prop.FullscreenMode = value;
+
+                switch (value)
+                {
+                    case FullscreenMode.Exclusive:
+                        if (App.FastFlags.GetPreset("Rendering.ManualFullscreen") != "False")
+                            App.FastFlags.SetPreset("Rendering.ManualFullscreen", "False");
+                        break;
+
+                    case FullscreenMode.Borderless:
+                        if (App.FastFlags.GetPreset("Rendering.ManualFullscreen") is not null)
+                            App.FastFlags.SetPreset("Rendering.ManualFullscreen", null);
+                        break;
+
+                    case FullscreenMode.Normal:
+                    default:
+                        break;
+                }
+
+                App.FastFlags.Save();
+            }
+        }
 
         public static bool CookieLoadingFinished => true;
 
