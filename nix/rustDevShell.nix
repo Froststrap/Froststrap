@@ -17,9 +17,7 @@ let
   toolchain =
     with fenix.packages.${stdenv.system};
     combine [
-      minimal.toolchain
-      latest.clippy
-      latest.rust-analyzer
+      latest.toolchain
     ];
 in
 mkFragment {

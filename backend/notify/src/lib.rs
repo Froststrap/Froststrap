@@ -2,9 +2,9 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-pub mod util;
-pub mod test;
 pub mod data_types;
+pub mod test;
+pub mod util;
 
 #[cfg(target_os = "linux")]
 pub mod linux;
@@ -17,7 +17,7 @@ use std::os::raw::c_char;
 use util::IStr;
 
 /// Runtime initialzer, will No-op on Linux systems
-/// 
+///
 /// On macOS it will request notification permission.
 ///
 /// On Windows it will set the thread AUMID.
@@ -25,7 +25,7 @@ use util::IStr;
 pub extern "C" fn init() -> i32 {
     #[cfg(target_os = "macos")]
     return macos::request_notification_permission();
-    
+
     #[cfg(target_os = "windows")]
     return win::set_application("xyz.froststrap.desktop".into());
 

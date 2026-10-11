@@ -1,38 +1,145 @@
 mod handlers;
 mod tracker;
 
-use std::thread;
+use std::error::Error;
+use std::sync::atomic::{AtomicI32, Ordering};
+use std::sync::{Arc, Mutex, MutexGuard};
+use std::thread::{self, JoinHandle};
 
 use smithay_client_toolkit::{
     compositor::{CompositorState, Region},
     output::OutputState,
     reexports::{
-        calloop::{channel, EventLoop},
+        calloop::{EventLoop, LoopSignal, channel},
         calloop_wayland_source::WaylandSource,
-        client::{globals::registry_queue_init, protocol::wl_shm, Connection},
+        client::{Connection, globals::registry_queue_init, protocol::wl_shm},
     },
     registry::RegistryState,
     shell::{
-        wlr_layer::{Anchor, KeyboardInteractivity, Layer, LayerShell, LayerSurface},
         WaylandSurface,
+        wlr_layer::{Anchor, KeyboardInteractivity, Layer, LayerShell, LayerSurface},
     },
-    shm::{slot::SlotPool, Shm},
+    shm::{Shm, slot::SlotPool},
 };
 
 use tracker::{SoberRect, WindowTracker};
 
-const BORDER: i32 = 6;
-const BORDER_PIXEL: u32 = 0xFF2080FF;
-const FILL_PIXEL: u32 = 0x20001040;
+fn lock<T>(mutex: &Mutex<T>) -> MutexGuard<'_, T> {
+    mutex
+        .lock()
+        .unwrap_or_else(|poisoned| poisoned.into_inner())
+}
 
-pub struct App {
+struct Frame {
+    width: i32,
+    height: i32,
+    pixels: Vec<u8>,
+}
+
+struct Shared {
+    frame: Mutex<Frame>,
+    width: AtomicI32,
+    height: AtomicI32,
+}
+
+enum Command {
+    Present,
+    Sync,
+    SetVisible(bool),
+    Shutdown,
+}
+
+pub struct Overlay {
+    shared: Arc<Shared>,
+    sender: channel::Sender<Command>,
+    thread: Option<JoinHandle<()>>,
+}
+
+impl Overlay {
+    pub fn start() -> Overlay {
+        let shared = Arc::new(Shared {
+            frame: Mutex::new(Frame {
+                width: 0,
+                height: 0,
+                pixels: Vec::new(),
+            }),
+            width: AtomicI32::new(0),
+            height: AtomicI32::new(0),
+        });
+        let (sender, receiver) = channel::channel::<Command>();
+
+        let thread_shared = shared.clone();
+        let thread_sender = sender.clone();
+        let thread = thread::spawn(move || {
+            if let Err(err) = run(thread_shared, thread_sender, receiver) {
+                eprintln!("overlay stopped: {err}");
+            }
+        });
+
+        Overlay {
+            shared,
+            sender,
+            thread: Some(thread),
+        }
+    }
+
+    pub fn size(&self) -> (i32, i32) {
+        (
+            self.shared.width.load(Ordering::Relaxed),
+            self.shared.height.load(Ordering::Relaxed),
+        )
+    }
+
+    pub fn submit(&self, pixels: &[u8], width: i32, height: i32, stride: i32) {
+        if width <= 0 || height <= 0 || stride < width * 4 {
+            return;
+        }
+
+        let row_bytes = width as usize * 4;
+        let needed = stride as usize * (height as usize - 1) + row_bytes;
+        if pixels.len() < needed {
+            return;
+        }
+
+        {
+            let mut frame = lock(&self.shared.frame);
+            frame.width = width;
+            frame.height = height;
+            frame.pixels.resize(row_bytes * height as usize, 0);
+            for row in 0..height as usize {
+                let src = row * stride as usize;
+                let dst = row * row_bytes;
+                frame.pixels[dst..dst + row_bytes].copy_from_slice(&pixels[src..src + row_bytes]);
+            }
+        }
+
+        let _ = self.sender.send(Command::Present);
+    }
+
+    pub fn set_visible(&self, visible: bool) {
+        let _ = self.sender.send(Command::SetVisible(visible));
+    }
+
+    pub fn shutdown(mut self) {
+        let _ = self.sender.send(Command::Shutdown);
+        if let Some(thread) = self.thread.take() {
+            let _ = thread.join();
+        }
+    }
+}
+
+struct App {
     registry_state: RegistryState,
     output_state: OutputState,
     shm: Shm,
     pool: SlotPool,
     layer: LayerSurface,
     tracker: Box<dyn WindowTracker>,
+    shared: Arc<Shared>,
+    signal: LoopSignal,
     rect: Option<SoberRect>,
+    visible: bool,
+    configured: bool,
 }
 
 impl App {
@@ -40,32 +147,47 @@ impl App {
         let Some(rect) = self.rect else {
             return;
         };
+        if !self.configured {
+            return;
+        }
 
         let width = rect.width.max(1);
         let height = rect.height.max(1);
-        let (buffer, canvas) = self
-            .pool
-            .create_buffer(width, height, width * 4, wl_shm::Format::Argb8888)
-            .expect("create buffer");
+        let Ok((buffer, canvas)) =
+            self.pool
+                .create_buffer(width, height, width * 4, wl_shm::Format::Argb8888)
+        else {
+            return;
+        };
 
-        for (index, px) in canvas.chunks_exact_mut(4).enumerate() {
-            let x = index as i32 % width;
-            let y = index as i32 / width;
-            let on_border =
-                x < BORDER || y < BORDER || x >= width - BORDER || y >= height - BORDER;
-            let pixel = if on_border { BORDER_PIXEL } else { FILL_PIXEL };
-            px.copy_from_slice(&pixel.to_le_bytes());
+        canvas.fill(0);
+
+        {
+            let frame = lock(&self.shared.frame);
+            let copy_width = frame.width.min(width).max(0) as usize;
+            let copy_height = frame.height.min(height).max(0) as usize;
+            let src_stride = frame.width as usize * 4;
+            let dst_stride = width as usize * 4;
+            for row in 0..copy_height {
+                let src = row * src_stride;
+                let dst = row * dst_stride;
+                canvas[dst..dst + copy_width * 4]
+                    .copy_from_slice(&frame.pixels[src..src + copy_width * 4]);
+            }
         }
 
         self.layer.wl_surface().damage_buffer(0, 0, width, height);
-        buffer
-            .attach_to(self.layer.wl_surface())
-            .expect("attach buffer");
-        self.layer.commit();
+        if buffer.attach_to(self.layer.wl_surface()).is_ok() {
+            self.layer.commit();
+        }
     }
 
     fn sync(&mut self) {
-        let next = self.tracker.query();
+        let next = if self.visible {
+            self.tracker.query()
+        } else {
+            None
+        };
         if next == self.rect {
             return;
         }
@@ -73,22 +195,42 @@ impl App {
 
         match next {
             Some(rect) => {
+                self.shared.width.store(rect.width, Ordering::Relaxed);
+                self.shared.height.store(rect.height, Ordering::Relaxed);
                 self.layer
                     .set_size(rect.width.max(1) as u32, rect.height.max(1) as u32);
                 self.layer.set_margin(rect.y, 0, 0, rect.x);
                 self.layer.commit();
             }
             None => {
+                self.shared.width.store(0, Ordering::Relaxed);
+                self.shared.height.store(0, Ordering::Relaxed);
+                self.configured = false;
                 self.layer.wl_surface().attach(None, 0, 0);
                 self.layer.commit();
             }
         }
     }
+
+    fn handle(&mut self, command: Command) {
+        match command {
+            Command::Present => self.draw(),
+            Command::Sync => self.sync(),
+            Command::SetVisible(visible) => {
+                self.visible = visible;
+                self.sync();
+            }
+            Command::Shutdown => self.signal.stop(),
+        }
+    }
 }
 
-pub fn run_rect_demo() -> Result<(), Box<dyn std::error::Error>> {
+fn run(
+    shared: Arc<Shared>,
+    sender: channel::Sender<Command>,
+    receiver: channel::Channel<Command>,
+) -> Result<(), Box<dyn Error>> {
     let tracker = tracker::detect().ok_or("no supported compositor detected")?;
-    let initial = tracker.query();
 
     let conn = Connection::connect_to_env()?;
     let (globals, event_queue) = registry_queue_init(&conn)?;
@@ -111,10 +253,15 @@ pub fn run_rect_demo() -> Result<(), Box<dyn std::error::Error>> {
     layer.set_keyboard_interactivity(KeyboardInteractivity::None);
 
     let empty_region = Region::new(&compositor)?;
-    layer.wl_surface().set_input_region(Some(empty_region.wl_region()));
+    layer
+        .wl_surface()
+        .set_input_region(Some(empty_region.wl_region()));
 
+    let initial = tracker.query();
     match initial {
         Some(rect) => {
+            shared.width.store(rect.width, Ordering::Relaxed);
+            shared.height.store(rect.height, Ordering::Relaxed);
             layer.set_size(rect.width.max(1) as u32, rect.height.max(1) as u32);
             layer.set_margin(rect.y, 0, 0, rect.x);
         }
@@ -131,24 +278,22 @@ pub fn run_rect_demo() -> Result<(), Box<dyn std::error::Error>> {
         .insert(handle.clone())
         .map_err(|_| "failed to register the wayland source")?;
 
-    let (tx, rx) = channel::channel::<()>();
+    handle
+        .insert_source(receiver, |event, _, app| match event {
+            channel::Event::Msg(command) => app.handle(command),
+            channel::Event::Closed => app.signal.stop(),
+        })
+        .map_err(|_| "failed to register the command channel")?;
+
     if let Some(events) = tracker.watch() {
         thread::spawn(move || {
             while events.recv().is_ok() {
-                if tx.send(()).is_err() {
+                if sender.send(Command::Sync).is_err() {
                     break;
                 }
             }
         });
     }
-
-    handle
-        .insert_source(rx, |event, _, app| {
-            if let channel::Event::Msg(()) = event {
-                app.sync();
-            }
-        })
-        .map_err(|_| "failed to register the tracker channel")?;
 
     let mut app = App {
         registry_state: RegistryState::new(&globals),
@@ -157,10 +302,13 @@ pub fn run_rect_demo() -> Result<(), Box<dyn std::error::Error>> {
         pool,
         layer,
         tracker,
+        shared,
+        signal: event_loop.get_signal(),
         rect: initial,
+        visible: true,
+        configured: false,
     };
 
-    loop {
-        event_loop.dispatch(None, &mut app)?;
-    }
+    event_loop.run(None, &mut app, |_| {})?;
+    Ok(())
 }

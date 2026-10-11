@@ -45,10 +45,10 @@ fn send_notification_impl(title: &str, body: &str) -> windows::core::Result<()> 
 
     let toast = ToastNotification::CreateToastNotification(&toast_xml)?;
 
-    let aumid_reader = AUMID_LOCK
-        .read()
-        .unwrap();
-    let aumid = aumid_reader.clone().expect("set_application() must be run before to send a notification with an AUMID.");
+    let aumid_reader = AUMID_LOCK.read().unwrap();
+    let aumid = aumid_reader
+        .clone()
+        .expect("set_application() must be run before to send a notification with an AUMID.");
 
     let notifier = ToastNotificationManager::CreateToastNotifierWithId(&HSTRING::from(aumid))?;
     notifier.Show(&toast)?;

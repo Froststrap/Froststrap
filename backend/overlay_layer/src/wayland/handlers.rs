@@ -3,8 +3,8 @@ use smithay_client_toolkit::{
     delegate_compositor, delegate_layer, delegate_output, delegate_registry, delegate_shm,
     output::{OutputHandler, OutputState},
     reexports::client::{
-        protocol::{wl_output, wl_surface},
         Connection, QueueHandle,
+        protocol::{wl_output, wl_surface},
     },
     registry::{ProvidesRegistryState, RegistryState},
     registry_handlers,
@@ -93,7 +93,7 @@ impl OutputHandler for App {
 
 impl LayerShellHandler for App {
     fn closed(&mut self, _conn: &Connection, _qh: &QueueHandle<Self>, _layer: &LayerSurface) {
-        std::process::exit(0);
+        self.signal.stop();
     }
 
     fn configure(
@@ -104,9 +104,8 @@ impl LayerShellHandler for App {
         _configure: LayerSurfaceConfigure,
         _serial: u32,
     ) {
-        if self.rect.is_some() {
-            self.draw();
-        }
+        self.configured = true;
+        self.draw();
     }
 }
 

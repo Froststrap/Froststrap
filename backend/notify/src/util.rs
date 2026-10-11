@@ -8,7 +8,7 @@ pub struct IStr(pub String);
 
 impl From<String> for IStr {
     fn from(input: String) -> Self {
-         Self(input)   
+        Self(input)
     }
 }
 
@@ -31,9 +31,7 @@ impl From<*const c_char> for IStr {
         // to provide its not a retarded string which
         // it not even a string, which would break
         // the program anyways.
-        let cstr = unsafe {
-            CStr::from_ptr(input)
-        };
+        let cstr = unsafe { CStr::from_ptr(input) };
 
         cstr.to_string_lossy().into_owned().into()
     }

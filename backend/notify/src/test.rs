@@ -4,7 +4,7 @@
 
 #[cfg(test)]
 mod test {
-    use crate::{send_notification_message, init};
+    use crate::{init, send_notification_message};
     use std::ffi::CString;
 
     #[test]

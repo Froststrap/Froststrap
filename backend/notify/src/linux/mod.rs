@@ -34,11 +34,8 @@ pub fn send_notification(title: String, description: String) -> i32 {
         timeout,
     );
 
-    let result: Result<(u32,), dbus::Error> = proxy.method_call(
-        "org.freedesktop.Notifications",
-        "Notify",
-        meta.into_args(),
-    );
+    let result: Result<(u32,), dbus::Error> =
+        proxy.method_call("org.freedesktop.Notifications", "Notify", meta.into_args());
 
     match result {
         Ok(_id) => SendNotificationResult::Sent as i32,

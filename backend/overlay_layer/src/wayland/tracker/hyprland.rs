@@ -13,7 +13,12 @@ const SOBER_CLASS: &str = "org.vinegarhq.Sober";
 fn socket_path(name: &str) -> Option<PathBuf> {
     let runtime = std::env::var_os("XDG_RUNTIME_DIR")?;
     let signature = std::env::var_os("HYPRLAND_INSTANCE_SIGNATURE")?;
-    Some(PathBuf::from(runtime).join("hypr").join(signature).join(name))
+    Some(
+        PathBuf::from(runtime)
+            .join("hypr")
+            .join(signature)
+            .join(name),
+    )
 }
 
 fn request(command: &str) -> Option<JsonValue> {
