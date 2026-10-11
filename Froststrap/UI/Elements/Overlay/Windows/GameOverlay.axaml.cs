@@ -438,10 +438,8 @@ namespace Froststrap.UI.Elements.Overlay
                 }
             }
 
-            bool wasHidden = !IsVisible || Opacity < 1;
-
-            if (wasHidden)
-                Opacity = 0;
+            if (Opacity < 1)
+                Opacity = 1;
 
             if (_pinnedMode)
             {
@@ -451,7 +449,7 @@ namespace Froststrap.UI.Elements.Overlay
             if (_overlay?.IsGameForeground() == false)
                 _overlay.FocusGame();
 
-            if (wasHidden)
+            if (!IsVisible)
                 Show();
 
             if (WindowState == WindowState.Minimized)
@@ -459,29 +457,11 @@ namespace Froststrap.UI.Elements.Overlay
 
             Reanchor();
 
-            if (wasHidden)
-            {
-                Dispatcher.UIThread.Post(() =>
-                {
-                    Dispatcher.UIThread.Post(() =>
-                    {
-                        Opacity = 1;
-                        Activate();
+            Activate();
 
-                        Dispatcher.UIThread.Post(() => _ = _viewModel.SyncAccountAsync(), DispatcherPriority.Background);
+            Dispatcher.UIThread.Post(() => _ = _viewModel.SyncAccountAsync(), DispatcherPriority.Background);
 
-                        Dispatcher.UIThread.Post(() => _presenting = false, DispatcherPriority.ApplicationIdle);
-                    }, DispatcherPriority.Background);
-                }, DispatcherPriority.Loaded);
-            }
-            else
-            {
-                Activate();
-
-                Dispatcher.UIThread.Post(() => _ = _viewModel.SyncAccountAsync(), DispatcherPriority.Background);
-
-                Dispatcher.UIThread.Post(() => _presenting = false, DispatcherPriority.ApplicationIdle);
-            }
+            Dispatcher.UIThread.Post(() => _presenting = false, DispatcherPriority.ApplicationIdle);
         }
 
         public void Reanchor()
