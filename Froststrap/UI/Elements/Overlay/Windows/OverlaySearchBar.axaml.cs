@@ -21,7 +21,7 @@ using WindowState = Avalonia.Controls.WindowState;
 
 namespace Froststrap.UI.Elements.Overlay
 {
-    internal partial class OverlaySearchBar : Window
+    internal partial class OverlaySearchBar : Window, IDisposable
     {
         private const int HotkeyId = 9001;
         private const int WM_HOTKEY = 0x0312;
@@ -38,6 +38,7 @@ namespace Froststrap.UI.Elements.Overlay
         private bool _preloading = true;
         private bool _warmScheduled;
         private bool _presenting;
+        private bool _disposed;
 
         private OverlayBounds? _lastBounds;
 
@@ -302,8 +303,22 @@ namespace Froststrap.UI.Elements.Overlay
 
         protected override void OnClosed(EventArgs e)
         {
+            Dispose();
+
+            base.OnClosed(e);
+        }
+
+        public void Dispose()
+        {
+            if (_disposed)
+                return;
+
+            _disposed = true;
+
             IsPresented = false;
+
             _viewModel.OnHidden();
+            _viewModel.Dispose();
 
             if (_host is not null)
             {
@@ -316,7 +331,7 @@ namespace Froststrap.UI.Elements.Overlay
             OverlayHotkeyRegistration.Unregister(_hwnd, HotkeyId);
             _hotkeyRegistered = false;
 
-            base.OnClosed(e);
+            GC.SuppressFinalize(this);
         }
     }
 }

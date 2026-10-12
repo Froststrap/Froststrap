@@ -100,6 +100,8 @@ namespace Froststrap.Integrations.Overlay.Platform
                 _window = new GameOverlay(this);
                 _window.PrepareHidden();
 
+                OverlaySearchBarService.Start(this);
+
                 _systemCallback = new WINEVENTPROC(OnSystemEvent);
                 _objectCallback = new WINEVENTPROC(OnObjectEvent);
 
@@ -284,7 +286,7 @@ namespace Froststrap.Integrations.Overlay.Platform
 
             _disposed = true;
 
-            OverlaySearchBarService.SetGameBounds(null);
+            OverlaySearchBarService.Stop();
 
             _systemHook?.Dispose();
             _objectHook?.Dispose();

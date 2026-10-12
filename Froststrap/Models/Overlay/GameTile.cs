@@ -1,4 +1,8 @@
-﻿using Avalonia.Media.Imaging;
+﻿// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
+using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using Froststrap.UI.ViewModels;
 using Froststrap.Utility;
@@ -29,6 +33,77 @@ namespace Froststrap.Models.Overlay
             private set => SetProperty(ref _iconBitmap, value);
         }
 
+        private string _creator = String.Empty;
+        public string Creator
+        {
+            get => _creator;
+            set
+            {
+                if (SetProperty(ref _creator, value))
+                    OnPropertyChanged(nameof(HasCreator));
+            }
+        }
+
+        private bool _isVerified;
+        public bool IsVerified
+        {
+            get => _isVerified;
+            set => SetProperty(ref _isVerified, value);
+        }
+
+        private long _favoritedCount;
+        public long FavoritedCount
+        {
+            get => _favoritedCount;
+            set
+            {
+                if (SetProperty(ref _favoritedCount, value))
+                {
+                    OnPropertyChanged(nameof(FavoritesText));
+                    OnPropertyChanged(nameof(HasFavorites));
+                }
+            }
+        }
+
+        private double _likeRatio;
+        public double LikeRatio
+        {
+            get => _likeRatio;
+            set
+            {
+                if (SetProperty(ref _likeRatio, value))
+                {
+                    OnPropertyChanged(nameof(LikeRatioText));
+                    OnPropertyChanged(nameof(HasLikeRatio));
+                }
+            }
+        }
+
+        private bool _isJoiningRegion;
+        public bool IsJoiningRegion
+        {
+            get => _isJoiningRegion;
+            set
+            {
+                if (SetProperty(ref _isJoiningRegion, value))
+                    OnPropertyChanged(nameof(IsRegionIdle));
+            }
+        }
+
+        public bool IsRegionIdle => !_isJoiningRegion;
+
+        public bool HasCreator => !String.IsNullOrEmpty(_creator);
+
+        public bool HasPlaying => Playing is not null;
+
+        public bool HasFavorites => _favoritedCount > 0;
+
+        public string FavoritesText => _favoritedCount.ToString("N0", Locale.CurrentCulture);
+
+        public bool HasLikeRatio => _likeRatio > 0;
+
+        public string LikeRatioText => $"{_likeRatio:0}%";
+
         private bool _loadingIcon;
         private string? _loadedIconUrl;
 
@@ -42,7 +117,7 @@ namespace Froststrap.Models.Overlay
             try
             {
                 string url = IconUrl;
-                Bitmap? bitmap = await ImageLoader.LoadAsync(url, 272);
+                Bitmap? bitmap = await ImageLoader.LoadAsync(url, 160);
 
                 if (bitmap is null)
                     return;
@@ -61,16 +136,5 @@ namespace Froststrap.Models.Overlay
                 _loadingIcon = false;
             }
         }
-
-        public string PlayingText => Playing is null
-            ? String.Empty
-            : String.Format(Locale.CurrentCulture, Strings.Menu_Overlay_Games_Playing, Compact(Playing.Value));
-
-        private static string Compact(long value) => value switch
-        {
-            >= 1_000_000 => (value / 1_000_000d).ToString("0.#", Locale.CurrentCulture) + "M",
-            >= 1_000 => (value / 1_000d).ToString("0.#", Locale.CurrentCulture) + "K",
-            _ => value.ToString(Locale.CurrentCulture)
-        };
     }
 }

@@ -8443,7 +8443,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} playing.
+        ///   Looks up a localized string similar to {0} Playing.
         /// </summary>
         public static string Menu_Overlay_Games_Playing {
             get {
@@ -9415,11 +9415,38 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Continue playing.
+        /// </summary>
+        public static string Menu_Overlay_SearchBar_Continue {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.SearchBar.Continue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Esc.
         /// </summary>
         public static string Menu_Overlay_SearchBar_Esc {
             get {
                 return ResourceManager.GetString("Menu.Overlay.SearchBar.Esc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Join.
+        /// </summary>
+        public static string Menu_Overlay_SearchBar_Join {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.SearchBar.Join", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No joinable server was found for &quot;{0}&quot;. Try again in a moment..
+        /// </summary>
+        public static string Menu_Overlay_SearchBar_JoinRegionFailed {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.SearchBar.JoinRegionFailed", resourceCulture);
             }
         }
         
@@ -9465,6 +9492,15 @@ namespace Froststrap.Resources {
         public static string Menu_Overlay_SearchBar_Play {
             get {
                 return ResourceManager.GetString("Menu.Overlay.SearchBar.Play", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Playing.
+        /// </summary>
+        public static string Menu_Overlay_SearchBar_Playing {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.SearchBar.Playing", resourceCulture);
             }
         }
         
@@ -9528,15 +9564,6 @@ namespace Froststrap.Resources {
         public static string Menu_Overlay_SearchBar_Tab_Market {
             get {
                 return ResourceManager.GetString("Menu.Overlay.SearchBar.Tab.Market", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Profiles.
-        /// </summary>
-        public static string Menu_Overlay_SearchBar_Tab_Profiles {
-            get {
-                return ResourceManager.GetString("Menu.Overlay.SearchBar.Tab.Profiles", resourceCulture);
             }
         }
         

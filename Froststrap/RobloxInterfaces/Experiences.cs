@@ -1,4 +1,9 @@
-﻿using Froststrap.Enums;
+﻿// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
+using Froststrap.Enums;
+using Froststrap.Models.Entities;
 
 namespace Froststrap.RobloxInterfaces
 {
@@ -56,9 +61,9 @@ namespace Froststrap.RobloxInterfaces
                 .Select(x => new GameTile
                 {
                     UniverseId = x.UniverseId,
-                    PlaceId = x.RootPlaceId,
-                    Name = x.Name,
-                    Playing = x.PlayerCount
+                    PlaceId    = x.RootPlaceId,
+                    Name       = x.Name,
+                    Playing    = x.PlayerCount
                 })
                 .ToList();
 
@@ -66,6 +71,7 @@ namespace Froststrap.RobloxInterfaces
                 tiles = [.. tiles.Take(limit)];
 
             await PopulateIconsAsync(tiles);
+            await PopulateDetailsAsync(tiles);
 
             return new GameSearchPage(tiles, next);
         }
@@ -94,9 +100,9 @@ namespace Froststrap.RobloxInterfaces
             var requests = results
                 .Select(x => new ThumbnailRequest
                 {
-                    Type = ThumbnailType.GameIcon,
+                    Type     = ThumbnailType.GameIcon,
                     TargetId = (ulong)x.UniverseId,
-                    Size = ThumbnailSize.Large
+                    Size     = ThumbnailSize.Large
                 })
                 .ToList();
 
@@ -114,7 +120,7 @@ namespace Froststrap.RobloxInterfaces
 
                 try
                 {
-                    result.ThumbnailUrl = url;
+                    result.ThumbnailUrl    = url;
                     result.ThumbnailBitmap = await ImageLoader.LoadAsync(url, SuggestionIconWidth);
                 }
                 catch (Exception ex)
@@ -156,13 +162,14 @@ namespace Froststrap.RobloxInterfaces
                     .Select(x => new GameTile
                     {
                         UniverseId = x.UniverseId,
-                        PlaceId = x.RootPlaceId,
-                        Name = x.Name ?? Strings.Menu_QuickPlay_UnknownGame,
-                        Playing = x.PlayerCount
+                        PlaceId    = x.RootPlaceId,
+                        Name       = x.Name ?? Strings.Menu_QuickPlay_UnknownGame,
+                        Playing    = x.PlayerCount
                     })
                     .ToList();
 
                 await PopulateIconsAsync(tiles);
+                await PopulateDetailsAsync(tiles);
 
                 return tiles;
             }
@@ -185,8 +192,8 @@ namespace Froststrap.RobloxInterfaces
                 .Select(x => new GameTile
                 {
                     UniverseId = x.Id,
-                    PlaceId = x.RootPlace!.Id,
-                    Name = x.Name ?? Strings.Menu_QuickPlay_UnknownGame
+                    PlaceId    = x.RootPlace!.Id,
+                    Name       = x.Name ?? Strings.Menu_QuickPlay_UnknownGame
                 })
                 .ToList();
 
@@ -248,6 +255,92 @@ namespace Froststrap.RobloxInterfaces
             {
                 App.Logger.Error("Failed to fetch experience icons");
                 App.Logger.Error(ex);
+            }
+        }
+
+        private static async Task PopulateDetailsAsync(List<GameTile> tiles)
+        {
+            if (tiles.Count == 0)
+                return;
+
+            var ids = tiles
+                .Select(t => t.UniverseId)
+                .Where(id => id > 0)
+                .Distinct()
+                .ToList();
+
+            if (ids.Count == 0)
+                return;
+
+            try
+            {
+                await UniverseDetails.FetchBulk(String.Join(',', ids));
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Warn("Failed to enrich game tiles");
+                App.Logger.Error(ex);
+                return;
+            }
+
+            foreach (GameTile tile in tiles)
+            {
+                UniverseDetails? details = UniverseDetails.LoadFromCache(tile.UniverseId);
+
+                if (details?.Data is null)
+                    continue;
+
+                tile.Creator        = details.Data.Creator?.Name ?? String.Empty;
+                tile.IsVerified     = details.Data.Creator?.HasVerifiedBadge ?? false;
+                tile.FavoritedCount = details.Data.FavoritedCount;
+            }
+
+            await PopulateVotesAsync(tiles);
+        }
+
+        private static async Task PopulateVotesAsync(List<GameTile> tiles)
+        {
+            var ids = tiles
+                .Select(t => t.UniverseId)
+                .Where(id => id > 0)
+                .Distinct()
+                .ToList();
+
+            if (ids.Count == 0)
+                return;
+
+            var votes = new Dictionary<long, (long Up, long Down)>();
+
+            try
+            {
+                foreach (long[] chunk in ids.Chunk(BatchSize))
+                {
+                    var response = await Http.GetJson<ApiArrayResponse<GameVotesResponse>>(
+                        UrlBuilder.BuildApiUrl("games", $"v1/games/votes?universeIds={String.Join(',', chunk)}"));
+
+                    if (response?.Data is null)
+                        continue;
+
+                    foreach (GameVotesResponse vote in response.Data)
+                        votes[vote.Id] = (vote.UpVotes, vote.DownVotes);
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Warn("Failed to fetch game votes");
+                App.Logger.Error(ex);
+                return;
+            }
+
+            foreach (GameTile tile in tiles)
+            {
+                if (!votes.TryGetValue(tile.UniverseId, out var vote))
+                    continue;
+
+                long total = vote.Up + vote.Down;
+
+                if (total > 0)
+                    tile.LikeRatio = (double)vote.Up / total * 100;
             }
         }
 

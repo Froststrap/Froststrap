@@ -3417,7 +3417,7 @@ All files will be moved, shortcuts updated, and the application will restart.</v
     <value>Couldn't reach Roblox. Try again in a moment.</value>
   </data>
   <data name="Menu.Overlay.Games.Playing" xml:space="preserve">
-    <value>{0} playing</value>
+    <value>{0} Playing</value>
   </data>
   <data name="Menu.Overlay.Games.Joining" xml:space="preserve">
     <value>Joining {0}…</value>
@@ -4018,5 +4018,17 @@ Press cancel to go back.</value>
   </data>
   <data name="Menu.Overlay.SearchBar.Tab.DevForum" xml:space="preserve">
     <value>DevForum</value>
+  </data>
+  <data name="Menu.Overlay.SearchBar.Join" xml:space="preserve">
+    <value>Join</value>
+  </data>
+  <data name="Menu.Overlay.SearchBar.Continue" xml:space="preserve">
+    <value>Continue playing</value>
+  </data>
+  <data name="Menu.Overlay.SearchBar.Playing" xml:space="preserve">
+    <value>Playing</value>
+  </data>
+  <data name="Menu.Overlay.SearchBar.JoinRegionFailed" xml:space="preserve">
+    <value>No joinable server was found for "{0}". Try again in a moment.</value>
   </data>
 </root>

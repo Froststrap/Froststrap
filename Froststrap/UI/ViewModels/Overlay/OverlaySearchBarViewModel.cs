@@ -4,6 +4,7 @@
 
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
+using Froststrap.Integrations;
 using Froststrap.Models.Overlay;
 using Froststrap.RobloxInterfaces;
 using System.Windows.Input;
@@ -11,13 +12,19 @@ using static Froststrap.RobloxInterfaces.Experiences;
 
 namespace Froststrap.UI.ViewModels.Overlay
 {
-    internal class OverlaySearchBarViewModel : NotifyPropertyChangedViewModel
+    internal class OverlaySearchBarViewModel : NotifyPropertyChangedViewModel, IDisposable
     {
         private static readonly TimeSpan SearchDelay = TimeSpan.FromMilliseconds(350);
         private const int MaxResults = 30;
 
         private readonly DispatcherTimer _debounce;
+        private readonly CancellationTokenSource _disposeCts = new();
+        private readonly HashSet<long> _joiningUniverses = [];
         private int _generation;
+
+        private bool _shown;
+        private bool _showingContinue;
+        private bool _disposed;
 
         public BulkObservableCollection<OverlaySearchTabItem> Tabs { get; } = [];
         public BulkObservableCollection<GameTile> Results { get; } = [];
@@ -58,10 +65,16 @@ namespace Froststrap.UI.ViewModels.Overlay
                 if (String.IsNullOrWhiteSpace(value))
                 {
                     _generation++;
+                    _showingContinue = false;
                     Clear();
+
+                    if (_shown)
+                        _ = LoadContinueAsync();
+
                     return;
                 }
 
+                _showingContinue = false;
                 _debounce.Start();
             }
         }
@@ -99,6 +112,8 @@ namespace Froststrap.UI.ViewModels.Overlay
 
         public bool ShowEmpty => !IsBusy && Results.Count == 0;
 
+        public bool ShowContinueHeader => _showingContinue && Results.Count > 0;
+
         public string EmptyText
         {
             get
@@ -116,6 +131,7 @@ namespace Froststrap.UI.ViewModels.Overlay
         public ICommand CloseCommand { get; }
         public ICommand SelectTabCommand { get; }
         public ICommand JoinCommand { get; }
+        public ICommand JoinRegionCommand { get; }
 
         public event EventHandler? CloseRequested;
 
@@ -145,16 +161,23 @@ namespace Froststrap.UI.ViewModels.Overlay
             });
 
             JoinCommand = new RelayCommand<GameTile>(Join);
+            JoinRegionCommand = new AsyncRelayCommand<GameTile>(JoinRegion);
         }
 
-        public void OnShown() => Refreshed();
+        public void OnShown()
+        {
+            _shown = true;
+            Refreshed();
+
+            ApplyJoiningState();
+
+            if (String.IsNullOrWhiteSpace(_query) && Results.Count == 0)
+                _ = LoadContinueAsync();
+        }
 
         public void OnHidden()
         {
-            _debounce.Stop();
-            _generation++;
-            Query = String.Empty;
-            Clear();
+            _shown = false;
         }
 
         public void MoveSelection(int delta)
@@ -199,6 +222,126 @@ namespace Froststrap.UI.ViewModels.Overlay
             CloseRequested?.Invoke(this, EventArgs.Empty);
         }
 
+        private async Task JoinRegion(GameTile? tile)
+        {
+            if (tile is null || _joiningUniverses.Contains(tile.UniverseId))
+                return;
+
+            _joiningUniverses.Add(tile.UniverseId);
+            ApplyJoiningState();
+
+            bool success = false;
+            bool cancelled = false;
+
+            try
+            {
+                App.Logger.Info($"Search bar: looking for best region server for {tile.Name} ({tile.PlaceId})");
+
+                using var fetcher = new RobloxServerFetcher();
+
+                success = await fetcher.JoinBestServerAsync(
+                    tile.PlaceId,
+                    showConfirmation: false,
+                    _disposeCts.Token);
+
+                if (success)
+                    App.Logger.Info($"Search bar: joined best region server for {tile.Name}");
+                else
+                    App.Logger.Warn($"Search bar: no region server found for {tile.Name}");
+            }
+            catch (OperationCanceledException)
+            {
+                cancelled = true;
+                App.Logger.Info($"Search bar: region join cancelled for {tile.Name}");
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error("Search bar failed to join best region");
+                App.Logger.Error(ex);
+            }
+            finally
+            {
+                _joiningUniverses.Remove(tile.UniverseId);
+                ApplyJoiningState();
+            }
+
+            if (cancelled)
+                return;
+
+            if (success)
+            {
+                CloseRequested?.Invoke(this, EventArgs.Empty);
+                return;
+            }
+
+            bool stillVisible = Results.Any(t => t.UniverseId == tile.UniverseId);
+
+            if (!stillVisible)
+                return;
+
+            try
+            {
+                await Frontend.ShowMessageBox(
+                    String.Format(Locale.CurrentCulture, Strings.Menu_Overlay_SearchBar_JoinRegionFailed, tile.Name),
+                    MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error("Failed to show region join failure message");
+                App.Logger.Error(ex);
+            }
+        }
+
+        private void ApplyJoiningState()
+        {
+            foreach (GameTile tile in Results)
+                tile.IsJoiningRegion = _joiningUniverses.Contains(tile.UniverseId);
+        }
+
+        private async Task LoadContinueAsync()
+        {
+            if (!String.IsNullOrWhiteSpace(_query))
+                return;
+
+            int generation = ++_generation;
+
+            IsBusy = true;
+            Refreshed();
+
+            try
+            {
+                List<GameTile> tiles = await Experiences.ContinueAsync();
+
+                if (generation != _generation || !String.IsNullOrWhiteSpace(_query))
+                    return;
+
+                Results.ReplaceAll(tiles);
+                ApplyJoiningState();
+
+                foreach (GameTile tile in tiles)
+                    _ = tile.LoadIconAsync();
+
+                _showingContinue = tiles.Count > 0;
+                SelectedIndex = tiles.Count > 0 ? 0 : -1;
+            }
+            catch (Exception ex)
+            {
+                if (generation != _generation)
+                    return;
+
+                App.Logger.Error("Continue list failed");
+                App.Logger.Error(ex);
+            }
+            finally
+            {
+                if (generation == _generation)
+                {
+                    IsBusy = false;
+                    Refreshed();
+                }
+            }
+        }
+
         private async Task SearchAsync(string query)
         {
             int generation = ++_generation;
@@ -214,10 +357,12 @@ namespace Froststrap.UI.ViewModels.Overlay
                     return;
 
                 Results.ReplaceAll(page.Tiles);
+                ApplyJoiningState();
 
                 foreach (GameTile tile in page.Tiles)
                     _ = tile.LoadIconAsync();
 
+                _showingContinue = false;
                 SelectedIndex = page.Tiles.Count > 0 ? 0 : -1;
             }
             catch (Exception ex)
@@ -252,7 +397,23 @@ namespace Froststrap.UI.ViewModels.Overlay
         {
             OnPropertyChanged(nameof(ShowResults));
             OnPropertyChanged(nameof(ShowEmpty));
+            OnPropertyChanged(nameof(ShowContinueHeader));
             OnPropertyChanged(nameof(EmptyText));
+        }
+
+        public void Dispose()
+        {
+            if (_disposed)
+                return;
+
+            _disposed = true;
+
+            _disposeCts.Cancel();
+            _disposeCts.Dispose();
+
+            _debounce.Stop();
+
+            GC.SuppressFinalize(this);
         }
     }
 }
