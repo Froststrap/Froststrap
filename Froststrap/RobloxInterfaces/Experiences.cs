@@ -11,15 +11,46 @@ namespace Froststrap.RobloxInterfaces
 
         private static readonly string SearchSession = Guid.NewGuid().ToString();
 
-        public static async Task<List<GameTile>> SearchAsync(string query)
-        {
-            var response = await Http.GetJson<OmniSearchResponse>(UrlBuilder.BuildApisUrl(
-                $"search-api/omni-search?searchQuery={Uri.EscapeDataString(query)}&pageType=all&sessionId={SearchSession}"));
+        internal sealed record GameSearchPage(List<GameTile> Tiles, string? NextCursor);
 
-            var tiles = (response.SearchResults ?? [])
+        private static async Task<(OmniSearchResponse? Response, string? NextCursor)> SearchRawAsync(
+            string query, string? cursor, string pageType)
+        {
+            string path = $"search-api/omni-search?searchQuery={Uri.EscapeDataString(query)}"
+                        + $"&pageType={pageType}&sessionId={SearchSession}";
+
+            if (!String.IsNullOrEmpty(cursor))
+                path += $"&pageToken={Uri.EscapeDataString(cursor)}";
+
+            using var doc = await Http.GetJson<JsonDocument>(UrlBuilder.BuildApisUrl(path));
+
+            if (doc is null)
+                return (null, null);
+
+            var response = doc.RootElement.Deserialize<OmniSearchResponse>();
+
+            string? next = doc.RootElement.TryGetProperty("nextPageToken", out var token)
+                && token.ValueKind == JsonValueKind.String
+                ? token.GetString()
+                : null;
+
+            return (response, next);
+        }
+
+        public static async Task<List<GameTile>> SearchAsync(string query) =>
+            (await SearchPageAsync(query)).Tiles;
+
+        public static async Task<GameSearchPage> SearchPageAsync(string query, string? cursor = null, int limit = 0)
+        {
+            if (String.IsNullOrWhiteSpace(query))
+                return new GameSearchPage([], null);
+
+            var (response, next) = await SearchRawAsync(query, cursor, "all");
+
+            var tiles = (response?.SearchResults ?? [])
                 .Where(x => x.ContentGroupType == "Game")
                 .SelectMany(x => x.Contents ?? [])
-                .Where(x => !x.IsSponsored && x.RootPlaceId != 0)
+                .Where(x => !x.IsSponsored && x.UniverseId > 0 && x.RootPlaceId > 0)
                 .GroupBy(x => x.UniverseId)
                 .Select(x => x.First())
                 .Select(x => new GameTile
@@ -31,16 +62,33 @@ namespace Froststrap.RobloxInterfaces
                 })
                 .ToList();
 
+            if (limit > 0 && tiles.Count > limit)
+                tiles = [.. tiles.Take(limit)];
+
             await PopulateIconsAsync(tiles);
 
-            return tiles;
+            return new GameSearchPage(tiles, next);
         }
 
         public static async Task<List<OmniSearchContent>> SuggestAsync(string query, CancellationToken token = default)
         {
-            var results = await GameSearching.GetGameSearchResultsAsync(query);
+            if (String.IsNullOrWhiteSpace(query) || token.IsCancellationRequested)
+                return [];
 
-            if (results is null || results.Count == 0 || token.IsCancellationRequested)
+            var (response, _) = await SearchRawAsync(query, null, "Game");
+
+            if (response is null || token.IsCancellationRequested)
+                return [];
+
+            var results = (response.SearchResults ?? [])
+                .SelectMany(x => x.Contents ?? [])
+                .Where(x => !x.IsSponsored && x.UniverseId > 0 && x.RootPlaceId > 0)
+                .GroupBy(x => x.UniverseId)
+                .Select(x => x.First())
+                .Take(5)
+                .ToList();
+
+            if (results.Count == 0 || token.IsCancellationRequested)
                 return [];
 
             var requests = results
@@ -76,7 +124,7 @@ namespace Froststrap.RobloxInterfaces
                 }
             }));
 
-            return [.. results];
+            return results;
         }
 
         public static async Task<List<GameTile>> ContinueAsync()

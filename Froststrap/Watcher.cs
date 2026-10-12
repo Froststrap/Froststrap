@@ -5,6 +5,7 @@
 using Froststrap.AppData;
 using Froststrap.Integrations;
 using Froststrap.Integrations.Overlay;
+using Froststrap.Integrations.OverlayModules;
 
 namespace Froststrap
 {
@@ -115,7 +116,12 @@ namespace Froststrap
 
                 // TODO: macOS support
                 if ((OperatingSystem.IsWindows() || OperatingSystem.IsLinux()) && App.Settings.Prop.EnableOverlay && _watcherData.ProcessId > 0)
+                {
                     Overlay = OverlayHostFactory.Create(_watcherData.ProcessId, ActivityWatcher);
+
+                    if (OperatingSystem.IsWindows())
+                        OverlaySearchBarService.Start(Overlay);
+                }
 
                 _notifyIcon = new(this);
             }
@@ -346,7 +352,6 @@ namespace Froststrap
                 await UnregisterGameModeWithDbusSendAsync(_gameModeHandle);
             }
 
-            Overlay?.Dispose();
             AppStorageManager.Apply();
 
             if (_watcherData.AutoclosePids is not null)
@@ -374,6 +379,7 @@ namespace Froststrap
                 _gameModeHandle = -1;
             }
 
+            OverlaySearchBarService.Stop();
             Overlay?.Dispose();
             IntegrationWatcher?.Dispose();
             WindowManipulation?.Dispose();

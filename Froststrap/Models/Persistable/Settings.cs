@@ -4,7 +4,6 @@
 
 using Avalonia.Input;
 using Froststrap.Enums.AppStoragePresets;
-using Froststrap.Models.Overlay;
 using System.Collections.ObjectModel;
 
 namespace Froststrap.Models.Persistable
@@ -17,6 +16,9 @@ namespace Froststrap.Models.Persistable
         public bool EnableOverlay { get; set; }
         public KeyModifiers OverlayHotkeyModifiers { get; set; } = OverlayHotkey.DefaultModifiers;
         public Key OverlayHotkeyKey { get; set; } = OverlayHotkey.DefaultKey;
+        public bool SearchBarEnabled { get; set; } = true;
+        public KeyModifiers SearchBarHotkeyModifiers { get; set; } = OverlaySearchBarHotkey.DefaultModifiers;
+        public Key SearchBarHotkeyKey { get; set; } = OverlaySearchBarHotkey.DefaultKey;
         public bool ShowServerDetails { get; set; } = true;
         public bool ShowServerUptime { get; set; } = true;
         public bool AutoRejoin { get; set; }

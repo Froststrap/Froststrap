@@ -9406,6 +9406,141 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This tab isn&apos;t ready yet.
+        /// </summary>
+        public static string Menu_Overlay_SearchBar_ComingSoon {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.SearchBar.ComingSoon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Esc.
+        /// </summary>
+        public static string Menu_Overlay_SearchBar_Esc {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.SearchBar.Esc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Navigate.
+        /// </summary>
+        public static string Menu_Overlay_SearchBar_Navigate {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.SearchBar.Navigate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No results for &quot;{0}&quot;.
+        /// </summary>
+        public static string Menu_Overlay_SearchBar_NoResults {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.SearchBar.NoResults", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open.
+        /// </summary>
+        public static string Menu_Overlay_SearchBar_Open {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.SearchBar.Open", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search games, people, items….
+        /// </summary>
+        public static string Menu_Overlay_SearchBar_Placeholder {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.SearchBar.Placeholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Play.
+        /// </summary>
+        public static string Menu_Overlay_SearchBar_Play {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.SearchBar.Play", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start typing to search.
+        /// </summary>
+        public static string Menu_Overlay_SearchBar_Prompt {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.SearchBar.Prompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DevForum.
+        /// </summary>
+        public static string Menu_Overlay_SearchBar_Tab_DevForum {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.SearchBar.Tab.DevForum", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Docs.
+        /// </summary>
+        public static string Menu_Overlay_SearchBar_Tab_Docs {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.SearchBar.Tab.Docs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Games.
+        /// </summary>
+        public static string Menu_Overlay_SearchBar_Tab_Games {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.SearchBar.Tab.Games", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Groups.
+        /// </summary>
+        public static string Menu_Overlay_SearchBar_Tab_Groups {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.SearchBar.Tab.Groups", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Items.
+        /// </summary>
+        public static string Menu_Overlay_SearchBar_Tab_Items {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.SearchBar.Tab.Items", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Market.
+        /// </summary>
+        public static string Menu_Overlay_SearchBar_Tab_Market {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.SearchBar.Tab.Market", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Profiles.
+        /// </summary>
+        public static string Menu_Overlay_SearchBar_Tab_Profiles {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.SearchBar.Tab.Profiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to All regions.
         /// </summary>
         public static string Menu_Overlay_Servers_AllRegions {

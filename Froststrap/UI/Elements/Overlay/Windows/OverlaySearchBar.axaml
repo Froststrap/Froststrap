@@ -1,0 +1,247 @@
+<!--
+SPDX-FileCopyrightText: 2026 Froststrap
+
+SPDX-License-Identifier: MPL-2.0
+-->
+
+<Window x:Class="Froststrap.UI.Elements.Overlay.OverlaySearchBar"
+        xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:resources="using:Froststrap.Resources"
+        xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
+        xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+        xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Overlay"
+        xmlns:model="clr-namespace:Froststrap.Models.Overlay"
+        x:DataType="vm:OverlaySearchBarViewModel"
+        mc:Ignorable="d"
+        Title="Froststrap Search"
+        Background="Transparent"
+        TransparencyLevelHint="AcrylicBlur,Transparent"
+        WindowDecorations="None"
+        CanResize="False"
+        ShowInTaskbar="False"
+        ShowActivated="False"
+        Topmost="True"
+        IsVisible="False"
+        WindowStartupLocation="Manual"
+        d:DesignWidth="1280"
+        d:DesignHeight="720">
+
+	<Window.Styles>
+		<Style Selector="Button.searchTab">
+			<Setter Property="Cursor" Value="Hand" />
+			<Setter Property="Padding" Value="12,5" />
+			<Setter Property="Margin" Value="0,0,4,0" />
+			<Setter Property="FontSize" Value="13" />
+			<Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
+			<Setter Property="Template">
+				<ControlTemplate>
+					<Border Name="PART_Bd"
+                            Background="Transparent"
+                            CornerRadius="6"
+                            Padding="{TemplateBinding Padding}">
+						<ContentPresenter Content="{TemplateBinding Content}"
+                                          VerticalAlignment="Center"
+                                          HorizontalAlignment="Center" />
+					</Border>
+				</ControlTemplate>
+			</Setter>
+		</Style>
+
+		<Style Selector="Button.searchTab:pointerover /template/ Border#PART_Bd">
+			<Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
+		</Style>
+
+		<Style Selector="Button.searchTab.selected /template/ Border#PART_Bd">
+			<Setter Property="Background" Value="{DynamicResource AccentFillColorDefaultBrush}" />
+		</Style>
+		<Style Selector="Button.searchTab.selected">
+			<Setter Property="Foreground" Value="{DynamicResource TextOnAccentFillColorPrimaryBrush}" />
+		</Style>
+		<Style Selector="Button.searchTab:disabled">
+			<Setter Property="Opacity" Value="0.4" />
+		</Style>
+
+		<Style Selector="ListBox.searchResults">
+			<Setter Property="Background" Value="Transparent" />
+			<Setter Property="Padding" Value="0" />
+		</Style>
+
+		<Style Selector="ListBox.searchResults ListBoxItem">
+			<Setter Property="Padding" Value="0" />
+			<Setter Property="Margin" Value="0,1" />
+			<Setter Property="CornerRadius" Value="8" />
+			<Setter Property="Background" Value="Transparent" />
+		</Style>
+
+		<Style Selector="ListBox.searchResults ListBoxItem:pointerover /template/ ContentPresenter">
+			<Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
+		</Style>
+
+		<Style Selector="ListBox.searchResults ListBoxItem:selected /template/ ContentPresenter">
+			<Setter Property="Background" Value="{DynamicResource AccentFillColorDefaultBrush}" />
+		</Style>
+	</Window.Styles>
+
+	<Grid x:Name="Scrim"
+          Background="#66000000"
+          RowDefinitions="80,Auto,*"
+          PointerPressed="ScrimClicked">
+
+		<Border Grid.Row="1"
+                Width="720"
+                MaxHeight="600"
+                HorizontalAlignment="Center"
+                CornerRadius="12"
+                Background="{DynamicResource SolidBackgroundFillColorSecondaryBrush}"
+                BorderBrush="{DynamicResource SurfaceStrokeColorDefaultBrush}"
+                BorderThickness="1">
+
+			<Grid RowDefinitions="Auto,Auto,*,Auto">
+
+				<Grid Grid.Row="0"
+                      ColumnDefinitions="Auto,*,Auto"
+                      Margin="16,14,16,10">
+
+					<ic:Lucide Grid.Column="0"
+                               Icon="Search"
+                               Width="16" Height="16"
+                               VerticalAlignment="Center"
+                               StrokeBrush="{DynamicResource TextFillColorSecondaryBrush}" />
+
+					<TextBox x:Name="SearchInput"
+                             Grid.Column="1"
+                             Margin="10,0,10,0"
+                             FontSize="15"
+                             Background="Transparent"
+                             BorderThickness="0"
+                             VerticalContentAlignment="Center"
+                             HorizontalContentAlignment="Left"
+                             CaretBrush="{DynamicResource TextFillColorPrimaryBrush}"
+                             Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                             PlaceholderText="{x:Static resources:Strings.Menu_Overlay_SearchBar_Placeholder}"
+                             Text="{Binding Query, Mode=TwoWay}" />
+
+					<Border Grid.Column="2"
+                            Padding="6,2"
+                            VerticalAlignment="Center"
+                            CornerRadius="4"
+                            Background="{DynamicResource ControlFillColorDefaultBrush}"
+                            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                            BorderThickness="1">
+						<TextBlock Text="{x:Static resources:Strings.Menu_Overlay_SearchBar_Esc}"
+                                   FontSize="11"
+                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+					</Border>
+				</Grid>
+
+				<ItemsControl Grid.Row="1"
+                              Margin="16,0,16,8"
+                              ItemsSource="{Binding Tabs}">
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<StackPanel Orientation="Horizontal" />
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+					<ItemsControl.ItemTemplate>
+						<DataTemplate x:DataType="model:OverlaySearchTabItem">
+							<Button Classes="searchTab"
+                                    Classes.selected="{Binding IsSelected}"
+                                    IsEnabled="{Binding IsEnabled}"
+                                    Content="{Binding Title}"
+                                    Command="{Binding $parent[ItemsControl].((vm:OverlaySearchBarViewModel)DataContext).SelectTabCommand}"
+                                    CommandParameter="{Binding}" />
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+
+				<Border Grid.Row="1"
+                        Height="1"
+                        VerticalAlignment="Bottom"
+                        Background="{DynamicResource DividerStrokeColorDefaultBrush}" />
+
+				<Panel Grid.Row="2" MinHeight="240">
+					<ListBox x:Name="ResultList"
+                             Classes="searchResults"
+                             Margin="8,6,8,6"
+                             ItemsSource="{Binding Results}"
+                             SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             DoubleTapped="ResultDoubleTapped">
+						<ListBox.ItemTemplate>
+							<DataTemplate x:DataType="model:GameTile">
+								<Grid ColumnDefinitions="Auto,*,Auto"
+                                      Margin="8,6">
+
+									<Border Grid.Column="0"
+                                            Width="40" Height="40"
+                                            CornerRadius="6"
+                                            Background="{DynamicResource ControlFillColorDefaultBrush}"
+                                            ClipToBounds="True">
+										<Image Source="{Binding IconBitmap}"
+                                               Width="40" Height="40"
+                                               Stretch="UniformToFill"
+                                               RenderOptions.BitmapInterpolationMode="HighQuality" />
+									</Border>
+
+									<StackPanel Grid.Column="1"
+                                                Margin="12,0,12,0"
+                                                VerticalAlignment="Center">
+										<TextBlock Text="{Binding Name}"
+                                                   FontSize="14"
+                                                   FontWeight="SemiBold"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+										<TextBlock Text="{Binding PlayingText}"
+                                                   FontSize="12"
+                                                   Margin="0,2,0,0"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+									</StackPanel>
+
+									<controls:IconButton Grid.Column="2"
+                                                         Width="36" Height="36"
+                                                         Padding="0"
+                                                         VerticalAlignment="Center"
+                                                         HorizontalAlignment="Right"
+                                                         CornerRadius="10"
+                                                         IconSize="16"
+                                                         Icon="Play"
+                                                         Command="{Binding $parent[ItemsControl].((vm:OverlaySearchBarViewModel)DataContext).JoinCommand}"
+                                                         CommandParameter="{Binding}" />
+								</Grid>
+							</DataTemplate>
+						</ListBox.ItemTemplate>
+					</ListBox>
+
+					<TextBlock Text="{Binding EmptyText}"
+                               FontSize="13"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Margin="24"
+                               TextAlignment="Center"
+                               TextWrapping="Wrap"
+                               Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                               IsVisible="{Binding ShowEmpty}" />
+				</Panel>
+
+				<Border Grid.Row="3"
+                        Padding="16,8"
+                        BorderThickness="0,1,0,0"
+                        BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}">
+					<StackPanel Orientation="Horizontal" Spacing="16">
+						<StackPanel Orientation="Horizontal" Spacing="6">
+							<TextBlock Text="↑↓" FontSize="11" FontFamily="{StaticResource CascadiaCode}"
+                                       Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+							<TextBlock Text="{x:Static resources:Strings.Menu_Overlay_SearchBar_Navigate}"
+                                       FontSize="11"
+                                       Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+						</StackPanel>
+					</StackPanel>
+				</Border>
+			</Grid>
+		</Border>
+	</Grid>
+</Window>

@@ -3974,4 +3974,49 @@ Press cancel to go back.</value>
   <data name="Menu_Behaviour_FullscreenMode_Description" xml:space="preserve">
     <value>Toggle with Alt+Enter in-game. Exclusive gives the best performance but blocks overlays. Borderless lets overlays work.</value>
   </data>
+  <data name="Menu.Overlay.SearchBar.Placeholder" xml:space="preserve">
+    <value>Search games, people, items…</value>
+  </data>
+  <data name="Menu.Overlay.SearchBar.Esc" xml:space="preserve">
+    <value>Esc</value>
+  </data>
+  <data name="Menu.Overlay.SearchBar.Prompt" xml:space="preserve">
+    <value>Start typing to search</value>
+  </data>
+  <data name="Menu.Overlay.SearchBar.NoResults" xml:space="preserve">
+    <value>No results for "{0}"</value>
+  </data>
+  <data name="Menu.Overlay.SearchBar.ComingSoon" xml:space="preserve">
+    <value>This tab isn't ready yet</value>
+  </data>
+  <data name="Menu.Overlay.SearchBar.Navigate" xml:space="preserve">
+    <value>Navigate</value>
+  </data>
+  <data name="Menu.Overlay.SearchBar.Open" xml:space="preserve">
+    <value>Open</value>
+  </data>
+  <data name="Menu.Overlay.SearchBar.Play" xml:space="preserve">
+    <value>Play</value>
+  </data>
+  <data name="Menu.Overlay.SearchBar.Tab.Games" xml:space="preserve">
+    <value>Games</value>
+  </data>
+  <data name="Menu.Overlay.SearchBar.Tab.Profiles" xml:space="preserve">
+    <value>Profiles</value>
+  </data>
+  <data name="Menu.Overlay.SearchBar.Tab.Items" xml:space="preserve">
+    <value>Items</value>
+  </data>
+  <data name="Menu.Overlay.SearchBar.Tab.Groups" xml:space="preserve">
+    <value>Groups</value>
+  </data>
+  <data name="Menu.Overlay.SearchBar.Tab.Market" xml:space="preserve">
+    <value>Market</value>
+  </data>
+  <data name="Menu.Overlay.SearchBar.Tab.Docs" xml:space="preserve">
+    <value>Docs</value>
+  </data>
+  <data name="Menu.Overlay.SearchBar.Tab.DevForum" xml:space="preserve">
+    <value>DevForum</value>
+  </data>
 </root>

@@ -77,8 +77,7 @@ namespace Froststrap.UI.Elements.Overlay
 
             Deactivated += OnDeactivated;
 
-            if (_overlay is not null)
-                _overlay.BoundsChanged += OnOverlayBoundsChanged;
+            _overlay?.BoundsChanged += OnOverlayBoundsChanged;
 
             ChatWindow.Attach(overlay);
             BadgeTracker.Attach(overlay?.ActivityWatcher);
@@ -137,7 +136,7 @@ namespace Froststrap.UI.Elements.Overlay
                 panel.PinChanged += OnPanelPinChanged;
                 panel.DragStateChanged += OnPanelDragStateChanged;
                 _panelVisibilitySubs[panel] = panel.GetObservable(Visual.IsVisibleProperty)
-                    .Subscribe(new AnonymousObserver<bool>(_ => OnPanelVisibilityChanged(panel)));
+                    .Subscribe(new AnonymousObserver<bool>(_ => OnPanelVisibilityChanged()));
             }
         }
 
@@ -589,9 +588,7 @@ namespace Froststrap.UI.Elements.Overlay
 
         private void UnregisterToggleHotkey()
         {
-            if (_hotkeyRegistered && OperatingSystem.IsWindows())
-                PInvoke.UnregisterHotKey(_hwnd, ToggleHotkeyId);
-
+            OverlayHotkeyRegistration.Unregister(_hwnd, ToggleHotkeyId);
             _hotkeyRegistered = false;
         }
 
@@ -600,38 +597,20 @@ namespace Froststrap.UI.Elements.Overlay
             if (!OperatingSystem.IsWindows() || _hwnd == HWND.Null)
                 return;
 
-            UnregisterToggleHotkey();
+            OverlayHotkeyRegistration.Unregister(_hwnd, ToggleHotkeyId);
+            _hotkeyRegistered = false;
 
             if (OverlayHotkey.IsSuspended)
                 return;
 
-            KeyModifiers modifiers = App.Settings.Prop.OverlayHotkeyModifiers;
-            Key key = App.Settings.Prop.OverlayHotkeyKey;
+            var (modifiers, key) = OverlayHotkeyRegistration.Resolve(
+                App.Settings.Prop.OverlayHotkeyModifiers,
+                App.Settings.Prop.OverlayHotkeyKey,
+                OverlayHotkey.DefaultModifiers,
+                OverlayHotkey.DefaultKey,
+                "overlay");
 
-            if (!OverlayHotkey.IsAllowed(modifiers, key))
-            {
-                App.Logger.Warn($"The saved overlay hotkey ({OverlayHotkey.Describe(modifiers, key)}) isn't usable, falling back to the default");
-
-                modifiers = OverlayHotkey.DefaultModifiers;
-                key = OverlayHotkey.DefaultKey;
-            }
-
-            var native = HOT_KEY_MODIFIERS.MOD_NOREPEAT;
-
-            if (modifiers.HasFlag(KeyModifiers.Control)) native |= HOT_KEY_MODIFIERS.MOD_CONTROL;
-            if (modifiers.HasFlag(KeyModifiers.Alt)) native |= HOT_KEY_MODIFIERS.MOD_ALT;
-            if (modifiers.HasFlag(KeyModifiers.Shift)) native |= HOT_KEY_MODIFIERS.MOD_SHIFT;
-            if (modifiers.HasFlag(KeyModifiers.Meta)) native |= HOT_KEY_MODIFIERS.MOD_WIN;
-
-            string shortcut = OverlayHotkey.Describe(modifiers, key);
-
-            _hotkeyRegistered = PInvoke.RegisterHotKey(
-                _hwnd, ToggleHotkeyId, native, (uint)KeyInterop.VirtualKeyFromKey(key));
-
-            if (_hotkeyRegistered)
-                App.Logger.Info($"Overlay hotkey is {shortcut}");
-            else
-                App.Logger.Warn($"Could not register the overlay hotkey, something else owns {shortcut}");
+            _hotkeyRegistered = OverlayHotkeyRegistration.Register(_hwnd, ToggleHotkeyId, modifiers, key, "Overlay");
         }
 
         #region Window region (click-through)
@@ -831,7 +810,7 @@ namespace Froststrap.UI.Elements.Overlay
             UpdateWindowRegion();
         }
 
-        private void OnPanelVisibilityChanged(OverlayPanel panel)
+        private void OnPanelVisibilityChanged()
         {
             if (!_pinnedMode)
                 return;
@@ -858,8 +837,7 @@ namespace Froststrap.UI.Elements.Overlay
 
             StopRegionTimer();
 
-            if (_overlay is not null)
-                _overlay.BoundsChanged -= OnOverlayBoundsChanged;
+            _overlay?.BoundsChanged -= OnOverlayBoundsChanged;
 
             OverlayHotkey.Changed -= OnHotkeySettingChanged;
             OverlayHotkey.SuspendedChanged -= OnHotkeySuspended;

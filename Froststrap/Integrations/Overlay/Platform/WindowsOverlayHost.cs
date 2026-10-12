@@ -169,6 +169,8 @@ namespace Froststrap.Integrations.Overlay.Platform
             OverlayBounds bounds = GetBounds();
             _lastBounds = bounds;
 
+            OverlaySearchBarService.SetGameBounds(bounds);
+
             Dispatcher.UIThread.Post(() => BoundsChanged?.Invoke(this, bounds));
         }
 
@@ -271,6 +273,7 @@ namespace Froststrap.Integrations.Overlay.Platform
                 return;
 
             _lastBounds = bounds;
+            OverlaySearchBarService.SetGameBounds(bounds);
             BoundsChanged?.Invoke(this, bounds);
         }
 
@@ -280,6 +283,8 @@ namespace Froststrap.Integrations.Overlay.Platform
                 return;
 
             _disposed = true;
+
+            OverlaySearchBarService.SetGameBounds(null);
 
             _systemHook?.Dispose();
             _objectHook?.Dispose();
