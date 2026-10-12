@@ -36,8 +36,6 @@ jobs:
       - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: "10.0.x"
-          cache: true
-          cache-dependency-path: "**/**/**/packages.lock.json"
 
       - name: Use nightly Rust
         run: |
@@ -54,7 +52,14 @@ jobs:
           vpk download github --repoUrl $PACKAGES_REPO --token ${{ secrets.PACKAGE_TOKEN }} --channel windows-x64 --outputDir .build/velopack $PRE
 
       - name: Publish
-        run: dotnet run --project build -- Publish
+        run: cargo xtask publish
+
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: xtask-timings-windows-${{ github.sha }}
+          path: build/target/cargo-timings/*.html
+          if-no-files-found: warn
 
       - name: Upload to packages release
         if: startsWith(github.ref, 'refs/tags/v')
@@ -83,8 +88,6 @@ jobs:
       - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: "10.0.x"
-          cache: true
-          cache-dependency-path: "**/**/**/packages.lock.json"
 
 
       - name: Use nightly Rust
@@ -139,8 +142,13 @@ jobs:
           SIGN: ${{ startsWith(github.ref, 'refs/tags/v') && 'true' || 'false' }}
           DEVELOPER_ID_APP: ${{ secrets.DEVELOPER_ID_APP }}
           DEVELOPER_ID_INSTALLER: ${{ secrets.DEVELOPER_ID_INSTALLER }}
-        run: dotnet run --project build -- Publish --override-arch ${{ matrix.arch }}
-
+        run: cargo xtask --override-arch ${{ matrix.arch }} publish 
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: xtask-timings-macos-${{ github.sha }}
+          path: build/target/cargo-timings/*.html
+          if-no-files-found: warn
       - name: Upload to packages release
         if: startsWith(github.ref, 'refs/tags/v')
         run: |
@@ -162,8 +170,6 @@ jobs:
       - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: "10.0.x"
-          cache: true
-          cache-dependency-path: "**/**/**/packages.lock.json"
 
       - name: Use nightly Rust
         run: |
@@ -182,7 +188,14 @@ jobs:
           vpk download github --repoUrl $PACKAGES_REPO --token ${{ secrets.PACKAGE_TOKEN }} --channel linux-x64 --outputDir .build/velopack $PRE
 
       - name: Publish
-        run: dotnet run --project build -- Publish
+        run: cargo xtask publish
+
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: xtask-timings-linux-${{ github.sha }}
+          path: build/target/cargo-timings/*.html
+          if-no-files-found: warn
 
       - name: Upload to packages release
         if: startsWith(github.ref, 'refs/tags/v')
@@ -197,13 +210,3 @@ jobs:
             .build/velopack/*
             .build/dist/*.deb
             .build/dist/*.rpm
-
-  publish-release:
-    if: startsWith(github.ref, 'refs/tags/v')
-    needs: [windows, macos, linux]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Publish the draft
-        env:
-          GH_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
-        run: gh release edit "$GITHUB_REF_NAME" --repo Froststrap/packages --draft=false

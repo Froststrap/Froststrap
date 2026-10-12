@@ -80,10 +80,7 @@ namespace Froststrap.UI.ViewModels.Dialogs
 
         private void ExecuteLaunch()
         {
-            NextAction action = SelectedLaunchMode == LaunchMode.Player
-                ? NextAction.LaunchRoblox
-                : NextAction.LaunchRobloxStudio;
-            CloseWindowRequest?.Invoke(this, action);
+            CloseWindowRequest?.Invoke(this, LaunchEntry.ToNextAction(SelectedLaunchMode));
         }
 
         public static string Version => string.Format(CultureInfo.InvariantCulture, Strings.Menu_About_Version, App.Version);

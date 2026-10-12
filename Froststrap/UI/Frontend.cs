@@ -16,18 +16,21 @@ namespace Froststrap.UI
     {
         public static async Task<MessageBoxResult> ShowMessageBox(string message, MessageBoxImage icon = MessageBoxImage.Information, MessageBoxButton buttons = MessageBoxButton.OK, MessageBoxResult defaultResult = MessageBoxResult.None)
         {
-            if (App.LaunchSettings.QuietFlag.Active)
-                return defaultResult;
-
             App.Logger.Info(message);
+
+            if (App.LaunchSettings.Silent)
+                return defaultResult;
 
             return await ShowFluentMessageBox(message, icon, buttons);
         }
 
         public static async Task ShowReleaseNotesDialog(string title, string releaseNotes)
         {
-            if (App.LaunchSettings.QuietFlag.Active)
+            if (App.LaunchSettings.Silent)
+            {
+                App.Logger.Info("Suppressing release notes dialog in silent mode");
                 return;
+            }
 
             await Dispatcher.UIThread.InvokeAsync(async () =>
             {
@@ -51,9 +54,6 @@ namespace Froststrap.UI
         //Were supposed to show this when watcher fails to launch but we lowkey dont anymore idk why
         public static async Task ShowPlayerErrorDialog(bool crash = false)
         {
-            if (App.LaunchSettings.QuietFlag.Active)
-                return;
-
             string topLine = crash ? Strings.Dialog_PlayerError_Crash : Strings.Dialog_PlayerError_FailedLaunch;
 
             string info = string.Format(CultureInfo.InvariantCulture,
@@ -67,8 +67,11 @@ namespace Froststrap.UI
 
         public static async Task ShowExceptionDialog(Exception exception)
         {
-            if (App.LaunchSettings.QuietFlag.Active)
+            if (App.LaunchSettings.Silent)
+            {
+                App.Logger.Error(exception, "Suppressing exception dialog in silent mode");
                 return;
+            }
 
             await Dispatcher.UIThread.InvokeAsync(async () =>
             {
@@ -96,8 +99,11 @@ namespace Froststrap.UI
 
         public static async Task ShowConnectivityDialog(string title, string description, MessageBoxImage image, Exception exception)
         {
-            if (App.LaunchSettings.QuietFlag.Active)
+            if (App.LaunchSettings.Silent)
+            {
+                App.Logger.Error(exception, $"Suppressing connectivity dialog in silent mode: {title}");
                 return;
+            }
 
             await Dispatcher.UIThread.InvokeAsync(async () =>
             {
@@ -139,10 +145,7 @@ namespace Froststrap.UI
             catch (Exception ex)
             {
                 App.Logger.Error("Unhandled exception", ex);
-
-                if (!App.LaunchSettings.QuietFlag.Active)
-                    await ShowMessageBox($"Failed to setup custom bootstrapper: {ex.Message}.\nDefaulting to Fluent.", MessageBoxImage.Error);
-
+                await ShowMessageBox($"Failed to setup custom bootstrapper: {ex.Message}.\nDefaulting to Fluent.", MessageBoxImage.Error);
                 return await GetBootstrapperDialog(BootstrapperStyle.FluentDialog);
             }
         }

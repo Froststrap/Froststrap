@@ -1,7 +1,7 @@
 # Build artifacts
 target
 result
-build/Publish/macApp/build
+build/macApp/build
 .build/
 [Bb]in/
 [Oo]bj/
@@ -12,6 +12,7 @@ DerivedData/
 # Velopack folders
 Releases/
 publish/
+!build/src/action/publish/
 
 # IDE stuff
 .vs/

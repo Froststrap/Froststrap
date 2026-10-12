@@ -7,6 +7,7 @@ using Avalonia;
 using Velopack;
 using Froststrap;
 using Froststrap.Backend;
+using Froststrap.Cli;
 #if WINDOWS
 using System.Runtime.InteropServices;
 #endif
@@ -18,12 +19,17 @@ sealed class Program
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
 #if WINDOWS
+    private const int AttachParentProcess = -1;
+
     [DllImport("kernel32.dll")]
     private static extern bool AllocConsole();
+
+    [DllImport("kernel32.dll")]
+    private static extern bool AttachConsole(int dwProcessId);
 #endif
 
     [STAThread]
-    public static void Main(string[] args)
+    public static int Main(string[] args)
     {
         VelopackApp.Build()
             .SetAutoApplyOnStartup(false)
@@ -34,8 +40,11 @@ sealed class Program
 
         ThreadPool.SetMinThreads(Environment.ProcessorCount * 2, Environment.ProcessorCount * 2);
 
+        // shim to convert old args to new ones
+        string[] launchArgs = LegacyArgs.Normalize(args);
+
 #if WINDOWS
-        if (args.Any(a => a is "-c" or "--console"))
+        if (launchArgs.Any(static a => a is "--console" or "-c"))
             AllocConsole();
 #endif
 
@@ -43,10 +52,49 @@ sealed class Program
         LogManager.Setup().LoadConfigurationFromAssemblyResource(assembly, "NLog.config");
         GlobalDiagnosticsContext.Set("logRoot", Paths.Logs);
         GlobalDiagnosticsContext.Set("startTime", DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss", CultureInfo.InvariantCulture));
+
+        var parseResult = DotMake.CommandLine.Cli.Parse<FroststrapCliCommand>(launchArgs);
+
+        if (LegacyArgs.RequestsHelpOrVersion(launchArgs))
+        {
+            AttachParentConsole();
+            int exitCode = parseResult.ParseResult.Invoke();
+            LogManager.Shutdown();
+            return exitCode;
+        }
+
+        if (parseResult.ParseResult.Errors.Count > 0)
+        {
+            AttachParentConsole();
+
+            foreach (var parseError in parseResult.ParseResult.Errors)
+            {
+                Console.Error.WriteLine(parseError.Message);
+                Logger.Error(parseError.Message);
+            }
+
+            LogManager.Shutdown();
+            return (int)ErrorCode.ERROR_CANCELLED;
+        }
+
+        var cli = parseResult.Bind<FroststrapCliCommand>();
+        var launchSettings = new LaunchSettings(cli, launchArgs);
+
+        if (launchSettings.UnknownArgs.Count > 0)
+        {
+            var unknown = launchSettings.UnknownArgs;
+            Logger.Error($"{unknown.Count} unrecognized argument(s): {string.Join(", ", unknown)}");
+            LogManager.Shutdown();
+            return (int)ErrorCode.ERROR_CANCELLED;
+        }
+
+        App.LaunchSettings = launchSettings;
+
+        if (launchArgs.Length != 0)
+            Logger.Debug($"Arguments: {string.Join(" ", launchArgs)}");
+
         Logger.Debug($"Log file: {Logging.FileLocation}");
         AppInitializer.InitializeNativeResolvers();
-
-        App.LaunchSettings = new LaunchSettings(args);
 
         try
         {
@@ -62,6 +110,15 @@ sealed class Program
         {
             LogManager.Shutdown();
         }
+
+        return 0;
+    }
+
+    private static void AttachParentConsole()
+    {
+#if WINDOWS
+        AttachConsole(AttachParentProcess);
+#endif
     }
 
     public static AppBuilder BuildAvaloniaApp()

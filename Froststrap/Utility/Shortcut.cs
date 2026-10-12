@@ -165,7 +165,7 @@ namespace Froststrap.Utility
             }
 
             onStatus?.Invoke("Creating...");
-            Create(appPath, $"-gameshortcut \"{argData}\"", lnkPath, finalIconPath);
+            Create(appPath, $"--game-shortcut \"{argData}\"", lnkPath, finalIconPath);
         }
 
         public static Task CreateGameShortcut(

@@ -137,7 +137,6 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public EventHandler? RequestSaveNoticeEvent;
         public EventHandler? RequestCloseWindowEvent;
-        public event EventHandler? SettingsSaved;
         public bool GBSEnabled = App.GlobalSettings.Loaded;
 
         public NextAction CloseAction { get; private set; } = NextAction.Terminate;
@@ -357,14 +356,11 @@ namespace Froststrap.UI.ViewModels.Settings
 
             if (!App.LaunchSettings.TestModeFlag.Active)
             {
-                string arg = SelectedLaunchMode == LaunchMode.Player ? "-player" : "-studio";
-                Process.Start(Paths.Process, arg);
+                LaunchEntry.LaunchInChildProcess(SelectedLaunchMode);
             }
             else
             {
-                CloseAction = SelectedLaunchMode == LaunchMode.Player
-                    ? NextAction.LaunchRoblox
-                    : NextAction.LaunchRobloxStudio;
+                CloseAction = LaunchEntry.ToNextAction(SelectedLaunchMode);
                 CloseWindow();
             }
         }
@@ -417,20 +413,11 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        private async void RestartApp()
+        public void RestartApp()
         {
             SaveSettings();
-            SettingsSaved?.Invoke(this, EventArgs.Empty);
 
-            await Task.Delay(750);
-
-            var startInfo = new ProcessStartInfo(Environment.ProcessPath!)
-            {
-                Arguments = "-menu"
-            };
-
-            Process.Start(startInfo);
-            App.FrostRPC = null;
+            CloseAction = NextAction.LaunchSettings;
             CloseWindow();
         }
 

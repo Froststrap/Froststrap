@@ -96,6 +96,44 @@ namespace Froststrap.UI.ViewModels.Settings
                 OnPropertyChanged(nameof(LaunchWithVirtualDisplay));
             }
         }
+        public string VirtualDisplayName
+        {
+            get => App.Settings.Prop.VirtualDisplayName;
+            set
+            {
+                App.Settings.Prop.VirtualDisplayName = value;
+                OnPropertyChanged(nameof(VirtualDisplayName));
+            }
+        }
+        public int VirtualDisplayWidth
+        {
+            get => App.Settings.Prop.VirtualDisplayWidth;
+            set
+            {
+                App.Settings.Prop.VirtualDisplayWidth = value;
+                OnPropertyChanged(nameof(VirtualDisplayWidth));
+            }
+        }
+
+        public int VirtualDisplayHeight
+        {
+            get => App.Settings.Prop.VirtualDisplayHeight;
+            set
+            {
+                App.Settings.Prop.VirtualDisplayHeight = value;
+                OnPropertyChanged(nameof(VirtualDisplayHeight));
+            }
+        }
+
+        public double[] VirtualDisplayHzModes
+        {
+            get => App.Settings.Prop.VirtualDisplayHzModes;
+            set
+            {
+                App.Settings.Prop.VirtualDisplayHzModes = value;
+                OnPropertyChanged(nameof(VirtualDisplayHzModes));
+            }
+        }
 
         public bool SoftKeyEnabled
         {

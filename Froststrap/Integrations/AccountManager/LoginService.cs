@@ -306,7 +306,9 @@ namespace Froststrap.Integrations.AccountManager
             "opera",
             "opera-stable",
             "helium",
+            "helium-browser",
             "thorium",
+            "yandex-browser",
         ];
 
         private static bool IsCompatibleBrowser(string? executablePath)

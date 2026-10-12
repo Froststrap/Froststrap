@@ -1,0 +1,15 @@
+[package]
+name = "xtask"
+description = "Build system for Froststrap"
+version = "1.0.0"
+edition = "2024"
+license = "MPL-2.0"
+
+[profile.dev]
+debug = false
+opt-level = 0
+panic = "abort"
+incremental = false
+
+[dependencies]
+pico-args = "0.5.0"
