@@ -206,8 +206,7 @@
                                 Margin="4"
                                 Classes="gameTileButton"
                                 Command="{Binding $parent[ItemsControl].((vm:GameBrowserViewModel)DataContext).JoinCommand}"
-                                CommandParameter="{Binding Mode=OneTime}"
-                                ToolTip.Tip="{Binding Name}">
+                                CommandParameter="{Binding Mode=OneTime}">
                                 <StackPanel>
                                     <Grid Height="136">
                                         <Border

@@ -208,7 +208,7 @@ SPDX-License-Identifier: MPL-2.0
 			<Button Name="GameButton"
                     Classes="gameButton"
                     Command="{Binding GameStatus.OpenCommand}"
-                    ToolTip.Tip="{x:Static resources:Strings.Menu_Overlay_GamePrivacy_Tooltip}">
+                    control:DockHintLayer.Text="{x:Static resources:Strings.Menu_Overlay_GamePrivacy_Tooltip}">
 				<StackPanel Orientation="Horizontal">
 					<Border Width="36" Height="36"
                             CornerRadius="6"
