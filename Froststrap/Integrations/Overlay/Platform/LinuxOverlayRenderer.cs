@@ -8,6 +8,7 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
+using Avalonia.VisualTree;
 using Froststrap.Backend;
 using System.Runtime.InteropServices;
 
@@ -126,8 +127,14 @@ namespace Froststrap.Integrations.Overlay.Platform
                 return;
             }
 
+            if (root is Avalonia.Controls.Primitives.TemplatedControl templated)
+            {
+                templated.ApplyTemplate();
+            }
+
             root.Measure(new Size(width, height));
             root.Arrange(new Rect(0, 0, width, height));
+            App.Logger.Info($"LinuxOverlayRenderer: root={root.GetType().Name} desired={root.DesiredSize} visualChildren={root.GetVisualChildren().Count()}");
             bitmap.Render(root);
 
             var stride = width * 4;

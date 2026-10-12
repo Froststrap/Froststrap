@@ -4,6 +4,7 @@
 
 using Avalonia.Threading;
 using Froststrap.Backend;
+using Froststrap.UI.Elements.Overlay;
 
 namespace Froststrap.Integrations.Overlay.Platform
 {
@@ -14,7 +15,7 @@ namespace Froststrap.Integrations.Overlay.Platform
         public LinuxOverlayHost(int robloxProcessId, ActivityWatcher? activityWatcher)
             : base(robloxProcessId, activityWatcher)
         {
-            Console.WriteLine($"overlay host created pid={robloxProcessId}");
+            App.Logger.Info($"LinuxOverlayHost: created pid={robloxProcessId}");
 
             bool initialised;
             try
@@ -23,11 +24,12 @@ namespace Froststrap.Integrations.Overlay.Platform
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"overlay init threw: {ex}");
+                App.Logger.Error("LinuxOverlayHost: init threw");
+                App.Logger.Error(ex);
                 return;
             }
 
-            Console.WriteLine($"overlay init result={initialised}");
+            App.Logger.Info($"LinuxOverlayHost: init result={initialised}");
             if (!initialised)
             {
                 return;
@@ -35,9 +37,19 @@ namespace Froststrap.Integrations.Overlay.Platform
 
             Dispatcher.UIThread.Post(() =>
             {
-                renderer = new LinuxOverlayRenderer();
-                renderer.Start();
-                Console.WriteLine($"overlay renderer started size={LinuxOverlay.Size()}");
+                try
+                {
+                    var overlay = new GameOverlay(this);
+                    App.Logger.Info("LinuxOverlayHost: GameOverlay constructed");
+                    renderer = new LinuxOverlayRenderer(overlay);
+                    renderer.Start();
+                    App.Logger.Info($"LinuxOverlayHost: renderer started size={LinuxOverlay.Size()}");
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.Error("LinuxOverlayHost: renderer setup threw");
+                    App.Logger.Error(ex);
+                }
             });
         }
     }

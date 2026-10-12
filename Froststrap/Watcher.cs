@@ -113,8 +113,6 @@ namespace Froststrap
                 if (_watcherData.LaunchMode == LaunchMode.Player && App.Settings.Prop.SoftKeyEnabled)
                     Softkey = new Softkey(_watcherData.ProcessId);
 
-                App.Logger.Info($"Overlay gate: enable={App.Settings.Prop.EnableOverlay} pid={_watcherData.ProcessId} linux={OperatingSystem.IsLinux()}");
-
                 // TODO: macOS support
                 if ((OperatingSystem.IsWindows() || OperatingSystem.IsLinux()) && App.Settings.Prop.EnableOverlay && _watcherData.ProcessId > 0)
                     Overlay = OverlayHostFactory.Create(_watcherData.ProcessId, ActivityWatcher);
