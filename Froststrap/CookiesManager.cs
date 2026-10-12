@@ -90,7 +90,16 @@ namespace Froststrap
             if (!Enabled)
                 throw new InvalidOperationException("Cookie access is not enabled");
 
-            HttpResponseMessage response = await SendAuthenticated(request);
+            byte[]? bufferedBody = null;
+            string? contentType = null;
+
+            if (request.Content is not null)
+            {
+                bufferedBody = await request.Content.ReadAsByteArrayAsync();
+                contentType = request.Content.Headers.ContentType?.ToString();
+            }
+
+            HttpResponseMessage response = await SendAuthenticated(BuildRequest(request, bufferedBody, contentType));
 
             if (response.StatusCode != HttpStatusCode.Forbidden
                 || !response.Headers.TryGetValues(CsrfHeader, out IEnumerable<string>? tokens)
@@ -103,7 +112,7 @@ namespace Froststrap
 
             response.Dispose();
 
-            return await SendAuthenticated(Repeat(request));
+            return await SendAuthenticated(BuildRequest(request, bufferedBody, contentType));
         }
 
         private async Task<HttpResponseMessage> SendAuthenticated(HttpRequestMessage request)
@@ -121,18 +130,27 @@ namespace Froststrap
             return await App.HttpClient.SendAsync(request);
         }
 
-        private static HttpRequestMessage Repeat(HttpRequestMessage request)
+        private static HttpRequestMessage BuildRequest(HttpRequestMessage original, byte[]? body, string? contentType)
         {
-            var repeat = new HttpRequestMessage(request.Method, request.RequestUri)
+            var request = new HttpRequestMessage(original.Method, original.RequestUri)
             {
-                Content = request.Content,
-                Version = request.Version
+                Version = original.Version
             };
 
-            foreach (KeyValuePair<string, IEnumerable<string>> header in request.Headers)
-                repeat.Headers.TryAddWithoutValidation(header.Key, header.Value);
+            if (body is not null)
+            {
+                var content = new ByteArrayContent(body);
 
-            return repeat;
+                if (!String.IsNullOrEmpty(contentType))
+                    content.Headers.TryAddWithoutValidation("Content-Type", contentType);
+
+                request.Content = content;
+            }
+
+            foreach (KeyValuePair<string, IEnumerable<string>> header in original.Headers)
+                request.Headers.TryAddWithoutValidation(header.Key, header.Value);
+
+            return request;
         }
 
         public async Task<HttpResponseMessage> AuthGet(Uri? uri) => await AuthRequest(new HttpRequestMessage { RequestUri = uri, Method = HttpMethod.Get });

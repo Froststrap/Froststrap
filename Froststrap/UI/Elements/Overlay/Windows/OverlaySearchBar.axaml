@@ -306,20 +306,21 @@ SPDX-License-Identifier: MPL-2.0
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
                         </ListBox>
+
+                        <TextBlock Grid.Row="1"
+                                   Text="{Binding EmptyText}"
+                                   FontSize="13"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Margin="24"
+                                   TextAlignment="Center"
+                                   TextWrapping="Wrap"
+                                   Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                   IsVisible="{Binding ShowEmpty}" />
                     </Grid>
 
                     <tabs:PeopleBrowser DataContext="{Binding People}"
                                         IsVisible="{Binding $parent[Window].((vm:OverlaySearchBarViewModel)DataContext).ShowPeopleTab}" />
-
-                    <TextBlock Text="{Binding EmptyText}"
-                               FontSize="13"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               Margin="24"
-                               TextAlignment="Center"
-                               TextWrapping="Wrap"
-                               Foreground="{DynamicResource TextFillColorTertiaryBrush}"
-                               IsVisible="{Binding ShowEmpty}" />
                 </Panel>
 
                 <Border Grid.Row="3"

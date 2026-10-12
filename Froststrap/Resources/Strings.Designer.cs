@@ -9433,6 +9433,24 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Friend.
+        /// </summary>
+        public static string Menu_Overlay_SearchBar_Friend {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.SearchBar.Friend", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Friends.
+        /// </summary>
+        public static string Menu_Overlay_SearchBar_Friends {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.SearchBar.Friends", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Join.
         /// </summary>
         public static string Menu_Overlay_SearchBar_Join {
@@ -9451,11 +9469,38 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Loading your friends….
+        /// </summary>
+        public static string Menu_Overlay_SearchBar_LoadingPeople {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.SearchBar.LoadingPeople", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Navigate.
         /// </summary>
         public static string Menu_Overlay_SearchBar_Navigate {
             get {
                 return ResourceManager.GetString("Menu.Overlay.SearchBar.Navigate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sign in to see your friends.
+        /// </summary>
+        public static string Menu_Overlay_SearchBar_NeedsCookies {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.SearchBar.NeedsCookies", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You don&apos;t have any friends yet.
+        /// </summary>
+        public static string Menu_Overlay_SearchBar_NoFriends {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.SearchBar.NoFriends", resourceCulture);
             }
         }
         
@@ -9469,11 +9514,29 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No users found for &quot;{0}&quot;.
+        /// </summary>
+        public static string Menu_Overlay_SearchBar_NoUsers {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.SearchBar.NoUsers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Open.
         /// </summary>
         public static string Menu_Overlay_SearchBar_Open {
             get {
                 return ResourceManager.GetString("Menu.Overlay.SearchBar.Open", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Request pending.
+        /// </summary>
+        public static string Menu_Overlay_SearchBar_Pending {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.SearchBar.Pending", resourceCulture);
             }
         }
         
@@ -9564,6 +9627,24 @@ namespace Froststrap.Resources {
         public static string Menu_Overlay_SearchBar_Tab_Market {
             get {
                 return ResourceManager.GetString("Menu.Overlay.SearchBar.Tab.Market", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to People.
+        /// </summary>
+        public static string Menu_Overlay_SearchBar_Tab_People {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.SearchBar.Tab.People", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You.
+        /// </summary>
+        public static string Menu_Overlay_SearchBar_You {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.SearchBar.You", resourceCulture);
             }
         }
         
@@ -11541,6 +11622,15 @@ namespace Froststrap.Resources {
         public static string Update_NoPackageAvailable {
             get {
                 return ResourceManager.GetString("Update.NoPackageAvailable", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Sent you a request.
+        /// </summary>
+        public static string Menu_Overlay_SearchBar_RequestReceived {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.SearchBar.RequestReceived", resourceCulture);
             }
         }
     }

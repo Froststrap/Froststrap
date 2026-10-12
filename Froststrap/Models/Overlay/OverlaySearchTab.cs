@@ -9,7 +9,7 @@ namespace Froststrap.Models.Overlay
     internal enum OverlaySearchTab
     {
         Games,
-        Profiles,
+        People,
         Items,
         Groups,
         Market,

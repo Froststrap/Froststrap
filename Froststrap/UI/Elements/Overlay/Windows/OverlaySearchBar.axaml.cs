@@ -51,7 +51,8 @@ namespace Froststrap.UI.Elements.Overlay
 
             InitializeComponent();
 
-            _viewModel.CloseRequested += (_, _) => Dismiss();
+            _viewModel.CloseRequested += OnCloseRequested;
+            _viewModel.FocusInputRequested += OnFocusInputRequested;
 
             Deactivated += OnDeactivated;
         }
@@ -63,6 +64,9 @@ namespace Froststrap.UI.Elements.Overlay
 
             _prepared = true;
             _host = host;
+
+            OverlaySearchBarViewModel.Attach(host);
+            _viewModel.Prewarm();
 
             Opacity = 0;
             Width = 1280;
@@ -84,6 +88,15 @@ namespace Froststrap.UI.Elements.Overlay
 
             InitialiseHotkey();
         }
+
+        private void OnCloseRequested(object? sender, EventArgs e) => Dismiss();
+
+        private void OnFocusInputRequested(object? sender, EventArgs e) =>
+            Dispatcher.UIThread.Post(() =>
+            {
+                SearchInput.Focus();
+                SearchInput.SelectAll();
+            }, DispatcherPriority.Input);
 
         private void OnOverlayBoundsChanged(object? sender, OverlayBounds bounds)
         {
@@ -318,6 +331,10 @@ namespace Froststrap.UI.Elements.Overlay
             IsPresented = false;
 
             _viewModel.OnHidden();
+
+            _viewModel.CloseRequested -= OnCloseRequested;
+            _viewModel.FocusInputRequested -= OnFocusInputRequested;
+
             _viewModel.Dispose();
 
             if (_host is not null)

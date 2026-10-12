@@ -4001,9 +4001,6 @@ Press cancel to go back.</value>
   <data name="Menu.Overlay.SearchBar.Tab.Games" xml:space="preserve">
     <value>Games</value>
   </data>
-  <data name="Menu.Overlay.SearchBar.Tab.Profiles" xml:space="preserve">
-    <value>Profiles</value>
-  </data>
   <data name="Menu.Overlay.SearchBar.Tab.Items" xml:space="preserve">
     <value>Items</value>
   </data>
@@ -4030,5 +4027,35 @@ Press cancel to go back.</value>
   </data>
   <data name="Menu.Overlay.SearchBar.JoinRegionFailed" xml:space="preserve">
     <value>No joinable server was found for "{0}". Try again in a moment.</value>
+  </data>
+  <data name="Menu.Overlay.SearchBar.Tab.People" xml:space="preserve">
+    <value>People</value>
+  </data>
+  <data name="Menu.Overlay.SearchBar.Friends" xml:space="preserve">
+    <value>Friends</value>
+  </data>
+  <data name="Menu.Overlay.SearchBar.Friend" xml:space="preserve">
+    <value>Friend</value>
+  </data>
+  <data name="Menu.Overlay.SearchBar.Pending" xml:space="preserve">
+    <value>Request pending</value>
+  </data>
+  <data name="Menu.Overlay.SearchBar.You" xml:space="preserve">
+    <value>You</value>
+  </data>
+  <data name="Menu.Overlay.SearchBar.LoadingPeople" xml:space="preserve">
+    <value>Loading your friends…</value>
+  </data>
+  <data name="Menu.Overlay.SearchBar.NoFriends" xml:space="preserve">
+    <value>You don't have any friends yet</value>
+  </data>
+  <data name="Menu.Overlay.SearchBar.NoUsers" xml:space="preserve">
+    <value>No users found for "{0}"</value>
+  </data>
+  <data name="Menu.Overlay.SearchBar.NeedsCookies" xml:space="preserve">
+    <value>Sign in to see your friends</value>
+  </data>
+  <data name="Menu.Overlay.SearchBar.RequestReceived" xml:space="preserve">
+    <value>Sent you a request</value>
   </data>
 </root>

@@ -5,8 +5,10 @@
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.Integrations;
+using Froststrap.Integrations.Overlay;
 using Froststrap.Models.Overlay;
 using Froststrap.RobloxInterfaces;
+using Froststrap.UI.ViewModels.Overlay.SearchTabs;
 using System.Windows.Input;
 using static Froststrap.RobloxInterfaces.Experiences;
 
@@ -29,6 +31,8 @@ namespace Froststrap.UI.ViewModels.Overlay
         public BulkObservableCollection<OverlaySearchTabItem> Tabs { get; } = [];
         public BulkObservableCollection<GameTile> Results { get; } = [];
 
+        public PeopleBrowserViewModel People { get; } = new();
+
         private OverlaySearchTab _selectedTab = OverlaySearchTab.Games;
         public OverlaySearchTab SelectedTab
         {
@@ -44,9 +48,32 @@ namespace Froststrap.UI.ViewModels.Overlay
                     tab.IsSelected = tab.Kind == value;
 
                 OnPropertyChanged(nameof(SelectedTab));
-                Clear();
+                OnPropertyChanged(nameof(ShowGamesTab));
+                OnPropertyChanged(nameof(ShowPeopleTab));
+
+                if (value == OverlaySearchTab.People)
+                {
+                    People.SetQuery(_query);
+                }
+                else if (value == OverlaySearchTab.Games)
+                {
+                    if (String.IsNullOrWhiteSpace(_query))
+                    {
+                        if (Results.Count == 0 && _shown)
+                            _ = LoadContinueAsync();
+                    }
+                    else
+                    {
+                        _debounce.Start();
+                    }
+                }
+
+                FocusInputRequested?.Invoke(this, EventArgs.Empty);
             }
         }
+
+        public bool ShowGamesTab => _selectedTab == OverlaySearchTab.Games;
+        public bool ShowPeopleTab => _selectedTab == OverlaySearchTab.People;
 
         private string _query = String.Empty;
         public string Query
@@ -59,6 +86,12 @@ namespace Froststrap.UI.ViewModels.Overlay
 
                 _query = value;
                 OnPropertyChanged(nameof(Query));
+
+                if (_selectedTab == OverlaySearchTab.People)
+                {
+                    People.SetQuery(value);
+                    return;
+                }
 
                 _debounce.Stop();
 
@@ -134,11 +167,12 @@ namespace Froststrap.UI.ViewModels.Overlay
         public ICommand JoinRegionCommand { get; }
 
         public event EventHandler? CloseRequested;
+        public event EventHandler? FocusInputRequested;
 
         public OverlaySearchBarViewModel()
         {
             Tabs.Add(new OverlaySearchTabItem { Kind = OverlaySearchTab.Games, Title = Strings.Menu_Overlay_SearchBar_Tab_Games, IsSelected = true });
-            Tabs.Add(new OverlaySearchTabItem { Kind = OverlaySearchTab.Profiles, Title = Strings.Menu_Overlay_SearchBar_Tab_Profiles, IsEnabled = false });
+            Tabs.Add(new OverlaySearchTabItem { Kind = OverlaySearchTab.People, Title = Strings.Menu_Overlay_SearchBar_Tab_People });
             Tabs.Add(new OverlaySearchTabItem { Kind = OverlaySearchTab.Items, Title = Strings.Menu_Overlay_SearchBar_Tab_Items, IsEnabled = false });
             Tabs.Add(new OverlaySearchTabItem { Kind = OverlaySearchTab.Groups, Title = Strings.Menu_Overlay_SearchBar_Tab_Groups, IsEnabled = false });
             Tabs.Add(new OverlaySearchTabItem { Kind = OverlaySearchTab.Market, Title = Strings.Menu_Overlay_SearchBar_Tab_Market, IsEnabled = false });
@@ -149,19 +183,40 @@ namespace Froststrap.UI.ViewModels.Overlay
             _debounce.Tick += async (_, _) =>
             {
                 _debounce.Stop();
-                await SearchAsync(Query);
+
+                if (_selectedTab == OverlaySearchTab.Games)
+                    await SearchAsync(Query);
             };
 
             CloseCommand = new RelayCommand(() => CloseRequested?.Invoke(this, EventArgs.Empty));
 
             SelectTabCommand = new RelayCommand<OverlaySearchTabItem>(tab =>
             {
-                if (tab?.IsEnabled == true)
-                    SelectedTab = tab.Kind;
+                if (tab?.IsEnabled != true)
+                    return;
+
+                if (tab.Kind == _selectedTab)
+                {
+                    FocusInputRequested?.Invoke(this, EventArgs.Empty);
+                    return;
+                }
+
+                SelectedTab = tab.Kind;
             });
 
             JoinCommand = new RelayCommand<GameTile>(Join);
             JoinRegionCommand = new AsyncRelayCommand<GameTile>(JoinRegion);
+        }
+
+        public static void Attach(IOverlayHost? host)
+        {
+            _ = host;
+        }
+
+        public void Prewarm()
+        {
+            _ = LoadContinueAsync();
+            People.Prewarm();
         }
 
         public void OnShown()
@@ -170,6 +225,12 @@ namespace Froststrap.UI.ViewModels.Overlay
             Refreshed();
 
             ApplyJoiningState();
+
+            if (_selectedTab == OverlaySearchTab.People)
+            {
+                People.SetQuery(_query);
+                return;
+            }
 
             if (String.IsNullOrWhiteSpace(_query) && Results.Count == 0)
                 _ = LoadContinueAsync();
@@ -182,6 +243,12 @@ namespace Froststrap.UI.ViewModels.Overlay
 
         public void MoveSelection(int delta)
         {
+            if (_selectedTab == OverlaySearchTab.People)
+            {
+                People.MoveSelection(delta);
+                return;
+            }
+
             if (Results.Count == 0)
                 return;
 
@@ -197,6 +264,12 @@ namespace Froststrap.UI.ViewModels.Overlay
 
         public void JoinSelected()
         {
+            if (_selectedTab == OverlaySearchTab.People)
+            {
+                People.JoinSelected();
+                return;
+            }
+
             if (SelectedIndex < 0 || SelectedIndex >= Results.Count)
                 return;
 
@@ -412,6 +485,8 @@ namespace Froststrap.UI.ViewModels.Overlay
             _disposeCts.Dispose();
 
             _debounce.Stop();
+
+            People.Dispose();
 
             GC.SuppressFinalize(this);
         }

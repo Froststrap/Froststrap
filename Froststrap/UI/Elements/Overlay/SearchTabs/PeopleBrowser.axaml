@@ -1,0 +1,231 @@
+<!--
+SPDX-FileCopyrightText: 2026 Froststrap
+
+SPDX-License-Identifier: MPL-2.0
+-->
+
+<UserControl x:Class="Froststrap.UI.Elements.Overlay.SearchTabs.PeopleBrowser"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:resources="using:Froststrap.Resources"
+             xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
+             xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+             xmlns:vmb="clr-namespace:Froststrap.UI.ViewModels.Overlay.SearchTabs"
+             xmlns:model="clr-namespace:Froststrap.Models.Overlay"
+             x:DataType="vmb:PeopleBrowserViewModel"
+             mc:Ignorable="d"
+             d:DesignWidth="720"
+             d:DesignHeight="400">
+
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="InGameRing" Color="#FF02B757" />
+        <SolidColorBrush x:Key="OnlineRing" Color="#FF00A2FF" />
+        <SolidColorBrush x:Key="StudioRing" Color="#FFF68802" />
+        <SolidColorBrush x:Key="OfflineRing" Color="#66808080" />
+        <SolidColorBrush x:Key="InGameText" Color="#FF6BDB8C" />
+        <SolidColorBrush x:Key="OnlineText" Color="#FF5CB8FF" />
+        <SolidColorBrush x:Key="StudioText" Color="#FFFFAE5C" />
+    </UserControl.Resources>
+
+    <UserControl.Styles>
+        <Style Selector="Border.personRing">
+            <Setter Property="BorderBrush" Value="{DynamicResource OfflineRing}" />
+        </Style>
+        <Style Selector="Border.personRing.ingame">
+            <Setter Property="BorderBrush" Value="{DynamicResource InGameRing}" />
+        </Style>
+        <Style Selector="Border.personRing.online">
+            <Setter Property="BorderBrush" Value="{DynamicResource OnlineRing}" />
+        </Style>
+        <Style Selector="Border.personRing.studio">
+            <Setter Property="BorderBrush" Value="{DynamicResource StudioRing}" />
+        </Style>
+
+        <Style Selector="TextBlock.status">
+            <Setter Property="Foreground" Value="{DynamicResource TextFillColorTertiaryBrush}" />
+        </Style>
+        <Style Selector="TextBlock.status.ingame">
+            <Setter Property="Foreground" Value="{DynamicResource InGameText}" />
+        </Style>
+        <Style Selector="TextBlock.status.online">
+            <Setter Property="Foreground" Value="{DynamicResource OnlineText}" />
+        </Style>
+        <Style Selector="TextBlock.status.studio">
+            <Setter Property="Foreground" Value="{DynamicResource StudioText}" />
+        </Style>
+    </UserControl.Styles>
+
+    <Grid RowDefinitions="Auto,*">
+
+        <TextBlock Grid.Row="0"
+                   Margin="20,6,20,2"
+                   FontSize="11"
+                   FontWeight="SemiBold"
+                   Text="{Binding HeaderText}"
+                   Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                   IsVisible="{Binding ShowHeader}" />
+
+        <Grid Grid.Row="1">
+            <ListBox x:Name="PersonList"
+                     Background="Transparent"
+                     Padding="0"
+                     Margin="8,6,8,6"
+                     ItemsSource="{Binding People}"
+                     SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                     DoubleTapped="PersonDoubleTapped">
+                <ListBox.Styles>
+                    <Style Selector="ListBoxItem">
+                        <Setter Property="Padding" Value="0" />
+                        <Setter Property="Margin" Value="0,1" />
+                        <Setter Property="CornerRadius" Value="8" />
+                        <Setter Property="Background" Value="Transparent" />
+                    </Style>
+                    <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
+                        <Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
+                    </Style>
+                    <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+                        <Setter Property="Background" Value="{DynamicResource AccentFillColorDefaultBrush}" />
+                    </Style>
+                </ListBox.Styles>
+
+                <ListBox.ItemTemplate>
+                    <DataTemplate x:DataType="model:SearchPerson">
+                        <Grid ColumnDefinitions="Auto,*,Auto"
+                              Margin="8,6">
+
+                            <Border Grid.Column="0"
+                                    Width="44"
+                                    Height="44"
+                                    BorderThickness="2"
+                                    CornerRadius="22"
+                                    Classes="personRing"
+                                    Classes.ingame="{Binding IsInGame}"
+                                    Classes.online="{Binding IsOnline}"
+                                    Classes.studio="{Binding IsInStudio}">
+                                <Border Margin="1"
+                                        Background="{DynamicResource ControlFillColorSecondaryBrush}"
+                                        ClipToBounds="True"
+                                        CornerRadius="19">
+                                    <Image Source="{Binding HeadshotBitmap}"
+                                           Stretch="UniformToFill"
+                                           RenderOptions.BitmapInterpolationMode="HighQuality" />
+                                </Border>
+                            </Border>
+
+                            <StackPanel Grid.Column="1"
+                                        Margin="12,0,12,0"
+                                        VerticalAlignment="Center"
+                                        Spacing="3">
+
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <TextBlock Grid.Column="0"
+                                               Text="{Binding DisplayName}"
+                                               FontSize="14"
+                                               FontWeight="SemiBold"
+                                               TextTrimming="CharacterEllipsis"
+                                               Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+
+                                    <Image Grid.Column="1"
+                                           Source="avares://Froststrap/Resources/RobloxVerified.png"
+                                           Width="14"
+                                           Height="14"
+                                           Margin="4,0,0,0"
+                                           VerticalAlignment="Center"
+                                           IsVisible="{Binding IsVerified}" />
+                                </Grid>
+
+                                <TextBlock Text="{Binding Handle}"
+                                           FontSize="11"
+                                           Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                           TextTrimming="CharacterEllipsis" />
+
+                                <TextBlock Classes="status"
+                                           Classes.ingame="{Binding IsInGame}"
+                                           Classes.online="{Binding IsOnline}"
+                                           Classes.studio="{Binding IsInStudio}"
+                                           FontSize="11"
+                                           Text="{Binding StatusText}"
+                                           TextTrimming="CharacterEllipsis" />
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2"
+                                        Orientation="Horizontal"
+                                        Spacing="4"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Right">
+
+                                <controls:IconButton Width="36" Height="36"
+                                                     Padding="0"
+                                                     CornerRadius="10"
+                                                     IconSize="16"
+                                                     Icon="Play"
+                                                     Classes="Primary"
+                                                     Command="{Binding $parent[ItemsControl].((vmb:PeopleBrowserViewModel)DataContext).JoinCommand}"
+                                                     CommandParameter="{Binding}"
+                                                     IsVisible="{Binding CanJoin}" />
+
+                                <controls:IconButton Width="36" Height="36"
+                                                     Padding="0"
+                                                     CornerRadius="10"
+                                                     IconSize="16"
+                                                     Icon="ExternalLink"
+                                                     Command="{Binding $parent[ItemsControl].((vmb:PeopleBrowserViewModel)DataContext).ViewGameCommand}"
+                                                     CommandParameter="{Binding}"
+                                                     IsVisible="{Binding CanViewGame}" />
+
+                                <controls:IconButton Width="36" Height="36"
+                                                     Padding="0"
+                                                     CornerRadius="10"
+                                                     IconSize="16"
+                                                     Icon="UserPlus"
+                                                     Classes="Primary"
+                                                     Command="{Binding $parent[ItemsControl].((vmb:PeopleBrowserViewModel)DataContext).AddFriendCommand}"
+                                                     CommandParameter="{Binding}"
+                                                     IsVisible="{Binding CanAddFriend}" />
+
+                                <Border Width="36" Height="36"
+                                        CornerRadius="10"
+                                        Background="{DynamicResource SubtleFillColorSecondaryBrush}"
+                                        IsVisible="{Binding ShowPendingBadge}"
+                                        ToolTip.Tip="{x:Static resources:Strings.Menu_Overlay_SearchBar_Pending}">
+                                    <ic:Lucide Icon="Clock"
+                                               Width="16" Height="16"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               StrokeBrush="{DynamicResource TextFillColorTertiaryBrush}" />
+                                </Border>
+
+                                <ui:FAProgressRing Width="20" Height="20"
+                                                   Margin="8,0"
+                                                   VerticalAlignment="Center"
+                                                   IsIndeterminate="True"
+                                                   IsActive="{Binding IsWorking}"
+                                                   IsVisible="{Binding IsWorking}" />
+                            </StackPanel>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <TextBlock Text="{Binding EmptyText}"
+                       FontSize="13"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Margin="24"
+                       TextAlignment="Center"
+                       TextWrapping="Wrap"
+                       Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                       IsVisible="{Binding ShowEmpty}" />
+
+            <ui:FAProgressRing Width="28" Height="28"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               IsIndeterminate="True"
+                               IsVisible="{Binding IsBusy}" />
+        </Grid>
+    </Grid>
+</UserControl>
