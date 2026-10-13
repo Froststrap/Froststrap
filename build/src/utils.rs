@@ -82,9 +82,9 @@ pub struct ProcessBuilder {
 }
 
 pub struct Process {
-    stdout: String,
-    stderr: String,
-    exit_code: Option<i32>,
+    pub stdout: String,
+    pub stderr: String,
+    pub exit_code: Option<i32>,
 }
 
 pub fn process<I, S>(file_name: &str, args: I) -> ProcessBuilder

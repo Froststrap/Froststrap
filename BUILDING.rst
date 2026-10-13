@@ -20,7 +20,6 @@ and if you get prompted to trust nix configuraiton stuff, you can deny if you do
 macOS Specific
 ~~~~~~~~~~~~~~
 
-- Xcode (.app is preferred as it has the whole toolchain which is needed)
 - Xcode Command Line Tools
 
 Linux Specific

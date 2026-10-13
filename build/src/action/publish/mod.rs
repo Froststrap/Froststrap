@@ -11,7 +11,7 @@ use crate::{arch, args, path, utils::{log, process}};
 mod os_specific;
 
 #[cfg(target_os = "macos")]
-#[path = "macos.rs"]
+#[path = "macos/mod.rs"]
 mod os_specific;
 
 #[cfg(target_os = "windows")]

@@ -1,5 +1,8 @@
 //! Build system for Froststrap
 
+#[cfg(target_os = "macos")]
+pub mod bundle;
+
 pub mod action;
 pub mod arch;
 pub mod integrate;
