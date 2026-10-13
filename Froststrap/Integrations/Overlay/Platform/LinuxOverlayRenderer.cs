@@ -4,6 +4,8 @@
 
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
@@ -25,6 +27,8 @@ namespace Froststrap.Integrations.Overlay.Platform
         private int height;
         private string regionSignature = "";
         private readonly IntPtr eventBuffer = Marshal.AllocHGlobal(24 * 32);
+        private readonly Pointer pointer = new(Pointer.GetNextFreeId(), PointerType.Mouse, true);
+        private IInputElement? pressed;
 
         public LinuxOverlayRenderer(Control? content = null)
         {
@@ -53,6 +57,7 @@ namespace Froststrap.Integrations.Overlay.Platform
             }
 
             Marshal.FreeHGlobal(eventBuffer);
+            pointer.Dispose();
         }
 
         private static Grid CreateTestContent()
@@ -166,11 +171,70 @@ namespace Froststrap.Integrations.Overlay.Platform
             for (int i = 0; i < count; i++)
             {
                 var e = Marshal.PtrToStructure<LinuxOverlay.InputEvent>(eventBuffer + i * 24);
-                if (e.Kind != 2)
+                Dispatch(e);
+            }
+        }
+
+        private void Dispatch(LinuxOverlay.InputEvent e)
+        {
+            if (e.Kind < 2 || e.Kind > 4)
+            {
+                return;
+            }
+
+            var point = new Point(e.X, e.Y);
+            var target = HitTest(point);
+            var props = new PointerPointProperties(
+                e.Kind == 3 ? RawInputModifiers.LeftMouseButton : RawInputModifiers.None,
+                e.Kind == 3 ? PointerUpdateKind.LeftButtonPressed : PointerUpdateKind.LeftButtonReleased);
+
+            if (e.Kind == 3 && target is not null)
+            {
+                pressed = target;
+                pointer.Capture(target);
+                var args = new PointerPressedEventArgs(target, pointer, root, point, (ulong)Environment.TickCount64, props, KeyModifiers.None);
+                target.RaiseEvent(args);
+                App.Logger.Info($"LinuxOverlayRenderer: pressed target={target.GetType().Name}");
+            }
+            else if (e.Kind == 4 && pressed is not null)
+            {
+                var releaseTarget = pressed;
+                pointer.Capture(null);
+                pressed = null;
+
+                var button = (releaseTarget as Visual)?.GetSelfAndVisualAncestors().OfType<Button>().FirstOrDefault();
+                if (button?.Command is { } command && command.CanExecute(button.CommandParameter))
                 {
-                    App.Logger.Info($"LinuxOverlayRenderer: input kind={e.Kind} code={e.Code} x={e.X} y={e.Y}");
+                    command.Execute(button.CommandParameter);
+                    App.Logger.Info($"LinuxOverlayRenderer: invoked button={button.GetType().Name} param={button.CommandParameter}");
                 }
             }
+        }
+
+        private IInputElement? HitTest(Point point)
+        {
+            IInputElement? best = null;
+            foreach (var visual in root.GetVisualDescendants())
+            {
+                if (visual is not Control control || !control.IsVisible || !control.IsHitTestVisible || !control.IsEffectivelyEnabled)
+                {
+                    continue;
+                }
+
+                var origin = control.TranslatePoint(new Point(0, 0), root);
+                if (origin is null)
+                {
+                    continue;
+                }
+
+                var rect = new Rect(origin.Value, control.Bounds.Size);
+                if (rect.Contains(point))
+                {
+                    best = control;
+                }
+            }
+
+            return best;
         }
     }
 }
