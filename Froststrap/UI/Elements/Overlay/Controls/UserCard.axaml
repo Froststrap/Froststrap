@@ -256,13 +256,17 @@ SPDX-License-Identifier: MPL-2.0
                                        Foreground="{DynamicResource TextFillColorTertiaryBrush}"
                                        IsVisible="{Binding HasCurrentRegion}" />
 
-							<ic:Lucide Grid.Column="3"
-                                       Icon="MapPin"
-                                       Width="12" Height="12"
-                                       Margin="6,0,0,0"
-                                       VerticalAlignment="Center"
-                                       StrokeBrush="{DynamicResource TextFillColorTertiaryBrush}"
-                                       IsVisible="{Binding HasCurrentRegion}" />
+							<Border Grid.Column="3"
+                                    Width="15" Height="9"
+                                    Margin="6,0,0,0"
+                                    VerticalAlignment="Center"
+                                    ClipToBounds="True"
+                                    CornerRadius="2"
+                                    IsVisible="{Binding HasCurrentRegion}">
+								<Image Source="{Binding RegionFlagBitmap}"
+                                       Stretch="Fill"
+                                       RenderOptions.BitmapInterpolationMode="HighQuality" />
+							</Border>
 
 							<TextBlock Grid.Column="4"
                                        Text="{Binding CurrentRegion}"

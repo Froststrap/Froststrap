@@ -25,6 +25,69 @@ namespace Froststrap.UI.ViewModels.Overlay
         private DateTime _lastSync = DateTime.MinValue;
         private bool _disposed;
 
+        private static readonly Dictionary<string, string> CountryNameToCode = BuildCountryLookup();
+
+        private static Dictionary<string, string> BuildCountryLookup()
+        {
+            var map = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (CultureInfo culture in CultureInfo.GetCultures(CultureTypes.SpecificCultures))
+            {
+                try
+                {
+                    var region = new RegionInfo(culture.Name);
+
+                    string twoLetter = region.TwoLetterISORegionName.ToLowerInvariant();
+                    string threeLetter = region.ThreeLetterISORegionName.ToLowerInvariant();
+
+                    if (!map.ContainsKey(region.EnglishName))
+                        map[region.EnglishName] = twoLetter;
+
+                    if (threeLetter.Length == 3 && !map.ContainsKey(threeLetter))
+                        map[threeLetter] = twoLetter;
+                }
+                catch (ArgumentException)
+                {
+                }
+            }
+
+            return map;
+        }
+
+        private static string? TryCountry(string value)
+        {
+            if (String.IsNullOrWhiteSpace(value))
+                return null;
+
+            value = value.Trim();
+
+            if (value.Length == 2 && value.All(char.IsLetter))
+                return value.ToLowerInvariant();
+
+            return CountryNameToCode.TryGetValue(value, out string? code) ? code : null;
+        }
+
+        private static string? ExtractCountryCode(string regionText)
+        {
+            if (String.IsNullOrWhiteSpace(regionText))
+                return null;
+
+            string[] parts = regionText.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+
+            if (parts.Length == 0)
+                return null;
+
+            for (int i = parts.Length - 1; i >= 0; i--)
+            {
+                string? code = TryCountry(parts[i]);
+
+                if (code is not null)
+                    return code;
+            }
+
+            return null;
+        }
+
         #region Account
 
         private string _profileIcon = String.Empty;
@@ -199,10 +262,82 @@ namespace Froststrap.UI.ViewModels.Overlay
                     return;
 
                 OnPropertyChanged(nameof(HasCurrentRegion));
+                OnPropertyChanged(nameof(CurrentRegionFlagUrl));
+
+                _ = LoadRegionFlagAsync();
             }
         }
 
         public bool HasCurrentRegion => !String.IsNullOrEmpty(_currentRegion);
+
+        public string? CurrentRegionFlagUrl
+        {
+            get
+            {
+                string? code = ExtractCountryCode(_currentRegion);
+
+                if (String.IsNullOrEmpty(code))
+                    return null;
+
+                return $"https://flagcdn.com/w40/{code.ToLowerInvariant()}.png";
+            }
+        }
+
+        private Bitmap? _regionFlagBitmap;
+        public Bitmap? RegionFlagBitmap
+        {
+            get => _regionFlagBitmap;
+            private set => SetProperty(ref _regionFlagBitmap, value);
+        }
+
+        private bool _loadingRegionFlag;
+        private string? _loadedRegionFlagUrl;
+
+        private async Task LoadRegionFlagAsync()
+        {
+            string? url = CurrentRegionFlagUrl;
+
+            if (String.IsNullOrEmpty(url))
+            {
+                RegionFlagBitmap = null;
+                _loadedRegionFlagUrl = null;
+                return;
+            }
+
+            if (_loadingRegionFlag || _loadedRegionFlagUrl == url)
+                return;
+
+            _loadingRegionFlag = true;
+
+            try
+            {
+                Bitmap? bitmap = await ImageLoader.LoadAsync(url, 40);
+
+                if (bitmap is null)
+                {
+                    App.Logger.Warn($"GameOverlayViewModel: flag decode returned null for {url}");
+                    return;
+                }
+
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    if (CurrentRegionFlagUrl == url)
+                    {
+                        RegionFlagBitmap = bitmap;
+                        _loadedRegionFlagUrl = url;
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error($"GameOverlayViewModel: failed to load flag from {url}");
+                App.Logger.Error(ex);
+            }
+            finally
+            {
+                _loadingRegionFlag = false;
+            }
+        }
 
         private bool _isInGame;
         public bool IsInGame
@@ -501,6 +636,8 @@ namespace Froststrap.UI.ViewModels.Overlay
             _loadedGameBitmapUrl = null;
             TimePlayed = String.Empty;
             CurrentRegion = String.Empty;
+            RegionFlagBitmap = null;
+            _loadedRegionFlagUrl = null;
             GameStatus.IsOpen = false;
             IsInGame = false;
         }
