@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
@@ -43,7 +44,16 @@ namespace Froststrap.Integrations.Overlay.Platform
                 {
                     var overlay = new GameOverlay(this);
                     App.Logger.Info("LinuxOverlayHost: GameOverlay constructed");
-                    App.Logger.Info($"LinuxOverlayHost: ancestors={(overlay.Content as Control)?.GetVisualAncestors().Count() ?? -1}");                    renderer = new LinuxOverlayRenderer(overlay.Content as Control);
+
+                    var content = overlay.Content as Control;
+                    var (w, h) = LinuxOverlay.Size();
+
+                    overlay.ApplyTemplate();
+                    overlay.Measure(new Size(w, h));
+                    overlay.Arrange(new Rect(0, 0, w, h));
+                    App.Logger.Info($"LinuxOverlayHost: ancestors={content?.GetVisualAncestors().Count() ?? -1}");
+
+                    renderer = new LinuxOverlayRenderer(content);
                     renderer.Start();
                     App.Logger.Info($"LinuxOverlayHost: renderer started size={LinuxOverlay.Size()}");
                 }
