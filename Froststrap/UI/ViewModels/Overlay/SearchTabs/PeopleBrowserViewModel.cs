@@ -10,9 +10,9 @@ using Froststrap.Models.APIs.RealtimeMessaging;
 using Froststrap.Models.APIs.Roblox;
 using Froststrap.Models.Overlay;
 using Froststrap.RobloxInterfaces;
-using System.Text;
-using System.Text.Json;
 using System.Windows.Input;
+
+using PeopleApi = Froststrap.RobloxInterfaces.People;
 
 namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
 {
@@ -20,18 +20,7 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
     {
         private static readonly TimeSpan SearchDelay = TimeSpan.FromMilliseconds(350);
         private static readonly TimeSpan PendingRefresh = TimeSpan.FromSeconds(45);
-        private const int MaxResults = 30;
         private const int FriendLimit = 100;
-        private const int DetailBatchSize = 50;
-
-        private enum FriendRequestFailure
-        {
-            Unknown,
-            AlreadyFriend,
-            AlreadyRequested,
-            Self,
-            Blocked
-        }
 
         private readonly DispatcherTimer _debounce;
         private readonly DispatcherTimer _pendingTimer;
@@ -241,14 +230,7 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
 
                 _me = me.Id;
 
-                var response = await Http.GetJson<ApiArrayResponse<FriendResponse>>(
-                    UrlBuilder.BuildApiUrl("friends", $"v1/users/{me.Id}/friends"));
-
-                var ids = response?.Data?
-                    .Select(x => x.Id)
-                    .Where(x => x > 0)
-                    .Take(FriendLimit)
-                    .ToList() ?? [];
+                List<long> ids = await PeopleApi.FetchFriendIdsLimitedAsync(me.Id, FriendLimit, _disposeCts.Token);
 
                 _friendIds = [.. ids];
 
@@ -261,19 +243,23 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
                     return;
                 }
 
-                Dictionary<long, UserDetails> details = await FetchDetailsSafeAsync(ids);
-                Dictionary<long, UserPresence> presence = await FetchPresenceAsync(ids);
-                Dictionary<long, string> headshots = await FetchHeadshotsAsync(ids);
+                var detailsTask   = PeopleApi.FetchDetailsAsync(ids, _disposeCts.Token);
+                var presenceTask  = PeopleApi.FetchPresenceAsync(ids, _disposeCts.Token);
+                var headshotsTask = PeopleApi.FetchHeadshotsAsync(ids, _disposeCts.Token);
+
+                await Task.WhenAll(detailsTask, presenceTask, headshotsTask);
+
+                Dictionary<long, UserDetails> details   = await detailsTask;
+                Dictionary<long, UserPresence> presence = await presenceTask;
+                Dictionary<long, string> headshots      = await headshotsTask;
 
                 var people = ids
-                    .Select(id =>
-                    {
-                        details.TryGetValue(id, out UserDetails? detail);
-                        presence.TryGetValue(id, out UserPresence? pres);
-                        headshots.TryGetValue(id, out string? headshot);
-
-                        return ToPerson(id, detail, pres, headshot, isFriend: true);
-                    })
+                    .Select(id => ToPerson(
+                        id,
+                        details.GetValueOrDefault(id),
+                        presence.GetValueOrDefault(id),
+                        headshots.GetValueOrDefault(id),
+                        isFriend: true))
                     .OrderBy(p => p.Status == UserPresenceType.Offline)
                     .ThenByDescending(p => (int)p.Status)
                     .ThenBy(p => p.DisplayName, StringComparer.CurrentCultureIgnoreCase)
@@ -306,27 +292,6 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
             }
         }
 
-        private static async Task<Dictionary<long, UserDetails>> FetchDetailsSafeAsync(List<long> ids)
-        {
-            var result = new Dictionary<long, UserDetails>();
-
-            foreach (long[] chunk in ids.Chunk(DetailBatchSize))
-            {
-                try
-                {
-                    foreach (var (id, user) in await UserDetails.FetchBatch([.. chunk]))
-                        result[id] = user;
-                }
-                catch (Exception ex)
-                {
-                    App.Logger.Warn($"People browser: failed to fetch {chunk.Length} user details");
-                    App.Logger.Error(ex);
-                }
-            }
-
-            return result;
-        }
-
         private void PrunePending(IEnumerable<long> friendIds)
         {
             var ids = friendIds as HashSet<long> ?? [.. friendIds];
@@ -344,13 +309,7 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
 
             try
             {
-                var response = await Http.GetJson<ApiArrayResponse<FriendResponse>>(
-                    UrlBuilder.BuildApiUrl("friends", $"v1/users/{_me}/friends"));
-
-                var ids = response?.Data?
-                    .Select(x => x.Id)
-                    .Where(x => x > 0)
-                    .ToHashSet() ?? [];
+                HashSet<long> ids = await PeopleApi.FetchFriendIdsAsync(_me, _disposeCts.Token);
 
                 if (ids.Count == 0)
                     return;
@@ -366,9 +325,7 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
                     _friendIds.Add(id);
                 }
 
-                var existing = People.Where(p => accepted.Contains(p.UserId)).ToList();
-
-                foreach (SearchPerson person in existing)
+                foreach (SearchPerson person in People.Where(p => accepted.Contains(p.UserId)))
                 {
                     person.IsFriend = true;
                     person.IsPending = false;
@@ -407,23 +364,10 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
 
             try
             {
-                string path = $"search-api/omni-search?verticalType=user"
-                            + $"&searchQuery={Uri.EscapeDataString(query.Trim())}"
-                            + $"&sessionId={Guid.NewGuid()}";
-
-                var response = await Http.GetJson<OmniUserSearchResponse>(UrlBuilder.BuildApisUrl(path));
+                List<OmniUserSearchContent> users = await PeopleApi.SearchUsersAsync(query, _disposeCts.Token);
 
                 if (generation != _searchGeneration)
                     return;
-
-                var users = (response?.SearchResults ?? [])
-                    .Where(g => g.ContentGroupType == "User")
-                    .SelectMany(g => g.Contents ?? [])
-                    .Where(c => c.ContentId > 0 && c.ContentType == "User")
-                    .GroupBy(c => c.ContentId)
-                    .Select(g => g.First())
-                    .Take(MaxResults)
-                    .ToList();
 
                 if (users.Count == 0)
                 {
@@ -435,13 +379,20 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
                 long me = App.Cookies.CurrentUser?.Id ?? 0;
                 var ids = users.Select(u => u.ContentId).ToList();
 
-                Dictionary<long, UserDetails> details = await FetchDetailsSafeAsync(ids);
-                Dictionary<long, UserPresence> presence = await FetchPresenceAsync(ids);
-                Dictionary<long, string> headshots = await FetchHeadshotsAsync(ids);
-                Dictionary<long, FriendStatus> statuses = await FetchFriendStatusesAsync(me, ids);
+                var detailsTask   = PeopleApi.FetchDetailsAsync(ids, _disposeCts.Token);
+                var presenceTask  = PeopleApi.FetchPresenceAsync(ids, _disposeCts.Token);
+                var headshotsTask = PeopleApi.FetchHeadshotsAsync(ids, _disposeCts.Token);
+                var statusesTask  = PeopleApi.FetchFriendStatusesAsync(me, ids, _disposeCts.Token);
+
+                await Task.WhenAll(detailsTask, presenceTask, headshotsTask, statusesTask);
 
                 if (generation != _searchGeneration)
                     return;
+
+                Dictionary<long, UserDetails> details   = await detailsTask;
+                Dictionary<long, UserPresence> presence = await presenceTask;
+                Dictionary<long, string> headshots      = await headshotsTask;
+                Dictionary<long, FriendStatus> statuses = await statusesTask;
 
                 var people = users
                     .Select(u =>
@@ -478,6 +429,9 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
 
                 People.ReplaceAll(people);
                 SelectedIndex = people.Count > 0 ? 0 : -1;
+            }
+            catch (OperationCanceledException)
+            {
             }
             catch (Exception ex)
             {
@@ -522,91 +476,6 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
             person.PlaceId = presence?.PlaceId ?? 0;
             person.RootPlaceId = presence?.RootPlaceId ?? 0;
             person.ServerId = String.IsNullOrEmpty(presence?.GameId) ? null : presence!.GameId;
-        }
-
-        private static async Task<Dictionary<long, UserPresence>> FetchPresenceAsync(List<long> ids)
-        {
-            var result = new Dictionary<long, UserPresence>();
-
-            if (ids.Count == 0)
-                return result;
-
-            foreach (long[] batch in ids.Distinct().Chunk(50))
-            {
-                try
-                {
-                    var response = await AccountRequests.PostJsonAsync<UserPresenceResponse>(
-                        UrlBuilder.BuildApiUrl("presence", "v1/presence/users"),
-                        new { userIds = batch });
-
-                    foreach (UserPresence presence in response?.UserPresences ?? [])
-                        result[presence.UserId] = presence;
-                }
-                catch (Exception ex)
-                {
-                    App.Logger.Warn("People browser: failed to fetch a batch of presence");
-                    App.Logger.Error(ex);
-                }
-            }
-
-            return result;
-        }
-
-        private static async Task<Dictionary<long, string>> FetchHeadshotsAsync(List<long> ids)
-        {
-            var result = new Dictionary<long, string>();
-
-            if (ids.Count == 0)
-                return result;
-
-            foreach (long[] batch in ids.Distinct().Chunk(50))
-            {
-                try
-                {
-                    var response = await Http.GetJson<ApiArrayResponse<AvatarHeadshotResponse>>(
-                        new Uri($"https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds={String.Join(',', batch)}&size=150x150&format=Png&isCircular=false"));
-
-                    foreach (AvatarHeadshotResponse headshot in response?.Data ?? [])
-                    {
-                        if (headshot.State == "Completed" && !String.IsNullOrEmpty(headshot.ImageUrl))
-                            result[headshot.TargetId] = headshot.ImageUrl!;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    App.Logger.Warn("People browser: failed to fetch a batch of headshots");
-                    App.Logger.Error(ex);
-                }
-            }
-
-            return result;
-        }
-
-        private static async Task<Dictionary<long, FriendStatus>> FetchFriendStatusesAsync(long me, List<long> ids)
-        {
-            var result = new Dictionary<long, FriendStatus>();
-
-            if (me == 0 || ids.Count == 0)
-                return result;
-
-            foreach (long[] batch in ids.Distinct().Chunk(50))
-            {
-                try
-                {
-                    var response = await Http.AuthGetJson<FriendStatusResponse>(
-                        UrlBuilder.BuildApiUrl("friends", $"v1/users/{me}/friends/statuses?userIds={String.Join(',', batch)}"));
-
-                    foreach (FriendStatusEntry entry in response?.Data ?? [])
-                        result[entry.Id] = FriendStatusExtensions.Parse(entry.Status);
-                }
-                catch (Exception ex)
-                {
-                    App.Logger.Warn("People browser: failed to fetch a batch of friend statuses");
-                    App.Logger.Error(ex);
-                }
-            }
-
-            return result;
         }
 
         private async Task JoinAsync(SearchPerson? person)
@@ -654,54 +523,36 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
 
             try
             {
-                var payload = new Dictionary<string, object>
+                PeopleApi.FriendRequestResult result = await PeopleApi.SendFriendRequestAsync(person.UserId);
+
+                switch (result)
                 {
-                    ["friendshipOriginSourceType"] = "Unknown"
-                };
+                    case PeopleApi.FriendRequestResult.Success:
+                        person.IsPending = true;
+                        _pendingIds.Add(person.UserId);
+                        UpdatePendingTimer();
+                        App.Logger.Info($"People browser: friend request sent to {person.DisplayName}");
+                        break;
 
-                var content = new StringContent(
-                    JsonSerializer.Serialize(payload),
-                    Encoding.UTF8,
-                    "application/json");
+                    case PeopleApi.FriendRequestResult.AlreadyFriend:
+                    case PeopleApi.FriendRequestResult.AlreadyRequested:
+                        person.IsPending = true;
+                        _pendingIds.Add(person.UserId);
+                        UpdatePendingTimer();
+                        App.Logger.Info($"People browser: friendship with {person.DisplayName} already exists");
+                        break;
 
-                using var response = await App.Cookies.AuthPost(
-                    UrlBuilder.BuildApiUrl("friends", $"v1/users/{person.UserId}/request-friendship"),
-                    content);
+                    case PeopleApi.FriendRequestResult.Self:
+                        App.Logger.Warn("People browser: cannot send a request to yourself");
+                        break;
 
-                if (response.IsSuccessStatusCode)
-                {
-                    person.IsPending = true;
-                    _pendingIds.Add(person.UserId);
-                    UpdatePendingTimer();
-                    App.Logger.Info($"People browser: friend request sent to {person.DisplayName}");
-                }
-                else
-                {
-                    string body = await response.Content.ReadAsStringAsync();
-                    FriendRequestFailure failure = ParseFriendRequestFailure(body);
+                    case PeopleApi.FriendRequestResult.Blocked:
+                        App.Logger.Warn($"People browser: request to {person.DisplayName} blocked");
+                        break;
 
-                    switch (failure)
-                    {
-                        case FriendRequestFailure.AlreadyFriend:
-                        case FriendRequestFailure.AlreadyRequested:
-                            person.IsPending = true;
-                            _pendingIds.Add(person.UserId);
-                            UpdatePendingTimer();
-                            App.Logger.Info($"People browser: friendship with {person.DisplayName} already exists");
-                            break;
-
-                        case FriendRequestFailure.Self:
-                            App.Logger.Warn("People browser: cannot send a request to yourself");
-                            break;
-
-                        case FriendRequestFailure.Blocked:
-                            App.Logger.Warn($"People browser: request to {person.DisplayName} blocked");
-                            break;
-
-                        default:
-                            App.Logger.Warn($"People browser: friend request failed ({(int)response.StatusCode}): {body}");
-                            break;
-                    }
+                    default:
+                        App.Logger.Warn($"People browser: friend request failed for {person.DisplayName}");
+                        break;
                 }
             }
             catch (Exception ex)
@@ -713,45 +564,6 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
             {
                 person.IsWorking = false;
             }
-        }
-
-        private static FriendRequestFailure ParseFriendRequestFailure(string body)
-        {
-            if (String.IsNullOrWhiteSpace(body))
-                return FriendRequestFailure.Unknown;
-
-            try
-            {
-                using var doc = JsonDocument.Parse(body);
-
-                if (!doc.RootElement.TryGetProperty("errors", out JsonElement errors)
-                    || errors.ValueKind != JsonValueKind.Array
-                    || errors.GetArrayLength() == 0)
-                    return FriendRequestFailure.Unknown;
-
-                JsonElement first = errors[0];
-
-                string message = first.TryGetProperty("message", out JsonElement msg) ? msg.GetString() ?? String.Empty : String.Empty;
-                string facing = first.TryGetProperty("userFacingMessage", out JsonElement ufm) ? ufm.GetString() ?? String.Empty : String.Empty;
-
-                string combined = $"{message} {facing}";
-
-                if (combined.Contains("already sent", StringComparison.OrdinalIgnoreCase)
-                    || combined.Contains("already exists", StringComparison.OrdinalIgnoreCase)
-                    || combined.Contains("already a friend", StringComparison.OrdinalIgnoreCase))
-                    return FriendRequestFailure.AlreadyFriend;
-
-                if (combined.Contains("yourself", StringComparison.OrdinalIgnoreCase))
-                    return FriendRequestFailure.Self;
-
-                if (combined.Contains("blocked", StringComparison.OrdinalIgnoreCase))
-                    return FriendRequestFailure.Blocked;
-            }
-            catch (JsonException)
-            {
-            }
-
-            return FriendRequestFailure.Unknown;
         }
 
         private void OnFriendshipChanged(object? sender, FriendshipNotification note)

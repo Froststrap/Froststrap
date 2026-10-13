@@ -12,13 +12,14 @@ using System.ComponentModel;
 
 namespace Froststrap.UI.Elements.Overlay.Controls
 {
-    internal partial class FriendActivity : UserControl
+    internal partial class FriendActivity : UserControl, IDisposable
     {
         private FriendActivityViewModel? _viewModel;
 
         private ChatTab? _dragTab;
         private Point _dragStart;
         private bool _dragActive;
+        private bool _disposed;
 
         public FriendActivity()
         {
@@ -37,6 +38,8 @@ namespace Froststrap.UI.Elements.Overlay.Controls
             {
                 _viewModel.MessagesAdded -= OnMessagesAdded;
                 _viewModel.PropertyChanged -= OnViewModelChanged;
+                _viewModel.Dispose();
+                _viewModel = null;
             }
 
             _viewModel = new FriendActivityViewModel(overlay);
@@ -55,6 +58,13 @@ namespace Froststrap.UI.Elements.Overlay.Controls
 
             if (change.Property.Name == nameof(IsEffectivelyVisible) && change.GetNewValue<bool>())
                 _ = _viewModel?.LoadAsync();
+        }
+
+        protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+        {
+            base.OnDetachedFromVisualTree(e);
+
+            Dispose();
         }
 
         private void OnViewModelChanged(object? sender, PropertyChangedEventArgs e)
@@ -210,6 +220,24 @@ namespace Froststrap.UI.Elements.Overlay.Controls
             }
 
             return -1;
+        }
+
+        public void Dispose()
+        {
+            if (_disposed)
+                return;
+
+            _disposed = true;
+
+            if (_viewModel is not null)
+            {
+                _viewModel.MessagesAdded -= OnMessagesAdded;
+                _viewModel.PropertyChanged -= OnViewModelChanged;
+                _viewModel.Dispose();
+                _viewModel = null;
+            }
+
+            GC.SuppressFinalize(this);
         }
     }
 }
