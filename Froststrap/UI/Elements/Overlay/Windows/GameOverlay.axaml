@@ -141,7 +141,13 @@ SPDX-License-Identifier: MPL-2.0
                     Background="{DynamicResource SolidBackgroundFillColorSecondaryBrush}"
                     BorderBrush="{DynamicResource SurfaceStrokeColorDefaultBrush}"
                     BorderThickness="1">
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <ScrollViewer x:Name="ChromeDockScroller"
+                              HorizontalAlignment="Stretch"
+                              VerticalAlignment="Stretch"
+                              HorizontalScrollBarVisibility="Auto"
+                              VerticalScrollBarVisibility="Disabled"
+                              HorizontalContentAlignment="Center">
+                <StackPanel x:Name="ChromeDockContent" Orientation="Horizontal" VerticalAlignment="Center" SizeChanged="ChromeDockContent_SizeChanged">
                     <control:UserCard Margin="8,0,0,0" VerticalAlignment="Center" />
 
                     <Rectangle Width="1" Height="32" Margin="16,0"
@@ -220,7 +226,8 @@ SPDX-License-Identifier: MPL-2.0
                                          Icon="X"
                                          Command="{Binding CloseCommand}"
                                          control:DockHintLayer.Text="{x:Static resources:Strings.Common_Close}" />
-                </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
             </Border>
 
             <control:DockHintLayer Panel.ZIndex="11" />

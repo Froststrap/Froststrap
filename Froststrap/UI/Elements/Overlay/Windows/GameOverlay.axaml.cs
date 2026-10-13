@@ -496,14 +496,49 @@ namespace Froststrap.UI.Elements.Overlay
 
         private void Window_SizeChanged(object? sender, SizeChangedEventArgs e)
         {
+            UpdateChromeDockLayout();
+
             foreach (OverlayPanel panel in PanelSurface.Children.OfType<OverlayPanel>())
                 panel.Clamp();
+        }
+
+        private void ChromeDockContent_SizeChanged(object? sender, SizeChangedEventArgs e)
+            => UpdateChromeDockLayout();
+
+        private void UpdateChromeDockLayout()
+        {
+            if (!IsLoaded || ChromeDockContent is null || ChromeDockScroller is null || ChromeDock is null)
+                return;
+
+            double contentWidth = ChromeDockContent.DesiredSize.Width;
+            if (contentWidth <= 0)
+                return;
+
+            const double horizontalWindowMargin = 16;
+            const double dockHorizontalPadding = 20;
+            const double scrollbarHeight = 14;
+            const double bottomGapWhenScrollable = 8;
+
+            double maxDockWidth = Math.Max(1, Bounds.Width - horizontalWindowMargin);
+            double naturalDockWidth = contentWidth + dockHorizontalPadding;
+            bool needsHorizontalScroll = naturalDockWidth > maxDockWidth + 0.5;
+
+            double dockWidth = Math.Min(naturalDockWidth, maxDockWidth);
+            double dockHeight = needsHorizontalScroll ? 68 + scrollbarHeight : 68;
+
+            ChromeDock.Width = dockWidth;
+            ChromeDock.Height = dockHeight;
+            ChromeDock.Margin = new Thickness(0, 0, 0, needsHorizontalScroll ? bottomGapWhenScrollable + 28 : 28);
+            ChromeDockScroller.Width = Math.Max(1, dockWidth - dockHorizontalPadding);
+            ChromeDockScroller.Height = dockHeight - 2;
+            ChromeDockContent.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
         }
 
         private void Window_Loaded(object? sender, RoutedEventArgs e) => _ = OnLoadedAsync();
 
         private async Task OnLoadedAsync()
         {
+            UpdateChromeDockLayout();
             WirePanelEvents();
 
             foreach (OverlayPanelKind kind in PanelKinds)
