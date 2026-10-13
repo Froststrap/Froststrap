@@ -45,13 +45,17 @@ namespace Froststrap.Integrations.Overlay.Platform
                     var overlay = new GameOverlay(this);
                     App.Logger.Info("LinuxOverlayHost: GameOverlay constructed");
 
-                    var content = overlay.Content as Control;
+                    if (overlay.Content is not Control content)
+                    {
+                        App.Logger.Error("LinuxOverlayHost: overlay content missing");
+                        return;
+                    }
+
                     var (w, h) = LinuxOverlay.Size();
 
                     overlay.ApplyTemplate();
                     overlay.Measure(new Size(w, h));
                     overlay.Arrange(new Rect(0, 0, w, h));
-                    App.Logger.Info($"LinuxOverlayHost: ancestors={content?.GetVisualAncestors().Count() ?? -1}");
 
                     renderer = new LinuxOverlayRenderer(content);
                     renderer.Start();
