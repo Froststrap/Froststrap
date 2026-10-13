@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+using Froststrap.Integrations.AccountManager;
 using Froststrap.RobloxInterfaces;
 using System.Net.WebSockets;
 using System.Security.Cryptography;
@@ -226,7 +227,8 @@ namespace Froststrap
 
             try
             {
-                if (!HasFileChanged())
+                string? active = AccountManager.Shared?.ActiveAccount?.SecurityToken;
+                if (!HasFileChanged() && (string.IsNullOrEmpty(active) || active == AuthCookie))
                     return;
 
                 accountChanged = await LoadTracked(true);
@@ -257,6 +259,17 @@ namespace Froststrap
             AccountChanged?.Invoke(this, EventArgs.Empty);
         }
 
+        private bool _managerHooked;
+
+        private void HookAccountManager()
+        {
+            if (_managerHooked || AccountManager.Shared is not { } manager)
+                return;
+
+            _managerHooked = true;
+            manager.ActiveAccountChanged += _ => ScheduleRefresh();
+        }
+
         private async Task LoadCookiesCore(bool reload)
         {
             if (!Enabled)
@@ -274,34 +287,38 @@ namespace Froststrap
 
             _hasLoaded = true;
 
+            HookAccountManager();
             StartWatching();
             RecordStamp();
-
-            if (!File.Exists(CookiesPath))
-            {
-                if (reload)
-                    Forget();
-
-                State = CookieState.NotFound;
-                App.Logger.Error("Cookie file not found");
-                return;
-            }
 
             try
             {
                 CookieLoadResult result = default;
 
-                if (OperatingSystem.IsWindows())
+                string? managed = AccountManager.Shared?.ActiveAccount?.SecurityToken;
+                App.Logger.Info($"CookiesManager: accountManagerTokenEmpty={string.IsNullOrWhiteSpace(managed)}");
+
+                if (!string.IsNullOrWhiteSpace(managed))
                 {
-                    result = await LoadWindowsCookies();
+                    result = new CookieLoadResult(managed, string.Empty);
                 }
-                else if (OperatingSystem.IsMacOS())
+                else if (File.Exists(CookiesPath))
                 {
-                    result = await LoadMacCookies();
+                    if (OperatingSystem.IsWindows())
+                        result = await LoadWindowsCookies();
+                    else if (OperatingSystem.IsMacOS())
+                        result = await LoadMacCookies();
+                    else if (OperatingSystem.IsLinux())
+                        result = await LoadLinuxCookies();
                 }
-                else if (OperatingSystem.IsLinux())
+                else
                 {
-                    result = await LoadLinuxCookies();
+                    if (reload)
+                        Forget();
+
+                    State = CookieState.NotFound;
+                    App.Logger.Error("Cookie file not found");
+                    return;
                 }
 
                 if (string.IsNullOrEmpty(result.AuthCookie))

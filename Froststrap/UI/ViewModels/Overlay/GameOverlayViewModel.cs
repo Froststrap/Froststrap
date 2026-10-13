@@ -334,6 +334,14 @@ namespace Froststrap.UI.ViewModels.Overlay
 
             App.Cookies.WatchAccount(this, static vm => vm.OnAccountChanged());
 
+            if (Integrations.AccountManager.AccountManager.Shared is { } manager)
+            {
+                manager.ActiveAccountChanged += account =>
+                {
+                    Dispatcher.UIThread.Post(() => _ = SyncAccountAsync(force: true));
+                };
+            }
+
             foreach ((string name, OverlayPanelLayout panel) in App.State.Prop.OverlayPanels)
             {
                 if (panel.Open && Enum.TryParse(name, out OverlayPanelKind kind))
@@ -392,6 +400,9 @@ namespace Froststrap.UI.ViewModels.Overlay
             try
             {
                 long id = playing;
+
+                if (id == 0)
+                    id = Integrations.AccountManager.AccountManager.Shared?.ActiveAccount?.UserId ?? 0;
 
                 if (id == 0 && await App.Cookies.EnsureLoadedAsync())
                     id = App.Cookies.CurrentUser?.Id ?? 0;
