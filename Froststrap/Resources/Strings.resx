@@ -4058,4 +4058,19 @@ Press cancel to go back.</value>
   <data name="Menu.Overlay.SearchBar.RequestReceived" xml:space="preserve">
     <value>Sent you a request</value>
   </data>
+  <data name="Menu.Overlay.Messages.Sort.Current" xml:space="preserve">
+    <value>Presence</value>
+  </data>
+  <data name="Menu.Overlay.Messages.Sort.Latest" xml:space="preserve">
+    <value>Latest conversation</value>
+  </data>
+  <data name="Menu.Overlay.Messages.Sort.Alphabetical" xml:space="preserve">
+    <value>A–Z</value>
+  </data>
+  <data name="Menu.Overlay.Messages.Sort.ReverseAlphabetical" xml:space="preserve">
+    <value>Z–A</value>
+  </data>
+  <data name="Menu.Overlay.Messages.SectionInStudio" xml:space="preserve">
+    <value>In Studio</value>
+  </data>
 </root>

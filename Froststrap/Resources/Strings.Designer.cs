@@ -11633,5 +11633,50 @@ namespace Froststrap.Resources {
                 return ResourceManager.GetString("Menu.Overlay.SearchBar.RequestReceived", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Current.
+        /// </summary>
+        public static string Menu_Overlay_Messages_Sort_Current {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Messages.Sort.Current", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Latest conversation.
+        /// </summary>
+        public static string Menu_Overlay_Messages_Sort_Latest {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Messages.Sort.Latest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A–Z.
+        /// </summary>
+        public static string Menu_Overlay_Messages_Sort_Alphabetical {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Messages.Sort.Alphabetical", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Z–A.
+        /// </summary>
+        public static string Menu_Overlay_Messages_Sort_ReverseAlphabetical {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Messages.Sort.ReverseAlphabetical", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to In Studio.
+        /// </summary>
+        public static string Menu_Overlay_Messages_SectionInStudio {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.Messages.SectionInStudio", resourceCulture);
+            }
+        }
     }
 }

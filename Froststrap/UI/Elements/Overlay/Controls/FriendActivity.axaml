@@ -58,6 +58,42 @@
 			<Setter Property="Background" Value="Transparent" />
 		</Style>
 
+		<Style Selector="ToggleButton.sortOption">
+			<Setter Property="Cursor" Value="Hand" />
+			<Setter Property="Padding" Value="10,8" />
+			<Setter Property="HorizontalAlignment" Value="Stretch" />
+			<Setter Property="HorizontalContentAlignment" Value="Stretch" />
+			<Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+			<Setter Property="Template">
+				<ControlTemplate>
+					<Border
+                        Name="PART_Bd"
+                        Padding="{TemplateBinding Padding}"
+                        Background="Transparent"
+                        CornerRadius="4">
+						<ContentPresenter
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Center"
+                            Content="{TemplateBinding Content}" />
+					</Border>
+				</ControlTemplate>
+			</Setter>
+		</Style>
+
+		<Style Selector="ToggleButton.sortOption:checked /template/ Border#PART_Bd">
+			<Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
+		</Style>
+
+		<Style Selector="ToggleButton.sortOption:pointerover /template/ Border#PART_Bd">
+			<Setter Property="Background" Value="{DynamicResource AccentFillColorDefaultBrush}" />
+		</Style>
+		<Style Selector="ToggleButton.sortOption:pointerover">
+			<Setter Property="Foreground" Value="{DynamicResource TextOnAccentFillColorPrimaryBrush}" />
+		</Style>
+		<Style Selector="ToggleButton.sortOption:pointerover ic|Lucide">
+			<Setter Property="StrokeBrush" Value="{DynamicResource TextOnAccentFillColorPrimaryBrush}" />
+		</Style>
+
 		<Style Selector=".presence Border.ring">
 			<Setter Property="BorderBrush" Value="{DynamicResource ControlStrongStrokeColorDisabledBrush}" />
 		</Style>
@@ -408,21 +444,92 @@
 				</Grid>
 			</Border>
 
-			<TextBox
+			<Grid
                 Grid.Row="1"
                 Margin="10,10,10,2"
-                FontSize="13"
-                PlaceholderText="{x:Static resources:Strings.Menu_Overlay_Messages_Search}"
-                Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}">
-				<TextBox.InnerLeftContent>
-					<ic:Lucide
-                        Width="14"
-                        Height="14"
-                        Margin="10,0,0,0"
-                        Icon="Search"
-                        StrokeBrush="{DynamicResource TextFillColorTertiaryBrush}" />
-				</TextBox.InnerLeftContent>
-			</TextBox>
+                ColumnDefinitions="*,Auto">
+
+				<TextBox
+                    Grid.Column="0"
+                    FontSize="13"
+                    PlaceholderText="{x:Static resources:Strings.Menu_Overlay_Messages_Search}"
+                    Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}">
+					<TextBox.InnerLeftContent>
+						<ic:Lucide
+                            Width="14"
+                            Height="14"
+                            Margin="10,0,0,0"
+                            Icon="Search"
+                            StrokeBrush="{DynamicResource TextFillColorTertiaryBrush}" />
+					</TextBox.InnerLeftContent>
+				</TextBox>
+
+				<Grid Grid.Column="1">
+					<Button
+                        Name="SortButton"
+                        Width="32"
+                        Height="32"
+                        Margin="6,0,0,0"
+                        Padding="0"
+                        VerticalAlignment="Center"
+                        Classes="flat"
+                        Command="{Binding ToggleSortDropdownCommand}"
+                        ToolTip.Tip="{Binding SortLabel}">
+						<ic:Lucide
+                            Width="15"
+                            Height="15"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Icon="ArrowUpDown"
+                            StrokeBrush="{DynamicResource TextFillColorSecondaryBrush}" />
+					</Button>
+
+					<Popup
+                        Name="SortDropdown"
+                        MaxHeight="300"
+                        IsLightDismissEnabled="True"
+                        IsOpen="{Binding IsSortDropdownOpen}"
+                        Placement="Bottom"
+                        PlacementTarget="{Binding #SortButton}"
+                        VerticalOffset="6">
+						<Border
+                            MinWidth="180"
+                            Background="#2D2D2D"
+                            BorderBrush="{DynamicResource FrostBorderDefault}"
+                            BorderThickness="1"
+                            BoxShadow="0 8 32 0 #20000000"
+                            CornerRadius="6"
+                            Padding="8">
+							<ItemsControl ItemsSource="{Binding SortOptions}">
+								<ItemsControl.ItemTemplate>
+									<DataTemplate>
+										<ToggleButton
+                                            Classes="sortOption"
+                                            IsChecked="{Binding IsSelected, Mode=OneWay}"
+                                            Command="{Binding $parent[ItemsControl].DataContext.SetSortCommand}"
+                                            CommandParameter="{Binding}">
+											<Grid ColumnDefinitions="*,Auto">
+												<TextBlock
+                                                    Grid.Column="0"
+                                                    VerticalAlignment="Center"
+                                                    Text="{Binding Label}" />
+												<ic:Lucide
+                                                    Grid.Column="1"
+                                                    Width="12"
+                                                    Height="12"
+                                                    VerticalAlignment="Center"
+                                                    Icon="Check"
+                                                    IsVisible="{Binding IsSelected}"
+                                                    StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}" />
+											</Grid>
+										</ToggleButton>
+									</DataTemplate>
+								</ItemsControl.ItemTemplate>
+							</ItemsControl>
+						</Border>
+					</Popup>
+				</Grid>
+			</Grid>
 
 			<Grid Grid.Row="2">
 				<ItemsControl

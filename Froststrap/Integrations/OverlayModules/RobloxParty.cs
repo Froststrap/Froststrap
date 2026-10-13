@@ -1,4 +1,4 @@
-﻿﻿using Froststrap.Models.APIs.RealtimeMessaging;
+﻿﻿﻿using Froststrap.Models.APIs.RealtimeMessaging;
 using Froststrap.Models.APIs.RobloxParty;
 using Froststrap.Models.APIs.RobloxParty.Events;
 using Froststrap.Utility;
@@ -11,6 +11,7 @@ namespace Froststrap.Integrations.OverlayModules
     internal class RobloxParty
     {
         private const string PlatformChatService = "platform-chat-api";
+        private const int ConversationPageSize = 100;
 
         public event EventHandler<MessageEvent>? IncomingMessage;
         public event EventHandler<ChannelMarkedRead>? ChannelRead;
@@ -35,10 +36,10 @@ namespace Froststrap.Integrations.OverlayModules
         private void OnChannelMetadataChanged(object? sender, ChannelMetadataUpdate note) =>
             ChannelMetadataChanged?.Invoke(this, note);
 
-        public static async Task<ConversationsPage?> GetConversations(int pageSize = 20, string? cursor = null)
+        public static async Task<ConversationsPage?> GetConversations(int pageSize = ConversationPageSize, string? cursor = null)
         {
             Uri url = UrlBuilder.BuildApisUrl(
-                $"{PlatformChatService}/v1/get-user-conversations?pageSize={pageSize}&include_user_data=true&cursor={cursor}");
+                $"{PlatformChatService}/v1/get-user-conversations?pageSize={pageSize}&include_user_data=false&cursor={cursor}");
 
             try
             {
@@ -53,27 +54,11 @@ namespace Froststrap.Integrations.OverlayModules
             return null;
         }
 
-        public static async Task<List<Conversation>> GetAllConversations(int maxPages = 5)
+        public static async Task<List<Conversation>> GetAllConversations()
         {
-            var conversations = new List<Conversation>();
-            string? cursor = null;
+            ConversationsPage? page = await GetConversations();
 
-            for (int page = 0; page < maxPages; page++)
-            {
-                ConversationsPage? result = await GetConversations(50, cursor);
-
-                if (result is null)
-                    break;
-
-                conversations.AddRange(result.Conversations);
-
-                cursor = result.NextCursor;
-
-                if (String.IsNullOrEmpty(cursor))
-                    break;
-            }
-
-            return conversations;
+            return page?.Conversations ?? [];
         }
 
         public static async Task<Conversation?> CreateConversation(long userId)
@@ -102,13 +87,13 @@ namespace Froststrap.Integrations.OverlayModules
             return null;
         }
 
-        public static async Task<UserMessagesPage?> GetMessages(Conversation conversation, string? cursor = null)
+        public static async Task<UserMessagesPage?> GetMessages(string conversationId, string? cursor = null)
         {
-            if (String.IsNullOrEmpty(conversation.Id))
+            if (String.IsNullOrEmpty(conversationId))
                 return null;
 
             Uri url = UrlBuilder.BuildApisUrl(
-                $"{PlatformChatService}/v1/get-conversation-messages?conversation_id={conversation.Id}&cursor={cursor}");
+                $"{PlatformChatService}/v1/get-conversation-messages?conversation_id={conversationId}&cursor={cursor}");
 
             try
             {
@@ -116,7 +101,7 @@ namespace Froststrap.Integrations.OverlayModules
             }
             catch (Exception ex) when (ex is JsonException || ex is HttpRequestException)
             {
-                App.Logger.Error($"Failed to get messages for {conversation.Id}");
+                App.Logger.Error($"Failed to get messages for {conversationId}");
                 App.Logger.Error(ex);
             }
 
@@ -149,11 +134,14 @@ namespace Froststrap.Integrations.OverlayModules
             return result.Messages.FirstOrDefault();
         }
 
-        public static async Task UpdateTypingStatus(Conversation conversation)
+        public static async Task UpdateTypingStatus(string conversationId)
         {
+            if (String.IsNullOrEmpty(conversationId))
+                return;
+
             try
             {
-                using var response = await PostAsync("update-typing-status", new ConversationPayload { Id = conversation.Id });
+                using var response = await PostAsync("update-typing-status", new ConversationPayload { Id = conversationId });
             }
             catch (HttpRequestException ex)
             {

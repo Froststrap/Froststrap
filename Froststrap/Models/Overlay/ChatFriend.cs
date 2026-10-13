@@ -36,6 +36,21 @@ namespace Froststrap.Models.Overlay
 
         public string Handle => IsGroup || String.IsNullOrEmpty(Username) ? String.Empty : $"@{Username}";
 
+        private DateTime? _lastMessageAt;
+        public DateTime? LastMessageAt
+        {
+            get => _lastMessageAt;
+            set
+            {
+                if (_lastMessageAt == value)
+                    return;
+
+                _lastMessageAt = value;
+
+                OnPropertyChanged(nameof(LastMessageAt));
+            }
+        }
+
         private string? _conversationId;
         public string? ConversationId
         {

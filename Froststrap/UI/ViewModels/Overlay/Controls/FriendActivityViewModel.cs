@@ -19,6 +19,28 @@ using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Overlay.Controls
 {
+    internal enum FriendSortMode
+    {
+        Presence,
+        LatestConversation,
+        Alphabetical,
+        ReverseAlphabetical
+    }
+
+    internal class FriendSortOption : NotifyPropertyChangedViewModel
+    {
+        public FriendSortMode Mode { get; init; }
+
+        public string Label { get; init; } = String.Empty;
+
+        private bool _isSelected;
+        public bool IsSelected
+        {
+            get => _isSelected;
+            set => SetProperty(ref _isSelected, value);
+        }
+    }
+
     internal class FriendActivityViewModel : NotifyPropertyChangedViewModel, IDisposable
     {
         private const int DetailsBatch = 100;
@@ -53,6 +75,8 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
         public ObservableCollection<ChatTab> Tabs { get; } = [];
 
+        public ObservableCollection<FriendSortOption> SortOptions { get; } = [];
+
         public event EventHandler? MessagesAdded;
 
         private ChatTab? _selectedTab;
@@ -85,6 +109,36 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                 OnPropertyChanged(nameof(HasTab));
                 OnPropertyChanged(nameof(ShowPlaceholder));
             }
+        }
+
+        private FriendSortMode _sortMode = FriendSortMode.Presence;
+        public FriendSortMode SortMode
+        {
+            get => _sortMode;
+            private set
+            {
+                if (_sortMode == value)
+                    return;
+
+                _sortMode = value;
+
+                foreach (FriendSortOption option in SortOptions)
+                    option.IsSelected = option.Mode == value;
+
+                OnPropertyChanged(nameof(SortMode));
+                OnPropertyChanged(nameof(SortLabel));
+
+                Rebuild();
+            }
+        }
+
+        public string SortLabel => SortOptions.FirstOrDefault(x => x.Mode == _sortMode)?.Label ?? String.Empty;
+
+        private bool _isSortDropdownOpen;
+        public bool IsSortDropdownOpen
+        {
+            get => _isSortDropdownOpen;
+            private set => SetProperty(ref _isSortDropdownOpen, value);
         }
 
         private void MarkAsRead(ChatTab tab)
@@ -147,6 +201,8 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
         public ICommand ToggleSectionCommand { get; }
         public ICommand SendCommand { get; }
         public ICommand JoinCommand { get; }
+        public ICommand SetSortCommand { get; }
+        public ICommand ToggleSortDropdownCommand { get; }
 
         public FriendActivityViewModel(IOverlayHost? overlay)
         {
@@ -157,10 +213,13 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             _headers = new Dictionary<FriendSection, FriendListHeader>
             {
                 [FriendSection.InGame] = new() { Section = FriendSection.InGame, Title = Strings.Menu_Overlay_Messages_SectionInGame },
+                [FriendSection.InStudio] = new() { Section = FriendSection.InStudio, Title = Strings.Menu_Overlay_Messages_SectionInStudio },
                 [FriendSection.Online] = new() { Section = FriendSection.Online, Title = Strings.Menu_Overlay_Messages_SectionOnline },
                 [FriendSection.Offline] = new() { Section = FriendSection.Offline, Title = Strings.Menu_Overlay_Messages_SectionOffline },
                 [FriendSection.Groups] = new() { Section = FriendSection.Groups, Title = Strings.Menu_Overlay_Messages_SectionGroups }
             };
+
+            BuildSortOptions();
 
             OpenChatCommand = new AsyncRelayCommand<ChatFriend>(OpenChatAsync);
             SelectTabCommand = new RelayCommand<ChatTab>(tab => SelectedTab = tab);
@@ -168,6 +227,17 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             ToggleSectionCommand = new RelayCommand<FriendListHeader>(ToggleSection);
             SendCommand = new AsyncRelayCommand(SendAsync, AsyncRelayCommandOptions.AllowConcurrentExecutions);
             JoinCommand = new RelayCommand(Join);
+
+            ToggleSortDropdownCommand = new RelayCommand(() => IsSortDropdownOpen = !IsSortDropdownOpen);
+
+            SetSortCommand = new RelayCommand<FriendSortOption>(option =>
+            {
+                if (option is null)
+                    return;
+
+                SortMode = option.Mode;
+                IsSortDropdownOpen = false;
+            });
 
 #pragma warning disable IDE0031
             if (_party is not null)
@@ -184,6 +254,34 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             App.Cookies.WatchAccount(this, static vm => vm.OnAccountChanged());
 
             RealtimeMessaging.AnyFriendshipChanged += OnFriendshipChanged;
+        }
+
+        private void BuildSortOptions()
+        {
+            SortOptions.Add(new FriendSortOption
+            {
+                Mode = FriendSortMode.Presence,
+                Label = Strings.Menu_Overlay_Messages_Sort_Current,
+                IsSelected = true
+            });
+
+            SortOptions.Add(new FriendSortOption
+            {
+                Mode = FriendSortMode.LatestConversation,
+                Label = Strings.Menu_Overlay_Messages_Sort_Latest
+            });
+
+            SortOptions.Add(new FriendSortOption
+            {
+                Mode = FriendSortMode.Alphabetical,
+                Label = Strings.Menu_Overlay_Messages_Sort_Alphabetical
+            });
+
+            SortOptions.Add(new FriendSortOption
+            {
+                Mode = FriendSortMode.ReverseAlphabetical,
+                Label = Strings.Menu_Overlay_Messages_Sort_ReverseAlphabetical
+            });
         }
 
         private void OnAccountChanged() => Dispatcher.UIThread.Post(() =>
@@ -317,6 +415,10 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
                 foreach (Conversation conversation in conversations)
                 {
+                    DateTime last = conversation.UpdatedAt == default
+                        ? conversation.PreviewMessage?.CreatedAt ?? DateTime.MinValue
+                        : conversation.UpdatedAt;
+
                     if (IsOneToOne(conversation))
                     {
                         long other = conversation.Participants.FirstOrDefault(x => x != _me.Id);
@@ -325,6 +427,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                         {
                             friend.ConversationId = conversation.Id;
                             friend.Unread = conversation.UnreadMessagesCount;
+                            friend.LastMessageAt = last;
                         }
 
                         continue;
@@ -336,7 +439,8 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                         DisplayName = String.IsNullOrWhiteSpace(conversation.Name) ? Strings.Menu_Overlay_Messages_UnnamedGroup : conversation.Name,
                         MemberCount = conversation.Participants.Length,
                         ConversationId = conversation.Id,
-                        Unread = conversation.UnreadMessagesCount
+                        Unread = conversation.UnreadMessagesCount,
+                        LastMessageAt = last
                     });
                 }
 
@@ -614,34 +718,67 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                 owner.Unread = 0;
         }
 
+        private IEnumerable<ChatFriend> Order(IEnumerable<ChatFriend> people)
+        {
+            return _sortMode switch
+            {
+                FriendSortMode.LatestConversation => people
+                    .OrderByDescending(x => x.LastMessageAt ?? DateTime.MinValue)
+                    .ThenBy(x => x.DisplayName, StringComparer.CurrentCultureIgnoreCase),
+
+                FriendSortMode.Alphabetical => people
+                    .OrderBy(x => x.DisplayName, StringComparer.CurrentCultureIgnoreCase),
+
+                FriendSortMode.ReverseAlphabetical => people
+                    .OrderByDescending(x => x.DisplayName, StringComparer.CurrentCultureIgnoreCase),
+
+                _ => people.OrderBy(x => x.DisplayName, StringComparer.CurrentCultureIgnoreCase)
+            };
+        }
+
         private void Rebuild()
         {
             string search = _searchText.Trim();
 
             bool Shown(ChatFriend friend) => search.Length == 0 || friend.Matches(search);
 
-            var sections = new (FriendSection Section, List<ChatFriend> People)[]
+            List<object> rows;
+
+            if (_sortMode == FriendSortMode.Presence)
             {
-                (FriendSection.InGame, [.. _people.Values.Where(x => x.IsInGame && Shown(x))]),
-                (FriendSection.Online, [.. _people.Values.Where(x => (x.IsOnline || x.IsInStudio) && Shown(x))]),
-                (FriendSection.Offline, [.. _people.Values.Where(x => x.Status == UserPresenceType.Offline && Shown(x))]),
-                (FriendSection.Groups, [.. _groups.Where(Shown)])
-            };
+                var sections = new (FriendSection Section, List<ChatFriend> People)[]
+                {
+                    (FriendSection.InGame,   [.. _people.Values.Where(x => x.IsInGame && Shown(x))]),
+                    (FriendSection.InStudio, [.. _people.Values.Where(x => x.IsInStudio && Shown(x))]),
+                    (FriendSection.Online,   [.. _people.Values.Where(x => x.IsOnline && Shown(x))]),
+                    (FriendSection.Offline,  [.. _people.Values.Where(x => x.Status == UserPresenceType.Offline && Shown(x))]),
+                    (FriendSection.Groups,   [.. _groups.Where(Shown)])
+                };
 
-            var rows = new List<object>();
+                rows = new List<object>();
 
-            foreach ((FriendSection section, List<ChatFriend> people) in sections)
+                foreach ((FriendSection section, List<ChatFriend> people) in sections)
+                {
+                    if (people.Count == 0)
+                        continue;
+
+                    FriendListHeader header = _headers[section];
+                    header.Count = people.Count;
+
+                    rows.Add(header);
+
+                    if (header.IsExpanded)
+                        rows.AddRange(people.OrderBy(x => x.DisplayName, StringComparer.CurrentCultureIgnoreCase));
+                }
+            }
+            else
             {
-                if (people.Count == 0)
-                    continue;
+                var visible = new List<ChatFriend>(_people.Count + _groups.Count);
 
-                FriendListHeader header = _headers[section];
-                header.Count = people.Count;
+                visible.AddRange(_people.Values.Where(Shown));
+                visible.AddRange(_groups.Where(Shown));
 
-                rows.Add(header);
-
-                if (header.IsExpanded)
-                    rows.AddRange(people.OrderBy(x => x.DisplayName, StringComparer.CurrentCultureIgnoreCase));
+                rows = Order(visible).Cast<object>().ToList();
             }
 
             if (!rows.SequenceEqual(Rows))
@@ -723,12 +860,13 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
             try
             {
-                UserMessagesPage? page = await RobloxParty.GetMessages(new Conversation { Id = tab.Friend.ConversationId });
+                UserMessagesPage? page = await RobloxParty.GetMessages(tab.Friend.ConversationId);
 
                 if (page is null)
                     return;
 
                 bool added = false;
+                DateTime? latest = null;
 
                 foreach (UserMessage message in Enumerable.Reverse(page.Messages))
                 {
@@ -745,10 +883,16 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                     else
                         AddLine(tab, sender, message.Content, message.CreatedAt);
 
+                    if (message.CreatedAt is DateTime at && (latest is null || at > latest))
+                        latest = at;
+
                     added = true;
                 }
 
                 tab.Loaded = true;
+
+                if (latest is not null && (tab.Friend.LastMessageAt is null || latest > tab.Friend.LastMessageAt))
+                    tab.Friend.LastMessageAt = latest;
 
                 if (tab == _selectedTab && added)
                     MarkAsRead(tab);
@@ -873,7 +1017,11 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                 if (!String.IsNullOrEmpty(sent?.Id))
                     tab.KnownMessages.Add(sent.Id);
 
+                tab.Friend.LastMessageAt = DateTime.UtcNow;
+
                 line.State = ChatLineState.Sent;
+
+                Rebuild();
             }
             catch (MessageModeratedException)
             {
@@ -910,15 +1058,24 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                     if (tab != _selectedTab)
                         tab.Friend.Unread++;
 
+                    Rebuild();
+
                     return;
                 }
 
                 ChatFriend? owner = _people.Values.Concat(_groups).FirstOrDefault(x => x.ConversationId == message.ConversationId);
 
                 if (owner is not null)
+                {
                     owner.Unread++;
+                    owner.LastMessageAt = DateTime.UtcNow;
+
+                    Rebuild();
+                }
                 else
+                {
                     await LoadAsync(true);
+                }
             });
         }
 
