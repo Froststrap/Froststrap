@@ -107,17 +107,6 @@ SPDX-License-Identifier: MPL-2.0
                     </control:OverlayPanel.PanelContent>
                 </control:OverlayPanel>
 
-                <control:OverlayPanel x:Name="GamesPanel"
-                                      Title="{x:Static resources:Strings.Menu_Overlay_Tab_Games}"
-                                      Icon="Gamepad2"
-                                      IsVisible="{Binding IsGamesVisible}"
-                                      CloseCommand="{Binding ClosePanelCommand}"
-                                      CloseCommandParameter="Games">
-                    <control:OverlayPanel.PanelContent>
-                        <control:GameBrowser />
-                    </control:OverlayPanel.PanelContent>
-                </control:OverlayPanel>
-
                 <control:OverlayPanel x:Name="HistoryPanel"
                                       Title="{x:Static resources:Strings.ContextMenu_GameHistory_Title}"
                                       Icon="RotateCcwClock"
@@ -184,16 +173,6 @@ SPDX-License-Identifier: MPL-2.0
                                   Command="{Binding TogglePanelCommand}"
                                   CommandParameter="Servers">
                         <ic:Lucide Icon="Server"
-                                   Width="16" Height="16"
-                                   StrokeBrush="{DynamicResource TextFillColorSecondaryBrush}" />
-                    </ToggleButton>
-
-                    <ToggleButton Classes="panelToggle"
-                                  control:DockHintLayer.Text="{x:Static resources:Strings.Menu_Overlay_Tab_Games}"
-                                  IsChecked="{Binding IsGamesVisible, Mode=OneWay}"
-                                  Command="{Binding TogglePanelCommand}"
-                                  CommandParameter="Games">
-                        <ic:Lucide Icon="Gamepad2"
                                    Width="16" Height="16"
                                    StrokeBrush="{DynamicResource TextFillColorSecondaryBrush}" />
                     </ToggleButton>

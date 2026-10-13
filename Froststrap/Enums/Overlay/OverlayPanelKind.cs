@@ -5,8 +5,7 @@
         Messages,
         Badges,
         Servers,
-        Notes,
-        Games,
-        History
+        History,
+        Notes
     }
 }

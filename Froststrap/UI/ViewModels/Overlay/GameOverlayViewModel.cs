@@ -1,4 +1,4 @@
-﻿using Avalonia;
+﻿﻿using Avalonia;
 using Avalonia.Input.Platform;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
@@ -222,7 +222,6 @@ namespace Froststrap.UI.ViewModels.Overlay
         public bool IsMessagesVisible => _open.Contains(OverlayPanelKind.Messages);
         public bool IsBadgesVisible => _open.Contains(OverlayPanelKind.Badges);
         public bool IsServersVisible => _open.Contains(OverlayPanelKind.Servers);
-        public bool IsGamesVisible => _open.Contains(OverlayPanelKind.Games);
         public bool IsHistoryVisible => _open.Contains(OverlayPanelKind.History);
         public bool IsNotesVisible => _open.Contains(OverlayPanelKind.Notes);
 
@@ -256,7 +255,6 @@ namespace Froststrap.UI.ViewModels.Overlay
             OnPropertyChanged(nameof(IsMessagesVisible));
             OnPropertyChanged(nameof(IsBadgesVisible));
             OnPropertyChanged(nameof(IsServersVisible));
-            OnPropertyChanged(nameof(IsGamesVisible));
             OnPropertyChanged(nameof(IsHistoryVisible));
             OnPropertyChanged(nameof(IsNotesVisible));
         }

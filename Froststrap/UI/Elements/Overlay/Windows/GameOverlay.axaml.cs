@@ -61,7 +61,6 @@ namespace Froststrap.UI.Elements.Overlay
         private BadgeTracker BadgeTracker => (BadgeTracker)BadgesPanel.PanelContent!;
         private ServerBrowser ServerBrowser => (ServerBrowser)ServersPanel.PanelContent!;
         private Notes NotesPad => (Notes)NotesPanel.PanelContent!;
-        private GameBrowser GameBrowser => (GameBrowser)GamesPanel.PanelContent!;
         private GameHistory GameHistory => (GameHistory)HistoryPanel.PanelContent!;
 
         public GameOverlay(IOverlayHost? overlay)
@@ -83,7 +82,6 @@ namespace Froststrap.UI.Elements.Overlay
             BadgeTracker.Attach(overlay?.ActivityWatcher);
             BadgeTracker.BadgeEarned += OnBadgeEarned;
             ServerBrowser.Attach(overlay?.ActivityWatcher);
-            GameBrowser.Attach(overlay?.ActivityWatcher);
             GameHistory.Attach(overlay?.ActivityWatcher);
         }
 
@@ -118,7 +116,6 @@ namespace Froststrap.UI.Elements.Overlay
             OverlayPanelKind.Badges => BadgesPanel,
             OverlayPanelKind.Servers => ServersPanel,
             OverlayPanelKind.Notes => NotesPanel,
-            OverlayPanelKind.Games => GamesPanel,
             OverlayPanelKind.History => HistoryPanel,
             _ => MessagesPanel
         };
@@ -179,7 +176,6 @@ namespace Froststrap.UI.Elements.Overlay
             {
                 OverlayPanelKind.Notes => (560d, 420d),
                 OverlayPanelKind.Servers => (880d, 520d),
-                OverlayPanelKind.Games => (800d, 540d),
                 OverlayPanelKind.History => (580d, 440d),
                 _ => (720d, 500d)
             };
