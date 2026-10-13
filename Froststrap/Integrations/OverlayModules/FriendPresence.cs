@@ -68,6 +68,7 @@ namespace Froststrap.Integrations.OverlayModules
             CancellationToken token = _cancellation.Token;
 
             _messaging?.PresenceBulk += OnPresenceBulk;
+            _messaging?.FriendshipChanged += OnFriendshipChanged;
 
             _ = Task.Run(() => RunAsync(token));
         }
@@ -75,6 +76,7 @@ namespace Froststrap.Integrations.OverlayModules
         public void Stop()
         {
             _messaging?.PresenceBulk -= OnPresenceBulk;
+            _messaging?.FriendshipChanged -= OnFriendshipChanged;
 
             _cancellation?.Cancel();
             _cancellation?.Dispose();
@@ -216,6 +218,81 @@ namespace Froststrap.Integrations.OverlayModules
             }
 
             Publish(changes, changed);
+        }
+
+        private void OnFriendshipChanged(object? sender, FriendshipNotification note)
+        {
+            if (note.EventArgs is not { } args || note.Type is null)
+                return;
+
+            if (App.Cookies.CurrentUser is not AuthenticatedUser me)
+                return;
+
+            long other = args.UserId1 == me.Id ? args.UserId2 : args.UserId1;
+            bool byMe  = (args.UserId1 == me.Id &&  args.UserId1IsActor)
+                      || (args.UserId2 == me.Id && !args.UserId1IsActor);
+
+            if (other == 0 || other == me.Id)
+                return;
+
+            bool friendsChanged = false;
+
+            lock (_lock)
+            {
+                switch (note.Type)
+                {
+                    case FriendshipNotification.CreatedType:
+                        if (!_friendIds.Contains(other))
+                        {
+                            _friends.Add(other);
+                            _friendIds.Add(other);
+                            friendsChanged = true;
+                        }
+
+                        _friendsFetched = DateTime.MinValue;
+                        break;
+
+                    case FriendshipNotification.DestroyedType:
+                        if (_friendIds.Remove(other))
+                        {
+                            _friends.Remove(other);
+                            friendsChanged = true;
+                        }
+
+                        _last.Remove(other);
+
+                        var stale = _notified.Keys.Where(k => k.UserId == other).ToList();
+
+                        foreach (var key in stale)
+                            _notified.Remove(key);
+
+                        _friendsFetched = DateTime.MinValue;
+                        break;
+
+                    case FriendshipNotification.RequestedType:
+                        App.Logger.Info($"{LOG_IDENT}::OnFriendshipChanged",
+                            byMe ? $"Friend request sent to {other}"
+                                 : $"Friend request received from {other}");
+                        return;
+
+                    default:
+                        App.Logger.Info($"{LOG_IDENT}::OnFriendshipChanged",
+                            $"Unhandled friendship type {note.Type}");
+                        return;
+                }
+            }
+
+            if (!friendsChanged)
+                return;
+
+            App.Logger.Info($"{LOG_IDENT}::OnFriendshipChanged",
+                note.Type == FriendshipNotification.CreatedType
+                    ? (byMe ? $"Added {other}" : $"{other} added you back")
+                    : (byMe ? $"Unfriended {other}" : $"{other} unfriended you"));
+
+            Updated?.Invoke(this, [other]);
+
+            _ = PollAsync();
         }
 
         private static List<long> Diff(Dictionary<long, UserPresence> before, Dictionary<long, UserPresence> now)

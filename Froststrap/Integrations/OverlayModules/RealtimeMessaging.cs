@@ -1,4 +1,4 @@
-﻿using Froststrap.Models.APIs.RealtimeMessaging;
+﻿﻿using Froststrap.Models.APIs.RealtimeMessaging;
 using Froststrap.Models.APIs.Roblox;
 using Froststrap.Models.APIs.RobloxParty.Events;
 using Froststrap;
@@ -27,7 +27,10 @@ namespace Froststrap.Integrations.OverlayModules
         public event EventHandler<MessageEvent>? PartyChat;
         public event EventHandler<SignalrMessage>? MessageReceived;
         public event EventHandler<IReadOnlyList<PresenceNotification>>? PresenceBulk;
+        public event EventHandler<FriendshipNotification>? FriendshipChanged;
         public event EventHandler? Connected;
+
+        public static event EventHandler<FriendshipNotification>? AnyFriendshipChanged;
 
         public readonly RobloxParty Party;
 
@@ -273,6 +276,16 @@ namespace Froststrap.Integrations.OverlayModules
 
                         if (notifications is { Count: > 0 })
                             PresenceBulk?.Invoke(this, notifications);
+                        break;
+
+                    case "FriendshipNotifications":
+                        var friendship = JsonSerializer.Deserialize<FriendshipNotification>(payload);
+
+                        if (friendship is not null && friendship.EventArgs is not null)
+                        {
+                            FriendshipChanged?.Invoke(this, friendship);
+                            AnyFriendshipChanged?.Invoke(this, friendship);
+                        }
                         break;
 
                     default:

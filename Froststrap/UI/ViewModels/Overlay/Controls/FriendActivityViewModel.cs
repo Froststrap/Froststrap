@@ -6,6 +6,7 @@ using Froststrap.Enums.Overlay;
 using Froststrap.Integrations;
 using Froststrap.Integrations.Overlay;
 using Froststrap.Integrations.OverlayModules;
+using Froststrap.Models.APIs.RealtimeMessaging;
 using Froststrap.Models.APIs.Roblox;
 using Froststrap.Models.APIs.RobloxParty;
 using Froststrap.Models.APIs.RobloxParty.Events;
@@ -18,7 +19,7 @@ using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Overlay.Controls
 {
-    internal class FriendActivityViewModel : NotifyPropertyChangedViewModel
+    internal class FriendActivityViewModel : NotifyPropertyChangedViewModel, IDisposable
     {
         private const int DetailsBatch = 100;
         private const int DetailConcurrency = 3;
@@ -46,6 +47,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
         private bool _loading;
         private bool _loaded;
         private bool _requested;
+        private bool _disposed;
 
         public BulkObservableCollection<object> Rows { get; } = new();
 
@@ -176,6 +178,8 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 #pragma warning restore IDE0031
 
             App.Cookies.WatchAccount(this, static vm => vm.OnAccountChanged());
+
+            RealtimeMessaging.AnyFriendshipChanged += OnFriendshipChanged;
         }
 
         private void OnAccountChanged() => Dispatcher.UIThread.Post(() =>
@@ -455,6 +459,106 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
             if (any)
                 Rebuild();
+        }
+
+        private void OnFriendshipChanged(object? sender, FriendshipNotification note)
+        {
+            if (note.EventArgs is not { } args || note.Type is null)
+                return;
+
+            long me = _me?.Id ?? App.Cookies.CurrentUser?.Id ?? 0;
+
+            if (me == 0)
+                return;
+
+            long other = args.UserId1 == me ? args.UserId2 : args.UserId1;
+            bool byMe  = (args.UserId1 == me &&  args.UserId1IsActor)
+                      || (args.UserId2 == me && !args.UserId1IsActor);
+
+            if (other == 0 || other == me)
+                return;
+
+            string type = note.Type;
+
+            Dispatcher.UIThread.Post(() => _ = ApplyFriendshipChangeAsync(other, type, byMe));
+        }
+
+        private async Task ApplyFriendshipChangeAsync(long other, string type, bool byMe)
+        {
+            if (_disposed)
+                return;
+
+            switch (type)
+            {
+                case FriendshipNotification.CreatedType:
+                {
+                    if (_people.ContainsKey(other))
+                        return;
+
+                    UserDetails? person = null;
+
+                    try
+                    {
+                        foreach (var (id, user) in await UserDetails.FetchBatch([other]))
+                        {
+                            if (id == other)
+                            {
+                                person = user;
+                                break;
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        App.Logger.Warn("Friend activity: failed to fetch new friend details");
+                        App.Logger.Error(ex);
+                    }
+
+                    if (_disposed || _people.ContainsKey(other))
+                        return;
+
+                    var friend = new ChatFriend
+                    {
+                        UserId = other,
+                        DisplayName = person?.Data.DisplayName ?? person?.Data.Name ?? other.ToString(Locale.CurrentCulture),
+                        Username = person?.Data.Name ?? String.Empty,
+                        Headshot = person?.Thumbnail?.ImageUrl
+                    };
+
+                    friend.Update(_presence?.GetPresence(other));
+
+                    _people[other] = friend;
+
+                    Rebuild();
+
+                    App.Logger.Info($"Friend activity: {(byMe ? "added" : "was added by")} {other}");
+                    break;
+                }
+
+                case FriendshipNotification.DestroyedType:
+                {
+                    if (!_people.Remove(other))
+                        return;
+
+                    ChatTab? tab = Tabs.FirstOrDefault(x => x.Friend.UserId == other);
+
+                    if (tab is not null)
+                        CloseTab(tab);
+
+                    Rebuild();
+
+                    App.Logger.Info($"Friend activity: {(byMe ? "removed" : "lost")} friend {other}");
+                    break;
+                }
+
+                case FriendshipNotification.RequestedType:
+                    App.Logger.Info($"Friend activity: friend request event for {other}");
+                    break;
+
+                default:
+                    App.Logger.Info($"Friend activity: unhandled friendship type {type}");
+                    break;
+            }
         }
 
         private void Rebuild()
@@ -792,6 +896,24 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                 App.Logger.Error("Failed to follow a friend");
                 App.Logger.Error(ex);
             }
+        }
+
+        public void Dispose()
+        {
+            if (_disposed)
+                return;
+
+            _disposed = true;
+
+            if (_party is not null)
+                _party.IncomingMessage -= OnIncomingMessage;
+
+            if (_presence is not null)
+                _presence.Updated -= OnPresenceUpdated;
+
+            RealtimeMessaging.AnyFriendshipChanged -= OnFriendshipChanged;
+
+            GC.SuppressFinalize(this);
         }
     }
 }

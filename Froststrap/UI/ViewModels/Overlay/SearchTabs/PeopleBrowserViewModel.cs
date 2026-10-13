@@ -5,6 +5,8 @@
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.Enums;
+using Froststrap.Integrations.OverlayModules;
+using Froststrap.Models.APIs.RealtimeMessaging;
 using Froststrap.Models.APIs.Roblox;
 using Froststrap.Models.Overlay;
 using Froststrap.RobloxInterfaces;
@@ -120,6 +122,8 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
             AddFriendCommand = new AsyncRelayCommand<SearchPerson>(AddFriendAsync);
 
             App.Cookies.WatchAccount(this, static vm => vm.OnAccountChanged());
+
+            RealtimeMessaging.AnyFriendshipChanged += OnFriendshipChanged;
         }
 
         public void Prewarm()
@@ -371,8 +375,6 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
                     person.HasIncoming = false;
                 }
 
-                // Force the friend cache to reload on next ShowCachedFriends so
-                // newly accepted friends appear with full user details.
                 _friendsLoaded = false;
                 _friendsCache.Clear();
 
@@ -446,8 +448,6 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
                     {
                         FriendStatus status = statuses.GetValueOrDefault(u.ContentId, FriendStatus.Unknown);
 
-                        // UserDetails has a reliable hasVerifiedBadge; omni-search's field
-                        // is often stale or missing for user verticals.
                         bool verified = details.TryGetValue(u.ContentId, out UserDetails? d)
                             ? d.Data.HasVerifiedBadge
                             : u.HasVerifiedBadge;
@@ -754,6 +754,103 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
             return FriendRequestFailure.Unknown;
         }
 
+        private void OnFriendshipChanged(object? sender, FriendshipNotification note)
+        {
+            if (note.EventArgs is not { } args || note.Type is null)
+                return;
+
+            long me = _me != 0 ? _me : App.Cookies.CurrentUser?.Id ?? 0;
+
+            if (me == 0)
+                return;
+
+            long other = args.UserId1 == me ? args.UserId2 : args.UserId1;
+            bool byMe  = (args.UserId1 == me &&  args.UserId1IsActor)
+                      || (args.UserId2 == me && !args.UserId1IsActor);
+
+            if (other == 0 || other == me)
+                return;
+
+            string type = note.Type;
+
+            Dispatcher.UIThread.Post(() => ApplyFriendshipChange(other, type, byMe));
+        }
+
+        private void ApplyFriendshipChange(long other, string type, bool byMe)
+        {
+            if (_disposed)
+                return;
+
+            switch (type)
+            {
+                case FriendshipNotification.CreatedType:
+                {
+                    _pendingIds.Remove(other);
+                    _friendIds.Add(other);
+
+                    foreach (SearchPerson p in People.Where(p => p.UserId == other))
+                    {
+                        p.IsFriend    = true;
+                        p.IsPending   = false;
+                        p.HasIncoming = false;
+                    }
+
+                    foreach (SearchPerson p in _friendsCache.Where(p => p.UserId == other))
+                    {
+                        p.IsFriend    = true;
+                        p.IsPending   = false;
+                        p.HasIncoming = false;
+                    }
+
+                    UpdatePendingTimer();
+
+                    _friendsLoaded = false;
+                    _friendsCache.Clear();
+
+                    if (_showingFriends && String.IsNullOrWhiteSpace(_query))
+                        _ = LoadFriendsAsync();
+
+                    App.Logger.Info($"People browser: {(byMe ? "added" : "was added by")} {other}");
+                    break;
+                }
+
+                case FriendshipNotification.DestroyedType:
+                {
+                    _pendingIds.Remove(other);
+                    _friendIds.Remove(other);
+
+                    foreach (SearchPerson p in People.Where(p => p.UserId == other))
+                        p.IsFriend = false;
+
+                    _friendsCache.RemoveAll(p => p.UserId == other);
+
+                    if (_showingFriends && String.IsNullOrWhiteSpace(_query))
+                    {
+                        People.ReplaceAll(_friendsCache);
+
+                        if (_friendsCache.Count == 0)
+                            SelectedIndex = -1;
+                        else if (SelectedIndex >= _friendsCache.Count)
+                            SelectedIndex = _friendsCache.Count - 1;
+                    }
+
+                    UpdatePendingTimer();
+                    Refreshed();
+
+                    App.Logger.Info($"People browser: {(byMe ? "removed" : "lost")} friend {other}");
+                    break;
+                }
+
+                case FriendshipNotification.RequestedType:
+                    App.Logger.Info($"People browser: friend request event for {other}");
+                    break;
+
+                default:
+                    App.Logger.Info($"People browser: unhandled friendship type {type}");
+                    break;
+            }
+        }
+
         private void Refreshed()
         {
             OnPropertyChanged(nameof(ShowPeople));
@@ -773,6 +870,8 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
             _disposeCts.Dispose();
             _debounce.Stop();
             _pendingTimer.Stop();
+
+            RealtimeMessaging.AnyFriendshipChanged -= OnFriendshipChanged;
 
             GC.SuppressFinalize(this);
         }
