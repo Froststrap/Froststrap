@@ -23,26 +23,20 @@ namespace Froststrap.Integrations.Overlay.Platform
         private int bufferSize;
         private int width;
         private int height;
-        private bool dirty = true;
 
         public LinuxOverlayRenderer(Control? content = null)
         {
             root = content ?? CreateTestContent();
             timer = new DispatcherTimer(
-                TimeSpan.FromMilliseconds(250),
+                TimeSpan.FromMilliseconds(50),
                 DispatcherPriority.Background,
-                (_, _) => tick());
+                (_, _) => Tick());
         }
 
         public void Start()
         {
             timer.Start();
-            tick();
-        }
-
-        public void Invalidate()
-        {
-            dirty = true;
+            Tick();
         }
 
         public void Dispose()
@@ -82,7 +76,7 @@ namespace Froststrap.Integrations.Overlay.Platform
             };
         }
 
-        private void tick()
+        private void Tick()
         {
             var (w, h) = LinuxOverlay.Size();
             if (w <= 0 || h <= 0)
@@ -92,19 +86,13 @@ namespace Froststrap.Integrations.Overlay.Platform
 
             if (w != width || h != height)
             {
-                resize(w, h);
+                Resize(w, h);
             }
 
-            if (!dirty)
-            {
-                return;
-            }
-
-            dirty = false;
-            render();
+            Render();
         }
 
-        private void resize(int w, int h)
+        private void Resize(int w, int h)
         {
             bitmap?.Dispose();
             if (buffer != IntPtr.Zero)
@@ -117,10 +105,9 @@ namespace Froststrap.Integrations.Overlay.Platform
             bufferSize = w * h * 4;
             buffer = Marshal.AllocHGlobal(bufferSize);
             bitmap = new RenderTargetBitmap(new PixelSize(w, h), new Vector(96, 96));
-            dirty = true;
         }
 
-        private void render()
+        private void Render()
         {
             if (bitmap is null)
             {
@@ -134,7 +121,6 @@ namespace Froststrap.Integrations.Overlay.Platform
 
             root.Measure(new Size(width, height));
             root.Arrange(new Rect(0, 0, width, height));
-            App.Logger.Info($"LinuxOverlayRenderer: root={root.GetType().Name} desired={root.DesiredSize} visualChildren={root.GetVisualChildren().Count()}");
             bitmap.Render(root);
 
             var stride = width * 4;
