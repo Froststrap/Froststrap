@@ -23,6 +23,8 @@ namespace Froststrap.Integrations.Overlay.Platform
         private int bufferSize;
         private int width;
         private int height;
+        private string regionSignature = "";
+        private readonly IntPtr eventBuffer = Marshal.AllocHGlobal(24 * 32);
 
         public LinuxOverlayRenderer(Control? content = null)
         {
@@ -49,6 +51,8 @@ namespace Froststrap.Integrations.Overlay.Platform
                 Marshal.FreeHGlobal(buffer);
                 buffer = IntPtr.Zero;
             }
+
+            Marshal.FreeHGlobal(eventBuffer);
         }
 
         private static Grid CreateTestContent()
@@ -90,6 +94,8 @@ namespace Froststrap.Integrations.Overlay.Platform
             }
 
             Render();
+            UpdateRegions();
+            PollInput();
         }
 
         private void Resize(int w, int h)
@@ -126,6 +132,45 @@ namespace Froststrap.Integrations.Overlay.Platform
             var stride = width * 4;
             bitmap.CopyPixels(new PixelRect(0, 0, width, height), buffer, bufferSize, stride);
             LinuxOverlay.Submit(buffer, width, height, stride);
+        }
+
+        private void UpdateRegions()
+        {
+            var dock = root.GetVisualDescendants().OfType<Control>().FirstOrDefault(c => c.Name == "ChromeDock");
+            if (dock is null || !dock.IsVisible)
+            {
+                return;
+            }
+
+            var origin = dock.TranslatePoint(new Point(0, 0), root);
+            if (origin is null)
+            {
+                return;
+            }
+
+            int[] rects = [(int)origin.Value.X, (int)origin.Value.Y, (int)dock.Bounds.Width, (int)dock.Bounds.Height];
+            var signature = string.Join(',', rects);
+            if (signature == regionSignature)
+            {
+                return;
+            }
+
+            regionSignature = signature;
+            LinuxOverlay.SetRegions(rects);
+            App.Logger.Info($"LinuxOverlayRenderer: regions={signature}");
+        }
+
+        private void PollInput()
+        {
+            int count = LinuxOverlay.PollInput(eventBuffer, 32);
+            for (int i = 0; i < count; i++)
+            {
+                var e = Marshal.PtrToStructure<LinuxOverlay.InputEvent>(eventBuffer + i * 24);
+                if (e.Kind != 2)
+                {
+                    App.Logger.Info($"LinuxOverlayRenderer: input kind={e.Kind} code={e.Code} x={e.X} y={e.Y}");
+                }
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 mod handlers;
 mod tracker;
 
+use std::collections::VecDeque;
 use std::error::Error;
 use std::sync::atomic::{AtomicI32, Ordering};
 use std::sync::{Arc, Mutex, MutexGuard};
@@ -15,6 +16,7 @@ use smithay_client_toolkit::{
         client::{Connection, globals::registry_queue_init, protocol::wl_shm},
     },
     registry::RegistryState,
+    seat::{SeatState, pointer::ThemedPointer},
     shell::{
         WaylandSurface,
         wlr_layer::{Anchor, KeyboardInteractivity, Layer, LayerShell, LayerSurface},
@@ -36,16 +38,29 @@ struct Frame {
     pixels: Vec<u8>,
 }
 
+#[repr(C)]
+#[derive(Clone, Copy, Default)]
+pub struct InputEvent {
+    pub kind: i32,
+    pub code: u32,
+    pub x: f32,
+    pub y: f32,
+    pub dx: f32,
+    pub dy: f32,
+}
+
 struct Shared {
     frame: Mutex<Frame>,
     width: AtomicI32,
     height: AtomicI32,
+    input: Mutex<VecDeque<InputEvent>>,
 }
 
 enum Command {
     Present,
     Sync,
     SetVisible(bool),
+    SetRegions(Vec<[i32; 4]>),
     Shutdown,
 }
 
@@ -65,6 +80,7 @@ impl Overlay {
             }),
             width: AtomicI32::new(0),
             height: AtomicI32::new(0),
+            input: Mutex::new(VecDeque::new()),
         });
         let (sender, receiver) = channel::channel::<Command>();
 
@@ -120,6 +136,25 @@ impl Overlay {
         let _ = self.sender.send(Command::SetVisible(visible));
     }
 
+    pub fn set_regions(&self, rects: Vec<[i32; 4]>) {
+        let _ = self.sender.send(Command::SetRegions(rects));
+    }
+
+    pub fn poll_input(&self, out: &mut [InputEvent]) -> usize {
+        let mut queue = lock(&self.shared.input);
+        let mut count = 0;
+        while count < out.len() {
+            match queue.pop_front() {
+                Some(event) => {
+                    out[count] = event;
+                    count += 1;
+                }
+                None => break,
+            }
+        }
+        count
+    }
+
     pub fn shutdown(mut self) {
         let _ = self.sender.send(Command::Shutdown);
         if let Some(thread) = self.thread.take() {
@@ -140,6 +175,9 @@ struct App {
     rect: Option<SoberRect>,
     visible: bool,
     configured: bool,
+    compositor: CompositorState,
+    seat_state: SeatState,
+    pointer: Option<ThemedPointer>,
 }
 
 impl App {
@@ -212,6 +250,27 @@ impl App {
         }
     }
 
+    fn push_input(&self, event: InputEvent) {
+        let mut queue = lock(&self.shared.input);
+        if queue.len() >= 1024 {
+            queue.pop_front();
+        }
+        queue.push_back(event);
+    }
+
+    fn set_regions(&mut self, rects: Vec<[i32; 4]>) {
+        let Ok(region) = Region::new(&self.compositor) else {
+            return;
+        };
+        for [x, y, w, h] in rects {
+            region.add(x, y, w, h);
+        }
+        self.layer
+            .wl_surface()
+            .set_input_region(Some(region.wl_region()));
+        self.layer.commit();
+    }
+
     fn handle(&mut self, command: Command) {
         match command {
             Command::Present => self.draw(),
@@ -220,6 +279,7 @@ impl App {
                 self.visible = visible;
                 self.sync();
             }
+            Command::SetRegions(rects) => self.set_regions(rects),
             Command::Shutdown => self.signal.stop(),
         }
     }
@@ -307,6 +367,9 @@ fn run(
         rect: initial,
         visible: true,
         configured: false,
+        compositor,
+        seat_state: SeatState::new(&globals, &qh),
+        pointer: None,
     };
 
     event_loop.run(None, &mut app, |_| {})?;

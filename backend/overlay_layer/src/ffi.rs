@@ -1,11 +1,13 @@
 use std::sync::{Mutex, MutexGuard};
 
-use crate::wayland::Overlay;
+use crate::wayland::{InputEvent, Overlay};
 
 static OVERLAY: Mutex<Option<Overlay>> = Mutex::new(None);
 
 fn slot() -> MutexGuard<'static, Option<Overlay>> {
-    OVERLAY.lock().unwrap_or_else(|poisoned| poisoned.into_inner())
+    OVERLAY
+        .lock()
+        .unwrap_or_else(|poisoned| poisoned.into_inner())
 }
 
 #[unsafe(no_mangle)]
@@ -64,4 +66,43 @@ pub extern "C" fn overlay_shutdown() {
     if let Some(overlay) = overlay {
         overlay.shutdown();
     }
+}
+
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn overlay_set_regions(rects: *const i32, count: i32) -> i32 {
+    if count < 0 || (count > 0 && rects.is_null()) {
+        return -1;
+    }
+
+    let flat: &[i32] = if count == 0 {
+        &[]
+    } else {
+        unsafe { std::slice::from_raw_parts(rects, count as usize * 4) }
+    };
+
+    let list: Vec<[i32; 4]> = flat
+        .chunks_exact(4)
+        .map(|c| [c[0], c[1], c[2], c[3]])
+        .collect();
+
+    match slot().as_ref() {
+        Some(overlay) => {
+            overlay.set_regions(list);
+            0
+        }
+        None => -1,
+    }
+}
+
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn overlay_poll_input(out: *mut InputEvent, max: i32) -> i32 {
+    if out.is_null() || max <= 0 {
+        return 0;
+    }
+
+    let buffer = unsafe { std::slice::from_raw_parts_mut(out, max as usize) };
+
+    slot()
+        .as_ref()
+        .map_or(0, |overlay| overlay.poll_input(buffer) as i32)
 }

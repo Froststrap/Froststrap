@@ -162,10 +162,28 @@ internal partial class InternalOverlay
 
     [LibraryImport("froststrap_overlay_layer", EntryPoint = "overlay_shutdown")]
     public static partial void Shutdown();
+
+    [LibraryImport("froststrap_overlay_layer", EntryPoint = "overlay_set_regions")]
+    public static partial int SetRegions([In] int[] rects, int count);
+
+    [LibraryImport("froststrap_overlay_layer", EntryPoint = "overlay_poll_input")]
+    public static partial int PollInput(IntPtr events, int max);
 }
 
 public class LinuxOverlay
 {
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct InputEvent
+    {
+        public int Kind;
+        public uint Code;
+        public float X;
+        public float Y;
+        public float Dx;
+        public float Dy;
+    }
+
     public static bool Init()
     {
         return InternalOverlay.Init() == 0;
@@ -190,4 +208,8 @@ public class LinuxOverlay
     {
         InternalOverlay.Shutdown();
     }
+
+    public static bool SetRegions(int[] rects) => InternalOverlay.SetRegions(rects, rects.Length / 4) == 0;
+
+    public static int PollInput(IntPtr events, int max) => InternalOverlay.PollInput(events, max);
 }
