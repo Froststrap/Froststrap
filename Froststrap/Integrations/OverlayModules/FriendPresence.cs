@@ -18,15 +18,16 @@ namespace Froststrap.Integrations.OverlayModules
 
         private const int BatchSize = 50;
         private const int MaxPerUpdate = 3;
+        private const int NotifiedPruneThreshold = 128;
 
         public event EventHandler<FriendPresenceChange>? Changed;
         public event EventHandler<IReadOnlyCollection<long>>? Updated;
 
-        [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "Owned by the caller, not by FriendPresence.")]
         private readonly ActivityWatcher? _activityWatcher = activityWatcher;
 
-        [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "Owned by the caller, not by FriendPresence.")]
         private readonly RealtimeMessaging? _messaging = messaging;
+
+        private readonly SemaphoreSlim _pollGate = new(1, 1);
 
         private readonly Lock _lock = new();
 
@@ -40,7 +41,14 @@ namespace Froststrap.Integrations.OverlayModules
         private CancellationTokenSource? _cancellation;
         private bool _seeded;
 
-        public IReadOnlyList<long> FriendIds => [.. _friends];
+        public IReadOnlyList<long> FriendIds
+        {
+            get
+            {
+                lock (_lock)
+                    return [.. _friends];
+            }
+        }
 
         public IReadOnlyDictionary<long, UserPresence> Presences
         {
@@ -127,7 +135,20 @@ namespace Froststrap.Integrations.OverlayModules
             lock (_lock)
                 _friendsFetched = DateTime.MinValue;
 
-            _ = PollAsync();
+            _ = PollSafeAsync();
+        }
+
+        private async Task PollSafeAsync()
+        {
+            try
+            {
+                await PollAsync();
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error($"{LOG_IDENT}::PollSafeAsync", "Failed to poll presence");
+                App.Logger.Error(ex);
+            }
         }
 
         public async Task PollAsync()
@@ -135,19 +156,48 @@ namespace Froststrap.Integrations.OverlayModules
             if (!await App.Cookies.EnsureLoadedAsync() || App.Cookies.CurrentUser is not AuthenticatedUser me)
                 return;
 
-            if (DateTime.UtcNow - _friendsFetched > FriendsRefresh)
+            await _pollGate.WaitAsync();
+
+            try
             {
-                var friends = await Http.GetJson<ApiArrayResponse<FriendResponse>>(
+                await PollCoreAsync(me);
+            }
+            finally
+            {
+                _pollGate.Release();
+            }
+        }
+
+        private async Task PollCoreAsync(AuthenticatedUser me)
+        {
+            bool refreshFriends;
+
+            lock (_lock)
+                refreshFriends = DateTime.UtcNow - _friendsFetched > FriendsRefresh;
+
+            if (refreshFriends)
+            {
+                var response = await Http.GetJson<ApiArrayResponse<FriendResponse>>(
                     UrlBuilder.BuildApiUrl("friends", $"v1/users/{me.Id}/friends"));
 
-                _friends = [.. friends?.Data?.Select(x => x.Id).Where(x => x > 0).Distinct() ?? []];
-                _friendIds = [.. _friends];
-                _friendsFetched = DateTime.UtcNow;
+                List<long> fetched = [.. response?.Data?.Select(x => x.Id).Where(x => x > 0).Distinct() ?? []];
 
-                App.Logger.Info($"{LOG_IDENT}::PollAsync", $"Keeping an eye on {_friends.Count} friends");
+                lock (_lock)
+                {
+                    _friends = fetched;
+                    _friendIds = [.. fetched];
+                    _friendsFetched = DateTime.UtcNow;
+                }
+
+                App.Logger.Info($"{LOG_IDENT}::PollAsync", $"Keeping an eye on {fetched.Count} friends");
             }
 
-            if (_friends.Count == 0)
+            List<long> friends;
+
+            lock (_lock)
+                friends = [.. _friends];
+
+            if (friends.Count == 0)
             {
                 _seeded = true;
                 Updated?.Invoke(this, []);
@@ -156,7 +206,7 @@ namespace Froststrap.Integrations.OverlayModules
 
             var now = new Dictionary<long, UserPresence>();
 
-            foreach (long[] batch in _friends.Chunk(BatchSize))
+            foreach (long[] batch in friends.Chunk(BatchSize))
             {
                 var response = await AccountRequests.PostJsonAsync<UserPresenceResponse>(
                     UrlBuilder.BuildApiUrl("presence", "v1/presence/users"), new { userIds = batch });
@@ -302,7 +352,7 @@ namespace Froststrap.Integrations.OverlayModules
 
             Updated?.Invoke(this, [other]);
 
-            _ = PollAsync();
+            _ = PollSafeAsync();
         }
 
         private static List<long> Diff(Dictionary<long, UserPresence> before, Dictionary<long, UserPresence> now)
@@ -343,11 +393,30 @@ namespace Froststrap.Integrations.OverlayModules
 
         private static bool InGame(UserPresence p) => p.UserPresenceType == UserPresenceType.InGame;
 
+        private void PruneNotified()
+        {
+            DateTime cutoff = DateTime.UtcNow - Cooldown;
+
+            var stale = new List<(long UserId, string Place)>();
+
+            foreach (KeyValuePair<(long UserId, string Place), DateTime> entry in _notified)
+            {
+                if (entry.Value < cutoff)
+                    stale.Add(entry.Key);
+            }
+
+            foreach (var key in stale)
+                _notified.Remove(key);
+        }
+
         private List<FriendPresenceChange> Compare(
             Dictionary<long, UserPresence> before,
             Dictionary<long, UserPresence> now)
         {
             var changes = new List<FriendPresenceChange>();
+
+            if (_notified.Count > NotifiedPruneThreshold)
+                PruneNotified();
 
             bool inGame = _activityWatcher?.InGame == true;
             string myServer = inGame ? _activityWatcher!.Data.JobId : String.Empty;

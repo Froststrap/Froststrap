@@ -34,7 +34,6 @@ namespace Froststrap.UI.Elements.Overlay
 
         private HWND _hwnd;
         private bool _prepared;
-        private bool _hotkeyRegistered;
         private bool _preloading = true;
         private bool _warmScheduled;
         private bool _presenting;
@@ -109,7 +108,7 @@ namespace Froststrap.UI.Elements.Overlay
                 if (!_warmScheduled)
                 {
                     _warmScheduled = true;
-                    Dispatcher.UIThread.Post(WarmUp, DispatcherPriority.Background);
+                    Dispatcher.UIThread.Post(() => _ = WarmUpAsync(), DispatcherPriority.Background);
                 }
 
                 return;
@@ -127,7 +126,7 @@ namespace Froststrap.UI.Elements.Overlay
             Height = Math.Max(bounds.Rect.Height / scaling, 0);
         }
 
-        private async void WarmUp()
+        private async Task WarmUpAsync()
         {
             await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Loaded);
             await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Render);
@@ -241,7 +240,6 @@ namespace Froststrap.UI.Elements.Overlay
                 return;
 
             OverlayHotkeyRegistration.Unregister(_hwnd, HotkeyId);
-            _hotkeyRegistered = false;
 
             if (!App.Settings.Prop.SearchBarEnabled)
                 return;
@@ -253,7 +251,7 @@ namespace Froststrap.UI.Elements.Overlay
                 OverlaySearchBarHotkey.DefaultKey,
                 "search bar");
 
-            _hotkeyRegistered = OverlayHotkeyRegistration.Register(_hwnd, HotkeyId, modifiers, key, "Search bar");
+            OverlayHotkeyRegistration.Register(_hwnd, HotkeyId, modifiers, key, "Search bar");
         }
 
         private IntPtr HwndHook(IntPtr hwnd, uint msg, IntPtr wParam, IntPtr lParam, ref bool handled)
@@ -346,7 +344,6 @@ namespace Froststrap.UI.Elements.Overlay
             OverlaySearchBarHotkey.Changed -= OnHotkeyChanged;
 
             OverlayHotkeyRegistration.Unregister(_hwnd, HotkeyId);
-            _hotkeyRegistered = false;
 
             GC.SuppressFinalize(this);
         }

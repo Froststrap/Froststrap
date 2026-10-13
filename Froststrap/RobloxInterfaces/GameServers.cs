@@ -21,6 +21,7 @@ namespace Froststrap.RobloxInterfaces
         private const int DetailsBatchSize = 50;
         private const int DetailsReach = 100;
         private const int AvatarDecodeWidth = 112;
+        private const int PrefetchConcurrency = 8;
 
         private static readonly Uri DatacentersUrl = new("https://apis.rovalra.com/v1/datacenters/list");
 
@@ -43,6 +44,8 @@ namespace Froststrap.RobloxInterfaces
                     .Distinct(StringComparer.OrdinalIgnoreCase)
                     .Select(code => new ServerRegion { Code = code!, Name = RegionName(code!) })
                     .OrderBy(x => x.Name, StringComparer.Ordinal));
+
+                _regions = regions;
             }
             catch (Exception ex)
             {
@@ -50,9 +53,7 @@ namespace Froststrap.RobloxInterfaces
                 App.Logger.Error(ex);
             }
 
-            _regions = regions;
-
-            return _regions;
+            return regions;
         }
 
         public static ServerRegion AllRegions() => new() { Code = String.Empty, Name = Strings.Menu_Overlay_Servers_AllRegions };
@@ -140,17 +141,40 @@ namespace Froststrap.RobloxInterfaces
 
             try
             {
-                List<string> tokens = [
-                    .. servers
-                    .SelectMany(x => x.PlayerTokens.Take(MaxFaces))
-                    .Distinct(StringComparer.Ordinal)
-                ];
+                var tokens = new List<string>();
+                var seenTokens = new HashSet<string>(StringComparer.Ordinal);
+
+                foreach (GameServer server in servers)
+                {
+                    int take = Math.Min(server.PlayerTokens.Count, MaxFaces);
+
+                    for (int i = 0; i < take; i++)
+                    {
+                        string token = server.PlayerTokens[i];
+
+                        if (seenTokens.Add(token))
+                            tokens.Add(token);
+                    }
+                }
 
                 Dictionary<string, string> real = tokens.Count > 0
                     ? await PlayerThumbnails.FetchByTokenAsync(tokens)
                     : [];
 
-                IReadOnlyList<string> pool = servers.Any(x => Faces(x, real).Count == 0)
+                var facesByServer = new Dictionary<GameServer, List<string>>(servers.Count);
+                bool needsPool = false;
+
+                foreach (GameServer server in servers)
+                {
+                    List<string> faces = Faces(server, real);
+
+                    facesByServer[server] = faces;
+
+                    if (faces.Count == 0)
+                        needsPool = true;
+                }
+
+                IReadOnlyList<string> pool = needsPool
                     ? await PlayerThumbnails.FetchPoolAsync()
                     : [];
 
@@ -160,12 +184,23 @@ namespace Froststrap.RobloxInterfaces
                 {
                     server.PlayerIcons.Clear();
 
-                    List<string> faces = Faces(server, real);
+                    List<string> faces = facesByServer[server];
 
-                    server.PlayerIcons.AddRange(faces.Count > 0 ? faces : Filler(server, pool));
+                    if (faces.Count > 0)
+                    {
+                        server.PlayerIcons.AddRange(faces);
 
-                    foreach (string url in server.PlayerIcons)
-                        pending.Add(url);
+                        foreach (string url in faces)
+                            pending.Add(url);
+                    }
+                    else
+                    {
+                        foreach (string url in Filler(server, pool))
+                        {
+                            server.PlayerIcons.Add(url);
+                            pending.Add(url);
+                        }
+                    }
                 }
 
                 await PrefetchAsync(pending);
@@ -190,25 +225,36 @@ namespace Froststrap.RobloxInterfaces
             if (unique.Count == 0)
                 return;
 
-            var work = unique.Select(url => ImageLoader.LoadAsync(url, AvatarDecodeWidth));
+            var options = new ParallelOptions { MaxDegreeOfParallelism = PrefetchConcurrency };
 
-            try
+            await Parallel.ForEachAsync(unique, options, async (url, _) =>
             {
-                await Task.WhenAll(work);
-            }
-            catch
-            {
-            }
+                try
+                {
+                    await ImageLoader.LoadAsync(url, AvatarDecodeWidth).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.Warn($"Failed to prefetch avatar {url}");
+                    App.Logger.Error(ex);
+                }
+            }).ConfigureAwait(false);
         }
 
-        private static List<string> Faces(GameServer server, Dictionary<string, string> resolved) =>
-        [
-            .. server.PlayerTokens
-                .Take(MaxFaces)
-                .Select(token => resolved.TryGetValue(token, out string? url) ? url : null)
-                .Where(x => !String.IsNullOrEmpty(x))
-                .Select(x => x!)
-        ];
+        private static List<string> Faces(GameServer server, Dictionary<string, string> resolved)
+        {
+            var faces = new List<string>(Math.Min(server.PlayerTokens.Count, MaxFaces));
+
+            int take = Math.Min(server.PlayerTokens.Count, MaxFaces);
+
+            for (int i = 0; i < take; i++)
+            {
+                if (resolved.TryGetValue(server.PlayerTokens[i], out string? url) && !String.IsNullOrEmpty(url))
+                    faces.Add(url);
+            }
+
+            return faces;
+        }
 
         private static IEnumerable<string> Filler(GameServer server, IReadOnlyList<string> pool)
         {

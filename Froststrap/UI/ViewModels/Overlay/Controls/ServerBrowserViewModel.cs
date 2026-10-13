@@ -1,4 +1,4 @@
-﻿using Avalonia;
+﻿﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input.Platform;
 using Avalonia.Threading;
@@ -12,10 +12,20 @@ using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Overlay.Controls
 {
-    internal class ServerBrowserViewModel : NotifyPropertyChangedViewModel
+    internal class ServerBrowserViewModel : NotifyPropertyChangedViewModel, IDisposable
     {
         private const string RobloxWebDeeplinkBase = "https://www.roblox.com/games/start";
         private const int PageSize = 60;
+
+        private static readonly string[] CurrentServerProperties =
+        [
+            nameof(HasCurrentServer),
+            nameof(CurrentServerType),
+            nameof(CurrentJobId),
+            nameof(CurrentUptime),
+            nameof(CanHop),
+            nameof(CanJoinClosest)
+        ];
 
         private readonly ActivityWatcher? _activityWatcher;
         private readonly FlashMessage _flash;
@@ -23,11 +33,13 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
         private List<GameServer> _allServers = [];
         private int _shown;
         private int _generation;
+        private bool _reloadPending;
 
         private bool _visible;
         private bool _initialised;
         private bool _stale;
         private bool _loadingMore;
+        private bool _disposed;
 
         public BulkObservableCollection<GameServer> Servers { get; } = new();
 
@@ -46,7 +58,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                 if (_selectedRegion == value) return;
                 _selectedRegion = value;
                 OnPropertyChanged(nameof(SelectedRegion));
-                _ = LoadAsync();
+                RequestReload();
             }
         }
 
@@ -59,7 +71,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                 if (_selectedOrder == value) return;
                 _selectedOrder = value;
                 OnPropertyChanged(nameof(SelectedOrder));
-                _ = LoadAsync();
+                RequestReload();
             }
         }
 
@@ -72,7 +84,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                 if (_excludeFull == value) return;
                 _excludeFull = value;
                 OnPropertyChanged(nameof(ExcludeFull));
-                _ = LoadAsync();
+                RequestReload();
             }
         }
 
@@ -125,8 +137,6 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
         public ICommand JoinCommand { get; }
         public ICommand CopyLinkCommand { get; }
 
-        #region This server
-
         private readonly DispatcherTimer? _currentServerTimer;
         private readonly DispatcherTimer _uptimeTimer = new() { Interval = TimeSpan.FromSeconds(1) };
 
@@ -158,20 +168,10 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
         public ICommand ClosestCommand { get; }
 
-        private async void RefreshCurrentServer()
+        private async Task RefreshCurrentServerAsync()
         {
-            foreach (string name in new[]
-            {
-                nameof(HasCurrentServer),
-                nameof(CurrentServerType),
-                nameof(CurrentJobId),
-                nameof(CurrentUptime),
-                nameof(CanHop),
-                nameof(CanJoinClosest)
-            })
-            {
+            foreach (string name in CurrentServerProperties)
                 OnPropertyChanged(name);
-            }
 
             if (!InGame || !ShowCurrentLocation || _currentLocation is not null)
                 return;
@@ -277,8 +277,6 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             }
         }
 
-        #endregion
-
         public ServerBrowserViewModel(ActivityWatcher? activityWatcher)
         {
             _activityWatcher = activityWatcher;
@@ -293,21 +291,40 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             HopCommand = new AsyncRelayCommand(HopAsync);
             ClosestCommand = new AsyncRelayCommand(JoinClosestAsync);
 
-            _uptimeTimer.Tick += (_, _) =>
-            {
-                foreach (GameServer server in Servers)
-                    server.Tick();
-            };
+            _uptimeTimer.Tick += OnUptimeTick;
 
             if (_activityWatcher is null)
                 return;
 
             _currentServerTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(10) };
-            _currentServerTimer.Tick += (_, _) => RefreshCurrentServer();
+            _currentServerTimer.Tick += OnCurrentServerTick;
 
-            _activityWatcher.OnGameJoin += (_, _) => Dispatcher.UIThread.Post(OnGameJoin);
-            _activityWatcher.OnGameLeave += (_, _) => Dispatcher.UIThread.Post(OnGameLeave);
+            _activityWatcher.OnGameJoin += OnActivityGameJoin;
+            _activityWatcher.OnGameLeave += OnActivityGameLeave;
         }
+
+        private void RequestReload()
+        {
+            if (IsBusy)
+            {
+                _reloadPending = true;
+                return;
+            }
+
+            _ = LoadAsync();
+        }
+
+        private void OnUptimeTick(object? sender, EventArgs e)
+        {
+            foreach (GameServer server in Servers)
+                server.Tick();
+        }
+
+        private void OnCurrentServerTick(object? sender, EventArgs e) => _ = RefreshCurrentServerAsync();
+
+        private void OnActivityGameJoin(object? sender, EventArgs e) => Dispatcher.UIThread.Post(OnGameJoin);
+
+        private void OnActivityGameLeave(object? sender, EventArgs e) => Dispatcher.UIThread.Post(OnGameLeave);
 
         public void SetVisible(bool visible)
         {
@@ -336,7 +353,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             }
             else
             {
-                RefreshCurrentServer();
+                _ = RefreshCurrentServerAsync();
             }
         }
 
@@ -432,7 +449,13 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                 {
                     IsBusy = false;
                     Refreshed();
-                    RefreshCurrentServer();
+                    _ = RefreshCurrentServerAsync();
+
+                    if (_reloadPending)
+                    {
+                        _reloadPending = false;
+                        _ = LoadAsync();
+                    }
                 }
             }
         }
@@ -527,7 +550,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
             OnPropertyChanged(nameof(HasMore));
             Refreshed();
-            RefreshCurrentServer();
+            _ = RefreshCurrentServerAsync();
         }
 
         private void Refreshed()
@@ -535,6 +558,31 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             OnPropertyChanged(nameof(ShowEmptyState));
             OnPropertyChanged(nameof(EmptyText));
             OnPropertyChanged(nameof(SummaryText));
+        }
+
+        public void Dispose()
+        {
+            if (_disposed)
+                return;
+
+            _disposed = true;
+
+            _uptimeTimer.Stop();
+            _uptimeTimer.Tick -= OnUptimeTick;
+
+            if (_currentServerTimer is not null)
+            {
+                _currentServerTimer.Stop();
+                _currentServerTimer.Tick -= OnCurrentServerTick;
+            }
+
+            if (_activityWatcher is not null)
+            {
+                _activityWatcher.OnGameJoin -= OnActivityGameJoin;
+                _activityWatcher.OnGameLeave -= OnActivityGameLeave;
+            }
+
+            GC.SuppressFinalize(this);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using Avalonia;
+﻿﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -21,7 +21,7 @@ using WindowState = Avalonia.Controls.WindowState;
 
 namespace Froststrap.UI.Elements.Overlay
 {
-    internal partial class GameOverlay : Window
+    internal partial class GameOverlay : Window, IDisposable
     {
         private const int ToggleHotkeyId = 9000;
         private const int WS_EX_TOOLWINDOW = 0x00000080;
@@ -31,18 +31,20 @@ namespace Froststrap.UI.Elements.Overlay
 
         private static readonly PixelPoint Offscreen = new(-32000, -32000);
 
+        private static readonly OverlayPanelKind[] PanelKinds = Enum.GetValues<OverlayPanelKind>();
+
         private readonly GameOverlayViewModel _viewModel;
         private readonly IOverlayHost? _overlay;
 
         private HWND _hwnd;
         private bool _win32Initialised;
-        private bool _hotkeyRegistered;
 
         private int _placed;
         private bool _presenting;
         private bool _panelsWired;
         private bool _preloading = true;
         private bool _warmScheduled;
+        private bool _disposed;
 
         private OverlayBounds? _lastBounds;
 
@@ -72,7 +74,7 @@ namespace Froststrap.UI.Elements.Overlay
 
             InitializeComponent();
 
-            _viewModel.PanelOpened += (_, panel) => Place(panel);
+            _viewModel.PanelOpened += OnPanelOpened;
 
             Deactivated += OnDeactivated;
 
@@ -84,6 +86,8 @@ namespace Froststrap.UI.Elements.Overlay
             ServerBrowser.Attach(overlay?.ActivityWatcher);
             GameHistory.Attach(overlay?.ActivityWatcher);
         }
+
+        private void OnPanelOpened(object? sender, OverlayPanelKind kind) => Place(kind);
 
         private void OnBadgeEarned(object? sender, Badge badge)
         {
@@ -101,13 +105,12 @@ namespace Froststrap.UI.Elements.Overlay
                 if (!_warmScheduled)
                 {
                     _warmScheduled = true;
-                    Dispatcher.UIThread.Post(WarmUp, DispatcherPriority.Background);
+                    Dispatcher.UIThread.Post(() => _ = WarmUpAsync(), DispatcherPriority.Background);
                 }
 
                 return;
             }
 
-            double scaling = RenderScaling > 0 ? RenderScaling : 1;
             Position = new PixelPoint((int)bounds.Rect.Left, (int)bounds.Rect.Top);
         }
 
@@ -127,7 +130,7 @@ namespace Froststrap.UI.Elements.Overlay
 
             _panelsWired = true;
 
-            foreach (OverlayPanelKind kind in Enum.GetValues<OverlayPanelKind>())
+            foreach (OverlayPanelKind kind in PanelKinds)
             {
                 OverlayPanel panel = PanelFor(kind);
                 panel.PinChanged += OnPanelPinChanged;
@@ -144,7 +147,7 @@ namespace Froststrap.UI.Elements.Overlay
 
             _panelsWired = false;
 
-            foreach (OverlayPanelKind kind in Enum.GetValues<OverlayPanelKind>())
+            foreach (OverlayPanelKind kind in PanelKinds)
             {
                 OverlayPanel panel = PanelFor(kind);
                 panel.PinChanged -= OnPanelPinChanged;
@@ -210,7 +213,7 @@ namespace Froststrap.UI.Elements.Overlay
 
         private void RestoreDepth()
         {
-            var order = Enum.GetValues<OverlayPanelKind>()
+            var order = PanelKinds
                 .Where(kind => PanelFor(kind).IsVisible)
                 .Select(kind => (Kind: kind, Saved: Saved(kind)))
                 .Where(x => x.Saved is not null)
@@ -227,7 +230,7 @@ namespace Froststrap.UI.Elements.Overlay
         {
             var panels = new Dictionary<string, OverlayPanelLayout>();
 
-            foreach (OverlayPanelKind kind in Enum.GetValues<OverlayPanelKind>())
+            foreach (OverlayPanelKind kind in PanelKinds)
             {
                 OverlayPanel panel = PanelFor(kind);
                 string name = kind.ToString();
@@ -279,7 +282,12 @@ namespace Froststrap.UI.Elements.Overlay
 
                 App.State.Prop.OverlayPanels = panels;
 
-                Task.Run(App.State.Save);
+                _ = Task.Run(App.State.Save, CancellationToken.None)
+                    .ContinueWith(
+                        t => App.Logger.Error($"Failed to save the layout: {t.Exception?.GetBaseException().Message}"),
+                        CancellationToken.None,
+                        TaskContinuationOptions.OnlyOnFaulted,
+                        TaskScheduler.Default);
             }
             catch (Exception ex)
             {
@@ -427,19 +435,14 @@ namespace Froststrap.UI.Elements.Overlay
                 _preloading = false;
 
                 if (_lastBounds is OverlayBounds bounds)
-                {
-                    double scaling = RenderScaling > 0 ? RenderScaling : 1;
                     Position = new PixelPoint((int)bounds.Rect.Left, (int)bounds.Rect.Top);
-                }
             }
 
             if (Opacity < 1)
                 Opacity = 1;
 
             if (_pinnedMode)
-            {
                 ExitPinnedMode();
-            }
 
             if (_overlay?.IsGameForeground() == false)
                 _overlay.FocusGame();
@@ -497,11 +500,13 @@ namespace Froststrap.UI.Elements.Overlay
                 panel.Clamp();
         }
 
-        private async void Window_Loaded(object? sender, RoutedEventArgs e)
+        private void Window_Loaded(object? sender, RoutedEventArgs e) => _ = OnLoadedAsync();
+
+        private async Task OnLoadedAsync()
         {
             WirePanelEvents();
 
-            foreach (OverlayPanelKind kind in Enum.GetValues<OverlayPanelKind>())
+            foreach (OverlayPanelKind kind in PanelKinds)
             {
                 OverlayPanel panel = PanelFor(kind);
 
@@ -516,7 +521,7 @@ namespace Froststrap.UI.Elements.Overlay
             await _viewModel.OnLoaded();
         }
 
-        private async void WarmUp()
+        private async Task WarmUpAsync()
         {
             await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Loaded);
             await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Render);
@@ -528,10 +533,7 @@ namespace Froststrap.UI.Elements.Overlay
             _preloading = false;
 
             if (_lastBounds is OverlayBounds bounds)
-            {
-                double scaling = RenderScaling > 0 ? RenderScaling : 1;
                 Position = new PixelPoint((int)bounds.Rect.Left, (int)bounds.Rect.Top);
-            }
 
             Hide();
             Opacity = 1;
@@ -585,7 +587,6 @@ namespace Froststrap.UI.Elements.Overlay
         private void UnregisterToggleHotkey()
         {
             OverlayHotkeyRegistration.Unregister(_hwnd, ToggleHotkeyId);
-            _hotkeyRegistered = false;
         }
 
         private void RegisterToggleHotkey()
@@ -594,7 +595,6 @@ namespace Froststrap.UI.Elements.Overlay
                 return;
 
             OverlayHotkeyRegistration.Unregister(_hwnd, ToggleHotkeyId);
-            _hotkeyRegistered = false;
 
             if (OverlayHotkey.IsSuspended)
                 return;
@@ -606,7 +606,7 @@ namespace Froststrap.UI.Elements.Overlay
                 OverlayHotkey.DefaultKey,
                 "overlay");
 
-            _hotkeyRegistered = OverlayHotkeyRegistration.Register(_hwnd, ToggleHotkeyId, modifiers, key, "Overlay");
+            OverlayHotkeyRegistration.Register(_hwnd, ToggleHotkeyId, modifiers, key, "Overlay");
         }
 
         #region Window region (click-through)
@@ -629,6 +629,15 @@ namespace Froststrap.UI.Elements.Overlay
             UpdateWindowRegion();
         }
 
+        private void ClearWindowRegion()
+        {
+            if (!OperatingSystem.IsWindows() || !_win32Initialised)
+                return;
+
+            _regionSignature = String.Empty;
+            _ = PInvoke.SetWindowRgn(_hwnd, HRGN.Null, true);
+        }
+
         private void UpdateWindowRegion()
         {
             if (!OperatingSystem.IsWindows() || !_win32Initialised)
@@ -639,8 +648,7 @@ namespace Froststrap.UI.Elements.Overlay
                 if (_regionSignature.Length == 0)
                     return;
 
-                _regionSignature = String.Empty;
-                _ = PInvoke.SetWindowRgn(_hwnd, HRGN.Null, true);
+                ClearWindowRegion();
                 return;
             }
 
@@ -717,13 +725,18 @@ namespace Froststrap.UI.Elements.Overlay
 
         #region Pinned mode
 
-        private bool AnyPinnedPanels() =>
-            Enum.GetValues<OverlayPanelKind>()
-                .Any(kind =>
-                {
-                    OverlayPanel panel = PanelFor(kind);
-                    return panel.IsPinned && panel.IsVisible;
-                });
+        private bool AnyPinnedPanels()
+        {
+            foreach (OverlayPanelKind kind in PanelKinds)
+            {
+                OverlayPanel panel = PanelFor(kind);
+
+                if (panel.IsPinned && panel.IsVisible)
+                    return true;
+            }
+
+            return false;
+        }
 
         private void EnterPinnedMode()
         {
@@ -740,7 +753,7 @@ namespace Froststrap.UI.Elements.Overlay
 
             ChromeDock.IsVisible = false;
 
-            foreach (OverlayPanelKind kind in Enum.GetValues<OverlayPanelKind>())
+            foreach (OverlayPanelKind kind in PanelKinds)
             {
                 OverlayPanel panel = PanelFor(kind);
 
@@ -763,15 +776,13 @@ namespace Froststrap.UI.Elements.Overlay
             _pinnedMode = false;
 
             StopRegionTimer();
-
-            _regionSignature = String.Empty;
-            UpdateWindowRegion();
+            ClearWindowRegion();
 
             Scrim.Background = _scrimBrush ?? new SolidColorBrush(Color.FromArgb(0xB3, 0, 0, 0));
 
             ChromeDock.IsVisible = true;
 
-            foreach (OverlayPanelKind kind in Enum.GetValues<OverlayPanelKind>())
+            foreach (OverlayPanelKind kind in PanelKinds)
             {
                 OverlayPanel panel = PanelFor(kind);
 
@@ -825,6 +836,18 @@ namespace Froststrap.UI.Elements.Overlay
 
         protected override void OnClosed(EventArgs e)
         {
+            Dispose();
+
+            base.OnClosed(e);
+        }
+
+        public void Dispose()
+        {
+            if (_disposed)
+                return;
+
+            _disposed = true;
+
             NotesPad.Flush();
 
             SaveLayout();
@@ -840,7 +863,10 @@ namespace Froststrap.UI.Elements.Overlay
 
             UnregisterToggleHotkey();
 
-            base.OnClosed(e);
+            _viewModel.PanelOpened -= OnPanelOpened;
+            _viewModel.Dispose();
+
+            GC.SuppressFinalize(this);
         }
     }
 }

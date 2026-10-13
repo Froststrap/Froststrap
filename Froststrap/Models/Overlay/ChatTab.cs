@@ -13,6 +13,8 @@ namespace Froststrap.Models.Overlay
 
         public bool Loaded { get; set; }
 
+        public DateTime? LastDividerDay { get; set; }
+
         public ChatTab()
         {
             Rows.CollectionChanged += (_, _) => OnPropertyChanged(nameof(ShowEmpty));

@@ -1,4 +1,4 @@
-﻿using System.Security.Cryptography;
+﻿﻿using System.Security.Cryptography;
 
 namespace Froststrap.RobloxInterfaces
 {
@@ -14,24 +14,26 @@ namespace Froststrap.RobloxInterfaces
 
         private static readonly Uri BatchUrl = new("https://thumbnails.roblox.com/v1/batch");
 
-        private static readonly SemaphoreSlim _poolLock = new(1, 1);
-
-        private static IReadOnlyList<string>? _pool;
+        private static readonly Lazy<Task<IReadOnlyList<string>>> Pool = new(
+            FetchPoolCoreAsync,
+            LazyThreadSafetyMode.ExecutionAndPublication);
 
         public static async Task<Dictionary<string, string>> FetchByTokenAsync(IReadOnlyList<string> tokens)
         {
             var icons = new Dictionary<string, string>(StringComparer.Ordinal);
 
+            ThumbnailSize size = Size.ToThumbnailSize();
+
             foreach (string[] chunk in tokens.Chunk(BatchSize))
             {
-                var requests = new List<ThumbnailRequest>();
-                var byRequestId = new Dictionary<string, string>(StringComparer.Ordinal);
+                var requests = new List<ThumbnailRequest>(chunk.Length);
+                var byRequestId = new Dictionary<string, string>(chunk.Length, StringComparer.Ordinal);
 
                 for (int i = 0; i < chunk.Length; i++)
                 {
                     string requestId = $"{i}:{chunk[i]}:AvatarHeadShot:{Size}:png:regular";
 
-                    requests.Add(new ThumbnailRequest { RequestId = requestId, Token = chunk[i], Size = Size.ToThumbnailSize() });
+                    requests.Add(new ThumbnailRequest { RequestId = requestId, Token = chunk[i], Size = size });
 
                     byRequestId[requestId] = chunk[i];
                 }
@@ -64,13 +66,10 @@ namespace Froststrap.RobloxInterfaces
             return icons;
         }
 
-        public static async Task<IReadOnlyList<string>> FetchPoolAsync()
+        public static Task<IReadOnlyList<string>> FetchPoolAsync() => Pool.Value;
+
+        private static async Task<IReadOnlyList<string>> FetchPoolCoreAsync()
         {
-            if (_pool is not null)
-                return _pool;
-
-            await _poolLock.WaitAsync();
-
             try
             {
                 var ids = new HashSet<long>();
@@ -92,8 +91,6 @@ namespace Froststrap.RobloxInterfaces
 
                 List<string> pool = [.. icons.Distinct(StringComparer.Ordinal)];
 
-                _pool = pool;
-
                 App.Logger.Info($"Pooled {pool.Count} faces");
 
                 return pool;
@@ -104,10 +101,6 @@ namespace Froststrap.RobloxInterfaces
                 App.Logger.Error(ex);
 
                 return [];
-            }
-            finally
-            {
-                _poolLock.Release();
             }
         }
     }

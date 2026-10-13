@@ -12,7 +12,7 @@ namespace Froststrap.Models.Overlay
         private const int AvatarSlots = 6;
         private const int ShortIdLength = 8;
 
-        private static readonly string[] AllPropertyNames =
+        private static readonly PropertyChangedEventArgs[] AllChangedArgs = BuildArgs(
         [
             nameof(JobId), nameof(Playing), nameof(MaxPlayers),
             nameof(Fps), nameof(City), nameof(Region),
@@ -28,7 +28,19 @@ namespace Froststrap.Models.Overlay
             nameof(PlayersText), nameof(CapacityText), nameof(FillPercentage),
             nameof(LocationText), nameof(HasLocation),
             nameof(ShortId), nameof(IdText)
-        ];
+        ]);
+
+        private static readonly PropertyChangedEventArgs UptimeTextArgs = new(nameof(UptimeText));
+
+        private static PropertyChangedEventArgs[] BuildArgs(string[] names)
+        {
+            var args = new PropertyChangedEventArgs[names.Length];
+
+            for (int i = 0; i < names.Length; i++)
+                args[i] = new PropertyChangedEventArgs(names[i]);
+
+            return args;
+        }
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -154,15 +166,15 @@ namespace Froststrap.Models.Overlay
         public void Tick()
         {
             if (HasUptime)
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(UptimeText)));
+                PropertyChanged?.Invoke(this, UptimeTextArgs);
         }
 
         public void RaiseAllChanged()
         {
             _avatars = null;
 
-            foreach (string name in AllPropertyNames)
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+            foreach (PropertyChangedEventArgs args in AllChangedArgs)
+                PropertyChanged?.Invoke(this, args);
         }
     }
 }

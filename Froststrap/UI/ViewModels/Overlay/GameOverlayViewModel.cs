@@ -9,13 +9,12 @@ using Froststrap.Integrations.Overlay;
 using Froststrap.UI.Elements.Overlay;
 using Froststrap.Utility;
 using LucideAvalonia.Enum;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Overlay
 {
-    internal class GameOverlayViewModel : NotifyPropertyChangedViewModel
+    internal class GameOverlayViewModel : NotifyPropertyChangedViewModel, IDisposable
     {
         private readonly GameOverlay _window;
         private readonly IOverlayHost? _overlay;
@@ -24,6 +23,7 @@ namespace Froststrap.UI.ViewModels.Overlay
         private readonly DispatcherTimer _sessionTimer;
 
         private DateTime _lastSync = DateTime.MinValue;
+        private bool _disposed;
 
         #region Account
 
@@ -339,7 +339,7 @@ namespace Froststrap.UI.ViewModels.Overlay
             }
 
             _sessionTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
-            _sessionTimer.Tick += (_, _) => UpdateSession();
+            _sessionTimer.Tick += OnSessionTick;
 
             if (_overlay is not null)
             {
@@ -348,12 +348,18 @@ namespace Froststrap.UI.ViewModels.Overlay
                 _overlay.WindowClosed += OnWindowClosed;
             }
 
-            if (_activityWatcher is null)
-                return;
-
-            _activityWatcher.OnGameJoin += (_, _) => Dispatcher.UIThread.Post(OnGameJoin);
-            _activityWatcher.OnGameLeave += (_, _) => Dispatcher.UIThread.Post(OnGameLeave);
+            if (_activityWatcher is not null)
+            {
+                _activityWatcher.OnGameJoin += OnActivityGameJoin;
+                _activityWatcher.OnGameLeave += OnActivityGameLeave;
+            }
         }
+
+        private void OnSessionTick(object? sender, EventArgs e) => UpdateSession();
+
+        private void OnActivityGameJoin(object? sender, EventArgs e) => Dispatcher.UIThread.Post(OnGameJoin);
+
+        private void OnActivityGameLeave(object? sender, EventArgs e) => Dispatcher.UIThread.Post(OnGameLeave);
 
         public async Task OnLoaded()
         {
@@ -569,6 +575,32 @@ namespace Froststrap.UI.ViewModels.Overlay
         {
             _sessionTimer.Stop();
             _window.Close();
+        }
+
+        public void Dispose()
+        {
+            if (_disposed)
+                return;
+
+            _disposed = true;
+
+            _sessionTimer.Stop();
+            _sessionTimer.Tick -= OnSessionTick;
+
+            if (_overlay is not null)
+            {
+                _overlay.BoundsChanged -= OnBoundsChanged;
+                _overlay.GameVisibilityChanged -= OnGameVisibilityChanged;
+                _overlay.WindowClosed -= OnWindowClosed;
+            }
+
+            if (_activityWatcher is not null)
+            {
+                _activityWatcher.OnGameJoin -= OnActivityGameJoin;
+                _activityWatcher.OnGameLeave -= OnActivityGameLeave;
+            }
+
+            GC.SuppressFinalize(this);
         }
     }
 }

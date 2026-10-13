@@ -316,7 +316,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
         {
             _requested = true;
 
-            if (_loading || (_loaded && !force))
+            if (_loading || (_loaded && !force) || _disposed)
                 return;
 
             if (!App.Settings.Prop.AllowCookieAccess)
@@ -360,6 +360,9 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                 Task<Dictionary<long, UserDetails>> detailsTask = FetchDetailsAsync([.. ids]);
 
                 await Task.WhenAll(conversationsTask, detailsTask);
+
+                if (_disposed)
+                    return;
 
                 List<Conversation> conversations = await conversationsTask;
                 Dictionary<long, UserDetails> details = await detailsTask;
@@ -474,7 +477,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
             Bitmap? bitmap = await ImageLoader.LoadAsync(_myAvatar, 84);
 
-            if (bitmap is not null)
+            if (bitmap is not null && !_disposed)
                 MyAvatarBitmap = bitmap;
         }
 
@@ -703,19 +706,32 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             if (_disposed)
                 return;
 
-            ChatTab? tab = Tabs.FirstOrDefault(x => x.Friend.ConversationId == channelId);
-
-            if (tab is not null)
+            foreach (ChatTab tab in Tabs)
             {
-                tab.Friend.Unread = 0;
-                return;
+                if (tab.Friend.ConversationId == channelId)
+                {
+                    tab.Friend.Unread = 0;
+                    return;
+                }
             }
 
-            ChatFriend? owner = _people.Values.Concat(_groups)
-                .FirstOrDefault(x => x.ConversationId == channelId);
+            foreach (ChatFriend friend in _people.Values)
+            {
+                if (friend.ConversationId == channelId)
+                {
+                    friend.Unread = 0;
+                    return;
+                }
+            }
 
-            if (owner is not null)
-                owner.Unread = 0;
+            foreach (ChatFriend group in _groups)
+            {
+                if (group.ConversationId == channelId)
+                {
+                    group.Unread = 0;
+                    return;
+                }
+            }
         }
 
         private IEnumerable<ChatFriend> Order(IEnumerable<ChatFriend> people)
@@ -746,13 +762,37 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
             if (_sortMode == FriendSortMode.Presence)
             {
+                var inGame   = new List<ChatFriend>();
+                var inStudio = new List<ChatFriend>();
+                var online   = new List<ChatFriend>();
+                var offline  = new List<ChatFriend>();
+
+                foreach (ChatFriend friend in _people.Values)
+                {
+                    if (!Shown(friend))
+                        continue;
+
+                    if (friend.IsInGame) inGame.Add(friend);
+                    else if (friend.IsInStudio) inStudio.Add(friend);
+                    else if (friend.IsOnline) online.Add(friend);
+                    else if (friend.Status == UserPresenceType.Offline) offline.Add(friend);
+                }
+
+                var groups = new List<ChatFriend>();
+
+                foreach (ChatFriend group in _groups)
+                {
+                    if (Shown(group))
+                        groups.Add(group);
+                }
+
                 var sections = new (FriendSection Section, List<ChatFriend> People)[]
                 {
-                    (FriendSection.InGame,   [.. _people.Values.Where(x => x.IsInGame && Shown(x))]),
-                    (FriendSection.InStudio, [.. _people.Values.Where(x => x.IsInStudio && Shown(x))]),
-                    (FriendSection.Online,   [.. _people.Values.Where(x => x.IsOnline && Shown(x))]),
-                    (FriendSection.Offline,  [.. _people.Values.Where(x => x.Status == UserPresenceType.Offline && Shown(x))]),
-                    (FriendSection.Groups,   [.. _groups.Where(Shown)])
+                    (FriendSection.InGame, inGame),
+                    (FriendSection.InStudio, inStudio),
+                    (FriendSection.Online, online),
+                    (FriendSection.Offline, offline),
+                    (FriendSection.Groups, groups)
                 };
 
                 rows = new List<object>();
@@ -775,8 +815,17 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             {
                 var visible = new List<ChatFriend>(_people.Count + _groups.Count);
 
-                visible.AddRange(_people.Values.Where(Shown));
-                visible.AddRange(_groups.Where(Shown));
+                foreach (ChatFriend friend in _people.Values)
+                {
+                    if (Shown(friend))
+                        visible.Add(friend);
+                }
+
+                foreach (ChatFriend group in _groups)
+                {
+                    if (Shown(group))
+                        visible.Add(group);
+                }
 
                 rows = Order(visible).Cast<object>().ToList();
             }
@@ -850,7 +899,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
         private async Task RefreshTabAsync(ChatTab tab)
         {
-            if (_party is null || String.IsNullOrEmpty(tab.Friend.ConversationId))
+            if (_party is null || String.IsNullOrEmpty(tab.Friend.ConversationId) || _disposed)
             {
                 tab.Loaded = true;
                 return;
@@ -862,7 +911,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             {
                 UserMessagesPage? page = await RobloxParty.GetMessages(tab.Friend.ConversationId);
 
-                if (page is null)
+                if (page is null || _disposed)
                     return;
 
                 bool added = false;
@@ -964,8 +1013,10 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
             DateTime day = time.ToLocalTime().Date;
 
-            if (tab.Rows.OfType<ChatDayDivider>().LastOrDefault()?.Day == day)
+            if (tab.LastDividerDay == day)
                 return;
+
+            tab.LastDividerDay = day;
 
             tab.Rows.Add(new ChatDayDivider(day, DayText(day)));
         }
@@ -1049,7 +1100,16 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
             _ = Dispatcher.UIThread.InvokeAsync(async () =>
             {
-                ChatTab? tab = Tabs.FirstOrDefault(x => x.Friend.ConversationId == message.ConversationId);
+                ChatTab? tab = null;
+
+                foreach (ChatTab candidate in Tabs)
+                {
+                    if (candidate.Friend.ConversationId == message.ConversationId)
+                    {
+                        tab = candidate;
+                        break;
+                    }
+                }
 
                 if (tab is not null)
                 {
@@ -1063,7 +1123,28 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                     return;
                 }
 
-                ChatFriend? owner = _people.Values.Concat(_groups).FirstOrDefault(x => x.ConversationId == message.ConversationId);
+                ChatFriend? owner = null;
+
+                foreach (ChatFriend friend in _people.Values)
+                {
+                    if (friend.ConversationId == message.ConversationId)
+                    {
+                        owner = friend;
+                        break;
+                    }
+                }
+
+                if (owner is null)
+                {
+                    foreach (ChatFriend group in _groups)
+                    {
+                        if (group.ConversationId == message.ConversationId)
+                        {
+                            owner = group;
+                            break;
+                        }
+                    }
+                }
 
                 if (owner is not null)
                 {

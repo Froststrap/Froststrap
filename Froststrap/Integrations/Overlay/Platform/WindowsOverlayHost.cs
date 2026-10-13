@@ -118,7 +118,7 @@ namespace Froststrap.Integrations.Overlay.Platform
                 return;
 
             SyncBounds();
-            Messaging.ConnectToUserhub();
+            await Messaging.ConnectToUserhubAsync();
         }
 
         private async Task<HWND> WaitForWindowAsync()
@@ -295,9 +295,13 @@ namespace Froststrap.Integrations.Overlay.Platform
             _systemCallback = null;
             _objectCallback = null;
 
-            Friends.Dispose();
+            Dispatcher.UIThread.Post(() =>
+            {
+                _window?.Close();
+                _window = null;
+            });
 
-            Dispatcher.UIThread.Post(() => _window?.Close());
+            Friends.Dispose();
 
             _ = Messaging.DisposeAsync().AsTask();
             GC.SuppressFinalize(this);

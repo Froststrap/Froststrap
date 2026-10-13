@@ -1,7 +1,5 @@
 ﻿﻿using Froststrap.Models.APIs.RealtimeMessaging;
-using Froststrap.Models.APIs.Roblox;
 using Froststrap.Models.APIs.RobloxParty.Events;
-using Froststrap;
 using System.Net.WebSockets;
 using System.Text;
 using System.Text.Json;
@@ -13,8 +11,11 @@ namespace Froststrap.Integrations.OverlayModules
         private const string RecordSeparator = "\u001e";
         private const int PingType = 6;
         private const int PingIntervalMs = 10000;
+        private const int ReceiveBufferSize = 4096;
 
         private readonly Uri _userhubUrl = new("wss://realtime-signalr.roblox.com/userhub");
+
+        private readonly SemaphoreSlim _connectGate = new(1, 1);
 
         private ClientWebSocket? _webSocket;
         private SemaphoreSlim? _sendLock;
@@ -52,53 +53,71 @@ namespace Froststrap.Integrations.OverlayModules
                 return;
 
             if (App.Cookies.IsAuthenticated)
-                ConnectToUserhub();
+                _ = ConnectToUserhubAsync();
             else
                 _ = DisconnectFromUserhub();
         }
 
         #region Connection
 
-        public async void ConnectToUserhub()
+        public void ConnectToUserhub() => _ = ConnectToUserhubAsync();
+
+        public async Task ConnectToUserhubAsync()
         {
+            if (_disposed)
+                return;
+
             if (!App.Settings.Prop.AllowCookieAccess)
             {
                 App.Logger.Warn("Cookie access is off, not connecting");
                 return;
             }
 
-            if (_webSocket is not null)
-                await DisconnectFromUserhub();
-
-            _sendLock = new SemaphoreSlim(1, 1);
-            _webSocket = new ClientWebSocket();
-            _cancellation = new CancellationTokenSource();
+            await _connectGate.WaitAsync();
 
             try
             {
-                App.Cookies.AuthWebsocket(_webSocket);
+                if (_disposed)
+                    return;
 
-                App.Logger.Info("Connecting to userhub");
+                if (_webSocket is not null)
+                    await DisconnectFromUserhub();
 
-                await _webSocket.ConnectAsync(_userhubUrl, _cancellation.Token);
+                _sendLock = new SemaphoreSlim(1, 1);
+                _webSocket = new ClientWebSocket();
+                _cancellation = new CancellationTokenSource();
 
-                App.Logger.Info("Connected to userhub");
+                try
+                {
+                    App.Cookies.AuthWebsocket(_webSocket);
+
+                    App.Logger.Info("Connecting to userhub");
+
+                    await _webSocket.ConnectAsync(_userhubUrl, _cancellation.Token);
+
+                    App.Logger.Info("Connected to userhub");
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.Error("Unable to connect to userhub");
+                    App.Logger.Error(ex);
+
+                    await DisconnectFromUserhub();
+                    return;
+                }
+
+                Connected?.Invoke(this, EventArgs.Empty);
+
+                await SendHandshake();
+
+                _receiveTask = ReceiveLoop(_webSocket, _cancellation.Token);
+                _pingTask = PingLoop(_cancellation.Token);
             }
-            catch (Exception ex)
+            finally
             {
-                App.Logger.Error("Unable to connect to userhub");
-                App.Logger.Error(ex);
-
-                await DisconnectFromUserhub();
-                return;
+                try { _connectGate.Release(); }
+                catch (ObjectDisposedException) { }
             }
-
-            Connected?.Invoke(this, EventArgs.Empty);
-
-            await SendHandshake();
-
-            _receiveTask = ReceiveLoop(_cancellation.Token);
-            _pingTask = PingLoop(_cancellation.Token);
         }
 
         public async Task DisconnectFromUserhub()
@@ -141,6 +160,9 @@ namespace Froststrap.Integrations.OverlayModules
             _disposed = true;
 
             await DisconnectFromUserhub();
+
+            _connectGate.Dispose();
+
             GC.SuppressFinalize(this);
         }
 
@@ -148,32 +170,32 @@ namespace Froststrap.Integrations.OverlayModules
 
         #region Data processing
 
-        private async Task ReceiveLoop(CancellationToken token)
+        private async Task ReceiveLoop(ClientWebSocket socket, CancellationToken token)
         {
+            byte[] buffer = new byte[ReceiveBufferSize];
+
+            using var stream = new MemoryStream();
+
             try
             {
-                while (!token.IsCancellationRequested && IsConnected)
+                while (!token.IsCancellationRequested && socket.State == WebSocketState.Open)
                 {
-                    string frame;
+                    stream.SetLength(0);
 
-                    using (var stream = new MemoryStream())
+                    ValueWebSocketReceiveResult result;
+
+                    do
                     {
-                        ValueWebSocketReceiveResult result;
-                        byte[] buffer = new byte[4096];
+                        result = await socket.ReceiveAsync(buffer.AsMemory(), token);
 
-                        do
-                        {
-                            result = await _webSocket!.ReceiveAsync(buffer.AsMemory(), token);
+                        if (result.MessageType == WebSocketMessageType.Close)
+                            return;
 
-                            if (result.MessageType == WebSocketMessageType.Close)
-                                return;
-
-                            await stream.WriteAsync(buffer.AsMemory(0, result.Count), token);
-                        }
-                        while (!result.EndOfMessage);
-
-                        frame = Encoding.UTF8.GetString(stream.ToArray());
+                        await stream.WriteAsync(buffer.AsMemory(0, result.Count), token);
                     }
+                    while (!result.EndOfMessage);
+
+                    string frame = Encoding.UTF8.GetString(stream.GetBuffer(), 0, (int)stream.Length);
 
                     foreach (string record in frame.Split(RecordSeparator, StringSplitOptions.RemoveEmptyEntries))
                         HandleRecord(record.TrimEnd('\0'));
@@ -233,7 +255,10 @@ namespace Froststrap.Integrations.OverlayModules
 
         private async Task SafeSend(string payload)
         {
-            if (!IsConnected || _sendLock is null)
+            ClientWebSocket? socket = _webSocket;
+            SemaphoreSlim? gate = _sendLock;
+
+            if (socket is null || gate is null || socket.State != WebSocketState.Open)
             {
                 App.Logger.Warn("Tried to send after the socket closed");
                 return;
@@ -241,10 +266,14 @@ namespace Froststrap.Integrations.OverlayModules
 
             byte[] bytes = Encoding.UTF8.GetBytes(payload + RecordSeparator);
 
+            bool entered = false;
+
             try
             {
-                await _sendLock.WaitAsync();
-                await _webSocket!.SendAsync(bytes, WebSocketMessageType.Text, true, CancellationToken.None);
+                await gate.WaitAsync();
+                entered = true;
+
+                await socket.SendAsync(bytes, WebSocketMessageType.Text, true, CancellationToken.None);
             }
             catch (Exception ex)
             {
@@ -253,7 +282,11 @@ namespace Froststrap.Integrations.OverlayModules
             }
             finally
             {
-                _sendLock?.Release();
+                if (entered)
+                {
+                    try { gate.Release(); }
+                    catch (ObjectDisposedException) { }
+                }
             }
         }
 
@@ -269,28 +302,29 @@ namespace Froststrap.Integrations.OverlayModules
                     case "CommunicationChannels":
                     {
                         using var doc = JsonDocument.Parse(payload);
+                        JsonElement root = doc.RootElement;
 
-                        string? type = doc.RootElement.TryGetProperty("Type", out JsonElement t)
+                        string? type = root.TryGetProperty("Type", out JsonElement t)
                             ? t.GetString()
                             : null;
 
                         if (String.Equals(type, "ChannelMarkedRead", StringComparison.Ordinal))
                         {
-                            var read = JsonSerializer.Deserialize<ChannelMarkedRead>(payload);
+                            var read = root.Deserialize<ChannelMarkedRead>();
 
                             if (read is not null && !String.IsNullOrEmpty(read.ChannelId))
                                 ChannelRead?.Invoke(this, read);
                         }
                         else if (String.Equals(type, "ChannelMetadataUpdated", StringComparison.Ordinal))
                         {
-                            var update = JsonSerializer.Deserialize<ChannelMetadataUpdate>(payload);
+                            var update = root.Deserialize<ChannelMetadataUpdate>();
 
                             if (update is not null && !String.IsNullOrEmpty(update.ChannelId))
                                 ChannelMetadataChanged?.Invoke(this, update);
                         }
                         else
                         {
-                            var message = JsonSerializer.Deserialize<MessageEvent>(payload)
+                            var message = root.Deserialize<MessageEvent>()
                                 ?? throw new JsonException("Deserialised MessageEvent is null");
 
                             PartyChat?.Invoke(this, message);
