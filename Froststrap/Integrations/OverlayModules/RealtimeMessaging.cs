@@ -28,6 +28,8 @@ namespace Froststrap.Integrations.OverlayModules
         public event EventHandler<SignalrMessage>? MessageReceived;
         public event EventHandler<IReadOnlyList<PresenceNotification>>? PresenceBulk;
         public event EventHandler<FriendshipNotification>? FriendshipChanged;
+        public event EventHandler<ChannelMarkedRead>? ChannelRead;
+        public event EventHandler<ChannelMetadataUpdate>? ChannelMetadataChanged;
         public event EventHandler? Connected;
 
         public static event EventHandler<FriendshipNotification>? AnyFriendshipChanged;
@@ -265,11 +267,37 @@ namespace Froststrap.Integrations.OverlayModules
                 switch (target)
                 {
                     case "CommunicationChannels":
-                        var message = JsonSerializer.Deserialize<MessageEvent>(payload)
-                            ?? throw new JsonException("Deserialised MessageEvent is null");
+                    {
+                        using var doc = JsonDocument.Parse(payload);
 
-                        PartyChat?.Invoke(this, message);
+                        string? type = doc.RootElement.TryGetProperty("Type", out JsonElement t)
+                            ? t.GetString()
+                            : null;
+
+                        if (String.Equals(type, "ChannelMarkedRead", StringComparison.Ordinal))
+                        {
+                            var read = JsonSerializer.Deserialize<ChannelMarkedRead>(payload);
+
+                            if (read is not null && !String.IsNullOrEmpty(read.ChannelId))
+                                ChannelRead?.Invoke(this, read);
+                        }
+                        else if (String.Equals(type, "ChannelMetadataUpdated", StringComparison.Ordinal))
+                        {
+                            var update = JsonSerializer.Deserialize<ChannelMetadataUpdate>(payload);
+
+                            if (update is not null && !String.IsNullOrEmpty(update.ChannelId))
+                                ChannelMetadataChanged?.Invoke(this, update);
+                        }
+                        else
+                        {
+                            var message = JsonSerializer.Deserialize<MessageEvent>(payload)
+                                ?? throw new JsonException("Deserialised MessageEvent is null");
+
+                            PartyChat?.Invoke(this, message);
+                        }
+
                         break;
+                    }
 
                     case "PresenceBulkNotifications":
                         var notifications = JsonSerializer.Deserialize<List<PresenceNotification>>(payload);

@@ -121,22 +121,22 @@ SPDX-License-Identifier: MPL-2.0
                                         VerticalAlignment="Center"
                                         Spacing="3">
 
-                                <Grid ColumnDefinitions="*,Auto">
-                                    <TextBlock Grid.Column="0"
-                                               Text="{Binding DisplayName}"
+                                <StackPanel Orientation="Horizontal"
+                                            HorizontalAlignment="Left"
+                                            Spacing="5">
+                                    <TextBlock Text="{Binding DisplayName}"
                                                FontSize="14"
                                                FontWeight="SemiBold"
                                                TextTrimming="CharacterEllipsis"
                                                Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
 
-                                    <Image Grid.Column="1"
-                                           Source="avares://Froststrap/Resources/RobloxVerified.png"
+                                    <Image Source="avares://Froststrap/Resources/RobloxVerified.png"
                                            Width="14"
                                            Height="14"
-                                           Margin="4,0,0,0"
                                            VerticalAlignment="Center"
+                                           RenderOptions.BitmapInterpolationMode="HighQuality"
                                            IsVisible="{Binding IsVerified}" />
-                                </Grid>
+                                </StackPanel>
 
                                 <TextBlock Text="{Binding Handle}"
                                            FontSize="11"
@@ -181,11 +181,31 @@ SPDX-License-Identifier: MPL-2.0
                                                      Padding="0"
                                                      CornerRadius="10"
                                                      IconSize="16"
+                                                     Icon="UserCheck"
+                                                     Classes="Primary"
+                                                     Command="{Binding $parent[ItemsControl].((vmb:PeopleBrowserViewModel)DataContext).AcceptFriendCommand}"
+                                                     CommandParameter="{Binding}"
+                                                     IsVisible="{Binding CanAcceptFriend}" />
+
+                                <controls:IconButton Width="36" Height="36"
+                                                     Padding="0"
+                                                     CornerRadius="10"
+                                                     IconSize="16"
                                                      Icon="UserPlus"
                                                      Classes="Primary"
                                                      Command="{Binding $parent[ItemsControl].((vmb:PeopleBrowserViewModel)DataContext).AddFriendCommand}"
                                                      CommandParameter="{Binding}"
                                                      IsVisible="{Binding CanAddFriend}" />
+
+                                <controls:IconButton Width="36" Height="36"
+                                                     Padding="0"
+                                                     CornerRadius="10"
+                                                     IconSize="16"
+                                                     Icon="UserMinus"
+                                                     Classes="Danger"
+                                                     Command="{Binding $parent[ItemsControl].((vmb:PeopleBrowserViewModel)DataContext).UnfriendCommand}"
+                                                     CommandParameter="{Binding}"
+                                                     IsVisible="{Binding CanUnfriend}" />
 
                                 <Border Width="36" Height="36"
                                         CornerRadius="10"

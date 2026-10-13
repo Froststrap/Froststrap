@@ -221,6 +221,7 @@ SPDX-License-Identifier: MPL-2.0
                                                        Width="12"
                                                        Height="12"
                                                        VerticalAlignment="Center"
+                                                       RenderOptions.BitmapInterpolationMode="HighQuality"
                                                        IsVisible="{Binding IsVerified}" />
                                             </StackPanel>
 

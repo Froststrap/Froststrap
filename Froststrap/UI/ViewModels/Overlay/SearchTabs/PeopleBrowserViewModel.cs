@@ -19,7 +19,7 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
     internal class PeopleBrowserViewModel : NotifyPropertyChangedViewModel, IDisposable
     {
         private static readonly TimeSpan SearchDelay = TimeSpan.FromMilliseconds(350);
-        private static readonly TimeSpan PendingRefresh = TimeSpan.FromSeconds(45);
+        private static readonly TimeSpan PendingRefresh = TimeSpan.FromMinutes(5);
         private const int FriendLimit = 100;
 
         private readonly DispatcherTimer _debounce;
@@ -42,6 +42,8 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
         public ICommand JoinCommand { get; }
         public ICommand ViewGameCommand { get; }
         public ICommand AddFriendCommand { get; }
+        public ICommand UnfriendCommand { get; }
+        public ICommand AcceptFriendCommand { get; }
 
         private int _selectedIndex = -1;
         public int SelectedIndex
@@ -109,6 +111,8 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
             JoinCommand = new AsyncRelayCommand<SearchPerson>(JoinAsync);
             ViewGameCommand = new RelayCommand<SearchPerson>(ViewGame);
             AddFriendCommand = new AsyncRelayCommand<SearchPerson>(AddFriendAsync);
+            UnfriendCommand = new AsyncRelayCommand<SearchPerson>(UnfriendAsync);
+            AcceptFriendCommand = new AsyncRelayCommand<SearchPerson>(AcceptFriendAsync);
 
             App.Cookies.WatchAccount(this, static vm => vm.OnAccountChanged());
 
@@ -566,6 +570,94 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
             }
         }
 
+        private async Task UnfriendAsync(SearchPerson? person)
+        {
+            if (person is null || !person.CanUnfriend)
+                return;
+
+            person.IsWorking = true;
+
+            try
+            {
+                if (await PeopleApi.UnfriendAsync(person.UserId))
+                {
+                    person.IsFriend    = false;
+                    person.IsPending   = false;
+                    person.HasIncoming = false;
+
+                    _friendIds.Remove(person.UserId);
+                    _friendsCache.RemoveAll(p => p.UserId == person.UserId);
+
+                    if (_showingFriends && String.IsNullOrWhiteSpace(_query))
+                    {
+                        People.ReplaceAll(_friendsCache);
+
+                        if (_friendsCache.Count == 0)
+                            SelectedIndex = -1;
+                        else if (SelectedIndex >= _friendsCache.Count)
+                            SelectedIndex = _friendsCache.Count - 1;
+                    }
+
+                    App.Logger.Info($"People browser: unfriended {person.DisplayName}");
+                }
+                else
+                {
+                    App.Logger.Warn($"People browser: unfriend of {person.DisplayName} was refused");
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error("People browser: failed to unfriend");
+                App.Logger.Error(ex);
+            }
+            finally
+            {
+                person.IsWorking = false;
+            }
+        }
+
+        private async Task AcceptFriendAsync(SearchPerson? person)
+        {
+            if (person is null || !person.CanAcceptFriend)
+                return;
+
+            person.IsWorking = true;
+
+            try
+            {
+                if (await PeopleApi.AcceptFriendRequestAsync(person.UserId))
+                {
+                    person.IsFriend    = true;
+                    person.IsPending   = false;
+                    person.HasIncoming = false;
+
+                    _pendingIds.Remove(person.UserId);
+                    _friendIds.Add(person.UserId);
+
+                    _friendsLoaded = false;
+                    _friendsCache.Clear();
+
+                    if (_showingFriends && String.IsNullOrWhiteSpace(_query))
+                        _ = LoadFriendsAsync();
+
+                    App.Logger.Info($"People browser: accepted friend request from {person.DisplayName}");
+                }
+                else
+                {
+                    App.Logger.Warn($"People browser: accept of {person.DisplayName}'s request was refused");
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error("People browser: failed to accept friend request");
+                App.Logger.Error(ex);
+            }
+            finally
+            {
+                person.IsWorking = false;
+            }
+        }
+
         private void OnFriendshipChanged(object? sender, FriendshipNotification note)
         {
             if (note.EventArgs is not { } args || note.Type is null)
@@ -654,8 +746,18 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
                 }
 
                 case FriendshipNotification.RequestedType:
-                    App.Logger.Info($"People browser: friend request event for {other}");
+                {
+                    foreach (SearchPerson p in People.Where(p => p.UserId == other))
+                    {
+                        if (byMe)
+                            p.IsPending = true;
+                        else
+                            p.HasIncoming = true;
+                    }
+
+                    App.Logger.Info($"People browser: friend request event for {other} ({(byMe ? "sent" : "received")})");
                     break;
+                }
 
                 default:
                     App.Logger.Info($"People browser: unhandled friendship type {type}");

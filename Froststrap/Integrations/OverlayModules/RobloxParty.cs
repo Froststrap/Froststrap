@@ -1,4 +1,5 @@
-﻿using Froststrap.Models.APIs.RobloxParty;
+﻿﻿using Froststrap.Models.APIs.RealtimeMessaging;
+using Froststrap.Models.APIs.RobloxParty;
 using Froststrap.Models.APIs.RobloxParty.Events;
 using Froststrap.Utility;
 using System.Net.Http;
@@ -12,6 +13,8 @@ namespace Froststrap.Integrations.OverlayModules
         private const string PlatformChatService = "platform-chat-api";
 
         public event EventHandler<MessageEvent>? IncomingMessage;
+        public event EventHandler<ChannelMarkedRead>? ChannelRead;
+        public event EventHandler<ChannelMetadataUpdate>? ChannelMetadataChanged;
 
         public RobloxParty(RealtimeMessaging? messaging)
         {
@@ -19,10 +22,18 @@ namespace Froststrap.Integrations.OverlayModules
                 return;
 
             messaging.PartyChat += OnIncomingMessage;
+            messaging.ChannelRead += OnChannelRead;
+            messaging.ChannelMetadataChanged += OnChannelMetadataChanged;
         }
 
         private void OnIncomingMessage(object? sender, MessageEvent message) =>
             IncomingMessage?.Invoke(this, message);
+
+        private void OnChannelRead(object? sender, ChannelMarkedRead note) =>
+            ChannelRead?.Invoke(this, note);
+
+        private void OnChannelMetadataChanged(object? sender, ChannelMetadataUpdate note) =>
+            ChannelMetadataChanged?.Invoke(this, note);
 
         public static async Task<ConversationsPage?> GetConversations(int pageSize = 20, string? cursor = null)
         {

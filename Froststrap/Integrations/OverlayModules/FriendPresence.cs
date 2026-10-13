@@ -11,9 +11,9 @@ namespace Froststrap.Integrations.OverlayModules
     {
         private const string LOG_IDENT = "FriendPresence";
 
-        private static readonly TimeSpan ResyncInterval = TimeSpan.FromMinutes(10);
+        private static readonly TimeSpan ResyncInterval = TimeSpan.FromMinutes(30);
         private static readonly TimeSpan OfflineInterval = TimeSpan.FromSeconds(45);
-        private static readonly TimeSpan FriendsRefresh = TimeSpan.FromMinutes(10);
+        private static readonly TimeSpan FriendsRefresh = TimeSpan.FromMinutes(30);
         private static readonly TimeSpan Cooldown = TimeSpan.FromMinutes(15);
 
         private const int BatchSize = 50;
@@ -69,6 +69,7 @@ namespace Froststrap.Integrations.OverlayModules
 
             _messaging?.PresenceBulk += OnPresenceBulk;
             _messaging?.FriendshipChanged += OnFriendshipChanged;
+            _messaging?.Connected += OnMessagingConnected;
 
             _ = Task.Run(() => RunAsync(token));
         }
@@ -77,6 +78,7 @@ namespace Froststrap.Integrations.OverlayModules
         {
             _messaging?.PresenceBulk -= OnPresenceBulk;
             _messaging?.FriendshipChanged -= OnFriendshipChanged;
+            _messaging?.Connected -= OnMessagingConnected;
 
             _cancellation?.Cancel();
             _cancellation?.Dispose();
@@ -118,6 +120,14 @@ namespace Froststrap.Integrations.OverlayModules
             catch (OperationCanceledException)
             {
             }
+        }
+
+        private void OnMessagingConnected(object? sender, EventArgs e)
+        {
+            lock (_lock)
+                _friendsFetched = DateTime.MinValue;
+
+            _ = PollAsync();
         }
 
         public async Task PollAsync()

@@ -267,6 +267,50 @@ namespace Froststrap.RobloxInterfaces
             }
         }
 
+        public static async Task<bool> UnfriendAsync(long userId)
+        {
+            if (userId <= 0)
+                return false;
+
+            try
+            {
+                using var response = await App.Cookies.AuthPost(
+                    UrlBuilder.BuildApiUrl("friends", $"v1/users/{userId}/unfriend"),
+                    new StringContent(String.Empty, Encoding.UTF8, "application/json"));
+
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error($"People: failed to unfriend {userId}");
+                App.Logger.Error(ex);
+
+                return false;
+            }
+        }
+
+        public static async Task<bool> AcceptFriendRequestAsync(long userId)
+        {
+            if (userId <= 0)
+                return false;
+
+            try
+            {
+                using var response = await App.Cookies.AuthPost(
+                    UrlBuilder.BuildApiUrl("friends", $"v1/users/{userId}/accept-friend-request"),
+                    new StringContent(String.Empty, Encoding.UTF8, "application/json"));
+
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error($"People: failed to accept friend request from {userId}");
+                App.Logger.Error(ex);
+
+                return false;
+            }
+        }
+
         private static FriendRequestResult ParseFriendRequestFailure(string body)
         {
             if (String.IsNullOrWhiteSpace(body))

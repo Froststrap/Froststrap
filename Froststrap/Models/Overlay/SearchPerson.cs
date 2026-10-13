@@ -194,7 +194,9 @@ namespace Froststrap.Models.Overlay
         public bool CanJoin => IsInGame && PlaceId > 0 && !String.IsNullOrEmpty(ServerId);
         public bool CanViewGame => IsInGame && !CanJoin && (RootPlaceId > 0 || PlaceId > 0);
         public bool CanAddFriend => !_isSelf && !_isFriend && !_isPending && !_hasIncoming && !_isWorking;
-        public bool ShowPendingBadge => (_isPending || _hasIncoming) && !_isFriend && !_isWorking;
+        public bool CanAcceptFriend => !_isSelf && _hasIncoming && !_isFriend && !_isWorking;
+        public bool CanUnfriend => !_isSelf && _isFriend && !_isWorking;
+        public bool ShowPendingBadge => _isPending && !_isFriend && !_hasIncoming && !_isWorking;
 
         public string StatusText
         {
@@ -226,6 +228,8 @@ namespace Froststrap.Models.Overlay
             OnPropertyChanged(nameof(CanJoin));
             OnPropertyChanged(nameof(CanViewGame));
             OnPropertyChanged(nameof(CanAddFriend));
+            OnPropertyChanged(nameof(CanAcceptFriend));
+            OnPropertyChanged(nameof(CanUnfriend));
             OnPropertyChanged(nameof(ShowPendingBadge));
             OnPropertyChanged(nameof(StatusText));
         }

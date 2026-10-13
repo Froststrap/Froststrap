@@ -171,7 +171,11 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
 #pragma warning disable IDE0031
             if (_party is not null)
+            {
                 _party.IncomingMessage += OnIncomingMessage;
+                _party.ChannelRead += OnChannelRead;
+                _party.ChannelMetadataChanged += OnChannelMetadataChanged;
+            }
 
             if (_presence is not null)
                 _presence.Updated += OnPresenceUpdated;
@@ -561,6 +565,55 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             }
         }
 
+        private void OnChannelRead(object? sender, ChannelMarkedRead note)
+        {
+            long me = _me?.Id ?? App.Cookies.CurrentUser?.Id ?? 0;
+
+            if (me == 0 || note.Actor?.UserId != me)
+                return;
+
+            if (String.IsNullOrEmpty(note.ChannelId))
+                return;
+
+            Dispatcher.UIThread.Post(() => ClearUnread(note.ChannelId));
+        }
+
+        private void OnChannelMetadataChanged(object? sender, ChannelMetadataUpdate note)
+        {
+            if (!String.Equals(note.MetadataUpdateType, ChannelMetadataUpdate.UnreadMetadataType, StringComparison.Ordinal))
+                return;
+
+            long me = _me?.Id ?? App.Cookies.CurrentUser?.Id ?? 0;
+
+            if (me == 0 || note.Actor?.UserId != me)
+                return;
+
+            if (String.IsNullOrEmpty(note.ChannelId))
+                return;
+
+            Dispatcher.UIThread.Post(() => ClearUnread(note.ChannelId));
+        }
+
+        private void ClearUnread(string channelId)
+        {
+            if (_disposed)
+                return;
+
+            ChatTab? tab = Tabs.FirstOrDefault(x => x.Friend.ConversationId == channelId);
+
+            if (tab is not null)
+            {
+                tab.Friend.Unread = 0;
+                return;
+            }
+
+            ChatFriend? owner = _people.Values.Concat(_groups)
+                .FirstOrDefault(x => x.ConversationId == channelId);
+
+            if (owner is not null)
+                owner.Unread = 0;
+        }
+
         private void Rebuild()
         {
             string search = _searchText.Trim();
@@ -906,7 +959,11 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             _disposed = true;
 
             if (_party is not null)
+            {
                 _party.IncomingMessage -= OnIncomingMessage;
+                _party.ChannelRead -= OnChannelRead;
+                _party.ChannelMetadataChanged -= OnChannelMetadataChanged;
+            }
 
             if (_presence is not null)
                 _presence.Updated -= OnPresenceUpdated;
