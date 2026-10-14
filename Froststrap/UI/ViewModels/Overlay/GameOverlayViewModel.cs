@@ -1,4 +1,4 @@
-﻿﻿using Avalonia;
+﻿using Avalonia;
 using Avalonia.Input.Platform;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
@@ -9,6 +9,7 @@ using Froststrap.Integrations.Overlay;
 using Froststrap.UI.Elements.Overlay;
 using Froststrap.Utility;
 using LucideAvalonia.Enum;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Windows.Input;
 
@@ -27,6 +28,8 @@ namespace Froststrap.UI.ViewModels.Overlay
 
         private static readonly Dictionary<string, string> CountryNameToCode = BuildCountryLookup();
 
+        [SuppressMessage("Globalization", "CA1308:Normalize strings to uppercase",
+            Justification = "Roblox region codes are always upper and flagcdn requires lowercase codes.")]
         private static Dictionary<string, string> BuildCountryLookup()
         {
             var map = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -54,6 +57,8 @@ namespace Froststrap.UI.ViewModels.Overlay
             return map;
         }
 
+        [SuppressMessage("Globalization", "CA1308:Normalize strings to uppercase",
+            Justification = "Roblox region codes are always upper and flagcdn requires lowercase codes.")]
         private static string? TryCountry(string value)
         {
             if (String.IsNullOrWhiteSpace(value))
@@ -270,6 +275,8 @@ namespace Froststrap.UI.ViewModels.Overlay
 
         public bool HasCurrentRegion => !String.IsNullOrEmpty(_currentRegion);
 
+        [SuppressMessage("Globalization", "CA1308:Normalize strings to uppercase",
+            Justification = "Roblox region codes are always upper and flagcdn requires lowercase codes.")]
         public string? CurrentRegionFlagUrl
         {
             get

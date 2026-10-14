@@ -8,6 +8,7 @@ using Froststrap.Integrations;
 using Froststrap.Integrations.Overlay;
 using Froststrap.Models.Overlay;
 using Froststrap.RobloxInterfaces;
+using Froststrap.UI.ViewModels.Overlay.Controls;
 using Froststrap.UI.ViewModels.Overlay.SearchTabs;
 using System.Windows.Input;
 using static Froststrap.RobloxInterfaces.Experiences;
@@ -33,6 +34,26 @@ namespace Froststrap.UI.ViewModels.Overlay
 
         public PeopleBrowserViewModel People { get; } = new();
 
+        private PrivateServersViewModel? _privateServers;
+        public PrivateServersViewModel? PrivateServers
+        {
+            get => _privateServers;
+            private set
+            {
+                if (_privateServers == value)
+                    return;
+
+                _privateServers = value;
+
+                OnPropertyChanged(nameof(PrivateServers));
+                OnPropertyChanged(nameof(ShowPrivateServers));
+                OnPropertyChanged(nameof(ShowGamesTab));
+                OnPropertyChanged(nameof(ShowPeopleTab));
+            }
+        }
+
+        public bool ShowPrivateServers => _privateServers is not null;
+
         private OverlaySearchTab _selectedTab = OverlaySearchTab.Games;
         public OverlaySearchTab SelectedTab
         {
@@ -46,6 +67,9 @@ namespace Froststrap.UI.ViewModels.Overlay
 
                 foreach (OverlaySearchTabItem tab in Tabs)
                     tab.IsSelected = tab.Kind == value;
+
+                if (ShowPrivateServers)
+                    ClosePrivateServers();
 
                 OnPropertyChanged(nameof(SelectedTab));
                 OnPropertyChanged(nameof(ShowGamesTab));
@@ -72,8 +96,8 @@ namespace Froststrap.UI.ViewModels.Overlay
             }
         }
 
-        public bool ShowGamesTab => _selectedTab == OverlaySearchTab.Games;
-        public bool ShowPeopleTab => _selectedTab == OverlaySearchTab.People;
+        public bool ShowGamesTab => _selectedTab == OverlaySearchTab.Games && !ShowPrivateServers;
+        public bool ShowPeopleTab => _selectedTab == OverlaySearchTab.People && !ShowPrivateServers;
 
         private string _query = String.Empty;
         public string Query
@@ -86,6 +110,9 @@ namespace Froststrap.UI.ViewModels.Overlay
 
                 _query = value;
                 OnPropertyChanged(nameof(Query));
+
+                if (ShowPrivateServers)
+                    ClosePrivateServers();
 
                 if (_selectedTab == OverlaySearchTab.People)
                 {
@@ -165,6 +192,8 @@ namespace Froststrap.UI.ViewModels.Overlay
         public ICommand SelectTabCommand { get; }
         public ICommand JoinCommand { get; }
         public ICommand JoinRegionCommand { get; }
+        public ICommand OpenPrivateServersCommand { get; }
+        public ICommand ClosePrivateServersCommand { get; }
 
         public event EventHandler? CloseRequested;
         public event EventHandler? FocusInputRequested;
@@ -206,6 +235,8 @@ namespace Froststrap.UI.ViewModels.Overlay
 
             JoinCommand = new RelayCommand<GameTile>(Join);
             JoinRegionCommand = new AsyncRelayCommand<GameTile>(JoinRegion);
+            OpenPrivateServersCommand = new RelayCommand<GameTile>(OpenPrivateServers);
+            ClosePrivateServersCommand = new RelayCommand(ClosePrivateServers);
         }
 
         public static void Attach(IOverlayHost? host)
@@ -369,6 +400,35 @@ namespace Froststrap.UI.ViewModels.Overlay
         {
             foreach (GameTile tile in Results)
                 tile.IsJoiningRegion = _joiningUniverses.Contains(tile.UniverseId);
+        }
+
+        private void OpenPrivateServers(GameTile? tile)
+        {
+            if (tile is null || tile.PlaceId == 0)
+                return;
+
+            _privateServers?.SetVisible(false);
+
+            var vm = new PrivateServersViewModel(
+                activityWatcher: null,
+                placeIdOverride: tile.PlaceId,
+                onBack: () =>
+                {
+                    ClosePrivateServers();
+                    FocusInputRequested?.Invoke(this, EventArgs.Empty);
+                });
+
+            PrivateServers = vm;
+            vm.SetVisible(true);
+        }
+
+        private void ClosePrivateServers()
+        {
+            if (_privateServers is null)
+                return;
+
+            _privateServers.SetVisible(false);
+            PrivateServers = null;
         }
 
         private async Task LoadContinueAsync()

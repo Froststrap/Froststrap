@@ -23,8 +23,10 @@ namespace Froststrap.Integrations.OverlayModules
         public event EventHandler<FriendPresenceChange>? Changed;
         public event EventHandler<IReadOnlyCollection<long>>? Updated;
 
+        [SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", Justification = "Owned by the caller, not by this type.")]
         private readonly ActivityWatcher? _activityWatcher = activityWatcher;
 
+        [SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", Justification = "Owned by the caller, not by this type.")]
         private readonly RealtimeMessaging? _messaging = messaging;
 
         private readonly SemaphoreSlim _pollGate = new(1, 1);
@@ -289,7 +291,7 @@ namespace Froststrap.Integrations.OverlayModules
                 return;
 
             long other = args.UserId1 == me.Id ? args.UserId2 : args.UserId1;
-            bool byMe  = (args.UserId1 == me.Id &&  args.UserId1IsActor)
+            bool byMe = (args.UserId1 == me.Id && args.UserId1IsActor)
                       || (args.UserId2 == me.Id && !args.UserId1IsActor);
 
             if (other == 0 || other == me.Id)
@@ -465,6 +467,9 @@ namespace Froststrap.Integrations.OverlayModules
         public void Dispose()
         {
             Stop();
+
+            _pollGate.Dispose();
+
             GC.SuppressFinalize(this);
         }
     }

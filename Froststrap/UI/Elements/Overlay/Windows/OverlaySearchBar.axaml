@@ -12,6 +12,7 @@ SPDX-License-Identifier: MPL-2.0
         xmlns:resources="using:Froststrap.Resources"
         xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
         xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+        xmlns:overlay="clr-namespace:Froststrap.UI.Elements.Overlay.Controls"
         xmlns:tabs="clr-namespace:Froststrap.UI.Elements.Overlay.SearchTabs"
         xmlns:ui="using:FluentAvalonia.UI.Controls"
         xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Overlay"
@@ -281,6 +282,15 @@ SPDX-License-Identifier: MPL-2.0
                                                                  Padding="0"
                                                                  CornerRadius="10"
                                                                  IconSize="16"
+                                                                 Icon="Lock"
+                                                                 Command="{Binding $parent[ItemsControl].((vm:OverlaySearchBarViewModel)DataContext).OpenPrivateServersCommand}"
+                                                                 CommandParameter="{Binding}"
+                                                                 ToolTip.Tip="{x:Static resources:Strings.Menu_Overlay_PrivateServers_ConfigureTitle}" />
+
+                                            <controls:IconButton Width="36" Height="36"
+                                                                 Padding="0"
+                                                                 CornerRadius="10"
+                                                                 IconSize="16"
                                                                  Icon="Earth"
                                                                  Command="{Binding $parent[ItemsControl].((vm:OverlaySearchBarViewModel)DataContext).JoinRegionCommand}"
                                                                  CommandParameter="{Binding}"
@@ -322,6 +332,12 @@ SPDX-License-Identifier: MPL-2.0
 
                     <tabs:PeopleBrowser DataContext="{Binding People}"
                                         IsVisible="{Binding $parent[Window].((vm:OverlaySearchBarViewModel)DataContext).ShowPeopleTab}" />
+
+                    <Border Padding="20,16,20,12"
+                            IsVisible="{Binding $parent[Window].((vm:OverlaySearchBarViewModel)DataContext).ShowPrivateServers}">
+                        <overlay:PrivateServerBrowser
+                            DataContext="{Binding $parent[Window].((vm:OverlaySearchBarViewModel)DataContext).PrivateServers}" />
+                    </Border>
                 </Panel>
 
                 <Border Grid.Row="3"

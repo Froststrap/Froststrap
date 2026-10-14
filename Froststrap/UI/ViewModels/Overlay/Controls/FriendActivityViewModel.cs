@@ -71,7 +71,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
         private bool _requested;
         private bool _disposed;
 
-        public BulkObservableCollection<object> Rows { get; } = new();
+        public BulkObservableCollection<object> Rows { get; } = [];
 
         public ObservableCollection<ChatTab> Tabs { get; } = [];
 
@@ -239,7 +239,6 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                 IsSortDropdownOpen = false;
             });
 
-#pragma warning disable IDE0031
             if (_party is not null)
             {
                 _party.IncomingMessage += OnIncomingMessage;
@@ -247,9 +246,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                 _party.ChannelMetadataChanged += OnChannelMetadataChanged;
             }
 
-            if (_presence is not null)
-                _presence.Updated += OnPresenceUpdated;
-#pragma warning restore IDE0031
+            _presence?.Updated += OnPresenceUpdated;
 
             App.Cookies.WatchAccount(this, static vm => vm.OnAccountChanged());
 
@@ -795,7 +792,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                     (FriendSection.Groups, groups)
                 };
 
-                rows = new List<object>();
+                rows = [];
 
                 foreach ((FriendSection section, List<ChatFriend> people) in sections)
                 {
@@ -827,7 +824,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                         visible.Add(group);
                 }
 
-                rows = Order(visible).Cast<object>().ToList();
+                rows = [.. Order(visible).Cast<object>()];
             }
 
             if (!rows.SequenceEqual(Rows))
@@ -1203,8 +1200,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                 _party.ChannelMetadataChanged -= OnChannelMetadataChanged;
             }
 
-            if (_presence is not null)
-                _presence.Updated -= OnPresenceUpdated;
+                _presence?.Updated -= OnPresenceUpdated;
 
             RealtimeMessaging.AnyFriendshipChanged -= OnFriendshipChanged;
 

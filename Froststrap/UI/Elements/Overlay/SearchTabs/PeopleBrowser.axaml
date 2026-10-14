@@ -162,16 +162,6 @@ SPDX-License-Identifier: MPL-2.0
                                                      Padding="0"
                                                      CornerRadius="10"
                                                      IconSize="16"
-                                                     Icon="Play"
-                                                     Classes="Primary"
-                                                     Command="{Binding $parent[ItemsControl].((vmb:PeopleBrowserViewModel)DataContext).JoinCommand}"
-                                                     CommandParameter="{Binding}"
-                                                     IsVisible="{Binding CanJoin}" />
-
-                                <controls:IconButton Width="36" Height="36"
-                                                     Padding="0"
-                                                     CornerRadius="10"
-                                                     IconSize="16"
                                                      Icon="ExternalLink"
                                                      Command="{Binding $parent[ItemsControl].((vmb:PeopleBrowserViewModel)DataContext).ViewGameCommand}"
                                                      CommandParameter="{Binding}"
@@ -206,6 +196,16 @@ SPDX-License-Identifier: MPL-2.0
                                                      Command="{Binding $parent[ItemsControl].((vmb:PeopleBrowserViewModel)DataContext).UnfriendCommand}"
                                                      CommandParameter="{Binding}"
                                                      IsVisible="{Binding CanUnfriend}" />
+
+                                <controls:IconButton Width="36" Height="36"
+                                                     Padding="0"
+                                                     CornerRadius="10"
+                                                     IconSize="16"
+                                                     Icon="Play"
+                                                     Classes="Primary"
+                                                     Command="{Binding $parent[ItemsControl].((vmb:PeopleBrowserViewModel)DataContext).JoinCommand}"
+                                                     CommandParameter="{Binding}"
+                                                     IsVisible="{Binding CanJoin}" />
 
                                 <Border Width="36" Height="36"
                                         CornerRadius="10"

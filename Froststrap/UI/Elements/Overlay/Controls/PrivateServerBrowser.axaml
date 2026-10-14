@@ -47,159 +47,174 @@
 
     <Grid RowDefinitions="*,Auto">
 
-        <Grid Grid.Row="0" IsVisible="{Binding ListVisible}">
-            <ScrollViewer
-                Margin="0,0,-8,0"
-                Padding="0,0,8,0"
-                VerticalScrollBarVisibility="Auto">
-                <StackPanel>
-                    <ItemsControl ItemsSource="{Binding Servers}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Grid Margin="0,0,0,12" ColumnDefinitions="Auto,*,260">
-                                    <Border
-                                        Grid.Column="0"
-                                        Width="40"
-                                        Height="40"
-                                        VerticalAlignment="Center"
-                                        Background="{DynamicResource ControlFillColorDefaultBrush}"
-                                        ClipToBounds="True"
-                                        CornerRadius="20">
-                                        <Image
-                                            RenderOptions.BitmapInterpolationMode="LowQuality"
-                                            Source="{Binding OwnerAvatarBitmap}"
-                                            Stretch="UniformToFill" />
-                                    </Border>
+        <Grid Grid.Row="0" IsVisible="{Binding ListVisible}" RowDefinitions="Auto,*">
 
-                                    <WrapPanel
-                                        Grid.Column="1"
-                                        Margin="14,0,12,0"
-                                        VerticalAlignment="Center">
-                                        <TextBlock
-                                            Margin="0,0,10,0"
-                                            Classes="Heading"
-                                            Text="{Binding Name}"
-                                            TextTrimming="CharacterEllipsis" />
-                                        <TextBlock Classes="Label" Text="{Binding CapacityText}" />
-                                        <TextBlock
-                                            Margin="10,0,0,0"
-                                            Classes="Label"
-                                            Foreground="{DynamicResource AccentFillColorDefaultBrush}"
-                                            IsVisible="{Binding IsCurrent}"
-                                            Text="{x:Static resources:Strings.Menu_Overlay_Servers_Current}" />
-                                    </WrapPanel>
+            <controls:IconButton
+                Grid.Row="0"
+                Margin="0,0,0,10"
+                HorizontalAlignment="Left"
+                Background="Transparent"
+                BorderBrush="Transparent"
+                Command="{Binding BackToSearchCommand}"
+                Icon="ArrowLeft"
+                IconSize="16"
+                IsVisible="{Binding ShowBackToSearchButton}"
+                ToolTip.Tip="{x:Static resources:Strings.Menu_Overlay_PrivateServers_BackToList}" />
 
-                                    <Button
-                                        Grid.Column="2"
-                                        Classes="cardAction"
-                                        Command="{Binding $parent[ItemsControl].((vm:PrivateServersViewModel)DataContext).JoinCommand}"
-                                        CommandParameter="{Binding}"
-                                        Content="{x:Static resources:Strings.Menu_Overlay_Servers_Join}"
-                                        IsEnabled="{Binding CanJoin}"
-                                        IsVisible="{Binding !IsMine}" />
+            <Grid Grid.Row="1">
+                <ScrollViewer
+                    Margin="0,0,-16,0"
+                    Padding="0,0,16,0"
+                    VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <ItemsControl ItemsSource="{Binding Servers}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="0,0,0,12" ColumnDefinitions="Auto,*,260">
+                                        <Border
+                                            Grid.Column="0"
+                                            Width="40"
+                                            Height="40"
+                                            VerticalAlignment="Center"
+                                            Background="{DynamicResource ControlFillColorDefaultBrush}"
+                                            ClipToBounds="True"
+                                            CornerRadius="20">
+                                            <Image
+                                                RenderOptions.BitmapInterpolationMode="LowQuality"
+                                                Source="{Binding OwnerAvatarBitmap}"
+                                                Stretch="UniformToFill" />
+                                        </Border>
 
-                                    <StackPanel
-                                        Grid.Column="2"
-                                        VerticalAlignment="Center"
-                                        IsVisible="{Binding IsMine}">
-                                        <Grid ColumnDefinitions="Auto,*">
-                                            <controls:IconButton
-                                                Grid.Column="0"
-                                                Command="{Binding $parent[ItemsControl].((vm:PrivateServersViewModel)DataContext).ConfigureCommand}"
-                                                CommandParameter="{Binding}"
-                                                Icon="Pencil"
-                                                IconSize="14"
-                                                ToolTip.Tip="{x:Static resources:Strings.Menu_Overlay_PrivateServers_Configure}" />
-                                            <Button
-                                                Grid.Column="1"
-                                                Margin="6,0,0,0"
-                                                Classes="cardAction"
-                                                Command="{Binding $parent[ItemsControl].((vm:PrivateServersViewModel)DataContext).JoinCommand}"
-                                                CommandParameter="{Binding}"
-                                                Content="{x:Static resources:Strings.Menu_Overlay_Servers_Join}"
-                                                IsEnabled="{Binding CanJoin}" />
-                                        </Grid>
-
-                                        <Grid
-                                            Margin="0,6,0,0"
-                                            ColumnDefinitions="*,*"
-                                            IsEnabled="{Binding IsIdle}">
-                                            <Button
-                                                Grid.Column="0"
-                                                Margin="0,0,3,0"
-                                                Classes="cardAction"
-                                                Command="{Binding $parent[ItemsControl].((vm:PrivateServersViewModel)DataContext).GenerateRowLinkCommand}"
-                                                CommandParameter="{Binding}"
-                                                Content="{x:Static resources:Strings.Menu_Overlay_PrivateServers_GenerateLink}"
-                                                FontSize="12" />
-                                            <Button
-                                                Grid.Column="1"
-                                                Margin="3,0,0,0"
-                                                Classes="cardAction"
-                                                Command="{Binding $parent[ItemsControl].((vm:PrivateServersViewModel)DataContext).CopyRowLinkCommand}"
-                                                CommandParameter="{Binding $self}"
-                                                Content="{x:Static resources:Strings.Menu_Overlay_PrivateServers_CopyLink}"
-                                                FontSize="12"
-                                                IsEnabled="{Binding HasLink}" />
-                                        </Grid>
-
-                                        <Grid
-                                            Margin="2,2,0,0"
-                                            ColumnDefinitions="*,Auto"
-                                            IsEnabled="{Binding IsIdle}">
+                                        <WrapPanel
+                                            Grid.Column="1"
+                                            Margin="14,0,12,0"
+                                            VerticalAlignment="Center">
                                             <TextBlock
-                                                VerticalAlignment="Center"
-                                                FontSize="12"
-                                                Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                                                Text="{x:Static resources:Strings.Menu_Overlay_PrivateServers_AllowJoining}" />
-                                            <ToggleSwitch
-                                                Grid.Column="1"
-                                                VerticalAlignment="Center"
-                                                Command="{Binding $parent[ItemsControl].((vm:PrivateServersViewModel)DataContext).ToggleRowActiveCommand}"
-                                                CommandParameter="{Binding}"
-                                                IsChecked="{Binding IsActive}" />
-                                        </Grid>
-                                    </StackPanel>
-                                </Grid>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
+                                                Margin="0,0,10,0"
+                                                Classes="Heading"
+                                                Text="{Binding Name}"
+                                                TextTrimming="CharacterEllipsis" />
+                                            <TextBlock Classes="Label" Text="{Binding CapacityText}" />
+                                            <TextBlock
+                                                Margin="10,0,0,0"
+                                                Classes="Label"
+                                                Foreground="{DynamicResource AccentFillColorDefaultBrush}"
+                                                IsVisible="{Binding IsCurrent}"
+                                                Text="{x:Static resources:Strings.Menu_Overlay_Servers_Current}" />
+                                        </WrapPanel>
 
-                    <Button
-                        Margin="0,2,0,6"
-                        HorizontalAlignment="Left"
-                        Command="{Binding LoadMoreCommand}"
-                        Content="{x:Static resources:Strings.Menu_Overlay_PrivateServers_LoadMore}"
-                        IsVisible="{Binding HasMore}" />
+                                        <Button
+                                            Grid.Column="2"
+                                            Classes="cardAction"
+                                            Command="{Binding $parent[ItemsControl].((vm:PrivateServersViewModel)DataContext).JoinCommand}"
+                                            CommandParameter="{Binding}"
+                                            Content="{x:Static resources:Strings.Menu_Overlay_Servers_Join}"
+                                            IsEnabled="{Binding CanJoin}"
+                                            IsVisible="{Binding !IsMine}" />
 
-                    <ui:FAProgressRing
-                        Width="22"
-                        Height="22"
-                        Margin="8,4,0,6"
-                        HorizontalAlignment="Left"
-                        IsIndeterminate="True"
-                        IsVisible="{Binding IsLoadingMore}" />
-                </StackPanel>
-            </ScrollViewer>
+                                        <StackPanel
+                                            Grid.Column="2"
+                                            VerticalAlignment="Center"
+                                            IsVisible="{Binding IsMine}">
+                                            <Grid ColumnDefinitions="Auto,*">
+                                                <controls:IconButton
+                                                    Grid.Column="0"
+                                                    Command="{Binding $parent[ItemsControl].((vm:PrivateServersViewModel)DataContext).ConfigureCommand}"
+                                                    CommandParameter="{Binding}"
+                                                    Icon="Pencil"
+                                                    IconSize="14"
+                                                    ToolTip.Tip="{x:Static resources:Strings.Menu_Overlay_PrivateServers_Configure}" />
+                                                <Button
+                                                    Grid.Column="1"
+                                                    Margin="6,0,0,0"
+                                                    Classes="cardAction"
+                                                    Command="{Binding $parent[ItemsControl].((vm:PrivateServersViewModel)DataContext).JoinCommand}"
+                                                    CommandParameter="{Binding}"
+                                                    Content="{x:Static resources:Strings.Menu_Overlay_Servers_Join}"
+                                                    IsEnabled="{Binding CanJoin}" />
+                                            </Grid>
 
-            <ui:FAProgressRing
-                Width="32"
-                Height="32"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                IsIndeterminate="True"
-                IsVisible="{Binding IsBusy}" />
+                                            <Grid
+                                                Margin="0,6,0,0"
+                                                ColumnDefinitions="*,*"
+                                                IsEnabled="{Binding IsIdle}">
+                                                <Button
+                                                    Grid.Column="0"
+                                                    Margin="0,0,3,0"
+                                                    Classes="cardAction"
+                                                    Command="{Binding $parent[ItemsControl].((vm:PrivateServersViewModel)DataContext).GenerateRowLinkCommand}"
+                                                    CommandParameter="{Binding}"
+                                                    Content="{x:Static resources:Strings.Menu_Overlay_PrivateServers_GenerateLink}"
+                                                    FontSize="12" />
+                                                <Button
+                                                    Grid.Column="1"
+                                                    Margin="3,0,0,0"
+                                                    Classes="cardAction"
+                                                    Command="{Binding $parent[ItemsControl].((vm:PrivateServersViewModel)DataContext).CopyRowLinkCommand}"
+                                                    CommandParameter="{Binding $self}"
+                                                    Content="{x:Static resources:Strings.Menu_Overlay_PrivateServers_CopyLink}"
+                                                    FontSize="12"
+                                                    IsEnabled="{Binding HasLink}" />
+                                            </Grid>
 
-            <TextBlock
-                MaxWidth="320"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                FontSize="13"
-                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                IsVisible="{Binding ShowEmptyState}"
-                Text="{Binding EmptyText}"
-                TextAlignment="Center"
-                TextWrapping="Wrap" />
+                                            <Grid
+                                                Margin="2,2,0,0"
+                                                ColumnDefinitions="*,Auto"
+                                                IsEnabled="{Binding IsIdle}">
+                                                <TextBlock
+                                                    VerticalAlignment="Center"
+                                                    FontSize="12"
+                                                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                                    Text="{x:Static resources:Strings.Menu_Overlay_PrivateServers_AllowJoining}" />
+                                                <ToggleSwitch
+                                                    Grid.Column="1"
+                                                    VerticalAlignment="Center"
+                                                    Command="{Binding $parent[ItemsControl].((vm:PrivateServersViewModel)DataContext).ToggleRowActiveCommand}"
+                                                    CommandParameter="{Binding}"
+                                                    IsChecked="{Binding IsActive}" />
+                                            </Grid>
+                                        </StackPanel>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <Button
+                            Margin="0,2,0,6"
+                            HorizontalAlignment="Left"
+                            Command="{Binding LoadMoreCommand}"
+                            Content="{x:Static resources:Strings.Menu_Overlay_PrivateServers_LoadMore}"
+                            IsVisible="{Binding HasMore}" />
+
+                        <ui:FAProgressRing
+                            Width="22"
+                            Height="22"
+                            Margin="8,4,0,6"
+                            HorizontalAlignment="Left"
+                            IsIndeterminate="True"
+                            IsVisible="{Binding IsLoadingMore}" />
+                    </StackPanel>
+                </ScrollViewer>
+
+                <ui:FAProgressRing
+                    Width="32"
+                    Height="32"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    IsIndeterminate="True"
+                    IsVisible="{Binding IsBusy}" />
+
+                <TextBlock
+                    MaxWidth="320"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    FontSize="13"
+                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                    IsVisible="{Binding ShowEmptyState}"
+                    Text="{Binding EmptyText}"
+                    TextAlignment="Center"
+                    TextWrapping="Wrap" />
+            </Grid>
         </Grid>
 
         <Grid
@@ -219,6 +234,7 @@
                 <Button
                     Grid.Column="1"
                     Background="Transparent"
+                    BorderBrush="Transparent"
                     Command="{Binding BackCommand}">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock
@@ -245,8 +261,8 @@
 
             <ScrollViewer
                 Grid.Row="1"
-                Margin="0,0,-8,0"
-                Padding="0,0,8,0"
+                Margin="0,0,-16,0"
+                Padding="0,0,16,0"
                 VerticalScrollBarVisibility="Auto">
                 <StackPanel IsEnabled="{Binding CanEdit}">
                     <Grid Margin="0,0,0,14" ColumnDefinitions="Auto,*">

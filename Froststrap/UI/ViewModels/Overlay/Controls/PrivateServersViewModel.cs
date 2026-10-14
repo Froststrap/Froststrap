@@ -17,6 +17,8 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
     internal class PrivateServersViewModel : NotifyPropertyChangedViewModel
     {
         private readonly ActivityWatcher? _activityWatcher;
+        private readonly long? _placeIdOverride;
+        private readonly Action? _onBack;
         private readonly Dictionary<long, PrivateServerDetails> _ownDetails = new();
         private readonly FlashMessage _flash;
 
@@ -287,6 +289,8 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             }
         }
 
+        public bool ShowBackToSearchButton => _onBack is not null;
+
         public ICommand RefreshCommand { get; }
         public ICommand LoadMoreCommand { get; }
         public ICommand JoinCommand { get; }
@@ -295,6 +299,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
         public ICommand GenerateRowLinkCommand { get; }
         public ICommand CopyRowLinkCommand { get; }
         public ICommand BackCommand { get; }
+        public ICommand BackToSearchCommand { get; }
         public ICommand EditNameCommand { get; }
         public ICommand SaveNameCommand { get; }
         public ICommand CancelNameCommand { get; }
@@ -304,13 +309,21 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
         public ICommand RegenerateLinkCommand { get; }
         public ICommand CopyLinkCommand { get; }
 
-        private bool InGame => _activityWatcher?.InGame == true && _activityWatcher.Data.PlaceId != 0;
-        private long PlaceId => _activityWatcher?.Data.PlaceId ?? 0;
+        private bool InGame => _placeIdOverride is not null
+            || (_activityWatcher?.InGame == true && _activityWatcher.Data.PlaceId != 0);
+
+        private long PlaceId => _placeIdOverride ?? (_activityWatcher?.Data.PlaceId ?? 0);
+
         private static bool SignedIn => App.Cookies.Loaded;
 
-        public PrivateServersViewModel(ActivityWatcher? activityWatcher)
+        public PrivateServersViewModel(
+            ActivityWatcher? activityWatcher,
+            long? placeIdOverride = null,
+            Action? onBack = null)
         {
             _activityWatcher = activityWatcher;
+            _placeIdOverride = placeIdOverride;
+            _onBack = onBack;
 
             _flash = new FlashMessage(TimeSpan.FromSeconds(4), () =>
             {
@@ -337,6 +350,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
             CopyRowLinkCommand = new AsyncRelayCommand<Visual>(CopyRowLinkAsync);
             BackCommand = new RelayCommand(Back);
+            BackToSearchCommand = new RelayCommand(() => _onBack?.Invoke());
 
             EditNameCommand = new RelayCommand(() =>
             {
@@ -362,7 +376,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
             CopyLinkCommand = new AsyncRelayCommand<Visual>(CopyManageLinkAsync);
 
-            if (_activityWatcher is null)
+            if (_activityWatcher is null || _placeIdOverride is not null)
                 return;
 
             _activityWatcher.OnGameJoin += (_, _) => Dispatcher.UIThread.Post(OnGameJoin);
@@ -379,6 +393,9 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
         private void OnGameJoin()
         {
+            if (_placeIdOverride is not null)
+                return;
+
             _loadedPlaceId = 0;
             StopManaging();
 
@@ -390,6 +407,9 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
         private void OnGameLeave()
         {
+            if (_placeIdOverride is not null)
+                return;
+
             _generation++;
             _loadedPlaceId = 0;
             _cursor = null;
