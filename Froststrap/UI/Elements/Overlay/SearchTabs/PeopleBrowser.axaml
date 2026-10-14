@@ -171,7 +171,7 @@ SPDX-License-Identifier: MPL-2.0
                                                      Padding="0"
                                                      CornerRadius="10"
                                                      IconSize="16"
-                                                     Icon="UserCheck"
+                                                     Icon="Check"
                                                      Classes="Primary"
                                                      Command="{Binding $parent[ItemsControl].((vmb:PeopleBrowserViewModel)DataContext).AcceptFriendCommand}"
                                                      CommandParameter="{Binding}"
@@ -181,8 +181,7 @@ SPDX-License-Identifier: MPL-2.0
                                                      Padding="0"
                                                      CornerRadius="10"
                                                      IconSize="16"
-                                                     Icon="UserPlus"
-                                                     Classes="Primary"
+                                                     Icon="Plus"
                                                      Command="{Binding $parent[ItemsControl].((vmb:PeopleBrowserViewModel)DataContext).AddFriendCommand}"
                                                      CommandParameter="{Binding}"
                                                      IsVisible="{Binding CanAddFriend}" />
