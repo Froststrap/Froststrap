@@ -19,7 +19,8 @@ namespace Froststrap.Integrations
         private const string GameLeavingEntry = "[FLog::SingleSurfaceApp] leaveUGCGameInternal";
         private const string GameLeavingEntrySober = "app_interface$json: {\"type\":\"game_left\"}";
         private const string AppCloseEntrySober = "app: lifecycle: will_do_clean_exit";
-        private const string GameDisconnectReasonEntry = "[FLog::Network] Sending disconnect with reason:";
+        private const string GameDisconnectReasonEntry = "[DFLog::NetworkClient] Client:Disconnect setting replicator disconnect reason to";
+        private const string GameDisconnectFromEntry = "[FLog::Network] Disconnect from ";
         private const string GameServerUptimeEntry = "[FLog::Output] Server Prefix: ";
 
         private const string StudioPlaceOpenEntry = "[FLog::PlaceManager] Start to open place";
@@ -33,7 +34,7 @@ namespace Froststrap.Integrations
         private const string GameJoiningUDMUXPattern = @"UDMUX Address\s*=\s*([0-9\.]+),\s*Port\s*=\s*[0-9]+\s*\|\s*RCC Server Address\s*=\s*([0-9\.]+),\s*Port\s*=\s*[0-9]+";
         private const string GameJoinedEntryPattern = @"serverId: ([0-9\.]+)\|[0-9]+";
         private const string GameMessageEntryPattern = @"\[BloxstrapRPC\] (.*)";
-        private const string GameDisconnectReasonPattern = @"Sending disconnect with reason: (\d+)";
+        private const string GameDisconnectReasonPattern = @"Client:Disconnect setting replicator disconnect reason to (\d+)";
         private const string GameServerUptimePattern = @"Server Prefix:.+_(\d{8}T\d{6}Z)_RCC_[0-9a-z]+";
 
         private int _logEntriesRead;
@@ -294,10 +295,26 @@ namespace Froststrap.Integrations
                 {
                     int reasonCode = int.Parse(match.Groups[1].Value, CultureInfo.InvariantCulture);
 
-                    if (reasonCode == 1 || reasonCode == 277)
+                    if (reasonCode == 278)
                     {
                         _shouldAutoRejoin = true;
-                        App.Logger.Info($"Inactivity/Internet disconnect detected (reason: {reasonCode})");
+                        App.Logger.Info($"Inactivity disconnect detected (reason: {reasonCode})");
+                    }
+                    else
+                    {
+                        App.Logger.Info($"Disconnect reason code: {reasonCode}");
+                    }
+                }
+            }
+            else if (logMessage.StartsWith(GameDisconnectFromEntry, StringComparison.Ordinal))
+            {
+                string reasonStr = logMessage[GameDisconnectFromEntry.Length..].Trim();
+                if (int.TryParse(reasonStr, NumberStyles.Integer, CultureInfo.InvariantCulture, out int reasonCode))
+                {
+                    if (reasonCode == 1)
+                    {
+                        _shouldAutoRejoin = true;
+                        App.Logger.Info($"Internet disconnect detected (reason: {reasonCode})");
                     }
                     else
                     {
