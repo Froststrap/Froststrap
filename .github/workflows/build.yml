@@ -210,3 +210,4 @@ jobs:
             .build/velopack/*
             .build/dist/*.deb
             .build/dist/*.rpm
+            .build/dist/*.tar.zst

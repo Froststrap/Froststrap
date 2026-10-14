@@ -69,7 +69,7 @@ pub fn pack(pack_dir: &std::path::Path) {
 
         if env::var("SIGN").is_ok_and(|v| v.eq_ignore_ascii_case("true")) {
             let entitlements = path::xtask_root()
-                .join("macApp/Froststrap.entitlements")
+                .join("src/action/publish/macos/Froststrap.entitlements")
                 .to_string_lossy()
                 .into_owned();
 

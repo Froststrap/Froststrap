@@ -5,7 +5,7 @@ use std::{
     path::{Path, PathBuf},
 };
 use plist::Value;
-use crate::utils::{Process, log, process};
+use crate::utils::{log, process};
 
 fn copy_any(src: &Path, dest: &Path) {
     let meta = fs::symlink_metadata(src).unwrap();

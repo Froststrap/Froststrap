@@ -35,3 +35,4 @@ jobs:
             release/**/*.AppImage
             release/**/*.deb
             release/**/*.rpm
+            release/**/*.tar.zst

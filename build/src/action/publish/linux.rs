@@ -69,11 +69,16 @@ fn build_nfpm(
     let mut nfpm_yaml_file = File::create(config.clone()).unwrap();
     nfpm_yaml_file.write_all(nfpm_yaml.as_bytes()).unwrap();
 
-    for p in ["deb", "rpm"] {
+    for p in ["deb", "rpm", "archlinux"] {
+        let out_name = match p {
+            "archlinux" => format!("Froststrap-linux-{}-{}.pkg.tar.zst", arch::target_arch(), p),
+            _ => format!("Froststrap-linux-{}.{}", arch::target_arch(), p),
+        };
+        
         log::info!("Building .{} via nFPM", p);
 
         let target = dist()
-            .join(format!("Froststrap-linux-{}.{}", arch::target_arch(), p))
+            .join(out_name)
             .to_string_lossy()
             .into_owned();
         let config_s = config.to_string_lossy().into_owned();
@@ -116,10 +121,23 @@ fn nfpm_config(
             arch: {arch}
             platform: linux
             version: {version}
-            maintainer: Froststrap-Dev
+            license: MPL-2.0
+            maintainer: Froststrap
             description: Roblox bootstrapper and mod manager
+
+            overrides:
+              deb:
+                depends:
+                  - libicu-dev
+              rpm:
+                depends:
+                  - libicu
+              archlinux:
+                depends:
+                  - icu
+            
             depends:
-              - libicu-dev
+              - dbus
 
             contents:
               - src: {}

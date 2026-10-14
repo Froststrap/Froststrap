@@ -2,7 +2,7 @@
 //! functions quick
 
 use std::ffi::OsStr;
-use std::io::{self, Read, Write};
+use std::io::{self, Read};
 use std::process::{Command, Stdio};
 use std::thread;
 
@@ -133,19 +133,13 @@ pub fn dedent(raw: &str) -> String {
     out
 }
 
-fn tee<R: Read, W: Write>(mut src: R, mut sink: W, echo: bool) -> Vec<u8> {
+fn capture<R: Read>(mut src: R) -> Vec<u8> {
     let mut all = Vec::new();
     let mut buf = [0u8; 4096];
     loop {
         match src.read(&mut buf) {
             Ok(0) | Err(_) => break,
-            Ok(n) => {
-                all.extend_from_slice(&buf[..n]);
-                if echo {
-                    let _ = sink.write_all(&buf[..n]);
-                    let _ = sink.flush();
-                }
-            }
+            Ok(n) => all.extend_from_slice(&buf[..n]),
         }
     }
     all
@@ -168,7 +162,19 @@ impl ProcessBuilder {
     }
 
     pub fn exec(mut self) -> io::Result<Process> {
-        let stream = self.stream;
+        if self.stream {
+            let status = self
+                .cmd
+                .stdout(Stdio::inherit())
+                .stderr(Stdio::inherit())
+                .status()?;
+            return Ok(Process {
+                stdout: String::new(),
+                stderr: String::new(),
+                exit_code: status.code(),
+            });
+        }
+
         let mut child = self
             .cmd
             .stdout(Stdio::piped())
@@ -178,8 +184,8 @@ impl ProcessBuilder {
         let out = child.stdout.take().expect("stdout was piped");
         let err = child.stderr.take().expect("stderr was piped");
 
-        let out_t = thread::spawn(move || tee(out, io::stdout(), stream));
-        let err_t = thread::spawn(move || tee(err, io::stderr(), stream));
+        let out_t = thread::spawn(move || capture(out));
+        let err_t = thread::spawn(move || capture(err));
 
         let status = child.wait()?;
         let stdout = out_t.join().expect("stdout thread panicked");
