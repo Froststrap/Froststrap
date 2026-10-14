@@ -309,7 +309,7 @@ SPDX-License-Identifier: MPL-2.0
                                                                  CornerRadius="10"
                                                                  IconSize="16"
                                                                  Icon="Play"
-                                                                 Classes="Primary"
+                                                                 Classes="Success"
                                                                  Command="{Binding $parent[ItemsControl].((vm:OverlaySearchBarViewModel)DataContext).JoinCommand}"
                                                                  CommandParameter="{Binding}" />
                                         </StackPanel>

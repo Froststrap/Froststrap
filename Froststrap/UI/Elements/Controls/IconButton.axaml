@@ -67,6 +67,22 @@ SPDX-License-Identifier: MPL-2.0
         <Setter Property="Opacity" Value="0.5" />
     </Style>
 
+    <Style Selector="controls|IconButton.Transparent">
+        <Setter Property="Background" Value="{DynamicResource SubtleFillColorTransparentBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SubtleFillColorTransparentBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+    </Style>
+    <Style Selector="controls|IconButton.Transparent:not(:disabled):pointerover /template/ Border#PART_LayoutRoot">
+        <Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
+    </Style>
+    <Style Selector="controls|IconButton.Transparent:not(:disabled):pressed /template/ Border#PART_LayoutRoot">
+        <Setter Property="Background" Value="{DynamicResource SubtleFillColorTertiaryBrush}" />
+    </Style>
+    <Style Selector="controls|IconButton.Transparent:disabled /template/ Border#PART_LayoutRoot">
+        <Setter Property="Background" Value="{DynamicResource SubtleFillColorTransparentBrush}" />
+        <Setter Property="Opacity" Value="0.4" />
+    </Style>
+
     <Style Selector="controls|IconButton.Danger:not(:disabled)">
         <Setter Property="Background" Value="#FF3B30" />
         <Setter Property="Foreground" Value="White" />
@@ -78,6 +94,40 @@ SPDX-License-Identifier: MPL-2.0
     <Style Selector="controls|IconButton.Danger:disabled /template/ Border#PART_LayoutRoot">
         <Setter Property="Background" Value="#80FF3B30" />
         <Setter Property="BorderBrush" Value="#80E03026" />
+    </Style>
+
+    <Style Selector="controls|IconButton.Success:not(:disabled)">
+        <Setter Property="Background" Value="#1ED760" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="BorderBrush" Value="#19B94F" />
+    </Style>
+    <Style Selector="controls|IconButton.Success:not(:disabled):pointerover /template/ Border#PART_LayoutRoot">
+        <Setter Property="Background" Value="#34E077" />
+        <Setter Property="BorderBrush" Value="#1ED760" />
+    </Style>
+    <Style Selector="controls|IconButton.Success:not(:disabled):pressed /template/ Border#PART_LayoutRoot">
+        <Setter Property="Background" Value="#19B94F" />
+    </Style>
+    <Style Selector="controls|IconButton.Success:disabled /template/ Border#PART_LayoutRoot">
+        <Setter Property="Background" Value="#801ED760" />
+        <Setter Property="BorderBrush" Value="#8019B94F" />
+    </Style>
+
+    <Style Selector="controls|IconButton.Caution:not(:disabled)">
+        <Setter Property="Background" Value="#FF9500" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="BorderBrush" Value="#E07E00" />
+    </Style>
+    <Style Selector="controls|IconButton.Caution:not(:disabled):pointerover /template/ Border#PART_LayoutRoot">
+        <Setter Property="Background" Value="#FFAA33" />
+        <Setter Property="BorderBrush" Value="#FF9500" />
+    </Style>
+    <Style Selector="controls|IconButton.Caution:not(:disabled):pressed /template/ Border#PART_LayoutRoot">
+        <Setter Property="Background" Value="#E07E00" />
+    </Style>
+    <Style Selector="controls|IconButton.Caution:disabled /template/ Border#PART_LayoutRoot">
+        <Setter Property="Background" Value="#80FF9500" />
+        <Setter Property="BorderBrush" Value="#80E07E00" />
     </Style>
 
     <Style Selector="controls|IconButton.Primary">
@@ -212,6 +262,22 @@ SPDX-License-Identifier: MPL-2.0
         <Setter Property="RenderTransform" Value="rotate(180deg)" />
     </Style>
 
+    <Style Selector="controls|IconButton.DropDownButton.Transparent /template/ Button#PART_PrimaryButton, controls|IconButton.DropDownButton.Transparent /template/ Button#PART_SecondaryButton">
+        <Setter Property="Background" Value="{DynamicResource SubtleFillColorTransparentBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SubtleFillColorTransparentBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+    </Style>
+    <Style Selector="controls|IconButton.DropDownButton.Transparent:not(:disabled):pointerover /template/ Button#PART_PrimaryButton, controls|IconButton.DropDownButton.Transparent:not(:disabled):pointerover /template/ Button#PART_SecondaryButton">
+        <Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
+    </Style>
+    <Style Selector="controls|IconButton.DropDownButton.Transparent:not(:disabled):pressed /template/ Button#PART_PrimaryButton, controls|IconButton.DropDownButton.Transparent:not(:disabled):pressed /template/ Button#PART_SecondaryButton">
+        <Setter Property="Background" Value="{DynamicResource SubtleFillColorTertiaryBrush}" />
+    </Style>
+    <Style Selector="controls|IconButton.DropDownButton.Transparent:disabled /template/ Button#PART_PrimaryButton, controls|IconButton.DropDownButton.Transparent:disabled /template/ Button#PART_SecondaryButton">
+        <Setter Property="Background" Value="{DynamicResource SubtleFillColorTransparentBrush}" />
+        <Setter Property="Opacity" Value="0.4" />
+    </Style>
+
     <Style Selector="controls|IconButton.DropDownButton.Danger /template/ Button#PART_PrimaryButton, controls|IconButton.DropDownButton.Danger /template/ Button#PART_SecondaryButton">
         <Setter Property="Background" Value="#FF3B30" />
         <Setter Property="Foreground" Value="White" />
@@ -223,6 +289,34 @@ SPDX-License-Identifier: MPL-2.0
     <Style Selector="controls|IconButton.DropDownButton.Danger:disabled /template/ Button#PART_PrimaryButton, controls|IconButton.DropDownButton.Danger:disabled /template/ Button#PART_SecondaryButton">
         <Setter Property="Background" Value="#80FF3B30" />
         <Setter Property="BorderBrush" Value="#80E03026" />
+    </Style>
+
+    <Style Selector="controls|IconButton.DropDownButton.Success /template/ Button#PART_PrimaryButton, controls|IconButton.DropDownButton.Success /template/ Button#PART_SecondaryButton">
+        <Setter Property="Background" Value="#1ED760" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="BorderBrush" Value="#19B94F" />
+    </Style>
+    <Style Selector="controls|IconButton.DropDownButton.Success:not(:disabled):pointerover /template/ Button#PART_PrimaryButton, controls|IconButton.DropDownButton.Success:not(:disabled):pointerover /template/ Button#PART_SecondaryButton">
+        <Setter Property="Background" Value="#34E077" />
+        <Setter Property="BorderBrush" Value="#1ED760" />
+    </Style>
+    <Style Selector="controls|IconButton.DropDownButton.Success:disabled /template/ Button#PART_PrimaryButton, controls|IconButton.DropDownButton.Success:disabled /template/ Button#PART_SecondaryButton">
+        <Setter Property="Background" Value="#801ED760" />
+        <Setter Property="BorderBrush" Value="#8019B94F" />
+    </Style>
+
+    <Style Selector="controls|IconButton.DropDownButton.Caution /template/ Button#PART_PrimaryButton, controls|IconButton.DropDownButton.Caution /template/ Button#PART_SecondaryButton">
+        <Setter Property="Background" Value="#FF9500" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="BorderBrush" Value="#E07E00" />
+    </Style>
+    <Style Selector="controls|IconButton.DropDownButton.Caution:not(:disabled):pointerover /template/ Button#PART_PrimaryButton, controls|IconButton.DropDownButton.Caution:not(:disabled):pointerover /template/ Button#PART_SecondaryButton">
+        <Setter Property="Background" Value="#FFAA33" />
+        <Setter Property="BorderBrush" Value="#FF9500" />
+    </Style>
+    <Style Selector="controls|IconButton.DropDownButton.Caution:disabled /template/ Button#PART_PrimaryButton, controls|IconButton.DropDownButton.Caution:disabled /template/ Button#PART_SecondaryButton">
+        <Setter Property="Background" Value="#80FF9500" />
+        <Setter Property="BorderBrush" Value="#80E07E00" />
     </Style>
 
     <Style Selector="controls|IconButton.DropDownButton.Primary /template/ Button#PART_PrimaryButton, controls|IconButton.DropDownButton.Primary /template/ Button#PART_SecondaryButton">
@@ -269,6 +363,33 @@ SPDX-License-Identifier: MPL-2.0
             </StackPanel>
 
             <StackPanel Spacing="8">
+                <TextBlock Text="Transparent" FontWeight="Bold" />
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <controls:IconButton Classes="Transparent" Icon="House" Content="Home" />
+                    <controls:IconButton Classes="Transparent" Icon="Settings" />
+                    <controls:IconButton Classes="Transparent" Icon="Trash" Content="Delete" />
+                </StackPanel>
+            </StackPanel>
+
+            <StackPanel Spacing="8">
+                <TextBlock Text="Success" FontWeight="Bold" />
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <controls:IconButton Classes="Success" Icon="Play" Content="Play" />
+                    <controls:IconButton Classes="Success" Icon="Check" Content="Confirm" />
+                    <controls:IconButton Classes="Success" Icon="Play" />
+                </StackPanel>
+            </StackPanel>
+
+            <StackPanel Spacing="8">
+                <TextBlock Text="Caution" FontWeight="Bold" />
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <controls:IconButton Classes="Caution" Icon="TriangleAlert" Content="Warning" />
+                    <controls:IconButton Classes="Caution" Icon="TriangleAlert" />
+                    <controls:IconButton Classes="Caution" Icon="Clock" Content="Pending" />
+                </StackPanel>
+            </StackPanel>
+
+            <StackPanel Spacing="8">
                 <TextBlock Text="Danger" FontWeight="Bold" />
                 <StackPanel Orientation="Horizontal" Spacing="8">
                     <controls:IconButton Classes="Danger" Icon="Trash" Content="Delete" />
@@ -280,7 +401,10 @@ SPDX-License-Identifier: MPL-2.0
                 <TextBlock Text="Disabled" FontWeight="Bold" />
                 <StackPanel Orientation="Horizontal" Spacing="8">
                     <controls:IconButton IsEnabled="False" Icon="Settings" Content="Disabled" />
+                    <controls:IconButton Classes="Transparent" IsEnabled="False" Icon="House" Content="Disabled" />
                     <controls:IconButton Classes="Primary" IsEnabled="False" Icon="Save" Content="Disabled" />
+                    <controls:IconButton Classes="Success" IsEnabled="False" Icon="Play" Content="Disabled" />
+                    <controls:IconButton Classes="Caution" IsEnabled="False" Icon="TriangleAlert" Content="Disabled" />
                     <controls:IconButton Classes="Danger" IsEnabled="False" Icon="Trash" Content="Disabled" />
                 </StackPanel>
             </StackPanel>
@@ -289,7 +413,10 @@ SPDX-License-Identifier: MPL-2.0
                 <TextBlock Text="Icon Only" FontWeight="Bold" />
                 <StackPanel Orientation="Horizontal" Spacing="8">
                     <controls:IconButton Icon="House" />
+                    <controls:IconButton Classes="Transparent" Icon="House" />
                     <controls:IconButton Classes="Primary" Icon="Save" />
+                    <controls:IconButton Classes="Success" Icon="Play" />
+                    <controls:IconButton Classes="Caution" Icon="TriangleAlert" />
                     <controls:IconButton Classes="Danger" Icon="Trash" />
                 </StackPanel>
             </StackPanel>
@@ -309,12 +436,18 @@ SPDX-License-Identifier: MPL-2.0
                 <TextBlock Text="DropDown Buttons (requires Flyout)" FontWeight="Bold" />
                 <StackPanel Orientation="Horizontal" Spacing="8">
                     <controls:IconButton Classes="DropDownButton" Icon="Save" Content="Save" />
+                    <controls:IconButton Classes="DropDownButton Transparent" Icon="House" Content="Home" />
                     <controls:IconButton Classes="DropDownButton Primary" Icon="Plus" Content="Add" />
+                    <controls:IconButton Classes="DropDownButton Success" Icon="Play" Content="Play" />
+                    <controls:IconButton Classes="DropDownButton Caution" Icon="TriangleAlert" Content="Warn" />
                     <controls:IconButton Classes="DropDownButton Danger" Icon="Trash" Content="Delete" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,8,0,0">
                     <controls:IconButton Classes="DropDownButton" Icon="Save" Content="Disabled" IsEnabled="False" />
+                    <controls:IconButton Classes="DropDownButton Transparent" Icon="House" Content="Disabled" IsEnabled="False" />
                     <controls:IconButton Classes="DropDownButton Primary" Icon="Plus" Content="Disabled" IsEnabled="False" />
+                    <controls:IconButton Classes="DropDownButton Success" Icon="Play" Content="Disabled" IsEnabled="False" />
+                    <controls:IconButton Classes="DropDownButton Caution" Icon="TriangleAlert" Content="Disabled" IsEnabled="False" />
                     <controls:IconButton Classes="DropDownButton Danger" Icon="Trash" Content="Disabled" IsEnabled="False" />
                 </StackPanel>
                 <controls:IconButton Classes="DropDownButton" Icon="More" />

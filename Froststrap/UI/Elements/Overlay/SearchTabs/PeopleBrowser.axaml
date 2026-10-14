@@ -202,7 +202,7 @@ SPDX-License-Identifier: MPL-2.0
                                                      CornerRadius="10"
                                                      IconSize="16"
                                                      Icon="Play"
-                                                     Classes="Primary"
+                                                     Classes="Success"
                                                      Command="{Binding $parent[ItemsControl].((vmb:PeopleBrowserViewModel)DataContext).JoinCommand}"
                                                      CommandParameter="{Binding}"
                                                      IsVisible="{Binding CanJoin}" />
