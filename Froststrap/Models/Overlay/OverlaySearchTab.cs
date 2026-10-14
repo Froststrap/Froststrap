@@ -9,12 +9,7 @@ namespace Froststrap.Models.Overlay
     internal enum OverlaySearchTab
     {
         Games,
-        People,
-        Items,
-        Groups,
-        Market,
-        Docs,
-        DevForum
+        People
     }
 
     internal class OverlaySearchTabItem : NotifyPropertyChangedViewModel

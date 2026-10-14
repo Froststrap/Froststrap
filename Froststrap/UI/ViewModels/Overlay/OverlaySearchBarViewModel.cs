@@ -202,11 +202,6 @@ namespace Froststrap.UI.ViewModels.Overlay
         {
             Tabs.Add(new OverlaySearchTabItem { Kind = OverlaySearchTab.Games, Title = Strings.Menu_Overlay_SearchBar_Tab_Games, IsSelected = true });
             Tabs.Add(new OverlaySearchTabItem { Kind = OverlaySearchTab.People, Title = Strings.Menu_Overlay_SearchBar_Tab_People });
-            Tabs.Add(new OverlaySearchTabItem { Kind = OverlaySearchTab.Items, Title = Strings.Menu_Overlay_SearchBar_Tab_Items, IsEnabled = false });
-            Tabs.Add(new OverlaySearchTabItem { Kind = OverlaySearchTab.Groups, Title = Strings.Menu_Overlay_SearchBar_Tab_Groups, IsEnabled = false });
-            Tabs.Add(new OverlaySearchTabItem { Kind = OverlaySearchTab.Market, Title = Strings.Menu_Overlay_SearchBar_Tab_Market, IsEnabled = false });
-            Tabs.Add(new OverlaySearchTabItem { Kind = OverlaySearchTab.Docs, Title = Strings.Menu_Overlay_SearchBar_Tab_Docs, IsEnabled = false });
-            Tabs.Add(new OverlaySearchTabItem { Kind = OverlaySearchTab.DevForum, Title = Strings.Menu_Overlay_SearchBar_Tab_DevForum, IsEnabled = false });
 
             _debounce = new DispatcherTimer { Interval = SearchDelay };
             _debounce.Tick += async (_, _) =>

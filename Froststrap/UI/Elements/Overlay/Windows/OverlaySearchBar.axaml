@@ -75,16 +75,33 @@ SPDX-License-Identifier: MPL-2.0
         <Style Selector="ListBox.searchResults ListBoxItem">
             <Setter Property="Padding" Value="0" />
             <Setter Property="Margin" Value="0,1" />
-            <Setter Property="CornerRadius" Value="8" />
             <Setter Property="Background" Value="Transparent" />
         </Style>
 
+        <Style Selector="ListBox.searchResults ListBoxItem /template/ ContentPresenter">
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Background" Duration="0:0:0.083" />
+                    <BrushTransition Property="BorderBrush" Duration="0:0:0.083" />
+                </Transitions>
+            </Setter>
+        </Style>
+
         <Style Selector="ListBox.searchResults ListBoxItem:pointerover /template/ ContentPresenter">
-            <Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
+            <Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
         </Style>
 
         <Style Selector="ListBox.searchResults ListBoxItem:selected /template/ ContentPresenter">
-            <Setter Property="Background" Value="{DynamicResource AccentFillColorDefaultBrush}" />
+            <Setter Property="Background" Value="{DynamicResource ControlFillColorDefaultBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource ControlElevationBorderBrush}" />
+        </Style>
+
+        <Style Selector="ListBox.searchResults ListBoxItem:selected:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
         </Style>
     </Window.Styles>
 
