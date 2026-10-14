@@ -1,4 +1,4 @@
-﻿﻿using Avalonia;
+﻿﻿﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -277,12 +277,9 @@ namespace Froststrap.UI.Elements.Overlay
 
                 _savedLayout = serialised;
 
-                if (File.Exists(App.State.FileLocation) && App.State.HasFileOnDiskChanged())
-                    App.State.Load(false);
-
                 App.State.Prop.OverlayPanels = panels;
 
-                _ = Task.Run(App.State.Save, CancellationToken.None)
+                _ = Task.Run(() => App.State.SaveSetting(nameof(State.OverlayPanels)), CancellationToken.None)
                     .ContinueWith(
                         t => App.Logger.Error($"Failed to save the layout: {t.Exception?.GetBaseException().Message}"),
                         CancellationToken.None,
