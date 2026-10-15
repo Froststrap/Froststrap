@@ -27,7 +27,8 @@ pub fn vpk() -> String {
     "vpk".to_string()
 }
 
-pub fn pack(pack_dir: &std::path::Path) {
+pub fn pack(pack_dir: &std::path::Path, entitlements: Option<&std::path::Path>) {
+    _ = entitlements; // shut up warning on other systems
     let pack_path = pack_dir.to_string_lossy().into_owned();
     let velopack_path = path::velopack();
     let version = super::version();
@@ -68,10 +69,10 @@ pub fn pack(pack_dir: &std::path::Path) {
         args.extend(["--bundleId".to_string(), "xyz.froststrap.desktop".to_string()]);
 
         if env::var("SIGN").is_ok_and(|v| v.eq_ignore_ascii_case("true")) {
-            let entitlements = path::xtask_root()
-                .join("src/action/publish/macos/Froststrap.entitlements")
-                .to_string_lossy()
-                .into_owned();
+            let Some(entitlements) = entitlements else {
+                log::error!("no entitlements provided for signing");
+                std::process::exit(1);
+            };
 
             args.extend([
                 "--signAppIdentity".to_string(),
@@ -79,7 +80,7 @@ pub fn pack(pack_dir: &std::path::Path) {
                 "--signInstallIdentity".to_string(),
                 required_env("DEVELOPER_ID_INSTALLER"),
                 "--signEntitlements".to_string(),
-                entitlements,
+                entitlements.to_string_lossy().into_owned(),
                 "--notaryProfile".to_string(),
                 "froststrap-notary".to_string(),
             ]);

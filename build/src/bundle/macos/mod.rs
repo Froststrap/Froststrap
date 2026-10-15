@@ -1,10 +1,9 @@
 use std::{
-    collections::BTreeMap,
     fs,
     os::unix::fs::PermissionsExt,
     path::{Path, PathBuf},
 };
-use plist::Value;
+use pissing::pl::PListFile;
 use crate::utils::{log, process};
 
 fn copy_any(src: &Path, dest: &Path) {
@@ -74,56 +73,6 @@ fn compile_png_to_icns(png_path: &Path, out_icns_path: &Path) {
     let _ = fs::remove_dir_all(&temp_dir);
 }
 
-#[derive(Debug, Clone)]
-pub struct InfoPlist {
-    entries: BTreeMap<String, Value>,
-}
-
-impl InfoPlist {
-    pub fn new(app_name: &str, executable: &str, bundle_id: &str) -> Self {
-        let mut plist = Self {
-            entries: BTreeMap::new(),
-        };
-
-        plist
-            .set("CFBundleDevelopmentRegion", "en")
-            .set("CFBundleExecutable", executable)
-            .set("CFBundleIdentifier", bundle_id)
-            .set("CFBundleName", app_name)
-            .set("CFBundleDisplayName", app_name)
-            .set("CFBundlePackageType", "APPL")
-            .set("CFBundleInfoDictionaryVersion", "6.0")
-            .set("LSMinimumSystemVersion", "12.0")
-            .set("LSApplicationCategoryType", "public.app-category.utilities")
-            .set(
-                "CFBundleSupportedPlatforms",
-                Value::Array(vec![Value::String("MacOSX".into())]),
-            );
-
-        plist
-    }
-
-    pub fn set(&mut self, key: impl Into<String>, value: impl Into<Value>) -> &mut Self {
-        self.entries.insert(key.into(), value.into());
-        self
-    }
-
-    pub fn version(&mut self, version: &str) -> &mut Self {
-        self.set("CFBundleShortVersionString", version);
-        self.set("CFBundleVersion", version.replace('.', ""))
-    }
-
-    pub fn icon(&mut self, icon_name: &str) -> &mut Self {
-        self.set("CFBundleIconFile", icon_name);
-        self.set("CFBundleIconName", icon_name)
-    }
-
-    pub fn write_to(&self, path: impl AsRef<Path>) -> Result<(), plist::Error> {
-        let dict = plist::Dictionary::from_iter(self.entries.clone());
-        Value::Dictionary(dict).to_file_xml(path)
-    }
-}
-
 #[derive(Clone)]
 pub enum Resource {
     Binary,
@@ -151,8 +100,7 @@ impl Resource {
 
 pub struct AppBuilder {
     name: String,
-    info_plist: Option<InfoPlist>,
-    entitlements: Option<PathBuf>,
+    info_plist: Option<PListFile>,
     app_icon_png: Option<PathBuf>,
     items: Vec<(PathBuf, Resource, String)>,
 }
@@ -162,24 +110,18 @@ impl AppBuilder {
         Self {
             name: name.into(),
             info_plist: None,
-            entitlements: None,
             app_icon_png: None,
             items: vec![],
         }
     }
 
-    pub fn info_plist(mut self, plist: InfoPlist) -> Self {
+    pub fn info_plist(mut self, plist: PListFile) -> Self {
         self.info_plist = Some(plist);
         self
     }
 
     pub fn app_icon(mut self, path: impl Into<PathBuf>) -> Self {
         self.app_icon_png = Some(path.into());
-        self
-    }
-
-    pub fn entitlements(mut self, path: impl Into<PathBuf>) -> Self {
-        self.entitlements = Some(path.into());
         self
     }
 
@@ -228,14 +170,13 @@ impl AppBuilder {
         fs::create_dir_all(contents.join("MacOS")).unwrap();
         fs::create_dir_all(contents.join("Frameworks")).unwrap();
 
-        let mut plist = self.info_plist.expect("info_plist is required");
+        let plist = self.info_plist.expect("info_plist is required");
 
         if let Some(png_path) = self.app_icon_png {
             let target_icns = resources_dir.join("AppIcon.icns");
             log::info!("Compiling {} into AppIcon.icns", png_path.display());
 
             compile_png_to_icns(&png_path, &target_icns);
-            plist.icon("AppIcon");
         }
 
         for (src, kind, name) in &self.items {
@@ -255,7 +196,7 @@ impl AppBuilder {
 
         // 3. Write Info.plist and PkgInfo
         plist
-            .write_to(contents.join("Info.plist"))
+            .write(contents.join("Info.plist"))
             .expect("Failed to write Info.plist");
 
         fs::write(contents.join("PkgInfo"), "APPL????").unwrap();

@@ -212,6 +212,11 @@ namespace Froststrap.UI.ViewModels.Settings
         private static readonly string[] ShiftlockFiles = ["MouseLockedCursor.png"];
         private static readonly string[] SoundFiles = ["oof.ogg"];
 
+        private static readonly FilePickerFileType CursorImageFileType = new("Cursor Images")
+        {
+            Patterns = ["*.png", "*.ico", "*.cur", "*.ani"]
+        };
+
         public static bool HasCustomCursors => CursorFiles.Any(f => File.Exists(Path.Combine(CursorPath, f)));
         public static bool HasCustomShiftlock => ShiftlockFiles.Any(f => File.Exists(Path.Combine(ShiftlockPath, f)));
         public static bool HasCustomDeathSound => SoundFiles.Any(f => File.Exists(Path.Combine(SoundPath, f)));
@@ -225,11 +230,11 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public async Task AddCustomCursorMod() =>
             await AddCustomFileAsync(CursorFiles, CursorPath, "Select Cursor",
-                [FilePickerFileTypes.ImagePng], "cursors", RefreshStates);
+                [CursorImageFileType], "cursors", RefreshStates, convertToPng: true);
 
         public async Task AddCustomShiftlockMod() =>
             await AddCustomFileAsync(ShiftlockFiles, ShiftlockPath, "Select Shiftlock",
-                [FilePickerFileTypes.ImagePng], "shiftlock", RefreshStates);
+                [CursorImageFileType], "shiftlock", RefreshStates, convertToPng: true);
 
         public async Task AddCustomDeathSound() =>
             await AddCustomFileAsync(SoundFiles, SoundPath, "Select Death Sound",
@@ -252,7 +257,7 @@ namespace Froststrap.UI.ViewModels.Settings
             return desktop.Windows.FirstOrDefault(w => w.IsActive) ?? desktop.MainWindow;
         }
 
-        private static async Task AddCustomFileAsync(string[] targetFiles, string targetDir, string dialogTitle, FilePickerFileType[] filters, string failureText, Action? postAction)
+        private static async Task AddCustomFileAsync(string[] targetFiles, string targetDir, string dialogTitle, FilePickerFileType[] filters, string failureText, Action? postAction, bool convertToPng = false)
         {
             var topLevel = GetDialogTopLevel();
 
@@ -272,13 +277,30 @@ namespace Froststrap.UI.ViewModels.Settings
 
             try
             {
+                byte[]? pngBytes = null;
+
+                if (convertToPng)
+                {
+                    pngBytes = Froststrap.Utility.CursorConverter.TryConvertToPng(sourcePath);
+
+                    if (pngBytes == null)
+                    {
+                        _ = Frontend.ShowMessageBox($"Unsupported or invalid cursor file:\n{Path.GetFileName(sourcePath)}", MessageBoxImage.Error);
+                        return;
+                    }
+                }
+
                 if (!Directory.Exists(targetDir))
                     Directory.CreateDirectory(targetDir);
 
                 foreach (var name in targetFiles)
                 {
                     string destPath = Path.Combine(targetDir, name);
-                    File.Copy(sourcePath, destPath, overwrite: true);
+
+                    if (pngBytes != null)
+                        await File.WriteAllBytesAsync(destPath, pngBytes);
+                    else
+                        File.Copy(sourcePath, destPath, overwrite: true);
                 }
 
                 postAction?.Invoke();
@@ -550,7 +572,7 @@ namespace Froststrap.UI.ViewModels.Settings
             var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
             {
                 Title = "Select Cursor Image",
-                FileTypeFilter = [FilePickerFileTypes.ImagePng],
+                FileTypeFilter = [CursorImageFileType],
                 AllowMultiple = false
             });
 
@@ -563,7 +585,15 @@ namespace Froststrap.UI.ViewModels.Settings
 
                 if (sourcePath != null && dest != null)
                 {
-                    File.Copy(sourcePath, dest, true);
+                    byte[]? pngBytes = Froststrap.Utility.CursorConverter.TryConvertToPng(sourcePath);
+
+                    if (pngBytes == null)
+                    {
+                        _ = Frontend.ShowMessageBox($"Unsupported or invalid cursor file:\n{Path.GetFileName(sourcePath)}", MessageBoxImage.Error);
+                        return;
+                    }
+
+                    await File.WriteAllBytesAsync(dest, pngBytes);
                     UpdateCursorPathAndPreview(fileName, dest);
                     NotifyCursorStates();
                 }

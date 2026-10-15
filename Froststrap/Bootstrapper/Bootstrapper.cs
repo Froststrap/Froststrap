@@ -1202,7 +1202,15 @@ internal partial class Bootstrapper : IDisposable
             {
                 string placeLauncherUrl = UrlBuilder.BuildPlacelauncherUrl((long)_joinData.PlaceId, serverid);
                 _launchCommandLine = _launchCommandLine.Replace(_joinData.PlaceLauncherUrl, HttpUtility.UrlEncode(placeLauncherUrl), StringComparison.Ordinal);
+                _joinData.JobId = serverid;
             }
+        }
+
+        string? soberUri = GameJoin.BuildSoberUri(_joinData);
+        if (soberUri is not null)
+        {
+            App.Logger.Info($"Translating launch command for Sober: {soberUri}");
+            _launchCommandLine = soberUri;
         }
 
         SetStatus(Strings.Bootstrapper_Status_StartingSober);

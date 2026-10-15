@@ -58,12 +58,17 @@
           ] { nameOverride = "default"; };
 
         packages = {
-          debug = pkgs.callPackage ./nix/build.nix { };
           inherit froststrap;
           default = froststrap;
         };
 
         formatter = (pkgs.callPackage ./nix/formatter.nix { }) inputs;
       }
-    );
+    )
+    // {
+      overlays.default = final: prev: {
+        froststrap = final.callPackage ./nix/package.nix { };
+        mkFroststrap = args: final.callPackage ./nix/binary.nix args;
+      };
+    };
 }

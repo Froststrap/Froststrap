@@ -6,7 +6,7 @@
   callPackage,
   cargo-bloat,
   pkg-config,
-  dbus
+  dbus,
 }:
 {
   fenix,
