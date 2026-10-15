@@ -6,12 +6,30 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 
+using Froststrap.Integrations.OverlayModules;
+
 namespace Froststrap.RobloxInterfaces
 {
     internal static class People
     {
         private const int BatchSize = 50;
+        private const int DetailsBatchSize = 100;
         private const int MaxSearchResults = 30;
+        private const int MaxFriendPages = 60;
+
+        private static readonly TimeSpan FriendPageDelay = TimeSpan.FromMilliseconds(120);
+
+        private static readonly SemaphoreSlim FriendListLock = new(1, 1);
+        private static readonly TimeSpan FriendListTtl = TimeSpan.FromMinutes(2);
+
+        private static List<long>? _friendList;
+        private static long _friendListOwner;
+        private static DateTime _friendListAt = DateTime.MinValue;
+
+        private static readonly Lock PresenceLock = new();
+        private static readonly TimeSpan PresenceTtl = TimeSpan.FromSeconds(30);
+
+        private static readonly Dictionary<long, (UserPresence Presence, DateTime At)> PresenceCache = [];
 
         internal enum FriendRequestResult
         {
@@ -34,7 +52,7 @@ namespace Froststrap.RobloxInterfaces
             if (distinct.Count == 0)
                 return result;
 
-            foreach (long[] batch in distinct.Chunk(BatchSize))
+            foreach (long[] batch in distinct.Chunk(DetailsBatchSize))
             {
                 if (token.IsCancellationRequested)
                     break;
@@ -56,7 +74,8 @@ namespace Froststrap.RobloxInterfaces
 
         public static async Task<Dictionary<long, UserPresence>> FetchPresenceAsync(
             IEnumerable<long> ids,
-            CancellationToken token = default)
+            CancellationToken token = default,
+            bool force = false)
         {
             var result = new Dictionary<long, UserPresence>();
 
@@ -65,7 +84,29 @@ namespace Froststrap.RobloxInterfaces
             if (distinct.Count == 0)
                 return result;
 
-            foreach (long[] batch in distinct.Chunk(BatchSize))
+            var missing = new List<long>();
+
+            bool live = RealtimeMessaging.UserhubConnected;
+
+            lock (PresenceLock)
+            {
+                DateTime cutoff = DateTime.UtcNow - PresenceTtl;
+
+                foreach (long id in distinct)
+                {
+                    if (!force
+                        && PresenceCache.TryGetValue(id, out var cached)
+                        && (live || cached.At >= cutoff))
+                        result[id] = cached.Presence;
+                    else
+                        missing.Add(id);
+                }
+            }
+
+            if (missing.Count == 0)
+                return result;
+
+            foreach (long[] batch in missing.Chunk(BatchSize))
             {
                 if (token.IsCancellationRequested)
                     break;
@@ -77,7 +118,12 @@ namespace Froststrap.RobloxInterfaces
                         new { userIds = batch });
 
                     foreach (UserPresence presence in response?.UserPresences ?? [])
+                    {
                         result[presence.UserId] = presence;
+
+                        lock (PresenceLock)
+                            PresenceCache[presence.UserId] = (presence, DateTime.UtcNow);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -89,43 +135,13 @@ namespace Froststrap.RobloxInterfaces
             return result;
         }
 
-        public static async Task<Dictionary<long, string>> FetchHeadshotsAsync(
-            IEnumerable<long> ids,
-            CancellationToken token = default)
+        public static void CachePresence(long userId, UserPresence presence)
         {
-            var result = new Dictionary<long, string>();
+            if (userId <= 0)
+                return;
 
-            var distinct = ids.Where(x => x > 0).Distinct().ToList();
-
-            if (distinct.Count == 0)
-                return result;
-
-            foreach (long[] batch in distinct.Chunk(BatchSize))
-            {
-                if (token.IsCancellationRequested)
-                    break;
-
-                try
-                {
-                    var response = await Http.GetJson<ApiArrayResponse<AvatarHeadshotResponse>>(
-                        new Uri($"https://thumbnails.roblox.com/v1/users/avatar-headshot"
-                              + $"?userIds={String.Join(',', batch)}"
-                              + $"&size=150x150&format=Png&isCircular=false"));
-
-                    foreach (AvatarHeadshotResponse headshot in response?.Data ?? [])
-                    {
-                        if (headshot.State == "Completed" && !String.IsNullOrEmpty(headshot.ImageUrl))
-                            result[headshot.TargetId] = headshot.ImageUrl!;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    App.Logger.Warn("People: failed to fetch a batch of headshots");
-                    App.Logger.Error(ex);
-                }
-            }
-
-            return result;
+            lock (PresenceLock)
+                PresenceCache[userId] = (presence, DateTime.UtcNow);
         }
 
         public static async Task<Dictionary<long, FriendStatus>> FetchFriendStatusesAsync(
@@ -167,42 +183,162 @@ namespace Froststrap.RobloxInterfaces
             return result;
         }
 
-        public static async Task<HashSet<long>> FetchFriendIdsAsync(
+        public static async Task<List<long>> FetchAllFriendIdsAsync(
             long me,
-            CancellationToken token = default)
+            CancellationToken token = default,
+            bool force = false)
         {
-            var result = new HashSet<long>();
-
             if (me == 0 || token.IsCancellationRequested)
-                return result;
+                return [];
+
+            await FriendListLock.WaitAsync();
+
+            try
+            {
+                if (!force
+                    && _friendListOwner == me
+                    && _friendList is { Count: > 0 }
+                    && DateTime.UtcNow - _friendListAt < FriendListTtl)
+                    return [.. _friendList];
+
+                var ids = new List<long>();
+                var seen = new HashSet<long>();
+
+                try
+                {
+                    await AppendFindFriendsAsync(me, ids, seen, token);
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.Warn("People: failed to page through the friend list");
+                    App.Logger.Error(ex);
+                }
+
+                if (ids.Count == 0)
+                {
+                    try
+                    {
+                        await AppendPublicFriendsAsync(me, ids, seen, token);
+                    }
+                    catch (Exception ex)
+                    {
+                        App.Logger.Warn("People: failed to fetch the friend list");
+                        App.Logger.Error(ex);
+                    }
+                }
+
+                try
+                {
+                    await AppendOnlineFriendsAsync(me, ids, seen, token);
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.Warn("People: failed to fetch the online friend list");
+                    App.Logger.Error(ex);
+                }
+
+                if (ids.Count > 0 && !token.IsCancellationRequested)
+                {
+                    _friendList = ids;
+                    _friendListOwner = me;
+                    _friendListAt = DateTime.UtcNow;
+                }
+
+                return ids;
+            }
+            finally
+            {
+                FriendListLock.Release();
+            }
+        }
+
+        private static async Task AppendFindFriendsAsync(
+            long me,
+            List<long> ids,
+            HashSet<long> seen,
+            CancellationToken token)
+        {
+            var cursors = new HashSet<string>(StringComparer.Ordinal);
+            string? cursor = null;
+
+            for (int page = 0; page < MaxFriendPages; page++)
+            {
+                if (token.IsCancellationRequested)
+                    return;
+
+                string path = $"v1/users/{me}/friends/find?userSort=1";
+
+                if (!String.IsNullOrEmpty(cursor))
+                    path += $"&cursor={Uri.EscapeDataString(cursor)}";
+
+                FriendFindResponse? response = await Http.AuthGetJson<FriendFindResponse>(
+                    UrlBuilder.BuildApiUrl("friends", path));
+
+                if (response?.PageItems is null)
+                    return;
+
+                foreach (FriendFindItem item in response.PageItems)
+                {
+                    if (item.Id > 0 && seen.Add(item.Id))
+                        ids.Add(item.Id);
+                }
+
+                cursor = response.NextCursor;
+
+                if (String.IsNullOrEmpty(cursor) || !cursors.Add(cursor))
+                    return;
+
+                if (token.IsCancellationRequested)
+                    return;
+
+                await Task.Delay(FriendPageDelay, CancellationToken.None);
+            }
+        }
+
+        private static async Task AppendPublicFriendsAsync(
+            long me,
+            List<long> ids,
+            HashSet<long> seen,
+            CancellationToken token)
+        {
+            if (token.IsCancellationRequested)
+                return;
 
             var response = await Http.GetJson<ApiArrayResponse<FriendResponse>>(
                 UrlBuilder.BuildApiUrl("friends", $"v1/users/{me}/friends"));
 
             foreach (FriendResponse friend in response?.Data ?? [])
             {
-                if (friend.Id > 0)
-                    result.Add(friend.Id);
+                if (friend.Id > 0 && seen.Add(friend.Id))
+                    ids.Add(friend.Id);
             }
-
-            return result;
         }
 
-        public static async Task<List<long>> FetchFriendIdsLimitedAsync(
+        private static async Task AppendOnlineFriendsAsync(
             long me,
-            int limit,
-            CancellationToken token = default)
+            List<long> ids,
+            HashSet<long> seen,
+            CancellationToken token)
         {
-            if (me == 0 || token.IsCancellationRequested)
-                return [];
+            if (token.IsCancellationRequested)
+                return;
 
-            var response = await Http.GetJson<ApiArrayResponse<FriendResponse>>(
-                UrlBuilder.BuildApiUrl("friends", $"v1/users/{me}/friends"));
+            var response = await Http.AuthGetJson<ApiArrayResponse<FriendResponse>>(
+                UrlBuilder.BuildApiUrl("friends", $"v1/users/{me}/friends/online"));
 
-            return [.. (response?.Data ?? [])
-                .Select(x => x.Id)
-                .Where(x => x > 0)
-                .Take(limit)];
+            foreach (FriendResponse friend in response?.Data ?? [])
+            {
+                if (friend.Id > 0 && seen.Add(friend.Id))
+                    ids.Add(friend.Id);
+            }
+        }
+
+        public static async Task<HashSet<long>> FetchFriendIdsAsync(
+            long me,
+            CancellationToken token = default,
+            bool force = false)
+        {
+            return [.. await FetchAllFriendIdsAsync(me, token, force)];
         }
 
         public static async Task<List<OmniUserSearchContent>> SearchUsersAsync(

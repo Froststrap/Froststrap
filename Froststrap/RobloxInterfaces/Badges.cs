@@ -16,6 +16,12 @@ namespace Froststrap.RobloxInterfaces
 
         private static readonly TimeSpan RateLimitBackoff = TimeSpan.FromSeconds(2);
 
+        private static readonly Lock CacheLock = new();
+        private static readonly TimeSpan ListTtl = TimeSpan.FromMinutes(5);
+
+        private static readonly Dictionary<long, (List<BadgeResponse> Badges, DateTime At)> ListCache = [];
+        private static readonly Dictionary<long, string> IconCache = [];
+
         public static async Task<List<Badge>> FetchAsync(long universeId, long userId)
         {
             var badges = new List<Badge>();
@@ -23,6 +29,39 @@ namespace Froststrap.RobloxInterfaces
             if (universeId == 0)
                 return badges;
 
+            List<BadgeResponse> responses = await FetchListAsync(universeId);
+
+            foreach (BadgeResponse badge in responses)
+            {
+                if (!badge.Enabled)
+                    continue;
+
+                badges.Add(new Badge
+                {
+                    Id = badge.Id,
+                    Name = String.IsNullOrEmpty(badge.DisplayName) ? badge.Name : badge.DisplayName!,
+                    Description = badge.DisplayDescription ?? badge.Description ?? String.Empty,
+                    WinRatePercentage = badge.Statistics?.WinRatePercentage ?? 0,
+                    PastDayAwardedCount = badge.Statistics?.PastDayAwardedCount ?? 0,
+                    AwardedCount = badge.Statistics?.AwardedCount ?? 0
+                });
+            }
+
+            await PopulateAwardedAsync(badges, userId);
+            await PopulateIconsAsync(badges);
+
+            return badges;
+        }
+
+        private static async Task<List<BadgeResponse>> FetchListAsync(long universeId)
+        {
+            lock (CacheLock)
+            {
+                if (ListCache.TryGetValue(universeId, out var cached) && DateTime.UtcNow - cached.At < ListTtl)
+                    return cached.Badges;
+            }
+
+            var responses = new List<BadgeResponse>();
             string? cursor = null;
 
             for (int page = 0; page < MaxPages; page++)
@@ -33,21 +72,7 @@ namespace Froststrap.RobloxInterfaces
                 if (response is null)
                     break;
 
-                foreach (BadgeResponse badge in response.Data)
-                {
-                    if (!badge.Enabled)
-                        continue;
-
-                    badges.Add(new Badge
-                    {
-                        Id = badge.Id,
-                        Name = String.IsNullOrEmpty(badge.DisplayName) ? badge.Name : badge.DisplayName!,
-                        Description = badge.DisplayDescription ?? badge.Description ?? String.Empty,
-                        WinRatePercentage = badge.Statistics?.WinRatePercentage ?? 0,
-                        PastDayAwardedCount = badge.Statistics?.PastDayAwardedCount ?? 0,
-                        AwardedCount = badge.Statistics?.AwardedCount ?? 0
-                    });
-                }
+                responses.AddRange(response.Data);
 
                 cursor = response.NextPageCursor;
 
@@ -55,10 +80,13 @@ namespace Froststrap.RobloxInterfaces
                     break;
             }
 
-            await PopulateAwardedAsync(badges, userId);
-            await PopulateIconsAsync(badges);
+            if (responses.Count > 0)
+            {
+                lock (CacheLock)
+                    ListCache[universeId] = (responses, DateTime.UtcNow);
+            }
 
-            return badges;
+            return responses;
         }
 
         private static async Task PopulateAwardedAsync(List<Badge> badges, long userId)
@@ -136,9 +164,25 @@ namespace Froststrap.RobloxInterfaces
             if (badges.Count == 0)
                 return;
 
+            var missing = new List<Badge>();
+
+            lock (CacheLock)
+            {
+                foreach (Badge badge in badges)
+                {
+                    if (IconCache.TryGetValue(badge.Id, out string? url))
+                        badge.IconUrl = url;
+                    else
+                        missing.Add(badge);
+                }
+            }
+
+            if (missing.Count == 0)
+                return;
+
             try
             {
-                foreach (long[] chunk in badges.Select(x => x.Id).Chunk(PageSize))
+                foreach (long[] chunk in missing.Select(x => x.Id).Chunk(PageSize))
                 {
                     var response = await Http.GetJson<ApiArrayResponse<ThumbnailResponse>>(
                         UrlBuilder.BuildApiUrl("thumbnails", $"v1/badges/icons?badgeIds={String.Join(',', chunk)}&size=150x150&format=Png&isCircular=false"));
@@ -146,10 +190,18 @@ namespace Froststrap.RobloxInterfaces
                     if (response?.Data is null)
                         continue;
 
-                    foreach (ThumbnailResponse thumbnail in response.Data)
+                    lock (CacheLock)
                     {
-                        Badge? badge = badges.FirstOrDefault(x => x.Id == thumbnail.TargetId);
-                        badge?.IconUrl = thumbnail.ImageUrl;
+                        foreach (ThumbnailResponse thumbnail in response.Data)
+                        {
+                            if (thumbnail.State != "Completed" || String.IsNullOrEmpty(thumbnail.ImageUrl))
+                                continue;
+
+                            IconCache[thumbnail.TargetId] = thumbnail.ImageUrl;
+
+                            Badge? badge = badges.FirstOrDefault(x => x.Id == thumbnail.TargetId);
+                            badge?.IconUrl = thumbnail.ImageUrl;
+                        }
                     }
                 }
             }

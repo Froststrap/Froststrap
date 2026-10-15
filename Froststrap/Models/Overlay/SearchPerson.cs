@@ -45,11 +45,7 @@ namespace Froststrap.Models.Overlay
         public string? HeadshotUrl
         {
             get => _headshotUrl;
-            set
-            {
-                if (SetProperty(ref _headshotUrl, value))
-                    _ = LoadHeadshotAsync();
-            }
+            set => SetProperty(ref _headshotUrl, value);
         }
 
         private Bitmap? _headshotBitmap;
@@ -61,6 +57,8 @@ namespace Froststrap.Models.Overlay
 
         private bool _loadingHeadshot;
         private string? _loadedHeadshotUrl;
+
+        public void EnsureHeadshotLoaded() => _ = LoadHeadshotAsync();
 
         private async Task LoadHeadshotAsync()
         {

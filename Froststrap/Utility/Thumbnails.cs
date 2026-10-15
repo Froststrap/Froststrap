@@ -2,10 +2,14 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+using System.Collections.Concurrent;
+
 namespace Froststrap.Utility
 {
     internal static class Thumbnails
     {
+        private static readonly ConcurrentDictionary<string, string> UrlCache = new();
+
         /// <remarks>
         /// Returned array may contain null values
         /// </remarks>
@@ -16,19 +20,22 @@ namespace Froststrap.Utility
 
             string?[] urls = new string?[requests.Count];
 
-            var remainingRequests = requests
-                .Select((req, index) => new { OriginalIndex = index, Data = req })
-                .ToList();
+            var pending = new List<int>();
 
-            for (int i = 1; i <= RETRIES; i++)
+            for (int index = 0; index < requests.Count; index++)
             {
-                if (remainingRequests.Count == 0)
-                    break;
+                if (UrlCache.TryGetValue(CacheKey(requests[index]), out string? cachedUrl))
+                    urls[index] = cachedUrl;
+                else
+                    pending.Add(index);
+            }
 
-                foreach (var item in remainingRequests)
-                    item.Data.RequestId = item.OriginalIndex.ToString(CultureInfo.InvariantCulture);
+            for (int i = 1; i <= RETRIES && pending.Count > 0; i++)
+            {
+                foreach (int index in pending)
+                    requests[index].RequestId = index.ToString(CultureInfo.InvariantCulture);
 
-                var currentPayloadData = remainingRequests.Select(x => x.Data).ToList();
+                var currentPayloadData = pending.Select(x => requests[x]).ToList();
                 using var payload = new StringContent(JsonSerializer.Serialize(currentPayloadData));
 
                 Uri apiUrl = UrlBuilder.BuildApiUrl("thumbnails", "v1/batch");
@@ -59,15 +66,21 @@ namespace Froststrap.Utility
                     }
                 }
 
-                remainingRequests.RemoveAll(x => completedIndices.Contains(x.OriginalIndex));
+                pending.RemoveAll(completedIndices.Contains);
 
-                if (remainingRequests.Count > 0)
+                if (pending.Count > 0)
                 {
                     if (i == RETRIES)
-                        App.Logger.Warn($"Ran out of retries with {remainingRequests.Count} items still pending.");
+                        App.Logger.Warn($"Ran out of retries with {pending.Count} items still pending.");
                     else
                         await Task.Delay(RETRY_TIME_INCREMENT * i, token);
                 }
+            }
+
+            for (int index = 0; index < requests.Count; index++)
+            {
+                if (!String.IsNullOrEmpty(urls[index]))
+                    UrlCache[CacheKey(requests[index])] = urls[index]!;
             }
 
             return urls;
@@ -78,5 +91,8 @@ namespace Froststrap.Utility
             var results = await GetThumbnailUrlsAsync([request], token);
             return results.FirstOrDefault();
         }
+
+        private static string CacheKey(ThumbnailRequest request) =>
+            $"{request.TargetId}:{request.Token}:{request.Type}:{request.Size}:{request.Format}:{request.IsCircular}";
     }
 }

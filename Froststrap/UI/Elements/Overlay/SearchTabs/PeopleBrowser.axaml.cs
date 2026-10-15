@@ -5,6 +5,7 @@
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Froststrap.Models.Overlay;
 
 namespace Froststrap.UI.Elements.Overlay.SearchTabs
 {
@@ -13,6 +14,14 @@ namespace Froststrap.UI.Elements.Overlay.SearchTabs
         public PeopleBrowser()
         {
             InitializeComponent();
+
+            PersonList.ContainerPrepared += OnPersonContainerPrepared;
+        }
+
+        private static void OnPersonContainerPrepared(object? sender, ContainerPreparedEventArgs e)
+        {
+            if (e.Container.DataContext is SearchPerson person)
+                person.EnsureHeadshotLoaded();
         }
 
         private void PersonDoubleTapped(object? sender, TappedEventArgs e)

@@ -20,7 +20,6 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
     {
         private static readonly TimeSpan SearchDelay = TimeSpan.FromMilliseconds(350);
         private static readonly TimeSpan PendingRefresh = TimeSpan.FromMinutes(5);
-        private const int FriendLimit = 100;
 
         private readonly DispatcherTimer _debounce;
         private readonly DispatcherTimer _pendingTimer;
@@ -117,6 +116,7 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
             App.Cookies.WatchAccount(this, static vm => vm.OnAccountChanged());
 
             RealtimeMessaging.AnyFriendshipChanged += OnFriendshipChanged;
+            RealtimeMessaging.AnyPresenceBulk += OnPresenceBulk;
         }
 
         public void Prewarm()
@@ -241,7 +241,7 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
 
                 _me = me.Id;
 
-                List<long> ids = await PeopleApi.FetchFriendIdsLimitedAsync(me.Id, FriendLimit, _disposeCts.Token);
+                List<long> ids = await PeopleApi.FetchAllFriendIdsAsync(me.Id, _disposeCts.Token);
 
                 if (_disposed)
                     return;
@@ -250,37 +250,29 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
 
                 if (ids.Count == 0)
                 {
+                    App.Logger.Warn("People browser: friend list came back empty");
+
                     People.ReplaceAll([]);
                     _friendsCache.Clear();
                     SelectedIndex = -1;
-                    _friendsLoaded = true;
                     return;
                 }
 
-                var detailsTask   = PeopleApi.FetchDetailsAsync(ids, _disposeCts.Token);
-                var presenceTask  = PeopleApi.FetchPresenceAsync(ids, _disposeCts.Token);
-                var headshotsTask = PeopleApi.FetchHeadshotsAsync(ids, _disposeCts.Token);
+                var detailsTask  = PeopleApi.FetchDetailsAsync(ids, _disposeCts.Token);
+                var presenceTask = PeopleApi.FetchPresenceAsync(ids, _disposeCts.Token);
 
-                await Task.WhenAll(detailsTask, presenceTask, headshotsTask);
+                await Task.WhenAll(detailsTask, presenceTask);
 
                 if (_disposed)
                     return;
 
                 Dictionary<long, UserDetails> details   = await detailsTask;
                 Dictionary<long, UserPresence> presence = await presenceTask;
-                Dictionary<long, string> headshots      = await headshotsTask;
 
                 var people = new List<SearchPerson>(ids.Count);
 
                 foreach (long id in ids)
-                {
-                    people.Add(ToPerson(
-                        id,
-                        details.GetValueOrDefault(id),
-                        presence.GetValueOrDefault(id),
-                        headshots.GetValueOrDefault(id),
-                        isFriend: true));
-                }
+                    people.Add(ToPerson(id, details.GetValueOrDefault(id), presence.GetValueOrDefault(id), isFriend: true));
 
                 people.Sort(CompareFriends);
 
@@ -314,15 +306,17 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
             }
         }
 
+        private static int StatusRank(UserPresenceType status) => status switch
+        {
+            UserPresenceType.InGame => 0,
+            UserPresenceType.InStudio => 1,
+            UserPresenceType.Online => 2,
+            _ => 3
+        };
+
         private static int CompareFriends(SearchPerson a, SearchPerson b)
         {
-            bool aOffline = a.Status == UserPresenceType.Offline;
-            bool bOffline = b.Status == UserPresenceType.Offline;
-
-            if (aOffline != bOffline)
-                return aOffline ? 1 : -1;
-
-            int statusCompare = ((int)b.Status).CompareTo((int)a.Status);
+            int statusCompare = StatusRank(a.Status).CompareTo(StatusRank(b.Status));
 
             if (statusCompare != 0)
                 return statusCompare;
@@ -347,7 +341,7 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
 
             try
             {
-                HashSet<long> ids = await PeopleApi.FetchFriendIdsAsync(_me, _disposeCts.Token);
+                HashSet<long> ids = await PeopleApi.FetchFriendIdsAsync(_me, _disposeCts.Token, force: true);
 
                 if (_disposed || ids.Count == 0)
                     return;
@@ -396,6 +390,71 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
                 _pendingTimer.Stop();
         }
 
+        private void OnPresenceBulk(object? sender, IReadOnlyList<PresenceNotification> notifications)
+        {
+            if (_disposed || notifications.Count == 0)
+                return;
+
+            foreach (PresenceNotification note in notifications)
+            {
+                if (!String.Equals(note.Type, PresenceNotification.PresenceChangedType, StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                if (note.PresenceReport is { UserId: > 0 } presence)
+                    PeopleApi.CachePresence(presence.UserId, presence);
+            }
+
+            Dispatcher.UIThread.Post(() => ApplyPresenceNotifications(notifications));
+        }
+
+        private void ApplyPresenceNotifications(IReadOnlyList<PresenceNotification> notifications)
+        {
+            if (_disposed || _friendsCache.Count == 0)
+                return;
+
+            bool changed = false;
+
+            foreach (PresenceNotification note in notifications)
+            {
+                if (!String.Equals(note.Type, PresenceNotification.PresenceChangedType, StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                if (note.PresenceReport is not { } presence || presence.UserId == 0)
+                    continue;
+
+                SearchPerson? person = _friendsCache.Find(p => p.UserId == presence.UserId);
+
+                if (person is null)
+                    continue;
+
+                if (ApplyPresence(person, presence))
+                {
+                    changed = true;
+                    App.Logger.Info($"People browser: {presence.UserId} is now {presence.UserPresenceType}");
+                }
+            }
+
+            if (!changed)
+                return;
+
+            _friendsCache.Sort(CompareFriends);
+
+            if (_showingFriends && String.IsNullOrWhiteSpace(_query))
+            {
+                long selectedId = SelectedIndex >= 0 && SelectedIndex < People.Count
+                    ? People[SelectedIndex].UserId
+                    : 0;
+
+                People.ReplaceAll(_friendsCache);
+
+                int index = selectedId != 0
+                    ? _friendsCache.FindIndex(person => person.UserId == selectedId)
+                    : -1;
+
+                SelectedIndex = index >= 0 ? index : (_friendsCache.Count > 0 ? 0 : -1);
+            }
+        }
+
         private async Task SearchUsersAsync(string query)
         {
             if (String.IsNullOrWhiteSpace(query) || _disposed)
@@ -423,19 +482,17 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
                 long me = App.Cookies.CurrentUser?.Id ?? 0;
                 var ids = users.Select(u => u.ContentId).ToList();
 
-                var detailsTask   = PeopleApi.FetchDetailsAsync(ids, _disposeCts.Token);
-                var presenceTask  = PeopleApi.FetchPresenceAsync(ids, _disposeCts.Token);
-                var headshotsTask = PeopleApi.FetchHeadshotsAsync(ids, _disposeCts.Token);
-                var statusesTask  = PeopleApi.FetchFriendStatusesAsync(me, ids, _disposeCts.Token);
+                var detailsTask  = PeopleApi.FetchDetailsAsync(ids, _disposeCts.Token);
+                var presenceTask = PeopleApi.FetchPresenceAsync(ids, _disposeCts.Token);
+                var statusesTask = PeopleApi.FetchFriendStatusesAsync(me, ids, _disposeCts.Token);
 
-                await Task.WhenAll(detailsTask, presenceTask, headshotsTask, statusesTask);
+                await Task.WhenAll(detailsTask, presenceTask, statusesTask);
 
                 if (_disposed || generation != _searchGeneration)
                     return;
 
                 Dictionary<long, UserDetails> details   = await detailsTask;
                 Dictionary<long, UserPresence> presence = await presenceTask;
-                Dictionary<long, string> headshots      = await headshotsTask;
                 Dictionary<long, FriendStatus> statuses = await statusesTask;
 
                 var people = new List<SearchPerson>(users.Count);
@@ -456,7 +513,7 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
                         DisplayName = String.IsNullOrEmpty(u.DisplayName) ? u.Username ?? String.Empty : u.DisplayName!,
                         Username = u.Username ?? String.Empty,
                         IsVerified = verified,
-                        HeadshotUrl = headshots.GetValueOrDefault(u.ContentId),
+                        HeadshotUrl = details.GetValueOrDefault(u.ContentId)?.Thumbnail?.ImageUrl,
                         IsFriend = status == FriendStatus.Friends,
                         IsPending = status == FriendStatus.RequestSent,
                         HasIncoming = status == FriendStatus.RequestReceived,
@@ -468,6 +525,8 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
                         ServerId = String.IsNullOrEmpty(pres?.GameId) ? null : pres!.GameId
                     });
                 }
+
+                people.Sort(CompareFriends);
 
                 People.ReplaceAll(people);
                 SelectedIndex = people.Count > 0 ? 0 : -1;
@@ -495,7 +554,7 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
             }
         }
 
-        private static SearchPerson ToPerson(long userId, UserDetails? details, UserPresence? presence, string? headshot, bool isFriend)
+        private static SearchPerson ToPerson(long userId, UserDetails? details, UserPresence? presence, bool isFriend)
         {
             var person = new SearchPerson
             {
@@ -503,7 +562,7 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
                 DisplayName = details?.Data.DisplayName ?? userId.ToString(Locale.CurrentCulture),
                 Username = details?.Data.Name ?? String.Empty,
                 IsVerified = details?.Data.HasVerifiedBadge ?? false,
-                HeadshotUrl = headshot ?? details?.Thumbnail?.ImageUrl,
+                HeadshotUrl = details?.Thumbnail?.ImageUrl,
                 IsFriend = isFriend
             };
 
@@ -511,13 +570,30 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
             return person;
         }
 
-        private static void ApplyPresence(SearchPerson person, UserPresence? presence)
+        private static bool ApplyPresence(SearchPerson person, UserPresence? presence)
         {
-            person.Status = presence?.UserPresenceType ?? UserPresenceType.Offline;
-            person.GameName = !String.IsNullOrWhiteSpace(presence?.LastLocation) ? presence!.LastLocation : null;
-            person.PlaceId = presence?.PlaceId ?? 0;
-            person.RootPlaceId = presence?.RootPlaceId ?? 0;
-            person.ServerId = String.IsNullOrEmpty(presence?.GameId) ? null : presence!.GameId;
+            UserPresenceType status = presence?.UserPresenceType ?? UserPresenceType.Offline;
+            string? gameName = !String.IsNullOrWhiteSpace(presence?.LastLocation) ? presence!.LastLocation : null;
+            long placeId = presence?.PlaceId ?? 0;
+            long rootPlaceId = presence?.RootPlaceId ?? 0;
+            string? serverId = String.IsNullOrEmpty(presence?.GameId) ? null : presence!.GameId;
+
+            bool changed = person.Status != status
+                || person.GameName != gameName
+                || person.PlaceId != placeId
+                || person.RootPlaceId != rootPlaceId
+                || !String.Equals(person.ServerId, serverId, StringComparison.Ordinal);
+
+            if (!changed)
+                return false;
+
+            person.Status = status;
+            person.GameName = gameName;
+            person.PlaceId = placeId;
+            person.RootPlaceId = rootPlaceId;
+            person.ServerId = serverId;
+
+            return true;
         }
 
         private async Task JoinAsync(SearchPerson? person)
@@ -836,6 +912,7 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
             _pendingTimer.Stop();
 
             RealtimeMessaging.AnyFriendshipChanged -= OnFriendshipChanged;
+            RealtimeMessaging.AnyPresenceBulk -= OnPresenceBulk;
 
             GC.SuppressFinalize(this);
         }

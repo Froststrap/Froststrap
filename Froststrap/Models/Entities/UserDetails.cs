@@ -10,81 +10,175 @@ namespace Froststrap.Models.Entities
     {
         private static ConcurrentDictionary<long, UserDetails> Cache { get; } = new();
 
+        private static readonly SemaphoreSlim FetchLock = new(1, 1);
+        private static readonly TimeSpan FetchInterval = TimeSpan.FromMilliseconds(300);
+
+        private const int MaxAttempts = 3;
+
+        private static DateTime _lastFetch = DateTime.MinValue;
+
         public GetUserResponse Data { get; set; } = null!;
 
-        public ThumbnailResponse Thumbnail { get; set; } = null!;
+        public ThumbnailResponse? Thumbnail { get; set; }
 
         public static async Task<UserDetails> Fetch(long id)
         {
             if (Cache.TryGetValue(id, out UserDetails? cached))
                 return cached;
 
-            Uri userUrl = UrlBuilder.BuildApiUrl("users", "v1/users/" + id);
-            Uri thumbnailsUrl = UrlBuilder.BuildApiUrl("thumbnails", $"v1/users/avatar-headshot?userIds={id}&size=180x180&format=Png&isCircular=false");
+            Dictionary<long, UserDetails> fetched = await FetchBatch([id]);
 
-            var userResponse = await Http.GetJson<GetUserResponse>(userUrl);
-            _ = userResponse ?? throw new InvalidHTTPResponseException("Roblox API for User Details returned invalid data");
+            if (!fetched.TryGetValue(id, out UserDetails? details))
+                throw new InvalidHTTPResponseException("Roblox API for User Details returned invalid data");
 
-            var thumbnailResponse = await Http.GetJson<ApiArrayResponse<ThumbnailResponse>>(thumbnailsUrl);
-            if (thumbnailResponse is null || !thumbnailResponse.Data.Any())
-                throw new InvalidHTTPResponseException("Roblox API for Thumbnails returned invalid data");
-
-            var details = new UserDetails
-            {
-                Data = userResponse,
-                Thumbnail = thumbnailResponse.Data.First()
-            };
-
-            Cache.TryAdd(id, details);
             return details;
         }
 
         public static async Task<Dictionary<long, UserDetails>> FetchBatch(List<long> userIds)
         {
-            var users = new Dictionary<long, UserDetails>();
-            var missing = new List<long>();
+            await FetchLock.WaitAsync();
 
-            foreach (long userId in userIds.Distinct())
+            try
             {
-                if (Cache.TryGetValue(userId, out UserDetails? cached))
-                    users[userId] = cached;
-                else
-                    missing.Add(userId);
-            }
+                var users = new Dictionary<long, UserDetails>();
+                var missing = new List<long>();
 
-            if (missing.Count == 0)
+                foreach (long userId in userIds.Distinct())
+                {
+                    if (Cache.TryGetValue(userId, out UserDetails? cached))
+                        users[userId] = cached;
+                    else
+                        missing.Add(userId);
+                }
+
+                if (missing.Count == 0)
+                    return users;
+
+                TimeSpan wait = FetchInterval - (DateTime.UtcNow - _lastFetch);
+
+                if (wait > TimeSpan.Zero)
+                    await Task.Delay(wait);
+
+                _lastFetch = DateTime.UtcNow;
+
+                List<GetUserResponse>? fetched = await FetchUsersAsync(missing);
+
+                if (fetched is null)
+                    return users;
+
+                Dictionary<long, ThumbnailResponse> thumbnails = await FetchThumbnailsAsync([.. fetched.Select(x => x.Id)]);
+
+                foreach (GetUserResponse user in fetched)
+                {
+                    var details = new UserDetails
+                    {
+                        Data = user,
+                        Thumbnail = thumbnails.GetValueOrDefault(user.Id)
+                    };
+
+                    users[user.Id] = details;
+                    Cache.TryAdd(user.Id, details);
+                }
+
                 return users;
-
-            var payload = new UserDetailsBatchRequest { UserIds = missing };
-
-            var usersResponse = await Http.SendJson<ApiArrayResponse<GetUserResponse>>(new HttpRequestMessage
+            }
+            finally
             {
-                RequestUri = UrlBuilder.BuildApiUrl("users", "v1/users"),
-                Method = HttpMethod.Post,
-                Content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json")
-            }) ?? throw new InvalidHTTPResponseException("Roblox API for User Details returned invalid data");
+                FetchLock.Release();
+            }
+        }
 
-            Uri thumbnailsUrl = UrlBuilder.BuildApiUrl(
-                "thumbnails",
-                $"v1/users/avatar-headshot?userIds={String.Join(',', missing)}&size=180x180&format=Png&isCircular=false");
+        private static async Task<List<GetUserResponse>?> FetchUsersAsync(List<long> userIds)
+        {
+            Uri url = UrlBuilder.BuildApiUrl("users", "v1/users");
+            string body = JsonSerializer.Serialize(new UserDetailsBatchRequest { UserIds = userIds });
 
-            var thumbnailResponse = await Http.GetJson<ApiArrayResponse<ThumbnailResponse>>(thumbnailsUrl)
-                ?? throw new InvalidHTTPResponseException("Roblox API for Thumbnails returned invalid data");
-
-            foreach (var user in usersResponse.Data)
+            for (int attempt = 1; attempt <= MaxAttempts; attempt++)
             {
-                var thumbnail = thumbnailResponse.Data.FirstOrDefault(x => x.TargetId == user.Id);
+                try
+                {
+                    using HttpResponseMessage response = await SendUsersAsync(url, body);
 
-                if (thumbnail is null)
-                    continue;
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var parsed = JsonSerializer.Deserialize<ApiArrayResponse<GetUserResponse>>(await response.Content.ReadAsStringAsync());
 
-                var details = new UserDetails { Data = user, Thumbnail = thumbnail };
+                        if (parsed?.Data is not null)
+                        {
+                            List<GetUserResponse> users = [.. parsed.Data];
 
-                users[user.Id] = details;
-                Cache.TryAdd(user.Id, details);
+                            if (users.Count > 0)
+                                return users;
+                        }
+
+                        return null;
+                    }
+
+                    if (response.StatusCode != HttpStatusCode.TooManyRequests)
+                    {
+                        App.Logger.Warn($"UserDetails: request for {userIds.Count} users failed with {(int)response.StatusCode}");
+                        return null;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.Warn($"UserDetails: failed to fetch {userIds.Count} user details");
+                    App.Logger.Error(ex);
+                    return null;
+                }
+
+                if (attempt < MaxAttempts)
+                    await Task.Delay(TimeSpan.FromMilliseconds(750 * attempt));
             }
 
-            return users;
+            App.Logger.Warn($"UserDetails: gave up fetching {userIds.Count} user details after {MaxAttempts} attempts");
+
+            return null;
+        }
+
+        private static async Task<HttpResponseMessage> SendUsersAsync(Uri url, string body)
+        {
+            if (await App.Cookies.EnsureLoadedAsync() && App.Cookies.IsAuthenticated)
+                return await App.Cookies.AuthPost(url, new StringContent(body, Encoding.UTF8, "application/json"));
+
+            return await App.HttpClient.SendAsync(new HttpRequestMessage(HttpMethod.Post, url)
+            {
+                Content = new StringContent(body, Encoding.UTF8, "application/json")
+            });
+        }
+
+        private static async Task<Dictionary<long, ThumbnailResponse>> FetchThumbnailsAsync(List<long> userIds)
+        {
+            var thumbnails = new Dictionary<long, ThumbnailResponse>();
+
+            if (userIds.Count == 0)
+                return thumbnails;
+
+            Uri url = UrlBuilder.BuildApiUrl("thumbnails",
+                $"v1/users/avatar-headshot?userIds={String.Join(',', userIds)}&size=180x180&format=Png&isCircular=false");
+
+            try
+            {
+                ApiArrayResponse<ThumbnailResponse>? response;
+
+                if (await App.Cookies.EnsureLoadedAsync() && App.Cookies.IsAuthenticated)
+                    response = await Http.AuthGetJson<ApiArrayResponse<ThumbnailResponse>>(url);
+                else
+                    response = await Http.GetJson<ApiArrayResponse<ThumbnailResponse>>(url);
+
+                foreach (ThumbnailResponse thumbnail in response?.Data ?? [])
+                {
+                    if (thumbnail.State == "Completed" && !String.IsNullOrEmpty(thumbnail.ImageUrl))
+                        thumbnails[thumbnail.TargetId] = thumbnail;
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Warn($"UserDetails: failed to fetch thumbnails for {userIds.Count} users");
+                App.Logger.Error(ex);
+            }
+
+            return thumbnails;
         }
     }
 }

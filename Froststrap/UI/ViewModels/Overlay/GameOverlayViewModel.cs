@@ -448,7 +448,7 @@ namespace Froststrap.UI.ViewModels.Overlay
 
                 DisplayName = details.Data.DisplayName;
                 Username = $"@{details.Data.Name}";
-                ProfileIcon = details.Thumbnail.ImageUrl ?? String.Empty;
+                ProfileIcon = details.Thumbnail?.ImageUrl ?? String.Empty;
 
                 _profileLoaded = true;
 

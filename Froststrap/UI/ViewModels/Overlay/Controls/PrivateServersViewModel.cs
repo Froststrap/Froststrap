@@ -541,7 +541,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                 foreach (PrivateServerItem item in items)
                 {
                     if (details.TryGetValue(item.OwnerId, out UserDetails? owner))
-                        item.OwnerAvatar = owner.Thumbnail.ImageUrl;
+                        item.OwnerAvatar = owner.Thumbnail?.ImageUrl;
                 }
             }
             catch (Exception ex)

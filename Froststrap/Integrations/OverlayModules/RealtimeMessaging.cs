@@ -1,4 +1,4 @@
-﻿﻿using Froststrap.Models.APIs.RealtimeMessaging;
+﻿using Froststrap.Models.APIs.RealtimeMessaging;
 using Froststrap.Models.APIs.RobloxParty.Events;
 using System.Net.WebSockets;
 using System.Text;
@@ -24,6 +24,7 @@ namespace Froststrap.Integrations.OverlayModules
         private Task? _receiveTask;
         private Task? _pingTask;
         private bool _disposed;
+        private int _connectedState;
 
         public event EventHandler<MessageEvent>? PartyChat;
         public event EventHandler<SignalrMessage>? MessageReceived;
@@ -34,10 +35,27 @@ namespace Froststrap.Integrations.OverlayModules
         public event EventHandler? Connected;
 
         public static event EventHandler<FriendshipNotification>? AnyFriendshipChanged;
+        public static event EventHandler<IReadOnlyList<PresenceNotification>>? AnyPresenceBulk;
+
+        private static int _connectedInstances;
 
         public readonly RobloxParty Party;
 
         public bool IsConnected => _webSocket is not null && _webSocket.State == WebSocketState.Open;
+
+        public static bool UserhubConnected => Volatile.Read(ref _connectedInstances) > 0;
+
+        private void MarkConnected()
+        {
+            if (Interlocked.Exchange(ref _connectedState, 1) == 0)
+                Interlocked.Increment(ref _connectedInstances);
+        }
+
+        private void MarkDisconnected()
+        {
+            if (Interlocked.Exchange(ref _connectedState, 0) == 1)
+                Interlocked.Decrement(ref _connectedInstances);
+        }
 
         public RealtimeMessaging()
         {
@@ -96,6 +114,8 @@ namespace Froststrap.Integrations.OverlayModules
                     await _webSocket.ConnectAsync(_userhubUrl, _cancellation.Token);
 
                     App.Logger.Info("Connected to userhub");
+
+                    MarkConnected();
                 }
                 catch (Exception ex)
                 {
@@ -145,6 +165,8 @@ namespace Froststrap.Integrations.OverlayModules
                 try { await _webSocket!.CloseAsync(WebSocketCloseStatus.NormalClosure, null, CancellationToken.None); }
                 catch (Exception) { }
             }
+
+            MarkDisconnected();
 
             _cancellation?.Dispose();
             _webSocket?.Dispose();
@@ -206,6 +228,10 @@ namespace Froststrap.Integrations.OverlayModules
             {
                 App.Logger.Error("Connection dropped");
                 App.Logger.Error(ex);
+            }
+            finally
+            {
+                MarkDisconnected();
             }
         }
 
@@ -337,7 +363,10 @@ namespace Froststrap.Integrations.OverlayModules
                         var notifications = JsonSerializer.Deserialize<List<PresenceNotification>>(payload);
 
                         if (notifications is { Count: > 0 })
+                        {
                             PresenceBulk?.Invoke(this, notifications);
+                            AnyPresenceBulk?.Invoke(this, notifications);
+                        }
                         break;
 
                     case "FriendshipNotifications":

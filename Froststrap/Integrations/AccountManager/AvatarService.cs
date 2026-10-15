@@ -9,6 +9,7 @@ namespace Froststrap.Integrations.AccountManager
 {
     internal class AvatarService
     {
+        private readonly Lock _cacheLock = new();
         private readonly Dictionary<long, string?> _avatarUrlCache = [];
 
         public async Task<Dictionary<long, string?>> GetAvatarUrlsBulkAsync(List<long> userIds)
@@ -16,11 +17,27 @@ namespace Froststrap.Integrations.AccountManager
             var result = new Dictionary<long, string?>();
             if (userIds == null || userIds.Count == 0) return result;
 
+            var missing = new List<long>();
+
+            lock (_cacheLock)
+            {
+                foreach (long userId in userIds.Distinct())
+                {
+                    if (_avatarUrlCache.TryGetValue(userId, out string? cachedUrl))
+                        result[userId] = cachedUrl;
+                    else
+                        missing.Add(userId);
+                }
+            }
+
+            if (missing.Count == 0)
+                return result;
+
             const int batchSize = 100;
 
-            for (int i = 0; i < userIds.Count; i += batchSize)
+            for (int i = 0; i < missing.Count; i += batchSize)
             {
-                var batch = userIds.Skip(i).Take(batchSize).ToList();
+                var batch = missing.Skip(i).Take(batchSize).ToList();
                 string idsParam = string.Join(',', batch);
                 var uriBuilder = new UriBuilder(UrlBuilder.BuildApiUrl("thumbnails", "v1/users/avatar-headshot", secure: true))
                 {
@@ -33,12 +50,15 @@ namespace Froststrap.Integrations.AccountManager
 
                     if (response?.Data != null)
                     {
-                        foreach (var item in response.Data)
+                        lock (_cacheLock)
                         {
-                            if (item.TargetId > 0 && !string.IsNullOrEmpty(item.ImageUrl))
+                            foreach (var item in response.Data)
                             {
-                                result[item.TargetId] = item.ImageUrl;
-                                _avatarUrlCache[item.TargetId] = item.ImageUrl;
+                                if (item.TargetId > 0 && !string.IsNullOrEmpty(item.ImageUrl))
+                                {
+                                    result[item.TargetId] = item.ImageUrl;
+                                    _avatarUrlCache[item.TargetId] = item.ImageUrl;
+                                }
                             }
                         }
                     }
@@ -52,7 +72,10 @@ namespace Froststrap.Integrations.AccountManager
             return result;
         }
 
-        public string? GetCachedAvatarUrl(long userId) =>
-            _avatarUrlCache.TryGetValue(userId, out var url) ? url : null;
+        public string? GetCachedAvatarUrl(long userId)
+        {
+            lock (_cacheLock)
+                return _avatarUrlCache.TryGetValue(userId, out var url) ? url : null;
+        }
     }
 }

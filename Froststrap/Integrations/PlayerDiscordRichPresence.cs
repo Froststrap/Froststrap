@@ -378,7 +378,7 @@ namespace Froststrap.Integrations
             if (App.Settings.Prop.ShowAccountOnRichPresence)
             {
                 var userDetails = await UserDetails.Fetch(activity.UserId);
-                smallImage = userDetails.Thumbnail.ImageUrl ?? "roblox";
+                smallImage = userDetails.Thumbnail?.ImageUrl ?? "roblox";
                 smallImageText = $"Playing on {userDetails.Data.DisplayName} (@{userDetails.Data.Name})";
             }
 

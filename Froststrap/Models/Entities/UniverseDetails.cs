@@ -9,6 +9,10 @@ namespace Froststrap.Models.Entities
     /// </summary>
     internal class UniverseDetails
     {
+        private static readonly Lock CacheLock = new();
+        private static readonly SemaphoreSlim FetchLock = new(1, 1);
+        private static readonly TimeSpan CacheTtl = TimeSpan.FromMinutes(3);
+
         private static List<UniverseDetails> Cache { get; set; } = [];
 
         public GameDetailResponse Data { get; set; } = null!;
@@ -18,9 +22,12 @@ namespace Froststrap.Models.Entities
         /// </summary>
         public ThumbnailResponse Thumbnail { get; set; } = null!;
 
+        public DateTime FetchedAt { get; set; } = DateTime.UtcNow;
+
         public static UniverseDetails? LoadFromCache(long id)
         {
-            return Cache.FirstOrDefault(x => x.Data?.Id == id);
+            lock (CacheLock)
+                return Cache.FirstOrDefault(x => x.Data?.Id == id);
         }
 
         public static Task FetchSingle(long id) => FetchBulk(id.ToString(CultureInfo.InvariantCulture));
@@ -39,54 +46,84 @@ namespace Froststrap.Models.Entities
             if (idList.Count == 0)
                 return;
 
-            const int chunkSize = 50;
-            var chunks = idList
-                .Select((id, index) => new { id, index })
-                .GroupBy(x => x.index / chunkSize)
-                .Select(g => string.Join(",", g.Select(x => x.id)))
-                .ToList();
+            await FetchLock.WaitAsync();
 
-            var gameDetailResults = new List<GameDetailResponse>();
-            var thumbnailResults = new List<ThumbnailResponse>();
-
-            foreach (var chunk in chunks)
+            try
             {
-                Uri gameDetailsUrl = UrlBuilder.BuildApiUrl("games", $"v1/games?universeIds={chunk}");
-                Uri thumbnailsUrl = UrlBuilder.BuildApiUrl("thumbnails", $"v1/games/icons?universeIds={chunk}&returnPolicy=PlaceHolder&size=128x128&format=Png&isCircular=false");
+                DateTime cutoff = DateTime.UtcNow - CacheTtl;
 
-                ApiArrayResponse<GameDetailResponse> gameDetailResponse;
-                if (App.Cookies.Loaded)
-                    gameDetailResponse = await Http.AuthGetJson<ApiArrayResponse<GameDetailResponse>>(gameDetailsUrl);
-                else
-                    gameDetailResponse = await Http.GetJson<ApiArrayResponse<GameDetailResponse>>(gameDetailsUrl);
+                List<long> stale;
 
-                if (gameDetailResponse.Data.Any())
-                    gameDetailResults.AddRange(gameDetailResponse.Data);
-
-                var universeThumbnailResponse = await Http.GetJson<ApiArrayResponse<ThumbnailResponse>>(thumbnailsUrl);
-                if (universeThumbnailResponse.Data.Any())
-                    thumbnailResults.AddRange(universeThumbnailResponse.Data);
-            }
-
-            var newCacheEntries = new List<UniverseDetails>();
-            foreach (var game in gameDetailResults)
-            {
-                var existing = Cache.FirstOrDefault(x => x.Data?.Id == game.Id);
-                if (existing != null)
-                    continue;
-
-                var thumb = thumbnailResults.FirstOrDefault(t => t.TargetId == game.Id)
-                            ?? new ThumbnailResponse { TargetId = game.Id, ImageUrl = "" };
-
-                newCacheEntries.Add(new UniverseDetails
+                lock (CacheLock)
                 {
-                    Data = game,
-                    Thumbnail = thumb
-                });
-            }
+                    stale = [.. idList.Where(id =>
+                        Cache.FirstOrDefault(x => x.Data?.Id == id) is not { } entry || entry.FetchedAt < cutoff)];
+                }
 
-            if (newCacheEntries.Count > 0)
-                Cache.AddRange(newCacheEntries);
+                if (stale.Count == 0)
+                    return;
+
+                const int chunkSize = 50;
+                var chunks = stale
+                    .Select((id, index) => new { id, index })
+                    .GroupBy(x => x.index / chunkSize)
+                    .Select(g => string.Join(",", g.Select(x => x.id)))
+                    .ToList();
+
+                var gameDetailResults = new List<GameDetailResponse>();
+                var thumbnailResults = new List<ThumbnailResponse>();
+
+                foreach (var chunk in chunks)
+                {
+                    Uri gameDetailsUrl = UrlBuilder.BuildApiUrl("games", $"v1/games?universeIds={chunk}");
+                    Uri thumbnailsUrl = UrlBuilder.BuildApiUrl("thumbnails", $"v1/games/icons?universeIds={chunk}&returnPolicy=PlaceHolder&size=128x128&format=Png&isCircular=false");
+
+                    ApiArrayResponse<GameDetailResponse> gameDetailResponse;
+                    if (App.Cookies.Loaded)
+                        gameDetailResponse = await Http.AuthGetJson<ApiArrayResponse<GameDetailResponse>>(gameDetailsUrl);
+                    else
+                        gameDetailResponse = await Http.GetJson<ApiArrayResponse<GameDetailResponse>>(gameDetailsUrl);
+
+                    if (gameDetailResponse.Data.Any())
+                        gameDetailResults.AddRange(gameDetailResponse.Data);
+
+                    var universeThumbnailResponse = await Http.GetJson<ApiArrayResponse<ThumbnailResponse>>(thumbnailsUrl);
+                    if (universeThumbnailResponse.Data.Any())
+                        thumbnailResults.AddRange(universeThumbnailResponse.Data);
+                }
+
+                lock (CacheLock)
+                {
+                    foreach (var game in gameDetailResults)
+                    {
+                        ThumbnailResponse? thumb = thumbnailResults.FirstOrDefault(t => t.TargetId == game.Id);
+
+                        var existing = Cache.FirstOrDefault(x => x.Data?.Id == game.Id);
+
+                        if (existing is not null)
+                        {
+                            existing.Data = game;
+                            existing.FetchedAt = DateTime.UtcNow;
+
+                            if (thumb is not null && !String.IsNullOrEmpty(thumb.ImageUrl))
+                                existing.Thumbnail = thumb;
+
+                            continue;
+                        }
+
+                        Cache.Add(new UniverseDetails
+                        {
+                            Data = game,
+                            Thumbnail = thumb ?? new ThumbnailResponse { TargetId = game.Id, ImageUrl = "" },
+                            FetchedAt = DateTime.UtcNow
+                        });
+                    }
+                }
+            }
+            finally
+            {
+                FetchLock.Release();
+            }
         }
     }
 }

@@ -15,8 +15,8 @@ namespace Froststrap.Integrations.OverlayModules
         private static readonly TimeSpan OfflineInterval = TimeSpan.FromSeconds(45);
         private static readonly TimeSpan FriendsRefresh = TimeSpan.FromMinutes(30);
         private static readonly TimeSpan Cooldown = TimeSpan.FromMinutes(15);
+        private static readonly TimeSpan MinPollInterval = TimeSpan.FromSeconds(15);
 
-        private const int BatchSize = 50;
         private const int MaxPerUpdate = 3;
         private const int NotifiedPruneThreshold = 128;
 
@@ -39,6 +39,8 @@ namespace Froststrap.Integrations.OverlayModules
         private List<long> _friends = [];
         private HashSet<long> _friendIds = [];
         private DateTime _friendsFetched = DateTime.MinValue;
+        private DateTime _lastPollAt = DateTime.MinValue;
+        private bool _forceFriendsRefresh;
 
         private CancellationTokenSource? _cancellation;
         private bool _seeded;
@@ -100,7 +102,7 @@ namespace Froststrap.Integrations.OverlayModules
         {
             try
             {
-                await PollAsync();
+                await PollAsync(forcePresence: true);
             }
             catch (Exception ex)
             {
@@ -118,7 +120,7 @@ namespace Froststrap.Integrations.OverlayModules
 
                     try
                     {
-                        await PollAsync();
+                        await PollAsync(forcePresence: true);
                     }
                     catch (Exception ex)
                     {
@@ -135,16 +137,16 @@ namespace Froststrap.Integrations.OverlayModules
         private void OnMessagingConnected(object? sender, EventArgs e)
         {
             lock (_lock)
-                _friendsFetched = DateTime.MinValue;
+                _forceFriendsRefresh = true;
 
-            _ = PollSafeAsync();
+            _ = PollSafeAsync(forcePresence: true);
         }
 
-        private async Task PollSafeAsync()
+        private async Task PollSafeAsync(bool forcePresence = false)
         {
             try
             {
-                await PollAsync();
+                await PollAsync(forcePresence);
             }
             catch (Exception ex)
             {
@@ -153,7 +155,7 @@ namespace Froststrap.Integrations.OverlayModules
             }
         }
 
-        public async Task PollAsync()
+        public async Task PollAsync(bool forcePresence = false)
         {
             if (!await App.Cookies.EnsureLoadedAsync() || App.Cookies.CurrentUser is not AuthenticatedUser me)
                 return;
@@ -162,7 +164,16 @@ namespace Froststrap.Integrations.OverlayModules
 
             try
             {
-                await PollCoreAsync(me);
+                lock (_lock)
+                {
+                    if (_seeded && DateTime.UtcNow - _lastPollAt < MinPollInterval)
+                        return;
+                }
+
+                await PollCoreAsync(me, forcePresence);
+
+                lock (_lock)
+                    _lastPollAt = DateTime.UtcNow;
             }
             finally
             {
@@ -170,28 +181,36 @@ namespace Froststrap.Integrations.OverlayModules
             }
         }
 
-        private async Task PollCoreAsync(AuthenticatedUser me)
+        private async Task PollCoreAsync(AuthenticatedUser me, bool forcePresence)
         {
             bool refreshFriends;
+            bool force;
 
             lock (_lock)
-                refreshFriends = DateTime.UtcNow - _friendsFetched > FriendsRefresh;
+            {
+                refreshFriends = _forceFriendsRefresh || DateTime.UtcNow - _friendsFetched > FriendsRefresh;
+                force = _forceFriendsRefresh;
+            }
 
             if (refreshFriends)
             {
-                var response = await Http.GetJson<ApiArrayResponse<FriendResponse>>(
-                    UrlBuilder.BuildApiUrl("friends", $"v1/users/{me.Id}/friends"));
-
-                List<long> fetched = [.. response?.Data?.Select(x => x.Id).Where(x => x > 0).Distinct() ?? []];
+                List<long> fetched = await People.FetchAllFriendIdsAsync(me.Id, _cancellation?.Token ?? default, force);
+                int count;
 
                 lock (_lock)
                 {
-                    _friends = fetched;
-                    _friendIds = [.. fetched];
-                    _friendsFetched = DateTime.UtcNow;
+                    if (fetched.Count > 0)
+                    {
+                        _friends = fetched;
+                        _friendIds = [.. fetched];
+                        _friendsFetched = DateTime.UtcNow;
+                        _forceFriendsRefresh = false;
+                    }
+
+                    count = _friends.Count;
                 }
 
-                App.Logger.Info($"{LOG_IDENT}::PollAsync", $"Keeping an eye on {fetched.Count} friends");
+                App.Logger.Info($"{LOG_IDENT}::PollAsync", $"Keeping an eye on {count} friends");
             }
 
             List<long> friends;
@@ -201,21 +220,11 @@ namespace Froststrap.Integrations.OverlayModules
 
             if (friends.Count == 0)
             {
-                _seeded = true;
                 Updated?.Invoke(this, []);
                 return;
             }
 
-            var now = new Dictionary<long, UserPresence>();
-
-            foreach (long[] batch in friends.Chunk(BatchSize))
-            {
-                var response = await AccountRequests.PostJsonAsync<UserPresenceResponse>(
-                    UrlBuilder.BuildApiUrl("presence", "v1/presence/users"), new { userIds = batch });
-
-                foreach (UserPresence presence in response?.UserPresences ?? [])
-                    now[presence.UserId] = presence;
-            }
+            Dictionary<long, UserPresence> now = await People.FetchPresenceAsync(friends, _cancellation?.Token ?? default, forcePresence);
 
             List<FriendPresenceChange> changes;
             List<long> changed;
@@ -236,13 +245,14 @@ namespace Froststrap.Integrations.OverlayModules
         {
             List<FriendPresenceChange> changes;
             List<long> changed;
+            Dictionary<long, UserPresence> updates;
 
             lock (_lock)
             {
                 if (!_seeded)
                     return;
 
-                var updates = new Dictionary<long, UserPresence>();
+                updates = [];
 
                 foreach (PresenceNotification note in notifications)
                 {
@@ -279,6 +289,9 @@ namespace Froststrap.Integrations.OverlayModules
                     _last[userId] = presence;
             }
 
+            foreach ((long userId, UserPresence presence) in updates)
+                People.CachePresence(userId, presence);
+
             Publish(changes, changed);
         }
 
@@ -311,7 +324,7 @@ namespace Froststrap.Integrations.OverlayModules
                             friendsChanged = true;
                         }
 
-                        _friendsFetched = DateTime.MinValue;
+                        _forceFriendsRefresh = true;
                         break;
 
                     case FriendshipNotification.DestroyedType:
@@ -328,7 +341,7 @@ namespace Froststrap.Integrations.OverlayModules
                         foreach (var key in stale)
                             _notified.Remove(key);
 
-                        _friendsFetched = DateTime.MinValue;
+                        _forceFriendsRefresh = true;
                         break;
 
                     case FriendshipNotification.RequestedType:

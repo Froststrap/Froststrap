@@ -16,7 +16,9 @@ namespace Froststrap.Utility
         private static readonly ConcurrentDictionary<string, Task<Bitmap?>> InFlight = new();
 
         private const int MaxRetries = 3;
+        private const int MaxConcurrentDownloads = 8;
         private static readonly TimeSpan BaseRetryDelay = TimeSpan.FromSeconds(1);
+        private static readonly SemaphoreSlim DownloadGate = new(MaxConcurrentDownloads);
 
         public static async Task<Bitmap?> LoadAsync(string? url, int decodeWidth = 0, string? cachePath = null)
         {
@@ -47,47 +49,56 @@ namespace Froststrap.Utility
 
         private static async Task<Bitmap?> LoadCoreAsync(string url, int decodeWidth, string? cachePath)
         {
-            byte[]? bytes = null;
-
-            // Try to read from cache first
-            if (!String.IsNullOrEmpty(cachePath) && File.Exists(cachePath))
-            {
-                try
-                {
-                    bytes = await File.ReadAllBytesAsync(cachePath);
-                }
-                catch (Exception ex)
-                {
-                    App.Logger.Error($"Failed to read cached image {cachePath}: {ex.Message}");
-                    try { File.Delete(cachePath); } catch { }
-                }
-            }
-
-            if (bytes is null)
-            {
-                // Download with retry logic for transient network errors
-                bytes = await DownloadWithRetryAsync(url, cachePath);
-                
-                if (bytes is null)
-                    return null;
-            }
+            await DownloadGate.WaitAsync();
 
             try
             {
-                Bitmap? bitmap = await Task.Run(() => Decode(bytes, decodeWidth));
+                byte[]? bytes = null;
 
-                Memory[url] = bitmap;
+                // Try to read from cache first
+                if (!String.IsNullOrEmpty(cachePath) && File.Exists(cachePath))
+                {
+                    try
+                    {
+                        bytes = await File.ReadAllBytesAsync(cachePath);
+                    }
+                    catch (Exception ex)
+                    {
+                        App.Logger.Error($"Failed to read cached image {cachePath}: {ex.Message}");
+                        try { File.Delete(cachePath); } catch { }
+                    }
+                }
 
-                return bitmap;
-            }
-            catch (Exception ex)
-            {
-                App.Logger.Error($"Failed to decode image from {url}: {ex.Message}");
-                return null;
+                if (bytes is null)
+                {
+                    // Download with retry logic for transient network errors
+                    bytes = await DownloadWithRetryAsync(url, cachePath);
+                    
+                    if (bytes is null)
+                        return null;
+                }
+
+                try
+                {
+                    Bitmap? bitmap = await Task.Run(() => Decode(bytes, decodeWidth));
+
+                    Memory[url] = bitmap;
+
+                    return bitmap;
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.Error($"Failed to decode image from {url}: {ex.Message}");
+                    return null;
+                }
+                finally
+                {
+                    InFlight.TryRemove(url, out _);
+                }
             }
             finally
             {
-                InFlight.TryRemove(url, out _);
+                DownloadGate.Release();
             }
         }
 
@@ -103,6 +114,9 @@ namespace Froststrap.Utility
 
                     if (!response.IsSuccessStatusCode)
                     {
+                        if (response.StatusCode == HttpStatusCode.TooManyRequests)
+                            throw new HttpRequestException($"Server returned {response.StatusCode}");
+
                         // Don't retry on 4xx client errors
                         if ((int)response.StatusCode >= 400 && (int)response.StatusCode < 500)
                         {
