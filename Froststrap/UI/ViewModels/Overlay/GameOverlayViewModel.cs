@@ -104,7 +104,7 @@ namespace Froststrap.UI.ViewModels.Overlay
                 if (!SetProperty(ref _profileIcon, value))
                     return;
 
-                _ = LoadProfileBitmapAsync();
+                _ = ImageLoader.LoadAndSetAsync(value, 80, b => ProfileBitmap = b);
             }
         }
 
@@ -113,40 +113,6 @@ namespace Froststrap.UI.ViewModels.Overlay
         {
             get => _profileBitmap;
             private set => SetProperty(ref _profileBitmap, value);
-        }
-
-        private bool _loadingProfileBitmap;
-        private string? _loadedProfileBitmapUrl;
-
-        private async Task LoadProfileBitmapAsync()
-        {
-            string url = _profileIcon;
-
-            if (_loadingProfileBitmap || String.IsNullOrEmpty(url) || _loadedProfileBitmapUrl == url)
-                return;
-
-            _loadingProfileBitmap = true;
-
-            try
-            {
-                Bitmap? bitmap = await ImageLoader.LoadAsync(url, 80);
-
-                if (bitmap is null)
-                    return;
-
-                await Dispatcher.UIThread.InvokeAsync(() =>
-                {
-                    if (_profileIcon == url)
-                    {
-                        ProfileBitmap = bitmap;
-                        _loadedProfileBitmapUrl = url;
-                    }
-                });
-            }
-            finally
-            {
-                _loadingProfileBitmap = false;
-            }
         }
 
         private string _displayName = String.Empty;
@@ -198,7 +164,7 @@ namespace Froststrap.UI.ViewModels.Overlay
                 if (!SetProperty(ref _gameIcon, value))
                     return;
 
-                _ = LoadGameBitmapAsync();
+                _ = ImageLoader.LoadAndSetAsync(value, 72, b => GameBitmap = b);
             }
         }
 
@@ -207,40 +173,6 @@ namespace Froststrap.UI.ViewModels.Overlay
         {
             get => _gameBitmap;
             private set => SetProperty(ref _gameBitmap, value);
-        }
-
-        private bool _loadingGameBitmap;
-        private string? _loadedGameBitmapUrl;
-
-        private async Task LoadGameBitmapAsync()
-        {
-            string url = _gameIcon;
-
-            if (_loadingGameBitmap || String.IsNullOrEmpty(url) || _loadedGameBitmapUrl == url)
-                return;
-
-            _loadingGameBitmap = true;
-
-            try
-            {
-                Bitmap? bitmap = await ImageLoader.LoadAsync(url, 72);
-
-                if (bitmap is null)
-                    return;
-
-                await Dispatcher.UIThread.InvokeAsync(() =>
-                {
-                    if (_gameIcon == url)
-                    {
-                        GameBitmap = bitmap;
-                        _loadedGameBitmapUrl = url;
-                    }
-                });
-            }
-            finally
-            {
-                _loadingGameBitmap = false;
-            }
         }
 
         private string _game = Strings.Menu_Overlay_NotInGame;
@@ -269,7 +201,7 @@ namespace Froststrap.UI.ViewModels.Overlay
                 OnPropertyChanged(nameof(HasCurrentRegion));
                 OnPropertyChanged(nameof(CurrentRegionFlagUrl));
 
-                _ = LoadRegionFlagAsync();
+                _ = ImageLoader.LoadAndSetAsync(CurrentRegionFlagUrl, 40, b => RegionFlagBitmap = b);
             }
         }
 
@@ -295,55 +227,6 @@ namespace Froststrap.UI.ViewModels.Overlay
         {
             get => _regionFlagBitmap;
             private set => SetProperty(ref _regionFlagBitmap, value);
-        }
-
-        private bool _loadingRegionFlag;
-        private string? _loadedRegionFlagUrl;
-
-        private async Task LoadRegionFlagAsync()
-        {
-            string? url = CurrentRegionFlagUrl;
-
-            if (String.IsNullOrEmpty(url))
-            {
-                RegionFlagBitmap = null;
-                _loadedRegionFlagUrl = null;
-                return;
-            }
-
-            if (_loadingRegionFlag || _loadedRegionFlagUrl == url)
-                return;
-
-            _loadingRegionFlag = true;
-
-            try
-            {
-                Bitmap? bitmap = await ImageLoader.LoadAsync(url, 40);
-
-                if (bitmap is null)
-                {
-                    App.Logger.Warn($"GameOverlayViewModel: flag decode returned null for {url}");
-                    return;
-                }
-
-                await Dispatcher.UIThread.InvokeAsync(() =>
-                {
-                    if (CurrentRegionFlagUrl == url)
-                    {
-                        RegionFlagBitmap = bitmap;
-                        _loadedRegionFlagUrl = url;
-                    }
-                });
-            }
-            catch (Exception ex)
-            {
-                App.Logger.Error($"GameOverlayViewModel: failed to load flag from {url}");
-                App.Logger.Error(ex);
-            }
-            finally
-            {
-                _loadingRegionFlag = false;
-            }
         }
 
         private bool _isInGame;
@@ -640,11 +523,9 @@ namespace Froststrap.UI.ViewModels.Overlay
             Game = Strings.Menu_Overlay_NotInGame;
             GameIcon = String.Empty;
             GameBitmap = null;
-            _loadedGameBitmapUrl = null;
             TimePlayed = String.Empty;
             CurrentRegion = String.Empty;
             RegionFlagBitmap = null;
-            _loadedRegionFlagUrl = null;
             GameStatus.IsOpen = false;
             IsInGame = false;
         }

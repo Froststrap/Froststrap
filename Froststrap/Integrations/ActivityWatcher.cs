@@ -40,7 +40,6 @@ namespace Froststrap.Integrations
         private int _logEntriesRead;
         private bool _teleportMarker;
         private bool _reservedTeleportMarker;
-        private bool _shouldAutoRejoin;
 
         private static readonly string GameHistoryCachePath = Path.Combine(Paths.Cache, "GameHistory.json");
 
@@ -269,7 +268,7 @@ namespace Froststrap.Integrations
             }
         }
 
-        private async void ProcessPlayerLogEntry(string logMessage)
+        private void ProcessPlayerLogEntry(string logMessage)
         {
             if (logMessage.StartsWith(GameLeavingEntry, StringComparison.Ordinal) ||
                 logMessage.StartsWith(GameLeavingEntrySober, StringComparison.Ordinal) ||
@@ -297,8 +296,8 @@ namespace Froststrap.Integrations
 
                     if (reasonCode == 278)
                     {
-                        _shouldAutoRejoin = true;
                         App.Logger.Info($"Inactivity disconnect detected (reason: {reasonCode})");
+                        TryAutoRejoin();
                     }
                     else
                     {
@@ -313,8 +312,8 @@ namespace Froststrap.Integrations
                 {
                     if (reasonCode == 1)
                     {
-                        _shouldAutoRejoin = true;
                         App.Logger.Info($"Internet disconnect detected (reason: {reasonCode})");
+                        TryAutoRejoin();
                     }
                     else
                     {
@@ -477,18 +476,7 @@ namespace Froststrap.Integrations
                     AddToHistory(Data);
                     OnGameLeave?.Invoke(this, EventArgs.Empty);
 
-                    var autoRejoinData = Data;
                     Data = new();
-
-                    if (App.Settings.Prop.AutoRejoin && _shouldAutoRejoin)
-                    {
-                        await Task.Delay(3000);
-
-                        autoRejoinData.RejoinServer();
-                        CloseProcess(_robloxPID);
-                    }
-
-                    _shouldAutoRejoin = false;
                 }
                 else if (logMessage.StartsWith(GameTeleportingEntry, StringComparison.Ordinal))
                 {
@@ -608,6 +596,28 @@ namespace Froststrap.Integrations
                     ShowNotif?.Invoke(this, null!);
                 }
             }
+        }
+
+        private void TryAutoRejoin()
+        {
+            if (!App.Settings.Prop.AutoRejoin)
+                return;
+
+            if (!InGame || Data.PlaceId == 0)
+                return;
+
+            App.Logger.Info($"Auto rejoining game ({Data})");
+
+            var autoRejoinData = Data;
+
+            InGame = false;
+            autoRejoinData.TimeLeft = DateTime.Now;
+            AddToHistory(autoRejoinData);
+            OnGameLeave?.Invoke(this, EventArgs.Empty);
+
+            Data = new();
+
+            autoRejoinData.RejoinServer();
         }
 
         private void StartHTTPServer()

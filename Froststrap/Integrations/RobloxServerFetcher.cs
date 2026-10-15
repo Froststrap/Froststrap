@@ -1,4 +1,4 @@
-﻿﻿using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Net.Http.Headers;
 using Froststrap.RobloxInterfaces;
 
@@ -7,6 +7,9 @@ namespace Froststrap.Integrations
     internal class RobloxServerFetcher : IDisposable
     {
         private static readonly Lazy<HttpClient> _sharedClient = new(CreateSharedClient);
+        private static readonly Lazy<RobloxServerFetcher> _sharedInstance = new(() => new RobloxServerFetcher());
+
+        public static RobloxServerFetcher Shared => _sharedInstance.Value;
 
         private static HttpClient CreateSharedClient()
         {

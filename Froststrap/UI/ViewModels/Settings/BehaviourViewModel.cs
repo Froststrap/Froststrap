@@ -299,39 +299,23 @@ namespace Froststrap.UI.ViewModels.Settings
 
             try
             {
-                var datacenters = await Http.GetJson<List<DatacenterEntry>>(
-                    new Uri("https://apis.rovalra.com/v1/datacenters/list"));
+                var result = await Integrations.RobloxServerFetcher.Shared.GetDatacentersAsync();
 
-                if (datacenters != null && datacenters.Count > 0)
+                if (result is not null)
                 {
-                    var regions = new HashSet<string>();
+                    var regions = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                    var map = new Dictionary<int, string>();
 
-                    foreach (var dc in datacenters)
+                    foreach (var region in result.Value.datacenterMap.Values)
                     {
-                        if (dc.Location != null && !string.IsNullOrEmpty(dc.Location.City))
-                        {
-                            string region = $"{dc.Location.City}, {dc.Location.Country}"
-                                .TrimStart(',')
-                                .Trim();
+                        if (!string.IsNullOrEmpty(region))
                             regions.Add(region);
-                        }
-                        else if (dc.Location != null && !string.IsNullOrEmpty(dc.Location.Country))
-                        {
-                            regions.Add(dc.Location.Country);
-                        }
                     }
+
+                    foreach (var kvp in result.Value.datacenterMap)
+                        map[kvp.Key] = kvp.Value;
 
                     baseRegions = [.. regions.OrderBy(r => r, StringComparer.OrdinalIgnoreCase)];
-
-                    var map = new Dictionary<int, string>();
-                    foreach (var dc in datacenters)
-                    {
-                        string regionKey = string.IsNullOrWhiteSpace(dc.Location?.City) && string.IsNullOrWhiteSpace(dc.Location?.Country)
-                            ? "Unknown"
-                            : $"{dc.Location.City}, {dc.Location.Country}".Trim().Trim(',', ' ');
-                        foreach (var id in dc.DataCenterIds)
-                            map[id] = regionKey;
-                    }
                     await SaveDatacentersToCacheAsync(map);
                 }
                 else

@@ -1,4 +1,4 @@
-﻿﻿using Froststrap.AppData;
+﻿using Froststrap.AppData;
 using Froststrap.Enums.Overlay;
 using Froststrap.Utility;
 using System;
@@ -23,8 +23,6 @@ namespace Froststrap.RobloxInterfaces
         private const int AvatarDecodeWidth = 112;
         private const int PrefetchConcurrency = 8;
 
-        private static readonly Uri DatacentersUrl = new("https://apis.rovalra.com/v1/datacenters/list");
-
         private static List<ServerRegion>? _regions;
 
         public static async Task<List<ServerRegion>> FetchRegionsAsync()
@@ -36,16 +34,19 @@ namespace Froststrap.RobloxInterfaces
 
             try
             {
-                var datacenters = await Http.GetJson<List<DatacenterEntry>>(DatacentersUrl);
+                var result = await Integrations.RobloxServerFetcher.Shared.GetDatacentersAsync();
+                if (result is not null)
+                {
+                    var (_, datacenterMap) = result.Value;
 
-                regions.AddRange(datacenters
-                    .Select(x => x.Location?.Country)
-                    .Where(x => !String.IsNullOrEmpty(x))
-                    .Distinct(StringComparer.OrdinalIgnoreCase)
-                    .Select(code => new ServerRegion { Code = code!, Name = RegionName(code!) })
-                    .OrderBy(x => x.Name, StringComparer.Ordinal));
+                    regions.AddRange(datacenterMap.Values
+                        .Where(x => !String.IsNullOrEmpty(x))
+                        .Distinct(StringComparer.OrdinalIgnoreCase)
+                        .Select(code => new ServerRegion { Code = code!, Name = RegionName(code!) })
+                        .OrderBy(x => x.Name, StringComparer.Ordinal));
 
-                _regions = regions;
+                    _regions = regions;
+                }
             }
             catch (Exception ex)
             {

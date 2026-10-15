@@ -167,6 +167,8 @@ namespace Froststrap.Models.Entities
             return location;
         }
 
+        public override string ToString() => $"{PlaceId}/{JobId}";
+
         public void RejoinServer()
         {
             try
@@ -175,22 +177,7 @@ namespace Froststrap.Models.Entities
 
                 string robloxUri = GetInviteDeeplink(true);
 
-                if (Processes.IsRobloxRunning())
-                {
-                    App.Logger.Info("Roblox is running, launching via player executable");
-
-                    Process.Start(new RobloxPlayerData().ExecutablePath, robloxUri);
-                }
-                else
-                {
-                    App.Logger.Info("Roblox is not running, launching via protocol handler");
-
-                    Process.Start(new ProcessStartInfo
-                    {
-                        FileName = robloxUri,
-                        UseShellExecute = true
-                    });
-                }
+                Process.Start(new RobloxPlayerData().ExecutablePath, robloxUri);
             }
             catch (Exception ex)
             {

@@ -150,38 +150,9 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             }
         }
 
-        private bool _loadingGameIcon;
-        private string? _loadedGameIconUrl;
-
         private async Task LoadGameIconAsync()
         {
-            string? url = _gameIcon;
-
-            if (_loadingGameIcon || String.IsNullOrEmpty(url) || _loadedGameIconUrl == url)
-                return;
-
-            _loadingGameIcon = true;
-
-            try
-            {
-                Bitmap? bitmap = await ImageLoader.LoadAsync(url, 300);
-
-                if (bitmap is null)
-                    return;
-
-                await Dispatcher.UIThread.InvokeAsync(() =>
-                {
-                    if (_gameIcon == url)
-                    {
-                        GameIconBitmap = bitmap;
-                        _loadedGameIconUrl = url;
-                    }
-                });
-            }
-            finally
-            {
-                _loadingGameIcon = false;
-            }
+            _ = ImageLoader.LoadAndSetAsync(_gameIcon, 300, b => GameIconBitmap = b);
         }
 
         private string _editName = String.Empty;
@@ -619,19 +590,9 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
                 Flash(message);
             }
-            catch (SettingRejectedException ex) when (!String.IsNullOrWhiteSpace(ex.Reason))
-            {
-                App.Logger.Error(ex);
-
-                Flash(String.Format(Locale.CurrentCulture,
-                    Strings.Menu_Overlay_PrivateServers_Rejected, ex.Reason));
-            }
             catch (Exception ex)
             {
-                App.Logger.Error("Failed to change the private server");
-                App.Logger.Error(ex);
-
-                Flash(Strings.Menu_Overlay_PrivateServers_SaveFailed);
+                HandleChangeError(ex);
             }
 
             await RefreshOwnAsync(item);
@@ -753,19 +714,9 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
                 Flash(success);
             }
-            catch (SettingRejectedException ex) when (!String.IsNullOrWhiteSpace(ex.Reason))
-            {
-                App.Logger.Error(ex);
-
-                Flash(String.Format(Locale.CurrentCulture,
-                    Strings.Menu_Overlay_PrivateServers_Rejected, ex.Reason));
-            }
             catch (Exception ex)
             {
-                App.Logger.Error("Failed to change the private server");
-                App.Logger.Error(ex);
-
-                Flash(Strings.Menu_Overlay_PrivateServers_SaveFailed);
+                HandleChangeError(ex);
             }
 
             try
@@ -783,6 +734,21 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             NotifyManage();
 
             return changed;
+        }
+
+        private void HandleChangeError(Exception ex)
+        {
+            if (ex is SettingRejectedException rejected && !String.IsNullOrWhiteSpace(rejected.Reason))
+            {
+                App.Logger.Error(ex);
+                Flash(String.Format(Locale.CurrentCulture,
+                    Strings.Menu_Overlay_PrivateServers_Rejected, rejected.Reason));
+                return;
+            }
+
+            App.Logger.Error("Failed to change the private server");
+            App.Logger.Error(ex);
+            Flash(Strings.Menu_Overlay_PrivateServers_SaveFailed);
         }
 
         private async Task SaveNameAsync()
@@ -813,20 +779,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                 return;
             }
 
-            try
-            {
-                var clipboard = TopLevel.GetTopLevel(visual)?.Clipboard;
-                if (clipboard is null) return;
-
-                await clipboard.SetTextAsync(item.Link);
-
-                Flash(Strings.Menu_Overlay_PrivateServers_LinkCopied);
-            }
-            catch (Exception ex)
-            {
-                App.Logger.Error("Failed to copy the link");
-                App.Logger.Error(ex);
-            }
+            await CopyToClipboardAsync(visual, item.Link);
         }
 
         private async Task CopyManageLinkAsync(Visual? visual)
@@ -834,12 +787,17 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             if (String.IsNullOrEmpty(Link))
                 return;
 
+            await CopyToClipboardAsync(visual, Link);
+        }
+
+        private async Task CopyToClipboardAsync(Visual? visual, string text)
+        {
             try
             {
                 var clipboard = TopLevel.GetTopLevel(visual)?.Clipboard;
                 if (clipboard is null) return;
 
-                await clipboard.SetTextAsync(Link);
+                await clipboard.SetTextAsync(text);
 
                 Flash(Strings.Menu_Overlay_PrivateServers_LinkCopied);
             }
@@ -931,7 +889,6 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             AllowedUsers.Clear();
 
             GameIconBitmap = null;
-            _loadedGameIconUrl = null;
 
             NotifyManage();
         }
