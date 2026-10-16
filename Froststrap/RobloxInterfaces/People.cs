@@ -74,8 +74,8 @@ namespace Froststrap.RobloxInterfaces
 
         public static async Task<Dictionary<long, UserPresence>> FetchPresenceAsync(
             IEnumerable<long> ids,
-            CancellationToken token = default,
-            bool force = false)
+            bool force = false,
+            CancellationToken token = default)
         {
             var result = new Dictionary<long, UserPresence>();
 
@@ -185,8 +185,8 @@ namespace Froststrap.RobloxInterfaces
 
         public static async Task<List<long>> FetchAllFriendIdsAsync(
             long me,
-            CancellationToken token = default,
-            bool force = false)
+            bool force = false,
+            CancellationToken token = default)
         {
             if (me == 0 || token.IsCancellationRequested)
                 return [];
@@ -335,10 +335,10 @@ namespace Froststrap.RobloxInterfaces
 
         public static async Task<HashSet<long>> FetchFriendIdsAsync(
             long me,
-            CancellationToken token = default,
-            bool force = false)
+            bool force = false,
+            CancellationToken token = default)
         {
-            return [.. await FetchAllFriendIdsAsync(me, token, force)];
+            return [.. await FetchAllFriendIdsAsync(me, force, token)];
         }
 
         public static async Task<List<OmniUserSearchContent>> SearchUsersAsync(

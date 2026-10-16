@@ -361,6 +361,7 @@
                     TextWrapping="Wrap" />
 
                 <ScrollViewer
+                    x:Name="ServerScroll"
                     Margin="0,0,-8,0"
                     Padding="0,0,8,0"
                     VerticalScrollBarVisibility="Auto">
@@ -513,13 +514,6 @@
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
-
-                        <Button
-                            Margin="0,8,0,4"
-                            HorizontalAlignment="Center"
-                            Command="{Binding LoadMoreCommand}"
-                            Content="{x:Static resources:Strings.Menu_Overlay_PrivateServers_LoadMore}"
-                            IsVisible="{Binding HasMore}" />
                     </StackPanel>
                 </ScrollViewer>
             </Grid>

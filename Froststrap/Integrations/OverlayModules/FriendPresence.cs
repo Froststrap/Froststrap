@@ -194,7 +194,7 @@ namespace Froststrap.Integrations.OverlayModules
 
             if (refreshFriends)
             {
-                List<long> fetched = await People.FetchAllFriendIdsAsync(me.Id, _cancellation?.Token ?? default, force);
+                List<long> fetched = await People.FetchAllFriendIdsAsync(me.Id, force, _cancellation?.Token ?? default);
                 int count;
 
                 lock (_lock)
@@ -224,7 +224,7 @@ namespace Froststrap.Integrations.OverlayModules
                 return;
             }
 
-            Dictionary<long, UserPresence> now = await People.FetchPresenceAsync(friends, _cancellation?.Token ?? default, forcePresence);
+            Dictionary<long, UserPresence> now = await People.FetchPresenceAsync(friends, forcePresence, _cancellation?.Token ?? default);
 
             List<FriendPresenceChange> changes;
             List<long> changed;

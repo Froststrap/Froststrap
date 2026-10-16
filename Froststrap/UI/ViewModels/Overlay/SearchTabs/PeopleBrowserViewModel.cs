@@ -20,12 +20,16 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
     {
         private static readonly TimeSpan SearchDelay = TimeSpan.FromMilliseconds(350);
         private static readonly TimeSpan PendingRefresh = TimeSpan.FromMinutes(5);
+        private const int PageSize = 15;
 
         private readonly DispatcherTimer _debounce;
         private readonly DispatcherTimer _pendingTimer;
         private readonly CancellationTokenSource _disposeCts = new();
         private readonly HashSet<long> _pendingIds = [];
         private readonly List<SearchPerson> _friendsCache = [];
+        private readonly List<SearchPerson> _searchResults = [];
+        private List<SearchPerson>? _visibleSource;
+        private int _visibleCount;
         private int _searchGeneration;
         private bool _disposed;
 
@@ -185,6 +189,8 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
                 if (People.Count > 0)
                 {
                     People.ReplaceAll([]);
+                    _visibleSource = null;
+                    _visibleCount = 0;
                     SelectedIndex = -1;
                     Refreshed();
                 }
@@ -195,9 +201,39 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
                 return;
             }
 
-            People.ReplaceAll(_friendsCache);
+            ResetVisible(_friendsCache);
             SelectedIndex = _friendsCache.Count > 0 ? 0 : -1;
             Refreshed();
+        }
+
+        public void LoadMorePeople()
+        {
+            List<SearchPerson>? source = _visibleSource;
+
+            if (source is null || _visibleCount >= source.Count)
+                return;
+
+            int next = Math.Min(source.Count, _visibleCount + PageSize);
+
+            People.AddRange(source.GetRange(_visibleCount, next - _visibleCount));
+
+            _visibleCount = next;
+        }
+
+        private void ResetVisible(List<SearchPerson> source)
+        {
+            _visibleSource = source;
+            _visibleCount = Math.Min(PageSize, source.Count);
+
+            People.ReplaceAll([.. source.Take(_visibleCount)]);
+        }
+
+        private void ResliceVisible(List<SearchPerson> source)
+        {
+            _visibleSource = source;
+            _visibleCount = Math.Min(_visibleCount, source.Count);
+
+            People.ReplaceAll([.. source.Take(_visibleCount)]);
         }
 
         private void OnAccountChanged() => Dispatcher.UIThread.Post(() =>
@@ -207,6 +243,9 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
             _pendingIds.Clear();
             _friendIds = [];
             _friendsCache.Clear();
+            _searchResults.Clear();
+            _visibleSource = null;
+            _visibleCount = 0;
             _me = 0;
 
             People.ReplaceAll([]);
@@ -235,13 +274,15 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
                 if (me is null)
                 {
                     People.ReplaceAll([]);
+                    _visibleSource = null;
+                    _visibleCount = 0;
                     SelectedIndex = -1;
                     return;
                 }
 
                 _me = me.Id;
 
-                List<long> ids = await PeopleApi.FetchAllFriendIdsAsync(me.Id, _disposeCts.Token);
+                List<long> ids = await PeopleApi.FetchAllFriendIdsAsync(me.Id, token: _disposeCts.Token);
 
                 if (_disposed)
                     return;
@@ -254,12 +295,14 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
 
                     People.ReplaceAll([]);
                     _friendsCache.Clear();
+                    _visibleSource = null;
+                    _visibleCount = 0;
                     SelectedIndex = -1;
                     return;
                 }
 
                 var detailsTask  = PeopleApi.FetchDetailsAsync(ids, _disposeCts.Token);
-                var presenceTask = PeopleApi.FetchPresenceAsync(ids, _disposeCts.Token);
+                var presenceTask = PeopleApi.FetchPresenceAsync(ids, token: _disposeCts.Token);
 
                 await Task.WhenAll(detailsTask, presenceTask);
 
@@ -281,7 +324,7 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
 
                 if (_showingFriends && String.IsNullOrWhiteSpace(_query))
                 {
-                    People.ReplaceAll(people);
+                    ResetVisible(people);
                     SelectedIndex = people.Count > 0 ? 0 : -1;
                 }
 
@@ -341,7 +384,7 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
 
             try
             {
-                HashSet<long> ids = await PeopleApi.FetchFriendIdsAsync(_me, _disposeCts.Token, force: true);
+                HashSet<long> ids = await PeopleApi.FetchFriendIdsAsync(_me, force: true, token: _disposeCts.Token);
 
                 if (_disposed || ids.Count == 0)
                     return;
@@ -357,7 +400,7 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
                     _friendIds.Add(id);
                 }
 
-                foreach (SearchPerson person in People)
+                foreach (SearchPerson person in _friendsCache)
                 {
                     if (accepted.Contains(person.UserId))
                     {
@@ -445,13 +488,16 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
                     ? People[SelectedIndex].UserId
                     : 0;
 
-                People.ReplaceAll(_friendsCache);
+                ResliceVisible(_friendsCache);
 
                 int index = selectedId != 0
                     ? _friendsCache.FindIndex(person => person.UserId == selectedId)
                     : -1;
 
-                SelectedIndex = index >= 0 ? index : (_friendsCache.Count > 0 ? 0 : -1);
+                if (index < 0 || index >= People.Count)
+                    index = People.Count > 0 ? 0 : -1;
+
+                SelectedIndex = index;
             }
         }
 
@@ -474,7 +520,10 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
 
                 if (users.Count == 0)
                 {
+                    _searchResults.Clear();
                     People.ReplaceAll([]);
+                    _visibleSource = null;
+                    _visibleCount = 0;
                     SelectedIndex = -1;
                     return;
                 }
@@ -483,7 +532,7 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
                 var ids = users.Select(u => u.ContentId).ToList();
 
                 var detailsTask  = PeopleApi.FetchDetailsAsync(ids, _disposeCts.Token);
-                var presenceTask = PeopleApi.FetchPresenceAsync(ids, _disposeCts.Token);
+                var presenceTask = PeopleApi.FetchPresenceAsync(ids, token: _disposeCts.Token);
                 var statusesTask = PeopleApi.FetchFriendStatusesAsync(me, ids, _disposeCts.Token);
 
                 await Task.WhenAll(detailsTask, presenceTask, statusesTask);
@@ -528,7 +577,10 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
 
                 people.Sort(CompareFriends);
 
-                People.ReplaceAll(people);
+                _searchResults.Clear();
+                _searchResults.AddRange(people);
+
+                ResetVisible(_searchResults);
                 SelectedIndex = people.Count > 0 ? 0 : -1;
             }
             catch (OperationCanceledException)
@@ -541,7 +593,10 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
 
                 App.Logger.Error("People browser: user search failed");
                 App.Logger.Error(ex);
+                _searchResults.Clear();
                 People.ReplaceAll([]);
+                _visibleSource = null;
+                _visibleCount = 0;
                 SelectedIndex = -1;
             }
             finally
@@ -704,12 +759,12 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
 
                     if (_showingFriends && String.IsNullOrWhiteSpace(_query))
                     {
-                        People.ReplaceAll(_friendsCache);
+                        ResliceVisible(_friendsCache);
 
-                        if (_friendsCache.Count == 0)
+                        if (People.Count == 0)
                             SelectedIndex = -1;
-                        else if (SelectedIndex >= _friendsCache.Count)
-                            SelectedIndex = _friendsCache.Count - 1;
+                        else if (SelectedIndex >= People.Count)
+                            SelectedIndex = People.Count - 1;
                     }
 
                     App.Logger.Info($"People browser: unfriended {person.DisplayName}");
@@ -853,12 +908,12 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
 
                     if (_showingFriends && String.IsNullOrWhiteSpace(_query))
                     {
-                        People.ReplaceAll(_friendsCache);
+                        ResliceVisible(_friendsCache);
 
-                        if (_friendsCache.Count == 0)
+                        if (People.Count == 0)
                             SelectedIndex = -1;
-                        else if (SelectedIndex >= _friendsCache.Count)
-                            SelectedIndex = _friendsCache.Count - 1;
+                        else if (SelectedIndex >= People.Count)
+                            SelectedIndex = People.Count - 1;
                     }
 
                     UpdatePendingTimer();

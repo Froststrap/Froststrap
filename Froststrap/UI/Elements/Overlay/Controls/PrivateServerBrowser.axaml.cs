@@ -1,6 +1,7 @@
 using System;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using Froststrap.Integrations;
 using Froststrap.UI.ViewModels.Overlay.Controls;
 
@@ -8,14 +9,30 @@ namespace Froststrap.UI.Elements.Overlay.Controls
 {
     internal partial class PrivateServerBrowser : UserControl
     {
+        private const double LoadMoreThreshold = 240;
+
         private PrivateServersViewModel? _viewModel;
 
         public PrivateServerBrowser()
         {
             InitializeComponent();
 
+            ServerScroll.AddHandler(ScrollViewer.ScrollChangedEvent, OnServersScrolled);
+
             this.GetObservable(IsVisibleProperty)
                 .Subscribe(new AnonymousObserver<bool>(v => _viewModel?.SetVisible(v)));
+        }
+
+        private void OnServersScrolled(object? sender, ScrollChangedEventArgs e)
+        {
+            if (sender is not ScrollViewer viewer || viewer.Extent.Height <= 0)
+                return;
+
+            if (viewer.Offset.Y + viewer.Viewport.Height < viewer.Extent.Height - LoadMoreThreshold)
+                return;
+
+            if (_viewModel is { IsBusy: false, HasMore: true })
+                _viewModel.LoadMoreCommand.Execute(null);
         }
 
         public void Attach(ActivityWatcher? activityWatcher)

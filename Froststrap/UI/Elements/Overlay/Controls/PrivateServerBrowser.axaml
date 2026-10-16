@@ -63,6 +63,7 @@
 
             <Grid Grid.Row="1">
                 <ScrollViewer
+                    x:Name="ServerScroll"
                     Margin="0,0,-16,0"
                     Padding="0,0,16,0"
                     VerticalScrollBarVisibility="Auto">
@@ -178,13 +179,6 @@
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
-
-                        <Button
-                            Margin="0,2,0,6"
-                            HorizontalAlignment="Left"
-                            Command="{Binding LoadMoreCommand}"
-                            Content="{x:Static resources:Strings.Menu_Overlay_PrivateServers_LoadMore}"
-                            IsVisible="{Binding HasMore}" />
 
                         <ui:FAProgressRing
                             Width="22"
