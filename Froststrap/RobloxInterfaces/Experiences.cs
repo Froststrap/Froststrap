@@ -76,26 +76,31 @@ namespace Froststrap.RobloxInterfaces
             return new GameSearchPage(tiles, next);
         }
 
-        public static async Task<List<OmniSearchContent>> SuggestAsync(string query, CancellationToken token = default)
+        public static async Task<(List<OmniSearchContent> Results, string? NextCursor)> SuggestPageAsync(
+            string query, string? cursor = null, CancellationToken token = default)
         {
             if (String.IsNullOrWhiteSpace(query) || token.IsCancellationRequested)
-                return [];
+                return ([], null);
 
-            var (response, _) = await SearchRawAsync(query, null, "Game");
+            var (response, next) = await SearchRawAsync(query, cursor, "Game");
 
             if (response is null || token.IsCancellationRequested)
-                return [];
+                return ([], null);
 
             var results = (response.SearchResults ?? [])
                 .SelectMany(x => x.Contents ?? [])
                 .Where(x => !x.IsSponsored && x.UniverseId > 0 && x.RootPlaceId > 0)
                 .GroupBy(x => x.UniverseId)
                 .Select(x => x.First())
-                .Take(5)
                 .ToList();
 
+            return (results, next);
+        }
+
+        public static async Task LoadSuggestionIconsAsync(List<OmniSearchContent> results, CancellationToken token = default)
+        {
             if (results.Count == 0 || token.IsCancellationRequested)
-                return [];
+                return;
 
             var requests = results
                 .Select(x => new ThumbnailRequest
@@ -109,7 +114,7 @@ namespace Froststrap.RobloxInterfaces
             var urls = await Thumbnails.GetThumbnailUrlsAsync(requests, token);
 
             if (token.IsCancellationRequested)
-                return [];
+                return;
 
             await Task.WhenAll(results.Select(async (result, index) =>
             {
@@ -129,8 +134,6 @@ namespace Froststrap.RobloxInterfaces
                     App.Logger.Error(ex);
                 }
             }));
-
-            return results;
         }
 
         public static async Task<List<GameTile>> ContinueAsync()

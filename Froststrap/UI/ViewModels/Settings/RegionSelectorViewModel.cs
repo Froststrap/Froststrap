@@ -1,4 +1,4 @@
-﻿﻿using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input.Platform;
 using Avalonia.Threading;
@@ -40,6 +40,12 @@ namespace Froststrap.UI.ViewModels.Settings
         private bool _hasValidCookies;
         private string _searchQuery = "";
         private OmniSearchContent? _selectedSearchResult;
+        private const int SearchPageSize = 10;
+        private readonly List<OmniSearchContent> _searchBuffer = [];
+        private string? _searchCursor;
+        private bool _searchExhausted = true;
+        private int _searchGeneration;
+        private bool _isLoadingMoreSearch;
         private int _lastFetchProcessedCount;
         private string? _thumbnailUrl;
         private string? _selectedRegionInput;
@@ -224,6 +230,7 @@ namespace Froststrap.UI.ViewModels.Settings
         public IAsyncRelayCommand SearchGamesCommand { get; }
         public IAsyncRelayCommand LoadMoreCommand { get; }
         public IRelayCommand ClearSearchCommand { get; }
+        public IRelayCommand LoadMoreSearchResultsCommand { get; }
         #endregion
 
         public RegionSelectorViewModel()
@@ -243,6 +250,7 @@ namespace Froststrap.UI.ViewModels.Settings
             LoadMoreCommand = new AsyncRelayCommand(LoadMoreAsync, () => ShowLoadMoreButton);
 
             ClearSearchCommand = new RelayCommand(ClearSearch);
+            LoadMoreSearchResultsCommand = new RelayCommand(LoadMoreSearchResults);
 
             App.Cookies.WatchAccount(this, static vm => vm.OnAccountChanged());
 
@@ -254,6 +262,15 @@ namespace Froststrap.UI.ViewModels.Settings
             SearchQuery = string.Empty;
             SearchResults.Clear();
             IsSearchFlyoutOpen = false;
+            ResetSearchPaging();
+        }
+
+        private void ResetSearchPaging()
+        {
+            _searchGeneration++;
+            _searchBuffer.Clear();
+            _searchCursor = null;
+            _searchExhausted = true;
         }
 
         private void OnSearchQueryChanged(string value)
@@ -262,11 +279,14 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 IsSearchFlyoutOpen = false;
                 SearchResults.Clear();
+                ResetSearchPaging();
                 return;
             }
 
             if (long.TryParse(value, out _))
                 PlaceId = value;
+
+            ResetSearchPaging();
 
             _searchDebounceCts?.Cancel();
             _searchDebounceCts?.Dispose();
@@ -715,7 +735,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
             try
             {
-                string link = $"https://www.roblox.com/games/start?placeId={placeId}&gameInstanceId={jobId}";
+                string link = UrlBuilder.BuildApiUrl("www", $"games/start?placeId={placeId}&gameInstanceId={jobId}").ToString();
 
                 var clipboard = TopLevel.GetTopLevel(visual)?.Clipboard;
                 if (clipboard is null)
@@ -735,21 +755,118 @@ namespace Froststrap.UI.ViewModels.Settings
             if (string.IsNullOrWhiteSpace(SearchQuery) || long.TryParse(SearchQuery, out _)) return;
             if (!HasValidCookies) return;
 
+            int generation = ++_searchGeneration;
             IsGameSearchLoading = true;
             try
             {
-                var results = await Experiences.SuggestAsync(SearchQuery, token);
-                if (token.IsCancellationRequested || results.Count == 0) return;
+                var (results, next) = await Experiences.SuggestPageAsync(SearchQuery, null, token);
+
+                if (token.IsCancellationRequested || generation != _searchGeneration)
+                    return;
+
+                _searchBuffer.Clear();
+                _searchBuffer.AddRange(results);
+                _searchCursor = next;
+                _searchExhausted = String.IsNullOrEmpty(next);
+
+                List<OmniSearchContent> chunk = _searchBuffer.Take(SearchPageSize).ToList();
+
+                await Experiences.LoadSuggestionIconsAsync(chunk, token);
+
+                if (token.IsCancellationRequested || generation != _searchGeneration)
+                    return;
 
                 Dispatcher.UIThread.Post(() =>
                 {
+                    if (generation != _searchGeneration)
+                        return;
+
                     SearchResults.Clear();
-                    foreach (var res in results) SearchResults.Add(res);
+                    foreach (var res in chunk) SearchResults.Add(res);
                     IsSearchFlyoutOpen = SearchResults.Count > 0 && !string.IsNullOrWhiteSpace(SearchQuery);
                 }, DispatcherPriority.Background);
             }
             catch (Exception ex) { App.Logger.Error($"Search error: {ex.Message}"); }
             finally { IsGameSearchLoading = false; }
+        }
+
+        public void LoadMoreSearchResults()
+        {
+            if (_isLoadingMoreSearch)
+                return;
+
+            if (String.IsNullOrWhiteSpace(SearchQuery) || long.TryParse(SearchQuery, out _))
+                return;
+
+            if (!HasValidCookies)
+                return;
+
+            if (SearchResults.Count < _searchBuffer.Count || (!_searchExhausted && !String.IsNullOrEmpty(_searchCursor)))
+                _ = LoadMoreSearchResultsAsync();
+        }
+
+        private async Task LoadMoreSearchResultsAsync()
+        {
+            _isLoadingMoreSearch = true;
+            int generation = _searchGeneration;
+
+            try
+            {
+                if (SearchResults.Count >= _searchBuffer.Count && !_searchExhausted && !String.IsNullOrEmpty(_searchCursor))
+                {
+                    var (results, next) = await Experiences.SuggestPageAsync(SearchQuery, _searchCursor);
+
+                    if (generation != _searchGeneration)
+                        return;
+
+                    int added = 0;
+
+                    foreach (var item in results)
+                    {
+                        if (_searchBuffer.Any(x => x.UniverseId == item.UniverseId))
+                            continue;
+
+                        _searchBuffer.Add(item);
+                        added++;
+                    }
+
+                    _searchCursor = next;
+                    _searchExhausted = added == 0 || String.IsNullOrEmpty(next);
+                }
+
+                if (generation != _searchGeneration)
+                    return;
+
+                await AppendNextSearchChunkAsync(generation);
+            }
+            catch (Exception ex) { App.Logger.Error($"Search load more failed: {ex.Message}"); }
+            finally { _isLoadingMoreSearch = false; }
+        }
+
+        private async Task AppendNextSearchChunkAsync(int generation)
+        {
+            if (SearchResults.Count >= _searchBuffer.Count)
+                return;
+
+            int next = Math.Min(_searchBuffer.Count, SearchResults.Count + SearchPageSize);
+            List<OmniSearchContent> chunk = _searchBuffer.GetRange(SearchResults.Count, next - SearchResults.Count);
+
+            await Experiences.LoadSuggestionIconsAsync(chunk, CancellationToken.None);
+
+            if (generation != _searchGeneration)
+                return;
+
+            Dispatcher.UIThread.Post(() =>
+            {
+                if (generation != _searchGeneration)
+                    return;
+
+                foreach (var item in chunk)
+                {
+                    if (!SearchResults.Contains(item))
+                        SearchResults.Add(item);
+                }
+            }, DispatcherPriority.Background);
         }
 
         private static string GetCachePath() => Path.Combine(Paths.Cache, "DataCentersCache.json");

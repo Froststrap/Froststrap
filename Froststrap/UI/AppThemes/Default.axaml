@@ -159,4 +159,18 @@ SPDX-License-Identifier: MPL-2.0
             </ControlTemplate>
         </Setter>
     </Style>
+
+    <Style Selector="TextBox.NoEffect:not(:disabled) /template/ Border#PART_BorderElement">
+        <Setter Property="Background" Value="{Binding $parent[TextBox].Background}" />
+        <Setter Property="BorderBrush" Value="{Binding $parent[TextBox].BorderBrush}" />
+        <Setter Property="BorderThickness" Value="{Binding $parent[TextBox].BorderThickness}" />
+    </Style>
+
+    <Style Selector="TextBox.NoEffect:not(:disabled):pointerover, TextBox.NoEffect:not(:disabled):focus">
+        <Setter Property="Foreground" Value="{DynamicResource TextControlForeground}" />
+    </Style>
+
+    <Style Selector="TextBox.NoEffect:not(:disabled):pointerover /template/ TextBlock#PART_Placeholder, TextBox.NoEffect:not(:disabled):focus /template/ TextBlock#PART_Placeholder">
+        <Setter Property="Foreground" Value="{DynamicResource TextControlPlaceholderForeground}" />
+    </Style>
 </Styles>

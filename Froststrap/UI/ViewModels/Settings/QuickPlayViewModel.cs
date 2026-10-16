@@ -47,6 +47,12 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
     private bool _isSearchFlyoutOpen;
     private bool _isGameSearchLoading;
     private CancellationTokenSource? _searchDebounceCts;
+    private const int SearchPageSize = 10;
+    private readonly List<OmniSearchContent> _searchBuffer = [];
+    private string? _searchCursor;
+    private bool _searchExhausted = true;
+    private int _searchGeneration;
+    private bool _isLoadingMoreSearch;
     private CancellationTokenSource? _gameInfoCts;
     private CancellationTokenSource? _subplacesCts;
     private QuickPlayGameItem? _selectedGame;
@@ -284,6 +290,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
     public ICommand JoinPrivateServerCommand { get; }
     public ICommand JoinBestRegionCommand { get; }
     public ICommand ClearSearchCommand { get; }
+    public ICommand LoadMoreSearchResultsCommand { get; }
     public IRelayCommand JoinServerByIdCommand { get; }
     public IAsyncRelayCommand JoinBestRegionFromSearchCommand { get; }
     public IRelayCommand ShowPrivateServersFromSearchCommand { get; }
@@ -345,6 +352,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
             item == null ? Task.CompletedTask : JoinBestRegionAsync(item.PlaceId, item.Name));
 
         ClearSearchCommand = new RelayCommand(ClearSearch);
+        LoadMoreSearchResultsCommand = new RelayCommand(LoadMoreSearchResults);
         JoinServerByIdCommand = new RelayCommand(JoinServerById, () => CanJoinServerById);
         JoinBestRegionFromSearchCommand = new AsyncRelayCommand(JoinBestRegionFromSearchAsync, () => CanJoinBestRegionFromSearch);
 
@@ -432,6 +440,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
         SwapSearchResults([]);
         SelectedSearchResult = null;
         IsSearchFlyoutOpen = false;
+        ResetSearchPaging();
     }
 
     private void OnSearchQueryChanged(string value)
@@ -445,6 +454,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
             SwapSearchResults([]);
             ClearSelectedGame();
             SelectedSearchResult = null;
+            ResetSearchPaging();
             return;
         }
 
@@ -454,6 +464,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
             SwapSearchResults([]);
             SelectedSearchResult = null;
             _ = LoadSelectedGameInfoAsync(placeId);
+            ResetSearchPaging();
             return;
         }
 
@@ -466,10 +477,20 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
         ClearSelectedGame();
         SelectedSearchResult = null;
 
+        ResetSearchPaging();
+
         _searchDebounceCts?.Cancel();
         _searchDebounceCts?.Dispose();
         _searchDebounceCts = new CancellationTokenSource();
         _ = DebouncedSearchTriggerAsync(_searchDebounceCts.Token);
+    }
+
+    private void ResetSearchPaging()
+    {
+        _searchGeneration++;
+        _searchBuffer.Clear();
+        _searchCursor = null;
+        _searchExhausted = true;
     }
 
     private bool CanJoinServerById =>
@@ -733,21 +754,114 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
         if (string.IsNullOrWhiteSpace(SearchQuery)) return;
         if (long.TryParse(SearchQuery, out _)) return;
 
+        int generation = ++_searchGeneration;
         IsGameSearchLoading = true;
         try
         {
-            var results = await Experiences.SuggestAsync(SearchQuery, token);
-            if (token.IsCancellationRequested || results.Count == 0) return;
+            var (results, next) = await Experiences.SuggestPageAsync(SearchQuery, null, token);
+
+            if (token.IsCancellationRequested || generation != _searchGeneration)
+                return;
+
+            _searchBuffer.Clear();
+            _searchBuffer.AddRange(results);
+            _searchCursor = next;
+            _searchExhausted = String.IsNullOrEmpty(next);
+
+            List<OmniSearchContent> chunk = _searchBuffer.Take(SearchPageSize).ToList();
+
+            await Experiences.LoadSuggestionIconsAsync(chunk, token);
+
+            if (token.IsCancellationRequested || generation != _searchGeneration)
+                return;
 
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
-                if (token.IsCancellationRequested) return;
-                SwapSearchResults([.. results]);
+                if (token.IsCancellationRequested || generation != _searchGeneration)
+                    return;
+
+                SwapSearchResults([.. chunk]);
                 IsSearchFlyoutOpen = SearchResults.Count > 0 && !string.IsNullOrWhiteSpace(SearchQuery);
             }, DispatcherPriority.Background, token);
         }
         catch (Exception ex) { App.Logger.Error($"Search error: {ex.Message}"); }
         finally { IsGameSearchLoading = false; }
+    }
+
+    public void LoadMoreSearchResults()
+    {
+        if (_isLoadingMoreSearch)
+            return;
+
+        if (String.IsNullOrWhiteSpace(SearchQuery) || long.TryParse(SearchQuery, out _))
+            return;
+
+        if (SearchResults.Count < _searchBuffer.Count || (!_searchExhausted && !String.IsNullOrEmpty(_searchCursor)))
+            _ = LoadMoreSearchResultsAsync();
+    }
+
+    private async Task LoadMoreSearchResultsAsync()
+    {
+        _isLoadingMoreSearch = true;
+        int generation = _searchGeneration;
+
+        try
+        {
+            if (SearchResults.Count >= _searchBuffer.Count && !_searchExhausted && !String.IsNullOrEmpty(_searchCursor))
+            {
+                var (results, next) = await Experiences.SuggestPageAsync(SearchQuery, _searchCursor);
+
+                if (generation != _searchGeneration)
+                    return;
+
+                int added = 0;
+
+                foreach (var item in results)
+                {
+                    if (_searchBuffer.Any(x => x.UniverseId == item.UniverseId))
+                        continue;
+
+                    _searchBuffer.Add(item);
+                    added++;
+                }
+
+                _searchCursor = next;
+                _searchExhausted = added == 0 || String.IsNullOrEmpty(next);
+            }
+
+            if (generation != _searchGeneration)
+                return;
+
+            await AppendNextSearchChunkAsync(generation);
+        }
+        catch (Exception ex) { App.Logger.Error($"Search load more failed: {ex.Message}"); }
+        finally { _isLoadingMoreSearch = false; }
+    }
+
+    private async Task AppendNextSearchChunkAsync(int generation)
+    {
+        if (SearchResults.Count >= _searchBuffer.Count)
+            return;
+
+        int next = Math.Min(_searchBuffer.Count, SearchResults.Count + SearchPageSize);
+        List<OmniSearchContent> chunk = _searchBuffer.GetRange(SearchResults.Count, next - SearchResults.Count);
+
+        await Experiences.LoadSuggestionIconsAsync(chunk, CancellationToken.None);
+
+        if (generation != _searchGeneration)
+            return;
+
+        await Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            if (generation != _searchGeneration)
+                return;
+
+            foreach (var item in chunk)
+            {
+                if (!SearchResults.Contains(item))
+                    SearchResults.Add(item);
+            }
+        }, DispatcherPriority.Background);
     }
 
     private async Task LoadRecentGamesAsync()
@@ -854,7 +968,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
             : null;
     }
 
-    private static HttpRequestMessage CookieRequest(HttpMethod method, string url, string cookie)
+    private static HttpRequestMessage CookieRequest(HttpMethod method, Uri url, string cookie)
     {
         var request = new HttpRequestMessage(method, url);
         request.Headers.Add("Cookie", $".ROBLOSECURITY={cookie}");
@@ -868,7 +982,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
 
         var url = UrlBuilder.BuildApiUrl("apis", "search-landing-page-api/v1?sessionId=Meddsam");
 
-        using var request = CookieRequest(HttpMethod.Get, url.ToString(), cookie);
+        using var request = CookieRequest(HttpMethod.Get, url, cookie);
 
         try
         {
@@ -1133,7 +1247,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
 
         var url = UrlBuilder.BuildApiUrl("games", $"v2/users/{userId}/favorite/games?accessFilter=0&limit=100&sortOrder=Desc");
 
-        using var request = CookieRequest(HttpMethod.Get, url.ToString(), cookie);
+        using var request = CookieRequest(HttpMethod.Get, url, cookie);
 
         var response = await Http.SendJson<ApiPageResponse<FavoriteGameData>>(request);
         if (response?.Data == null) return [];
@@ -1214,10 +1328,10 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
             networkType = "4g"
         };
 
-        using var request = CookieRequest(HttpMethod.Post, "https://apis.roblox.com/discovery-api/omni-recommendation", cookie);
+        using var request = CookieRequest(HttpMethod.Post, UrlBuilder.BuildApisUrl("discovery-api/omni-recommendation"), cookie);
         request.Content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
         request.Headers.Add("User-Agent", "Roblox/WinInet");
-        request.Headers.Add("Referer", "https://www.roblox.com/home");
+        request.Headers.Add("Referer", UrlBuilder.BuildApiUrl("www", "home").ToString());
 
         var response = await Http.SendJson<OmniRecommendationResponse>(request);
         if (response?.Sorts == null) return [];

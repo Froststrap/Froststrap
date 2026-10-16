@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.Input;
 using Avalonia.Threading;
 using Avalonia.Media.Imaging;
+using Froststrap.RobloxInterfaces;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
@@ -34,6 +35,12 @@ namespace Froststrap.UI.ViewModels.Settings
         private bool _isSearchFlyoutOpen;
         private OmniSearchContent? _selectedSearchResult;
         private CancellationTokenSource? _searchDebounceCts;
+        private const int SearchPageSize = 10;
+        private readonly List<OmniSearchContent> _searchBuffer = [];
+        private string? _searchCursor;
+        private bool _searchExhausted = true;
+        private int _searchGeneration;
+        private bool _isLoadingMoreSearch;
         private bool _isProcessingSelection;
         private bool _disposed;
         #endregion
@@ -118,6 +125,7 @@ namespace Froststrap.UI.ViewModels.Settings
         public IAsyncRelayCommand CreateGameShortcutCommand { get; }
         public IAsyncRelayCommand SearchGamesCommand { get; }
         public IRelayCommand ClearSearchCommand { get; }
+        public IRelayCommand LoadMoreSearchResultsCommand { get; }
         #endregion
 
         public ShortcutsViewModel()
@@ -129,6 +137,7 @@ namespace Froststrap.UI.ViewModels.Settings
             CreateGameShortcutCommand = new AsyncRelayCommand(CreateGameShortcut);
             SearchGamesCommand = new AsyncRelayCommand(SearchGamesAsync);
             ClearSearchCommand = new RelayCommand(ClearSearch);
+            LoadMoreSearchResultsCommand = new RelayCommand(LoadMoreSearchResults);
         }
 
         private async Task CreateGameShortcut()
@@ -168,6 +177,15 @@ namespace Froststrap.UI.ViewModels.Settings
             SearchResults.Clear();
             IsSearchFlyoutOpen = false;
             SelectedSearchResult = null;
+            ResetSearchPaging();
+        }
+
+        private void ResetSearchPaging()
+        {
+            _searchGeneration++;
+            _searchBuffer.Clear();
+            _searchCursor = null;
+            _searchExhausted = true;
         }
 
         private void OnSearchQueryChanged(string value)
@@ -179,6 +197,8 @@ namespace Froststrap.UI.ViewModels.Settings
                 PlaceId = id.ToString(CultureInfo.InvariantCulture);
                 _ = FetchInfoForId(id, CancellationToken.None);
             }
+
+            ResetSearchPaging();
 
             _searchDebounceCts?.Cancel();
             _searchDebounceCts?.Dispose();
@@ -262,46 +282,34 @@ namespace Froststrap.UI.ViewModels.Settings
                 return;
             }
 
+            int generation = ++_searchGeneration;
             IsGameSearchLoading = true;
             try
             {
-                var results = await GameSearching.GetGameSearchResultsAsync(SearchQuery);
+                var (results, next) = await Experiences.SuggestPageAsync(SearchQuery);
 
-                if (results != null && results.Count > 0)
-                {
-                    var thumbRequests = results.Select(x => new ThumbnailRequest
-                    {
-                        TargetId = (ulong)x.RootPlaceId,
-                        Type = ThumbnailType.PlaceIcon,
-                        Size = ThumbnailSize.Large,
-                        Format = ThumbnailFormat.Png,
-                        IsCircular = false
-                    }).ToList();
+                if (generation != _searchGeneration)
+                    return;
 
-                    var fetchedUrls = await Thumbnails.GetThumbnailUrlsAsync(thumbRequests, CancellationToken.None);
+                _searchBuffer.Clear();
+                _searchBuffer.AddRange(results);
+                _searchCursor = next;
+                _searchExhausted = String.IsNullOrEmpty(next);
 
-                    for (int i = 0; i < results.Count; i++)
-                    {
-                        if (fetchedUrls != null && i < fetchedUrls.Length && !string.IsNullOrEmpty(fetchedUrls[i]))
-                        {
-                            try
-                            {
-                                var response = await App.HttpClient.GetByteArrayAsync(new Uri(fetchedUrls[i]!));
-                                using var ms = new MemoryStream(response);
-                                results[i].ThumbnailBitmap = new Bitmap(ms);
-                            }
-                            catch { }
-                        }
-                    }
-                }
+                List<OmniSearchContent> chunk = _searchBuffer.Take(SearchPageSize).ToList();
+
+                await Experiences.LoadSuggestionIconsAsync(chunk);
+
+                if (generation != _searchGeneration)
+                    return;
 
                 Dispatcher.UIThread.Post(() =>
                 {
+                    if (generation != _searchGeneration)
+                        return;
+
                     SearchResults.Clear();
-                    if (results != null)
-                    {
-                        foreach (var res in results) SearchResults.Add(res);
-                    }
+                    foreach (var res in chunk) SearchResults.Add(res);
                     IsSearchFlyoutOpen = SearchResults.Count > 0 && !string.IsNullOrWhiteSpace(SearchQuery);
                 }, DispatcherPriority.Background);
             }
@@ -313,6 +321,82 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 IsGameSearchLoading = false;
             }
+        }
+
+        public void LoadMoreSearchResults()
+        {
+            if (_isLoadingMoreSearch)
+                return;
+
+            if (String.IsNullOrWhiteSpace(SearchQuery) || long.TryParse(SearchQuery, out _))
+                return;
+
+            if (SearchResults.Count < _searchBuffer.Count || (!_searchExhausted && !String.IsNullOrEmpty(_searchCursor)))
+                _ = LoadMoreSearchResultsAsync();
+        }
+
+        private async Task LoadMoreSearchResultsAsync()
+        {
+            _isLoadingMoreSearch = true;
+            int generation = _searchGeneration;
+
+            try
+            {
+                if (SearchResults.Count >= _searchBuffer.Count && !_searchExhausted && !String.IsNullOrEmpty(_searchCursor))
+                {
+                    var (results, next) = await Experiences.SuggestPageAsync(SearchQuery, _searchCursor);
+
+                    if (generation != _searchGeneration)
+                        return;
+
+                    int added = 0;
+
+                    foreach (var item in results)
+                    {
+                        if (_searchBuffer.Any(x => x.UniverseId == item.UniverseId))
+                            continue;
+
+                        _searchBuffer.Add(item);
+                        added++;
+                    }
+
+                    _searchCursor = next;
+                    _searchExhausted = added == 0 || String.IsNullOrEmpty(next);
+                }
+
+                if (generation != _searchGeneration)
+                    return;
+
+                await AppendNextSearchChunkAsync(generation);
+            }
+            catch (Exception ex) { App.Logger.Error($"Search load more failed: {ex.Message}"); }
+            finally { _isLoadingMoreSearch = false; }
+        }
+
+        private async Task AppendNextSearchChunkAsync(int generation)
+        {
+            if (SearchResults.Count >= _searchBuffer.Count)
+                return;
+
+            int next = Math.Min(_searchBuffer.Count, SearchResults.Count + SearchPageSize);
+            List<OmniSearchContent> chunk = _searchBuffer.GetRange(SearchResults.Count, next - SearchResults.Count);
+
+            await Experiences.LoadSuggestionIconsAsync(chunk, CancellationToken.None);
+
+            if (generation != _searchGeneration)
+                return;
+
+            Dispatcher.UIThread.Post(() =>
+            {
+                if (generation != _searchGeneration)
+                    return;
+
+                foreach (var item in chunk)
+                {
+                    if (!SearchResults.Contains(item))
+                        SearchResults.Add(item);
+                }
+            }, DispatcherPriority.Background);
         }
 
         private static async Task<Bitmap?> LoadBitmapFromUrl(string? url, CancellationToken token = default)

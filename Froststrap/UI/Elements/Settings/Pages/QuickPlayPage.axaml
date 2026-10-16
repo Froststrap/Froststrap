@@ -391,6 +391,7 @@
                                         VerticalAlignment="Center"
                                         FilterMode="None"
                                         IsDropDownOpen="{Binding IsSearchFlyoutOpen, Mode=TwoWay}"
+                                        ui:AutoCompleteDropdownBehaviourAttacher.LoadMoreCommand="{Binding LoadMoreSearchResultsCommand}"
                                         ItemsSource="{Binding SearchResults}"
                                         PlaceholderText="{x:Static resources:Strings.Menu_RegionSelector_FindGame}"
                                         SelectedItem="{Binding SelectedSearchResult, Mode=TwoWay}"

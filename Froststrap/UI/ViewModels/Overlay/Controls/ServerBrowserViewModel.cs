@@ -1,4 +1,4 @@
-﻿﻿using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input.Platform;
 using Avalonia.Threading;
@@ -14,7 +14,6 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 {
     internal class ServerBrowserViewModel : NotifyPropertyChangedViewModel, IDisposable
     {
-        private const string RobloxWebDeeplinkBase = "https://www.roblox.com/games/start";
         private const int PageSize = 60;
 
         private static readonly string[] CurrentServerProperties =
@@ -523,7 +522,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
             try
             {
-                string link = $"{RobloxWebDeeplinkBase}?placeId={_activityWatcher.Data.PlaceId}&gameInstanceId={server.JobId}";
+                string link = UrlBuilder.BuildApiUrl("www", $"games/start?placeId={_activityWatcher.Data.PlaceId}&gameInstanceId={server.JobId}").ToString();
 
                 var clipboard = TopLevel.GetTopLevel(visual)?.Clipboard;
                 if (clipboard is null) return;

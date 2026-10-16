@@ -3,8 +3,6 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-using Froststrap.RobloxInterfaces;
-
 namespace Froststrap.Models.Entities
 {
     internal static class GameSearching
@@ -21,7 +19,7 @@ namespace Froststrap.Models.Entities
 
             try
             {
-                Uri omniSearchUrl = new($"https://apis.{Deployment.RobloxDomain}/search-api/omni-search?searchQuery={Uri.EscapeDataString(searchQuery)}&sessionid=0&pageType=Game");
+                Uri omniSearchUrl = UrlBuilder.BuildApisUrl($"search-api/omni-search?searchQuery={Uri.EscapeDataString(searchQuery)}&sessionid=0&pageType=Game");
 
                 var response = await Http.GetJson<OmniSearchResponse>(omniSearchUrl);
 
@@ -76,7 +74,7 @@ namespace Froststrap.Models.Entities
             try
             {
                 string cursorParam = string.IsNullOrEmpty(cursor) ? "" : $"&pageToken={Uri.EscapeDataString(cursor)}";
-                Uri url = new($"https://apis.{Deployment.RobloxDomain}/search-api/omni-search?searchQuery={Uri.EscapeDataString(keyword)}&sessionId=0&pageType=Game{cursorParam}");
+                Uri url = UrlBuilder.BuildApisUrl($"search-api/omni-search?searchQuery={Uri.EscapeDataString(keyword)}&sessionId=0&pageType=Game{cursorParam}");
 
                 var response = await Http.GetJson<System.Text.Json.JsonDocument>(url);
 

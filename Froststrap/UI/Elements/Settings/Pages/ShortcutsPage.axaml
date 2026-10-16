@@ -123,6 +123,7 @@ SPDX-License-Identifier: MPL-2.0
                                          SelectedItem="{Binding SelectedSearchResult, Mode=TwoWay}"
                                          FilterMode="None"
                                          IsDropDownOpen="{Binding IsSearchFlyoutOpen, Mode=TwoWay}"
+                                         ui:AutoCompleteDropdownBehaviourAttacher.LoadMoreCommand="{Binding LoadMoreSearchResultsCommand}"
                                          PlaceholderText="{x:Static resources:Strings.Menu_RegionSelector_FindGame}">
                             <AutoCompleteBox.ItemTemplate>
                                 <DataTemplate DataType="apis:OmniSearchContent">

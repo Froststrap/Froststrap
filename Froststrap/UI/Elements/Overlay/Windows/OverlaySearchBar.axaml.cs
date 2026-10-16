@@ -25,6 +25,7 @@ namespace Froststrap.UI.Elements.Overlay
     {
         private const int HotkeyId = 9001;
         private const int WM_HOTKEY = 0x0312;
+        private const double LoadMoreThreshold = 120;
 
         private static readonly PixelPoint Offscreen = new(-32000, -32000);
 
@@ -53,7 +54,23 @@ namespace Froststrap.UI.Elements.Overlay
             _viewModel.CloseRequested += OnCloseRequested;
             _viewModel.FocusInputRequested += OnFocusInputRequested;
 
+            ResultList.AddHandler(ScrollViewer.ScrollChangedEvent, OnResultListScrolled);
+
             Deactivated += OnDeactivated;
+        }
+
+        private void OnResultListScrolled(object? sender, ScrollChangedEventArgs e)
+        {
+            if (e.Source is not ScrollViewer viewer || viewer.Extent.Height <= 0)
+                return;
+
+            if (e.OffsetDelta.Y < 0)
+                return;
+
+            if (viewer.Offset.Y + viewer.Viewport.Height < viewer.Extent.Height - LoadMoreThreshold)
+                return;
+
+            _viewModel.ShowMoreGames();
         }
 
         public void Prepare(IOverlayHost? host)

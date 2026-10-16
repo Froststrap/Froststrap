@@ -18,11 +18,16 @@ namespace Froststrap.UI.ViewModels.Overlay
     internal class OverlaySearchBarViewModel : NotifyPropertyChangedViewModel, IDisposable
     {
         private static readonly TimeSpan SearchDelay = TimeSpan.FromMilliseconds(350);
-        private const int MaxResults = 30;
+        private const int PageSize = 10;
 
         private readonly DispatcherTimer _debounce;
         private readonly CancellationTokenSource _disposeCts = new();
         private readonly HashSet<long> _joiningUniverses = [];
+        private readonly List<GameTile> _searchBuffer = [];
+        private string? _nextCursor;
+        private bool _hasMorePages;
+        private int _visibleCount;
+        private bool _loadingMore;
         private int _generation;
 
         private bool _shown;
@@ -164,9 +169,27 @@ namespace Froststrap.UI.ViewModels.Overlay
 
                 _isBusy = value;
                 OnPropertyChanged(nameof(IsBusy));
+                OnPropertyChanged(nameof(IsGamesLoading));
                 Refreshed();
             }
         }
+
+        private bool _isLoadingMore;
+        public bool IsLoadingMore
+        {
+            get => _isLoadingMore;
+            private set
+            {
+                if (_isLoadingMore == value)
+                    return;
+
+                _isLoadingMore = value;
+                OnPropertyChanged(nameof(IsLoadingMore));
+                OnPropertyChanged(nameof(IsGamesLoading));
+            }
+        }
+
+        public bool IsGamesLoading => IsBusy || IsLoadingMore;
 
         public bool ShowResults => Results.Count > 0;
 
@@ -250,15 +273,13 @@ namespace Froststrap.UI.ViewModels.Overlay
             _shown = true;
             Refreshed();
 
+            SelectedTab = OverlaySearchTab.Games;
+
+            Query = String.Empty;
+
             ApplyJoiningState();
 
-            if (_selectedTab == OverlaySearchTab.People)
-            {
-                People.SetQuery(_query);
-                return;
-            }
-
-            if (String.IsNullOrWhiteSpace(_query) && Results.Count == 0)
+            if (!IsBusy && String.IsNullOrWhiteSpace(_query) && Results.Count == 0)
                 _ = LoadContinueAsync();
         }
 
@@ -281,9 +302,16 @@ namespace Froststrap.UI.ViewModels.Overlay
             int next = SelectedIndex + delta;
 
             if (next < 0)
+            {
                 next = Results.Count - 1;
+            }
             else if (next >= Results.Count)
-                next = 0;
+            {
+                AppendBuffered();
+
+                if (next >= Results.Count)
+                    next = 0;
+            }
 
             SelectedIndex = next;
         }
@@ -443,14 +471,15 @@ namespace Froststrap.UI.ViewModels.Overlay
                 if (generation != _generation || !String.IsNullOrWhiteSpace(_query))
                     return;
 
-                Results.ReplaceAll(tiles);
-                ApplyJoiningState();
+                _searchBuffer.Clear();
+                _searchBuffer.AddRange(tiles);
+                _nextCursor = null;
+                _hasMorePages = false;
 
-                foreach (GameTile tile in tiles)
-                    _ = tile.LoadIconAsync();
+                ResetVisible();
 
-                _showingContinue = tiles.Count > 0;
-                SelectedIndex = tiles.Count > 0 ? 0 : -1;
+                _showingContinue = Results.Count > 0;
+                SelectedIndex = Results.Count > 0 ? 0 : -1;
             }
             catch (Exception ex)
             {
@@ -479,19 +508,20 @@ namespace Froststrap.UI.ViewModels.Overlay
 
             try
             {
-                GameSearchPage page = await Experiences.SearchPageAsync(query.Trim(), null, MaxResults);
+                GameSearchPage page = await Experiences.SearchPageAsync(query.Trim(), null);
 
                 if (generation != _generation)
                     return;
 
-                Results.ReplaceAll(page.Tiles);
-                ApplyJoiningState();
+                _searchBuffer.Clear();
+                _searchBuffer.AddRange(page.Tiles);
+                _nextCursor = page.NextCursor;
+                _hasMorePages = !String.IsNullOrEmpty(page.NextCursor);
 
-                foreach (GameTile tile in page.Tiles)
-                    _ = tile.LoadIconAsync();
+                ResetVisible();
 
                 _showingContinue = false;
-                SelectedIndex = page.Tiles.Count > 0 ? 0 : -1;
+                SelectedIndex = Results.Count > 0 ? 0 : -1;
             }
             catch (Exception ex)
             {
@@ -514,8 +544,98 @@ namespace Froststrap.UI.ViewModels.Overlay
             }
         }
 
+        public void ShowMoreGames()
+        {
+            if (_selectedTab != OverlaySearchTab.Games || ShowPrivateServers || IsBusy)
+                return;
+
+            int appended = AppendBuffered();
+
+            if (appended == 0 && _hasMorePages && !_loadingMore && !String.IsNullOrWhiteSpace(_query))
+                _ = LoadMoreSearchAsync();
+        }
+
+        private int AppendBuffered()
+        {
+            if (_visibleCount >= _searchBuffer.Count)
+                return 0;
+
+            int next = Math.Min(_searchBuffer.Count, _visibleCount + PageSize);
+            List<GameTile> chunk = _searchBuffer.GetRange(_visibleCount, next - _visibleCount);
+
+            Results.AddRange(chunk);
+            _visibleCount = next;
+
+            ApplyJoiningState();
+
+            foreach (GameTile tile in chunk)
+                _ = tile.LoadIconAsync();
+
+            return chunk.Count;
+        }
+
+        private async Task LoadMoreSearchAsync()
+        {
+            _loadingMore = true;
+            IsLoadingMore = true;
+
+            int generation = _generation;
+
+            try
+            {
+                GameSearchPage page = await Experiences.SearchPageAsync(_query.Trim(), _nextCursor);
+
+                if (generation != _generation)
+                    return;
+
+                int added = 0;
+
+                foreach (GameTile tile in page.Tiles)
+                {
+                    if (_searchBuffer.Any(x => x.UniverseId == tile.UniverseId))
+                        continue;
+
+                    _searchBuffer.Add(tile);
+                    added++;
+                }
+
+                _nextCursor = page.NextCursor;
+                _hasMorePages = added > 0 && !String.IsNullOrEmpty(page.NextCursor);
+
+                AppendBuffered();
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error("Search bar failed to load more results");
+                App.Logger.Error(ex);
+
+                _hasMorePages = false;
+            }
+            finally
+            {
+                _loadingMore = false;
+                IsLoadingMore = false;
+            }
+        }
+
+        private void ResetVisible()
+        {
+            _visibleCount = Math.Min(PageSize, _searchBuffer.Count);
+
+            Results.ReplaceAll([.. _searchBuffer.Take(_visibleCount)]);
+            ApplyJoiningState();
+
+            foreach (GameTile tile in Results)
+                _ = tile.LoadIconAsync();
+        }
+
         private void Clear()
         {
+            _searchBuffer.Clear();
+            _nextCursor = null;
+            _hasMorePages = false;
+            _visibleCount = 0;
+
             Results.ReplaceAll([]);
             SelectedIndex = -1;
             Refreshed();

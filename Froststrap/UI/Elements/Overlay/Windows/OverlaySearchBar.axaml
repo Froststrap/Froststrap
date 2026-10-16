@@ -132,6 +132,7 @@ SPDX-License-Identifier: MPL-2.0
 
                     <TextBox x:Name="SearchInput"
                              Grid.Column="1"
+                             Classes="NoEffect"
                              Margin="10,0,10,0"
                              FontSize="15"
                              Background="Transparent"
@@ -334,6 +335,15 @@ SPDX-License-Identifier: MPL-2.0
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
                         </ListBox>
+
+                        <ui:FAProgressRing Grid.Row="1"
+                                           Width="28" Height="28"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           IsIndeterminate="True"
+                                           IsActive="{Binding IsGamesLoading}"
+                                           IsVisible="{Binding IsGamesLoading}"
+                                           Foreground="{DynamicResource SystemAccentColor}" />
 
                         <TextBlock Grid.Row="1"
                                    Text="{Binding EmptyText}"

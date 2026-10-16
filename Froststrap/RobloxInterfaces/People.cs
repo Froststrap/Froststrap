@@ -191,7 +191,7 @@ namespace Froststrap.RobloxInterfaces
             if (me == 0 || token.IsCancellationRequested)
                 return [];
 
-            await FriendListLock.WaitAsync();
+            await FriendListLock.WaitAsync(token);
 
             try
             {

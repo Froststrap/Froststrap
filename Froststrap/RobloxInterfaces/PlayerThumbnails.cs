@@ -1,4 +1,4 @@
-﻿﻿using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 
 namespace Froststrap.RobloxInterfaces
 {
@@ -12,7 +12,7 @@ namespace Froststrap.RobloxInterfaces
 
         private const int HighestUserId = 200_000_000;
 
-        private static readonly Uri BatchUrl = new("https://thumbnails.roblox.com/v1/batch");
+        private static readonly Uri BatchUrl = UrlBuilder.BuildApiUrl("thumbnails", "v1/batch");
 
         private static readonly Lazy<Task<IReadOnlyList<string>>> Pool = new(
             FetchPoolCoreAsync,
@@ -82,7 +82,7 @@ namespace Froststrap.RobloxInterfaces
                 foreach (long[] chunk in ids.Chunk(BatchSize))
                 {
                     var response = await Http.GetJson<ApiArrayResponse<ThumbnailResponse>>(
-                        new Uri($"https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds={String.Join(',', chunk)}&size={Size}&format=Png&isCircular=false"));
+                        UrlBuilder.BuildApiUrl("thumbnails", $"v1/users/avatar-headshot?userIds={String.Join(',', chunk)}&size={Size}&format=Png&isCircular=false"));
 
                     icons.AddRange(response.Data
                         .Where(x => x.State == "Completed" && !String.IsNullOrEmpty(x.ImageUrl))
