@@ -1,4 +1,4 @@
-﻿﻿﻿using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -10,10 +10,12 @@ using Froststrap.Integrations;
 using Froststrap.Integrations.Overlay;
 using Froststrap.Models.Overlay;
 using Froststrap.UI.Elements.Overlay.Controls;
+using Froststrap.UI.Utility;
 using Froststrap.UI.ViewModels.Overlay;
 using System.Collections.Generic;
 using Windows.Win32;
 using Windows.Win32.Foundation;
+using Windows.Win32.Graphics.Dwm;
 using Windows.Win32.Graphics.Gdi;
 using Windows.Win32.UI.Input.KeyboardAndMouse;
 using Windows.Win32.UI.WindowsAndMessaging;
@@ -43,6 +45,7 @@ namespace Froststrap.UI.Elements.Overlay
         private bool _presenting;
         private bool _panelsWired;
         private bool _preloading = true;
+        private bool _cloaked;
         private bool _warmScheduled;
         private bool _disposed;
 
@@ -307,6 +310,8 @@ namespace Froststrap.UI.Elements.Overlay
 
             Position = Offscreen;
 
+            SetCloaked(true);
+
             InitialiseWin32();
         }
 
@@ -427,13 +432,10 @@ namespace Froststrap.UI.Elements.Overlay
         {
             _presenting = true;
 
-            if (_preloading)
-            {
-                _preloading = false;
+            _preloading = false;
 
-                if (_lastBounds is OverlayBounds bounds)
-                    Position = new PixelPoint((int)bounds.Rect.Left, (int)bounds.Rect.Top);
-            }
+            if (_lastBounds is OverlayBounds bounds)
+                Position = new PixelPoint((int)bounds.Rect.Left, (int)bounds.Rect.Top);
 
             if (Opacity < 1)
                 Opacity = 1;
@@ -443,6 +445,8 @@ namespace Froststrap.UI.Elements.Overlay
 
             if (_overlay?.IsGameForeground() == false)
                 _overlay.FocusGame();
+
+            SetCloaked(false);
 
             if (!IsVisible)
                 Show();
@@ -559,16 +563,70 @@ namespace Froststrap.UI.Elements.Overlay
             await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Render);
             await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Loaded);
 
-            if (!_preloading)
+            if (_disposed || !_preloading)
                 return;
 
-            _preloading = false;
+            SizeForBounds();
 
-            if (_lastBounds is OverlayBounds bounds)
-                Position = new PixelPoint((int)bounds.Rect.Left, (int)bounds.Rect.Top);
+            Opacity = 1;
+
+            await Rendering.WaitForFrameAsync();
+
+            if (_disposed || !_preloading)
+                return;
 
             Hide();
-            Opacity = 1;
+
+            SetCloaked(false);
+
+            _preloading = false;
+        }
+
+        private void SizeForBounds()
+        {
+            if (_lastBounds is not OverlayBounds bounds)
+                return;
+
+            double scaling = GetBoundsScaling(bounds);
+
+            Width = Math.Max(bounds.Rect.Width / scaling, 0);
+            Height = Math.Max(bounds.Rect.Height / scaling, 0);
+
+            Position = Offscreen;
+        }
+
+        private double GetBoundsScaling(OverlayBounds bounds)
+        {
+            PixelPoint center = new(
+                (int)(bounds.Rect.Left + (bounds.Rect.Width / 2)),
+                (int)(bounds.Rect.Top + (bounds.Rect.Height / 2)));
+
+            var screen = Screens.ScreenFromPoint(center);
+
+            if (screen is not null && screen.Scaling > 0)
+                return screen.Scaling;
+
+            return RenderScaling > 0 ? RenderScaling : 1;
+        }
+
+        private void SetCloaked(bool cloaked)
+        {
+            if (!OperatingSystem.IsWindows() || _cloaked == cloaked)
+                return;
+
+            var handle = TryGetPlatformHandle();
+
+            if (handle is null)
+                return;
+
+            _cloaked = cloaked;
+
+            unsafe
+            {
+                int value = cloaked ? 1 : 0;
+
+                _ = PInvoke.DwmSetWindowAttribute(new HWND(handle.Handle), DWMWINDOWATTRIBUTE.DWMWA_CLOAK, &value, sizeof(int));
+            }
         }
 
         private void InitialiseWin32()

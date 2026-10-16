@@ -4,11 +4,14 @@
 
 using Avalonia.Controls;
 using Avalonia.Media;
+using Avalonia.Rendering.Composition;
 
 namespace Froststrap.UI.Utility
 {
     internal static class Rendering
     {
+        private static readonly TimeSpan FrameTimeout = TimeSpan.FromSeconds(2);
+
         public static double GetTextWidth(TextBlock textBlock)
         {
             if (textBlock == null) return 0;
@@ -35,6 +38,30 @@ namespace Froststrap.UI.Utility
             catch (Exception)
             {
                 return text.Length * fontSize * 0.6;
+            }
+        }
+
+        public static async Task WaitForFrameAsync()
+        {
+            Compositor? compositor = Compositor.TryGetDefaultCompositor();
+
+            if (compositor is null)
+                return;
+
+            try
+            {
+                Task rendered = compositor.RequestCompositionBatchCommitAsync().Rendered;
+
+                await rendered.WaitAsync(FrameTimeout);
+            }
+            catch (TimeoutException)
+            {
+                App.Logger.Warn("Timed out waiting for a rendered frame");
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Warn("Failed waiting for a rendered frame");
+                App.Logger.Error(ex);
             }
         }
     }

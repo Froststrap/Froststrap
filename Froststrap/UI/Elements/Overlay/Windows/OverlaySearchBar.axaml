@@ -105,9 +105,9 @@ SPDX-License-Identifier: MPL-2.0
         </Style>
     </Window.Styles>
 
-    <Grid x:Name="Scrim"
-          Background="#66000000"
-          PointerPressed="ScrimClicked">
+    <Border x:Name="Scrim"
+            Background="#B3000000"
+            PointerPressed="ScrimClicked">
 
         <Border Width="720"
                 MaxHeight="600"
@@ -395,5 +395,5 @@ SPDX-License-Identifier: MPL-2.0
                 </Border>
             </Grid>
         </Border>
-    </Grid>
+    </Border>
 </Window>

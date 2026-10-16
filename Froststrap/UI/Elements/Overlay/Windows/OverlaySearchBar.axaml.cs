@@ -12,10 +12,12 @@ using Avalonia.Win32.Input;
 using Froststrap.Integrations.Overlay;
 using Froststrap.Integrations.OverlayModules;
 using Froststrap.Models.Overlay;
+using Froststrap.UI.Utility;
 using Froststrap.UI.ViewModels.Overlay;
 
 using Windows.Win32;
 using Windows.Win32.Foundation;
+using Windows.Win32.Graphics.Dwm;
 
 using WindowState = Avalonia.Controls.WindowState;
 
@@ -36,6 +38,7 @@ namespace Froststrap.UI.Elements.Overlay
         private HWND _hwnd;
         private bool _prepared;
         private bool _preloading = true;
+        private bool _cloaked;
         private bool _warmScheduled;
         private bool _presenting;
         private bool _disposed;
@@ -93,6 +96,8 @@ namespace Froststrap.UI.Elements.Overlay
 
             Position = Offscreen;
 
+            SetCloaked(true);
+
             if (_host is not null)
             {
                 _host.BoundsChanged += OnOverlayBoundsChanged;
@@ -136,11 +141,65 @@ namespace Froststrap.UI.Elements.Overlay
 
         private void ApplyBounds(OverlayBounds bounds)
         {
-            double scaling = RenderScaling > 0 ? RenderScaling : 1;
-
             Position = new PixelPoint((int)bounds.Rect.Left, (int)bounds.Rect.Top);
+
+            ApplySize(bounds);
+        }
+
+        private void ApplySize(OverlayBounds bounds)
+        {
+            double scaling = GetBoundsScaling(bounds);
+
             Width = Math.Max(bounds.Rect.Width / scaling, 0);
             Height = Math.Max(bounds.Rect.Height / scaling, 0);
+
+            double radius = bounds.IsMaximised ? 0 : 8;
+
+            Scrim.CornerRadius = new CornerRadius(0, 0, radius, radius);
+        }
+
+        private void SizeForBounds()
+        {
+            if (_lastBounds is not OverlayBounds bounds)
+                return;
+
+            ApplySize(bounds);
+
+            Position = Offscreen;
+        }
+
+        private double GetBoundsScaling(OverlayBounds bounds)
+        {
+            PixelPoint center = new(
+                (int)(bounds.Rect.Left + (bounds.Rect.Width / 2)),
+                (int)(bounds.Rect.Top + (bounds.Rect.Height / 2)));
+
+            var screen = Screens.ScreenFromPoint(center);
+
+            if (screen is not null && screen.Scaling > 0)
+                return screen.Scaling;
+
+            return RenderScaling > 0 ? RenderScaling : 1;
+        }
+
+        private void SetCloaked(bool cloaked)
+        {
+            if (!OperatingSystem.IsWindows() || _cloaked == cloaked)
+                return;
+
+            var handle = TryGetPlatformHandle();
+
+            if (handle is null)
+                return;
+
+            _cloaked = cloaked;
+
+            unsafe
+            {
+                int value = cloaked ? 1 : 0;
+
+                _ = PInvoke.DwmSetWindowAttribute(new HWND(handle.Handle), DWMWINDOWATTRIBUTE.DWMWA_CLOAK, &value, sizeof(int));
+            }
         }
 
         private async Task WarmUpAsync()
@@ -149,16 +208,23 @@ namespace Froststrap.UI.Elements.Overlay
             await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Render);
             await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Loaded);
 
-            if (!_preloading)
+            if (_disposed || !_preloading)
                 return;
 
-            _preloading = false;
+            SizeForBounds();
 
-            if (_lastBounds is OverlayBounds bounds)
-                ApplyBounds(bounds);
+            Opacity = 1;
+
+            await Rendering.WaitForFrameAsync();
+
+            if (_disposed || !_preloading)
+                return;
 
             Hide();
-            Opacity = 1;
+
+            SetCloaked(false);
+
+            _preloading = false;
         }
 
         public void Present()
@@ -168,6 +234,8 @@ namespace Froststrap.UI.Elements.Overlay
 
             if (_host?.IsGameForeground() == false)
                 _host.FocusGame();
+
+            SetCloaked(false);
 
             if (!IsVisible)
                 Show();
