@@ -2455,6 +2455,42 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dark.
+        /// </summary>
+        public static string Enums_KeyOverlayStyle_Dark {
+            get {
+                return ResourceManager.GetString("Enums.KeyOverlayStyle.Dark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Light.
+        /// </summary>
+        public static string Enums_KeyOverlayStyle_Light {
+            get {
+                return ResourceManager.GetString("Enums.KeyOverlayStyle.Light", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Minecraft (Dark).
+        /// </summary>
+        public static string Enums_KeyOverlayStyle_MinecraftDark {
+            get {
+                return ResourceManager.GetString("Enums.KeyOverlayStyle.MinecraftDark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Minecraft (Light).
+        /// </summary>
+        public static string Enums_KeyOverlayStyle_MinecraftLight {
+            get {
+                return ResourceManager.GetString("Enums.KeyOverlayStyle.MinecraftLight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Froststrap (Opaque).
         /// </summary>
         public static string Enums_BootstrapperStyle_FluentDialog {
@@ -6756,6 +6792,186 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show your movement keys, mouse buttons and clicks per second on screen while you play..
+        /// </summary>
+        public static string Menu_Integrations_KeyOverlay_Description {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.KeyOverlay.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Key Overlay.
+        /// </summary>
+        public static string Menu_Integrations_KeyOverlay_Title {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.KeyOverlay.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Color used for pressed keys and mouse buttons. Defaults to your system accent color..
+        /// </summary>
+        public static string Menu_Integrations_KeyOverlayHighlightColor_Description {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.KeyOverlayHighlightColor.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Highlight color.
+        /// </summary>
+        public static string Menu_Integrations_KeyOverlayHighlightColor_Title {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.KeyOverlayHighlightColor.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change the key combination that shows or hides the key overlay..
+        /// </summary>
+        public static string Menu_Integrations_KeyOverlayHotkey_Description {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.KeyOverlayHotkey.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Key overlay shortcut.
+        /// </summary>
+        public static string Menu_Integrations_KeyOverlayHotkey_Title {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.KeyOverlayHotkey.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Press this shortcut to make the key overlay movable, then drag it anywhere inside the game window..
+        /// </summary>
+        public static string Menu_Integrations_KeyOverlayMoveHotkey_Description {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.KeyOverlayMoveHotkey.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move overlay shortcut.
+        /// </summary>
+        public static string Menu_Integrations_KeyOverlayMoveHotkey_Title {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.KeyOverlayMoveHotkey.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scale of the key overlay, from smaller to larger..
+        /// </summary>
+        public static string Menu_Integrations_KeyOverlayScale_Description {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.KeyOverlayScale.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keystroke size.
+        /// </summary>
+        public static string Menu_Integrations_KeyOverlayScale_Title {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.KeyOverlayScale.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preset look of the key overlay..
+        /// </summary>
+        public static string Menu_Integrations_KeyOverlayStyle_Description {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.KeyOverlayStyle.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Overlay style.
+        /// </summary>
+        public static string Menu_Integrations_KeyOverlayStyle_Title {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.KeyOverlayStyle.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show clicks per second for the left mouse button..
+        /// </summary>
+        public static string Menu_Integrations_KeyOverlayShowCpsLeft_Description {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.KeyOverlayShowCpsLeft.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Left click CPS.
+        /// </summary>
+        public static string Menu_Integrations_KeyOverlayShowCpsLeft_Title {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.KeyOverlayShowCpsLeft.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show clicks per second for the right mouse button..
+        /// </summary>
+        public static string Menu_Integrations_KeyOverlayShowCpsRight_Description {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.KeyOverlayShowCpsRight.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Right click CPS.
+        /// </summary>
+        public static string Menu_Integrations_KeyOverlayShowCpsRight_Title {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.KeyOverlayShowCpsRight.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show the movement key cluster. The keys follow your Soft Key profile..
+        /// </summary>
+        public static string Menu_Integrations_KeyOverlayShowKeys_Description {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.KeyOverlayShowKeys.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Movement keys.
+        /// </summary>
+        public static string Menu_Integrations_KeyOverlayShowKeys_Title {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.KeyOverlayShowKeys.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show the mouse button overlay..
+        /// </summary>
+        public static string Menu_Integrations_KeyOverlayShowMouse_Description {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.KeyOverlayShowMouse.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mouse buttons.
+        /// </summary>
+        public static string Menu_Integrations_KeyOverlayShowMouse_Title {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.KeyOverlayShowMouse.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Overlay.
         /// </summary>
         public static string Menu_Integrations_Overlay_Title {
@@ -6869,6 +7085,42 @@ namespace Froststrap.Resources {
         public static string Menu_Integrations_RPC_Studio_Description {
             get {
                 return ResourceManager.GetString("Menu.Integrations.RPC.Studio.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show a quick game search bar over the game window..
+        /// </summary>
+        public static string Menu_Integrations_SearchBar_Description {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.SearchBar.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search bar.
+        /// </summary>
+        public static string Menu_Integrations_SearchBar_Title {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.SearchBar.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change the key combination that opens the search bar..
+        /// </summary>
+        public static string Menu_Integrations_SearchBarHotkey_Description {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.SearchBarHotkey.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search bar shortcut.
+        /// </summary>
+        public static string Menu_Integrations_SearchBarHotkey_Title {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.SearchBarHotkey.Title", resourceCulture);
             }
         }
         

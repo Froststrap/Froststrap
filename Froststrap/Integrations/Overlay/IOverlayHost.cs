@@ -15,6 +15,7 @@ namespace Froststrap.Integrations.Overlay
         RealtimeMessaging Messaging { get; }
         ActivityWatcher? ActivityWatcher { get; }
         FriendPresence Friends { get; }
+        int ProcessId { get; }
 
         void Start();
         void SyncBounds();

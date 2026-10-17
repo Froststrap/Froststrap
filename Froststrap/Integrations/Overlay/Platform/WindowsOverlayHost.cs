@@ -37,6 +37,7 @@ namespace Froststrap.Integrations.Overlay.Platform
         public RealtimeMessaging Messaging { get; } = new();
         public ActivityWatcher? ActivityWatcher { get; }
         public FriendPresence Friends { get; }
+        public int ProcessId => (int)_robloxProcessId;
 
         private readonly uint _robloxProcessId;
         private HWND _robloxWindow;
@@ -101,6 +102,7 @@ namespace Froststrap.Integrations.Overlay.Platform
                 _window.PrepareHidden();
 
                 OverlaySearchBarService.Start(this);
+                KeyOverlayService.Start(this);
 
                 _systemCallback = new WINEVENTPROC(OnSystemEvent);
                 _objectCallback = new WINEVENTPROC(OnObjectEvent);
@@ -287,6 +289,7 @@ namespace Froststrap.Integrations.Overlay.Platform
             _disposed = true;
 
             OverlaySearchBarService.Stop();
+            KeyOverlayService.Stop();
 
             _systemHook?.Dispose();
             _objectHook?.Dispose();

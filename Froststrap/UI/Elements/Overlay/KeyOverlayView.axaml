@@ -1,0 +1,315 @@
+<!--
+    SPDX-FileCopyrightText: 2026 Froststrap
+
+    SPDX-License-Identifier: MPL-2.0
+-->
+
+<UserControl x:Class="Froststrap.UI.Elements.Overlay.KeyOverlayView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Overlay"
+             x:DataType="vm:KeyOverlayViewModel"
+             mc:Ignorable="d"
+             d:DesignWidth="420"
+             d:DesignHeight="240">
+
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="KeyOverlayCardBrush" Color="#D91B1B22" />
+        <SolidColorBrush x:Key="KeyOverlayKeyBrush" Color="#59383843" />
+        <SolidColorBrush x:Key="KeyOverlayKeyActiveBrush" Color="#0078D4" />
+        <SolidColorBrush x:Key="KeyOverlayKeyTextBrush" Color="#F2FFFFFF" />
+        <SolidColorBrush x:Key="KeyOverlayDividerBrush" Color="#66FFFFFF" />
+        <SolidColorBrush x:Key="KeyOverlayLabelBrush" Color="#99FFFFFF" />
+    </UserControl.Resources>
+
+    <UserControl.Styles>
+        <Style Selector="Border.hudCard">
+            <Setter Property="Background" Value="{DynamicResource KeyOverlayCardBrush}" />
+            <Setter Property="CornerRadius" Value="14" />
+            <Setter Property="Padding" Value="10" />
+        </Style>
+
+        <Style Selector="Border.keycap">
+            <Setter Property="Background" Value="{DynamicResource KeyOverlayKeyBrush}" />
+            <Setter Property="CornerRadius" Value="10" />
+            <Setter Property="Width" Value="56" />
+            <Setter Property="Height" Value="50" />
+        </Style>
+
+        <Style Selector="Border.keycap.pressed">
+            <Setter Property="Background" Value="{DynamicResource KeyOverlayKeyActiveBrush}" />
+        </Style>
+
+        <Style Selector="Border.keycap.space">
+            <Setter Property="Width" Value="180" />
+            <Setter Property="Height" Value="36" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+        </Style>
+
+        <Style Selector="TextBlock.keycapText">
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{DynamicResource KeyOverlayKeyTextBrush}" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+
+        <Style Selector="TextBlock.spaceText">
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontWeight" Value="Bold" />
+        </Style>
+
+        <Style Selector="Border.mouseShell">
+            <Setter Property="Background" Value="{DynamicResource KeyOverlayKeyBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource KeyOverlayDividerBrush}" />
+            <Setter Property="BorderThickness" Value="2" />
+            <Setter Property="CornerRadius" Value="32" />
+        </Style>
+
+        <Style Selector="Border.mouseButton">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+
+        <Style Selector="Border.mouseButton.left">
+            <Setter Property="CornerRadius" Value="30,0,0,0" />
+        </Style>
+
+        <Style Selector="Border.mouseButton.right">
+            <Setter Property="CornerRadius" Value="0,30,0,0" />
+        </Style>
+
+        <Style Selector="Border.mouseButton.pressed">
+            <Setter Property="Background" Value="{DynamicResource KeyOverlayKeyActiveBrush}" />
+        </Style>
+
+        <Style Selector="Border.cpsCard">
+            <Setter Property="MinWidth" Value="78" />
+        </Style>
+
+        <Style Selector="TextBlock.cpsValue">
+            <Setter Property="FontSize" Value="22" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Foreground" Value="{DynamicResource KeyOverlayKeyTextBrush}" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+        </Style>
+
+        <Style Selector="TextBlock.cpsLabel">
+            <Setter Property="FontSize" Value="10" />
+            <Setter Property="Foreground" Value="{DynamicResource KeyOverlayLabelBrush}" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+        </Style>
+
+        <Style Selector="Border.mcKey">
+            <Setter Property="Background" Value="{DynamicResource KeyOverlayKeyBrush}" />
+            <Setter Property="CornerRadius" Value="4" />
+            <Setter Property="Width" Value="60" />
+            <Setter Property="Height" Value="52" />
+        </Style>
+
+        <Style Selector="Border.mcKey.pressed">
+            <Setter Property="Background" Value="{DynamicResource KeyOverlayKeyActiveBrush}" />
+        </Style>
+
+        <Style Selector="Border.mcKey.space">
+            <Setter Property="Width" Value="196" />
+            <Setter Property="Height" Value="34" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+        </Style>
+
+        <Style Selector="Border.mcSpaceBar">
+            <Setter Property="Width" Value="60" />
+            <Setter Property="Height" Value="4" />
+            <Setter Property="CornerRadius" Value="2" />
+            <Setter Property="Background" Value="{DynamicResource KeyOverlayDividerBrush}" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+
+        <Style Selector="Border.mcMouseCard">
+            <Setter Property="Background" Value="{DynamicResource KeyOverlayKeyBrush}" />
+            <Setter Property="CornerRadius" Value="4" />
+            <Setter Property="Width" Value="94" />
+            <Setter Property="Height" Value="60" />
+        </Style>
+
+        <Style Selector="Border.mcMouseCard.pressed">
+            <Setter Property="Background" Value="{DynamicResource KeyOverlayKeyActiveBrush}" />
+        </Style>
+
+        <Style Selector="TextBlock.mcKeyText">
+            <Setter Property="FontSize" Value="20" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{DynamicResource KeyOverlayKeyTextBrush}" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+
+        <Style Selector="TextBlock.mcMouseLabel">
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{DynamicResource KeyOverlayKeyTextBrush}" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+        </Style>
+
+        <Style Selector="TextBlock.mcMouseCps">
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Foreground" Value="{DynamicResource KeyOverlayLabelBrush}" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+        </Style>
+    </UserControl.Styles>
+
+    <LayoutTransformControl x:Name="ScaleRoot">
+        <Panel>
+            <Grid x:Name="StandardLayout" ColumnDefinitions="Auto,Auto" ColumnSpacing="8">
+
+                <Border Grid.Column="0"
+                        Classes="hudCard"
+                        IsVisible="{Binding ShowKeys}">
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="6">
+
+                        <Border Classes="keycap" Classes.pressed="{Binding IsUpPressed}" HorizontalAlignment="Center">
+                            <TextBlock Classes="keycapText" Text="{Binding UpLabel}" />
+                        </Border>
+
+                        <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Spacing="6">
+                            <Border Classes="keycap" Classes.pressed="{Binding IsLeftPressed}">
+                                <TextBlock Classes="keycapText" Text="{Binding LeftLabel}" />
+                            </Border>
+
+                            <Border Classes="keycap" Classes.pressed="{Binding IsDownPressed}">
+                                <TextBlock Classes="keycapText" Text="{Binding DownLabel}" />
+                            </Border>
+
+                            <Border Classes="keycap" Classes.pressed="{Binding IsRightPressed}">
+                                <TextBlock Classes="keycapText" Text="{Binding RightLabel}" />
+                            </Border>
+                        </StackPanel>
+
+                        <Border Classes="keycap space" Classes.pressed="{Binding IsSpacePressed}">
+                            <TextBlock Classes="keycapText spaceText" Text="SPACE" />
+                        </Border>
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Column="1"
+                        Classes="hudCard"
+                        IsVisible="{Binding ShowMouseArea}">
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="10">
+
+                        <Border Classes="mouseShell"
+                                Width="64" Height="90"
+                                HorizontalAlignment="Center"
+                                IsVisible="{Binding ShowMouse}">
+                            <Grid>
+                                <Grid RowDefinitions="38,*">
+                                    <Grid Grid.Row="0" ColumnDefinitions="*,*">
+                                        <Border Grid.Column="0"
+                                                Classes="mouseButton left"
+                                                Classes.pressed="{Binding IsMouseLeftPressed}" />
+
+                                        <Border Grid.Column="1"
+                                                Classes="mouseButton right"
+                                                Classes.pressed="{Binding IsMouseRightPressed}" />
+                                    </Grid>
+                                </Grid>
+
+                                <Rectangle Width="1" Height="36"
+                                           Margin="0,2,0,0"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Top"
+                                           Fill="{DynamicResource KeyOverlayDividerBrush}" />
+
+                                <Rectangle Width="60" Height="1"
+                                           Margin="0,38,0,0"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Top"
+                                           Fill="{DynamicResource KeyOverlayDividerBrush}" />
+                            </Grid>
+                        </Border>
+
+                        <StackPanel Orientation="Horizontal"
+                                    Spacing="8"
+                                    HorizontalAlignment="Center"
+                                    IsVisible="{Binding ShowCpsRow}">
+                            <Border Classes="cpsCard" IsVisible="{Binding ShowCpsLeft}">
+                                <StackPanel>
+                                    <TextBlock Classes="cpsValue" Text="{Binding LeftCps}" />
+                                    <TextBlock Classes="cpsLabel" Text="LEFT CPS" />
+                                </StackPanel>
+                            </Border>
+
+                            <Border Classes="cpsCard" IsVisible="{Binding ShowCpsRight}">
+                                <StackPanel>
+                                    <TextBlock Classes="cpsValue" Text="{Binding RightCps}" />
+                                    <TextBlock Classes="cpsLabel" Text="RIGHT CPS" />
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <StackPanel x:Name="MinecraftLayout"
+                        HorizontalAlignment="Left"
+                        Orientation="Vertical"
+                        IsVisible="False"
+                        Spacing="8">
+
+                <StackPanel Orientation="Vertical" Spacing="8" IsVisible="{Binding ShowKeys}">
+                    <Border Classes="mcKey" Classes.pressed="{Binding IsUpPressed}" HorizontalAlignment="Center">
+                        <TextBlock Classes="mcKeyText" Text="{Binding UpLabel}" />
+                    </Border>
+
+                    <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Spacing="8">
+                        <Border Classes="mcKey" Classes.pressed="{Binding IsLeftPressed}">
+                            <TextBlock Classes="mcKeyText" Text="{Binding LeftLabel}" />
+                        </Border>
+
+                        <Border Classes="mcKey" Classes.pressed="{Binding IsDownPressed}">
+                            <TextBlock Classes="mcKeyText" Text="{Binding DownLabel}" />
+                        </Border>
+
+                        <Border Classes="mcKey" Classes.pressed="{Binding IsRightPressed}">
+                            <TextBlock Classes="mcKeyText" Text="{Binding RightLabel}" />
+                        </Border>
+                    </StackPanel>
+
+                    <Border Classes="mcKey space" Classes.pressed="{Binding IsSpacePressed}">
+                        <Border Classes="mcSpaceBar" />
+                    </Border>
+                </StackPanel>
+
+                <StackPanel HorizontalAlignment="Center"
+                            Orientation="Horizontal"
+                            Spacing="8"
+                            IsVisible="{Binding ShowCpsRow}">
+                    <Border Classes="mcMouseCard"
+                            Classes.pressed="{Binding IsMouseLeftPressed}"
+                            IsVisible="{Binding ShowCpsLeft}">
+                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Classes="mcMouseLabel" Text="LMB" />
+                            <TextBlock Classes="mcMouseCps" Text="{Binding LeftCps, StringFormat='{}{0} CPS'}" />
+                        </StackPanel>
+                    </Border>
+
+                    <Border Classes="mcMouseCard"
+                            Classes.pressed="{Binding IsMouseRightPressed}"
+                            IsVisible="{Binding ShowCpsRight}">
+                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Classes="mcMouseLabel" Text="RMB" />
+                            <TextBlock Classes="mcMouseCps" Text="{Binding RightCps, StringFormat='{}{0} CPS'}" />
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </StackPanel>
+
+            <Border BorderBrush="{DynamicResource KeyOverlayKeyActiveBrush}"
+                    BorderThickness="2"
+                    CornerRadius="16"
+                    IsHitTestVisible="False"
+                    IsVisible="{Binding IsMoveMode}" />
+        </Panel>
+    </LayoutTransformControl>
+</UserControl>

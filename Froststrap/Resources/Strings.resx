@@ -332,6 +332,18 @@ If not, then please report this exception through a [GitHub issue]({1}) along wi
   <data name="Enums.BootstrapperStyle.FluentAeroDialog" xml:space="preserve">
     <value>Froststrap (Glass)</value>
   </data>
+  <data name="Enums.KeyOverlayStyle.Dark" xml:space="preserve">
+    <value>Dark</value>
+  </data>
+  <data name="Enums.KeyOverlayStyle.Light" xml:space="preserve">
+    <value>Light</value>
+  </data>
+  <data name="Enums.KeyOverlayStyle.MinecraftDark" xml:space="preserve">
+    <value>Minecraft (Dark)</value>
+  </data>
+  <data name="Enums.KeyOverlayStyle.MinecraftLight" xml:space="preserve">
+    <value>Minecraft (Light)</value>
+  </data>
   <data name="Enums.CursorType.From2006" xml:space="preserve">
     <value>~2006 (Cartoony)</value>
   </data>
@@ -3835,6 +3847,78 @@ Press cancel to go back.</value>
   </data>
   <data name="Menu.Integrations.OverlayHotkey.Reset" xml:space="preserve">
     <value>Reset shortcut</value>
+  </data>
+  <data name="Menu.Integrations.SearchBar.Title" xml:space="preserve">
+    <value>Search bar</value>
+  </data>
+  <data name="Menu.Integrations.SearchBar.Description" xml:space="preserve">
+    <value>Show a quick game search bar over the game window.</value>
+  </data>
+  <data name="Menu.Integrations.SearchBarHotkey.Title" xml:space="preserve">
+    <value>Search bar shortcut</value>
+  </data>
+  <data name="Menu.Integrations.SearchBarHotkey.Description" xml:space="preserve">
+    <value>Change the key combination that opens the search bar.</value>
+  </data>
+  <data name="Menu.Integrations.KeyOverlay.Title" xml:space="preserve">
+    <value>Key Overlay</value>
+  </data>
+  <data name="Menu.Integrations.KeyOverlay.Description" xml:space="preserve">
+    <value>Show your movement keys, mouse buttons and clicks per second on screen while you play.</value>
+  </data>
+  <data name="Menu.Integrations.KeyOverlayHotkey.Title" xml:space="preserve">
+    <value>Key overlay shortcut</value>
+  </data>
+  <data name="Menu.Integrations.KeyOverlayHotkey.Description" xml:space="preserve">
+    <value>Change the key combination that shows or hides the key overlay.</value>
+  </data>
+  <data name="Menu.Integrations.KeyOverlayMoveHotkey.Title" xml:space="preserve">
+    <value>Move overlay shortcut</value>
+  </data>
+  <data name="Menu.Integrations.KeyOverlayMoveHotkey.Description" xml:space="preserve">
+    <value>Press this shortcut to make the key overlay movable, then drag it anywhere inside the game window.</value>
+  </data>
+  <data name="Menu.Integrations.KeyOverlayStyle.Title" xml:space="preserve">
+    <value>Overlay style</value>
+  </data>
+  <data name="Menu.Integrations.KeyOverlayStyle.Description" xml:space="preserve">
+    <value>Preset look of the key overlay.</value>
+  </data>
+  <data name="Menu.Integrations.KeyOverlayScale.Title" xml:space="preserve">
+    <value>Keystroke size</value>
+  </data>
+  <data name="Menu.Integrations.KeyOverlayScale.Description" xml:space="preserve">
+    <value>Scale of the key overlay, from smaller to larger.</value>
+  </data>
+  <data name="Menu.Integrations.KeyOverlayHighlightColor.Title" xml:space="preserve">
+    <value>Highlight color</value>
+  </data>
+  <data name="Menu.Integrations.KeyOverlayHighlightColor.Description" xml:space="preserve">
+    <value>Color used for pressed keys and mouse buttons. Defaults to your system accent color.</value>
+  </data>
+  <data name="Menu.Integrations.KeyOverlayShowKeys.Title" xml:space="preserve">
+    <value>Movement keys</value>
+  </data>
+  <data name="Menu.Integrations.KeyOverlayShowKeys.Description" xml:space="preserve">
+    <value>Show the movement key cluster. The keys follow your Soft Key profile.</value>
+  </data>
+  <data name="Menu.Integrations.KeyOverlayShowMouse.Title" xml:space="preserve">
+    <value>Mouse buttons</value>
+  </data>
+  <data name="Menu.Integrations.KeyOverlayShowMouse.Description" xml:space="preserve">
+    <value>Show the mouse button overlay.</value>
+  </data>
+  <data name="Menu.Integrations.KeyOverlayShowCpsLeft.Title" xml:space="preserve">
+    <value>Left click CPS</value>
+  </data>
+  <data name="Menu.Integrations.KeyOverlayShowCpsLeft.Description" xml:space="preserve">
+    <value>Show clicks per second for the left mouse button.</value>
+  </data>
+  <data name="Menu.Integrations.KeyOverlayShowCpsRight.Title" xml:space="preserve">
+    <value>Right click CPS</value>
+  </data>
+  <data name="Menu.Integrations.KeyOverlayShowCpsRight.Description" xml:space="preserve">
+    <value>Show clicks per second for the right mouse button.</value>
   </data>
   <data name="Menu.Overlay.Messages.SectionInGame" xml:space="preserve">
     <value>In game</value>

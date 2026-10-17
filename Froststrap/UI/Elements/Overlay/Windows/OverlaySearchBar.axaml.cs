@@ -315,9 +315,12 @@ namespace Froststrap.UI.Elements.Overlay
 
             RegisterHotkey();
             OverlaySearchBarHotkey.Changed += OnHotkeyChanged;
+            OverlaySearchBarHotkey.SuspendedChanged += OnHotkeySuspended;
         }
 
         private void OnHotkeyChanged(object? sender, EventArgs e) => RegisterHotkey();
+
+        private void OnHotkeySuspended(object? sender, bool suspended) => RegisterHotkey();
 
         private void RegisterHotkey()
         {
@@ -327,6 +330,12 @@ namespace Froststrap.UI.Elements.Overlay
             OverlayHotkeyRegistration.Unregister(_hwnd, HotkeyId);
 
             if (!App.Settings.Prop.SearchBarEnabled)
+            {
+                Dismiss();
+                return;
+            }
+
+            if (OverlaySearchBarHotkey.IsSuspended)
                 return;
 
             var (modifiers, key) = OverlayHotkeyRegistration.Resolve(
@@ -427,6 +436,7 @@ namespace Froststrap.UI.Elements.Overlay
             }
 
             OverlaySearchBarHotkey.Changed -= OnHotkeyChanged;
+            OverlaySearchBarHotkey.SuspendedChanged -= OnHotkeySuspended;
 
             OverlayHotkeyRegistration.Unregister(_hwnd, HotkeyId);
 

@@ -27,6 +27,10 @@ namespace Froststrap.Models.Persistable
 
         public string? PendingUpdateReleaseNotes { get; set; }
 
+        public double KeyOverlayOffsetX { get; set; }
+
+        public double KeyOverlayOffsetY { get; set; }
+
         public Dictionary<string, OverlayPanelLayout> OverlayPanels { get; set; } = [];
 
         public List<ModConfig> Mods { get; set; } = [];
