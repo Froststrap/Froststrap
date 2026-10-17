@@ -36,6 +36,8 @@ SPDX-License-Identifier: MPL-2.0
         <Style Selector="ListBox.searchResults">
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="Padding" Value="0" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="BorderBrush" Value="Transparent" />
         </Style>
 
         <Style Selector="ListBox.searchResults ListBoxItem">
@@ -47,6 +49,7 @@ SPDX-License-Identifier: MPL-2.0
         <Style Selector="ListBox.searchResults ListBoxItem /template/ ContentPresenter">
             <Setter Property="CornerRadius" Value="8" />
             <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Margin" Value="2,2,2,0" />
             <Setter Property="BorderBrush" Value="Transparent" />
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="Transitions">
@@ -111,28 +114,28 @@ SPDX-License-Identifier: MPL-2.0
                              Text="{Binding Query, Mode=TwoWay}" />
 
                     <Border Grid.Column="2"
-                            Padding="6,2"
+                            Padding="9,4"
                             VerticalAlignment="Center"
                             CornerRadius="4"
                             Background="{DynamicResource ControlFillColorDefaultBrush}"
                             BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
                             BorderThickness="1">
                         <TextBlock Text="{x:Static resources:Strings.Menu_Overlay_SearchBar_Esc}"
-                                   FontSize="11"
+                                   FontSize="12"
                                    Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
                     </Border>
                 </Grid>
 
                 <Panel Grid.Row="1" MinHeight="240">
 
-                    <Border Margin="8,0,8,6"
+                    <Border Margin="8,0,8,0"
                             CornerRadius="8"
-                            BorderThickness="1"
-                            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                            BorderThickness="0"
+                            BorderBrush="Transparent"
                             Background="Transparent"
                             IsVisible="{Binding !ShowPrivateServers}">
                         <TabControl x:Name="Tabs"
-                                    Padding="4"
+                                    Padding="4,4,4,0"
                                     Background="Transparent"
                                     SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay}">
 
@@ -164,7 +167,7 @@ SPDX-License-Identifier: MPL-2.0
 
                                     <TextBlock Grid.Row="0"
                                                Margin="20,6,20,2"
-                                               FontSize="11"
+                                               FontSize="13"
                                                FontWeight="SemiBold"
                                                Text="{x:Static resources:Strings.Menu_Overlay_SearchBar_Continue}"
                                                Foreground="{DynamicResource TextFillColorTertiaryBrush}"
@@ -173,7 +176,7 @@ SPDX-License-Identifier: MPL-2.0
                                     <ListBox x:Name="ResultList"
                                              Grid.Row="1"
                                              Classes="searchResults"
-                                             Margin="8,6,8,6"
+                                             Margin="8,6,8,0"
                                              ItemsSource="{Binding Results}"
                                              SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"
                                              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
@@ -359,22 +362,57 @@ SPDX-License-Identifier: MPL-2.0
                         BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}">
                     <StackPanel Orientation="Horizontal" Spacing="16">
                         <StackPanel Orientation="Horizontal" Spacing="6">
-                            <TextBlock Text="↑↓"
-                                       FontSize="11"
-                                       FontFamily="{StaticResource CascadiaCode}"
-                                       Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <Border Padding="9,4"
+                                        MinWidth="32"
+                                        CornerRadius="4"
+                                        Background="{DynamicResource ControlFillColorDefaultBrush}"
+                                        BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                                        BorderThickness="1">
+                                    <ic:Lucide Icon="ArrowUp"
+                                               Width="12" Height="12"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               StrokeThickness="2"
+                                               StrokeBrush="{DynamicResource TextFillColorSecondaryBrush}" />
+                                </Border>
+                                <Border Padding="9,4"
+                                        MinWidth="32"
+                                        CornerRadius="4"
+                                        Background="{DynamicResource ControlFillColorDefaultBrush}"
+                                        BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                                        BorderThickness="1">
+                                    <ic:Lucide Icon="ArrowDown"
+                                               Width="12" Height="12"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               StrokeThickness="2"
+                                               StrokeBrush="{DynamicResource TextFillColorSecondaryBrush}" />
+                                </Border>
+                            </StackPanel>
                             <TextBlock Text="{x:Static resources:Strings.Menu_Overlay_SearchBar_Navigate}"
                                        FontSize="11"
+                                       VerticalAlignment="Center"
                                        Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal" Spacing="6">
-                            <TextBlock Text="↵"
-                                       FontSize="11"
-                                       FontFamily="{StaticResource CascadiaCode}"
-                                       Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+                            <Border Padding="9,4"
+                                    MinWidth="32"
+                                    CornerRadius="4"
+                                    Background="{DynamicResource ControlFillColorDefaultBrush}"
+                                    BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                                    BorderThickness="1">
+                                <ic:Lucide Icon="CornerDownLeft"
+                                           Width="12" Height="12"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           StrokeThickness="2"
+                                           StrokeBrush="{DynamicResource TextFillColorSecondaryBrush}" />
+                            </Border>
                             <TextBlock Text="{x:Static resources:Strings.Menu_Overlay_SearchBar_Join}"
                                        FontSize="11"
+                                       VerticalAlignment="Center"
                                        Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
                         </StackPanel>
                     </StackPanel>
