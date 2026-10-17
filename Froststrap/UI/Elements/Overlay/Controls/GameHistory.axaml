@@ -150,18 +150,14 @@
                                             VerticalAlignment="Center">
 
                                     <controls:IconButton Icon="Play"
+                                                         IsFilled="True"
                                                          Content="{x:Static resources:Strings.ContextMenu_GameHistory_Rejoin}"
                                                          Command="{Binding RejoinServerCommand}"
-                                                         Classes="Primary" />
+                                                         Classes="Success" />
 
                                     <controls:IconButton Icon="Link2"
                                                          Content="{x:Static resources:Strings.Common_Deeplink}"
                                                          Command="{Binding CopyDeeplinkCommand}"
-                                                         CommandParameter="{Binding $self}" />
-
-                                    <controls:IconButton Icon="Clipboard"
-                                                         Content="{x:Static resources:Strings.Common_ServerID}"
-                                                         Command="{Binding CopyServerIdCommand}"
                                                          CommandParameter="{Binding $self}" />
 
                                     <controls:IconButton Icon="Trash"

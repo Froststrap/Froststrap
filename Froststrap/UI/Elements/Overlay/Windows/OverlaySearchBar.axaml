@@ -33,40 +33,6 @@ SPDX-License-Identifier: MPL-2.0
         d:DesignHeight="720">
 
     <Window.Styles>
-        <Style Selector="Button.searchTab">
-            <Setter Property="Cursor" Value="Hand" />
-            <Setter Property="Padding" Value="12,5" />
-            <Setter Property="Margin" Value="0,0,4,0" />
-            <Setter Property="FontSize" Value="13" />
-            <Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
-            <Setter Property="Template">
-                <ControlTemplate>
-                    <Border Name="PART_Bd"
-                            Background="Transparent"
-                            CornerRadius="6"
-                            Padding="{TemplateBinding Padding}">
-                        <ContentPresenter Content="{TemplateBinding Content}"
-                                          VerticalAlignment="Center"
-                                          HorizontalAlignment="Center" />
-                    </Border>
-                </ControlTemplate>
-            </Setter>
-        </Style>
-
-        <Style Selector="Button.searchTab:pointerover /template/ Border#PART_Bd">
-            <Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
-        </Style>
-
-        <Style Selector="Button.searchTab.selected /template/ Border#PART_Bd">
-            <Setter Property="Background" Value="{DynamicResource AccentFillColorDefaultBrush}" />
-        </Style>
-        <Style Selector="Button.searchTab.selected">
-            <Setter Property="Foreground" Value="{DynamicResource TextOnAccentFillColorPrimaryBrush}" />
-        </Style>
-        <Style Selector="Button.searchTab:disabled">
-            <Setter Property="Opacity" Value="0.4" />
-        </Style>
-
         <Style Selector="ListBox.searchResults">
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="Padding" Value="0" />
@@ -118,7 +84,7 @@ SPDX-License-Identifier: MPL-2.0
                 BorderBrush="{DynamicResource SurfaceStrokeColorDefaultBrush}"
                 BorderThickness="1">
 
-            <Grid RowDefinitions="Auto,Auto,*,Auto">
+            <Grid RowDefinitions="Auto,*,Auto">
 
                 <Grid Grid.Row="0"
                       ColumnDefinitions="Auto,*,Auto"
@@ -157,217 +123,237 @@ SPDX-License-Identifier: MPL-2.0
                     </Border>
                 </Grid>
 
-                <ItemsControl Grid.Row="1"
-                              Margin="16,0,16,8"
-                              ItemsSource="{Binding Tabs}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <StackPanel Orientation="Horizontal" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate x:DataType="model:OverlaySearchTabItem">
-                            <Button Classes="searchTab"
-                                    Classes.selected="{Binding IsSelected}"
-                                    IsEnabled="{Binding IsEnabled}"
-                                    Content="{Binding Title}"
-                                    Command="{Binding $parent[ItemsControl].((vm:OverlaySearchBarViewModel)DataContext).SelectTabCommand}"
-                                    CommandParameter="{Binding}" />
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+                <Panel Grid.Row="1" MinHeight="240">
 
-                <Border Grid.Row="1"
-                        Height="1"
-                        VerticalAlignment="Bottom"
-                        Background="{DynamicResource DividerStrokeColorDefaultBrush}" />
+                    <Border Margin="8,0,8,6"
+                            CornerRadius="8"
+                            BorderThickness="1"
+                            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                            Background="Transparent"
+                            IsVisible="{Binding !ShowPrivateServers}">
+                        <TabControl x:Name="Tabs"
+                                    Padding="4"
+                                    Background="Transparent"
+                                    SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay}">
 
-                <Panel Grid.Row="2" MinHeight="240">
+                            <TabControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <UniformGrid Columns="2" />
+                                </ItemsPanelTemplate>
+                            </TabControl.ItemsPanel>
 
-                    <Grid RowDefinitions="Auto,*" IsVisible="{Binding ShowGamesTab}">
+                            <TabControl.Styles>
+                                <Style Selector="TabItem">
+                                    <Setter Property="HorizontalAlignment" Value="Stretch" />
+                                    <Setter Property="HorizontalContentAlignment" Value="Center" />
+                                    <Setter Property="FontSize" Value="18" />
+                                    <Setter Property="Focusable" Value="False" />
+                                </Style>
 
-                        <TextBlock Grid.Row="0"
-                                   Margin="20,6,20,2"
-                                   FontSize="11"
-                                   FontWeight="SemiBold"
-                                   Text="{x:Static resources:Strings.Menu_Overlay_SearchBar_Continue}"
-                                   Foreground="{DynamicResource TextFillColorTertiaryBrush}"
-                                   IsVisible="{Binding ShowContinueHeader}" />
+                                <Style Selector="TabItem.Square /template/ Border#PART_LayoutRoot">
+                                    <Setter Property="CornerRadius" Value="0" />
+                                </Style>
+                            </TabControl.Styles>
 
-                        <ListBox x:Name="ResultList"
-                                 Grid.Row="1"
-                                 Classes="searchResults"
-                                 Margin="8,6,8,6"
-                                 ItemsSource="{Binding Results}"
-                                 SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"
-                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                 DoubleTapped="ResultDoubleTapped">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate x:DataType="model:GameTile">
-                                    <Grid ColumnDefinitions="Auto,*,Auto"
-                                          Margin="8,6">
+                            <TabItem Classes="Square" Header="{x:Static resources:Strings.Menu_Overlay_SearchBar_Tab_Games}">
+                                <ui:TabItemHelper.Icon>
+                                    <ic:Lucide Icon="Gamepad2" />
+                                </ui:TabItemHelper.Icon>
 
-                                        <Border Grid.Column="0"
-                                                Width="48" Height="48"
-                                                CornerRadius="6"
-                                                Background="{DynamicResource ControlFillColorDefaultBrush}"
-                                                ClipToBounds="True">
-                                            <Image Source="{Binding IconBitmap}"
-                                                   Width="48" Height="48"
-                                                   Stretch="UniformToFill"
-                                                   RenderOptions.BitmapInterpolationMode="HighQuality" />
-                                        </Border>
+                                <Grid RowDefinitions="Auto,*">
 
-                                        <StackPanel Grid.Column="1"
-                                                    Margin="12,0,12,0"
-                                                    VerticalAlignment="Center"
-                                                    Spacing="3">
-                                            <TextBlock Text="{Binding Name}"
-                                                       FontSize="14"
-                                                       FontWeight="SemiBold"
-                                                       TextTrimming="CharacterEllipsis"
-                                                       Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                                    <TextBlock Grid.Row="0"
+                                               Margin="20,6,20,2"
+                                               FontSize="11"
+                                               FontWeight="SemiBold"
+                                               Text="{x:Static resources:Strings.Menu_Overlay_SearchBar_Continue}"
+                                               Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                               IsVisible="{Binding ShowContinueHeader}" />
 
-                                            <StackPanel Orientation="Horizontal"
-                                                        Spacing="4"
-                                                        IsVisible="{Binding HasCreator}">
-                                                <TextBlock Text="{Binding Creator, StringFormat='By {0}'}"
-                                                           FontSize="11"
-                                                           VerticalAlignment="Center"
-                                                           TextTrimming="CharacterEllipsis"
-                                                           Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
-                                                <Image Source="avares://Froststrap/Resources/RobloxVerified.png"
-                                                       Width="12"
-                                                       Height="12"
+                                    <ListBox x:Name="ResultList"
+                                             Grid.Row="1"
+                                             Classes="searchResults"
+                                             Margin="8,6,8,6"
+                                             ItemsSource="{Binding Results}"
+                                             SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"
+                                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                             ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                             DoubleTapped="ResultDoubleTapped">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate x:DataType="model:GameTile">
+                                                <Grid ColumnDefinitions="Auto,*,Auto"
+                                                      Margin="8,6">
+
+                                                    <Border Grid.Column="0"
+                                                            Width="48" Height="48"
+                                                            CornerRadius="6"
+                                                            Background="{DynamicResource ControlFillColorDefaultBrush}"
+                                                            ClipToBounds="True">
+                                                        <Image Source="{Binding IconBitmap}"
+                                                               Width="48" Height="48"
+                                                               Stretch="UniformToFill"
+                                                               RenderOptions.BitmapInterpolationMode="HighQuality" />
+                                                    </Border>
+
+                                                    <StackPanel Grid.Column="1"
+                                                                Margin="12,0,12,0"
+                                                                VerticalAlignment="Center"
+                                                                Spacing="3">
+                                                        <TextBlock Text="{Binding Name}"
+                                                                   FontSize="14"
+                                                                   FontWeight="SemiBold"
+                                                                   TextTrimming="CharacterEllipsis"
+                                                                   Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+
+                                                        <StackPanel Orientation="Horizontal"
+                                                                    Spacing="4"
+                                                                    IsVisible="{Binding HasCreator}">
+                                                            <TextBlock Text="{Binding Creator, StringFormat='By {0}'}"
+                                                                       FontSize="11"
+                                                                       VerticalAlignment="Center"
+                                                                       TextTrimming="CharacterEllipsis"
+                                                                       Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+                                                            <Image Source="avares://Froststrap/Resources/RobloxVerified.png"
+                                                                   Width="12"
+                                                                   Height="12"
+                                                                   VerticalAlignment="Center"
+                                                                   RenderOptions.BitmapInterpolationMode="HighQuality"
+                                                                   IsVisible="{Binding IsVerified}" />
+                                                        </StackPanel>
+
+                                                        <StackPanel Orientation="Horizontal" Spacing="12">
+                                                            <StackPanel Orientation="Horizontal"
+                                                                        Spacing="4"
+                                                                        IsVisible="{Binding HasPlaying}">
+                                                                <ic:Lucide Icon="Users"
+                                                                           Width="11" Height="11"
+                                                                           VerticalAlignment="Center"
+                                                                           StrokeBrush="{DynamicResource TextFillColorTertiaryBrush}" />
+                                                                <TextBlock Text="{Binding Playing, Converter={StaticResource NumberAbbreviationConverter}}"
+                                                                           FontSize="11"
+                                                                           VerticalAlignment="Center"
+                                                                           Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+                                                                <TextBlock Text="{x:Static resources:Strings.Menu_Overlay_SearchBar_Playing}"
+                                                                           FontSize="11"
+                                                                           VerticalAlignment="Center"
+                                                                           Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+                                                            </StackPanel>
+
+                                                            <StackPanel Orientation="Horizontal"
+                                                                        Spacing="4"
+                                                                        IsVisible="{Binding HasLikeRatio}">
+                                                                <ic:Lucide Icon="ThumbsUp"
+                                                                           Width="11" Height="11"
+                                                                           VerticalAlignment="Center"
+                                                                           StrokeBrush="{DynamicResource TextFillColorTertiaryBrush}" />
+                                                                <TextBlock Text="{Binding LikeRatioText}"
+                                                                           FontSize="11"
+                                                                           VerticalAlignment="Center"
+                                                                           Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+                                                            </StackPanel>
+
+                                                            <StackPanel Orientation="Horizontal"
+                                                                        Spacing="4"
+                                                                        IsVisible="{Binding HasFavorites}">
+                                                                <ic:Lucide Icon="Star"
+                                                                           Width="11" Height="11"
+                                                                           VerticalAlignment="Center"
+                                                                           StrokeBrush="{DynamicResource TextFillColorTertiaryBrush}" />
+                                                                <TextBlock Text="{Binding FavoritesText}"
+                                                                           FontSize="11"
+                                                                           VerticalAlignment="Center"
+                                                                           Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+                                                            </StackPanel>
+                                                        </StackPanel>
+                                                    </StackPanel>
+
+                                                    <StackPanel Grid.Column="2"
+                                                                Orientation="Horizontal"
+                                                                Spacing="4"
+                                                                VerticalAlignment="Center"
+                                                                HorizontalAlignment="Right">
+
+                                                        <controls:IconButton Width="36" Height="36"
+                                                                             Padding="0"
+                                                                             CornerRadius="10"
+                                                                             IconSize="16"
+                                                                             Icon="Lock"
+                                                                             Command="{Binding $parent[ItemsControl].((vm:OverlaySearchBarViewModel)DataContext).OpenPrivateServersCommand}"
+                                                                             CommandParameter="{Binding}"
+                                                                             ToolTip.Tip="{x:Static resources:Strings.Menu_Overlay_PrivateServers_ConfigureTitle}" />
+
+                                                        <controls:IconButton Width="36" Height="36"
+                                                                             Padding="0"
+                                                                             CornerRadius="10"
+                                                                             IconSize="16"
+                                                                             Icon="Earth"
+                                                                             Command="{Binding $parent[ItemsControl].((vm:OverlaySearchBarViewModel)DataContext).JoinRegionCommand}"
+                                                                             CommandParameter="{Binding}"
+                                                                             IsVisible="{Binding IsRegionIdle}" />
+
+                                                        <ui:FAProgressRing Width="32" Height="32"
+                                                                           Margin="8,0"
+                                                                           VerticalAlignment="Center"
+                                                                           Foreground="{DynamicResource SystemAccentColor}"
+                                                                           IsIndeterminate="True"
+                                                                           IsActive="{Binding IsJoiningRegion}"
+                                                                           IsVisible="{Binding IsJoiningRegion}" />
+
+                                                        <controls:IconButton Width="36" Height="36"
+                                                                             Padding="0"
+                                                                             CornerRadius="10"
+                                                                             IconSize="16"
+                                                                             Icon="Play"
+                                                                             IsFilled="True"
+                                                                             Classes="Success"
+                                                                             Command="{Binding $parent[ItemsControl].((vm:OverlaySearchBarViewModel)DataContext).JoinCommand}"
+                                                                             CommandParameter="{Binding}" />
+                                                    </StackPanel>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
+
+                                    <ui:FAProgressRing Grid.Row="1"
+                                                       Width="28" Height="28"
+                                                       HorizontalAlignment="Center"
                                                        VerticalAlignment="Center"
-                                                       RenderOptions.BitmapInterpolationMode="HighQuality"
-                                                       IsVisible="{Binding IsVerified}" />
-                                            </StackPanel>
+                                                       IsIndeterminate="True"
+                                                       IsActive="{Binding IsGamesLoading}"
+                                                       IsVisible="{Binding IsGamesLoading}"
+                                                       Foreground="{DynamicResource SystemAccentColor}" />
 
-                                            <StackPanel Orientation="Horizontal" Spacing="12">
-                                                <StackPanel Orientation="Horizontal"
-                                                            Spacing="4"
-                                                            IsVisible="{Binding HasPlaying}">
-                                                    <ic:Lucide Icon="Users"
-                                                               Width="11" Height="11"
-                                                               VerticalAlignment="Center"
-                                                               StrokeBrush="{DynamicResource TextFillColorTertiaryBrush}" />
-                                                    <TextBlock Text="{Binding Playing, Converter={StaticResource NumberAbbreviationConverter}}"
-                                                               FontSize="11"
-                                                               VerticalAlignment="Center"
-                                                               Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
-                                                    <TextBlock Text="{x:Static resources:Strings.Menu_Overlay_SearchBar_Playing}"
-                                                               FontSize="11"
-                                                               VerticalAlignment="Center"
-                                                               Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
-                                                </StackPanel>
+                                    <TextBlock Grid.Row="1"
+                                               Text="{Binding EmptyText}"
+                                               FontSize="13"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Margin="24"
+                                               TextAlignment="Center"
+                                               TextWrapping="Wrap"
+                                               Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                               IsVisible="{Binding ShowEmpty}" />
+                                </Grid>
+                            </TabItem>
 
-                                                <StackPanel Orientation="Horizontal"
-                                                            Spacing="4"
-                                                            IsVisible="{Binding HasLikeRatio}">
-                                                    <ic:Lucide Icon="ThumbsUp"
-                                                               Width="11" Height="11"
-                                                               VerticalAlignment="Center"
-                                                               StrokeBrush="{DynamicResource TextFillColorTertiaryBrush}" />
-                                                    <TextBlock Text="{Binding LikeRatioText}"
-                                                               FontSize="11"
-                                                               VerticalAlignment="Center"
-                                                               Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
-                                                </StackPanel>
+                            <TabItem Classes="Square" Header="{x:Static resources:Strings.Menu_Overlay_SearchBar_Tab_People}">
+                                <ui:TabItemHelper.Icon>
+                                    <ic:Lucide Icon="Users" />
+                                </ui:TabItemHelper.Icon>
 
-                                                <StackPanel Orientation="Horizontal"
-                                                            Spacing="4"
-                                                            IsVisible="{Binding HasFavorites}">
-                                                    <ic:Lucide Icon="Star"
-                                                               Width="11" Height="11"
-                                                               VerticalAlignment="Center"
-                                                               StrokeBrush="{DynamicResource TextFillColorTertiaryBrush}" />
-                                                    <TextBlock Text="{Binding FavoritesText}"
-                                                               FontSize="11"
-                                                               VerticalAlignment="Center"
-                                                               Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
-                                                </StackPanel>
-                                            </StackPanel>
-                                        </StackPanel>
-
-                                        <StackPanel Grid.Column="2"
-                                                    Orientation="Horizontal"
-                                                    Spacing="4"
-                                                    VerticalAlignment="Center"
-                                                    HorizontalAlignment="Right">
-
-                                            <controls:IconButton Width="36" Height="36"
-                                                                 Padding="0"
-                                                                 CornerRadius="10"
-                                                                 IconSize="16"
-                                                                 Icon="Lock"
-                                                                 Command="{Binding $parent[ItemsControl].((vm:OverlaySearchBarViewModel)DataContext).OpenPrivateServersCommand}"
-                                                                 CommandParameter="{Binding}"
-                                                                 ToolTip.Tip="{x:Static resources:Strings.Menu_Overlay_PrivateServers_ConfigureTitle}" />
-
-                                            <controls:IconButton Width="36" Height="36"
-                                                                 Padding="0"
-                                                                 CornerRadius="10"
-                                                                 IconSize="16"
-                                                                 Icon="Earth"
-                                                                 Command="{Binding $parent[ItemsControl].((vm:OverlaySearchBarViewModel)DataContext).JoinRegionCommand}"
-                                                                 CommandParameter="{Binding}"
-                                                                 IsVisible="{Binding IsRegionIdle}" />
-
-                                            <ui:FAProgressRing Width="32" Height="32"
-                                                               Margin="8,0"
-                                                               VerticalAlignment="Center"
-                                                               Foreground="{DynamicResource SystemAccentColor}"
-                                                               IsIndeterminate="True"
-                                                               IsActive="{Binding IsJoiningRegion}"
-                                                               IsVisible="{Binding IsJoiningRegion}" />
-
-                                            <controls:IconButton Width="36" Height="36"
-                                                                 Padding="0"
-                                                                 CornerRadius="10"
-                                                                 IconSize="16"
-                                                                 Icon="Play"
-                                                                 Classes="Success"
-                                                                 Command="{Binding $parent[ItemsControl].((vm:OverlaySearchBarViewModel)DataContext).JoinCommand}"
-                                                                 CommandParameter="{Binding}" />
-                                        </StackPanel>
-                                    </Grid>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-
-                        <ui:FAProgressRing Grid.Row="1"
-                                           Width="28" Height="28"
-                                           HorizontalAlignment="Center"
-                                           VerticalAlignment="Center"
-                                           IsIndeterminate="True"
-                                           IsActive="{Binding IsGamesLoading}"
-                                           IsVisible="{Binding IsGamesLoading}"
-                                           Foreground="{DynamicResource SystemAccentColor}" />
-
-                        <TextBlock Grid.Row="1"
-                                   Text="{Binding EmptyText}"
-                                   FontSize="13"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center"
-                                   Margin="24"
-                                   TextAlignment="Center"
-                                   TextWrapping="Wrap"
-                                   Foreground="{DynamicResource TextFillColorTertiaryBrush}"
-                                   IsVisible="{Binding ShowEmpty}" />
-                    </Grid>
-
-                    <tabs:PeopleBrowser DataContext="{Binding People}"
-                                        IsVisible="{Binding $parent[Window].((vm:OverlaySearchBarViewModel)DataContext).ShowPeopleTab}" />
+                                <tabs:PeopleBrowser DataContext="{Binding People}" />
+                            </TabItem>
+                        </TabControl>
+                    </Border>
 
                     <Border Padding="20,16,20,12"
-                            IsVisible="{Binding $parent[Window].((vm:OverlaySearchBarViewModel)DataContext).ShowPrivateServers}">
+                            IsVisible="{Binding ShowPrivateServers}">
                         <overlay:PrivateServerBrowser
-                            DataContext="{Binding $parent[Window].((vm:OverlaySearchBarViewModel)DataContext).PrivateServers}" />
+                            DataContext="{Binding PrivateServers}" />
                     </Border>
                 </Panel>
 
-                <Border Grid.Row="3"
+                <Border Grid.Row="2"
                         Padding="16,8"
                         BorderThickness="0,1,0,0"
                         BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}">

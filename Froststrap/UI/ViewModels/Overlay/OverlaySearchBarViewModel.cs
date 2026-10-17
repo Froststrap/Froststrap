@@ -34,7 +34,6 @@ namespace Froststrap.UI.ViewModels.Overlay
         private bool _showingContinue;
         private bool _disposed;
 
-        public BulkObservableCollection<OverlaySearchTabItem> Tabs { get; } = [];
         public BulkObservableCollection<GameTile> Results { get; } = [];
 
         public PeopleBrowserViewModel People { get; } = new();
@@ -52,8 +51,6 @@ namespace Froststrap.UI.ViewModels.Overlay
 
                 OnPropertyChanged(nameof(PrivateServers));
                 OnPropertyChanged(nameof(ShowPrivateServers));
-                OnPropertyChanged(nameof(ShowGamesTab));
-                OnPropertyChanged(nameof(ShowPeopleTab));
             }
         }
 
@@ -70,15 +67,11 @@ namespace Froststrap.UI.ViewModels.Overlay
 
                 _selectedTab = value;
 
-                foreach (OverlaySearchTabItem tab in Tabs)
-                    tab.IsSelected = tab.Kind == value;
-
                 if (ShowPrivateServers)
                     ClosePrivateServers();
 
                 OnPropertyChanged(nameof(SelectedTab));
-                OnPropertyChanged(nameof(ShowGamesTab));
-                OnPropertyChanged(nameof(ShowPeopleTab));
+                OnPropertyChanged(nameof(SelectedTabIndex));
 
                 if (value == OverlaySearchTab.People)
                 {
@@ -101,8 +94,19 @@ namespace Froststrap.UI.ViewModels.Overlay
             }
         }
 
-        public bool ShowGamesTab => _selectedTab == OverlaySearchTab.Games && !ShowPrivateServers;
-        public bool ShowPeopleTab => _selectedTab == OverlaySearchTab.People && !ShowPrivateServers;
+        public int SelectedTabIndex
+        {
+            get => _selectedTab == OverlaySearchTab.People ? 1 : 0;
+            set
+            {
+                OverlaySearchTab tab = value == 1 ? OverlaySearchTab.People : OverlaySearchTab.Games;
+
+                if (tab == _selectedTab)
+                    return;
+
+                SelectedTab = tab;
+            }
+        }
 
         private string _query = String.Empty;
         public string Query
@@ -212,7 +216,6 @@ namespace Froststrap.UI.ViewModels.Overlay
         }
 
         public ICommand CloseCommand { get; }
-        public ICommand SelectTabCommand { get; }
         public ICommand JoinCommand { get; }
         public ICommand JoinRegionCommand { get; }
         public ICommand OpenPrivateServersCommand { get; }
@@ -223,9 +226,6 @@ namespace Froststrap.UI.ViewModels.Overlay
 
         public OverlaySearchBarViewModel()
         {
-            Tabs.Add(new OverlaySearchTabItem { Kind = OverlaySearchTab.Games, Title = Strings.Menu_Overlay_SearchBar_Tab_Games, IsSelected = true });
-            Tabs.Add(new OverlaySearchTabItem { Kind = OverlaySearchTab.People, Title = Strings.Menu_Overlay_SearchBar_Tab_People });
-
             _debounce = new DispatcherTimer { Interval = SearchDelay };
             _debounce.Tick += async (_, _) =>
             {
@@ -236,20 +236,6 @@ namespace Froststrap.UI.ViewModels.Overlay
             };
 
             CloseCommand = new RelayCommand(() => CloseRequested?.Invoke(this, EventArgs.Empty));
-
-            SelectTabCommand = new RelayCommand<OverlaySearchTabItem>(tab =>
-            {
-                if (tab?.IsEnabled != true)
-                    return;
-
-                if (tab.Kind == _selectedTab)
-                {
-                    FocusInputRequested?.Invoke(this, EventArgs.Empty);
-                    return;
-                }
-
-                SelectedTab = tab.Kind;
-            });
 
             JoinCommand = new RelayCommand<GameTile>(Join);
             JoinRegionCommand = new AsyncRelayCommand<GameTile>(JoinRegion);

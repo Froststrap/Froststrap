@@ -76,6 +76,7 @@ SPDX-License-Identifier: MPL-2.0
                      ItemsSource="{Binding People}"
                      SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                     ScrollViewer.VerticalScrollBarVisibility="Hidden"
                      DoubleTapped="PersonDoubleTapped">
                 <ListBox.Styles>
                     <Style Selector="ListBoxItem">
@@ -216,6 +217,7 @@ SPDX-License-Identifier: MPL-2.0
                                                      CornerRadius="10"
                                                      IconSize="16"
                                                      Icon="Play"
+                                                     IsFilled="True"
                                                      Classes="Success"
                                                      Command="{Binding $parent[ItemsControl].((vmb:PeopleBrowserViewModel)DataContext).JoinCommand}"
                                                      CommandParameter="{Binding}"

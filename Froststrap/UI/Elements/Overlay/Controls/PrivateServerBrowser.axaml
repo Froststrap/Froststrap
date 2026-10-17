@@ -429,6 +429,7 @@
                                             </StackPanel>
                                             <controls:IconButton
                                                 Grid.Column="1"
+                                                Classes="Transparent"
                                                 Command="{Binding $parent[ItemsControl].((vm:PrivateServersViewModel)DataContext).RemoveUserCommand}"
                                                 CommandParameter="{Binding}"
                                                 Icon="X"

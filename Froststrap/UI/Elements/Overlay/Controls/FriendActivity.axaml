@@ -743,10 +743,11 @@
                             Orientation="Horizontal">
 							<controls:IconButton
                                 Margin="12,0,0,0"
-                                Classes="Primary"
+                                Classes="Success"
                                 Command="{Binding $parent[UserControl].DataContext.JoinCommand}"
                                 Content="{x:Static resources:Strings.Menu_Overlay_Messages_Join}"
                                 Icon="Play"
+                                IsFilled="True"
                                 IsVisible="{Binding CanJoin}" />
 							<controls:IconButton
                                 Margin="12,0,0,0"
