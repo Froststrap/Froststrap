@@ -44,6 +44,12 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
 
     private string _searchQuery = "";
     private string _serverId = "";
+    private long _linkPlaceId;
+    private string? _linkJobId;
+    private string? _linkAccessCode;
+    private string? _linkLinkCode;
+    private string? _linkLaunchCommand;
+    private int _linkResolveSeq;
     private bool _isSearchFlyoutOpen;
     private bool _isGameSearchLoading;
     private CancellationTokenSource? _searchDebounceCts;
@@ -155,7 +161,11 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
     public string ServerId
     {
         get => _serverId;
-        set => SetProperty(ref _serverId, value);
+        set
+        {
+            if (SetProperty(ref _serverId, value))
+                OnServerIdChanged(value);
+        }
     }
 
     public bool IsSearchFlyoutOpen
@@ -472,8 +482,35 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
         IsSearchFlyoutOpen = false;
     }
 
+    private void OnServerIdChanged(string value)
+    {
+        if (!string.IsNullOrWhiteSpace(value) && LooksLikeRobloxLink(value))
+        {
+            // a link was pasted into the Server ID box: resolve it the same way as in the search box
+            _linkResolveSeq++;
+            _ = ResolvePastedLinkAsync(value.Trim(), _linkResolveSeq);
+            return;
+        }
+
+        // user edited Server ID by hand and it no longer matches the resolved link
+        if (_linkPlaceId != 0 && !string.Equals(value?.Trim(), _linkJobId, StringComparison.Ordinal))
+        {
+            _linkResolveSeq++;
+            ClearResolvedLink();
+            JoinServerByIdCommand.NotifyCanExecuteChanged();
+        }
+    }
+
     private void OnSearchQueryChanged(string value)
     {
+        // a link pasted into the Server ID box should survive typing a place id
+        bool keepServerIdLink = LooksLikeRobloxLink(ServerId);
+        if (!keepServerIdLink)
+        {
+            ClearResolvedLink();
+            _linkResolveSeq++;
+        }
+
         JoinServerByIdCommand.NotifyCanExecuteChanged();
         JoinBestRegionFromSearchCommand.NotifyCanExecuteChanged();
 
@@ -495,6 +532,16 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
             return;
         }
 
+        if (LooksLikeRobloxLink(value))
+        {
+            IsSearchFlyoutOpen = false;
+            SwapSearchResults([]);
+            SelectedSearchResult = null;
+            _linkResolveSeq++;
+            _ = ResolvePastedLinkAsync(value, _linkResolveSeq);
+            return;
+        }
+
         if (SelectedSearchResult != null &&
             string.Equals(value, SelectedSearchResult.Name, StringComparison.Ordinal))
         {
@@ -511,17 +558,141 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
     }
 
     private bool CanJoinServerById =>
-        long.TryParse(SearchQuery, out _);
+        long.TryParse(SearchQuery, out _) || _linkPlaceId != 0 || _linkLaunchCommand != null;
 
     private bool CanJoinBestRegionFromSearch =>
         HasActiveAccount && long.TryParse(SearchQuery, out _);
 
+    // Roblox gameInstanceId is always a GUID
+    private static bool IsValidJobId(string? jobId) =>
+        !string.IsNullOrWhiteSpace(jobId) && Guid.TryParse(jobId.Trim(), out _);
+
     private void JoinServerById()
     {
+        if (_linkPlaceId == 0 && _linkLaunchCommand != null)
+        {
+            Process.Start(new ProcessStartInfo(_linkLaunchCommand) { UseShellExecute = true });
+            return;
+        }
+
+        if (_linkPlaceId != 0)
+        {
+            // only let the server id box override it if the link itself carried one,
+            // otherwise a leftover server id would replace the link's access/link code
+            string? linkJobId = _linkJobId;
+            if (linkJobId != null && IsValidJobId(ServerId))
+                linkJobId = ServerId.Trim();
+
+            LaunchRoblox(_linkPlaceId, linkJobId, _linkAccessCode, _linkLinkCode);
+            return;
+        }
+
         if (!long.TryParse(SearchQuery, out var placeId)) return;
 
-        var jobId = string.IsNullOrWhiteSpace(ServerId) ? null : ServerId.Trim();
+        string? jobId = null;
+        if (!string.IsNullOrWhiteSpace(ServerId))
+        {
+            if (IsValidJobId(ServerId))
+            {
+                jobId = ServerId.Trim();
+            }
+            else
+            {
+                App.Logger.Info("Server ID is not a valid GUID, ignoring it");
+            }
+        }
+
         LaunchRoblox(placeId, jobId);
+    }
+
+    private static bool LooksLikeRobloxLink(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value)) return false;
+
+        string v = value.Trim();
+        return v.StartsWith("roblox://", StringComparison.OrdinalIgnoreCase)
+            || v.StartsWith("roblox-player:", StringComparison.OrdinalIgnoreCase)
+            || v.Contains("roblox.com", StringComparison.OrdinalIgnoreCase)
+            || v.StartsWith("ro.blox.com/", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private void ClearResolvedLink()
+    {
+        _linkPlaceId = 0;
+        _linkJobId = null;
+        _linkAccessCode = null;
+        _linkLinkCode = null;
+        _linkLaunchCommand = null;
+    }
+
+    private async Task ResolvePastedLinkAsync(string link, int seq)
+    {
+        string? command = await GameJoin.GetLaunchCommandByLink(link);
+        if (seq != _linkResolveSeq)
+            return;
+
+        if (command is null)
+        {
+            App.Logger.Info("Pasted link did not resolve to a launch command");
+            return;
+        }
+
+        App.Logger.Info($"Resolved pasted link to launch command: {command}");
+
+        long placeId = 0;
+        string? jobId = null;
+        string? accessCode = null;
+        string? linkCode = null;
+
+        try
+        {
+            var query = System.Web.HttpUtility.ParseQueryString(new Uri(command).Query);
+            if (long.TryParse(query["placeId"], out long parsedPlaceId))
+                placeId = parsedPlaceId;
+            jobId = query["gameInstanceId"];
+            accessCode = query["accessCode"];
+            linkCode = query["linkCode"];
+        }
+        catch (UriFormatException)
+        {
+            return;
+        }
+
+        if (seq != _linkResolveSeq)
+            return;
+
+        // never keep a non-GUID as job id
+        if (!IsValidJobId(jobId))
+            jobId = null;
+
+        if (placeId <= 0)
+        {
+            if (command.StartsWith("roblox://", StringComparison.Ordinal))
+            {
+                _linkLaunchCommand = command;
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    JoinServerByIdCommand.NotifyCanExecuteChanged();
+                });
+            }
+            return;
+        }
+
+        _linkPlaceId = placeId;
+        _linkJobId = jobId;
+        _linkAccessCode = accessCode;
+        _linkLinkCode = linkCode;
+
+        // set after the link fields so OnServerIdChanged sees a matching _linkJobId and keeps the link
+        if (!string.IsNullOrEmpty(jobId))
+            ServerId = jobId;
+
+        await Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            JoinServerByIdCommand.NotifyCanExecuteChanged();
+        });
+
+        _ = LoadSelectedGameInfoAsync(placeId);
     }
 
     private async Task JoinBestRegionFromSearchAsync()
@@ -1325,15 +1496,17 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
         return gameItems;
     }
 
-    private static void LaunchRoblox(long placeId, string? jobId = null, string? accessCode = null)
+    private static void LaunchRoblox(long placeId, string? jobId = null, string? accessCode = null, string? linkCode = null)
     {
         if (placeId == 0) return;
         string deeplink = $"roblox://experiences/start?placeId={placeId}";
 
         if (!string.IsNullOrEmpty(accessCode))
             deeplink += "&accessCode=" + Uri.EscapeDataString(accessCode);
-        else if (!string.IsNullOrEmpty(jobId))
-            deeplink += "&gameInstanceId=" + Uri.EscapeDataString(jobId);
+        else if (IsValidJobId(jobId))
+            deeplink += "&gameInstanceId=" + Uri.EscapeDataString(jobId!.Trim());
+        else if (!string.IsNullOrEmpty(linkCode))
+            deeplink += "&linkCode=" + Uri.EscapeDataString(linkCode);
 
         Process.Start(new ProcessStartInfo(deeplink) { UseShellExecute = true });
     }
