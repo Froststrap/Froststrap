@@ -59,6 +59,9 @@ namespace Froststrap
                 return null;
             }
 
+            if (IsFishstrapHost(host))
+                return BuildFishstrapLaunchCommand(uri);
+
             if (!IsRobloxHost(host))
                 return null;
 
@@ -176,9 +179,46 @@ namespace Froststrap
             return url;
         }
 
+        private static string? BuildFishstrapLaunchCommand(Uri uri)
+        {
+            string[] segments = uri.AbsolutePath.Split('/', StringSplitOptions.RemoveEmptyEntries);
+
+            if (segments.Length != 2
+                || !segments[0].Equals("v1", StringComparison.OrdinalIgnoreCase)
+                || !segments[1].Equals("joingame", StringComparison.OrdinalIgnoreCase))
+                return null;
+
+            if (!long.TryParse(GetQueryValue(uri, "placeId"), out long placeId) || placeId <= 0)
+                return null;
+
+            App.Logger.Info($"Extracted place ID from fishstrap.app deeplink: {placeId}");
+
+            string url = $"roblox://experiences/start?placeId={placeId}";
+
+            string? serverId = GetQueryValue(uri, "gameInstanceId");
+            if (!string.IsNullOrEmpty(serverId))
+            {
+                url += $"&gameInstanceId={Uri.EscapeDataString(serverId)}";
+                App.Logger.Info($"Extracted server ID from fishstrap.app deeplink: {serverId}");
+            }
+
+            string? launchData = GetQueryValue(uri, "launchData");
+            if (!string.IsNullOrEmpty(launchData))
+            {
+                url += $"&launchData={Uri.EscapeDataString(launchData)}";
+                App.Logger.Info("Extracted launch data from fishstrap.app deeplink");
+            }
+
+            return url;
+        }
+
         private static bool IsRobloxHost(string host) =>
             host.Equals("roblox.com", StringComparison.OrdinalIgnoreCase)
             || host.EndsWith(".roblox.com", StringComparison.OrdinalIgnoreCase);
+
+        private static bool IsFishstrapHost(string host) =>
+            host.Equals("fishstrap.app", StringComparison.OrdinalIgnoreCase)
+            || host.EndsWith(".fishstrap.app", StringComparison.OrdinalIgnoreCase);
 
         private static string? GetQueryValue(Uri uri, string name)
         {
