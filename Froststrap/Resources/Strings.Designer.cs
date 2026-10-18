@@ -3139,6 +3139,42 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to AZERTY.
+        /// </summary>
+        public static string Enums_SoftKeyProfile_AZERTY {
+            get {
+                return ResourceManager.GetString("Enums.SoftKeyProfile.AZERTY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Arrow Keys.
+        /// </summary>
+        public static string Enums_SoftKeyProfile_ArrowKeys {
+            get {
+                return ResourceManager.GetString("Enums.SoftKeyProfile.ArrowKeys", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ESDF.
+        /// </summary>
+        public static string Enums_SoftKeyProfile_ESDF {
+            get {
+                return ResourceManager.GetString("Enums.SoftKeyProfile.ESDF", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to WASD.
+        /// </summary>
+        public static string Enums_SoftKeyProfile_WASD {
+            get {
+                return ResourceManager.GetString("Enums.SoftKeyProfile.WASD", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to High (Default).
         /// </summary>
         public static string Enums_TextureQuality_Default {
@@ -11887,15 +11923,6 @@ namespace Froststrap.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Join.
-        /// </summary>
-        public static string Menu_Join {
-            get {
-                return ResourceManager.GetString("Menu.Join", resourceCulture);
-            }
-        }
-
-        /// <summary>
         ///   Looks up a localized string similar to Current.
         /// </summary>
         public static string Menu_Overlay_Messages_Sort_Current {
@@ -11932,15 +11959,6 @@ namespace Froststrap.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Froststrap Joiner.
-        /// </summary>
-        public static string Joiner_Title {
-            get {
-                return ResourceManager.GetString("Joiner.Title", resourceCulture);
-            }
-        }
-
-        /// <summary>
         ///   Looks up a localized string similar to In Studio.
         /// </summary>
         public static string Menu_Overlay_Messages_SectionInStudio {
@@ -11950,83 +11968,74 @@ namespace Froststrap.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Paste a Roblox link and press Enter:.
+        ///   Looks up a localized string similar to Join by link.
         /// </summary>
-        public static string Joiner_PasteInstructions {
+        public static string Menu_Overlay_JoinByLink_Title {
             get {
-                return ResourceManager.GetString("Joiner.PasteInstructions", resourceCulture);
+                return ResourceManager.GetString("Menu.Overlay.JoinByLink.Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Paste a Roblox link.
+        /// </summary>
+        public static string Menu_Overlay_JoinByLink_Placeholder {
+            get {
+                return ResourceManager.GetString("Menu.Overlay.JoinByLink.Placeholder", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to Join.
         /// </summary>
-        public static string Joiner_Join {
+        public static string Menu_Overlay_JoinByLink_Join {
             get {
-                return ResourceManager.GetString("Joiner.Join", resourceCulture);
+                return ResourceManager.GetString("Menu.Overlay.JoinByLink.Join", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Ready. Paste a link to join instantly..
+        ///   Looks up a localized string similar to Looking up the game….
         /// </summary>
-        public static string Joiner_Ready {
+        public static string Menu_Overlay_JoinByLink_Resolving {
             get {
-                return ResourceManager.GetString("Joiner.Ready", resourceCulture);
+                return ResourceManager.GetString("Menu.Overlay.JoinByLink.Resolving", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Invalid link. Paste a Roblox link..
+        ///   Looks up a localized string similar to That link doesn't lead to a joinable game.
         /// </summary>
-        public static string Joiner_InvalidLink {
+        public static string Menu_Overlay_JoinByLink_Invalid {
             get {
-                return ResourceManager.GetString("Joiner.InvalidLink", resourceCulture);
+                return ResourceManager.GetString("Menu.Overlay.JoinByLink.Invalid", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Joining....
+        ///   Looks up a localized string similar to Couldn't look up that game. Try again in a moment..
         /// </summary>
-        public static string Joiner_Joining {
+        public static string Menu_Overlay_JoinByLink_Failed {
             get {
-                return ResourceManager.GetString("Joiner.Joining", resourceCulture);
+                return ResourceManager.GetString("Menu.Overlay.JoinByLink.Failed", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Resolving link...
+        ///   Looks up a localized string similar to Couldn't start Roblox. Try again in a moment..
         /// </summary>
-        public static string Joiner_Resolving {
+        public static string Menu_Overlay_JoinByLink_JoinFailed {
             get {
-                return ResourceManager.GetString("Joiner.Resolving", resourceCulture);
+                return ResourceManager.GetString("Menu.Overlay.JoinByLink.JoinFailed", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Join instantly on paste.
+        ///   Looks up a localized string similar to Movement key layout used for Soft Key input resolution and for the key overlay display..
         /// </summary>
-        public static string Joiner_JoinInstantlyOnPaste {
+        public static string Menu_Integrations_KeyOverlaySoftKey_Description {
             get {
-                return ResourceManager.GetString("Joiner.JoinInstantlyOnPaste", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Close after joining.
-        /// </summary>
-        public static string Joiner_CloseAfterJoining {
-            get {
-                return ResourceManager.GetString("Joiner.CloseAfterJoining", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Froststrap settings.
-        /// </summary>
-        public static string Joiner_Settings {
-            get {
-                return ResourceManager.GetString("Joiner.Settings", resourceCulture);
+                return ResourceManager.GetString("Menu.Integrations.KeyOverlaySoftKey.Description", resourceCulture);
             }
         }
     }

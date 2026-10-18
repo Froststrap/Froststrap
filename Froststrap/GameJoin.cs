@@ -60,7 +60,10 @@ namespace Froststrap
             }
 
             if (IsFishstrapHost(host))
-                return BuildFishstrapLaunchCommand(uri);
+                return BuildInviteLaunchCommand(uri, "fishstrap.app deeplink", "v1", "joingame");
+
+            if (IsFroststrapHost(host))
+                return BuildInviteLaunchCommand(uri, "froststrap.xyz invite", "invite");
 
             if (!IsRobloxHost(host))
                 return null;
@@ -89,52 +92,37 @@ namespace Froststrap
                 if (!App.Cookies.Loaded)
                     return deepLink;
 
-                string? csrf = null;
-                for (int i = 0; i < 2; i++)
-                {
-                    using var request = new HttpRequestMessage(HttpMethod.Post, UrlBuilder.BuildApiUrl("apis", "sharelinks/v1/resolve-link", secure: true));
-                    request.Headers.Add("Cookie", $".ROBLOSECURITY={App.Cookies.GetAuthCookie()}");
-                    request.Content = new StringContent($"{{\"linkId\":\"{code}\",\"linkType\":\"Server\"}}", Encoding.UTF8, "application/json");
-                    if (csrf is not null)
-                        request.Headers.Add("X-CSRF-TOKEN", csrf);
+                using var request = new HttpRequestMessage(HttpMethod.Post, UrlBuilder.BuildApiUrl("apis", "sharelinks/v1/resolve-link", secure: true));
+                request.Content = new StringContent($"{{\"linkId\":\"{code}\",\"linkType\":\"Server\"}}", Encoding.UTF8, "application/json");
 
-                    using var response = await App.HttpClient.SendAsync(request);
+                using var response = await App.Cookies.AuthRequest(request);
 
-                    if (response.StatusCode == HttpStatusCode.Forbidden && response.Headers.TryGetValues("x-csrf-token", out var token))
-                    {
-                        csrf = token.First();
-                        continue;
-                    }
+                if (!response.IsSuccessStatusCode)
+                    return deepLink;
 
-                    if (!response.IsSuccessStatusCode)
-                        return deepLink;
+                string body = await response.Content.ReadAsStringAsync();
+                using var json = JsonDocument.Parse(body);
 
-                    string body = await response.Content.ReadAsStringAsync();
-                    using var json = JsonDocument.Parse(body);
+                if (!json.RootElement.TryGetProperty("privateServerInviteData", out var data))
+                    return deepLink;
 
-                    if (!json.RootElement.TryGetProperty("privateServerInviteData", out var data))
-                        return deepLink;
+                if (data.TryGetProperty("status", out var status) && status.GetString() != "Valid")
+                    return deepLink;
 
-                    if (data.TryGetProperty("status", out var status) && status.GetString() != "Valid")
-                        return deepLink;
+                if (!data.TryGetProperty("placeId", out var placeIdProp))
+                    return deepLink;
 
-                    if (!data.TryGetProperty("placeId", out var placeIdProp))
-                        return deepLink;
+                if (!placeIdProp.TryGetInt64(out long pid))
+                    return deepLink;
 
-                    if (!placeIdProp.TryGetInt64(out long pid))
-                        return deepLink;
+                if (!data.TryGetProperty("linkCode", out var linkCode))
+                    return deepLink;
 
-                    if (!data.TryGetProperty("linkCode", out var linkCode))
-                        return deepLink;
+                string? resolvedCode = linkCode.GetString();
+                if (string.IsNullOrEmpty(resolvedCode))
+                    return deepLink;
 
-                    string? resolvedCode = linkCode.GetString();
-                    if (string.IsNullOrEmpty(resolvedCode))
-                        return deepLink;
-
-                    return $"roblox://experiences/start?placeId={pid}&linkCode={Uri.EscapeDataString(resolvedCode)}";
-                }
-
-                return deepLink;
+                return $"roblox://experiences/start?placeId={pid}&linkCode={Uri.EscapeDataString(resolvedCode)}";
             }
 
             // experience page (roblox.com/games/{placeId}/name[?privateServerLinkCode=...])
@@ -149,9 +137,9 @@ namespace Froststrap
             return null;
         }
 
-        private static string BuildStartExperienceUrl(long placeId, Uri uri)
+        private static string BuildStartExperienceUrl(long placeId, Uri uri, string source = "web link")
         {
-            App.Logger.Info($"Extracted place ID from web link: {placeId}");
+            App.Logger.Info($"Extracted place ID from {source}: {placeId}");
 
             string url = $"roblox://experiences/start?placeId={placeId}";
 
@@ -159,57 +147,50 @@ namespace Froststrap
             if (!string.IsNullOrEmpty(linkCode))
             {
                 url += $"&linkCode={Uri.EscapeDataString(linkCode)}";
-                App.Logger.Info($"Extracted private server link code from web link: {linkCode}");
+                App.Logger.Info($"Extracted private server link code from {source}: {linkCode}");
             }
 
             string? serverId = GetQueryValue(uri, "gameInstanceId");
             if (!string.IsNullOrEmpty(serverId))
             {
                 url += $"&gameInstanceId={Uri.EscapeDataString(serverId)}";
-                App.Logger.Info($"Extracted server ID from web link: {serverId}");
+                App.Logger.Info($"Extracted server ID from {source}: {serverId}");
             }
 
             string? accessCode = GetQueryValue(uri, "accessCode");
             if (!string.IsNullOrEmpty(accessCode))
             {
                 url += $"&accessCode={Uri.EscapeDataString(accessCode)}";
-                App.Logger.Info($"Extracted access code from web link: {accessCode}");
-            }
-
-            return url;
-        }
-
-        private static string? BuildFishstrapLaunchCommand(Uri uri)
-        {
-            string[] segments = uri.AbsolutePath.Split('/', StringSplitOptions.RemoveEmptyEntries);
-
-            if (segments.Length != 2
-                || !segments[0].Equals("v1", StringComparison.OrdinalIgnoreCase)
-                || !segments[1].Equals("joingame", StringComparison.OrdinalIgnoreCase))
-                return null;
-
-            if (!long.TryParse(GetQueryValue(uri, "placeId"), out long placeId) || placeId <= 0)
-                return null;
-
-            App.Logger.Info($"Extracted place ID from fishstrap.app deeplink: {placeId}");
-
-            string url = $"roblox://experiences/start?placeId={placeId}";
-
-            string? serverId = GetQueryValue(uri, "gameInstanceId");
-            if (!string.IsNullOrEmpty(serverId))
-            {
-                url += $"&gameInstanceId={Uri.EscapeDataString(serverId)}";
-                App.Logger.Info($"Extracted server ID from fishstrap.app deeplink: {serverId}");
+                App.Logger.Info($"Extracted access code from {source}: {accessCode}");
             }
 
             string? launchData = GetQueryValue(uri, "launchData");
             if (!string.IsNullOrEmpty(launchData))
             {
                 url += $"&launchData={Uri.EscapeDataString(launchData)}";
-                App.Logger.Info("Extracted launch data from fishstrap.app deeplink");
+                App.Logger.Info($"Extracted launch data from {source}");
             }
 
             return url;
+        }
+
+        private static string? BuildInviteLaunchCommand(Uri uri, string source, params string[] path)
+        {
+            string[] segments = uri.AbsolutePath.Split('/', StringSplitOptions.RemoveEmptyEntries);
+
+            if (segments.Length != path.Length)
+                return null;
+
+            for (int i = 0; i < path.Length; i++)
+            {
+                if (!segments[i].Equals(path[i], StringComparison.OrdinalIgnoreCase))
+                    return null;
+            }
+
+            if (!long.TryParse(GetQueryValue(uri, "placeId"), out long placeId) || placeId <= 0)
+                return null;
+
+            return BuildStartExperienceUrl(placeId, uri, source);
         }
 
         private static bool IsRobloxHost(string host) =>
@@ -219,6 +200,10 @@ namespace Froststrap
         private static bool IsFishstrapHost(string host) =>
             host.Equals("fishstrap.app", StringComparison.OrdinalIgnoreCase)
             || host.EndsWith(".fishstrap.app", StringComparison.OrdinalIgnoreCase);
+
+        private static bool IsFroststrapHost(string host) =>
+            host.Equals("froststrap.xyz", StringComparison.OrdinalIgnoreCase)
+            || host.EndsWith(".froststrap.xyz", StringComparison.OrdinalIgnoreCase);
 
         private static string? GetQueryValue(Uri uri, string name)
         {

@@ -31,20 +31,36 @@ namespace Froststrap.UI.ViewModels.Overlay
 
         public KeyOverlayViewModel()
         {
-            var labels = SoftKeyLayout.Labels(App.Settings.Prop.SoftKeyProfile);
-
-            UpLabel = labels.Up;
-            LeftLabel = labels.Left;
-            DownLabel = labels.Down;
-            RightLabel = labels.Right;
-
             RefreshOptions();
         }
 
-        public string UpLabel { get; }
-        public string LeftLabel { get; }
-        public string DownLabel { get; }
-        public string RightLabel { get; }
+        private string _upLabel = String.Empty;
+        public string UpLabel
+        {
+            get => _upLabel;
+            private set => SetProperty(ref _upLabel, value);
+        }
+
+        private string _leftLabel = String.Empty;
+        public string LeftLabel
+        {
+            get => _leftLabel;
+            private set => SetProperty(ref _leftLabel, value);
+        }
+
+        private string _downLabel = String.Empty;
+        public string DownLabel
+        {
+            get => _downLabel;
+            private set => SetProperty(ref _downLabel, value);
+        }
+
+        private string _rightLabel = String.Empty;
+        public string RightLabel
+        {
+            get => _rightLabel;
+            private set => SetProperty(ref _rightLabel, value);
+        }
 
         public bool ShowKeys
         {
@@ -136,6 +152,13 @@ namespace Froststrap.UI.ViewModels.Overlay
 
         public void RefreshOptions()
         {
+            var labels = SoftKeyLayout.Labels(App.Settings.Prop.SoftKeyProfile);
+
+            UpLabel = labels.Up;
+            LeftLabel = labels.Left;
+            DownLabel = labels.Down;
+            RightLabel = labels.Right;
+
             ShowKeys = App.Settings.Prop.KeyOverlayShowKeys;
             ShowMouse = App.Settings.Prop.KeyOverlayShowMouse;
             ShowCpsLeft = App.Settings.Prop.KeyOverlayShowCpsLeft;

@@ -250,6 +250,21 @@
                                 </ComboBox>
                             </controls:OptionControl>
 
+                            <controls:OptionControl Description="{x:Static resources:Strings.Menu_Integrations_KeyOverlaySoftKey_Description}" Header="{x:Static resources:Strings.Menu_Bootstrapper_SoftKeyProfile_Title}">
+                                <ComboBox
+                                    Width="200"
+                                    Margin="5,0,0,0"
+                                    Padding="10,5,10,5"
+                                    ItemsSource="{Binding SoftKeyProfiles, Mode=OneTime}"
+                                    SelectedItem="{Binding SoftKeyProfile, Mode=TwoWay}">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Converter={StaticResource EnumNameConverter}}" />
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </controls:OptionControl>
+
                             <controls:OptionControl Description="{x:Static resources:Strings.Menu_Integrations_KeyOverlayScale_Description}" Header="{x:Static resources:Strings.Menu_Integrations_KeyOverlayScale_Title}">
                                 <ComboBox
                                     Width="200"

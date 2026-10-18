@@ -183,6 +183,8 @@ SPDX-License-Identifier: MPL-2.0
                                    StrokeBrush="{DynamicResource TextFillColorSecondaryBrush}" />
                     </ToggleButton>
 
+                    <control:JoinByLink VerticalAlignment="Center" />
+
                     <ToggleButton Classes="panelToggle"
                                   control:DockHintLayer.Text="{x:Static resources:Strings.ContextMenu_GameHistory_Title}"
                                   IsChecked="{Binding IsHistoryVisible, Mode=OneWay}"

@@ -364,6 +364,22 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
+        public IEnumerable<SoftKeyProfile> SoftKeyProfiles { get; } = Enum.GetValues<SoftKeyProfile>();
+
+        public SoftKeyProfile SoftKeyProfile
+        {
+            get => App.Settings.Prop.SoftKeyProfile;
+            set
+            {
+                if (App.Settings.Prop.SoftKeyProfile == value)
+                    return;
+
+                App.Settings.Prop.SoftKeyProfile = value;
+                OnPropertyChanged(nameof(SoftKeyProfile));
+                KeyOverlayDisplay.NotifyChanged();
+            }
+        }
+
         public bool KeyOverlayShowMouse
         {
             get => App.Settings.Prop.KeyOverlayShowMouse;

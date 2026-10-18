@@ -869,7 +869,7 @@ internal partial class Bootstrapper : IDisposable
             AppStorageManager.Apply();
 
             if (_joinData.JoinType == GameJoinType.Unknown)
-                App.Logger.Warn("Unable to get join data");
+                App.Logger.Info("Unable to get join data");
 
             App.Logger.Info($"Join Type: {_joinData.JoinType}");
             App.Logger.Info($"Join Origin: {_joinData.JoinOrigin ?? "null"}");

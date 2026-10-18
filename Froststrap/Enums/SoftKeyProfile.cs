@@ -9,7 +9,6 @@ namespace Froststrap.Enums
         WASD,
         AZERTY,
         ESDF,
-        [EnumName(StaticName = "Arrow Keys")]
         ArrowKeys
     }
 }

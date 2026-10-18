@@ -132,6 +132,8 @@ namespace Froststrap.UI.ViewModels.Overlay
 
         public Controls.GameStatusViewModel GameStatus { get; } = new();
 
+        public Controls.JoinByLinkViewModel JoinByLink { get; } = new();
+
         private string _username = String.Empty;
         public string Username
         {
@@ -624,6 +626,8 @@ namespace Froststrap.UI.ViewModels.Overlay
                 _activityWatcher.OnGameJoin -= OnActivityGameJoin;
                 _activityWatcher.OnGameLeave -= OnActivityGameLeave;
             }
+
+            JoinByLink.Dispose();
 
             GC.SuppressFinalize(this);
         }
