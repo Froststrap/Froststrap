@@ -11,7 +11,6 @@ namespace Froststrap
     [JsonSourceGenerationOptions(WriteIndented = true, ReadCommentHandling = JsonCommentHandling.Skip)]
     [JsonSerializable(typeof(Settings))]
     [JsonSerializable(typeof(State))]
-    [JsonSerializable(typeof(OverlayNotes))]
     [JsonSerializable(typeof(DistributionState))]
     [JsonSerializable(typeof(RobloxState))]
     [JsonSerializable(typeof(RemoteDataBase))]
