@@ -544,18 +544,7 @@ namespace Froststrap.RobloxInterfaces
         public static void Launch(string query)
         {
             string deeplink = $"roblox://experiences/start?{query}";
-
-            if (Processes.IsRobloxRunning())
-            {
-                Process.Start(new RobloxPlayerData().ExecutablePath, deeplink);
-                return;
-            }
-
-            Process.Start(new ProcessStartInfo
-            {
-                FileName = deeplink,
-                UseShellExecute = true
-            });
+            Process.Start(new RobloxPlayerData().ExecutablePath, deeplink);
         }
 
         public static Uri GamePage(long placeId) => UrlBuilder.BuildApiUrl("www", $"games/{placeId}");
