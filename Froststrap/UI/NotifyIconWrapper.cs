@@ -25,6 +25,13 @@ namespace Froststrap.UI
         private DateTime _lastClickTime = DateTime.MinValue;
         private const int DoubleClickThresholdMs = 300;
 
+        private static uint RandomSerial()
+        {
+            var bytes = new byte[4];
+            System.Security.Cryptography.RandomNumberGenerator.Fill(bytes);
+            return BitConverter.ToUInt32(bytes, 0) | 1u;
+        }
+
         public NotifyIconWrapper(Watcher watcher)
         {
 #if __APPLE__
@@ -37,12 +44,25 @@ namespace Froststrap.UI
                 // TODO:
                 // make this read from config so we can config
                 // with new values.
-                Froststrap.Backend.VirtualDisplay.Initialize(
+                void InitAndStart(uint serial) => Froststrap.Backend.VirtualDisplay.Initialize(
                     App.Settings.Prop.VirtualDisplayName,
                     App.Settings.Prop.VirtualDisplayWidth,
                     App.Settings.Prop.VirtualDisplayHeight,
-                    [60.0, 120.0, 240.0]
+                    [60.0, 120.0, 240.0],
+                    serial
                 );
+
+                InitAndStart(App.Settings.Prop.VirtualDisplaySerial);
+
+                var result = Froststrap.Backend.VirtualDisplay.Start();
+                if (result != -2) return;
+
+                App.Logger.Warn("Virtual display identity rejected, rotating serial");
+
+                var rotated = RandomSerial();
+                App.Settings.Prop.VirtualDisplaySerial = rotated;
+
+                InitAndStart(rotated);
                 Froststrap.Backend.VirtualDisplay.Start();
             });
 #endif

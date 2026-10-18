@@ -20,7 +20,8 @@ internal partial class InternalVirtualDisplay
         nuint width,
         nuint height,
         double* item,
-        nuint capacity
+        nuint capacity,
+        uint serial
     );
     [LibraryImport(
         "virtualdisplay",
@@ -44,11 +45,12 @@ public class VirtualDisplay
 {
     /// Intiialize datapoints around being able to
     /// create the virtual display
-    public unsafe static void Initialize(
+    public unsafe static int Initialize(
         string name,
         int width,
         int height,
-        double[] rates
+        double[] rates,
+        uint serial
     )
     {                    
         fixed (double* ptr = rates)
@@ -58,18 +60,21 @@ public class VirtualDisplay
                 (nuint)width,
                 (nuint)height,
                 ptr,
-                (nuint)rates.Length
+                (nuint)rates.Length,
+                serial
             );
             Console.WriteLine($"Virtual display initialized: {result}");
+            return result;
         }
     }
 
     /// Wrapper around starting the virtual display
-    public static void Start()
+    public static int Start()
     {
         var result = InternalVirtualDisplay.Start();
 
         Console.WriteLine($"Virtual display started: {result}");
+        return result;
     }
 
     /// Checks with Rust implementation if the ring has `Some()`
