@@ -70,34 +70,12 @@ namespace Froststrap.Integrations
 
         private void AssignKeys(SoftKeyProfile profile)
         {
-            switch (profile)
-            {
-                case SoftKeyProfile.AZERTY:
-                    _keyUp = 0x5A;
-                    _keyLeft = 0x51;
-                    _keyDown = 0x53;
-                    _keyRight = 0x44;
-                    break;
-                case SoftKeyProfile.ESDF:
-                    _keyUp = 0x45;
-                    _keyLeft = 0x53;
-                    _keyDown = 0x44;
-                    _keyRight = 0x46;
-                    break;
-                case SoftKeyProfile.ArrowKeys:
-                    _keyUp = 0x26;
-                    _keyLeft = 0x25;
-                    _keyDown = 0x28;
-                    _keyRight = 0x27;
-                    break;
-                case SoftKeyProfile.WASD:
-                default:
-                    _keyUp = 0x57;
-                    _keyLeft = 0x41;
-                    _keyDown = 0x53;
-                    _keyRight = 0x44;
-                    break;
-            }
+            var keys = SoftKeyLayout.Resolve(profile);
+
+            _keyUp = keys.Up;
+            _keyLeft = keys.Left;
+            _keyDown = keys.Down;
+            _keyRight = keys.Right;
         }
 
         [SupportedOSPlatform("windows")]

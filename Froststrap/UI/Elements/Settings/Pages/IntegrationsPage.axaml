@@ -12,6 +12,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:gv="using:Froststrap.UI.ViewModels"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:overlay="clr-namespace:Froststrap.UI.Elements.Overlay"
     xmlns:resources="using:Froststrap.Resources"
     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
     d:DesignHeight="2500"
@@ -75,7 +76,7 @@
                 IsEnabled="{Binding ActivityTrackingEnabled}"
                 IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}">
                 <ComboBox
-                    MinWidth="200"
+                    Width="200"
                     Margin="5,0,0,0"
                     Padding="10,5,10,5"
                     ItemsSource="{Binding TrayDoubleClickActions, Mode=OneTime}"
@@ -178,6 +179,172 @@
                                 Icon="RotateCcw" />
                         </Grid>
                     </controls:OptionControl>
+
+                    <controls:CardExpander
+                        Classes="NoUserExpansion"
+                        Description="{x:Static resources:Strings.Menu_Integrations_SearchBar_Description}"
+                        Header="{x:Static resources:Strings.Menu_Integrations_SearchBar_Title}"
+                        IsEnabled="{Binding EnableOverlay}"
+                        IsExpanded="{Binding SearchBarEnabled, Mode=OneWay}"
+                        IsVisible="{x:Static gv:GlobalViewModel.IsWindows}">
+                        <controls:CardExpander.HeaderContent>
+                            <ToggleSwitch IsChecked="{Binding SearchBarEnabled, Mode=TwoWay}" />
+                        </controls:CardExpander.HeaderContent>
+
+                        <StackPanel Margin="0,8,0,0">
+                            <controls:OptionControl Description="{x:Static resources:Strings.Menu_Integrations_SearchBarHotkey_Description}" Header="{x:Static resources:Strings.Menu_Integrations_SearchBarHotkey_Title}">
+                                <Grid
+                                    MinWidth="200"
+                                    HorizontalAlignment="Right"
+                                    ColumnDefinitions="*,Auto">
+                                    <controls:HotkeyBox
+                                        Key="{Binding SearchBarHotkeyKey, Mode=TwoWay}"
+                                        Grid.Column="0"
+                                        HorizontalAlignment="Stretch"
+                                        IsRecording="{Binding IsRecordingSearchBarHotkey, Mode=OneWayToSource}"
+                                        Modifiers="{Binding SearchBarHotkeyModifiers, Mode=TwoWay}" />
+                                    <controls:IconButton
+                                        Grid.Column="1"
+                                        Margin="4,0,0,0"
+                                        Command="{Binding ResetSearchBarHotkeyCommand, Mode=OneTime}"
+                                        Icon="RotateCcw" />
+                                </Grid>
+                            </controls:OptionControl>
+                        </StackPanel>
+                    </controls:CardExpander>
+
+                    <controls:CardExpander
+                        Classes="NoUserExpansion"
+                        Description="{x:Static resources:Strings.Menu_Integrations_KeyOverlay_Description}"
+                        Header="{x:Static resources:Strings.Menu_Integrations_KeyOverlay_Title}"
+                        IsEnabled="{Binding EnableOverlay}"
+                        IsExpanded="{Binding KeyOverlayEnabled, Mode=OneWay}"
+                        IsVisible="{x:Static gv:GlobalViewModel.IsWindows}">
+                        <controls:CardExpander.HeaderContent>
+                            <ToggleSwitch IsChecked="{Binding KeyOverlayEnabled, Mode=TwoWay}" />
+                        </controls:CardExpander.HeaderContent>
+
+                        <StackPanel Margin="0,8,0,0">
+                            <Viewbox
+                                Width="360"
+                                Height="180"
+                                Margin="0,4,0,12"
+                                HorizontalAlignment="Center"
+                                Stretch="Uniform"
+                                StretchDirection="DownOnly">
+                                <overlay:KeyOverlayView IsPreview="True" />
+                            </Viewbox>
+
+                            <controls:OptionControl Description="{x:Static resources:Strings.Menu_Integrations_KeyOverlayStyle_Description}" Header="{x:Static resources:Strings.Menu_Integrations_KeyOverlayStyle_Title}">
+                                <ComboBox
+                                    Width="200"
+                                    Margin="5,0,0,0"
+                                    Padding="10,5,10,5"
+                                    ItemsSource="{Binding KeyOverlayStyles, Mode=OneTime}"
+                                    SelectedItem="{Binding KeyOverlayStyle, Mode=TwoWay}">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Converter={StaticResource EnumNameConverter}}" />
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </controls:OptionControl>
+
+                            <controls:OptionControl Description="{x:Static resources:Strings.Menu_Integrations_KeyOverlayScale_Description}" Header="{x:Static resources:Strings.Menu_Integrations_KeyOverlayScale_Title}">
+                                <ComboBox
+                                    Width="200"
+                                    Margin="5,0,0,0"
+                                    Padding="10,5,10,5"
+                                    ItemsSource="{Binding KeyOverlayScales, Mode=OneTime}"
+                                    SelectedItem="{Binding KeyOverlayScale, Mode=TwoWay}">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Converter={StaticResource EnumNameConverter}}" />
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </controls:OptionControl>
+
+                            <controls:OptionControl Description="{x:Static resources:Strings.Menu_Integrations_KeyOverlayHotkey_Description}" Header="{x:Static resources:Strings.Menu_Integrations_KeyOverlayHotkey_Title}">
+                                <Grid
+                                    MinWidth="200"
+                                    HorizontalAlignment="Right"
+                                    ColumnDefinitions="*,Auto">
+                                    <controls:HotkeyBox
+                                        Key="{Binding KeyOverlayHotkeyKey, Mode=TwoWay}"
+                                        Grid.Column="0"
+                                        HorizontalAlignment="Stretch"
+                                        IsRecording="{Binding IsRecordingKeyOverlayHotkey, Mode=OneWayToSource}"
+                                        Modifiers="{Binding KeyOverlayHotkeyModifiers, Mode=TwoWay}" />
+                                    <controls:IconButton
+                                        Grid.Column="1"
+                                        Margin="4,0,0,0"
+                                        Command="{Binding ResetKeyOverlayHotkeyCommand, Mode=OneTime}"
+                                        Icon="RotateCcw" />
+                                </Grid>
+                            </controls:OptionControl>
+
+                            <controls:OptionControl Description="{x:Static resources:Strings.Menu_Integrations_KeyOverlayMoveHotkey_Description}" Header="{x:Static resources:Strings.Menu_Integrations_KeyOverlayMoveHotkey_Title}">
+                                <Grid
+                                    MinWidth="200"
+                                    HorizontalAlignment="Right"
+                                    ColumnDefinitions="*,Auto">
+                                    <controls:HotkeyBox
+                                        Key="{Binding KeyOverlayMoveHotkeyKey, Mode=TwoWay}"
+                                        Grid.Column="0"
+                                        HorizontalAlignment="Stretch"
+                                        IsRecording="{Binding IsRecordingKeyOverlayMoveHotkey, Mode=OneWayToSource}"
+                                        Modifiers="{Binding KeyOverlayMoveHotkeyModifiers, Mode=TwoWay}" />
+                                    <controls:IconButton
+                                        Grid.Column="1"
+                                        Margin="4,0,0,0"
+                                        Command="{Binding ResetKeyOverlayMoveHotkeyCommand, Mode=OneTime}"
+                                        Icon="RotateCcw" />
+                                </Grid>
+                            </controls:OptionControl>
+
+                            <controls:OptionControl Description="{x:Static resources:Strings.Menu_Integrations_KeyOverlayShowKeys_Description}" Header="{x:Static resources:Strings.Menu_Integrations_KeyOverlayShowKeys_Title}">
+                                <ToggleSwitch IsChecked="{Binding KeyOverlayShowKeys, Mode=TwoWay}" />
+                            </controls:OptionControl>
+
+                            <controls:OptionControl Description="{x:Static resources:Strings.Menu_Integrations_KeyOverlayShowMouse_Description}" Header="{x:Static resources:Strings.Menu_Integrations_KeyOverlayShowMouse_Title}">
+                                <ToggleSwitch IsChecked="{Binding KeyOverlayShowMouse, Mode=TwoWay}" />
+                            </controls:OptionControl>
+
+                            <controls:OptionControl Description="{x:Static resources:Strings.Menu_Integrations_KeyOverlayShowCpsLeft_Description}" Header="{x:Static resources:Strings.Menu_Integrations_KeyOverlayShowCpsLeft_Title}">
+                                <ToggleSwitch IsChecked="{Binding KeyOverlayShowCpsLeft, Mode=TwoWay}" />
+                            </controls:OptionControl>
+
+                            <controls:OptionControl Description="{x:Static resources:Strings.Menu_Integrations_KeyOverlayShowCpsRight_Description}" Header="{x:Static resources:Strings.Menu_Integrations_KeyOverlayShowCpsRight_Title}">
+                                <ToggleSwitch IsChecked="{Binding KeyOverlayShowCpsRight, Mode=TwoWay}" />
+                            </controls:OptionControl>
+
+                            <controls:OptionControl Description="{x:Static resources:Strings.Menu_Integrations_KeyOverlayHighlightColor_Description}" Header="{x:Static resources:Strings.Menu_Integrations_KeyOverlayHighlightColor_Title}">
+                                <StackPanel
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    Orientation="Horizontal"
+                                    Spacing="4">
+                                    <Border
+                                        Width="{Binding #KeyOverlayColorPickerButton.Bounds.Height}"
+                                        Height="{Binding #KeyOverlayColorPickerButton.Bounds.Height}"
+                                        VerticalAlignment="Center"
+                                        Background="{Binding KeyOverlayHighlightColorBrush}"
+                                        BorderBrush="{DynamicResource ControlElevationBorderBrush}"
+                                        BorderThickness="1"
+                                        CornerRadius="6" />
+                                    <Button
+                                        x:Name="KeyOverlayColorPickerButton"
+                                        Command="{Binding OpenKeyOverlayColorCommand, Mode=OneTime}"
+                                        CommandParameter="{Binding $self}"
+                                        Content="{x:Static resources:Strings.Common_ColorPicker}" />
+                                    <controls:IconButton
+                                        Command="{Binding ResetKeyOverlayColorCommand, Mode=OneTime}"
+                                        Icon="RotateCcw" />
+                                </StackPanel>
+                            </controls:OptionControl>
+                        </StackPanel>
+                    </controls:CardExpander>
                 </StackPanel>
             </controls:CardExpander>
 

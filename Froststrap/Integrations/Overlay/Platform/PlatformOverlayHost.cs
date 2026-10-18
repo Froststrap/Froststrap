@@ -42,6 +42,7 @@ namespace Froststrap.Integrations.Overlay.Platform
         public RealtimeMessaging Messaging => _host.Messaging;
         public ActivityWatcher? ActivityWatcher => _host.ActivityWatcher;
         public FriendPresence Friends => _host.Friends;
+        public int ProcessId => _host.ProcessId;
 
         public void Start() => _host.Start();
         public void SyncBounds() => _host.SyncBounds();

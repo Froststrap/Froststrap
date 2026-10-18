@@ -19,6 +19,18 @@ namespace Froststrap.Models.Persistable
         public bool SearchBarEnabled { get; set; } = true;
         public KeyModifiers SearchBarHotkeyModifiers { get; set; } = OverlaySearchBarHotkey.DefaultModifiers;
         public Key SearchBarHotkeyKey { get; set; } = OverlaySearchBarHotkey.DefaultKey;
+        public bool KeyOverlayEnabled { get; set; }
+        public KeyModifiers KeyOverlayHotkeyModifiers { get; set; } = KeyOverlayHotkey.DefaultModifiers;
+        public Key KeyOverlayHotkeyKey { get; set; } = KeyOverlayHotkey.DefaultKey;
+        public KeyOverlayStyle KeyOverlayStyle { get; set; } = KeyOverlayStyle.Dark;
+        public KeyOverlayScale KeyOverlayScale { get; set; } = KeyOverlayScale.X100;
+        public KeyModifiers KeyOverlayMoveHotkeyModifiers { get; set; } = KeyOverlayMoveHotkey.DefaultModifiers;
+        public Key KeyOverlayMoveHotkeyKey { get; set; } = KeyOverlayMoveHotkey.DefaultKey;
+        public bool KeyOverlayShowKeys { get; set; } = true;
+        public bool KeyOverlayShowMouse { get; set; } = true;
+        public bool KeyOverlayShowCpsLeft { get; set; } = true;
+        public bool KeyOverlayShowCpsRight { get; set; } = true;
+        public string? KeyOverlayHighlightColor { get; set; }
         public bool ShowServerDetails { get; set; } = true;
         public bool ShowServerUptime { get; set; } = true;
         public bool AutoRejoin { get; set; }

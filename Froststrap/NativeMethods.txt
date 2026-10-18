@@ -3,6 +3,8 @@ FlashWindow
 GetWindowLong
 SetWindowLong
 SetWindowPos
+GetTopWindow
+GetWindow
 CopyIcon
 GetWindowText
 SetWindowText
@@ -21,6 +23,7 @@ IsIconic
 IsZoomed
 GetForegroundWindow
 GetWindowThreadProcessId
+GetClassName
 DwmGetWindowAttribute
 GetClientRect
 ClientToScreen
@@ -31,8 +34,10 @@ RECT
 IsWindowVisible
 EnumWindows
 SetWindowRgn
+GetWindowRgn
 CreateRectRgn
 CombineRgn
+OffsetRgn
 DeleteObject
 SetWindowsHookEx
 UnhookWindowsHookEx

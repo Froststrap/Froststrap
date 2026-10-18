@@ -8,6 +8,7 @@ using Avalonia.Input.Platform;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using Froststrap.Integrations;
+using Froststrap.Integrations.OverlayModules;
 
 namespace Froststrap.UI.Elements.ContextMenu
 {
@@ -29,6 +30,7 @@ namespace Froststrap.UI.Elements.ContextMenu
         private NativeMenuItem? PlaytimeMenuItem;
         private NativeMenuItem? RichPresenceMenuItem;
         private NativeMenuItem? SoftkeyMenuItem;
+        private NativeMenuItem? KeyOverlayMenuItem;
         private NativeMenuItem? InviteDeeplinkMenuItem;
         private NativeMenuItem? AutoJoinRegionMenuItem;
         private NativeMenuItem? ServerDetailsMenuItem;
@@ -62,16 +64,19 @@ namespace Froststrap.UI.Elements.ContextMenu
             PlaytimeMenuItem = items.ElementAtOrDefault(1);
             RichPresenceMenuItem = items.ElementAtOrDefault(3);
             SoftkeyMenuItem = items.ElementAtOrDefault(4);
-            InviteDeeplinkMenuItem = items.ElementAtOrDefault(5);
-            AutoJoinRegionMenuItem = items.ElementAtOrDefault(6);
-            ServerDetailsMenuItem = items.ElementAtOrDefault(7);
-            GameHistoryMenuItem = items.ElementAtOrDefault(8);
-            CloseRobloxMenuItem = items.ElementAtOrDefault(10);
+            KeyOverlayMenuItem = items.ElementAtOrDefault(5);
+            InviteDeeplinkMenuItem = items.ElementAtOrDefault(6);
+            AutoJoinRegionMenuItem = items.ElementAtOrDefault(7);
+            ServerDetailsMenuItem = items.ElementAtOrDefault(8);
+            GameHistoryMenuItem = items.ElementAtOrDefault(9);
+            CloseRobloxMenuItem = items.ElementAtOrDefault(11);
         }
 
         public MenuContainer(Watcher watcher) : this()
         {
             _watcher = watcher;
+
+            KeyOverlayService.SessionEnabledChanged += KeyOverlayService_SessionEnabledChanged;
 
             if (ActivityWatcher is not null)
             {
@@ -89,6 +94,7 @@ namespace Froststrap.UI.Elements.ContextMenu
                         GameHistoryMenuItem?.SetValue(MenuItem.IsVisibleProperty, false);
                         AutoJoinRegionMenuItem?.SetValue(MenuItem.IsVisibleProperty, false);
                         SoftkeyMenuItem?.SetValue(MenuItem.IsVisibleProperty, false);
+                        KeyOverlayMenuItem?.SetValue(MenuItem.IsVisibleProperty, false);
                         CloseRobloxMenuItem?.SetValue(MenuItem.HeaderProperty, Strings.Menu_ContextMenu_CloseStudio);
 
                         if (App.Settings.Prop.PlaytimeCounter)
@@ -106,6 +112,9 @@ namespace Froststrap.UI.Elements.ContextMenu
 
                         SoftkeyMenuItem?.IsVisible = App.Settings.Prop.SoftKeyEnabled && _watcher?.Softkey != null && OperatingSystem.IsWindows();
                         SoftkeyMenuItem?.IsChecked = true;
+
+                        KeyOverlayMenuItem?.IsVisible = App.Settings.Prop.KeyOverlayEnabled && _watcher?.Overlay is not null && OperatingSystem.IsWindows();
+                        KeyOverlayMenuItem?.IsChecked = KeyOverlayService.SessionEnabled;
                     }
 
                     if (RichPresenceMenuItem != null)
@@ -199,6 +208,19 @@ namespace Froststrap.UI.Elements.ContextMenu
                 _watcher?.Softkey?.SetEnabled(item.IsChecked);
             }
         }
+
+        private void KeyOverlayMenuItem_Click(object? sender, EventArgs e)
+        {
+            if (sender is NativeMenuItem item)
+                KeyOverlayService.SetSessionEnabled(item.IsChecked);
+        }
+
+        private void KeyOverlayService_SessionEnabledChanged(object? sender, bool enabled) =>
+            Dispatcher.UIThread.Post(() =>
+            {
+                if (KeyOverlayMenuItem is not null)
+                    KeyOverlayMenuItem.IsChecked = enabled;
+            });
 
         private async void InviteDeeplinkMenuItem_Click(object? sender, EventArgs e)
         {

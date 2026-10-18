@@ -14,6 +14,10 @@ namespace Froststrap.Models.Overlay
 
         public static event EventHandler? Changed;
 
+        public static event EventHandler<bool>? SuspendedChanged;
+
+        public static bool IsSuspended { get; private set; }
+
         private static bool _notifyPending;
 
         public static void NotifyChanged()
@@ -28,6 +32,16 @@ namespace Froststrap.Models.Overlay
                 _notifyPending = false;
                 Changed?.Invoke(null, EventArgs.Empty);
             }, DispatcherPriority.Background);
+        }
+
+        public static void SetSuspended(bool suspended)
+        {
+            if (IsSuspended == suspended)
+                return;
+
+            IsSuspended = suspended;
+
+            SuspendedChanged?.Invoke(null, suspended);
         }
     }
 }

@@ -29,9 +29,11 @@ namespace Froststrap.Integrations.Overlay.Platform
         public RealtimeMessaging Messaging { get; } = new();
         public ActivityWatcher? ActivityWatcher { get; }
         public FriendPresence Friends { get; }
+        public int ProcessId { get; }
 
         public UnsupportedOverlayHost(int robloxProcessId, ActivityWatcher? activityWatcher)
         {
+            ProcessId = robloxProcessId;
             ActivityWatcher = activityWatcher;
             Friends = new FriendPresence(activityWatcher, Messaging);
         }
