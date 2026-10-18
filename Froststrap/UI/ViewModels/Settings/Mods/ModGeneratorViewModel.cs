@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: 2026 Froststrap
+// SPDX-FileCopyrightText: 2026 Froststrap
 //
 // SPDX-License-Identifier: MPL-2.0
 
@@ -575,7 +575,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                             ? new { GradientStops = GradientStops.Select(s => new { s.Offset, s.Color }), Angle = GradientAngle }
                             : (object)new { SolidColor = SolidColorHex }
                     };
-                    await File.WriteAllTextAsync(infoPath, JsonSerializer.Serialize(infoData, _jsonOptions));
+                    await File.WriteAllTextAsync(infoPath, JsonHelper.Serialize(infoData, _jsonOptions));
 
                     StatusText = Strings.Menu_ModGenerator_Packaging;
                     Progress = 90;

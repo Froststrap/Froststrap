@@ -2,10 +2,11 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Xml.Linq;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Data;
 using Avalonia.Media;
 
 namespace Froststrap.UI.Elements.Bootstrapper
@@ -16,14 +17,22 @@ namespace Froststrap.UI.Elements.Bootstrapper
         {
             try
             {
-                var converter = TypeDescriptor.GetConverter(typeof(T));
-                return (T?)converter?.ConvertFromInvariantString(input);
+                if (typeof(T).IsEnum)
+                    return Enum.Parse<T>(input, ignoreCase: true);
+
+                return (T?)Convert.ChangeType(input, typeof(T), CultureInfo.InvariantCulture);
             }
             catch (NotSupportedException)
             {
                 return default;
             }
         }
+
+        [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Custom theme bindings target a runtime DataContext, so reflection bindings are required; the dialog view models are rooted.")]
+        private static Binding ReflectionBinding(string path) => new(path);
+
+        [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Custom theme bindings target a runtime DataContext, so reflection bindings are required; the dialog view models are rooted.")]
+        private static Binding ReflectionBinding(string path, BindingMode mode) => new(path) { Mode = mode };
 
         private static Thickness? GetThicknessFromXElement(XElement xmlElement, string attributeName)
         {

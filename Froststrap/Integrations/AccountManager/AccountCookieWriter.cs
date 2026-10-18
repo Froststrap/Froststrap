@@ -66,7 +66,7 @@ namespace Froststrap.Integrations.AccountManager
                 Cookies = Convert.ToBase64String(encrypted)
             };
 
-            string json = System.Text.Json.JsonSerializer.Serialize(cookieData, _jsonOptions);
+            string json = JsonHelper.Serialize(cookieData, _jsonOptions);
             BackupFile(filePath);
             File.WriteAllText(filePath, json);
             return true;

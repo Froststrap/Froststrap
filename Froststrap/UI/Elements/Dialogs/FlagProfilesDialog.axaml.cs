@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: 2026 Froststrap
+// SPDX-FileCopyrightText: 2026 Froststrap
 //
 // SPDX-License-Identifier: MPL-2.0
 
@@ -307,7 +307,7 @@ namespace Froststrap.UI.Elements.Dialogs
             try
             {
                 string jsonText = File.ReadAllText(profilePath);
-                var flags = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonText);
+                var flags = JsonHelper.Deserialize<Dictionary<string, object>>(jsonText);
 
                 if (flags == null)
                 {
@@ -384,7 +384,7 @@ namespace Froststrap.UI.Elements.Dialogs
                     return;
                 }
 
-                string json = JsonSerializer.Serialize(currentFlags, _jsonOptions);
+                string json = JsonHelper.Serialize(currentFlags, _jsonOptions);
 
                 string profilesDirectory = Path.Combine(Paths.Base, Paths.SavedFlagProfiles);
                 string profilePath = Path.Combine(profilesDirectory, selectedProfile);

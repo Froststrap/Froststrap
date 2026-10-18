@@ -107,7 +107,7 @@ internal class SoberSettingsManager : JsonManager<Dictionary<string, object>>
         try
         {
             string contents = File.ReadAllText(FileLocation);
-            var settings = JsonSerializer.Deserialize<Dictionary<string, object>>(contents, _readOptions)
+            var settings = JsonHelper.Deserialize<Dictionary<string, object>>(contents, _readOptions)
                            ?? [];
             Prop = settings;
             Loaded = true;
@@ -152,7 +152,7 @@ internal class SoberSettingsManager : JsonManager<Dictionary<string, object>>
             if (!string.IsNullOrEmpty(directory))
                 Directory.CreateDirectory(directory);
 
-            string contents = JsonSerializer.Serialize(Prop, _writeOptions);
+            string contents = JsonHelper.Serialize(Prop, _writeOptions);
             File.WriteAllText(FileLocation, contents);
             _savedHash = ComputeHash(Prop);
             App.Logger.Info("Save Complete!");

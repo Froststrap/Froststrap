@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+using System.Diagnostics.CodeAnalysis;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
@@ -15,6 +16,9 @@ namespace Froststrap.UI.Utility
         private static bool _avaloniaEditThemeLoaded;
         private static bool _colorPickerTemplatesLoaded;
 
+        [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Runtime XAML resource loading by URI; Froststrap and the referenced control assemblies are rooted so the compiled XAML is preserved.")]
+        public static object Load(Uri uri) => AvaloniaXamlLoader.Load(uri);
+
         public static void EnsureAvaloniaEditTheme()
         {
             if (_avaloniaEditThemeLoaded || Application.Current is not { } app)
@@ -22,7 +26,7 @@ namespace Froststrap.UI.Utility
 
             _avaloniaEditThemeLoaded = true;
 
-            if (AvaloniaXamlLoader.Load(new Uri("avares://AvaloniaEdit/Themes/Fluent/AvaloniaEdit.xaml")) is not Styles styles)
+            if (Load(new Uri("avares://AvaloniaEdit/Themes/Fluent/AvaloniaEdit.xaml")) is not Styles styles)
                 return;
 
             int insertAt = app.Styles.Count;
@@ -56,7 +60,7 @@ namespace Froststrap.UI.Utility
 
             foreach (string source in sources)
             {
-                if (AvaloniaXamlLoader.Load(new Uri(source)) is ResourceDictionary dictionary)
+                if (Load(new Uri(source)) is ResourceDictionary dictionary)
                     app.Resources.MergedDictionaries.Add(dictionary);
             }
         }

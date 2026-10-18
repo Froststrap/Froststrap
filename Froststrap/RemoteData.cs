@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: 2026 Froststrap
+// SPDX-FileCopyrightText: 2026 Froststrap
 //
 // SPDX-License-Identifier: MPL-2.0
 
@@ -87,7 +87,7 @@ namespace Froststrap
 
                     App.Logger.Info("Remote Data.json signature verified successfully.");
 
-                    Prop = JsonSerializer.Deserialize<RemoteDataBase>(dataBytes)
+                    Prop = JsonHelper.Deserialize<RemoteDataBase>(dataBytes)
                            ?? throw new JsonException("Deserialized remote data was null.");
 
                     LoadedState = GenericTriState.Successful;
@@ -148,7 +148,7 @@ namespace Froststrap
                     return false;
                 }
 
-                Prop = JsonSerializer.Deserialize<RemoteDataBase>(localDataBytes)!;
+                Prop = JsonHelper.Deserialize<RemoteDataBase>(localDataBytes)!;
                 App.Logger.Info("Successfully verified and loaded local Data.json cache from disk.");
                 return true;
             }

@@ -3,6 +3,7 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
@@ -236,6 +237,8 @@ namespace Froststrap.Utility
             Create(appPath, $"-p \"{deeplink}\"", lnkPath, finalIconPath);
         }
 
+        [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "COM automation through the WScript.Shell ProgID uses late-bound dynamic dispatch; its members live in the registered COM server at runtime and are never trimmed.")]
+        [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "The WScript.Shell COM class is instantiated by ProgID at runtime and is not subject to trimming.")]
         private static void CreateWindowsShortcut(
             string exePath,
             string exeArgs,

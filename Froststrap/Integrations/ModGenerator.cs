@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: 2026 Froststrap
+// SPDX-FileCopyrightText: 2026 Froststrap
 // Copyright (C) Froststrap Team
 //
 // SPDX-License-Identifier: MPL-2.0
@@ -99,7 +99,7 @@ namespace Froststrap.Integrations
         private static void CacheModGeneratorVersion(string version)
         {
             var state = new { Version = version, UpdatedAt = DateTime.Now };
-            File.WriteAllText(ModGeneratorVersionCacheFile, JsonSerializer.Serialize(state));
+            File.WriteAllText(ModGeneratorVersionCacheFile, JsonHelper.Serialize(state));
         }
 
         public static async Task<string> EnsureModGeneratorAsync()
@@ -599,7 +599,7 @@ namespace Froststrap.Integrations
             var assembly = Assembly.GetExecutingAssembly();
             using var stream = assembly.GetManifestResourceStream("Froststrap.Resources.mappings.json");
             if (stream == null) return [];
-            return await JsonSerializer.DeserializeAsync<Dictionary<string, string[]>>(stream) ?? [];
+            return await JsonHelper.DeserializeAsync<Dictionary<string, string[]>>(stream) ?? [];
         }
 
         private static async Task<(int ExitCode, string Output, string Errors)> ExecuteExeAsync(string exe, string args, string workingDir)

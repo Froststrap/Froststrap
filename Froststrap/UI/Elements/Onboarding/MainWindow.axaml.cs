@@ -6,6 +6,7 @@ using Froststrap.UI.Elements.Base;
 using Froststrap.UI.Elements.Onboarding.Pages;
 using Froststrap.UI.Utility;
 using Froststrap.UI.ViewModels.Onboarding;
+using Froststrap.Utility;
 
 namespace Froststrap.UI.Elements.Onboarding
 {
@@ -106,7 +107,7 @@ namespace Froststrap.UI.Elements.Onboarding
             _currentPage = pageType;
             NextPageCallback = null;
 
-            var pageInstance = Activator.CreateInstance(pageType);
+            var pageInstance = ReflectionHelper.CreateInstance(pageType);
             RootFrame.Content = pageInstance;
 
             var index = _pages.IndexOf(pageType);

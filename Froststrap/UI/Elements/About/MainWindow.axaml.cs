@@ -7,6 +7,7 @@ using System.Reflection;
 using Avalonia.Controls;
 using FluentAvalonia.UI.Controls;
 using Froststrap.UI.ViewModels.About;
+using Froststrap.Utility;
 
 namespace Froststrap.UI.Elements.About
 {
@@ -85,23 +86,13 @@ namespace Froststrap.UI.Elements.About
 
             foreach (var viewTypeName in viewTypeNames)
             {
-                var viewType = Type.GetType(viewTypeName);
-
-                if (viewType == null)
-                {
-                    try
-                    {
-                        var assembly = Assembly.GetExecutingAssembly();
-                        viewType = assembly.GetType(viewTypeName, false);
-                    }
-                    catch { }
-                }
+                var viewType = ReflectionHelper.FindType(viewTypeName);
 
                 if (viewType != null && typeof(Control).IsAssignableFrom(viewType))
                 {
                     try
                     {
-                        if (Activator.CreateInstance(viewType) is Control view) return view;
+                        if (ReflectionHelper.CreateInstance(viewType) is Control view) return view;
                     }
                     catch (Exception ex)
                     {

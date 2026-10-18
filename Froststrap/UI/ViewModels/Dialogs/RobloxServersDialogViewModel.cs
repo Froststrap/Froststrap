@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: 2026 Froststrap
+// SPDX-FileCopyrightText: 2026 Froststrap
 //
 // SPDX-License-Identifier: MPL-2.0
 
@@ -108,7 +108,7 @@ internal class RobloxServersDialogViewModel : NotifyPropertyChangedViewModel, ID
             try
             {
                 string json = File.ReadAllText(cachePath);
-                return JsonSerializer.Deserialize<List<GameHistoryEntry>>(json, _historyLoadOptions) ?? [];
+                return JsonHelper.Deserialize<List<GameHistoryEntry>>(json, _historyLoadOptions) ?? [];
             }
             catch
             {

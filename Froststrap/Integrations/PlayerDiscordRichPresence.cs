@@ -179,7 +179,7 @@ namespace Froststrap.Integrations
 
             try
             {
-                presenceData = message.Data.Deserialize<Models.BloxstrapRPC.RichPresence>();
+                presenceData = JsonHelper.Deserialize<Models.BloxstrapRPC.RichPresence>(message.Data);
             }
             catch (Exception)
             {

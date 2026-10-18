@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+using System.Collections.Concurrent;
 using System.Net.Http.Headers;
 
 namespace Froststrap.Integrations
@@ -64,7 +64,7 @@ namespace Froststrap.Integrations
                 cancellationToken.ThrowIfCancellationRequested();
 
                 var json = await _client.GetStringAsync(new Uri(DatacenterUrl), cancellationToken);
-                var datacenterEntries = JsonSerializer.Deserialize<List<DatacenterEntry>>(json);
+                var datacenterEntries = JsonHelper.Deserialize<List<DatacenterEntry>>(json);
 
                 if (datacenterEntries == null) return null;
 
@@ -143,7 +143,7 @@ namespace Froststrap.Integrations
                 if (!response.IsSuccessStatusCode) return (results, null);
 
                 var content = await response.Content.ReadAsStringAsync(cancellationToken);
-                var regionResponse = JsonSerializer.Deserialize<RoValraRegionResponse>(content);
+                var regionResponse = JsonHelper.Deserialize<RoValraRegionResponse>(content);
 
                 if (regionResponse?.Servers == null) return (results, null);
 
@@ -328,7 +328,7 @@ namespace Froststrap.Integrations
                 joinReq.Headers.Add("Origin", "https://roblox.com");
                 joinReq.Headers.Add("Cookie", $".ROBLOSECURITY={roblosecurity}");
 
-                joinReq.Content = new StringContent(JsonSerializer.Serialize(new
+                joinReq.Content = new StringContent(JsonHelper.Serialize(new
                 {
                     placeId,
                     isTeleport = false,
@@ -525,7 +525,7 @@ namespace Froststrap.Integrations
             try
             {
                 var ipinfoJson = await _client.GetStringAsync(new Uri(IpInfoUrl), cancellationToken);
-                _ipinfoCache = JsonSerializer.Deserialize<IPInfoResponse>(ipinfoJson);
+                _ipinfoCache = JsonHelper.Deserialize<IPInfoResponse>(ipinfoJson);
                 _ipinfoCachedAtUtc = DateTime.UtcNow;
                 return _ipinfoCache;
             }

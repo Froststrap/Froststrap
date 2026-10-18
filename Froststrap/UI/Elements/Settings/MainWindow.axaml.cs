@@ -16,6 +16,7 @@ using FluentAvalonia.UI.Controls;
 using Froststrap.UI.Elements.Controls;
 using Froststrap.UI.Utility;
 using Froststrap.UI.ViewModels.Settings;
+using Froststrap.Utility;
 using LucideAvalonia.Enum;
 using System.ComponentModel;
 
@@ -327,7 +328,7 @@ namespace Froststrap.UI.Elements.Settings
             {
                 try
                 {
-                    return Activator.CreateInstance(cachedViewType) as Control;
+                    return ReflectionHelper.CreateInstance(cachedViewType) as Control;
                 }
                 catch (Exception ex)
                 {
@@ -349,8 +350,7 @@ namespace Froststrap.UI.Elements.Settings
 
             foreach (var viewTypeName in viewTypeNames)
             {
-                var viewType = Type.GetType(viewTypeName) ??
-                               System.Reflection.Assembly.GetExecutingAssembly().GetType(viewTypeName);
+                var viewType = ReflectionHelper.FindType(viewTypeName);
 
                 if (viewType != null && typeof(Control).IsAssignableFrom(viewType))
                 {
@@ -358,7 +358,7 @@ namespace Froststrap.UI.Elements.Settings
 
                     try
                     {
-                        return Activator.CreateInstance(viewType) as Control;
+                        return ReflectionHelper.CreateInstance(viewType) as Control;
                     }
                     catch (Exception ex)
                     {

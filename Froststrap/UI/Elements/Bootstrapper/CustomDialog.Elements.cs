@@ -132,7 +132,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
 
             if (sourceData.IsIcon)
             {
-                Binding binding = new("Icon") { Mode = BindingMode.OneWay };
+                Binding binding = ReflectionBinding("Icon", BindingMode.OneWay);
                 imageBrush.Bind(ImageBrush.SourceProperty, binding);
             }
             else if (sourceData.Path != null)
@@ -527,10 +527,10 @@ namespace Froststrap.UI.Elements.Bootstrapper
 
             if (xmlElement.Attribute("Name")?.Value == "CancelButton")
             {
-                Binding cancelEnabledBinding = new("CancelEnabled") { Mode = BindingMode.TwoWay };
+                Binding cancelEnabledBinding = ReflectionBinding("CancelEnabled", BindingMode.TwoWay);
                 button.Bind(Button.IsEnabledProperty, cancelEnabledBinding);
 
-                Binding cancelCommandBinding = new("CancelInstallCommand");
+                Binding cancelCommandBinding = ReflectionBinding("CancelInstallCommand");
                 button.Bind(Button.CommandProperty, cancelCommandBinding);
             }
 
@@ -557,13 +557,13 @@ namespace Froststrap.UI.Elements.Bootstrapper
 
             if (xmlElement.Attribute("Name")?.Value == "PrimaryProgressBar")
             {
-                Binding isIndeterminateBinding = new("ProgressIndeterminate") { Mode = BindingMode.OneWay };
+                Binding isIndeterminateBinding = ReflectionBinding("ProgressIndeterminate", BindingMode.OneWay);
                 progressBar.Bind(ProgressBar.IsIndeterminateProperty, isIndeterminateBinding);
 
-                Binding maximumBinding = new("ProgressMaximum") { Mode = BindingMode.OneWay };
+                Binding maximumBinding = ReflectionBinding("ProgressMaximum", BindingMode.OneWay);
                 progressBar.Bind(ProgressBar.MaximumProperty, maximumBinding);
 
-                Binding valueBinding = new("ProgressValue") { Mode = BindingMode.OneWay };
+                Binding valueBinding = ReflectionBinding("ProgressValue", BindingMode.OneWay);
                 progressBar.Bind(ProgressBar.ValueProperty, valueBinding);
             }
 
@@ -579,13 +579,13 @@ namespace Froststrap.UI.Elements.Bootstrapper
 
             if (xmlElement.Attribute("Name")?.Value == "PrimaryProgressRing")
             {
-                Binding isIndeterminateBinding = new("ProgressIndeterminate") { Mode = BindingMode.OneWay };
+                Binding isIndeterminateBinding = ReflectionBinding("ProgressIndeterminate", BindingMode.OneWay);
                 progressRing.Bind(FluentAvalonia.UI.Controls.FAProgressRing.IsIndeterminateProperty, isIndeterminateBinding);
 
-                Binding maximumBinding = new("ProgressMaximum") { Mode = BindingMode.OneWay };
+                Binding maximumBinding = ReflectionBinding("ProgressMaximum", BindingMode.OneWay);
                 progressRing.Bind(FluentAvalonia.UI.Controls.FAProgressRing.MaximumProperty, maximumBinding);
 
-                Binding valueBinding = new("ProgressValue") { Mode = BindingMode.OneWay };
+                Binding valueBinding = ReflectionBinding("ProgressValue", BindingMode.OneWay);
                 progressRing.Bind(FluentAvalonia.UI.Controls.FAProgressRing.ValueProperty, valueBinding);
             }
 
@@ -630,7 +630,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
 
             if (xmlElement.Attribute("Name")?.Value == "StatusText")
             {
-                Binding textBinding = new("Message") { Mode = BindingMode.OneWay };
+                Binding textBinding = ReflectionBinding("Message", BindingMode.OneWay);
                 textBlock.Bind(TextBlock.TextProperty, textBinding);
             }
 
@@ -664,7 +664,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
 
             if (imageData.IsIcon)
             {
-                image.Bind(Image.SourceProperty, new Binding("Icon"));
+                image.Bind(Image.SourceProperty, ReflectionBinding("Icon"));
             }
             else if (imageData.Path != null)
             {

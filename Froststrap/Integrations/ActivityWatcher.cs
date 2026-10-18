@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: 2026 Froststrap
+// SPDX-FileCopyrightText: 2026 Froststrap
 //
 // SPDX-License-Identifier: MPL-2.0
 
@@ -514,7 +514,7 @@ namespace Froststrap.Integrations
 
                     try
                     {
-                        message = JsonSerializer.Deserialize<Message>(messagePlain);
+                        message = JsonHelper.Deserialize<Message>(messagePlain);
                     }
                     catch (Exception ex)
                     {
@@ -540,7 +540,7 @@ namespace Froststrap.Integrations
 
                         try
                         {
-                            data = message.Data.Deserialize<string>();
+                            data = JsonHelper.Deserialize<string>(message.Data);
                         }
                         catch (Exception ex)
                         {
@@ -651,15 +651,15 @@ namespace Froststrap.Integrations
 
                 using var reader = new StreamReader(context.Request.InputStream, Encoding.UTF8);
                 string json = reader.ReadToEnd();
-                var message = JsonSerializer.Deserialize<StudioMessage>(json);
+                var message = JsonHelper.Deserialize<StudioMessage>(json);
 
                 if (message != null)
                 {
                     if (message.StudioCommand == "SetRichPresence")
                     {
-                        var richPresenceData = message.Data.Deserialize<StudioRichPresence>();
+                        var richPresenceData = JsonHelper.Deserialize<StudioRichPresence>(message.Data);
                         if (richPresenceData != null)
-                            message.Data = JsonSerializer.SerializeToElement(richPresenceData);
+                            message.Data = JsonHelper.SerializeToElement(richPresenceData);
                     }
 
                     OnStudioRPCMessage?.Invoke(this, message);
@@ -685,7 +685,7 @@ namespace Froststrap.Integrations
                 }
 
                 string json = File.ReadAllText(GameHistoryCachePath);
-                var gameHistory = JsonSerializer.Deserialize<List<GameHistoryEntry>>(json, _loadOptions);
+                var gameHistory = JsonHelper.Deserialize<List<GameHistoryEntry>>(json, _loadOptions);
 
                 if (gameHistory != null)
                 {
@@ -786,7 +786,7 @@ namespace Froststrap.Integrations
                                    })]
                     })];
 
-                string json = JsonSerializer.Serialize(gameHistory, _saveOptions);
+                string json = JsonHelper.Serialize(gameHistory, _saveOptions);
                 File.WriteAllText(GameHistoryCachePath, json);
 
                 App.Logger.Info($"Saved {gameHistory.Count} games (max 10 servers each) to cache");

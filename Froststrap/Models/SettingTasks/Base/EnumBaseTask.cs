@@ -2,9 +2,12 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
+
 namespace Froststrap.Models.SettingTasks.Base
 {
-    internal abstract class EnumBaseTask<T> : BaseTask where T : struct, Enum
+    internal abstract class EnumBaseTask<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields)] T> : BaseTask where T : struct, Enum
     {
         private T _originalState = default!;
 
@@ -41,15 +44,9 @@ namespace Froststrap.Models.SettingTasks.Base
         public IEnumerable<T> Selections { get; private set; }
             = Enum.GetValues<T>().OrderBy(x =>
             {
-                var attributes = x.GetType().GetMember(x.ToString())[0].GetCustomAttributes(typeof(EnumSortAttribute), false);
+                var attribute = typeof(T).GetField(x.ToString())?.GetCustomAttribute<EnumSortAttribute>();
 
-                if (attributes.Length > 0)
-                {
-                    var attribute = (EnumSortAttribute)attributes[0];
-                    return attribute.Order;
-                }
-
-                return 0;
+                return attribute?.Order ?? 0;
             });
 
         public EnumBaseTask(string prefix, string name) : base(prefix, name) { }

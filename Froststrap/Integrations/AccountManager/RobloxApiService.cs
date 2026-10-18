@@ -47,7 +47,7 @@ namespace Froststrap.Integrations.AccountManager
             try
             {
                 var requestData = new { userIds = new[] { userId } };
-                string jsonPayload = System.Text.Json.JsonSerializer.Serialize(requestData);
+                string jsonPayload = JsonHelper.Serialize(requestData);
 
                 using var request = new HttpRequestMessage(HttpMethod.Post, UrlBuilder.BuildApiUrl("presence", "v1/presence/users", secure: true))
                 {

@@ -3,20 +3,12 @@
 // SPDX-License-Identifier: MPL-2.0
 
 using System.Text.Json.Nodes;
-using System.Text.Json.Serialization.Metadata;
 using System.Reflection;
 
 namespace Froststrap
 {
     internal class JsonManager<T>(string? className = null) where T : class, new()
     {
-        private static readonly JsonSerializerOptions _jsonOptions = new()
-        {
-            WriteIndented = true,
-            ReadCommentHandling = JsonCommentHandling.Skip,
-            TypeInfoResolver = JsonTypeInfoResolver.Combine(JsonContext.Default, new DefaultJsonTypeInfoResolver())
-        };
-
         protected T _prop = new();
 
         public virtual T Prop
@@ -43,7 +35,7 @@ namespace Froststrap
 
         protected virtual string ComputeHash(T obj)
         {
-            string json = JsonSerializer.Serialize(obj, _jsonOptions);
+            string json = JsonHelper.Serialize(obj);
             return FastHash.FromString(json);
         }
 
@@ -66,7 +58,7 @@ namespace Froststrap
                 {
                     string contents = File.ReadAllText(FileLocation);
 
-                    T settings = JsonSerializer.Deserialize<T>(contents, _jsonOptions)
+                    T settings = JsonHelper.Deserialize<T>(contents)
                         ?? throw new InvalidOperationException($"{ClassName} deserialization returned null.");
 
                     _prop = settings;
@@ -135,7 +127,7 @@ namespace Froststrap
 
             try
             {
-                string contents = JsonSerializer.Serialize(Prop, _jsonOptions);
+                string contents = JsonHelper.Serialize(Prop);
 
                 File.WriteAllText(FileLocation, contents);
 
@@ -177,11 +169,11 @@ namespace Froststrap
                     if (!string.IsNullOrWhiteSpace(existingContent))
                     {
                         using var doc = JsonDocument.Parse(existingContent);
-                        existingJson = JsonSerializer.SerializeToNode(doc.RootElement)?.AsObject() ?? [];
+                        existingJson = JsonNode.Parse(doc.RootElement.GetRawText())?.AsObject() ?? [];
                     }
                 }
 
-                var currentJson = JsonSerializer.SerializeToNode(Prop, _jsonOptions)?.AsObject();
+                var currentJson = JsonHelper.SerializeToNode(Prop)?.AsObject();
                 _ = currentJson ?? throw new InvalidOperationException("Failed to serialize current object.");
 
                 if (currentJson.TryGetPropertyValue(SettingName, out JsonNode? value))
@@ -195,7 +187,7 @@ namespace Froststrap
                     return;
                 }
 
-                string contents = existingJson.ToJsonString(_jsonOptions);
+                string contents = existingJson.ToJsonString(JsonHelper.Options);
                 File.WriteAllText(FileLocation, contents);
                 LastFileHash = FastHash.FromString(contents);
                 _savedHash = ComputeHash(Prop);
@@ -252,7 +244,7 @@ namespace Froststrap
                 if (!File.Exists(FileDirectory))
                     File.Create(FileDirectory).Dispose();
 
-                string FastFlagsJson = JsonSerializer.Serialize(Prop, _jsonOptions);
+                string FastFlagsJson = JsonHelper.Serialize(Prop);
 
                 File.WriteAllText(FileDirectory, FastFlagsJson);
             }
@@ -284,7 +276,7 @@ namespace Froststrap
 
                 App.Logger.Info($"Loading {SavedClientSettings}");
 
-                T settings = JsonSerializer.Deserialize<T>(SavedClientSettings)
+                T settings = JsonHelper.Deserialize<T>(SavedClientSettings)
                     ?? throw new JsonException($"Failed to deserialize profile: {name}");
 
                 App.FastFlags.suspendUndoSnapshot = true;
@@ -358,7 +350,7 @@ namespace Froststrap
                 }
 
                 // Deserialize the profile JSON
-                T settings = JsonSerializer.Deserialize<T>(profileJson)
+                T settings = JsonHelper.Deserialize<T>(profileJson)
                     ?? throw new ArgumentNullException(nameof(name), "Deserialization returned null");
 
                 App.FastFlags.suspendUndoSnapshot = true;

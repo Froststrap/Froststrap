@@ -64,7 +64,7 @@ namespace Froststrap.UI.Elements.Base
         public AvaloniaWindow()
         {
             var uri = new Uri("avares://Froststrap/UI/Elements/Base/BackgroundPanel.axaml");
-            var panel = (Panel)AvaloniaXamlLoader.Load(uri);
+            var panel = (Panel)DeferredStyles.Load(uri);
 
             _backgroundBorder = panel.Find<Border>("PART_BackgroundBorder");
             _backgroundImage = panel.Find<Image>("PART_BackgroundImage");
@@ -170,12 +170,12 @@ namespace Froststrap.UI.Elements.Base
                     if (_cachedThemeName != themeName || _cachedThemeDictionary == null || _cachedThemeStyles == null)
                     {
                         var themeUri = new Uri($"avares://Froststrap/UI/AppThemes/ResourceDictionarys/{themeName}.axaml");
-                        var loadedTheme = AvaloniaXamlLoader.Load(themeUri);
+                        var loadedTheme = DeferredStyles.Load(themeUri);
                         if (loadedTheme is ResourceDictionary dict)
                             _cachedThemeDictionary = dict;
 
                         var styleUri = new Uri($"avares://Froststrap/UI/AppThemes/Styles/{themeName}.axaml");
-                        var loadedStyle = AvaloniaXamlLoader.Load(styleUri);
+                        var loadedStyle = DeferredStyles.Load(styleUri);
                         if (loadedStyle is Styles loadedStyles)
                             _cachedThemeStyles = loadedStyles;
 

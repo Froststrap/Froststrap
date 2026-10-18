@@ -147,7 +147,7 @@ namespace Froststrap.Integrations
 
             try
             {
-                presenceData = message.Data.Deserialize<StudioRichPresence>();
+                presenceData = JsonHelper.Deserialize<StudioRichPresence>(message.Data);
             }
             catch (Exception)
             {

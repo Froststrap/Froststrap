@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: 2026 Froststrap
+// SPDX-FileCopyrightText: 2026 Froststrap
 //
 // SPDX-License-Identifier: MPL-2.0
 
@@ -269,7 +269,7 @@ namespace Froststrap.UI.ViewModels.Onboarding
             };
 
             using var stream = await file.OpenWriteAsync();
-            await JsonSerializer.SerializeAsync(stream, data, SerializationOptions);
+            await JsonHelper.SerializeAsync(stream, data, SerializationOptions);
         }
 
         private async Task ImportGradient(TopLevel topLevel)
