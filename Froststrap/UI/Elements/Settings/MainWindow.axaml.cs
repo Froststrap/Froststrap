@@ -35,6 +35,7 @@ namespace Froststrap.UI.Elements.Settings
         private readonly HashSet<string> _indexedPageTags = [];
         private readonly SearchIndexBuilder _searchIndexBuilder = new();
         private bool _isIndexingAllPagesStarted;
+        private SearchDialog? _searchOverlay;
 
         private const double NotificationHeight = 80;
         private const double NotificationSpacing = 15;
@@ -62,13 +63,6 @@ namespace Froststrap.UI.Elements.Settings
             _viewModel.RequestSaveNoticeEvent += (_, _) => ShowSaveNotification();
             _viewModel.RequestCloseWindowEvent += (_, _) => Close();
             _viewModel.SearchBar.SearchResultSelected += (_, item) => OnSearchResultSelected(item);
-
-            var overlay = this.FindControl<SearchDialog>("SearchOverlay");
-            if (overlay != null)
-            {
-                overlay.Subscribe(_viewModel.SearchBar);
-                overlay.Dismissed += (_, _) => overlay.Hide();
-            }
 
             App.Logger.Debug("Initializing settings window");
 
@@ -102,12 +96,35 @@ namespace Froststrap.UI.Elements.Settings
             this.Closing += MainWindow_Closing;
             this.Closed += MainWindow_Closed;
 
-            UpdatePageView(_viewModel.CurrentPage);
-
             Dispatcher.UIThread.Post(() =>
             {
+                if (_viewModel == null) return;
+                UpdatePageView(_viewModel.CurrentPage);
                 UpdateSelectedNavigationViewItem(_viewModel.SelectedPage);
             }, DispatcherPriority.Loaded);
+        }
+
+        private SearchDialog? EnsureSearchOverlay()
+        {
+            if (_viewModel == null)
+                return null;
+
+            if (_searchOverlay != null)
+                return _searchOverlay;
+
+            var overlay = new SearchDialog();
+            overlay.Subscribe(_viewModel.SearchBar);
+            overlay.Dismissed += (_, _) => overlay.Hide();
+
+            Grid.SetRow(overlay, 0);
+            Grid.SetRowSpan(overlay, 3);
+            overlay.ZIndex = 2000;
+
+            if (this.FindControl<Grid>("RootGrid") is { } rootGrid)
+                rootGrid.Children.Add(overlay);
+
+            _searchOverlay = overlay;
+            return overlay;
         }
 
         protected override async void OnOpened(EventArgs e)
@@ -154,7 +171,7 @@ namespace Froststrap.UI.Elements.Settings
 
         private void OnSearchResultSelected(SearchBarItem item)
         {
-            this.FindControl<SearchDialog>("SearchOverlay")?.Hide();
+            _searchOverlay?.Hide();
 
             _pendingSearchScrollItem = item;
 
@@ -267,7 +284,7 @@ namespace Froststrap.UI.Elements.Settings
 
             StartIndexingAllPagesIfNeeded();
 
-            this.FindControl<SearchDialog>("SearchOverlay")?.Show();
+            EnsureSearchOverlay()?.Show();
         }
 
         private void UpdateSelectedNavigationViewItem(string selectedPage)

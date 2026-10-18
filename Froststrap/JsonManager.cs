@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization.Metadata;
 using System.Reflection;
 
 namespace Froststrap
@@ -12,7 +13,8 @@ namespace Froststrap
         private static readonly JsonSerializerOptions _jsonOptions = new()
         {
             WriteIndented = true,
-            ReadCommentHandling = JsonCommentHandling.Skip
+            ReadCommentHandling = JsonCommentHandling.Skip,
+            TypeInfoResolver = JsonTypeInfoResolver.Combine(JsonContext.Default, new DefaultJsonTypeInfoResolver())
         };
 
         protected T _prop = new();

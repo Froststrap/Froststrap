@@ -6,6 +6,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Froststrap.UI.Elements.Base;
+using Froststrap.UI.Utility;
 
 namespace Froststrap.UI.Elements.Dialogs
 {
@@ -15,6 +16,7 @@ namespace Froststrap.UI.Elements.Dialogs
 
         public ColorPickerDialog()
         {
+            DeferredStyles.EnsureColorPickerTemplates();
             InitializeComponent();
 
             Part_SquarePicker.ColorChanged += Part_SquarePicker_ColorChanged;

@@ -24,7 +24,11 @@ SPDX-License-Identifier: MPL-2.0
     <AssemblyName>Froststrap</AssemblyName>
     <RootNamespace>Froststrap</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  	<!-- <PublishTrimmed>true</PublishTrimmed> -->
+  	<PublishTrimmed>true</PublishTrimmed>
+  	<TrimMode>partial</TrimMode>
+  	<JsonSerializerIsReflectionEnabledByDefault>true</JsonSerializerIsReflectionEnabledByDefault>
+  	<SuppressTrimAnalysisWarnings>true</SuppressTrimAnalysisWarnings>
+  	<SuppressAotAnalysisWarnings>true</SuppressAotAnalysisWarnings>
   	<NeutralLanguage>en</NeutralLanguage>
     <Description>Froststrap - A Fishstrap fork</Description>
     <ApplicationIcon>Froststrap.ico</ApplicationIcon>
@@ -37,9 +41,10 @@ SPDX-License-Identifier: MPL-2.0
   <PropertyGroup Condition="'$(RuntimeIdentifier)' != ''">
     <PublishSingleFile>true</PublishSingleFile>
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
-    <PublishReadyToRun>false</PublishReadyToRun>
+    <PublishReadyToRun>true</PublishReadyToRun>
+    <PublishReadyToRunComposite>true</PublishReadyToRunComposite>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
     <SelfContained>true</SelfContained>
-    <SelfContained Condition="$(RuntimeIdentifier.StartsWith('win'))">false</SelfContained>
   </PropertyGroup>
 
   <!-- Resources needed by Avalonia -->

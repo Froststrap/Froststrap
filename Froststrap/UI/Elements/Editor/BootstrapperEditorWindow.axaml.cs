@@ -19,6 +19,7 @@ using AvaloniaEdit.Highlighting.Xshd;
 using FluentAvalonia.UI.Controls;
 using Froststrap.UI.Elements.Base;
 using Froststrap.UI.Elements.Controls;
+using Froststrap.UI.Utility;
 using Froststrap.UI.ViewModels.Editor;
 using LucideAvalonia.Enum;
 using System.Xml;
@@ -151,6 +152,7 @@ namespace Froststrap.UI.Elements.Editor
 
         public BootstrapperEditorWindow()
         {
+            DeferredStyles.EnsureAvaloniaEditTheme();
             InitializeComponent();
         }
 
