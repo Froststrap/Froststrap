@@ -27,9 +27,7 @@ namespace Froststrap.Models.Persistable
 
         public string? PendingUpdateReleaseNotes { get; set; }
 
-        public double KeyOverlayOffsetX { get; set; }
-
-        public double KeyOverlayOffsetY { get; set; }
+        public KeystrokePosition KeystrokePosition { get; set; } = new();
 
         public Dictionary<string, OverlayPanelLayout> OverlayPanels { get; set; } = [];
 

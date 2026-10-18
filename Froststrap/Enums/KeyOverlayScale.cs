@@ -21,6 +21,12 @@ namespace Froststrap.Enums
         X115,
 
         [EnumName(StaticName = "125%")]
-        X125
+        X125,
+
+        [EnumName(StaticName = "135%")]
+        X135,
+
+        [EnumName(StaticName = "150%")]
+        X150
     }
 }

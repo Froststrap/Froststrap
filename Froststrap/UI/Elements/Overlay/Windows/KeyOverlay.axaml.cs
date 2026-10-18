@@ -47,9 +47,9 @@ namespace Froststrap.UI.Elements.Overlay
 
         private double _lastScaling = 1;
 
-        private readonly List<RectInt> _occluders = [];
+        private readonly List<Occluder> _occluders = [];
         private RectInt _lastClip;
-        private RectInt[] _lastOccluders = [];
+        private Occluder[] _lastOccluders = [];
         private bool _hasRegionState;
 
         private bool _moveMode;
@@ -193,8 +193,8 @@ namespace Froststrap.UI.Elements.Overlay
             PixelPoint origin = GetBasePosition(bounds, scaling, width, height);
 
             Position = new PixelPoint(
-                origin.X + (int)Math.Round(App.State.Prop.KeyOverlayOffsetX),
-                origin.Y + (int)Math.Round(App.State.Prop.KeyOverlayOffsetY));
+                origin.X + (int)Math.Round(App.State.Prop.KeystrokePosition.X),
+                origin.Y + (int)Math.Round(App.State.Prop.KeystrokePosition.Y));
 
             UpdateRegion();
         }
@@ -307,8 +307,7 @@ namespace Froststrap.UI.Elements.Overlay
         {
             _ = Task.Run(() =>
             {
-                App.State.SaveSetting(nameof(State.KeyOverlayOffsetX));
-                App.State.SaveSetting(nameof(State.KeyOverlayOffsetY));
+                App.State.SaveSetting(nameof(State.KeystrokePosition));
             }, CancellationToken.None);
         }
 
@@ -330,8 +329,8 @@ namespace Froststrap.UI.Elements.Overlay
 
             PixelPoint origin = GetBasePosition(bounds, _lastScaling, width, height);
 
-            App.State.Prop.KeyOverlayOffsetX = left - origin.X;
-            App.State.Prop.KeyOverlayOffsetY = top - origin.Y;
+            App.State.Prop.KeystrokePosition.X = left - origin.X;
+            App.State.Prop.KeystrokePosition.Y = top - origin.Y;
 
             Position = new PixelPoint(left, top);
 
@@ -370,7 +369,7 @@ namespace Froststrap.UI.Elements.Overlay
             {
                 _occluders.Clear();
 
-                if (TryGetForegroundOccluder(position, clip, out RectInt foreground))
+                if (TryGetForegroundOccluder(position, clip, out Occluder foreground))
                     _occluders.Add(foreground);
             }
 
@@ -385,11 +384,30 @@ namespace Froststrap.UI.Elements.Overlay
                 ? PInvoke.CreateRectRgn(clip.Left, clip.Top, clip.Right, clip.Bottom)
                 : PInvoke.CreateRectRgn(0, 0, 0, 0);
 
-            foreach (RectInt occluder in _occluders)
+            foreach (Occluder occluder in _occluders)
             {
-                HRGN hole = PInvoke.CreateRectRgn(occluder.Left, occluder.Top, occluder.Right, occluder.Bottom);
-                _ = PInvoke.CombineRgn(region, region, hole, RGN_COMBINE_MODE.RGN_DIFF);
-                _ = PInvoke.DeleteObject(hole);
+                HRGN shape = PInvoke.CreateRectRgn(0, 0, 0, 0);
+
+                if (PInvoke.GetWindowRgn(occluder.Handle, shape) == 0)
+                {
+                    _ = PInvoke.DeleteObject(shape);
+
+                    shape = PInvoke.CreateRectRgn(
+                        occluder.Screen.Left - position.X,
+                        occluder.Screen.Top - position.Y,
+                        occluder.Screen.Right - position.X,
+                        occluder.Screen.Bottom - position.Y);
+                }
+                else
+                {
+                    _ = PInvoke.OffsetRgn(
+                        shape,
+                        occluder.Screen.Left - position.X,
+                        occluder.Screen.Top - position.Y);
+                }
+
+                _ = PInvoke.CombineRgn(region, region, shape, RGN_COMBINE_MODE.RGN_DIFF);
+                _ = PInvoke.DeleteObject(shape);
             }
 
             if (PInvoke.SetWindowRgn(_hwnd, region, true) == 0)
@@ -413,7 +431,7 @@ namespace Froststrap.UI.Elements.Overlay
             return true;
         }
 
-        private bool CollectOccluders(List<RectInt> results, PixelPoint position, RectInt clip)
+        private bool CollectOccluders(List<Occluder> results, PixelPoint position, RectInt clip)
         {
             if (_host is null || _host.ProcessId <= 0)
                 return false;
@@ -439,6 +457,12 @@ namespace Froststrap.UI.Elements.Overlay
                         continue;
                     }
 
+                    if (processId == (uint)Environment.ProcessId)
+                    {
+                        hwnd = next;
+                        continue;
+                    }
+
                     if (IsOccluderWindow(hwnd) && TryGetWindowRect(hwnd, out RECT rect))
                     {
                         var candidate = new RectInt(
@@ -451,7 +475,7 @@ namespace Froststrap.UI.Elements.Overlay
                             && candidate.Bottom > clip.Top && candidate.Top < clip.Bottom
                             && !IsCloaked(hwnd))
                         {
-                            results.Add(candidate);
+                            results.Add(new Occluder(hwnd, new RectInt(rect.left, rect.top, rect.right, rect.bottom)));
                         }
                     }
                 }
@@ -462,11 +486,39 @@ namespace Froststrap.UI.Elements.Overlay
             return false;
         }
 
-        private static bool IsOccluderWindow(HWND hwnd) =>
-            PInvoke.IsWindowVisible(hwnd) && !PInvoke.IsIconic(hwnd) && !IsShellWindow(hwnd);
+        private static bool IsOccluderWindow(HWND hwnd)
+        {
+            if (!PInvoke.IsWindowVisible(hwnd) || PInvoke.IsIconic(hwnd) || IsShellWindow(hwnd))
+                return false;
 
-        private static bool TryGetWindowRect(HWND hwnd, out RECT bounds) =>
-            PInvoke.GetWindowRect(hwnd, out bounds) && bounds.right > bounds.left && bounds.bottom > bounds.top;
+            uint exStyle = (uint)PInvoke.GetWindowLong(hwnd, WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE);
+
+            return (exStyle & (WS_EX_TRANSPARENT | WS_EX_LAYERED)) == 0;
+        }
+
+        private static bool TryGetWindowRect(HWND hwnd, out RECT bounds)
+        {
+            unsafe
+            {
+                RECT rect = default;
+
+                var result = PInvoke.DwmGetWindowAttribute(
+                    hwnd,
+                    DWMWINDOWATTRIBUTE.DWMWA_EXTENDED_FRAME_BOUNDS,
+                    &rect,
+                    (uint)sizeof(RECT));
+
+                if (result.Failed && !PInvoke.GetWindowRect(hwnd, out rect))
+                {
+                    bounds = default;
+                    return false;
+                }
+
+                bounds = rect;
+            }
+
+            return bounds.right > bounds.left && bounds.bottom > bounds.top;
+        }
 
         private static bool IsCloaked(HWND hwnd)
         {
@@ -483,12 +535,24 @@ namespace Froststrap.UI.Elements.Overlay
             }
         }
 
-        private bool TryGetForegroundOccluder(PixelPoint position, RectInt clip, out RectInt occluder)
+        private bool TryGetForegroundOccluder(PixelPoint position, RectInt clip, out Occluder occluder)
         {
             occluder = default;
 
-            if (!TryGetOccluderRect(out RECT rect))
+            HWND foreground = PInvoke.GetForegroundWindow();
+
+            if (foreground == HWND.Null)
                 return false;
+
+            _ = PInvoke.GetWindowThreadProcessId(foreground, out uint processId);
+
+            if ((_host is not null && processId == (uint)_host.ProcessId)
+                || processId == (uint)Environment.ProcessId
+                || !IsOccluderWindow(foreground)
+                || !TryGetWindowRect(foreground, out RECT rect))
+            {
+                return false;
+            }
 
             var candidate = new RectInt(
                 rect.left - position.X,
@@ -502,41 +566,8 @@ namespace Froststrap.UI.Elements.Overlay
                 return false;
             }
 
-            occluder = candidate;
+            occluder = new Occluder(foreground, new RectInt(rect.left, rect.top, rect.right, rect.bottom));
             return true;
-        }
-
-        private bool TryGetOccluderRect(out RECT bounds)
-        {
-            bounds = default;
-
-            HWND foreground = PInvoke.GetForegroundWindow();
-
-            if (foreground == HWND.Null)
-                return false;
-
-            _ = PInvoke.GetWindowThreadProcessId(foreground, out uint processId);
-
-            if ((_host is not null && processId == (uint)_host.ProcessId) || IsShellWindow(foreground))
-                return false;
-
-            unsafe
-            {
-                RECT rect = default;
-
-                var result = PInvoke.DwmGetWindowAttribute(
-                    foreground,
-                    DWMWINDOWATTRIBUTE.DWMWA_EXTENDED_FRAME_BOUNDS,
-                    &rect,
-                    (uint)sizeof(RECT));
-
-                if (result.Failed && !PInvoke.GetWindowRect(foreground, out rect))
-                    return false;
-
-                bounds = rect;
-            }
-
-            return bounds.right > bounds.left && bounds.bottom > bounds.top;
         }
 
         private static bool IsShellWindow(HWND hwnd)
@@ -562,6 +593,8 @@ namespace Froststrap.UI.Elements.Overlay
         }
 
         private readonly record struct RectInt(int Left, int Top, int Right, int Bottom);
+
+        private readonly record struct Occluder(HWND Handle, RectInt Screen);
 
         #endregion
 

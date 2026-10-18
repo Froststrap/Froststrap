@@ -10,7 +10,7 @@ namespace Froststrap.Models.Overlay
     internal static class KeyOverlayHotkey
     {
         public const KeyModifiers DefaultModifiers = KeyModifiers.Control | KeyModifiers.Alt;
-        public const Key DefaultKey = Key.P;
+        public const Key DefaultKey = Key.M;
 
         public static event EventHandler? Changed;
 

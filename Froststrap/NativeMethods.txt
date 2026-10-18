@@ -34,8 +34,10 @@ RECT
 IsWindowVisible
 EnumWindows
 SetWindowRgn
+GetWindowRgn
 CreateRectRgn
 CombineRgn
+OffsetRgn
 DeleteObject
 SetWindowsHookEx
 UnhookWindowsHookEx

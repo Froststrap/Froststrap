@@ -12,6 +12,8 @@ namespace Froststrap.Extensions
             KeyOverlayScale.X95 => 0.95,
             KeyOverlayScale.X115 => 1.15,
             KeyOverlayScale.X125 => 1.25,
+            KeyOverlayScale.X135 => 1.35,
+            KeyOverlayScale.X150 => 1.5,
             _ => 1.0
         };
 
@@ -21,7 +23,9 @@ namespace Froststrap.Extensions
             KeyOverlayScale.X95,
             KeyOverlayScale.X100,
             KeyOverlayScale.X115,
-            KeyOverlayScale.X125
+            KeyOverlayScale.X125,
+            KeyOverlayScale.X135,
+            KeyOverlayScale.X150
         ];
     }
 }
