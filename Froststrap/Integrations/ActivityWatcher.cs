@@ -324,11 +324,13 @@ namespace Froststrap.Integrations
                     int jsonStart = logMessage.IndexOf('{', StringComparison.Ordinal);
                     string jsonString = logMessage[jsonStart..];
                     using JsonDocument doc = JsonDocument.Parse(jsonString);
-                    if (doc.RootElement.TryGetProperty("params", out JsonElement paramsElement)
+                    if (
+                        doc.RootElement.TryGetProperty("params", out JsonElement paramsElement)
                         && paramsElement.TryGetProperty("request", out JsonElement requestElement)
                         && requestElement.TryGetProperty("requestType", out JsonElement requestTypeElement)
-                        && requestTypeElement.GetString() == "RequestPrivateGame")
-                        && requestElement.TryGetProperty("accessCode", out JsonElement accessCodeElement))
+                        && requestTypeElement.GetString() == "RequestPrivateGame"
+                        && requestElement.TryGetProperty("accessCode", out JsonElement accessCodeElement)
+                    )
                     {
                         string? accessCode = accessCodeElement.GetString();
                         if (!string.IsNullOrEmpty(accessCode))
