@@ -22,7 +22,6 @@ namespace Froststrap.Integrations
         private const string GameDisconnectReasonEntry = "[FLog::Network] Sending disconnect with reason:";
         private const string GameServerUptimeEntry = "[FLog::Output] Server Prefix: ";
 
-        private const string StudioPlaceOpenEntry = "[FLog::PlaceManager] Start to open place";
         private const string StudioPlaceCloseEntry = "[FLog::PlaceManager] PlaceManager::closeCurrentPlayDoc";
 
         private const string GameJoiningEntryPattern = @"! Joining game '([0-9a-f\-]{36})' place ([0-9]+) at ([0-9\.]+)";
