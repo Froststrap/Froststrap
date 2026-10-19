@@ -239,30 +239,14 @@ namespace Froststrap.Integrations
 
         private void ProcessStudioLogEntry(string logMessage)
         {
-            if (!InRobloxStudio)
-            {
-                InRobloxStudio = true;
-            }
+            InRobloxStudio = true;
 
-            if (!InStudioPlace)
+            if (logMessage.StartsWith(StudioPlaceCloseEntry, StringComparison.Ordinal))
             {
-                if (logMessage.StartsWith(StudioPlaceOpenEntry, StringComparison.Ordinal))
-                {
-                    App.Logger.Info("Studio place opened");
-                    InStudioPlace = true;
+                App.Logger.Info("Studio place closed");
+                InStudioPlace = false;
 
-                    OnStudioPlaceOpened?.Invoke(this, EventArgs.Empty);
-                }
-            }
-            else if (InStudioPlace)
-            {
-                if (logMessage.StartsWith(StudioPlaceCloseEntry, StringComparison.Ordinal))
-                {
-                    App.Logger.Info("Studio place closed");
-                    InStudioPlace = false;
-
-                    OnStudioPlaceClosed?.Invoke(this, EventArgs.Empty);
-                }
+                OnStudioPlaceClosed?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -340,20 +324,18 @@ namespace Froststrap.Integrations
                     int jsonStart = logMessage.IndexOf('{', StringComparison.Ordinal);
                     string jsonString = logMessage[jsonStart..];
                     using JsonDocument doc = JsonDocument.Parse(jsonString);
-                    if (doc.RootElement.TryGetProperty("params", out JsonElement paramsElement) && paramsElement.TryGetProperty("request", out JsonElement requestElement))
+                    if (doc.RootElement.TryGetProperty("params", out JsonElement paramsElement)
+                        && paramsElement.TryGetProperty("request", out JsonElement requestElement)
+                        && requestElement.TryGetProperty("requestType", out JsonElement requestTypeElement)
+                        && requestTypeElement.GetString() == "RequestPrivateGame")
+                        && requestElement.TryGetProperty("accessCode", out JsonElement accessCodeElement))
                     {
-                        if (requestElement.TryGetProperty("requestType", out JsonElement requestTypeElement) && requestTypeElement.GetString() == "RequestPrivateGame")
+                        string? accessCode = accessCodeElement.GetString();
+                        if (!string.IsNullOrEmpty(accessCode))
                         {
-                            if (requestElement.TryGetProperty("accessCode", out JsonElement accessCodeElement))
-                            {
-                                string? accessCode = accessCodeElement.GetString();
-                                if (!string.IsNullOrEmpty(accessCode))
-                                {
-                                    Data.AccessCode = accessCode;
-                                    Data.ServerType = ServerType.Private;
-                                    App.Logger.Info($"Captured private server access code: {accessCode}");
-                                }
-                            }
+                            Data.AccessCode = accessCode;
+                            Data.ServerType = ServerType.Private;
+                            App.Logger.Info($"Captured private server access code: {accessCode}");
                         }
                     }
                 }
