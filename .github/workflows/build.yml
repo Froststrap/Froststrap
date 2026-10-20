@@ -12,7 +12,6 @@ env:
 
 jobs:
   windows:
-    needs: prepare
     runs-on: windows-latest
     defaults:
       run:
@@ -94,7 +93,6 @@ jobs:
           path: .build/velopack/*
 
   macos:
-    needs: prepare
     runs-on: macos-26
     strategy:
       fail-fast: false
@@ -180,7 +178,6 @@ jobs:
           path: .build/velopack/*
 
   linux:
-    needs: prepare
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
