@@ -1,9 +1,7 @@
 //! publish module
 
-mod velopack;
-
 use std::{fs, env, sync::OnceLock};
-use crate::integrate::git::git;
+use crate::integrate::{git::git, velopack};
 use crate::{arch, args, path, utils::{log, process}};
 
 #[cfg(target_os = "linux")]
@@ -12,10 +10,6 @@ mod os_specific;
 
 #[cfg(target_os = "macos")]
 #[path = "macos.rs"]
-mod os_specific;
-
-#[cfg(target_os = "windows")]
-#[path = "win.rs"]
 mod os_specific;
 
 fn delete_pdbs(dir: &std::path::Path) -> std::io::Result<()> {
@@ -63,14 +57,14 @@ fn version_for_run() -> String {
 
 pub fn main() {
     super::restore::main();
-    let args = args::get();
+    let a = args::get();
 
     let path: String = path::git_root()
         .join("Froststrap/Froststrap.csproj")
         .into_string()
         .unwrap();
     log::info!("Froststrap path: {}", path);
-    let config = args.configuration;
+    let config = a.configuration;
     let output_path = path::dotnet_publish_artifacts().into_string().unwrap();
     let rust_target_triple = arch::rust_triple();
     let rid = arch::dotnet_rid();
@@ -99,7 +93,17 @@ pub fn main() {
 
     delete_pdbs(&path::dotnet_publish_artifacts()).unwrap();
 
+    #[cfg(not(any(target_os = "windows", target_os = "macos")))]
     os_specific::main();
+    #[cfg(target_os = "macos")]
+    let (app_path, entitlements_path) = os_specific::main();
+
+    if !a.no_installers {
+        #[cfg(not(target_os = "windows"))]
+        velopack::pack(version(), &app_path, Some(&entitlements_path));
+        #[cfg(not(target_os = "macos"))]
+        velopack::pack(version(), &path::dotnet_publish_artifacts(), None);
+    }
 
     log::info!("Build complete!");
 }

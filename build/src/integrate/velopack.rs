@@ -1,13 +1,9 @@
-//! controller module for velopack
-
 use crate::{arch, path, utils::{log, process}};
-use std::{path::PathBuf, env::consts};
-
-#[cfg(target_os = "macos")]
-use std::env;
+use std::env::consts;
 
 #[cfg(target_os = "macos")]
 fn required_env(key: &str) -> String {
+    use std::env;
     env::var(key).unwrap_or_else(|_| {
         log::error!("missing required environment variable {key}");
         std::process::exit(1);
@@ -17,21 +13,17 @@ fn required_env(key: &str) -> String {
 pub fn vpk() -> String {
     let exe = if cfg!(windows) { "vpk.exe" } else { "vpk" };
 
-    if let Some(home) = std::env::home_dir() {
-        let local: PathBuf = home.join(".dotnet").join("tools").join(exe);
-        if local.is_file() {
-            return local.to_string_lossy().into_owned();
-        }
-    }
-
-    "vpk".to_string()
+    std::env::home_dir()
+        .map(|home| home.join(".dotnet").join("tools").join(exe))
+        .filter(|path| path.is_file())
+        .map(|path| path.to_string_lossy().into_owned())
+        .unwrap_or_else(|| "vpk".into())
 }
 
-pub fn pack(pack_dir: &std::path::Path, entitlements: Option<&std::path::Path>) {
-    _ = entitlements; // shut up warning on other systems
+pub fn pack(version: String, pack_dir: &std::path::Path, entitlements: Option<&std::path::Path>) {
+    _ = entitlements;
     let pack_path = pack_dir.to_string_lossy().into_owned();
     let velopack_path = path::velopack();
-    let version = super::version();
     let channel = arch::velopack_channel();
 
     std::fs::create_dir_all(&velopack_path).unwrap();
@@ -66,6 +58,7 @@ pub fn pack(pack_dir: &std::path::Path, entitlements: Option<&std::path::Path>) 
 
     #[cfg(target_os = "macos")]
     {
+        use std::env;
         args.extend(["--bundleId".to_string(), "xyz.froststrap.desktop".to_string()]);
 
         if env::var("SIGN").is_ok_and(|v| v.eq_ignore_ascii_case("true")) {
@@ -95,7 +88,7 @@ pub fn pack(pack_dir: &std::path::Path, entitlements: Option<&std::path::Path>) 
         ]);
     }
 
-    log::info!("Packing with vpk on channel {}", channel);
+    log::info!("Packing with vpk on channel {channel}");
     let vpk_bin = vpk();
     process(&vpk_bin, args).exec_checked(&vpk_bin);
 }
