@@ -92,8 +92,73 @@ namespace Froststrap.UI.ViewModels.Settings
             get => App.Settings.Prop.LaunchWithVirtualDisplay;
             set
             {
+                // First enable: mint the EDID serial from mouse entropy
+                // before committing the toggle.
+                if (value && App.Settings.Prop.VirtualDisplaySerial == 0)
+                {
+                    _ = GenerateVirtualDisplaySerialThenEnableAsync();
+                    return;
+                }
+
                 App.Settings.Prop.LaunchWithVirtualDisplay = value;
                 OnPropertyChanged(nameof(LaunchWithVirtualDisplay));
+            }
+        }
+
+        private async Task GenerateVirtualDisplaySerialThenEnableAsync()
+        {
+            var serial = await UI.Elements.Settings.VirtualDisplayEntropyDialog.RequestAsync();
+
+            if (serial is { } value)
+            {
+                App.Settings.Prop.VirtualDisplaySerial = value;
+                App.Logger.Info("Virtual display identity generated from mouse entropy");
+                // Re-enter the setter with the serial now stored.
+                LaunchWithVirtualDisplay = true;
+            }
+            else
+            {
+                App.Logger.Info("Virtual display identity generation cancelled");
+                // Snap the toggle back off.
+                OnPropertyChanged(nameof(LaunchWithVirtualDisplay));
+            }
+        }
+        public string VirtualDisplayName
+        {
+            get => App.Settings.Prop.VirtualDisplayName;
+            set
+            {
+                App.Settings.Prop.VirtualDisplayName = value;
+                OnPropertyChanged(nameof(VirtualDisplayName));
+            }
+        }
+        public int VirtualDisplayWidth
+        {
+            get => App.Settings.Prop.VirtualDisplayWidth;
+            set
+            {
+                App.Settings.Prop.VirtualDisplayWidth = value;
+                OnPropertyChanged(nameof(VirtualDisplayWidth));
+            }
+        }
+
+        public int VirtualDisplayHeight
+        {
+            get => App.Settings.Prop.VirtualDisplayHeight;
+            set
+            {
+                App.Settings.Prop.VirtualDisplayHeight = value;
+                OnPropertyChanged(nameof(VirtualDisplayHeight));
+            }
+        }
+
+        public double[] VirtualDisplayHzModes
+        {
+            get => App.Settings.Prop.VirtualDisplayHzModes;
+            set
+            {
+                App.Settings.Prop.VirtualDisplayHzModes = value;
+                OnPropertyChanged(nameof(VirtualDisplayHzModes));
             }
         }
 

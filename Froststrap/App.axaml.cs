@@ -9,7 +9,6 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Styling;
 using Avalonia.Threading;
 using Froststrap.AppData;
-using Froststrap.Backend;
 using Froststrap.Integrations;
 using Froststrap.UI.Elements.Base;
 using Microsoft.Win32;
@@ -28,6 +27,14 @@ internal partial class App : Application
 
         new Froststrap.UI.Elements.About.MainWindow().Show();
         AboutOpen = true;
+    }
+
+    public static bool SettingsOpen;
+    private void Settings_OnClick(object? sender, EventArgs e)
+    {
+        if (SettingsOpen) return;
+
+        LaunchHandler.LaunchSettings();
     }
 
     private const string MockReleaseTagEnvironmentVariable = "MOCK_RELEASE_TAG";
@@ -58,11 +65,6 @@ internal partial class App : Application
         .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion
         ?? "unknown+asteo").Split("+")[0];
 
-    static App()
-    {
-        Logger.Info($"App.Version = '{Version}'");
-    }
-
     public static readonly string InternalVersion = Assembly.GetExecutingAssembly()
         .GetName().Version!.ToString()[..^2];
 
@@ -83,6 +85,26 @@ internal partial class App : Application
     public static bool IsPlayerInstalled => PlayerData.IsInstalled;
 
     public static bool IsStudioInstalled => StudioData.IsInstalled;
+
+    private static bool? _linuxPlayerInstalled;
+
+    public static bool LinuxPlayerInstalled
+    {
+        get
+        {
+            if (!OperatingSystem.IsLinux())
+                return false;
+
+            if (_linuxPlayerInstalled is not bool cached)
+            {
+                var clientPath = Path.Combine(Paths.Versions, "Sober", "data", "sober", "packages", "x86_64", "com.roblox.client");
+                cached = Directory.Exists(clientPath) && Directory.EnumerateFiles(clientPath, "*", SearchOption.AllDirectories).Any();
+                _linuxPlayerInstalled = cached;
+            }
+
+            return cached;
+        }
+    }
 
     public static readonly RobloxPlayerData PlayerData = new();
 
@@ -130,9 +152,6 @@ internal partial class App : Application
         if (version is null || string.IsNullOrWhiteSpace(notes))
             return;
 
-        if (LaunchSettings.QuietFlag.Active)
-            return;
-
         if (LaunchSettings.RobloxLaunchMode != LaunchMode.None || !string.Equals(version, Version, StringComparison.OrdinalIgnoreCase))
         {
             State.Prop.PendingUpdateVersion = null;
@@ -152,8 +171,11 @@ internal partial class App : Application
 
     private static bool _showingExceptionDialog;
     private static readonly Lock ActivationLock = new();
+    private static readonly ManualResetEventSlim ActivationReceived = new(false);
+    private static readonly TimeSpan ColdStartActivationTimeout = TimeSpan.FromMilliseconds(250);
     private static string? _pendingActivationUri;
     private static bool _launchArgsProcessed;
+    private static DateTime _waitStart;
     private static List<Style>? _disableAnimationStyles;
 
     private static string? GetEnvironmentVariable(params string[] names)
@@ -199,7 +221,7 @@ internal partial class App : Application
         Logger.Debug($"Terminating with exit code {exitCodeNum} ({exitCode})");
 
 #if __APPLE__
-        VirtualDisplay.End();
+        Froststrap.Backend.VirtualDisplay.End();
 #endif
         Environment.Exit(exitCodeNum);
     }
@@ -421,6 +443,8 @@ internal partial class App : Application
 
         string uri = protocolArgs.Uri.OriginalString;
 
+        ActivationReceived.Set();
+
         lock (ActivationLock)
         {
             if (!_launchArgsProcessed)
@@ -505,7 +529,7 @@ internal partial class App : Application
             return;
 
 #if __APPLE__
-        Logger.Info("Forcing Mobile App URI to be handled by us");
+        Logger.Debug("Forcing Mobile App URI to be handled by us");
         Backend.MobileAppReg.Init();
 #endif
 
@@ -519,7 +543,7 @@ internal partial class App : Application
 #if __APPLE__
         desktop.ShutdownRequested += (_, _) =>
         {
-            VirtualDisplay.End();
+            Froststrap.Backend.VirtualDisplay.End();
         };
 #endif
 
@@ -571,16 +595,13 @@ internal partial class App : Application
         if (Settings.Prop.DisableAnimations)
             ApplyAnimationSettings();
 
-        if (State.Prop.IsFirstLaunch)
-        {
-            LaunchSettings.OnboardingFlag.Active = true;
-            Logger.Info("First launch detected, launching onboarding.");
-        }
-
         _ = Task.Run(async () =>
         {
             try
             {
+                UriHandler.EnsureRegistered();
+                _ = Integrations.AccountManager.AccountManager.Shared;
+
                 FastFlags.Load();
                 GlobalSettings.Load();
 
@@ -640,11 +661,42 @@ internal partial class App : Application
         });
 
         lock (ActivationLock)
+        {
+            if (LaunchSettings.RobloxLaunchMode == LaunchMode.None && _pendingActivationUri is not null)
+                LaunchSettings.TryResolveRobloxUri([_pendingActivationUri]);
+        }
+
+        await WaitForColdStartActivationAsync();
+
+        lock (ActivationLock)
             _launchArgsProcessed = true;
 
         await LaunchHandler.ProcessLaunchArgs();
         await ShowPendingUpdateNotesAsync();
 
         base.OnFrameworkInitializationCompleted();
+    }
+
+    private static async Task WaitForColdStartActivationAsync()
+    {
+        if (!OperatingSystem.IsMacOS())
+            return;
+
+        if (LaunchSettings.RobloxLaunchMode != LaunchMode.None
+            || State.Prop.IsFirstLaunch
+            || LaunchSettings.SettingsFlag.Active
+            || LaunchSettings.BackgroundUpdaterFlag.Active)
+            return;
+
+        Logger.Debug("Waiting for a possible cold-start URL activation");
+
+        _waitStart = DateTime.Now;
+
+        bool signalled = await Task.Run(() => ActivationReceived.Wait(ColdStartActivationTimeout));
+
+        if (LaunchSettings.RobloxLaunchMode != LaunchMode.None)
+            Logger.Debug($"Cold-start activation resolved to {LaunchSettings.RobloxLaunchMode} in {(DateTime.Now - _waitStart).TotalMilliseconds:F0}ms, skipping the launch menu");
+        else if (!signalled)
+            Logger.Debug($"No cold-start activation within {ColdStartActivationTimeout.TotalMilliseconds:F0}ms, opening the launch menu");
     }
 }

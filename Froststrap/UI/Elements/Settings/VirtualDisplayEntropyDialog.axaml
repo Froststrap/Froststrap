@@ -1,0 +1,57 @@
+<!--
+SPDX-FileCopyrightText: 2026 Froststrap
+
+SPDX-License-Identifier: MPL-2.0
+-->
+
+<base:AvaloniaWindow
+    x:Class="Froststrap.UI.Elements.Settings.VirtualDisplayEntropyDialog"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="Generating display identity"
+    Width="460"
+    Height="260"
+    CanResize="False"
+    WindowStartupLocation="CenterOwner">
+
+    <Grid Margin="20" RowDefinitions="Auto,*,Auto,Auto">
+        <TextBlock
+            Name="InstructionText"
+            Grid.Row="0"
+            TextWrapping="Wrap"
+            TextAlignment="Center"
+            Text="Move your mouse around this window to generate a unique display identity (pass 1 of 2)" />
+
+        <Border
+            Name="CaptureArea"
+            Grid.Row="1"
+            Margin="0,16"
+            Background="{DynamicResource ControlFillColorDefaultBrush}"
+            CornerRadius="8">
+            <TextBlock
+                Name="HintText"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center"
+                Opacity="0.6"
+                Text="Keep moving!" />
+        </Border>
+
+        <ProgressBar
+            Name="Progress"
+            Grid.Row="2"
+            Minimum="0"
+            Maximum="1"
+            Height="6" />
+
+        <Button
+            Grid.Row="3"
+            Margin="0,16,0,0"
+            HorizontalAlignment="Center"
+            Content="Cancel"
+            Click="OnCancel" />
+    </Grid>
+</base:AvaloniaWindow>

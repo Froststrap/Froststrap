@@ -1877,7 +1877,7 @@ Remove it now?</value>
   <data name="Menu.CommunityMods.Misc" xml:space="preserve">
     <value>Misc Mods</value>
   </data>
-  <data name="Menu.CommunityMods.Skybox" xml:space="preserve">
+  <data name="Menu.CommunityMods.SkyBox" xml:space="preserve">
     <value>Skybox</value>
   </data>
   <data name="Menu.CommunityMods.Cursor" xml:space="preserve">

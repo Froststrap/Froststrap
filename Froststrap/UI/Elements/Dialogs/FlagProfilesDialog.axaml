@@ -124,7 +124,7 @@ SPDX-License-Identifier: MPL-2.0
                 <controls:IconButton x:Name="RemovePlaceButton"
                                      Grid.Column="0"
                                      Classes="Danger"
-                                     Icon="Trash2"
+                                     Icon="Trash"
                                      Content="{x:Static resources:Strings.Menu_FlagProfiles_RemoveSelected}"
                                      Click="RemovePlaceButton_Click"
                                      IsEnabled="False"
@@ -143,7 +143,7 @@ SPDX-License-Identifier: MPL-2.0
                             Spacing="12"
                             HorizontalAlignment="Right">
                     <controls:IconButton x:Name="DeleteButton"
-                                         Icon="Trash2"
+                                         Icon="Trash"
                                          Classes="Danger"
                                          Content="{x:Static resources:Strings.Menu_FlagProfiles_DeleteSelected}"
                                          Click="DeleteButton_Click"

@@ -1,4 +1,4 @@
-<!--
+﻿<!--
 SPDX-FileCopyrightText: 2026 Froststrap
 
 SPDX-License-Identifier: MPL-2.0
@@ -127,7 +127,7 @@ SPDX-License-Identifier: MPL-2.0
                                              Width="200"
                                              PlaceholderText="{x:Static resources:Strings.Common_Value}"
                                              Padding="8,5" />
-                                    <controls:IconButton Icon="Trash2"
+                                    <controls:IconButton Icon="Trash"
                                                          Classes="Danger"
                                                          Command="{Binding RemoveCommand}"
                                                          Width="30"

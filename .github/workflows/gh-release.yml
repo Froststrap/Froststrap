@@ -11,6 +11,20 @@ jobs:
     uses: ./.github/workflows/build.yml
     secrets: inherit
 
+  # runs before any of build happens
+  # so velopack can me assured that the place it throws
+  # assets into does exist.
+  prepare:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Init release in packages repo
+        env:
+          GH_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
+        run: |
+          PRE=""; [[ "$GITHUB_REF_NAME" == *-* ]] && PRE="--prerelease"
+          gh release view "$GITHUB_REF_NAME" --repo Froststrap/packages >/dev/null 2>&1 || \
+            gh release create "$GITHUB_REF_NAME" --repo Froststrap/packages --draft --title "$GITHUB_REF_NAME" --notes "" $PRE
+
   release:
     needs: build
     runs-on: ubuntu-latest
@@ -38,3 +52,4 @@ jobs:
             release/**/*.AppImage
             release/**/*.deb
             release/**/*.rpm
+            release/**/*.tar.zst

@@ -1,2 +1,5 @@
 [build]
 rustflags = ["-Z", "threads=8"]
+
+[alias]
+xtask = "run --timings --manifest-path ./build/Cargo.toml --"

@@ -4,17 +4,17 @@
 
 #[cfg(test)]
 mod test {
-    use crate::{request_notificaiton_permission, send_notification_message, set_application};
+    use crate::{send_notification_message, init};
     use std::ffi::CString;
 
     #[test]
-    fn test_notification_request() {
-        assert_eq!(request_notificaiton_permission(), 0)
+    fn test_init() {
+        assert_eq!(init(), 0)
     }
 
     #[test]
     fn test_notification_send() {
-        set_application(CString::new("xyz.froststrap.desktop").unwrap().as_ptr());
+        init();
         let title = CString::new("Notification Test").unwrap();
         let description = CString::new("A description came with the test too!").unwrap();
 

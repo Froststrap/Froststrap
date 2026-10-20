@@ -20,7 +20,6 @@ namespace Froststrap.UI.ViewModels.Settings
         private readonly List<string> _activeAutoRegions = [];
         private readonly CancellationTokenSource _disposeCts = new();
         private RobloxServerFetcher? _fetcher;
-        private Dictionary<int, string>? _dcMap;
         private CancellationTokenSource? _searchDebounceCts;
         private CancellationTokenSource? _searchCts;
         private List<string> _sortedAutoRegions = [];
@@ -371,8 +370,6 @@ namespace Froststrap.UI.ViewModels.Settings
             var sorted = regions.OrderBy(r => r, StringComparer.OrdinalIgnoreCase).ToList();
             var list = new List<string> { Strings.Common_Auto };
             list.AddRange(sorted);
-
-            _dcMap = dcMap;
 
             var desired = string.IsNullOrEmpty(_selectedRegion) ? Strings.Common_Auto : _selectedRegion;
             var match = list.FirstOrDefault(r => r.Equals(desired, StringComparison.OrdinalIgnoreCase))

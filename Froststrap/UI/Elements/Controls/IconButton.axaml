@@ -1,4 +1,4 @@
-<!--
+﻿<!--
 SPDX-FileCopyrightText: 2026 Froststrap
 
 SPDX-License-Identifier: MPL-2.0
@@ -255,7 +255,7 @@ SPDX-License-Identifier: MPL-2.0
                 <StackPanel Orientation="Horizontal" Spacing="8">
                     <controls:IconButton Icon="House" Content="Home" />
                     <controls:IconButton Icon="Settings" Content="Settings" />
-                    <controls:IconButton Icon="Trash2" Content="Delete" />
+                    <controls:IconButton Icon="Trash" Content="Delete" />
                 </StackPanel>
             </StackPanel>
 
@@ -271,7 +271,7 @@ SPDX-License-Identifier: MPL-2.0
             <StackPanel Spacing="8">
                 <TextBlock Text="Danger" FontWeight="Bold" />
                 <StackPanel Orientation="Horizontal" Spacing="8">
-                    <controls:IconButton Classes="Danger" Icon="Trash2" Content="Delete" />
+                    <controls:IconButton Classes="Danger" Icon="Trash" Content="Delete" />
                     <controls:IconButton Classes="Danger" Icon="TriangleAlert" Content="Warning" />
                 </StackPanel>
             </StackPanel>
@@ -281,7 +281,7 @@ SPDX-License-Identifier: MPL-2.0
                 <StackPanel Orientation="Horizontal" Spacing="8">
                     <controls:IconButton IsEnabled="False" Icon="Settings" Content="Disabled" />
                     <controls:IconButton Classes="Primary" IsEnabled="False" Icon="Save" Content="Disabled" />
-                    <controls:IconButton Classes="Danger" IsEnabled="False" Icon="Trash2" Content="Disabled" />
+                    <controls:IconButton Classes="Danger" IsEnabled="False" Icon="Trash" Content="Disabled" />
                 </StackPanel>
             </StackPanel>
 
@@ -290,7 +290,7 @@ SPDX-License-Identifier: MPL-2.0
                 <StackPanel Orientation="Horizontal" Spacing="8">
                     <controls:IconButton Icon="House" />
                     <controls:IconButton Classes="Primary" Icon="Save" />
-                    <controls:IconButton Classes="Danger" Icon="Trash2" />
+                    <controls:IconButton Classes="Danger" Icon="Trash" />
                 </StackPanel>
             </StackPanel>
 
@@ -299,12 +299,12 @@ SPDX-License-Identifier: MPL-2.0
                 <StackPanel Orientation="Horizontal" Spacing="8">
                     <controls:IconButton Classes="DropDownButton" Icon="Save" Content="Save" />
                     <controls:IconButton Classes="DropDownButton Primary" Icon="Plus" Content="Add" />
-                    <controls:IconButton Classes="DropDownButton Danger" Icon="Trash2" Content="Delete" />
+                    <controls:IconButton Classes="DropDownButton Danger" Icon="Trash" Content="Delete" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,8,0,0">
                     <controls:IconButton Classes="DropDownButton" Icon="Save" Content="Disabled" IsEnabled="False" />
                     <controls:IconButton Classes="DropDownButton Primary" Icon="Plus" Content="Disabled" IsEnabled="False" />
-                    <controls:IconButton Classes="DropDownButton Danger" Icon="Trash2" Content="Disabled" IsEnabled="False" />
+                    <controls:IconButton Classes="DropDownButton Danger" Icon="Trash" Content="Disabled" IsEnabled="False" />
                 </StackPanel>
                 <controls:IconButton Classes="DropDownButton" Icon="More" />
             </StackPanel>

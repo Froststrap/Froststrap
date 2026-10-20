@@ -25,12 +25,44 @@ namespace Froststrap.UI
         private DateTime _lastClickTime = DateTime.MinValue;
         private const int DoubleClickThresholdMs = 300;
 
+        private static uint RandomSerial()
+        {
+            var bytes = new byte[4];
+            System.Security.Cryptography.RandomNumberGenerator.Fill(bytes);
+            return BitConverter.ToUInt32(bytes, 0) | 1u;
+        }
+
         public NotifyIconWrapper(Watcher watcher)
         {
 #if __APPLE__
             if (App.Settings.Prop.LaunchWithVirtualDisplay) Dispatcher.UIThread.Post(() =>
             {
                 App.Logger.Debug("Starting Virtual display");
+                // this currently will just emulate pretty much the old VDSP
+                // just different name and more modes
+                //
+                // TODO:
+                // make this read from config so we can config
+                // with new values.
+                void InitAndStart(uint serial) => Froststrap.Backend.VirtualDisplay.Initialize(
+                    App.Settings.Prop.VirtualDisplayName,
+                    App.Settings.Prop.VirtualDisplayWidth,
+                    App.Settings.Prop.VirtualDisplayHeight,
+                    [60.0, 120.0, 240.0],
+                    serial
+                );
+
+                InitAndStart(App.Settings.Prop.VirtualDisplaySerial);
+
+                var result = Froststrap.Backend.VirtualDisplay.Start();
+                if (result != -2) return;
+
+                App.Logger.Warn("Virtual display identity rejected, rotating serial");
+
+                var rotated = RandomSerial();
+                App.Settings.Prop.VirtualDisplaySerial = rotated;
+
+                InitAndStart(rotated);
                 Froststrap.Backend.VirtualDisplay.Start();
             });
 #endif
@@ -88,8 +120,6 @@ namespace Froststrap.UI
             icons.Add(_trayIcon);
         }
 
-
-        // On macos simply clicking the icon instantly opens the menu so double click action isnt possible
         private void OnTrayIconClicked(object? sender, EventArgs e)
         {
             if (!OperatingSystem.IsWindows())
@@ -201,8 +231,12 @@ namespace Froststrap.UI
             _isDisposed = true;
 
 #if __APPLE__
-            App.Logger.Debug("Exiting Virtual Display (if there is one)");
-            Froststrap.Backend.VirtualDisplay.End();
+            var vdr = Froststrap.Backend.VirtualDisplay.Running();
+            App.Logger.Info($"Virtual Display result = {vdr}");
+            if (vdr) {
+                App.Logger.Debug("Exiting Virtual Display");
+                Froststrap.Backend.VirtualDisplay.End();
+            }
 #endif
             App.Logger.Info("Cleaning up TrayIcon and MenuContainer");
 

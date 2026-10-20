@@ -32,14 +32,9 @@ namespace Froststrap.UI.ViewModels.Dialogs
             get
             {
                 if (OperatingSystem.IsLinux())
-                {
-                    var clientPath = Path.Combine(Paths.Versions, "Sober", "data", "sober", "packages", "x86_64", "com.roblox.client");
-                    return Directory.Exists(clientPath) && Directory.EnumerateFiles(clientPath, "*", SearchOption.AllDirectories).Any();
-                }
+                    return App.LinuxPlayerInstalled;
                 else
-                {
                     return App.IsPlayerInstalled;
-                }
             }
         }
 
@@ -85,10 +80,7 @@ namespace Froststrap.UI.ViewModels.Dialogs
 
         private void ExecuteLaunch()
         {
-            NextAction action = SelectedLaunchMode == LaunchMode.Player
-                ? NextAction.LaunchRoblox
-                : NextAction.LaunchRobloxStudio;
-            CloseWindowRequest?.Invoke(this, action);
+            CloseWindowRequest?.Invoke(this, LaunchEntry.ToNextAction(SelectedLaunchMode));
         }
 
         public static string Version => string.Format(CultureInfo.InvariantCulture, Strings.Menu_About_Version, App.Version);

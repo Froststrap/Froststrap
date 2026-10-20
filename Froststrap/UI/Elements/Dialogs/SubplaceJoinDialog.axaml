@@ -15,6 +15,7 @@ SPDX-License-Identifier: MPL-2.0
     xmlns:models="clr-namespace:Froststrap.Models"
     xmlns:dialogsVm="clr-namespace:Froststrap.UI.ViewModels.Dialogs"
     xmlns:resources="clr-namespace:Froststrap.Resources"
+    xmlns:utility="clr-namespace:Froststrap.UI.Utility"
     x:Name="RootDialog"
     x:DataType="dialogsVm:SubplaceJoinDialogViewModel"
     Title="{x:Static resources:Strings.Menu_QuickPlay_AvailableSubplaces}"
@@ -73,7 +74,7 @@ SPDX-License-Identifier: MPL-2.0
                                 <controls:Card Width="150" Margin="5" Padding="0" CornerRadius="8" ClipToBounds="True">
                                     <StackPanel>
                                         <Border CornerRadius="12,12,0,0" ClipToBounds="True">
-                                            <Image Source="{Binding ThumbnailUrl, Converter={StaticResource UrlToBitmapConverter}}"
+                                            <Image utility:RemoteImage.SourceUrl="{Binding ThumbnailUrl}"
                                                    Height="150" Width="150" Stretch="UniformToFill"
                                                    RenderOptions.BitmapInterpolationMode="LowQuality"/>
                                         </Border>
