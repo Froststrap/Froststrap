@@ -99,7 +99,7 @@ pub fn main() {
     let (app_path, entitlements_path) = os_specific::main();
 
     if !a.no_installers {
-        #[cfg(not(target_os = "windows"))]
+        #[cfg(target_os = "macos")]
         velopack::pack(version(), &app_path, Some(&entitlements_path));
         #[cfg(not(target_os = "macos"))]
         velopack::pack(version(), &path::dotnet_publish_artifacts(), None);
