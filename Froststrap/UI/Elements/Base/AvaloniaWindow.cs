@@ -192,7 +192,7 @@ namespace Froststrap.UI.Elements.Base
                 }
                 catch (Exception ex)
                 {
-                    App.Logger.Error($"Theme/Style loading error for {themeName}: {ex.Message}");
+                    App.Logger.Error($"Theme/Style loading error for {themeName}: {ex}");
                 }
             }
             else
@@ -256,7 +256,7 @@ namespace Froststrap.UI.Elements.Base
                         }
                         catch (Exception ex)
                         {
-                            App.Logger.Error($"Image load error: {ex.Message}");
+                            App.Logger.Error($"Image load error: {ex}");
                         }
                     }
                     else

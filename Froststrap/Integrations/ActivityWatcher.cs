@@ -2,8 +2,6 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-using System.Runtime.InteropServices;
-
 namespace Froststrap.Integrations
 {
     internal class ActivityWatcher : IDisposable
@@ -22,6 +20,7 @@ namespace Froststrap.Integrations
         private const string GameDisconnectReasonEntry = "[FLog::Network] Sending disconnect with reason:";
         private const string GameServerUptimeEntry = "[FLog::Output] Server Prefix: ";
 
+        private const string StudioPlaceOpenEntry = "[FLog::PlaceManager] Start to open place";
         private const string StudioPlaceCloseEntry = "[FLog::PlaceManager] PlaceManager::closeCurrentPlayDoc";
 
         private const string GameJoiningEntryPattern = @"! Joining game '([0-9a-f\-]{36})' place ([0-9]+) at ([0-9\.]+)";
@@ -51,9 +50,7 @@ namespace Froststrap.Integrations
         public event EventHandler? ShowNotif;
         public event EventHandler? OnGameJoin;
         public event EventHandler? OnGameLeave;
-#pragma warning disable CS0067
         public event EventHandler? OnStudioPlaceOpened;
-#pragma warning restore CS0067
         public event EventHandler? OnStudioPlaceClosed;
         public event EventHandler? OnLogOpen;
         public event EventHandler? OnAppClose;
@@ -133,7 +130,7 @@ namespace Froststrap.Integrations
 
                 App.Logger.Info("Opening Roblox log file...");
 
-                string logNameFilter = (InRobloxStudio || _launchMode == LaunchMode.Studio || _launchMode == LaunchMode.StudioAuth)
+                string logNameFilter = (_launchMode == LaunchMode.Studio || _launchMode == LaunchMode.StudioAuth)
                     ? "Studio"
                     : "Player";
 
@@ -202,7 +199,7 @@ namespace Froststrap.Integrations
             if (string.IsNullOrEmpty(logMessage))
                 return;
 
-            if (InRobloxStudio || _launchMode == LaunchMode.Studio || _launchMode == LaunchMode.StudioAuth)
+            if (_launchMode == LaunchMode.Studio || _launchMode == LaunchMode.StudioAuth)
             {
                 ProcessStudioLogEntry(logMessage);
             }
@@ -240,14 +237,25 @@ namespace Froststrap.Integrations
 
         private void ProcessStudioLogEntry(string logMessage)
         {
-            InRobloxStudio = true;
-
-            if (logMessage.StartsWith(StudioPlaceCloseEntry, StringComparison.Ordinal))
+            if (!InStudioPlace)
             {
-                App.Logger.Info("Studio place closed");
-                InStudioPlace = false;
+                if (logMessage.StartsWith(StudioPlaceOpenEntry, StringComparison.Ordinal))
+                {
+                    App.Logger.Info("Studio place opened");
+                    InStudioPlace = true;
 
-                OnStudioPlaceClosed?.Invoke(this, EventArgs.Empty);
+                    OnStudioPlaceOpened?.Invoke(this, EventArgs.Empty);
+                }
+            }
+            else
+            {
+                if (logMessage.StartsWith(StudioPlaceCloseEntry, StringComparison.Ordinal))
+                {
+                    App.Logger.Info("Studio place closed");
+                    InStudioPlace = false;
+
+                    OnStudioPlaceClosed?.Invoke(this, EventArgs.Empty);
+                }
             }
         }
 
@@ -301,7 +309,6 @@ namespace Froststrap.Integrations
                         return;
                     }
 
-                    InGame = false;
                     Data.PlaceId = long.Parse(match.Groups[2].Value, CultureInfo.InvariantCulture);
                     Data.JobId = match.Groups[1].Value;
                     Data.MachineAddress = match.Groups[3].Value;
@@ -325,20 +332,20 @@ namespace Froststrap.Integrations
                     int jsonStart = logMessage.IndexOf('{', StringComparison.Ordinal);
                     string jsonString = logMessage[jsonStart..];
                     using JsonDocument doc = JsonDocument.Parse(jsonString);
-                    if (
-                        doc.RootElement.TryGetProperty("params", out JsonElement paramsElement)
-                        && paramsElement.TryGetProperty("request", out JsonElement requestElement)
-                        && requestElement.TryGetProperty("requestType", out JsonElement requestTypeElement)
-                        && requestTypeElement.GetString() == "RequestPrivateGame"
-                        && requestElement.TryGetProperty("accessCode", out JsonElement accessCodeElement)
-                    )
+                    if (doc.RootElement.TryGetProperty("params", out JsonElement paramsElement) && paramsElement.TryGetProperty("request", out JsonElement requestElement))
                     {
-                        string? accessCode = accessCodeElement.GetString();
-                        if (!string.IsNullOrEmpty(accessCode))
+                        if (requestElement.TryGetProperty("requestType", out JsonElement requestTypeElement) && requestTypeElement.GetString() == "RequestPrivateGame")
                         {
-                            Data.AccessCode = accessCode;
-                            Data.ServerType = ServerType.Private;
-                            App.Logger.Info($"Captured private server access code: {accessCode}");
+                            if (requestElement.TryGetProperty("accessCode", out JsonElement accessCodeElement))
+                            {
+                                string? accessCode = accessCodeElement.GetString();
+                                if (!string.IsNullOrEmpty(accessCode))
+                                {
+                                    Data.AccessCode = accessCode;
+                                    Data.ServerType = ServerType.Private;
+                                    App.Logger.Info($"Captured private server access code: {accessCode}");
+                                }
+                            }
                         }
                     }
                 }
@@ -432,7 +439,7 @@ namespace Froststrap.Integrations
                     }
                 }
             }
-            else if (InGame && Data.PlaceId != 0)
+            else if (Data.PlaceId != 0)
             {
                 if (logMessage.StartsWith(GameDisconnectedEntry, StringComparison.Ordinal))
                 {
@@ -787,8 +794,7 @@ namespace Froststrap.Integrations
             IsDisposed = true;
             if (InRobloxStudio)
                 StopHTTPServer();
-            _httpCancellationTokenSource?.Dispose();
-            GC.SuppressFinalize(this);
+            _httpCancellationTokenSource.Dispose();
         }
     }
 }

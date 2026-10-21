@@ -106,7 +106,7 @@ namespace Froststrap.UI
             var icons = TrayIcon.GetIcons(app);
             if (icons is null)
             {
-                icons = new TrayIcons();
+                icons = [];
                 TrayIcon.SetIcons(app, icons);
             }
             icons.Add(_trayIcon);
