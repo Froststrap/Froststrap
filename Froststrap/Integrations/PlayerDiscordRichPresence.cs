@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-using DiscordRPC;
+using Froststrap.Integrations.Discord;
 using System.Net.Sockets;
 
 namespace Froststrap.Integrations
@@ -13,8 +13,8 @@ namespace Froststrap.Integrations
         private readonly ActivityWatcher _activityWatcher;
         private readonly Queue<Message> _messageQueue = new();
 
-        private DiscordRPC.RichPresence? _currentPresence;
-        private DiscordRPC.RichPresence? _originalPresence;
+        private DiscordActivity? _currentPresence;
+        private DiscordActivity? _originalPresence;
 
         private readonly FixedSizeList<ThumbnailCacheEntry> _thumbnailCache = new(20);
 
@@ -27,7 +27,7 @@ namespace Froststrap.Integrations
 
         public PlayerDiscordRichPresence(ActivityWatcher activityWatcher)
         {
-            _rpcClient = new DiscordRpcClient("363445589247131668", -1, null, true, DiscordIpcPipeClient.Create());
+            _rpcClient = new DiscordRpcClient("363445589247131668");
             _activityWatcher = activityWatcher;
 
             _activityWatcher.OnGameJoin += (_, _) => Task.Run(() => SetCurrentGame());
@@ -392,7 +392,7 @@ namespace Froststrap.Integrations
             string universeName = universeDetails.Data.Name;
             if (universeName.Length < 2) universeName = $"{universeName}\x2800\x2800\x2800";
 
-            _currentPresence = new DiscordRPC.RichPresence
+            _currentPresence = new DiscordActivity
             {
                 Details = universeName,
                 StatusDisplay = App.Settings.Prop.EnableCustomStatusDisplay ? StatusDisplayType.Details : (StatusDisplayType)0,

@@ -3,23 +3,52 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Platform;
 using Avalonia.Threading;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using PuppeteerSharp;
-using System.Diagnostics;
-using System.Net;
-using System.Runtime.InteropServices;
-using System.Text;
-using FluentAvalonia.UI.Controls;
 using Froststrap.UI.Elements.Dialogs;
-using Froststrap.UI.Elements.Settings;
+using System.Text.Json.Nodes;
 
 namespace Froststrap.Integrations.AccountManager
 {
     internal class LoginService
     {
-        private Browser? _browser;
+        private static readonly Uri LoginUri = new("https://www.roblox.com/login");
+
+        private const string LoadingHtml = """
+            <!doctype html>
+            <html>
+            <head>
+            <meta charset="utf-8">
+            <style>
+            html, body { height: 100%; margin: 0; }
+            body {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 14px;
+                background: #101014;
+                color: #e6e6e6;
+                font-family: "Segoe UI", system-ui, sans-serif;
+            }
+            .spinner {
+                width: 28px;
+                height: 28px;
+                border: 3px solid #2b2b33;
+                border-top-color: #8b5cf6;
+                border-radius: 50%;
+                animation: spin 0.8s linear infinite;
+            }
+            p { margin: 0; font-size: 14px; opacity: 0.8; }
+            @keyframes spin { to { transform: rotate(360deg); } }
+            </style>
+            </head>
+            <body><div class="spinner"></div><p>Preparing sign-in...</p></body>
+            </html>
+            """;
 
         // https://devforum.roblox.com/t/how-to-generate-a-roblosecurity-token-from-quick-login/3147931
         public static async Task<AccountManagerAccount?> AddAccountByQuickSignInAsync(QuickSignCodeDialog dialog, CancellationToken cancellationToken)
@@ -34,10 +63,10 @@ namespace Froststrap.Integrations.AccountManager
                 using var createResponse = await client.PostAsync(createUrl, createContent, cancellationToken);
                 createResponse.EnsureSuccessStatusCode();
 
-                var createJson = JObject.Parse(await createResponse.Content.ReadAsStringAsync(cancellationToken));
-                string code = createJson["code"]!.Value<string>()!;
-                string privateKey = createJson["privateKey"]!.Value<string>()!;
-                DateTime expirationTime = createJson["expirationTime"]!.Value<DateTime>();
+                var createJson = JsonNode.Parse(await createResponse.Content.ReadAsStringAsync(cancellationToken))!;
+                string code = createJson["code"]!.GetValue<string>();
+                string privateKey = createJson["privateKey"]!.GetValue<string>();
+                DateTime expirationTime = createJson["expirationTime"]!.GetValue<DateTime>();
 
                 await Dispatcher.UIThread.InvokeAsync(() => dialog.StartNewSignIn(code));
 
@@ -48,8 +77,8 @@ namespace Froststrap.Integrations.AccountManager
                 {
                     await Task.Delay(4000, cancellationToken);
 
-                    var statusPayload = new { code, privateKey };
-                    using var statusContent = new StringContent(JsonConvert.SerializeObject(statusPayload), Encoding.UTF8, "application/json");
+                    var statusPayload = new LoginCodeRequest { Code = code, PrivateKey = privateKey };
+                    using var statusContent = new StringContent(JsonHelper.Serialize(statusPayload), Encoding.UTF8, "application/json");
 
                     using var statusResponse = await client.PostAsync(statusUrl, statusContent, cancellationToken);
 
@@ -98,9 +127,9 @@ namespace Froststrap.Integrations.AccountManager
                 return "Cancelled";
             }
 
-            var statusJson = JObject.Parse(body);
-            string? status = (string?)statusJson["status"];
-            string? accountName = (string?)statusJson["accountName"];
+            var statusJson = JsonNode.Parse(body);
+            string? status = statusJson?["status"]?.GetValue<string>();
+            string? accountName = statusJson?["accountName"]?.GetValue<string>();
 
             await Dispatcher.UIThread.InvokeAsync(() => dialog.UpdateStatus(status ?? "Error", accountName));
             return status;
@@ -109,8 +138,8 @@ namespace Froststrap.Integrations.AccountManager
         private static async Task<AccountManagerAccount?> PerformFinalLoginAsync(string code, string privateKey, QuickSignCodeDialog dialog, CancellationToken token)
         {
             var loginUrl = UrlBuilder.BuildApiUrl("auth", "v2/login", secure: true);
-            var loginData = new { ctype = "AuthToken", cvalue = code, password = privateKey };
-            using var loginContent = new StringContent(JsonConvert.SerializeObject(loginData), Encoding.UTF8, "application/json");
+            var loginData = new LoginTokenRequest { Ctype = "AuthToken", Cvalue = code, Password = privateKey };
+            using var loginContent = new StringContent(JsonHelper.Serialize(loginData), Encoding.UTF8, "application/json");
 
             using var handler = new HttpClientHandler
             {
@@ -130,7 +159,7 @@ namespace Froststrap.Integrations.AccountManager
                 {
                     string csrfToken = csrfValues.First();
 
-                    using var retryContent = new StringContent(JsonConvert.SerializeObject(loginData), Encoding.UTF8, "application/json");
+                    using var retryContent = new StringContent(JsonHelper.Serialize(loginData), Encoding.UTF8, "application/json");
                     using var retryRequest = new HttpRequestMessage(HttpMethod.Post, loginUrl)
                     {
                         Content = retryContent
@@ -160,106 +189,80 @@ namespace Froststrap.Integrations.AccountManager
             }
         }
 
-        public async Task<AccountManagerAccount?> AddAccountByBrowserAsync(Func<string, Task<AccountManagerAccount?>> accountResolver)
+        public static async Task<AccountManagerAccount?> AddAccountByBrowserAsync(Func<string, Task<AccountManagerAccount?>> accountResolver)
         {
+            NativeWebDialog? dialog = null;
             var completionSource = new TaskCompletionSource<string?>(TaskCreationOptions.RunContinuationsAsynchronously);
+            var loginTimeout = TimeSpan.FromMinutes(10);
+            var cookieTimeout = TimeSpan.FromSeconds(5);
 
             try
             {
-                App.Logger.Info("Launching browser for account login...");
-                string? executablePath = GetSystemBrowserPath();
+                App.Logger.Info("Opening web view for account login...");
 
-                if (executablePath != null)
+                await Dispatcher.UIThread.InvokeAsync(() =>
                 {
-                    MainWindow.ShowGlobalNotification(
-                        "Compatible browser found!",
-                        "Launching browser for login.",
-                        FAInfoBarSeverity.Success
-                    );
-                }
-
-                if (executablePath == null)
-                {
-                    var fetcher = new BrowserFetcher();
-                    var installed = fetcher.GetInstalledBrowsers().FirstOrDefault(b => b.Browser == SupportedBrowser.Chromium);
-                    if (installed != null) executablePath = installed.GetExecutablePath();
-
-                    if (executablePath == null)
+                    dialog = new NativeWebDialog
                     {
-                        App.Logger.Info("No browser found, downloading Chromium...");
-                        MainWindow.ShowGlobalNotification(
-                            "No compatible browser found",
-                            "Please wait while we download Chromium for login.",
-                            FAInfoBarSeverity.Warning
-                        );
-                        var browserInfo = await fetcher.DownloadAsync();
-                        executablePath = browserInfo.GetExecutablePath();
-                    }
-                }
+                        Title = "Preparing sign-in...",
+                        CanUserResize = true,
+                        DefaultBackground = Avalonia.Media.Color.Parse("#101014")
+                    };
 
-                _browser = (Browser)await Puppeteer.LaunchAsync(new LaunchOptions
-                {
-                    Headless = false,
-                    DefaultViewport = null,
-                    ExecutablePath = executablePath,
-                    Args = ["--disable-notifications", "--no-sandbox", "--disable-setuid-sandbox", "--disable-blink-features=AutomationControlled"],
-                    IgnoredDefaultArgs = ["--enable-automation"]
-                });
+                    dialog.Resize(520, 720);
+                    dialog.NavigateToString(LoadingHtml);
 
-                if (_browser == null) return null;
-
-                var mainPage = await _browser.NewPageAsync();
-                await mainPage.SetUserAgentAsync("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36");
-
-                var pages = await _browser.PagesAsync();
-                foreach (var p in pages) if (p != mainPage) await p.CloseAsync();
-
-                _browser.Disconnected += (s, e) => completionSource.TrySetResult(null);
-                mainPage.Close += (s, e) => completionSource.TrySetResult(null);
-                mainPage.Response += (_, e) => ObserveRedirectBody(e.Response);
-
-                _ = Task.Run(async () =>
-                {
-                    try
+                    if (!string.IsNullOrEmpty(Paths.DataRoot))
                     {
-                        while (!completionSource.Task.IsCompleted)
+                        dialog.EnvironmentRequested += (_, args) =>
                         {
-                            if (mainPage == null || mainPage.IsClosed) break;
-
-                            var cookies = await mainPage.GetCookiesAsync("https://www.roblox.com/");
-                            var securityCookie = cookies.FirstOrDefault(c => c.Name == ".ROBLOSECURITY");
-
-                            if (securityCookie != null)
-                            {
-                                App.Logger.Info("Successfully captured cookie.");
-                                completionSource.TrySetResult(securityCookie.Value);
-                                break;
-                            }
-                            await Task.Delay(1000);
-                        }
+                            if (args is WindowsWebView2EnvironmentRequestedEventArgs webView2Args)
+                                webView2Args.UserDataFolder = Path.Combine(Paths.DataRoot, "WebView2");
+                        };
                     }
-                    catch { /* Page closed */ }
+
+                    dialog.Closing += (_, _) => completionSource.TrySetResult(null);
+
+                    // AdapterCreated is the first point where the cookie manager is usable.
+                    // Polling before that only burns UI-thread time and can leave the page
+                    // waiting indefinitely on a cookie manager that will never appear.
+                    dialog.AdapterCreated += (_, _) =>
+                        _ = PrepareLoginPageAsync(dialog, completionSource, cookieTimeout);
+
+                    ShowSetupIndicator(dialog);
+
+                    var owner = GetActiveWindow();
+                    if (owner != null)
+                        dialog.Show(owner);
+                    else
+                        dialog.Show();
                 });
+
+                string? newCookie;
 
                 try
                 {
-                    await mainPage.GoToAsync("https://www.roblox.com/login", new NavigationOptions { WaitUntil = [WaitUntilNavigation.Networkidle2] });
+                    newCookie = await completionSource.Task.WaitAsync(loginTimeout);
                 }
-                catch (Exception ex)
+                catch (TimeoutException)
                 {
-                    App.Logger.Error($"Initial nav failed ({ex.Message}), trying JS fallback...");
-                    try
-                    {
-                        if (!mainPage.IsClosed)
-                            await mainPage.EvaluateExpressionAsync("window.location.href = 'https://www.roblox.com/login'");
-                    }
-                    catch { }
+                    newCookie = null;
                 }
 
-                var resultTask = await Task.WhenAny(completionSource.Task, Task.Delay(TimeSpan.FromMinutes(10)));
-                string? newCookie = resultTask == completionSource.Task ? await completionSource.Task : null;
+                if (string.IsNullOrEmpty(newCookie))
+                {
+                    App.Logger.Info("Browser login was cancelled or timed out.");
 
-                if (string.IsNullOrEmpty(newCookie)) return null;
+                    try { dialog?.Close(); }
+                    catch { }
+
+                    return null;
+                }
+
+                App.Logger.Info("Successfully captured .ROBLOSECURITY cookie.");
+
+                try { dialog?.Close(); }
+                catch { }
 
                 return await accountResolver(newCookie);
             }
@@ -268,330 +271,154 @@ namespace Froststrap.Integrations.AccountManager
                 App.Logger.Error(ex);
                 return null;
             }
-            finally
-            {
-                if (_browser != null && !_browser.IsClosed)
-                {
-                    await _browser.CloseAsync();
-                    _browser = null;
-                }
-            }
         }
 
-        private static void ObserveRedirectBody(IResponse response)
+        private static Window? GetActiveWindow()
         {
-            if ((int)response.Status is < 300 or >= 400)
-                return;
-
-            _ = Task.Run(async () =>
-            {
-                try { await response.BufferAsync(); }
-                catch { /* expected: the body is unavailable for redirect responses */ }
-            });
-        }
-
-        private static readonly string[] CompatibleBrowsers =
-        [
-            "chrome",
-            "google-chrome",
-            "google-chrome-stable",
-            "chromium",
-            "chromium-browser",
-            "brave",
-            "brave-browser",
-            "edge",
-            "msedge",
-            "microsoft-edge",
-            "vivaldi",
-            "opera",
-            "opera-stable",
-            "helium",
-            "helium-browser",
-            "thorium",
-            "yandex-browser",
-        ];
-
-        private static bool IsCompatibleBrowser(string? executablePath)
-        {
-            if (string.IsNullOrWhiteSpace(executablePath) || !File.Exists(executablePath))
-                return false;
-
-            string executableName = Path.GetFileNameWithoutExtension(executablePath);
-
-            return CompatibleBrowsers.Any(browser =>
-                executableName.Equals(browser, StringComparison.OrdinalIgnoreCase));
-        }
-
-        private static string? GetSystemBrowserPath()
-        {
-            string? browserPath = null;
-
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                browserPath = GetWindowsBrowserPath();
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                browserPath = GetLinuxBrowserPath();
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-                browserPath = GetMacOsBrowserPath();
-
-            return IsCompatibleBrowser(browserPath) ? browserPath : null;
-        }
-
-        private static string? GetWindowsBrowserPath()
-        {
-            try
-            {
-                using var key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(
-                    @"Software\Microsoft\Windows\Shell\Associations\UrlAssociations\http\UserChoice");
-
-                string? progId = key?.GetValue("ProgId")?.ToString();
-
-                if (string.IsNullOrWhiteSpace(progId))
-                    return null;
-
-                using var commandKey = Microsoft.Win32.Registry.ClassesRoot.OpenSubKey(
-                    $@"{progId}\shell\open\command");
-
-                string? command = commandKey?.GetValue(null)?.ToString();
-
-                return GetExecutableFromCommand(command);
-            }
-            catch
-            {
+            if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
                 return null;
-            }
+
+            return desktop.Windows.FirstOrDefault(window => window.IsActive) ?? desktop.MainWindow;
         }
 
-        private static string? GetLinuxBrowserPath()
+        private static void ShowSetupIndicator(NativeWebDialog dialog)
         {
             try
             {
-                using var process = Process.Start(new ProcessStartInfo
+                if (dialog.TryGetWindow() is not { Content: null } window)
+                    return;
+
+                var progress = new ProgressBar
                 {
-                    FileName = "xdg-mime",
-                    Arguments = "query default x-scheme-handler/http",
-                    RedirectStandardOutput = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                });
+                    IsIndeterminate = true,
+                    Width = 220,
+                    HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center
+                };
 
-                if (process == null)
-                    return null;
-
-                string desktopFile = process.StandardOutput.ReadToEnd().Trim();
-                process.WaitForExit();
-
-                if (string.IsNullOrWhiteSpace(desktopFile))
-                    return null;
-
-                string[] dataDirectories =
-                [
-                    Environment.GetEnvironmentVariable("XDG_DATA_HOME")
-                        ?? Path.Combine(
-                            Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-                            ".local",
-                            "share"),
-
-                    ..(Environment.GetEnvironmentVariable("XDG_DATA_DIRS")
-                        ?? "/usr/local/share:/usr/share")
-                        .Split(':', StringSplitOptions.RemoveEmptyEntries)
-                ];
-
-                foreach (string directory in dataDirectories)
+                var text = new TextBlock
                 {
-                    string desktopPath = Path.Combine(directory, "applications", desktopFile);
+                    Text = "Preparing sign-in...",
+                    FontSize = 14,
+                    Foreground = new Avalonia.Media.SolidColorBrush(Avalonia.Media.Color.Parse("#e6e6e6")),
+                    HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center
+                };
 
-                    if (!File.Exists(desktopPath))
-                        continue;
+                var stack = new StackPanel
+                {
+                    Spacing = 14,
+                    HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                    VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+                    Children = { progress, text }
+                };
 
-                    string? exec = File.ReadLines(desktopPath)
-                        .Select(line => line.Trim())
-                        .FirstOrDefault(line =>
-                            line.StartsWith("Exec=", StringComparison.OrdinalIgnoreCase));
+                window.Content = new Grid
+                {
+                    Background = new Avalonia.Media.SolidColorBrush(Avalonia.Media.Color.Parse("#101014")),
+                    Children = { stack }
+                };
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Debug(ex, "Failed to show the web view setup indicator");
+            }
+        }
 
-                    string? executable = GetExecutableFromCommand(
-                        exec?["Exec=".Length..]);
+        private static async Task PrepareLoginPageAsync(
+            NativeWebDialog dialog,
+            TaskCompletionSource<string?> completionSource,
+            TimeSpan cookieTimeout)
+        {
+            try
+            {
+                // The loading page is supplied before the dialog is shown, so the
+                // web view displays it as soon as the adapter is created.
+                var cookieManager = dialog.TryGetCookieManager();
 
-                    if (executable != null)
-                        return executable;
+                if (cookieManager != null)
+                    await ClearCookiesAsync(cookieManager, cookieTimeout);
+
+                if (completionSource.Task.IsCompleted)
+                    return;
+
+                try
+                {
+                    dialog.Title = Strings.Menu_BrowserLogin_Title;
+                    dialog.Source = LoginUri;
                 }
-            }
-            catch
-            {
-            }
+                catch (Exception ex) { App.Logger.Error(ex); }
 
-            return null;
-        }
-
-        private static string? GetMacOsBrowserPath()
-        {
-            try
-            {
-                using var process = Process.Start(new ProcessStartInfo
+                while (!completionSource.Task.IsCompleted)
                 {
-                    FileName = "defaults",
-                    Arguments = "read com.apple.LaunchServices/com.apple.launchservices.secure LSHandlers",
-                    RedirectStandardOutput = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                });
-
-                if (process == null)
-                    return null;
-
-                string output = process.StandardOutput.ReadToEnd();
-                process.WaitForExit();
-
-                string? bundleIdentifier = null;
-                bool isHttpHandler = false;
-
-                foreach (string line in output.Split('\n'))
-                {
-                    string trimmed = line.Trim();
-
-                    if (trimmed.Contains(
-                            "\"LSHandlerURLScheme\" = http",
-                            StringComparison.Ordinal))
+                    try
                     {
-                        isHttpHandler = true;
-                    }
-                    else if (isHttpHandler &&
-                             trimmed.StartsWith(
-                                 "LSHandlerRoleAll = ",
-                                 StringComparison.Ordinal))
-                    {
-                        bundleIdentifier = trimmed
-                            .Replace(
-                                "LSHandlerRoleAll = ",
-                                "",
-                                StringComparison.Ordinal)
-                            .Trim()
-                            .TrimEnd(';')
-                            .Trim('"');
+                        cookieManager = dialog.TryGetCookieManager();
 
-                        break;
+                        if (cookieManager != null)
+                        {
+                            var cookies = await cookieManager.GetCookiesAsync().WaitAsync(cookieTimeout);
+                            var securityCookie = cookies.FirstOrDefault(cookie => cookie.Name == ".ROBLOSECURITY");
+
+                            if (securityCookie != null && !string.IsNullOrEmpty(securityCookie.Value))
+                            {
+                                completionSource.TrySetResult(securityCookie.Value);
+                                return;
+                            }
+                        }
                     }
+                    catch (TimeoutException)
+                    {
+                        App.Logger.Warn("Timed out while reading web view cookies, retrying.");
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                        return;
+                    }
+                    catch (Exception ex)
+                    {
+                        App.Logger.Error(ex, "Failed to read web view cookies");
+                    }
+
+                    await Task.Delay(1000);
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error(ex);
+                completionSource.TrySetResult(null);
+            }
+        }
+
+        private static async Task<bool> ClearCookiesAsync(NativeWebViewCookieManager cookieManager, TimeSpan timeout)
+        {
+            bool cleared = false;
+
+            try
+            {
+                var cookies = await cookieManager.GetCookiesAsync().WaitAsync(timeout);
+
+                foreach (var cookie in cookies)
+                {
+                    try
+                    {
+                        cookieManager.DeleteCookie(cookie);
+                        cleared = true;
+                    }
+                    catch { }
                 }
 
-                if (string.IsNullOrWhiteSpace(bundleIdentifier))
-                    return null;
-
-                using var findProcess = Process.Start(new ProcessStartInfo
-                {
-                    FileName = "mdfind",
-                    Arguments = $"kMDItemCFBundleIdentifier == '{bundleIdentifier}'",
-                    RedirectStandardOutput = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                });
-
-                if (findProcess == null)
-                    return null;
-
-                string applicationPath = findProcess.StandardOutput
-                    .ReadToEnd()
-                    .Split('\n', StringSplitOptions.RemoveEmptyEntries)
-                    .FirstOrDefault() ?? "";
-
-                findProcess.WaitForExit();
-
-                if (string.IsNullOrWhiteSpace(applicationPath))
-                    return null;
-
-                string? executableName = GetPlistValue(
-                    Path.Combine(applicationPath, "Contents", "Info.plist"),
-                    "CFBundleExecutable");
-
-                if (string.IsNullOrWhiteSpace(executableName))
-                    return null;
-
-                string executablePath = Path.Combine(
-                    applicationPath,
-                    "Contents",
-                    "MacOS",
-                    executableName);
-
-                return File.Exists(executablePath) ? executablePath : null;
+                if (cleared)
+                    App.Logger.Info($"Cleared {cookies.Count} web view cookie(s) before login.");
             }
-            catch
+            catch (TimeoutException)
             {
-                return null;
+                App.Logger.Warn("Timed out while clearing web view cookies.");
             }
-        }
-
-        private static string? GetExecutableFromCommand(string? command)
-        {
-            if (string.IsNullOrWhiteSpace(command))
-                return null;
-
-            command = command.Trim();
-
-            string executable;
-
-            if (command.StartsWith('"'))
+            catch (Exception ex)
             {
-                int endQuote = command.IndexOf('"', 1);
-
-                if (endQuote <= 1)
-                    return null;
-
-                executable = command[1..endQuote];
-            }
-            else
-            {
-                executable = command
-                    .Split(' ', StringSplitOptions.RemoveEmptyEntries)
-                    .FirstOrDefault() ?? "";
+                App.Logger.Error(ex);
             }
 
-            if (string.IsNullOrWhiteSpace(executable))
-                return null;
-
-            if (executable.Equals("flatpak", StringComparison.OrdinalIgnoreCase) ||
-                executable.Equals("snap", StringComparison.OrdinalIgnoreCase))
-                return null;
-
-            if (Path.IsPathFullyQualified(executable))
-                return File.Exists(executable) ? executable : null;
-
-            string? path = Environment.GetEnvironmentVariable("PATH");
-
-            if (string.IsNullOrWhiteSpace(path))
-                return null;
-
-            foreach (string directory in path.Split(
-                Path.PathSeparator,
-                StringSplitOptions.RemoveEmptyEntries))
-            {
-                string executablePath = Path.Combine(directory, executable);
-
-                if (File.Exists(executablePath))
-                    return executablePath;
-            }
-
-            return null;
-        }
-
-        private static string? GetPlistValue(string plistPath, string key)
-        {
-            if (!File.Exists(plistPath))
-                return null;
-
-            using var process = Process.Start(new ProcessStartInfo
-            {
-                FileName = "defaults",
-                Arguments = $"read \"{plistPath}\" {key}",
-                RedirectStandardOutput = true,
-                UseShellExecute = false,
-                CreateNoWindow = true
-            });
-
-            if (process == null)
-                return null;
-
-            string value = process.StandardOutput.ReadToEnd().Trim();
-            process.WaitForExit();
-
-            return string.IsNullOrWhiteSpace(value) ? null : value;
+            return cleared;
         }
     }
 }

@@ -132,7 +132,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
 
             if (sourceData.IsIcon)
             {
-                Binding binding = ReflectionBinding("Icon", BindingMode.OneWay);
+                BindingBase binding = CreateBinding("Icon", BindingMode.OneWay);
                 imageBrush.Bind(ImageBrush.SourceProperty, binding);
             }
             else if (sourceData.Path != null)
@@ -527,10 +527,10 @@ namespace Froststrap.UI.Elements.Bootstrapper
 
             if (xmlElement.Attribute("Name")?.Value == "CancelButton")
             {
-                Binding cancelEnabledBinding = ReflectionBinding("CancelEnabled", BindingMode.TwoWay);
+                BindingBase cancelEnabledBinding = CreateBinding("CancelEnabled", BindingMode.TwoWay);
                 button.Bind(Button.IsEnabledProperty, cancelEnabledBinding);
 
-                Binding cancelCommandBinding = ReflectionBinding("CancelInstallCommand");
+                BindingBase cancelCommandBinding = CreateBinding("CancelInstallCommand");
                 button.Bind(Button.CommandProperty, cancelCommandBinding);
             }
 
@@ -557,13 +557,13 @@ namespace Froststrap.UI.Elements.Bootstrapper
 
             if (xmlElement.Attribute("Name")?.Value == "PrimaryProgressBar")
             {
-                Binding isIndeterminateBinding = ReflectionBinding("ProgressIndeterminate", BindingMode.OneWay);
+                BindingBase isIndeterminateBinding = CreateBinding("ProgressIndeterminate", BindingMode.OneWay);
                 progressBar.Bind(ProgressBar.IsIndeterminateProperty, isIndeterminateBinding);
 
-                Binding maximumBinding = ReflectionBinding("ProgressMaximum", BindingMode.OneWay);
+                BindingBase maximumBinding = CreateBinding("ProgressMaximum", BindingMode.OneWay);
                 progressBar.Bind(ProgressBar.MaximumProperty, maximumBinding);
 
-                Binding valueBinding = ReflectionBinding("ProgressValue", BindingMode.OneWay);
+                BindingBase valueBinding = CreateBinding("ProgressValue", BindingMode.OneWay);
                 progressBar.Bind(ProgressBar.ValueProperty, valueBinding);
             }
 
@@ -579,13 +579,13 @@ namespace Froststrap.UI.Elements.Bootstrapper
 
             if (xmlElement.Attribute("Name")?.Value == "PrimaryProgressRing")
             {
-                Binding isIndeterminateBinding = ReflectionBinding("ProgressIndeterminate", BindingMode.OneWay);
+                BindingBase isIndeterminateBinding = CreateBinding("ProgressIndeterminate", BindingMode.OneWay);
                 progressRing.Bind(FluentAvalonia.UI.Controls.FAProgressRing.IsIndeterminateProperty, isIndeterminateBinding);
 
-                Binding maximumBinding = ReflectionBinding("ProgressMaximum", BindingMode.OneWay);
+                BindingBase maximumBinding = CreateBinding("ProgressMaximum", BindingMode.OneWay);
                 progressRing.Bind(FluentAvalonia.UI.Controls.FAProgressRing.MaximumProperty, maximumBinding);
 
-                Binding valueBinding = ReflectionBinding("ProgressValue", BindingMode.OneWay);
+                BindingBase valueBinding = CreateBinding("ProgressValue", BindingMode.OneWay);
                 progressRing.Bind(FluentAvalonia.UI.Controls.FAProgressRing.ValueProperty, valueBinding);
             }
 
@@ -630,7 +630,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
 
             if (xmlElement.Attribute("Name")?.Value == "StatusText")
             {
-                Binding textBinding = ReflectionBinding("Message", BindingMode.OneWay);
+                BindingBase textBinding = CreateBinding("Message", BindingMode.OneWay);
                 textBlock.Bind(TextBlock.TextProperty, textBinding);
             }
 
@@ -664,7 +664,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
 
             if (imageData.IsIcon)
             {
-                image.Bind(Image.SourceProperty, ReflectionBinding("Icon"));
+                image.Bind(Image.SourceProperty, CreateBinding("Icon"));
             }
             else if (imageData.Path != null)
             {

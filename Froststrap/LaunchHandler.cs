@@ -75,8 +75,14 @@ namespace Froststrap
         {
             if (App.SettingsOpen)
             {
-                App.Logger.Info("Settings window is already open, ignoring the request");
-                return;
+                if (UI.Elements.Settings.MainWindow.Instance is not null)
+                {
+                    App.Logger.Info("Settings window is already open, ignoring the request");
+                    return;
+                }
+
+                App.Logger.Warn("Settings was marked as open but no window exists, recovering");
+                App.SettingsOpen = false;
             }
 
             var interlock = new InterProcessLock("Settings");
@@ -116,7 +122,11 @@ namespace Froststrap
                 activationCts.Dispose();
                 interlock.Dispose();
                 App.FrostRPC = null;
-                ProcessNextAction(window.CloseAction);
+                App.SettingsOpen = false;
+
+                NextAction nextAction = window.CloseAction;
+
+                Dispatcher.UIThread.Post(() => ProcessNextAction(nextAction), DispatcherPriority.Background);
             };
 
             window.Show();
@@ -224,7 +234,9 @@ namespace Froststrap
                 if (_suppressMenuCloseAction)
                     return;
 
-                ProcessNextAction(dialog.CloseAction);
+                NextAction nextAction = dialog.CloseAction;
+
+                Dispatcher.UIThread.Post(() => ProcessNextAction(nextAction), DispatcherPriority.Background);
             };
 
             dialog.Show();

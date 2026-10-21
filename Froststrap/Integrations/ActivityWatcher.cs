@@ -51,7 +51,9 @@ namespace Froststrap.Integrations
         public event EventHandler? ShowNotif;
         public event EventHandler? OnGameJoin;
         public event EventHandler? OnGameLeave;
+#pragma warning disable CS0067
         public event EventHandler? OnStudioPlaceOpened;
+#pragma warning restore CS0067
         public event EventHandler? OnStudioPlaceClosed;
         public event EventHandler? OnLogOpen;
         public event EventHandler? OnAppClose;

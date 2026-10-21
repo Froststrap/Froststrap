@@ -14,8 +14,15 @@ using Avalonia.Threading;
 using Avalonia.VisualTree;
 using FluentAvalonia.UI.Controls;
 using Froststrap.UI.Elements.Controls;
+using Froststrap.UI.Elements.Settings.Pages;
+using Froststrap.UI.Elements.Settings.Pages.FastFlags;
+using Froststrap.UI.Elements.Settings.Pages.GlobalSettings;
+using Froststrap.UI.Elements.Settings.Pages.Mods;
 using Froststrap.UI.Utility;
 using Froststrap.UI.ViewModels.Settings;
+using Froststrap.UI.ViewModels.Settings.FastFlags;
+using Froststrap.UI.ViewModels.Settings.GlobalSettings;
+using Froststrap.UI.ViewModels.Settings.Mods;
 using Froststrap.Utility;
 using LucideAvalonia.Enum;
 using System.ComponentModel;
@@ -317,58 +324,26 @@ namespace Froststrap.UI.Elements.Settings
             }
         }
 
-        private static readonly Dictionary<string, Type> ViewTypeCache = new();
-
-        private static Control? ResolveViewForViewModel(object viewModel)
+        private static Control? ResolveViewForViewModel(object viewModel) => viewModel switch
         {
-            var viewModelName = viewModel.GetType().Name;
-            var viewName = viewModelName.Replace("ViewModel", "", StringComparison.Ordinal);
-
-            if (ViewTypeCache.TryGetValue(viewModelName, out var cachedViewType))
-            {
-                try
-                {
-                    return ReflectionHelper.CreateInstance(cachedViewType) as Control;
-                }
-                catch (Exception ex)
-                {
-                    App.Logger.Error($"Failed to create view {cachedViewType.Name}: {ex.Message}");
-                    return null;
-                }
-            }
-
-            var viewTypeNames = new[]
-            {
-                $"Froststrap.UI.Elements.Settings.Pages.GlobalSettings.{viewName}",
-                $"Froststrap.UI.Elements.Settings.Pages.FastFlags.{viewName}",
-                $"Froststrap.UI.Elements.Settings.Pages.Mods.{viewName}Page",
-                $"Froststrap.UI.Elements.Settings.Pages.{viewName}Page",
-                $"Froststrap.UI.Elements.Settings.Pages.{viewName}",
-                $"Froststrap.UI.Elements.Settings.{viewName}Page",
-                $"Froststrap.UI.Elements.Settings.{viewName}"
-            };
-
-            foreach (var viewTypeName in viewTypeNames)
-            {
-                var viewType = ReflectionHelper.FindType(viewTypeName);
-
-                if (viewType != null && typeof(Control).IsAssignableFrom(viewType))
-                {
-                    ViewTypeCache[viewModelName] = viewType;
-
-                    try
-                    {
-                        return ReflectionHelper.CreateInstance(viewType) as Control;
-                    }
-                    catch (Exception ex)
-                    {
-                        App.Logger.Error($"Failed to create view {viewTypeName}: {ex.Message}");
-                    }
-                }
-            }
-
-            return null;
-        }
+            IntegrationsViewModel => new IntegrationsPage(),
+            BehaviourViewModel => new BehaviourPage(),
+            LinuxSettingsViewModel => new LinuxSettingsPage(),
+            ModsPresetsViewModel => new ModsPresetsPage(),
+            FastFlagsViewModel => new FastFlagsPage(),
+            AppearanceViewModel => new AppearancePage(),
+            RegionSelectorViewModel => new RegionSelectorPage(),
+            GlobalSettingsViewModel => new GlobalSettingsPage(),
+            ShortcutsViewModel => new ShortcutsPage(),
+            QuickPlayViewModel => new QuickPlayPage(),
+            ChannelViewModel => new ChannelPage(),
+            GlobalSettingsEditorViewModel => new GlobalSettingsEditor(),
+            FastFlagEditorViewModel => new FastFlagEditor(),
+            CommunityModsViewModel => new CommunityModsPage(),
+            ModGeneratorViewModel => new ModGeneratorPage(),
+            ModsViewModel => new ModsPage(),
+            _ => null
+        };
 
         public void LoadState()
         {

@@ -4,11 +4,17 @@
 
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Markup.Xaml;
 
 namespace Froststrap.UI.Elements.Base
 {
-    internal class BackgroundHostPanel : Panel
+    internal partial class BackgroundHostPanel : Panel
     {
+        public BackgroundHostPanel()
+        {
+            InitializeComponent();
+        }
+
         protected override Size MeasureOverride(Size availableSize)
         {
             Size contentSize = default;

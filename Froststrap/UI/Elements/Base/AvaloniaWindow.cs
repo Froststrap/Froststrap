@@ -63,8 +63,7 @@ namespace Froststrap.UI.Elements.Base
 
         public AvaloniaWindow()
         {
-            var uri = new Uri("avares://Froststrap/UI/Elements/Base/BackgroundPanel.axaml");
-            var panel = (Panel)DeferredStyles.Load(uri);
+            var panel = new BackgroundHostPanel();
 
             _backgroundBorder = panel.Find<Border>("PART_BackgroundBorder");
             _backgroundImage = panel.Find<Image>("PART_BackgroundImage");
@@ -169,33 +168,27 @@ namespace Froststrap.UI.Elements.Base
                 {
                     if (_cachedThemeName != themeName || _cachedThemeDictionary == null || _cachedThemeStyles == null)
                     {
-                        var themeUri = new Uri($"avares://Froststrap/UI/AppThemes/ResourceDictionarys/{themeName}.axaml");
-                        var loadedTheme = DeferredStyles.Load(themeUri);
-                        if (loadedTheme is ResourceDictionary dict)
-                            _cachedThemeDictionary = dict;
+                        bool light = themeName == "Light";
 
-                        var styleUri = new Uri($"avares://Froststrap/UI/AppThemes/Styles/{themeName}.axaml");
-                        var loadedStyle = DeferredStyles.Load(styleUri);
-                        if (loadedStyle is Styles loadedStyles)
-                            _cachedThemeStyles = loadedStyles;
+                        _cachedThemeDictionary = light
+                            ? new Froststrap.UI.AppThemes.ResourceDictionarys.Light()
+                            : new Froststrap.UI.AppThemes.ResourceDictionarys.Dark();
+
+                        _cachedThemeStyles = light
+                            ? new Froststrap.UI.AppThemes.Styles.Light()
+                            : new Froststrap.UI.AppThemes.Styles.Dark();
 
                         _cachedThemeName = themeName;
                     }
 
-                    if (_cachedThemeDictionary != null)
-                    {
-                        _activeThemeDictionary = _cachedThemeDictionary;
-                        Application.Current.Resources.MergedDictionaries.Add(_cachedThemeDictionary);
+                    _activeThemeDictionary = _cachedThemeDictionary;
+                    Application.Current.Resources.MergedDictionaries.Add(_cachedThemeDictionary);
 
-                        if (_cachedThemeDictionary.TryGetValue("ApplicationBackgroundColor", out var themeBg))
-                            backgroundBrush = themeBg as IBrush;
-                    }
+                    if (_cachedThemeDictionary.TryGetValue("ApplicationBackgroundColor", out var themeBg))
+                        backgroundBrush = themeBg as IBrush;
 
-                    if (_cachedThemeStyles != null)
-                    {
-                        _activeColorStyle = _cachedThemeStyles;
-                        Application.Current.Styles.Insert(1, _cachedThemeStyles);
-                    }
+                    _activeColorStyle = _cachedThemeStyles;
+                    Application.Current.Styles.Insert(1, _cachedThemeStyles);
                 }
                 catch (Exception ex)
                 {

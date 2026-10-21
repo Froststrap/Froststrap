@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
@@ -11,31 +10,67 @@ using System.Text.Json.Serialization.Metadata;
 
 namespace Froststrap
 {
-    internal static class JsonHelper
+    internal static partial class JsonHelper
     {
+        private static readonly object ResolverLock = new();
+
+        /// <summary>
+        /// Source-generated metadata for the types declared in <see cref="JsonContext"/> plus the
+        /// types auto-registered into <c>JsonContextGenerated</c> by tools/JsonContextGen.
+        /// Reflection-based resolution is intentionally not used so this stays Native AOT safe.
+        /// </summary>
+        internal static readonly IJsonTypeInfoResolver Resolver = BuildResolver();
+
+        private static IJsonTypeInfoResolver BuildResolver()
+        {
+            IJsonTypeInfoResolver resolver = JsonContext.Default;
+
+            AddGeneratedResolver(ref resolver);
+
+            return resolver;
+        }
+
+        static partial void AddGeneratedResolver(ref IJsonTypeInfoResolver resolver);
+
         internal static readonly JsonSerializerOptions Options = new()
         {
             WriteIndented = true,
             ReadCommentHandling = JsonCommentHandling.Skip,
-            TypeInfoResolver = BuildResolver()
+            NumberHandling = JsonNumberHandling.AllowReadingFromString,
+            TypeInfoResolver = Resolver
         };
 
         private static readonly JsonSerializerOptions WebOptions = new(JsonSerializerDefaults.Web)
         {
-            TypeInfoResolver = BuildResolver()
+            NumberHandling = JsonNumberHandling.AllowReadingFromString,
+            TypeInfoResolver = Resolver
         };
 
-        private static readonly JsonSerializerOptions PlainOptions = new()
+        internal static readonly JsonSerializerOptions PlainOptions = new()
         {
-            TypeInfoResolver = BuildResolver()
+            NumberHandling = JsonNumberHandling.AllowReadingFromString,
+            TypeInfoResolver = Resolver
         };
 
-        [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Reflection-based resolution is intentional and verified; hot startup types are covered by the source-generated JsonContext.")]
-        private static IJsonTypeInfoResolver BuildResolver()
-            => JsonTypeInfoResolver.Combine(JsonContext.Default, new DefaultJsonTypeInfoResolver());
+        private static JsonSerializerOptions Prepare(JsonSerializerOptions options)
+        {
+            if (options.TypeInfoResolver == null)
+            {
+                lock (ResolverLock)
+                {
+                    options.TypeInfoResolver ??= Resolver;
+                }
+            }
+
+            return options;
+        }
 
         internal static JsonTypeInfo<T> TypeInfo<T>(JsonSerializerOptions? options = null)
-            => (JsonTypeInfo<T>)(options ?? Options).GetTypeInfo(typeof(T))!;
+            => Prepare(options ?? Options).GetTypeInfo(typeof(T)) as JsonTypeInfo<T>
+                ?? throw new InvalidOperationException(
+                    $"No source-generated JSON metadata is registered for {typeof(T)}. " +
+                    "Use JsonHelper from a generic call site so tools/JsonContextGen can register it, " +
+                    "or add it to JsonContext.cs.");
 
         internal static string Serialize<T>(T value, JsonSerializerOptions? options = null)
             => JsonSerializer.Serialize(value, TypeInfo<T>(options));

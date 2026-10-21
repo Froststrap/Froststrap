@@ -67,7 +67,7 @@ namespace Froststrap
             Directory.CreateDirectory(Path.GetDirectoryName(PluginFile)!);
             await File.WriteAllBytesAsync(PluginFile, data);
 
-            var state = new { Version = release.TagName, UpdatedAt = DateTime.Now };
+            var state = new VersionCacheEntry { Version = release.TagName, UpdatedAt = DateTime.Now };
             await File.WriteAllTextAsync(VersionCacheFile, JsonHelper.Serialize(state));
         }
 

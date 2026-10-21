@@ -3,7 +3,7 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-using DiscordRPC;
+using Froststrap.Integrations.Discord;
 using System.Net.Sockets;
 
 namespace Froststrap.Integrations
@@ -14,8 +14,8 @@ namespace Froststrap.Integrations
         private readonly ActivityWatcher _activityWatcher;
         private readonly Queue<StudioMessage> _messageQueue = [];
 
-        private DiscordRPC.RichPresence? _currentPresence;
-        private DiscordRPC.RichPresence? _originalPresence;
+        private DiscordActivity? _currentPresence;
+        private DiscordActivity? _originalPresence;
 
         private bool _visible = true;
         private bool _rpcEnabled = true;
@@ -23,7 +23,7 @@ namespace Froststrap.Integrations
 
         public StudioDiscordRichPresence(ActivityWatcher activityWatcher)
         {
-            _rpcClient = new DiscordRpcClient("1454451301130960896", -1, null, true, DiscordIpcPipeClient.Create());
+            _rpcClient = new DiscordRpcClient("1454451301130960896");
             _activityWatcher = activityWatcher;
 
             _activityWatcher.OnStudioRPCMessage += (_, message) => ProcessRPCMessage(message);
@@ -92,7 +92,7 @@ namespace Froststrap.Integrations
 
             App.Logger.Info("Initializing Studio presence");
 
-            _currentPresence = new DiscordRPC.RichPresence
+            _currentPresence = new DiscordActivity
             {
                 Timestamps = new Timestamps { Start = DateTime.UtcNow },
                 Assets = new Assets
@@ -122,7 +122,7 @@ namespace Froststrap.Integrations
 
             DateTime? existingTimestamp = _currentPresence?.Timestamps?.Start;
 
-            _currentPresence = new DiscordRPC.RichPresence
+            _currentPresence = new DiscordActivity
             {
                 Timestamps = existingTimestamp.HasValue
                     ? new Timestamps { Start = existingTimestamp.Value }

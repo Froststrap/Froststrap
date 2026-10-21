@@ -2,12 +2,15 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-using System.Diagnostics.CodeAnalysis;
+using System.Windows.Input;
 using System.Xml.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
+using Avalonia.Data.Core;
+using Avalonia.Markup.Xaml.MarkupExtensions.CompiledBindings;
 using Avalonia.Media;
+using Froststrap.UI.ViewModels.Bootstrapper;
 
 namespace Froststrap.UI.Elements.Bootstrapper
 {
@@ -28,11 +31,57 @@ namespace Froststrap.UI.Elements.Bootstrapper
             }
         }
 
-        [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Custom theme bindings target a runtime DataContext, so reflection bindings are required; the dialog view models are rooted.")]
-        private static Binding ReflectionBinding(string path) => new(path);
+        private static CompiledBinding CreateBinding(string path) => CreateBinding(path, BindingMode.OneWay);
 
-        [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Custom theme bindings target a runtime DataContext, so reflection bindings are required; the dialog view models are rooted.")]
-        private static Binding ReflectionBinding(string path, BindingMode mode) => new(path) { Mode = mode };
+        private static CompiledBinding CreateBinding(string path, BindingMode mode)
+        {
+            CompiledBindingPath bindingPath = path switch
+            {
+                "Icon" => BuildBindingPath(new ClrPropertyInfo(
+                    "Icon",
+                    static target => ((BootstrapperDialogViewModel)target).Icon,
+                    null,
+                    typeof(IImage))),
+                "CancelEnabled" => BuildBindingPath(new ClrPropertyInfo(
+                    "CancelEnabled",
+                    static target => ((BootstrapperDialogViewModel)target).CancelEnabled,
+                    static (target, value) => ((BootstrapperDialogViewModel)target).CancelEnabled = (bool)value!,
+                    typeof(bool))),
+                "CancelInstallCommand" => BuildBindingPath(new ClrPropertyInfo(
+                    "CancelInstallCommand",
+                    static target => ((BootstrapperDialogViewModel)target).CancelInstallCommand,
+                    null,
+                    typeof(ICommand))),
+                "ProgressIndeterminate" => BuildBindingPath(new ClrPropertyInfo(
+                    "ProgressIndeterminate",
+                    static target => ((BootstrapperDialogViewModel)target).ProgressIndeterminate,
+                    null,
+                    typeof(bool))),
+                "ProgressMaximum" => BuildBindingPath(new ClrPropertyInfo(
+                    "ProgressMaximum",
+                    static target => ((BootstrapperDialogViewModel)target).ProgressMaximum,
+                    null,
+                    typeof(int))),
+                "ProgressValue" => BuildBindingPath(new ClrPropertyInfo(
+                    "ProgressValue",
+                    static target => ((BootstrapperDialogViewModel)target).ProgressValue,
+                    null,
+                    typeof(int))),
+                "Message" => BuildBindingPath(new ClrPropertyInfo(
+                    "Message",
+                    static target => ((BootstrapperDialogViewModel)target).Message,
+                    null,
+                    typeof(string))),
+                _ => throw new ArgumentOutOfRangeException(nameof(path), path, "Unknown custom dialog binding path.")
+            };
+
+            return new CompiledBinding(bindingPath) { Mode = mode };
+        }
+
+        private static CompiledBindingPath BuildBindingPath(ClrPropertyInfo property)
+            => new CompiledBindingPathBuilder()
+                .Property(property, PropertyInfoAccessorFactory.CreateInpcPropertyAccessor)
+                .Build();
 
         private static Thickness? GetThicknessFromXElement(XElement xmlElement, string attributeName)
         {

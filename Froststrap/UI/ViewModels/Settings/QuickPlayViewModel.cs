@@ -1431,16 +1431,16 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
 
         var url = "https://apis.roblox.com/discovery-api/omni-recommendation";
 
-        var payload = new
+        var payload = new OmniRecommendationRequest
         {
-            pageType = "Home",
-            sessionId = Guid.NewGuid().ToString(),
-            supportedTreatmentTypes = new[] { "SortlessGrid" },
-            sduiTreatmentTypes = new[] { "Carousel", "HeroUnit" },
-            cpuCores = Environment.ProcessorCount,
-            maxResolution = "2560x1440",
-            maxMemory = 32768,
-            networkType = "4g"
+            PageType = "Home",
+            SessionId = Guid.NewGuid().ToString(),
+            SupportedTreatmentTypes = ["SortlessGrid"],
+            SduiTreatmentTypes = ["Carousel", "HeroUnit"],
+            CpuCores = Environment.ProcessorCount,
+            MaxResolution = "2560x1440",
+            MaxMemory = 32768,
+            NetworkType = "4g"
         };
 
         var jsonPayload = JsonHelper.Serialize(payload);

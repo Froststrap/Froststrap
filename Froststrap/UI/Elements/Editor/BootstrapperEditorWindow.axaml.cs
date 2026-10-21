@@ -29,15 +29,15 @@ namespace Froststrap.UI.Elements.Editor
 {
     internal partial class BootstrapperEditorWindow : AvaloniaWindow, IDisposable
     {
-        private static class CustomBootstrapperSchema
+        internal static class CustomBootstrapperSchema
         {
-            private class Schema
+            internal class Schema
             {
                 public Dictionary<string, Element> Elements { get; set; } = [];
                 public Dictionary<string, Type> Types { get; set; } = [];
             }
 
-            private class Element
+            internal class Element
             {
                 public string? SuperClass { get; set; }
                 public bool IsCreatable { get; set; }

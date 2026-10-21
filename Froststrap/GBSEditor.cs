@@ -63,10 +63,9 @@ internal class GBSEditor
     };
 
     private static readonly Regex PathTailRegex = new(
-        @"^(?<parent>.+)/(?<type>[A-Za-z0-9_]+)\[@name='(?<name>[A-Za-z0-9_]+)'\]$",
-        RegexOptions.Compiled);
+        @"^(?<parent>.+)/(?<type>[A-Za-z0-9_]+)\[@name='(?<name>[A-Za-z0-9_]+)'\]$");
 
-    private static readonly Regex ValidSettingName = new(@"^[A-Za-z0-9_]+$", RegexOptions.Compiled);
+    private static readonly Regex ValidSettingName = new(@"^[A-Za-z0-9_]+$");
 
     public static IReadOnlyDictionary<FontSize, string?> FontSizes => new Dictionary<FontSize, string?>
     {

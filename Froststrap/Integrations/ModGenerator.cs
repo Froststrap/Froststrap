@@ -98,7 +98,7 @@ namespace Froststrap.Integrations
 
         private static void CacheModGeneratorVersion(string version)
         {
-            var state = new { Version = version, UpdatedAt = DateTime.Now };
+            var state = new VersionCacheEntry { Version = version, UpdatedAt = DateTime.Now };
             File.WriteAllText(ModGeneratorVersionCacheFile, JsonHelper.Serialize(state));
         }
 
@@ -474,8 +474,7 @@ namespace Froststrap.Integrations
                 var result = new Dictionary<string, List<SpriteDef>>();
 
                 var entryRegex = new Regex(
-                    @"\['([^']+)'\]\s*=\s*{\s*ImageRectOffset\s*=\s*Vector2\.new\((\d+),\s*(\d+)\)\s*,\s*ImageRectSize\s*=\s*Vector2\.new\((\d+),\s*(\d+)\)\s*,\s*ImageSet\s*=\s*'([^']+)'",
-                    RegexOptions.Compiled);
+                    @"\['([^']+)'\]\s*=\s*{\s*ImageRectOffset\s*=\s*Vector2\.new\((\d+),\s*(\d+)\)\s*,\s*ImageRectSize\s*=\s*Vector2\.new\((\d+),\s*(\d+)\)\s*,\s*ImageSet\s*=\s*'([^']+)'");
 
                 string[] tableNames = ["assets_1x", "assets_2x", "assets_3x"];
                 int totalMatches = 0;

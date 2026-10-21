@@ -1505,6 +1505,9 @@ Would you like to switch your preferred channel to {0}?</value>
   <data name="Menu.Dialog.QuickSignIn.Title" xml:space="preserve">
     <value>Quick Sign In</value>
   </data>
+  <data name="Menu.BrowserLogin.Title" xml:space="preserve">
+    <value>Sign in to Roblox</value>
+  </data>
   <data name="Menu.Channel.StaticDirectory.Title" xml:space="preserve">
     <value>Static directory</value>
   </data>

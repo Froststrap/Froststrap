@@ -31,6 +31,10 @@ sealed class Program
     [STAThread]
     public static int Main(string[] args)
     {
+#if WINDOWS && FROSTSTRAP_AOT
+        Utility.AotNativeLibraryExtractor.Extract();
+#endif
+
         VelopackApp.Build()
             .SetAutoApplyOnStartup(false)
             .OnAfterInstallFastCallback(v => UriHandler.RegisterProtocolHandlers())

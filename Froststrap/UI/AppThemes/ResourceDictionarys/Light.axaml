@@ -5,7 +5,8 @@ SPDX-License-Identifier: MPL-2.0
 -->
 
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    x:Class="Froststrap.UI.AppThemes.ResourceDictionarys.Light">
 
     <SolidColorBrush x:Key="NewTextEditorBackground"       Color="White" />
     <SolidColorBrush x:Key="NewTextEditorForeground"       Color="#2D2D2D" />

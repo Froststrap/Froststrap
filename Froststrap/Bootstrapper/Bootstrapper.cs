@@ -31,8 +31,8 @@ internal partial class Bootstrapper : IDisposable
     private static readonly JsonSerializerOptions _indentedJsonOptions = new() { WriteIndented = true };
 
     // might slightly increase the ram usage a bit, it's worth it, tho, since it reduces the cpu usage and is much better overrall
-    private static readonly Regex FlatpakProgressRegex = new(@"Updating\s+(?<current>\d+)/(?<total>\d+)…", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-    private static readonly Regex FlatpakPercentRegex = new(@"(?<percent>\d+)%", RegexOptions.Compiled);
+    private static readonly Regex FlatpakProgressRegex = new(@"Updating\s+(?<current>\d+)/(?<total>\d+)…", RegexOptions.IgnoreCase);
+    private static readonly Regex FlatpakPercentRegex = new(@"(?<percent>\d+)%");
     private readonly CancellationTokenSource _cancelTokenSource = new();
 
     private IAppData AppData = default!;
@@ -3796,7 +3796,7 @@ internal partial class Bootstrapper : IDisposable
         Regex[]? compiledFilters = null;
         if (!string.IsNullOrEmpty(fileFilter))
         {
-            compiledFilters = [.. fileFilter.Split(';').Select(p => new Regex(p, RegexOptions.Compiled))];
+            compiledFilters = [.. fileFilter.Split(';').Select(p => new Regex(p))];
         }
 
         await Task.Run(async () =>

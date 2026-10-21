@@ -328,12 +328,12 @@ namespace Froststrap.Integrations
                 joinReq.Headers.Add("Origin", "https://roblox.com");
                 joinReq.Headers.Add("Cookie", $".ROBLOSECURITY={roblosecurity}");
 
-                joinReq.Content = new StringContent(JsonHelper.Serialize(new
+                joinReq.Content = new StringContent(JsonHelper.Serialize(new JoinGameInstanceRequest
                 {
-                    placeId,
-                    isTeleport = false,
-                    gameId = jobId,
-                    gameJoinAttemptId = jobId
+                    PlaceId = placeId,
+                    IsTeleport = false,
+                    GameId = jobId,
+                    GameJoinAttemptId = jobId
                 }), Encoding.UTF8, "application/json");
 
                 try
@@ -420,13 +420,7 @@ namespace Froststrap.Integrations
             try
             {
                 if (App.Cookies != null)
-                {
-                    var field = typeof(CookiesManager).GetField("AuthCookie", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                    if (field != null)
-                    {
-                        return Task.FromResult(field.GetValue(App.Cookies) as string);
-                    }
-                }
+                    return Task.FromResult<string?>(App.Cookies.GetAuthCookie());
             }
             catch (Exception ex)
             {

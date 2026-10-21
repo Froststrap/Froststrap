@@ -3,7 +3,6 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-using Newtonsoft.Json;
 using System.Globalization;
 using System.Net;
 using System.Security.Cryptography;
