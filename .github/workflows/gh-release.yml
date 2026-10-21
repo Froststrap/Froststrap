@@ -6,7 +6,19 @@ on:
   workflow_dispatch:
 
 jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Init release in packages repo
+        env:
+          GH_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
+        run: |
+          PRE=""; [[ "$GITHUB_REF_NAME" == *-* ]] && PRE="--prerelease"
+          gh release view "$GITHUB_REF_NAME" --repo Froststrap/packages >/dev/null 2>&1 || \
+            gh release create "$GITHUB_REF_NAME" --repo Froststrap/packages --draft --title "$GITHUB_REF_NAME" --notes "" $PRE
+
   build:
+    needs: prepare
     uses: ./.github/workflows/build.yml
     secrets: inherit
 

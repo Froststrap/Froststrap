@@ -547,7 +547,7 @@ internal partial class App : Application
             return;
 
 #if __APPLE__
-        Logger.Info("Forcing Mobile App URI to be handled by us");
+        Logger.Debug("Forcing Mobile App URI to be handled by us");
         Backend.MobileAppReg.Init();
 #endif
 

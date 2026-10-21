@@ -19,7 +19,6 @@ pub fn main() {
     desktop_file.write_all(entry.as_bytes()).unwrap();
 
     build_nfpm(dotnet_publish_artifacts(), version, desktop, icon);
-    super::velopack::pack(&dotnet_publish_artifacts(), None);
 }
 
 fn desktop_entry(version: &str) -> String {

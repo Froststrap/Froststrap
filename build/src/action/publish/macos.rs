@@ -102,8 +102,7 @@ fn entitlements() -> PListFile {
     ])
 }
 
-pub fn main() {
-    let a = args::get();
+pub fn main() -> (PathBuf, PathBuf) {
     let version = super::version();
 
     let publish_dir = path::dotnet_publish_artifacts();
@@ -129,10 +128,5 @@ pub fn main() {
         builder = builder.framework(dylib_src);
     }
 
-    let app_path = builder.build(&dist);
-
-    if a.no_installers {
-        return;
-    }
-    super::velopack::pack(&app_path, Some(&entitlements_path));
+    (builder.build(&dist), entitlements_path)
 }
