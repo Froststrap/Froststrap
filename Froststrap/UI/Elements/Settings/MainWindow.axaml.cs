@@ -445,14 +445,15 @@ namespace Froststrap.UI.Elements.Settings
             Grid.SetColumn(closeButton, 2);
             contentGrid.Children.Add(closeButton);
 
-            var transform = new TranslateTransform(NotificationSlideDistance, 0)
+            var transform = new TranslateTransform(App.Settings.Prop.DisableAnimations ? 0 : NotificationSlideDistance, 0);
+            if (!App.Settings.Prop.DisableAnimations)
             {
-                Transitions =
+                transform.Transitions =
                 [
                     new DoubleTransition { Property = TranslateTransform.XProperty, Duration = TimeSpan.FromMilliseconds(350), Easing = new QuarticEaseOut() },
                     new DoubleTransition { Property = TranslateTransform.YProperty, Duration = TimeSpan.FromMilliseconds(300), Easing = new QuarticEaseOut() }
-                ]
-            };
+                ];
+            }
 
             var notification = new Border
             {
@@ -488,9 +489,12 @@ namespace Froststrap.UI.Elements.Settings
 
             Dispatcher.UIThread.InvokeAsync(async () =>
             {
-                await Task.Delay(50);
-                if (cts.IsCancellationRequested) return;
-                transform.X = 0;
+                if (!App.Settings.Prop.DisableAnimations)
+                {
+                    await Task.Delay(50);
+                    if (cts.IsCancellationRequested) return;
+                    transform.X = 0;
+                }
 
                 await Task.Delay(timeout);
                 if (!cts.IsCancellationRequested)
@@ -505,8 +509,11 @@ namespace Froststrap.UI.Elements.Settings
             entry.TimeoutCts?.Cancel();
             RepositionNotifications();
 
-            entry.Transform.X = NotificationSlideDistance;
-            await Task.Delay(350);
+            if (!App.Settings.Prop.DisableAnimations)
+            {
+                entry.Transform.X = NotificationSlideDistance;
+                await Task.Delay(350);
+            }
 
             var notificationPanel = this.FindControl<Panel>("NotificationPanel");
             if (notificationPanel != null && notificationPanel.Children.Contains(entry.Element))

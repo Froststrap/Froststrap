@@ -297,14 +297,15 @@ namespace Froststrap.UI.Elements.Editor
             Grid.SetColumn(closeButton, 2);
             contentGrid.Children.Add(closeButton);
 
-            var transform = new TranslateTransform(500, 0)
+            var transform = new TranslateTransform(App.Settings.Prop.DisableAnimations ? 0 : 500, 0);
+            if (!App.Settings.Prop.DisableAnimations)
             {
-                Transitions =
+                transform.Transitions =
                 [
                     new DoubleTransition { Property = TranslateTransform.XProperty, Duration = TimeSpan.FromMilliseconds(350), Easing = new QuarticEaseOut() },
                     new DoubleTransition { Property = TranslateTransform.YProperty, Duration = TimeSpan.FromMilliseconds(300), Easing = new QuarticEaseOut() }
-                ]
-            };
+                ];
+            }
 
             var notification = new Border
             {
@@ -340,9 +341,12 @@ namespace Froststrap.UI.Elements.Editor
 
             Dispatcher.UIThread.InvokeAsync(async () =>
             {
-                await Task.Delay(50);
-                if (cts.IsCancellationRequested) return;
-                transform.X = 0;
+                if (!App.Settings.Prop.DisableAnimations)
+                {
+                    await Task.Delay(50);
+                    if (cts.IsCancellationRequested) return;
+                    transform.X = 0;
+                }
 
                 await Task.Delay(timeout);
                 if (!cts.IsCancellationRequested)
@@ -357,8 +361,11 @@ namespace Froststrap.UI.Elements.Editor
             entry.TimeoutCts?.Cancel();
             RepositionNotifications();
 
-            entry.Transform.X = 500;
-            await Task.Delay(350);
+            if (!App.Settings.Prop.DisableAnimations)
+            {
+                entry.Transform.X = 500;
+                await Task.Delay(350);
+            }
 
             var notificationPanel = this.FindControl<Panel>("NotificationPanel");
             if (notificationPanel != null && notificationPanel.Children.Contains(entry.Element))
