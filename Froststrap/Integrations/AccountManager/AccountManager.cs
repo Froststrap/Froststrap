@@ -135,19 +135,27 @@ namespace Froststrap.Integrations.AccountManager
 
         public void SaveAccounts()
         {
+            SaveAccountsCore(writeCredentials: true);
+        }
+
+        private void SaveAccountsCore(bool writeCredentials)
+        {
             try
             {
-                foreach (var account in _accounts)
+                if (writeCredentials)
                 {
-                    if (string.IsNullOrEmpty(account.SecurityToken))
-                        continue;
-
-                    if (!AccountSecurity.SetCredential(
-                        account.UserId.ToString(CultureInfo.InvariantCulture),
-                        account.SecurityToken
-                    ))
+                    foreach (var account in _accounts)
                     {
-                        App.Logger.Warn($"Failed to save credential for account {account.UserId}.");
+                        if (string.IsNullOrEmpty(account.SecurityToken))
+                            continue;
+
+                        if (!AccountSecurity.SetCredential(
+                            account.UserId.ToString(CultureInfo.InvariantCulture),
+                            account.SecurityToken
+                        ))
+                        {
+                            App.Logger.Warn($"Failed to save credential for account {account.UserId}.");
+                        }
                     }
                 }
 
@@ -167,6 +175,15 @@ namespace Froststrap.Integrations.AccountManager
             {
                 App.Logger.Error("Unhandled exception: ", ex);
             }
+        }
+
+        public void ReorderAccounts(IReadOnlyList<AccountManagerAccount> ordered)
+        {
+            if (ordered.Count != _accounts.Count)
+                return;
+
+            _accounts = [.. ordered];
+            SaveAccountsCore(writeCredentials: false);
         }
 
         public void SetActiveAccount(long? userId)
@@ -239,27 +256,9 @@ namespace Froststrap.Integrations.AccountManager
         ) =>
             LoginService.AddAccountByQuickSignInAsync(dialog, token);
 
-        public async Task<AccountManagerAccount?> AddAccountByBrowserAsync() =>
+        public static async Task<AccountManagerAccount?> AddAccountByBrowserAsync() =>
             await LoginService.AddAccountByBrowserAsync(async cookie =>
-            {
-                var accountInfo =
-                    await RobloxApiService.GetAccountInfoFromCookieAsync(cookie);
-
-                if (accountInfo == null)
-                    return null;
-
-                var existing = _accounts.FirstOrDefault(
-                    acc => acc.UserId == accountInfo.UserId
-                );
-
-                if (existing == null)
-                {
-                    AddAccount(accountInfo);
-                    return accountInfo;
-                }
-
-                return existing;
-            });
+                await RobloxApiService.GetAccountInfoFromCookieAsync(cookie));
 
         public static Task<UserPresence?> GetUserPresenceAsync(long userId) =>
             RobloxApiService.GetUserPresenceAsync(userId);
