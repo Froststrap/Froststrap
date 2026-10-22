@@ -4,7 +4,6 @@
 {
   stdenv,
   callPackage,
-  cargo-bloat,
   pkg-config,
   dbus,
 }:
@@ -24,7 +23,6 @@ mkFragment {
   name = "rust";
   buildInputs = [
     toolchain
-    cargo-bloat
   ];
   nativeBuildInputs = [
     pkg-config

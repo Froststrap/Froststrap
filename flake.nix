@@ -47,14 +47,21 @@
 
             dotnetFrag = pkgs.callPackage ./nix/dotnetDevShell.nix { };
             extraFrag = pkgs.callPackage ./nix/extra.nix { };
+            lintFrag = pkgs.callPackage ./nix/lint.nix { };
+            lspFrag = pkgs.callPackage ./nix/lsp.nix { };
             rustFrag = (pkgs.callPackage ./nix/rustDevShell.nix { }) inputs;
           in
           mkComposedShell [ rustFrag ] { }
           // mkComposedShell [ dotnetFrag ] { }
+          // mkComposedShell [ extraFrag ] { }
+          // mkComposedShell [ lintFrag ] { }
+          // mkComposedShell [ dotnetFrag lspFrag ] { nameOverride = "lsp"; }
+          // mkComposedShell [ dotnetFrag rustFrag ] { nameOverride = "minimal"; }
           // mkComposedShell [
             dotnetFrag
             rustFrag
             extraFrag
+            lintFrag
           ] { nameOverride = "default"; };
 
         packages = {

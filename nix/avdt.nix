@@ -9,7 +9,8 @@
   buildDotnetGlobalTool,
 }:
 let
-  dotnet-sdk = dotnetCorePackages.sdk_10_0;
+  dotnet-sdk = dotnetCorePackages.sdk_10_0-bin;
+  dotnet-runtime = dotnetCorePackages.runtime_10_0-bin;
   avdt-unwrapped = buildDotnetGlobalTool {
     pname = "avdt";
     version = "2.2.3";
@@ -24,7 +25,7 @@ let
       "avaloniaui.developertools."
       + lib.optionalString stdenv.hostPlatform.isLinux "linux"
       + lib.optionalString stdenv.hostPlatform.isDarwin "macos";
-    dotnet-sdk = dotnet-sdk;
+    inherit dotnet-sdk dotnet-runtime;
   };
 in
 writeShellScriptBin "avdt" (
@@ -36,7 +37,7 @@ writeShellScriptBin "avdt" (
         cp -r ${avdt-unwrapped}/lib/avdt/. "$DATA_DIR"
         chmod -R u+w "$DATA_DIR"
       fi
-      export DOTNET_ROOT="${dotnet-sdk}/share/dotnet"
+      export DOTNET_ROOT="${dotnet-runtime}/share/dotnet"
       exec "$DATA_DIR/avdt" "$@"
     ''
   else

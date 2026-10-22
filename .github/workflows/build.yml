@@ -11,20 +11,7 @@ env:
   PACKAGES_REPO: https://github.com/Froststrap/packages
 
 jobs:
-  prepare:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Create draft release in packages repo
-        if: startsWith(github.ref, 'refs/tags/v')
-        env:
-          GH_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
-        run: |
-          PRE=""; [[ "$GITHUB_REF_NAME" == *-* ]] && PRE="--prerelease"
-          gh release view "$GITHUB_REF_NAME" --repo Froststrap/packages >/dev/null 2>&1 || \
-            gh release create "$GITHUB_REF_NAME" --repo Froststrap/packages --draft --title "$GITHUB_REF_NAME" --notes "" $PRE
-
   windows:
-    needs: prepare
     runs-on: windows-latest
     defaults:
       run:
@@ -33,7 +20,8 @@ jobs:
       - uses: actions/checkout@v7
         with: { submodules: true, fetch-tags: true, fetch-depth: 1 }
 
-      - uses: actions/setup-dotnet@v6
+      - name: Install .NET
+        uses: actions/setup-dotnet@v6
         with:
           dotnet-version: "10.0.x"
 
@@ -41,12 +29,11 @@ jobs:
         run: |
           rustup toolchain install nightly --profile minimal
           rustup default nightly
-
-      - run: dotnet tool install -g vpk --version $VPK_VERSION
+          dotnet tool install -g vpk --version $VPK_VERSION
 
       - name: Fetch previous release (for deltas)
         if: startsWith(github.ref, 'refs/tags/v')
-        continue-on-error: true # first release has nothing to download
+        continue-on-error: true
         run: |
           PRE=""; [[ "$GITHUB_REF_NAME" == *-* ]] && PRE="--pre"
           vpk download github --repoUrl $PACKAGES_REPO --token ${{ secrets.PACKAGE_TOKEN }} --channel windows-x64 --outputDir .build/velopack $PRE
@@ -73,7 +60,6 @@ jobs:
           path: .build/velopack/*
 
   macos:
-    needs: prepare
     runs-on: macos-26
     strategy:
       fail-fast: false
@@ -85,39 +71,39 @@ jobs:
       - uses: actions/checkout@v7
         with: { submodules: true, fetch-tags: true, fetch-depth: 1 }
 
-      - uses: actions/setup-dotnet@v6
+      - name: Install .NET
+        uses: actions/setup-dotnet@v6
         with:
           dotnet-version: "10.0.x"
 
-
-      - name: Use nightly Rust
+      - name: Install other deps
         run: |
           rustup toolchain install nightly --profile minimal
           rustup default nightly
-
-      - run: rustup target add ${{ matrix.rust-target }}
-      - run: dotnet tool install -g vpk --version $VPK_VERSION
+          rustup target add ${{ matrix.rust-target }}
+          dotnet tool install -g vpk --version $VPK_VERSION
 
       - name: Remove stale signing keychain
         if: startsWith(github.ref, 'refs/tags/v')
         run: security delete-keychain signing_temp.keychain || true
 
-      - name: Import app cert
-        id: import_app_cert
+      - name: Import signing certs
         if: startsWith(github.ref, 'refs/tags/v')
         uses: apple-actions/import-codesign-certs@v7
         with:
           p12-file-base64: ${{ secrets.CERT_P12_BASE64 }}
-          p12-password: ${{ secrets.P12_PASSWORD }}
+          p12-password: ${{ secrets.CERT_P12_PASS }}
 
-      - name: Import installer cert
+      - name: Resolve signing identities
         if: startsWith(github.ref, 'refs/tags/v')
-        uses: apple-actions/import-codesign-certs@v7
-        with:
-          p12-file-base64: ${{ secrets.CERT_P12_INSTALLER_BASE64 }}
-          p12-password: ${{ secrets.P12_PASSWORD }}
-          create-keychain: false
-          keychain-password: ${{ steps.import_app_cert.outputs.keychain-password }}
+        run: |
+          KC=~/Library/Keychains/signing_temp.keychain-db
+          APP=$(security find-identity -v "$KC" | grep "Developer ID Application" | head -1 | awk -F'"' '{print $2}')
+          INST=$(security find-identity -v "$KC" | grep "Developer ID Installer" | head -1 | awk -F'"' '{print $2}')
+          echo "::add-mask::$APP"
+          echo "::add-mask::$INST"
+          echo "DEVELOPER_ID_APP=$APP" >> "$GITHUB_ENV"
+          echo "DEVELOPER_ID_INSTALLER=$INST" >> "$GITHUB_ENV"
 
       - name: Store notary profile
         if: startsWith(github.ref, 'refs/tags/v')
@@ -140,9 +126,7 @@ jobs:
       - name: Publish
         env:
           SIGN: ${{ startsWith(github.ref, 'refs/tags/v') && 'true' || 'false' }}
-          DEVELOPER_ID_APP: ${{ secrets.DEVELOPER_ID_APP }}
-          DEVELOPER_ID_INSTALLER: ${{ secrets.DEVELOPER_ID_INSTALLER }}
-        run: cargo xtask --override-arch ${{ matrix.arch }} publish 
+        run: cargo xtask --override-arch ${{ matrix.arch }} publish
       - uses: actions/upload-artifact@v7
         if: always()
         with:
@@ -161,24 +145,22 @@ jobs:
           path: .build/velopack/*
 
   linux:
-    needs: prepare
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
         with: { submodules: true, fetch-tags: true, fetch-depth: 1 }
 
-      - uses: actions/setup-dotnet@v6
+      - name: Install .NET
+        uses: actions/setup-dotnet@v6
         with:
           dotnet-version: "10.0.x"
 
-      - name: Use nightly Rust
+      - name: Install other deps
         run: |
           rustup toolchain install nightly --profile minimal
           rustup default nightly
-
-      - run: dotnet tool install -g vpk --version $VPK_VERSION
-
-      - run: sudo apt install -y libdbus-1-dev libxkbcommon-dev pkg-config
+          dotnet tool install -g vpk --version $VPK_VERSION
+          sudo apt install -y libdbus-1-dev pkg-config
 
       - name: Fetch previous release (for deltas)
         if: startsWith(github.ref, 'refs/tags/v')
