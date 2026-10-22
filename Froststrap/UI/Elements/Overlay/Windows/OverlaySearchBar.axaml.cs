@@ -7,17 +7,12 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
-using Avalonia.Win32.Input;
 
 using Froststrap.Integrations.Overlay;
 using Froststrap.Integrations.OverlayModules;
 using Froststrap.Models.Overlay;
 using Froststrap.UI.Utility;
 using Froststrap.UI.ViewModels.Overlay;
-
-using Windows.Win32;
-using Windows.Win32.Foundation;
-using Windows.Win32.Graphics.Dwm;
 
 using WindowState = Avalonia.Controls.WindowState;
 
@@ -26,7 +21,6 @@ namespace Froststrap.UI.Elements.Overlay
     internal partial class OverlaySearchBar : Window, IDisposable
     {
         private const int HotkeyId = 9001;
-        private const int WM_HOTKEY = 0x0312;
         private const double LoadMoreThreshold = 120;
 
         private static readonly PixelPoint Offscreen = new(-32000, -32000);
@@ -35,10 +29,8 @@ namespace Froststrap.UI.Elements.Overlay
 
         private IOverlayHost? _host;
 
-        private HWND _hwnd;
         private bool _prepared;
         private bool _preloading = true;
-        private bool _cloaked;
         private bool _warmScheduled;
         private bool _presenting;
         private bool _disposed;
@@ -96,18 +88,23 @@ namespace Froststrap.UI.Elements.Overlay
 
             Position = Offscreen;
 
-            SetCloaked(true);
+            host?.PrepareSearchBarWindow(this);
+            host?.SetWindowCloaked(this, true);
 
-            if (_host is not null)
+            if (host is not null)
             {
-                _host.BoundsChanged += OnOverlayBoundsChanged;
-                _host.GameVisibilityChanged += OnGameVisibilityChanged;
+                host.BoundsChanged += OnOverlayBoundsChanged;
+                host.GameVisibilityChanged += OnGameVisibilityChanged;
+                host.HotkeyPressed += OnHotkeyPressed;
             }
 
             if (OverlaySearchBarService.GameBounds is OverlayBounds cached)
                 _lastBounds = cached;
 
-            InitialiseHotkey();
+            RegisterHotkey();
+
+            OverlaySearchBarHotkey.Changed += OnHotkeyChanged;
+            OverlaySearchBarHotkey.SuspendedChanged += OnHotkeySuspended;
         }
 
         private void OnCloseRequested(object? sender, EventArgs e) => Dismiss();
@@ -182,26 +179,6 @@ namespace Froststrap.UI.Elements.Overlay
             return RenderScaling > 0 ? RenderScaling : 1;
         }
 
-        private void SetCloaked(bool cloaked)
-        {
-            if (!OperatingSystem.IsWindows() || _cloaked == cloaked)
-                return;
-
-            var handle = TryGetPlatformHandle();
-
-            if (handle is null)
-                return;
-
-            _cloaked = cloaked;
-
-            unsafe
-            {
-                int value = cloaked ? 1 : 0;
-
-                _ = PInvoke.DwmSetWindowAttribute(new HWND(handle.Handle), DWMWINDOWATTRIBUTE.DWMWA_CLOAK, &value, sizeof(int));
-            }
-        }
-
         private async Task WarmUpAsync()
         {
             await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Loaded);
@@ -222,7 +199,7 @@ namespace Froststrap.UI.Elements.Overlay
 
             Hide();
 
-            SetCloaked(false);
+            _host?.SetWindowCloaked(this, false);
 
             _preloading = false;
         }
@@ -235,7 +212,7 @@ namespace Froststrap.UI.Elements.Overlay
             if (_host?.IsGameForeground() == false)
                 _host.FocusGame();
 
-            SetCloaked(false);
+            _host?.SetWindowCloaked(this, false);
 
             if (!IsVisible)
                 Show();
@@ -295,27 +272,15 @@ namespace Froststrap.UI.Elements.Overlay
                 Dismiss();
         }
 
-        #region Hotkey
-
-        private void InitialiseHotkey()
+        private void OnHotkeyPressed(object? sender, int id)
         {
-            if (!OperatingSystem.IsWindows())
+            if (id != HotkeyId)
                 return;
 
-            var platformHandle = TryGetPlatformHandle();
-            if (platformHandle is null)
-            {
-                App.Logger.Warn("Search bar has no platform handle, hotkey not registered");
-                return;
-            }
-
-            _hwnd = new HWND(platformHandle.Handle);
-
-            Win32Properties.AddWndProcHookCallback(this, HwndHook);
-
-            RegisterHotkey();
-            OverlaySearchBarHotkey.Changed += OnHotkeyChanged;
-            OverlaySearchBarHotkey.SuspendedChanged += OnHotkeySuspended;
+            if (IsPresented)
+                Dismiss();
+            else
+                Present();
         }
 
         private void OnHotkeyChanged(object? sender, EventArgs e) => RegisterHotkey();
@@ -324,10 +289,10 @@ namespace Froststrap.UI.Elements.Overlay
 
         private void RegisterHotkey()
         {
-            if (!OperatingSystem.IsWindows() || _hwnd == HWND.Null)
+            if (_host is null)
                 return;
 
-            OverlayHotkeyRegistration.Unregister(_hwnd, HotkeyId);
+            _host.UnregisterHotkey(this, HotkeyId);
 
             if (!App.Settings.Prop.SearchBarEnabled)
             {
@@ -338,32 +303,15 @@ namespace Froststrap.UI.Elements.Overlay
             if (OverlaySearchBarHotkey.IsSuspended)
                 return;
 
-            var (modifiers, key) = OverlayHotkeyRegistration.Resolve(
+            _host.RegisterHotkey(
+                this,
+                HotkeyId,
                 App.Settings.Prop.SearchBarHotkeyModifiers,
                 App.Settings.Prop.SearchBarHotkeyKey,
                 OverlaySearchBarHotkey.DefaultModifiers,
                 OverlaySearchBarHotkey.DefaultKey,
                 "search bar");
-
-            OverlayHotkeyRegistration.Register(_hwnd, HotkeyId, modifiers, key, "Search bar");
         }
-
-        private IntPtr HwndHook(IntPtr hwnd, uint msg, IntPtr wParam, IntPtr lParam, ref bool handled)
-        {
-            if (msg != WM_HOTKEY || wParam.ToInt32() != HotkeyId)
-                return IntPtr.Zero;
-
-            if (IsPresented)
-                Dismiss();
-            else
-                Present();
-
-            handled = true;
-
-            return IntPtr.Zero;
-        }
-
-        #endregion
 
         protected override void OnKeyDown(KeyEventArgs e)
         {
@@ -433,12 +381,13 @@ namespace Froststrap.UI.Elements.Overlay
             {
                 _host.BoundsChanged -= OnOverlayBoundsChanged;
                 _host.GameVisibilityChanged -= OnGameVisibilityChanged;
+                _host.HotkeyPressed -= OnHotkeyPressed;
+
+                _host.UnregisterHotkey(this, HotkeyId);
             }
 
             OverlaySearchBarHotkey.Changed -= OnHotkeyChanged;
             OverlaySearchBarHotkey.SuspendedChanged -= OnHotkeySuspended;
-
-            OverlayHotkeyRegistration.Unregister(_hwnd, HotkeyId);
 
             GC.SuppressFinalize(this);
         }

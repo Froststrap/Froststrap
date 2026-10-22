@@ -1,24 +1,21 @@
-﻿using Avalonia;
+﻿// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Threading;
-using Avalonia.Win32.Input;
+
 using Froststrap.Enums.Overlay;
-using Froststrap.Integrations;
 using Froststrap.Integrations.Overlay;
 using Froststrap.Models.Overlay;
 using Froststrap.UI.Elements.Overlay.Controls;
 using Froststrap.UI.Utility;
 using Froststrap.UI.ViewModels.Overlay;
-using System.Collections.Generic;
-using Windows.Win32;
-using Windows.Win32.Foundation;
-using Windows.Win32.Graphics.Dwm;
-using Windows.Win32.Graphics.Gdi;
-using Windows.Win32.UI.Input.KeyboardAndMouse;
-using Windows.Win32.UI.WindowsAndMessaging;
+
 using WindowState = Avalonia.Controls.WindowState;
 
 namespace Froststrap.UI.Elements.Overlay
@@ -26,8 +23,6 @@ namespace Froststrap.UI.Elements.Overlay
     internal partial class GameOverlay : Window, IDisposable
     {
         private const int ToggleHotkeyId = 9000;
-        private const int WS_EX_TOOLWINDOW = 0x00000080;
-        private const int WM_HOTKEY = 0x0312;
 
         private const double CascadeStep = 44;
 
@@ -38,14 +33,10 @@ namespace Froststrap.UI.Elements.Overlay
         private readonly GameOverlayViewModel _viewModel;
         private readonly IOverlayHost? _overlay;
 
-        private HWND _hwnd;
-        private bool _win32Initialised;
-
         private int _placed;
         private bool _presenting;
         private bool _panelsWired;
         private bool _preloading = true;
-        private bool _cloaked;
         private bool _warmScheduled;
         private bool _disposed;
 
@@ -83,6 +74,9 @@ namespace Froststrap.UI.Elements.Overlay
 
             _overlay?.BoundsChanged += OnOverlayBoundsChanged;
 
+            if (_overlay is not null)
+                _overlay.HotkeyPressed += OnHotkeyPressed;
+
             ChatWindow.Attach(overlay);
             BadgeTracker.Attach(overlay?.ActivityWatcher);
             BadgeTracker.BadgeEarned += OnBadgeEarned;
@@ -95,6 +89,14 @@ namespace Froststrap.UI.Elements.Overlay
         private void OnBadgeEarned(object? sender, Badge badge)
         {
             App.Logger.Info($"Badge earned: {badge.Name} ({badge.RarityText})");
+        }
+
+        private void OnHotkeyPressed(object? sender, int id)
+        {
+            if (id != ToggleHotkeyId)
+                return;
+
+            Toggle();
         }
 
         private void OnOverlayBoundsChanged(object? sender, OverlayBounds bounds)
@@ -298,9 +300,6 @@ namespace Froststrap.UI.Elements.Overlay
 
         public void PrepareHidden()
         {
-            if (!OperatingSystem.IsWindows())
-                return;
-
             Opacity = 0;
             Position = Offscreen;
             Width = 1280;
@@ -310,9 +309,13 @@ namespace Froststrap.UI.Elements.Overlay
 
             Position = Offscreen;
 
-            SetCloaked(true);
+            _overlay?.PrepareGameWindow(this);
+            _overlay?.SetWindowCloaked(this, true);
 
-            InitialiseWin32();
+            RegisterToggleHotkey();
+
+            OverlayHotkey.Changed += OnHotkeySettingChanged;
+            OverlayHotkey.SuspendedChanged += OnHotkeySuspended;
         }
 
         public void Toggle()
@@ -392,7 +395,7 @@ namespace Froststrap.UI.Elements.Overlay
         }
 
         private bool IsInFront() =>
-            PInvoke.GetForegroundWindow() == _hwnd || _overlay?.IsGameForeground() == true;
+            _overlay?.IsWindowForeground(this) == true || _overlay?.IsGameForeground() == true;
 
         private void OnDeactivated(object? sender, EventArgs e)
         {
@@ -408,7 +411,7 @@ namespace Froststrap.UI.Elements.Overlay
                 return;
             }
 
-            if (IsOwnProcessForeground())
+            if (_overlay?.IsOwnProcessForeground() == true)
                 return;
 
             if (_overlay?.IsGameForeground() == true)
@@ -417,15 +420,6 @@ namespace Froststrap.UI.Elements.Overlay
             App.Logger.Info("Focus left the game, hiding");
 
             Dismiss();
-        }
-
-        private static unsafe bool IsOwnProcessForeground()
-        {
-            uint processId = 0;
-
-            _ = PInvoke.GetWindowThreadProcessId(PInvoke.GetForegroundWindow(), &processId);
-
-            return processId == Environment.ProcessId;
         }
 
         private void Present()
@@ -446,7 +440,7 @@ namespace Froststrap.UI.Elements.Overlay
             if (_overlay?.IsGameForeground() == false)
                 _overlay.FocusGame();
 
-            SetCloaked(false);
+            _overlay?.SetWindowCloaked(this, false);
 
             if (!IsVisible)
                 Show();
@@ -466,9 +460,7 @@ namespace Froststrap.UI.Elements.Overlay
         public void Reanchor()
         {
             RefreshPinned();
-
-            if (OperatingSystem.IsWindows())
-                _overlay?.AnchorAboveGame((IntPtr)_hwnd);
+            _overlay?.RaiseOverlayWindow(this);
         }
 
         public void RefreshPinned()
@@ -479,7 +471,7 @@ namespace Froststrap.UI.Elements.Overlay
             if (_preloading)
                 return;
 
-            bool gameOrOverlayInFront = _overlay?.IsGameForeground() == true || IsOwnProcessForeground();
+            bool gameOrOverlayInFront = _overlay?.IsGameForeground() == true || _overlay?.IsOwnProcessForeground() == true;
             bool shouldShow = AnyPinnedPanels()
                 && gameOrOverlayInFront
                 && _overlay?.IsGameMinimised() != true;
@@ -577,7 +569,7 @@ namespace Froststrap.UI.Elements.Overlay
 
             Hide();
 
-            SetCloaked(false);
+            _overlay?.SetWindowCloaked(this, false);
 
             _preloading = false;
         }
@@ -609,61 +601,6 @@ namespace Froststrap.UI.Elements.Overlay
             return RenderScaling > 0 ? RenderScaling : 1;
         }
 
-        private void SetCloaked(bool cloaked)
-        {
-            if (!OperatingSystem.IsWindows() || _cloaked == cloaked)
-                return;
-
-            var handle = TryGetPlatformHandle();
-
-            if (handle is null)
-                return;
-
-            _cloaked = cloaked;
-
-            unsafe
-            {
-                int value = cloaked ? 1 : 0;
-
-                _ = PInvoke.DwmSetWindowAttribute(new HWND(handle.Handle), DWMWINDOWATTRIBUTE.DWMWA_CLOAK, &value, sizeof(int));
-            }
-        }
-
-        private void InitialiseWin32()
-        {
-            if (!OperatingSystem.IsWindows() || _win32Initialised)
-                return;
-
-            var platformHandle = TryGetPlatformHandle();
-            if (platformHandle is null)
-                return;
-
-            _hwnd = new HWND(platformHandle.Handle);
-
-            Win32Properties.AddWndProcHookCallback(this, HwndHook);
-
-            int exStyle = PInvoke.GetWindowLong(_hwnd, WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE);
-            _ = PInvoke.SetWindowLong(_hwnd, WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE, exStyle | WS_EX_TOOLWINDOW);
-
-            RegisterToggleHotkey();
-            OverlayHotkey.Changed += OnHotkeySettingChanged;
-            OverlayHotkey.SuspendedChanged += OnHotkeySuspended;
-
-            _win32Initialised = true;
-        }
-
-        private IntPtr HwndHook(IntPtr hwnd, uint msg, IntPtr wParam, IntPtr lParam, ref bool handled)
-        {
-            if (msg != WM_HOTKEY || wParam.ToInt32() != ToggleHotkeyId)
-                return IntPtr.Zero;
-
-            Toggle();
-
-            handled = true;
-
-            return IntPtr.Zero;
-        }
-
         private void OnHotkeySettingChanged(object? sender, EventArgs e) => RegisterToggleHotkey();
 
         private void OnHotkeySuspended(object? sender, bool suspended)
@@ -676,27 +613,27 @@ namespace Froststrap.UI.Elements.Overlay
 
         private void UnregisterToggleHotkey()
         {
-            OverlayHotkeyRegistration.Unregister(_hwnd, ToggleHotkeyId);
+            _overlay?.UnregisterHotkey(this, ToggleHotkeyId);
         }
 
         private void RegisterToggleHotkey()
         {
-            if (!OperatingSystem.IsWindows() || _hwnd == HWND.Null)
+            if (_overlay is null)
                 return;
 
-            OverlayHotkeyRegistration.Unregister(_hwnd, ToggleHotkeyId);
+            _overlay.UnregisterHotkey(this, ToggleHotkeyId);
 
             if (OverlayHotkey.IsSuspended)
                 return;
 
-            var (modifiers, key) = OverlayHotkeyRegistration.Resolve(
+            _overlay.RegisterHotkey(
+                this,
+                ToggleHotkeyId,
                 App.Settings.Prop.OverlayHotkeyModifiers,
                 App.Settings.Prop.OverlayHotkeyKey,
                 OverlayHotkey.DefaultModifiers,
                 OverlayHotkey.DefaultKey,
                 "overlay");
-
-            OverlayHotkeyRegistration.Register(_hwnd, ToggleHotkeyId, modifiers, key, "Overlay");
         }
 
         #region Window region (click-through)
@@ -721,28 +658,22 @@ namespace Froststrap.UI.Elements.Overlay
 
         private void ClearWindowRegion()
         {
-            if (!OperatingSystem.IsWindows() || !_win32Initialised)
+            if (_regionSignature.Length == 0)
                 return;
 
             _regionSignature = String.Empty;
-            _ = PInvoke.SetWindowRgn(_hwnd, HRGN.Null, true);
+            _overlay?.ClearOverlayRegion(this);
         }
 
         private void UpdateWindowRegion()
         {
-            if (!OperatingSystem.IsWindows() || !_win32Initialised)
-                return;
-
             if (!_pinnedMode)
             {
-                if (_regionSignature.Length == 0)
-                    return;
-
                 ClearWindowRegion();
                 return;
             }
 
-            var boxes = new List<(int L, int T, int R, int B)>();
+            var regions = new List<OverlayRegion>();
             double scaling = RenderScaling > 0 ? RenderScaling : 1;
 
             foreach (var child in PanelSurface.Children)
@@ -760,36 +691,23 @@ namespace Froststrap.UI.Elements.Overlay
                 int bottom = (int)Math.Round((topLeft.Value.Y + panel.Bounds.Height) * scaling);
 
                 if (right > left && bottom > top)
-                    boxes.Add((left, top, right, bottom));
+                    regions.Add(new OverlayRegion(left, top, right, bottom));
             }
 
-            string signature = String.Join('|', boxes);
+            string signature = String.Join('|', regions);
 
             if (signature == _regionSignature)
                 return;
 
             _regionSignature = signature;
 
-            if (boxes.Count == 0)
+            if (regions.Count == 0)
             {
-                _ = PInvoke.SetWindowRgn(_hwnd, HRGN.Null, true);
+                _overlay?.ClearOverlayRegion(this);
                 return;
             }
 
-            HRGN combined = PInvoke.CreateRectRgn(boxes[0].L, boxes[0].T, boxes[0].R, boxes[0].B);
-
-            for (int i = 1; i < boxes.Count; i++)
-            {
-                HRGN rect = PInvoke.CreateRectRgn(boxes[i].L, boxes[i].T, boxes[i].R, boxes[i].B);
-                _ = PInvoke.CombineRgn(combined, combined, rect, RGN_COMBINE_MODE.RGN_OR);
-                _ = PInvoke.DeleteObject(rect);
-            }
-
-            if (PInvoke.SetWindowRgn(_hwnd, combined, true) == 0)
-            {
-                _regionSignature = String.Empty;
-                _ = PInvoke.DeleteObject(combined);
-            }
+            _overlay?.SetOverlayRegion(this, regions);
         }
 
         private void OnPanelDragStateChanged(object? sender, bool dragging)
@@ -801,8 +719,7 @@ namespace Froststrap.UI.Elements.Overlay
 
             if (_draggingPanels > 0)
             {
-                if (OperatingSystem.IsWindows() && _win32Initialised)
-                    _ = PInvoke.SetWindowRgn(_hwnd, HRGN.Null, true);
+                _overlay?.ClearOverlayRegion(this);
             }
             else
             {
@@ -947,6 +864,9 @@ namespace Froststrap.UI.Elements.Overlay
             StopRegionTimer();
 
             _overlay?.BoundsChanged -= OnOverlayBoundsChanged;
+
+            if (_overlay is not null)
+                _overlay.HotkeyPressed -= OnHotkeyPressed;
 
             OverlayHotkey.Changed -= OnHotkeySettingChanged;
             OverlayHotkey.SuspendedChanged -= OnHotkeySuspended;

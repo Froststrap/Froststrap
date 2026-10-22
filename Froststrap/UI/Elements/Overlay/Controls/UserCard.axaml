@@ -229,10 +229,8 @@ SPDX-License-Identifier: MPL-2.0
                                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                                    TextTrimming="CharacterEllipsis" />
 
-						<Grid ColumnDefinitions="Auto,Auto,Auto,Auto,*"
-                              HorizontalAlignment="Left"
-                              Margin="0,1,0,0"
-                              MaxWidth="{Binding #GameNameText.Bounds.Width}">
+						<Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto"
+                              Margin="0,1,0,0">
 
 							<TextBlock Grid.Column="0"
                                        Text="{x:Static resources:Strings.Menu_Overlay_Session}"

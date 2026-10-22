@@ -2,12 +2,18 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Threading;
+
+using Froststrap.Enums;
+using Froststrap.Integrations.Overlay.Platform.Windows;
 using Froststrap.Integrations.OverlayModules;
+using Froststrap.Models.Overlay;
 using Froststrap.UI.Elements.Overlay;
-using Froststrap;
+
 using System.Drawing;
+
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.UI.Accessibility;
@@ -33,6 +39,7 @@ namespace Froststrap.Integrations.Overlay.Platform
         public event EventHandler<OverlayBounds>? BoundsChanged;
         public event EventHandler<bool>? GameVisibilityChanged;
         public event EventHandler? WindowClosed;
+        public event EventHandler<int>? HotkeyPressed;
 
         public RealtimeMessaging Messaging { get; } = new();
         public ActivityWatcher? ActivityWatcher { get; }
@@ -47,6 +54,8 @@ namespace Froststrap.Integrations.Overlay.Platform
 
         private UnhookWinEventSafeHandle? _systemHook;
         private UnhookWinEventSafeHandle? _objectHook;
+
+        private readonly Dictionary<Window, WindowsWindow> _overlayWindows = [];
 
         private GameOverlay? _window;
         private OverlayBounds? _lastBounds;
@@ -178,20 +187,6 @@ namespace Froststrap.Integrations.Overlay.Platform
             Dispatcher.UIThread.Post(() => BoundsChanged?.Invoke(this, bounds));
         }
 
-        public void AnchorAboveGame(IntPtr overlayHandle)
-        {
-            if (overlayHandle == IntPtr.Zero || _robloxWindow == HWND.Null)
-                return;
-
-            PInvoke.SetWindowPos(
-                (HWND)overlayHandle,
-                HWND.Null,
-                0, 0, 0, 0,
-                SET_WINDOW_POS_FLAGS.SWP_NOMOVE |
-                SET_WINDOW_POS_FLAGS.SWP_NOSIZE |
-                SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE);
-        }
-
         public bool IsGameMinimised() => _robloxWindow != HWND.Null && PInvoke.IsIconic(_robloxWindow);
 
         public bool IsGameForeground() => _robloxWindow != HWND.Null && PInvoke.GetForegroundWindow() == _robloxWindow;
@@ -210,12 +205,12 @@ namespace Froststrap.Integrations.Overlay.Platform
             if (!PInvoke.GetClientRect(_robloxWindow, out RECT client))
                 return new OverlayBounds(default, false);
 
-            System.Drawing.Point origin = new(client.left, client.top);
+            Point origin = new(client.left, client.top);
 
             if (!PInvoke.ClientToScreen(_robloxWindow, ref origin))
                 return new OverlayBounds(default, false);
 
-            var bounds = new Rect(
+            var bounds = new Avalonia.Rect(
                 origin.X,
                 origin.Y,
                 Math.Max(client.right - client.left, 0),
@@ -223,6 +218,97 @@ namespace Froststrap.Integrations.Overlay.Platform
 
             return new OverlayBounds(bounds, PInvoke.IsZoomed(_robloxWindow));
         }
+
+        public IKeyOverlayInput? CreateKeyInput(SoftKeyProfile profile) =>
+            new WindowsKeyOverlayInput((int)_robloxProcessId, profile);
+
+        public void PrepareGameWindow(Window window) => PrepareOverlayWindow(window, WindowsWindow.WindowKind.Game);
+        public void PrepareKeyOverlayWindow(Window window) => PrepareOverlayWindow(window, WindowsWindow.WindowKind.KeyOverlay);
+        public void PrepareSearchBarWindow(Window window) => PrepareOverlayWindow(window, WindowsWindow.WindowKind.SearchBar);
+
+        private void PrepareOverlayWindow(Window window, WindowsWindow.WindowKind kind)
+        {
+            if (_disposed || _overlayWindows.ContainsKey(window))
+                return;
+
+            var state = new WindowsWindow(window, OnHotkeyPressed);
+
+            if (!state.Attach(kind))
+            {
+                state.Release();
+                return;
+            }
+
+            _overlayWindows[window] = state;
+        }
+
+        public void ReleaseOverlayWindow(Window window)
+        {
+            if (_overlayWindows.Remove(window, out WindowsWindow? state))
+                state.Release();
+        }
+
+        public void SetWindowCloaked(Window window, bool cloaked)
+        {
+            if (_overlayWindows.TryGetValue(window, out WindowsWindow? state))
+                state.SetCloaked(cloaked);
+        }
+
+        public void SetClickThrough(Window window, bool clickThrough)
+        {
+            if (_overlayWindows.TryGetValue(window, out WindowsWindow? state))
+                state.SetClickThrough(clickThrough);
+        }
+
+        public void SetOverlayRegion(Window window, IReadOnlyList<OverlayRegion> regions)
+        {
+            if (_overlayWindows.TryGetValue(window, out WindowsWindow? state))
+                state.SetRegion(regions);
+        }
+
+        public void ClearOverlayRegion(Window window)
+        {
+            if (_overlayWindows.TryGetValue(window, out WindowsWindow? state))
+                state.ClearRegion();
+        }
+
+        public void ClipOverlayToGame(Window window, OverlayRegion gameClip)
+        {
+            if (_overlayWindows.TryGetValue(window, out WindowsWindow? state))
+                state.ClipToGame(gameClip, _robloxWindow, _robloxProcessId);
+        }
+
+        public bool IsWindowForeground(Window window) =>
+            _overlayWindows.TryGetValue(window, out WindowsWindow? state) && state.IsForeground();
+
+        public bool IsOwnProcessForeground() => WindowsWindow.IsOwnProcessForeground();
+
+        public void RaiseOverlayWindow(Window window)
+        {
+            if (_overlayWindows.TryGetValue(window, out WindowsWindow? state))
+                state.Raise();
+        }
+
+        public bool RegisterHotkey(
+            Window window,
+            int id,
+            KeyModifiers modifiers,
+            Key key,
+            KeyModifiers defaultModifiers,
+            Key defaultKey,
+            string description)
+        {
+            return _overlayWindows.TryGetValue(window, out WindowsWindow? state)
+                && state.RegisterHotkey(id, modifiers, key, defaultModifiers, defaultKey, description);
+        }
+
+        public void UnregisterHotkey(Window window, int id)
+        {
+            if (_overlayWindows.TryGetValue(window, out WindowsWindow? state))
+                state.UnregisterHotkey(id);
+        }
+
+        private void OnHotkeyPressed(int id) => HotkeyPressed?.Invoke(this, id);
 
         private void OnSystemEvent(HWINEVENTHOOK hook, uint iEvent, HWND hWnd, int idObject, int idChild, uint thread, uint time)
         {
@@ -297,6 +383,11 @@ namespace Froststrap.Integrations.Overlay.Platform
             _objectHook = null;
             _systemCallback = null;
             _objectCallback = null;
+
+            foreach (WindowsWindow state in _overlayWindows.Values)
+                state.Release();
+
+            _overlayWindows.Clear();
 
             Dispatcher.UIThread.Post(() =>
             {

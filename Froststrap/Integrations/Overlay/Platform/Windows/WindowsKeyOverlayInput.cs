@@ -3,13 +3,14 @@
 // SPDX-License-Identifier: MPL-2.0
 
 using Froststrap.Enums;
+using Froststrap.Integrations.Overlay;
 using Froststrap.Models.Overlay;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 
-namespace Froststrap.Integrations.OverlayModules
+namespace Froststrap.Integrations.Overlay.Platform.Windows
 {
-    internal sealed class KeyOverlayInput : IDisposable
+    internal sealed class WindowsKeyOverlayInput : IKeyOverlayInput
     {
         private const int WH_KEYBOARD_LL = 13;
         private const int WH_MOUSE_LL = 14;
@@ -60,7 +61,7 @@ namespace Froststrap.Integrations.OverlayModules
 
         private bool _isDisposed;
 
-        public KeyOverlayInput(int robloxPid, SoftKeyProfile profile)
+        public WindowsKeyOverlayInput(int robloxPid, SoftKeyProfile profile)
         {
             _robloxPid = robloxPid;
 

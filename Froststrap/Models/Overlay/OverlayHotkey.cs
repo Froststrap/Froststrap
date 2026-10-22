@@ -74,6 +74,21 @@ namespace Froststrap.Models.Overlay
             return modifiers != KeyModifiers.None;
         }
 
+        public static (KeyModifiers Modifiers, Key Key) Resolve(
+            KeyModifiers modifiers,
+            Key key,
+            KeyModifiers defaultModifiers,
+            Key defaultKey,
+            string description)
+        {
+            if (IsAllowed(modifiers, key))
+                return (modifiers, key);
+
+            App.Logger.Warn($"The saved {description} hotkey ({Describe(modifiers, key)}) isn't usable, falling back to the default");
+
+            return (defaultModifiers, defaultKey);
+        }
+
         public static string Describe(KeyModifiers modifiers, Key key)
         {
             string keyName = key == Key.None ? String.Empty : KeyName(key);

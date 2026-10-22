@@ -2,7 +2,12 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+using Avalonia.Controls;
+using Avalonia.Input;
+
+using Froststrap.Enums;
 using Froststrap.Integrations.OverlayModules;
+using Froststrap.Models.Overlay;
 
 namespace Froststrap.Integrations.Overlay
 {
@@ -11,6 +16,7 @@ namespace Froststrap.Integrations.Overlay
         event EventHandler<OverlayBounds>? BoundsChanged;
         event EventHandler<bool>? GameVisibilityChanged;
         event EventHandler? WindowClosed;
+        event EventHandler<int>? HotkeyPressed;
 
         RealtimeMessaging Messaging { get; }
         ActivityWatcher? ActivityWatcher { get; }
@@ -23,6 +29,33 @@ namespace Froststrap.Integrations.Overlay
         bool IsGameForeground();
         void FocusGame();
         void WatchFriendsForPanel();
-        void AnchorAboveGame(IntPtr overlayHandle);
+
+        IKeyOverlayInput? CreateKeyInput(SoftKeyProfile profile);
+
+        void PrepareGameWindow(Window window);
+        void PrepareKeyOverlayWindow(Window window);
+        void PrepareSearchBarWindow(Window window);
+        void ReleaseOverlayWindow(Window window);
+
+        void SetWindowCloaked(Window window, bool cloaked);
+        void SetClickThrough(Window window, bool clickThrough);
+        void SetOverlayRegion(Window window, IReadOnlyList<OverlayRegion> regions);
+        void ClearOverlayRegion(Window window);
+        void ClipOverlayToGame(Window window, OverlayRegion gameClip);
+
+        bool IsWindowForeground(Window window);
+        bool IsOwnProcessForeground();
+        void RaiseOverlayWindow(Window window);
+
+        bool RegisterHotkey(
+            Window window,
+            int id,
+            KeyModifiers modifiers,
+            Key key,
+            KeyModifiers defaultModifiers,
+            Key defaultKey,
+            string description);
+
+        void UnregisterHotkey(Window window, int id);
     }
 }
