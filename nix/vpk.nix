@@ -8,7 +8,7 @@
   buildDotnetGlobalTool,
 }:
 let
-  dotnet-sdk = dotnetCorePackages.sdk_10_0;
+  dotnet-sdk = dotnetCorePackages.sdk_10_0-bin;
   vpk-unwrapped = buildDotnetGlobalTool {
     pname = "vpk";
     version = "1.2.161";
