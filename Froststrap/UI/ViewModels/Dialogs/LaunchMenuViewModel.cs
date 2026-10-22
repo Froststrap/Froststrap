@@ -40,7 +40,9 @@ namespace Froststrap.UI.ViewModels.Dialogs
 
         public static bool IsStudioInstalled => App.IsStudioInstalled;
 
-        public static string PlayerMenuItemText => OperatingSystem.IsLinux() ? Strings.Common_Sober : Strings.Common_Player;
+        public string PlayerMenuItemText => OperatingSystem.IsLinux()
+            ? App.UseRosemary ? Strings.Common_Rosemary : Strings.Common_Sober
+            : Strings.Common_Player;
 
         public string LaunchButtonText
         {
@@ -48,7 +50,9 @@ namespace Froststrap.UI.ViewModels.Dialogs
             {
                 if (SelectedLaunchMode == LaunchMode.Player)
                 {
-                    string modeName = OperatingSystem.IsLinux() ? Strings.Common_Sober : Strings.Common_Player;
+                    string modeName = OperatingSystem.IsLinux()
+                        ? App.UseRosemary ? Strings.Common_Rosemary : Strings.Common_Sober
+                        : Strings.Common_Player;
                     return IsPlayerInstalled
                         ? $"{Strings.Common_Launch} {modeName}"
                         : $"{Strings.Common_Install} {modeName}";
@@ -72,10 +76,17 @@ namespace Froststrap.UI.ViewModels.Dialogs
 
         public LaunchMenuViewModel()
         {
+            App.RuntimeChanged += RuntimeChanged;
             LaunchCommand = new RelayCommand(ExecuteLaunch);
             SetLaunchModeCommand = new RelayCommand<LaunchMode>(mode => SelectedLaunchMode = mode);
             LaunchSettingsCommand = new RelayCommand(() => CloseWindowRequest?.Invoke(this, NextAction.LaunchSettings));
             SelectedLaunchMode = App.State.Prop.LastLaunchMode;
+        }
+
+        private void RuntimeChanged(object? sender, EventArgs e)
+        {
+            OnPropertyChanged(nameof(PlayerMenuItemText));
+            OnPropertyChanged(nameof(LaunchButtonText));
         }
 
         private void ExecuteLaunch()

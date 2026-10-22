@@ -22,7 +22,6 @@ SPDX-License-Identifier: MPL-2.0
     mc:Ignorable="d">
     <ScrollViewer>
         <StackPanel Margin="14">
-
             <TextBlock Margin="0,8,0,0"
                        FontSize="20"
                        FontWeight="Bold" IsVisible="{Binding SoberEnabled}"

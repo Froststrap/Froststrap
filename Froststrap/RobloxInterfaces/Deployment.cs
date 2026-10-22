@@ -26,7 +26,7 @@ namespace Froststrap.RobloxInterfaces
 
         public static string ChannelToken { get; set; } = string.Empty;
 
-        public static string BinaryType => OperatingSystem.IsMacOS() ? "MacPlayer" : "WindowsPlayer";
+        public static string BinaryType => OperatingSystem.IsMacOS() || App.UseRosemary ? "MacPlayer" : "WindowsPlayer";
 
         public static string RobloxDomain => App.Settings.Prop.RobloxDomain;
 
@@ -175,7 +175,7 @@ namespace Froststrap.RobloxInterfaces
             {
                 string location;
 
-                if (OperatingSystem.IsMacOS())
+                if (OperatingSystem.IsMacOS() || App.UseRosemary)
                 {
                     location = GetLocation($"/mac/{version}-RobloxPlayer.zip");
 

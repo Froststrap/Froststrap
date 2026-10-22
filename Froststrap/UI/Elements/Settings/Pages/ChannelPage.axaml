@@ -120,7 +120,24 @@ SPDX-License-Identifier: MPL-2.0
                                         Margin="0,2,0,10"
                                         TextWrapping="Wrap" />
 
-            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
+            <controls:CardExpander IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
+                                   Header="{x:Static resources:Strings.Menu_Deployment_PlayerRuntime_Title}"
+                                   Description="{x:Static resources:Strings.Menu_Deployment_PlayerRuntime_Description}"
+                                   IsExpanded="{Binding UseRosemary, Mode=TwoWay}"
+                                   Classes="NoUserExpansion">
+                <controls:CardExpander.HeaderContent>
+                    <ToggleSwitch IsChecked="{Binding UseRosemary, Mode=TwoWay}" />
+                </controls:CardExpander.HeaderContent>
+                <StackPanel Spacing="8">
+                    <controls:OptionControl Header="{x:Static resources:Strings.Menu_Deployment_RosemaryExecutablePath_Title}"
+                                            Description="{x:Static resources:Strings.Menu_Deployment_RosemaryExecutablePath_Description}">
+                        <TextBox Text="{Binding RosemaryExecutablePath, Mode=TwoWay}"
+                                 PlaceholderText="{x:Static resources:Strings.Menu_Deployment_RosemaryExecutablePath_Placeholder}" />
+                    </controls:OptionControl>
+                </StackPanel>
+            </controls:CardExpander>
+
+            <controls:OptionControl IsVisible="{Binding IsSoberRuntime}"
                                     Header="{x:Static resources:Strings.Menu_Deployment_AutoUpdateSober}">
                 <ToggleSwitch IsChecked="{Binding AutomaticallyUpdateSober, Mode=TwoWay}" />
             </controls:OptionControl>

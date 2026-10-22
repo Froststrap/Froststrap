@@ -65,7 +65,7 @@ namespace Froststrap.UI.ViewModels.Settings
             App.Settings.HasUnsavedChanges ||
             App.State.HasUnsavedChanges ||
             App.FastFlags.HasUnsavedChanges ||
-            (OperatingSystem.IsLinux() && App.SoberSettings.HasUnsavedChanges) ||
+            (OperatingSystem.IsLinux() && !App.UseRosemary && App.SoberSettings.HasUnsavedChanges) ||
             App.GlobalSettings.HasUnsavedChanges ||
             App.PendingSettingTasks.Count > 0;
 
@@ -143,6 +143,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public MainWindowViewModel()
         {
+            App.RuntimeChanged += RuntimeChanged;
             _breadcrumbItems.CollectionChanged += OnBreadcrumbsChanged;
 
             SetLaunchModeCommand = new RelayCommand<LaunchMode>(mode => SelectedLaunchMode = mode);
@@ -227,6 +228,12 @@ namespace Froststrap.UI.ViewModels.Settings
                 NavigateToIntegrationsCommand.Execute(null);
 
             SelectedLaunchMode = App.State.Prop.LastLaunchMode;
+        }
+
+        private void RuntimeChanged(object? sender, EventArgs e)
+        {
+            OnPropertyChanged(nameof(PlayerMenuItemText));
+            OnPropertyChanged(nameof(LaunchButtonText));
         }
 
         private void Navigate(string pageId, string title, string description, object viewModel, ObservableCollection<BreadcrumbItemModel>? customBreadcrumbs = null)
@@ -332,7 +339,7 @@ namespace Froststrap.UI.ViewModels.Settings
             App.FastFlags.Save();
             App.GlobalSettings.Save();
 
-            if (OperatingSystem.IsLinux())
+            if (OperatingSystem.IsLinux() && !App.UseRosemary)
                 App.SoberSettings.Save();
 
             foreach (var pair in App.PendingSettingTasks)
@@ -391,7 +398,9 @@ namespace Froststrap.UI.ViewModels.Settings
         }
 
         public static bool IsStudioInstalled => App.IsStudioInstalled;
-        public static string PlayerMenuItemText => OperatingSystem.IsLinux() ? Strings.Common_Sober : Strings.Common_Player;
+        public string PlayerMenuItemText => OperatingSystem.IsLinux()
+            ? App.UseRosemary ? Strings.Common_Rosemary : Strings.Common_Sober
+            : Strings.Common_Player;
 
         public string LaunchButtonText
         {
@@ -399,7 +408,9 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 if (SelectedLaunchMode == LaunchMode.Player)
                 {
-                    string modeName = OperatingSystem.IsLinux() ? Strings.Common_Sober : Strings.Common_Player;
+                    string modeName = OperatingSystem.IsLinux()
+                        ? App.UseRosemary ? Strings.Common_Rosemary : Strings.Common_Sober
+                        : Strings.Common_Player;
                     return IsPlayerInstalled
                         ? $"{Strings.Common_SaveAndLaunch} {modeName}"
                         : $"{Strings.Common_SaveAndInstall} {modeName}";

@@ -8,11 +8,11 @@ namespace Froststrap.AppData
     {
         public string ProductName => "Roblox";
 
-        public override string BinaryType => OperatingSystem.IsMacOS() ? "MacPlayer" : "WindowsPlayer";
+        public override string BinaryType => OperatingSystem.IsMacOS() || App.UseRosemary ? "MacPlayer" : "WindowsPlayer";
 
         public string RegistryName => "RobloxPlayer";
 
-        public string ProcessName => OperatingSystem.IsMacOS() ? "RobloxPlayer" : "RobloxPlayerBeta";
+        public string ProcessName => OperatingSystem.IsMacOS() || App.UseRosemary ? "RobloxPlayer" : "RobloxPlayerBeta";
 
         public override string ExecutableName => App.RobloxPlayerAppName;
 

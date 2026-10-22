@@ -9652,5 +9652,16 @@ namespace Froststrap.Resources {
                 return ResourceManager.GetString("Joiner.Settings", resourceCulture);
             }
         }
+
+        public static string Common_Rosemary => ResourceManager.GetString("Common.Rosemary", resourceCulture);
+        public static string Common_LaunchPlayer => ResourceManager.GetString("Common.LaunchPlayer", resourceCulture);
+        public static string Menu_Deployment_PlayerRuntime_Title => ResourceManager.GetString("Menu.Deployment.PlayerRuntime.Title", resourceCulture);
+        public static string Menu_Deployment_PlayerRuntime_Description => ResourceManager.GetString("Menu.Deployment.PlayerRuntime.Description", resourceCulture);
+        public static string Menu_Deployment_RosemaryExecutablePath_Title => ResourceManager.GetString("Menu.Deployment.RosemaryExecutablePath.Title", resourceCulture);
+        public static string Menu_Deployment_RosemaryExecutablePath_Description => ResourceManager.GetString("Menu.Deployment.RosemaryExecutablePath.Description", resourceCulture);
+        public static string Menu_Deployment_RosemaryExecutablePath_Placeholder => ResourceManager.GetString("Menu.Deployment.RosemaryExecutablePath.Placeholder", resourceCulture);
+        public static string Rosemary_DownloadPrompt => ResourceManager.GetString("Rosemary.DownloadPrompt", resourceCulture);
+        public static string Rosemary_DownloadFailed => ResourceManager.GetString("Rosemary.DownloadFailed", resourceCulture);
+        public static string Rosemary_LaunchFailed => ResourceManager.GetString("Rosemary.LaunchFailed", resourceCulture);
     }
 }

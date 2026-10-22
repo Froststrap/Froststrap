@@ -1637,6 +1637,12 @@ Would you like to switch your preferred channel to {0}?</value>
   <data name="Common.Sober" xml:space="preserve">
     <value>Sober</value>
   </data>
+  <data name="Common.Rosemary" xml:space="preserve">
+    <value>Rosemary</value>
+  </data>
+  <data name="Common.LaunchPlayer" xml:space="preserve">
+    <value>Launch Player</value>
+  </data>
   <data name="Common.Launch" xml:space="preserve">
     <value>Launch</value>
   </data>
@@ -2576,6 +2582,21 @@ Do you want to install the plugin?</value>
   <data name="Menu.LinuxSettings.Title" xml:space="preserve">
     <value>Linux Settings</value>
   </data>
+  <data name="Menu.Deployment.PlayerRuntime.Title" xml:space="preserve">
+    <value>Use Rosemary</value>
+  </data>
+  <data name="Menu.Deployment.PlayerRuntime.Description" xml:space="preserve">
+    <value>Use Rosemary instead of Sober for the Linux player. Rosemary is downloaded when needed.</value>
+  </data>
+  <data name="Menu.Deployment.RosemaryExecutablePath.Title" xml:space="preserve">
+    <value>Rosemary Executable</value>
+  </data>
+  <data name="Menu.Deployment.RosemaryExecutablePath.Description" xml:space="preserve">
+    <value>Path to rosemary. Leave empty to use PATH or download the latest AppImage when launching.</value>
+  </data>
+  <data name="Menu.Deployment.RosemaryExecutablePath.Placeholder" xml:space="preserve">
+    <value>Auto-detect</value>
+  </data>
   <data name="Menu.LinuxSettings.AllowGamepadPermission.Title" xml:space="preserve">
     <value>Allow Gamepad Permission</value>
   </data>
@@ -3037,6 +3058,15 @@ Do you want to install the plugin?</value>
   </data>
   <data name="Sober.LaunchFailed" xml:space="preserve">
     <value>Failed to launch Sober. Make sure Flatpak and {0} are installed. {1}</value>
+  </data>
+  <data name="Rosemary.DownloadPrompt" xml:space="preserve">
+    <value>Rosemary was not found. Download the latest Rosemary AppImage from GitHub?</value>
+  </data>
+  <data name="Rosemary.DownloadFailed" xml:space="preserve">
+    <value>Rosemary could not be found or downloaded. Set its executable path or install rosemary on PATH.</value>
+  </data>
+  <data name="Rosemary.LaunchFailed" xml:space="preserve">
+    <value>Failed to launch Rosemary: {0}</value>
   </data>
   <data name="Update.Available" xml:space="preserve">
     <value>A new {0} version {1} is available. {2}</value>

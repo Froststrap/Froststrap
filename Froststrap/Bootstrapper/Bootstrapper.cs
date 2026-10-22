@@ -48,13 +48,15 @@ internal partial class Bootstrapper : IDisposable
     private readonly System.Collections.Concurrent.ConcurrentDictionary<string, byte> _sizedFromResponse = new();
     private readonly GameJoinData _joinData = null!;
 
-    private static bool AutomaticallyUpdateSober => OperatingSystem.IsLinux() && App.Settings.Prop.AutomaticallyUpdateSober;
+    private static bool AutomaticallyUpdateSober => OperatingSystem.IsLinux() && !App.UseRosemary && App.Settings.Prop.AutomaticallyUpdateSober;
+    private bool UseRosemary => OperatingSystem.IsLinux() && !IsStudioLaunch && App.UseRosemary;
+    private bool UsesMacBuild => OperatingSystem.IsMacOS() || UseRosemary;
     private string CurrentDirectory => _latestVersionDirectory ?? AppData.Directory;
 
     private bool MustUpgrade => App.LaunchSettings.ForceFlag.Active
         || App.State.Prop.ForceReinstall
-        || ((!OperatingSystem.IsLinux() || IsStudioLaunch) && (string.IsNullOrEmpty(AppData.DistributionState.VersionGuid)
-        || (OperatingSystem.IsMacOS() ? !Directory.Exists(AppData.ExecutablePath) : !File.Exists(AppData.ExecutablePath))))
+        || ((!OperatingSystem.IsLinux() || IsStudioLaunch || UseRosemary) && (string.IsNullOrEmpty(AppData.DistributionState.VersionGuid)
+        || (UsesMacBuild ? !Directory.Exists(AppData.ExecutablePath) : !File.Exists(AppData.ExecutablePath))))
         || (OperatingSystem.IsWindows() && !IsStudioLaunch && !File.Exists(Path.Combine(CurrentDirectory, "WebView2Loader.dll")))
         || (OperatingSystem.IsWindows() && !IsStudioLaunch && !File.Exists(Path.Combine(CurrentDirectory, "RobloxPlayerBeta.dll")));
 
@@ -115,7 +117,7 @@ internal partial class Bootstrapper : IDisposable
 
     private async Task SetupPackageDictionaries()
     {
-        if (OperatingSystem.IsMacOS())
+        if (UsesMacBuild)
         {
             PackageDirectoryMap = new Dictionary<string, string>
             {
@@ -125,7 +127,7 @@ internal partial class Bootstrapper : IDisposable
             return;
         }
 
-        if (OperatingSystem.IsLinux() && !IsStudioLaunch)
+        if (OperatingSystem.IsLinux() && !IsStudioLaunch && !UseRosemary)
         {
             PackageDirectoryMap = [];
             return;
@@ -142,7 +144,7 @@ internal partial class Bootstrapper : IDisposable
             PackageDirectoryMap[package.Key] = package.Value;
 
         // Linux treats \\ weirdly, it leaves a \ in their name and dosent place in correct directory
-        if (OperatingSystem.IsLinux())
+        if (OperatingSystem.IsLinux() && !UseRosemary)
         {
             foreach (var key in PackageDirectoryMap.Keys.ToList())
             {
@@ -198,7 +200,7 @@ internal partial class Bootstrapper : IDisposable
         SetStatus(Strings.Bootstrapper_Status_Connecting);
 
         // Skip the Roblox deployment API connectivity check entirely.
-        if (OperatingSystem.IsLinux() && !IsStudioLaunch)
+        if (OperatingSystem.IsLinux() && !IsStudioLaunch && !UseRosemary)
         {
             _noConnection = true;
             _latestVersionDirectory = Paths.SoberAssetOverlay;
@@ -315,7 +317,7 @@ internal partial class Bootstrapper : IDisposable
                 // where we'd need to restore files from a package that isn't present on disk and needs to be redownloaded
                 allModificationsApplied = await ApplyModifications();
             }
-            else if (OperatingSystem.IsLinux())
+            else if (OperatingSystem.IsLinux() && !UseRosemary)
             {
                 if (MustUpgrade)
                 {
@@ -391,6 +393,10 @@ internal partial class Bootstrapper : IDisposable
                 else if (IsStudioLaunch)
                 {
                     await LaunchStudioViaWineAsync();
+                }
+                else if (UseRosemary)
+                {
+                    await StartRoblox();
                 }
                 else
                 {
@@ -658,10 +664,10 @@ internal partial class Bootstrapper : IDisposable
             _latestVersionDirectory = Path.Combine(Paths.Versions, _latestVersionGuid);
 
         // Mods are applied directly into Sober's asset_overlay directory instead of a versioned folder.
-        if (OperatingSystem.IsLinux() && !IsStudioLaunch)
+        if (OperatingSystem.IsLinux() && !IsStudioLaunch && !UseRosemary)
             _latestVersionDirectory = Paths.SoberAssetOverlay;
 
-        if (OperatingSystem.IsMacOS())
+        if (UsesMacBuild)
         {
             // Mac uses monolithic zip downloads instead of individual packages
             string zipName = IsStudioLaunch ? "RobloxStudioApp.zip" : "RobloxPlayer.zip";
@@ -715,7 +721,7 @@ internal partial class Bootstrapper : IDisposable
             key.SetValueSafe("www." + Deployment.RobloxDomain, Deployment.IsDefaultChannel ? "" : Deployment.Channel);
         }
 
-        if (OperatingSystem.IsMacOS())
+        if (UsesMacBuild)
         {
             Utility.MacChannelStore.Apply(AppData.RegistryName, Deployment.RobloxDomain, Deployment.IsDefaultChannel ? null : Deployment.Channel);
         }
@@ -974,8 +980,37 @@ internal partial class Bootstrapper : IDisposable
         App.Logger.Info($"Resolved Roblox path: {expectedPath}");
 
         string launchArguments = _launchCommandLine;
+        ProcessStartInfo startInfo = null!;
 
-        if (OperatingSystem.IsMacOS())
+        if (UseRosemary)
+        {
+            var locator = new RosemaryLocator(App.HttpClient);
+            string? rosemaryPath = await locator.ResolveAsync(
+                async () => await Frontend.ShowMessageBox(Strings.Rosemary_DownloadPrompt, MessageBoxImage.Question, MessageBoxButton.YesNo) == MessageBoxResult.Yes,
+                async (current, total) =>
+                {
+                    if (total > 0)
+                        SetStatus(string.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_Status_DownloadingPackages, FormatBytes(current), FormatBytes(total)));
+                    await Task.CompletedTask;
+                });
+
+            if (rosemaryPath is null)
+            {
+                await Frontend.ShowMessageBox(Strings.Rosemary_DownloadFailed, MessageBoxImage.Error);
+                return;
+            }
+
+            startInfo = new ProcessStartInfo
+            {
+                FileName = rosemaryPath,
+                WorkingDirectory = AppData.Directory,
+                UseShellExecute = false
+            };
+            startInfo.ArgumentList.Add(Path.Combine(expectedPath, "Contents", "MacOS", "RobloxPlayer"));
+            if (!string.IsNullOrWhiteSpace(_launchCommandLine))
+                startInfo.ArgumentList.Add(_launchCommandLine.Trim());
+        }
+        else if (OperatingSystem.IsMacOS())
         {
             string launch = _launchCommandLine.Trim();
 
@@ -998,13 +1033,16 @@ internal partial class Bootstrapper : IDisposable
             }
         }
 
-        var startInfo = new ProcessStartInfo()
+        else
         {
-            FileName = OperatingSystem.IsMacOS() ? "open" : expectedPath,
-            Arguments = launchArguments,
-            WorkingDirectory = AppData.Directory,
-            UseShellExecute = OperatingSystem.IsMacOS()
-        };
+            startInfo = new ProcessStartInfo
+            {
+                FileName = expectedPath,
+                Arguments = launchArguments,
+                WorkingDirectory = AppData.Directory,
+                UseShellExecute = false
+            };
+        }
 
         if (_launchMode == LaunchMode.Player && ShouldRunAsAdmin())
         {
@@ -1060,7 +1098,7 @@ internal partial class Bootstrapper : IDisposable
             // attempt a reinstall on next launch
             try
             {
-                if (OperatingSystem.IsMacOS())
+                if (UsesMacBuild)
                     Directory.Delete(AppData.ExecutablePath, true);
                 else
                     File.Delete(AppData.ExecutablePath);
@@ -1505,7 +1543,7 @@ internal partial class Bootstrapper : IDisposable
             }
         }
 
-        if (OperatingSystem.IsLinux())
+        if (OperatingSystem.IsLinux() && !UseRosemary)
         {
             try
             {
@@ -1546,12 +1584,12 @@ internal partial class Bootstrapper : IDisposable
         {
             string path = Path.Combine(dir, exe);
 
-            bool exists = OperatingSystem.IsMacOS() ? Directory.Exists(path) : File.Exists(path);
+            bool exists = (OperatingSystem.IsMacOS() || App.UseRosemary) ? Directory.Exists(path) : File.Exists(path);
             if (!exists) continue;
 
             try
             {
-                if (OperatingSystem.IsMacOS())
+                if (OperatingSystem.IsMacOS() || App.UseRosemary)
                     Directory.Delete(path, true);
                 else
                 {
@@ -1570,7 +1608,7 @@ internal partial class Bootstrapper : IDisposable
 
     public static void CleanupVersionsFolder()
     {
-        if (OperatingSystem.IsLinux())
+        if (OperatingSystem.IsLinux() && !App.UseRosemary)
         {
             bool isStudio = App.Bootstrapper?.IsStudioLaunch ?? false;
             if (!isStudio)
@@ -1724,7 +1762,7 @@ internal partial class Bootstrapper : IDisposable
         Directory.CreateDirectory(_latestVersionDirectory);
 
 
-        if (OperatingSystem.IsMacOS())
+        if (UsesMacBuild)
         {
             string backupDir = GetResourcesBackupPath(_latestVersionGuid);
             if (Directory.Exists(backupDir))
@@ -2400,7 +2438,7 @@ internal partial class Bootstrapper : IDisposable
         if (string.IsNullOrEmpty(_latestVersionDirectory))
             return;
 
-        string clientSettingsRoot = OperatingSystem.IsMacOS()
+        string clientSettingsRoot = UsesMacBuild
             ? Path.Combine(_latestVersionDirectory, AppData.ExecutableName, "Contents", "MacOS")
             : _latestVersionDirectory;
 
@@ -2872,14 +2910,14 @@ internal partial class Bootstrapper : IDisposable
             .ToList();
 
         string appBundleContentsDirectory = Path.Combine(_latestVersionDirectory, AppData.ExecutableName, "Contents");
-        string contentDirectory = OperatingSystem.IsMacOS()
+        string contentDirectory = UsesMacBuild
             ? Path.Combine(appBundleContentsDirectory, "Resources")
             : _latestVersionDirectory;
-        string clientSettingsBaseDirectory = OperatingSystem.IsMacOS()
+        string clientSettingsBaseDirectory = UsesMacBuild
             ? Path.Combine(appBundleContentsDirectory, "MacOS")
             : _latestVersionDirectory;
 
-        if (OperatingSystem.IsMacOS())
+        if (UsesMacBuild)
             EnsureMacResourcesBackup(contentDirectory, _latestVersionGuid);
 
         var currentModManifest = new Dictionary<string, ModFileEntry>(StringComparer.OrdinalIgnoreCase);
@@ -2975,7 +3013,7 @@ internal partial class Bootstrapper : IDisposable
 
         App.Logger.Info("Writing AppSettings.xml...");
         if (!File.Exists(Path.Combine(Paths.Modifications, "AppSettings.xml"))
-            && (!OperatingSystem.IsLinux() || IsStudioLaunch))
+            && (!OperatingSystem.IsLinux() || IsStudioLaunch || UseRosemary))
         {
             Directory.CreateDirectory(_latestVersionDirectory);
             await File.WriteAllTextAsync(
@@ -3211,7 +3249,7 @@ internal partial class Bootstrapper : IDisposable
 
             if (!profileApplied)
             {
-                if (!OperatingSystem.IsLinux() || IsStudioLaunch)
+                if (!OperatingSystem.IsLinux() || IsStudioLaunch || UseRosemary)
                 {
                     if (File.Exists(source))
                     {
@@ -3264,10 +3302,10 @@ internal partial class Bootstrapper : IDisposable
             string actualFile = fileLocation;
             string? fileNameWithoutExt = Path.GetFileNameWithoutExtension(fileLocation);
 
-            if (fileNameWithoutExt != null && fileNameWithoutExt.EndsWith("_Delete", StringComparison.Ordinal) && OperatingSystem.IsLinux() && !IsStudioLaunch)
+            if (fileNameWithoutExt != null && fileNameWithoutExt.EndsWith("_Delete", StringComparison.Ordinal) && OperatingSystem.IsLinux() && !IsStudioLaunch && !UseRosemary)
                 continue;
 
-            if (OperatingSystem.IsMacOS())
+            if (UsesMacBuild)
             {
                 bool isClientSettingsFile = IsClientSettingsRelativePath(actualFile);
                 string backupDir = GetResourcesBackupPath(_latestVersionGuid);
@@ -3331,7 +3369,7 @@ internal partial class Bootstrapper : IDisposable
             App.Logger.Info($"Restoring '{internalZipPath}' from package {packageName}");
         }
 
-        if ((!OperatingSystem.IsLinux() || IsStudioLaunch) && fileRestoreMap.Count > 0)
+        if ((!OperatingSystem.IsLinux() || IsStudioLaunch || UseRosemary) && fileRestoreMap.Count > 0)
         {
             long restoreBytes = fileRestoreMap.Keys
                 .Select(name => _versionPackageManifest.Find(x => x.Name == name))
@@ -3371,13 +3409,13 @@ internal partial class Bootstrapper : IDisposable
             return;
         }
 
-        if (OperatingSystem.IsLinux() && !IsStudioLaunch)
+        if (OperatingSystem.IsLinux() && !IsStudioLaunch && !UseRosemary)
         {
             App.Logger.Info("Skipping mod folder initialization on Linux Player (Sober).");
             return;
         }
 
-        string contentRoot = OperatingSystem.IsMacOS()
+        string contentRoot = UsesMacBuild
             ? Path.Combine(_latestVersionDirectory, AppData.ExecutableName, "Contents", "Resources")
             : _latestVersionDirectory;
         if (!Directory.Exists(contentRoot))
@@ -3543,9 +3581,10 @@ internal partial class Bootstrapper : IDisposable
 
         Directory.CreateDirectory(Paths.Downloads);
 
-        string packageUrl = OperatingSystem.IsMacOS()
-            ? Deployment.GetLocation($"{GetMacArchPath()}/{_latestVersionGuid}-{package.Name}")
-            : Deployment.GetLocation($"/{_latestVersionGuid}-{package.Name}");
+        string packageUrl = Deployment.GetLocation(
+            UsesMacBuild
+                ? $"{GetMacArchPath()}/{_latestVersionGuid}-{package.Name}"
+                : $"/{_latestVersionGuid}-{package.Name}");
         string robloxPackageLocation = Path.Combine(Paths.LocalAppData, "Roblox", "Downloads", package.Signature);
 
         if (File.Exists(package.DownloadPath))
@@ -3553,7 +3592,7 @@ internal partial class Bootstrapper : IDisposable
             string calculatedFastHash = FastHash.FromFile(package.DownloadPath);
 
             // Skip hash validation for macOS as the mock manifest lacks actual signature FastHashs
-            if (!OperatingSystem.IsMacOS() && calculatedFastHash != package.Signature)
+            if (!UsesMacBuild && calculatedFastHash != package.Signature)
             {
                 App.Logger.Warn($"Package is corrupted ({calculatedFastHash} != {package.Signature})! Deleting and re-downloading...");
                 File.Delete(package.DownloadPath);
@@ -3639,7 +3678,7 @@ internal partial class Bootstrapper : IDisposable
 
                 string hash = FastHash.FromStream(fileStream);
 
-                if (!OperatingSystem.IsMacOS() && !string.Equals(hash, package.Signature, StringComparison.OrdinalIgnoreCase))
+                if (!UsesMacBuild && !string.Equals(hash, package.Signature, StringComparison.OrdinalIgnoreCase))
                     throw new ChecksumFailedException($"Failed to verify download of {packageUrl}\n\nExpected hash: {package.Signature}\nGot hash: {hash}");
 
                 App.Logger.Info($"Finished downloading! ({totalBytesRead} bytes total)");

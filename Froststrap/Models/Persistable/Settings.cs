@@ -113,6 +113,8 @@ namespace Froststrap.Models.Persistable
         public StudioRenderer StudioRenderer { get; set; } = StudioRenderer.DXVK;
         public bool StudioGameMode { get; set; }
         public bool StudioDebug { get; set; }
+        public bool UseRosemary { get; set; }
+        public string RosemaryExecutablePath { get; set; } = string.Empty;
         public Dictionary<string, string> StudioEnvironmentVariables { get; set; } = [];
 
         // Misc Stuff

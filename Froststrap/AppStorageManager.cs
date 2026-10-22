@@ -12,7 +12,9 @@ namespace Froststrap
     {
         public static string FileLocation =>
             OperatingSystem.IsLinux()
-                ? Path.Combine(Paths.SoberData, "appData", "LocalStorage", "appStorage.json")
+                ? App.UseRosemary
+                    ? Path.Combine(Paths.Roblox, "LocalStorage", "appStorage.json")
+                    : Path.Combine(Paths.SoberData, "appData", "LocalStorage", "appStorage.json")
                 : Path.Combine(Paths.Roblox, "LocalStorage", "appStorage.json");
 
         private static readonly JsonSerializerOptions SerializerOptions = new()

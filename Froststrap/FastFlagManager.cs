@@ -202,7 +202,7 @@ namespace Froststrap
             if (saved)
             {
                 OriginalProp = new(Prop);
-                if (OperatingSystem.IsLinux())
+                if (OperatingSystem.IsLinux() && !App.UseRosemary)
                     SyncToSoberConfig();
             }
 

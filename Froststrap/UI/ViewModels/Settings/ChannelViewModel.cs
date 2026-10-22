@@ -24,12 +24,43 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public ChannelViewModel()
         {
+            App.RuntimeChanged += RuntimeChanged;
             _ = LoadChannelDeployInfo(App.Settings.Prop.PlayerChannel, false);
             _ = LoadChannelDeployInfo(App.Settings.Prop.StudioChannel, true);
 
             BrowsePlayerVersionHashCommand = new AsyncRelayCommand<object?>(BrowsePlayerVersionHashAsync);
             BrowseStudioVersionHashCommand = new AsyncRelayCommand<object?>(BrowseStudioVersionHashAsync);
             CheckForUpdatesCommand = new AsyncRelayCommand(CheckForUpdatesAsync);
+        }
+
+        private void RuntimeChanged(object? sender, EventArgs e)
+        {
+            OnPropertyChanged(nameof(IsSoberRuntime));
+            OnPropertyChanged(nameof(UseRosemary));
+        }
+
+        public static bool UseRosemary
+        {
+            get => App.Settings.Prop.UseRosemary;
+            set
+            {
+                if (App.Settings.Prop.UseRosemary == value)
+                    return;
+
+                App.Settings.Prop.UseRosemary = value;
+                App.Settings.Save();
+                App.NotifyRuntimeChanged();
+            }
+        }
+
+        public static string RosemaryExecutablePath
+        {
+            get => App.Settings.Prop.RosemaryExecutablePath;
+            set
+            {
+                App.Settings.Prop.RosemaryExecutablePath = value;
+                App.Settings.Save();
+            }
         }
 
         public static IEnumerable<UpdateCheck> UpdateCheckValues => Enum.GetValues<UpdateCheck>();
@@ -427,6 +458,8 @@ namespace Froststrap.UI.ViewModels.Settings
             get => App.Settings.Prop.AutomaticallyUpdateSober;
             set => App.Settings.Prop.AutomaticallyUpdateSober = value;
         }
+
+        public static bool IsSoberRuntime => !App.UseRosemary;
 
         public static int MaxThreadDownload
         {

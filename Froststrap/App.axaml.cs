@@ -48,7 +48,10 @@ internal partial class App : Application
     public const string ProjectSupportLink = "https://github.com/Froststrap/Froststrap/issues/new";
     public const string ProjectRemoteDataLink = "https://raw.githubusercontent.com/Froststrap/config/refs/heads/main/Data.json";
 
-    public static string RobloxPlayerAppName => OperatingSystem.IsMacOS() ? "RobloxPlayer.app" : "RobloxPlayerBeta.exe";
+    public static bool UseRosemary => OperatingSystem.IsLinux() && Settings.Prop.UseRosemary;
+    public static event EventHandler? RuntimeChanged;
+    public static void NotifyRuntimeChanged() => RuntimeChanged?.Invoke(null, EventArgs.Empty);
+    public static string RobloxPlayerAppName => OperatingSystem.IsMacOS() || UseRosemary ? "RobloxPlayer.app" : "RobloxPlayerBeta.exe";
     public static string RobloxStudioAppName => OperatingSystem.IsMacOS() ? "RobloxStudio.app" : "RobloxStudioBeta.exe";
 
     // simple shorthand for extremely frequently used and long string - this goes under HKCU
@@ -97,6 +100,9 @@ internal partial class App : Application
 
             if (_linuxPlayerInstalled is not bool cached)
             {
+                if (UseRosemary)
+                    return PlayerData.IsInstalled;
+
                 var clientPath = Path.Combine(Paths.Versions, "Sober", "data", "sober", "packages", "x86_64", "com.roblox.client");
                 cached = Directory.Exists(clientPath) && Directory.EnumerateFiles(clientPath, "*", SearchOption.AllDirectories).Any();
                 _linuxPlayerInstalled = cached;
@@ -605,7 +611,7 @@ internal partial class App : Application
                 FastFlags.Load();
                 GlobalSettings.Load();
 
-                if (OperatingSystem.IsLinux())
+                if (OperatingSystem.IsLinux() && !UseRosemary)
                     SoberSettings.Load(alertFailure: false);
 
                 _ = AssertWindowsAUMIDAsync();

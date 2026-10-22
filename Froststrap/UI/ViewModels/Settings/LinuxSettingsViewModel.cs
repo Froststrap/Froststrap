@@ -10,7 +10,7 @@ namespace Froststrap.UI.ViewModels.Settings
 {
     internal class LinuxSettingsViewModel : NotifyPropertyChangedViewModel
     {
-        public static bool SoberEnabled => App.SoberSettings.Loaded;
+        public static bool SoberEnabled => OperatingSystem.IsLinux() && !App.UseRosemary && App.SoberSettings.Loaded;
 
         public LinuxSettingsViewModel()
         {

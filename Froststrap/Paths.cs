@@ -95,7 +95,9 @@ namespace Froststrap
                 DataRoot = Path.Combine(xdgData, App.ProjectName);
 
                 // Sober data lives under Versions/Sober (symlink target managed by Installer)
-                Roblox = Path.Combine(DataRoot, "Versions", "Sober");
+                Roblox = App.UseRosemary
+                    ? Path.Combine(DataRoot, "Roblox")
+                    : Path.Combine(DataRoot, "Versions", "Sober");
 
                 SoberData = Path.Combine(Roblox, "data", "sober");
 
@@ -126,7 +128,9 @@ namespace Froststrap
             }
             else if (OperatingSystem.IsLinux())
             {
-                RobloxLogs = Path.Combine(Roblox, "data", "sober", "sober_logs");
+                RobloxLogs = App.UseRosemary
+                    ? Path.Combine(Roblox, "logs")
+                    : Path.Combine(Roblox, "data", "sober", "sober_logs");
                 RobloxCache = Path.Combine(Roblox, "cache");
             }
             else
