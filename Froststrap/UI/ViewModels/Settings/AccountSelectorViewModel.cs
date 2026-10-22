@@ -276,6 +276,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 }
 
                 await RefreshAllPresencesAsync();
+                await Dispatcher.UIThread.InvokeAsync(StartPresencePolling);
             }
             catch (Exception ex)
             {
@@ -365,6 +366,9 @@ namespace Froststrap.UI.ViewModels.Settings
                             UserPresenceType.InStudio => Brushes.Orange,
                             _ => Brushes.Gray
                         };
+
+                        if (presence != null && CurrentAccount != null && item.UserId == CurrentAccount.UserId)
+                            CurrentPresence = presence;
                     });
                 }
                 catch (Exception ex)
@@ -400,7 +404,16 @@ namespace Froststrap.UI.ViewModels.Settings
         }
 
         [RelayCommand]
-        private void ToggleDropdown() => IsDropdownOpen = !IsDropdownOpen;
+        private void ToggleDropdown()
+        {
+            if (IsDropdownOpen)
+            {
+                IsDropdownOpen = false;
+                return;
+            }
+
+            Dispatcher.UIThread.Post(() => IsDropdownOpen = true);
+        }
 
         [RelayCommand]
         private void DeleteAccount(AccountWithAvatar item)

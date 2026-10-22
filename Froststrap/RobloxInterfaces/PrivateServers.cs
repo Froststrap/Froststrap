@@ -53,15 +53,15 @@ namespace Froststrap.RobloxInterfaces
 
         public static async Task<PrivateServerUser?> FindUserAsync(string username)
         {
-            var body = new Dictionary<string, object>
+            var body = new UsernamesRequest
             {
-                ["usernames"] = new[] { username },
-                ["excludeBannedUsers"] = true
+                Usernames = [username],
+                ExcludeBannedUsers = true
             };
 
             var request = new HttpRequestMessage(HttpMethod.Post, UrlBuilder.BuildApiUrl("users", "v1/usernames/users"))
             {
-                Content = new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json")
+                Content = new StringContent(JsonHelper.Serialize(body), Encoding.UTF8, "application/json")
             };
 
             var response = await Http.SendJson<ApiArrayResponse<PrivateServerUser>>(request);
@@ -78,29 +78,68 @@ namespace Froststrap.RobloxInterfaces
 
         private static Task UpdateAsync(PrivateServerDetails current, string setting, string value,
             string? name, bool active, bool newJoinCode) =>
-            PatchAsync(ServerUrl(current.Id), setting, value, new Dictionary<string, object?>
+            PatchAsync(ServerUrl(current.Id), setting, value, JsonHelper.Serialize(new PrivateServerUpdateRequest
             {
-                ["name"] = name,
-                ["active"] = active,
-                ["newJoinCode"] = newJoinCode
-            });
+                Name = name,
+                Active = active,
+                NewJoinCode = newJoinCode
+            }));
 
         private static Task UpdatePermissionsAsync(PrivateServerDetails current, string setting, string value,
             bool? friendsAllowed, long? addUser, long? removeUser)
         {
             PrivateServerPermissions p = current.Permissions ?? new PrivateServerPermissions();
 
-            return PatchAsync(PermissionsUrl(current.Id), setting, value, new Dictionary<string, object?>
+            return PatchAsync(PermissionsUrl(current.Id), setting, value, JsonHelper.Serialize(new PrivateServerPermissionsUpdateRequest
             {
-                ["clanAllowed"] = p.ClanAllowed,
-                ["enemyClanId"] = p.EnemyClanId,
-                ["friendsAllowed"] = friendsAllowed ?? p.FriendsAllowed,
-                ["usersToAdd"] = addUser is long a ? new[] { a } : Array.Empty<long>(),
-                ["usersToRemove"] = removeUser is long r ? new[] { r } : Array.Empty<long>()
-            });
+                ClanAllowed = p.ClanAllowed,
+                EnemyClanId = p.EnemyClanId,
+                FriendsAllowed = friendsAllowed ?? p.FriendsAllowed,
+                UsersToAdd = addUser is long a ? [a] : [],
+                UsersToRemove = removeUser is long r ? [r] : []
+            }));
         }
 
-        private static Task PatchAsync(Uri url, string setting, string value, Dictionary<string, object?> body) =>
-            AccountRequests.SendAsync(HttpMethod.Patch, url, body, setting, value);
+        private static Task PatchAsync(Uri url, string setting, string value, string jsonBody) =>
+            AccountRequests.SendAsync(HttpMethod.Patch, url, jsonBody, setting, value);
+    }
+
+    internal sealed class UsernamesRequest
+    {
+        [JsonPropertyName("usernames")]
+        public string[] Usernames { get; set; } = [];
+
+        [JsonPropertyName("excludeBannedUsers")]
+        public bool ExcludeBannedUsers { get; set; }
+    }
+
+    internal sealed class PrivateServerUpdateRequest
+    {
+        [JsonPropertyName("name")]
+        public string? Name { get; set; }
+
+        [JsonPropertyName("active")]
+        public bool Active { get; set; }
+
+        [JsonPropertyName("newJoinCode")]
+        public bool NewJoinCode { get; set; }
+    }
+
+    internal sealed class PrivateServerPermissionsUpdateRequest
+    {
+        [JsonPropertyName("clanAllowed")]
+        public bool ClanAllowed { get; set; }
+
+        [JsonPropertyName("enemyClanId")]
+        public long? EnemyClanId { get; set; }
+
+        [JsonPropertyName("friendsAllowed")]
+        public bool FriendsAllowed { get; set; }
+
+        [JsonPropertyName("usersToAdd")]
+        public long[] UsersToAdd { get; set; } = [];
+
+        [JsonPropertyName("usersToRemove")]
+        public long[] UsersToRemove { get; set; } = [];
     }
 }

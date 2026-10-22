@@ -242,7 +242,7 @@ namespace Froststrap.Integrations.OverlayModules
 
             try
             {
-                var message = JsonSerializer.Deserialize<SignalrMessage>(record);
+                var message = JsonHelper.Deserialize<SignalrMessage>(record);
 
                 if (message is null || message.Type is null || message.Type == PingType)
                     return;
@@ -336,21 +336,21 @@ namespace Froststrap.Integrations.OverlayModules
 
                         if (String.Equals(type, "ChannelMarkedRead", StringComparison.Ordinal))
                         {
-                            var read = root.Deserialize<ChannelMarkedRead>();
+                            var read = JsonHelper.Deserialize<ChannelMarkedRead>(root);
 
                             if (read is not null && !String.IsNullOrEmpty(read.ChannelId))
                                 ChannelRead?.Invoke(this, read);
                         }
                         else if (String.Equals(type, "ChannelMetadataUpdated", StringComparison.Ordinal))
                         {
-                            var update = root.Deserialize<ChannelMetadataUpdate>();
+                            var update = JsonHelper.Deserialize<ChannelMetadataUpdate>(root);
 
                             if (update is not null && !String.IsNullOrEmpty(update.ChannelId))
                                 ChannelMetadataChanged?.Invoke(this, update);
                         }
                         else
                         {
-                            var message = root.Deserialize<MessageEvent>()
+                            var message = JsonHelper.Deserialize<MessageEvent>(root)
                                 ?? throw new JsonException("Deserialised MessageEvent is null");
 
                             PartyChat?.Invoke(this, message);
@@ -360,7 +360,7 @@ namespace Froststrap.Integrations.OverlayModules
                     }
 
                     case "PresenceBulkNotifications":
-                        var notifications = JsonSerializer.Deserialize<List<PresenceNotification>>(payload);
+                        var notifications = JsonHelper.Deserialize<List<PresenceNotification>>(payload);
 
                         if (notifications is { Count: > 0 })
                         {
@@ -370,7 +370,7 @@ namespace Froststrap.Integrations.OverlayModules
                         break;
 
                     case "FriendshipNotifications":
-                        var friendship = JsonSerializer.Deserialize<FriendshipNotification>(payload);
+                        var friendship = JsonHelper.Deserialize<FriendshipNotification>(payload);
 
                         if (friendship is not null && friendship.EventArgs is not null)
                         {

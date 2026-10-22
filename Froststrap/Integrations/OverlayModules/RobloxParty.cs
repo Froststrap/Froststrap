@@ -1,4 +1,4 @@
-﻿﻿﻿using Froststrap.Models.APIs.RealtimeMessaging;
+﻿using Froststrap.Models.APIs.RealtimeMessaging;
 using Froststrap.Models.APIs.RobloxParty;
 using Froststrap.Models.APIs.RobloxParty.Events;
 using Froststrap.Utility;
@@ -63,18 +63,25 @@ namespace Froststrap.Integrations.OverlayModules
 
         public static async Task<Conversation?> CreateConversation(long userId)
         {
-            var payload = new
+            var payload = new CreateConversationsRequest
             {
-                conversations = new[] { new { type = "one_to_one", participant_user_ids = new[] { userId } } },
-                include_user_data = false
+                Conversations =
+                [
+                    new CreateConversationEntry
+                    {
+                        Type = "one_to_one",
+                        ParticipantUserIds = [userId]
+                    }
+                ],
+                IncludeUserData = false
             };
 
             try
             {
-                using var response = await PostAsync("create-conversations", payload);
+                using var response = await PostAsync("create-conversations", JsonHelper.Serialize(payload));
                 response.EnsureSuccessStatusCode();
 
-                var page = JsonSerializer.Deserialize<ConversationsPage>(await response.Content.ReadAsStringAsync());
+                var page = JsonHelper.Deserialize<ConversationsPage>(await response.Content.ReadAsStringAsync());
 
                 return page?.Conversations.FirstOrDefault(x => !String.IsNullOrEmpty(x.Id));
             }
@@ -116,10 +123,10 @@ namespace Froststrap.Integrations.OverlayModules
                 Messages = [new MessageContent { Content = messageContent }]
             };
 
-            using var response = await PostAsync("send-messages", payload);
+            using var response = await PostAsync("send-messages", JsonHelper.Serialize(payload));
             response.EnsureSuccessStatusCode();
 
-            var result = JsonSerializer.Deserialize<UserMessagesPage>(await response.Content.ReadAsStringAsync());
+            var result = JsonHelper.Deserialize<UserMessagesPage>(await response.Content.ReadAsStringAsync());
 
             if (result is null)
                 return null;
@@ -141,7 +148,8 @@ namespace Froststrap.Integrations.OverlayModules
 
             try
             {
-                using var response = await PostAsync("update-typing-status", new ConversationPayload { Id = conversationId });
+                using var response = await PostAsync("update-typing-status",
+                    JsonHelper.Serialize(new ConversationPayload { Id = conversationId }));
             }
             catch (HttpRequestException ex)
             {
@@ -150,9 +158,9 @@ namespace Froststrap.Integrations.OverlayModules
             }
         }
 
-        private static async Task<HttpResponseMessage> PostAsync(string endpoint, object payload)
+        private static async Task<HttpResponseMessage> PostAsync(string endpoint, string jsonPayload)
         {
-            var content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
+            var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
 
             return await App.Cookies.AuthPost(
                 UrlBuilder.BuildApisUrl($"{PlatformChatService}/v1/{endpoint}"), content);
@@ -171,7 +179,7 @@ namespace Froststrap.Integrations.OverlayModules
             try
             {
                 using var response = await PostAsync("mark-conversations",
-                    new { conversation_ids = ids });
+                    JsonHelper.Serialize(new MarkConversationsReadRequest { ConversationIds = ids }));
 
                 response.EnsureSuccessStatusCode();
             }
@@ -181,5 +189,29 @@ namespace Froststrap.Integrations.OverlayModules
                 App.Logger.Error(ex);
             }
         }
+    }
+
+    internal sealed class CreateConversationsRequest
+    {
+        [JsonPropertyName("conversations")]
+        public List<CreateConversationEntry> Conversations { get; set; } = [];
+
+        [JsonPropertyName("include_user_data")]
+        public bool IncludeUserData { get; set; }
+    }
+
+    internal sealed class CreateConversationEntry
+    {
+        [JsonPropertyName("type")]
+        public string Type { get; set; } = String.Empty;
+
+        [JsonPropertyName("participant_user_ids")]
+        public long[] ParticipantUserIds { get; set; } = [];
+    }
+
+    internal sealed class MarkConversationsReadRequest
+    {
+        [JsonPropertyName("conversation_ids")]
+        public string[] ConversationIds { get; set; } = [];
     }
 }

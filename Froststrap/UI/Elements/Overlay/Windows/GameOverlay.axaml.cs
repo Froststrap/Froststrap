@@ -273,7 +273,7 @@ namespace Froststrap.UI.Elements.Overlay
             {
                 var panels = BuildLayout();
 
-                string serialised = JsonSerializer.Serialize(panels);
+                string serialised = JsonHelper.Serialize(panels);
 
                 if (serialised == _savedLayout)
                     return;
@@ -552,7 +552,7 @@ namespace Froststrap.UI.Elements.Overlay
 
             RestoreDepth();
 
-            _savedLayout = JsonSerializer.Serialize(BuildLayout());
+            _savedLayout = JsonHelper.Serialize(BuildLayout());
 
             await _viewModel.OnLoaded();
         }

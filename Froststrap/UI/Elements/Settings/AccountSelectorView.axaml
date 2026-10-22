@@ -123,7 +123,7 @@
             Name="AccountDropdown"
             MaxHeight="450"
             IsLightDismissEnabled="True"
-            IsOpen="{Binding IsDropdownOpen}"
+            IsOpen="{Binding IsDropdownOpen, Mode=TwoWay}"
             Placement="Top"
             PlacementConstraintAdjustment="SlideX"
             PlacementTarget="{Binding #AccountButton}"

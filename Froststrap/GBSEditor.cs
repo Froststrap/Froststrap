@@ -81,7 +81,21 @@ internal class GBSEditor
         { PlayerListLayOut.x1, "1" }
     };
 
-    public bool Loaded { get; set; }
+    private bool _loaded;
+    public bool Loaded
+    {
+        get => _loaded;
+        set
+        {
+            if (_loaded == value)
+                return;
+
+            _loaded = value;
+            LoadedChanged?.Invoke(this, EventArgs.Empty);
+        }
+    }
+
+    public event EventHandler? LoadedChanged;
 
     public static string FileLocation => OperatingSystem.IsLinux() ?
             Path.Combine(Paths.SoberData, "appData", "GlobalBasicSettings_13.xml") :

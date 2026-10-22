@@ -78,13 +78,19 @@ try
 
     foreach (SyntaxTree tree in trees)
     {
+        List<InvocationExpressionSyntax> candidates = tree.GetRoot()
+            .DescendantNodes()
+            .OfType<InvocationExpressionSyntax>()
+            .Where(IsPotentialJsonInvocation)
+            .ToList();
+
+        if (candidates.Count == 0)
+            continue;
+
         SemanticModel model = compilation.GetSemanticModel(tree);
 
-        foreach (SyntaxNode node in tree.GetRoot().DescendantNodes())
+        foreach (InvocationExpressionSyntax invocation in candidates)
         {
-            if (node is not InvocationExpressionSyntax invocation)
-                continue;
-
             if (model.GetSymbolInfo(invocation).Symbol is not IMethodSymbol method)
                 continue;
 
@@ -166,6 +172,26 @@ catch (Exception ex)
 {
     Console.Error.WriteLine($"JsonContextGen failed: {ex}");
     return 1;
+}
+
+static bool IsPotentialJsonInvocation(InvocationExpressionSyntax invocation)
+{
+    SimpleNameSyntax? name = invocation.Expression switch
+    {
+        MemberAccessExpressionSyntax member => member.Name,
+        MemberBindingExpressionSyntax binding => binding.Name,
+        SimpleNameSyntax simple => simple,
+        _ => null
+    };
+
+    if (name is null)
+        return false;
+
+    string identifier = name.Identifier.ValueText;
+
+    return identifier.Contains("Json", StringComparison.Ordinal)
+        || identifier.StartsWith("Serialize", StringComparison.Ordinal)
+        || identifier.StartsWith("Deserialize", StringComparison.Ordinal);
 }
 
 static string BuildSignature(IEnumerable<string> sources, IEnumerable<string> references, string[] defines)

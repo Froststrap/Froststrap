@@ -77,8 +77,8 @@ namespace Froststrap.UI.Elements.Settings
             if (showAlreadyRunningWarning)
                 ShowAlreadyRunningNotification();
 
-            gbs.Opacity = _viewModel.GBSEnabled ? 1 : 0.5;
-            gbs.IsEnabled = _viewModel.GBSEnabled;
+            App.GlobalSettings.LoadedChanged += OnGlobalSettingsLoadedChanged;
+            UpdateGbsEnabled();
 
             LoadState();
 
@@ -110,6 +110,20 @@ namespace Froststrap.UI.Elements.Settings
                 UpdatePageView(_viewModel.CurrentPage);
                 UpdateSelectedNavigationViewItem(_viewModel.SelectedPage);
             }, DispatcherPriority.Loaded);
+        }
+
+        private void OnGlobalSettingsLoadedChanged(object? sender, EventArgs e)
+        {
+            Dispatcher.UIThread.Post(UpdateGbsEnabled);
+        }
+
+        private void UpdateGbsEnabled()
+        {
+            _viewModel?.RefreshGbsEnabled();
+
+            bool enabled = _viewModel?.GBSEnabled ?? App.GlobalSettings.Loaded;
+            gbs.Opacity = enabled ? 1 : 0.5;
+            gbs.IsEnabled = enabled;
         }
 
         private SearchDialog? EnsureSearchOverlay()
@@ -795,6 +809,7 @@ namespace Froststrap.UI.Elements.Settings
 
         private void MainWindow_Closed(object? sender, EventArgs e)
         {
+            App.GlobalSettings.LoadedChanged -= OnGlobalSettingsLoadedChanged;
             NotificationManager = null;
             Instance = null;
             App.SettingsOpen = false;

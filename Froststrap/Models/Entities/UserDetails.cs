@@ -91,7 +91,7 @@ namespace Froststrap.Models.Entities
         private static async Task<List<GetUserResponse>?> FetchUsersAsync(List<long> userIds)
         {
             Uri url = UrlBuilder.BuildApiUrl("users", "v1/users");
-            string body = JsonSerializer.Serialize(new UserDetailsBatchRequest { UserIds = userIds });
+            string body = JsonHelper.Serialize(new UserDetailsBatchRequest { UserIds = userIds });
 
             for (int attempt = 1; attempt <= MaxAttempts; attempt++)
             {
@@ -101,7 +101,7 @@ namespace Froststrap.Models.Entities
 
                     if (response.IsSuccessStatusCode)
                     {
-                        var parsed = JsonSerializer.Deserialize<ApiArrayResponse<GetUserResponse>>(await response.Content.ReadAsStringAsync());
+                        var parsed = JsonHelper.Deserialize<ApiArrayResponse<GetUserResponse>>(await response.Content.ReadAsStringAsync());
 
                         if (parsed?.Data is not null)
                         {

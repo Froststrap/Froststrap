@@ -113,9 +113,13 @@ namespace Froststrap.RobloxInterfaces
 
                 try
                 {
-                    var response = await AccountRequests.PostJsonAsync<UserPresenceResponse>(
-                        UrlBuilder.BuildApiUrl("presence", "v1/presence/users"),
-                        new { userIds = batch });
+                    var payload = new PresenceBatchRequest { UserIds = batch };
+                    using var request = new HttpRequestMessage(HttpMethod.Post, UrlBuilder.BuildApiUrl("presence", "v1/presence/users"))
+                    {
+                        Content = new StringContent(JsonHelper.Serialize(payload), Encoding.UTF8, "application/json")
+                    };
+
+                    var response = await Http.AuthSendJson<UserPresenceResponse>(request);
 
                     foreach (UserPresence presence in response?.UserPresences ?? [])
                     {
@@ -373,13 +377,13 @@ namespace Froststrap.RobloxInterfaces
 
             try
             {
-                var payload = new Dictionary<string, object>
+                var payload = new Dictionary<string, string>
                 {
                     ["friendshipOriginSourceType"] = "Unknown"
                 };
 
                 var content = new StringContent(
-                    JsonSerializer.Serialize(payload),
+                    JsonHelper.Serialize(payload),
                     Encoding.UTF8,
                     "application/json");
 

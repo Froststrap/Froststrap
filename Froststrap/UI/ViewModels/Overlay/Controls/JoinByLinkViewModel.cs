@@ -305,7 +305,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                 }
 
                 string body = await response.Content.ReadAsStringAsync(token);
-                UniverseIdResponse? universe = JsonSerializer.Deserialize<UniverseIdResponse>(body);
+                UniverseIdResponse? universe = JsonHelper.Deserialize<UniverseIdResponse>(body);
 
                 if (universe is null || universe.UniverseId == 0)
                 {

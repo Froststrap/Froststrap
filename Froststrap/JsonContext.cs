@@ -74,6 +74,7 @@ namespace Froststrap
     [JsonSerializable(typeof(JoinGameInstanceRequest))]
     [JsonSerializable(typeof(OmniRecommendationRequest))]
     [JsonSerializable(typeof(BootstrapperEditorWindow.CustomBootstrapperSchema.Schema))]
+    [JsonSerializable(typeof(OverlayNotes))]
     internal partial class JsonContext : JsonSerializerContext
     {
     }

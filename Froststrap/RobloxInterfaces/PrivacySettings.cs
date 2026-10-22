@@ -107,7 +107,7 @@ namespace Froststrap.RobloxInterfaces
             AccountRequests.SendAsync(
                 HttpMethod.Post,
                 UpdateUrl,
-                new Dictionary<string, string> { [setting] = value },
+                JsonHelper.Serialize(new Dictionary<string, string> { [setting] = value }),
                 setting,
                 value);
     }

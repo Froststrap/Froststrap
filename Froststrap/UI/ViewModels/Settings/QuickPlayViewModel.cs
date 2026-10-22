@@ -674,7 +674,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
             if (!response.IsSuccessStatusCode) return;
 
             var json = await response.Content.ReadAsStringAsync(token);
-            var universe = JsonSerializer.Deserialize<UniverseIdResponse>(json);
+            var universe = JsonHelper.Deserialize<UniverseIdResponse>(json);
             if (universe is null || universe.UniverseId == 0) return;
 
             long universeId = universe.UniverseId;

@@ -14,6 +14,9 @@ SPDX-License-Identifier: MPL-2.0
     <RootNamespace>JsonContextGen</RootNamespace>
     <IsPackable>false</IsPackable>
     <EnableDefaultItems>true</EnableDefaultItems>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+    <EnableNETAnalyzers>false</EnableNETAnalyzers>
+    <AnalysisLevel>none</AnalysisLevel>
   </PropertyGroup>
 
   <ItemGroup>

@@ -32,7 +32,7 @@ namespace Froststrap.RobloxInterfaces
             if (doc is null)
                 return (null, null);
 
-            var response = doc.RootElement.Deserialize<OmniSearchResponse>();
+            var response = JsonHelper.Deserialize<OmniSearchResponse>(doc.RootElement);
 
             string? next = doc.RootElement.TryGetProperty("nextPageToken", out var token)
                 && token.ValueKind == JsonValueKind.String

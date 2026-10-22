@@ -33,7 +33,15 @@ namespace Froststrap.RobloxInterfaces
                 {
                     string requestId = $"{i}:{chunk[i]}:AvatarHeadShot:{Size}:png:regular";
 
-                    requests.Add(new ThumbnailRequest { RequestId = requestId, Token = chunk[i], Size = size });
+                    requests.Add(new ThumbnailRequest
+                    {
+                        RequestId = requestId,
+                        Token = chunk[i],
+                        Type = ThumbnailType.AvatarHeadShot,
+                        Size = size,
+                        Format = ThumbnailFormat.Png,
+                        IsCircular = false
+                    });
 
                     byRequestId[requestId] = chunk[i];
                 }
@@ -42,7 +50,7 @@ namespace Froststrap.RobloxInterfaces
                 {
                     var message = new HttpRequestMessage(HttpMethod.Post, BatchUrl)
                     {
-                        Content = new StringContent(JsonSerializer.Serialize(requests), Encoding.UTF8, "application/json")
+                        Content = new StringContent(JsonHelper.Serialize(requests), Encoding.UTF8, "application/json")
                     };
 
                     var response = await Http.SendJson<ApiArrayResponse<ThumbnailResponse>>(message);

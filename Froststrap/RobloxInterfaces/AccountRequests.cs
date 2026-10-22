@@ -8,9 +8,9 @@ namespace Froststrap.RobloxInterfaces
 {
     internal static class AccountRequests
     {
-        public static async Task SendAsync(HttpMethod method, Uri url, object body, string setting, string value)
+        public static async Task SendAsync(HttpMethod method, Uri url, string? jsonBody, string setting, string value)
         {
-            using var response = await SendJsonAsync(method, url, body);
+            using var response = await SendJsonAsync(method, url, jsonBody);
             await EnsureAcceptedAsync(response, setting, value);
         }
 
@@ -21,17 +21,10 @@ namespace Froststrap.RobloxInterfaces
             response.EnsureSuccessStatusCode();
         }
 
-        public static async Task<T> PostJsonAsync<T>(Uri url, object body)
-        {
-            using var response = await SendJsonAsync(HttpMethod.Post, url, body);
-            response.EnsureSuccessStatusCode();
-            return JsonSerializer.Deserialize<T>(await response.Content.ReadAsStringAsync())!;
-        }
-
-        private static Task<HttpResponseMessage> SendJsonAsync(HttpMethod method, Uri url, object? body) =>
+        private static Task<HttpResponseMessage> SendJsonAsync(HttpMethod method, Uri url, string? jsonBody) =>
             App.Cookies.AuthRequest(new HttpRequestMessage(method, url)
             {
-                Content = body is null ? null : new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json")
+                Content = jsonBody is null ? null : new StringContent(jsonBody, Encoding.UTF8, "application/json")
             });
 
         private static async Task EnsureAcceptedAsync(HttpResponseMessage response, string setting, string value)

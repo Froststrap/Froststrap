@@ -137,7 +137,11 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public EventHandler? RequestSaveNoticeEvent;
         public EventHandler? RequestCloseWindowEvent;
-        public bool GBSEnabled = App.GlobalSettings.Loaded;
+        private bool _gbsEnabled = App.GlobalSettings.Loaded;
+
+        public bool GBSEnabled => _gbsEnabled;
+
+        public void RefreshGbsEnabled() => _gbsEnabled = App.GlobalSettings.Loaded;
 
         public NextAction CloseAction { get; private set; } = NextAction.Terminate;
 
