@@ -104,8 +104,10 @@ namespace Froststrap
 
             window.Loaded += (s, e) =>
             {
-                _ = Task.Run(() => App.PlayerState.Load());
-                _ = Task.Run(() => App.StudioState.Load());
+                if (!App.PlayerState.Loaded)
+                    _ = Task.Run(() => App.PlayerState.Prop);
+                if (!App.StudioState.Loaded)
+                    _ = Task.Run(() => App.StudioState.Prop);
 
                 if (App.Settings.Prop.ShowUsingFroststrapRPC && App.FrostRPC == null)
                 {

@@ -394,7 +394,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 }
                 else if (SelectedAddMethod == Strings.Common_Browser)
                 {
-                    newAccount = await _accountManager.AddAccountByBrowserAsync();
+                    newAccount = await AccountManager.AddAccountByBrowserAsync();
                 }
                 else if (SelectedAddMethod == Strings.Common_Manual)
                 {

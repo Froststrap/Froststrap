@@ -42,18 +42,27 @@ SPDX-License-Identifier: MPL-2.0
     <DebugType>none</DebugType>
     <DebugSymbols>false</DebugSymbols>
     <CopyOutputSymbolsToPublishDirectory>false</CopyOutputSymbolsToPublishDirectory>
+    <OptimizationPreference>Size</OptimizationPreference>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <AotEmbedNativeLibraries Condition="'$(AotEmbedNativeLibraries)' == ''">true</AotEmbedNativeLibraries>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(RuntimeIdentifier)' != ''">
-    <PublishSingleFile>true</PublishSingleFile>
-    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <PublishSingleFile Condition="'$(PublishAot)' != 'true'">true</PublishSingleFile>
+    <IncludeNativeLibrariesForSelfExtract Condition="'$(PublishAot)' != 'true'">true</IncludeNativeLibrariesForSelfExtract>
     <PublishReadyToRun Condition="'$(PublishAot)' != 'true'">true</PublishReadyToRun>
     <PublishReadyToRunComposite Condition="'$(PublishAot)' != 'true'">true</PublishReadyToRunComposite>
-    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+    <EnableCompressionInSingleFile Condition="'$(PublishAot)' != 'true'">true</EnableCompressionInSingleFile>
     <SelfContained>true</SelfContained>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(PublishTrimmed)' == 'true'">
+  <PropertyGroup>
+    <RootTrimmedAssemblies Condition="'$(RootTrimmedAssemblies)' == ''">true</RootTrimmedAssemblies>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(PublishTrimmed)' == 'true' and '$(RootTrimmedAssemblies)' == 'true'">
     <TrimmerRootAssembly Include="Froststrap" />
     <TrimmerRootAssembly Include="AvaloniaEdit" />
     <TrimmerRootAssembly Include="ColorPicker" />
@@ -163,7 +172,7 @@ SPDX-License-Identifier: MPL-2.0
   </Target>
 
   <Target Name="EmbedAotNativeLibraries" BeforeTargets="_GenerateCompileInputs"
-          Condition="'$(PublishAot)' == 'true' and $([MSBuild]::IsOSPlatform('Windows'))">
+          Condition="'$(PublishAot)' == 'true' and '$(AotEmbedNativeLibraries)' == 'true' and $([MSBuild]::IsOSPlatform('Windows'))">
     <ItemGroup>
       <_AotNativeLibrary Include="@(ReferenceCopyLocalPaths->Distinct())"
                          Condition="'%(Filename)%(Extension)' == 'av_libglesv2.dll'
@@ -178,12 +187,29 @@ SPDX-License-Identifier: MPL-2.0
         <Visible>false</Visible>
       </EmbeddedResource>
     </ItemGroup>
+    <GetFileHash Files="@(_AotNativeLibrary)" Algorithm="SHA256" HashEncoding="hex">
+      <Output TaskParameter="Items" ItemName="_AotNativeLibraryHashed" />
+    </GetFileHash>
+    <WriteLinesToFile File="$(IntermediateOutputPath)AotNative.manifest"
+                      Lines="@(_AotNativeLibraryHashed->'%(Filename)%(Extension)|%(FileHash)')"
+                      Overwrite="true"
+                      WriteOnlyWhenDifferent="true" />
+    <ItemGroup>
+      <EmbeddedResource Include="$(IntermediateOutputPath)AotNative.manifest">
+        <LogicalName>Froststrap.Native.manifest</LogicalName>
+        <Type>Non-Resx</Type>
+        <WithCulture>false</WithCulture>
+        <Visible>false</Visible>
+      </EmbeddedResource>
+    </ItemGroup>
   </Target>
 
   <Target Name="CleanAotPublishOutput" AfterTargets="Publish"
           Condition="'$(PublishAot)' == 'true' and $([MSBuild]::IsOSPlatform('Windows'))">
     <ItemGroup>
       <_AotPublishKeep Include="$([MSBuild]::NormalizeDirectory('$(PublishDir)'))Froststrap.exe" />
+      <_AotPublishKeep Include="$([MSBuild]::NormalizeDirectory('$(PublishDir)'))*.dll"
+                       Condition="'$(AotEmbedNativeLibraries)' != 'true'" />
       <_AotPublishFiles Include="$([MSBuild]::NormalizeDirectory('$(PublishDir)'))**\*" Exclude="@(_AotPublishKeep)" />
       <_AotPublishDirectories Include="$([System.IO.Directory]::GetDirectories('$(PublishDir)'))" />
     </ItemGroup>

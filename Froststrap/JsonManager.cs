@@ -21,6 +21,12 @@ namespace Froststrap
 
         public bool Loaded { get; protected set; }
 
+        public bool TryGetLoaded(out T value)
+        {
+            value = _prop;
+            return Loaded;
+        }
+
         public virtual string ClassName { get; } = string.IsNullOrEmpty(className) ? typeof(T).Name : className;
 
         public virtual string ProfilesLocation => Path.Combine(Paths.Base, "Profiles.json");
@@ -405,14 +411,22 @@ namespace Froststrap
     /// <typeparam name="T">Class</typeparam>
     internal class LazyJsonManager<T>(string? className) : JsonManager<T>(className) where T : class, new()
     {
+        private readonly object _loadSync = new();
+
         public override T Prop
         {
             get
             {
-                if (!Loaded)
-                    Load();
+                if (Loaded)
+                    return _prop;
 
-                return _prop;
+                lock (_loadSync)
+                {
+                    if (!Loaded)
+                        Load();
+
+                    return _prop;
+                }
             }
             set
             {
