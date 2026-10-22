@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: 2026 Froststrap
+// SPDX-FileCopyrightText: 2026 Froststrap
 //
 // SPDX-License-Identifier: MPL-2.0
 
@@ -38,7 +38,7 @@ namespace Froststrap.Extensions
             response.EnsureSuccessStatusCode();
 
             using var stream = await response.Content.ReadAsStreamAsync(token);
-            return await JsonSerializer.DeserializeAsync<T>(stream, cancellationToken: token);
+            return await JsonHelper.DeserializeAsync<T>(stream, cancellationToken: token);
         }
     }
 }

@@ -65,6 +65,12 @@ SPDX-License-Identifier: MPL-2.0
                                CommandParameter="https://github.com/AvaloniaUI/AvaloniaEdit" />
 
                 <ui:CardAction Margin="4" Icon="Copyright"
+                               Header="Avalonia WebView"
+                               Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
+                               Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+                               CommandParameter="https://github.com/AvaloniaUI/Avalonia.Controls.WebView" />
+
+                <ui:CardAction Margin="4" Icon="Copyright"
                                Header="Fluent Avalonia"
                                Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
                                Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
@@ -105,18 +111,6 @@ SPDX-License-Identifier: MPL-2.0
                                Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
                                Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
                                CommandParameter="https://github.com/icsharpcode/SharpZipLib" />
-
-                <ui:CardAction Margin="4" Icon="Copyright"
-                               Header="Puppeteer Sharp"
-                               Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
-                               Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
-                               CommandParameter="https://github.com/hardkoded/puppeteer-sharp" />
-
-                <ui:CardAction Margin="4" Icon="Copyright"
-                               Header="Puppeteer Sharp Extra"
-                               Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
-                               Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
-                               CommandParameter="https://github.com/Overmiind/Puppeteer-sharp-extra" />
 
                 <ui:CardAction Margin="4" Icon="Copyright"
                                Header="NLog"

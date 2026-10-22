@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
 using System.Net.Sockets;
-using DiscordRPC;
+using Froststrap.Integrations.Discord;
 
 namespace Froststrap.Integrations
 {
@@ -21,12 +21,7 @@ namespace Froststrap.Integrations
 
         public FroststrapRichPresence()
         {
-            _rpcClient = new DiscordRpcClient(
-                "1399535282713399418",
-                -1,
-                null,
-                true,
-                DiscordIpcPipeClient.Create())
+            _rpcClient = new DiscordRpcClient("1399535282713399418")
             {
                 SkipIdenticalPresence = true,
                 ShutdownOnly = true
@@ -54,7 +49,7 @@ namespace Froststrap.Integrations
             });
         }
 
-        private void OnReady(object sender, DiscordRPC.Message.ReadyMessage args)
+        private void OnReady(object? sender, ReadyMessage args)
         {
             if (_disposed) return;
 
@@ -103,7 +98,7 @@ namespace Froststrap.Integrations
 
             _lastState = state;
 
-            var presence = new DiscordRPC.RichPresence
+            var presence = new DiscordActivity
             {
                 Details = "Customize Roblox to your liking!",
                 State = state,

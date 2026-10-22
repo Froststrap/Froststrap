@@ -240,13 +240,30 @@ internal partial class App : Application
         });
     }
 
-    async void GlobalExceptionHandler(object sender, DispatcherUnhandledExceptionEventArgs e)
+    async void GlobalExceptionHandler(object? sender, DispatcherUnhandledExceptionEventArgs e)
     {
         e.Handled = true;
+
+        if (IsWebViewInitializationAbort(e.Exception))
+        {
+            Logger.Info("Ignored WebView2 initialization abort.");
+            return;
+        }
 
         Logger.Error($"An exception occurred: {e.Exception.Message}");
 
         await FinalizeExceptionHandling(e.Exception);
+    }
+
+    private static bool IsWebViewInitializationAbort(Exception ex)
+    {
+        for (Exception? current = ex; current != null; current = current.InnerException)
+        {
+            if (current is COMException { HResult: unchecked((int)0x80004004) })
+                return true;
+        }
+
+        return false;
     }
 
     public static async Task FinalizeExceptionHandling(AggregateException ex)
@@ -425,6 +442,7 @@ internal partial class App : Application
 
         AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
         TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
+        Dispatcher.UIThread.UnhandledException += GlobalExceptionHandler;
 
         if (OperatingSystem.IsMacOS()
             && TryGetFeature(typeof(IActivatableLifetime)) is IActivatableLifetime activatableLifetime)

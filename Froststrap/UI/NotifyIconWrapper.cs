@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: MPL-2.0
 
 using Avalonia;
-using System.Reflection;
 using Avalonia.Controls;
 using Avalonia.Platform;
 using Avalonia.Threading;
@@ -84,16 +83,9 @@ namespace Froststrap.UI
                 Menu = nativeMenu
             };
 
-            const BindingFlags NonPublic = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public;
-
-            var impl = typeof(TrayIcon).GetProperty("Impl", NonPublic)?.GetValue(_trayIcon);
-            var iconImpl = typeof(WindowIcon).GetProperty("PlatformImpl", NonPublic)?.GetValue(_trayIcon.Icon);
-
             App.Logger.Debug(
-                $"Tray: impl={impl?.GetType().Name ?? "null"} " +
-                $"uiThread={Dispatcher.UIThread.CheckAccess()} " +
+                $"Tray: uiThread={Dispatcher.UIThread.CheckAccess()} " +
                 $"iconBytes={iconBytes} " +
-                $"iconImpl={iconImpl?.GetType().Name ?? "null"} " +
                 $"menu={(_trayIcon.Menu is null ? "null" : "set")} " +
                 $"exporter={(_trayIcon.NativeMenuExporter is null ? "null" : "set")} " +
                 $"iconsCollection={(TrayIcon.GetIcons(Application.Current!) is null ? "null" : "set")} " +
@@ -114,7 +106,7 @@ namespace Froststrap.UI
             var icons = TrayIcon.GetIcons(app);
             if (icons is null)
             {
-                icons = new TrayIcons();
+                icons = [];
                 TrayIcon.SetIcons(app, icons);
             }
             icons.Add(_trayIcon);

@@ -2,13 +2,13 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace Froststrap.Models
 {
     internal record AccountManagerAccount
     {
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public string SecurityToken { get; init; }
 
         public long UserId { get; init; }

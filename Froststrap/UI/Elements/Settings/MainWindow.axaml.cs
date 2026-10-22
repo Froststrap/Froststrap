@@ -14,8 +14,16 @@ using Avalonia.Threading;
 using Avalonia.VisualTree;
 using FluentAvalonia.UI.Controls;
 using Froststrap.UI.Elements.Controls;
+using Froststrap.UI.Elements.Settings.Pages;
+using Froststrap.UI.Elements.Settings.Pages.FastFlags;
+using Froststrap.UI.Elements.Settings.Pages.GlobalSettings;
+using Froststrap.UI.Elements.Settings.Pages.Mods;
 using Froststrap.UI.Utility;
 using Froststrap.UI.ViewModels.Settings;
+using Froststrap.UI.ViewModels.Settings.FastFlags;
+using Froststrap.UI.ViewModels.Settings.GlobalSettings;
+using Froststrap.UI.ViewModels.Settings.Mods;
+using Froststrap.Utility;
 using LucideAvalonia.Enum;
 using System.ComponentModel;
 
@@ -35,6 +43,7 @@ namespace Froststrap.UI.Elements.Settings
         private readonly HashSet<string> _indexedPageTags = [];
         private readonly SearchIndexBuilder _searchIndexBuilder = new();
         private bool _isIndexingAllPagesStarted;
+        private SearchDialog? _searchOverlay;
 
         private const double NotificationHeight = 80;
         private const double NotificationSpacing = 15;
@@ -62,13 +71,6 @@ namespace Froststrap.UI.Elements.Settings
             _viewModel.RequestSaveNoticeEvent += (_, _) => ShowSaveNotification();
             _viewModel.RequestCloseWindowEvent += (_, _) => Close();
             _viewModel.SearchBar.SearchResultSelected += (_, item) => OnSearchResultSelected(item);
-
-            var overlay = this.FindControl<SearchDialog>("SearchOverlay");
-            if (overlay != null)
-            {
-                overlay.Subscribe(_viewModel.SearchBar);
-                overlay.Dismissed += (_, _) => overlay.Hide();
-            }
 
             App.Logger.Debug("Initializing settings window");
 
@@ -102,12 +104,35 @@ namespace Froststrap.UI.Elements.Settings
             this.Closing += MainWindow_Closing;
             this.Closed += MainWindow_Closed;
 
-            UpdatePageView(_viewModel.CurrentPage);
-
             Dispatcher.UIThread.Post(() =>
             {
+                if (_viewModel == null) return;
+                UpdatePageView(_viewModel.CurrentPage);
                 UpdateSelectedNavigationViewItem(_viewModel.SelectedPage);
             }, DispatcherPriority.Loaded);
+        }
+
+        private SearchDialog? EnsureSearchOverlay()
+        {
+            if (_viewModel == null)
+                return null;
+
+            if (_searchOverlay != null)
+                return _searchOverlay;
+
+            var overlay = new SearchDialog();
+            overlay.Subscribe(_viewModel.SearchBar);
+            overlay.Dismissed += (_, _) => overlay.Hide();
+
+            Grid.SetRow(overlay, 0);
+            Grid.SetRowSpan(overlay, 3);
+            overlay.ZIndex = 2000;
+
+            if (this.FindControl<Grid>("RootGrid") is { } rootGrid)
+                rootGrid.Children.Add(overlay);
+
+            _searchOverlay = overlay;
+            return overlay;
         }
 
         protected override async void OnOpened(EventArgs e)
@@ -154,7 +179,7 @@ namespace Froststrap.UI.Elements.Settings
 
         private void OnSearchResultSelected(SearchBarItem item)
         {
-            this.FindControl<SearchDialog>("SearchOverlay")?.Hide();
+            _searchOverlay?.Hide();
 
             _pendingSearchScrollItem = item;
 
@@ -267,7 +292,7 @@ namespace Froststrap.UI.Elements.Settings
 
             StartIndexingAllPagesIfNeeded();
 
-            this.FindControl<SearchDialog>("SearchOverlay")?.Show();
+            EnsureSearchOverlay()?.Show();
         }
 
         private void UpdateSelectedNavigationViewItem(string selectedPage)
@@ -299,59 +324,26 @@ namespace Froststrap.UI.Elements.Settings
             }
         }
 
-        private static readonly Dictionary<string, Type> ViewTypeCache = new();
-
-        private static Control? ResolveViewForViewModel(object viewModel)
+        private static Control? ResolveViewForViewModel(object viewModel) => viewModel switch
         {
-            var viewModelName = viewModel.GetType().Name;
-            var viewName = viewModelName.Replace("ViewModel", "", StringComparison.Ordinal);
-
-            if (ViewTypeCache.TryGetValue(viewModelName, out var cachedViewType))
-            {
-                try
-                {
-                    return Activator.CreateInstance(cachedViewType) as Control;
-                }
-                catch (Exception ex)
-                {
-                    App.Logger.Error($"Failed to create view {cachedViewType.Name}: {ex.Message}");
-                    return null;
-                }
-            }
-
-            var viewTypeNames = new[]
-            {
-                $"Froststrap.UI.Elements.Settings.Pages.GlobalSettings.{viewName}",
-                $"Froststrap.UI.Elements.Settings.Pages.FastFlags.{viewName}",
-                $"Froststrap.UI.Elements.Settings.Pages.Mods.{viewName}Page",
-                $"Froststrap.UI.Elements.Settings.Pages.{viewName}Page",
-                $"Froststrap.UI.Elements.Settings.Pages.{viewName}",
-                $"Froststrap.UI.Elements.Settings.{viewName}Page",
-                $"Froststrap.UI.Elements.Settings.{viewName}"
-            };
-
-            foreach (var viewTypeName in viewTypeNames)
-            {
-                var viewType = Type.GetType(viewTypeName) ??
-                               System.Reflection.Assembly.GetExecutingAssembly().GetType(viewTypeName);
-
-                if (viewType != null && typeof(Control).IsAssignableFrom(viewType))
-                {
-                    ViewTypeCache[viewModelName] = viewType;
-
-                    try
-                    {
-                        return Activator.CreateInstance(viewType) as Control;
-                    }
-                    catch (Exception ex)
-                    {
-                        App.Logger.Error($"Failed to create view {viewTypeName}: {ex.Message}");
-                    }
-                }
-            }
-
-            return null;
-        }
+            IntegrationsViewModel => new IntegrationsPage(),
+            BehaviourViewModel => new BehaviourPage(),
+            LinuxSettingsViewModel => new LinuxSettingsPage(),
+            ModsPresetsViewModel => new ModsPresetsPage(),
+            FastFlagsViewModel => new FastFlagsPage(),
+            AppearanceViewModel => new AppearancePage(),
+            RegionSelectorViewModel => new RegionSelectorPage(),
+            GlobalSettingsViewModel => new GlobalSettingsPage(),
+            ShortcutsViewModel => new ShortcutsPage(),
+            QuickPlayViewModel => new QuickPlayPage(),
+            ChannelViewModel => new ChannelPage(),
+            GlobalSettingsEditorViewModel => new GlobalSettingsEditor(),
+            FastFlagEditorViewModel => new FastFlagEditor(),
+            CommunityModsViewModel => new CommunityModsPage(),
+            ModGeneratorViewModel => new ModGeneratorPage(),
+            ModsViewModel => new ModsPage(),
+            _ => null
+        };
 
         public void LoadState()
         {
@@ -453,14 +445,15 @@ namespace Froststrap.UI.Elements.Settings
             Grid.SetColumn(closeButton, 2);
             contentGrid.Children.Add(closeButton);
 
-            var transform = new TranslateTransform(NotificationSlideDistance, 0)
+            var transform = new TranslateTransform(App.Settings.Prop.DisableAnimations ? 0 : NotificationSlideDistance, 0);
+            if (!App.Settings.Prop.DisableAnimations)
             {
-                Transitions =
+                transform.Transitions =
                 [
                     new DoubleTransition { Property = TranslateTransform.XProperty, Duration = TimeSpan.FromMilliseconds(350), Easing = new QuarticEaseOut() },
                     new DoubleTransition { Property = TranslateTransform.YProperty, Duration = TimeSpan.FromMilliseconds(300), Easing = new QuarticEaseOut() }
-                ]
-            };
+                ];
+            }
 
             var notification = new Border
             {
@@ -496,9 +489,12 @@ namespace Froststrap.UI.Elements.Settings
 
             Dispatcher.UIThread.InvokeAsync(async () =>
             {
-                await Task.Delay(50);
-                if (cts.IsCancellationRequested) return;
-                transform.X = 0;
+                if (!App.Settings.Prop.DisableAnimations)
+                {
+                    await Task.Delay(50);
+                    if (cts.IsCancellationRequested) return;
+                    transform.X = 0;
+                }
 
                 await Task.Delay(timeout);
                 if (!cts.IsCancellationRequested)
@@ -513,8 +509,11 @@ namespace Froststrap.UI.Elements.Settings
             entry.TimeoutCts?.Cancel();
             RepositionNotifications();
 
-            entry.Transform.X = NotificationSlideDistance;
-            await Task.Delay(350);
+            if (!App.Settings.Prop.DisableAnimations)
+            {
+                entry.Transform.X = NotificationSlideDistance;
+                await Task.Delay(350);
+            }
 
             var notificationPanel = this.FindControl<Panel>("NotificationPanel");
             if (notificationPanel != null && notificationPanel.Children.Contains(entry.Element))

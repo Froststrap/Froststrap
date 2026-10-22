@@ -113,9 +113,15 @@ internal partial class InternalNativeNotify
 /// A native notifier
 public class NativeNotify
 {
-    public static void Init()
+    private static readonly Lazy<bool> Initialized = new(() =>
     {
         InternalNativeNotify.Init();
+        return true;
+    });
+
+    public static void Init()
+    {
+        _ = Initialized.Value;
     }
 
     public static void SendMessage(
@@ -126,6 +132,7 @@ public class NativeNotify
     {
         Task.Run(() =>
         {
+            _ = Initialized.Value;
             InternalNativeNotify.SendMessage(title, description, duration);
         });
     }

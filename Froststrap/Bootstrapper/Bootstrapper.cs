@@ -31,8 +31,8 @@ internal partial class Bootstrapper : IDisposable
     private static readonly JsonSerializerOptions _indentedJsonOptions = new() { WriteIndented = true };
 
     // might slightly increase the ram usage a bit, it's worth it, tho, since it reduces the cpu usage and is much better overrall
-    private static readonly Regex FlatpakProgressRegex = new(@"Updating\s+(?<current>\d+)/(?<total>\d+)…", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-    private static readonly Regex FlatpakPercentRegex = new(@"(?<percent>\d+)%", RegexOptions.Compiled);
+    private static readonly Regex FlatpakProgressRegex = new(@"Updating\s+(?<current>\d+)/(?<total>\d+)…", RegexOptions.IgnoreCase);
+    private static readonly Regex FlatpakPercentRegex = new(@"(?<percent>\d+)%");
     private readonly CancellationTokenSource _cancelTokenSource = new();
 
     private IAppData AppData = default!;
@@ -2414,7 +2414,7 @@ internal partial class Bootstrapper : IDisposable
             try
             {
                 string existingJson = File.ReadAllText(destPath);
-                existing = JsonSerializer.Deserialize<Dictionary<string, object>>(existingJson) ?? [];
+                existing = JsonHelper.Deserialize<Dictionary<string, object>>(existingJson) ?? [];
             }
             catch { }
         }
@@ -2426,7 +2426,7 @@ internal partial class Bootstrapper : IDisposable
         foreach (var kv in rendererFlags)
             existing[kv.Key] = kv.Value;
 
-        string mergedJson = JsonSerializer.Serialize(existing, _indentedJsonOptions);
+        string mergedJson = JsonHelper.Serialize(existing, _indentedJsonOptions);
         File.WriteAllText(destPath, mergedJson);
     }
 
@@ -2573,7 +2573,7 @@ internal partial class Bootstrapper : IDisposable
                 return null;
             }
 
-            var data = await response.Content.ReadFromJsonAsync<WebView2LatestResponse>(cancellationToken: _cancelTokenSource.Token);
+            var data = await JsonHelper.ReadFromJsonAsync<WebView2LatestResponse>(response.Content, cancellationToken: _cancelTokenSource.Token);
             return data?.ContentId?.Version;
         }
         catch (Exception ex)
@@ -2595,7 +2595,7 @@ internal partial class Bootstrapper : IDisposable
                 return null;
             }
 
-            var downloads = await response.Content.ReadFromJsonAsync<List<WebView2Download>>(cancellationToken: _cancelTokenSource.Token);
+            var downloads = await JsonHelper.ReadFromJsonAsync<List<WebView2Download>>(response.Content, cancellationToken: _cancelTokenSource.Token);
             if (downloads is null)
                 return null;
 
@@ -2625,7 +2625,7 @@ internal partial class Bootstrapper : IDisposable
     private async Task<GithubRelease?> GetLatestKombuchaReleaseAsync()
     {
         const string url = $"https://api.github.com/repos/vinegarhq/kombucha/releases/latest";
-        return await App.HttpClient.GetFromJsonAsync<GithubRelease>(url, _cancelTokenSource.Token);
+        return await JsonHelper.GetFromJsonAsync<GithubRelease>(App.HttpClient, url, _cancelTokenSource.Token);
     }
 
     private async Task LaunchStudioViaWineAsync()
@@ -2947,7 +2947,7 @@ internal partial class Bootstrapper : IDisposable
                 string modFilepath = Path.Combine(fontFamiliesFolder, jsonFilename);
                 if (File.Exists(modFilepath))
                     continue;
-                var fontFamilyData = JsonSerializer.Deserialize<FontFamily>(await File.ReadAllTextAsync(jsonFilePath));
+                var fontFamilyData = JsonHelper.Deserialize<FontFamily>(await File.ReadAllTextAsync(jsonFilePath));
                 if (fontFamilyData is null)
                     continue;
                 bool shouldWrite = false;
@@ -2960,7 +2960,7 @@ internal partial class Bootstrapper : IDisposable
                     }
                 }
                 if (shouldWrite)
-                    await File.WriteAllTextAsync(modFilepath, JsonSerializer.Serialize(fontFamilyData, _indentedJsonOptions));
+                    await File.WriteAllTextAsync(modFilepath, JsonHelper.Serialize(fontFamilyData, _indentedJsonOptions));
             }
             App.Logger.Info("End font check");
         }
@@ -3445,7 +3445,7 @@ internal partial class Bootstrapper : IDisposable
                     }
 
                     string profileJson = await File.ReadAllTextAsync(profilePath);
-                    var flags = JsonSerializer.Deserialize<Dictionary<string, object>>(profileJson);
+                    var flags = JsonHelper.Deserialize<Dictionary<string, object>>(profileJson);
 
                     if (flags == null || flags.Count == 0)
                     {
@@ -3796,7 +3796,7 @@ internal partial class Bootstrapper : IDisposable
         Regex[]? compiledFilters = null;
         if (!string.IsNullOrEmpty(fileFilter))
         {
-            compiledFilters = [.. fileFilter.Split(';').Select(p => new Regex(p, RegexOptions.Compiled))];
+            compiledFilters = [.. fileFilter.Split(';').Select(p => new Regex(p))];
         }
 
         await Task.Run(async () =>

@@ -236,40 +236,100 @@ namespace Froststrap.Utility
             Create(appPath, $"-p \"{deeplink}\"", lnkPath, finalIconPath);
         }
 
-        private static void CreateWindowsShortcut(
+        private static unsafe void CreateWindowsShortcut(
             string exePath,
             string exeArgs,
             string lnkPath,
             string? iconPath
         )
         {
-            var shellType = Type.GetTypeFromProgID("WScript.Shell")
-                ?? throw new InvalidOperationException("Windows Script Host is unavailable.");
+            Guid clsid = new("00021401-0000-0000-C000-000000000046");
+            Guid iid = new("000214F9-0000-0000-C000-000000000046");
+            const uint CLSCTX_INPROC_SERVER = 0x1;
 
-            dynamic shell = Activator.CreateInstance(shellType)!;
-            dynamic shortcut = shell.CreateShortcut(lnkPath);
+            int hr = CoCreateInstance(ref clsid, IntPtr.Zero, CLSCTX_INPROC_SERVER, ref iid, out IntPtr shellLink);
+            Marshal.ThrowExceptionForHR(hr);
+
+            IntPtr persistFile = IntPtr.Zero;
 
             try
             {
-                shortcut.TargetPath = exePath;
-                shortcut.Arguments = exeArgs;
-                shortcut.WorkingDirectory = Path.GetDirectoryName(exePath);
+                Guid persistFileIid = new("0000010b-0000-0000-C000-000000000046");
+                hr = QueryInterface(shellLink, ref persistFileIid, out persistFile);
+                Marshal.ThrowExceptionForHR(hr);
+
+                SetShellLinkString(shellLink, 20, exePath);
+                SetShellLinkString(shellLink, 11, exeArgs);
+                SetShellLinkString(shellLink, 9, Path.GetDirectoryName(exePath) ?? string.Empty);
 
                 var finalIconPath = string.IsNullOrWhiteSpace(iconPath)
                     ? exePath
                     : iconPath;
 
-                if (Path.GetExtension(finalIconPath)
-                    .Equals(".ico", StringComparison.OrdinalIgnoreCase))
-                    shortcut.IconLocation = finalIconPath;
-                else shortcut.IconLocation = $"{finalIconPath},0";
-                shortcut.Save();
+                SetShellLinkIconLocation(shellLink, finalIconPath, 0);
+
+                hr = SavePersistFile(persistFile, lnkPath);
+                Marshal.ThrowExceptionForHR(hr);
             }
             finally
             {
-                Marshal.FinalReleaseComObject(shortcut);
-                Marshal.FinalReleaseComObject(shell);
+                if (persistFile != IntPtr.Zero)
+                    ReleaseComObject(persistFile);
+
+                ReleaseComObject(shellLink);
             }
+        }
+
+        [DllImport("ole32.dll", ExactSpelling = true, PreserveSig = true)]
+        private static extern int CoCreateInstance(
+            ref Guid rclsid,
+            IntPtr pUnkOuter,
+            uint dwClsContext,
+            ref Guid riid,
+            out IntPtr ppv);
+
+        private static unsafe int QueryInterface(IntPtr obj, ref Guid riid, out IntPtr ppv)
+        {
+            Guid iid = riid;
+            IntPtr result = IntPtr.Zero;
+            int hr;
+
+            Guid* iidPtr = &iid;
+            var fn = (delegate* unmanaged[Stdcall]<IntPtr, Guid*, IntPtr*, int>)(*(IntPtr**)obj)[0];
+            hr = fn(obj, iidPtr, &result);
+
+            ppv = result;
+            return hr;
+        }
+
+        private static unsafe int SetShellLinkString(IntPtr obj, int slot, string value)
+        {
+            var fn = (delegate* unmanaged[Stdcall]<IntPtr, char*, int>)(*(IntPtr**)obj)[slot];
+
+            fixed (char* valuePtr = value)
+                return fn(obj, valuePtr);
+        }
+
+        private static unsafe int SetShellLinkIconLocation(IntPtr obj, string path, int index)
+        {
+            var fn = (delegate* unmanaged[Stdcall]<IntPtr, char*, int, int>)(*(IntPtr**)obj)[17];
+
+            fixed (char* pathPtr = path)
+                return fn(obj, pathPtr, index);
+        }
+
+        private static unsafe int SavePersistFile(IntPtr obj, string path)
+        {
+            var fn = (delegate* unmanaged[Stdcall]<IntPtr, char*, int, int>)(*(IntPtr**)obj)[6];
+
+            fixed (char* pathPtr = path)
+                return fn(obj, pathPtr, 1);
+        }
+
+        private static unsafe void ReleaseComObject(IntPtr obj)
+        {
+            var fn = (delegate* unmanaged[Stdcall]<IntPtr, uint>)(*(IntPtr**)obj)[2];
+            fn(obj);
         }
 
         // idk if these will work at all
