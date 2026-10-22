@@ -17,6 +17,18 @@ It is way easier if you are on macOS or Linux to just use Nix, and enter the fla
 
 and if you get prompted to trust nix configuraiton stuff, you can deny if you don't feel it's safe.
 
+The default shell includes the .NET SDK, Rust toolchain, publishing tools, and lint tools.
+For a leaner shell without the extras:
+
+.. code-block:: bash
+
+   nix develop .#minimal  # .NET + Rust only
+   nix develop .#dotnet   # .NET only
+   nix develop .#rust     # Rust only
+   nix develop .#extra    # vpk, avdt, cargo-bloat, and nfpm
+   nix develop .#lint     # reuse and typos
+   nix develop .#lsp      # .NET + OmniSharp
+
 macOS Specific
 ~~~~~~~~~~~~~~
 
@@ -43,6 +55,8 @@ Publish
 ~~~~~~~
 
 Publishing is going to create installers, and other important stuff making it publishable online.
+
+The default Nix devshell includes ``vpk``; if you use ``.#minimal``, switch to the default shell for installers.
 
 .. code-block:: bash
 

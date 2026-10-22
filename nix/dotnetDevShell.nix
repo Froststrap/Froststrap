@@ -23,7 +23,6 @@
   libsecret,
   dotnetCorePackages,
   glib,
-  omnisharp-roslyn,
   callPackage,
   nspr,
   dbus,
@@ -60,7 +59,6 @@ mkFragment (finalAttrs: {
   ];
 
   buildInputs = [
-    omnisharp-roslyn # lsp
     dotnet-tc
   ]
   ++ lib.optionals stdenv.hostPlatform.isLinux [
