@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input.Platform;
+using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.Integrations;
@@ -897,7 +898,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 };
 
                 Directory.CreateDirectory(Paths.Cache);
-                var json = JsonSerializer.Serialize(cache);
+                var json = JsonHelper.Serialize(cache);
                 await File.WriteAllTextAsync(GetCachePath(), json);
             }
             catch { }
@@ -910,7 +911,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 if (!File.Exists(GetCachePath())) return null;
 
                 var json = await File.ReadAllTextAsync(GetCachePath());
-                var cache = JsonSerializer.Deserialize<DatacentersCache>(json);
+                var cache = JsonHelper.Deserialize<DatacentersCache>(json);
 
                 if (cache == null) return null;
                 if (!allowExpired && cache.LastUpdated < DateTime.UtcNow.AddDays(-7)) return null;

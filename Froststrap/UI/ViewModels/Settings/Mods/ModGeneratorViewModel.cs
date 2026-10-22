@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: 2026 Froststrap
+// SPDX-FileCopyrightText: 2026 Froststrap
 //
 // SPDX-License-Identifier: MPL-2.0
 
@@ -12,6 +12,7 @@ using CommunityToolkit.Mvvm.Input;
 using Froststrap.Integrations;
 using System.Collections.ObjectModel;
 using System.IO.Compression;
+using System.Text.Json.Nodes;
 using System.Windows.Input;
 using Color = Avalonia.Media.Color;
 
@@ -566,16 +567,35 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                     if (Directory.Exists(contentDir)) DeleteExcept(contentDir);
 
                     string infoPath = Path.Combine(TempRoot, "info.json");
-                    var infoData = new
+
+                    JsonNode colorsUsed;
+
+                    if (IsGradientMode)
+                    {
+                        JsonArray stops = [];
+
+                        foreach (var stop in GradientStops)
+                            stops.Add((JsonNode)new JsonObject { ["Offset"] = stop.Offset, ["Color"] = stop.Color });
+
+                        colorsUsed = new JsonObject
+                        {
+                            [nameof(GradientExport.GradientStops)] = stops,
+                            ["Angle"] = GradientAngle
+                        };
+                    }
+                    else
+                    {
+                        colorsUsed = new JsonObject { ["SolidColor"] = SolidColorHex };
+                    }
+
+                    var infoData = new ModGeneratorInfo
                     {
                         FroststrapVersion = App.InternalVersion,
                         RobloxVersion = vName,
                         RobloxVersionHash = vHash,
-                        ColorsUsed = IsGradientMode
-                            ? new { GradientStops = GradientStops.Select(s => new { s.Offset, s.Color }), Angle = GradientAngle }
-                            : (object)new { SolidColor = SolidColorHex }
+                        ColorsUsed = colorsUsed
                     };
-                    await File.WriteAllTextAsync(infoPath, JsonSerializer.Serialize(infoData, _jsonOptions));
+                    await File.WriteAllTextAsync(infoPath, JsonHelper.Serialize(infoData, _jsonOptions));
 
                     StatusText = Strings.Menu_ModGenerator_Packaging;
                     Progress = 90;

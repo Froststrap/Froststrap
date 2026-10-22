@@ -31,6 +31,10 @@ sealed class Program
     [STAThread]
     public static int Main(string[] args)
     {
+#if WINDOWS && FROSTSTRAP_AOT
+        Utility.AotNativeLibraryExtractor.Extract();
+#endif
+
         VelopackApp.Build()
             .SetAutoApplyOnStartup(false)
             .OnAfterInstallFastCallback(v => UriHandler.RegisterProtocolHandlers())
@@ -38,10 +42,8 @@ sealed class Program
             .OnBeforeUninstallFastCallback(v => UriHandler.UnregisterProtocolHandlers())
             .Run();
 
-        ThreadPool.SetMinThreads(Environment.ProcessorCount * 2, Environment.ProcessorCount * 2);
-
         // shim to convert old args to new ones
-        string[] launchArgs = LegacyArgs.Normalize(args);
+        string[] launchArgs = args.Length == 0 ? [] : LegacyArgs.Normalize(args);
 
 #if WINDOWS
         if (launchArgs.Any(static a => a is "--console" or "-c"))
@@ -53,32 +55,41 @@ sealed class Program
         GlobalDiagnosticsContext.Set("logRoot", Paths.Logs);
         GlobalDiagnosticsContext.Set("startTime", DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss", CultureInfo.InvariantCulture));
 
-        var parseResult = DotMake.CommandLine.Cli.Parse<FroststrapCliCommand>(launchArgs);
-
-        if (LegacyArgs.RequestsHelpOrVersion(launchArgs))
+        if (launchArgs.Length == 0)
         {
-            AttachParentConsole();
-            int exitCode = parseResult.ParseResult.Invoke();
-            LogManager.Shutdown();
-            return exitCode;
+            App.LaunchSettings = new LaunchSettings(new FroststrapCliCommand(), launchArgs);
         }
-
-        if (parseResult.ParseResult.Errors.Count > 0)
+        else
         {
-            AttachParentConsole();
+            var parseResult = DotMake.CommandLine.Cli.Parse<FroststrapCliCommand>(launchArgs);
 
-            foreach (var parseError in parseResult.ParseResult.Errors)
+            if (LegacyArgs.RequestsHelpOrVersion(launchArgs))
             {
-                Console.Error.WriteLine(parseError.Message);
-                Logger.Error(parseError.Message);
+                AttachParentConsole();
+                int exitCode = parseResult.ParseResult.Invoke();
+                LogManager.Shutdown();
+                return exitCode;
             }
 
-            LogManager.Shutdown();
-            return (int)ErrorCode.ERROR_CANCELLED;
+            if (parseResult.ParseResult.Errors.Count > 0)
+            {
+                AttachParentConsole();
+
+                foreach (var parseError in parseResult.ParseResult.Errors)
+                {
+                    Console.Error.WriteLine(parseError.Message);
+                    Logger.Error(parseError.Message);
+                }
+
+                LogManager.Shutdown();
+                return (int)ErrorCode.ERROR_CANCELLED;
+            }
+
+            var cli = parseResult.Bind<FroststrapCliCommand>();
+            App.LaunchSettings = new LaunchSettings(cli, launchArgs);
         }
 
-        var cli = parseResult.Bind<FroststrapCliCommand>();
-        var launchSettings = new LaunchSettings(cli, launchArgs);
+        var launchSettings = App.LaunchSettings;
 
         if (launchSettings.UnknownArgs.Count > 0)
         {
@@ -88,8 +99,6 @@ sealed class Program
             return (int)ErrorCode.ERROR_CANCELLED;
         }
 
-        App.LaunchSettings = launchSettings;
-
         if (launchArgs.Length != 0)
             Logger.Debug($"Arguments: {string.Join(" ", launchArgs)}");
 
@@ -98,7 +107,9 @@ sealed class Program
 
         try
         {
+#if __APPLE__
             NativeNotify.Init();
+#endif
             BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
         }
         catch (Exception ex)

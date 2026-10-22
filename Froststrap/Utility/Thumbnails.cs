@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: 2026 Froststrap
+// SPDX-FileCopyrightText: 2026 Froststrap
 //
 // SPDX-License-Identifier: MPL-2.0
 
@@ -36,7 +36,7 @@ namespace Froststrap.Utility
                     requests[index].RequestId = index.ToString(CultureInfo.InvariantCulture);
 
                 var currentPayloadData = pending.Select(x => requests[x]).ToList();
-                using var payload = new StringContent(JsonSerializer.Serialize(currentPayloadData));
+                using var payload = new StringContent(JsonHelper.Serialize(currentPayloadData));
 
                 Uri apiUrl = UrlBuilder.BuildApiUrl("thumbnails", "v1/batch");
 

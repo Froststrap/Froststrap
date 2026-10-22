@@ -20,14 +20,14 @@ namespace Froststrap.Models.APIs.Roblox
         public string? Token { get; set; }
 
         [JsonPropertyName("type")]
-        [JsonConverter(typeof(JsonStringEnumConverter))]
+        [JsonConverter(typeof(JsonStringEnumConverter<ThumbnailType>))]
         public ThumbnailType Type { get; set; } = ThumbnailType.Avatar;
 
         [JsonPropertyName("size")]
         public ThumbnailSize Size { get; set; } = ThumbnailSize.Small;
 
         [JsonPropertyName("format")]
-        [JsonConverter(typeof(JsonStringEnumConverter))]
+        [JsonConverter(typeof(JsonStringEnumConverter<ThumbnailFormat>))]
         public ThumbnailFormat Format { get; set; } = ThumbnailFormat.Png;
 
         [JsonPropertyName("isCircular")]

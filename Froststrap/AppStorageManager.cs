@@ -19,7 +19,8 @@ namespace Froststrap
         private static readonly JsonSerializerOptions SerializerOptions = new()
         {
             // default encoder inflates file by like 30% so we're not gonna use it lol
-            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+            TypeInfoResolver = JsonHelper.Resolver
         };
 
         public static void Apply()

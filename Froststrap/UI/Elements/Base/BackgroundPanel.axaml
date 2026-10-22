@@ -6,7 +6,8 @@ SPDX-License-Identifier: MPL-2.0
 
 <local:BackgroundHostPanel xmlns="https://github.com/avaloniaui"
                            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                           xmlns:local="clr-namespace:Froststrap.UI.Elements.Base">
+                           xmlns:local="clr-namespace:Froststrap.UI.Elements.Base"
+                           x:Class="Froststrap.UI.Elements.Base.BackgroundHostPanel">
     <Border x:Name="PART_BackgroundBorder"
             IsHitTestVisible="False"
             HorizontalAlignment="Stretch"

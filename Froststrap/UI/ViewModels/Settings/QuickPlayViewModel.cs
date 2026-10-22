@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: 2026 Froststrap
+// SPDX-FileCopyrightText: 2026 Froststrap
 //
 // SPDX-License-Identifier: MPL-2.0
 
@@ -934,14 +934,14 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
             if (!File.Exists(cachePath)) return [];
 
             string json = File.ReadAllText(cachePath);
-            var entries = JsonSerializer.Deserialize<List<GameHistoryEntry>>(json, HistoryLoadOptions) ?? [];
+            var entries = JsonHelper.Deserialize<List<GameHistoryEntry>>(json, HistoryLoadOptions) ?? [];
 
             var validEntries = entries.Where(e => e.UniverseId > 0).ToList();
             if (validEntries.Count != entries.Count)
             {
                 try
                 {
-                    var cleanJson = JsonSerializer.Serialize(validEntries, HistoryLoadOptions);
+                    var cleanJson = JsonHelper.Serialize(validEntries, HistoryLoadOptions);
                     File.WriteAllText(cachePath, cleanJson);
                     App.Logger.Info("Cleaned GameHistory.json by removing entries with UniverseId = 0");
                 }
@@ -1316,20 +1316,22 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
         string? cookie = ActiveCookie();
         if (string.IsNullOrEmpty(cookie)) return [];
 
-        var payload = new
+        var payload = new OmniRecommendationRequest
         {
-            pageType = "Home",
-            sessionId = Guid.NewGuid().ToString(),
-            supportedTreatmentTypes = new[] { "SortlessGrid" },
-            sduiTreatmentTypes = new[] { "Carousel", "HeroUnit" },
-            cpuCores = Environment.ProcessorCount,
-            maxResolution = "2560x1440",
-            maxMemory = 32768,
-            networkType = "4g"
+            PageType = "Home",
+            SessionId = Guid.NewGuid().ToString(),
+            SupportedTreatmentTypes = ["SortlessGrid"],
+            SduiTreatmentTypes = ["Carousel", "HeroUnit"],
+            CpuCores = Environment.ProcessorCount,
+            MaxResolution = "2560x1440",
+            MaxMemory = 32768,
+            NetworkType = "4g"
         };
 
+        var jsonPayload = JsonHelper.Serialize(payload);
+
         using var request = CookieRequest(HttpMethod.Post, UrlBuilder.BuildApisUrl("discovery-api/omni-recommendation"), cookie);
-        request.Content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
+        request.Content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
         request.Headers.Add("User-Agent", "Roblox/WinInet");
         request.Headers.Add("Referer", UrlBuilder.BuildApiUrl("www", "home").ToString());
 

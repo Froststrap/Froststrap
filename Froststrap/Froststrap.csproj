@@ -1,4 +1,4 @@
-﻿<!--
+<!--
 SPDX-FileCopyrightText: 2026 Froststrap
 
 SPDX-License-Identifier: MPL-2.0
@@ -24,23 +24,49 @@ SPDX-License-Identifier: MPL-2.0
     <AssemblyName>Froststrap</AssemblyName>
     <RootNamespace>Froststrap</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  	<!-- <PublishTrimmed>true</PublishTrimmed> -->
+  	<PublishAot>true</PublishAot>
+  	<PublishTrimmed>true</PublishTrimmed>
+  	<TrimMode>full</TrimMode>
   	<NeutralLanguage>en</NeutralLanguage>
     <Description>Froststrap - A Fishstrap fork</Description>
     <ApplicationIcon>Froststrap.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <NoWarn>$(NoWarn);CA1416;CS7035;CS7035;CA2007;CA1863;CA1031;CA1019;CA2000;CA1852;CA2216;CA1812;CA5392;SYSLIB1045;SYSLIB1054;CA5351</NoWarn>
+    <NoWarn>$(NoWarn);CA1416;CS7035;CA2007;CA1863;CA1031;CA1019;CA2000;CA1852;CA2216;CA1812;CA5392;SYSLIB1045;SYSLIB1054;CA5351;IL2104</NoWarn>
     <DefineConstants Condition="$([MSBuild]::IsOSPlatform('Windows'))">$(DefineConstants);WINDOWS</DefineConstants>
     <DefineConstants Condition="$([MSBuild]::IsOSPlatform('MacOS'))">$(DefineConstants);__APPLE__</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(RuntimeIdentifier)' != ''">
-    <PublishSingleFile>true</PublishSingleFile>
-    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
-    <PublishReadyToRun>false</PublishReadyToRun>
-    <SelfContained>true</SelfContained>
-    <SelfContained Condition="$(RuntimeIdentifier.StartsWith('win'))">false</SelfContained>
+  <PropertyGroup Condition="'$(PublishAot)' == 'true'">
+    <NoWarn>$(NoWarn);IL2026;IL3050;IL2070;IL2075</NoWarn>
+    <DefineConstants Condition="$([MSBuild]::IsOSPlatform('Windows'))">$(DefineConstants);FROSTSTRAP_AOT</DefineConstants>
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+    <CopyOutputSymbolsToPublishDirectory>false</CopyOutputSymbolsToPublishDirectory>
+    <OptimizationPreference>Size</OptimizationPreference>
   </PropertyGroup>
+
+  <PropertyGroup>
+    <AotEmbedNativeLibraries Condition="'$(AotEmbedNativeLibraries)' == ''">true</AotEmbedNativeLibraries>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(RuntimeIdentifier)' != ''">
+    <PublishSingleFile Condition="'$(PublishAot)' != 'true'">true</PublishSingleFile>
+    <IncludeNativeLibrariesForSelfExtract Condition="'$(PublishAot)' != 'true'">true</IncludeNativeLibrariesForSelfExtract>
+    <PublishReadyToRun Condition="'$(PublishAot)' != 'true'">true</PublishReadyToRun>
+    <PublishReadyToRunComposite Condition="'$(PublishAot)' != 'true'">true</PublishReadyToRunComposite>
+    <EnableCompressionInSingleFile Condition="'$(PublishAot)' != 'true'">true</EnableCompressionInSingleFile>
+    <SelfContained>true</SelfContained>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <RootTrimmedAssemblies Condition="'$(RootTrimmedAssemblies)' == ''">true</RootTrimmedAssemblies>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(PublishTrimmed)' == 'true' and '$(RootTrimmedAssemblies)' == 'true'">
+    <TrimmerRootAssembly Include="Froststrap" />
+    <TrimmerRootAssembly Include="AvaloniaEdit" />
+    <TrimmerRootAssembly Include="ColorPicker" />
+  </ItemGroup>
 
   <!-- Resources needed by Avalonia -->
   <ItemGroup>
@@ -48,7 +74,6 @@ SPDX-License-Identifier: MPL-2.0
     <AvaloniaResource Include="UI/AppThemes/EditorThemes/*.xshd" />
     <AvaloniaResource Include="Froststrap.ico" />
     <AvaloniaResource Include="Froststrap.png" />
-    <AvaloniaResource Include="UI\Elements\Base\BackgroundPanel.axaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -65,8 +90,9 @@ SPDX-License-Identifier: MPL-2.0
     <PackageReference Include="AnimatedImage.Avalonia" Version="2.1.4" />
     <PackageReference Include="Avalonia" Version="12.1.3" />
     <PackageReference Include="Avalonia.AvaloniaEdit" Version="12.0.0" />
+    <PackageReference Include="Avalonia.Controls.WebView" Version="12.1.1" />
     <PackageReference Include="Avalonia.Desktop" Version="12.1.3" />
-    <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="12.1.3" />
+    <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="12.1.3" Condition="'$(Configuration)' == 'Debug'" />
     <PackageReference Include="Avalonia.Wayland" Version="12.1.3" />
     <PackageReference Include="AvaloniaUI.DiagnosticsSupport" Version="2.2.3">
       <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
@@ -74,15 +100,11 @@ SPDX-License-Identifier: MPL-2.0
     </PackageReference>
     <PackageReference Include="BouncyCastle.Cryptography" Version="2.7.0" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
-    <PackageReference Include="DiscordRichPresence" Version="1.6.1.70" />
     <PackageReference Include="DotMake.CommandLine" Version="3.7.0" />
-    <PackageReference Include="HotAvalonia" Version="3.1.5" />
-    <PackageReference Include="ktsu.CredentialCache" Version="1.3.40" />
+    <PackageReference Include="HotAvalonia" Version="3.1.5" Condition="'$(Configuration)' == 'Debug'" />
     <PackageReference Include="Markdig" Version="1.3.2" />
     <PackageReference Include="NLog" Version="6.2.0" />
     <PackageReference Include="SharpZipLib" Version="1.4.2" />
-    <PackageReference Include="PuppeteerSharp" Version="24.42.0" />
-    <PackageReference Include="PuppeteerExtraSharp" Version="3.1.1" />
     <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="10.0.8" />
     <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.321" PrivateAssets="all" />
     <PackageReference Include="Velopack" Version="1.2.161" />
@@ -93,6 +115,7 @@ SPDX-License-Identifier: MPL-2.0
     <ProjectReference Include="../libs/LucideAvalonia/LucideAvalonia/LucideAvalonia.csproj" />
     <ProjectReference Include="../libs/FluentAvalonia/src/FluentAvalonia/FluentAvalonia.csproj" />
     <ProjectReference Include="../backend/backend.csproj" />
+    <ProjectReference Include="../tools/JsonContextGen/JsonContextGen.csproj" ReferenceOutputAssembly="false" PrivateAssets="all" SkipGetTargetFrameworkProperties="true" />
   </ItemGroup>
 
   <ItemGroup>
@@ -135,6 +158,89 @@ SPDX-License-Identifier: MPL-2.0
   <Target Name="KeepDylibsOutOfBundle" AfterTargets="ComputeResolvedFilesToPublishList" Condition="$([MSBuild]::IsOSPlatform('OSX'))">
     <ItemGroup>
       <ResolvedFileToPublish Remove="@(ResolvedFileToPublish)" Condition="'%(Filename)%(Extension)' == 'libnotify.dylib'&#xA;                                     Or '%(Filename)%(Extension)' == 'libvirtualdisplay.dylib'&#xA;                                     Or '%(Filename)%(Extension)' == 'libmobileappreg.dylib'" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="RemoveJsonContextGenPublishFiles" AfterTargets="ComputeResolvedFilesToPublishList">
+    <ItemGroup>
+      <ResolvedFileToPublish Remove="@(ResolvedFileToPublish)" Condition="'%(Filename)%(Extension)' == 'JsonContextGen.deps.json'&#xA;                                     Or '%(Filename)%(Extension)' == 'JsonContextGen.runtimeconfig.json'" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="DeleteJsonContextGenPublishFiles" AfterTargets="Publish">
+    <Delete Files="$(PublishDir)JsonContextGen.deps.json;$(PublishDir)JsonContextGen.runtimeconfig.json" />
+  </Target>
+
+  <Target Name="EmbedAotNativeLibraries" BeforeTargets="_GenerateCompileInputs"
+          Condition="'$(PublishAot)' == 'true' and '$(AotEmbedNativeLibraries)' == 'true' and $([MSBuild]::IsOSPlatform('Windows'))">
+    <ItemGroup>
+      <_AotNativeLibrary Include="@(ReferenceCopyLocalPaths->Distinct())"
+                         Condition="'%(Filename)%(Extension)' == 'av_libglesv2.dll'
+                                    Or '%(Filename)%(Extension)' == 'libHarfBuzzSharp.dll'
+                                    Or '%(Filename)%(Extension)' == 'libSkiaSharp.dll'" />
+      <_AotNativeLibrary Include="$(MSBuildProjectDirectory)/../backend/bin/$(Configuration)/net10.0/notify.dll"
+                         Condition="Exists('$(MSBuildProjectDirectory)/../backend/bin/$(Configuration)/net10.0/notify.dll')" />
+      <EmbeddedResource Include="@(_AotNativeLibrary)">
+        <LogicalName>Froststrap.Native.%(Filename)%(Extension)</LogicalName>
+        <Type>Non-Resx</Type>
+        <WithCulture>false</WithCulture>
+        <Visible>false</Visible>
+      </EmbeddedResource>
+    </ItemGroup>
+    <GetFileHash Files="@(_AotNativeLibrary)" Algorithm="SHA256" HashEncoding="hex">
+      <Output TaskParameter="Items" ItemName="_AotNativeLibraryHashed" />
+    </GetFileHash>
+    <WriteLinesToFile File="$(IntermediateOutputPath)AotNative.manifest"
+                      Lines="@(_AotNativeLibraryHashed->'%(Filename)%(Extension)|%(FileHash)')"
+                      Overwrite="true"
+                      WriteOnlyWhenDifferent="true" />
+    <ItemGroup>
+      <EmbeddedResource Include="$(IntermediateOutputPath)AotNative.manifest">
+        <LogicalName>Froststrap.Native.manifest</LogicalName>
+        <Type>Non-Resx</Type>
+        <WithCulture>false</WithCulture>
+        <Visible>false</Visible>
+      </EmbeddedResource>
+    </ItemGroup>
+  </Target>
+
+  <Target Name="CleanAotPublishOutput" AfterTargets="Publish"
+          Condition="'$(PublishAot)' == 'true' and $([MSBuild]::IsOSPlatform('Windows'))">
+    <ItemGroup>
+      <_AotPublishKeep Include="$([MSBuild]::NormalizeDirectory('$(PublishDir)'))Froststrap.exe" />
+      <_AotPublishKeep Include="$([MSBuild]::NormalizeDirectory('$(PublishDir)'))*.dll"
+                       Condition="'$(AotEmbedNativeLibraries)' != 'true'" />
+      <_AotPublishFiles Include="$([MSBuild]::NormalizeDirectory('$(PublishDir)'))**\*" Exclude="@(_AotPublishKeep)" />
+      <_AotPublishDirectories Include="$([System.IO.Directory]::GetDirectories('$(PublishDir)'))" />
+    </ItemGroup>
+    <Delete Files="@(_AotPublishFiles)" ContinueOnError="true" />
+    <RemoveDir Directories="@(_AotPublishDirectories)" ContinueOnError="true" />
+  </Target>
+
+  <Target Name="GenerateJsonContextRegistrations" BeforeTargets="CoreCompile"
+          Condition="'$(DesignTimeBuild)' != 'true' and '$(BuildingProject)' == 'true'">
+    <PropertyGroup>
+      <JsonContextAutoGenerated>$(IntermediateOutputPath)JsonContext.AutoRegistered.g.cs</JsonContextAutoGenerated>
+      <_JsonGenSources>$(IntermediateOutputPath)JsonContextGen.sources.rsp</_JsonGenSources>
+      <_JsonGenReferences>$(IntermediateOutputPath)JsonContextGen.references.rsp</_JsonGenReferences>
+    </PropertyGroup>
+    <ItemGroup>
+      <_JsonGenSource Include="@(Compile)" Exclude="$(JsonContextAutoGenerated)" />
+      <_JsonGenReference Include="@(ReferencePath)" />
+    </ItemGroup>
+    <WriteLinesToFile File="$(_JsonGenSources)" Lines="@(_JsonGenSource->'%(FullPath)')" Overwrite="true" WriteOnlyWhenDifferent="true" />
+    <WriteLinesToFile File="$(_JsonGenReferences)" Lines="@(_JsonGenReference->'%(FullPath)')" Overwrite="true" WriteOnlyWhenDifferent="true" />
+    <MSBuild Projects="$(MSBuildProjectDirectory)/../tools/JsonContextGen/JsonContextGen.csproj"
+             Targets="GetTargetPath"
+             Properties="Configuration=$(Configuration);RuntimeIdentifier=$(RuntimeIdentifier)">
+      <Output TaskParameter="TargetOutputs" ItemName="_JsonGenAssembly" />
+    </MSBuild>
+    <Exec Command="dotnet &quot;@(_JsonGenAssembly)&quot; &quot;$(_JsonGenSources)&quot; &quot;$(_JsonGenReferences)&quot; &quot;$(JsonContextAutoGenerated)&quot; &quot;$(DefineConstants)&quot;"
+          Condition="'@(_JsonGenAssembly)' != ''"
+          ContinueOnError="WarnAndContinue" />
+    <ItemGroup>
+      <Compile Remove="$(JsonContextAutoGenerated)" />
+      <Compile Include="$(JsonContextAutoGenerated)" Condition="Exists('$(JsonContextAutoGenerated)')" />
     </ItemGroup>
   </Target>
 </Project>

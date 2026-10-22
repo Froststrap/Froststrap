@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: 2026 Froststrap
+// SPDX-FileCopyrightText: 2026 Froststrap
 //
 // SPDX-License-Identifier: MPL-2.0
 
@@ -172,7 +172,7 @@ namespace Froststrap.UI.ViewModels.Onboarding
                 if (!File.Exists(GetCachePath())) return null;
 
                 var json = await File.ReadAllTextAsync(GetCachePath());
-                var cache = JsonSerializer.Deserialize<DatacentersCache>(json);
+                var cache = JsonHelper.Deserialize<DatacentersCache>(json);
 
                 if (cache == null) return null;
 
@@ -223,7 +223,7 @@ namespace Froststrap.UI.ViewModels.Onboarding
                 };
 
                 Directory.CreateDirectory(Paths.Cache);
-                var json = JsonSerializer.Serialize(cache);
+                var json = JsonHelper.Serialize(cache);
                 await File.WriteAllTextAsync(GetCachePath(), json);
             }
             catch { /* ignore */ }

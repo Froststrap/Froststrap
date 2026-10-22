@@ -5137,6 +5137,15 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sign in to Roblox.
+        /// </summary>
+        public static string Menu_BrowserLogin_Title {
+            get {
+                return ResourceManager.GetString("Menu.BrowserLogin.Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Add New.
         /// </summary>
         public static string Menu_FastFlagEditor_AddNew {

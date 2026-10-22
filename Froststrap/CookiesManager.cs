@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: 2026 Froststrap
+// SPDX-FileCopyrightText: 2026 Froststrap
 //
 // SPDX-License-Identifier: MPL-2.0
 
@@ -184,7 +184,7 @@ namespace Froststrap
                 response.EnsureSuccessStatusCode();
 
                 string content = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<AuthenticatedUser>(content);
+                return JsonHelper.Deserialize<AuthenticatedUser>(content);
             }
             catch (HttpRequestException ex)
             {
@@ -445,7 +445,7 @@ namespace Froststrap
         private static async Task<CookieLoadResult> LoadWindowsCookies()
         {
             string content = await ReadTextShared(CookiesPath);
-            var cookies = JsonSerializer.Deserialize<RobloxCookies>(content)!;
+            var cookies = JsonHelper.Deserialize<RobloxCookies>(content)!;
 
             byte[] encryptedData = Convert.FromBase64String(cookies.Cookies);
             byte[] unencryptedData = ProtectedData.Unprotect(encryptedData, null, DataProtectionScope.CurrentUser);

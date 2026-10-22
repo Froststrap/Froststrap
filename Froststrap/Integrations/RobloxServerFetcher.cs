@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+using System.Collections.Concurrent;
 using System.Net.Http.Headers;
 using Froststrap.RobloxInterfaces;
 
@@ -92,19 +92,8 @@ namespace Froststrap.Integrations
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                using var resp = await _client
-                    .GetAsync(new Uri(DatacenterUrl), HttpCompletionOption.ResponseHeadersRead, cancellationToken)
-                    .ConfigureAwait(false);
-
-                resp.EnsureSuccessStatusCode();
-
-                await using var stream = await resp.Content
-                    .ReadAsStreamAsync(cancellationToken)
-                    .ConfigureAwait(false);
-
-                var datacenterEntries = await JsonSerializer
-                    .DeserializeAsync<List<DatacenterEntry>>(stream, cancellationToken: cancellationToken)
-                    .ConfigureAwait(false);
+                var json = await _client.GetStringAsync(new Uri(DatacenterUrl), cancellationToken);
+                var datacenterEntries = JsonHelper.Deserialize<List<DatacenterEntry>>(json);
 
                 if (datacenterEntries == null)
                     return null;
@@ -182,7 +171,7 @@ namespace Froststrap.Integrations
                 if (!response.IsSuccessStatusCode) return (results, null);
 
                 var content = await response.Content.ReadAsStringAsync(cancellationToken);
-                var regionResponse = JsonSerializer.Deserialize<RoValraRegionResponse>(content);
+                var regionResponse = JsonHelper.Deserialize<RoValraRegionResponse>(content);
 
                 if (regionResponse?.Servers == null) return (results, null);
 
@@ -367,12 +356,12 @@ namespace Froststrap.Integrations
                 joinReq.Headers.Add("Origin", "https://roblox.com");
                 joinReq.Headers.Add("Cookie", $".ROBLOSECURITY={roblosecurity}");
 
-                joinReq.Content = new StringContent(JsonSerializer.Serialize(new
+                joinReq.Content = new StringContent(JsonHelper.Serialize(new JoinGameInstanceRequest
                 {
-                    placeId,
-                    isTeleport = false,
-                    gameId = jobId,
-                    gameJoinAttemptId = jobId
+                    PlaceId = placeId,
+                    IsTeleport = false,
+                    GameId = jobId,
+                    GameJoinAttemptId = jobId
                 }), Encoding.UTF8, "application/json");
 
                 try
@@ -437,33 +426,47 @@ namespace Froststrap.Integrations
             }
         }
 
-        private static string? GetAccountManagerCookie()
+        private static Task<string?> GetCookieFromAccountManagerAsync()
         {
             try
             {
                 var active = AccountManager.AccountManager.Shared?.ActiveAccount;
 
                 if (active != null && !string.IsNullOrWhiteSpace(active.SecurityToken))
-                    return active.SecurityToken;
+                    return Task.FromResult<string?>(active.SecurityToken);
             }
             catch (Exception ex)
             {
                 App.Logger.Error("Unhandled exception:", ex);
             }
 
-            return null;
+            return Task.FromResult<string?>(null);
+        }
+
+        private static Task<string?> GetCookieFromCookiesManagerAsync()
+        {
+            try
+            {
+                if (App.Cookies != null)
+                    return Task.FromResult<string?>(App.Cookies.GetAuthCookie());
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error("Unhandled exception:", ex);
+            }
+            return Task.FromResult<string?>(null);
         }
 
         public async Task<string?> ResolveCookieAsync()
         {
-            string? accountManagerCookie = GetAccountManagerCookie();
+            string? accountManagerCookie = await GetCookieFromAccountManagerAsync();
             if (!string.IsNullOrWhiteSpace(accountManagerCookie) && await ValidateCookieAsync(accountManagerCookie))
             {
                 App.Logger.Info("Using valid cookie from Account Manager.");
                 return accountManagerCookie;
             }
 
-            string cookiesManagerCookie = App.Cookies.GetAuthCookie();
+            string? cookiesManagerCookie = await GetCookieFromCookiesManagerAsync();
             if (!string.IsNullOrWhiteSpace(cookiesManagerCookie) && await ValidateCookieAsync(cookiesManagerCookie))
             {
                 App.Logger.Info("Using valid cookie from Cookies Manager.");
@@ -544,7 +547,7 @@ namespace Froststrap.Integrations
             try
             {
                 var ipinfoJson = await _client.GetStringAsync(new Uri(IpInfoUrl), cancellationToken);
-                _ipinfoCache = JsonSerializer.Deserialize<IPInfoResponse>(ipinfoJson);
+                _ipinfoCache = JsonHelper.Deserialize<IPInfoResponse>(ipinfoJson);
                 _ipinfoCachedAtUtc = DateTime.UtcNow;
                 return _ipinfoCache;
             }
