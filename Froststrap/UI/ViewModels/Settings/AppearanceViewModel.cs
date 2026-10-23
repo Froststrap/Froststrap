@@ -207,6 +207,12 @@ namespace Froststrap.UI.ViewModels.Settings
             set => App.Settings.Prop.BootstrapperTitle = value;
         }
 
+        public static bool ShowInfo
+        {
+            get => App.Settings.Prop.BootstrapperShowInfo;
+            set => App.Settings.Prop.BootstrapperShowInfo = value;
+        }
+
         public string CustomIconLocation
         {
             get => App.Settings.Prop.BootstrapperIconCustomLocation;

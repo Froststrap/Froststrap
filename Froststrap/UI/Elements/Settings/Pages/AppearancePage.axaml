@@ -493,6 +493,12 @@ SPDX-License-Identifier: MPL-2.0
                     </Grid>
                 </controls:OptionControl>
 
+                <controls:OptionControl
+                    Header="{x:Static resources:Strings.Menu_Appearance_ShowInfo_Title}"
+                    Description="{x:Static resources:Strings.Menu_Appearance_ShowInfo_Description}">
+                    <ToggleSwitch IsChecked="{Binding ShowInfo, Mode=TwoWay}" />
+                </controls:OptionControl>
+
                 <controls:OptionControl Header="{x:Static resources:Strings.Menu_Appearance_CustomisationTitle_Title}" Description="{x:Static resources:Strings.Menu_Appearance_CustomisationTitle_Description}">
                     <TextBox PlaceholderText="Froststrap" Width="200" Text="{Binding Title, Mode=TwoWay}" />
                 </controls:OptionControl>

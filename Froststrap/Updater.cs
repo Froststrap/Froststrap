@@ -10,8 +10,6 @@ namespace Froststrap;
 
 internal class Updater
 {
-    public static Bootstrapper? Bootstrapper { get; set; } = null!;
-
     public static async Task RunMigrations(string? previousVersion = null)
     {
         if (OperatingSystem.IsLinux())
