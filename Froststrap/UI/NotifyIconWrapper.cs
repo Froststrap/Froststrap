@@ -65,7 +65,7 @@ namespace Froststrap.UI
                 Froststrap.Backend.VirtualDisplay.Start();
             });
 #endif
-            App.Logger.Info("Initializing Avalonia TrayIcon");
+            App.Logger.Info("Initializing TrayIcon");
 
             _watcher = watcher;
             _menuContainer = new MenuContainer(_watcher);

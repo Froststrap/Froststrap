@@ -2,9 +2,10 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-#if WINDOWS && FROSTSTRAP_AOT
+#if (_WIN32 || __linux__) && FROSTSTRAP_AOT
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -16,14 +17,24 @@ namespace Froststrap.Utility
         private const string ManifestResource = ResourcePrefix + "manifest";
         private const string ReadyFileName = ".ready";
 
-        private static readonly string[] NativeLibraries =
-        [
-            "av_libglesv2.dll",
-            "libHarfBuzzSharp.dll",
-            "libSkiaSharp.dll",
-            "notify.dll"
-        ];
+        private static readonly string[] NativeLibraries = OperatingSystem.IsWindows()
+            ?
+            [
+                "av_libglesv2.dll",
+                "libHarfBuzzSharp.dll",
+                "libSkiaSharp.dll",
+                "notify.dll"
+            ]
+            :
+            [
+                "libHarfBuzzSharp.so",
+                "libSkiaSharp.so",
+                "libnotify.so"
+            ];
 
+        private static string? _nativeDirectory;
+
+        [SupportedOSPlatform("windows")]
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         private static extern bool SetDllDirectory(string lpPathName);
 
@@ -62,7 +73,7 @@ namespace Froststrap.Utility
             string directoryName = hashes.Count > 0
                 ? HashManifest(hashes)
                 : assembly.ManifestModule.ModuleVersionId.ToString("N");
-            string root = Path.Combine(Path.GetTempPath(), "Froststrap", "AotNative");
+            string root = GetExtractionRoot();
             string directory = Path.Combine(root, directoryName);
             string marker = Path.Combine(directory, ReadyFileName);
 
@@ -71,7 +82,72 @@ namespace Froststrap.Utility
 
             _ = Task.Run(() => CleanupStaleDirectories(root, directoryName));
 
-            SetDllDirectory(directory);
+            UseNativeDirectory(directory);
+        }
+
+        private static string GetExtractionRoot()
+        {
+            if (OperatingSystem.IsWindows())
+                return Path.Combine(Path.GetTempPath(), "Froststrap", "AotNative");
+
+            string? cache = Environment.GetEnvironmentVariable("XDG_CACHE_HOME");
+
+            if (string.IsNullOrEmpty(cache))
+            {
+                string home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                cache = Path.Combine(home, ".cache");
+            }
+
+            return Path.Combine(cache, "Froststrap", "AotNative");
+        }
+
+        private static void UseNativeDirectory(string directory)
+        {
+            if (OperatingSystem.IsWindows())
+            {
+                SetDllDirectory(directory);
+                return;
+            }
+
+            _nativeDirectory = directory;
+
+            Assembly[] assemblies =
+            [
+                typeof(SkiaSharp.SKCanvas).Assembly,
+                typeof(HarfBuzzSharp.Blob).Assembly,
+                typeof(AotNativeLibraryExtractor).Assembly
+            ];
+
+            foreach (Assembly asm in assemblies)
+            {
+                try
+                {
+                    NativeLibrary.SetDllImportResolver(asm, ResolveNative);
+                }
+                catch (InvalidOperationException)
+                {
+                }
+            }
+        }
+
+        private static IntPtr ResolveNative(string name, Assembly assembly, DllImportSearchPath? searchPath)
+        {
+            if (_nativeDirectory is null)
+                return IntPtr.Zero;
+
+            string[] candidates = name.EndsWith(".so", StringComparison.Ordinal)
+                ? [name]
+                : [name + ".so", "lib" + name + ".so"];
+
+            foreach (string candidate in candidates)
+            {
+                string path = Path.Combine(_nativeDirectory, candidate);
+
+                if (File.Exists(path) && NativeLibrary.TryLoad(path, out IntPtr handle))
+                    return handle;
+            }
+
+            return IntPtr.Zero;
         }
 
         private static void ReadManifest(Assembly assembly, Dictionary<string, string> hashes)

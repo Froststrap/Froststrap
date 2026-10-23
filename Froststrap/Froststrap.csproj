@@ -31,14 +31,15 @@ SPDX-License-Identifier: MPL-2.0
     <Description>Froststrap - A Fishstrap fork</Description>
     <ApplicationIcon>Froststrap.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <NoWarn>$(NoWarn);CA1416;CS7035;CA2007;CA1863;CA1031;CA1019;CA2000;CA1852;CA2216;CA1812;CA5392;SYSLIB1045;SYSLIB1054;CA5351;IL2104</NoWarn>
-    <DefineConstants Condition="$([MSBuild]::IsOSPlatform('Windows'))">$(DefineConstants);WINDOWS</DefineConstants>
+    <NoWarn>$(NoWarn);CA1416;CA2007;CA1863;CA1031;CA1019;CA2000;CA1852;CA2216;CA1812;CA5392;SYSLIB1045;SYSLIB1054;CA5351;IL2104;CS7035</NoWarn>
+    <DefineConstants Condition="$([MSBuild]::IsOSPlatform('Windows'))">$(DefineConstants);WINDOWS;_WIN32</DefineConstants>
+    <DefineConstants Condition="$([MSBuild]::IsOSPlatform('Linux'))">$(DefineConstants);__linux__</DefineConstants>
     <DefineConstants Condition="$([MSBuild]::IsOSPlatform('MacOS'))">$(DefineConstants);__APPLE__</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(PublishAot)' == 'true'">
     <NoWarn>$(NoWarn);IL2026;IL3050;IL2070;IL2075</NoWarn>
-    <DefineConstants Condition="$([MSBuild]::IsOSPlatform('Windows'))">$(DefineConstants);FROSTSTRAP_AOT</DefineConstants>
+    <DefineConstants>$(DefineConstants);FROSTSTRAP_AOT</DefineConstants>
     <DebugType>none</DebugType>
     <DebugSymbols>false</DebugSymbols>
     <CopyOutputSymbolsToPublishDirectory>false</CopyOutputSymbolsToPublishDirectory>
@@ -172,19 +173,23 @@ SPDX-License-Identifier: MPL-2.0
   </Target>
 
   <Target Name="EmbedAotNativeLibraries" BeforeTargets="_GenerateCompileInputs"
-          Condition="'$(PublishAot)' == 'true' and '$(AotEmbedNativeLibraries)' == 'true' and $([MSBuild]::IsOSPlatform('Windows'))">
+          Condition="'$(PublishAot)' == 'true' and '$(AotEmbedNativeLibraries)' == 'true' and ($([MSBuild]::IsOSPlatform('Windows')) or $([MSBuild]::IsOSPlatform('Linux')))">
     <PropertyGroup>
       <_AotNativeRid Condition="'$(RuntimeIdentifier)' != ''">$(RuntimeIdentifier)</_AotNativeRid>
       <_AotNativeRid Condition="'$(_AotNativeRid)' == ''">$(NETCoreSdkRuntimeIdentifier)</_AotNativeRid>
+      <_AotNotifyLib Condition="$([MSBuild]::IsOSPlatform('Windows'))">notify.dll</_AotNotifyLib>
+      <_AotNotifyLib Condition="$([MSBuild]::IsOSPlatform('Linux'))">libnotify.so</_AotNotifyLib>
     </PropertyGroup>
     <ItemGroup>
       <_AotNativeLibrary Include="@(ReferenceCopyLocalPaths->Distinct())"
                          Condition="('%(Filename)%(Extension)' == 'av_libglesv2.dll'
                                     Or '%(Filename)%(Extension)' == 'libHarfBuzzSharp.dll'
-                                    Or '%(Filename)%(Extension)' == 'libSkiaSharp.dll')
+                                    Or '%(Filename)%(Extension)' == 'libSkiaSharp.dll'
+                                    Or '%(Filename)%(Extension)' == 'libHarfBuzzSharp.so'
+                                    Or '%(Filename)%(Extension)' == 'libSkiaSharp.so')
                                     And $([System.String]::Copy('%(FullPath)').Contains('$(_AotNativeRid)'))" />
-      <_AotNativeLibrary Include="$(MSBuildProjectDirectory)/../backend/bin/$(Configuration)/net10.0/notify.dll"
-                         Condition="Exists('$(MSBuildProjectDirectory)/../backend/bin/$(Configuration)/net10.0/notify.dll')" />
+      <_AotNativeLibrary Include="$(MSBuildProjectDirectory)/../backend/bin/$(Configuration)/net10.0/$(_AotNotifyLib)"
+                         Condition="Exists('$(MSBuildProjectDirectory)/../backend/bin/$(Configuration)/net10.0/$(_AotNotifyLib)')" />
       <EmbeddedResource Include="@(_AotNativeLibrary)">
         <LogicalName>Froststrap.Native.%(Filename)%(Extension)</LogicalName>
         <Type>Non-Resx</Type>

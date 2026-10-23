@@ -27,6 +27,7 @@
   nspr,
   dbus,
   squashfsTools,
+  skia,
 }:
 let
   inherit (callPackage ./devshell-tools.nix { }) mkFragment;
@@ -44,6 +45,7 @@ mkFragment (finalAttrs: {
     wayland
     libxkbcommon
     libsecret
+    skia
     dbus
 
     # X11 libs

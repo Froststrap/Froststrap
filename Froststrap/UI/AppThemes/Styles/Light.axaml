@@ -9,8 +9,8 @@ SPDX-License-Identifier: MPL-2.0
         x:Class="Froststrap.UI.AppThemes.Styles.Light">
 
     <Style Selector="ProgressBar.Square">
-        <Setter Property="Background" Value="{StaticResource ControlFillColorDefaultBrush}" />
-        <Setter Property="Foreground" Value="{StaticResource NewTextEditorForeground}" />
+        <Setter Property="Background" Value="{DynamicResource ControlFillColorDefaultBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource NewTextEditorForeground}" />
         <Setter Property="Template">
             <ControlTemplate>
                 <Grid Name="TemplateRoot" ClipToBounds="True">

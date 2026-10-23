@@ -644,6 +644,12 @@ Would you like to upgrade your currently installed version?</value>
   <data name="Menu.Appearance.CustomisationTitle.Title" xml:space="preserve">
     <value>Bootstrapper Title</value>
   </data>
+  <data name="Menu.Appearance.ShowInfo.Title" xml:space="preserve">
+    <value>Show bootstrapper information</value>
+  </data>
+  <data name="Menu.Appearance.ShowInfo.Description" xml:space="preserve">
+    <value>Shows information of version and channel for supported bootstrapper themes.</value>
+  </data>
   <data name="Menu.Appearance.Description" xml:space="preserve">
     <value>Configure how Froststrap should look.</value>
   </data>

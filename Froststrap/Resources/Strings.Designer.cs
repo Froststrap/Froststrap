@@ -3702,6 +3702,19 @@ namespace Froststrap.Resources {
             }
         }
         
+
+        public static string Menu_Appearance_ShowInfo_Title {
+            get {
+                return ResourceManager.GetString("Menu.Appearance.ShowInfo.Title", resourceCulture);
+            }
+        }
+
+        public static string Menu_Appearance_ShowInfo_Description {
+            get {
+                return ResourceManager.GetString("Menu.Appearance.ShowInfo.Description", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Failed to delete custom theme {0}: {1}.
         /// </summary>

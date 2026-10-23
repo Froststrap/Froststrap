@@ -41,8 +41,8 @@ namespace Froststrap.UI.ViewModels.Bootstrapper
                 BackgroundColourBrush = new SolidColorBrush(color);
             }
 
-            VersionText = $"Version: V{ExtractMajorVersion(version)}";
-            ChannelText = $"Channel: {Deployment.Channel}";
+            VersionText = App.Settings.Prop.BootstrapperShowInfo ? $"Version: V{ExtractMajorVersion(version)}" : "";
+            ChannelText = App.Settings.Prop.BootstrapperShowInfo ? $"Channel: {Deployment.Channel}" : "";
 
             Deployment.ChannelChanged += (_, newChannel) =>
             {
