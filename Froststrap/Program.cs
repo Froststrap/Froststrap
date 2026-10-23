@@ -34,7 +34,7 @@ sealed class Program
     [STAThread]
     public static int Main(string[] args)
     {
-#if _WIN32 && __linux__ && FROSTSTRAP_AOT
+#if (_WIN32 || __linux__) && FROSTSTRAP_AOT
         Utility.AotNativeLibraryExtractor.Extract();
 #endif
 

@@ -173,14 +173,20 @@ SPDX-License-Identifier: MPL-2.0
   </Target>
 
   <Target Name="EmbedAotNativeLibraries" BeforeTargets="_GenerateCompileInputs"
-          Condition="'$(PublishAot)' == 'true' and '$(AotEmbedNativeLibraries)' == 'true' and $([MSBuild]::IsOSPlatform('Windows'))">
+          Condition="'$(PublishAot)' == 'true' and '$(AotEmbedNativeLibraries)' == 'true' and ($([MSBuild]::IsOSPlatform('Windows')) or $([MSBuild]::IsOSPlatform('Linux')))">
+    <PropertyGroup>
+      <_AotNotifyLib Condition="$([MSBuild]::IsOSPlatform('Windows'))">notify.dll</_AotNotifyLib>
+      <_AotNotifyLib Condition="$([MSBuild]::IsOSPlatform('Linux'))">libnotify.so</_AotNotifyLib>
+    </PropertyGroup>
     <ItemGroup>
       <_AotNativeLibrary Include="@(ReferenceCopyLocalPaths->Distinct())"
                          Condition="'%(Filename)%(Extension)' == 'av_libglesv2.dll'
                                     Or '%(Filename)%(Extension)' == 'libHarfBuzzSharp.dll'
-                                    Or '%(Filename)%(Extension)' == 'libSkiaSharp.dll'" />
-      <_AotNativeLibrary Include="$(MSBuildProjectDirectory)/../backend/bin/$(Configuration)/net10.0/notify.dll"
-                         Condition="Exists('$(MSBuildProjectDirectory)/../backend/bin/$(Configuration)/net10.0/notify.dll')" />
+                                    Or '%(Filename)%(Extension)' == 'libSkiaSharp.dll'
+                                    Or '%(Filename)%(Extension)' == 'libHarfBuzzSharp.so'
+                                    Or '%(Filename)%(Extension)' == 'libSkiaSharp.so'" />
+      <_AotNativeLibrary Include="$(MSBuildProjectDirectory)/../backend/bin/$(Configuration)/net10.0/$(_AotNotifyLib)"
+                         Condition="Exists('$(MSBuildProjectDirectory)/../backend/bin/$(Configuration)/net10.0/$(_AotNotifyLib)')" />
       <EmbeddedResource Include="@(_AotNativeLibrary)">
         <LogicalName>Froststrap.Native.%(Filename)%(Extension)</LogicalName>
         <Type>Non-Resx</Type>
