@@ -221,6 +221,8 @@ namespace Froststrap
 
             dialog.Loaded += (s, e) =>
             {
+                App.Logger.Info($"Launch menu ready after {Program.StartupTimer.ElapsedMilliseconds} ms");
+
                 if (App.Settings.Prop.ShowUsingFroststrapRPC && App.FrostRPC == null)
                 {
                     App.FrostRPC = new FroststrapRichPresence();

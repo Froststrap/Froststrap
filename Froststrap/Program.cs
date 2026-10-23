@@ -8,6 +8,7 @@ using Velopack;
 using Froststrap;
 using Froststrap.Backend;
 using Froststrap.Cli;
+using System.Diagnostics;
 #if WINDOWS
 using System.Runtime.InteropServices;
 #endif
@@ -17,6 +18,8 @@ namespace Froststrap;
 sealed class Program
 {
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
+    internal static readonly Stopwatch StartupTimer = Stopwatch.StartNew();
 
 #if WINDOWS
     private const int AttachParentProcess = -1;

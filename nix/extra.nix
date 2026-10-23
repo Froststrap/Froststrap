@@ -4,6 +4,7 @@
 {
   lib,
   nfpm,
+  zstd,
   stdenv,
   cargo-bloat,
   callPackage,
@@ -18,6 +19,7 @@ mkFragment {
   buildInputs = [
     vpk # velopack tooling
     avdt # avalonia devtools
+    zstd
     cargo-bloat
   ]
   ++ lib.optionals stdenv.hostPlatform.isLinux [
