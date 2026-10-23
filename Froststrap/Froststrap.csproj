@@ -39,7 +39,7 @@ SPDX-License-Identifier: MPL-2.0
 
   <PropertyGroup Condition="'$(PublishAot)' == 'true'">
     <NoWarn>$(NoWarn);IL2026;IL3050;IL2070;IL2075</NoWarn>
-    <DefineConstants Condition="$([MSBuild]::IsOSPlatform('Windows'))">$(DefineConstants);FROSTSTRAP_AOT</DefineConstants>
+    <DefineConstants>$(DefineConstants);FROSTSTRAP_AOT</DefineConstants>
     <DebugType>none</DebugType>
     <DebugSymbols>false</DebugSymbols>
     <CopyOutputSymbolsToPublishDirectory>false</CopyOutputSymbolsToPublishDirectory>
