@@ -21,10 +21,5 @@ namespace Froststrap
 
         public static LaunchMode ToLaunchMode(NextAction action) =>
             action == NextAction.LaunchRobloxStudio ? LaunchMode.Studio : LaunchMode.Player;
-
-        public static void LaunchInChildProcess(LaunchMode mode)
-        {
-            Process.Start(Paths.Process, GetCliArgs(mode));
-        }
     }
 }

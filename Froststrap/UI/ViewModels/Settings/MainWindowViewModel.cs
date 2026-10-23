@@ -353,16 +353,8 @@ namespace Froststrap.UI.ViewModels.Settings
         public void SaveAndLaunchSettings()
         {
             SaveSettings();
-
-            if (!App.LaunchSettings.TestModeFlag.Active)
-            {
-                LaunchEntry.LaunchInChildProcess(SelectedLaunchMode);
-            }
-            else
-            {
-                CloseAction = LaunchEntry.ToNextAction(SelectedLaunchMode);
-                CloseWindow();
-            }
+            CloseAction = LaunchEntry.ToNextAction(SelectedLaunchMode);
+            CloseWindow();
         }
 
         public LaunchMode SelectedLaunchMode
