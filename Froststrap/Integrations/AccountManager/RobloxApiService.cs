@@ -3,8 +3,7 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using Froststrap.Models.APIs.Roblox;
 
 namespace Froststrap.Integrations.AccountManager
 {
@@ -25,14 +24,14 @@ namespace Froststrap.Integrations.AccountManager
                 var response = await client.GetAsync(UrlBuilder.BuildApiUrl("users", "v1/users/authenticated", secure: true));
                 response.EnsureSuccessStatusCode();
 
-                var jo = JsonConvert.DeserializeObject<JObject>(await response.Content.ReadAsStringAsync());
-                if (jo == null) return null;
+                var user = await JsonHelper.ReadFromJsonAsync<AuthenticatedUser>(response.Content);
+                if (user == null) return null;
 
                 return new AccountManagerAccount(
                     securityCookie,
-                    jo["id"]?.Value<long>() ?? 0,
-                    jo["name"]?.Value<string>() ?? "",
-                    jo["displayName"]?.Value<string>() ?? ""
+                    user.Id,
+                    user.Username,
+                    user.DisplayName
                 );
             }
             catch (Exception ex)
@@ -46,8 +45,8 @@ namespace Froststrap.Integrations.AccountManager
         {
             try
             {
-                var requestData = new { userIds = new[] { userId } };
-                string jsonPayload = System.Text.Json.JsonSerializer.Serialize(requestData);
+                var requestData = new PresenceBatchRequest { UserIds = [userId] };
+                string jsonPayload = JsonHelper.Serialize(requestData);
 
                 using var request = new HttpRequestMessage(HttpMethod.Post, UrlBuilder.BuildApiUrl("presence", "v1/presence/users", secure: true))
                 {

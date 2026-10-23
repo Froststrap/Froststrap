@@ -324,6 +324,22 @@ namespace Froststrap.UI.ViewModels.Settings
             await Task.WhenAll(tasks);
         }
 
+        public void MoveAccount(int fromIndex, int toIndex, bool persist = true)
+        {
+            if (fromIndex < 0 || fromIndex >= Accounts.Count) return;
+            if (toIndex < 0 || toIndex >= Accounts.Count) return;
+            if (fromIndex == toIndex) return;
+
+            Accounts.Move(fromIndex, toIndex);
+
+            if (persist)
+                SaveAccountOrder();
+        }
+
+        public void SaveAccountOrder()
+        {
+            _accountManager.ReorderAccounts([.. Accounts.Select(a => a.Account)]);
+        }
 
         [RelayCommand]
         private void SelectAccount(AccountWithAvatar item)
@@ -378,7 +394,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 }
                 else if (SelectedAddMethod == Strings.Common_Browser)
                 {
-                    newAccount = await _accountManager.AddAccountByBrowserAsync();
+                    newAccount = await AccountManager.AddAccountByBrowserAsync();
                 }
                 else if (SelectedAddMethod == Strings.Common_Manual)
                 {

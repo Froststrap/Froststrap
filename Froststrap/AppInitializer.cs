@@ -10,14 +10,31 @@ internal static class AppInitializer
 {
     public static void InitializeNativeResolvers()
     {
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        if (!RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            return;
+
+        List<Assembly> assemblies =
+        [
+            typeof(Froststrap.Backend.VirtualDisplay).Assembly,
+            typeof(SkiaSharp.SKCanvas).Assembly,
+            typeof(HarfBuzzSharp.Blob).Assembly
+        ];
+
+        Assembly? avaloniaNative = AppDomain.CurrentDomain.GetAssemblies()
+            .FirstOrDefault(static a => a.GetName().Name == "Avalonia.Native");
+
+        if (avaloniaNative is not null)
+            assemblies.Add(avaloniaNative);
+
+        foreach (Assembly assembly in assemblies)
         {
-            var backendAssembly = typeof(Froststrap.Backend.VirtualDisplay).Assembly;
-            App.Logger.Debug($"Registering resolver for {backendAssembly.FullName}");
-            NativeLibrary.SetDllImportResolver(
-                backendAssembly,
-                ResolveBundleFramework
-            );
+            try
+            {
+                NativeLibrary.SetDllImportResolver(assembly, ResolveBundleFramework);
+            }
+            catch (InvalidOperationException)
+            {
+            }
         }
     }
 
@@ -28,28 +45,35 @@ internal static class AppInitializer
     {
         string baseDir = AppContext.BaseDirectory;
 
-        string fileName = libraryName;
-        if (!fileName.EndsWith(".dylib", StringComparison.OrdinalIgnoreCase))
+        List<string> fileNames = [];
+
+        if (libraryName.EndsWith(".dylib", StringComparison.OrdinalIgnoreCase))
         {
-            fileName = $"lib{libraryName}.dylib";
+            fileNames.Add(libraryName);
+        }
+        else
+        {
+            fileNames.Add($"{libraryName}.dylib");
+
+            if (!libraryName.StartsWith("lib", StringComparison.Ordinal))
+                fileNames.Add($"lib{libraryName}.dylib");
         }
 
-        string[] candidatePaths =
+        string[] directories =
         [
-            // Same folder as executable
-            Path.Combine(baseDir, fileName),
-            Path.Combine(baseDir, libraryName),
-
-            // Bundle Frameworks
-            Path.Combine(baseDir, "..", "Frameworks", fileName),
-            Path.Combine(baseDir, "..", "Frameworks", libraryName)
+            Path.Combine(baseDir, "..", "Frameworks"),
+            baseDir
         ];
 
-        foreach (string relativePath in candidatePaths)
+        foreach (string directory in directories)
         {
-            string fullPath = Path.GetFullPath(relativePath);
+            foreach (string fileName in fileNames)
+            {
+                string fullPath = Path.GetFullPath(Path.Combine(directory, fileName));
 
-            if (File.Exists(fullPath) && NativeLibrary.TryLoad(fullPath, out IntPtr handle)) return handle;
+                if (File.Exists(fullPath) && NativeLibrary.TryLoad(fullPath, out IntPtr handle))
+                    return handle;
+            }
         }
 
         return IntPtr.Zero;

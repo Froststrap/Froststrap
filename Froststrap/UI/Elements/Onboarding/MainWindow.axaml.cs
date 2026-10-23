@@ -6,6 +6,7 @@ using Froststrap.UI.Elements.Base;
 using Froststrap.UI.Elements.Onboarding.Pages;
 using Froststrap.UI.Utility;
 using Froststrap.UI.ViewModels.Onboarding;
+using Froststrap.Utility;
 
 namespace Froststrap.UI.Elements.Onboarding
 {
@@ -106,7 +107,7 @@ namespace Froststrap.UI.Elements.Onboarding
             _currentPage = pageType;
             NextPageCallback = null;
 
-            var pageInstance = Activator.CreateInstance(pageType);
+            var pageInstance = CreatePage(pageType);
             RootFrame.Content = pageInstance;
 
             var index = _pages.IndexOf(pageType);
@@ -121,6 +122,18 @@ namespace Froststrap.UI.Elements.Onboarding
             _viewModel.BackButtonEnabled = _currentPage != _pages.First();
 
             return true;
+        }
+
+        private static object CreatePage(Type pageType)
+        {
+            if (pageType == typeof(Page1)) return new Page1();
+            if (pageType == typeof(Page2)) return new Page2();
+            if (pageType == typeof(Page3)) return new Page3();
+            if (pageType == typeof(Page4)) return new Page4();
+            if (pageType == typeof(Page5)) return new Page5();
+            if (pageType == typeof(Page6)) return new Page6();
+            if (pageType == typeof(Page7)) return new Page7();
+            return new Page1();
         }
         #endregion
     }

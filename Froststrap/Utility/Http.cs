@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: 2026 Froststrap
+// SPDX-FileCopyrightText: 2026 Froststrap
 //
 // SPDX-License-Identifier: MPL-2.0
 
@@ -21,7 +21,7 @@ namespace Froststrap.Utility
 
             string json = await request.Content.ReadAsStringAsync();
 
-            return JsonSerializer.Deserialize<T>(json)!;
+            return JsonHelper.Deserialize<T>(json)!;
         }
 
         public static async Task<T> SendJson<T>(HttpRequestMessage requestMessage)
@@ -32,7 +32,7 @@ namespace Froststrap.Utility
 
             string json = await request.Content.ReadAsStringAsync();
 
-            return JsonSerializer.Deserialize<T>(json)!;
+            return JsonHelper.Deserialize<T>(json)!;
         }
 
         public static async Task<T> AuthGetJson<T>(Uri url)
@@ -43,7 +43,7 @@ namespace Froststrap.Utility
 
             string json = await request.Content.ReadAsStringAsync();
 
-            return JsonSerializer.Deserialize<T>(json)!;
+            return JsonHelper.Deserialize<T>(json)!;
         }
 
         public static async Task<T> AuthSendJson<T>(HttpRequestMessage requestMessage)
@@ -56,7 +56,7 @@ namespace Froststrap.Utility
 
             string json = await request.Content.ReadAsStringAsync();
 
-            return JsonSerializer.Deserialize<T>(json)!;
+            return JsonHelper.Deserialize<T>(json)!;
         }
     }
 }

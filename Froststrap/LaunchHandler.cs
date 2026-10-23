@@ -75,8 +75,14 @@ namespace Froststrap
         {
             if (App.SettingsOpen)
             {
-                App.Logger.Info("Settings window is already open, ignoring the request");
-                return;
+                if (UI.Elements.Settings.MainWindow.Instance is not null)
+                {
+                    App.Logger.Info("Settings window is already open, ignoring the request");
+                    return;
+                }
+
+                App.Logger.Warn("Settings was marked as open but no window exists, recovering");
+                App.SettingsOpen = false;
             }
 
             var interlock = new InterProcessLock("Settings");
@@ -98,8 +104,10 @@ namespace Froststrap
 
             window.Loaded += (s, e) =>
             {
-                _ = Task.Run(() => App.PlayerState.Load());
-                _ = Task.Run(() => App.StudioState.Load());
+                if (!App.PlayerState.Loaded)
+                    _ = Task.Run(() => App.PlayerState.Prop);
+                if (!App.StudioState.Loaded)
+                    _ = Task.Run(() => App.StudioState.Prop);
 
                 if (App.Settings.Prop.ShowUsingFroststrapRPC && App.FrostRPC == null)
                 {
@@ -116,7 +124,11 @@ namespace Froststrap
                 activationCts.Dispose();
                 interlock.Dispose();
                 App.FrostRPC = null;
-                ProcessNextAction(window.CloseAction);
+                App.SettingsOpen = false;
+
+                NextAction nextAction = window.CloseAction;
+
+                Dispatcher.UIThread.Post(() => ProcessNextAction(nextAction), DispatcherPriority.Background);
             };
 
             window.Show();
@@ -209,6 +221,8 @@ namespace Froststrap
 
             dialog.Loaded += (s, e) =>
             {
+                App.Logger.Info($"Launch menu ready after {Program.StartupTimer.ElapsedMilliseconds} ms");
+
                 if (App.Settings.Prop.ShowUsingFroststrapRPC && App.FrostRPC == null)
                 {
                     App.FrostRPC = new FroststrapRichPresence();
@@ -224,7 +238,9 @@ namespace Froststrap
                 if (_suppressMenuCloseAction)
                     return;
 
-                ProcessNextAction(dialog.CloseAction);
+                NextAction nextAction = dialog.CloseAction;
+
+                Dispatcher.UIThread.Post(() => ProcessNextAction(nextAction), DispatcherPriority.Background);
             };
 
             dialog.Show();

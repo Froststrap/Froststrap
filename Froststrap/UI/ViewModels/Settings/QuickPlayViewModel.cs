@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: 2026 Froststrap
+// SPDX-FileCopyrightText: 2026 Froststrap
 //
 // SPDX-License-Identifier: MPL-2.0
 
@@ -1048,14 +1048,14 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
             if (!File.Exists(cachePath)) return [];
 
             string json = File.ReadAllText(cachePath);
-            var entries = JsonSerializer.Deserialize<List<GameHistoryEntry>>(json, HistoryLoadOptions) ?? [];
+            var entries = JsonHelper.Deserialize<List<GameHistoryEntry>>(json, HistoryLoadOptions) ?? [];
 
             var validEntries = entries.Where(e => e.UniverseId > 0).ToList();
             if (validEntries.Count != entries.Count)
             {
                 try
                 {
-                    var cleanJson = JsonSerializer.Serialize(validEntries, HistoryLoadOptions);
+                    var cleanJson = JsonHelper.Serialize(validEntries, HistoryLoadOptions);
                     File.WriteAllText(cachePath, cleanJson);
                     App.Logger.Info("Cleaned GameHistory.json by removing entries with UniverseId = 0");
                 }
@@ -1092,7 +1092,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
             response.EnsureSuccessStatusCode();
             string json = await response.Content.ReadAsStringAsync();
 
-            var result = JsonSerializer.Deserialize<SearchLandingResponse>(json);
+            var result = JsonHelper.Deserialize<SearchLandingResponse>(json);
             var recentSort = result?.Sorts?.FirstOrDefault(s => s.SortId == "RecentlyVisited");
             if (recentSort?.Games == null) return [];
 
@@ -1431,19 +1431,19 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
 
         var url = "https://apis.roblox.com/discovery-api/omni-recommendation";
 
-        var payload = new
+        var payload = new OmniRecommendationRequest
         {
-            pageType = "Home",
-            sessionId = Guid.NewGuid().ToString(),
-            supportedTreatmentTypes = new[] { "SortlessGrid" },
-            sduiTreatmentTypes = new[] { "Carousel", "HeroUnit" },
-            cpuCores = Environment.ProcessorCount,
-            maxResolution = "2560x1440",
-            maxMemory = 32768,
-            networkType = "4g"
+            PageType = "Home",
+            SessionId = Guid.NewGuid().ToString(),
+            SupportedTreatmentTypes = ["SortlessGrid"],
+            SduiTreatmentTypes = ["Carousel", "HeroUnit"],
+            CpuCores = Environment.ProcessorCount,
+            MaxResolution = "2560x1440",
+            MaxMemory = 32768,
+            NetworkType = "4g"
         };
 
-        var jsonPayload = JsonSerializer.Serialize(payload);
+        var jsonPayload = JsonHelper.Serialize(payload);
 
         using var request = new HttpRequestMessage(HttpMethod.Post, url)
         {

@@ -9,6 +9,7 @@
 }:
 let
   dotnet-sdk = dotnetCorePackages.sdk_10_0-bin;
+  dotnet-runtime = dotnetCorePackages.runtime_10_0-bin;
   vpk-unwrapped = buildDotnetGlobalTool {
     pname = "vpk";
     version = "1.2.161";
@@ -20,7 +21,7 @@ let
       else
         lib.fakeSha256;
     nugetName = "vpk";
-    dotnet-sdk = dotnet-sdk;
+    inherit dotnet-sdk dotnet-runtime;
   };
 in
 vpk-unwrapped

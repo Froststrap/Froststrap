@@ -19,6 +19,7 @@ using AvaloniaEdit.Highlighting.Xshd;
 using FluentAvalonia.UI.Controls;
 using Froststrap.UI.Elements.Base;
 using Froststrap.UI.Elements.Controls;
+using Froststrap.UI.Utility;
 using Froststrap.UI.ViewModels.Editor;
 using LucideAvalonia.Enum;
 using System.Xml;
@@ -28,15 +29,15 @@ namespace Froststrap.UI.Elements.Editor
 {
     internal partial class BootstrapperEditorWindow : AvaloniaWindow, IDisposable
     {
-        private static class CustomBootstrapperSchema
+        internal static class CustomBootstrapperSchema
         {
-            private class Schema
+            internal class Schema
             {
                 public Dictionary<string, Element> Elements { get; set; } = [];
                 public Dictionary<string, Type> Types { get; set; } = [];
             }
 
-            private class Element
+            internal class Element
             {
                 public string? SuperClass { get; set; }
                 public bool IsCreatable { get; set; }
@@ -62,7 +63,7 @@ namespace Froststrap.UI.Elements.Editor
                 try
                 {
                     string json = Resource.GetString("CustomBootstrapperSchema.json").GetAwaiter().GetResult();
-                    _schema = JsonSerializer.Deserialize<Schema>(json) ?? throw new InvalidOperationException("Schema deserialization failed.");
+                    _schema = JsonHelper.Deserialize<Schema>(json) ?? throw new InvalidOperationException("Schema deserialization failed.");
 
                     foreach (var type in _schema.Types)
                         Types.Add(type.Key, type.Value);
@@ -151,6 +152,7 @@ namespace Froststrap.UI.Elements.Editor
 
         public BootstrapperEditorWindow()
         {
+            DeferredStyles.EnsureAvaloniaEditTheme();
             InitializeComponent();
         }
 
@@ -295,14 +297,15 @@ namespace Froststrap.UI.Elements.Editor
             Grid.SetColumn(closeButton, 2);
             contentGrid.Children.Add(closeButton);
 
-            var transform = new TranslateTransform(500, 0)
+            var transform = new TranslateTransform(App.Settings.Prop.DisableAnimations ? 0 : 500, 0);
+            if (!App.Settings.Prop.DisableAnimations)
             {
-                Transitions =
+                transform.Transitions =
                 [
                     new DoubleTransition { Property = TranslateTransform.XProperty, Duration = TimeSpan.FromMilliseconds(350), Easing = new QuarticEaseOut() },
                     new DoubleTransition { Property = TranslateTransform.YProperty, Duration = TimeSpan.FromMilliseconds(300), Easing = new QuarticEaseOut() }
-                ]
-            };
+                ];
+            }
 
             var notification = new Border
             {
@@ -338,9 +341,12 @@ namespace Froststrap.UI.Elements.Editor
 
             Dispatcher.UIThread.InvokeAsync(async () =>
             {
-                await Task.Delay(50);
-                if (cts.IsCancellationRequested) return;
-                transform.X = 0;
+                if (!App.Settings.Prop.DisableAnimations)
+                {
+                    await Task.Delay(50);
+                    if (cts.IsCancellationRequested) return;
+                    transform.X = 0;
+                }
 
                 await Task.Delay(timeout);
                 if (!cts.IsCancellationRequested)
@@ -355,8 +361,11 @@ namespace Froststrap.UI.Elements.Editor
             entry.TimeoutCts?.Cancel();
             RepositionNotifications();
 
-            entry.Transform.X = 500;
-            await Task.Delay(350);
+            if (!App.Settings.Prop.DisableAnimations)
+            {
+                entry.Transform.X = 500;
+                await Task.Delay(350);
+            }
 
             var notificationPanel = this.FindControl<Panel>("NotificationPanel");
             if (notificationPanel != null && notificationPanel.Children.Contains(entry.Element))

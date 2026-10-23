@@ -1,0 +1,15 @@
+<!--
+SPDX-FileCopyrightText: 2026 Froststrap
+
+SPDX-License-Identifier: MPL-2.0
+-->
+
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    x:Class="Froststrap.UI.Utility.ColorPickerTemplates">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceInclude Source="avares://ColorPicker/Templates/HueSlider.axaml" />
+        <ResourceInclude Source="avares://ColorPicker/Templates/SquareSlider.axaml" />
+        <ResourceInclude Source="avares://ColorPicker/Templates/SquarePicker.axaml" />
+    </ResourceDictionary.MergedDictionaries>
+</ResourceDictionary>

@@ -10,7 +10,6 @@ SPDX-License-Identifier: MPL-2.0
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
     xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
-    xmlns:elements="clr-namespace:Froststrap.UI.Elements"
     xmlns:gv="using:Froststrap.UI.ViewModels"
     xmlns:ico="using:FluentIcons.Avalonia.Fluent"
     xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
@@ -30,7 +29,7 @@ SPDX-License-Identifier: MPL-2.0
     CanResize="True"
     WindowStartupLocation="CenterScreen">
 
-    <Grid RowDefinitions="Auto,*,56">
+    <Grid x:Name="RootGrid" RowDefinitions="Auto,*,56">
         <Panel
             Grid.Row="0"
             Height="36"
@@ -346,11 +345,5 @@ SPDX-License-Identifier: MPL-2.0
             IsVisible="False"
             Opacity="0"
             ZIndex="-1000" />
-
-        <elements:SearchDialog
-            x:Name="SearchOverlay"
-            Grid.Row="0"
-            Grid.RowSpan="3"
-            ZIndex="2000" />
     </Grid>
 </base:AvaloniaWindow>

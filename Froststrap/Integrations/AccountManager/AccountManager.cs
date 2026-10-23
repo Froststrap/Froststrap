@@ -4,8 +4,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
 using Froststrap.UI.Elements.Dialogs;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 
 namespace Froststrap.Integrations.AccountManager
 {
@@ -16,7 +15,6 @@ namespace Froststrap.Integrations.AccountManager
         private readonly string _accountsLocation;
         private List<AccountManagerAccount> _accounts = [];
 
-        private readonly LoginService _loginService = new();
         private readonly AvatarService _avatarService = new();
 
         public event Action<AccountManagerAccount?>? ActiveAccountChanged;
@@ -45,7 +43,7 @@ namespace Froststrap.Integrations.AccountManager
 
                 json = MigrateCredentials(json);
 
-                var data = JsonConvert.DeserializeObject<AccountManagerData>(json);
+                var data = JsonHelper.Deserialize<AccountManagerData>(json);
 
                 if (data?.Accounts != null)
                 {
@@ -77,24 +75,27 @@ namespace Froststrap.Integrations.AccountManager
         {
             try
             {
-                var root = JObject.Parse(json);
+                var root = JsonNode.Parse(json) as JsonObject;
 
-                if (root[nameof(AccountManagerData.Accounts)] is not JArray accounts)
+                if (root?[nameof(AccountManagerData.Accounts)] is not JsonArray accounts)
                     return json;
 
                 bool foundLegacyCredentials = false;
 
-                foreach (JObject account in accounts.OfType<JObject>())
+                foreach (var accountNode in accounts)
                 {
+                    if (accountNode is not JsonObject account)
+                        continue;
+
                     var userIdToken = account[nameof(AccountManagerAccount.UserId)];
-                    var securityToken = account[nameof(AccountManagerAccount.SecurityToken)]?.Value<string>();
+                    var securityToken = account[nameof(AccountManagerAccount.SecurityToken)]?.GetValue<string>();
 
                     if (userIdToken == null || string.IsNullOrEmpty(securityToken))
                         continue;
 
                     foundLegacyCredentials = true;
 
-                    long userId = userIdToken.Value<long>();
+                    long userId = userIdToken.GetValue<long>();
 
                     if (!AccountSecurity.TryUnprotect(securityToken, out string unprotectedToken))
                     {
@@ -118,7 +119,7 @@ namespace Froststrap.Integrations.AccountManager
                 if (!foundLegacyCredentials)
                     return json;
 
-                var migratedJson = root.ToString(Formatting.Indented);
+                var migratedJson = root.ToJsonString(JsonHelper.Options);
                 File.WriteAllText(_accountsLocation, migratedJson);
 
                 App.Logger.Info("Successfully migrated account credentials to the OS credential store.");
@@ -134,19 +135,27 @@ namespace Froststrap.Integrations.AccountManager
 
         public void SaveAccounts()
         {
+            SaveAccountsCore(writeCredentials: true);
+        }
+
+        private void SaveAccountsCore(bool writeCredentials)
+        {
             try
             {
-                foreach (var account in _accounts)
+                if (writeCredentials)
                 {
-                    if (string.IsNullOrEmpty(account.SecurityToken))
-                        continue;
-
-                    if (!AccountSecurity.SetCredential(
-                        account.UserId.ToString(CultureInfo.InvariantCulture),
-                        account.SecurityToken
-                    ))
+                    foreach (var account in _accounts)
                     {
-                        App.Logger.Warn($"Failed to save credential for account {account.UserId}.");
+                        if (string.IsNullOrEmpty(account.SecurityToken))
+                            continue;
+
+                        if (!AccountSecurity.SetCredential(
+                            account.UserId.ToString(CultureInfo.InvariantCulture),
+                            account.SecurityToken
+                        ))
+                        {
+                            App.Logger.Warn($"Failed to save credential for account {account.UserId}.");
+                        }
                     }
                 }
 
@@ -159,13 +168,22 @@ namespace Froststrap.Integrations.AccountManager
 
                 File.WriteAllText(
                     _accountsLocation,
-                    JsonConvert.SerializeObject(data, Formatting.Indented)
+                    JsonHelper.Serialize(data)
                 );
             }
             catch (Exception ex)
             {
                 App.Logger.Error("Unhandled exception: ", ex);
             }
+        }
+
+        public void ReorderAccounts(IReadOnlyList<AccountManagerAccount> ordered)
+        {
+            if (ordered.Count != _accounts.Count)
+                return;
+
+            _accounts = [.. ordered];
+            SaveAccountsCore(writeCredentials: false);
         }
 
         public void SetActiveAccount(long? userId)
@@ -238,27 +256,9 @@ namespace Froststrap.Integrations.AccountManager
         ) =>
             LoginService.AddAccountByQuickSignInAsync(dialog, token);
 
-        public async Task<AccountManagerAccount?> AddAccountByBrowserAsync() =>
-            await _loginService.AddAccountByBrowserAsync(async cookie =>
-            {
-                var accountInfo =
-                    await RobloxApiService.GetAccountInfoFromCookieAsync(cookie);
-
-                if (accountInfo == null)
-                    return null;
-
-                var existing = _accounts.FirstOrDefault(
-                    acc => acc.UserId == accountInfo.UserId
-                );
-
-                if (existing == null)
-                {
-                    AddAccount(accountInfo);
-                    return accountInfo;
-                }
-
-                return existing;
-            });
+        public static async Task<AccountManagerAccount?> AddAccountByBrowserAsync() =>
+            await LoginService.AddAccountByBrowserAsync(async cookie =>
+                await RobloxApiService.GetAccountInfoFromCookieAsync(cookie));
 
         public static Task<UserPresence?> GetUserPresenceAsync(long userId) =>
             RobloxApiService.GetUserPresenceAsync(userId);

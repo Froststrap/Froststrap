@@ -6,7 +6,9 @@ using System.ComponentModel;
 using System.Reflection;
 using Avalonia.Controls;
 using FluentAvalonia.UI.Controls;
+using Froststrap.UI.Elements.About.Pages;
 using Froststrap.UI.ViewModels.About;
+using Froststrap.Utility;
 
 namespace Froststrap.UI.Elements.About
 {
@@ -67,51 +69,12 @@ namespace Froststrap.UI.Elements.About
             }
         }
 
-        private static Control? ResolveViewForViewModel(object viewModel)
+        private static Control? ResolveViewForViewModel(object viewModel) => viewModel switch
         {
-            var actualViewModelType = viewModel.GetType();
-            var viewModelName = actualViewModelType.Name;
-            var viewName = viewModelName.Replace("ViewModel", "", StringComparison.Ordinal);
-
-            var viewTypeNames = new[]
-            {
-                $"Froststrap.UI.Elements.About.Pages.{viewName}Page",
-                $"Froststrap.UI.Elements.About.Pages.{viewName}",
-                $"Froststrap.UI.Elements.About.{viewName}Page",
-                $"Froststrap.UI.Elements.About.{viewName}",
-                $"Froststrap.UI.Elements.{viewName}Page",
-                $"Froststrap.UI.Elements.{viewName}"
-            };
-
-            foreach (var viewTypeName in viewTypeNames)
-            {
-                var viewType = Type.GetType(viewTypeName);
-
-                if (viewType == null)
-                {
-                    try
-                    {
-                        var assembly = Assembly.GetExecutingAssembly();
-                        viewType = assembly.GetType(viewTypeName, false);
-                    }
-                    catch { }
-                }
-
-                if (viewType != null && typeof(Control).IsAssignableFrom(viewType))
-                {
-                    try
-                    {
-                        if (Activator.CreateInstance(viewType) is Control view) return view;
-                    }
-                    catch (Exception ex)
-                    {
-                        App.Logger.Error($"Failed to create view {viewTypeName}: {ex.Message}");
-                    }
-                }
-            }
-
-            return null;
-        }
+            AboutViewModel => new AboutPage(),
+            LicensesViewModel => new LicensesPage(),
+            _ => null
+        };
 
         private void UpdateSelectedNavigationViewItem(string selectedTag)
         {

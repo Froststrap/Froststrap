@@ -627,7 +627,7 @@ Would you like to upgrade your currently installed version?</value>
     <value>App Themes</value>
   </data>
   <data name="Menu.Appearance.Custom.Theme.Description" xml:space="preserve">
-      <value>Froststrap will automatically check for updates when it starts, then download and install stable versions in the background and restart.</value>
+      <value>Change the app theme between light, dark and custom</value>
   </data>
   <data name="Menu.Appearance.Icon.Description" xml:space="preserve">
     <value>Choose what icon Froststrap should use.</value>
@@ -1504,6 +1504,9 @@ Would you like to switch your preferred channel to {0}?</value>
   </data>
   <data name="Menu.Dialog.QuickSignIn.Title" xml:space="preserve">
     <value>Quick Sign In</value>
+  </data>
+  <data name="Menu.BrowserLogin.Title" xml:space="preserve">
+    <value>Sign in to Roblox</value>
   </data>
   <data name="Menu.Channel.StaticDirectory.Title" xml:space="preserve">
     <value>Static directory</value>
