@@ -39,9 +39,12 @@ namespace Froststrap.Integrations.Overlay.Platform
 
         public IKeyOverlayInput? CreateKeyInput(SoftKeyProfile profile) => null;
 
+        public bool UsesSeparatePinnedWindows => false;
+
         public void PrepareGameWindow(Window window) { }
         public void PrepareKeyOverlayWindow(Window window) { }
         public void PrepareSearchBarWindow(Window window) { }
+        public void PreparePinnedPanelWindow(Window window) { }
         public void ReleaseOverlayWindow(Window window) { }
 
         public void SetWindowCloaked(Window window, bool cloaked) { }

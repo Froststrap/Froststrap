@@ -9,6 +9,7 @@ using Avalonia.Media;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.Integrations;
+using Froststrap.Integrations.Discord;
 using Froststrap.Models.Overlay;
 using Froststrap.UI.Elements.Dialogs;
 using System.Collections.ObjectModel;
@@ -153,10 +154,10 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public bool EnableOverlay
         {
-            get => (OperatingSystem.IsWindows() || OperatingSystem.IsLinux()) && App.Settings.Prop.EnableOverlay;
+            get => App.Settings.Prop.EnableOverlay;
             set
             {
-                App.Settings.Prop.EnableOverlay = (OperatingSystem.IsWindows() || OperatingSystem.IsLinux()) && value;
+                App.Settings.Prop.EnableOverlay = value;
                 OnPropertyChanged(nameof(EnableOverlay));
             }
         }
@@ -213,10 +214,10 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public bool KeyOverlayEnabled
         {
-            get => OperatingSystem.IsWindows() && App.Settings.Prop.KeyOverlayEnabled;
+            get => App.Settings.Prop.KeyOverlayEnabled;
             set
             {
-                App.Settings.Prop.KeyOverlayEnabled = OperatingSystem.IsWindows() && value;
+                App.Settings.Prop.KeyOverlayEnabled = value;
                 OnPropertyChanged(nameof(KeyOverlayEnabled));
             }
         }
@@ -472,10 +473,10 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public bool SearchBarEnabled
         {
-            get => OperatingSystem.IsWindows() && App.Settings.Prop.SearchBarEnabled;
+            get => App.Settings.Prop.SearchBarEnabled;
             set
             {
-                App.Settings.Prop.SearchBarEnabled = OperatingSystem.IsWindows() && value;
+                App.Settings.Prop.SearchBarEnabled = value;
                 OnPropertyChanged(nameof(SearchBarEnabled));
                 OverlaySearchBarHotkey.NotifyChanged();
             }

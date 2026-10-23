@@ -10,6 +10,7 @@ using Avalonia.Styling;
 using Avalonia.Threading;
 using Froststrap.AppData;
 using Froststrap.Integrations;
+using Froststrap.Integrations.Discord;
 using Froststrap.UI.Elements.Base;
 using Microsoft.Win32;
 using System.Reflection;

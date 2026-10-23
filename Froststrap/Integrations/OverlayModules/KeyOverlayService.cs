@@ -21,7 +21,7 @@ namespace Froststrap.Integrations.OverlayModules
 
         public static void Start(IOverlayHost? host)
         {
-            if (_started || !OperatingSystem.IsWindows() || !App.Settings.Prop.KeyOverlayEnabled)
+            if (_started || !App.Settings.Prop.KeyOverlayEnabled)
                 return;
 
             _started = true;

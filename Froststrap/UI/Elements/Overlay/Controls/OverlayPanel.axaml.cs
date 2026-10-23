@@ -81,10 +81,15 @@ namespace Froststrap.UI.Elements.Overlay.Controls
             set => SetValue(IsPinnedProperty, value);
         }
 
+        public bool IsDetached { get; set; }
+
         public ICommand TogglePinCommand { get; }
 
         public event EventHandler? PinChanged;
         public event EventHandler<bool>? DragStateChanged;
+
+        public event EventHandler<PointerPressedEventArgs>? DetachedDragRequested;
+        public event EventHandler<(string Edge, Vector Delta)>? DetachedResizeRequested;
 
         private Point _dragStart;
         private Point _dragOrigin;
@@ -149,6 +154,15 @@ namespace Froststrap.UI.Elements.Overlay.Controls
 
         private void TitleBarPointerPressed(object? sender, PointerPressedEventArgs e)
         {
+            if (IsDetached)
+            {
+                if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
+                    DetachedDragRequested?.Invoke(this, e);
+
+                e.Handled = true;
+                return;
+            }
+
             if (Surface is null)
                 return;
 
@@ -200,7 +214,15 @@ namespace Froststrap.UI.Elements.Overlay.Controls
 
         private void ResizeDragDelta(object? sender, VectorEventArgs e)
         {
-            if (sender is not Thumb thumb || thumb.Tag is not string edge || Surface is null)
+            if (IsDetached)
+            {
+                if (sender is Thumb thumb && thumb.Tag is string detachedEdge)
+                    DetachedResizeRequested?.Invoke(this, (detachedEdge, e.Vector));
+
+                return;
+            }
+
+            if (sender is not Thumb thumb2 || thumb2.Tag is not string edge || Surface is null)
                 return;
 
             if (edge.Contains("Left", StringComparison.Ordinal))

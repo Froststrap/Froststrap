@@ -173,11 +173,16 @@ SPDX-License-Identifier: MPL-2.0
 
   <Target Name="EmbedAotNativeLibraries" BeforeTargets="_GenerateCompileInputs"
           Condition="'$(PublishAot)' == 'true' and '$(AotEmbedNativeLibraries)' == 'true' and $([MSBuild]::IsOSPlatform('Windows'))">
+    <PropertyGroup>
+      <_AotNativeRid Condition="'$(RuntimeIdentifier)' != ''">$(RuntimeIdentifier)</_AotNativeRid>
+      <_AotNativeRid Condition="'$(_AotNativeRid)' == ''">$(NETCoreSdkRuntimeIdentifier)</_AotNativeRid>
+    </PropertyGroup>
     <ItemGroup>
       <_AotNativeLibrary Include="@(ReferenceCopyLocalPaths->Distinct())"
-                         Condition="'%(Filename)%(Extension)' == 'av_libglesv2.dll'
+                         Condition="('%(Filename)%(Extension)' == 'av_libglesv2.dll'
                                     Or '%(Filename)%(Extension)' == 'libHarfBuzzSharp.dll'
-                                    Or '%(Filename)%(Extension)' == 'libSkiaSharp.dll'" />
+                                    Or '%(Filename)%(Extension)' == 'libSkiaSharp.dll')
+                                    And $([System.String]::Copy('%(FullPath)').Contains('$(_AotNativeRid)'))" />
       <_AotNativeLibrary Include="$(MSBuildProjectDirectory)/../backend/bin/$(Configuration)/net10.0/notify.dll"
                          Condition="Exists('$(MSBuildProjectDirectory)/../backend/bin/$(Configuration)/net10.0/notify.dll')" />
       <EmbeddedResource Include="@(_AotNativeLibrary)">

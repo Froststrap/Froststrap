@@ -13,7 +13,9 @@ namespace Froststrap.Models.Overlay
 {
     internal static class OverlayHotkey
     {
-        public const KeyModifiers DefaultModifiers = KeyModifiers.Control | KeyModifiers.Alt;
+        public static readonly KeyModifiers DefaultModifiers = OperatingSystem.IsMacOS()
+            ? KeyModifiers.Meta | KeyModifiers.Shift
+            : KeyModifiers.Control | KeyModifiers.Alt;
 
         public const Key DefaultKey = Key.L;
 
@@ -140,6 +142,7 @@ namespace Froststrap.Models.Overlay
             [Key.OemOpenBrackets] = "[",
             [Key.OemCloseBrackets] = "]",
             [Key.OemPipe] = "\\",
+            [Key.OemBackslash] = "\\",
             [Key.OemSemicolon] = ";",
             [Key.OemQuotes] = "'",
             [Key.OemComma] = ",",

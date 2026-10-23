@@ -4,7 +4,7 @@
 
 using Froststrap.Enums;
 
-namespace Froststrap.Integrations
+namespace Froststrap.Models.Overlay
 {
     internal static class SoftKeyLayout
     {

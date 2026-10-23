@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+using System;
+
 using Avalonia.Input;
 using Avalonia.Threading;
 
@@ -9,7 +11,10 @@ namespace Froststrap.Models.Overlay
 {
     internal static class KeyOverlayMoveHotkey
     {
-        public const KeyModifiers DefaultModifiers = KeyModifiers.Control | KeyModifiers.Alt;
+        public static readonly KeyModifiers DefaultModifiers = OperatingSystem.IsMacOS()
+            ? KeyModifiers.Meta | KeyModifiers.Shift
+            : KeyModifiers.Control | KeyModifiers.Alt;
+
         public const Key DefaultKey = Key.P;
 
         public static event EventHandler? Changed;

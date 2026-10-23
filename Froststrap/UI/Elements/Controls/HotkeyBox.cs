@@ -55,6 +55,7 @@ namespace Froststrap.UI.Elements.Controls
 
         private Button? _recorder;
         private TextBlock? _shortcutText;
+        private KeyModifiers _heldModifiers = KeyModifiers.None;
 
         public event EventHandler? RecordingChanged;
 
@@ -117,6 +118,7 @@ namespace Froststrap.UI.Elements.Controls
             }
 
             IsRecording = true;
+            _heldModifiers = KeyModifiers.None;
 
             _recorder?.Classes.Set("accent", true);
             SetText(Strings.Menu_Integrations_OverlayHotkey_Recording);
@@ -141,7 +143,9 @@ namespace Froststrap.UI.Elements.Controls
                 return;
             }
 
-            KeyModifiers modifiers = e.KeyModifiers | OverlayHotkey.ModifierOf(key);
+            _heldModifiers |= OverlayHotkey.ModifierOf(key);
+
+            KeyModifiers modifiers = e.KeyModifiers | _heldModifiers;
 
             if (OverlayHotkey.IsModifier(key))
             {
@@ -163,8 +167,24 @@ namespace Froststrap.UI.Elements.Controls
 
         private void RecorderKeyUp(object? sender, KeyEventArgs e)
         {
-            if (IsRecording)
-                e.Handled = true;
+            if (!IsRecording)
+                return;
+
+            e.Handled = true;
+
+            KeyModifiers released = OverlayHotkey.ModifierOf(e.Key);
+
+            if (released == KeyModifiers.None)
+                return;
+
+            _heldModifiers &= ~released;
+
+            KeyModifiers modifiers = e.KeyModifiers | _heldModifiers;
+
+            if (modifiers == KeyModifiers.None)
+                SetText(Strings.Menu_Integrations_OverlayHotkey_Recording);
+            else
+                SetText($"{OverlayHotkey.Describe(modifiers, Key.None)} + …");
         }
 
         private void RecorderLostFocus(object? sender, RoutedEventArgs e) => StopRecording();
@@ -174,6 +194,7 @@ namespace Froststrap.UI.Elements.Controls
             bool wasRecording = IsRecording;
 
             IsRecording = false;
+            _heldModifiers = KeyModifiers.None;
 
             _recorder?.Classes.Set("accent", false);
 

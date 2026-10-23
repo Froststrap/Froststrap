@@ -47,8 +47,21 @@ namespace Froststrap.UI.Elements.Overlay
 
         private readonly Dictionary<OverlayPanel, IDisposable> _panelVisibilitySubs = [];
 
+        private readonly Dictionary<OverlayPanel, Window> _pinnedWindows = [];
+        private readonly Dictionary<OverlayPanel, PinnedPanelLayout> _detachedLayouts = [];
+
         private bool _pinnedMode;
         private IBrush? _scrimBrush;
+
+        private readonly record struct PinnedPanelLayout(
+            double Left,
+            double Top,
+            double Width,
+            double Height,
+            double SurfaceWidth,
+            double SurfaceHeight);
+
+        private bool SeparatePinned => _overlay?.UsesSeparatePinnedWindows == true;
 
         private DispatcherTimer? _regionTimer;
         private int _draggingPanels;
@@ -117,6 +130,8 @@ namespace Froststrap.UI.Elements.Overlay
             }
 
             Position = new PixelPoint((int)bounds.Rect.Left, (int)bounds.Rect.Top);
+
+            RepositionPinnedWindows();
         }
 
         private OverlayPanel PanelFor(OverlayPanelKind kind) => kind switch
@@ -252,17 +267,19 @@ namespace Froststrap.UI.Elements.Overlay
                     continue;
                 }
 
+                bool detached = _detachedLayouts.TryGetValue(panel, out PinnedPanelLayout layout);
+
                 panels[name] = new OverlayPanelLayout
                 {
                     Open = panel.IsVisible,
                     Pinned = panel.IsPinned,
-                    Left = panel.Position.X,
-                    Top = panel.Position.Y,
-                    Width = panel.PanelSize.Width,
-                    Height = panel.PanelSize.Height,
+                    Left = detached ? layout.Left : panel.Position.X,
+                    Top = detached ? layout.Top : panel.Position.Y,
+                    Width = detached ? layout.Width : panel.PanelSize.Width,
+                    Height = detached ? layout.Height : panel.PanelSize.Height,
                     Depth = panel.Depth,
-                    SurfaceWidth = panel.SurfaceSize.Width,
-                    SurfaceHeight = panel.SurfaceSize.Height
+                    SurfaceWidth = detached ? layout.SurfaceWidth : panel.SurfaceSize.Width,
+                    SurfaceHeight = detached ? layout.SurfaceHeight : panel.SurfaceSize.Height
                 };
             }
 
@@ -476,6 +493,27 @@ namespace Froststrap.UI.Elements.Overlay
                 && gameOrOverlayInFront
                 && _overlay?.IsGameMinimised() != true;
 
+            if (SeparatePinned)
+            {
+                if (!_pinnedMode)
+                    return;
+
+                foreach (Window window in _pinnedWindows.Values)
+                {
+                    if (shouldShow)
+                    {
+                        if (!window.IsVisible)
+                            window.Show();
+                    }
+                    else if (window.IsVisible)
+                    {
+                        window.Hide();
+                    }
+                }
+
+                return;
+            }
+
             if (shouldShow)
             {
                 if (!IsVisible)
@@ -667,6 +705,9 @@ namespace Froststrap.UI.Elements.Overlay
 
         private void UpdateWindowRegion()
         {
+            if (SeparatePinned)
+                return;
+
             if (!_pinnedMode)
             {
                 ClearWindowRegion();
@@ -712,6 +753,9 @@ namespace Froststrap.UI.Elements.Overlay
 
         private void OnPanelDragStateChanged(object? sender, bool dragging)
         {
+            if (SeparatePinned)
+                return;
+
             _draggingPanels += dragging ? 1 : -1;
 
             if (_draggingPanels < 0)
@@ -753,6 +797,12 @@ namespace Froststrap.UI.Elements.Overlay
             if (!AnyPinnedPanels())
                 return;
 
+            if (SeparatePinned)
+            {
+                EnterSeparatePinnedMode();
+                return;
+            }
+
             _pinnedMode = true;
 
             _scrimBrush ??= Scrim.Background;
@@ -779,6 +829,12 @@ namespace Froststrap.UI.Elements.Overlay
         {
             if (!_pinnedMode)
                 return;
+
+            if (SeparatePinned)
+            {
+                ExitSeparatePinnedMode();
+                return;
+            }
 
             _pinnedMode = false;
 
@@ -808,6 +864,28 @@ namespace Froststrap.UI.Elements.Overlay
             if (!_pinnedMode)
                 return;
 
+            if (SeparatePinned)
+            {
+                if (panel.IsPinned)
+                    DetachPanel(panel);
+                else
+                {
+                    RestoreDetachedPanel(panel);
+                    panel.Opacity = 0;
+                    panel.IsHitTestVisible = false;
+                }
+
+                if (!AnyPinnedPanels())
+                {
+                    Hide();
+                    ExitPinnedMode();
+                    return;
+                }
+
+                RefreshPinned();
+                return;
+            }
+
             if (!panel.IsPinned)
             {
                 panel.Opacity = 0;
@@ -829,6 +907,25 @@ namespace Froststrap.UI.Elements.Overlay
             if (!_pinnedMode)
                 return;
 
+            if (SeparatePinned)
+            {
+                foreach (OverlayPanel panel in _pinnedWindows.Keys.ToList())
+                {
+                    if (!panel.IsVisible)
+                        RestoreDetachedPanel(panel);
+                }
+
+                if (!AnyPinnedPanels())
+                {
+                    Hide();
+                    ExitPinnedMode();
+                    return;
+                }
+
+                RefreshPinned();
+                return;
+            }
+
             if (AnyPinnedPanels())
             {
                 UpdateWindowRegion();
@@ -837,6 +934,348 @@ namespace Froststrap.UI.Elements.Overlay
 
             Hide();
             ExitPinnedMode();
+        }
+
+        #endregion
+
+        #region Separate pinned windows
+
+        private void EnterSeparatePinnedMode()
+        {
+            _pinnedMode = true;
+
+            _scrimBrush ??= Scrim.Background;
+            Scrim.Background = null;
+
+            ChromeDock.IsVisible = false;
+
+            foreach (OverlayPanelKind kind in PanelKinds)
+            {
+                OverlayPanel panel = PanelFor(kind);
+
+                if (panel.IsPinned)
+                {
+                    DetachPanel(panel);
+                    continue;
+                }
+
+                panel.Opacity = 0;
+                panel.IsHitTestVisible = false;
+            }
+
+            Hide();
+            RefreshPinned();
+        }
+
+        private void ExitSeparatePinnedMode()
+        {
+            _pinnedMode = false;
+
+            foreach (OverlayPanel panel in _pinnedWindows.Keys.ToList())
+                RestoreDetachedPanel(panel);
+
+            Scrim.Background = _scrimBrush ?? new SolidColorBrush(Color.FromArgb(0xB3, 0, 0, 0));
+
+            ChromeDock.IsVisible = true;
+
+            foreach (OverlayPanelKind kind in PanelKinds)
+            {
+                OverlayPanel panel = PanelFor(kind);
+
+                panel.Opacity = 1;
+                panel.IsHitTestVisible = true;
+            }
+        }
+
+        private void DetachPanel(OverlayPanel panel)
+        {
+            if (_pinnedWindows.ContainsKey(panel))
+                return;
+
+            double width = Math.Max(panel.PanelSize.Width, OverlayPanel.MinPanelWidth);
+            double height = Math.Max(panel.PanelSize.Height, OverlayPanel.MinPanelHeight);
+
+            var layout = new PinnedPanelLayout(
+                panel.Position.X,
+                panel.Position.Y,
+                width,
+                height,
+                panel.SurfaceSize.Width,
+                panel.SurfaceSize.Height);
+
+            PanelSurface.Children.Remove(panel);
+
+            _detachedLayouts[panel] = layout;
+
+            panel.IsDetached = true;
+            panel.Width = width;
+            panel.Height = height;
+
+            Canvas.SetLeft(panel, 0);
+            Canvas.SetTop(panel, 0);
+
+            var surface = new Canvas
+            {
+                Width = width,
+                Height = height,
+                Background = Brushes.Transparent,
+                Children = { panel }
+            };
+
+            var window = new Window
+            {
+                Width = width,
+                Height = height,
+                Opacity = 0,
+                WindowDecorations = WindowDecorations.None,
+                CanResize = false,
+                ShowInTaskbar = false,
+                ShowActivated = false,
+                Topmost = true,
+                TransparencyLevelHint = new[] { WindowTransparencyLevel.Transparent },
+                Background = Brushes.Transparent,
+                WindowStartupLocation = WindowStartupLocation.Manual,
+                Content = surface
+            };
+
+            SetPinnedWindowPosition(window, layout);
+
+            window.Show();
+
+            _overlay?.PreparePinnedPanelWindow(window);
+
+            window.PositionChanged += OnPinnedWindowPositionChanged;
+            window.Closed += OnPinnedWindowClosed;
+
+            _pinnedWindows[panel] = window;
+
+            panel.DetachedDragRequested += OnPanelDetachedDragRequested;
+            panel.DetachedResizeRequested += OnPanelDetachedResizeRequested;
+
+            window.Opacity = 1;
+        }
+
+        private void RestoreDetachedPanel(OverlayPanel panel, bool closeWindow = true)
+        {
+            if (!_pinnedWindows.Remove(panel, out Window? window))
+                return;
+
+            panel.IsDetached = false;
+
+            UnsubscribePinnedWindow(window);
+
+            panel.DetachedDragRequested -= OnPanelDetachedDragRequested;
+            panel.DetachedResizeRequested -= OnPanelDetachedResizeRequested;
+
+            if (window.Content is Canvas surface)
+                surface.Children.Remove(panel);
+
+            window.Content = null;
+
+            if (closeWindow)
+                window.Close();
+
+            if (!_detachedLayouts.Remove(panel, out PinnedPanelLayout layout))
+                return;
+
+            double scaleX = Scale(PanelSurface.Bounds.Width, layout.SurfaceWidth);
+            double scaleY = Scale(PanelSurface.Bounds.Height, layout.SurfaceHeight);
+
+            panel.Width = layout.Width;
+            panel.Height = layout.Height;
+
+            PanelSurface.Children.Add(panel);
+
+            Canvas.SetLeft(panel, layout.Left * scaleX);
+            Canvas.SetTop(panel, layout.Top * scaleY);
+
+            panel.Clamp();
+            panel.Raise();
+        }
+
+        private void UnsubscribePinnedWindow(Window window)
+        {
+            window.PositionChanged -= OnPinnedWindowPositionChanged;
+            window.Closed -= OnPinnedWindowClosed;
+        }
+
+        private void SetPinnedWindowPosition(Window window, PinnedPanelLayout layout)
+        {
+            if (_lastBounds is not OverlayBounds bounds)
+                return;
+
+            double scale = GetBoundsScaling(bounds);
+            if (scale <= 0)
+                scale = 1;
+
+            window.Width = layout.Width;
+            window.Height = layout.Height;
+            window.Position = new PixelPoint(
+                (int)Math.Round(bounds.Rect.Left + (layout.Left * scale)),
+                (int)Math.Round(bounds.Rect.Top + (layout.Top * scale)));
+        }
+
+        private void RepositionPinnedWindows()
+        {
+            if (_pinnedWindows.Count == 0)
+                return;
+
+            foreach ((OverlayPanel panel, Window window) in _pinnedWindows)
+            {
+                if (_detachedLayouts.TryGetValue(panel, out PinnedPanelLayout layout))
+                    SetPinnedWindowPosition(window, layout);
+            }
+        }
+
+        private void OnPinnedWindowPositionChanged(object? sender, PixelPointEventArgs e)
+        {
+            if (sender is not Window window)
+                return;
+
+            if (_lastBounds is not OverlayBounds bounds)
+                return;
+
+            OverlayPanel? owner = null;
+
+            foreach ((OverlayPanel panel, Window w) in _pinnedWindows)
+            {
+                if (ReferenceEquals(w, window))
+                {
+                    owner = panel;
+                    break;
+                }
+            }
+
+            if (owner is null)
+                return;
+
+            if (!_detachedLayouts.TryGetValue(owner, out PinnedPanelLayout layout))
+                return;
+
+            double scale = GetBoundsScaling(bounds);
+            if (scale <= 0)
+                scale = 1;
+
+            double localLeft = (window.Position.X - bounds.Rect.Left) / scale;
+            double localTop = (window.Position.Y - bounds.Rect.Top) / scale;
+
+            _detachedLayouts[owner] = layout with { Left = localLeft, Top = localTop };
+        }
+
+        private void OnPinnedWindowClosed(object? sender, EventArgs e)
+        {
+            if (sender is not Window window)
+                return;
+
+            OverlayPanel? owner = null;
+
+            foreach ((OverlayPanel panel, Window w) in _pinnedWindows)
+            {
+                if (ReferenceEquals(w, window))
+                {
+                    owner = panel;
+                    break;
+                }
+            }
+
+            if (owner is null)
+                return;
+
+            RestoreDetachedPanel(owner, closeWindow: false);
+
+            if (!AnyPinnedPanels())
+            {
+                Hide();
+                ExitPinnedMode();
+            }
+        }
+
+        private void OnPanelDetachedDragRequested(object? sender, PointerPressedEventArgs e)
+        {
+            if (sender is not OverlayPanel panel)
+                return;
+
+            if (!_pinnedWindows.TryGetValue(panel, out Window? window))
+                return;
+
+            window.BeginMoveDrag(e);
+        }
+
+        private void OnPanelDetachedResizeRequested(object? sender, (string Edge, Vector Delta) args)
+        {
+            if (sender is not OverlayPanel panel)
+                return;
+
+            if (!_pinnedWindows.TryGetValue(panel, out Window? window))
+                return;
+
+            ApplyDetachedResize(panel, window, args.Edge, args.Delta);
+        }
+
+        private void ApplyDetachedResize(OverlayPanel panel, Window window, string edge, Vector delta)
+        {
+            double width = window.Width;
+            double height = window.Height;
+            double windowLeft = window.Position.X;
+            double windowTop = window.Position.Y;
+
+            if (edge.Contains("Left", StringComparison.Ordinal))
+            {
+                double applied = Grow(width, -delta.X, OverlayPanel.MinPanelWidth, out double newWidth);
+                width = newWidth;
+                windowLeft -= applied;
+            }
+            else if (edge.Contains("Right", StringComparison.Ordinal))
+            {
+                Grow(width, delta.X, OverlayPanel.MinPanelWidth, out double newWidth);
+                width = newWidth;
+            }
+
+            if (edge.Contains("Top", StringComparison.Ordinal))
+            {
+                double applied = Grow(height, -delta.Y, OverlayPanel.MinPanelHeight, out double newHeight);
+                height = newHeight;
+                windowTop -= applied;
+            }
+            else if (edge.Contains("Bottom", StringComparison.Ordinal))
+            {
+                Grow(height, delta.Y, OverlayPanel.MinPanelHeight, out double newHeight);
+                height = newHeight;
+            }
+
+            window.Width = width;
+            window.Height = height;
+            window.Position = new PixelPoint((int)Math.Round(windowLeft), (int)Math.Round(windowTop));
+
+            if (window.Content is Canvas surface)
+            {
+                surface.Width = width;
+                surface.Height = height;
+            }
+
+            panel.Width = width;
+            panel.Height = height;
+
+            if (_lastBounds is OverlayBounds bounds && _detachedLayouts.TryGetValue(panel, out PinnedPanelLayout layout))
+            {
+                double scale = GetBoundsScaling(bounds);
+                if (scale <= 0)
+                    scale = 1;
+
+                _detachedLayouts[panel] = layout with
+                {
+                    Left = (windowLeft - bounds.Rect.Left) / scale,
+                    Top = (windowTop - bounds.Rect.Top) / scale,
+                    Width = width,
+                    Height = height
+                };
+            }
+        }
+
+        private static double Grow(double current, double delta, double min, out double result)
+        {
+            result = Math.Max(current + delta, min);
+            return result - current;
         }
 
         #endregion
@@ -858,6 +1297,9 @@ namespace Froststrap.UI.Elements.Overlay
             NotesPad.Flush();
 
             SaveLayout();
+
+            if (SeparatePinned)
+                ExitSeparatePinnedMode();
 
             UnwirePanelEvents();
 

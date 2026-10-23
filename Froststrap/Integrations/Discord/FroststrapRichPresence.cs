@@ -5,7 +5,7 @@
 using System.Net.Sockets;
 using Froststrap.Integrations.Discord;
 
-namespace Froststrap.Integrations
+namespace Froststrap.Integrations.Discord
 {
     internal class FroststrapRichPresence : IDisposable
     {

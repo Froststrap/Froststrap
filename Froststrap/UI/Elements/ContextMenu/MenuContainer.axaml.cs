@@ -113,7 +113,7 @@ namespace Froststrap.UI.Elements.ContextMenu
                         SoftkeyMenuItem?.IsVisible = App.Settings.Prop.SoftKeyEnabled && _watcher?.Softkey != null && OperatingSystem.IsWindows();
                         SoftkeyMenuItem?.IsChecked = true;
 
-                        KeyOverlayMenuItem?.IsVisible = App.Settings.Prop.KeyOverlayEnabled && _watcher?.Overlay is not null && OperatingSystem.IsWindows();
+                        KeyOverlayMenuItem?.IsVisible = App.Settings.Prop.KeyOverlayEnabled && _watcher?.Overlay is not null;
                         KeyOverlayMenuItem?.IsChecked = KeyOverlayService.SessionEnabled;
                     }
 

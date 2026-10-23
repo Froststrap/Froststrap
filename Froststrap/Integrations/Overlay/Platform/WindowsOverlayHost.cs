@@ -222,9 +222,12 @@ namespace Froststrap.Integrations.Overlay.Platform
         public IKeyOverlayInput? CreateKeyInput(SoftKeyProfile profile) =>
             new WindowsKeyOverlayInput((int)_robloxProcessId, profile);
 
+        public bool UsesSeparatePinnedWindows => false;
+
         public void PrepareGameWindow(Window window) => PrepareOverlayWindow(window, WindowsWindow.WindowKind.Game);
         public void PrepareKeyOverlayWindow(Window window) => PrepareOverlayWindow(window, WindowsWindow.WindowKind.KeyOverlay);
         public void PrepareSearchBarWindow(Window window) => PrepareOverlayWindow(window, WindowsWindow.WindowKind.SearchBar);
+        public void PreparePinnedPanelWindow(Window window) { }
 
         private void PrepareOverlayWindow(Window window, WindowsWindow.WindowKind kind)
         {

@@ -154,8 +154,7 @@
                 Classes="NoUserExpansion"
                 Description="{x:Static resources:Strings.Menu_Integrations_EnableOverlay_Description}"
                 Header="{x:Static resources:Strings.Menu_Integrations_EnableOverlay_Title}"
-                IsExpanded="{Binding EnableOverlay, Mode=OneWay}"
-                IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}">
+                IsExpanded="{Binding EnableOverlay, Mode=OneWay}">
                 <controls:CardExpander.HeaderContent>
                     <ToggleSwitch IsChecked="{Binding EnableOverlay, Mode=TwoWay}" />
                 </controls:CardExpander.HeaderContent>
@@ -185,8 +184,7 @@
                         Description="{x:Static resources:Strings.Menu_Integrations_SearchBar_Description}"
                         Header="{x:Static resources:Strings.Menu_Integrations_SearchBar_Title}"
                         IsEnabled="{Binding EnableOverlay}"
-                        IsExpanded="{Binding SearchBarEnabled, Mode=OneWay}"
-                        IsVisible="{x:Static gv:GlobalViewModel.IsWindows}">
+                        IsExpanded="{Binding SearchBarEnabled, Mode=OneWay}">
                         <controls:CardExpander.HeaderContent>
                             <ToggleSwitch IsChecked="{Binding SearchBarEnabled, Mode=TwoWay}" />
                         </controls:CardExpander.HeaderContent>
@@ -218,8 +216,7 @@
                         Description="{x:Static resources:Strings.Menu_Integrations_KeyOverlay_Description}"
                         Header="{x:Static resources:Strings.Menu_Integrations_KeyOverlay_Title}"
                         IsEnabled="{Binding EnableOverlay}"
-                        IsExpanded="{Binding KeyOverlayEnabled, Mode=OneWay}"
-                        IsVisible="{x:Static gv:GlobalViewModel.IsWindows}">
+                        IsExpanded="{Binding KeyOverlayEnabled, Mode=OneWay}">
                         <controls:CardExpander.HeaderContent>
                             <ToggleSwitch IsChecked="{Binding KeyOverlayEnabled, Mode=TwoWay}" />
                         </controls:CardExpander.HeaderContent>

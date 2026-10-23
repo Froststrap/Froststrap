@@ -21,7 +21,7 @@ namespace Froststrap.Integrations.OverlayModules
 
         public static void Start(IOverlayHost? host)
         {
-            if (_started || !OperatingSystem.IsWindows())
+            if (_started)
                 return;
 
             _started = true;

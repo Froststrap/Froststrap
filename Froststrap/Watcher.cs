@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
 using Froststrap.Integrations;
+using Froststrap.Integrations.Discord;
 using Froststrap.Integrations.Overlay;
 using Froststrap.Integrations.OverlayModules;
 
@@ -93,8 +94,7 @@ namespace Froststrap
                 if (_watcherData.LaunchMode == LaunchMode.Player && App.Settings.Prop.SoftKeyEnabled)
                     Softkey = new Softkey(_watcherData.ProcessId);
 
-                // TODO: macOS support
-                if ((OperatingSystem.IsWindows() || OperatingSystem.IsLinux()) && App.Settings.Prop.EnableOverlay && _watcherData.ProcessId > 0)
+                if (App.Settings.Prop.EnableOverlay && _watcherData.ProcessId > 0)
                     Overlay = OverlayHostFactory.Create(_watcherData.ProcessId, ActivityWatcher);
 
                 _notifyIcon = new(this);

@@ -5,6 +5,7 @@
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Froststrap.Integrations;
+using Froststrap.Integrations.Discord;
 using Avalonia.Controls.ApplicationLifetimes;
 using Froststrap.UI.Elements.Dialogs;
 using Froststrap.UI.Elements.Onboarding;
