@@ -129,7 +129,7 @@ pub fn main() -> (PathBuf, PathBuf) {
     }
 
     for lib in ["libAvaloniaNative.dylib", "libSkiaSharp.dylib", "libHarfBuzzSharp.dylib"] {
-        builder = builder.binary(publish_dir.join(lib));
+        builder = builder.framework(publish_dir.join(lib));
     }
 
     (builder.build(&dist), entitlements_path)

@@ -37,6 +37,7 @@ sealed class Program
 #if (_WIN32 || __linux__) && FROSTSTRAP_AOT
         Utility.AotNativeLibraryExtractor.Extract();
 #endif
+        AppInitializer.InitializeNativeResolvers();
 
         VelopackApp.Build()
             .SetAutoApplyOnStartup(false)
@@ -106,7 +107,6 @@ sealed class Program
             Logger.Debug($"Arguments: {string.Join(" ", launchArgs)}");
 
         Logger.Debug($"Log file: {Logging.FileLocation}");
-        AppInitializer.InitializeNativeResolvers();
 
         try
         {
