@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-#if WINDOWS && FROSTSTRAP_AOT
+#if _WIN32 && __linux__ && FROSTSTRAP_AOT
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;

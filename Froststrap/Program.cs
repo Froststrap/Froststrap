@@ -9,7 +9,7 @@ using Froststrap;
 using Froststrap.Backend;
 using Froststrap.Cli;
 using System.Diagnostics;
-#if WINDOWS
+#if _WIN32
 using System.Runtime.InteropServices;
 #endif
 
@@ -21,7 +21,7 @@ sealed class Program
 
     internal static readonly Stopwatch StartupTimer = Stopwatch.StartNew();
 
-#if WINDOWS
+#if _WIN32
     private const int AttachParentProcess = -1;
 
     [DllImport("kernel32.dll")]
@@ -34,7 +34,7 @@ sealed class Program
     [STAThread]
     public static int Main(string[] args)
     {
-#if WINDOWS && FROSTSTRAP_AOT
+#if _WIN32 && __linux__ && FROSTSTRAP_AOT
         Utility.AotNativeLibraryExtractor.Extract();
 #endif
 
@@ -48,7 +48,7 @@ sealed class Program
         // shim to convert old args to new ones
         string[] launchArgs = args.Length == 0 ? [] : LegacyArgs.Normalize(args);
 
-#if WINDOWS
+#if _WIN32
         if (launchArgs.Any(static a => a is "--console" or "-c"))
             AllocConsole();
 #endif
@@ -130,7 +130,7 @@ sealed class Program
 
     private static void AttachParentConsole()
     {
-#if WINDOWS
+#if _WIN32
         AttachConsole(AttachParentProcess);
 #endif
     }
