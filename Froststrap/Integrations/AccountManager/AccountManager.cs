@@ -198,13 +198,56 @@ namespace Froststrap.Integrations.AccountManager
             }
         }
 
-        public void AddAccount(AccountManagerAccount account)
+        public AccountManagerAccount AddOrUpdateAccount(AccountManagerAccount account, out bool isNew)
         {
-            if (_accounts.Any(a => a.UserId == account.UserId))
-                return;
+            int index = _accounts.FindIndex(a => a.UserId == account.UserId);
 
-            _accounts.Add(account);
+            if (index < 0)
+            {
+                isNew = true;
+                _accounts.Add(account);
+                SaveAccounts();
+                return account;
+            }
+
+            isNew = false;
+            var existing = _accounts[index];
+
+            var updated = existing with
+            {
+                Username = account.Username,
+                DisplayName = account.DisplayName,
+                SecurityToken = string.IsNullOrEmpty(account.SecurityToken)
+                    ? existing.SecurityToken
+                    : account.SecurityToken
+            };
+
+            _accounts[index] = updated;
+
+            if (ActiveAccount?.UserId == updated.UserId)
+            {
+                ActiveAccount = updated;
+                ActiveAccountChanged?.Invoke(updated);
+            }
+
             SaveAccounts();
+            return updated;
+        }
+
+        public void AddAccount(AccountManagerAccount account) => AddOrUpdateAccount(account, out _);
+
+        public async Task<bool> RefreshAccountInfoAsync(AccountManagerAccount account)
+        {
+            string? cookie = GetRoblosecurityForUser(account.UserId);
+            if (string.IsNullOrEmpty(cookie))
+                return false;
+
+            var info = await RobloxApiService.GetAccountInfoFromCookieAsync(cookie);
+            if (info == null || info.UserId != account.UserId)
+                return false;
+
+            AddOrUpdateAccount(info, out _);
+            return true;
         }
 
         public bool RemoveAccount(AccountManagerAccount account)

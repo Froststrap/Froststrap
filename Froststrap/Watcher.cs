@@ -280,6 +280,41 @@ namespace Froststrap
             }
         }
 
+        private static bool IsStudioProcess(Process process)
+        {
+            string processName = App.StudioData.ProcessName;
+
+            if (string.Equals(process.ProcessName, processName, StringComparison.OrdinalIgnoreCase))
+                return true;
+
+            return OperatingSystem.IsLinux()
+                && process.ProcessName.StartsWith("RobloxStudio", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static int GetNewestStudioProcessId(IEnumerable<Process> processes)
+        {
+            int newestPid = 0;
+            DateTime newestStartTime = DateTime.MinValue;
+
+            foreach (var process in processes)
+            {
+                if (!IsStudioProcess(process))
+                    continue;
+
+                try
+                {
+                    if (process.StartTime > newestStartTime)
+                    {
+                        newestStartTime = process.StartTime;
+                        newestPid = process.Id;
+                    }
+                }
+                catch (Exception) { }
+            }
+
+            return newestPid;
+        }
+
         public async Task Run()
         {
             if (!_lock.IsAcquired || _watcherData is null)
@@ -288,23 +323,46 @@ namespace Froststrap
             ActivityWatcher?.Start();
             WindowManipulation?.Start();
 
+            bool isStudio = _watcherData.LaunchMode == LaunchMode.Studio || _watcherData.LaunchMode == LaunchMode.StudioAuth;
+
             try
             {
                 while (!_cancellationTokenSource.Token.IsCancellationRequested)
                 {
-                    var processExists = Utility.Processes.GetProcessesSafe().Any(x => x.Id == _watcherData.ProcessId);
+                    var processes = Utility.Processes.GetProcessesSafe();
+                    var processExists = processes.Any(x => x.Id == _watcherData.ProcessId);
 
                     if (!processExists && _watcherData.LaunchMode == LaunchMode.Player)
                     {
                         if (OperatingSystem.IsLinux())
                             processExists = Utility.Processes.GetProcessesSafe().Any(x =>
                                 x.ProcessName == (App.UseRosemary ? "rosemary" : "sober"));
+                            processExists = processes.Any(x => x.ProcessName == "sober");
                         else if (OperatingSystem.IsMacOS())
-                            processExists = Utility.Processes.GetProcessesSafe().Any(x => x.ProcessName == "RobloxPlayer");
+                            processExists = processes.Any(x => x.ProcessName == "RobloxPlayer");
                     }
 
-                    if (!processExists && (_watcherData.LaunchMode == LaunchMode.Studio || _watcherData.LaunchMode == LaunchMode.StudioAuth) && OperatingSystem.IsMacOS())
-                        processExists = Utility.Processes.GetProcessesSafe().Any(x => x.ProcessName == "RobloxStudio");
+                    if (isStudio)
+                    {
+                        var studioProcesses = processes.Where(IsStudioProcess).ToList();
+
+                        if (studioProcesses.Count > 0)
+                        {
+                            processExists = true;
+
+                            if (!studioProcesses.Any(x => x.Id == _watcherData.ProcessId))
+                            {
+                                int newestStudioPid = GetNewestStudioProcessId(studioProcesses);
+
+                                if (newestStudioPid != 0)
+                                {
+                                    App.Logger.Info($"Studio process {_watcherData.ProcessId} is no longer running, now tracking PID {newestStudioPid}");
+                                    _watcherData.ProcessId = newestStudioPid;
+                                    ProcessId = newestStudioPid;
+                                }
+                            }
+                        }
+                    }
 
                     if (!processExists) break;
 
