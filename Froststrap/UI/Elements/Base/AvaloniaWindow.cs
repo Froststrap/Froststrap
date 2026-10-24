@@ -98,7 +98,7 @@ namespace Froststrap.UI.Elements.Base
             WindowDecorations = WindowDecorations.Full;
             ExtendClientAreaToDecorationsHint = true;
             ExtendClientAreaTitleBarHeightHint = -1;
-            MacOSTitleBar.SetIsThick(this, true);
+            MacOSTitleBar.SetTrafficLightOffset(this, new Point(20,19));
             TextOptions.SetTextRenderingMode(this, TextRenderingMode.Antialias);
             if (ApplyTopPadding) _contentHost?.Margin = new Thickness(0, 36, 0, 0);
 
