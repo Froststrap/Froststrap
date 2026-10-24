@@ -335,9 +335,8 @@ namespace Froststrap
                     if (!processExists && _watcherData.LaunchMode == LaunchMode.Player)
                     {
                         if (OperatingSystem.IsLinux())
-                            processExists = Utility.Processes.GetProcessesSafe().Any(x =>
+                            processExists = processes.Any(x =>
                                 x.ProcessName == (App.UseRosemary ? "rosemary" : "sober"));
-                            processExists = processes.Any(x => x.ProcessName == "sober");
                         else if (OperatingSystem.IsMacOS())
                             processExists = processes.Any(x => x.ProcessName == "RobloxPlayer");
                     }
