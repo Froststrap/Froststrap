@@ -100,7 +100,7 @@ namespace Froststrap.UI.Elements.Base
             ExtendClientAreaTitleBarHeightHint = -1;
             if (OperatingSystem.IsMacOSVersionAtLeast(26))
             {
-                MacOSTitleBar.SetTrafficLightOffset(this, new Point(15, 14));
+                MacOSTitleBar.SetTrafficLightOffset(this, new Point(11, 11));
             }
             else
             {
