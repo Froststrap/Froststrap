@@ -282,13 +282,24 @@ namespace Froststrap
 
         private static bool IsStudioProcess(Process process)
         {
-            string processName = App.StudioData.ProcessName;
+            try
+            {
+                string expected = Path.GetFileNameWithoutExtension(App.StudioData.ProcessName);
+                string actual = Path.GetFileNameWithoutExtension(process.ProcessName);
 
-            if (string.Equals(process.ProcessName, processName, StringComparison.OrdinalIgnoreCase))
-                return true;
+                if (string.Equals(actual, expected, StringComparison.OrdinalIgnoreCase))
+                    return true;
 
-            return OperatingSystem.IsLinux()
-                && process.ProcessName.StartsWith("RobloxStudio", StringComparison.OrdinalIgnoreCase);
+                if (OperatingSystem.IsMacOS() && string.Equals(actual, "RobloxStudio", StringComparison.OrdinalIgnoreCase))
+                    return true;
+
+                return OperatingSystem.IsLinux()
+                    && actual.StartsWith("RobloxStudio", StringComparison.OrdinalIgnoreCase);
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         private static int GetNewestStudioProcessId(IEnumerable<Process> processes)
