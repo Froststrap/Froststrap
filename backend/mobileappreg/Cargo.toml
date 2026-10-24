@@ -9,5 +9,7 @@ license.workspace = true
 crate-type = ["cdylib"]
 
 [dependencies]
+log.workspace = true
+logger.workspace = true
 objc2-core-services.workspace = true
 objc2-core-foundation.workspace = true

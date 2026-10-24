@@ -22,8 +22,14 @@ SPDX-License-Identifier: MPL-2.0
                      MinWidth="740" Width="740" Height="440"
                      WindowStartupLocation="CenterScreen" CanResize="True">
 
-    <Grid RowDefinitions="Auto,*">
-        <Border Background="{DynamicResource ControlFillColorDefaultBrush}" Height="40" IsHitTestVisible="False"/>
+    <Grid x:Name="RootGrid" RowDefinitions="Auto,*">
+        <Panel
+            Grid.Row="0"
+            Height="{Binding TitlebarSpaceHeight}"
+            Background="{DynamicResource ControlFillColorDefaultBrush}"
+            PointerPressed="TitleBarGrid_PointerPressed"
+            IsVisible="{Binding IsNotLinux}"
+        />
 
         <Grid Grid.Row="1" Name="MainGrid">
             <ui:FANavigationView Name="NavView"

@@ -48,11 +48,11 @@ pub fn pack(version: String, pack_dir: &std::path::Path, entitlements: Option<&s
     #[cfg(target_os = "windows")]
     {
         args.extend([
-            "--icon".to_string(),
+            "--icon".into(),
             path::git_root().join("Froststrap/Froststrap.ico").to_string_lossy().into_owned(),
-            "--framework".to_string(),
-            "net10.0-x64-runtime,vcredist143-x64".to_string(),
-            "--msi".to_string(),
+            "--framework".into(),
+            "vcredist143-x64".into(),
+            "--msi".into(),
         ]);
     }
 

@@ -26,6 +26,8 @@ namespace Froststrap.UI.ViewModels.Settings
     {
         private bool _isNotLinux = !OperatingSystem.IsLinux();
         public bool IsNotLinux { get => _isNotLinux; }
+        private int _titlebarSpaceHeight = 36;
+        public int TitlebarSpaceHeight { get => _titlebarSpaceHeight; }
 
         private static readonly Dictionary<string, LucideIconNames> _pageIconMap = new()
         {
@@ -360,16 +362,7 @@ namespace Froststrap.UI.ViewModels.Settings
         public void SaveAndLaunchSettings()
         {
             SaveSettings();
-
-            if (!App.LaunchSettings.TestModeFlag.Active)
-            {
-                LaunchEntry.LaunchInChildProcess(SelectedLaunchMode);
-            }
-            else
-            {
-                CloseAction = LaunchEntry.ToNextAction(SelectedLaunchMode);
-                CloseWindow();
-            }
+            LaunchHandler.ProcessNextAction(LaunchEntry.ToNextAction(SelectedLaunchMode));
         }
 
         public LaunchMode SelectedLaunchMode
