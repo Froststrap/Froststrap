@@ -100,7 +100,7 @@ namespace Froststrap.UI.Elements.Base
             ExtendClientAreaTitleBarHeightHint = -1;
             MacOSTitleBar.SetIsThick(this, true);
             TextOptions.SetTextRenderingMode(this, TextRenderingMode.Antialias);
-            if (ApplyTopPadding) _contentHost?.Margin = new Thickness(0, 32, 0, 0);
+            if (ApplyTopPadding) _contentHost?.Margin = new Thickness(0, 36, 0, 0);
 
             ApplyTheme();
         }

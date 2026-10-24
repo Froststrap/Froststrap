@@ -32,7 +32,7 @@ SPDX-License-Identifier: MPL-2.0
     <Grid x:Name="RootGrid" RowDefinitions="Auto,*,56">
         <Panel
             Grid.Row="0"
-            Height="36"
+            Height="{Binding TitlebarSpaceHeight}"
             Background="{DynamicResource ControlFillColorDefaultBrush}"
             PointerPressed="TitleBarGrid_PointerPressed"
             IsVisible="{Binding IsNotLinux}"
