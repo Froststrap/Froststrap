@@ -16,6 +16,14 @@ namespace Froststrap.Integrations.Discord
         Details = 2
     }
 
+    internal enum ActivityType
+    {
+        Playing = 0,
+        Listening = 2,
+        Watching = 3,
+        Competing = 5
+    }
+
     internal sealed class Button
     {
         public string? Label { get; set; }
@@ -83,6 +91,7 @@ namespace Froststrap.Integrations.Discord
     {
         public string? Details { get; set; }
         public string? State { get; set; }
+        public ActivityType Type { get; set; } = ActivityType.Playing;
         public StatusDisplayType StatusDisplay { get; set; }
         public Timestamps Timestamps { get; set; } = new();
         public Assets Assets { get; set; } = new();
@@ -92,6 +101,7 @@ namespace Froststrap.Integrations.Discord
         {
             Details = Details,
             State = State,
+            Type = Type,
             StatusDisplay = StatusDisplay,
             Timestamps = Timestamps.Clone(),
             Assets = Assets.Clone(),
@@ -274,7 +284,6 @@ namespace Froststrap.Integrations.Discord
                 lock (_presenceLock)
                 {
                     _stream = stream;
-                    _connected = true;
                     _lastActivitySignature = null;
                 }
 
@@ -301,8 +310,9 @@ namespace Froststrap.Integrations.Discord
 
                     ReadLoop(stream);
                 }
-                catch
+                catch (Exception ex)
                 {
+                    App.Logger.Error($"Discord RPC worker exception ({_applicationId}): {ex.Message}");
                 }
                 finally
                 {
@@ -327,24 +337,32 @@ namespace Froststrap.Integrations.Discord
 
         private void PresenceWriterLoop()
         {
-            while (true)
+            while (!_disposed)
             {
-                byte[]? command;
-
-                lock (_presenceLock)
+                try
                 {
-                    while (!_disposed && _pendingCommand == null)
-                        Monitor.Wait(_presenceLock);
+                    byte[]? command;
 
-                    if (_disposed)
-                        return;
+                    lock (_presenceLock)
+                    {
+                        while (!_disposed && _pendingCommand == null)
+                            Monitor.Wait(_presenceLock);
 
-                    command = _pendingCommand;
-                    _pendingCommand = null;
+                        if (_disposed)
+                            return;
+
+                        command = _pendingCommand;
+                        _pendingCommand = null;
+                    }
+
+                    if (command != null)
+                        SendFrame(command);
                 }
-
-                if (command != null)
-                    SendFrame(command);
+                catch (Exception ex)
+                {
+                    App.Logger.Error($"Discord RPC writer exception ({_applicationId}): {ex.Message}");
+                    Thread.Sleep(100);
+                }
             }
         }
 
@@ -381,7 +399,31 @@ namespace Froststrap.Integrations.Discord
                     stream.ReadExactly(data, 0, (int)length);
 
                 if (opcode == OpcodeClose)
+                {
+                    string reason = "";
+                    int code = 0;
+
+                    if (length > 0)
+                    {
+                        try
+                        {
+                            using var document = JsonDocument.Parse(data);
+                            var root = document.RootElement;
+
+                            if (root.TryGetProperty("message", out var message) && message.ValueKind == JsonValueKind.String)
+                                reason = message.GetString() ?? "";
+
+                            if (root.TryGetProperty("code", out var codeElement) && codeElement.TryGetInt32(out int parsedCode))
+                                code = parsedCode;
+                        }
+                        catch
+                        {
+                        }
+                    }
+
+                    OnClose?.Invoke(this, new CloseMessage { Reason = reason, Code = code });
                     return;
+                }
 
                 if (opcode == OpcodePing)
                 {
@@ -401,30 +443,31 @@ namespace Froststrap.Integrations.Discord
                 using var document = JsonDocument.Parse(data);
                 var root = document.RootElement;
 
-                if (root.TryGetProperty("cmd", out var cmd) && cmd.ValueKind == JsonValueKind.String)
-                {
-                    if (cmd.GetString() == "SET_ACTIVITY")
-                        OnPresenceUpdate?.Invoke(this, new PresenceUpdateMessage());
-
-                    return;
-                }
-
                 if (root.TryGetProperty("evt", out var evt) && evt.ValueKind == JsonValueKind.String)
                 {
                     switch (evt.GetString())
                     {
                         case "READY":
                             OnReady?.Invoke(this, new ReadyMessage { User = ParseUser(root) });
-                            break;
+                            return;
                         case "ERROR":
-                            OnError?.Invoke(this, ParseError(root));
-                            break;
+                            var error = ParseError(root);
+                            App.Logger.Error($"Discord RPC error {error.Code} ({_applicationId}): {error.Message}");
+                            OnError?.Invoke(this, error);
+                            return;
                     }
+                }
+
+                if (root.TryGetProperty("cmd", out var cmd) &&
+                    cmd.ValueKind == JsonValueKind.String &&
+                    cmd.GetString() == "SET_ACTIVITY")
+                {
+                    OnPresenceUpdate?.Invoke(this, new PresenceUpdateMessage());
                 }
             }
             catch (Exception ex)
             {
-                App.Logger.Error($"Failed to read Discord RPC frame: {ex.Message}");
+                App.Logger.Error($"Failed to read Discord RPC frame ({_applicationId}): {ex.Message}");
             }
         }
 
@@ -478,33 +521,59 @@ namespace Froststrap.Integrations.Discord
             SendRawFrame(OpcodeHandshake, stream.ToArray());
         }
 
-        private void SendFrame(byte[] payload) => SendRawFrame(OpcodeFrame, payload);
-
-        private void SendClose() => SendRawFrame(OpcodeClose, []);
+        private void SendFrame(byte[] payload)
+        {
+            App.Logger.Debug($"Discord RPC sending SET_ACTIVITY ({payload.Length} bytes, app {_applicationId})");
+            SendRawFrame(OpcodeFrame, payload);
+        }
 
         private void SendRawFrame(int opcode, byte[] data)
         {
             var stream = _stream;
 
             if (stream == null)
+            {
+                App.Logger.Warn($"Discord RPC dropping frame (opcode {opcode}, app {_applicationId}): stream is null");
                 return;
+            }
+
+            int totalLength = 8 + data.Length;
+            byte[] frame = new byte[totalLength];
+            BinaryPrimitives.WriteUInt32LittleEndian(frame.AsSpan(0, 4), (uint)opcode);
+            BinaryPrimitives.WriteUInt32LittleEndian(frame.AsSpan(4, 4), (uint)data.Length);
+            data.CopyTo(frame, 8);
+
+            bool timedOut = false;
 
             try
             {
                 lock (_writeLock)
                 {
-                    Span<byte> header = stackalloc byte[8];
-                    BinaryPrimitives.WriteUInt32LittleEndian(header, (uint)opcode);
-                    BinaryPrimitives.WriteUInt32LittleEndian(header[4..], (uint)data.Length);
-
-                    stream.Write(header);
-                    stream.Write(data);
+                    using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+                    stream.WriteAsync(frame, 0, totalLength, cts.Token).GetAwaiter().GetResult();
                     stream.Flush();
                 }
             }
+            catch (OperationCanceledException)
+            {
+                timedOut = true;
+                App.Logger.Error($"Discord RPC write timed out after 10s ({_applicationId}, opcode {opcode})");
+            }
             catch (Exception ex)
             {
-                App.Logger.Error($"Failed to send Discord RPC frame: {ex.Message}");
+                App.Logger.Error($"Failed to send Discord RPC frame ({_applicationId}): {ex.Message}");
+            }
+
+            if (timedOut)
+            {
+                lock (_presenceLock)
+                {
+                    if (ReferenceEquals(_stream, stream))
+                        _stream = null;
+                }
+
+                try { stream.Dispose(); }
+                catch { }
             }
         }
 
@@ -525,6 +594,10 @@ namespace Froststrap.Integrations.Discord
                     writer.WriteStartObject("activity");
                     WriteActivity(writer, presence);
                     writer.WriteEndObject();
+                }
+                else
+                {
+                    writer.WriteNull("activity");
                 }
 
                 writer.WriteEndObject();
@@ -556,6 +629,7 @@ namespace Froststrap.Integrations.Discord
             if (!string.IsNullOrEmpty(presence.State))
                 writer.WriteString("state", presence.State);
 
+            writer.WriteNumber("type", (int)presence.Type);
             writer.WriteNumber("status_display_type", (int)presence.StatusDisplay);
 
             ulong? start = presence.Timestamps.StartUnixMilliseconds;
@@ -624,7 +698,7 @@ namespace Froststrap.Integrations.Discord
             {
                 for (int i = 0; i < PipeCount; i++)
                 {
-                    NamedPipeClientStream pipe = new(".", $"discord-ipc-{i}", PipeDirection.InOut, PipeOptions.None);
+                    NamedPipeClientStream pipe = new(".", $"discord-ipc-{i}", PipeDirection.InOut, PipeOptions.Asynchronous);
 
                     try
                     {

@@ -13,7 +13,7 @@ namespace Froststrap.Integrations.Discord
         private readonly Timestamps _startTimestamps;
         private readonly Stopwatch _uptimeStopwatch;
         private bool _disposed;
-        private string _currentPage = "Idle";
+        private string _currentPage = "Starting";
         private string? _currentDialog;
         private string _lastState = "";
 
@@ -23,8 +23,7 @@ namespace Froststrap.Integrations.Discord
         {
             _rpcClient = new DiscordRpcClient("1399535282713399418")
             {
-                SkipIdenticalPresence = true,
-                ShutdownOnly = true
+                SkipIdenticalPresence = true
             };
 
             _rpcClient.OnReady += OnReady;
@@ -55,8 +54,38 @@ namespace Froststrap.Integrations.Discord
 
             App.Logger.Info($"Connected as {args.User.Username}");
 
-            if (!_disposed)
-                UpdatePresence();
+            _ = PushInitialPresenceAsync();
+        }
+
+        private async Task PushInitialPresenceAsync()
+        {
+            var ackTcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+            EventHandler<PresenceUpdateMessage> handler = (_, _) => ackTcs.TrySetResult(true);
+
+            if (_rpcClient != null)
+                _rpcClient.OnPresenceUpdate += handler;
+
+            try
+            {
+                for (int attempt = 1; attempt <= 3; attempt++)
+                {
+                    if (_disposed) return;
+
+                    _lastState = "";
+                    UpdatePresence();
+
+                    var result = await Task.WhenAny(ackTcs.Task, Task.Delay(2000));
+                    if (result == ackTcs.Task)
+                        return;
+                }
+
+                App.Logger.Warn("Initial Froststrap presence not acknowledged after 3 attempts");
+            }
+            finally
+            {
+                if (_rpcClient != null)
+                    _rpcClient.OnPresenceUpdate -= handler;
+            }
         }
 
         public void SetPage(string pageName)
@@ -131,15 +160,10 @@ namespace Froststrap.Integrations.Discord
             }
         }
 
-        // i have refixed this fucking code 3 times now it BETTER not get removed
         public void Dispose()
         {
-            if (_disposed)
-                return;
-
+            if (_disposed) return;
             _disposed = true;
-
-            App.Logger.Info("Cleaning up Discord RPC");
 
             if (_rpcClient != null)
             {
@@ -150,7 +174,6 @@ namespace Froststrap.Integrations.Discord
                 }
                 catch (IOException ex) when (ex.InnerException is SocketException)
                 {
-                    // Ignore pipe closure issues.
                 }
                 catch (Exception ex)
                 {
