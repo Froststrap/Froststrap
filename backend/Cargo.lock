@@ -56,9 +56,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "log"
+version = "0.4.34"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f9f8bd3e56ce4dfc153cf470fffbfa98c7620958b312ca5c3a4b8d5181fd13c6"
+
+[[package]]
+name = "logger"
+version = "0.1.0"
+dependencies = [
+ "log",
+]
+
+[[package]]
 name = "mobileappreg"
 version = "1.0.0"
 dependencies = [
+ "log",
+ "logger",
  "objc2-core-foundation",
  "objc2-core-services",
 ]
@@ -69,6 +84,8 @@ version = "1.0.0"
 dependencies = [
  "block2",
  "dbus",
+ "log",
+ "logger",
  "objc2",
  "windows",
 ]
@@ -181,6 +198,8 @@ version = "0.1.0"
 dependencies = [
  "block2",
  "dispatch2",
+ "log",
+ "logger",
  "objc2",
  "objc2-core-foundation",
  "objc2-core-graphics",
