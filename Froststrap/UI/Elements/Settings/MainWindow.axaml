@@ -30,13 +30,128 @@ SPDX-License-Identifier: MPL-2.0
     WindowStartupLocation="CenterScreen">
 
     <Grid x:Name="RootGrid" RowDefinitions="Auto,*,56">
-        <Panel
+        <Border
             Grid.Row="0"
             Height="{Binding TitlebarSpaceHeight}"
             Background="{DynamicResource ControlFillColorDefaultBrush}"
+            IsVisible="{x:Static gv:GlobalViewModel.IsWindows}"
+            PointerPressed="TitleBarGrid_PointerPressed" />
+        <Border
+            Grid.Row="0"
+            Height="{Binding TitlebarSpaceHeight}"
+            Padding="95,0,12,0"
+            Background="{DynamicResource ControlFillColorDefaultBrush}"
+            IsVisible="{x:Static gv:GlobalViewModel.IsMacOS}"
             PointerPressed="TitleBarGrid_PointerPressed"
-            IsVisible="{Binding IsNotLinux}"
-        />
+        >      
+            <Grid ColumnDefinitions="Auto, *, Auto">
+                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                    <Button
+                        Width="32"
+                        Height="28"
+                        Padding="0"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Click="ToggleSidebar">
+                        <ic:Lucide Icon="PanelLeft" Width="16" Height="16" />
+                    </Button>
+                    <controls:IconButton
+                        Icon="Search"
+                        Click="OpenSearchOverlay"
+                        Width="28"
+                        Height="28"
+                        Padding="0"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        IconSize="14" />
+                    <StackPanel
+                        Classes="pageTitle"
+                        Classes.paneClosed="{Binding !#NavView.IsPaneOpen}"
+                        Orientation="Horizontal"
+                        Spacing="14"
+                        VerticalAlignment="Center">
+                        <StackPanel.Styles>
+                            <Style Selector="StackPanel.pageTitle">
+                                <Setter Property="Margin" Value="56,0,0,0" />
+                                <Setter Property="Transitions">
+                                    <Transitions>
+                                        <ThicknessTransition Property="Margin" Duration="0:0:0.2" Easing="CubicEaseOut" />
+                                    </Transitions>
+                                </Setter>
+                            </Style>
+                            <Style Selector="StackPanel.pageTitle.paneClosed">
+                                <Setter Property="Margin" Value="8,0,0,0" />
+                            </Style>
+                        </StackPanel.Styles>
+                        <ic:Lucide
+                            Icon="{Binding CurrentPageIcon}"
+                            Width="16"
+                            Height="16"
+                            Foreground="{DynamicResource TextFillColorPrimraryBrush}"
+                            VerticalAlignment="Center" />
+
+                        <ItemsControl
+                            IsVisible="{Binding HasBreadcrumbs}"
+                            ItemsSource="{Binding BreadcrumbItems}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel
+                                        VerticalAlignment="Center"
+                                        Orientation="Horizontal"
+                                        Spacing="8" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate DataType="vm:BreadcrumbItemModel">
+                                    <StackPanel
+                                        VerticalAlignment="Center"
+                                        Orientation="Horizontal"
+                                        Spacing="8">
+                                        <Button
+                                            FontSize="18"
+                                            Margin="0,4,0,0"
+                                            Padding="0"
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).BreadcrumbItemClickedCommand}"
+                                            CommandParameter="{Binding}"
+                                            Content="{Binding Content}"
+                                            Foreground="{DynamicResource TextFillColorPrimraryBrush}"
+                                            IsVisible="{Binding !IsLast}" />
+                                        <TextBlock
+                                            FontSize="18"
+                                            Margin="0,4,0,0"
+                                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                            IsVisible="{Binding !IsLast}"
+                                            Text="›" />
+                                        <TextBlock
+                                            FontSize="18"
+                                            Margin="0,4,0,0"
+                                            Foreground="{DynamicResource TextFillColorPrimraryBrush}"
+                                            IsVisible="{Binding IsLast}"
+                                            Text="{Binding Content}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <TextBlock
+                            x:Name="PageTitleTextTitlebar"
+                            FontSize="16"
+                            Margin="0,4,0,0"
+                            FontWeight="SemiBold"
+                            Foreground="{DynamicResource TextFillColorPrimraryBrush}"
+                            Text="{Binding CurrentPageTitle}"
+                            IsVisible="{Binding ShowPageTitle}" />
+                    </StackPanel>
+                </StackPanel>
+                <local:AccountSelectorView
+                    Grid.Column="2"
+                    PhotoPosition="Right"
+                    DropdownDirection="Down"
+                />
+            </Grid>
+        </Border>
 
         <ui:FANavigationView
             Name="NavView"
@@ -46,8 +161,8 @@ SPDX-License-Identifier: MPL-2.0
             IsSettingsVisible="False"
             ItemInvoked="NavView_ItemInvoked"
             OpenPaneLength="220"
+            IsPaneToggleButtonVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}"
             PaneDisplayMode="Left">
-
             <ui:FANavigationView.PaneToggleRowContent>
                 <controls:IconButton Icon="Search"
                                      Click="OpenSearchOverlay"
@@ -59,6 +174,7 @@ SPDX-License-Identifier: MPL-2.0
                                      Foreground="{DynamicResource NavigationViewItemForeground}"
                                      BorderThickness="0"
                                      BorderBrush="Transparent"
+                                     IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}"
                                      CornerRadius="{DynamicResource ControlCornerRadius}"
                                      IconSize="14">
                     <controls:IconButton.Styles>
@@ -166,6 +282,7 @@ SPDX-License-Identifier: MPL-2.0
                 <Grid RowDefinitions="Auto,*">
                     <Border Grid.Row="0"
                             BorderBrush="{DynamicResource ControlElevationBorderBrush}"
+                            IsVisible="{Binding IsNotMacOS}"
                             BorderThickness="0,0,0,2">
                         <StackPanel>
                             <StackPanel Margin="18">
@@ -272,10 +389,16 @@ SPDX-License-Identifier: MPL-2.0
             BorderBrush="{DynamicResource ControlStrokeColorDefault}"
             BorderThickness="0,1,0,0">
             <Grid ColumnDefinitions="Auto, *, Auto, Auto, Auto, Auto" ColumnSpacing="8">
-                <local:AccountSelectorView
-                    x:Name="AccountSelectorView"
+                <Border
                     Grid.Column="0"
-                    Margin="8,0,0,0" />
+                    IsVisible="{Binding IsNotMacOS}"
+                    Margin="8,0,0,0"
+                >
+                    <local:AccountSelectorView
+                        x:Name="AccountSelectorView"
+                        PhotoPosition="Left"
+                    />
+                </Border>
                 <controls:IconButton Grid.Column="2"
                                      FontWeight="SemiBold"
                                      Height="36"

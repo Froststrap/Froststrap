@@ -45,6 +45,9 @@ namespace Froststrap.UI.Elements.Settings
         private bool _isIndexingAllPagesStarted;
         private SearchDialog? _searchOverlay;
 
+        private void ToggleSidebar(object? sender, Avalonia.Interactivity.RoutedEventArgs e) =>
+            NavView.IsPaneOpen = !NavView.IsPaneOpen;
+
         private const double NotificationHeight = 80;
         private const double NotificationSpacing = 15;
         private const double NotificationSlideDistance = 500;

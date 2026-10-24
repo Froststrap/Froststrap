@@ -10,7 +10,7 @@ namespace Froststrap.UI.ViewModels.About
     {
         private bool _isNotLinux = !OperatingSystem.IsLinux();
         public bool IsNotLinux { get => _isNotLinux; }
-        private int _titlebarSpaceHeight = 36;
+        private int _titlebarSpaceHeight = OperatingSystem.IsMacOS() ? 52 : 36;
         public int TitlebarSpaceHeight { get => _titlebarSpaceHeight; }
 
         private object? _currentPage;
