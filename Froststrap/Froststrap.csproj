@@ -37,6 +37,10 @@ SPDX-License-Identifier: MPL-2.0
     <DefineConstants Condition="$([MSBuild]::IsOSPlatform('MacOS'))">$(DefineConstants);__APPLE__</DefineConstants>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(RuntimeIdentifier)' == ''">
+    <RuntimeIdentifier>$(NETCoreSdkPortableRuntimeIdentifier)</RuntimeIdentifier>
+  </PropertyGroup>
+
   <PropertyGroup Condition="'$(PublishAot)' == 'true'">
     <NoWarn>$(NoWarn);IL2026;IL3050;IL2070;IL2075</NoWarn>
     <DefineConstants>$(DefineConstants);FROSTSTRAP_AOT</DefineConstants>
@@ -162,8 +166,8 @@ SPDX-License-Identifier: MPL-2.0
   </Target>
 
   <Target Name="EmbedAotNativeLibraries" BeforeTargets="_GenerateCompileInputs"
-          Condition="'$(PublishAot)' == 'true' and '$(AotEmbedNativeLibraries)' == 'true' and ($([MSBuild]::IsOSPlatform('Windows')) or $([MSBuild]::IsOSPlatform('Linux')))">
-    <PropertyGroup>
+          Condition="'$(PublishAot)' == 'true' and '$(RuntimeIdentifier)' != '' and '$(AotEmbedNativeLibraries)' == 'true' and ($([MSBuild]::IsOSPlatform('Windows')) or $([MSBuild]::IsOSPlatform('Linux')))">
+  <PropertyGroup>
       <_AotNotifyLib Condition="$([MSBuild]::IsOSPlatform('Windows'))">notify.dll</_AotNotifyLib>
       <_AotNotifyLib Condition="$([MSBuild]::IsOSPlatform('Linux'))">libnotify.so</_AotNotifyLib>
     </PropertyGroup>
@@ -213,5 +217,3 @@ SPDX-License-Identifier: MPL-2.0
     <RemoveDir Directories="@(_AotPublishDirectories)" ContinueOnError="true" />
   </Target>
 </Project>
-
-
