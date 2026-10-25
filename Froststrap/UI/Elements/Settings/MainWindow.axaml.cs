@@ -85,7 +85,6 @@ namespace Froststrap.UI.Elements.Settings
 
             LoadState();
 
-
             App.RemoteData.Subscribe((_, _) => Dispatcher.UIThread.Post(() =>
             {
                 var data = App.RemoteData.Prop;
@@ -271,12 +270,6 @@ namespace Froststrap.UI.Elements.Settings
         {
             if (e.InvokedItemContainer is FANavigationViewItem navItem && navItem.Tag is string tag)
             {
-                if (tag == "about")
-                {
-                    _viewModel?.OpenAboutCommand.Execute(null);
-                    return;
-                }
-
                 if (_viewModel != null && _viewModel.SelectedPage == tag)
                 {
                     return;
@@ -305,24 +298,10 @@ namespace Froststrap.UI.Elements.Settings
 
             foreach (var item in navView.MenuItems)
             {
-                if (item is FANavigationViewItem navItem && navItem.Tag is string tag)
+                if (item is FANavigationViewItem navItem && navItem.Tag is string tag && tag == selectedPage)
                 {
-                    if (tag == selectedPage)
-                    {
-                        navView.SelectedItem = navItem;
-                        return;
-                    }
-                }
-            }
-            foreach (var item in navView.FooterMenuItems)
-            {
-                if (item is FANavigationViewItem navItem && navItem.Tag is string tag)
-                {
-                    if (tag == selectedPage)
-                    {
-                        navView.SelectedItem = navItem;
-                        return;
-                    }
+                    navView.SelectedItem = navItem;
+                    return;
                 }
             }
         }

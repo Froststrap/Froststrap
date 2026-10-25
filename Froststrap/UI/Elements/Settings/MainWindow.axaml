@@ -29,6 +29,19 @@ SPDX-License-Identifier: MPL-2.0
     x:DataType="vm:MainWindowViewModel"
     CanResize="True"
     WindowStartupLocation="CenterScreen">
+    <base:AvaloniaWindow.Styles>
+        <Style Selector="controls|IconButton.ghost">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+
+            <Style Selector="^:pointerover /template/ Border#PART_LayoutRoot">
+                <Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
+            </Style>
+            <Style Selector="^:pressed /template/ Border#PART_LayoutRoot">
+                <Setter Property="Background" Value="{DynamicResource SubtleFillColorTertiaryBrush}" />
+            </Style>
+        </Style>
+    </base:AvaloniaWindow.Styles>
 
     <Grid x:Name="RootGrid" RowDefinitions="Auto,*,56">
         <Border
@@ -230,14 +243,6 @@ SPDX-License-Identifier: MPL-2.0
                 </ui:FANavigationViewItem>
             </ui:FANavigationView.MenuItems>
 
-            <ui:FANavigationView.FooterMenuItems>
-                <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_About_Title}" Tag="about">
-                    <ui:FANavigationViewItem.Icon>
-                        <ic:Lucide Icon="CircleAlert" />
-                    </ui:FANavigationViewItem.Icon>
-                </ui:FANavigationViewItem>
-            </ui:FANavigationView.FooterMenuItems>
-
             <ui:FANavigationView.Content>
                 <Grid RowDefinitions="Auto,*">
                     <ui:FAInfoBar
@@ -264,12 +269,22 @@ SPDX-License-Identifier: MPL-2.0
         <Border
             Grid.Row="2"
             Height="56"
-            Padding="0,0,16,0"
+            Padding="10,0,10,0"
             Background="{DynamicResource ControlFillColorDefaultBrush}"
             BorderBrush="{DynamicResource ControlStrokeColorDefault}"
             BorderThickness="0,1,0,0">
-            <Grid ColumnDefinitions="*, Auto, Auto, Auto, Auto" ColumnSpacing="8">
-                <controls:IconButton Grid.Column="1"
+            <Grid ColumnDefinitions="Auto, *, Auto, Auto, Auto, Auto" ColumnSpacing="8">
+                <controls:IconButton
+                    FontWeight="SemiBold"
+                    Grid.Column="0"
+                    Classes="ghost"
+                    Icon="CircleAlert"
+                    Height="36"
+                    Padding="20,0"
+                    Command="{Binding OpenAboutCommand}"
+                    Content="{x:Static resources:Strings.Menu_About_Title}"
+                />
+                <controls:IconButton Grid.Column="2"
                                      FontWeight="SemiBold"
                                      Height="36"
                                      Padding="20,0"
@@ -295,7 +310,7 @@ SPDX-License-Identifier: MPL-2.0
                 </controls:IconButton>
                 <Button
                     FontWeight="SemiBold"
-                    Grid.Column="2"
+                    Grid.Column="3"
                     Height="36"
                     Padding="20,0"
                     Classes="accent"
@@ -303,7 +318,7 @@ SPDX-License-Identifier: MPL-2.0
                     Content="{x:Static resources:Strings.Menu_Restart}" />
                 <Button
                     FontWeight="SemiBold"
-                    Grid.Column="3"
+                    Grid.Column="4"
                     Height="36"
                     Padding="20,0"
                     Classes="accent"
@@ -311,7 +326,7 @@ SPDX-License-Identifier: MPL-2.0
                     Content="{x:Static resources:Strings.Menu_Save}" />
                 <Button
                     FontWeight="SemiBold"
-                    Grid.Column="4"
+                    Grid.Column="5"
                     Height="36"
                     Padding="20,0"
                     Command="{Binding CloseWindowCommand}"
