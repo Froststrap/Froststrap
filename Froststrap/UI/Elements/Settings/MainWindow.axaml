@@ -81,7 +81,7 @@ SPDX-License-Identifier: MPL-2.0
                             Icon="{Binding CurrentPageIcon}"
                             Width="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).IconButtonIconSize}"
                             Height="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).IconButtonIconSize}"
-                            Foreground="{DynamicResource TextFillColorPrimraryBrush}"
+                            Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                             VerticalAlignment="Center" />
 
                         <ItemsControl
@@ -109,7 +109,7 @@ SPDX-License-Identifier: MPL-2.0
                                             Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).BreadcrumbItemClickedCommand}"
                                             CommandParameter="{Binding}"
                                             Content="{Binding Content}"
-                                            Foreground="{DynamicResource TextFillColorPrimraryBrush}"
+                                            Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                                             IsVisible="{Binding !IsLast}" />
                                         <TextBlock
                                             FontSize="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).TitlebarTextSize}"
@@ -120,7 +120,7 @@ SPDX-License-Identifier: MPL-2.0
                                         <TextBlock
                                             FontSize="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).TitlebarTextSize}"
                                             Margin="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).TextCorrection}"
-                                            Foreground="{DynamicResource TextFillColorPrimraryBrush}"
+                                            Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                                             IsVisible="{Binding IsLast}"
                                             Text="{Binding Content}" />
                                     </StackPanel>
@@ -133,7 +133,7 @@ SPDX-License-Identifier: MPL-2.0
                             FontSize="{Binding TitlebarTextSize}"
                             Margin="{Binding TextCorrection}"
                             FontWeight="SemiBold"
-                            Foreground="{DynamicResource TextFillColorPrimraryBrush}"
+                            Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                             Text="{Binding CurrentPageTitle}"
                             IsVisible="{Binding ShowPageTitle}" />
                     </StackPanel>
