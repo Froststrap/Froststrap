@@ -180,7 +180,7 @@ namespace Froststrap.Integrations.Overlay.Platform.Mac
 
             if (!MacKeyMap.TryGetKeyCode(resolvedKey, out uint keyCode))
             {
-                App.Logger.Warn($"MacHotkeys: {description} uses unsupported key {resolvedKey}");
+                App.Logger.Warn($"{description} uses unsupported key {resolvedKey}");
                 return false;
             }
 
@@ -201,7 +201,7 @@ namespace Froststrap.Integrations.Overlay.Platform.Mac
             if (status != 0)
             {
                 App.Logger.Warn(
-                    $"MacHotkeys: could not register {description} " +
+                    $"could not register {description} " +
                     $"({OverlayHotkey.Describe(resolvedModifiers, resolvedKey)}), status={status}");
                 return false;
             }
@@ -209,7 +209,7 @@ namespace Froststrap.Integrations.Overlay.Platform.Mac
             Registrations[id] = hotKeyRef;
 
             App.Logger.Info(
-                $"MacHotkeys: registered {description} as " +
+                $"registered {description} as " +
                 $"{OverlayHotkey.Describe(resolvedModifiers, resolvedKey)}");
 
             return true;
@@ -223,7 +223,7 @@ namespace Froststrap.Integrations.Overlay.Platform.Mac
             int status = MacCarbon.UnregisterEventHotKey(hotKeyRef);
 
             if (status != 0)
-                App.Logger.Warn($"MacHotkeys: could not unregister hotkey {id}, status={status}");
+                App.Logger.Warn($"could not unregister hotkey {id}, status={status}");
         }
 
         private static bool EnsureHandler()
@@ -252,7 +252,7 @@ namespace Froststrap.Integrations.Overlay.Platform.Mac
 
                 if (status != 0)
                 {
-                    App.Logger.Error($"MacHotkeys: InstallEventHandler failed, status={status}");
+                    App.Logger.Error($"InstallEventHandler failed, status={status}");
                     return false;
                 }
             }

@@ -411,8 +411,6 @@ namespace Froststrap.UI.ViewModels.Overlay
 
         public async Task LoadProfileAsync()
         {
-            const string LOG_IDENT = "GameOverlayViewModel::LoadProfileAsync";
-
             long playing = _activityWatcher?.InGame == true ? _activityWatcher.Data.UserId : 0;
 
             if (_profileLoading || (_profileLoaded && (playing == 0 || playing == _profileId)))
@@ -429,7 +427,7 @@ namespace Froststrap.UI.ViewModels.Overlay
 
                 if (id == 0)
                 {
-                    App.Logger.Info($"{LOG_IDENT}: Couldn't tell which account is signed in");
+                    App.Logger.Info($"Couldn't tell which account is signed in");
                     return;
                 }
 
@@ -454,11 +452,11 @@ namespace Froststrap.UI.ViewModels.Overlay
 
                 _profileLoaded = true;
 
-                App.Logger.Info($"{LOG_IDENT}: Showing account {id}");
+                App.Logger.Info($"Showing account {id}");
             }
             catch (Exception ex)
             {
-                App.Logger.Error($"{LOG_IDENT}: Failed to load the signed-in user");
+                App.Logger.Error($"Failed to load the signed-in user");
                 App.Logger.Error(ex);
             }
             finally
