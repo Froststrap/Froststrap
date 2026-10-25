@@ -30,7 +30,7 @@ namespace Froststrap.UI.ViewModels.Settings
         private bool _isNotMacOS = !OperatingSystem.IsMacOS();
         public bool IsNotMacOS { get => _isNotMacOS; }
 
-        private int _titlebarSpaceHeight = OperatingSystem.IsMacOS() ? 52 : 32;
+        private int _titlebarSpaceHeight = OperatingSystem.IsMacOS() ? 52 : 40;
         public int TitlebarSpaceHeight { get => _titlebarSpaceHeight; }
         private Thickness _titlebarPadding = OperatingSystem.IsMacOS() ? new Thickness(95,0,12,0) : OperatingSystem.IsLinux() ? new Thickness(4, 0) : new Thickness(4, 0, 140, 0);
         public Thickness TitlebarPadding { get => _titlebarPadding; }
