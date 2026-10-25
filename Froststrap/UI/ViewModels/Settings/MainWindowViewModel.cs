@@ -79,13 +79,30 @@ namespace Froststrap.UI.ViewModels.Settings
             set => SetProperty(ref _currentPageIcon, value);
         }
 
-        public static bool HasUnsavedChanges =>
-            App.Settings.HasUnsavedChanges ||
-            App.State.HasUnsavedChanges ||
-            App.FastFlags.HasUnsavedChanges ||
-            (OperatingSystem.IsLinux() && App.SoberSettings.HasUnsavedChanges) ||
-            App.GlobalSettings.HasUnsavedChanges ||
-            App.PendingSettingTasks.Count > 0;
+        public static bool HasUnsavedChanges
+        {
+            get
+            {
+                bool dirty = false;
+                void Check(string name, bool isDirty, Func<string>? detail = null)
+                {
+                    if (!isDirty) return;
+                    dirty = true;
+                    App.Logger.Info($"Unsaved changes in {name}: {detail?.Invoke()}");
+                }
+
+                Check("Settings", App.Settings.HasUnsavedChanges, App.Settings.DescribeChanges);
+                Check("State", App.State.HasUnsavedChanges, App.State.DescribeChanges);
+                Check("FastFlags", App.FastFlags.HasUnsavedChanges, App.FastFlags.DescribeChanges);
+                if (OperatingSystem.IsLinux())
+                    Check("SoberSettings", App.SoberSettings.HasUnsavedChanges);
+                Check("GlobalSettings", App.GlobalSettings.HasUnsavedChanges);
+                Check("PendingSettingTasks", App.PendingSettingTasks.Count > 0,
+                    () => string.Join(", ", App.PendingSettingTasks.Keys));
+
+                return dirty;
+            }
+        }
 
         private LaunchMode _selectedLaunchMode = LaunchMode.Player;
 

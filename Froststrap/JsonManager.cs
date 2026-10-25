@@ -38,6 +38,7 @@ namespace Froststrap
         public bool IsSaved => File.Exists(FileLocation);
 
         protected string? _savedHash;
+        protected string? _savedJson;
 
         protected virtual string ComputeHash(T obj)
         {
@@ -52,6 +53,21 @@ namespace Froststrap
                 if (_savedHash == null) return true;
                 return ComputeHash(Prop) != _savedHash;
             }
+        }
+
+        public string DescribeChanges()
+        {
+            if (_savedJson is null) return "(no baseline)";
+            try
+            {
+                var before = JsonNode.Parse(_savedJson) as JsonObject ?? [];
+                var after = JsonHelper.SerializeToNode(Prop) as JsonObject ?? [];
+                var changed = before.Select(p => p.Key).Union(after.Select(p => p.Key))
+                    .Where(k => before[k]?.ToJsonString() != after[k]?.ToJsonString())
+                    .ToList();
+                return changed.Count == 0 ? "(hash differs, no key diff)" : string.Join(", ", changed);
+            }
+            catch (Exception ex) { return $"(diff failed: {ex.Message})"; }
         }
 
         public virtual bool Load(bool alertFailure = true)
@@ -71,6 +87,7 @@ namespace Froststrap
                     Loaded = true;
                     LastFileHash = FastHash.FromString(contents);
                     _savedHash = ComputeHash(_prop);
+                    _savedJson = JsonHelper.Serialize(_prop);
 
                     App.Logger.Info("Loaded successfully!");
                     return true;
@@ -80,6 +97,7 @@ namespace Froststrap
                     App.Logger.Error($"Could not find {FileLocation}.");
                     Loaded = true;
                     _savedHash = ComputeHash(_prop);
+                    _savedJson = JsonHelper.Serialize(_prop);
                     return false;
                 }
             }
@@ -139,6 +157,7 @@ namespace Froststrap
 
                 LastFileHash = FastHash.FromString(contents);
                 _savedHash = ComputeHash(Prop);
+                _savedJson = JsonHelper.Serialize(Prop);
                 App.Logger.Info("Save complete!");
                 return true;
             }
@@ -197,6 +216,7 @@ namespace Froststrap
                 File.WriteAllText(FileLocation, contents);
                 LastFileHash = FastHash.FromString(contents);
                 _savedHash = ComputeHash(Prop);
+                _savedJson = JsonHelper.Serialize(Prop);
                 App.Logger.Info("SaveSetting complete!");
             }
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or JsonException)

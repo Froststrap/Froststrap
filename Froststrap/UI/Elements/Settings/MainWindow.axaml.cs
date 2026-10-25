@@ -350,20 +350,22 @@ namespace Froststrap.UI.Elements.Settings
 
         public void LoadState()
         {
+            double left = State.Left, top = State.Top;
+
             var screen = Screens.Primary?.Bounds;
             if (screen != null)
             {
-                if (State.Left > screen.Value.Width) State.Left = 0;
-                if (State.Top > screen.Value.Height) State.Top = 0;
+                if (left > screen.Value.Width) left = 0;
+                if (top > screen.Value.Height) top = 0;
             }
 
             if (State.Width > 0) this.Width = State.Width;
             if (State.Height > 0) this.Height = State.Height;
 
-            if (State.Left > 0 && State.Top > 0)
+            if (left > 0 && top > 0)
             {
                 this.WindowStartupLocation = WindowStartupLocation.Manual;
-                this.Position = new PixelPoint((int)State.Left, (int)State.Top);
+                this.Position = new PixelPoint((int)left, (int)top);
             }
         }
 
