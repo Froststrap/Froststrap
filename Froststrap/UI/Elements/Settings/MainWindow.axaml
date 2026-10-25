@@ -78,8 +78,8 @@ SPDX-License-Identifier: MPL-2.0
                         </StackPanel.Styles>
                         <ic:Lucide
                             Icon="{Binding CurrentPageIcon}"
-                            Width="16"
-                            Height="16"
+                            Width="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).IconButtonIconSize}"
+                            Height="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).IconButtonIconSize}"
                             Foreground="{DynamicResource TextFillColorPrimraryBrush}"
                             VerticalAlignment="Center" />
 

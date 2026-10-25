@@ -30,15 +30,15 @@ namespace Froststrap.UI.ViewModels.Settings
         private bool _isNotMacOS = !OperatingSystem.IsMacOS();
         public bool IsNotMacOS { get => _isNotMacOS; }
 
-        private int _titlebarSpaceHeight = OperatingSystem.IsMacOS() ? 52 : 36;
+        private int _titlebarSpaceHeight = OperatingSystem.IsMacOS() ? 52 : 32;
         public int TitlebarSpaceHeight { get => _titlebarSpaceHeight; }
-        private Thickness _titlebarPadding = OperatingSystem.IsMacOS() ? new Thickness(95,0,12,0) : OperatingSystem.IsLinux() ? new Thickness(6, 0) : new Thickness(12,0,132,0);
+        private Thickness _titlebarPadding = OperatingSystem.IsMacOS() ? new Thickness(95,0,12,0) : OperatingSystem.IsLinux() ? new Thickness(4, 0) : new Thickness(12,0,132,0);
         public Thickness TitlebarPadding { get => _titlebarPadding; }
         private Thickness _openSidebarTitleMargin = OperatingSystem.IsMacOS() ? new Thickness(56,0,0,0) : OperatingSystem.IsLinux() ? new Thickness(155,0,0,0) : new Thickness(138,0,0,0);
         public Thickness OpenSidebarTitleMargin { get => _openSidebarTitleMargin; }
         private Thickness _textCorrection = OperatingSystem.IsMacOS() ? new Thickness(0,4,0,0) : new Thickness(0,0,0,0);
         public Thickness TextCorrection { get => _textCorrection; }
-        private int _iconButtonSize = OperatingSystem.IsMacOS() ? 28 : 26;
+        private int _iconButtonSize = OperatingSystem.IsMacOS() ? 28 : 24;
         public int IconButtonSize { get => _iconButtonSize; }
         private int _iconButtonIconSize = OperatingSystem.IsMacOS() ? 14 : 14;
         public int IconButtonIconSize { get => _iconButtonIconSize; }
