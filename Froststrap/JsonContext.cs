@@ -3,6 +3,12 @@
 // SPDX-License-Identifier: MPL-2.0
 
 using System.Text.Json.Serialization;
+using Froststrap.Integrations.OverlayModules;
+using Froststrap.RobloxInterfaces;
+using Froststrap.Models.APIs.RobloxParty;
+using Froststrap.Models.APIs.RobloxParty.Events;
+using Froststrap.Models.APIs.RealtimeMessaging;
+using Froststrap.Models.APIs.Roblox;
 using Froststrap.UI.Elements.Editor;
 
 namespace Froststrap
@@ -32,10 +38,13 @@ namespace Froststrap
     [JsonSerializable(typeof(FontFace))]
     [JsonSerializable(typeof(RobloxCookies))]
     [JsonSerializable(typeof(AuthenticatedUser))]
+    [JsonSerializable(typeof(ApiPageResponse<PrivateServerEntry>))]
     [JsonSerializable(typeof(AccountManagerData))]
     [JsonSerializable(typeof(ApiArrayResponse<ThumbnailResponse>))]
     [JsonSerializable(typeof(ApiArrayResponse<GameDetailResponse>))]
     [JsonSerializable(typeof(UserPresenceResponse))]
+    [JsonSerializable(typeof(UserSettingsResponse))]
+    [JsonSerializable(typeof(UserDetailsBatchRequest))]
     [JsonSerializable(typeof(UserPresence))]
     [JsonSerializable(typeof(Message))]
     [JsonSerializable(typeof(RichPresence))]
@@ -75,6 +84,26 @@ namespace Froststrap
     [JsonSerializable(typeof(OmniRecommendationRequest))]
     [JsonSerializable(typeof(BootstrapperEditorWindow.CustomBootstrapperSchema.Schema))]
     [JsonSerializable(typeof(OverlayNotes))]
+    [JsonSerializable(typeof(ConversationsPage))]
+    [JsonSerializable(typeof(UserMessagesPage))]
+    [JsonSerializable(typeof(PrivateServerDetails))]
+    [JsonSerializable(typeof(FriendStatusResponse))]
+    [JsonSerializable(typeof(FriendFindResponse))]
+    [JsonSerializable(typeof(ApiArrayResponse<FriendResponse>))]
+    [JsonSerializable(typeof(ApiPageResponse<GameServerResponse>))]
+    [JsonSerializable(typeof(ApiArrayResponse<BadgeAwardedDate>))]
+    [JsonSerializable(typeof(ApiArrayResponse<GetUserResponse>))]
+    [JsonSerializable(typeof(UniverseIdResponse))]
+    [JsonSerializable(typeof(SignalrMessage))]
+    [JsonSerializable(typeof(ChannelMarkedRead))]
+    [JsonSerializable(typeof(ChannelMetadataUpdate))]
+    [JsonSerializable(typeof(MessageEvent))]
+    [JsonSerializable(typeof(List<PresenceNotification>))]
+    [JsonSerializable(typeof(FriendshipNotification))]
+    [JsonSerializable(typeof(PrivateServerUpdateRequest))]
+    [JsonSerializable(typeof(PrivateServerPermissionsUpdateRequest))]
+    [JsonSerializable(typeof(ConversationPayload))]
+    [JsonSerializable(typeof(MarkConversationsReadRequest))]
     internal partial class JsonContext : JsonSerializerContext
     {
     }

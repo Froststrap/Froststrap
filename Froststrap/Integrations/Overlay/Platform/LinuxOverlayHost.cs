@@ -5,9 +5,9 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;
-using Avalonia.VisualTree;
 using Froststrap.Backend;
 using Froststrap.UI.Elements.Overlay;
+using Froststrap.Integrations.Overlay.Platform.Linux;
 
 namespace Froststrap.Integrations.Overlay.Platform
 {

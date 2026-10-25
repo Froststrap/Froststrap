@@ -9,7 +9,7 @@ using Froststrap.Backend;
 using Froststrap.UI.Elements.Overlay.Controls;
 using System.Runtime.InteropServices;
 
-namespace Froststrap.Integrations.Overlay.Platform
+namespace Froststrap.Integrations.Overlay.Platform.Linux
 {
     internal sealed class LinuxOverlayRenderer : IDisposable
     {
