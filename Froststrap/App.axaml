@@ -49,6 +49,15 @@ SPDX-License-Identifier: MPL-2.0
 
     <Application.Resources>
         <ResourceDictionary>
+            <ControlTheme
+                x:Key="SettingsWindowDecorationsTheme"
+                TargetType="WindowDrawnDecorations"
+                BasedOn="{StaticResource {x:Type WindowDrawnDecorations}}">
+                <Style Selector="^ /template/ TextBlock#TitleTextBlock">
+                    <Setter Property="IsVisible" Value="False" />
+                </Style>
+            </ControlTheme>
+
             <StaticResource x:Key="ToolTipBackground" ResourceKey="ToolTipBackgroundBrush" />
             <StaticResource x:Key="ToolTipForeground" ResourceKey="ToolTipForegroundBrush" />
 

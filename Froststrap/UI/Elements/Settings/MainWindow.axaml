@@ -21,6 +21,7 @@ SPDX-License-Identifier: MPL-2.0
     xmlns:ui="using:FluentAvalonia.UI.Controls"
     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
     Title="{x:Static resources:Strings.Menu_Title}"
+    WindowDecorationsTheme="{StaticResource SettingsWindowDecorationsTheme}"
     Width="1125"
     Height="700"
     MinWidth="750"
