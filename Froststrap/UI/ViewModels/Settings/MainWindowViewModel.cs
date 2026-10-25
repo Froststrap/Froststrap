@@ -42,7 +42,7 @@ namespace Froststrap.UI.ViewModels.Settings
         public int IconButtonSize { get => _iconButtonSize; }
         private int _iconButtonIconSize = OperatingSystem.IsMacOS() ? 14 : 14;
         public int IconButtonIconSize { get => _iconButtonIconSize; }
-        private int _titlebarTextSize = OperatingSystem.IsMacOS() ? 18 : 15;
+        private int _titlebarTextSize = OperatingSystem.IsMacOS() ? 18 : 13;
         public int TitlebarTextSize { get => _titlebarTextSize; }
 
         private static readonly Dictionary<string, LucideIconNames> _pageIconMap = new()
