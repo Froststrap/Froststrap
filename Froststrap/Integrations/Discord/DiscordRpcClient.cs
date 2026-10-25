@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
 using System.Buffers.Binary;
+using System.IO;
 using System.IO.Pipes;
 using System.Net.Sockets;
 using System.Text.Json;
@@ -132,6 +133,41 @@ namespace Froststrap.Integrations.Discord
     {
     }
 
+    internal sealed class BackoffDelay
+    {
+        public int Maximum { get; }
+        public int Minimum { get; }
+        public int Current => _current;
+        public int Fails => _fails;
+
+        private int _current;
+        private int _fails;
+
+        public BackoffDelay(int min, int max)
+        {
+            Minimum = min;
+            Maximum = max;
+            _current = min;
+            _fails = 0;
+        }
+
+        public void Reset()
+        {
+            _fails = 0;
+            _current = Minimum;
+        }
+
+        public int NextDelay()
+        {
+            _fails++;
+
+            double diff = (Maximum - Minimum) / 100f;
+            _current = (int)Math.Floor(diff * _fails) + Minimum;
+
+            return Math.Min(Math.Max(_current, Minimum), Maximum);
+        }
+    }
+
     internal sealed class DiscordRpcClient : IDisposable
     {
         private const int PipeCount = 10;
@@ -141,6 +177,13 @@ namespace Froststrap.Integrations.Discord
         private const int OpcodeClose = 2;
         private const int OpcodePing = 3;
         private const int OpcodePong = 4;
+
+        private static readonly string[] LinuxPackageManagerDirs =
+        [
+            "app/com.discordapp.Discord/",
+            "snap.discord/",
+            ".flatpak/dev.vencord.Vesktop/xdg-run",
+        ];
 
         private readonly string _applicationId;
         private readonly Thread _worker;
@@ -251,9 +294,34 @@ namespace Froststrap.Integrations.Discord
             GC.SuppressFinalize(this);
         }
 
+        private static bool IsPeerClosedException(Exception ex)
+        {
+            for (Exception? current = ex; current is not null; current = current.InnerException)
+            {
+                switch (current)
+                {
+                    case EndOfStreamException:
+                        return true;
+
+                    case SocketException se when se.SocketErrorCode is
+                        SocketError.ConnectionAborted or
+                        SocketError.ConnectionReset or
+                        SocketError.Disconnecting or
+                        SocketError.NotConnected or
+                        SocketError.Shutdown:
+                        return true;
+
+                    case IOException when current.InnerException is SocketException:
+                        return true;
+                }
+            }
+
+            return false;
+        }
+
         private void WorkerLoop()
         {
-            long backoff = 500;
+            var backoff = new BackoffDelay(500, 60000);
 
             while (!_disposed)
             {
@@ -264,10 +332,9 @@ namespace Froststrap.Integrations.Discord
 
                 if (stream == null)
                 {
-                    if (!WaitBackoff(backoff))
+                    if (!WaitBackoff(backoff.NextDelay()))
                         return;
 
-                    backoff = Math.Min(backoff * 2, 60000);
                     continue;
                 }
 
@@ -278,7 +345,7 @@ namespace Froststrap.Integrations.Discord
                     _lastActivitySignature = null;
                 }
 
-                backoff = 500;
+                backoff.Reset();
 
                 try
                 {
@@ -301,6 +368,13 @@ namespace Froststrap.Integrations.Discord
 
                     ReadLoop(stream);
                 }
+                catch (Exception) when (_disposed)
+                {
+                }
+                catch (Exception ex) when (IsPeerClosedException(ex))
+                {
+                    App.Logger.Warn($"Discord RPC connection closed ({_applicationId}): {ex.Message}");
+                }
                 catch
                 {
                 }
@@ -320,7 +394,7 @@ namespace Froststrap.Integrations.Discord
                         OnClose?.Invoke(this, new CloseMessage { Reason = "Connection closed", Code = 0 });
                 }
 
-                if (!WaitBackoff(backoff))
+                if (!WaitBackoff(backoff.NextDelay()))
                     return;
             }
         }
@@ -348,9 +422,9 @@ namespace Froststrap.Integrations.Discord
             }
         }
 
-        private bool WaitBackoff(long milliseconds)
+        private bool WaitBackoff(int milliseconds)
         {
-            for (long waited = 0; waited < milliseconds; waited += 100)
+            for (int waited = 0; waited < milliseconds; waited += 100)
             {
                 if (_disposed)
                     return false;
@@ -484,6 +558,9 @@ namespace Froststrap.Integrations.Discord
 
         private void SendRawFrame(int opcode, byte[] data)
         {
+            if (_disposed)
+                return;
+
             var stream = _stream;
 
             if (stream == null)
@@ -502,9 +579,18 @@ namespace Froststrap.Integrations.Discord
                     stream.Flush();
                 }
             }
+            catch (Exception) when (_disposed)
+            {
+            }
+            catch (Exception ex) when (IsPeerClosedException(ex))
+            {
+                if (!_disposed)
+                    App.Logger.Warn($"Discord RPC write connection closed ({_applicationId}): {ex.Message}");
+            }
             catch (Exception ex)
             {
-                App.Logger.Error($"Failed to send Discord RPC frame: {ex.Message}");
+                if (!_disposed)
+                    App.Logger.Error($"Failed to send Discord RPC frame ({_applicationId}): {ex.Message}");
             }
         }
 
@@ -660,9 +746,9 @@ namespace Froststrap.Integrations.Discord
 
         private static IEnumerable<string> ResolveUnixPaths()
         {
-            foreach (string directory in ResolveUnixDirectories())
+            for (int i = 0; i < PipeCount; i++)
             {
-                for (int i = 0; i < PipeCount; i++)
+                foreach (string directory in ResolveUnixDirectories())
                     yield return Path.Combine(directory, $"discord-ipc-{i}");
             }
         }
@@ -673,8 +759,17 @@ namespace Froststrap.Integrations.Discord
             {
                 string? value = Environment.GetEnvironmentVariable(variable);
 
-                if (!string.IsNullOrWhiteSpace(value) && Directory.Exists(value))
-                    yield return value;
+                if (string.IsNullOrWhiteSpace(value) || !Directory.Exists(value))
+                    continue;
+
+                yield return value;
+
+                foreach (string sub in LinuxPackageManagerDirs)
+                {
+                    string nested = Path.Combine(value, sub);
+                    if (Directory.Exists(nested))
+                        yield return nested;
+                }
             }
 
             if (OperatingSystem.IsMacOS())
