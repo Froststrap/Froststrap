@@ -6,8 +6,8 @@ SPDX-License-Identifier: MPL-2.0
 
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-  	<AppVersion Condition="'$(AppVersion)' == ''">0.0.0</AppVersion>
-  	<InfAppVersion Condition="'$(InfAppVersion)' == ''">$(AppVersion)</InfAppVersion>
+    <AppVersion Condition="'$(AppVersion)' == ''">0.0.0</AppVersion>
+    <InfAppVersion Condition="'$(InfAppVersion)' == ''">$(AppVersion)</InfAppVersion>
     <OutputType Condition="!$([MSBuild]::IsOSPlatform('Windows'))">Exe</OutputType>
     <OutputType Condition="$([MSBuild]::IsOSPlatform('Windows'))">WinExe</OutputType>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
@@ -24,10 +24,10 @@ SPDX-License-Identifier: MPL-2.0
     <AssemblyName>Froststrap</AssemblyName>
     <RootNamespace>Froststrap</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  	<PublishAot>true</PublishAot>
-  	<PublishTrimmed>true</PublishTrimmed>
-  	<TrimMode>full</TrimMode>
-  	<NeutralLanguage>en</NeutralLanguage>
+    <PublishAot Condition="'$(Configuration)' != 'Debug'">true</PublishAot>
+    <PublishTrimmed Condition="'$(PublishAot)' == 'true'">true</PublishTrimmed>
+    <TrimMode Condition="'$(PublishAot)' == 'true'">full</TrimMode>
+    <NeutralLanguage>en</NeutralLanguage>
     <Description>Froststrap - A Fishstrap fork</Description>
     <ApplicationIcon>Froststrap.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -57,9 +57,9 @@ SPDX-License-Identifier: MPL-2.0
   <PropertyGroup Condition="'$(RuntimeIdentifier)' != ''">
     <PublishSingleFile Condition="'$(PublishAot)' != 'true'">true</PublishSingleFile>
     <IncludeNativeLibrariesForSelfExtract Condition="'$(PublishAot)' != 'true'">true</IncludeNativeLibrariesForSelfExtract>
-    <PublishReadyToRun Condition="'$(PublishAot)' != 'true'">true</PublishReadyToRun>
-    <PublishReadyToRunComposite Condition="'$(PublishAot)' != 'true'">true</PublishReadyToRunComposite>
-    <EnableCompressionInSingleFile Condition="'$(PublishAot)' != 'true'">true</EnableCompressionInSingleFile>
+    <PublishReadyToRun Condition="'$(PublishAot)' != 'true' and '$(Configuration)' != 'Debug'">true</PublishReadyToRun>
+    <PublishReadyToRunComposite Condition="'$(PublishAot)' != 'true' and '$(Configuration)' != 'Debug'">true</PublishReadyToRunComposite>
+    <EnableCompressionInSingleFile Condition="'$(PublishAot)' != 'true' and '$(Configuration)' != 'Debug'">true</EnableCompressionInSingleFile>
     <SelfContained>true</SelfContained>
   </PropertyGroup>
 
