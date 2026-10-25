@@ -8,6 +8,11 @@ namespace Froststrap.UI.ViewModels.About
 {
     internal partial class MainWindowViewModel : NotifyPropertyChangedViewModel
     {
+        private bool _isNotLinux = !OperatingSystem.IsLinux();
+        public bool IsNotLinux { get => _isNotLinux; }
+        private int _titlebarSpaceHeight = OperatingSystem.IsMacOS() ? 52 : 36;
+        public int TitlebarSpaceHeight { get => _titlebarSpaceHeight; }
+
         private object? _currentPage;
         public object? CurrentPage
         {

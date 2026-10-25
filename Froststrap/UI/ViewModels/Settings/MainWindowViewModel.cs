@@ -26,6 +26,10 @@ namespace Froststrap.UI.ViewModels.Settings
     {
         private bool _isNotLinux = !OperatingSystem.IsLinux();
         public bool IsNotLinux { get => _isNotLinux; }
+        private bool _isNotMacOS = !OperatingSystem.IsMacOS();
+        public bool IsNotMacOS { get => _isNotMacOS; }
+        private int _titlebarSpaceHeight = OperatingSystem.IsMacOS() ? 52 : 36;
+        public int TitlebarSpaceHeight { get => _titlebarSpaceHeight; }
 
         private static readonly Dictionary<string, LucideIconNames> _pageIconMap = new()
         {

@@ -38,6 +38,12 @@ internal partial class InternalVirtualDisplay
         EntryPoint = "end_display"
     )]
     public static partial int End();
+
+    [LibraryImport(
+        "virtualdisplay",
+        EntryPoint = "set_logger"
+    )]
+    public static partial void SetLogger(IntPtr callback);
 }
 
 /// A Virtual Display mechanism for macOS
@@ -108,6 +114,12 @@ internal partial class InternalNativeNotify
         EntryPoint = "init"
     )]
     public static partial int Init();
+
+    [LibraryImport(
+        "notify",
+        EntryPoint = "set_logger"
+    )]
+    public static partial void SetLogger(IntPtr callback);
 }
 
 /// A native notifier
@@ -145,6 +157,12 @@ internal partial class InternalMobileAppReg
         EntryPoint = "init"
     )]
     public static partial int Init();
+
+    [LibraryImport(
+        "mobileappreg",
+        EntryPoint = "set_logger"
+    )]
+    public static partial void SetLogger(IntPtr callback);
 }
 
 public class MobileAppReg

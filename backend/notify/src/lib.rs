@@ -16,6 +16,8 @@ pub mod win;
 use std::os::raw::c_char;
 use util::IStr;
 
+logger::export_set_logger!();
+
 /// Runtime initialzer, will No-op on Linux systems
 ///
 /// On macOS it will request notification permission.
@@ -47,7 +49,7 @@ pub unsafe extern "C" fn send_notification_message(
     #[cfg(target_os = "macos")]
     {
         let r = macos::send_notification(title, description);
-        println!("Send notify result={r}");
+        log::debug!("Send notify result={r}");
         r
     }
 

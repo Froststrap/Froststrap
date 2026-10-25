@@ -130,7 +130,7 @@ namespace Froststrap.Integrations
 
                 App.Logger.Info("Opening Roblox log file...");
 
-                string logNameFilter = (_launchMode == LaunchMode.Studio || _launchMode == LaunchMode.StudioAuth)
+                string logNameFilter = IsStudioLaunch
                     ? "Studio"
                     : "Player";
 
@@ -167,23 +167,80 @@ namespace Froststrap.Integrations
                 logFileInfo = new FileInfo(LogLocation);
             }
 
-            OnLogOpen?.Invoke(this, EventArgs.Empty);
-
-            var logFileStream = logFileInfo.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-
-            App.Logger.Info($"Opened {LogLocation}");
-
-            using var streamReader = new StreamReader(logFileStream);
-
             while (!IsDisposed)
             {
-                string? log = await streamReader.ReadLineAsync();
+                OnLogOpen?.Invoke(this, EventArgs.Empty);
 
-                if (log is null)
+                using var logFileStream = logFileInfo.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                using var streamReader = new StreamReader(logFileStream);
+
+                App.Logger.Info($"Opened {LogLocation}");
+
+                bool switchedLogFile = false;
+
+                while (!IsDisposed)
+                {
+                    string? log = await streamReader.ReadLineAsync();
+
+                    if (log is not null)
+                    {
+                        ReadLogEntry(log);
+                        continue;
+                    }
+
                     await Task.Delay(1000);
-                else
-                    ReadLogEntry(log);
+
+                    FileInfo? newerLogFile = IsStudioLaunch ? GetNewerStudioLog(logFileInfo) : null;
+
+                    if (newerLogFile is not null)
+                    {
+                        App.Logger.Info($"Detected new Studio log file, switching from {logFileInfo.Name} to {newerLogFile.Name}");
+
+                        logFileInfo = newerLogFile;
+                        LogLocation = newerLogFile.FullName;
+                        switchedLogFile = true;
+                        ResetStudioPlaceState();
+
+                        break;
+                    }
+                }
+
+                if (!switchedLogFile)
+                    break;
             }
+        }
+
+        private bool IsStudioLaunch => _launchMode == LaunchMode.Studio || _launchMode == LaunchMode.StudioAuth;
+
+        private static FileInfo? GetNewerStudioLog(FileInfo currentLogFile)
+        {
+            string? logDirectory = currentLogFile.DirectoryName;
+            if (string.IsNullOrEmpty(logDirectory) || !Directory.Exists(logDirectory))
+                return null;
+
+            try
+            {
+                return new DirectoryInfo(logDirectory)
+                    .GetFiles()
+                    .Where(x => x.Name.Contains("Studio", StringComparison.OrdinalIgnoreCase))
+                    .Where(x => x.CreationTimeUtc > currentLogFile.CreationTimeUtc)
+                    .OrderByDescending(x => x.CreationTimeUtc)
+                    .FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error($"Failed to search for a newer Studio log file: {ex.Message}");
+                return null;
+            }
+        }
+
+        private void ResetStudioPlaceState()
+        {
+            if (!InStudioPlace)
+                return;
+
+            InStudioPlace = false;
+            OnStudioPlaceClosed?.Invoke(this, EventArgs.Empty);
         }
 
         private void ReadLogEntry(string entry)

@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+using Avalonia.Input;
 using System.ComponentModel;
 using System.Reflection;
 using Avalonia.Controls;
@@ -92,6 +93,14 @@ namespace Froststrap.UI.Elements.About
                     }
                 }
             }
+        }
+
+        private void TitleBarGrid_PointerPressed(object sender, PointerPressedEventArgs e)
+        {
+            if (!e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
+                return;
+
+            this.BeginMoveDrag(e);
         }
 
         private void NavView_ItemInvoked(object? sender, FANavigationViewItemInvokedEventArgs e)

@@ -6,6 +6,7 @@
 resolver = "3"
 members = [
   "notify",
+  "logger",
   "mobileappreg",
   "overlay_layer",
   "virtualdisplay",
@@ -32,9 +33,13 @@ panic = "abort"
 incremental = false
 
 [workspace.dependencies]
+log = "0.4"
 objc2 = "0.6"
 block2 = "0.6"
 dispatch2 = "0.3"
+
+[workspace.dependencies.logger]
+path = "logger"
 
 [workspace.dependencies.objc2-core-foundation]
 version = "0.3"

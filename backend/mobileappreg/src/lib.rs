@@ -5,6 +5,8 @@
 pub mod cs;
 pub mod registration;
 
+logger::export_set_logger!();
+
 #[unsafe(no_mangle)]
 pub extern "C" fn init() -> i32 {
     registration::register()
