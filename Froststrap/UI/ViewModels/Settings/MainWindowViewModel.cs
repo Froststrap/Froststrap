@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+using Avalonia;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.UI.Elements.Settings.Pages;
@@ -28,8 +29,21 @@ namespace Froststrap.UI.ViewModels.Settings
         public bool IsNotLinux { get => _isNotLinux; }
         private bool _isNotMacOS = !OperatingSystem.IsMacOS();
         public bool IsNotMacOS { get => _isNotMacOS; }
+
         private int _titlebarSpaceHeight = OperatingSystem.IsMacOS() ? 52 : 36;
         public int TitlebarSpaceHeight { get => _titlebarSpaceHeight; }
+        private Thickness _titlebarPadding = OperatingSystem.IsMacOS() ? new Thickness(95,0,12,0) : OperatingSystem.IsLinux() ? new Thickness(6, 0) : new Thickness(12,0,132,0);
+        public Thickness TitlebarPadding { get => _titlebarPadding; }
+        private Thickness _openSidebarTitleMargin = OperatingSystem.IsMacOS() ? new Thickness(56,0,0,0) : OperatingSystem.IsLinux() ? new Thickness(155,0,0,0) : new Thickness(138,0,0,0);
+        public Thickness OpenSidebarTitleMargin { get => _openSidebarTitleMargin; }
+        private Thickness _textCorrection = OperatingSystem.IsMacOS() ? new Thickness(0,4,0,0) : new Thickness(0,0,0,0);
+        public Thickness TextCorrection { get => _textCorrection; }
+        private int _iconButtonSize = OperatingSystem.IsMacOS() ? 28 : 26;
+        public int IconButtonSize { get => _iconButtonSize; }
+        private int _iconButtonIconSize = OperatingSystem.IsMacOS() ? 14 : 14;
+        public int IconButtonIconSize { get => _iconButtonIconSize; }
+        private int _titlebarTextSize = OperatingSystem.IsMacOS() ? 18 : 15;
+        public int TitlebarTextSize { get => _titlebarTextSize; }
 
         private static readonly Dictionary<string, LucideIconNames> _pageIconMap = new()
         {

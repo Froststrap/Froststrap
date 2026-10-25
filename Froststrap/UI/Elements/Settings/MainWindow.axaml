@@ -33,37 +33,30 @@ SPDX-License-Identifier: MPL-2.0
         <Border
             Grid.Row="0"
             Height="{Binding TitlebarSpaceHeight}"
+            Padding="{Binding TitlebarPadding}"
             Background="{DynamicResource ControlFillColorDefaultBrush}"
-            IsVisible="{x:Static gv:GlobalViewModel.IsWindows}"
-            PointerPressed="TitleBarGrid_PointerPressed" />
-        <Border
-            Grid.Row="0"
-            Height="{Binding TitlebarSpaceHeight}"
-            Padding="95,0,12,0"
-            Background="{DynamicResource ControlFillColorDefaultBrush}"
-            IsVisible="{x:Static gv:GlobalViewModel.IsMacOS}"
             PointerPressed="TitleBarGrid_PointerPressed"
         >      
             <Grid ColumnDefinitions="Auto, *, Auto">
                 <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-                    <Button
-                        Width="32"
-                        Height="28"
+                    <controls:IconButton
+                        Icon="PanelLeft"
+                        Click="ToggleSidebar"
+                        Width="{Binding IconButtonSize}"
+                        Height="{Binding IconButtonSize}"
                         Padding="0"
                         Background="Transparent"
                         BorderThickness="0"
-                        Click="ToggleSidebar">
-                        <ic:Lucide Icon="PanelLeft" Width="16" Height="16" />
-                    </Button>
+                        IconSize="{Binding IconButtonIconSize}" />
                     <controls:IconButton
                         Icon="Search"
                         Click="OpenSearchOverlay"
-                        Width="28"
-                        Height="28"
+                        Width="{Binding IconButtonSize}"
+                        Height="{Binding IconButtonSize}"
                         Padding="0"
                         Background="Transparent"
                         BorderThickness="0"
-                        IconSize="14" />
+                        IconSize="{Binding IconButtonIconSize}" />
                     <StackPanel
                         Classes="pageTitle"
                         Classes.paneClosed="{Binding !#NavView.IsPaneOpen}"
@@ -72,7 +65,7 @@ SPDX-License-Identifier: MPL-2.0
                         VerticalAlignment="Center">
                         <StackPanel.Styles>
                             <Style Selector="StackPanel.pageTitle">
-                                <Setter Property="Margin" Value="56,0,0,0" />
+                                <Setter Property="Margin" Value="{Binding OpenSidebarTitleMargin}" />
                                 <Setter Property="Transitions">
                                     <Transitions>
                                         <ThicknessTransition Property="Margin" Duration="0:0:0.2" Easing="CubicEaseOut" />
@@ -108,8 +101,7 @@ SPDX-License-Identifier: MPL-2.0
                                         Orientation="Horizontal"
                                         Spacing="8">
                                         <Button
-                                            FontSize="18"
-                                            Margin="0,4,0,0"
+                                            FontSize="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).TitlebarTextSize}"
                                             Padding="0"
                                             Background="Transparent"
                                             BorderThickness="0"
@@ -119,14 +111,14 @@ SPDX-License-Identifier: MPL-2.0
                                             Foreground="{DynamicResource TextFillColorPrimraryBrush}"
                                             IsVisible="{Binding !IsLast}" />
                                         <TextBlock
-                                            FontSize="18"
-                                            Margin="0,4,0,0"
+                                            FontSize="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).TitlebarTextSize}"
+                                            Margin="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).TextCorrection}"
                                             Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                                             IsVisible="{Binding !IsLast}"
                                             Text="›" />
                                         <TextBlock
-                                            FontSize="18"
-                                            Margin="0,4,0,0"
+                                            FontSize="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).TitlebarTextSize}"
+                                            Margin="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).TextCorrection}"
                                             Foreground="{DynamicResource TextFillColorPrimraryBrush}"
                                             IsVisible="{Binding IsLast}"
                                             Text="{Binding Content}" />
@@ -137,8 +129,8 @@ SPDX-License-Identifier: MPL-2.0
 
                         <TextBlock
                             x:Name="PageTitleTextTitlebar"
-                            FontSize="16"
-                            Margin="0,4,0,0"
+                            FontSize="{Binding TitlebarTextSize}"
+                            Margin="{Binding TextCorrection}"
                             FontWeight="SemiBold"
                             Foreground="{DynamicResource TextFillColorPrimraryBrush}"
                             Text="{Binding CurrentPageTitle}"
@@ -161,41 +153,8 @@ SPDX-License-Identifier: MPL-2.0
             IsSettingsVisible="False"
             ItemInvoked="NavView_ItemInvoked"
             OpenPaneLength="220"
-            IsPaneToggleButtonVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}"
+            IsPaneToggleButtonVisible="False"
             PaneDisplayMode="Left">
-            <ui:FANavigationView.PaneToggleRowContent>
-                <controls:IconButton Icon="Search"
-                                     Click="OpenSearchOverlay"
-                                     Width="40"
-                                     Height="36"
-                                     Padding="0"
-                                     Margin="4,2"
-                                     Background="{DynamicResource NavigationViewItemBackground}"
-                                     Foreground="{DynamicResource NavigationViewItemForeground}"
-                                     BorderThickness="0"
-                                     BorderBrush="Transparent"
-                                     IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}"
-                                     CornerRadius="{DynamicResource ControlCornerRadius}"
-                                     IconSize="14">
-                    <controls:IconButton.Styles>
-                        <Style Selector="controls|IconButton">
-                            <Style Selector="^:pointerover">
-                                <Setter Property="Foreground" Value="{DynamicResource NavigationViewButtonForegroundPointerOver}" />
-                            </Style>
-                            <Style Selector="^:pointerover /template/ Border#PART_LayoutRoot">
-                                <Setter Property="Background" Value="{DynamicResource NavigationViewButtonBackgroundPointerOver}" />
-                            </Style>
-                            <Style Selector="^:pressed">
-                                <Setter Property="Foreground" Value="{DynamicResource NavigationViewButtonForegroundPressed}" />
-                            </Style>
-                            <Style Selector="^:pressed /template/ Border#PART_LayoutRoot">
-                                <Setter Property="Background" Value="{DynamicResource NavigationViewButtonBackgroundPressed}" />
-                            </Style>
-                        </Style>
-                    </controls:IconButton.Styles>
-                </controls:IconButton>
-            </ui:FANavigationView.PaneToggleRowContent>
-
             <ui:FANavigationView.MenuItems>
                 <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_Integrations_Title}" Tag="integrations">
                     <ui:FANavigationViewItem.Icon>
@@ -280,93 +239,13 @@ SPDX-License-Identifier: MPL-2.0
 
             <ui:FANavigationView.Content>
                 <Grid RowDefinitions="Auto,*">
-                    <Border Grid.Row="0"
-                            BorderBrush="{DynamicResource ControlElevationBorderBrush}"
-                            IsVisible="{Binding IsNotMacOS}"
-                            BorderThickness="0,0,0,2">
-                        <StackPanel>
-                            <StackPanel Margin="18">
-                                <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
-                                    <ic:Lucide
-                                        Icon="{Binding CurrentPageIcon}"
-                                        Width="26"
-                                        Height="26"
-                                        Margin="0,0,8,0"
-                                        VerticalAlignment="Bottom" />
-
-                                    <ItemsControl
-                                        IsVisible="{Binding HasBreadcrumbs}"
-                                        ItemsSource="{Binding BreadcrumbItems}">
-                                        <ItemsControl.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <StackPanel
-                                                    VerticalAlignment="Center"
-                                                    Orientation="Horizontal"
-                                                    Spacing="8" />
-                                            </ItemsPanelTemplate>
-                                        </ItemsControl.ItemsPanel>
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate DataType="vm:BreadcrumbItemModel">
-                                                <StackPanel
-                                                    VerticalAlignment="Center"
-                                                    Orientation="Horizontal"
-                                                    Spacing="8">
-                                                    <Button
-                                                        Padding="0"
-                                                        Background="Transparent"
-                                                        BorderThickness="0"
-                                                        Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).BreadcrumbItemClickedCommand}"
-                                                        CommandParameter="{Binding}"
-                                                        Content="{Binding Content}"
-                                                        FontSize="22"
-                                                        FontWeight="SemiBold"
-                                                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                                                        IsVisible="{Binding !IsLast}" />
-                                                    <TextBlock
-                                                        VerticalAlignment="Center"
-                                                        FontSize="22"
-                                                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                                        IsVisible="{Binding !IsLast}"
-                                                        Text="›" />
-                                                    <TextBlock
-                                                        VerticalAlignment="Center"
-                                                        FontSize="22"
-                                                        FontWeight="SemiBold"
-                                                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                                                        IsVisible="{Binding IsLast}"
-                                                        Text="{Binding Content}" />
-                                                </StackPanel>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-
-                                    <TextBlock
-                                        x:Name="PageTitleText"
-                                        FontSize="22"
-                                        FontWeight="SemiBold"
-                                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                                        Text="{Binding CurrentPageTitle}"
-                                        IsVisible="{Binding ShowPageTitle}" />
-                                </StackPanel>
-
-                                <controls:MarkdownTextBlock
-                                    x:Name="PageDescriptionText"
-                                    FontSize="15"
-                                    Margin="0,2,0,0"
-                                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                    IsVisible="{Binding CurrentPageDescription, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-                                    MarkdownText="{Binding CurrentPageDescription}" />
-                            </StackPanel>
-
-                            <ui:FAInfoBar
-                                x:Name="AlertBar"
-                                Margin="12,4,12,8"
-                                IsOpen="False"
-                                IsClosable="False"
-                                Severity="Informational" />
-                        </StackPanel>
-                    </Border>
-
+                    <ui:FAInfoBar
+                        x:Name="AlertBar"
+                        Grid.Row="0"
+                        Margin="12,0"
+                        IsOpen="False"
+                        IsClosable="False"
+                        Severity="Informational" />
                     <Panel Grid.Row="1">
                         <TransitioningContentControl
                             x:Name="PageContentControl"
@@ -388,18 +267,8 @@ SPDX-License-Identifier: MPL-2.0
             Background="{DynamicResource ControlFillColorDefaultBrush}"
             BorderBrush="{DynamicResource ControlStrokeColorDefault}"
             BorderThickness="0,1,0,0">
-            <Grid ColumnDefinitions="Auto, *, Auto, Auto, Auto, Auto" ColumnSpacing="8">
-                <Border
-                    Grid.Column="0"
-                    IsVisible="{Binding IsNotMacOS}"
-                    Margin="8,0,0,0"
-                >
-                    <local:AccountSelectorView
-                        x:Name="AccountSelectorView"
-                        PhotoPosition="Left"
-                    />
-                </Border>
-                <controls:IconButton Grid.Column="2"
+            <Grid ColumnDefinitions="*, Auto, Auto, Auto, Auto" ColumnSpacing="8">
+                <controls:IconButton Grid.Column="1"
                                      FontWeight="SemiBold"
                                      Height="36"
                                      Padding="20,0"
@@ -425,7 +294,7 @@ SPDX-License-Identifier: MPL-2.0
                 </controls:IconButton>
                 <Button
                     FontWeight="SemiBold"
-                    Grid.Column="3"
+                    Grid.Column="2"
                     Height="36"
                     Padding="20,0"
                     Classes="accent"
@@ -433,7 +302,7 @@ SPDX-License-Identifier: MPL-2.0
                     Content="{x:Static resources:Strings.Menu_Restart}" />
                 <Button
                     FontWeight="SemiBold"
-                    Grid.Column="4"
+                    Grid.Column="3"
                     Height="36"
                     Padding="20,0"
                     Classes="accent"
@@ -441,7 +310,7 @@ SPDX-License-Identifier: MPL-2.0
                     Content="{x:Static resources:Strings.Menu_Save}" />
                 <Button
                     FontWeight="SemiBold"
-                    Grid.Column="5"
+                    Grid.Column="4"
                     Height="36"
                     Padding="20,0"
                     Command="{Binding CloseWindowCommand}"
