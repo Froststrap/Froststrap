@@ -104,7 +104,23 @@ namespace Froststrap
                         {
                             foreach (var crashProc in Process.GetProcessesByName("RobloxCrashHandler"))
                             {
-                                try { crashProc.Kill(); } catch { }
+                                try
+                                {
+                                    App.Logger.Info($"Found crash handler: {crashProc.ProcessName} (PID {crashProc.Id})");
+
+                                    crashProc.Kill();
+                                    crashProc.WaitForExit(3000);
+
+                                    App.Logger.Info(
+                                        crashProc.HasExited
+                                            ? $"Crash handler {crashProc.Id} exited successfully"
+                                            : $"Crash handler {crashProc.Id} is still running"
+                                    );
+                                }
+                                catch (Exception ex)
+                                {
+                                    App.Logger.Error($"Failed to close crash handler {crashProc.Id}: {ex}");
+                                }
                             }
                         }
                     }
