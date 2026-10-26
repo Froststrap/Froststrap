@@ -14,6 +14,7 @@ using Avalonia.Styling;
 using Avalonia.Threading;
 using FluentAvalonia.Styling;
 using Froststrap.UI.Utility;
+using SkiaSharp;
 using System.Runtime.CompilerServices;
 
 namespace Froststrap.UI.Elements.Base
@@ -46,6 +47,7 @@ namespace Froststrap.UI.Elements.Base
         private static int _backgroundLoadVersion;
 
         private static readonly string[] AnimatedImageExtensions = [".gif"];
+        private const int MaxBackgroundDecodeWidth = 2560;
 
         private readonly Panel? _backgroundHost;
         private readonly Image? _backgroundImage;
@@ -357,6 +359,7 @@ namespace Froststrap.UI.Elements.Base
         private static void StartBackgroundBitmapLoad(string path)
         {
             int version = ++_backgroundLoadVersion;
+            int decodeWidth = GetBackgroundDecodeWidth();
 
             _ = Task.Run(() =>
             {
@@ -364,10 +367,32 @@ namespace Froststrap.UI.Elements.Base
 
                 try
                 {
-                    bitmap = new Bitmap(path);
+                    int sourceWidth = 0;
+
+                    using (var probe = File.OpenRead(path))
+                    {
+                        try
+                        {
+                            using var codec = SKCodec.Create(probe);
+                            sourceWidth = codec?.Info.Width ?? 0;
+                        }
+                        catch (Exception ex)
+                        {
+                            App.Logger.Debug($"Image dimension probe failed for {path}: {ex.Message}");
+                        }
+                    }
+
+                    using var stream = File.OpenRead(path);
+                    bitmap = sourceWidth <= 0 || sourceWidth > decodeWidth
+                        ? Bitmap.DecodeToWidth(stream, decodeWidth, BitmapInterpolationMode.HighQuality)
+                        : new Bitmap(stream);
+
+                    App.Logger.Debug($"Background image decoded: source={sourceWidth}px, decoded={bitmap.PixelSize.Width}x{bitmap.PixelSize.Height}, target={decodeWidth}px");
                 }
                 catch (Exception ex)
                 {
+                    bitmap?.Dispose();
+                    bitmap = null;
                     App.Logger.Error($"Image load error: {ex}");
                 }
 
@@ -376,6 +401,35 @@ namespace Froststrap.UI.Elements.Base
 
                 Dispatcher.UIThread.Post(() => CompleteBackgroundBitmapLoad(path, version, bitmap));
             });
+        }
+
+        private static int GetBackgroundDecodeWidth()
+        {
+            int width = 0;
+
+            try
+            {
+                if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+                {
+                    foreach (var window in desktop.Windows)
+                    {
+                        if (window.Screens.Primary is { } screen)
+                        {
+                            width = screen.Bounds.Width;
+                            break;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error($"Failed to determine screen size: {ex.Message}");
+            }
+
+            if (width <= 0)
+                width = MaxBackgroundDecodeWidth;
+
+            return Math.Min(width, MaxBackgroundDecodeWidth);
         }
 
         private static void CompleteBackgroundBitmapLoad(string path, int version, Bitmap bitmap)
