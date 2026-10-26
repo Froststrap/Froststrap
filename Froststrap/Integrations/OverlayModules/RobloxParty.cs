@@ -45,7 +45,7 @@ namespace Froststrap.Integrations.OverlayModules
             {
                 return await Http.AuthGetJson<ConversationsPage>(url);
             }
-            catch (Exception ex) when (ex is JsonException || ex is HttpRequestException)
+            catch (Exception ex)
             {
                 App.Logger.Error("Failed to get conversations");
                 App.Logger.Error(ex);

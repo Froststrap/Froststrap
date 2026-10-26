@@ -196,6 +196,39 @@ namespace Froststrap
 
         private record struct CookieLoadResult(string AuthCookie, string BrowserTracker);
 
+        private async Task<AuthenticatedUser?> GetAuthenticatedWithRetry()
+        {
+            for (int attempt = 0; attempt < 3; attempt++)
+            {
+                AuthenticatedUser? user = await GetAuthenticated();
+
+                if (user is not null && user.Id != 0)
+                    return user;
+
+                if (attempt < 2)
+                {
+                    App.Logger.Warn($"Could not resolve the signed-in account (attempt {attempt + 1}/3), retrying");
+                    await Task.Delay(250 * (attempt + 1));
+                }
+            }
+
+            return null;
+        }
+
+        private static async Task<CookieLoadResult> ReadCookiesFromStore()
+        {
+            if (OperatingSystem.IsWindows())
+                return await LoadWindowsCookies();
+
+            if (OperatingSystem.IsMacOS())
+                return await LoadMacCookies();
+
+            if (OperatingSystem.IsLinux())
+                return await LoadLinuxCookies();
+
+            return default;
+        }
+
         public async Task LoadCookies()
         {
             bool accountChanged;
@@ -266,7 +299,7 @@ namespace Froststrap
                 return;
             }
 
-            if (!reload && !string.IsNullOrEmpty(AuthCookie))
+            if (!reload && CurrentUser is not null && !string.IsNullOrEmpty(AuthCookie))
             {
                 App.Logger.Error("Cookie was already loaded!");
                 return;
@@ -291,17 +324,15 @@ namespace Froststrap
             {
                 CookieLoadResult result = default;
 
-                if (OperatingSystem.IsWindows())
+                for (int attempt = 0; attempt < 3; attempt++)
                 {
-                    result = await LoadWindowsCookies();
-                }
-                else if (OperatingSystem.IsMacOS())
-                {
-                    result = await LoadMacCookies();
-                }
-                else if (OperatingSystem.IsLinux())
-                {
-                    result = await LoadLinuxCookies();
+                    result = await ReadCookiesFromStore();
+
+                    if (!string.IsNullOrEmpty(result.AuthCookie))
+                        break;
+
+                    if (attempt < 2)
+                        await Task.Delay(200);
                 }
 
                 if (string.IsNullOrEmpty(result.AuthCookie))
@@ -321,9 +352,10 @@ namespace Froststrap
                 else
                     App.Logger.Info("No browser tracker in the cookie store");
 
-                AuthenticatedUser? user = await GetAuthenticated();
-                State = (user != null && user.Id != 0) ? CookieState.Success : CookieState.Invalid;
+                AuthenticatedUser? user = await GetAuthenticatedWithRetry();
+
                 CurrentUser = user;
+                State = (user != null && user.Id != 0) ? CookieState.Success : CookieState.Invalid;
             }
             catch (Exception ex)
             {

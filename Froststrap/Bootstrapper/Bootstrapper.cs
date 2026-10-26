@@ -1117,7 +1117,7 @@ internal partial class Bootstrapper : IDisposable
         AppStorageManager.Apply();
 
         if (_joinData.JoinType == GameJoinType.Unknown)
-            App.Logger.Warn("Unable to get join data");
+            App.Logger.Info("Unable to get join data");
 
         App.Logger.Info($"Join Type: {_joinData.JoinType}");
         App.Logger.Info($"Join Origin: {_joinData.JoinOrigin ?? "null"}");
@@ -2112,7 +2112,7 @@ internal partial class Bootstrapper : IDisposable
         var updateStartInfo = new ProcessStartInfo
         {
             FileName = "flatpak",
-            Arguments = $"update --user {SoberFlatpakId} --assumeyes",
+            Arguments = $"update {SoberFlatpakId} --assumeyes",
             UseShellExecute = false,
             RedirectStandardOutput = true,
             RedirectStandardError = true,
@@ -2127,6 +2127,8 @@ internal partial class Bootstrapper : IDisposable
             _cancelTokenSource.Token
         );
 
+        CancellationToken token = linkedCts.Token;
+
         try
         {
             using var process = Process.Start(updateStartInfo)
@@ -2136,7 +2138,7 @@ internal partial class Bootstrapper : IDisposable
             {
                 try
                 {
-                    while (!linkedCts.Token.IsCancellationRequested)
+                    while (!token.IsCancellationRequested)
                     {
                         string? line = await process.StandardOutput.ReadLineAsync();
                         if (line is null)
@@ -2208,13 +2210,13 @@ internal partial class Bootstrapper : IDisposable
                 {
                     App.Logger.Warn($"Error reading flatpak output: {ex.Message}");
                 }
-            }, linkedCts.Token);
+            }, token);
 
             var errorTask = Task.Run(async () =>
             {
                 try
                 {
-                    while (!linkedCts.Token.IsCancellationRequested)
+                    while (!token.IsCancellationRequested)
                     {
                         string? line = await process.StandardError.ReadLineAsync();
                         if (line is null)
@@ -2228,11 +2230,11 @@ internal partial class Bootstrapper : IDisposable
                 {
                     App.Logger.Warn($"Error reading flatpak stderr: {ex.Message}");
                 }
-            }, linkedCts.Token);
+            }, token);
 
             await Task.WhenAny(
-                process.WaitForExitAsync(linkedCts.Token),
-                Task.Delay(Timeout.Infinite, linkedCts.Token)
+                process.WaitForExitAsync(token),
+                Task.Delay(Timeout.Infinite, token)
             );
 
             if (!process.HasExited && linkedCts.IsCancellationRequested)
@@ -2245,6 +2247,13 @@ internal partial class Bootstrapper : IDisposable
             {
                 await process.WaitForExitAsync();
             }
+
+            try
+            {
+                await Task.WhenAll(outputTask, errorTask);
+            }
+            catch (OperationCanceledException) { }
+            catch (Exception) { }
 
             if (process.ExitCode != 0 && process.ExitCode != -1)
             {

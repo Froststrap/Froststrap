@@ -50,6 +50,8 @@ namespace Froststrap.Integrations.Overlay
         bool IsOwnProcessForeground();
         void RaiseOverlayWindow(Window window);
 
+        bool CanDetectFocus => true;
+
         bool RegisterHotkey(
             Window window,
             int id,

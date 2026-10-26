@@ -77,7 +77,7 @@ namespace Froststrap
                 }
                 else
                 {
-                    App.Logger.Error($"Could not find {FileLocation}.");
+                    App.Logger.Warn($"Could not find {FileLocation}.");
                     Loaded = true;
                     _savedHash = ComputeHash(_prop);
                     return false;
@@ -219,7 +219,7 @@ namespace Froststrap
                 }
                 else
                 {
-                    App.Logger.Error("File does not exist on disk");
+                    App.Logger.Warn("File does not exist on disk");
                 }
             }
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)

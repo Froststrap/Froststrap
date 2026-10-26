@@ -52,6 +52,8 @@ namespace Froststrap.UI.Elements.Overlay.Controls
                 _ = _viewModel.LoadAsync();
         }
 
+        public Task LoadAsync() => _viewModel?.LoadAsync() ?? Task.CompletedTask;
+
         protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
         {
             base.OnPropertyChanged(change);

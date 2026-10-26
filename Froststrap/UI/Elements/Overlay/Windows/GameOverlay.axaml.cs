@@ -38,6 +38,7 @@ namespace Froststrap.UI.Elements.Overlay
         private bool _panelsWired;
         private bool _preloading = true;
         private bool _warmScheduled;
+        private bool _initialised;
         private bool _disposed;
 
         private OverlayBounds? _lastBounds;
@@ -431,6 +432,9 @@ namespace Froststrap.UI.Elements.Overlay
             if (_overlay?.IsOwnProcessForeground() == true)
                 return;
 
+            if (_overlay?.CanDetectFocus == false)
+                return;
+
             if (_overlay?.IsGameForeground() == true)
                 return;
 
@@ -454,7 +458,7 @@ namespace Froststrap.UI.Elements.Overlay
             if (_pinnedMode)
                 ExitPinnedMode();
 
-            if (_overlay?.IsGameForeground() == false)
+            if (_overlay?.CanDetectFocus != false && _overlay?.IsGameForeground() == false)
                 _overlay.FocusGame();
 
             _overlay?.SetWindowCloaked(this, false);
@@ -488,7 +492,9 @@ namespace Froststrap.UI.Elements.Overlay
             if (_preloading)
                 return;
 
-            bool gameOrOverlayInFront = _overlay?.IsGameForeground() == true || _overlay?.IsOwnProcessForeground() == true;
+            bool gameOrOverlayInFront = _overlay?.CanDetectFocus == false
+                || _overlay?.IsGameForeground() == true
+                || _overlay?.IsOwnProcessForeground() == true;
             bool shouldShow = AnyPinnedPanels()
                 && gameOrOverlayInFront
                 && _overlay?.IsGameMinimised() != true;
@@ -565,7 +571,20 @@ namespace Froststrap.UI.Elements.Overlay
             ChromeDockContent.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
         }
 
-        private void Window_Loaded(object? sender, RoutedEventArgs e) => _ = OnLoadedAsync();
+        private void Window_Loaded(object? sender, RoutedEventArgs e) => _ = PrepareForRenderingAsync();
+
+        public async Task PrepareForRenderingAsync(bool skipWarmUp = false)
+        {
+            if (_initialised || _disposed)
+                return;
+
+            _initialised = true;
+
+            await OnLoadedAsync();
+
+            if (skipWarmUp)
+                _preloading = false;
+        }
 
         private async Task OnLoadedAsync()
         {
@@ -585,6 +604,8 @@ namespace Froststrap.UI.Elements.Overlay
             _savedLayout = JsonHelper.Serialize(BuildLayout());
 
             await _viewModel.OnLoaded();
+
+            _ = ChatWindow.LoadAsync();
         }
 
         private async Task WarmUpAsync()

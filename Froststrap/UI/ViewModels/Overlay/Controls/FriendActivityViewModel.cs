@@ -350,7 +350,17 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                     : RobloxParty.GetAllConversations();
 
                 if (_presence is not null && !_presence.HasLooked)
-                    await _presence.PollAsync();
+                {
+                    try
+                    {
+                        await _presence.PollAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        App.Logger.Warn("Failed to load friends, continuing with conversations");
+                        App.Logger.Error(ex);
+                    }
+                }
 
                 var ids = new HashSet<long>(_presence?.FriendIds ?? []) { _me.Id };
 
