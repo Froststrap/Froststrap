@@ -36,33 +36,36 @@ namespace Froststrap.Models.SettingTasks
 
         public override void Execute()
         {
-            if (!NewState.Equals(default(T)))
+            _fileDataMap.TryGetValue(OriginalState, out var originalResourceMap);
+            _fileDataMap.TryGetValue(NewState, out var newResourceMap);
+
+            if (originalResourceMap != null) foreach (var (path, data) in originalResourceMap)
             {
-                var resourceMap = _fileDataMap[NewState];
-
-                foreach (var resourcePair in resourceMap)
+                if (newResourceMap == null || !newResourceMap.ContainsKey(path) && data.HashMatches())
                 {
-                    var data = resourcePair.Value;
-
-                    if (!data.HashMatches())
-                    {
-                        Directory.CreateDirectory(Path.GetDirectoryName(data.FullFilePath)!);
-
-                        using var resourceStream = data.ResourceStream;
-                        using var memoryStream = new MemoryStream();
-                        data.ResourceStream.CopyTo(memoryStream);
-
-                        Filesystem.AssertReadOnly(data.FullFilePath);
-                        File.WriteAllBytes(data.FullFilePath, memoryStream.ToArray());
-                    }
+                    Filesystem.AssertReadOnly(data.FullFilePath);
+                    File.Delete(data.FullFilePath);
                 }
             }
-            else
+
+            if (newResourceMap != null)
             {
-                foreach (var dataPair in _fileDataMap.First().Value)
+                foreach (var data in newResourceMap.Values)
                 {
-                    Filesystem.AssertReadOnly(dataPair.Value.FullFilePath);
-                    File.Delete(dataPair.Value.FullFilePath);
+                    if (data.HashMatches())
+                        return;
+
+                    Directory.CreateDirectory(
+                        Path.GetDirectoryName(data.FullFilePath)!
+                    );
+
+                    using var resourceStream = data.ResourceStream;
+                    using var memoryStream = new MemoryStream();
+
+                    resourceStream.CopyTo(memoryStream);
+
+                    Filesystem.AssertReadOnly(data.FullFilePath);
+                    File.WriteAllBytes(data.FullFilePath, memoryStream.ToArray());
                 }
             }
 
