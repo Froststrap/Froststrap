@@ -41,6 +41,7 @@ internal class RobloxServersDialogViewModel : NotifyPropertyChangedViewModel, ID
         IsCurrentGameApi = !isTracked;
 
         RejoinServerCommand = new RelayCommand<object>(OnRejoinServer);
+        RefreshCommand = new AsyncRelayCommand(LoadAsync, AsyncRelayCommandOptions.AllowConcurrentExecutions);
 
         _ = LoadAsync();
     }
@@ -77,8 +78,12 @@ internal class RobloxServersDialogViewModel : NotifyPropertyChangedViewModel, ID
 
     public ICommand RejoinServerCommand { get; }
 
+    public IAsyncRelayCommand RefreshCommand { get; }
+
     private async Task LoadAsync()
     {
+        if (_disposed || IsLoading) return;
+
         IsLoading = true;
         try
         {
@@ -93,7 +98,8 @@ internal class RobloxServersDialogViewModel : NotifyPropertyChangedViewModel, ID
         }
         finally
         {
-            IsLoading = false;
+            if (!_disposed)
+                IsLoading = false;
         }
     }
 
@@ -124,10 +130,7 @@ internal class RobloxServersDialogViewModel : NotifyPropertyChangedViewModel, ID
         foreach (var s in sorted) s.IsLatest = false;
         if (sorted.Count > 0) sorted[0].IsLatest = true;
 
-        await Dispatcher.UIThread.InvokeAsync(() =>
-        {
-            Servers = new ObservableCollection<ServerInfo>(sorted);
-        });
+        await Dispatcher.UIThread.InvokeAsync(() => SetServers(sorted));
     }
 
     private async Task LoadApiServersAsync()
@@ -166,10 +169,28 @@ internal class RobloxServersDialogViewModel : NotifyPropertyChangedViewModel, ID
 
         servers = [.. servers.OrderByDescending(s => s.JoinedAt)];
 
-        await Dispatcher.UIThread.InvokeAsync(() =>
+        await Dispatcher.UIThread.InvokeAsync(() => SetServers(servers));
+    }
+
+    private void SetServers(IEnumerable<ServerInfo> servers)
+    {
+        if (_disposed)
         {
-            Servers = new ObservableCollection<ServerInfo>(servers);
-        });
+            DisposeServerBitmaps(servers);
+            return;
+        }
+
+        var oldServers = _servers;
+        Servers = new ObservableCollection<ServerInfo>(servers);
+
+        Dispatcher.UIThread.Post(() => DisposeServerBitmaps(oldServers), DispatcherPriority.Background);
+    }
+
+    private static void DisposeServerBitmaps(IEnumerable<ServerInfo> servers)
+    {
+        foreach (var server in servers)
+            foreach (var bmp in server.PlayerAvatarThumbnails)
+                bmp.Dispose();
     }
 
     private static async Task LoadPlayerThumbnailsAsync(List<ServerInfo> servers)
@@ -287,11 +308,7 @@ internal class RobloxServersDialogViewModel : NotifyPropertyChangedViewModel, ID
         if (_disposed) return;
 
         if (disposing)
-        {
-            foreach (var server in _servers)
-                foreach (var bmp in server.PlayerAvatarThumbnails)
-                    bmp.Dispose();
-        }
+            DisposeServerBitmaps(_servers);
 
         _disposed = true;
     }

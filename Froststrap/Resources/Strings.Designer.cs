@@ -8652,6 +8652,15 @@ namespace Froststrap.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Refresh.
+        /// </summary>
+        public static string Menu_QuickPlay_Refresh {
+            get {
+                return ResourceManager.GetString("Menu.QuickPlay.Refresh", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Rejoin Last Server.
         /// </summary>
         public static string Menu_QuickPlay_RejoinLastServer {

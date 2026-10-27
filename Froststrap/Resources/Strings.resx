@@ -2453,6 +2453,9 @@ Do you want to install the plugin?</value>
   <data name="Menu.QuickPlay.LoadingServers" xml:space="preserve">
     <value>Loading servers...</value>
   </data>
+  <data name="Menu.QuickPlay.Refresh" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
   <data name="Menu.QuickPlay.Latest" xml:space="preserve">
     <value>Latest</value>
   </data>
