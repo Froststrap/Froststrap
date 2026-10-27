@@ -58,6 +58,7 @@ sealed class Program
         LogManager.Setup().LoadConfigurationFromAssemblyResource(assembly, "NLog.config");
         GlobalDiagnosticsContext.Set("logRoot", Paths.Logs);
         GlobalDiagnosticsContext.Set("startTime", DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss", CultureInfo.InvariantCulture));
+        _ = Task.Run(() => AppInitializer.RunMacSecurityDiagnostics());
         NativeLog.Register();
 
         if (launchArgs.Length == 0)
