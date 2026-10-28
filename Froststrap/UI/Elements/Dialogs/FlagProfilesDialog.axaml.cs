@@ -2,12 +2,21 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Text.Json;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Input.Platform;
 using Avalonia.Interactivity;
+using Avalonia.Platform;
 using Froststrap.UI.Elements.Base;
-using System.Collections.ObjectModel;
-using System.Reflection;
 
 namespace Froststrap.UI.Elements.Dialogs
 {
@@ -403,15 +412,10 @@ namespace Froststrap.UI.Elements.Dialogs
         private void LoadPresetProfiles()
         {
             LoadPresetProfile.Items.Clear();
-
-            var assembly = Assembly.GetExecutingAssembly();
-            string resourcePrefix = "Froststrap.Resources.PresetFlags.";
-            var resourceNames = assembly.GetManifestResourceNames();
-            var profiles = resourceNames.Where(r => r.StartsWith(resourcePrefix, StringComparison.Ordinal));
-
-            foreach (var resourceName in profiles)
+            var presetAssets = AssetLoader.GetAssets(new Uri("avares://Froststrap/Resources/PresetFlags/"), null);
+            foreach (var assetUri in presetAssets)
             {
-                string profileName = resourceName[resourcePrefix.Length..];
+                string profileName = Path.GetFileName(assetUri.AbsolutePath);
                 LoadPresetProfile.Items.Add(profileName);
             }
         }
@@ -459,7 +463,7 @@ namespace Froststrap.UI.Elements.Dialogs
             {
                 case 0:
                     if (LoadPresetProfile.SelectedItem is string selectedPreset)
-                        App.FastFlags.LoadPresetProfile(selectedPreset, clearFlags: true);
+                        _ = App.FastFlags.LoadPresetProfile(selectedPreset, clearFlags: true);
                     break;
                 case 1:
                     break;

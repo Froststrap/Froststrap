@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+using Avalonia.Platform;
 using System.Text.Json.Nodes;
 using System.Reflection;
 
@@ -333,7 +334,7 @@ namespace Froststrap
             }
         }
 
-        public async void LoadPresetProfile(string? name, bool? clearFlags)
+        public async Task LoadPresetProfile(string? name, bool? clearFlags)
         {
             if (string.IsNullOrEmpty(name))
                 return;
@@ -341,36 +342,33 @@ namespace Froststrap
             try
             {
                 string profileJson;
-                var assembly = Assembly.GetExecutingAssembly();
-                string resourcePrefix = "Froststrap.Resources.PresetFlags.";
-                string resourceFullName = resourcePrefix + name;
 
-                string? foundResource = assembly.GetManifestResourceNames()
-                    .FirstOrDefault(r => r.Equals(resourceFullName, StringComparison.OrdinalIgnoreCase));
+                var presetAssets = AssetLoader.GetAssets(new Uri("avares://Froststrap/Resources/PresetFlags/"), null);
+                var targetUri = presetAssets.FirstOrDefault(u => u.AbsolutePath.EndsWith(name, StringComparison.OrdinalIgnoreCase));
 
-                if (foundResource != null)
+                if (targetUri != null)
                 {
-                    using Stream stream = assembly.GetManifestResourceStream(foundResource)!;
+                    using Stream stream = AssetLoader.Open(targetUri);
                     using StreamReader reader = new(stream);
-                    profileJson = reader.ReadToEnd();
+                    profileJson = await reader.ReadToEndAsync();
 
                     App.Logger.Info($"Loading embedded preset profile {name}");
                 }
                 else
                 {
                     // Load from disk (user profiles)
-                    string BaseDir = Paths.SavedFlagProfiles;
+                    string baseDir = Paths.SavedFlagProfiles;
 
-                    if (!Directory.Exists(BaseDir))
-                        Directory.CreateDirectory(BaseDir);
+                    if (!Directory.Exists(baseDir))
+                        Directory.CreateDirectory(baseDir);
 
-                    string[] Files = Directory.GetFiles(BaseDir);
-                    string FoundFile = Files.FirstOrDefault(f => Path.GetFileName(f) == name) ?? string.Empty;
+                    string[] files = Directory.GetFiles(baseDir);
+                    string foundFile = files.FirstOrDefault(f => Path.GetFileName(f).Equals(name, StringComparison.OrdinalIgnoreCase)) ?? string.Empty;
 
-                    if (string.IsNullOrEmpty(FoundFile))
+                    if (string.IsNullOrEmpty(foundFile))
                         throw new FileNotFoundException($"Profile file '{name}' not found.");
 
-                    profileJson = File.ReadAllText(FoundFile);
+                    profileJson = await File.ReadAllTextAsync(foundFile);
 
                     App.Logger.Info($"Loading user profile from file {name}");
                 }
