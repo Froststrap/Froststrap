@@ -37,6 +37,15 @@ internal partial class App : Application
         LaunchHandler.LaunchSettings();
     }
 
+    public static bool DiagnosticsOpen;
+    private void Diagnostics_OnClick(object? sender, EventArgs e)
+    {
+        if (DiagnosticsOpen) return;
+
+        new Froststrap.UI.Elements.Diagnostics.MainWindow().Show();
+        DiagnosticsOpen = true;
+    }
+
     private const string MockReleaseTagEnvironmentVariable = "MOCK_RELEASE_TAG";
     private const string MockCurrentVersionEnvironmentVariable = "MOCK_CURRENT_VERSION";
 

@@ -29,6 +29,11 @@ SPDX-License-Identifier: MPL-2.0
                 Click="Settings_OnClick"
                 Gesture="Meta+,"
             />
+            <NativeMenuItem
+                Header="Diagnostics"
+                Click="Diagnostics_OnClick"
+                Gesture="Meta+Shift+Alt+D"
+            />
         </NativeMenu>
     </NativeMenu.Menu>
 

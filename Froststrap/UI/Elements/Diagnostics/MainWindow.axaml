@@ -1,0 +1,34 @@
+<!--
+SPDX-FileCopyrightText: 2026 Froststrap
+
+SPDX-License-Identifier: MPL-2.0
+-->
+
+<base:AvaloniaWindow xmlns="https://github.com/avaloniaui"
+                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                     xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+                     xmlns:resources="clr-namespace:Froststrap.Resources"
+                     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Diagnostics"
+                     xmlns:ui="using:FluentAvalonia.UI.Controls"
+                     xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
+                     mc:Ignorable="d"
+                     x:Class="Froststrap.UI.Elements.Diagnostics.MainWindow"
+                     x:DataType="vm:MainWindowViewModel"
+                     Title="Diagnostics"
+                     WindowDecorationsTheme="{StaticResource SettingsWindowDecorationsTheme}"
+                     MinWidth="600" Width="740" Height="520"
+                     WindowStartupLocation="CenterScreen" CanResize="True">
+    <Grid RowDefinitions="Auto,*">
+        <Panel Grid.Row="0"
+               Height="{Binding TitlebarSpaceHeight}"
+               Background="{DynamicResource ControlFillColorDefaultBrush}"
+               PointerPressed="TitleBarGrid_PointerPressed"
+               IsVisible="{Binding IsNotLinux}" />
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="20,12,20,20" Spacing="12"> 
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</base:AvaloniaWindow>
