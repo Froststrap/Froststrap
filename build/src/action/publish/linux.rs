@@ -49,6 +49,17 @@ fn build_nfpm(
         "https://github.com/goreleaser/nfpm/releases/download/v2.47.0/nfpm_2.47.0_Linux_x86_64.tar.gz", true);
 
     let binary = output_dir.join("Froststrap");
+    let libs_dir = output_dir.join("libs");
+    let native_libs = native_libraries(&libs_dir);
+
+    if native_libs.is_empty() {
+        log::error!(
+            "no native libraries found in {} - the publish step should stage them there",
+            libs_dir.display()
+        );
+        std::process::exit(1);
+    }
+
     let config = dist().join("nfpm.yaml");
     let post_install_path = dist().join("nfpm-postinstall.sh");
 
@@ -63,6 +74,7 @@ fn build_nfpm(
         &desktop,
         &post_install_path,
         &version,
+        &native_libs,
     );
 
     let mut nfpm_yaml_file = File::create(config.clone()).unwrap();
@@ -106,6 +118,20 @@ fn post_install_script() -> String {
     )
 }
 
+fn native_libraries(directory: &Path) -> Vec<PathBuf> {
+    let Ok(entries) = fs::read_dir(directory) else {
+        return Vec::new();
+    };
+
+    let mut libraries: Vec<PathBuf> = entries
+        .filter_map(|entry| entry.ok().map(|entry| entry.path()))
+        .filter(|path| path.is_file() && path.extension().is_some_and(|ext| ext == "so"))
+        .collect();
+
+    libraries.sort();
+    libraries
+}
+
 fn nfpm_config(
     arch: &str,
     binary: &Path,
@@ -113,7 +139,23 @@ fn nfpm_config(
     desktop: &Path,
     post_install: &Path,
     version: &str,
+    native_libs: &[PathBuf],
 ) -> String {
+    let mut native_contents = "              - dst: /usr/lib/froststrap\n                type: dir\n".into();
+
+    for path in native_libs {
+        let name = path
+            .file_name()
+            .map(|name| name.to_string_lossy())
+            .unwrap_or_default();
+
+        native_contents.push_str(&format!(
+            "              - src: {}\n                dst: /usr/lib/froststrap/{}\n",
+            path.to_string_lossy(),
+            name
+        ));
+    }
+
     dedent(&format!(
         r#"
             name: froststrap
@@ -148,6 +190,7 @@ fn nfpm_config(
               - src: {}
                 dst: /usr/share/applications/Froststrap.desktop
 
+{native_contents}
             scripts:
               postinstall: {}
         "#,

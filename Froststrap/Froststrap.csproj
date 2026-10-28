@@ -43,15 +43,10 @@ SPDX-License-Identifier: MPL-2.0
 
   <PropertyGroup Condition="'$(PublishAot)' == 'true'">
     <NoWarn>$(NoWarn);IL2026;IL3050;IL2070;IL2075</NoWarn>
-    <DefineConstants>$(DefineConstants);FROSTSTRAP_AOT</DefineConstants>
     <DebugType>none</DebugType>
     <DebugSymbols>false</DebugSymbols>
     <CopyOutputSymbolsToPublishDirectory>false</CopyOutputSymbolsToPublishDirectory>
     <OptimizationPreference>Size</OptimizationPreference>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <AotEmbedNativeLibraries Condition="'$(AotEmbedNativeLibraries)' == ''">true</AotEmbedNativeLibraries>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(RuntimeIdentifier)' != ''">
@@ -165,55 +160,21 @@ SPDX-License-Identifier: MPL-2.0
     </ItemGroup>
   </Target>
 
-  <Target Name="EmbedAotNativeLibraries" BeforeTargets="_GenerateCompileInputs"
-          Condition="'$(PublishAot)' == 'true' and '$(RuntimeIdentifier)' != '' and '$(AotEmbedNativeLibraries)' == 'true' and ($([MSBuild]::IsOSPlatform('Windows')) or $([MSBuild]::IsOSPlatform('Linux')))">
-  <PropertyGroup>
-      <_AotNotifyLib Condition="$([MSBuild]::IsOSPlatform('Windows'))">notify.dll</_AotNotifyLib>
-      <_AotNotifyLib Condition="$([MSBuild]::IsOSPlatform('Linux'))">libnotify.so</_AotNotifyLib>
+  <Target Name="StageNativeLibraries" AfterTargets="Publish"
+          Condition="'$(PublishAot)' == 'true' and '$(RuntimeIdentifier)' != '' and ($([MSBuild]::IsOSPlatform('Windows')) or $([MSBuild]::IsOSPlatform('Linux')))">
+    <PropertyGroup>
+      <_NativeLibraryDir>$([MSBuild]::NormalizeDirectory('$(PublishDir)', 'libs'))</_NativeLibraryDir>
     </PropertyGroup>
     <ItemGroup>
-      <_AotNativeLibrary Include="@(ReferenceCopyLocalPaths->Distinct())"
-                         Condition="'%(Filename)%(Extension)' == 'av_libglesv2.dll'
-                                    Or '%(Filename)%(Extension)' == 'libHarfBuzzSharp.dll'
-                                    Or '%(Filename)%(Extension)' == 'libSkiaSharp.dll'
-                                    Or '%(Filename)%(Extension)' == 'libHarfBuzzSharp.so'
-                                    Or '%(Filename)%(Extension)' == 'libSkiaSharp.so'" />
-      <_AotNativeLibrary Include="$(MSBuildProjectDirectory)/../backend/bin/$(Configuration)/net10.0/$(_AotNotifyLib)"
-                         Condition="Exists('$(MSBuildProjectDirectory)/../backend/bin/$(Configuration)/net10.0/$(_AotNotifyLib)')" />
-      <EmbeddedResource Include="@(_AotNativeLibrary)">
-        <LogicalName>Froststrap.Native.%(Filename)%(Extension)</LogicalName>
-        <Type>Non-Resx</Type>
-        <WithCulture>false</WithCulture>
-        <Visible>false</Visible>
-      </EmbeddedResource>
+      <_PublishNativeLibrary Include="$([MSBuild]::NormalizeDirectory('$(PublishDir)'))*.dll"
+                             Condition="$([MSBuild]::IsOSPlatform('Windows'))" />
+      <_PublishNativeLibrary Include="$([MSBuild]::NormalizeDirectory('$(PublishDir)'))*.so*"
+                             Condition="$([MSBuild]::IsOSPlatform('Linux'))" />
     </ItemGroup>
-    <GetFileHash Files="@(_AotNativeLibrary)" Algorithm="SHA256" HashEncoding="hex">
-      <Output TaskParameter="Items" ItemName="_AotNativeLibraryHashed" />
-    </GetFileHash>
-    <WriteLinesToFile File="$(IntermediateOutputPath)AotNative.manifest"
-                      Lines="@(_AotNativeLibraryHashed->'%(Filename)%(Extension)|%(FileHash)')"
-                      Overwrite="true"
-                      WriteOnlyWhenDifferent="true" />
-    <ItemGroup>
-      <EmbeddedResource Include="$(IntermediateOutputPath)AotNative.manifest">
-        <LogicalName>Froststrap.Native.manifest</LogicalName>
-        <Type>Non-Resx</Type>
-        <WithCulture>false</WithCulture>
-        <Visible>false</Visible>
-      </EmbeddedResource>
-    </ItemGroup>
-  </Target>
-
-  <Target Name="CleanAotPublishOutput" AfterTargets="Publish"
-          Condition="'$(PublishAot)' == 'true' and $([MSBuild]::IsOSPlatform('Windows'))">
-    <ItemGroup>
-      <_AotPublishKeep Include="$([MSBuild]::NormalizeDirectory('$(PublishDir)'))Froststrap.exe" />
-      <_AotPublishKeep Include="$([MSBuild]::NormalizeDirectory('$(PublishDir)'))*.dll"
-                       Condition="'$(AotEmbedNativeLibraries)' != 'true'" />
-      <_AotPublishFiles Include="$([MSBuild]::NormalizeDirectory('$(PublishDir)'))**\*" Exclude="@(_AotPublishKeep)" />
-      <_AotPublishDirectories Include="$([System.IO.Directory]::GetDirectories('$(PublishDir)'))" />
-    </ItemGroup>
-    <Delete Files="@(_AotPublishFiles)" ContinueOnError="true" />
-    <RemoveDir Directories="@(_AotPublishDirectories)" ContinueOnError="true" />
+    <Error Condition="'@(_PublishNativeLibrary)' == ''"
+           Text="No native libraries were found in $(PublishDir); cannot stage the libs folder." />
+    <RemoveDir Directories="$(_NativeLibraryDir)" />
+    <MakeDir Directories="$(_NativeLibraryDir)" />
+    <Move SourceFiles="@(_PublishNativeLibrary)" DestinationFolder="$(_NativeLibraryDir)" />
   </Target>
 </Project>

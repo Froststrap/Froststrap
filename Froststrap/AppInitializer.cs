@@ -2,11 +2,12 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-/// macOS related runtime startup, debug related stuff will mostly be logging stuff
-/// related for settings, which might if not known will make stuff not repro.
+/// Runtime startup helpers: native library resolution for every platform and
+/// macOS code-signing diagnostics.
 
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 using System.Diagnostics;
 using Froststrap;
 
@@ -174,68 +175,110 @@ internal static class AppInitializer
         }
     }
 
+    private static readonly string[] ResolverAssemblies =
+    [
+        "Froststrap",
+        "SkiaSharp",
+        "HarfBuzzSharp",
+        "Avalonia.Native",
+        "Avalonia.Win32"
+    ];
+
+    private static string[] _nativeLibraryDirectories = [];
+    private static bool _resolversInitialized;
+
+    [SupportedOSPlatform("windows")]
+    [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+    private static extern bool SetDllDirectory(string lpPathName);
+
     public static void InitializeNativeResolvers()
     {
-        if (!RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        if (_resolversInitialized)
             return;
 
-        List<Assembly> assemblies =
+        _resolversInitialized = true;
+        _nativeLibraryDirectories = GetNativeLibraryDirectories();
+
+        if (OperatingSystem.IsWindows())
+        {
+            string? libraryDirectory = _nativeLibraryDirectories.FirstOrDefault(Directory.Exists);
+
+            if (libraryDirectory is not null)
+                SetDllDirectory(libraryDirectory);
+        }
+
+        AppDomain.CurrentDomain.AssemblyLoad += static (_, args) => RegisterResolver(args.LoadedAssembly);
+
+        HashSet<Assembly> assemblies =
         [
-            typeof(Froststrap.Backend.VirtualDisplay).Assembly,
+            typeof(App).Assembly,
             typeof(SkiaSharp.SKCanvas).Assembly,
             typeof(HarfBuzzSharp.Blob).Assembly
         ];
 
-        Assembly? avaloniaNative = AppDomain.CurrentDomain.GetAssemblies()
-            .FirstOrDefault(static a => a.GetName().Name == "Avalonia.Native");
-
-        if (avaloniaNative is not null)
-            assemblies.Add(avaloniaNative);
+        assemblies.UnionWith(AppDomain.CurrentDomain.GetAssemblies());
 
         foreach (Assembly assembly in assemblies)
+            RegisterResolver(assembly);
+    }
+
+    private static string[] GetNativeLibraryDirectories()
+    {
+        string baseDirectory = AppContext.BaseDirectory;
+
+        if (OperatingSystem.IsMacOS())
         {
-            try
-            {
-                NativeLibrary.SetDllImportResolver(assembly, ResolveBundleFramework);
-            }
-            catch (InvalidOperationException)
-            {
-            }
+            return
+            [
+                Path.GetFullPath(Path.Combine(baseDirectory, "..", "Frameworks")),
+                Path.Combine(baseDirectory, "libs"),
+                baseDirectory
+            ];
+        }
+
+        if (OperatingSystem.IsLinux())
+        {
+            return
+            [
+                Path.Combine(baseDirectory, "libs"),
+                "/usr/lib/froststrap",
+                baseDirectory
+            ];
+        }
+
+        return
+        [
+            Path.Combine(baseDirectory, "libs"),
+            baseDirectory
+        ];
+    }
+
+    private static void RegisterResolver(Assembly assembly)
+    {
+        string? assemblyName = assembly.GetName().Name;
+
+        if (assemblyName is null || !ResolverAssemblies.Contains(assemblyName, StringComparer.Ordinal))
+            return;
+
+        try
+        {
+            NativeLibrary.SetDllImportResolver(assembly, ResolveNativeLibrary);
+        }
+        catch (InvalidOperationException)
+        {
         }
     }
 
-    private static IntPtr ResolveBundleFramework(
+    private static IntPtr ResolveNativeLibrary(
         string libraryName,
         Assembly assembly,
         DllImportSearchPath? searchPath)
     {
-        string baseDir = AppContext.BaseDirectory;
-
-        List<string> fileNames = [];
-
-        if (libraryName.EndsWith(".dylib", StringComparison.OrdinalIgnoreCase))
+        foreach (string fileName in GetCandidateFileNames(libraryName))
         {
-            fileNames.Add(libraryName);
-        }
-        else
-        {
-            fileNames.Add($"{libraryName}.dylib");
-
-            if (!libraryName.StartsWith("lib", StringComparison.Ordinal))
-                fileNames.Add($"lib{libraryName}.dylib");
-        }
-
-        string[] directories =
-        [
-            Path.Combine(baseDir, "..", "Frameworks"),
-            baseDir
-        ];
-
-        foreach (string directory in directories)
-        {
-            foreach (string fileName in fileNames)
+            foreach (string directory in _nativeLibraryDirectories)
             {
-                string fullPath = Path.GetFullPath(Path.Combine(directory, fileName));
+                string fullPath = Path.Combine(directory, fileName);
 
                 if (File.Exists(fullPath) && NativeLibrary.TryLoad(fullPath, out IntPtr handle))
                     return handle;
@@ -243,5 +286,25 @@ internal static class AppInitializer
         }
 
         return IntPtr.Zero;
+    }
+
+    private static IEnumerable<string> GetCandidateFileNames(string libraryName)
+    {
+        if (Path.HasExtension(libraryName))
+        {
+            yield return libraryName;
+            yield break;
+        }
+
+        string extension = OperatingSystem.IsWindows()
+            ? ".dll"
+            : OperatingSystem.IsMacOS()
+                ? ".dylib"
+                : ".so";
+
+        yield return libraryName + extension;
+
+        if (!libraryName.StartsWith("lib", StringComparison.OrdinalIgnoreCase))
+            yield return "lib" + libraryName + extension;
     }
 }
