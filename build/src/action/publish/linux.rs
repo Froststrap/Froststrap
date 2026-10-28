@@ -141,7 +141,7 @@ fn nfpm_config(
     version: &str,
     native_libs: &[PathBuf],
 ) -> String {
-    let mut native_contents = "              - dst: /usr/lib/froststrap\n                type: dir\n".into();
+    let mut native_contents = String::from("              - dst: /usr/lib/froststrap\n                type: dir\n");
 
     for path in native_libs {
         let name = path
