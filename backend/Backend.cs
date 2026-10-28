@@ -176,7 +176,7 @@ public class MobileAppReg
 internal partial class InternalOverlay
 {
     [LibraryImport("froststrap_overlay_layer", EntryPoint = "overlay_init")]
-    public static partial int Init(int processId);
+    public static partial int Init();
 
     [LibraryImport("froststrap_overlay_layer", EntryPoint = "overlay_width")]
     public static partial int Width();
@@ -214,9 +214,9 @@ public class LinuxOverlay
         public float Dy;
     }
 
-    public static bool Init(int processId)
+    public static bool Init()
     {
-        return InternalOverlay.Init(processId) == 0;
+        return InternalOverlay.Init() == 0;
     }
 
     public static (int Width, int Height) Size()

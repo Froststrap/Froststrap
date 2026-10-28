@@ -5,6 +5,7 @@ using Avalonia.Interactivity;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
+using Froststrap.Backend;
 using Froststrap.UI.Elements.Overlay.Controls;
 using System.Runtime.InteropServices;
 
@@ -12,159 +13,154 @@ namespace Froststrap.Integrations.Overlay.Platform.Linux
 {
     internal sealed class LinuxOverlayRenderer : IDisposable
     {
-        private const int MaxEvents = 64;
+        private const int MaxEvents = 32;
         private static readonly int EventSize = Marshal.SizeOf<LinuxOverlay.InputEvent>();
         private static readonly TimeSpan MinFrame = TimeSpan.FromMilliseconds(16);
         private static readonly TimeSpan IdleFrame = TimeSpan.FromMilliseconds(250);
 
-        private readonly Window _window;
-        private readonly Control _root;
-        private readonly int _surface;
-        private readonly DispatcherTimer _timer;
-        private readonly IntPtr _eventBuffer = Marshal.AllocHGlobal(EventSize * MaxEvents);
-        private readonly Pointer _pointer = new(Pointer.GetNextFreeId(), PointerType.Mouse, true);
+        private readonly Control root;
+        private readonly DispatcherTimer timer;
+        private readonly IntPtr eventBuffer = Marshal.AllocHGlobal(EventSize * MaxEvents);
+        private readonly Pointer pointer = new(Pointer.GetNextFreeId(), PointerType.Mouse, true);
 
-        private RenderTargetBitmap? _bitmap;
-        private IntPtr _buffer;
-        private int _bufferSize;
-        private int _width;
-        private int _height;
-        private int _scale = 1;
-        private string _regionSignature = "";
-        private bool _dirty = true;
-        private DateTime _lastRender = DateTime.MinValue;
+        private RenderTargetBitmap? bitmap;
+        private IntPtr buffer;
+        private int bufferSize;
+        private int width;
+        private int height;
+        private string regionSignature = "";
+        private bool dirty = true;
+        private DateTime lastRender = DateTime.MinValue;
 
-        private IInputElement? _pressed;
-        private Button? _pressedButton;
-        private IInputElement? _focused;
+        private IInputElement? pressed;
+        private Button? pressedButton;
 
-        internal LinuxOverlayRenderer(Window window, Control content, int surface)
+        public LinuxOverlayRenderer(Control content)
         {
-            _window = window;
-            _root = content;
-            _surface = surface;
-            _timer = new DispatcherTimer(TimeSpan.FromMilliseconds(8), DispatcherPriority.Input, (_, _) => Tick());
+            root = content;
+            timer = new DispatcherTimer(TimeSpan.FromMilliseconds(8), DispatcherPriority.Input, (_, _) => Tick());
         }
 
-        internal void Start()
+        public void Start()
         {
-            _timer.Start();
+            timer.Start();
             Tick();
         }
 
         public void Dispose()
         {
-            _timer.Stop();
-            _bitmap?.Dispose();
-            _bitmap = null;
+            timer.Stop();
+            bitmap?.Dispose();
+            bitmap = null;
 
-            if (_buffer != IntPtr.Zero)
+            if (buffer != IntPtr.Zero)
             {
-                Marshal.FreeHGlobal(_buffer);
-                _buffer = IntPtr.Zero;
+                Marshal.FreeHGlobal(buffer);
+                buffer = IntPtr.Zero;
             }
 
-            Marshal.FreeHGlobal(_eventBuffer);
-            _pointer.Dispose();
+            Marshal.FreeHGlobal(eventBuffer);
+            pointer.Dispose();
         }
 
         private void Tick()
         {
             PollInput();
 
-            var (w, h) = LinuxOverlay.Size(_surface);
-
+            var (w, h) = LinuxOverlay.Size();
             if (w <= 0 || h <= 0)
-                return;
-
-            var now = DateTime.UtcNow;
-            var sinceRender = now - _lastRender;
-
-            int scale = Math.Max(1, LinuxOverlay.Scale(_surface));
-
-            if (w != _width || h != _height || scale != _scale)
             {
-                Resize(w, h, scale);
-                _dirty = true;
+                return;
             }
 
-            if (!(_dirty && sinceRender >= MinFrame) && sinceRender < IdleFrame)
-                return;
+            var now = DateTime.UtcNow;
+            var sinceRender = now - lastRender;
 
-            _dirty = false;
-            _lastRender = now;
+            if (w != width || h != height)
+            {
+                Resize(w, h);
+                dirty = true;
+            }
+
+            if (!(dirty && sinceRender >= MinFrame) && sinceRender < IdleFrame)
+            {
+                return;
+            }
+
+            dirty = false;
+            lastRender = now;
             Render();
             UpdateRegions();
         }
 
-        private void Resize(int w, int h, int scale)
+        private void Resize(int w, int h)
         {
-            _bitmap?.Dispose();
+            bitmap?.Dispose();
 
-            if (_buffer != IntPtr.Zero)
-                Marshal.FreeHGlobal(_buffer);
+            if (buffer != IntPtr.Zero)
+            {
+                Marshal.FreeHGlobal(buffer);
+            }
 
-            _width = w;
-            _height = h;
-            _scale = scale;
-
-            int pixelWidth = w * scale;
-            int pixelHeight = h * scale;
-
-            _bufferSize = pixelWidth * pixelHeight * 4;
-            _buffer = Marshal.AllocHGlobal(_bufferSize);
-            _bitmap = new RenderTargetBitmap(
-                new PixelSize(pixelWidth, pixelHeight),
-                new Vector(96 * scale, 96 * scale));
+            width = w;
+            height = h;
+            bufferSize = w * h * 4;
+            buffer = Marshal.AllocHGlobal(bufferSize);
+            bitmap = new RenderTargetBitmap(new PixelSize(w, h), new Vector(96, 96));
         }
 
         private void Render()
         {
-            if (_bitmap is null)
+            if (bitmap is null)
+            {
                 return;
+            }
 
-            _root.InvalidateMeasure();
-            _root.Measure(new Size(_width, _height));
-            _root.Arrange(new Rect(0, 0, _width, _height));
+            root.InvalidateMeasure();
+            root.Measure(new Size(width, height));
+            root.Arrange(new Rect(0, 0, width, height));
 
             foreach (var panel in Panels())
             {
                 if (!panel.IsVisible || double.IsNaN(panel.Width) || double.IsNaN(panel.Height))
+                {
                     continue;
+                }
 
                 panel.InvalidateMeasure();
                 panel.Measure(new Size(panel.Width, panel.Height));
                 panel.Arrange(new Rect(Canvas.GetLeft(panel), Canvas.GetTop(panel), panel.Width, panel.Height));
             }
 
-            _bitmap.Render(_root);
+            bitmap.Render(root);
 
-            int pixelWidth = _width * _scale;
-            int pixelHeight = _height * _scale;
-            var stride = pixelWidth * 4;
-            _bitmap.CopyPixels(new PixelRect(0, 0, pixelWidth, pixelHeight), _buffer, _bufferSize, stride);
-            LinuxOverlay.Submit(_surface, _buffer, pixelWidth, pixelHeight, stride);
+            var stride = width * 4;
+            bitmap.CopyPixels(new PixelRect(0, 0, width, height), buffer, bufferSize, stride);
+            LinuxOverlay.Submit(buffer, width, height, stride);
         }
 
-        private IEnumerable<OverlayPanel> Panels() => _root.GetVisualDescendants().OfType<OverlayPanel>();
+        private IEnumerable<OverlayPanel> Panels() => root.GetVisualDescendants().OfType<OverlayPanel>();
 
         private void UpdateRegions()
         {
-            if (_surface != LinuxOverlay.SurfaceGame)
-                return;
-
             List<int> rects = [];
 
-            foreach (var control in _root.GetVisualDescendants().OfType<Control>())
+            foreach (var control in root.GetVisualDescendants().OfType<Control>())
             {
                 if (control.Name != "ChromeDock" && control is not OverlayPanel)
+                {
                     continue;
+                }
 
                 if (!Shown(control) || control.Bounds.Width <= 0 || control.Bounds.Height <= 0)
+                {
                     continue;
+                }
 
-                if (control.TranslatePoint(default, _root) is not { } origin)
+                if (control.TranslatePoint(default, root) is not { } origin)
+                {
                     continue;
+                }
 
                 rects.Add((int)origin.X);
                 rects.Add((int)origin.Y);
@@ -173,12 +169,13 @@ namespace Froststrap.Integrations.Overlay.Platform.Linux
             }
 
             var signature = string.Join(',', rects);
-
-            if (signature == _regionSignature)
+            if (signature == regionSignature)
+            {
                 return;
+            }
 
-            _regionSignature = signature;
-            LinuxOverlay.SetInputRegion(_surface, [.. rects]);
+            regionSignature = signature;
+            LinuxOverlay.SetRegions([.. rects]);
         }
 
         private bool Shown(Visual visual)
@@ -186,10 +183,14 @@ namespace Froststrap.Integrations.Overlay.Platform.Linux
             for (Visual? current = visual; current is not null; current = current.GetVisualParent())
             {
                 if (!current.IsVisible)
+                {
                     return false;
+                }
 
-                if (ReferenceEquals(current, _root))
+                if (ReferenceEquals(current, root))
+                {
                     return true;
+                }
             }
 
             return true;
@@ -197,18 +198,19 @@ namespace Froststrap.Integrations.Overlay.Platform.Linux
 
         private void PollInput()
         {
-            int count = LinuxOverlay.PollInput(_eventBuffer, MaxEvents);
-
+            int count = LinuxOverlay.PollInput(eventBuffer, MaxEvents);
             if (count <= 0)
+            {
                 return;
+            }
 
             LinuxOverlay.InputEvent? lastMove = null;
 
             for (int i = 0; i < count; i++)
             {
-                var e = Marshal.PtrToStructure<LinuxOverlay.InputEvent>(_eventBuffer + i * EventSize);
+                var e = Marshal.PtrToStructure<LinuxOverlay.InputEvent>(eventBuffer + i * EventSize);
 
-                if (e.Kind == LinuxOverlay.KindMotion)
+                if (e.Kind == 2)
                 {
                     lastMove = e;
                     continue;
@@ -220,164 +222,110 @@ namespace Froststrap.Integrations.Overlay.Platform.Linux
                     lastMove = null;
                 }
 
-                switch (e.Kind)
+                if (e.Kind == 3)
                 {
-                    case LinuxOverlay.KindButtonDown: Press(e); break;
-                    case LinuxOverlay.KindButtonUp: Release(e); break;
-                    case LinuxOverlay.KindKeyDown: HandleKey(e); break;
-                    case LinuxOverlay.KindText: HandleText(e); break;
+                    Press(e);
+                }
+                else if (e.Kind == 4)
+                {
+                    Release(e);
                 }
             }
 
             if (lastMove is { } tail)
+            {
                 Move(tail);
+            }
 
-            _dirty = true;
+            dirty = true;
         }
-
-        internal void HandleKey(LinuxOverlay.InputEvent e)
-        {
-            if (e.Kind != LinuxOverlay.KindKeyDown)
-                return;
-
-            var target = _focused ?? _pressed;
-
-            if (target is null)
-                return;
-
-            Key key = KeysymToKey(e.Keysym);
-
-            if (key == Key.None)
-                return;
-
-            var args = new KeyEventArgs
-            {
-                RoutedEvent = InputElement.KeyDownEvent,
-                Key = key,
-                Source = target
-            };
-
-            (target as InputElement)?.RaiseEvent(args);
-            _dirty = true;
-        }
-
-        internal void HandleText(LinuxOverlay.InputEvent e)
-        {
-            if (e.Text is null)
-                return;
-
-            int len = Array.IndexOf(e.Text, (byte)0);
-
-            if (len <= 0)
-                len = e.Text.Length;
-
-            string text = System.Text.Encoding.UTF8.GetString(e.Text, 0, len);
-
-            if (string.IsNullOrEmpty(text))
-                return;
-
-            var target = _focused ?? _pressed;
-
-            if (target is null)
-                return;
-
-            var args = new TextInputEventArgs
-            {
-                RoutedEvent = InputElement.TextInputEvent,
-                Text = text,
-                Source = target
-            };
-
-            (target as InputElement)?.RaiseEvent(args);
-            _dirty = true;
-        }
-
-        private static Key KeysymToKey(uint keysym) => keysym switch
-        {
-            0xFF08 => Key.Back, 0xFF09 => Key.Tab, 0xFF0D => Key.Enter,
-            0xFF1B => Key.Escape, 0xFF51 => Key.Left, 0xFF52 => Key.Up,
-            0xFF53 => Key.Right, 0xFF54 => Key.Down, 0xFF50 => Key.Home,
-            0xFF57 => Key.End, 0xFFFF => Key.Delete, 0x20 => Key.Space,
-            _ => Key.None
-        };
 
         private static ulong Timestamp() => (ulong)Environment.TickCount64;
 
         private void Move(LinuxOverlay.InputEvent e)
         {
             var point = new Point(e.X, e.Y);
-            var target = _pointer.Captured ?? _pressed ?? HitTest(point);
-
+            var target = pointer.Captured ?? pressed ?? HitTest(point);
             if (target is null)
+            {
                 return;
+            }
 
             var props = new PointerPointProperties(RawInputModifiers.None, PointerUpdateKind.Other);
-            target.RaiseEvent(new PointerEventArgs(
-                InputElement.PointerMovedEvent, target, _pointer, _root,
-                point, Timestamp(), props, KeyModifiers.None));
+            target.RaiseEvent(new PointerEventArgs(InputElement.PointerMovedEvent, target, pointer, root, point, Timestamp(), props, KeyModifiers.None));
         }
 
         private void Press(LinuxOverlay.InputEvent e)
         {
-            if (_pressed is not null)
+            if (pressed is not null)
+            {
                 return;
+            }
 
             var point = new Point(e.X, e.Y);
-
             if (HitTest(point) is not { } target)
+            {
                 return;
+            }
 
-            _pressed = target;
-            _focused = target;
-            _pressedButton = AncestorButton(target);
+            pressed = target;
+            pressedButton = AncestorButton(target);
 
-            if (_pressedButton is not null)
+            if (pressedButton is not null)
+            {
                 return;
+            }
 
             (target as InputElement)?.Focus();
 
             var props = new PointerPointProperties(RawInputModifiers.LeftMouseButton, PointerUpdateKind.LeftButtonPressed);
-            target.RaiseEvent(new PointerPressedEventArgs(
-                target, _pointer, _root, point, Timestamp(), props, KeyModifiers.None));
+            target.RaiseEvent(new PointerPressedEventArgs(target, pointer, root, point, Timestamp(), props, KeyModifiers.None));
         }
 
         private void Release(LinuxOverlay.InputEvent e)
         {
-            if (_pressed is null)
+            if (pressed is null)
+            {
                 return;
+            }
 
             var point = new Point(e.X, e.Y);
-            var target = _pointer.Captured ?? _pressed;
-            var button = _pressedButton;
+            var target = pointer.Captured ?? pressed;
+            var button = pressedButton;
 
-            _pressed = null;
-            _pressedButton = null;
+            pressed = null;
+            pressedButton = null;
 
             if (button is not null)
             {
-                _pointer.Capture(null);
+                pointer.Capture(null);
 
                 if (AncestorButton(HitTest(point)) == button)
+                {
                     Invoke(button);
+                }
 
                 return;
             }
 
             var props = new PointerPointProperties(RawInputModifiers.None, PointerUpdateKind.LeftButtonReleased);
-            target.RaiseEvent(new PointerReleasedEventArgs(
-                target, _pointer, _root, point, Timestamp(), props, KeyModifiers.None, MouseButton.Left));
-            _pointer.Capture(null);
+            target.RaiseEvent(new PointerReleasedEventArgs(target, pointer, root, point, Timestamp(), props, KeyModifiers.None, MouseButton.Left));
+            pointer.Capture(null);
         }
 
         private static void Invoke(Button button)
         {
             if (!button.IsEffectivelyEnabled)
+            {
                 return;
+            }
 
             if (button.Command is { } command)
             {
                 if (command.CanExecute(button.CommandParameter))
+                {
                     command.Execute(button.CommandParameter);
+                }
 
                 return;
             }
@@ -388,26 +336,34 @@ namespace Froststrap.Integrations.Overlay.Platform.Linux
         private static Button? AncestorButton(IInputElement? element) =>
             (element as Visual)?.GetSelfAndVisualAncestors().OfType<Button>().FirstOrDefault();
 
-        private Control? HitTest(Point point) => Probe(_root, point);
+        private Control? HitTest(Point point) => Probe(root, point);
 
         private Control? Probe(Visual visual, Point point)
         {
             if (visual is not Control control || !control.IsVisible || !control.IsHitTestVisible || !control.IsEffectivelyEnabled)
+            {
                 return null;
+            }
 
-            if (control.TranslatePoint(default, _root) is not { } origin)
+            if (control.TranslatePoint(default, root) is not { } origin)
+            {
                 return null;
+            }
 
             var local = point - origin;
             var inside = new Rect(control.Bounds.Size).Contains(new Point(local.X, local.Y));
 
             if (!inside && control.ClipToBounds)
+            {
                 return null;
+            }
 
             foreach (var child in control.GetVisualChildren().Reverse())
             {
                 if (Probe(child, point) is { } hit)
+                {
                     return hit;
+                }
             }
 
             return inside && Solid(control) ? control : null;
@@ -418,7 +374,7 @@ namespace Froststrap.Integrations.Overlay.Platform.Linux
             Panel panel => panel.Background is not null,
             Border border => border.Background is not null,
             Avalonia.Controls.Presenters.ContentPresenter presenter => presenter.Background is not null,
-            _ => true
+                _ => true
         };
     }
 }

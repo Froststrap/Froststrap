@@ -10,12 +10,3 @@ crate-type = ["cdylib", "rlib"]
 [dependencies]
 smithay-client-toolkit = "0.19"
 tinyjson = "2.5.1"
-x11-dl = "2.21.0"
-libc = "0.2"
-wayland-client = "0.31"
-wayland-protocols-wlr = { version = "0.3", features = ["client"] }
-evdev = "0.12"
-ashpd = { version = "0.9", default-features = false, features = ["tokio"] }
-tokio = { version = "1", features = ["rt", "rt-multi-thread", "macros", "sync", "time"] }
-zbus = { version = "4", default-features = false, features = ["blocking"] }
-futures-lite = "2"
