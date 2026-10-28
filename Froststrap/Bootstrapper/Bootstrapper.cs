@@ -49,8 +49,8 @@ internal partial class Bootstrapper : IDisposable
     private readonly GameJoinData _joinData = null!;
 
     private static bool AutomaticallyUpdateSober => OperatingSystem.IsLinux() && !App.UseRosemary && App.Settings.Prop.AutomaticallyUpdateSober;
-    private bool UseRosemary => OperatingSystem.IsLinux() && !IsStudioLaunch && App.UseRosemary;
-    private bool UsesMacBuild => OperatingSystem.IsMacOS() || UseRosemary;
+    private static bool UseRosemary => OperatingSystem.IsLinux() && App.UseRosemary;
+    private static bool UsesMacBuild => OperatingSystem.IsMacOS() || UseRosemary;
     private string CurrentDirectory => _latestVersionDirectory ?? AppData.Directory;
 
     private bool MustUpgrade => App.LaunchSettings.ForceFlag.Active
@@ -386,17 +386,13 @@ internal partial class Bootstrapper : IDisposable
                 else if (!allModificationsApplied)
                     Backend.NativeNotify.SendMessage(Strings.Bootstrapper_ModificationsFailed_Title, Strings.Bootstrapper_ModificationsFailed_Message);
 
-                if (!OperatingSystem.IsLinux())
+                if (!OperatingSystem.IsLinux() || UseRosemary)
                 {
                     await StartRoblox();
                 }
                 else if (IsStudioLaunch)
                 {
                     await LaunchStudioViaWineAsync();
-                }
-                else if (UseRosemary)
-                {
-                    await StartRoblox();
                 }
                 else
                 {
@@ -980,59 +976,76 @@ internal partial class Bootstrapper : IDisposable
         App.Logger.Info($"Resolved Roblox path: {expectedPath}");
 
         string launchArguments = _launchCommandLine;
-        ProcessStartInfo startInfo = null!;
+        ProcessStartInfo startInfo;
 
+        string? rosemaryPath = null;
         if (UseRosemary)
         {
-            var locator = new RosemaryLocator(App.HttpClient);
-            string? rosemaryPath = await locator.ResolveAsync(
-                async () => await Frontend.ShowMessageBox(Strings.Rosemary_DownloadPrompt, MessageBoxImage.Question, MessageBoxButton.YesNo) == MessageBoxResult.Yes,
-                async (current, total) =>
-                {
-                    if (total > 0)
-                        SetStatus(string.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_Status_DownloadingPackages, FormatBytes(current), FormatBytes(total)));
-                    await Task.CompletedTask;
-                });
+            var manager = new RosemaryManager(App.HttpClient);
+            rosemaryPath = await manager.EnsureAsync(async (current, total) =>
+            {
+                if (total > 0)
+                    SetStatus(string.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_Status_DownloadingRosemaryProgress, FormatBytes(current), FormatBytes(total)));
+                else
+                    SetStatus(Strings.Bootstrapper_Status_DownloadingRosemary);
+                await Task.CompletedTask;
+            });
 
             if (rosemaryPath is null)
             {
                 await Frontend.ShowMessageBox(Strings.Rosemary_DownloadFailed, MessageBoxImage.Error);
                 return;
             }
-
-            startInfo = new ProcessStartInfo
-            {
-                FileName = rosemaryPath,
-                WorkingDirectory = AppData.Directory,
-                UseShellExecute = false
-            };
-            startInfo.ArgumentList.Add(Path.Combine(expectedPath, "Contents", "MacOS", "RobloxPlayer"));
-            if (!string.IsNullOrWhiteSpace(_launchCommandLine))
-                startInfo.ArgumentList.Add(_launchCommandLine.Trim());
         }
-        else if (OperatingSystem.IsMacOS())
+
+        if (OperatingSystem.IsMacOS() || UseRosemary)
         {
             string launch = _launchCommandLine.Trim();
 
             if (launch.Length == 0 && !IsStudioLaunch)
                 launch = "roblox-player:";
 
-            if (launch.Length == 0)
+            if (UseRosemary)
             {
-                launchArguments = $"-n \"{expectedPath}\"";
-            }
-            else if (launch.StartsWith('-'))
-            {
-                launchArguments = $"-n \"{expectedPath}\" --args {launch}";
+                startInfo = new ProcessStartInfo
+                {
+                    FileName = rosemaryPath!,
+                    WorkingDirectory = AppData.Directory,
+                    UseShellExecute = false
+                };
+                startInfo.EnvironmentVariables["ROSEMARY_PREFIX"] = RosemaryData.PrefixDirectory;
+                startInfo.EnvironmentVariables["ROSEMARY_PREFIX_SETUP"] = "download";
+                startInfo.ArgumentList.Add(expectedPath);
+
+                foreach (string argument in SplitArguments(launch))
+                    startInfo.ArgumentList.Add(argument);
             }
             else
             {
-                App.Logger.Info("Delivering the launch url to Roblox through Launch Services");
-                string safeUrl = launch.Replace("\"", "%22", StringComparison.Ordinal);
-                launchArguments = $"-n -a \"{expectedPath}\" \"{safeUrl}\"";
+                if (launch.Length == 0)
+                {
+                    launchArguments = $"-n \"{expectedPath}\"";
+                }
+                else if (launch.StartsWith('-'))
+                {
+                    launchArguments = $"-n \"{expectedPath}\" --args {launch}";
+                }
+                else
+                {
+                    App.Logger.Info("Delivering the launch url to Roblox through Launch Services");
+                    string safeUrl = launch.Replace("\"", "%22", StringComparison.Ordinal);
+                    launchArguments = $"-n -a \"{expectedPath}\" \"{safeUrl}\"";
+                }
+
+                startInfo = new ProcessStartInfo
+                {
+                    FileName = "open",
+                    Arguments = launchArguments,
+                    WorkingDirectory = AppData.Directory,
+                    UseShellExecute = true
+                };
             }
         }
-
         else
         {
             startInfo = new ProcessStartInfo
@@ -1129,6 +1142,40 @@ internal partial class Bootstrapper : IDisposable
 
         // allow for window to show, since the log is created pretty far beforehand
         await Task.Delay(1000);
+    }
+
+    private static List<string> SplitArguments(string commandLine)
+    {
+        var arguments = new List<string>();
+        var current = new System.Text.StringBuilder();
+        bool inQuotes = false;
+
+        foreach (char character in commandLine)
+        {
+            if (character == '"')
+            {
+                inQuotes = !inQuotes;
+                continue;
+            }
+
+            if (char.IsWhiteSpace(character) && !inQuotes)
+            {
+                if (current.Length > 0)
+                {
+                    arguments.Add(current.ToString());
+                    current.Clear();
+                }
+
+                continue;
+            }
+
+            current.Append(character);
+        }
+
+        if (current.Length > 0)
+            arguments.Add(current.ToString());
+
+        return arguments;
     }
 
     private async Task LaunchViaSober(List<int> autoclosePids)
@@ -1696,9 +1743,12 @@ internal partial class Bootstrapper : IDisposable
     private static void KillRobloxPlayers()
     {
         var processesToKill = new List<Process>();
-        string playerProcessName = OperatingSystem.IsMacOS() ? "RobloxPlayer" : "RobloxPlayerBeta";
+        string playerProcessName = OperatingSystem.IsMacOS() || App.UseRosemary ? "RobloxPlayer" : "RobloxPlayerBeta";
         processesToKill.AddRange(Process.GetProcessesByName(playerProcessName));
         processesToKill.AddRange(Process.GetProcessesByName("RobloxCrashHandler"));
+
+        if (App.UseRosemary)
+            processesToKill.AddRange(Process.GetProcessesByName("rosemary"));
 
         foreach (Process process in processesToKill)
         {
@@ -1905,7 +1955,7 @@ internal partial class Bootstrapper : IDisposable
             }
         }
 
-        if (OperatingSystem.IsMacOS())
+        if (UsesMacBuild)
         {
             string[] appNames = ["RobloxPlayer.app", "RobloxStudio.app"];
             foreach (string appName in appNames)
@@ -1922,8 +1972,12 @@ internal partial class Bootstrapper : IDisposable
                         fileInfo.UnixFileMode |= UnixFileMode.UserExecute | UnixFileMode.GroupExecute | UnixFileMode.OtherExecute;
                     }
                 }
-                using var process = Process.Start("xattr", $"-dr com.apple.quarantine \"{appPath}\"");
-                await process!.WaitForExitAsync();
+
+                if (OperatingSystem.IsMacOS())
+                {
+                    using var process = Process.Start("xattr", $"-dr com.apple.quarantine \"{appPath}\"");
+                    await process!.WaitForExitAsync();
+                }
             }
         }
 
@@ -1931,6 +1985,7 @@ internal partial class Bootstrapper : IDisposable
         MigrateCompatibilityFlags();
 
         AppData.DistributionState.VersionGuid = _latestVersionGuid;
+        AppData.DistributionState.Version = _latestVersion?.ToString() ?? string.Empty;
 
         AppData.DistributionState.PackageHashes.Clear();
 
@@ -3768,7 +3823,7 @@ internal partial class Bootstrapper : IDisposable
 
                 App.Logger.Info($"Extracting {package.Name} (Attempt {attempts}/{maxAttempts})...");
 
-                if (OperatingSystem.IsLinux() && IsStudioLaunch)
+                if (OperatingSystem.IsLinux() && IsStudioLaunch && !UseRosemary)
                 {
                     await ExtractZipLinux(package.DownloadPath, targetFolder, fileFilter, _cancelTokenSource.Token);
                 }

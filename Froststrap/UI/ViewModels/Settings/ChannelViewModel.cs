@@ -36,30 +36,28 @@ namespace Froststrap.UI.ViewModels.Settings
         private void RuntimeChanged(object? sender, EventArgs e)
         {
             OnPropertyChanged(nameof(IsSoberRuntime));
-            OnPropertyChanged(nameof(UseRosemary));
+            OnPropertyChanged(nameof(SelectedPlayerRuntime));
+            OnPropertyChanged(nameof(IsRobloxInstallationMissing));
+            OnPropertyChanged(nameof(UpdateRoblox));
+            OnPropertyChanged(nameof(ForceRobloxReinstallation));
+
+            _ = LoadChannelDeployInfo(App.Settings.Prop.PlayerChannel, false);
+            _ = LoadChannelDeployInfo(App.Settings.Prop.StudioChannel, true);
         }
 
-        public static bool UseRosemary
+        public IEnumerable<PlayerRuntime> PlayerRuntimeOptions { get; } = Enum.GetValues<PlayerRuntime>();
+
+        public static PlayerRuntime SelectedPlayerRuntime
         {
-            get => App.Settings.Prop.UseRosemary;
+            get => App.Settings.Prop.PlayerRuntime;
             set
             {
-                if (App.Settings.Prop.UseRosemary == value)
+                if (App.Settings.Prop.PlayerRuntime == value)
                     return;
 
-                App.Settings.Prop.UseRosemary = value;
+                App.Settings.Prop.PlayerRuntime = value;
                 App.Settings.Save();
                 App.NotifyRuntimeChanged();
-            }
-        }
-
-        public static string RosemaryExecutablePath
-        {
-            get => App.Settings.Prop.RosemaryExecutablePath;
-            set
-            {
-                App.Settings.Prop.RosemaryExecutablePath = value;
-                App.Settings.Save();
             }
         }
 
@@ -269,7 +267,7 @@ namespace Froststrap.UI.ViewModels.Settings
             get
             {
                 if (OperatingSystem.IsLinux())
-                    return !App.LinuxPlayerInstalled;
+                    return !App.LinuxPlayerInstalled && !App.IsStudioInstalled;
                 return !App.IsPlayerInstalled && !App.IsStudioInstalled;
             }
         }
@@ -325,9 +323,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
                 if (token.IsCancellationRequested) return;
 
-                string binaryType = isStudio
-                    ? (OperatingSystem.IsMacOS() ? "MacStudio" : "WindowsStudio64")
-                    : (OperatingSystem.IsMacOS() ? "MacPlayer" : "WindowsPlayer");
+                string binaryType = GetBinaryType(isStudio);
 
                 bool isPrivate = await Deployment.IsChannelPrivate(channel);
                 if (token.IsCancellationRequested) return;
@@ -459,7 +455,7 @@ namespace Froststrap.UI.ViewModels.Settings
             set => App.Settings.Prop.AutomaticallyUpdateSober = value;
         }
 
-        public static bool IsSoberRuntime => !App.UseRosemary;
+        public static bool IsSoberRuntime => OperatingSystem.IsLinux() && !App.UseRosemary;
 
         public static int MaxThreadDownload
         {
@@ -549,6 +545,8 @@ namespace Froststrap.UI.ViewModels.Settings
             OnPropertyChanged(nameof(ForceRobloxReinstallation));
             OnPropertyChanged(nameof(UpdateRoblox));
             OnPropertyChanged(nameof(AutomaticallyUpdateSober));
+            OnPropertyChanged(nameof(IsSoberRuntime));
+            OnPropertyChanged(nameof(SelectedPlayerRuntime));
             OnPropertyChanged(nameof(StaticDirectory));
             OnPropertyChanged(nameof(TestModeEnabled));
             OnPropertyChanged(nameof(IsRobloxInstallationMissing));
@@ -735,7 +733,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
                 string resourceUrl;
 
-                if (OperatingSystem.IsMacOS())
+                if (OperatingSystem.IsMacOS() || App.UseRosemary)
                 {
                     if (string.IsNullOrEmpty(binaryType))
                         return (false, "Binary type is required for macOS validation.");
@@ -798,7 +796,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private static string GetBinaryType(bool isStudio)
         {
-            if (OperatingSystem.IsMacOS())
+            if (OperatingSystem.IsMacOS() || App.UseRosemary)
                 return isStudio ? "MacStudio" : "MacPlayer";
             else
                 return isStudio ? "WindowsStudio64" : "WindowsPlayer";
@@ -880,6 +878,8 @@ namespace Froststrap.UI.ViewModels.Settings
 
             if (disposing)
             {
+                App.RuntimeChanged -= RuntimeChanged;
+
                 _playerCts?.Cancel();
                 _playerCts?.Dispose();
                 _playerCts = null;

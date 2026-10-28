@@ -188,12 +188,12 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 foreach (RenderingMode mode in Enum.GetValues<RenderingMode>())
                 {
-                    if (mode == RenderingMode.Direct3D && !OperatingSystem.IsMacOS())
+                    if (mode == RenderingMode.Direct3D && !(OperatingSystem.IsMacOS() || App.UseRosemary))
                         continue;
 
                     string display = mode switch
                     {
-                        RenderingMode.Default when OperatingSystem.IsMacOS() => Strings.Enums_RenderingMode_DefaultMetal,
+                        RenderingMode.Default when OperatingSystem.IsMacOS() || App.UseRosemary => Strings.Enums_RenderingMode_DefaultMetal,
                         RenderingMode.Default => Strings.Enums_RenderingMode_DefaultDirect,
                         RenderingMode.Direct3D => Strings.Enums_FlagPresets_RenderingMode_Direct3D,
                         _ => mode.ToString()

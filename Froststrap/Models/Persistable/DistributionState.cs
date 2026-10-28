@@ -8,6 +8,8 @@ namespace Froststrap.Models.Persistable
     {
         public string VersionGuid { get; set; } = string.Empty;
 
+        public string Version { get; set; } = string.Empty;
+
         public Dictionary<string, string> PackageHashes { get; set; } = [];
 
         public List<string> ModManifest { get; set; } = [];

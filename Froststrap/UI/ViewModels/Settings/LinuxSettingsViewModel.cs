@@ -12,6 +12,8 @@ namespace Froststrap.UI.ViewModels.Settings
     {
         public static bool SoberEnabled => OperatingSystem.IsLinux() && !App.UseRosemary && App.SoberSettings.Loaded;
 
+        public static bool WineStudioEnabled => OperatingSystem.IsLinux() && !App.UseRosemary;
+
         public LinuxSettingsViewModel()
         {
             StudioEnvEntries = [];
@@ -110,7 +112,7 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             get
             {
-                if (!OperatingSystem.IsLinux()) return false;
+                if (!OperatingSystem.IsLinux() || App.UseRosemary) return false;
                 string baseWineDir = Path.Combine(Paths.Base, "Wine");
                 string wineBinary = Path.Combine(baseWineDir, "kombucha", "bin", "wine");
                 if (!File.Exists(wineBinary)) return false;

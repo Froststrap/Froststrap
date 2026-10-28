@@ -12,7 +12,7 @@ internal class Updater
 {
     public static async Task RunMigrations(string? previousVersion = null)
     {
-        if (OperatingSystem.IsLinux())
+        if (OperatingSystem.IsLinux() && !App.UseRosemary)
             SetupSoberSymlink();
 
         string currentVer = App.InternalVersion;

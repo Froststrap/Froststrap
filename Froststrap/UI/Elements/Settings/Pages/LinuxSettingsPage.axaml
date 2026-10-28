@@ -54,7 +54,7 @@ SPDX-License-Identifier: MPL-2.0
 
             <Separator Margin="0,8,0,4" IsVisible="{Binding SoberEnabled}" />
 
-            <TextBlock Margin="0,8,0,0" IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
+            <TextBlock Margin="0,8,0,0" IsVisible="{Binding WineStudioEnabled}"
                        FontSize="20"
                        FontWeight="Bold"
                        Text="{x:Static resources:Strings.Common_Studio}" />
@@ -65,13 +65,13 @@ SPDX-License-Identifier: MPL-2.0
                 Command="{Binding OpenWineCfgCommand}"
                 IsVisible="{Binding IsWineAvailable}"/>
 
-            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
+            <controls:OptionControl IsVisible="{Binding WineStudioEnabled}"
                                     Header="{x:Static resources:Strings.Menu_LinuxSettings_WebPages_Title}"
                                     Description="{x:Static resources:Strings.Menu_LinuxSettings_WebPages_Description}">
                 <ToggleSwitch IsChecked="{Binding EnableWebView2, Mode=TwoWay}" />
             </controls:OptionControl>
 
-            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
+            <controls:OptionControl IsVisible="{Binding WineStudioEnabled}"
                                     Header="{x:Static resources:Strings.Menu_LinuxSettings_GraphicsRenderer_Title}"
                                     Description="{x:Static resources:Strings.Menu_LinuxSettings_GraphicsRenderer_Description}">
                 <ComboBox Width="200"
@@ -79,7 +79,7 @@ SPDX-License-Identifier: MPL-2.0
                           SelectedItem="{Binding SelectedStudioRenderer, Mode=TwoWay}" />
             </controls:OptionControl>
 
-            <controls:CardExpander IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
+            <controls:CardExpander IsVisible="{Binding WineStudioEnabled}"
                                    Header="{x:Static resources:Strings.Menu_LinuxSettings_VirtualDesktops_Title}" Classes="NoUserExpansion"
                                    Description="{x:Static resources:Strings.Menu_LinuxSettings_VirtualDesktops_Description}" IsExpanded="{Binding VirtualDesktopEnabled, Mode=OneWay}">
                 <controls:CardExpander.HeaderContent>
@@ -92,25 +92,25 @@ SPDX-License-Identifier: MPL-2.0
                 </StackPanel>
             </controls:CardExpander>
 
-            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
+            <controls:OptionControl IsVisible="{Binding WineStudioEnabled}"
                                     Header="{x:Static resources:Strings.Menu_LinuxSettings_LauncherCommand_Title}"
                                     Description="{x:Static resources:Strings.Menu_LinuxSettings_LauncherCommand_Description}">
                 <TextBox Text="{Binding StudioLauncher, Mode=TwoWay}" PlaceholderText="{x:Static resources:Strings.Menu_LinuxSettings_LauncherPlaceholder}" />
             </controls:OptionControl>
 
-            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
+            <controls:OptionControl IsVisible="{Binding WineStudioEnabled}"
                                     Header="{x:Static resources:Strings.Menu_LinuxSettings_GameMode_Title}"
                                     Description="{x:Static resources:Strings.Menu_LinuxSettings_GameMode_Description}">
                 <ToggleSwitch IsChecked="{Binding StudioGameMode, Mode=TwoWay}" />
             </controls:OptionControl>
 
-            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
+            <controls:OptionControl IsVisible="{Binding WineStudioEnabled}"
                                     Header="{x:Static resources:Strings.Menu_LinuxSettings_DebugMode_Title}"
                                     Description="{x:Static resources:Strings.Menu_LinuxSettings_DebugMode_Description}">
                 <ToggleSwitch IsChecked="{Binding StudioDebug, Mode=TwoWay}" />
             </controls:OptionControl>
 
-            <controls:OptionControl  IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
+            <controls:OptionControl  IsVisible="{Binding WineStudioEnabled}"
                                     Header="{x:Static resources:Strings.Menu_LinuxSettings_EnvironmentVariables_Title}"
                                     Description="{x:Static resources:Strings.Menu_LinuxSettings_EnvironmentVariables_Description}">
                 <StackPanel Spacing="8">

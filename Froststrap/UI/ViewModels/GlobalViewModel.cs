@@ -15,6 +15,7 @@ namespace Froststrap.UI.ViewModels
 
         public static bool IsWindowsOrLinux => IsWindows || IsLinux;
         public static bool IsWindowsOrMacOS => IsWindows || IsMacOS;
+        public static bool IsWindowsOrMacOSOrRosemary => IsWindows || IsMacOS || App.UseRosemary;
 
         public static ICommand OpenWebpageCommand => new RelayCommand<string>(OpenWebpage);
 

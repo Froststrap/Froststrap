@@ -120,22 +120,13 @@ SPDX-License-Identifier: MPL-2.0
                                         Margin="0,2,0,10"
                                         TextWrapping="Wrap" />
 
-            <controls:CardExpander IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
-                                   Header="{x:Static resources:Strings.Menu_Deployment_PlayerRuntime_Title}"
-                                   Description="{x:Static resources:Strings.Menu_Deployment_PlayerRuntime_Description}"
-                                   IsExpanded="{Binding UseRosemary, Mode=TwoWay}"
-                                   Classes="NoUserExpansion">
-                <controls:CardExpander.HeaderContent>
-                    <ToggleSwitch IsChecked="{Binding UseRosemary, Mode=TwoWay}" />
-                </controls:CardExpander.HeaderContent>
-                <StackPanel Spacing="8">
-                    <controls:OptionControl Header="{x:Static resources:Strings.Menu_Deployment_RosemaryExecutablePath_Title}"
-                                            Description="{x:Static resources:Strings.Menu_Deployment_RosemaryExecutablePath_Description}">
-                        <TextBox Text="{Binding RosemaryExecutablePath, Mode=TwoWay}"
-                                 PlaceholderText="{x:Static resources:Strings.Menu_Deployment_RosemaryExecutablePath_Placeholder}" />
-                    </controls:OptionControl>
-                </StackPanel>
-            </controls:CardExpander>
+            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
+                                    Header="{x:Static resources:Strings.Menu_Deployment_PlayerRuntime_Title}"
+                                    Description="{x:Static resources:Strings.Menu_Deployment_PlayerRuntime_Description}">
+                <ComboBox Width="200"
+                          ItemsSource="{Binding PlayerRuntimeOptions, Mode=OneTime}"
+                          SelectedItem="{Binding SelectedPlayerRuntime, Mode=TwoWay}" />
+            </controls:OptionControl>
 
             <controls:OptionControl IsVisible="{Binding IsSoberRuntime}"
                                     Header="{x:Static resources:Strings.Menu_Deployment_AutoUpdateSober}">
@@ -148,7 +139,7 @@ SPDX-License-Identifier: MPL-2.0
                 <ToggleSwitch IsChecked="{Binding ForceRobloxReinstallation, Mode=TwoWay}" />
             </controls:OptionControl>
 
-            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOS}"
+            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOSOrRosemary}"
                                     Header="{x:Static resources:Strings.Menu_Channel_RobloxUpgrades}"
                                     Description="{x:Static resources:Strings.Menu_Channel_RobloxUpgrades_Description}"
                                     IsEnabled="{Binding !IsRobloxInstallationMissing}">
@@ -160,7 +151,7 @@ SPDX-License-Identifier: MPL-2.0
                 Description="{x:Static resources:Strings.Menu_Deployment_PlayerOverrideHash_Description}"
                 IsExpanded="{Binding PlayerVersionOverrideEnabled, Mode=TwoWay}"
                 Classes="NoUserExpansion"
-                IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOS}">
+                IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOSOrRosemary}">
                 <controls:CardExpander.HeaderContent>
                     <ToggleSwitch IsChecked="{Binding PlayerVersionOverrideEnabled, Mode=TwoWay}" />
                 </controls:CardExpander.HeaderContent>
@@ -242,7 +233,7 @@ SPDX-License-Identifier: MPL-2.0
             <controls:CardExpander
                 Header="{x:Static resources:Strings.Menu_Deployment_PlayerChannel_Title}"
                 Description="{x:Static resources:Strings.Menu_Deployment_Channel_Description}"
-                IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOS}"
+                IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOSOrRosemary}"
                 IsExpanded="True">
 
                 <controls:CardExpander.HeaderContent>

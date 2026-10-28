@@ -364,6 +364,24 @@ namespace Froststrap.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Downloading Rosemary....
+        /// </summary>
+        public static string Bootstrapper_Status_DownloadingRosemary {
+            get {
+                return ResourceManager.GetString("Bootstrapper.Status.DownloadingRosemary", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Downloading Rosemary ({0} of {1})....
+        /// </summary>
+        public static string Bootstrapper_Status_DownloadingRosemaryProgress {
+            get {
+                return ResourceManager.GetString("Bootstrapper.Status.DownloadingRosemaryProgress", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Extracting.
         /// </summary>
         public static string Bootstrapper_Status_Extracting {
@@ -9678,10 +9696,6 @@ namespace Froststrap.Resources {
         public static string Common_LaunchPlayer => ResourceManager.GetString("Common.LaunchPlayer", resourceCulture);
         public static string Menu_Deployment_PlayerRuntime_Title => ResourceManager.GetString("Menu.Deployment.PlayerRuntime.Title", resourceCulture);
         public static string Menu_Deployment_PlayerRuntime_Description => ResourceManager.GetString("Menu.Deployment.PlayerRuntime.Description", resourceCulture);
-        public static string Menu_Deployment_RosemaryExecutablePath_Title => ResourceManager.GetString("Menu.Deployment.RosemaryExecutablePath.Title", resourceCulture);
-        public static string Menu_Deployment_RosemaryExecutablePath_Description => ResourceManager.GetString("Menu.Deployment.RosemaryExecutablePath.Description", resourceCulture);
-        public static string Menu_Deployment_RosemaryExecutablePath_Placeholder => ResourceManager.GetString("Menu.Deployment.RosemaryExecutablePath.Placeholder", resourceCulture);
-        public static string Rosemary_DownloadPrompt => ResourceManager.GetString("Rosemary.DownloadPrompt", resourceCulture);
         public static string Rosemary_DownloadFailed => ResourceManager.GetString("Rosemary.DownloadFailed", resourceCulture);
         public static string Rosemary_LaunchFailed => ResourceManager.GetString("Rosemary.LaunchFailed", resourceCulture);
     }

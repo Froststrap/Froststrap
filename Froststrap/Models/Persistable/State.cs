@@ -23,6 +23,8 @@ namespace Froststrap.Models.Persistable
 
         public string? LastMigratedVersion { get; set; }
 
+        public string? RosemaryVersion { get; set; }
+
         public string? PendingUpdateVersion { get; set; }
 
         public string? PendingUpdateReleaseNotes { get; set; }

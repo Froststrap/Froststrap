@@ -25,7 +25,7 @@ static class Processes
         string processName = Path.GetFileNameWithoutExtension(App.RobloxPlayerAppName);
 
         if (OperatingSystem.IsLinux())
-            return processes.Any(x => x.ProcessName == "sober");
+            return processes.Any(x => x.ProcessName == (App.UseRosemary ? "rosemary" : "sober"));
         else
             return processes.Any(x => x.ProcessName == processName);
     }

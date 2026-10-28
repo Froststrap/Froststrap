@@ -287,6 +287,9 @@ namespace Froststrap
             if (string.Equals(process.ProcessName, processName, StringComparison.OrdinalIgnoreCase))
                 return true;
 
+            if (App.UseRosemary && string.Equals(process.ProcessName, "rosemary", StringComparison.OrdinalIgnoreCase))
+                return true;
+
             return OperatingSystem.IsLinux()
                 && process.ProcessName.StartsWith("RobloxStudio", StringComparison.OrdinalIgnoreCase);
         }

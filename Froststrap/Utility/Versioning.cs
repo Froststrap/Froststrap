@@ -156,15 +156,18 @@ static class Versioning
     {
         string playerLocation = data.ExecutablePath;
 
-        if (!File.Exists(playerLocation))
-            return "";
+        if (File.Exists(playerLocation))
+        {
+            FileVersionInfo versionInfo = FileVersionInfo.GetVersionInfo(playerLocation);
 
-        FileVersionInfo versionInfo = FileVersionInfo.GetVersionInfo(playerLocation);
+            if (versionInfo.ProductVersion is not null)
+                return versionInfo.ProductVersion.Replace(", ", ".", StringComparison.Ordinal);
+        }
 
-        if (versionInfo.ProductVersion is null)
-            return "";
+        if (Directory.Exists(playerLocation))
+            return data.DistributionState.Version;
 
-        return versionInfo.ProductVersion.Replace(", ", ".", StringComparison.Ordinal);
+        return "";
     }
 
     public static string GetRobloxVersionStr(bool studio)
@@ -177,6 +180,10 @@ static class Versioning
     public static Version? GetRobloxVersion(IAppData data)
     {
         string str = GetRobloxVersionStr(data);
+
+        if (string.IsNullOrEmpty(str))
+            return null;
+
         return ParseVersionSafe(str);
     }
 }

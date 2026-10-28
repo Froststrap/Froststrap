@@ -48,11 +48,17 @@ internal partial class App : Application
     public const string ProjectSupportLink = "https://github.com/Froststrap/Froststrap/issues/new";
     public const string ProjectRemoteDataLink = "https://raw.githubusercontent.com/Froststrap/config/refs/heads/main/Data.json";
 
-    public static bool UseRosemary => OperatingSystem.IsLinux() && Settings.Prop.UseRosemary;
+    public static bool UseRosemary => OperatingSystem.IsLinux() && Settings.Prop.PlayerRuntime == PlayerRuntime.Rosemary;
     public static event EventHandler? RuntimeChanged;
-    public static void NotifyRuntimeChanged() => RuntimeChanged?.Invoke(null, EventArgs.Empty);
+
+    public static void NotifyRuntimeChanged()
+    {
+        _linuxPlayerInstalled = null;
+        RuntimeChanged?.Invoke(null, EventArgs.Empty);
+    }
+
     public static string RobloxPlayerAppName => OperatingSystem.IsMacOS() || UseRosemary ? "RobloxPlayer.app" : "RobloxPlayerBeta.exe";
-    public static string RobloxStudioAppName => OperatingSystem.IsMacOS() ? "RobloxStudio.app" : "RobloxStudioBeta.exe";
+    public static string RobloxStudioAppName => OperatingSystem.IsMacOS() || UseRosemary ? "RobloxStudio.app" : "RobloxStudioBeta.exe";
 
     // simple shorthand for extremely frequently used and long string - this goes under HKCU
     public const string UninstallKey = $@"Software\Microsoft\Windows\CurrentVersion\Uninstall\{ProjectName}";
@@ -101,10 +107,15 @@ internal partial class App : Application
             if (_linuxPlayerInstalled is not bool cached)
             {
                 if (UseRosemary)
-                    return PlayerData.IsInstalled;
+                {
+                    cached = PlayerData.IsInstalled;
+                }
+                else
+                {
+                    var clientPath = Path.Combine(Paths.Versions, "Sober", "data", "sober", "packages", "x86_64", "com.roblox.client");
+                    cached = Directory.Exists(clientPath) && Directory.EnumerateFiles(clientPath, "*", SearchOption.AllDirectories).Any();
+                }
 
-                var clientPath = Path.Combine(Paths.Versions, "Sober", "data", "sober", "packages", "x86_64", "com.roblox.client");
-                cached = Directory.Exists(clientPath) && Directory.EnumerateFiles(clientPath, "*", SearchOption.AllDirectories).Any();
                 _linuxPlayerInstalled = cached;
             }
 
@@ -115,6 +126,8 @@ internal partial class App : Application
     public static readonly RobloxPlayerData PlayerData = new();
 
     public static readonly RobloxStudioData StudioData = new();
+
+    public static readonly RosemaryData RosemaryData = new();
 
     public static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -131,6 +144,8 @@ internal partial class App : Application
     public static readonly LazyJsonManager<DistributionState> PlayerState = new(nameof(PlayerState));
 
     public static readonly LazyJsonManager<DistributionState> StudioState = new(nameof(StudioState));
+
+    public static readonly LazyJsonManager<DistributionState> RosemaryState = new(nameof(RosemaryState));
 
     public static readonly RemoteDataManager RemoteData = new();
 

@@ -10,12 +10,12 @@ namespace Froststrap.AppData
 
         public virtual string BinaryType { get; } = null!;
 
-        public string StaticDirectory => Path.Combine(Paths.Versions, BinaryType);
-        public string DynamicDirectory => Path.Combine(Paths.Versions, DistributionState.VersionGuid);
+        public virtual string StaticDirectory => Path.Combine(Paths.Versions, BinaryType);
+        public virtual string DynamicDirectory => Path.Combine(Paths.Versions, DistributionState.VersionGuid);
 
-        public string Directory => App.Settings.Prop.StaticDirectory ? StaticDirectory : DynamicDirectory;
+        public virtual string Directory => App.Settings.Prop.StaticDirectory ? StaticDirectory : DynamicDirectory;
 
-        public bool IsInstalled => DistributionStateManager.IsSaved && IsInstalledWith(DistributionState);
+        public virtual bool IsInstalled => DistributionStateManager.IsSaved && IsInstalledWith(DistributionState);
 
         public bool IsInstalledWith(DistributionState state)
         {

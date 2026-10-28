@@ -2592,19 +2592,10 @@ Do you want to install the plugin?</value>
     <value>Linux Settings</value>
   </data>
   <data name="Menu.Deployment.PlayerRuntime.Title" xml:space="preserve">
-    <value>Use Rosemary</value>
+    <value>Player Runtime</value>
   </data>
   <data name="Menu.Deployment.PlayerRuntime.Description" xml:space="preserve">
-    <value>Use Rosemary instead of Sober for the Linux player. Rosemary is downloaded when needed.</value>
-  </data>
-  <data name="Menu.Deployment.RosemaryExecutablePath.Title" xml:space="preserve">
-    <value>Rosemary Executable</value>
-  </data>
-  <data name="Menu.Deployment.RosemaryExecutablePath.Description" xml:space="preserve">
-    <value>Path to rosemary. Leave empty to use PATH or download the latest AppImage when launching.</value>
-  </data>
-  <data name="Menu.Deployment.RosemaryExecutablePath.Placeholder" xml:space="preserve">
-    <value>Auto-detect</value>
+    <value>How Froststrap runs Roblox on Linux. Sober runs the Android player; Rosemary runs the macOS player and Studio through a macOS compatibility layer. Rosemary is downloaded automatically.</value>
   </data>
   <data name="Menu.LinuxSettings.AllowGamepadPermission.Title" xml:space="preserve">
     <value>Allow Gamepad Permission</value>
@@ -2867,6 +2858,12 @@ Do you want to install the plugin?</value>
   <data name="Bootstrapper.Status.DownloadingWine" xml:space="preserve">
     <value>Downloading Wine...</value>
   </data>
+  <data name="Bootstrapper.Status.DownloadingRosemary" xml:space="preserve">
+    <value>Downloading Rosemary...</value>
+  </data>
+  <data name="Bootstrapper.Status.DownloadingRosemaryProgress" xml:space="preserve">
+    <value>Downloading Rosemary ({0} of {1})...</value>
+  </data>
   <data name="Bootstrapper.Status.ExtractingWine" xml:space="preserve">
     <value>Extracting Wine...</value>
   </data>
@@ -3068,11 +3065,8 @@ Do you want to install the plugin?</value>
   <data name="Sober.LaunchFailed" xml:space="preserve">
     <value>Failed to launch Sober. Make sure Flatpak and {0} are installed. {1}</value>
   </data>
-  <data name="Rosemary.DownloadPrompt" xml:space="preserve">
-    <value>Rosemary was not found. Download the latest Rosemary AppImage from GitHub?</value>
-  </data>
   <data name="Rosemary.DownloadFailed" xml:space="preserve">
-    <value>Rosemary could not be found or downloaded. Set its executable path or install rosemary on PATH.</value>
+    <value>Rosemary could not be downloaded. Check your internet connection, or install rosemary on your PATH.</value>
   </data>
   <data name="Rosemary.LaunchFailed" xml:space="preserve">
     <value>Failed to launch Rosemary: {0}</value>

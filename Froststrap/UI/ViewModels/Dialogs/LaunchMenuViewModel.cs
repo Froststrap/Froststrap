@@ -58,7 +58,10 @@ namespace Froststrap.UI.ViewModels.Dialogs
             }
         }
 
-        public string PlayerMenuItemText => OperatingSystem.IsLinux()
+        private string? _playerMenuItemText;
+        public string PlayerMenuItemText => _playerMenuItemText ??= GetPlayerMenuItemText();
+
+        private static string GetPlayerMenuItemText() => OperatingSystem.IsLinux()
             ? App.UseRosemary ? Strings.Common_Rosemary : Strings.Common_Sober
             : Strings.Common_Player;
 
@@ -143,6 +146,7 @@ namespace Froststrap.UI.ViewModels.Dialogs
 
         private void RuntimeChanged(object? sender, EventArgs e)
         {
+            _playerMenuItemText = null;
             OnPropertyChanged(nameof(PlayerMenuItemText));
             OnPropertyChanged(nameof(LaunchButtonText));
         }

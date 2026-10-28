@@ -24,15 +24,70 @@ namespace Froststrap
         public static string SavedFlagProfiles { get; private set; } = "";
         public static string Versions { get; private set; } = "";
         public static string Modifications { get; private set; } = "";
-        public static string Roblox { get; private set; } = "";
         public static string CustomThemes { get; private set; } = "";
-        public static string RobloxLogs { get; private set; } = "";
-        public static string RobloxCache { get; private set; } = "";
         public static string CustomCursors { get; private set; } = "";
 
-        public static string SoberAssetOverlay { get; private set; } = "";
-        public static string SoberData { get; private set; } = "";
-        public static string SoberConfig { get; private set; } = "";
+        public static string Roblox
+        {
+            get
+            {
+                if (OperatingSystem.IsMacOS())
+                    return Path.Combine(UserProfile, "Library", "Application Support", "Roblox");
+
+                if (OperatingSystem.IsLinux())
+                {
+                    return App.UseRosemary
+                        ? RosemaryLibraryPath("Application Support", "Roblox")
+                        : Path.Combine(DataRoot, "Versions", "Sober");
+                }
+
+                return Path.Combine(LocalAppData, "Roblox");
+            }
+        }
+
+        public static string RobloxLogs
+        {
+            get
+            {
+                if (OperatingSystem.IsMacOS())
+                    return Path.Combine(UserProfile, "Library", "Logs", "Roblox");
+
+                if (OperatingSystem.IsLinux())
+                {
+                    return App.UseRosemary
+                        ? RosemaryLibraryPath("Logs", "Roblox")
+                        : Path.Combine(Roblox, "data", "sober", "sober_logs");
+                }
+
+                return Path.Combine(Roblox, "logs");
+            }
+        }
+
+        public static string RobloxCache
+        {
+            get
+            {
+                if (OperatingSystem.IsMacOS())
+                    return Path.Combine(UserProfile, "Library", "Caches", "com.roblox.RobloxPlayer");
+
+                if (OperatingSystem.IsLinux())
+                {
+                    return App.UseRosemary
+                        ? RosemaryLibraryPath("Caches", "com.roblox.RobloxPlayer")
+                        : Path.Combine(Roblox, "cache");
+                }
+
+                return Path.Combine(Path.GetTempPath(), "Roblox");
+            }
+        }
+
+        public static string SoberData => Path.Combine(Roblox, "data", "sober");
+        public static string SoberAssetOverlay => Path.Combine(SoberData, "asset_overlay");
+        public static string SoberConfig => Path.Combine(Roblox, "config", "sober");
+
+        public static string RosemaryHome => Path.Combine(AppData.RosemaryData.PrefixDirectory, "root", "Users", Environment.UserName);
+
+        private static string RosemaryLibraryPath(params string[] parts) => Path.Combine([RosemaryHome, "Library", .. parts]);
 
         public static string CustomFont => Path.Combine(Modifications, "content", "fonts", "CustomFont.ttf");
 
@@ -72,7 +127,6 @@ namespace Froststrap
                 var rootPath = Path.Combine(LocalAppData, App.ProjectName);
                 ConfigRoot = rootPath;
                 DataRoot = rootPath;
-                Roblox = Path.Combine(LocalAppData, "Roblox");
             }
             else if (OperatingSystem.IsMacOS())
             {
@@ -80,8 +134,6 @@ namespace Froststrap
                 var rootPath = Path.Combine(libraryPath, "Application Support", App.ProjectName);
                 ConfigRoot = rootPath;
                 DataRoot = rootPath;
-
-                Roblox = Path.Combine(libraryPath, "Application Support", "Roblox");
             }
             else if (OperatingSystem.IsLinux())
             {
@@ -93,17 +145,6 @@ namespace Froststrap
 
                 ConfigRoot = Path.Combine(xdgConfig, App.ProjectName);
                 DataRoot = Path.Combine(xdgData, App.ProjectName);
-
-                // Sober data lives under Versions/Sober (symlink target managed by Installer)
-                Roblox = App.UseRosemary
-                    ? Path.Combine(DataRoot, "Roblox")
-                    : Path.Combine(DataRoot, "Versions", "Sober");
-
-                SoberData = Path.Combine(Roblox, "data", "sober");
-
-                SoberAssetOverlay = Path.Combine(Roblox, "data", "sober", "asset_overlay");
-
-                SoberConfig = Path.Combine(Roblox, "config", "sober");
 
                 // Set cache and logs to XDG locations
                 Cache = Path.Combine(xdgCache, App.ProjectName);
@@ -120,24 +161,6 @@ namespace Froststrap
             // Ensure cache have sensible defaults when not set by XDG above
             if (String.IsNullOrEmpty(Cache))
                 Cache = Path.Combine(DataRoot, "Cache");
-
-            if (OperatingSystem.IsMacOS())
-            {
-                RobloxLogs = Path.Combine(UserProfile, "Library", "Logs", "Roblox");
-                RobloxCache = Path.Combine(UserProfile, "Library", "Caches", "com.roblox.RobloxPlayer");
-            }
-            else if (OperatingSystem.IsLinux())
-            {
-                RobloxLogs = App.UseRosemary
-                    ? Path.Combine(Roblox, "logs")
-                    : Path.Combine(Roblox, "data", "sober", "sober_logs");
-                RobloxCache = Path.Combine(Roblox, "cache");
-            }
-            else
-            {
-                RobloxLogs = Path.Combine(Roblox, "logs");
-                RobloxCache = Path.Combine(Path.GetTempPath(), "Roblox");
-            }
 
             string exeName = OperatingSystem.IsWindows() ? $"{App.ProjectName}.exe" : App.ProjectName;
 
@@ -162,10 +185,11 @@ namespace Froststrap
                     // Compatibility migration for an earlier Linux path regression:
                     // move DataRoot/Roblox -> DataRoot/Versions/Sober if needed.
                     string regressedRobloxPath = Path.Combine(DataRoot, "Roblox");
-                    if (Directory.Exists(regressedRobloxPath) && !Directory.Exists(Roblox))
+                    string soberRobloxPath = Path.Combine(DataRoot, "Versions", "Sober");
+                    if (Directory.Exists(regressedRobloxPath) && !Directory.Exists(soberRobloxPath))
                     {
-                        Directory.CreateDirectory(Path.GetDirectoryName(Roblox)!);
-                        Directory.Move(regressedRobloxPath, Roblox);
+                        Directory.CreateDirectory(Path.GetDirectoryName(soberRobloxPath)!);
+                        Directory.Move(regressedRobloxPath, soberRobloxPath);
                     }
 
                     static void TryMove(string src, string dst)

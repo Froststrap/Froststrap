@@ -29,7 +29,7 @@ namespace Froststrap.Integrations.AccountManager
             {
                 if (OperatingSystem.IsWindows())
                     return WriteWindowsCookieFile(plainCookie, filePath);
-                if (OperatingSystem.IsMacOS())
+                if (OperatingSystem.IsMacOS() || App.UseRosemary)
                     return WriteMacCookieFile(plainCookie, filePath);
                 if (OperatingSystem.IsLinux())
                     return WriteLinuxCookieFile(plainCookie, filePath);
