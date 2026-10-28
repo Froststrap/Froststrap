@@ -42,12 +42,24 @@ public static unsafe class NativeLog
         var callback =
             (IntPtr)(delegate* unmanaged[Cdecl]<int, byte*, byte*, void>)&OnLog;
 
-        InternalNativeNotify.SetLogger(callback);
+        SetLogger("notify", InternalNativeNotify.SetLogger, callback);
 
         if (OperatingSystem.IsMacOS())
         {
-            InternalVirtualDisplay.SetLogger(callback);
-            InternalMobileAppReg.SetLogger(callback);
+            SetLogger("virtualdisplay", InternalVirtualDisplay.SetLogger, callback);
+            SetLogger("mobileappreg", InternalMobileAppReg.SetLogger, callback);
+        }
+    }
+
+    private static void SetLogger(string library, Action<IntPtr> setLogger, IntPtr callback)
+    {
+        try
+        {
+            setLogger(callback);
+        }
+        catch (Exception ex) when (NativeLibraryFailure.IsLoadFailure(ex))
+        {
+            NativeLibraryFailure.Report(library, ex);
         }
     }
 }
