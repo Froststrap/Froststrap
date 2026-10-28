@@ -178,6 +178,7 @@ internal static class AppInitializer
     private static readonly string[] ResolverAssemblies =
     [
         "Froststrap",
+        "backend",
         "SkiaSharp",
         "HarfBuzzSharp",
         "Avalonia.Native",
@@ -212,6 +213,7 @@ internal static class AppInitializer
         HashSet<Assembly> assemblies =
         [
             typeof(App).Assembly,
+            typeof(Froststrap.Backend.VirtualDisplay).Assembly,
             typeof(SkiaSharp.SKCanvas).Assembly,
             typeof(HarfBuzzSharp.Blob).Assembly
         ];
