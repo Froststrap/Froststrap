@@ -65,6 +65,8 @@ SPDX-License-Identifier: MPL-2.0
   <!-- Resources needed by Avalonia -->
   <ItemGroup>
     <AvaloniaResource Include="Resources/**" />
+    <AvaloniaResource Remove="Resources/Strings*.resx" />
+    <AvaloniaResource Remove="Resources/Strings.Designer.cs" />
     <AvaloniaResource Include="UI/AppThemes/EditorThemes/*.xshd" />
     <AvaloniaResource Include="Froststrap.ico" />
     <AvaloniaResource Include="Froststrap.png" />
