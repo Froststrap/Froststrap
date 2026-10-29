@@ -19,6 +19,7 @@
     };
     flake-utils.url = "github:numtide/flake-utils";
     nixpkgs.url = "github:nixos/nixpkgs/26.05";
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     treefmt-nix.url = "github:numtide/treefmt-nix";
     self.submodules = true;
   };
@@ -27,12 +28,17 @@
     {
       flake-utils,
       nixpkgs,
+      nixpkgs-unstable,
       ...
     }@inputs:
     flake-utils.lib.eachDefaultSystem (
       system:
       let
         pkgs = import nixpkgs {
+          inherit system;
+        };
+
+        pkgs-unstable = import nixpkgs-unstable {
           inherit system;
         };
 
@@ -45,7 +51,9 @@
               mkComposedShell
               ;
 
-            dotnetFrag = pkgs.callPackage ./nix/dotnetDevShell.nix { };
+            dotnetFrag = pkgs.callPackage ./nix/dotnetDevShell.nix {
+              fontconfig = pkgs-unstable.fontconfig;
+            };
             extraFrag = pkgs.callPackage ./nix/extra.nix { };
             lintFrag = pkgs.callPackage ./nix/lint.nix { };
             lspFrag = pkgs.callPackage ./nix/lsp.nix { };
