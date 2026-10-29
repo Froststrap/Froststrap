@@ -3,6 +3,10 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+using DiscordRPC;
+using DiscordRPC.Logging;
+using RichPresence = DiscordRPC.RichPresence;
+using DiscordRPC.Message;
 using Froststrap.Integrations.Discord;
 using System.Net.Sockets;
 
@@ -14,8 +18,8 @@ namespace Froststrap.Integrations
         private readonly ActivityWatcher _activityWatcher;
         private readonly Queue<StudioMessage> _messageQueue = [];
 
-        private DiscordActivity? _currentPresence;
-        private DiscordActivity? _originalPresence;
+        private RichPresence? _currentPresence;
+        private RichPresence? _originalPresence;
 
         private bool _visible = true;
         private bool _rpcEnabled = true;
@@ -23,7 +27,7 @@ namespace Froststrap.Integrations
 
         public StudioDiscordRichPresence(ActivityWatcher activityWatcher)
         {
-            _rpcClient = new DiscordRpcClient("1454451301130960896");
+            _rpcClient = new DiscordRpcClient("1454451301130960896", -1, new NullLogger(), true, DiscordIpcPipeClient.Create());
             _activityWatcher = activityWatcher;
 
             _activityWatcher.OnStudioRPCMessage += (_, message) => ProcessRPCMessage(message);
@@ -92,15 +96,15 @@ namespace Froststrap.Integrations
 
             App.Logger.Info("Initializing Studio presence");
 
-            _currentPresence = new DiscordActivity
+            _currentPresence = new RichPresence
             {
                 Timestamps = new Timestamps { Start = DateTime.UtcNow },
                 Assets = new Assets
                 {
                     LargeImageKey = "roblox_studio",
                     LargeImageText = "Roblox Studio",
-                    SmallImageKey = null,
-                    SmallImageText = null
+                    SmallImageKey = string.Empty,
+                    SmallImageText = string.Empty
                 },
             };
 
@@ -122,7 +126,7 @@ namespace Froststrap.Integrations
 
             DateTime? existingTimestamp = _currentPresence?.Timestamps?.Start;
 
-            _currentPresence = new DiscordActivity
+            _currentPresence = new RichPresence
             {
                 Timestamps = existingTimestamp.HasValue
                     ? new Timestamps { Start = existingTimestamp.Value }
@@ -131,8 +135,8 @@ namespace Froststrap.Integrations
                 {
                     LargeImageKey = "roblox_studio",
                     LargeImageText = "Roblox Studio",
-                    SmallImageKey = null,
-                    SmallImageText = null
+                    SmallImageKey = string.Empty,
+                    SmallImageText = string.Empty
                 },
             };
 
@@ -159,13 +163,15 @@ namespace Froststrap.Integrations
 
             if (!string.IsNullOrEmpty(presenceData.Details) && App.Settings.Prop.StudioWorkspaceInfo)
             {
-                _currentPresence!.Details = presenceData.DevCount > 1
-                    ? $"{presenceData.Details} ({presenceData.DevCount} Developers)"
-                    : presenceData.Details;
+                _currentPresence!.Details = DiscordPresenceHelper.Truncate(
+                    presenceData.DevCount > 1
+                        ? $"{presenceData.Details} ({presenceData.DevCount} Developers)"
+                        : presenceData.Details,
+                    128);
             }
 
             if (!string.IsNullOrEmpty(presenceData.State) && App.Settings.Prop.StudioEditingInfo)
-                _currentPresence!.State = presenceData.State;
+                _currentPresence!.State = DiscordPresenceHelper.Truncate(presenceData.State, 128);
 
             string largeImageKey = "roblox_studio";
             string largeImageText = "Roblox Studio";
@@ -190,15 +196,15 @@ namespace Froststrap.Integrations
             _currentPresence!.Assets = new Assets
             {
                 LargeImageKey = largeImageKey,
-                LargeImageText = largeImageText,
+                LargeImageText = DiscordPresenceHelper.Truncate(largeImageText, 128),
                 SmallImageKey = smallImageKey ?? string.Empty,
-                SmallImageText = presenceData.Testing && App.Settings.Prop.StudioShowTesting ? "Currently Testing" : null
+                SmallImageText = presenceData.Testing && App.Settings.Prop.StudioShowTesting ? "Currently Testing" : null!
             };
 
             if (App.Settings.Prop.StudioGameButton && presenceData.PlaceId > 0 && presenceData.IsPublic)
                 _currentPresence.Buttons = [new Button { Label = "Open Roblox Game", Url = $"https://www.roblox.com/games/{presenceData.PlaceId}" }];
             else
-                _currentPresence.Buttons = null;
+                _currentPresence.Buttons = null!;
 
             if (_rpcEnabled) _originalPresence = _currentPresence.Clone();
 
@@ -216,7 +222,7 @@ namespace Froststrap.Integrations
 
             if (_visible)
                 UpdatePresence();
-            else
+            else if (_rpcClient.IsInitialized)
                 _rpcClient.ClearPresence();
         }
 
