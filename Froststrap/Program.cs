@@ -30,7 +30,7 @@ sealed partial class Program
     private static void AttachParentConsole()
     {
 #if _WIN32
-        AttachConsole(AttachParentProcess);
+        _ = AttachConsole(AttachParentProcess);
 #endif
     }
 
@@ -51,7 +51,7 @@ sealed partial class Program
 
 #if _WIN32
         if (launchArgs.Any(static a => a is "--console" or "-c"))
-            AllocConsole();
+            _ = AllocConsole();
 #endif
 
         Logging.Configure(Paths.Logs);
