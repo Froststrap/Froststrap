@@ -20,15 +20,13 @@ namespace Froststrap.Utility
             if (!OperatingSystem.IsMacOS())
                 return;
 
-            const string LOG_IDENT = "MacChannelStore::Apply";
-
             try
             {
                 string domain = ResolveDomain(registryName);
                 string defaultKey = "www." + robloxDomain;
 
                 var before = ReadStringValues(domain);
-                App.Logger.Info($"{LOG_IDENT}: '{domain}' before: {Describe(before)}");
+                App.Logger.Info($"'{domain}' before: {Describe(before)}");
 
                 var keys = before
                     .Where(kv => ChannelValueRegex().IsMatch(kv.Value))
@@ -48,7 +46,7 @@ namespace Froststrap.Utility
                             continue;
 
                         var delete = Run(DefaultsTool, ["delete", domain, key]);
-                        App.Logger.Info($"{LOG_IDENT}: cleared '{key}' (was '{current}'), exit {delete.ExitCode}");
+                        App.Logger.Info($"cleared '{key}' (was '{current}'), exit {delete.ExitCode}");
                     }
                     else
                     {
@@ -56,18 +54,18 @@ namespace Froststrap.Utility
                             continue;
 
                         var write = Run(DefaultsTool, ["write", domain, key, "-string", channel]);
-                        App.Logger.Info($"{LOG_IDENT}: set '{key}' to '{channel}' (was '{current ?? "<unset>"}'), exit {write.ExitCode}");
+                        App.Logger.Info($"set '{key}' to '{channel}' (was '{current ?? "<unset>"}'), exit {write.ExitCode}");
 
                         if (write.ExitCode != 0)
-                            App.Logger.Warn($"{LOG_IDENT}: defaults write failed: {write.StdErr.Trim()}");
+                            App.Logger.Warn($"defaults write failed: {write.StdErr.Trim()}");
                     }
                 }
 
-                App.Logger.Info($"{LOG_IDENT}: '{domain}' after: {Describe(ReadStringValues(domain))}");
+                App.Logger.Info($"'{domain}' after: {Describe(ReadStringValues(domain))}");
             }
             catch (Exception ex)
             {
-                App.Logger.Warn($"{LOG_IDENT}: failed to pin the channel: {ex.Message}");
+                App.Logger.Warn($"failed to pin the channel: {ex.Message}");
             }
         }
 
