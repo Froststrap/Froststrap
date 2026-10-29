@@ -62,10 +62,6 @@ SPDX-License-Identifier: MPL-2.0
     <SelfContained>true</SelfContained>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <RootTrimmedAssemblies Condition="'$(RootTrimmedAssemblies)' == ''">true</RootTrimmedAssemblies>
-  </PropertyGroup>
-
   <!-- Resources needed by Avalonia -->
   <ItemGroup>
     <AvaloniaResource Include="Resources/**" />
@@ -136,7 +132,6 @@ SPDX-License-Identifier: MPL-2.0
   </ItemGroup>
 
   <Target Name="CopyMacLibsFromBackend" AfterTargets="Build" Condition="$([MSBuild]::IsOSPlatform('OSX'))">
-
     <PropertyGroup>
       <BackendOutDir>$(MSBuildProjectDirectory)/../backend/bin/$(Configuration)/$(TargetFramework)/</BackendOutDir>
     </PropertyGroup>
