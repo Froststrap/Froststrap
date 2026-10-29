@@ -8,9 +8,6 @@ using Velopack;
 using Froststrap;
 using Froststrap.Backend;
 using Froststrap.Cli;
-#if _WIN32
-using System.Runtime.InteropServices;
-#endif
 
 namespace Froststrap;
 
@@ -23,12 +20,19 @@ sealed class Program
 #if _WIN32
     private const int AttachParentProcess = -1;
 
-    [DllImport("kernel32.dll")]
-    private static extern bool AllocConsole();
+    [System.Runtime.InteropServices.LibraryImport("kernel32.dll")]
+    private static partial int AllocConsole();
 
-    [DllImport("kernel32.dll")]
-    private static extern bool AttachConsole(int dwProcessId);
+    [System.Runtime.InteropServices.LibraryImport("kernel32.dll")]
+    private static partial int AttachConsole(int dwProcessId);
 #endif
+
+    private static void AttachParentConsole()
+    {
+#if _WIN32
+        AttachConsole(AttachParentProcess);
+#endif
+    }
 
     [STAThread]
     public static int Main(string[] args)
@@ -123,12 +127,6 @@ sealed class Program
         return 0;
     }
 
-    private static void AttachParentConsole()
-    {
-#if _WIN32
-        AttachConsole(AttachParentProcess);
-#endif
-    }
 
     public static AppBuilder BuildAvaloniaApp()
     {
