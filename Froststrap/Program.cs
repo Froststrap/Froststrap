@@ -51,10 +51,7 @@ sealed class Program
             AllocConsole();
 #endif
 
-        var assembly = typeof(App).Assembly;
-        LogManager.Setup().LoadConfigurationFromAssemblyResource(assembly, "NLog.config");
-        GlobalDiagnosticsContext.Set("logRoot", Paths.Logs);
-        GlobalDiagnosticsContext.Set("startTime", DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss", CultureInfo.InvariantCulture));
+        Logging.Configure(Paths.Logs);
         _ = Task.Run(() => AppInitializer.RunMacSecurityDiagnostics());
         NativeLog.Register();
 
