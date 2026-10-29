@@ -37,7 +37,7 @@ namespace Froststrap
                 if (OperatingSystem.IsLinux())
                 {
                     return App.UseRosemary
-                        ? RosemaryLibraryPath("Application Support", "Roblox")
+                        ? Path.Combine(UserProfile, "Library", "Application Support", "Roblox")
                         : Path.Combine(DataRoot, "Versions", "Sober");
                 }
 
@@ -55,7 +55,7 @@ namespace Froststrap
                 if (OperatingSystem.IsLinux())
                 {
                     return App.UseRosemary
-                        ? RosemaryLibraryPath("Logs", "Roblox")
+                        ? Path.Combine(UserProfile, "Library", "Logs", "Roblox")
                         : Path.Combine(Roblox, "data", "sober", "sober_logs");
                 }
 
@@ -73,7 +73,7 @@ namespace Froststrap
                 if (OperatingSystem.IsLinux())
                 {
                     return App.UseRosemary
-                        ? RosemaryLibraryPath("Caches", "com.roblox.RobloxPlayer")
+                        ? Path.Combine(UserProfile, "Library", "Caches", "com.roblox.RobloxPlayer")
                         : Path.Combine(Roblox, "cache");
                 }
 
@@ -84,10 +84,6 @@ namespace Froststrap
         public static string SoberData => Path.Combine(Roblox, "data", "sober");
         public static string SoberAssetOverlay => Path.Combine(SoberData, "asset_overlay");
         public static string SoberConfig => Path.Combine(Roblox, "config", "sober");
-
-        public static string RosemaryHome => Path.Combine(AppData.RosemaryData.PrefixDirectory, "root", "Users", Environment.UserName);
-
-        private static string RosemaryLibraryPath(params string[] parts) => Path.Combine([RosemaryHome, "Library", .. parts]);
 
         public static string CustomFont => Path.Combine(Modifications, "content", "fonts", "CustomFont.ttf");
 

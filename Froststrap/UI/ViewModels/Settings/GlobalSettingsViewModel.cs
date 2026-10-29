@@ -42,10 +42,8 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             string targetPath;
 
-            if (OperatingSystem.IsMacOS())
+            if (OperatingSystem.IsMacOS() || App.UseRosemary)
                 targetPath = Path.Combine(Paths.UserProfile, "Library", "Roblox");
-            else if (App.UseRosemary)
-                targetPath = Path.Combine(Paths.RosemaryHome, "Library", "Roblox");
             else
                 targetPath = Paths.Roblox;
 

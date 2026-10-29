@@ -31,9 +31,9 @@ namespace Froststrap
         public string GetAuthCookie() => AuthCookie;
 
         public static string CookiesPath => OperatingSystem.IsMacOS()
-            ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Library", "HTTPStorages", "com.roblox.RobloxPlayer.binarycookies")
+            ? Path.Combine(Paths.UserProfile, "Library", "HTTPStorages", "com.roblox.RobloxPlayer.binarycookies")
             : App.UseRosemary
-                ? Path.Combine(Paths.RosemaryHome, "Library", "HTTPStorages", "com.roblox.RobloxPlayer.binarycookies")
+                ? Path.Combine(Paths.UserProfile, "Library", "Cookies", "com.roblox.RobloxPlayer.cookies.tsv")
                 : OperatingSystem.IsLinux()
                     ? Path.Combine(Paths.Roblox, "data", "sober", "cookies")
                     : Path.Combine(Paths.Roblox, "LocalStorage", Deployment.IsDefaultRobloxDomain ? "RobloxCookies.dat" : $"{Deployment.RobloxDomain}_RobloxCookies.dat");
@@ -119,9 +119,13 @@ namespace Froststrap
                 {
                     authCookie = await LoadWindowsCookies();
                 }
-                else if (OperatingSystem.IsMacOS() || App.UseRosemary)
+                else if (OperatingSystem.IsMacOS())
                 {
                     authCookie = await LoadMacCookies();
+                }
+                else if (App.UseRosemary)
+                {
+                    authCookie = await LoadRosemaryCookies();
                 }
                 else if (OperatingSystem.IsLinux())
                 {
@@ -164,6 +168,37 @@ namespace Froststrap
             byte[] fileBytes = await File.ReadAllBytesAsync(CookiesPath);
             var cookies = ParseBinaryCookies(fileBytes);
             return ExtractRoblosecurity(cookies) ?? string.Empty;
+        }
+
+        private static async Task<string> LoadRosemaryCookies()
+        {
+            string[] lines = await File.ReadAllLinesAsync(CookiesPath);
+
+            foreach (string line in lines)
+            {
+                if (string.IsNullOrWhiteSpace(line))
+                    continue;
+
+                // Format: name \t value \t domain \t path \t secure \t expiry(unix)
+                string[] parts = line.Split('\t');
+                if (parts.Length < 2)
+                    continue;
+
+                string name = parts[0].Trim();
+                if (name != AuthCookieName)
+                    continue;
+
+                string domain = parts.Length > 2 ? parts[2].Trim() : string.Empty;
+                if (!domain.Equals(Deployment.RobloxDomain, StringComparison.OrdinalIgnoreCase) &&
+                    !domain.EndsWith("." + Deployment.RobloxDomain, StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                string value = parts[1];
+                if (!string.IsNullOrEmpty(value))
+                    return value;
+            }
+
+            return string.Empty;
         }
 
         private static async Task<string> LoadLinuxCookies()

@@ -49,13 +49,12 @@ internal partial class Bootstrapper : IDisposable
     private readonly GameJoinData _joinData = null!;
 
     private static bool AutomaticallyUpdateSober => OperatingSystem.IsLinux() && !App.UseRosemary && App.Settings.Prop.AutomaticallyUpdateSober;
-    private static bool UseRosemary => OperatingSystem.IsLinux() && App.UseRosemary;
-    private static bool UsesMacBuild => OperatingSystem.IsMacOS() || UseRosemary;
+    private static bool UsesMacBuild => OperatingSystem.IsMacOS() || App.UseRosemary;
     private string CurrentDirectory => _latestVersionDirectory ?? AppData.Directory;
 
     private bool MustUpgrade => App.LaunchSettings.ForceFlag.Active
         || App.State.Prop.ForceReinstall
-        || ((!OperatingSystem.IsLinux() || IsStudioLaunch || UseRosemary) && (string.IsNullOrEmpty(AppData.DistributionState.VersionGuid)
+        || ((!OperatingSystem.IsLinux() || IsStudioLaunch || App.UseRosemary) && (string.IsNullOrEmpty(AppData.DistributionState.VersionGuid)
         || (UsesMacBuild ? !Directory.Exists(AppData.ExecutablePath) : !File.Exists(AppData.ExecutablePath))))
         || (OperatingSystem.IsWindows() && !IsStudioLaunch && !File.Exists(Path.Combine(CurrentDirectory, "WebView2Loader.dll")))
         || (OperatingSystem.IsWindows() && !IsStudioLaunch && !File.Exists(Path.Combine(CurrentDirectory, "RobloxPlayerBeta.dll")));
@@ -127,7 +126,7 @@ internal partial class Bootstrapper : IDisposable
             return;
         }
 
-        if (OperatingSystem.IsLinux() && !IsStudioLaunch && !UseRosemary)
+        if (OperatingSystem.IsLinux() && !IsStudioLaunch && !App.UseRosemary)
         {
             PackageDirectoryMap = [];
             return;
@@ -144,7 +143,7 @@ internal partial class Bootstrapper : IDisposable
             PackageDirectoryMap[package.Key] = package.Value;
 
         // Linux treats \\ weirdly, it leaves a \ in their name and dosent place in correct directory
-        if (OperatingSystem.IsLinux() && !UseRosemary)
+        if (OperatingSystem.IsLinux() && !App.UseRosemary)
         {
             foreach (var key in PackageDirectoryMap.Keys.ToList())
             {
@@ -200,7 +199,7 @@ internal partial class Bootstrapper : IDisposable
         SetStatus(Strings.Bootstrapper_Status_Connecting);
 
         // Skip the Roblox deployment API connectivity check entirely.
-        if (OperatingSystem.IsLinux() && !IsStudioLaunch && !UseRosemary)
+        if (OperatingSystem.IsLinux() && !IsStudioLaunch && !App.UseRosemary)
         {
             _noConnection = true;
             _latestVersionDirectory = Paths.SoberAssetOverlay;
@@ -317,7 +316,7 @@ internal partial class Bootstrapper : IDisposable
                 // where we'd need to restore files from a package that isn't present on disk and needs to be redownloaded
                 allModificationsApplied = await ApplyModifications();
             }
-            else if (OperatingSystem.IsLinux() && !UseRosemary)
+            else if (OperatingSystem.IsLinux() && !App.UseRosemary)
             {
                 if (MustUpgrade)
                 {
@@ -386,7 +385,7 @@ internal partial class Bootstrapper : IDisposable
                 else if (!allModificationsApplied)
                     Backend.NativeNotify.SendMessage(Strings.Bootstrapper_ModificationsFailed_Title, Strings.Bootstrapper_ModificationsFailed_Message);
 
-                if (!OperatingSystem.IsLinux() || UseRosemary)
+                if (!OperatingSystem.IsLinux() || App.UseRosemary)
                 {
                     await StartRoblox();
                 }
@@ -660,7 +659,7 @@ internal partial class Bootstrapper : IDisposable
             _latestVersionDirectory = Path.Combine(Paths.Versions, _latestVersionGuid);
 
         // Mods are applied directly into Sober's asset_overlay directory instead of a versioned folder.
-        if (OperatingSystem.IsLinux() && !IsStudioLaunch && !UseRosemary)
+        if (OperatingSystem.IsLinux() && !IsStudioLaunch && !App.UseRosemary)
             _latestVersionDirectory = Paths.SoberAssetOverlay;
 
         if (UsesMacBuild)
@@ -979,15 +978,35 @@ internal partial class Bootstrapper : IDisposable
         ProcessStartInfo startInfo;
 
         string? rosemaryPath = null;
-        if (UseRosemary)
+        if (App.UseRosemary)
         {
+            bool progressInitialized = false;
+
             var manager = new RosemaryManager(App.HttpClient);
             rosemaryPath = await manager.EnsureAsync(async (current, total) =>
             {
                 if (total > 0)
+                {
+                    if (!progressInitialized)
+                    {
+                        BeginDownloadProgress(total);
+                        progressInitialized = true;
+                    }
+
+                    Interlocked.Exchange(ref _totalDownloadedBytes, current);
+                    UpdateProgressBar();
                     SetStatus(string.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_Status_DownloadingRosemaryProgress, FormatBytes(current), FormatBytes(total)));
+                }
                 else
+                {
                     SetStatus(Strings.Bootstrapper_Status_DownloadingRosemary);
+
+                    if (Dialog is not null)
+                    {
+                        Dialog.ProgressIndeterminate = true;
+                        Dialog.TaskbarProgressState = TaskbarItemProgressState.Indeterminate;
+                    }
+                }
                 await Task.CompletedTask;
             });
 
@@ -996,16 +1015,26 @@ internal partial class Bootstrapper : IDisposable
                 await Frontend.ShowMessageBox(Strings.Rosemary_DownloadFailed, MessageBoxImage.Error);
                 return;
             }
+
+            Interlocked.Exchange(ref _totalDownloadedBytes, 0);
+
+            if (Dialog is not null)
+            {
+                Dialog.ProgressIndeterminate = true;
+                Dialog.ProgressValue = 0;
+                Dialog.TaskbarProgressValue = 0.0;
+                Dialog.TaskbarProgressState = TaskbarItemProgressState.None;
+            }
         }
 
-        if (OperatingSystem.IsMacOS() || UseRosemary)
+        if (UsesMacBuild)
         {
             string launch = _launchCommandLine.Trim();
 
             if (launch.Length == 0 && !IsStudioLaunch)
                 launch = "roblox-player:";
 
-            if (UseRosemary)
+            if (App.UseRosemary)
             {
                 startInfo = new ProcessStartInfo
                 {
@@ -1013,8 +1042,10 @@ internal partial class Bootstrapper : IDisposable
                     WorkingDirectory = AppData.Directory,
                     UseShellExecute = false
                 };
-                startInfo.EnvironmentVariables["ROSEMARY_PREFIX"] = RosemaryData.PrefixDirectory;
-                startInfo.EnvironmentVariables["ROSEMARY_PREFIX_SETUP"] = "download";
+                startInfo.EnvironmentVariables["ROSEMARY_PREFIX"] = "off";
+                startInfo.EnvironmentVariables["ROSEMARY_DECORATIONS"] = "server";
+                startInfo.EnvironmentVariables["ROSEMARY_MENU"] = "none";
+                startInfo.EnvironmentVariables["ROSEMARY_SCREEN_REFRESH_RATE"] = "9999";
                 startInfo.ArgumentList.Add(expectedPath);
 
                 foreach (string argument in SplitArguments(launch))
@@ -1590,7 +1621,7 @@ internal partial class Bootstrapper : IDisposable
             }
         }
 
-        if (OperatingSystem.IsLinux() && !UseRosemary)
+        if (OperatingSystem.IsLinux() && !App.UseRosemary)
         {
             try
             {
@@ -1631,12 +1662,12 @@ internal partial class Bootstrapper : IDisposable
         {
             string path = Path.Combine(dir, exe);
 
-            bool exists = (OperatingSystem.IsMacOS() || App.UseRosemary) ? Directory.Exists(path) : File.Exists(path);
+            bool exists = (UsesMacBuild) ? Directory.Exists(path) : File.Exists(path);
             if (!exists) continue;
 
             try
             {
-                if (OperatingSystem.IsMacOS() || App.UseRosemary)
+                if (UsesMacBuild)
                     Directory.Delete(path, true);
                 else
                 {
@@ -1743,7 +1774,7 @@ internal partial class Bootstrapper : IDisposable
     private static void KillRobloxPlayers()
     {
         var processesToKill = new List<Process>();
-        string playerProcessName = OperatingSystem.IsMacOS() || App.UseRosemary ? "RobloxPlayer" : "RobloxPlayerBeta";
+        string playerProcessName = UsesMacBuild ? "RobloxPlayer" : "RobloxPlayerBeta";
         processesToKill.AddRange(Process.GetProcessesByName(playerProcessName));
         processesToKill.AddRange(Process.GetProcessesByName("RobloxCrashHandler"));
 
@@ -3068,7 +3099,7 @@ internal partial class Bootstrapper : IDisposable
 
         App.Logger.Info("Writing AppSettings.xml...");
         if (!File.Exists(Path.Combine(Paths.Modifications, "AppSettings.xml"))
-            && (!OperatingSystem.IsLinux() || IsStudioLaunch || UseRosemary))
+            && (!OperatingSystem.IsLinux() || IsStudioLaunch || App.UseRosemary))
         {
             Directory.CreateDirectory(_latestVersionDirectory);
             await File.WriteAllTextAsync(
@@ -3304,7 +3335,7 @@ internal partial class Bootstrapper : IDisposable
 
             if (!profileApplied)
             {
-                if (!OperatingSystem.IsLinux() || IsStudioLaunch || UseRosemary)
+                if (!OperatingSystem.IsLinux() || IsStudioLaunch || App.UseRosemary)
                 {
                     if (File.Exists(source))
                     {
@@ -3357,7 +3388,7 @@ internal partial class Bootstrapper : IDisposable
             string actualFile = fileLocation;
             string? fileNameWithoutExt = Path.GetFileNameWithoutExtension(fileLocation);
 
-            if (fileNameWithoutExt != null && fileNameWithoutExt.EndsWith("_Delete", StringComparison.Ordinal) && OperatingSystem.IsLinux() && !IsStudioLaunch && !UseRosemary)
+            if (fileNameWithoutExt != null && fileNameWithoutExt.EndsWith("_Delete", StringComparison.Ordinal) && OperatingSystem.IsLinux() && !IsStudioLaunch && !App.UseRosemary)
                 continue;
 
             if (UsesMacBuild)
@@ -3424,7 +3455,7 @@ internal partial class Bootstrapper : IDisposable
             App.Logger.Info($"Restoring '{internalZipPath}' from package {packageName}");
         }
 
-        if ((!OperatingSystem.IsLinux() || IsStudioLaunch || UseRosemary) && fileRestoreMap.Count > 0)
+        if ((!OperatingSystem.IsLinux() || IsStudioLaunch || App.UseRosemary) && fileRestoreMap.Count > 0)
         {
             long restoreBytes = fileRestoreMap.Keys
                 .Select(name => _versionPackageManifest.Find(x => x.Name == name))
@@ -3464,7 +3495,7 @@ internal partial class Bootstrapper : IDisposable
             return;
         }
 
-        if (OperatingSystem.IsLinux() && !IsStudioLaunch && !UseRosemary)
+        if (OperatingSystem.IsLinux() && !IsStudioLaunch && !App.UseRosemary)
         {
             App.Logger.Info("Skipping mod folder initialization on Linux Player (Sober).");
             return;
@@ -3823,7 +3854,7 @@ internal partial class Bootstrapper : IDisposable
 
                 App.Logger.Info($"Extracting {package.Name} (Attempt {attempts}/{maxAttempts})...");
 
-                if (OperatingSystem.IsLinux() && IsStudioLaunch && !UseRosemary)
+                if (OperatingSystem.IsLinux() && IsStudioLaunch && !App.UseRosemary)
                 {
                     await ExtractZipLinux(package.DownloadPath, targetFolder, fileFilter, _cancelTokenSource.Token);
                 }

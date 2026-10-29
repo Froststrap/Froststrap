@@ -90,7 +90,7 @@ namespace Froststrap.Utility
 
             try
             {
-                string prefs = Path.Combine(Paths.RosemaryHome, "Library", "Preferences");
+                string prefs = Path.Combine(Paths.UserProfile, "Library", "Preferences");
                 Directory.CreateDirectory(prefs);
 
                 string domain = ResolvePrefixDomain(prefs, registryName);

@@ -2595,7 +2595,7 @@ Do you want to install the plugin?</value>
     <value>Player Runtime</value>
   </data>
   <data name="Menu.Deployment.PlayerRuntime.Description" xml:space="preserve">
-    <value>How Froststrap runs Roblox on Linux. Sober runs the Android player; Rosemary runs the macOS player and Studio through a macOS compatibility layer. Rosemary is downloaded automatically.</value>
+    <value>How Froststrap runs Roblox on Linux, Rosemary is downloaded automatically.</value>
   </data>
   <data name="Menu.LinuxSettings.AllowGamepadPermission.Title" xml:space="preserve">
     <value>Allow Gamepad Permission</value>

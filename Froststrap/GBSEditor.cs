@@ -83,11 +83,9 @@ internal class GBSEditor
 
     public bool Loaded { get; set; }
 
-    public static string FileLocation => OperatingSystem.IsLinux() ?
-            App.UseRosemary
-                ? Path.Combine(Paths.RosemaryHome, "Library", "Roblox", "GlobalBasicSettings_13.xml")
-                : Path.Combine(Paths.SoberData, "appData", "GlobalBasicSettings_13.xml") :
-                OperatingSystem.IsMacOS() ?
+    public static string FileLocation => OperatingSystem.IsLinux() && !App.UseRosemary ?
+            Path.Combine(Paths.SoberData, "appData", "GlobalBasicSettings_13.xml") :
+                OperatingSystem.IsMacOS() || App.UseRosemary ?
                     Path.Combine(Paths.UserProfile, "Library", "Roblox", "GlobalBasicSettings_13.xml") :
                         Path.Combine(Paths.Roblox, "GlobalBasicSettings_13.xml");
 

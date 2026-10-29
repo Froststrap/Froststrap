@@ -11,11 +11,9 @@ namespace Froststrap
     internal static class AppStorageManager
     {
         public static string FileLocation =>
-            OperatingSystem.IsLinux()
-                ? App.UseRosemary
-                    ? Path.Combine(Paths.RosemaryHome, "Library", "Roblox", "LocalStorage", "appStorage.json")
-                    : Path.Combine(Paths.SoberData, "appData", "LocalStorage", "appStorage.json")
-                : OperatingSystem.IsMacOS()
+            OperatingSystem.IsLinux() && !App.UseRosemary
+                ? Path.Combine(Paths.SoberData, "appData", "LocalStorage", "appStorage.json")
+                : OperatingSystem.IsMacOS() || App.UseRosemary
                     ? Path.Combine(Paths.UserProfile, "Library", "Roblox", "LocalStorage", "appStorage.json")
                     : Path.Combine(Paths.Roblox, "LocalStorage", "appStorage.json");
 
