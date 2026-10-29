@@ -9,7 +9,7 @@ using Avalonia.Media;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
-using ICSharpCode.SharpZipLib.Zip;
+using System.IO.Compression;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using FontFamily = Avalonia.Media.FontFamily;
@@ -470,8 +470,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             {
                 await Task.Run(() =>
                 {
-                    var fastZip = new FastZip();
-                    fastZip.ExtractZip(zipPath, tempDir, null);
+                    ZipFile.ExtractToDirectory(zipPath, tempDir);
                 });
                 await ImportModFromSource(tempDir, isZip: true, baseNameOverride: zipFileName);
             }
@@ -505,8 +504,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                     {
                         await Task.Run(() =>
                         {
-                            var fastZip = new FastZip();
-                            fastZip.ExtractZip(path, tempDir, null);
+                            ZipFile.ExtractToDirectory(path, tempDir);
                         });
                         await ImportModFromSource(tempDir, isZip: true, baseNameOverride: zipFileName);
                     }

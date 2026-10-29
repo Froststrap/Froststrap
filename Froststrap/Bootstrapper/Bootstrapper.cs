@@ -4,9 +4,8 @@
 
 using Froststrap.AppData;
 using Froststrap.RobloxInterfaces;
-using ICSharpCode.SharpZipLib.GZip;
-using ICSharpCode.SharpZipLib.Tar;
-using ICSharpCode.SharpZipLib.Zip;
+using System.Formats.Tar;
+using System.IO.Compression;
 using Microsoft.Win32;
 using System.ComponentModel;
 using System.Data;
@@ -20,7 +19,6 @@ namespace Froststrap;
 internal partial class Bootstrapper : IDisposable
 {
     #region Properties
-    private readonly FastZipEvents _fastZipEvents = new();
     private static readonly JsonSerializerOptions _indentedJsonOptions = new() { WriteIndented = true };
 
     // might slightly increase the ram usage a bit, it's worth it, tho, since it reduces the cpu usage and is much better overrall
@@ -79,19 +77,6 @@ internal partial class Bootstrapper : IDisposable
     {
         _launchMode = launchMode;
 
-        // https://github.com/icsharpcode/SharpZipLib/blob/master/src/ICSharpCode.SharpZipLib/Zip/FastZip.cs/#L669-L680
-        // exceptions don't get thrown if we define events without actually binding to the failure events. probably a bug. ¯\_(ツ)_/¯
-        _fastZipEvents.FileFailure += (_, e) =>
-        {
-            if (!e.Name.EndsWith(".ttf", StringComparison.OrdinalIgnoreCase))
-                throw e.Exception;
-
-            App.Logger.Error($"Failed to extract {e.Name}");
-            _packageExtractionSuccess = false;
-        };
-        _fastZipEvents.DirectoryFailure += (_, e) => throw e.Exception;
-        _fastZipEvents.ProcessFile += (_, e) => e.ContinueRunning = !_cancelTokenSource.IsCancellationRequested;
-
         SetupAppData();
 
         Deployment.Channel = IsStudioLaunch ? App.Settings.Prop.StudioChannel : App.Settings.Prop.PlayerChannel;
@@ -134,8 +119,7 @@ internal partial class Bootstrapper : IDisposable
         foreach (var package in localData)
             PackageDirectoryMap[package.Key] = package.Value;
 
-        // Linux treats \\ weirdly, it leaves a \ in their name and dosent place in correct directory
-        if (OperatingSystem.IsLinux())
+        if (!OperatingSystem.IsWindows())
         {
             foreach (var key in PackageDirectoryMap.Keys.ToList())
             {
@@ -2353,13 +2337,15 @@ internal partial class Bootstrapper : IDisposable
         await Task.Run(() =>
         {
             using var fileStream = File.OpenRead(archivePath);
-            using var gzipStream = new GZipInputStream(fileStream);
-            using var tarStream = new TarInputStream(gzipStream, System.Text.Encoding.UTF8);
+            using var gzipStream = new GZipStream(fileStream, CompressionMode.Decompress);
+            using var tarReader = new TarReader(gzipStream);
 
-            TarEntry entry;
-            while ((entry = tarStream.GetNextEntry()) != null)
+            System.Formats.Tar.TarEntry? entry;
+            while ((entry = tarReader.GetNextEntry()) != null)
             {
-                if (entry.IsDirectory) continue;
+                if (entry.EntryType is TarEntryType.Directory)
+                    continue;
+
                 string entryName = entry.Name.Replace('\\', '/');
                 if (entryName.Contains("/x64/", StringComparison.OrdinalIgnoreCase) && entryName.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
                 {
@@ -2368,7 +2354,7 @@ internal partial class Bootstrapper : IDisposable
                     {
                         string targetPath = Path.Combine(outputDir, fileName);
                         using var fs = File.Create(targetPath);
-                        tarStream.CopyEntryContents(fs);
+                        entry.DataStream?.CopyTo(fs);
                     }
                 }
             }
@@ -3664,6 +3650,55 @@ internal partial class Bootstrapper : IDisposable
         }
     }
 
+    private void ExtractZipBcl(string zipPath, string targetFolder, string? fileFilter)
+    {
+        Regex[]? compiledFilters = null;
+        if (!string.IsNullOrEmpty(fileFilter))
+            compiledFilters = [.. fileFilter.Split(';').Select(p => new Regex(p))];
+
+        string fullTargetFolder = Path.GetFullPath(targetFolder);
+        if (!fullTargetFolder.EndsWith(Path.DirectorySeparatorChar))
+            fullTargetFolder += Path.DirectorySeparatorChar;
+
+        using var archive = ZipFile.OpenRead(zipPath);
+
+        foreach (ZipArchiveEntry entry in archive.Entries)
+        {
+            if (_cancelTokenSource.IsCancellationRequested)
+                return;
+
+            if (entry.FullName.EndsWith('/'))
+                continue;
+
+            string entryName = entry.FullName.Replace('\\', '/');
+
+            if (compiledFilters is not null && !compiledFilters.Any(r => r.IsMatch(entryName)))
+                continue;
+
+            string targetPath = Path.GetFullPath(Path.Combine(fullTargetFolder, entryName));
+
+            if (!targetPath.StartsWith(fullTargetFolder, StringComparison.Ordinal))
+            {
+                App.Logger.Warn($"Skipping entry with path-traversal pattern: {entry.FullName}");
+                continue;
+            }
+
+            string? targetDir = Path.GetDirectoryName(targetPath);
+            if (!string.IsNullOrEmpty(targetDir))
+                Directory.CreateDirectory(targetDir);
+
+            try
+            {
+                entry.ExtractToFile(targetPath, overwrite: true);
+            }
+            catch (Exception ex) when (entry.Name.EndsWith(".ttf", StringComparison.OrdinalIgnoreCase))
+            {
+                App.Logger.Error($"Failed to extract {entry.FullName}: {ex.Message}");
+                _packageExtractionSuccess = false;
+            }
+        }
+    }
+
     private async Task<bool> ExtractPackage(Package package, List<string>? files = null)
     {
         int attempts = 0;
@@ -3715,8 +3750,7 @@ internal partial class Bootstrapper : IDisposable
                 }
                 else
                 {
-                    var fastZip = new FastZip(_fastZipEvents);
-                    fastZip.ExtractZip(package.DownloadPath, targetFolder, fileFilter);
+                    ExtractZipBcl(package.DownloadPath, targetFolder, fileFilter);
                 }
 
                 App.Logger.Info($"Finished extracting {package.Name}");
@@ -3775,29 +3809,36 @@ internal partial class Bootstrapper : IDisposable
     {
         Regex[]? compiledFilters = null;
         if (!string.IsNullOrEmpty(fileFilter))
-        {
             compiledFilters = [.. fileFilter.Split(';').Select(p => new Regex(p))];
-        }
 
         await Task.Run(async () =>
         {
-            using var zipFile = new ZipFile(File.OpenRead(zipPath));
-            foreach (ZipEntry entry in zipFile)
+            using var archive = await ZipFile.OpenReadAsync(zipPath, cancellationToken);
+
+            string fullTargetFolder = Path.GetFullPath(targetFolder);
+            if (!fullTargetFolder.EndsWith(Path.DirectorySeparatorChar))
+                fullTargetFolder += Path.DirectorySeparatorChar;
+
+            foreach (ZipArchiveEntry entry in archive.Entries)
             {
-                if (entry.IsDirectory)
+                if (entry.FullName.EndsWith('/'))
                     continue;
 
-                string entryName = entry.Name.Replace('\\', '/');
+                string entryName = entry.FullName.Replace('\\', '/');
 
                 if (compiledFilters is not null && !compiledFilters.Any(r => r.IsMatch(entryName)))
                     continue;
 
-                string targetPath = Path.Combine(targetFolder, entryName);
+                string targetPath = Path.GetFullPath(Path.Combine(fullTargetFolder, entryName));
+
+                if (!targetPath.StartsWith(fullTargetFolder, StringComparison.Ordinal))
+                    continue;
+
                 string? targetDir = Path.GetDirectoryName(targetPath);
                 if (!string.IsNullOrEmpty(targetDir))
                     Directory.CreateDirectory(targetDir);
 
-                using var stream = zipFile.GetInputStream(entry);
+                await using var stream = await entry.OpenAsync(cancellationToken);
                 using var fileStream = File.Create(targetPath);
                 await stream.CopyToAsync(fileStream, cancellationToken);
             }

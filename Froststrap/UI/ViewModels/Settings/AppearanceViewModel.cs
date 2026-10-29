@@ -10,7 +10,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using Froststrap.UI.Elements.Base;
 using Froststrap.UI.Elements.Dialogs;
 using Froststrap.UI.Elements.Editor;
-using ICSharpCode.SharpZipLib.Zip;
+using System.IO.Compression;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Input;
@@ -560,29 +560,29 @@ namespace Froststrap.UI.ViewModels.Settings
                 FileTypeChoices = [new FilePickerFileType("Zip Archive") { Patterns = _zipFilter }]
             });
 
-            if (file is null) return;
+            if (file is null)
+                return;
 
             string themeDir = Path.Combine(Paths.CustomThemes, SelectedCustomTheme);
 
             await Task.Run(async () =>
             {
                 using var outputStream = await file.OpenWriteAsync();
-                using var zipStream = new ZipOutputStream(outputStream);
-                zipStream.SetLevel(5);
+                using var archive = new ZipArchive(outputStream, ZipArchiveMode.Create, leaveOpen: false);
 
                 foreach (var filePath in Directory.EnumerateFiles(themeDir, "*.*", SearchOption.AllDirectories))
                 {
-                    string relativePath = Path.GetRelativePath(themeDir, filePath);
-                    var entry = new ZipEntry(relativePath) { DateTime = DateTime.Now };
+                    string relativePath = Path.GetRelativePath(themeDir, filePath).Replace('\\', '/');
 
-                    await zipStream.PutNextEntryAsync(entry);
+                    var entry = archive.CreateEntry(relativePath, CompressionLevel.Optimal);
+                    entry.LastWriteTime = DateTimeOffset.Now;
+
+                    await using var entryStream = await entry.OpenAsync();
                     using var fileStream = File.OpenRead(filePath);
-                    await fileStream.CopyToAsync(zipStream);
-                    zipStream.CloseEntry();
+                    await fileStream.CopyToAsync(entryStream);
                 }
-
-                zipStream.Finish();
             });
+
             Froststrap.Utility.Threading.ShellExecute(file.Path.LocalPath, select: true);
         }
 
