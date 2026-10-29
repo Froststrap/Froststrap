@@ -8,7 +8,6 @@ using Velopack;
 using Froststrap;
 using Froststrap.Backend;
 using Froststrap.Cli;
-using System.Diagnostics;
 #if _WIN32
 using System.Runtime.InteropServices;
 #endif

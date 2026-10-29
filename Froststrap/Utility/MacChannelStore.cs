@@ -2,10 +2,7 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-using System.Diagnostics;
 using System.Runtime.Versioning;
-using System.Text.Json;
-using System.Text.RegularExpressions;
 
 namespace Froststrap.Utility
 {

@@ -6,7 +6,6 @@ using Froststrap.UI.Elements.Base;
 using Froststrap.UI.Elements.Onboarding.Pages;
 using Froststrap.UI.Utility;
 using Froststrap.UI.ViewModels.Onboarding;
-using Froststrap.Utility;
 
 namespace Froststrap.UI.Elements.Onboarding
 {

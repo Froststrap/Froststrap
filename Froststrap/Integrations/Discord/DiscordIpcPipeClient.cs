@@ -5,7 +5,6 @@
 using System.Buffers.Binary;
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
 using System.IO.Pipes;
 using System.Net.Sockets;
 using DiscordRPC.IO;
@@ -13,17 +12,6 @@ using DiscordRPC.Logging;
 
 namespace Froststrap.Integrations.Discord
 {
-    /// <summary>
-    /// Cross-platform Discord IPC pipe client.
-    /// <para>
-    /// The default client from DiscordRPC-NativeAOT only searches the directories
-    /// supplied by <c>XDG_RUNTIME_DIR</c>/<c>TMPDIR</c>/<c>TMP</c>/<c>TEMP</c> and uses a
-    /// five second timeout for every missing pipe. On macOS the socket usually lives in
-    /// the GUI session temp directory (<c>/var/folders/.../T</c>), which can differ from
-    /// <c>TMPDIR</c> when the app is started from a terminal or dev shell. This client
-    /// scans those directories as a fallback and fails fast when a socket is missing.
-    /// </para>
-    /// </summary>
     internal sealed class DiscordIpcPipeClient : INamedPipeClient
     {
         private const string PipePrefix = "discord-ipc-";

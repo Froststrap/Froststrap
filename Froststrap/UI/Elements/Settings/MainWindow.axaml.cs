@@ -23,7 +23,6 @@ using Froststrap.UI.ViewModels.Settings;
 using Froststrap.UI.ViewModels.Settings.FastFlags;
 using Froststrap.UI.ViewModels.Settings.GlobalSettings;
 using Froststrap.UI.ViewModels.Settings.Mods;
-using Froststrap.Utility;
 using LucideAvalonia.Enum;
 using System.ComponentModel;
 

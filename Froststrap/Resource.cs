@@ -2,11 +2,6 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-using System;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Avalonia.Platform;
 
 namespace Froststrap

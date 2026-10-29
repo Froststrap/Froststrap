@@ -8,7 +8,6 @@
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
-using System.Diagnostics;
 using Froststrap;
 
 internal static class AppInitializer
