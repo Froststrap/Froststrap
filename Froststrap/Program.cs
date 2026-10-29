@@ -11,7 +11,7 @@ using Froststrap.Cli;
 
 namespace Froststrap;
 
-sealed class Program
+sealed partial class Program
 {
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
