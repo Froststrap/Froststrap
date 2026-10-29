@@ -200,13 +200,61 @@ namespace Froststrap
             bool saved = base.Save();
 
             if (saved)
-            {
                 OriginalProp = new(Prop);
-                if (OperatingSystem.IsLinux() && !App.UseRosemary)
+
+            if (OperatingSystem.IsLinux())
+            {
+                if (App.UseRosemary)
+                    SyncToRosemaryClientSettings();
+                else if (saved)
                     SyncToSoberConfig();
             }
 
             return saved;
+        }
+
+        [System.Runtime.Versioning.SupportedOSPlatform("linux")]
+        private void SyncToRosemaryClientSettings()
+        {
+            try
+            {
+                string source = FileLocation;
+                if (!File.Exists(source))
+                {
+                    App.Logger.Warn($"Cannot sync Rosemary flags; source file does not exist: {source}");
+                    return;
+                }
+
+                string[] appNames = [App.RobloxPlayerAppName, App.RobloxStudioAppName];
+
+                foreach (string appName in appNames)
+                {
+                    string destination = Path.Combine(
+                        App.PlayerData.Directory,
+                        appName,
+                        "Contents",
+                        "MacOS",
+                        "ClientSettings",
+                        FileName);
+
+                    string? directory = Path.GetDirectoryName(destination);
+                    if (directory is null || !Directory.Exists(Path.Combine(App.PlayerData.Directory, appName)))
+                        continue;
+
+                    Directory.CreateDirectory(directory);
+                    File.Copy(source, destination, overwrite: true);
+                }
+
+                App.Logger.Info("Successfully synced flags to Rosemary client settings.");
+            }
+            catch (IOException ex)
+            {
+                App.Logger.Error($"Failed to sync flags to Rosemary: {ex}");
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                App.Logger.Error($"Failed to sync flags to Rosemary: {ex}");
+            }
         }
 
         [System.Runtime.Versioning.SupportedOSPlatform("linux")]
