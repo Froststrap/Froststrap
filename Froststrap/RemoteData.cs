@@ -3,8 +3,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
 using System.Security;
-using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.Crypto.Signers;
+using System.Security.Cryptography;
 
 namespace Froststrap
 {
@@ -13,16 +12,14 @@ namespace Froststrap
         public override string ClassName => nameof(RemoteDataManager);
 
         public override string FileLocation => Path.Combine(Paths.Base, "Data.json");
-        private string SignatureFileLocation => $"{FileLocation}.sig";
 
         public GenericTriState LoadedState = GenericTriState.Unknown;
 
         public event EventHandler DataLoaded = null!;
 
-        private const int Ed25519PublicKeyLength = 32;
-        private const int Ed25519SignatureLength = 64;
-
-        private const string ConfigPublicKeyBase64 = "frqqb5rEBhsU5pMkPQDQYwM3FyEmJWWIQWsVKztwzrI=";
+        private const int MaxSignatureLength = 80;
+        private string SignatureFileLocation => $"{FileLocation}.p256.sig";
+        private const string ConfigPublicKeyBase64 = "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEJdlC7QtmASE6ErcMxYrF/zhB6Yur5v+as5eEic5sTawX1weypXzLxZiyqltXS+naupU498V622IGLQAuG/xHTQ==";
         private static readonly byte[] ConfigPublicKey = Convert.FromBase64String(ConfigPublicKeyBase64);
 
         public void Subscribe(EventHandler Handler)
@@ -62,15 +59,14 @@ namespace Froststrap
             if (App.Settings.Prop.ForceLocalData)
             {
                 App.Logger.Info("Force loading local data");
-                LoadLocalVerifiedData();
-                LoadedState = GenericTriState.Successful;
+                LoadedState = LoadLocalVerifiedData() ? GenericTriState.Successful : GenericTriState.Failed;
             }
             else
             {
                 try
                 {
                     Uri remoteDataUri = new(App.ProjectRemoteDataLink);
-                    Uri remoteSigUri = new($"{App.ProjectRemoteDataLink}.sig");
+                    Uri remoteSigUri = new($"{App.ProjectRemoteDataLink}.p256.sig");
 
                     App.Logger.Info("Fetching remote Data.json and signature...");
 
@@ -80,7 +76,7 @@ namespace Froststrap
                     byte[] dataBytes = await dataTask;
                     byte[] sigBytes = await sigTask;
 
-                    if (sigBytes.Length != Ed25519SignatureLength || !VerifyEd25519(dataBytes, sigBytes, ConfigPublicKey))
+                    if (!VerifyEcdsa(dataBytes, sigBytes, ConfigPublicKey))
                     {
                         throw new SecurityException("Remote Data.json signature verification failed!");
                     }
@@ -115,7 +111,7 @@ namespace Froststrap
             {
                 File.WriteAllBytes(FileLocation, dataBytes);
                 File.WriteAllBytes(SignatureFileLocation, sigBytes);
-                App.Logger.Info("Saved verified Data.json and Data.json.sig to local cache.");
+                App.Logger.Info("Saved verified Data.json and Data.json.p256.sig to local cache.");
             }
             catch (Exception ex)
             {
@@ -137,7 +133,7 @@ namespace Froststrap
                 byte[] localDataBytes = File.ReadAllBytes(FileLocation);
                 byte[] localSigBytes = File.ReadAllBytes(SignatureFileLocation);
 
-                if (localSigBytes.Length != Ed25519SignatureLength || !VerifyEd25519(localDataBytes, localSigBytes, ConfigPublicKey))
+                if (!VerifyEcdsa(localDataBytes, localSigBytes, ConfigPublicKey))
                 {
                     App.Logger.Error("LOCAL DISK CACHE TAMPERED! Signature check failed for local Data.json.");
 
@@ -160,21 +156,20 @@ namespace Froststrap
             }
         }
 
-        private static bool VerifyEd25519(byte[] data, byte[] signature, byte[] publicKey)
+        private static bool VerifyEcdsa(byte[] data, byte[] signature, byte[] publicKey)
         {
             if (data == null || signature == null || publicKey == null)
                 return false;
 
-            if (signature.Length != Ed25519SignatureLength || publicKey.Length != Ed25519PublicKeyLength)
+            if (signature.Length == 0 || signature.Length > MaxSignatureLength)
                 return false;
 
             try
             {
-                var pubKeyParams = new Ed25519PublicKeyParameters(publicKey, 0);
-                var verifier = new Ed25519Signer();
-                verifier.Init(forSigning: false, pubKeyParams);
-                verifier.BlockUpdate(data, 0, data.Length);
-                return verifier.VerifySignature(signature);
+                using var ecdsa = ECDsa.Create();
+                ecdsa.ImportSubjectPublicKeyInfo(publicKey, out _);
+                return ecdsa.VerifyData(data, signature, HashAlgorithmName.SHA256,
+                    DSASignatureFormat.Rfc3279DerSequence);
             }
             catch
             {
