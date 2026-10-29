@@ -2,10 +2,13 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography;
 
 namespace Froststrap.Utility
 {
+    [SuppressMessage("Security", "CA5351",
+        Justification = "MD5 is only used to match checksums defined by external servers, not for security.")]
     internal static class FastHash
     {
         public static string FromBytes(byte[] data)
