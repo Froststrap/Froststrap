@@ -66,12 +66,6 @@ SPDX-License-Identifier: MPL-2.0
     <RootTrimmedAssemblies Condition="'$(RootTrimmedAssemblies)' == ''">true</RootTrimmedAssemblies>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(PublishTrimmed)' == 'true' and '$(RootTrimmedAssemblies)' == 'true'">
-    <TrimmerRootAssembly Include="Froststrap" />
-    <TrimmerRootAssembly Include="AvaloniaEdit" />
-    <TrimmerRootAssembly Include="ColorPicker" />
-  </ItemGroup>
-
   <!-- Resources needed by Avalonia -->
   <ItemGroup>
     <AvaloniaResource Include="Resources/**" />
