@@ -42,7 +42,9 @@
           inherit system;
         };
 
-        froststrap = pkgs.callPackage ./nix/package.nix { };
+        froststrap = pkgs.callPackage ./nix/package.nix {
+          fontconfig = pkgs-unstable.fontconfig;
+        };
       in
       {
         devShells =

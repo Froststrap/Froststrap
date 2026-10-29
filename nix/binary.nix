@@ -1,5 +1,6 @@
 {
   lib,
+  fontconfig,
   appimageTools,
   fetchurl,
   makeDesktopItem,
@@ -39,6 +40,7 @@ appimageTools.wrapType2 {
   extraPkgs =
     pkgs: with pkgs; [
       icu
+      fontconfig
       dbus
     ];
 
