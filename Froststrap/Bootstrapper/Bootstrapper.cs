@@ -2,13 +2,6 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-// To debug the automatic updater:
-// - Uncomment the definition below
-// - Publish the executable
-// - Launch the executable (click no when it asks you to upgrade)
-// - Launch Roblox (for testing web launches, run it from the command prompt)
-// - To re-test the same executable, delete it from the installation folder
-
 using Froststrap.AppData;
 using Froststrap.RobloxInterfaces;
 using ICSharpCode.SharpZipLib.GZip;
@@ -2671,20 +2664,7 @@ internal partial class Bootstrapper : IDisposable
                 if (Directory.Exists(symlinkPath))
                     Directory.Delete(symlinkPath, true);
 
-                var psi = new ProcessStartInfo("ln", $"-s {extractDir} {symlinkPath}")
-                {
-                    UseShellExecute = false,
-                    RedirectStandardError = true,
-                    RedirectStandardOutput = true,
-                };
-                using var proc = Process.Start(psi);
-                await proc!.WaitForExitAsync(_cancelTokenSource.Token);
-                if (proc.ExitCode != 0)
-                {
-                    var err = await proc.StandardError.ReadToEndAsync(_cancelTokenSource.Token);
-                    throw new InvalidOperationException($"Symlink creation failed: {err}");
-                }
-
+                Directory.CreateSymbolicLink(symlinkPath, extractDir);
                 App.Logger.Info($"Kombucha {versionTag} installed.");
             }
             finally
