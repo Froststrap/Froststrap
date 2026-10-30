@@ -157,6 +157,7 @@ jobs:
             curl \
             ca-certificates \
             clang \
+            rustup \
             build-essential \
             zlib1g-dev \
             libdbus-1-dev \
