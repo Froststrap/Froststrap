@@ -157,6 +157,7 @@ jobs:
             curl \
             ca-certificates \
             clang \
+            squashfs-tools \
             build-essential \
             zlib1g-dev \
             libdbus-1-dev \
