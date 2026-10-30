@@ -81,6 +81,14 @@ public sealed class Localizer
         }
     }
 
+    public void LoadCultureFromString(string cultureName, string json)
+    {
+        if (string.IsNullOrWhiteSpace(json)) return;
+        var dict = new Dictionary<string, string>();
+        MergeFromJson(json, dict);
+        _cultures[cultureName] = dict;
+    }
+
     private static void MergeFromJson(string json, Dictionary<string, string> target)
     {
         using var doc = JsonDocument.Parse(json);
