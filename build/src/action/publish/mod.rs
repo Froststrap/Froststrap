@@ -42,7 +42,8 @@ fn version_for_run() -> String {
             .unwrap_or_else(|| DEFAULT.to_string());
 
         if let Some(run) = env_nonempty("GITHUB_RUN_NUMBER") {
-            tag = format!("{tag}-ci.{run}");
+            let base = tag.split('-').next().unwrap_or(&tag);
+            tag = format!("{base}-ci.{run}");
         }
         tag
     };
