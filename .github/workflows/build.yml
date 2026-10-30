@@ -157,7 +157,6 @@ jobs:
             curl \
             ca-certificates \
             clang \
-            rustup \
             build-essential \
             zlib1g-dev \
             libdbus-1-dev \
@@ -171,10 +170,14 @@ jobs:
         with:
           dotnet-version: "10.0.x"
 
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@nightly
+        with:
+          targets: x86_64-unknown-linux-gnu
+          components: rustfmt, clippy
+
       - name: Install other deps
         run: |
-          rustup toolchain install nightly --profile minimal
-          rustup default nightly
           dotnet tool install -g vpk --version $VPK_VERSION
           sudo apt install -y libdbus-1-dev pkg-config
 
