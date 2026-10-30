@@ -146,6 +146,8 @@ jobs:
 
   linux:
     runs-on: ubuntu-latest
+    container:
+      image: ubuntu:22.04
     steps:
       - uses: actions/checkout@v7
         with: { submodules: true, fetch-tags: true, fetch-depth: 0 }
