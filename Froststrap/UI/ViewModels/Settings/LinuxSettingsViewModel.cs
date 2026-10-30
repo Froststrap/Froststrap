@@ -81,7 +81,7 @@ namespace Froststrap.UI.ViewModels.Settings
             string wineBinary = Path.Combine(baseWineDir, "kombucha", "bin", "wine");
             if (!File.Exists(wineBinary))
             {
-                _ = Frontend.ShowMessageBox(Strings.Menu_LinuxSettings_WineBinaryNotFound, MessageBoxImage.Error);
+                _ = Frontend.ShowMessageBox(Localizer.Instance.Get("Menu_LinuxSettings_WineBinaryNotFound"), MessageBoxImage.Error);
                 return;
             }
 
@@ -102,7 +102,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
             catch (Exception ex)
             {
-                _ = Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Menu_LinuxSettings_FailedToStartWineCfg, ex.Message), MessageBoxImage.Error);
+                _ = Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Menu_LinuxSettings_FailedToStartWineCfg"), ex.Message), MessageBoxImage.Error);
             }
         }
 

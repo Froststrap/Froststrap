@@ -91,7 +91,7 @@ namespace Froststrap.Utility
 
                 _loadStatus = GenericTriState.Failed;
 
-                await Frontend.ShowMessageBox(Strings.Dialog_CannotCreateShortcuts, MessageBoxImage.Warning);
+                await Frontend.ShowMessageBox(Localizer.Instance.Get("Dialog_CannotCreateShortcuts"), MessageBoxImage.Warning);
             }
         }
 

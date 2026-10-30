@@ -6,6 +6,9 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Styling;
+using Froststrap.Localisation;
+using System.Globalization;
+using System.IO;
 
 namespace Froststrap
 {
@@ -17,9 +20,10 @@ namespace Froststrap
 
         private static readonly List<string> _rtlLocales = ["ar", "he"];
 
-        public static readonly Dictionary<string, string> SupportedLocales = new()
+        private static Dictionary<string, string> _supportedLocales;
+        public static Dictionary<string, string> SupportedLocales => _supportedLocales ??= new()
         {
-            { "nil", Strings.Common_SystemDefault },
+            { "nil", Localizer.Instance.Get("Common_SystemDefault") },
             { "en", "English" },
             { "en-US", "English (United States)" },
             { "ar", "العربية" }, // Arabic
@@ -63,7 +67,7 @@ namespace Froststrap
 
             languages.AddRange(SupportedLocales.Values.Take(3));
             languages.AddRange(SupportedLocales.Values.Where(x => !languages.Contains(x)).OrderBy(x => x));
-            languages[0] = Strings.Common_SystemDefault;
+            languages[0] = Localizer.Instance.Get("Common_SystemDefault");
 
             return languages;
         }
@@ -87,13 +91,29 @@ namespace Froststrap
             CultureInfo.DefaultThreadCurrentCulture = CurrentCulture;
             CultureInfo.DefaultThreadCurrentUICulture = CurrentCulture;
 
-            Strings.Culture = CurrentCulture;
+            Localizer.Instance.CultureName = CurrentCulture.Name;
 
             RightToLeft = _rtlLocales.Any(l => CurrentCulture.Name.StartsWith(l, StringComparison.OrdinalIgnoreCase));
         }
 
         public static void Initialize()
         {
+            // Load default and culture translations from packaged JSON
+            var baseDir = AppContext.BaseDirectory;
+            var translationsDir = Path.Combine(baseDir, "Resources", "Translations");
+            if (Directory.Exists(translationsDir))
+            {
+                var defaultPath = Path.Combine(translationsDir, "en-US.json");
+                if (File.Exists(defaultPath))
+                    Localizer.Instance.LoadDefault(defaultPath);
+
+                foreach (var file in Directory.GetFiles(translationsDir, "*.json"))
+                {
+                    var name = Path.GetFileNameWithoutExtension(file);
+                    Localizer.Instance.LoadCulture(name, file);
+                }
+            }
+
             Set("nil");
 
             ApplyLocaleToApplication();

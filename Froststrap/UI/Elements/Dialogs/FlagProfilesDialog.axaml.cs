@@ -118,9 +118,9 @@ namespace Froststrap.UI.Elements.Dialogs
                 PlaceProfileEmptyMessage.IsVisible = !hasProfiles || !hasProfileSelected;
 
                 if (!hasProfiles)
-                    PlaceProfileEmptyMessage.Text = Strings.Menu_FlagProfiles_NoProfilesFound;
+                    PlaceProfileEmptyMessage.Text = Localizer.Instance.Get("Menu_FlagProfiles_NoProfilesFound");
                 else if (!hasProfileSelected)
-                    PlaceProfileEmptyMessage.Text = Strings.Menu_FlagProfiles_SelectProfileFirst;
+                    PlaceProfileEmptyMessage.Text = Localizer.Instance.Get("Menu_FlagProfiles_SelectProfileFirst");
 
                 PlaceIdsListBox.SelectionChanged -= PlaceIdsListBox_SelectionChanged;
 
@@ -160,7 +160,7 @@ namespace Froststrap.UI.Elements.Dialogs
         {
             if (PlaceProfile.SelectedItem is not string selectedProfile)
             {
-                _ = Frontend.ShowMessageBox(Strings.Menu_FlagProfiles_SelectProfileFirst, MessageBoxImage.Warning, MessageBoxButton.OK);
+                _ = Frontend.ShowMessageBox(Localizer.Instance.Get("Menu_FlagProfiles_SelectProfileFirst"), MessageBoxImage.Warning, MessageBoxButton.OK);
                 return;
             }
 
@@ -168,19 +168,19 @@ namespace Froststrap.UI.Elements.Dialogs
 
             if (string.IsNullOrWhiteSpace(placeId))
             {
-                _ = Frontend.ShowMessageBox(Strings.Menu_FlagProfiles_EnterPlaceId, MessageBoxImage.Warning, MessageBoxButton.OK);
+                _ = Frontend.ShowMessageBox(Localizer.Instance.Get("Menu_FlagProfiles_EnterPlaceId"), MessageBoxImage.Warning, MessageBoxButton.OK);
                 return;
             }
 
             if (!Regex.IsMatch(placeId, @"^\d+$"))
             {
-                _ = Frontend.ShowMessageBox(Strings.Menu_FlagProfiles_PlaceIdNumeric, MessageBoxImage.Warning, MessageBoxButton.OK);
+                _ = Frontend.ShowMessageBox(Localizer.Instance.Get("Menu_FlagProfiles_PlaceIdNumeric"), MessageBoxImage.Warning, MessageBoxButton.OK);
                 return;
             }
 
             if (_placeIds.Contains(placeId))
             {
-                _ = Frontend.ShowMessageBox(Strings.Menu_FlagProfiles_PlaceIdExists, MessageBoxImage.Warning, MessageBoxButton.OK);
+                _ = Frontend.ShowMessageBox(Localizer.Instance.Get("Menu_FlagProfiles_PlaceIdExists"), MessageBoxImage.Warning, MessageBoxButton.OK);
                 return;
             }
 
@@ -235,7 +235,7 @@ namespace Froststrap.UI.Elements.Dialogs
         {
             if (LoadProfile.SelectedItem is not string oldProfileName)
             {
-                _ = Frontend.ShowMessageBox(Strings.Menu_FlagProfiles_SelectProfileRename, MessageBoxImage.Warning, MessageBoxButton.OK);
+                _ = Frontend.ShowMessageBox(Localizer.Instance.Get("Menu_FlagProfiles_SelectProfileRename"), MessageBoxImage.Warning, MessageBoxButton.OK);
                 return;
             }
 
@@ -243,7 +243,7 @@ namespace Froststrap.UI.Elements.Dialogs
 
             if (string.IsNullOrWhiteSpace(newName))
             {
-                _ = Frontend.ShowMessageBox(Strings.Menu_FlagProfiles_NameCannotBeEmpty, MessageBoxImage.Error, MessageBoxButton.OK);
+                _ = Frontend.ShowMessageBox(Localizer.Instance.Get("Menu_FlagProfiles_NameCannotBeEmpty"), MessageBoxImage.Error, MessageBoxButton.OK);
                 return;
             }
 
@@ -251,7 +251,7 @@ namespace Froststrap.UI.Elements.Dialogs
             {
                 if (newName.Contains(c, StringComparison.Ordinal))
                 {
-                    _ = Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Menu_FlagProfiles_InvalidCharacter, c), MessageBoxImage.Error, MessageBoxButton.OK);
+                    _ = Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Menu_FlagProfiles_InvalidCharacter"), c), MessageBoxImage.Error, MessageBoxButton.OK);
                     return;
                 }
             }
@@ -262,7 +262,7 @@ namespace Froststrap.UI.Elements.Dialogs
 
             if (File.Exists(newPath))
             {
-                _ = Frontend.ShowMessageBox(Strings.Menu_FlagProfiles_ProfileExists, MessageBoxImage.Error, MessageBoxButton.OK);
+                _ = Frontend.ShowMessageBox(Localizer.Instance.Get("Menu_FlagProfiles_ProfileExists"), MessageBoxImage.Error, MessageBoxButton.OK);
                 return;
             }
 
@@ -283,7 +283,7 @@ namespace Froststrap.UI.Elements.Dialogs
             }
             catch (Exception ex)
             {
-                _ = Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Menu_FlagProfiles_RenameFailed, ex.Message), MessageBoxImage.Error, MessageBoxButton.OK);
+                _ = Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Menu_FlagProfiles_RenameFailed"), ex.Message), MessageBoxImage.Error, MessageBoxButton.OK);
             }
         }
 
@@ -291,7 +291,7 @@ namespace Froststrap.UI.Elements.Dialogs
         {
             if (LoadProfile.SelectedItem is not string selectedProfile)
             {
-                _ = Frontend.ShowMessageBox(Strings.Menu_FlagProfiles_SelectProfileCopy, MessageBoxImage.Warning, MessageBoxButton.OK);
+                _ = Frontend.ShowMessageBox(Localizer.Instance.Get("Menu_FlagProfiles_SelectProfileCopy"), MessageBoxImage.Warning, MessageBoxButton.OK);
                 return;
             }
 
@@ -300,7 +300,7 @@ namespace Froststrap.UI.Elements.Dialogs
 
             if (!File.Exists(profilePath))
             {
-                _ = Frontend.ShowMessageBox(Strings.Menu_FlagProfiles_ProfileNotFound, MessageBoxImage.Error, MessageBoxButton.OK);
+                _ = Frontend.ShowMessageBox(Localizer.Instance.Get("Menu_FlagProfiles_ProfileNotFound"), MessageBoxImage.Error, MessageBoxButton.OK);
                 return;
             }
 
@@ -311,7 +311,7 @@ namespace Froststrap.UI.Elements.Dialogs
 
                 if (flags == null)
                 {
-                    _ = Frontend.ShowMessageBox(Strings.Menu_FlagProfiles_ParseFailed, MessageBoxImage.Error, MessageBoxButton.OK);
+                    _ = Frontend.ShowMessageBox(Localizer.Instance.Get("Menu_FlagProfiles_ParseFailed"), MessageBoxImage.Error, MessageBoxButton.OK);
                     return;
                 }
 
@@ -363,7 +363,7 @@ namespace Froststrap.UI.Elements.Dialogs
             }
             catch (Exception ex)
             {
-                _ = Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Menu_FlagProfiles_CopyFailed, ex.Message), MessageBoxImage.Error, MessageBoxButton.OK);
+                _ = Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Menu_FlagProfiles_CopyFailed"), ex.Message), MessageBoxImage.Error, MessageBoxButton.OK);
             }
         }
 
@@ -371,7 +371,7 @@ namespace Froststrap.UI.Elements.Dialogs
         {
             if (LoadProfile.SelectedItem is not string selectedProfile)
             {
-                _ = Frontend.ShowMessageBox(Strings.Menu_FlagProfiles_SelectProfileUpdate, MessageBoxImage.Warning, MessageBoxButton.OK);
+                _ = Frontend.ShowMessageBox(Localizer.Instance.Get("Menu_FlagProfiles_SelectProfileUpdate"), MessageBoxImage.Warning, MessageBoxButton.OK);
                 return;
             }
 
@@ -380,7 +380,7 @@ namespace Froststrap.UI.Elements.Dialogs
                 var currentFlags = App.FastFlags.Prop;
                 if (currentFlags == null)
                 {
-                    _ = Frontend.ShowMessageBox(Strings.Menu_FlagProfiles_GetFlagsFailed, MessageBoxImage.Error, MessageBoxButton.OK);
+                    _ = Frontend.ShowMessageBox(Localizer.Instance.Get("Menu_FlagProfiles_GetFlagsFailed"), MessageBoxImage.Error, MessageBoxButton.OK);
                     return;
                 }
 
@@ -396,7 +396,7 @@ namespace Froststrap.UI.Elements.Dialogs
             }
             catch (Exception ex)
             {
-                _ = Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Menu_FlagProfiles_UpdateFailed, ex.Message), MessageBoxImage.Error, MessageBoxButton.OK);
+                _ = Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Menu_FlagProfiles_UpdateFailed"), ex.Message), MessageBoxImage.Error, MessageBoxButton.OK);
             }
         }
 

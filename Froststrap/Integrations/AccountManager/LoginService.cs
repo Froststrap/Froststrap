@@ -342,7 +342,7 @@ namespace Froststrap.Integrations.AccountManager
 
                 try
                 {
-                    dialog.Title = Strings.Menu_BrowserLogin_Title;
+                    dialog.Title = Localizer.Instance.Get("Menu_BrowserLogin_Title");
                     dialog.Source = LoginUri;
                 }
                 catch (Exception ex) { App.Logger.Error(ex); }

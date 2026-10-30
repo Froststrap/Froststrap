@@ -179,7 +179,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                     if (Directory.Exists(themePath))
                     {
                         var result = await Frontend.ShowMessageBox(
-                            string.Format(CultureInfo.InvariantCulture, Strings.Menu_CommunityMods_Overwrite, baseName),
+                            string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Menu_CommunityMods_Overwrite"), baseName),
                             MessageBoxImage.Question,
                             MessageBoxButton.YesNo);
 
@@ -203,7 +203,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                     App.Settings.Prop.BootstrapperStyle = BootstrapperStyle.CustomDialog;
                     App.Settings.Save();
 
-                    _ = Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Menu_CommunityMods_ThemeInstalled, finalName), MessageBoxImage.Information);
+                    _ = Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Menu_CommunityMods_ThemeInstalled"), finalName), MessageBoxImage.Information);
                 }
                 else
                 {
@@ -212,7 +212,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                     if (Directory.Exists(installPath))
                     {
                         var result = await Frontend.ShowMessageBox(
-                            string.Format(CultureInfo.InvariantCulture, Strings.Menu_CommunityMods_Overwrite, baseName),
+                            string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Menu_CommunityMods_Overwrite"), baseName),
                             MessageBoxImage.Question,
                             MessageBoxButton.YesNo);
 
@@ -255,7 +255,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                     }
 
                     App.State.SaveSetting("Mods");
-                    _ = Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Menu_CommunityMods_ModInstalled, finalName), MessageBoxImage.Information);
+                    _ = Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Menu_CommunityMods_ModInstalled"), finalName), MessageBoxImage.Information);
                 }
             }
             catch (Exception ex)

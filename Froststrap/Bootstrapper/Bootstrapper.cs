@@ -138,22 +138,22 @@ internal partial class Bootstrapper : IDisposable
 
         App.Logger.Warn($"Connectivity check failed: {ex}");
 
-        string message = Strings.Dialog_Connectivity_BadConnection;
+        string message = Localizer.Instance.Get("Dialog_Connectivity_BadConnection");
 
         if (ex is AggregateException)
             ex = ex.InnerException!;
 
         // https://gist.github.com/pizzaboxer/4b58303589ee5b14cc64397460a8f386
         if (ex is HttpRequestException && ex.InnerException is null)
-            message = String.Format(CultureInfo.InvariantCulture, Strings.Dialog_Connectivity_RobloxDown, "[status.roblox.com](https://status.roblox.com)");
+            message = String.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Dialog_Connectivity_RobloxDown"), "[status.roblox.com](https://status.roblox.com)");
 
         if (MustUpgrade)
-            message += $"\n\n{Strings.Dialog_Connectivity_RobloxUpgradeNeeded}\n\n{Strings.Dialog_Connectivity_TryAgainLater}";
+            message += $"\n\n{Localizer.Instance.Get("Dialog_Connectivity_RobloxUpgradeNeeded")}\n\n{Localizer.Instance.Get("Dialog_Connectivity_TryAgainLater")}";
         else
-            message += $"\n\n{Strings.Dialog_Connectivity_RobloxUpgradeSkip}";
+            message += $"\n\n{Localizer.Instance.Get("Dialog_Connectivity_RobloxUpgradeSkip")}";
 
         await Frontend.ShowConnectivityDialog(
-            String.Format(CultureInfo.InvariantCulture, Strings.Dialog_Connectivity_UnableToConnect, "Roblox"),
+            String.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Dialog_Connectivity_UnableToConnect"), "Roblox"),
             message,
             MustUpgrade ? MessageBoxImage.Error : MessageBoxImage.Warning,
             ex);
@@ -172,7 +172,7 @@ internal partial class Bootstrapper : IDisposable
         if (AutomaticallyUpdateSober && _launchMode == LaunchMode.Player)
             await UpdateSoberFlatpakAsync();
 
-        SetStatus(Strings.Bootstrapper_Status_Connecting);
+        SetStatus(Localizer.Instance.Get("Bootstrapper_Status_Connecting"));
 
         // Skip the Roblox deployment API connectivity check entirely.
         if (OperatingSystem.IsLinux() && !IsStudioLaunch)
@@ -206,7 +206,7 @@ internal partial class Bootstrapper : IDisposable
             }
 
             App.Logger.Warn($"{LockName} instance exists, waiting...");
-            SetStatus(Strings.Bootstrapper_Status_WaitingOtherInstances);
+            SetStatus(Localizer.Instance.Get("Bootstrapper_Status_WaitingOtherInstances"));
 
             while (!_cancelTokenSource.Token.IsCancellationRequested)
             {
@@ -252,7 +252,7 @@ internal partial class Bootstrapper : IDisposable
             if (!_noConnection)
             {
                 if (App.RemoteData.LoadedState == GenericTriState.Unknown) // we dont want it to flicker
-                    SetStatus(Strings.Bootstrapper_Status_WaitingForData);
+                    SetStatus(Localizer.Instance.Get("Bootstrapper_Status_WaitingForData"));
 
                 await SetupPackageDictionaries(); // mods also require it
 
@@ -357,9 +357,9 @@ internal partial class Bootstrapper : IDisposable
             {
                 // show tips
                 if (!_packageExtractionSuccess)
-                    Backend.NativeNotify.SendMessage(Strings.Bootstrapper_ExtractionFailed_Title, Strings.Bootstrapper_ExtractionFailed_Message);
+                    Backend.NativeNotify.SendMessage(Localizer.Instance.Get("Bootstrapper_ExtractionFailed_Title"), Localizer.Instance.Get("Bootstrapper_ExtractionFailed_Message"));
                 else if (!allModificationsApplied)
-                    Backend.NativeNotify.SendMessage(Strings.Bootstrapper_ModificationsFailed_Title, Strings.Bootstrapper_ModificationsFailed_Message);
+                    Backend.NativeNotify.SendMessage(Localizer.Instance.Get("Bootstrapper_ModificationsFailed_Title"), Localizer.Instance.Get("Bootstrapper_ModificationsFailed_Message"));
 
                 if (!OperatingSystem.IsLinux())
                 {
@@ -482,7 +482,7 @@ internal partial class Bootstrapper : IDisposable
                         : Deployment.DefaultChannel;
 
                     var promptResult = await Frontend.ShowMessageBox(
-                        String.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_Bootstrapper_Dialog_PromptChannelChange, displayChannel, Deployment.Channel),
+                        String.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Bootstrapper_Bootstrapper_Dialog_PromptChannelChange"), displayChannel, Deployment.Channel),
                         MessageBoxImage.Question,
                         MessageBoxButton.YesNo
                     );
@@ -537,7 +537,7 @@ internal partial class Bootstrapper : IDisposable
                 App.Logger.Warn($"Player version override invalid: {error}. Falling back to channel.");
 
                 await Frontend.ShowMessageBox(
-                    string.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_Status_InvalidOverride, overrideHash, error),
+                    string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Bootstrapper_Status_InvalidOverride"), overrideHash, error),
                     MessageBoxImage.Warning,
                     MessageBoxButton.OK
                 );
@@ -573,7 +573,7 @@ internal partial class Bootstrapper : IDisposable
                     {
                         await Frontend.ShowMessageBox(
                             String.Format(CultureInfo.InvariantCulture,
-                                Strings.Boostrapper_Dialog_UnauthorizedChannel,
+                                Localizer.Instance.Get("Boostrapper_Dialog_UnauthorizedChannel"),
                                 Deployment.Channel,
                                 Deployment.DefaultChannel
                             ),
@@ -593,7 +593,7 @@ internal partial class Bootstrapper : IDisposable
             if (clientVersion.IsBehindDefaultChannel && App.Settings.Prop.ChannelChangeMode == ChannelChangeMode.Prompt)
             {
                 MessageBoxResult action = await Frontend.ShowMessageBox(
-                        String.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_Dialog_ChannelOutOfDate, Deployment.Channel, Deployment.DefaultChannel),
+                        String.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Bootstrapper_Dialog_ChannelOutOfDate"), Deployment.Channel, Deployment.DefaultChannel),
                         MessageBoxImage.Warning,
                         MessageBoxButton.YesNo
                     );
@@ -780,11 +780,11 @@ internal partial class Bootstrapper : IDisposable
         using var fetcher = new Integrations.RobloxServerFetcher();
 
         if (!string.IsNullOrEmpty(selectedRegion) &&
-            !selectedRegion.Equals(Strings.Common_Auto, StringComparison.OrdinalIgnoreCase))
+            !selectedRegion.Equals(Localizer.Instance.Get("Common_Auto"), StringComparison.OrdinalIgnoreCase))
         {
             App.Logger.Debug($"User selected specific region: {selectedRegion}");
 
-            SetStatus(string.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_Status_SearchingServers, selectedRegion));
+            SetStatus(string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Bootstrapper_Status_SearchingServers"), selectedRegion));
 
             var result = await fetcher.FindBestServerInSelectedRegionAsync(
                 (long)_joinData.PlaceId!,
@@ -808,7 +808,7 @@ internal partial class Bootstrapper : IDisposable
 
         cancellationToken.ThrowIfCancellationRequested();
 
-        SetStatus(Strings.Bootstrapper_Status_SearchingNearbyServers);
+        SetStatus(Localizer.Instance.Get("Bootstrapper_Status_SearchingNearbyServers"));
 
         var topRegions = await fetcher.GetClosestRegionsForAutoModeAsync(cancellationToken);
 
@@ -865,7 +865,7 @@ internal partial class Bootstrapper : IDisposable
                     App.Logger.Debug("User is trying to join a friend, showing dialog");
 
                     var result = await Frontend.ShowMessageBox(
-                        String.Format(CultureInfo.InvariantCulture, Strings.Menu_Bootstrapper_Experimental_BetterMatchmaking_FollowUser),
+                        String.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Menu_Bootstrapper_Experimental_BetterMatchmaking_FollowUser")),
                         MessageBoxImage.Question,
                         MessageBoxButton.YesNo
                     );
@@ -881,7 +881,7 @@ internal partial class Bootstrapper : IDisposable
                 _skipMatchmaking = false;
                 _matchmakingCts = new CancellationTokenSource();
 
-                Dialog?.CancelButtonText = Strings.Bootstrapper_CancelButton_Skip;
+                Dialog?.CancelButtonText = Localizer.Instance.Get("Bootstrapper_CancelButton_Skip");
 
                 try
                 {
@@ -909,15 +909,15 @@ internal partial class Bootstrapper : IDisposable
                 catch (HttpRequestException ex)
                 {
                     _ = Frontend.ShowConnectivityDialog(
-                        String.Format(CultureInfo.InvariantCulture, Strings.Dialog_Connectivity_UnableToConnect, "rovalra.com"),
-                        Strings.Dialog_Connectivity_MatchmakingFailed,
+                        String.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Dialog_Connectivity_UnableToConnect"), "rovalra.com"),
+                        Localizer.Instance.Get("Dialog_Connectivity_MatchmakingFailed"),
                         MessageBoxImage.Warning,
                         ex
                     );
                 }
                 finally
                 {
-                    Dialog?.CancelButtonText = Strings.Common_Cancel;
+                    Dialog?.CancelButtonText = Localizer.Instance.Get("Common_Cancel");
                     _matchmakingInProgress = false;
                     _matchmakingCts?.Dispose();
                     _matchmakingCts = null;
@@ -934,7 +934,7 @@ internal partial class Bootstrapper : IDisposable
                 _launchCommandLine = "roblox://navigation/home";
         }
 
-        SetStatus(Strings.Bootstrapper_Status_Starting);
+        SetStatus(Localizer.Instance.Get("Bootstrapper_Status_Starting"));
 
         string expectedName = IsStudioLaunch ? App.RobloxStudioAppName : App.RobloxPlayerAppName;
         string expectedPath = Path.Combine((string)AppData.Directory, expectedName);
@@ -1113,7 +1113,7 @@ internal partial class Bootstrapper : IDisposable
                 App.Logger.Debug("User is trying to join a friend, showing dialog");
 
                 var result = await Frontend.ShowMessageBox(
-                    String.Format(CultureInfo.InvariantCulture, Strings.Menu_Bootstrapper_Experimental_BetterMatchmaking_FollowUser),
+                    String.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Menu_Bootstrapper_Experimental_BetterMatchmaking_FollowUser")),
                     MessageBoxImage.Question,
                     MessageBoxButton.YesNo
                 );
@@ -1129,7 +1129,7 @@ internal partial class Bootstrapper : IDisposable
             _skipMatchmaking = false;
             _matchmakingCts = new CancellationTokenSource();
 
-            Dialog?.CancelButtonText = Strings.Bootstrapper_CancelButton_Skip;
+            Dialog?.CancelButtonText = Localizer.Instance.Get("Bootstrapper_CancelButton_Skip");
 
             try
             {
@@ -1157,15 +1157,15 @@ internal partial class Bootstrapper : IDisposable
             catch (HttpRequestException ex)
             {
                 _ = Frontend.ShowConnectivityDialog(
-                    String.Format(CultureInfo.InvariantCulture, Strings.Dialog_Connectivity_UnableToConnect, "rovalra.com"),
-                    Strings.Dialog_Connectivity_MatchmakingFailed,
+                    String.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Dialog_Connectivity_UnableToConnect"), "rovalra.com"),
+                    Localizer.Instance.Get("Dialog_Connectivity_MatchmakingFailed"),
                     MessageBoxImage.Warning,
                     ex
                 );
             }
             finally
             {
-                Dialog?.CancelButtonText = Strings.Common_Cancel;
+                Dialog?.CancelButtonText = Localizer.Instance.Get("Common_Cancel");
                 _matchmakingInProgress = false;
                 _matchmakingCts?.Dispose();
                 _matchmakingCts = null;
@@ -1186,7 +1186,7 @@ internal partial class Bootstrapper : IDisposable
             _launchCommandLine = soberUri;
         }
 
-        SetStatus(Strings.Bootstrapper_Status_StartingSober);
+        SetStatus(Localizer.Instance.Get("Bootstrapper_Status_StartingSober"));
 
         Utility.Processes.KillSober();
         App.Logger.Debug($"Launching Sober via flatpak with args: {_launchCommandLine}");
@@ -1285,7 +1285,7 @@ internal partial class Bootstrapper : IDisposable
             App.Logger.Error($"Failed to launch Sober via flatpak! {ex}");
             string detailsPart = string.IsNullOrWhiteSpace(ex.Message) ? "" : $"\n\n{ex.Message}";
             await Frontend.ShowMessageBox(
-                string.Format(CultureInfo.InvariantCulture, Strings.Sober_LaunchFailed, SoberFlatpakId, detailsPart),
+                string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Sober_LaunchFailed"), SoberFlatpakId, detailsPart),
                 MessageBoxImage.Error
             );
             App.Terminate(ErrorCode.ERROR_CANCELLED);
@@ -1442,7 +1442,7 @@ internal partial class Bootstrapper : IDisposable
             App.Logger.Info("Skipping Better MatchMaking.");
             _skipMatchmaking = true;
             _matchmakingCts?.Cancel();
-            SetStatus(Strings.Bootstrapper_Status_SkippingMatchmaking);
+            SetStatus(Localizer.Instance.Get("Bootstrapper_Status_SkippingMatchmaking"));
             return true;
         }
 
@@ -1657,12 +1657,12 @@ internal partial class Bootstrapper : IDisposable
     {
         if (!App.Settings.Prop.UpdateRoblox)
         {
-            SetStatus(Strings.Bootstrapper_Status_CancelUpgrade);
+            SetStatus(Localizer.Instance.Get("Bootstrapper_Status_CancelUpgrade"));
             App.Logger.Info("Upgrading disabled, cancelling the upgrade.");
 
             if (!Directory.Exists(_latestVersionDirectory))
             {
-                _ = Frontend.ShowMessageBox(Strings.Bootstrapper_Dialog_NoUpgradeWithoutClient, MessageBoxImage.Warning, MessageBoxButton.OK);
+                _ = Frontend.ShowMessageBox(Localizer.Instance.Get("Bootstrapper_Dialog_NoUpgradeWithoutClient"), MessageBoxImage.Warning, MessageBoxButton.OK);
             }
             else
             {
@@ -1672,8 +1672,8 @@ internal partial class Bootstrapper : IDisposable
         }
 
         SetStatus(string.IsNullOrEmpty(AppData.DistributionState.VersionGuid)
-            ? Strings.Bootstrapper_Status_Installing
-            : Strings.Bootstrapper_Status_Upgrading);
+            ? Localizer.Instance.Get("Bootstrapper_Status_Installing")
+            : Localizer.Instance.Get("Bootstrapper_Status_Upgrading"));
 
         Directory.CreateDirectory(Paths.Base);
         Directory.CreateDirectory(Paths.Downloads);
@@ -1731,7 +1731,7 @@ internal partial class Bootstrapper : IDisposable
 
         if (Filesystem.GetFreeDiskSpace(Paths.Base) < totalSizeRequired)
         {
-            await Frontend.ShowMessageBox(Strings.Bootstrapper_NotEnoughSpace, MessageBoxImage.Error);
+            await Frontend.ShowMessageBox(Localizer.Instance.Get("Bootstrapper_NotEnoughSpace"), MessageBoxImage.Error);
             App.Terminate(ErrorCode.ERROR_INSTALL_FAILURE);
             return;
         }
@@ -1789,7 +1789,7 @@ internal partial class Bootstrapper : IDisposable
         {
             Dialog.ProgressIndeterminate = true;
             Dialog.TaskbarProgressState = TaskbarItemProgressState.Indeterminate;
-            SetStatus(Strings.Bootstrapper_Status_Configuring);
+            SetStatus(Localizer.Instance.Get("Bootstrapper_Status_Configuring"));
         }
 
         if (OperatingSystem.IsWindows() && App.State.Prop.PromptWebView2Install)
@@ -1804,7 +1804,7 @@ internal partial class Bootstrapper : IDisposable
             }
             else
             {
-                var result = await Frontend.ShowMessageBox(Strings.Bootstrapper_WebView2NotFound, MessageBoxImage.Warning, MessageBoxButton.YesNo, MessageBoxResult.Yes);
+                var result = await Frontend.ShowMessageBox(Localizer.Instance.Get("Bootstrapper_WebView2NotFound"), MessageBoxImage.Warning, MessageBoxButton.YesNo, MessageBoxResult.Yes);
 
                 if (result != MessageBoxResult.Yes)
                 {
@@ -1826,7 +1826,7 @@ internal partial class Bootstrapper : IDisposable
 
                     await ExtractPackage(package);
 
-                    SetStatus(Strings.Bootstrapper_Status_InstallingWebView2);
+                    SetStatus(Localizer.Instance.Get("Bootstrapper_Status_InstallingWebView2"));
 
                     var startInfo = new ProcessStartInfo()
                     {
@@ -1930,7 +1930,7 @@ internal partial class Bootstrapper : IDisposable
 
     private async Task<bool> EnsureSoberInstalledAsync()
     {
-        SetStatus(Strings.Bootstrapper_Status_CheckingFlatpak);
+        SetStatus(Localizer.Instance.Get("Bootstrapper_Status_CheckingFlatpak"));
 
         var flatpakCheck = new ProcessStartInfo
         {
@@ -2005,7 +2005,7 @@ internal partial class Bootstrapper : IDisposable
             Dialog.TaskbarProgressState = TaskbarItemProgressState.Indeterminate;
         }
 
-        SetStatus(Strings.Bootstrapper_Status_InstallingSober);
+        SetStatus(Localizer.Instance.Get("Bootstrapper_Status_InstallingSober"));
 
         var installStartInfo = new ProcessStartInfo
         {
@@ -2058,21 +2058,21 @@ internal partial class Bootstrapper : IDisposable
         {
             string details = string.Join('\n', errorLines.TakeLast(8));
             string detailsPart = string.IsNullOrWhiteSpace(details) ? "" : $"\n\n{details}";
-            string message = string.Format(CultureInfo.InvariantCulture, Strings.Sober_FlatpakInstallFailed, SoberFlatpakId, detailsPart);
+            string message = string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Sober_FlatpakInstallFailed"), SoberFlatpakId, detailsPart);
             await Frontend.ShowMessageBox(message, MessageBoxImage.Error);
             App.Terminate(ErrorCode.ERROR_CANCELLED);
             return false;
         }
 
         App.Logger.Info("Sober installation complete.");
-        SetStatus(Strings.Bootstrapper_Status_StartingSober);
+        SetStatus(Localizer.Instance.Get("Bootstrapper_Status_StartingSober"));
         return true;
     }
 
     private async Task UpdateSoberFlatpakAsync()
     {
         App.Logger.Info($"Running 'flatpak update {SoberFlatpakId}'.");
-        SetStatus(Strings.Bootstrapper_Status_UpdatingSober);
+        SetStatus(Localizer.Instance.Get("Bootstrapper_Status_UpdatingSober"));
 
         if (Dialog is not null)
         {
@@ -2147,7 +2147,7 @@ internal partial class Bootstrapper : IDisposable
                                 {
                                     Dialog.ProgressValue = overallPercent;
                                     Dialog.TaskbarProgressValue = overallPercent / 100.0;
-                                    SetStatus(string.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_Status_UpdatingSoberProgress, current, total, percent));
+                                    SetStatus(string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Bootstrapper_Status_UpdatingSoberProgress"), current, total, percent));
                                 }
 
                             }
@@ -2160,7 +2160,7 @@ internal partial class Bootstrapper : IDisposable
                                 {
                                     Dialog.ProgressValue = overallPercent;
                                     Dialog.TaskbarProgressValue = overallPercent / 100.0;
-                                    SetStatus(string.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_Status_UpdatingSoberBasic, current, total));
+                                    SetStatus(string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Bootstrapper_Status_UpdatingSoberBasic"), current, total));
                                 }
                             }
                             else
@@ -2231,7 +2231,7 @@ internal partial class Bootstrapper : IDisposable
                 {
                     Dialog.ProgressValue = 100;
                     Dialog.TaskbarProgressValue = 1.0;
-                    SetStatus(Strings.Bootstrapper_Status_SoberUpdateComplete);
+                    SetStatus(Localizer.Instance.Get("Bootstrapper_Status_SoberUpdateComplete"));
                 }
             }
         }
@@ -2322,12 +2322,12 @@ internal partial class Bootstrapper : IDisposable
         {
             if (!File.Exists(cacheFile))
             {
-                SetStatus(Strings.Bootstrapper_Status_DownloadingDXVK);
+                SetStatus(Localizer.Instance.Get("Bootstrapper_Status_DownloadingDXVK"));
                 await DownloadFileWithProgressAsync(url, cacheFile);
                 Dialog?.ProgressIndeterminate = true;
             }
 
-            SetStatus(Strings.Bootstrapper_Status_ExtractingDXVK);
+            SetStatus(Localizer.Instance.Get("Bootstrapper_Status_ExtractingDXVK"));
             await ExtractDxvkArchive(cacheFile, _latestVersionDirectory);
         }
     }
@@ -2428,7 +2428,7 @@ internal partial class Bootstrapper : IDisposable
         if (App.Settings.Prop.EnableWebView2)
         {
             App.Logger.Info("Downloading WebView2 Runtime via Wine...");
-            SetStatus(Strings.Bootstrapper_Status_DownloadingWebView2);
+            SetStatus(Localizer.Instance.Get("Bootstrapper_Status_DownloadingWebView2"));
 
             try
             {
@@ -2460,7 +2460,7 @@ internal partial class Bootstrapper : IDisposable
                 await DownloadFileWithProgressAsync(download.Value.Url, tempFile);
                 Dialog?.ProgressIndeterminate = true;
 
-                SetStatus(Strings.Bootstrapper_Status_InstallingWebView2);
+                SetStatus(Localizer.Instance.Get("Bootstrapper_Status_InstallingWebView2"));
 
                 int exitCode = await wineMgr.RunAsync(tempFile,
                     ["--msedgewebview", "--do-not-launch-msedge", "--system-level"],
@@ -2483,7 +2483,7 @@ internal partial class Bootstrapper : IDisposable
         else
         {
             App.Logger.Info("Uninstalling WebView2 Runtime via Wine...");
-            SetStatus(Strings.Bootstrapper_Status_UninstallingWebView2);
+            SetStatus(Localizer.Instance.Get("Bootstrapper_Status_UninstallingWebView2"));
 
             string uninstallerPath = Path.Combine(wineMgr.PrefixDir, "drive_c", "Program Files (x86)",
                 "Microsoft", "EdgeWebView", "Application", installedVersion!, "Installer", "setup.exe");
@@ -2623,7 +2623,7 @@ internal partial class Bootstrapper : IDisposable
             var asset = release.Assets?.FirstOrDefault(a => a.Name?.EndsWith(".tar.xz", StringComparison.Ordinal) == true);
             _ = asset ?? throw new InvalidOperationException("No .tar.xz asset found in Kombucha release.");
 
-            SetStatus(Strings.Bootstrapper_Status_DownloadingWine);
+            SetStatus(Localizer.Instance.Get("Bootstrapper_Status_DownloadingWine"));
 
             string tempFile = Path.GetTempFileName();
             try
@@ -2642,7 +2642,7 @@ internal partial class Bootstrapper : IDisposable
 
                 Directory.CreateDirectory(Path.GetDirectoryName(extractDir)!);
 
-                SetStatus(Strings.Bootstrapper_Status_ExtractingWine);
+                SetStatus(Localizer.Instance.Get("Bootstrapper_Status_ExtractingWine"));
                 await ExtractTarXzAsync(tempFile, Path.GetDirectoryName(extractDir)!, _cancelTokenSource.Token);
 
                 if (File.Exists(symlinkPath))
@@ -2666,14 +2666,14 @@ internal partial class Bootstrapper : IDisposable
 
         var wineMgr = new WineManager(baseWineDir);
 
-        SetStatus(Strings.Bootstrapper_Status_InitializingWinePrefix);
+        SetStatus(Localizer.Instance.Get("Bootstrapper_Status_InitializingWinePrefix"));
         await wineMgr.EnsurePrefixAsync(_cancelTokenSource.Token);
 
         await SetupDxvkAndRendererAsync();
 
         await SetupWebView2Async(wineMgr);
 
-        SetStatus(Strings.Bootstrapper_Status_Starting);
+        SetStatus(Localizer.Instance.Get("Bootstrapper_Status_Starting"));
 
         var env = new Dictionary<string, string>
         {
@@ -2819,7 +2819,7 @@ internal partial class Bootstrapper : IDisposable
     private async Task<bool> ApplyModifications()
     {
         bool success = true;
-        SetStatus(Strings.Bootstrapper_Status_ApplyingModifications);
+        SetStatus(Localizer.Instance.Get("Bootstrapper_Status_ApplyingModifications"));
         App.Logger.Info("Checking file mods...");
 
         File.Delete(Path.Combine(Paths.Base, "ModManifest.txt"));
@@ -3313,7 +3313,7 @@ internal partial class Bootstrapper : IDisposable
                 {
                     await DownloadPackage(package);
 
-                    SetStatus(Strings.Bootstrapper_Status_ApplyingModifications);
+                    SetStatus(Localizer.Instance.Get("Bootstrapper_Status_ApplyingModifications"));
                     await ExtractPackage(package, entry.Value);
                 }
             }
@@ -3618,8 +3618,8 @@ internal partial class Bootstrapper : IDisposable
                 if (ex is ChecksumFailedException)
                 {
                     await Frontend.ShowConnectivityDialog(
-                        Strings.Dialog_Connectivity_UnableToDownload,
-                        String.Format(CultureInfo.InvariantCulture, Strings.Dialog_Connectivity_UnableToDownloadReason, "[https://github.com/bloxstraplabs/bloxstrap/wiki/Bloxstrap-is-unable-to-download-Roblox](https://github.com/bloxstraplabs/bloxstrap/wiki/Bloxstrap-is-unable-to-download-Roblox)"),
+                        Localizer.Instance.Get("Dialog_Connectivity_UnableToDownload"),
+                        String.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Dialog_Connectivity_UnableToDownloadReason"), "[https://github.com/bloxstraplabs/bloxstrap/wiki/Bloxstrap-is-unable-to-download-Roblox](https://github.com/bloxstraplabs/bloxstrap/wiki/Bloxstrap-is-unable-to-download-Roblox)"),
                         MessageBoxImage.Error,
                         ex
                     );
@@ -3794,7 +3794,7 @@ internal partial class Bootstrapper : IDisposable
                 }
 
                 App.Logger.Info("Retrying download...");
-                SetStatus(string.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_Status_RetryingPackage, package.Name));
+                SetStatus(string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Bootstrapper_Status_RetryingPackage"), package.Name));
                 await Task.Delay(1000);
 
                 Interlocked.Add(ref _totalDownloadedBytes, -(long)package.PackedSize);

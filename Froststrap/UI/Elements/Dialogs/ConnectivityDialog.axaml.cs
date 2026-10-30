@@ -55,7 +55,7 @@ namespace Froststrap.UI.Elements.Dialogs
 
             AddException(exception);
 
-            VersionText.Text = String.Format(CultureInfo.InvariantCulture, Strings.Menu_About_Version, App.Version);
+            VersionText.Text = String.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Menu_About_Version"), App.Version);
 
             CloseButton.Click += (_, _) => Close();
 

@@ -158,7 +158,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
         public void UpdateTotalFlagsCount()
         {
             int count = _fastFlagList.Count;
-            TotalFlagsTextBlock.Text = $"{Strings.Menu_FastFlagEditor_TotalFlags}: {count}";
+            TotalFlagsTextBlock.Text = $"{Localizer.Instance.Get("Menu_FastFlagEditor_TotalFlags")}: {count}";
         }
 
         private async void AddButton_Click(object sender, RoutedEventArgs e)
@@ -213,7 +213,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
             }
             else
             {
-                _ = Frontend.ShowMessageBox(Strings.Menu_FastFlagEditor_AlreadyExists, MessageBoxImage.Information, MessageBoxButton.OK);
+                _ = Frontend.ShowMessageBox(Localizer.Instance.Get("Menu_FastFlagEditor_AlreadyExists"), MessageBoxImage.Information, MessageBoxButton.OK);
 
                 bool refresh = false;
 
@@ -243,7 +243,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
             if (!base64Flags.Contains(name))
             {
                 var result = await Frontend.ShowMessageBox(
-                    string.Format(CultureInfo.InvariantCulture, Strings.Menu_FastFlagEditor_NotInWhiteList, name),
+                    string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Menu_FastFlagEditor_NotInWhiteList"), name),
                     MessageBoxImage.Warning,
                     MessageBoxButton.YesNo);
 
@@ -293,7 +293,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
             catch (Exception ex)
             {
                 _ = Frontend.ShowMessageBox(
-                    string.Format(CultureInfo.InvariantCulture, Strings.Menu_FastFlagEditor_InvalidJSON, ex.Message),
+                    string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Menu_FastFlagEditor_InvalidJSON"), ex.Message),
                     MessageBoxImage.Error,
                     MessageBoxButton.OK
                 );
@@ -311,7 +311,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
             {
                 string message = string.Format(
                     CultureInfo.InvariantCulture,
-                    Strings.Menu_FastFlagEditor_ConflictingImport,
+                    Localizer.Instance.Get("Menu_FastFlagEditor_ConflictingImport"),
                     conflictingFlags.Count,
                     string.Join(", ", conflictingFlags.Take(25))
                 );
@@ -342,7 +342,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
             if (invalidFlags.Count > 0)
             {
                 var result = await Frontend.ShowMessageBox(
-                    string.Format(CultureInfo.InvariantCulture, Strings.Menu_FastFlagEditor_NotInWhiteList, invalidFlags.Count),
+                    string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Menu_FastFlagEditor_NotInWhiteList"), invalidFlags.Count),
                     MessageBoxImage.Warning,
                     MessageBoxButton.YesNo);
 
@@ -384,12 +384,12 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
             if (!(_fastFlagList.Any() || App.FastFlags.Prop.Count > 0))
             {
                 await Frontend.ShowMessageBox(
-                    Strings.Menu_FastFlagEditor_NoFlagDelete,
+                    Localizer.Instance.Get("Menu_FastFlagEditor_NoFlagDelete"),
                     MessageBoxImage.Information);
                 return;
             }
 
-            if (await Frontend.ShowMessageBox(Strings.Menu_FastFlagEditor_ConfirmDeleteAll, MessageBoxImage.Warning,
+            if (await Frontend.ShowMessageBox(Localizer.Instance.Get("Menu_FastFlagEditor_ConfirmDeleteAll"), MessageBoxImage.Warning,
                 MessageBoxButton.YesNo) != MessageBoxResult.Yes)
             {
                 return;
@@ -510,7 +510,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
                     await writer.WriteAsync(json);
 
                     await Frontend.ShowMessageBox(
-                        Strings.Menu_FastFlagEditor_Exported,
+                        Localizer.Instance.Get("Menu_FastFlagEditor_Exported"),
                         MessageBoxImage.Information);
                 }
             }
@@ -588,12 +588,12 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
                 int totalChanges = invalidRemoved.Count;
                 if (totalChanges == 0)
                 {
-                    await Frontend.ShowMessageBox(Strings.Menu_FastFlagEditor_NoInvalid, MessageBoxImage.Information);
+                    await Frontend.ShowMessageBox(Localizer.Instance.Get("Menu_FastFlagEditor_NoInvalid"), MessageBoxImage.Information);
                     return;
                 }
 
                 await Frontend.ShowMessageBox(
-                    string.Format(CultureInfo.InvariantCulture, Strings.Menu_FastFlagEditor_HaveBeenRemoved, totalChanges),
+                    string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Menu_FastFlagEditor_HaveBeenRemoved"), totalChanges),
                     MessageBoxImage.Information);
 
                 ReloadList();
@@ -660,7 +660,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
             string newText = textbox.Text?.Trim() ?? string.Empty;
             string header = e.Column.Header?.ToString() ?? string.Empty;
 
-            if (header == Strings.Common_Name)
+            if (header == Localizer.Instance.Get("Common_Name"))
             {
                 string oldName = entry.Name;
 
@@ -669,7 +669,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
 
                 if (App.FastFlags.GetValue(newText) is not null)
                 {
-                    _ = Frontend.ShowMessageBox(Strings.Menu_FastFlagEditor_AlreadyExists, MessageBoxImage.Information);
+                    _ = Frontend.ShowMessageBox(Localizer.Instance.Get("Menu_FastFlagEditor_AlreadyExists"), MessageBoxImage.Information);
                     e.Cancel = true;
                     textbox.Text = oldName;
                     goto EndEditing;
@@ -689,7 +689,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
                 // Force a full refresh to update presets
                 ReloadList();
             }
-            else if (header == Strings.Common_Value)
+            else if (header == Localizer.Instance.Get("Common_Value"))
             {
                 string newValue = newText;
                 entry.Value = newValue;
@@ -792,7 +792,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
 
             if (filePaths.Count == 0)
             {
-                await Frontend.ShowMessageBox(Strings.Menu_FastFlagEditor_FileExtensionWarning, MessageBoxImage.Information);
+                await Frontend.ShowMessageBox(Localizer.Instance.Get("Menu_FastFlagEditor_FileExtensionWarning"), MessageBoxImage.Information);
                 return;
             }
 

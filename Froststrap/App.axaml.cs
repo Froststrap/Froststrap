@@ -174,7 +174,7 @@ internal partial class App : Application
         State.Save();
 
         await Frontend.ShowReleaseNotesDialog(
-            string.Format(CultureInfo.CurrentCulture, Strings.Menu_Deployment_ReleaseNotes_Title, version),
+            string.Format(CultureInfo.CurrentCulture, Localizer.Instance.Get("Menu_Deployment_ReleaseNotes_Title"), version),
             notes);
     }
 
@@ -317,7 +317,7 @@ internal partial class App : Application
         if (IsNetworkException(ex))
         {
             await Frontend.ShowConnectivityDialog(
-                Strings.Dialog_Connectivity_UnableToConnect,
+                Localizer.Instance.Get("Dialog_Connectivity_UnableToConnect"),
                 "Network Error",
                 MessageBoxImage.Warning,
                 ex

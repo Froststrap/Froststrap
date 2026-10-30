@@ -194,14 +194,14 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             if (Directory.Exists(folderPath))
                 Froststrap.Utility.Threading.ShellExecute(folderPath);
             else
-                _ = Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Menu_Mods_FolderDosentExist, mod.FolderName), MessageBoxImage.Error, MessageBoxButton.OK);
+                _ = Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Menu_Mods_FolderDosentExist"), mod.FolderName), MessageBoxImage.Error, MessageBoxButton.OK);
         }
 
         [RelayCommand]
         public void AddMod()
         {
             string modsFolder = Paths.Modifications;
-            string baseName = Strings.Menu_Mods_DefaultNewModName;
+            string baseName = Localizer.Instance.Get("Menu_Mods_DefaultNewModName");
             string folderName = baseName;
             int counter = 1;
             while (Modifications.Any(x => x.FolderName.Equals(folderName, StringComparison.OrdinalIgnoreCase)) ||
@@ -315,7 +315,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             if (Path.GetFullPath(modPath) == Path.GetFullPath(Paths.Modifications))
                 return;
 
-            var result = await Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Menu_Mods_DeleteMod, mod.FolderName), MessageBoxImage.Warning, MessageBoxButton.YesNo);
+            var result = await Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Menu_Mods_DeleteMod"), mod.FolderName), MessageBoxImage.Warning, MessageBoxButton.YesNo);
             if (result != MessageBoxResult.Yes) return;
 
             try
@@ -329,7 +329,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             catch (Exception ex)
             {
                 App.Logger.Error($"Unhandled exception: {ex.Message}");
-                await Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Menu_Mods_DeleteFailed, ex.Message), MessageBoxImage.Error, MessageBoxButton.OK);
+                await Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Menu_Mods_DeleteFailed"), ex.Message), MessageBoxImage.Error, MessageBoxButton.OK);
             }
         }
 
@@ -346,13 +346,13 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             string safeName = string.Join("_", newName.Split(Path.GetInvalidFileNameChars())).Trim();
             if (string.IsNullOrWhiteSpace(safeName))
             {
-                _ = Frontend.ShowMessageBox(Strings.Menu_Mods_InvalidFolderName, MessageBoxImage.Warning, MessageBoxButton.OK);
+                _ = Frontend.ShowMessageBox(Localizer.Instance.Get("Menu_Mods_InvalidFolderName"), MessageBoxImage.Warning, MessageBoxButton.OK);
                 return;
             }
 
             if (Modifications.Any(m => m.FolderName.Equals(safeName, StringComparison.OrdinalIgnoreCase) && m != SelectedMod))
             {
-                _ = Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Menu_Mods_AlreadyExist, safeName), MessageBoxImage.Warning, MessageBoxButton.OK);
+                _ = Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Menu_Mods_AlreadyExist"), safeName), MessageBoxImage.Warning, MessageBoxButton.OK);
                 return;
             }
 
@@ -372,7 +372,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             catch (Exception ex)
             {
                 App.Logger.Error($"Unhandled exception {ex.Message}");
-                _ = Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Menu_Mods_RenameFailed, ex.Message), MessageBoxImage.Error, MessageBoxButton.OK);
+                _ = Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Menu_Mods_RenameFailed"), ex.Message), MessageBoxImage.Error, MessageBoxButton.OK);
             }
         }
 
@@ -477,7 +477,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             catch (Exception ex)
             {
                 App.Logger.Error($"Unhandled exception: {ex.Message}");
-                await Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Menu_Mods_ZipExtractFailed, ex.Message), MessageBoxImage.Error, MessageBoxButton.OK);
+                await Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Menu_Mods_ZipExtractFailed"), ex.Message), MessageBoxImage.Error, MessageBoxButton.OK);
             }
             finally
             {
@@ -520,7 +520,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                 }
                 else
                 {
-                    await Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Menu_Mods_UnsupportedFile, path), MessageBoxImage.Warning, MessageBoxButton.OK);
+                    await Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Menu_Mods_UnsupportedFile"), path), MessageBoxImage.Warning, MessageBoxButton.OK);
                 }
             }
         }
@@ -537,7 +537,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             string? modRoot = ValidateModStructure(sourcePath);
             if (modRoot == null)
             {
-                await Frontend.ShowMessageBox(Strings.Menu_Mods_InvalidModFolders, MessageBoxImage.Error, MessageBoxButton.OK);
+                await Frontend.ShowMessageBox(Localizer.Instance.Get("Menu_Mods_InvalidModFolders"), MessageBoxImage.Error, MessageBoxButton.OK);
                 return;
             }
 
@@ -549,13 +549,13 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
                 if (string.IsNullOrWhiteSpace(folderName))
                 {
-                    await Frontend.ShowMessageBox(Strings.Menu_Mods_InvalidModFolderName, MessageBoxImage.Error);
+                    await Frontend.ShowMessageBox(Localizer.Instance.Get("Menu_Mods_InvalidModFolderName"), MessageBoxImage.Error);
                     return;
                 }
 
                 if (Modifications.Any(m => m.FolderName.Equals(folderName, StringComparison.OrdinalIgnoreCase)))
                 {
-                    await Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Menu_Mods_AlreadyImported, folderName), MessageBoxImage.Information);
+                    await Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Menu_Mods_AlreadyImported"), folderName), MessageBoxImage.Information);
                     return;
                 }
 
@@ -570,7 +570,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                 UpdatePriorities();
                 OnPropertyChanged(nameof(HasMods));
                 CheckFontPreviewAvailability(existingMod);
-                await Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Menu_Mods_Imported, folderName), MessageBoxImage.Information);
+                await Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Menu_Mods_Imported"), folderName), MessageBoxImage.Information);
                 return;
             }
 
@@ -613,21 +613,21 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
             CheckFontPreviewAvailability(newMod);
 
-            await Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Menu_Mods_Imported, newFolderName), MessageBoxImage.Information, MessageBoxButton.OK);
+            await Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Menu_Mods_Imported"), newFolderName), MessageBoxImage.Information, MessageBoxButton.OK);
         }
 
         private async Task ExportModAsync(ModConfig? mod)
         {
             if (mod == null || string.IsNullOrWhiteSpace(mod.FolderName))
             {
-                await Frontend.ShowMessageBox(Strings.Menu_Mods_ExportSelectMod, MessageBoxImage.Warning);
+                await Frontend.ShowMessageBox(Localizer.Instance.Get("Menu_Mods_ExportSelectMod"), MessageBoxImage.Warning);
                 return;
             }
 
             string modPath = Path.Combine(Paths.Modifications, mod.FolderName);
             if (!Directory.Exists(modPath))
             {
-                await Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Menu_Mods_ExportFolderMissing, mod.FolderName), MessageBoxImage.Error);
+                await Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Menu_Mods_ExportFolderMissing"), mod.FolderName), MessageBoxImage.Error);
                 return;
             }
 
@@ -665,12 +665,12 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                     System.IO.Compression.ZipFile.CreateFromDirectory(modPath, file.Path.LocalPath);
                 });
 
-                await Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Menu_Mods_ExportSuccess, mod.FolderName), MessageBoxImage.Information);
+                await Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Menu_Mods_ExportSuccess"), mod.FolderName), MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
                 App.Logger.Error($"Unhandled exception: {ex.Message}");
-                await Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Menu_Mods_ExportFailed, ex.Message), MessageBoxImage.Error);
+                await Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Menu_Mods_ExportFailed"), ex.Message), MessageBoxImage.Error);
             }
         }
 
@@ -705,7 +705,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             }
 
             IsLoadingPreview = true;
-            PreviewStatus = Strings.Menu_Mods_Preview_Loading;
+            PreviewStatus = Localizer.Instance.Get("Menu_Mods_Preview_Loading");
             PreviewGlyphItems = [];
 
             try
@@ -714,7 +714,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
                 if (brush == null)
                 {
-                    PreviewStatus = Strings.Menu_Mods_Preview_NoColor;
+                    PreviewStatus = Localizer.Instance.Get("Menu_Mods_Preview_NoColor");
                     IsLoadingPreview = false;
                     HasFontPreview = false;
                     return;
@@ -757,14 +757,14 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                     }
                 }
 
-                PreviewStatus = string.Format(CultureInfo.InvariantCulture, Strings.Menu_Mods_Preview_LoadingFont, _currentFontVariant);
+                PreviewStatus = string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Menu_Mods_Preview_LoadingFont"), _currentFontVariant);
                 await LoadGlyphsWithColorAsync(brush, _currentFontVariant);
-                PreviewStatus = Strings.Menu_Mods_Preview_Loaded;
+                PreviewStatus = Localizer.Instance.Get("Menu_Mods_Preview_Loaded");
             }
             catch (Exception ex)
             {
                 App.Logger.Error($"Unhandled exception: {ex.Message}");
-                PreviewStatus = string.Format(CultureInfo.InvariantCulture, Strings.Menu_Mods_Preview_Failed, ex.Message);
+                PreviewStatus = string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Menu_Mods_Preview_Failed"), ex.Message);
                 PreviewGlyphItems = [];
             }
             finally

@@ -16,9 +16,9 @@ namespace Froststrap.UI.ViewModels.Settings
         // Shortcut.cs resolves the correct filename internally
         public ShortcutTask DesktopIconTask { get; } = new("Desktop", Paths.Desktop, $"{App.ProjectName}.lnk");
         public ShortcutTask StartMenuIconTask { get; } = new("StartMenu", Paths.WindowsStartMenu, $"{App.ProjectName}.lnk");
-        public ShortcutTask PlayerIconTask { get; } = new("RobloxPlayer", Paths.Desktop, $"{Strings.LaunchMenu_LaunchRoblox}.lnk", LaunchEntry.GetCliArgs(LaunchMode.Player));
-        public ShortcutTask StudioIconTask { get; } = new("RobloxStudio", Paths.Desktop, $"{Strings.LaunchMenu_LaunchRobloxStudio}.lnk", LaunchEntry.GetCliArgs(LaunchMode.Studio));
-        public ShortcutTask SettingsIconTask { get; } = new("Settings", Paths.Desktop, $"{Strings.Menu_Title}.lnk", "--settings");
+        public ShortcutTask PlayerIconTask { get; } = new("RobloxPlayer", Paths.Desktop, $"{Localizer.Instance.Get("LaunchMenu_LaunchRoblox")}.lnk", LaunchEntry.GetCliArgs(LaunchMode.Player));
+        public ShortcutTask StudioIconTask { get; } = new("RobloxStudio", Paths.Desktop, $"{Localizer.Instance.Get("LaunchMenu_LaunchRobloxStudio")}.lnk", LaunchEntry.GetCliArgs(LaunchMode.Studio));
+        public ShortcutTask SettingsIconTask { get; } = new("Settings", Paths.Desktop, $"{Localizer.Instance.Get("Menu_Title")}.lnk", "--settings");
         public ExtractIconsTask ExtractIconsTask { get; } = new();
 
         #region Fields
@@ -122,9 +122,9 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public ShortcutsViewModel()
         {
-            PreviewName = Strings.Menu_Shortcuts_NoGameSelected;
-            PreviewId = string.Format(CultureInfo.CurrentCulture, Strings.Menu_RegionSelector_ID, 0);
-            ShortcutStatus = Strings.Menu_Shortcuts_Ready;
+            PreviewName = Localizer.Instance.Get("Menu_Shortcuts_NoGameSelected");
+            PreviewId = string.Format(CultureInfo.CurrentCulture, Localizer.Instance.Get("Menu_RegionSelector_ID"), 0);
+            ShortcutStatus = Localizer.Instance.Get("Menu_Shortcuts_Ready");
 
             CreateGameShortcutCommand = new AsyncRelayCommand(CreateGameShortcut);
             SearchGamesCommand = new AsyncRelayCommand(SearchGamesAsync);
@@ -133,15 +133,15 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private async Task CreateGameShortcut()
         {
-            if (string.IsNullOrEmpty(PlaceId) || PreviewName == Strings.Menu_Shortcuts_NoGameSelected)
+            if (string.IsNullOrEmpty(PlaceId) || PreviewName == Localizer.Instance.Get("Menu_Shortcuts_NoGameSelected"))
             {
-                ShortcutStatus = Strings.Menu_Shortcuts_SelectGameFirst;
+                ShortcutStatus = Localizer.Instance.Get("Menu_Shortcuts_SelectGameFirst");
                 return;
             }
 
             try
             {
-                ShortcutStatus = Strings.Menu_Shortcuts_Processing;
+                ShortcutStatus = Localizer.Instance.Get("Menu_Shortcuts_Processing");
 
                 await Shortcut.CreateGameShortcut(
                     appPath: Paths.Process,
@@ -153,11 +153,11 @@ namespace Froststrap.UI.ViewModels.Settings
                     onStatus: status => ShortcutStatus = status
                 );
 
-                ShortcutStatus = Strings.Menu_Shortcuts_ShortcutCreated;
+                ShortcutStatus = Localizer.Instance.Get("Menu_Shortcuts_ShortcutCreated");
             }
             catch (Exception ex)
             {
-                ShortcutStatus = Strings.Menu_Shortcuts_ErrorCreatingShortcut;
+                ShortcutStatus = Localizer.Instance.Get("Menu_Shortcuts_ErrorCreatingShortcut");
                 App.Logger.Error($"Unhandled exception: {ex.Message}");
             }
         }
@@ -207,10 +207,10 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             if (value is null)
             {
-                PreviewName = Strings.Menu_Shortcuts_NoGameSelected;
-                PreviewId = string.Format(CultureInfo.CurrentCulture, Strings.Menu_RegionSelector_ID, 0);
+                PreviewName = Localizer.Instance.Get("Menu_Shortcuts_NoGameSelected");
+                PreviewId = string.Format(CultureInfo.CurrentCulture, Localizer.Instance.Get("Menu_RegionSelector_ID"), 0);
                 PreviewIcon = null;
-                ShortcutStatus = Strings.Menu_Shortcuts_Ready;
+                ShortcutStatus = Localizer.Instance.Get("Menu_Shortcuts_Ready");
                 return;
             }
 
@@ -218,9 +218,9 @@ namespace Froststrap.UI.ViewModels.Settings
             PlaceId = value.RootPlaceId.ToString(CultureInfo.InvariantCulture);
             SearchQuery = PlaceId;
             PreviewName = value.Name!;
-            PreviewId = string.Format(CultureInfo.CurrentCulture, Strings.Menu_RegionSelector_ID, value.RootPlaceId);
+            PreviewId = string.Format(CultureInfo.CurrentCulture, Localizer.Instance.Get("Menu_RegionSelector_ID"), value.RootPlaceId);
             PreviewIcon = value.ThumbnailBitmap;
-            ShortcutStatus = Strings.Menu_Shortcuts_ReadyToCreate;
+            ShortcutStatus = Localizer.Instance.Get("Menu_Shortcuts_ReadyToCreate");
             _isProcessingSelection = false;
             IsSearchFlyoutOpen = false;
         }
@@ -229,7 +229,7 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             try
             {
-                ShortcutStatus = Strings.Menu_Shortcuts_UpdatingPreview;
+                ShortcutStatus = Localizer.Instance.Get("Menu_Shortcuts_UpdatingPreview");
 
                 await UniverseDetails.FetchBulk(id.ToString(CultureInfo.InvariantCulture));
                 var details = UniverseDetails.LoadFromCache(id);
@@ -237,20 +237,20 @@ namespace Froststrap.UI.ViewModels.Settings
                 if (details != null)
                 {
                     PreviewName = details.Data.Name;
-                    PreviewId = string.Format(CultureInfo.CurrentCulture, Strings.Menu_RegionSelector_ID, id);
+                    PreviewId = string.Format(CultureInfo.CurrentCulture, Localizer.Instance.Get("Menu_RegionSelector_ID"), id);
                     PreviewIcon = await LoadBitmapFromUrl(details.Thumbnail.ImageUrl, token);
                 }
                 else
                 {
-                    PreviewName = string.Format(CultureInfo.CurrentCulture, Strings.Menu_Shortcuts_Game, id);
-                    PreviewId = string.Format(CultureInfo.CurrentCulture, Strings.Menu_RegionSelector_ID, id);
+                    PreviewName = string.Format(CultureInfo.CurrentCulture, Localizer.Instance.Get("Menu_Shortcuts_Game"), id);
+                    PreviewId = string.Format(CultureInfo.CurrentCulture, Localizer.Instance.Get("Menu_RegionSelector_ID"), id);
                     PreviewIcon = null;
                 }
             }
             catch (Exception)
             {
-                PreviewName = string.Format(CultureInfo.CurrentCulture, Strings.Menu_Shortcuts_Game, id);
-                ShortcutStatus = Strings.Menu_Shortcuts_ReadyWithManualId;
+                PreviewName = string.Format(CultureInfo.CurrentCulture, Localizer.Instance.Get("Menu_Shortcuts_Game"), id);
+                ShortcutStatus = Localizer.Instance.Get("Menu_Shortcuts_ReadyWithManualId");
             }
         }
 

@@ -25,7 +25,7 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             CustomIntegrations.Add(new CustomIntegration()
             {
-                Name = Strings.Menu_Integrations_Custom_NewIntegration
+                Name = Localizer.Instance.Get("Menu_Integrations_Custom_NewIntegration")
             });
 
             SelectedCustomIntegrationIndex = CustomIntegrations.Count - 1;
@@ -78,7 +78,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 var file = files[0];
                 string path = file.Path.LocalPath;
 
-                if (string.IsNullOrWhiteSpace(SelectedCustomIntegration.Name) || SelectedCustomIntegration.Name == Strings.Menu_Integrations_Custom_NewIntegration)
+                if (string.IsNullOrWhiteSpace(SelectedCustomIntegration.Name) || SelectedCustomIntegration.Name == Localizer.Instance.Get("Menu_Integrations_Custom_NewIntegration"))
                 {
                     SelectedCustomIntegration.Name = Path.GetFileNameWithoutExtension(path);
                 }
@@ -268,7 +268,7 @@ namespace Froststrap.UI.ViewModels.Settings
             if (value && !App.Settings.Prop.StudioRPC)
             {
                 var result = await Frontend.ShowMessageBox(
-                    Strings.Menu_Integrations_StudioRPC_PluginConfirmation,
+                    Localizer.Instance.Get("Menu_Integrations_StudioRPC_PluginConfirmation"),
                     MessageBoxImage.Information,
                     MessageBoxButton.YesNo
                 );

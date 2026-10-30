@@ -767,7 +767,7 @@ namespace Froststrap.Integrations
                 string selectedRegion = App.Settings.Prop.SelectedRegion ?? "";
 
                 if (!string.IsNullOrEmpty(selectedRegion) &&
-                    !selectedRegion.Equals(Strings.Common_Auto, StringComparison.OrdinalIgnoreCase))
+                    !selectedRegion.Equals(Localizer.Instance.Get("Common_Auto"), StringComparison.OrdinalIgnoreCase))
                 {
                     var result = await FindBestServerInSelectedRegionAsync(
                         placeId,

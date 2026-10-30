@@ -89,7 +89,7 @@ namespace Froststrap.UI.Elements.ContextMenu
                         GameHistoryMenuItem?.SetValue(MenuItem.IsVisibleProperty, false);
                         AutoJoinRegionMenuItem?.SetValue(MenuItem.IsVisibleProperty, false);
                         SoftkeyMenuItem?.SetValue(MenuItem.IsVisibleProperty, false);
-                        CloseRobloxMenuItem?.SetValue(MenuItem.HeaderProperty, Strings.Menu_ContextMenu_CloseStudio);
+                        CloseRobloxMenuItem?.SetValue(MenuItem.HeaderProperty, Localizer.Instance.Get("Menu_ContextMenu_CloseStudio"));
 
                         if (App.Settings.Prop.PlaytimeCounter)
                         {
@@ -135,11 +135,11 @@ namespace Froststrap.UI.Elements.ContextMenu
 
             string statusText;
             if (ActivityWatcher.InStudioPlace && _studioPlaceJoinTime.HasValue)
-                statusText = $"{Strings.Common_Total}: {FormatTimeSpan(total)} | {Strings.Common_Studio}: {FormatTimeSpan(DateTime.Now - _studioPlaceJoinTime.Value)}";
+                statusText = $"{Localizer.Instance.Get("Common_Total")}: {FormatTimeSpan(total)} | {Localizer.Instance.Get("Common_Studio")}: {FormatTimeSpan(DateTime.Now - _studioPlaceJoinTime.Value)}";
             else if (ActivityWatcher.InGame)
-                statusText = $"{Strings.Common_Total}: {FormatTimeSpan(total)} | {Strings.Common_Game}: {FormatTimeSpan(DateTime.Now - ActivityWatcher.Data.TimeJoined)}";
+                statusText = $"{Localizer.Instance.Get("Common_Total")}: {FormatTimeSpan(total)} | {Localizer.Instance.Get("Common_Game")}: {FormatTimeSpan(DateTime.Now - ActivityWatcher.Data.TimeJoined)}";
             else
-                statusText = $"{Strings.Common_Total}: {FormatTimeSpan(total)}";
+                statusText = $"{Localizer.Instance.Get("Common_Total")}: {FormatTimeSpan(total)}";
 
             PlaytimeMenuItem.Header = statusText;
         }
@@ -203,7 +203,7 @@ namespace Froststrap.UI.Elements.ContextMenu
         private async void InviteDeeplinkMenuItem_Click(object? sender, EventArgs e)
         {
             string deeplink = ActivityWatcher?.Data?.GetInviteDeeplink(true, DeeplinkType.RobloxProtocol)
-                               ?? Strings.Menu_ContextMenu_NoData;
+                               ?? Localizer.Instance.Get("Menu_ContextMenu_NoData");
 
             var topLevel = TopLevel.GetTopLevel(this);
             if (topLevel?.Clipboard is IClipboard clipboard)

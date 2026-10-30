@@ -51,7 +51,7 @@ namespace Froststrap.Models.Persistable
         public bool SoftKeyEnabled { get; set; }
         public SoftKeyProfile SoftKeyProfile { get; set; } = SoftKeyProfile.WASD;
         public bool EnableBetterMatchmaking { get; set; }
-        public string SelectedRegion { get; set; } = Strings.Common_Auto;
+        public string SelectedRegion { get; set; } = Localizer.Instance.Get("Common_Auto");
         public bool EnableRobloxBackgroundApp { get; set; }
         public RobloxTheme RobloxTheme { get; set; } = RobloxTheme.Default;
 

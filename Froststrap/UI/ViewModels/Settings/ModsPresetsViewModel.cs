@@ -198,7 +198,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
             else
             {
-                _ = Frontend.ShowMessageBox(Strings.Common_RobloxNotInstalled, MessageBoxImage.Error);
+                _ = Frontend.ShowMessageBox(Localizer.Instance.Get("Common_RobloxNotInstalled"), MessageBoxImage.Error);
             }
         }
 

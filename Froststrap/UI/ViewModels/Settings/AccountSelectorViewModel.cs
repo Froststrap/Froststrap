@@ -45,7 +45,7 @@ namespace Froststrap.UI.ViewModels.Settings
             set => SetProperty(ref _accounts, value);
         }
 
-        private string _selectedAddMethod = Strings.Menu_AccountSelector_Login_LocalCookie;
+        private string _selectedAddMethod = Localizer.Instance.Get("Menu_AccountSelector_Login_LocalCookie");
         public string SelectedAddMethod
         {
             get => _selectedAddMethod;
@@ -118,18 +118,18 @@ namespace Froststrap.UI.ViewModels.Settings
                 if (CurrentPresence == null) return "Offline";
                 return CurrentPresence.UserPresenceType switch
                 {
-                    0 => Strings.Menu_AccountSelector_Presence_Offline,
-                    1 => Strings.Menu_AccountSelector_Presence_Online,
-                    2 => Strings.Menu_AccountSelector_Presence_InGame,
-                    3 => Strings.Menu_AccountSelector_Presence_InStudio,
-                    _ => Strings.Common_Unknown
+                    0 => Localizer.Instance.Get("Menu_AccountSelector_Presence_Offline"),
+                    1 => Localizer.Instance.Get("Menu_AccountSelector_Presence_Online"),
+                    2 => Localizer.Instance.Get("Menu_AccountSelector_Presence_InGame"),
+                    3 => Localizer.Instance.Get("Menu_AccountSelector_Presence_InStudio"),
+                    _ => Localizer.Instance.Get("Common_Unknown")
                 };
             }
         }
 
-        public List<string> AddMethods { get; } = [Strings.Menu_AccountSelector_Login_LocalCookie, Strings.Menu_Dialog_QuickSignIn_Title, Strings.Common_Manual, Strings.Common_Browser];
+        public List<string> AddMethods { get; } = [Localizer.Instance.Get("Menu_AccountSelector_Login_LocalCookie"), Localizer.Instance.Get("Menu_Dialog_QuickSignIn_Title"), Localizer.Instance.Get("Common_Manual"), Localizer.Instance.Get("Common_Browser")];
 
-        public string CurrentAccountDisplayName => CurrentAccount == null ? Strings.Menu_AccountSelector_NotLoggedIn : $"@{CurrentAccount.Username}";
+        public string CurrentAccountDisplayName => CurrentAccount == null ? Localizer.Instance.Get("Menu_AccountSelector_NotLoggedIn") : $"@{CurrentAccount.Username}";
 
         public AccountSelectorViewModel()
         {
@@ -185,7 +185,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 App.Logger.Info($"Removed expired/invalid account: {account.Username}");
 
                 await Dispatcher.UIThread.InvokeAsync(() =>
-                    Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Menu_AccountSelector_AccountRemoved, account.Username)));
+                    Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Menu_AccountSelector_AccountRemoved"), account.Username)));
             }
 
             if (invalidAccounts.Count > 0)
@@ -367,7 +367,7 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 AccountManagerAccount? newAccount = null;
 
-                if (SelectedAddMethod == Strings.Menu_Dialog_QuickSignIn_Title)
+                if (SelectedAddMethod == Localizer.Instance.Get("Menu_Dialog_QuickSignIn_Title"))
                 {
                     var dialog = new QuickSignCodeDialog();
                     var cts = new CancellationTokenSource();
@@ -392,16 +392,16 @@ namespace Froststrap.UI.ViewModels.Settings
                         cts.Dispose();
                     }
                 }
-                else if (SelectedAddMethod == Strings.Common_Browser)
+                else if (SelectedAddMethod == Localizer.Instance.Get("Common_Browser"))
                 {
                     newAccount = await AccountManager.AddAccountByBrowserAsync();
                 }
-                else if (SelectedAddMethod == Strings.Common_Manual)
+                else if (SelectedAddMethod == Localizer.Instance.Get("Common_Manual"))
                 {
                     OnManualAddRequested?.Invoke();
                     return;
                 }
-                else if (SelectedAddMethod == Strings.Menu_AccountSelector_Login_LocalCookie)
+                else if (SelectedAddMethod == Localizer.Instance.Get("Menu_AccountSelector_Login_LocalCookie"))
                 {
                     newAccount = await ImportFromCookieManager();
                 }
@@ -444,7 +444,7 @@ namespace Froststrap.UI.ViewModels.Settings
             IsDropdownOpen = false;
 
             await Frontend.ShowMessageBox(
-                string.Format(CultureInfo.InvariantCulture, Strings.Menu_AccountSelector_AlreadyLoggedIn, updated.Username),
+                string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Menu_AccountSelector_AlreadyLoggedIn"), updated.Username),
                 MessageBoxImage.Information);
 
             return true;
@@ -485,11 +485,11 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 string error = cookieManager.State switch
                 {
-                    CookieState.NotAllowed => Strings.Menu_CookieState_NotAllowed,
-                    CookieState.NotFound => Strings.Menu_CookieState_NotFound,
-                    CookieState.Invalid => Strings.Menu_CookieState_Invalid,
-                    CookieState.Failed => Strings.Menu_CookieState_Failed,
-                    _ => Strings.Menu_CookieState_CouldNotLoad
+                    CookieState.NotAllowed => Localizer.Instance.Get("Menu_CookieState_NotAllowed"),
+                    CookieState.NotFound => Localizer.Instance.Get("Menu_CookieState_NotFound"),
+                    CookieState.Invalid => Localizer.Instance.Get("Menu_CookieState_Invalid"),
+                    CookieState.Failed => Localizer.Instance.Get("Menu_CookieState_Failed"),
+                    _ => Localizer.Instance.Get("Menu_CookieState_CouldNotLoad")
                 };
                 _ = Frontend.ShowMessageBox(error);
                 return null;
@@ -554,11 +554,11 @@ namespace Froststrap.UI.ViewModels.Settings
             bool success = AccountManager.WriteCookieFileForAccount(item.Account);
             if (success)
             {
-                _ = Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.AccountManager_Replace_Success, item.Username));
+                _ = Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("AccountManager_Replace_Success"), item.Username));
             }
             else
             {
-                _ = Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.AccountManager_Replace_Failed, item.Username), MessageBoxImage.Error);
+                _ = Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("AccountManager_Replace_Failed"), item.Username), MessageBoxImage.Error);
             }
         }
 

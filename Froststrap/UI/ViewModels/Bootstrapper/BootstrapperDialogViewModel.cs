@@ -45,7 +45,7 @@ namespace Froststrap.UI.ViewModels.Bootstrapper
                 _dialog.CloseBootstrapper();
         }
 
-        private string _cancelButtonText = Strings.Common_Cancel;
+        private string _cancelButtonText = Localizer.Instance.Get("Common_Cancel");
         public string CancelButtonText
         {
             get => _cancelButtonText;

@@ -218,15 +218,15 @@ namespace Froststrap.UI.Elements.Settings
 
         private readonly Dictionary<string, (string Title, LucideIconNames Icon)> _pageInfo = new()
         {
-            ["integrations"] = (Strings.Menu_Integrations_Title, LucideIconNames.Plus),
-            ["behaviour"] = (Strings.Menu_Behaviour_Title, LucideIconNames.Play),
-            ["linuxsettings"] = (Strings.Menu_LinuxSettings_Title, LucideIconNames.Settings),
-            ["mods"] = (Strings.Menu_PresetMods_Title, LucideIconNames.BookOpen),
-            ["fastflags"] = (Strings.Menu_FastFlags_Title, LucideIconNames.Flag),
-            ["appearance"] = (Strings.Menu_Appearance_Title, LucideIconNames.Palette),
-            ["globalsettings"] = (Strings.Menu_GlobalSettings_Title, LucideIconNames.PenLine),
-            ["shortcuts"] = (Strings.Common_Shortcuts, LucideIconNames.Link2),
-            ["channels"] = (Strings.Common_Deployment, LucideIconNames.HardDriveUpload)
+            ["integrations"] = (Localizer.Instance.Get("Menu_Integrations_Title"), LucideIconNames.Plus),
+            ["behaviour"] = (Localizer.Instance.Get("Menu_Behaviour_Title"), LucideIconNames.Play),
+            ["linuxsettings"] = (Localizer.Instance.Get("Menu_LinuxSettings_Title"), LucideIconNames.Settings),
+            ["mods"] = (Localizer.Instance.Get("Menu_PresetMods_Title"), LucideIconNames.BookOpen),
+            ["fastflags"] = (Localizer.Instance.Get("Menu_FastFlags_Title"), LucideIconNames.Flag),
+            ["appearance"] = (Localizer.Instance.Get("Menu_Appearance_Title"), LucideIconNames.Palette),
+            ["globalsettings"] = (Localizer.Instance.Get("Menu_GlobalSettings_Title"), LucideIconNames.PenLine),
+            ["shortcuts"] = (Localizer.Instance.Get("Common_Shortcuts"), LucideIconNames.Link2),
+            ["channels"] = (Localizer.Instance.Get("Common_Deployment"), LucideIconNames.HardDriveUpload)
         };
 
         private void UpdatePageView(object? viewModel)
@@ -350,8 +350,8 @@ namespace Froststrap.UI.Elements.Settings
         private void ShowSaveNotification()
         {
             ShowNotification(
-                Strings.Menu_SettingsSaved_Title,
-                Strings.Menu_SettingsSaved_Message,
+                Localizer.Instance.Get("Menu_SettingsSaved_Title"),
+                Localizer.Instance.Get("Menu_SettingsSaved_Message"),
                 FAInfoBarSeverity.Success,
                 3000);
         }
@@ -360,8 +360,8 @@ namespace Froststrap.UI.Elements.Settings
         {
             await Task.Delay(500);
             ShowNotification(
-                Strings.Menu_AlreadyRunning_Title,
-                Strings.Menu_AlreadyRunning_Caption,
+                Localizer.Instance.Get("Menu_AlreadyRunning_Title"),
+                Localizer.Instance.Get("Menu_AlreadyRunning_Caption"),
                 FAInfoBarSeverity.Warning,
                 5000);
         }
@@ -743,7 +743,7 @@ namespace Froststrap.UI.Elements.Settings
                 e.Cancel = true;
 
                 var result = await Frontend.ShowMessageBox(
-                    Strings.Menu_UnsavedChangesPrompt,
+                    Localizer.Instance.Get("Menu_UnsavedChangesPrompt"),
                     MessageBoxImage.Warning,
                     MessageBoxButton.YesNoCancel
                 );

@@ -30,7 +30,7 @@ internal partial class Bootstrapper
         if (updateStatus && total > 0)
         {
             SetStatus(string.Format(CultureInfo.InvariantCulture,
-                Strings.Bootstrapper_Status_DownloadingPackages,
+                Localizer.Instance.Get("Bootstrapper_Status_DownloadingPackages"),
                 FormatBytes(Math.Min(current, total)), FormatBytes(total)));
         }
 

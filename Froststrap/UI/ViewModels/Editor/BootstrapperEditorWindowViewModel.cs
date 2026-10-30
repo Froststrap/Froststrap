@@ -34,7 +34,7 @@ namespace Froststrap.UI.ViewModels.Editor
                 _dialog?.CloseBootstrapper();
                 _dialog = dialog;
 
-                dialog.Message = Strings.Bootstrapper_StylePreview_TextCancel;
+                dialog.Message = Localizer.Instance.Get("Bootstrapper_StylePreview_TextCancel");
                 dialog.CancelEnabled = true;
                 dialog.ShowBootstrapper();
             }
@@ -42,7 +42,7 @@ namespace Froststrap.UI.ViewModels.Editor
             {
                 App.Logger.Error("Unhandled exception: ", ex);
                 _ = Frontend.ShowMessageBox(
-                    string.Format(CultureInfo.InvariantCulture, Strings.CustomTheme_Editor_Errors_PreviewFailed, ex.Message),
+                    string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("CustomTheme_Editor_Errors_PreviewFailed"), ex.Message),
                     MessageBoxImage.Error,
                     MessageBoxButton.OK
                 );
@@ -57,7 +57,7 @@ namespace Froststrap.UI.ViewModels.Editor
             {
                 File.WriteAllText(path, Code);
                 CodeChanged = false;
-                ThemeSavedCallback?.Invoke(true, Strings.CustomTheme_Editor_Save_Success_Description);
+                ThemeSavedCallback?.Invoke(true, Localizer.Instance.Get("CustomTheme_Editor_Save_Success_Description"));
             }
             catch (Exception ex)
             {

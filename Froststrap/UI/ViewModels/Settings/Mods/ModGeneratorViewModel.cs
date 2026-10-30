@@ -229,7 +229,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                 if (GradientStops.Count > 0)
                     GradientStops[0].Color = SolidColorHex;
                 UpdateGlyphColors();
-                StatusText = Strings.Menu_ModGenerator_ReadyToGenerate;
+                StatusText = Localizer.Instance.Get("Menu_ModGenerator_ReadyToGenerate");
             }
         }
 
@@ -266,12 +266,12 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                     if (FontDisplayNames.Count > 0)
                         SelectedFontDisplayName = FontDisplayNames[0];
                 });
-                StatusText = Strings.Menu_ModGenerator_ReadyToGenerate;
+                StatusText = Localizer.Instance.Get("Menu_ModGenerator_ReadyToGenerate");
             }
             catch (Exception ex)
             {
                 App.Logger.Error($"Unhandled exception: {ex}");
-                StatusText = Strings.Menu_ModGenerator_FailedPreview;
+                StatusText = Localizer.Instance.Get("Menu_ModGenerator_FailedPreview");
             }
         }
 
@@ -335,7 +335,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             catch (Exception ex)
             {
                 App.Logger.Error($"Unhandled exception: {ex}");
-                StatusText = Strings.Menu_ModGenerator_FailedPreview;
+                StatusText = Localizer.Instance.Get("Menu_ModGenerator_FailedPreview");
             }
         }
 
@@ -349,13 +349,13 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
             if (ModFolderName.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
             {
-                FolderNameValidationError = Strings.Menu_ModGeneratorName_Invalid;
+                FolderNameValidationError = Localizer.Instance.Get("Menu_ModGeneratorName_Invalid");
                 return;
             }
 
             string fullPath = Path.Combine(Paths.Modifications, ModFolderName);
             if (Directory.Exists(fullPath))
-                FolderNameValidationError = Strings.Menu_ModGeneratorName_Exists;
+                FolderNameValidationError = Localizer.Instance.Get("Menu_ModGeneratorName_Exists");
             else
                 FolderNameValidationError = "";
         }
@@ -420,17 +420,17 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             IsNotGeneratingMod = false;
             IsProgressVisible = true;
             Progress = 0;
-            StatusText = Strings.Menu_ModGenerator_Starting;
+            StatusText = Localizer.Instance.Get("Menu_ModGenerator_Starting");
 
             try
             {
                 await Task.Run(async () =>
                 {
-                    StatusText = Strings.Menu_ModGenerator_Downnloading;
+                    StatusText = Localizer.Instance.Get("Menu_ModGenerator_Downnloading");
                     Progress = 5;
                     var (luaZip, extraZip, contentZip, vHash, vName) = await ModGenerator.DownloadForModGenerator();
 
-                    StatusText = Strings.Menu_ModGenerator_Extracting;
+                    StatusText = Localizer.Instance.Get("Menu_ModGenerator_Extracting");
                     Progress = 25;
                     string luaDir = Path.Combine(TempRoot, "ExtraContent", "LuaPackages");
                     string extraDir = Path.Combine(TempRoot, "ExtraContent", "textures");
@@ -443,7 +443,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                         () => SafeExtract(extraZip, extraDir),
                         () => SafeExtract(contentZip, contentDir));
 
-                    StatusText = Strings.Menu_ModGenerator_RecoloringPNGS;
+                    StatusText = Localizer.Instance.Get("Menu_ModGenerator_RecoloringPNGS");
                     Progress = 50;
                     string foundationImagesDir = Path.Combine(TempRoot, "ExtraContent", "LuaPackages", "Packages", "_Index", "FoundationImages", "FoundationImages", "SpriteSheets");
                     string? getImageSetDataPath = Path.Combine(TempRoot, "ExtraContent", "LuaPackages", "Packages", "_Index", "FoundationImages", "FoundationImages", "Generated", "GetImageSetData.lua");
@@ -474,7 +474,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                     );
                     Progress = 70;
 
-                    StatusText = Strings.Menu_ModGenerator_RecoloringFonts;
+                    StatusText = Localizer.Instance.Get("Menu_ModGenerator_RecoloringFonts");
 
                     string? gradientArg = null;
                     double? angleArg = null;
@@ -505,7 +505,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
                     WriteBuilderIconsJson(TempRoot);
 
-                    StatusText = Strings.Menu_ModGenerator_CleaningUp;
+                    StatusText = Localizer.Instance.Get("Menu_ModGenerator_CleaningUp");
                     Progress = 80;
 
                     var preservePaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -597,7 +597,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                     };
                     await File.WriteAllTextAsync(infoPath, JsonHelper.Serialize(infoData, _jsonOptions));
 
-                    StatusText = Strings.Menu_ModGenerator_Packaging;
+                    StatusText = Localizer.Instance.Get("Menu_ModGenerator_Packaging");
                     Progress = 90;
 
                     if (IncludeModifications)
@@ -651,7 +651,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                         }
 
                         Progress = 100;
-                        StatusText = string.Format(CultureInfo.InvariantCulture, Strings.Menu_ModGenerator_AppliedModifications, copiedFiles);
+                        StatusText = string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Menu_ModGenerator_AppliedModifications"), copiedFiles);
                     }
                     else
                     {
@@ -672,11 +672,11 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                             {
                                 ModGenerator.ZipResult(TempRoot, file.Path.LocalPath);
                                 Progress = 100;
-                                StatusText = string.Format(CultureInfo.InvariantCulture, Strings.Menu_ModGenerator_SavedTo, Path.GetFileName(file.Path.LocalPath));
+                                StatusText = string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Menu_ModGenerator_SavedTo"), Path.GetFileName(file.Path.LocalPath));
                             }
                             else
                             {
-                                StatusText = Strings.Menu_ModGenerator_Cancelled;
+                                StatusText = Localizer.Instance.Get("Menu_ModGenerator_Cancelled");
                             }
                         });
                     }

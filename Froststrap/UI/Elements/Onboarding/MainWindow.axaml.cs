@@ -114,9 +114,9 @@ namespace Froststrap.UI.Elements.Onboarding
                 RootNavigation.CurrentIndex = index;
 
             if (_currentPage == _pages.Last())
-                SetNextButtonText(Strings.Common_Finish);
+                SetNextButtonText(Localizer.Instance.Get("Common_Finish"));
             else
-                SetNextButtonText(Strings.Common_Next);
+                SetNextButtonText(Localizer.Instance.Get("Common_Next"));
 
             _viewModel.BackButtonEnabled = _currentPage != _pages.First();
 

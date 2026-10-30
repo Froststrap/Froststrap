@@ -168,7 +168,7 @@ namespace Froststrap.UI.Elements.Editor
                 Directory = directory,
                 Name = name,
                 Code = ToCRLF(themeContents),
-                Title = string.Format(CultureInfo.InvariantCulture, Strings.CustomTheme_Editor_Title, name)
+                Title = string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("CustomTheme_Editor_Title"), name)
             };
 
             DataContext = _viewModel;
@@ -183,8 +183,8 @@ namespace Froststrap.UI.Elements.Editor
                 if (success)
                 {
                     Dispatcher.UIThread.Post(() => ShowNotification(
-                        Strings.Menu_SettingsSaved_Title,
-                        Strings.Menu_SettingsSaved_Message,
+                        Localizer.Instance.Get("Menu_SettingsSaved_Title"),
+                        Localizer.Instance.Get("Menu_SettingsSaved_Message"),
                         FAInfoBarSeverity.Success,
                         3000));
                 }
@@ -400,7 +400,7 @@ namespace Froststrap.UI.Elements.Editor
             e.Cancel = true;
 
             var result = await Frontend.ShowMessageBox(
-                string.Format(CultureInfo.InvariantCulture, Strings.CustomTheme_Editor_ConfirmSave, _viewModel.Name),
+                string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("CustomTheme_Editor_ConfirmSave"), _viewModel.Name),
                 MessageBoxImage.Information,
                 MessageBoxButton.YesNoCancel
             );

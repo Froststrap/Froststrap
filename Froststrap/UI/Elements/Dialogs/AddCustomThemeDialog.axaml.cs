@@ -15,7 +15,7 @@ namespace Froststrap.UI.Elements.Dialogs
         private const int CreateNewTabId = 0;
         private readonly AddCustomThemeViewModel _viewModel;
 
-        private static readonly FilePickerFileType ZipFileType = new(Strings.FileTypes_ZipArchive)
+        private static readonly FilePickerFileType ZipFileType = new(Localizer.Instance.Get("FileTypes_ZipArchive"))
         {
             Patterns = ["*.zip"]
         };
@@ -42,10 +42,10 @@ namespace Froststrap.UI.Elements.Dialogs
         {
             int count = Directory.GetDirectories(Paths.CustomThemes).Length;
             int i = count + 1;
-            string name = string.Format(CultureInfo.CurrentCulture, Strings.CustomTheme_DefaultName, i);
+            string name = string.Format(CultureInfo.CurrentCulture, Localizer.Instance.Get("CustomTheme_DefaultName"), i);
 
             if (File.Exists(GetThemePath(name)))
-                name = string.Format(CultureInfo.CurrentCulture, Strings.CustomTheme_DefaultName, $"{i}-{RandomNumberGenerator.GetInt32(1, 100000)}");
+                name = string.Format(CultureInfo.CurrentCulture, Localizer.Instance.Get("CustomTheme_DefaultName"), $"{i}-{RandomNumberGenerator.GetInt32(1, 100000)}");
 
             return name;
         }
@@ -88,7 +88,7 @@ namespace Froststrap.UI.Elements.Dialogs
 
             if (string.IsNullOrEmpty(_viewModel.Name))
             {
-                _viewModel.NameError = Strings.CustomTheme_Add_Errors_NameEmpty;
+                _viewModel.NameError = Localizer.Instance.Get("CustomTheme_Add_Errors_NameEmpty");
                 App.Logger.Error("Name is empty");
                 return false;
             }
@@ -98,16 +98,16 @@ namespace Froststrap.UI.Elements.Dialogs
             {
                 _viewModel.NameError = validationResult switch
                 {
-                    PathValidator.ValidationResult.IllegalCharacter => Strings.CustomTheme_Add_Errors_NameIllegalCharacters,
-                    PathValidator.ValidationResult.ReservedFileName => Strings.CustomTheme_Add_Errors_NameReserved,
-                    _ => Strings.CustomTheme_Add_Errors_Unknown
+                    PathValidator.ValidationResult.IllegalCharacter => Localizer.Instance.Get("CustomTheme_Add_Errors_NameIllegalCharacters"),
+                    PathValidator.ValidationResult.ReservedFileName => Localizer.Instance.Get("CustomTheme_Add_Errors_NameReserved"),
+                    _ => Localizer.Instance.Get("CustomTheme_Add_Errors_Unknown")
                 };
                 return false;
             }
 
             if (File.Exists(GetThemePath(_viewModel.Name)))
             {
-                _viewModel.NameError = Strings.CustomTheme_Add_Errors_NameTaken;
+                _viewModel.NameError = Localizer.Instance.Get("CustomTheme_Add_Errors_NameTaken");
                 App.Logger.Error("Theme name already exists");
                 return false;
             }
@@ -122,7 +122,7 @@ namespace Froststrap.UI.Elements.Dialogs
 
             if (string.IsNullOrEmpty(viewModel.FilePath) || !viewModel.FilePath.EndsWith(".zip", StringComparison.OrdinalIgnoreCase))
             {
-                viewModel.FileError = Strings.CustomTheme_Add_Errors_FileNotZip;
+                viewModel.FileError = Localizer.Instance.Get("CustomTheme_Add_Errors_FileNotZip");
                 return false;
             }
 
@@ -134,7 +134,7 @@ namespace Froststrap.UI.Elements.Dialogs
 
                 if (!foundThemeFile)
                 {
-                    viewModel.FileError = Strings.CustomTheme_Add_Errors_ZipMissingThemeFile;
+                    viewModel.FileError = Localizer.Instance.Get("CustomTheme_Add_Errors_ZipMissingThemeFile");
                     return false;
                 }
 
@@ -143,7 +143,7 @@ namespace Froststrap.UI.Elements.Dialogs
             catch (Exception ex)
             {
                 App.Logger.Error("Unhandled exception:", ex);
-                viewModel.FileError = Strings.CustomTheme_Add_Errors_ZipInvalidData;
+                viewModel.FileError = Localizer.Instance.Get("CustomTheme_Add_Errors_ZipInvalidData");
                 return false;
             }
         }
@@ -212,7 +212,7 @@ namespace Froststrap.UI.Elements.Dialogs
             catch (Exception ex)
             {
                 App.Logger.Error("Unhandled exception:", ex);
-                _viewModel.FileError = Strings.CustomTheme_Add_Errors_Unknown;
+                _viewModel.FileError = Localizer.Instance.Get("CustomTheme_Add_Errors_Unknown");
             }
             finally
             {
@@ -228,7 +228,7 @@ namespace Froststrap.UI.Elements.Dialogs
 
             var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
             {
-                Title = Strings.Common_ImportFromFile,
+                Title = Localizer.Instance.Get("Common_ImportFromFile"),
                 FileTypeFilter = [ZipFileType],
                 AllowMultiple = false
             });

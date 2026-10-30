@@ -9,7 +9,7 @@ namespace Froststrap.UI.ViewModels.Onboarding
 {
     internal class MainWindowViewModel : NotifyPropertyChangedViewModel
     {
-        public string NextButtonText { get; private set; } = Strings.Common_Next;
+        public string NextButtonText { get; private set; } = Localizer.Instance.Get("Common_Next");
         private bool _backButtonEnabled;
         public bool BackButtonEnabled
         {

@@ -9,7 +9,7 @@ namespace Froststrap.Models.SettingTasks
 {
     internal class ExtractIconsTask : BoolBaseTask
     {
-        private static string IconPath => Path.Combine(Paths.Base, Strings.Paths_Icons);
+        private static string IconPath => Path.Combine(Paths.Base, Localizer.Instance.Get("Paths_Icons"));
 
         // List of embedded icon resource names to extract
         private static readonly string[] AllowedIconNames =

@@ -41,8 +41,8 @@ namespace Froststrap.UI.ViewModels.Settings
             IBootstrapperDialog dialog = await App.Settings.Prop.BootstrapperStyle.GetNew();
 
             dialog.Message = App.Settings.Prop.BootstrapperStyle == BootstrapperStyle.ByfronDialog
-                ? Strings.Bootstrapper_StylePreview_ImageCancel
-                : Strings.Bootstrapper_StylePreview_TextCancel;
+                ? Localizer.Instance.Get("Bootstrapper_StylePreview_ImageCancel")
+                : Localizer.Instance.Get("Bootstrapper_StylePreview_TextCancel");
 
             dialog.CancelEnabled = true;
             dialog.ShowBootstrapper();
@@ -104,17 +104,17 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 string identifier = App.Settings.Prop.Locale;
                 if (identifier == "nil")
-                    return Strings.Common_SystemDefault;
+                    return Localizer.Instance.Get("Common_SystemDefault");
 
                 return Locale.SupportedLocales.TryGetValue(identifier, out var value)
                     ? value
-                    : Strings.Common_SystemDefault;
+                    : Localizer.Instance.Get("Common_SystemDefault");
             }
             set
             {
                 string? identifier = Locale.SupportedLocales.FirstOrDefault(x => x.Value == value).Key;
 
-                if (identifier == null && value == Strings.Common_SystemDefault)
+                if (identifier == null && value == Localizer.Instance.Get("Common_SystemDefault"))
                     identifier = "nil";
 
                 identifier ??= "nil";
@@ -599,7 +599,7 @@ namespace Froststrap.UI.ViewModels.Settings
             catch (Exception ex)
             {
                 App.Logger.Error($"Unhandled exception: {ex.Message}");
-                await Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Menu_Appearance_CustomThemes_DeleteFailed, themeToDelete, ex.Message), MessageBoxImage.Error);
+                await Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Menu_Appearance_CustomThemes_DeleteFailed"), themeToDelete, ex.Message), MessageBoxImage.Error);
                 return;
             }
 
@@ -643,7 +643,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
             if (string.IsNullOrEmpty(SelectedCustomThemeName))
             {
-                await Frontend.ShowMessageBox(Strings.CustomTheme_Add_Errors_NameEmpty, MessageBoxImage.Error);
+                await Frontend.ShowMessageBox(Localizer.Instance.Get("CustomTheme_Add_Errors_NameEmpty"), MessageBoxImage.Error);
                 return;
             }
 
@@ -652,9 +652,9 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 string errorString = validationResult switch
                 {
-                    PathValidator.ValidationResult.IllegalCharacter => Strings.CustomTheme_Add_Errors_NameIllegalCharacters,
-                    PathValidator.ValidationResult.ReservedFileName => Strings.CustomTheme_Add_Errors_NameReserved,
-                    _ => Strings.CustomTheme_Add_Errors_Unknown
+                    PathValidator.ValidationResult.IllegalCharacter => Localizer.Instance.Get("CustomTheme_Add_Errors_NameIllegalCharacters"),
+                    PathValidator.ValidationResult.ReservedFileName => Localizer.Instance.Get("CustomTheme_Add_Errors_NameReserved"),
+                    _ => Localizer.Instance.Get("CustomTheme_Add_Errors_Unknown")
                 };
                 await Frontend.ShowMessageBox(errorString, MessageBoxImage.Error);
                 return;
@@ -663,7 +663,7 @@ namespace Froststrap.UI.ViewModels.Settings
             string path = Path.Combine(Paths.CustomThemes, SelectedCustomThemeName, "Theme.xml");
             if (File.Exists(path))
             {
-                await Frontend.ShowMessageBox(Strings.CustomTheme_Add_Errors_NameTaken, MessageBoxImage.Error);
+                await Frontend.ShowMessageBox(Localizer.Instance.Get("CustomTheme_Add_Errors_NameTaken"), MessageBoxImage.Error);
                 return;
             }
 

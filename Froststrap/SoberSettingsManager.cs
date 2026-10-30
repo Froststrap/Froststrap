@@ -123,7 +123,7 @@ internal class SoberSettingsManager : JsonManager<Dictionary<string, object>>
 
             if (alertFailure)
             {
-                string message = Strings.JsonManager_SettingsLoadFailed;
+                string message = Localizer.Instance.Get("JsonManager_SettingsLoadFailed");
                 _ = Frontend.ShowMessageBox($"{message}\n\n{ex.Message}", MessageBoxImage.Warning);
             }
             return false;

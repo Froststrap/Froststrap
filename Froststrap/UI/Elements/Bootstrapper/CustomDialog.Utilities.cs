@@ -131,7 +131,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
             if (resourceName == "Version")
                 return App.Version;
 
-            return Strings.ResourceManager.GetString(resourceName, CultureInfo.CurrentCulture) ?? resourceName;
+            return Localizer.Instance.Get(resourceName) ?? resourceName;
         }
 
         private static string? GetFullPath(CustomDialog dialog, string? sourcePath)

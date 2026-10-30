@@ -30,7 +30,7 @@ namespace Froststrap.UI.ViewModels.Settings
         #region Fields
         private bool _hasSearched;
         private string _placeId = "";
-        private string _selectedRegion = Strings.Common_Auto;
+        private string _selectedRegion = Localizer.Instance.Get("Common_Auto");
         private bool _isLoading;
         private bool _isGameSearchLoading;
         private string _loadingMessage = "";
@@ -211,10 +211,10 @@ namespace Froststrap.UI.ViewModels.Settings
         public bool ShowLoadMoreButton =>
             HasSearched && !IsLoading && !IsLoadingMore && Servers.Count > 0 && HasMoreServers;
 
-        public string ServerListMessage => !HasValidCookies ? Strings.Menu_RegionSelector_LoginRequired :
+        public string ServerListMessage => !HasValidCookies ? Localizer.Instance.Get("Menu_RegionSelector_LoginRequired") :
             IsLoading ? "" :
-            !HasSearched ? Strings.Menu_RegionSelector_EnterPlaceId :
-            IsServerListEmpty ? (LastFetchProcessedCount == 0 ? Strings.Menu_RegionSelector_NoPublicServers : Strings.Menu_RegionSelector_NoServersForRegion) : "";
+            !HasSearched ? Localizer.Instance.Get("Menu_RegionSelector_EnterPlaceId") :
+            IsServerListEmpty ? (LastFetchProcessedCount == 0 ? Localizer.Instance.Get("Menu_RegionSelector_NoPublicServers") : Localizer.Instance.Get("Menu_RegionSelector_NoServersForRegion")) : "";
 
         public IAsyncRelayCommand SearchCommand { get; }
         public IAsyncRelayCommand SearchGamesCommand { get; }
@@ -334,7 +334,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
 
             IsLoading = true;
-            LoadingMessage = Strings.Menu_RegionSelector_LoadingDatacenters;
+            LoadingMessage = Localizer.Instance.Get("Menu_RegionSelector_LoadingDatacenters");
 
             var apiResult = await _fetcher!.GetDatacentersAsync();
             if (apiResult != null)
@@ -342,7 +342,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 var (regions, dcMap) = apiResult.Value;
                 PopulateRegions(regions, dcMap);
                 await SaveDatacentersToCacheAsync(dcMap);
-                LoadingMessage = string.Format(CultureInfo.InvariantCulture, Strings.Menu_RegionSelector_LoadedRegions, Regions.Count);
+                LoadingMessage = string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Menu_RegionSelector_LoadedRegions"), Regions.Count);
                 IsLoading = false;
                 await Task.Delay(800);
                 LoadingMessage = "";
@@ -354,26 +354,26 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 var (regions, dcMap) = staleCache.Value;
                 PopulateRegions(regions, dcMap);
-                LoadingMessage = Strings.Menu_RegionSelector_UsingCachedData;
+                LoadingMessage = Localizer.Instance.Get("Menu_RegionSelector_UsingCachedData");
                 IsLoading = false;
                 await Task.Delay(1500);
                 LoadingMessage = "";
                 return;
             }
 
-            LoadingMessage = Strings.Menu_RegionSelector_FailedToLoadDatacenters;
+            LoadingMessage = Localizer.Instance.Get("Menu_RegionSelector_FailedToLoadDatacenters");
             IsLoading = false;
         }
 
         private void PopulateRegions(List<string> regions, Dictionary<int, string> dcMap)
         {
             var sorted = regions.OrderBy(r => r, StringComparer.OrdinalIgnoreCase).ToList();
-            var list = new List<string> { Strings.Common_Auto };
+            var list = new List<string> { Localizer.Instance.Get("Common_Auto") };
             list.AddRange(sorted);
 
-            var desired = string.IsNullOrEmpty(_selectedRegion) ? Strings.Common_Auto : _selectedRegion;
+            var desired = string.IsNullOrEmpty(_selectedRegion) ? Localizer.Instance.Get("Common_Auto") : _selectedRegion;
             var match = list.FirstOrDefault(r => r.Equals(desired, StringComparison.OrdinalIgnoreCase))
-                        ?? Strings.Common_Auto;
+                        ?? Localizer.Instance.Get("Common_Auto");
 
             SelectedRegion = "";
             Regions = list;
@@ -391,7 +391,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
             HasSearched = true;
             IsLoading = true;
-            LoadingMessage = Strings.Menu_RegionSelector_SearchingServers;
+            LoadingMessage = Localizer.Instance.Get("Menu_RegionSelector_SearchingServers");
             Servers.Clear();
             _displayedServerIds.Clear();
             _regionCursors.Clear();
@@ -411,7 +411,7 @@ namespace Froststrap.UI.ViewModels.Settings
             try
             {
                 _isAutoMode = string.IsNullOrEmpty(SelectedRegion) ||
-                              SelectedRegion.Equals(Strings.Common_Auto, StringComparison.OrdinalIgnoreCase);
+                              SelectedRegion.Equals(Localizer.Instance.Get("Common_Auto"), StringComparison.OrdinalIgnoreCase);
 
                 if (string.IsNullOrEmpty(_resolvedCookie))
                 {

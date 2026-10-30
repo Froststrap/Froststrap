@@ -24,7 +24,7 @@ namespace Froststrap.UI.Elements.Dialogs
             AddException(exception);
 
             if (!Logging.Initialized)
-                LocateLogFileButton.Content = Strings.Dialog_Exception_CopyLogContents;
+                LocateLogFileButton.Content = Localizer.Instance.Get("Dialog_Exception_CopyLogContents");
 
             string repoUrl = $"https://github.com/{App.ProjectRepository}";
             string wikiUrl = $"{repoUrl}/wiki";
@@ -44,13 +44,13 @@ namespace Froststrap.UI.Elements.Dialogs
                     issueUrl = $"{repoUrl}/issues/new?template=bug_report.yaml";
             }
 
-            string helpMessage = String.Format(CultureInfo.InvariantCulture, Strings.Dialog_Exception_Info_2, wikiUrl, issueUrl);
+            string helpMessage = String.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Dialog_Exception_Info_2"), wikiUrl, issueUrl);
 
             if (!App.IsActionBuild)
-                helpMessage = String.Format(CultureInfo.InvariantCulture, Strings.Dialog_Exception_Info_2_Alt, wikiUrl);
+                helpMessage = String.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Dialog_Exception_Info_2_Alt"), wikiUrl);
 
             HelpMessageMarkdown.MarkdownText = helpMessage;
-            VersionText.Text = String.Format(CultureInfo.InvariantCulture, Strings.Menu_About_Version, App.Version);
+            VersionText.Text = String.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Menu_About_Version"), App.Version);
 
             ReportExceptionButton.Click += (_, _) => Froststrap.Utility.Threading.ShellExecute(issueUrl);
 

@@ -126,13 +126,13 @@ namespace Froststrap.UI.Elements.Dialogs
             switch (result)
             {
                 case MessageBoxResult.OK:
-                    return Strings.Common_OK;
+                    return Localizer.Instance.Get("Common_OK");
                 case MessageBoxResult.Cancel:
-                    return Strings.Common_Cancel;
+                    return Localizer.Instance.Get("Common_Cancel");
                 case MessageBoxResult.Yes:
-                    return Strings.Common_Yes;
+                    return Localizer.Instance.Get("Common_Yes");
                 case MessageBoxResult.No:
-                    return Strings.Common_No;
+                    return Localizer.Instance.Get("Common_No");
                 default:
                     Debug.Assert(false);
                     return result.ToString();

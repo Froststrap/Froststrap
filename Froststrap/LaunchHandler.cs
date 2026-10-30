@@ -300,7 +300,7 @@ namespace Froststrap
 
             if (OperatingSystem.IsWindows() && !File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "mfplat.dll")))
             {
-                await Frontend.ShowMessageBox(Strings.Bootstrapper_WMFNotFound, MessageBoxImage.Error);
+                await Frontend.ShowMessageBox(Localizer.Instance.Get("Bootstrapper_WMFNotFound"), MessageBoxImage.Error);
 
                 Utility.Threading.ShellExecute("https://support.microsoft.com/en-us/topic/media-feature-pack-list-for-windows-n-editions-c1c6fffa-d052-8338-7a79-a4bb980a700a");
 
@@ -309,7 +309,7 @@ namespace Froststrap
 
             if (App.Settings.Prop.ConfirmLaunches && Utility.Processes.IsRobloxRunning() && launchMode == LaunchMode.Player)
             {
-                var result = await Frontend.ShowMessageBox(Strings.Bootstrapper_ConfirmLaunch, MessageBoxImage.Warning, MessageBoxButton.YesNo);
+                var result = await Frontend.ShowMessageBox(Localizer.Instance.Get("Bootstrapper_ConfirmLaunch"), MessageBoxImage.Warning, MessageBoxButton.YesNo);
 
                 if (result != MessageBoxResult.Yes)
                 {

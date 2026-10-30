@@ -106,7 +106,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
             if (UpdaterManager.IsCiBuild)
             {
-                UpdateStatus = Strings.Menu_Deployment_CheckForUpdates_UpToDate;
+                UpdateStatus = Localizer.Instance.Get("Menu_Deployment_CheckForUpdates_UpToDate");
                 return;
             }
 
@@ -114,13 +114,13 @@ namespace Froststrap.UI.ViewModels.Settings
 
             try
             {
-                UpdateStatus = Strings.Menu_Deployment_CheckForUpdates_Checking;
+                UpdateStatus = Localizer.Instance.Get("Menu_Deployment_CheckForUpdates_Checking");
 
                 var updater = new UpdaterManager(PreReleaseUpdatesEnabled);
 
                 if (!updater.IsInstalled)
                 {
-                    UpdateStatus = Strings.Menu_Deployment_CheckForUpdates_NotSupported;
+                    UpdateStatus = Localizer.Instance.Get("Menu_Deployment_CheckForUpdates_NotSupported");
                     return;
                 }
 
@@ -128,24 +128,24 @@ namespace Froststrap.UI.ViewModels.Settings
 
                 if (update is null)
                 {
-                    UpdateStatus = Strings.Menu_Deployment_CheckForUpdates_UpToDate;
+                    UpdateStatus = Localizer.Instance.Get("Menu_Deployment_CheckForUpdates_UpToDate");
                     return;
                 }
 
                 var result = await Frontend.ShowMessageBox(
-                    string.Format(CultureInfo.CurrentCulture, Strings.Menu_Deployment_CheckForUpdates_Found, update.TargetFullRelease.Version),
+                    string.Format(CultureInfo.CurrentCulture, Localizer.Instance.Get("Menu_Deployment_CheckForUpdates_Found"), update.TargetFullRelease.Version),
                     MessageBoxImage.Question,
                     MessageBoxButton.YesNo);
 
                 if (result != MessageBoxResult.Yes)
                 {
-                    UpdateStatus = Strings.Menu_Deployment_CheckForUpdates_UpToDate;
+                    UpdateStatus = Localizer.Instance.Get("Menu_Deployment_CheckForUpdates_UpToDate");
                     return;
                 }
 
                 UpdateStatus = string.Format(
                     CultureInfo.CurrentCulture,
-                    Strings.Menu_Deployment_CheckForUpdates_Downloading,
+                    Localizer.Instance.Get("Menu_Deployment_CheckForUpdates_Downloading"),
                     update.TargetFullRelease.Version);
 
                 await updater.DownloadUpdatesAsync(update);
@@ -155,7 +155,7 @@ namespace Froststrap.UI.ViewModels.Settings
             catch (Exception ex)
             {
                 App.Logger.Error("Manual update check failed: ", ex);
-                UpdateStatus = Strings.Menu_Deployment_CheckForUpdates_Failed;
+                UpdateStatus = Localizer.Instance.Get("Menu_Deployment_CheckForUpdates_Failed");
             }
             finally
             {
@@ -191,7 +191,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 if (ValidateDomain(value))
                     App.Settings.Prop.RobloxDomain = value;
                 else
-                    _ = Frontend.ShowMessageBox(Strings.Menu_Deployment_DomainValidation, MessageBoxImage.Warning, MessageBoxButton.OK);
+                    _ = Frontend.ShowMessageBox(Localizer.Instance.Get("Menu_Deployment_DomainValidation"), MessageBoxImage.Warning, MessageBoxButton.OK);
             }
         }
 
@@ -212,7 +212,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private async Task HandleTestModeConfirmation()
         {
-            var result = await Frontend.ShowMessageBox(Strings.Menu_TestMode_Prompt, MessageBoxImage.Information, MessageBoxButton.YesNo);
+            var result = await Frontend.ShowMessageBox(Localizer.Instance.Get("Menu_TestMode_Prompt"), MessageBoxImage.Information, MessageBoxButton.YesNo);
             if (result == MessageBoxResult.Yes)
             {
                 App.State.Prop.TestModeWarningShown = true;
@@ -276,7 +276,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 if (isStudio)
                 {
                     StudioShowLoadingError = false;
-                    StudioInfoLoadingText = Strings.Menu_Channel_Switcher_Fetching;
+                    StudioInfoLoadingText = Localizer.Instance.Get("Menu_Channel_Switcher_Fetching");
                     StudioDeployInfo = null;
                     OnPropertyChanged(nameof(StudioShowLoadingError));
                     OnPropertyChanged(nameof(StudioInfoLoadingText));
@@ -285,7 +285,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 else
                 {
                     PlayerShowLoadingError = false;
-                    PlayerInfoLoadingText = Strings.Menu_Channel_Switcher_Fetching;
+                    PlayerInfoLoadingText = Localizer.Instance.Get("Menu_Channel_Switcher_Fetching");
                     PlayerDeployInfo = null;
                     OnPropertyChanged(nameof(PlayerShowLoadingError));
                     OnPropertyChanged(nameof(PlayerInfoLoadingText));
@@ -340,7 +340,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
                 string errorText;
                 if (ex.StatusCode.HasValue && ex.StatusCode.Value == HttpStatusCode.Unauthorized)
-                    errorText = Strings.Menu_Channel_Switcher_Unauthorized;
+                    errorText = Localizer.Instance.Get("Menu_Channel_Switcher_Unauthorized");
                 else if (ex.StatusCode.HasValue)
                     errorText = $"HTTP error {(int)ex.StatusCode.Value}";
                 else
@@ -367,14 +367,14 @@ namespace Froststrap.UI.ViewModels.Settings
                 if (isStudio)
                 {
                     StudioShowLoadingError = true;
-                    StudioInfoLoadingText = Strings.Menu_Deployment_FailedToLoadChannelData;
+                    StudioInfoLoadingText = Localizer.Instance.Get("Menu_Deployment_FailedToLoadChannelData");
                     OnPropertyChanged(nameof(StudioShowLoadingError));
                     OnPropertyChanged(nameof(StudioInfoLoadingText));
                 }
                 else
                 {
                     PlayerShowLoadingError = true;
-                    PlayerInfoLoadingText = Strings.Menu_Deployment_FailedToLoadChannelData;
+                    PlayerInfoLoadingText = Localizer.Instance.Get("Menu_Deployment_FailedToLoadChannelData");
                     OnPropertyChanged(nameof(PlayerShowLoadingError));
                     OnPropertyChanged(nameof(PlayerInfoLoadingText));
                 }
@@ -447,7 +447,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
             var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
             {
-                Title = Strings.Menu_BottomButtons_ImportSettings,
+                Title = Localizer.Instance.Get("Menu_BottomButtons_ImportSettings"),
                 AllowMultiple = false,
                 FileTypeFilter = [new FilePickerFileType("JSON") { Patterns = ["*.json"] }]
             });
@@ -481,7 +481,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
             var file = await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
             {
-                Title = Strings.Menu_BottomButtons_ExportSettings,
+                Title = Localizer.Instance.Get("Menu_BottomButtons_ExportSettings"),
                 SuggestedFileName = "Settings.json",
                 FileTypeChoices = [new FilePickerFileType("JSON") { Patterns = ["*.json"] }]
             });
@@ -532,9 +532,9 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public static IReadOnlyDictionary<string, ChannelChangeMode> ChannelChangeModes => new Dictionary<string, ChannelChangeMode>
         {
-            { Strings.Menu_Channel_ChangeAction_Automatic, ChannelChangeMode.Automatic },
-            { Strings.Menu_Channel_ChangeAction_Prompt, ChannelChangeMode.Prompt },
-            { Strings.Menu_Channel_ChangeAction_Ignore, ChannelChangeMode.Ignore },
+            { Localizer.Instance.Get("Menu_Channel_ChangeAction_Automatic"), ChannelChangeMode.Automatic },
+            { Localizer.Instance.Get("Menu_Channel_ChangeAction_Prompt"), ChannelChangeMode.Prompt },
+            { Localizer.Instance.Get("Menu_Channel_ChangeAction_Ignore"), ChannelChangeMode.Ignore },
         };
 
         public static string SelectedChannelChangeMode

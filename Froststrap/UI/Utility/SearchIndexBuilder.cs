@@ -34,15 +34,15 @@ namespace Froststrap.UI.Utility
 
             var navigationItems = new[]
             {
-                new { Display = Strings.Menu_Integrations_Title, Tag = "integrations" },
-                new { Display = Strings.Menu_Behaviour_Title, Tag = "behaviour" },
-                new { Display = Strings.Menu_PresetMods_Title, Tag = "mods" },
-                new { Display = Strings.Menu_FastFlags_Title, Tag = "fastflags" },
-                new { Display = Strings.Menu_Appearance_Title, Tag = "appearance" },
-                new { Display = Strings.Menu_RegionSelector_Title, Tag = "regionselector" },
-                new { Display = Strings.Menu_GlobalSettings_Title, Tag = "globalsettings" },
-                new { Display = Strings.Common_Shortcuts, Tag = "shortcuts" },
-                new { Display = Strings.Common_Deployment, Tag = "channels" }
+                new { Display = Localizer.Instance.Get("Menu_Integrations_Title"), Tag = "integrations" },
+                new { Display = Localizer.Instance.Get("Menu_Behaviour_Title"), Tag = "behaviour" },
+                new { Display = Localizer.Instance.Get("Menu_PresetMods_Title"), Tag = "mods" },
+                new { Display = Localizer.Instance.Get("Menu_FastFlags_Title"), Tag = "fastflags" },
+                new { Display = Localizer.Instance.Get("Menu_Appearance_Title"), Tag = "appearance" },
+                new { Display = Localizer.Instance.Get("Menu_RegionSelector_Title"), Tag = "regionselector" },
+                new { Display = Localizer.Instance.Get("Menu_GlobalSettings_Title"), Tag = "globalsettings" },
+                new { Display = Localizer.Instance.Get("Common_Shortcuts"), Tag = "shortcuts" },
+                new { Display = Localizer.Instance.Get("Common_Deployment"), Tag = "channels" }
             };
 
             _navigationItemsCache = [];

@@ -20,7 +20,7 @@ namespace Froststrap.UI.Elements.Dialogs
             InitializeComponent();
             SignInSuccessful = false;
 
-            StatusText.Text = Strings.Menu_QuickSignIn_Waitting;
+            StatusText.Text = Localizer.Instance.Get("Menu_QuickSignIn_Waitting");
         }
 
         public void StartNewSignIn(string code)
@@ -32,7 +32,7 @@ namespace Froststrap.UI.Elements.Dialogs
 
             CodeTextBox.Text = code ?? string.Empty;
             CodeBox.IsVisible = true;
-            StatusText.Text = Strings.Menu_QuickSignIn_Waitting;
+            StatusText.Text = Localizer.Instance.Get("Menu_QuickSignIn_Waitting");
 
             if (!IsVisible)
             {
@@ -46,7 +46,7 @@ namespace Froststrap.UI.Elements.Dialogs
         public void CompleteSignIn()
         {
             SignInSuccessful = true;
-            StatusText.Text = Strings.Menu_QuickSignIn_Complete;
+            StatusText.Text = Localizer.Instance.Get("Menu_QuickSignIn_Complete");
 
             _autoCloseTimer = new DispatcherTimer
             {
@@ -74,7 +74,7 @@ namespace Froststrap.UI.Elements.Dialogs
                     {
                         Dispatcher.UIThread.Post(() =>
                         {
-                            StatusText.Text = Strings.Menu_QuickSignIn_Waitting;
+                            StatusText.Text = Localizer.Instance.Get("Menu_QuickSignIn_Waitting");
                         });
                     }, TaskScheduler.Default);
                 }
@@ -100,13 +100,13 @@ namespace Froststrap.UI.Elements.Dialogs
                         CompleteSignIn();
                         break;
                     case "Cancelled":
-                        StatusText.Text = Strings.Menu_QuickSignIn_Cancelled;
+                        StatusText.Text = Localizer.Instance.Get("Menu_QuickSignIn_Cancelled");
                         break;
                     case "TimedOut":
-                        StatusText.Text = Strings.Menu_QuickSignIn_TimedOut;
+                        StatusText.Text = Localizer.Instance.Get("Menu_QuickSignIn_TimedOut");
                         break;
                     case "UserLinked":
-                        StatusText.Text = Strings.Menu_QuickSignIn_Linked;
+                        StatusText.Text = Localizer.Instance.Get("Menu_QuickSignIn_Linked");
                         break;
                     default:
                         if (!string.IsNullOrEmpty(accountName))

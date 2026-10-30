@@ -18,21 +18,21 @@ namespace Froststrap.Exceptions
         public CustomThemeException(string message, Exception innerException) : base(message, innerException) { }
 
         public CustomThemeException(string translationString, params object?[] args)
-            : base(string.Format(CultureInfo.InvariantCulture, Strings.ResourceManager.GetString(translationString, CultureInfo.CurrentCulture) ?? translationString, args))
+            : base(string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get(translationString) ?? translationString, args))
         {
-            EnglishMessage = string.Format(CultureInfo.InvariantCulture, Strings.ResourceManager.GetString(translationString, CultureInfo.InvariantCulture) ?? translationString, args);
+            EnglishMessage = string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get(translationString) ?? translationString, args);
         }
 
         public CustomThemeException(Exception innerException, string translationString)
-            : base(Strings.ResourceManager.GetString(translationString, CultureInfo.CurrentCulture) ?? translationString, innerException)
+            : base(Localizer.Instance.Get(translationString) ?? translationString, innerException)
         {
-            EnglishMessage = Strings.ResourceManager.GetString(translationString, CultureInfo.InvariantCulture) ?? translationString;
+            EnglishMessage = Localizer.Instance.Get(translationString) ?? translationString;
         }
 
         public CustomThemeException(Exception innerException, string translationString, params object?[] args)
-            : base(string.Format(CultureInfo.InvariantCulture, Strings.ResourceManager.GetString(translationString, CultureInfo.CurrentCulture) ?? translationString, args), innerException)
+            : base(string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get(translationString) ?? translationString, args), innerException)
         {
-            EnglishMessage = string.Format(CultureInfo.InvariantCulture, Strings.ResourceManager.GetString(translationString, CultureInfo.InvariantCulture) ?? translationString, args);
+            EnglishMessage = string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get(translationString) ?? translationString, args);
         }
 
         public override string ToString()

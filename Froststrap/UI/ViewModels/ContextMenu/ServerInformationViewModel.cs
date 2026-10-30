@@ -93,16 +93,16 @@ internal class ServerInformationViewModel : NotifyPropertyChangedViewModel
 
     public bool ShowInstanceId => HasServerData && !string.IsNullOrEmpty(InstanceId);
     public bool AccessCodeVisibility => HasServerData && !string.IsNullOrEmpty(AccessCode);
-    public bool ServerLocationVisibility => HasServerData && !string.IsNullOrEmpty(ServerLocation) && ServerLocation != Strings.Common_NotAvailable;
-    public bool ServerUptimeVisibility => HasServerData && !string.IsNullOrEmpty(ServerUptime) && ServerUptime != Strings.Common_NotAvailable && App.Settings.Prop.ShowServerUptime;
+    public bool ServerLocationVisibility => HasServerData && !string.IsNullOrEmpty(ServerLocation) && ServerLocation != Localizer.Instance.Get("Common_NotAvailable");
+    public bool ServerUptimeVisibility => HasServerData && !string.IsNullOrEmpty(ServerUptime) && ServerUptime != Localizer.Instance.Get("Common_NotAvailable") && App.Settings.Prop.ShowServerUptime;
     public bool ShowCopyButton => HasServerData;
 
     public ICommand CopyCommand { get; }
     public ICommand CloseCommand { get; }
 
     public string CopyButtonText => AccessCodeVisibility
-        ? Strings.ContextMenu_ServerInformation_CopyAccessCode
-        : Strings.ContextMenu_ServerInformation_CopyInstanceId;
+        ? Localizer.Instance.Get("ContextMenu_ServerInformation_CopyAccessCode")
+        : Localizer.Instance.Get("ContextMenu_ServerInformation_CopyInstanceId");
 
     public ServerInformationViewModel()
     {
@@ -127,10 +127,10 @@ internal class ServerInformationViewModel : NotifyPropertyChangedViewModel
         ServerType = data.ServerType.ToString();
         InstanceId = data.JobId;
         AccessCode = data.AccessCode;
-        ServerLocation = data.Region ?? Strings.Common_NotAvailable;
+        ServerLocation = data.Region ?? Localizer.Instance.Get("Common_NotAvailable");
         ServerUptime = data.StartTime.HasValue
             ? FormatUptime(DateTime.UtcNow - data.StartTime.Value)
-            : Strings.Common_NotAvailable;
+            : Localizer.Instance.Get("Common_NotAvailable");
         HasServerData = true;
 
         StartUptimeUpdates();
@@ -158,7 +158,7 @@ internal class ServerInformationViewModel : NotifyPropertyChangedViewModel
         }
         else
         {
-            ServerUptime = Strings.Common_NotAvailable;
+            ServerUptime = Localizer.Instance.Get("Common_NotAvailable");
         }
     }
 
@@ -179,12 +179,12 @@ internal class ServerInformationViewModel : NotifyPropertyChangedViewModel
             }
             else
             {
-                ServerLocation = Strings.Common_NotAvailable;
+                ServerLocation = Localizer.Instance.Get("Common_NotAvailable");
             }
         }
         else
         {
-            ServerLocation = Strings.Common_NotAvailable;
+            ServerLocation = Localizer.Instance.Get("Common_NotAvailable");
         }
     }
 

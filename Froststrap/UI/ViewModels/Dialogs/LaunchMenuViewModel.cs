@@ -58,7 +58,7 @@ namespace Froststrap.UI.ViewModels.Dialogs
             }
         }
 
-        public static string PlayerMenuItemText => OperatingSystem.IsLinux() ? Strings.Common_Sober : Strings.Common_Player;
+        public static string PlayerMenuItemText => OperatingSystem.IsLinux() ? Localizer.Instance.Get("Common_Sober") : Localizer.Instance.Get("Common_Player");
 
         public string LaunchButtonText
         {
@@ -66,16 +66,16 @@ namespace Froststrap.UI.ViewModels.Dialogs
             {
                 if (SelectedLaunchMode == LaunchMode.Player)
                 {
-                    string modeName = OperatingSystem.IsLinux() ? Strings.Common_Sober : Strings.Common_Player;
+                    string modeName = OperatingSystem.IsLinux() ? Localizer.Instance.Get("Common_Sober") : Localizer.Instance.Get("Common_Player");
                     return IsPlayerInstalled
-                        ? $"{Strings.Common_Launch} {modeName}"
-                        : $"{Strings.Common_Install} {modeName}";
+                        ? $"{Localizer.Instance.Get("Common_Launch")} {modeName}"
+                        : $"{Localizer.Instance.Get("Common_Install")} {modeName}";
                 }
                 else
                 {
                     return IsStudioInstalled
-                        ? $"{Strings.Common_Launch} {Strings.Common_Studio}"
-                        : $"{Strings.Common_Install} {Strings.Common_Studio}";
+                        ? $"{Localizer.Instance.Get("Common_Launch")} {Localizer.Instance.Get("Common_Studio")}"
+                        : $"{Localizer.Instance.Get("Common_Install")} {Localizer.Instance.Get("Common_Studio")}";
                 }
             }
         }
@@ -141,6 +141,6 @@ namespace Froststrap.UI.ViewModels.Dialogs
             CloseWindowRequest?.Invoke(this, LaunchEntry.ToNextAction(SelectedLaunchMode));
         }
 
-        public static string Version => string.Format(CultureInfo.InvariantCulture, Strings.Menu_About_Version, App.Version);
+        public static string Version => string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Menu_About_Version"), App.Version);
     }
 }

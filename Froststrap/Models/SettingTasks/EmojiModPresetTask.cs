@@ -51,8 +51,8 @@ namespace Froststrap.Models.SettingTasks
                     {
                         App.Logger.Error("Unhandled exception: ", ex);
                         await Frontend.ShowConnectivityDialog(
-                            string.Format(CultureInfo.CurrentCulture, Strings.Dialog_Connectivity_UnableToConnect, "GitHub"),
-                            $"{Strings.Menu_PresetMods_Presets_EmojiType_Error}\n\n{Strings.Dialog_Connectivity_TryAgainLater}",
+                            string.Format(CultureInfo.CurrentCulture, Localizer.Instance.Get("Dialog_Connectivity_UnableToConnect"), "GitHub"),
+                            $"{Localizer.Instance.Get("Menu_PresetMods_Presets_EmojiType_Error")}\n\n{Localizer.Instance.Get("Dialog_Connectivity_TryAgainLater")}",
                             MessageBoxImage.Warning,
                             ex
                         );

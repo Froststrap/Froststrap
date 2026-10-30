@@ -109,7 +109,7 @@ namespace Froststrap.UI.ViewModels.Settings
         private string _selectedPage = "integrations";
         public string SelectedPage { get => _selectedPage; set => SetProperty(ref _selectedPage, value); }
 
-        private string _currentPageTitle = Strings.Menu_Integrations_Title;
+        private string _currentPageTitle = Localizer.Instance.Get("Menu_Integrations_Title");
         public string CurrentPageTitle { get => _currentPageTitle; set => SetProperty(ref _currentPageTitle, value); }
 
         private string _currentPageDescription = "";
@@ -190,10 +190,10 @@ namespace Froststrap.UI.ViewModels.Settings
             BreadcrumbItemClickedCommand = new RelayCommand<BreadcrumbItemModel>(HandleBreadcrumbItemClicked);
             SearchBar = new();
 
-            NavigateToIntegrationsCommand = new RelayCommand(() => Navigate("integrations", Strings.Menu_Integrations_Title, Strings.Menu_Integrations_Description, new IntegrationsViewModel()));
-            NavigateToBehaviourCommand = new RelayCommand(() => Navigate("behaviour", Strings.Menu_Behaviour_Title, Strings.Menu_Behaviour_Description, new BehaviourViewModel()));
-            NavigateToLinuxSettingsCommand = new RelayCommand(() => Navigate("linuxsettings", Strings.Menu_LinuxSettings_Title, null!, new LinuxSettingsViewModel()));
-            NavigateToPresetModsCommand = new RelayCommand(() => Navigate("mods", Strings.Menu_PresetMods_Title, Strings.Menu_PresetMods_Description, new ModsPresetsViewModel()));
+            NavigateToIntegrationsCommand = new RelayCommand(() => Navigate("integrations", Localizer.Instance.Get("Menu_Integrations_Title"), Localizer.Instance.Get("Menu_Integrations_Description"), new IntegrationsViewModel()));
+            NavigateToBehaviourCommand = new RelayCommand(() => Navigate("behaviour", Localizer.Instance.Get("Menu_Behaviour_Title"), Localizer.Instance.Get("Menu_Behaviour_Description"), new BehaviourViewModel()));
+            NavigateToLinuxSettingsCommand = new RelayCommand(() => Navigate("linuxsettings", Localizer.Instance.Get("Menu_LinuxSettings_Title"), null!, new LinuxSettingsViewModel()));
+            NavigateToPresetModsCommand = new RelayCommand(() => Navigate("mods", Localizer.Instance.Get("Menu_PresetMods_Title"), Localizer.Instance.Get("Menu_PresetMods_Description"), new ModsPresetsViewModel()));
             NavigateToFastFlagsCommand = new RelayCommand(() =>
             {
                 var dialogService = new FastFlagsDialogService(this);
@@ -202,57 +202,57 @@ namespace Froststrap.UI.ViewModels.Settings
                     new DefaultSettingsService(),
                     dialogService
                 );
-                Navigate("fastflags", Strings.Menu_FastFlags_Title, Strings.Menu_FastFlags_Description, viewModel);
+                Navigate("fastflags", Localizer.Instance.Get("Menu_FastFlags_Title"), Localizer.Instance.Get("Menu_FastFlags_Description"), viewModel);
             });
-            NavigateToAppearanceCommand = new RelayCommand(() => Navigate("appearance", Strings.Menu_Appearance_Title, Strings.Menu_Appearance_Description, new AppearanceViewModel()));
-            NavigateToRegionSelectorCommand = new RelayCommand(() => Navigate("regionselector", Strings.Menu_RegionSelector_Title, Strings.Menu_RegionSelector_Description, new RegionSelectorViewModel()));
-            NavigateToGlobalSettingsCommand = new RelayCommand(() => Navigate("globalsettings", Strings.Menu_GlobalSettings_Title, Strings.Menu_GBSEditor_Description, new GlobalSettingsViewModel()));
-            NavigateToShortcutsCommand = new RelayCommand(() => Navigate("shortcuts", Strings.Common_Shortcuts, Strings.Menu_Shortcuts_Description, new ShortcutsViewModel()));
-            NavigateToQuickPlayCommand = new RelayCommand(() => Navigate("quickplay", Strings.Menu_QuickPlay_Title, Strings.Menu_QuickPlay_Description, new QuickPlayViewModel()));
-            NavigateToChannelsCommand = new RelayCommand(() => Navigate("channels", Strings.Common_Deployment, Strings.Menu_Channel_Description, new ChannelViewModel()));
+            NavigateToAppearanceCommand = new RelayCommand(() => Navigate("appearance", Localizer.Instance.Get("Menu_Appearance_Title"), Localizer.Instance.Get("Menu_Appearance_Description"), new AppearanceViewModel()));
+            NavigateToRegionSelectorCommand = new RelayCommand(() => Navigate("regionselector", Localizer.Instance.Get("Menu_RegionSelector_Title"), Localizer.Instance.Get("Menu_RegionSelector_Description"), new RegionSelectorViewModel()));
+            NavigateToGlobalSettingsCommand = new RelayCommand(() => Navigate("globalsettings", Localizer.Instance.Get("Menu_GlobalSettings_Title"), Localizer.Instance.Get("Menu_GBSEditor_Description"), new GlobalSettingsViewModel()));
+            NavigateToShortcutsCommand = new RelayCommand(() => Navigate("shortcuts", Localizer.Instance.Get("Common_Shortcuts"), Localizer.Instance.Get("Menu_Shortcuts_Description"), new ShortcutsViewModel()));
+            NavigateToQuickPlayCommand = new RelayCommand(() => Navigate("quickplay", Localizer.Instance.Get("Menu_QuickPlay_Title"), Localizer.Instance.Get("Menu_QuickPlay_Description"), new QuickPlayViewModel()));
+            NavigateToChannelsCommand = new RelayCommand(() => Navigate("channels", Localizer.Instance.Get("Common_Deployment"), Localizer.Instance.Get("Menu_Channel_Description"), new ChannelViewModel()));
 
             NavigateToGlobalSettingsEditorCommand = new RelayCommand(() =>
             {
                 ObservableCollection<BreadcrumbItemModel> crumbs = [
-                    new() { Content = Strings.Menu_GlobalSettings_Title, Tag = "globalsettings" },
-                    new() { Content = Strings.Common_Editor, Tag = null, IsLast = true }
+                    new() { Content = Localizer.Instance.Get("Menu_GlobalSettings_Title"), Tag = "globalsettings" },
+                    new() { Content = Localizer.Instance.Get("Common_Editor"), Tag = null, IsLast = true }
                 ];
-                Navigate("globalsettingseditor", Strings.Common_Editor, Strings.Menu_GlobalSettingsEditor_Description, new GlobalSettingsEditorViewModel(this), crumbs);
+                Navigate("globalsettingseditor", Localizer.Instance.Get("Common_Editor"), Localizer.Instance.Get("Menu_GlobalSettingsEditor_Description"), new GlobalSettingsEditorViewModel(this), crumbs);
             });
 
             NavigateToFastFlagEditorCommand = new RelayCommand(() =>
             {
                 ObservableCollection<BreadcrumbItemModel> crumbs = [
-                    new() { Content = Strings.Menu_FastFlags_Title, Tag = "fastflags" },
-                    new() { Content = Strings.Common_Editor, Tag = null, IsLast = true }
+                    new() { Content = Localizer.Instance.Get("Menu_FastFlags_Title"), Tag = "fastflags" },
+                    new() { Content = Localizer.Instance.Get("Common_Editor"), Tag = null, IsLast = true }
                 ];
-                Navigate("fastflageditor", Strings.Common_Editor, Strings.Menu_FastFlagEditor_Description, new FastFlagEditorViewModel(this), crumbs);
+                Navigate("fastflageditor", Localizer.Instance.Get("Common_Editor"), Localizer.Instance.Get("Menu_FastFlagEditor_Description"), new FastFlagEditorViewModel(this), crumbs);
             });
 
             NavigateToCommunityModsCommand = new RelayCommand(() =>
             {
                 ObservableCollection<BreadcrumbItemModel> crumbs = [
-                    new() { Content = Strings.Menu_PresetMods_Title, Tag = "mods" },
-                    new() { Content = Strings.Menu_CommunityMods_Title, Tag = null, IsLast = true }
+                    new() { Content = Localizer.Instance.Get("Menu_PresetMods_Title"), Tag = "mods" },
+                    new() { Content = Localizer.Instance.Get("Menu_CommunityMods_Title"), Tag = null, IsLast = true }
                 ];
-                Navigate("communitymods", Strings.Menu_CommunityMods_Title, Strings.Menu_CommunityMods_Description, new CommunityModsViewModel(), crumbs);
+                Navigate("communitymods", Localizer.Instance.Get("Menu_CommunityMods_Title"), Localizer.Instance.Get("Menu_CommunityMods_Description"), new CommunityModsViewModel(), crumbs);
             });
 
             NavigateToModGeneratorCommand = new RelayCommand(() =>
             {
-                Navigate("modgenerator", Strings.Menu_ModGenerator_Title, Strings.Menu_ModGenerator_Description, new ModGeneratorViewModel(), [
-                    new() { Content = Strings.Menu_PresetMods_Title, Tag = "mods" },
-                    new() { Content = Strings.Menu_ModGenerator_Title, Tag = null, IsLast = true }
+                Navigate("modgenerator", Localizer.Instance.Get("Menu_ModGenerator_Title"), Localizer.Instance.Get("Menu_ModGenerator_Description"), new ModGeneratorViewModel(), [
+                    new() { Content = Localizer.Instance.Get("Menu_PresetMods_Title"), Tag = "mods" },
+                    new() { Content = Localizer.Instance.Get("Menu_ModGenerator_Title"), Tag = null, IsLast = true }
                 ]);
             });
 
             NavigateToMyModsCommand = new RelayCommand(() =>
             {
                 ObservableCollection<BreadcrumbItemModel> crumbs = [
-                    new() { Content = Strings.Menu_PresetMods_Title, Tag = "mods" },
-                    new() { Content = Strings.Menu_Mods_Title, Tag = null, IsLast = true }
+                    new() { Content = Localizer.Instance.Get("Menu_PresetMods_Title"), Tag = "mods" },
+                    new() { Content = Localizer.Instance.Get("Menu_Mods_Title"), Tag = null, IsLast = true }
                 ];
-                Navigate("custommods", Strings.Menu_Mods_Title, Strings.Menu_Mods_InfoBar, new ModsViewModel(), crumbs);
+                Navigate("custommods", Localizer.Instance.Get("Menu_Mods_Title"), Localizer.Instance.Get("Menu_Mods_InfoBar"), new ModsViewModel(), crumbs);
             });
 
             var lastPageName = App.State.Prop.LastPage;
@@ -417,7 +417,7 @@ namespace Froststrap.UI.ViewModels.Settings
         }
 
         public static bool IsStudioInstalled => App.IsStudioInstalled;
-        public static string PlayerMenuItemText => OperatingSystem.IsLinux() ? Strings.Common_Sober : Strings.Common_Player;
+        public static string PlayerMenuItemText => OperatingSystem.IsLinux() ? Localizer.Instance.Get("Common_Sober") : Localizer.Instance.Get("Common_Player");
 
         public string LaunchButtonText
         {
@@ -425,16 +425,16 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 if (SelectedLaunchMode == LaunchMode.Player)
                 {
-                    string modeName = OperatingSystem.IsLinux() ? Strings.Common_Sober : Strings.Common_Player;
+                    string modeName = OperatingSystem.IsLinux() ? Localizer.Instance.Get("Common_Sober") : Localizer.Instance.Get("Common_Player");
                     return IsPlayerInstalled
-                        ? $"{Strings.Common_SaveAndLaunch} {modeName}"
-                        : $"{Strings.Common_SaveAndInstall} {modeName}";
+                        ? $"{Localizer.Instance.Get("Common_SaveAndLaunch")} {modeName}"
+                        : $"{Localizer.Instance.Get("Common_SaveAndInstall")} {modeName}";
                 }
                 else
                 {
                     return IsStudioInstalled
-                        ? $"{Strings.Common_SaveAndLaunch} {Strings.Common_Studio}"
-                        : $"{Strings.Common_SaveAndInstall} {Strings.Common_Studio}";
+                        ? $"{Localizer.Instance.Get("Common_SaveAndLaunch")} {Localizer.Instance.Get("Common_Studio")}"
+                        : $"{Localizer.Instance.Get("Common_SaveAndInstall")} {Localizer.Instance.Get("Common_Studio")}";
                 }
             }
         }

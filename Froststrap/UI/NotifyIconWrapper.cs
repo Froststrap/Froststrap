@@ -171,9 +171,9 @@ namespace Froststrap.UI
 
             string title = ActivityWatcher.Data.ServerType switch
             {
-                ServerType.Public => Strings.ContextMenu_ServerInformation_Notification_Title_Public,
-                ServerType.Private => Strings.ContextMenu_ServerInformation_Notification_Title_Private,
-                ServerType.Reserved => Strings.ContextMenu_ServerInformation_Notification_Title_Reserved,
+                ServerType.Public => Localizer.Instance.Get("ContextMenu_ServerInformation_Notification_Title_Public"),
+                ServerType.Private => Localizer.Instance.Get("ContextMenu_ServerInformation_Notification_Title_Private"),
+                ServerType.Reserved => Localizer.Instance.Get("ContextMenu_ServerInformation_Notification_Title_Reserved"),
                 _ => ""
             };
 
@@ -182,8 +182,8 @@ namespace Froststrap.UI
             {
                 App.Logger.Error("Couldn't connect to ipinfo.io");
                 ShowAlert(
-                    string.Format(CultureInfo.InvariantCulture, Strings.Dialog_Connectivity_UnableToConnect, "ipinfo.io"),
-                    Strings.ActivityWatcher_LocationQueryFailed,
+                    string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Dialog_Connectivity_UnableToConnect"), "ipinfo.io"),
+                    Localizer.Instance.Get("ActivityWatcher_LocationQueryFailed"),
                     5
                 );
                 return;
@@ -192,16 +192,16 @@ namespace Froststrap.UI
             if (!App.Settings.Prop.ShowServerUptime)
             {
                 string? serverID = ActivityWatcher.Data.JobId;
-                ShowAlert(title, string.Format(CultureInfo.InvariantCulture, Strings.ContextMenu_ServerDetails_Notification_Text_ServerID, serverLocation, serverID));
+                ShowAlert(title, string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("ContextMenu_ServerDetails_Notification_Text_ServerID"), serverLocation, serverID));
             }
             else
             {
                 TimeSpan _serverUptime = DateTime.UtcNow - (ActivityWatcher.Data.StartTime ?? DateTime.UtcNow);
                 string serverUptime = _serverUptime.TotalMinutes < 1
-                    ? Strings.Common_JustStarted
+                    ? Localizer.Instance.Get("Common_JustStarted")
                     : Time.FormatTimeSpan(_serverUptime);
 
-                ShowAlert(title, string.Format(CultureInfo.InvariantCulture, Strings.ContextMenu_ServerDetails_Notification_Text, serverLocation, serverUptime));
+                ShowAlert(title, string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("ContextMenu_ServerDetails_Notification_Text"), serverLocation, serverUptime));
             }
         }
 

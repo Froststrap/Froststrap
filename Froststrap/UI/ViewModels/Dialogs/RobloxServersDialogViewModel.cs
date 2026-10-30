@@ -36,7 +36,7 @@ internal class RobloxServersDialogViewModel : NotifyPropertyChangedViewModel, ID
         _isTracked = isTracked;
 
         UniverseDetails = details;
-        GameName = details?.Data?.Name ?? Strings.Menu_QuickPlay_UnknownGame;
+        GameName = details?.Data?.Name ?? Localizer.Instance.Get("Menu_QuickPlay_UnknownGame");
         GameThumbnailUrl = details?.Thumbnail?.ImageUrl;
         IsCurrentGameApi = !isTracked;
 

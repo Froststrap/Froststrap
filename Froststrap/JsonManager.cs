@@ -111,8 +111,8 @@ namespace Froststrap
                 {
                     string message = ClassName switch
                     {
-                        nameof(Settings) => Strings.JsonManager_SettingsLoadFailed,
-                        nameof(FastFlagManager) => Strings.JsonManager_FastFlagsLoadFailed,
+                        nameof(Settings) => Localizer.Instance.Get("JsonManager_SettingsLoadFailed"),
+                        nameof(FastFlagManager) => Localizer.Instance.Get("JsonManager_FastFlagsLoadFailed"),
                         _ => string.Empty
                     };
 
@@ -167,7 +167,7 @@ namespace Froststrap
                 App.Logger.Error("Failed to save");
                 App.Logger.Error(ex);
 
-                string errorMessage = string.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_JsonManagerSaveFailed, ClassName, ex.Message);
+                string errorMessage = string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Bootstrapper_JsonManagerSaveFailed"), ClassName, ex.Message);
                 _ = Frontend.ShowMessageBox(errorMessage, MessageBoxImage.Warning);
 
                 return false;

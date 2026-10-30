@@ -38,7 +38,7 @@ namespace Froststrap.UI.ViewModels.Dialogs
         {
             if (string.IsNullOrWhiteSpace(CookieInput))
             {
-                await Frontend.ShowMessageBox(Strings.Menu_ManualLogin_EnterCookie, MessageBoxImage.Warning);
+                await Frontend.ShowMessageBox(Localizer.Instance.Get("Menu_ManualLogin_EnterCookie"), MessageBoxImage.Warning);
                 return;
             }
 
@@ -51,7 +51,7 @@ namespace Froststrap.UI.ViewModels.Dialogs
 
                 if (accountInfo == null)
                 {
-                    await Frontend.ShowMessageBox(Strings.Menu_ManualLogin_InvalidCookie, MessageBoxImage.Error);
+                    await Frontend.ShowMessageBox(Localizer.Instance.Get("Menu_ManualLogin_InvalidCookie"), MessageBoxImage.Error);
                     return;
                 }
 

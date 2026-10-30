@@ -358,7 +358,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
             if (!HasActiveAccount)
             {
                 await Frontend.ShowMessageBox(
-                    Strings.Menu_QuickPlay_PleaseSelectAccount,
+                    Localizer.Instance.Get("Menu_QuickPlay_PleaseSelectAccount"),
                     MessageBoxImage.Warning);
                 return;
             }
@@ -375,10 +375,10 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
                 if (success)
                 {
                     MainWindow.ShowGlobalNotification(
-                        Strings.Menu_QuickPlay_BestRegionJoined_Title,
+                        Localizer.Instance.Get("Menu_QuickPlay_BestRegionJoined_Title"),
                         string.Format(
                             CultureInfo.InvariantCulture,
-                            Strings.Menu_QuickPlay_BestRegionJoined_Message,
+                            Localizer.Instance.Get("Menu_QuickPlay_BestRegionJoined_Message"),
                             item.Name),
                         FAInfoBarSeverity.Success,
                         4000,
@@ -441,7 +441,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
         var accountManager = AccountManager.Shared;
         if (accountManager?.ActiveAccount == null)
         {
-            await Frontend.ShowMessageBox(Strings.Menu_QuickPlay_PleaseSelectAccount, MessageBoxImage.Warning);
+            await Frontend.ShowMessageBox(Localizer.Instance.Get("Menu_QuickPlay_PleaseSelectAccount"), MessageBoxImage.Warning);
             return;
         }
 
@@ -703,7 +703,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
         if (!HasActiveAccount)
         {
             await Frontend.ShowMessageBox(
-                Strings.Menu_QuickPlay_PleaseSelectAccount,
+                Localizer.Instance.Get("Menu_QuickPlay_PleaseSelectAccount"),
                 MessageBoxImage.Warning);
             return;
         }
@@ -720,10 +720,10 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
             if (success)
             {
                 MainWindow.ShowGlobalNotification(
-                    Strings.Menu_QuickPlay_BestRegionJoined_Title,
+                    Localizer.Instance.Get("Menu_QuickPlay_BestRegionJoined_Title"),
                     string.Format(
                         CultureInfo.InvariantCulture,
-                        Strings.Menu_QuickPlay_BestRegionJoined_Message,
+                        Localizer.Instance.Get("Menu_QuickPlay_BestRegionJoined_Message"),
                         placeId),
                     FAInfoBarSeverity.Success,
                     4000,
@@ -872,8 +872,8 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
             {
                 UniverseId = universeId,
                 PlaceId = placeId,
-                Name = details?.Data?.Name ?? Strings.Menu_QuickPlay_UnknownGame,
-                Creator = details?.Data?.Creator?.Name ?? Strings.Common_Unknown,
+                Name = details?.Data?.Name ?? Localizer.Instance.Get("Menu_QuickPlay_UnknownGame"),
+                Creator = details?.Data?.Creator?.Name ?? Localizer.Instance.Get("Common_Unknown"),
                 Playing = details?.Data?.Playing ?? 0,
                 Visits = details?.Data?.Visits ?? 0,
                 OriginalDetails = details,
@@ -1023,8 +1023,8 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
                 {
                     UniverseId = entry.UniverseId,
                     PlaceId = entry.PlaceId,
-                    Name = details?.Data?.Name ?? Strings.Menu_QuickPlay_UnknownGame,
-                    Creator = details?.Data?.Creator?.Name ?? Strings.Common_Unknown,
+                    Name = details?.Data?.Name ?? Localizer.Instance.Get("Menu_QuickPlay_UnknownGame"),
+                    Creator = details?.Data?.Creator?.Name ?? Localizer.Instance.Get("Common_Unknown"),
                     Playing = details?.Data?.Playing ?? 0,
                     Visits = details?.Data?.Visits ?? 0,
                     ServerCount = entry.Servers.Count,
@@ -1106,7 +1106,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
                 {
                     UniverseId = apiGame.UniverseId,
                     PlaceId = apiGame.RootPlaceId,
-                    Name = apiGame.Name ?? Strings.Menu_QuickPlay_UnknownGame,
+                    Name = apiGame.Name ?? Localizer.Instance.Get("Menu_QuickPlay_UnknownGame"),
                     Playing = apiGame.PlayerCount,
                     Source = GameSource.RobloxApi,
                     LastPlayedTicks = baseTicks - i
@@ -1165,8 +1165,8 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
                 if (details?.Data != null)
                 {
                     game.OriginalDetails = details;
-                    game.Creator = details.Data.Creator?.Name ?? Strings.Common_Unknown;
-                    if (string.IsNullOrEmpty(game.Name)) game.Name = details.Data.Name ?? Strings.Menu_QuickPlay_UnknownGame;
+                    game.Creator = details.Data.Creator?.Name ?? Localizer.Instance.Get("Common_Unknown");
+                    if (string.IsNullOrEmpty(game.Name)) game.Name = details.Data.Name ?? Localizer.Instance.Get("Menu_QuickPlay_UnknownGame");
                     game.Playing = details.Data.Playing;
                     game.Visits = details.Data.Visits;
                     if (game.PlaceId == 0) game.PlaceId = details.Data.RootPlaceId;
@@ -1370,8 +1370,8 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
             {
                 UniverseId = fav.Id,
                 PlaceId = fav.RootPlace.Id,
-                Name = fav.Name ?? Strings.Menu_QuickPlay_UnknownGame,
-                Creator = fav.Creator?.Name ?? Strings.Common_Unknown,
+                Name = fav.Name ?? Localizer.Instance.Get("Menu_QuickPlay_UnknownGame"),
+                Creator = fav.Creator?.Name ?? Localizer.Instance.Get("Common_Unknown"),
                 Visits = fav.PlaceVisits,
                 Source = GameSource.None
             });
@@ -1474,7 +1474,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
                 {
                     UniverseId = rec.ContentId,
                     PlaceId = details.RootPlaceId,
-                    Name = details.Name ?? Strings.Menu_QuickPlay_UnknownGame,
+                    Name = details.Name ?? Localizer.Instance.Get("Menu_QuickPlay_UnknownGame"),
                     Creator = "Unknown",
                     Playing = details.PlayerCount,
                     Visits = details.TotalUpVotes + details.TotalDownVotes,
@@ -1487,7 +1487,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
                 {
                     UniverseId = rec.ContentId,
                     PlaceId = rec.ContentId,
-                    Name = Strings.Menu_QuickPlay_UnknownGame,
+                    Name = Localizer.Instance.Get("Menu_QuickPlay_UnknownGame"),
                     Source = GameSource.None
                 });
             }

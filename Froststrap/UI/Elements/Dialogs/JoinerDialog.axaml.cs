@@ -56,7 +56,7 @@ namespace Froststrap.UI.Elements.Dialogs
                 if ((await GameJoin.GetLaunchCommandByLink(LinkBox.Text ?? "")) is not string launchCommand)
                 {
                     _joining = false;
-                    StatusText.Text = Strings.Joiner_InvalidLink;
+                    StatusText.Text = Localizer.Instance.Get("Joiner_InvalidLink");
                     return;
                 }
 
@@ -68,7 +68,7 @@ namespace Froststrap.UI.Elements.Dialogs
 
                 LinkBox.IsEnabled = false;
                 JoinButton.IsEnabled = false;
-                StatusText.Text = Strings.Joiner_Joining;
+                StatusText.Text = Localizer.Instance.Get("Joiner_Joining");
 
                 App.Logger.Info($"Joining with launch command from pasted link: {launchCommand}");
 

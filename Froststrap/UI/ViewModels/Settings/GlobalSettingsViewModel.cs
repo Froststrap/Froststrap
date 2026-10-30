@@ -77,11 +77,11 @@ namespace Froststrap.UI.ViewModels.Settings
 
                 if (success)
                 {
-                    _ = Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Menu_GlobalSettings_Export_Success, localPath), MessageBoxImage.Information);
+                    _ = Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Localizer.Instance.Get("Menu_GlobalSettings_Export_Success"), localPath), MessageBoxImage.Information);
                 }
                 else
                 {
-                    _ = Frontend.ShowMessageBox(Strings.Menu_GlobalSettings_Export_Fail, MessageBoxImage.Error);
+                    _ = Frontend.ShowMessageBox(Localizer.Instance.Get("Menu_GlobalSettings_Export_Fail"), MessageBoxImage.Error);
                 }
             }
         }
@@ -112,18 +112,18 @@ namespace Froststrap.UI.ViewModels.Settings
                 var doc = XDocument.Load(localPath);
                 if (doc.Root?.Name != "roblox")
                 {
-                    _ = Frontend.ShowMessageBox(Strings.Menu_GlobalSettings_Import_NotGBS, MessageBoxImage.Warning);
+                    _ = Frontend.ShowMessageBox(Localizer.Instance.Get("Menu_GlobalSettings_Import_NotGBS"), MessageBoxImage.Warning);
                     return;
                 }
             }
             catch
             {
-                _ = Frontend.ShowMessageBox(Strings.Menu_GlobalSettings_Import_NotXML, MessageBoxImage.Warning);
+                _ = Frontend.ShowMessageBox(Localizer.Instance.Get("Menu_GlobalSettings_Import_NotXML"), MessageBoxImage.Warning);
                 return;
             }
 
             var confirm = await Frontend.ShowMessageBox(
-                Strings.Menu_GlobalSettings_Import_Confirmation,
+                Localizer.Instance.Get("Menu_GlobalSettings_Import_Confirmation"),
                 MessageBoxImage.Warning,
                 MessageBoxButton.YesNo);
 
@@ -133,11 +133,11 @@ namespace Froststrap.UI.ViewModels.Settings
                 if (success)
                 {
                     App.GlobalSettings.Load();
-                    _ = Frontend.ShowMessageBox(Strings.Menu_GlobalSettings_Import_Success, MessageBoxImage.Information);
+                    _ = Frontend.ShowMessageBox(Localizer.Instance.Get("Menu_GlobalSettings_Import_Success"), MessageBoxImage.Information);
                 }
                 else
                 {
-                    _ = Frontend.ShowMessageBox(Strings.Menu_GlobalSettings_Import_Fail, MessageBoxImage.Error);
+                    _ = Frontend.ShowMessageBox(Localizer.Instance.Get("Menu_GlobalSettings_Import_Fail"), MessageBoxImage.Error);
                 }
             }
         }
@@ -185,7 +185,7 @@ namespace Froststrap.UI.ViewModels.Settings
             set
             {
                 if (value)
-                    _ = Frontend.ShowMessageBox(Strings.Menu_GlobalSettings_ReadonlyMessage, MessageBoxImage.Warning);
+                    _ = Frontend.ShowMessageBox(Localizer.Instance.Get("Menu_GlobalSettings_ReadonlyMessage"), MessageBoxImage.Warning);
 
                 App.GlobalSettings.SetReadOnly(value);
                 OnPropertyChanged(nameof(ReadOnly));

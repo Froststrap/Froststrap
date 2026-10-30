@@ -23,13 +23,13 @@ namespace Froststrap.Extensions
             }
             catch (UnauthorizedAccessException)
             {
-                await Frontend.ShowMessageBox(Strings.Dialog_RegistryWriteError, MessageBoxImage.Error);
+                await Frontend.ShowMessageBox(Localizer.Instance.Get("Dialog_RegistryWriteError"), MessageBoxImage.Error);
                 App.Terminate(ErrorCode.ERROR_INSTALL_FAILURE);
             }
             catch (ArgumentNullException) when (name is null)
             {
                 App.Logger.Error("Cannot set registry value with null name");
-                await Frontend.ShowMessageBox(Strings.Dialog_RegistryWriteError, MessageBoxImage.Error);
+                await Frontend.ShowMessageBox(Localizer.Instance.Get("Dialog_RegistryWriteError"), MessageBoxImage.Error);
                 App.Terminate(ErrorCode.ERROR_INSTALL_FAILURE);
             }
         }
@@ -47,7 +47,7 @@ namespace Froststrap.Extensions
             }
             catch (UnauthorizedAccessException)
             {
-                await Frontend.ShowMessageBox(Strings.Dialog_RegistryWriteError, MessageBoxImage.Error);
+                await Frontend.ShowMessageBox(Localizer.Instance.Get("Dialog_RegistryWriteError"), MessageBoxImage.Error);
                 App.Terminate(ErrorCode.ERROR_INSTALL_FAILURE);
             }
             catch (ArgumentException)

@@ -51,38 +51,38 @@ namespace Froststrap.UI.ViewModels.Onboarding
         {
             FaqItems.Add(new FaqItem
             {
-                Question = Strings.Menu_Onboarding_Page6_Q1,
-                Answer = Strings.Menu_Onboarding_Page6_A1
+                Question = Localizer.Instance.Get("Menu_Onboarding_Page6_Q1"),
+                Answer = Localizer.Instance.Get("Menu_Onboarding_Page6_A1")
             });
 
             FaqItems.Add(new FaqItem
             {
-                Question = Strings.Menu_Onboarding_Page6_Q2,
-                Answer = Strings.Menu_Onboarding_Page6_A2
+                Question = Localizer.Instance.Get("Menu_Onboarding_Page6_Q2"),
+                Answer = Localizer.Instance.Get("Menu_Onboarding_Page6_A2")
             });
 
             FaqItems.Add(new FaqItem
             {
-                Question = Strings.Menu_Onboarding_Page6_Q3,
-                Answer = Strings.Menu_Onboarding_Page6_A3
+                Question = Localizer.Instance.Get("Menu_Onboarding_Page6_Q3"),
+                Answer = Localizer.Instance.Get("Menu_Onboarding_Page6_A3")
             });
 
             FaqItems.Add(new FaqItem
             {
-                Question = Strings.Menu_Onboarding_Page6_Q4,
-                Answer = Strings.Menu_Onboarding_Page6_A4
+                Question = Localizer.Instance.Get("Menu_Onboarding_Page6_Q4"),
+                Answer = Localizer.Instance.Get("Menu_Onboarding_Page6_A4")
             });
 
             FaqItems.Add(new FaqItem
             {
-                Question = Strings.Menu_Onboarding_Page6_Q5,
-                Answer = Strings.Menu_Onboarding_Page6_A5
+                Question = Localizer.Instance.Get("Menu_Onboarding_Page6_Q5"),
+                Answer = Localizer.Instance.Get("Menu_Onboarding_Page6_A5")
             });
 
             FaqItems.Add(new FaqItem
             {
-                Question = Strings.Menu_Onboarding_Page6_Q6,
-                Answer = Strings.Menu_Onboarding_Page6_A6
+                Question = Localizer.Instance.Get("Menu_Onboarding_Page6_Q6"),
+                Answer = Localizer.Instance.Get("Menu_Onboarding_Page6_A6")
             });
         }
     }

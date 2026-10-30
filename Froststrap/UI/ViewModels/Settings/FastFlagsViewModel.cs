@@ -193,9 +193,9 @@ namespace Froststrap.UI.ViewModels.Settings
 
                     string display = mode switch
                     {
-                        RenderingMode.Default when OperatingSystem.IsMacOS() => Strings.Enums_RenderingMode_DefaultMetal,
-                        RenderingMode.Default => Strings.Enums_RenderingMode_DefaultDirect,
-                        RenderingMode.Direct3D => Strings.Enums_FlagPresets_RenderingMode_Direct3D,
+                        RenderingMode.Default when OperatingSystem.IsMacOS() => Localizer.Instance.Get("Enums_RenderingMode_DefaultMetal"),
+                        RenderingMode.Default => Localizer.Instance.Get("Enums_RenderingMode_DefaultDirect"),
+                        RenderingMode.Direct3D => Localizer.Instance.Get("Enums_FlagPresets_RenderingMode_Direct3D"),
                         _ => mode.ToString()
                     };
                     yield return new KeyValuePair<RenderingMode, string>(mode, display);

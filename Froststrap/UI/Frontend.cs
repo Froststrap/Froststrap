@@ -34,7 +34,7 @@ namespace Froststrap.UI
 
             await Dispatcher.UIThread.InvokeAsync(async () =>
             {
-                var dialog = new FluentMessageBox(title, releaseNotes, Strings.Menu_Deployment_ReleaseNotes_Close);
+                var dialog = new FluentMessageBox(title, releaseNotes, Localizer.Instance.Get("Menu_Deployment_ReleaseNotes_Close"));
                 Window? owner = null;
                 if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
                     owner = desktop.Windows.FirstOrDefault(w => w.IsActive) ?? desktop.MainWindow;
@@ -54,10 +54,10 @@ namespace Froststrap.UI
         //Were supposed to show this when watcher fails to launch but we lowkey dont anymore idk why
         public static async Task ShowPlayerErrorDialog(bool crash = false)
         {
-            string topLine = crash ? Strings.Dialog_PlayerError_Crash : Strings.Dialog_PlayerError_FailedLaunch;
+            string topLine = crash ? Localizer.Instance.Get("Dialog_PlayerError_Crash") : Localizer.Instance.Get("Dialog_PlayerError_FailedLaunch");
 
             string info = string.Format(CultureInfo.InvariantCulture,
-                Strings.Dialog_PlayerError_HelpInformation,
+                Localizer.Instance.Get("Dialog_PlayerError_HelpInformation"),
                 $"https://github.com/{App.ProjectRepository}/wiki/Roblox-crashes-or-does-not-launch",
                 $"https://github.com/{App.ProjectRepository}/wiki/Switching-between-Roblox-and-Bloxstrap"
             );
