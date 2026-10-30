@@ -149,6 +149,19 @@ jobs:
     container:
       image: ubuntu:22.04
     steps:
+      - name: Install system dependencies
+        run: |
+          apt-get update
+          apt-get install -y \
+            git \
+            curl \
+            ca-certificates \
+            clang \
+            build-essential \
+            zlib1g-dev \
+            libdbus-1-dev \
+            pkg-config
+
       - uses: actions/checkout@v7
         with: { submodules: true, fetch-tags: true, fetch-depth: 0 }
 
