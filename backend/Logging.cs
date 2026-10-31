@@ -37,13 +37,14 @@ public static unsafe class NativeLog
 
     /// Installs the callback in every native library that supports logging.
     /// Must run after NLog has been configured.
+    internal static IntPtr Callback =>
+        (IntPtr)(delegate* unmanaged[Cdecl]<int, byte*, byte*, void>)&OnLog;
+
     public static void Register()
     {
-        var callback =
-            (IntPtr)(delegate* unmanaged[Cdecl]<int, byte*, byte*, void>)&OnLog;
+        var callback = Callback;
 
         SetLogger("notify", InternalNativeNotify.SetLogger, callback);
-        SetLogger("audioplayer", InternalAudioPlayer.SetLogger, callback);
 
         if (OperatingSystem.IsMacOS())
         {

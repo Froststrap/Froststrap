@@ -271,10 +271,19 @@ public enum AudioPlayerResult
 
 public class AudioPlayer
 {
+    private static bool _loggerSet;
+
     public static AudioPlayerResult Play(string path, double volume)
     {
         try
         {
+            // loaded on first use so it isn't touched while music is off
+            if (!_loggerSet)
+            {
+                InternalAudioPlayer.SetLogger(NativeLog.Callback);
+                _loggerSet = true;
+            }
+
             return (AudioPlayerResult)InternalAudioPlayer.Play(path, (float)volume);
         }
         catch (Exception ex) when (NativeLibraryFailure.IsLoadFailure(ex))

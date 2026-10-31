@@ -3756,6 +3756,24 @@ namespace Froststrap.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Couldn't play the selected file. Make sure it's a valid MP3, OGG, WAV, or FLAC file..
+        /// </summary>
+        public static string Menu_Appearance_BackgroundMusic_PlayFailed {
+            get {
+                return ResourceManager.GetString("Menu.Appearance.BackgroundMusic.PlayFailed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Audio playback isn't available on this system..
+        /// </summary>
+        public static string Menu_Appearance_BackgroundMusic_Unavailable {
+            get {
+                return ResourceManager.GetString("Menu.Appearance.BackgroundMusic.Unavailable", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Preview.
         /// </summary>
         public static string Menu_Appearance_Preview {
