@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
 using Avalonia.Markup.Xaml;
+using Avalonia.Data;
 
 namespace Froststrap.Localisation;
 
@@ -11,6 +12,11 @@ public class LocalStringExtension : MarkupExtension
 
     public override object ProvideValue(IServiceProvider serviceProvider)
     {
-        return Localizer.Instance.Get(Key ?? "") ?? Key ?? "";
+        return new Binding
+        {
+            Source = Localizer.Instance,
+            Path = "[" + (Key ?? "") + "]",
+            Mode = BindingMode.OneWay
+        };
     }
 }

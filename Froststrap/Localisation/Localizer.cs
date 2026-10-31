@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Text.Json;
+using Avalonia.Threading;
 
 namespace Froststrap.Localisation;
 
@@ -100,8 +101,20 @@ public sealed class Localizer : INotifyPropertyChanged
         var dict = new Dictionary<string, string>();
         MergeFromJson(json, dict);
         _remoteCultures[cultureName] = dict;
-        if (cultureName == _cultureName) PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Item[]"));
+        try
+        {
+            if (Dispatcher.UIThread.CheckAccess())
+                RaiseItemChanged();
+            else
+                Dispatcher.UIThread.Post(() => RaiseItemChanged());
+        }
+        catch { }
         CultureChanged?.Invoke();
+    }
+
+    private void RaiseItemChanged()
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Item[]"));
     }
 
     public void LoadCultureFromString(string cultureName, string json)
