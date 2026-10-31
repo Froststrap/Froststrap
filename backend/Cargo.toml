@@ -9,9 +9,11 @@ members = [
   "logger",
   "mobileappreg",
   "virtualdisplay",
+  "audioplayer",
 ]
 default-members = [
   "notify",
+  "audioplayer",
 ]
 
 [workspace.package]

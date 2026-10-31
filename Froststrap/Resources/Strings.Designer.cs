@@ -3720,6 +3720,42 @@ namespace Froststrap.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Background Music.
+        /// </summary>
+        public static string Menu_Appearance_BackgroundMusic_Title {
+            get {
+                return ResourceManager.GetString("Menu.Appearance.BackgroundMusic.Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Plays an audio file on a loop while the settings window is open. Supports MP3, OGG, WAV, and FLAC..
+        /// </summary>
+        public static string Menu_Appearance_BackgroundMusic_Description {
+            get {
+                return ResourceManager.GetString("Menu.Appearance.BackgroundMusic.Description", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No file selected....
+        /// </summary>
+        public static string Menu_Appearance_BackgroundMusic_NoFile {
+            get {
+                return ResourceManager.GetString("Menu.Appearance.BackgroundMusic.NoFile", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Volume:.
+        /// </summary>
+        public static string Menu_Appearance_BackgroundMusic_Volume {
+            get {
+                return ResourceManager.GetString("Menu.Appearance.BackgroundMusic.Volume", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Preview.
         /// </summary>
         public static string Menu_Appearance_Preview {

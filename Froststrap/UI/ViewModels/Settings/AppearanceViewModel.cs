@@ -835,6 +835,61 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
+        public bool BackgroundMusicEnabled
+        {
+            get => App.Settings.Prop.BackgroundMusicEnabled;
+            set
+            {
+                App.Settings.Prop.BackgroundMusicEnabled = value;
+                OnPropertyChanged(nameof(BackgroundMusicEnabled));
+                BackgroundMusic.Refresh();
+            }
+        }
+
+        public string BackgroundMusicPath
+        {
+            get => App.Settings.Prop.BackgroundMusicPath;
+            set
+            {
+                App.Settings.Prop.BackgroundMusicPath = value;
+                OnPropertyChanged(nameof(BackgroundMusicPath));
+                BackgroundMusic.Refresh();
+            }
+        }
+
+        public double BackgroundMusicVolume
+        {
+            get => App.Settings.Prop.BackgroundMusicVolume;
+            set
+            {
+                App.Settings.Prop.BackgroundMusicVolume = value;
+                OnPropertyChanged(nameof(BackgroundMusicVolume));
+                BackgroundMusic.Refresh();
+            }
+        }
+
+        private ICommand? _selectMusicCommand;
+        public ICommand SelectMusicCommand => _selectMusicCommand ??= new RelayCommand<TopLevel>(async tl =>
+        {
+            if (tl == null) return;
+
+            var files = await tl.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+            {
+                Title = Strings.Menu_Appearance_BackgroundMusic_Title,
+                FileTypeFilter = [new FilePickerFileType("Audio") { Patterns = ["*.mp3", "*.ogg", "*.wav", "*.flac"] }],
+                AllowMultiple = false
+            });
+
+            if (files.Count > 0)
+                BackgroundMusicPath = files[0].Path.LocalPath;
+        });
+
+        private ICommand? _clearMusicCommand;
+        public ICommand ClearMusicCommand => _clearMusicCommand ??= new RelayCommand(() =>
+        {
+            BackgroundMusicPath = string.Empty;
+        });
+
         public bool IsGradientMode => BackgroundType == BackgroundMode.Gradient;
         public bool IsImageMode => BackgroundType == BackgroundMode.Image;
         public double? GradientAngle

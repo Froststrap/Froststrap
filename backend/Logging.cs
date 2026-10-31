@@ -43,6 +43,7 @@ public static unsafe class NativeLog
             (IntPtr)(delegate* unmanaged[Cdecl]<int, byte*, byte*, void>)&OnLog;
 
         SetLogger("notify", InternalNativeNotify.SetLogger, callback);
+        SetLogger("audioplayer", InternalAudioPlayer.SetLogger, callback);
 
         if (OperatingSystem.IsMacOS())
         {

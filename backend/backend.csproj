@@ -32,12 +32,13 @@
     <NativeLibExt Condition="$([MSBuild]::IsOSPlatform('OSX'))">dylib</NativeLibExt>
     <NativeLibExt Condition="$([MSBuild]::IsOSPlatform('Linux'))">so</NativeLibExt>
 
-    <PackageFlags>-p notify</PackageFlags>
-    <PackageFlags Condition="$([MSBuild]::IsOSPlatform('OSX'))">-p notify -p mobileappreg -p virtualdisplay</PackageFlags>
+    <PackageFlags>-p notify -p audioplayer</PackageFlags>
+    <PackageFlags Condition="$([MSBuild]::IsOSPlatform('OSX'))">-p notify -p audioplayer -p mobileappreg -p virtualdisplay</PackageFlags>
   </PropertyGroup>
 
   <ItemGroup>
     <NativeLib Include="$(RustTargetDir)/$(NativeLibPrefix)notify.$(NativeLibExt)" />
+    <NativeLib Include="$(RustTargetDir)/$(NativeLibPrefix)audioplayer.$(NativeLibExt)" />
     <NativeLib Include="$(RustTargetDir)/libvirtualdisplay.dylib"
                Condition="$([MSBuild]::IsOSPlatform('OSX'))" />
     <NativeLib Include="$(RustTargetDir)/libmobileappreg.dylib"
