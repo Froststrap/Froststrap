@@ -50,6 +50,8 @@ public sealed class Localizer
         catch { /* fail safe */ }
     }
 
+    public event Action? CultureChanged;
+
     private readonly Dictionary<string, string> _default = new();
     private readonly Dictionary<string, Dictionary<string, string>> _cultures = new();
     private readonly Dictionary<string, Dictionary<string, string>> _remoteCultures = new();
@@ -58,7 +60,11 @@ public sealed class Localizer
     public string CultureName
     {
         get => _cultureName;
-        set => _cultureName = value ?? "en-US";
+        set
+        {
+            _cultureName = value ?? "en-US";
+            CultureChanged?.Invoke();
+        }
     }
 
     public void LoadDefault(string filePath)
@@ -88,6 +94,7 @@ public sealed class Localizer
         var dict = new Dictionary<string, string>();
         MergeFromJson(json, dict);
         _remoteCultures[cultureName] = dict;
+        if (cultureName == _cultureName) CultureChanged?.Invoke();
     }
 
     public void LoadCultureFromString(string cultureName, string json)

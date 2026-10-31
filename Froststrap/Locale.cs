@@ -155,6 +155,15 @@ namespace Froststrap
 
             RightToLeft = _rtlLocales.Any(l => CurrentCulture.Name.StartsWith(l, StringComparison.OrdinalIgnoreCase));
 
+            try
+            {
+                Localizer.Instance.CultureChanged += () =>
+                {
+                    try { System.Diagnostics.Debug.WriteLine("Locale changed - restart advised for static bindings"); } catch { }
+                };
+            }
+            catch { }
+
             _ = Task.Run(async () =>
             {
                 try

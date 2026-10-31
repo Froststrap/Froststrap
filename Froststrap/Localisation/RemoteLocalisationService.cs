@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2026 Froststrap
 // SPDX-License-Identifier: MPL-2.0
 
+using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 
@@ -10,7 +11,7 @@ public sealed class RemoteLocalisationService
 {
     private const string Hash = "ac54d1f1f43955abb44d1cachmk";
     private static readonly HttpClient Client = new() { Timeout = TimeSpan.FromSeconds(10) };
-    private static readonly string CacheDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Froststrap", "LocalisationCache");
+    private static string CacheDir => Path.Combine(Paths.Cache, "LocalisationCache");
     private const string ManifestName = "manifest.json";
     private const string CheckName = "last-check.json";
 
@@ -41,17 +42,19 @@ public sealed class RemoteLocalisationService
             if (string.IsNullOrWhiteSpace(manifestText)) return;
             using var manifestDoc = JsonDocument.Parse(manifestText);
             var root = manifestDoc.RootElement;
-            if (!root.TryGetProperty("timestamp", out var tsProp) || !root.TryGetProperty("content", out var contentProp)) return;
-
+            if (!root.TryGetProperty("timestamp", out var tsProp)) return;
+            if (!root.TryGetProperty("content", out var contentProp)) return;
             var timestamp = tsProp.GetInt64();
+
             var checkPath = Path.Combine(CacheDir, CheckName);
+            var metaPath = Path.Combine(CacheDir, "meta.json");
             long cachedTs = 0;
-            if (File.Exists(checkPath))
+            if (File.Exists(metaPath))
             {
                 try
                 {
-                    using var checkDoc = JsonDocument.Parse(File.ReadAllText(checkPath));
-                    if (checkDoc.RootElement.TryGetProperty("timestamp", out var ctProp)) cachedTs = ctProp.GetInt64();
+                    using var metaDoc = JsonDocument.Parse(File.ReadAllText(metaPath));
+                    if (metaDoc.RootElement.TryGetProperty("timestamp", out var ts)) cachedTs = ts.GetInt64();
                 }
                 catch { }
             }
@@ -60,14 +63,13 @@ public sealed class RemoteLocalisationService
             if (string.IsNullOrEmpty(targetPath)) return;
 
             var cacheFile = Path.Combine(CacheDir, cultureName + ".json");
-            bool skip = false;
-            if (File.Exists(cacheFile))
+            bool skipDownload = false;
+            if (File.Exists(cacheFile) && cachedTs == timestamp)
             {
-                // If manifest timestamp unchanged and file exists, skip download
-                if (cachedTs == timestamp) skip = true;
+                skipDownload = true;
             }
 
-            if (!skip)
+            if (!skipDownload)
             {
                 var contentUrl = $"https://distributions.crowdin.net/{Hash}{targetPath}";
                 using var contentResp = await Client.GetAsync(contentUrl, ct);
@@ -76,25 +78,32 @@ public sealed class RemoteLocalisationService
                     var contentText = await contentResp.Content.ReadAsStringAsync(ct);
                     if (!string.IsNullOrWhiteSpace(contentText))
                     {
-                        // Validate JSON before saving
                         try
                         {
                             using var validate = JsonDocument.Parse(contentText);
-                            File.WriteAllText(cacheFile, contentText);
-                            File.WriteAllText(checkPath, $"{{\"timestamp\":{timestamp}}}");
+                            var tempFile = cacheFile + ".tmp";
+                            File.WriteAllText(tempFile, contentText);
+                            File.Move(tempFile, cacheFile, overwrite: true);
+                            File.WriteAllText(checkPath, $"{{\"timestamp\":{timestamp},\"locale\":\"{cultureName}\"}}");
+                            File.WriteAllText(metaPath, $"{{\"timestamp\":{timestamp}}}");
                             Localizer.Instance.LoadRemoteCultureFromString(cultureName, contentText);
                         }
-                        catch { /* keep existing cache/embedded */ }
+                        catch
+                        {
+                            if (File.Exists(cacheFile))
+                            {
+                                try { Localizer.Instance.LoadRemoteCultureFromString(cultureName, File.ReadAllText(cacheFile)); } catch { }
+                            }
+                        }
                     }
                 }
             }
             else
             {
-                // Even if skipped, ensure remote tier loaded from cache
                 LoadCached(cultureName);
             }
         }
-        catch { /* silent */ }
+        catch { }
     }
 
     private static string? FindContentPath(JsonElement contentProp, string cultureName)
@@ -103,9 +112,6 @@ public sealed class RemoteLocalisationService
         foreach (var prop in contentProp.EnumerateObject())
         {
             var key = prop.Name;
-            // Map locale to Crowdin keys: de-DE matches de entry; pt-BR matches pt-BR; etc.
-            // We match if key equals cultureName, or if cultureName starts with key + '-' (e.g. de-DE starts with de-)
-            // Also handle exact key match for full locale names in content
             if (key.Equals(cultureName, StringComparison.OrdinalIgnoreCase))
             {
                 if (prop.Value.ValueKind == JsonValueKind.Array && prop.Value.GetArrayLength() > 0)
@@ -114,9 +120,8 @@ public sealed class RemoteLocalisationService
                     if (!string.IsNullOrEmpty(first)) return first;
                 }
             }
-            else if (cultureName.StartsWith(key + "-", StringComparison.OrdinalIgnoreCase) || cultureName.StartsWith(key, StringComparison.OrdinalIgnoreCase) && cultureName.Length > key.Length)
+            else if (cultureName.Length >= 2 && key.Length == 2 && cultureName.StartsWith(key, StringComparison.OrdinalIgnoreCase) && (cultureName.Length == key.Length + 3 && cultureName[key.Length] == '-'))
             {
-                // Prefer exact or closest; for simplicity accept first match
                 if (prop.Value.ValueKind == JsonValueKind.Array && prop.Value.GetArrayLength() > 0)
                 {
                     var first = prop.Value[0].GetString();
