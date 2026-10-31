@@ -18,7 +18,7 @@ SPDX-License-Identifier: MPL-2.0
     d:DesignHeight="900"
     d:DesignWidth="800"
     x:DataType="vm:ChannelViewModel"
-    mc:Ignorable="d">
+    mc:Ignorable="d" xmlns:local="clr-namespace:Froststrap.Localisation;assembly=Froststrap" xmlns:loc="clr-namespace:Froststrap.Localisation;assembly=Froststrap">
 
     <ScrollViewer>
         <StackPanel Margin="14">
@@ -26,20 +26,20 @@ SPDX-License-Identifier: MPL-2.0
                 <controls:CardAction
                     Grid.Column="0"
                     Icon="Import"
-                    Header="{x:Static resources:Strings.Menu_BottomButtons_ImportSettings}"
+                    Header="{local:LocalString Key=Menu_BottomButtons_ImportSettings}"
                     Command="{Binding ImportSettingsCommand}"
                     CommandParameter="{Binding $parent[UserControl]}" />
 
                 <controls:CardAction
                     Grid.Column="1"
                     Icon="RotateCcw"
-                    Header="{x:Static resources:Strings.Menu_BottomButtons_ResetSettingsToDefault}"
+                    Header="{local:LocalString Key=Menu_BottomButtons_ResetSettingsToDefault}"
                     Command="{Binding ResetSettingsToDefaultCommand}" />
 
                 <controls:CardAction
                     Grid.Column="2"
                     Icon="ArrowRightFromLine"
-                    Header="{x:Static resources:Strings.Menu_BottomButtons_ExportSettings}"
+                    Header="{local:LocalString Key=Menu_BottomButtons_ExportSettings}"
                     Command="{Binding ExportSettingsCommand}"
                     CommandParameter="{Binding $parent[UserControl]}" />
             </Grid>
@@ -48,15 +48,15 @@ SPDX-License-Identifier: MPL-2.0
 
             <controls:OptionControl
                 Margin="0,12,0,0"
-                Header="{x:Static resources:Strings.Menu_Deployment_CheckForUpdates_Title}"
-                Description="{x:Static resources:Strings.Menu_Deployment_CheckForUpdates_Description}">
+                Header="{local:LocalString Key=Menu_Deployment_CheckForUpdates_Title}"
+                Description="{local:LocalString Key=Menu_Deployment_CheckForUpdates_Description}">
                 <StackPanel Spacing="6" HorizontalAlignment="Right">
                     <Button
                         Classes="accent"
                         HorizontalAlignment="Right"
                         Command="{Binding CheckForUpdatesCommand}"
                         IsEnabled="{Binding CanCheckForUpdates}"
-                        Content="{x:Static resources:Strings.Menu_Deployment_CheckForUpdates_Button}" />
+                        Content="{local:LocalString Key=Menu_Deployment_CheckForUpdates_Button}" />
 
                     <TextBlock
                         HorizontalAlignment="Right"
@@ -78,14 +78,14 @@ SPDX-License-Identifier: MPL-2.0
 
             <controls:MarkdownTextBlock
                 Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                MarkdownText="{x:Static resources:Strings.Menu_Deployment_Froststrap_Description}"
+                MarkdownText="{local:LocalString Key=Menu_Deployment_Froststrap_Description}"
                 Margin="0,2,0,10"
                 TextWrapping="Wrap"
                 />
 
             <controls:CardExpander
-                Header="{x:Static resources:Strings.Menu_Behaviour_AutoUpdate_Title}"
-                Description="{x:Static resources:Strings.Menu_Behaviour_AutoUpdate_Description}"
+                Header="{local:LocalString Key=Menu_Behaviour_AutoUpdate_Title}"
+                Description="{local:LocalString Key=Menu_Behaviour_AutoUpdate_Description}"
                 IsExpanded="{Binding AutomaticUpdatesEnabled, Mode=TwoWay}"
                 Classes="NoUserExpansion">
 
@@ -94,15 +94,15 @@ SPDX-License-Identifier: MPL-2.0
                 </controls:CardExpander.HeaderContent>
 
                 <controls:OptionControl
-                    Description="{x:Static resources:Strings.Menu_Deployment_AutoPreReleaseUpdate_Description}"
-                    Header="{x:Static resources:Strings.Menu_Deployment_AutoPreReleaseUpdate_Title}">
+                    Description="{local:LocalString Key=Menu_Deployment_AutoPreReleaseUpdate_Description}"
+                    Header="{local:LocalString Key=Menu_Deployment_AutoPreReleaseUpdate_Title}">
                     <ToggleSwitch IsChecked="{Binding PreReleaseUpdatesEnabled, Mode=TwoWay}"/>
                 </controls:OptionControl>
             </controls:CardExpander>
 
             <controls:OptionControl
-                Description="{x:Static resources:Strings.Menu_TestMode_Description}"
-                Header="{x:Static resources:Strings.Menu_TestMode}">
+                Description="{local:LocalString Key=Menu_TestMode_Description}"
+                Header="{local:LocalString Key=Menu_TestMode}">
                 <ToggleSwitch IsChecked="{Binding TestModeEnabled, Mode=TwoWay}"/>
             </controls:OptionControl>
 
@@ -116,31 +116,31 @@ SPDX-License-Identifier: MPL-2.0
                 />
 
             <controls:MarkdownTextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                        MarkdownText="{x:Static resources:Strings.Menu_Deployment_Player_Description}"
+                                        MarkdownText="{local:LocalString Key=Menu_Deployment_Player_Description}"
                                         Margin="0,2,0,10"
                                         TextWrapping="Wrap" />
 
             <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
-                                    Header="{x:Static resources:Strings.Menu_Deployment_AutoUpdateSober}">
+                                    Header="{local:LocalString Key=Menu_Deployment_AutoUpdateSober}">
                 <ToggleSwitch IsChecked="{Binding AutomaticallyUpdateSober, Mode=TwoWay}" />
             </controls:OptionControl>
 
-            <controls:OptionControl Header="{x:Static resources:Strings.Menu_Behaviour_ForceRobloxReinstall_Title}"
-                                    Description="{x:Static resources:Strings.Menu_Behaviour_ForceRobloxReinstall_Description}"
+            <controls:OptionControl Header="{local:LocalString Key=Menu_Behaviour_ForceRobloxReinstall_Title}"
+                                    Description="{local:LocalString Key=Menu_Behaviour_ForceRobloxReinstall_Description}"
                                     IsEnabled="{Binding !IsRobloxInstallationMissing}">
                 <ToggleSwitch IsChecked="{Binding ForceRobloxReinstallation, Mode=TwoWay}" />
             </controls:OptionControl>
 
             <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOS}"
-                                    Header="{x:Static resources:Strings.Menu_Channel_RobloxUpgrades}"
-                                    Description="{x:Static resources:Strings.Menu_Channel_RobloxUpgrades_Description}"
+                                    Header="{local:LocalString Key=Menu_Channel_RobloxUpgrades}"
+                                    Description="{local:LocalString Key=Menu_Channel_RobloxUpgrades_Description}"
                                     IsEnabled="{Binding !IsRobloxInstallationMissing}">
                 <ToggleSwitch IsChecked="{Binding UpdateRoblox, Mode=TwoWay}" />
             </controls:OptionControl>
 
             <controls:CardExpander
-                Header="{x:Static resources:Strings.Menu_Deployment_PlayerOverrideHash_Title}"
-                Description="{x:Static resources:Strings.Menu_Deployment_PlayerOverrideHash_Description}"
+                Header="{local:LocalString Key=Menu_Deployment_PlayerOverrideHash_Title}"
+                Description="{local:LocalString Key=Menu_Deployment_PlayerOverrideHash_Description}"
                 IsExpanded="{Binding PlayerVersionOverrideEnabled, Mode=TwoWay}"
                 Classes="NoUserExpansion"
                 IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOS}">
@@ -149,8 +149,8 @@ SPDX-License-Identifier: MPL-2.0
                 </controls:CardExpander.HeaderContent>
                 <StackPanel>
                     <controls:OptionControl
-                        Header="{x:Static resources:Strings.Menu_Deployment_VersionHash_Title}"
-                        Description="{x:Static resources:Strings.Menu_Deployment_VersionHash_Description}">
+                        Header="{local:LocalString Key=Menu_Deployment_VersionHash_Title}"
+                        Description="{local:LocalString Key=Menu_Deployment_VersionHash_Description}">
                         <StackPanel Spacing="6">
                             <TextBox
                                 Width="280"
@@ -208,8 +208,8 @@ SPDX-License-Identifier: MPL-2.0
                 </StackPanel>
             </controls:CardExpander>
 
-            <controls:OptionControl Header="{x:Static resources:Strings.Menu_Deployment_MultiThread_Title}"
-                                    Description="{x:Static resources:Strings.Menu_Deployment_MultiThread_Description}">
+            <controls:OptionControl Header="{local:LocalString Key=Menu_Deployment_MultiThread_Title}"
+                                    Description="{local:LocalString Key=Menu_Deployment_MultiThread_Description}">
                 <TextBox
                     Width="200"
                     Margin="5,0,0,0"
@@ -217,14 +217,14 @@ SPDX-License-Identifier: MPL-2.0
                     Text="{Binding MaxThreadDownload, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
             </controls:OptionControl>
 
-            <controls:OptionControl Header="{x:Static resources:Strings.Menu_Channel_StaticDirectory_Title}"
-                                    Description="{x:Static resources:Strings.Menu_Channel_StaticDirectory_Description}">
+            <controls:OptionControl Header="{local:LocalString Key=Menu_Channel_StaticDirectory_Title}"
+                                    Description="{local:LocalString Key=Menu_Channel_StaticDirectory_Description}">
                 <ToggleSwitch IsChecked="{Binding StaticDirectory, Mode=TwoWay}" />
             </controls:OptionControl>
 
             <controls:CardExpander
-                Header="{x:Static resources:Strings.Menu_Deployment_PlayerChannel_Title}"
-                Description="{x:Static resources:Strings.Menu_Deployment_Channel_Description}"
+                Header="{local:LocalString Key=Menu_Deployment_PlayerChannel_Title}"
+                Description="{local:LocalString Key=Menu_Deployment_Channel_Description}"
                 IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOS}"
                 IsExpanded="True">
 
@@ -245,7 +245,7 @@ SPDX-License-Identifier: MPL-2.0
                             Margin="0,0,16,8"
                             VerticalAlignment="Center"
                             Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                            Text="{x:Static resources:Strings.Common_Version}" />
+                            Text="{local:LocalString Key=Common_Version}" />
                         <TextBlock
                             Grid.Row="0"
                             Grid.Column="1"
@@ -258,7 +258,7 @@ SPDX-License-Identifier: MPL-2.0
                             Margin="0,0,16,8"
                             VerticalAlignment="Center"
                             Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                            Text="{x:Static resources:Strings.Common_VersionGuid}" />
+                            Text="{local:LocalString Key=Common_VersionGuid}" />
                         <TextBlock
                             Grid.Row="1"
                             Grid.Column="1"
@@ -271,7 +271,7 @@ SPDX-License-Identifier: MPL-2.0
                             Margin="0,0,16,8"
                             VerticalAlignment="Center"
                             Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                            Text="{x:Static resources:Strings.Common_Timestamp}" />
+                            Text="{local:LocalString Key=Common_Timestamp}" />
                         <TextBlock
                             Grid.Row="2"
                             Grid.Column="1"
@@ -291,7 +291,7 @@ SPDX-License-Identifier: MPL-2.0
                             <TextBlock
                                 Margin="8,0,0,0"
                                 VerticalAlignment="Center"
-                                Text="{x:Static resources:Strings.Menu_Deployment_Channel_OutOfDate}" />
+                                Text="{local:LocalString Key=Menu_Deployment_Channel_OutOfDate}" />
                         </StackPanel>
                     </Grid>
 
@@ -322,8 +322,8 @@ SPDX-License-Identifier: MPL-2.0
                 </StackPanel>
             </controls:CardExpander>
 
-            <controls:OptionControl Header="{x:Static resources:Strings.Menu_Channel_ChangeAction_Title}"
-                                    Description="{x:Static resources:Strings.Menu_Channel_ChangeAction_Description}">
+            <controls:OptionControl Header="{local:LocalString Key=Menu_Channel_ChangeAction_Title}"
+                                    Description="{local:LocalString Key=Menu_Channel_ChangeAction_Description}">
                 <ComboBox
                     Width="200"
                     Margin="5,0,0,0"
@@ -338,19 +338,19 @@ SPDX-License-Identifier: MPL-2.0
                 Margin="0,10,0,0"
                 FontSize="20"
                 FontWeight="Bold"
-                Text="{x:Static resources:Strings.Common_Studio}"
+                Text="{local:LocalString Key=Common_Studio}"
                 />
 
             <controls:MarkdownTextBlock
                 Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                 Margin="0,2,0,10"
-                MarkdownText="{x:Static resources:Strings.Menu_Deployment_Studio_Description}"
+                MarkdownText="{local:LocalString Key=Menu_Deployment_Studio_Description}"
                 TextWrapping="Wrap"
                 />
 
             <controls:CardExpander
-                Header="{x:Static resources:Strings.Menu_Deployment_OverrideHash_Title}"
-                Description="{x:Static resources:Strings.Menu_Deployment_OverrideHash_Description}"
+                Header="{local:LocalString Key=Menu_Deployment_OverrideHash_Title}"
+                Description="{local:LocalString Key=Menu_Deployment_OverrideHash_Description}"
                 IsExpanded="{Binding StudioVersionOverrideEnabled, Mode=TwoWay}"
                 Classes="NoUserExpansion">
                 <controls:CardExpander.HeaderContent>
@@ -358,8 +358,8 @@ SPDX-License-Identifier: MPL-2.0
                 </controls:CardExpander.HeaderContent>
                 <StackPanel>
                     <controls:OptionControl
-                        Header="{x:Static resources:Strings.Menu_Deployment_VersionHash_Title}"
-                        Description="{x:Static resources:Strings.Menu_Deployment_VersionHash_Description}">
+                        Header="{local:LocalString Key=Menu_Deployment_VersionHash_Title}"
+                        Description="{local:LocalString Key=Menu_Deployment_VersionHash_Description}">
                         <StackPanel Spacing="6">
                             <TextBox
                                 Width="280"
@@ -418,8 +418,8 @@ SPDX-License-Identifier: MPL-2.0
             </controls:CardExpander>
 
             <controls:CardExpander
-                Header="{x:Static resources:Strings.Menu_Deployment_StudioChannel_Title}"
-                Description="{x:Static resources:Strings.Menu_Deployment_Channel_Description}"
+                Header="{local:LocalString Key=Menu_Deployment_StudioChannel_Title}"
+                Description="{local:LocalString Key=Menu_Deployment_Channel_Description}"
                 IsExpanded="True">
 
                 <controls:CardExpander.HeaderContent>
@@ -439,7 +439,7 @@ SPDX-License-Identifier: MPL-2.0
                             Margin="0,0,16,8"
                             VerticalAlignment="Center"
                             Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                            Text="{x:Static resources:Strings.Common_Version}" />
+                            Text="{local:LocalString Key=Common_Version}" />
                         <TextBlock
                             Grid.Row="0"
                             Grid.Column="1"
@@ -452,7 +452,7 @@ SPDX-License-Identifier: MPL-2.0
                             Margin="0,0,16,8"
                             VerticalAlignment="Center"
                             Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                            Text="{x:Static resources:Strings.Common_VersionGuid}" />
+                            Text="{local:LocalString Key=Common_VersionGuid}" />
                         <TextBlock
                             Grid.Row="1"
                             Grid.Column="1"
@@ -465,7 +465,7 @@ SPDX-License-Identifier: MPL-2.0
                             Margin="0,0,16,8"
                             VerticalAlignment="Center"
                             Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                            Text="{x:Static resources:Strings.Common_Timestamp}" />
+                            Text="{local:LocalString Key=Common_Timestamp}" />
                         <TextBlock
                             Grid.Row="2"
                             Grid.Column="1"
@@ -485,7 +485,7 @@ SPDX-License-Identifier: MPL-2.0
                             <TextBlock
                                 Margin="8,0,0,0"
                                 VerticalAlignment="Center"
-                                Text="{x:Static resources:Strings.Menu_Deployment_Channel_OutOfDate}" />
+                                Text="{local:LocalString Key=Menu_Deployment_Channel_OutOfDate}" />
                         </StackPanel>
                     </Grid>
 

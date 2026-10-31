@@ -18,7 +18,7 @@ SPDX-License-Identifier: MPL-2.0
              d:DesignHeight="600"
              d:DesignWidth="1000"
              Focusable="True"
-             mc:Ignorable="d">
+             mc:Ignorable="d" xmlns:local="clr-namespace:Froststrap.Localisation;assembly=Froststrap" xmlns:loc="clr-namespace:Froststrap.Localisation;assembly=Froststrap">
 
     <Grid DragDrop.AllowDrop="True"
           DragDrop.Drop="OnDrop"
@@ -29,24 +29,24 @@ SPDX-License-Identifier: MPL-2.0
         <Grid RowDefinitions="Auto, Auto, Auto, *" Margin="14">
 
             <ui:FAInfoBar Grid.Row="0"
-                          Message="{x:Static resources:Strings.Menu_FastFlagEditor_WhiteList}"
+                          Message="{local:LocalString Key=Menu_FastFlagEditor_WhiteList}"
                           Severity="Informational"
                           IsOpen="True"
                           IsClosable="False"
                           Margin="0,4,0,8" />
 
             <WrapPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,0">
-                <controls:IconButton Click="AddButton_Click" Icon="Plus" Content="{x:Static resources:Strings.Menu_FastFlagEditor_AddNew}" Margin="0,0,8,8" />
-                <controls:IconButton Click="DeleteButton_Click" Icon="Trash" Classes="Danger" Content="{x:Static resources:Strings.Menu_FastFlagEditor_DeleteSelected}" Margin="0,0,8,8" x:Name="DeleteSelectedButton" IsEnabled="False" />
-                <controls:IconButton Click="DeleteAllButton_Click" Icon="Trash" Content="{x:Static resources:Strings.Common_DeleteAll}" Margin="0,0,8,8" />
-                <controls:IconButton Click="CopyJSONButton_Click" Icon="Clipboard" Content="{x:Static resources:Strings.Common_CopyAll}" Margin="0,0,8,8" />
-                <controls:IconButton Click="ExportJSONButton_Click" Icon="ArrowRightFromLine" Content="{x:Static resources:Strings.Menu_FastFlagEditor_ExportJson}" Margin="0,0,8,8" />
-                <controls:IconButton Click="FlagProfiles_Click" Icon="FilePenLine" Content="{x:Static resources:Strings.Common_Profiles}" Margin="0,0,8,8" />
-                <controls:IconButton Click="CleanListButton_Click" Icon="Funnel" Content="{x:Static resources:Strings.Menu_FastFlagEditor_CleanList}" Margin="0,0,8,8" />
+                <controls:IconButton Click="AddButton_Click" Icon="Plus" Content="{local:LocalString Key=Menu_FastFlagEditor_AddNew}" Margin="0,0,8,8" />
+                <controls:IconButton Click="DeleteButton_Click" Icon="Trash" Classes="Danger" Content="{local:LocalString Key=Menu_FastFlagEditor_DeleteSelected}" Margin="0,0,8,8" x:Name="DeleteSelectedButton" IsEnabled="False" />
+                <controls:IconButton Click="DeleteAllButton_Click" Icon="Trash" Content="{local:LocalString Key=Common_DeleteAll}" Margin="0,0,8,8" />
+                <controls:IconButton Click="CopyJSONButton_Click" Icon="Clipboard" Content="{local:LocalString Key=Common_CopyAll}" Margin="0,0,8,8" />
+                <controls:IconButton Click="ExportJSONButton_Click" Icon="ArrowRightFromLine" Content="{local:LocalString Key=Menu_FastFlagEditor_ExportJson}" Margin="0,0,8,8" />
+                <controls:IconButton Click="FlagProfiles_Click" Icon="FilePenLine" Content="{local:LocalString Key=Common_Profiles}" Margin="0,0,8,8" />
+                <controls:IconButton Click="CleanListButton_Click" Icon="Funnel" Content="{local:LocalString Key=Menu_FastFlagEditor_CleanList}" Margin="0,0,8,8" />
 
                 <ToggleButton Name="TogglePresetsButton"
                               Click="ToggleButton_Click"
-                              Content="{x:Static resources:Strings.Menu_FastFlagEditor_ShowPresetFlags}"
+                              Content="{local:LocalString Key=Menu_FastFlagEditor_ShowPresetFlags}"
                               IsChecked="False"
                               VerticalAlignment="Center"
                               Margin="0,0,8,8"/>
@@ -59,12 +59,12 @@ SPDX-License-Identifier: MPL-2.0
                            Margin="0,0,8,8"
                            FontWeight="Medium"
                            FontSize="12"
-                           Text="{x:Static resources:Strings.Menu_FastFlagEditor_TotalFlags}" />
+                           Text="{local:LocalString Key=Menu_FastFlagEditor_TotalFlags}" />
 
                 <Grid Grid.Row="1">
                     <TextBox Name="SearchTextBox"
                              VerticalContentAlignment="Center"
-                             PlaceholderText="{x:Static resources:Strings.Common_Search}"
+                             PlaceholderText="{local:LocalString Key=Common_Search}"
                              TextChanged="SearchTextBox_TextChanged">
                         <TextBox.InnerLeftContent>
                             <ic:Lucide Height="16" Width="16" Icon="Search" Margin="10,0,0,0" VerticalAlignment="Center" />
@@ -101,7 +101,7 @@ SPDX-License-Identifier: MPL-2.0
                     <DataGrid.Columns>
                         <DataGridTemplateColumn MinWidth="67"
                                                 Width="Auto"
-                                                Header="{x:Static resources:Strings.Common_Presets}"
+                                                Header="{local:LocalString Key=Common_Presets}"
                                                 CanUserResize="False"
                                                 IsVisible="{Binding #TogglePresetsButton.IsChecked}">
                             <DataGridTemplateColumn.CellTemplate>
@@ -115,18 +115,18 @@ SPDX-License-Identifier: MPL-2.0
 
                         <DataGridTextColumn Width="*"
                                             Binding="{Binding Name}"
-                                            Header="{x:Static resources:Strings.Common_Name}"
+                                            Header="{local:LocalString Key=Common_Name}"
                                             x:DataType="model:FastFlag" />
 
                         <DataGridTextColumn Width="250"
                                             Binding="{Binding Value}"
-                                            Header="{x:Static resources:Strings.Common_Value}"
+                                            Header="{local:LocalString Key=Common_Value}"
                                             x:DataType="model:FastFlag" />
                     </DataGrid.Columns>
                 </DataGrid>
 
                 <TextBlock x:Name="EmptyTextBlock"
-                           Text="{x:Static resources:Strings.Menu_FastFlagEditor_NoFlags}"
+                           Text="{local:LocalString Key=Menu_FastFlagEditor_NoFlags}"
                            FontSize="16"
                            FontWeight="Medium"
                            HorizontalAlignment="Center"
@@ -143,7 +143,7 @@ SPDX-License-Identifier: MPL-2.0
               IsVisible="False"
               Background="#88000000">
 
-            <TextBlock Text="{x:Static resources:Strings.Menu_FastFlagEditor_DragOverlay}"
+            <TextBlock Text="{local:LocalString Key=Menu_FastFlagEditor_DragOverlay}"
                        FontSize="20"
                        FontWeight="SemiBold"
                        HorizontalAlignment="Center"

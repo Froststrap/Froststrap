@@ -15,14 +15,14 @@ SPDX-License-Identifier: MPL-2.0
                      xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
                      xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Dialogs"
                      xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
-                     Title="{x:Static resources:Strings.Menu_Dialog_QuickSignIn_Title}"
+                     Title="{local:LocalString Key=Menu_Dialog_QuickSignIn_Title}"
                      Width="450"
                      Height="345"
                      MinWidth="450"
                      MinHeight="345"
                      CanResize="True"
                      WindowStartupLocation="CenterOwner"
-                     mc:Ignorable="d">
+                     mc:Ignorable="d" xmlns:local="clr-namespace:Froststrap.Localisation;assembly=Froststrap" xmlns:loc="clr-namespace:Froststrap.Localisation;assembly=Froststrap">
 
     <Grid RowDefinitions="*,Auto">
         <Grid Grid.Row="0" Margin="20,16,20,16" RowDefinitions="Auto,Auto,Auto,Auto,*">
@@ -37,7 +37,7 @@ SPDX-License-Identifier: MPL-2.0
                 <TextBlock
                     FontSize="18"
                     FontWeight="SemiBold"
-                    Text="{x:Static resources:Strings.Menu_Dialog_QuickSignIn_Title}" />
+                    Text="{local:LocalString Key=Menu_Dialog_QuickSignIn_Title}" />
             </StackPanel>
 
             <controls:MarkdownTextBlock
@@ -46,7 +46,7 @@ SPDX-License-Identifier: MPL-2.0
                 Margin="0,0,0,12"
                 FontSize="14"
                 Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                MarkdownText="{Binding Source={x:Static resources:Strings.Menu_QuickSignIn_Instruction}, Converter={StaticResource StringFormatConverter}, ConverterParameter=https://www.roblox.com/crossdevicelogin/ConfirmCode}"
+                MarkdownText="{Binding Source={local:LocalString Key=Menu_QuickSignIn_Instruction}, Converter={StaticResource StringFormatConverter}, ConverterParameter=https://www.roblox.com/crossdevicelogin/ConfirmCode}"
                 TextWrapping="Wrap"
                 IsVisible="True" />
 
@@ -90,7 +90,7 @@ SPDX-License-Identifier: MPL-2.0
                         Foreground="{DynamicResource SystemFillColorAttentionBrush}"/>
                     <TextBlock
                         x:Name="StatusText"
-                        Text="{x:Static resources:Strings.Menu_QuickSignIn_Waitting}"
+                        Text="{local:LocalString Key=Menu_QuickSignIn_Waitting}"
                         TextWrapping="Wrap"
                         FontSize="13"
                         Foreground="{DynamicResource TextFillColorPrimaryBrush}"
@@ -115,14 +115,14 @@ SPDX-License-Identifier: MPL-2.0
                     Margin="0,0,8,0"
                     HorizontalAlignment="Right"
                     Click="Copy_Click"
-                    Content="{x:Static resources:Strings.Common_Copy}"/>
+                    Content="{local:LocalString Key=Common_Copy}"/>
 
                 <Button
                     Grid.Column="2"
                     MinWidth="100"
                     HorizontalAlignment="Right"
                     Click="Close_Click"
-                    Content="{x:Static resources:Strings.Common_Close}"/>
+                    Content="{local:LocalString Key=Common_Close}"/>
             </Grid>
         </Border>
     </Grid>

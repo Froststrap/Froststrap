@@ -15,7 +15,7 @@ SPDX-License-Identifier: MPL-2.0
              xmlns:utility="clr-namespace:Froststrap.UI.Utility"
              x:Class="Froststrap.UI.Elements.Settings.AccountSelectorView"
              x:DataType="vm:AccountSelectorViewModel"
-             mc:Ignorable="d" d:DesignHeight="220" d:DesignWidth="450">
+             mc:Ignorable="d" d:DesignHeight="220" d:DesignWidth="450" xmlns:local="clr-namespace:Froststrap.Localisation;assembly=Froststrap" xmlns:loc="clr-namespace:Froststrap.Localisation;assembly=Froststrap">
 
     <UserControl.Styles>
         <Style Selector="Button#AccountButton">
@@ -98,7 +98,7 @@ SPDX-License-Identifier: MPL-2.0
                                    TextTrimming="CharacterEllipsis"/>
                     </StackPanel>
 
-                    <TextBlock Text="{x:Static resources:Strings.Menu_AccountSelector_NotLoggedIn}"
+                    <TextBlock Text="{local:LocalString Key=Menu_AccountSelector_NotLoggedIn}"
                                FontSize="11"
                                FontWeight="SemiBold"
                                Foreground="{DynamicResource TextFillColorPrimaryBrush}"
@@ -131,7 +131,7 @@ SPDX-License-Identifier: MPL-2.0
                             BorderThickness="0,0,0,1">
                         <Grid ColumnDefinitions="*,Auto">
                             <Button Grid.Column="0"
-                                    Content="{x:Static resources:Strings.Menu_AccountSelector_AddAccount}"
+                                    Content="{local:LocalString Key=Menu_AccountSelector_AddAccount}"
                                     Command="{Binding AddAccountCommand}"
                                     IsEnabled="{Binding !IsAddingAccount}"
                                     Height="32"
@@ -271,7 +271,7 @@ SPDX-License-Identifier: MPL-2.0
                     </ScrollViewer>
 
                     <TextBlock Grid.Row="1"
-                               Text="{x:Static resources:Strings.Menu_AccountSelector_AskToAddAccount}"
+                               Text="{local:LocalString Key=Menu_AccountSelector_AskToAddAccount}"
                                FontSize="12"
                                TextAlignment="Center"
                                HorizontalAlignment="Center"

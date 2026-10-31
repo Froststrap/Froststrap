@@ -20,7 +20,7 @@ SPDX-License-Identifier: MPL-2.0
                      Height="475"
                      CanResize="True"
                      WindowStartupLocation="CenterOwner"
-                     mc:Ignorable="d">
+                     mc:Ignorable="d" xmlns:local="clr-namespace:Froststrap.Localisation;assembly=Froststrap" xmlns:loc="clr-namespace:Froststrap.Localisation;assembly=Froststrap">
 
     <Grid RowDefinitions="*,Auto">
         <Grid Grid.Row="0" Margin="20,8,20,16" RowDefinitions="Auto,Auto,Auto,Auto">
@@ -35,7 +35,7 @@ SPDX-License-Identifier: MPL-2.0
                 <TextBlock
                     FontSize="18"
                     FontWeight="SemiBold"
-                    Text="{x:Static resources:Strings.Menu_ManualLogin_Title}" />
+                    Text="{local:LocalString Key=Menu_ManualLogin_Title}" />
             </StackPanel>
 
             <Border
@@ -52,7 +52,7 @@ SPDX-License-Identifier: MPL-2.0
                         Margin="0,0,0,8"
                         FontSize="13"
                         FontWeight="SemiBold"
-                        Text="{x:Static resources:Strings.Menu_ManualLogin_PasteSecurity}" />
+                        Text="{local:LocalString Key=Menu_ManualLogin_PasteSecurity}" />
 
                     <TextBox
                         x:Name="CookieTextBox"
@@ -69,31 +69,31 @@ SPDX-License-Identifier: MPL-2.0
             <StackPanel Grid.Row="3" Margin="8,0,0,0">
                 <TextBlock Margin="0,2,0,2">
                     <Run Text="1." FontWeight="Bold" />
-                    <Run Text="{x:Static resources:Strings.Menu_ManualLogin_Instruction_1}" />
+                    <Run Text="{local:LocalString Key=Menu_ManualLogin_Instruction_1}" />
                 </TextBlock>
                 <TextBlock Margin="0,2,0,2">
                     <Run Text="2." FontWeight="Bold" />
-                    <Run Text="{x:Static resources:Strings.Menu_ManualLogin_Instruction_2}" />
+                    <Run Text="{local:LocalString Key=Menu_ManualLogin_Instruction_2}" />
                 </TextBlock>
                 <TextBlock Margin="0,2,0,2">
                     <Run Text="3." FontWeight="Bold" />
-                    <Run Text="{x:Static resources:Strings.Menu_ManualLogin_Instruction_3}" />
+                    <Run Text="{local:LocalString Key=Menu_ManualLogin_Instruction_3}" />
                 </TextBlock>
                 <TextBlock Margin="0,2,0,2">
                     <Run Text="4." FontWeight="Bold" />
-                    <Run Text="{x:Static resources:Strings.Menu_ManualLogin_Instruction_4}" />
+                    <Run Text="{local:LocalString Key=Menu_ManualLogin_Instruction_4}" />
                 </TextBlock>
                 <TextBlock Margin="0,2,0,2">
                     <Run Text="5." FontWeight="Bold" />
-                    <Run Text="{x:Static resources:Strings.Menu_ManualLogin_Instruction_5}" />
+                    <Run Text="{local:LocalString Key=Menu_ManualLogin_Instruction_5}" />
                 </TextBlock>
                 <TextBlock Margin="0,2,0,2">
                     <Run Text="6." FontWeight="Bold" />
-                    <Run Text="{x:Static resources:Strings.Menu_ManualLogin_Instruction_6}" />
+                    <Run Text="{local:LocalString Key=Menu_ManualLogin_Instruction_6}" />
                 </TextBlock>
                 <TextBlock Margin="0,2,0,2">
                     <Run Text="7." FontWeight="Bold" />
-                    <Run Text="{x:Static resources:Strings.Menu_ManualLogin_Instruction_7}" />
+                    <Run Text="{local:LocalString Key=Menu_ManualLogin_Instruction_7}" />
                 </TextBlock>
             </StackPanel>
         </Grid>
@@ -112,7 +112,7 @@ SPDX-License-Identifier: MPL-2.0
                         Margin="0,0,8,0"
                         HorizontalAlignment="Right"
                         Command="{Binding AddAccountCommand}"
-                        Content="{x:Static resources:Strings.Common_Add}"
+                        Content="{local:LocalString Key=Common_Add}"
                         IsEnabled="{Binding IsAddEnabled}"/>
 
                 <Button
@@ -120,7 +120,7 @@ SPDX-License-Identifier: MPL-2.0
                     MinWidth="100"
                     HorizontalAlignment="Right"
                     Command="{Binding CancelCommand}"
-                    Content="{x:Static resources:Strings.Common_Cancel}"/>
+                    Content="{local:LocalString Key=Common_Cancel}"/>
             </Grid>
         </Border>
     </Grid>

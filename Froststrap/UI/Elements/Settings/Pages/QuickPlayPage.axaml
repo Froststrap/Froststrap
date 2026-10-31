@@ -16,7 +16,7 @@ SPDX-License-Identifier: MPL-2.0
              xmlns:resources="clr-namespace:Froststrap.Resources"
              xmlns:utility="clr-namespace:Froststrap.UI.Utility"
              x:Name="RootPage"
-             x:DataType="vm:QuickPlayViewModel">
+             x:DataType="vm:QuickPlayViewModel" xmlns:local="clr-namespace:Froststrap.Localisation;assembly=Froststrap" xmlns:loc="clr-namespace:Froststrap.Localisation;assembly=Froststrap">
 
 	<UserControl.Resources>
 		<DataTemplate x:Key="GameCardTemplate" x:DataType="models:QuickPlayGameItem">
@@ -28,17 +28,17 @@ SPDX-License-Identifier: MPL-2.0
 				</Button.Styles>
 				<Button.Flyout>
 					<MenuFlyout Placement="Pointer">
-						<MenuItem Header="{x:Static resources:Strings.Menu_QuickPlay_JoinGame}" Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).JoinGameCommand}" CommandParameter="{Binding}">
+						<MenuItem Header="{local:LocalString Key=Menu_QuickPlay_JoinGame}" Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).JoinGameCommand}" CommandParameter="{Binding}">
 							<MenuItem.Icon>
 								<ic:Lucide Icon="Play" Height="16" Width="16" />
 							</MenuItem.Icon>
 						</MenuItem>
-						<MenuItem Header="{x:Static resources:Strings.Menu_QuickPlay_RejoinLastServer}" Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).RejoinLastServerCommand}" CommandParameter="{Binding}">
+						<MenuItem Header="{local:LocalString Key=Menu_QuickPlay_RejoinLastServer}" Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).RejoinLastServerCommand}" CommandParameter="{Binding}">
 							<MenuItem.Icon>
 								<ic:Lucide Icon="RotateCcwClock" Height="16" Width="16" />
 							</MenuItem.Icon>
 						</MenuItem>
-						<MenuItem Header="{x:Static resources:Strings.Menu_QuickPlay_JoinBestRegion}"
+						<MenuItem Header="{local:LocalString Key=Menu_QuickPlay_JoinBestRegion}"
                                   Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).JoinBestRegionCommand}"
                                   CommandParameter="{Binding}"
                                   IsEnabled="{Binding DataContext.CanJoinBestRegion, ElementName=RootPage}">
@@ -47,7 +47,7 @@ SPDX-License-Identifier: MPL-2.0
 							</MenuItem.Icon>
 						</MenuItem>
 						<Separator />
-						<MenuItem Header="{Binding ServerCount, StringFormat='{x:Static resources:Strings.Menu_QuickPlay_TrackedServers}'}"
+						<MenuItem Header="{Binding ServerCount, StringFormat='{local:LocalString Key=Menu_QuickPlay_TrackedServers}'}"
                                   Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).ViewServersCommand}"
                                   CommandParameter="{Binding}"
                                   IsVisible="{Binding Source, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Tracked}">
@@ -55,14 +55,14 @@ SPDX-License-Identifier: MPL-2.0
 								<ic:Lucide Icon="FileCode" Height="16" Width="16" />
 							</MenuItem.Icon>
 						</MenuItem>
-						<MenuItem Header="{x:Static resources:Strings.Menu_QuickPlay_RobloxServers}"
+						<MenuItem Header="{local:LocalString Key=Menu_QuickPlay_RobloxServers}"
                                   Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).ViewRobloxServersCommand}"
                                   CommandParameter="{Binding}">
 							<MenuItem.Icon>
 								<ic:Lucide Icon="Server" Height="16" Width="16" />
 							</MenuItem.Icon>
 						</MenuItem>
-						<MenuItem Header="{x:Static resources:Strings.Menu_QuickPlay_PrivateServers}"
+						<MenuItem Header="{local:LocalString Key=Menu_QuickPlay_PrivateServers}"
                                   IsVisible="{Binding DataContext.HasActiveAccount, ElementName=RootPage}"
                                   Command="{Binding DataContext.ShowPrivateServersCommand, ElementName=RootPage}"
                                   CommandParameter="{Binding}">
@@ -70,13 +70,13 @@ SPDX-License-Identifier: MPL-2.0
 								<ic:Lucide Icon="LockKeyholeOpen" Height="16" Width="16" />
 							</MenuItem.Icon>
 						</MenuItem>
-						<MenuItem Header="{x:Static resources:Strings.Menu_QuickPlay_ViewSubplaces}" Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).ViewSubplacesCommand}" CommandParameter="{Binding}">
+						<MenuItem Header="{local:LocalString Key=Menu_QuickPlay_ViewSubplaces}" Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).ViewSubplacesCommand}" CommandParameter="{Binding}">
 							<MenuItem.Icon>
 								<ic:Lucide Icon="Layers" Height="16" Width="16" />
 							</MenuItem.Icon>
 						</MenuItem>
 						<Separator />
-						<MenuItem Header="{x:Static resources:Strings.Menu_QuickPlay_VisitPage}" Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).VisitPageCommand}" CommandParameter="{Binding}">
+						<MenuItem Header="{local:LocalString Key=Menu_QuickPlay_VisitPage}" Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).VisitPageCommand}" CommandParameter="{Binding}">
 							<MenuItem.Icon>
 								<ic:Lucide Icon="ExternalLink" Height="16" Width="16" />
 							</MenuItem.Icon>
@@ -111,7 +111,7 @@ SPDX-License-Identifier: MPL-2.0
 										<ic:Lucide Icon="Users" Height="12" Width="12" VerticalAlignment="Center"/>
 										<TextBlock Text="{Binding Playing, Converter={StaticResource NumberAbbreviationConverter}}"
                                                    FontSize="10" FontWeight="Medium"/>
-										<TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_Active}"
+										<TextBlock Text="{local:LocalString Key=Menu_QuickPlay_Active}"
                                                    FontSize="10" Opacity="0.5"/>
 									</StackPanel>
 									<StackPanel Grid.Column="2" Orientation="Horizontal"
@@ -119,7 +119,7 @@ SPDX-License-Identifier: MPL-2.0
 										<ic:Lucide Icon="Eye" Height="12" Width="12" VerticalAlignment="Center"/>
 										<TextBlock Text="{Binding Visits, Converter={StaticResource NumberAbbreviationConverter}}"
                                                    FontSize="10" FontWeight="Medium"/>
-										<TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_Visits}"
+										<TextBlock Text="{local:LocalString Key=Menu_QuickPlay_Visits}"
                                                    FontSize="10" Opacity="0.5"/>
 									</StackPanel>
 								</Grid>
@@ -134,11 +134,11 @@ SPDX-License-Identifier: MPL-2.0
 						<Panel VerticalAlignment="Top" HorizontalAlignment="Left" Margin="8">
 							<Border Padding="6,2" CornerRadius="6" Background="#22C55E"
                                     IsVisible="{Binding Source, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Tracked}">
-								<TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_Tracked}" FontSize="10" FontWeight="Bold"/>
+								<TextBlock Text="{local:LocalString Key=Menu_QuickPlay_Tracked}" FontSize="10" FontWeight="Bold"/>
 							</Border>
 							<Border Padding="6,2" CornerRadius="6" Background="#3B82F6"
                                     IsVisible="{Binding Source, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=RobloxApi}">
-								<TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_RobloxAPI}" FontSize="10" FontWeight="Bold"/>
+								<TextBlock Text="{local:LocalString Key=Menu_QuickPlay_RobloxAPI}" FontSize="10" FontWeight="Bold"/>
 							</Border>
 						</Panel>
 					</Panel>
@@ -199,7 +199,7 @@ SPDX-License-Identifier: MPL-2.0
 													<ic:Lucide Icon="Users" Height="12" Width="12" VerticalAlignment="Center"/>
 													<TextBlock Text="{Binding SelectedGame.Playing, Converter={StaticResource NumberAbbreviationConverter}}"
                                                                FontSize="10" FontWeight="Medium"/>
-													<TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_Active}"
+													<TextBlock Text="{local:LocalString Key=Menu_QuickPlay_Active}"
                                                                FontSize="10" Opacity="0.5"/>
 												</StackPanel>
 												<StackPanel Grid.Column="2" Orientation="Horizontal"
@@ -207,7 +207,7 @@ SPDX-License-Identifier: MPL-2.0
 													<ic:Lucide Icon="Eye" Height="12" Width="12" VerticalAlignment="Center"/>
 													<TextBlock Text="{Binding SelectedGame.Visits, Converter={StaticResource NumberAbbreviationConverter}}"
                                                                FontSize="10" FontWeight="Medium"/>
-													<TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_Visits}"
+													<TextBlock Text="{local:LocalString Key=Menu_QuickPlay_Visits}"
                                                                FontSize="10" Opacity="0.5"/>
 												</StackPanel>
 											</Grid>
@@ -252,7 +252,7 @@ SPDX-License-Identifier: MPL-2.0
                                                      ItemsSource="{Binding SearchResults}"
                                                      FilterMode="None"
                                                      IsDropDownOpen="{Binding IsSearchFlyoutOpen, Mode=TwoWay}"
-                                                     PlaceholderText="{x:Static resources:Strings.Menu_RegionSelector_FindGame}">
+                                                     PlaceholderText="{local:LocalString Key=Menu_RegionSelector_FindGame}">
 										<AutoCompleteBox.ItemTemplate>
 											<DataTemplate DataType="apis:OmniSearchContent">
 												<Grid ColumnDefinitions="Auto,*,Auto" MaxWidth="380">
@@ -320,7 +320,7 @@ SPDX-License-Identifier: MPL-2.0
                                                          VerticalAlignment="Center"
                                                          HorizontalContentAlignment="Center"
                                                          VerticalContentAlignment="Center"
-                                                         ToolTip.Tip="{x:Static resources:Strings.Menu_QuickPlay_PrivateServers}"/>
+                                                         ToolTip.Tip="{local:LocalString Key=Menu_QuickPlay_PrivateServers}"/>
 								</Grid>
 
 								<TextBlock Text="Server ID (Optional)"
@@ -372,7 +372,7 @@ SPDX-License-Identifier: MPL-2.0
 										<Grid ColumnDefinitions="*,Auto">
 											<StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
 												<ic:Lucide Icon="Layers" Height="14" Width="14" VerticalAlignment="Center"/>
-												<TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_ViewSubplaces}"
+												<TextBlock Text="{local:LocalString Key=Menu_QuickPlay_ViewSubplaces}"
                                                            FontWeight="SemiBold"
                                                            FontSize="13"
                                                            VerticalAlignment="Center"/>
@@ -433,7 +433,7 @@ SPDX-License-Identifier: MPL-2.0
                                                                                      VerticalAlignment="Center"
                                                                                      HorizontalContentAlignment="Center"
                                                                                      VerticalContentAlignment="Center"
-                                                                                     ToolTip.Tip="{x:Static resources:Strings.Menu_QuickPlay_JoinGame}"/>
+                                                                                     ToolTip.Tip="{local:LocalString Key=Menu_QuickPlay_JoinGame}"/>
 															</Grid>
 														</Border>
 													</DataTemplate>
@@ -449,7 +449,7 @@ SPDX-License-Identifier: MPL-2.0
 											<ui:FAProgressRing IsActive="{Binding IsLoadingSubplaces}"
                                                                Width="32" Height="32"
                                                                Foreground="{DynamicResource SystemAccentColor}"/>
-											<TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_LoadingSubplaces}"
+											<TextBlock Text="{local:LocalString Key=Menu_QuickPlay_LoadingSubplaces}"
                                                        FontSize="11"
                                                        Opacity="0.6"
                                                        HorizontalAlignment="Center"/>
@@ -464,13 +464,13 @@ SPDX-License-Identifier: MPL-2.0
                                                        Height="32" Width="32"
                                                        HorizontalAlignment="Center"
                                                        Opacity="0.4"/>
-											<TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_NoSubplacesSelected}"
+											<TextBlock Text="{local:LocalString Key=Menu_QuickPlay_NoSubplacesSelected}"
                                                        FontSize="11"
                                                        Opacity="0.6"
                                                        TextAlignment="Center"
                                                        TextWrapping="Wrap"
                                                        IsVisible="{Binding !HasCurrentSearchPlace}"/>
-											<TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_NoSubplacesFound}"
+											<TextBlock Text="{local:LocalString Key=Menu_QuickPlay_NoSubplacesFound}"
                                                        FontSize="11"
                                                        Opacity="0.6"
                                                        TextAlignment="Center"
@@ -486,7 +486,7 @@ SPDX-License-Identifier: MPL-2.0
 
 				<TabControl SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay}">
 
-					<TabItem Header="{x:Static resources:Strings.Menu_QuickPlay_ContinuePlaying}">
+					<TabItem Header="{local:LocalString Key=Menu_QuickPlay_ContinuePlaying}">
 						<ui:TabItemHelper.Icon>
 							<ic:Lucide Icon="RotateCcwClock" />
 						</ui:TabItemHelper.Icon>
@@ -502,7 +502,7 @@ SPDX-License-Identifier: MPL-2.0
 									</ItemsControl.ItemsPanel>
 								</ItemsControl>
 							</ScrollViewer>
-							<TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_NoRecentGames}"
+							<TextBlock Text="{local:LocalString Key=Menu_QuickPlay_NoRecentGames}"
                                        IsVisible="{Binding ShowRecentEmpty}"
                                        IsHitTestVisible="False"
                                        VerticalAlignment="Center" HorizontalAlignment="Center" Opacity="0.6"/>
@@ -511,17 +511,17 @@ SPDX-License-Identifier: MPL-2.0
                                         IsHitTestVisible="False"
                                         Spacing="16" Margin="0,16"
                                         VerticalAlignment="Center" HorizontalAlignment="Center">
-								<TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_LoadingRecentGames}"
+								<TextBlock Text="{local:LocalString Key=Menu_QuickPlay_LoadingRecentGames}"
                                            HorizontalAlignment="Center" FontSize="14" FontWeight="SemiBold" Opacity="0.9"/>
 								<ui:FAProgressRing IsActive="{Binding IsLoading}" Width="48" Height="48"
                                                    Foreground="{DynamicResource SystemAccentColor}"/>
-								<TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_FetchingGameInfo}"
+								<TextBlock Text="{local:LocalString Key=Menu_QuickPlay_FetchingGameInfo}"
                                            HorizontalAlignment="Center" FontSize="12" Opacity="0.6"/>
 							</StackPanel>
 						</Grid>
 					</TabItem>
 
-					<TabItem Header="{x:Static resources:Strings.Menu_QuickPlay_Recommended}">
+					<TabItem Header="{local:LocalString Key=Menu_QuickPlay_Recommended}">
 						<ui:TabItemHelper.Icon>
 							<ic:Lucide Icon="GamepadDirectional" />
 						</ui:TabItemHelper.Icon>
@@ -540,10 +540,10 @@ SPDX-License-Identifier: MPL-2.0
 							<StackPanel IsVisible="{Binding ShowRecommendedEmpty}"
                                         IsHitTestVisible="False"
                                         VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="8">
-								<TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_NoRecommendedGames}"
+								<TextBlock Text="{local:LocalString Key=Menu_QuickPlay_NoRecommendedGames}"
                                            Opacity="0.6" HorizontalAlignment="Center"
                                            IsVisible="{Binding IsLoggedIn}"/>
-								<TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_LoginToSeeRecommended}"
+								<TextBlock Text="{local:LocalString Key=Menu_QuickPlay_LoginToSeeRecommended}"
                                            Opacity="0.6" HorizontalAlignment="Center"
                                            IsVisible="{Binding !IsLoggedIn}"/>
 							</StackPanel>
@@ -552,17 +552,17 @@ SPDX-License-Identifier: MPL-2.0
                                         IsHitTestVisible="False"
                                         Spacing="16" Margin="0,16"
                                         VerticalAlignment="Center" HorizontalAlignment="Center">
-								<TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_LoadingRecommended}"
+								<TextBlock Text="{local:LocalString Key=Menu_QuickPlay_LoadingRecommended}"
                                            HorizontalAlignment="Center" FontSize="14" FontWeight="SemiBold" Opacity="0.9"/>
 								<ui:FAProgressRing IsActive="{Binding IsRecommendedLoading}" Width="48" Height="48"
                                                    Foreground="{DynamicResource SystemAccentColor}"/>
-								<TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_FetchingGameInfo}"
+								<TextBlock Text="{local:LocalString Key=Menu_QuickPlay_FetchingGameInfo}"
                                            HorizontalAlignment="Center" FontSize="12" Opacity="0.6"/>
 							</StackPanel>
 						</Grid>
 					</TabItem>
 
-					<TabItem Header="{x:Static resources:Strings.Menu_QuickPlay_Favorites}">
+					<TabItem Header="{local:LocalString Key=Menu_QuickPlay_Favorites}">
 						<ui:TabItemHelper.Icon>
 							<ic:Lucide Icon="Star" />
 						</ui:TabItemHelper.Icon>
@@ -581,10 +581,10 @@ SPDX-License-Identifier: MPL-2.0
 							<StackPanel IsVisible="{Binding ShowFavoritesEmpty}"
                                         IsHitTestVisible="False"
                                         VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="16" Margin="0,16">
-								<TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_NoFavoriteGames}"
+								<TextBlock Text="{local:LocalString Key=Menu_QuickPlay_NoFavoriteGames}"
                                            Opacity="0.6" HorizontalAlignment="Center"
                                            IsVisible="{Binding IsLoggedIn}"/>
-								<TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_LoginToSeeFavorites}"
+								<TextBlock Text="{local:LocalString Key=Menu_QuickPlay_LoginToSeeFavorites}"
                                            Opacity="0.6" HorizontalAlignment="Center"
                                            IsVisible="{Binding !IsLoggedIn}"/>
 							</StackPanel>
@@ -593,11 +593,11 @@ SPDX-License-Identifier: MPL-2.0
                                         IsHitTestVisible="False"
                                         Spacing="16" Margin="0,16"
                                         VerticalAlignment="Center" HorizontalAlignment="Center">
-								<TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_LoadingFavorites}"
+								<TextBlock Text="{local:LocalString Key=Menu_QuickPlay_LoadingFavorites}"
                                            HorizontalAlignment="Center" FontSize="14" FontWeight="SemiBold" Opacity="0.9"/>
 								<ui:FAProgressRing IsActive="{Binding IsFavoritesLoading}" Width="48" Height="48"
                                                    Foreground="{DynamicResource SystemAccentColor}"/>
-								<TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_FetchingGameInfo}"
+								<TextBlock Text="{local:LocalString Key=Menu_QuickPlay_FetchingGameInfo}"
                                            HorizontalAlignment="Center" FontSize="12" Opacity="0.6"/>
 							</StackPanel>
 						</Grid>
@@ -608,11 +608,11 @@ SPDX-License-Identifier: MPL-2.0
 
 		<Grid IsVisible="{Binding IsJoiningBestRegion}" ZIndex="200" Background="#99000000">
 			<StackPanel Spacing="16" HorizontalAlignment="Center" VerticalAlignment="Center">
-				<TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_FindingBestServer}"
+				<TextBlock Text="{local:LocalString Key=Menu_QuickPlay_FindingBestServer}"
                            HorizontalAlignment="Center" FontSize="14" FontWeight="SemiBold" Opacity="0.9"/>
 				<ui:FAProgressRing IsActive="{Binding IsJoiningBestRegion}" Width="48" Height="48"
                                    Foreground="{DynamicResource SystemAccentColor}"/>
-				<TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_CheckingServers}"
+				<TextBlock Text="{local:LocalString Key=Menu_QuickPlay_CheckingServers}"
                            HorizontalAlignment="Center" FontSize="12" Opacity="0.7"/>
 			</StackPanel>
 		</Grid>

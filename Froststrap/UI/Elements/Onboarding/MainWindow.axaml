@@ -15,14 +15,14 @@ SPDX-License-Identifier: MPL-2.0
     xmlns:resources="using:Froststrap.Resources"
     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Onboarding"
     mc:Ignorable="d"
-    Title="{x:Static resources:Strings.Onboarding_Title}"
+    Title="{local:LocalString Key=Onboarding_Title}"
     Width="700"
     Height="550"
     MinWidth="640"
     MinHeight="480"
     x:DataType="vm:MainWindowViewModel"
     CanResize="False"
-    WindowStartupLocation="CenterScreen">
+    WindowStartupLocation="CenterScreen" xmlns:local="clr-namespace:Froststrap.Localisation;assembly=Froststrap" xmlns:loc="clr-namespace:Froststrap.Localisation;assembly=Froststrap">
 
     <Grid RowDefinitions="*,Auto,Auto">
         <Border Grid.Row="0" Padding="24,16,24,0" Margin="0,8,0,0">
@@ -51,7 +51,7 @@ SPDX-License-Identifier: MPL-2.0
                     Margin="0,0,8,0"
                     Command="{Binding BackPageCommand}"
                     IsEnabled="{Binding BackButtonEnabled}"
-                    Content="{x:Static resources:Strings.Common_Back}"/>
+                    Content="{local:LocalString Key=Common_Back}"/>
                 <Button
                     Grid.Column="2"
                     Width="{Binding ButtonWidth}"

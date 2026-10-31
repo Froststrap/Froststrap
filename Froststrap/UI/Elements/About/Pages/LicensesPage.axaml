@@ -12,25 +12,25 @@ SPDX-License-Identifier: MPL-2.0
              xmlns:models="clr-namespace:Froststrap.UI.ViewModels"
              xmlns:resources="clr-namespace:Froststrap.Resources"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="1500"
-             x:Class="Froststrap.UI.Elements.About.Pages.LicensesPage">
+             x:Class="Froststrap.UI.Elements.About.Pages.LicensesPage" xmlns:local="clr-namespace:Froststrap.Localisation;assembly=Froststrap" xmlns:loc="clr-namespace:Froststrap.Localisation;assembly=Froststrap">
 
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel Margin="14">
             <TextBlock Margin="0,0,0,16"
                        FontSize="24"
                        FontWeight="Bold"
-                       Text="{x:Static resources:Strings.About_Licenses_Title}" />
+                       Text="{local:LocalString Key=About_Licenses_Title}" />
 
             <UniformGrid Columns="3">
                 <ui:CardAction Margin="4" Icon="Copyright"
                                Header="Bloxstrap"
-                               Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
+                               Description="{local:LocalString Key=Menu_About_Licenses_MIT}"
                                Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
                                CommandParameter="https://github.com/bloxstraplabs/bloxstrap" />
 
                 <ui:CardAction Margin="4" Icon="Copyright"
                                Header="Fishstrap"
-                               Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
+                               Description="{local:LocalString Key=Menu_About_Licenses_MIT}"
                                Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
                                CommandParameter="https://github.com/Fishstrap/Fishstrap" />
 
@@ -48,55 +48,55 @@ SPDX-License-Identifier: MPL-2.0
 
                 <ui:CardAction Margin="4" Icon="Copyright"
                                Header="Avalonia"
-                               Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
+                               Description="{local:LocalString Key=Menu_About_Licenses_MIT}"
                                Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
                                CommandParameter="https://github.com/AvaloniaUI/Avalonia" />
 
                 <ui:CardAction Margin="4" Icon="Copyright"
                                Header="AnimatedImage"
-                               Description="{x:Static resources:Strings.Menu_About_Licenses_Apache}"
+                               Description="{local:LocalString Key=Menu_About_Licenses_Apache}"
                                Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
                                CommandParameter="https://github.com/whistyun/AnimatedImage" />
 
                 <ui:CardAction Margin="4" Icon="Copyright"
                                Header="Avalonia Edit"
-                               Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
+                               Description="{local:LocalString Key=Menu_About_Licenses_MIT}"
                                Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
                                CommandParameter="https://github.com/AvaloniaUI/AvaloniaEdit" />
 
                 <ui:CardAction Margin="4" Icon="Copyright"
                                Header="Avalonia WebView"
-                               Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
+                               Description="{local:LocalString Key=Menu_About_Licenses_MIT}"
                                Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
                                CommandParameter="https://github.com/AvaloniaUI/Avalonia.Controls.WebView" />
 
                 <ui:CardAction Margin="4" Icon="Copyright"
                                Header="Fluent Avalonia"
-                               Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
+                               Description="{local:LocalString Key=Menu_About_Licenses_MIT}"
                                Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
                                CommandParameter="https://github.com/amwx/FluentAvalonia" />
 
                 <ui:CardAction Margin="4" Icon="Copyright"
                                Header="LucideAvalonia"
-                               Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
+                               Description="{local:LocalString Key=Menu_About_Licenses_MIT}"
                                Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
                                CommandParameter="https://github.com/MarwanFr/LucideAvaloniaUI" />
 
                 <ui:CardAction Margin="4" Icon="Copyright"
                                Header="Pixi ColorPicker"
-                               Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
+                               Description="{local:LocalString Key=Menu_About_Licenses_MIT}"
                                Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
                                CommandParameter="https://github.com/PixiEditor/ColorPicker" />
 
                 <ui:CardAction Margin="4" Icon="Copyright"
                                Header="CommunityToolKit MVVM"
-                               Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
+                               Description="{local:LocalString Key=Menu_About_Licenses_MIT}"
                                Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
                                CommandParameter="https://github.com/CommunityToolkit/dotnet" />
 
                 <ui:CardAction Margin="4" Icon="Copyright"
                                Header="Discord Rich Presence"
-                               Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
+                               Description="{local:LocalString Key=Menu_About_Licenses_MIT}"
                                Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
                                CommandParameter="https://github.com/Lachee/discord-rpc-csharp" />
 

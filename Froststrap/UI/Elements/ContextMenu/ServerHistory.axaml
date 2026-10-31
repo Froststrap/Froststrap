@@ -16,11 +16,11 @@ SPDX-License-Identifier: MPL-2.0
                      xmlns:ui="using:FluentAvalonia.UI.Controls"
                      xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.ContextMenu"
                      x:DataType="vm:ServerHistoryViewModel"
-                     Title="{x:Static resources:Strings.ContextMenu_GameHistory_Title}"
+                     Title="{local:LocalString Key=ContextMenu_GameHistory_Title}"
                      Width="580" Height="420"
                      MinWidth="420" MinHeight="420"
                      WindowStartupLocation="CenterScreen"
-                     mc:Ignorable="d">
+                     mc:Ignorable="d" xmlns:local="clr-namespace:Froststrap.Localisation;assembly=Froststrap" xmlns:loc="clr-namespace:Froststrap.Localisation;assembly=Froststrap">
 
     <base:AvaloniaWindow.Styles>
         <Style Selector="TextBlock.errorView">
@@ -49,7 +49,7 @@ SPDX-License-Identifier: MPL-2.0
 
         <TextBlock Grid.Row="0"
                    Margin="16,8,16,0"
-                   Text="{x:Static resources:Strings.ContextMenu_GameHistory_Description}"
+                   Text="{local:LocalString Key=ContextMenu_GameHistory_Description}"
                    TextWrapping="Wrap" />
 
         <TextBlock Grid.Row="1"
@@ -96,19 +96,19 @@ SPDX-License-Identifier: MPL-2.0
                                 <StackPanel Margin="0,10,0,0" Orientation="Horizontal" Spacing="8">
                                     <controls:IconButton
                                         Icon="Play"
-                                        Content="{x:Static resources:Strings.ContextMenu_GameHistory_Rejoin}"
+                                        Content="{local:LocalString Key=ContextMenu_GameHistory_Rejoin}"
                                         Command="{Binding RejoinServerCommand}"
                                         Classes="Primary" />
 
                                     <controls:IconButton
                                         Icon="Link2"
-                                        Content="{x:Static resources:Strings.Common_Deeplink}"
+                                        Content="{local:LocalString Key=Common_Deeplink}"
                                         Command="{Binding CopyDeeplinkCommand}"
                                         CommandParameter="{Binding $self}"/>
 
                                     <controls:IconButton
                                         Icon="Clipboard"
-                                        Content="{x:Static resources:Strings.Common_ServerID}"
+                                        Content="{local:LocalString Key=Common_ServerID}"
                                         Command="{Binding CopyServerIdCommand}"
                                         CommandParameter="{Binding $self}"/>
 

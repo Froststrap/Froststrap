@@ -17,7 +17,7 @@ SPDX-License-Identifier: MPL-2.0
              xmlns:controls="using:Froststrap.UI.Elements.Controls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
              x:Class="Froststrap.UI.Elements.Onboarding.Pages.Page5"
-             x:DataType="vm:Page5ViewModel">
+             x:DataType="vm:Page5ViewModel" xmlns:local="clr-namespace:Froststrap.Localisation;assembly=Froststrap" xmlns:loc="clr-namespace:Froststrap.Localisation;assembly=Froststrap">
 
     <ScrollViewer>
         <StackPanel Margin="8">
@@ -35,21 +35,21 @@ SPDX-License-Identifier: MPL-2.0
                         </Transitions>
                     </ic:Lucide.Transitions>
                 </ic:Lucide>
-                <TextBlock Text="{x:Static resources:Strings.Common_Shortcuts}"
+                <TextBlock Text="{local:LocalString Key=Common_Shortcuts}"
                            FontSize="20"
                            FontWeight="SemiBold"
                            HorizontalAlignment="Center"
                            Margin="0,10,0,0" />
             </StackPanel>
             <StackPanel>
-                <TextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="{x:Static resources:Strings.Menu_Shortcuts_General_Description}" TextAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,8" />
+                <TextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="{local:LocalString Key=Menu_Shortcuts_General_Description}" TextAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,8" />
 
                 <Grid x:Name="ShortcutsGrid" ColumnDefinitions="*, *">
                     <controls:OptionControl
                         x:Name="DesktopOption"
                         Grid.Column="0"
                         Margin="0,0,4,0"
-                        Header="{x:Static resources:Strings.Common_Shortcuts_Desktop}">
+                        Header="{local:LocalString Key=Common_Shortcuts_Desktop}">
                         <ToggleSwitch IsChecked="{Binding DesktopIconTask.NewState, Mode=TwoWay}" />
                     </controls:OptionControl>
 
@@ -58,34 +58,34 @@ SPDX-License-Identifier: MPL-2.0
                         Grid.Column="1"
                         Margin="2,0,4,0"
                         IsVisible="{x:Static gv:GlobalViewModel.IsWindows}"
-                        Header="{x:Static resources:Strings.Common_Shortcuts_StartMenu}">
+                        Header="{local:LocalString Key=Common_Shortcuts_StartMenu}">
                         <ToggleSwitch IsChecked="{Binding StartMenuIconTask.NewState, Mode=TwoWay}" />
                     </controls:OptionControl>
                 </Grid>
 
                 <Separator Margin="0,16,0,12" />
 
-                <TextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="{x:Static resources:Strings.Menu_Shortcuts_Function_Description}" TextAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,8" />
+                <TextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="{local:LocalString Key=Menu_Shortcuts_Function_Description}" TextAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,8" />
 
                 <Grid ColumnDefinitions="*,*,*">
                     <controls:OptionControl
                         Grid.Column="0"
                         Margin="0,0,2,0"
-                        Header="{x:Static resources:Strings.LaunchMenu_LaunchRoblox}">
+                        Header="{local:LocalString Key=LaunchMenu_LaunchRoblox}">
                         <ToggleSwitch IsChecked="{Binding PlayerIconTask.NewState, Mode=TwoWay}" />
                     </controls:OptionControl>
 
                     <controls:OptionControl
                         Grid.Column="1"
                         Margin="2,0,2,0"
-                        Header="{x:Static resources:Strings.LaunchMenu_LaunchRobloxStudio}">
+                        Header="{local:LocalString Key=LaunchMenu_LaunchRobloxStudio}">
                         <ToggleSwitch IsChecked="{Binding StudioIconTask.NewState, Mode=TwoWay}" />
                     </controls:OptionControl>
 
                     <controls:OptionControl
                         Grid.Column="2"
                         Margin="2,0,2,0"
-                        Header="{x:Static resources:Strings.Menu_Title}">
+                        Header="{local:LocalString Key=Menu_Title}">
                         <ToggleSwitch IsChecked="{Binding SettingsIconTask.NewState, Mode=TwoWay}" />
                     </controls:OptionControl>
                 </Grid>

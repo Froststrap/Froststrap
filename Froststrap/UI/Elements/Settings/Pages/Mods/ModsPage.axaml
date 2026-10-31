@@ -23,7 +23,7 @@ SPDX-License-Identifier: MPL-2.0
              DragDrop.AllowDrop="True"
              DragDrop.Drop="Page_Drop"
              DragDrop.DragEnter="Page_DragEnter"
-             DragDrop.DragLeave="Page_DragLeave">
+             DragDrop.DragLeave="Page_DragLeave" xmlns:local="clr-namespace:Froststrap.Localisation;assembly=Froststrap" xmlns:loc="clr-namespace:Froststrap.Localisation;assembly=Froststrap">
 
     <Grid>
 
@@ -34,39 +34,39 @@ SPDX-License-Identifier: MPL-2.0
             <StackPanel Grid.Row="0">
                 <Grid ColumnDefinitions="*,*,*">
                     <controls:CardAction Grid.Column="0" Margin="0,0,4,0"
-                                         Header="{x:Static resources:Strings.Menu_CommunityMods_Title}"
+                                         Header="{local:LocalString Key=Menu_CommunityMods_Title}"
                                          Icon="House"
-                                         Description="{x:Static resources:Strings.Menu_CommunityMods_Description}"
+                                         Description="{local:LocalString Key=Menu_CommunityMods_Description}"
                                          Command="{Binding OpenCommunityModsCommand}" />
                     <controls:CardAction Grid.Column="1" Margin="2,0,2,0"
-                                         Header="{x:Static resources:Strings.Menu_PresetMods_Title}"
+                                         Header="{local:LocalString Key=Menu_PresetMods_Title}"
                                          Icon="BookOpen"
-                                         Description="{x:Static resources:Strings.Menu_PresetMods_Description}"
+                                         Description="{local:LocalString Key=Menu_PresetMods_Description}"
                                          Command="{Binding OpenPresetModsCommand}" />
                     <controls:CardAction Grid.Column="2" Margin="4,0,0,0"
-                                         Header="{x:Static resources:Strings.Menu_ModGenerator_Title}"
+                                         Header="{local:LocalString Key=Menu_ModGenerator_Title}"
                                          Icon="PaintbrushVertical"
-                                         Description="{x:Static resources:Strings.Menu_ModGenerator_Description}"
+                                         Description="{local:LocalString Key=Menu_ModGenerator_Description}"
                                          Command="{Binding OpenModGeneratorCommand}" />
                 </Grid>
 
                 <Separator Margin="0,8" />
 
                 <controls:IconButton Icon="Plus"
-                                     Content="{x:Static resources:Strings.Menu_Mods_AddNewMod}"
+                                     Content="{local:LocalString Key=Menu_Mods_AddNewMod}"
                                      HorizontalAlignment="Stretch"
                                      Command="{Binding AddModCommand}"
                                      Margin="0,0,0,4" />
 
                 <Grid ColumnDefinitions="*,*" Margin="0,4,0,0">
                     <controls:IconButton Icon="Folder"
-                                         Content="{x:Static resources:Strings.Menu_Mods_ImportFolder}"
+                                         Content="{local:LocalString Key=Menu_Mods_ImportFolder}"
                                          HorizontalAlignment="Stretch"
                                          Margin="0,0,2,0"
                                          Command="{Binding ImportFolderCommand}"
                                          CommandParameter="{Binding $self}" />
                     <controls:IconButton Icon="FolderArchive"
-                                         Content="{x:Static resources:Strings.Menu_Mods_ImportZIP}"
+                                         Content="{local:LocalString Key=Menu_Mods_ImportZIP}"
                                          HorizontalAlignment="Stretch"
                                          Margin="2,0,0,0"
                                          Grid.Column="1"
@@ -157,22 +157,22 @@ SPDX-License-Identifier: MPL-2.0
 
                 <Border Grid.Column="1" Padding="4,0,0,0">
                     <StackPanel>
-                        <TextBlock Text="{x:Static resources:Strings.Menu_Mods_SelectedModAction}" FontWeight="SemiBold" Margin="0,0,0,8" />
+                        <TextBlock Text="{local:LocalString Key=Menu_Mods_SelectedModAction}" FontWeight="SemiBold" Margin="0,0,0,8" />
 
                         <StackPanel IsEnabled="{Binding SelectedMod, Converter={x:Static conv:ObjectConverters.IsNotNull}}">
                             <TextBox PlaceholderText="New name"
                                      Text="{Binding NewName}"
                                      Margin="0,4" />
                             <controls:IconButton Icon="Pencil"
-                                                 Content="{x:Static resources:Strings.Common_Rename}"
+                                                 Content="{local:LocalString Key=Common_Rename}"
                                                  Command="{Binding RenameModCommand}"
                                                  HorizontalAlignment="Stretch"
                                                  Margin="0,4" />
                             <controls:IconButton Command="{Binding ExportModCommand}" CommandParameter="{Binding SelectedMod}"
-                                                 Content="{x:Static resources:Strings.Common_Export}" Icon="ArrowRightFromLine" Margin="0,4" />
+                                                 Content="{local:LocalString Key=Common_Export}" Icon="ArrowRightFromLine" Margin="0,4" />
 
                             <controls:IconButton Icon="Type"
-                                                 Content="{x:Static resources:Strings.Menu_Mods_PreviewFont}"
+                                                 Content="{local:LocalString Key=Menu_Mods_PreviewFont}"
                                                  Command="{Binding TogglePreviewCommand}"
                                                  HorizontalAlignment="Stretch"
                                                  Margin="0,4"
@@ -181,7 +181,7 @@ SPDX-License-Identifier: MPL-2.0
                             <Grid ColumnDefinitions="*,*" Margin="0,4">
                                 <controls:IconButton Grid.Column="0"
                                                      Icon="Trash"
-                                                     Content="{x:Static resources:Strings.Common_Delete}"
+                                                     Content="{local:LocalString Key=Common_Delete}"
                                                      Classes="Danger"
                                                      Command="{Binding DeleteModCommand}"
                                                      CommandParameter="{Binding SelectedMod}"
@@ -189,7 +189,7 @@ SPDX-License-Identifier: MPL-2.0
                                                      Margin="0,0,2,0" />
                                 <controls:IconButton Grid.Column="1"
                                                      Icon="Folder"
-                                                     Content="{x:Static resources:Strings.Common_OpenFolder}"
+                                                     Content="{local:LocalString Key=Common_OpenFolder}"
                                                      Command="{Binding OpenModFolderCommand}"
                                                      CommandParameter="{Binding SelectedMod}"
                                                      HorizontalAlignment="Stretch"
@@ -202,7 +202,7 @@ SPDX-License-Identifier: MPL-2.0
 
             <Grid Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center"
                   IsVisible="{Binding !HasMods}">
-                <TextBlock Text="{x:Static resources:Strings.Menu_Mods_NoneInstalled}"
+                <TextBlock Text="{local:LocalString Key=Menu_Mods_NoneInstalled}"
                            FontSize="20"
                            Opacity="0.5"
                            FontWeight="Bold"
@@ -238,7 +238,7 @@ SPDX-License-Identifier: MPL-2.0
                     <Grid RowDefinitions="Auto,Auto,Auto,*,Auto">
                         <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
                             <StackPanel>
-                                <TextBlock Text="{x:Static resources:Strings.Menu_Mods_Preview_Font_Preview}"
+                                <TextBlock Text="{local:LocalString Key=Menu_Mods_Preview_Font_Preview}"
                                            FontSize="18"
                                            FontWeight="SemiBold"
                                            Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
@@ -259,7 +259,7 @@ SPDX-License-Identifier: MPL-2.0
                         <Separator Grid.Row="1" Margin="0,12" />
 
                         <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,12" HorizontalAlignment="Center" Spacing="12">
-                            <TextBlock Text="{x:Static resources:Strings.Menu_Mods_Preview_FontVariant}"
+                            <TextBlock Text="{local:LocalString Key=Menu_Mods_Preview_FontVariant}"
                                        VerticalAlignment="Center"
                                        Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
                             <ComboBox ItemsSource="{Binding FontVariants}"
@@ -281,7 +281,7 @@ SPDX-License-Identifier: MPL-2.0
                                         <ProgressBar IsIndeterminate="True"
                                                      Width="200"
                                                      Height="4" />
-                                        <TextBlock Text="{x:Static resources:Strings.Menu_Mods_Preview_Loading_Glyphs}"
+                                        <TextBlock Text="{local:LocalString Key=Menu_Mods_Preview_Loading_Glyphs}"
                                                    FontSize="14"
                                                    Margin="0,8,0,0"
                                                    Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
@@ -318,7 +318,7 @@ SPDX-License-Identifier: MPL-2.0
                         </ScrollViewer>
 
                         <StackPanel Grid.Row="4" Orientation="Horizontal" Margin="0,12,0,0" HorizontalAlignment="Center">
-                            <Button Content="{x:Static resources:Strings.Common_Close}"
+                            <Button Content="{local:LocalString Key=Common_Close}"
                                     Command="{Binding TogglePreviewCommand}"
                                     Padding="20,8"/>
                         </StackPanel>
@@ -331,7 +331,7 @@ SPDX-License-Identifier: MPL-2.0
               IsVisible="{Binding IsDragOver}"
               Background="#88000000">
 
-            <TextBlock Text="{x:Static resources:Strings.Menu_Mods_DragOverlay}"
+            <TextBlock Text="{local:LocalString Key=Menu_Mods_DragOverlay}"
                        FontSize="20"
                        FontWeight="SemiBold"
                        HorizontalAlignment="Center"

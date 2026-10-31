@@ -17,12 +17,12 @@ SPDX-License-Identifier: MPL-2.0
     xmlns:resources="clr-namespace:Froststrap.Resources"
     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Dialogs"
     x:DataType="vm:AddCustomThemeViewModel"
-    Title="{x:Static resources:Strings.AddCustomTheme_Title}"
+    Title="{local:LocalString Key=AddCustomTheme_Title}"
     Width="480"
     CanResize="False"
     SizeToContent="Height"
     WindowStartupLocation="CenterScreen"
-    mc:Ignorable="d">
+    mc:Ignorable="d" xmlns:local="clr-namespace:Froststrap.Localisation;assembly=Froststrap" xmlns:loc="clr-namespace:Froststrap.Localisation;assembly=Froststrap">
 
     <Grid RowDefinitions="*,Auto">
         <Border Grid.Row="0"
@@ -46,13 +46,13 @@ SPDX-License-Identifier: MPL-2.0
                     </Style>
                 </TabControl.Styles>
 
-                <TabItem Header="{x:Static resources:Strings.Common_CreateNew}">
+                <TabItem Header="{local:LocalString Key=Common_CreateNew}">
 					<ui:TabItemHelper.Icon>
 						<ic:Lucide Icon="Plus" />
 					</ui:TabItemHelper.Icon>
                     <StackPanel Spacing="12" Margin="0,0,0,8">
                         <Grid ColumnDefinitions="75,*" RowDefinitions="*,Auto" ColumnSpacing="12">
-                            <TextBlock Text="{x:Static resources:Strings.Common_Name}"
+                            <TextBlock Text="{local:LocalString Key=Common_Name}"
                                        VerticalAlignment="Center" />
                             <TextBox Grid.Column="1"
                                      Text="{Binding Name}"
@@ -65,7 +65,7 @@ SPDX-License-Identifier: MPL-2.0
                         </Grid>
 
                         <Grid ColumnDefinitions="75,*" ColumnSpacing="12">
-                            <TextBlock Text="{x:Static resources:Strings.Common_Template}"
+                            <TextBlock Text="{local:LocalString Key=Common_Template}"
                                        VerticalAlignment="Center" />
                             <ComboBox Grid.Column="1"
                                       HorizontalAlignment="Stretch"
@@ -81,7 +81,7 @@ SPDX-License-Identifier: MPL-2.0
                     </StackPanel>
                 </TabItem>
 
-                <TabItem Header="{x:Static resources:Strings.Common_Import}">
+                <TabItem Header="{local:LocalString Key=Common_Import}">
 					<ui:TabItemHelper.Icon>
 						<ic:Lucide Icon="FolderDown" />
 					</ui:TabItemHelper.Icon>
@@ -90,7 +90,7 @@ SPDX-License-Identifier: MPL-2.0
                                    IsVisible="{Binding HasFilePath}"
                                    TextAlignment="Center"
                                    TextWrapping="Wrap"/>
-                        <controls:IconButton Content="{x:Static resources:Strings.Common_ImportFromFile}"
+                        <controls:IconButton Content="{local:LocalString Key=Common_ImportFromFile}"
                                              Icon="FolderArchive"
                                              HorizontalAlignment="Stretch"
                                              Click="OnImportButtonClicked"/>
@@ -107,11 +107,11 @@ SPDX-License-Identifier: MPL-2.0
                 Padding="15"
                 Background="{DynamicResource ControlFillColorDefaultBrush}">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="12">
-                <Button Content="{x:Static resources:Strings.Common_OK}"
+                <Button Content="{local:LocalString Key=Common_OK}"
                         Click="OnOkButtonClicked"
                         Width="100"/>
 
-                <Button Content="{x:Static resources:Strings.Common_Cancel}"
+                <Button Content="{local:LocalString Key=Common_Cancel}"
                         Click="OnCancelButtonClicked"
                         Width="100" />
             </StackPanel>

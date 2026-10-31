@@ -2,13 +2,14 @@
 // SPDX-License-Identifier: MPL-2.0
 
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Text.Json;
 
 namespace Froststrap.Localisation;
 
-public sealed class Localizer
+public sealed class Localizer : INotifyPropertyChanged
 {
     private static readonly Localizer s_instance = new();
     public static Localizer Instance => s_instance;
@@ -57,12 +58,17 @@ public sealed class Localizer
     private readonly Dictionary<string, Dictionary<string, string>> _remoteCultures = new();
     private string _cultureName = "en-US";
 
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    public string this[string key] => Get(key);
+
     public string CultureName
     {
         get => _cultureName;
         set
         {
             _cultureName = value ?? "en-US";
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Item[]"));
             CultureChanged?.Invoke();
         }
     }
@@ -94,7 +100,8 @@ public sealed class Localizer
         var dict = new Dictionary<string, string>();
         MergeFromJson(json, dict);
         _remoteCultures[cultureName] = dict;
-        if (cultureName == _cultureName) CultureChanged?.Invoke();
+        if (cultureName == _cultureName) PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Item[]"));
+        CultureChanged?.Invoke();
     }
 
     public void LoadCultureFromString(string cultureName, string json)
@@ -123,6 +130,7 @@ public sealed class Localizer
     public void SetRemoteCulture(string cultureName, Dictionary<string, string> dict)
     {
         if (dict != null) _remoteCultures[cultureName] = dict;
+        if (cultureName == _cultureName) PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Item[]"));
     }
 
     public void ClearRemoteCulture(string cultureName) => _remoteCultures.Remove(cultureName);

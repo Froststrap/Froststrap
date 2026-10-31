@@ -12,11 +12,11 @@ SPDX-License-Identifier: MPL-2.0
                      xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
                      xmlns:ui="using:FluentAvalonia.UI.Controls"
                      x:Class="Froststrap.UI.Elements.Dialogs.AddFastFlagDialog"
-                     Title="{x:Static resources:Strings.Dialog_AddFastFlag_Title}"
+                     Title="{local:LocalString Key=Dialog_AddFastFlag_Title}"
                      Width="480"
                      SizeToContent="Height"
                      CanResize="False"
-                     WindowStartupLocation="CenterScreen">
+                     WindowStartupLocation="CenterScreen" xmlns:local="clr-namespace:Froststrap.Localisation;assembly=Froststrap" xmlns:loc="clr-namespace:Froststrap.Localisation;assembly=Froststrap">
 
     <Grid RowDefinitions="*,Auto">
         <Border Grid.Row="0"
@@ -40,7 +40,7 @@ SPDX-License-Identifier: MPL-2.0
                     </Style>
                 </TabControl.Styles>
 
-                <TabItem Header="{x:Static resources:Strings.Common_AddSingle}">
+                <TabItem Header="{local:LocalString Key=Common_AddSingle}">
 					<ui:TabItemHelper.Icon>
 						<ic:Lucide Icon="Plus" />
 					</ui:TabItemHelper.Icon>
@@ -48,7 +48,7 @@ SPDX-License-Identifier: MPL-2.0
                         <Grid ColumnDefinitions="75, *" RowDefinitions="Auto" ColumnSpacing="12">
                             <TextBlock Grid.Column="0"
                                        VerticalAlignment="Center"
-                                       Text="{x:Static resources:Strings.Common_Name}" />
+                                       Text="{local:LocalString Key=Common_Name}" />
                             <TextBox Grid.Column="1"
                                      x:Name="FlagNameTextBox"
                                      PlaceholderText="FFlagExample" />
@@ -57,7 +57,7 @@ SPDX-License-Identifier: MPL-2.0
                         <Grid ColumnDefinitions="75, *" ColumnSpacing="12">
                             <TextBlock Grid.Column="0"
                                        VerticalAlignment="Center"
-                                       Text="{x:Static resources:Strings.Common_Value}" />
+                                       Text="{local:LocalString Key=Common_Value}" />
                             <TextBox Grid.Column="1"
                                      x:Name="FlagValueTextBox"
                                      PlaceholderText="True" />
@@ -65,7 +65,7 @@ SPDX-License-Identifier: MPL-2.0
                     </StackPanel>
                 </TabItem>
 
-                <TabItem Header="{x:Static resources:Strings.Common_ImportJson}">
+                <TabItem Header="{local:LocalString Key=Common_ImportJson}">
 					<ui:TabItemHelper.Icon>
 						<ic:Lucide Icon="FileBraces" />
 					</ui:TabItemHelper.Icon>
@@ -80,7 +80,7 @@ SPDX-License-Identifier: MPL-2.0
                                  VerticalContentAlignment="Center"
                                  PlaceholderText="{}{&#10;    &quot;FFlagDebugDisplayFPS&quot;: &quot;True&quot;&#10;}" />
 
-                        <controls:IconButton Content="{x:Static resources:Strings.Common_ImportFromFile}"
+                        <controls:IconButton Content="{local:LocalString Key=Common_ImportFromFile}"
                                              Icon="FileText"
                                              HorizontalAlignment="Stretch"
                                              Click="ImportButton_Click"/>
@@ -94,12 +94,12 @@ SPDX-License-Identifier: MPL-2.0
                 Background="{DynamicResource ControlFillColorDefaultBrush}">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="12">
                 <Button x:Name="OkButton"
-                        Content="{x:Static resources:Strings.Common_OK}"
+                        Content="{local:LocalString Key=Common_OK}"
                         Click="OKButton_Click"
                         Width="100"
                         IsEnabled="False" />
 
-                <Button Content="{x:Static resources:Strings.Common_Cancel}"
+                <Button Content="{local:LocalString Key=Common_Cancel}"
                         Click="CancelButton_Click"
                         Width="100" />
             </StackPanel>

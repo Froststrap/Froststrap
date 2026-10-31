@@ -16,7 +16,7 @@ SPDX-License-Identifier: MPL-2.0
     x:DataType="vm:BootstrapperEditorWindowViewModel"
     Title="{Binding Title}"
     Width="1000" Height="500"
-    WindowStartupLocation="CenterScreen">
+    WindowStartupLocation="CenterScreen" xmlns:local="clr-namespace:Froststrap.Localisation;assembly=Froststrap" xmlns:loc="clr-namespace:Froststrap.Localisation;assembly=Froststrap">
 
     <Grid RowDefinitions="*,Auto">
         <Panel
@@ -42,20 +42,20 @@ SPDX-License-Identifier: MPL-2.0
             <Grid ColumnDefinitions="*,Auto,Auto,Auto">
                 <Button Grid.Column="0" Margin="8,0,0,0"
                         Command="{Binding OpenThemeFolderCommand}"
-                        Content="{x:Static resources:Strings.CustomTheme_Editor_OpenThemeDirectory}" />
+                        Content="{local:LocalString Key=CustomTheme_Editor_OpenThemeDirectory}" />
 
                 <Button Grid.Column="1" Margin="10,0,0,0"
                         Classes="accent"
                         Command="{Binding PreviewCommand}"
-                        Content="{x:Static resources:Strings.Menu_Appearance_Preview}" />
+                        Content="{local:LocalString Key=Menu_Appearance_Preview}" />
 
                 <Button Grid.Column="2" Margin="10,0,0,0"
                         Classes="accent"
                         Command="{Binding SaveCommand}"
-                        Content="{x:Static resources:Strings.Menu_Save}" />
+                        Content="{local:LocalString Key=Menu_Save}" />
 
                 <Button Grid.Column="3" Margin="12,0,0,0"
-                        Content="{x:Static resources:Strings.Common_Close}"
+                        Content="{local:LocalString Key=Common_Close}"
                         Click="OnCancelButtonClicked" />
             </Grid>
         </Border>

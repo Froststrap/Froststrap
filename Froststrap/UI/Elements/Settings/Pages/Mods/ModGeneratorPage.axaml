@@ -19,28 +19,28 @@ SPDX-License-Identifier: MPL-2.0
              x:DataType="vm:ModGeneratorViewModel"
              d:DesignHeight="800"
              d:DesignWidth="1100"
-             mc:Ignorable="d">
+             mc:Ignorable="d" xmlns:local="clr-namespace:Froststrap.Localisation;assembly=Froststrap" xmlns:loc="clr-namespace:Froststrap.Localisation;assembly=Froststrap">
 
     <ScrollViewer>
         <Grid Margin="14" RowDefinitions="Auto,Auto,*">
             <Grid Grid.Row="0" ColumnDefinitions="*,*,*">
                 <controls:CardAction Grid.Column="0" Margin="0,0,4,0"
                                      Command="{Binding OpenCommunityModsCommand}"
-                                     Header="{x:Static resources:Strings.Menu_CommunityMods_Title}"
+                                     Header="{local:LocalString Key=Menu_CommunityMods_Title}"
                                      Icon="House"
-                                     Description="{x:Static resources:Strings.Menu_CommunityMods_Description}" />
+                                     Description="{local:LocalString Key=Menu_CommunityMods_Description}" />
 
                 <controls:CardAction Grid.Column="1" Margin="2,0,2,0"
                                      Command="{Binding OpenPresetModsCommand}"
-                                     Header="{x:Static resources:Strings.Menu_PresetMods_Title}"
+                                     Header="{local:LocalString Key=Menu_PresetMods_Title}"
                                      Icon="BookOpen"
-                                     Description="{x:Static resources:Strings.Menu_PresetMods_Description}" />
+                                     Description="{local:LocalString Key=Menu_PresetMods_Description}" />
 
                 <controls:CardAction Grid.Column="2" Margin="4,0,0,0"
                                      Command="{Binding OpenModsCommand}"
-                                     Header="{x:Static resources:Strings.Menu_Mods_Title}"
+                                     Header="{local:LocalString Key=Menu_Mods_Title}"
                                      Icon="List"
-                                     Description="{x:Static resources:Strings.Menu_Mods_Description}" />
+                                     Description="{local:LocalString Key=Menu_Mods_Description}" />
             </Grid>
 
             <Separator Margin="0,8" Grid.Row="1" />
@@ -55,13 +55,13 @@ SPDX-License-Identifier: MPL-2.0
                         <Grid Grid.Row="0" Margin="0,0,0,12" RowDefinitions="*,Auto">
                             <TextBlock FontSize="18"
                                        FontWeight="SemiBold"
-                                       Text="{x:Static resources:Strings.Menu_ModGenerator_StylePreview}"
+                                       Text="{local:LocalString Key=Menu_ModGenerator_StylePreview}"
                                        VerticalAlignment="Center"
                                        Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
 
                             <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,8,0,0">
                                 <TextBlock VerticalAlignment="Center"
-                                           Text="{x:Static resources:Strings.Menu_ModGenerator_IconSet}"
+                                           Text="{local:LocalString Key=Menu_ModGenerator_IconSet}"
                                            Margin="0,0,8,0"
                                            Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
                                 <ComboBox Width="200"
@@ -104,18 +104,18 @@ SPDX-License-Identifier: MPL-2.0
                         CornerRadius="8"
                         Padding="12">
                     <StackPanel>
-                        <TextBlock FontSize="14" FontWeight="Bold" Text="{x:Static resources:Strings.Menu_Appearance_Title}"
+                        <TextBlock FontSize="14" FontWeight="Bold" Text="{local:LocalString Key=Menu_Appearance_Title}"
                                    Margin="0,0,0,12" Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
 
                         <StackPanel Margin="0,0,0,12" Orientation="Horizontal" Spacing="4">
-                            <TextBlock Text="{x:Static resources:Strings.Common_Angle}" VerticalAlignment="Center" />
+                            <TextBlock Text="{local:LocalString Key=Common_Angle}" VerticalAlignment="Center" />
                             <NumericUpDown Value="{Binding GradientAngle}"
                                            Width="160"
                                            Minimum="0"
                                            Maximum="360"
                                            FormatString="{}{0}°"
                                            IsEnabled="{Binding IsNotGeneratingMod}"/>
-                            <Button Content="{x:Static resources:Strings.Menu_ModGenerator_AddStop}" Command="{Binding AddGradientStopCommand}"
+                            <Button Content="{local:LocalString Key=Menu_ModGenerator_AddStop}" Command="{Binding AddGradientStopCommand}"
                                     IsEnabled="{Binding IsNotGeneratingMod}"/>
                         </StackPanel>
 
@@ -124,17 +124,17 @@ SPDX-License-Identifier: MPL-2.0
                                 <DataTemplate>
                                     <Grid ColumnDefinitions="Auto,*,45,110,Auto,Auto" Margin="0,4" VerticalAlignment="Center"
                                           IsEnabled="{Binding $parent[ItemsControl].DataContext.IsNotGeneratingMod}">
-                                        <TextBlock Text="{x:Static resources:Strings.Common_Offset}" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                        <TextBlock Text="{local:LocalString Key=Common_Offset}" VerticalAlignment="Center" Margin="0,0,10,0"/>
                                         <Slider Grid.Column="1" Minimum="0" Maximum="1"
                                                 Value="{Binding Offset, Mode=TwoWay}" VerticalAlignment="Center"/>
                                         <TextBlock Grid.Column="2" Text="{Binding Offset, StringFormat={}{0:N2}}"
                                                    HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center"/>
                                         <TextBox Grid.Column="3" Text="{Binding Color, Mode=TwoWay}"
                                                  Margin="0,0,4,0" VerticalAlignment="Center"/>
-                                        <Button Grid.Column="4" Content="{x:Static resources:Strings.Common_ColorPicker}"
+                                        <Button Grid.Column="4" Content="{local:LocalString Key=Common_ColorPicker}"
                                                 Command="{Binding $parent[ItemsControl].DataContext.OpenColorPickerCommand}"
                                                 CommandParameter="{Binding}" Margin="0,0,4,0"/>
-                                        <Button Grid.Column="5" Content="{x:Static resources:Strings.Common_Remove}"
+                                        <Button Grid.Column="5" Content="{local:LocalString Key=Common_Remove}"
                                                 Command="{Binding $parent[ItemsControl].DataContext.RemoveGradientStopCommand}"
                                                 CommandParameter="{Binding}"/>
                                     </Grid>
@@ -152,28 +152,28 @@ SPDX-License-Identifier: MPL-2.0
                     <StackPanel>
                         <TextBlock FontSize="14"
                                    FontWeight="Bold"
-                                   Text="{x:Static resources:Strings.Menu_ModGenerator_ModsOptions}"
+                                   Text="{local:LocalString Key=Menu_ModGenerator_ModsOptions}"
                                    Margin="0,0,0,8"
                                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
                         <WrapPanel Orientation="Horizontal">
-                            <CheckBox Content="{x:Static resources:Strings.Menu_ModGenerator_ApplyCursor}" IsChecked="{Binding ColorCursors}" Margin="4,0"
+                            <CheckBox Content="{local:LocalString Key=Menu_ModGenerator_ApplyCursor}" IsChecked="{Binding ColorCursors}" Margin="4,0"
                                       IsEnabled="{Binding IsNotGeneratingMod}"/>
-                            <CheckBox Content="{x:Static resources:Strings.Menu_ModGenerator_ApplyShiftlock}" IsChecked="{Binding ColorShiftlock}" Margin="4,0"
+                            <CheckBox Content="{local:LocalString Key=Menu_ModGenerator_ApplyShiftlock}" IsChecked="{Binding ColorShiftlock}" Margin="4,0"
                                       IsEnabled="{Binding IsNotGeneratingMod}"/>
-                            <CheckBox Content="{x:Static resources:Strings.Menu_ModGenerator_ApplyEmoteWheel}" IsChecked="{Binding ColorEmoteWheel}" Margin="4,0"
+                            <CheckBox Content="{local:LocalString Key=Menu_ModGenerator_ApplyEmoteWheel}" IsChecked="{Binding ColorEmoteWheel}" Margin="4,0"
                                       IsEnabled="{Binding IsNotGeneratingMod}"/>
-                            <CheckBox Content="{x:Static resources:Strings.Menu_ModGenerator_DontColorPlay}" IsChecked="{Binding DontColorPlayIcon}" Margin="4,0"
+                            <CheckBox Content="{local:LocalString Key=Menu_ModGenerator_DontColorPlay}" IsChecked="{Binding DontColorPlayIcon}" Margin="4,0"
                                       IsEnabled="{Binding IsNotGeneratingMod}"/>
-                            <CheckBox Content="{x:Static resources:Strings.Menu_ModGenerator_IncludeModification}" IsChecked="{Binding IncludeModifications}" Margin="4,0"
+                            <CheckBox Content="{local:LocalString Key=Menu_ModGenerator_IncludeModification}" IsChecked="{Binding IncludeModifications}" Margin="4,0"
                                       IsEnabled="{Binding IsNotGeneratingMod}"/>
                             <StackPanel Orientation="Horizontal" Spacing="4">
-                                <TextBlock Text="{x:Static resources:Strings.Common_Bands}" VerticalAlignment="Center" ToolTip.Tip="{x:Static resources:Strings.Menu_ModGenerator_BandInfo}" />
+                                <TextBlock Text="{local:LocalString Key=Common_Bands}" VerticalAlignment="Center" ToolTip.Tip="{local:LocalString Key=Menu_ModGenerator_BandInfo}" />
                                 <NumericUpDown Value="{Binding GradientBands}"
                                                Width="100"
                                                Minimum="0"
                                                Maximum="64"
                                                PlaceholderText="8"
-                                               ToolTip.Tip="{x:Static resources:Strings.Menu_ModGenerator_BandInfo}"
+                                               ToolTip.Tip="{local:LocalString Key=Menu_ModGenerator_BandInfo}"
                                                VerticalAlignment="Center"
                                                IsEnabled="{Binding IsNotGeneratingMod}"/>
                             </StackPanel>
@@ -181,31 +181,31 @@ SPDX-License-Identifier: MPL-2.0
 
                         <Grid ColumnDefinitions="*,*" Margin="0,8,0,8">
                             <StackPanel Grid.Column="0" Margin="0,0,8,0">
-                                <TextBlock Text="{x:Static resources:Strings.Menu_ModGenerator_RobloxIcon}" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                                <TextBlock Text="{local:LocalString Key=Menu_ModGenerator_RobloxIcon}" FontWeight="SemiBold" Margin="0,0,0,4"/>
                                 <Grid ColumnDefinitions="*,Auto,Auto">
                                     <TextBox Text="{Binding RobloxIconImagePath}" IsReadOnly="True" PlaceholderText="No image selected"
                                              VerticalAlignment="Center" IsEnabled="{Binding IsNotGeneratingMod}"/>
-                                    <Button Grid.Column="1" Content="{x:Static resources:Strings.Common_Select}" Command="{Binding SelectRobloxIconCommand}" Margin="4,0,4,0"
+                                    <Button Grid.Column="1" Content="{local:LocalString Key=Common_Select}" Command="{Binding SelectRobloxIconCommand}" Margin="4,0,4,0"
                                             IsEnabled="{Binding IsNotGeneratingMod}"/>
-                                    <Button Grid.Column="2" Content="{x:Static resources:Strings.Common_Clear}" Command="{Binding ClearRobloxIconCommand}"
+                                    <Button Grid.Column="2" Content="{local:LocalString Key=Common_Clear}" Command="{Binding ClearRobloxIconCommand}"
                                             IsEnabled="{Binding IsNotGeneratingMod}"/>
                                 </Grid>
                             </StackPanel>
 
                             <StackPanel Grid.Column="1" Margin="8,0,0,0">
-                                <TextBlock Text="{x:Static resources:Strings.Menu_ModGenerator_CustomSpinner}" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                                <TextBlock Text="{local:LocalString Key=Menu_ModGenerator_CustomSpinner}" FontWeight="SemiBold" Margin="0,0,0,4"/>
                                 <Grid ColumnDefinitions="*,Auto,Auto">
                                     <TextBox Text="{Binding CustomSpinnerPath}" IsReadOnly="True" PlaceholderText="No image selected"
                                              VerticalAlignment="Center" IsEnabled="{Binding IsNotGeneratingMod}"/>
-                                    <Button Grid.Column="1" Content="{x:Static resources:Strings.Common_Select}" Command="{Binding SelectSpinnerIconCommand}" Margin="4,0,4,0"
+                                    <Button Grid.Column="1" Content="{local:LocalString Key=Common_Select}" Command="{Binding SelectSpinnerIconCommand}" Margin="4,0,4,0"
                                             IsEnabled="{Binding IsNotGeneratingMod}"/>
-                                    <Button Grid.Column="2" Content="{x:Static resources:Strings.Common_Clear}" Command="{Binding ClearSpinnerIconCommand}"
+                                    <Button Grid.Column="2" Content="{local:LocalString Key=Common_Clear}" Command="{Binding ClearSpinnerIconCommand}"
                                             IsEnabled="{Binding IsNotGeneratingMod}"/>
                                 </Grid>
                             </StackPanel>
                         </Grid>
 
-                        <TextBlock Text="{x:Static resources:Strings.Menu_ModGenerator_CustomModName}" FontWeight="SemiBold" Margin="0,8,0,4" IsVisible="{Binding IncludeModifications}"/>
+                        <TextBlock Text="{local:LocalString Key=Menu_ModGenerator_CustomModName}" FontWeight="SemiBold" Margin="0,8,0,4" IsVisible="{Binding IncludeModifications}"/>
                         <TextBox Text="{Binding ModFolderName, UpdateSourceTrigger=PropertyChanged}"
                                  PlaceholderText="{Binding SuggestedFolderName}"
                                  IsVisible="{Binding IncludeModifications}"
@@ -220,7 +220,7 @@ SPDX-License-Identifier: MPL-2.0
 
                         <controls:IconButton Command="{Binding GenerateModCommand}"
                                              IsEnabled="{Binding IsNotGeneratingMod}"
-                                             Content="{x:Static resources:Strings.Common_Generate}"
+                                             Content="{local:LocalString Key=Common_Generate}"
                                              HorizontalAlignment="Stretch"
                                              Height="40"
                                              Icon="Play"

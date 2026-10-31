@@ -14,12 +14,12 @@ SPDX-License-Identifier: MPL-2.0
                      xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
                      xmlns:ui="using:FluentAvalonia.UI.Controls"
                      x:Class="Froststrap.UI.Elements.Dialogs.FlagProfilesDialog"
-                     Title="{x:Static resources:Strings.Menu_FlagProfiles_Title}"
+                     Title="{local:LocalString Key=Menu_FlagProfiles_Title}"
                      Width="540"
                      SizeToContent="Height"
                      CanResize="False"
                      WindowStartupLocation="CenterScreen"
-                     mc:Ignorable="d">
+                     mc:Ignorable="d" xmlns:local="clr-namespace:Froststrap.Localisation;assembly=Froststrap" xmlns:loc="clr-namespace:Froststrap.Localisation;assembly=Froststrap">
 
     <Grid RowDefinitions="Auto,*">
         <Border Grid.Row="0"
@@ -45,7 +45,7 @@ SPDX-License-Identifier: MPL-2.0
                     </Style>
                 </TabControl.Styles>
 
-                <TabItem Header="{x:Static resources:Strings.Common_PresetFlagLists}">
+                <TabItem Header="{local:LocalString Key=Common_PresetFlagLists}">
                     <ui:TabItemHelper.Icon>
                         <ic:Lucide Icon="BookOpenText" />
                     </ui:TabItemHelper.Icon>
@@ -54,38 +54,38 @@ SPDX-License-Identifier: MPL-2.0
                     </StackPanel>
                 </TabItem>
 
-                <TabItem Header="{x:Static resources:Strings.Menu_FlagProfiles_PlaceIdsTab}">
+                <TabItem Header="{local:LocalString Key=Menu_FlagProfiles_PlaceIdsTab}">
                     <ui:TabItemHelper.Icon>
                         <ic:Lucide Icon="Gamepad2" />
                     </ui:TabItemHelper.Icon>
                     <StackPanel Spacing="12" Margin="0,0,0,8">
                         <Grid x:Name="PlaceProfileGrid" ColumnDefinitions="Auto,*" ColumnSpacing="8" IsVisible="False">
-                            <TextBlock Text="{x:Static resources:Strings.Menu_FlagProfiles_SelectProfileLabel}" VerticalAlignment="Center" />
+                            <TextBlock Text="{local:LocalString Key=Menu_FlagProfiles_SelectProfileLabel}" VerticalAlignment="Center" />
                             <ComboBox x:Name="PlaceProfile" Grid.Column="1" HorizontalAlignment="Stretch" SelectionChanged="PlaceProfile_SelectionChanged" />
                         </Grid>
 
                         <TextBlock x:Name="PlaceProfileEmptyMessage"
-                                   Text="{x:Static resources:Strings.Menu_FlagProfiles_NoProfilesFound}"
+                                   Text="{local:LocalString Key=Menu_FlagProfiles_NoProfilesFound}"
                                    Foreground="{DynamicResource SystemFillColorSecondaryBrush}"
                                    FontSize="12"
                                    HorizontalAlignment="Center"
                                    IsVisible="False" />
 
                         <StackPanel x:Name="PlaceIdsContent" Spacing="8" IsVisible="False">
-                            <TextBlock Text="{x:Static resources:Strings.Menu_FlagProfiles_AddPlaceId}" FontSize="12" FontWeight="Medium" />
+                            <TextBlock Text="{local:LocalString Key=Menu_FlagProfiles_AddPlaceId}" FontSize="12" FontWeight="Medium" />
                             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
-                                <TextBox x:Name="NewPlaceIdTextBox" PlaceholderText="{x:Static resources:Strings.Menu_FlagProfiles_PlaceIdWatermark}" />
-                                <Button x:Name="AddPlaceButton" Grid.Column="1" Content="{x:Static resources:Strings.Common_Add}" Click="AddPlaceButton_Click" MinWidth="80" />
+                                <TextBox x:Name="NewPlaceIdTextBox" PlaceholderText="{local:LocalString Key=Menu_FlagProfiles_PlaceIdWatermark}" />
+                                <Button x:Name="AddPlaceButton" Grid.Column="1" Content="{local:LocalString Key=Common_Add}" Click="AddPlaceButton_Click" MinWidth="80" />
                             </Grid>
 
-                            <TextBlock Text="{x:Static resources:Strings.Menu_FlagProfiles_CurrentPlaceIds}" FontSize="12" FontWeight="Medium" />
+                            <TextBlock Text="{local:LocalString Key=Menu_FlagProfiles_CurrentPlaceIds}" FontSize="12" FontWeight="Medium" />
                             <ListBox x:Name="PlaceIdsListBox" Height="120" SelectionChanged="PlaceIdsListBox_SelectionChanged" />
-                            <TextBlock x:Name="PlaceIdInfoText" Text="{x:Static resources:Strings.Menu_FlagProfiles_SelectProfile}" Foreground="{DynamicResource SystemFillColorSecondaryBrush}" FontSize="12" HorizontalAlignment="Center" IsVisible="False" Margin="0,0,0,-8" />
+                            <TextBlock x:Name="PlaceIdInfoText" Text="{local:LocalString Key=Menu_FlagProfiles_SelectProfile}" Foreground="{DynamicResource SystemFillColorSecondaryBrush}" FontSize="12" HorizontalAlignment="Center" IsVisible="False" Margin="0,0,0,-8" />
                         </StackPanel>
                     </StackPanel>
                 </TabItem>
 
-                <TabItem Header="{x:Static resources:Strings.Menu_Save}">
+                <TabItem Header="{local:LocalString Key=Menu_Save}">
                     <ui:TabItemHelper.Icon>
                         <ic:Lucide Icon="Plus" />
                     </ui:TabItemHelper.Icon>
@@ -94,7 +94,7 @@ SPDX-License-Identifier: MPL-2.0
                     </StackPanel>
                 </TabItem>
 
-                <TabItem Header="{x:Static resources:Strings.Menu_Load}">
+                <TabItem Header="{local:LocalString Key=Menu_Load}">
                     <ui:TabItemHelper.Icon>
                         <ic:Lucide Icon="List" />
                     </ui:TabItemHelper.Icon>
@@ -102,14 +102,14 @@ SPDX-License-Identifier: MPL-2.0
                         <StackPanel Spacing="12">
                             <Grid x:Name="RenamePanel" ColumnDefinitions="*,Auto,Auto,Auto" ColumnSpacing="8">
                                 <TextBox Grid.Column="0" x:Name="RenameTextBox" PlaceholderText="Rename Profile" />
-                                <Button Grid.Column="1" Content="{x:Static resources:Strings.Common_Rename}" Click="RenameButton_Click" MinWidth="80" />
-                                <Button Grid.Column="2" Content="{x:Static resources:Strings.Common_Copy}" Click="CopyButton_Click" MinWidth="80" />
-                                <Button Grid.Column="3" Content="{x:Static resources:Strings.Common_Update}" Click="UpdateButton_Click" MinWidth="80" />
+                                <Button Grid.Column="1" Content="{local:LocalString Key=Common_Rename}" Click="RenameButton_Click" MinWidth="80" />
+                                <Button Grid.Column="2" Content="{local:LocalString Key=Common_Copy}" Click="CopyButton_Click" MinWidth="80" />
+                                <Button Grid.Column="3" Content="{local:LocalString Key=Common_Update}" Click="UpdateButton_Click" MinWidth="80" />
                             </Grid>
 
                             <Grid>
                                 <ListBox x:Name="LoadProfile" Height="200" SelectionChanged="LoadProfile_SelectionChanged" />
-                                <TextBlock x:Name="LoadProfileEmptyText" Text="{x:Static resources:Strings.Menu_FlagProfiles_NoProfileFound}" Foreground="{DynamicResource SystemFillColorSecondaryBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="False" />
+                                <TextBlock x:Name="LoadProfileEmptyText" Text="{local:LocalString Key=Menu_FlagProfiles_NoProfileFound}" Foreground="{DynamicResource SystemFillColorSecondaryBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="False" />
                             </Grid>
                         </StackPanel>
                     </StackPanel>
@@ -125,7 +125,7 @@ SPDX-License-Identifier: MPL-2.0
                                      Grid.Column="0"
                                      Classes="Danger"
                                      Icon="Trash"
-                                     Content="{x:Static resources:Strings.Menu_FlagProfiles_RemoveSelected}"
+                                     Content="{local:LocalString Key=Menu_FlagProfiles_RemoveSelected}"
                                      Click="RemovePlaceButton_Click"
                                      IsEnabled="False"
                                      IsVisible="False"
@@ -135,7 +135,7 @@ SPDX-License-Identifier: MPL-2.0
                           Grid.Column="0"
                           HorizontalAlignment="Left"
                           VerticalAlignment="Center"
-                          Content="{x:Static resources:Strings.Menu_FlagProfiles_ClearFlags}"
+                          Content="{local:LocalString Key=Menu_FlagProfiles_ClearFlags}"
                           IsVisible="False" />
 
                 <StackPanel Grid.Column="1"
@@ -145,17 +145,17 @@ SPDX-License-Identifier: MPL-2.0
                     <controls:IconButton x:Name="DeleteButton"
                                          Icon="Trash"
                                          Classes="Danger"
-                                         Content="{x:Static resources:Strings.Menu_FlagProfiles_DeleteSelected}"
+                                         Content="{local:LocalString Key=Menu_FlagProfiles_DeleteSelected}"
                                          Click="DeleteButton_Click"
                                          IsVisible="False" />
 
                     <Button x:Name="OkButton"
-                            Content="{x:Static resources:Strings.Common_OK}"
+                            Content="{local:LocalString Key=Common_OK}"
                             Click="OKButton_Click"
                             Width="100"
                             IsEnabled="False" />
 
-                    <Button Content="{x:Static resources:Strings.Common_Cancel}"
+                    <Button Content="{local:LocalString Key=Common_Cancel}"
                             Click="CancelButton_Click"
                             Width="100" />
                 </StackPanel>

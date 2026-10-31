@@ -18,7 +18,7 @@ SPDX-License-Identifier: MPL-2.0
     xmlns:utility="clr-namespace:Froststrap.UI.Utility"
     x:Name="RootDialog"
     x:DataType="dialogsVm:SubplaceJoinDialogViewModel"
-    Title="{x:Static resources:Strings.Menu_QuickPlay_AvailableSubplaces}"
+    Title="{local:LocalString Key=Menu_QuickPlay_AvailableSubplaces}"
     Width="700"
     Height="550"
     MinWidth="500"
@@ -26,7 +26,7 @@ SPDX-License-Identifier: MPL-2.0
     WindowDecorations="None"
     WindowStartupLocation="CenterOwner"
     CanResize="True"
-    ShowInTaskbar="False">
+    ShowInTaskbar="False" xmlns:local="clr-namespace:Froststrap.Localisation;assembly=Froststrap" xmlns:loc="clr-namespace:Froststrap.Localisation;assembly=Froststrap">
 
     <Border BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
             Background="Transparent"
@@ -40,7 +40,7 @@ SPDX-License-Identifier: MPL-2.0
                 <Grid ColumnDefinitions="*, Auto">
                     <StackPanel Orientation="Horizontal" Spacing="10">
                         <ic:Lucide Icon="Layers" Height="18" Width="18" />
-                        <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_AvailableSubplaces}"
+                        <TextBlock Text="{local:LocalString Key=Menu_QuickPlay_AvailableSubplaces}"
                                    FontWeight="Bold" VerticalAlignment="Center"/>
                     </StackPanel>
                     <Button Grid.Column="1" Click="OnCloseClicked"
@@ -55,7 +55,7 @@ SPDX-License-Identifier: MPL-2.0
                     <StackPanel Spacing="16" HorizontalAlignment="Center" VerticalAlignment="Center">
                         <ui:FAProgressRing IsActive="{Binding IsLoading}" Width="40" Height="40"
                                            Foreground="{DynamicResource SystemAccentColor}"/>
-                        <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_LoadingSubplaces}"
+                        <TextBlock Text="{local:LocalString Key=Menu_QuickPlay_LoadingSubplaces}"
                                    FontSize="12" Opacity="0.7"/>
                     </StackPanel>
                 </Grid>

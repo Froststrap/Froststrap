@@ -13,14 +13,15 @@ SPDX-License-Identifier: MPL-2.0
     xmlns:gv="using:Froststrap.UI.ViewModels"
     xmlns:ico="using:FluentIcons.Avalonia.Fluent"
     xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
-    xmlns:local="clr-namespace:Froststrap.UI.Elements.Settings"
+    xmlns:local="clr-namespace:Froststrap.UI.Elements.Settings;assembly=Froststrap"
+    xmlns:loc="clr-namespace:Froststrap.Localisation;assembly=Froststrap"
     xmlns:enums="using:Froststrap.Enums"
     xmlns:resources="using:Froststrap.Resources"
     xmlns:av="using:Avalonia.Controls"
     xmlns:transitions="clr-namespace:Froststrap.UI.Utility"
     xmlns:ui="using:FluentAvalonia.UI.Controls"
     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
-    Title="{x:Static resources:Strings.Menu_Title}"
+    Title="{loc:LocalString Key=Menu_Title}"
     WindowDecorationsTheme="{StaticResource SettingsWindowDecorationsTheme}"
     Width="1125"
     Height="700"
@@ -170,25 +171,25 @@ SPDX-License-Identifier: MPL-2.0
             IsPaneToggleButtonVisible="False"
             PaneDisplayMode="Left">
             <ui:FANavigationView.MenuItems>
-                <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_Integrations_Title}" Tag="integrations">
+                <ui:FANavigationViewItem Content="{loc:LocalString Key=Menu_Integrations_Title}" Tag="integrations">
                     <ui:FANavigationViewItem.Icon>
                         <ic:Lucide Icon="Plus" />
                     </ui:FANavigationViewItem.Icon>
                 </ui:FANavigationViewItem>
 
-                <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_Behaviour_Title}" Tag="behaviour">
+                <ui:FANavigationViewItem Content="{loc:LocalString Key=Menu_Behaviour_Title}" Tag="behaviour">
                     <ui:FANavigationViewItem.Icon>
                         <ic:Lucide Icon="Play" />
                     </ui:FANavigationViewItem.Icon>
                 </ui:FANavigationViewItem>
 
-                <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_QuickPlay_Title}" Tag="quickplay">
+                <ui:FANavigationViewItem Content="{loc:LocalString Key=Menu_QuickPlay_Title}" Tag="quickplay">
                     <ui:FANavigationViewItem.Icon>
                         <ic:Lucide Icon="Gamepad2" />
                     </ui:FANavigationViewItem.Icon>
                 </ui:FANavigationViewItem>
 
-                <ui:FANavigationViewItem Content="{x:Static resources:Strings.Common_Deployment}" Tag="channels">
+                <ui:FANavigationViewItem Content="{loc:LocalString Key=Common_Deployment}" Tag="channels">
                     <ui:FANavigationViewItem.Icon>
                         <ic:Lucide Icon="HardDriveUpload" />
                     </ui:FANavigationViewItem.Icon>
@@ -196,13 +197,13 @@ SPDX-License-Identifier: MPL-2.0
 
                 <ui:FANavigationViewItemSeparator />
 
-                <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_PresetMods_Title}" Tag="mods">
+                <ui:FANavigationViewItem Content="{loc:LocalString Key=Menu_PresetMods_Title}" Tag="mods">
                     <ui:FANavigationViewItem.Icon>
                         <ic:Lucide Icon="BookOpen" />
                     </ui:FANavigationViewItem.Icon>
                 </ui:FANavigationViewItem>
 
-                <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_Appearance_Title}" Tag="appearance">
+                <ui:FANavigationViewItem Content="{loc:LocalString Key=Menu_Appearance_Title}" Tag="appearance">
                     <ui:FANavigationViewItem.Icon>
                         <ic:Lucide Icon="Palette" />
                     </ui:FANavigationViewItem.Icon>
@@ -210,19 +211,19 @@ SPDX-License-Identifier: MPL-2.0
 
                 <ui:FANavigationViewItemSeparator />
 
-                <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_FastFlags_Title}" Tag="fastflags">
+                <ui:FANavigationViewItem Content="{loc:LocalString Key=Menu_FastFlags_Title}" Tag="fastflags">
                     <ui:FANavigationViewItem.Icon>
                         <ic:Lucide Icon="Flag" />
                     </ui:FANavigationViewItem.Icon>
                 </ui:FANavigationViewItem>
 
-                <ui:FANavigationViewItem Name="gbs" Content="{x:Static resources:Strings.Menu_GlobalSettings_Title}" Tag="globalsettings">
+                <ui:FANavigationViewItem Name="gbs" Content="{loc:LocalString Key=Menu_GlobalSettings_Title}" Tag="globalsettings">
                     <ui:FANavigationViewItem.Icon>
                         <ic:Lucide Icon="PenLine" />
                     </ui:FANavigationViewItem.Icon>
                 </ui:FANavigationViewItem>
 
-                <ui:FANavigationViewItem Name="linux" IsVisible="{x:Static gv:GlobalViewModel.IsLinux}" Content="{x:Static resources:Strings.Menu_LinuxSettings_Title}" Tag="linuxsettings">
+                <ui:FANavigationViewItem Name="linux" IsVisible="{x:Static gv:GlobalViewModel.IsLinux}" Content="{loc:LocalString Key=Menu_LinuxSettings_Title}" Tag="linuxsettings">
                     <ui:FANavigationViewItem.Icon>
                         <ic:Lucide Icon="Settings" />
                     </ui:FANavigationViewItem.Icon>
@@ -230,13 +231,13 @@ SPDX-License-Identifier: MPL-2.0
 
                 <ui:FANavigationViewItemSeparator />
 
-                <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_RegionSelector_Title}" Tag="regionselector">
+                <ui:FANavigationViewItem Content="{loc:LocalString Key=Menu_RegionSelector_Title}" Tag="regionselector">
                     <ui:FANavigationViewItem.Icon>
                         <ic:Lucide Icon="Globe" />
                     </ui:FANavigationViewItem.Icon>
                 </ui:FANavigationViewItem>
 
-                <ui:FANavigationViewItem Content="{x:Static resources:Strings.Common_Shortcuts}" Tag="shortcuts">
+                <ui:FANavigationViewItem Content="{loc:LocalString Key=Common_Shortcuts}" Tag="shortcuts">
                     <ui:FANavigationViewItem.Icon>
                         <ic:Lucide Icon="Link2" />
                     </ui:FANavigationViewItem.Icon>
@@ -282,7 +283,7 @@ SPDX-License-Identifier: MPL-2.0
                     Height="36"
                     Padding="20,0"
                     Command="{Binding OpenAboutCommand}"
-                    Content="{x:Static resources:Strings.Menu_About_Title}"
+                    Content="{loc:LocalString Key=Menu_About_Title}"
                 />
                 <controls:IconButton Grid.Column="2"
                                      FontWeight="SemiBold"
@@ -299,7 +300,7 @@ SPDX-License-Identifier: MPL-2.0
                                     <ic:Lucide Icon="Gamepad2" />
                                 </MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Header="{x:Static resources:Strings.Common_Studio}" Command="{Binding SetLaunchModeCommand}"
+                            <MenuItem Header="{loc:LocalString Key=Common_Studio}" Command="{Binding SetLaunchModeCommand}"
                                       CommandParameter="{x:Static enums:LaunchMode.Studio}">
                                 <MenuItem.Icon>
                                     <ic:Lucide Icon="Wrench" />
@@ -315,7 +316,7 @@ SPDX-License-Identifier: MPL-2.0
                     Padding="20,0"
                     Classes="accent"
                     Command="{Binding RestartAppCommand}"
-                    Content="{x:Static resources:Strings.Menu_Restart}" />
+                    Content="{loc:LocalString Key=Menu_Restart}" />
                 <Button
                     FontWeight="SemiBold"
                     Grid.Column="4"
@@ -323,14 +324,14 @@ SPDX-License-Identifier: MPL-2.0
                     Padding="20,0"
                     Classes="accent"
                     Command="{Binding SaveSettingsCommand}"
-                    Content="{x:Static resources:Strings.Menu_Save}" />
+                    Content="{loc:LocalString Key=Menu_Save}" />
                 <Button
                     FontWeight="SemiBold"
                     Grid.Column="5"
                     Height="36"
                     Padding="20,0"
                     Command="{Binding CloseWindowCommand}"
-                    Content="{x:Static resources:Strings.Common_Close}" />
+                    Content="{loc:LocalString Key=Common_Close}" />
             </Grid>
         </Border>
 

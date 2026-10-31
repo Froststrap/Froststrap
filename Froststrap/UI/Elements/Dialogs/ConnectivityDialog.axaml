@@ -16,8 +16,8 @@ SPDX-License-Identifier: MPL-2.0
                      mc:Ignorable="d"
                      Width="480"
                      SizeToContent="Height"
-                     Title="{x:Static resources:Strings.Dialog_Connectivity_Title}"
-                     WindowStartupLocation="CenterScreen">
+                     Title="{local:LocalString Key=Dialog_Connectivity_Title}"
+                     WindowStartupLocation="CenterScreen" xmlns:local="clr-namespace:Froststrap.Localisation;assembly=Froststrap" xmlns:loc="clr-namespace:Froststrap.Localisation;assembly=Froststrap">
 
     <Grid RowDefinitions="*,Auto">
         <Grid Grid.Row="0" Margin="16" ColumnDefinitions="Auto,*">
@@ -32,7 +32,7 @@ SPDX-License-Identifier: MPL-2.0
                                       MarkdownText="?" Margin="0,16,0,0"
                                       TextWrapping="Wrap" />
 
-                <TextBlock Text="{x:Static resources:Strings.Dialog_Connectivity_MoreInfo}"
+                <TextBlock Text="{local:LocalString Key=Dialog_Connectivity_MoreInfo}"
                            Margin="0,16,0,0" TextWrapping="Wrap" />
 
                 <TextBox x:Name="ErrorTextBox" Padding="8" Margin="0,8,0,0"
@@ -53,7 +53,7 @@ SPDX-License-Identifier: MPL-2.0
                            FontSize="14" />
                 <Button x:Name="CloseButton"
                         MinWidth="100"
-                        Content="{x:Static resources:Strings.Common_Close}"
+                        Content="{local:LocalString Key=Common_Close}"
                         HorizontalAlignment="Right" />
             </Grid>
         </Border>

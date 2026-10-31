@@ -17,58 +17,58 @@ SPDX-License-Identifier: MPL-2.0
              xmlns:lucideEnums="clr-namespace:LucideAvalonia.Enum;assembly=LucideAvalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
              x:Class="Froststrap.UI.Elements.Settings.Pages.ModsPresetsPage"
-             x:DataType="vm:ModsPresetsViewModel">
+             x:DataType="vm:ModsPresetsViewModel" xmlns:local="clr-namespace:Froststrap.Localisation;assembly=Froststrap" xmlns:loc="clr-namespace:Froststrap.Localisation;assembly=Froststrap">
 
     <ScrollViewer>
         <StackPanel Margin="14">
             <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto, Auto">
                 <controls:CardAction Grid.Column="0" Margin="0,0,4,0"
-                                     Header="{x:Static resources:Strings.Menu_CommunityMods_Title}"
+                                     Header="{local:LocalString Key=Menu_CommunityMods_Title}"
                                      Icon="House"
-                                     Description="{x:Static resources:Strings.Menu_CommunityMods_Description}"
+                                     Description="{local:LocalString Key=Menu_CommunityMods_Description}"
                                      Command="{Binding OpenCommunityModsCommand}" />
 
                 <controls:CardAction Grid.Column="1" Margin="2,0,2,0"
-                                     Header="{x:Static resources:Strings.Menu_Mods_Title}"
+                                     Header="{local:LocalString Key=Menu_Mods_Title}"
                                      Icon="List"
-                                     Description="{x:Static resources:Strings.Menu_Mods_Description}"
+                                     Description="{local:LocalString Key=Menu_Mods_Description}"
                                      Command="{Binding OpenModsCommand}" />
 
                 <controls:CardAction Grid.Column="2" Margin="4,0,0,0"
-                                     Header="{x:Static resources:Strings.Menu_ModGenerator_Title}"
+                                     Header="{local:LocalString Key=Menu_ModGenerator_Title}"
                                      Icon="PaintbrushVertical"
-                                     Description="{x:Static resources:Strings.Menu_ModGenerator_Description}"
+                                     Description="{local:LocalString Key=Menu_ModGenerator_Description}"
                                      Command="{Binding OpenModGeneratorCommand}"/>
 
                 <controls:CardAction Grid.Row="1" Grid.ColumnSpan="3"
-                                     Header="{x:Static resources:Strings.Menu_PresetMods_OpenModsFolder}"
+                                     Header="{local:LocalString Key=Menu_PresetMods_OpenModsFolder}"
                                      Icon="FolderOpen"
                                      Command="{Binding OpenModsFolderCommand}"/>
 
                 <controls:CardAction Grid.Row="2" Grid.ColumnSpan="3" IsVisible="{x:Static gv:GlobalViewModel.IsWindows}"
-                                     Header="{x:Static resources:Strings.Menu_PresetMods_Misc_CompatibilitySettings_Title}"
+                                     Header="{local:LocalString Key=Menu_PresetMods_Misc_CompatibilitySettings_Title}"
                                      Icon="ShieldCheck"
-                                     Description="{Binding Source={x:Static resources:Strings.Menu_PresetMods_Misc_CompatibilitySettings_Description}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://devblogs.microsoft.com/directx/demystifying-full-screen-optimizations/'}"
+                                     Description="{Binding Source={local:LocalString Key=Menu_PresetMods_Misc_CompatibilitySettings_Description}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://devblogs.microsoft.com/directx/demystifying-full-screen-optimizations/'}"
                                      Command="{Binding OpenCompatSettingsCommand}"/>
             </Grid>
 
             <Separator Margin="0,12" />
 
             <StackPanel>
-                <TextBlock Margin="0,10,0,0" FontSize="20" FontWeight="Bold" Text="{x:Static resources:Strings.Common_Presets}" />
+                <TextBlock Margin="0,10,0,0" FontSize="20" FontWeight="Bold" Text="{local:LocalString Key=Common_Presets}" />
 
                 <controls:MarkdownTextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                            MarkdownText="{x:Static resources:Strings.Menu_PresetMods_Presets_Description}"
+                                            MarkdownText="{local:LocalString Key=Menu_PresetMods_Presets_Description}"
                                             Margin="0,2,0,10"
                                             TextWrapping="Wrap" />
 
-                <controls:OptionControl Header="{x:Static resources:Strings.Menu_PresetMods_Presets_OldAvatarEditor_Title}"
-                                        Description="{x:Static resources:Strings.Menu_PresetMods_Presets_OldAvatarEditor_Description}">
+                <controls:OptionControl Header="{local:LocalString Key=Menu_PresetMods_Presets_OldAvatarEditor_Title}"
+                                        Description="{local:LocalString Key=Menu_PresetMods_Presets_OldAvatarEditor_Description}">
                     <ToggleSwitch IsChecked="{Binding OldAvatarBackgroundTask.NewState, Mode=TwoWay}" />
                 </controls:OptionControl>
 
-                <controls:OptionControl Header="{x:Static resources:Strings.Menu_PresetMods_Presets_MouseCursor_Title}"
-                                        Description="{x:Static resources:Strings.Menu_PresetMods_Presets_MouseCursor_Description}">
+                <controls:OptionControl Header="{local:LocalString Key=Menu_PresetMods_Presets_MouseCursor_Title}"
+                                        Description="{local:LocalString Key=Menu_PresetMods_Presets_MouseCursor_Description}">
                     <ComboBox MinWidth="200" ItemsSource="{Binding CursorTypeTask.Selections, Mode=OneTime}"
                               SelectedItem="{Binding CursorTypeTask.NewState, Mode=TwoWay}">
                         <ComboBox.ItemTemplate>
@@ -79,8 +79,8 @@ SPDX-License-Identifier: MPL-2.0
                     </ComboBox>
                 </controls:OptionControl>
 
-                <controls:OptionControl Header="{x:Static resources:Strings.Menu_PresetMods_Presets_EmojiType_Title}"
-                                        Description="{x:Static resources:Strings.Menu_PresetMods_Presets_EmojiType_Description}">
+                <controls:OptionControl Header="{local:LocalString Key=Menu_PresetMods_Presets_EmojiType_Title}"
+                                        Description="{local:LocalString Key=Menu_PresetMods_Presets_EmojiType_Description}">
                     <ComboBox MinWidth="200" ItemsSource="{Binding EmojiFontTask.Selections, Mode=OneTime}"
                               SelectedItem="{Binding EmojiFontTask.NewState, Mode=TwoWay}">
                         <ComboBox.ItemTemplate>
@@ -93,83 +93,83 @@ SPDX-License-Identifier: MPL-2.0
 
                 <Separator Margin="0,12" />
 
-                <TextBlock Margin="0,10,0,0" FontSize="20" FontWeight="Bold" Text="{x:Static resources:Strings.Common_Miscellaneous}" />
+                <TextBlock Margin="0,10,0,0" FontSize="20" FontWeight="Bold" Text="{local:LocalString Key=Common_Miscellaneous}" />
 
                 <controls:MarkdownTextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                            MarkdownText="{x:Static resources:Strings.Menu_PresetMods_Misc_Description}"
+                                            MarkdownText="{local:LocalString Key=Menu_PresetMods_Misc_Description}"
                                             Margin="0,2,0,10"
                                             TextWrapping="Wrap" />
 
-                <controls:OptionControl Header="{x:Static resources:Strings.Menu_PresetMods_Misc_CustomFont_Title}"
-                                        Description="{x:Static resources:Strings.Menu_PresetMods_Misc_CustomFont_Description}">
+                <controls:OptionControl Header="{local:LocalString Key=Menu_PresetMods_Misc_CustomFont_Title}"
+                                        Description="{local:LocalString Key=Menu_PresetMods_Misc_CustomFont_Description}">
                     <Panel>
                         <controls:IconButton Command="{Binding ChooseCustomFontCommand}"
-                                             Content="{x:Static resources:Strings.Menu_PresetMods_Misc_CustomFont_Choose}"
+                                             Content="{local:LocalString Key=Menu_PresetMods_Misc_CustomFont_Choose}"
                                              Icon="FilePlusCorner"
                                              IsVisible="{Binding !IsCustomFontSet}" />
                         <controls:IconButton Classes="Danger"
                                              Command="{Binding RemoveCustomFontCommand}"
-                                             Content="{x:Static resources:Strings.Menu_PresetMods_Misc_CustomFont_Remove}"
+                                             Content="{local:LocalString Key=Menu_PresetMods_Misc_CustomFont_Remove}"
                                              Icon="Trash"
                                              IsVisible="{Binding IsCustomFontSet}" />
                     </Panel>
                 </controls:OptionControl>
 
-                <controls:OptionControl Header="{x:Static resources:Strings.Menu_PresetMods_Misc_CustomDeathSound_Title}"
-                                        Description="{x:Static resources:Strings.Menu_PresetMods_Misc_CustomDeathSound_Description}">
+                <controls:OptionControl Header="{local:LocalString Key=Menu_PresetMods_Misc_CustomDeathSound_Title}"
+                                        Description="{local:LocalString Key=Menu_PresetMods_Misc_CustomDeathSound_Description}">
                     <Panel>
                         <controls:IconButton Command="{Binding AddCustomDeathSoundCommand}"
-                                             Content="{x:Static resources:Strings.Menu_PresetMods_Misc_CustomDeathSound_Choose}"
+                                             Content="{local:LocalString Key=Menu_PresetMods_Misc_CustomDeathSound_Choose}"
                                              Icon="FilePlusCorner"
                                              IsVisible="{Binding !HasCustomDeathSound}" />
                         <controls:IconButton Classes="Danger"
                                              Command="{Binding RemoveCustomDeathSoundCommand}"
-                                             Content="{x:Static resources:Strings.Menu_PresetMods_Misc_CustomDeathSound_Remove}"
+                                             Content="{local:LocalString Key=Menu_PresetMods_Misc_CustomDeathSound_Remove}"
                                              Icon="Trash"
                                              IsVisible="{Binding HasCustomDeathSound}" />
                     </Panel>
                 </controls:OptionControl>
 
                 <controls:CardExpander IsExpanded="True"
-                                       Header="{x:Static resources:Strings.Menu_PresetMods_Misc_CardExpander_CustomCursors_Title}"
-                                       Description="{x:Static resources:Strings.Menu_PresetMods_Misc_CardExpander_CustomCursors_Descriptions}">
+                                       Header="{local:LocalString Key=Menu_PresetMods_Misc_CardExpander_CustomCursors_Title}"
+                                       Description="{local:LocalString Key=Menu_PresetMods_Misc_CardExpander_CustomCursors_Descriptions}">
                     <StackPanel>
-                        <controls:OptionControl Header="{x:Static resources:Strings.Menu_PresetMods_Misc_CustomCursor_Title}"
-                                                Description="{x:Static resources:Strings.Menu_PresetMods_Misc_CustomCursor_Description}">
+                        <controls:OptionControl Header="{local:LocalString Key=Menu_PresetMods_Misc_CustomCursor_Title}"
+                                                Description="{local:LocalString Key=Menu_PresetMods_Misc_CustomCursor_Description}">
                             <Panel>
                                 <controls:IconButton Command="{Binding AddCustomCursorModCommand}"
                                                      Icon="FilePlusCorner"
-                                                     Content="{x:Static resources:Strings.Menu_PresetMods_Misc_CustomCursor_Choose}"
+                                                     Content="{local:LocalString Key=Menu_PresetMods_Misc_CustomCursor_Choose}"
                                                      IsVisible="{Binding !HasCustomCursors}" />
                                 <controls:IconButton Classes="Danger"
                                                      Command="{Binding RemoveCustomCursorModCommand}"
                                                      Icon="Trash"
-                                                     Content="{x:Static resources:Strings.Menu_PresetMods_Misc_CustomCursor_Remove}"
+                                                     Content="{local:LocalString Key=Menu_PresetMods_Misc_CustomCursor_Remove}"
                                                      IsVisible="{Binding HasCustomCursors}" />
                             </Panel>
                         </controls:OptionControl>
 
                         <controls:OptionControl
-                            Header="{x:Static resources:Strings.Menu_PresetMods_Misc_CustomShiftLock_Title}"
-                            Description="{x:Static resources:Strings.Menu_PresetMods_Misc_CustomShiftLock_Description}">
+                            Header="{local:LocalString Key=Menu_PresetMods_Misc_CustomShiftLock_Title}"
+                            Description="{local:LocalString Key=Menu_PresetMods_Misc_CustomShiftLock_Description}">
 
                             <StackPanel>
                                 <controls:IconButton Command="{Binding AddCustomShiftlockModCommand}"
-                                                     Content="{x:Static resources:Strings.Menu_PresetMods_Misc_CustomShiftLock_Choose}"
+                                                     Content="{local:LocalString Key=Menu_PresetMods_Misc_CustomShiftLock_Choose}"
                                                      Icon="FilePlusCorner"
                                                      IsVisible="{Binding !HasCustomShiftlock}" />
 
                                 <controls:IconButton Classes="Danger"
                                                      Command="{Binding RemoveCustomShiftlockModCommand}"
-                                                     Content="{x:Static resources:Strings.Menu_PresetMods_Misc_CustomShiftLock_Remove}"
+                                                     Content="{local:LocalString Key=Menu_PresetMods_Misc_CustomShiftLock_Remove}"
                                                      Icon="Trash"
                                                      IsVisible="{Binding HasCustomShiftlock}" />
                             </StackPanel>
                         </controls:OptionControl>
 
                         <controls:CardExpander IsExpanded="True"
-                                               Header="{x:Static resources:Strings.Menu_PresetMods_Misc_CustomCursorSet_Title}"
-                                               Description="{x:Static resources:Strings.Menu_PresetMods_Misc_CustomCursorSet_Description}">
+                                               Header="{local:LocalString Key=Menu_PresetMods_Misc_CustomCursorSet_Title}"
+                                               Description="{local:LocalString Key=Menu_PresetMods_Misc_CustomCursorSet_Description}">
                             <Grid MinHeight="300" MaxHeight="500" Margin="-8,4,-8,0" RowDefinitions="340,Auto" ColumnDefinitions="250,*">
                                 <ListBox Grid.Row="0"
                                          Grid.Column="0"
@@ -187,13 +187,13 @@ SPDX-License-Identifier: MPL-2.0
                                 <Grid Grid.Row="1" Grid.Column="0" Margin="0,4,4,0" ColumnDefinitions="*,*">
                                     <controls:IconButton Grid.Column="0" Height="32" HorizontalAlignment="Stretch" Margin="0,0,4,0"
                                                          Command="{Binding AddCustomCursorSetCommand}"
-                                                         Content="{x:Static resources:Strings.Common_New}"
+                                                         Content="{local:LocalString Key=Common_New}"
                                                          Icon="Plus" />
 
                                     <controls:IconButton Grid.Column="1" Height="32" HorizontalAlignment="Stretch" Margin="4,0,0,0"
                                                          Classes="Danger"
                                                          Command="{Binding DeleteCustomCursorSetCommand}"
-                                                         Content="{x:Static resources:Strings.Common_Delete}"
+                                                         Content="{local:LocalString Key=Common_Delete}"
                                                          Icon="Trash"
                                                          IsEnabled="{Binding IsCustomCursorSetSelected}" />
                                 </Grid>
@@ -204,7 +204,7 @@ SPDX-License-Identifier: MPL-2.0
                                             <TextBox Grid.Column="0" PlaceholderText="Custom Cursor Set 1" Text="{Binding SelectedCustomCursorSetName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch" />
                                             <controls:IconButton Grid.Column="1" Margin="4,0,0,0"
                                                                  Icon="Pencil"
-                                                                 Content="{x:Static resources:Strings.Common_Rename}"
+                                                                 Content="{local:LocalString Key=Common_Rename}"
                                                                  Command="{Binding RenameCustomCursorSetCommand}"
                                                                  FontWeight="Medium" />
                                         </Grid>
@@ -217,13 +217,13 @@ SPDX-License-Identifier: MPL-2.0
                                                 </Viewbox>
                                             </Border>
                                             <StackPanel Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Orientation="Vertical" Margin="0,8,0,0">
-                                                <controls:IconButton Content="{x:Static resources:Strings.Common_Browse}"
+                                                <controls:IconButton Content="{local:LocalString Key=Common_Browse}"
                                                                      Icon="Folder"
                                                                      Command="{Binding AddMouseLockedCursorCommand}"
                                                                      CommandParameter="{Binding $self}"
                                                                      IsVisible="{Binding !HasShiftlockCursor}"
                                                                      HorizontalAlignment="Stretch" Height="32" />
-                                                <controls:IconButton Content="{x:Static resources:Strings.Common_Remove}"
+                                                <controls:IconButton Content="{local:LocalString Key=Common_Remove}"
                                                                      Icon="Trash"
                                                                      Command="{Binding DeleteCursorCommand}"
                                                                      CommandParameter="MouseLockedCursor.png"
@@ -240,13 +240,13 @@ SPDX-License-Identifier: MPL-2.0
                                                 </Viewbox>
                                             </Border>
                                             <StackPanel Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Orientation="Vertical" Margin="0,8,0,0">
-                                                <controls:IconButton Content="{x:Static resources:Strings.Common_Browse}"
+                                                <controls:IconButton Content="{local:LocalString Key=Common_Browse}"
                                                                      Icon="Folder"
                                                                      Command="{Binding AddArrowCursorCommand}"
                                                                      CommandParameter="{Binding $self}"
                                                                      IsVisible="{Binding !HasArrowCursor}"
                                                                      HorizontalAlignment="Stretch" Height="32" />
-                                                <controls:IconButton Content="{x:Static resources:Strings.Common_Remove}"
+                                                <controls:IconButton Content="{local:LocalString Key=Common_Remove}"
                                                                      Icon="Trash"
                                                                      Command="{Binding DeleteCursorCommand}"
                                                                      CommandParameter="ArrowCursor.png"
@@ -263,13 +263,13 @@ SPDX-License-Identifier: MPL-2.0
                                                 </Viewbox>
                                             </Border>
                                             <StackPanel Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Orientation="Vertical" Margin="0,8,0,0">
-                                                <controls:IconButton Content="{x:Static resources:Strings.Common_Browse}"
+                                                <controls:IconButton Content="{local:LocalString Key=Common_Browse}"
                                                                      Icon="Folder"
                                                                      Command="{Binding AddArrowFarCursorCommand}"
                                                                      CommandParameter="{Binding $self}"
                                                                      IsVisible="{Binding !HasArrowFarCursor}"
                                                                      HorizontalAlignment="Stretch" Height="32" />
-                                                <controls:IconButton Content="{x:Static resources:Strings.Common_Remove}"
+                                                <controls:IconButton Content="{local:LocalString Key=Common_Remove}"
                                                                      Icon="Trash"
                                                                      Command="{Binding DeleteCursorCommand}"
                                                                      CommandParameter="ArrowFarCursor.png"
@@ -286,13 +286,13 @@ SPDX-License-Identifier: MPL-2.0
                                                 </Viewbox>
                                             </Border>
                                             <StackPanel Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Orientation="Vertical" Margin="0,8,0,0">
-                                                <controls:IconButton Content="{x:Static resources:Strings.Common_Browse}"
+                                                <controls:IconButton Content="{local:LocalString Key=Common_Browse}"
                                                                      Icon="Folder"
                                                                      Command="{Binding AddIBeamCursorCommand}"
                                                                      CommandParameter="{Binding $self}"
                                                                      IsVisible="{Binding !HasIBeamCursor}"
                                                                      HorizontalAlignment="Stretch" Height="32" />
-                                                <controls:IconButton Content="{x:Static resources:Strings.Common_Remove}"
+                                                <controls:IconButton Content="{local:LocalString Key=Common_Remove}"
                                                                      Icon="Trash"
                                                                      Command="{Binding DeleteCursorCommand}"
                                                                      CommandParameter="IBeamCursor.png"
@@ -305,26 +305,26 @@ SPDX-License-Identifier: MPL-2.0
 
                                 <Grid Grid.Row="1" Grid.Column="1" ColumnDefinitions="*,*,*,*" Height="36" IsVisible="{Binding IsCustomCursorSetSelected}">
                                     <controls:IconButton Grid.Column="0" Height="32"
-                                                         Content="{x:Static resources:Strings.Menu_PresetMods_CursorSet_Apply}"
+                                                         Content="{local:LocalString Key=Menu_PresetMods_CursorSet_Apply}"
                                                          Icon="CircleCheckBig"
                                                          Command="{Binding ApplyCursorSetCommand}"
                                                          HorizontalAlignment="Stretch" Margin="4,0,0,0"
                                                          ToolTip.Tip="This will apply your cursors into your Mods Folder." />
                                     <controls:IconButton Grid.Column="1" Height="32"
-                                                         Content="{x:Static resources:Strings.Menu_PresetMods_CursorSet_Fetch}"
+                                                         Content="{local:LocalString Key=Menu_PresetMods_CursorSet_Fetch}"
                                                          Icon="Images"
                                                          Command="{Binding GetCurrentCursorSetCommand}"
                                                          HorizontalAlignment="Stretch" Margin="4,0,0,0"
                                                          ToolTip.Tip="This will copy the cursors from your Mods folder." />
                                     <controls:IconButton Grid.Column="2" Height="32"
-                                                         Content="{x:Static resources:Strings.Menu_PresetMods_CursorSet_Import}"
+                                                         Content="{local:LocalString Key=Menu_PresetMods_CursorSet_Import}"
                                                          Icon="FolderArchive"
                                                          Command="{Binding ImportCursorSetCommand}"
                                                          CommandParameter="{Binding $self}"
                                                          HorizontalAlignment="Stretch" Margin="4,0,0,0"
                                                          ToolTip.Tip="Allows you to Import Cursor from others easily." />
                                     <controls:IconButton Grid.Column="3" Height="32"
-                                                         Content="{x:Static resources:Strings.Menu_PresetMods_CursorSet_Export}"
+                                                         Content="{local:LocalString Key=Menu_PresetMods_CursorSet_Export}"
                                                          Icon="ArrowRightFromLine"
                                                          Command="{Binding ExportCursorSetCommand}"
                                                          CommandParameter="{Binding $self}"
@@ -333,7 +333,7 @@ SPDX-License-Identifier: MPL-2.0
                                 </Grid>
 
                                 <TextBlock Grid.RowSpan="2" Grid.Column="1"
-                                           Text="{x:Static resources:Strings.Menu_PresetMods_CursorSet_None}"
+                                           Text="{local:LocalString Key=Menu_PresetMods_CursorSet_None}"
                                            FontWeight="Medium" TextAlignment="Center"
                                            VerticalAlignment="Center" HorizontalAlignment="Center"
                                            IsVisible="{Binding !IsCustomCursorSetSelected}"/>

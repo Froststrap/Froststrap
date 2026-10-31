@@ -16,7 +16,7 @@ SPDX-License-Identifier: MPL-2.0
              xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
              x:Class="Froststrap.UI.Elements.Onboarding.Pages.Page7"
-             x:DataType="vm:Page7ViewModel">
+             x:DataType="vm:Page7ViewModel" xmlns:local="clr-namespace:Froststrap.Localisation;assembly=Froststrap" xmlns:loc="clr-namespace:Froststrap.Localisation;assembly=Froststrap">
 
     <ScrollViewer>
         <Grid Margin="8" RowDefinitions="Auto, *">
@@ -35,14 +35,14 @@ SPDX-License-Identifier: MPL-2.0
                             </Transitions>
                         </ic:Lucide.Transitions>
                     </ic:Lucide>
-                    <TextBlock Text="{x:Static resources:Strings.Common_Finished}"
+                    <TextBlock Text="{local:LocalString Key=Common_Finished}"
                                FontSize="20"
                                FontWeight="SemiBold"
                                HorizontalAlignment="Center"
                                Margin="0,10,0,0" />
                 </StackPanel>
 
-                <TextBlock Text="{x:Static resources:Strings.Onboarding_Page7_Text1}"
+                <TextBlock Text="{local:LocalString Key=Onboarding_Page7_Text1}"
                            Margin="0,0,0,16"
                            TextWrapping="Wrap"
                            HorizontalAlignment="Center"
@@ -54,7 +54,7 @@ SPDX-License-Identifier: MPL-2.0
                   RowDefinitions="Auto, Auto, Auto"
                   ColumnDefinitions="*, *"
                   Margin="0,0,0,4">
-                <TextBlock Text="{x:Static resources:Strings.Onboarding_Page7_Text2}"
+                <TextBlock Text="{local:LocalString Key=Onboarding_Page7_Text2}"
                            Grid.ColumnSpan="2"
                            Grid.Row="0"
                            Margin="0,0,0,12"
@@ -62,14 +62,14 @@ SPDX-License-Identifier: MPL-2.0
                            HorizontalAlignment="Center"
                            TextAlignment="Center" />
 
-                <controls:CardAction Header="{x:Static resources:Strings.LaunchMenu_LaunchRoblox}"
+                <controls:CardAction Header="{local:LocalString Key=LaunchMenu_LaunchRoblox}"
                                      Icon="Gamepad2"
                                      Command="{Binding LaunchRobloxCommand}"
                                      Grid.Row="1"
                                      Grid.ColumnSpan="2"
                                      Margin="0,0,0,8" />
 
-                <controls:CardAction Header="{x:Static resources:Strings.Common_Settings}"
+                <controls:CardAction Header="{local:LocalString Key=Common_Settings}"
                                      Icon="Settings"
                                      Command="{Binding LaunchSettingsCommand}"
                                      Grid.Row="2"

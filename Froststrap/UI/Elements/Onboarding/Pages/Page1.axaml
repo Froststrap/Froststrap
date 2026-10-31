@@ -16,7 +16,7 @@ SPDX-License-Identifier: MPL-2.0
              xmlns:controls="using:Froststrap.UI.Elements.Controls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
              x:Class="Froststrap.UI.Elements.Onboarding.Pages.Page1"
-             x:DataType="vm:Page1ViewModel">
+             x:DataType="vm:Page1ViewModel" xmlns:local="clr-namespace:Froststrap.Localisation;assembly=Froststrap" xmlns:loc="clr-namespace:Froststrap.Localisation;assembly=Froststrap">
     <ScrollViewer>
         <StackPanel Margin="8">
             <StackPanel Orientation="Vertical" Spacing="8" HorizontalAlignment="Center" Margin="0,0,0,12">
@@ -30,7 +30,7 @@ SPDX-License-Identifier: MPL-2.0
                         </Transitions>
                     </lucideAvalonia:Lucide.Transitions>
                 </lucideAvalonia:Lucide>
-                <TextBlock Margin="0,10,0,0" Text="{x:Static resources:Strings.Dialog_LanguageSelector_Header}"
+                <TextBlock Margin="0,10,0,0" Text="{local:LocalString Key=Dialog_LanguageSelector_Header}"
                            FontSize="20" FontWeight="SemiBold"
                            HorizontalAlignment="Center" />
             </StackPanel>

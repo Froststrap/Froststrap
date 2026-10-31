@@ -627,6 +627,7 @@ internal partial class App : Application
         try
         {
             RemoteLocalisationService.LoadCached(Locale.CurrentCulture.Name);
+            System.Diagnostics.Debug.WriteLine("Localisation cache dir: " + Path.Combine(Paths.Cache, "LocalisationCache"));
             if (Locale.CurrentCulture.Name != "en-US")
             {
                 var checkPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Froststrap", "LocalisationCache", "last-check.json");

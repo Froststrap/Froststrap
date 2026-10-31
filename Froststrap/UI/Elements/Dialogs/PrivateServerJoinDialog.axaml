@@ -17,7 +17,7 @@ SPDX-License-Identifier: MPL-2.0
     xmlns:utility="clr-namespace:Froststrap.UI.Utility"
     x:Name="RootDialog"
     x:DataType="dialogsVm:PrivateServerJoinDialogViewModel"
-    Title="{x:Static resources:Strings.Menu_QuickPlay_PrivateServers}"
+    Title="{local:LocalString Key=Menu_QuickPlay_PrivateServers}"
     Width="600"
     Height="500"
     MinWidth="450"
@@ -25,7 +25,7 @@ SPDX-License-Identifier: MPL-2.0
 	WindowDecorations="None"
     WindowStartupLocation="CenterOwner"
     CanResize="True"
-    ShowInTaskbar="False">
+    ShowInTaskbar="False" xmlns:local="clr-namespace:Froststrap.Localisation;assembly=Froststrap" xmlns:loc="clr-namespace:Froststrap.Localisation;assembly=Froststrap">
 
 	<Border BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
             Background="Transparent"
@@ -39,7 +39,7 @@ SPDX-License-Identifier: MPL-2.0
 				<Grid ColumnDefinitions="*, Auto">
 					<StackPanel Orientation="Horizontal" Spacing="10">
 						<ic:Lucide Icon="LockKeyholeOpen" Height="18" Width="18" />
-						<TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_PrivateServers}"
+						<TextBlock Text="{local:LocalString Key=Menu_QuickPlay_PrivateServers}"
                                    FontWeight="Bold" VerticalAlignment="Center"/>
 					</StackPanel>
 					<Button Grid.Column="1" Click="OnCloseClicked"
@@ -54,7 +54,7 @@ SPDX-License-Identifier: MPL-2.0
 					<StackPanel Spacing="16" HorizontalAlignment="Center" VerticalAlignment="Center">
 						<ui:FAProgressRing IsActive="{Binding IsLoading}" Width="40" Height="40"
                                            Foreground="{DynamicResource SystemAccentColor}"/>
-						<TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_LoadingPrivateServers}"
+						<TextBlock Text="{local:LocalString Key=Menu_QuickPlay_LoadingPrivateServers}"
                                    FontSize="12" Opacity="0.7"/>
 					</StackPanel>
 				</Grid>
@@ -86,7 +86,7 @@ SPDX-License-Identifier: MPL-2.0
 													<Run Text="/" />
 													<Run Text="{Binding MaxPlayers}" />
 													<Run Text=" " />
-													<Run Text="{x:Static resources:Strings.Menu_QuickPlay_Players}" />
+													<Run Text="{local:LocalString Key=Menu_QuickPlay_Players}" />
 												</TextBlock>
 											</StackPanel>
 											<controls:IconButton Grid.Column="2"
@@ -104,7 +104,7 @@ SPDX-License-Identifier: MPL-2.0
 					<StackPanel IsVisible="{Binding IsEmpty}"
                                 HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="8">
 						<ic:Lucide Icon="LockKeyhole" Height="36" Width="36" Opacity="0.5" />
-						<TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_NoPrivateServersFound}"
+						<TextBlock Text="{local:LocalString Key=Menu_QuickPlay_NoPrivateServersFound}"
                                    FontSize="13" Opacity="0.7"/>
 					</StackPanel>
 				</Grid>
