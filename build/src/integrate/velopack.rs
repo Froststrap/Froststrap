@@ -53,6 +53,9 @@ pub fn pack(version: String, pack_dir: &std::path::Path, entitlements: Option<&s
             "--framework".into(),
             "vcredist143-x64".into(),
             "--msi".into(),
+            // fix for msi error 2503 (force per-user install)
+            "--instLocation".into(),
+            "PerUser".into(),
         ]);
     }
 
