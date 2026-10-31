@@ -1729,7 +1729,15 @@ internal partial class Bootstrapper : IDisposable
         totalSizeRequired += installPackages.Where(x => !cachedPackageHashes.Contains(x.Signature)).Sum(x => (long)x.PackedSize);
         totalSizeRequired += installPackages.Sum(x => (long)x.Size);
 
-        if (Filesystem.GetFreeDiskSpace(Paths.Base) < totalSizeRequired)
+        long freeDiskSpace = Filesystem.GetFreeDiskSpace(Paths.Base);
+
+        App.Logger.Info($"Disk space check for '{Paths.Base}': {freeDiskSpace} bytes free, {totalSizeRequired} bytes required");
+
+        if (freeDiskSpace < 0)
+        {
+            App.Logger.Warn("Could not determine free disk space, skipping the disk space check.");
+        }
+        else if (freeDiskSpace < totalSizeRequired)
         {
             await Frontend.ShowMessageBox(Strings.Bootstrapper_NotEnoughSpace, MessageBoxImage.Error);
             App.Terminate(ErrorCode.ERROR_INSTALL_FAILURE);
