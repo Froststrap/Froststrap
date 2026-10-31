@@ -20,44 +20,70 @@ namespace Froststrap
 
         private static readonly List<string> _rtlLocales = ["ar", "he"];
 
+        private static readonly Dictionary<string, string> _legacyToFull = new()
+        {
+            { "en", "en-US" }, { "de", "de-DE" }, { "fr", "fr-FR" }, { "ja", "ja-JP" },
+            { "pt-BR", "pt-BR" }, { "pt-PT", "pt-PT" }, { "zh-CN", "zh-CN" }, { "zh-TW", "zh-TW" },
+            { "sv-SE", "sv-SE" }, { "es-ES", "es-ES" }, { "ar", "ar-SA" }, { "bg", "bg-BG" },
+            { "cs", "cs-CZ" }, { "da", "da-DK" }, { "el", "el-GR" }, { "et", "et-EE" },
+            { "fi", "fi-FI" }, { "hu", "hu-HU" }, { "id", "id-ID" }, { "it", "it-IT" },
+            { "ko", "ko-KR" }, { "lt", "lt-LT" }, { "lv", "lv-LV" }, { "nl", "nl-NL" },
+            { "pl", "pl-PL" }, { "ro", "ro-RO" }, { "ru", "ru-RU" }, { "sk", "sk-SK" },
+            { "sl", "sl-SI" }, { "tr", "tr-TR" }, { "uk", "uk-UA" }, { "vi", "vi-VN" }
+        };
+
         private static Dictionary<string, string> _supportedLocales;
         public static Dictionary<string, string> SupportedLocales => _supportedLocales ??= new()
         {
             { "nil", Localizer.Instance.Get("Common_SystemDefault") },
-            { "en", "English" },
             { "en-US", "English (United States)" },
-            { "ar", "العربية" }, // Arabic
-            { "bg", "Български" }, // Bulgarian
-            { "cs", "Čeština" }, // Czech
-            { "da", "Dansk" }, // Danish
-            { "de", "Deutsch" }, // German
-            { "el", "Ελληνικά" }, // Greek
-            { "es-ES", "Español" }, // Spanish
-            { "et", "Eesti" }, // Estonian
-            { "fi", "Suomi" }, // Finnish
-            { "fr", "Français" }, // French
-            { "hu", "Magyar" }, // Hungarian
-            { "id", "Bahasa Indonesia" }, // Indonesian
-            { "it", "Italiano" }, // Italian
-            { "ja", "日本語" }, // Japanese
-            { "ko", "한국어" }, // Korean
-            { "lt", "Lietuvių" }, // Lithuanian
-            { "lv", "Latviešu" }, // Latvian
-            { "nl", "Nederlands" }, // Dutch
-            { "pl", "Polski" }, // Polish
-            { "pt-BR", "Português (Brasil)" }, // Portuguese, Brazilian
-            { "pt-PT", "Português (Portugal)" }, // Portuguese, Portugal
-            { "ro", "Română" }, // Romanian
-            { "ru", "Русский" }, // Russian
-            { "sk", "Slovenčina" }, // Slovak
-            { "sl", "Slovenščina" }, // Slovenian
-            { "sv-SE", "Svenska" }, // Swedish
-            { "tr", "Türkçe" }, // Turkish
-            { "uk", "Українська" }, // Ukrainian
-            { "vi", "Tiếng Việt" }, // Vietnamese
-            { "zh-CN", "中文 (简体)" }, // Chinese Simplified
-            { "zh-TW", "中文 (繁體)" } // Chinese Traditional
+            { "ar-SA", "العربية" },
+            { "bg-BG", "Български" },
+            { "cs-CZ", "Čeština" },
+            { "da-DK", "Dansk" },
+            { "de-DE", "Deutsch" },
+            { "el-GR", "Ελληνικά" },
+            { "es-ES", "Español" },
+            { "et-EE", "Eesti" },
+            { "fi-FI", "Suomi" },
+            { "fr-FR", "Français" },
+            { "hu-HU", "Magyar" },
+            { "id-ID", "Bahasa Indonesia" },
+            { "it-IT", "Italiano" },
+            { "ja-JP", "日本語" },
+            { "ko-KR", "한국어" },
+            { "lt-LT", "Lietuvių" },
+            { "lv-LV", "Latviešu" },
+            { "nl-NL", "Nederlands" },
+            { "pl-PL", "Polski" },
+            { "pt-BR", "Português (Brasil)" },
+            { "pt-PT", "Português (Portugal)" },
+            { "ro-RO", "Română" },
+            { "ru-RU", "Русский" },
+            { "sk-SK", "Slovenčina" },
+            { "sl-SI", "Slovenščina" },
+            { "sv-SE", "Svenska" },
+            { "tr-TR", "Türkçe" },
+            { "uk-UA", "Українська" },
+            { "vi-VN", "Tiếng Việt" },
+            { "zh-CN", "中文 (简体)" },
+            { "zh-TW", "中文 (繁體)" }
         };
+
+        public static string MigrateLegacySetting(string identifier)
+        {
+            if (string.IsNullOrEmpty(identifier)) return "nil";
+            if (identifier == "nil") return "nil";
+            if (_legacyToFull.TryGetValue(identifier, out var full)) return full;
+            if (SupportedLocales.ContainsKey(identifier)) return identifier;
+            // Try two-letter prefix match for backward compatibility
+            foreach (var k in SupportedLocales.Keys)
+            {
+                if (k != "nil" && k.StartsWith(identifier + "-", StringComparison.OrdinalIgnoreCase)) return k;
+                if (k != "nil" && k.StartsWith(identifier, StringComparison.OrdinalIgnoreCase) && k.Length == identifier.Length + 3 && k[identifier.Length] == '-') return k;
+            }
+            return identifier;
+        }
 
         public static string GetIdentifierFromName(string language) => SupportedLocales.FirstOrDefault(x => x.Value == language).Key ?? "nil";
 
@@ -72,10 +98,44 @@ namespace Froststrap
             return languages;
         }
 
+        private static string ResolveDefaultLocale()
+        {
+            var name = CultureInfo.CurrentUICulture.Name;
+            if (!string.IsNullOrEmpty(name))
+            {
+                foreach (var k in SupportedLocales.Keys)
+                {
+                    if (k == "nil") continue;
+                    if (k.Equals(name, StringComparison.OrdinalIgnoreCase)) return k;
+                    // two-letter prefix match for backward compatibility
+                    if (name.Length >= 2 && k.StartsWith(name.Substring(0, 2), StringComparison.OrdinalIgnoreCase) && (k.Length == name.Length || k[name.Length] == '-'))
+                        return k;
+                }
+            }
+            return "en-US";
+        }
+
         public static void Set(string identifier)
         {
+            identifier = MigrateLegacySetting(identifier);
+
             if (!SupportedLocales.ContainsKey(identifier))
-                identifier = "nil";
+            {
+                if (identifier == "nil")
+                {
+                    identifier = ResolveDefaultLocale();
+                }
+                else
+                {
+                    identifier = "en-US";
+                }
+            }
+
+            if (identifier == "nil")
+                identifier = ResolveDefaultLocale();
+
+            if (identifier == "nil")
+                identifier = "en-US";
 
             if (identifier == "nil")
             {
@@ -94,6 +154,15 @@ namespace Froststrap
             Localizer.Instance.CultureName = CurrentCulture.Name;
 
             RightToLeft = _rtlLocales.Any(l => CurrentCulture.Name.StartsWith(l, StringComparison.OrdinalIgnoreCase));
+
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    await RemoteLocalisationService.RefreshAsync(CurrentCulture.Name);
+                }
+                catch { }
+            });
         }
 
         public static void Initialize()

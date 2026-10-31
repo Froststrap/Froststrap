@@ -52,6 +52,7 @@ public sealed class Localizer
 
     private readonly Dictionary<string, string> _default = new();
     private readonly Dictionary<string, Dictionary<string, string>> _cultures = new();
+    private readonly Dictionary<string, Dictionary<string, string>> _remoteCultures = new();
     private string _cultureName = "en-US";
 
     public string CultureName
@@ -81,6 +82,14 @@ public sealed class Localizer
         }
     }
 
+    public void LoadRemoteCultureFromString(string cultureName, string json)
+    {
+        if (string.IsNullOrWhiteSpace(json)) return;
+        var dict = new Dictionary<string, string>();
+        MergeFromJson(json, dict);
+        _remoteCultures[cultureName] = dict;
+    }
+
     public void LoadCultureFromString(string cultureName, string json)
     {
         if (string.IsNullOrWhiteSpace(json)) return;
@@ -104,11 +113,28 @@ public sealed class Localizer
         }
     }
 
+    public void SetRemoteCulture(string cultureName, Dictionary<string, string> dict)
+    {
+        if (dict != null) _remoteCultures[cultureName] = dict;
+    }
+
+    public void ClearRemoteCulture(string cultureName) => _remoteCultures.Remove(cultureName);
+
+    public void ClearAllRemote() => _remoteCultures.Clear();
+
+    private string? TryGetInRemote(string cultureName, string key)
+    {
+        if (_remoteCultures.TryGetValue(cultureName, out var dict) && dict.TryGetValue(key, out var v)) return v;
+        return null;
+    }
+
     public string Get(string key, params object[] args)
     {
         if (string.IsNullOrEmpty(key)) return key ?? string.Empty;
 
-        string value = TryGetInCulture(_cultureName, key)
+        string value = TryGetInRemote(_cultureName, key)
+                      ?? TryGetInCulture(_cultureName, key)
+                      ?? TryGetInRemote("en-US", key)
                       ?? TryGetInCulture("en-US", key)
                       ?? TryGetInDefault(key)
                       ?? key;

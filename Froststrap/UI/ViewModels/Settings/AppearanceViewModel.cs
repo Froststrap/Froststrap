@@ -121,7 +121,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
                 if (App.Settings.Prop.Locale != identifier)
                 {
-                    App.Settings.Prop.Locale = identifier;
+                    App.Settings.Prop.Locale = identifier; // migrated to full locale
                     OnPropertyChanged(nameof(SelectedLanguage));
 
                     Locale.Set(identifier);

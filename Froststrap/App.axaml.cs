@@ -11,6 +11,8 @@ using Avalonia.Threading;
 using Froststrap.AppData;
 using Froststrap.Integrations;
 using Froststrap.UI.Elements.Base;
+using System.IO;
+using Froststrap.Localisation;
 using Microsoft.Win32;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -617,7 +619,32 @@ internal partial class App : Application
         }
 
         AvaloniaWindow.ApplyTheme();
-        Locale.Set(Settings.Prop.Locale);
+        var migratedLocale = Locale.MigrateLegacySetting(Settings.Prop.Locale);
+        if (migratedLocale != Settings.Prop.Locale) Settings.Prop.Locale = migratedLocale;
+        Locale.Set(migratedLocale ?? "nil");
+        Settings.Save();
+
+        try
+        {
+            RemoteLocalisationService.LoadCached(Locale.CurrentCulture.Name);
+            if (Locale.CurrentCulture.Name != "en-US")
+            {
+                var checkPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Froststrap", "LocalisationCache", "last-check.json");
+                bool old = true;
+                if (File.Exists(checkPath))
+                {
+                    try { old = (DateTime.Now - File.GetLastWriteTime(checkPath)).TotalHours > 24; } catch { }
+                }
+                if (old)
+                {
+                    _ = Task.Run(async () =>
+                    {
+                        try { await RemoteLocalisationService.RefreshAsync(Locale.CurrentCulture.Name); } catch { }
+                    });
+                }
+            }
+        }
+        catch { }
 
         if (Settings.Prop.DisableAnimations)
             ApplyAnimationSettings();
