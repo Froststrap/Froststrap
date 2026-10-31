@@ -75,17 +75,17 @@ pub fn main() {
     log::info!("AppVersion: {}", version());
 
     let args = [
-        "publish".to_string(),
-        path,
-        "-c".to_string(),
-        config.to_string(),
-        "-r".to_string(),
-        rid.to_string(),
-        "-o".to_string(),
-        output_path,
-        format!("-p:RustTargetTriple={rust_target_triple}"),
-        format!("-p:AppVersion={}", version()),
-        "-nologo".to_string(),
+        "publish",
+        &path,
+        "-c",
+        &config.to_string(),
+        "-r",
+        &rid,
+        "-o",
+        &output_path,
+        &format!("-p:RustTargetTriple={rust_target_triple}"),
+        &format!("-p:AppVersion={}", version()),
+        "-nologo",
     ];
 
     std::fs::create_dir_all(path::dotnet_publish_artifacts()).unwrap();
