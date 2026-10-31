@@ -30,14 +30,15 @@ namespace Froststrap.UI.Converters
                     return attribute.StaticName;
 
                 if (!string.IsNullOrEmpty(attribute.FromTranslation))
-                    return Localizer.Instance.Get(attribute.FromTranslation) ?? attribute.FromTranslation;
+                    return Localizer.Instance.Get(attribute.FromTranslation.Replace(".", "_")) ?? attribute.FromTranslation;
             }
 
             var dotIndex = typeName.IndexOf('.', StringComparison.Ordinal);
 
             var trimmedTypeName = dotIndex >= 0 ? typeName[(dotIndex + 1)..] : typeName;
 
-            return Localizer.Instance.Get($"{trimmedTypeName}.{stringVal}") ?? $"{trimmedTypeName}.{stringVal}";
+            var lookupKey = $"{trimmedTypeName}.{stringVal}".Replace(".", "_");
+            return Localizer.Instance.Get(lookupKey) ?? $"{trimmedTypeName}.{stringVal}";
         }
 
         public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
