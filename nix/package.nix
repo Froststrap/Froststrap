@@ -10,6 +10,7 @@
   zlib,
   krb5,
   dbus,
+  alsa-lib,
   lib,
 }:
 {
@@ -57,7 +58,7 @@ buildDotnetModule {
     clang
     xtask
   ];
-  buildInputs = [ dbus fontconfig zlib krb5 ];
+  buildInputs = [ dbus fontconfig zlib krb5 ] ++ lib.optionals stdenv.hostPlatform.isLinux [ alsa-lib ];
 
   buildPhase = ''
     runHook preBuild
@@ -72,7 +73,7 @@ buildDotnetModule {
     mkdir -p $out/lib/froststrap $out/bin
     cp -r build/publish/publish/. $out/lib/froststrap/
     makeWrapper $out/lib/froststrap/Froststrap $out/bin/Froststrap \
-      --prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath [ dbus fontconfig ]}:$out/lib/froststrap/libs
+      --prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath ([ dbus fontconfig ] ++ lib.optionals stdenv.hostPlatform.isLinux [ alsa-lib ])}:$out/lib/froststrap/libs
     runHook postInstall
   '';
 

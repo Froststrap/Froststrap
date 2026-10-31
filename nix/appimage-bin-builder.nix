@@ -42,6 +42,7 @@ appimageTools.wrapType2 {
       icu
       fontconfig
       dbus
+      alsa-lib
     ];
 
   # list values must end with ";". makeDesktopItem omits it.
