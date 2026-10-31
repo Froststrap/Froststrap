@@ -35,9 +35,10 @@ let
     cargoHash = "sha256-7YV+oYJE266v0iyzCZmRCo0bkLKLBMLXBKTIG7r03E0=";
     doCheck = false;
   };
+  version = "2.0.6-beta.8";
 in
 buildDotnetModule {
-  inherit dotnet-runtime dotnet-sdk src;
+  inherit dotnet-runtime dotnet-sdk src version;
   projectFile = "Froststrap/Froststrap.csproj";
   nugetDeps = ./deps.json;
   name = "froststrap";
@@ -60,6 +61,7 @@ buildDotnetModule {
 
   buildPhase = ''
     runHook preBuild
+    export FROSTSTRAP_VERSION=${version}
     export CARGO_NET_OFFLINE=true
     xtask publish --no-installers --output "$PWD/build/publish"
     runHook postBuild
