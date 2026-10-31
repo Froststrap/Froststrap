@@ -35,7 +35,9 @@ fn version() -> String {
 fn version_for_run() -> String {
     const DEFAULT: &str = "v0.0.2";
 
-    let tag = if env::var("GITHUB_REF_TYPE").as_deref() == Ok("tag") {
+    let tag = if let Some(v) = env_nonempty("FROSTSTRAP_VERSION") {
+        v
+    } else if env::var("GITHUB_REF_TYPE").as_deref() == Ok("tag") {
         env_nonempty("GITHUB_REF_NAME").unwrap_or_default()
     } else {
         let mut tag = git(&["describe", "--tags", "--abbrev=0"])
@@ -51,7 +53,7 @@ fn version_for_run() -> String {
     let tag = if tag.trim().is_empty() {
         DEFAULT
     } else {
-        tag.as_str()
+        tag.trim()
     };
     tag.strip_prefix('v').unwrap_or(tag).to_string()
 }
