@@ -9,10 +9,11 @@ namespace Froststrap.Utility;
 [SupportedOSPlatform("linux")]
 internal static class LinuxRegistry
 {
-    private static readonly string MimePackagesDir = Path.Combine(
+    private static readonly string MimeRootDir = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-        ".local", "share", "mime", "packages"
+        ".local", "share", "mime"
     );
+    private static readonly string MimePackagesDir = Path.Combine(MimeRootDir, "packages");
 
     private static readonly string MimeXmlPath = Path.Combine(
         MimePackagesDir, "froststrap-mime.xml"
@@ -35,7 +36,8 @@ internal static class LinuxRegistry
 
     private static void RegisterMimeTypes()
     {
-        if (!OperatingSystem.IsLinux()) return;
+        if (!OperatingSystem.IsLinux())
+            return;
 
         Directory.CreateDirectory(MimePackagesDir);
 
@@ -45,7 +47,6 @@ internal static class LinuxRegistry
 
         foreach (var kv in ExtensionToMime)
         {
-            string ext = kv.Key.TrimStart('.');
             string mime = kv.Value;
             xml.AppendLine(CultureInfo.InvariantCulture, $"  <mime-type type=\"{mime}\">");
             xml.AppendLine(CultureInfo.InvariantCulture, $"    <comment>Roblox Studio {kv.Key} file</comment>");
@@ -57,25 +58,41 @@ internal static class LinuxRegistry
 
         File.WriteAllText(MimeXmlPath, xml.ToString());
 
-        try
-        {
-            Process.Start("update-mime-database", MimePackagesDir)?.WaitForExit();
-        }
-        catch { }
+        UpdateMimeDatabase();
     }
 
     public static void UnregisterAll()
     {
-        if (!OperatingSystem.IsLinux()) return;
+        if (!OperatingSystem.IsLinux())
+            return;
 
         if (File.Exists(MimeXmlPath))
         {
             File.Delete(MimeXmlPath);
-            try
+            UpdateMimeDatabase();
+        }
+    }
+
+    private static void UpdateMimeDatabase()
+    {
+        try
+        {
+            using var p = Process.Start(new ProcessStartInfo("update-mime-database")
             {
-                Process.Start("update-mime-database", MimePackagesDir)?.WaitForExit();
-            }
-            catch { }
+                ArgumentList = { MimeRootDir },
+                UseShellExecute = false,
+                RedirectStandardError = true,
+            });
+            if (p is null) return;
+
+            string err = p.StandardError.ReadToEnd();
+            p.WaitForExit();
+            if (p.ExitCode != 0)
+                App.Logger.Error($"update-mime-database failed: {err.Trim()}");
+        }
+        catch (Exception ex)
+        {
+            App.Logger.Error($"update-mime-database not run: {ex.Message}");
         }
     }
 }
