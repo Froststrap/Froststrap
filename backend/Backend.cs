@@ -229,6 +229,95 @@ public class NativeNotify
     }
 }
 
+internal partial class InternalAudioPlayer
+{
+    [LibraryImport(
+        "audioplayer",
+        EntryPoint = "play"
+    )]
+    public static partial int Play(
+        [MarshalAs(UnmanagedType.LPUTF8Str)] string path,
+        float volume
+    );
+
+    [LibraryImport(
+        "audioplayer",
+        EntryPoint = "set_volume"
+    )]
+    public static partial void SetVolume(float volume);
+
+    [LibraryImport(
+        "audioplayer",
+        EntryPoint = "stop"
+    )]
+    public static partial void Stop();
+
+    [LibraryImport(
+        "audioplayer",
+        EntryPoint = "set_logger"
+    )]
+    public static partial void SetLogger(IntPtr callback);
+}
+
+public enum AudioPlayerResult
+{
+    Ok = 0,
+    InvalidArgument = 1,
+    FileNotReadable = 2,
+    UnsupportedFormat = 3,
+    NoOutputDevice = 4,
+    LibraryUnavailable = -1
+}
+
+public class AudioPlayer
+{
+    private static bool _loggerSet;
+
+    public static AudioPlayerResult Play(string path, double volume)
+    {
+        try
+        {
+            // loaded on first use so it isn't touched while music is off
+            if (!_loggerSet)
+            {
+                InternalAudioPlayer.SetLogger(NativeLog.Callback);
+                _loggerSet = true;
+            }
+
+            return (AudioPlayerResult)InternalAudioPlayer.Play(path, (float)volume);
+        }
+        catch (Exception ex) when (NativeLibraryFailure.IsLoadFailure(ex))
+        {
+            NativeLibraryFailure.Report("audioplayer", ex);
+            return AudioPlayerResult.LibraryUnavailable;
+        }
+    }
+
+    public static void SetVolume(double volume)
+    {
+        try
+        {
+            InternalAudioPlayer.SetVolume((float)volume);
+        }
+        catch (Exception ex) when (NativeLibraryFailure.IsLoadFailure(ex))
+        {
+            NativeLibraryFailure.Report("audioplayer", ex);
+        }
+    }
+
+    public static void Stop()
+    {
+        try
+        {
+            InternalAudioPlayer.Stop();
+        }
+        catch (Exception ex) when (NativeLibraryFailure.IsLoadFailure(ex))
+        {
+            NativeLibraryFailure.Report("audioplayer", ex);
+        }
+    }
+}
+
 internal partial class InternalMobileAppReg
 {
     [LibraryImport(

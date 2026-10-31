@@ -123,7 +123,12 @@ pub fn main() -> (PathBuf, PathBuf) {
         .app_icon(icon_path)
         .binary(&main_executable);
 
-    for lib in ["libvirtualdisplay.dylib", "libmobileappreg.dylib", "libnotify.dylib"] {
+    for lib in [
+        "libvirtualdisplay.dylib",
+        "libmobileappreg.dylib",
+        "libnotify.dylib",
+        "libaudioplayer.dylib",
+    ] {
         let dylib_src = find_dylib(lib);
         builder = builder.framework(dylib_src);
     }

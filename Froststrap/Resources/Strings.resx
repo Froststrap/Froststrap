@@ -2068,6 +2068,24 @@ It must contain at least one of the following folders: content, ExtraContent, Pl
   <data name="Menu.Appearance.Opacity" xml:space="preserve">
     <value>Opacity:</value>
   </data>
+  <data name="Menu.Appearance.BackgroundMusic.Title" xml:space="preserve">
+    <value>Background Music</value>
+  </data>
+  <data name="Menu.Appearance.BackgroundMusic.Description" xml:space="preserve">
+    <value>Plays an audio file on a loop while the settings window is open. Supports MP3, OGG, WAV, and FLAC.</value>
+  </data>
+  <data name="Menu.Appearance.BackgroundMusic.NoFile" xml:space="preserve">
+    <value>No file selected...</value>
+  </data>
+  <data name="Menu.Appearance.BackgroundMusic.Volume" xml:space="preserve">
+    <value>Volume:</value>
+  </data>
+  <data name="Menu.Appearance.BackgroundMusic.PlayFailed" xml:space="preserve">
+    <value>Couldn't play the selected file. Make sure it's a valid MP3, OGG, WAV, or FLAC file.</value>
+  </data>
+  <data name="Menu.Appearance.BackgroundMusic.Unavailable" xml:space="preserve">
+    <value>Audio playback isn't available on this system.</value>
+  </data>
   <data name="Menu.Appearance.ThemeCycling.Title" xml:space="preserve">
     <value>Theme Cycling</value>
   </data>

@@ -171,6 +171,49 @@ SPDX-License-Identifier: MPL-2.0
                     </StackPanel>
                 </controls:CardExpander>
 
+                <controls:CardExpander Classes="NoUserExpansion"
+                                       Header="{x:Static resources:Strings.Menu_Appearance_BackgroundMusic_Title}"
+                                       Description="{x:Static resources:Strings.Menu_Appearance_BackgroundMusic_Description}"
+                                       IsExpanded="{Binding BackgroundMusicEnabled, Mode=OneWay}">
+                    <controls:CardExpander.HeaderContent>
+                        <ToggleSwitch IsChecked="{Binding BackgroundMusicEnabled, Mode=TwoWay}" />
+                    </controls:CardExpander.HeaderContent>
+
+                    <StackPanel Spacing="15">
+                        <Grid ColumnDefinitions="*, Auto, Auto" Margin="0,4">
+                            <TextBox Text="{Binding BackgroundMusicPath}"
+                                     PlaceholderText="{x:Static resources:Strings.Menu_Appearance_BackgroundMusic_NoFile}"
+                                     IsReadOnly="True"
+                                     VerticalContentAlignment="Center"
+                                     Margin="0,0,8,0"/>
+
+                            <Button Grid.Column="1"
+                                    Content="{x:Static resources:Strings.Common_Browse}"
+                                    Command="{Binding SelectMusicCommand}"
+                                    CommandParameter="{Binding $parent[TopLevel]}"
+                                    Margin="0,0,8,0"/>
+
+                            <Button Grid.Column="2"
+                                    Content="{x:Static resources:Strings.Common_Clear}"
+                                    Command="{Binding ClearMusicCommand}"
+                                    Classes="accent"/>
+                        </Grid>
+
+                        <Grid ColumnDefinitions="Auto, *, 50">
+                            <TextBlock Text="{x:Static resources:Strings.Menu_Appearance_BackgroundMusic_Volume}" VerticalAlignment="Center" Margin="0,0,15,0"/>
+                            <Slider Grid.Column="1"
+                                    Minimum="0"
+                                    Maximum="1"
+                                    Value="{Binding BackgroundMusicVolume}"
+                                    VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="2"
+                                       Text="{Binding BackgroundMusicVolume, StringFormat=\{0:P0\}}"
+                                       HorizontalAlignment="Right"
+                                       VerticalAlignment="Center"/>
+                        </Grid>
+                    </StackPanel>
+                </controls:CardExpander>
+
                 <controls:OptionControl
                     Header="{x:Static resources:Strings.Menu_Deployment_DisableAnimations_Title}"
                     Description="{x:Static resources:Strings.Menu_Deployment_DisableAnimations_Description}">

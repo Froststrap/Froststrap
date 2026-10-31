@@ -1,0 +1,22 @@
+# SPDX-FileCopyrightText: 2026 Froststrap
+#
+# SPDX-License-Identifier: MPL-2.0
+
+[package]
+name = "audioplayer"
+version = "1.0.0"
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+log.workspace = true
+logger.workspace = true
+
+[dependencies.rodio]
+version = "0.23"
+default-features = false
+features = ["playback", "mp3", "vorbis", "wav", "flac"]

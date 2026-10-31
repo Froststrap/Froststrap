@@ -83,6 +83,9 @@ namespace Froststrap.Models.Persistable
         public string? BackgroundImagePath { get; set; } = "";
         public BackgroundStretch BackgroundStretch { get; set; } = BackgroundStretch.Fill;
         public double BackgroundOpacity { get; set; } = 1.0;
+        public bool BackgroundMusicEnabled { get; set; }
+        public string BackgroundMusicPath { get; set; } = "";
+        public double BackgroundMusicVolume { get; set; } = 0.5;
         public string BootstrapperTitle { get; set; } = App.ProjectName;
         public string BootstrapperIconCustomLocation { get; set; } = "";
         public Theme Theme { get; set; } = Theme.Default;

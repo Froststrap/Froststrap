@@ -2,10 +2,12 @@
 #
 # SPDX-License-Identifier: MPL-2.0
 {
+  lib,
   stdenv,
   callPackage,
   pkg-config,
   dbus,
+  alsa-lib,
 }:
 {
   fenix,
@@ -29,5 +31,8 @@ mkFragment {
   nativeBuildInputs = [
     pkg-config
     dbus
+  ]
+  ++ lib.optionals stdenv.hostPlatform.isLinux [
+    alsa-lib
   ];
 }
