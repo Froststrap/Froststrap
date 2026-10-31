@@ -1,5 +1,6 @@
 //! Helpers for path finding
 
+use crate::args;
 use std::path::{Path, PathBuf};
 use std::sync::OnceLock;
 
@@ -38,7 +39,13 @@ pub fn xtask_root() -> &'static Path {
 }
 
 pub fn output_root() -> PathBuf {
-    git_root().join(".build")
+    let args = args::get();
+    if let Some(p) = args.output.clone() {
+        p
+    }
+    else {
+        git_root().join(".build")
+    }
 }
 
 pub fn write_output_gitignore() {

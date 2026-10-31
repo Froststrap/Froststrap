@@ -1,6 +1,7 @@
 //! Arg handling
 
 use std::{
+    path::PathBuf,
     fmt::{Display, Formatter},
     sync::OnceLock,
 };
@@ -25,6 +26,7 @@ Options:
   --configuration <debug|release>  Base configuration (default: release)
   --override-arch <ARCH>           Cross-compile for another arch
   --no-installers                  Skip installers on publish
+  -o, --output                     Change output for what is .build
   -h, --help                       Print this message
   -v, --version                    Print version
 ";
@@ -35,6 +37,7 @@ pub struct AppArgs {
     pub no_installers: bool,
     pub configuration: Configuration,
     pub override_arch: Option<String>,
+    pub output: Option<PathBuf>,
 }
 
 impl AppArgs {
@@ -67,6 +70,10 @@ impl AppArgs {
             .opt_value_from_str("--override-arch")
             .unwrap_or_else(|e| die(format!("--override-arch: {e}")));
 
+        let output = pargs
+            .opt_value_from_str(["-o", "--output"])
+            .unwrap_or_else(|e| die(format!("--output: {e}")));
+
         let action = pargs
             .free_from_str::<Action>()
             .unwrap_or_else(|e| die(format!("<ACTION>: {e}")));
@@ -75,7 +82,7 @@ impl AppArgs {
             die(format!("unknown argument `{}`", extra.to_string_lossy()));
         }
 
-        Self { action, no_installers, configuration, override_arch }
+        Self { action, no_installers, configuration, override_arch, output }
     }
 }
 

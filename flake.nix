@@ -41,10 +41,6 @@
         pkgs-unstable = import nixpkgs-unstable {
           inherit system;
         };
-
-        froststrap = pkgs.callPackage ./nix/package.nix {
-          fontconfig = pkgs-unstable.fontconfig;
-        };
       in
       {
         devShells =
@@ -74,8 +70,15 @@
             lintFrag
           ] { nameOverride = "default"; };
 
-        packages = {
-          inherit froststrap;
+        packages = let
+          fontconfig = pkgs-unstable.fontconfig;
+        in rec {
+          froststrap = (pkgs.callPackage ./nix/package.nix {
+            inherit fontconfig;
+          }) inputs;
+          froststrap-bin = pkgs.callPackage ./nix/binary.nix {
+            inherit fontconfig;
+          };
           default = froststrap;
         };
 
@@ -89,3 +92,4 @@
       };
     };
 }
+
