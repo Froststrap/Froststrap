@@ -5,7 +5,25 @@
   rustPlatform,
   pkg-config,
   fontconfig,
+  freetype,
+  libGL,
+  nspr,
+  vulkan-loader,
+  wayland,
+  libxkbcommon,
+  libsecret,
+  skia,
+  libX11,
+  libICE,
+  libSM,
+  libXi,
+  libXrandr,
+  libxcursor,
+  libxcb,
+  xcbutil,
+  glib,
   stdenv,
+  expat,
   clang,
   zlib,
   krb5,
@@ -37,6 +55,32 @@ let
     doCheck = false;
   };
   version = "2.0.6-beta.8";
+
+  runtimeLibs = lib.optionals stdenv.hostPlatform.isLinux [
+    expat
+    fontconfig
+    freetype
+    libGL
+    nspr
+    vulkan-loader
+    wayland
+    libxkbcommon
+    libsecret
+    skia
+    dbus
+    alsa-lib
+
+    # X11 libs
+    libX11
+    libICE
+    libSM
+    libXi
+    libXrandr
+    libxcursor
+    libxcb
+    xcbutil
+    glib
+  ];
 in
 buildDotnetModule {
   inherit dotnet-runtime dotnet-sdk src version;
@@ -59,7 +103,7 @@ buildDotnetModule {
     pkg-config
     clang
   ];
-  
+
   buildInputs = lib.optionals stdenv.hostPlatform.isLinux [
     dbus
     alsa-lib
@@ -81,9 +125,9 @@ buildDotnetModule {
     mkdir -p $out/lib/froststrap $out/bin
     cp -r build/publish/publish/. $out/lib/froststrap/
     makeWrapper $out/lib/froststrap/Froststrap $out/bin/Froststrap \
-    ${lib.optionalString stdenv.hostPlatform.isLinux
-    
-      "--prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath [ dbus alsa-lib fontconfig ]}:$out/lib/froststrap/libs"
+    ${
+      lib.optionalString stdenv.hostPlatform.isLinux
+        "--prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath runtimeLibs}:$out/lib/froststrap/libs"
     }
     runHook postInstall
   '';
