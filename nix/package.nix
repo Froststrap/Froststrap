@@ -53,11 +53,18 @@ buildDotnetModule {
   nativeBuildInputs = [
     rustPlatform.cargoSetupHook
     toolchain
+    xtask
+  ] ++ lib.optionals stdenv.hostPlatform.isLinux [
     pkg-config
     clang
-    xtask
   ];
-  buildInputs = [ dbus fontconfig zlib krb5 ];
+
+  buildInputs = lib.optionals stdenv.hostPlatform.isLinux [
+    dbus
+    fontconfig
+    zlib
+    krb5
+  ];
 
   buildPhase = ''
     runHook preBuild
@@ -72,9 +79,21 @@ buildDotnetModule {
     mkdir -p $out/lib/froststrap $out/bin
     cp -r build/publish/publish/. $out/lib/froststrap/
     makeWrapper $out/lib/froststrap/Froststrap $out/bin/Froststrap \
-      --prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath [ dbus fontconfig ]}:$out/lib/froststrap/libs
+    ${lib.optionalString stdenv.hostPlatform.isLinux
+      "--prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath [ dbus fontconfig ]}:$out/lib/froststrap/libs"
+    }
     runHook postInstall
   '';
 
-  meta.mainProgram = "Froststrap";
+  meta = {
+    description = "A cross-platform Roblox bootstrapper, focused on performance and customization.";
+    homepage = "https://froststrap.xyz/";
+    license = lib.licenses.mpl20;
+    mainProgram = "Froststrap";
+    platforms = [
+      "x86_64-linux"
+      "x86-64-darwin"
+      "aarch64-darwin"
+    ];
+  };
 }
