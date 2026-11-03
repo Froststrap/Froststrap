@@ -137,6 +137,9 @@ sealed partial class Program
 #endif
             .LogToTrace();
 
+        // Bundled Inter (static weights) on every OS so text looks the same everywhere.
+        builder = builder.WithInterFont();
+
         if (OperatingSystem.IsWindows() && App.LaunchSettings?.NoGpuFlag.Active == true)
         {
             builder = builder.With(new Win32PlatformOptions

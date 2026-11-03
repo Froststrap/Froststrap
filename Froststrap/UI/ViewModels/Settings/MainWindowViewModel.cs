@@ -36,8 +36,6 @@ namespace Froststrap.UI.ViewModels.Settings
         public Thickness TitlebarPadding { get => _titlebarPadding; }
         private Thickness _openSidebarTitleMargin = OperatingSystem.IsMacOS() ? new Thickness(56,0,0,0) : new Thickness(155,0,0,0);
         public Thickness OpenSidebarTitleMargin { get => _openSidebarTitleMargin; }
-        private Thickness _textCorrection = OperatingSystem.IsMacOS() ? new Thickness(0,4,0,0) : new Thickness(0,0,0,0);
-        public Thickness TextCorrection { get => _textCorrection; }
         private int _iconButtonSize = OperatingSystem.IsMacOS() ? 28 : 24;
         public int IconButtonSize { get => _iconButtonSize; }
         private int _iconButtonIconSize = OperatingSystem.IsMacOS() ? 14 : 14;

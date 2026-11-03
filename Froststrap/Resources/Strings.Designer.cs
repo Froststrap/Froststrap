@@ -4109,6 +4109,33 @@ namespace Froststrap.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Enter a refresh rate in Hz and add it to the list of modes the Virtual Display offers.
+        /// </summary>
+        public static string Menu_Behaviour_VirtualDisplayHz_Description {
+            get {
+                return ResourceManager.GetString("Menu.Behaviour.VirtualDisplayHz.Description", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to e.g. 144.
+        /// </summary>
+        public static string Menu_Behaviour_VirtualDisplayHz_Placeholder {
+            get {
+                return ResourceManager.GetString("Menu.Behaviour.VirtualDisplayHz.Placeholder", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Refresh rates.
+        /// </summary>
+        public static string Menu_Behaviour_VirtualDisplayHz_Title {
+            get {
+                return ResourceManager.GetString("Menu.Behaviour.VirtualDisplayHz.Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to A clean installation of Roblox will occur on the next launch..
         /// </summary>
         public static string Menu_Behaviour_ForceRobloxReinstall_Description {

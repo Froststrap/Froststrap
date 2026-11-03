@@ -190,8 +190,14 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private static bool IsBackdropSupported(WindowsBackdrops backdrop)
         {
+            if (OperatingSystem.IsMacOS())
+                return backdrop is WindowsBackdrops.None or WindowsBackdrops.Blur;
+
             if (!OperatingSystem.IsWindows())
                 return backdrop == WindowsBackdrops.None;
+
+            if (backdrop == WindowsBackdrops.Blur)
+                return false;
 
             return backdrop switch
             {

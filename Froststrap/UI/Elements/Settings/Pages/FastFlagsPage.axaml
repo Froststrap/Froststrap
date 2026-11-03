@@ -47,7 +47,6 @@ SPDX-License-Identifier: MPL-2.0
                 Description="{x:Static resources:Strings.Menu_FastFlags_Presets_MSAA_Description}">
                 <ComboBox
                     Margin="0"
-                    Padding="10,5"
                     MinWidth="200"
                     ItemsSource="{Binding MSAALevels.Keys, Mode=OneTime}"
                     SelectedItem="{Binding SelectedMSAALevel, Mode=TwoWay}">
@@ -130,7 +129,6 @@ SPDX-License-Identifier: MPL-2.0
 				<ComboBox
 					MinWidth="200"
 					Margin="0"
-					Padding="10,5"
 					ItemsSource="{Binding RenderingModeOptions, Mode=OneTime}"
 					SelectedItem="{Binding SelectedRenderingModeItem, Mode=TwoWay}">
 					<ComboBox.ItemTemplate>
@@ -148,7 +146,6 @@ SPDX-License-Identifier: MPL-2.0
                 <ComboBox
                     MinWidth="200"
                     Margin="0"
-                    Padding="10,5"
                     ItemsSource="{Binding QualityLevels.Keys, Mode=OneTime}"
                     SelectedItem="{Binding SelectedQualityLevel, Mode=TwoWay}">
                     <ComboBox.ItemTemplate>
@@ -162,7 +159,7 @@ SPDX-License-Identifier: MPL-2.0
             <controls:OptionControl
                 Header="{x:Static resources:Strings.Menu_FastFlags_Presets_TextureQuality_Title}"
                 Description="{x:Static resources:Strings.Menu_FastFlags_Presets_TextureQuality_Description}">
-                <ComboBox Width="200" Margin="5,0,0,0" Padding="10,5,10,5" ItemsSource="{Binding TextureQualities.Keys, Mode=OneTime}" SelectedItem="{Binding SelectedTextureQuality, Mode=TwoWay}">
+                <ComboBox Width="200" Margin="5,0,0,0" ItemsSource="{Binding TextureQualities.Keys, Mode=OneTime}" SelectedItem="{Binding SelectedTextureQuality, Mode=TwoWay}">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding ., Converter={StaticResource EnumNameConverter}}" />
