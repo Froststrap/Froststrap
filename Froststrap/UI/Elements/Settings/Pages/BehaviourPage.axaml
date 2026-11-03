@@ -78,13 +78,15 @@ SPDX-License-Identifier: MPL-2.0
                             <StackPanel Orientation="Horizontal" Spacing="4">
                                 <TextBox
                                     Width="150"
+                                    Height="32"
+                                    VerticalContentAlignment="Center"
                                     PlaceholderText="{x:Static resources:Strings.Menu_Behaviour_VirtualDisplayHz_Placeholder}"
                                     Text="{Binding NewVirtualDisplayHz, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                     <TextBox.KeyBindings>
                                         <KeyBinding Gesture="Enter" Command="{Binding AddVirtualDisplayHzCommand}" />
                                     </TextBox.KeyBindings>
                                 </TextBox>
-                                <Button Content="{x:Static resources:Strings.Common_Add}" Command="{Binding AddVirtualDisplayHzCommand}" />
+                                <Button Content="{x:Static resources:Strings.Common_Add}" Command="{Binding AddVirtualDisplayHzCommand}" Height="32" VerticalContentAlignment="Center" />
                             </StackPanel>
                             <ItemsControl ItemsSource="{Binding VirtualDisplayHzEntries}">
                                 <ItemsControl.ItemTemplate>

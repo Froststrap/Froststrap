@@ -44,7 +44,6 @@ SPDX-License-Identifier: MPL-2.0
                         <ComboBox
                             MinWidth="200"
                             Margin="5,0,0,0"
-                            Padding="10,5,10,5"
                             ItemsSource="{Binding Themes}"
                             SelectedItem="{Binding Theme, Mode=TwoWay}">
                             <ComboBox.ItemTemplate>
@@ -184,7 +183,6 @@ SPDX-License-Identifier: MPL-2.0
                     <ComboBox
                         MinWidth="200"
                         Margin="5,0,0,0"
-                        Padding="10,5,10,5"
                         ItemsSource="{Binding BackdropOptions}"
                         SelectedItem="{Binding SelectedBackdrop, Mode=TwoWay}"/>
                 </controls:OptionControl>
@@ -192,7 +190,6 @@ SPDX-License-Identifier: MPL-2.0
                 <controls:OptionControl Description="{x:Static resources:Strings.Menu_Appearance_Language_Description}" Header="{x:Static resources:Strings.Menu_Appearance_Language_Title}">
                     <ComboBox
                         MinWidth="200"
-                        Padding="10,5,10,5"
                         ItemsSource="{Binding Languages, Mode=OneTime}"
                         SelectedItem="{Binding SelectedLanguage, Mode=TwoWay}" />
                 </controls:OptionControl>
@@ -248,7 +245,6 @@ SPDX-License-Identifier: MPL-2.0
                                   ColumnDefinitions="*, Auto">
                                 <ComboBox
                                     HorizontalAlignment="Stretch"
-                                    Padding="10,5,10,5"
                                     ItemsSource="{Binding RobloxIcons, Mode=OneWay}"
                                     SelectedValue="{Binding RobloxIcon, Mode=TwoWay}"
                                     SelectedValueBinding="{Binding IconType}">
@@ -338,7 +334,6 @@ SPDX-License-Identifier: MPL-2.0
 
                     <controls:CardExpander.HeaderContent>
                         <ComboBox MinWidth="200"
-                                  Padding="10,5,10,5"
                                   ItemsSource="{Binding Dialogs, Mode=OneTime}"
                                   SelectedItem="{Binding Dialog, Mode=TwoWay}">
                             <ComboBox.ItemTemplate>
@@ -468,7 +463,6 @@ SPDX-License-Identifier: MPL-2.0
                     <Grid Width="200" HorizontalAlignment="Right" ColumnDefinitions="*, Auto">
                         <ComboBox
                             HorizontalAlignment="Stretch"
-                            Padding="10,5,10,5"
                             ItemsSource="{Binding Icons, Mode=OneWay}"
                             SelectedValue="{Binding Icon, Mode=TwoWay}"
                             SelectedValueBinding="{Binding IconType}">

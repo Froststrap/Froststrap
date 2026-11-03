@@ -449,6 +449,17 @@ internal partial class App : Application
     {
         AvaloniaXamlLoader.Load(this);
 
+        // FluentAvalonia pins ContentControlThemeFontFamily to the system font, bypassing the default font.
+        Resources["ContentControlThemeFontFamily"] = new Avalonia.Media.FontFamily("fonts:Inter#Inter");
+
+        // FluentAvalonia's paddings put more space below the text (tuned for Segoe UI), which reads as too high with Inter.
+        Resources["ComboBoxPadding"] = new Thickness(12, 7, 0, 5);
+        Resources["ComboBoxItemThemePadding"] = new Thickness(11, 7, 11, 5);
+        Resources["ComboBoxEditableTextPadding"] = new Thickness(11, 7, 32, 4);
+        Resources["TextControlThemePadding"] = new Thickness(10, 7, 6, 4);
+        Resources["ButtonPadding"] = new Thickness(11, 5, 11, 5);
+        Resources["MenuFlyoutItemThemePadding"] = new Thickness(11, 10, 11, 7);
+
         AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
         TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
         Dispatcher.UIThread.UnhandledException += GlobalExceptionHandler;

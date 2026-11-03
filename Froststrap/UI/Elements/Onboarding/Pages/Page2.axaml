@@ -44,7 +44,6 @@ SPDX-License-Identifier: MPL-2.0
                 <ComboBox
                     MinWidth="200"
                     Margin="5,0,0,0"
-                    Padding="10,5,10,5"
                     ItemsSource="{Binding BackdropOptions}"
                     SelectedItem="{Binding SelectedBackdrop, Mode=TwoWay}"/>
             </controls:OptionControl>
@@ -54,7 +53,6 @@ SPDX-License-Identifier: MPL-2.0
                     <ComboBox
                         Grid.Column="1"
                         MinWidth="200"
-                        Padding="10,5,10,5"
                         ItemsSource="{Binding Themes}"
                         SelectedItem="{Binding Theme, Mode=TwoWay}">
                         <ComboBox.ItemTemplate>
