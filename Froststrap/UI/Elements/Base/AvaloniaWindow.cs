@@ -255,7 +255,13 @@ namespace Froststrap.UI.Elements.Base
                     foreach (var s in App.Settings.Prop.CustomGradientStops)
                     {
                         if (Color.TryParse(s.Color, out var color))
+                        {
+                            // Keep the gradient translucent enough for the blur behind it to show.
+                            if (App.Settings.Prop.SelectedBackdrop == WindowsBackdrops.Blur)
+                                color = Color.FromArgb(Math.Min(color.A, (byte)0xBF), color.R, color.G, color.B);
+
                             avaloniaStops.Add(new Avalonia.Media.GradientStop(color, s.Offset));
+                        }
                     }
 
                     double angle = App.Settings.Prop.GradientAngle ?? 45;
@@ -464,12 +470,58 @@ namespace Froststrap.UI.Elements.Base
             }
         }
 
+        private static void LogTransparency(object? sender, AvaloniaPropertyChangedEventArgs e)
+        {
+            if (e.Property == TopLevel.ActualTransparencyLevelProperty)
+                App.Logger.Debug($"Actual transparency level: {e.NewValue}");
+        }
+
+        private static readonly (string Key, string Color)[] BlurLightFills =
+        [
+            ("ControlFillColorDefaultBrush", "#4DFFFFFF"),
+            ("ControlFillColorSecondaryBrush", "#33FFFFFF"),
+            ("ControlFillColorTertiaryBrush", "#26FFFFFF"),
+            ("CardBackgroundFillColorDefaultBrush", "#4DFFFFFF"),
+            ("LayerFillColorDefaultBrush", "#26FFFFFF"),
+            ("SolidBackgroundFillColorBaseBrush", "#00F3F3F3"),
+            ("SolidBackgroundFillColorTertiaryBrush", "#4DF9F9F9")
+        ];
+
+        // FluentAvalonia's light fills are ~50-70% white, which hides the blur; dark fills are already faint.
+        private static void ApplyBlurLightFills(bool enable)
+        {
+            var app = Application.Current;
+            if (app is null)
+                return;
+
+            if (!app.Resources.ThemeDictionaries.TryGetValue(ThemeVariant.Light, out var existing)
+                || existing is not ResourceDictionary dict)
+            {
+                if (!enable)
+                    return;
+
+                dict = new ResourceDictionary();
+                app.Resources.ThemeDictionaries[ThemeVariant.Light] = dict;
+            }
+
+            foreach (var (key, color) in BlurLightFills)
+            {
+                if (enable)
+                    dict[key] = new SolidColorBrush(Color.Parse(color));
+                else
+                    dict.Remove(key);
+            }
+        }
+
         public static void UpdateBackdropForAllWindows()
         {
             if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
                 return;
 
             var selectedBackdrop = App.Settings.Prop.SelectedBackdrop;
+
+            if (OperatingSystem.IsMacOS())
+                ApplyBlurLightFills(selectedBackdrop == WindowsBackdrops.Blur);
 
             foreach (var window in desktop.Windows)
             {
@@ -489,9 +541,12 @@ namespace Froststrap.UI.Elements.Base
                     {
                         WindowsBackdrops.Acrylic => [WindowTransparencyLevel.AcrylicBlur, WindowTransparencyLevel.None],
                         WindowsBackdrops.Mica => [WindowTransparencyLevel.Mica, WindowTransparencyLevel.None],
+                        WindowsBackdrops.Blur => [WindowTransparencyLevel.AcrylicBlur, WindowTransparencyLevel.Blur, WindowTransparencyLevel.None],
                         _ => [WindowTransparencyLevel.None]
                     };
                     window.Background = Brushes.Transparent;
+                    window.PropertyChanged -= LogTransparency;
+                    window.PropertyChanged += LogTransparency;
                 }
                 else
                 {
