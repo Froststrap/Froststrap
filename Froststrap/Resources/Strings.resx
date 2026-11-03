@@ -698,6 +698,15 @@ Would you like to upgrade your currently installed version?</value>
   <data name="Menu.Behaviour.EnableVirtualDisplay.Description" xml:space="preserve">
     <value>When Roblox launches, open AppleBlox's VirtualDisplay to have a fake 240Hz display for Roblox to VSync to.</value>
   </data>
+  <data name="Menu.Behaviour.VirtualDisplayHz.Title" xml:space="preserve">
+    <value>Refresh rates</value>
+  </data>
+  <data name="Menu.Behaviour.VirtualDisplayHz.Description" xml:space="preserve">
+    <value>Enter a refresh rate in Hz and add it to the list of modes the Virtual Display offers</value>
+  </data>
+  <data name="Menu.Behaviour.VirtualDisplayHz.Placeholder" xml:space="preserve">
+    <value>e.g. 144</value>
+  </data>
   <data name="Menu.Behaviour.ConfirmLaunches.Description" xml:space="preserve">
     <value>Prevents closing your existing game when accidentally launching another Roblox instance.</value>
   </data>

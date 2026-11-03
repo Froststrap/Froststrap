@@ -71,6 +71,50 @@ SPDX-License-Identifier: MPL-2.0
                             PlaceholderText="Froststrap Virtual Display"
                             Text="{Binding VirtualDisplayHeight, Mode=TwoWay}" />
                     </controls:OptionControl>
+                    <controls:OptionControl
+                        Header="{x:Static resources:Strings.Menu_Behaviour_VirtualDisplayHz_Title}"
+                        Description="{x:Static resources:Strings.Menu_Behaviour_VirtualDisplayHz_Description}">
+                        <StackPanel Spacing="8" MinWidth="260">
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <TextBox
+                                    Width="150"
+                                    PlaceholderText="{x:Static resources:Strings.Menu_Behaviour_VirtualDisplayHz_Placeholder}"
+                                    Text="{Binding NewVirtualDisplayHz, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                    <TextBox.KeyBindings>
+                                        <KeyBinding Gesture="Enter" Command="{Binding AddVirtualDisplayHzCommand}" />
+                                    </TextBox.KeyBindings>
+                                </TextBox>
+                                <Button Content="{x:Static resources:Strings.Common_Add}" Command="{Binding AddVirtualDisplayHzCommand}" />
+                            </StackPanel>
+                            <ItemsControl ItemsSource="{Binding VirtualDisplayHzEntries}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border MinHeight="40"
+                                                Margin="0,2"
+                                                Padding="12,4,4,4"
+                                                CornerRadius="6"
+                                                Background="{DynamicResource ControlFillColorSecondaryBrush}">
+                                            <Grid ColumnDefinitions="*,Auto">
+                                                <TextBlock Grid.Column="0"
+                                                           Text="{Binding Display}"
+                                                           VerticalAlignment="Center" />
+                                                <controls:IconButton Grid.Column="1"
+                                                                     Icon="Trash"
+                                                                     Classes="Danger"
+                                                                     Command="{Binding RemoveCommand}"
+                                                                     Width="32"
+                                                                     Height="32"
+                                                                     MinHeight="32"
+                                                                     Padding="0"
+                                                                     VerticalAlignment="Center"
+                                                                     ToolTip.Tip="{x:Static resources:Strings.Common_Remove}" />
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </controls:OptionControl>
                     <!-- <controls:OptionControl -->
                         <!-- Header="Display Name" -->
                         <!-- Description="Customise the metadata what Virtual Display is recognized as"> -->

@@ -47,7 +47,7 @@ namespace Froststrap.UI
                     App.Settings.Prop.VirtualDisplayName,
                     App.Settings.Prop.VirtualDisplayWidth,
                     App.Settings.Prop.VirtualDisplayHeight,
-                    [60.0, 120.0, 240.0],
+                    App.Settings.Prop.VirtualDisplayHzModes.Length > 0 ? App.Settings.Prop.VirtualDisplayHzModes : [60.0],
                     serial
                 );
 
