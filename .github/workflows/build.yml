@@ -39,6 +39,9 @@ jobs:
           PRE=""; [[ "$GITHUB_REF_NAME" == *-* ]] && PRE="--pre"
           vpk download github --repoUrl $PACKAGES_REPO --token ${{ secrets.PACKAGE_TOKEN }} --channel windows-x64 --outputDir .build/velopack $PRE
 
+      - name: Clean
+        run: cargo xtask clean
+
       - name: Publish
         run: cargo xtask publish
 
@@ -125,6 +128,9 @@ jobs:
           PRE=""; [[ "$GITHUB_REF_NAME" == *-* ]] && PRE="--pre"
           vpk download github --repoUrl $PACKAGES_REPO --token ${{ secrets.PACKAGE_TOKEN }} --channel macos-${{ matrix.arch }} --outputDir .build/velopack $PRE
 
+      - name: Clean
+        run: cargo xtask clean
+
       - name: Publish
         env:
           SIGN: ${{ startsWith(github.ref, 'refs/tags/v') && 'true' || 'false' }}
@@ -192,6 +198,9 @@ jobs:
         run: |
           PRE=""; [[ "$GITHUB_REF_NAME" == *-* ]] && PRE="--pre"
           vpk download github --repoUrl $PACKAGES_REPO --token ${{ secrets.PACKAGE_TOKEN }} --channel linux-x64 --outputDir .build/velopack $PRE
+
+      - name: Clean
+        run: cargo xtask clean
 
       - name: Publish
         run: cargo xtask publish
