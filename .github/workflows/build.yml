@@ -29,7 +29,7 @@ jobs:
         run: |
           rustup toolchain install nightly --profile minimal
           rustup default nightly
-          dotnet tool install -g vpk --version $VPK_VERSION
+          dotnet tool install vpk --version $VPK_VERSION --tool-path "$RUNNER_TEMP/vpk"
           echo "$RUNNER_TEMP/vpk" >> "$GITHUB_PATH"
 
       - name: Fetch previous release (for deltas)
@@ -82,7 +82,7 @@ jobs:
           rustup toolchain install nightly --profile minimal
           rustup default nightly
           rustup target add ${{ matrix.rust-target }}
-          dotnet tool install -g vpk --version $VPK_VERSION
+          dotnet tool install vpk --version $VPK_VERSION --tool-path "$RUNNER_TEMP/vpk"
           echo "$RUNNER_TEMP/vpk" >> "$GITHUB_PATH"
 
       - name: Remove stale signing keychain
@@ -181,7 +181,7 @@ jobs:
 
       - name: Install other deps
         run: |
-          dotnet tool install -g vpk --version $VPK_VERSION
+          dotnet tool install vpk --version $VPK_VERSION --tool-path "$RUNNER_TEMP/vpk"
           echo "$RUNNER_TEMP/vpk" >> "$GITHUB_PATH"
           apt install -y libdbus-1-dev pkg-config
 
