@@ -28,7 +28,7 @@
   zlib,
   krb5,
   dbus,
-  alsa-lib,
+  libpulseaudio,
   lib,
 }:
 {
@@ -68,7 +68,7 @@ let
     libsecret
     skia
     dbus
-    alsa-lib
+    libpulseaudio
 
     # X11 libs
     libX11
@@ -106,7 +106,7 @@ buildDotnetModule {
 
   buildInputs = lib.optionals stdenv.hostPlatform.isLinux [
     dbus
-    alsa-lib
+    libpulseaudio
     fontconfig
     zlib
     krb5

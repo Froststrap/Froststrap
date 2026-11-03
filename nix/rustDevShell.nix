@@ -7,7 +7,7 @@
   callPackage,
   pkg-config,
   dbus,
-  alsa-lib,
+  libpulseaudio,
 }:
 {
   fenix,
@@ -33,6 +33,6 @@ mkFragment {
     dbus
   ]
   ++ lib.optionals stdenv.hostPlatform.isLinux [
-    alsa-lib
+    libpulseaudio
   ];
 }

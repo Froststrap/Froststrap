@@ -169,7 +169,7 @@ jobs:
             build-essential \
             zlib1g-dev \
             libdbus-1-dev \
-            libasound2-dev \
+            libpulse-dev \
             pkg-config
 
       - uses: actions/checkout@v7

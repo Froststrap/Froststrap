@@ -26,7 +26,7 @@
   callPackage,
   nspr,
   dbus,
-  alsa-lib,
+  libpulseaudio,
   squashfsTools,
   skia,
 }:
@@ -48,7 +48,7 @@ mkFragment (finalAttrs: {
     libsecret
     skia
     dbus
-    alsa-lib
+    libpulseaudio
 
     # X11 libs
     libX11
