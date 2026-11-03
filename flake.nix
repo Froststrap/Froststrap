@@ -87,7 +87,7 @@
     )
     // {
       overlays.default = final: prev: {
-        froststrap = final.callPackage ./nix/package.nix { };
+        froststrap = (final.callPackage ./nix/package.nix { }) inputs;
         mkFroststrap = args: final.callPackage ./nix/binary.nix args;
       };
     };

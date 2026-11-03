@@ -164,7 +164,7 @@ internal static class AppInitializer
                 return "<timeout>";
             }
 
-             process.WaitForExit();
+            Task.WaitAll(stdout, stderr);
 
             return $"{stdout.Result}{stderr.Result}".Trim();
         }

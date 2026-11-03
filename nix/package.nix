@@ -139,7 +139,7 @@ buildDotnetModule {
     mainProgram = "Froststrap";
     platforms = [
       "x86_64-linux"
-      "x86-64-darwin"
+      "x86_64-darwin"
       "aarch64-darwin"
     ];
   };

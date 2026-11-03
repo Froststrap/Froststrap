@@ -32,6 +32,15 @@ fn find_dylib(file_name: &str) -> PathBuf {
     p
 }
 
+fn cf_bundle_version(version: &str) -> String {
+    version
+        .split(|c: char| !c.is_ascii_digit())
+        .filter(|part| !part.is_empty())
+        .take(4)
+        .collect::<Vec<_>>()
+        .join(".")
+}
+
 fn info_plist(version: &str) -> PListFile {
     PListFile::new("1.0").content(dict![
         string("CFBundleDevelopmentRegion", "en"),
@@ -44,7 +53,7 @@ fn info_plist(version: &str) -> PListFile {
         string("CFBundleIconFile", "AppIcon"),
         string("CFBundleIconName", "AppIcon"),
         string("CFBundleShortVersionString", version),
-        string("CFBundleVersion", version.replace('.', "")),
+        string("CFBundleVersion", cf_bundle_version(version)),
         string("LSMinimumSystemVersion", "12.0"),
         string("LSApplicationCategoryType", "public.app-category.utilities"),
         entry("CFBundleSupportedPlatforms", array!["MacOSX"]),

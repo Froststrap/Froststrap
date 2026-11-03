@@ -112,8 +112,6 @@ fn post_install_script() -> String {
         if command -v gtk-update-icon-cache >/dev/null 2>&1; then
           gtk-update-icon-cache -q /usr/share/icons/hicolor || :
         fi
-
-        /usr/bin/Froststrap --register-mime-types 2>/dev/null || :
     "#,
     )
 }
