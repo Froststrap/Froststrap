@@ -274,6 +274,18 @@ SPDX-License-Identifier: MPL-2.0
                             IsChecked="{Binding BackgroundMusicShuffle, Mode=TwoWay}"
                             AutomationProperties.Name="{x:Static resources:Strings.Menu_Appearance_BackgroundMusic_Shuffle}" />
                     </Grid>
+
+                    <Grid
+                        ColumnDefinitions="*,Auto"
+                        ColumnSpacing="8">
+                        <TextBlock
+                            Text="{x:Static resources:Strings.Menu_Appearance_BackgroundMusic_Resume}"
+                            VerticalAlignment="Center" />
+                        <ToggleSwitch
+                            Grid.Column="1"
+                            IsChecked="{Binding BackgroundMusicResume, Mode=TwoWay}"
+                            AutomationProperties.Name="{x:Static resources:Strings.Menu_Appearance_BackgroundMusic_Resume}" />
+                    </Grid>
                 </StackPanel>
             </controls:CardExpander>
 

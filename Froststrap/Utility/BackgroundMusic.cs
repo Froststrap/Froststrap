@@ -30,6 +30,7 @@ namespace Froststrap.Utility
         private static List<string> _tracks = [];
         private static int _index = -1;
         private static string? _playing;
+        private static volatile string? _lastStarted;
         private static string? _failedFolder;
         private static bool _unreadable;
         private static bool _shuffled;
@@ -43,16 +44,43 @@ namespace Froststrap.Utility
             AudioPlayer.TrackEnded += OnTrackEnded;
         }
 
+        // Settings can close and reopen right away in the same process; keep playing through that
+        private static readonly TimeSpan StopDelay = TimeSpan.FromSeconds(2);
+        private static readonly Lock WindowLock = new();
+        private static int _windowGeneration;
+
         public static void Start()
         {
-            _active = true;
+            lock (WindowLock)
+            {
+                _windowGeneration++;
+                _active = true;
+            }
+
             Retry();
         }
 
         public static void Stop()
         {
-            _active = false;
-            Refresh();
+            SaveLastTrack();
+
+            int generation;
+            lock (WindowLock)
+                generation = ++_windowGeneration;
+
+            _ = Task.Delay(StopDelay).ContinueWith(_ =>
+            {
+                lock (WindowLock)
+                {
+                    // reopened in the meantime
+                    if (_windowGeneration != generation)
+                        return;
+
+                    _active = false;
+                }
+
+                Refresh();
+            });
         }
 
         // turning music on is a retry; set here because a quick off/on can be coalesced into one Apply
@@ -193,7 +221,8 @@ namespace Froststrap.Utility
                 return;
             }
 
-            int next = advance || _index < 0 ? _index + 1 : _index;
+            // starting again resumes the same track, or moves on if the user doesn't want that
+            int next = advance || _index < 0 || !settings.BackgroundMusicResume ? _index + 1 : _index;
 
             // stop once every track has failed in a row, whether it failed to start or broke off later
             while (_failures < _tracks.Count)
@@ -219,6 +248,7 @@ namespace Froststrap.Utility
                 {
                     _index = index;
                     _playing = path;
+                    _lastStarted = path;
                     return;
                 }
 
@@ -250,9 +280,12 @@ namespace Froststrap.Utility
 
             if (_folder != folder)
             {
+                // first load since the app started: pick up from the song saved last session
+                string? saved = _folder is null ? App.State.Prop.BackgroundMusicLastTrack : null;
+
                 _folder = folder;
-                _index = -1;
                 StopPlayback();
+                _index = saved is null ? -1 : _tracks.FindIndex(t => string.Equals(t, saved, StringComparison.OrdinalIgnoreCase));
                 return;
             }
 
@@ -325,6 +358,17 @@ namespace Froststrap.Utility
                 message,
                 FAInfoBarSeverity.Error,
                 5000);
+        }
+
+        // runs on the UI thread when Settings closes, so it doesn't race other State.json saves
+        private static void SaveLastTrack()
+        {
+            string? last = _lastStarted;
+            if (last is null || last == App.State.Prop.BackgroundMusicLastTrack)
+                return;
+
+            App.State.Prop.BackgroundMusicLastTrack = last;
+            App.State.SaveSetting(nameof(State.BackgroundMusicLastTrack));
         }
 
         private static void StopPlayback()
