@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+using System.Security.Cryptography;
 using FluentAvalonia.UI.Controls;
 using Froststrap.Backend;
 using Froststrap.UI.Elements.Settings;
@@ -68,19 +69,23 @@ namespace Froststrap.Utility
             lock (WindowLock)
                 generation = ++_windowGeneration;
 
-            _ = Task.Delay(StopDelay).ContinueWith(_ =>
+            _ = StopLaterAsync(generation);
+        }
+
+        private static async Task StopLaterAsync(int generation)
+        {
+            await Task.Delay(StopDelay);
+
+            lock (WindowLock)
             {
-                lock (WindowLock)
-                {
-                    // reopened in the meantime
-                    if (_windowGeneration != generation)
-                        return;
+                // reopened in the meantime
+                if (_windowGeneration != generation)
+                    return;
 
-                    _active = false;
-                }
+                _active = false;
+            }
 
-                Refresh();
-            });
+            Refresh();
         }
 
         // turning music on is a retry; set here because a quick off/on can be coalesced into one Apply
@@ -344,7 +349,7 @@ namespace Froststrap.Utility
         private static List<string> Shuffled(List<string> tracks)
         {
             string[] order = [.. tracks];
-            Random.Shared.Shuffle(order);
+            RandomNumberGenerator.Shuffle<string>(order);
             return [.. order];
         }
 
