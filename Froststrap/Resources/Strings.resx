@@ -3366,4 +3366,40 @@ Close Roblox first. This can take a while.</value>
   <data name="Menu.Bootstrapper.RobloxTheme.Description" xml:space="preserve">
     <value>The theme used by the Roblox app.</value>
   </data>
+  <data name="Menu.Diagnostics.Logs.Title" xml:space="preserve">
+    <value>Logs</value>
+  </data>
+  <data name="Menu.Diagnostics.FroststrapLogs.Title" xml:space="preserve">
+    <value>Froststrap logs</value>
+  </data>
+  <data name="Menu.Diagnostics.FroststrapLogs.Description" xml:space="preserve">
+    <value>Open the folder containing Froststrap's log files.</value>
+  </data>
+  <data name="Menu.Diagnostics.RobloxLogs.Title" xml:space="preserve">
+    <value>Roblox logs</value>
+  </data>
+  <data name="Menu.Diagnostics.RobloxLogs.Description" xml:space="preserve">
+    <value>Open the folder containing Roblox's log files.</value>
+  </data>
+  <data name="Menu.Diagnostics.Screenshot.Title" xml:space="preserve">
+    <value>Screenshots</value>
+  </data>
+  <data name="Menu.Diagnostics.Screenshot.Header" xml:space="preserve">
+    <value>Settings window screenshot</value>
+  </data>
+  <data name="Menu.Diagnostics.Screenshot.Description" xml:space="preserve">
+    <value>Save an image of the settings window without the window frame.</value>
+  </data>
+  <data name="Menu.Diagnostics.Screenshot.Button" xml:space="preserve">
+    <value>Take screenshot</value>
+  </data>
+  <data name="Menu.Diagnostics.Screenshot.NotOpen" xml:space="preserve">
+    <value>Open the settings window first.</value>
+  </data>
+  <data name="Menu.Diagnostics.Screenshot.Saved" xml:space="preserve">
+    <value>Screenshot saved.</value>
+  </data>
+  <data name="Menu.Diagnostics.Screenshot.Failed" xml:space="preserve">
+    <value>Failed to save the screenshot.</value>
+  </data>
 </root>
