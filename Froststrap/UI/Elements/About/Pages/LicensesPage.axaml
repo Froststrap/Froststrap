@@ -41,7 +41,7 @@ SPDX-License-Identifier: MPL-2.0
                                CommandParameter="https://github.com/AppleBlox/appleblox" />
 
                 <ui:CardAction Margin="4" Icon="Copyright"
-                               Header="Sober/Vinegar"
+                               Header="Vinegar"
                                Description="GPL-3.0"
                                Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
                                CommandParameter="https://github.com/vinegarhq/vinegar" />
@@ -95,10 +95,10 @@ SPDX-License-Identifier: MPL-2.0
                                CommandParameter="https://github.com/CommunityToolkit/dotnet" />
 
                 <ui:CardAction Margin="4" Icon="Copyright"
-                               Header="Discord Rich Presence"
+                               Header="DiscordRPC-NativeAOT"
                                Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
                                Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
-                               CommandParameter="https://github.com/Lachee/discord-rpc-csharp" />
+                               CommandParameter="https://github.com/samse1337/DiscordRPC-NativeAOT" />
 
                 <ui:CardAction Margin="4" Icon="Copyright"
                                Header="MarkDig"
@@ -131,10 +131,10 @@ SPDX-License-Identifier: MPL-2.0
                                CommandParameter="https://github.com/microsoft/windows-rs" />
 
                 <ui:CardAction Margin="4" Icon="Copyright"
-                               Header="WiX Toolset"
-                               Description="MS-RL License"
+                               Header="Velopack"
+                               Description="MIT License"
                                Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
-                               CommandParameter="https://github.com/wixtoolset/wix" />
+                               CommandParameter="https://github.com/velopack/velopack" />
             </UniformGrid>
         </StackPanel>
     </ScrollViewer>
