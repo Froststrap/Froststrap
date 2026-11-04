@@ -26,14 +26,8 @@ SPDX-License-Identifier: MPL-2.0
                 <ToggleSwitch IsChecked="{Binding ExtractIconsTask.NewState, Mode=TwoWay}" />
             </controls:OptionControl>
 
-            <Border Height="8" />
-
-            <TextBlock
-                FontSize="20"
-                FontWeight="Bold"
-                Margin="0,8,0,0"
-                Text="{x:Static resources:Strings.Menu_Shortcuts_General_Title}" />
-            <TextBlock FontSize="14" Margin="0,4,0,10" TextWrapping="Wrap" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="{x:Static resources:Strings.Menu_Shortcuts_General_Description}" />
+            <controls:SectionHeader Title="{x:Static resources:Strings.Menu_Shortcuts_General_Title}"
+                Description="{x:Static resources:Strings.Menu_Shortcuts_General_Description}" />
 
             <Grid x:Name="ShortcutsGrid" ColumnDefinitions="*, *">
                 <controls:OptionControl
@@ -54,14 +48,8 @@ SPDX-License-Identifier: MPL-2.0
                 </controls:OptionControl>
             </Grid>
 
-            <Border Height="8" />
-
-            <TextBlock
-                FontSize="20"
-                FontWeight="Bold"
-                Margin="0,8,0,0"
-                Text="{x:Static resources:Strings.Menu_Shortcuts_Function_Title}" />
-            <TextBlock FontSize="14" Margin="0,4,0,10" TextWrapping="Wrap" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="{x:Static resources:Strings.Menu_Shortcuts_Function_Description}" />
+            <controls:SectionHeader Title="{x:Static resources:Strings.Menu_Shortcuts_Function_Title}"
+                Description="{x:Static resources:Strings.Menu_Shortcuts_Function_Description}" />
 
             <Grid ColumnDefinitions="*,*,*">
                 <controls:OptionControl
@@ -86,19 +74,8 @@ SPDX-License-Identifier: MPL-2.0
                 </controls:OptionControl>
             </Grid>
 
-            <Border Height="8" />
-
-            <TextBlock
-                FontSize="20"
-                FontWeight="Bold"
-                Margin="0,8,0,0"
-                Text="{x:Static resources:Strings.Common_Miscellaneous}" />
-
-            <controls:MarkdownTextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                        MarkdownText="{x:Static resources:Strings.Menu_Shortcuts_Misc_Description}"
-                                        Margin="0,4,0,10"
-                                        FontSize="14"
-                                        TextWrapping="Wrap" />
+            <controls:SectionHeader Title="{x:Static resources:Strings.Common_Miscellaneous}"
+                Description="{x:Static resources:Strings.Menu_Shortcuts_Misc_Description}" />
 
             <controls:CardExpander Header="{x:Static resources:Strings.Menu_Shortcuts_GameShortcut_Title}" IsExpanded="True">
                 <StackPanel>

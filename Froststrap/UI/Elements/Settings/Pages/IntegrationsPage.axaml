@@ -21,18 +21,9 @@ SPDX-License-Identifier: MPL-2.0
 
     <ScrollViewer VerticalScrollBarVisibility="Hidden">
         <StackPanel Margin="14">
-            <TextBlock
-                FontSize="20"
-                FontWeight="Bold"
-                Text="{x:Static resources:Strings.Menu_Integrations_ActivityTracking}"
-            />
-
-            <controls:MarkdownTextBlock
-                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                MarkdownText="{x:Static resources:Strings.Menu_Integrations_ActivityTracking_Description}"
-                TextWrapping="Wrap"
-                Margin="0,4,0,10"
-            />
+            <controls:SectionHeader Title="{x:Static resources:Strings.Menu_Integrations_ActivityTracking}"
+                Description="{x:Static resources:Strings.Menu_Integrations_ActivityTracking_Description}"
+                Margin="0,0,0,3" />
 
             <controls:OptionControl
                 x:Name="ActivityTrackingOption"
@@ -137,21 +128,8 @@ SPDX-License-Identifier: MPL-2.0
                 </StackPanel>
             </controls:CardExpander>
 
-            <Border Height="8" />
-
-            <TextBlock
-                FontSize="20"
-                FontWeight="Bold"
-                Text="{x:Static resources:Strings.Common_DiscordRichPresence}"
-                Margin="0,8,0,0"
-            />
-
-            <controls:MarkdownTextBlock
-                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                MarkdownText="{Binding Source={x:Static resources:Strings.Menu_Integrations_RequiresActivityTracking}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://bloxstraplabs.com/wiki/features/discord-rich-presence/'}"
-                TextWrapping="Wrap"
-                Margin="0,4,0,10"
-            />
+            <controls:SectionHeader Title="{x:Static resources:Strings.Common_DiscordRichPresence}"
+                Description="{Binding Source={x:Static resources:Strings.Menu_Integrations_RequiresActivityTracking}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://bloxstraplabs.com/wiki/features/discord-rich-presence/'}" />
 
             <controls:OptionControl
                                     Description="{x:Static resources:Strings.Menu_Integrations_FroststrapRPC_Description}"
@@ -159,17 +137,8 @@ SPDX-License-Identifier: MPL-2.0
                 <ToggleSwitch IsChecked="{Binding ShowUsingFroststrapRPC, Mode=TwoWay}" />
             </controls:OptionControl>
 
-            <TextBlock
-                       FontSize="20"
-                       FontWeight="Bold"
-                       Margin="0,8,0,0"
-                       Text="{x:Static resources:Strings.Common_Player}" />
-
-            <controls:MarkdownTextBlock
-                                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                        MarkdownText="{x:Static resources:Strings.Menu_Integrations_RPC_Player_Description}"
-                                        Margin="0,4,0,10"
-                                        TextWrapping="Wrap" />
+            <controls:SectionHeader Title="{x:Static resources:Strings.Common_Player}"
+                Description="{x:Static resources:Strings.Menu_Integrations_RPC_Player_Description}" />
 
             <controls:OptionControl
                                     x:Name="DiscordActivityOption"
@@ -200,16 +169,8 @@ SPDX-License-Identifier: MPL-2.0
                 <ToggleSwitch IsChecked="{Binding DiscordAccountOnProfile, Mode=TwoWay}" />
             </controls:OptionControl>
 
-            <TextBlock
-                       FontSize="20"
-                       Margin="0,8,0,0"
-                       FontWeight="Bold"
-                       Text="{x:Static resources:Strings.Common_Studio}"/>
-
-            <controls:MarkdownTextBlock
-                                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                        MarkdownText="{x:Static resources:Strings.Menu_Integrations_RPC_Studio_Description}"
-                                        TextWrapping="Wrap" />
+            <controls:SectionHeader Title="{x:Static resources:Strings.Common_Studio}"
+                Description="{x:Static resources:Strings.Menu_Integrations_RPC_Studio_Description}" />
 
             <controls:OptionControl x:Name="StudioActivityOption"
                                     Header="{x:Static resources:Strings.Menu_Integrations_StudioActivity_Title}"
@@ -253,18 +214,8 @@ SPDX-License-Identifier: MPL-2.0
                 <ToggleSwitch IsChecked="{Binding StudioGameButton, Mode=TwoWay}" />
             </controls:OptionControl>
 
-            <Border Height="8" />
-
-            <TextBlock
-                FontSize="20"
-                FontWeight="Bold"
-                Margin="0,8,0,0"
-                Text="{x:Static resources:Strings.Menu_Integrations_Custom_Title}" />
-            <TextBlock
-                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                Text="{x:Static resources:Strings.Menu_Integrations_Custom_Description}"
-                Margin="0,4,0,10"
-                TextWrapping="Wrap" />
+            <controls:SectionHeader Title="{x:Static resources:Strings.Menu_Integrations_Custom_Title}"
+                Description="{x:Static resources:Strings.Menu_Integrations_Custom_Description}" />
 
             <Grid MinHeight="325" Margin="0,8,0,0" RowDefinitions="*, Auto" ColumnDefinitions="250, *">
                 <ListBox

@@ -59,13 +59,7 @@ SPDX-License-Identifier: MPL-2.0
             </controls:OptionControl>
 
             <StackPanel>
-                <Border Height="8" />
-                <TextBlock
-                    FontSize="20"
-                    FontWeight="Bold"
-                    Text="{x:Static resources:Strings.Menu_GlobalSettings_GraphicsSettings_Title}"
-                    Margin="0,8,0,10"
-                    />
+                <controls:SectionHeader Title="{x:Static resources:Strings.Menu_GlobalSettings_GraphicsSettings_Title}" />
                 <StackPanel>
                     <controls:OptionControl Header="{x:Static resources:Strings.Menu_GlobalSettings_FramerateLimit_Title}" Description="{x:Static resources:Strings.Menu_GlobalSettings_FramerateLimit_Description}">
                         <TextBox Width="150" Text="{Binding FramerateCap, Mode=TwoWay}" />
@@ -88,13 +82,7 @@ SPDX-License-Identifier: MPL-2.0
                     </controls:OptionControl>
                 </StackPanel>
 
-                <Border Height="8" />
-                <TextBlock
-                    FontSize="20"
-                    FontWeight="Bold"
-                    Text="{x:Static resources:Strings.Menu_GlobalSettings_AudioSettings_Title}"
-                    Margin="0,8,0,10"
-                    />
+                <controls:SectionHeader Title="{x:Static resources:Strings.Menu_GlobalSettings_AudioSettings_Title}" />
                 <StackPanel>
                     <controls:OptionControl Header="{x:Static resources:Strings.Menu_GlobalSettings_MasterVolume_Title}" Description="{x:Static resources:Strings.Menu_GlobalSettings_MasterVolume_Description}">
                         <fa:ShowValueSlider Width="250" Minimum="0" Maximum="1" TickFrequency="0.1" IsSnapToTickEnabled="True" Value="{Binding MasterVolume}" ShowValue="True" />
@@ -110,13 +98,7 @@ SPDX-License-Identifier: MPL-2.0
                     </controls:OptionControl>
                 </StackPanel>
 
-                <Border Height="8" />
-                <TextBlock
-                    FontSize="20"
-                    FontWeight="Bold"
-                    Text="{x:Static resources:Strings.Menu_GlobalSettings_InputSettings_Title}"
-                    Margin="0,8,0,10"
-                    />
+                <controls:SectionHeader Title="{x:Static resources:Strings.Menu_GlobalSettings_InputSettings_Title}" />
                 <StackPanel>
                     <controls:OptionControl Header="{x:Static resources:Strings.Menu_GlobalSettings_Sensitivity_Title}" Description="{x:Static resources:Strings.Menu_GlobalSettings_Sensitivity_Description}">
                         <TextBox Width="150" Text="{Binding MouseSensitivity}" />
@@ -151,13 +133,7 @@ SPDX-License-Identifier: MPL-2.0
                     </controls:OptionControl>
                 </StackPanel>
 
-                <Border Height="8" />
-                <TextBlock
-                    FontSize="20"
-                    FontWeight="Bold"
-                    Text="{x:Static resources:Strings.Menu_GlobalSettings_Accessibility_Title}"
-                    Margin="0,8,0,10"
-                    />
+                <controls:SectionHeader Title="{x:Static resources:Strings.Menu_GlobalSettings_Accessibility_Title}" />
                 <StackPanel>
                     <controls:OptionControl Header="{x:Static resources:Strings.Menu_GlobalSettings_UITransparency_Title}" Description="{x:Static resources:Strings.Menu_GlobalSettings_UITransparency_Description}">
                         <TextBox Width="150" Text="{Binding UITransparency}" />

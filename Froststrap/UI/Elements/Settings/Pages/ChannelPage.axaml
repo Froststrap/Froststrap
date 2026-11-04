@@ -44,7 +44,8 @@ SPDX-License-Identifier: MPL-2.0
                     CommandParameter="{Binding $parent[UserControl]}" />
             </Grid>
 
-            <Border Height="8" />
+            <controls:SectionHeader Title="Froststrap"
+                Description="{x:Static resources:Strings.Menu_Deployment_Froststrap_Description}" />
 
             <controls:OptionControl
                 Header="{x:Static resources:Strings.Menu_Deployment_CheckForUpdates_Title}"
@@ -53,6 +54,7 @@ SPDX-License-Identifier: MPL-2.0
                     <Button
                         Classes="accent"
                         HorizontalAlignment="Right"
+                        Padding="8,6"
                         Command="{Binding CheckForUpdatesCommand}"
                         IsEnabled="{Binding CanCheckForUpdates}"
                         Content="{x:Static resources:Strings.Menu_Deployment_CheckForUpdates_Button}" />
@@ -66,38 +68,17 @@ SPDX-License-Identifier: MPL-2.0
                 </StackPanel>
             </controls:OptionControl>
 
-            <Border Height="8" />
-
-            <TextBlock
-                FontSize="20"
-                FontWeight="Bold"
-                Text="Froststrap"
-                Margin="0,8,0,0"
-                />
-
-            <controls:MarkdownTextBlock
-                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                MarkdownText="{x:Static resources:Strings.Menu_Deployment_Froststrap_Description}"
-                Margin="0,4,0,10"
-                TextWrapping="Wrap"
-                />
-
-            <controls:CardExpander
+            <controls:OptionControl
                 Header="{x:Static resources:Strings.Menu_Behaviour_AutoUpdate_Title}"
-                Description="{x:Static resources:Strings.Menu_Behaviour_AutoUpdate_Description}"
-                IsExpanded="{Binding AutomaticUpdatesEnabled, Mode=TwoWay}"
-                Classes="NoUserExpansion">
-
-                <controls:CardExpander.HeaderContent>
+                Description="{x:Static resources:Strings.Menu_Behaviour_AutoUpdate_Description}">
                     <ToggleSwitch IsChecked="{Binding AutomaticUpdatesEnabled, Mode=TwoWay}"/>
-                </controls:CardExpander.HeaderContent>
+            </controls:OptionControl>
 
-                <controls:OptionControl
-                    Description="{x:Static resources:Strings.Menu_Deployment_AutoPreReleaseUpdate_Description}"
-                    Header="{x:Static resources:Strings.Menu_Deployment_AutoPreReleaseUpdate_Title}">
-                    <ToggleSwitch IsChecked="{Binding PreReleaseUpdatesEnabled, Mode=TwoWay}"/>
-                </controls:OptionControl>
-            </controls:CardExpander>
+            <controls:OptionControl
+                Description="{x:Static resources:Strings.Menu_Deployment_AutoPreReleaseUpdate_Description}"
+                Header="{x:Static resources:Strings.Menu_Deployment_AutoPreReleaseUpdate_Title}">
+                <ToggleSwitch IsChecked="{Binding PreReleaseUpdatesEnabled, Mode=TwoWay}"/>
+            </controls:OptionControl>
 
             <controls:OptionControl
                 Description="{x:Static resources:Strings.Menu_TestMode_Description}"
@@ -125,19 +106,8 @@ SPDX-License-Identifier: MPL-2.0
                 </Grid>
             </controls:OptionControl>
 
-            <Border Height="8" />
-
-            <TextBlock
-                FontSize="20"
-                FontWeight="Bold"
-                Margin="0,8,0,0"
-                Text="Roblox"
-                />
-
-            <controls:MarkdownTextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                        MarkdownText="{x:Static resources:Strings.Menu_Deployment_Player_Description}"
-                                        Margin="0,4,0,10"
-                                        TextWrapping="Wrap" />
+            <controls:SectionHeader Title="Roblox"
+                Description="{x:Static resources:Strings.Menu_Deployment_Player_Description}" />
 
             <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
                                     Header="{x:Static resources:Strings.Menu_Deployment_AutoUpdateSober}">
@@ -350,21 +320,8 @@ SPDX-License-Identifier: MPL-2.0
                     SelectedItem="{Binding SelectedChannelChangeMode, Mode=TwoWay}" />
             </controls:OptionControl>
 
-            <Border Height="8" />
-
-            <TextBlock
-                Margin="0,8,0,0"
-                FontSize="20"
-                FontWeight="Bold"
-                Text="{x:Static resources:Strings.Common_Studio}"
-                />
-
-            <controls:MarkdownTextBlock
-                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                Margin="0,4,0,10"
-                MarkdownText="{x:Static resources:Strings.Menu_Deployment_Studio_Description}"
-                TextWrapping="Wrap"
-                />
+            <controls:SectionHeader Title="{x:Static resources:Strings.Common_Studio}"
+                Description="{x:Static resources:Strings.Menu_Deployment_Studio_Description}" />
 
             <controls:CardExpander
                 Header="{x:Static resources:Strings.Menu_Deployment_OverrideHash_Title}"

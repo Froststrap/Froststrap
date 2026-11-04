@@ -29,15 +29,9 @@ SPDX-License-Identifier: MPL-2.0
                       VerticalAlignment="Stretch"
                       HorizontalAlignment="Stretch">
             <StackPanel Margin="14">
-                <TextBlock
-                    FontSize="20"
-                    FontWeight="Bold"
-                    Text="Froststrap" />
-
-                <controls:MarkdownTextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                            MarkdownText="{x:Static resources:Strings.Menu_Appearance_Froststrap_Description}"
-                                            Margin="0,4,0,10"
-                                            TextWrapping="Wrap" />
+                <controls:SectionHeader Title="Froststrap"
+                    Description="{x:Static resources:Strings.Menu_Appearance_Froststrap_Description}"
+                    Margin="0,0,0,3" />
 
                 <controls:CardExpander Classes="NoUserExpansion" Header="{x:Static resources:Strings.Menu_Appearance_Custom_Theme_Title}" Description="{x:Static resources:Strings.Menu_Appearance_Custom_Theme_Description}" IsExpanded="{Binding CustomThemeExpanded, Mode=OneWay}">
                     <controls:CardExpander.HeaderContent>
@@ -194,18 +188,9 @@ SPDX-License-Identifier: MPL-2.0
                         SelectedItem="{Binding SelectedLanguage, Mode=TwoWay}" />
                 </controls:OptionControl>
 
-                <Border Height="8" IsVisible="{x:Static gv:GlobalViewModel.IsWindows}" />
-
-                <StackPanel Margin="0,8,0,0" VerticalAlignment="Bottom" IsVisible="{x:Static gv:GlobalViewModel.IsWindows}">
-                    <TextBlock
-                        FontSize="20"
-                        FontWeight="Bold"
-                        Text="Roblox" />
-                    <TextBlock
-                        Margin="0,4,0,10"
-                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                        Text="Customize how the Roblox window looks like."
-                        TextWrapping="Wrap" />
+                <StackPanel VerticalAlignment="Bottom" IsVisible="{x:Static gv:GlobalViewModel.IsWindows}">
+                    <controls:SectionHeader Title="Roblox"
+                        Description="Customize how the Roblox window looks like." />
                 </StackPanel>
 
                 <controls:CardExpander

@@ -52,15 +52,9 @@ SPDX-License-Identifier: MPL-2.0
                                      Command="{Binding OpenCompatSettingsCommand}"/>
             </Grid>
 
-            <Border Height="8" />
-
             <StackPanel>
-                <TextBlock Margin="0,8,0,0" FontSize="20" FontWeight="Bold" Text="{x:Static resources:Strings.Common_Presets}" />
-
-                <controls:MarkdownTextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                            MarkdownText="{x:Static resources:Strings.Menu_PresetMods_Presets_Description}"
-                                            Margin="0,4,0,10"
-                                            TextWrapping="Wrap" />
+                <controls:SectionHeader Title="{x:Static resources:Strings.Common_Presets}"
+                    Description="{x:Static resources:Strings.Menu_PresetMods_Presets_Description}" />
 
                 <controls:OptionControl Header="{x:Static resources:Strings.Menu_PresetMods_Presets_OldAvatarEditor_Title}"
                                         Description="{x:Static resources:Strings.Menu_PresetMods_Presets_OldAvatarEditor_Description}">
@@ -91,14 +85,8 @@ SPDX-License-Identifier: MPL-2.0
                     </ComboBox>
                 </controls:OptionControl>
 
-                <Border Height="8" />
-
-                <TextBlock Margin="0,8,0,0" FontSize="20" FontWeight="Bold" Text="{x:Static resources:Strings.Common_Miscellaneous}" />
-
-                <controls:MarkdownTextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                            MarkdownText="{x:Static resources:Strings.Menu_PresetMods_Misc_Description}"
-                                            Margin="0,4,0,10"
-                                            TextWrapping="Wrap" />
+                <controls:SectionHeader Title="{x:Static resources:Strings.Common_Miscellaneous}"
+                    Description="{x:Static resources:Strings.Menu_PresetMods_Misc_Description}" />
 
                 <controls:OptionControl Header="{x:Static resources:Strings.Menu_PresetMods_Misc_CustomFont_Title}"
                                         Description="{x:Static resources:Strings.Menu_PresetMods_Misc_CustomFont_Description}">
