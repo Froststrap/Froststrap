@@ -9,7 +9,7 @@ using Avalonia.Media;
 namespace Froststrap.UI.Elements.Controls
 {
     // Standard settings page section heading: space above, bold title, optional markdown description.
-    // Set Margin="0,0,0,3" on the first header of a page, since the page already has its own padding.
+    // Set Margin="0,0,0,4" on the first header of a page, since the page already has its own padding.
     internal class SectionHeader : StackPanel
     {
         public static readonly StyledProperty<string?> TitleProperty =
@@ -56,7 +56,7 @@ namespace Froststrap.UI.Elements.Controls
 
         public SectionHeader()
         {
-            Margin = new Thickness(0, 12, 0, 3);
+            Margin = new Thickness(0, 24, 0, 4);
             Children.Add(_title);
             Children.Add(_description);
         }

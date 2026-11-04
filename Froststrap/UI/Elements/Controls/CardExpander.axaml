@@ -108,7 +108,7 @@ SPDX-License-Identifier: MPL-2.0
                 <controls:Card Name="ContentBorder" Background="{TemplateBinding Background}"
                                BorderBrush="{TemplateBinding BorderBrush}"
                                BorderThickness="{TemplateBinding BorderThickness}"
-                               Padding="0" Margin="0,2">
+                               Padding="0" Margin="0,4">
                     <StackPanel>
                         <Border Padding="16,12" Background="Transparent">
                             <Grid ColumnDefinitions="*, Auto">
