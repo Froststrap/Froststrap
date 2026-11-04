@@ -4,6 +4,7 @@
 
 // Big ass file with all mappings
 
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using NLog;
 
@@ -233,12 +234,19 @@ internal partial class InternalAudioPlayer
 {
     [LibraryImport(
         "audioplayer",
-        EntryPoint = "play"
+        EntryPoint = "play_track"
     )]
-    public static partial int Play(
+    public static partial int PlayTrack(
         [MarshalAs(UnmanagedType.LPUTF8Str)] string path,
-        float volume
+        float volume,
+        ulong id
     );
+
+    [LibraryImport(
+        "audioplayer",
+        EntryPoint = "set_track_end_callback"
+    )]
+    public static partial void SetTrackEndCallback(IntPtr callback);
 
     [LibraryImport(
         "audioplayer",
@@ -269,22 +277,44 @@ public enum AudioPlayerResult
     LibraryUnavailable = -1
 }
 
-public class AudioPlayer
+public static unsafe class AudioPlayer
 {
-    private static bool _loggerSet;
+    private static bool _initialized;
 
-    public static AudioPlayerResult Play(string path, double volume)
+    /// Raised on the audio thread when a track ends on its own (id, failed). Keep handlers short.
+    public static event Action<ulong, bool>? TrackEnded;
+
+    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
+    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+    private static void OnTrackEnded(ulong id, int failed)
+    {
+        // an exception escaping a native callback would take the whole process down
+        try
+        {
+            TrackEnded?.Invoke(id, failed != 0);
+        }
+        catch (Exception ex)
+        {
+            try { Logger.Error(ex, "Track end handler failed"); } catch { }
+        }
+    }
+
+    /// Plays a file once. `id` comes back through TrackEnded when it finishes.
+    public static AudioPlayerResult PlayTrack(string path, double volume, ulong id)
     {
         try
         {
             // loaded on first use so it isn't touched while music is off
-            if (!_loggerSet)
+            if (!_initialized)
             {
                 InternalAudioPlayer.SetLogger(NativeLog.Callback);
-                _loggerSet = true;
+                InternalAudioPlayer.SetTrackEndCallback(
+                    (IntPtr)(delegate* unmanaged[Cdecl]<ulong, int, void>)&OnTrackEnded);
+                _initialized = true;
             }
 
-            return (AudioPlayerResult)InternalAudioPlayer.Play(path, (float)volume);
+            return (AudioPlayerResult)InternalAudioPlayer.PlayTrack(path, (float)volume, id);
         }
         catch (Exception ex) when (NativeLibraryFailure.IsLoadFailure(ex))
         {

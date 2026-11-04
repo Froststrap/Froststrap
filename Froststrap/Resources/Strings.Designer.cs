@@ -3729,7 +3729,7 @@ namespace Froststrap.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Plays an audio file on a loop while the settings window is open. Supports MP3, OGG, WAV, and FLAC..
+        ///   Looks up a localized string similar to Plays the songs in a folder while the settings window is open. Supports MP3, OGG, WAV, and FLAC..
         /// </summary>
         public static string Menu_Appearance_BackgroundMusic_Description {
             get {
@@ -3738,11 +3738,29 @@ namespace Froststrap.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to No file selected....
+        ///   Looks up a localized string similar to No folder selected....
         /// </summary>
-        public static string Menu_Appearance_BackgroundMusic_NoFile {
+        public static string Menu_Appearance_BackgroundMusic_NoFolder {
             get {
-                return ResourceManager.GetString("Menu.Appearance.BackgroundMusic.NoFile", resourceCulture);
+                return ResourceManager.GetString("Menu.Appearance.BackgroundMusic.NoFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The selected folder could not be opened. Check that it still exists and that Froststrap can access it..
+        /// </summary>
+        public static string Menu_Appearance_BackgroundMusic_FolderUnreadable {
+            get {
+                return ResourceManager.GetString("Menu.Appearance.BackgroundMusic.FolderUnreadable", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No MP3, OGG, WAV, or FLAC files were found in the selected folder..
+        /// </summary>
+        public static string Menu_Appearance_BackgroundMusic_NoTracks {
+            get {
+                return ResourceManager.GetString("Menu.Appearance.BackgroundMusic.NoTracks", resourceCulture);
             }
         }
 

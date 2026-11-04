@@ -4,6 +4,7 @@
 
 use super::{DeviceInfo, Emitter, EmitterError, OutputConfig, check_pair, spread};
 use std::ffi::c_void;
+use std::time::{Duration, Instant};
 
 use windows::Win32::Foundation::{CloseHandle, HANDLE, PROPERTYKEY, RPC_E_CHANGED_MODE};
 use windows::Win32::Media::Audio::{
@@ -26,6 +27,9 @@ const PKEY_DEVICE_FRIENDLY_NAME: PROPERTYKEY =
 
 /// 200 ms, in 100 ns units
 const BUFFER_DURATION: i64 = 2_000_000;
+
+/// Give up when the device takes no audio for this long (unplugged, driver hang, ...)
+const STALL_TIMEOUT: Duration = Duration::from_secs(2);
 
 fn device_err(context: &str, e: windows::core::Error) -> EmitterError {
     EmitterError::Device(format!("{context}: {e}"))
@@ -232,6 +236,7 @@ impl Emitter for WasapiEmitter {
 
         let total = out.len() / self.channels;
         let mut done = 0;
+        let mut last_progress = Instant::now();
         let result = loop {
             if done >= total {
                 break Ok(());
@@ -243,11 +248,15 @@ impl Emitter for WasapiEmitter {
             };
 
             if free == 0 {
+                if last_progress.elapsed() > STALL_TIMEOUT {
+                    break Err(EmitterError::Device("the output device stopped taking audio".into()));
+                }
+
                 // buffer is full: make sure it's playing, then wait for room
                 if let Err(e) = self.start() {
                     break Err(e);
                 }
-                unsafe { WaitForSingleObject(self.event, 500) };
+                unsafe { WaitForSingleObject(self.event, 200) };
                 continue;
             }
 
@@ -267,6 +276,7 @@ impl Emitter for WasapiEmitter {
             }
 
             done += frames;
+            last_progress = Instant::now();
         };
 
         self.scratch = out;
@@ -276,8 +286,19 @@ impl Emitter for WasapiEmitter {
 
     fn drain(&mut self) -> Result<(), EmitterError> {
         self.start()?;
-        while self.padding()? > 0 {
+
+        let mut last = self.padding()?;
+        let mut last_progress = Instant::now();
+        while last > 0 {
             unsafe { WaitForSingleObject(self.event, 100) };
+
+            let now = self.padding()?;
+            if now < last {
+                last_progress = Instant::now();
+            } else if last_progress.elapsed() > STALL_TIMEOUT {
+                return Err(EmitterError::Device("the output device stopped playing".into()));
+            }
+            last = now;
         }
         unsafe { self.client.Stop() }.map_err(|e| device_err("Stop", e))?;
         self.started = false;

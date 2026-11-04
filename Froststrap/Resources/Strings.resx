@@ -2081,10 +2081,16 @@ It must contain at least one of the following folders: content, ExtraContent, Pl
     <value>Background Music</value>
   </data>
   <data name="Menu.Appearance.BackgroundMusic.Description" xml:space="preserve">
-    <value>Plays an audio file on a loop while the settings window is open. Supports MP3, OGG, WAV, and FLAC.</value>
+    <value>Plays the songs in a folder while the settings window is open. Supports MP3, OGG, WAV, and FLAC.</value>
   </data>
-  <data name="Menu.Appearance.BackgroundMusic.NoFile" xml:space="preserve">
-    <value>No file selected...</value>
+  <data name="Menu.Appearance.BackgroundMusic.NoFolder" xml:space="preserve">
+    <value>No folder selected...</value>
+  </data>
+  <data name="Menu.Appearance.BackgroundMusic.FolderUnreadable" xml:space="preserve">
+    <value>The selected folder could not be opened. Check that it still exists and that Froststrap can access it.</value>
+  </data>
+  <data name="Menu.Appearance.BackgroundMusic.NoTracks" xml:space="preserve">
+    <value>No MP3, OGG, WAV, or FLAC files were found in the selected folder.</value>
   </data>
   <data name="Menu.Appearance.BackgroundMusic.Volume" xml:space="preserve">
     <value>Volume:</value>

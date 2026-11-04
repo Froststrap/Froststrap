@@ -180,8 +180,8 @@ SPDX-License-Identifier: MPL-2.0
 
                     <StackPanel Spacing="15">
                         <Grid ColumnDefinitions="*, Auto, Auto" Margin="0,4">
-                            <TextBox Text="{Binding BackgroundMusicPath}"
-                                     PlaceholderText="{x:Static resources:Strings.Menu_Appearance_BackgroundMusic_NoFile}"
+                            <TextBox Text="{Binding BackgroundMusicFolder}"
+                                     PlaceholderText="{x:Static resources:Strings.Menu_Appearance_BackgroundMusic_NoFolder}"
                                      IsReadOnly="True"
                                      VerticalContentAlignment="Center"
                                      Margin="0,0,8,0"/>

@@ -56,7 +56,7 @@ fn main() {
     let output = OutputConfig { device: flag("--device"), pair: pair.saturating_sub(1), ..Default::default() };
 
     let started = Instant::now();
-    let player = match Player::play(file.into(), output, volume, false) {
+    let player = match Player::play(file.into(), output, volume, false, None) {
         Ok(p) => p,
         Err(e) => {
             println!("play failed: {e}");

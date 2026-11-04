@@ -5,7 +5,7 @@
 use std::path::PathBuf;
 use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, AtomicU32, Ordering};
-use std::sync::mpsc::{self, Receiver, Sender};
+use std::sync::mpsc::{self, Receiver};
 use std::thread::{self, JoinHandle};
 use std::time::Duration;
 
@@ -13,6 +13,7 @@ use crate::decode::{DecodeError, TrackDecoder};
 use crate::emitter::{self, Emitter, EmitterError, OutputConfig};
 
 const FALLBACK_RATE: u32 = 48_000;
+const STOP_TIMEOUT: Duration = Duration::from_secs(3);
 
 #[derive(Debug, PartialEq)]
 pub enum PlayerEvent {
@@ -35,18 +36,29 @@ impl std::fmt::Display for PlayError {
     }
 }
 
+/// Called on the playback thread when a track ends on its own (not when stopped). Keep it short.
+pub type EndHandler = Box<dyn FnOnce(&PlayerEvent) + Send>;
+
 /// Plays one file on its own thread. Dropping it stops playback.
 pub struct Player {
     stop: Arc<AtomicBool>,
     volume: Arc<AtomicU32>,
     thread: Option<JoinHandle<()>>,
+    /// Disconnects when the playback thread exits.
+    exited: Receiver<()>,
     events: Receiver<PlayerEvent>,
 }
 
 impl Player {
     /// Returns once the file is open and the output has started (or failed to), so callers get
     /// errors directly. With `repeat` the track loops until the player is dropped.
-    pub fn play(path: PathBuf, mut output: OutputConfig, volume: f32, repeat: bool) -> Result<Self, PlayError> {
+    pub fn play(
+        path: PathBuf,
+        mut output: OutputConfig,
+        volume: f32,
+        repeat: bool,
+        on_end: Option<EndHandler>,
+    ) -> Result<Self, PlayError> {
         let decoder = TrackDecoder::open(&path).map_err(PlayError::Decode)?;
         output.sample_rate = decoder.sample_rate.unwrap_or(FALLBACK_RATE);
 
@@ -54,11 +66,14 @@ impl Player {
         let volume = Arc::new(AtomicU32::new(volume.clamp(0.0, 1.0).to_bits()));
         let (events_tx, events) = mpsc::channel();
         let (ready_tx, ready_rx) = mpsc::channel();
+        let (exited_tx, exited) = mpsc::channel::<()>();
 
         let thread = {
             let stop = stop.clone();
             let volume = volume.clone();
             thread::spawn(move || {
+                let _exited = exited_tx;
+
                 let emitter = match emitter::open(&output) {
                     Ok(e) => {
                         let _ = ready_tx.send(Ok(()));
@@ -71,12 +86,17 @@ impl Player {
                 };
 
                 let source = Source { path, repeat, decoder };
-                run(source, emitter, output, &stop, &volume, &events_tx);
+                if let Some(event) = run(source, emitter, output, &stop, &volume) {
+                    if let Some(on_end) = on_end {
+                        on_end(&event);
+                    }
+                    let _ = events_tx.send(event);
+                }
             })
         };
 
         match ready_rx.recv_timeout(Duration::from_secs(5)) {
-            Ok(Ok(())) => Ok(Self { stop, volume, thread: Some(thread), events }),
+            Ok(Ok(())) => Ok(Self { stop, volume, thread: Some(thread), exited, events }),
             Ok(Err(e)) => Err(PlayError::Output(e)),
             Err(_) => {
                 stop.store(true, Ordering::Relaxed);
@@ -97,8 +117,17 @@ impl Player {
 impl Drop for Player {
     fn drop(&mut self) {
         self.stop.store(true, Ordering::Relaxed);
-        if let Some(thread) = self.thread.take() {
-            let _ = thread.join();
+
+        // never let a stuck audio device hang whoever is stopping playback
+        match self.exited.recv_timeout(STOP_TIMEOUT) {
+            Err(mpsc::RecvTimeoutError::Timeout) => {
+                log::warn!("audio thread didn't stop within {STOP_TIMEOUT:?}, leaving it behind");
+            }
+            _ => {
+                if let Some(thread) = self.thread.take() {
+                    let _ = thread.join();
+                }
+            }
         }
     }
 }
@@ -115,21 +144,24 @@ fn run(
     mut output: OutputConfig,
     stop: &AtomicBool,
     volume: &AtomicU32,
-    events: &Sender<PlayerEvent>,
-) {
+) -> Option<PlayerEvent> {
     let mut chunk = Vec::new();
+    let mut produced_audio = false;
 
     let result = loop {
         if stop.load(Ordering::Relaxed) {
             let _ = emitter.flush();
-            return;
+            return None;
         }
 
         let rate = match source.decoder.next_stereo(&mut chunk) {
             Ok(Some(rate)) => rate,
+            // reopening a file with nothing playable in it would spin forever
+            Ok(None) if !produced_audio => break Err("the file contains no playable audio".into()),
             Ok(None) if source.repeat => match TrackDecoder::open(&source.path) {
                 Ok(d) => {
                     source.decoder = d;
+                    produced_audio = false;
                     continue;
                 }
                 Err(e) => break Err(e.to_string()),
@@ -155,12 +187,11 @@ fn run(
         if let Err(e) = emitter.write(&chunk) {
             break Err(e.to_string());
         }
+        produced_audio = true;
     };
 
-    let event = match result.and_then(|()| emitter.drain().map_err(|e| e.to_string())) {
-        Ok(()) => PlayerEvent::Finished,
-        Err(e) => PlayerEvent::Failed(e),
-    };
-
-    let _ = events.send(event);
+    match result.and_then(|()| emitter.drain().map_err(|e| e.to_string())) {
+        Ok(()) => Some(PlayerEvent::Finished),
+        Err(e) => Some(PlayerEvent::Failed(e)),
+    }
 }

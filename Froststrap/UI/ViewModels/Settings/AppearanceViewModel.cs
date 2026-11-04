@@ -848,17 +848,21 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 App.Settings.Prop.BackgroundMusicEnabled = value;
                 OnPropertyChanged(nameof(BackgroundMusicEnabled));
-                BackgroundMusic.Refresh();
+
+                if (value)
+                    BackgroundMusic.Retry();
+                else
+                    BackgroundMusic.Refresh();
             }
         }
 
-        public string BackgroundMusicPath
+        public string BackgroundMusicFolder
         {
-            get => App.Settings.Prop.BackgroundMusicPath;
+            get => App.Settings.Prop.BackgroundMusicFolder;
             set
             {
-                App.Settings.Prop.BackgroundMusicPath = value;
-                OnPropertyChanged(nameof(BackgroundMusicPath));
+                App.Settings.Prop.BackgroundMusicFolder = value;
+                OnPropertyChanged(nameof(BackgroundMusicFolder));
                 BackgroundMusic.Refresh();
             }
         }
@@ -879,21 +883,20 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             if (tl == null) return;
 
-            var files = await tl.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+            var folders = await tl.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions
             {
                 Title = Strings.Menu_Appearance_BackgroundMusic_Title,
-                FileTypeFilter = [new FilePickerFileType("Audio") { Patterns = ["*.mp3", "*.ogg", "*.wav", "*.flac"] }],
                 AllowMultiple = false
             });
 
-            if (files.Count > 0)
-                BackgroundMusicPath = files[0].Path.LocalPath;
+            if (folders.Count > 0)
+                BackgroundMusicFolder = folders[0].Path.LocalPath;
         });
 
         private ICommand? _clearMusicCommand;
         public ICommand ClearMusicCommand => _clearMusicCommand ??= new RelayCommand(() =>
         {
-            BackgroundMusicPath = string.Empty;
+            BackgroundMusicFolder = string.Empty;
         });
 
         public bool IsGradientMode => BackgroundType == BackgroundMode.Gradient;
