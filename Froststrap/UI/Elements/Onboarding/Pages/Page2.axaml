@@ -20,7 +20,7 @@ SPDX-License-Identifier: MPL-2.0
              x:DataType="vm:Page2ViewModel">
 
     <ScrollViewer>
-        <StackPanel Margin="8">
+        <StackPanel Margin="14">
             <StackPanel Orientation="Vertical" Spacing="8" HorizontalAlignment="Center" Margin="0,0,0,12">
                 <lucideAvalonia:Lucide x:Name="HeaderIcon" Icon="Sparkles" Width="70" Height="70"
                                        HorizontalAlignment="Center"
@@ -74,7 +74,7 @@ SPDX-License-Identifier: MPL-2.0
                                 </DataTemplate>
                             </ComboBox.ItemTemplate>
                         </ComboBox>
-                        <Separator Margin="0,8" />
+                        <Border Height="8" />
                     </StackPanel>
 
                     <StackPanel Spacing="15" IsVisible="{Binding IsGradientMode}">

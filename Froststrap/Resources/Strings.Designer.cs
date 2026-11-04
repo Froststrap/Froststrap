@@ -9790,5 +9790,113 @@ namespace Froststrap.Resources {
                 return ResourceManager.GetString("Joiner.Settings", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Logs.
+        /// </summary>
+        public static string Menu_Diagnostics_Logs_Title {
+            get {
+                return ResourceManager.GetString("Menu.Diagnostics.Logs.Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Froststrap logs.
+        /// </summary>
+        public static string Menu_Diagnostics_FroststrapLogs_Title {
+            get {
+                return ResourceManager.GetString("Menu.Diagnostics.FroststrapLogs.Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Open the folder containing Froststrap's log files..
+        /// </summary>
+        public static string Menu_Diagnostics_FroststrapLogs_Description {
+            get {
+                return ResourceManager.GetString("Menu.Diagnostics.FroststrapLogs.Description", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Roblox logs.
+        /// </summary>
+        public static string Menu_Diagnostics_RobloxLogs_Title {
+            get {
+                return ResourceManager.GetString("Menu.Diagnostics.RobloxLogs.Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Open the folder containing Roblox's log files..
+        /// </summary>
+        public static string Menu_Diagnostics_RobloxLogs_Description {
+            get {
+                return ResourceManager.GetString("Menu.Diagnostics.RobloxLogs.Description", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Screenshots.
+        /// </summary>
+        public static string Menu_Diagnostics_Screenshot_Title {
+            get {
+                return ResourceManager.GetString("Menu.Diagnostics.Screenshot.Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Settings window screenshot.
+        /// </summary>
+        public static string Menu_Diagnostics_Screenshot_Header {
+            get {
+                return ResourceManager.GetString("Menu.Diagnostics.Screenshot.Header", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Save an image of the settings window without the window frame..
+        /// </summary>
+        public static string Menu_Diagnostics_Screenshot_Description {
+            get {
+                return ResourceManager.GetString("Menu.Diagnostics.Screenshot.Description", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Take screenshot.
+        /// </summary>
+        public static string Menu_Diagnostics_Screenshot_Button {
+            get {
+                return ResourceManager.GetString("Menu.Diagnostics.Screenshot.Button", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Open the settings window first..
+        /// </summary>
+        public static string Menu_Diagnostics_Screenshot_NotOpen {
+            get {
+                return ResourceManager.GetString("Menu.Diagnostics.Screenshot.NotOpen", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Screenshot saved..
+        /// </summary>
+        public static string Menu_Diagnostics_Screenshot_Saved {
+            get {
+                return ResourceManager.GetString("Menu.Diagnostics.Screenshot.Saved", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to save the screenshot..
+        /// </summary>
+        public static string Menu_Diagnostics_Screenshot_Failed {
+            get {
+                return ResourceManager.GetString("Menu.Diagnostics.Screenshot.Failed", resourceCulture);
+            }
+        }
     }
 }
