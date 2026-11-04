@@ -17,8 +17,8 @@ namespace Froststrap.UI.ViewModels.Diagnostics
         public bool IsNotLinux { get; } = !OperatingSystem.IsLinux();
         public int TitlebarSpaceHeight { get; } = OperatingSystem.IsMacOS() ? 52 : 40;
 
-        public ICommand OpenFroststrapLogsCommand => new RelayCommand(() => OpenFolder(Paths.Logs));
-        public ICommand OpenRobloxLogsCommand => new RelayCommand(() => OpenFolder(Paths.RobloxLogs));
+        public ICommand OpenFroststrapLogsCommand { get; } = new RelayCommand(() => OpenFolder(Paths.Logs));
+        public ICommand OpenRobloxLogsCommand { get; } = new RelayCommand(() => OpenFolder(Paths.RobloxLogs));
         public ICommand TakeScreenshotCommand => new AsyncRelayCommand<Control>(TakeScreenshotAsync);
 
         private string _screenshotStatus = string.Empty;
@@ -75,7 +75,7 @@ namespace Froststrap.UI.ViewModels.Diagnostics
                     return;
 
                 await using var stream = await file.OpenWriteAsync();
-                bitmap.Save(stream);
+                bitmap.Save(stream, PngBitmapEncoderOptions.Default);
 
                 ScreenshotStatus = Strings.Menu_Diagnostics_Screenshot_Saved;
             }
