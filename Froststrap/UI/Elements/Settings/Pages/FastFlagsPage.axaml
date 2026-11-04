@@ -19,7 +19,7 @@ SPDX-License-Identifier: MPL-2.0
     x:DataType="vm:FastFlagsViewModel"
     mc:Ignorable="d">
 
-    <ScrollViewer>
+    <ScrollViewer VerticalScrollBarVisibility="Hidden">
         <StackPanel Margin="14">
 
             <controls:CardAction
@@ -40,7 +40,7 @@ SPDX-License-Identifier: MPL-2.0
                 Header="{x:Static resources:Strings.Menu_FastFlags_Reset_Title}">
                 <ToggleSwitch IsChecked="{Binding ResetConfiguration, Mode=TwoWay}" />
             </controls:OptionControl>
-			<Separator Margin="0,8" />
+			<Border Height="8" />
 
             <controls:OptionControl
                 Header="{x:Static resources:Strings.Menu_FastFlags_Presets_MSAA_Title}"

@@ -20,9 +20,9 @@ SPDX-License-Identifier: MPL-2.0
     x:DataType="vm:ChannelViewModel"
     mc:Ignorable="d">
 
-    <ScrollViewer>
+    <ScrollViewer VerticalScrollBarVisibility="Hidden">
         <StackPanel Margin="14">
-            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="6">
+            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="4">
                 <controls:CardAction
                     Grid.Column="0"
                     Icon="Import"
@@ -47,7 +47,6 @@ SPDX-License-Identifier: MPL-2.0
             <Border Height="8" />
 
             <controls:OptionControl
-                Margin="0,12,0,0"
                 Header="{x:Static resources:Strings.Menu_Deployment_CheckForUpdates_Title}"
                 Description="{x:Static resources:Strings.Menu_Deployment_CheckForUpdates_Description}">
                 <StackPanel Spacing="6" HorizontalAlignment="Right">

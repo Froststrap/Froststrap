@@ -24,7 +24,7 @@ SPDX-License-Identifier: MPL-2.0
     VerticalAlignment="Stretch">
 
     <Grid>
-        <ScrollViewer VerticalScrollBarVisibility="Auto"
+        <ScrollViewer VerticalScrollBarVisibility="Hidden"
                       HorizontalScrollBarVisibility="Disabled"
                       VerticalAlignment="Stretch"
                       HorizontalAlignment="Stretch">
@@ -65,7 +65,7 @@ SPDX-License-Identifier: MPL-2.0
                                     </DataTemplate>
                                 </ComboBox.ItemTemplate>
                             </ComboBox>
-                            <Separator Margin="0,8" />
+                            <Border Height="8" />
                         </StackPanel>
 
                         <StackPanel Spacing="15" IsVisible="{Binding IsGradientMode}">
@@ -194,7 +194,7 @@ SPDX-License-Identifier: MPL-2.0
                         SelectedItem="{Binding SelectedLanguage, Mode=TwoWay}" />
                 </controls:OptionControl>
 
-                <Separator Margin="0,12" IsVisible="{x:Static gv:GlobalViewModel.IsWindows}" />
+                <Border Height="8" IsVisible="{x:Static gv:GlobalViewModel.IsWindows}" />
 
                 <StackPanel Margin="0,8,0,0" VerticalAlignment="Bottom" IsVisible="{x:Static gv:GlobalViewModel.IsWindows}">
                     <TextBlock
@@ -303,7 +303,7 @@ SPDX-License-Identifier: MPL-2.0
                     </StackPanel>
                 </controls:CardExpander>
 
-                <Separator Margin="0,12" />
+                <Border Height="8" />
 
                 <Grid ColumnDefinitions="*,128">
                     <StackPanel Grid.Column="0" VerticalAlignment="Bottom">
@@ -311,7 +311,7 @@ SPDX-License-Identifier: MPL-2.0
                             VerticalAlignment="Bottom"
                             FontSize="20"
                             FontWeight="Bold"
-                            Margin="0,10,0,0"
+                            Margin="0,8,0,0"
                             Text="{x:Static resources:Strings.Menu_Behaviour_Title}" />
                         <TextBlock
                             Foreground="{DynamicResource TextFillColorSecondaryBrush}"
@@ -414,7 +414,7 @@ SPDX-License-Identifier: MPL-2.0
                                                      Content="{x:Static resources:Strings.Common_Export}" />
                             </Grid>
 
-                            <Separator Margin="0,12"/>
+                            <Border Height="8" />
 
                             <Grid ColumnDefinitions="*, Auto" Margin="0,4">
                                 <StackPanel Spacing="2">

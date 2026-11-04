@@ -21,7 +21,7 @@ SPDX-License-Identifier: MPL-2.0
     d:DesignWidth="1200"
     x:DataType="vm:BehaviourViewModel"
     mc:Ignorable="d">
-    <ScrollViewer>
+    <ScrollViewer VerticalScrollBarVisibility="Hidden">
         <StackPanel Margin="14">
             <controls:OptionControl
                 Header="{x:Static resources:Strings.Menu_Behaviour_ConfirmLaunches_Title}"
