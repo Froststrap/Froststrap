@@ -21,6 +21,7 @@ namespace Froststrap.UI.ViewModels.Settings
         private CancellationTokenSource? _studioHashCts;
         private CancellationTokenSource? _playerHashCts;
         private bool _disposed;
+        private bool _isMoving;
 
         public ChannelViewModel()
         {
@@ -30,6 +31,8 @@ namespace Froststrap.UI.ViewModels.Settings
             BrowsePlayerVersionHashCommand = new AsyncRelayCommand<object?>(BrowsePlayerVersionHashAsync);
             BrowseStudioVersionHashCommand = new AsyncRelayCommand<object?>(BrowseStudioVersionHashAsync);
             CheckForUpdatesCommand = new AsyncRelayCommand(CheckForUpdatesAsync);
+            BrowseStorageDirectoryCommand = new AsyncRelayCommand<object?>(BrowseStorageDirectoryAsync);
+            MoveStorageDirectoryCommand = new AsyncRelayCommand(MoveStorageDirectoryAsync, () => !_isMoving);
         }
 
         public static IEnumerable<UpdateCheck> UpdateCheckValues => Enum.GetValues<UpdateCheck>();
@@ -805,6 +808,77 @@ namespace Froststrap.UI.ViewModels.Settings
                 token,
                 enforceAgeAndBan: true,
                 binaryType: GetBinaryType(false));
+        }
+
+        private string _storageDirectory = StorageLocation.Current;
+
+        public string StorageDirectory
+        {
+            get => _storageDirectory;
+            set
+            {
+                _storageDirectory = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public IAsyncRelayCommand BrowseStorageDirectoryCommand { get; }
+        public IAsyncRelayCommand MoveStorageDirectoryCommand { get; }
+
+        private async Task BrowseStorageDirectoryAsync(object? parameter)
+        {
+            var topLevel = GetTopLevel(parameter);
+            if (topLevel == null) return;
+
+            var folders = await topLevel.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions());
+            if (folders.Count > 0 && folders[0].TryGetLocalPath() is { Length: > 0 } path)
+                StorageDirectory = path;
+        }
+
+        private async Task MoveStorageDirectoryAsync()
+        {
+            string newDir = StorageDirectory;
+            string currentDir = StorageLocation.Current;
+
+            if (string.IsNullOrWhiteSpace(newDir))
+            {
+                await Frontend.ShowMessageBox(Strings.Menu_Deployment_MoveInstallation_InvalidDirectory, MessageBoxImage.Warning);
+                return;
+            }
+
+            if (string.Equals(Path.GetFullPath(newDir), currentDir, StringComparison.Ordinal))
+            {
+                await Frontend.ShowMessageBox(Strings.Menu_Deployment_MoveInstallation_SameDirectory, MessageBoxImage.Information);
+                return;
+            }
+
+            var confirm = await Frontend.ShowMessageBox(
+                string.Format(CultureInfo.InvariantCulture, Strings.Menu_Deployment_MoveInstallation_Confirm, currentDir, newDir),
+                MessageBoxImage.Question,
+                MessageBoxButton.YesNo);
+
+            if (confirm != MessageBoxResult.Yes)
+                return;
+
+            _isMoving = true;
+            MoveStorageDirectoryCommand.NotifyCanExecuteChanged();
+
+            try
+            {
+                await Task.Run(() => StorageLocation.Move(newDir));
+                StorageDirectory = StorageLocation.Current;
+                await Frontend.ShowMessageBox(Strings.Menu_Deployment_MoveInstallation_Success, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error(ex);
+                await Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Menu_Deployment_MoveInstallation_Failed, ex.Message), MessageBoxImage.Error);
+            }
+            finally
+            {
+                _isMoving = false;
+                MoveStorageDirectoryCommand.NotifyCanExecuteChanged();
+            }
         }
 
         private async Task BrowsePlayerVersionHashAsync(object? parameter)
