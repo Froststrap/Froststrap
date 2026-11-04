@@ -118,7 +118,7 @@ SPDX-License-Identifier: MPL-2.0
                     <StackPanel>
                         <controls:MarkdownTextBlock MarkdownText="[meddsam](https://discord.com/users/1051148571371647017)" />
                         <controls:MarkdownTextBlock MarkdownText="[SquireDot](https://github.com/UltimatePlayer97)" />
-                        <controls:MarkdownTextBlock MarkdownText="[Invra](https://invra.net) ([GitLab](https://gitlab.com/invra), [GitHub](https://github.com/invra))" />
+                        <controls:MarkdownTextBlock MarkdownText="[Invra](https://invra.net)" />
                     </StackPanel>
                 </Expander>
 
