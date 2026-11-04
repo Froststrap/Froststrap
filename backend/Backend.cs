@@ -262,9 +262,57 @@ internal partial class InternalAudioPlayer
 
     [LibraryImport(
         "audioplayer",
+        EntryPoint = "set_paused"
+    )]
+    public static partial void SetPaused(int paused);
+
+    [LibraryImport(
+        "audioplayer",
         EntryPoint = "set_logger"
     )]
     public static partial void SetLogger(IntPtr callback);
+
+    [LibraryImport(
+        "audioplayer",
+        EntryPoint = "track_info_open"
+    )]
+    public static partial IntPtr TrackInfoOpen([MarshalAs(UnmanagedType.LPUTF8Str)] string path);
+
+    [LibraryImport(
+        "audioplayer",
+        EntryPoint = "track_info_title"
+    )]
+    public static partial IntPtr TrackInfoTitle(IntPtr info);
+
+    [LibraryImport(
+        "audioplayer",
+        EntryPoint = "track_info_artist"
+    )]
+    public static partial IntPtr TrackInfoArtist(IntPtr info);
+
+    [LibraryImport(
+        "audioplayer",
+        EntryPoint = "track_info_album"
+    )]
+    public static partial IntPtr TrackInfoAlbum(IntPtr info);
+
+    [LibraryImport(
+        "audioplayer",
+        EntryPoint = "track_info_duration"
+    )]
+    public static partial double TrackInfoDuration(IntPtr info);
+
+    [LibraryImport(
+        "audioplayer",
+        EntryPoint = "track_info_art"
+    )]
+    public static partial IntPtr TrackInfoArt(IntPtr info, out nuint length);
+
+    [LibraryImport(
+        "audioplayer",
+        EntryPoint = "track_info_free"
+    )]
+    public static partial void TrackInfoFree(IntPtr info);
 }
 
 public enum AudioPlayerResult
@@ -276,6 +324,9 @@ public enum AudioPlayerResult
     NoOutputDevice = 4,
     LibraryUnavailable = -1
 }
+
+/// Tags, length and encoded cover image (usually JPEG or PNG, empty if none) of one file.
+internal sealed record TrackInfo(string? Title, string? Artist, string? Album, TimeSpan? Duration, ReadOnlyMemory<byte> Art);
 
 public static unsafe class AudioPlayer
 {
@@ -305,15 +356,7 @@ public static unsafe class AudioPlayer
     {
         try
         {
-            // loaded on first use so it isn't touched while music is off
-            if (!_initialized)
-            {
-                InternalAudioPlayer.SetLogger(NativeLog.Callback);
-                InternalAudioPlayer.SetTrackEndCallback(
-                    (IntPtr)(delegate* unmanaged[Cdecl]<ulong, int, void>)&OnTrackEnded);
-                _initialized = true;
-            }
-
+            Initialize();
             return (AudioPlayerResult)InternalAudioPlayer.PlayTrack(path, (float)volume, id);
         }
         catch (Exception ex) when (NativeLibraryFailure.IsLoadFailure(ex))
@@ -345,6 +388,65 @@ public static unsafe class AudioPlayer
         {
             NativeLibraryFailure.Report("audioplayer", ex);
         }
+    }
+
+    public static void SetPaused(bool paused)
+    {
+        try
+        {
+            InternalAudioPlayer.SetPaused(paused ? 1 : 0);
+        }
+        catch (Exception ex) when (NativeLibraryFailure.IsLoadFailure(ex))
+        {
+            NativeLibraryFailure.Report("audioplayer", ex);
+        }
+    }
+
+    /// Null if the file can't be read or the library is missing. Reads the whole cover, so call it off the UI thread.
+    internal static TrackInfo? ReadTrackInfo(string path)
+    {
+        IntPtr info = IntPtr.Zero;
+
+        try
+        {
+            Initialize();
+
+            info = InternalAudioPlayer.TrackInfoOpen(path);
+            if (info == IntPtr.Zero)
+                return null;
+
+            double seconds = InternalAudioPlayer.TrackInfoDuration(info);
+            IntPtr art = InternalAudioPlayer.TrackInfoArt(info, out nuint length);
+
+            return new TrackInfo(
+                Marshal.PtrToStringUTF8(InternalAudioPlayer.TrackInfoTitle(info)),
+                Marshal.PtrToStringUTF8(InternalAudioPlayer.TrackInfoArtist(info)),
+                Marshal.PtrToStringUTF8(InternalAudioPlayer.TrackInfoAlbum(info)),
+                seconds >= 0 ? TimeSpan.FromSeconds(seconds) : null,
+                art == IntPtr.Zero || length == 0 ? ReadOnlyMemory<byte>.Empty : new ReadOnlySpan<byte>((void*)art, checked((int)length)).ToArray());
+        }
+        catch (Exception ex) when (NativeLibraryFailure.IsLoadFailure(ex))
+        {
+            NativeLibraryFailure.Report("audioplayer", ex);
+            return null;
+        }
+        finally
+        {
+            if (info != IntPtr.Zero)
+                InternalAudioPlayer.TrackInfoFree(info);
+        }
+    }
+
+    // loaded on first use so it isn't touched while music is off
+    private static void Initialize()
+    {
+        if (_initialized)
+            return;
+
+        InternalAudioPlayer.SetLogger(NativeLog.Callback);
+        InternalAudioPlayer.SetTrackEndCallback(
+            (IntPtr)(delegate* unmanaged[Cdecl]<ulong, int, void>)&OnTrackEnded);
+        _initialized = true;
     }
 }
 

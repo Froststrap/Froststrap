@@ -52,6 +52,10 @@ pub trait Emitter: Send {
     fn drain(&mut self) -> Result<(), EmitterError>;
     /// Drops anything still buffered.
     fn flush(&mut self) -> Result<(), EmitterError>;
+    /// Holds what's buffered; the next `write` carries on. Without it, a pause only stops new audio.
+    fn pause(&mut self) -> Result<(), EmitterError> {
+        Ok(())
+    }
 }
 
 pub fn open(config: &OutputConfig) -> Result<Box<dyn Emitter>, EmitterError> {

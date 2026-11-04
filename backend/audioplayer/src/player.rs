@@ -9,6 +9,8 @@ use std::sync::mpsc::{self, Receiver};
 use std::thread::{self, JoinHandle};
 use std::time::Duration;
 
+const PAUSE_POLL: Duration = Duration::from_millis(20);
+
 use crate::decode::{DecodeError, TrackDecoder};
 use crate::emitter::{self, Emitter, EmitterError, OutputConfig};
 
@@ -42,6 +44,7 @@ pub type EndHandler = Box<dyn FnOnce(&PlayerEvent) + Send>;
 /// Plays one file on its own thread. Dropping it stops playback.
 pub struct Player {
     stop: Arc<AtomicBool>,
+    paused: Arc<AtomicBool>,
     volume: Arc<AtomicU32>,
     thread: Option<JoinHandle<()>>,
     /// Disconnects when the playback thread exits.
@@ -63,6 +66,7 @@ impl Player {
         output.sample_rate = decoder.sample_rate.unwrap_or(FALLBACK_RATE);
 
         let stop = Arc::new(AtomicBool::new(false));
+        let paused = Arc::new(AtomicBool::new(false));
         let volume = Arc::new(AtomicU32::new(volume.clamp(0.0, 1.0).to_bits()));
         let (events_tx, events) = mpsc::channel();
         let (ready_tx, ready_rx) = mpsc::channel();
@@ -70,6 +74,7 @@ impl Player {
 
         let thread = {
             let stop = stop.clone();
+            let paused = paused.clone();
             let volume = volume.clone();
             thread::spawn(move || {
                 let _exited = exited_tx;
@@ -86,7 +91,7 @@ impl Player {
                 };
 
                 let source = Source { path, repeat, decoder };
-                if let Some(event) = run(source, emitter, output, &stop, &volume) {
+                if let Some(event) = run(source, emitter, output, &stop, &paused, &volume) {
                     if let Some(on_end) = on_end {
                         on_end(&event);
                     }
@@ -96,7 +101,7 @@ impl Player {
         };
 
         match ready_rx.recv_timeout(Duration::from_secs(5)) {
-            Ok(Ok(())) => Ok(Self { stop, volume, thread: Some(thread), exited, events }),
+            Ok(Ok(())) => Ok(Self { stop, paused, volume, thread: Some(thread), exited, events }),
             Ok(Err(e)) => Err(PlayError::Output(e)),
             Err(_) => {
                 stop.store(true, Ordering::Relaxed);
@@ -107,6 +112,10 @@ impl Player {
 
     pub fn set_volume(&self, volume: f32) {
         self.volume.store(volume.clamp(0.0, 1.0).to_bits(), Ordering::Relaxed);
+    }
+
+    pub fn set_paused(&self, paused: bool) {
+        self.paused.store(paused, Ordering::Relaxed);
     }
 
     pub fn events(&self) -> &Receiver<PlayerEvent> {
@@ -143,16 +152,30 @@ fn run(
     mut emitter: Box<dyn Emitter>,
     mut output: OutputConfig,
     stop: &AtomicBool,
+    paused: &AtomicBool,
     volume: &AtomicU32,
 ) -> Option<PlayerEvent> {
     let mut chunk = Vec::new();
     let mut produced_audio = false;
+    let mut holding = false;
 
     let result = loop {
         if stop.load(Ordering::Relaxed) {
             let _ = emitter.flush();
             return None;
         }
+
+        if paused.load(Ordering::Relaxed) {
+            if !holding {
+                if let Err(e) = emitter.pause() {
+                    break Err(e.to_string());
+                }
+                holding = true;
+            }
+            thread::sleep(PAUSE_POLL);
+            continue;
+        }
+        holding = false;
 
         let rate = match source.decoder.next_stereo(&mut chunk) {
             Ok(Some(rate)) => rate,

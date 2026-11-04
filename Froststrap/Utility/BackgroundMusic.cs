@@ -36,6 +36,21 @@ namespace Froststrap.Utility
         private static bool _unreadable;
         private static bool _shuffled;
 
+        // requests from the music controls, applied on the next Apply
+        private static int _skip;
+        private static int _pauseToggles;
+        private static bool _paused;
+
+        // what the controls show; updated after each Apply
+        private static volatile string? _nowPlaying;
+        private static volatile bool _nowPaused;
+
+        /// Raised off the UI thread when the current track or the pause state changes.
+        public static event Action? StateChanged;
+
+        public static string? CurrentTrack => _nowPlaying;
+        public static bool IsPaused => _nowPaused;
+
         // failures in a row; only a track that plays to the end resets it
         private static int _failures;
         private static readonly HashSet<string> RecentFailures = new(StringComparer.OrdinalIgnoreCase);
@@ -92,6 +107,24 @@ namespace Froststrap.Utility
         public static void Retry()
         {
             Interlocked.Increment(ref _rescanRequested);
+            Refresh();
+        }
+
+        public static void Next()
+        {
+            Interlocked.Exchange(ref _skip, 1);
+            Refresh();
+        }
+
+        public static void Previous()
+        {
+            Interlocked.Exchange(ref _skip, -1);
+            Refresh();
+        }
+
+        public static void TogglePause()
+        {
+            Interlocked.Increment(ref _pauseToggles);
             Refresh();
         }
 
@@ -153,6 +186,21 @@ namespace Froststrap.Utility
             {
                 Gate.Release();
             }
+
+            if (_nowPlaying != _playing || _nowPaused != _paused)
+            {
+                _nowPlaying = _playing;
+                _nowPaused = _paused;
+
+                try
+                {
+                    StateChanged?.Invoke();
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.Error($"Background music state handler failed: {ex}");
+                }
+            }
         }
 
         private static void Apply()
@@ -171,6 +219,8 @@ namespace Froststrap.Utility
 
             // stopping bumps _playId, so a late report from a stopped or replaced track never matches
             bool advance = endedId != 0 && endedId == Interlocked.Read(ref _playId);
+            int skip = Interlocked.Exchange(ref _skip, 0);
+            bool togglePause = Interlocked.Exchange(ref _pauseToggles, 0) % 2 == 1;
 
             if (!_active || !settings.BackgroundMusicEnabled || string.IsNullOrWhiteSpace(folder))
             {
@@ -208,9 +258,15 @@ namespace Froststrap.Utility
                     ResetFailures();
             }
 
-            if (_playing is not null && !advance)
+            // controls only act on a track that's playing
+            bool skipping = skip != 0 && _playing is not null && !switched && !advance;
+            if (togglePause && _playing is not null)
+                _paused = !_paused;
+
+            if (_playing is not null && !advance && !skipping)
             {
                 AudioPlayer.SetVolume(volume);
+                AudioPlayer.SetPaused(_paused);
                 return;
             }
 
@@ -228,6 +284,9 @@ namespace Froststrap.Utility
 
             // starting again resumes the same track, or moves on if the user doesn't want that
             int next = advance || _index < 0 || !settings.BackgroundMusicResume ? _index + 1 : _index;
+
+            if (skipping)
+                next = _index < 0 ? 0 : skip > 0 ? _index + 1 : (_index - 1 + _tracks.Count) % _tracks.Count;
 
             // stop once every track has failed in a row, whether it failed to start or broke off later
             while (_failures < _tracks.Count)
@@ -254,6 +313,7 @@ namespace Froststrap.Utility
                     _index = index;
                     _playing = path;
                     _lastStarted = path;
+                    _paused = false;
                     return;
                 }
 
@@ -386,6 +446,7 @@ namespace Froststrap.Utility
 
             AudioPlayer.Stop();
             _playing = null;
+            _paused = false;
         }
     }
 }

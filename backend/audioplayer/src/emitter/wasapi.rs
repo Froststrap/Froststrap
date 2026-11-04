@@ -313,6 +313,15 @@ impl Emitter for WasapiEmitter {
         self.started = false;
         Ok(())
     }
+
+    // Stop keeps the buffer, and the next write starts it again
+    fn pause(&mut self) -> Result<(), EmitterError> {
+        if self.started {
+            unsafe { self.client.Stop() }.map_err(|e| device_err("Stop", e))?;
+            self.started = false;
+        }
+        Ok(())
+    }
 }
 
 impl Drop for WasapiEmitter {
