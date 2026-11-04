@@ -98,6 +98,7 @@ namespace Froststrap.Models.Persistable
             }
         }
         public double BackgroundMusicVolume { get; set; } = 0.5;
+        public bool BackgroundMusicShuffle { get; set; }
         public string BootstrapperTitle { get; set; } = App.ProjectName;
         public string BootstrapperIconCustomLocation { get; set; } = "";
         public Theme Theme { get; set; } = Theme.Default;

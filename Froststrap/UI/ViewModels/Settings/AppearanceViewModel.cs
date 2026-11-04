@@ -878,6 +878,17 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
+        public bool BackgroundMusicShuffle
+        {
+            get => App.Settings.Prop.BackgroundMusicShuffle;
+            set
+            {
+                App.Settings.Prop.BackgroundMusicShuffle = value;
+                OnPropertyChanged(nameof(BackgroundMusicShuffle));
+                BackgroundMusic.Refresh();
+            }
+        }
+
         private ICommand? _selectMusicCommand;
         public ICommand SelectMusicCommand => _selectMusicCommand ??= new RelayCommand<TopLevel>(async tl =>
         {

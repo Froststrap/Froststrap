@@ -32,9 +32,11 @@ namespace Froststrap.Utility
         private static string? _playing;
         private static string? _failedFolder;
         private static bool _unreadable;
+        private static bool _shuffled;
 
         // failures in a row; only a track that plays to the end resets it
         private static int _failures;
+        private static readonly HashSet<string> RecentFailures = new(StringComparer.OrdinalIgnoreCase);
 
         static BackgroundMusic()
         {
@@ -140,7 +142,7 @@ namespace Froststrap.Utility
             if (!_active || !settings.BackgroundMusicEnabled || string.IsNullOrWhiteSpace(folder))
             {
                 _failedFolder = null;
-                _failures = 0;
+                ResetFailures();
                 Interlocked.Increment(ref _rescanRequested);
                 StopPlayback();
                 return;
@@ -159,12 +161,18 @@ namespace Froststrap.Utility
             if (switched)
                 advance = false;
 
+            if (settings.BackgroundMusicShuffle != _shuffled)
+                Arrange(settings.BackgroundMusicShuffle);
+
             if (advance)
             {
                 if (endedFailed)
                     App.Logger.Warn("Background music track stopped with an error, skipping it");
 
-                _failures = endedFailed ? _failures + 1 : 0;
+                if (endedFailed)
+                    AddFailure(_playing);
+                else
+                    ResetFailures();
             }
 
             if (_playing is not null && !advance)
@@ -185,12 +193,21 @@ namespace Froststrap.Utility
                 return;
             }
 
-            int start = advance || _index < 0 ? _index + 1 : _index;
+            int next = advance || _index < 0 ? _index + 1 : _index;
 
             // stop once every track has failed in a row, whether it failed to start or broke off later
-            for (int attempt = 0; _failures < _tracks.Count; attempt++)
+            while (_failures < _tracks.Count)
             {
-                int index = (start + attempt) % _tracks.Count;
+                // past the end of the order, even while skipping failures: start a new round
+                if (next >= _tracks.Count)
+                {
+                    if (_shuffled)
+                        Reshuffle();
+
+                    next = 0;
+                }
+
+                int index = next++;
                 string path = _tracks[index];
                 ulong id = Interlocked.Increment(ref _playId);
 
@@ -206,7 +223,7 @@ namespace Froststrap.Utility
                 }
 
                 App.Logger.Warn($"Could not play background music ({result}): {path}");
-                _failures++;
+                AddFailure(path);
 
                 if (result is AudioPlayerResult.NoOutputDevice or AudioPlayerResult.LibraryUnavailable)
                 {
@@ -225,10 +242,11 @@ namespace Froststrap.Utility
             List<string>? found = FindTracks(folder);
             _unreadable = found is null;
             _tracks = found ?? [];
+            _shuffled = false;
 
             // a rescan is a retry, so earlier failures no longer count
             _failedFolder = null;
-            _failures = 0;
+            ResetFailures();
 
             if (_folder != folder)
             {
@@ -240,6 +258,61 @@ namespace Froststrap.Utility
 
             // same folder rescanned: keep our place if the current track is still there
             _index = current is null ? -1 : _tracks.FindIndex(t => string.Equals(t, current, StringComparison.OrdinalIgnoreCase));
+        }
+
+        // sorted, or shuffled with the current track moved to the front so it keeps playing
+        private static void Arrange(bool shuffle)
+        {
+            string? current = _index >= 0 && _index < _tracks.Count ? _tracks[_index] : null;
+
+            if (shuffle)
+                _tracks = Shuffled(_tracks);
+            else
+                _tracks.Sort(StringComparer.OrdinalIgnoreCase);
+
+            _shuffled = shuffle;
+            _index = current is null ? -1 : _tracks.FindIndex(t => string.Equals(t, current, StringComparison.OrdinalIgnoreCase));
+
+            if (shuffle && _index > 0)
+            {
+                (_tracks[0], _tracks[_index]) = (_tracks[_index], _tracks[0]);
+                _index = 0;
+            }
+        }
+
+        // next round in a new order: tracks that just failed go last, so the others get tried first,
+        // and the track that just played doesn't come first
+        private static void Reshuffle()
+        {
+            List<string> order = Shuffled(_tracks);
+            List<string> untried = [.. order.Where(t => !RecentFailures.Contains(t))];
+            _tracks = [.. untried, .. order.Where(RecentFailures.Contains)];
+
+            // only swap with another untried track; repeating a song beats retrying a failed one
+            if (untried.Count > 1 && string.Equals(_tracks[0], _playing, StringComparison.OrdinalIgnoreCase))
+                (_tracks[0], _tracks[1]) = (_tracks[1], _tracks[0]);
+
+            _index = -1;
+        }
+
+        private static void AddFailure(string? path)
+        {
+            _failures++;
+            if (path is not null)
+                RecentFailures.Add(path);
+        }
+
+        private static void ResetFailures()
+        {
+            _failures = 0;
+            RecentFailures.Clear();
+        }
+
+        private static List<string> Shuffled(List<string> tracks)
+        {
+            string[] order = [.. tracks];
+            Random.Shared.Shuffle(order);
+            return [.. order];
         }
 
         private static void Fail(string folder, string message)

@@ -3765,6 +3765,15 @@ namespace Froststrap.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Shuffle.
+        /// </summary>
+        public static string Menu_Appearance_BackgroundMusic_Shuffle {
+            get {
+                return ResourceManager.GetString("Menu.Appearance.BackgroundMusic.Shuffle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Volume:.
         /// </summary>
         public static string Menu_Appearance_BackgroundMusic_Volume {

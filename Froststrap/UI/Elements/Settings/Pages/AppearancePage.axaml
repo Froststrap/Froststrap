@@ -210,6 +210,13 @@ SPDX-License-Identifier: MPL-2.0
                                        HorizontalAlignment="Right"
                                        VerticalAlignment="Center"/>
                         </Grid>
+
+                        <Grid ColumnDefinitions="*, Auto">
+                            <TextBlock Text="{x:Static resources:Strings.Menu_Appearance_BackgroundMusic_Shuffle}" VerticalAlignment="Center"/>
+                            <ToggleSwitch Grid.Column="1"
+                                          IsChecked="{Binding BackgroundMusicShuffle, Mode=TwoWay}"
+                                          AutomationProperties.Name="{x:Static resources:Strings.Menu_Appearance_BackgroundMusic_Shuffle}"/>
+                        </Grid>
                     </StackPanel>
                 </controls:CardExpander>
 

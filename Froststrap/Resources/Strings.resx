@@ -2077,6 +2077,9 @@ It must contain at least one of the following folders: content, ExtraContent, Pl
   <data name="Menu.Appearance.Opacity" xml:space="preserve">
     <value>Opacity:</value>
   </data>
+  <data name="Menu.Appearance.BackgroundMusic.Shuffle" xml:space="preserve">
+    <value>Shuffle</value>
+  </data>
   <data name="Menu.Appearance.BackgroundMusic.Title" xml:space="preserve">
     <value>Background Music</value>
   </data>
