@@ -119,13 +119,13 @@ internal partial class Bootstrapper : IDisposable
         foreach (var package in localData)
             PackageDirectoryMap[package.Key] = package.Value;
 
-        if (!OperatingSystem.IsWindows())
+        if (OperatingSystem.IsWindows())
+            return;
+
+        foreach (var key in PackageDirectoryMap.Keys.ToList())
         {
-            foreach (var key in PackageDirectoryMap.Keys.ToList())
-            {
-                if (PackageDirectoryMap[key] != null)
-                    PackageDirectoryMap[key] = PackageDirectoryMap[key].Replace('\\', '/');
-            }
+            if (PackageDirectoryMap[key] != null)
+                PackageDirectoryMap[key] = PackageDirectoryMap[key].Replace('\\', '/');
         }
     }
 
@@ -165,8 +165,6 @@ internal partial class Bootstrapper : IDisposable
     public async Task Run()
     {
         App.Logger.Info("Running bootstrapper");
-
-        // this is now always enabled as of v2.8.0
         Dialog?.CancelEnabled = true;
 
         if (AutomaticallyUpdateSober && _launchMode == LaunchMode.Player)
@@ -3183,33 +3181,27 @@ internal partial class Bootstrapper : IDisposable
                 }
             }
 
-            if (!profileApplied)
+            if (!profileApplied && !OperatingSystem.IsLinux() || IsStudioLaunch && File.Exists(source))
             {
-                if (!OperatingSystem.IsLinux() || IsStudioLaunch)
+                try
                 {
-                    if (File.Exists(source))
+                    bool match = File.Exists(dest) &&
+                        (await Task.Run(() => FastHash.FromFile(source)) == await Task.Run(() => FastHash.FromFile(dest)));
+                    if (!match)
                     {
-                        try
-                        {
-                            bool match = File.Exists(dest) &&
-                                (await Task.Run(() => FastHash.FromFile(source)) == await Task.Run(() => FastHash.FromFile(dest)));
-                            if (!match)
-                            {
-                                Directory.CreateDirectory(Path.GetDirectoryName(dest)!);
-                                File.Copy(source, dest, true);
-                                App.Logger.Info("FastFlags Applied (normal source).");
-                            }
+                        Directory.CreateDirectory(Path.GetDirectoryName(dest)!);
+                        File.Copy(source, dest, true);
+                        App.Logger.Info("FastFlags Applied (normal source).");
+                    }
 
-                            if (File.Exists(dest))
-                            {
-                                var info = new FileInfo(dest);
-                                lock (currentModManifest)
-                                    currentModManifest[rel] = new ModFileEntry { Size = info.Length, LastModified = info.LastWriteTime };
-                            }
-                        }
-                        catch (Exception ex) { App.Logger.Error(ex); }
+                    if (File.Exists(dest))
+                    {
+                        var info = new FileInfo(dest);
+                        lock (currentModManifest)
+                            currentModManifest[rel] = new ModFileEntry { Size = info.Length, LastModified = info.LastWriteTime };
                     }
                 }
+                catch (Exception ex) { App.Logger.Error(ex); }
             }
         }
         else
@@ -3647,8 +3639,9 @@ internal partial class Bootstrapper : IDisposable
                 }
 
                 // attempt download over HTTP
-                // this isn't actually that unsafe - signatures were fetched earlier over HTTPS
-                // so we've already established that our signatures are legit, and that there's very likely no MITM anyway
+                // SAFETY:
+                //   signatures were fetched earlier over HTTPS
+                //   we've already established that our signatures are legit, MITM unlikely
                 if (ex is IOException && !packageUrl.StartsWith("http://", StringComparison.Ordinal))
                 {
                     App.Logger.Info("Retrying download over HTTP...");

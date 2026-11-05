@@ -83,7 +83,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public BehaviourViewModel()
         {
-            foreach (var hz in App.Settings.Prop.VirtualDisplayHzModes.Distinct().Order())
+            foreach (var hz in (App.Settings.Prop.VirtualDisplayHzModes ?? []).Distinct().Order())
                 VirtualDisplayHzEntries.Add(new HzEntry(hz, RemoveVirtualDisplayHz));
 
             AddVirtualDisplayHzCommand = new RelayCommand(AddVirtualDisplayHz);
