@@ -67,7 +67,7 @@ SPDX-License-Identifier: MPL-2.0
                                      Command="{Binding LaunchRobloxCommand}"
                                      Grid.Row="1"
                                      Grid.ColumnSpan="2"
-                                     Margin="0,0,0,8" />
+                                     Margin="0,0,0,4" />
 
                 <controls:CardAction Header="{x:Static resources:Strings.Common_Settings}"
                                      Icon="Settings"
