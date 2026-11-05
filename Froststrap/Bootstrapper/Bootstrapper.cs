@@ -21,7 +21,6 @@ internal partial class Bootstrapper : IDisposable
     #region Properties
     private static readonly JsonSerializerOptions _indentedJsonOptions = new() { WriteIndented = true };
 
-    // might slightly increase the ram usage a bit, it's worth it, tho, since it reduces the cpu usage and is much better overrall
     private static readonly Regex FlatpakProgressRegex = new(@"Updating\s+(?<current>\d+)/(?<total>\d+)…", RegexOptions.IgnoreCase);
     private static readonly Regex FlatpakPercentRegex = new(@"(?<percent>\d+)%");
     private readonly CancellationTokenSource _cancelTokenSource = new();
@@ -320,18 +319,14 @@ internal partial class Bootstrapper : IDisposable
                 Backend.NativeNotify.SendMessage(Strings.Bootstrapper_ModificationsFailed_Title, Strings.Bootstrapper_ModificationsFailed_Message);
 
             if (!OperatingSystem.IsLinux())
-            {
                 await StartRoblox();
-            }
             else if (IsStudioLaunch)
-            {
                 await LaunchStudioViaWineAsync();
-            }
             else
             {
                 if (!await EnsureSoberInstalledAsync())
                     return;
-                await LaunchViaSober([]);
+                await LaunchSober([]);
             }
 
             Dialog?.CloseBootstrapper();
@@ -397,11 +392,11 @@ internal partial class Bootstrapper : IDisposable
 
             if (
                 userChannel?.Token is not null &&
-                userChannel.AssignmentType != 1 // might need a change in the future
-                )
+                userChannel.AssignmentType != 1 // might need a change in future
+            )
             {
-                // prevent roblox from thinking its a different channel
-                // we have to do it to prevent issues with channel fflags
+                // prevent roblox from thinking its different channel
+                // have to do to prevent issues with channel fflags
                 if (!string.IsNullOrEmpty(enrolledChannel))
                     _launchCommandLine = _launchCommandLine.Replace(
                         $"channel:{enrolledChannel}",
@@ -456,11 +451,11 @@ internal partial class Bootstrapper : IDisposable
         else
         {
             string channelFlagData = App.LaunchSettings.ChannelFlag.Data!;
-            if (!String.IsNullOrEmpty(channelFlagData))
-            {
-                App.Logger.Debug($"Forcing channel {channelFlagData}");
-                EnrollChannel(channelFlagData);
-            }
+            if (String.IsNullOrEmpty(channelFlagData))
+                return;
+
+            App.Logger.Debug($"Forcing channel {channelFlagData}");
+            EnrollChannel(channelFlagData);
         }
 
         if (!string.IsNullOrEmpty(Deployment.ChannelToken)
@@ -1027,7 +1022,7 @@ internal partial class Bootstrapper : IDisposable
         await Task.Delay(1000);
     }
 
-    private async Task LaunchViaSober(List<int> autoclosePids)
+    private async Task LaunchSober(List<int> autoclosePids)
     {
         if (App.Settings.Prop.ShowServerDetails)
             App.SoberSettings.SetPreset("ServerLocationIndicatorEnabled", "false");
