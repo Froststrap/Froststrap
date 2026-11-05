@@ -3518,8 +3518,44 @@ internal partial class Bootstrapper : IDisposable
         {
             string calculatedFastHash = FastHash.FromFile(package.DownloadPath);
 
-            // Skip hash validation for macOS as the mock manifest lacks actual signature FastHashs
-            if (!OperatingSystem.IsMacOS() && calculatedFastHash != package.Signature)
+            if (OperatingSystem.IsMacOS())
+            {
+                var knownState = IsStudioLaunch ? App.StudioState : App.PlayerState;
+
+                if (knownState.Prop.PackageHashes.TryGetValue(package.Name, out string? knownHash))
+                {
+                    if (calculatedFastHash != knownHash)
+                    {
+                        App.Logger.Warn($"Cached package is corrupted ({calculatedFastHash} != {knownHash})! Deleting and re-downloading...");
+                        File.Delete(package.DownloadPath);
+                    }
+                    else
+                    {
+                        App.Logger.Info("Package is already downloaded and matches its recorded hash, skipping...");
+                        if (updateProgress)
+                        {
+                            Interlocked.Add(ref _totalDownloadedBytes, package.PackedSize);
+                            UpdateProgressBar();
+                        }
+                        return;
+                    }
+                }
+                else
+                {
+                    App.Logger.Warn($"No recorded hash for {package.Name}; anchoring integrity to existing file ({calculatedFastHash})");
+                    knownState.Prop.PackageHashes[package.Name] = calculatedFastHash;
+                    knownState.Save();
+
+                    App.Logger.Info("Package is already downloaded, skipping...");
+                    if (updateProgress)
+                    {
+                        Interlocked.Add(ref _totalDownloadedBytes, package.PackedSize);
+                        UpdateProgressBar();
+                    }
+                    return;
+                }
+            }
+            else if (calculatedFastHash != package.Signature)
             {
                 App.Logger.Warn($"Package is corrupted ({calculatedFastHash} != {package.Signature})! Deleting and re-downloading...");
                 File.Delete(package.DownloadPath);
@@ -3605,7 +3641,13 @@ internal partial class Bootstrapper : IDisposable
 
                 string hash = FastHash.FromStream(fileStream);
 
-                if (!OperatingSystem.IsMacOS() && !string.Equals(hash, package.Signature, StringComparison.OrdinalIgnoreCase))
+                if (OperatingSystem.IsMacOS())
+                {
+                    var knownState = IsStudioLaunch ? App.StudioState : App.PlayerState;
+                    knownState.Prop.PackageHashes[package.Name] = hash;
+                    knownState.Save();
+                }
+                else if (!string.Equals(hash, package.Signature, StringComparison.OrdinalIgnoreCase))
                     throw new ChecksumFailedException($"Failed to verify download of {packageUrl}\n\nExpected hash: {package.Signature}\nGot hash: {hash}");
 
                 App.Logger.Info($"Finished downloading! ({totalBytesRead} bytes total)");
@@ -3641,8 +3683,11 @@ internal partial class Bootstrapper : IDisposable
                 // attempt download over HTTP
                 // SAFETY:
                 //   signatures were fetched earlier over HTTPS
-                //   we've already established that our signatures are legit, MITM unlikely
-                if (ex is IOException && !packageUrl.StartsWith("http://", StringComparison.Ordinal))
+                //   on macOS there is no signature to verify, so the download
+                //   must never leave HTTPS (see DownloadPackage's hash check)
+                if (ex is IOException
+                    && !OperatingSystem.IsMacOS()
+                    && !packageUrl.StartsWith("http://", StringComparison.Ordinal))
                 {
                     App.Logger.Info("Retrying download over HTTP...");
                     packageUrl = packageUrl.Replace("https://", "http://", StringComparison.Ordinal);
