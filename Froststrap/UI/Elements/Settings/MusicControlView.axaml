@@ -97,19 +97,12 @@ SPDX-License-Identifier: MPL-2.0
                                 Command="{Binding ShuffleCommand}"
                                 ToolTip.Tip="{x:Static resources:Strings.Menu_Appearance_BackgroundMusic_Shuffle}"
                                 AutomationProperties.Name="{x:Static resources:Strings.Menu_Appearance_BackgroundMusic_Shuffle}">
-                                <!-- on: accent icon with a dot under it, like Spotify -->
-                                <StackPanel Spacing="3">
-                                    <ic:Lucide
-                                        Icon="Shuffle"
-                                        Classes.on="{Binding Shuffle}"
-                                        Width="16"
-                                        Height="16" />
-                                    <Ellipse
-                                        Width="4"
-                                        Height="4"
-                                        Fill="{DynamicResource AccentFillColorDefaultBrush}"
-                                        IsVisible="{Binding Shuffle}" />
-                                </StackPanel>
+                                <!-- on: accent-colored icon -->
+                                <ic:Lucide
+                                    Icon="Shuffle"
+                                    Classes.on="{Binding Shuffle}"
+                                    Width="16"
+                                    Height="16" />
                             </Button>
                             <Button
                                 Width="40"
@@ -155,19 +148,12 @@ SPDX-License-Identifier: MPL-2.0
                                 Command="{Binding RepeatCommand}"
                                 ToolTip.Tip="{Binding RepeatTip}"
                                 AutomationProperties.Name="{Binding RepeatTip}">
-                                <!-- on: accent icon with a dot under it, like Spotify -->
-                                <StackPanel Spacing="3">
-                                    <ic:Lucide
-                                        Icon="{Binding RepeatIcon}"
-                                        Classes.on="{Binding IsRepeating}"
-                                        Width="16"
-                                        Height="16" />
-                                    <Ellipse
-                                        Width="4"
-                                        Height="4"
-                                        Fill="{DynamicResource AccentFillColorDefaultBrush}"
-                                        IsVisible="{Binding IsRepeating}" />
-                                </StackPanel>
+                                <!-- on: accent-colored icon -->
+                                <ic:Lucide
+                                    Icon="{Binding RepeatIcon}"
+                                    Classes.on="{Binding IsRepeating}"
+                                    Width="16"
+                                    Height="16" />
                             </Button>
                         </StackPanel>
 
