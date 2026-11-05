@@ -698,6 +698,15 @@ Would you like to upgrade your currently installed version?</value>
   <data name="Menu.Behaviour.EnableVirtualDisplay.Description" xml:space="preserve">
     <value>When Roblox launches, open AppleBlox's VirtualDisplay to have a fake 240Hz display for Roblox to VSync to.</value>
   </data>
+  <data name="Menu.Behaviour.VirtualDisplayHz.Title" xml:space="preserve">
+    <value>Refresh rates</value>
+  </data>
+  <data name="Menu.Behaviour.VirtualDisplayHz.Description" xml:space="preserve">
+    <value>Enter a refresh rate in Hz and add it to the list of modes the Virtual Display offers</value>
+  </data>
+  <data name="Menu.Behaviour.VirtualDisplayHz.Placeholder" xml:space="preserve">
+    <value>e.g. 144</value>
+  </data>
   <data name="Menu.Behaviour.ConfirmLaunches.Description" xml:space="preserve">
     <value>Prevents closing your existing game when accidentally launching another Roblox instance.</value>
   </data>
@@ -3221,27 +3230,27 @@ The override will be disabled and the channel version will be used instead.</val
     <value>Using cached datacenter data (offline).</value>
   </data>
   <data name="Menu.Deployment.MoveInstallation.Title" xml:space="preserve">
-    <value>Installation Directory</value>
+    <value>Storage Location</value>
   </data>
   <data name="Menu.Deployment.MoveInstallation.Description" xml:space="preserve">
-    <value>Change where Froststrap is installed. All files will be moved to the new location.</value>
+    <value>Move downloaded Roblox versions and cached downloads to another drive or folder. Froststrap links back to them, so nothing else changes.</value>
   </data>
   <data name="Menu.Deployment.MoveInstallation" xml:space="preserve">
-    <value>Move Installation</value>
+    <value>Move Storage</value>
   </data>
   <data name="Menu.Deployment.MoveInstallation.SameDirectory" xml:space="preserve">
-    <value>The new directory is the same as the current installation.</value>
+    <value>The new directory is the same as the current storage location.</value>
   </data>
   <data name="Menu.Deployment.MoveInstallation.InvalidDirectory" xml:space="preserve">
     <value>Please specify a valid directory.</value>
   </data>
   <data name="Menu.Deployment.MoveInstallation.Confirm" xml:space="preserve">
-    <value>Move Froststrap from '{0}' to '{1}'?
+    <value>Move Froststrap storage from '{0}' to '{1}'?
 
-All files will be moved, shortcuts will be updated, and the application will restart.</value>
+Close Roblox first. This can take a while.</value>
   </data>
   <data name="Menu.Deployment.MoveInstallation.Success" xml:space="preserve">
-    <value>Froststrap has been moved successfully. The application will now restart.</value>
+    <value>Storage moved successfully.</value>
   </data>
   <data name="Menu.Deployment.MoveInstallation.Failed" xml:space="preserve">
     <value>Move failed: {0}</value>
@@ -3356,5 +3365,41 @@ All files will be moved, shortcuts will be updated, and the application will res
   </data>
   <data name="Menu.Bootstrapper.RobloxTheme.Description" xml:space="preserve">
     <value>The theme used by the Roblox app.</value>
+  </data>
+  <data name="Menu.Diagnostics.Logs.Title" xml:space="preserve">
+    <value>Logs</value>
+  </data>
+  <data name="Menu.Diagnostics.FroststrapLogs.Title" xml:space="preserve">
+    <value>Froststrap logs</value>
+  </data>
+  <data name="Menu.Diagnostics.FroststrapLogs.Description" xml:space="preserve">
+    <value>Open the folder containing Froststrap's log files.</value>
+  </data>
+  <data name="Menu.Diagnostics.RobloxLogs.Title" xml:space="preserve">
+    <value>Roblox logs</value>
+  </data>
+  <data name="Menu.Diagnostics.RobloxLogs.Description" xml:space="preserve">
+    <value>Open the folder containing Roblox's log files.</value>
+  </data>
+  <data name="Menu.Diagnostics.Screenshot.Title" xml:space="preserve">
+    <value>Screenshots</value>
+  </data>
+  <data name="Menu.Diagnostics.Screenshot.Header" xml:space="preserve">
+    <value>Settings window screenshot</value>
+  </data>
+  <data name="Menu.Diagnostics.Screenshot.Description" xml:space="preserve">
+    <value>Save an image of the settings window without the window frame.</value>
+  </data>
+  <data name="Menu.Diagnostics.Screenshot.Button" xml:space="preserve">
+    <value>Take screenshot</value>
+  </data>
+  <data name="Menu.Diagnostics.Screenshot.NotOpen" xml:space="preserve">
+    <value>Open the settings window first.</value>
+  </data>
+  <data name="Menu.Diagnostics.Screenshot.Saved" xml:space="preserve">
+    <value>Screenshot saved.</value>
+  </data>
+  <data name="Menu.Diagnostics.Screenshot.Failed" xml:space="preserve">
+    <value>Failed to save the screenshot.</value>
   </data>
 </root>

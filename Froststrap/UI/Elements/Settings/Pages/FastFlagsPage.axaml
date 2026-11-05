@@ -19,14 +19,13 @@ SPDX-License-Identifier: MPL-2.0
     x:DataType="vm:FastFlagsViewModel"
     mc:Ignorable="d">
 
-    <ScrollViewer>
-        <StackPanel Margin="14">
-
+    <ScrollViewer VerticalScrollBarVisibility="Hidden">
+        <StackPanel Margin="14,10">
             <controls:CardAction
                 Icon="FilePenLine"
                 Header="{x:Static resources:Strings.Menu_FastFlagEditor_Title}"
                 Description="{x:Static resources:Strings.Menu_FastFlags_Editor_Description}"
-                Command="{Binding OpenFastFlagEditorCommand}"/>
+                Command="{Binding OpenFastFlagEditorCommand}" />
 
             <controls:OptionControl
                 x:Name="ManagerEnabled"
@@ -40,14 +39,11 @@ SPDX-License-Identifier: MPL-2.0
                 Header="{x:Static resources:Strings.Menu_FastFlags_Reset_Title}">
                 <ToggleSwitch IsChecked="{Binding ResetConfiguration, Mode=TwoWay}" />
             </controls:OptionControl>
-			<Separator Margin="0,8" />
 
             <controls:OptionControl
                 Header="{x:Static resources:Strings.Menu_FastFlags_Presets_MSAA_Title}"
                 Description="{x:Static resources:Strings.Menu_FastFlags_Presets_MSAA_Description}">
                 <ComboBox
-                    Margin="0"
-                    Padding="10,5"
                     MinWidth="200"
                     ItemsSource="{Binding MSAALevels.Keys, Mode=OneTime}"
                     SelectedItem="{Binding SelectedMSAALevel, Mode=TwoWay}">
@@ -78,30 +74,27 @@ SPDX-License-Identifier: MPL-2.0
             </controls:OptionControl>
 
             <controls:CardExpander
-                IsExpanded="{Binding Path=LowPolyMeshesEnabled, Mode=OneWay}"
-                Classes="NoUserExpansion"
                 Header="{x:Static resources:Strings.Menu_FastFlags_Presets_LowPolyMeshes_Title}"
-                Description="{x:Static resources:Strings.Menu_FastFlags_Presets_LowPolyMeshes_Description}">
+                Description="{x:Static resources:Strings.Menu_FastFlags_Presets_LowPolyMeshes_Description}"
+                IsExpanded="{Binding Path=LowPolyMeshesEnabled, Mode=OneWay}"
+                Classes="NoUserExpansion">
                 <controls:CardExpander.HeaderContent>
                     <ToggleSwitch IsChecked="{Binding LowPolyMeshesEnabled, Mode=TwoWay}" />
                 </controls:CardExpander.HeaderContent>
-                <StackPanel Margin="0,8,0,0" Spacing="8">
+                <StackPanel Spacing="8">
                     <TextBlock
-                        Padding="4"
                         Text="{x:Static resources:Strings.Menu_FastFlags_Presets_LowPolyMeshes_Information}"
-                        FontSize="13"
+                        FontSize="12"
                         Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                         TextAlignment="Center"
                         TextWrapping="Wrap" />
-                    <Grid ColumnDefinitions="Auto,*,Auto">
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8">
                         <TextBlock
                             Grid.Column="0"
                             Text="{x:Static resources:Strings.Common_Performance}"
-                            FontSize="13"
                             VerticalAlignment="Center" />
                         <Slider
                             Grid.Column="1"
-                            Margin="12,0"
                             Minimum="0"
                             Maximum="9"
                             TickFrequency="1"
@@ -110,7 +103,6 @@ SPDX-License-Identifier: MPL-2.0
                         <TextBlock
                             Grid.Column="2"
                             Text="{x:Static resources:Strings.Common_Quality}"
-                            FontSize="13"
                             VerticalAlignment="Center" />
                     </Grid>
                 </StackPanel>
@@ -127,18 +119,16 @@ SPDX-License-Identifier: MPL-2.0
                 Header="{x:Static resources:Strings.Menu_FastFlags_Presets_RenderingMode_Title}"
                 Description="{x:Static resources:Strings.Menu_FastFlags_Presets_RenderingMode_Description}"
                 HelpLink="https://github.com/Meddsam/Froststrap/wiki/A-guide-to-FastFlags#rendering-mode">
-				<ComboBox
-					MinWidth="200"
-					Margin="0"
-					Padding="10,5"
-					ItemsSource="{Binding RenderingModeOptions, Mode=OneTime}"
-					SelectedItem="{Binding SelectedRenderingModeItem, Mode=TwoWay}">
-					<ComboBox.ItemTemplate>
-						<DataTemplate>
-							<TextBlock Text="{Binding Value}" />
-						</DataTemplate>
-					</ComboBox.ItemTemplate>
-				</ComboBox>
+                <ComboBox
+                    MinWidth="200"
+                    ItemsSource="{Binding RenderingModeOptions, Mode=OneTime}"
+                    SelectedItem="{Binding SelectedRenderingModeItem, Mode=TwoWay}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Value}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
             </controls:OptionControl>
 
             <controls:OptionControl
@@ -147,8 +137,6 @@ SPDX-License-Identifier: MPL-2.0
                 HelpLink="https://github.com/Meddsam/Froststrap/wiki/A-guide-to-FastFlags#override-graphic-level">
                 <ComboBox
                     MinWidth="200"
-                    Margin="0"
-                    Padding="10,5"
                     ItemsSource="{Binding QualityLevels.Keys, Mode=OneTime}"
                     SelectedItem="{Binding SelectedQualityLevel, Mode=TwoWay}">
                     <ComboBox.ItemTemplate>
@@ -162,7 +150,10 @@ SPDX-License-Identifier: MPL-2.0
             <controls:OptionControl
                 Header="{x:Static resources:Strings.Menu_FastFlags_Presets_TextureQuality_Title}"
                 Description="{x:Static resources:Strings.Menu_FastFlags_Presets_TextureQuality_Description}">
-                <ComboBox Width="200" Margin="5,0,0,0" Padding="10,5,10,5" ItemsSource="{Binding TextureQualities.Keys, Mode=OneTime}" SelectedItem="{Binding SelectedTextureQuality, Mode=TwoWay}">
+                <ComboBox
+                    Width="200"
+                    ItemsSource="{Binding TextureQualities.Keys, Mode=OneTime}"
+                    SelectedItem="{Binding SelectedTextureQuality, Mode=TwoWay}">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding ., Converter={StaticResource EnumNameConverter}}" />

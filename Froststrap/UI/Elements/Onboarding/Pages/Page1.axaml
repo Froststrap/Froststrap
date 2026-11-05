@@ -18,7 +18,7 @@ SPDX-License-Identifier: MPL-2.0
              x:Class="Froststrap.UI.Elements.Onboarding.Pages.Page1"
              x:DataType="vm:Page1ViewModel">
     <ScrollViewer>
-        <StackPanel Margin="8">
+        <StackPanel Margin="14">
             <StackPanel Orientation="Vertical" Spacing="8" HorizontalAlignment="Center" Margin="0,0,0,12">
                 <lucideAvalonia:Lucide x:Name="HeaderIcon" Icon="Languages" Width="70" Height="70"
                                        HorizontalAlignment="Center"

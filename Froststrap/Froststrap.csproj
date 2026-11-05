@@ -19,9 +19,9 @@ SPDX-License-Identifier: MPL-2.0
     <Version>$(AppVersion)</Version>
     <FileVersion>$(AppVersion)</FileVersion>
     <InformationalVersion>$(InfAppVersion)</InformationalVersion>
+    <AssemblyName>froststrap</AssemblyName>
     <Company>Froststrap</Company>
-    <Product>$(AssemblyName)</Product>
-    <AssemblyName>Froststrap</AssemblyName>
+    <Product>Froststrap</Product>
     <RootNamespace>Froststrap</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   	<PublishAot>true</PublishAot>
@@ -79,6 +79,7 @@ SPDX-License-Identifier: MPL-2.0
     <PackageReference Include="Avalonia.AvaloniaEdit" Version="12.0.0" />
     <PackageReference Include="Avalonia.Controls.WebView" Version="12.1.1" />
     <PackageReference Include="Avalonia.Desktop" Version="12.1.3" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="12.1.3" />
     <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="12.1.3" Condition="'$(Configuration)' == 'Debug'" />
     <PackageReference Include="Avalonia.Wayland" Version="12.1.3" />
     <PackageReference Include="AvaloniaUI.DiagnosticsSupport" Version="2.2.3">
@@ -97,7 +98,6 @@ SPDX-License-Identifier: MPL-2.0
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../libs/ColorPicker/ColorPicker.csproj" />
     <ProjectReference Include="../libs/LucideAvalonia/LucideAvalonia/LucideAvalonia.csproj" />
     <ProjectReference Include="../libs/FluentAvalonia/src/FluentAvalonia/FluentAvalonia.csproj" />
     <ProjectReference Include="../backend/backend.csproj" />

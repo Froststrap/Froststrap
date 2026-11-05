@@ -13,6 +13,14 @@ pub fn target_arch() -> &'static str {
     dotnet_arch_name(normalize_arch(raw))
 }
 
+pub fn apple_arch() -> &'static str {
+    let raw = crate::args::get()
+        .override_arch
+        .as_deref()
+        .unwrap_or(consts::ARCH);
+    apple_arch_name(normalize_arch(raw))
+}
+
 /// Always "x86_64" or "aarch64".
 pub fn normalized_arch() -> &'static str {
     normalize_arch(target_arch())
@@ -83,6 +91,14 @@ pub fn normalize_arch(arch: &str) -> &'static str {
 fn dotnet_arch_name(normalized: &str) -> &'static str {
     match normalized {
         "x86_64" => "x64",
+        "aarch64" => "arm64",
+        other => panic!("Unrecognized arch: {other}"),
+    }
+}
+
+fn apple_arch_name(normalized: &str) -> &'static str {
+    match normalized {
+        "x86_64" => "x86_64",
         "aarch64" => "arm64",
         other => panic!("Unrecognized arch: {other}"),
     }

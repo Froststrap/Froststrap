@@ -13,29 +13,7 @@ using Froststrap;
 internal static class AppInitializer
 {
     [DllImport("libSystem.dylib")]
-    private static extern int getpid();
-
-    [DllImport("libSystem.dylib", SetLastError = true)]
-    private static extern int csops(int pid, uint ops, out uint status, nuint size);
-
-    [DllImport("libSystem.dylib")]
     private static extern int csr_get_active_config(out uint config);
-
-    private const uint CS_OPS_STATUS = 0;
-
-    private static readonly (uint Bit, string Name)[] CodeSignFlags =
-    [
-        (0x00000001, "VALID"),
-        (0x00000002, "ADHOC"),
-        (0x00000004, "GET_TASK_ALLOW"),
-        (0x00000100, "HARD"),
-        (0x00000200, "KILL"),
-        (0x00000800, "RESTRICT"),
-        (0x00001000, "ENFORCEMENT"),
-        (0x00002000, "REQUIRE_LV"),
-        (0x00020000, "LINKER_SIGNED"),
-        (0x10000000, "RUNTIME")
-    ];
 
     private static readonly (uint Bit, string Name)[] CsrFlags =
     [
@@ -66,7 +44,6 @@ internal static class AppInitializer
             App.Logger.Debug($"boot-args: {RunTool("/usr/sbin/nvram", "boot-args")}");
 
             string frameworksDir = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "Frameworks"));
-            App.Logger.Debug($"Frameworks dir: {frameworksDir} (exists: {Directory.Exists(frameworksDir)})");
 
             if (Directory.Exists(frameworksDir))
             {
@@ -76,18 +53,6 @@ internal static class AppInitializer
 
             try
             {
-                int pid = getpid();
-
-                if (csops(pid, CS_OPS_STATUS, out uint status, sizeof(uint)) == 0)
-                {
-                    string flags = string.Join(",", CodeSignFlags.Where(f => (status & f.Bit) != 0).Select(static f => f.Name));
-                    App.Logger.Debug($"Process cs flags (pid {pid}): 0x{status:x} [{flags}]");
-                }
-                else
-                {
-                    App.Logger.Debug($"Process cs flags (pid {pid}): unknown (errno {Marshal.GetLastWin32Error()})");
-                }
-
                 if (csr_get_active_config(out uint csr) == 0)
                 {
                     string flags = string.Join(",", CsrFlags.Where(f => (csr & f.Bit) != 0).Select(static f => f.Name));
@@ -164,7 +129,7 @@ internal static class AppInitializer
                 return "<timeout>";
             }
 
-             process.WaitForExit();
+            Task.WaitAll(stdout, stderr);
 
             return $"{stdout.Result}{stderr.Result}".Trim();
         }
@@ -176,7 +141,7 @@ internal static class AppInitializer
 
     private static readonly string[] ResolverAssemblies =
     [
-        "Froststrap",
+        "froststrap",
         "backend",
         "SkiaSharp",
         "HarfBuzzSharp",

@@ -126,13 +126,11 @@ SPDX-License-Identifier: MPL-2.0
                                             IsVisible="{Binding !IsLast}" />
                                         <TextBlock
                                             FontSize="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).TitlebarTextSize}"
-                                            Margin="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).TextCorrection}"
                                             Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                                             IsVisible="{Binding !IsLast}"
                                             Text="›" />
                                         <TextBlock
                                             FontSize="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).TitlebarTextSize}"
-                                            Margin="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).TextCorrection}"
                                             Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                                             IsVisible="{Binding IsLast}"
                                             Text="{Binding Content}" />
@@ -144,7 +142,6 @@ SPDX-License-Identifier: MPL-2.0
                         <TextBlock
                             x:Name="PageTitleTextTitlebar"
                             FontSize="{Binding TitlebarTextSize}"
-                            Margin="{Binding TextCorrection}"
                             FontWeight="SemiBold"
                             Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                             Text="{Binding CurrentPageTitle}"

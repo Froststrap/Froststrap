@@ -19,7 +19,7 @@ SPDX-License-Identifier: MPL-2.0
              x:DataType="vm:Page7ViewModel">
 
     <ScrollViewer>
-        <Grid Margin="8" RowDefinitions="Auto, *">
+        <Grid Margin="14" RowDefinitions="Auto, *">
             <StackPanel Grid.Row="0">
                 <StackPanel Orientation="Vertical" Spacing="8" HorizontalAlignment="Center" Margin="0,0,0,12">
                     <ic:Lucide x:Name="HeaderIcon"
@@ -67,7 +67,7 @@ SPDX-License-Identifier: MPL-2.0
                                      Command="{Binding LaunchRobloxCommand}"
                                      Grid.Row="1"
                                      Grid.ColumnSpan="2"
-                                     Margin="0,0,0,8" />
+                                     Margin="0,0,0,4" />
 
                 <controls:CardAction Header="{x:Static resources:Strings.Common_Settings}"
                                      Icon="Settings"
