@@ -121,7 +121,7 @@ buildDotnetModule {
     runHook preInstall
     mkdir -p $out/lib/froststrap $out/bin
     cp -r build/publish/publish/. $out/lib/froststrap/
-    makeWrapper $out/lib/froststrap/Froststrap $out/bin/Froststrap \
+    makeWrapper $out/lib/froststrap/froststrap $out/bin/froststrap \
     ${
       lib.optionalString stdenv.hostPlatform.isLinux
         "--prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath runtimeLibs}:$out/lib/froststrap/libs"
@@ -133,7 +133,7 @@ buildDotnetModule {
     description = "A cross-platform Roblox bootstrapper, focused on performance and customization.";
     homepage = "https://froststrap.xyz/";
     license = lib.licenses.mpl20;
-    mainProgram = "Froststrap";
+    mainProgram = "froststrap";
     platforms = [
       "x86_64-linux"
       "x86_64-darwin"

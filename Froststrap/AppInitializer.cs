@@ -141,7 +141,7 @@ internal static class AppInitializer
 
     private static readonly string[] ResolverAssemblies =
     [
-        "Froststrap",
+        "froststrap",
         "backend",
         "SkiaSharp",
         "HarfBuzzSharp",
