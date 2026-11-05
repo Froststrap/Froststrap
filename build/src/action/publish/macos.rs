@@ -111,7 +111,7 @@ fn thin_bin(path: PathBuf) -> PathBuf {
     let arch = arch::apple_arch();
     let path = path.to_str().unwrap();
 
-    log::info!("Thinning binary {} with lipo to only be {}.", path, arch);
+    log::info!("Thinning binary {} to only {} via lipo", path, arch);
 
     let args = [
         "-thin",
