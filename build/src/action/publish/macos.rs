@@ -3,11 +3,7 @@
 use std::{fs, path::PathBuf};
 use pissing::prelude::*;
 use crate::{
-    arch, args,
-    args::Configuration,
-    bundle::macos::AppBuilder,
-    path,
-    utils::log,
+    arch, args::{self, Configuration}, bundle::macos::AppBuilder, path, utils::{log, process},
 };
 
 fn find_dylib(file_name: &str) -> PathBuf {
@@ -111,6 +107,24 @@ fn entitlements() -> PListFile {
     ])
 }
 
+fn thin_bin(path: PathBuf) -> PathBuf {
+    let arch = arch::apple_arch();
+    let path = path.to_str().unwrap();
+
+    log::info!("Thinning binary {} with lipo to only be {}.", path, arch);
+
+    let args = [
+        "-thin",
+        arch,
+        path,
+        "-output",
+        path,
+    ];
+    
+    process("lipo", args).exec_checked("dotnet msbuild");
+    path.into()
+}
+
 pub fn main() -> (PathBuf, PathBuf) {
     let version = super::version();
 
@@ -133,12 +147,13 @@ pub fn main() -> (PathBuf, PathBuf) {
         .binary(&main_executable);
 
     for lib in ["libvirtualdisplay.dylib", "libmobileappreg.dylib", "libnotify.dylib"] {
-        let dylib_src = find_dylib(lib);
-        builder = builder.framework(dylib_src);
+        let dylib = find_dylib(lib);
+        builder = builder.framework(dylib);
     }
 
     for lib in ["libAvaloniaNative.dylib", "libSkiaSharp.dylib", "libHarfBuzzSharp.dylib"] {
-        builder = builder.framework(publish_dir.join(lib));
+        let dylib = thin_bin(publish_dir.join(lib));
+        builder = builder.framework(dylib);
     }
 
     (builder.build(&dist), entitlements_path)
