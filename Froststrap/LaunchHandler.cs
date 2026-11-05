@@ -325,7 +325,6 @@ namespace Froststrap
 
             try
             {
-                App.Logger.Info("Initializing bootstrapper dialog");
                 ThemeCycler.HandleLaunchCycle();
                 dialog = await App.Settings.Prop.BootstrapperStyle.GetNew();
                 App.Bootstrapper.Dialog = dialog;
