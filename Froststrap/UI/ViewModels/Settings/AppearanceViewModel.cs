@@ -7,6 +7,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Froststrap.Backend;
 using Froststrap.UI.Elements.Base;
 using Froststrap.UI.Elements.Dialogs;
 using Froststrap.UI.Elements.Editor;
@@ -348,6 +349,9 @@ namespace Froststrap.UI.ViewModels.Settings
 
             PopulateCustomThemes();
             InitializeGradientStops();
+
+            if (BackgroundMusicEnabled)
+                _ = LoadOutputDevicesAsync();
         }
 
         public bool AutoChangeTitle
@@ -850,9 +854,15 @@ namespace Froststrap.UI.ViewModels.Settings
                 OnPropertyChanged(nameof(BackgroundMusicEnabled));
 
                 if (value)
+                {
                     BackgroundMusic.Retry();
+                    if (OutputDevices.Count == 0)
+                        _ = LoadOutputDevicesAsync();
+                }
                 else
+                {
                     BackgroundMusic.Refresh();
+                }
             }
         }
 
@@ -877,6 +887,81 @@ namespace Froststrap.UI.ViewModels.Settings
                 App.Settings.Prop.BackgroundMusicResume = value;
                 OnPropertyChanged(nameof(BackgroundMusicResume));
             }
+        }
+
+        public ObservableCollection<OutputDeviceOption> OutputDevices { get; } = [];
+        public ObservableCollection<string> ChannelPairs { get; } = [];
+
+        private OutputDeviceOption? _outputDevice;
+        public OutputDeviceOption? OutputDevice
+        {
+            get => _outputDevice;
+            set
+            {
+                // the ComboBox clears its selection while the list is rebuilt
+                if (value is null || value == _outputDevice)
+                    return;
+
+                _outputDevice = value;
+                OnPropertyChanged(nameof(OutputDevice));
+                UpdateChannelPairs(value.Channels);
+
+                if (App.Settings.Prop.BackgroundMusicDevice != value.Id)
+                {
+                    App.Settings.Prop.BackgroundMusicDevice = value.Id;
+                    App.Settings.Prop.BackgroundMusicChannelPair = 0;
+                    OnPropertyChanged(nameof(BackgroundMusicChannelPair));
+                    BackgroundMusic.Refresh();
+                }
+            }
+        }
+
+        public int BackgroundMusicChannelPair
+        {
+            get => App.Settings.Prop.BackgroundMusicChannelPair;
+            set
+            {
+                if (value < 0 || value == App.Settings.Prop.BackgroundMusicChannelPair)
+                    return;
+
+                App.Settings.Prop.BackgroundMusicChannelPair = value;
+                OnPropertyChanged(nameof(BackgroundMusicChannelPair));
+                BackgroundMusic.Refresh();
+            }
+        }
+
+        public bool HasChannelPairs => ChannelPairs.Count > 1;
+
+        private async Task LoadOutputDevicesAsync()
+        {
+            var devices = await Task.Run(() => AudioPlayer.ListDevices());
+            string saved = App.Settings.Prop.BackgroundMusicDevice;
+
+            int defaultChannels = devices.FirstOrDefault(d => d.IsDefault)?.Channels ?? 2;
+            var options = new List<OutputDeviceOption> { new("", Strings.Menu_Appearance_BackgroundMusic_Device_Default, defaultChannels) };
+            options.AddRange(devices.Select(d => new OutputDeviceOption(d.Id, d.Name, d.Channels)));
+
+            // keep a device that's unplugged right now, so the setting isn't lost
+            if (saved.Length > 0 && !options.Any(o => o.Id == saved))
+                options.Add(new(saved, Strings.Menu_Appearance_BackgroundMusic_Device_Missing, 2));
+
+            OutputDevices.Clear();
+            foreach (var option in options)
+                OutputDevices.Add(option);
+
+            _outputDevice = null;
+            OutputDevice = options.First(o => o.Id == saved);
+        }
+
+        private void UpdateChannelPairs(int channels)
+        {
+            int pairs = Math.Max(1, channels / 2);
+            ChannelPairs.Clear();
+            for (int i = 0; i < pairs; i++)
+                ChannelPairs.Add(string.Create(CultureInfo.InvariantCulture, $"{i * 2 + 1}/{i * 2 + 2}"));
+
+            OnPropertyChanged(nameof(HasChannelPairs));
+            OnPropertyChanged(nameof(BackgroundMusicChannelPair));
         }
 
         private ICommand? _selectMusicCommand;
@@ -1171,5 +1256,10 @@ namespace Froststrap.UI.ViewModels.Settings
                 OnPropertyChanged();
             }
         }
+    }
+
+    internal sealed record OutputDeviceOption(string Id, string Name, int Channels)
+    {
+        public override string ToString() => Name;
     }
 }

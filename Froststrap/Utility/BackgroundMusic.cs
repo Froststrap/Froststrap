@@ -41,6 +41,9 @@ namespace Froststrap.Utility
         private static int _pauseToggles;
         private static bool _paused;
 
+        // output device and stereo pair from the settings, as last applied
+        private static (string Device, int Pair) _output = ("", 0);
+
         // repeat off reached the end of the playlist; waits for a press before playing again
         private static bool _finished;
 
@@ -286,6 +289,16 @@ namespace Froststrap.Utility
                     ResetFailures();
             }
 
+            var output = (Device: settings.BackgroundMusicDevice ?? "", Pair: Math.Max(0, settings.BackgroundMusicChannelPair));
+            bool rerouted = output != _output;
+            if (rerouted)
+            {
+                // a new output is a retry
+                _output = output;
+                _failedFolder = null;
+                ResetFailures();
+            }
+
             // a press while nothing plays (end of the playlist, or every song failed) starts again
             bool startRequested = (togglePause || skip != 0) && _playing is null;
             bool wasFinished = _finished;
@@ -301,7 +314,11 @@ namespace Froststrap.Utility
             if (togglePause && _playing is not null)
                 _paused = !_paused;
 
-            if (_playing is not null && !advance && !skipping)
+            // a playing track moves to the new output from the start, keeping its pause
+            bool restart = rerouted && _playing is not null && !advance && !skipping;
+            bool keepPaused = restart && _paused;
+
+            if (_playing is not null && !advance && !skipping && !restart)
             {
                 AudioPlayer.SetVolume(volume);
                 AudioPlayer.SetPaused(_paused);
@@ -321,7 +338,8 @@ namespace Froststrap.Utility
             }
 
             // starting again resumes the same track, or moves on if the user doesn't want that
-            int next = advance || _index < 0 || !settings.BackgroundMusicResume ? _index + 1 : _index;
+            int next = restart ? _index
+                : advance || _index < 0 || !settings.BackgroundMusicResume ? _index + 1 : _index;
 
             var repeat = settings.BackgroundMusicRepeat;
             bool finishedCleanly = advance && !endedFailed && !skipping;
@@ -371,7 +389,7 @@ namespace Froststrap.Utility
                 ulong id = Interlocked.Increment(ref _playId);
 
                 AudioPlayerResult result = File.Exists(path)
-                    ? AudioPlayer.PlayTrack(path, volume, id)
+                    ? AudioPlayer.PlayTrack(path, volume, id, output.Device, output.Pair)
                     : AudioPlayerResult.FileNotReadable;
 
                 if (result == AudioPlayerResult.Ok)
@@ -384,7 +402,9 @@ namespace Froststrap.Utility
                         History.RemoveRange(historyTarget + 1, History.Count - historyTarget - 1);
                     else
                         Remember(path);
-                    _paused = false;
+                    _paused = keepPaused;
+                    if (keepPaused)
+                        AudioPlayer.SetPaused(true);
                     return;
                 }
 

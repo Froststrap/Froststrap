@@ -239,8 +239,35 @@ internal partial class InternalAudioPlayer
     public static partial int PlayTrack(
         [MarshalAs(UnmanagedType.LPUTF8Str)] string path,
         float volume,
-        ulong id
+        ulong id,
+        [MarshalAs(UnmanagedType.LPUTF8Str)] string? device,
+        ushort pair
     );
+
+    [LibraryImport(
+        "audioplayer",
+        EntryPoint = "devices_open"
+    )]
+    public static partial IntPtr DevicesOpen();
+
+    [LibraryImport(
+        "audioplayer",
+        EntryPoint = "devices_count"
+    )]
+    public static partial nuint DevicesCount(IntPtr list);
+
+    [LibraryImport(
+        "audioplayer",
+        EntryPoint = "devices_get"
+    )]
+    [return: MarshalAs(UnmanagedType.U1)]
+    public static partial bool DevicesGet(IntPtr list, nuint index, out IntPtr id, out IntPtr name, out ushort channels, out int isDefault);
+
+    [LibraryImport(
+        "audioplayer",
+        EntryPoint = "devices_free"
+    )]
+    public static partial void DevicesFree(IntPtr list);
 
     [LibraryImport(
         "audioplayer",
@@ -326,6 +353,9 @@ public enum AudioPlayerResult
 }
 
 /// Tags, length and encoded cover image (usually JPEG or PNG, empty if none) of one file.
+/// An output device. `Id` is empty for the system default.
+public sealed record AudioDevice(string Id, string Name, int Channels, bool IsDefault);
+
 public sealed record TrackInfo(string? Title, string? Artist, string? Album, TimeSpan? Duration, ReadOnlyMemory<byte> Art);
 
 public static unsafe class AudioPlayer
@@ -351,13 +381,15 @@ public static unsafe class AudioPlayer
         }
     }
 
-    /// Plays a file once. `id` comes back through TrackEnded when it finishes.
-    public static AudioPlayerResult PlayTrack(string path, double volume, ulong id)
+    /// Plays a file once on `device` (null for the default), starting at channel `pair * 2 + 1`.
+    /// Falls back to the default output if that can't be opened. `id` comes back through TrackEnded.
+    public static AudioPlayerResult PlayTrack(string path, double volume, ulong id, string? device = null, int pair = 0)
     {
         try
         {
             Initialize();
-            return (AudioPlayerResult)InternalAudioPlayer.PlayTrack(path, (float)volume, id);
+            ushort firstChannel = (ushort)Math.Clamp(pair * 2, 0, ushort.MaxValue - 1);
+            return (AudioPlayerResult)InternalAudioPlayer.PlayTrack(path, (float)volume, id, device, firstChannel);
         }
         catch (Exception ex) when (NativeLibraryFailure.IsLoadFailure(ex))
         {
@@ -399,6 +431,47 @@ public static unsafe class AudioPlayer
         catch (Exception ex) when (NativeLibraryFailure.IsLoadFailure(ex))
         {
             NativeLibraryFailure.Report("audioplayer", ex);
+        }
+    }
+
+    /// Empty if the devices can't be listed or the library is missing. Can block, so call it off the UI thread.
+    public static IReadOnlyList<AudioDevice> ListDevices()
+    {
+        IntPtr list = IntPtr.Zero;
+
+        try
+        {
+            Initialize();
+
+            list = InternalAudioPlayer.DevicesOpen();
+            if (list == IntPtr.Zero)
+                return [];
+
+            nuint count = InternalAudioPlayer.DevicesCount(list);
+            var devices = new List<AudioDevice>((int)count);
+            for (nuint i = 0; i < count; i++)
+            {
+                if (!InternalAudioPlayer.DevicesGet(list, i, out IntPtr id, out IntPtr name, out ushort channels, out int isDefault))
+                    continue;
+
+                devices.Add(new AudioDevice(
+                    Marshal.PtrToStringUTF8(id) ?? "",
+                    Marshal.PtrToStringUTF8(name) ?? "",
+                    channels,
+                    isDefault != 0));
+            }
+
+            return devices;
+        }
+        catch (Exception ex) when (NativeLibraryFailure.IsLoadFailure(ex))
+        {
+            NativeLibraryFailure.Report("audioplayer", ex);
+            return [];
+        }
+        finally
+        {
+            if (list != IntPtr.Zero)
+                InternalAudioPlayer.DevicesFree(list);
         }
     }
 

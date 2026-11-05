@@ -3810,6 +3810,60 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Output device.
+        /// </summary>
+        public static string Menu_Appearance_BackgroundMusic_Device {
+            get {
+                return ResourceManager.GetString("Menu.Appearance.BackgroundMusic.Device", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Where the music plays. If the device isn't connected, it plays on the default one..
+        /// </summary>
+        public static string Menu_Appearance_BackgroundMusic_Device_Description {
+            get {
+                return ResourceManager.GetString("Menu.Appearance.BackgroundMusic.Device.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to System default.
+        /// </summary>
+        public static string Menu_Appearance_BackgroundMusic_Device_Default {
+            get {
+                return ResourceManager.GetString("Menu.Appearance.BackgroundMusic.Device.Default", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disconnected device.
+        /// </summary>
+        public static string Menu_Appearance_BackgroundMusic_Device_Missing {
+            get {
+                return ResourceManager.GetString("Menu.Appearance.BackgroundMusic.Device.Missing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Output channels.
+        /// </summary>
+        public static string Menu_Appearance_BackgroundMusic_Channels {
+            get {
+                return ResourceManager.GetString("Menu.Appearance.BackgroundMusic.Channels", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Which pair of the device's channels gets the music..
+        /// </summary>
+        public static string Menu_Appearance_BackgroundMusic_Channels_Description {
+            get {
+                return ResourceManager.GetString("Menu.Appearance.BackgroundMusic.Channels.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Resume last song.
         /// </summary>
         public static string Menu_Appearance_BackgroundMusic_Resume {

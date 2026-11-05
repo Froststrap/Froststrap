@@ -247,6 +247,25 @@ SPDX-License-Identifier: MPL-2.0
                         Description="{x:Static resources:Strings.Menu_Appearance_BackgroundMusic_Resume_Description}">
                         <ToggleSwitch IsChecked="{Binding BackgroundMusicResume, Mode=TwoWay}" />
                     </controls:OptionControl>
+
+                    <controls:OptionControl
+                        Header="{x:Static resources:Strings.Menu_Appearance_BackgroundMusic_Device}"
+                        Description="{x:Static resources:Strings.Menu_Appearance_BackgroundMusic_Device_Description}">
+                        <ComboBox
+                            MinWidth="200"
+                            ItemsSource="{Binding OutputDevices}"
+                            SelectedItem="{Binding OutputDevice, Mode=TwoWay}" />
+                    </controls:OptionControl>
+
+                    <controls:OptionControl
+                        Header="{x:Static resources:Strings.Menu_Appearance_BackgroundMusic_Channels}"
+                        Description="{x:Static resources:Strings.Menu_Appearance_BackgroundMusic_Channels_Description}"
+                        IsVisible="{Binding HasChannelPairs}">
+                        <ComboBox
+                            MinWidth="200"
+                            ItemsSource="{Binding ChannelPairs}"
+                            SelectedIndex="{Binding BackgroundMusicChannelPair, Mode=TwoWay}" />
+                    </controls:OptionControl>
                 </StackPanel>
             </controls:CardExpander>
 

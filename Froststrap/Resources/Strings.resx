@@ -2101,6 +2101,24 @@ It must contain at least one of the following folders: content, ExtraContent, Pl
   <data name="Menu.MusicControls.Previous" xml:space="preserve">
     <value>Previous</value>
   </data>
+  <data name="Menu.Appearance.BackgroundMusic.Device" xml:space="preserve">
+    <value>Output device</value>
+  </data>
+  <data name="Menu.Appearance.BackgroundMusic.Device.Description" xml:space="preserve">
+    <value>Where the music plays. If the device isn't connected, it plays on the default one.</value>
+  </data>
+  <data name="Menu.Appearance.BackgroundMusic.Device.Default" xml:space="preserve">
+    <value>System default</value>
+  </data>
+  <data name="Menu.Appearance.BackgroundMusic.Device.Missing" xml:space="preserve">
+    <value>Disconnected device</value>
+  </data>
+  <data name="Menu.Appearance.BackgroundMusic.Channels" xml:space="preserve">
+    <value>Output channels</value>
+  </data>
+  <data name="Menu.Appearance.BackgroundMusic.Channels.Description" xml:space="preserve">
+    <value>Which pair of the device's channels gets the music.</value>
+  </data>
   <data name="Menu.Appearance.BackgroundMusic.Resume" xml:space="preserve">
     <value>Resume last song</value>
   </data>

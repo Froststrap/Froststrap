@@ -101,6 +101,8 @@ namespace Froststrap.Models.Persistable
         public bool BackgroundMusicShuffle { get; set; }
         public BackgroundMusicRepeat BackgroundMusicRepeat { get; set; } = BackgroundMusicRepeat.All;
         public bool BackgroundMusicResume { get; set; } = true;
+        public string BackgroundMusicDevice { get; set; } = "";
+        public int BackgroundMusicChannelPair { get; set; }
         public string BootstrapperTitle { get; set; } = App.ProjectName;
         public string BootstrapperIconCustomLocation { get; set; } = "";
         public Theme Theme { get; set; } = Theme.Default;
