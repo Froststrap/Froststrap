@@ -85,10 +85,7 @@ internal partial class Bootstrapper : IDisposable
         _joinData = GameJoin.GetJoinDataByLaunchCommand(_launchCommandLine);
     }
 
-    private void SetupAppData()
-    {
-        AppData = IsStudioLaunch ? new RobloxStudioData() : new RobloxPlayerData();
-    }
+    private void SetupAppData() => AppData = IsStudioLaunch ? new RobloxStudioData() : new RobloxPlayerData();
 
     private async Task HandleConnectionError(Exception ex)
     {
