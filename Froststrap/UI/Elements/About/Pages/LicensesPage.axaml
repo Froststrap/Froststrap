@@ -83,12 +83,6 @@ SPDX-License-Identifier: MPL-2.0
                                CommandParameter="https://github.com/MarwanFr/LucideAvaloniaUI" />
 
                 <ui:CardAction Margin="4" Icon="Copyright"
-                               Header="Pixi ColorPicker"
-                               Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
-                               Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
-                               CommandParameter="https://github.com/PixiEditor/ColorPicker" />
-
-                <ui:CardAction Margin="4" Icon="Copyright"
                                Header="CommunityToolKit MVVM"
                                Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
                                Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
