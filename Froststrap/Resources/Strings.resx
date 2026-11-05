@@ -2086,6 +2086,15 @@ It must contain at least one of the following folders: content, ExtraContent, Pl
   <data name="Menu.MusicControls.Pause" xml:space="preserve">
     <value>Pause</value>
   </data>
+  <data name="Menu.MusicControls.RepeatAll" xml:space="preserve">
+    <value>Repeat all</value>
+  </data>
+  <data name="Menu.MusicControls.RepeatOff" xml:space="preserve">
+    <value>Repeat off</value>
+  </data>
+  <data name="Menu.MusicControls.RepeatOne" xml:space="preserve">
+    <value>Repeat one</value>
+  </data>
   <data name="Menu.MusicControls.Play" xml:space="preserve">
     <value>Play</value>
   </data>
@@ -2094,6 +2103,9 @@ It must contain at least one of the following folders: content, ExtraContent, Pl
   </data>
   <data name="Menu.Appearance.BackgroundMusic.Resume" xml:space="preserve">
     <value>Resume last song</value>
+  </data>
+  <data name="Menu.Appearance.BackgroundMusic.Resume.Description" xml:space="preserve">
+    <value>Pick up the last song when Settings or Froststrap opens again. When off, it moves on to the next song.</value>
   </data>
   <data name="Menu.Appearance.BackgroundMusic.Shuffle" xml:space="preserve">
     <value>Shuffle</value>

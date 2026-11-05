@@ -41,6 +41,9 @@ namespace Froststrap.Utility
         private static int _pauseToggles;
         private static bool _paused;
 
+        // repeat off reached the end of the playlist; waits for a press before playing again
+        private static bool _finished;
+
         // songs that actually played, newest last, so Previous works across shuffle rounds
         private const int HistoryLimit = 100;
         private static readonly List<string> History = [];
@@ -249,6 +252,7 @@ namespace Froststrap.Utility
             if (!_active || !settings.BackgroundMusicEnabled || string.IsNullOrWhiteSpace(folder))
             {
                 _failedFolder = null;
+                _finished = false;
                 ResetFailures();
                 Interlocked.Increment(ref _rescanRequested);
                 StopPlayback();
@@ -282,6 +286,16 @@ namespace Froststrap.Utility
                     ResetFailures();
             }
 
+            // a press while nothing plays (end of the playlist, or every song failed) starts again
+            bool startRequested = (togglePause || skip != 0) && _playing is null;
+            bool wasFinished = _finished;
+            if (startRequested)
+            {
+                _finished = false;
+                _failedFolder = null;
+                ResetFailures();
+            }
+
             // controls only act on a track that's playing; a skip pressed as it ends replaces the auto-advance
             bool skipping = skip != 0 && _playing is not null && !switched;
             if (togglePause && _playing is not null)
@@ -294,8 +308,8 @@ namespace Froststrap.Utility
                 return;
             }
 
-            // everything in this folder already failed; wait for a new folder, a toggle or a rescan
-            if (_failedFolder == folder)
+            // everything in this folder already failed, or the playlist ended; wait for a press or a change
+            if (_failedFolder == folder || _finished)
                 return;
 
             if (_tracks.Count == 0)
@@ -308,6 +322,23 @@ namespace Froststrap.Utility
 
             // starting again resumes the same track, or moves on if the user doesn't want that
             int next = advance || _index < 0 || !settings.BackgroundMusicResume ? _index + 1 : _index;
+
+            var repeat = settings.BackgroundMusicRepeat;
+            bool finishedCleanly = advance && !endedFailed && !skipping;
+
+            if (finishedCleanly && repeat == BackgroundMusicRepeat.One)
+                next = _index;
+
+            if (finishedCleanly && repeat == BackgroundMusicRepeat.Off && _index == _tracks.Count - 1)
+            {
+                StopPlayback();
+                _finished = true;
+                return;
+            }
+
+            // after the playlist ended: Play starts over, Previous replays the last song
+            if (wasFinished && startRequested)
+                next = skip < 0 ? _index : _index + 1;
 
             // where Previous is headed in the history; only applied once that song really starts
             int historyTarget = -1;
@@ -382,6 +413,7 @@ namespace Froststrap.Utility
 
             List<string>? found = FindTracks(folder);
             _unreadable = found is null;
+            _finished = false;
             _tracks = found ?? [];
             _shuffled = false;
 

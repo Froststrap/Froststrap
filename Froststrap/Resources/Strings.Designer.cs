@@ -3819,6 +3819,42 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Pick up the last song when Settings or Froststrap opens again. When off, it moves on to the next song..
+        /// </summary>
+        public static string Menu_Appearance_BackgroundMusic_Resume_Description {
+            get {
+                return ResourceManager.GetString("Menu.Appearance.BackgroundMusic.Resume.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Repeat all.
+        /// </summary>
+        public static string Menu_MusicControls_RepeatAll {
+            get {
+                return ResourceManager.GetString("Menu.MusicControls.RepeatAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Repeat off.
+        /// </summary>
+        public static string Menu_MusicControls_RepeatOff {
+            get {
+                return ResourceManager.GetString("Menu.MusicControls.RepeatOff", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Repeat one.
+        /// </summary>
+        public static string Menu_MusicControls_RepeatOne {
+            get {
+                return ResourceManager.GetString("Menu.MusicControls.RepeatOne", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Shuffle.
         /// </summary>
         public static string Menu_Appearance_BackgroundMusic_Shuffle {

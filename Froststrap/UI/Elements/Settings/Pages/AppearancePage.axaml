@@ -240,21 +240,14 @@ SPDX-License-Identifier: MPL-2.0
                         <Button
                             Grid.Column="2"
                             Content="{x:Static resources:Strings.Common_Clear}"
-                            Command="{Binding ClearMusicCommand}"
-                            Classes="accent" />
+                            Command="{Binding ClearMusicCommand}" />
                     </Grid>
 
-                    <Grid
-                        ColumnDefinitions="*,Auto"
-                        ColumnSpacing="8">
-                        <TextBlock
-                            Text="{x:Static resources:Strings.Menu_Appearance_BackgroundMusic_Resume}"
-                            VerticalAlignment="Center" />
-                        <ToggleSwitch
-                            Grid.Column="1"
-                            IsChecked="{Binding BackgroundMusicResume, Mode=TwoWay}"
-                            AutomationProperties.Name="{x:Static resources:Strings.Menu_Appearance_BackgroundMusic_Resume}" />
-                    </Grid>
+                    <controls:OptionControl
+                        Header="{x:Static resources:Strings.Menu_Appearance_BackgroundMusic_Resume}"
+                        Description="{x:Static resources:Strings.Menu_Appearance_BackgroundMusic_Resume_Description}">
+                        <ToggleSwitch IsChecked="{Binding BackgroundMusicResume, Mode=TwoWay}" />
+                    </controls:OptionControl>
                 </StackPanel>
             </controls:CardExpander>
 

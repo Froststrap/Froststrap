@@ -29,6 +29,9 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public MusicControlViewModel()
         {
+            ShuffleCommand = new RelayCommand(() => Shuffle = !Shuffle);
+            RepeatCommand = new RelayCommand(CycleRepeat);
+
             BackgroundMusic.StateChanged += OnStateChanged;
             Update();
         }
@@ -36,6 +39,8 @@ namespace Froststrap.UI.ViewModels.Settings
         public ICommand PreviousCommand { get; } = new RelayCommand(BackgroundMusic.Previous);
         public ICommand PlayPauseCommand { get; } = new RelayCommand(BackgroundMusic.TogglePause);
         public ICommand NextCommand { get; } = new RelayCommand(BackgroundMusic.Next);
+        public ICommand ShuffleCommand { get; }
+        public ICommand RepeatCommand { get; }
 
         /// Shown while music is on, so volume and shuffle stay reachable even when nothing plays.
         public bool IsVisible
@@ -44,11 +49,17 @@ namespace Froststrap.UI.ViewModels.Settings
             private set => SetProperty(ref _isVisible, value);
         }
 
-        /// The playback buttons only work while a song is loaded.
         public bool HasTrack
         {
             get => _hasTrack;
-            private set => SetProperty(ref _hasTrack, value);
+            private set
+            {
+                if (SetProperty(ref _hasTrack, value))
+                {
+                    OnPropertyChanged(nameof(PlayPauseIcon));
+                    OnPropertyChanged(nameof(PlayPauseTip));
+                }
+            }
         }
 
         public bool IsPaused
@@ -64,8 +75,10 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public LucideIconNames PlayPauseIcon => IsPaused ? LucideIconNames.Play : LucideIconNames.Pause;
-        public string PlayPauseTip => IsPaused ? Strings.Menu_MusicControls_Play : Strings.Menu_MusicControls_Pause;
+        // with nothing playing, the button starts playback again
+        private bool ShowsPlay => IsPaused || !HasTrack;
+        public LucideIconNames PlayPauseIcon => ShowsPlay ? LucideIconNames.Play : LucideIconNames.Pause;
+        public string PlayPauseTip => ShowsPlay ? Strings.Menu_MusicControls_Play : Strings.Menu_MusicControls_Pause;
 
         public string Title
         {
@@ -123,6 +136,38 @@ namespace Froststrap.UI.ViewModels.Settings
                 BackgroundMusic.Refresh();
             }
         }
+
+        public BackgroundMusicRepeat Repeat
+        {
+            get => App.Settings.Prop.BackgroundMusicRepeat;
+            set
+            {
+                App.Settings.Prop.BackgroundMusicRepeat = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsRepeating));
+                OnPropertyChanged(nameof(RepeatIcon));
+                OnPropertyChanged(nameof(RepeatTip));
+                BackgroundMusic.Refresh();
+            }
+        }
+
+        public bool IsRepeating => Repeat != BackgroundMusicRepeat.Off;
+        public LucideIconNames RepeatIcon => Repeat == BackgroundMusicRepeat.One ? LucideIconNames.Repeat1 : LucideIconNames.Repeat;
+
+        public string RepeatTip => Repeat switch
+        {
+            BackgroundMusicRepeat.All => Strings.Menu_MusicControls_RepeatAll,
+            BackgroundMusicRepeat.One => Strings.Menu_MusicControls_RepeatOne,
+            _ => Strings.Menu_MusicControls_RepeatOff,
+        };
+
+        // same order as Spotify: off, whole playlist, this song
+        private void CycleRepeat() => Repeat = Repeat switch
+        {
+            BackgroundMusicRepeat.Off => BackgroundMusicRepeat.All,
+            BackgroundMusicRepeat.All => BackgroundMusicRepeat.One,
+            _ => BackgroundMusicRepeat.Off,
+        };
 
         // raised off the UI thread
         private void OnStateChanged() => Dispatcher.UIThread.Post(Update);

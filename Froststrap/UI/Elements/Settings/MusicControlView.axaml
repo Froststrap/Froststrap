@@ -86,6 +86,7 @@ SPDX-License-Identifier: MPL-2.0
                     <StackPanel
                         Margin="12"
                         Spacing="16">
+                        <!-- like Spotify: shuffle, previous, play, next, repeat -->
                         <StackPanel
                             Orientation="Horizontal"
                             Spacing="8"
@@ -94,8 +95,20 @@ SPDX-License-Identifier: MPL-2.0
                                 Width="40"
                                 Height="40"
                                 Padding="0"
+                                Classes.accent="{Binding Shuffle}"
+                                Command="{Binding ShuffleCommand}"
+                                ToolTip.Tip="{x:Static resources:Strings.Menu_Appearance_BackgroundMusic_Shuffle}"
+                                AutomationProperties.Name="{x:Static resources:Strings.Menu_Appearance_BackgroundMusic_Shuffle}">
+                                <ic:Lucide
+                                    Icon="Shuffle"
+                                    Width="16"
+                                    Height="16" />
+                            </Button>
+                            <Button
+                                Width="40"
+                                Height="40"
+                                Padding="0"
                                 Command="{Binding PreviousCommand}"
-                                IsEnabled="{Binding HasTrack}"
                                 ToolTip.Tip="{x:Static resources:Strings.Menu_MusicControls_Previous}"
                                 AutomationProperties.Name="{x:Static resources:Strings.Menu_MusicControls_Previous}">
                                 <ic:Lucide
@@ -109,7 +122,6 @@ SPDX-License-Identifier: MPL-2.0
                                 Padding="0"
                                 Classes="accent"
                                 Command="{Binding PlayPauseCommand}"
-                                IsEnabled="{Binding HasTrack}"
                                 ToolTip.Tip="{Binding PlayPauseTip}"
                                 AutomationProperties.Name="{Binding PlayPauseTip}">
                                 <ic:Lucide
@@ -122,11 +134,23 @@ SPDX-License-Identifier: MPL-2.0
                                 Height="40"
                                 Padding="0"
                                 Command="{Binding NextCommand}"
-                                IsEnabled="{Binding HasTrack}"
                                 ToolTip.Tip="{x:Static resources:Strings.Menu_MusicControls_Next}"
                                 AutomationProperties.Name="{x:Static resources:Strings.Menu_MusicControls_Next}">
                                 <ic:Lucide
                                     Icon="SkipForward"
+                                    Width="16"
+                                    Height="16" />
+                            </Button>
+                            <Button
+                                Width="40"
+                                Height="40"
+                                Padding="0"
+                                Classes.accent="{Binding IsRepeating}"
+                                Command="{Binding RepeatCommand}"
+                                ToolTip.Tip="{Binding RepeatTip}"
+                                AutomationProperties.Name="{Binding RepeatTip}">
+                                <ic:Lucide
+                                    Icon="{Binding RepeatIcon}"
                                     Width="16"
                                     Height="16" />
                             </Button>
@@ -152,27 +176,6 @@ SPDX-License-Identifier: MPL-2.0
                                 Text="{Binding Volume, StringFormat=\{0:P0\}}"
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Center" />
-                        </Grid>
-
-                        <Grid
-                            ColumnDefinitions="Auto,*,Auto"
-                            ColumnSpacing="8">
-                            <ic:Lucide
-                                Icon="Shuffle"
-                                Width="16"
-                                Height="16"
-                                VerticalAlignment="Center" />
-                            <TextBlock
-                                Grid.Column="1"
-                                Text="{x:Static resources:Strings.Menu_Appearance_BackgroundMusic_Shuffle}"
-                                VerticalAlignment="Center" />
-                            <ToggleSwitch
-                                Grid.Column="2"
-                                IsChecked="{Binding Shuffle, Mode=TwoWay}"
-                                OnContent=""
-                                OffContent=""
-                                MinWidth="0"
-                                AutomationProperties.Name="{x:Static resources:Strings.Menu_Appearance_BackgroundMusic_Shuffle}" />
                         </Grid>
                     </StackPanel>
                 </StackPanel>
