@@ -21,8 +21,7 @@ internal partial class Bootstrapper : IDisposable
             };
             return;
         }
-
-        if (OperatingSystem.IsLinux() && !IsStudioLaunch)
+        else if (OperatingSystem.IsLinux() && !IsStudioLaunch)
         {
             PackageDirectoryMap = [];
             return;
