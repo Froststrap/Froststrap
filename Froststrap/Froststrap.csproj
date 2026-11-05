@@ -19,9 +19,9 @@ SPDX-License-Identifier: MPL-2.0
     <Version>$(AppVersion)</Version>
     <FileVersion>$(AppVersion)</FileVersion>
     <InformationalVersion>$(InfAppVersion)</InformationalVersion>
+    <AssemblyName>froststrap</AssemblyName>
     <Company>Froststrap</Company>
-    <Product>$(AssemblyName)</Product>
-    <AssemblyName>Froststrap</AssemblyName>
+    <Product>Froststrap</Product>
     <RootNamespace>Froststrap</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   	<PublishAot>true</PublishAot>
