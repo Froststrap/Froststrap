@@ -92,7 +92,7 @@ namespace Froststrap.UI.ViewModels.Dialogs
                 if (!response.IsSuccessStatusCode)
                     return null;
 
-                var user = await response.Content.ReadFromJsonAsync<AuthenticatedUser>();
+                var user = await JsonHelper.ReadFromJsonAsync<AuthenticatedUser>(response.Content);
 
                 if (user is not { Id: > 0 })
                     return null;

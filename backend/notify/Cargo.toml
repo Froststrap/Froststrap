@@ -12,6 +12,10 @@ license.workspace = true
 [lib]
 crate-type = ["cdylib"]
 
+[dependencies]
+log.workspace = true
+logger.workspace = true
+
 [target.'cfg(target_os = "linux")'.dependencies]
 dbus.workspace = true
 

@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+using Avalonia.Platform;
 using System.Text.Json.Nodes;
 using System.Reflection;
 
@@ -9,12 +10,6 @@ namespace Froststrap
 {
     internal class JsonManager<T>(string? className = null) where T : class, new()
     {
-        private static readonly JsonSerializerOptions _jsonOptions = new()
-        {
-            WriteIndented = true,
-            ReadCommentHandling = JsonCommentHandling.Skip
-        };
-
         protected T _prop = new();
 
         public virtual T Prop
@@ -27,6 +22,12 @@ namespace Froststrap
 
         public bool Loaded { get; protected set; }
 
+        public bool TryGetLoaded(out T value)
+        {
+            value = _prop;
+            return Loaded;
+        }
+
         public virtual string ClassName { get; } = string.IsNullOrEmpty(className) ? typeof(T).Name : className;
 
         public virtual string ProfilesLocation => Path.Combine(Paths.Base, "Profiles.json");
@@ -38,10 +39,11 @@ namespace Froststrap
         public bool IsSaved => File.Exists(FileLocation);
 
         protected string? _savedHash;
+        protected string? _savedJson;
 
         protected virtual string ComputeHash(T obj)
         {
-            string json = JsonSerializer.Serialize(obj, _jsonOptions);
+            string json = JsonHelper.Serialize(obj);
             return FastHash.FromString(json);
         }
 
@@ -54,6 +56,21 @@ namespace Froststrap
             }
         }
 
+        public string DescribeChanges()
+        {
+            if (_savedJson is null) return "(no baseline)";
+            try
+            {
+                var before = JsonNode.Parse(_savedJson) as JsonObject ?? [];
+                var after = JsonHelper.SerializeToNode(Prop) as JsonObject ?? [];
+                var changed = before.Select(p => p.Key).Union(after.Select(p => p.Key))
+                    .Where(k => before[k]?.ToJsonString() != after[k]?.ToJsonString())
+                    .ToList();
+                return changed.Count == 0 ? "(hash differs, no key diff)" : string.Join(", ", changed);
+            }
+            catch (Exception ex) { return $"(diff failed: {ex.Message})"; }
+        }
+
         public virtual bool Load(bool alertFailure = true)
         {
             App.Logger.Info($"Loading from {FileLocation}...");
@@ -64,13 +81,14 @@ namespace Froststrap
                 {
                     string contents = File.ReadAllText(FileLocation);
 
-                    T settings = JsonSerializer.Deserialize<T>(contents, _jsonOptions)
+                    T settings = JsonHelper.Deserialize<T>(contents)
                         ?? throw new InvalidOperationException($"{ClassName} deserialization returned null.");
 
                     _prop = settings;
                     Loaded = true;
                     LastFileHash = FastHash.FromString(contents);
                     _savedHash = ComputeHash(_prop);
+                    _savedJson = JsonHelper.Serialize(_prop);
 
                     App.Logger.Info("Loaded successfully!");
                     return true;
@@ -80,6 +98,7 @@ namespace Froststrap
                     App.Logger.Error($"Could not find {FileLocation}.");
                     Loaded = true;
                     _savedHash = ComputeHash(_prop);
+                    _savedJson = JsonHelper.Serialize(_prop);
                     return false;
                 }
             }
@@ -133,12 +152,13 @@ namespace Froststrap
 
             try
             {
-                string contents = JsonSerializer.Serialize(Prop, _jsonOptions);
+                string contents = JsonHelper.Serialize(Prop);
 
                 File.WriteAllText(FileLocation, contents);
 
                 LastFileHash = FastHash.FromString(contents);
                 _savedHash = ComputeHash(Prop);
+                _savedJson = JsonHelper.Serialize(Prop);
                 App.Logger.Info("Save complete!");
                 return true;
             }
@@ -175,11 +195,11 @@ namespace Froststrap
                     if (!string.IsNullOrWhiteSpace(existingContent))
                     {
                         using var doc = JsonDocument.Parse(existingContent);
-                        existingJson = JsonSerializer.SerializeToNode(doc.RootElement)?.AsObject() ?? [];
+                        existingJson = JsonNode.Parse(doc.RootElement.GetRawText())?.AsObject() ?? [];
                     }
                 }
 
-                var currentJson = JsonSerializer.SerializeToNode(Prop, _jsonOptions)?.AsObject();
+                var currentJson = JsonHelper.SerializeToNode(Prop)?.AsObject();
                 _ = currentJson ?? throw new InvalidOperationException("Failed to serialize current object.");
 
                 if (currentJson.TryGetPropertyValue(SettingName, out JsonNode? value))
@@ -193,10 +213,11 @@ namespace Froststrap
                     return;
                 }
 
-                string contents = existingJson.ToJsonString(_jsonOptions);
+                string contents = existingJson.ToJsonString(JsonHelper.Options);
                 File.WriteAllText(FileLocation, contents);
                 LastFileHash = FastHash.FromString(contents);
                 _savedHash = ComputeHash(Prop);
+                _savedJson = JsonHelper.Serialize(Prop);
                 App.Logger.Info("SaveSetting complete!");
             }
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or JsonException)
@@ -250,7 +271,7 @@ namespace Froststrap
                 if (!File.Exists(FileDirectory))
                     File.Create(FileDirectory).Dispose();
 
-                string FastFlagsJson = JsonSerializer.Serialize(Prop, _jsonOptions);
+                string FastFlagsJson = JsonHelper.Serialize(Prop);
 
                 File.WriteAllText(FileDirectory, FastFlagsJson);
             }
@@ -282,7 +303,7 @@ namespace Froststrap
 
                 App.Logger.Info($"Loading {SavedClientSettings}");
 
-                T settings = JsonSerializer.Deserialize<T>(SavedClientSettings)
+                T settings = JsonHelper.Deserialize<T>(SavedClientSettings)
                     ?? throw new JsonException($"Failed to deserialize profile: {name}");
 
                 App.FastFlags.suspendUndoSnapshot = true;
@@ -313,7 +334,7 @@ namespace Froststrap
             }
         }
 
-        public async void LoadPresetProfile(string? name, bool? clearFlags)
+        public async Task LoadPresetProfile(string? name, bool? clearFlags)
         {
             if (string.IsNullOrEmpty(name))
                 return;
@@ -321,42 +342,39 @@ namespace Froststrap
             try
             {
                 string profileJson;
-                var assembly = Assembly.GetExecutingAssembly();
-                string resourcePrefix = "Froststrap.Resources.PresetFlags.";
-                string resourceFullName = resourcePrefix + name;
 
-                string? foundResource = assembly.GetManifestResourceNames()
-                    .FirstOrDefault(r => r.Equals(resourceFullName, StringComparison.OrdinalIgnoreCase));
+                var presetAssets = AssetLoader.GetAssets(new Uri("avares://Froststrap/Resources/PresetFlags/"), null);
+                var targetUri = presetAssets.FirstOrDefault(u => u.AbsolutePath.EndsWith(name, StringComparison.OrdinalIgnoreCase));
 
-                if (foundResource != null)
+                if (targetUri != null)
                 {
-                    using Stream stream = assembly.GetManifestResourceStream(foundResource)!;
+                    using Stream stream = AssetLoader.Open(targetUri);
                     using StreamReader reader = new(stream);
-                    profileJson = reader.ReadToEnd();
+                    profileJson = await reader.ReadToEndAsync();
 
                     App.Logger.Info($"Loading embedded preset profile {name}");
                 }
                 else
                 {
                     // Load from disk (user profiles)
-                    string BaseDir = Paths.SavedFlagProfiles;
+                    string baseDir = Paths.SavedFlagProfiles;
 
-                    if (!Directory.Exists(BaseDir))
-                        Directory.CreateDirectory(BaseDir);
+                    if (!Directory.Exists(baseDir))
+                        Directory.CreateDirectory(baseDir);
 
-                    string[] Files = Directory.GetFiles(BaseDir);
-                    string FoundFile = Files.FirstOrDefault(f => Path.GetFileName(f) == name) ?? string.Empty;
+                    string[] files = Directory.GetFiles(baseDir);
+                    string foundFile = files.FirstOrDefault(f => Path.GetFileName(f).Equals(name, StringComparison.OrdinalIgnoreCase)) ?? string.Empty;
 
-                    if (string.IsNullOrEmpty(FoundFile))
+                    if (string.IsNullOrEmpty(foundFile))
                         throw new FileNotFoundException($"Profile file '{name}' not found.");
 
-                    profileJson = File.ReadAllText(FoundFile);
+                    profileJson = await File.ReadAllTextAsync(foundFile);
 
                     App.Logger.Info($"Loading user profile from file {name}");
                 }
 
                 // Deserialize the profile JSON
-                T settings = JsonSerializer.Deserialize<T>(profileJson)
+                T settings = JsonHelper.Deserialize<T>(profileJson)
                     ?? throw new ArgumentNullException(nameof(name), "Deserialization returned null");
 
                 App.FastFlags.suspendUndoSnapshot = true;
@@ -411,14 +429,22 @@ namespace Froststrap
     /// <typeparam name="T">Class</typeparam>
     internal class LazyJsonManager<T>(string? className) : JsonManager<T>(className) where T : class, new()
     {
+        private readonly object _loadSync = new();
+
         public override T Prop
         {
             get
             {
-                if (!Loaded)
-                    Load();
+                if (Loaded)
+                    return _prop;
 
-                return _prop;
+                lock (_loadSync)
+                {
+                    if (!Loaded)
+                        Load();
+
+                    return _prop;
+                }
             }
             set
             {

@@ -5,11 +5,12 @@ SPDX-License-Identifier: MPL-2.0
 -->
 
 <Styles xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="Froststrap.UI.AppThemes.Styles.Dark">
 
     <Style Selector="ProgressBar.Square">
-        <Setter Property="Background" Value="{StaticResource ControlFillColorDefaultBrush}" />
-        <Setter Property="Foreground" Value="{StaticResource NewTextEditorForeground}" />
+        <Setter Property="Background" Value="{DynamicResource ControlFillColorDefaultBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource NewTextEditorForeground}" />
         <Setter Property="Template">
             <ControlTemplate>
                 <Grid Name="TemplateRoot" ClipToBounds="True">

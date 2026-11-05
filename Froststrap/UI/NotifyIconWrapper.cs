@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: MPL-2.0
 
 using Avalonia;
-using System.Reflection;
 using Avalonia.Controls;
 using Avalonia.Platform;
 using Avalonia.Threading;
@@ -38,17 +37,11 @@ namespace Froststrap.UI
             if (App.Settings.Prop.LaunchWithVirtualDisplay) Dispatcher.UIThread.Post(() =>
             {
                 App.Logger.Debug("Starting Virtual display");
-                // this currently will just emulate pretty much the old VDSP
-                // just different name and more modes
-                //
-                // TODO:
-                // make this read from config so we can config
-                // with new values.
                 void InitAndStart(uint serial) => Froststrap.Backend.VirtualDisplay.Initialize(
                     App.Settings.Prop.VirtualDisplayName,
                     App.Settings.Prop.VirtualDisplayWidth,
                     App.Settings.Prop.VirtualDisplayHeight,
-                    [60.0, 120.0, 240.0],
+                    App.Settings.Prop.VirtualDisplayHzModes.Length > 0 ? App.Settings.Prop.VirtualDisplayHzModes : [60.0],
                     serial
                 );
 
@@ -66,7 +59,7 @@ namespace Froststrap.UI
                 Froststrap.Backend.VirtualDisplay.Start();
             });
 #endif
-            App.Logger.Info("Initializing Avalonia TrayIcon");
+            App.Logger.Info("Initializing TrayIcon");
 
             _watcher = watcher;
             _menuContainer = new MenuContainer(_watcher);
@@ -84,16 +77,9 @@ namespace Froststrap.UI
                 Menu = nativeMenu
             };
 
-            const BindingFlags NonPublic = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public;
-
-            var impl = typeof(TrayIcon).GetProperty("Impl", NonPublic)?.GetValue(_trayIcon);
-            var iconImpl = typeof(WindowIcon).GetProperty("PlatformImpl", NonPublic)?.GetValue(_trayIcon.Icon);
-
             App.Logger.Debug(
-                $"Tray: impl={impl?.GetType().Name ?? "null"} " +
-                $"uiThread={Dispatcher.UIThread.CheckAccess()} " +
+                $"Tray: uiThread={Dispatcher.UIThread.CheckAccess()} " +
                 $"iconBytes={iconBytes} " +
-                $"iconImpl={iconImpl?.GetType().Name ?? "null"} " +
                 $"menu={(_trayIcon.Menu is null ? "null" : "set")} " +
                 $"exporter={(_trayIcon.NativeMenuExporter is null ? "null" : "set")} " +
                 $"iconsCollection={(TrayIcon.GetIcons(Application.Current!) is null ? "null" : "set")} " +
@@ -114,7 +100,7 @@ namespace Froststrap.UI
             var icons = TrayIcon.GetIcons(app);
             if (icons is null)
             {
-                icons = new TrayIcons();
+                icons = [];
                 TrayIcon.SetIcons(app, icons);
             }
             icons.Add(_trayIcon);

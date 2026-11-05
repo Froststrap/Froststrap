@@ -221,7 +221,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 NumberStyles.Integer, CultureInfo.InvariantCulture, out var v) ? v : 1;
             set
             {
-                App.GlobalSettings.SetPreset("Audio.MasterVolumeStudio",
+                App.GlobalSettings.SetPreset("Rendering.SavedQualityLevel",
                     value.ToString(CultureInfo.InvariantCulture));
                 OnPropertyChanged(nameof(GraphicsQuality));
             }
@@ -286,9 +286,9 @@ namespace Froststrap.UI.ViewModels.Settings
         }
         public static double PartyVoiceVolume
         {
-            get => double.TryParse(App.GlobalSettings.GetPreset("Audio.PartyChatVolume"),
+            get => double.TryParse(App.GlobalSettings.GetPreset("Audio.PartyVoiceVolume"),
                 NumberStyles.Float, CultureInfo.InvariantCulture, out var v) ? v : 1.0;
-            set => App.GlobalSettings.SetPreset("Audio.PartyChatVolume",
+            set => App.GlobalSettings.SetPreset("Audio.PartyVoiceVolume",
                 value.ToString(CultureInfo.InvariantCulture));
         }
         public static double VoiceChatVolume

@@ -6,6 +6,10 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="NLog" Version="6.2.0" />
+  </ItemGroup>
+
   <PropertyGroup>
     <RustProjectDir>$(MSBuildProjectDirectory)</RustProjectDir>
     <RustProfile Condition="'$(Configuration)' == 'Release'">release</RustProfile>

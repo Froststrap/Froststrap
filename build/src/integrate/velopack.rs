@@ -28,7 +28,7 @@ pub fn pack(version: String, pack_dir: &std::path::Path, entitlements: Option<&s
 
     std::fs::create_dir_all(&velopack_path).unwrap();
 
-    let main_exe = if consts::OS == "windows" { "Froststrap.exe" } else { "Froststrap" };
+    let main_exe = if consts::OS == "windows" { "froststrap.exe" } else { "froststrap" };
 
     let mut args: Vec<String> = [
         "pack",
@@ -48,11 +48,14 @@ pub fn pack(version: String, pack_dir: &std::path::Path, entitlements: Option<&s
     #[cfg(target_os = "windows")]
     {
         args.extend([
-            "--icon".to_string(),
+            "--icon".into(),
             path::git_root().join("Froststrap/Froststrap.ico").to_string_lossy().into_owned(),
-            "--framework".to_string(),
-            "net10.0-x64-runtime,vcredist143-x64".to_string(),
-            "--msi".to_string(),
+            "--framework".into(),
+            "vcredist143-x64".into(),
+            "--msi".into(),
+            // fix for msi error 2503 (force per-user install)
+            "--instLocation".into(),
+            "PerUser".into(),
         ]);
     }
 

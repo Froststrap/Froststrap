@@ -6,7 +6,6 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using Froststrap.UI.ViewModels.Dialogs;
-using ICSharpCode.SharpZipLib.Zip;
 using System.Security.Cryptography;
 
 namespace Froststrap.UI.Elements.Dialogs
@@ -183,8 +182,7 @@ namespace Froststrap.UI.Elements.Dialogs
 
                 await Task.Run(() =>
                 {
-                    var fastZip = new FastZip();
-                    fastZip.ExtractZip(_viewModel.FilePath, staging, null);
+                    System.IO.Compression.ZipFile.ExtractToDirectory(_viewModel.FilePath, staging);
 
                     var entries = Directory.GetFileSystemEntries(staging);
 

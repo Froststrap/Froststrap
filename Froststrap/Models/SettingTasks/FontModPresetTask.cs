@@ -123,7 +123,7 @@ namespace Froststrap.Models.SettingTasks
                 Filesystem.AssertReadOnly(targetPath);
                 File.WriteAllText(
                     targetPath,
-                    JsonSerializer.Serialize(fontFamily, SerializerOptions)
+                    JsonHelper.Serialize(fontFamily, SerializerOptions)
                 );
             }
         }

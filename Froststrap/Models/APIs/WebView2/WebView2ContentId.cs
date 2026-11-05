@@ -6,6 +6,7 @@ namespace Froststrap.Models.APIs.WebView2
 {
     internal class WebView2ContentId
     {
+        [JsonPropertyName("version")]
         public string? Version { get; set; }
     }
 }

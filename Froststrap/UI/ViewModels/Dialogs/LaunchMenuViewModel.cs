@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+using Avalonia.Threading;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 
@@ -27,18 +28,35 @@ namespace Froststrap.UI.ViewModels.Dialogs
             }
         }
 
-        public static bool IsPlayerInstalled
+        private bool _isPlayerInstalled;
+        public bool IsPlayerInstalled
         {
-            get
+            get => _isPlayerInstalled;
+            private set
             {
-                if (OperatingSystem.IsLinux())
-                    return App.LinuxPlayerInstalled;
-                else
-                    return App.IsPlayerInstalled;
+                if (_isPlayerInstalled == value)
+                    return;
+
+                _isPlayerInstalled = value;
+                OnPropertyChanged(nameof(IsPlayerInstalled));
+                OnPropertyChanged(nameof(LaunchButtonText));
             }
         }
 
-        public static bool IsStudioInstalled => App.IsStudioInstalled;
+        private bool _isStudioInstalled;
+        public bool IsStudioInstalled
+        {
+            get => _isStudioInstalled;
+            private set
+            {
+                if (_isStudioInstalled == value)
+                    return;
+
+                _isStudioInstalled = value;
+                OnPropertyChanged(nameof(IsStudioInstalled));
+                OnPropertyChanged(nameof(LaunchButtonText));
+            }
+        }
 
         public static string PlayerMenuItemText => OperatingSystem.IsLinux() ? Strings.Common_Sober : Strings.Common_Player;
 
@@ -75,7 +93,47 @@ namespace Froststrap.UI.ViewModels.Dialogs
             LaunchCommand = new RelayCommand(ExecuteLaunch);
             SetLaunchModeCommand = new RelayCommand<LaunchMode>(mode => SelectedLaunchMode = mode);
             LaunchSettingsCommand = new RelayCommand(() => CloseWindowRequest?.Invoke(this, NextAction.LaunchSettings));
-            SelectedLaunchMode = App.State.Prop.LastLaunchMode;
+
+            _selectedLaunchMode = App.State.Prop.LastLaunchMode;
+
+            RefreshInstalledStates();
+
+            if (!App.PlayerState.Loaded || !App.StudioState.Loaded)
+                _ = LoadInstalledStatesAsync();
+        }
+
+        private async Task LoadInstalledStatesAsync()
+        {
+            try
+            {
+                await Task.Run(() =>
+                {
+                    _ = App.PlayerState.Prop;
+                    _ = App.StudioState.Prop;
+                });
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error(ex, "Failed to load installation states");
+                return;
+            }
+
+            await Dispatcher.UIThread.InvokeAsync(RefreshInstalledStates);
+        }
+
+        private void RefreshInstalledStates()
+        {
+            if (OperatingSystem.IsLinux())
+            {
+                IsPlayerInstalled = App.LinuxPlayerInstalled;
+            }
+            else if (App.PlayerState.TryGetLoaded(out DistributionState playerState))
+            {
+                IsPlayerInstalled = App.PlayerData.IsInstalledWith(playerState);
+            }
+
+            if (App.StudioState.TryGetLoaded(out DistributionState studioState))
+                IsStudioInstalled = App.StudioData.IsInstalledWith(studioState);
         }
 
         private void ExecuteLaunch()

@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: 2026 Froststrap
+// SPDX-FileCopyrightText: 2026 Froststrap
 //
 // SPDX-License-Identifier: MPL-2.0
 
@@ -10,7 +10,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using Froststrap.UI.Elements.Base;
 using Froststrap.UI.Elements.Dialogs;
 using Froststrap.UI.Elements.Editor;
-using ICSharpCode.SharpZipLib.Zip;
+using System.IO.Compression;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Input;
@@ -190,8 +190,14 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private static bool IsBackdropSupported(WindowsBackdrops backdrop)
         {
+            if (OperatingSystem.IsMacOS())
+                return backdrop is WindowsBackdrops.None or WindowsBackdrops.Blur;
+
             if (!OperatingSystem.IsWindows())
                 return backdrop == WindowsBackdrops.None;
+
+            if (backdrop == WindowsBackdrops.Blur)
+                return false;
 
             return backdrop switch
             {
@@ -205,6 +211,12 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             get => App.Settings.Prop.BootstrapperTitle;
             set => App.Settings.Prop.BootstrapperTitle = value;
+        }
+
+        public static bool ShowInfo
+        {
+            get => App.Settings.Prop.BootstrapperShowInfo;
+            set => App.Settings.Prop.BootstrapperShowInfo = value;
         }
 
         public string CustomIconLocation
@@ -554,29 +566,29 @@ namespace Froststrap.UI.ViewModels.Settings
                 FileTypeChoices = [new FilePickerFileType("Zip Archive") { Patterns = _zipFilter }]
             });
 
-            if (file is null) return;
+            if (file is null)
+                return;
 
             string themeDir = Path.Combine(Paths.CustomThemes, SelectedCustomTheme);
 
             await Task.Run(async () =>
             {
                 using var outputStream = await file.OpenWriteAsync();
-                using var zipStream = new ZipOutputStream(outputStream);
-                zipStream.SetLevel(5);
+                using var archive = new ZipArchive(outputStream, ZipArchiveMode.Create, leaveOpen: false);
 
                 foreach (var filePath in Directory.EnumerateFiles(themeDir, "*.*", SearchOption.AllDirectories))
                 {
-                    string relativePath = Path.GetRelativePath(themeDir, filePath);
-                    var entry = new ZipEntry(relativePath) { DateTime = DateTime.Now };
+                    string relativePath = Path.GetRelativePath(themeDir, filePath).Replace('\\', '/');
 
-                    await zipStream.PutNextEntryAsync(entry);
+                    var entry = archive.CreateEntry(relativePath, CompressionLevel.Optimal);
+                    entry.LastWriteTime = DateTimeOffset.Now;
+
+                    await using var entryStream = await entry.OpenAsync();
                     using var fileStream = File.OpenRead(filePath);
-                    await fileStream.CopyToAsync(zipStream);
-                    zipStream.CloseEntry();
+                    await fileStream.CopyToAsync(entryStream);
                 }
-
-                zipStream.Finish();
             });
+
             Froststrap.Utility.Threading.ShellExecute(file.Path.LocalPath, select: true);
         }
 
@@ -974,14 +986,14 @@ namespace Froststrap.UI.ViewModels.Settings
 
             if (file == null) return;
 
-            var data = new
+            var data = new GradientExport
             {
-                GradientStops = GradientStops.Select(s => new { s.Offset, s.Color }).ToList(),
-                GradientAngle
+                GradientStops = [.. GradientStops.Select(s => new Models.GradientStops { Offset = s.Offset, Color = s.Color })],
+                GradientAngle = GradientAngle
             };
 
             using var stream = await file.OpenWriteAsync();
-            await JsonSerializer.SerializeAsync(stream, data, SerializationOptions);
+            await JsonHelper.SerializeAsync(stream, data, SerializationOptions);
         }
 
         private async Task ImportGradient(TopLevel topLevel)

@@ -4,10 +4,9 @@
 {
   lib,
   nfpm,
-  typos,
-  reuse,
+  zstd,
   stdenv,
-  renovate,
+  cargo-bloat,
   callPackage,
 }:
 let
@@ -20,9 +19,8 @@ mkFragment {
   buildInputs = [
     vpk # velopack tooling
     avdt # avalonia devtools
-    reuse
-    typos
-    renovate
+    zstd
+    cargo-bloat
   ]
   ++ lib.optionals stdenv.hostPlatform.isLinux [
     nfpm

@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+using Avalonia;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.UI.Elements.Settings.Pages;
@@ -26,6 +27,21 @@ namespace Froststrap.UI.ViewModels.Settings
     {
         private bool _isNotLinux = !OperatingSystem.IsLinux();
         public bool IsNotLinux { get => _isNotLinux; }
+        private bool _isNotMacOS = !OperatingSystem.IsMacOS();
+        public bool IsNotMacOS { get => _isNotMacOS; }
+
+        private int _titlebarSpaceHeight = OperatingSystem.IsMacOS() ? 52 : 40;
+        public int TitlebarSpaceHeight { get => _titlebarSpaceHeight; }
+        private Thickness _titlebarPadding = OperatingSystem.IsMacOS() ? new Thickness(95,0,12,0) : OperatingSystem.IsLinux() ? new Thickness(8, 0) : new Thickness(8, 0, 140, 0);
+        public Thickness TitlebarPadding { get => _titlebarPadding; }
+        private Thickness _openSidebarTitleMargin = OperatingSystem.IsMacOS() ? new Thickness(56,0,0,0) : new Thickness(155,0,0,0);
+        public Thickness OpenSidebarTitleMargin { get => _openSidebarTitleMargin; }
+        private int _iconButtonSize = OperatingSystem.IsMacOS() ? 28 : 24;
+        public int IconButtonSize { get => _iconButtonSize; }
+        private int _iconButtonIconSize = OperatingSystem.IsMacOS() ? 14 : 14;
+        public int IconButtonIconSize { get => _iconButtonIconSize; }
+        private int _titlebarTextSize = OperatingSystem.IsMacOS() ? 18 : 13;
+        public int TitlebarTextSize { get => _titlebarTextSize; }
 
         private static readonly Dictionary<string, LucideIconNames> _pageIconMap = new()
         {
@@ -61,13 +77,30 @@ namespace Froststrap.UI.ViewModels.Settings
             set => SetProperty(ref _currentPageIcon, value);
         }
 
-        public static bool HasUnsavedChanges =>
-            App.Settings.HasUnsavedChanges ||
-            App.State.HasUnsavedChanges ||
-            App.FastFlags.HasUnsavedChanges ||
-            (OperatingSystem.IsLinux() && App.SoberSettings.HasUnsavedChanges) ||
-            App.GlobalSettings.HasUnsavedChanges ||
-            App.PendingSettingTasks.Count > 0;
+        public static bool HasUnsavedChanges
+        {
+            get
+            {
+                bool dirty = false;
+                void Check(string name, bool isDirty, Func<string>? detail = null)
+                {
+                    if (!isDirty) return;
+                    dirty = true;
+                    App.Logger.Info($"Unsaved changes in {name}: {detail?.Invoke()}");
+                }
+
+                Check("Settings", App.Settings.HasUnsavedChanges, App.Settings.DescribeChanges);
+                Check("State", App.State.HasUnsavedChanges, App.State.DescribeChanges);
+                Check("FastFlags", App.FastFlags.HasUnsavedChanges, App.FastFlags.DescribeChanges);
+                if (OperatingSystem.IsLinux())
+                    Check("SoberSettings", App.SoberSettings.HasUnsavedChanges);
+                Check("GlobalSettings", App.GlobalSettings.HasUnsavedChanges);
+                Check("PendingSettingTasks", App.PendingSettingTasks.Count > 0,
+                    () => string.Join(", ", App.PendingSettingTasks.Keys));
+
+                return dirty;
+            }
+        }
 
         private LaunchMode _selectedLaunchMode = LaunchMode.Player;
 
@@ -353,16 +386,7 @@ namespace Froststrap.UI.ViewModels.Settings
         public void SaveAndLaunchSettings()
         {
             SaveSettings();
-
-            if (!App.LaunchSettings.TestModeFlag.Active)
-            {
-                LaunchEntry.LaunchInChildProcess(SelectedLaunchMode);
-            }
-            else
-            {
-                CloseAction = LaunchEntry.ToNextAction(SelectedLaunchMode);
-                CloseWindow();
-            }
+            LaunchHandler.ProcessNextAction(LaunchEntry.ToNextAction(SelectedLaunchMode));
         }
 
         public LaunchMode SelectedLaunchMode

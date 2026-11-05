@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: 2026 Froststrap
+// SPDX-FileCopyrightText: 2026 Froststrap
 // Copyright (C) Froststrap Team
 //
 // SPDX-License-Identifier: MPL-2.0
@@ -98,8 +98,8 @@ namespace Froststrap.Integrations
 
         private static void CacheModGeneratorVersion(string version)
         {
-            var state = new { Version = version, UpdatedAt = DateTime.Now };
-            File.WriteAllText(ModGeneratorVersionCacheFile, JsonSerializer.Serialize(state));
+            var state = new VersionCacheEntry { Version = version, UpdatedAt = DateTime.Now };
+            File.WriteAllText(ModGeneratorVersionCacheFile, JsonHelper.Serialize(state));
         }
 
         public static async Task<string> EnsureModGeneratorAsync()
@@ -474,8 +474,7 @@ namespace Froststrap.Integrations
                 var result = new Dictionary<string, List<SpriteDef>>();
 
                 var entryRegex = new Regex(
-                    @"\['([^']+)'\]\s*=\s*{\s*ImageRectOffset\s*=\s*Vector2\.new\((\d+),\s*(\d+)\)\s*,\s*ImageRectSize\s*=\s*Vector2\.new\((\d+),\s*(\d+)\)\s*,\s*ImageSet\s*=\s*'([^']+)'",
-                    RegexOptions.Compiled);
+                    @"\['([^']+)'\]\s*=\s*{\s*ImageRectOffset\s*=\s*Vector2\.new\((\d+),\s*(\d+)\)\s*,\s*ImageRectSize\s*=\s*Vector2\.new\((\d+),\s*(\d+)\)\s*,\s*ImageSet\s*=\s*'([^']+)'");
 
                 string[] tableNames = ["assets_1x", "assets_2x", "assets_3x"];
                 int totalMatches = 0;
@@ -597,9 +596,9 @@ namespace Froststrap.Integrations
         private static async Task<Dictionary<string, string[]>> LoadEmbeddedMappingsAsync()
         {
             var assembly = Assembly.GetExecutingAssembly();
-            using var stream = assembly.GetManifestResourceStream("Froststrap.Resources.mappings.json");
+            using var stream = Resource.GetStream("Resources/mappings.json");
             if (stream == null) return [];
-            return await JsonSerializer.DeserializeAsync<Dictionary<string, string[]>>(stream) ?? [];
+            return await JsonHelper.DeserializeAsync<Dictionary<string, string[]>>(stream) ?? [];
         }
 
         private static async Task<(int ExitCode, string Output, string Errors)> ExecuteExeAsync(string exe, string args, string workingDir)

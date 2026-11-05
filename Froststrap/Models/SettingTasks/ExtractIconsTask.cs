@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+using Avalonia.Platform;
 using System.Reflection;
 
 namespace Froststrap.Models.SettingTasks
@@ -35,23 +36,19 @@ namespace Froststrap.Models.SettingTasks
             {
                 Directory.CreateDirectory(IconPath);
 
-                var assembly = Assembly.GetExecutingAssembly();
-                var resourceNames = assembly.GetManifestResourceNames();
-
                 foreach (string iconName in AllowedIconNames)
                 {
-                    string fullResourceName = $"Froststrap.Resources.{iconName}";
+                    var assetUri = new Uri($"avares://Froststrap/Resources/{iconName}");
 
-                    if (!resourceNames.Contains(fullResourceName))
+                    if (!AssetLoader.Exists(assetUri))
                         continue;
-
-                    using var stream = assembly.GetManifestResourceStream(fullResourceName)!;
-                    using var memoryStream = new MemoryStream();
-                    stream.CopyTo(memoryStream);
 
                     string filePath = Path.Combine(IconPath, iconName);
                     Filesystem.AssertReadOnly(filePath);
-                    File.WriteAllBytes(filePath, memoryStream.ToArray());
+
+                    using var stream = AssetLoader.Open(assetUri);
+                    using var fileStream = File.Create(filePath);
+                    stream.CopyTo(fileStream);
                 }
             }
             else if (Directory.Exists(IconPath))

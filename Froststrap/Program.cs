@@ -8,29 +8,37 @@ using Velopack;
 using Froststrap;
 using Froststrap.Backend;
 using Froststrap.Cli;
-#if WINDOWS
-using System.Runtime.InteropServices;
-#endif
 
 namespace Froststrap;
 
-sealed class Program
+sealed partial class Program
 {
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-#if WINDOWS
+    internal static readonly Stopwatch StartupTimer = Stopwatch.StartNew();
+
+#if _WIN32
     private const int AttachParentProcess = -1;
 
-    [DllImport("kernel32.dll")]
-    private static extern bool AllocConsole();
+    [System.Runtime.InteropServices.LibraryImport("kernel32.dll")]
+    private static partial int AllocConsole();
 
-    [DllImport("kernel32.dll")]
-    private static extern bool AttachConsole(int dwProcessId);
+    [System.Runtime.InteropServices.LibraryImport("kernel32.dll")]
+    private static partial int AttachConsole(int dwProcessId);
 #endif
+
+    private static void AttachParentConsole()
+    {
+#if _WIN32
+        _ = AttachConsole(AttachParentProcess);
+#endif
+    }
 
     [STAThread]
     public static int Main(string[] args)
     {
+        AppInitializer.InitializeNativeResolvers();
+
         VelopackApp.Build()
             .SetAutoApplyOnStartup(false)
             .OnAfterInstallFastCallback(v => UriHandler.RegisterProtocolHandlers())
@@ -38,47 +46,53 @@ sealed class Program
             .OnBeforeUninstallFastCallback(v => UriHandler.UnregisterProtocolHandlers())
             .Run();
 
-        ThreadPool.SetMinThreads(Environment.ProcessorCount * 2, Environment.ProcessorCount * 2);
-
         // shim to convert old args to new ones
-        string[] launchArgs = LegacyArgs.Normalize(args);
+        string[] launchArgs = args.Length == 0 ? [] : LegacyArgs.Normalize(args);
 
-#if WINDOWS
+#if _WIN32
         if (launchArgs.Any(static a => a is "--console" or "-c"))
-            AllocConsole();
+            _ = AllocConsole();
 #endif
 
-        var assembly = typeof(App).Assembly;
-        LogManager.Setup().LoadConfigurationFromAssemblyResource(assembly, "NLog.config");
-        GlobalDiagnosticsContext.Set("logRoot", Paths.Logs);
-        GlobalDiagnosticsContext.Set("startTime", DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss", CultureInfo.InvariantCulture));
+        Logging.Configure(Paths.Logs);
+        _ = Task.Run(() => AppInitializer.RunMacSecurityDiagnostics());
+        NativeLog.Register();
 
-        var parseResult = DotMake.CommandLine.Cli.Parse<FroststrapCliCommand>(launchArgs);
-
-        if (LegacyArgs.RequestsHelpOrVersion(launchArgs))
+        if (launchArgs.Length == 0)
         {
-            AttachParentConsole();
-            int exitCode = parseResult.ParseResult.Invoke();
-            LogManager.Shutdown();
-            return exitCode;
+            App.LaunchSettings = new LaunchSettings(new FroststrapCliCommand(), launchArgs);
         }
-
-        if (parseResult.ParseResult.Errors.Count > 0)
+        else
         {
-            AttachParentConsole();
+            var parseResult = DotMake.CommandLine.Cli.Parse<FroststrapCliCommand>(launchArgs);
 
-            foreach (var parseError in parseResult.ParseResult.Errors)
+            if (LegacyArgs.RequestsHelpOrVersion(launchArgs))
             {
-                Console.Error.WriteLine(parseError.Message);
-                Logger.Error(parseError.Message);
+                AttachParentConsole();
+                int exitCode = parseResult.ParseResult.Invoke();
+                LogManager.Shutdown();
+                return exitCode;
             }
 
-            LogManager.Shutdown();
-            return (int)ErrorCode.ERROR_CANCELLED;
+            if (parseResult.ParseResult.Errors.Count > 0)
+            {
+                AttachParentConsole();
+
+                foreach (var parseError in parseResult.ParseResult.Errors)
+                {
+                    Console.Error.WriteLine(parseError.Message);
+                    Logger.Error(parseError.Message);
+                }
+
+                LogManager.Shutdown();
+                return (int)ErrorCode.ERROR_CANCELLED;
+            }
+
+            var cli = parseResult.Bind<FroststrapCliCommand>();
+            App.LaunchSettings = new LaunchSettings(cli, launchArgs);
         }
 
-        var cli = parseResult.Bind<FroststrapCliCommand>();
-        var launchSettings = new LaunchSettings(cli, launchArgs);
+        var launchSettings = App.LaunchSettings;
 
         if (launchSettings.UnknownArgs.Count > 0)
         {
@@ -88,17 +102,16 @@ sealed class Program
             return (int)ErrorCode.ERROR_CANCELLED;
         }
 
-        App.LaunchSettings = launchSettings;
-
         if (launchArgs.Length != 0)
             Logger.Debug($"Arguments: {string.Join(" ", launchArgs)}");
 
         Logger.Debug($"Log file: {Logging.FileLocation}");
-        AppInitializer.InitializeNativeResolvers();
 
         try
         {
+#if __APPLE__
             NativeNotify.Init();
+#endif
             BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
         }
         catch (Exception ex)
@@ -114,12 +127,6 @@ sealed class Program
         return 0;
     }
 
-    private static void AttachParentConsole()
-    {
-#if WINDOWS
-        AttachConsole(AttachParentProcess);
-#endif
-    }
 
     public static AppBuilder BuildAvaloniaApp()
     {
@@ -129,6 +136,9 @@ sealed class Program
             .WithDeveloperTools()
 #endif
             .LogToTrace();
+
+        // Bundled Inter (static weights) on every OS so text looks the same everywhere.
+        builder = builder.WithInterFont();
 
         if (OperatingSystem.IsWindows() && App.LaunchSettings?.NoGpuFlag.Active == true)
         {

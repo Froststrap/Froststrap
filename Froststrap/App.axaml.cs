@@ -37,6 +37,15 @@ internal partial class App : Application
         LaunchHandler.LaunchSettings();
     }
 
+    public static bool DiagnosticsOpen;
+    private void Diagnostics_OnClick(object? sender, EventArgs e)
+    {
+        if (DiagnosticsOpen) return;
+
+        new Froststrap.UI.Elements.Diagnostics.MainWindow().Show();
+        DiagnosticsOpen = true;
+    }
+
     private const string MockReleaseTagEnvironmentVariable = "MOCK_RELEASE_TAG";
     private const string MockCurrentVersionEnvironmentVariable = "MOCK_CURRENT_VERSION";
 
@@ -240,13 +249,30 @@ internal partial class App : Application
         });
     }
 
-    async void GlobalExceptionHandler(object sender, DispatcherUnhandledExceptionEventArgs e)
+    async void GlobalExceptionHandler(object? sender, DispatcherUnhandledExceptionEventArgs e)
     {
         e.Handled = true;
+
+        if (IsWebViewInitializationAbort(e.Exception))
+        {
+            Logger.Info("Ignored WebView2 initialization abort.");
+            return;
+        }
 
         Logger.Error($"An exception occurred: {e.Exception.Message}");
 
         await FinalizeExceptionHandling(e.Exception);
+    }
+
+    private static bool IsWebViewInitializationAbort(Exception ex)
+    {
+        for (Exception? current = ex; current != null; current = current.InnerException)
+        {
+            if (current is COMException { HResult: unchecked((int)0x80004004) })
+                return true;
+        }
+
+        return false;
     }
 
     public static async Task FinalizeExceptionHandling(AggregateException ex)
@@ -423,8 +449,20 @@ internal partial class App : Application
     {
         AvaloniaXamlLoader.Load(this);
 
+        // FluentAvalonia pins ContentControlThemeFontFamily to the system font, bypassing the default font.
+        Resources["ContentControlThemeFontFamily"] = new Avalonia.Media.FontFamily("fonts:Inter#Inter");
+
+        // FluentAvalonia's paddings put more space below the text (tuned for Segoe UI), which reads as too high with Inter.
+        Resources["ComboBoxPadding"] = new Thickness(12, 7, 0, 5);
+        Resources["ComboBoxItemThemePadding"] = new Thickness(11, 7, 11, 5);
+        Resources["ComboBoxEditableTextPadding"] = new Thickness(11, 7, 32, 4);
+        Resources["TextControlThemePadding"] = new Thickness(10, 7, 6, 4);
+        Resources["ButtonPadding"] = new Thickness(11, 5, 11, 5);
+        Resources["MenuFlyoutItemThemePadding"] = new Thickness(11, 10, 11, 7);
+
         AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
         TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
+        Dispatcher.UIThread.UnhandledException += GlobalExceptionHandler;
 
         if (OperatingSystem.IsMacOS()
             && TryGetFeature(typeof(IActivatableLifetime)) is IActivatableLifetime activatableLifetime)

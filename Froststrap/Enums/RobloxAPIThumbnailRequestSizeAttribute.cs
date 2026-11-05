@@ -1,7 +1,5 @@
 namespace Froststrap.Enums;
 
-using System.Text.Json.Serialization;
-
 [JsonConverter(typeof(JsonStringEnumConverter<ThumbnailSize>))]
 internal enum ThumbnailSize
 {

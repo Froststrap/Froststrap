@@ -10,6 +10,8 @@ body:
       options:
         - label: I have checked that this issue I am reporting doesn't exist in closed or open issues.
           required: false
+        - label: I have tried to replicate this issue I am reporting on the newest version possible (betas included).
+          required: false
         - label: I agree that I have just ticked all the boxes without actually reading
           required: false
         - label: I have given all relevant, detailed information with no placeholder text remaining

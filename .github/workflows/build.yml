@@ -18,9 +18,10 @@ jobs:
         shell: bash
     steps:
       - uses: actions/checkout@v7
-        with: { submodules: true, fetch-tags: true, fetch-depth: 1 }
+        with: { submodules: true, fetch-tags: true, fetch-depth: 0 }
 
-      - uses: actions/setup-dotnet@v6
+      - name: Install .NET
+        uses: actions/setup-dotnet@v6
         with:
           dotnet-version: "10.0.x"
 
@@ -28,8 +29,8 @@ jobs:
         run: |
           rustup toolchain install nightly --profile minimal
           rustup default nightly
-
-      - run: dotnet tool install -g vpk --version $VPK_VERSION
+          dotnet tool install vpk --version $VPK_VERSION --tool-path "$RUNNER_TEMP/vpk"
+          echo "$RUNNER_TEMP/vpk" >> "$GITHUB_PATH"
 
       - name: Fetch previous release (for deltas)
         if: startsWith(github.ref, 'refs/tags/v')
@@ -37,6 +38,9 @@ jobs:
         run: |
           PRE=""; [[ "$GITHUB_REF_NAME" == *-* ]] && PRE="--pre"
           vpk download github --repoUrl $PACKAGES_REPO --token ${{ secrets.PACKAGE_TOKEN }} --channel windows-x64 --outputDir .build/velopack $PRE
+
+      - name: Clean
+        run: cargo xtask clean
 
       - name: Publish
         run: cargo xtask publish
@@ -102,19 +106,20 @@ jobs:
           - { arch: x64, rust-target: x86_64-apple-darwin }
     steps:
       - uses: actions/checkout@v7
-        with: { submodules: true, fetch-tags: true, fetch-depth: 1 }
+        with: { submodules: true, fetch-tags: true, fetch-depth: 0 }
 
-      - uses: actions/setup-dotnet@v6
+      - name: Install .NET
+        uses: actions/setup-dotnet@v6
         with:
           dotnet-version: "10.0.x"
 
-      - name: Use nightly Rust
+      - name: Install other deps
         run: |
           rustup toolchain install nightly --profile minimal
           rustup default nightly
-
-      - run: rustup target add ${{ matrix.rust-target }}
-      - run: dotnet tool install -g vpk --version $VPK_VERSION
+          rustup target add ${{ matrix.rust-target }}
+          dotnet tool install vpk --version $VPK_VERSION --tool-path "$RUNNER_TEMP/vpk"
+          echo "$RUNNER_TEMP/vpk" >> "$GITHUB_PATH"
 
       - name: Remove stale signing keychain
         if: startsWith(github.ref, 'refs/tags/v')
@@ -156,6 +161,9 @@ jobs:
           PRE=""; [[ "$GITHUB_REF_NAME" == *-* ]] && PRE="--pre"
           vpk download github --repoUrl $PACKAGES_REPO --token ${{ secrets.PACKAGE_TOKEN }} --channel macos-${{ matrix.arch }} --outputDir .build/velopack $PRE
 
+      - name: Clean
+        run: cargo xtask clean
+
       - name: Publish
         env:
           SIGN: ${{ startsWith(github.ref, 'refs/tags/v') && 'true' || 'false' }}
@@ -179,22 +187,42 @@ jobs:
 
   linux:
     runs-on: ubuntu-latest
+    container:
+      image: ubuntu:22.04
     steps:
-      - uses: actions/checkout@v7
-        with: { submodules: true, fetch-tags: true, fetch-depth: 1 }
+      - name: Install system dependencies
+        run: |
+          apt-get update
+          apt-get install -y \
+            git \
+            curl \
+            ca-certificates \
+            clang \
+            squashfs-tools \
+            build-essential \
+            zlib1g-dev \
+            libdbus-1-dev \
+            pkg-config
 
-      - uses: actions/setup-dotnet@v6
+      - uses: actions/checkout@v7
+        with: { submodules: true, fetch-tags: true, fetch-depth: 0 }
+
+      - name: Install .NET
+        uses: actions/setup-dotnet@v6
         with:
           dotnet-version: "10.0.x"
 
-      - name: Use nightly Rust
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@nightly
+        with:
+          targets: x86_64-unknown-linux-gnu
+          components: rustfmt, clippy
+
+      - name: Install other deps
         run: |
-          rustup toolchain install nightly --profile minimal
-          rustup default nightly
-
-      - run: dotnet tool install -g vpk --version $VPK_VERSION
-
-      - run: sudo apt install -y libdbus-1-dev pkg-config
+          dotnet tool install vpk --version $VPK_VERSION --tool-path "$RUNNER_TEMP/vpk"
+          echo "$RUNNER_TEMP/vpk" >> "$GITHUB_PATH"
+          apt install -y libdbus-1-dev pkg-config
 
       - name: Fetch previous release (for deltas)
         if: startsWith(github.ref, 'refs/tags/v')
@@ -202,6 +230,9 @@ jobs:
         run: |
           PRE=""; [[ "$GITHUB_REF_NAME" == *-* ]] && PRE="--pre"
           vpk download github --repoUrl $PACKAGES_REPO --token ${{ secrets.PACKAGE_TOKEN }} --channel linux-x64 --outputDir .build/velopack $PRE
+
+      - name: Clean
+        run: cargo xtask clean
 
       - name: Publish
         run: cargo xtask publish

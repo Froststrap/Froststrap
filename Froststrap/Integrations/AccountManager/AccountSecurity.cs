@@ -5,15 +5,11 @@
 
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
-using ktsu.CredentialCache;
-using ktsu.Semantics.Strings;
 
 namespace Froststrap.Integrations.AccountManager;
 
 internal static class AccountSecurity
 {
-    private const string ServiceName = "Froststrap";
-
     public static string? GetCredential(string accountId)
     {
         if (string.IsNullOrWhiteSpace(accountId))
@@ -21,13 +17,8 @@ internal static class AccountSecurity
 
         try
         {
-            PersonaGUID persona = CreatePersona(accountId);
-
-            if (ktsu.CredentialCache.CredentialCache.Instance.TryGet(persona, out Credential? credential)
-                && credential is CredentialWithToken token)
-            {
-                return token.Token.ToString(CultureInfo.InvariantCulture);
-            }
+            if (CredentialStore.TryGet(accountId, out string token) && !string.IsNullOrEmpty(token))
+                return token;
         }
         catch
         {
@@ -43,17 +34,7 @@ internal static class AccountSecurity
 
         try
         {
-            PersonaGUID persona = CreatePersona(accountId);
-
-            ktsu.CredentialCache.CredentialCache.Instance.AddOrReplace(
-                persona,
-                new CredentialWithToken
-                {
-                    Token = SemanticString<CredentialToken>.Create(credential),
-                }
-            );
-
-            return true;
+            return CredentialStore.Set(accountId, credential);
         }
         catch (Exception ex)
         {
@@ -69,17 +50,13 @@ internal static class AccountSecurity
 
         try
         {
-            PersonaGUID persona = CreatePersona(accountId);
-            return ktsu.CredentialCache.CredentialCache.Instance.Remove(persona);
+            return CredentialStore.Remove(accountId);
         }
         catch
         {
             return false;
         }
     }
-
-    private static PersonaGUID CreatePersona(string accountId) =>
-        SemanticString<PersonaGUID>.Create($"{ServiceName}:{accountId}");
 
     // Legacy DPAPI methods.
     public static string Protect(string text)

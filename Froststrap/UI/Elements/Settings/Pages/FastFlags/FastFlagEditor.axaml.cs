@@ -287,7 +287,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
 
             try
             {
-                list = JsonSerializer.Deserialize<Dictionary<string, object>>(json, _jsonOptions);
+                list = JsonHelper.Deserialize<Dictionary<string, object>>(json, _jsonOptions);
                 _ = list ?? throw new InvalidOperationException("JSON returned null");
             }
             catch (Exception ex)

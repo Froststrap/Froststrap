@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: 2026 Froststrap
+// SPDX-FileCopyrightText: 2026 Froststrap
 //
 // SPDX-License-Identifier: MPL-2.0
 
@@ -41,8 +41,14 @@ namespace Froststrap.UI.ViewModels.Onboarding
 
         private static bool IsBackdropSupported(WindowsBackdrops backdrop)
         {
+            if (OperatingSystem.IsMacOS())
+                return backdrop is WindowsBackdrops.None or WindowsBackdrops.Blur;
+
             if (!OperatingSystem.IsWindows())
                 return backdrop == WindowsBackdrops.None;
+
+            if (backdrop == WindowsBackdrops.Blur)
+                return false;
 
             return backdrop switch
             {
@@ -262,14 +268,14 @@ namespace Froststrap.UI.ViewModels.Onboarding
 
             if (file == null) return;
 
-            var data = new
+            var data = new GradientExport
             {
-                GradientStops = GradientStops.Select(s => new { s.Offset, s.Color }).ToList(),
-                GradientAngle
+                GradientStops = [.. GradientStops.Select(s => new Models.GradientStops { Offset = s.Offset, Color = s.Color })],
+                GradientAngle = GradientAngle
             };
 
             using var stream = await file.OpenWriteAsync();
-            await JsonSerializer.SerializeAsync(stream, data, SerializationOptions);
+            await JsonHelper.SerializeAsync(stream, data, SerializationOptions);
         }
 
         private async Task ImportGradient(TopLevel topLevel)

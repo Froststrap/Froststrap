@@ -53,6 +53,8 @@ namespace Froststrap.UI.ViewModels.Dialogs
 
         public void Initialize()
         {
+            _ = Mod.LoadThumbnailAsync();
+
             if (Mod.IsColorMod)
                 _ = InitializePreviewAsync();
         }

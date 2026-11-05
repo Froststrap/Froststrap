@@ -20,3 +20,4 @@ result
 Releases/
 publish/
 !build/src/action/publish/
+Publish.bat

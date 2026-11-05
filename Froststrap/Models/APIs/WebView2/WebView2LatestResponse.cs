@@ -6,6 +6,7 @@ namespace Froststrap.Models.APIs.WebView2
 {
     internal class WebView2LatestResponse
     {
+        [JsonPropertyName("contentId")]
         public WebView2ContentId? ContentId { get; set; }
     }
 }

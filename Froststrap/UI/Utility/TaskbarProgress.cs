@@ -6,8 +6,7 @@ using System.Runtime.InteropServices;
 
 namespace Froststrap.UI.Utility
 {
-    // Modified from https://github.com/PowerShell/PSReadLine/blob/e9122d38e932614393ff61faf57d6518990d7226/PSReadLine/PlatformWindows.cs#L704
-    internal static class TaskbarProgress
+    internal static unsafe class TaskbarProgress
     {
         private enum TaskbarStates
         {
@@ -18,49 +17,49 @@ namespace Froststrap.UI.Utility
             Paused = 0x8,
         }
 
-        [ComImport()]
-        [Guid("ea1afb91-9e28-4b86-90e9-9e9f8a5eefaf")]
-        [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-        private interface ITaskbarList3
+        private static readonly Guid TaskbarListClassId = new("56fdf344-fd6d-11d0-958a-006097c9a090");
+        private static readonly Guid TaskbarList3InterfaceId = new("ea1afb91-9e28-4b86-90e9-9e9f8a5eefaf");
+        private static readonly Lazy<nint> TaskbarInstance = new(CreateTaskbarInstance);
+
+        [DllImport("ole32.dll", PreserveSig = true)]
+        private static extern int CoCreateInstance(
+            in Guid rclsid,
+            nint pUnkOuter,
+            uint dwClsContext,
+            in Guid riid,
+            out nint ppv);
+
+        private static nint CreateTaskbarInstance()
         {
-            // ITaskbarList
-            [PreserveSig]
-            int HrInit();
+            int result = CoCreateInstance(
+                in TaskbarListClassId,
+                nint.Zero,
+                1,
+                in TaskbarList3InterfaceId,
+                out nint instance);
 
-            [PreserveSig]
-            int AddTab(IntPtr hwnd);
+            Marshal.ThrowExceptionForHR(result);
 
-            [PreserveSig]
-            int DeleteTab(IntPtr hwnd);
-
-            [PreserveSig]
-            int ActivateTab(IntPtr hwnd);
-
-            [PreserveSig]
-            int SetActiveAlt(IntPtr hwnd);
-
-            // ITaskbarList2
-            [PreserveSig]
-            int MarkFullscreenWindow(IntPtr hwnd, [MarshalAs(UnmanagedType.Bool)] bool fFullscreen);
-
-            // ITaskbarList3
-            [PreserveSig]
-            int SetProgressValue(IntPtr hwnd, UInt64 ullCompleted, UInt64 ullTotal);
-
-            [PreserveSig]
-            int SetProgressState(IntPtr hwnd, TaskbarStates state);
-
-            // N.B. for copy/pasters: we've left out the rest of the ITaskbarList3 methods...
+            try
+            {
+                nint* vtable = *(nint**)instance;
+                var initialize = (delegate* unmanaged[Stdcall]<nint, int>)vtable[3];
+                Marshal.ThrowExceptionForHR(initialize(instance));
+                return instance;
+            }
+            catch
+            {
+                Release(instance);
+                throw;
+            }
         }
 
-        [ComImport()]
-        [Guid("56fdf344-fd6d-11d0-958a-006097c9a090")]
-        [ClassInterface(ClassInterfaceType.None)]
-        private class TaskbarInstance
+        private static void Release(nint instance)
         {
+            nint* vtable = *(nint**)instance;
+            var release = (delegate* unmanaged[Stdcall]<nint, uint>)vtable[2];
+            release(instance);
         }
-
-        private static readonly Lazy<ITaskbarList3> _taskbarInstance = new(() => (ITaskbarList3)new TaskbarInstance());
 
         private static TaskbarStates ConvertEnum(TaskbarItemProgressState state)
         {
@@ -75,19 +74,20 @@ namespace Froststrap.UI.Utility
             };
         }
 
-        private static int SetProgressState(IntPtr windowHandle, TaskbarStates taskbarState)
+        public static int SetProgressState(nint windowHandle, TaskbarItemProgressState taskbarState)
         {
-            return _taskbarInstance.Value.SetProgressState(windowHandle, taskbarState);
+            nint instance = TaskbarInstance.Value;
+            nint* vtable = *(nint**)instance;
+            var setProgressState = (delegate* unmanaged[Stdcall]<nint, nint, int, int>)vtable[10];
+            return setProgressState(instance, windowHandle, (int)ConvertEnum(taskbarState));
         }
 
-        public static int SetProgressState(IntPtr windowHandle, TaskbarItemProgressState taskbarState)
+        public static int SetProgressValue(nint windowHandle, int progressValue, int progressMax)
         {
-            return SetProgressState(windowHandle, ConvertEnum(taskbarState));
-        }
-
-        public static int SetProgressValue(IntPtr windowHandle, int progressValue, int progressMax)
-        {
-            return _taskbarInstance.Value.SetProgressValue(windowHandle, (ulong)progressValue, (ulong)progressMax);
+            nint instance = TaskbarInstance.Value;
+            nint* vtable = *(nint**)instance;
+            var setProgressValue = (delegate* unmanaged[Stdcall]<nint, nint, ulong, ulong, int>)vtable[9];
+            return setProgressValue(instance, windowHandle, (ulong)progressValue, (ulong)progressMax);
         }
     }
 }

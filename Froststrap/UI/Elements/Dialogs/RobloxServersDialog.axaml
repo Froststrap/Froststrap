@@ -54,10 +54,17 @@ SPDX-License-Identifier: MPL-2.0
                                    FontSize="12" Opacity="0.6"
                                    IsVisible="{Binding IsCurrentGameApi}"/>
 					</StackPanel>
-					<Button Grid.Column="2" Click="OnCloseClicked"
-                            Background="Transparent" BorderThickness="0">
-						<ic:Lucide Icon="X" Height="16" Width="16" />
-					</Button>
+					<StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="4">
+						<Button Command="{Binding RefreshCommand}"
+                                ToolTip.Tip="{x:Static resources:Strings.Menu_QuickPlay_Refresh}"
+                                Background="Transparent" BorderThickness="0">
+							<ic:Lucide Icon="RefreshCw" Height="16" Width="16" />
+						</Button>
+						<Button Click="OnCloseClicked"
+                                Background="Transparent" BorderThickness="0">
+							<ic:Lucide Icon="X" Height="16" Width="16" />
+						</Button>
+					</StackPanel>
 				</Grid>
 			</Border>
 

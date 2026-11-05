@@ -60,6 +60,7 @@ namespace Froststrap.Models.Persistable
         public Dictionary<string, List<string>> ProfilePlaceIds { get; set; } = [];
 
         // Appearance Page
+        public bool BootstrapperShowInfo { get; set; }
         public BootstrapperStyle BootstrapperStyle { get; set; } = BootstrapperStyle.FluentAeroDialog;
         public string? SelectedCustomTheme { get; set; }
         public bool CycleEnabled { get; set; }

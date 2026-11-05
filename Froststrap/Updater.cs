@@ -10,8 +10,6 @@ namespace Froststrap;
 
 internal class Updater
 {
-    public static Bootstrapper? Bootstrapper { get; set; } = null!;
-
     public static async Task RunMigrations(string? previousVersion = null)
     {
         if (OperatingSystem.IsLinux())
@@ -107,6 +105,7 @@ internal class Updater
         App.State.Prop.LastMigratedVersion = currentVer;
         App.State.Save();
 
+        if (App.Settings.Loaded) App.Settings.Save();
         if (App.PlayerState.Loaded) App.PlayerState.Save();
         if (App.StudioState.Loaded) App.StudioState.Save();
 
