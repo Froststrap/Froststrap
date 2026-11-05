@@ -181,6 +181,8 @@ namespace Froststrap.Utility
         {
             await Gate.WaitAsync();
 
+            bool changed;
+
             try
             {
                 Interlocked.Exchange(ref _queued, 0);
@@ -193,27 +195,36 @@ namespace Froststrap.Utility
             }
             finally
             {
+                // published under the gate, so an older Apply can't overwrite a newer one's state
+                changed = PublishState();
                 Gate.Release();
             }
 
+            if (!changed)
+                return;
+
+            try
+            {
+                StateChanged?.Invoke();
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error($"Background music state handler failed: {ex}");
+            }
+        }
+
+        private static bool PublishState()
+        {
             var settings = App.Settings.Prop;
             bool available = settings.BackgroundMusicEnabled && !string.IsNullOrWhiteSpace(settings.BackgroundMusicFolder);
 
-            if (_nowPlaying != _playing || _nowPaused != _paused || _nowAvailable != available)
-            {
-                _nowPlaying = _playing;
-                _nowPaused = _paused;
-                _nowAvailable = available;
+            if (_nowPlaying == _playing && _nowPaused == _paused && _nowAvailable == available)
+                return false;
 
-                try
-                {
-                    StateChanged?.Invoke();
-                }
-                catch (Exception ex)
-                {
-                    App.Logger.Error($"Background music state handler failed: {ex}");
-                }
-            }
+            _nowPlaying = _playing;
+            _nowPaused = _paused;
+            _nowAvailable = available;
+            return true;
         }
 
         private static void Apply()
@@ -271,8 +282,8 @@ namespace Froststrap.Utility
                     ResetFailures();
             }
 
-            // controls only act on a track that's playing
-            bool skipping = skip != 0 && _playing is not null && !switched && !advance;
+            // controls only act on a track that's playing; a skip pressed as it ends replaces the auto-advance
+            bool skipping = skip != 0 && _playing is not null && !switched;
             if (togglePause && _playing is not null)
                 _paused = !_paused;
 
@@ -349,8 +360,10 @@ namespace Froststrap.Utility
                 App.Logger.Warn($"Could not play background music ({result}): {path}");
                 AddFailure(path);
 
-                // a song that won't start shouldn't be a place Previous can go back to
-                if (History.RemoveAll(t => string.Equals(t, path, StringComparison.OrdinalIgnoreCase)) > 0)
+                // a file that won't open shouldn't be a place Previous can go back to;
+                // a device problem isn't the song's fault, so its history stays
+                if (result is AudioPlayerResult.FileNotReadable or AudioPlayerResult.UnsupportedFormat
+                    && History.RemoveAll(t => string.Equals(t, path, StringComparison.OrdinalIgnoreCase)) > 0)
                     historyTarget = -1;
 
                 if (result is AudioPlayerResult.NoOutputDevice or AudioPlayerResult.LibraryUnavailable)

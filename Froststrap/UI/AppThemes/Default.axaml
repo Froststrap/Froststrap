@@ -29,6 +29,13 @@ SPDX-License-Identifier: MPL-2.0
         <Setter Property="CornerRadius" Value="{DynamicResource OverlayCornerRadius}" />
     </Style>
 
+    <!-- opaque, for flyouts that open over busy content (like the account dropdown) -->
+    <Style Selector="FlyoutPresenter.solid">
+        <Setter Property="Background" Value="{DynamicResource SolidBackgroundFillColorQuarternaryBrush}" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="ClipToBounds" Value="True" />
+    </Style>
+
     <Style Selector="AvaloniaEdit|TextEditor">
         <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
         <Setter Property="Template">

@@ -154,11 +154,22 @@ namespace Froststrap.UI.ViewModels.Settings
         // tags and cover are read off the UI thread; a newer track wins if they arrive late
         private async Task LoadInfoAsync(string track, int version)
         {
-            var (info, cover) = await Task.Run(() =>
+            TrackInfo? info;
+            Bitmap? cover;
+
+            try
             {
-                TrackInfo? info = AudioPlayer.ReadTrackInfo(track);
-                return (info, DecodeCover(info?.Art ?? ReadOnlyMemory<byte>.Empty));
-            });
+                (info, cover) = await Task.Run(() =>
+                {
+                    TrackInfo? info = AudioPlayer.ReadTrackInfo(track);
+                    return (info, DecodeCover(info?.Art ?? ReadOnlyMemory<byte>.Empty));
+                });
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Warn($"Could not read track info for '{track}': {ex.Message}");
+                return;
+            }
 
             if (_disposed || version != _loadVersion)
             {

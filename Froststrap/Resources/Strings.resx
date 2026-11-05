@@ -2114,7 +2114,7 @@ It must contain at least one of the following folders: content, ExtraContent, Pl
     <value>No MP3, OGG, WAV, or FLAC files were found in the selected folder.</value>
   </data>
   <data name="Menu.Appearance.BackgroundMusic.Volume" xml:space="preserve">
-    <value>Volume:</value>
+    <value>Volume</value>
   </data>
   <data name="Menu.Appearance.BackgroundMusic.PlayFailed" xml:space="preserve">
     <value>Couldn't play the selected file. Make sure it's a valid MP3, OGG, WAV, or FLAC file.</value>

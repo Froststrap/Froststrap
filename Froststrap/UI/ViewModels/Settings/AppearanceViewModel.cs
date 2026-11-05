@@ -863,7 +863,9 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 App.Settings.Prop.BackgroundMusicFolder = value;
                 OnPropertyChanged(nameof(BackgroundMusicFolder));
-                BackgroundMusic.Refresh();
+
+                // picking the same folder again is how you'd pick up songs added to it
+                BackgroundMusic.Retry();
             }
         }
 
