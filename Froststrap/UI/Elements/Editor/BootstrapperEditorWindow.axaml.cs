@@ -95,7 +95,7 @@ namespace Froststrap.UI.Elements.Editor
                     }
                     else
                     {
-                        throw new InvalidOperationException($"Schema for type {attribute.Value} is missing. Blame Matt!");
+                        throw new InvalidOperationException($"Schema for type {attribute.Value} is missing.");
                     }
                 }
 
