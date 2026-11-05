@@ -867,28 +867,6 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public double BackgroundMusicVolume
-        {
-            get => App.Settings.Prop.BackgroundMusicVolume;
-            set
-            {
-                App.Settings.Prop.BackgroundMusicVolume = value;
-                OnPropertyChanged(nameof(BackgroundMusicVolume));
-                BackgroundMusic.Refresh();
-            }
-        }
-
-        public bool BackgroundMusicShuffle
-        {
-            get => App.Settings.Prop.BackgroundMusicShuffle;
-            set
-            {
-                App.Settings.Prop.BackgroundMusicShuffle = value;
-                OnPropertyChanged(nameof(BackgroundMusicShuffle));
-                BackgroundMusic.Refresh();
-            }
-        }
-
         public bool BackgroundMusicResume
         {
             get => App.Settings.Prop.BackgroundMusicResume;

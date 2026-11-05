@@ -3765,6 +3765,42 @@ namespace Froststrap.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Next.
+        /// </summary>
+        public static string Menu_MusicControls_Next {
+            get {
+                return ResourceManager.GetString("Menu.MusicControls.Next", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pause.
+        /// </summary>
+        public static string Menu_MusicControls_Pause {
+            get {
+                return ResourceManager.GetString("Menu.MusicControls.Pause", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Play.
+        /// </summary>
+        public static string Menu_MusicControls_Play {
+            get {
+                return ResourceManager.GetString("Menu.MusicControls.Play", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Previous.
+        /// </summary>
+        public static string Menu_MusicControls_Previous {
+            get {
+                return ResourceManager.GetString("Menu.MusicControls.Previous", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Resume last song.
         /// </summary>
         public static string Menu_Appearance_BackgroundMusic_Resume {

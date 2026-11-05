@@ -2077,6 +2077,18 @@ It must contain at least one of the following folders: content, ExtraContent, Pl
   <data name="Menu.Appearance.Opacity" xml:space="preserve">
     <value>Opacity:</value>
   </data>
+  <data name="Menu.MusicControls.Next" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="Menu.MusicControls.Pause" xml:space="preserve">
+    <value>Pause</value>
+  </data>
+  <data name="Menu.MusicControls.Play" xml:space="preserve">
+    <value>Play</value>
+  </data>
+  <data name="Menu.MusicControls.Previous" xml:space="preserve">
+    <value>Previous</value>
+  </data>
   <data name="Menu.Appearance.BackgroundMusic.Resume" xml:space="preserve">
     <value>Resume last song</value>
   </data>

@@ -1,0 +1,168 @@
+<!--
+SPDX-FileCopyrightText: 2026 Froststrap
+
+SPDX-License-Identifier: MPL-2.0
+-->
+
+<UserControl
+    x:Class="Froststrap.UI.Elements.Settings.MusicControlView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
+    xmlns:resources="using:Froststrap.Resources"
+    xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
+    x:DataType="vm:MusicControlViewModel"
+    IsVisible="{Binding IsVisible}">
+
+    <Button
+        Width="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).IconButtonSize}"
+        Height="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).IconButtonSize}"
+        Padding="0"
+        Background="Transparent"
+        BorderThickness="0"
+        VerticalAlignment="Center"
+        ToolTip.Tip="{x:Static resources:Strings.Menu_Appearance_BackgroundMusic_Title}"
+        AutomationProperties.Name="{x:Static resources:Strings.Menu_Appearance_BackgroundMusic_Title}">
+        <ic:Lucide
+            Icon="Music"
+            Width="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).IconButtonIconSize}"
+            Height="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).IconButtonIconSize}"
+            Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+
+        <Button.Flyout>
+            <Flyout Placement="BottomEdgeAlignedRight">
+                <StackPanel
+                    Width="300"
+                    Spacing="16">
+                    <Grid
+                        ColumnDefinitions="64,*"
+                        ColumnSpacing="12">
+                        <Border
+                            Width="64"
+                            Height="64"
+                            CornerRadius="6"
+                            ClipToBounds="True"
+                            Background="{DynamicResource ControlFillColorSecondaryBrush}">
+                            <Panel>
+                                <ic:Lucide
+                                    Icon="Music"
+                                    Width="24"
+                                    Height="24"
+                                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                    IsVisible="{Binding !HasCover}" />
+                                <Image
+                                    Source="{Binding Cover}"
+                                    Stretch="UniformToFill"
+                                    RenderOptions.BitmapInterpolationMode="HighQuality"
+                                    IsVisible="{Binding HasCover}" />
+                            </Panel>
+                        </Border>
+
+                        <StackPanel
+                            Grid.Column="1"
+                            Spacing="2"
+                            VerticalAlignment="Center">
+                            <TextBlock
+                                Text="{Binding Title}"
+                                FontWeight="SemiBold"
+                                TextTrimming="CharacterEllipsis"
+                                ToolTip.Tip="{Binding Title}" />
+                            <TextBlock
+                                Text="{Binding Subtitle}"
+                                FontSize="12"
+                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                TextTrimming="CharacterEllipsis"
+                                IsVisible="{Binding HasSubtitle}" />
+                        </StackPanel>
+                    </Grid>
+
+                    <StackPanel
+                        Orientation="Horizontal"
+                        Spacing="8"
+                        HorizontalAlignment="Center">
+                        <Button
+                            Width="40"
+                            Height="40"
+                            Padding="0"
+                            Command="{Binding PreviousCommand}"
+                            ToolTip.Tip="{x:Static resources:Strings.Menu_MusicControls_Previous}"
+                            AutomationProperties.Name="{x:Static resources:Strings.Menu_MusicControls_Previous}">
+                            <ic:Lucide
+                                Icon="SkipBack"
+                                Width="16"
+                                Height="16" />
+                        </Button>
+                        <Button
+                            Width="48"
+                            Height="40"
+                            Padding="0"
+                            Classes="accent"
+                            Command="{Binding PlayPauseCommand}"
+                            ToolTip.Tip="{Binding PlayPauseTip}"
+                            AutomationProperties.Name="{Binding PlayPauseTip}">
+                            <ic:Lucide
+                                Icon="{Binding PlayPauseIcon}"
+                                Width="18"
+                                Height="18" />
+                        </Button>
+                        <Button
+                            Width="40"
+                            Height="40"
+                            Padding="0"
+                            Command="{Binding NextCommand}"
+                            ToolTip.Tip="{x:Static resources:Strings.Menu_MusicControls_Next}"
+                            AutomationProperties.Name="{x:Static resources:Strings.Menu_MusicControls_Next}">
+                            <ic:Lucide
+                                Icon="SkipForward"
+                                Width="16"
+                                Height="16" />
+                        </Button>
+                    </StackPanel>
+
+                    <Grid
+                        ColumnDefinitions="Auto,*,40"
+                        ColumnSpacing="8">
+                        <ic:Lucide
+                            Icon="Volume2"
+                            Width="16"
+                            Height="16"
+                            VerticalAlignment="Center" />
+                        <Slider
+                            Grid.Column="1"
+                            Minimum="0"
+                            Maximum="1"
+                            Value="{Binding Volume}"
+                            VerticalAlignment="Center"
+                            AutomationProperties.Name="{x:Static resources:Strings.Menu_Appearance_BackgroundMusic_Volume}" />
+                        <TextBlock
+                            Grid.Column="2"
+                            Text="{Binding Volume, StringFormat=\{0:P0\}}"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center" />
+                    </Grid>
+
+                    <Grid
+                        ColumnDefinitions="Auto,*,Auto"
+                        ColumnSpacing="8">
+                        <ic:Lucide
+                            Icon="Shuffle"
+                            Width="16"
+                            Height="16"
+                            VerticalAlignment="Center" />
+                        <TextBlock
+                            Grid.Column="1"
+                            Text="{x:Static resources:Strings.Menu_Appearance_BackgroundMusic_Shuffle}"
+                            VerticalAlignment="Center" />
+                        <ToggleSwitch
+                            Grid.Column="2"
+                            IsChecked="{Binding Shuffle, Mode=TwoWay}"
+                            OnContent=""
+                            OffContent=""
+                            MinWidth="0"
+                            AutomationProperties.Name="{x:Static resources:Strings.Menu_Appearance_BackgroundMusic_Shuffle}" />
+                    </Grid>
+                </StackPanel>
+            </Flyout>
+        </Button.Flyout>
+    </Button>
+</UserControl>

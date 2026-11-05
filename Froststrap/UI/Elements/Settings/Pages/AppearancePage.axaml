@@ -245,37 +245,6 @@ SPDX-License-Identifier: MPL-2.0
                     </Grid>
 
                     <Grid
-                        ColumnDefinitions="Auto,*,50"
-                        ColumnSpacing="8">
-                        <TextBlock
-                            Text="{x:Static resources:Strings.Menu_Appearance_BackgroundMusic_Volume}"
-                            VerticalAlignment="Center" />
-                        <Slider
-                            Grid.Column="1"
-                            Minimum="0"
-                            Maximum="1"
-                            Value="{Binding BackgroundMusicVolume}"
-                            VerticalAlignment="Center" />
-                        <TextBlock
-                            Grid.Column="2"
-                            Text="{Binding BackgroundMusicVolume, StringFormat=\{0:P0\}}"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Center" />
-                    </Grid>
-
-                    <Grid
-                        ColumnDefinitions="*,Auto"
-                        ColumnSpacing="8">
-                        <TextBlock
-                            Text="{x:Static resources:Strings.Menu_Appearance_BackgroundMusic_Shuffle}"
-                            VerticalAlignment="Center" />
-                        <ToggleSwitch
-                            Grid.Column="1"
-                            IsChecked="{Binding BackgroundMusicShuffle, Mode=TwoWay}"
-                            AutomationProperties.Name="{x:Static resources:Strings.Menu_Appearance_BackgroundMusic_Shuffle}" />
-                    </Grid>
-
-                    <Grid
                         ColumnDefinitions="*,Auto"
                         ColumnSpacing="8">
                         <TextBlock
