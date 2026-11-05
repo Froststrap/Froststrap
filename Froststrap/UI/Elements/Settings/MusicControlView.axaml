@@ -34,10 +34,9 @@ SPDX-License-Identifier: MPL-2.0
                 Placement="BottomEdgeAlignedRight"
                 FlyoutPresenterClasses="solid">
                 <StackPanel Width="300">
-                    <!-- now playing, set apart like the account dropdown's header -->
+                    <!-- now playing; same shade as the rest so the rounded corners show, just a divider below -->
                     <Border
                         Padding="12"
-                        Background="{DynamicResource ControlFillColorSecondaryBrush}"
                         BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
                         BorderThickness="0,0,0,1">
                         <Grid
@@ -95,14 +94,22 @@ SPDX-License-Identifier: MPL-2.0
                                 Width="40"
                                 Height="40"
                                 Padding="0"
-                                Classes.accent="{Binding Shuffle}"
                                 Command="{Binding ShuffleCommand}"
                                 ToolTip.Tip="{x:Static resources:Strings.Menu_Appearance_BackgroundMusic_Shuffle}"
                                 AutomationProperties.Name="{x:Static resources:Strings.Menu_Appearance_BackgroundMusic_Shuffle}">
-                                <ic:Lucide
-                                    Icon="Shuffle"
-                                    Width="16"
-                                    Height="16" />
+                                <!-- on: accent icon with a dot under it, like Spotify -->
+                                <StackPanel Spacing="3">
+                                    <ic:Lucide
+                                        Icon="Shuffle"
+                                        Classes.on="{Binding Shuffle}"
+                                        Width="16"
+                                        Height="16" />
+                                    <Ellipse
+                                        Width="4"
+                                        Height="4"
+                                        Fill="{DynamicResource AccentFillColorDefaultBrush}"
+                                        IsVisible="{Binding Shuffle}" />
+                                </StackPanel>
                             </Button>
                             <Button
                                 Width="40"
@@ -145,14 +152,22 @@ SPDX-License-Identifier: MPL-2.0
                                 Width="40"
                                 Height="40"
                                 Padding="0"
-                                Classes.accent="{Binding IsRepeating}"
                                 Command="{Binding RepeatCommand}"
                                 ToolTip.Tip="{Binding RepeatTip}"
                                 AutomationProperties.Name="{Binding RepeatTip}">
-                                <ic:Lucide
-                                    Icon="{Binding RepeatIcon}"
-                                    Width="16"
-                                    Height="16" />
+                                <!-- on: accent icon with a dot under it, like Spotify -->
+                                <StackPanel Spacing="3">
+                                    <ic:Lucide
+                                        Icon="{Binding RepeatIcon}"
+                                        Classes.on="{Binding IsRepeating}"
+                                        Width="16"
+                                        Height="16" />
+                                    <Ellipse
+                                        Width="4"
+                                        Height="4"
+                                        Fill="{DynamicResource AccentFillColorDefaultBrush}"
+                                        IsVisible="{Binding IsRepeating}" />
+                                </StackPanel>
                             </Button>
                         </StackPanel>
 

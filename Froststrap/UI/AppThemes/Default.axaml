@@ -22,6 +22,11 @@ SPDX-License-Identifier: MPL-2.0
         <Setter Property="StrokeThickness" Value="1.5" />
     </Style>
 
+    <!-- a toggle that's on, like shuffle or repeat in the music controls -->
+    <Style Selector="ic|Lucide.on">
+        <Setter Property="StrokeBrush" Value="{DynamicResource AccentFillColorDefaultBrush}" />
+    </Style>
+
     <Style Selector="FlyoutPresenter">
         <Setter Property="Background" Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
         <Setter Property="BorderBrush" Value="{DynamicResource CardStrokeColorDefaultBrush}" />
