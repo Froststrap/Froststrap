@@ -2080,6 +2080,9 @@ It must contain at least one of the following folders: content, ExtraContent, Pl
   <data name="Menu.MusicControls.Next" xml:space="preserve">
     <value>Next</value>
   </data>
+  <data name="Menu.MusicControls.NothingPlaying" xml:space="preserve">
+    <value>Nothing playing</value>
+  </data>
   <data name="Menu.MusicControls.Pause" xml:space="preserve">
     <value>Pause</value>
   </data>

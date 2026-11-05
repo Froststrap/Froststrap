@@ -3774,6 +3774,15 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Nothing playing.
+        /// </summary>
+        public static string Menu_MusicControls_NothingPlaying {
+            get {
+                return ResourceManager.GetString("Menu.MusicControls.NothingPlaying", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Pause.
         /// </summary>
         public static string Menu_MusicControls_Pause {

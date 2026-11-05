@@ -21,8 +21,9 @@ namespace Froststrap.UI.ViewModels.Settings
         private bool _disposed;
 
         private bool _isVisible;
+        private bool _hasTrack;
         private bool _isPaused;
-        private string _title = "";
+        private string _title = Strings.Menu_MusicControls_NothingPlaying;
         private string _subtitle = "";
         private Bitmap? _cover;
 
@@ -36,11 +37,18 @@ namespace Froststrap.UI.ViewModels.Settings
         public ICommand PlayPauseCommand { get; } = new RelayCommand(BackgroundMusic.TogglePause);
         public ICommand NextCommand { get; } = new RelayCommand(BackgroundMusic.Next);
 
-        /// Only shown while a song is loaded (playing or paused).
+        /// Shown while music is on, so volume and shuffle stay reachable even when nothing plays.
         public bool IsVisible
         {
             get => _isVisible;
             private set => SetProperty(ref _isVisible, value);
+        }
+
+        /// The playback buttons only work while a song is loaded.
+        public bool HasTrack
+        {
+            get => _hasTrack;
+            private set => SetProperty(ref _hasTrack, value);
         }
 
         public bool IsPaused
@@ -125,19 +133,22 @@ namespace Froststrap.UI.ViewModels.Settings
                 return;
 
             string? track = BackgroundMusic.CurrentTrack;
-            IsVisible = track is not null;
+            IsVisible = BackgroundMusic.IsAvailable;
+            HasTrack = track is not null;
             IsPaused = BackgroundMusic.IsPaused;
 
             if (track == _track)
                 return;
 
+            // any change, including to nothing, makes loads still in flight stale
             _track = track;
-            Title = track is null ? "" : Path.GetFileNameWithoutExtension(track);
+            int version = ++_loadVersion;
+            Title = track is null ? Strings.Menu_MusicControls_NothingPlaying : Path.GetFileNameWithoutExtension(track);
             Subtitle = "";
             Cover = null;
 
             if (track is not null)
-                _ = LoadInfoAsync(track, ++_loadVersion);
+                _ = LoadInfoAsync(track, version);
         }
 
         // tags and cover are read off the UI thread; a newer track wins if they arrive late

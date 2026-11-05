@@ -41,15 +41,23 @@ namespace Froststrap.Utility
         private static int _pauseToggles;
         private static bool _paused;
 
+        // songs that actually played, newest last, so Previous works across shuffle rounds
+        private const int HistoryLimit = 100;
+        private static readonly List<string> History = [];
+
         // what the controls show; updated after each Apply
         private static volatile string? _nowPlaying;
         private static volatile bool _nowPaused;
+        private static volatile bool _nowAvailable;
 
         /// Raised off the UI thread when the current track or the pause state changes.
         public static event Action? StateChanged;
 
         public static string? CurrentTrack => _nowPlaying;
         public static bool IsPaused => _nowPaused;
+
+        /// Music is on and has a folder, whether or not a song is playing right now.
+        public static bool IsAvailable => _nowAvailable;
 
         // failures in a row; only a track that plays to the end resets it
         private static int _failures;
@@ -110,15 +118,16 @@ namespace Froststrap.Utility
             Refresh();
         }
 
+        // skips add up, so three quick presses move three songs
         public static void Next()
         {
-            Interlocked.Exchange(ref _skip, 1);
+            Interlocked.Increment(ref _skip);
             Refresh();
         }
 
         public static void Previous()
         {
-            Interlocked.Exchange(ref _skip, -1);
+            Interlocked.Decrement(ref _skip);
             Refresh();
         }
 
@@ -187,10 +196,14 @@ namespace Froststrap.Utility
                 Gate.Release();
             }
 
-            if (_nowPlaying != _playing || _nowPaused != _paused)
+            var settings = App.Settings.Prop;
+            bool available = settings.BackgroundMusicEnabled && !string.IsNullOrWhiteSpace(settings.BackgroundMusicFolder);
+
+            if (_nowPlaying != _playing || _nowPaused != _paused || _nowAvailable != available)
             {
                 _nowPlaying = _playing;
                 _nowPaused = _paused;
+                _nowAvailable = available;
 
                 try
                 {
@@ -285,8 +298,19 @@ namespace Froststrap.Utility
             // starting again resumes the same track, or moves on if the user doesn't want that
             int next = advance || _index < 0 || !settings.BackgroundMusicResume ? _index + 1 : _index;
 
+            // where Previous is headed in the history; only applied once that song really starts
+            int historyTarget = -1;
             if (skipping)
-                next = _index < 0 ? 0 : skip > 0 ? _index + 1 : (_index - 1 + _tracks.Count) % _tracks.Count;
+            {
+                if (skip < 0 && TryGoBack(-skip, out int back, out historyTarget))
+                {
+                    next = back;
+                }
+                else
+                {
+                    next = StepFrom(_index, skip);
+                }
+            }
 
             // stop once every track has failed in a row, whether it failed to start or broke off later
             while (_failures < _tracks.Count)
@@ -313,12 +337,21 @@ namespace Froststrap.Utility
                     _index = index;
                     _playing = path;
                     _lastStarted = path;
+
+                    if (historyTarget >= 0 && string.Equals(History[historyTarget], path, StringComparison.OrdinalIgnoreCase))
+                        History.RemoveRange(historyTarget + 1, History.Count - historyTarget - 1);
+                    else
+                        Remember(path);
                     _paused = false;
                     return;
                 }
 
                 App.Logger.Warn($"Could not play background music ({result}): {path}");
                 AddFailure(path);
+
+                // a song that won't start shouldn't be a place Previous can go back to
+                if (History.RemoveAll(t => string.Equals(t, path, StringComparison.OrdinalIgnoreCase)) > 0)
+                    historyTarget = -1;
 
                 if (result is AudioPlayerResult.NoOutputDevice or AudioPlayerResult.LibraryUnavailable)
                 {
@@ -349,6 +382,7 @@ namespace Froststrap.Utility
                 string? saved = _folder is null ? App.State.Prop.BackgroundMusicLastTrack : null;
 
                 _folder = folder;
+                History.Clear();
                 StopPlayback();
                 _index = saved is null ? -1 : _tracks.FindIndex(t => string.Equals(t, saved, StringComparison.OrdinalIgnoreCase));
                 return;
@@ -356,6 +390,58 @@ namespace Froststrap.Utility
 
             // same folder rescanned: keep our place if the current track is still there
             _index = current is null ? -1 : _tracks.FindIndex(t => string.Equals(t, current, StringComparison.OrdinalIgnoreCase));
+        }
+
+        // one song at a time, so a multi-skip past the end of a shuffle round carries into the next round
+        private static int StepFrom(int index, int steps)
+        {
+            int count = _tracks.Count;
+            if (index < 0)
+                return 0;
+
+            if (steps < 0)
+                return ((index + steps) % count + count) % count;
+
+            if (!_shuffled)
+                return (index + steps) % count;
+
+            for (int i = 0; i < steps; i++)
+            {
+                if (++index >= count)
+                {
+                    Reshuffle();
+                    index = 0;
+                }
+            }
+
+            return index;
+        }
+
+        // the song `steps` back in what actually played; false if the history doesn't go back that far.
+        // Doesn't touch the history: that waits until the song really starts.
+        private static bool TryGoBack(int steps, out int index, out int target)
+        {
+            index = -1;
+            target = History.Count - 1 - steps;
+            if (target < 0)
+                return false;
+
+            string song = History[target];
+            index = _tracks.FindIndex(t => string.Equals(t, song, StringComparison.OrdinalIgnoreCase));
+            if (index < 0)
+                target = -1;
+
+            return index >= 0;
+        }
+
+        private static void Remember(string path)
+        {
+            if (History.Count > 0 && string.Equals(History[^1], path, StringComparison.OrdinalIgnoreCase))
+                return;
+
+            History.Add(path);
+            if (History.Count > HistoryLimit)
+                History.RemoveAt(0);
         }
 
         // sorted, or shuffled with the current track moved to the front so it keeps playing

@@ -85,6 +85,7 @@ SPDX-License-Identifier: MPL-2.0
                             Height="40"
                             Padding="0"
                             Command="{Binding PreviousCommand}"
+                            IsEnabled="{Binding HasTrack}"
                             ToolTip.Tip="{x:Static resources:Strings.Menu_MusicControls_Previous}"
                             AutomationProperties.Name="{x:Static resources:Strings.Menu_MusicControls_Previous}">
                             <ic:Lucide
@@ -98,6 +99,7 @@ SPDX-License-Identifier: MPL-2.0
                             Padding="0"
                             Classes="accent"
                             Command="{Binding PlayPauseCommand}"
+                            IsEnabled="{Binding HasTrack}"
                             ToolTip.Tip="{Binding PlayPauseTip}"
                             AutomationProperties.Name="{Binding PlayPauseTip}">
                             <ic:Lucide
@@ -110,6 +112,7 @@ SPDX-License-Identifier: MPL-2.0
                             Height="40"
                             Padding="0"
                             Command="{Binding NextCommand}"
+                            IsEnabled="{Binding HasTrack}"
                             ToolTip.Tip="{x:Static resources:Strings.Menu_MusicControls_Next}"
                             AutomationProperties.Name="{x:Static resources:Strings.Menu_MusicControls_Next}">
                             <ic:Lucide
