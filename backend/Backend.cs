@@ -326,7 +326,7 @@ public enum AudioPlayerResult
 }
 
 /// Tags, length and encoded cover image (usually JPEG or PNG, empty if none) of one file.
-internal sealed record TrackInfo(string? Title, string? Artist, string? Album, TimeSpan? Duration, ReadOnlyMemory<byte> Art);
+public sealed record TrackInfo(string? Title, string? Artist, string? Album, TimeSpan? Duration, ReadOnlyMemory<byte> Art);
 
 public static unsafe class AudioPlayer
 {
@@ -403,7 +403,7 @@ public static unsafe class AudioPlayer
     }
 
     /// Null if the file can't be read or the library is missing. Reads the whole cover, so call it off the UI thread.
-    internal static TrackInfo? ReadTrackInfo(string path)
+    public static TrackInfo? ReadTrackInfo(string path)
     {
         IntPtr info = IntPtr.Zero;
 
