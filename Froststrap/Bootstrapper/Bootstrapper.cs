@@ -274,13 +274,13 @@ internal partial class Bootstrapper : IDisposable
                         backgroundUpdaterLockOpen = false;
                     }
 
-                    if (!backgroundUpdaterLockOpen)
-                    {
-                        if (IsEligibleForBackgroundUpdate())
-                            StartBackgroundUpdater();
-                        else
-                            await UpgradeRoblox();
-                    }
+                    if (backgroundUpdaterLockOpen)
+                        return;
+
+                    if (IsEligibleForBackgroundUpdate())
+                        StartBackgroundUpdater();
+                    else
+                        await UpgradeRoblox();
                 }
 
                 if (_cancelTokenSource.IsCancellationRequested)
@@ -300,20 +300,20 @@ internal partial class Bootstrapper : IDisposable
 
                     try
                     {
-                        if (Directory.Exists(clientPackagePath))
-                        {
-                            DirectoryInfo di = new(clientPackagePath);
+                        if (!Directory.Exists(clientPackagePath))
+                            return;
 
-                            foreach (FileInfo file in di.GetFiles())
-                                file.Delete();
+                        DirectoryInfo di = new(clientPackagePath);
 
-                            foreach (DirectoryInfo dir in di.GetDirectories())
-                                dir.Delete(true);
+                        foreach (FileInfo file in di.GetFiles())
+                            file.Delete();
 
-                            App.State.Prop.ForceReinstall = false;
+                        foreach (DirectoryInfo dir in di.GetDirectories())
+                            dir.Delete(true);
 
-                            App.Logger.Debug($"Successfully cleared contents of {clientPackagePath}");
-                        }
+                        App.State.Prop.ForceReinstall = false;
+
+                        App.Logger.Debug($"Successfully cleared contents of {clientPackagePath}");
                     }
                     catch (Exception ex)
                     {
@@ -342,40 +342,37 @@ internal partial class Bootstrapper : IDisposable
 
                 WindowsRegistry.RegisterClientLocation(IsStudioLaunch, _latestVersionDirectory); // if it for some reason doesnt exist
             }
+            else if (IsStudioLaunch)
+            {
+                App.Logger.Debug("Studio launch detected, syncing RPC plugin...");
+                StudioPluginManager.Sync();
+            }
+
+            if (App.LaunchSettings.NoLaunchFlag.Active && !_cancelTokenSource.IsCancellationRequested)
+                return;
+
+            // show tips
+            if (!_packageExtractionSuccess)
+                Backend.NativeNotify.SendMessage(Strings.Bootstrapper_ExtractionFailed_Title, Strings.Bootstrapper_ExtractionFailed_Message);
+            else if (!allModificationsApplied)
+                Backend.NativeNotify.SendMessage(Strings.Bootstrapper_ModificationsFailed_Title, Strings.Bootstrapper_ModificationsFailed_Message);
+
+            if (!OperatingSystem.IsLinux())
+            {
+                await StartRoblox();
+            }
+            else if (IsStudioLaunch)
+            {
+                await LaunchStudioViaWineAsync();
+            }
             else
             {
-                if (IsStudioLaunch)
-                {
-                    App.Logger.Debug("Studio launch detected, syncing RPC plugin...");
-                    StudioPluginManager.Sync();
-                }
+                if (!await EnsureSoberInstalledAsync())
+                    return;
+                await LaunchViaSober([]);
             }
 
-            if (!App.LaunchSettings.NoLaunchFlag.Active && !_cancelTokenSource.IsCancellationRequested)
-            {
-                // show tips
-                if (!_packageExtractionSuccess)
-                    Backend.NativeNotify.SendMessage(Strings.Bootstrapper_ExtractionFailed_Title, Strings.Bootstrapper_ExtractionFailed_Message);
-                else if (!allModificationsApplied)
-                    Backend.NativeNotify.SendMessage(Strings.Bootstrapper_ModificationsFailed_Title, Strings.Bootstrapper_ModificationsFailed_Message);
-
-                if (!OperatingSystem.IsLinux())
-                {
-                    await StartRoblox();
-                }
-                else if (IsStudioLaunch)
-                {
-                    await LaunchStudioViaWineAsync();
-                }
-                else
-                {
-                    if (!await EnsureSoberInstalledAsync())
-                        return;
-                    await LaunchViaSober([]);
-                }
-
-                Dialog?.CloseBootstrapper();
-            }
+            Dialog?.CloseBootstrapper();
         }
         finally
         {
@@ -2621,7 +2618,7 @@ internal partial class Bootstrapper : IDisposable
 
         if (!File.Exists(wineExe))
         {
-            App.Logger.Info("Wine not found – downloading Kombucha.");
+            App.Logger.Info("Kombucha not found – downloading Kombucha.");
 
             var release = await GetLatestKombuchaReleaseAsync();
             _ = release ?? throw new InvalidOperationException("Could not fetch latest Kombucha release.");
