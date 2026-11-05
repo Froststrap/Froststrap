@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+#[cfg(target_os = "macos")]
+mod coreaudio;
 #[cfg(target_os = "linux")]
 mod pulse;
 #[cfg(target_os = "windows")]
@@ -65,7 +67,10 @@ pub fn open(config: &OutputConfig) -> Result<Box<dyn Emitter>, EmitterError> {
     #[cfg(target_os = "linux")]
     return pulse::PulseEmitter::open(config).map(|e| Box::new(e) as Box<dyn Emitter>);
 
-    #[cfg(not(any(target_os = "windows", target_os = "linux")))]
+    #[cfg(target_os = "macos")]
+    return coreaudio::CoreAudioEmitter::open(config).map(|e| Box::new(e) as Box<dyn Emitter>);
+
+    #[cfg(not(any(target_os = "windows", target_os = "linux", target_os = "macos")))]
     {
         _ = config;
         Err(EmitterError::Unavailable("no audio backend for this platform yet".into()))
@@ -79,7 +84,10 @@ pub fn devices() -> Result<Vec<DeviceInfo>, EmitterError> {
     #[cfg(target_os = "linux")]
     return pulse::devices();
 
-    #[cfg(not(any(target_os = "windows", target_os = "linux")))]
+    #[cfg(target_os = "macos")]
+    return coreaudio::devices();
+
+    #[cfg(not(any(target_os = "windows", target_os = "linux", target_os = "macos")))]
     Err(EmitterError::Unavailable("no audio backend for this platform yet".into()))
 }
 
