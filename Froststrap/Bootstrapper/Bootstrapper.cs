@@ -500,6 +500,14 @@ internal partial class Bootstrapper : IDisposable
         return "";
     }
 
+    private static bool ShouldSkipBaseModFile(string relativeFile) =>
+        relativeFile == "README.txt" ||
+        relativeFile == "info.json" ||
+        relativeFile.EndsWith(".lock", StringComparison.Ordinal) ||
+        relativeFile.EndsWith(".dll", StringComparison.Ordinal) ||
+        relativeFile.EndsWith(".exe", StringComparison.Ordinal) ||
+        IsClientSettingsRelativePath(relativeFile);
+
     private async Task StartRoblox()
     {
         App.Logger.Info("Starting Roblox");
@@ -537,8 +545,7 @@ internal partial class Bootstrapper : IDisposable
                         MessageBoxButton.YesNo
                     );
 
-                    if (result == MessageBoxResult.Yes)
-                        isFollowUser = true;
+                    isFollowUser = result == MessageBoxResult.Yes;
                 }
 
                 string? serverid = null;
@@ -2394,12 +2401,7 @@ internal partial class Bootstrapper : IDisposable
             foreach (string file in Directory.GetFiles(Paths.Modifications))
             {
                 string relativeFile = Path.GetFileName(file);
-                if (relativeFile == "README.txt" ||
-                    relativeFile == "info.json" ||
-                    relativeFile.EndsWith(".lock", StringComparison.Ordinal) ||
-                    relativeFile.EndsWith(".dll", StringComparison.Ordinal) ||
-                    relativeFile.EndsWith(".exe", StringComparison.Ordinal) ||
-                    IsClientSettingsRelativePath(relativeFile))
+                if (ShouldSkipBaseModFile(relativeFile))
                     continue;
 
                 var info = new FileInfo(file);
@@ -2421,12 +2423,7 @@ internal partial class Bootstrapper : IDisposable
                 foreach (string file in Directory.GetFiles(dir, "*.*", SearchOption.AllDirectories))
                 {
                     string relativeFile = Path.GetRelativePath(Paths.Modifications, file);
-                    if (relativeFile == "README.txt" ||
-                        relativeFile == "info.json" ||
-                        relativeFile.EndsWith(".lock", StringComparison.Ordinal) ||
-                        relativeFile.EndsWith(".dll", StringComparison.Ordinal) ||
-                        relativeFile.EndsWith(".exe", StringComparison.Ordinal) ||
-                        IsClientSettingsRelativePath(relativeFile))
+                    if (ShouldSkipBaseModFile(relativeFile))
                         continue;
 
                     var info = new FileInfo(file);
