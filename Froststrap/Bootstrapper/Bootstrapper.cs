@@ -2797,42 +2797,42 @@ internal partial class Bootstrapper : IDisposable
             string profileName = kvp.Key;
             List<string> placeIds = kvp.Value;
 
-            if (placeIds.Contains(placeId.ToString(CultureInfo.InvariantCulture)))
+            if (!placeIds.Contains(placeId.ToString(CultureInfo.InvariantCulture)))
+                return false;
+
+            App.Logger.Info($"Found matching profile '{profileName}' for place ID {placeId}");
+
+            try
             {
-                App.Logger.Info($"Found matching profile '{profileName}' for place ID {placeId}");
+                string profilePath = Path.Combine(Paths.SavedFlagProfiles, profileName);
 
-                try
+                if (!File.Exists(profilePath))
                 {
-                    string profilePath = Path.Combine(Paths.SavedFlagProfiles, profileName);
-
-                    if (!File.Exists(profilePath))
-                    {
-                        App.Logger.Warn($"Profile file '{profileName}' not found at {profilePath}");
-                        return false;
-                    }
-
-                    string profileJson = await File.ReadAllTextAsync(profilePath);
-                    var flags = JsonHelper.Deserialize<Dictionary<string, object>>(profileJson);
-
-                    if (flags == null || flags.Count == 0)
-                    {
-                        App.Logger.Warn($"Profile '{profileName}' is empty or invalid");
-                        return false;
-                    }
-
-                    Directory.CreateDirectory(Path.Combine(clientSettingsBaseDirectory, "ClientSettings"));
-                    string destPath = Path.Combine(clientSettingsBaseDirectory, "ClientSettings", "ClientAppSettings.json");
-
-                    await File.WriteAllTextAsync(destPath, profileJson);
-
-                    App.Logger.Info($"Successfully applied FastFlag profile '{profileName}' for place ID {placeId} ({flags.Count} flags)");
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    App.Logger.Error($"Failed to apply FastFlag profile '{profileName}': {ex.Message}");
+                    App.Logger.Warn($"Profile file '{profileName}' not found at {profilePath}");
                     return false;
                 }
+
+                string profileJson = await File.ReadAllTextAsync(profilePath);
+                var flags = JsonHelper.Deserialize<Dictionary<string, object>>(profileJson);
+
+                if (flags == null || flags.Count == 0)
+                {
+                    App.Logger.Warn($"Profile '{profileName}' is empty or invalid");
+                    return false;
+                }
+
+                Directory.CreateDirectory(Path.Combine(clientSettingsBaseDirectory, "ClientSettings"));
+                string destPath = Path.Combine(clientSettingsBaseDirectory, "ClientSettings", "ClientAppSettings.json");
+
+                await File.WriteAllTextAsync(destPath, profileJson);
+
+                App.Logger.Info($"Successfully applied FastFlag profile '{profileName}' for place ID {placeId} ({flags.Count} flags)");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error($"Failed to apply FastFlag profile '{profileName}': {ex.Message}");
+                return false;
             }
         }
 
