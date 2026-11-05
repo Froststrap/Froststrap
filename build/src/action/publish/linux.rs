@@ -10,7 +10,7 @@ pub fn main() {
     }
     let version = super::version();
     let icon = path::xtask_root().join("icon512.png");
-    let desktop = path::dist().join("Froststrap.desktop");
+    let desktop = path::dist().join("froststrap.desktop");
 
     std::fs::create_dir_all(path::dist()).unwrap();
 
@@ -28,8 +28,8 @@ fn desktop_entry(version: &str) -> String {
         Type=Application
         Name=Froststrap
         Comment=A fork of Fishstrap, focused on performance and customization
-        Exec=Froststrap %u
-        TryExec=Froststrap
+        Exec=froststrap %u
+        TryExec=froststrap
         Icon=froststrap
         Terminal=false
         Categories=Game;
@@ -48,7 +48,7 @@ fn build_nfpm(
     let nfpm = ensure_tool(&path::dist(), "nfpm",
         "https://github.com/goreleaser/nfpm/releases/download/v2.47.0/nfpm_2.47.0_Linux_x86_64.tar.gz", true);
 
-    let binary = output_dir.join("Froststrap");
+    let binary = output_dir.join("froststrap");
     let libs_dir = output_dir.join("libs");
     let native_libs = native_libraries(&libs_dir);
 
@@ -180,13 +180,13 @@ fn nfpm_config(
 
             contents:
               - src: {}
-                dst: /usr/bin/Froststrap
+                dst: /usr/bin/froststrap
                 file_info:
                   mode: 0755
               - src: {}
                 dst: /usr/share/icons/hicolor/512x512/apps/froststrap.png
               - src: {}
-                dst: /usr/share/applications/Froststrap.desktop
+                dst: /usr/share/applications/froststrap.desktop
 
 {native_contents}
             scripts:

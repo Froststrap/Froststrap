@@ -40,7 +40,7 @@ fn cf_bundle_version(version: &str) -> String {
 fn info_plist(version: &str) -> PListFile {
     PListFile::new("1.0").content(dict![
         string("CFBundleDevelopmentRegion", "en"),
-        string("CFBundleExecutable", "Froststrap"),
+        string("CFBundleExecutable", "froststrap"),
         string("CFBundleIdentifier", "xyz.froststrap.desktop"),
         string("CFBundleName", "Froststrap"),
         string("CFBundleDisplayName", "Froststrap"),
@@ -132,7 +132,7 @@ pub fn main() -> (PathBuf, PathBuf) {
     let dist = path::dist();
     fs::create_dir_all(&dist).unwrap();
 
-    let main_executable = publish_dir.join("Froststrap");
+    let main_executable = publish_dir.join("froststrap");
     let icon_path = path::xtask_root().join("macicon512.png");
 
     let entitlements_path = path::bundling_artifacts().join("Froststrap.entitlements");
