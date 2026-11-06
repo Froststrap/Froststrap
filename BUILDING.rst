@@ -17,24 +17,36 @@ It is way easier if you are on macOS or Linux to just use Nix, and enter the fla
 
 and if you get prompted to trust nix configuraiton stuff, you can deny if you don't feel it's safe.
 
+The default shell includes the .NET SDK, Rust toolchain, publishing tools, and lint tools.
+For a leaner shell without the extras:
+
+.. code-block:: bash
+
+   nix develop .#minimal  # .NET + Rust only
+   nix develop .#dotnet   # .NET only
+   nix develop .#rust     # Rust only
+   nix develop .#extra    # vpk, avdt, cargo-bloat, and nfpm
+   nix develop .#lint     # reuse and typos
+   nix develop .#lsp      # .NET + OmniSharp
+
 macOS Specific
 ~~~~~~~~~~~~~~
 
-- Xcode (.app is preferred as it has the whole toolchain which is needed)
 - Xcode Command Line Tools
 
-Windows Specific
-~~~~~~~~~~~~~~~~
+Linux Specific
+~~~~~~~~~~~~~~
 
-- NSIS (need to add the NSIS compiler to PATH env, which can be found via searching "Edit System Environment Variables")
+- dbus (libdbus-1-3)
+- icu (libicu-dev)
 
 All other dependents
 ~~~~~~~~~~~~~~~~~~~~
 
+- Velopack dotnet tool for installers
 - Rust compiler (Rust 2024, and preferrably though rustup)
 - .NET 10 SDK (Need a C# compiller)
-- Fallout dotnet tool (build ochestration system)
-- Git (needed by Fallout & our orchestration to publish with a version, which is nedeed to publish)
+- Git (needed by ``xtask`` to publish with a version, will fault without Git with any command)
 
 Commands
 --------
@@ -44,15 +56,17 @@ Publish
 
 Publishing is going to create installers, and other important stuff making it publishable online.
 
+The default Nix devshell includes ``vpk``; if you use ``.#minimal``, switch to the default shell for installers.
+
 .. code-block:: bash
 
-   dotnet run --project build -- publish
+   cargo xtask publish
 
 and to publish without the installers- e.g packaging for your own system which doesn't need them
 
 .. code-block:: bash
 
-   dotnet run --project build -- publish --no-installers
+   cargo xtask publish --no-installers
 
 Cross-compiling
 ~~~~~~~~~~~~~~~
@@ -64,7 +78,7 @@ triple, and the Xcode macOS app is built with the matching ``ARCHS``.
 
 .. code-block:: bash
 
-   dotnet run --project build -- publish --override-arch x64
+   cargo xtask publish --override-arch x64
 
 This is how the Intel package is produced from an Apple Silicon machine, and vice versa.
 
@@ -75,7 +89,7 @@ Going to be useful for debug builds, and there's mulitple ways to do so.
 
 .. code-block:: bash
 
-   dotnet run --project build -- compile
+   cargo xtask build
 
 .. code-block:: bash
 
@@ -88,7 +102,7 @@ Cleaning out stale stuff- should run both of these.
 
 .. code-block:: bash
 
-   dotnet run --project build -- clean
+   cargo xtask clean
 
 .. code-block:: bash
 
@@ -97,7 +111,7 @@ Cleaning out stale stuff- should run both of these.
 Directories
 -----------
 
-Most likely your at this section to figure out where fallout build stuff goes-
+Most likely your at this section to figure out where the build stuff goes-
 and that is ``/.build``.
 
 - ``.build/publish`` - a publish artifact dir where from ``dotnet publish`` everything useful gets put into

@@ -8,7 +8,6 @@ using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.UI.Elements.Dialogs;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.IO.Compression;
 
 namespace Froststrap.UI.ViewModels.Settings.Mods

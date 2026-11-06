@@ -21,9 +21,18 @@ SPDX-License-Identifier: MPL-2.0
                 Header="About Froststrap"
                 Click="About_OnClick"
             />
+
+            <NativeMenuItemSeparator />
+
             <NativeMenuItem
                 Header="Settings"
+                Click="Settings_OnClick"
                 Gesture="Meta+,"
+            />
+            <NativeMenuItem
+                Header="Diagnostics"
+                Click="Diagnostics_OnClick"
+                Gesture="Meta+Shift+Alt+D"
             />
         </NativeMenu>
     </NativeMenu.Menu>
@@ -39,20 +48,21 @@ SPDX-License-Identifier: MPL-2.0
         <StyleInclude Source="avares://Froststrap/UI/Elements/Controls/TitleBar.axaml" />
         <StyleInclude Source="avares://Froststrap/UI/Elements/Controls/CardAction.axaml" />
         <StyleInclude Source="avares://Froststrap/UI/Elements/Controls/IconButton.axaml" />
-
-        <StyleInclude Source="avares://AvaloniaEdit/Themes/Fluent/AvaloniaEdit.xaml" />
+        <StyleInclude Source="avares://Froststrap/UI/Elements/Controls/SectionHeader.axaml" />
 
         <StyleInclude Source="avares://Froststrap/UI/AppThemes/Default.axaml" />
     </Application.Styles>
 
     <Application.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceInclude Source="avares://ColorPicker/Templates/HueSlider.axaml" />
-                <ResourceInclude Source="avares://ColorPicker/Templates/SquareSlider.axaml" />
-                <ResourceInclude Source="avares://ColorPicker/Templates/SquarePicker.axaml" />
-                <ResourceInclude Source="avares://LucideAvalonia/Lucide/ResourcesIcons.axaml" />
-            </ResourceDictionary.MergedDictionaries>
+            <ControlTheme
+                x:Key="SettingsWindowDecorationsTheme"
+                TargetType="WindowDrawnDecorations"
+                BasedOn="{StaticResource {x:Type WindowDrawnDecorations}}">
+                <Style Selector="^ /template/ TextBlock#TitleTextBlock">
+                    <Setter Property="IsVisible" Value="False" />
+                </Style>
+            </ControlTheme>
 
             <StaticResource x:Key="ToolTipBackground" ResourceKey="ToolTipBackgroundBrush" />
             <StaticResource x:Key="ToolTipForeground" ResourceKey="ToolTipForegroundBrush" />

@@ -9,12 +9,12 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Styling;
 using Avalonia.Threading;
 using Froststrap.AppData;
-using Froststrap.Backend;
 using Froststrap.Integrations;
 using Froststrap.UI.Elements.Base;
 using Microsoft.Win32;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using Velopack;
 
 namespace Froststrap;
 
@@ -27,6 +27,23 @@ internal partial class App : Application
 
         new Froststrap.UI.Elements.About.MainWindow().Show();
         AboutOpen = true;
+    }
+
+    public static bool SettingsOpen;
+    private void Settings_OnClick(object? sender, EventArgs e)
+    {
+        if (SettingsOpen) return;
+
+        LaunchHandler.LaunchSettings();
+    }
+
+    public static bool DiagnosticsOpen;
+    private void Diagnostics_OnClick(object? sender, EventArgs e)
+    {
+        if (DiagnosticsOpen) return;
+
+        new Froststrap.UI.Elements.Diagnostics.MainWindow().Show();
+        DiagnosticsOpen = true;
     }
 
     private const string MockReleaseTagEnvironmentVariable = "MOCK_RELEASE_TAG";
@@ -57,11 +74,6 @@ internal partial class App : Application
         .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion
         ?? "unknown+asteo").Split("+")[0];
 
-    static App()
-    {
-        Logger.Info($"App.Version = '{Version}'");
-    }
-
     public static readonly string InternalVersion = Assembly.GetExecutingAssembly()
         .GetName().Version!.ToString()[..^2];
 
@@ -82,6 +94,26 @@ internal partial class App : Application
     public static bool IsPlayerInstalled => PlayerData.IsInstalled;
 
     public static bool IsStudioInstalled => StudioData.IsInstalled;
+
+    private static bool? _linuxPlayerInstalled;
+
+    public static bool LinuxPlayerInstalled
+    {
+        get
+        {
+            if (!OperatingSystem.IsLinux())
+                return false;
+
+            if (_linuxPlayerInstalled is not bool cached)
+            {
+                var clientPath = Path.Combine(Paths.Versions, "Sober", "data", "sober", "packages", "x86_64", "com.roblox.client");
+                cached = Directory.Exists(clientPath) && Directory.EnumerateFiles(clientPath, "*", SearchOption.AllDirectories).Any();
+                _linuxPlayerInstalled = cached;
+            }
+
+            return cached;
+        }
+    }
 
     public static readonly RobloxPlayerData PlayerData = new();
 
@@ -113,10 +145,46 @@ internal partial class App : Application
 
     public static readonly HttpClient HttpClient = new(new HttpClientLoggingHandler(new HttpClientHandler { AutomaticDecompression = DecompressionMethods.All }));
 
+    public static void SavePendingUpdateNotes(UpdateInfo update)
+    {
+        string notes = update.TargetFullRelease.NotesMarkdown ?? string.Empty;
+        State.Prop.PendingUpdateVersion = notes.Length == 0 ? null : update.TargetFullRelease.Version.ToString();
+        State.Prop.PendingUpdateReleaseNotes = notes.Length == 0 ? null : notes;
+        State.Save();
+    }
+
+    private static async Task ShowPendingUpdateNotesAsync()
+    {
+        string? version = State.Prop.PendingUpdateVersion;
+        string? notes = State.Prop.PendingUpdateReleaseNotes;
+
+        if (version is null || string.IsNullOrWhiteSpace(notes))
+            return;
+
+        if (LaunchSettings.RobloxLaunchMode != LaunchMode.None || !string.Equals(version, Version, StringComparison.OrdinalIgnoreCase))
+        {
+            State.Prop.PendingUpdateVersion = null;
+            State.Prop.PendingUpdateReleaseNotes = null;
+            State.Save();
+            return;
+        }
+
+        State.Prop.PendingUpdateVersion = null;
+        State.Prop.PendingUpdateReleaseNotes = null;
+        State.Save();
+
+        await Frontend.ShowReleaseNotesDialog(
+            string.Format(CultureInfo.CurrentCulture, Strings.Menu_Deployment_ReleaseNotes_Title, version),
+            notes);
+    }
+
     private static bool _showingExceptionDialog;
     private static readonly Lock ActivationLock = new();
+    private static readonly ManualResetEventSlim ActivationReceived = new(false);
+    private static readonly TimeSpan ColdStartActivationTimeout = TimeSpan.FromMilliseconds(250);
     private static string? _pendingActivationUri;
     private static bool _launchArgsProcessed;
+    private static DateTime _waitStart;
     private static List<Style>? _disableAnimationStyles;
 
     private static string? GetEnvironmentVariable(params string[] names)
@@ -141,11 +209,19 @@ internal partial class App : Application
     {
         e.SetObserved();
 
+        if (e.Exception.Flatten().InnerExceptions.All(IsExpectedCancellationException))
+            return;
+
         Logger.Error(
             e.Exception,
             "An unobserved background task exception occurred."
         );
     }
+
+    private static bool IsExpectedCancellationException(Exception exception)
+        => exception is OperationCanceledException
+            || exception is IOException
+                && exception.InnerException is System.Net.Sockets.SocketException { ErrorCode: 125 };
 
     public static void Terminate(ErrorCode exitCode = ErrorCode.ERROR_SUCCESS)
     {
@@ -154,7 +230,7 @@ internal partial class App : Application
         Logger.Debug($"Terminating with exit code {exitCodeNum} ({exitCode})");
 
 #if __APPLE__
-        VirtualDisplay.End();
+        Froststrap.Backend.VirtualDisplay.End();
 #endif
         Environment.Exit(exitCodeNum);
     }
@@ -173,13 +249,30 @@ internal partial class App : Application
         });
     }
 
-    async void GlobalExceptionHandler(object sender, DispatcherUnhandledExceptionEventArgs e)
+    async void GlobalExceptionHandler(object? sender, DispatcherUnhandledExceptionEventArgs e)
     {
         e.Handled = true;
+
+        if (IsWebViewInitializationAbort(e.Exception))
+        {
+            Logger.Info("Ignored WebView2 initialization abort.");
+            return;
+        }
 
         Logger.Error($"An exception occurred: {e.Exception.Message}");
 
         await FinalizeExceptionHandling(e.Exception);
+    }
+
+    private static bool IsWebViewInitializationAbort(Exception ex)
+    {
+        for (Exception? current = ex; current != null; current = current.InnerException)
+        {
+            if (current is COMException { HResult: unchecked((int)0x80004004) })
+                return true;
+        }
+
+        return false;
     }
 
     public static async Task FinalizeExceptionHandling(AggregateException ex)
@@ -356,8 +449,20 @@ internal partial class App : Application
     {
         AvaloniaXamlLoader.Load(this);
 
+        // FluentAvalonia pins ContentControlThemeFontFamily to the system font, bypassing the default font.
+        Resources["ContentControlThemeFontFamily"] = new Avalonia.Media.FontFamily("fonts:Inter#Inter");
+
+        // FluentAvalonia's paddings put more space below the text (tuned for Segoe UI), which reads as too high with Inter.
+        Resources["ComboBoxPadding"] = new Thickness(12, 7, 0, 5);
+        Resources["ComboBoxItemThemePadding"] = new Thickness(11, 7, 11, 5);
+        Resources["ComboBoxEditableTextPadding"] = new Thickness(11, 7, 32, 4);
+        Resources["TextControlThemePadding"] = new Thickness(10, 7, 6, 4);
+        Resources["ButtonPadding"] = new Thickness(11, 5, 11, 5);
+        Resources["MenuFlyoutItemThemePadding"] = new Thickness(11, 10, 11, 7);
+
         AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
         TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
+        Dispatcher.UIThread.UnhandledException += GlobalExceptionHandler;
 
         if (OperatingSystem.IsMacOS()
             && TryGetFeature(typeof(IActivatableLifetime)) is IActivatableLifetime activatableLifetime)
@@ -375,6 +480,8 @@ internal partial class App : Application
             return;
 
         string uri = protocolArgs.Uri.OriginalString;
+
+        ActivationReceived.Set();
 
         lock (ActivationLock)
         {
@@ -460,7 +567,7 @@ internal partial class App : Application
             return;
 
 #if __APPLE__
-        Logger.Info("Forcing Mobile App URI to be handled by us");
+        Logger.Debug("Forcing Mobile App URI to be handled by us");
         Backend.MobileAppReg.Init();
 #endif
 
@@ -474,7 +581,7 @@ internal partial class App : Application
 #if __APPLE__
         desktop.ShutdownRequested += (_, _) =>
         {
-            VirtualDisplay.End();
+            Froststrap.Backend.VirtualDisplay.End();
         };
 #endif
 
@@ -526,16 +633,13 @@ internal partial class App : Application
         if (Settings.Prop.DisableAnimations)
             ApplyAnimationSettings();
 
-        if (State.Prop.IsFirstLaunch)
-        {
-            LaunchSettings.OnboardingFlag.Active = true;
-            Logger.Info("First launch detected, launching onboarding.");
-        }
-
         _ = Task.Run(async () =>
         {
             try
             {
+                UriHandler.EnsureRegistered();
+                _ = Integrations.AccountManager.AccountManager.Shared;
+
                 FastFlags.Load();
                 GlobalSettings.Load();
 
@@ -560,8 +664,11 @@ internal partial class App : Application
 
         _ = Task.Run(async () =>
         {
-            if (Settings.Prop.UpdateChecks == UpdateCheck.Disabled)
-                return;
+            if (
+                Settings.Prop.UpdateChecks == UpdateCheck.Disabled
+                || UpdaterManager.IsCiBuild
+                || LaunchSettings.BypassUpdateCheck
+            ) return;
 
             try
             {
@@ -582,6 +689,7 @@ internal partial class App : Application
                     return;
 
                 await updater.DownloadUpdatesAsync(update);
+                SavePendingUpdateNotes(update);
                 updater.ApplyUpdatesAndRestart(update);
             }
             catch (Exception ex)
@@ -591,10 +699,42 @@ internal partial class App : Application
         });
 
         lock (ActivationLock)
+        {
+            if (LaunchSettings.RobloxLaunchMode == LaunchMode.None && _pendingActivationUri is not null)
+                LaunchSettings.TryResolveRobloxUri([_pendingActivationUri]);
+        }
+
+        await WaitForColdStartActivationAsync();
+
+        lock (ActivationLock)
             _launchArgsProcessed = true;
 
         await LaunchHandler.ProcessLaunchArgs();
+        await ShowPendingUpdateNotesAsync();
 
         base.OnFrameworkInitializationCompleted();
+    }
+
+    private static async Task WaitForColdStartActivationAsync()
+    {
+        if (!OperatingSystem.IsMacOS())
+            return;
+
+        if (LaunchSettings.RobloxLaunchMode != LaunchMode.None
+            || State.Prop.IsFirstLaunch
+            || LaunchSettings.SettingsFlag.Active
+            || LaunchSettings.BackgroundUpdaterFlag.Active)
+            return;
+
+        Logger.Debug("Waiting for a possible cold-start URL activation");
+
+        _waitStart = DateTime.Now;
+
+        bool signalled = await Task.Run(() => ActivationReceived.Wait(ColdStartActivationTimeout));
+
+        if (LaunchSettings.RobloxLaunchMode != LaunchMode.None)
+            Logger.Debug($"Cold-start activation resolved to {LaunchSettings.RobloxLaunchMode} in {(DateTime.Now - _waitStart).TotalMilliseconds:F0}ms, skipping the launch menu");
+        else if (!signalled)
+            Logger.Debug($"No cold-start activation within {ColdStartActivationTimeout.TotalMilliseconds:F0}ms, opening the launch menu");
     }
 }

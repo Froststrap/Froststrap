@@ -3,11 +3,7 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-using Newtonsoft.Json;
-using System.Globalization;
-using System.Net;
 using System.Security.Cryptography;
-using System.Text;
 
 namespace Froststrap.Integrations.AccountManager
 {
@@ -66,7 +62,7 @@ namespace Froststrap.Integrations.AccountManager
                 Cookies = Convert.ToBase64String(encrypted)
             };
 
-            string json = System.Text.Json.JsonSerializer.Serialize(cookieData, _jsonOptions);
+            string json = JsonHelper.Serialize(cookieData, _jsonOptions);
             BackupFile(filePath);
             File.WriteAllText(filePath, json);
             return true;

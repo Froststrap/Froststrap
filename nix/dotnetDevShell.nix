@@ -23,15 +23,15 @@
   libsecret,
   dotnetCorePackages,
   glib,
-  omnisharp-roslyn,
   callPackage,
   nspr,
+  dbus,
   squashfsTools,
+  skia,
 }:
 let
   inherit (callPackage ./devshell-tools.nix { }) mkFragment;
-  avdt = callPackage ./avdt.nix { };
-  dotnet-tc = dotnetCorePackages.sdk_10_0-bin;
+  dotnet-tc = dotnetCorePackages.sdk_10_0;
 in
 mkFragment (finalAttrs: {
   name = "dotnet";
@@ -45,6 +45,8 @@ mkFragment (finalAttrs: {
     wayland
     libxkbcommon
     libsecret
+    skia
+    dbus
 
     # X11 libs
     libX11
@@ -59,9 +61,7 @@ mkFragment (finalAttrs: {
   ];
 
   buildInputs = [
-    omnisharp-roslyn # lsp
     dotnet-tc
-    avdt # devtools for avalonia
   ]
   ++ lib.optionals stdenv.hostPlatform.isLinux [
     glib

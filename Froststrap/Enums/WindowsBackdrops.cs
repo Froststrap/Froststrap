@@ -8,6 +8,7 @@ namespace Froststrap.Enums
     {
         Mica,
         Acrylic,
-        None
+        None,
+        Blur
     }
 }

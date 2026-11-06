@@ -2,12 +2,14 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+using System.Diagnostics.CodeAnalysis;
 using Avalonia.Data.Converters;
 
 namespace Froststrap.UI.Converters
 {
     internal class EnumNameConverter : IValueConverter
     {
+        [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Enum member lookup targets the app's own rooted enum types, so their members are always preserved.")]
         public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
             if (value is not Enum enumVal)

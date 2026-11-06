@@ -1,8 +1,12 @@
-﻿// SPDX-FileCopyrightText: 2026 Froststrap
+// SPDX-FileCopyrightText: 2026 Froststrap
 //
 // SPDX-License-Identifier: MPL-2.0
 
+using CommunityToolkit.Mvvm.Input;
 using Froststrap.Enums.AppStoragePresets;
+using System.Collections.ObjectModel;
+using System.Globalization;
+using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
@@ -39,7 +43,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 };
 
                 Directory.CreateDirectory(Paths.Cache);
-                var json = JsonSerializer.Serialize(cache);
+                var json = JsonHelper.Serialize(cache);
                 await File.WriteAllTextAsync(GetCachePath(), json);
             }
             catch { /* ignore */ }
@@ -52,7 +56,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 if (!File.Exists(GetCachePath())) return null;
 
                 var json = await File.ReadAllTextAsync(GetCachePath());
-                var cache = JsonSerializer.Deserialize<DatacentersCache>(json);
+                var cache = JsonHelper.Deserialize<DatacentersCache>(json);
 
                 if (cache == null) return null;
 
@@ -79,6 +83,11 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public BehaviourViewModel()
         {
+            foreach (var hz in (App.Settings.Prop.VirtualDisplayHzModes ?? []).Distinct().Order())
+                VirtualDisplayHzEntries.Add(new HzEntry(hz, RemoveVirtualDisplayHz));
+
+            AddVirtualDisplayHzCommand = new RelayCommand(AddVirtualDisplayHz);
+
             App.Cookies.StateChanged += (_, state) =>
                 CookieLoadingFailed = state is not (CookieState.Success or CookieState.Unknown);
 
@@ -92,8 +101,122 @@ namespace Froststrap.UI.ViewModels.Settings
             get => App.Settings.Prop.LaunchWithVirtualDisplay;
             set
             {
+                // First enable: mint the EDID serial from mouse entropy
+                // before committing the toggle.
+                if (value && App.Settings.Prop.VirtualDisplaySerial == 0)
+                {
+                    _ = GenerateVirtualDisplaySerialThenEnableAsync();
+                    return;
+                }
+
                 App.Settings.Prop.LaunchWithVirtualDisplay = value;
                 OnPropertyChanged(nameof(LaunchWithVirtualDisplay));
+            }
+        }
+
+        private async Task GenerateVirtualDisplaySerialThenEnableAsync()
+        {
+            var serial = await UI.Elements.Settings.VirtualDisplayEntropyDialog.RequestAsync();
+
+            if (serial is { } value)
+            {
+                App.Settings.Prop.VirtualDisplaySerial = value;
+                App.Logger.Info("Virtual display identity generated from mouse entropy");
+                // Re-enter the setter with the serial now stored.
+                LaunchWithVirtualDisplay = true;
+            }
+            else
+            {
+                App.Logger.Info("Virtual display identity generation cancelled");
+                // Snap the toggle back off.
+                OnPropertyChanged(nameof(LaunchWithVirtualDisplay));
+            }
+        }
+        public string VirtualDisplayName
+        {
+            get => App.Settings.Prop.VirtualDisplayName;
+            set
+            {
+                App.Settings.Prop.VirtualDisplayName = value;
+                OnPropertyChanged(nameof(VirtualDisplayName));
+            }
+        }
+        public int VirtualDisplayWidth
+        {
+            get => App.Settings.Prop.VirtualDisplayWidth;
+            set
+            {
+                App.Settings.Prop.VirtualDisplayWidth = value;
+                OnPropertyChanged(nameof(VirtualDisplayWidth));
+            }
+        }
+
+        public int VirtualDisplayHeight
+        {
+            get => App.Settings.Prop.VirtualDisplayHeight;
+            set
+            {
+                App.Settings.Prop.VirtualDisplayHeight = value;
+                OnPropertyChanged(nameof(VirtualDisplayHeight));
+            }
+        }
+
+        public ObservableCollection<HzEntry> VirtualDisplayHzEntries { get; } = [];
+
+        public ICommand AddVirtualDisplayHzCommand { get; }
+
+        private string _newVirtualDisplayHz = "";
+        public string NewVirtualDisplayHz
+        {
+            get => _newVirtualDisplayHz;
+            set
+            {
+                _newVirtualDisplayHz = value;
+                OnPropertyChanged(nameof(NewVirtualDisplayHz));
+            }
+        }
+
+        private void AddVirtualDisplayHz()
+        {
+            if (!double.TryParse(NewVirtualDisplayHz, NumberStyles.Float, CultureInfo.InvariantCulture, out var hz)
+                || hz <= 0 || double.IsInfinity(hz))
+                return;
+
+            if (VirtualDisplayHzEntries.All(e => e.Value != hz))
+            {
+                int index = 0;
+                while (index < VirtualDisplayHzEntries.Count && VirtualDisplayHzEntries[index].Value < hz)
+                    index++;
+
+                VirtualDisplayHzEntries.Insert(index, new HzEntry(hz, RemoveVirtualDisplayHz));
+                SaveVirtualDisplayHz();
+            }
+
+            NewVirtualDisplayHz = "";
+        }
+
+        private void RemoveVirtualDisplayHz(HzEntry entry)
+        {
+            VirtualDisplayHzEntries.Remove(entry);
+            SaveVirtualDisplayHz();
+        }
+
+        private void SaveVirtualDisplayHz()
+        {
+            App.Settings.Prop.VirtualDisplayHzModes = [.. VirtualDisplayHzEntries.Select(e => e.Value)];
+            App.Settings.Save();
+        }
+
+        internal class HzEntry
+        {
+            public double Value { get; }
+            public string Display => $"{Value.ToString("0.##", CultureInfo.InvariantCulture)} Hz";
+            public ICommand RemoveCommand { get; }
+
+            public HzEntry(double value, Action<HzEntry> removeAction)
+            {
+                Value = value;
+                RemoveCommand = new RelayCommand(() => removeAction(this));
             }
         }
 

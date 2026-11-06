@@ -121,7 +121,7 @@ namespace Froststrap.UI.Elements.Dialogs
             var results = new List<VersionEntry>();
 
             string pattern = $@"New\s+{binaryType}(?:64)?\s+version-(?<hash>[a-f0-9]+|hidden)\s+at\s+(?<date>[^,]+),\s+file\s+version:\s+(?<fileVer>[^,]+(?:,\s*[0-9]+)*)";
-            var regex = new Regex(pattern, RegexOptions.IgnoreCase | RegexOptions.Compiled);
+            var regex = new Regex(pattern, RegexOptions.IgnoreCase);
 
             foreach (Match match in regex.Matches(content))
             {

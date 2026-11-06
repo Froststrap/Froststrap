@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: 2026 Froststrap
+// SPDX-FileCopyrightText: 2026 Froststrap
 //
 // SPDX-License-Identifier: MPL-2.0
 
@@ -67,8 +67,8 @@ namespace Froststrap
             Directory.CreateDirectory(Path.GetDirectoryName(PluginFile)!);
             await File.WriteAllBytesAsync(PluginFile, data);
 
-            var state = new { Version = release.TagName, UpdatedAt = DateTime.Now };
-            await File.WriteAllTextAsync(VersionCacheFile, JsonSerializer.Serialize(state));
+            var state = new VersionCacheEntry { Version = release.TagName, UpdatedAt = DateTime.Now };
+            await File.WriteAllTextAsync(VersionCacheFile, JsonHelper.Serialize(state));
         }
 
         private static async Task<GithubRelease?> GetLatestRelease()
@@ -76,7 +76,7 @@ namespace Froststrap
             try
             {
                 var response = await App.HttpClient.GetStringAsync(new Uri(VersionApiUrl));
-                return JsonSerializer.Deserialize<GithubRelease>(response);
+                return JsonHelper.Deserialize<GithubRelease>(response);
             }
             catch { return null; }
         }

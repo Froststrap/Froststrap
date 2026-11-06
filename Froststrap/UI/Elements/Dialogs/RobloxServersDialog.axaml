@@ -15,6 +15,7 @@ SPDX-License-Identifier: MPL-2.0
     xmlns:models="clr-namespace:Froststrap.Models"
     xmlns:dialogsVm="clr-namespace:Froststrap.UI.ViewModels.Dialogs"
     xmlns:resources="clr-namespace:Froststrap.Resources"
+    xmlns:utility="clr-namespace:Froststrap.UI.Utility"
     x:Name="RootDialog"
     x:DataType="dialogsVm:RobloxServersDialogViewModel"
     Title="{Binding GameName, FallbackValue='Servers'}"
@@ -38,7 +39,7 @@ SPDX-License-Identifier: MPL-2.0
                     PointerPressed="OnHeaderPointerPressed">
 				<Grid ColumnDefinitions="Auto, *, Auto">
 					<Border CornerRadius="8" ClipToBounds="True" Width="40" Height="40">
-						<Image Source="{Binding GameThumbnailUrl, Converter={StaticResource UrlToBitmapConverter}}"
+						<Image utility:RemoteImage.SourceUrl="{Binding GameThumbnailUrl}"
                                Stretch="UniformToFill"
                                RenderOptions.BitmapInterpolationMode="LowQuality"/>
 					</Border>
@@ -53,10 +54,17 @@ SPDX-License-Identifier: MPL-2.0
                                    FontSize="12" Opacity="0.6"
                                    IsVisible="{Binding IsCurrentGameApi}"/>
 					</StackPanel>
-					<Button Grid.Column="2" Click="OnCloseClicked"
-                            Background="Transparent" BorderThickness="0">
-						<ic:Lucide Icon="X" Height="16" Width="16" />
-					</Button>
+					<StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="4">
+						<Button Command="{Binding RefreshCommand}"
+                                ToolTip.Tip="{x:Static resources:Strings.Menu_QuickPlay_Refresh}"
+                                Background="Transparent" BorderThickness="0">
+							<ic:Lucide Icon="RefreshCw" Height="16" Width="16" />
+						</Button>
+						<Button Click="OnCloseClicked"
+                                Background="Transparent" BorderThickness="0">
+							<ic:Lucide Icon="X" Height="16" Width="16" />
+						</Button>
+					</StackPanel>
 				</Grid>
 			</Border>
 

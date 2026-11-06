@@ -1,43 +1,143 @@
 {
+  dotnetCorePackages,
+  buildDotnetModule,
+  makeRustPlatform,
+  rustPlatform,
+  pkg-config,
+  fontconfig,
+  freetype,
+  libGL,
+  nspr,
+  vulkan-loader,
+  wayland,
+  libxkbcommon,
+  libsecret,
+  skia,
+  libX11,
+  libICE,
+  libSM,
+  libXi,
+  libXrandr,
+  libxcursor,
+  libxcb,
+  xcbutil,
+  glib,
+  stdenv,
+  expat,
+  clang,
+  zlib,
+  krb5,
+  dbus,
   lib,
-  appimageTools,
-  fetchurl,
 }:
-
+{
+  fenix,
+  ...
+}:
 let
-  version = "2.0.2";
-
-  src = fetchurl {
-    url = "https://github.com/Froststrap/Froststrap/releases/download/v${version}/Froststrap-linux-x64.AppImage";
-    hash = "sha256-KajUNB3vgzslBOTvL/GWTwRLZmbc+XKvtkyRQAz0ktE=";
+  dotnet-sdk = dotnetCorePackages.sdk_10_0;
+  dotnet-runtime = dotnetCorePackages.runtime_10_0-bin;
+  toolchain =
+    with fenix.packages.${stdenv.system};
+    combine [ minimal.toolchain ];
+  src = ../.;
+  fenixRustPlatform = makeRustPlatform {
+    cargo = toolchain;
+    rustc = toolchain;
   };
 
-  appimageContents = appimageTools.extractType2 {
-    inherit version src;
-    pname = "froststrap";
+  xtask = fenixRustPlatform.buildRustPackage {
+    pname = "xtask";
+    version = "0.0.0";
+    src = ../build;
+    cargoHash = "sha256-7YV+oYJE266v0iyzCZmRCo0bkLKLBMLXBKTIG7r03E0=";
+    doCheck = false;
   };
+  version = "2.0.6-beta.8";
+
+  runtimeLibs = lib.optionals stdenv.hostPlatform.isLinux [
+    expat
+    fontconfig
+    freetype
+    libGL
+    nspr
+    vulkan-loader
+    wayland
+    libxkbcommon
+    libsecret
+    skia
+    dbus
+
+    # X11 libs
+    libX11
+    libICE
+    libSM
+    libXi
+    libXrandr
+    libxcursor
+    libxcb
+    xcbutil
+    glib
+  ];
 in
-appimageTools.wrapType2 {
-  pname = "froststrap";
-  inherit version src;
+buildDotnetModule {
+  inherit dotnet-runtime dotnet-sdk src version;
+  projectFile = "Froststrap/Froststrap.csproj";
+  nugetDeps = ./deps.json;
+  name = "froststrap";
+  cargoRoot = "backend";
+  selfContainedBuild = true;
 
-  extraPkgs = pkgs: [
-    pkgs.icu
+  cargoDeps = rustPlatform.fetchCargoVendor {
+    src = "${src}/backend";
+    hash = "sha256-KqFpWnP1SgVWs//PM0nqgzpmxDTGuHhy2ffHils4U2Q=";
+  };
+
+  nativeBuildInputs = [
+    rustPlatform.cargoSetupHook
+    toolchain
+    xtask
+  ] ++ lib.optionals stdenv.hostPlatform.isLinux [
+    pkg-config
+    clang
   ];
 
-  extraInstallCommands = ''
-    install -Dm644 ${appimageContents}/usr/share/applications/Froststrap.desktop \
-        $out/share/applications/Froststrap.desktop
+  buildInputs = lib.optionals stdenv.hostPlatform.isLinux [
+    dbus
+    fontconfig
+    zlib
+    krb5
+  ];
 
-    install -Dm644 ${appimageContents}/usr/share/icons/hicolor/512x512/apps/froststrap.png \
-        $out/share/icons/hicolor/512x512/apps/froststrap.png
+  buildPhase = ''
+    runHook preBuild
+    export FROSTSTRAP_VERSION=${version}
+    export CARGO_NET_OFFLINE=true
+    xtask publish --no-installers --output "$PWD/build/publish"
+    runHook postBuild
+  '';
+
+  installPhase = ''
+    runHook preInstall
+    mkdir -p $out/lib/froststrap $out/bin
+    cp -r build/publish/publish/. $out/lib/froststrap/
+    makeWrapper $out/lib/froststrap/froststrap $out/bin/froststrap \
+    ${
+      lib.optionalString stdenv.hostPlatform.isLinux
+        "--prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath runtimeLibs}:$out/lib/froststrap/libs"
+    }
+    runHook postInstall
   '';
 
   meta = {
     description = "A cross-platform Roblox bootstrapper, focused on performance and customization.";
     homepage = "https://froststrap.xyz/";
     license = lib.licenses.mpl20;
-    platforms = [ "x86_64-linux" ];
     mainProgram = "froststrap";
+    platforms = [
+      "x86_64-linux"
+      "x86_64-darwin"
+      "aarch64-darwin"
+    ];
   };
 }

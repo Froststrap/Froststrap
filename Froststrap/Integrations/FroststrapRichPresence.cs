@@ -4,6 +4,10 @@
 
 using System.Net.Sockets;
 using DiscordRPC;
+using DiscordRPC.Logging;
+using RichPresence = DiscordRPC.RichPresence;
+using DiscordRPC.Message;
+using Froststrap.Integrations.Discord;
 
 namespace Froststrap.Integrations
 {
@@ -21,12 +25,7 @@ namespace Froststrap.Integrations
 
         public FroststrapRichPresence()
         {
-            _rpcClient = new DiscordRpcClient(
-                "1399535282713399418",
-                -1,
-                null,
-                true,
-                DiscordIpcPipeClient.Create())
+            _rpcClient = new DiscordRpcClient("1399535282713399418", -1, new NullLogger(), true, DiscordIpcPipeClient.Create())
             {
                 SkipIdenticalPresence = true,
                 ShutdownOnly = true
@@ -41,17 +40,20 @@ namespace Froststrap.Integrations
 
             _uptimeStopwatch = Stopwatch.StartNew();
 
-            try
+            _ = Task.Run(() =>
             {
-                _rpcClient.Initialize();
-            }
-            catch (Exception ex)
-            {
-                App.Logger.Error($"Failed to init RPC: {ex.Message}");
-            }
+                try
+                {
+                    _rpcClient.Initialize();
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.Error($"Failed to init RPC: {ex.Message}");
+                }
+            });
         }
 
-        private void OnReady(object sender, DiscordRPC.Message.ReadyMessage args)
+        private void OnReady(object sender, ReadyMessage args)
         {
             if (_disposed) return;
 
@@ -91,16 +93,18 @@ namespace Froststrap.Integrations
             if (_disposed || _rpcClient == null || !_rpcClient.IsInitialized)
                 return;
 
-            string state = !string.IsNullOrEmpty(_currentDialog)
-                ? $"Page: {_currentPage} | Dialog: {_currentDialog}"
-                : $"Page: {_currentPage}";
+            string state = DiscordPresenceHelper.Truncate(
+                !string.IsNullOrEmpty(_currentDialog)
+                    ? $"Page: {_currentPage} | Dialog: {_currentDialog}"
+                    : $"Page: {_currentPage}",
+                128);
 
             if (state == _lastState)
                 return;
 
             _lastState = state;
 
-            var presence = new DiscordRPC.RichPresence
+            var presence = new RichPresence
             {
                 Details = "Customize Roblox to your liking!",
                 State = state,
@@ -110,7 +114,7 @@ namespace Froststrap.Integrations
                     LargeImageKey = "froststrap",
                     LargeImageText = "Froststrap",
                     SmallImageKey = "checkmark",
-                    SmallImageText = $"{App.Version}"
+                    SmallImageText = DiscordPresenceHelper.Truncate($"{App.Version}", 128)
                 },
                 Buttons =
                 [

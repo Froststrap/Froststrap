@@ -1,4 +1,4 @@
-﻿using Avalonia.Media.Imaging;
+using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.Integrations;
@@ -20,7 +20,6 @@ namespace Froststrap.UI.ViewModels.Settings
         private readonly List<string> _activeAutoRegions = [];
         private readonly CancellationTokenSource _disposeCts = new();
         private RobloxServerFetcher? _fetcher;
-        private Dictionary<int, string>? _dcMap;
         private CancellationTokenSource? _searchDebounceCts;
         private CancellationTokenSource? _searchCts;
         private List<string> _sortedAutoRegions = [];
@@ -371,8 +370,6 @@ namespace Froststrap.UI.ViewModels.Settings
             var sorted = regions.OrderBy(r => r, StringComparer.OrdinalIgnoreCase).ToList();
             var list = new List<string> { Strings.Common_Auto };
             list.AddRange(sorted);
-
-            _dcMap = dcMap;
 
             var desired = string.IsNullOrEmpty(_selectedRegion) ? Strings.Common_Auto : _selectedRegion;
             var match = list.FirstOrDefault(r => r.Equals(desired, StringComparison.OrdinalIgnoreCase))
@@ -729,7 +726,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 };
 
                 Directory.CreateDirectory(Paths.Cache);
-                var json = JsonSerializer.Serialize(cache);
+                var json = JsonHelper.Serialize(cache);
                 await File.WriteAllTextAsync(GetCachePath(), json);
             }
             catch { }
@@ -742,7 +739,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 if (!File.Exists(GetCachePath())) return null;
 
                 var json = await File.ReadAllTextAsync(GetCachePath());
-                var cache = JsonSerializer.Deserialize<DatacentersCache>(json);
+                var cache = JsonHelper.Deserialize<DatacentersCache>(json);
 
                 if (cache == null) return null;
                 if (!allowExpired && cache.LastUpdated < DateTime.UtcNow.AddDays(-7)) return null;

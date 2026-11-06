@@ -27,7 +27,7 @@ SPDX-License-Identifier: MPL-2.0
         <StackPanel Grid.Column="0" Margin="0,0,16,0" Spacing="12">
             <md:Card Height="180" ClipToBounds="True">
                 <Panel>
-                    <Image Source="{Binding Mod.ThumbnailUrl, Converter={StaticResource UrlToBitmapConverter}}}"
+                    <Image Source="{Binding Mod.Thumbnail}"
                            Stretch="UniformToFill"
                            RenderOptions.BitmapInterpolationMode="HighQuality"/>
                 </Panel>

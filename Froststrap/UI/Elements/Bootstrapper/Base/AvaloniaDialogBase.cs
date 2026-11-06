@@ -86,10 +86,12 @@ namespace Froststrap.UI.Elements.Bootstrapper.Base
 
         public AvaloniaDialogBase()
         {
+            App.Logger.Debug("Initializing Bootstrapper Window");
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
             CanResize = false;
-
-            this.WindowDecorations = WindowDecorations.None;
+            ShowActivated = true;
+            ShowActivated = true;
+            WindowDecorations = WindowDecorations.BorderOnly;
 
             TextOptions.SetTextRenderingMode(this, TextRenderingMode.Antialias);
             this.Closing += Dialog_Closing;

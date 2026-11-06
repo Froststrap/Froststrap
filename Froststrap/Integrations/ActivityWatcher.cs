@@ -1,8 +1,6 @@
-﻿// SPDX-FileCopyrightText: 2026 Froststrap
+// SPDX-FileCopyrightText: 2026 Froststrap
 //
 // SPDX-License-Identifier: MPL-2.0
-
-using System.Runtime.InteropServices;
 
 namespace Froststrap.Integrations
 {
@@ -132,7 +130,7 @@ namespace Froststrap.Integrations
 
                 App.Logger.Info("Opening Roblox log file...");
 
-                string logNameFilter = (InRobloxStudio || _launchMode == LaunchMode.Studio || _launchMode == LaunchMode.StudioAuth)
+                string logNameFilter = IsStudioLaunch
                     ? "Studio"
                     : "Player";
 
@@ -167,23 +165,80 @@ namespace Froststrap.Integrations
                 logFileInfo = new FileInfo(LogLocation);
             }
 
-            OnLogOpen?.Invoke(this, EventArgs.Empty);
-
-            var logFileStream = logFileInfo.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-
-            App.Logger.Info($"Opened {LogLocation}");
-
-            using var streamReader = new StreamReader(logFileStream);
-
             while (!IsDisposed)
             {
-                string? log = await streamReader.ReadLineAsync();
+                OnLogOpen?.Invoke(this, EventArgs.Empty);
 
-                if (log is null)
+                using var logFileStream = logFileInfo.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                using var streamReader = new StreamReader(logFileStream);
+
+                App.Logger.Info($"Opened {LogLocation}");
+
+                bool switchedLogFile = false;
+
+                while (!IsDisposed)
+                {
+                    string? log = await streamReader.ReadLineAsync();
+
+                    if (log is not null)
+                    {
+                        ReadLogEntry(log);
+                        continue;
+                    }
+
                     await Task.Delay(1000);
-                else
-                    ReadLogEntry(log);
+
+                    FileInfo? newerLogFile = IsStudioLaunch ? GetNewerStudioLog(logFileInfo) : null;
+
+                    if (newerLogFile is not null)
+                    {
+                        App.Logger.Info($"Detected new Studio log file, switching from {logFileInfo.Name} to {newerLogFile.Name}");
+
+                        logFileInfo = newerLogFile;
+                        LogLocation = newerLogFile.FullName;
+                        switchedLogFile = true;
+                        ResetStudioPlaceState();
+
+                        break;
+                    }
+                }
+
+                if (!switchedLogFile)
+                    break;
             }
+        }
+
+        private bool IsStudioLaunch => _launchMode == LaunchMode.Studio || _launchMode == LaunchMode.StudioAuth;
+
+        private static FileInfo? GetNewerStudioLog(FileInfo currentLogFile)
+        {
+            string? logDirectory = currentLogFile.DirectoryName;
+            if (string.IsNullOrEmpty(logDirectory) || !Directory.Exists(logDirectory))
+                return null;
+
+            try
+            {
+                return new DirectoryInfo(logDirectory)
+                    .GetFiles()
+                    .Where(x => x.Name.Contains("Studio", StringComparison.OrdinalIgnoreCase))
+                    .Where(x => x.CreationTimeUtc > currentLogFile.CreationTimeUtc)
+                    .OrderByDescending(x => x.CreationTimeUtc)
+                    .FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error($"Failed to search for a newer Studio log file: {ex.Message}");
+                return null;
+            }
+        }
+
+        private void ResetStudioPlaceState()
+        {
+            if (!InStudioPlace)
+                return;
+
+            InStudioPlace = false;
+            OnStudioPlaceClosed?.Invoke(this, EventArgs.Empty);
         }
 
         private void ReadLogEntry(string entry)
@@ -201,7 +256,7 @@ namespace Froststrap.Integrations
             if (string.IsNullOrEmpty(logMessage))
                 return;
 
-            if (InRobloxStudio || _launchMode == LaunchMode.Studio || _launchMode == LaunchMode.StudioAuth)
+            if (_launchMode == LaunchMode.Studio || _launchMode == LaunchMode.StudioAuth)
             {
                 ProcessStudioLogEntry(logMessage);
             }
@@ -239,11 +294,6 @@ namespace Froststrap.Integrations
 
         private void ProcessStudioLogEntry(string logMessage)
         {
-            if (!InRobloxStudio)
-            {
-                InRobloxStudio = true;
-            }
-
             if (!InStudioPlace)
             {
                 if (logMessage.StartsWith(StudioPlaceOpenEntry, StringComparison.Ordinal))
@@ -254,7 +304,7 @@ namespace Froststrap.Integrations
                     OnStudioPlaceOpened?.Invoke(this, EventArgs.Empty);
                 }
             }
-            else if (InStudioPlace)
+            else
             {
                 if (logMessage.StartsWith(StudioPlaceCloseEntry, StringComparison.Ordinal))
                 {
@@ -316,7 +366,6 @@ namespace Froststrap.Integrations
                         return;
                     }
 
-                    InGame = false;
                     Data.PlaceId = long.Parse(match.Groups[2].Value, CultureInfo.InvariantCulture);
                     Data.JobId = match.Groups[1].Value;
                     Data.MachineAddress = match.Groups[3].Value;
@@ -447,7 +496,7 @@ namespace Froststrap.Integrations
                     }
                 }
             }
-            else if (InGame && Data.PlaceId != 0)
+            else if (Data.PlaceId != 0)
             {
                 if (logMessage.StartsWith(GameDisconnectedEntry, StringComparison.Ordinal))
                 {
@@ -514,7 +563,7 @@ namespace Froststrap.Integrations
 
                     try
                     {
-                        message = JsonSerializer.Deserialize<Message>(messagePlain);
+                        message = JsonHelper.Deserialize<Message>(messagePlain);
                     }
                     catch (Exception ex)
                     {
@@ -540,7 +589,7 @@ namespace Froststrap.Integrations
 
                         try
                         {
-                            data = message.Data.Deserialize<string>();
+                            data = JsonHelper.Deserialize<string>(message.Data);
                         }
                         catch (Exception ex)
                         {
@@ -651,15 +700,15 @@ namespace Froststrap.Integrations
 
                 using var reader = new StreamReader(context.Request.InputStream, Encoding.UTF8);
                 string json = reader.ReadToEnd();
-                var message = JsonSerializer.Deserialize<StudioMessage>(json);
+                var message = JsonHelper.Deserialize<StudioMessage>(json);
 
                 if (message != null)
                 {
                     if (message.StudioCommand == "SetRichPresence")
                     {
-                        var richPresenceData = message.Data.Deserialize<StudioRichPresence>();
+                        var richPresenceData = JsonHelper.Deserialize<StudioRichPresence>(message.Data);
                         if (richPresenceData != null)
-                            message.Data = JsonSerializer.SerializeToElement(richPresenceData);
+                            message.Data = JsonHelper.SerializeToElement(richPresenceData);
                     }
 
                     OnStudioRPCMessage?.Invoke(this, message);
@@ -685,7 +734,7 @@ namespace Froststrap.Integrations
                 }
 
                 string json = File.ReadAllText(GameHistoryCachePath);
-                var gameHistory = JsonSerializer.Deserialize<List<GameHistoryEntry>>(json, _loadOptions);
+                var gameHistory = JsonHelper.Deserialize<List<GameHistoryEntry>>(json, _loadOptions);
 
                 if (gameHistory != null)
                 {
@@ -786,7 +835,7 @@ namespace Froststrap.Integrations
                                    })]
                     })];
 
-                string json = JsonSerializer.Serialize(gameHistory, _saveOptions);
+                string json = JsonHelper.Serialize(gameHistory, _saveOptions);
                 File.WriteAllText(GameHistoryCachePath, json);
 
                 App.Logger.Info($"Saved {gameHistory.Count} games (max 10 servers each) to cache");
@@ -802,8 +851,7 @@ namespace Froststrap.Integrations
             IsDisposed = true;
             if (InRobloxStudio)
                 StopHTTPServer();
-            _httpCancellationTokenSource?.Dispose();
-            GC.SuppressFinalize(this);
+            _httpCancellationTokenSource.Dispose();
         }
     }
 }

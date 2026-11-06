@@ -221,7 +221,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 NumberStyles.Integer, CultureInfo.InvariantCulture, out var v) ? v : 1;
             set
             {
-                App.GlobalSettings.SetPreset("Audio.MasterVolumeStudio",
+                App.GlobalSettings.SetPreset("Rendering.SavedQualityLevel",
                     value.ToString(CultureInfo.InvariantCulture));
                 OnPropertyChanged(nameof(GraphicsQuality));
             }
@@ -286,9 +286,9 @@ namespace Froststrap.UI.ViewModels.Settings
         }
         public static double PartyVoiceVolume
         {
-            get => double.TryParse(App.GlobalSettings.GetPreset("Audio.PartyChatVolume"),
+            get => double.TryParse(App.GlobalSettings.GetPreset("Audio.PartyVoiceVolume"),
                 NumberStyles.Float, CultureInfo.InvariantCulture, out var v) ? v : 1.0;
-            set => App.GlobalSettings.SetPreset("Audio.PartyChatVolume",
+            set => App.GlobalSettings.SetPreset("Audio.PartyVoiceVolume",
                 value.ToString(CultureInfo.InvariantCulture));
         }
         public static double VoiceChatVolume
@@ -299,10 +299,10 @@ namespace Froststrap.UI.ViewModels.Settings
                 value.ToString(CultureInfo.InvariantCulture));
         }
 
-        public static int MouseSensitivity
+        public static double MouseSensitivity
         {
-            get => int.TryParse(App.GlobalSettings.GetPreset("User.MouseSensitivity"),
-                NumberStyles.Integer, CultureInfo.InvariantCulture, out var v) ? v : 1;
+            get => double.TryParse(App.GlobalSettings.GetPreset("User.MouseSensitivity"),
+                NumberStyles.Float, CultureInfo.InvariantCulture, out var v) ? v : 1.0;
             set => App.GlobalSettings.SetPreset("User.MouseSensitivity",
                 value.ToString(CultureInfo.InvariantCulture));
         }
@@ -368,7 +368,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public int UITransparency
         {
-        
+
             get => int.TryParse(App.GlobalSettings.GetPreset("UI.Transparency"),
                 NumberStyles.Integer, CultureInfo.InvariantCulture, out var v) ? v : 1;
             set

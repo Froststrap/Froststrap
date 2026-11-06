@@ -24,30 +24,69 @@ namespace Froststrap.UI
         private DateTime _lastClickTime = DateTime.MinValue;
         private const int DoubleClickThresholdMs = 300;
 
+        private static uint RandomSerial()
+        {
+            var bytes = new byte[4];
+            System.Security.Cryptography.RandomNumberGenerator.Fill(bytes);
+            return BitConverter.ToUInt32(bytes, 0) | 1u;
+        }
+
         public NotifyIconWrapper(Watcher watcher)
         {
 #if __APPLE__
             if (App.Settings.Prop.LaunchWithVirtualDisplay) Dispatcher.UIThread.Post(() =>
             {
                 App.Logger.Debug("Starting Virtual display");
+                void InitAndStart(uint serial) => Froststrap.Backend.VirtualDisplay.Initialize(
+                    App.Settings.Prop.VirtualDisplayName,
+                    App.Settings.Prop.VirtualDisplayWidth,
+                    App.Settings.Prop.VirtualDisplayHeight,
+                    App.Settings.Prop.VirtualDisplayHzModes.Length > 0 ? App.Settings.Prop.VirtualDisplayHzModes : [60.0],
+                    serial
+                );
+
+                InitAndStart(App.Settings.Prop.VirtualDisplaySerial);
+
+                var result = Froststrap.Backend.VirtualDisplay.Start();
+                if (result != -2) return;
+
+                App.Logger.Warn("Virtual display identity rejected, rotating serial");
+
+                var rotated = RandomSerial();
+                App.Settings.Prop.VirtualDisplaySerial = rotated;
+
+                InitAndStart(rotated);
                 Froststrap.Backend.VirtualDisplay.Start();
             });
 #endif
-            App.Logger.Info("Initializing Avalonia TrayIcon");
+            App.Logger.Info("Initializing TrayIcon");
 
             _watcher = watcher;
             _menuContainer = new MenuContainer(_watcher);
 
             var nativeMenu = NativeMenu.GetMenu(_menuContainer);
 
+            var iconUri = new Uri("avares://Froststrap/Froststrap.ico");
+            long iconBytes;
+            using (var s = AssetLoader.Open(iconUri)) iconBytes = s.Length;
+
             _trayIcon = new TrayIcon
             {
-                Icon = new WindowIcon(AssetLoader.Open(new Uri("avares://Froststrap/FroststrapTray.ico"))),
+                Icon = new WindowIcon(AssetLoader.Open(iconUri)),
                 ToolTipText = "Froststrap",
                 Menu = nativeMenu
             };
 
+            App.Logger.Debug(
+                $"Tray: uiThread={Dispatcher.UIThread.CheckAccess()} " +
+                $"iconBytes={iconBytes} " +
+                $"menu={(_trayIcon.Menu is null ? "null" : "set")} " +
+                $"exporter={(_trayIcon.NativeMenuExporter is null ? "null" : "set")} " +
+                $"iconsCollection={(TrayIcon.GetIcons(Application.Current!) is null ? "null" : "set")} " +
+                $"visible={_trayIcon.IsVisible}");
+
             _trayIcon.Clicked += OnTrayIconClicked;
+            App.Logger.Debug("Subscribed _trayIcon.Clicked to OnTrayIconClicked");
 
             if (ActivityWatcher is not null && App.Settings.Prop.ShowServerDetails)
             {
@@ -57,21 +96,21 @@ namespace Froststrap.UI
                     ActivityWatcher.OnGameJoin += ShowNotification;
             }
 
-            TrayIcon.GetIcons(Application.Current!)?.Add(_trayIcon);
+            var app = Application.Current!;
+            var icons = TrayIcon.GetIcons(app);
+            if (icons is null)
+            {
+                icons = [];
+                TrayIcon.SetIcons(app, icons);
+            }
+            icons.Add(_trayIcon);
         }
 
-
-        // On macos simply clicking the icon instantly opens the menu so double click action isnt possible
         private void OnTrayIconClicked(object? sender, EventArgs e)
         {
-            if (OperatingSystem.IsMacOS())
+            if (!OperatingSystem.IsWindows())
                 return;
 
-            HandleWindowsDoubleClickLogic();
-        }
-
-        private void HandleWindowsDoubleClickLogic()
-        {
             DateTime now = DateTime.Now;
             double elapsed = (now - _lastClickTime).TotalMilliseconds;
 
@@ -178,8 +217,12 @@ namespace Froststrap.UI
             _isDisposed = true;
 
 #if __APPLE__
-            App.Logger.Debug("Exiting Virtual Display (if there is one)");
-            Froststrap.Backend.VirtualDisplay.End();
+            var vdr = Froststrap.Backend.VirtualDisplay.Running();
+            App.Logger.Info($"Virtual Display result = {vdr}");
+            if (vdr) {
+                App.Logger.Debug("Exiting Virtual Display");
+                Froststrap.Backend.VirtualDisplay.End();
+            }
 #endif
             App.Logger.Info("Cleaning up TrayIcon and MenuContainer");
 

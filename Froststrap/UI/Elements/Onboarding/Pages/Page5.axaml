@@ -20,7 +20,7 @@ SPDX-License-Identifier: MPL-2.0
              x:DataType="vm:Page5ViewModel">
 
     <ScrollViewer>
-        <StackPanel Margin="8">
+        <StackPanel Margin="14">
             <StackPanel Orientation="Vertical" Spacing="8" HorizontalAlignment="Center" Margin="0,0,0,12">
                 <ic:Lucide x:Name="HeaderIcon"
                            Icon="Link2"
@@ -63,28 +63,28 @@ SPDX-License-Identifier: MPL-2.0
                     </controls:OptionControl>
                 </Grid>
 
-                <Separator Margin="0,16,0,12" />
+                <Border Height="8" />
 
                 <TextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="{x:Static resources:Strings.Menu_Shortcuts_Function_Description}" TextAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,8" />
 
                 <Grid ColumnDefinitions="*,*,*">
                     <controls:OptionControl
                         Grid.Column="0"
-                        Margin="0,0,2,0"
+                        Margin="0,0,4,0"
                         Header="{x:Static resources:Strings.LaunchMenu_LaunchRoblox}">
                         <ToggleSwitch IsChecked="{Binding PlayerIconTask.NewState, Mode=TwoWay}" />
                     </controls:OptionControl>
 
                     <controls:OptionControl
                         Grid.Column="1"
-                        Margin="2,0,2,0"
+                        Margin="4,0,4,0"
                         Header="{x:Static resources:Strings.LaunchMenu_LaunchRobloxStudio}">
                         <ToggleSwitch IsChecked="{Binding StudioIconTask.NewState, Mode=TwoWay}" />
                     </controls:OptionControl>
 
                     <controls:OptionControl
                         Grid.Column="2"
-                        Margin="2,0,2,0"
+                        Margin="4,0,4,0"
                         Header="{x:Static resources:Strings.Menu_Title}">
                         <ToggleSwitch IsChecked="{Binding SettingsIconTask.NewState, Mode=TwoWay}" />
                     </controls:OptionControl>

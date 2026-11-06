@@ -3642,6 +3642,18 @@ namespace Froststrap.Resources {
             }
         }
 
+        public static string Menu_Appearance_ShowInfo_Title {
+            get {
+                return ResourceManager.GetString("Menu.Appearance.ShowInfo.Title", resourceCulture);
+            }
+        }
+
+        public static string Menu_Appearance_ShowInfo_Description {
+            get {
+                return ResourceManager.GetString("Menu.Appearance.ShowInfo.Description", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Failed to delete custom theme {0}: {1}.
         /// </summary>
@@ -3987,6 +3999,33 @@ namespace Froststrap.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Found new version: {0}. Would you like to update and restart?.
+        /// </summary>
+        public static string Menu_Deployment_CheckForUpdates_Found {
+            get {
+                return ResourceManager.GetString("Menu.Deployment.CheckForUpdates.Found", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to What's new in {0}.
+        /// </summary>
+        public static string Menu_Deployment_ReleaseNotes_Title {
+            get {
+                return ResourceManager.GetString("Menu.Deployment.ReleaseNotes.Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Close.
+        /// </summary>
+        public static string Menu_Deployment_ReleaseNotes_Close {
+            get {
+                return ResourceManager.GetString("Menu.Deployment.ReleaseNotes.Close", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Update Roblox in the background instead of waiting. Not recommended for slow networks. At least 3GB of free storage space is required for this feature to work..
         /// </summary>
         public static string Menu_Behaviour_BackgroundUpdates_Description {
@@ -4064,6 +4103,33 @@ namespace Froststrap.Resources {
         public static string Menu_Behaviour_EnableVirtualDisplay_Title {
             get {
                 return ResourceManager.GetString("Menu.Behaviour.EnableVirtualDisplay.Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Enter a refresh rate in Hz and add it to the list of modes the Virtual Display offers.
+        /// </summary>
+        public static string Menu_Behaviour_VirtualDisplayHz_Description {
+            get {
+                return ResourceManager.GetString("Menu.Behaviour.VirtualDisplayHz.Description", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to e.g. 144.
+        /// </summary>
+        public static string Menu_Behaviour_VirtualDisplayHz_Placeholder {
+            get {
+                return ResourceManager.GetString("Menu.Behaviour.VirtualDisplayHz.Placeholder", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Refresh rates.
+        /// </summary>
+        public static string Menu_Behaviour_VirtualDisplayHz_Title {
+            get {
+                return ResourceManager.GetString("Menu.Behaviour.VirtualDisplayHz.Title", resourceCulture);
             }
         }
 
@@ -4995,6 +5061,15 @@ namespace Froststrap.Resources {
         public static string Menu_Dialog_QuickSignIn_Title {
             get {
                 return ResourceManager.GetString("Menu.Dialog.QuickSignIn.Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Sign in to Roblox.
+        /// </summary>
+        public static string Menu_BrowserLogin_Title {
+            get {
+                return ResourceManager.GetString("Menu.BrowserLogin.Title", resourceCulture);
             }
         }
 
@@ -8656,6 +8731,15 @@ namespace Froststrap.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Refresh.
+        /// </summary>
+        public static string Menu_QuickPlay_Refresh {
+            get {
+                return ResourceManager.GetString("Menu.QuickPlay.Refresh", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Rejoin Last Server.
         /// </summary>
         public static string Menu_QuickPlay_RejoinLastServer {
@@ -9576,6 +9660,213 @@ namespace Froststrap.Resources {
         public static string Update_NoPackageAvailable {
             get {
                 return ResourceManager.GetString("Update.NoPackageAvailable", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Join.
+        /// </summary>
+        public static string Menu_Join {
+            get {
+                return ResourceManager.GetString("Menu.Join", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Froststrap Joiner.
+        /// </summary>
+        public static string Joiner_Title {
+            get {
+                return ResourceManager.GetString("Joiner.Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Paste a Roblox link and press Enter:.
+        /// </summary>
+        public static string Joiner_PasteInstructions {
+            get {
+                return ResourceManager.GetString("Joiner.PasteInstructions", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Join.
+        /// </summary>
+        public static string Joiner_Join {
+            get {
+                return ResourceManager.GetString("Joiner.Join", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Ready. Paste a link to join instantly..
+        /// </summary>
+        public static string Joiner_Ready {
+            get {
+                return ResourceManager.GetString("Joiner.Ready", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid link. Paste a Roblox link..
+        /// </summary>
+        public static string Joiner_InvalidLink {
+            get {
+                return ResourceManager.GetString("Joiner.InvalidLink", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Joining....
+        /// </summary>
+        public static string Joiner_Joining {
+            get {
+                return ResourceManager.GetString("Joiner.Joining", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Resolving link...
+        /// </summary>
+        public static string Joiner_Resolving {
+            get {
+                return ResourceManager.GetString("Joiner.Resolving", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Join instantly on paste.
+        /// </summary>
+        public static string Joiner_JoinInstantlyOnPaste {
+            get {
+                return ResourceManager.GetString("Joiner.JoinInstantlyOnPaste", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Close after joining.
+        /// </summary>
+        public static string Joiner_CloseAfterJoining {
+            get {
+                return ResourceManager.GetString("Joiner.CloseAfterJoining", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Froststrap settings.
+        /// </summary>
+        public static string Joiner_Settings {
+            get {
+                return ResourceManager.GetString("Joiner.Settings", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Logs.
+        /// </summary>
+        public static string Menu_Diagnostics_Logs_Title {
+            get {
+                return ResourceManager.GetString("Menu.Diagnostics.Logs.Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Froststrap logs.
+        /// </summary>
+        public static string Menu_Diagnostics_FroststrapLogs_Title {
+            get {
+                return ResourceManager.GetString("Menu.Diagnostics.FroststrapLogs.Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Open the folder containing Froststrap's log files..
+        /// </summary>
+        public static string Menu_Diagnostics_FroststrapLogs_Description {
+            get {
+                return ResourceManager.GetString("Menu.Diagnostics.FroststrapLogs.Description", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Roblox logs.
+        /// </summary>
+        public static string Menu_Diagnostics_RobloxLogs_Title {
+            get {
+                return ResourceManager.GetString("Menu.Diagnostics.RobloxLogs.Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Open the folder containing Roblox's log files..
+        /// </summary>
+        public static string Menu_Diagnostics_RobloxLogs_Description {
+            get {
+                return ResourceManager.GetString("Menu.Diagnostics.RobloxLogs.Description", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Screenshots.
+        /// </summary>
+        public static string Menu_Diagnostics_Screenshot_Title {
+            get {
+                return ResourceManager.GetString("Menu.Diagnostics.Screenshot.Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Settings window screenshot.
+        /// </summary>
+        public static string Menu_Diagnostics_Screenshot_Header {
+            get {
+                return ResourceManager.GetString("Menu.Diagnostics.Screenshot.Header", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Save an image of the settings window without the window frame..
+        /// </summary>
+        public static string Menu_Diagnostics_Screenshot_Description {
+            get {
+                return ResourceManager.GetString("Menu.Diagnostics.Screenshot.Description", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Take screenshot.
+        /// </summary>
+        public static string Menu_Diagnostics_Screenshot_Button {
+            get {
+                return ResourceManager.GetString("Menu.Diagnostics.Screenshot.Button", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Open the settings window first..
+        /// </summary>
+        public static string Menu_Diagnostics_Screenshot_NotOpen {
+            get {
+                return ResourceManager.GetString("Menu.Diagnostics.Screenshot.NotOpen", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Screenshot saved..
+        /// </summary>
+        public static string Menu_Diagnostics_Screenshot_Saved {
+            get {
+                return ResourceManager.GetString("Menu.Diagnostics.Screenshot.Saved", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to save the screenshot..
+        /// </summary>
+        public static string Menu_Diagnostics_Screenshot_Failed {
+            get {
+                return ResourceManager.GetString("Menu.Diagnostics.Screenshot.Failed", resourceCulture);
             }
         }
     }

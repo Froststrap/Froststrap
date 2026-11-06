@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: MPL-2.0
 
 using Froststrap.Enums.GBSPresets;
-using System.Globalization;
 using System.Xml.Linq;
 using System.Xml.XPath;
 
@@ -64,10 +63,9 @@ internal class GBSEditor
     };
 
     private static readonly Regex PathTailRegex = new(
-        @"^(?<parent>.+)/(?<type>[A-Za-z0-9_]+)\[@name='(?<name>[A-Za-z0-9_]+)'\]$",
-        RegexOptions.Compiled);
+        @"^(?<parent>.+)/(?<type>[A-Za-z0-9_]+)\[@name='(?<name>[A-Za-z0-9_]+)'\]$");
 
-    private static readonly Regex ValidSettingName = new(@"^[A-Za-z0-9_]+$", RegexOptions.Compiled);
+    private static readonly Regex ValidSettingName = new(@"^[A-Za-z0-9_]+$");
 
     public static IReadOnlyDictionary<FontSize, string?> FontSizes => new Dictionary<FontSize, string?>
     {
@@ -395,9 +393,9 @@ internal class GBSEditor
         Document = document;
         Loaded = true;
         previousReadOnlyState = GetReadOnly();
-        _savedHash = ComputeHash();
 
         RemoveLegacyJunk();
+        _savedHash = ComputeHash();
     }
 
     private bool HasExpectedStructure(XDocument document)

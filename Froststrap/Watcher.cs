@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-using Froststrap.AppData;
 using Froststrap.Integrations;
 
 namespace Froststrap
@@ -32,7 +31,9 @@ namespace Froststrap
 
         public static int? ProcessId { get; private set; }
 
-        public Watcher()
+        public bool IsActive => _lock.IsAcquired;
+
+        public Watcher(WatcherData watcherData)
         {
             if (!_lock.IsAcquired)
             {
@@ -40,29 +41,7 @@ namespace Froststrap
                 return;
             }
 
-            string? watcherDataArg = App.LaunchSettings.WatcherFlag.Data;
-
-            if (String.IsNullOrEmpty(watcherDataArg))
-            {
-#if DEBUG
-                string path = new RobloxPlayerData().ExecutablePath;
-                if (!File.Exists(path))
-                    throw new InvalidOperationException("Roblox player has not been installed");
-
-                using var gameClientProcess = Process.Start(path);
-
-                _watcherData = new() { ProcessId = gameClientProcess.Id, LaunchMode = LaunchMode.Player };
-#else
-                throw new InvalidOperationException("Watcher data not specified");
-#endif
-            }
-            else
-            {
-                _watcherData = JsonSerializer.Deserialize<WatcherData>(Encoding.UTF8.GetString(Convert.FromBase64String(watcherDataArg)));
-            }
-
-            if (_watcherData is null)
-                throw new InvalidOperationException("Watcher data is invalid");
+            _watcherData = watcherData;
 
             ProcessId = _watcherData.ProcessId;
 
@@ -125,7 +104,26 @@ namespace Froststrap
                         {
                             foreach (var crashProc in Process.GetProcessesByName("RobloxCrashHandler"))
                             {
-                                try { crashProc.Kill(); } catch { }
+                                try
+                                {
+                                    App.Logger.Info($"Found crash handler: {crashProc.ProcessName} (PID {crashProc.Id})");
+
+                                    crashProc.Kill();
+                                            await Task.WhenAny(
+                                        crashProc.WaitForExitAsync(),
+                                        Task.Delay(3000)
+                                    );
+
+                                    App.Logger.Info(
+                                        crashProc.HasExited
+                                            ? $"Crash handler {crashProc.Id} exited successfully"
+                                            : $"Crash handler {crashProc.Id} is still running"
+                                    );
+                                }
+                                catch (Exception ex)
+                                {
+                                    App.Logger.Error($"Failed to close crash handler {crashProc.Id}: {ex}");
+                                }
                             }
                         }
                     }
@@ -301,6 +299,52 @@ namespace Froststrap
             }
         }
 
+        private static bool IsStudioProcess(Process process)
+        {
+            try
+            {
+                string expected = Path.GetFileNameWithoutExtension(App.StudioData.ProcessName);
+                string actual = Path.GetFileNameWithoutExtension(process.ProcessName);
+
+                if (string.Equals(actual, expected, StringComparison.OrdinalIgnoreCase))
+                    return true;
+
+                if (OperatingSystem.IsMacOS() && string.Equals(actual, "RobloxStudio", StringComparison.OrdinalIgnoreCase))
+                    return true;
+
+                return OperatingSystem.IsLinux()
+                    && actual.StartsWith("RobloxStudio", StringComparison.OrdinalIgnoreCase);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private static int GetNewestStudioProcessId(IEnumerable<Process> processes)
+        {
+            int newestPid = 0;
+            DateTime newestStartTime = DateTime.MinValue;
+
+            foreach (var process in processes)
+            {
+                if (!IsStudioProcess(process))
+                    continue;
+
+                try
+                {
+                    if (process.StartTime > newestStartTime)
+                    {
+                        newestStartTime = process.StartTime;
+                        newestPid = process.Id;
+                    }
+                }
+                catch (Exception) { }
+            }
+
+            return newestPid;
+        }
+
         public async Task Run()
         {
             if (!_lock.IsAcquired || _watcherData is null)
@@ -309,22 +353,44 @@ namespace Froststrap
             ActivityWatcher?.Start();
             WindowManipulation?.Start();
 
+            bool isStudio = _watcherData.LaunchMode == LaunchMode.Studio || _watcherData.LaunchMode == LaunchMode.StudioAuth;
+
             try
             {
                 while (!_cancellationTokenSource.Token.IsCancellationRequested)
                 {
-                    var processExists = Utility.Processes.GetProcessesSafe().Any(x => x.Id == _watcherData.ProcessId);
+                    var processes = Utility.Processes.GetProcessesSafe();
+                    var processExists = processes.Any(x => x.Id == _watcherData.ProcessId);
 
                     if (!processExists && _watcherData.LaunchMode == LaunchMode.Player)
                     {
                         if (OperatingSystem.IsLinux())
-                            processExists = Utility.Processes.GetProcessesSafe().Any(x => x.ProcessName == "sober");
+                            processExists = processes.Any(x => x.ProcessName == "sober");
                         else if (OperatingSystem.IsMacOS())
-                            processExists = Utility.Processes.GetProcessesSafe().Any(x => x.ProcessName == "RobloxPlayer");
+                            processExists = processes.Any(x => x.ProcessName == "RobloxPlayer");
                     }
 
-                    if (!processExists && (_watcherData.LaunchMode == LaunchMode.Studio || _watcherData.LaunchMode == LaunchMode.StudioAuth) && OperatingSystem.IsMacOS())
-                        processExists = Utility.Processes.GetProcessesSafe().Any(x => x.ProcessName == "RobloxStudio");
+                    if (isStudio)
+                    {
+                        var studioProcesses = processes.Where(IsStudioProcess).ToList();
+
+                        if (studioProcesses.Count > 0)
+                        {
+                            processExists = true;
+
+                            if (!studioProcesses.Any(x => x.Id == _watcherData.ProcessId))
+                            {
+                                int newestStudioPid = GetNewestStudioProcessId(studioProcesses);
+
+                                if (newestStudioPid != 0)
+                                {
+                                    App.Logger.Info($"Studio process {_watcherData.ProcessId} is no longer running, now tracking PID {newestStudioPid}");
+                                    _watcherData.ProcessId = newestStudioPid;
+                                    ProcessId = newestStudioPid;
+                                }
+                            }
+                        }
+                    }
 
                     if (!processExists) break;
 
@@ -347,7 +413,7 @@ namespace Froststrap
             }
 
             if (App.LaunchSettings.TestModeFlag.Active)
-                Process.Start(Paths.Process, "-settings -testmode");
+                Process.Start(Paths.Process, "--settings --test-mode");
         }
 
         public void Dispose()

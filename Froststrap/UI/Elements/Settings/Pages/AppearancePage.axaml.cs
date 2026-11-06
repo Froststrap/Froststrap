@@ -4,7 +4,6 @@
 
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
 using Froststrap.UI.ViewModels.Settings;
 
 namespace Froststrap.UI.Elements.Settings.Pages;
@@ -42,13 +41,7 @@ internal partial class AppearancePage : UserControl
             if (this.VisualRoot is MainWindow mainWindow &&
                 mainWindow.DataContext is MainWindowViewModel mainWindowViewModel)
             {
-                mainWindowViewModel.SaveSettings();
-            }
-
-            Process.Start(Paths.Process, "-menu");
-            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-            {
-                desktop.Shutdown();
+                mainWindowViewModel.RestartApp();
             }
         }
     }

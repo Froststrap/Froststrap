@@ -1,13 +1,13 @@
-﻿// SPDX-FileCopyrightText: 2026 Froststrap
+// SPDX-FileCopyrightText: 2026 Froststrap
 //
 // SPDX-License-Identifier: MPL-2.0
 
+using System.Collections.ObjectModel;
 using Avalonia.Controls;
 using Avalonia.Input.Platform;
 using Avalonia.Interactivity;
+using Avalonia.Platform;
 using Froststrap.UI.Elements.Base;
-using System.Collections.ObjectModel;
-using System.Reflection;
 
 namespace Froststrap.UI.Elements.Dialogs
 {
@@ -17,7 +17,6 @@ namespace Froststrap.UI.Elements.Dialogs
 
         private static readonly JsonSerializerOptions _jsonOptions = new() { WriteIndented = true };
         private readonly ObservableCollection<string> _placeIds = [];
-        private string? _currentProfile;
         private bool _isUpdatingPlaceIds;
         private bool _isRemoving;
 
@@ -110,7 +109,6 @@ namespace Froststrap.UI.Elements.Dialogs
             try
             {
                 string? selectedProfile = PlaceProfile.SelectedItem as string;
-                _currentProfile = selectedProfile;
 
                 bool hasProfiles = PlaceProfile.Items.Count > 0;
                 bool hasProfileSelected = selectedProfile != null;
@@ -309,7 +307,7 @@ namespace Froststrap.UI.Elements.Dialogs
             try
             {
                 string jsonText = File.ReadAllText(profilePath);
-                var flags = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonText);
+                var flags = JsonHelper.Deserialize<Dictionary<string, object>>(jsonText);
 
                 if (flags == null)
                 {
@@ -386,7 +384,7 @@ namespace Froststrap.UI.Elements.Dialogs
                     return;
                 }
 
-                string json = JsonSerializer.Serialize(currentFlags, _jsonOptions);
+                string json = JsonHelper.Serialize(currentFlags, _jsonOptions);
 
                 string profilesDirectory = Path.Combine(Paths.Base, Paths.SavedFlagProfiles);
                 string profilePath = Path.Combine(profilesDirectory, selectedProfile);
@@ -405,15 +403,10 @@ namespace Froststrap.UI.Elements.Dialogs
         private void LoadPresetProfiles()
         {
             LoadPresetProfile.Items.Clear();
-
-            var assembly = Assembly.GetExecutingAssembly();
-            string resourcePrefix = "Froststrap.Resources.PresetFlags.";
-            var resourceNames = assembly.GetManifestResourceNames();
-            var profiles = resourceNames.Where(r => r.StartsWith(resourcePrefix, StringComparison.Ordinal));
-
-            foreach (var resourceName in profiles)
+            var presetAssets = AssetLoader.GetAssets(new Uri("avares://Froststrap/Resources/PresetFlags/"), null);
+            foreach (var assetUri in presetAssets)
             {
-                string profileName = resourceName[resourcePrefix.Length..];
+                string profileName = Path.GetFileName(assetUri.AbsolutePath);
                 LoadPresetProfile.Items.Add(profileName);
             }
         }
@@ -461,7 +454,7 @@ namespace Froststrap.UI.Elements.Dialogs
             {
                 case 0:
                     if (LoadPresetProfile.SelectedItem is string selectedPreset)
-                        App.FastFlags.LoadPresetProfile(selectedPreset, clearFlags: true);
+                        _ = App.FastFlags.LoadPresetProfile(selectedPreset, clearFlags: true);
                     break;
                 case 1:
                     break;

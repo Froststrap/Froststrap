@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+using Avalonia;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.UI.Elements.Settings.Pages;
@@ -24,6 +25,24 @@ namespace Froststrap.UI.ViewModels.Settings
 
     internal class MainWindowViewModel : ObservableObject
     {
+        private bool _isNotLinux = !OperatingSystem.IsLinux();
+        public bool IsNotLinux { get => _isNotLinux; }
+        private bool _isNotMacOS = !OperatingSystem.IsMacOS();
+        public bool IsNotMacOS { get => _isNotMacOS; }
+
+        private int _titlebarSpaceHeight = OperatingSystem.IsMacOS() ? 52 : 40;
+        public int TitlebarSpaceHeight { get => _titlebarSpaceHeight; }
+        private Thickness _titlebarPadding = OperatingSystem.IsMacOS() ? new Thickness(95,0,12,0) : OperatingSystem.IsLinux() ? new Thickness(8, 0) : new Thickness(8, 0, 140, 0);
+        public Thickness TitlebarPadding { get => _titlebarPadding; }
+        private Thickness _openSidebarTitleMargin = OperatingSystem.IsMacOS() ? new Thickness(56,0,0,0) : new Thickness(155,0,0,0);
+        public Thickness OpenSidebarTitleMargin { get => _openSidebarTitleMargin; }
+        private int _iconButtonSize = OperatingSystem.IsMacOS() ? 28 : 24;
+        public int IconButtonSize { get => _iconButtonSize; }
+        private int _iconButtonIconSize = OperatingSystem.IsMacOS() ? 14 : 14;
+        public int IconButtonIconSize { get => _iconButtonIconSize; }
+        private int _titlebarTextSize = OperatingSystem.IsMacOS() ? 18 : 13;
+        public int TitlebarTextSize { get => _titlebarTextSize; }
+
         private static readonly Dictionary<string, LucideIconNames> _pageIconMap = new()
         {
             ["integrations"] = LucideIconNames.Plus,
@@ -58,13 +77,30 @@ namespace Froststrap.UI.ViewModels.Settings
             set => SetProperty(ref _currentPageIcon, value);
         }
 
-        public static bool HasUnsavedChanges =>
-            App.Settings.HasUnsavedChanges ||
-            App.State.HasUnsavedChanges ||
-            App.FastFlags.HasUnsavedChanges ||
-            (OperatingSystem.IsLinux() && App.SoberSettings.HasUnsavedChanges) ||
-            App.GlobalSettings.HasUnsavedChanges ||
-            App.PendingSettingTasks.Count > 0;
+        public static bool HasUnsavedChanges
+        {
+            get
+            {
+                bool dirty = false;
+                void Check(string name, bool isDirty, Func<string>? detail = null)
+                {
+                    if (!isDirty) return;
+                    dirty = true;
+                    App.Logger.Info($"Unsaved changes in {name}: {detail?.Invoke()}");
+                }
+
+                Check("Settings", App.Settings.HasUnsavedChanges, App.Settings.DescribeChanges);
+                Check("State", App.State.HasUnsavedChanges, App.State.DescribeChanges);
+                Check("FastFlags", App.FastFlags.HasUnsavedChanges, App.FastFlags.DescribeChanges);
+                if (OperatingSystem.IsLinux())
+                    Check("SoberSettings", App.SoberSettings.HasUnsavedChanges);
+                Check("GlobalSettings", App.GlobalSettings.HasUnsavedChanges);
+                Check("PendingSettingTasks", App.PendingSettingTasks.Count > 0,
+                    () => string.Join(", ", App.PendingSettingTasks.Keys));
+
+                return dirty;
+            }
+        }
 
         private LaunchMode _selectedLaunchMode = LaunchMode.Player;
 
@@ -134,7 +170,6 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public EventHandler? RequestSaveNoticeEvent;
         public EventHandler? RequestCloseWindowEvent;
-        public event EventHandler? SettingsSaved;
         public bool GBSEnabled = App.GlobalSettings.Loaded;
 
         public NextAction CloseAction { get; private set; } = NextAction.Terminate;
@@ -308,7 +343,7 @@ namespace Froststrap.UI.ViewModels.Settings
         private void OpenAbout()
         {
             if (App.AboutOpen) return;
-            
+
             App.FrostRPC?.SetDialog("About");
             new Elements.About.MainWindow().Show();
             App.FrostRPC?.ClearDialog();
@@ -351,19 +386,7 @@ namespace Froststrap.UI.ViewModels.Settings
         public void SaveAndLaunchSettings()
         {
             SaveSettings();
-
-            if (!App.LaunchSettings.TestModeFlag.Active)
-            {
-                string arg = SelectedLaunchMode == LaunchMode.Player ? "-player" : "-studio";
-                Process.Start(Paths.Process, arg);
-            }
-            else
-            {
-                CloseAction = SelectedLaunchMode == LaunchMode.Player
-                    ? NextAction.LaunchRoblox
-                    : NextAction.LaunchRobloxStudio;
-                CloseWindow();
-            }
+            LaunchHandler.ProcessNextAction(LaunchEntry.ToNextAction(SelectedLaunchMode));
         }
 
         public LaunchMode SelectedLaunchMode
@@ -385,14 +408,9 @@ namespace Froststrap.UI.ViewModels.Settings
             get
             {
                 if (OperatingSystem.IsLinux())
-                {
-                    var clientPath = Path.Combine(Paths.Versions, "Sober", "data", "sober", "packages", "x86_64", "com.roblox.client");
-                    return Directory.Exists(clientPath) && Directory.EnumerateFiles(clientPath, "*", SearchOption.AllDirectories).Any();
-                }
+                    return App.LinuxPlayerInstalled;
                 else
-                {
                     return App.IsPlayerInstalled;
-                }
             }
         }
 
@@ -419,20 +437,11 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        private async void RestartApp()
+        public void RestartApp()
         {
             SaveSettings();
-            SettingsSaved?.Invoke(this, EventArgs.Empty);
 
-            await Task.Delay(750);
-
-            var startInfo = new ProcessStartInfo(Environment.ProcessPath!)
-            {
-                Arguments = "-menu"
-            };
-
-            Process.Start(startInfo);
-            App.FrostRPC = null;
+            CloseAction = NextAction.LaunchSettings;
             CloseWindow();
         }
 

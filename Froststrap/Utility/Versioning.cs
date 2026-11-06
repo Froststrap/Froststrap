@@ -6,7 +6,8 @@ using Froststrap.AppData;
 
 namespace Froststrap.Utility;
 
-static class Versioning {
+static class Versioning
+{
     public static Version GetVersionFromString(string version)
     {
         if (version.StartsWith('v'))

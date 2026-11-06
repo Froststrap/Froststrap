@@ -1,4 +1,4 @@
-<!--
+﻿<!--
 SPDX-FileCopyrightText: 2026 Froststrap
 
 SPDX-License-Identifier: MPL-2.0
@@ -37,7 +37,7 @@ SPDX-License-Identifier: MPL-2.0
 
             <WrapPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,0">
                 <controls:IconButton Click="AddButton_Click" Icon="Plus" Content="{x:Static resources:Strings.Menu_FastFlagEditor_AddNew}" Margin="0,0,8,8" />
-                <controls:IconButton Click="DeleteButton_Click" Icon="Trash2" Classes="Danger" Content="{x:Static resources:Strings.Menu_FastFlagEditor_DeleteSelected}" Margin="0,0,8,8" x:Name="DeleteSelectedButton" IsEnabled="False" />
+                <controls:IconButton Click="DeleteButton_Click" Icon="Trash" Classes="Danger" Content="{x:Static resources:Strings.Menu_FastFlagEditor_DeleteSelected}" Margin="0,0,8,8" x:Name="DeleteSelectedButton" IsEnabled="False" />
                 <controls:IconButton Click="DeleteAllButton_Click" Icon="Trash" Content="{x:Static resources:Strings.Common_DeleteAll}" Margin="0,0,8,8" />
                 <controls:IconButton Click="CopyJSONButton_Click" Icon="Clipboard" Content="{x:Static resources:Strings.Common_CopyAll}" Margin="0,0,8,8" />
                 <controls:IconButton Click="ExportJSONButton_Click" Icon="ArrowRightFromLine" Content="{x:Static resources:Strings.Menu_FastFlagEditor_ExportJson}" Margin="0,0,8,8" />

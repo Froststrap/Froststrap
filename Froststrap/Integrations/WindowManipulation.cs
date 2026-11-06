@@ -10,7 +10,6 @@ namespace Froststrap.Integrations
 {
     internal class WindowManipulation : IDisposable
     {
-        private const string LOG_IDENT = "WindowManipulation";
         private const uint WINEVENT_OUTOFCONTEXT = 0x0;
         private const uint EVENT_OBJECT_NAMECHANGE = 0x800C;
         private const uint WM_SETICON = 0x0080;
@@ -31,13 +30,12 @@ namespace Froststrap.Integrations
         private bool _disposed;
 
         private string _currentTitle = "Roblox";
-        private string _gameTitle = "";
         private string _configuredTitle = "Roblox";
         private bool _inGame;
 
         public WindowManipulation(long robloxProcessId)
         {
-            App.Logger.Info(LOG_IDENT, $"Got Roblox PID {robloxProcessId}");
+            App.Logger.Info($"Got Roblox PID {robloxProcessId}");
 
             _robloxPID = unchecked((uint)robloxProcessId);
             _setTitleHook = SetWindowTitleHook;
@@ -51,7 +49,7 @@ namespace Froststrap.Integrations
             {
                 if (!await WaitForWindowAsync())
                 {
-                    App.Logger.Warn(LOG_IDENT, $"Timed out waiting for window handle for PID {_robloxPID}");
+                    App.Logger.Warn($"Timed out waiting for window handle for PID {_robloxPID}");
                     return;
                 }
 
@@ -67,7 +65,7 @@ namespace Froststrap.Integrations
 
         public void ApplyWindowModifications()
         {
-            App.Logger.Info(LOG_IDENT, "Applying window modifications");
+            App.Logger.Info("Applying window modifications");
 
             ApplyConfiguredIcon();
             ApplyConfiguredTitle();
@@ -78,7 +76,7 @@ namespace Froststrap.Integrations
             if (!HasWindow)
                 return;
 
-            App.Logger.Info(LOG_IDENT, "Applying configured Roblox icon");
+            App.Logger.Info("Applying configured Roblox icon");
 
             RobloxIcon robloxIcon = App.Settings.Prop.RobloxIcon;
 
@@ -108,13 +106,13 @@ namespace Froststrap.Integrations
 
             if (_inGame)
             {
-                App.Logger.Info(LOG_IDENT, "In-game, keeping current title instead of applying configured title.");
+                App.Logger.Info("In-game, keeping current title instead of applying configured title.");
                 return;
             }
 
             _currentTitle = _configuredTitle;
 
-            App.Logger.Info(LOG_IDENT, $"Applying configured Roblox title: {_configuredTitle}");
+            App.Logger.Info($"Applying configured Roblox title: {_configuredTitle}");
             PInvoke.SetWindowText(_hWnd, _configuredTitle);
 
             if (_configuredTitle != "Roblox")
@@ -147,11 +145,11 @@ namespace Froststrap.Integrations
                 PInvoke.SendMessage(_hWnd, WM_SETICON, new WPARAM(ICON_SMALL), new LPARAM((nint)smallCopy.Value));
                 PInvoke.SendMessage(_hWnd, WM_SETICON, new WPARAM(ICON_BIG), new LPARAM((nint)bigCopy.Value));
 
-                App.Logger.Info(LOG_IDENT, "Applied game icon to Roblox window");
+                App.Logger.Info("Applied game icon to Roblox window");
             }
             catch (Exception ex)
             {
-                App.Logger.Error(LOG_IDENT, $"Failed to apply game icon: {ex.Message}");
+                App.Logger.Error($"Failed to apply game icon: {ex.Message}");
             }
         }
 
@@ -161,21 +159,19 @@ namespace Froststrap.Integrations
                 return;
 
             _inGame = true;
-            _gameTitle = title;
             _currentTitle = title;
 
             EnsureTitleHook();
 
-            App.Logger.Info(LOG_IDENT, $"Applying game title to Roblox window: {title}");
+            App.Logger.Info($"Applying game title to Roblox window: {title}");
             PInvoke.SetWindowText(_hWnd, title);
         }
 
         public void ResetToConfigured()
         {
-            App.Logger.Info(LOG_IDENT, "Resetting Roblox window back to configured state");
+            App.Logger.Info("Resetting Roblox window back to configured state");
 
             _inGame = false;
-            _gameTitle = "";
 
             if (App.Settings.Prop.AutoChangeIcon)
                 ApplyConfiguredIcon();
@@ -193,7 +189,7 @@ namespace Froststrap.Integrations
                 if (TryGetWindowForPid((int)_robloxPID, out IntPtr handle))
                 {
                     _hWnd = new HWND(handle);
-                    App.Logger.Info(LOG_IDENT, $"Resolved window handle for PID {_robloxPID}: 0x{handle.ToInt64():X}");
+                    App.Logger.Info($"Resolved window handle for PID {_robloxPID}: 0x{handle.ToInt64():X}");
                     return true;
                 }
 
@@ -247,7 +243,7 @@ namespace Froststrap.Integrations
                     0,
                     WINEVENT_OUTOFCONTEXT);
 
-                App.Logger.Info(LOG_IDENT, "Title change hook installed.");
+                App.Logger.Info("Title change hook installed.");
             });
         }
 
@@ -265,7 +261,7 @@ namespace Froststrap.Integrations
             _titleHook = null;
             _titleHookInstalled = false;
 
-            App.Logger.Info(LOG_IDENT, "Title change hook removed.");
+            App.Logger.Info("Title change hook removed.");
         }
 
         private void SetWindowTitleHook(
@@ -290,7 +286,7 @@ namespace Froststrap.Integrations
 
             if (newTitle != _currentTitle)
             {
-                App.Logger.Info(LOG_IDENT, $"Reverting Roblox title back to: {_currentTitle}");
+                App.Logger.Info($"Reverting Roblox title back to: {_currentTitle}");
                 PInvoke.SetWindowText(_hWnd, _currentTitle);
             }
         }

@@ -35,7 +35,6 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
         };
 
         private DataGrid? _dataGrid;
-        private TextBox? _searchTextBox;
 
         public new event PropertyChangedEventHandler? PropertyChanged;
 
@@ -62,7 +61,6 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
         {
             base.OnLoaded(e);
             _dataGrid = this.FindControl<DataGrid>("DataGrid");
-            _searchTextBox = this.FindControl<TextBox>("SearchTextBox");
 
             this.Focus();
 
@@ -289,7 +287,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
 
             try
             {
-                list = JsonSerializer.Deserialize<Dictionary<string, object>>(json, _jsonOptions);
+                list = JsonHelper.Deserialize<Dictionary<string, object>>(json, _jsonOptions);
                 _ = list ?? throw new InvalidOperationException("JSON returned null");
             }
             catch (Exception ex)

@@ -1,0 +1,56 @@
+<!--
+SPDX-FileCopyrightText: 2026 Froststrap
+
+SPDX-License-Identifier: MPL-2.0
+-->
+
+<base:AvaloniaWindow x:Class="Froststrap.UI.Elements.Dialogs.JoinerDialog"
+                     xmlns="https://github.com/avaloniaui"
+                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                     xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+                     xmlns:resources="clr-namespace:Froststrap.Resources"
+                     Title="{x:Static resources:Strings.Joiner_Title}"
+                     Width="560"
+                     SizeToContent="Height"
+                     CanResize="False"
+                     WindowStartupLocation="CenterScreen">
+
+    <Grid>
+        <StackPanel Margin="32,16,32,24" Spacing="12">
+            <TextBlock Text="{x:Static resources:Strings.Joiner_PasteInstructions}" />
+
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                <TextBox Grid.Column="0"
+                         x:Name="LinkBox"
+                         VerticalAlignment="Center"
+                         KeyDown="OnLinkBoxKeyDown"
+                         TextChanged="OnLinkTextChanged" />
+
+                <Button Grid.Column="1"
+                        x:Name="JoinButton"
+                        Content="{x:Static resources:Strings.Joiner_Join}"
+                        Click="OnJoinClicked"
+                        Padding="24,6"
+                        VerticalAlignment="Center" />
+            </Grid>
+
+            <TextBlock x:Name="StatusText"
+                       Text="{x:Static resources:Strings.Joiner_Ready}"
+                       FontSize="12"
+                       Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+
+            <StackPanel Orientation="Horizontal" Spacing="24">
+                <CheckBox x:Name="JoinInstantlyOnPaste"
+                          IsChecked="True"
+                          Content="{x:Static resources:Strings.Joiner_JoinInstantlyOnPaste}" />
+                <CheckBox x:Name="CloseAfterJoining"
+                          Content="{x:Static resources:Strings.Joiner_CloseAfterJoining}" />
+            </StackPanel>
+
+            <Button Content="{x:Static resources:Strings.Joiner_Settings}"
+                    HorizontalAlignment="Left"
+                    Padding="16,6"
+                    Click="OnSettingsClicked" />
+        </StackPanel>
+    </Grid>
+</base:AvaloniaWindow>

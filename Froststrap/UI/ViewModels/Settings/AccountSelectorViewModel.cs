@@ -324,6 +324,22 @@ namespace Froststrap.UI.ViewModels.Settings
             await Task.WhenAll(tasks);
         }
 
+        public void MoveAccount(int fromIndex, int toIndex, bool persist = true)
+        {
+            if (fromIndex < 0 || fromIndex >= Accounts.Count) return;
+            if (toIndex < 0 || toIndex >= Accounts.Count) return;
+            if (fromIndex == toIndex) return;
+
+            Accounts.Move(fromIndex, toIndex);
+
+            if (persist)
+                SaveAccountOrder();
+        }
+
+        public void SaveAccountOrder()
+        {
+            _accountManager.ReorderAccounts([.. Accounts.Select(a => a.Account)]);
+        }
 
         [RelayCommand]
         private void SelectAccount(AccountWithAvatar item)
@@ -378,7 +394,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 }
                 else if (SelectedAddMethod == Strings.Common_Browser)
                 {
-                    newAccount = await _accountManager.AddAccountByBrowserAsync();
+                    newAccount = await AccountManager.AddAccountByBrowserAsync();
                 }
                 else if (SelectedAddMethod == Strings.Common_Manual)
                 {
@@ -418,14 +434,45 @@ namespace Froststrap.UI.ViewModels.Settings
         private async Task<bool> HandleDuplicateAccountAsync(AccountManagerAccount account)
         {
             var existing = _accountManager.Accounts.FirstOrDefault(a => a.UserId == account.UserId);
-            if (existing != null)
+            if (existing == null)
+                return false;
+
+            var updated = _accountManager.AddOrUpdateAccount(account, out _);
+            ReplaceAccountEntry(updated);
+
+            _accountManager.SetActiveAccount(updated.UserId);
+            IsDropdownOpen = false;
+
+            await Frontend.ShowMessageBox(
+                string.Format(CultureInfo.InvariantCulture, Strings.Menu_AccountSelector_AlreadyLoggedIn, updated.Username),
+                MessageBoxImage.Information);
+
+            return true;
+        }
+
+        private void ReplaceAccountEntry(AccountManagerAccount updated)
+        {
+            int index = -1;
+            for (int i = 0; i < Accounts.Count; i++)
             {
-                _accountManager.SetActiveAccount(existing.UserId);
-                IsDropdownOpen = false;
-                await Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Menu_AccountSelector_AlreadyLoggedIn, existing.Username), MessageBoxImage.Information);
-                return true;
+                if (Accounts[i].UserId == updated.UserId)
+                {
+                    index = i;
+                    break;
+                }
             }
-            return false;
+
+            if (index < 0)
+                return;
+
+            var old = Accounts[index];
+            _accountAvatarUrls.TryGetValue(updated.UserId, out var url);
+
+            Accounts[index] = new AccountWithAvatar(updated, url ?? old.AvatarUrl)
+            {
+                PresenceStatus = old.PresenceStatus,
+                PresenceBrush = old.PresenceBrush
+            };
         }
 
         private static async Task<AccountManagerAccount?> ImportFromCookieManager()

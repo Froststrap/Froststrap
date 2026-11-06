@@ -35,16 +35,8 @@ namespace Froststrap.UI.Elements.Bootstrapper
 
             try
             {
-                if (typeof(T) == typeof(bool))
-                {
-                    return (T)(object)bool.Parse(attribute.Value);
-                }
-
-                var converter = System.ComponentModel.TypeDescriptor.GetConverter(typeof(T));
-                if (converter != null && converter.CanConvertFrom(typeof(string)))
-                {
-                    return (T)converter.ConvertFromInvariantString(attribute.Value)!;
-                }
+                if (typeof(T).IsEnum)
+                    return (T)Enum.Parse(typeof(T), attribute.Value, ignoreCase: true);
 
                 return (T)Convert.ChangeType(attribute.Value, typeof(T), CultureInfo.InvariantCulture);
             }
