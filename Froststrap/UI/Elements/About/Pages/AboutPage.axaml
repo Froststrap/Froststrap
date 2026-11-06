@@ -33,21 +33,25 @@ SPDX-License-Identifier: MPL-2.0
 
             <WrapPanel HorizontalAlignment="Center" Orientation="Horizontal">
                 <Button Margin="0,0,8,8"
+                        Padding="14,8"
                         Content="{x:Static resources:Strings.Menu_About_GithubRepository}"
                         Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
                         CommandParameter="https://github.com/Froststrap/Froststrap" />
 
                 <Button Margin="0,0,8,8"
+                        Padding="14,8"
                         Content="{x:Static resources:Strings.Menu_About_HelpInformation}"
                         Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
                         CommandParameter="https://bloxstraplabs.com/wiki/" />
 
                 <Button Margin="0,0,8,8"
+                        Padding="14,8"
                         Content="{x:Static resources:Strings.Menu_About_ReportIssue}"
                         Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
                         CommandParameter="https://github.com/Froststrap/Froststrap/issues" />
 
                 <Button Margin="0,0,0,8"
+                        Padding="14,8"
                         Content="{x:Static resources:Strings.Menu_About_DiscordServer}"
                         Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
                         CommandParameter="https://discord.gg/KdR9vpRcUN" />
