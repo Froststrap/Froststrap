@@ -21,14 +21,13 @@ SPDX-License-Identifier: MPL-2.0
 
     <ScrollViewer>
         <StackPanel Spacing="16" Margin="0,0,16,0">
-
             <TextBlock
                 Text="Please take the time to read our FAQ that will most likely answer your question. If your question is still not answered feel free to join our Discord."
                 TextWrapping="Wrap"
                 Foreground="#D0D0E0"
                 Margin="0,0,0,8"
                 />
-            <!-- Why are we doing it like this exactly in codebehind ???-->
+
             <ItemsControl ItemsSource="{Binding FaqItems}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="vm:FaqItem">
