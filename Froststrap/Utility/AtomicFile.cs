@@ -10,11 +10,11 @@ namespace Froststrap.Utility
         /// write never leaves a half-written file. `ownerOnly` creates it as 0600 on Unix.
         public static void WriteAllText(string path, string contents, bool ownerOnly = false)
         {
-            string temp = $"{path}.{Environment.ProcessId}.tmp";
+            string temp = $"{path}.{Guid.NewGuid():N}.tmp";
 
             try
             {
-                var options = new FileStreamOptions { Mode = FileMode.Create, Access = FileAccess.Write };
+                var options = new FileStreamOptions { Mode = FileMode.CreateNew, Access = FileAccess.Write };
                 if (ownerOnly && !OperatingSystem.IsWindows())
                     options.UnixCreateMode = UnixFileMode.UserRead | UnixFileMode.UserWrite;
 

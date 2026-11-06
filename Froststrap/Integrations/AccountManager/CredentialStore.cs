@@ -177,12 +177,11 @@ internal static class CredentialStore
     {
         lock (FileLock)
         {
-            // keep an unreadable file aside instead of silently replacing it with this one account
+            // never replace an unreadable store: that would drop every other saved login
             if (ReadFile() is not { } data)
             {
-                if (!SetAsideUnreadableFile())
-                    return false;
-                data = [];
+                App.Logger.Warn("credentials.json couldn't be read, so the credential wasn't saved; the file was left untouched.");
+                return false;
             }
 
             data[accountId] = token;
@@ -201,21 +200,6 @@ internal static class CredentialStore
                 return true;
 
             return WriteFile(data);
-        }
-    }
-
-    private static bool SetAsideUnreadableFile()
-    {
-        try
-        {
-            string backup = $"{FilePath}.unreadable-{DateTime.UtcNow:yyyyMMddHHmmss}";
-            File.Move(FilePath, backup);
-            App.Logger.Warn($"credentials.json couldn't be read; kept it as {Path.GetFileName(backup)} and started a new one.");
-            return true;
-        }
-        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
-        {
-            return false;
         }
     }
 

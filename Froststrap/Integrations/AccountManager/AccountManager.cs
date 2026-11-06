@@ -221,7 +221,8 @@ namespace Froststrap.Integrations.AccountManager
 
         /// Adds or updates several accounts with a single save. If saving fails, the account list
         /// and the affected credentials are put back the way they were and false is returned.
-        /// Nothing is changed if the current credentials can't be read first.
+        /// Nothing is changed if the current credentials can't be read first. The rollback is
+        /// best effort, not a transaction: restoring a credential can fail too, and that's logged.
         public bool TryAddOrUpdateAccounts(IReadOnlyList<AccountManagerAccount> accounts, out List<bool> isNew)
         {
             isNew = [];
