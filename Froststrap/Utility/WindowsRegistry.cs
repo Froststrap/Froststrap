@@ -202,7 +202,6 @@ namespace Froststrap.Utility
         /// </summary>
         public static void RemoveRobloxStartupEntry()
         {
-            const string LOG_IDENT = "WindowsRegistry::RemoveRobloxStartupEntry";
             const string valueName = "RobloxPlayerBeta";
 
             try
@@ -215,16 +214,16 @@ namespace Froststrap.Utility
                 // make sure we only ever delete roblox's own entry
                 if (!entry.Contains(App.RobloxPlayerAppName, StringComparison.OrdinalIgnoreCase))
                 {
-                    App.Logger.Info($"{LOG_IDENT}: Leaving '{valueName}' alone, it doesn't point at Roblox");
+                    App.Logger.Info($"Leaving '{valueName}' alone, it doesn't point at Roblox");
                     return;
                 }
 
-                App.Logger.Info($"{LOG_IDENT}: Removing startup entry '{entry}'");
+                App.Logger.Info($"Removing startup entry '{entry}'");
                 runKey.DeleteValue(valueName);
             }
             catch (Exception ex)
             {
-                App.Logger.Error($"{LOG_IDENT}: Failed to remove startup entry: {ex}");
+                App.Logger.Error($"Failed to remove startup entry: {ex}");
             }
         }
     }

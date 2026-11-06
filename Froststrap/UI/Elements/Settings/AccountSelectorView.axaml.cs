@@ -12,6 +12,18 @@ using Froststrap.UI.ViewModels.Settings;
 
 namespace Froststrap.UI.Elements.Settings
 {
+    internal enum PhotoSide
+    {
+        Left,
+        Right
+    }
+
+    internal enum DropdownSide
+    {
+        Up,
+        Down
+    }
+    
     internal partial class AccountSelectorView : UserControl, IDisposable
     {
         private readonly AccountSelectorViewModel? _viewModel;
@@ -216,6 +228,45 @@ namespace Froststrap.UI.Elements.Settings
             }
 
             _disposed = true;
+        }
+        public static readonly StyledProperty<PhotoSide> PhotoPositionProperty =
+            AvaloniaProperty.Register<AccountSelectorView, PhotoSide>(nameof(PhotoPosition), PhotoSide.Left);
+
+        public PhotoSide PhotoPosition
+        {
+            get => GetValue(PhotoPositionProperty);
+            set => SetValue(PhotoPositionProperty, value);
+        }
+
+        static AccountSelectorView()
+        {
+            PhotoPositionProperty.Changed.AddClassHandler<AccountSelectorView>((view, _) => view.UpdatePhotoPosition());
+            DropdownDirectionProperty.Changed.AddClassHandler<AccountSelectorView>((view, _) => view.UpdateDropdownPlacement());
+        }
+
+        private void UpdatePhotoPosition()
+        {
+            bool right = PhotoPosition == PhotoSide.Right;
+
+            DockPanel.SetDock(AvatarHost, right ? Dock.Right : Dock.Left);
+            AvatarHost.Margin = right ? new Thickness(8, 0, 0, 0) : new Thickness(0, 0, 8, 0);
+        }
+
+        public static readonly StyledProperty<DropdownSide> DropdownDirectionProperty =
+            AvaloniaProperty.Register<AccountSelectorView, DropdownSide>(nameof(DropdownDirection), DropdownSide.Up);
+
+        public DropdownSide DropdownDirection
+        {
+            get => GetValue(DropdownDirectionProperty);
+            set => SetValue(DropdownDirectionProperty, value);
+        }
+
+        private void UpdateDropdownPlacement()
+        {
+            bool down = DropdownDirection == DropdownSide.Down;
+
+            AccountDropdown.Placement = down ? PlacementMode.Bottom : PlacementMode.Top;
+            AccountDropdown.VerticalOffset = down ? 6 : -6; // small gap away from the button
         }
     }
 }

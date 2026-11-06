@@ -104,7 +104,26 @@ namespace Froststrap
                         {
                             foreach (var crashProc in Process.GetProcessesByName("RobloxCrashHandler"))
                             {
-                                try { crashProc.Kill(); } catch { }
+                                try
+                                {
+                                    App.Logger.Info($"Found crash handler: {crashProc.ProcessName} (PID {crashProc.Id})");
+
+                                    crashProc.Kill();
+                                            await Task.WhenAny(
+                                        crashProc.WaitForExitAsync(),
+                                        Task.Delay(3000)
+                                    );
+
+                                    App.Logger.Info(
+                                        crashProc.HasExited
+                                            ? $"Crash handler {crashProc.Id} exited successfully"
+                                            : $"Crash handler {crashProc.Id} is still running"
+                                    );
+                                }
+                                catch (Exception ex)
+                                {
+                                    App.Logger.Error($"Failed to close crash handler {crashProc.Id}: {ex}");
+                                }
                             }
                         }
                     }
@@ -282,16 +301,27 @@ namespace Froststrap
 
         private static bool IsStudioProcess(Process process)
         {
-            string processName = App.StudioData.ProcessName;
+            try
+            {
+                string expected = Path.GetFileNameWithoutExtension(App.StudioData.ProcessName);
+                string actual = Path.GetFileNameWithoutExtension(process.ProcessName);
 
-            if (string.Equals(process.ProcessName, processName, StringComparison.OrdinalIgnoreCase))
-                return true;
+                if (string.Equals(actual, expected, StringComparison.OrdinalIgnoreCase))
+                    return true;
 
-            if (App.UseRosemary && string.Equals(process.ProcessName, "rosemary", StringComparison.OrdinalIgnoreCase))
-                return true;
+                if (App.UseRosemary && string.Equals(process.ProcessName, "rosemary", StringComparison.OrdinalIgnoreCase))
+                    return true;
 
-            return OperatingSystem.IsLinux()
-                && process.ProcessName.StartsWith("RobloxStudio", StringComparison.OrdinalIgnoreCase);
+                if (OperatingSystem.IsMacOS() && string.Equals(actual, "RobloxStudio", StringComparison.OrdinalIgnoreCase))
+                    return true;
+
+                return OperatingSystem.IsLinux()
+                    && actual.StartsWith("RobloxStudio", StringComparison.OrdinalIgnoreCase);
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         private static int GetNewestStudioProcessId(IEnumerable<Process> processes)

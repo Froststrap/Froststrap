@@ -2,6 +2,10 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+using DiscordRPC;
+using DiscordRPC.Logging;
+using RichPresence = DiscordRPC.RichPresence;
+using DiscordRPC.Message;
 using Froststrap.Integrations.Discord;
 using System.Net.Sockets;
 
@@ -13,8 +17,8 @@ namespace Froststrap.Integrations
         private readonly ActivityWatcher _activityWatcher;
         private readonly Queue<Message> _messageQueue = new();
 
-        private DiscordActivity? _currentPresence;
-        private DiscordActivity? _originalPresence;
+        private RichPresence? _currentPresence;
+        private RichPresence? _originalPresence;
 
         private readonly FixedSizeList<ThumbnailCacheEntry> _thumbnailCache = new(20);
 
@@ -27,7 +31,7 @@ namespace Froststrap.Integrations
 
         public PlayerDiscordRichPresence(ActivityWatcher activityWatcher)
         {
-            _rpcClient = new DiscordRpcClient("363445589247131668");
+            _rpcClient = new DiscordRpcClient("363445589247131668", -1, new NullLogger(), true, DiscordIpcPipeClient.Create());
             _activityWatcher = activityWatcher;
 
             _activityWatcher.OnGameJoin += (_, _) => Task.Run(() => SetCurrentGame());
@@ -72,13 +76,21 @@ namespace Froststrap.Integrations
                 return;
             }
 
-            if (message.Command == "SetLaunchData")
+            try
             {
-                _currentPresence.Buttons = GetButtons();
+                if (message.Command == "SetLaunchData")
+                {
+                    _currentPresence.Buttons = GetButtons();
+                }
+                else if (message.Command == "SetRichPresence")
+                {
+                    ProcessSetRichPresence(message, implicitUpdate);
+                }
             }
-            else if (message.Command == "SetRichPresence")
+            catch (Exception ex)
             {
-                ProcessSetRichPresence(message, implicitUpdate);
+                App.Logger.Error($"Failed to process rich presence message: {ex.Message}");
+                return;
             }
 
             if (implicitUpdate)
@@ -174,6 +186,10 @@ namespace Froststrap.Integrations
             Debug.Assert(_currentPresence is not null);
             Debug.Assert(_originalPresence is not null);
 
+            _currentPresence.Timestamps ??= new Timestamps();
+            _currentPresence.Assets ??= new Assets();
+            _originalPresence.Assets ??= new Assets();
+
             _fetchThumbnailsToken?.Cancel();
             _fetchThumbnailsToken = null;
 
@@ -259,7 +275,7 @@ namespace Froststrap.Integrations
                     }
 
                     if (presenceData.SmallImage.HoverText is not null)
-                        _currentPresence.Assets.SmallImageText = presenceData.SmallImage.HoverText;
+                        _currentPresence.Assets.SmallImageText = DiscordPresenceHelper.Truncate(presenceData.SmallImage.HoverText, 128);
                 }
             }
 
@@ -295,7 +311,7 @@ namespace Froststrap.Integrations
                     }
 
                     if (presenceData.LargeImage.HoverText is not null)
-                        _currentPresence.Assets.LargeImageText = presenceData.LargeImage.HoverText;
+                        _currentPresence.Assets.LargeImageText = DiscordPresenceHelper.Truncate(presenceData.LargeImage.HoverText, 128);
                 }
             }
 
@@ -319,8 +335,8 @@ namespace Froststrap.Integrations
 
             if (_visible)
                 UpdatePresence();
-            else
-                _rpcClient?.ClearPresence();
+            else if (_rpcClient?.IsInitialized == true)
+                _rpcClient.ClearPresence();
         }
 
         public async Task<bool> SetCurrentGame()
@@ -392,19 +408,19 @@ namespace Froststrap.Integrations
             string universeName = universeDetails.Data.Name;
             if (universeName.Length < 2) universeName = $"{universeName}\x2800\x2800\x2800";
 
-            _currentPresence = new DiscordActivity
+            _currentPresence = new RichPresence
             {
-                Details = universeName,
-                StatusDisplay = App.Settings.Prop.EnableCustomStatusDisplay ? StatusDisplayType.Details : (StatusDisplayType)0,
-                State = status,
+                Details = DiscordPresenceHelper.Truncate(universeName, 128),
+                StatusDisplay = App.Settings.Prop.EnableCustomStatusDisplay ? StatusDisplayType.Details : StatusDisplayType.Name,
+                State = DiscordPresenceHelper.Truncate(status, 128),
                 Timestamps = new Timestamps { Start = timeStarted.ToUniversalTime() },
                 Buttons = GetButtons(),
                 Assets = new Assets
                 {
                     LargeImageKey = icon,
-                    LargeImageText = universeDetails.Data.Name,
+                    LargeImageText = DiscordPresenceHelper.Truncate(universeDetails.Data.Name, 128),
                     SmallImageKey = smallImage,
-                    SmallImageText = smallImageText
+                    SmallImageText = DiscordPresenceHelper.Truncate(smallImageText, 128)
                 }
             };
 

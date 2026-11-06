@@ -14,6 +14,7 @@ using Avalonia.Styling;
 using Avalonia.Threading;
 using FluentAvalonia.Styling;
 using Froststrap.UI.Utility;
+using SkiaSharp;
 using System.Runtime.CompilerServices;
 
 namespace Froststrap.UI.Elements.Base
@@ -46,6 +47,7 @@ namespace Froststrap.UI.Elements.Base
         private static int _backgroundLoadVersion;
 
         private static readonly string[] AnimatedImageExtensions = [".gif"];
+        private const int MaxBackgroundDecodeWidth = 2560;
 
         private readonly Panel? _backgroundHost;
         private readonly Image? _backgroundImage;
@@ -97,15 +99,8 @@ namespace Froststrap.UI.Elements.Base
 
             WindowDecorations = WindowDecorations.Full;
             ExtendClientAreaToDecorationsHint = true;
-            ExtendClientAreaTitleBarHeightHint = -1;
-            if (OperatingSystem.IsMacOSVersionAtLeast(26))
-            {
-                MacOSTitleBar.SetTrafficLightOffset(this, new Point(15, 14));
-            }
-            else
-            {
-                MacOSTitleBar.SetTrafficLightOffset(this, new Point(15, 75));
-            }
+            ExtendClientAreaTitleBarHeightHint = OperatingSystem.IsMacOS() ? -1 : 40;
+            MacOSTitleBar.SetTrafficLightOffset(this, new Point(20,19));
             TextOptions.SetTextRenderingMode(this, TextRenderingMode.Antialias);
             if (ApplyTopPadding) _contentHost?.Margin = new Thickness(0, 36, 0, 0);
 
@@ -260,7 +255,13 @@ namespace Froststrap.UI.Elements.Base
                     foreach (var s in App.Settings.Prop.CustomGradientStops)
                     {
                         if (Color.TryParse(s.Color, out var color))
+                        {
+                            // Keep the gradient translucent enough for the blur behind it to show.
+                            if (App.Settings.Prop.SelectedBackdrop == WindowsBackdrops.Blur)
+                                color = Color.FromArgb(Math.Min(color.A, (byte)0xBF), color.R, color.G, color.B);
+
                             avaloniaStops.Add(new Avalonia.Media.GradientStop(color, s.Offset));
+                        }
                     }
 
                     double angle = App.Settings.Prop.GradientAngle ?? 45;
@@ -364,6 +365,7 @@ namespace Froststrap.UI.Elements.Base
         private static void StartBackgroundBitmapLoad(string path)
         {
             int version = ++_backgroundLoadVersion;
+            int decodeWidth = GetBackgroundDecodeWidth();
 
             _ = Task.Run(() =>
             {
@@ -371,10 +373,32 @@ namespace Froststrap.UI.Elements.Base
 
                 try
                 {
-                    bitmap = new Bitmap(path);
+                    int sourceWidth = 0;
+
+                    using (var probe = File.OpenRead(path))
+                    {
+                        try
+                        {
+                            using var codec = SKCodec.Create(probe);
+                            sourceWidth = codec?.Info.Width ?? 0;
+                        }
+                        catch (Exception ex)
+                        {
+                            App.Logger.Debug($"Image dimension probe failed for {path}: {ex.Message}");
+                        }
+                    }
+
+                    using var stream = File.OpenRead(path);
+                    bitmap = sourceWidth <= 0 || sourceWidth > decodeWidth
+                        ? Bitmap.DecodeToWidth(stream, decodeWidth, BitmapInterpolationMode.HighQuality)
+                        : new Bitmap(stream);
+
+                    App.Logger.Debug($"Background image decoded: source={sourceWidth}px, decoded={bitmap.PixelSize.Width}x{bitmap.PixelSize.Height}, target={decodeWidth}px");
                 }
                 catch (Exception ex)
                 {
+                    bitmap?.Dispose();
+                    bitmap = null;
                     App.Logger.Error($"Image load error: {ex}");
                 }
 
@@ -383,6 +407,35 @@ namespace Froststrap.UI.Elements.Base
 
                 Dispatcher.UIThread.Post(() => CompleteBackgroundBitmapLoad(path, version, bitmap));
             });
+        }
+
+        private static int GetBackgroundDecodeWidth()
+        {
+            int width = 0;
+
+            try
+            {
+                if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+                {
+                    foreach (var window in desktop.Windows)
+                    {
+                        if (window.Screens.Primary is { } screen)
+                        {
+                            width = screen.Bounds.Width;
+                            break;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error($"Failed to determine screen size: {ex.Message}");
+            }
+
+            if (width <= 0)
+                width = MaxBackgroundDecodeWidth;
+
+            return Math.Min(width, MaxBackgroundDecodeWidth);
         }
 
         private static void CompleteBackgroundBitmapLoad(string path, int version, Bitmap bitmap)
@@ -417,12 +470,58 @@ namespace Froststrap.UI.Elements.Base
             }
         }
 
+        private static void LogTransparency(object? sender, AvaloniaPropertyChangedEventArgs e)
+        {
+            if (e.Property == TopLevel.ActualTransparencyLevelProperty)
+                App.Logger.Debug($"Actual transparency level: {e.NewValue}");
+        }
+
+        private static readonly (string Key, string Color)[] BlurLightFills =
+        [
+            ("ControlFillColorDefaultBrush", "#4DFFFFFF"),
+            ("ControlFillColorSecondaryBrush", "#33FFFFFF"),
+            ("ControlFillColorTertiaryBrush", "#26FFFFFF"),
+            ("CardBackgroundFillColorDefaultBrush", "#4DFFFFFF"),
+            ("LayerFillColorDefaultBrush", "#26FFFFFF"),
+            ("SolidBackgroundFillColorBaseBrush", "#00F3F3F3"),
+            ("SolidBackgroundFillColorTertiaryBrush", "#4DF9F9F9")
+        ];
+
+        // FluentAvalonia's light fills are ~50-70% white, which hides the blur; dark fills are already faint.
+        private static void ApplyBlurLightFills(bool enable)
+        {
+            var app = Application.Current;
+            if (app is null)
+                return;
+
+            if (!app.Resources.ThemeDictionaries.TryGetValue(ThemeVariant.Light, out var existing)
+                || existing is not ResourceDictionary dict)
+            {
+                if (!enable)
+                    return;
+
+                dict = new ResourceDictionary();
+                app.Resources.ThemeDictionaries[ThemeVariant.Light] = dict;
+            }
+
+            foreach (var (key, color) in BlurLightFills)
+            {
+                if (enable)
+                    dict[key] = new SolidColorBrush(Color.Parse(color));
+                else
+                    dict.Remove(key);
+            }
+        }
+
         public static void UpdateBackdropForAllWindows()
         {
             if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
                 return;
 
             var selectedBackdrop = App.Settings.Prop.SelectedBackdrop;
+
+            if (OperatingSystem.IsMacOS())
+                ApplyBlurLightFills(selectedBackdrop == WindowsBackdrops.Blur);
 
             foreach (var window in desktop.Windows)
             {
@@ -442,9 +541,12 @@ namespace Froststrap.UI.Elements.Base
                     {
                         WindowsBackdrops.Acrylic => [WindowTransparencyLevel.AcrylicBlur, WindowTransparencyLevel.None],
                         WindowsBackdrops.Mica => [WindowTransparencyLevel.Mica, WindowTransparencyLevel.None],
+                        WindowsBackdrops.Blur => [WindowTransparencyLevel.AcrylicBlur, WindowTransparencyLevel.Blur, WindowTransparencyLevel.None],
                         _ => [WindowTransparencyLevel.None]
                     };
                     window.Background = Brushes.Transparent;
+                    window.PropertyChanged -= LogTransparency;
+                    window.PropertyChanged += LogTransparency;
                 }
                 else
                 {

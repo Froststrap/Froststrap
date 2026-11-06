@@ -3,10 +3,7 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-using System.Globalization;
-using System.Net;
 using System.Security.Cryptography;
-using System.Text;
 
 namespace Froststrap.Integrations.AccountManager
 {

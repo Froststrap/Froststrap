@@ -10,7 +10,6 @@ namespace Froststrap.UI.Utility
     internal static class DeferredStyles
     {
         private static bool _avaloniaEditThemeLoaded;
-        private static bool _colorPickerTemplatesLoaded;
 
         public static void EnsureAvaloniaEditTheme()
         {
@@ -32,15 +31,6 @@ namespace Froststrap.UI.Utility
             }
 
             app.Styles.Insert(insertAt, new AvaloniaEditTheme());
-        }
-
-        public static void EnsureColorPickerTemplates()
-        {
-            if (_colorPickerTemplatesLoaded || Application.Current is not { } app)
-                return;
-
-            _colorPickerTemplatesLoaded = true;
-            app.Resources.MergedDictionaries.Add(new ColorPickerTemplates());
         }
     }
 }

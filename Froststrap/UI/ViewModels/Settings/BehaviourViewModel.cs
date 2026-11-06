@@ -2,7 +2,11 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+using CommunityToolkit.Mvvm.Input;
 using Froststrap.Enums.AppStoragePresets;
+using System.Collections.ObjectModel;
+using System.Globalization;
+using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
@@ -79,6 +83,11 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public BehaviourViewModel()
         {
+            foreach (var hz in (App.Settings.Prop.VirtualDisplayHzModes ?? []).Distinct().Order())
+                VirtualDisplayHzEntries.Add(new HzEntry(hz, RemoveVirtualDisplayHz));
+
+            AddVirtualDisplayHzCommand = new RelayCommand(AddVirtualDisplayHz);
+
             App.Cookies.StateChanged += (_, state) =>
                 CookieLoadingFailed = state is not (CookieState.Success or CookieState.Unknown);
 
@@ -152,13 +161,62 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public double[] VirtualDisplayHzModes
+        public ObservableCollection<HzEntry> VirtualDisplayHzEntries { get; } = [];
+
+        public ICommand AddVirtualDisplayHzCommand { get; }
+
+        private string _newVirtualDisplayHz = "";
+        public string NewVirtualDisplayHz
         {
-            get => App.Settings.Prop.VirtualDisplayHzModes;
+            get => _newVirtualDisplayHz;
             set
             {
-                App.Settings.Prop.VirtualDisplayHzModes = value;
-                OnPropertyChanged(nameof(VirtualDisplayHzModes));
+                _newVirtualDisplayHz = value;
+                OnPropertyChanged(nameof(NewVirtualDisplayHz));
+            }
+        }
+
+        private void AddVirtualDisplayHz()
+        {
+            if (!double.TryParse(NewVirtualDisplayHz, NumberStyles.Float, CultureInfo.InvariantCulture, out var hz)
+                || hz <= 0 || double.IsInfinity(hz))
+                return;
+
+            if (VirtualDisplayHzEntries.All(e => e.Value != hz))
+            {
+                int index = 0;
+                while (index < VirtualDisplayHzEntries.Count && VirtualDisplayHzEntries[index].Value < hz)
+                    index++;
+
+                VirtualDisplayHzEntries.Insert(index, new HzEntry(hz, RemoveVirtualDisplayHz));
+                SaveVirtualDisplayHz();
+            }
+
+            NewVirtualDisplayHz = "";
+        }
+
+        private void RemoveVirtualDisplayHz(HzEntry entry)
+        {
+            VirtualDisplayHzEntries.Remove(entry);
+            SaveVirtualDisplayHz();
+        }
+
+        private void SaveVirtualDisplayHz()
+        {
+            App.Settings.Prop.VirtualDisplayHzModes = [.. VirtualDisplayHzEntries.Select(e => e.Value)];
+            App.Settings.Save();
+        }
+
+        internal class HzEntry
+        {
+            public double Value { get; }
+            public string Display => $"{Value.ToString("0.##", CultureInfo.InvariantCulture)} Hz";
+            public ICommand RemoveCommand { get; }
+
+            public HzEntry(double value, Action<HzEntry> removeAction)
+            {
+                Value = value;
+                RemoveCommand = new RelayCommand(() => removeAction(this));
             }
         }
 

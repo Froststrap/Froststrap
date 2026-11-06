@@ -52,8 +52,6 @@ namespace Froststrap
 
         private static void ApplyTheme(JsonObject storage)
         {
-            const string LOG_IDENT = "AppStorageManager::ApplyTheme";
-
             var theme = App.Settings.Prop.RobloxTheme;
 
             if (theme == RobloxTheme.Default)
@@ -86,15 +84,13 @@ namespace Froststrap
             }
             catch (Exception ex)
             {
-                App.Logger.Error($"{LOG_IDENT}: Failed to update the per-account theme cache");
+                App.Logger.Error($"Failed to update the per-account theme cache");
                 App.Logger.Error(ex);
             }
         }
 
         private static void Mutate(Action<JsonObject> mutate)
         {
-            const string LOG_IDENT = "AppStorageManager::Mutate";
-
             string path = FileLocation;
 
             if (!File.Exists(path))
@@ -113,13 +109,13 @@ namespace Froststrap
 
                 if (String.IsNullOrWhiteSpace(contents))
                 {
-                    App.Logger.Info($"{LOG_IDENT}: File is empty, leaving it alone");
+                    App.Logger.Info($"File is empty, leaving it alone");
                     return;
                 }
 
                 if (JsonNode.Parse(contents) is not JsonObject storage)
                 {
-                    App.Logger.Info($"{LOG_IDENT}: File is not a JSON object, leaving it alone");
+                    App.Logger.Info($"File is not a JSON object, leaving it alone");
                     return;
                 }
 
@@ -131,7 +127,7 @@ namespace Froststrap
 
                 if (output == original)
                 {
-                    App.Logger.Info($"{LOG_IDENT}: Already up to date");
+                    App.Logger.Info($"Already up to date");
                     return;
                 }
 
@@ -142,11 +138,11 @@ namespace Froststrap
                 File.Replace(tempPath, path, null);
                 tempPath = null;
 
-                App.Logger.Info($"{LOG_IDENT}: Saved successfully");
+                App.Logger.Info("Saved successfully");
             }
             catch (Exception ex)
             {
-                App.Logger.Error($"{LOG_IDENT}: Failed to patch {path}");
+                App.Logger.Error($"Failed to patch {path}");
                 App.Logger.Error(ex);
             }
             finally
@@ -161,8 +157,6 @@ namespace Froststrap
 
         private static void Create(string path, Action<JsonObject> mutate)
         {
-            const string LOG_IDENT = "AppStorageManager::Create";
-
             try
             {
                 var storage = new JsonObject();
@@ -172,11 +166,11 @@ namespace Froststrap
                 Directory.CreateDirectory(Path.GetDirectoryName(path)!);
                 File.WriteAllText(path, storage.ToJsonString(SerializerOptions), new UTF8Encoding(false));
 
-                App.Logger.Info($"{LOG_IDENT}: Seeded {path}");
+                App.Logger.Info($"Seeded {path}");
             }
             catch (Exception ex)
             {
-                App.Logger.Error($"{LOG_IDENT}: Failed to seed {path}");
+                App.Logger.Error($"Failed to seed {path}");
                 App.Logger.Error(ex);
             }
         }

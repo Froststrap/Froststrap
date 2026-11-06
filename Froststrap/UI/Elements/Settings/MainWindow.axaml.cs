@@ -23,7 +23,6 @@ using Froststrap.UI.ViewModels.Settings;
 using Froststrap.UI.ViewModels.Settings.FastFlags;
 using Froststrap.UI.ViewModels.Settings.GlobalSettings;
 using Froststrap.UI.ViewModels.Settings.Mods;
-using Froststrap.Utility;
 using LucideAvalonia.Enum;
 using System.ComponentModel;
 
@@ -44,6 +43,9 @@ namespace Froststrap.UI.Elements.Settings
         private readonly SearchIndexBuilder _searchIndexBuilder = new();
         private bool _isIndexingAllPagesStarted;
         private SearchDialog? _searchOverlay;
+
+        private void ToggleSidebar(object? sender, Avalonia.Interactivity.RoutedEventArgs e) =>
+            NavView.IsPaneOpen = !NavView.IsPaneOpen;
 
         private const double NotificationHeight = 80;
         private const double NotificationSpacing = 15;
@@ -81,7 +83,6 @@ namespace Froststrap.UI.Elements.Settings
             gbs.IsEnabled = _viewModel.GBSEnabled;
 
             LoadState();
-
 
             App.RemoteData.Subscribe((_, _) => Dispatcher.UIThread.Post(() =>
             {
@@ -268,12 +269,6 @@ namespace Froststrap.UI.Elements.Settings
         {
             if (e.InvokedItemContainer is FANavigationViewItem navItem && navItem.Tag is string tag)
             {
-                if (tag == "about")
-                {
-                    _viewModel?.OpenAboutCommand.Execute(null);
-                    return;
-                }
-
                 if (_viewModel != null && _viewModel.SelectedPage == tag)
                 {
                     return;
@@ -302,24 +297,10 @@ namespace Froststrap.UI.Elements.Settings
 
             foreach (var item in navView.MenuItems)
             {
-                if (item is FANavigationViewItem navItem && navItem.Tag is string tag)
+                if (item is FANavigationViewItem navItem && navItem.Tag is string tag && tag == selectedPage)
                 {
-                    if (tag == selectedPage)
-                    {
-                        navView.SelectedItem = navItem;
-                        return;
-                    }
-                }
-            }
-            foreach (var item in navView.FooterMenuItems)
-            {
-                if (item is FANavigationViewItem navItem && navItem.Tag is string tag)
-                {
-                    if (tag == selectedPage)
-                    {
-                        navView.SelectedItem = navItem;
-                        return;
-                    }
+                    navView.SelectedItem = navItem;
+                    return;
                 }
             }
         }
@@ -347,20 +328,22 @@ namespace Froststrap.UI.Elements.Settings
 
         public void LoadState()
         {
+            double left = State.Left, top = State.Top;
+
             var screen = Screens.Primary?.Bounds;
             if (screen != null)
             {
-                if (State.Left > screen.Value.Width) State.Left = 0;
-                if (State.Top > screen.Value.Height) State.Top = 0;
+                if (left > screen.Value.Width) left = 0;
+                if (top > screen.Value.Height) top = 0;
             }
 
             if (State.Width > 0) this.Width = State.Width;
             if (State.Height > 0) this.Height = State.Height;
 
-            if (State.Left > 0 && State.Top > 0)
+            if (left > 0 && top > 0)
             {
                 this.WindowStartupLocation = WindowStartupLocation.Manual;
-                this.Position = new PixelPoint((int)State.Left, (int)State.Top);
+                this.Position = new PixelPoint((int)left, (int)top);
             }
         }
 

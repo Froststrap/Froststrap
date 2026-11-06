@@ -10,7 +10,7 @@ pub fn main() {
     }
     let version = super::version();
     let icon = path::xtask_root().join("icon512.png");
-    let desktop = path::dist().join("Froststrap.desktop");
+    let desktop = path::dist().join("froststrap.desktop");
 
     std::fs::create_dir_all(path::dist()).unwrap();
 
@@ -28,8 +28,8 @@ fn desktop_entry(version: &str) -> String {
         Type=Application
         Name=Froststrap
         Comment=A fork of Fishstrap, focused on performance and customization
-        Exec=Froststrap %u
-        TryExec=Froststrap
+        Exec=froststrap %u
+        TryExec=froststrap
         Icon=froststrap
         Terminal=false
         Categories=Game;
@@ -48,7 +48,18 @@ fn build_nfpm(
     let nfpm = ensure_tool(&path::dist(), "nfpm",
         "https://github.com/goreleaser/nfpm/releases/download/v2.47.0/nfpm_2.47.0_Linux_x86_64.tar.gz", true);
 
-    let binary = output_dir.join("Froststrap");
+    let binary = output_dir.join("froststrap");
+    let libs_dir = output_dir.join("libs");
+    let native_libs = native_libraries(&libs_dir);
+
+    if native_libs.is_empty() {
+        log::error!(
+            "no native libraries found in {} - the publish step should stage them there",
+            libs_dir.display()
+        );
+        std::process::exit(1);
+    }
+
     let config = dist().join("nfpm.yaml");
     let post_install_path = dist().join("nfpm-postinstall.sh");
 
@@ -63,6 +74,7 @@ fn build_nfpm(
         &desktop,
         &post_install_path,
         &version,
+        &native_libs,
     );
 
     let mut nfpm_yaml_file = File::create(config.clone()).unwrap();
@@ -100,10 +112,22 @@ fn post_install_script() -> String {
         if command -v gtk-update-icon-cache >/dev/null 2>&1; then
           gtk-update-icon-cache -q /usr/share/icons/hicolor || :
         fi
-
-        /usr/bin/Froststrap --register-mime-types 2>/dev/null || :
     "#,
     )
+}
+
+fn native_libraries(directory: &Path) -> Vec<PathBuf> {
+    let Ok(entries) = fs::read_dir(directory) else {
+        return Vec::new();
+    };
+
+    let mut libraries: Vec<PathBuf> = entries
+        .filter_map(|entry| entry.ok().map(|entry| entry.path()))
+        .filter(|path| path.is_file() && path.extension().is_some_and(|ext| ext == "so"))
+        .collect();
+
+    libraries.sort();
+    libraries
 }
 
 fn nfpm_config(
@@ -113,7 +137,23 @@ fn nfpm_config(
     desktop: &Path,
     post_install: &Path,
     version: &str,
+    native_libs: &[PathBuf],
 ) -> String {
+    let mut native_contents = String::from("              - dst: /usr/lib/froststrap\n                type: dir\n");
+
+    for path in native_libs {
+        let name = path
+            .file_name()
+            .map(|name| name.to_string_lossy())
+            .unwrap_or_default();
+
+        native_contents.push_str(&format!(
+            "              - src: {}\n                dst: /usr/lib/froststrap/{}\n",
+            path.to_string_lossy(),
+            name
+        ));
+    }
+
     dedent(&format!(
         r#"
             name: froststrap
@@ -140,14 +180,15 @@ fn nfpm_config(
 
             contents:
               - src: {}
-                dst: /usr/bin/Froststrap
+                dst: /usr/bin/froststrap
                 file_info:
                   mode: 0755
               - src: {}
                 dst: /usr/share/icons/hicolor/512x512/apps/froststrap.png
               - src: {}
-                dst: /usr/share/applications/Froststrap.desktop
+                dst: /usr/share/applications/froststrap.desktop
 
+{native_contents}
             scripts:
               postinstall: {}
         "#,

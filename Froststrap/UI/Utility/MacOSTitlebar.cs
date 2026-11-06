@@ -2,10 +2,6 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-// TODO:
-// Rip out all off IsThick
-
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Avalonia;
@@ -18,21 +14,6 @@ internal static class MacOSTitleBar
 {
     // ── attached properties ────────────────────────────────
 
-    /// <summary>
-    /// Adds an empty NSToolbar so macOS uses the taller unified title bar.
-    /// </summary>
-    public static readonly AttachedProperty<bool> IsThickProperty =
-        AvaloniaProperty.RegisterAttached<Window, bool>(
-            "IsThick", typeof(MacOSTitleBar), defaultValue: false);
-
-    public static bool GetIsThick(Window window) => window.GetValue(IsThickProperty);
-    public static void SetIsThick(Window window, bool value) => window.SetValue(IsThickProperty, value);
-
-    /// <summary>
-    /// Position of the traffic-light group's top-left corner (the close button's
-    /// top-left), in points, measured from the window's top-left. null = system default.
-    /// Works with or without IsThick.
-    /// </summary>
     public static readonly AttachedProperty<Point?> TrafficLightOffsetProperty =
         AvaloniaProperty.RegisterAttached<Window, Point?>(
             "TrafficLightOffset", typeof(MacOSTitleBar), defaultValue: null);
@@ -42,7 +23,6 @@ internal static class MacOSTitleBar
 
     static MacOSTitleBar()
     {
-        IsThickProperty.Changed.AddClassHandler<Window>((w, _) => Sync(w));
         TrafficLightOffsetProperty.Changed.AddClassHandler<Window>((w, _) => Sync(w));
     }
 
@@ -62,7 +42,7 @@ internal static class MacOSTitleBar
         if (!OperatingSystem.IsMacOS())
             return;
 
-        bool wanted = GetIsThick(window) || GetTrafficLightOffset(window) is not null;
+        bool wanted = GetTrafficLightOffset(window) is not null;
 
         if (!wanted)
         {
@@ -98,7 +78,7 @@ internal static class MacOSTitleBar
 
         private readonly Window _window;
         private IntPtr _nsWindow;
-        private IntPtr _nsToolbar; // zero when the thick toolbar isn't active
+        private IntPtr _nsToolbar;
         private IntPtr _selSetToolbar;
         private IntPtr _selSetTitlebarAppearsTransparent;
         private IntPtr _selSetTitleVisibility;
@@ -109,8 +89,6 @@ internal static class MacOSTitleBar
         private IntPtr _selIsFlipped;
         private bool _attached;
 
-        // default (system) frames of close/minimize/zoom, captured the first time we
-        // move them. used for relative spacing and to restore the default layout.
         private readonly CGRect[] _originalFrames = new CGRect[3];
         private bool _haveOriginals;
 
@@ -121,8 +99,6 @@ internal static class MacOSTitleBar
             if (_attached)
                 return;
 
-            // the NSWindow handle is only available after the native window is
-            // created — defer setup if the window hasn't opened yet
             if (_window.IsLoaded)
                 Setup();
             else
@@ -131,7 +107,6 @@ internal static class MacOSTitleBar
 
         public void Detach()
         {
-            // always unhook, even if Setup never ran (window never opened)
             _window.Opened -= OnOpened;
             _window.PropertyChanged -= OnWindowPropertyChanged;
             _window.Resized -= OnWindowResized;
@@ -139,7 +114,6 @@ internal static class MacOSTitleBar
             if (!_attached)
                 return;
 
-            // put the traffic lights back first, then drop the toolbar
             try { RestoreTrafficLights(); } catch { /* best effort */ }
             RemoveToolbar();
 
@@ -147,7 +121,7 @@ internal static class MacOSTitleBar
         }
 
         /// <summary>
-        /// Re-reads IsThick / TrafficLightOffset and applies them. Safe to call any time.
+        /// Re-reads TrafficLightOffset and applies it. Safe to call any time.
         /// </summary>
         public void Update()
         {
@@ -156,7 +130,8 @@ internal static class MacOSTitleBar
 
             try
             {
-                bool wantToolbar = GetIsThick(_window);
+                // Replicate the IsThick behavior automatically when an offset is applied
+                bool wantToolbar = GetTrafficLightOffset(_window) is not null;
 
                 if (wantToolbar && _nsToolbar == IntPtr.Zero)
                     CreateToolbar();
@@ -208,7 +183,7 @@ internal static class MacOSTitleBar
 
                 _attached = true;
 
-                // 5. create the toolbar (if IsThick) and position the traffic lights
+                // 5. create the toolbar and position the traffic lights
                 Update();
             }
             catch (Exception ex)
@@ -304,14 +279,30 @@ internal static class MacOSTitleBar
                 if (host == IntPtr.Zero)
                     return;
 
-                double hostHeight = GetFrame(host).Height;
+                var hostFrame = GetFrame(host);
+                double hostHeight = hostFrame.Height;
                 bool flipped = objc_msgSend_bool_ret(host, _selIsFlipped);
 
-                // keep the buttons inside the title bar region so they can't be clipped away
                 var anchor = _originalFrames[0];
-                double maxTop = Math.Max(0, hostHeight - anchor.Height);
-                double top = Math.Clamp(offset.Y, 0, maxTop);
+                double top = Math.Max(0, offset.Y); // Remove the restrictve maxTop clamp
                 double dx = Math.Max(0, offset.X) - anchor.X;
+
+                // Hit-testing fix: If your requested Y offset drops the buttons outside the bounds 
+                // of the NSTitlebarView, they become unclickable. We fix this by automatically 
+                // stretching the titlebar container to fully cover your requested Y coordinate.
+                double requiredHeight = top + anchor.Height;
+                if (hostHeight < requiredHeight)
+                {
+                    if (flipped) {
+                        hostFrame.Height = requiredHeight;
+                    } else {
+                        // For bottom-up coordinates, expanding height means we must shift Y down
+                        hostFrame.Y -= (requiredHeight - hostHeight);
+                        hostFrame.Height = requiredHeight;
+                    }
+                    SetFrame(host, hostFrame);
+                    hostHeight = requiredHeight; // Update so Y coordinate math below is accurate
+                }
 
                 for (int i = 0; i < 3; i++)
                 {

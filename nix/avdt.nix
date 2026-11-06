@@ -9,7 +9,7 @@
   buildDotnetGlobalTool,
 }:
 let
-  dotnet-sdk = dotnetCorePackages.sdk_10_0-bin;
+  dotnet-sdk = dotnetCorePackages.sdk_10_0;
   dotnet-runtime = dotnetCorePackages.runtime_10_0-bin;
   avdt-unwrapped = buildDotnetGlobalTool {
     pname = "avdt";

@@ -14,34 +14,14 @@ SPDX-License-Identifier: MPL-2.0
              xmlns:resources="clr-namespace:Froststrap.Resources"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="1500"
              x:DataType="dmodels:AboutViewModel"
-             x:Class="Froststrap.UI.Elements.About.Pages.AboutPage"
-             KeyDown="UiPage_KeyDown">
-
-    <UserControl.Resources>
-        <Style x:Key="EggAnimationStyle" Selector="Image">
-            <Style.Animations>
-                <Animation Duration="0:0:3" FillMode="Forward">
-                    <KeyFrame Cue="0%">
-                        <Setter Property="Opacity" Value="1.0"/>
-                    </KeyFrame>
-                    <KeyFrame Cue="100%">
-                        <Setter Property="Opacity" Value="0.0"/>
-                    </KeyFrame>
-                </Animation>
-            </Style.Animations>
-        </Style>
-    </UserControl.Resources>
-
+             x:Class="Froststrap.UI.Elements.About.Pages.AboutPage">
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel Margin="14">
 
             <Grid Margin="0,0,0,24" HorizontalAlignment="Center" ColumnDefinitions="Auto,*">
                 <Panel Grid.Column="0">
-                    <Image x:Name="Image1" Width="72" Height="72" VerticalAlignment="Center"
+                    <Image x:Name="Image" Width="72" Height="72" VerticalAlignment="Center"
                            Source="avares://Froststrap/Froststrap.png" RenderOptions.BitmapInterpolationMode="HighQuality" />
-                    <Image x:Name="Image2" Width="72" Height="72" VerticalAlignment="Center"
-                           Source="avares://Froststrap/Resources/BootstrapperStyles/ByfronDialog/Matt.png" RenderOptions.BitmapInterpolationMode="HighQuality"
-                           Opacity="0" />
                 </Panel>
 
                 <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center">
@@ -118,7 +98,7 @@ SPDX-License-Identifier: MPL-2.0
                     <StackPanel>
                         <controls:MarkdownTextBlock MarkdownText="[meddsam](https://discord.com/users/1051148571371647017)" />
                         <controls:MarkdownTextBlock MarkdownText="[SquireDot](https://github.com/UltimatePlayer97)" />
-                        <controls:MarkdownTextBlock MarkdownText="[Invra](https://invra.net) ([GitLab](https://gitlab.com/invra), [GitHub](https://github.com/invra))" />
+                        <controls:MarkdownTextBlock MarkdownText="[Invra](https://invra.net)" />
                     </StackPanel>
                 </Expander>
 

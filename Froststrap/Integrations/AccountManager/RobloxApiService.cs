@@ -3,8 +3,6 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-using Froststrap.Models.APIs.Roblox;
-
 namespace Froststrap.Integrations.AccountManager
 {
     internal static class RobloxApiService

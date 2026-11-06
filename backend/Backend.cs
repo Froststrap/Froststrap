@@ -5,8 +5,35 @@
 // Big ass file with all mappings
 
 using System.Runtime.InteropServices;
+using NLog;
 
 namespace Froststrap.Backend;
+
+internal static class NativeLibraryFailure
+{
+    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+    private static readonly Lock Sync = new();
+    private static readonly HashSet<string> Reported = new(StringComparer.OrdinalIgnoreCase);
+
+    public static bool IsLoadFailure(Exception ex) =>
+        ex is DllNotFoundException or EntryPointNotFoundException or BadImageFormatException
+        || (ex is TypeInitializationException { InnerException: { } inner } && IsLoadFailure(inner));
+
+    public static void Report(string library, Exception ex)
+    {
+        lock (Sync)
+        {
+            if (!Reported.Add(library))
+                return;
+        }
+
+        Logger.Error(
+            ex,
+            "Failed to load the '{Library}' library. The file has been removed or quarantined by antivirus software." +
+            "Reinstall Froststrap or add an exclusion for its installation folder. Features that depend on this library are disabled.",
+            library);
+    }
+}
 
 /// A Virtual Display mechanism for macOS
 internal partial class InternalVirtualDisplay
@@ -58,42 +85,73 @@ public class VirtualDisplay
         double[] rates,
         uint serial
     )
-    {                    
-        fixed (double* ptr = rates)
+    {
+        try
         {
-            var result = InternalVirtualDisplay.Init(
-                name,
-                (nuint)width,
-                (nuint)height,
-                ptr,
-                (nuint)rates.Length,
-                serial
-            );
-            Console.WriteLine($"Virtual display initialized: {result}");
-            return result;
+            fixed (double* ptr = rates)
+            {
+                var result = InternalVirtualDisplay.Init(
+                    name,
+                    (nuint)width,
+                    (nuint)height,
+                    ptr,
+                    (nuint)rates.Length,
+                    serial
+                );
+                Console.WriteLine($"Virtual display initialized: {result}");
+                return result;
+            }
+        }
+        catch (Exception ex) when (NativeLibraryFailure.IsLoadFailure(ex))
+        {
+            NativeLibraryFailure.Report("virtualdisplay", ex);
+            return -1;
         }
     }
 
     /// Wrapper around starting the virtual display
     public static int Start()
     {
-        var result = InternalVirtualDisplay.Start();
+        try
+        {
+            var result = InternalVirtualDisplay.Start();
 
-        Console.WriteLine($"Virtual display started: {result}");
-        return result;
+            Console.WriteLine($"Virtual display started: {result}");
+            return result;
+        }
+        catch (Exception ex) when (NativeLibraryFailure.IsLoadFailure(ex))
+        {
+            NativeLibraryFailure.Report("virtualdisplay", ex);
+            return -1;
+        }
     }
 
     /// Checks with Rust implementation if the ring has `Some()`
     /// Which implies it's active or not
     public static bool Running()
     {
-        return InternalVirtualDisplay.IsRunning() != 0;
+        try
+        {
+            return InternalVirtualDisplay.IsRunning() != 0;
+        }
+        catch (Exception ex) when (NativeLibraryFailure.IsLoadFailure(ex))
+        {
+            NativeLibraryFailure.Report("virtualdisplay", ex);
+            return false;
+        }
     }
 
     /// Instructs to shut up the NSApplication worker thread
     public static void End()
     {
-        InternalVirtualDisplay.End();
+        try
+        {
+            InternalVirtualDisplay.End();
+        }
+        catch (Exception ex) when (NativeLibraryFailure.IsLoadFailure(ex))
+        {
+            NativeLibraryFailure.Report("virtualdisplay", ex);
+        }
     }
 }
 
@@ -125,11 +183,23 @@ internal partial class InternalNativeNotify
 /// A native notifier
 public class NativeNotify
 {
-    private static readonly Lazy<bool> Initialized = new(() =>
+    private static readonly Lazy<bool> Initialized = new(InitializeNative);
+
+    private static bool InitializeNative()
     {
-        InternalNativeNotify.Init();
-        return true;
-    });
+        try
+        {
+            InternalNativeNotify.Init();
+            return true;
+        }
+        catch (Exception ex) when (NativeLibraryFailure.IsLoadFailure(ex))
+        {
+            NativeLibraryFailure.Report("notify", ex);
+            return false;
+        }
+    }
+
+    public static bool Available => Initialized.Value;
 
     public static void Init()
     {
@@ -144,8 +214,17 @@ public class NativeNotify
     {
         Task.Run(() =>
         {
-            _ = Initialized.Value;
-            InternalNativeNotify.SendMessage(title, description, duration);
+            if (!Initialized.Value)
+                return;
+
+            try
+            {
+                InternalNativeNotify.SendMessage(title, description, duration);
+            }
+            catch (Exception ex) when (NativeLibraryFailure.IsLoadFailure(ex))
+            {
+                NativeLibraryFailure.Report("notify", ex);
+            }
         });
     }
 }
@@ -169,6 +248,13 @@ public class MobileAppReg
 {
     public static void Init()
     {
-        InternalMobileAppReg.Init();
+        try
+        {
+            InternalMobileAppReg.Init();
+        }
+        catch (Exception ex) when (NativeLibraryFailure.IsLoadFailure(ex))
+        {
+            NativeLibraryFailure.Report("mobileappreg", ex);
+        }
     }
 }

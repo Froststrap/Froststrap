@@ -2,21 +2,72 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
+
 namespace Froststrap.Utility
 {
     internal static class Filesystem
     {
         internal static long GetFreeDiskSpace(string path)
         {
-            foreach (var drive in DriveInfo.GetDrives())
+            if (string.IsNullOrWhiteSpace(path))
+                return -1;
+
+            string fullPath;
+
+            try
             {
-                // https://github.com/Bloxstraplabs/Bloxstrap/issues/1648#issuecomment-2192571030
-                if (path.StartsWith(drive.Name, StringComparison.OrdinalIgnoreCase))
-                    return drive.AvailableFreeSpace;
+                fullPath = Path.GetFullPath(path);
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Warn($"Could not resolve path '{path}' for the disk space check: {ex.Message}");
+                return -1;
             }
 
-            return -1;
+            if (OperatingSystem.IsWindows())
+                return TryGetWindowsFreeSpace(fullPath, out long windowsFreeSpace) ? windowsFreeSpace : -1;
+
+            try
+            {
+                return new DriveInfo(fullPath).AvailableFreeSpace;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Warn($"Could not read free disk space for '{fullPath}': {ex.Message}");
+                return -1;
+            }
         }
+
+        [SupportedOSPlatform("windows")]
+        private static bool TryGetWindowsFreeSpace(string path, out long freeSpace)
+        {
+            freeSpace = -1;
+
+            try
+            {
+                if (!GetDiskFreeSpaceEx(path, out ulong availableFreeSpace, out _, out _))
+                    return false;
+
+                freeSpace = availableFreeSpace > long.MaxValue ? long.MaxValue : (long)availableFreeSpace;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Warn($"Could not read free disk space for '{path}': {ex.Message}");
+                return false;
+            }
+        }
+
+        [SupportedOSPlatform("windows")]
+        [DllImport("kernel32.dll", EntryPoint = "GetDiskFreeSpaceExW", CharSet = CharSet.Unicode, SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool GetDiskFreeSpaceEx(
+            string lpDirectoryName,
+            out ulong lpFreeBytesAvailableToCaller,
+            out ulong lpTotalNumberOfBytes,
+            out ulong lpTotalNumberOfFreeBytes);
 
         internal static void AssertReadOnly(string filePath)
         {

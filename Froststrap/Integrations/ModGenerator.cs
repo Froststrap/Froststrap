@@ -596,7 +596,7 @@ namespace Froststrap.Integrations
         private static async Task<Dictionary<string, string[]>> LoadEmbeddedMappingsAsync()
         {
             var assembly = Assembly.GetExecutingAssembly();
-            using var stream = assembly.GetManifestResourceStream("Froststrap.Resources.mappings.json");
+            using var stream = Resource.GetStream("Resources/mappings.json");
             if (stream == null) return [];
             return await JsonHelper.DeserializeAsync<Dictionary<string, string[]>>(stream) ?? [];
         }
