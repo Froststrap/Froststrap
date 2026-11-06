@@ -2,7 +2,10 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Platform.Storage;
 using Avalonia.Media;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
@@ -127,7 +130,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public List<string> AddMethods { get; } = [Strings.Menu_AccountSelector_Login_LocalCookie, Strings.Menu_Dialog_QuickSignIn_Title, Strings.Common_Manual, Strings.Common_Browser];
+        public List<string> AddMethods { get; } = [Strings.Menu_AccountSelector_Login_LocalCookie, Strings.Menu_Dialog_QuickSignIn_Title, Strings.Common_Manual, Strings.Common_Browser, Strings.Menu_AccountTransfer_Import_Method];
 
         public string CurrentAccountDisplayName => CurrentAccount == null ? Strings.Menu_AccountSelector_NotLoggedIn : $"@{CurrentAccount.Username}";
 
@@ -401,6 +404,11 @@ namespace Froststrap.UI.ViewModels.Settings
                     OnManualAddRequested?.Invoke();
                     return;
                 }
+                else if (SelectedAddMethod == Strings.Menu_AccountTransfer_Import_Method)
+                {
+                    await ImportFromFileAsync();
+                    return;
+                }
                 else if (SelectedAddMethod == Strings.Menu_AccountSelector_Login_LocalCookie)
                 {
                     newAccount = await ImportFromCookieManager();
@@ -429,6 +437,142 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 IsAddingAccount = false;
             }
+        }
+
+        private static Window? ParentWindow()
+        {
+            if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+                return null;
+
+            return desktop.Windows.FirstOrDefault(w => w.IsActive) ?? desktop.MainWindow;
+        }
+
+        [RelayCommand]
+        private async Task ExportAccounts()
+        {
+            var parent = ParentWindow();
+            if (parent is null)
+                return;
+
+            IsDropdownOpen = false;
+
+            var accounts = _accountManager.Accounts.Where(a => !string.IsNullOrEmpty(a.SecurityToken)).ToList();
+            if (accounts.Count == 0)
+            {
+                await Frontend.ShowMessageBox(Strings.Menu_AccountTransfer_Error_NoAccounts, MessageBoxImage.Information);
+                return;
+            }
+
+            var dialog = new AccountTransferDialog(accounts);
+            if (!await dialog.ShowDialog<bool>(parent) || dialog.ViewModel.ExportedData is not { } data)
+                return;
+
+            try
+            {
+                var file = await parent.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+                {
+                    Title = Strings.Menu_AccountTransfer_Export_Title,
+                    SuggestedFileName = $"Froststrap-accounts-{DateTime.Now:yyyyMMdd}.{AccountTransfer.FileExtension}",
+                    DefaultExtension = AccountTransfer.FileExtension,
+                    FileTypeChoices = [ExportFileType],
+                });
+
+                if (file is null)
+                    return;
+
+                await using (var stream = await file.OpenWriteAsync())
+                    await stream.WriteAsync(data);
+
+                App.Logger.Info($"Exported {dialog.ViewModel.Accounts.Count(a => a.IsSelected)} account(s).");
+                await Frontend.ShowMessageBox(Strings.Menu_AccountTransfer_Export_Done, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error("Couldn't save the account export: ", ex);
+                await Frontend.ShowMessageBox(Strings.Menu_AccountTransfer_Error_Save, MessageBoxImage.Error);
+            }
+        }
+
+        private static readonly FilePickerFileType ExportFileType = new(Strings.Menu_AccountTransfer_FileType)
+        {
+            Patterns = [$"*.{AccountTransfer.FileExtension}"],
+        };
+
+        private async Task ImportFromFileAsync()
+        {
+            var parent = ParentWindow();
+            if (parent is null)
+                return;
+
+            IsDropdownOpen = false;
+
+            byte[] data;
+            try
+            {
+                var files = await parent.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+                {
+                    Title = Strings.Menu_AccountTransfer_Import_Title,
+                    FileTypeFilter = [ExportFileType, FilePickerFileTypes.All],
+                    AllowMultiple = false,
+                });
+
+                if (files.Count == 0)
+                    return;
+
+                await using var stream = await files[0].OpenReadAsync();
+                if (stream.CanSeek && stream.Length > MaxImportSize)
+                {
+                    await Frontend.ShowMessageBox(Strings.Menu_AccountTransfer_Error_NotAnExport, MessageBoxImage.Error);
+                    return;
+                }
+
+                using var buffer = new MemoryStream();
+                await stream.CopyToAsync(buffer);
+                data = buffer.ToArray();
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error("Couldn't read the account export: ", ex);
+                await Frontend.ShowMessageBox(Strings.Menu_AccountTransfer_Error_Read, MessageBoxImage.Error);
+                return;
+            }
+
+            var dialog = new AccountTransferDialog(data);
+            if (!await dialog.ShowDialog<bool>(parent) || dialog.ViewModel.ImportedAccounts is not { } entries)
+                return;
+
+            var results = await AccountTransfer.ImportAsync(_accountManager, entries);
+            await LoadDataAsync();
+
+            await Frontend.ShowMessageBox(DescribeImport(results),
+                results.Any(r => r.Outcome is AccountImportOutcome.Expired or AccountImportOutcome.Invalid)
+                    ? MessageBoxImage.Warning
+                    : MessageBoxImage.Information);
+        }
+
+        // an export of every account fits in a few KB
+        private const long MaxImportSize = 1024 * 1024;
+
+        private static string DescribeImport(List<AccountImportItem> results)
+        {
+            if (results.Count == 0)
+                return Strings.Menu_AccountTransfer_Import_Empty;
+
+            var lines = new List<string>();
+            void Add(AccountImportOutcome outcome, string format)
+            {
+                var names = results.Where(r => r.Outcome == outcome).Select(r => r.Name).ToList();
+                if (names.Count > 0)
+                    lines.Add(string.Format(CultureInfo.InvariantCulture, format, names.Count, string.Join(", ", names)));
+            }
+
+            Add(AccountImportOutcome.Added, Strings.Menu_AccountTransfer_Import_Added);
+            Add(AccountImportOutcome.Updated, Strings.Menu_AccountTransfer_Import_Updated);
+            Add(AccountImportOutcome.Unchecked, Strings.Menu_AccountTransfer_Import_Unchecked);
+            Add(AccountImportOutcome.Expired, Strings.Menu_AccountTransfer_Import_Expired);
+            Add(AccountImportOutcome.Invalid, Strings.Menu_AccountTransfer_Import_Invalid);
+
+            return string.Join("\n", lines);
         }
 
         private async Task<bool> HandleDuplicateAccountAsync(AccountManagerAccount account)
