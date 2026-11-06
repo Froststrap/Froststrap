@@ -17,44 +17,57 @@ SPDX-License-Identifier: MPL-2.0
              x:Class="Froststrap.UI.Elements.About.Pages.AboutPage">
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel Margin="14">
+            <Grid Margin="0,24" HorizontalAlignment="Center" ColumnDefinitions="Auto,*">
+                <Image Grid.Column="0" x:Name="Image" Width="76" Height="76" VerticalAlignment="Center"
+                       Source="avares://Froststrap/Froststrap.png" RenderOptions.BitmapInterpolationMode="HighQuality" />
 
-            <Grid Margin="0,0,0,24" HorizontalAlignment="Center" ColumnDefinitions="Auto,*">
-                <Panel Grid.Column="0">
-                    <Image x:Name="Image" Width="72" Height="72" VerticalAlignment="Center"
-                           Source="avares://Froststrap/Froststrap.png" RenderOptions.BitmapInterpolationMode="HighQuality" />
-                </Panel>
-
-                <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center">
-                    <TextBlock Text="Froststrap" FontSize="24" FontWeight="Bold" />
+                <StackPanel Grid.Column="1" Margin="16,0,0,0" VerticalAlignment="Center">
+                    <TextBlock Text="Froststrap" FontSize="30" FontWeight="Bold" />
                     <TextBlock Text="{x:Static resources:Strings.Menu_About_Description}"
                                Foreground="{DynamicResource TextFillColorTertiaryBrush}"  />
                 </StackPanel>
             </Grid>
 
             <WrapPanel HorizontalAlignment="Center" Orientation="Horizontal">
-                <Button Margin="0,0,8,8"
-                        Padding="14,8"
-                        Content="{x:Static resources:Strings.Menu_About_GithubRepository}"
-                        Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
-                        CommandParameter="https://github.com/Froststrap/Froststrap" />
+                <controls:IconButton
+                    Icon="SquareArrowOutUpRight"
+                    VerticalAlignment="Center"
+                    Padding="14,8"
+                    IconSize="18"
+                    Margin="0,0,8,0"
+                    Content="{x:Static resources:Strings.Menu_About_GithubRepository}"
+                    Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+                    CommandParameter="https://github.com/Froststrap/Froststrap" />
 
-                <Button Margin="0,0,8,8"
-                        Padding="14,8"
-                        Content="{x:Static resources:Strings.Menu_About_HelpInformation}"
-                        Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
-                        CommandParameter="https://bloxstraplabs.com/wiki/" />
+                <controls:IconButton
+                    Icon="CircleQuestionMark"
+                    VerticalAlignment="Center"
+                    Padding="14,8"
+                    IconSize="18"
+                    Margin="0,0,8,0"
+                    Content="{x:Static resources:Strings.Menu_About_HelpInformation}"
+                    Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+                    CommandParameter="https://bloxstraplabs.com/wiki/" />
 
-                <Button Margin="0,0,8,8"
-                        Padding="14,8"
-                        Content="{x:Static resources:Strings.Menu_About_ReportIssue}"
-                        Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
-                        CommandParameter="https://github.com/Froststrap/Froststrap/issues" />
+                <controls:IconButton
+                    Icon="Flag"
+                    VerticalAlignment="Center"
+                    Padding="14,8"
+                    IconSize="18"
+                    Margin="0,0,8,0"
+                    Content="{x:Static resources:Strings.Menu_About_ReportIssue}"
+                    Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+                    CommandParameter="https://github.com/Froststrap/Froststrap/issues" />
 
-                <Button Margin="0,0,0,8"
-                        Padding="14,8"
-                        Content="{x:Static resources:Strings.Menu_About_DiscordServer}"
-                        Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
-                        CommandParameter="https://discord.gg/KdR9vpRcUN" />
+                <controls:IconButton
+                    Icon="Users"
+                    VerticalAlignment="Center"
+                    Padding="14,8"
+                    IconSize="18"
+                    Margin="0,0,8,0"
+                    Content="{x:Static resources:Strings.Menu_About_DiscordServer}"
+                    Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+                    CommandParameter="https://discord.gg/KdR9vpRcUN" />
             </WrapPanel>
 
             <StackPanel IsVisible="{Binding BuildInformationVisibility}">
