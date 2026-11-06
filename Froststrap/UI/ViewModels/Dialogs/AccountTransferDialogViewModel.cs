@@ -143,15 +143,15 @@ namespace Froststrap.UI.ViewModels.Dialogs
                     var selected = Accounts.Where(a => a.IsSelected).Select(a => a.Account);
                     var (result, data) = await AccountTransfer.ExportAsync(selected, Password);
 
-                    if (result != AccountVaultResult.Ok)
-                    {
-                        Error = Describe(result);
-                        return;
-                    }
-
                     if (_cancelRequested)
                     {
                         CloseDialog(false);
+                        return;
+                    }
+
+                    if (result != AccountVaultResult.Ok)
+                    {
+                        Error = Describe(result);
                         return;
                     }
 
@@ -262,7 +262,7 @@ namespace Froststrap.UI.ViewModels.Dialogs
         [RelayCommand]
         private void Cancel()
         {
-            // stop checking accounts; what was imported so far is still reported
+            // stop checking accounts; nothing gets saved
             if (_isImporting)
                 _importCancel?.Cancel();
             else

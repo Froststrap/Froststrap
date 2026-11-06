@@ -170,8 +170,8 @@ namespace Froststrap.Integrations.AccountManager
             return [.. manager.Accounts.Where(a => ids.Contains(a.UserId))];
         }
 
-        /// Verifies each session with Roblox and adds the ones whose owner it can confirm.
-        /// Stops early when cancelled; the rest are reported as cancelled.
+        /// Verifies each session with Roblox, then saves the confirmed ones in one go.
+        /// Cancelling changes nothing; every entry is then reported as cancelled.
         public static async Task<List<AccountImportItem>> ImportAsync(
             AccountManager manager,
             IReadOnlyList<AccountExportEntry> entries,
@@ -179,35 +179,52 @@ namespace Froststrap.Integrations.AccountManager
             IProgress<int>? progress,
             CancellationToken token)
         {
-            var results = new List<AccountImportItem>();
             var unique = entries.DistinctBy(e => e.UserId).ToList();
+            var results = new List<AccountImportItem>();
+            var toSave = new List<(int Index, AccountManagerAccount Account)>();
 
-            for (int i = 0; i < unique.Count; i++)
+            for (int i = 0; i < unique.Count && !token.IsCancellationRequested; i++)
             {
-                var entry = unique[i];
-                string name = string.IsNullOrEmpty(entry.Username)
-                    ? entry.UserId.ToString(CultureInfo.InvariantCulture)
-                    : entry.Username;
-
-                if (token.IsCancellationRequested)
-                {
-                    results.AddRange(unique.Skip(i).Select(e => new AccountImportItem(
-                        string.IsNullOrEmpty(e.Username) ? e.UserId.ToString(CultureInfo.InvariantCulture) : e.Username,
-                        AccountImportOutcome.Cancelled)));
-                    break;
-                }
-
                 progress?.Report(i);
-                results.Add(await ImportOneAsync(manager, entry, name, replaceExisting, token));
+
+                var (item, account) = await CheckAsync(manager, unique[i], replaceExisting, token);
+                results.Add(item);
+                if (account is not null)
+                    toSave.Add((results.Count - 1, account));
+            }
+
+            if (token.IsCancellationRequested)
+                return [.. unique.Select(e => new AccountImportItem(NameOf(e), AccountImportOutcome.Cancelled))];
+
+            if (toSave.Count == 0)
+                return results;
+
+            bool saved = manager.TryAddOrUpdateAccounts([.. toSave.Select(t => t.Account)], out var isNew);
+            for (int i = 0; i < toSave.Count; i++)
+            {
+                var outcome = !saved ? AccountImportOutcome.NotSaved
+                    : isNew[i] ? AccountImportOutcome.Added
+                    : AccountImportOutcome.Updated;
+                results[toSave[i].Index] = results[toSave[i].Index] with { Outcome = outcome };
             }
 
             return results;
         }
 
-        private static async Task<AccountImportItem> ImportOneAsync(AccountManager manager, AccountExportEntry entry, string name, bool replaceExisting, CancellationToken token)
+        private static string NameOf(AccountExportEntry entry) =>
+            string.IsNullOrEmpty(entry.Username) ? entry.UserId.ToString(CultureInfo.InvariantCulture) : entry.Username;
+
+        /// The account to save, or null with the reason it's skipped.
+        private static async Task<(AccountImportItem Item, AccountManagerAccount? Account)> CheckAsync(
+            AccountManager manager,
+            AccountExportEntry entry,
+            bool replaceExisting,
+            CancellationToken token)
         {
+            string name = NameOf(entry);
+
             if (entry.UserId <= 0 || string.IsNullOrWhiteSpace(entry.SecurityToken))
-                return new(name, AccountImportOutcome.Invalid);
+                return (new(name, AccountImportOutcome.Invalid), null);
 
             AccountManagerAccount? account;
             using var limit = CancellationTokenSource.CreateLinkedTokenSource(token);
@@ -222,39 +239,30 @@ namespace Froststrap.Integrations.AccountManager
                 {
                     var probe = new AccountManagerAccount(entry.SecurityToken, entry.UserId, entry.Username, entry.DisplayName);
                     bool? valid = await AccountManager.ValidateAccountAsync(probe, limit.Token);
-                    return new(name, valid == false ? AccountImportOutcome.Expired : AccountImportOutcome.Unreachable);
+                    return (new(name, valid == false ? AccountImportOutcome.Expired : AccountImportOutcome.Unreachable), null);
                 }
             }
             catch (OperationCanceledException) when (token.IsCancellationRequested)
             {
-                return new(name, AccountImportOutcome.Cancelled);
+                return (new(name, AccountImportOutcome.Cancelled), null);
             }
             catch (OperationCanceledException)
             {
                 // our own time limit
-                return new(name, AccountImportOutcome.Unreachable);
+                return (new(name, AccountImportOutcome.Unreachable), null);
             }
 
             // the replace prompt was about the file's accounts, so a session for anyone else can't ride along
             if (account.UserId != entry.UserId)
-                return new(name, AccountImportOutcome.Mismatched);
+                return (new(name, AccountImportOutcome.Mismatched), null);
 
             name = string.IsNullOrEmpty(account.Username) ? name : account.Username;
 
             if (!replaceExisting && manager.Accounts.Any(a => a.UserId == account.UserId))
-                return new(name, AccountImportOutcome.Kept);
+                return (new(name, AccountImportOutcome.Kept), null);
 
-            if (token.IsCancellationRequested)
-                return new(name, AccountImportOutcome.Cancelled);
-
-            manager.AddOrUpdateAccount(account, out bool isNew);
-
-            // saving can fail quietly: check both AccountManager.json and the session itself
-            string? saved = AccountSecurity.GetCredential(account.UserId.ToString(CultureInfo.InvariantCulture));
-            if (!manager.LastSaveSucceeded || saved != account.SecurityToken)
-                return new(name, AccountImportOutcome.NotSaved);
-
-            return new(name, isNew ? AccountImportOutcome.Added : AccountImportOutcome.Updated);
+            // outcome is filled in once the batch is saved
+            return (new(name, AccountImportOutcome.Added), account);
         }
     }
 }

@@ -209,13 +209,77 @@ namespace Froststrap.Integrations.AccountManager
 
         public AccountManagerAccount AddOrUpdateAccount(AccountManagerAccount account, out bool isNew)
         {
+            var result = Merge(account, out isNew);
+
+            if (!isNew && ActiveAccount?.UserId == result.UserId)
+            {
+                ActiveAccount = result;
+                ActiveAccountChanged?.Invoke(result);
+            }
+
+            SaveAccounts();
+            return result;
+        }
+
+        /// Adds or updates several accounts with a single save. If saving fails, the account list
+        /// and the affected credentials are put back the way they were and false is returned.
+        public bool TryAddOrUpdateAccounts(IReadOnlyList<AccountManagerAccount> accounts, out List<bool> isNew)
+        {
+            var listBefore = _accounts.ToList();
+            var activeBefore = ActiveAccount;
+            var credentialsBefore = accounts
+                .Select(a => a.UserId.ToString(CultureInfo.InvariantCulture))
+                .Distinct()
+                .ToDictionary(id => id, AccountSecurity.GetCredential);
+
+            isNew = [];
+            foreach (var account in accounts)
+            {
+                var merged = Merge(account, out bool added);
+                isNew.Add(added);
+
+                if (!added && ActiveAccount?.UserId == merged.UserId)
+                    ActiveAccount = merged;
+            }
+
+            SaveAccounts();
+
+            if (LastSaveSucceeded)
+            {
+                if (ActiveAccount is not null && !ReferenceEquals(ActiveAccount, activeBefore))
+                    ActiveAccountChanged?.Invoke(ActiveAccount);
+                return true;
+            }
+
+            _accounts.Clear();
+            _accounts.AddRange(listBefore);
+            ActiveAccount = activeBefore;
+
+            foreach (var (id, credential) in credentialsBefore)
+            {
+                bool restored = credential is null
+                    ? AccountSecurity.DeleteCredential(id)
+                    : AccountSecurity.SetCredential(id, credential);
+
+                if (!restored)
+                    App.Logger.Warn($"Couldn't restore the saved credential for account {id} after a failed save.");
+            }
+
+            // AccountManager.json may have been written before a credential failed
+            SaveAccountsCore(writeCredentials: false);
+            LastSaveSucceeded = false;
+            return false;
+        }
+
+        // updates the list only; callers save and raise events
+        private AccountManagerAccount Merge(AccountManagerAccount account, out bool isNew)
+        {
             int index = _accounts.FindIndex(a => a.UserId == account.UserId);
 
             if (index < 0)
             {
                 isNew = true;
                 _accounts.Add(account);
-                SaveAccounts();
                 return account;
             }
 
@@ -232,14 +296,6 @@ namespace Froststrap.Integrations.AccountManager
             };
 
             _accounts[index] = updated;
-
-            if (ActiveAccount?.UserId == updated.UserId)
-            {
-                ActiveAccount = updated;
-                ActiveAccountChanged?.Invoke(updated);
-            }
-
-            SaveAccounts();
             return updated;
         }
 
