@@ -2077,6 +2077,81 @@ It must contain at least one of the following folders: content, ExtraContent, Pl
   <data name="Menu.Appearance.Opacity" xml:space="preserve">
     <value>Opacity:</value>
   </data>
+  <data name="Menu.MusicControls.Next" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="Menu.MusicControls.NothingPlaying" xml:space="preserve">
+    <value>Nothing playing</value>
+  </data>
+  <data name="Menu.MusicControls.Pause" xml:space="preserve">
+    <value>Pause</value>
+  </data>
+  <data name="Menu.MusicControls.RepeatAll" xml:space="preserve">
+    <value>Repeat all</value>
+  </data>
+  <data name="Menu.MusicControls.RepeatOff" xml:space="preserve">
+    <value>Repeat off</value>
+  </data>
+  <data name="Menu.MusicControls.RepeatOne" xml:space="preserve">
+    <value>Repeat one</value>
+  </data>
+  <data name="Menu.MusicControls.Play" xml:space="preserve">
+    <value>Play</value>
+  </data>
+  <data name="Menu.MusicControls.Previous" xml:space="preserve">
+    <value>Previous</value>
+  </data>
+  <data name="Menu.Appearance.BackgroundMusic.Device" xml:space="preserve">
+    <value>Output device</value>
+  </data>
+  <data name="Menu.Appearance.BackgroundMusic.Device.Description" xml:space="preserve">
+    <value>Where the music plays. If the device isn't connected, it plays on the default one.</value>
+  </data>
+  <data name="Menu.Appearance.BackgroundMusic.Device.Default" xml:space="preserve">
+    <value>System default</value>
+  </data>
+  <data name="Menu.Appearance.BackgroundMusic.Device.Missing" xml:space="preserve">
+    <value>Disconnected device</value>
+  </data>
+  <data name="Menu.Appearance.BackgroundMusic.Channels" xml:space="preserve">
+    <value>Output channels</value>
+  </data>
+  <data name="Menu.Appearance.BackgroundMusic.Channels.Description" xml:space="preserve">
+    <value>Which pair of the device's channels gets the music.</value>
+  </data>
+  <data name="Menu.Appearance.BackgroundMusic.Resume" xml:space="preserve">
+    <value>Resume last song</value>
+  </data>
+  <data name="Menu.Appearance.BackgroundMusic.Resume.Description" xml:space="preserve">
+    <value>Pick up the last song when Settings or Froststrap opens again. When off, it moves on to the next song.</value>
+  </data>
+  <data name="Menu.Appearance.BackgroundMusic.Shuffle" xml:space="preserve">
+    <value>Shuffle</value>
+  </data>
+  <data name="Menu.Appearance.BackgroundMusic.Title" xml:space="preserve">
+    <value>Background Music</value>
+  </data>
+  <data name="Menu.Appearance.BackgroundMusic.Description" xml:space="preserve">
+    <value>Plays the songs in a folder while the settings window is open. Supports MP3, OGG, WAV, and FLAC.</value>
+  </data>
+  <data name="Menu.Appearance.BackgroundMusic.NoFolder" xml:space="preserve">
+    <value>No folder selected...</value>
+  </data>
+  <data name="Menu.Appearance.BackgroundMusic.FolderUnreadable" xml:space="preserve">
+    <value>The selected folder could not be opened. Check that it still exists and that Froststrap can access it.</value>
+  </data>
+  <data name="Menu.Appearance.BackgroundMusic.NoTracks" xml:space="preserve">
+    <value>No MP3, OGG, WAV, or FLAC files were found in the selected folder.</value>
+  </data>
+  <data name="Menu.Appearance.BackgroundMusic.Volume" xml:space="preserve">
+    <value>Volume</value>
+  </data>
+  <data name="Menu.Appearance.BackgroundMusic.PlayFailed" xml:space="preserve">
+    <value>Couldn't play the selected file. Make sure it's a valid MP3, OGG, WAV, or FLAC file.</value>
+  </data>
+  <data name="Menu.Appearance.BackgroundMusic.Unavailable" xml:space="preserve">
+    <value>Audio playback isn't available on this system.</value>
+  </data>
   <data name="Menu.Appearance.ThemeCycling.Title" xml:space="preserve">
     <value>Theme Cycling</value>
   </data>

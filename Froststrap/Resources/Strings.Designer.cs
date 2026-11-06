@@ -3720,6 +3720,231 @@ namespace Froststrap.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Background Music.
+        /// </summary>
+        public static string Menu_Appearance_BackgroundMusic_Title {
+            get {
+                return ResourceManager.GetString("Menu.Appearance.BackgroundMusic.Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Plays the songs in a folder while the settings window is open. Supports MP3, OGG, WAV, and FLAC..
+        /// </summary>
+        public static string Menu_Appearance_BackgroundMusic_Description {
+            get {
+                return ResourceManager.GetString("Menu.Appearance.BackgroundMusic.Description", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No folder selected....
+        /// </summary>
+        public static string Menu_Appearance_BackgroundMusic_NoFolder {
+            get {
+                return ResourceManager.GetString("Menu.Appearance.BackgroundMusic.NoFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The selected folder could not be opened. Check that it still exists and that Froststrap can access it..
+        /// </summary>
+        public static string Menu_Appearance_BackgroundMusic_FolderUnreadable {
+            get {
+                return ResourceManager.GetString("Menu.Appearance.BackgroundMusic.FolderUnreadable", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No MP3, OGG, WAV, or FLAC files were found in the selected folder..
+        /// </summary>
+        public static string Menu_Appearance_BackgroundMusic_NoTracks {
+            get {
+                return ResourceManager.GetString("Menu.Appearance.BackgroundMusic.NoTracks", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Next.
+        /// </summary>
+        public static string Menu_MusicControls_Next {
+            get {
+                return ResourceManager.GetString("Menu.MusicControls.Next", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nothing playing.
+        /// </summary>
+        public static string Menu_MusicControls_NothingPlaying {
+            get {
+                return ResourceManager.GetString("Menu.MusicControls.NothingPlaying", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pause.
+        /// </summary>
+        public static string Menu_MusicControls_Pause {
+            get {
+                return ResourceManager.GetString("Menu.MusicControls.Pause", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Play.
+        /// </summary>
+        public static string Menu_MusicControls_Play {
+            get {
+                return ResourceManager.GetString("Menu.MusicControls.Play", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Previous.
+        /// </summary>
+        public static string Menu_MusicControls_Previous {
+            get {
+                return ResourceManager.GetString("Menu.MusicControls.Previous", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Output device.
+        /// </summary>
+        public static string Menu_Appearance_BackgroundMusic_Device {
+            get {
+                return ResourceManager.GetString("Menu.Appearance.BackgroundMusic.Device", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Where the music plays. If the device isn't connected, it plays on the default one..
+        /// </summary>
+        public static string Menu_Appearance_BackgroundMusic_Device_Description {
+            get {
+                return ResourceManager.GetString("Menu.Appearance.BackgroundMusic.Device.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to System default.
+        /// </summary>
+        public static string Menu_Appearance_BackgroundMusic_Device_Default {
+            get {
+                return ResourceManager.GetString("Menu.Appearance.BackgroundMusic.Device.Default", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disconnected device.
+        /// </summary>
+        public static string Menu_Appearance_BackgroundMusic_Device_Missing {
+            get {
+                return ResourceManager.GetString("Menu.Appearance.BackgroundMusic.Device.Missing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Output channels.
+        /// </summary>
+        public static string Menu_Appearance_BackgroundMusic_Channels {
+            get {
+                return ResourceManager.GetString("Menu.Appearance.BackgroundMusic.Channels", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Which pair of the device's channels gets the music..
+        /// </summary>
+        public static string Menu_Appearance_BackgroundMusic_Channels_Description {
+            get {
+                return ResourceManager.GetString("Menu.Appearance.BackgroundMusic.Channels.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Resume last song.
+        /// </summary>
+        public static string Menu_Appearance_BackgroundMusic_Resume {
+            get {
+                return ResourceManager.GetString("Menu.Appearance.BackgroundMusic.Resume", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pick up the last song when Settings or Froststrap opens again. When off, it moves on to the next song..
+        /// </summary>
+        public static string Menu_Appearance_BackgroundMusic_Resume_Description {
+            get {
+                return ResourceManager.GetString("Menu.Appearance.BackgroundMusic.Resume.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Repeat all.
+        /// </summary>
+        public static string Menu_MusicControls_RepeatAll {
+            get {
+                return ResourceManager.GetString("Menu.MusicControls.RepeatAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Repeat off.
+        /// </summary>
+        public static string Menu_MusicControls_RepeatOff {
+            get {
+                return ResourceManager.GetString("Menu.MusicControls.RepeatOff", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Repeat one.
+        /// </summary>
+        public static string Menu_MusicControls_RepeatOne {
+            get {
+                return ResourceManager.GetString("Menu.MusicControls.RepeatOne", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shuffle.
+        /// </summary>
+        public static string Menu_Appearance_BackgroundMusic_Shuffle {
+            get {
+                return ResourceManager.GetString("Menu.Appearance.BackgroundMusic.Shuffle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Volume.
+        /// </summary>
+        public static string Menu_Appearance_BackgroundMusic_Volume {
+            get {
+                return ResourceManager.GetString("Menu.Appearance.BackgroundMusic.Volume", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Couldn't play the selected file. Make sure it's a valid MP3, OGG, WAV, or FLAC file..
+        /// </summary>
+        public static string Menu_Appearance_BackgroundMusic_PlayFailed {
+            get {
+                return ResourceManager.GetString("Menu.Appearance.BackgroundMusic.PlayFailed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Audio playback isn't available on this system..
+        /// </summary>
+        public static string Menu_Appearance_BackgroundMusic_Unavailable {
+            get {
+                return ResourceManager.GetString("Menu.Appearance.BackgroundMusic.Unavailable", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Preview.
         /// </summary>
         public static string Menu_Appearance_Preview {

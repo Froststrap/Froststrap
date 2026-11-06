@@ -168,12 +168,15 @@ fn nfpm_config(
               deb:
                 depends:
                   - libicu-dev
+                  - libpulse0
               rpm:
                 depends:
                   - libicu
+                  - pulseaudio-libs
               archlinux:
                 depends:
                   - icu
+                  - libpulse
             
             depends:
               - dbus

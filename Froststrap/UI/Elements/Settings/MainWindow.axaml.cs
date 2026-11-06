@@ -145,6 +145,8 @@ namespace Froststrap.UI.Elements.Settings
                 Position = NotificationPosition.TopRight,
                 MaxItems = 3
             };
+
+            BackgroundMusic.Start();
         }
 
         public void StartIndexingAllPagesIfNeeded()
@@ -768,6 +770,7 @@ namespace Froststrap.UI.Elements.Settings
 
         private void MainWindow_Closed(object? sender, EventArgs e)
         {
+            BackgroundMusic.Stop();
             NotificationManager = null;
             Instance = null;
             App.SettingsOpen = false;

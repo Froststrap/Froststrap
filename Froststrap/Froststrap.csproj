@@ -137,11 +137,13 @@ SPDX-License-Identifier: MPL-2.0
     <Copy SourceFiles="$(BackendOutDir)libmobileappreg.dylib" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" Condition="Exists('$(BackendOutDir)libmobileappreg.dylib')" />
 
     <Copy SourceFiles="$(BackendOutDir)libnotify.dylib" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" Condition="Exists('$(BackendOutDir)libnotify.dylib')" />
+
+    <Copy SourceFiles="$(BackendOutDir)libaudioplayer.dylib" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" Condition="Exists('$(BackendOutDir)libaudioplayer.dylib')" />
   </Target>
 
   <Target Name="KeepDylibsOutOfBundle" AfterTargets="ComputeResolvedFilesToPublishList" Condition="$([MSBuild]::IsOSPlatform('OSX'))">
     <ItemGroup>
-      <ResolvedFileToPublish Remove="@(ResolvedFileToPublish)" Condition="'%(Filename)%(Extension)' == 'libnotify.dylib'&#xA;                                     Or '%(Filename)%(Extension)' == 'libvirtualdisplay.dylib'&#xA;                                     Or '%(Filename)%(Extension)' == 'libmobileappreg.dylib'" />
+      <ResolvedFileToPublish Remove="@(ResolvedFileToPublish)" Condition="'%(Filename)%(Extension)' == 'libnotify.dylib'&#xA;                                     Or '%(Filename)%(Extension)' == 'libvirtualdisplay.dylib'&#xA;                                     Or '%(Filename)%(Extension)' == 'libmobileappreg.dylib'&#xA;                                     Or '%(Filename)%(Extension)' == 'libaudioplayer.dylib'" />
     </ItemGroup>
   </Target>
 

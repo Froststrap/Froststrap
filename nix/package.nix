@@ -28,6 +28,7 @@
   zlib,
   krb5,
   dbus,
+  libpulseaudio,
   lib,
 }:
 {
@@ -67,6 +68,7 @@ let
     libsecret
     skia
     dbus
+    libpulseaudio
 
     # X11 libs
     libX11
@@ -90,7 +92,7 @@ buildDotnetModule {
 
   cargoDeps = rustPlatform.fetchCargoVendor {
     src = "${src}/backend";
-    hash = "sha256-KqFpWnP1SgVWs//PM0nqgzpmxDTGuHhy2ffHils4U2Q=";
+    hash = "sha256-ygWJiKz4L4fh1RRgFJNSFSoOz5HeF/b0ZiAehnMyuEY=";
   };
 
   nativeBuildInputs = [
@@ -104,6 +106,7 @@ buildDotnetModule {
 
   buildInputs = lib.optionals stdenv.hostPlatform.isLinux [
     dbus
+    libpulseaudio
     fontconfig
     zlib
     krb5

@@ -12,6 +12,8 @@ namespace Froststrap.Models.Persistable
 
         public string? LastPage { get; set; } = null!;
 
+        public string? BackgroundMusicLastTrack { get; set; }
+
         public bool ForceReinstall { get; set; }
 
         //if we were still windows only i would of just done it in nsis installer

@@ -42,6 +42,7 @@ appimageTools.wrapType2 {
       icu
       fontconfig
       dbus
+      libpulseaudio
     ];
 
   # list values must end with ";". makeDesktopItem omits it.
