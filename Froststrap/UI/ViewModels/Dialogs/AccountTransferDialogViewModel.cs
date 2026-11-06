@@ -18,6 +18,8 @@ namespace Froststrap.UI.ViewModels.Dialogs
         private readonly byte[]? _importData;
         private readonly AccountManager? _manager;
         private CancellationTokenSource? _importCancel;
+        private bool _cancelRequested;
+        private bool _allowClose;
 
         public bool IsExport => _importData is null;
         public bool IsImport => !IsExport;
@@ -111,14 +113,16 @@ namespace Froststrap.UI.ViewModels.Dialogs
             _window = window;
             _importData = importData;
             _manager = manager;
-            // closing mid-import stops it, then the dialog closes itself with what got imported
+            // closing while busy (unlocking or importing) cancels instead; the dialog then
+            // closes itself, and nothing more is imported
             _window.Closing += (_, e) =>
             {
-                if (_isImporting)
-                {
-                    e.Cancel = true;
-                    _importCancel?.Cancel();
-                }
+                if (_allowClose || !IsBusy)
+                    return;
+
+                e.Cancel = true;
+                _cancelRequested = true;
+                _importCancel?.Cancel();
             };
         }
 
@@ -152,11 +156,23 @@ namespace Froststrap.UI.ViewModels.Dialogs
                         return;
                     }
 
+                    if (_cancelRequested)
+                    {
+                        CloseDialog(false);
+                        return;
+                    }
+
                     ExportedData = data;
                 }
                 else
                 {
                     var (result, entries) = await AccountTransfer.ReadAsync(_importData!, Password);
+
+                    if (_cancelRequested)
+                    {
+                        CloseDialog(false);
+                        return;
+                    }
 
                     if (result != AccountVaultResult.Ok)
                     {
@@ -164,13 +180,17 @@ namespace Froststrap.UI.ViewModels.Dialogs
                         return;
                     }
 
-                    if (await AskReplaceAsync(entries) is not bool replace)
+                    if (await AskReplaceAsync(entries) is not bool replace || _cancelRequested)
+                    {
+                        if (_cancelRequested)
+                            CloseDialog(false);
                         return;
+                    }
 
                     ImportResults = await RunImportAsync(entries, replace);
                 }
 
-                _window.Close(true);
+                CloseDialog(true);
             }
             catch (Exception ex)
             {
@@ -189,7 +209,7 @@ namespace Froststrap.UI.ViewModels.Dialogs
             if (existing.Count == 0)
                 return false;
 
-            string names = string.Join(", ", existing.Select(e => e.Username));
+            string names = string.Join(", ", existing.Select(a => AccountTransfer.EscapeMarkdown(a.Username)));
             var answer = await Frontend.ShowMessageBox(
                 string.Format(CultureInfo.InvariantCulture, Strings.Menu_AccountTransfer_Import_ReplacePrompt, existing.Count, names),
                 MessageBoxImage.Question,
@@ -228,6 +248,12 @@ namespace Froststrap.UI.ViewModels.Dialogs
             }
         }
 
+        private void CloseDialog(bool result)
+        {
+            _allowClose = true;
+            _window.Close(result);
+        }
+
         [RelayCommand]
         private void Cancel()
         {
@@ -235,13 +261,16 @@ namespace Froststrap.UI.ViewModels.Dialogs
             if (_isImporting)
                 _importCancel?.Cancel();
             else
-                _window.Close(false);
+                CloseDialog(false);
         }
 
         private bool CheckExportInput()
         {
-            if (!Accounts.Any(a => a.IsSelected))
+            int selected = Accounts.Count(a => a.IsSelected);
+            if (selected == 0)
                 Error = Strings.Menu_AccountTransfer_Error_NoAccounts;
+            else if (selected > AccountTransfer.MaxAccounts)
+                Error = string.Format(CultureInfo.InvariantCulture, Strings.Menu_AccountTransfer_Error_TooMany, AccountTransfer.MaxAccounts);
             else if (Password.Length < AccountTransfer.MinPasswordLength)
                 Error = string.Format(CultureInfo.InvariantCulture, Strings.Menu_AccountTransfer_Error_ShortPassword, AccountTransfer.MinPasswordLength);
             else if (Password != ConfirmPassword)

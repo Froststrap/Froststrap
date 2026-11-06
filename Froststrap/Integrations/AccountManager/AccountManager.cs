@@ -307,9 +307,10 @@ namespace Froststrap.Integrations.AccountManager
             RobloxApiService.GetUserPresenceAsync(userId);
 
         public static Task<bool?> ValidateAccountAsync(
-            AccountManagerAccount account
+            AccountManagerAccount account,
+            CancellationToken token = default
         ) =>
-            RobloxApiService.ValidateAccountAsync(account);
+            RobloxApiService.ValidateAccountAsync(account, token);
 
         public static bool WriteCookieFileForAccount(
             AccountManagerAccount account

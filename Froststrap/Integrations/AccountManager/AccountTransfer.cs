@@ -47,13 +47,15 @@ namespace Froststrap.Integrations.AccountManager
         Expired,
         Unreachable,
         Invalid,
+        Mismatched,
+        NotSaved,
         Cancelled,
     }
 
     internal sealed record AccountImportItem(string Name, AccountImportOutcome Outcome);
 
     /// Encrypted export/import of Account Manager accounts (#240).
-    internal static class AccountTransfer
+    internal static partial class AccountTransfer
     {
         public const string FileExtension = "fsaccounts";
         public const int MinPasswordLength = 12;
@@ -64,15 +66,25 @@ namespace Froststrap.Integrations.AccountManager
 
         private static readonly TimeSpan CheckTimeout = TimeSpan.FromSeconds(20);
 
+        /// Names come from Roblox or a file, and message boxes render Markdown.
+        public static string EscapeMarkdown(string text) => MarkdownSpecial().Replace(text, @"\$1");
+
+        [GeneratedRegex(@"([\\`*_{}\[\]()#+\-.!|<>~])")]
+        private static partial Regex MarkdownSpecial();
+
         // the same password typed on macOS (NFD) and Windows (NFC) must give the same key
         private static byte[] PasswordBytes(string password) =>
             Encoding.UTF8.GetBytes(password.Normalize(NormalizationForm.FormC));
 
         public static Task<(AccountVaultResult Result, byte[] Data)> ExportAsync(IEnumerable<AccountManagerAccount> accounts, string password)
         {
+            var list = accounts.Where(a => !string.IsNullOrEmpty(a.SecurityToken)).ToList();
+            if (list.Count > MaxAccounts)
+                return Task.FromResult((AccountVaultResult.InvalidArgument, Array.Empty<byte>()));
+
             var file = new AccountExportFile
             {
-                Accounts = [.. accounts
+                Accounts = [.. list
                     .Where(a => !string.IsNullOrEmpty(a.SecurityToken))
                     .Select(a => new AccountExportEntry
                     {
@@ -150,9 +162,13 @@ namespace Froststrap.Integrations.AccountManager
             return (AccountVaultResult.Ok, file.Accounts);
         }
 
-        /// Entries whose account is already saved, going by the file's user IDs.
-        public static List<AccountExportEntry> FindExisting(AccountManager manager, IEnumerable<AccountExportEntry> entries) =>
-            [.. entries.Where(e => manager.Accounts.Any(a => a.UserId == e.UserId)).DistinctBy(e => e.UserId)];
+        /// Saved accounts the file has an entry for. Names come from what's saved, not the file;
+        /// the import later rejects any entry whose session turns out to belong to someone else.
+        public static List<AccountManagerAccount> FindExisting(AccountManager manager, IEnumerable<AccountExportEntry> entries)
+        {
+            var ids = entries.Select(e => e.UserId).ToHashSet();
+            return [.. manager.Accounts.Where(a => ids.Contains(a.UserId))];
+        }
 
         /// Verifies each session with Roblox and adds the ones whose owner it can confirm.
         /// Stops early when cancelled; the rest are reported as cancelled.
@@ -194,15 +210,18 @@ namespace Froststrap.Integrations.AccountManager
                 return new(name, AccountImportOutcome.Invalid);
 
             AccountManagerAccount? account;
+            using var limit = CancellationTokenSource.CreateLinkedTokenSource(token);
+            limit.CancelAfter(CheckTimeout);
+
             try
             {
                 // the session must tell us who it belongs to; the file's user ID is never trusted
-                account = await RobloxApiService.GetAccountInfoFromCookieAsync(entry.SecurityToken).WaitAsync(CheckTimeout, token);
+                account = await RobloxApiService.GetAccountInfoFromCookieAsync(entry.SecurityToken, limit.Token);
 
                 if (account is null)
                 {
                     var probe = new AccountManagerAccount(entry.SecurityToken, entry.UserId, entry.Username, entry.DisplayName);
-                    bool? valid = await AccountManager.ValidateAccountAsync(probe).WaitAsync(CheckTimeout, token);
+                    bool? valid = await AccountManager.ValidateAccountAsync(probe, limit.Token);
                     return new(name, valid == false ? AccountImportOutcome.Expired : AccountImportOutcome.Unreachable);
                 }
             }
@@ -210,10 +229,15 @@ namespace Froststrap.Integrations.AccountManager
             {
                 return new(name, AccountImportOutcome.Cancelled);
             }
-            catch (TimeoutException)
+            catch (OperationCanceledException)
             {
+                // our own time limit
                 return new(name, AccountImportOutcome.Unreachable);
             }
+
+            // the replace prompt was about the file's accounts, so a session for anyone else can't ride along
+            if (account.UserId != entry.UserId)
+                return new(name, AccountImportOutcome.Mismatched);
 
             name = string.IsNullOrEmpty(account.Username) ? name : account.Username;
 
@@ -221,6 +245,12 @@ namespace Froststrap.Integrations.AccountManager
                 return new(name, AccountImportOutcome.Kept);
 
             manager.AddOrUpdateAccount(account, out bool isNew);
+
+            // saving can fail quietly, so read the session back before calling it done
+            string? saved = AccountSecurity.GetCredential(account.UserId.ToString(CultureInfo.InvariantCulture));
+            if (saved != account.SecurityToken)
+                return new(name, AccountImportOutcome.NotSaved);
+
             return new(name, isNew ? AccountImportOutcome.Added : AccountImportOutcome.Updated);
         }
     }

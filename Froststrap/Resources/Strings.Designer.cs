@@ -3561,6 +3561,33 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Skipped, the saved login belongs to a different account than the file says {0}: {1}.
+        /// </summary>
+        public static string Menu_AccountTransfer_Import_Mismatched {
+            get {
+                return ResourceManager.GetString("Menu.AccountTransfer.Import.Mismatched", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Checked but couldn't be saved, see the logs {0}: {1}.
+        /// </summary>
+        public static string Menu_AccountTransfer_Import_NotSaved {
+            get {
+                return ResourceManager.GetString("Menu.AccountTransfer.Import.NotSaved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can export at most {0} accounts at once..
+        /// </summary>
+        public static string Menu_AccountTransfer_Error_TooMany {
+            get {
+                return ResourceManager.GetString("Menu.AccountTransfer.Error.TooMany", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Not imported, cancelled {0}: {1}.
         /// </summary>
         public static string Menu_AccountTransfer_Import_Cancelled {

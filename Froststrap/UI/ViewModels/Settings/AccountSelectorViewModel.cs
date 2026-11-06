@@ -554,7 +554,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        // null if the stream is longer than `limit`; never reads more than limit + 1 bytes
+        // null if the stream is longer than `limit`; reads at most one chunk past it
         private static async Task<byte[]?> ReadLimitedAsync(Stream stream, long limit)
         {
             using var buffer = new MemoryStream();
@@ -566,7 +566,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 if (buffer.Length + read > limit)
                     return null;
 
-                buffer.Write(chunk, 0, read);
+                await buffer.WriteAsync(chunk.AsMemory(0, read));
             }
 
             return buffer.ToArray();
@@ -582,7 +582,7 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 var names = results.Where(r => r.Outcome == outcome).Select(r => r.Name).ToList();
                 if (names.Count > 0)
-                    lines.Add(string.Format(CultureInfo.InvariantCulture, format, names.Count, string.Join(", ", names)));
+                    lines.Add(string.Format(CultureInfo.InvariantCulture, format, names.Count, string.Join(", ", names.Select(AccountTransfer.EscapeMarkdown))));
             }
 
             Add(AccountImportOutcome.Added, Strings.Menu_AccountTransfer_Import_Added);
@@ -591,9 +591,12 @@ namespace Froststrap.UI.ViewModels.Settings
             Add(AccountImportOutcome.Unreachable, Strings.Menu_AccountTransfer_Import_Unreachable);
             Add(AccountImportOutcome.Expired, Strings.Menu_AccountTransfer_Import_Expired);
             Add(AccountImportOutcome.Invalid, Strings.Menu_AccountTransfer_Import_Invalid);
+            Add(AccountImportOutcome.Mismatched, Strings.Menu_AccountTransfer_Import_Mismatched);
+            Add(AccountImportOutcome.NotSaved, Strings.Menu_AccountTransfer_Import_NotSaved);
             Add(AccountImportOutcome.Cancelled, Strings.Menu_AccountTransfer_Import_Cancelled);
 
-            return string.Join("\n", lines);
+            // separate paragraphs, since the message box renders Markdown
+            return string.Join("\n\n", lines);
         }
 
         private async Task<bool> HandleDuplicateAccountAsync(AccountManagerAccount account)

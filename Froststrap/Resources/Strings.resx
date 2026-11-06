@@ -1794,6 +1794,15 @@ The app will close this window when sign-in completes.</value>
   <data name="Menu.AccountTransfer.Import.Unreachable" xml:space="preserve">
     <value>Skipped, couldn't confirm with Roblox (try again later) {0}: {1}</value>
   </data>
+  <data name="Menu.AccountTransfer.Import.Mismatched" xml:space="preserve">
+    <value>Skipped, the saved login belongs to a different account than the file says {0}: {1}</value>
+  </data>
+  <data name="Menu.AccountTransfer.Import.NotSaved" xml:space="preserve">
+    <value>Checked but couldn't be saved, see the logs {0}: {1}</value>
+  </data>
+  <data name="Menu.AccountTransfer.Error.TooMany" xml:space="preserve">
+    <value>You can export at most {0} accounts at once.</value>
+  </data>
   <data name="Menu.AccountTransfer.Import.Cancelled" xml:space="preserve">
     <value>Not imported, cancelled {0}: {1}</value>
   </data>
