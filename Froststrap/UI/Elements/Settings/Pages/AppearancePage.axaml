@@ -250,7 +250,8 @@ SPDX-License-Identifier: MPL-2.0
 
                     <controls:OptionControl
                         Header="{x:Static resources:Strings.Menu_Appearance_BackgroundMusic_Device}"
-                        Description="{x:Static resources:Strings.Menu_Appearance_BackgroundMusic_Device_Description}">
+                        Description="{x:Static resources:Strings.Menu_Appearance_BackgroundMusic_Device_Description}"
+                        IsVisible="{Binding HasOutputDevices}">
                         <ComboBox
                             MinWidth="200"
                             ItemsSource="{Binding OutputDevices}"

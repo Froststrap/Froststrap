@@ -931,6 +931,7 @@ namespace Froststrap.UI.ViewModels.Settings
         }
 
         public bool HasChannelPairs => ChannelPairs.Count > 1;
+        public bool HasOutputDevices => OutputDevices.Count > 1;
 
         private async Task LoadOutputDevicesAsync()
         {
@@ -939,7 +940,8 @@ namespace Froststrap.UI.ViewModels.Settings
 
             int defaultChannels = devices.FirstOrDefault(d => d.IsDefault)?.Channels ?? 2;
             var options = new List<OutputDeviceOption> { new("", Strings.Menu_Appearance_BackgroundMusic_Device_Default, defaultChannels) };
-            options.AddRange(devices.Select(d => new OutputDeviceOption(d.Id, d.Name, d.Channels)));
+            // backends without device listing only report the default, which is already the first row
+            options.AddRange(devices.Where(d => d.Id.Length > 0).Select(d => new OutputDeviceOption(d.Id, d.Name, d.Channels)));
 
             // keep a device that's unplugged right now, so the setting isn't lost
             if (saved.Length > 0 && !options.Any(o => o.Id == saved))
@@ -951,6 +953,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
             _outputDevice = null;
             OutputDevice = options.First(o => o.Id == saved);
+            OnPropertyChanged(nameof(HasOutputDevices));
         }
 
         private void UpdateChannelPairs(int channels)

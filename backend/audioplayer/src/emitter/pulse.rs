@@ -162,6 +162,11 @@ impl Emitter for PulseEmitter {
         let result = unsafe { pa_simple_flush(self.handle, &mut error) };
         self.check(result, error)
     }
+
+    // pa_simple can't cork, so drop what's buffered to stop right away
+    fn pause(&mut self) -> Result<(), EmitterError> {
+        self.flush()
+    }
 }
 
 impl Drop for PulseEmitter {
