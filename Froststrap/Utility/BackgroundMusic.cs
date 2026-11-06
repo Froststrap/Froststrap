@@ -583,8 +583,10 @@ namespace Froststrap.Utility
             if (last is null || last == App.State.Prop.BackgroundMusicLastTrack)
                 return;
 
+            // a full save: SaveSetting marks the whole state as saved, which would drop
+            // other fields still pending at close (window bounds, for one)
             App.State.Prop.BackgroundMusicLastTrack = last;
-            App.State.SaveSetting(nameof(State.BackgroundMusicLastTrack));
+            App.State.Save();
         }
 
         private static void StopPlayback()

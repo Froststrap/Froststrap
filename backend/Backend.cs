@@ -360,7 +360,8 @@ public sealed record TrackInfo(string? Title, string? Artist, string? Album, Tim
 
 public static unsafe class AudioPlayer
 {
-    private static bool _initialized;
+    private static volatile bool _initialized;
+    private static readonly Lock InitLock = new();
 
     /// Raised on the audio thread when a track ends on its own (id, failed). Keep handlers short.
     public static event Action<ulong, bool>? TrackEnded;
@@ -511,15 +512,22 @@ public static unsafe class AudioPlayer
     }
 
     // loaded on first use so it isn't touched while music is off
+    // playback and the device list can both make the first call, from different threads
     private static void Initialize()
     {
         if (_initialized)
             return;
 
-        InternalAudioPlayer.SetLogger(NativeLog.Callback);
-        InternalAudioPlayer.SetTrackEndCallback(
-            (IntPtr)(delegate* unmanaged[Cdecl]<ulong, int, void>)&OnTrackEnded);
-        _initialized = true;
+        lock (InitLock)
+        {
+            if (_initialized)
+                return;
+
+            InternalAudioPlayer.SetLogger(NativeLog.Callback);
+            InternalAudioPlayer.SetTrackEndCallback(
+                (IntPtr)(delegate* unmanaged[Cdecl]<ulong, int, void>)&OnTrackEnded);
+            _initialized = true;
+        }
     }
 }
 
