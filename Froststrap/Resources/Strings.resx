@@ -575,9 +575,9 @@ Would you like to upgrade your currently installed version?</value>
     <value>Code</value>
   </data>
   <data name="Menu.About.Contributors.Description" xml:space="preserve">
-    <value>These are all of the people who have made notable contributions to Fishstrap and Froststrap, shaping them into what they are today.</value>
+    <value>These are all of the people who have made notable contributions to Froststrap, shaping it into what it is today.</value>
   </data>
-  <data name="Menu.About.Contributors.Inspirations" xml:space="preserve">
+  <data name="Menu.About.Contributors.Insipirations" xml:space="preserve">
     <value>Inspirations</value>
   </data>
   <data name="Menu.About.Description" xml:space="preserve">
