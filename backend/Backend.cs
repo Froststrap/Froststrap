@@ -258,3 +258,85 @@ public class MobileAppReg
         }
     }
 }
+
+internal static unsafe partial class InternalAccountVault
+{
+    [LibraryImport(
+        "accountvault",
+        EntryPoint = "vault_seal"
+    )]
+    public static partial int Seal(byte* password, nuint passwordLen, byte* plain, nuint plainLen, out byte* output, out nuint outputLen);
+
+    [LibraryImport(
+        "accountvault",
+        EntryPoint = "vault_open"
+    )]
+    public static partial int Open(byte* password, nuint passwordLen, byte* data, nuint dataLen, out byte* output, out nuint outputLen);
+
+    [LibraryImport(
+        "accountvault",
+        EntryPoint = "vault_free"
+    )]
+    public static partial void Free(byte* data, nuint len);
+}
+
+public enum AccountVaultResult
+{
+    Ok = 0,
+    InvalidArgument = -1,
+    WrongPassword = -2,
+    NotAVault = -3,
+    UnsupportedVersion = -4,
+    Internal = -5,
+    LibraryUnavailable = -100,
+}
+
+/// Password-protected blobs (Argon2id + AES-256-GCM). Slow on purpose, so call it off the UI thread.
+public static unsafe class AccountVault
+{
+    public static AccountVaultResult Seal(ReadOnlySpan<byte> password, ReadOnlySpan<byte> plain, out byte[] sealedData)
+        => Call(password, plain, seal: true, out sealedData);
+
+    /// The caller should wipe `plain` when done with it.
+    public static AccountVaultResult Open(ReadOnlySpan<byte> password, ReadOnlySpan<byte> sealedData, out byte[] plain)
+        => Call(password, sealedData, seal: false, out plain);
+
+    private static AccountVaultResult Call(ReadOnlySpan<byte> password, ReadOnlySpan<byte> input, bool seal, out byte[] result)
+    {
+        result = [];
+
+        try
+        {
+            byte* output = null;
+            nuint outputLen = 0;
+            int code;
+
+            fixed (byte* pw = password)
+            fixed (byte* data = input)
+            {
+                code = seal
+                    ? InternalAccountVault.Seal(pw, (nuint)password.Length, data, (nuint)input.Length, out output, out outputLen)
+                    : InternalAccountVault.Open(pw, (nuint)password.Length, data, (nuint)input.Length, out output, out outputLen);
+            }
+
+            if (code != 0)
+                return Enum.IsDefined((AccountVaultResult)code) ? (AccountVaultResult)code : AccountVaultResult.Internal;
+
+            try
+            {
+                result = new ReadOnlySpan<byte>(output, checked((int)outputLen)).ToArray();
+            }
+            finally
+            {
+                InternalAccountVault.Free(output, outputLen);
+            }
+
+            return AccountVaultResult.Ok;
+        }
+        catch (Exception ex) when (NativeLibraryFailure.IsLoadFailure(ex))
+        {
+            NativeLibraryFailure.Report("accountvault", ex);
+            return AccountVaultResult.LibraryUnavailable;
+        }
+    }
+}
