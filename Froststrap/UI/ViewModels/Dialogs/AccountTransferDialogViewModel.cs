@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+using Avalonia.Controls;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.Backend;
 using Froststrap.Integrations.AccountManager;
@@ -106,6 +107,8 @@ namespace Froststrap.UI.ViewModels.Dialogs
             _window = window;
             foreach (var account in accounts)
                 Accounts.Add(new SelectableAccount(account));
+
+            _window.Closing += OnClosing;
         }
 
         public AccountTransferDialogViewModel(AvaloniaWindow window, byte[] importData, AccountManager manager)
@@ -113,17 +116,7 @@ namespace Froststrap.UI.ViewModels.Dialogs
             _window = window;
             _importData = importData;
             _manager = manager;
-            // closing while busy (unlocking or importing) cancels instead; the dialog then
-            // closes itself, and nothing more is imported
-            _window.Closing += (_, e) =>
-            {
-                if (_allowClose || !IsBusy)
-                    return;
-
-                e.Cancel = true;
-                _cancelRequested = true;
-                _importCancel?.Cancel();
-            };
+            _window.Closing += OnClosing;
         }
 
         [RelayCommand]
@@ -246,6 +239,18 @@ namespace Froststrap.UI.ViewModels.Dialogs
                 Status = "";
                 OnPropertyChanged(nameof(CanCancel));
             }
+        }
+
+        // closing while busy (encrypting, unlocking or importing) cancels instead; the dialog then
+        // closes itself, and nothing more is saved or imported
+        private void OnClosing(object? sender, WindowClosingEventArgs e)
+        {
+            if (_allowClose || !IsBusy)
+                return;
+
+            e.Cancel = true;
+            _cancelRequested = true;
+            _importCancel?.Cancel();
         }
 
         private void CloseDialog(bool result)

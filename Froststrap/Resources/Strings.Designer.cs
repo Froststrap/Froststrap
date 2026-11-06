@@ -3435,15 +3435,6 @@ namespace Froststrap.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to From file.
-        /// </summary>
-        public static string Menu_AccountTransfer_Import_Method {
-            get {
-                return ResourceManager.GetString("Menu.AccountTransfer.Import.Method", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Export accounts.
         /// </summary>
         public static string Menu_AccountTransfer_Export_Title {

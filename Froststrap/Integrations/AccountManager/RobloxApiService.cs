@@ -22,7 +22,7 @@ namespace Froststrap.Integrations.AccountManager
                 var response = await client.GetAsync(UrlBuilder.BuildApiUrl("users", "v1/users/authenticated", secure: true), token);
                 response.EnsureSuccessStatusCode();
 
-                var user = await JsonHelper.ReadFromJsonAsync<AuthenticatedUser>(response.Content);
+                var user = await JsonHelper.ReadFromJsonAsync<AuthenticatedUser>(response.Content, token);
                 if (user == null) return null;
 
                 return new AccountManagerAccount(

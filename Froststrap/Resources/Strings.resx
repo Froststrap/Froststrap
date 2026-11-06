@@ -1752,9 +1752,6 @@ The app will close this window when sign-in completes.</value>
   <data name="Menu.GlobalSettingsEditor.Description" xml:space="preserve">
     <value>Manage all your global settings here.</value>
   </data>
-  <data name="Menu.AccountTransfer.Import.Method" xml:space="preserve">
-    <value>From file</value>
-  </data>
   <data name="Menu.AccountTransfer.Export.Title" xml:space="preserve">
     <value>Export accounts</value>
   </data>

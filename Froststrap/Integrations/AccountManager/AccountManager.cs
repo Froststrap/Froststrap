@@ -133,6 +133,9 @@ namespace Froststrap.Integrations.AccountManager
             }
         }
 
+        /// Whether the last save wrote both the credentials and AccountManager.json.
+        public bool LastSaveSucceeded { get; private set; } = true;
+
         public void SaveAccounts()
         {
             SaveAccountsCore(writeCredentials: true);
@@ -140,6 +143,8 @@ namespace Froststrap.Integrations.AccountManager
 
         private void SaveAccountsCore(bool writeCredentials)
         {
+            bool ok = true;
+
             try
             {
                 if (writeCredentials)
@@ -155,6 +160,7 @@ namespace Froststrap.Integrations.AccountManager
                         ))
                         {
                             App.Logger.Warn($"Failed to save credential for account {account.UserId}.");
+                            ok = false;
                         }
                     }
                 }
@@ -174,7 +180,10 @@ namespace Froststrap.Integrations.AccountManager
             catch (Exception ex)
             {
                 App.Logger.Error("Unhandled exception: ", ex);
+                ok = false;
             }
+
+            LastSaveSucceeded = ok;
         }
 
         public void ReorderAccounts(IReadOnlyList<AccountManagerAccount> ordered)

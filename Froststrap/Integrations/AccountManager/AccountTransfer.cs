@@ -244,11 +244,14 @@ namespace Froststrap.Integrations.AccountManager
             if (!replaceExisting && manager.Accounts.Any(a => a.UserId == account.UserId))
                 return new(name, AccountImportOutcome.Kept);
 
+            if (token.IsCancellationRequested)
+                return new(name, AccountImportOutcome.Cancelled);
+
             manager.AddOrUpdateAccount(account, out bool isNew);
 
-            // saving can fail quietly, so read the session back before calling it done
+            // saving can fail quietly: check both AccountManager.json and the session itself
             string? saved = AccountSecurity.GetCredential(account.UserId.ToString(CultureInfo.InvariantCulture));
-            if (saved != account.SecurityToken)
+            if (!manager.LastSaveSucceeded || saved != account.SecurityToken)
                 return new(name, AccountImportOutcome.NotSaved);
 
             return new(name, isNew ? AccountImportOutcome.Added : AccountImportOutcome.Updated);

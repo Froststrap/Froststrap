@@ -130,7 +130,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public List<string> AddMethods { get; } = [Strings.Menu_AccountSelector_Login_LocalCookie, Strings.Menu_Dialog_QuickSignIn_Title, Strings.Common_Manual, Strings.Common_Browser, Strings.Menu_AccountTransfer_Import_Method];
+        public List<string> AddMethods { get; } = [Strings.Menu_AccountSelector_Login_LocalCookie, Strings.Menu_Dialog_QuickSignIn_Title, Strings.Common_Manual, Strings.Common_Browser];
 
         public string CurrentAccountDisplayName => CurrentAccount == null ? Strings.Menu_AccountSelector_NotLoggedIn : $"@{CurrentAccount.Username}";
 
@@ -404,11 +404,6 @@ namespace Froststrap.UI.ViewModels.Settings
                     OnManualAddRequested?.Invoke();
                     return;
                 }
-                else if (SelectedAddMethod == Strings.Menu_AccountTransfer_Import_Method)
-                {
-                    await ImportFromFileAsync();
-                    return;
-                }
                 else if (SelectedAddMethod == Strings.Menu_AccountSelector_Login_LocalCookie)
                 {
                     newAccount = await ImportFromCookieManager();
@@ -498,7 +493,8 @@ namespace Froststrap.UI.ViewModels.Settings
             Patterns = [$"*.{AccountTransfer.FileExtension}"],
         };
 
-        private async Task ImportFromFileAsync()
+        [RelayCommand]
+        private async Task ImportAccounts()
         {
             var parent = ParentWindow();
             if (parent is null)
