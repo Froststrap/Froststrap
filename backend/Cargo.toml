@@ -13,6 +13,7 @@ members = [
 ]
 default-members = [
   "notify",
+  "accountvault",
 ]
 
 [workspace.package]
@@ -31,6 +32,13 @@ codegen-units = 1
 strip = "symbols"
 panic = "abort"
 incremental = false
+
+# key derivation is unbearably slow unoptimised, which makes the vault tests crawl
+[profile.dev.package.argon2]
+opt-level = 3
+
+[profile.dev.package.blake2]
+opt-level = 3
 
 [workspace.dependencies]
 log = "0.4"

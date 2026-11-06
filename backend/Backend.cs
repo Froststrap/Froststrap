@@ -297,7 +297,7 @@ public static unsafe class AccountVault
     public static AccountVaultResult Seal(ReadOnlySpan<byte> password, ReadOnlySpan<byte> plain, out byte[] sealedData)
         => Call(password, plain, seal: true, out sealedData);
 
-    /// The caller should wipe `plain` when done with it.
+    /// `plain` is pinned; the caller owns it and should wipe it with CryptographicOperations.ZeroMemory.
     public static AccountVaultResult Open(ReadOnlySpan<byte> password, ReadOnlySpan<byte> sealedData, out byte[] plain)
         => Call(password, sealedData, seal: false, out plain);
 
@@ -324,7 +324,10 @@ public static unsafe class AccountVault
 
             try
             {
-                result = new ReadOnlySpan<byte>(output, checked((int)outputLen)).ToArray();
+                // pinned so the GC can't leave moved copies of the plaintext behind before the caller wipes it
+                int len = checked((int)outputLen);
+                result = seal ? GC.AllocateUninitializedArray<byte>(len) : GC.AllocateArray<byte>(len, pinned: true);
+                new ReadOnlySpan<byte>(output, len).CopyTo(result);
             }
             finally
             {
