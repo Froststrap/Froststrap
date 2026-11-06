@@ -46,8 +46,6 @@ namespace Froststrap.RobloxInterfaces
 
         private static PrivacyLevel? Parse(string setting, string? value)
         {
-            const string LOG_IDENT = "PrivacySettings::Parse";
-
             if (value is null)
                 return null;
 
@@ -56,7 +54,7 @@ namespace Froststrap.RobloxInterfaces
                     if (name == value)
                         return level;
 
-            App.Logger.Warn($"{LOG_IDENT}: Unknown value '{value}' for {setting}");
+            App.Logger.Warn($"Unknown value '{value}' for {setting}");
             return null;
         }
 
@@ -79,11 +77,9 @@ namespace Froststrap.RobloxInterfaces
 
         public static async Task<bool> SetOnlineVisibilityAsync(PrivacyLevel online, PrivacyLevel? join)
         {
-            const string LOG_IDENT = "PrivacySettings::SetOnlineVisibilityAsync";
-
             var plan = PlanOnlineVisibility(online, join);
 
-            App.Logger.Info($"{LOG_IDENT}: Setting online visibility to {online} with joining at {join?.ToString() ?? "unreported"}: {String.Join(", then ", plan.Select(x => $"{x.Setting}={x.Value}"))}");
+            App.Logger.Info($"Setting online visibility to {online} with joining at {join?.ToString() ?? "unreported"}: {String.Join(", then ", plan.Select(x => $"{x.Setting}={x.Value}"))}");
 
             foreach ((string setting, string value) in plan)
                 await PostAsync(setting, value);
@@ -93,12 +89,10 @@ namespace Froststrap.RobloxInterfaces
 
         public static async Task SetGameVisibilityAsync(PrivacyLevel join, PrivacyLevel? online)
         {
-            const string LOG_IDENT = "PrivacySettings::SetGameVisibilityAsync";
-
             if (!GameVisibilityAllowed(join, online))
                 throw new ArgumentException($"Game visibility {join} is wider than online visibility {online}", nameof(join));
 
-            App.Logger.Info($"{LOG_IDENT}: Setting game visibility to {join} with online at {online?.ToString() ?? "unreported"}");
+            App.Logger.Info($"Setting game visibility to {join} with online at {online?.ToString() ?? "unreported"}");
 
             await PostAsync(JoinSetting, JoinValues[join]);
         }

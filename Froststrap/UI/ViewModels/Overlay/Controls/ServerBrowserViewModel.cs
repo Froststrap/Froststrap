@@ -238,8 +238,6 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
         private async Task JoinClosestAsync()
         {
-            const string LOG_IDENT = "ServerBrowserViewModel::JoinClosestAsync";
-
             if (!CanJoinClosest) return;
 
             _findingClosest = true;
@@ -259,7 +257,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                 if (alreadyClosest) { Flash(Strings.Menu_Overlay_Servers_ClosestAlready); return; }
                 if (jobId is null) { Flash(Strings.Menu_Overlay_Servers_ClosestNone); return; }
 
-                App.Logger.Info($"{LOG_IDENT}: joining {jobId}");
+                App.Logger.Info($"joining {jobId}");
                 GameServers.Join(placeId, jobId);
                 Flash(Strings.Menu_Overlay_Servers_ClosestJoining);
             }

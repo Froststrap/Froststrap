@@ -9,8 +9,6 @@ namespace Froststrap.Integrations.OverlayModules
 {
     internal class FriendPresence(ActivityWatcher? activityWatcher, RealtimeMessaging? messaging = null) : IDisposable
     {
-        private const string LOG_IDENT = "FriendPresence";
-
         private static readonly TimeSpan ResyncInterval = TimeSpan.FromMinutes(30);
         private static readonly TimeSpan OfflineInterval = TimeSpan.FromSeconds(45);
         private static readonly TimeSpan FriendsRefresh = TimeSpan.FromMinutes(30);
@@ -106,7 +104,7 @@ namespace Froststrap.Integrations.OverlayModules
             }
             catch (Exception ex)
             {
-                App.Logger.Error($"{LOG_IDENT}::RunAsync", "Failed to seed presence");
+                App.Logger.Error("Failed to seed presence");
                 App.Logger.Error(ex);
             }
 
@@ -124,7 +122,7 @@ namespace Froststrap.Integrations.OverlayModules
                     }
                     catch (Exception ex)
                     {
-                        App.Logger.Error($"{LOG_IDENT}::RunAsync", "Failed to reconcile presence");
+                        App.Logger.Error("Failed to reconcile presence");
                         App.Logger.Error(ex);
                     }
                 }
@@ -150,7 +148,7 @@ namespace Froststrap.Integrations.OverlayModules
             }
             catch (Exception ex)
             {
-                App.Logger.Error($"{LOG_IDENT}::PollSafeAsync", "Failed to poll presence");
+                App.Logger.Error("Failed to poll presence");
                 App.Logger.Error(ex);
             }
         }
@@ -210,7 +208,7 @@ namespace Froststrap.Integrations.OverlayModules
                     count = _friends.Count;
                 }
 
-                App.Logger.Info($"{LOG_IDENT}::PollAsync", $"Keeping an eye on {count} friends");
+                App.Logger.Info($"Keeping an eye on {count} friends");
             }
 
             List<long> friends;
@@ -261,7 +259,7 @@ namespace Froststrap.Integrations.OverlayModules
 
                     if (!String.Equals(note.Type, PresenceNotification.PresenceChangedType, StringComparison.OrdinalIgnoreCase))
                     {
-                        App.Logger.Info($"{LOG_IDENT}::OnPresenceBulk: unhandled presence type {note.Type}");
+                        App.Logger.Info($"unhandled presence type {note.Type}");
                         continue;
                     }
 
@@ -345,14 +343,11 @@ namespace Froststrap.Integrations.OverlayModules
                         break;
 
                     case FriendshipNotification.RequestedType:
-                        App.Logger.Info($"{LOG_IDENT}::OnFriendshipChanged",
-                            byMe ? $"Friend request sent to {other}"
-                                 : $"Friend request received from {other}");
+                        App.Logger.Info(byMe ? $"Friend request sent to {other}" : $"Friend request received from {other}");
                         return;
 
                     default:
-                        App.Logger.Info($"{LOG_IDENT}::OnFriendshipChanged",
-                            $"Unhandled friendship type {note.Type}");
+                        App.Logger.Info($"Unhandled friendship type {note.Type}");
                         return;
                 }
             }
@@ -360,8 +355,7 @@ namespace Froststrap.Integrations.OverlayModules
             if (!friendsChanged)
                 return;
 
-            App.Logger.Info($"{LOG_IDENT}::OnFriendshipChanged",
-                note.Type == FriendshipNotification.CreatedType
+            App.Logger.Info(note.Type == FriendshipNotification.CreatedType
                     ? (byMe ? $"Added {other}" : $"{other} added you back")
                     : (byMe ? $"Unfriended {other}" : $"{other} unfriended you"));
 

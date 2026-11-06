@@ -138,8 +138,6 @@ namespace Froststrap.RobloxInterfaces
 
         public static async Task<List<GameTile>> ContinueAsync()
         {
-            const string LOG_IDENT = "Experiences::ContinueAsync";
-
             string? cookie = App.Cookies.GetAuthCookie();
 
             if (String.IsNullOrEmpty(cookie))
@@ -178,7 +176,7 @@ namespace Froststrap.RobloxInterfaces
             }
             catch (Exception ex)
             {
-                App.Logger.Error($"{LOG_IDENT}: Failed to load the Continue list");
+                App.Logger.Error($"Failed to load the Continue list");
                 App.Logger.Error(ex);
 
                 return [];

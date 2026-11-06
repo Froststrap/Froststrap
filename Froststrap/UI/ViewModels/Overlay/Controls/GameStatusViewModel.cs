@@ -19,11 +19,9 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
         protected override async Task<string> ApplyAsync(PrivacyLevel value)
         {
-            const string LOG_IDENT = "GameStatusViewModel::ApplyAsync";
-
             await PrivacySettings.SetGameVisibilityAsync(value, State?.Online);
 
-            App.Logger.Info($"{LOG_IDENT}: Game visibility is now {value}");
+            App.Logger.Info($"Game visibility is now {value}");
 
             return Strings.Menu_Overlay_Privacy_Saved;
         }

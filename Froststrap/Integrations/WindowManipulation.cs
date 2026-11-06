@@ -10,7 +10,6 @@ namespace Froststrap.Integrations
 {
     internal class WindowManipulation : IDisposable
     {
-        private const string LOG_IDENT = "WindowManipulation";
         private const uint WINEVENT_OUTOFCONTEXT = 0x0;
         private const uint EVENT_OBJECT_NAMECHANGE = 0x800C;
         private const uint WM_SETICON = 0x0080;
@@ -340,13 +339,13 @@ namespace Froststrap.Integrations
 
                 if (_keyboardHook is null || _keyboardHook.Value == IntPtr.Zero)
                 {
-                    App.Logger.Warn(LOG_IDENT, "Failed to install keyboard hook for Alt+Enter handling");
+                    App.Logger.Warn("Failed to install keyboard hook for Alt+Enter handling");
                     _keyboardHook = null;
                     _keyboardProc = null;
                 }
                 else
                 {
-                    App.Logger.Info(LOG_IDENT, "Keyboard hook installed (borderless Alt+Enter interception)");
+                    App.Logger.Info("Keyboard hook installed (borderless Alt+Enter interception)");
                 }
             });
         }
@@ -394,7 +393,7 @@ namespace Froststrap.Integrations
             if (((uint)kb->flags & LLKHF_ALTDOWN) == 0)
                 return PInvoke.CallNextHookEx(default, nCode, wParam, lParam);
 
-            App.Logger.Info(LOG_IDENT, "Alt+Enter detected in borderless mode — toggling borderless fullscreen");
+            App.Logger.Info("Alt+Enter detected in borderless mode — toggling borderless fullscreen");
 
             Dispatcher.UIThread.Post(ToggleBorderlessFullscreen);
 
@@ -424,7 +423,7 @@ namespace Froststrap.Integrations
             }
             catch (Exception ex)
             {
-                App.Logger.Error(LOG_IDENT, "Failed to toggle borderless fullscreen");
+                App.Logger.Error("Failed to toggle borderless fullscreen");
                 App.Logger.Error(ex);
             }
         }
@@ -468,7 +467,7 @@ namespace Froststrap.Integrations
                 SET_WINDOW_POS_FLAGS.SWP_SHOWWINDOW |
                 SET_WINDOW_POS_FLAGS.SWP_NOZORDER);
 
-            App.Logger.Info(LOG_IDENT, "Borderless toggled → fullscreen");
+            App.Logger.Info("Borderless toggled → fullscreen");
         }
 
         private void MakeWindowed()
@@ -515,7 +514,7 @@ namespace Froststrap.Integrations
                 SET_WINDOW_POS_FLAGS.SWP_NOZORDER |
                 SET_WINDOW_POS_FLAGS.SWP_FRAMECHANGED);
 
-            App.Logger.Info(LOG_IDENT, "Borderless toggled → windowed");
+            App.Logger.Info("Borderless toggled → windowed");
         }
 
         public void Dispose()
