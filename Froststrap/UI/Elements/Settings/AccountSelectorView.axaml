@@ -159,9 +159,22 @@ SPDX-License-Identifier: MPL-2.0
                                         <Style Selector="ComboBox /template/ ContentControl">
                                             <Setter Property="Opacity" Value="0" />
                                         </Style>
+                                        <!-- the template's glyph sits off-centre in a box this small; draw our own -->
+                                        <Style Selector="ComboBox /template/ PathIcon">
+                                            <Setter Property="Opacity" Value="0" />
+                                        </Style>
                                     </ComboBox.Styles>
                                 </ComboBox>
                             </Border>
+
+                            <ic:Lucide Grid.Column="1"
+                                       Icon="ChevronDown"
+                                       Width="14"
+                                       Height="14"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       IsHitTestVisible="False"
+                                       StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}" />
 
                             <controls:IconButton Grid.Column="2"
                                                  Width="36"

@@ -23,7 +23,7 @@ SPDX-License-Identifier: MPL-2.0
     <Grid RowDefinitions="*,Auto">
         <StackPanel Grid.Row="0" Margin="20,8,20,16" Spacing="12">
             <StackPanel Orientation="Horizontal" Spacing="8">
-                <ic:Lucide FontSize="20" Icon="LockKeyhole" />
+                <ic:Lucide Icon="LockKeyhole" Width="20" Height="20" VerticalAlignment="Center" StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}" />
                 <TextBlock FontSize="18" FontWeight="SemiBold" Text="{Binding Title}" />
             </StackPanel>
 
@@ -64,7 +64,7 @@ SPDX-License-Identifier: MPL-2.0
                     Background="{DynamicResource SystemFillColorCautionBackgroundBrush}"
                     CornerRadius="6">
                 <StackPanel Orientation="Horizontal" Spacing="8">
-                    <ic:Lucide Icon="TriangleAlert" FontSize="16" VerticalAlignment="Top" />
+                    <ic:Lucide Icon="TriangleAlert" Width="16" Height="16" VerticalAlignment="Top" StrokeBrush="{DynamicResource SystemFillColorCautionBrush}" />
                     <TextBlock Text="{x:Static resources:Strings.Menu_AccountTransfer_Export_Warning}"
                                TextWrapping="Wrap"
                                MaxWidth="370" />
