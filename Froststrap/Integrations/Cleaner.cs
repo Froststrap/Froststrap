@@ -6,7 +6,7 @@ namespace Froststrap.Integrations
 {
     internal class Cleaner
     {
-        private const int MaxFiles = 200;
+        private const int MaxFiles = 2000;
 
         public static readonly IReadOnlyDictionary<string, string?> Directories = new Dictionary<string, string?>
         {
@@ -18,19 +18,25 @@ namespace Froststrap.Integrations
 
         public static void DoCleaning()
         {
+            var cleanerOption = App.Settings.Prop.CleanerOptions;
+            if (cleanerOption == CleanerOptions.Never)
+            {
+                App.Logger.Info("Cleaner is set to Never; skipping");
+                return;
+            }
+
             App.Logger.Debug("Cleaner has started");
 
-            var maxFileAge = App.Settings.Prop.CleanerOptions switch
+            var maxFileAge = cleanerOption switch
             {
                 CleanerOptions.OneDay => 1,
                 CleanerOptions.OneWeek => 7,
                 CleanerOptions.OneMonth => 30,
                 CleanerOptions.TwoMonths => 60,
-                CleanerOptions.Never => int.MaxValue,
                 _ => int.MaxValue,
             };
 
-            var threshold = DateTime.Now.AddHours(-maxFileAge);
+            var threshold = DateTime.Now.AddDays(-maxFileAge);
 
             foreach (var directory in Directories)
             {

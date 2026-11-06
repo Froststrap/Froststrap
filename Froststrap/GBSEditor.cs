@@ -407,9 +407,9 @@ internal class GBSEditor
         Document = document;
         Loaded = true;
         previousReadOnlyState = GetReadOnly();
-        _savedHash = ComputeHash();
 
         RemoveLegacyJunk();
+        _savedHash = ComputeHash();
     }
 
     private bool HasExpectedStructure(XDocument document)

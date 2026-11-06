@@ -9,7 +9,6 @@ using Avalonia.Controls;
 using FluentAvalonia.UI.Controls;
 using Froststrap.UI.Elements.About.Pages;
 using Froststrap.UI.ViewModels.About;
-using Froststrap.Utility;
 
 namespace Froststrap.UI.Elements.About
 {

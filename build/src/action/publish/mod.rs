@@ -35,14 +35,17 @@ fn version() -> String {
 fn version_for_run() -> String {
     const DEFAULT: &str = "v0.0.2";
 
-    let tag = if env::var("GITHUB_REF_TYPE").as_deref() == Ok("tag") {
+    let tag = if let Some(v) = env_nonempty("FROSTSTRAP_VERSION") {
+        v
+    } else if env::var("GITHUB_REF_TYPE").as_deref() == Ok("tag") {
         env_nonempty("GITHUB_REF_NAME").unwrap_or_default()
     } else {
         let mut tag = git(&["describe", "--tags", "--abbrev=0"])
             .unwrap_or_else(|| DEFAULT.to_string());
 
         if let Some(run) = env_nonempty("GITHUB_RUN_NUMBER") {
-            tag = format!("{tag}-ci.{run}");
+            let base = tag.split('-').next().unwrap_or(&tag);
+            tag = format!("{base}-ci.{run}");
         }
         tag
     };
@@ -50,7 +53,7 @@ fn version_for_run() -> String {
     let tag = if tag.trim().is_empty() {
         DEFAULT
     } else {
-        tag.as_str()
+        tag.trim()
     };
     tag.strip_prefix('v').unwrap_or(tag).to_string()
 }
@@ -74,17 +77,17 @@ pub fn main() {
     log::info!("AppVersion: {}", version());
 
     let args = [
-        "publish".to_string(),
-        path,
-        "-c".to_string(),
-        config.to_string(),
-        "-r".to_string(),
-        rid.to_string(),
-        "-o".to_string(),
-        output_path,
-        format!("-p:RustTargetTriple={rust_target_triple}"),
-        format!("-p:AppVersion={}", version()),
-        "-nologo".to_string(),
+        "publish",
+        &path,
+        "-c",
+        &config.to_string(),
+        "-r",
+        &rid,
+        "-o",
+        &output_path,
+        &format!("-p:RustTargetTriple={rust_target_triple}"),
+        &format!("-p:AppVersion={}", version()),
+        "-nologo",
     ];
 
     std::fs::create_dir_all(path::dotnet_publish_artifacts()).unwrap();

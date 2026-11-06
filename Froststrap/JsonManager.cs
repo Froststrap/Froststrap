@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+using Avalonia.Platform;
 using System.Text.Json.Nodes;
 using System.Reflection;
 
@@ -38,6 +39,7 @@ namespace Froststrap
         public bool IsSaved => File.Exists(FileLocation);
 
         protected string? _savedHash;
+        protected string? _savedJson;
 
         protected virtual string ComputeHash(T obj)
         {
@@ -52,6 +54,21 @@ namespace Froststrap
                 if (_savedHash == null) return true;
                 return ComputeHash(Prop) != _savedHash;
             }
+        }
+
+        public string DescribeChanges()
+        {
+            if (_savedJson is null) return "(no baseline)";
+            try
+            {
+                var before = JsonNode.Parse(_savedJson) as JsonObject ?? [];
+                var after = JsonHelper.SerializeToNode(Prop) as JsonObject ?? [];
+                var changed = before.Select(p => p.Key).Union(after.Select(p => p.Key))
+                    .Where(k => before[k]?.ToJsonString() != after[k]?.ToJsonString())
+                    .ToList();
+                return changed.Count == 0 ? "(hash differs, no key diff)" : string.Join(", ", changed);
+            }
+            catch (Exception ex) { return $"(diff failed: {ex.Message})"; }
         }
 
         public virtual bool Load(bool alertFailure = true)
@@ -71,6 +88,7 @@ namespace Froststrap
                     Loaded = true;
                     LastFileHash = FastHash.FromString(contents);
                     _savedHash = ComputeHash(_prop);
+                    _savedJson = JsonHelper.Serialize(_prop);
 
                     App.Logger.Info("Loaded successfully!");
                     return true;
@@ -80,6 +98,7 @@ namespace Froststrap
                     App.Logger.Warn($"Could not find {FileLocation}.");
                     Loaded = true;
                     _savedHash = ComputeHash(_prop);
+                    _savedJson = JsonHelper.Serialize(_prop);
                     return false;
                 }
             }
@@ -139,6 +158,7 @@ namespace Froststrap
 
                 LastFileHash = FastHash.FromString(contents);
                 _savedHash = ComputeHash(Prop);
+                _savedJson = JsonHelper.Serialize(Prop);
                 App.Logger.Info("Save complete!");
                 return true;
             }
@@ -197,6 +217,7 @@ namespace Froststrap
                 File.WriteAllText(FileLocation, contents);
                 LastFileHash = FastHash.FromString(contents);
                 _savedHash = ComputeHash(Prop);
+                _savedJson = JsonHelper.Serialize(Prop);
                 App.Logger.Info("SaveSetting complete!");
             }
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or JsonException)
@@ -313,7 +334,7 @@ namespace Froststrap
             }
         }
 
-        public async void LoadPresetProfile(string? name, bool? clearFlags)
+        public async Task LoadPresetProfile(string? name, bool? clearFlags)
         {
             if (string.IsNullOrEmpty(name))
                 return;
@@ -321,36 +342,33 @@ namespace Froststrap
             try
             {
                 string profileJson;
-                var assembly = Assembly.GetExecutingAssembly();
-                string resourcePrefix = "Froststrap.Resources.PresetFlags.";
-                string resourceFullName = resourcePrefix + name;
 
-                string? foundResource = assembly.GetManifestResourceNames()
-                    .FirstOrDefault(r => r.Equals(resourceFullName, StringComparison.OrdinalIgnoreCase));
+                var presetAssets = AssetLoader.GetAssets(new Uri("avares://Froststrap/Resources/PresetFlags/"), null);
+                var targetUri = presetAssets.FirstOrDefault(u => u.AbsolutePath.EndsWith(name, StringComparison.OrdinalIgnoreCase));
 
-                if (foundResource != null)
+                if (targetUri != null)
                 {
-                    using Stream stream = assembly.GetManifestResourceStream(foundResource)!;
+                    using Stream stream = AssetLoader.Open(targetUri);
                     using StreamReader reader = new(stream);
-                    profileJson = reader.ReadToEnd();
+                    profileJson = await reader.ReadToEndAsync();
 
                     App.Logger.Info($"Loading embedded preset profile {name}");
                 }
                 else
                 {
                     // Load from disk (user profiles)
-                    string BaseDir = Paths.SavedFlagProfiles;
+                    string baseDir = Paths.SavedFlagProfiles;
 
-                    if (!Directory.Exists(BaseDir))
-                        Directory.CreateDirectory(BaseDir);
+                    if (!Directory.Exists(baseDir))
+                        Directory.CreateDirectory(baseDir);
 
-                    string[] Files = Directory.GetFiles(BaseDir);
-                    string FoundFile = Files.FirstOrDefault(f => Path.GetFileName(f) == name) ?? string.Empty;
+                    string[] files = Directory.GetFiles(baseDir);
+                    string foundFile = files.FirstOrDefault(f => Path.GetFileName(f).Equals(name, StringComparison.OrdinalIgnoreCase)) ?? string.Empty;
 
-                    if (string.IsNullOrEmpty(FoundFile))
+                    if (string.IsNullOrEmpty(foundFile))
                         throw new FileNotFoundException($"Profile file '{name}' not found.");
 
-                    profileJson = File.ReadAllText(FoundFile);
+                    profileJson = await File.ReadAllTextAsync(foundFile);
 
                     App.Logger.Info($"Loading user profile from file {name}");
                 }

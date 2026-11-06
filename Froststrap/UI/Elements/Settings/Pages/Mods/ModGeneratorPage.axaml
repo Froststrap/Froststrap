@@ -6,7 +6,6 @@ SPDX-License-Identifier: MPL-2.0
 
 <UserControl x:Class="Froststrap.UI.Elements.Settings.Pages.Mods.ModGeneratorPage"
              xmlns="https://github.com/avaloniaui"
-             xmlns:colorpicker="using:ColorPicker"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"

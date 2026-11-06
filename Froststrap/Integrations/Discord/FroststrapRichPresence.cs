@@ -3,6 +3,10 @@
 // SPDX-License-Identifier: MPL-2.0
 
 using System.Net.Sockets;
+using DiscordRPC;
+using DiscordRPC.Logging;
+using RichPresence = DiscordRPC.RichPresence;
+using DiscordRPC.Message;
 using Froststrap.Integrations.Discord;
 
 namespace Froststrap.Integrations.Discord
@@ -13,7 +17,7 @@ namespace Froststrap.Integrations.Discord
         private readonly Timestamps _startTimestamps;
         private readonly Stopwatch _uptimeStopwatch;
         private bool _disposed;
-        private string _currentPage = "Starting";
+        private string _currentPage = "Idle";
         private string? _currentDialog;
         private string _lastState = "";
 
@@ -21,9 +25,10 @@ namespace Froststrap.Integrations.Discord
 
         public FroststrapRichPresence()
         {
-            _rpcClient = new DiscordRpcClient("1399535282713399418")
+            _rpcClient = new DiscordRpcClient("1399535282713399418", -1, new NullLogger(), true, DiscordIpcPipeClient.Create())
             {
-                SkipIdenticalPresence = true
+                SkipIdenticalPresence = true,
+                ShutdownOnly = true
             };
 
             _rpcClient.OnReady += OnReady;
@@ -48,44 +53,14 @@ namespace Froststrap.Integrations.Discord
             });
         }
 
-        private void OnReady(object? sender, ReadyMessage args)
+        private void OnReady(object sender, ReadyMessage args)
         {
             if (_disposed) return;
 
             App.Logger.Info($"Connected as {args.User.Username}");
 
-            _ = PushInitialPresenceAsync();
-        }
-
-        private async Task PushInitialPresenceAsync()
-        {
-            var ackTcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
-            EventHandler<PresenceUpdateMessage> handler = (_, _) => ackTcs.TrySetResult(true);
-
-            if (_rpcClient != null)
-                _rpcClient.OnPresenceUpdate += handler;
-
-            try
-            {
-                for (int attempt = 1; attempt <= 3; attempt++)
-                {
-                    if (_disposed) return;
-
-                    _lastState = "";
-                    UpdatePresence();
-
-                    var result = await Task.WhenAny(ackTcs.Task, Task.Delay(2000));
-                    if (result == ackTcs.Task)
-                        return;
-                }
-
-                App.Logger.Warn("Initial Froststrap presence not acknowledged after 3 attempts");
-            }
-            finally
-            {
-                if (_rpcClient != null)
-                    _rpcClient.OnPresenceUpdate -= handler;
-            }
+            if (!_disposed)
+                UpdatePresence();
         }
 
         public void SetPage(string pageName)
@@ -118,16 +93,18 @@ namespace Froststrap.Integrations.Discord
             if (_disposed || _rpcClient == null || !_rpcClient.IsInitialized)
                 return;
 
-            string state = !string.IsNullOrEmpty(_currentDialog)
-                ? $"Page: {_currentPage} | Dialog: {_currentDialog}"
-                : $"Page: {_currentPage}";
+            string state = DiscordPresenceHelper.Truncate(
+                !string.IsNullOrEmpty(_currentDialog)
+                    ? $"Page: {_currentPage} | Dialog: {_currentDialog}"
+                    : $"Page: {_currentPage}",
+                128);
 
             if (state == _lastState)
                 return;
 
             _lastState = state;
 
-            var presence = new DiscordActivity
+            var presence = new RichPresence
             {
                 Details = "Customize Roblox to your liking!",
                 State = state,
@@ -137,7 +114,7 @@ namespace Froststrap.Integrations.Discord
                     LargeImageKey = "froststrap",
                     LargeImageText = "Froststrap",
                     SmallImageKey = "checkmark",
-                    SmallImageText = $"{App.Version}"
+                    SmallImageText = DiscordPresenceHelper.Truncate($"{App.Version}", 128)
                 },
                 Buttons =
                 [

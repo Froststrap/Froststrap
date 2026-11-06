@@ -34,90 +34,119 @@ SPDX-License-Identifier: MPL-2.0
 
     <Grid Margin="14" RowDefinitions="Auto,*">
         <Border Grid.Row="0" Margin="0,0,0,16" Padding="16" CornerRadius="8">
-            <StackPanel Spacing="12">
+            <StackPanel Spacing="8">
+                <AutoCompleteBox
+                    x:Name="GameSearchAutoCompleteBox"
+                    Text="{Binding SearchQuery, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    ItemsSource="{Binding SearchResults}"
+                    IsDropDownOpen="{Binding IsSearchFlyoutOpen, Mode=TwoWay}"
+                    ui:AutoCompleteDropdownBehaviourAttacher.LoadMoreCommand="{Binding LoadMoreSearchResultsCommand}"
+                    PlaceholderText="{x:Static resources:Strings.Menu_RegionSelector_FindGame}"
+                    FilterMode="None"
+                    Width="300"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center">
+                    <AutoCompleteBox.ItemTemplate>
+                        <DataTemplate DataType="apis:OmniSearchContent">
+                            <Grid
+                                ColumnDefinitions="Auto,*,Auto"
+                                ColumnSpacing="8"
+                                MaxWidth="270">
+                                <Border
+                                    Grid.Column="0"
+                                    Width="44"
+                                    Height="44"
+                                    Background="#10FFFFFF"
+                                    ClipToBounds="True"
+                                    CornerRadius="4">
+                                    <Image
+                                        Source="{Binding ThumbnailBitmap}"
+                                        Stretch="UniformToFill"
+                                        RenderOptions.BitmapInterpolationMode="HighQuality" />
+                                </Border>
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <TextBlock
+                                        Text="{Binding Name}"
+                                        FontSize="14"
+                                        FontWeight="SemiBold"
+                                        TextTrimming="CharacterEllipsis" />
+                                    <TextBlock
+                                        Text="{Binding RootPlaceId, StringFormat='ID: {0}'}"
+                                        FontSize="11"
+                                        Opacity="0.5" />
+                                </StackPanel>
+                                <StackPanel
+                                    Grid.Column="2"
+                                    Orientation="Horizontal"
+                                    Spacing="4"
+                                    VerticalAlignment="Center">
+                                    <ic:Lucide
+                                        Icon="Users"
+                                        Width="12"
+                                        Height="12"
+                                        Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                                    <TextBlock
+                                        Text="{Binding PlayerCount, Converter={StaticResource NumberAbbreviationConverter}}"
+                                        FontSize="12"
+                                        VerticalAlignment="Center" />
+                                </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </AutoCompleteBox.ItemTemplate>
+
+                    <AutoCompleteBox.InnerLeftContent>
+                        <ic:Lucide
+                            Icon="Search"
+                            Width="14"
+                            Height="14"
+                            Margin="8,0,0,0"
+                            VerticalAlignment="Center" />
+                    </AutoCompleteBox.InnerLeftContent>
+
+                    <AutoCompleteBox.InnerRightContent>
+                        <StackPanel Orientation="Horizontal" Spacing="4">
+                            <ui:FAProgressRing
+                                IsVisible="{Binding IsGameSearchLoading}"
+                                IsIndeterminate="True"
+                                Width="20"
+                                Height="20"
+                                VerticalAlignment="Center" />
+                            <controls:IconButton
+                                Command="{Binding ClearSearchCommand}"
+                                IsVisible="{Binding SearchQuery, Converter={x:Static StringConverters.IsNotNullOrEmpty}, FallbackValue=False}"
+                                Icon="X"
+                                IconSize="14"
+                                Width="28"
+                                Height="28"
+                                Padding="8"
+                                Margin="0,0,4,0"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                VerticalAlignment="Center" />
+                        </StackPanel>
+                    </AutoCompleteBox.InnerRightContent>
+                </AutoCompleteBox>
+
                 <StackPanel Orientation="Horizontal" Spacing="8">
-                    <AutoCompleteBox x:Name="GameSearchAutoCompleteBox"
-                                     Width="300"
-                                     VerticalAlignment="Center"
-                                     Text="{Binding SearchQuery, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                     ItemsSource="{Binding SearchResults}"
-                                     FilterMode="None"
-                                     IsDropDownOpen="{Binding IsSearchFlyoutOpen, Mode=TwoWay}"
-                                     ui:AutoCompleteDropdownBehaviourAttacher.LoadMoreCommand="{Binding LoadMoreSearchResultsCommand}"
-                                     PlaceholderText="{x:Static resources:Strings.Menu_RegionSelector_FindGame}">
-                        <AutoCompleteBox.ItemTemplate>
-                            <DataTemplate DataType="apis:OmniSearchContent">
-                                <Grid ColumnDefinitions="Auto,*,Auto" MaxWidth="270">
-                                    <Border Grid.Column="0" Width="44" Height="44"
-                                            Background="#10FFFFFF" ClipToBounds="True" CornerRadius="4">
-                                        <Image RenderOptions.BitmapInterpolationMode="HighQuality"
-                                               Source="{Binding ThumbnailBitmap}" Stretch="UniformToFill" />
-                                    </Border>
-                                    <StackPanel Grid.Column="1" Margin="10,0" VerticalAlignment="Center">
-                                        <TextBlock FontWeight="SemiBold" FontSize="16"
-                                                   Text="{Binding Name}" TextTrimming="CharacterEllipsis" />
-                                        <TextBlock FontSize="10" Opacity="0.5"
-                                                   Text="{Binding RootPlaceId, StringFormat='ID: {0}'}" />
-                                    </StackPanel>
-                                    <StackPanel Grid.Column="2" VerticalAlignment="Center"
-                                                Orientation="Horizontal" Spacing="4">
-                                        <ic:Lucide Margin="0,2,0,0" Height="12" Width="12"
-                                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                                   Icon="Users"/>
-                                        <TextBlock VerticalAlignment="Center" FontSize="12"
-                                                   Text="{Binding PlayerCount, Converter={StaticResource NumberAbbreviationConverter}}" />
-                                    </StackPanel>
-                                </Grid>
-                            </DataTemplate>
-                        </AutoCompleteBox.ItemTemplate>
-
-                        <AutoCompleteBox.InnerLeftContent>
-                            <ic:Lucide Icon="Search"
-                                       Height="14"
-                                       Width="14"
-                                       VerticalAlignment="Center"
-                                       Margin="8,0,0,0"/>
-                        </AutoCompleteBox.InnerLeftContent>
-
-                        <AutoCompleteBox.InnerRightContent>
-                            <StackPanel Orientation="Horizontal" Spacing="4">
-                                <ui:FAProgressRing IsIndeterminate="True"
-                                                   Width="20"
-                                                   Height="20"
-                                                   VerticalAlignment="Center"
-                                                   IsVisible="{Binding IsGameSearchLoading}" />
-                                <controls:IconButton Command="{Binding ClearSearchCommand}"
-                                                     IsVisible="{Binding SearchQuery, Converter={x:Static StringConverters.IsNotNullOrEmpty}, FallbackValue=False}"
-                                                     Icon="X"
-                                                     IconSize="14"
-                                                     Background="Transparent"
-                                                     BorderThickness="0"
-                                                     Width="28"
-                                                     Height="28"
-                                                     VerticalAlignment="Center"
-                                                     Margin="0,0,2,0"
-                                                     Padding="8"/>
-                            </StackPanel>
-                        </AutoCompleteBox.InnerRightContent>
-                    </AutoCompleteBox>
-                </StackPanel>
-
-                <StackPanel Orientation="Horizontal" Spacing="8">
-                    <TextBlock VerticalAlignment="Center" Text="{x:Static resources:Strings.Menu_RegionSelector_Region}" />
-
-                    <ComboBox Width="200" VerticalAlignment="Center"
-                              ItemsSource="{Binding Regions}"
-                              SelectedItem="{Binding SelectedRegion, Mode=TwoWay}" />
-
-                    <Button Width="100" VerticalAlignment="Center" Classes="accent"
-                            Command="{Binding SearchCommand}"
-                            Content="{x:Static resources:Strings.Common_Search}" />
-
-                    <Button IsVisible="{Binding ShowLoadMoreButton}"
-                            Command="{Binding LoadMoreCommand}"
-                            VerticalAlignment="Center"
-                            Padding="16,4"
-                            Content="{x:Static resources:Strings.Menu_RegionSelector_LoadMore}" />
+                    <TextBlock
+                        Text="{x:Static resources:Strings.Menu_RegionSelector_Region}"
+                        VerticalAlignment="Center" />
+                    <ComboBox
+                        ItemsSource="{Binding Regions}"
+                        SelectedItem="{Binding SelectedRegion, Mode=TwoWay}"
+                        Width="200"
+                        VerticalAlignment="Center" />
+                    <Button
+                        Command="{Binding SearchCommand}"
+                        Content="{x:Static resources:Strings.Common_Search}"
+                        Width="100"
+                        VerticalAlignment="Center"
+                        Classes="accent" />
+                    <Button
+                        Command="{Binding LoadMoreCommand}"
+                        Content="{x:Static resources:Strings.Menu_RegionSelector_LoadMore}"
+                        IsVisible="{Binding ShowLoadMoreButton}"
+                        VerticalAlignment="Center" />
                 </StackPanel>
             </StackPanel>
         </Border>
@@ -258,66 +287,77 @@ SPDX-License-Identifier: MPL-2.0
                 </ItemsControl>
             </ScrollViewer>
 
-            <Border IsVisible="{Binding IsServerListEmptyAndNotLoading}"
-                    CornerRadius="12"
-                    Background="{DynamicResource SolidBackgroundFillColorTertiaryBrush}"
-                    Opacity="0.8">
-                <StackPanel HorizontalAlignment="Center"
-                            VerticalAlignment="Center" Spacing="12">
-                    <ic:Lucide Width="48" Height="48"
-                               HorizontalAlignment="Center"
-                               Opacity="0.5"
-                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                               Icon="Search"/>
-                    <TextBlock HorizontalAlignment="Center"
-                               Margin="0,0,0,8"
-                               FontSize="16"
-                               FontWeight="Medium"
-                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                               Text="{Binding ServerListMessage}"
-                               TextAlignment="Center"
-                               TextWrapping="Wrap" />
+            <Border
+                IsVisible="{Binding IsServerListEmptyAndNotLoading}"
+                Background="{DynamicResource SolidBackgroundFillColorTertiaryBrush}"
+                CornerRadius="8"
+                Opacity="0.8">
+                <StackPanel
+                    Spacing="16"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+                    <ic:Lucide
+                        Icon="Search"
+                        Width="48"
+                        Height="48"
+                        HorizontalAlignment="Center"
+                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                        Opacity="0.5" />
+                    <TextBlock
+                        Text="{Binding ServerListMessage}"
+                        FontSize="14"
+                        FontWeight="Medium"
+                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                        TextAlignment="Center"
+                        TextWrapping="Wrap"
+                        HorizontalAlignment="Center" />
                 </StackPanel>
             </Border>
 
-            <Border IsVisible="{Binding ShowLoadingIndicator}"
-                    CornerRadius="12"
-                    Background="{DynamicResource SolidBackgroundFillColorTertiaryBrush}"
-                    Opacity="0.8">
-                <Grid>
-                    <StackPanel HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Spacing="16">
-                        <ui:FAProgressRing IsIndeterminate="True"
-                                           Width="100" Height="100"
-                                           HorizontalAlignment="Center" />
-                        <TextBlock HorizontalAlignment="Center"
-                                   FontSize="14"
-                                   FontWeight="SemiBold"
-                                   Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                                   Text="{Binding LoadingMessage}" />
-                    </StackPanel>
-                </Grid>
+            <Border
+                IsVisible="{Binding ShowLoadingIndicator}"
+                Background="{DynamicResource SolidBackgroundFillColorTertiaryBrush}"
+                CornerRadius="8"
+                Opacity="0.8">
+                <StackPanel
+                    Spacing="16"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+                    <ui:FAProgressRing
+                        IsIndeterminate="True"
+                        Width="100"
+                        Height="100"
+                        HorizontalAlignment="Center" />
+                    <TextBlock
+                        Text="{Binding LoadingMessage}"
+                        FontSize="14"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                        HorizontalAlignment="Center" />
+                </StackPanel>
             </Border>
 
-            <Border IsVisible="{Binding IsLoadingMore}"
-                    CornerRadius="12"
-                    Background="{DynamicResource SolidBackgroundFillColorTertiaryBrush}"
-                    Opacity="0.8">
-                <Grid>
-                    <StackPanel HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Spacing="16">
-                        <ui:FAProgressRing IsIndeterminate="True"
-                                           Width="100" Height="100"
-                                           HorizontalAlignment="Center" />
-                        <TextBlock HorizontalAlignment="Center"
-                                   FontSize="14"
-                                   FontWeight="SemiBold"
-                                   Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                                   Text="{x:Static resources:Strings.Menu_RegionSelector_LoadingMore}" />
-                    </StackPanel>
-                </Grid>
+            <Border
+                IsVisible="{Binding IsLoadingMore}"
+                Background="{DynamicResource SolidBackgroundFillColorTertiaryBrush}"
+                CornerRadius="8"
+                Opacity="0.8">
+                <StackPanel
+                    Spacing="16"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+                    <ui:FAProgressRing
+                        IsIndeterminate="True"
+                        Width="100"
+                        Height="100"
+                        HorizontalAlignment="Center" />
+                    <TextBlock
+                        Text="{x:Static resources:Strings.Menu_RegionSelector_LoadingMore}"
+                        FontSize="14"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                        HorizontalAlignment="Center" />
+                </StackPanel>
             </Border>
         </Grid>
     </Grid>

@@ -160,10 +160,7 @@ namespace Froststrap.Integrations.AccountManager
                     string csrfToken = csrfValues.First();
 
                     using var retryContent = new StringContent(JsonHelper.Serialize(loginData), Encoding.UTF8, "application/json");
-                    using var retryRequest = new HttpRequestMessage(HttpMethod.Post, loginUrl)
-                    {
-                        Content = retryContent
-                    };
+                    using var retryRequest = new HttpRequestMessage(HttpMethod.Post, loginUrl) { Content = retryContent };
                     retryRequest.Headers.Add("x-csrf-token", csrfToken);
 
                     loginResponse.Dispose();

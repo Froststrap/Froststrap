@@ -8,14 +8,10 @@ using Velopack;
 using Froststrap;
 using Froststrap.Backend;
 using Froststrap.Cli;
-using System.Diagnostics;
-#if _WIN32
-using System.Runtime.InteropServices;
-#endif
 
 namespace Froststrap;
 
-sealed class Program
+sealed partial class Program
 {
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
@@ -24,19 +20,23 @@ sealed class Program
 #if _WIN32
     private const int AttachParentProcess = -1;
 
-    [DllImport("kernel32.dll")]
-    private static extern bool AllocConsole();
+    [System.Runtime.InteropServices.LibraryImport("kernel32.dll")]
+    private static partial int AllocConsole();
 
-    [DllImport("kernel32.dll")]
-    private static extern bool AttachConsole(int dwProcessId);
+    [System.Runtime.InteropServices.LibraryImport("kernel32.dll")]
+    private static partial int AttachConsole(int dwProcessId);
 #endif
+
+    private static void AttachParentConsole()
+    {
+#if _WIN32
+        _ = AttachConsole(AttachParentProcess);
+#endif
+    }
 
     [STAThread]
     public static int Main(string[] args)
     {
-#if (_WIN32 || __linux__) && FROSTSTRAP_AOT
-        Utility.AotNativeLibraryExtractor.Extract();
-#endif
         AppInitializer.InitializeNativeResolvers();
 
         VelopackApp.Build()
@@ -51,13 +51,11 @@ sealed class Program
 
 #if _WIN32
         if (launchArgs.Any(static a => a is "--console" or "-c"))
-            AllocConsole();
+            _ = AllocConsole();
 #endif
 
-        var assembly = typeof(App).Assembly;
-        LogManager.Setup().LoadConfigurationFromAssemblyResource(assembly, "NLog.config");
-        GlobalDiagnosticsContext.Set("logRoot", Paths.Logs);
-        GlobalDiagnosticsContext.Set("startTime", DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss", CultureInfo.InvariantCulture));
+        Logging.Configure(Paths.Logs);
+        _ = Task.Run(() => AppInitializer.RunMacSecurityDiagnostics());
         NativeLog.Register();
 
         if (launchArgs.Length == 0)
@@ -129,40 +127,87 @@ sealed class Program
         return 0;
     }
 
-    private static void AttachParentConsole()
-    {
-#if _WIN32
-        AttachConsole(AttachParentProcess);
-#endif
-    }
 
     public static AppBuilder BuildAvaloniaApp()
     {
         var builder = AppBuilder.Configure<App>()
             .UsePlatformDetect()
+            .WithInterFont()
 #if DEBUG
             .WithDeveloperTools()
 #endif
             .LogToTrace();
 
-        if (OperatingSystem.IsWindows() && App.LaunchSettings?.NoGpuFlag.Active == true)
-        {
-            builder = builder.With(new Win32PlatformOptions
+        if (OperatingSystem.IsMacOS())
+            builder = builder.With(new AvaloniaNativePlatformOptions
             {
-                RenderingMode = [Win32RenderingMode.Software]
+                // Remove render with deprecated Core OpenGL, want best experience for macOS.
+                // https://developer.apple.com/library/archive/documentation/GraphicsImaging/Conceptual/OpenGL-MacProgGuide/opengl_pg_concepts/opengl_pg_concepts.html
+                //
+                // > Important: OpenGL was deprecated in macOS 10.14.
+                // > To create high-performance code on GPUs, use the Metal framework instead.
+                // 
+                // Quote from linked website.
+                RenderingMode = new[]
+                {
+                    AvaloniaNativeRenderingMode.Metal,
+                    AvaloniaNativeRenderingMode.Software
+                }
             });
+
+        if (OperatingSystem.IsLinux())
+        {
+            builder = builder.With(new X11PlatformOptions
+            {
+                // https://docs.avaloniaui.net/api/avalonia/x11platformoptions#uid-1eb188c693
+                // 
+                // Add Vulkan as a possible render method, possibly unstable?
+                RenderingMode = new[]
+                {
+                    X11RenderingMode.Glx,
+                    X11RenderingMode.Vulkan,
+                    X11RenderingMode.Software
+                },
+            });
+
+            if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("FROSTSTRAP_FORCE_WAYLAND")))
+            {
+                App.Logger.Debug("Using Wayland backend (FROSTSTRAP_FORCE_WAYLAND)");
+
+                builder = builder.UseWayland()
+                    .With(new WaylandPlatformOptions
+                    {
+                        UseDmabufSwapchain = true
+                    });
+            }
         }
 
-        if (OperatingSystem.IsLinux() &&
-            !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("FROSTSTRAP_FORCE_WAYLAND")))
+        if (OperatingSystem.IsWindows())
         {
-            App.Logger.Debug("Using Wayland backend (FROSTSTRAP_FORCE_WAYLAND)");
-
-            builder = builder.UseWayland()
-                .With(new WaylandPlatformOptions
+            if (App.LaunchSettings?.NoGpuFlag.Active == true)
+            {
+                builder = builder.With(new Win32PlatformOptions
                 {
-                    UseDmabufSwapchain = true
+                    RenderingMode = [Win32RenderingMode.Software]
                 });
+            }
+            else
+            {
+                // https://docs.avaloniaui.net/docs/platform-specific-guides/windows#rendering-mode
+                // 
+                // All options in here might actually be nice to have available.
+                // `AngleGL` is noted to only work with `WinUIComposition` and `DirectComposition`
+                // which possibly is dependents of the backdrops we have, haven't tested.
+                builder = builder.With(new Win32PlatformOptions
+                {
+                    RenderingMode = [
+                        Win32RenderingMode.AngleEgl,
+                        Win32RenderingMode.Wgl,
+                        Win32RenderingMode.Vulkan,
+                        Win32RenderingMode.Software
+                    ]
+                });
+            }
         }
 
         return builder;

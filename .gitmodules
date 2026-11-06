@@ -4,9 +4,6 @@
 [submodule "libs/FluentAvalonia"]
 	path = libs/FluentAvalonia
 	url = https://github.com/Froststrap/FluentAvalonia.git
-[submodule "libs/ColorPicker"]
-	path = libs/ColorPicker
-	url = https://github.com/Froststrap/ColorPicker.git
 [submodule "backend/virtualdisplay"]
 	path = backend/virtualdisplay
 	url = https://github.com/Froststrap/virtualdisplay
