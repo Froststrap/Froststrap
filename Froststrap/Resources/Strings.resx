@@ -1797,6 +1797,9 @@ The app will close this window when sign-in completes.</value>
   <data name="Menu.AccountTransfer.Import.NotSaved" xml:space="preserve">
     <value>Checked but couldn't be saved, see the logs {0}: {1}</value>
   </data>
+  <data name="Menu.AccountTransfer.Error.TooLarge" xml:space="preserve">
+    <value>This file is too large to be a Froststrap account export.</value>
+  </data>
   <data name="Menu.AccountTransfer.Error.TooMany" xml:space="preserve">
     <value>You can export at most {0} accounts at once.</value>
   </data>

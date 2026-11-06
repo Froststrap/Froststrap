@@ -518,7 +518,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 await using var stream = await files[0].OpenReadAsync();
                 if (await ReadLimitedAsync(stream, AccountTransfer.MaxFileSize) is not { } read)
                 {
-                    await Frontend.ShowMessageBox(Strings.Menu_AccountTransfer_Error_NotAnExport, MessageBoxImage.Error);
+                    await Frontend.ShowMessageBox(Strings.Menu_AccountTransfer_Error_TooLarge, MessageBoxImage.Error);
                     return;
                 }
 

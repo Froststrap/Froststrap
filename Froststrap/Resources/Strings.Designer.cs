@@ -3570,6 +3570,15 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This file is too large to be a Froststrap account export..
+        /// </summary>
+        public static string Menu_AccountTransfer_Error_TooLarge {
+            get {
+                return ResourceManager.GetString("Menu.AccountTransfer.Error.TooLarge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You can export at most {0} accounts at once..
         /// </summary>
         public static string Menu_AccountTransfer_Error_TooMany {
