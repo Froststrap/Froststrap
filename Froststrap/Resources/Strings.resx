@@ -1788,8 +1788,24 @@ The app will close this window when sign-in completes.</value>
   <data name="Menu.AccountTransfer.Import.Updated" xml:space="preserve">
     <value>Updated {0}: {1}</value>
   </data>
-  <data name="Menu.AccountTransfer.Import.Unchecked" xml:space="preserve">
-    <value>Added without checking (couldn't reach Roblox) {0}: {1}</value>
+  <data name="Menu.AccountTransfer.Import.Kept" xml:space="preserve">
+    <value>Kept your current login {0}: {1}</value>
+  </data>
+  <data name="Menu.AccountTransfer.Import.Unreachable" xml:space="preserve">
+    <value>Skipped, couldn't confirm with Roblox (try again later) {0}: {1}</value>
+  </data>
+  <data name="Menu.AccountTransfer.Import.Cancelled" xml:space="preserve">
+    <value>Not imported, cancelled {0}: {1}</value>
+  </data>
+  <data name="Menu.AccountTransfer.Import.Progress" xml:space="preserve">
+    <value>Checking accounts with Roblox… {0} of {1}</value>
+  </data>
+  <data name="Menu.AccountTransfer.Import.ReplacePrompt" xml:space="preserve">
+    <value>{0} account(s) in this file are already in Froststrap: {1}
+
+Replace their saved logins with the ones from the file?
+
+Yes: replace them. No: keep your current logins and only add new accounts.</value>
   </data>
   <data name="Menu.AccountTransfer.Import.Expired" xml:space="preserve">
     <value>Skipped, session expired {0}: {1}</value>

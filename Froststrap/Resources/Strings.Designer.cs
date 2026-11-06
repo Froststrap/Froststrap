@@ -3543,11 +3543,47 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Added without checking (couldn't reach Roblox) {0}: {1}.
+        ///   Looks up a localized string similar to Kept your current login {0}: {1}.
         /// </summary>
-        public static string Menu_AccountTransfer_Import_Unchecked {
+        public static string Menu_AccountTransfer_Import_Kept {
             get {
-                return ResourceManager.GetString("Menu.AccountTransfer.Import.Unchecked", resourceCulture);
+                return ResourceManager.GetString("Menu.AccountTransfer.Import.Kept", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Skipped, couldn't confirm with Roblox (try again later) {0}: {1}.
+        /// </summary>
+        public static string Menu_AccountTransfer_Import_Unreachable {
+            get {
+                return ResourceManager.GetString("Menu.AccountTransfer.Import.Unreachable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not imported, cancelled {0}: {1}.
+        /// </summary>
+        public static string Menu_AccountTransfer_Import_Cancelled {
+            get {
+                return ResourceManager.GetString("Menu.AccountTransfer.Import.Cancelled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Checking accounts with Roblox… {0} of {1}.
+        /// </summary>
+        public static string Menu_AccountTransfer_Import_Progress {
+            get {
+                return ResourceManager.GetString("Menu.AccountTransfer.Import.Progress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} account(s) in this file are already in Froststrap: {1}.
+        /// </summary>
+        public static string Menu_AccountTransfer_Import_ReplacePrompt {
+            get {
+                return ResourceManager.GetString("Menu.AccountTransfer.Import.ReplacePrompt", resourceCulture);
             }
         }
         

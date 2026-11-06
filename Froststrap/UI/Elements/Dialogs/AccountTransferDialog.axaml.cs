@@ -18,10 +18,10 @@ namespace Froststrap.UI.Elements.Dialogs
             InitializeComponent();
         }
 
-        /// Unlock an export file.
-        public AccountTransferDialog(byte[] importData)
+        /// Unlock an export file and import it into `manager`.
+        public AccountTransferDialog(byte[] importData, Integrations.AccountManager.AccountManager manager)
         {
-            ViewModel = new AccountTransferDialogViewModel(this, importData);
+            ViewModel = new AccountTransferDialogViewModel(this, importData, manager);
             DataContext = ViewModel;
             InitializeComponent();
         }

@@ -71,6 +71,10 @@ SPDX-License-Identifier: MPL-2.0
                 </StackPanel>
             </Border>
 
+            <TextBlock IsVisible="{Binding HasStatus}"
+                       Text="{Binding Status}"
+                       TextWrapping="Wrap" />
+
             <TextBlock IsVisible="{Binding HasError}"
                        Text="{Binding Error}"
                        Foreground="{DynamicResource SystemFillColorCriticalBrush}"
@@ -101,7 +105,7 @@ SPDX-License-Identifier: MPL-2.0
                         MinWidth="100"
                         Command="{Binding CancelCommand}"
                         Content="{x:Static resources:Strings.Common_Cancel}"
-                        IsEnabled="{Binding IsIdle}" />
+                        IsEnabled="{Binding CanCancel}" />
             </Grid>
         </Border>
     </Grid>

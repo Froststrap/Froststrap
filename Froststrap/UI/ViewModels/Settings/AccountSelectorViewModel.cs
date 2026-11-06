@@ -520,15 +520,13 @@ namespace Froststrap.UI.ViewModels.Settings
                     return;
 
                 await using var stream = await files[0].OpenReadAsync();
-                if (stream.CanSeek && stream.Length > MaxImportSize)
+                if (await ReadLimitedAsync(stream, AccountTransfer.MaxFileSize) is not { } read)
                 {
                     await Frontend.ShowMessageBox(Strings.Menu_AccountTransfer_Error_NotAnExport, MessageBoxImage.Error);
                     return;
                 }
 
-                using var buffer = new MemoryStream();
-                await stream.CopyToAsync(buffer);
-                data = buffer.ToArray();
+                data = read;
             }
             catch (Exception ex)
             {
@@ -537,21 +535,42 @@ namespace Froststrap.UI.ViewModels.Settings
                 return;
             }
 
-            var dialog = new AccountTransferDialog(data);
-            if (!await dialog.ShowDialog<bool>(parent) || dialog.ViewModel.ImportedAccounts is not { } entries)
-                return;
+            try
+            {
+                var dialog = new AccountTransferDialog(data, _accountManager);
+                if (!await dialog.ShowDialog<bool>(parent) || dialog.ViewModel.ImportResults is not { } results)
+                    return;
 
-            var results = await AccountTransfer.ImportAsync(_accountManager, entries);
-            await LoadDataAsync();
+                await LoadDataAsync();
 
-            await Frontend.ShowMessageBox(DescribeImport(results),
-                results.Any(r => r.Outcome is AccountImportOutcome.Expired or AccountImportOutcome.Invalid)
-                    ? MessageBoxImage.Warning
-                    : MessageBoxImage.Information);
+                bool allFine = results.All(r => r.Outcome is AccountImportOutcome.Added or AccountImportOutcome.Updated or AccountImportOutcome.Kept);
+                await Frontend.ShowMessageBox(DescribeImport(results), allFine ? MessageBoxImage.Information : MessageBoxImage.Warning);
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error("Account import failed: ", ex);
+                await LoadDataAsync();
+                await Frontend.ShowMessageBox(Strings.Menu_AccountTransfer_Error_Internal, MessageBoxImage.Error);
+            }
         }
 
-        // an export of every account fits in a few KB
-        private const long MaxImportSize = 1024 * 1024;
+        // null if the stream is longer than `limit`; never reads more than limit + 1 bytes
+        private static async Task<byte[]?> ReadLimitedAsync(Stream stream, long limit)
+        {
+            using var buffer = new MemoryStream();
+            var chunk = new byte[16 * 1024];
+            int read;
+
+            while ((read = await stream.ReadAsync(chunk)) > 0)
+            {
+                if (buffer.Length + read > limit)
+                    return null;
+
+                buffer.Write(chunk, 0, read);
+            }
+
+            return buffer.ToArray();
+        }
 
         private static string DescribeImport(List<AccountImportItem> results)
         {
@@ -568,9 +587,11 @@ namespace Froststrap.UI.ViewModels.Settings
 
             Add(AccountImportOutcome.Added, Strings.Menu_AccountTransfer_Import_Added);
             Add(AccountImportOutcome.Updated, Strings.Menu_AccountTransfer_Import_Updated);
-            Add(AccountImportOutcome.Unchecked, Strings.Menu_AccountTransfer_Import_Unchecked);
+            Add(AccountImportOutcome.Kept, Strings.Menu_AccountTransfer_Import_Kept);
+            Add(AccountImportOutcome.Unreachable, Strings.Menu_AccountTransfer_Import_Unreachable);
             Add(AccountImportOutcome.Expired, Strings.Menu_AccountTransfer_Import_Expired);
             Add(AccountImportOutcome.Invalid, Strings.Menu_AccountTransfer_Import_Invalid);
+            Add(AccountImportOutcome.Cancelled, Strings.Menu_AccountTransfer_Import_Cancelled);
 
             return string.Join("\n", lines);
         }

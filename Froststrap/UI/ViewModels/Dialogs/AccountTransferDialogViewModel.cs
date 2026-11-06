@@ -11,11 +11,13 @@ using System.Collections.ObjectModel;
 namespace Froststrap.UI.ViewModels.Dialogs
 {
     /// Export: pick accounts and a password, closes with the sealed bytes.
-    /// Import: asks for the file's password, closes with its entries.
+    /// Import: asks for the file's password, confirms replacements, then imports with progress.
     internal partial class AccountTransferDialogViewModel : NotifyPropertyChangedViewModel
     {
         private readonly AvaloniaWindow _window;
         private readonly byte[]? _importData;
+        private readonly AccountManager? _manager;
+        private CancellationTokenSource? _importCancel;
 
         public bool IsExport => _importData is null;
         public bool IsImport => !IsExport;
@@ -68,14 +70,34 @@ namespace Froststrap.UI.ViewModels.Dialogs
             set
             {
                 if (SetProperty(ref _isBusy, value))
+                {
                     OnPropertyChanged(nameof(IsIdle));
+                    OnPropertyChanged(nameof(CanCancel));
+                }
             }
         }
 
         public bool IsIdle => !IsBusy;
 
+        private string _status = "";
+        public string Status
+        {
+            get => _status;
+            set
+            {
+                if (SetProperty(ref _status, value))
+                    OnPropertyChanged(nameof(HasStatus));
+            }
+        }
+
+        public bool HasStatus => Status.Length > 0;
+
+        // the key derivation can't be interrupted, but checking accounts can
+        private bool _isImporting;
+        public bool CanCancel => IsIdle || _isImporting;
+
         public byte[]? ExportedData { get; private set; }
-        public List<AccountExportEntry>? ImportedAccounts { get; private set; }
+        public List<AccountImportItem>? ImportResults { get; private set; }
 
         public AccountTransferDialogViewModel(AvaloniaWindow window, IEnumerable<AccountManagerAccount> accounts)
         {
@@ -84,10 +106,20 @@ namespace Froststrap.UI.ViewModels.Dialogs
                 Accounts.Add(new SelectableAccount(account));
         }
 
-        public AccountTransferDialogViewModel(AvaloniaWindow window, byte[] importData)
+        public AccountTransferDialogViewModel(AvaloniaWindow window, byte[] importData, AccountManager manager)
         {
             _window = window;
             _importData = importData;
+            _manager = manager;
+            // closing mid-import stops it, then the dialog closes itself with what got imported
+            _window.Closing += (_, e) =>
+            {
+                if (_isImporting)
+                {
+                    e.Cancel = true;
+                    _importCancel?.Cancel();
+                }
+            };
         }
 
         [RelayCommand]
@@ -132,7 +164,10 @@ namespace Froststrap.UI.ViewModels.Dialogs
                         return;
                     }
 
-                    ImportedAccounts = entries;
+                    if (await AskReplaceAsync(entries) is not bool replace)
+                        return;
+
+                    ImportResults = await RunImportAsync(entries, replace);
                 }
 
                 _window.Close(true);
@@ -148,8 +183,60 @@ namespace Froststrap.UI.ViewModels.Dialogs
             }
         }
 
+        private async Task<bool?> AskReplaceAsync(List<AccountExportEntry> entries)
+        {
+            var existing = AccountTransfer.FindExisting(_manager!, entries);
+            if (existing.Count == 0)
+                return false;
+
+            string names = string.Join(", ", existing.Select(e => e.Username));
+            var answer = await Frontend.ShowMessageBox(
+                string.Format(CultureInfo.InvariantCulture, Strings.Menu_AccountTransfer_Import_ReplacePrompt, existing.Count, names),
+                MessageBoxImage.Question,
+                MessageBoxButton.YesNoCancel,
+                MessageBoxResult.No);
+
+            return answer switch
+            {
+                MessageBoxResult.Yes => true,
+                MessageBoxResult.No => false,
+                _ => null,
+            };
+        }
+
+        private async Task<List<AccountImportItem>> RunImportAsync(List<AccountExportEntry> entries, bool replace)
+        {
+            int total = entries.DistinctBy(e => e.UserId).Count();
+            var progress = new Progress<int>(done =>
+                Status = string.Format(CultureInfo.InvariantCulture, Strings.Menu_AccountTransfer_Import_Progress, Math.Min(done + 1, total), total));
+
+            using var cancel = new CancellationTokenSource();
+            _importCancel = cancel;
+            _isImporting = true;
+            OnPropertyChanged(nameof(CanCancel));
+
+            try
+            {
+                return await AccountTransfer.ImportAsync(_manager!, entries, replace, progress, cancel.Token);
+            }
+            finally
+            {
+                _importCancel = null;
+                _isImporting = false;
+                Status = "";
+                OnPropertyChanged(nameof(CanCancel));
+            }
+        }
+
         [RelayCommand]
-        private void Cancel() => _window.Close(false);
+        private void Cancel()
+        {
+            // stop checking accounts; what was imported so far is still reported
+            if (_isImporting)
+                _importCancel?.Cancel();
+            else
+                _window.Close(false);
+        }
 
         private bool CheckExportInput()
         {
