@@ -56,7 +56,13 @@ impl VaultError {
     }
 }
 
-fn derive_key(password: &[u8], salt: &[u8], m: u32, t: u32, p: u32) -> Result<Zeroizing<[u8; 32]>, VaultError> {
+fn derive_key(
+    password: &[u8],
+    salt: &[u8],
+    m: u32,
+    t: u32,
+    p: u32,
+) -> Result<Zeroizing<[u8; 32]>, VaultError> {
     let params = Params::new(m, t, p, Some(32)).map_err(|_| VaultError::NotAVault)?;
     let mut key = Zeroizing::new([0u8; 32]);
     Argon2::new(Algorithm::Argon2id, Version::V0x13, params)
@@ -100,7 +106,13 @@ fn seal_with(password: &[u8], plain: &[u8], m: u32, t: u32, p: u32) -> Result<Ve
     let key = derive_key(password, &salt, m, t, p)?;
     let cipher = Aes256Gcm::new_from_slice(key.as_ref()).map_err(|_| VaultError::Internal)?;
     let sealed = cipher
-        .encrypt(Nonce::from_slice(&nonce), Payload { msg: plain, aad: &out })
+        .encrypt(
+            Nonce::from_slice(&nonce),
+            Payload {
+                msg: plain,
+                aad: &out,
+            },
+        )
         .map_err(|_| VaultError::Internal)?;
 
     out.extend_from_slice(&sealed);
@@ -111,7 +123,11 @@ pub fn open(password: &[u8], data: &[u8]) -> Result<Zeroizing<Vec<u8>>, VaultErr
     open_with(password, data, false)
 }
 
-fn open_with(password: &[u8], data: &[u8], allow_cheaper: bool) -> Result<Zeroizing<Vec<u8>>, VaultError> {
+fn open_with(
+    password: &[u8],
+    data: &[u8],
+    allow_cheaper: bool,
+) -> Result<Zeroizing<Vec<u8>>, VaultError> {
     if data.len() < 5 || &data[..4] != MAGIC {
         return Err(VaultError::NotAVault);
     }
@@ -139,7 +155,13 @@ fn open_with(password: &[u8], data: &[u8], allow_cheaper: bool) -> Result<Zeroiz
     let key = derive_key(password, salt, m, t, p)?;
     let cipher = Aes256Gcm::new_from_slice(key.as_ref()).map_err(|_| VaultError::Internal)?;
     cipher
-        .decrypt(Nonce::from_slice(nonce), Payload { msg: sealed, aad: header })
+        .decrypt(
+            Nonce::from_slice(nonce),
+            Payload {
+                msg: sealed,
+                aad: header,
+            },
+        )
         .map(Zeroizing::new)
         // a wrong password and a tampered file look the same to GCM
         .map_err(|_| VaultError::WrongPassword)
@@ -197,7 +219,9 @@ pub unsafe extern "C" fn vault_seal(
     if !unsafe { reset_out(out, out_len) } {
         return ERR_INVALID_ARG;
     }
-    let (Some(password), Some(plain)) = (unsafe { bytes(password, password_len) }, unsafe { bytes(plain, plain_len) }) else {
+    let (Some(password), Some(plain)) = (unsafe { bytes(password, password_len) }, unsafe {
+        bytes(plain, plain_len)
+    }) else {
         return ERR_INVALID_ARG;
     };
 
@@ -226,7 +250,9 @@ pub unsafe extern "C" fn vault_open(
     if !unsafe { reset_out(out, out_len) } {
         return ERR_INVALID_ARG;
     }
-    let (Some(password), Some(data)) = (unsafe { bytes(password, password_len) }, unsafe { bytes(data, data_len) }) else {
+    let (Some(password), Some(data)) = (unsafe { bytes(password, password_len) }, unsafe {
+        bytes(data, data_len)
+    }) else {
         return ERR_INVALID_ARG;
     };
 
@@ -268,20 +294,34 @@ mod tests {
     #[test]
     fn round_trip() {
         let sealed = quick(b"correct horse", b"{\"accounts\":[]}");
-        assert_eq!(open_cheap(b"correct horse", &sealed).unwrap().as_slice(), b"{\"accounts\":[]}");
+        assert_eq!(
+            open_cheap(b"correct horse", &sealed).unwrap().as_slice(),
+            b"{\"accounts\":[]}"
+        );
     }
 
     #[test]
     fn default_params_round_trip() {
         let sealed = seal(b"pw", b"hi").unwrap();
-        assert_eq!(&sealed[5..17], [M_COST.to_le_bytes(), T_COST.to_le_bytes(), P_COST.to_le_bytes()].concat());
+        assert_eq!(
+            &sealed[5..17],
+            [
+                M_COST.to_le_bytes(),
+                T_COST.to_le_bytes(),
+                P_COST.to_le_bytes()
+            ]
+            .concat()
+        );
         assert_eq!(open(b"pw", &sealed).unwrap().as_slice(), b"hi");
     }
 
     #[test]
     fn wrong_password() {
         let sealed = quick(b"right", b"secret");
-        assert_eq!(open_cheap(b"wrong", &sealed).unwrap_err(), VaultError::WrongPassword);
+        assert_eq!(
+            open_cheap(b"wrong", &sealed).unwrap_err(),
+            VaultError::WrongPassword
+        );
     }
 
     #[test]
@@ -290,19 +330,32 @@ mod tests {
         for i in [20, HEADER_LEN - 1, HEADER_LEN, sealed.len() - 1] {
             let mut bad = sealed.clone();
             bad[i] ^= 1;
-            assert_eq!(open_cheap(b"pw", &bad).unwrap_err(), VaultError::WrongPassword, "byte {i}");
+            assert_eq!(
+                open_cheap(b"pw", &bad).unwrap_err(),
+                VaultError::WrongPassword,
+                "byte {i}"
+            );
         }
     }
 
     #[test]
     fn rejects_other_files() {
         assert_eq!(open_cheap(b"pw", b"").unwrap_err(), VaultError::NotAVault);
-        assert_eq!(open_cheap(b"pw", b"{\"accounts\":[]}").unwrap_err(), VaultError::NotAVault);
-        assert_eq!(open_cheap(b"pw", &quick(b"pw", b"x")[..HEADER_LEN]).unwrap_err(), VaultError::NotAVault);
+        assert_eq!(
+            open_cheap(b"pw", b"{\"accounts\":[]}").unwrap_err(),
+            VaultError::NotAVault
+        );
+        assert_eq!(
+            open_cheap(b"pw", &quick(b"pw", b"x")[..HEADER_LEN]).unwrap_err(),
+            VaultError::NotAVault
+        );
 
         let mut future = quick(b"pw", b"x");
         future[4] = 2;
-        assert_eq!(open_cheap(b"pw", &future).unwrap_err(), VaultError::UnsupportedVersion);
+        assert_eq!(
+            open_cheap(b"pw", &future).unwrap_err(),
+            VaultError::UnsupportedVersion
+        );
     }
 
     fn with_params(mut data: Vec<u8>, m: u32, t: u32, p: u32) -> Vec<u8> {
@@ -315,9 +368,21 @@ mod tests {
     #[test]
     fn rejects_other_params() {
         let base = quick(b"pw", b"x");
-        for (m, t, p) in [(u32::MAX, 1, 1), (8, 64, 1), (8, 1, 16), (0, 1, 1), (8, 0, 1), (8, 1, 0), (M_COST * 2, T_COST, P_COST)] {
+        for (m, t, p) in [
+            (u32::MAX, 1, 1),
+            (8, 64, 1),
+            (8, 1, 16),
+            (0, 1, 1),
+            (8, 0, 1),
+            (8, 1, 0),
+            (M_COST * 2, T_COST, P_COST),
+        ] {
             let bad = with_params(base.clone(), m, t, p);
-            assert_eq!(open_cheap(b"pw", &bad).unwrap_err(), VaultError::NotAVault, "{m}/{t}/{p}");
+            assert_eq!(
+                open_cheap(b"pw", &bad).unwrap_err(),
+                VaultError::NotAVault,
+                "{m}/{t}/{p}"
+            );
         }
     }
 
@@ -327,8 +392,14 @@ mod tests {
         assert!(!params_allowed(8, 1, 1, false));
         assert!(!params_allowed(M_COST, T_COST + 1, P_COST, false));
 
-        assert_eq!(open(b"pw", &quick(b"pw", b"x")).unwrap_err(), VaultError::NotAVault);
-        assert_eq!(open(b"pw", &seal(b"pw", b"x").unwrap()).unwrap().as_slice(), b"x");
+        assert_eq!(
+            open(b"pw", &quick(b"pw", b"x")).unwrap_err(),
+            VaultError::NotAVault
+        );
+        assert_eq!(
+            open(b"pw", &seal(b"pw", b"x").unwrap()).unwrap().as_slice(),
+            b"x"
+        );
     }
 
     #[test]
@@ -336,7 +407,10 @@ mod tests {
         let sealed = quick(b"pw", b"secret");
         for len in 0..sealed.len() {
             let err = open_cheap(b"pw", &sealed[..len]).unwrap_err();
-            assert!(matches!(err, VaultError::NotAVault | VaultError::WrongPassword), "len {len}: {err:?}");
+            assert!(
+                matches!(err, VaultError::NotAVault | VaultError::WrongPassword),
+                "len {len}: {err:?}"
+            );
         }
     }
 
@@ -349,7 +423,10 @@ mod tests {
     #[test]
     fn empty_password() {
         assert_eq!(seal(b"", b"x").unwrap_err(), VaultError::InvalidArg);
-        assert_eq!(open_cheap(b"", &quick(b"pw", b"x")).unwrap_err(), VaultError::WrongPassword);
+        assert_eq!(
+            open_cheap(b"", &quick(b"pw", b"x")).unwrap_err(),
+            VaultError::WrongPassword
+        );
     }
 
     #[test]
@@ -359,10 +436,16 @@ mod tests {
         assert_eq!(sealed.len(), MAX_DATA_LEN);
         assert_eq!(open_cheap(b"pw", &sealed).unwrap().len(), MAX_PLAIN_LEN);
 
-        assert_eq!(seal_with(b"pw", &vec![0u8; MAX_PLAIN_LEN + 1], 8, 1, 1).unwrap_err(), VaultError::InvalidArg);
+        assert_eq!(
+            seal_with(b"pw", &vec![0u8; MAX_PLAIN_LEN + 1], 8, 1, 1).unwrap_err(),
+            VaultError::InvalidArg
+        );
         let mut too_big = sealed;
         too_big.push(0);
-        assert_eq!(open_cheap(b"pw", &too_big).unwrap_err(), VaultError::NotAVault);
+        assert_eq!(
+            open_cheap(b"pw", &too_big).unwrap_err(),
+            VaultError::NotAVault
+        );
     }
 
     #[test]
@@ -378,13 +461,53 @@ mod tests {
         // failed calls get their own outputs, since every call clears what it's given
         let (mut failed, mut failed_len) = (ptr::null_mut(), 0);
         unsafe {
-            assert_eq!(vault_seal(pw.as_ptr(), pw.len(), msg.as_ptr(), msg.len(), &mut sealed, &mut sealed_len), OK);
-            assert_eq!(vault_open(pw.as_ptr(), pw.len(), sealed, sealed_len, &mut plain, &mut plain_len), OK);
+            assert_eq!(
+                vault_seal(
+                    pw.as_ptr(),
+                    pw.len(),
+                    msg.as_ptr(),
+                    msg.len(),
+                    &mut sealed,
+                    &mut sealed_len
+                ),
+                OK
+            );
+            assert_eq!(
+                vault_open(
+                    pw.as_ptr(),
+                    pw.len(),
+                    sealed,
+                    sealed_len,
+                    &mut plain,
+                    &mut plain_len
+                ),
+                OK
+            );
             assert_eq!(slice::from_raw_parts(plain, plain_len), msg);
 
-            assert_eq!(vault_open(b"x".as_ptr(), 1, sealed, sealed_len, &mut failed, &mut failed_len), ERR_WRONG_PASSWORD);
+            assert_eq!(
+                vault_open(
+                    b"x".as_ptr(),
+                    1,
+                    sealed,
+                    sealed_len,
+                    &mut failed,
+                    &mut failed_len
+                ),
+                ERR_WRONG_PASSWORD
+            );
             assert!(failed.is_null() && failed_len == 0);
-            assert_eq!(vault_seal(ptr::null(), 0, msg.as_ptr(), msg.len(), &mut failed, &mut failed_len), ERR_INVALID_ARG);
+            assert_eq!(
+                vault_seal(
+                    ptr::null(),
+                    0,
+                    msg.as_ptr(),
+                    msg.len(),
+                    &mut failed,
+                    &mut failed_len
+                ),
+                ERR_INVALID_ARG
+            );
             assert!(failed.is_null() && failed_len == 0);
 
             vault_free(sealed, sealed_len);
@@ -396,9 +519,29 @@ mod tests {
     fn c_abi_clears_outputs_on_error() {
         let (mut out, mut out_len) = (ptr::dangling_mut::<u8>(), 99usize);
         unsafe {
-            assert_eq!(vault_open(b"pw".as_ptr(), 2, b"junk".as_ptr(), 4, &mut out, &mut out_len), ERR_NOT_A_VAULT);
+            assert_eq!(
+                vault_open(
+                    b"pw".as_ptr(),
+                    2,
+                    b"junk".as_ptr(),
+                    4,
+                    &mut out,
+                    &mut out_len
+                ),
+                ERR_NOT_A_VAULT
+            );
             assert!(out.is_null() && out_len == 0);
-            assert_eq!(vault_seal(b"pw".as_ptr(), 2, ptr::null(), 5, ptr::null_mut(), &mut out_len), ERR_INVALID_ARG);
+            assert_eq!(
+                vault_seal(
+                    b"pw".as_ptr(),
+                    2,
+                    ptr::null(),
+                    5,
+                    ptr::null_mut(),
+                    &mut out_len
+                ),
+                ERR_INVALID_ARG
+            );
         }
     }
 
@@ -411,8 +554,28 @@ mod tests {
                 let (mut plain, mut plain_len) = (ptr::null_mut(), 0);
                 unsafe {
                     // the C ABI uses the real params, so this exercises the production path too
-                    assert_eq!(vault_seal(pw.as_ptr(), pw.len(), msg.as_ptr(), msg.len(), &mut sealed, &mut sealed_len), OK);
-                    assert_eq!(vault_open(pw.as_ptr(), pw.len(), sealed, sealed_len, &mut plain, &mut plain_len), OK);
+                    assert_eq!(
+                        vault_seal(
+                            pw.as_ptr(),
+                            pw.len(),
+                            msg.as_ptr(),
+                            msg.len(),
+                            &mut sealed,
+                            &mut sealed_len
+                        ),
+                        OK
+                    );
+                    assert_eq!(
+                        vault_open(
+                            pw.as_ptr(),
+                            pw.len(),
+                            sealed,
+                            sealed_len,
+                            &mut plain,
+                            &mut plain_len
+                        ),
+                        OK
+                    );
                     assert_eq!(slice::from_raw_parts(plain, plain_len), msg);
                     vault_free(sealed, sealed_len);
                     vault_free(plain, plain_len);

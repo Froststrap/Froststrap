@@ -85,7 +85,6 @@ namespace Froststrap.Integrations.AccountManager
             var file = new AccountExportFile
             {
                 Accounts = [.. list
-                    .Where(a => !string.IsNullOrEmpty(a.SecurityToken))
                     .Select(a => new AccountExportEntry
                     {
                         UserId = a.UserId,

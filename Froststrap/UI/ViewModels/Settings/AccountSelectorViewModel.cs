@@ -476,7 +476,12 @@ namespace Froststrap.UI.ViewModels.Settings
                     return;
 
                 await using (var stream = await file.OpenWriteAsync())
+                {
+                    // overwriting a bigger file must not leave its tail behind, or the export won't open
+                    if (stream.CanSeek)
+                        stream.SetLength(0);
                     await stream.WriteAsync(data);
+                }
 
                 App.Logger.Info($"Exported {dialog.ViewModel.Accounts.Count(a => a.IsSelected)} account(s).");
                 await Frontend.ShowMessageBox(Strings.Menu_AccountTransfer_Export_Done, MessageBoxImage.Information);

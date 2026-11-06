@@ -172,10 +172,8 @@ namespace Froststrap.Integrations.AccountManager
                     LastUpdated = DateTime.UtcNow,
                 };
 
-                File.WriteAllText(
-                    _accountsLocation,
-                    JsonHelper.Serialize(data)
-                );
+                // a failed write leaves the previous file intact
+                AtomicFile.WriteAllText(_accountsLocation, JsonHelper.Serialize(data));
             }
             catch (Exception ex)
             {
@@ -223,16 +221,27 @@ namespace Froststrap.Integrations.AccountManager
 
         /// Adds or updates several accounts with a single save. If saving fails, the account list
         /// and the affected credentials are put back the way they were and false is returned.
+        /// Nothing is changed if the current credentials can't be read first.
         public bool TryAddOrUpdateAccounts(IReadOnlyList<AccountManagerAccount> accounts, out List<bool> isNew)
         {
+            isNew = [];
+
+            // only a known previous state can be restored, so a read error stops the batch up front
+            var credentialsBefore = new Dictionary<string, string?>();
+            foreach (var id in accounts.Select(a => a.UserId.ToString(CultureInfo.InvariantCulture)).Distinct())
+            {
+                var read = AccountSecurity.ReadCredential(id, out string token);
+                if (read == CredentialRead.Failed)
+                {
+                    App.Logger.Warn($"Couldn't read the saved credential for account {id}; not importing.");
+                    return false;
+                }
+                credentialsBefore[id] = read == CredentialRead.Found ? token : null;
+            }
+
             var listBefore = _accounts.ToList();
             var activeBefore = ActiveAccount;
-            var credentialsBefore = accounts
-                .Select(a => a.UserId.ToString(CultureInfo.InvariantCulture))
-                .Distinct()
-                .ToDictionary(id => id, AccountSecurity.GetCredential);
 
-            isNew = [];
             foreach (var account in accounts)
             {
                 var merged = Merge(account, out bool added);
@@ -244,7 +253,12 @@ namespace Froststrap.Integrations.AccountManager
 
             SaveAccounts();
 
-            if (LastSaveSucceeded)
+            // trust the store, not the return values: every imported session must read back as written
+            bool verified = LastSaveSucceeded && accounts.All(a =>
+                AccountSecurity.ReadCredential(a.UserId.ToString(CultureInfo.InvariantCulture), out string saved) == CredentialRead.Found
+                && saved == _accounts.Find(x => x.UserId == a.UserId)?.SecurityToken);
+
+            if (verified)
             {
                 if (ActiveAccount is not null && !ReferenceEquals(ActiveAccount, activeBefore))
                     ActiveAccountChanged?.Invoke(ActiveAccount);

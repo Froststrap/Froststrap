@@ -7,6 +7,13 @@ using System.Runtime.InteropServices;
 
 namespace Froststrap.Integrations.AccountManager;
 
+internal enum CredentialRead
+{
+    Found,
+    Missing,
+    Failed,
+}
+
 internal static class CredentialStore
 {
     private const string TargetPrefix = "ktsu.CredentialCache:Froststrap:";
@@ -17,16 +24,20 @@ internal static class CredentialStore
 
     private static readonly Lock FileLock = new();
 
-    public static bool TryGet(string accountId, out string token)
+    public static bool TryGet(string accountId, out string token) =>
+        Read(accountId, out token) == CredentialRead.Found;
+
+    /// Like TryGet, but tells "nothing saved" apart from "couldn't read the store".
+    public static CredentialRead Read(string accountId, out string token)
     {
         token = string.Empty;
 
         if (string.IsNullOrWhiteSpace(accountId))
-            return false;
+            return CredentialRead.Missing;
 
         return OperatingSystem.IsWindows()
-            ? TryGetWindows(accountId, out token)
-            : TryGetFile(accountId, out token);
+            ? ReadWindows(accountId, out token)
+            : ReadFromFile(accountId, out token);
     }
 
     public static bool Set(string accountId, string token)
@@ -51,25 +62,25 @@ internal static class CredentialStore
 
     private static string BuildTarget(string accountId) => TargetPrefix + accountId;
 
-    private static bool TryGetWindows(string accountId, out string token)
+    private static CredentialRead ReadWindows(string accountId, out string token)
     {
         token = string.Empty;
 
         if (!CredRead(BuildTarget(accountId), CredentialTypeGeneric, 0, out IntPtr handle))
-            return false;
+            return Marshal.GetLastPInvokeError() == ErrorNotFound ? CredentialRead.Missing : CredentialRead.Failed;
 
         try
         {
             Credential credential = Marshal.PtrToStructure<Credential>(handle);
 
             if (credential.CredentialBlobSize == 0 || credential.CredentialBlob == IntPtr.Zero)
-                return false;
+                return CredentialRead.Missing;
 
             byte[] bytes = new byte[credential.CredentialBlobSize];
             Marshal.Copy(credential.CredentialBlob, bytes, 0, bytes.Length);
 
             token = ExtractToken(Encoding.UTF8.GetString(bytes));
-            return !string.IsNullOrEmpty(token);
+            return string.IsNullOrEmpty(token) ? CredentialRead.Missing : CredentialRead.Found;
         }
         finally
         {
@@ -143,29 +154,37 @@ internal static class CredentialStore
 
     private static string FilePath => Path.Combine(Paths.Cache, FileName);
 
-    private static bool TryGetFile(string accountId, out string token)
+    private static CredentialRead ReadFromFile(string accountId, out string token)
     {
         token = string.Empty;
 
         lock (FileLock)
         {
-            var data = ReadFile();
+            if (ReadFile() is not { } data)
+                return CredentialRead.Failed;
 
             if (data.TryGetValue(accountId, out string? value) && !string.IsNullOrEmpty(value))
             {
                 token = value;
-                return true;
+                return CredentialRead.Found;
             }
         }
 
-        return false;
+        return CredentialRead.Missing;
     }
 
     private static bool SetFile(string accountId, string token)
     {
         lock (FileLock)
         {
-            var data = ReadFile();
+            // keep an unreadable file aside instead of silently replacing it with this one account
+            if (ReadFile() is not { } data)
+            {
+                if (!SetAsideUnreadableFile())
+                    return false;
+                data = [];
+            }
+
             data[accountId] = token;
             return WriteFile(data);
         }
@@ -175,7 +194,8 @@ internal static class CredentialStore
     {
         lock (FileLock)
         {
-            var data = ReadFile();
+            if (ReadFile() is not { } data)
+                return false;
 
             if (!data.Remove(accountId))
                 return true;
@@ -184,7 +204,23 @@ internal static class CredentialStore
         }
     }
 
-    private static Dictionary<string, string> ReadFile()
+    private static bool SetAsideUnreadableFile()
+    {
+        try
+        {
+            string backup = $"{FilePath}.unreadable-{DateTime.UtcNow:yyyyMMddHHmmss}";
+            File.Move(FilePath, backup);
+            App.Logger.Warn($"credentials.json couldn't be read; kept it as {Path.GetFileName(backup)} and started a new one.");
+            return true;
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            return false;
+        }
+    }
+
+    // null if the file exists but can't be read or parsed
+    private static Dictionary<string, string>? ReadFile()
     {
         try
         {
@@ -196,7 +232,7 @@ internal static class CredentialStore
         }
         catch
         {
-            return [];
+            return null;
         }
     }
 
@@ -205,11 +241,7 @@ internal static class CredentialStore
         try
         {
             Directory.CreateDirectory(Paths.Cache);
-            File.WriteAllText(FilePath, JsonHelper.Serialize(data, JsonHelper.PlainOptions));
-
-            if (!OperatingSystem.IsWindows())
-                File.SetUnixFileMode(FilePath, UnixFileMode.UserRead | UnixFileMode.UserWrite);
-
+            AtomicFile.WriteAllText(FilePath, JsonHelper.Serialize(data, JsonHelper.PlainOptions), ownerOnly: true);
             return true;
         }
         catch

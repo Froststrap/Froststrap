@@ -181,6 +181,13 @@ namespace Froststrap.UI.ViewModels.Dialogs
                     }
 
                     ImportResults = await RunImportAsync(entries, replace);
+
+                    // a cancelled import saved nothing, so there's nothing to report
+                    if (ImportResults.Count > 0 && ImportResults.All(r => r.Outcome == AccountImportOutcome.Cancelled))
+                    {
+                        CloseDialog(false);
+                        return;
+                    }
                 }
 
                 CloseDialog(true);
