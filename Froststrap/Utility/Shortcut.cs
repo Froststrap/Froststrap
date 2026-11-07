@@ -399,28 +399,7 @@ namespace Froststrap.Utility
 
         private static void SaveBitmapAsIcon(Bitmap bitmap, Stream output)
         {
-            using var ms = new MemoryStream();
-            bitmap.Save(ms, PngBitmapEncoderOptions.Default);
-            ms.Position = 0;
-
-            using var resized = Bitmap.DecodeToWidth(ms, 64);
-            using var pngStream = new MemoryStream();
-            resized.Save(pngStream, PngBitmapEncoderOptions.Default);
-            byte[] pngBytes = pngStream.ToArray();
-
-            using var writer = new BinaryWriter(output);
-            writer.Write((short)0);
-            writer.Write((short)1);
-            writer.Write((short)1);
-            writer.Write((byte)64);
-            writer.Write((byte)64);
-            writer.Write((byte)0);
-            writer.Write((byte)0);
-            writer.Write((short)1);
-            writer.Write((short)32);
-            writer.Write(pngBytes.Length);
-            writer.Write(22);
-            writer.Write(pngBytes);
+            IcoWriter.Write(bitmap, output);
         }
 
         public static string SanitizeFileName(string name)

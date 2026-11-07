@@ -6,6 +6,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using Avalonia.Media.Imaging;
 using Avalonia.Styling;
 using Avalonia.Threading;
 using Froststrap.AppData;
@@ -358,7 +359,16 @@ internal partial class App : Application
             using var stream = Resource.GetStream(name);
             Directory.CreateDirectory(Path.GetDirectoryName(baseFilePath)!);
             using var fileStream = File.Create(baseFilePath);
-            stream.CopyTo(fileStream);
+
+            if (fileName.EndsWith(".ico", StringComparison.OrdinalIgnoreCase))
+            {
+                using var bitmap = new Bitmap(stream);
+                IcoWriter.Write(bitmap, fileStream);
+            }
+            else
+            {
+                stream.CopyTo(fileStream);
+            }
         }
         return baseFilePath;
     }
@@ -368,7 +378,7 @@ internal partial class App : Application
         if (!OperatingSystem.IsWindows()) return;
         Logger.Debug("Verifying AUMID creation");
 
-        string iconPath = ExtractIcon("IconFroststrap.ico", "Froststrap.ico");
+        string iconPath = ExtractIcon("IconFroststrap.png", "Froststrap.ico");
 
         const string aumidKeyPath = @"Software\Classes\AppUserModelId\xyz.froststrap.desktop";
         using var baseKey = Registry.CurrentUser;
