@@ -3,6 +3,10 @@ Contributing to Froststrap
 
 Thank you for showing interest in contributing to Froststrap!
 
+Building Froststrap
+~~~~~~~~~~~~~~~~~~~
+
+An updated copy can be found online at https://docs.froststrap.xyz/docs/contributing/build-from-source
 
 Accepted contributions
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -11,7 +15,7 @@ Rather listing everything we want to allow, its easier to say we do have a list 
 going to be attributed as a contribution.
 
 
-- Fully AI changes, with no human intervention
+- No fully AI changes- those with no human in the loop
 - Singular changes like changing a return of something that is type ``()`` to actually implicitly return type ``()`` - simply put, removing a ``;`` when it's the last line in a function
 
 
