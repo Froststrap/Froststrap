@@ -1752,6 +1752,118 @@ The app will close this window when sign-in completes.</value>
   <data name="Menu.GlobalSettingsEditor.Description" xml:space="preserve">
     <value>Manage all your global settings here.</value>
   </data>
+  <data name="Menu.AccountTransfer.Export.Title" xml:space="preserve">
+    <value>Export accounts</value>
+  </data>
+  <data name="Menu.AccountTransfer.Export.Description" xml:space="preserve">
+    <value>Save the selected accounts to a password-protected file, so you can sign back in to all of them later without logging in again.</value>
+  </data>
+  <data name="Menu.AccountTransfer.Export.Warning" xml:space="preserve">
+    <value>This file contains your login sessions. Anyone with the file and its password can sign in as these accounts. Keep it private and never share it.</value>
+  </data>
+  <data name="Menu.AccountTransfer.Export.Confirm" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="Menu.AccountTransfer.Export.Done" xml:space="preserve">
+    <value>Accounts exported. Keep the file and its password safe.</value>
+  </data>
+  <data name="Menu.AccountTransfer.Import.Title" xml:space="preserve">
+    <value>Import accounts</value>
+  </data>
+  <data name="Menu.AccountTransfer.Import.Description" xml:space="preserve">
+    <value>Enter the password you chose when exporting this file.</value>
+  </data>
+  <data name="Menu.AccountTransfer.Import.Confirm" xml:space="preserve">
+    <value>Import</value>
+  </data>
+  <data name="Menu.AccountTransfer.Import.Empty" xml:space="preserve">
+    <value>The file didn't contain any accounts.</value>
+  </data>
+  <data name="Menu.AccountTransfer.Import.Added" xml:space="preserve">
+    <value>Added {0}: {1}</value>
+  </data>
+  <data name="Menu.AccountTransfer.Import.Updated" xml:space="preserve">
+    <value>Updated {0}: {1}</value>
+  </data>
+  <data name="Menu.AccountTransfer.Import.Kept" xml:space="preserve">
+    <value>Kept your current login {0}: {1}</value>
+  </data>
+  <data name="Menu.AccountTransfer.Import.Unreachable" xml:space="preserve">
+    <value>Skipped, couldn't confirm with Roblox (try again later) {0}: {1}</value>
+  </data>
+  <data name="Menu.AccountTransfer.Import.Mismatched" xml:space="preserve">
+    <value>Skipped, the saved login belongs to a different account than the file says {0}: {1}</value>
+  </data>
+  <data name="Menu.AccountTransfer.Import.NotSaved" xml:space="preserve">
+    <value>Checked but couldn't be saved, see the logs {0}: {1}</value>
+  </data>
+  <data name="Menu.AccountTransfer.Error.TooLarge" xml:space="preserve">
+    <value>This file is too large to be a Froststrap account export.</value>
+  </data>
+  <data name="Menu.AccountTransfer.Error.TooMany" xml:space="preserve">
+    <value>You can export at most {0} accounts at once.</value>
+  </data>
+  <data name="Menu.AccountTransfer.Import.Cancelled" xml:space="preserve">
+    <value>Not imported, cancelled {0}: {1}</value>
+  </data>
+  <data name="Menu.AccountTransfer.Import.Progress" xml:space="preserve">
+    <value>Checking accounts with Roblox… {0} of {1}</value>
+  </data>
+  <data name="Menu.AccountTransfer.Import.ReplacePrompt" xml:space="preserve">
+    <value>{0} account(s) in this file are already in Froststrap: {1}
+
+Replace their saved logins with the ones from the file?
+
+Yes: replace them. No: keep your current logins and only add new accounts.</value>
+  </data>
+  <data name="Menu.AccountTransfer.Import.Expired" xml:space="preserve">
+    <value>Skipped, session expired {0}: {1}</value>
+  </data>
+  <data name="Menu.AccountTransfer.Import.Invalid" xml:space="preserve">
+    <value>Skipped, damaged entry {0}: {1}</value>
+  </data>
+  <data name="Menu.AccountTransfer.Password" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="Menu.AccountTransfer.ConfirmPassword" xml:space="preserve">
+    <value>Confirm password</value>
+  </data>
+  <data name="Menu.AccountTransfer.FileType" xml:space="preserve">
+    <value>Froststrap account export</value>
+  </data>
+  <data name="Menu.AccountTransfer.Error.EnterPassword" xml:space="preserve">
+    <value>Enter the file's password.</value>
+  </data>
+  <data name="Menu.AccountTransfer.Error.NoAccounts" xml:space="preserve">
+    <value>There are no signed-in accounts to export.</value>
+  </data>
+  <data name="Menu.AccountTransfer.Error.ShortPassword" xml:space="preserve">
+    <value>Use a password with at least {0} characters.</value>
+  </data>
+  <data name="Menu.AccountTransfer.Error.Mismatch" xml:space="preserve">
+    <value>The passwords don't match.</value>
+  </data>
+  <data name="Menu.AccountTransfer.Error.WrongPassword" xml:space="preserve">
+    <value>Wrong password, or the file is damaged.</value>
+  </data>
+  <data name="Menu.AccountTransfer.Error.NotAnExport" xml:space="preserve">
+    <value>This isn't a Froststrap account export.</value>
+  </data>
+  <data name="Menu.AccountTransfer.Error.NewerVersion" xml:space="preserve">
+    <value>This file was made by a newer version of Froststrap. Update Froststrap and try again.</value>
+  </data>
+  <data name="Menu.AccountTransfer.Error.Unavailable" xml:space="preserve">
+    <value>Account export isn't available because a Froststrap component is missing. Try reinstalling Froststrap.</value>
+  </data>
+  <data name="Menu.AccountTransfer.Error.Internal" xml:space="preserve">
+    <value>Something went wrong. Check the logs for details.</value>
+  </data>
+  <data name="Menu.AccountTransfer.Error.Save" xml:space="preserve">
+    <value>Couldn't save the file.</value>
+  </data>
+  <data name="Menu.AccountTransfer.Error.Read" xml:space="preserve">
+    <value>Couldn't read the file.</value>
+  </data>
   <data name="Menu.AccountSelector.AddAccount" xml:space="preserve">
     <value>Add Account</value>
   </data>

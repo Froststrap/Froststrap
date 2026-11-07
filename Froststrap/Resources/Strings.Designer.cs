@@ -3435,6 +3435,330 @@ namespace Froststrap.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Export accounts.
+        /// </summary>
+        public static string Menu_AccountTransfer_Export_Title {
+            get {
+                return ResourceManager.GetString("Menu.AccountTransfer.Export.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save the selected accounts to a password-protected file, so you can sign back in to all of them later without logging in again..
+        /// </summary>
+        public static string Menu_AccountTransfer_Export_Description {
+            get {
+                return ResourceManager.GetString("Menu.AccountTransfer.Export.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This file contains your login sessions. Anyone with the file and its password can sign in as these accounts. Keep it private and never share it..
+        /// </summary>
+        public static string Menu_AccountTransfer_Export_Warning {
+            get {
+                return ResourceManager.GetString("Menu.AccountTransfer.Export.Warning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export.
+        /// </summary>
+        public static string Menu_AccountTransfer_Export_Confirm {
+            get {
+                return ResourceManager.GetString("Menu.AccountTransfer.Export.Confirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Accounts exported. Keep the file and its password safe..
+        /// </summary>
+        public static string Menu_AccountTransfer_Export_Done {
+            get {
+                return ResourceManager.GetString("Menu.AccountTransfer.Export.Done", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import accounts.
+        /// </summary>
+        public static string Menu_AccountTransfer_Import_Title {
+            get {
+                return ResourceManager.GetString("Menu.AccountTransfer.Import.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter the password you chose when exporting this file..
+        /// </summary>
+        public static string Menu_AccountTransfer_Import_Description {
+            get {
+                return ResourceManager.GetString("Menu.AccountTransfer.Import.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import.
+        /// </summary>
+        public static string Menu_AccountTransfer_Import_Confirm {
+            get {
+                return ResourceManager.GetString("Menu.AccountTransfer.Import.Confirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The file didn't contain any accounts..
+        /// </summary>
+        public static string Menu_AccountTransfer_Import_Empty {
+            get {
+                return ResourceManager.GetString("Menu.AccountTransfer.Import.Empty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Added {0}: {1}.
+        /// </summary>
+        public static string Menu_AccountTransfer_Import_Added {
+            get {
+                return ResourceManager.GetString("Menu.AccountTransfer.Import.Added", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Updated {0}: {1}.
+        /// </summary>
+        public static string Menu_AccountTransfer_Import_Updated {
+            get {
+                return ResourceManager.GetString("Menu.AccountTransfer.Import.Updated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Kept your current login {0}: {1}.
+        /// </summary>
+        public static string Menu_AccountTransfer_Import_Kept {
+            get {
+                return ResourceManager.GetString("Menu.AccountTransfer.Import.Kept", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Skipped, couldn't confirm with Roblox (try again later) {0}: {1}.
+        /// </summary>
+        public static string Menu_AccountTransfer_Import_Unreachable {
+            get {
+                return ResourceManager.GetString("Menu.AccountTransfer.Import.Unreachable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Skipped, the saved login belongs to a different account than the file says {0}: {1}.
+        /// </summary>
+        public static string Menu_AccountTransfer_Import_Mismatched {
+            get {
+                return ResourceManager.GetString("Menu.AccountTransfer.Import.Mismatched", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Checked but couldn't be saved, see the logs {0}: {1}.
+        /// </summary>
+        public static string Menu_AccountTransfer_Import_NotSaved {
+            get {
+                return ResourceManager.GetString("Menu.AccountTransfer.Import.NotSaved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This file is too large to be a Froststrap account export..
+        /// </summary>
+        public static string Menu_AccountTransfer_Error_TooLarge {
+            get {
+                return ResourceManager.GetString("Menu.AccountTransfer.Error.TooLarge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can export at most {0} accounts at once..
+        /// </summary>
+        public static string Menu_AccountTransfer_Error_TooMany {
+            get {
+                return ResourceManager.GetString("Menu.AccountTransfer.Error.TooMany", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not imported, cancelled {0}: {1}.
+        /// </summary>
+        public static string Menu_AccountTransfer_Import_Cancelled {
+            get {
+                return ResourceManager.GetString("Menu.AccountTransfer.Import.Cancelled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Checking accounts with Roblox… {0} of {1}.
+        /// </summary>
+        public static string Menu_AccountTransfer_Import_Progress {
+            get {
+                return ResourceManager.GetString("Menu.AccountTransfer.Import.Progress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} account(s) in this file are already in Froststrap: {1}.
+        /// </summary>
+        public static string Menu_AccountTransfer_Import_ReplacePrompt {
+            get {
+                return ResourceManager.GetString("Menu.AccountTransfer.Import.ReplacePrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Skipped, session expired {0}: {1}.
+        /// </summary>
+        public static string Menu_AccountTransfer_Import_Expired {
+            get {
+                return ResourceManager.GetString("Menu.AccountTransfer.Import.Expired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Skipped, damaged entry {0}: {1}.
+        /// </summary>
+        public static string Menu_AccountTransfer_Import_Invalid {
+            get {
+                return ResourceManager.GetString("Menu.AccountTransfer.Import.Invalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password.
+        /// </summary>
+        public static string Menu_AccountTransfer_Password {
+            get {
+                return ResourceManager.GetString("Menu.AccountTransfer.Password", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Confirm password.
+        /// </summary>
+        public static string Menu_AccountTransfer_ConfirmPassword {
+            get {
+                return ResourceManager.GetString("Menu.AccountTransfer.ConfirmPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Froststrap account export.
+        /// </summary>
+        public static string Menu_AccountTransfer_FileType {
+            get {
+                return ResourceManager.GetString("Menu.AccountTransfer.FileType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter the file's password..
+        /// </summary>
+        public static string Menu_AccountTransfer_Error_EnterPassword {
+            get {
+                return ResourceManager.GetString("Menu.AccountTransfer.Error.EnterPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There are no signed-in accounts to export..
+        /// </summary>
+        public static string Menu_AccountTransfer_Error_NoAccounts {
+            get {
+                return ResourceManager.GetString("Menu.AccountTransfer.Error.NoAccounts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use a password with at least {0} characters..
+        /// </summary>
+        public static string Menu_AccountTransfer_Error_ShortPassword {
+            get {
+                return ResourceManager.GetString("Menu.AccountTransfer.Error.ShortPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The passwords don't match..
+        /// </summary>
+        public static string Menu_AccountTransfer_Error_Mismatch {
+            get {
+                return ResourceManager.GetString("Menu.AccountTransfer.Error.Mismatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wrong password, or the file is damaged..
+        /// </summary>
+        public static string Menu_AccountTransfer_Error_WrongPassword {
+            get {
+                return ResourceManager.GetString("Menu.AccountTransfer.Error.WrongPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This isn't a Froststrap account export..
+        /// </summary>
+        public static string Menu_AccountTransfer_Error_NotAnExport {
+            get {
+                return ResourceManager.GetString("Menu.AccountTransfer.Error.NotAnExport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This file was made by a newer version of Froststrap. Update Froststrap and try again..
+        /// </summary>
+        public static string Menu_AccountTransfer_Error_NewerVersion {
+            get {
+                return ResourceManager.GetString("Menu.AccountTransfer.Error.NewerVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Account export isn't available because a Froststrap component is missing. Try reinstalling Froststrap..
+        /// </summary>
+        public static string Menu_AccountTransfer_Error_Unavailable {
+            get {
+                return ResourceManager.GetString("Menu.AccountTransfer.Error.Unavailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Something went wrong. Check the logs for details..
+        /// </summary>
+        public static string Menu_AccountTransfer_Error_Internal {
+            get {
+                return ResourceManager.GetString("Menu.AccountTransfer.Error.Internal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Couldn't save the file..
+        /// </summary>
+        public static string Menu_AccountTransfer_Error_Save {
+            get {
+                return ResourceManager.GetString("Menu.AccountTransfer.Error.Save", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Couldn't read the file..
+        /// </summary>
+        public static string Menu_AccountTransfer_Error_Read {
+            get {
+                return ResourceManager.GetString("Menu.AccountTransfer.Error.Read", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add Account.
         /// </summary>
         public static string Menu_AccountSelector_AddAccount {
