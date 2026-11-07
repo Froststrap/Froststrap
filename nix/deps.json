@@ -55,6 +55,11 @@
     "hash": "sha256-y3ZqNYglcHlE0Z8iC9DKkiySEZ3a1wG42M2aJXjMnDs="
   },
   {
+    "pname": "Avalonia.Fonts.Inter",
+    "version": "12.1.3",
+    "hash": "sha256-9rSwNg8uc1w/5Pzuw2fxC6I7U1271HrChMUkUeg5Lko="
+  },
+  {
     "pname": "Avalonia.FreeDesktop",
     "version": "12.1.3",
     "hash": "sha256-KUgO49V84mV4sgmKNNFPevnbjmyCndIrpSfmLTh8FHU="

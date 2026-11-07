@@ -6,6 +6,8 @@ using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
+using Avalonia.LogicalTree;
 using Avalonia.Controls.Notifications;
 using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Media;
@@ -159,6 +161,11 @@ namespace Froststrap.UI.Elements.Settings
         private void TitleBarGrid_PointerPressed(object sender, PointerPressedEventArgs e)
         {
             if (!e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
+                return;
+
+            // presses inside popups (e.g. the account dropdown) bubble up here too; dragging on
+            // those starts a window move that eats the release, so a ComboBox there never opens
+            if (e.Source is StyledElement source && source.FindLogicalAncestorOfType<Popup>() is not null)
                 return;
 
             this.BeginMoveDrag(e);

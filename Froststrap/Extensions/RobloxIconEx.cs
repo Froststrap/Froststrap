@@ -82,7 +82,7 @@ namespace Froststrap.Extensions
                 return cached;
 
             byte[] bytes = LoadIconBytes(icon);
-            HICON hIcon = IcoBytesToHIcon(bytes);
+            HICON hIcon = PngBytesToHIcon(bytes);
 
             if (hIcon != HICON.Null)
                 _hIconCache[icon] = (nint)hIcon.Value;
@@ -92,7 +92,7 @@ namespace Froststrap.Extensions
 
         private static Bitmap LoadFromResource(string name)
         {
-            var uri = new Uri($"avares://Froststrap/Resources/{name}.ico");
+            var uri = new Uri($"avares://Froststrap/Resources/{name}.png");
             using var stream = AssetLoader.Open(uri);
             return new Bitmap(stream);
         }
@@ -110,7 +110,7 @@ namespace Froststrap.Extensions
                 string location = App.Settings.Prop.RobloxIconCustomLocation;
                 if (!string.IsNullOrEmpty(location) && File.Exists(location))
                 {
-                    try { return File.ReadAllBytes(location); }
+                    try { return ConvertToPngBytes(File.ReadAllBytes(location)); }
                     catch (Exception ex) { App.Logger.Error($"Failed to read custom icon! {ex}"); }
                 }
 
@@ -135,63 +135,137 @@ namespace Froststrap.Extensions
 
         private static byte[] LoadResourceBytes(string name)
         {
-            var uri = new Uri($"avares://Froststrap/Resources/{name}.ico");
+            var uri = new Uri($"avares://Froststrap/Resources/{name}.png");
             using var stream = AssetLoader.Open(uri);
             using var ms = new MemoryStream();
             stream.CopyTo(ms);
             return ms.ToArray();
         }
 
-        private static unsafe HICON IcoBytesToHIcon(byte[] icoBytes, int desiredSize = 32)
+        private static byte[] ConvertToPngBytes(byte[] data)
         {
-            if (icoBytes.Length < 6)
-                return HICON.Null;
+            if (IsPng(data))
+                return data;
 
-            ushort type = BitConverter.ToUInt16(icoBytes, 2);
-            ushort count = BitConverter.ToUInt16(icoBytes, 4);
-            if (type != 1 || count == 0)
-                return HICON.Null;
+            byte[]? largestFrame = TryGetLargestIcoFrame(data, out int width, out int height);
 
-            int bestIndex = -1;
-            int bestScore = int.MaxValue;
+            if (largestFrame is not null)
+            {
+                if (IsPng(largestFrame))
+                    return largestFrame;
+
+                if (!TryBuildSingleEntryIco(largestFrame, width, height, out byte[] singleEntryIco))
+                    return data;
+
+                data = singleEntryIco;
+            }
+
+            using var input = new MemoryStream(data);
+            using var bitmap = new Bitmap(input);
+            using var output = new MemoryStream();
+            bitmap.Save(output, PngBitmapEncoderOptions.Default);
+            return output.ToArray();
+        }
+
+        private static bool IsPng(byte[] data) =>
+            data.Length >= 8 &&
+            data[0] == 0x89 && data[1] == 0x50 && data[2] == 0x4E && data[3] == 0x47 &&
+            data[4] == 0x0D && data[5] == 0x0A && data[6] == 0x1A && data[7] == 0x0A;
+
+        private static byte[]? TryGetLargestIcoFrame(byte[] data, out int width, out int height)
+        {
+            width = 0;
+            height = 0;
+
+            if (data.Length < 6 ||
+                BitConverter.ToUInt16(data, 0) != 0 ||
+                BitConverter.ToUInt16(data, 2) != 1)
+                return null;
+
+            ushort count = BitConverter.ToUInt16(data, 4);
+            if (count == 0)
+                return null;
+
+            int bestArea = -1;
+            int bestWidth = 0;
+            int bestHeight = 0;
+            int bestOffset = 0;
+            int bestSize = 0;
 
             for (int i = 0; i < count; i++)
             {
                 int entryOffset = 6 + i * 16;
-                if (entryOffset + 16 > icoBytes.Length)
+                if (entryOffset + 16 > data.Length)
                     break;
 
-                int w = icoBytes[entryOffset + 0];
-                int h = icoBytes[entryOffset + 1];
-                if (w == 0) w = 256;
-                if (h == 0) h = 256;
+                int w = data[entryOffset] == 0 ? 256 : data[entryOffset];
+                int h = data[entryOffset + 1] == 0 ? 256 : data[entryOffset + 1];
+                uint size = BitConverter.ToUInt32(data, entryOffset + 8);
+                uint offset = BitConverter.ToUInt32(data, entryOffset + 12);
 
-                int score = Math.Abs(w - desiredSize) + Math.Abs(h - desiredSize);
-                if (score < bestScore)
+                if (size == 0 || offset + size > data.Length)
+                    continue;
+
+                if (w * h > bestArea)
                 {
-                    bestScore = score;
-                    bestIndex = i;
+                    bestArea = w * h;
+                    bestWidth = w;
+                    bestHeight = h;
+                    bestOffset = (int)offset;
+                    bestSize = (int)size;
                 }
             }
 
-            if (bestIndex < 0)
+            if (bestArea < 0)
+                return null;
+
+            width = bestWidth;
+            height = bestHeight;
+
+            byte[] frame = new byte[bestSize];
+            Buffer.BlockCopy(data, bestOffset, frame, 0, bestSize);
+            return frame;
+        }
+
+        private static bool TryBuildSingleEntryIco(byte[] frame, int width, int height, out byte[] ico)
+        {
+            ico = [];
+
+            if (frame.Length == 0)
+                return false;
+
+            using var output = new MemoryStream();
+
+            using (var writer = new BinaryWriter(output, Encoding.UTF8, leaveOpen: true))
+            {
+                writer.Write((ushort)0);
+                writer.Write((ushort)1);
+                writer.Write((ushort)1);
+                writer.Write((byte)(width >= 256 ? 0 : width));
+                writer.Write((byte)(height >= 256 ? 0 : height));
+                writer.Write((byte)0);
+                writer.Write((byte)0);
+                writer.Write((ushort)1);
+                writer.Write((ushort)32);
+                writer.Write((uint)frame.Length);
+                writer.Write((uint)22);
+                writer.Write(frame);
+            }
+
+            ico = output.ToArray();
+            return true;
+        }
+
+        private static unsafe HICON PngBytesToHIcon(byte[] pngBytes)
+        {
+            if (pngBytes.Length == 0)
                 return HICON.Null;
 
-            int bestOffset = 6 + bestIndex * 16;
-            uint dataSize = BitConverter.ToUInt32(icoBytes, bestOffset + 8);
-            uint dataOffset = BitConverter.ToUInt32(icoBytes, bestOffset + 12);
-
-            if (dataOffset + dataSize > icoBytes.Length || dataSize == 0)
-                return HICON.Null;
-
-            byte[] imageData = new byte[dataSize];
-            Buffer.BlockCopy(icoBytes, (int)dataOffset, imageData, 0, (int)dataSize);
-
-            fixed (byte* pImage = imageData)
+            fixed (byte* pImage = pngBytes)
             {
                 return PInvoke.CreateIconFromResourceEx(
                     pImage,
-                    dataSize,
+                    (uint)pngBytes.Length,
                     fIcon: true,
                     dwVer: 0x00030000,
                     cxDesired: 0,

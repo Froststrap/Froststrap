@@ -70,7 +70,7 @@ SPDX-License-Identifier: MPL-2.0
                     CommandParameter="https://discord.gg/KdR9vpRcUN" />
             </WrapPanel>
 
-            <StackPanel IsVisible="{Binding BuildInformationVisibility}">
+            <StackPanel>
                 <TextBlock Text="{x:Static resources:Strings.Menu_About_BuildInfo}" FontWeight="Bold" FontSize="20" Margin="0,16,0,0" />
 
                 <Grid Margin="0,8,0,0" ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto">
@@ -81,28 +81,6 @@ SPDX-License-Identifier: MPL-2.0
                     <TextBlock Grid.Row="1" Grid.Column="0" Margin="0,4,16,4" FontSize="14" Text="{x:Static resources:Strings.Common_Version}" />
                     <TextBlock Grid.Row="1" Grid.Column="1" VerticalAlignment="Center"
                                Text="{Binding Version}" Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
-
-                    <TextBlock Grid.Row="2" Grid.Column="0" Margin="0,4,16,4" FontSize="14" Text="{x:Static resources:Strings.Menu_About_CommitHash}"
-                               IsVisible="{Binding BuildCommitVisibility}" />
-
-                    <Button Grid.Row="2" Grid.Column="1"
-                            IsVisible="{Binding BuildCommitVisibility}"
-                            Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
-                            CommandParameter="{Binding BuildCommitHashUrl}"
-                            Padding="0"
-                            Background="Transparent"
-                            BorderThickness="0">
-                        <TextBlock Text="{Binding BuildMetadata.CommitHash}"
-                                   TextDecorations="Underline"
-                                   Foreground="{DynamicResource SystemAccentColor}" />
-                    </Button>
-
-                    <TextBlock Grid.Row="3" Grid.Column="0" Margin="0,4,16,4" FontSize="14" Text="{x:Static resources:Strings.Menu_About_CommitRef}"
-                               IsVisible="{Binding BuildCommitVisibility}" />
-                    <TextBlock Grid.Row="3" Grid.Column="1" VerticalAlignment="Center"
-                               Text="{Binding BuildMetadata.CommitRef}"
-                               Foreground="{DynamicResource TextFillColorTertiaryBrush}"
-                               IsVisible="{Binding BuildCommitVisibility}" />
                 </Grid>
             </StackPanel>
 

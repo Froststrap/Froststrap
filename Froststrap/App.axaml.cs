@@ -6,6 +6,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using Avalonia.Media.Imaging;
 using Avalonia.Styling;
 using Avalonia.Threading;
 using Froststrap.AppData;
@@ -80,10 +81,6 @@ internal partial class App : Application
     public static Bootstrapper? Bootstrapper { get; set; } = null!;
 
     public FroststrapRichPresence? RichPresence { get; private set; }
-
-    public static bool IsActionBuild => !String.IsNullOrEmpty(BuildMetadata.CommitRef);
-
-    public static bool IsProductionBuild => IsActionBuild && BuildMetadata.CommitRef.StartsWith("tag", StringComparison.Ordinal);
 
     public static string? MockReleaseTag => GetEnvironmentVariable(MockReleaseTagEnvironmentVariable);
 
@@ -362,7 +359,16 @@ internal partial class App : Application
             using var stream = Resource.GetStream(name);
             Directory.CreateDirectory(Path.GetDirectoryName(baseFilePath)!);
             using var fileStream = File.Create(baseFilePath);
-            stream.CopyTo(fileStream);
+
+            if (fileName.EndsWith(".ico", StringComparison.OrdinalIgnoreCase))
+            {
+                using var bitmap = new Bitmap(stream);
+                IcoWriter.Write(bitmap, fileStream);
+            }
+            else
+            {
+                stream.CopyTo(fileStream);
+            }
         }
         return baseFilePath;
     }
@@ -372,7 +378,7 @@ internal partial class App : Application
         if (!OperatingSystem.IsWindows()) return;
         Logger.Debug("Verifying AUMID creation");
 
-        string iconPath = ExtractIcon("IconFroststrap.ico", "Froststrap.ico");
+        string iconPath = ExtractIcon("IconFroststrap.png", "Froststrap.ico");
 
         const string aumidKeyPath = @"Software\Classes\AppUserModelId\xyz.froststrap.desktop";
         using var baseKey = Registry.CurrentUser;
@@ -595,16 +601,9 @@ internal partial class App : Application
         Logger.Debug($"Built for RID: {RuntimeInformation.RuntimeIdentifier}");
 
         var userAgent = new StringBuilder($"{ProjectName}/{Version}");
-        if (IsActionBuild)
-        {
-            Logger.Debug($"Compiled {BuildMetadata.Timestamp.ToFriendlyString()} from commit {BuildMetadata.CommitHash} ({BuildMetadata.CommitRef})");
-            userAgent.Append(IsProductionBuild ? " (Production)" : $" (Artifact {BuildMetadata.CommitHash}, {BuildMetadata.CommitRef})");
-        }
-        else
-        {
-            Logger.Debug($"Compiled {BuildMetadata.Timestamp.ToFriendlyString()}");
-            userAgent.Append(string.Format(CultureInfo.InvariantCulture, " (Build {0})", Convert.ToBase64String(Encoding.UTF8.GetBytes(BuildMetadata.Machine))));
-        }
+
+        Logger.Debug($"Compiled {BuildMetadata.Timestamp.ToFriendlyString()}");
+        userAgent.Append(string.Format(CultureInfo.InvariantCulture, " (Build {0})", Convert.ToBase64String(Encoding.UTF8.GetBytes(BuildMetadata.Machine))));
 
         HttpClient.Timeout = TimeSpan.FromSeconds(60);
         if (HttpClient.DefaultRequestHeaders.UserAgent.Count == 0)
