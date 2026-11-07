@@ -81,10 +81,6 @@ internal partial class App : Application
 
     public FroststrapRichPresence? RichPresence { get; private set; }
 
-    public static bool IsActionBuild => !String.IsNullOrEmpty(BuildMetadata.CommitRef);
-
-    public static bool IsProductionBuild => IsActionBuild && BuildMetadata.CommitRef.StartsWith("tag", StringComparison.Ordinal);
-
     public static string? MockReleaseTag => GetEnvironmentVariable(MockReleaseTagEnvironmentVariable);
 
     public static bool IsMockReleaseEnabled => !string.IsNullOrWhiteSpace(MockReleaseTag);
@@ -595,16 +591,9 @@ internal partial class App : Application
         Logger.Debug($"Built for RID: {RuntimeInformation.RuntimeIdentifier}");
 
         var userAgent = new StringBuilder($"{ProjectName}/{Version}");
-        if (IsActionBuild)
-        {
-            Logger.Debug($"Compiled {BuildMetadata.Timestamp.ToFriendlyString()} from commit {BuildMetadata.CommitHash} ({BuildMetadata.CommitRef})");
-            userAgent.Append(IsProductionBuild ? " (Production)" : $" (Artifact {BuildMetadata.CommitHash}, {BuildMetadata.CommitRef})");
-        }
-        else
-        {
-            Logger.Debug($"Compiled {BuildMetadata.Timestamp.ToFriendlyString()}");
-            userAgent.Append(string.Format(CultureInfo.InvariantCulture, " (Build {0})", Convert.ToBase64String(Encoding.UTF8.GetBytes(BuildMetadata.Machine))));
-        }
+
+        Logger.Debug($"Compiled {BuildMetadata.Timestamp.ToFriendlyString()}");
+        userAgent.Append(string.Format(CultureInfo.InvariantCulture, " (Build {0})", Convert.ToBase64String(Encoding.UTF8.GetBytes(BuildMetadata.Machine))));
 
         HttpClient.Timeout = TimeSpan.FromSeconds(60);
         if (HttpClient.DefaultRequestHeaders.UserAgent.Count == 0)
