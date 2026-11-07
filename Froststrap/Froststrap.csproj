@@ -65,8 +65,8 @@ SPDX-License-Identifier: MPL-2.0
   <!-- Resources needed by Avalonia -->
   <ItemGroup>
     <AvaloniaResource Include="Resources/**" />
-    <AvaloniaResource Remove="Resources/Strings*.resx" />
-    <AvaloniaResource Remove="Resources/Strings.Designer.cs" />
+    <AvaloniaResource Remove="Resources/Translations/Strings*.resx" />
+    <AvaloniaResource Remove="Resources/Translations/Strings.Designer.cs" />
     <AvaloniaResource Include="UI/AppThemes/EditorThemes/*.xshd" />
     <AvaloniaResource Include="Froststrap.ico" />
     <AvaloniaResource Include="Froststrap.png" />
@@ -113,14 +113,15 @@ SPDX-License-Identifier: MPL-2.0
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Resources/Strings.resx">
+    <EmbeddedResource Update="Resources/Translations/Strings.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Strings.Designer.cs</LastGenOutput>
+      <CustomToolNamespace>Froststrap.Resources</CustomToolNamespace>
     </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Resources/Strings.Designer.cs">
+    <Compile Update="Resources/Translations/Strings.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>Strings.resx</DependentUpon>
