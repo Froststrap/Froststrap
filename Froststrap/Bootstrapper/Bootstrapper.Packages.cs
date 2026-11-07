@@ -55,9 +55,7 @@ internal partial class Bootstrapper : IDisposable
             App.Logger.Info("Upgrading disabled, cancelling the upgrade.");
 
             if (!Directory.Exists(_latestVersionDirectory))
-            {
                 _ = Frontend.ShowMessageBox(Strings.Bootstrapper_Dialog_NoUpgradeWithoutClient, MessageBoxImage.Warning, MessageBoxButton.OK);
-            }
             else
             {
                 await Task.Delay(2000);

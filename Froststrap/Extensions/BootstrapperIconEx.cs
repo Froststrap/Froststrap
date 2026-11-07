@@ -78,21 +78,14 @@ namespace Froststrap.Extensions
 
         private static Bitmap LoadFromResource(string name)
         {
-            // Load the ICO file
-            var uri = new Uri($"avares://Froststrap/Resources/{name}.ico");
+            var uri = new Uri($"avares://Froststrap/Resources/{name}.png");
             using var stream = AssetLoader.Open(uri);
-            return LoadBestIconFromIcoStream(stream);
+            return new Bitmap(stream);
         }
 
         private static Bitmap LoadIconFromFile(string path)
         {
             using var stream = File.OpenRead(path);
-            return LoadBestIconFromIcoStream(stream);
-        }
-
-        private static Bitmap LoadBestIconFromIcoStream(Stream stream)
-        {
-            stream.Position = 0;
             return new Bitmap(stream);
         }
 

@@ -86,7 +86,7 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 Title = "Select Roblox Icon File",
                 AllowMultiple = false,
-                FileTypeFilter = [new FilePickerFileType("Icons") { Patterns = ["*.ico"] }]
+                FileTypeFilter = [new FilePickerFileType("Images") { Patterns = ["*.ico", "*.png", "*.jpg", "*.jpeg", "*.bmp"] }]
             });
 
             if (files.Count > 0)
