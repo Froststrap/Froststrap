@@ -47,9 +47,13 @@ namespace Froststrap.UI.Elements.Dialogs
 
     internal partial class VersionOverrideDialog : Base.AvaloniaWindow
     {
+        private enum SortColumn { Version, Hash, Date }
+
         private readonly LaunchMode _launchMode;
         private readonly ObservableCollection<VersionEntry> _versions = [];
         private bool _isLoading;
+        private SortColumn _sortColumn = SortColumn.Date;
+        private bool _sortDescending = true;
 
         public ObservableCollection<VersionEntry> Versions => _versions;
 
@@ -62,13 +66,18 @@ namespace Froststrap.UI.Elements.Dialogs
         public VersionOverrideDialog(LaunchMode mode) : this()
         {
             _launchMode = mode;
-            VersionsDataGrid.SelectionChanged += (s, e) =>
-                CopyHashButton.IsEnabled = VersionsDataGrid.SelectedItem != null;
+            VersionsList.SelectionChanged += (s, e) =>
+                CopyHashButton.IsEnabled = VersionsList.SelectedItem != null;
+
+            SortVersionButton.Click += (s, e) => SortBy(SortColumn.Version);
+            SortHashButton.Click += (s, e) => SortBy(SortColumn.Hash);
+            SortDateButton.Click += (s, e) => SortBy(SortColumn.Date);
 
             CopyHashButton.Click += CopyHashButton_Click;
             RefreshButton.Click += RefreshButton_Click;
             CloseButton.Click += (s, e) => Close();
 
+            UpdateHeaders();
             _ = LoadVersionsAsync();
         }
 
@@ -104,6 +113,8 @@ namespace Froststrap.UI.Elements.Dialogs
                 {
                     _versions.Add(entry);
                 }
+
+                ApplySort();
             }
             catch (Exception ex)
             {
@@ -114,6 +125,54 @@ namespace Froststrap.UI.Elements.Dialogs
                 _isLoading = false;
                 RefreshButton.IsEnabled = true;
             }
+        }
+
+        private void SortBy(SortColumn column)
+        {
+            if (_sortColumn == column)
+            {
+                _sortDescending = !_sortDescending;
+            }
+            else
+            {
+                _sortColumn = column;
+                _sortDescending = column == SortColumn.Date; // newest first by default
+            }
+
+            ApplySort();
+        }
+
+        private void ApplySort()
+        {
+            var selected = VersionsList.SelectedItem;
+
+            Func<VersionEntry, object> key = _sortColumn switch
+            {
+                SortColumn.Version => e => Version.TryParse(e.Version, out var v) ? v : new Version(0, 0),
+                SortColumn.Hash => e => e.Hash,
+                _ => e => e.ReleaseDateUtc,
+            };
+
+            var sorted = (_sortDescending
+                ? _versions.OrderByDescending(key)
+                : _versions.OrderBy(key)).ToList();
+
+            _versions.Clear();
+            foreach (var entry in sorted)
+            {
+                _versions.Add(entry);
+            }
+
+            VersionsList.SelectedItem = selected;
+            UpdateHeaders();
+        }
+
+        private void UpdateHeaders()
+        {
+            // TODO: implement icons for the current sorted header to make it better UX
+            SortVersionButton.Content = "Version";
+            SortHashButton.Content = "Hash";
+            SortDateButton.Content = "Release Date";
         }
 
         private static List<VersionEntry> ParseDeployHistory(string content, string binaryType)
@@ -158,14 +217,15 @@ namespace Froststrap.UI.Elements.Dialogs
 
         private async void CopyHashButton_Click(object? sender, EventArgs e)
         {
-            if (VersionsDataGrid.SelectedItem is VersionEntry selected)
-            {
-                var topLevel = TopLevel.GetTopLevel(this);
-                if (topLevel?.Clipboard is IClipboard clipboard)
-                {
-                    await clipboard.SetTextAsync($"version-{selected.Hash}");
-                }
-            }
+            if (VersionsList.SelectedItem is not VersionEntry selected)
+                return;
+
+            var topLevel = TopLevel.GetTopLevel(this);
+
+            if (topLevel?.Clipboard is not IClipboard clipboard)
+                return;
+
+            await clipboard.SetTextAsync($"version-{selected.Hash}");
         }
 
         private async void RefreshButton_Click(object? sender, EventArgs e)
