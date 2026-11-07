@@ -169,10 +169,9 @@ namespace Froststrap.UI.Elements.Dialogs
 
         private void UpdateHeaders()
         {
-            // TODO: implement icons for the current sorted header to make it better UX
-            SortVersionButton.Content = "Version";
-            SortHashButton.Content = "Hash";
-            SortDateButton.Content = "Release Date";
+            SortVersionButton.Classes.Set("sorted", _sortColumn == SortColumn.Version);
+            SortHashButton.Classes.Set("sorted", _sortColumn == SortColumn.Hash);
+            SortDateButton.Classes.Set("sorted", _sortColumn == SortColumn.Date);
         }
 
         private static List<VersionEntry> ParseDeployHistory(string content, string binaryType)

@@ -4,36 +4,48 @@ SPDX-FileCopyrightText: 2026 Froststrap
 SPDX-License-Identifier: MPL-2.0
 -->
 
-<base:AvaloniaWindow x:Class="Froststrap.UI.Elements.Dialogs.VersionOverrideDialog"
-                     xmlns="https://github.com/avaloniaui"
-                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                     xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
-                     xmlns:local="clr-namespace:Froststrap.UI.Elements.Dialogs"
-                     xmlns:resources="clr-namespace:Froststrap.Resources"
-                     mc:Ignorable="d"
-                     x:DataType="local:VersionOverrideDialog"
-                     Title="Available Version"
-                     Width="750"
-                     Height="500"
-                     WindowStartupLocation="CenterScreen">
- 	<base:AvaloniaWindow.Styles>
-		<Style Selector="Button.header">
-			<Setter Property="Background" Value="Transparent"/>
-			<Setter Property="BorderThickness" Value="0"/>
-			<Setter Property="Padding" Value="0"/>
-			<Setter Property="FontWeight" Value="SemiBold"/>
-			<Setter Property="HorizontalAlignment" Value="Stretch"/>
-			<Setter Property="HorizontalContentAlignment" Value="Left"/>
-		</Style>
+<base:AvaloniaWindow
+	x:Class="Froststrap.UI.Elements.Dialogs.VersionOverrideDialog"
+	xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+	xmlns:local="clr-namespace:Froststrap.UI.Elements.Dialogs"
+	xmlns:resources="clr-namespace:Froststrap.Resources"
+	mc:Ignorable="d"
+	x:DataType="local:VersionOverrideDialog"
+	Title="Available Version"
+	Width="750"
+	Height="500"
+	WindowStartupLocation="CenterScreen"
+>
+ <base:AvaloniaWindow.Styles>
+    <Style Selector="Button.header">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="CornerRadius" Value="0"/>
+    </Style>
+
+    <Style Selector="Button.header:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}"/>
+    </Style>
+
+    <Style Selector="Button.header.sorted /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}"/>
+    </Style>
+
+    <Style Selector="Button.header.sorted:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource ControlFillColorTertiaryBrush}"/>
+    </Style>
 	</base:AvaloniaWindow.Styles>
 
 	<Grid RowDefinitions="*,Auto">
-
 		<Grid Grid.Row="0" Margin="16" RowDefinitions="Auto,*">
-
-			<!-- Header -->
 			<Border Grid.Row="0"
                     BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
                     BorderThickness="0,0,0,1">
