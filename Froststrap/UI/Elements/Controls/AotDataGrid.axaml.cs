@@ -402,9 +402,6 @@ namespace Froststrap.UI.Elements.Controls
             };
             button.Classes.Add("header");
 
-            if (isSorted)
-                button.Classes.Add("sorted");
-
             var content = new Grid { ColumnDefinitions = new ColumnDefinitions("*,Auto") };
 
             var headerContent = new ContentControl
@@ -432,6 +429,10 @@ namespace Froststrap.UI.Elements.Controls
             button.Click += (_, _) => HandleHeaderClick(column);
 
             var cell = new Grid { ColumnDefinitions = new ColumnDefinitions("*,Auto") };
+            cell.Classes.Add("header-cell");
+            if (isSorted)
+                cell.Classes.Add("sorted");
+
             Grid.SetColumn(button, 0);
             cell.Children.Add(button);
 
@@ -451,7 +452,6 @@ namespace Froststrap.UI.Elements.Controls
 
                 var grip = new Border
                 {
-                    Width = 1,
                     HorizontalAlignment = HorizontalAlignment.Center,
                     VerticalAlignment = VerticalAlignment.Stretch,
                     Margin = new Thickness(0, 6, 0, 6)
