@@ -602,7 +602,7 @@ internal partial class App : Application
 
         var userAgent = new StringBuilder($"{ProjectName}/{Version}");
 
-        Logger.Debug($"Compiled {BuildMetadata.Timestamp.ToFriendlyString()}");
+        Logger.Debug($"Compiled {BuildMetadata.LocalTimestamp.ToFriendlyString()}");
         userAgent.Append(string.Format(CultureInfo.InvariantCulture, " (Build {0})", Convert.ToBase64String(Encoding.UTF8.GetBytes(BuildMetadata.Machine))));
 
         HttpClient.Timeout = TimeSpan.FromSeconds(60);

@@ -11,8 +11,6 @@ Sorted top-to-bottom on try to fix first
 When fixing these, realization of hard ones to solve,
 you can switch around priority
 
-- CA2216
-- CA1019
 - CA1863
 - CA5392
 - CA1852
