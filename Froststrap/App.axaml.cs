@@ -416,7 +416,8 @@ internal partial class App : Application
     public static void ApplyAnimationSettings()
     {
         var app = Application.Current;
-        if (app == null) return;
+        if (app == null)
+            return;
 
         RemoveAnimationSettings();
 
@@ -455,10 +456,7 @@ internal partial class App : Application
     {
         AvaloniaXamlLoader.Load(this);
 
-        // FluentAvalonia pins ContentControlThemeFontFamily to the system font, bypassing the default font.
         Resources["ContentControlThemeFontFamily"] = new Avalonia.Media.FontFamily("fonts:Inter#Inter");
-
-        // FluentAvalonia's paddings put more space below the text (tuned for Segoe UI), which reads as too high with Inter.
         Resources["ComboBoxPadding"] = new Thickness(12, 7, 0, 5);
         Resources["ComboBoxItemThemePadding"] = new Thickness(11, 7, 11, 5);
         Resources["ComboBoxEditableTextPadding"] = new Thickness(11, 7, 32, 4);
@@ -470,11 +468,8 @@ internal partial class App : Application
         TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
         Dispatcher.UIThread.UnhandledException += GlobalExceptionHandler;
 
-        if (OperatingSystem.IsMacOS()
-            && TryGetFeature(typeof(IActivatableLifetime)) is IActivatableLifetime activatableLifetime)
-        {
+        if (OperatingSystem.IsMacOS() && TryGetFeature(typeof(IActivatableLifetime)) is IActivatableLifetime activatableLifetime)
             activatableLifetime.Activated += OnAppActivated;
-        }
     }
 
     private static void OnAppActivated(object? sender, ActivatedEventArgs e)
