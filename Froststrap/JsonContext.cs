@@ -104,6 +104,12 @@ namespace Froststrap
     [JsonSerializable(typeof(PrivateServerPermissionsUpdateRequest))]
     [JsonSerializable(typeof(ConversationPayload))]
     [JsonSerializable(typeof(MarkConversationsReadRequest))]
+    [JsonSerializable(typeof(ApiArrayResponse<GameVotesResponse>))]
+    [JsonSerializable(typeof(ApiArrayResponse<PrivateServerUser>))]
+    [JsonSerializable(typeof(ApiPageResponse<BadgeResponse>))]
+    [JsonSerializable(typeof(ApiPageResponse<FavoriteGameData>))]
+    [JsonSerializable(typeof(ApiPageResponse<SubplaceData>))]
+    [JsonSerializable(typeof(OmniUserSearchResponse))]
     internal partial class JsonContext : JsonSerializerContext
     {
     }
