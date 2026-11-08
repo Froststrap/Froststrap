@@ -139,6 +139,8 @@ namespace Froststrap.Integrations
                     var candidates = new DirectoryInfo(logDirectory)
                         .GetFiles()
                         .Where(x => x.Name.Contains(logNameFilter, StringComparison.OrdinalIgnoreCase) && x.CreationTime <= DateTime.Now)
+                        // the crash handler starts alongside Roblox and writes its own "_Player_" log
+                        .Where(x => !x.Name.Contains("CrashHandler", StringComparison.OrdinalIgnoreCase))
                         .OrderByDescending(x => x.CreationTime)
                         .ToList();
 
@@ -221,6 +223,7 @@ namespace Froststrap.Integrations
                 return new DirectoryInfo(logDirectory)
                     .GetFiles()
                     .Where(x => x.Name.Contains("Studio", StringComparison.OrdinalIgnoreCase))
+                    .Where(x => !x.Name.Contains("CrashHandler", StringComparison.OrdinalIgnoreCase))
                     .Where(x => x.CreationTimeUtc > currentLogFile.CreationTimeUtc)
                     .OrderByDescending(x => x.CreationTimeUtc)
                     .FirstOrDefault();
