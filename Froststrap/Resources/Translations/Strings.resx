@@ -2555,6 +2555,36 @@ Do you want to install the plugin?</value>
   <data name="Menu.Shortcuts.SearchForGame" xml:space="preserve">
     <value>Search for a Game</value>
   </data>
+  <data name="Menu.Shortcuts.SearchForGame.Description" xml:space="preserve">
+    <value>Search by name, or enter a place ID.</value>
+  </data>
+  <data name="Menu.Shortcuts.InvalidLink" xml:space="preserve">
+    <value>That isn't a Roblox game link.</value>
+  </data>
+  <data name="Menu.Shortcuts.NotFound" xml:space="preserve">
+    <value>Couldn't find that game.</value>
+  </data>
+  <data name="Menu.Shortcuts.Failed" xml:space="preserve">
+    <value>Couldn't create the shortcut.</value>
+  </data>
+  <data name="Menu.Shortcuts.Created" xml:space="preserve">
+    <value>Added {0} to your desktop.</value>
+  </data>
+  <data name="Menu.Shortcuts.Tab.Search" xml:space="preserve">
+    <value>Manual</value>
+  </data>
+  <data name="Menu.Shortcuts.Tab.Link" xml:space="preserve">
+    <value>Link</value>
+  </data>
+  <data name="Menu.Shortcuts.GameLink" xml:space="preserve">
+    <value>Game link</value>
+  </data>
+  <data name="Menu.Shortcuts.GameLink.Description" xml:space="preserve">
+    <value>Paste a Roblox game link. The game, server instance, and private server code are read from it automatically.</value>
+  </data>
+  <data name="Menu.Shortcuts.GameLink.Placeholder" xml:space="preserve">
+    <value>https://www.roblox.com/games/...</value>
+  </data>
   <data name="Menu.Shortcuts.ServerInstanceId" xml:space="preserve">
     <value>Server Instance ID</value>
   </data>

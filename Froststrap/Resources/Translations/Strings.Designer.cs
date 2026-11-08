@@ -9175,6 +9175,60 @@ namespace Froststrap.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Added {0} to your desktop..
+        /// </summary>
+        public static string Menu_Shortcuts_Created {
+            get {
+                return ResourceManager.GetString("Menu.Shortcuts.Created", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Game link.
+        /// </summary>
+        public static string Menu_Shortcuts_GameLink {
+            get {
+                return ResourceManager.GetString("Menu.Shortcuts.GameLink", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Paste a Roblox game link. The game, server instance, and private server code are read from it automatically..
+        /// </summary>
+        public static string Menu_Shortcuts_GameLink_Description {
+            get {
+                return ResourceManager.GetString("Menu.Shortcuts.GameLink.Description", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to https://www.roblox.com/games/....
+        /// </summary>
+        public static string Menu_Shortcuts_GameLink_Placeholder {
+            get {
+                return ResourceManager.GetString("Menu.Shortcuts.GameLink.Placeholder", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Link.
+        /// </summary>
+        public static string Menu_Shortcuts_Tab_Link {
+            get {
+                return ResourceManager.GetString("Menu.Shortcuts.Tab.Link", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Search.
+        /// </summary>
+        public static string Menu_Shortcuts_Tab_Search {
+            get {
+                return ResourceManager.GetString("Menu.Shortcuts.Tab.Search", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Configure how Froststrap can be readily launched..
         /// </summary>
         public static string Menu_Shortcuts_Description {
@@ -9207,6 +9261,15 @@ namespace Froststrap.Resources {
         public static string Menu_Shortcuts_ExtractIcons_Title {
             get {
                 return ResourceManager.GetString("Menu.Shortcuts.ExtractIcons.Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Couldn&apos;t create the shortcut..
+        /// </summary>
+        public static string Menu_Shortcuts_Failed {
+            get {
+                return ResourceManager.GetString("Menu.Shortcuts.Failed", resourceCulture);
             }
         }
 
@@ -9265,6 +9328,15 @@ namespace Froststrap.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to That isn&apos;t a Roblox game link..
+        /// </summary>
+        public static string Menu_Shortcuts_InvalidLink {
+            get {
+                return ResourceManager.GetString("Menu.Shortcuts.InvalidLink", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Create shortcuts that allows you to join specific games/servers quickly..
         /// </summary>
         public static string Menu_Shortcuts_Misc_Description {
@@ -9279,6 +9351,15 @@ namespace Froststrap.Resources {
         public static string Menu_Shortcuts_NoGameSelected {
             get {
                 return ResourceManager.GetString("Menu.Shortcuts.NoGameSelected", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Couldn&apos;t find that game..
+        /// </summary>
+        public static string Menu_Shortcuts_NotFound {
+            get {
+                return ResourceManager.GetString("Menu.Shortcuts.NotFound", resourceCulture);
             }
         }
 
@@ -9333,6 +9414,15 @@ namespace Froststrap.Resources {
         public static string Menu_Shortcuts_SearchForGame {
             get {
                 return ResourceManager.GetString("Menu.Shortcuts.SearchForGame", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Search by name, paste a Roblox game link, or enter a place ID..
+        /// </summary>
+        public static string Menu_Shortcuts_SearchForGame_Description {
+            get {
+                return ResourceManager.GetString("Menu.Shortcuts.SearchForGame.Description", resourceCulture);
             }
         }
 
