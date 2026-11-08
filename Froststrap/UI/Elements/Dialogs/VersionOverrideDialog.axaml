@@ -11,6 +11,7 @@ SPDX-License-Identifier: MPL-2.0
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+	xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
 	xmlns:local="clr-namespace:Froststrap.UI.Elements.Dialogs"
 	xmlns:resources="clr-namespace:Froststrap.Resources"
 	mc:Ignorable="d"
@@ -20,66 +21,41 @@ SPDX-License-Identifier: MPL-2.0
 	Height="500"
 	WindowStartupLocation="CenterScreen"
 >
- <base:AvaloniaWindow.Styles>
-    <Style Selector="Button.header">
-        <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="Padding" Value="0"/>
-        <Setter Property="FontWeight" Value="SemiBold"/>
-        <Setter Property="HorizontalAlignment" Value="Stretch"/>
-        <Setter Property="HorizontalContentAlignment" Value="Left"/>
-        <Setter Property="CornerRadius" Value="0"/>
-    </Style>
-
-    <Style Selector="Button.header:pointerover /template/ ContentPresenter#PART_ContentPresenter">
-        <Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}"/>
-    </Style>
-
-    <Style Selector="Button.header.sorted /template/ ContentPresenter#PART_ContentPresenter">
-        <Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}"/>
-    </Style>
-
-    <Style Selector="Button.header.sorted:pointerover /template/ ContentPresenter#PART_ContentPresenter">
-        <Setter Property="Background" Value="{DynamicResource ControlFillColorTertiaryBrush}"/>
-    </Style>
-	</base:AvaloniaWindow.Styles>
-
 	<Grid RowDefinitions="*,Auto">
-		<Grid Grid.Row="0" Margin="16" RowDefinitions="Auto,*">
-			<Border Grid.Row="0"
-                    BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
-                    BorderThickness="0,0,0,1">
-        <Grid ColumnDefinitions="150,4*,200">
-			    <Button x:Name="SortVersionButton" Padding="8" Grid.Column="0" Content="Version"
-			            Classes="header" />
-			    <Button x:Name="SortHashButton" Padding="8" Grid.Column="1" Content="Hash"
-			            Classes="header" />
-			    <Button x:Name="SortDateButton" Padding="8" Grid.Column="2" Content="Release Date"
-			            Classes="header" />
-				</Grid>
-			</Border>
+		<controls:AotDataGrid Grid.Row="0"
+		                      Name="VersionsGrid"
+		                      Margin="16"
+		                      ItemsSource="{Binding Versions}"
+		                      SelectionMode="Single">
+			<controls:AotDataGrid.Columns>
+				<controls:AotDataGridColumn Header="Version" Width="150">
+					<controls:AotDataGridColumn.CellTemplate>
+						<DataTemplate x:DataType="local:VersionEntry">
+							<TextBlock Text="{Binding Version}" VerticalAlignment="Center" Margin="4,0" />
+						</DataTemplate>
+					</controls:AotDataGridColumn.CellTemplate>
+				</controls:AotDataGridColumn>
 
-			<ListBox x:Name="VersionsList"
-                     Grid.Row="1"
-                     ItemsSource="{Binding Versions}"
-                     SelectionMode="Single">
-				<ListBox.Styles>
-					<Style Selector="ListBoxItem">
-						<Setter Property="Padding" Value="0"/>
-					</Style>
-				</ListBox.Styles>
-				<ListBox.ItemTemplate>
-					<DataTemplate x:DataType="local:VersionEntry">
-						<Grid ColumnDefinitions="150,4*,200" Height="40" Margin="8,0">
-							<TextBlock Grid.Column="0" Text="{Binding Version}" VerticalAlignment="Center"/>
-							<TextBlock Grid.Column="1" Text="{Binding Hash}" VerticalAlignment="Center"
-                                       TextTrimming="CharacterEllipsis"/>
-							<TextBlock Grid.Column="2" Text="{Binding Date}" VerticalAlignment="Center"/>
-						</Grid>
-					</DataTemplate>
-				</ListBox.ItemTemplate>
-			</ListBox>
-		</Grid>
+				<controls:AotDataGridColumn Header="Hash" Width="4*">
+					<controls:AotDataGridColumn.CellTemplate>
+						<DataTemplate x:DataType="local:VersionEntry">
+							<TextBlock Text="{Binding Hash}"
+							           VerticalAlignment="Center"
+							           Margin="4,0"
+							           TextTrimming="CharacterEllipsis" />
+						</DataTemplate>
+					</controls:AotDataGridColumn.CellTemplate>
+				</controls:AotDataGridColumn>
+
+				<controls:AotDataGridColumn Header="Release Date" Width="200">
+					<controls:AotDataGridColumn.CellTemplate>
+						<DataTemplate x:DataType="local:VersionEntry">
+							<TextBlock Text="{Binding Date}" VerticalAlignment="Center" Margin="4,0" />
+						</DataTemplate>
+					</controls:AotDataGridColumn.CellTemplate>
+				</controls:AotDataGridColumn>
+			</controls:AotDataGrid.Columns>
+		</controls:AotDataGrid>
 
 		<Border Grid.Row="1" Padding="15"
                 Background="{DynamicResource ControlFillColorDefaultBrush}">

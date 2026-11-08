@@ -47,13 +47,9 @@ namespace Froststrap.UI.Elements.Dialogs
 
     internal partial class VersionOverrideDialog : Base.AvaloniaWindow
     {
-        private enum SortColumn { Version, Hash, Date }
-
         private readonly LaunchMode _launchMode;
         private readonly ObservableCollection<VersionEntry> _versions = [];
         private bool _isLoading;
-        private SortColumn _sortColumn = SortColumn.Date;
-        private bool _sortDescending = true;
 
         public ObservableCollection<VersionEntry> Versions => _versions;
 
@@ -61,23 +57,25 @@ namespace Froststrap.UI.Elements.Dialogs
         {
             InitializeComponent();
             DataContext = this;
+
+            VersionsGrid.Columns[0].SortKey = o =>
+                Version.TryParse(((VersionEntry)o!).Version, out var version) ? version : new Version(0, 0);
+            VersionsGrid.Columns[1].SortKey = o => ((VersionEntry)o!).Hash;
+            VersionsGrid.Columns[2].SortKey = o => ((VersionEntry)o!).ReleaseDateUtc;
+
+            VersionsGrid.SortBy(VersionsGrid.Columns[2], true);
         }
 
         public VersionOverrideDialog(LaunchMode mode) : this()
         {
             _launchMode = mode;
-            VersionsList.SelectionChanged += (s, e) =>
-                CopyHashButton.IsEnabled = VersionsList.SelectedItem != null;
-
-            SortVersionButton.Click += (s, e) => SortBy(SortColumn.Version);
-            SortHashButton.Click += (s, e) => SortBy(SortColumn.Hash);
-            SortDateButton.Click += (s, e) => SortBy(SortColumn.Date);
+            VersionsGrid.SelectionChanged += (s, e) =>
+                CopyHashButton.IsEnabled = VersionsGrid.SelectedItem != null;
 
             CopyHashButton.Click += CopyHashButton_Click;
             RefreshButton.Click += RefreshButton_Click;
             CloseButton.Click += (s, e) => Close();
 
-            UpdateHeaders();
             _ = LoadVersionsAsync();
         }
 
@@ -113,8 +111,6 @@ namespace Froststrap.UI.Elements.Dialogs
                 {
                     _versions.Add(entry);
                 }
-
-                ApplySort();
             }
             catch (Exception ex)
             {
@@ -125,53 +121,6 @@ namespace Froststrap.UI.Elements.Dialogs
                 _isLoading = false;
                 RefreshButton.IsEnabled = true;
             }
-        }
-
-        private void SortBy(SortColumn column)
-        {
-            if (_sortColumn == column)
-            {
-                _sortDescending = !_sortDescending;
-            }
-            else
-            {
-                _sortColumn = column;
-                _sortDescending = column == SortColumn.Date; // newest first by default
-            }
-
-            ApplySort();
-        }
-
-        private void ApplySort()
-        {
-            var selected = VersionsList.SelectedItem;
-
-            Func<VersionEntry, object> key = _sortColumn switch
-            {
-                SortColumn.Version => e => Version.TryParse(e.Version, out var v) ? v : new Version(0, 0),
-                SortColumn.Hash => e => e.Hash,
-                _ => e => e.ReleaseDateUtc,
-            };
-
-            var sorted = (_sortDescending
-                ? _versions.OrderByDescending(key)
-                : _versions.OrderBy(key)).ToList();
-
-            _versions.Clear();
-            foreach (var entry in sorted)
-            {
-                _versions.Add(entry);
-            }
-
-            VersionsList.SelectedItem = selected;
-            UpdateHeaders();
-        }
-
-        private void UpdateHeaders()
-        {
-            SortVersionButton.Classes.Set("sorted", _sortColumn == SortColumn.Version);
-            SortHashButton.Classes.Set("sorted", _sortColumn == SortColumn.Hash);
-            SortDateButton.Classes.Set("sorted", _sortColumn == SortColumn.Date);
         }
 
         private static List<VersionEntry> ParseDeployHistory(string content, string binaryType)
@@ -216,7 +165,7 @@ namespace Froststrap.UI.Elements.Dialogs
 
         private async void CopyHashButton_Click(object? sender, EventArgs e)
         {
-            if (VersionsList.SelectedItem is not VersionEntry selected)
+            if (VersionsGrid.SelectedItem is not VersionEntry selected)
                 return;
 
             var topLevel = TopLevel.GetTopLevel(this);

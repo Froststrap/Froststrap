@@ -9,10 +9,8 @@ using Avalonia.Input;
 using Avalonia.Input.Platform;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
-using Avalonia.Threading;
-using Avalonia.VisualTree;
+using Froststrap.UI.Elements.Controls;
 using Froststrap.UI.Elements.Dialogs;
-using LucideAvalonia;
 using LucideAvalonia.Enum;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -34,7 +32,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
             AllowTrailingCommas = true
         };
 
-        private DataGrid? _dataGrid;
+        private AotDataGrid? _dataGrid;
 
         public new event PropertyChangedEventHandler? PropertyChanged;
 
@@ -54,13 +52,16 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
         {
             InitializeComponent();
 
+            DataGrid.Columns[1].SortKey = o => ((FastFlag)o!).Name;
+            DataGrid.Columns[2].SortKey = o => ((FastFlag)o!).Value;
+
             App.FrostRPC?.SetPage("FastFlag Editor");
         }
 
         protected override void OnLoaded(RoutedEventArgs e)
         {
             base.OnLoaded(e);
-            _dataGrid = this.FindControl<DataGrid>("DataGrid");
+            _dataGrid = this.FindControl<AotDataGrid>("DataGrid");
 
             this.Focus();
 
@@ -99,37 +100,6 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
             DeleteSelectedButton?.IsEnabled = false;
 
             UpdateTotalFlagsCount();
-
-            // Update icons after data is loaded
-            Dispatcher.UIThread.Post(UpdatePresetIcons, DispatcherPriority.Loaded);
-        }
-
-        private void UpdatePresetIcons()
-        {
-            if (_dataGrid is null) return;
-
-            // Find all rows in the DataGrid
-            foreach (var row in _dataGrid.GetVisualDescendants().OfType<DataGridRow>())
-            {
-                if (row.DataContext is FastFlag flag)
-                {
-                    // Find the Lucide icon in this row
-                    var icon = row.GetVisualDescendants().OfType<Lucide>().FirstOrDefault();
-                    if (icon is not null)
-                    {
-                        // Set the icon properties
-                        icon.Width = 20;
-                        icon.Height = 20;
-                        icon.Icon = flag.Preset;
-                        icon.StrokeBrush = Foreground;
-
-                        // Force repaint
-                        var brush = icon.StrokeBrush;
-                        icon.StrokeBrush = null;
-                        icon.StrokeBrush = brush;
-                    }
-                }
-            }
         }
 
         protected override void OnKeyDown(KeyEventArgs e)
@@ -264,7 +234,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
             if (entry != null)
             {
                 DataGrid.SelectedItem = entry;
-                DataGrid.ScrollIntoView(entry, null);
+                DataGrid.ScrollIntoView(entry);
             }
 
             UpdateTotalFlagsCount();
@@ -366,7 +336,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
 
             var tempList = new List<FastFlag>();
 
-            foreach (FastFlag entry in _dataGrid.SelectedItems.OfType<FastFlag>())
+            foreach (FastFlag entry in _dataGrid.SelectedItems?.OfType<FastFlag>() ?? [])
                 tempList.Add(entry);
 
             foreach (FastFlag entry in tempList)
@@ -646,57 +616,95 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
                 return;
 
             _showPresets = tb.IsChecked ?? true;
+            DataGrid.Columns[0].IsVisible = _showPresets;
             ReloadList();
         }
 
-        private void DataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        private void NameTextBox_LostFocus(object? sender, RoutedEventArgs e)
         {
-            if (e.Row.DataContext is not FastFlag entry || e.EditingElement is not TextBox textbox)
+            if (sender is TextBox textBox)
+                CommitName(textBox);
+        }
+
+        private void NameTextBox_KeyDown(object? sender, KeyEventArgs e)
+        {
+            if (e.Key != Key.Enter || sender is not TextBox textBox)
+                return;
+
+            CommitName(textBox);
+            e.Handled = true;
+        }
+
+        private void CommitName(TextBox textBox)
+        {
+            if (textBox.DataContext is not FastFlag entry)
+                return;
+
+            string newText = textBox.Text?.Trim() ?? string.Empty;
+            string oldName = entry.Name;
+
+            if (newText == oldName || string.IsNullOrEmpty(newText))
+            {
+                textBox.Text = oldName;
+                return;
+            }
+
+            if (App.FastFlags.GetValue(newText) is not null)
+            {
+                _ = Frontend.ShowMessageBox(Strings.Menu_FastFlagEditor_AlreadyExists, MessageBoxImage.Information);
+                textBox.Text = oldName;
+                return;
+            }
+
+            App.FastFlags.suspendUndoSnapshot = true;
+            App.FastFlags.SaveUndoSnapshot();
+
+            App.FastFlags.SetValue(oldName, null);
+            App.FastFlags.SetValue(newText, entry.Value);
+
+            entry.Name = newText;
+
+            var presetFlags = FastFlagManager.PresetFlags.Values;
+            entry.Preset = presetFlags.Contains(newText) ? LucideIconNames.CircleCheck : LucideIconNames.CircleX;
+
+            App.FastFlags.suspendUndoSnapshot = false;
+
+            if (!newText.Contains(_searchFilter, StringComparison.OrdinalIgnoreCase))
+                ClearSearch();
+            else
+                ReloadList();
+        }
+
+        private void ValueTextBox_LostFocus(object? sender, RoutedEventArgs e)
+        {
+            if (sender is TextBox textBox)
+                CommitValue(textBox);
+        }
+
+        private void ValueTextBox_KeyDown(object? sender, KeyEventArgs e)
+        {
+            if (e.Key != Key.Enter || sender is not TextBox textBox)
+                return;
+
+            CommitValue(textBox);
+            e.Handled = true;
+        }
+
+        private static void CommitValue(TextBox textBox)
+        {
+            if (textBox.DataContext is not FastFlag entry)
+                return;
+
+            string newValue = textBox.Text?.Trim() ?? string.Empty;
+            if (newValue == entry.Value)
                 return;
 
             App.FastFlags.suspendUndoSnapshot = true;
             App.FastFlags.SaveUndoSnapshot();
 
-            string newText = textbox.Text?.Trim() ?? string.Empty;
-            string header = e.Column.Header?.ToString() ?? string.Empty;
+            entry.Value = newValue;
+            App.FastFlags.SetValue(entry.Name, newValue);
 
-            if (header == Strings.Common_Name)
-            {
-                string oldName = entry.Name;
-
-                if (newText == oldName || string.IsNullOrEmpty(newText))
-                    goto EndEditing;
-
-                if (App.FastFlags.GetValue(newText) is not null)
-                {
-                    _ = Frontend.ShowMessageBox(Strings.Menu_FastFlagEditor_AlreadyExists, MessageBoxImage.Information);
-                    e.Cancel = true;
-                    textbox.Text = oldName;
-                    goto EndEditing;
-                }
-
-                App.FastFlags.SetValue(oldName, null);
-                App.FastFlags.SetValue(newText, entry.Value);
-
-                entry.Name = newText;
-
-                if (!newText.Contains(_searchFilter, StringComparison.OrdinalIgnoreCase))
-                    ClearSearch();
-
-                var presetFlags = FastFlagManager.PresetFlags.Values;
-                entry.Preset = presetFlags.Contains(newText) ? LucideIconNames.CircleCheck : LucideIconNames.CircleX;
-
-                // Force a full refresh to update presets
-                ReloadList();
-            }
-            else if (header == Strings.Common_Value)
-            {
-                string newValue = newText;
-                entry.Value = newValue;
-                App.FastFlags.SetValue(entry.Name, newValue);
-            }
-
-        EndEditing:
             App.FastFlags.suspendUndoSnapshot = false;
         }
 
@@ -704,7 +712,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
         {
             if (_dataGrid is null || DeleteSelectedButton is null) return;
 
-            DeleteSelectedButton.IsEnabled = _dataGrid.SelectedItems.Count > 0;
+            DeleteSelectedButton.IsEnabled = _dataGrid.SelectedItems?.Count > 0;
         }
 
         private void ClearSearch(bool refresh = true)

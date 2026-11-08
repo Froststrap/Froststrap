@@ -49,6 +49,7 @@ SPDX-License-Identifier: MPL-2.0
         <StyleInclude Source="avares://Froststrap/UI/Elements/Controls/CardAction.axaml" />
         <StyleInclude Source="avares://Froststrap/UI/Elements/Controls/IconButton.axaml" />
         <StyleInclude Source="avares://Froststrap/UI/Elements/Controls/SectionHeader.axaml" />
+        <StyleInclude Source="avares://Froststrap/UI/Elements/Controls/AotDataGrid.axaml" />
 
         <StyleInclude Source="avares://Froststrap/UI/AppThemes/Default.axaml" />
     </Application.Styles>

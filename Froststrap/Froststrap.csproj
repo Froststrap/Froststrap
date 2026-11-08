@@ -51,7 +51,6 @@ SPDX-License-Identifier: MPL-2.0
 
   <PropertyGroup Condition="'$(PublishAot)' == 'true'">
     <DebugType>none</DebugType>
-    <DebugSymbols>false</DebugSymbols>
     <CopyOutputSymbolsToPublishDirectory>false</CopyOutputSymbolsToPublishDirectory>
     <OptimizationPreference>Size</OptimizationPreference>
   </PropertyGroup>
