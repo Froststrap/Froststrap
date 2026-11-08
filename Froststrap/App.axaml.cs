@@ -522,51 +522,6 @@ internal partial class App : Application
         }
     }
 
-    public static async Task<GithubRelease?> GetLatestRelease(bool includePreRelease = false)
-    {
-        try
-        {
-            if (IsMockReleaseEnabled)
-            {
-                string mockTag = MockReleaseTag ?? "v0.0.0-mock";
-                Logger.Debug($"Using mocked release {mockTag}");
-                return new GithubRelease
-                {
-                    TagName = mockTag,
-                    Name = mockTag,
-                    Body = "Mock release",
-                    Prerelease = true,
-                    CreatedAt = DateTime.UtcNow.ToString("o"),
-                    Assets = []
-                };
-            }
-
-            string url = includePreRelease
-                ? $"https://api.github.com/repos/{ProjectRepository}/releases"
-                : $"https://api.github.com/repos/{ProjectRepository}/releases/latest";
-
-            if (includePreRelease)
-            {
-                var releases = await Http.GetJson<List<GithubRelease>>(new Uri(url));
-                if (releases is null || releases.Count == 0)
-                {
-                    Logger.Info("No releases found");
-                    return null;
-                }
-                return releases[0];
-            }
-            else
-            {
-                return await Http.GetJson<GithubRelease>(new Uri(url));
-            }
-        }
-        catch (Exception ex)
-        {
-            Logger.Error($"Unhandled exception {ex}");
-            return null;
-        }
-    }
-
     public override async void OnFrameworkInitializationCompleted()
     {
         if (ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
