@@ -11,7 +11,7 @@ pub mod log {
 
     const RESET: &str = "\x1b[0m";
     pub const GRAY: &str = "\x1b[90m";
-    pub const BLUE: &str = "\x1b[34m";
+    pub const PURPLE: &str = "\x1b[95m";
     pub const YELLOW: &str = "\x1b[33m";
     pub const RED: &str = "\x1b[31m";
 
@@ -34,13 +34,13 @@ pub mod log {
         if to_stderr { eprintln!("{line}"); } else { println!("{line}"); }
     }
 
-    pub struct Blue<T>(pub T);
+    pub struct Purple<T>(pub T);
 
     macro_rules! forward {
         ($($tr:ident),*) => {$(
-            impl<T: fmt::$tr> fmt::$tr for Blue<T> {
+            impl<T: fmt::$tr> fmt::$tr for Purple<T> {
                 fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-                    f.write_str(BLUE)?;
+                    f.write_str(PURPLE)?;
                     fmt::$tr::fmt(&self.0, f)?;
                     f.write_str(RESET)
                 }
@@ -52,13 +52,13 @@ pub mod log {
     #[macro_export]
     macro_rules! __log {
         ($err:expr, $color:expr, $level:literal, $fmt:literal $(, $arg:expr)* $(,)?) => {
-            $crate::utils::log::emit($err, $color, $level, format_args!($fmt $(, $crate::utils::log::Blue(&$arg))*))
+            $crate::utils::log::emit($err, $color, $level, format_args!($fmt $(, $crate::utils::log::Purple(&$arg))*))
         };
     }
 
     #[macro_export]
     macro_rules! __info {
-        ($($t:tt)*) => { $crate::__log!(false, $crate::utils::log::BLUE, "INF", $($t)*) };
+        ($($t:tt)*) => { $crate::__log!(false, $crate::utils::log::PURPLE, "INF", $($t)*) };
     }
 
     #[macro_export]
