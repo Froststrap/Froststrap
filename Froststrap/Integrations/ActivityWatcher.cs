@@ -117,97 +117,114 @@ namespace Froststrap.Integrations
             LoadGameHistory();
         }
 
+        private string LogKindToken => IsStudioLaunch ? "_Studio_" : "_Player_";
+
+        private bool IsGameLog(FileInfo file) =>
+            file.Name.Contains(LogKindToken, StringComparison.OrdinalIgnoreCase)
+            && !file.Name.Contains("CrashHandler", StringComparison.OrdinalIgnoreCase)
+            && !file.Name.Contains("Installer", StringComparison.OrdinalIgnoreCase);
+
         public async void Start()
         {
-            FileInfo logFileInfo;
+            FileInfo? logFile = null;
 
-            if (String.IsNullOrEmpty(LogLocation))
+            if (!string.IsNullOrEmpty(LogLocation))
             {
-                string logDirectory = Paths.RobloxLogs;
+                var provided = new FileInfo(LogLocation);
 
-                if (!Directory.Exists(logDirectory))
+                if (IsGameLog(provided))
+                {
+                    logFile = provided;
+                }
+                else
+                {
+                    App.Logger.Warn($"Ignoring supplied log file, not a game log: {provided.Name}");
+                    LogLocation = null!;
+                }
+            }
+
+            if (logFile is null)
+            {
+                if (!Directory.Exists(Paths.RobloxLogs))
                     return;
 
-                App.Logger.Info("Opening Roblox log file...");
+                App.Logger.Info("Looking for Roblox log file...");
 
-                string logNameFilter = IsStudioLaunch
-                    ? "Studio"
-                    : "Player";
+                logFile = await FindLogFileAsync(Paths.RobloxLogs, DateTime.Now.AddSeconds(-15));
+                if (logFile is null)
+                    return;
 
-                while (true)
-                {
-                    var candidates = new DirectoryInfo(logDirectory)
-                        .GetFiles()
-                        .Where(x => x.Name.Contains(logNameFilter, StringComparison.OrdinalIgnoreCase) && x.CreationTime <= DateTime.Now)
-                        // the crash handler starts alongside Roblox and writes its own "_Player_" log
-                        .Where(x => !x.Name.Contains("CrashHandler", StringComparison.OrdinalIgnoreCase))
-                        .OrderByDescending(x => x.CreationTime)
-                        .ToList();
-
-                    if (candidates.Count == 0)
-                    {
-                        App.Logger.Info($"No '{logNameFilter}' log files found, waiting...");
-                        await Task.Delay(1000);
-                        continue;
-                    }
-
-                    logFileInfo = candidates.First();
-
-                    if (logFileInfo.CreationTime.AddSeconds(15) > DateTime.Now)
-                        break;
-
-                    App.Logger.Info($"Could not find recent enough log file, waiting... (newest is {logFileInfo.Name})");
-                    await Task.Delay(1000);
-                }
-
-                LogLocation = logFileInfo.FullName;
-            }
-            else
-            {
-                logFileInfo = new FileInfo(LogLocation);
+                LogLocation = logFile.FullName;
             }
 
             while (!IsDisposed)
             {
                 OnLogOpen?.Invoke(this, EventArgs.Empty);
 
-                using var logFileStream = logFileInfo.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                using var streamReader = new StreamReader(logFileStream);
+                FileInfo? next = await TailLogAsync(logFile);
+                if (next is null)
+                    break;
 
-                App.Logger.Info($"Opened {LogLocation}");
+                App.Logger.Info($"Switching log file: {logFile.Name} -> {next.Name}");
 
-                bool switchedLogFile = false;
+                logFile = next;
+                LogLocation = next.FullName;
+                ResetStudioPlaceState();
+            }
+        }
 
-                while (!IsDisposed)
+        private async Task<FileInfo?> FindLogFileAsync(string directory, DateTime createdAfter)
+        {
+            while (!IsDisposed)
+            {
+                try
                 {
-                    string? log = await streamReader.ReadLineAsync();
+                    FileInfo? newest = new DirectoryInfo(directory)
+                        .GetFiles()
+                        .Where(IsGameLog)
+                        .Where(x => x.CreationTime >= createdAfter)
+                        .OrderByDescending(x => x.CreationTime)
+                        .FirstOrDefault();
 
-                    if (log is not null)
-                    {
-                        ReadLogEntry(log);
-                        continue;
-                    }
-
-                    await Task.Delay(1000);
-
-                    FileInfo? newerLogFile = IsStudioLaunch ? GetNewerStudioLog(logFileInfo) : null;
-
-                    if (newerLogFile is not null)
-                    {
-                        App.Logger.Info($"Detected new Studio log file, switching from {logFileInfo.Name} to {newerLogFile.Name}");
-
-                        logFileInfo = newerLogFile;
-                        LogLocation = newerLogFile.FullName;
-                        switchedLogFile = true;
-                        ResetStudioPlaceState();
-
-                        break;
-                    }
+                    if (newest is not null)
+                        return newest;
+                }
+                catch (IOException ex)
+                {
+                    App.Logger.Error($"Failed to scan log directory: {ex.Message}");
                 }
 
-                if (!switchedLogFile)
-                    break;
+                App.Logger.Info($"No recent '{LogKindToken.Trim('_')}' log file yet, waiting...");
+                await Task.Delay(1000);
             }
+
+            return null;
+        }
+
+        private async Task<FileInfo?> TailLogAsync(FileInfo logFile)
+        {
+            using var stream = logFile.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            using var reader = new StreamReader(stream);
+
+            App.Logger.Info($"Reading {logFile.FullName}");
+
+            while (!IsDisposed)
+            {
+                string? line = await reader.ReadLineAsync();
+
+                if (line is not null)
+                {
+                    ReadLogEntry(line);
+                    continue;
+                }
+
+                await Task.Delay(1000);
+
+                if (IsStudioLaunch && GetNewerStudioLog(logFile) is { } newer)
+                    return newer;
+            }
+
+            return null;
         }
 
         private bool IsStudioLaunch => _launchMode == LaunchMode.Studio || _launchMode == LaunchMode.StudioAuth;
