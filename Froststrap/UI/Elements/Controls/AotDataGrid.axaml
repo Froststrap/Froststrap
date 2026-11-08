@@ -1,0 +1,66 @@
+<!--
+SPDX-FileCopyrightText: 2026 Froststrap
+
+SPDX-License-Identifier: MPL-2.0
+-->
+
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls">
+
+    <Style Selector="controls|AotDataGrid">
+        <Setter Property="Background" Value="{DynamicResource NormalDarkAndLightBackground}" />
+    </Style>
+
+    <Style Selector="controls|AotDataGrid Grid#PART_Root">
+        <Setter Property="Background" Value="{DynamicResource NormalDarkAndLightBackground}" />
+    </Style>
+
+    <Style Selector="controls|AotDataGrid Border#PART_HeaderBorder">
+        <Setter Property="Background" Value="{DynamicResource ControlFillColorTertiaryBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ControlElevationBorderBrush}" />
+        <Setter Property="BorderThickness" Value="0,0,0,1" />
+    </Style>
+
+    <Style Selector="controls|AotDataGrid Button.header">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="8,0" />
+        <Setter Property="Height" Value="30" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+        <Setter Property="CornerRadius" Value="0" />
+    </Style>
+
+    <Style Selector="controls|AotDataGrid Button.header:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
+    </Style>
+
+    <Style Selector="controls|AotDataGrid Button.header.sorted /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
+    </Style>
+
+    <Style Selector="controls|AotDataGrid Border.resize-handle">
+        <Setter Property="Background" Value="Transparent" />
+    </Style>
+
+    <Style Selector="controls|AotDataGrid Border.resize-handle:pointerover">
+        <Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
+    </Style>
+
+    <Style Selector="controls|AotDataGrid Border.resize-grip">
+        <Setter Property="Background" Value="{DynamicResource ControlStrokeColorDefaultBrush}" />
+    </Style>
+
+    <Style Selector="controls|AotDataGrid ListBox#PART_ListBox">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="0" />
+    </Style>
+
+    <Style Selector="controls|AotDataGrid ListBox#PART_ListBox ListBoxItem">
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="MinHeight" Value="30" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+    </Style>
+</Styles>

@@ -245,8 +245,7 @@ SPDX-License-Identifier: MPL-2.0
                     <ui:FAInfoBar
                         x:Name="AlertBar"
                         Grid.Row="0"
-                        Margin="12,0"
-                        IsOpen="False"
+                        Margin="12,12,12,0"
                         IsClosable="False"
                         Severity="Informational" />
                     <Panel Grid.Row="1">

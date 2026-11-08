@@ -9,6 +9,7 @@ SPDX-License-Identifier: MPL-2.0
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
              xmlns:model="clr-namespace:Froststrap.Models"
+             xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
              xmlns:resources="using:Froststrap.Resources"
              xmlns:local="clr-namespace:Froststrap.UI.Elements.Settings.Pages.GlobalSettings"
              x:DataType="local:GlobalSettingsEditor">
@@ -25,51 +26,64 @@ SPDX-License-Identifier: MPL-2.0
             </TextBox>
         </Grid>
 
-        <DataGrid Grid.Row="1" Name="DataGrid"
-                  AutoGenerateColumns="False"
-                  CanUserResizeColumns="True"
-                  CellEditEnding="DataGrid_CellEditEnding"
-                  GridLinesVisibility="Horizontal"
-                  x:DataType="model:GlobalSetting">
-            <DataGrid.Columns>
-                <DataGridTextColumn x:DataType="model:GlobalSetting" Header="{x:Static resources:Strings.Common_Name}" Binding="{Binding Name}" IsReadOnly="True" Width="*" />
-
-                <DataGridTemplateColumn Header="{x:Static resources:Strings.Common_Value}" Width="150">
-                    <DataTemplate>
-                        <TextBlock x:DataType="model:GlobalSetting" Text="{Binding Value}" VerticalAlignment="Center" Margin="10,0"
-                                   Opacity="{Binding IsVector, Converter={x:Static local:GlobalSettingsEditor.DimIfTrue}}" />
-                    </DataTemplate>
-                    <DataGridTemplateColumn.CellEditingTemplate>
-                        <DataTemplate>
-                            <TextBox x:DataType="model:GlobalSetting" Text="{Binding Value}" IsEnabled="{Binding !IsVector}" />
+        <controls:AotDataGrid Grid.Row="1" Name="DataGrid" SelectionMode="Single">
+            <controls:AotDataGrid.Columns>
+                <controls:AotDataGridColumn Header="{x:Static resources:Strings.Common_Name}" Width="*">
+                    <controls:AotDataGridColumn.CellTemplate>
+                        <DataTemplate x:DataType="model:GlobalSetting">
+                            <TextBlock Text="{Binding Name}" VerticalAlignment="Center" Margin="4,0" />
                         </DataTemplate>
-                    </DataGridTemplateColumn.CellEditingTemplate>
-                </DataGridTemplateColumn>
+                    </controls:AotDataGridColumn.CellTemplate>
+                </controls:AotDataGridColumn>
 
-                <DataGridTemplateColumn Header="{x:Static resources:Strings.Menu_GBSEditor_VectorX}" Width="100">
-                    <DataTemplate>
-                        <TextBlock x:DataType="model:GlobalSetting" Text="{Binding VectorX}" VerticalAlignment="Center" Margin="10,0"
-                                   Opacity="{Binding IsVector, Converter={x:Static local:GlobalSettingsEditor.DimIfFalse}}" />
-                    </DataTemplate>
-                    <DataGridTemplateColumn.CellEditingTemplate>
-                        <DataTemplate>
-                            <TextBox x:DataType="model:GlobalSetting" Text="{Binding VectorX}" IsEnabled="{Binding IsVector}" />
+                <controls:AotDataGridColumn Header="{x:Static resources:Strings.Common_Value}" Width="150">
+                    <controls:AotDataGridColumn.CellTemplate>
+                        <DataTemplate x:DataType="model:GlobalSetting">
+                            <TextBox Text="{Binding Value}"
+                                     IsEnabled="{Binding !IsVector}"
+                                     VerticalContentAlignment="Center"
+                                     Background="Transparent"
+                                     BorderThickness="0"
+                                     Padding="0"
+                                     Margin="0"
+                                     LostFocus="ValueTextBox_LostFocus"
+                                     KeyDown="ValueTextBox_KeyDown" />
                         </DataTemplate>
-                    </DataGridTemplateColumn.CellEditingTemplate>
-                </DataGridTemplateColumn>
+                    </controls:AotDataGridColumn.CellTemplate>
+                </controls:AotDataGridColumn>
 
-                <DataGridTemplateColumn Header="{x:Static resources:Strings.Menu_GBSEditor_VectorY}" Width="100">
-                    <DataTemplate>
-                        <TextBlock x:DataType="model:GlobalSetting" Text="{Binding VectorY}" VerticalAlignment="Center" Margin="10,0"
-                                   Opacity="{Binding IsVector, Converter={x:Static local:GlobalSettingsEditor.DimIfFalse}}" />
-                    </DataTemplate>
-                    <DataGridTemplateColumn.CellEditingTemplate>
-                        <DataTemplate>
-                            <TextBox x:DataType="model:GlobalSetting" Text="{Binding VectorY}" IsEnabled="{Binding IsVector}" />
+                <controls:AotDataGridColumn Header="{x:Static resources:Strings.Menu_GBSEditor_VectorX}" Width="100">
+                    <controls:AotDataGridColumn.CellTemplate>
+                        <DataTemplate x:DataType="model:GlobalSetting">
+                            <TextBox Text="{Binding VectorX}"
+                                     IsEnabled="{Binding IsVector}"
+                                     VerticalContentAlignment="Center"
+                                     Background="Transparent"
+                                     BorderThickness="0"
+                                     Padding="0"
+                                     Margin="0"
+                                     LostFocus="VectorXTextBox_LostFocus"
+                                     KeyDown="VectorXTextBox_KeyDown" />
                         </DataTemplate>
-                    </DataGridTemplateColumn.CellEditingTemplate>
-                </DataGridTemplateColumn>
-            </DataGrid.Columns>
-        </DataGrid>
+                    </controls:AotDataGridColumn.CellTemplate>
+                </controls:AotDataGridColumn>
+
+                <controls:AotDataGridColumn Header="{x:Static resources:Strings.Menu_GBSEditor_VectorY}" Width="100">
+                    <controls:AotDataGridColumn.CellTemplate>
+                        <DataTemplate x:DataType="model:GlobalSetting">
+                            <TextBox Text="{Binding VectorY}"
+                                     IsEnabled="{Binding IsVector}"
+                                     VerticalContentAlignment="Center"
+                                     Background="Transparent"
+                                     BorderThickness="0"
+                                     Padding="0"
+                                     Margin="0"
+                                     LostFocus="VectorYTextBox_LostFocus"
+                                     KeyDown="VectorYTextBox_KeyDown" />
+                        </DataTemplate>
+                    </controls:AotDataGridColumn.CellTemplate>
+                </controls:AotDataGridColumn>
+            </controls:AotDataGrid.Columns>
+        </controls:AotDataGrid>
     </Grid>
 </UserControl>

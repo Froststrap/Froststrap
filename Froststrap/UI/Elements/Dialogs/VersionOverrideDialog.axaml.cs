@@ -57,13 +57,20 @@ namespace Froststrap.UI.Elements.Dialogs
         {
             InitializeComponent();
             DataContext = this;
+
+            VersionsGrid.Columns[0].SortKey = o =>
+                Version.TryParse(((VersionEntry)o!).Version, out var version) ? version : new Version(0, 0);
+            VersionsGrid.Columns[1].SortKey = o => ((VersionEntry)o!).Hash;
+            VersionsGrid.Columns[2].SortKey = o => ((VersionEntry)o!).ReleaseDateUtc;
+
+            VersionsGrid.SortBy(VersionsGrid.Columns[2], true);
         }
 
         public VersionOverrideDialog(LaunchMode mode) : this()
         {
             _launchMode = mode;
-            VersionsDataGrid.SelectionChanged += (s, e) =>
-                CopyHashButton.IsEnabled = VersionsDataGrid.SelectedItem != null;
+            VersionsGrid.SelectionChanged += (s, e) =>
+                CopyHashButton.IsEnabled = VersionsGrid.SelectedItem != null;
 
             CopyHashButton.Click += CopyHashButton_Click;
             RefreshButton.Click += RefreshButton_Click;
@@ -158,14 +165,15 @@ namespace Froststrap.UI.Elements.Dialogs
 
         private async void CopyHashButton_Click(object? sender, EventArgs e)
         {
-            if (VersionsDataGrid.SelectedItem is VersionEntry selected)
-            {
-                var topLevel = TopLevel.GetTopLevel(this);
-                if (topLevel?.Clipboard is IClipboard clipboard)
-                {
-                    await clipboard.SetTextAsync($"version-{selected.Hash}");
-                }
-            }
+            if (VersionsGrid.SelectedItem is not VersionEntry selected)
+                return;
+
+            var topLevel = TopLevel.GetTopLevel(this);
+
+            if (topLevel?.Clipboard is not IClipboard clipboard)
+                return;
+
+            await clipboard.SetTextAsync($"version-{selected.Hash}");
         }
 
         private async void RefreshButton_Click(object? sender, EventArgs e)
