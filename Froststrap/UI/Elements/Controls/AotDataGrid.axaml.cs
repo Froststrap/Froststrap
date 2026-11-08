@@ -428,7 +428,10 @@ namespace Froststrap.UI.Elements.Controls
             Grid.SetColumn(button, 0);
             cell.Children.Add(button);
 
-            if (column.CanUserResize)
+            var visible = Columns.Where(c => c.IsVisible).ToList();
+            bool isLast = visible.IndexOf(column) == visible.Count - 1;
+
+            if (column.CanUserResize && !isLast)
             {
                 var handle = new Border
                 {
@@ -450,8 +453,8 @@ namespace Froststrap.UI.Elements.Controls
                 handle.Child = grip;
 
                 bool dragging = false;
-                double dragStartX = 0;
-                double dragStartWidth = 0;
+                double dragStartX = 0, startLeft = 0, startRight = 0;
+                AotDataGridColumn? neighbor = null;
 
                 handle.PointerPressed += (_, e) =>
                 {
@@ -459,21 +462,36 @@ namespace Froststrap.UI.Elements.Controls
                     if (!point.Properties.IsLeftButtonPressed)
                         return;
 
-                    dragging = true;
+                    var cols = Columns.Where(c => c.IsVisible).ToList();
+                    int i = cols.IndexOf(column);
+                    if (i < 0 || i >= cols.Count - 1)
+                        return;
+
+                    var widths = cols.Select((c, k) =>
+                        Math.Max(c.MinWidth, _headerGrid.ColumnDefinitions[k].ActualWidth)).ToList();
+                    for (int k = 0; k < cols.Count; k++)
+                        cols[k].Width = new GridLength(widths[k], GridUnitType.Star);
+
+                    neighbor = cols[i + 1];
+                    startLeft = widths[i];
+                    startRight = widths[i + 1];
                     dragStartX = point.Position.X;
-                    dragStartWidth = definition.ActualWidth;
+                    dragging = true;
                     e.Pointer.Capture(handle);
                     e.Handled = true;
                 };
 
                 handle.PointerMoved += (_, e) =>
                 {
-                    if (!dragging)
+                    if (!dragging || neighbor is null)
                         return;
 
-                    var point = e.GetCurrentPoint(_headerGrid);
-                    double newWidth = Math.Max(column.MinWidth, dragStartWidth + (point.Position.X - dragStartX));
-                    column.Width = new GridLength(newWidth);
+                    double delta = e.GetCurrentPoint(_headerGrid).Position.X - dragStartX;
+
+                    delta = Math.Clamp(delta, column.MinWidth - startLeft, startRight - neighbor.MinWidth);
+
+                    column.Width = new GridLength(startLeft + delta, GridUnitType.Star);
+                    neighbor.Width = new GridLength(startRight - delta, GridUnitType.Star);
                     e.Handled = true;
                 };
 
