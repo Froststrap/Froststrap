@@ -20,7 +20,7 @@ namespace Froststrap.Utility
         private static readonly TimeSpan BaseRetryDelay = TimeSpan.FromSeconds(1);
         private static readonly SemaphoreSlim DownloadGate = new(MaxConcurrentDownloads);
 
-        public static async Task<Bitmap?> LoadAsync(string? url, int decodeWidth = 0, string? cachePath = null)
+        public static async Task<Bitmap?> LoadAsync(string? url, int decodeWidth = 0, string? cachePath = null, bool highPriority = false)
         {
             if (String.IsNullOrEmpty(url))
                 return null;
@@ -28,10 +28,10 @@ namespace Froststrap.Utility
             if (Memory.TryGetValue(url, out Bitmap? cached))
                 return cached;
 
-            return await InFlight.GetOrAdd(url, _ => LoadCoreAsync(url, decodeWidth, cachePath));
+            return await InFlight.GetOrAdd(url, _ => LoadCoreAsync(url, decodeWidth, cachePath, highPriority));
         }
 
-        public static async Task LoadAndSetAsync(string? url, int decodeWidth, Action<Bitmap?> setter)
+        public static async Task LoadAndSetAsync(string? url, int decodeWidth, Action<Bitmap?> setter, bool highPriority = false)
         {
             if (String.IsNullOrEmpty(url))
             {
@@ -39,7 +39,7 @@ namespace Froststrap.Utility
                 return;
             }
 
-            Bitmap? bitmap = await LoadAsync(url, decodeWidth);
+            Bitmap? bitmap = await LoadAsync(url, decodeWidth, highPriority: highPriority);
 
             if (bitmap is null)
                 return;
@@ -47,9 +47,10 @@ namespace Froststrap.Utility
             await Dispatcher.UIThread.InvokeAsync(() => setter(bitmap));
         }
 
-        private static async Task<Bitmap?> LoadCoreAsync(string url, int decodeWidth, string? cachePath)
+        private static async Task<Bitmap?> LoadCoreAsync(string url, int decodeWidth, string? cachePath, bool highPriority)
         {
-            await DownloadGate.WaitAsync();
+            if (!highPriority)
+                await DownloadGate.WaitAsync();
 
             try
             {
@@ -98,7 +99,8 @@ namespace Froststrap.Utility
             }
             finally
             {
-                DownloadGate.Release();
+                if (!highPriority)
+                    DownloadGate.Release();
             }
         }
 

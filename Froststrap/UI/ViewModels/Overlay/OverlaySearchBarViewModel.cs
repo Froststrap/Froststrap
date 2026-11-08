@@ -33,6 +33,8 @@ namespace Froststrap.UI.ViewModels.Overlay
         private bool _shown;
         private bool _showingContinue;
         private bool _disposed;
+        private bool _continueStale = true;
+        private ActivityWatcher? _activityWatcher;
 
         public BulkObservableCollection<GameTile> Results { get; } = [];
 
@@ -243,9 +245,23 @@ namespace Froststrap.UI.ViewModels.Overlay
             ClosePrivateServersCommand = new RelayCommand(ClosePrivateServers);
         }
 
-        public static void Attach(IOverlayHost? host)
+        public void Attach(IOverlayHost? host)
         {
-            _ = host;
+            if (_activityWatcher is not null)
+                _activityWatcher.OnGameLeave -= OnGameLeave;
+
+            _activityWatcher = host?.ActivityWatcher;
+
+            if (_activityWatcher is not null)
+                _activityWatcher.OnGameLeave += OnGameLeave;
+        }
+
+        private void OnGameLeave(object? sender, EventArgs e)
+        {
+            _continueStale = true;
+
+            if (_shown && _selectedTab == OverlaySearchTab.Games && String.IsNullOrWhiteSpace(_query))
+                _ = LoadContinueAsync();
         }
 
         public void Prewarm()
@@ -265,7 +281,7 @@ namespace Froststrap.UI.ViewModels.Overlay
 
             ApplyJoiningState();
 
-            if (!IsBusy && String.IsNullOrWhiteSpace(_query) && Results.Count == 0)
+            if (!IsBusy && String.IsNullOrWhiteSpace(_query) && (_continueStale || Results.Count == 0))
                 _ = LoadContinueAsync();
         }
 
@@ -466,6 +482,7 @@ namespace Froststrap.UI.ViewModels.Overlay
 
                 _showingContinue = Results.Count > 0;
                 SelectedIndex = Results.Count > 0 ? 0 : -1;
+                _continueStale = false;
             }
             catch (Exception ex)
             {
@@ -646,6 +663,9 @@ namespace Froststrap.UI.ViewModels.Overlay
             _disposeCts.Dispose();
 
             _debounce.Stop();
+
+            if (_activityWatcher is not null)
+                _activityWatcher.OnGameLeave -= OnGameLeave;
 
             People.Dispose();
 

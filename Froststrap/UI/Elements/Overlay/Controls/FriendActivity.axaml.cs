@@ -20,6 +20,11 @@ namespace Froststrap.UI.Elements.Overlay.Controls
         private Point _dragStart;
         private bool _dragActive;
         private bool _disposed;
+        private bool _loadingHistory;
+
+        public event EventHandler<int>? UnreadChanged;
+
+        public int UnreadCount => _viewModel?.UnreadCount ?? 0;
 
         public FriendActivity()
         {
@@ -30,6 +35,8 @@ namespace Froststrap.UI.Elements.Overlay.Controls
             TabScroller.AddHandler(PointerPressedEvent, TabPointerPressed, RoutingStrategies.Tunnel);
             TabScroller.AddHandler(PointerMovedEvent, TabPointerMoved, RoutingStrategies.Tunnel);
             TabScroller.AddHandler(PointerReleasedEvent, TabPointerReleased, RoutingStrategies.Tunnel);
+
+            MessageScroller.ScrollChanged += MessageScroller_ScrollChanged;
         }
 
         public void Attach(IOverlayHost? overlay)
@@ -47,6 +54,8 @@ namespace Froststrap.UI.Elements.Overlay.Controls
             _viewModel.PropertyChanged += OnViewModelChanged;
 
             DataContext = _viewModel;
+
+            UnreadChanged?.Invoke(this, UnreadCount);
 
             if (IsEffectivelyVisible)
                 _ = _viewModel.LoadAsync();
@@ -71,6 +80,9 @@ namespace Froststrap.UI.Elements.Overlay.Controls
 
         private void OnViewModelChanged(object? sender, PropertyChangedEventArgs e)
         {
+            if (e.PropertyName == nameof(FriendActivityViewModel.UnreadCount))
+                UnreadChanged?.Invoke(this, UnreadCount);
+
             if (e.PropertyName != nameof(FriendActivityViewModel.SelectedTab))
                 return;
 
@@ -81,6 +93,46 @@ namespace Froststrap.UI.Elements.Overlay.Controls
         }
 
         private void OnMessagesAdded(object? sender, EventArgs e) => ScrollToEnd();
+
+        private async void MessageScroller_ScrollChanged(object? sender, ScrollChangedEventArgs e)
+        {
+            if (_viewModel is null || _loadingHistory || e.ExtentDelta.Y <= 0)
+                return;
+
+            if (MessageScroller.Offset.Y > 24)
+                return;
+
+            double before = MessageScroller.Extent.Height;
+
+            _loadingHistory = true;
+
+            bool loaded;
+
+            try
+            {
+                loaded = await _viewModel.LoadOlderHistoryAsync();
+            }
+            catch
+            {
+                loaded = false;
+            }
+
+            if (!loaded)
+            {
+                _loadingHistory = false;
+                return;
+            }
+
+            Dispatcher.UIThread.Post(() =>
+            {
+                double delta = MessageScroller.Extent.Height - before;
+
+                if (delta > 0)
+                    MessageScroller.Offset = new Vector(MessageScroller.Offset.X, MessageScroller.Offset.Y + delta);
+
+                _loadingHistory = false;
+            }, DispatcherPriority.Loaded);
+        }
 
         private void ScrollToEnd() =>
             Dispatcher.UIThread.Post(MessageScroller.ScrollToEnd, DispatcherPriority.Loaded);

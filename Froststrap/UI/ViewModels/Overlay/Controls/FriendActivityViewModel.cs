@@ -45,6 +45,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
     {
         private const int DetailsBatch = 100;
         private const int DetailConcurrency = 3;
+        private const int HistoryPrefetch = 25;
         private const string OneToOne = "one_to_one";
 
         private static readonly TimeSpan GroupGap = TimeSpan.FromMinutes(5);
@@ -70,6 +71,9 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
         private bool _loaded;
         private bool _requested;
         private bool _disposed;
+        private int _unreadCount = -1;
+
+        public int UnreadCount => _people.Values.Count(x => x.Unread > 0) + _groups.Count(x => x.Unread > 0);
 
         public BulkObservableCollection<object> Rows { get; } = [];
 
@@ -108,6 +112,9 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                 OnPropertyChanged(nameof(SelectedTab));
                 OnPropertyChanged(nameof(HasTab));
                 OnPropertyChanged(nameof(ShowPlaceholder));
+                OnPropertyChanged(nameof(ShowTabLoading));
+
+                RefreshUnread();
             }
         }
 
@@ -151,7 +158,9 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
         public bool HasTab => _selectedTab is not null;
 
-        public bool ShowPlaceholder => _selectedTab is null;
+        public bool ShowTabLoading => _selectedTab?.IsLoading == true;
+
+        public bool ShowPlaceholder => _selectedTab is null && _loaded;
 
         private string _searchText = String.Empty;
         public string SearchText
@@ -287,6 +296,8 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             _myAvatar = null;
             _loaded = false;
 
+            OnPropertyChanged(nameof(ShowPlaceholder));
+
             _people.Clear();
             _groups.Clear();
 
@@ -294,6 +305,8 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             Rows.ReplaceAll([]);
 
             SelectedTab = null;
+
+            RefreshUnread();
 
             MyName = String.Empty;
             MyHandle = String.Empty;
@@ -349,7 +362,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                     ? Task.FromResult(new List<Conversation>())
                     : RobloxParty.GetAllConversations();
 
-                if (_presence is not null && !_presence.HasLooked)
+                if (_presence is not null)
                 {
                     try
                     {
@@ -363,6 +376,20 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                 }
 
                 var ids = new HashSet<long>(_presence?.FriendIds ?? []) { _me.Id };
+
+                if (ids.Count == 1)
+                {
+                    try
+                    {
+                        foreach (long id in await People.FetchAllFriendIdsAsync(_me.Id))
+                            ids.Add(id);
+                    }
+                    catch (Exception ex)
+                    {
+                        App.Logger.Warn("Failed to load the friend list, continuing with conversations");
+                        App.Logger.Error(ex);
+                    }
+                }
 
                 Task<Dictionary<long, UserDetails>> detailsTask = FetchDetailsAsync([.. ids]);
 
@@ -456,6 +483,10 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
                 _loaded = true;
 
+                OnPropertyChanged(nameof(ShowPlaceholder));
+
+                RefreshUnread();
+
                 SetListStatus(null);
 
                 ApplyPresence(null);
@@ -471,6 +502,8 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             finally
             {
                 _loading = false;
+
+                OnPropertyChanged(nameof(ShowPlaceholder));
             }
         }
 
@@ -664,6 +697,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                         CloseTab(tab);
 
                     Rebuild();
+                    RefreshUnread();
 
                     App.Logger.Info($"Friend activity: {(byMe ? "removed" : "lost")} friend {other}");
                     break;
@@ -718,6 +752,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                 if (tab.Friend.ConversationId == channelId)
                 {
                     tab.Friend.Unread = 0;
+                    RefreshUnread();
                     return;
                 }
             }
@@ -727,6 +762,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                 if (friend.ConversationId == channelId)
                 {
                     friend.Unread = 0;
+                    RefreshUnread();
                     return;
                 }
             }
@@ -736,6 +772,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                 if (group.ConversationId == channelId)
                 {
                     group.Unread = 0;
+                    RefreshUnread();
                     return;
                 }
             }
@@ -872,6 +909,18 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             OnPropertyChanged(nameof(ShowListStatus));
         }
 
+        private void RefreshUnread()
+        {
+            int count = _people.Values.Count(x => x.Unread > 0) + _groups.Count(x => x.Unread > 0);
+
+            if (count == _unreadCount)
+                return;
+
+            _unreadCount = count;
+
+            OnPropertyChanged(nameof(UnreadCount));
+        }
+
         private async Task OpenChatAsync(ChatFriend? friend)
         {
             if (friend is null)
@@ -921,7 +970,14 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                 if (page is null || _disposed)
                     return;
 
+                if (!tab.Loaded)
+                {
+                    tab.NextCursor = page.NextCursor ?? String.Empty;
+                    tab.HasMoreHistory = !String.IsNullOrEmpty(tab.NextCursor);
+                }
+
                 bool added = false;
+                int loadedCount = 0;
                 DateTime? latest = null;
 
                 foreach (UserMessage message in Enumerable.Reverse(page.Messages))
@@ -943,6 +999,50 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                         latest = at;
 
                     added = true;
+                    loadedCount++;
+                }
+
+                if (!tab.Loaded)
+                {
+                    tab.IsLoadingHistory = true;
+
+                    try
+                    {
+                        while (loadedCount < HistoryPrefetch && !String.IsNullOrEmpty(tab.NextCursor))
+                        {
+                            UserMessagesPage? olderPage = await RobloxParty.GetMessages(tab.Friend.ConversationId, tab.NextCursor);
+
+                            if (olderPage is null || _disposed)
+                                break;
+
+                            tab.NextCursor = olderPage.NextCursor ?? String.Empty;
+                            tab.HasMoreHistory = !String.IsNullOrEmpty(tab.NextCursor);
+
+                            var older = new List<UserMessage>();
+
+                            foreach (UserMessage message in Enumerable.Reverse(olderPage.Messages))
+                            {
+                                if (String.IsNullOrEmpty(message.Id) || !tab.KnownMessages.Add(message.Id))
+                                    continue;
+
+                                if (!String.IsNullOrEmpty(message.Visibility) && message.Visibility != "visible")
+                                    continue;
+
+                                older.Add(message);
+                                loadedCount++;
+                            }
+
+                            if (older.Count == 0)
+                                break;
+
+                            PrependMessages(tab, older);
+                            added = true;
+                        }
+                    }
+                    finally
+                    {
+                        tab.IsLoadingHistory = false;
+                    }
                 }
 
                 tab.Loaded = true;
@@ -967,20 +1067,127 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             }
         }
 
+        public async Task<bool> LoadOlderHistoryAsync()
+        {
+            ChatTab? tab = _selectedTab;
+
+            if (tab is null || _party is null || _disposed
+                || tab.IsLoadingHistory || !tab.HasMoreHistory
+                || String.IsNullOrEmpty(tab.Friend.ConversationId)
+                || String.IsNullOrEmpty(tab.NextCursor))
+            {
+                return false;
+            }
+
+            tab.IsLoadingHistory = true;
+
+            try
+            {
+                UserMessagesPage? page = await RobloxParty.GetMessages(tab.Friend.ConversationId, tab.NextCursor);
+
+                if (page is null || _disposed || tab != _selectedTab)
+                    return false;
+
+                var older = new List<UserMessage>();
+
+                foreach (UserMessage message in Enumerable.Reverse(page.Messages))
+                {
+                    if (String.IsNullOrEmpty(message.Id) || !tab.KnownMessages.Add(message.Id))
+                        continue;
+
+                    if (!String.IsNullOrEmpty(message.Visibility) && message.Visibility != "visible")
+                        continue;
+
+                    older.Add(message);
+                }
+
+                tab.NextCursor = page.NextCursor ?? String.Empty;
+                tab.HasMoreHistory = !String.IsNullOrEmpty(tab.NextCursor);
+
+                if (older.Count == 0)
+                    return false;
+
+                PrependMessages(tab, older);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error("Failed to load older messages");
+                App.Logger.Error(ex);
+                return false;
+            }
+            finally
+            {
+                tab.IsLoadingHistory = false;
+            }
+        }
+
+        private void PrependMessages(ChatTab tab, List<UserMessage> messagesOldestFirst)
+        {
+            var rows = new List<object>();
+            DateTime? divider = null;
+
+            foreach (UserMessage message in messagesOldestFirst)
+            {
+                long sender = message.Sender ?? UserMessage.SystemSenderId;
+
+                if (sender == UserMessage.SystemSenderId)
+                {
+                    AddDividerTo(rows, message.CreatedAt, ref divider);
+                    rows.Add(new ChatSystemLine(message.Content));
+                }
+                else
+                {
+                    AddLineTo(rows, tab, sender, message.Content, message.CreatedAt, ref divider);
+                }
+            }
+
+            if (rows.Count == 0)
+                return;
+
+            ChatDayDivider? addedDivider = rows.OfType<ChatDayDivider>().LastOrDefault();
+
+            if (addedDivider is not null
+                && tab.Rows.Count > 0
+                && tab.Rows[0] is ChatDayDivider existing
+                && existing.Day == addedDivider.Day)
+            {
+                tab.Rows.RemoveAt(0);
+            }
+
+            for (int i = rows.Count - 1; i >= 0; i--)
+                tab.Rows.Insert(0, rows[i]);
+        }
+
         private static void AddSystemLine(ChatTab tab, string text, DateTime? at)
         {
-            AddDivider(tab, at);
+            DateTime? divider = tab.LastDividerDay;
 
+            AddDividerTo(tab.Rows, at, ref divider);
+
+            tab.LastDividerDay = divider;
             tab.Rows.Add(new ChatSystemLine(text));
         }
 
         private ChatLine AddLine(ChatTab tab, long sender, string text, DateTime? at)
         {
+            DateTime? divider = tab.LastDividerDay;
+
+            ChatLine line = AddLineTo(tab.Rows, tab, sender, text, at, ref divider);
+
+            tab.LastDividerDay = divider;
+
+            return line;
+        }
+
+        private ChatLine AddLineTo(IList<object> rows, ChatTab tab, long sender, string text, DateTime? at, ref DateTime? lastDividerDay)
+        {
             bool mine = _me is not null && sender == _me.Id;
 
-            AddDivider(tab, at);
+            AddDividerTo(rows, at, ref lastDividerDay);
 
-            var group = tab.Rows.LastOrDefault() as ChatMessageGroup;
+            var group = rows.LastOrDefault() as ChatMessageGroup;
 
             bool continues = group is not null
                 && group.SenderId == sender
@@ -999,7 +1206,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                     StartedAt = at
                 };
 
-                tab.Rows.Add(group);
+                rows.Add(group);
 
                 _ = group.LoadAvatarAsync();
             }
@@ -1013,19 +1220,19 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             return line;
         }
 
-        private static void AddDivider(ChatTab tab, DateTime? at)
+        private static void AddDividerTo(IList<object> rows, DateTime? at, ref DateTime? lastDividerDay)
         {
             if (at is not DateTime time)
                 return;
 
             DateTime day = time.ToLocalTime().Date;
 
-            if (tab.LastDividerDay == day)
+            if (lastDividerDay == day)
                 return;
 
-            tab.LastDividerDay = day;
+            lastDividerDay = day;
 
-            tab.Rows.Add(new ChatDayDivider(day, DayText(day)));
+            rows.Add(new ChatDayDivider(day, DayText(day)));
         }
 
         private static string DayText(DateTime day)
@@ -1126,6 +1333,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                         tab.Friend.Unread++;
 
                     Rebuild();
+                    RefreshUnread();
 
                     return;
                 }
@@ -1159,6 +1367,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                     owner.LastMessageAt = DateTime.UtcNow;
 
                     Rebuild();
+                    RefreshUnread();
                 }
                 else
                 {

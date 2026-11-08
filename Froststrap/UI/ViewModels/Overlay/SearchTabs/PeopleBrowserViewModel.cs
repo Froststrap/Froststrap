@@ -141,6 +141,7 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
                 _debounce.Stop();
                 _searchGeneration++;
                 _showingFriends = true;
+                IsBusy = _loadingFriends;
                 ShowCachedFriends();
                 return;
             }
@@ -234,6 +235,34 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
             _visibleCount = Math.Min(_visibleCount, source.Count);
 
             People.ReplaceAll([.. source.Take(_visibleCount)]);
+        }
+
+        private void ResortVisible(List<SearchPerson> source)
+        {
+            _visibleSource = source;
+
+            int count = Math.Min(_visibleCount, source.Count);
+            _visibleCount = count;
+
+            List<SearchPerson> desired = source.Take(count).ToList();
+            var desiredSet = new HashSet<SearchPerson>(desired);
+
+            for (int i = People.Count - 1; i >= 0; i--)
+            {
+                if (!desiredSet.Contains(People[i]))
+                    People.RemoveAt(i);
+            }
+
+            for (int i = 0; i < desired.Count; i++)
+            {
+                SearchPerson person = desired[i];
+                int current = People.IndexOf(person);
+
+                if (current < 0)
+                    People.Insert(i, person);
+                else if (current != i)
+                    People.Move(current, i);
+            }
         }
 
         private void OnAccountChanged() => Dispatcher.UIThread.Post(() =>
@@ -484,20 +513,20 @@ namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
 
             if (_showingFriends && String.IsNullOrWhiteSpace(_query))
             {
-                long selectedId = SelectedIndex >= 0 && SelectedIndex < People.Count
-                    ? People[SelectedIndex].UserId
-                    : 0;
+                SearchPerson? selected = SelectedIndex >= 0 && SelectedIndex < People.Count
+                    ? People[SelectedIndex]
+                    : null;
 
-                ResliceVisible(_friendsCache);
+                ResortVisible(_friendsCache);
 
-                int index = selectedId != 0
-                    ? _friendsCache.FindIndex(person => person.UserId == selectedId)
-                    : -1;
+                int index = selected is not null ? People.IndexOf(selected) : -1;
 
-                if (index < 0 || index >= People.Count)
+                if (index < 0)
                     index = People.Count > 0 ? 0 : -1;
 
                 SelectedIndex = index;
+
+                Refreshed();
             }
         }
 

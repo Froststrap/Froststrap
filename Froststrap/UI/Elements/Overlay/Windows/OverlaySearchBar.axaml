@@ -297,7 +297,6 @@ SPDX-License-Identifier: MPL-2.0
                                                         <ui:FAProgressRing Width="32" Height="32"
                                                                            Margin="8,0"
                                                                            VerticalAlignment="Center"
-                                                                           Foreground="{DynamicResource SystemAccentColor}"
                                                                            IsIndeterminate="True"
                                                                            IsActive="{Binding IsJoiningRegion}"
                                                                            IsVisible="{Binding IsJoiningRegion}" />
@@ -323,8 +322,7 @@ SPDX-License-Identifier: MPL-2.0
                                                        VerticalAlignment="Center"
                                                        IsIndeterminate="True"
                                                        IsActive="{Binding IsGamesLoading}"
-                                                       IsVisible="{Binding IsGamesLoading}"
-                                                       Foreground="{DynamicResource SystemAccentColor}" />
+                                                       IsVisible="{Binding IsGamesLoading}" />
 
                                     <TextBlock Grid.Row="1"
                                                Text="{Binding EmptyText}"

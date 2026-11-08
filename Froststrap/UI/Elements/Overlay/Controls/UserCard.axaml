@@ -260,7 +260,7 @@ SPDX-License-Identifier: MPL-2.0
                                     VerticalAlignment="Center"
                                     ClipToBounds="True"
                                     CornerRadius="2"
-                                    IsVisible="{Binding HasCurrentRegion}">
+                                    IsVisible="{Binding HasRegionFlag}">
 								<Image Source="{Binding RegionFlagBitmap}"
                                        Stretch="Fill"
                                        RenderOptions.BitmapInterpolationMode="HighQuality" />
@@ -270,6 +270,7 @@ SPDX-License-Identifier: MPL-2.0
                                        Text="{Binding CurrentRegion}"
                                        FontSize="12"
                                        MinWidth="75"
+                                       MaxWidth="75"
                                        Margin="4,0,0,0"
                                        VerticalAlignment="Center"
                                        TextTrimming="CharacterEllipsis"

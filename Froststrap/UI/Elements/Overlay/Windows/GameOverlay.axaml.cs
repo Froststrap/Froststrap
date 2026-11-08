@@ -92,6 +92,9 @@ namespace Froststrap.UI.Elements.Overlay
                 _overlay.HotkeyPressed += OnHotkeyPressed;
 
             ChatWindow.Attach(overlay);
+            ChatWindow.UnreadChanged += OnChatUnreadChanged;
+            _viewModel.UnreadConversations = ChatWindow.UnreadCount;
+
             BadgeTracker.Attach(overlay?.ActivityWatcher);
             BadgeTracker.BadgeEarned += OnBadgeEarned;
             ServerBrowser.Attach(overlay?.ActivityWatcher);
@@ -99,6 +102,9 @@ namespace Froststrap.UI.Elements.Overlay
         }
 
         private void OnPanelOpened(object? sender, OverlayPanelKind kind) => Place(kind);
+
+        private void OnChatUnreadChanged(object? sender, int count) =>
+            _viewModel.UnreadConversations = count;
 
         private void OnBadgeEarned(object? sender, Badge badge)
         {
@@ -1335,6 +1341,8 @@ namespace Froststrap.UI.Elements.Overlay
             OverlayHotkey.SuspendedChanged -= OnHotkeySuspended;
 
             UnregisterToggleHotkey();
+
+            ChatWindow.UnreadChanged -= OnChatUnreadChanged;
 
             _viewModel.PanelOpened -= OnPanelOpened;
             _viewModel.Dispose();

@@ -76,7 +76,7 @@ namespace Froststrap.UI.Elements.Overlay
             _prepared = true;
             _host = host;
 
-            OverlaySearchBarViewModel.Attach(host);
+            _viewModel.Attach(host);
             _viewModel.Prewarm();
 
             Opacity = 0;

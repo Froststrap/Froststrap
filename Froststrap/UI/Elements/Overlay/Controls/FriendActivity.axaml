@@ -9,9 +9,10 @@
     xmlns:models="using:Froststrap.Models.Overlay"
     xmlns:resources="using:Froststrap.Resources"
     xmlns:ui="using:FluentAvalonia.UI.Controls"
+    xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Overlay.Controls"
+    x:DataType="vm:FriendActivityViewModel"
     d:DesignHeight="580"
     d:DesignWidth="860"
-    x:CompileBindings="False"
     mc:Ignorable="d">
 
 	<UserControl.Resources>
@@ -188,13 +189,13 @@
 	</UserControl.Styles>
 
 	<UserControl.DataTemplates>
-		<DataTemplate DataType="models:FriendListHeader">
+		<DataTemplate DataType="models:FriendListHeader" x:DataType="models:FriendListHeader">
 			<Button
                 Margin="0,8,0,2"
                 Padding="6,4"
                 HorizontalAlignment="Stretch"
                 Classes="flat"
-                Command="{Binding $parent[ItemsControl].DataContext.ToggleSectionCommand}"
+                Command="{Binding $parent[ItemsControl].((vm:FriendActivityViewModel)DataContext).ToggleSectionCommand}"
                 CommandParameter="{Binding}">
 				<StackPanel Orientation="Horizontal">
 					<Panel
@@ -228,7 +229,7 @@
 			</Button>
 		</DataTemplate>
 
-		<DataTemplate DataType="models:ChatFriend">
+		<DataTemplate DataType="models:ChatFriend" x:DataType="models:ChatFriend">
 			<Button
                 HorizontalAlignment="Stretch"
                 Classes="flat presence"
@@ -236,7 +237,7 @@
                 Classes.ingame="{Binding IsInGame}"
                 Classes.online="{Binding IsOnline}"
                 Classes.studio="{Binding IsInStudio}"
-                Command="{Binding $parent[ItemsControl].DataContext.OpenChatCommand}"
+                Command="{Binding $parent[ItemsControl].((vm:FriendActivityViewModel)DataContext).OpenChatCommand}"
                 CommandParameter="{Binding}">
 				<Grid ColumnDefinitions="Auto,*,Auto">
 					<Border
@@ -305,7 +306,7 @@
 			</Button>
 		</DataTemplate>
 
-		<DataTemplate DataType="models:ChatDayDivider">
+		<DataTemplate DataType="models:ChatDayDivider" x:DataType="models:ChatDayDivider">
 			<Grid Margin="0,14,0,6" ColumnDefinitions="*,Auto,*">
 				<Rectangle
                     Grid.Column="0"
@@ -326,7 +327,7 @@
 			</Grid>
 		</DataTemplate>
 
-		<DataTemplate DataType="models:ChatSystemLine">
+		<DataTemplate DataType="models:ChatSystemLine" x:DataType="models:ChatSystemLine">
 			<TextBlock
                 Margin="46,4,0,4"
                 FontSize="12"
@@ -336,7 +337,7 @@
                 TextWrapping="Wrap" />
 		</DataTemplate>
 
-		<DataTemplate DataType="models:ChatMessageGroup">
+		<DataTemplate DataType="models:ChatMessageGroup" x:DataType="models:ChatMessageGroup">
 			<Grid
                 Margin="0,6,0,4"
                 Classes="messageGroup"
@@ -373,7 +374,7 @@
 
 					<ItemsControl Focusable="False" ItemsSource="{Binding Lines}">
 						<ItemsControl.ItemTemplate>
-							<DataTemplate>
+							<DataTemplate x:DataType="models:ChatLine">
 								<StackPanel
                                     Margin="0,1"
                                     Classes="line"
@@ -502,11 +503,11 @@
                             Padding="8">
 							<ItemsControl ItemsSource="{Binding SortOptions}">
 								<ItemsControl.ItemTemplate>
-									<DataTemplate>
+									<DataTemplate x:DataType="vm:FriendSortOption">
 										<ToggleButton
                                             Classes="sortOption"
                                             IsChecked="{Binding IsSelected, Mode=OneWay}"
-                                            Command="{Binding $parent[ItemsControl].DataContext.SetSortCommand}"
+                                            Command="{Binding $parent[ItemsControl].((vm:FriendActivityViewModel)DataContext).SetSortCommand}"
                                             CommandParameter="{Binding}">
 											<Grid ColumnDefinitions="*,Auto">
 												<TextBlock
@@ -607,7 +608,7 @@
 								</ItemsPanelTemplate>
 							</ItemsControl.ItemsPanel>
 							<ItemsControl.ItemTemplate>
-								<DataTemplate>
+								<DataTemplate x:DataType="models:ChatTab">
 									<Border
                                         Height="40"
                                         Classes="tab"
@@ -617,7 +618,7 @@
                                                 Height="38"
                                                 Padding="12,0,4,0"
                                                 Classes="flat noHover"
-                                                Command="{Binding $parent[ItemsControl].DataContext.SelectTabCommand}"
+                                                Command="{Binding $parent[ItemsControl].((vm:FriendActivityViewModel)DataContext).SelectTabCommand}"
                                                 CommandParameter="{Binding}">
 												<StackPanel Orientation="Horizontal">
 													<Border
@@ -656,7 +657,7 @@
                                                 Padding="0"
                                                 VerticalAlignment="Center"
                                                 Classes="flat"
-                                                Command="{Binding $parent[ItemsControl].DataContext.CloseTabCommand}"
+                                                Command="{Binding $parent[ItemsControl].((vm:FriendActivityViewModel)DataContext).CloseTabCommand}"
                                                 CommandParameter="{Binding}"
                                                 ToolTip.Tip="{x:Static resources:Strings.Menu_Overlay_Messages_CloseTab}">
 												<ic:Lucide
@@ -679,6 +680,7 @@
                     Margin="16,12,16,8"
                     DataContext="{Binding SelectedTab.Friend}">
 					<Grid
+                        x:DataType="models:ChatFriend"
                         Classes="presence"
                         Classes.group="{Binding IsGroup}"
                         Classes.ingame="{Binding IsInGame}"
@@ -744,14 +746,14 @@
 							<controls:IconButton
                                 Margin="12,0,0,0"
                                 Classes="Success"
-                                Command="{Binding $parent[UserControl].DataContext.JoinCommand}"
+                                Command="{Binding $parent[UserControl].((vm:FriendActivityViewModel)DataContext).JoinCommand}"
                                 Content="{x:Static resources:Strings.Menu_Overlay_Messages_Join}"
                                 Icon="Play"
                                 IsFilled="True"
                                 IsVisible="{Binding CanJoin}" />
 							<controls:IconButton
                                 Margin="12,0,0,0"
-                                Command="{Binding $parent[UserControl].DataContext.JoinCommand}"
+                                Command="{Binding $parent[UserControl].((vm:FriendActivityViewModel)DataContext).JoinCommand}"
                                 Content="{x:Static resources:Strings.Menu_Overlay_Messages_ViewGame}"
                                 Icon="ExternalLink"
                                 IsVisible="{Binding CanViewGame}" />
@@ -784,7 +786,7 @@
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         IsIndeterminate="True"
-                        IsVisible="{Binding SelectedTab.IsLoading}" />
+                        IsVisible="{Binding ShowTabLoading}" />
 				</Grid>
 
 				<Grid

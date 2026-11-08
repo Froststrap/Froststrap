@@ -158,9 +158,29 @@ SPDX-License-Identifier: MPL-2.0
                                   IsChecked="{Binding IsMessagesVisible, Mode=OneWay}"
                                   Command="{Binding TogglePanelCommand}"
                                   CommandParameter="Messages">
-                        <ic:Lucide Icon="MessageSquareMore"
-                                   Width="16" Height="16"
-                                   StrokeBrush="{DynamicResource TextFillColorSecondaryBrush}" />
+                        <Grid Width="20" Height="20">
+                            <ic:Lucide Icon="MessageSquareMore"
+                                       Width="16" Height="16"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       StrokeBrush="{DynamicResource TextFillColorSecondaryBrush}" />
+                            <Border MinWidth="15"
+                                    Height="15"
+                                    Margin="0,-7.5,-8.5,0"
+                                    Padding="3,0"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Top"
+                                    Background="#FF3B30"
+                                    CornerRadius="7.5"
+                                    IsVisible="{Binding HasUnreadConversations}">
+                                <TextBlock HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           FontSize="9"
+                                           FontWeight="Bold"
+                                           Foreground="White"
+                                           Text="{Binding UnreadConversationsText}" />
+                            </Border>
+                        </Grid>
                     </ToggleButton>
 
                     <ToggleButton Classes="panelToggle"

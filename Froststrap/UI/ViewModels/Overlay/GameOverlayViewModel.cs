@@ -181,7 +181,7 @@ namespace Froststrap.UI.ViewModels.Overlay
         public string Game
         {
             get => _game;
-            set => SetProperty(ref _game, value);
+            set => SetProperty(ref _game, value?.Trim() ?? String.Empty);
         }
 
         private string _timePlayed = String.Empty;
@@ -203,7 +203,17 @@ namespace Froststrap.UI.ViewModels.Overlay
                 OnPropertyChanged(nameof(HasCurrentRegion));
                 OnPropertyChanged(nameof(CurrentRegionFlagUrl));
 
-                _ = ImageLoader.LoadAndSetAsync(CurrentRegionFlagUrl, 40, b => RegionFlagBitmap = b);
+                string? flagUrl = CurrentRegionFlagUrl;
+
+                _ = ImageLoader.LoadAndSetAsync(
+                    flagUrl,
+                    40,
+                    b =>
+                    {
+                        if (CurrentRegionFlagUrl == flagUrl)
+                            RegionFlagBitmap = b;
+                    },
+                    highPriority: true);
             }
         }
 
@@ -228,8 +238,14 @@ namespace Froststrap.UI.ViewModels.Overlay
         public Bitmap? RegionFlagBitmap
         {
             get => _regionFlagBitmap;
-            private set => SetProperty(ref _regionFlagBitmap, value);
+            private set
+            {
+                if (SetProperty(ref _regionFlagBitmap, value))
+                    OnPropertyChanged(nameof(HasRegionFlag));
+            }
         }
+
+        public bool HasRegionFlag => _regionFlagBitmap is not null;
 
         private bool _isInGame;
         public bool IsInGame
@@ -237,6 +253,26 @@ namespace Froststrap.UI.ViewModels.Overlay
             get => _isInGame;
             set => SetProperty(ref _isInGame, value);
         }
+
+        private int _unreadConversations;
+        public int UnreadConversations
+        {
+            get => _unreadConversations;
+            set
+            {
+                if (!SetProperty(ref _unreadConversations, value))
+                    return;
+
+                OnPropertyChanged(nameof(HasUnreadConversations));
+                OnPropertyChanged(nameof(UnreadConversationsText));
+            }
+        }
+
+        public bool HasUnreadConversations => _unreadConversations > 0;
+
+        public string UnreadConversationsText => _unreadConversations > 99
+            ? "99+"
+            : _unreadConversations.ToString(CultureInfo.CurrentCulture);
 
         #endregion
 

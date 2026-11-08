@@ -8,9 +8,11 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:resources="using:Froststrap.Resources"
     xmlns:ui="using:FluentAvalonia.UI.Controls"
+    xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Overlay.Controls"
+    xmlns:models="clr-namespace:Froststrap.Models.Overlay"
+    x:DataType="vm:BadgeTrackerViewModel"
     d:DesignHeight="560"
     d:DesignWidth="820"
-    x:CompileBindings="False"
     mc:Ignorable="d">
 
     <Grid RowDefinitions="Auto,Auto,*">
@@ -18,67 +20,48 @@
         <Grid
             Grid.Row="0"
             MinHeight="32"
-            Margin="0,0,0,8">
+            Margin="0,0,0,8"
+            ColumnDefinitions="*,Auto">
 
-            <Grid ColumnDefinitions="*,Auto" IsVisible="{Binding ShowSummary}">
-                <TextBlock
-                    Grid.Column="0"
-                    VerticalAlignment="Center"
-                    FontSize="13"
-                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                    Text="{Binding HeaderText}"
-                    TextTrimming="CharacterEllipsis" />
+            <TextBlock
+                Grid.Column="0"
+                VerticalAlignment="Center"
+                FontSize="13"
+                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                Text="{Binding DisplayText}"
+                TextTrimming="CharacterEllipsis"
+                TextWrapping="Wrap" />
+
+            <StackPanel
+                Grid.Column="1"
+                Margin="12,0,0,0"
+                VerticalAlignment="Center"
+                Orientation="Horizontal">
 
                 <controls:IconButton
-                    Grid.Column="1"
                     VerticalAlignment="Center"
                     Command="{Binding RefreshCommand}"
                     Content="{x:Static resources:Strings.Menu_Overlay_Refresh}"
                     Icon="RefreshCw"
-                    IsEnabled="{Binding CanRefresh}" />
-            </Grid>
-
-            <Grid ColumnDefinitions="*,Auto,Auto" IsVisible="{Binding IsConfirming}">
-                <TextBlock
-                    Grid.Column="0"
-                    VerticalAlignment="Center"
-                    FontSize="13"
-                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                    Text="{Binding ConfirmText}"
-                    TextWrapping="Wrap" />
+                    IsEnabled="{Binding CanRefresh}"
+                    IsVisible="{Binding ShowSummary}" />
 
                 <controls:IconButton
-                    Grid.Column="1"
-                    Margin="12,0,0,0"
+                    Margin="8,0,0,0"
                     VerticalAlignment="Center"
                     Command="{Binding CancelRemoveCommand}"
                     Content="{x:Static resources:Strings.Common_Cancel}"
-                    Icon="X" />
+                    Icon="X"
+                    IsVisible="{Binding IsConfirming}" />
 
                 <controls:IconButton
-                    Grid.Column="2"
                     Classes="Danger"
                     Margin="8,0,0,0"
                     VerticalAlignment="Center"
                     Command="{Binding ConfirmRemoveCommand}"
                     Content="{x:Static resources:Strings.Menu_Overlay_Badges_Remove}"
-                    Icon="Trash" />
-            </Grid>
-
-            <StackPanel
-                Orientation="Horizontal"
-                VerticalAlignment="Center"
-                IsVisible="{Binding IsRemoving}">
-                <ui:FAProgressRing
-                    Width="16"
-                    Height="16"
-                    Margin="0,0,10,0"
-                    IsIndeterminate="True" />
-                <TextBlock
-                    VerticalAlignment="Center"
-                    FontSize="13"
-                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                    Text="{Binding RemovingText}" />
+                    Icon="Trash"
+                    IsVisible="{Binding IsConfirming}" />
             </StackPanel>
         </Grid>
 
@@ -96,7 +79,7 @@
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 IsIndeterminate="True"
-                IsVisible="{Binding IsBusy}" />
+                IsVisible="{Binding ShowProgressRing}" />
 
             <TextBlock
                 MaxWidth="320"
@@ -126,7 +109,7 @@
                 </ItemsControl.ItemsPanel>
 
                 <ItemsControl.ItemTemplate>
-                    <DataTemplate>
+                    <DataTemplate x:DataType="models:Badge">
                         <Border
                             Margin="0,0,0,6"
                             Padding="10"
@@ -206,8 +189,7 @@
                                             Width="12"
                                             Height="12"
                                             Margin="0,0,6,0"
-                                            Icon="Trophy"
-                                            StrokeBrush="{Binding AwardedIconBrush}" />
+                                            Icon="Trophy" />
                                         <TextBlock
                                             VerticalAlignment="Center"
                                             FontSize="11"
@@ -224,11 +206,11 @@
                                     Margin="8,0,0,0"
                                     Padding="0"
                                     VerticalAlignment="Center"
-                                    Command="{Binding $parent[ItemsControl].DataContext.RemoveCommand}"
+                                    Command="{Binding $parent[ItemsControl].((vm:BadgeTrackerViewModel)DataContext).RemoveCommand}"
                                     CommandParameter="{Binding}"
                                     Icon="Trash"
                                     IconSize="14"
-                                    IsEnabled="{Binding $parent[ItemsControl].DataContext.CanEdit}"
+                                    IsEnabled="{Binding $parent[ItemsControl].((vm:BadgeTrackerViewModel)DataContext).CanEdit}"
                                     IsVisible="{Binding CanRemove}"
                                     ToolTip.Tip="{x:Static resources:Strings.Menu_Overlay_Badges_RemoveTooltip}" />
                             </Grid>

@@ -44,10 +44,13 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
                 _isBusy = value;
                 OnPropertyChanged(nameof(IsBusy));
+                OnPropertyChanged(nameof(ShowProgressRing));
                 OnPropertyChanged(nameof(CanRefresh));
                 OnPropertyChanged(nameof(ShowEmptyState));
             }
         }
+
+        public bool ShowProgressRing => IsBusy || _isRemoving;
 
         public bool CanRefresh => !IsBusy && !_isRemoving;
 
@@ -75,6 +78,8 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
         }
 
         public string HeaderText => _flash.Text ?? CompletionText;
+
+        public string DisplayText => IsRemoving ? RemovingText : IsConfirming ? ConfirmText : HeaderText;
 
         public bool IsConfirming => _pending is not null && !_isRemoving;
 
@@ -125,6 +130,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             _flash = new FlashMessage(TimeSpan.FromSeconds(4), () =>
             {
                 OnPropertyChanged(nameof(HeaderText));
+                OnPropertyChanged(nameof(DisplayText));
             });
 
             App.Cookies.WatchAccount(this, static vm => vm.OnAccountChanged());
@@ -293,6 +299,8 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                 _isRemoving = false;
                 _pending = null;
 
+                RemovalChanged();
+
                 Show(Badges.ToList());
 
                 Refreshed();
@@ -310,6 +318,8 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                 _isRemoving = false;
                 _pending = null;
 
+                RemovalChanged();
+
                 Refreshed();
 
                 _flash.Show(String.Format(Locale.CurrentCulture, Strings.Menu_Overlay_Badges_RemoveFailed, 1, 1));
@@ -319,8 +329,8 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
         private void Show(IEnumerable<Badge> badges)
         {
             var ordered = badges
-                .OrderBy(x => x.Awarded)
-                .ThenByDescending(x => x.WinRatePercentage)
+                .OrderByDescending(x => x.Awarded)
+                .ThenByDescending(x => x.AwardedCount)
                 .ToList();
 
             Badges.ReplaceAll(ordered);
@@ -347,6 +357,8 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             OnPropertyChanged(nameof(ConfirmText));
             OnPropertyChanged(nameof(IsRemoving));
             OnPropertyChanged(nameof(RemovingText));
+            OnPropertyChanged(nameof(DisplayText));
+            OnPropertyChanged(nameof(ShowProgressRing));
             OnPropertyChanged(nameof(CanEdit));
             OnPropertyChanged(nameof(CanRefresh));
             OnPropertyChanged(nameof(ShowSummary));
@@ -358,6 +370,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             OnPropertyChanged(nameof(CompletionPercentage));
             OnPropertyChanged(nameof(CompletionText));
             OnPropertyChanged(nameof(HeaderText));
+            OnPropertyChanged(nameof(DisplayText));
             OnPropertyChanged(nameof(ShowEmptyState));
             OnPropertyChanged(nameof(EmptyText));
 

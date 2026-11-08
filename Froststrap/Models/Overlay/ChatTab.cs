@@ -15,6 +15,12 @@ namespace Froststrap.Models.Overlay
 
         public DateTime? LastDividerDay { get; set; }
 
+        public string NextCursor { get; set; } = String.Empty;
+
+        public bool HasMoreHistory { get; set; }
+
+        public bool IsLoadingHistory { get; set; }
+
         public ChatTab()
         {
             Rows.CollectionChanged += (_, _) => OnPropertyChanged(nameof(ShowEmpty));
