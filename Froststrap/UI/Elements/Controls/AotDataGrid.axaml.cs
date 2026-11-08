@@ -8,8 +8,11 @@ using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Layout;
+using Avalonia.Controls.Primitives;
+using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.VisualTree;
 using System.Collections;
+using LucideAvalonia.Enum;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 
@@ -411,13 +414,17 @@ namespace Froststrap.UI.Elements.Controls
             };
             content.Children.Add(headerContent);
 
-            var arrow = new TextBlock
+            var arrow = new LucideAvalonia.Lucide
             {
-                Text = isSorted ? (_sortDescending ? "▼" : "▲") : string.Empty,
-                FontSize = 10,
+                Icon = _sortDescending ? LucideIconNames.ChevronDown : LucideIconNames.ChevronUp,
+                Width = 10,
+                Height = 10,
                 Margin = new Thickness(6, 0, 0, 0),
-                VerticalAlignment = VerticalAlignment.Center
+                VerticalAlignment = VerticalAlignment.Center,
+                IsVisible = isSorted
             };
+            arrow.Bind(TemplatedControl.ForegroundProperty,
+                new DynamicResourceExtension("TextFillColorPrimaryBrush"));
             Grid.SetColumn(arrow, 1);
             content.Children.Add(arrow);
 
