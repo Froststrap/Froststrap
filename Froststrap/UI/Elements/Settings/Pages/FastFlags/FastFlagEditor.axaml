@@ -89,41 +89,59 @@ SPDX-License-Identifier: MPL-2.0
             </Grid>
 
             <Grid Grid.Row="3">
-                <DataGrid Name="DataGrid"
-                          AutoGenerateColumns="False"
-                          SelectionChanged="DataGrid_SelectionChanged"
-                          CanUserResizeColumns="True"
-                          CellEditEnding="DataGrid_CellEditEnding"
-                          HorizontalScrollBarVisibility="Disabled"
-                          GridLinesVisibility="Horizontal"
-                          HeadersVisibility="All"
-                          x:DataType="model:FastFlag">
-                    <DataGrid.Columns>
-                        <DataGridTemplateColumn MinWidth="67"
-                                                Width="Auto"
-                                                Header="{x:Static resources:Strings.Common_Presets}"
-                                                CanUserResize="False"
-                                                IsVisible="{Binding #TogglePresetsButton.IsChecked}">
-                            <DataGridTemplateColumn.CellTemplate>
+                <controls:AotDataGrid Name="DataGrid"
+                                      SelectionMode="Multiple"
+                                      SelectionChanged="DataGrid_SelectionChanged"
+                                      RowHeight="32">
+                    <controls:AotDataGrid.Columns>
+                        <controls:AotDataGridColumn Width="67"
+                                                    MinWidth="67"
+                                                    Header="{x:Static resources:Strings.Common_Presets}"
+                                                    CanUserSort="False"
+                                                    IsVisible="False">
+                            <controls:AotDataGridColumn.CellTemplate>
                                 <DataTemplate x:DataType="model:FastFlag">
                                     <ic:Lucide Height="20" Width="20"
+                                               Icon="{Binding Preset}"
                                                HorizontalAlignment="Center"
                                                VerticalAlignment="Center" />
                                 </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
+                            </controls:AotDataGridColumn.CellTemplate>
+                        </controls:AotDataGridColumn>
 
-                        <DataGridTextColumn Width="*"
-                                            Binding="{Binding Name}"
-                                            Header="{x:Static resources:Strings.Common_Name}"
-                                            x:DataType="model:FastFlag" />
+                        <controls:AotDataGridColumn Width="*"
+                                                    Header="{x:Static resources:Strings.Common_Name}">
+                            <controls:AotDataGridColumn.CellTemplate>
+                                <DataTemplate x:DataType="model:FastFlag">
+                                    <TextBox Text="{Binding Name, Mode=OneWay}"
+                                             VerticalContentAlignment="Center"
+                                             Background="Transparent"
+                                             BorderThickness="0"
+                                             Padding="0"
+                                             Margin="0"
+                                             LostFocus="NameTextBox_LostFocus"
+                                             KeyDown="NameTextBox_KeyDown" />
+                                </DataTemplate>
+                            </controls:AotDataGridColumn.CellTemplate>
+                        </controls:AotDataGridColumn>
 
-                        <DataGridTextColumn Width="250"
-                                            Binding="{Binding Value}"
-                                            Header="{x:Static resources:Strings.Common_Value}"
-                                            x:DataType="model:FastFlag" />
-                    </DataGrid.Columns>
-                </DataGrid>
+                        <controls:AotDataGridColumn Width="250"
+                                                    Header="{x:Static resources:Strings.Common_Value}">
+                            <controls:AotDataGridColumn.CellTemplate>
+                                <DataTemplate x:DataType="model:FastFlag">
+                                    <TextBox Text="{Binding Value, Mode=OneWay}"
+                                             VerticalContentAlignment="Center"
+                                             Background="Transparent"
+                                             BorderThickness="0"
+                                             Padding="0"
+                                             Margin="0"
+                                             LostFocus="ValueTextBox_LostFocus"
+                                             KeyDown="ValueTextBox_KeyDown" />
+                                </DataTemplate>
+                            </controls:AotDataGridColumn.CellTemplate>
+                        </controls:AotDataGridColumn>
+                    </controls:AotDataGrid.Columns>
+                </controls:AotDataGrid>
 
                 <TextBlock x:Name="EmptyTextBlock"
                            Text="{x:Static resources:Strings.Menu_FastFlagEditor_NoFlags}"

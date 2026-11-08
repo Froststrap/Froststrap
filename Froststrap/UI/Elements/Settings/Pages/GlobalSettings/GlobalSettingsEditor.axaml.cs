@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
 using Avalonia.Controls;
-using Avalonia.Data.Converters;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using System.Collections.ObjectModel;
 using System.Xml.XPath;
@@ -14,9 +14,6 @@ namespace Froststrap.UI.Elements.Settings.Pages.GlobalSettings
     {
         // This all could of been done better but meh
 
-        public static readonly IValueConverter DimIfTrue = new FuncValueConverter<bool, double>(x => x ? 0.3 : 1.0);
-        public static readonly IValueConverter DimIfFalse = new FuncValueConverter<bool, double>(x => x ? 1.0 : 0.3);
-
         private readonly ObservableCollection<GlobalSetting> _globalSettingsList = [];
         private string _searchFilter = string.Empty;
         private CancellationTokenSource? _searchCancellationTokenSource;
@@ -26,6 +23,13 @@ namespace Froststrap.UI.Elements.Settings.Pages.GlobalSettings
         {
             InitializeComponent();
             DataGrid.ItemsSource = _globalSettingsList;
+
+            var columns = DataGrid.Columns;
+            columns[0].SortKey = o => ((GlobalSetting)o!).Name;
+            columns[1].SortKey = o => ((GlobalSetting)o!).Value;
+            columns[2].SortKey = o => ((GlobalSetting)o!).VectorX;
+            columns[3].SortKey = o => ((GlobalSetting)o!).VectorY;
+
             App.FrostRPC?.SetPage("Global Settings Editor");
         }
 
@@ -96,34 +100,85 @@ namespace Froststrap.UI.Elements.Settings.Pages.GlobalSettings
             catch (TaskCanceledException) { }
         }
 
-        private void DataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        private void ValueTextBox_LostFocus(object? sender, RoutedEventArgs e)
         {
-            if (e.Row.DataContext is not GlobalSetting entry || e.EditingElement is not TextBox textbox)
+            if (sender is TextBox textBox)
+                CommitValue(textBox);
+        }
+
+        private void ValueTextBox_KeyDown(object? sender, KeyEventArgs e)
+        {
+            if (e.Key != Key.Enter || sender is not TextBox textBox)
                 return;
 
-            string newText = textbox.Text?.Trim() ?? string.Empty;
-            string header = e.Column.Header?.ToString() ?? string.Empty;
+            CommitValue(textBox);
+            e.Handled = true;
+        }
+
+        private static void CommitValue(TextBox textBox)
+        {
+            if (textBox.DataContext is not GlobalSetting entry || entry.IsVector)
+                return;
+
+            string newText = textBox.Text?.Trim() ?? string.Empty;
+            entry.Value = newText;
 
             string dynamicPath = $"{App.GlobalSettings.RootPaths["UserSettings"]}/*[@name='{entry.Name}']";
+            App.GlobalSettings.Document?.XPathSelectElement(dynamicPath)?.SetValue(newText);
+        }
 
-            if (entry.IsVector)
-            {
-                if (header == Strings.Menu_GBSEditor_VectorX)
-                {
-                    entry.VectorX = newText;
-                    App.GlobalSettings.Document?.XPathSelectElement($"{dynamicPath}/X")?.SetValue(newText);
-                }
-                else if (header == Strings.Menu_GBSEditor_VectorY)
-                {
-                    entry.VectorY = newText;
-                    App.GlobalSettings.Document?.XPathSelectElement($"{dynamicPath}/Y")?.SetValue(newText);
-                }
-            }
-            else if (header == Strings.Common_Value)
-            {
-                entry.Value = newText;
-                App.GlobalSettings.Document?.XPathSelectElement(dynamicPath)?.SetValue(newText);
-            }
+        private void VectorXTextBox_LostFocus(object? sender, RoutedEventArgs e)
+        {
+            if (sender is TextBox textBox)
+                CommitVectorX(textBox);
+        }
+
+        private void VectorXTextBox_KeyDown(object? sender, KeyEventArgs e)
+        {
+            if (e.Key != Key.Enter || sender is not TextBox textBox)
+                return;
+
+            CommitVectorX(textBox);
+            e.Handled = true;
+        }
+
+        private static void CommitVectorX(TextBox textBox)
+        {
+            if (textBox.DataContext is not GlobalSetting entry || !entry.IsVector)
+                return;
+
+            string newText = textBox.Text?.Trim() ?? string.Empty;
+            entry.VectorX = newText;
+
+            string dynamicPath = $"{App.GlobalSettings.RootPaths["UserSettings"]}/*[@name='{entry.Name}']/X";
+            App.GlobalSettings.Document?.XPathSelectElement(dynamicPath)?.SetValue(newText);
+        }
+
+        private void VectorYTextBox_LostFocus(object? sender, RoutedEventArgs e)
+        {
+            if (sender is TextBox textBox)
+                CommitVectorY(textBox);
+        }
+
+        private void VectorYTextBox_KeyDown(object? sender, KeyEventArgs e)
+        {
+            if (e.Key != Key.Enter || sender is not TextBox textBox)
+                return;
+
+            CommitVectorY(textBox);
+            e.Handled = true;
+        }
+
+        private static void CommitVectorY(TextBox textBox)
+        {
+            if (textBox.DataContext is not GlobalSetting entry || !entry.IsVector)
+                return;
+
+            string newText = textBox.Text?.Trim() ?? string.Empty;
+            entry.VectorY = newText;
+
+            string dynamicPath = $"{App.GlobalSettings.RootPaths["UserSettings"]}/*[@name='{entry.Name}']/Y";
+            App.GlobalSettings.Document?.XPathSelectElement(dynamicPath)?.SetValue(newText);
         }
 
         public void Dispose()

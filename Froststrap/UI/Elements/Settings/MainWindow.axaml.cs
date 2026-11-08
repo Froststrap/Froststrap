@@ -92,14 +92,14 @@ namespace Froststrap.UI.Elements.Settings
                 if (data is null) return;
 
                 bool show = data.AlertEnabled && !string.IsNullOrWhiteSpace(data.AlertContent);
-
+                AlertBar.IsVisible = show;
                 AlertBar.IsOpen = show;
 
-                if (show)
-                {
-                    AlertBar.Message = data.AlertContent;
-                    AlertBar.Severity = data.AlertSeverity;
-                }
+                if (!show)
+                    return;
+
+                AlertBar.Message = data.AlertContent;
+                AlertBar.Severity = data.AlertSeverity;
             }));
 
             _viewModel.PropertyChanged += OnViewModelPropertyChanged;

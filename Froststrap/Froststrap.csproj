@@ -26,6 +26,7 @@ SPDX-License-Identifier: MPL-2.0
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   	<PublishAot>true</PublishAot>
   	<PublishTrimmed>true</PublishTrimmed>
+  	<TrimmerSingleWarn>false</TrimmerSingleWarn>
   	<TrimMode>full</TrimMode>
   	<NeutralLanguage>en</NeutralLanguage>
     <Description>Froststrap - A Fishstrap fork</Description>
@@ -39,6 +40,9 @@ SPDX-License-Identifier: MPL-2.0
     <DefineConstants Condition="$([MSBuild]::IsOSPlatform('Windows'))">$(DefineConstants);_WIN32</DefineConstants>
     <DefineConstants Condition="$([MSBuild]::IsOSPlatform('Linux'))">$(DefineConstants);__linux__</DefineConstants>
     <DefineConstants Condition="$([MSBuild]::IsOSPlatform('MacOS'))">$(DefineConstants);__APPLE__</DefineConstants>
+    <IlcFoldIdenticalMethodBodies>true</IlcFoldIdenticalMethodBodies>
+    <ServerGarbageCollection>false</ServerGarbageCollection>
+    <EnableHWIntrinsic>false</EnableHWIntrinsic>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(RuntimeIdentifier)' == ''">
@@ -46,9 +50,7 @@ SPDX-License-Identifier: MPL-2.0
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(PublishAot)' == 'true'">
-    <NoWarn>$(NoWarn);IL2026;IL3050;IL2070;IL2075</NoWarn>
     <DebugType>none</DebugType>
-    <DebugSymbols>false</DebugSymbols>
     <CopyOutputSymbolsToPublishDirectory>false</CopyOutputSymbolsToPublishDirectory>
     <OptimizationPreference>Size</OptimizationPreference>
   </PropertyGroup>
