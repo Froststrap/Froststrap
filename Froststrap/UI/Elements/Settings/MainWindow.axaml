@@ -246,7 +246,6 @@ SPDX-License-Identifier: MPL-2.0
                         x:Name="AlertBar"
                         Grid.Row="0"
                         Margin="12,0"
-                        IsOpen="False"
                         IsClosable="False"
                         Severity="Informational" />
                     <Panel Grid.Row="1">
