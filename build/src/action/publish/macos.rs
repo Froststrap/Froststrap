@@ -98,11 +98,8 @@ fn info_plist(version: &str) -> PListFile {
 
 fn entitlements() -> PListFile {
     PListFile::new("1.0").content(dict![
-        bool("com.apple.security.cs.allow-jit", true),
-        bool("com.apple.security.cs.allow-unsigned-executable-memory", true),
-        bool("com.apple.security.cs.disable-library-validation", true),
-        bool("com.apple.security.files.downloads.read-write", false),
         bool("com.apple.security.files.user-selected.read-write", true),
+        bool("com.apple.security.files.downloads.read-write", false),
         bool("com.apple.security.network.client", true),
     ])
 }
