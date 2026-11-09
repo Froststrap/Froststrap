@@ -7,6 +7,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Controls.Presenters;
+using Avalonia.Controls.Primitives;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
@@ -529,28 +530,33 @@ namespace Froststrap.UI.Elements.Base
                     continue;
 
                 var state = BackdropStates.GetValue(window, static _ => new BackdropState());
-
-                if (state.Applied == selectedBackdrop)
-                    continue;
+                bool backdropChanged = state.Applied != selectedBackdrop;
 
                 state.Applied = selectedBackdrop;
 
                 if (selectedBackdrop != WindowsBackdrops.None)
                 {
-                    window.TransparencyLevelHint = selectedBackdrop switch
+                    if (backdropChanged)
                     {
-                        WindowsBackdrops.Acrylic => [WindowTransparencyLevel.AcrylicBlur, WindowTransparencyLevel.None],
-                        WindowsBackdrops.Mica => [WindowTransparencyLevel.Mica, WindowTransparencyLevel.None],
-                        WindowsBackdrops.Blur => [WindowTransparencyLevel.AcrylicBlur, WindowTransparencyLevel.Blur, WindowTransparencyLevel.None],
-                        _ => [WindowTransparencyLevel.None]
-                    };
+                        window.TransparencyLevelHint = selectedBackdrop switch
+                        {
+                            WindowsBackdrops.Acrylic => [WindowTransparencyLevel.AcrylicBlur, WindowTransparencyLevel.None],
+                            WindowsBackdrops.Mica => [WindowTransparencyLevel.Mica, WindowTransparencyLevel.None],
+                            WindowsBackdrops.Blur => [WindowTransparencyLevel.AcrylicBlur, WindowTransparencyLevel.Blur, WindowTransparencyLevel.None],
+                            _ => [WindowTransparencyLevel.None]
+                        };
+                        window.PropertyChanged -= LogTransparency;
+                        window.PropertyChanged += LogTransparency;
+                    }
+
                     window.Background = Brushes.Transparent;
-                    window.PropertyChanged -= LogTransparency;
-                    window.PropertyChanged += LogTransparency;
                 }
                 else
                 {
-                    window.TransparencyLevelHint = [WindowTransparencyLevel.None];
+                    if (backdropChanged)
+                        window.TransparencyLevelHint = [WindowTransparencyLevel.None];
+
+                    window.ClearValue(TemplatedControl.BackgroundProperty);
                 }
             }
         }
