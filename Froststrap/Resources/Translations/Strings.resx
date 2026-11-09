@@ -571,17 +571,23 @@ Would you like to upgrade your currently installed version?</value>
   <data name="Menu.About.Contributors" xml:space="preserve">
     <value>Contributors</value>
   </data>
+  <data name="Menu.About.Contributors.Description" xml:space="preserve">
+    <value>These are all of the people who have made notable contributions to Froststrap, shaping it into what it is today.</value>
+  </data>
   <data name="Menu.About.Contributors.Code" xml:space="preserve">
     <value>Code</value>
   </data>
-  <data name="Menu.About.Contributors.Description" xml:space="preserve">
-    <value>These are all of the people who have made notable contributions to Froststrap, shaping it into what it is today.</value>
+  <data name="Menu.About.Contributors.Code.Description" xml:space="preserve">
+    <value>Maintainers of the Froststrap project</value>
   </data>
   <data name="Menu.About.Contributors.Insipirations" xml:space="preserve">
     <value>Inspirations</value>
   </data>
+  <data name="Menu.About.Contributors.Insipirations.Description" xml:space="preserve">
+    <value>Who we have used to look up to for new features and how to do</value>
+  </data>
   <data name="Menu.About.Description" xml:space="preserve">
-    <value>A Fishstrap/Froststrap Fork.</value>
+    <value>A Fishstrap Fork.</value>
   </data>
   <data name="Menu.About.DiscordServer" xml:space="preserve">
     <value>Discord Server</value>

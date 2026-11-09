@@ -3327,6 +3327,15 @@ namespace Froststrap.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Maintainers of the Froststrap project.
+        /// </summary>
+        public static string Menu_About_Contributors_Code_Description {
+            get {
+                return ResourceManager.GetString("Menu.About.Contributors.Code.Description", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to These are all of the people who have made notable contributions to Froststrap and Froststrap, shaping them into what they are today..
         /// </summary>
         public static string Menu_About_Contributors_Description {
@@ -3341,6 +3350,15 @@ namespace Froststrap.Resources {
         public static string Menu_About_Contributors_Insipirations {
             get {
                 return ResourceManager.GetString("Menu.About.Contributors.Insipirations", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Who we have used to look up at as pointers to new features and what to do.
+        /// </summary>
+        public static string Menu_About_Contributors_Insipirations_Description {
+            get {
+                return ResourceManager.GetString("Menu.About.Contributors.Insipirations.Description", resourceCulture);
             }
         }
 
