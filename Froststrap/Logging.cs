@@ -19,7 +19,7 @@ namespace Froststrap
             """${date:format=HH\:mm\:ss} ${pad:padding=-5:inner=${level:uppercase=true}} ${froststrap-callsite} - ${message} ${exception:format=tostring}""";
 
         private const string ConsoleLayout =
-            """${date:format=HH\:mm\:ss} ${pad:padding=-5:inner=${level:uppercase=true}} ${froststrap-callsite} - ${message} ${exception:format=tostring}""";
+            """${date:format=HH\:mm\:ss} ${pad:padding=-5:inner=${level:uppercase=true}} ${message} ${exception:format=tostring}""";
 
         public static bool Initialized => LogManager.Configuration != null;
 
