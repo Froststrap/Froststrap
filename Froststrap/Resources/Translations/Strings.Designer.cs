@@ -3108,11 +3108,29 @@ namespace Froststrap.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Custom Color.
+        /// </summary>
+        public static string Enums_Theme_Custom {
+            get {
+                return ResourceManager.GetString("Enums.Theme.Custom", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Dark.
         /// </summary>
         public static string Enums_Theme_Dark {
             get {
                 return ResourceManager.GetString("Enums.Theme.Dark", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Image.
+        /// </summary>
+        public static string Enums_Theme_Image {
+            get {
+                return ResourceManager.GetString("Enums.Theme.Image", resourceCulture);
             }
         }
 
@@ -3560,6 +3578,24 @@ namespace Froststrap.Resources {
         public static string Menu_Appearance_BackgroundMode {
             get {
                 return ResourceManager.GetString("Menu.Appearance.BackgroundMode", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Background Image.
+        /// </summary>
+        public static string Menu_Appearance_BackgroundImage {
+            get {
+                return ResourceManager.GetString("Menu.Appearance.BackgroundImage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Colors.
+        /// </summary>
+        public static string Menu_Appearance_CustomColors {
+            get {
+                return ResourceManager.GetString("Menu.Appearance.CustomColors", resourceCulture);
             }
         }
 

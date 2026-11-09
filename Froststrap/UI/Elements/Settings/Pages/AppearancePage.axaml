@@ -48,25 +48,12 @@ SPDX-License-Identifier: MPL-2.0
                 </controls:CardExpander.HeaderContent>
 
                 <StackPanel Spacing="16">
-                    <StackPanel Spacing="4">
-                        <TextBlock
-                            Text="{x:Static resources:Strings.Menu_Appearance_BackgroundMode}"
-                            FontWeight="Bold" />
-                        <ComboBox
-                            ItemsSource="{Binding BackgroundTypes}"
-                            SelectedItem="{Binding BackgroundType}"
-                            HorizontalAlignment="Stretch">
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding ., Converter={StaticResource EnumNameConverter}}" />
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
-                    </StackPanel>
-
                     <StackPanel
                         Spacing="16"
-                        IsVisible="{Binding IsGradientMode}">
+                        IsVisible="{Binding IsColorTheme}">
+                        <TextBlock
+                            Text="{x:Static resources:Strings.Menu_Appearance_CustomColors}"
+                            FontWeight="Bold" />
                         <WrapPanel
                             ItemSpacing="16"
                             LineSpacing="8"
@@ -141,6 +128,7 @@ SPDX-License-Identifier: MPL-2.0
                                         <Button
                                             Grid.Column="5"
                                             Content="{x:Static resources:Strings.Common_Remove}"
+                                            IsEnabled="{Binding $parent[ItemsControl].((vm:AppearanceViewModel)DataContext).CanRemoveGradientStop}"
                                             Command="{Binding $parent[ItemsControl].((vm:AppearanceViewModel)DataContext).RemoveGradientStopCommand}"
                                             CommandParameter="{Binding}" />
                                     </Grid>
@@ -151,7 +139,10 @@ SPDX-License-Identifier: MPL-2.0
 
                     <StackPanel
                         Spacing="16"
-                        IsVisible="{Binding IsImageMode}">
+                        IsVisible="{Binding IsImageTheme}">
+                        <TextBlock
+                            Text="{x:Static resources:Strings.Menu_Appearance_BackgroundImage}"
+                            FontWeight="Bold" />
                         <Grid
                             ColumnDefinitions="*,Auto,Auto"
                             ColumnSpacing="8">

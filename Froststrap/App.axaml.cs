@@ -570,9 +570,9 @@ internal partial class App : Application
         Settings.Load();
         State.Load();
 
-        if (Settings.Prop.Theme > Theme.Custom)
+        if (Settings.Prop.Theme == Theme.Custom && Settings.Prop.BackgroundType == BackgroundMode.Image)
         {
-            Settings.Prop.Theme = Theme.Dark;
+            Settings.Prop.Theme = Theme.Image;
             Settings.Save();
         }
 

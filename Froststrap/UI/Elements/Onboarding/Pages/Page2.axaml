@@ -63,21 +63,8 @@ SPDX-License-Identifier: MPL-2.0
                     </ComboBox>
                 </controls:CardExpander.HeaderContent>
                 <StackPanel Spacing="15">
-                    <StackPanel Spacing="5">
-                        <TextBlock Text="{x:Static resources:Strings.Menu_Appearance_BackgroundMode}" FontWeight="Bold"/>
-                        <ComboBox ItemsSource="{Binding BackgroundTypes}"
-                                  SelectedItem="{Binding BackgroundType}"
-                                  HorizontalAlignment="Stretch">
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding ., Converter={StaticResource EnumNameConverter}}" />
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
-                        <Border Height="8" />
-                    </StackPanel>
-
-                    <StackPanel Spacing="15" IsVisible="{Binding IsGradientMode}">
+                    <StackPanel Spacing="15" IsVisible="{Binding IsColorTheme}">
+                        <TextBlock Text="{x:Static resources:Strings.Menu_Appearance_CustomColors}" FontWeight="Bold"/>
 
                         <WrapPanel Orientation="Horizontal" VerticalAlignment="Center">
                             <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center" HorizontalAlignment="Left">
@@ -121,6 +108,7 @@ SPDX-License-Identifier: MPL-2.0
                                                 Margin="0,0,8,0"/>
 
                                         <Button Grid.Column="5" Content="{x:Static resources:Strings.Common_Remove}"
+                                                IsEnabled="{Binding $parent[ItemsControl].((vm:Page2ViewModel)DataContext).CanRemoveGradientStop}"
                                                 Command="{Binding $parent[ItemsControl].((vm:Page2ViewModel)DataContext).RemoveGradientStopCommand}"
                                                 CommandParameter="{Binding}"/>
                                     </Grid>
@@ -129,7 +117,8 @@ SPDX-License-Identifier: MPL-2.0
                         </ItemsControl>
                     </StackPanel>
 
-                    <StackPanel Spacing="15" IsVisible="{Binding IsImageMode}">
+                    <StackPanel Spacing="15" IsVisible="{Binding IsImageTheme}">
+                        <TextBlock Text="{x:Static resources:Strings.Menu_Appearance_BackgroundImage}" FontWeight="Bold"/>
                         <Grid ColumnDefinitions="*, Auto, Auto" Margin="0,4">
                             <TextBox Text="{Binding BackgroundImagePath}"
                                      PlaceholderText="No image selected..."

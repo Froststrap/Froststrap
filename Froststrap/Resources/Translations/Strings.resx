@@ -374,6 +374,12 @@ If not, then please report this exception through a [GitHub issue]({1}) along wi
   <data name="Enums.Theme.Light" xml:space="preserve">
     <value>Light</value>
   </data>
+  <data name="Enums.Theme.Custom" xml:space="preserve">
+    <value>Custom Color</value>
+  </data>
+  <data name="Enums.Theme.Image" xml:space="preserve">
+    <value>Image</value>
+  </data>
   <data name="Enums.Theme.Froststrap" xml:space="preserve">
     <value>Froststrap</value>
   </data>
@@ -2073,6 +2079,12 @@ It must contain at least one of the following folders: content, ExtraContent, Pl
   </data>
   <data name="Menu.Appearance.BackgroundMode" xml:space="preserve">
     <value>Background Mode:</value>
+  </data>
+  <data name="Menu.Appearance.CustomColors" xml:space="preserve">
+    <value>Colors</value>
+  </data>
+  <data name="Menu.Appearance.BackgroundImage" xml:space="preserve">
+    <value>Background Image</value>
   </data>
   <data name="Menu.Appearance.ResetDefault" xml:space="preserve">
     <value>Reset to Default</value>

@@ -230,7 +230,8 @@ namespace Froststrap.UI.Elements.Editor
         {
             try
             {
-                string themeName = App.Settings.Prop.Theme.GetFinal().ToString();
+                var finalTheme = App.Settings.Prop.Theme.GetFinal();
+                string themeName = finalTheme == Enums.Theme.Light ? "Light" : finalTheme == Enums.Theme.Dark ? "Dark" : "Custom";
                 var uri = new Uri($"avares://Froststrap/UI/AppThemes/EditorThemes/Editor-Theme-{themeName}.xshd");
 
                 using var xmlStream = AssetLoader.Open(uri);
