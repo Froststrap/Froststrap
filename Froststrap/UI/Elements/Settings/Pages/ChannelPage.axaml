@@ -69,8 +69,8 @@ SPDX-License-Identifier: MPL-2.0
             </controls:OptionControl>
 
             <controls:OptionControl
-                Header="{x:Static resources:Strings.Menu_Behaviour_AutoUpdate_Title}"
-                Description="{x:Static resources:Strings.Menu_Behaviour_AutoUpdate_Description}">
+                Header="{x:Static resources:Strings.Menu_Bootstrapper_AutoUpdate_Title}"
+                Description="{x:Static resources:Strings.Menu_Bootstrapper_AutoUpdate_Description}">
                 <ToggleSwitch IsChecked="{Binding AutomaticUpdatesEnabled, Mode=TwoWay}" />
             </controls:OptionControl>
 
@@ -124,8 +124,8 @@ SPDX-License-Identifier: MPL-2.0
             </controls:OptionControl>
 
             <controls:OptionControl
-                Header="{x:Static resources:Strings.Menu_Behaviour_ForceRobloxReinstall_Title}"
-                Description="{x:Static resources:Strings.Menu_Behaviour_ForceRobloxReinstall_Description}"
+                Header="{x:Static resources:Strings.Menu_Bootstrapper_ForceRobloxReinstall_Title}"
+                Description="{x:Static resources:Strings.Menu_Bootstrapper_ForceRobloxReinstall_Description}"
                 IsEnabled="{Binding !IsRobloxInstallationMissing}">
                 <ToggleSwitch IsChecked="{Binding ForceRobloxReinstallation, Mode=TwoWay}" />
             </controls:OptionControl>

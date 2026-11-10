@@ -603,25 +603,25 @@ Kas soovite oma praegu installitud versiooni uuendada?</value>
   <data name="Menu.Appearance.Title" xml:space="preserve">
     <value>Välimus</value>
   </data>
-  <data name="Menu.Behaviour.AutoUpdate.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.AutoUpdate.Description" xml:space="preserve">
     <value>Froststrap kontrollib ja uuendab end automaatselt stabiilse versioonini, kui Roblox käivitatakse.</value>
   </data>
-  <data name="Menu.Behaviour.AutoUpdate.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.AutoUpdate.Title" xml:space="preserve">
     <value>Froststrapi automaatne uuendamine</value>
   </data>
-  <data name="Menu.Behaviour.ConfirmLaunches.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ConfirmLaunches.Description" xml:space="preserve">
     <value>Võimaldab vältida olemasoleva mängu sulgemist, kui käivitatakse kogemata teine Roblox-instants.</value>
   </data>
-  <data name="Menu.Behaviour.ConfirmLaunches.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ConfirmLaunches.Title" xml:space="preserve">
     <value>Instantsi käivitamise kinnitus</value>
   </data>
-  <data name="Menu.Behaviour.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.Description" xml:space="preserve">
     <value>Määra kindlaks, mida Froststrap peaks tegema Robloxi käivitamisel.</value>
   </data>
-  <data name="Menu.Behaviour.ForceRobloxReinstall.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ForceRobloxReinstall.Description" xml:space="preserve">
     <value>Järgmisel käivitamisel toimub Robloxi puhas installimine.</value>
   </data>
-  <data name="Menu.Behaviour.ForceRobloxReinstall.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ForceRobloxReinstall.Title" xml:space="preserve">
     <value>Robloxi uuesti paigaldamine</value>
   </data>
   <data name="Menu.FastFlagEditor.AddNew" xml:space="preserve">
@@ -1236,10 +1236,10 @@ Kas soovid muuta oma eelistatud kanali {0}-ks?</value>
   <data name="Bootstrapper.ModificationsFailed.Message" xml:space="preserve">
     <value>Kõik muudatused ei ole käesolevas versioonis veel olemas.</value>
   </data>
-  <data name="Menu.Behaviour.BackgroundUpdates.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.BackgroundUpdates.Title" xml:space="preserve">
     <value>Taustteabe uuendused</value>
   </data>
-  <data name="Menu.Behaviour.BackgroundUpdates.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.BackgroundUpdates.Description" xml:space="preserve">
     <value>Uuenda Roblox taustal, selle asemel et oodata. Ei soovitata aeglaste võrkude puhul. Selle funktsiooni töötamiseks on vaja vähemalt 3 GB vaba salvestusruumi.</value>
   </data>
   <data name="CustomTheme.Templates.Blank.UIElements" xml:space="preserve">
@@ -1276,10 +1276,10 @@ Kas soovid muuta oma eelistatud kanali {0}-ks?</value>
   <data name="Menu.GBSEditor.ReadOnly.Description" xml:space="preserve">
     <value>Ära lase Robloxil üle kirjutada üldseadistusi.</value>
   </data>
-  <data name="Menu.Behaviour.AllowCookieAccess.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.AllowCookieAccess.Title" xml:space="preserve">
     <value>Froststrap’i kontoõigused</value>
   </data>
-  <data name="Menu.Behaviour.AllowCookieAccess.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.AllowCookieAccess.Description" xml:space="preserve">
     <value>Võimaldab juurdepääsu Robloxi API-dele, kasutades sinu autentimisküpsist. [Millistele andmetele Froststrap juurdepääsu saab?]({0})</value>
   </data>
   <data name="Menu.Appearance.WindowsBackdrop.Title" xml:space="preserve">
@@ -1288,16 +1288,16 @@ Kas soovid muuta oma eelistatud kanali {0}-ks?</value>
   <data name="Menu.Appearance.WindowsBackdrop.Description" xml:space="preserve">
     <value>Vali akna taustiefekt. Selleks on vaja tumedat teemat ja rakenduse taaskäivitamist. Märkus: Mica töötab ainult Windows 11-s.</value>
   </data>
-  <data name="Menu.Behaviour.CloseCrashHandler.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.CloseCrashHandler.Description" xml:space="preserve">
     <value>Sulgeb käivitamisel automaatselt protsessi „RobloxCrashHandler.exe“, et vabastada osa süsteemiressursse.</value>
   </data>
-  <data name="Menu.Behaviour.CloseCrashHandler.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.CloseCrashHandler.Title" xml:space="preserve">
     <value>Sulge krahhi käsitleja</value>
   </data>
-  <data name="Menu.Behaviour.ProcessPriority.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ProcessPriority.Description" xml:space="preserve">
     <value>Valib Robloxile protsessori prioriteedi.</value>
   </data>
-  <data name="Menu.Behaviour.ProcessPriority.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ProcessPriority.Title" xml:space="preserve">
     <value>Robloxi protsessi prioriteet</value>
   </data>
   <data name="Menu.BottomButtons.ResetSettingsToDefault" xml:space="preserve">

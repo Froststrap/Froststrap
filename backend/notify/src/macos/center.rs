@@ -4,6 +4,7 @@
 
 use super::data_types::{NSString, opts};
 use super::runtime::class;
+use std::ffi::{CStr, c_char};
 use block2::RcBlock;
 use objc2::rc::Retained;
 use objc2::runtime::{AnyObject, Bool};
@@ -62,6 +63,14 @@ impl std::error::Error for PostError {}
 
 pub(super) struct NotificationCenter(Retained<AnyObject>);
 
+fn ns_to_string(obj: &AnyObject) -> String {
+    unsafe {
+        let p: *const c_char = msg_send![obj, UTF8String];
+        if p.is_null() { String::new() } else { CStr::from_ptr(p).to_string_lossy().into_owned() }
+    }
+}
+
+
 impl NotificationCenter {
     pub fn current() -> Option<Self> {
         let cls = class(c"UNUserNotificationCenter")?;
@@ -71,7 +80,18 @@ impl NotificationCenter {
 
     pub fn request_authorization(&self, timeout: Duration) -> Option<bool> {
         let (tx, rx) = channel();
-        let handler = RcBlock::new(move |granted: Bool, _err: Option<&AnyObject>| {
+        let handler = RcBlock::new(move |granted: Bool, err: Option<&AnyObject>| {
+            if let Some(err) = err {
+                unsafe {
+                    let code: isize = msg_send![err, code];
+                    let domain: Retained<AnyObject> = msg_send![err, domain];
+                    let desc: Retained<AnyObject> = msg_send![err, localizedDescription];
+                    log::error!(
+                        "requestAuthorization error: domain={} code={} desc={}",
+                        ns_to_string(&domain), code, ns_to_string(&desc)
+                    );
+                }
+            }
             let _ = tx.send(granted.as_bool());
         });
 

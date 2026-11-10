@@ -7,6 +7,8 @@ using System.Runtime.Versioning;
 
 namespace Froststrap.Integrations
 {
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2216",
+        Justification = "The hook thread keeps this instance rooted, so a finalizer could never run before Dispose; the OS removes the hook on process exit.")]
     internal sealed class Softkey : IDisposable
     {
         private uint _keyUp;

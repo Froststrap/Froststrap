@@ -173,7 +173,7 @@ SPDX-License-Identifier: MPL-2.0
                     </ui:FANavigationViewItem.Icon>
                 </ui:FANavigationViewItem>
 
-                <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_Behaviour_Title}" Tag="behaviour">
+                <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_Bootstrapper_Title}" Tag="bootstrapper">
                     <ui:FANavigationViewItem.Icon>
                         <ic:Lucide Icon="Play" />
                     </ui:FANavigationViewItem.Icon>

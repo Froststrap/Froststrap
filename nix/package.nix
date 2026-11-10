@@ -37,9 +37,7 @@
 let
   dotnet-sdk = dotnetCorePackages.sdk_10_0;
   dotnet-runtime = dotnetCorePackages.runtime_10_0-bin;
-  toolchain =
-    with fenix.packages.${stdenv.system};
-    combine [ minimal.toolchain ];
+  toolchain = with fenix.packages.${stdenv.system}; combine [ minimal.toolchain ];
   src = ../.;
   fenixRustPlatform = makeRustPlatform {
     cargo = toolchain;
@@ -81,7 +79,12 @@ let
   ];
 in
 buildDotnetModule {
-  inherit dotnet-runtime dotnet-sdk src version;
+  inherit
+    dotnet-runtime
+    dotnet-sdk
+    src
+    version
+    ;
   projectFile = "Froststrap/Froststrap.csproj";
   nugetDeps = ./deps.json;
   name = "froststrap";
@@ -97,7 +100,8 @@ buildDotnetModule {
     rustPlatform.cargoSetupHook
     toolchain
     xtask
-  ] ++ lib.optionals stdenv.hostPlatform.isLinux [
+  ]
+  ++ lib.optionals stdenv.hostPlatform.isLinux [
     pkg-config
     clang
   ];
@@ -122,10 +126,7 @@ buildDotnetModule {
     mkdir -p $out/lib/froststrap $out/bin
     cp -r build/publish/publish/. $out/lib/froststrap/
     makeWrapper $out/lib/froststrap/froststrap $out/bin/froststrap \
-    ${
-      lib.optionalString stdenv.hostPlatform.isLinux
-        "--prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath runtimeLibs}:$out/lib/froststrap/libs"
-    }
+    ${lib.optionalString stdenv.hostPlatform.isLinux "--prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath runtimeLibs}:$out/lib/froststrap/libs"}
     runHook postInstall
   '';
 

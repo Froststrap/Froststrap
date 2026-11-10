@@ -624,28 +624,28 @@ Ar norite atnaujinti šiuo metu įdiegtą versiją?</value>
   <data name="Menu.Appearance.Title" xml:space="preserve">
     <value>Išvaizda</value>
   </data>
-  <data name="Menu.Behaviour.AutoUpdate.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.AutoUpdate.Description" xml:space="preserve">
     <value>„Froststrap“ paleidus „Roblox“ automatiškai patikrins ir atnaujins save iki stabilios versijos.</value>
   </data>
-  <data name="Menu.Behaviour.AutoUpdate.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.AutoUpdate.Title" xml:space="preserve">
     <value>Automatiškai atnaujinti „Froststrap“</value>
   </data>
-  <data name="Menu.Behaviour.ConfirmLaunches.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ConfirmLaunches.Description" xml:space="preserve">
     <value>Apsaugo nuo esamo žaidimo uždarymo, jei netyčia paleidžiate kitą „Roblox“ instanciją.</value>
   </data>
-  <data name="Menu.Behaviour.ConfirmLaunches.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ConfirmLaunches.Title" xml:space="preserve">
     <value>Instancijos paleidimo patvirtinimas</value>
   </data>
-  <data name="Menu.Behaviour.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.Description" xml:space="preserve">
     <value>Nustatykite, ką „Froststrap“ turėtų daryti paleidžiant „Roblox“.</value>
   </data>
-  <data name="Menu.Behaviour.ForceRobloxReinstall.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ForceRobloxReinstall.Description" xml:space="preserve">
     <value>Kitas paleidimas bus susijęs su „Roblox“ švariu įdiegimu.</value>
   </data>
-  <data name="Menu.Behaviour.ForceRobloxReinstall.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ForceRobloxReinstall.Title" xml:space="preserve">
     <value>Priversti iš naujo įdiegti „Roblox“</value>
   </data>
-  <data name="Menu.Behaviour.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.Title" xml:space="preserve">
     <value>„Bootstrapper“</value>
   </data>
   <data name="Menu.FastFlagEditor.AddNew" xml:space="preserve">
@@ -1260,10 +1260,10 @@ Ar norite pakeisti numatytąjį kanalą į {0}?</value>
   <data name="Bootstrapper.ModificationsFailed.Message" xml:space="preserve">
     <value>Ne visos modifikacijos bus įtrauktos į šį išleidimą.</value>
   </data>
-  <data name="Menu.Behaviour.BackgroundUpdates.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.BackgroundUpdates.Title" xml:space="preserve">
     <value>Fono atnaujinimai</value>
   </data>
-  <data name="Menu.Behaviour.BackgroundUpdates.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.BackgroundUpdates.Description" xml:space="preserve">
     <value>Atnaujinkite „Roblox“ fone, o ne laukite. Nerekomenduojama naudoti esant lėtai interneto ryšio spartai. Kad ši funkcija veiktų, reikia mažiausiai 3 GB laisvos saugyklos vietos.</value>
   </data>
   <data name="CustomTheme.Templates.Blank.UIElements" xml:space="preserve">
@@ -1300,10 +1300,10 @@ Ar norite pakeisti numatytąjį kanalą į {0}?</value>
   <data name="Menu.GBSEditor.ReadOnly.Description" xml:space="preserve">
     <value>Neleiskite „Roblox“ pakeisti bendrųjų nustatymų.</value>
   </data>
-  <data name="Menu.Behaviour.AllowCookieAccess.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.AllowCookieAccess.Title" xml:space="preserve">
     <value>„Froststrap“ paskyros leidimai</value>
   </data>
-  <data name="Menu.Behaviour.AllowCookieAccess.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.AllowCookieAccess.Description" xml:space="preserve">
     <value>Suteikia prieigą prie „Roblox“ API naudodamas jūsų autentifikavimo slapuką. [Prie ko „Froststrap“ turės prieigą?]({0})</value>
   </data>
   <data name="Menu.Appearance.WindowsBackdrop.Title" xml:space="preserve">
@@ -1312,16 +1312,16 @@ Ar norite pakeisti numatytąjį kanalą į {0}?</value>
   <data name="Menu.Appearance.WindowsBackdrop.Description" xml:space="preserve">
     <value>Pasirinkite lango fono efektą. Tam reikalinga tamsioji tema ir programos perkrovimas. Pastaba: „Mica“ veikia tik „Windows 11“ sistemoje.</value>
   </data>
-  <data name="Menu.Behaviour.CloseCrashHandler.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.CloseCrashHandler.Description" xml:space="preserve">
     <value>Paleidžiant programą automatiškai uždaro „RobloxCrashHandler.exe“ procesą, kad būtų atlaisvinta dalis sistemos išteklių.</value>
   </data>
-  <data name="Menu.Behaviour.CloseCrashHandler.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.CloseCrashHandler.Title" xml:space="preserve">
     <value>Uždaryti avarijos tvarkyklę</value>
   </data>
-  <data name="Menu.Behaviour.ProcessPriority.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ProcessPriority.Description" xml:space="preserve">
     <value>Nustato „Roblox“ procesoriaus prioritetą.</value>
   </data>
-  <data name="Menu.Behaviour.ProcessPriority.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ProcessPriority.Title" xml:space="preserve">
     <value>„Roblox“ procesų prioritetai</value>
   </data>
   <data name="Menu.BottomButtons.ResetSettingsToDefault" xml:space="preserve">

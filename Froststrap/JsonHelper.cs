@@ -16,12 +16,7 @@ namespace Froststrap
         /// Source-generated metadata for the types declared in <see cref="JsonContext"/>.
         /// Reflection-based resolution is intentionally not used so this stays Native AOT safe.
         /// </summary>
-        internal static readonly IJsonTypeInfoResolver Resolver = BuildResolver();
-
-        private static JsonContext BuildResolver()
-        {
-            return JsonContext.Default;
-        }
+        internal static readonly IJsonTypeInfoResolver Resolver = JsonContext.Default;
 
         internal static readonly JsonSerializerOptions Options = new()
         {

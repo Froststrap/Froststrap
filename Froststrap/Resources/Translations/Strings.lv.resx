@@ -606,25 +606,25 @@ Vai vēlaties atjaunināt pašlaik instalēto versiju?</value>
   <data name="Menu.Appearance.Title" xml:space="preserve">
     <value>Izskats</value>
   </data>
-  <data name="Menu.Behaviour.AutoUpdate.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.AutoUpdate.Description" xml:space="preserve">
     <value>Froststrap, uzsākot Roblox, automātiski pārbaudīs un atjaunināsies līdz stabilai versijai.</value>
   </data>
-  <data name="Menu.Behaviour.AutoUpdate.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.AutoUpdate.Title" xml:space="preserve">
     <value>Froststrap automātiskā atjaunināšana</value>
   </data>
-  <data name="Menu.Behaviour.ConfirmLaunches.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ConfirmLaunches.Description" xml:space="preserve">
     <value>Novērš esošās spēles aizvēršanu, ja nejauši tiek palaista cita „Roblox“ instance.</value>
   </data>
-  <data name="Menu.Behaviour.ConfirmLaunches.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ConfirmLaunches.Title" xml:space="preserve">
     <value>Instances palaišanas apstiprinājums</value>
   </data>
-  <data name="Menu.Behaviour.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.Description" xml:space="preserve">
     <value>Iestatiet, kā Froststrap rīkosies, palaižot Roblox.</value>
   </data>
-  <data name="Menu.Behaviour.ForceRobloxReinstall.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ForceRobloxReinstall.Description" xml:space="preserve">
     <value>Nākamajā palaišanas reizē tiks veikta Roblox tīrā instalācija.</value>
   </data>
-  <data name="Menu.Behaviour.ForceRobloxReinstall.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ForceRobloxReinstall.Title" xml:space="preserve">
     <value>Piespiedu Roblox pārinstalēšana</value>
   </data>
   <data name="Menu.FastFlagEditor.AddNew" xml:space="preserve">
@@ -1242,10 +1242,10 @@ Vai vēlies mainīt savu izvēlēto kanālu uz {0}?</value>
   <data name="Bootstrapper.ModificationsFailed.Message" xml:space="preserve">
     <value>Ne visas izmaiņas tiks iekļautas šajā versijā.</value>
   </data>
-  <data name="Menu.Behaviour.BackgroundUpdates.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.BackgroundUpdates.Title" xml:space="preserve">
     <value>Fona atjauninājumi</value>
   </data>
-  <data name="Menu.Behaviour.BackgroundUpdates.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.BackgroundUpdates.Description" xml:space="preserve">
     <value>Atjauniniet „Roblox“ fonā, nevis gaidot. Nav ieteicams lēniem tīkliem. Lai šī funkcija darbotos, ir nepieciešami vismaz 3 GB brīvas vietas.</value>
   </data>
   <data name="CustomTheme.Templates.Blank.UIElements" xml:space="preserve">
@@ -1282,10 +1282,10 @@ Vai vēlies mainīt savu izvēlēto kanālu uz {0}?</value>
   <data name="Menu.GBSEditor.ReadOnly.Description" xml:space="preserve">
     <value>Neļaujiet „Roblox“ pārrakstīt vispārējos iestatījumus.</value>
   </data>
-  <data name="Menu.Behaviour.AllowCookieAccess.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.AllowCookieAccess.Title" xml:space="preserve">
     <value>Froststrap konta atļaujas</value>
   </data>
-  <data name="Menu.Behaviour.AllowCookieAccess.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.AllowCookieAccess.Description" xml:space="preserve">
     <value>Nodrošina piekļuvi Roblox API, izmantojot jūsu autentifikācijas sīkfailu. [Kam Froststrap piekļūs?]({0})</value>
   </data>
   <data name="Menu.Appearance.WindowsBackdrop.Title" xml:space="preserve">
@@ -1294,16 +1294,16 @@ Vai vēlies mainīt savu izvēlēto kanālu uz {0}?</value>
   <data name="Menu.Appearance.WindowsBackdrop.Description" xml:space="preserve">
     <value>Izvēlieties loga fona efektu. Nepieciešama tumšā tēma un lietotnes pārstartēšana. Piezīme: „Mica” darbojas tikai operētājsistēmā Windows 11.</value>
   </data>
-  <data name="Menu.Behaviour.CloseCrashHandler.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.CloseCrashHandler.Description" xml:space="preserve">
     <value>Palaides brīdī automātiski aizver procesu „RobloxCrashHandler.exe“, lai atbrīvotu daļu sistēmas resursu.</value>
   </data>
-  <data name="Menu.Behaviour.CloseCrashHandler.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.CloseCrashHandler.Title" xml:space="preserve">
     <value>Aizvērt avārijas apstrādes moduli</value>
   </data>
-  <data name="Menu.Behaviour.ProcessPriority.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ProcessPriority.Description" xml:space="preserve">
     <value>Izvēlas Roblox procesora prioritāti.</value>
   </data>
-  <data name="Menu.Behaviour.ProcessPriority.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ProcessPriority.Title" xml:space="preserve">
     <value>„Roblox“ procesa prioritāte</value>
   </data>
   <data name="Menu.BottomButtons.ResetSettingsToDefault" xml:space="preserve">

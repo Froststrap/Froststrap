@@ -784,29 +784,22 @@ namespace Froststrap.UI.ViewModels.Settings
             set
             {
                 App.Settings.Prop.Theme = value;
+
+                if (value == Theme.Custom && GradientStops.Count == 0)
+                    AddDefaultGradientStops();
+
                 OnPropertyChanged(nameof(Theme));
                 OnPropertyChanged(nameof(CustomThemeExpanded));
+                OnPropertyChanged(nameof(IsColorTheme));
+                OnPropertyChanged(nameof(IsImageTheme));
+                OnPropertyChanged(nameof(CanRemoveGradientStop));
                 ApplyThemeUpdate();
             }
         }
 
-        public static bool CustomThemeExpanded => App.Settings.Prop.Theme == Theme.Custom;
+        public static bool CustomThemeExpanded => App.Settings.Prop.Theme is Theme.Custom or Theme.Image;
 
-        public IEnumerable<BackgroundMode> BackgroundTypes { get; } = Enum.GetValues<BackgroundMode>();
         public IEnumerable<BackgroundStretch> BackgroundStretches { get; } = Enum.GetValues<BackgroundStretch>();
-
-        public BackgroundMode BackgroundType
-        {
-            get => App.Settings.Prop.BackgroundType;
-            set
-            {
-                App.Settings.Prop.BackgroundType = value;
-                OnPropertyChanged(nameof(BackgroundType));
-                OnPropertyChanged(nameof(IsGradientMode));
-                OnPropertyChanged(nameof(IsImageMode));
-                ApplyThemeUpdate();
-            }
-        }
 
         public BackgroundStretch BackgroundStretch
         {
@@ -841,8 +834,8 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public bool IsGradientMode => BackgroundType == BackgroundMode.Gradient;
-        public bool IsImageMode => BackgroundType == BackgroundMode.Image;
+        public bool IsColorTheme => this.Theme == Enums.Theme.Custom;
+        public bool IsImageTheme => this.Theme == Enums.Theme.Image;
         public double? GradientAngle
         {
             get => App.Settings.Prop.GradientAngle;
@@ -861,6 +854,7 @@ namespace Froststrap.UI.ViewModels.Settings
         }
 
         public ObservableCollection<GradientStops> GradientStops { get; } = [];
+        public bool CanRemoveGradientStop => GradientStops.Count > 1;
 
         private ICommand? _addGradientStopCommand;
         public ICommand AddGradientStopCommand => _addGradientStopCommand ??= new RelayCommand(async () => await AddGradientStop());
@@ -937,21 +931,23 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private async Task AddGradientStop()
         {
-            GradientStops newStop = new() { Offset = 0.5, Color = "#000000" };
+            GradientStops newStop = new() { Offset = 0.5, Color = "#FFFFFF" };
             newStop.PropertyChanged += OnGradientStopPropertyChanged;
             GradientStops.Add(newStop);
+            OnPropertyChanged(nameof(CanRemoveGradientStop));
             ApplyThemeUpdate();
         }
 
         private void RemoveGradientStop(GradientStops stop)
         {
-            if (stop == null) return;
+            if (stop == null || GradientStops.Count <= 1) return;
             stop.PropertyChanged -= OnGradientStopPropertyChanged;
             GradientStops.Remove(stop);
+            OnPropertyChanged(nameof(CanRemoveGradientStop));
             ApplyThemeUpdate();
         }
 
-        private void ResetGradient()
+        private void AddDefaultGradientStops()
         {
             List<GradientStops> defaultStops =
             [
@@ -960,14 +956,21 @@ namespace Froststrap.UI.ViewModels.Settings
                 new() { Offset = 1.0, Color = "#80202C36" }
             ];
 
-            foreach (var stop in GradientStops) stop.PropertyChanged -= OnGradientStopPropertyChanged;
-            GradientStops.Clear();
-
             foreach (var stop in defaultStops)
             {
                 stop.PropertyChanged += OnGradientStopPropertyChanged;
                 GradientStops.Add(stop);
             }
+
+            OnPropertyChanged(nameof(CanRemoveGradientStop));
+        }
+
+        private void ResetGradient()
+        {
+            foreach (var stop in GradientStops) stop.PropertyChanged -= OnGradientStopPropertyChanged;
+            GradientStops.Clear();
+
+            AddDefaultGradientStops();
 
             GradientAngle = 0;
             OnPropertyChanged(nameof(GradientAngle));
@@ -1036,6 +1039,10 @@ namespace Froststrap.UI.ViewModels.Settings
                     GradientAngle = angleElement.GetDouble();
                 }
 
+                if (GradientStops.Count == 0)
+                    AddDefaultGradientStops();
+
+                OnPropertyChanged(nameof(CanRemoveGradientStop));
                 ApplyThemeUpdate();
             }
             catch (Exception ex)
@@ -1081,6 +1088,8 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 ResetGradient();
             }
+
+            OnPropertyChanged(nameof(CanRemoveGradientStop));
         }
         #endregion
     }

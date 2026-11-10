@@ -603,25 +603,25 @@ Szeretné frissíteni a jelenleg telepített verziót?</value>
   <data name="Menu.Appearance.Title" xml:space="preserve">
     <value>Megjelenés</value>
   </data>
-  <data name="Menu.Behaviour.AutoUpdate.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.AutoUpdate.Description" xml:space="preserve">
     <value>A Froststrap a Roblox indításakor automatikusan ellenőrzi és frissíti magát egy stabil verzióra.</value>
   </data>
-  <data name="Menu.Behaviour.AutoUpdate.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.AutoUpdate.Title" xml:space="preserve">
     <value>A Froststrap automatikus frissítése</value>
   </data>
-  <data name="Menu.Behaviour.ConfirmLaunches.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ConfirmLaunches.Description" xml:space="preserve">
     <value>Megakadályozza a már futó játék bezáródását, ha véletlenül elindítasz egy másik Roblox-példányt.</value>
   </data>
-  <data name="Menu.Behaviour.ConfirmLaunches.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ConfirmLaunches.Title" xml:space="preserve">
     <value>Az példány elindításának visszaigazolása</value>
   </data>
-  <data name="Menu.Behaviour.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.Description" xml:space="preserve">
     <value>Állítsd be, hogy a Froststrap mit tegyen a Roblox indításakor.</value>
   </data>
-  <data name="Menu.Behaviour.ForceRobloxReinstall.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ForceRobloxReinstall.Description" xml:space="preserve">
     <value>A Roblox következő indításakor a program tiszta telepítése fog megtörténni.</value>
   </data>
-  <data name="Menu.Behaviour.ForceRobloxReinstall.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ForceRobloxReinstall.Title" xml:space="preserve">
     <value>A Roblox újratelepítésének kényszerítése</value>
   </data>
   <data name="Menu.FastFlagEditor.AddNew" xml:space="preserve">
@@ -1229,10 +1229,10 @@ Szeretnéd a preferált csatornádat {0}-ra váltani?</value>
   <data name="Bootstrapper.ModificationsFailed.Message" xml:space="preserve">
     <value>Nem minden módosítás lesz benne a mostani kiadásban.</value>
   </data>
-  <data name="Menu.Behaviour.BackgroundUpdates.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.BackgroundUpdates.Title" xml:space="preserve">
     <value>Háttérfrissítések</value>
   </data>
-  <data name="Menu.Behaviour.BackgroundUpdates.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.BackgroundUpdates.Description" xml:space="preserve">
     <value>A várakozás helyett frissítsd a Robloxot a háttérben. Lassú internetkapcsolat esetén nem ajánlott. A funkció működéséhez legalább 3 GB szabad tárhelyre van szükség.</value>
   </data>
   <data name="CustomTheme.Templates.Blank.UIElements" xml:space="preserve">
@@ -1269,10 +1269,10 @@ Szeretnéd a preferált csatornádat {0}-ra váltani?</value>
   <data name="Menu.GBSEditor.ReadOnly.Description" xml:space="preserve">
     <value>Megakadályozza, hogy a Roblox felülírja a globális beállításokat.</value>
   </data>
-  <data name="Menu.Behaviour.AllowCookieAccess.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.AllowCookieAccess.Title" xml:space="preserve">
     <value>Froststrap-fiók jogosultságai</value>
   </data>
-  <data name="Menu.Behaviour.AllowCookieAccess.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.AllowCookieAccess.Description" xml:space="preserve">
     <value>A hitelesítési cookie-d segítségével hozzáférést biztosít a Roblox API-khoz. [Mire fog a Froststrap hozzáférni?]({0})</value>
   </data>
   <data name="Menu.Appearance.WindowsBackdrop.Title" xml:space="preserve">
@@ -1281,16 +1281,16 @@ Szeretnéd a preferált csatornádat {0}-ra váltani?</value>
   <data name="Menu.Appearance.WindowsBackdrop.Description" xml:space="preserve">
     <value>Válasszon ki egy ablakháttér-effektust! Ehhez sötét téma szükséges, és az alkalmazást újra kell indítani. Megjegyzés: A Mica csak Windows 11 rendszeren működik.</value>
   </data>
-  <data name="Menu.Behaviour.CloseCrashHandler.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.CloseCrashHandler.Description" xml:space="preserve">
     <value>Indításkor automatikusan bezárja a RobloxCrashHandler.exe folyamatot, hogy felszabadítson némi rendszerkapacitást.</value>
   </data>
-  <data name="Menu.Behaviour.CloseCrashHandler.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.CloseCrashHandler.Title" xml:space="preserve">
     <value>A hiba-kezelő bezárása</value>
   </data>
-  <data name="Menu.Behaviour.ProcessPriority.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ProcessPriority.Description" xml:space="preserve">
     <value>Kijelöli a Roblox CPU-prioritását.</value>
   </data>
-  <data name="Menu.Behaviour.ProcessPriority.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ProcessPriority.Title" xml:space="preserve">
     <value>Roblox folyamatprioritás</value>
   </data>
   <data name="Menu.BottomButtons.ResetSettingsToDefault" xml:space="preserve">

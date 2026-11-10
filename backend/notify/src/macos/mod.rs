@@ -9,13 +9,15 @@ mod runtime;
 use std::time::Duration;
 
 use crate::data_types::{NotificationPermissionResult as Perm, SendNotificationResult as Send};
-use center::{NotificationCenter, PostError};
+use center::{AuthStatus, NotificationCenter, PostError};
 
 pub fn request_notification_permission() -> i32 {
     if !runtime::has_bundle_id() {
+        log::error!("No bundle context!");
         return Perm::NoBundleContext as i32;
     }
     let Some(center) = NotificationCenter::current() else {
+        log::error!("No bundle context!");
         return Perm::NoBundleContext as i32;
     };
     match center.request_authorization(Duration::from_secs(30)) {
@@ -28,14 +30,25 @@ pub fn request_notification_permission() -> i32 {
 #[unsafe(no_mangle)]
 pub fn send_notification(title: String, body: String) -> i32 {
     if !runtime::has_bundle_id() {
+        log::error!("No bundle context!");
         return Send::NoBundleContext as i32;
     }
     let Some(center) = NotificationCenter::current() else {
+        log::error!("No bundle context!");
         return Send::NoBundleContext as i32;
     };
     match center.authorization_status(Duration::from_secs(5)) {
         Some(s) if s.can_deliver() => {}
-        Some(_) => return Send::NotAuthorized as i32,
+        Some(AuthStatus::NotDetermined) => {
+            log::warn!("Notification status NotDetermined, requesting authorization");
+            if center.request_authorization(Duration::from_secs(30)) != Some(true) {
+                return Send::NotAuthorized as i32;
+            }
+        }
+        Some(s) => {
+            log::warn!("Notifications not deliverable, status={s:?}");
+            return Send::NotAuthorized as i32;
+        }
         None => return Send::TimedOut as i32,
     }
     match center.post(&title, &body, Duration::from_secs(5)) {

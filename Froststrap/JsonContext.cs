@@ -64,6 +64,7 @@ namespace Froststrap
     [JsonSerializable(typeof(List<ThumbnailRequest>))]
     [JsonSerializable(typeof(ThumbnailResponse))]
     [JsonSerializable(typeof(GameDetailResponse))]
+    [JsonSerializable(typeof(UniverseIdResponse))]
     [JsonSerializable(typeof(GradientStops))]
     [JsonSerializable(typeof(GradientExport))]
     [JsonSerializable(typeof(ModGeneratorInfo))]

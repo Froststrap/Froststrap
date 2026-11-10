@@ -603,25 +603,25 @@ Czy chcesz zaktualizować obecnie zainstalowaną wersję?</value>
   <data name="Menu.Appearance.Title" xml:space="preserve">
     <value>Wygląd</value>
   </data>
-  <data name="Menu.Behaviour.AutoUpdate.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.AutoUpdate.Description" xml:space="preserve">
     <value>Froststrap automatycznie sprawdzi i zaktualizuje się do stabilnej wersji podczas uruchamiania Roblox.</value>
   </data>
-  <data name="Menu.Behaviour.AutoUpdate.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.AutoUpdate.Title" xml:space="preserve">
     <value>Automatyczna aktualizacja Froststrap</value>
   </data>
-  <data name="Menu.Behaviour.ConfirmLaunches.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ConfirmLaunches.Description" xml:space="preserve">
     <value>Zapobiega zamknięciu aktualnie uruchomionej gry w przypadku przypadkowego uruchomienia kolejnej instancji Roblox.</value>
   </data>
-  <data name="Menu.Behaviour.ConfirmLaunches.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ConfirmLaunches.Title" xml:space="preserve">
     <value>Potwierdzenie uruchomienia instancji</value>
   </data>
-  <data name="Menu.Behaviour.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.Description" xml:space="preserve">
     <value>Skonfiguruj, jak Froststrap ma się zachowywać podczas uruchamiania Roblox.</value>
   </data>
-  <data name="Menu.Behaviour.ForceRobloxReinstall.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ForceRobloxReinstall.Description" xml:space="preserve">
     <value>Przy następnym uruchomieniu nastąpi czysta instalacja Roblox.</value>
   </data>
-  <data name="Menu.Behaviour.ForceRobloxReinstall.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ForceRobloxReinstall.Title" xml:space="preserve">
     <value>Wymuś ponowną instalację Roblox</value>
   </data>
   <data name="Menu.FastFlagEditor.AddNew" xml:space="preserve">
@@ -1239,10 +1239,10 @@ Czy chcesz zmienić swój preferowany kanał na {0}?</value>
   <data name="Bootstrapper.ModificationsFailed.Message" xml:space="preserve">
     <value>Nie wszystkie modyfikacje zostaną uwzględnione w obecnej wersji.</value>
   </data>
-  <data name="Menu.Behaviour.BackgroundUpdates.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.BackgroundUpdates.Title" xml:space="preserve">
     <value>Aktualizacje dotyczące kontekstu</value>
   </data>
-  <data name="Menu.Behaviour.BackgroundUpdates.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.BackgroundUpdates.Description" xml:space="preserve">
     <value>Zaktualizuj Roblox w tle, zamiast czekać. Nie zaleca się tej opcji w przypadku wolnych połączeń internetowych. Aby ta funkcja działała, potrzebne jest co najmniej 3 GB wolnego miejsca na dysku.</value>
   </data>
   <data name="CustomTheme.Templates.Blank.UIElements" xml:space="preserve">
@@ -1279,10 +1279,10 @@ Czy chcesz zmienić swój preferowany kanał na {0}?</value>
   <data name="Menu.GBSEditor.ReadOnly.Description" xml:space="preserve">
     <value>Zapobiegaj nadpisywaniu ustawień globalnych przez Roblox.</value>
   </data>
-  <data name="Menu.Behaviour.AllowCookieAccess.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.AllowCookieAccess.Title" xml:space="preserve">
     <value>Uprawnienia do konta Froststrap</value>
   </data>
-  <data name="Menu.Behaviour.AllowCookieAccess.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.AllowCookieAccess.Description" xml:space="preserve">
     <value>Zapewnia dostęp do interfejsów API serwisu Roblox przy użyciu pliku cookie uwierzytelniającego. [Do czego będzie miał dostęp Froststrap?]({0})</value>
   </data>
   <data name="Menu.Appearance.WindowsBackdrop.Title" xml:space="preserve">
@@ -1291,16 +1291,16 @@ Czy chcesz zmienić swój preferowany kanał na {0}?</value>
   <data name="Menu.Appearance.WindowsBackdrop.Description" xml:space="preserve">
     <value>Wybierz efekt tła okna. Wymaga włączenia ciemnego motywu i ponownego uruchomienia aplikacji. Uwaga: funkcja Mica działa wyłącznie w systemie Windows 11.</value>
   </data>
-  <data name="Menu.Behaviour.CloseCrashHandler.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.CloseCrashHandler.Description" xml:space="preserve">
     <value>Automatycznie zamyka proces RobloxCrashHandler.exe po uruchomieniu, aby zwolnić część zasobów systemowych.</value>
   </data>
-  <data name="Menu.Behaviour.CloseCrashHandler.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.CloseCrashHandler.Title" xml:space="preserve">
     <value>Zamknij moduł obsługi awarii</value>
   </data>
-  <data name="Menu.Behaviour.ProcessPriority.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ProcessPriority.Description" xml:space="preserve">
     <value>Ustawia priorytet procesora dla aplikacji Roblox.</value>
   </data>
-  <data name="Menu.Behaviour.ProcessPriority.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ProcessPriority.Title" xml:space="preserve">
     <value>Priorytet procesów w Roblox</value>
   </data>
   <data name="Menu.BottomButtons.ResetSettingsToDefault" xml:space="preserve">

@@ -3108,11 +3108,29 @@ namespace Froststrap.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Custom Color.
+        /// </summary>
+        public static string Enums_Theme_Custom {
+            get {
+                return ResourceManager.GetString("Enums.Theme.Custom", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Dark.
         /// </summary>
         public static string Enums_Theme_Dark {
             get {
                 return ResourceManager.GetString("Enums.Theme.Dark", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Image.
+        /// </summary>
+        public static string Enums_Theme_Image {
+            get {
+                return ResourceManager.GetString("Enums.Theme.Image", resourceCulture);
             }
         }
 
@@ -3327,6 +3345,15 @@ namespace Froststrap.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Maintainers of the Froststrap project.
+        /// </summary>
+        public static string Menu_About_Contributors_Code_Description {
+            get {
+                return ResourceManager.GetString("Menu.About.Contributors.Code.Description", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to These are all of the people who have made notable contributions to Froststrap and Froststrap, shaping them into what they are today..
         /// </summary>
         public static string Menu_About_Contributors_Description {
@@ -3341,6 +3368,15 @@ namespace Froststrap.Resources {
         public static string Menu_About_Contributors_Insipirations {
             get {
                 return ResourceManager.GetString("Menu.About.Contributors.Insipirations", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Who we have used to look up at as pointers to new features and what to do.
+        /// </summary>
+        public static string Menu_About_Contributors_Insipirations_Description {
+            get {
+                return ResourceManager.GetString("Menu.About.Contributors.Insipirations.Description", resourceCulture);
             }
         }
 
@@ -3870,6 +3906,24 @@ namespace Froststrap.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Background Image.
+        /// </summary>
+        public static string Menu_Appearance_BackgroundImage {
+            get {
+                return ResourceManager.GetString("Menu.Appearance.BackgroundImage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Colors.
+        /// </summary>
+        public static string Menu_Appearance_CustomColors {
+            get {
+                return ResourceManager.GetString("Menu.Appearance.CustomColors", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Customize Froststrap’s bootstrapper using a wide variety of options..
         /// </summary>
         public static string Menu_Appearance_Bootstrapper_Description {
@@ -4163,38 +4217,38 @@ namespace Froststrap.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Provides access to Roblox APIs using your authentication cookie. [What will Froststrap access?]({0}).
         /// </summary>
-        public static string Menu_Behaviour_AllowCookieAccess_Description {
+        public static string Menu_Bootstrapper_AllowCookieAccess_Description {
             get {
-                return ResourceManager.GetString("Menu.Behaviour.AllowCookieAccess.Description", resourceCulture);
+                return ResourceManager.GetString("Menu.Bootstrapper.AllowCookieAccess.Description", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to Froststrap Account Permissions.
         /// </summary>
-        public static string Menu_Behaviour_AllowCookieAccess_Title {
+        public static string Menu_Bootstrapper_AllowCookieAccess_Title {
             get {
-                return ResourceManager.GetString("Menu.Behaviour.AllowCookieAccess.Title", resourceCulture);
+                return ResourceManager.GetString("Menu.Bootstrapper.AllowCookieAccess.Title", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to Froststrap will automatically check and update itself to a stable version when launching Roblox, Will only notify users on linux..
         /// </summary>
-        public static string Menu_Behaviour_AutoUpdate_Description {
+        public static string Menu_Bootstrapper_AutoUpdate_Description {
             get {
-                return ResourceManager.GetString("Menu.Behaviour.AutoUpdate.Description", resourceCulture);
+                return ResourceManager.GetString("Menu.Bootstrapper.AutoUpdate.Description", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to Automatically Update Froststrap.
         /// </summary>
-        public static string Menu_Behaviour_AutoUpdate_Title
+        public static string Menu_Bootstrapper_AutoUpdate_Title
         {
             get
             {
-                return ResourceManager.GetString("Menu.Behaviour.AutoUpdate.Title", resourceCulture);
+                return ResourceManager.GetString("Menu.Bootstrapper.AutoUpdate.Title", resourceCulture);
             }
         }
 
@@ -4300,135 +4354,135 @@ namespace Froststrap.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Update Roblox in the background instead of waiting. Not recommended for slow networks. At least 3GB of free storage space is required for this feature to work..
         /// </summary>
-        public static string Menu_Behaviour_BackgroundUpdates_Description {
+        public static string Menu_Bootstrapper_BackgroundUpdates_Description {
             get {
-                return ResourceManager.GetString("Menu.Behaviour.BackgroundUpdates.Description", resourceCulture);
+                return ResourceManager.GetString("Menu.Bootstrapper.BackgroundUpdates.Description", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to Background Updates.
         /// </summary>
-        public static string Menu_Behaviour_BackgroundUpdates_Title {
+        public static string Menu_Bootstrapper_BackgroundUpdates_Title {
             get {
-                return ResourceManager.GetString("Menu.Behaviour.BackgroundUpdates.Title", resourceCulture);
+                return ResourceManager.GetString("Menu.Bootstrapper.BackgroundUpdates.Title", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to Automatically closes the RobloxCrashHandler.exe process on launch to free up some system usage..
         /// </summary>
-        public static string Menu_Behaviour_CloseCrashHandler_Description {
+        public static string Menu_Bootstrapper_CloseCrashHandler_Description {
             get {
-                return ResourceManager.GetString("Menu.Behaviour.CloseCrashHandler.Description", resourceCulture);
+                return ResourceManager.GetString("Menu.Bootstrapper.CloseCrashHandler.Description", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to Close Crash Handler.
         /// </summary>
-        public static string Menu_Behaviour_CloseCrashHandler_Title {
+        public static string Menu_Bootstrapper_CloseCrashHandler_Title {
             get {
-                return ResourceManager.GetString("Menu.Behaviour.CloseCrashHandler.Title", resourceCulture);
+                return ResourceManager.GetString("Menu.Bootstrapper.CloseCrashHandler.Title", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to Prevents closures of your existing game when accidentally launching another Roblox Instance..
         /// </summary>
-        public static string Menu_Behaviour_ConfirmLaunches_Description {
+        public static string Menu_Bootstrapper_ConfirmLaunches_Description {
             get {
-                return ResourceManager.GetString("Menu.Behaviour.ConfirmLaunches.Description", resourceCulture);
+                return ResourceManager.GetString("Menu.Bootstrapper.ConfirmLaunches.Description", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to Instance Launch Confirmation.
         /// </summary>
-        public static string Menu_Behaviour_ConfirmLaunches_Title {
+        public static string Menu_Bootstrapper_ConfirmLaunches_Title {
             get {
-                return ResourceManager.GetString("Menu.Behaviour.ConfirmLaunches.Title", resourceCulture);
+                return ResourceManager.GetString("Menu.Bootstrapper.ConfirmLaunches.Title", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to Configure what Froststrap should do when launching Roblox..
         /// </summary>
-        public static string Menu_Behaviour_Description {
+        public static string Menu_Bootstrapper_Description {
             get {
-                return ResourceManager.GetString("Menu.Behaviour.Description", resourceCulture);
+                return ResourceManager.GetString("Menu.Bootstrapper.Description", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to When Roblox launches, open AppleBlox&apos;s VirtualDisplay to have a fake 240Hz display for Roblox to VSync to..
         /// </summary>
-        public static string Menu_Behaviour_EnableVirtualDisplay_Description {
+        public static string Menu_Bootstrapper_EnableVirtualDisplay_Description {
             get {
-                return ResourceManager.GetString("Menu.Behaviour.EnableVirtualDisplay.Description", resourceCulture);
+                return ResourceManager.GetString("Menu.Bootstrapper.EnableVirtualDisplay.Description", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to Virtual Display.
         /// </summary>
-        public static string Menu_Behaviour_EnableVirtualDisplay_Title {
+        public static string Menu_Bootstrapper_EnableVirtualDisplay_Title {
             get {
-                return ResourceManager.GetString("Menu.Behaviour.EnableVirtualDisplay.Title", resourceCulture);
+                return ResourceManager.GetString("Menu.Bootstrapper.EnableVirtualDisplay.Title", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to Enter a refresh rate in Hz and add it to the list of modes the Virtual Display offers.
         /// </summary>
-        public static string Menu_Behaviour_VirtualDisplayHz_Description {
+        public static string Menu_Bootstrapper_VirtualDisplayHz_Description {
             get {
-                return ResourceManager.GetString("Menu.Behaviour.VirtualDisplayHz.Description", resourceCulture);
+                return ResourceManager.GetString("Menu.Bootstrapper.VirtualDisplayHz.Description", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to e.g. 144.
         /// </summary>
-        public static string Menu_Behaviour_VirtualDisplayHz_Placeholder {
+        public static string Menu_Bootstrapper_VirtualDisplayHz_Placeholder {
             get {
-                return ResourceManager.GetString("Menu.Behaviour.VirtualDisplayHz.Placeholder", resourceCulture);
+                return ResourceManager.GetString("Menu.Bootstrapper.VirtualDisplayHz.Placeholder", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to Refresh rates.
         /// </summary>
-        public static string Menu_Behaviour_VirtualDisplayHz_Title {
+        public static string Menu_Bootstrapper_VirtualDisplayHz_Title {
             get {
-                return ResourceManager.GetString("Menu.Behaviour.VirtualDisplayHz.Title", resourceCulture);
+                return ResourceManager.GetString("Menu.Bootstrapper.VirtualDisplayHz.Title", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to A clean installation of Roblox will occur on the next launch..
         /// </summary>
-        public static string Menu_Behaviour_ForceRobloxReinstall_Description {
+        public static string Menu_Bootstrapper_ForceRobloxReinstall_Description {
             get {
-                return ResourceManager.GetString("Menu.Behaviour.ForceRobloxReinstall.Description", resourceCulture);
+                return ResourceManager.GetString("Menu.Bootstrapper.ForceRobloxReinstall.Description", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to Force Roblox Reinstallation.
         /// </summary>
-        public static string Menu_Behaviour_ForceRobloxReinstall_Title {
+        public static string Menu_Bootstrapper_ForceRobloxReinstall_Title {
             get {
-                return ResourceManager.GetString("Menu.Behaviour.ForceRobloxReinstall.Title", resourceCulture);
+                return ResourceManager.GetString("Menu.Bootstrapper.ForceRobloxReinstall.Title", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to Bootstrapper.
         /// </summary>
-        public static string Menu_Behaviour_Title {
+        public static string Menu_Bootstrapper_Title {
             get {
-                return ResourceManager.GetString("Menu.Behaviour.Title", resourceCulture);
+                return ResourceManager.GetString("Menu.Bootstrapper.Title", resourceCulture);
             }
         }
 
@@ -9499,6 +9553,60 @@ namespace Froststrap.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Added {0} to your desktop..
+        /// </summary>
+        public static string Menu_Shortcuts_Created {
+            get {
+                return ResourceManager.GetString("Menu.Shortcuts.Created", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Game link.
+        /// </summary>
+        public static string Menu_Shortcuts_GameLink {
+            get {
+                return ResourceManager.GetString("Menu.Shortcuts.GameLink", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Paste a Roblox game link. The game, server instance, and private server code are read from it automatically..
+        /// </summary>
+        public static string Menu_Shortcuts_GameLink_Description {
+            get {
+                return ResourceManager.GetString("Menu.Shortcuts.GameLink.Description", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to https://www.roblox.com/games/....
+        /// </summary>
+        public static string Menu_Shortcuts_GameLink_Placeholder {
+            get {
+                return ResourceManager.GetString("Menu.Shortcuts.GameLink.Placeholder", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Link.
+        /// </summary>
+        public static string Menu_Shortcuts_Tab_Link {
+            get {
+                return ResourceManager.GetString("Menu.Shortcuts.Tab.Link", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Search.
+        /// </summary>
+        public static string Menu_Shortcuts_Tab_Search {
+            get {
+                return ResourceManager.GetString("Menu.Shortcuts.Tab.Search", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Configure how Froststrap can be readily launched..
         /// </summary>
         public static string Menu_Shortcuts_Description {
@@ -9531,6 +9639,15 @@ namespace Froststrap.Resources {
         public static string Menu_Shortcuts_ExtractIcons_Title {
             get {
                 return ResourceManager.GetString("Menu.Shortcuts.ExtractIcons.Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Couldn&apos;t create the shortcut..
+        /// </summary>
+        public static string Menu_Shortcuts_Failed {
+            get {
+                return ResourceManager.GetString("Menu.Shortcuts.Failed", resourceCulture);
             }
         }
 
@@ -9589,6 +9706,15 @@ namespace Froststrap.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to That isn&apos;t a Roblox game link..
+        /// </summary>
+        public static string Menu_Shortcuts_InvalidLink {
+            get {
+                return ResourceManager.GetString("Menu.Shortcuts.InvalidLink", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Create shortcuts that allows you to join specific games/servers quickly..
         /// </summary>
         public static string Menu_Shortcuts_Misc_Description {
@@ -9603,6 +9729,15 @@ namespace Froststrap.Resources {
         public static string Menu_Shortcuts_NoGameSelected {
             get {
                 return ResourceManager.GetString("Menu.Shortcuts.NoGameSelected", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Couldn&apos;t find that game..
+        /// </summary>
+        public static string Menu_Shortcuts_NotFound {
+            get {
+                return ResourceManager.GetString("Menu.Shortcuts.NotFound", resourceCulture);
             }
         }
 
@@ -9657,6 +9792,15 @@ namespace Froststrap.Resources {
         public static string Menu_Shortcuts_SearchForGame {
             get {
                 return ResourceManager.GetString("Menu.Shortcuts.SearchForGame", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Search by name, paste a Roblox game link, or enter a place ID..
+        /// </summary>
+        public static string Menu_Shortcuts_SearchForGame_Description {
+            get {
+                return ResourceManager.GetString("Menu.Shortcuts.SearchForGame.Description", resourceCulture);
             }
         }
 

@@ -11,6 +11,8 @@ namespace Froststrap.Utility
 {
     internal static class Shortcut
     {
+        private const int MaxFileNameLength = 100;
+
         private static GenericTriState _loadStatus = GenericTriState.Unknown;
 
         private static string? _froststrapIconPath;
@@ -63,15 +65,20 @@ namespace Froststrap.Utility
             return lnkPath;
         }
 
-        public static async void Create(string exePath, string exeArgs, string lnkPath, string? iconPath = null)
+        public static async Task<bool> Create(string exePath, string exeArgs, string lnkPath, string? iconPath = null, bool overwrite = false)
         {
             string resolvedPath = ResolvePath(lnkPath);
 
-            if (File.Exists(resolvedPath))
-                return;
-
             try
             {
+                if (File.Exists(resolvedPath))
+                {
+                    if (!overwrite)
+                        return true;
+
+                    File.Delete(resolvedPath);
+                }
+
                 if (OperatingSystem.IsWindows())
                     CreateWindowsShortcut(exePath, exeArgs, lnkPath, iconPath);
                 else if (OperatingSystem.IsMacOS())
@@ -79,19 +86,25 @@ namespace Froststrap.Utility
                 else if (OperatingSystem.IsLinux())
                     CreateLinuxShortcut(exePath, exeArgs, lnkPath, iconPath);
 
+                if (!File.Exists(resolvedPath))
+                    return false;
+
                 if (_loadStatus != GenericTriState.Successful)
                     _loadStatus = GenericTriState.Successful;
+
+                return true;
             }
             catch (Exception ex)
             {
                 App.Logger.Error($"Failed to create a shortcut for {resolvedPath}! {ex}");
 
-                if (_loadStatus == GenericTriState.Failed)
-                    return;
+                if (_loadStatus != GenericTriState.Failed)
+                {
+                    _loadStatus = GenericTriState.Failed;
+                    await Frontend.ShowMessageBox(Strings.Dialog_CannotCreateShortcuts, MessageBoxImage.Warning);
+                }
 
-                _loadStatus = GenericTriState.Failed;
-
-                await Frontend.ShowMessageBox(Strings.Dialog_CannotCreateShortcuts, MessageBoxImage.Warning);
+                return false;
             }
         }
 
@@ -165,7 +178,8 @@ namespace Froststrap.Utility
             }
 
             onStatus?.Invoke("Creating...");
-            Create(appPath, $"--game-shortcut \"{argData}\"", lnkPath, finalIconPath);
+            if (!await Create(appPath, $"--game-shortcut \"{argData}\"", lnkPath, finalIconPath, overwrite: true))
+                throw new IOException("The game shortcut was not created");
         }
 
         public static Task CreateGameShortcut(
@@ -174,6 +188,7 @@ namespace Froststrap.Utility
             string placeId,
             string? jobId,
             string? accessCode,
+            string? linkCode,
             Bitmap? icon,
             Action<string>? onStatus = null)
         {
@@ -181,7 +196,7 @@ namespace Froststrap.Utility
             string lnkPath = Path.Combine(Paths.Desktop, $"{safeName}.lnk");
 
             // Delegate with the resolved lnk path baked in via a local wrapper.
-            return CreateGameShortcutInternal(appPath, placeId, jobId, accessCode, icon, lnkPath, onStatus);
+            return CreateGameShortcutInternal(appPath, placeId, jobId, accessCode, linkCode, icon, lnkPath, onStatus);
         }
 
         private static async Task CreateGameShortcutInternal(
@@ -189,15 +204,18 @@ namespace Froststrap.Utility
             string placeId,
             string? jobId,
             string? accessCode,
+            string? linkCode,
             Bitmap? icon,
             string lnkPath,
             Action<string>? onStatus)
         {
             string deeplink = $"roblox://experiences/start?placeId={placeId}";
             if (!string.IsNullOrEmpty(accessCode))
-                deeplink += $"&accessCode={accessCode}";
+                deeplink += $"&accessCode={Uri.EscapeDataString(accessCode)}";
             else if (!string.IsNullOrEmpty(jobId))
-                deeplink += $"&gameInstanceId={jobId}";
+                deeplink += $"&gameInstanceId={Uri.EscapeDataString(jobId)}";
+            else if (!string.IsNullOrEmpty(linkCode))
+                deeplink += $"&linkCode={Uri.EscapeDataString(linkCode)}";
 
             string? finalIconPath = null;
 
@@ -233,7 +251,9 @@ namespace Froststrap.Utility
             }
 
             onStatus?.Invoke("Creating...");
-            Create(appPath, $"-p \"{deeplink}\"", lnkPath, finalIconPath);
+
+            if (!await Create(appPath, $"-p \"{deeplink}\"", lnkPath, finalIconPath, overwrite: true))
+                throw new IOException("The game shortcut was not created");
         }
 
         private static unsafe void CreateWindowsShortcut(
@@ -415,6 +435,10 @@ namespace Froststrap.Utility
             }
 
             string result = sb.ToString().Trim().TrimEnd('.');
+
+            if (result.Length > MaxFileNameLength)
+                result = result[..MaxFileNameLength].Trim().TrimEnd('.');
+
             return string.IsNullOrWhiteSpace(result) ? "Shortcut" : result;
         }
 

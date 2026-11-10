@@ -5,7 +5,7 @@ SPDX-License-Identifier: MPL-2.0
 -->
 
 <UserControl
-    x:Class="Froststrap.UI.Elements.Settings.Pages.BehaviourPage"
+    x:Class="Froststrap.UI.Elements.Settings.Pages.BootstrapperPage"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
@@ -19,20 +19,19 @@ SPDX-License-Identifier: MPL-2.0
     xmlns:lucideEnums="clr-namespace:LucideAvalonia.Enum;assembly=LucideAvalonia"
     d:DesignHeight="2500"
     d:DesignWidth="1200"
-    x:DataType="vm:BehaviourViewModel"
+    x:DataType="vm:BootstrapperViewModel"
     mc:Ignorable="d">
-
     <ScrollViewer VerticalScrollBarVisibility="Hidden">
         <StackPanel Margin="14,10">
             <controls:OptionControl
-                Header="{x:Static resources:Strings.Menu_Behaviour_ConfirmLaunches_Title}"
-                Description="{x:Static resources:Strings.Menu_Behaviour_ConfirmLaunches_Description}">
+                Header="{x:Static resources:Strings.Menu_Bootstrapper_ConfirmLaunches_Title}"
+                Description="{x:Static resources:Strings.Menu_Bootstrapper_ConfirmLaunches_Description}">
                 <ToggleSwitch IsChecked="{Binding ConfirmLaunches, Mode=TwoWay}" />
             </controls:OptionControl>
 
             <controls:CardExpander
-                Header="{x:Static resources:Strings.Menu_Behaviour_EnableVirtualDisplay_Title}"
-                Description="{x:Static resources:Strings.Menu_Behaviour_EnableVirtualDisplay_Description}"
+                Header="{x:Static resources:Strings.Menu_Bootstrapper_EnableVirtualDisplay_Title}"
+                Description="{x:Static resources:Strings.Menu_Bootstrapper_EnableVirtualDisplay_Description}"
                 IsExpanded="{Binding LaunchWithVirtualDisplay, Mode=TwoWay}"
                 IsVisible="{x:Static gv:GlobalViewModel.IsMacOS}"
                 Classes="NoUserExpansion">
@@ -61,7 +60,7 @@ SPDX-License-Identifier: MPL-2.0
                         Description="Customise the screen width (scale is implied to 1 if set, and 0 is default)">
                         <TextBox
                             Width="200"
-                            PlaceholderText="Froststrap Virtual Display"
+                            PlaceholderText="0"
                             Text="{Binding VirtualDisplayWidth, Mode=TwoWay}" />
                     </controls:OptionControl>
 
@@ -70,20 +69,20 @@ SPDX-License-Identifier: MPL-2.0
                         Description="Customise the screen height (scale is implied to 1 if set, and 0 is default)">
                         <TextBox
                             Width="200"
-                            PlaceholderText="Froststrap Virtual Display"
+                            PlaceholderText="0"
                             Text="{Binding VirtualDisplayHeight, Mode=TwoWay}" />
                     </controls:OptionControl>
 
                     <controls:OptionControl
-                        Header="{x:Static resources:Strings.Menu_Behaviour_VirtualDisplayHz_Title}"
-                        Description="{x:Static resources:Strings.Menu_Behaviour_VirtualDisplayHz_Description}">
+                        Header="{x:Static resources:Strings.Menu_Bootstrapper_VirtualDisplayHz_Title}"
+                        Description="{x:Static resources:Strings.Menu_Bootstrapper_VirtualDisplayHz_Description}">
                         <StackPanel MinWidth="260" Spacing="8">
                             <StackPanel Orientation="Horizontal" Spacing="4">
                                 <TextBox
                                     Width="150"
                                     Height="32"
                                     VerticalContentAlignment="Center"
-                                    PlaceholderText="{x:Static resources:Strings.Menu_Behaviour_VirtualDisplayHz_Placeholder}"
+                                    PlaceholderText="{x:Static resources:Strings.Menu_Bootstrapper_VirtualDisplayHz_Placeholder}"
                                     Text="{Binding NewVirtualDisplayHz, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                     <TextBox.KeyBindings>
                                         <KeyBinding Gesture="Enter" Command="{Binding AddVirtualDisplayHzCommand}" />
@@ -135,22 +134,22 @@ SPDX-License-Identifier: MPL-2.0
             </controls:CardExpander>
 
             <controls:OptionControl
-                Header="{x:Static resources:Strings.Menu_Behaviour_CloseCrashHandler_Title}"
-                Description="{x:Static resources:Strings.Menu_Behaviour_CloseCrashHandler_Description}"
+                Header="{x:Static resources:Strings.Menu_Bootstrapper_CloseCrashHandler_Title}"
+                Description="{x:Static resources:Strings.Menu_Bootstrapper_CloseCrashHandler_Description}"
                 IsVisible="{x:Static gv:GlobalViewModel.IsWindows}">
                 <ToggleSwitch IsChecked="{Binding CloseCrashHandler, Mode=TwoWay}" />
             </controls:OptionControl>
 
             <controls:OptionControl
-                Header="{x:Static resources:Strings.Menu_Behaviour_BackgroundUpdates_Title}"
-                Description="{x:Static resources:Strings.Menu_Behaviour_BackgroundUpdates_Description}"
+                Header="{x:Static resources:Strings.Menu_Bootstrapper_BackgroundUpdates_Title}"
+                Description="{x:Static resources:Strings.Menu_Bootstrapper_BackgroundUpdates_Description}"
                 IsVisible="{x:Static gv:GlobalViewModel.IsWindows}">
                 <ToggleSwitch IsChecked="{Binding BackgroundUpdates, Mode=TwoWay}" />
             </controls:OptionControl>
 
             <controls:OptionControl
-                Header="{x:Static resources:Strings.Menu_Behaviour_AllowCookieAccess_Title}"
-                Description="{Binding Source={x:Static resources:Strings.Menu_Behaviour_AllowCookieAccess_Description}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://docs.froststrap.xyz/docs/account-manager/account-access#what-froststrap-can-access'}">
+                Header="{x:Static resources:Strings.Menu_Bootstrapper_AllowCookieAccess_Title}"
+                Description="{Binding Source={x:Static resources:Strings.Menu_Bootstrapper_AllowCookieAccess_Description}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://docs.froststrap.xyz/docs/account-manager/account-access#what-froststrap-can-access'}">
                 <StackPanel Orientation="Horizontal" Spacing="8">
                     <ic:Lucide
                         Icon="TriangleAlert"
