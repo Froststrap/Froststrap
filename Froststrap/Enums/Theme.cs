@@ -10,7 +10,10 @@ namespace Froststrap.Enums
         Default,
         Dark,
         Light,
-        [EnumName(FromTranslation = "Common.Custom")]
-        Custom
+        [EnumName(FromTranslation = "Enums.Theme.Custom")]
+        Custom,
+
+        [EnumName(FromTranslation = "Enums.Theme.Image")]
+        Image
     }
 }

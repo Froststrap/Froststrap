@@ -17,43 +17,60 @@ SPDX-License-Identifier: MPL-2.0
              x:Class="Froststrap.UI.Elements.About.Pages.AboutPage">
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel Margin="14">
+            <Grid Margin="0,24" HorizontalAlignment="Center" ColumnDefinitions="Auto,*">
+                <Image Grid.Column="0" x:Name="Image" Width="76" Height="76" VerticalAlignment="Center"
+                       Source="avares://Froststrap/Froststrap.png" RenderOptions.BitmapInterpolationMode="HighQuality" />
 
-            <Grid Margin="0,0,0,24" HorizontalAlignment="Center" ColumnDefinitions="Auto,*">
-                <Panel Grid.Column="0">
-                    <Image x:Name="Image" Width="72" Height="72" VerticalAlignment="Center"
-                           Source="avares://Froststrap/Froststrap.png" RenderOptions.BitmapInterpolationMode="HighQuality" />
-                </Panel>
-
-                <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center">
-                    <TextBlock Text="Froststrap" FontSize="24" FontWeight="Bold" />
+                <StackPanel Grid.Column="1" Margin="16,0,0,0" VerticalAlignment="Center">
+                    <TextBlock Text="Froststrap" FontSize="30" FontWeight="Bold" />
                     <TextBlock Text="{x:Static resources:Strings.Menu_About_Description}"
                                Foreground="{DynamicResource TextFillColorTertiaryBrush}"  />
                 </StackPanel>
             </Grid>
 
             <WrapPanel HorizontalAlignment="Center" Orientation="Horizontal">
-                <Button Margin="0,0,8,8"
-                        Content="{x:Static resources:Strings.Menu_About_GithubRepository}"
-                        Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
-                        CommandParameter="https://github.com/Froststrap/Froststrap" />
+                <controls:IconButton
+                    Icon="SquareArrowOutUpRight"
+                    VerticalAlignment="Center"
+                    Padding="14,8"
+                    IconSize="18"
+                    Margin="0,0,8,0"
+                    Content="{x:Static resources:Strings.Menu_About_GithubRepository}"
+                    Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+                    CommandParameter="https://github.com/Froststrap/Froststrap" />
 
-                <Button Margin="0,0,8,8"
-                        Content="{x:Static resources:Strings.Menu_About_HelpInformation}"
-                        Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
-                        CommandParameter="https://bloxstraplabs.com/wiki/" />
+                <controls:IconButton
+                    Icon="CircleQuestionMark"
+                    VerticalAlignment="Center"
+                    Padding="14,8"
+                    IconSize="18"
+                    Margin="0,0,8,0"
+                    Content="{x:Static resources:Strings.Menu_About_HelpInformation}"
+                    Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+                    CommandParameter="https://bloxstraplabs.com/wiki/" />
 
-                <Button Margin="0,0,8,8"
-                        Content="{x:Static resources:Strings.Menu_About_ReportIssue}"
-                        Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
-                        CommandParameter="https://github.com/Froststrap/Froststrap/issues" />
+                <controls:IconButton
+                    Icon="Flag"
+                    VerticalAlignment="Center"
+                    Padding="14,8"
+                    IconSize="18"
+                    Margin="0,0,8,0"
+                    Content="{x:Static resources:Strings.Menu_About_ReportIssue}"
+                    Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+                    CommandParameter="https://github.com/Froststrap/Froststrap/issues" />
 
-                <Button Margin="0,0,0,8"
-                        Content="{x:Static resources:Strings.Menu_About_DiscordServer}"
-                        Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
-                        CommandParameter="https://discord.gg/KdR9vpRcUN" />
+                <controls:IconButton
+                    Icon="Users"
+                    VerticalAlignment="Center"
+                    Padding="14,8"
+                    IconSize="18"
+                    Margin="0,0,8,0"
+                    Content="{x:Static resources:Strings.Menu_About_DiscordServer}"
+                    Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+                    CommandParameter="https://discord.gg/KdR9vpRcUN" />
             </WrapPanel>
 
-            <StackPanel IsVisible="{Binding BuildInformationVisibility}">
+            <StackPanel>
                 <TextBlock Text="{x:Static resources:Strings.Menu_About_BuildInfo}" FontWeight="Bold" FontSize="20" Margin="0,16,0,0" />
 
                 <Grid Margin="0,8,0,0" ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto">
@@ -64,38 +81,14 @@ SPDX-License-Identifier: MPL-2.0
                     <TextBlock Grid.Row="1" Grid.Column="0" Margin="0,4,16,4" FontSize="14" Text="{x:Static resources:Strings.Common_Version}" />
                     <TextBlock Grid.Row="1" Grid.Column="1" VerticalAlignment="Center"
                                Text="{Binding Version}" Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
-
-                    <TextBlock Grid.Row="2" Grid.Column="0" Margin="0,4,16,4" FontSize="14" Text="{x:Static resources:Strings.Menu_About_CommitHash}"
-                               IsVisible="{Binding BuildCommitVisibility}" />
-
-                    <Button Grid.Row="2" Grid.Column="1"
-                            IsVisible="{Binding BuildCommitVisibility}"
-                            Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
-                            CommandParameter="{Binding BuildCommitHashUrl}"
-                            Padding="0"
-                            Background="Transparent"
-                            BorderThickness="0">
-                        <TextBlock Text="{Binding BuildMetadata.CommitHash}"
-                                   TextDecorations="Underline"
-                                   Foreground="{DynamicResource SystemAccentColor}" />
-                    </Button>
-
-                    <TextBlock Grid.Row="3" Grid.Column="0" Margin="0,4,16,4" FontSize="14" Text="{x:Static resources:Strings.Menu_About_CommitRef}"
-                               IsVisible="{Binding BuildCommitVisibility}" />
-                    <TextBlock Grid.Row="3" Grid.Column="1" VerticalAlignment="Center"
-                               Text="{Binding BuildMetadata.CommitRef}"
-                               Foreground="{DynamicResource TextFillColorTertiaryBrush}"
-                               IsVisible="{Binding BuildCommitVisibility}" />
                 </Grid>
             </StackPanel>
 
             <TextBlock Text="{x:Static resources:Strings.Menu_About_Contributors}" FontWeight="Bold" FontSize="20" Margin="0,16,0,0" />
-            <TextBlock Text="{x:Static resources:Strings.Menu_About_Contributors_Description}" TextWrapping="Wrap"
-                       Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
 
             <controls:CardExpander
                 Header="{x:Static resources:Strings.Menu_About_Contributors_Code}"
-                Description="Maintainers of the Froststrap project"
+                Description="{x:Static resources:Strings.Menu_About_Contributors_Code_Description}"
                 Margin="0,4,0,0"
                 IsExpanded="True"
             >
@@ -108,7 +101,7 @@ SPDX-License-Identifier: MPL-2.0
 
             <controls:CardExpander
                 Header="{x:Static resources:Strings.Menu_About_Contributors}"
-                Description="People who have lended a hand in improving Froststrap"
+                Description="{x:Static resources:Strings.Menu_About_Contributors_Description}"
             >
                 <StackPanel>
                     <controls:MarkdownTextBlock MarkdownText="[Efaz](https://github.com/EfazDev)" />
@@ -133,7 +126,7 @@ SPDX-License-Identifier: MPL-2.0
 
             <controls:CardExpander
                 Header="{x:Static resources:Strings.Menu_About_Contributors_Insipirations}"
-                Description="Who we have used to look up at as pointers to new features and what to do"
+                Description="{x:Static resources:Strings.Menu_About_Contributors_Insipirations_Description}"
             >
                 <StackPanel>
                     <controls:MarkdownTextBlock MarkdownText="[Bloxstrap](https://github.com/bloxstraplabs/bloxstrap)" />

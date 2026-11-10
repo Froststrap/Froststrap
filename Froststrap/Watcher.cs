@@ -109,10 +109,10 @@ namespace Froststrap
                                     App.Logger.Info($"Found crash handler: {crashProc.ProcessName} (PID {crashProc.Id})");
 
                                     crashProc.Kill();
-                                            await Task.WhenAny(
-                                        crashProc.WaitForExitAsync(),
-                                        Task.Delay(3000)
-                                    );
+                                    await Task.WhenAny(
+                                crashProc.WaitForExitAsync(),
+                                Task.Delay(3000)
+                            );
 
                                     App.Logger.Info(
                                         crashProc.HasExited

@@ -25,6 +25,14 @@ namespace Froststrap.Models.Entities
 
         public static Task FetchSingle(long id) => FetchBulk(id.ToString(CultureInfo.InvariantCulture));
 
+        public static async Task<long?> ResolveUniverseId(long placeId)
+        {
+            UniverseIdResponse response = await Http.GetJson<UniverseIdResponse>(
+                UrlBuilder.BuildApiUrl("apis", $"universes/v1/places/{placeId}/universe"));
+
+            return response.UniverseId;
+        }
+
         public static async Task FetchBulk(string ids)
         {
             if (string.IsNullOrWhiteSpace(ids))

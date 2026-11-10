@@ -3,16 +3,19 @@ Contributing to Froststrap
 
 Thank you for showing interest in contributing to Froststrap!
 
+Building Froststrap
+~~~~~~~~~~~~~~~~~~~
+
+An updated copy can be found online at https://docs.froststrap.xyz/docs/contributing/build-from-source
 
 Accepted contributions
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Rather listing everything we want to allow, its easier to say we do have a list of stuff which is considered
-going to be attributed as a contribution.
+Rather listing everything we want to allow, it's easier to say we do have a list of stuff which is considered
+not allowed in contributions.
 
-
-- Fully AI changes, with no human intervention
-- Singular changes like changing a return of something that is type ``()`` to actually implicitly return type ``()`` - simply put, removing a ``;`` when it's the last line in a function
+- Fully AI changes- those with no human in the loop
+- Singular changes- E.g. a really simple change of syntax which has no arguably impact like +-1 line diffs
 
 
 Things needed to do a contribution (PR/MR)

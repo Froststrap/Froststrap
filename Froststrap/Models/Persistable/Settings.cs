@@ -46,7 +46,7 @@ namespace Froststrap.Models.Persistable
         public string VirtualDisplayName { get; set; } = "";
         public int VirtualDisplayWidth { get; set; }
         public int VirtualDisplayHeight { get; set; }
-        public double[] VirtualDisplayHzModes { get; set; } = [ 24.0, 25.0, 30.0, 60.0, 120.0, 144.0, 240.0 ];
+        public double[] VirtualDisplayHzModes { get; set; } = [24.0, 25.0, 30.0, 60.0, 120.0, 144.0, 240.0];
         public uint VirtualDisplaySerial { get; set; }
         public bool SoftKeyEnabled { get; set; }
         public SoftKeyProfile SoftKeyProfile { get; set; } = SoftKeyProfile.WASD;

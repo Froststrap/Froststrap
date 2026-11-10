@@ -83,13 +83,12 @@ namespace Froststrap.UI.Elements.Controls
 
             if (IsExpanded)
             {
-                _container.ClearValue(Layoutable.HeightProperty);
-                _container.Opacity = 1;
+                _presenter.Measure(new Size(_container.Bounds.Width, double.PositiveInfinity));
+                _container.MaxHeight = _presenter.DesiredSize.Height;
             }
             else
             {
-                _container.Height = 0;
-                _container.Opacity = 0;
+                _container.MaxHeight = 0;
             }
         }
     }
