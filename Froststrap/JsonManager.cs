@@ -344,7 +344,8 @@ namespace Froststrap
                 string profileJson;
 
                 var presetAssets = AssetLoader.GetAssets(new Uri("avares://Froststrap/Resources/PresetFlags/"), null);
-                var targetUri = presetAssets.FirstOrDefault(u => u.AbsolutePath.EndsWith(name, StringComparison.OrdinalIgnoreCase));
+                var targetUri = presetAssets.FirstOrDefault(u =>
+                    string.Equals(Uri.UnescapeDataString(Path.GetFileName(u.AbsolutePath)), name, StringComparison.OrdinalIgnoreCase));
 
                 if (targetUri != null)
                 {
