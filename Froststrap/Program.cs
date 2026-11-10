@@ -138,6 +138,10 @@ sealed partial class Program
 #endif
             .LogToTrace();
 
+#if DEBUG
+        Console.WriteLine("DEBUG BUILD! Expect shit perfomance due to use of debuggers");
+#endif
+
         if (OperatingSystem.IsMacOS())
             builder = builder.With(new AvaloniaNativePlatformOptions
             {
