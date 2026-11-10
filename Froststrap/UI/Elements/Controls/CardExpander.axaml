@@ -70,12 +70,6 @@ SPDX-License-Identifier: MPL-2.0
                         <Border Name="PART_ContentContainer"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 ClipToBounds="True">
-                            <Border.Transitions>
-                                <Transitions>
-                                    <DoubleTransition Property="Height" Duration="0:0:0.25" Easing="CubicEaseOut"/>
-                                </Transitions>
-                            </Border.Transitions>
-
                             <ContentPresenter Name="PART_ContentPresenter"
                                               Content="{TemplateBinding Content}"
                                               Padding="16"/>
@@ -95,7 +89,6 @@ SPDX-License-Identifier: MPL-2.0
     </Style>
 
     <Style Selector="controls|CardExpander[IsExpanded=False] Border#PART_ContentContainer">
-        <Setter Property="Height" Value="0" />
         <Setter Property="BorderThickness" Value="0" />
     </Style>
 
@@ -134,11 +127,6 @@ SPDX-License-Identifier: MPL-2.0
                         <Border Name="PART_ContentContainer"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 ClipToBounds="True">
-                            <Border.Transitions>
-                                <Transitions>
-                                    <DoubleTransition Property="Height" Duration="0:0:0.25" Easing="CubicEaseOut" />
-                                </Transitions>
-                            </Border.Transitions>
                             <ContentPresenter Name="PART_ContentPresenter" Content="{TemplateBinding Content}" Padding="16" />
                         </Border>
                     </StackPanel>
@@ -152,7 +140,6 @@ SPDX-License-Identifier: MPL-2.0
     </Style>
 
     <Style Selector="controls|CardExpander.NoUserExpansion[IsExpanded=False] Border#PART_ContentContainer">
-        <Setter Property="Height" Value="0" />
         <Setter Property="BorderThickness" Value="0" />
     </Style>
 </Styles>
