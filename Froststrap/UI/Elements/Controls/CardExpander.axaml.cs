@@ -4,9 +4,7 @@
 
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
-using Avalonia.Layout;
 
 namespace Froststrap.UI.Elements.Controls
 {
@@ -49,7 +47,6 @@ namespace Froststrap.UI.Elements.Controls
         }
 
         private Border? _container;
-        private ContentPresenter? _presenter;
 
         protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
         {
@@ -64,32 +61,14 @@ namespace Froststrap.UI.Elements.Controls
         {
             base.OnApplyTemplate(e);
             _container = e.NameScope.Find<Border>("PART_ContentContainer");
-            _presenter = e.NameScope.Find<ContentPresenter>("PART_ContentPresenter");
-
-            this.PropertyChanged += (sender, args) =>
-            {
-                if (args.Property == BoundsProperty)
-                {
-                    UpdateVisualState();
-                }
-            };
-
             UpdateVisualState();
         }
 
         private void UpdateVisualState()
         {
-            if (_container == null || _presenter == null) return;
+            if (_container == null) return;
 
-            if (IsExpanded)
-            {
-                _presenter.Measure(new Size(_container.Bounds.Width, double.PositiveInfinity));
-                _container.MaxHeight = _presenter.DesiredSize.Height;
-            }
-            else
-            {
-                _container.MaxHeight = 0;
-            }
+            _container.MaxHeight = IsExpanded ? double.PositiveInfinity : 0;
         }
     }
 }
