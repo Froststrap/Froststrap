@@ -14,14 +14,14 @@ namespace Froststrap.UI
 {
     internal static class Frontend
     {
-        public static async Task<MessageBoxResult> ShowMessageBox(string message, MessageBoxImage icon = MessageBoxImage.Information, MessageBoxButton buttons = MessageBoxButton.OK, MessageBoxResult defaultResult = MessageBoxResult.None)
+        public static async Task<MessageBoxResult> ShowMessageBox(string message, MessageBoxImage icon = MessageBoxImage.Information, MessageBoxButton buttons = MessageBoxButton.OK, MessageBoxResult defaultResult = MessageBoxResult.None, Window? owner = null)
         {
             App.Logger.Info(message);
 
             if (App.LaunchSettings.Silent)
                 return defaultResult;
 
-            return await ShowFluentMessageBox(message, icon, buttons);
+            return await ShowFluentMessageBox(message, icon, buttons, owner);
         }
 
         public static async Task ShowReleaseNotesDialog(string title, string releaseNotes)
@@ -165,14 +165,13 @@ namespace Froststrap.UI
             };
         }
 
-        private static async Task<MessageBoxResult> ShowFluentMessageBox(string message, MessageBoxImage icon, MessageBoxButton buttons)
+        private static async Task<MessageBoxResult> ShowFluentMessageBox(string message, MessageBoxImage icon, MessageBoxButton buttons, Window? owner)
         {
             return await Dispatcher.UIThread.InvokeAsync(async () =>
             {
                 var messagebox = new FluentMessageBox(message, icon, buttons);
 
-                Window? owner = null;
-                if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+                if (owner is null && Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
                 {
                     owner = desktop.Windows.FirstOrDefault(w => w.IsActive) ?? desktop.MainWindow;
                 }

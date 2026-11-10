@@ -92,7 +92,8 @@ namespace Froststrap.UI.ViewModels.Settings
                 Check("Settings", App.Settings.HasUnsavedChanges, App.Settings.DescribeChanges);
                 Check("State", App.State.HasUnsavedChanges, App.State.DescribeChanges);
                 Check("FastFlags", App.FastFlags.HasUnsavedChanges, App.FastFlags.DescribeChanges);
-                if (OperatingSystem.IsLinux())
+                // without Sober's config there's nothing to save, so it never counts
+                if (OperatingSystem.IsLinux() && App.SoberSettings.Loaded)
                     Check("SoberSettings", App.SoberSettings.HasUnsavedChanges);
                 Check("GlobalSettings", App.GlobalSettings.HasUnsavedChanges);
                 Check("PendingSettingTasks", App.PendingSettingTasks.Count > 0,
