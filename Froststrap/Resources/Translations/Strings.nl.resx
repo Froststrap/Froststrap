@@ -587,28 +587,28 @@ Wilt u de momenteel geïnstalleerde versie upgraden?</value>
   <data name="Menu.Appearance.Title" xml:space="preserve">
     <value>Uiterlijk</value>
   </data>
-  <data name="Menu.Behaviour.AutoUpdate.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.AutoUpdate.Description" xml:space="preserve">
     <value>Froststrap controleert automatisch of er een stabiele versie beschikbaar is en werkt zichzelf bij wanneer Roblox wordt gestart.</value>
   </data>
-  <data name="Menu.Behaviour.AutoUpdate.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.AutoUpdate.Title" xml:space="preserve">
     <value>Froststrap automatisch bijwerken</value>
   </data>
-  <data name="Menu.Behaviour.ConfirmLaunches.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ConfirmLaunches.Description" xml:space="preserve">
     <value>Voorkomt dat je huidige spel wordt afgesloten wanneer je per ongeluk een andere Roblox-instantie start.</value>
   </data>
-  <data name="Menu.Behaviour.ConfirmLaunches.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ConfirmLaunches.Title" xml:space="preserve">
     <value>Bevestiging van het opstarten van de instantie</value>
   </data>
-  <data name="Menu.Behaviour.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.Description" xml:space="preserve">
     <value>Stel in wat Froststrap moet doen bij het opstarten van Roblox.</value>
   </data>
-  <data name="Menu.Behaviour.ForceRobloxReinstall.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ForceRobloxReinstall.Description" xml:space="preserve">
     <value>Bij de volgende keer opstarten wordt Roblox opnieuw geïnstalleerd.</value>
   </data>
-  <data name="Menu.Behaviour.ForceRobloxReinstall.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ForceRobloxReinstall.Title" xml:space="preserve">
     <value>Roblox opnieuw installeren</value>
   </data>
-  <data name="Menu.Behaviour.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.Title" xml:space="preserve">
     <value>Zelfstarter</value>
   </data>
   <data name="Menu.FastFlagEditor.AddNew" xml:space="preserve">
@@ -1217,10 +1217,10 @@ Wil je je voorkeurskanaal wijzigen naar {0}?</value>
   <data name="Bootstrapper.ModificationsFailed.Message" xml:space="preserve">
     <value>Niet alle aanpassingen zullen in de huidige release aanwezig zijn.</value>
   </data>
-  <data name="Menu.Behaviour.BackgroundUpdates.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.BackgroundUpdates.Title" xml:space="preserve">
     <value>Achtergrondupdates</value>
   </data>
-  <data name="Menu.Behaviour.BackgroundUpdates.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.BackgroundUpdates.Description" xml:space="preserve">
     <value>Werk Roblox op de achtergrond bij in plaats van te wachten. Niet aanbevolen bij trage internetverbindingen. Er is minimaal 3 GB vrije opslagruimte nodig om deze functie te kunnen gebruiken.</value>
   </data>
   <data name="CustomTheme.Templates.Blank.UIElements" xml:space="preserve">
@@ -1257,10 +1257,10 @@ Wil je je voorkeurskanaal wijzigen naar {0}?</value>
   <data name="Menu.GBSEditor.ReadOnly.Description" xml:space="preserve">
     <value>Voorkom dat Roblox de algemene instellingen overschrijft.</value>
   </data>
-  <data name="Menu.Behaviour.AllowCookieAccess.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.AllowCookieAccess.Title" xml:space="preserve">
     <value>Rechten voor Froststrap-accounts</value>
   </data>
-  <data name="Menu.Behaviour.AllowCookieAccess.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.AllowCookieAccess.Description" xml:space="preserve">
     <value>Biedt toegang tot de Roblox-API’s via je authenticatiecookie. [Waar krijgt Froststrap toegang toe?]({0})</value>
   </data>
   <data name="Menu.Appearance.WindowsBackdrop.Title" xml:space="preserve">
@@ -1269,16 +1269,16 @@ Wil je je voorkeurskanaal wijzigen naar {0}?</value>
   <data name="Menu.Appearance.WindowsBackdrop.Description" xml:space="preserve">
     <value>Kies een achtergrondeffect voor het venster. Hiervoor is een donker thema vereist en moet de app opnieuw worden opgestart. Opmerking: Mica werkt alleen op Windows 11.</value>
   </data>
-  <data name="Menu.Behaviour.CloseCrashHandler.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.CloseCrashHandler.Description" xml:space="preserve">
     <value>Sluit het proces RobloxCrashHandler.exe automatisch bij het opstarten om wat systeembronnen vrij te maken.</value>
   </data>
-  <data name="Menu.Behaviour.CloseCrashHandler.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.CloseCrashHandler.Title" xml:space="preserve">
     <value>Crash-handler sluiten</value>
   </data>
-  <data name="Menu.Behaviour.ProcessPriority.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ProcessPriority.Description" xml:space="preserve">
     <value>Hiermee stel je de CPU-prioriteit voor Roblox in.</value>
   </data>
-  <data name="Menu.Behaviour.ProcessPriority.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ProcessPriority.Title" xml:space="preserve">
     <value>Roblox-procesprioriteit</value>
   </data>
   <data name="Menu.BottomButtons.ResetSettingsToDefault" xml:space="preserve">

@@ -293,9 +293,12 @@ internal static class MacOSTitleBar
                 double requiredHeight = top + anchor.Height;
                 if (hostHeight < requiredHeight)
                 {
-                    if (flipped) {
+                    if (flipped)
+                    {
                         hostFrame.Height = requiredHeight;
-                    } else {
+                    }
+                    else
+                    {
                         // For bottom-up coordinates, expanding height means we must shift Y down
                         hostFrame.Y -= (requiredHeight - hostHeight);
                         hostFrame.Height = requiredHeight;

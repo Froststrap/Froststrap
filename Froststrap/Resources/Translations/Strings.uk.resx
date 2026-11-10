@@ -609,28 +609,28 @@
   <data name="Menu.Appearance.Title" xml:space="preserve">
     <value>Зовнішній вигляд</value>
   </data>
-  <data name="Menu.Behaviour.AutoUpdate.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.AutoUpdate.Description" xml:space="preserve">
     <value>Froststrap автоматично перевірятиме та оновлюватиметься до стабільної версії під час запуску Roblox.</value>
   </data>
-  <data name="Menu.Behaviour.AutoUpdate.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.AutoUpdate.Title" xml:space="preserve">
     <value>Автоматичне оновлення Froststrap</value>
   </data>
-  <data name="Menu.Behaviour.ConfirmLaunches.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ConfirmLaunches.Description" xml:space="preserve">
     <value>Запобігає закриттю поточної гри у разі випадкового запуску іншого екземпляра Roblox.</value>
   </data>
-  <data name="Menu.Behaviour.ConfirmLaunches.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ConfirmLaunches.Title" xml:space="preserve">
     <value>Підтвердження запуску екземпляра</value>
   </data>
-  <data name="Menu.Behaviour.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.Description" xml:space="preserve">
     <value>Налаштуйте, що має робити Froststrap під час запуску Roblox.</value>
   </data>
-  <data name="Menu.Behaviour.ForceRobloxReinstall.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ForceRobloxReinstall.Description" xml:space="preserve">
     <value>Під час наступного запуску відбудеться чиста інсталяція Roblox.</value>
   </data>
-  <data name="Menu.Behaviour.ForceRobloxReinstall.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ForceRobloxReinstall.Title" xml:space="preserve">
     <value>Примусове перевстановлення Roblox</value>
   </data>
-  <data name="Menu.Behaviour.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.Title" xml:space="preserve">
     <value>«Bootstrapper»</value>
   </data>
   <data name="Menu.FastFlagEditor.AddNew" xml:space="preserve">
@@ -1248,10 +1248,10 @@ Froststrap було встановлено в папці «{1}».</value>
   <data name="Bootstrapper.ModificationsFailed.Message" xml:space="preserve">
     <value>Не всі зміни будуть включені в цей випуск.</value>
   </data>
-  <data name="Menu.Behaviour.BackgroundUpdates.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.BackgroundUpdates.Title" xml:space="preserve">
     <value>Оновлення загальної інформації</value>
   </data>
-  <data name="Menu.Behaviour.BackgroundUpdates.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.BackgroundUpdates.Description" xml:space="preserve">
     <value>Оновлюйте Roblox у фоновому режимі, замість того щоб чекати. Не рекомендується для повільних мереж. Для роботи цієї функції потрібно щонайменше 3 ГБ вільного місця на диску.</value>
   </data>
   <data name="CustomTheme.Templates.Blank.UIElements" xml:space="preserve">
@@ -1288,10 +1288,10 @@ Froststrap було встановлено в папці «{1}».</value>
   <data name="Menu.GBSEditor.ReadOnly.Description" xml:space="preserve">
     <value>Запобігайте тому, щоб Roblox замінював глобальні налаштування.</value>
   </data>
-  <data name="Menu.Behaviour.AllowCookieAccess.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.AllowCookieAccess.Title" xml:space="preserve">
     <value>Права доступу до облікового запису Froststrap</value>
   </data>
-  <data name="Menu.Behaviour.AllowCookieAccess.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.AllowCookieAccess.Description" xml:space="preserve">
     <value>Забезпечує доступ до API-інтерфейсів Roblox за допомогою вашого файлу cookie для автентифікації. [До чого отримає доступ Froststrap?]({0})</value>
   </data>
   <data name="Menu.Appearance.WindowsBackdrop.Title" xml:space="preserve">
@@ -1300,16 +1300,16 @@ Froststrap було встановлено в папці «{1}».</value>
   <data name="Menu.Appearance.WindowsBackdrop.Description" xml:space="preserve">
     <value>Виберіть ефект фону вікна. Для цього потрібна темна тема та перезапуск програми. Примітка: Mica працює лише в Windows 11.</value>
   </data>
-  <data name="Menu.Behaviour.CloseCrashHandler.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.CloseCrashHandler.Description" xml:space="preserve">
     <value>Автоматично закриває процес RobloxCrashHandler.exe під час запуску, щоб звільнити частину системних ресурсів.</value>
   </data>
-  <data name="Menu.Behaviour.CloseCrashHandler.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.CloseCrashHandler.Title" xml:space="preserve">
     <value>Закрити обробник помилок</value>
   </data>
-  <data name="Menu.Behaviour.ProcessPriority.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ProcessPriority.Description" xml:space="preserve">
     <value>Визначає пріоритет процесора для Roblox.</value>
   </data>
-  <data name="Menu.Behaviour.ProcessPriority.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ProcessPriority.Title" xml:space="preserve">
     <value>Пріоритет процесів у Roblox</value>
   </data>
   <data name="Menu.BottomButtons.ResetSettingsToDefault" xml:space="preserve">

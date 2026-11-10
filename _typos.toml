@@ -1,0 +1,7 @@
+[type.resx]
+extend-glob = ["*.resx"]
+check-file = false
+
+[type.control-strings]
+extend-glob = ["*ControlStrings.json"]
+check-file = false

@@ -374,6 +374,12 @@ If not, then please report this exception through a [GitHub issue]({1}) along wi
   <data name="Enums.Theme.Light" xml:space="preserve">
     <value>Light</value>
   </data>
+  <data name="Enums.Theme.Custom" xml:space="preserve">
+    <value>Custom Color</value>
+  </data>
+  <data name="Enums.Theme.Image" xml:space="preserve">
+    <value>Image</value>
+  </data>
   <data name="Enums.Theme.Froststrap" xml:space="preserve">
     <value>Froststrap</value>
   </data>
@@ -571,17 +577,23 @@ Would you like to upgrade your currently installed version?</value>
   <data name="Menu.About.Contributors" xml:space="preserve">
     <value>Contributors</value>
   </data>
+  <data name="Menu.About.Contributors.Description" xml:space="preserve">
+    <value>These are all of the people who have made notable contributions to Froststrap, shaping it into what it is today.</value>
+  </data>
   <data name="Menu.About.Contributors.Code" xml:space="preserve">
     <value>Code</value>
   </data>
-  <data name="Menu.About.Contributors.Description" xml:space="preserve">
-    <value>These are all of the people who have made notable contributions to Froststrap, shaping it into what it is today.</value>
+  <data name="Menu.About.Contributors.Code.Description" xml:space="preserve">
+    <value>Maintainers of the Froststrap project</value>
   </data>
   <data name="Menu.About.Contributors.Insipirations" xml:space="preserve">
     <value>Inspirations</value>
   </data>
+  <data name="Menu.About.Contributors.Insipirations.Description" xml:space="preserve">
+    <value>Who we have used to look up to for new features and how to do</value>
+  </data>
   <data name="Menu.About.Description" xml:space="preserve">
-    <value>A Fishstrap/Froststrap Fork.</value>
+    <value>A Fishstrap Fork.</value>
   </data>
   <data name="Menu.About.DiscordServer" xml:space="preserve">
     <value>Discord Server</value>
@@ -653,10 +665,10 @@ Would you like to upgrade your currently installed version?</value>
   <data name="Menu.Appearance.Title" xml:space="preserve">
     <value>Appearance</value>
   </data>
-  <data name="Menu.Behaviour.AutoUpdate.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.AutoUpdate.Description" xml:space="preserve">
     <value>Froststrap will automatically check for updates and update itself to a stable version when launching Roblox. On Linux, it will only notify you.</value>
   </data>
-  <data name="Menu.Behaviour.AutoUpdate.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.AutoUpdate.Title" xml:space="preserve">
     <value>Automatically Update Froststrap</value>
   </data>
   <data name="Menu.Deployment.CheckForUpdates.Title" xml:space="preserve">
@@ -692,37 +704,37 @@ Would you like to upgrade your currently installed version?</value>
   <data name="Menu.Deployment.ReleaseNotes.Close" xml:space="preserve">
     <value>Close</value>
   </data>
-  <data name="Menu.Behaviour.EnableVirtualDisplay.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.EnableVirtualDisplay.Title" xml:space="preserve">
     <value>Virtual Display</value>
   </data>
-  <data name="Menu.Behaviour.EnableVirtualDisplay.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.EnableVirtualDisplay.Description" xml:space="preserve">
     <value>When Roblox launches, open AppleBlox's VirtualDisplay to have a fake 240Hz display for Roblox to VSync to.</value>
   </data>
-  <data name="Menu.Behaviour.VirtualDisplayHz.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.VirtualDisplayHz.Title" xml:space="preserve">
     <value>Refresh rates</value>
   </data>
-  <data name="Menu.Behaviour.VirtualDisplayHz.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.VirtualDisplayHz.Description" xml:space="preserve">
     <value>Enter a refresh rate in Hz and add it to the list of modes the Virtual Display offers</value>
   </data>
-  <data name="Menu.Behaviour.VirtualDisplayHz.Placeholder" xml:space="preserve">
+  <data name="Menu.Bootstrapper.VirtualDisplayHz.Placeholder" xml:space="preserve">
     <value>e.g. 144</value>
   </data>
-  <data name="Menu.Behaviour.ConfirmLaunches.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ConfirmLaunches.Description" xml:space="preserve">
     <value>Prevents closing your existing game when accidentally launching another Roblox instance.</value>
   </data>
-  <data name="Menu.Behaviour.ConfirmLaunches.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ConfirmLaunches.Title" xml:space="preserve">
     <value>Instance Launch Confirmation</value>
   </data>
-  <data name="Menu.Behaviour.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.Description" xml:space="preserve">
     <value>Configure what Froststrap should do when launching Roblox.</value>
   </data>
-  <data name="Menu.Behaviour.ForceRobloxReinstall.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ForceRobloxReinstall.Description" xml:space="preserve">
     <value>A clean installation of Roblox will occur on the next launch.</value>
   </data>
-  <data name="Menu.Behaviour.ForceRobloxReinstall.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ForceRobloxReinstall.Title" xml:space="preserve">
     <value>Force Roblox Reinstallation</value>
   </data>
-  <data name="Menu.Behaviour.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.Title" xml:space="preserve">
     <value>Bootstrapper</value>
   </data>
   <data name="Menu.FastFlagEditor.AddNew" xml:space="preserve">
@@ -1342,10 +1354,10 @@ Would you like to switch your preferred channel to {0}?</value>
   <data name="Bootstrapper.ModificationsFailed.Message" xml:space="preserve">
     <value>Not all modifications will be present in the current launch.</value>
   </data>
-  <data name="Menu.Behaviour.BackgroundUpdates.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.BackgroundUpdates.Title" xml:space="preserve">
     <value>Background Updates</value>
   </data>
-  <data name="Menu.Behaviour.BackgroundUpdates.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.BackgroundUpdates.Description" xml:space="preserve">
     <value>Update Roblox in the background instead of waiting. Not recommended for slow networks. At least 3GB of free storage space is required for this feature to work.</value>
   </data>
   <data name="CustomTheme.Templates.Blank.UIElements" xml:space="preserve">
@@ -1382,10 +1394,10 @@ Would you like to switch your preferred channel to {0}?</value>
   <data name="Menu.GBSEditor.ReadOnly.Description" xml:space="preserve">
     <value>Prevent Roblox from overriding global settings.</value>
   </data>
-  <data name="Menu.Behaviour.AllowCookieAccess.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.AllowCookieAccess.Title" xml:space="preserve">
     <value>Froststrap Account Permissions</value>
   </data>
-  <data name="Menu.Behaviour.AllowCookieAccess.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.AllowCookieAccess.Description" xml:space="preserve">
     <value>Provides access to Roblox APIs using your authentication cookie. [What will Froststrap access?]({0})</value>
   </data>
   <data name="Menu.Appearance.WindowsBackdrop.Title" xml:space="preserve">
@@ -1394,10 +1406,10 @@ Would you like to switch your preferred channel to {0}?</value>
   <data name="Menu.Appearance.WindowsBackdrop.Description" xml:space="preserve">
     <value>Choose a window backdrop effect. Requires the dark theme and an app restart. Some backdrops may not work on different operating systems.</value>
   </data>
-  <data name="Menu.Behaviour.CloseCrashHandler.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.CloseCrashHandler.Description" xml:space="preserve">
     <value>Automatically closes the RobloxCrashHandler.exe process on launch to free up some system resources.</value>
   </data>
-  <data name="Menu.Behaviour.CloseCrashHandler.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.CloseCrashHandler.Title" xml:space="preserve">
     <value>Close Crash Handler</value>
   </data>
   <data name="Menu.BottomButtons.ResetSettingsToDefault" xml:space="preserve">
@@ -2068,6 +2080,12 @@ It must contain at least one of the following folders: content, ExtraContent, Pl
   <data name="Menu.Appearance.BackgroundMode" xml:space="preserve">
     <value>Background Mode:</value>
   </data>
+  <data name="Menu.Appearance.CustomColors" xml:space="preserve">
+    <value>Colors</value>
+  </data>
+  <data name="Menu.Appearance.BackgroundImage" xml:space="preserve">
+    <value>Background Image</value>
+  </data>
   <data name="Menu.Appearance.ResetDefault" xml:space="preserve">
     <value>Reset to Default</value>
   </data>
@@ -2629,6 +2647,36 @@ Do you want to install the plugin?</value>
   </data>
   <data name="Menu.Shortcuts.SearchForGame" xml:space="preserve">
     <value>Search for a Game</value>
+  </data>
+  <data name="Menu.Shortcuts.SearchForGame.Description" xml:space="preserve">
+    <value>Search by name, or enter a place ID.</value>
+  </data>
+  <data name="Menu.Shortcuts.InvalidLink" xml:space="preserve">
+    <value>That isn't a Roblox game link.</value>
+  </data>
+  <data name="Menu.Shortcuts.NotFound" xml:space="preserve">
+    <value>Couldn't find that game.</value>
+  </data>
+  <data name="Menu.Shortcuts.Failed" xml:space="preserve">
+    <value>Couldn't create the shortcut.</value>
+  </data>
+  <data name="Menu.Shortcuts.Created" xml:space="preserve">
+    <value>Added {0} to your desktop.</value>
+  </data>
+  <data name="Menu.Shortcuts.Tab.Search" xml:space="preserve">
+    <value>Manual</value>
+  </data>
+  <data name="Menu.Shortcuts.Tab.Link" xml:space="preserve">
+    <value>Link</value>
+  </data>
+  <data name="Menu.Shortcuts.GameLink" xml:space="preserve">
+    <value>Game link</value>
+  </data>
+  <data name="Menu.Shortcuts.GameLink.Description" xml:space="preserve">
+    <value>Paste a Roblox game link. The game, server instance, and private server code are read from it automatically.</value>
+  </data>
+  <data name="Menu.Shortcuts.GameLink.Placeholder" xml:space="preserve">
+    <value>https://www.roblox.com/games/...</value>
   </data>
   <data name="Menu.Shortcuts.ServerInstanceId" xml:space="preserve">
     <value>Server Instance ID</value>

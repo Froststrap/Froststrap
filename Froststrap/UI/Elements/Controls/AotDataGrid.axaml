@@ -36,20 +36,37 @@ SPDX-License-Identifier: MPL-2.0
         <Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
     </Style>
 
-    <Style Selector="controls|AotDataGrid Button.header.sorted /template/ ContentPresenter#PART_ContentPresenter">
+    <Style Selector="controls|AotDataGrid Grid.header-cell">
+        <Setter Property="Background" Value="Transparent" />
+    </Style>
+
+    <Style Selector="controls|AotDataGrid Grid.header-cell.sorted">
         <Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
+    </Style>
+
+    <Style Selector="controls|AotDataGrid Grid.header-cell.sorted Button.header:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource ControlFillColorTertiaryBrush}" />
     </Style>
 
     <Style Selector="controls|AotDataGrid Border.resize-handle">
         <Setter Property="Background" Value="Transparent" />
     </Style>
 
-    <Style Selector="controls|AotDataGrid Border.resize-handle:pointerover">
-        <Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
+    <Style Selector="controls|AotDataGrid Border.resize-grip">
+        <Setter Property="Width" Value="1" />
+        <Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
+        <Setter Property="CornerRadius" Value="1.5" />
+        <Setter Property="Transitions">
+            <Transitions>
+                <DoubleTransition Property="Width" Duration="0:0:0.12" />
+                <BrushTransition Property="Background" Duration="0:0:0.12" />
+            </Transitions>
+        </Setter>
     </Style>
 
-    <Style Selector="controls|AotDataGrid Border.resize-grip">
-        <Setter Property="Background" Value="{DynamicResource ControlStrokeColorDefaultBrush}" />
+    <Style Selector="controls|AotDataGrid Border.resize-handle:pointerover > Border.resize-grip">
+        <Setter Property="Width" Value="3" />
+        <Setter Property="Background" Value="{DynamicResource ControlStrongStrokeColorDefaultBrush}" />
     </Style>
 
     <Style Selector="controls|AotDataGrid ListBox#PART_ListBox">

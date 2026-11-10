@@ -70,17 +70,21 @@
             lintFrag
           ] { nameOverride = "default"; };
 
-        packages = let
-          fontconfig = pkgs-unstable.fontconfig;
-        in rec {
-          froststrap = (pkgs.callPackage ./nix/package.nix {
-            inherit fontconfig;
-          }) inputs;
-          froststrap-bin = pkgs.callPackage ./nix/binary.nix {
-            inherit fontconfig;
+        packages =
+          let
+            fontconfig = pkgs-unstable.fontconfig;
+          in
+          rec {
+            froststrap =
+              (pkgs.callPackage ./nix/package.nix {
+                inherit fontconfig;
+              })
+                inputs;
+            froststrap-bin = pkgs.callPackage ./nix/binary.nix {
+              inherit fontconfig;
+            };
+            default = froststrap;
           };
-          default = froststrap;
-        };
 
         formatter = (pkgs.callPackage ./nix/formatter.nix { }) inputs;
       }
@@ -92,4 +96,3 @@
       };
     };
 }
-

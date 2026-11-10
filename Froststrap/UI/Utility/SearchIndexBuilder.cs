@@ -35,7 +35,7 @@ namespace Froststrap.UI.Utility
             var navigationItems = new[]
             {
                 new { Display = Strings.Menu_Integrations_Title, Tag = "integrations" },
-                new { Display = Strings.Menu_Behaviour_Title, Tag = "behaviour" },
+                new { Display = Strings.Menu_Bootstrapper_Title, Tag = "bootstrapper" },
                 new { Display = Strings.Menu_PresetMods_Title, Tag = "mods" },
                 new { Display = Strings.Menu_FastFlags_Title, Tag = "fastflags" },
                 new { Display = Strings.Menu_Appearance_Title, Tag = "appearance" },

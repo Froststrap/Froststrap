@@ -113,14 +113,19 @@ SPDX-License-Identifier: MPL-2.0
                                                     Header="{x:Static resources:Strings.Common_Name}">
                             <controls:AotDataGridColumn.CellTemplate>
                                 <DataTemplate x:DataType="model:FastFlag">
-                                    <TextBox Text="{Binding Name, Mode=OneWay}"
-                                             VerticalContentAlignment="Center"
-                                             Background="Transparent"
-                                             BorderThickness="0"
-                                             Padding="0"
-                                             Margin="0"
-                                             LostFocus="NameTextBox_LostFocus"
-                                             KeyDown="NameTextBox_KeyDown" />
+                                    <Panel Background="Transparent" DoubleTapped="Cell_DoubleTapped">
+                                        <TextBox Text="{Binding Name, Mode=OneWay}"
+                                                 VerticalContentAlignment="Center"
+                                                 Background="Transparent"
+                                                 BorderThickness="0"
+                                                 Padding="0"
+                                                 Margin="0"
+                                                 Focusable="False"
+                                                 IsTabStop="False"
+                                                 IsHitTestVisible="False"
+                                                 LostFocus="NameTextBox_LostFocus"
+                                                 KeyDown="NameTextBox_KeyDown" />
+                                    </Panel>
                                 </DataTemplate>
                             </controls:AotDataGridColumn.CellTemplate>
                         </controls:AotDataGridColumn>
@@ -129,14 +134,19 @@ SPDX-License-Identifier: MPL-2.0
                                                     Header="{x:Static resources:Strings.Common_Value}">
                             <controls:AotDataGridColumn.CellTemplate>
                                 <DataTemplate x:DataType="model:FastFlag">
-                                    <TextBox Text="{Binding Value, Mode=OneWay}"
-                                             VerticalContentAlignment="Center"
-                                             Background="Transparent"
-                                             BorderThickness="0"
-                                             Padding="0"
-                                             Margin="0"
-                                             LostFocus="ValueTextBox_LostFocus"
-                                             KeyDown="ValueTextBox_KeyDown" />
+                                    <Panel Background="Transparent" DoubleTapped="Cell_DoubleTapped">
+                                        <TextBox Text="{Binding Value, Mode=OneWay}"
+                                                 VerticalContentAlignment="Center"
+                                                 Background="Transparent"
+                                                 BorderThickness="0"
+                                                 Padding="0"
+                                                 Margin="0"
+                                                 Focusable="False"
+                                                 IsTabStop="False"
+                                                 IsHitTestVisible="False"
+                                                 LostFocus="ValueTextBox_LostFocus"
+                                                 KeyDown="ValueTextBox_KeyDown" />
+                                    </Panel>
                                 </DataTemplate>
                             </controls:AotDataGridColumn.CellTemplate>
                         </controls:AotDataGridColumn>

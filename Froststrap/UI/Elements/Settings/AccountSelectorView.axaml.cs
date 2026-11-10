@@ -23,7 +23,7 @@ namespace Froststrap.UI.Elements.Settings
         Up,
         Down
     }
-    
+
     internal partial class AccountSelectorView : UserControl, IDisposable
     {
         private readonly AccountSelectorViewModel? _viewModel;

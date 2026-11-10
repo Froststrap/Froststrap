@@ -7,6 +7,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Controls.Presenters;
+using Avalonia.Controls.Primitives;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
@@ -100,7 +101,7 @@ namespace Froststrap.UI.Elements.Base
             WindowDecorations = WindowDecorations.Full;
             ExtendClientAreaToDecorationsHint = true;
             ExtendClientAreaTitleBarHeightHint = OperatingSystem.IsMacOS() ? -1 : 40;
-            MacOSTitleBar.SetTrafficLightOffset(this, new Point(20,19));
+            MacOSTitleBar.SetTrafficLightOffset(this, new Point(20, 19));
             TextOptions.SetTextRenderingMode(this, TextRenderingMode.Antialias);
             if (ApplyTopPadding) _contentHost?.Margin = new Thickness(0, 36, 0, 0);
 
@@ -183,9 +184,11 @@ namespace Froststrap.UI.Elements.Base
 
             var finalTheme = App.Settings.Prop.Theme.GetFinal();
             string themeName = Enum.GetName(finalTheme) ?? "Dark";
-            bool isCustom = finalTheme == Enums.Theme.Custom;
+            bool isCustomColors = finalTheme == Enums.Theme.Custom;
+            bool isCustomImage = finalTheme == Enums.Theme.Image;
+            bool isBackgroundTheme = isCustomColors || isCustomImage;
 
-            bool themeChanged = isCustom
+            bool themeChanged = isBackgroundTheme
                 || _activeThemeDictionary == null
                 || _activeColorStyle == null
                 || !string.Equals(_appliedThemeName, themeName, StringComparison.Ordinal);
@@ -226,7 +229,7 @@ namespace Froststrap.UI.Elements.Base
             Stretch imageStretch = Stretch.UniformToFill;
             double imageOpacity = 1.0;
 
-            if (!isCustom)
+            if (!isBackgroundTheme)
             {
                 EnsureCachedTheme(themeName);
 
@@ -248,42 +251,11 @@ namespace Froststrap.UI.Elements.Base
                 app.Resources.MergedDictionaries.Add(customDict);
                 _appliedThemeName = null;
 
-                if (App.Settings.Prop.BackgroundType == BackgroundMode.Gradient)
+                if (isCustomColors)
                 {
-                    var avaloniaStops = new Avalonia.Media.GradientStops();
-
-                    foreach (var s in App.Settings.Prop.CustomGradientStops)
-                    {
-                        if (Color.TryParse(s.Color, out var color))
-                        {
-                            // Keep the gradient translucent enough for the blur behind it to show.
-                            if (App.Settings.Prop.SelectedBackdrop == WindowsBackdrops.Blur)
-                                color = Color.FromArgb(Math.Min(color.A, (byte)0xBF), color.R, color.G, color.B);
-
-                            avaloniaStops.Add(new Avalonia.Media.GradientStop(color, s.Offset));
-                        }
-                    }
-
-                    double angle = App.Settings.Prop.GradientAngle ?? 45;
-                    double angleRad = (Math.PI / 180.0) * (angle - 90);
-
-                    var startPoint = new RelativePoint(
-                        0.5 - Math.Cos(angleRad) * 0.5,
-                        0.5 - Math.Sin(angleRad) * 0.5,
-                        RelativeUnit.Relative);
-                    var endPoint = new RelativePoint(
-                        0.5 + Math.Cos(angleRad) * 0.5,
-                        0.5 + Math.Sin(angleRad) * 0.5,
-                        RelativeUnit.Relative);
-
-                    backgroundBrush = new LinearGradientBrush
-                    {
-                        GradientStops = avaloniaStops,
-                        StartPoint = startPoint,
-                        EndPoint = endPoint
-                    };
+                    backgroundBrush = BuildCustomColorBrush();
                 }
-                else if (App.Settings.Prop.BackgroundType == BackgroundMode.Image)
+                else
                 {
                     string path = App.Settings.Prop.BackgroundImagePath ?? string.Empty;
 
@@ -340,6 +312,56 @@ namespace Froststrap.UI.Elements.Base
             UpdateBackdropForAllWindows();
 
             bitmapToDispose?.Dispose();
+        }
+
+        private static readonly Color DefaultCustomColor = Color.Parse("#80272F48");
+
+        private static Color AdjustForBlur(Color color) =>
+            App.Settings.Prop.SelectedBackdrop == WindowsBackdrops.Blur
+                ? Color.FromArgb(Math.Min(color.A, (byte)0xBF), color.R, color.G, color.B)
+                : color;
+
+        private static IBrush BuildCustomColorBrush()
+        {
+            var stops = new List<Avalonia.Media.GradientStop>();
+
+            foreach (var s in App.Settings.Prop.CustomGradientStops ?? [])
+            {
+                if (!Color.TryParse(s.Color, out var color))
+                    continue;
+
+                stops.Add(new Avalonia.Media.GradientStop(AdjustForBlur(color), s.Offset));
+            }
+
+            if (stops.Count == 0)
+                return new SolidColorBrush(AdjustForBlur(DefaultCustomColor));
+
+            if (stops.Count == 1)
+                return new SolidColorBrush(stops[0].Color);
+
+            double angle = App.Settings.Prop.GradientAngle ?? 45;
+            double angleRad = (Math.PI / 180.0) * (angle - 90);
+
+            var startPoint = new RelativePoint(
+                0.5 - Math.Cos(angleRad) * 0.5,
+                0.5 - Math.Sin(angleRad) * 0.5,
+                RelativeUnit.Relative);
+            var endPoint = new RelativePoint(
+                0.5 + Math.Cos(angleRad) * 0.5,
+                0.5 + Math.Sin(angleRad) * 0.5,
+                RelativeUnit.Relative);
+
+            var avaloniaStops = new Avalonia.Media.GradientStops();
+
+            foreach (var stop in stops)
+                avaloniaStops.Add(stop);
+
+            return new LinearGradientBrush
+            {
+                GradientStops = avaloniaStops,
+                StartPoint = startPoint,
+                EndPoint = endPoint
+            };
         }
 
         private static void EnsureCachedTheme(string themeName)
@@ -529,28 +551,33 @@ namespace Froststrap.UI.Elements.Base
                     continue;
 
                 var state = BackdropStates.GetValue(window, static _ => new BackdropState());
-
-                if (state.Applied == selectedBackdrop)
-                    continue;
+                bool backdropChanged = state.Applied != selectedBackdrop;
 
                 state.Applied = selectedBackdrop;
 
                 if (selectedBackdrop != WindowsBackdrops.None)
                 {
-                    window.TransparencyLevelHint = selectedBackdrop switch
+                    if (backdropChanged)
                     {
-                        WindowsBackdrops.Acrylic => [WindowTransparencyLevel.AcrylicBlur, WindowTransparencyLevel.None],
-                        WindowsBackdrops.Mica => [WindowTransparencyLevel.Mica, WindowTransparencyLevel.None],
-                        WindowsBackdrops.Blur => [WindowTransparencyLevel.AcrylicBlur, WindowTransparencyLevel.Blur, WindowTransparencyLevel.None],
-                        _ => [WindowTransparencyLevel.None]
-                    };
+                        window.TransparencyLevelHint = selectedBackdrop switch
+                        {
+                            WindowsBackdrops.Acrylic => [WindowTransparencyLevel.AcrylicBlur, WindowTransparencyLevel.None],
+                            WindowsBackdrops.Mica => [WindowTransparencyLevel.Mica, WindowTransparencyLevel.None],
+                            WindowsBackdrops.Blur => [WindowTransparencyLevel.AcrylicBlur, WindowTransparencyLevel.Blur, WindowTransparencyLevel.None],
+                            _ => [WindowTransparencyLevel.None]
+                        };
+                        window.PropertyChanged -= LogTransparency;
+                        window.PropertyChanged += LogTransparency;
+                    }
+
                     window.Background = Brushes.Transparent;
-                    window.PropertyChanged -= LogTransparency;
-                    window.PropertyChanged += LogTransparency;
                 }
                 else
                 {
-                    window.TransparencyLevelHint = [WindowTransparencyLevel.None];
+                    if (backdropChanged)
+                        window.TransparencyLevelHint = [WindowTransparencyLevel.None];
+
+                    window.ClearValue(TemplatedControl.BackgroundProperty);
                 }
             }
         }

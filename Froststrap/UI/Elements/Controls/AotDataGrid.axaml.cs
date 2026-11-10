@@ -8,8 +8,11 @@ using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Layout;
+using Avalonia.Controls.Primitives;
+using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.VisualTree;
 using System.Collections;
+using LucideAvalonia.Enum;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 
@@ -399,9 +402,6 @@ namespace Froststrap.UI.Elements.Controls
             };
             button.Classes.Add("header");
 
-            if (isSorted)
-                button.Classes.Add("sorted");
-
             var content = new Grid { ColumnDefinitions = new ColumnDefinitions("*,Auto") };
 
             var headerContent = new ContentControl
@@ -411,13 +411,17 @@ namespace Froststrap.UI.Elements.Controls
             };
             content.Children.Add(headerContent);
 
-            var arrow = new TextBlock
+            var arrow = new LucideAvalonia.Lucide
             {
-                Text = isSorted ? (_sortDescending ? "▼" : "▲") : string.Empty,
-                FontSize = 10,
+                Icon = _sortDescending ? LucideIconNames.ChevronDown : LucideIconNames.ChevronUp,
+                Width = 10,
+                Height = 10,
                 Margin = new Thickness(6, 0, 0, 0),
-                VerticalAlignment = VerticalAlignment.Center
+                VerticalAlignment = VerticalAlignment.Center,
+                IsVisible = isSorted
             };
+            arrow.Bind(TemplatedControl.ForegroundProperty,
+                new DynamicResourceExtension("TextFillColorPrimaryBrush"));
             Grid.SetColumn(arrow, 1);
             content.Children.Add(arrow);
 
@@ -425,6 +429,10 @@ namespace Froststrap.UI.Elements.Controls
             button.Click += (_, _) => HandleHeaderClick(column);
 
             var cell = new Grid { ColumnDefinitions = new ColumnDefinitions("*,Auto") };
+            cell.Classes.Add("header-cell");
+            if (isSorted)
+                cell.Classes.Add("sorted");
+
             Grid.SetColumn(button, 0);
             cell.Children.Add(button);
 
@@ -444,7 +452,6 @@ namespace Froststrap.UI.Elements.Controls
 
                 var grip = new Border
                 {
-                    Width = 1,
                     HorizontalAlignment = HorizontalAlignment.Center,
                     VerticalAlignment = VerticalAlignment.Stretch,
                     Margin = new Thickness(0, 6, 0, 6)

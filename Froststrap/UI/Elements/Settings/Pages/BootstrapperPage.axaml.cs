@@ -6,9 +6,9 @@ using Avalonia.Controls;
 
 namespace Froststrap.UI.Elements.Settings.Pages;
 
-internal partial class BehaviourPage : UserControl
+internal partial class BootstrapperPage : UserControl
 {
-    public BehaviourPage()
+    public BootstrapperPage()
     {
         InitializeComponent();
 

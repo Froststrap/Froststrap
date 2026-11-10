@@ -47,15 +47,14 @@ pub unsafe extern "C" fn send_notification_message(
     let description = IStr::from(description).into();
 
     #[cfg(target_os = "macos")]
-    {
-        let r = macos::send_notification(title, description);
-        log::debug!("Send notify result={r}");
-        r
-    }
+    let r = macos::send_notification(title, description);
 
     #[cfg(target_os = "linux")]
-    return linux::send_notification(title, description);
+    let r = linux::send_notification(title, description);
 
     #[cfg(target_os = "windows")]
-    return win::send_notification(title, description);
+    let r = win::send_notification(title, description);
+
+    log::debug!("Send notify result={r}");
+    r
 }

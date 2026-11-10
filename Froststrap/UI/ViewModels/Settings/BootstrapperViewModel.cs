@@ -10,7 +10,7 @@ using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
-    internal class BehaviourViewModel : NotifyPropertyChangedViewModel
+    internal class BootstrapperViewModel : NotifyPropertyChangedViewModel
     {
         private List<string> _availableRegions = [];
         private bool _isLoadingRegions;
@@ -81,7 +81,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public BehaviourViewModel()
+        public BootstrapperViewModel()
         {
             foreach (var hz in (App.Settings.Prop.VirtualDisplayHzModes ?? []).Distinct().Order())
                 VirtualDisplayHzEntries.Add(new HzEntry(hz, RemoveVirtualDisplayHz));

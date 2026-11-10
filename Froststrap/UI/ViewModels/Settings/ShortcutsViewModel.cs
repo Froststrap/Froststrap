@@ -35,6 +35,18 @@ namespace Froststrap.UI.ViewModels.Settings
         private OmniSearchContent? _selectedSearchResult;
         private CancellationTokenSource? _searchDebounceCts;
         private bool _isProcessingSelection;
+        private int _linkResolveSeq;
+        private string _gameLink = "";
+        private string _linkPlaceId = "";
+        private string _linkJobId = "";
+        private string _linkAccessCode = "";
+        private string _linkPreviewName = "";
+        private string _linkPreviewId = "";
+        private Bitmap? _linkPreviewIcon;
+        private string _linkShortcutStatus = "";
+        private CancellationTokenSource? _gameLinkDebounceCts;
+        private int _gameLinkResolveSeq;
+        private bool _linkAccessCodeIsLinkCode;
         private bool _disposed;
         #endregion
 
@@ -71,6 +83,40 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             get => _accessCode;
             set => SetProperty(ref _accessCode, value);
+        }
+
+        public string GameLink
+        {
+            get => _gameLink;
+            set
+            {
+                if (SetProperty(ref _gameLink, value))
+                    OnGameLinkChanged(value);
+            }
+        }
+
+        public string LinkPreviewName
+        {
+            get => _linkPreviewName;
+            set => SetProperty(ref _linkPreviewName, value);
+        }
+
+        public string LinkPreviewId
+        {
+            get => _linkPreviewId;
+            set => SetProperty(ref _linkPreviewId, value);
+        }
+
+        public Bitmap? LinkPreviewIcon
+        {
+            get => _linkPreviewIcon;
+            set => SetProperty(ref _linkPreviewIcon, value);
+        }
+
+        public string LinkShortcutStatus
+        {
+            get => _linkShortcutStatus;
+            set => SetProperty(ref _linkShortcutStatus, value);
         }
 
         public string PreviewName
@@ -116,6 +162,7 @@ namespace Froststrap.UI.ViewModels.Settings
         public ObservableCollection<OmniSearchContent> SearchResults { get; } = [];
 
         public IAsyncRelayCommand CreateGameShortcutCommand { get; }
+        public IAsyncRelayCommand CreateLinkShortcutCommand { get; }
         public IAsyncRelayCommand SearchGamesCommand { get; }
         public IRelayCommand ClearSearchCommand { get; }
         #endregion
@@ -126,7 +173,12 @@ namespace Froststrap.UI.ViewModels.Settings
             PreviewId = string.Format(CultureInfo.CurrentCulture, Strings.Menu_RegionSelector_ID, 0);
             ShortcutStatus = Strings.Menu_Shortcuts_Ready;
 
+            LinkPreviewName = Strings.Menu_Shortcuts_NoGameSelected;
+            LinkPreviewId = string.Format(CultureInfo.CurrentCulture, Strings.Menu_RegionSelector_ID, 0);
+            LinkShortcutStatus = Strings.Menu_Shortcuts_Ready;
+
             CreateGameShortcutCommand = new AsyncRelayCommand(CreateGameShortcut);
+            CreateLinkShortcutCommand = new AsyncRelayCommand(CreateLinkShortcut);
             SearchGamesCommand = new AsyncRelayCommand(SearchGamesAsync);
             ClearSearchCommand = new RelayCommand(ClearSearch);
         }
@@ -149,42 +201,183 @@ namespace Froststrap.UI.ViewModels.Settings
                     placeId: PlaceId,
                     jobId: JobId,
                     accessCode: AccessCode,
+                    linkCode: null,
                     icon: PreviewIcon,
                     onStatus: status => ShortcutStatus = status
                 );
 
-                ShortcutStatus = Strings.Menu_Shortcuts_ShortcutCreated;
+                ShortcutStatus = string.Format(CultureInfo.CurrentCulture, Strings.Menu_Shortcuts_Created, PreviewName);
             }
             catch (Exception ex)
             {
-                ShortcutStatus = Strings.Menu_Shortcuts_ErrorCreatingShortcut;
+                ShortcutStatus = Strings.Menu_Shortcuts_Failed;
+                App.Logger.Error($"Unhandled exception: {ex.Message}");
+            }
+        }
+
+        private async Task CreateLinkShortcut()
+        {
+            if (string.IsNullOrEmpty(_linkPlaceId) || LinkPreviewName == Strings.Menu_Shortcuts_NoGameSelected)
+            {
+                LinkShortcutStatus = Strings.Menu_Shortcuts_SelectGameFirst;
+                return;
+            }
+
+            try
+            {
+                LinkShortcutStatus = Strings.Menu_Shortcuts_Processing;
+
+                await Shortcut.CreateGameShortcut(
+                    appPath: Paths.Process,
+                    displayName: LinkPreviewName,
+                    placeId: _linkPlaceId,
+                    jobId: _linkJobId,
+                    accessCode: _linkAccessCodeIsLinkCode ? null : _linkAccessCode,
+                    linkCode: _linkAccessCodeIsLinkCode ? _linkAccessCode : null,
+                    icon: LinkPreviewIcon,
+                    onStatus: status => LinkShortcutStatus = status
+                );
+
+                LinkShortcutStatus = string.Format(CultureInfo.CurrentCulture, Strings.Menu_Shortcuts_Created, LinkPreviewName);
+            }
+            catch (Exception ex)
+            {
+                LinkShortcutStatus = Strings.Menu_Shortcuts_Failed;
                 App.Logger.Error($"Unhandled exception: {ex.Message}");
             }
         }
 
         private void ClearSearch()
         {
+            _isProcessingSelection = true;
+            _linkResolveSeq++;
+            _searchDebounceCts?.Cancel();
+
             SearchQuery = string.Empty;
             SearchResults.Clear();
             IsSearchFlyoutOpen = false;
             SelectedSearchResult = null;
+            ResetSelectedGame();
+            _isProcessingSelection = false;
+        }
+
+        private void ResetSelectedGame()
+        {
+            PlaceId = string.Empty;
+            JobId = string.Empty;
+            AccessCode = string.Empty;
+            PreviewName = Strings.Menu_Shortcuts_NoGameSelected;
+            PreviewId = string.Format(CultureInfo.CurrentCulture, Strings.Menu_RegionSelector_ID, 0);
+            PreviewIcon = null;
+            ShortcutStatus = Strings.Menu_Shortcuts_Ready;
         }
 
         private void OnSearchQueryChanged(string value)
         {
             if (_isProcessingSelection) return;
 
-            if (long.TryParse(value, out var id))
+            if (string.IsNullOrWhiteSpace(value))
             {
+                ClearSearch();
+                return;
+            }
+
+            if (long.TryParse(value, out var id) && id > 0)
+            {
+                _linkResolveSeq++;
                 PlaceId = id.ToString(CultureInfo.InvariantCulture);
+                SetPendingGamePreview(id);
                 _ = FetchInfoForId(id, CancellationToken.None);
             }
+            else if (LooksLikeRobloxLink(value))
+            {
+                _linkResolveSeq++;
+                _searchDebounceCts?.Cancel();
+                SearchResults.Clear();
+                IsSearchFlyoutOpen = false;
+                SelectedSearchResult = null;
+                ResetSelectedGame();
+                _ = ResolvePastedLinkAsync(value.Trim(), _linkResolveSeq);
+                return;
+            }
+
+            SelectedSearchResult = null;
+            ResetSelectedGame();
 
             _searchDebounceCts?.Cancel();
             _searchDebounceCts?.Dispose();
             _searchDebounceCts = new CancellationTokenSource();
 
             _ = DebouncedSearchTriggerAsync(_searchDebounceCts.Token);
+        }
+
+        private static bool LooksLikeRobloxLink(string? value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return false;
+
+            string trimmed = value.Trim();
+
+            return trimmed.StartsWith("roblox://", StringComparison.OrdinalIgnoreCase)
+                || trimmed.StartsWith("roblox-player:", StringComparison.OrdinalIgnoreCase)
+                || trimmed.Contains("roblox.com", StringComparison.OrdinalIgnoreCase)
+                || trimmed.StartsWith("ro.blox.com/", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private async Task ResolvePastedLinkAsync(string link, int sequence)
+        {
+            ShortcutStatus = Strings.Menu_Shortcuts_UpdatingPreview;
+
+            string? command;
+
+            try
+            {
+                command = await GameJoin.GetLaunchCommandByLink(link);
+            }
+            catch (Exception ex)
+            {
+                if (sequence != _linkResolveSeq)
+                    return;
+
+                App.Logger.Error($"Failed to resolve pasted game link: {ex.Message}");
+                ShortcutStatus = Strings.Menu_Shortcuts_InvalidLink;
+                return;
+            }
+
+            if (sequence != _linkResolveSeq)
+                return;
+
+            if (string.IsNullOrEmpty(command))
+            {
+                ShortcutStatus = Strings.Menu_Shortcuts_InvalidLink;
+                return;
+            }
+
+            GameJoinData joinData = GameJoin.GetJoinDataByLaunchCommand(command);
+
+            if (joinData.PlaceId is not long placeId || placeId <= 0)
+            {
+                ShortcutStatus = Strings.Menu_Shortcuts_InvalidLink;
+                return;
+            }
+
+            _isProcessingSelection = true;
+            PlaceId = placeId.ToString(CultureInfo.InvariantCulture);
+            SearchQuery = PlaceId;
+            JobId = IsValidJobId(joinData.JobId) ? joinData.JobId! : string.Empty;
+            AccessCode = joinData.AccessCode ?? string.Empty;
+            SetPendingGamePreview(placeId);
+            _isProcessingSelection = false;
+
+            await FetchInfoForId(placeId, CancellationToken.None);
+        }
+
+        private void SetPendingGamePreview(long placeId)
+        {
+            PreviewName = string.Format(CultureInfo.CurrentCulture, Strings.Menu_Shortcuts_Game, placeId);
+            PreviewId = string.Format(CultureInfo.CurrentCulture, Strings.Menu_RegionSelector_ID, placeId);
+            PreviewIcon = null;
+            ShortcutStatus = Strings.Menu_Shortcuts_UpdatingPreview;
         }
 
         private async Task DebouncedSearchTriggerAsync(CancellationToken token)
@@ -205,6 +398,9 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private void OnSelectedSearchResultChanged(OmniSearchContent? value)
         {
+            _linkResolveSeq++;
+            _searchDebounceCts?.Cancel();
+
             if (value is null)
             {
                 PreviewName = Strings.Menu_Shortcuts_NoGameSelected;
@@ -225,32 +421,255 @@ namespace Froststrap.UI.ViewModels.Settings
             IsSearchFlyoutOpen = false;
         }
 
-        private async Task FetchInfoForId(long id, CancellationToken token)
+        private void OnGameLinkChanged(string value)
+        {
+            _gameLinkResolveSeq++;
+            _gameLinkDebounceCts?.Cancel();
+            _gameLinkDebounceCts?.Dispose();
+            _gameLinkDebounceCts = null;
+
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                ResetLinkSelection();
+                return;
+            }
+
+            ResetLinkSelection();
+            LinkShortcutStatus = Strings.Menu_Shortcuts_UpdatingPreview;
+
+            _gameLinkDebounceCts = new CancellationTokenSource();
+            _ = DebouncedGameLinkResolveAsync(value.Trim(), _gameLinkResolveSeq, _gameLinkDebounceCts.Token);
+        }
+
+        private async Task DebouncedGameLinkResolveAsync(string link, int sequence, CancellationToken token)
         {
             try
             {
-                ShortcutStatus = Strings.Menu_Shortcuts_UpdatingPreview;
+                await Task.Delay(500, token);
 
-                await UniverseDetails.FetchBulk(id.ToString(CultureInfo.InvariantCulture));
-                var details = UniverseDetails.LoadFromCache(id);
+                if (token.IsCancellationRequested || sequence != _gameLinkResolveSeq)
+                    return;
+
+                if (!LooksLikeRobloxLink(link))
+                {
+                    ResetLinkSelection();
+                    LinkShortcutStatus = Strings.Menu_Shortcuts_InvalidLink;
+                    return;
+                }
+
+                await ResolveGameLinkAsync(link, sequence, token);
+            }
+            catch (OperationCanceledException) { }
+        }
+
+        private async Task ResolveGameLinkAsync(string link, int sequence, CancellationToken token)
+        {
+            ResetLinkSelection();
+            LinkShortcutStatus = Strings.Menu_Shortcuts_UpdatingPreview;
+
+            string? command;
+
+            try
+            {
+                command = await GameJoin.GetLaunchCommandByLink(link);
+            }
+            catch (Exception ex)
+            {
+                if (token.IsCancellationRequested || sequence != _gameLinkResolveSeq)
+                    return;
+
+                App.Logger.Error($"Failed to resolve pasted game link: {ex.Message}");
+                ResetLinkSelection();
+                LinkShortcutStatus = Strings.Menu_Shortcuts_InvalidLink;
+                return;
+            }
+
+            if (token.IsCancellationRequested || sequence != _gameLinkResolveSeq)
+                return;
+
+            if (string.IsNullOrEmpty(command))
+            {
+                ResetLinkSelection();
+                LinkShortcutStatus = Strings.Menu_Shortcuts_InvalidLink;
+                return;
+            }
+
+            long placeId = 0;
+            string? jobId = null;
+            string? accessCode = null;
+            string? linkCode = null;
+
+            if (Uri.TryCreate(command, UriKind.Absolute, out Uri? uri))
+            {
+                var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
+
+                _ = long.TryParse(query["placeId"], NumberStyles.Integer, CultureInfo.InvariantCulture, out placeId);
+
+                jobId = query["gameInstanceId"];
+                accessCode = query["accessCode"];
+                linkCode = query["linkCode"];
+            }
+
+            if (!IsValidJobId(jobId))
+                jobId = null;
+
+            if (placeId <= 0)
+            {
+                ResetLinkSelection();
+                LinkShortcutStatus = Strings.Menu_Shortcuts_InvalidLink;
+                return;
+            }
+
+            _linkPlaceId = placeId.ToString(CultureInfo.InvariantCulture);
+            _linkJobId = jobId ?? string.Empty;
+            _linkAccessCode = accessCode ?? linkCode ?? string.Empty;
+            _linkAccessCodeIsLinkCode = string.IsNullOrEmpty(accessCode) && !string.IsNullOrEmpty(linkCode);
+
+            SetPendingLinkPreview(placeId);
+
+            await FetchLinkPreviewAsync(placeId, token);
+        }
+
+        private static bool IsValidJobId(string? jobId) =>
+            !string.IsNullOrWhiteSpace(jobId) && Guid.TryParse(jobId.Trim(), out _);
+
+        private void ResetLinkSelection()
+        {
+            _linkPlaceId = string.Empty;
+            _linkJobId = string.Empty;
+            _linkAccessCode = string.Empty;
+            _linkAccessCodeIsLinkCode = false;
+            LinkPreviewName = Strings.Menu_Shortcuts_NoGameSelected;
+            LinkPreviewId = string.Format(CultureInfo.CurrentCulture, Strings.Menu_RegionSelector_ID, 0);
+            LinkPreviewIcon = null;
+            LinkShortcutStatus = Strings.Menu_Shortcuts_Ready;
+        }
+
+        private void SetPendingLinkPreview(long placeId)
+        {
+            LinkPreviewName = string.Format(CultureInfo.CurrentCulture, Strings.Menu_Shortcuts_Game, placeId);
+            LinkPreviewId = string.Format(CultureInfo.CurrentCulture, Strings.Menu_RegionSelector_ID, placeId);
+            LinkPreviewIcon = null;
+            LinkShortcutStatus = Strings.Menu_Shortcuts_UpdatingPreview;
+        }
+
+        private async Task FetchLinkPreviewAsync(long placeId, CancellationToken token)
+        {
+            LinkShortcutStatus = Strings.Menu_Shortcuts_UpdatingPreview;
+
+            GamePreviewResult? preview = await FetchGamePreviewAsync(placeId, token);
+
+            if (preview is null)
+                return;
+
+            if (!preview.PlaceExists)
+                _linkPlaceId = string.Empty;
+
+            LinkPreviewName = preview.Name;
+            LinkPreviewId = preview.Id;
+            LinkPreviewIcon = preview.Icon;
+            LinkShortcutStatus = preview.Status;
+        }
+
+        private async Task FetchInfoForId(long placeId, CancellationToken token)
+        {
+            ShortcutStatus = Strings.Menu_Shortcuts_UpdatingPreview;
+
+            GamePreviewResult? preview = await FetchGamePreviewAsync(placeId, token);
+
+            if (preview is null)
+                return;
+
+            if (!preview.PlaceExists)
+                PlaceId = string.Empty;
+
+            PreviewName = preview.Name;
+            PreviewId = preview.Id;
+            PreviewIcon = preview.Icon;
+            ShortcutStatus = preview.Status;
+        }
+
+        private static async Task<GamePreviewResult?> FetchGamePreviewAsync(long placeId, CancellationToken token)
+        {
+            try
+            {
+                long? universeId;
+
+                try
+                {
+                    universeId = await UniverseDetails.ResolveUniverseId(placeId);
+                }
+                catch (Exception ex)
+                {
+                    if (token.IsCancellationRequested)
+                        return null;
+
+                    App.Logger.Error($"Failed to resolve universe ID for place {placeId}: {ex.Message}");
+
+                    return new GamePreviewResult(
+                        string.Format(CultureInfo.CurrentCulture, Strings.Menu_Shortcuts_Game, placeId),
+                        string.Format(CultureInfo.CurrentCulture, Strings.Menu_RegionSelector_ID, placeId),
+                        null,
+                        Strings.Menu_Shortcuts_ReadyWithManualId,
+                        true);
+                }
+
+                if (token.IsCancellationRequested)
+                    return null;
+
+                if (universeId is null)
+                {
+                    return new GamePreviewResult(
+                        Strings.Menu_Shortcuts_NoGameSelected,
+                        string.Format(CultureInfo.CurrentCulture, Strings.Menu_RegionSelector_ID, 0),
+                        null,
+                        Strings.Menu_Shortcuts_NotFound,
+                        false);
+                }
+
+                if (UniverseDetails.LoadFromCache(universeId.Value) is null)
+                    await UniverseDetails.FetchSingle(universeId.Value);
+
+                if (token.IsCancellationRequested)
+                    return null;
+
+                var details = UniverseDetails.LoadFromCache(universeId.Value);
 
                 if (details != null)
                 {
-                    PreviewName = details.Data.Name;
-                    PreviewId = string.Format(CultureInfo.CurrentCulture, Strings.Menu_RegionSelector_ID, id);
-                    PreviewIcon = await LoadBitmapFromUrl(details.Thumbnail.ImageUrl, token);
+                    Bitmap? icon = await LoadBitmapFromUrl(details.Thumbnail.ImageUrl, token);
+
+                    if (token.IsCancellationRequested)
+                        return null;
+
+                    return new GamePreviewResult(
+                        details.Data.Name,
+                        string.Format(CultureInfo.CurrentCulture, Strings.Menu_RegionSelector_ID, placeId),
+                        icon,
+                        Strings.Menu_Shortcuts_ReadyToCreate,
+                        true);
                 }
-                else
-                {
-                    PreviewName = string.Format(CultureInfo.CurrentCulture, Strings.Menu_Shortcuts_Game, id);
-                    PreviewId = string.Format(CultureInfo.CurrentCulture, Strings.Menu_RegionSelector_ID, id);
-                    PreviewIcon = null;
-                }
+
+                return new GamePreviewResult(
+                    string.Format(CultureInfo.CurrentCulture, Strings.Menu_Shortcuts_Game, placeId),
+                    string.Format(CultureInfo.CurrentCulture, Strings.Menu_RegionSelector_ID, placeId),
+                    null,
+                    Strings.Menu_Shortcuts_ReadyWithManualId,
+                    true);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                PreviewName = string.Format(CultureInfo.CurrentCulture, Strings.Menu_Shortcuts_Game, id);
-                ShortcutStatus = Strings.Menu_Shortcuts_ReadyWithManualId;
+                if (token.IsCancellationRequested)
+                    return null;
+
+                App.Logger.Error($"Failed to fetch info for place {placeId}: {ex.Message}");
+
+                return new GamePreviewResult(
+                    string.Format(CultureInfo.CurrentCulture, Strings.Menu_Shortcuts_Game, placeId),
+                    string.Format(CultureInfo.CurrentCulture, Strings.Menu_RegionSelector_ID, placeId),
+                    null,
+                    Strings.Menu_Shortcuts_ReadyWithManualId,
+                    true);
             }
         }
 
@@ -315,6 +734,8 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
+        private sealed record GamePreviewResult(string Name, string Id, Bitmap? Icon, string Status, bool PlaceExists);
+
         private static async Task<Bitmap?> LoadBitmapFromUrl(string? url, CancellationToken token = default)
         {
             if (string.IsNullOrEmpty(url)) return null;
@@ -348,6 +769,10 @@ namespace Froststrap.UI.ViewModels.Settings
                 _searchDebounceCts?.Cancel();
                 _searchDebounceCts?.Dispose();
                 _searchDebounceCts = null;
+
+                _gameLinkDebounceCts?.Cancel();
+                _gameLinkDebounceCts?.Dispose();
+                _gameLinkDebounceCts = null;
             }
 
             _disposed = true;

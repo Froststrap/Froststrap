@@ -615,28 +615,28 @@
   <data name="Menu.Appearance.Title" xml:space="preserve">
     <value>외관</value>
   </data>
-  <data name="Menu.Behaviour.AutoUpdate.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.AutoUpdate.Description" xml:space="preserve">
     <value>Froststrap은 Roblox를 실행할 때 자동으로 상태를 확인하고 안정 버전을 설치합니다.</value>
   </data>
-  <data name="Menu.Behaviour.AutoUpdate.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.AutoUpdate.Title" xml:space="preserve">
     <value>Froststrap 자동 업데이트</value>
   </data>
-  <data name="Menu.Behaviour.ConfirmLaunches.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ConfirmLaunches.Description" xml:space="preserve">
     <value>실수로 다른 Roblox 인스턴스를 실행했을 때 기존 게임이 종료되는 것을 방지합니다.</value>
   </data>
-  <data name="Menu.Behaviour.ConfirmLaunches.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ConfirmLaunches.Title" xml:space="preserve">
     <value>인스턴스 시작 확인</value>
   </data>
-  <data name="Menu.Behaviour.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.Description" xml:space="preserve">
     <value>Roblox를 실행할 때 Froststrap이 수행할 작업을 설정합니다.</value>
   </data>
-  <data name="Menu.Behaviour.ForceRobloxReinstall.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ForceRobloxReinstall.Description" xml:space="preserve">
     <value>다음에 실행할 때 Roblox가 새로 설치됩니다.</value>
   </data>
-  <data name="Menu.Behaviour.ForceRobloxReinstall.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ForceRobloxReinstall.Title" xml:space="preserve">
     <value>Roblox 재설치 강제 실행</value>
   </data>
-  <data name="Menu.Behaviour.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.Title" xml:space="preserve">
     <value>부트스트래퍼</value>
   </data>
   <data name="Menu.FastFlagEditor.AddNew" xml:space="preserve">
@@ -1254,10 +1254,10 @@ Froststrap은 "{1}"에 설치되었습니다.</value>
   <data name="Bootstrapper.ModificationsFailed.Message" xml:space="preserve">
     <value>이번 출시 버전에는 모든 수정 사항이 포함되지는 않을 것입니다.</value>
   </data>
-  <data name="Menu.Behaviour.BackgroundUpdates.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.BackgroundUpdates.Title" xml:space="preserve">
     <value>배경 정보 업데이트</value>
   </data>
-  <data name="Menu.Behaviour.BackgroundUpdates.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.BackgroundUpdates.Description" xml:space="preserve">
     <value>기다리지 말고 백그라운드에서 Roblox를 업데이트하세요. 네트워크 속도가 느린 경우에는 권장하지 않습니다. 이 기능을 사용하려면 최소 3GB의 여유 저장 공간이 필요합니다.</value>
   </data>
   <data name="CustomTheme.Templates.Blank.UIElements" xml:space="preserve">
@@ -1294,10 +1294,10 @@ Froststrap은 "{1}"에 설치되었습니다.</value>
   <data name="Menu.GBSEditor.ReadOnly.Description" xml:space="preserve">
     <value>Roblox가 전역 설정을 덮어쓰지 못하도록 방지합니다.</value>
   </data>
-  <data name="Menu.Behaviour.AllowCookieAccess.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.AllowCookieAccess.Title" xml:space="preserve">
     <value>Froststrap 계정 권한</value>
   </data>
-  <data name="Menu.Behaviour.AllowCookieAccess.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.AllowCookieAccess.Description" xml:space="preserve">
     <value>인증 쿠키를 사용하여 Roblox API에 액세스할 수 있게 해줍니다. [Froststrap은 어떤 정보에 액세스하나요?]({0})</value>
   </data>
   <data name="Menu.Appearance.WindowsBackdrop.Title" xml:space="preserve">
@@ -1306,16 +1306,16 @@ Froststrap은 "{1}"에 설치되었습니다.</value>
   <data name="Menu.Appearance.WindowsBackdrop.Description" xml:space="preserve">
     <value>창 배경 효과를 선택하세요. 다크 테마가 설정되어 있어야 하며 앱을 다시 시작해야 합니다. 참고: Mica는 Windows 11에서만 작동합니다.</value>
   </data>
-  <data name="Menu.Behaviour.CloseCrashHandler.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.CloseCrashHandler.Description" xml:space="preserve">
     <value>실행 시 RobloxCrashHandler.exe 프로세스를 자동으로 종료하여 시스템 리소스를 일부 확보합니다.</value>
   </data>
-  <data name="Menu.Behaviour.CloseCrashHandler.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.CloseCrashHandler.Title" xml:space="preserve">
     <value>충돌 처리기 닫기</value>
   </data>
-  <data name="Menu.Behaviour.ProcessPriority.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ProcessPriority.Description" xml:space="preserve">
     <value>Roblox의 CPU 우선순위를 선택합니다.</value>
   </data>
-  <data name="Menu.Behaviour.ProcessPriority.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ProcessPriority.Title" xml:space="preserve">
     <value>Roblox 프로세스 우선순위</value>
   </data>
   <data name="Menu.BottomButtons.ResetSettingsToDefault" xml:space="preserve">

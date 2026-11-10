@@ -606,25 +606,25 @@
   <data name="Menu.Appearance.Title" xml:space="preserve">
     <value>Εμφάνιση</value>
   </data>
-  <data name="Menu.Behaviour.AutoUpdate.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.AutoUpdate.Description" xml:space="preserve">
     <value>Το Froststrap θα ελέγχει αυτόματα και θα ενημερώνεται σε μια σταθερή έκδοση κατά την εκκίνηση του Roblox.</value>
   </data>
-  <data name="Menu.Behaviour.AutoUpdate.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.AutoUpdate.Title" xml:space="preserve">
     <value>Αυτόματη ενημέρωση του Froststrap</value>
   </data>
-  <data name="Menu.Behaviour.ConfirmLaunches.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ConfirmLaunches.Description" xml:space="preserve">
     <value>Αποτρέπει το κλείσιμο του τρέχοντος παιχνιδιού σας σε περίπτωση που ξεκινήσετε κατά λάθος μια άλλη παρουσία του Roblox.</value>
   </data>
-  <data name="Menu.Behaviour.ConfirmLaunches.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ConfirmLaunches.Title" xml:space="preserve">
     <value>Επιβεβαίωση εκκίνησης παρουσίας</value>
   </data>
-  <data name="Menu.Behaviour.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.Description" xml:space="preserve">
     <value>Ρυθμίστε τις ενέργειες που θα εκτελεί το Froststrap κατά την εκκίνηση του Roblox.</value>
   </data>
-  <data name="Menu.Behaviour.ForceRobloxReinstall.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ForceRobloxReinstall.Description" xml:space="preserve">
     <value>Κατά την επόμενη εκκίνηση θα πραγματοποιηθεί μια «καθαρή» εγκατάσταση του Roblox.</value>
   </data>
-  <data name="Menu.Behaviour.ForceRobloxReinstall.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ForceRobloxReinstall.Title" xml:space="preserve">
     <value>Επιβολή επανεγκατάστασης του Roblox</value>
   </data>
   <data name="Menu.FastFlagEditor.AddNew" xml:space="preserve">
@@ -1239,10 +1239,10 @@
   <data name="Bootstrapper.ModificationsFailed.Message" xml:space="preserve">
     <value>Δεν θα περιλαμβάνονται όλες οι τροποποιήσεις στην τρέχουσα έκδοση.</value>
   </data>
-  <data name="Menu.Behaviour.BackgroundUpdates.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.BackgroundUpdates.Title" xml:space="preserve">
     <value>Ενημερώσεις σχετικά με το ιστορικό</value>
   </data>
-  <data name="Menu.Behaviour.BackgroundUpdates.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.BackgroundUpdates.Description" xml:space="preserve">
     <value>Ενημερώστε το Roblox στο παρασκήνιο αντί να περιμένετε. Δεν συνιστάται για αργές συνδέσεις. Απαιτούνται τουλάχιστον 3 GB ελεύθερου χώρου αποθήκευσης για να λειτουργήσει αυτή η λειτουργία.</value>
   </data>
   <data name="CustomTheme.Templates.Blank.UIElements" xml:space="preserve">
@@ -1279,10 +1279,10 @@
   <data name="Menu.GBSEditor.ReadOnly.Description" xml:space="preserve">
     <value>Αποτρέψτε το Roblox από το να παρακάμψει τις γενικές ρυθμίσεις.</value>
   </data>
-  <data name="Menu.Behaviour.AllowCookieAccess.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.AllowCookieAccess.Title" xml:space="preserve">
     <value>Δικαιώματα λογαριασμού Froststrap</value>
   </data>
-  <data name="Menu.Behaviour.AllowCookieAccess.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.AllowCookieAccess.Description" xml:space="preserve">
     <value>Παρέχει πρόσβαση στα API του Roblox χρησιμοποιώντας το cookie πιστοποίησής σας. [Σε τι θα έχει πρόσβαση το Froststrap;]({0})</value>
   </data>
   <data name="Menu.Appearance.WindowsBackdrop.Title" xml:space="preserve">
@@ -1291,16 +1291,16 @@
   <data name="Menu.Appearance.WindowsBackdrop.Description" xml:space="preserve">
     <value>Επιλέξτε ένα εφέ φόντου παραθύρου. Απαιτείται σκοτεινό θέμα και επανεκκίνηση της εφαρμογής. Σημείωση: Το Mica λειτουργεί μόνο στα Windows 11.</value>
   </data>
-  <data name="Menu.Behaviour.CloseCrashHandler.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.CloseCrashHandler.Description" xml:space="preserve">
     <value>Κλείνει αυτόματα τη διαδικασία RobloxCrashHandler.exe κατά την εκκίνηση, προκειμένου να ελευθερωθεί μέρος της χρήσης του συστήματος.</value>
   </data>
-  <data name="Menu.Behaviour.CloseCrashHandler.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.CloseCrashHandler.Title" xml:space="preserve">
     <value>Κλείσιμο του προγράμματος διαχείρισης σφαλμάτων</value>
   </data>
-  <data name="Menu.Behaviour.ProcessPriority.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ProcessPriority.Description" xml:space="preserve">
     <value>Επιλέγει την προτεραιότητα της CPU για το Roblox.</value>
   </data>
-  <data name="Menu.Behaviour.ProcessPriority.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ProcessPriority.Title" xml:space="preserve">
     <value>Προτεραιότητα διεργασιών στο Roblox</value>
   </data>
   <data name="Menu.BottomButtons.ResetSettingsToDefault" xml:space="preserve">

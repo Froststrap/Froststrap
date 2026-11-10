@@ -1,0 +1,161 @@
+<Project>
+  <UsingTask TaskName="GenerateJsonContextRegistrations" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)/Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup>
+      <ProjectDirectory ParameterType="System.String" Required="true" />
+      <ContextFile ParameterType="System.String" Required="true" />
+      <OutputFile ParameterType="System.String" Required="true" />
+    </ParameterGroup>
+    <Task>
+      <Using Namespace="System" />
+      <Using Namespace="System.Collections.Generic" />
+      <Using Namespace="System.IO" />
+      <Using Namespace="System.Linq" />
+      <Using Namespace="System.Text" />
+      <Using Namespace="System.Text.RegularExpressions" />
+      <Code Type="Fragment" Language="cs"><![CDATA[
+        var registered = new HashSet<string>(StringComparer.Ordinal);
+
+        if (File.Exists(ContextFile))
+        {
+            foreach (Match match in Regex.Matches(File.ReadAllText(ContextFile), @"\[JsonSerializable\(typeof\((?<type>[^)]+)\)\)\]"))
+                registered.Add(Regex.Replace(match.Groups["type"].Value, @"\s+", ""));
+        }
+
+        var found = new SortedSet<string>(StringComparer.Ordinal);
+
+        string[] prefixes =
+        [
+            "JsonHelper.Deserialize<",
+            "JsonHelper.DeserializeAsync<",
+            "JsonHelper.Serialize<",
+            "JsonHelper.SerializeAsync<",
+            "JsonHelper.SerializeToNode<",
+            "JsonHelper.SerializeToElement<",
+            "JsonHelper.GetFromJsonAsync<",
+            "JsonHelper.ReadFromJsonAsync<",
+            "JsonHelper.TypeInfo<",
+            "Http.GetJson<",
+            "Http.SendJson<",
+            "Http.AuthGetJson<",
+            "Http.AuthSendJson<",
+            ".PostFromJsonWithRetriesAsync<"
+        ];
+
+        int FindClose(string text, int open)
+        {
+            int depth = 0;
+
+            for (int i = open; i < text.Length; i++)
+            {
+                if (text[i] == '<')
+                    depth++;
+                else if (text[i] == '>' && --depth == 0)
+                    return i;
+            }
+
+            return -1;
+        }
+
+        string outputPath = Path.GetFullPath(OutputFile);
+
+        foreach (string file in Directory.EnumerateFiles(ProjectDirectory, "*.cs", SearchOption.AllDirectories))
+        {
+            string path = Path.GetFullPath(file);
+
+            if (path.Equals(outputPath, StringComparison.OrdinalIgnoreCase)
+                || path.IndexOf(Path.DirectorySeparatorChar + "obj" + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase) >= 0
+                || path.IndexOf(Path.DirectorySeparatorChar + "bin" + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase) >= 0)
+                continue;
+
+            string text = File.ReadAllText(file);
+
+            foreach (string prefix in prefixes)
+            {
+                int index = 0;
+
+                while ((index = text.IndexOf(prefix, index, StringComparison.Ordinal)) >= 0)
+                {
+                    int open = index + prefix.Length - 1;
+                    int close = FindClose(text, open);
+
+                    if (close < 0)
+                    {
+                        index = open + 1;
+                        continue;
+                    }
+
+                    string type = Regex.Replace(text.Substring(open + 1, close - open - 1), @"\s+", "");
+
+                    index = close + 1;
+
+                    if (type.Length == 0 || Regex.IsMatch(type, @"^[A-Z][0-9]?$"))
+                        continue;
+
+                    found.Add(type);
+                }
+            }
+        }
+
+        bool IsRegistered(string type)
+        {
+            if (registered.Contains(type))
+                return true;
+
+            if (type.IndexOf('<') >= 0)
+                return false;
+
+            string simple = type.Substring(type.LastIndexOf('.') + 1);
+
+            return registered.Contains(simple)
+                || registered.Any(name => name.EndsWith("." + simple, StringComparison.Ordinal));
+        }
+
+        string source = File.ReadAllText(ContextFile);
+        const string classMarker = "internal partial class JsonContext";
+        int classIndex = source.IndexOf(classMarker, StringComparison.Ordinal);
+
+        if (classIndex < 0)
+            throw new InvalidOperationException($"Could not find '{classMarker}' in {ContextFile}");
+
+        int lineStart = source.LastIndexOf('\n', classIndex) + 1;
+        var builder = new StringBuilder(source.Substring(0, lineStart));
+
+        foreach (string type in found.Where(type => !IsRegistered(type)))
+        {
+            builder.Append("    [JsonSerializable(typeof(");
+            builder.Append(type);
+            builder.AppendLine("))]");
+        }
+
+        builder.Append(source.Substring(lineStart));
+
+        string content = builder.ToString();
+
+        if (content != source)
+            File.WriteAllText(ContextFile, content);
+
+        Directory.CreateDirectory(Path.GetDirectoryName(outputPath)!);
+
+        if (!File.Exists(outputPath) || File.ReadAllText(outputPath) != content)
+            File.WriteAllText(outputPath, content);
+      ]]></Code>
+    </Task>
+  </UsingTask>
+
+  <Target Name="GenerateJsonContextRegistrations" BeforeTargets="CoreCompile">
+    <PropertyGroup>
+      <JsonContextGeneratedFile>$([System.IO.Path]::Combine('$(MSBuildProjectDirectory)', '$(IntermediateOutputPath)', 'JsonContext.Generated.g.cs'))</JsonContextGeneratedFile>
+    </PropertyGroup>
+
+    <GenerateJsonContextRegistrations
+        ProjectDirectory="$(MSBuildProjectDirectory)"
+        ContextFile="$(MSBuildProjectDirectory)/JsonContext.cs"
+        OutputFile="$(JsonContextGeneratedFile)" />
+
+    <ItemGroup>
+      <Compile Remove="JsonContext.cs" />
+      <Compile Include="$(JsonContextGeneratedFile)" />
+      <FileWrites Include="$(JsonContextGeneratedFile)" />
+    </ItemGroup>
+  </Target>
+</Project>

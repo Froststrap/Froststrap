@@ -416,7 +416,8 @@ internal partial class App : Application
     public static void ApplyAnimationSettings()
     {
         var app = Application.Current;
-        if (app == null) return;
+        if (app == null)
+            return;
 
         RemoveAnimationSettings();
 
@@ -455,10 +456,7 @@ internal partial class App : Application
     {
         AvaloniaXamlLoader.Load(this);
 
-        // FluentAvalonia pins ContentControlThemeFontFamily to the system font, bypassing the default font.
         Resources["ContentControlThemeFontFamily"] = new Avalonia.Media.FontFamily("fonts:Inter#Inter");
-
-        // FluentAvalonia's paddings put more space below the text (tuned for Segoe UI), which reads as too high with Inter.
         Resources["ComboBoxPadding"] = new Thickness(12, 7, 0, 5);
         Resources["ComboBoxItemThemePadding"] = new Thickness(11, 7, 11, 5);
         Resources["ComboBoxEditableTextPadding"] = new Thickness(11, 7, 32, 4);
@@ -470,11 +468,8 @@ internal partial class App : Application
         TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
         Dispatcher.UIThread.UnhandledException += GlobalExceptionHandler;
 
-        if (OperatingSystem.IsMacOS()
-            && TryGetFeature(typeof(IActivatableLifetime)) is IActivatableLifetime activatableLifetime)
-        {
+        if (OperatingSystem.IsMacOS() && TryGetFeature(typeof(IActivatableLifetime)) is IActivatableLifetime activatableLifetime)
             activatableLifetime.Activated += OnAppActivated;
-        }
     }
 
     private static void OnAppActivated(object? sender, ActivatedEventArgs e)
@@ -522,51 +517,6 @@ internal partial class App : Application
         }
     }
 
-    public static async Task<GithubRelease?> GetLatestRelease(bool includePreRelease = false)
-    {
-        try
-        {
-            if (IsMockReleaseEnabled)
-            {
-                string mockTag = MockReleaseTag ?? "v0.0.0-mock";
-                Logger.Debug($"Using mocked release {mockTag}");
-                return new GithubRelease
-                {
-                    TagName = mockTag,
-                    Name = mockTag,
-                    Body = "Mock release",
-                    Prerelease = true,
-                    CreatedAt = DateTime.UtcNow.ToString("o"),
-                    Assets = []
-                };
-            }
-
-            string url = includePreRelease
-                ? $"https://api.github.com/repos/{ProjectRepository}/releases"
-                : $"https://api.github.com/repos/{ProjectRepository}/releases/latest";
-
-            if (includePreRelease)
-            {
-                var releases = await Http.GetJson<List<GithubRelease>>(new Uri(url));
-                if (releases is null || releases.Count == 0)
-                {
-                    Logger.Info("No releases found");
-                    return null;
-                }
-                return releases[0];
-            }
-            else
-            {
-                return await Http.GetJson<GithubRelease>(new Uri(url));
-            }
-        }
-        catch (Exception ex)
-        {
-            Logger.Error($"Unhandled exception {ex}");
-            return null;
-        }
-    }
-
     public override async void OnFrameworkInitializationCompleted()
     {
         if (ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
@@ -602,7 +552,7 @@ internal partial class App : Application
 
         var userAgent = new StringBuilder($"{ProjectName}/{Version}");
 
-        Logger.Debug($"Compiled {BuildMetadata.Timestamp.ToFriendlyString()}");
+        Logger.Debug($"Compiled {BuildMetadata.LocalTimestamp.ToFriendlyString()}");
         userAgent.Append(string.Format(CultureInfo.InvariantCulture, " (Build {0})", Convert.ToBase64String(Encoding.UTF8.GetBytes(BuildMetadata.Machine))));
 
         HttpClient.Timeout = TimeSpan.FromSeconds(60);
@@ -620,9 +570,9 @@ internal partial class App : Application
         Settings.Load();
         State.Load();
 
-        if (Settings.Prop.Theme > Theme.Custom)
+        if (Settings.Prop.Theme == Theme.Custom && Settings.Prop.BackgroundType == BackgroundMode.Image)
         {
-            Settings.Prop.Theme = Theme.Dark;
+            Settings.Prop.Theme = Theme.Image;
             Settings.Save();
         }
 

@@ -606,25 +606,25 @@ Ali želite posodobiti trenutno nameščeno različico?</value>
   <data name="Menu.Appearance.Title" xml:space="preserve">
     <value>Videz</value>
   </data>
-  <data name="Menu.Behaviour.AutoUpdate.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.AutoUpdate.Description" xml:space="preserve">
     <value>Froststrap se bo ob zagonu Robloxa samodejno preveril in posodobil na stabilno različico.</value>
   </data>
-  <data name="Menu.Behaviour.AutoUpdate.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.AutoUpdate.Title" xml:space="preserve">
     <value>Samodejna posodobitev programa Froststrap</value>
   </data>
-  <data name="Menu.Behaviour.ConfirmLaunches.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ConfirmLaunches.Description" xml:space="preserve">
     <value>Prepreči zaprtje trenutno odprte igre, če po nesreči zaženete še eno instanco Roblox.</value>
   </data>
-  <data name="Menu.Behaviour.ConfirmLaunches.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ConfirmLaunches.Title" xml:space="preserve">
     <value>Potrditev zagona instance</value>
   </data>
-  <data name="Menu.Behaviour.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.Description" xml:space="preserve">
     <value>Nastavite, kaj naj Froststrap stori ob zagonu Robloxa.</value>
   </data>
-  <data name="Menu.Behaviour.ForceRobloxReinstall.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ForceRobloxReinstall.Description" xml:space="preserve">
     <value>Pri naslednjem zagonu se bo izvedla čista namestitev programa Roblox.</value>
   </data>
-  <data name="Menu.Behaviour.ForceRobloxReinstall.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ForceRobloxReinstall.Title" xml:space="preserve">
     <value>Prisilna ponovna namestitev Roblox</value>
   </data>
   <data name="Menu.FastFlagEditor.AddNew" xml:space="preserve">
@@ -1239,10 +1239,10 @@ Ali želite preklopiti na privzeti kanal ({1})?</value>
   <data name="Bootstrapper.ModificationsFailed.Message" xml:space="preserve">
     <value>V tej različici ne bodo na voljo vse spremembe.</value>
   </data>
-  <data name="Menu.Behaviour.BackgroundUpdates.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.BackgroundUpdates.Title" xml:space="preserve">
     <value>Posodobitve ozadja</value>
   </data>
-  <data name="Menu.Behaviour.BackgroundUpdates.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.BackgroundUpdates.Description" xml:space="preserve">
     <value>Posodobite Roblox v ozadju, namesto da čakate. Ne priporoča se za počasne internetne povezave. Da bi ta funkcija delovala, je potrebnih vsaj 3 GB prostega prostora za shranjevanje.</value>
   </data>
   <data name="CustomTheme.Templates.Blank.UIElements" xml:space="preserve">
@@ -1279,10 +1279,10 @@ Ali želite preklopiti na privzeti kanal ({1})?</value>
   <data name="Menu.GBSEditor.ReadOnly.Description" xml:space="preserve">
     <value>Prepreči, da bi Roblox prepisal globalne nastavitve.</value>
   </data>
-  <data name="Menu.Behaviour.AllowCookieAccess.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.AllowCookieAccess.Title" xml:space="preserve">
     <value>Dovoljenja za račun Froststrap</value>
   </data>
-  <data name="Menu.Behaviour.AllowCookieAccess.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.AllowCookieAccess.Description" xml:space="preserve">
     <value>Omogoča dostop do API-jev Roblox z uporabo vašega piškotka za avtentifikacijo. [Kaj bo Froststrap dostopal?]({0})</value>
   </data>
   <data name="Menu.Appearance.WindowsBackdrop.Title" xml:space="preserve">
@@ -1291,16 +1291,16 @@ Ali želite preklopiti na privzeti kanal ({1})?</value>
   <data name="Menu.Appearance.WindowsBackdrop.Description" xml:space="preserve">
     <value>Izberite učinek ozadja okna. Zahteva temno temo in ponovni zagon aplikacije. Opomba: Mica deluje le v sistemu Windows 11.</value>
   </data>
-  <data name="Menu.Behaviour.CloseCrashHandler.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.CloseCrashHandler.Description" xml:space="preserve">
     <value>Ob zagonu samodejno zapre proces RobloxCrashHandler.exe, da se sprosti nekaj sistemskih virov.</value>
   </data>
-  <data name="Menu.Behaviour.CloseCrashHandler.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.CloseCrashHandler.Title" xml:space="preserve">
     <value>Zapri obdelovalnik napak</value>
   </data>
-  <data name="Menu.Behaviour.ProcessPriority.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ProcessPriority.Description" xml:space="preserve">
     <value>Izbere prednost procesorja za Roblox.</value>
   </data>
-  <data name="Menu.Behaviour.ProcessPriority.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ProcessPriority.Title" xml:space="preserve">
     <value>Prednost procesov v Robloxu</value>
   </data>
   <data name="Menu.BottomButtons.ResetSettingsToDefault" xml:space="preserve">
