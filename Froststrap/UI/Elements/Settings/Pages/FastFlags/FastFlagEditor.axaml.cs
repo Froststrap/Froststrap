@@ -620,10 +620,29 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
             ReloadList();
         }
 
+        private void Cell_DoubleTapped(object? sender, TappedEventArgs e)
+        {
+            if (sender is not Panel panel)
+                return;
+
+            if (panel.Children.OfType<TextBox>().FirstOrDefault() is not TextBox textBox)
+                return;
+
+            textBox.IsHitTestVisible = true;
+            textBox.Focusable = true;
+            textBox.Focus();
+            textBox.SelectAll();
+            e.Handled = true;
+        }
+
         private void NameTextBox_LostFocus(object? sender, RoutedEventArgs e)
         {
             if (sender is TextBox textBox)
+            {
                 CommitName(textBox);
+                textBox.Focusable = false;
+                textBox.IsHitTestVisible = false;
+            }
         }
 
         private void NameTextBox_KeyDown(object? sender, KeyEventArgs e)
@@ -632,6 +651,9 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
                 return;
 
             CommitName(textBox);
+            textBox.Focusable = false;
+            textBox.IsHitTestVisible = false;
+            Focus();
             e.Handled = true;
         }
 
@@ -678,7 +700,11 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
         private void ValueTextBox_LostFocus(object? sender, RoutedEventArgs e)
         {
             if (sender is TextBox textBox)
+            {
                 CommitValue(textBox);
+                textBox.Focusable = false;
+                textBox.IsHitTestVisible = false;
+            }
         }
 
         private void ValueTextBox_KeyDown(object? sender, KeyEventArgs e)
@@ -687,6 +713,9 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
                 return;
 
             CommitValue(textBox);
+            textBox.Focusable = false;
+            textBox.IsHitTestVisible = false;
+            Focus();
             e.Handled = true;
         }
 
