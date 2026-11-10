@@ -603,28 +603,28 @@ Se utilizará por defecto {1}.</value>
   <data name="Menu.Appearance.Title" xml:space="preserve">
     <value>Aspecto</value>
   </data>
-  <data name="Menu.Behaviour.AutoUpdate.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.AutoUpdate.Description" xml:space="preserve">
     <value>Froststrap se comprobará automáticamente y se actualizará a una versión estable al iniciar Roblox.</value>
   </data>
-  <data name="Menu.Behaviour.AutoUpdate.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.AutoUpdate.Title" xml:space="preserve">
     <value>Actualizar Froststrap automáticamente</value>
   </data>
-  <data name="Menu.Behaviour.ConfirmLaunches.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ConfirmLaunches.Description" xml:space="preserve">
     <value>Evita que se cierre el juego en el que estás jugando si abres por error otra instancia de Roblox.</value>
   </data>
-  <data name="Menu.Behaviour.ConfirmLaunches.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ConfirmLaunches.Title" xml:space="preserve">
     <value>Confirmación de la puesta en marcha de la instancia</value>
   </data>
-  <data name="Menu.Behaviour.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.Description" xml:space="preserve">
     <value>Configura qué debe hacer Froststrap al iniciar Roblox.</value>
   </data>
-  <data name="Menu.Behaviour.ForceRobloxReinstall.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ForceRobloxReinstall.Description" xml:space="preserve">
     <value>La próxima vez que se inicie el programa, se realizará una instalación limpia de Roblox.</value>
   </data>
-  <data name="Menu.Behaviour.ForceRobloxReinstall.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ForceRobloxReinstall.Title" xml:space="preserve">
     <value>Forzar la reinstalación de Roblox</value>
   </data>
-  <data name="Menu.Behaviour.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.Title" xml:space="preserve">
     <value>Emprendedor que se vale de sus propios recursos</value>
   </data>
   <data name="Menu.FastFlagEditor.AddNew" xml:space="preserve">
@@ -1239,10 +1239,10 @@ Para obtener más información, únete al servidor de Discord de Bloxshade.</val
   <data name="Bootstrapper.ModificationsFailed.Message" xml:space="preserve">
     <value>No todas las modificaciones estarán presentes en el lanzamiento actual.</value>
   </data>
-  <data name="Menu.Behaviour.BackgroundUpdates.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.BackgroundUpdates.Title" xml:space="preserve">
     <value>Actualizaciones de fondo</value>
   </data>
-  <data name="Menu.Behaviour.BackgroundUpdates.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.BackgroundUpdates.Description" xml:space="preserve">
     <value>Actualiza Roblox en segundo plano en lugar de esperar. No se recomienda para conexiones lentas. Se necesitan al menos 3 GB de espacio libre de almacenamiento para que esta función funcione.</value>
   </data>
   <data name="CustomTheme.Templates.Blank.UIElements" xml:space="preserve">
@@ -1279,10 +1279,10 @@ Para obtener más información, únete al servidor de Discord de Bloxshade.</val
   <data name="Menu.GBSEditor.ReadOnly.Description" xml:space="preserve">
     <value>Evita que Roblox anule la configuración global.</value>
   </data>
-  <data name="Menu.Behaviour.AllowCookieAccess.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.AllowCookieAccess.Title" xml:space="preserve">
     <value>Permisos de la cuenta de Froststrap</value>
   </data>
-  <data name="Menu.Behaviour.AllowCookieAccess.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.AllowCookieAccess.Description" xml:space="preserve">
     <value>Permite acceder a las API de Roblox utilizando tu cookie de autenticación. [¿A qué tendrá acceso Froststrap?]({0})</value>
   </data>
   <data name="Menu.Appearance.WindowsBackdrop.Title" xml:space="preserve">
@@ -1291,16 +1291,16 @@ Para obtener más información, únete al servidor de Discord de Bloxshade.</val
   <data name="Menu.Appearance.WindowsBackdrop.Description" xml:space="preserve">
     <value>Elige un efecto de fondo para la ventana. Requiere el tema oscuro y reiniciar la aplicación. Nota: Mica solo funciona en Windows 11.</value>
   </data>
-  <data name="Menu.Behaviour.CloseCrashHandler.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.CloseCrashHandler.Description" xml:space="preserve">
     <value>Cierra automáticamente el proceso RobloxCrashHandler.exe al iniciarse para liberar algo de recursos del sistema.</value>
   </data>
-  <data name="Menu.Behaviour.CloseCrashHandler.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.CloseCrashHandler.Title" xml:space="preserve">
     <value>Cerrar el gestor de errores</value>
   </data>
-  <data name="Menu.Behaviour.ProcessPriority.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ProcessPriority.Description" xml:space="preserve">
     <value>Selecciona la prioridad de la CPU para Roblox.</value>
   </data>
-  <data name="Menu.Behaviour.ProcessPriority.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.ProcessPriority.Title" xml:space="preserve">
     <value>Prioridad de procesos de Roblox</value>
   </data>
   <data name="Menu.BottomButtons.ResetSettingsToDefault" xml:space="preserve">

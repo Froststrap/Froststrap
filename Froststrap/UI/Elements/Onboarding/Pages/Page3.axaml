@@ -46,8 +46,8 @@ SPDX-License-Identifier: MPL-2.0
 
             <controls:OptionControl
                 Margin="0,0,0,8"
-                Header="{x:Static resources:Strings.Menu_Behaviour_AllowCookieAccess_Title}"
-                Description="{Binding Source={x:Static resources:Strings.Menu_Behaviour_AllowCookieAccess_Description},
+                Header="{x:Static resources:Strings.Menu_Bootstrapper_AllowCookieAccess_Title}"
+                Description="{Binding Source={x:Static resources:Strings.Menu_Bootstrapper_AllowCookieAccess_Description},
                 Converter={StaticResource StringFormatConverter},
                 ConverterParameter='https://docs.froststrap.xyz/docs/account-manager/account-access#what-froststrap-can-access'}">
                 <StackPanel Orientation="Horizontal" Spacing="8">

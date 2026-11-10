@@ -209,7 +209,7 @@ namespace Froststrap.UI.Elements.Settings
             return pageTag switch
             {
                 "integrations" => () => _viewModel?.NavigateToIntegrationsCommand.Execute(null),
-                "behaviour" => () => _viewModel?.NavigateToBehaviourCommand.Execute(null),
+                "bootstrapper" => () => _viewModel?.NavigateToBootstrapperCommand.Execute(null),
                 "linuxsettings" => () => _viewModel?.NavigateToLinuxSettingsCommand.Execute(null),
                 "mods" => () => _viewModel?.NavigateToPresetModsCommand.Execute(null),
                 "fastflags" => () => _viewModel?.NavigateToFastFlagsCommand.Execute(null),
@@ -226,7 +226,7 @@ namespace Froststrap.UI.Elements.Settings
         private readonly Dictionary<string, (string Title, LucideIconNames Icon)> _pageInfo = new()
         {
             ["integrations"] = (Strings.Menu_Integrations_Title, LucideIconNames.Plus),
-            ["behaviour"] = (Strings.Menu_Behaviour_Title, LucideIconNames.Play),
+            ["bootstrapper"] = (Strings.Menu_Bootstrapper_Title, LucideIconNames.Play),
             ["linuxsettings"] = (Strings.Menu_LinuxSettings_Title, LucideIconNames.Settings),
             ["mods"] = (Strings.Menu_PresetMods_Title, LucideIconNames.BookOpen),
             ["fastflags"] = (Strings.Menu_FastFlags_Title, LucideIconNames.Flag),
@@ -315,7 +315,7 @@ namespace Froststrap.UI.Elements.Settings
         private static Control? ResolveViewForViewModel(object viewModel) => viewModel switch
         {
             IntegrationsViewModel => new IntegrationsPage(),
-            BehaviourViewModel => new BehaviourPage(),
+            BootstrapperViewModel => new BootstrapperPage(),
             LinuxSettingsViewModel => new LinuxSettingsPage(),
             ModsPresetsViewModel => new ModsPresetsPage(),
             FastFlagsViewModel => new FastFlagsPage(),
@@ -541,7 +541,7 @@ namespace Froststrap.UI.Elements.Settings
             var allPageTags = new List<string>
             {
                 "integrations",
-                "behaviour",
+                "bootstrapper",
                 "channels",
                 "mods",
                 "appearance",
@@ -580,7 +580,7 @@ namespace Froststrap.UI.Elements.Settings
                         object? vm = pageTag switch
                         {
                             "integrations" => new IntegrationsViewModel(),
-                            "behaviour" => new BehaviourViewModel(),
+                            "bootstrapper" => new BootstrapperViewModel(),
                             "linuxsettings" => new LinuxSettingsViewModel(),
                             "mods" => new ModsPresetsViewModel(),
                             "fastflags" => new FastFlagsViewModel(),

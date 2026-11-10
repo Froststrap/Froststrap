@@ -336,7 +336,7 @@ SPDX-License-Identifier: MPL-2.0
                 ColumnDefinitions="*,128"
                 ColumnSpacing="8">
                 <controls:SectionHeader
-                    Title="{x:Static resources:Strings.Menu_Behaviour_Title}"
+                    Title="{x:Static resources:Strings.Menu_Bootstrapper_Title}"
                     Description="{x:Static resources:Strings.Menu_Appearance_Bootstrapper_Description}"
                     VerticalAlignment="Bottom" />
                 <Button
