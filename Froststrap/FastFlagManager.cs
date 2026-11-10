@@ -246,8 +246,12 @@ namespace Froststrap
             bool result = base.Load(alertFailure);
             OriginalProp = new(Prop);
 
+            // forced on every load; save it now, or it counts as an unsaved change nobody made
             if (GetPreset("Rendering.ManualFullscreen") != "False")
+            {
                 SetPreset("Rendering.ManualFullscreen", "False");
+                Save();
+            }
 
             return result;
         }
