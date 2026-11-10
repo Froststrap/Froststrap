@@ -52,7 +52,7 @@ namespace Froststrap
             using var stream = GetStream(name);
             using var memoryStream = new MemoryStream();
 
-            await stream.CopyToAsync(memoryStream);
+            await stream.CopyToAsync(memoryStream).ConfigureAwait(false);
             return memoryStream.ToArray();
         }
 

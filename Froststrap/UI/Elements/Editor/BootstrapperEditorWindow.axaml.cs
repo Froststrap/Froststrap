@@ -62,7 +62,10 @@ namespace Froststrap.UI.Elements.Editor
 
                 try
                 {
-                    string json = Resource.GetString("CustomBootstrapperSchema.json").GetAwaiter().GetResult();
+                    // read synchronously: blocking on the async version from the UI thread deadlocks
+                    using var stream = Resource.GetStream("CustomBootstrapperSchema.json");
+                    using var reader = new StreamReader(stream);
+                    string json = reader.ReadToEnd();
                     _schema = JsonHelper.Deserialize<Schema>(json) ?? throw new InvalidOperationException("Schema deserialization failed.");
 
                     foreach (var type in _schema.Types)
