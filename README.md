@@ -27,9 +27,9 @@
 
 ## Download
 
-> [!TIP]
-> **Windows:** [**Download the installer (.msi)**][download-windows], then open it.
-> There's no `.exe` to download: the `.msi` **is** the installer.
+> [!NOTE]
+> Windows doesn't have a `.exe` file: download instead the `.msi`.
+> It is the modern way to install programs on your system and manage.
 
 Every system (click to download the latest version):
 
@@ -41,8 +41,8 @@ Every system (click to download the latest version):
 | Linux (any distro) | [**AppImage**][download-linux-appimage] |
 | Debian / Ubuntu / Linux Mint / Pop!_OS | [**.deb**][download-linux-deb] |
 | Fedora / RHEL / Nobara / Bazzite / Rocky / openSUSE | [**.rpm**][download-linux-rpm] |
-| Arch / CachyOS / EndeavourOS | [**AUR**][download-linux-aur]: `yay -S froststrap-bin` (or the [AppImage][download-linux-appimage]) |
-| NixOS / Nix | `nix run github:Froststrap/Froststrap` |
+| Arch / Omarchy / CachyOS / EndeavourOS | [**AUR**][download-linux-aur]: `yay -S froststrap-bin` (or the [AppImage][download-linux-appimage]) |
+| Nix | `nix run github:Froststrap/Froststrap` |
 
 All files are also listed on the [latest release][repo-latest] page, under **Assets**.
 
