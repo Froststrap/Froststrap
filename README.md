@@ -41,7 +41,7 @@ Every system (click to download the latest version):
 | Debian / Ubuntu / Linux Mint / Pop!_OS | [**.deb**][download-linux-deb] |
 | Fedora / RHEL / Nobara / Bazzite / Rocky / openSUSE | [**.rpm**][download-linux-rpm] |
 | Arch / Omarchy / CachyOS / EndeavourOS | [**AUR**][download-linux-aur]: `yay -S froststrap-bin'` |
-| Linux Universal | [**.AppImage**][download-linux-appimage]) |
+| Linux Universal | [**.AppImage**][download-linux-appimage] |
 | Nix | `nix run github:Froststrap/Froststrap` |
 
 All files are also listed on the [latest release][repo-latest] page, under **Assets**.
