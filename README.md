@@ -7,11 +7,7 @@
 </p>
 
 <p align="center">
-    <img src="./.resources/froststrap.webp" height="200" alt="logo"/>
-</p>
-
-<p align="center">
-    If you'd like to support our project, consider giving this repository a star!
+    <img src="./.resources/froststrap.webp" height="200" alt="Froststrap logo"/>
 </p>
 
 <div align="center">
@@ -28,10 +24,9 @@
 ## Download
 
 > [!NOTE]
-> Windows doesn't have a `.exe` file: download instead the `.msi`.
-> It is the modern way to install programs on your system and manage.
+> There's no `.exe` installer for Windows. Download the `.msi` instead.
 
-Every system (click to download the latest version):
+Choose an installation method for your operating system:
 
 | System | Download |
 | :- | :- |
@@ -44,99 +39,97 @@ Every system (click to download the latest version):
 | Universal Linux | [**.AppImage**][download-linux-appimage] |
 | Nix | `nix run github:Froststrap/Froststrap` |
 
-All files are also listed on the [latest release][repo-latest] page, under **Assets**.
+All release files are also listed under **Assets** on the [latest release][repo-latest] page.
 
 > [!CAUTION]
-> The official repository [Froststrap/Froststrap](https://github.com/Froststrap/Froststrap.git) and [our website](https://froststrap.xyz) are the **ONLY PLACES** where you should download the binary/executable. Any other source is **NOT** affiliated with us and poses a potential security threat.
+> Download Froststrap binaries and executables **only** from the official repository, [Froststrap/Froststrap](https://github.com/Froststrap/Froststrap.git), or [our website](https://froststrap.xyz). Other download sources are **not affiliated** with the project and may pose a security risk.
 
 ## Platform Support
 
 ### Tier I
 
-Tier I means we guarantee it works.
-We support shipping binaries for these systems.
+Tier I platforms are guaranteed to work, and we provide binaries for them.
 
 | System | Notes |
 | :- | :- |
-| Windows | Windows 10 LTSC or Windows 11 and above |
-| macOS aarch64 >= 26.0 | Colloquially arm64. macOS 26 (Tahoe) and above |
-| NixOS | All managed via wrapped binaries, so as long as you use our wrapper, it works correctly |
+| Windows | Windows 10 LTSC or Windows 11 and later |
+| macOS aarch64 >= 26.0 | `aarch64` is also known as `arm64`. Requires macOS 26 (Tahoe) or later |
+| NixOS | Binaries run through our wrapper; as long as you use it, everything works correctly |
 
 ### Tier II
 
-Tier II can be thought of as supported.
-Binaries to be shipped, but support won't be as reliable due to less reproducibility or a higher maintenance burden.
+Tier II platforms are supported, and we ship binaries for them. However, support may be less reliable due to reduced reproducibility or a higher maintenance burden.
 
 | System | Notes |
 | :- | :- |
-| Arch Linux | Not known to be stable, so we will attempt to reproduce issues but assume they are Arch Linux issues |
-| Other macOS | Any Mac system not covered is considered long gone, but if there is certain issues there is consideration |
-| Fedora | No dependency list testing is available, so there is no guarantee the software will run without installing additional packages |
-| Ubuntu/Debian | No dependency list testing is available, so there is no guarantee the software will run without installing additional packages |
+| Arch Linux | Stability is not guaranteed. We will attempt to reproduce reported issues but generally assume they are specific to Arch Linux |
+| Other macOS | Macs not covered above (such as Intel Macs or macOS older than 26) aren't a focus, but we may look at specific issues case by case |
+| Fedora | Dependency lists have not been tested, so additional packages may be required and compatibility is not guaranteed |
+| Ubuntu/Debian | Dependency lists have not been tested, so additional packages may be required and compatibility is not guaranteed |
 
 ### Tier III
 
 | System | Notes |
 | :- | :- |
-| Anything not listed | We will try to help with issues, but in most cases, distro-specific issues or shortcomings will be vetoed or deprioritized in favor of more important work |
+| Anything not listed | We will try to help with reported issues, but distribution-specific problems or limitations may be declined or given lower priority than other work |
 
 ## Key Improvements Over Fishstrap
 
 ### Integrations
-- Automatically rejoin servers you were disconnected from due to inactivity
-- Disable Roblox’s built-in screenshot and video recording system
-- Custom Froststrap Discord RPC that shows the current page/dialog
-- Replace "Playing Roblox" with the name of the game you're playing using Custom Status Display
-- The playtime counter shows both total and session playtime
-- Roblox Studio RPC integrated within Froststrap
-    * Change the Studio RPC thumbnail depending on the script that is open
-    * Show script type, name, and number of lines of code
+- Automatically rejoin servers after being disconnected due to inactivity
+- Disable Roblox's built-in screenshot and video recording system
+- Show which Froststrap page or dialog you're on with Froststrap's own Discord RPC
+- Replace "Playing Roblox" with the current game's name using Custom Status Display
+- Track both total and session playtime with the playtime counter
+- Show your Roblox Studio activity on Discord with the built-in Studio RPC
+    * Change the Studio RPC thumbnail based on the currently open script
+    * Display the script's type, name, and line count
 
 ### Mods
-- Multi-mod system that allows you to download many mods at once
-- Select where to apply the mod (Player/Studio)
-- Download community-made mods directly from within the app
-- Generate mods using hex codes, with options to color the cursor, Shift Lock, or Emote Wheel
-- Change the cursor, Shift Lock, death sound, and game font by selecting a file
-- Use custom cursor sets to change between your cursors faster
+- Download multiple mods at once using the multi-mod system
+- Choose whether to apply a mod to Roblox Player or Roblox Studio
+- Download community-made mods directly in the app
+- Generate mods using hexadecimal color codes to customize the cursor, Shift Lock, or Emote Wheel
+- Customize the cursor, Shift Lock, death sound, and game font by selecting files
+- Switch between cursors more quickly using custom cursor sets
 
 ### FastFlag Enhancements
-- Automatic notification when applying FastFlags that are not in the Roblox FastFlag Allowlist
-- Create or use FastFlag profiles
-- Change all Roblox FastFlags in the allowlist via the FastFlag settings
-- Click 'Clean List' to remove flags that are not in the Roblox FastFlag Allowlist
+- Receive automatic notifications when applying FastFlags that are not on the Roblox FastFlag allowlist
+- Create and use FastFlag profiles
+- Change all allowlisted Roblox FastFlags through the FastFlag settings
+- Click **Clean List** to remove flags that are not on the Roblox FastFlag allowlist
 
 ### UI & Appearance
-- Fully customizable bootstrapper launcher
-- Change the app font to any font you prefer
-- Supports image and gradient background themes
-- Built-in app themes
-- Change the window background to Aero, Acrylic, or Mica
+- Fully customize the bootstrapper launcher
+- Change the application font to one you prefer
+- Use image or gradient background themes
+- Choose from built-in application themes
+- Change the window backdrop to Aero, Acrylic, or Mica
 
 ### Settings
-- Easily switch Roblox update channels
-- Option to fully block Roblox updates
-- Replace Roblox’s changing version-xxxxx folders with a non-changing folder
+- Switch between Roblox update channels easily
+- Block Roblox updates entirely
+- Replace Roblox's changing `version-xxxxx` folders with a fixed folder
 - View all currently available Roblox channels
 
 ### Extra Features
-- Easily import settings from other bootstrappers such as Fishstrap and Bloxstrap
-- Create game shortcuts for faster game joining
-- Join servers in your region more easily using the region selector
+- Import settings from other bootstrappers, such as Fishstrap and Bloxstrap
+- Create game shortcuts to join games more quickly
+- Use the region selector to join servers in your region more easily
 - Join servers in your selected region through the system tray while playing
-- Built-in account manager
+- Manage accounts using the built-in account manager
 
-More features are planned! You can also suggest new features in the Issues section.
+More features are planned! You can suggest new ones by opening a GitHub issue.
 
 ---
 
 ## Licensing
 
-All new code revisions are under [MPL-2.0](https://opensource.org/license/MPL-2.0).
+All new code revisions are licensed under the [Mozilla Public License 2.0 (MPL-2.0)](https://opensource.org/license/MPL-2.0).
 
 ## Stargazing
 
-To support the development of Froststrap, consider giving the repository a star.
+Consider starring the repository to support Froststrap's development.
 
 <a href="https://www.star-history.com/?repos=Froststrap%2FFroststrap&type=date&legend=top-left">
  <picture>
