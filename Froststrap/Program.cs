@@ -143,7 +143,7 @@ sealed partial class Program
             .LogToTrace();
 
 #if DEBUG
-        Console.WriteLine("DEBUG BUILD! Expect shit perfomance due to use of debuggers");
+        Logger.Warn("Debug build! Expect shit perfomance due to use of debuggers.");
 #endif
 
         if (OperatingSystem.IsMacOS())
