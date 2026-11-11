@@ -41,7 +41,11 @@ Every system (click to download the latest version):
 | Windows | [**Installer (.msi)**][download-windows], or run `winget install Froststrap.Froststrap` |
 | macOS (Apple Silicon) | [**Installer (.pkg)**][download-macos-arm64] |
 | macOS (Intel) | [**Installer (.pkg)**][download-macos-x64] |
-| Linux | [**AppImage**][download-linux-appimage] or [**Debian/Ubuntu (.deb)**][download-linux-deb] |
+| Linux (any distro) | [**AppImage**][download-linux-appimage] |
+| Debian / Ubuntu / Linux Mint / Pop!_OS | [**.deb**][download-linux-deb] |
+| Fedora / RHEL / Nobara / Bazzite / Rocky / openSUSE | [**.rpm**][download-linux-rpm] |
+| Arch / CachyOS / EndeavourOS | [**AUR**][download-linux-aur]: `yay -S froststrap-bin` (or the [AppImage][download-linux-appimage]) |
+| NixOS / Nix | `nix run github:Froststrap/Froststrap` |
 
 All files are also listed on the [latest release][repo-latest] page, under **Assets**.
 
@@ -128,8 +132,10 @@ To support the development of Froststrap, consider giving the repository a star.
 [download-windows]: https://github.com/Froststrap/Froststrap/releases/latest/download/Froststrap-windows-x64.msi
 [download-macos-arm64]: https://github.com/Froststrap/Froststrap/releases/latest/download/Froststrap-macos-arm64-Setup.pkg
 [download-macos-x64]: https://github.com/Froststrap/Froststrap/releases/latest/download/Froststrap-macos-x64-Setup.pkg
+[download-linux-aur]: https://aur.archlinux.org/packages/froststrap-bin
 [download-linux-appimage]: https://github.com/Froststrap/Froststrap/releases/latest/download/Froststrap-linux-x64.AppImage
 [download-linux-deb]: https://github.com/Froststrap/Froststrap/releases/latest/download/Froststrap-linux-x64.deb
+[download-linux-rpm]: https://github.com/Froststrap/Froststrap/releases/latest/download/Froststrap-linux-x64.rpm
 [repo-stargazer]: https://github.com/Froststrap/Froststrap/stargazers
 
 [discord-invite]: https://discord.gg/KdR9vpRcUN
