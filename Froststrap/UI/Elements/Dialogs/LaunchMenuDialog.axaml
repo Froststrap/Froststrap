@@ -28,7 +28,7 @@ SPDX-License-Identifier: MPL-2.0
     <Grid>
         <StackPanel Margin="32,0,32,32">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="16" Margin="0,8,0,24">
-                <Image Width="64" Height="64" Source="avares://Froststrap/Froststrap.png"
+                <Image Width="64" Height="64" Source="avares://Froststrap/Resources/Froststrap.png"
                        RenderOptions.BitmapInterpolationMode="HighQuality"/>
                 <StackPanel VerticalAlignment="Center">
                     <TextBlock Name="LaunchTitle" Text="Froststrap" FontSize="28" FontWeight="Bold" />

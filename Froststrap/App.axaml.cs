@@ -71,7 +71,7 @@ internal partial class App : Application
     public static readonly BuildMetadataAttribute BuildMetadata = Assembly.GetExecutingAssembly()
         .GetCustomAttribute<BuildMetadataAttribute>()!;
 
-    public static readonly string Version = (System.Reflection.Assembly.GetExecutingAssembly()
+    public static readonly string Version = (Assembly.GetExecutingAssembly()
         .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion
         ?? "unknown+asteo").Split("+")[0];
 
@@ -350,67 +350,49 @@ internal partial class App : Application
         return false;
     }
 
-    public static string ExtractIcon(string name, string fileName)
-    {
-        string baseFilePath = Path.Combine(Paths.Base, fileName);
-
-        if (!File.Exists(baseFilePath))
-        {
-            using var stream = Resource.GetStream(name);
-            Directory.CreateDirectory(Path.GetDirectoryName(baseFilePath)!);
-            using var fileStream = File.Create(baseFilePath);
-
-            if (fileName.EndsWith(".ico", StringComparison.OrdinalIgnoreCase))
-            {
-                using var bitmap = new Bitmap(stream);
-                IcoWriter.Write(bitmap, fileStream);
-            }
-            else
-            {
-                stream.CopyTo(fileStream);
-            }
-        }
-        return baseFilePath;
-    }
-
     public static async Task AssertWindowsAUMIDAsync()
     {
-        if (!OperatingSystem.IsWindows()) return;
+        if (!OperatingSystem.IsWindows())
+            return;
+#if DEBUG
+        return;
+        /// Return early just becasue of if this runs in debug this might fuck shit up
+        /// Would be good to though make it more robust so this doesn't need to happen
+#endif
+
         Logger.Debug("Verifying AUMID creation");
 
-        string iconPath = ExtractIcon("IconFroststrap.png", "Froststrap.ico");
+        string iconPath = Path.Combine(AppContext.BaseDirectory, "AppIcon.ico");
 
         const string aumidKeyPath = @"Software\Classes\AppUserModelId\xyz.froststrap.desktop";
         using var baseKey = Registry.CurrentUser;
 
-        bool keyExists = baseKey.GetSubKeyNames().Contains("AppUserModelId") &&
-                         baseKey.OpenSubKey("AppUserModelId")?.GetSubKeyNames().Contains("xyz.froststrap.desktop") == true;
-
-        if (!keyExists)
+        if (
+            baseKey.GetSubKeyNames().Contains("AppUserModelId")
+            && baseKey.OpenSubKey("AppUserModelId")?.GetSubKeyNames().Contains("xyz.froststrap.desktop") == true
+        )
         {
-            using var aumidKey = baseKey.CreateSubKey(aumidKeyPath);
-            aumidKey.SetValue("DisplayName", "Froststrap");
-            aumidKey.SetValue("IconBackgroundColor", "FFDDDDDD");
-            aumidKey.SetValue("IconUri", iconPath);
-            Logger.Info("Created AUMID registry key.");
-        }
-        else
-        {
-            using var aumidKey = baseKey.OpenSubKey(aumidKeyPath, writable: true);
-            if (aumidKey != null)
-            {
-                string? currentIconUri = aumidKey.GetValue("IconUri") as string;
-                if (currentIconUri == null || !string.Equals(currentIconUri, iconPath, StringComparison.OrdinalIgnoreCase))
-                {
-                    aumidKey.SetValue("IconUri", iconPath);
-                    Logger.Info($"Updated IconUri from '{currentIconUri}' to '{iconPath}'.");
-                }
-            }
-            else
+            using var aumidKeys = baseKey.OpenSubKey(aumidKeyPath, writable: true);
+            if (aumidKeys is null)
             {
                 Logger.Warn("Could not open existing AUMID key for writing.");
+                return;
             }
+
+            string? currentIconUri = aumidKeys.GetValue("IconUri") as string;
+            if (currentIconUri == null || !string.Equals(currentIconUri, iconPath, StringComparison.OrdinalIgnoreCase))
+            {
+                aumidKeys.SetValue("IconUri", iconPath);
+                Logger.Info($"Updated IconUri from '{currentIconUri}' to '{iconPath}'.");
+            }
+            return;
         }
+
+        using var aumidKey = baseKey.CreateSubKey(aumidKeyPath);
+        aumidKey.SetValue("DisplayName", "Froststrap");
+        aumidKey.SetValue("IconBackgroundColor", "FFDDDDDD");
+        aumidKey.SetValue("IconUri", iconPath);
+        Logger.Info("Created AUMID registry key.");
     }
 
     public static void ApplyAnimationSettings()

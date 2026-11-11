@@ -30,7 +30,7 @@ SPDX-License-Identifier: MPL-2.0
   	<TrimMode>full</TrimMode>
   	<NeutralLanguage>en</NeutralLanguage>
     <Description>Froststrap - A Fishstrap fork</Description>
-    <ApplicationIcon>Froststrap.ico</ApplicationIcon>
+    <ApplicationIcon>../build/win.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <DebuggerSupport>false</DebuggerSupport>
     <UseSizeOptimizedLinq>true</UseSizeOptimizedLinq>
@@ -70,8 +70,6 @@ SPDX-License-Identifier: MPL-2.0
     <AvaloniaResource Remove="Resources/Translations/Strings*.resx" />
     <AvaloniaResource Remove="Resources/Translations/Strings.Designer.cs" />
     <AvaloniaResource Include="UI/AppThemes/EditorThemes/*.xshd" />
-    <AvaloniaResource Include="Froststrap.ico" />
-    <AvaloniaResource Include="Froststrap.png" />
   </ItemGroup>
 
   <!-- NuGet packages -->
