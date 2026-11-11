@@ -35,8 +35,8 @@
   ...
 }:
 let
-  dotnet-sdk = dotnetCorePackages.sdk_10_0;
-  dotnet-runtime = dotnetCorePackages.runtime_10_0-bin;
+  dotnet-sdk = dotnetCorePackages.sdk_11_0;
+  dotnet-runtime = dotnetCorePackages.runtime_11_0-bin;
   toolchain = with fenix.packages.${stdenv.system}; combine [ minimal.toolchain ];
   src = ../.;
   fenixRustPlatform = makeRustPlatform {
