@@ -49,7 +49,36 @@ All files are also listed on the [latest release][repo-latest] page, under **Ass
 > [!CAUTION]
 > The official repository [Froststrap/Froststrap](https://github.com/Froststrap/Froststrap.git) and [our website](https://froststrap.xyz) are the **ONLY PLACES** where you should download the binary/executable. Any other source is **NOT** affiliated with us and poses a potential security threat.
 
----
+## Platform Support
+
+### Tier I
+
+Tier I means we guarantee it works.
+We support shipping binaries for these systems.
+
+| System | Notes |
+| :- | :- |
+| Windows | Windows 10 LTSC or Windows 11 and above |
+| macOS aarch64 >= 26.0 | Colloquially arm64. macOS 26 (Tahoe) and above |
+| NixOS | All managed via wrapped binaries, so as long as you use our wrapper, it works correctly |
+
+### Tier II
+
+Tier II can be thought of as supported.
+Binaries to be shipped, but support won't be as reliable due to less reproducibility or a higher maintenance burden.
+
+| System | Notes |
+| :- | :- |
+| Arch Linux | Not known to be stable, so we will attempt to reproduce issues but assume they are Arch Linux issues |
+| Other macOS | Any Mac system not covered is considered long gone, but if there is certain issues there is consideration |
+| Fedora | No dependency list testing is available, so there is no guarantee the software will run without installing additional packages |
+| Ubuntu/Debian | No dependency list testing is available, so there is no guarantee the software will run without installing additional packages |
+
+### Tier III
+
+| System | Notes |
+| :- | :- |
+| Anything not listed | We will try to help with issues, but in most cases, distro-specific issues or shortcomings will be vetoed or deprioritized in favor of more important work |
 
 ## Key Improvements Over Fishstrap
 
