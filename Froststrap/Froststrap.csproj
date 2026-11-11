@@ -96,7 +96,8 @@ SPDX-License-Identifier: MPL-2.0
     <PackageReference Include="Velopack" Version="1.2.161" />
   </ItemGroup>
 
-  <ItemGroup>
+  <!-- 10.0.14 at least (NU1903); newer SDKs bring a newer one that must match their runtime pack -->
+  <ItemGroup Condition="$([MSBuild]::VersionLessThan('$(BundledNETCoreAppPackageVersion)', '10.0.14'))">
     <KnownILCompilerPack Update="Microsoft.DotNet.ILCompiler" ILCompilerPackVersion="10.0.14" />
   </ItemGroup>
 
