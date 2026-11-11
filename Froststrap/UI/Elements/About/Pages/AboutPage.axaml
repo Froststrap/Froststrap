@@ -19,7 +19,7 @@ SPDX-License-Identifier: MPL-2.0
         <StackPanel Margin="14">
             <Grid Margin="0,24" HorizontalAlignment="Center" ColumnDefinitions="Auto,*">
                 <Image Grid.Column="0" x:Name="Image" Width="76" Height="76" VerticalAlignment="Center"
-                       Source="avares://Froststrap/Froststrap.png" RenderOptions.BitmapInterpolationMode="HighQuality" />
+                       Source="avares://Froststrap/Resources/Froststrap.png" RenderOptions.BitmapInterpolationMode="HighQuality" />
 
                 <StackPanel Grid.Column="1" Margin="16,0,0,0" VerticalAlignment="Center">
                     <TextBlock Text="Froststrap" FontSize="30" FontWeight="Bold" />

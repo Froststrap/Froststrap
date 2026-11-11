@@ -1,0 +1,65 @@
+<!--
+SPDX-FileCopyrightText: 2026 Froststrap
+
+SPDX-License-Identifier: MPL-2.0
+-->
+
+<Project>
+  <PropertyGroup>
+    <BackendMacDylibs>libvirtualdisplay.dylib;libmobileappreg.dylib;libnotify.dylib;libaccountvault.dylib</BackendMacDylibs>
+    <_BackendMacDylibsDelimited>;$(BackendMacDylibs);</_BackendMacDylibsDelimited>
+    <BackendNativeLibraryFolder Condition="'$(BackendNativeLibraryFolder)' == ''">libs</BackendNativeLibraryFolder>
+  </PropertyGroup>
+
+  <Target Name="CopyMacLibsFromBackend"
+          AfterTargets="Build"
+          Condition="$([MSBuild]::IsOSPlatform('OSX'))">
+    <PropertyGroup>
+      <_BackendOutDir>$([MSBuild]::NormalizeDirectory('$(MSBuildProjectDirectory)', '..', 'backend', 'bin', '$(Configuration)', '$(TargetFramework)'))</_BackendOutDir>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <_BackendMacDylib Include="$(BackendMacDylibs)" />
+      <_BackendMacDylibPath Include="@(_BackendMacDylib->'$(_BackendOutDir)%(Identity)')" />
+      <_BackendMacDylibExisting Include="@(_BackendMacDylibPath)"
+                                Condition="Exists('%(FullPath)')" />
+    </ItemGroup>
+
+    <Copy SourceFiles="@(_BackendMacDylibExisting)"
+          DestinationFolder="$(OutDir)"
+          SkipUnchangedFiles="true" />
+  </Target>
+
+  <Target Name="KeepDylibsOutOfBundle"
+          AfterTargets="ComputeResolvedFilesToPublishList"
+          Condition="$([MSBuild]::IsOSPlatform('OSX'))">
+    <ItemGroup>
+      <_DylibToExclude Include="@(ResolvedFileToPublish)"
+                       Condition="$(_BackendMacDylibsDelimited.Contains(';%(Filename)%(Extension);'))" />
+      <ResolvedFileToPublish Remove="@(_DylibToExclude)" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="StageNativeLibraries"
+          AfterTargets="Publish"
+          Condition="'$(PublishAot)' == 'true' and '$(RuntimeIdentifier)' != '' and ($([MSBuild]::IsOSPlatform('Windows')) or $([MSBuild]::IsOSPlatform('Linux')))">
+    <PropertyGroup>
+      <_PublishDirNormalized>$([MSBuild]::NormalizeDirectory('$(PublishDir)'))</_PublishDirNormalized>
+      <_NativeLibraryDir>$([MSBuild]::NormalizeDirectory('$(PublishDir)', '$(BackendNativeLibraryFolder)'))</_NativeLibraryDir>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <_PublishNativeLibrary Include="$(_PublishDirNormalized)*.dll"
+                             Condition="$([MSBuild]::IsOSPlatform('Windows'))" />
+      <_PublishNativeLibrary Include="$(_PublishDirNormalized)*.so*"
+                             Condition="$([MSBuild]::IsOSPlatform('Linux'))" />
+    </ItemGroup>
+
+    <Error Condition="'@(_PublishNativeLibrary)' == ''"
+           Text="No native libraries were found in $(PublishDir); cannot stage the $(BackendNativeLibraryFolder) folder." />
+
+    <RemoveDir Directories="$(_NativeLibraryDir)" />
+    <MakeDir Directories="$(_NativeLibraryDir)" />
+    <Move SourceFiles="@(_PublishNativeLibrary)" DestinationFolder="$(_NativeLibraryDir)" />
+  </Target>
+</Project>

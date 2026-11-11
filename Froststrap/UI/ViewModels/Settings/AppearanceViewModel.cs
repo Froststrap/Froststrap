@@ -8,8 +8,8 @@ using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Froststrap.UI.Elements.Base;
+using Froststrap.UI.Elements.Bootstrapper;
 using Froststrap.UI.Elements.Dialogs;
-using Froststrap.UI.Elements.Editor;
 using System.IO.Compression;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -23,8 +23,11 @@ namespace Froststrap.UI.ViewModels.Settings
         private static readonly string[] JsonPatterns = ["*.json"];
         private static readonly JsonSerializerOptions SerializationOptions = new() { WriteIndented = true };
         private CustomThemeCycleSelectionWrapper? _selectedThemeWrapper;
+        private CustomDialog? _customThemePreview;
+        private Action? _themeReloadHandler;
 
         public ICommand PreviewBootstrapperCommand => new RelayCommand(PreviewBootstrapper);
+        public ICommand PreviewCustomThemeCommand => new RelayCommand(() => PreviewCustomTheme());
         public IAsyncRelayCommand BrowseCustomIconLocationCommand => new AsyncRelayCommand<Control>(async c => await BrowseCustomIconLocation(c));
         public IAsyncRelayCommand BrowseCustomRobloxIconLocationCommand => new AsyncRelayCommand<Control>(async c => await BrowseCustomRobloxIconLocation(c));
 
@@ -541,15 +544,84 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             if (SelectedCustomTheme is null) return;
 
-            var topLevel = TopLevel.GetTopLevel(control);
-            if (topLevel is not Window parentWindow) return;
+            string directory = Path.Combine(Paths.CustomThemes, SelectedCustomTheme);
+            string themePath = Path.Combine(directory, "Theme.xml");
 
-            App.FrostRPC?.SetDialog("Editing Custom Theme");
-            using (var editor = new BootstrapperEditorWindow(SelectedCustomTheme))
+            if (!File.Exists(themePath))
             {
-                await editor.ShowDialog(parentWindow);
+                await Frontend.ShowMessageBox(
+                    string.Format(CultureInfo.InvariantCulture, Strings.CustomTheme_Errors_FileNotFound, themePath),
+                    MessageBoxImage.Error,
+                    MessageBoxButton.OK);
+                return;
             }
-            App.FrostRPC?.ClearDialog();
+
+            WatchSelectedTheme(directory);
+
+            try
+            {
+                ExternalEditor.OpenTheme(SelectedCustomTheme);
+            }
+            finally
+            {
+                App.FrostRPC?.ClearDialog();
+            }
+        }
+
+        private void PreviewCustomTheme(bool showErrors = true)
+        {
+            if (SelectedCustomTheme is null) return;
+
+            string directory = Path.Combine(Paths.CustomThemes, SelectedCustomTheme);
+            WatchSelectedTheme(directory);
+
+            try
+            {
+                CustomDialog dialog = new();
+                dialog.ApplyCustomTheme(SelectedCustomTheme);
+
+                dialog.Closed += (_, _) =>
+                {
+                    if (ReferenceEquals(_customThemePreview, dialog))
+                        _customThemePreview = null;
+                };
+
+                _customThemePreview?.CloseBootstrapper();
+                _customThemePreview = dialog;
+
+                dialog.Message = Strings.Bootstrapper_StylePreview_TextCancel;
+                dialog.CancelEnabled = true;
+                dialog.ShowBootstrapper();
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error("Unhandled exception: ", ex);
+
+                if (showErrors)
+                {
+                    _ = Frontend.ShowMessageBox(
+                        string.Format(CultureInfo.InvariantCulture, Strings.CustomTheme_Editor_Errors_PreviewFailed, ex.Message),
+                        MessageBoxImage.Error,
+                        MessageBoxButton.OK);
+                }
+            }
+        }
+
+        private void WatchSelectedTheme(string directory)
+        {
+            if (!Directory.Exists(directory))
+                return;
+
+            _themeReloadHandler ??= () => Avalonia.Threading.Dispatcher.UIThread.Post(ReloadCustomThemePreview);
+            ThemeFileWatcher.Watch(directory, _themeReloadHandler);
+        }
+
+        private void ReloadCustomThemePreview()
+        {
+            if (_customThemePreview == null)
+                return;
+
+            PreviewCustomTheme(showErrors: false);
         }
 
         private async Task ExportCustomTheme(Control? control)
@@ -579,6 +651,10 @@ namespace Froststrap.UI.ViewModels.Settings
                 foreach (var filePath in Directory.EnumerateFiles(themeDir, "*.*", SearchOption.AllDirectories))
                 {
                     string relativePath = Path.GetRelativePath(themeDir, filePath).Replace('\\', '/');
+
+                    if (relativePath.StartsWith(".vscode/", StringComparison.OrdinalIgnoreCase)
+                        || relativePath.StartsWith(".zed/", StringComparison.OrdinalIgnoreCase))
+                        continue;
 
                     var entry = archive.CreateEntry(relativePath, CompressionLevel.Optimal);
                     entry.LastWriteTime = DateTimeOffset.Now;

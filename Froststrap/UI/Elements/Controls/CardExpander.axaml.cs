@@ -2,7 +2,12 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Avalonia;
+using Avalonia.Animation;
+using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
@@ -23,6 +28,8 @@ namespace Froststrap.UI.Elements.Controls
 
         public static readonly StyledProperty<bool> IsExpandedProperty =
             AvaloniaProperty.Register<CardExpander, bool>(nameof(IsExpanded), defaultValue: false);
+
+        private static readonly TimeSpan ExpandDuration = TimeSpan.FromMilliseconds(150);
 
         public object? Header
         {
@@ -50,6 +57,7 @@ namespace Froststrap.UI.Elements.Controls
 
         private Border? _container;
         private ContentPresenter? _presenter;
+        private CancellationTokenSource? _animationCts;
 
         protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
         {
@@ -63,33 +71,156 @@ namespace Froststrap.UI.Elements.Controls
         protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
         {
             base.OnApplyTemplate(e);
+
             _container = e.NameScope.Find<Border>("PART_ContentContainer");
             _presenter = e.NameScope.Find<ContentPresenter>("PART_ContentPresenter");
 
-            this.PropertyChanged += (sender, args) =>
-            {
-                if (args.Property == BoundsProperty)
-                {
-                    UpdateVisualState();
-                }
-            };
-
-            UpdateVisualState();
+            UpdateVisualState(animate: false);
         }
 
-        private void UpdateVisualState()
+        private async void UpdateVisualState(bool animate = true)
         {
             if (_container == null || _presenter == null) return;
 
-            if (IsExpanded)
+            _animationCts?.Cancel();
+            _animationCts = null;
+
+            var useAnimation = animate && !App.Settings.Prop.DisableAnimations;
+
+            if (!useAnimation)
             {
-                _presenter.Measure(new Size(_container.Bounds.Width, double.PositiveInfinity));
-                _container.MaxHeight = _presenter.DesiredSize.Height;
+                _container.Transitions = null;
+
+                if (IsExpanded)
+                {
+                    // Let the content size itself so items added later are never clipped.
+                    _container.MaxHeight = double.PositiveInfinity;
+                }
+                else
+                {
+                    _container.MaxHeight = 0;
+                }
+
+                return;
             }
-            else
+
+            var cts = new CancellationTokenSource();
+            _animationCts = cts;
+
+            try
             {
+                if (IsExpanded)
+                {
+                    await AnimateExpandedAsync(cts.Token);
+                }
+                else
+                {
+                    await AnimateCollapsedAsync(cts.Token);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+            }
+            finally
+            {
+                if (ReferenceEquals(_animationCts, cts))
+                {
+                    _animationCts = null;
+                }
+
+                cts.Dispose();
+            }
+        }
+
+        private async Task AnimateExpandedAsync(CancellationToken token)
+        {
+            if (_container == null || _presenter == null) return;
+
+            var targetHeight = MeasureContentHeight();
+            if (!double.IsFinite(targetHeight))
+            {
+                _container.Transitions = null;
+                _container.MaxHeight = double.PositiveInfinity;
+                return;
+            }
+
+            _container.Transitions = null;
+            _container.MaxHeight = 0;
+
+            _container.Transitions = CreateHeightTransition();
+            _container.MaxHeight = targetHeight;
+
+            await Task.Delay(ExpandDuration, token);
+
+            if (token.IsCancellationRequested) return;
+
+            _container.Transitions = null;
+            // Hand the height back to the layout system so dynamic content keeps fitting.
+            _container.MaxHeight = double.PositiveInfinity;
+        }
+
+        private async Task AnimateCollapsedAsync(CancellationToken token)
+        {
+            if (_container == null) return;
+
+            var currentHeight = _container.Bounds.Height;
+            if (currentHeight <= 0)
+            {
+                _container.Transitions = null;
                 _container.MaxHeight = 0;
+                return;
             }
+
+            // MaxHeight is infinite while expanded, and infinity can't be animated from,
+            // so pin it to the current height first.
+            _container.Transitions = null;
+            _container.MaxHeight = currentHeight;
+
+            _container.Transitions = CreateHeightTransition();
+            _container.MaxHeight = 0;
+
+            await Task.Delay(ExpandDuration, token);
+
+            if (token.IsCancellationRequested) return;
+
+            _container.Transitions = null;
+            _container.MaxHeight = 0;
+        }
+
+        private double MeasureContentHeight()
+        {
+            if (_container == null || _presenter == null) return double.PositiveInfinity;
+
+            var availableWidth = _container.Bounds.Width;
+            if (availableWidth <= 0)
+            {
+                availableWidth = Bounds.Width;
+            }
+
+            if (availableWidth <= 0) return double.PositiveInfinity;
+
+            _presenter.Measure(new Size(availableWidth, double.PositiveInfinity));
+
+            var desiredHeight = _presenter.DesiredSize.Height;
+            if (double.IsNaN(desiredHeight) || double.IsInfinity(desiredHeight))
+            {
+                return double.PositiveInfinity;
+            }
+
+            return desiredHeight + _container.BorderThickness.Top + _container.BorderThickness.Bottom;
+        }
+
+        private static Transitions CreateHeightTransition()
+        {
+            return
+            [
+                new DoubleTransition
+                {
+                    Property = Layoutable.MaxHeightProperty,
+                    Duration = ExpandDuration,
+                    Easing = new CubicEaseOut()
+                }
+            ];
         }
     }
 }

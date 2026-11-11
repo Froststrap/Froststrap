@@ -433,7 +433,7 @@ SPDX-License-Identifier: MPL-2.0
                         <TextBox Text="{Binding SelectedCustomThemeName, Mode=TwoWay}" />
 
                         <Grid
-                            ColumnDefinitions="*,*,*"
+                            ColumnDefinitions="*,*,*,*"
                             ColumnSpacing="8">
                             <controls:IconButton
                                 Grid.Column="0"
@@ -450,6 +450,12 @@ SPDX-License-Identifier: MPL-2.0
                                 HorizontalAlignment="Stretch" />
                             <controls:IconButton
                                 Grid.Column="2"
+                                Icon="Play"
+                                Content="{x:Static resources:Strings.Menu_Appearance_Preview}"
+                                Command="{Binding PreviewCustomThemeCommand}"
+                                HorizontalAlignment="Stretch" />
+                            <controls:IconButton
+                                Grid.Column="3"
                                 Icon="ArrowRightFromLine"
                                 Content="{x:Static resources:Strings.Common_Export}"
                                 Command="{Binding ExportCustomThemeCommand}"
