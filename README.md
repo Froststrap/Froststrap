@@ -25,9 +25,6 @@
 
 </div>
 
-> [!CAUTION]
-> The official repository [Froststrap/Froststrap](https://github.com/Froststrap/Froststrap.git) and [our website](https://froststrap.xyz) are the **ONLY PLACES** where you should download the binary/executable. Any other source is **NOT** affiliated with us and poses a potential security threat.
-
 ## Download
 
 > [!TIP]
@@ -48,6 +45,9 @@ Every system (click to download the latest version):
 | NixOS / Nix | `nix run github:Froststrap/Froststrap` |
 
 All files are also listed on the [latest release][repo-latest] page, under **Assets**.
+
+> [!CAUTION]
+> The official repository [Froststrap/Froststrap](https://github.com/Froststrap/Froststrap.git) and [our website](https://froststrap.xyz) are the **ONLY PLACES** where you should download the binary/executable. Any other source is **NOT** affiliated with us and poses a potential security threat.
 
 ---
 
