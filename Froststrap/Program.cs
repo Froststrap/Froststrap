@@ -4,6 +4,7 @@
 
 using NLog;
 using Avalonia;
+using Avalonia.Media.Fonts;
 using Velopack;
 using Froststrap;
 using Froststrap.Backend;
@@ -132,7 +133,10 @@ sealed partial class Program
     {
         var builder = AppBuilder.Configure<App>()
             .UsePlatformDetect()
-            .WithInterFont()
+            .ConfigureFonts(fontManager => fontManager.AddFontCollection(
+                new EmbeddedFontCollection(
+                    new Uri("fonts:Froststrap", UriKind.Absolute),
+                    new Uri("avares://Froststrap/Resources/Fonts", UriKind.Absolute))))
 #if DEBUG
             .WithDeveloperTools()
 #endif

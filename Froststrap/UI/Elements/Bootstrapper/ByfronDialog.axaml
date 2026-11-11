@@ -59,9 +59,9 @@ SPDX-License-Identifier: MPL-2.0
                            TextAlignment="Center"
                            Text="{Binding Message}"
                            Foreground="{Binding Foreground}"
-                           FontFamily="{StaticResource Rubik}"
+                           FontFamily="{StaticResource Inter}"
                            FontSize="17"
-                           FontWeight="Light">
+                           FontWeight="Normal">
                     <TextBlock.RenderTransform>
                         <ScaleTransform ScaleY="0.9"/>
                     </TextBlock.RenderTransform>

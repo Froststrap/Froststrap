@@ -438,7 +438,7 @@ internal partial class App : Application
     {
         AvaloniaXamlLoader.Load(this);
 
-        Resources["ContentControlThemeFontFamily"] = new Avalonia.Media.FontFamily("fonts:Inter#Inter");
+        Resources["ContentControlThemeFontFamily"] = new Avalonia.Media.FontFamily("fonts:Froststrap#Inter");
         Resources["ComboBoxPadding"] = new Thickness(12, 7, 0, 5);
         Resources["ComboBoxItemThemePadding"] = new Thickness(11, 7, 11, 5);
         Resources["ComboBoxEditableTextPadding"] = new Thickness(11, 7, 32, 4);
