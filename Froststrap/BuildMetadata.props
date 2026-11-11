@@ -1,0 +1,20 @@
+<!--
+SPDX-FileCopyrightText: 2026 Froststrap
+
+SPDX-License-Identifier: MPL-2.0
+-->
+
+<Project>
+  <PropertyGroup>
+    <BuildMachine Condition="'$(BuildMachine)' == ''">$([System.Environment]::MachineName)/$([System.Environment]::UserName)</BuildMachine>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AssemblyAttribute Include="Froststrap.Models.Attributes.BuildMetadataAttribute">
+      <_Parameter1>$([System.DateTime]::UtcNow.ToString("s"))Z</_Parameter1>
+      <_Parameter2>$(BuildMachine)</_Parameter2>
+      <_Parameter3>$(CommitHash)</_Parameter3>
+      <_Parameter4>$(CommitRef)</_Parameter4>
+    </AssemblyAttribute>
+  </ItemGroup>
+</Project>
