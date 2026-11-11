@@ -69,14 +69,12 @@ SPDX-License-Identifier: MPL-2.0
     <AvaloniaResource Include="Resources/**" />
     <AvaloniaResource Remove="Resources/Translations/Strings*.resx" />
     <AvaloniaResource Remove="Resources/Translations/Strings.Designer.cs" />
-    <AvaloniaResource Include="UI/AppThemes/EditorThemes/*.xshd" />
   </ItemGroup>
 
   <!-- NuGet packages -->
   <ItemGroup>
     <PackageReference Include="AnimatedImage.Avalonia" Version="2.1.4" />
     <PackageReference Include="Avalonia" Version="12.1.3" />
-    <PackageReference Include="Avalonia.AvaloniaEdit" Version="12.0.0" />
     <PackageReference Include="Avalonia.Controls.WebView" Version="12.1.1" />
     <PackageReference Include="Avalonia.Desktop" Version="12.1.3" />
     <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="12.1.3" Condition="'$(Configuration)' == 'Debug'" />

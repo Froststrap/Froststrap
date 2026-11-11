@@ -68,13 +68,6 @@ namespace Froststrap.UI.ViewModels.About
 
             Licenses.Add(new LicenseItem
             {
-                Header = "Avalonia Edit",
-                Description = Strings.Menu_About_Licenses_MIT,
-                Url = "https://github.com/AvaloniaUI/AvaloniaEdit"
-            });
-
-            Licenses.Add(new LicenseItem
-            {
                 Header = "Avalonia WebView",
                 Description = Strings.Menu_About_Licenses_MIT,
                 Url = "https://github.com/AvaloniaUI/Avalonia.Controls.WebView"

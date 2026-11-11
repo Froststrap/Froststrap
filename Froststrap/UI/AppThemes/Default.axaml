@@ -8,8 +8,6 @@ SPDX-License-Identifier: MPL-2.0
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ui="using:FluentAvalonia.UI.Controls"
         xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
-        xmlns:AvaloniaEdit="clr-namespace:AvaloniaEdit;assembly=AvaloniaEdit"
-        xmlns:cc="using:AvaloniaEdit.CodeCompletion"
         xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls">
 
     <Style Selector="WindowDrawnDecorations /template/ Button#PART_FullScreenButton">
@@ -28,22 +26,6 @@ SPDX-License-Identifier: MPL-2.0
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="{DynamicResource OverlayCornerRadius}" />
     </Style>
-
-    <Style Selector="AvaloniaEdit|TextEditor">
-        <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border CornerRadius="6">
-                    <ScrollViewer Name="PART_ScrollViewer"
-                                  Padding="{TemplateBinding Padding}"
-                                  HorizontalScrollBarVisibility="{TemplateBinding HorizontalScrollBarVisibility}"
-                                  VerticalScrollBarVisibility="{TemplateBinding VerticalScrollBarVisibility}"
-                                  AllowAutoHide="True" />
-                </Border>
-            </ControlTemplate>
-        </Setter>
-    </Style>
-
 
     <Style Selector="ListBox">
         <Setter Property="Background" Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
@@ -69,39 +51,6 @@ SPDX-License-Identifier: MPL-2.0
                                         Margin="{TemplateBinding Padding}" />
                     </ScrollViewer>
                 </Border>
-            </ControlTemplate>
-        </Setter>
-    </Style>
-
-    <Style Selector="cc|CompletionListBox">
-        <Setter Property="Background" Value="{DynamicResource CompletionListBackgroundBrush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource CardStrokeColorDefaultBrush}" />
-        <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="CornerRadius" Value="4" />
-        <Setter Property="Padding" Value="0" />
-        <Setter Property="ClipToBounds" Value="True" />
-    </Style>
-
-    <Style Selector="cc|CompletionListBox ListBoxItem">
-        <Setter Property="Padding" Value="4,2" />
-    </Style>
-
-    <Style Selector="cc|CompletionList">
-        <Setter Property="Template">
-            <ControlTemplate>
-                <cc:CompletionListBox Name="PART_ListBox">
-                    <cc:CompletionListBox.ItemTemplate>
-                        <DataTemplate x:DataType="cc:ICompletionData">
-                            <StackPanel Orientation="Horizontal" Margin="0">
-                                <Image Source="{Binding Image}"
-                                       Width="16"
-                                       Height="16"
-                                       Margin="0,0,2,0" />
-                                <ContentControl Content="{Binding Content}" />
-                            </StackPanel>
-                        </DataTemplate>
-                    </cc:CompletionListBox.ItemTemplate>
-                </cc:CompletionListBox>
             </ControlTemplate>
         </Setter>
     </Style>
