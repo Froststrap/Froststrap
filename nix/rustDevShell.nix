@@ -16,12 +16,12 @@ let
   toolchain =
     with fenix.packages.${stdenv.system};
     combine [
-      nightly.cargo
-      nightly.rustc
-      nightly.clippy
-      nightly.rustfmt
-      nightly.rust-src
-      nightly.rust-analyzer
+      latest.cargo
+      latest.rustc
+      latest.clippy
+      latest.rustfmt
+      latest.rust-src
+      latest.rust-analyzer
   ];
 in
 mkFragment {
