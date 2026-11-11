@@ -28,6 +28,23 @@
 > [!CAUTION]
 > The official repository [Froststrap/Froststrap](https://github.com/Froststrap/Froststrap.git) and [our website](https://froststrap.xyz) are the **ONLY PLACES** where you should download the binary/executable. Any other source is **NOT** affiliated with us and poses a potential security threat.
 
+## Download
+
+> [!TIP]
+> **Windows:** [**Download the installer (.msi)**][download-windows], then open it.
+> There's no `.exe` to download: the `.msi` **is** the installer.
+
+Every system (click to download the latest version):
+
+| System | Download |
+| :- | :- |
+| Windows | [**Installer (.msi)**][download-windows], or run `winget install Froststrap.Froststrap` |
+| macOS (Apple Silicon) | [**Installer (.pkg)**][download-macos-arm64] |
+| macOS (Intel) | [**Installer (.pkg)**][download-macos-x64] |
+| Linux | [**AppImage**][download-linux-appimage] or [**Debian/Ubuntu (.deb)**][download-linux-deb] |
+
+All files are also listed on the [latest release][repo-latest] page, under **Assets**.
+
 ---
 
 ## Key Improvements Over Fishstrap
@@ -108,6 +125,11 @@ To support the development of Froststrap, consider giving the repository a star.
 [repo-actions]: https://github.com/Froststrap/Froststrap/actions
 [repo-releases]: https://github.com/Froststrap/Froststrap/releases
 [repo-latest]: https://github.com/Froststrap/Froststrap/releases/latest
+[download-windows]: https://github.com/Froststrap/Froststrap/releases/latest/download/Froststrap-windows-x64.msi
+[download-macos-arm64]: https://github.com/Froststrap/Froststrap/releases/latest/download/Froststrap-macos-arm64-Setup.pkg
+[download-macos-x64]: https://github.com/Froststrap/Froststrap/releases/latest/download/Froststrap-macos-x64-Setup.pkg
+[download-linux-appimage]: https://github.com/Froststrap/Froststrap/releases/latest/download/Froststrap-linux-x64.AppImage
+[download-linux-deb]: https://github.com/Froststrap/Froststrap/releases/latest/download/Froststrap-linux-x64.deb
 [repo-stargazer]: https://github.com/Froststrap/Froststrap/stargazers
 
 [discord-invite]: https://discord.gg/KdR9vpRcUN
