@@ -10,6 +10,10 @@
     <img src="./.resources/froststrap.webp" height="200" alt="Froststrap logo"/>
 </p>
 
+<p align="center">
+    If you'd like to support our project, consider giving this repository a star!
+</p>
+
 <div align="center">
 
 [![License][badge-repo-license]][repo-license]
