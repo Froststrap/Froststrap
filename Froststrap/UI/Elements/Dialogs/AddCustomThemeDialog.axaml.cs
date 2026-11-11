@@ -126,6 +126,14 @@ namespace Froststrap.UI.Elements.Dialogs
                 return false;
             }
 
+            string fileName = Path.GetFileNameWithoutExtension(viewModel.FilePath);
+
+            if (fileName.Contains('.') || string.IsNullOrWhiteSpace(fileName))
+            {
+                viewModel.FileError = Strings.CustomTheme_Add_Errors_FileNotZip;
+                return false;
+            }
+
             try
             {
                 using var zipFile = System.IO.Compression.ZipFile.OpenRead(viewModel.FilePath);
@@ -177,6 +185,14 @@ namespace Froststrap.UI.Elements.Dialogs
 
             try
             {
+                string root = Path.TrimEndingDirectorySeparator(Path.GetFullPath(Paths.CustomThemes)) + Path.DirectorySeparatorChar;
+                string full = Path.TrimEndingDirectorySeparator(Path.GetFullPath(finalDir));
+
+                if (string.IsNullOrWhiteSpace(name) || !full.StartsWith(root, StringComparison.OrdinalIgnoreCase))
+                    throw new UnauthorizedAccessException("Theme must be within Paths.CustomThemes");
+
+                finalDir = full;
+
                 Directory.CreateDirectory(staging);
                 Directory.CreateDirectory(finalDir);
 
@@ -199,7 +215,7 @@ namespace Froststrap.UI.Elements.Dialogs
                             if (Directory.Exists(entry))
                                 MoveDirectory(entry, dest);
                             else
-                                File.Copy(entry, dest, true);
+                                File.Copy(entry, dest);
                         }
                     }
                 });
