@@ -128,7 +128,8 @@ namespace Froststrap.UI.Elements.Dialogs
 
             string fileName = Path.GetFileNameWithoutExtension(viewModel.FilePath);
 
-            if (fileName.Contains('.') || string.IsNullOrWhiteSpace(fileName))
+
+            if (fileName.Contains('.', StringComparison.Ordinal) || string.IsNullOrWhiteSpace(fileName))
             {
                 viewModel.FileError = Strings.CustomTheme_Add_Errors_FileNotZip;
                 return false;

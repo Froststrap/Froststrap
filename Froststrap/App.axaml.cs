@@ -64,7 +64,7 @@ internal partial class App : Application
     // simple shorthand for extremely frequently used and long string - this goes under HKCU
     public const string UninstallKey = $@"Software\Microsoft\Windows\CurrentVersion\Uninstall\{ProjectName}";
 
-    public const string ApisKey = $"Software\\{ProjectName}";
+    public const string ApisKey = @$"Software\{ProjectName}";
 
     public static LaunchSettings LaunchSettings { get; internal set; } = null!;
 
@@ -350,6 +350,7 @@ internal partial class App : Application
         return false;
     }
 
+#pragma warning disable CS0162
     public static async Task AssertWindowsAUMIDAsync()
     {
         if (!OperatingSystem.IsWindows())
@@ -394,6 +395,7 @@ internal partial class App : Application
         aumidKey.SetValue("IconUri", iconPath);
         Logger.Info("Created AUMID registry key.");
     }
+#pragma warning restore CS0162
 
     public static void ApplyAnimationSettings()
     {
