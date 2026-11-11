@@ -31,7 +31,7 @@
 }:
 let
   inherit (callPackage ./devshell-tools.nix { }) mkFragment;
-  dotnet-tc = dotnetCorePackages.sdk_11_0;
+  dotnet-tc = dotnetCorePackages.sdk_10_0;
 in
 mkFragment (finalAttrs: {
   name = "dotnet";
