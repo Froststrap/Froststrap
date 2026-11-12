@@ -6,7 +6,7 @@ namespace Froststrap
 {
     static class Paths
     {
-        public static string Temp => Path.Combine(Path.GetTempPath(), App.ProjectName);
+        public static string Temp => Path.Combine(Path.GetTempPath(), ProjectInfo.Name);
         public static string UserProfile => Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         public static string LocalAppData => Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
         public static string RoamingAppData => Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
@@ -20,8 +20,8 @@ namespace Froststrap
         public static string ConfigRoot { get; private set; } = "";
         public static string DataRoot { get; private set; } = "";
 
-        private static string WindowsDataRoot => Path.Combine(RoamingAppData, App.ProjectName);
-        public static string WindowsInstallRoot => Path.Combine(LocalAppData, App.ProjectName);
+        private static string WindowsDataRoot => Path.Combine(RoamingAppData, ProjectInfo.Name);
+        public static string WindowsInstallRoot => Path.Combine(LocalAppData, ProjectInfo.Name);
 
         public static string Downloads { get; private set; } = "";
         public static string Cache { get; private set; } = "";
@@ -48,7 +48,7 @@ namespace Froststrap
                 {
                     return Path.Combine(
                         Paths.UserProfile,
-                        "Library", "Logs", App.ProjectName
+                        "Library", "Logs", ProjectInfo.Name
                     );
                 }
                 if (OperatingSystem.IsLinux())
@@ -57,7 +57,7 @@ namespace Froststrap
                     var baseDir = string.IsNullOrEmpty(xdgState)
                     ? Path.Combine(Paths.UserProfile, ".local", "state")
                     : xdgState;
-                    return Path.Combine(baseDir, App.ProjectName);
+                    return Path.Combine(baseDir, ProjectInfo.Name);
                 }
                 return Path.Combine(WindowsDataRoot, "Logs");
             }
@@ -100,7 +100,7 @@ namespace Froststrap
             else if (OperatingSystem.IsMacOS())
             {
                 string libraryPath = Path.Combine(UserProfile, "Library");
-                var rootPath = Path.Combine(libraryPath, "Application Support", App.ProjectName);
+                var rootPath = Path.Combine(libraryPath, "Application Support", ProjectInfo.Name);
                 ConfigRoot = rootPath;
                 DataRoot = rootPath;
 
@@ -114,8 +114,8 @@ namespace Froststrap
                 string xdgCache = Environment.GetEnvironmentVariable("XDG_CACHE_HOME") ?? Path.Combine(UserProfile, ".cache");
                 string xdgBin = Environment.GetEnvironmentVariable("XDG_BIN_HOME") ?? Path.Combine(UserProfile, ".local", "bin");
 
-                ConfigRoot = Path.Combine(xdgConfig, App.ProjectName);
-                DataRoot = Path.Combine(xdgData, App.ProjectName);
+                ConfigRoot = Path.Combine(xdgConfig, ProjectInfo.Name);
+                DataRoot = Path.Combine(xdgData, ProjectInfo.Name);
 
                 // Sober data lives under Versions/Sober (symlink target managed by Installer)
                 Roblox = Path.Combine(DataRoot, "Versions", "Sober");
@@ -127,7 +127,7 @@ namespace Froststrap
                 SoberConfig = Path.Combine(Roblox, "config", "sober");
 
                 // Set cache and logs to XDG locations
-                Cache = Path.Combine(xdgCache, App.ProjectName);
+                Cache = Path.Combine(xdgCache, ProjectInfo.Name);
             }
 
             SavedFlagProfiles = Path.Combine(ConfigRoot, "SavedFlagProfiles");
@@ -158,7 +158,7 @@ namespace Froststrap
                 RobloxCache = Path.Combine(Path.GetTempPath(), "Roblox");
             }
 
-            string exeName = OperatingSystem.IsWindows() ? $"{App.ProjectName}.exe" : App.ProjectName;
+            string exeName = OperatingSystem.IsWindows() ? $"{ProjectInfo.Name}.exe" : ProjectInfo.Name;
 
             Directory.CreateDirectory(ConfigRoot);
             Directory.CreateDirectory(DataRoot);
@@ -226,7 +226,7 @@ namespace Froststrap
                     // Compatibility migration for earlier releases where mods/presets were under DataRoot.
                     TryMove(Path.Combine(DataRoot, "Modifications"), Modifications);
 
-                    string legacyBase = Path.Combine(UserProfile, ".config", App.ProjectName);
+                    string legacyBase = Path.Combine(UserProfile, ".config", ProjectInfo.Name);
                     string marker = Path.Combine(ConfigRoot, ".migrated_to_xdg");
 
                     if (Directory.Exists(legacyBase) && !File.Exists(marker) && !String.Equals(Path.GetFullPath(legacyBase), Path.GetFullPath(ConfigRoot), StringComparison.OrdinalIgnoreCase))

@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-using Froststrap.UI.ViewModels;
 
 namespace Froststrap.Models
 {
