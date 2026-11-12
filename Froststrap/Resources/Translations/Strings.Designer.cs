@@ -1720,47 +1720,12 @@ namespace Froststrap.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Save changes to {0}?.
-        /// </summary>
-        public static string CustomTheme_Editor_ConfirmSave {
-            get {
-                return ResourceManager.GetString("CustomTheme.Editor.ConfirmSave", resourceCulture);
-            }
-        }
-
-        /// <summary>
         ///   Looks up a localized string similar to Failed to preview theme: {0}.
         /// </summary>
+
         public static string CustomTheme_Editor_Errors_PreviewFailed {
             get {
                 return ResourceManager.GetString("CustomTheme.Editor.Errors.PreviewFailed", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Open Theme Directory.
-        /// </summary>
-        public static string CustomTheme_Editor_OpenThemeDirectory {
-            get {
-                return ResourceManager.GetString("CustomTheme.Editor.OpenThemeDirectory", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Your theme has been saved!.
-        /// </summary>
-        public static string CustomTheme_Editor_Save_Success_Description {
-            get {
-                return ResourceManager.GetString("CustomTheme.Editor.Save.Success.Description", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Editing &quot;{0}&quot;.
-        /// </summary>
-        public static string CustomTheme_Editor_Title {
-            get {
-                return ResourceManager.GetString("CustomTheme.Editor.Title", resourceCulture);
             }
         }
 

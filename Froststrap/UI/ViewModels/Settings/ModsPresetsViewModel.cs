@@ -406,7 +406,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 CustomCursorSets.Add(new CustomCursorSet { Name = Path.GetFileName(dir), FolderPath = dir });
             }
 
-            if (CustomCursorSets.Any()) SelectedCustomCursorSetIndex = 0;
+            if (CustomCursorSets.Count > 0) SelectedCustomCursorSetIndex = 0;
         }
 
         private void AddCustomCursorSet()

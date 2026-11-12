@@ -63,6 +63,7 @@ namespace Froststrap.Models.Persistable
         public bool BootstrapperShowInfo { get; set; }
         public BootstrapperStyle BootstrapperStyle { get; set; } = BootstrapperStyle.FluentAeroDialog;
         public string? SelectedCustomTheme { get; set; }
+        public ExternalEditorKind ExternalEditor { get; set; } = ExternalEditorKind.Auto;
         public bool CycleEnabled { get; set; }
         public CycleFrequency CycleFrequency { get; set; } = CycleFrequency.EveryLaunch;
         public int CycleIntervalValue { get; set; } = 1;

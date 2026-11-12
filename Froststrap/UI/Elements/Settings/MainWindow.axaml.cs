@@ -751,10 +751,12 @@ namespace Froststrap.UI.Elements.Settings
             {
                 e.Cancel = true;
 
+                // owned by this window, so it can't open behind it or get attached to another one
                 var result = await Frontend.ShowMessageBox(
                     Strings.Menu_UnsavedChangesPrompt,
                     MessageBoxImage.Warning,
-                    MessageBoxButton.YesNoCancel
+                    MessageBoxButton.YesNoCancel,
+                    owner: this
                 );
 
                 if (result == MessageBoxResult.Yes)

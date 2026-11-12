@@ -47,9 +47,21 @@ pub fn pack(version: String, pack_dir: &std::path::Path, entitlements: Option<&s
 
     #[cfg(target_os = "windows")]
     {
+        let icon = path::git_root().join("build/win.ico");
+        let install_icon = pack_dir.join("AppIcon.ico");
+
+        if let Err(e) = std::fs::copy(&icon, &install_icon) {
+            log::error!(
+                "failed to copy {} to {}: {e}",
+                icon.display(),
+                install_icon.display()
+            );
+            std::process::exit(1);
+        }
+
         args.extend([
             "--icon".into(),
-            path::git_root().join("Froststrap/Froststrap.ico").to_string_lossy().into_owned(),
+            icon.to_string_lossy().into_owned(),
             "--framework".into(),
             "vcredist143-x64".into(),
             "--msi".into(),

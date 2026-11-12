@@ -351,7 +351,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
 
         private async void DeleteAllButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!(_fastFlagList.Any() || App.FastFlags.Prop.Count > 0))
+            if (!(_fastFlagList.Count > 0 || App.FastFlags.Prop.Count > 0))
             {
                 await Frontend.ShowMessageBox(
                     Strings.Menu_FastFlagEditor_NoFlagDelete,

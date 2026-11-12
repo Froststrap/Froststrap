@@ -4,6 +4,7 @@
 
 using NLog;
 using Avalonia;
+using Avalonia.Media.Fonts;
 using Velopack;
 using Froststrap;
 using Froststrap.Backend;
@@ -132,14 +133,17 @@ sealed partial class Program
     {
         var builder = AppBuilder.Configure<App>()
             .UsePlatformDetect()
-            .WithInterFont()
+            .ConfigureFonts(fontManager => fontManager.AddFontCollection(
+                new EmbeddedFontCollection(
+                    new Uri("fonts:Froststrap", UriKind.Absolute),
+                    new Uri("avares://Froststrap/Resources/Fonts", UriKind.Absolute))))
 #if DEBUG
             .WithDeveloperTools()
 #endif
             .LogToTrace();
 
 #if DEBUG
-        Console.WriteLine("DEBUG BUILD! Expect shit perfomance due to use of debuggers");
+        Logger.Warn("Debug build! Expect shit perfomance due to use of debuggers.");
 #endif
 
         if (OperatingSystem.IsMacOS())

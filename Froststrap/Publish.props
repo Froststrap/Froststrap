@@ -1,0 +1,45 @@
+<!--
+SPDX-FileCopyrightText: 2026 Froststrap
+
+SPDX-License-Identifier: MPL-2.0
+-->
+
+<Project>
+  <PropertyGroup>
+    <PublishAot>true</PublishAot>
+    <PublishTrimmed>true</PublishTrimmed>
+    <TrimMode>full</TrimMode>
+    <TrimmerSingleWarn>false</TrimmerSingleWarn>
+    <DebuggerSupport>false</DebuggerSupport>
+    <UseSizeOptimizedLinq>true</UseSizeOptimizedLinq>
+    <StackTraceSupport>true</StackTraceSupport>
+    <EventSourceSupport>false</EventSourceSupport>
+    <IlcFoldIdenticalMethodBodies>true</IlcFoldIdenticalMethodBodies>
+    <ServerGarbageCollection>false</ServerGarbageCollection>
+    <EnableHWIntrinsic>false</EnableHWIntrinsic>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(RuntimeIdentifier)' == ''">
+    <RuntimeIdentifier>$(NETCoreSdkPortableRuntimeIdentifier)</RuntimeIdentifier>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(PublishAot)' == 'true'">
+    <DebugType>none</DebugType>
+    <CopyOutputSymbolsToPublishDirectory>false</CopyOutputSymbolsToPublishDirectory>
+    <OptimizationPreference>Size</OptimizationPreference>
+  </PropertyGroup>
+
+  <!-- Non-AOT fallback -->
+  <PropertyGroup Condition="'$(RuntimeIdentifier)' != ''">
+    <PublishSingleFile Condition="'$(PublishAot)' != 'true'">true</PublishSingleFile>
+    <IncludeNativeLibrariesForSelfExtract Condition="'$(PublishAot)' != 'true'">true</IncludeNativeLibrariesForSelfExtract>
+    <PublishReadyToRun Condition="'$(PublishAot)' != 'true'">true</PublishReadyToRun>
+    <PublishReadyToRunComposite Condition="'$(PublishAot)' != 'true'">true</PublishReadyToRunComposite>
+    <EnableCompressionInSingleFile Condition="'$(PublishAot)' != 'true'">true</EnableCompressionInSingleFile>
+    <SelfContained>true</SelfContained>
+  </PropertyGroup>
+
+  <ItemGroup Condition="$([MSBuild]::VersionLessThan('$(BundledNETCoreAppPackageVersion)', '10.0.14'))">
+    <KnownILCompilerPack Update="Microsoft.DotNet.ILCompiler" ILCompilerPackVersion="10.0.14" />
+  </ItemGroup>
+</Project>
