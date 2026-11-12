@@ -510,7 +510,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
                     var preservePaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
                     foreach (var entry in mappings.Values)
-                        preservePaths.Add(Path.GetFullPath(Path.Combine(TempRoot, Path.Combine(entry))));
+                        preservePaths.Add(Path.GetFullPath(Path.Combine([TempRoot, .. entry])));
 
                     string builderIconsFontDir = Path.Combine(TempRoot, "ExtraContent", "LuaPackages", "Packages", "_Index", "BuilderIcons", "BuilderIcons", "Font");
                     if (Directory.Exists(builderIconsFontDir))
@@ -790,7 +790,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
         private void UpdateSolidColorFromGradient()
         {
-            if (GradientStops.Any())
+            if (GradientStops.Count > 0)
             {
                 var firstHex = GradientStops[0].Color;
                 if (IsValidHexColor(firstHex))
