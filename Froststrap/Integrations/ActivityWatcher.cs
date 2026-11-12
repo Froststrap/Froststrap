@@ -7,7 +7,7 @@ namespace Froststrap.Integrations
     internal class ActivityWatcher : IDisposable
     {
         private const string GameMessageEntry = "[FLog::CreatorOutput] [BloxstrapRPC]";
-        private const string GameJoiningEntry = "[FLog::Output] ! Joining game";
+        internal const string GameJoiningEntry = "[FLog::Output] ! Joining game";
         private const string GameTeleportingEntry = "[FLog::UgcExperienceController] UgcExperienceController: doTeleport: joinScriptUrl";
         private const string GameLaunchEventEntry = "[FLog::NewWebView2Browser] Webview handles hybrid javascript event";
         private const string GameJoiningUniverseEntry = "[FLog::GameJoinLoadTime] Report game_join_loadtime:";
