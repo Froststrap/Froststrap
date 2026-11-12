@@ -588,7 +588,19 @@ namespace Froststrap.UI.Elements.Base
 
             ApplyWindowBackground();
             UpdateBackdropForAllWindows();
-            Locale.ApplyLocaleToWindow(this);
+            ApplyLocale();
+        }
+
+        private void ApplyLocale()
+        {
+            if (Locale.RightToLeft)
+            {
+                FlowDirection = FlowDirection.RightToLeft;
+            }
+            else if (Locale.CurrentCulture.Name.StartsWith("th", StringComparison.Ordinal))
+            {
+                Application.Current?.Resources["ContentFontFamily"] = new Avalonia.Media.FontFamily("Noto Sans Thai");
+            }
         }
 
         protected override void OnClosed(EventArgs e)

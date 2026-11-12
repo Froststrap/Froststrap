@@ -2,14 +2,11 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Media;
-using Avalonia.Styling;
+using System.Globalization;
 
-namespace Froststrap
+namespace Froststrap.Localisation
 {
-    internal static class Locale
+    public static class Locale
     {
         public static CultureInfo CurrentCulture { get; private set; } = CultureInfo.InvariantCulture;
 
@@ -57,7 +54,7 @@ namespace Froststrap
 
         public static string GetIdentifierFromName(string language) => SupportedLocales.FirstOrDefault(x => x.Value == language).Key ?? "nil";
 
-        public static List<string> GetLanguages()
+        public static IReadOnlyList<string> GetLanguages()
         {
             var languages = new List<string>();
 
@@ -90,42 +87,6 @@ namespace Froststrap
             Strings.Culture = CurrentCulture;
 
             RightToLeft = _rtlLocales.Any(l => CurrentCulture.Name.StartsWith(l, StringComparison.OrdinalIgnoreCase));
-        }
-
-        public static void Initialize()
-        {
-            Set("nil");
-
-            ApplyLocaleToApplication();
-        }
-
-        public static void ApplyLocaleToWindow(Window window)
-        {
-            if (RightToLeft)
-            {
-                window.FlowDirection = FlowDirection.RightToLeft;
-            }
-            else if (CurrentCulture.Name.StartsWith("th", StringComparison.Ordinal))
-            {
-                Application.Current?.Resources["ContentFontFamily"] =
-                    new Avalonia.Media.FontFamily("Noto Sans Thai");
-            }
-        }
-
-        private static void ApplyLocaleToApplication()
-        {
-            if (RightToLeft)
-            {
-                var rtlStyle = new Style(x => x.OfType<Control>())
-                {
-                    Setters =
-                    {
-                        new Setter(Control.FlowDirectionProperty, FlowDirection.RightToLeft)
-                    }
-                };
-
-                Application.Current?.Styles.Add(rtlStyle);
-            }
         }
     }
 }

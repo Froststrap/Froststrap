@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Froststrap.Resources {
+namespace Froststrap.Localisation {
     using System;
 
 
