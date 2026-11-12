@@ -15,6 +15,7 @@ SPDX-License-Identifier: MPL-2.0
     xmlns:gv="using:Froststrap.UI.ViewModels"
     xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
+    xmlns:settings="clr-namespace:Froststrap.UI.Elements.Settings"
     d:DesignHeight="2500"
     d:DesignWidth="1200"
     x:DataType="vm:AppearanceViewModel"
@@ -232,6 +233,8 @@ SPDX-License-Identifier: MPL-2.0
                             Content="{x:Static resources:Strings.Common_Clear}"
                             Command="{Binding ClearMusicCommand}" />
                     </Grid>
+
+                    <settings:MusicPlaylistView IsVisible="{Binding BackgroundMusicFolder, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
 
                     <controls:OptionControl
                         Header="{x:Static resources:Strings.Menu_Appearance_BackgroundMusic_Resume}"

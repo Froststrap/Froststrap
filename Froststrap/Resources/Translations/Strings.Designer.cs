@@ -3775,6 +3775,15 @@ namespace Froststrap.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Now playing.
+        /// </summary>
+        public static string Menu_Appearance_BackgroundMusic_NowPlaying {
+            get {
+                return ResourceManager.GetString("Menu.Appearance.BackgroundMusic.NowPlaying", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to No MP3, OGG, WAV, or FLAC files were found in the selected folder..
         /// </summary>
         public static string Menu_Appearance_BackgroundMusic_NoTracks {

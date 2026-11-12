@@ -38,6 +38,7 @@ namespace Froststrap.Utility
 
         // requests from the music controls, applied on the next Apply
         private static int _skip;
+        private static string? _jumpTo;
         private static int _pauseToggles;
         private static bool _paused;
 
@@ -58,6 +59,13 @@ namespace Froststrap.Utility
 
         /// Raised off the UI thread when the current track or the pause state changes.
         public static event Action? StateChanged;
+
+        /// The folder was (re)scanned. Read `Playlist` for the songs.
+        public static event Action? PlaylistChanged;
+
+        /// Songs found in the current folder, sorted by name (not in play order).
+        public static IReadOnlyList<string> Playlist => _playlist;
+        private static volatile IReadOnlyList<string> _playlist = [];
 
         public static string? CurrentTrack => _nowPlaying;
         public static bool IsPaused => _nowPaused;
@@ -134,6 +142,13 @@ namespace Froststrap.Utility
         public static void Previous()
         {
             Interlocked.Decrement(ref _skip);
+            Refresh();
+        }
+
+        /// Plays a song from the current folder, starting playback if nothing is playing.
+        public static void Play(string track)
+        {
+            Volatile.Write(ref _jumpTo, track);
             Refresh();
         }
 
@@ -251,6 +266,7 @@ namespace Froststrap.Utility
             bool advance = endedId != 0 && endedId == Interlocked.Read(ref _playId);
             int skip = Interlocked.Exchange(ref _skip, 0);
             bool togglePause = Interlocked.Exchange(ref _pauseToggles, 0) % 2 == 1;
+            string? jumpTo = Interlocked.Exchange(ref _jumpTo, null);
 
             if (!_active || !settings.BackgroundMusicEnabled || string.IsNullOrWhiteSpace(folder))
             {
@@ -259,6 +275,13 @@ namespace Froststrap.Utility
                 ResetFailures();
                 Interlocked.Increment(ref _rescanRequested);
                 StopPlayback();
+
+                // turning it back on rescans, which fills the list again
+                if (_playlist.Count > 0)
+                {
+                    _playlist = [];
+                    PlaylistChanged?.Invoke();
+                }
                 return;
             }
 
@@ -269,6 +292,10 @@ namespace Froststrap.Utility
                 // read before scanning, so a request during the scan triggers another one
                 _rescanDone = requested;
                 LoadFolder(folder);
+
+                // _tracks is still in name order here; shuffling happens below
+                _playlist = [.. _tracks];
+                PlaylistChanged?.Invoke();
             }
 
             // a new folder starts fresh, so the old folder's track end doesn't count
@@ -299,10 +326,26 @@ namespace Froststrap.Utility
                 ResetFailures();
             }
 
+            // picking a song from the list overrides any skip or pause pressed at the same time
+            int jumpIndex = jumpTo is null ? -1 : _tracks.FindIndex(t => string.Equals(t, jumpTo, StringComparison.OrdinalIgnoreCase));
+            bool jumping = jumpIndex >= 0;
+
+            // shuffled: the picked song plays next instead of skipping everything before it in the order
+            if (jumping && _shuffled && jumpIndex != _index)
+            {
+                string picked = _tracks[jumpIndex];
+                _tracks.RemoveAt(jumpIndex);
+                if (jumpIndex < _index)
+                    _index--;
+
+                jumpIndex = _index + 1;
+                _tracks.Insert(jumpIndex, picked);
+            }
+
             // a press while nothing plays (end of the playlist, or every song failed) starts again
             bool startRequested = (togglePause || skip != 0) && _playing is null;
             bool wasFinished = _finished;
-            if (startRequested)
+            if (startRequested || jumping)
             {
                 _finished = false;
                 _failedFolder = null;
@@ -310,15 +353,15 @@ namespace Froststrap.Utility
             }
 
             // controls only act on a track that's playing; a skip pressed as it ends replaces the auto-advance
-            bool skipping = skip != 0 && _playing is not null && !switched;
-            if (togglePause && _playing is not null)
+            bool skipping = skip != 0 && _playing is not null && !switched && !jumping;
+            if (togglePause && _playing is not null && !jumping)
                 _paused = !_paused;
 
             // a playing track moves to the new output from the start, keeping its pause
-            bool restart = rerouted && _playing is not null && !advance && !skipping;
+            bool restart = rerouted && _playing is not null && !advance && !skipping && !jumping;
             bool keepPaused = restart && _paused;
 
-            if (_playing is not null && !advance && !skipping && !restart)
+            if (_playing is not null && !advance && !skipping && !restart && !jumping)
             {
                 AudioPlayer.SetVolume(volume);
                 AudioPlayer.SetPaused(_paused);
@@ -342,7 +385,7 @@ namespace Froststrap.Utility
                 : advance || _index < 0 || !settings.BackgroundMusicResume ? _index + 1 : _index;
 
             var repeat = settings.BackgroundMusicRepeat;
-            bool finishedCleanly = advance && !endedFailed && !skipping;
+            bool finishedCleanly = advance && !endedFailed && !skipping && !jumping;
 
             if (finishedCleanly && repeat == BackgroundMusicRepeat.One)
                 next = _index;
@@ -370,6 +413,12 @@ namespace Froststrap.Utility
                 {
                     next = StepFrom(_index, skip);
                 }
+            }
+
+            if (jumping)
+            {
+                next = jumpIndex;
+                historyTarget = -1;
             }
 
             // stop once every track has failed in a row, whether it failed to start or broke off later

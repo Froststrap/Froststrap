@@ -2149,6 +2149,9 @@ It must contain at least one of the following folders: content, ExtraContent, Pl
   <data name="Menu.Appearance.BackgroundMusic.NoTracks" xml:space="preserve">
     <value>No MP3, OGG, WAV, or FLAC files were found in the selected folder.</value>
   </data>
+  <data name="Menu.Appearance.BackgroundMusic.NowPlaying" xml:space="preserve">
+    <value>Now playing</value>
+  </data>
   <data name="Menu.Appearance.BackgroundMusic.Volume" xml:space="preserve">
     <value>Volume</value>
   </data>
