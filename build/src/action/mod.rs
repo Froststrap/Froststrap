@@ -3,7 +3,6 @@
 //! Export the module with a main function.
 
 pub mod clean;
-pub mod build;
 pub mod restore;
 pub mod publish;
 
@@ -13,7 +12,6 @@ use std::str::FromStr;
 pub enum Action {
     Clean,
     Restore,
-    Build,
     Publish,
 }
 
@@ -24,7 +22,6 @@ impl FromStr for Action {
         match s {
             "clean" => Ok(Self::Clean),
             "restore" => Ok(Self::Restore),
-            "build" => Ok(Self::Build),
             "publish" => Ok(Self::Publish),
             _ => Err(format!("unknown command `{s}`")),
         }
@@ -34,7 +31,6 @@ impl FromStr for Action {
 impl Action {
     pub fn exec(self) {
         match self {
-            Action::Build => build::main(),
             Action::Restore => restore::main(),
             Action::Clean => clean::main(),
             Action::Publish => publish::main(),
