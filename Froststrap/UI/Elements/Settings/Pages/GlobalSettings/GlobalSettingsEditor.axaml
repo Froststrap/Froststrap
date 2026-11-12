@@ -8,10 +8,10 @@ SPDX-License-Identifier: MPL-2.0
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
-             xmlns:model="clr-namespace:Froststrap.Models"
-             xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+             xmlns:model="using:Froststrap.Models"
+             xmlns:controls="using:Froststrap.UI.Elements.Controls"
              xmlns:resources="using:Froststrap.Localisation"
-             xmlns:local="clr-namespace:Froststrap.UI.Elements.Settings.Pages.GlobalSettings"
+             xmlns:local="using:Froststrap.UI.Elements.Settings.Pages.GlobalSettings"
              x:DataType="local:GlobalSettingsEditor">
 
     <Grid RowDefinitions="Auto,*" Margin="14">

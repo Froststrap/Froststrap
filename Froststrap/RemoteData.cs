@@ -65,8 +65,8 @@ namespace Froststrap
             {
                 try
                 {
-                    Uri remoteDataUri = new(App.ProjectRemoteDataLink);
-                    Uri remoteSigUri = new($"{App.ProjectRemoteDataLink}.p256.sig");
+                    Uri remoteDataUri = new(ProjectInfo.RemoteDataUrl);
+                    Uri remoteSigUri = new($"{ProjectInfo.RemoteDataUrl}.p256.sig");
 
                     App.Logger.Info("Fetching remote Data.json and signature...");
 

@@ -8,8 +8,8 @@ SPDX-License-Identifier: MPL-2.0
     x:Class="Froststrap.UI.Elements.ContextMenu.MenuContainer"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:app="clr-namespace:Froststrap"
-    xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+    xmlns:app="using:Froststrap"
+    xmlns:base="using:Froststrap.UI.Elements.Base"
     xmlns:resources="using:Froststrap.Localisation"
     Title="ContextMenuContainer"
     Width="0" Height="0"
@@ -18,7 +18,7 @@ SPDX-License-Identifier: MPL-2.0
     Opacity="0">
     <NativeMenu.Menu>
         <NativeMenu>
-            <NativeMenuItem Header="{x:Static app:App.ProjectName} {x:Static app:App.Version}" IsEnabled="False" />
+            <NativeMenuItem Header="{x:Static app:ProjectInfo.Name} {x:Static app:App.Version}" IsEnabled="False" />
             <NativeMenuItem Header="Total: 00:00" IsEnabled="False" />
             <NativeMenuItemSeparator />
             <NativeMenuItem Header="{x:Static resources:Strings.Common_DiscordRichPresence}" IsVisible="False" Click="RichPresenceMenuItem_Click" ToggleType="CheckBox" IsChecked="True" />
