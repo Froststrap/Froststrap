@@ -37,13 +37,15 @@ namespace Froststrap.Utility
 
         private static void Start(string directory)
         {
-            _watcher = new FileSystemWatcher(directory, "Theme.xml")
+            // whole folder, not just Theme.xml: images and other assets the theme references count too
+            _watcher = new FileSystemWatcher(directory)
             {
                 NotifyFilter = NotifyFilters.LastWrite
                     | NotifyFilters.Size
                     | NotifyFilters.FileName
+                    | NotifyFilters.DirectoryName
                     | NotifyFilters.CreationTime,
-                IncludeSubdirectories = false,
+                IncludeSubdirectories = true,
                 EnableRaisingEvents = true
             };
 
@@ -57,6 +59,10 @@ namespace Froststrap.Utility
 
         private static void OnFileEvent(object sender, FileSystemEventArgs e)
         {
+            // editor state (.vscode/, .zed/, swap files) churns constantly and never affects the theme
+            if (e.Name is null || e.Name.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar).Any(part => part.StartsWith('.')))
+                return;
+
             lock (Sync)
             {
                 _debounce?.Dispose();
@@ -83,7 +89,7 @@ namespace Froststrap.Utility
             }
             catch (Exception ex)
             {
-                App.Logger.Error("Failed to reload the custom theme preview", ex);
+                App.Logger.Error(ex, "Failed to reload the custom theme preview");
             }
         }
 

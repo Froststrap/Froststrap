@@ -64,6 +64,29 @@ namespace Froststrap
         }
 
         public static string Base => DataRoot;
+
+        public static bool TryGetCustomThemeDirectory(string? name, [System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out string? directory)
+            => TryGetChildDirectory(CustomThemes, name, out directory);
+
+        public static bool TryGetChildDirectory(string root, string? name, [System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out string? directory)
+        {
+            directory = null;
+
+            if (string.IsNullOrWhiteSpace(name)
+                || name is "." or ".."
+                || Utility.PathValidator.IsFileNameValid(name) != Utility.PathValidator.ValidationResult.Ok)
+                return false;
+
+            string fullRoot = Path.TrimEndingDirectorySeparator(Path.GetFullPath(root));
+            string full = Path.TrimEndingDirectorySeparator(Path.GetFullPath(Path.Combine(fullRoot, name)));
+
+            StringComparison comparison = OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+            if (!string.Equals(Path.GetDirectoryName(full), fullRoot, comparison))
+                return false;
+
+            directory = full;
+            return true;
+        }
         public static bool Initialized => !String.IsNullOrEmpty(DataRoot);
 
         public static void Initialize()

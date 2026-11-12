@@ -32,7 +32,27 @@ namespace Froststrap.Utility
             }
             """;
 
+        private static readonly string[] GeneratedVsCodeFiles = [SchemaFileName, "settings.json", "extensions.json"];
+
         private static string? _cachedSchema;
+
+        public static void RemoveEditorConfiguration(string themeDirectory)
+        {
+            foreach (string entry in Directory.EnumerateFileSystemEntries(themeDirectory, ".*", SearchOption.AllDirectories).ToList())
+            {
+                try
+                {
+                    if (Directory.Exists(entry))
+                        Directory.Delete(entry, true);
+                    else if (File.Exists(entry))
+                        File.Delete(entry);
+                }
+                catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+                {
+                    App.Logger.Warn(ex, $"Failed to remove editor configuration '{entry}'");
+                }
+            }
+        }
 
         public static void EnsureVisualStudioCode(string themeDirectory)
         {
@@ -41,27 +61,30 @@ namespace Froststrap.Utility
                 string directory = Path.Combine(themeDirectory, VsCodeDirectoryName);
                 Directory.CreateDirectory(directory);
 
+                foreach (string file in Directory.EnumerateFileSystemEntries(directory))
+                {
+                    if (GeneratedVsCodeFiles.Contains(Path.GetFileName(file), StringComparer.OrdinalIgnoreCase))
+                        continue;
+
+                    if (Directory.Exists(file))
+                        Directory.Delete(file, true);
+                    else
+                        File.Delete(file);
+                }
+
                 WriteIfChanged(Path.Combine(directory, SchemaFileName), GetSchema());
-                WriteIfMissing(Path.Combine(directory, "settings.json"), SettingsJson);
-                WriteIfMissing(Path.Combine(directory, "extensions.json"), ExtensionsJson);
+                WriteIfChanged(Path.Combine(directory, "settings.json"), SettingsJson);
+                WriteIfChanged(Path.Combine(directory, "extensions.json"), ExtensionsJson);
             }
             catch (Exception ex)
             {
-                App.Logger.Error("Failed to prepare the theme editor workspace", ex);
+                App.Logger.Error(ex, "Failed to prepare the theme editor workspace");
             }
         }
 
         private static void WriteIfChanged(string path, string contents)
         {
             if (File.Exists(path) && File.ReadAllText(path) == contents)
-                return;
-
-            File.WriteAllText(path, contents);
-        }
-
-        private static void WriteIfMissing(string path, string contents)
-        {
-            if (File.Exists(path))
                 return;
 
             File.WriteAllText(path, contents);

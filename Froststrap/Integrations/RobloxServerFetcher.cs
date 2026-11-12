@@ -94,7 +94,7 @@ namespace Froststrap.Integrations
             }
             catch (Exception ex)
             {
-                App.Logger.Error("Unhandled exception:", ex);
+                App.Logger.Error(ex, "Failed to fetch datacenters");
                 return null;
             }
         }
@@ -409,7 +409,7 @@ namespace Froststrap.Integrations
             }
             catch (Exception ex)
             {
-                App.Logger.Error("Unhandled exception:", ex);
+                App.Logger.Error(ex, "Failed to get cookie from account manager");
             }
 
             return Task.FromResult<string?>(null);
@@ -424,7 +424,7 @@ namespace Froststrap.Integrations
             }
             catch (Exception ex)
             {
-                App.Logger.Error("Unhandled exception:", ex);
+                App.Logger.Error(ex, "Failed to get cookie from cookies manager");
             }
             return Task.FromResult<string?>(null);
         }
@@ -529,7 +529,7 @@ namespace Froststrap.Integrations
             }
             catch (Exception ex)
             {
-                App.Logger.Error("Failed to resolve IP info:", ex);
+                App.Logger.Error(ex, "Failed to resolve IP info:");
                 return _ipinfoCache;
             }
         }
@@ -588,7 +588,7 @@ namespace Froststrap.Integrations
             }
             catch (Exception ex)
             {
-                App.Logger.Error("Unhandled exception:", ex);
+                App.Logger.Error(ex, "Failed to get closest regions for auto mode");
                 return [];
             }
         }
@@ -676,7 +676,7 @@ namespace Froststrap.Integrations
             }
             catch (Exception ex)
             {
-                App.Logger.Error("Unhandled exception:", ex);
+                App.Logger.Error(ex, "Failed to find best server in region");
                 return new ServerSelectionResult();
             }
         }
@@ -752,7 +752,7 @@ namespace Froststrap.Integrations
             }
             catch (Exception ex)
             {
-                App.Logger.Error("Unhandled exception:", ex);
+                App.Logger.Error(ex, "Failed to find best server in selected region");
                 return new ServerSelectionResult();
             }
         }
@@ -834,7 +834,7 @@ namespace Froststrap.Integrations
             }
             catch (Exception ex)
             {
-                App.Logger.Error("Unhandled exception:", ex);
+                App.Logger.Error(ex, "Failed to join best server");
                 return false;
             }
         }

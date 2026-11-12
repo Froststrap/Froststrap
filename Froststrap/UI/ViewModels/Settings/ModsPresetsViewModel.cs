@@ -423,7 +423,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 CustomCursorSets.Add(new CustomCursorSet { Name = Path.GetFileName(newFolderPath), FolderPath = newFolderPath });
                 SelectedCustomCursorSetIndex = CustomCursorSets.Count - 1;
             }
-            catch (Exception ex) { App.Logger.Error("Unhandled exception: ", ex); }
+            catch (Exception ex) { App.Logger.Error(ex, "Failed to add custom cursor set"); }
         }
 
         private void DeleteCustomCursorSet()
@@ -435,7 +435,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 CustomCursorSets.Remove(SelectedCustomCursorSet);
                 SelectedCustomCursorSetIndex = CustomCursorSets.Count > 0 ? 0 : -1;
             }
-            catch (Exception ex) { App.Logger.Error("Unhandled exception: ", ex); }
+            catch (Exception ex) { App.Logger.Error(ex, "Failed to delete custom cursor set"); }
         }
 
         private void RenameCustomCursorSet()
@@ -451,7 +451,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 CustomCursorSets[idx] = new CustomCursorSet { Name = SelectedCustomCursorSetName, FolderPath = newPath };
                 SelectedCustomCursorSetIndex = idx;
             }
-            catch (Exception ex) { App.Logger.Error("Unhandled exception: ", ex); }
+            catch (Exception ex) { App.Logger.Error(ex, "Failed to rename custom cursor set"); }
         }
 
         private void ApplyCursorSet()
@@ -480,7 +480,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
                 _ = Frontend.ShowMessageBox($"Cursor set '{SelectedCustomCursorSet.Name}' applied successfully!", MessageBoxImage.Information);
             }
-            catch (Exception ex) { App.Logger.Error("Unhandled exception: ", ex); }
+            catch (Exception ex) { App.Logger.Error(ex, "Failed to apply cursor set"); }
         }
 
         private async Task ExportCursorSet(Control? control)
@@ -512,7 +512,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
             catch (Exception ex)
             {
-                App.Logger.Error("Unhandled exception: ", ex);
+                App.Logger.Error(ex, "Failed to export cursor set");
             }
         }
 
@@ -558,7 +558,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
             catch (Exception ex)
             {
-                App.Logger.Error("Unhandled exception: ", ex);
+                App.Logger.Error(ex, "Failed to import cursor set");
             }
         }
 
@@ -600,7 +600,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
             catch (Exception ex)
             {
-                App.Logger.Error("Unhandled exception: ", ex);
+                App.Logger.Error(ex, "Failed to add cursor image");
             }
         }
 
@@ -658,7 +658,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
             catch (Exception ex)
             {
-                App.Logger.Error("Unhandled exception: ", ex);
+                App.Logger.Error(ex, "Failed to read current cursor set");
                 _ = Frontend.ShowMessageBox($"Failed to get current cursor set:\n{ex.Message}", MessageBoxImage.Error);
             }
 

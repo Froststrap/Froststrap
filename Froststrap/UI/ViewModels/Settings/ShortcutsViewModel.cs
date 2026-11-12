@@ -211,7 +211,7 @@ namespace Froststrap.UI.ViewModels.Settings
             catch (Exception ex)
             {
                 ShortcutStatus = Strings.Menu_Shortcuts_Failed;
-                App.Logger.Error($"Unhandled exception: {ex.Message}");
+                App.Logger.Error(ex, "Failed to create game shortcut");
             }
         }
 
@@ -243,7 +243,7 @@ namespace Froststrap.UI.ViewModels.Settings
             catch (Exception ex)
             {
                 LinkShortcutStatus = Strings.Menu_Shortcuts_Failed;
-                App.Logger.Error($"Unhandled exception: {ex.Message}");
+                App.Logger.Error(ex, "Failed to create link shortcut");
             }
         }
 

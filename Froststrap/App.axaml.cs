@@ -275,7 +275,7 @@ internal partial class App : Application
     public static async Task FinalizeExceptionHandling(AggregateException ex)
     {
         foreach (var innerEx in ex.InnerExceptions)
-            Logger.Error("Unhandled exception: ", innerEx);
+            Logger.Error(innerEx, "Unhandled exception (inner)");
 
         await FinalizeExceptionHandling(ex.GetBaseException(), false);
     }
