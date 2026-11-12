@@ -12,7 +12,7 @@ SPDX-License-Identifier: MPL-2.0
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
     xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
-    xmlns:resources="using:Froststrap.Resources"
+    xmlns:resources="using:Froststrap.Localisation"
     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Onboarding"
     mc:Ignorable="d"
     Title="{x:Static resources:Strings.Onboarding_Title}"

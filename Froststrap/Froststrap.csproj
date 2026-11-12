@@ -33,8 +33,6 @@ SPDX-License-Identifier: MPL-2.0
   <!-- Resources needed by Avalonia -->
   <ItemGroup>
     <AvaloniaResource Include="Resources/**" />
-    <AvaloniaResource Remove="Resources/Translations/Strings*.resx" />
-    <AvaloniaResource Remove="Resources/Translations/Strings.Designer.cs" />
   </ItemGroup>
 
   <!-- NuGet packages -->
@@ -64,19 +62,7 @@ SPDX-License-Identifier: MPL-2.0
     <ProjectReference Include="../libs/FluentAvalonia/src/FluentAvalonia/FluentAvalonia.csproj" />
     <ProjectReference Include="../libs/DiscordRPC-NativeAOT/DiscordRPC-NativeAOT.csproj" />
     <ProjectReference Include="../backend/backend.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Update="Resources/Translations/Strings.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
-      <CustomToolNamespace>Froststrap.Resources</CustomToolNamespace>
-    </EmbeddedResource>
-    <Compile Update="Resources/Translations/Strings.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Strings.resx</DependentUpon>
-    </Compile>
+    <ProjectReference Include="../Froststrap.Localisation/Froststrap.Localisation.csproj" />
   </ItemGroup>
 
   <Import Project="Backend.targets" />

@@ -9,7 +9,7 @@ SPDX-License-Identifier: MPL-2.0
                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                      xmlns:vm="using:Froststrap.UI.ViewModels.ContextMenu"
-                     xmlns:resources="using:Froststrap.Resources"
+                     xmlns:resources="using:Froststrap.Localisation"
                      xmlns:controls="using:Froststrap.UI.Elements.Controls"
                      xmlns:base="using:Froststrap.UI.Elements.Base"
                      x:Class="Froststrap.UI.Elements.ContextMenu.ServerInformation"

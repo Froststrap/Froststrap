@@ -12,7 +12,7 @@ SPDX-License-Identifier: MPL-2.0
     xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:resources="using:Froststrap.Resources"
+    xmlns:resources="using:Froststrap.Localisation"
     xmlns:gv="using:Froststrap.UI.ViewModels"
     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
     d:DesignHeight="900"

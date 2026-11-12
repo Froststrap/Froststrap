@@ -9,7 +9,7 @@ SPDX-License-Identifier: MPL-2.0
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
-             xmlns:resources="clr-namespace:Froststrap.Resources"
+             xmlns:resources="using:Froststrap.Localisation"
              xmlns:models="clr-namespace:Froststrap.Models.APIs.Config"
              xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
              xmlns:enums="clr-namespace:LucideAvalonia.Enum;assembly=LucideAvalonia"

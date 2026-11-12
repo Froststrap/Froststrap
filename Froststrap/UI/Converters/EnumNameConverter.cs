@@ -30,14 +30,14 @@ namespace Froststrap.UI.Converters
                     return attribute.StaticName;
 
                 if (!string.IsNullOrEmpty(attribute.FromTranslation))
-                    return Strings.ResourceManager.GetString(attribute.FromTranslation, CultureInfo.CurrentCulture) ?? attribute.FromTranslation;
+                    return Translations.Get(attribute.FromTranslation);
             }
 
             var dotIndex = typeName.IndexOf('.', StringComparison.Ordinal);
 
             var trimmedTypeName = dotIndex >= 0 ? typeName[(dotIndex + 1)..] : typeName;
 
-            return Strings.ResourceManager.GetString($"{trimmedTypeName}.{stringVal}", CultureInfo.CurrentCulture) ?? $"{trimmedTypeName}.{stringVal}";
+            return Translations.Get($"{trimmedTypeName}.{stringVal}");
         }
 
         public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
