@@ -672,7 +672,7 @@ namespace Froststrap.Integrations
 
                 App.Logger.Info($"Studio RPC server active on port {HttpPort}");
             }
-            catch (Exception ex) { App.Logger.Error("Unhandled exception: ", ex); }
+            catch (Exception ex) { App.Logger.Error(ex, "Failed to start activity HTTP server"); }
         }
 
         public void StopHTTPServer()
@@ -737,7 +737,7 @@ namespace Froststrap.Integrations
             }
             catch (Exception ex)
             {
-                App.Logger.Error($"Unhandled exception: {ex.Message}");
+                App.Logger.Error(ex, "Failed to process activity HTTP request");
                 response.StatusCode = 500;
             }
         }

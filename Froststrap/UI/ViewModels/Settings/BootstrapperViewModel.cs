@@ -397,7 +397,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
             catch (Exception ex)
             {
-                App.Logger.Error("Unhandled exception: ", ex);
+                App.Logger.Error(ex, "Failed to load available regions");
 
                 var stale = await LoadDatacentersFromCacheAsync(allowExpired: true);
                 if (stale != null)

@@ -9,6 +9,7 @@ namespace Froststrap
         public static string Temp => Path.Combine(Path.GetTempPath(), App.ProjectName);
         public static string UserProfile => Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         public static string LocalAppData => Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+        public static string RoamingAppData => Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
         public static string Desktop => Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
         public static string WindowsStartMenu => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.StartMenu), "Programs");
         public static string Process => Environment.ProcessPath!;
@@ -18,6 +19,9 @@ namespace Froststrap
 
         public static string ConfigRoot { get; private set; } = "";
         public static string DataRoot { get; private set; } = "";
+
+        private static string WindowsDataRoot => Path.Combine(RoamingAppData, App.ProjectName);
+        public static string WindowsInstallRoot => Path.Combine(LocalAppData, App.ProjectName);
 
         public static string Downloads { get; private set; } = "";
         public static string Cache { get; private set; } = "";
@@ -55,23 +59,42 @@ namespace Froststrap
                     : xdgState;
                     return Path.Combine(baseDir, App.ProjectName);
                 }
-                return Path.Combine(
-                    Paths.LocalAppData,
-                    App.ProjectName, "Logs"
-                );
+                return Path.Combine(WindowsDataRoot, "Logs");
             }
         }
 
         public static string Base => DataRoot;
+
+        public static bool TryGetCustomThemeDirectory(string? name, [System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out string? directory)
+            => TryGetChildDirectory(CustomThemes, name, out directory);
+
+        public static bool TryGetChildDirectory(string root, string? name, [System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out string? directory)
+        {
+            directory = null;
+
+            if (string.IsNullOrWhiteSpace(name)
+                || name is "." or ".."
+                || Utility.PathValidator.IsFileNameValid(name) != Utility.PathValidator.ValidationResult.Ok)
+                return false;
+
+            string fullRoot = Path.TrimEndingDirectorySeparator(Path.GetFullPath(root));
+            string full = Path.TrimEndingDirectorySeparator(Path.GetFullPath(Path.Combine(fullRoot, name)));
+
+            StringComparison comparison = OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+            if (!string.Equals(Path.GetDirectoryName(full), fullRoot, comparison))
+                return false;
+
+            directory = full;
+            return true;
+        }
         public static bool Initialized => !String.IsNullOrEmpty(DataRoot);
 
         public static void Initialize()
         {
             if (OperatingSystem.IsWindows())
             {
-                var rootPath = Path.Combine(LocalAppData, App.ProjectName);
-                ConfigRoot = rootPath;
-                DataRoot = rootPath;
+                ConfigRoot = WindowsDataRoot;
+                DataRoot = WindowsDataRoot;
                 Roblox = Path.Combine(LocalAppData, "Roblox");
             }
             else if (OperatingSystem.IsMacOS())

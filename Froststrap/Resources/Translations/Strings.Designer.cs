@@ -1730,6 +1730,15 @@ namespace Froststrap.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Couldn&apos;t open the theme folder &quot;{0}&quot;. You can open it manually and edit Theme.xml with any text editor..
+        /// </summary>
+        public static string CustomTheme_Editor_Errors_OpenFailed {
+            get {
+                return ResourceManager.GetString("CustomTheme.Editor.Errors.OpenFailed", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Custom dialog has already been initialised.
         /// </summary>
         public static string CustomTheme_Errors_DialogAlreadyInitialised {

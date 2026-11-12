@@ -138,7 +138,7 @@ namespace Froststrap.Models.APIs.Config
             }
             catch (Exception ex)
             {
-                App.Logger.Error("Unhandled exception: ", ex.Message);
+                App.Logger.Error(ex, "Failed to load community mod thumbnail");
             }
         }
     }

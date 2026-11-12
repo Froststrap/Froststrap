@@ -294,7 +294,7 @@ internal class GBSEditor
         }
         catch (Exception ex)
         {
-            App.Logger.Error($"Failed to set read-only on {FileLocation}", ex);
+            App.Logger.Error(ex, $"Failed to set read-only on {FileLocation}");
         }
     }
 
@@ -329,7 +329,7 @@ internal class GBSEditor
         }
         catch (Exception ex)
         {
-            App.Logger.Error($"Failed to create template at {FileLocation}", ex);
+            App.Logger.Error(ex, $"Failed to create template at {FileLocation}");
         }
     }
 
@@ -351,7 +351,7 @@ internal class GBSEditor
         }
         catch (Exception ex)
         {
-            App.Logger.Error("Failed to load, recreating template...", ex);
+            App.Logger.Error(ex, "Failed to load, recreating template...");
 
             if (File.Exists(FileLocation))
             {

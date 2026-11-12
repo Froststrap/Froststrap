@@ -270,7 +270,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             }
             catch (Exception ex)
             {
-                App.Logger.Error($"Unhandled exception: {ex}");
+                App.Logger.Error(ex, "Failed to load font files");
                 StatusText = Strings.Menu_ModGenerator_FailedPreview;
             }
         }
@@ -327,14 +327,14 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
                             glyphItems.Add(new GlyphItem { Data = geometry, Brush = glyphBrush });
                         }
-                        catch (Exception ex) { App.Logger.Error($"Unhandled exception: {ex}"); }
+                        catch (Exception ex) { App.Logger.Error(ex, "Failed to load glyph preview"); }
                     });
                 }
                 GlyphItems = glyphItems;
             }
             catch (Exception ex)
             {
-                App.Logger.Error($"Unhandled exception: {ex}");
+                App.Logger.Error(ex, "Failed to load glyph previews");
                 StatusText = Strings.Menu_ModGenerator_FailedPreview;
             }
         }
@@ -684,7 +684,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             }
             catch (Exception ex)
             {
-                App.Logger.Error($"Unhandled exception: {ex}");
+                App.Logger.Error(ex, "Failed to generate mod");
                 StatusText = $"Error: {ex.Message}";
             }
             finally
@@ -843,7 +843,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             catch (Exception ex)
             {
                 StatusText = $"Color picker error: {ex.Message}";
-                App.Logger.Error("Unhandled exception: ", ex);
+                App.Logger.Error(ex, "Failed to open colour picker");
             }
         }
 

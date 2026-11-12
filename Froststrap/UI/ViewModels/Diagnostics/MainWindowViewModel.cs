@@ -81,7 +81,7 @@ namespace Froststrap.UI.ViewModels.Diagnostics
             }
             catch (Exception ex)
             {
-                App.Logger.Error("Failed to take screenshot:", ex);
+                App.Logger.Error(ex, "Failed to take screenshot:");
                 ScreenshotStatus = Strings.Menu_Diagnostics_Screenshot_Failed;
             }
         }
