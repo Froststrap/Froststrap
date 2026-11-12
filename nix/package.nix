@@ -48,7 +48,7 @@ let
     pname = "xtask";
     version = "0.0.0";
     src = ../build;
-    cargoHash = "sha256-7YV+oYJE266v0iyzCZmRCo0bkLKLBMLXBKTIG7r03E0=";
+    cargoHash = "sha256-kjDU+JRJXlP8+1GpXwFnQBq+JnQnRbMNl9ZmIjJ747c=";
     doCheck = false;
   };
   version = "2.0.7";
