@@ -51,7 +51,7 @@ let
     cargoHash = "sha256-7YV+oYJE266v0iyzCZmRCo0bkLKLBMLXBKTIG7r03E0=";
     doCheck = false;
   };
-  version = "2.0.6-beta.8";
+  version = "2.0.7";
 
   runtimeLibs = lib.optionals stdenv.hostPlatform.isLinux [
     expat
