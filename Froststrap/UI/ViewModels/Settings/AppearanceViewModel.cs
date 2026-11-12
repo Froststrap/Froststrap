@@ -100,7 +100,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public static List<string> Languages => Locale.GetLanguages();
+        public static IReadOnlyList<string> Languages => Locale.GetLanguages();
 
         public string SelectedLanguage
         {

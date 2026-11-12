@@ -7,7 +7,6 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
-using Froststrap.Resources;
 using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Diagnostics

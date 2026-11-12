@@ -1,5 +1,6 @@
 ﻿<Solution>
   <Project Path="./Froststrap/Froststrap.csproj" />
+  <Project Path="./Froststrap.Localisation/Froststrap.Localisation.csproj" />
   <Project Path="./libs/LucideAvalonia/LucideAvalonia/LucideAvalonia.csproj" />
   <Project Path="./libs/FluentAvalonia/src/FluentAvalonia/FluentAvalonia.csproj" />
   <Project Path="./libs/DiscordRPC-NativeAOT/DiscordRPC-NativeAOT.csproj" />

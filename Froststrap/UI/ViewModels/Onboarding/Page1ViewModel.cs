@@ -8,7 +8,7 @@ namespace Froststrap.UI.ViewModels.Onboarding
     {
         public Page1ViewModel() { }
 
-        public static List<string> Languages => Locale.GetLanguages();
+        public static IReadOnlyList<string> Languages => Locale.GetLanguages();
 
         private string _selectedLanguage = Locale.SupportedLocales[App.Settings.Prop.Locale];
         public string SelectedLanguage

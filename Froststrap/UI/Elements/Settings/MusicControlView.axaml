@@ -9,7 +9,7 @@ SPDX-License-Identifier: MPL-2.0
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
-    xmlns:resources="using:Froststrap.Resources"
+    xmlns:resources="using:Froststrap.Localisation"
     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
     x:DataType="vm:MusicControlViewModel"
     IsVisible="{Binding IsVisible}">

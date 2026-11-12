@@ -15,7 +15,7 @@ SPDX-License-Identifier: MPL-2.0
     xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
     xmlns:local="clr-namespace:Froststrap.UI.Elements.Settings"
     xmlns:enums="using:Froststrap.Enums"
-    xmlns:resources="using:Froststrap.Resources"
+    xmlns:resources="using:Froststrap.Localisation"
     xmlns:av="using:Avalonia.Controls"
     xmlns:transitions="clr-namespace:Froststrap.UI.Utility"
     xmlns:ui="using:FluentAvalonia.UI.Controls"
