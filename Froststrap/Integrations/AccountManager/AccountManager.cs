@@ -67,7 +67,7 @@ namespace Froststrap.Integrations.AccountManager
             }
             catch (Exception ex)
             {
-                App.Logger.Error("Unhandled exception: ", ex);
+                App.Logger.Error(ex, "Failed to load accounts");
             }
         }
 
@@ -177,7 +177,7 @@ namespace Froststrap.Integrations.AccountManager
             }
             catch (Exception ex)
             {
-                App.Logger.Error("Unhandled exception: ", ex);
+                App.Logger.Error(ex, "Failed to save accounts");
                 ok = false;
             }
 

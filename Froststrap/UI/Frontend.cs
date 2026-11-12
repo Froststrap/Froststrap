@@ -144,7 +144,7 @@ namespace Froststrap.UI
             }
             catch (Exception ex)
             {
-                App.Logger.Error("Unhandled exception", ex);
+                App.Logger.Error(ex, "Failed to load the custom bootstrapper theme");
                 await ShowMessageBox($"Failed to setup custom bootstrapper: {ex.Message}.\nDefaulting to Fluent.", MessageBoxImage.Error);
                 return await GetBootstrapperDialog(BootstrapperStyle.FluentDialog);
             }

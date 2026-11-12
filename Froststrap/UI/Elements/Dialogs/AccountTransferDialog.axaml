@@ -48,14 +48,14 @@ SPDX-License-Identifier: MPL-2.0
 
             <TextBox PasswordChar="●"
                      Classes="revealPasswordButton"
-                     Watermark="{x:Static resources:Strings.Menu_AccountTransfer_Password}"
+                     PlaceholderText="{x:Static resources:Strings.Menu_AccountTransfer_Password}"
                      Text="{Binding Password}"
                      IsEnabled="{Binding IsIdle}" />
 
             <TextBox IsVisible="{Binding IsExport}"
                      PasswordChar="●"
                      Classes="revealPasswordButton"
-                     Watermark="{x:Static resources:Strings.Menu_AccountTransfer_ConfirmPassword}"
+                     PlaceholderText="{x:Static resources:Strings.Menu_AccountTransfer_ConfirmPassword}"
                      Text="{Binding ConfirmPassword}"
                      IsEnabled="{Binding IsIdle}" />
 

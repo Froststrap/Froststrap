@@ -151,7 +151,7 @@ namespace Froststrap.UI.Elements.Dialogs
             }
             catch (Exception ex)
             {
-                App.Logger.Error("Unhandled exception:", ex);
+                App.Logger.Error(ex, "Failed to validate theme zip");
                 viewModel.FileError = Strings.CustomTheme_Add_Errors_ZipInvalidData;
                 return false;
             }
@@ -219,6 +219,8 @@ namespace Froststrap.UI.Elements.Dialogs
                                 File.Copy(entry, dest);
                         }
                     }
+
+                    ThemeEditorWorkspace.RemoveEditorConfiguration(finalDir);
                 });
 
                 Created = true;
@@ -228,7 +230,7 @@ namespace Froststrap.UI.Elements.Dialogs
             }
             catch (Exception ex)
             {
-                App.Logger.Error("Unhandled exception:", ex);
+                App.Logger.Error(ex, "Failed to import custom theme");
                 _viewModel.FileError = Strings.CustomTheme_Add_Errors_Unknown;
             }
             finally

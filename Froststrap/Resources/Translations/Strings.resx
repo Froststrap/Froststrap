@@ -1370,6 +1370,10 @@ Would you like to switch your preferred channel to {0}?</value>
   <data name="CustomTheme.Editor.Errors.PreviewFailed" xml:space="preserve">
     <value>Failed to preview theme: {0}</value>
   </data>
+  <data name="CustomTheme.Editor.Errors.OpenFailed" xml:space="preserve">
+    <value>Couldn't open the theme folder "{0}". You can open it manually and edit Theme.xml with any text editor.</value>
+    <comment>{0} is the folder path</comment>
+  </data>
   <data name="Bootstrapper.Status.WaitingForData" xml:space="preserve">
     <value>Waiting for data...</value>
   </data>

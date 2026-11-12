@@ -416,7 +416,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 if (string.IsNullOrEmpty(_resolvedCookie))
                 {
                     try { _resolvedCookie = await _fetcher!.ResolveCookieAsync(); }
-                    catch (Exception ex) { App.Logger.Error("Failed to resolve cookie:", ex); }
+                    catch (Exception ex) { App.Logger.Error(ex, "Failed to resolve cookie:"); }
                 }
 
                 List<ServerInstance> servers;

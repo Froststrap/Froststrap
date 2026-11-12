@@ -329,7 +329,7 @@ namespace Froststrap.UI.ViewModels.Onboarding
             }
             catch (Exception ex)
             {
-                App.Logger.Error("Unhandled exception: ", ex);
+                App.Logger.Error(ex, "Failed to import gradient");
             }
         }
 

@@ -125,7 +125,10 @@ namespace Froststrap.UI.Elements.Bootstrapper
         #region Public APIs
         public void ApplyCustomTheme(string name, string contents)
         {
-            ThemeDir = Path.Combine(Paths.CustomThemes, name);
+            if (!Paths.TryGetCustomThemeDirectory(name, out string? themeDir))
+                throw new CustomThemeException("CustomTheme.Errors.FileNotFound", name);
+
+            ThemeDir = themeDir;
 
             string convertedXaml = Utility.ThemeXamlConverter.ConvertThemeXaml(contents);
 
@@ -145,7 +148,10 @@ namespace Froststrap.UI.Elements.Bootstrapper
 
         public void ApplyCustomTheme(string name)
         {
-            string path = Path.Combine(Paths.CustomThemes, name, "Theme.xml");
+            if (!Paths.TryGetCustomThemeDirectory(name, out string? themeDir))
+                throw new CustomThemeException("CustomTheme.Errors.FileNotFound", name);
+
+            string path = Path.Combine(themeDir, "Theme.xml");
 
             if (!File.Exists(path))
                 throw new CustomThemeException("CustomTheme.Errors.FileNotFound", path);

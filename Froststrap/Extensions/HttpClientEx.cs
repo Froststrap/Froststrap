@@ -22,7 +22,7 @@ namespace Froststrap.Extensions
                 }
                 catch (Exception ex)
                 {
-                    App.Logger.Error("Unhandled exception: ", ex);
+                    App.Logger.Error(ex, "POST request failed, retrying");
 
                     if (i == retries)
                         throw;
