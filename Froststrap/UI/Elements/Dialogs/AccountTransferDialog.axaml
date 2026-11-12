@@ -10,7 +10,7 @@ SPDX-License-Identifier: MPL-2.0
                      xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                     xmlns:resources="clr-namespace:Froststrap.Resources"
+                     xmlns:resources="using:Froststrap.Localisation"
                      xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
                      xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Dialogs"
                      x:DataType="vm:AccountTransferDialogViewModel"

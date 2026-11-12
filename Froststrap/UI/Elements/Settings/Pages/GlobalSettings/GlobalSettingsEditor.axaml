@@ -10,7 +10,7 @@ SPDX-License-Identifier: MPL-2.0
              xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
              xmlns:model="clr-namespace:Froststrap.Models"
              xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
-             xmlns:resources="using:Froststrap.Resources"
+             xmlns:resources="using:Froststrap.Localisation"
              xmlns:local="clr-namespace:Froststrap.UI.Elements.Settings.Pages.GlobalSettings"
              x:DataType="local:GlobalSettingsEditor">
 

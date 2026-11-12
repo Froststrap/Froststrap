@@ -9,7 +9,7 @@ SPDX-License-Identifier: MPL-2.0
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     x:Class="Froststrap.UI.Elements.Dialogs.ColorPickerDialog"
     xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
-    xmlns:resources="clr-namespace:Froststrap.Resources"
+    xmlns:resources="using:Froststrap.Localisation"
     Title="{x:Static resources:Strings.Common_ColorPicker}"
     Width="420"
     Height="560"

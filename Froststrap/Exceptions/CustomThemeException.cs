@@ -18,21 +18,21 @@ namespace Froststrap.Exceptions
         public CustomThemeException(string message, Exception innerException) : base(message, innerException) { }
 
         public CustomThemeException(string translationString, params object?[] args)
-            : base(string.Format(CultureInfo.InvariantCulture, Strings.ResourceManager.GetString(translationString, CultureInfo.CurrentCulture) ?? translationString, args))
+            : base(string.Format(CultureInfo.InvariantCulture, Translations.Get(translationString), args))
         {
-            EnglishMessage = string.Format(CultureInfo.InvariantCulture, Strings.ResourceManager.GetString(translationString, CultureInfo.InvariantCulture) ?? translationString, args);
+            EnglishMessage = string.Format(CultureInfo.InvariantCulture, Translations.GetEnglish(translationString), args);
         }
 
         public CustomThemeException(Exception innerException, string translationString)
-            : base(Strings.ResourceManager.GetString(translationString, CultureInfo.CurrentCulture) ?? translationString, innerException)
+            : base(Translations.Get(translationString), innerException)
         {
-            EnglishMessage = Strings.ResourceManager.GetString(translationString, CultureInfo.InvariantCulture) ?? translationString;
+            EnglishMessage = Translations.GetEnglish(translationString);
         }
 
         public CustomThemeException(Exception innerException, string translationString, params object?[] args)
-            : base(string.Format(CultureInfo.InvariantCulture, Strings.ResourceManager.GetString(translationString, CultureInfo.CurrentCulture) ?? translationString, args), innerException)
+            : base(string.Format(CultureInfo.InvariantCulture, Translations.Get(translationString), args), innerException)
         {
-            EnglishMessage = string.Format(CultureInfo.InvariantCulture, Strings.ResourceManager.GetString(translationString, CultureInfo.InvariantCulture) ?? translationString, args);
+            EnglishMessage = string.Format(CultureInfo.InvariantCulture, Translations.GetEnglish(translationString), args);
         }
 
         public override string ToString()

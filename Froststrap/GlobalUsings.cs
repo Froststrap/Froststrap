@@ -37,6 +37,6 @@ global using Froststrap.Models.Manifest;
 global using Froststrap.Models.Persistable;
 global using Froststrap.Models.SettingTasks;
 global using Froststrap.Models.SettingTasks.Base;
-global using Froststrap.Resources;
+global using Froststrap.Localisation;
 global using Froststrap.UI;
 global using Froststrap.Utility;
