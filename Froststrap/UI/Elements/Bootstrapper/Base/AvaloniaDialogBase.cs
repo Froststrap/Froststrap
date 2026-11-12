@@ -90,7 +90,6 @@ namespace Froststrap.UI.Elements.Bootstrapper.Base
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
             CanResize = false;
             ShowActivated = true;
-            ShowActivated = true;
             WindowDecorations = WindowDecorations.BorderOnly;
 
             TextOptions.SetTextRenderingMode(this, TextRenderingMode.Antialias);

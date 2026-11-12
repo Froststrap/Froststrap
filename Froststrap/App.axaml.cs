@@ -275,7 +275,7 @@ internal partial class App : Application
     public static async Task FinalizeExceptionHandling(AggregateException ex)
     {
         foreach (var innerEx in ex.InnerExceptions)
-            Logger.Error("Unhandled exception: ", innerEx);
+            Logger.Error(innerEx, "Unhandled exception (inner)");
 
         await FinalizeExceptionHandling(ex.GetBaseException(), false);
     }
@@ -526,6 +526,10 @@ internal partial class App : Application
 #endif
 
         Paths.Initialize();
+
+        // must happen before anything below loads Settings/State from the new data root
+        if (OperatingSystem.IsWindows())
+            Updater.MigrateOutOfInstallRoot();
 
         NLog.GlobalDiagnosticsContext.Set("logRoot", Paths.Logs);
         NLog.GlobalDiagnosticsContext.Set("startTime", DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss", CultureInfo.InvariantCulture));

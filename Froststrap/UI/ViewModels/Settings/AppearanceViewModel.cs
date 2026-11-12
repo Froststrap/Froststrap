@@ -496,17 +496,28 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
+        private static string GetThemeDirectoryOrThrow(string name)
+            => Paths.TryGetCustomThemeDirectory(name, out string? directory)
+                ? directory
+                : throw new InvalidOperationException($"'{name}' is not a valid custom theme name");
+
         private static void DeleteCustomThemeStructure(string name)
         {
-            string dir = Path.Combine(Paths.CustomThemes, name);
+            string dir = GetThemeDirectoryOrThrow(name);
+
+            // the preview watcher holds a handle on the theme folder
+            ThemeFileWatcher.Stop();
+
             if (Directory.Exists(dir))
                 Directory.Delete(dir, true);
         }
 
         private static void RenameCustomThemeStructure(string oldName, string newName)
         {
-            string oldDir = Path.Combine(Paths.CustomThemes, oldName);
-            string newDir = Path.Combine(Paths.CustomThemes, newName);
+            string oldDir = GetThemeDirectoryOrThrow(oldName);
+            string newDir = GetThemeDirectoryOrThrow(newName);
+
+            ThemeFileWatcher.Stop();
             Directory.Move(oldDir, newDir);
         }
 
@@ -548,10 +559,11 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             if (SelectedCustomTheme is null) return;
 
-            string directory = Path.Combine(Paths.CustomThemes, SelectedCustomTheme);
-            string themePath = Path.Combine(directory, "Theme.xml");
+            string themePath = Paths.TryGetCustomThemeDirectory(SelectedCustomTheme, out string? directory)
+                ? Path.Combine(directory, "Theme.xml")
+                : SelectedCustomTheme;
 
-            if (!File.Exists(themePath))
+            if (directory is null || !File.Exists(themePath))
             {
                 await Frontend.ShowMessageBox(
                     string.Format(CultureInfo.InvariantCulture, Strings.CustomTheme_Errors_FileNotFound, themePath),
@@ -560,48 +572,66 @@ namespace Froststrap.UI.ViewModels.Settings
                 return;
             }
 
-            WatchSelectedTheme(directory);
-
-            try
+            if (!ExternalEditor.OpenTheme(SelectedCustomTheme))
             {
-                ExternalEditor.OpenTheme(SelectedCustomTheme);
-            }
-            finally
-            {
-                App.FrostRPC?.ClearDialog();
+                await Frontend.ShowMessageBox(
+                    string.Format(CultureInfo.InvariantCulture, Strings.CustomTheme_Editor_Errors_OpenFailed, directory),
+                    MessageBoxImage.Error,
+                    MessageBoxButton.OK);
             }
         }
 
-        private void PreviewCustomTheme(bool showErrors = true)
+        /// <param name="reload">
+        /// Live-reload after a file change: errors are expected mid-edit so they're only logged, and the new
+        /// window takes the old one's place without stealing focus from the user's editor.
+        /// </param>
+        private void PreviewCustomTheme(bool reload = false)
         {
             if (SelectedCustomTheme is null) return;
 
-            string directory = Path.Combine(Paths.CustomThemes, SelectedCustomTheme);
-            WatchSelectedTheme(directory);
-
             try
             {
+                string directory = GetThemeDirectoryOrThrow(SelectedCustomTheme);
+
                 CustomDialog dialog = new();
                 dialog.ApplyCustomTheme(SelectedCustomTheme);
 
                 dialog.Closed += (_, _) =>
                 {
-                    if (ReferenceEquals(_customThemePreview, dialog))
-                        _customThemePreview = null;
+                    if (!ReferenceEquals(_customThemePreview, dialog))
+                        return;
+
+                    // nothing left to live-reload, so release the folder
+                    _customThemePreview = null;
+                    ThemeFileWatcher.Stop();
                 };
 
-                _customThemePreview?.CloseBootstrapper();
+                CustomDialog? previous = _customThemePreview;
+
+                if (reload && previous is not null)
+                {
+                    dialog.ShowActivated = false;
+                    dialog.WindowStartupLocation = WindowStartupLocation.Manual;
+                    dialog.Position = previous.Position;
+                }
+
+                // swap before closing so the old dialog's Closed handler doesn't stop the watcher
                 _customThemePreview = dialog;
 
                 dialog.Message = Strings.Bootstrapper_StylePreview_TextCancel;
                 dialog.CancelEnabled = true;
                 dialog.ShowBootstrapper();
+
+                // close the old one only once the new one is up, so there's no gap/flicker
+                previous?.CloseBootstrapper();
+
+                WatchSelectedTheme(directory);
             }
             catch (Exception ex)
             {
-                App.Logger.Error("Unhandled exception: ", ex);
+                App.Logger.Error(ex, "Failed to preview custom theme");
 
-                if (showErrors)
+                if (!reload)
                 {
                     _ = Frontend.ShowMessageBox(
                         string.Format(CultureInfo.InvariantCulture, Strings.CustomTheme_Editor_Errors_PreviewFailed, ex.Message),
@@ -625,7 +655,7 @@ namespace Froststrap.UI.ViewModels.Settings
             if (_customThemePreview == null)
                 return;
 
-            PreviewCustomTheme(showErrors: false);
+            PreviewCustomTheme(reload: true);
         }
 
         private async Task ExportCustomTheme(Control? control)
@@ -645,7 +675,8 @@ namespace Froststrap.UI.ViewModels.Settings
             if (file is null)
                 return;
 
-            string themeDir = Path.Combine(Paths.CustomThemes, SelectedCustomTheme);
+            if (!Paths.TryGetCustomThemeDirectory(SelectedCustomTheme, out string? themeDir))
+                return;
 
             await Task.Run(async () =>
             {
@@ -684,7 +715,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
             catch (Exception ex)
             {
-                App.Logger.Error($"Unhandled exception: {ex.Message}");
+                App.Logger.Error(ex, "Failed to delete custom theme");
                 await Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Menu_Appearance_CustomThemes_DeleteFailed, themeToDelete, ex.Message), MessageBoxImage.Error);
                 return;
             }
@@ -759,7 +790,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
             catch (Exception ex)
             {
-                App.Logger.Error($"Unhandled exception: {ex.Message}");
+                App.Logger.Error(ex, "Failed to rename custom theme");
                 await Frontend.ShowMessageBox("Rename failed", MessageBoxImage.Error);
                 return;
             }
@@ -1270,7 +1301,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
             catch (Exception ex)
             {
-                App.Logger.Error($"Unhandled exception: {ex.Message}");
+                App.Logger.Error(ex, "Failed to import gradient");
             }
         }
 

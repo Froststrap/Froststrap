@@ -157,7 +157,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
             catch (Exception ex)
             {
-                App.Logger.Error("Manual update check failed: ", ex);
+                App.Logger.Error(ex, "Manual update check failed: ");
                 UpdateStatus = Strings.Menu_Deployment_CheckForUpdates_Failed;
             }
             finally
@@ -381,7 +381,7 @@ namespace Froststrap.UI.ViewModels.Settings
                     OnPropertyChanged(nameof(PlayerShowLoadingError));
                     OnPropertyChanged(nameof(PlayerInfoLoadingText));
                 }
-                App.Logger.Error("Unhandled exception: ", ex);
+                App.Logger.Error(ex, "Failed to load channel deploy info");
             }
         }
 

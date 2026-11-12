@@ -2,8 +2,6 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-using System.ComponentModel;
-
 namespace Froststrap.Utility
 {
     internal static class ExternalEditor
@@ -16,7 +14,7 @@ namespace Froststrap.Utility
         ];
 
         public static bool OpenTheme(string themeName)
-            => OpenFolder(Path.Combine(Paths.CustomThemes, themeName));
+            => Paths.TryGetCustomThemeDirectory(themeName, out string? directory) && OpenFolder(directory);
 
         public static bool OpenFolder(string directory)
         {
@@ -47,13 +45,23 @@ namespace Froststrap.Utility
 
         private static bool TryOpen(string directory, ExternalEditorKind kind)
         {
-            EditorLauncher? launcher = ResolveLauncher(kind);
-            if (launcher == null)
-                return false;
+            bool reuseWindow = kind is ExternalEditorKind.VisualStudioCode;
+            bool workspaceReady = false;
 
-            EnsureWorkspace(directory, kind);
+            // try every install we can find: the first one that exists on disk isn't necessarily launchable
+            foreach (string executable in ResolveExecutables(kind))
+            {
+                if (!workspaceReady)
+                {
+                    EnsureWorkspace(directory, kind);
+                    workspaceReady = true;
+                }
 
-            return TryStart(launcher.FileName, directory, launcher.ReuseWindow);
+                if (TryStart(executable, directory, reuseWindow))
+                    return true;
+            }
+
+            return false;
         }
 
         private static void EnsureWorkspace(string directory, ExternalEditorKind kind)
@@ -71,23 +79,21 @@ namespace Froststrap.Utility
             }
             catch (Exception ex)
             {
-                App.Logger.Error("Failed to open directory with the system default handler", ex);
+                App.Logger.Error(ex, "Failed to open directory with the system default handler");
                 return false;
             }
         }
 
-        private static EditorLauncher? ResolveLauncher(ExternalEditorKind kind)
+        private static IEnumerable<string> ResolveExecutables(ExternalEditorKind kind)
         {
-            bool reuseWindow = kind is ExternalEditorKind.VisualStudioCode;
+            HashSet<string> seen = new(OperatingSystem.IsWindows() ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal);
 
             foreach (string candidate in GetCandidates(kind))
             {
                 string? executable = ResolveExecutable(candidate);
-                if (executable != null)
-                    return new EditorLauncher(executable, reuseWindow);
+                if (executable != null && seen.Add(executable))
+                    yield return executable;
             }
-
-            return null;
         }
 
         private static IEnumerable<string> GetCandidates(ExternalEditorKind kind) => kind switch
@@ -100,64 +106,48 @@ namespace Froststrap.Utility
 
         private static string? ResolveExecutable(string candidate)
         {
-            if (Path.IsPathRooted(candidate)
-                || candidate.Contains(Path.DirectorySeparatorChar, StringComparison.Ordinal)
-                || candidate.Contains(Path.AltDirectorySeparatorChar, StringComparison.Ordinal))
-            {
-                return File.Exists(candidate) ? candidate : null;
-            }
+            if (Path.IsPathFullyQualified(candidate))
+                return IsLaunchable(candidate) ? candidate : null;
 
-            string? path = Environment.GetEnvironmentVariable("PATH");
-            if (string.IsNullOrEmpty(path))
-                return null;
-
-            foreach (string directory in path.Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries))
+            foreach (string directory in GetPathDirectories())
             {
                 string fullPath = Path.Combine(directory, candidate);
 
-                if (File.Exists(fullPath))
+                if (OperatingSystem.IsWindows() && !Path.HasExtension(candidate))
+                    fullPath += ".exe";
+
+                if (IsLaunchable(fullPath))
                     return fullPath;
-
-                if (OperatingSystem.IsWindows())
-                {
-                    foreach (string extension in new[] { ".exe", ".cmd", ".bat" })
-                    {
-                        string withExtension = fullPath + extension;
-
-                        if (File.Exists(withExtension))
-                            return withExtension;
-                    }
-                }
             }
 
             return null;
         }
 
+        private static bool IsLaunchable(string path)
+        {
+            if (!File.Exists(path))
+                return false;
+
+            return !OperatingSystem.IsWindows()
+                || Path.GetExtension(path).Equals(".exe", StringComparison.OrdinalIgnoreCase);
+        }
+
+        // relative PATH entries (".", "") would resolve against whatever the working directory happens
+        // to be, e.g. a Downloads folder when launched from a browser, so they're ignored
+        private static IEnumerable<string> GetPathDirectories()
+            => (Environment.GetEnvironmentVariable("PATH") ?? string.Empty)
+                .Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .Where(Path.IsPathFullyQualified);
+
         private static bool TryStart(string fileName, string directory, bool reuseWindow)
         {
             try
             {
-                ProcessStartInfo startInfo;
-
-                if (OperatingSystem.IsWindows() && fileName.EndsWith(".cmd", StringComparison.OrdinalIgnoreCase))
+                ProcessStartInfo startInfo = new(fileName)
                 {
-                    startInfo = new ProcessStartInfo("cmd.exe")
-                    {
-                        UseShellExecute = false,
-                        CreateNoWindow = true
-                    };
-
-                    startInfo.ArgumentList.Add("/c");
-                    startInfo.ArgumentList.Add(fileName);
-                }
-                else
-                {
-                    startInfo = new ProcessStartInfo(fileName)
-                    {
-                        UseShellExecute = false,
-                        CreateNoWindow = true
-                    };
-                }
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
 
                 if (reuseWindow)
                     startInfo.ArgumentList.Add("--reuse-window");
@@ -167,13 +157,9 @@ namespace Froststrap.Utility
                 using Process? process = Process.Start(startInfo);
                 return process != null;
             }
-            catch (Exception ex) when (ex is Win32Exception or InvalidOperationException)
-            {
-                return false;
-            }
             catch (Exception ex)
             {
-                App.Logger.Error($"Failed to launch external editor \"{fileName}\"", ex);
+                App.Logger.Warn(ex, $"Failed to launch external editor \"{fileName}\"");
                 return false;
             }
         }
@@ -213,7 +199,14 @@ namespace Froststrap.Utility
                 yield return Path.Combine(localAppData, "Programs", "Microsoft VS Code", "Code.exe");
                 yield return Path.Combine(programFiles, "Microsoft VS Code", "Code.exe");
                 yield return Path.Combine(programFilesX86, "Microsoft VS Code", "Code.exe");
-                yield return "code.cmd";
+
+                // installs elsewhere only put "<install>\bin\code.cmd" on PATH; launch the Code.exe next to it
+                // directly instead of going through the .cmd
+                foreach (string directory in GetPathDirectories())
+                {
+                    if (File.Exists(Path.Combine(directory, "code.cmd")))
+                        yield return Path.GetFullPath(Path.Combine(directory, "..", "Code.exe"));
+                }
             }
             else if (OperatingSystem.IsMacOS())
             {
@@ -238,7 +231,5 @@ namespace Froststrap.Utility
                 yield return "/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl";
             }
         }
-
-        private sealed record EditorLauncher(string FileName, bool ReuseWindow);
     }
 }

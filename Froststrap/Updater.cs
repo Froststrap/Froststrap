@@ -177,6 +177,120 @@ internal class Updater
         catch { return false; }
     }
 
+    [SupportedOSPlatform("windows")]
+    public static void MigrateOutOfInstallRoot()
+    {
+        string legacyRoot = Paths.WindowsInstallRoot;
+
+        if (!Directory.Exists(legacyRoot))
+            return;
+
+        foreach (string source in Directory.EnumerateFileSystemEntries(legacyRoot))
+        {
+            string name = Path.GetFileName(source);
+
+            if (IsInstallerOwned(source, name))
+                continue;
+
+            string dest = Path.Combine(Paths.DataRoot, name);
+
+            try
+            {
+                MoveEntry(source, dest);
+                App.Logger.Info($"Migrated '{source}' -> '{dest}'");
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error(ex, $"Failed to migrate '{source}' -> '{dest}'");
+            }
+        }
+    }
+
+    private static bool IsInstallerOwned(string path, string name)
+    {
+        if (Directory.Exists(path))
+            return name.Equals("current", StringComparison.OrdinalIgnoreCase)
+                || name.Equals("packages", StringComparison.OrdinalIgnoreCase)
+                || name.Equals("Locks", StringComparison.OrdinalIgnoreCase);
+
+        string ext = Path.GetExtension(name);
+        return ext.Equals(".exe", StringComparison.OrdinalIgnoreCase)
+            || ext.Equals(".dll", StringComparison.OrdinalIgnoreCase)
+            || ext.Equals(".pdb", StringComparison.OrdinalIgnoreCase)
+            || ext.Equals(".nupkg", StringComparison.OrdinalIgnoreCase)
+            || ext.Equals(".version", StringComparison.OrdinalIgnoreCase)
+            || name.StartsWith('.')
+            || name.StartsWith("velopack", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static void MoveEntry(string source, string dest)
+    {
+        if (File.Exists(source))
+        {
+            if (File.Exists(dest))
+            {
+                App.Logger.Warn($"'{dest}' already exists, leaving '{source}' in place");
+                return;
+            }
+
+            Directory.CreateDirectory(Path.GetDirectoryName(dest)!);
+            File.Move(source, dest);
+            return;
+        }
+
+        var info = new DirectoryInfo(source);
+
+        if (Directory.Exists(dest) && !Directory.EnumerateFileSystemEntries(dest).Any())
+            Directory.Delete(dest);
+
+        if (info.LinkTarget is not null)
+        {
+            string? target = info.ResolveLinkTarget(true)?.FullName;
+
+            if (Directory.Exists(dest))
+            {
+                App.Logger.Warn($"'{dest}' already has data, leaving junction '{source}' in place");
+                return;
+            }
+
+            if (target is not null)
+                StorageLocation.CreateLink(dest, target);
+
+            info.Delete();
+            return;
+        }
+
+        if (!Directory.Exists(dest))
+        {
+            try
+            {
+                Directory.Move(source, dest);
+                return;
+            }
+            catch (IOException) when (Directory.Exists(source) && !Directory.Exists(dest)) { }
+        }
+
+        MergeDirectory(source, dest);
+    }
+
+    private static void MergeDirectory(string source, string dest)
+    {
+        Directory.CreateDirectory(dest);
+
+        foreach (string file in Directory.EnumerateFiles(source))
+        {
+            string target = Path.Combine(dest, Path.GetFileName(file));
+            if (!File.Exists(target))
+                File.Move(file, target);
+        }
+
+        foreach (string dir in Directory.EnumerateDirectories(source))
+            MoveEntry(dir, Path.Combine(dest, Path.GetFileName(dir)));
+
+        if (!Directory.EnumerateFileSystemEntries(source).Any())
+            Directory.Delete(source);
+    }
+
     private static void TryDelete(string path)
     {
         try { if (File.Exists(path)) File.Delete(path); }

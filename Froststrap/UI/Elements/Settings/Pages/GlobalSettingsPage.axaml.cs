@@ -82,7 +82,7 @@ namespace Froststrap.UI.Elements.Settings.Pages
             }
             catch (Exception ex)
             {
-                App.Logger.Error("Unhandled exception: ", ex);
+                App.Logger.Error(ex, "Failed to initialise global settings view model");
                 DataContext = new GlobalSettingsViewModel();
             }
         }
