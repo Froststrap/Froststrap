@@ -527,6 +527,10 @@ internal partial class App : Application
 
         Paths.Initialize();
 
+        // must happen before anything below loads Settings/State from the new data root
+        if (OperatingSystem.IsWindows())
+            Updater.MigrateOutOfInstallRoot();
+
         NLog.GlobalDiagnosticsContext.Set("logRoot", Paths.Logs);
         NLog.GlobalDiagnosticsContext.Set("startTime", DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss", CultureInfo.InvariantCulture));
 

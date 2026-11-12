@@ -9,6 +9,7 @@ namespace Froststrap
         public static string Temp => Path.Combine(Path.GetTempPath(), App.ProjectName);
         public static string UserProfile => Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         public static string LocalAppData => Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+        public static string RoamingAppData => Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
         public static string Desktop => Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
         public static string WindowsStartMenu => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.StartMenu), "Programs");
         public static string Process => Environment.ProcessPath!;
@@ -18,6 +19,9 @@ namespace Froststrap
 
         public static string ConfigRoot { get; private set; } = "";
         public static string DataRoot { get; private set; } = "";
+
+        private static string WindowsDataRoot => Path.Combine(RoamingAppData, App.ProjectName);
+        public static string WindowsInstallRoot => Path.Combine(LocalAppData, App.ProjectName);
 
         public static string Downloads { get; private set; } = "";
         public static string Cache { get; private set; } = "";
@@ -55,10 +59,7 @@ namespace Froststrap
                     : xdgState;
                     return Path.Combine(baseDir, App.ProjectName);
                 }
-                return Path.Combine(
-                    Paths.LocalAppData,
-                    App.ProjectName, "Logs"
-                );
+                return Path.Combine(WindowsDataRoot, "Logs");
             }
         }
 
@@ -69,9 +70,8 @@ namespace Froststrap
         {
             if (OperatingSystem.IsWindows())
             {
-                var rootPath = Path.Combine(LocalAppData, App.ProjectName);
-                ConfigRoot = rootPath;
-                DataRoot = rootPath;
+                ConfigRoot = WindowsDataRoot;
+                DataRoot = WindowsDataRoot;
                 Roblox = Path.Combine(LocalAppData, "Roblox");
             }
             else if (OperatingSystem.IsMacOS())

@@ -84,7 +84,7 @@ namespace Froststrap
                 CopyDirectory(dir, Path.Combine(dest, Path.GetFileName(dir)));
         }
 
-        private static void CreateLink(string link, string target)
+        internal static void CreateLink(string link, string target)
         {
             if (!OperatingSystem.IsWindows())
             {
