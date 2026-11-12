@@ -84,7 +84,27 @@ namespace Froststrap.Models.Persistable
         public string? BackgroundImagePath { get; set; } = "";
         public BackgroundStretch BackgroundStretch { get; set; } = BackgroundStretch.Fill;
         public double BackgroundOpacity { get; set; } = 1.0;
-        public string BootstrapperTitle { get; set; } = ProjectInfo.Name;
+        public bool BackgroundMusicEnabled { get; set; }
+        public string BackgroundMusicFolder { get; set; } = "";
+
+        // dev builds of this feature stored a single file; read it once as its folder, never write it back
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public string? BackgroundMusicPath
+        {
+            get => null;
+            set
+            {
+                if (!string.IsNullOrWhiteSpace(value) && string.IsNullOrWhiteSpace(BackgroundMusicFolder))
+                    BackgroundMusicFolder = Path.GetDirectoryName(value) ?? "";
+            }
+        }
+        public double BackgroundMusicVolume { get; set; } = 0.5;
+        public bool BackgroundMusicShuffle { get; set; }
+        public BackgroundMusicRepeat BackgroundMusicRepeat { get; set; } = BackgroundMusicRepeat.All;
+        public bool BackgroundMusicResume { get; set; } = true;
+        public string BackgroundMusicDevice { get; set; } = "";
+        public int BackgroundMusicChannelPair { get; set; }
+                public string BootstrapperTitle { get; set; } = ProjectInfo.Name;
         public string BootstrapperIconCustomLocation { get; set; } = "";
         public Theme Theme { get; set; } = Theme.Default;
         public bool EnableWindowManipulation { get; set; }

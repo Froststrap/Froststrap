@@ -9,9 +9,11 @@ members = [
   "logger",
   "mobileappreg",
   "virtualdisplay",
+  "audioplayer",
 ]
 default-members = [
   "notify",
+  "audioplayer",
 ]
 
 [workspace.package]
@@ -70,6 +72,21 @@ features = [
 [workspace.dependencies.dbus]
 version = "0.9"
 default-features = false
+
+[workspace.dependencies.symphonia]
+version = "0.6"
+default-features = false
+features = [
+  "mp3",
+  "ogg",
+  "vorbis",
+  "flac",
+  "wav",
+  "pcm",
+  "id3v1",
+  "id3v2",
+  "opt-simd",
+]
 
 [workspace.dependencies.windows]
 version = "0.62.2"

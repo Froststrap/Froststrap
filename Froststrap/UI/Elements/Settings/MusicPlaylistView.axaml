@@ -1,0 +1,157 @@
+<!--
+SPDX-FileCopyrightText: 2026 Froststrap
+
+SPDX-License-Identifier: MPL-2.0
+-->
+
+<UserControl
+    x:Class="Froststrap.UI.Elements.Settings.MusicPlaylistView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+    xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
+    xmlns:resources="using:Froststrap.Localisation"
+    xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
+    x:DataType="vm:MusicPlaylistViewModel">
+
+    <Panel>
+        <TextBlock
+            Text="{x:Static resources:Strings.Menu_Appearance_BackgroundMusic_NoTracks}"
+            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+            TextWrapping="Wrap"
+            IsVisible="{Binding !HasTracks}" />
+
+        <!-- same layout as the custom theme list: songs on the left, details on the right -->
+        <Grid
+            ColumnDefinitions="250,*"
+            ColumnSpacing="8"
+            IsVisible="{Binding HasTracks}">
+            <ListBox
+                MaxHeight="280"
+                VerticalAlignment="Top"
+                ItemsSource="{Binding Tracks}"
+                DoubleTapped="OnTrackDoubleTapped"
+                SelectedItem="{Binding Selected, Mode=TwoWay}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="vm:MusicPlaylistItem">
+                        <Grid
+                            ColumnDefinitions="32,*,Auto"
+                            ColumnSpacing="8">
+                            <Border
+                                Width="32"
+                                Height="32"
+                                CornerRadius="4"
+                                ClipToBounds="True"
+                                Background="{DynamicResource ControlFillColorSecondaryBrush}">
+                                <Panel>
+                                    <ic:Lucide
+                                        Icon="Music"
+                                        Width="14"
+                                        Height="14"
+                                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                        IsVisible="{Binding !HasThumbnail}" />
+                                    <Image
+                                        Source="{Binding Thumbnail}"
+                                        Stretch="UniformToFill"
+                                        RenderOptions.BitmapInterpolationMode="HighQuality"
+                                        IsVisible="{Binding HasThumbnail}" />
+                                </Panel>
+                            </Border>
+
+                            <StackPanel
+                                Grid.Column="1"
+                                VerticalAlignment="Center">
+                                <TextBlock
+                                    Text="{Binding Title}"
+                                    TextTrimming="CharacterEllipsis"
+                                    ToolTip.Tip="{Binding Title}" />
+                                <TextBlock
+                                    Text="{Binding Artist}"
+                                    FontSize="12"
+                                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                    TextTrimming="CharacterEllipsis"
+                                    IsVisible="{Binding HasArtist}" />
+                            </StackPanel>
+
+                            <ic:Lucide
+                                Grid.Column="2"
+                                Icon="AudioLines"
+                                Width="14"
+                                Height="14"
+                                Classes="on"
+                                VerticalAlignment="Center"
+                                IsVisible="{Binding IsNowPlaying}"
+                                ToolTip.Tip="{x:Static resources:Strings.Menu_Appearance_BackgroundMusic_NowPlaying}" />
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <Grid
+                Grid.Column="1"
+                ColumnDefinitions="96,*"
+                RowDefinitions="Auto,Auto"
+                ColumnSpacing="12"
+                RowSpacing="12"
+                VerticalAlignment="Top"
+                IsVisible="{Binding HasSelection}">
+                <Border
+                    Width="96"
+                    Height="96"
+                    CornerRadius="6"
+                    ClipToBounds="True"
+                    VerticalAlignment="Top"
+                    Background="{DynamicResource ControlFillColorSecondaryBrush}">
+                    <Panel>
+                        <ic:Lucide
+                            Icon="Music"
+                            Width="32"
+                            Height="32"
+                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                            IsVisible="{Binding !HasSelectedCover}" />
+                        <Image
+                            Source="{Binding SelectedCover}"
+                            Stretch="UniformToFill"
+                            RenderOptions.BitmapInterpolationMode="HighQuality"
+                            IsVisible="{Binding HasSelectedCover}" />
+                    </Panel>
+                </Border>
+
+                <StackPanel
+                    Grid.Column="1"
+                    Spacing="2"
+                    VerticalAlignment="Center">
+                    <TextBlock
+                        Text="{Binding Selected.Title, FallbackValue=''}"
+                        FontWeight="SemiBold"
+                        TextWrapping="Wrap" />
+                    <TextBlock
+                        Text="{Binding Selected.Artist, FallbackValue=''}"
+                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                        TextWrapping="Wrap"
+                        IsVisible="{Binding Selected.HasArtist, FallbackValue=False}" />
+                    <TextBlock
+                        Text="{Binding Selected.Album, FallbackValue=''}"
+                        FontSize="12"
+                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                        TextWrapping="Wrap"
+                        IsVisible="{Binding Selected.HasAlbum, FallbackValue=False}" />
+                    <TextBlock
+                        Text="{Binding Selected.Duration, FallbackValue=''}"
+                        FontSize="12"
+                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                        IsVisible="{Binding Selected.HasDuration, FallbackValue=False}" />
+                </StackPanel>
+
+                <controls:IconButton
+                    Grid.Row="1"
+                    Grid.ColumnSpan="2"
+                    Icon="Play"
+                    Content="{x:Static resources:Strings.Menu_MusicControls_Play}"
+                    Command="{Binding PlayCommand}"
+                    HorizontalAlignment="Left"
+                    Classes="accent" />
+            </Grid>
+        </Grid>
+    </Panel>
+</UserControl>

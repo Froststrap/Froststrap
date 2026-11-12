@@ -4,6 +4,7 @@
 
 // Big ass file with all mappings
 
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using NLog;
 
@@ -226,6 +227,307 @@ public class NativeNotify
                 NativeLibraryFailure.Report("notify", ex);
             }
         });
+    }
+}
+
+internal partial class InternalAudioPlayer
+{
+    [LibraryImport(
+        "audioplayer",
+        EntryPoint = "play_track"
+    )]
+    public static partial int PlayTrack(
+        [MarshalAs(UnmanagedType.LPUTF8Str)] string path,
+        float volume,
+        ulong id,
+        [MarshalAs(UnmanagedType.LPUTF8Str)] string? device,
+        ushort pair
+    );
+
+    [LibraryImport(
+        "audioplayer",
+        EntryPoint = "devices_open"
+    )]
+    public static partial IntPtr DevicesOpen();
+
+    [LibraryImport(
+        "audioplayer",
+        EntryPoint = "devices_count"
+    )]
+    public static partial nuint DevicesCount(IntPtr list);
+
+    [LibraryImport(
+        "audioplayer",
+        EntryPoint = "devices_get"
+    )]
+    [return: MarshalAs(UnmanagedType.U1)]
+    public static partial bool DevicesGet(IntPtr list, nuint index, out IntPtr id, out IntPtr name, out ushort channels, out int isDefault);
+
+    [LibraryImport(
+        "audioplayer",
+        EntryPoint = "devices_free"
+    )]
+    public static partial void DevicesFree(IntPtr list);
+
+    [LibraryImport(
+        "audioplayer",
+        EntryPoint = "set_track_end_callback"
+    )]
+    public static partial void SetTrackEndCallback(IntPtr callback);
+
+    [LibraryImport(
+        "audioplayer",
+        EntryPoint = "set_volume"
+    )]
+    public static partial void SetVolume(float volume);
+
+    [LibraryImport(
+        "audioplayer",
+        EntryPoint = "stop"
+    )]
+    public static partial void Stop();
+
+    [LibraryImport(
+        "audioplayer",
+        EntryPoint = "set_paused"
+    )]
+    public static partial void SetPaused(int paused);
+
+    [LibraryImport(
+        "audioplayer",
+        EntryPoint = "set_logger"
+    )]
+    public static partial void SetLogger(IntPtr callback);
+
+    [LibraryImport(
+        "audioplayer",
+        EntryPoint = "track_info_open"
+    )]
+    public static partial IntPtr TrackInfoOpen([MarshalAs(UnmanagedType.LPUTF8Str)] string path);
+
+    [LibraryImport(
+        "audioplayer",
+        EntryPoint = "track_info_title"
+    )]
+    public static partial IntPtr TrackInfoTitle(IntPtr info);
+
+    [LibraryImport(
+        "audioplayer",
+        EntryPoint = "track_info_artist"
+    )]
+    public static partial IntPtr TrackInfoArtist(IntPtr info);
+
+    [LibraryImport(
+        "audioplayer",
+        EntryPoint = "track_info_album"
+    )]
+    public static partial IntPtr TrackInfoAlbum(IntPtr info);
+
+    [LibraryImport(
+        "audioplayer",
+        EntryPoint = "track_info_duration"
+    )]
+    public static partial double TrackInfoDuration(IntPtr info);
+
+    [LibraryImport(
+        "audioplayer",
+        EntryPoint = "track_info_art"
+    )]
+    public static partial IntPtr TrackInfoArt(IntPtr info, out nuint length);
+
+    [LibraryImport(
+        "audioplayer",
+        EntryPoint = "track_info_free"
+    )]
+    public static partial void TrackInfoFree(IntPtr info);
+}
+
+public enum AudioPlayerResult
+{
+    Ok = 0,
+    InvalidArgument = 1,
+    FileNotReadable = 2,
+    UnsupportedFormat = 3,
+    NoOutputDevice = 4,
+    LibraryUnavailable = -1
+}
+
+/// Tags, length and encoded cover image (usually JPEG or PNG, empty if none) of one file.
+/// An output device. `Id` is empty for the system default.
+public sealed record AudioDevice(string Id, string Name, int Channels, bool IsDefault);
+
+public sealed record TrackInfo(string? Title, string? Artist, string? Album, TimeSpan? Duration, ReadOnlyMemory<byte> Art);
+
+public static unsafe class AudioPlayer
+{
+    private static volatile bool _initialized;
+    private static readonly Lock InitLock = new();
+
+    /// Raised on the audio thread when a track ends on its own (id, failed). Keep handlers short.
+    public static event Action<ulong, bool>? TrackEnded;
+
+    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
+    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+    private static void OnTrackEnded(ulong id, int failed)
+    {
+        // an exception escaping a native callback would take the whole process down
+        try
+        {
+            TrackEnded?.Invoke(id, failed != 0);
+        }
+        catch (Exception ex)
+        {
+            try { Logger.Error(ex, "Track end handler failed"); } catch { }
+        }
+    }
+
+    /// Plays a file once on `device` (null for the default), starting at channel `pair * 2 + 1`.
+    /// Falls back to the default output if that can't be opened. `id` comes back through TrackEnded.
+    public static AudioPlayerResult PlayTrack(string path, double volume, ulong id, string? device = null, int pair = 0)
+    {
+        try
+        {
+            Initialize();
+            ushort firstChannel = (ushort)Math.Clamp(pair * 2, 0, ushort.MaxValue - 1);
+            return (AudioPlayerResult)InternalAudioPlayer.PlayTrack(path, (float)volume, id, device, firstChannel);
+        }
+        catch (Exception ex) when (NativeLibraryFailure.IsLoadFailure(ex))
+        {
+            NativeLibraryFailure.Report("audioplayer", ex);
+            return AudioPlayerResult.LibraryUnavailable;
+        }
+    }
+
+    public static void SetVolume(double volume)
+    {
+        try
+        {
+            InternalAudioPlayer.SetVolume((float)volume);
+        }
+        catch (Exception ex) when (NativeLibraryFailure.IsLoadFailure(ex))
+        {
+            NativeLibraryFailure.Report("audioplayer", ex);
+        }
+    }
+
+    public static void Stop()
+    {
+        try
+        {
+            InternalAudioPlayer.Stop();
+        }
+        catch (Exception ex) when (NativeLibraryFailure.IsLoadFailure(ex))
+        {
+            NativeLibraryFailure.Report("audioplayer", ex);
+        }
+    }
+
+    public static void SetPaused(bool paused)
+    {
+        try
+        {
+            InternalAudioPlayer.SetPaused(paused ? 1 : 0);
+        }
+        catch (Exception ex) when (NativeLibraryFailure.IsLoadFailure(ex))
+        {
+            NativeLibraryFailure.Report("audioplayer", ex);
+        }
+    }
+
+    /// Empty if the devices can't be listed or the library is missing. Can block, so call it off the UI thread.
+    public static IReadOnlyList<AudioDevice> ListDevices()
+    {
+        IntPtr list = IntPtr.Zero;
+
+        try
+        {
+            Initialize();
+
+            list = InternalAudioPlayer.DevicesOpen();
+            if (list == IntPtr.Zero)
+                return [];
+
+            nuint count = InternalAudioPlayer.DevicesCount(list);
+            var devices = new List<AudioDevice>((int)count);
+            for (nuint i = 0; i < count; i++)
+            {
+                if (!InternalAudioPlayer.DevicesGet(list, i, out IntPtr id, out IntPtr name, out ushort channels, out int isDefault))
+                    continue;
+
+                devices.Add(new AudioDevice(
+                    Marshal.PtrToStringUTF8(id) ?? "",
+                    Marshal.PtrToStringUTF8(name) ?? "",
+                    channels,
+                    isDefault != 0));
+            }
+
+            return devices;
+        }
+        catch (Exception ex) when (NativeLibraryFailure.IsLoadFailure(ex))
+        {
+            NativeLibraryFailure.Report("audioplayer", ex);
+            return [];
+        }
+        finally
+        {
+            if (list != IntPtr.Zero)
+                InternalAudioPlayer.DevicesFree(list);
+        }
+    }
+
+    /// Null if the file can't be read or the library is missing. Reads the whole cover, so call it off the UI thread.
+    public static TrackInfo? ReadTrackInfo(string path)
+    {
+        IntPtr info = IntPtr.Zero;
+
+        try
+        {
+            Initialize();
+
+            info = InternalAudioPlayer.TrackInfoOpen(path);
+            if (info == IntPtr.Zero)
+                return null;
+
+            double seconds = InternalAudioPlayer.TrackInfoDuration(info);
+            IntPtr art = InternalAudioPlayer.TrackInfoArt(info, out nuint length);
+
+            return new TrackInfo(
+                Marshal.PtrToStringUTF8(InternalAudioPlayer.TrackInfoTitle(info)),
+                Marshal.PtrToStringUTF8(InternalAudioPlayer.TrackInfoArtist(info)),
+                Marshal.PtrToStringUTF8(InternalAudioPlayer.TrackInfoAlbum(info)),
+                seconds >= 0 ? TimeSpan.FromSeconds(seconds) : null,
+                art == IntPtr.Zero || length == 0 ? ReadOnlyMemory<byte>.Empty : new ReadOnlySpan<byte>((void*)art, checked((int)length)).ToArray());
+        }
+        catch (Exception ex) when (NativeLibraryFailure.IsLoadFailure(ex))
+        {
+            NativeLibraryFailure.Report("audioplayer", ex);
+            return null;
+        }
+        finally
+        {
+            if (info != IntPtr.Zero)
+                InternalAudioPlayer.TrackInfoFree(info);
+        }
+    }
+
+    // loaded on first use so it isn't touched while music is off
+    // playback and the device list can both make the first call, from different threads
+    private static void Initialize()
+    {
+        if (_initialized)
+            return;
+
+        lock (InitLock)
+        {
+            if (_initialized)
+                return;
+
+            InternalAudioPlayer.SetLogger(NativeLog.Callback);
+            InternalAudioPlayer.SetTrackEndCallback(
+                (IntPtr)(delegate* unmanaged[Cdecl]<ulong, int, void>)&OnTrackEnded);
+            _initialized = true;
+        }
     }
 }
 
