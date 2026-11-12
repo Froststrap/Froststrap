@@ -119,10 +119,17 @@ namespace Froststrap.Integrations
 
         private string LogKindToken => IsStudioLaunch ? "_Studio_" : "_Player_";
 
-        private bool IsGameLog(FileInfo file) =>
-            file.Name.Contains(LogKindToken, StringComparison.OrdinalIgnoreCase)
-            && !file.Name.Contains("CrashHandler", StringComparison.OrdinalIgnoreCase)
-            && !file.Name.Contains("Installer", StringComparison.OrdinalIgnoreCase);
+        private bool IsSoberLaunch => OperatingSystem.IsLinux() && !IsStudioLaunch;
+
+        private bool IsGameLog(FileInfo file)
+        {
+            if (IsSoberLaunch)
+                return file.Extension.Equals(".log", StringComparison.OrdinalIgnoreCase) && file.LinkTarget is null;
+
+            return file.Name.Contains(LogKindToken, StringComparison.OrdinalIgnoreCase)
+                && !file.Name.Contains("CrashHandler", StringComparison.OrdinalIgnoreCase)
+                && !file.Name.Contains("Installer", StringComparison.OrdinalIgnoreCase);
+        }
 
         public async void Start()
         {
@@ -194,7 +201,7 @@ namespace Froststrap.Integrations
                     App.Logger.Error($"Failed to scan log directory: {ex.Message}");
                 }
 
-                App.Logger.Info($"No recent '{LogKindToken.Trim('_')}' log file yet, waiting...");
+                App.Logger.Info($"No recent '{LogKindToken.Trim('_')}' log file yet, waiting 1000...");
                 await Task.Delay(1000);
             }
 
