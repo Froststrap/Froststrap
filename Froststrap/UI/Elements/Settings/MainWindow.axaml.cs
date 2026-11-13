@@ -208,6 +208,7 @@ namespace Froststrap.UI.Elements.Settings
         {
             return pageTag switch
             {
+                "home" => () => _viewModel?.NavigateToHomeCommand.Execute(null),
                 "integrations" => () => _viewModel?.NavigateToIntegrationsCommand.Execute(null),
                 "bootstrapper" => () => _viewModel?.NavigateToBootstrapperCommand.Execute(null),
                 "linuxsettings" => () => _viewModel?.NavigateToLinuxSettingsCommand.Execute(null),
@@ -225,6 +226,7 @@ namespace Froststrap.UI.Elements.Settings
 
         private readonly Dictionary<string, (string Title, LucideIconNames Icon)> _pageInfo = new()
         {
+            ["home"] = (Strings.Menu_Home_Title, LucideIconNames.House),
             ["integrations"] = (Strings.Menu_Integrations_Title, LucideIconNames.Plus),
             ["bootstrapper"] = (Strings.Menu_Bootstrapper_Title, LucideIconNames.Play),
             ["linuxsettings"] = (Strings.Menu_LinuxSettings_Title, LucideIconNames.Settings),
@@ -324,6 +326,7 @@ namespace Froststrap.UI.Elements.Settings
             GlobalSettingsViewModel => new GlobalSettingsPage(),
             ShortcutsViewModel => new ShortcutsPage(),
             QuickPlayViewModel => new QuickPlayPage(),
+            HomeViewModel => new HomePage(),
             ChannelViewModel => new ChannelPage(),
             GlobalSettingsEditorViewModel => new GlobalSettingsEditor(),
             FastFlagEditorViewModel => new FastFlagEditor(),
@@ -540,6 +543,7 @@ namespace Froststrap.UI.Elements.Settings
 
             var allPageTags = new List<string>
             {
+                "home",
                 "integrations",
                 "bootstrapper",
                 "channels",

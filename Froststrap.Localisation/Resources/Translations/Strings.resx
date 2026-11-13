@@ -914,6 +914,45 @@ More information:
   <data name="Menu.Integrations.QueryServerLocation.Title" xml:space="preserve">
     <value>Query Server Location</value>
   </data>
+  <data name="Menu.Home.Active" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="Menu.Home.ContinuePlaying" xml:space="preserve">
+    <value>Continue Playing</value>
+  </data>
+  <data name="Menu.Home.Description" xml:space="preserve">
+    <value>Friends and recently played games.</value>
+  </data>
+  <data name="Menu.Home.Friends" xml:space="preserve">
+    <value>Friends</value>
+  </data>
+  <data name="Menu.Home.Join" xml:space="preserve">
+    <value>Join</value>
+  </data>
+  <data name="Menu.Home.LoginFriends" xml:space="preserve">
+    <value>Log in with Account Manager to see friends.</value>
+  </data>
+  <data name="Menu.Home.LoginRecent" xml:space="preserve">
+    <value>Log in with Account Manager to see recent games.</value>
+  </data>
+  <data name="Menu.Home.NoFriends" xml:space="preserve">
+    <value>No friends found.</value>
+  </data>
+  <data name="Menu.Home.NoRecent" xml:space="preserve">
+    <value>No recent games.</value>
+  </data>
+  <data name="Menu.Home.Refresh" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="Menu.Home.Title" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="Menu.Home.ViewProfile" xml:space="preserve">
+    <value>View Profile</value>
+  </data>
+  <data name="Menu.Home.VisitPage" xml:space="preserve">
+    <value>Visit Page</value>
+  </data>
   <data name="Menu.Integrations.Title" xml:space="preserve">
     <value>Integrations</value>
   </data>

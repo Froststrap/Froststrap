@@ -167,6 +167,12 @@ SPDX-License-Identifier: MPL-2.0
             IsPaneToggleButtonVisible="False"
             PaneDisplayMode="Left">
             <ui:FANavigationView.MenuItems>
+                <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_Home_Title}" Tag="home">
+                    <ui:FANavigationViewItem.Icon>
+                        <ic:Lucide Icon="House" />
+                    </ui:FANavigationViewItem.Icon>
+                </ui:FANavigationViewItem>
+
                 <ui:FANavigationViewItem Content="{x:Static resources:Strings.Menu_Integrations_Title}" Tag="integrations">
                     <ui:FANavigationViewItem.Icon>
                         <ic:Lucide Icon="Plus" />

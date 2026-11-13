@@ -6291,6 +6291,123 @@ namespace Froststrap.Localisation {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Active.
+        /// </summary>
+        public static string Menu_Home_Active {
+            get {
+                return ResourceManager.GetString("Menu.Home.Active", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Continue Playing.
+        /// </summary>
+        public static string Menu_Home_ContinuePlaying {
+            get {
+                return ResourceManager.GetString("Menu.Home.ContinuePlaying", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Friends and recently played games..
+        /// </summary>
+        public static string Menu_Home_Description {
+            get {
+                return ResourceManager.GetString("Menu.Home.Description", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Friends.
+        /// </summary>
+        public static string Menu_Home_Friends {
+            get {
+                return ResourceManager.GetString("Menu.Home.Friends", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Join.
+        /// </summary>
+        public static string Menu_Home_Join {
+            get {
+                return ResourceManager.GetString("Menu.Home.Join", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Log in with Account Manager to see friends..
+        /// </summary>
+        public static string Menu_Home_LoginFriends {
+            get {
+                return ResourceManager.GetString("Menu.Home.LoginFriends", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Log in with Account Manager to see recent games..
+        /// </summary>
+        public static string Menu_Home_LoginRecent {
+            get {
+                return ResourceManager.GetString("Menu.Home.LoginRecent", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No friends found..
+        /// </summary>
+        public static string Menu_Home_NoFriends {
+            get {
+                return ResourceManager.GetString("Menu.Home.NoFriends", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No recent games..
+        /// </summary>
+        public static string Menu_Home_NoRecent {
+            get {
+                return ResourceManager.GetString("Menu.Home.NoRecent", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Refresh.
+        /// </summary>
+        public static string Menu_Home_Refresh {
+            get {
+                return ResourceManager.GetString("Menu.Home.Refresh", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Home.
+        /// </summary>
+        public static string Menu_Home_Title {
+            get {
+                return ResourceManager.GetString("Menu.Home.Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to View Profile.
+        /// </summary>
+        public static string Menu_Home_ViewProfile {
+            get {
+                return ResourceManager.GetString("Menu.Home.ViewProfile", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Visit Page.
+        /// </summary>
+        public static string Menu_Home_VisitPage {
+            get {
+                return ResourceManager.GetString("Menu.Home.VisitPage", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Activity Tracking.
         /// </summary>
         public static string Menu_Integrations_ActivityTracking {

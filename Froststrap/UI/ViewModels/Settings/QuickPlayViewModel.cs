@@ -8,6 +8,7 @@ using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
 using Froststrap.Integrations;
 using Froststrap.Integrations.AccountManager;
+using Froststrap.UI.Elements.Controls;
 using Froststrap.UI.Elements.Dialogs;
 using Froststrap.UI.Converters;
 using Froststrap.UI.Elements.Settings;
@@ -18,7 +19,7 @@ using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Settings;
 
-internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
+internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable, IGameMenuActions
 {
     internal enum QuickPlayTab
     {
@@ -355,35 +356,10 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
         {
             if (item == null || item.PlaceId == 0 || IsJoiningBestRegion) return;
 
-            if (!HasActiveAccount)
-            {
-                await Frontend.ShowMessageBox(
-                    Strings.Menu_QuickPlay_PleaseSelectAccount,
-                    MessageBoxImage.Warning);
-                return;
-            }
-
             IsJoiningBestRegion = true;
             try
             {
-                using var fetcher = new RobloxServerFetcher();
-                bool success = await fetcher.JoinBestServerAsync(
-                    item.PlaceId,
-                    showConfirmation: false
-                );
-
-                if (success)
-                {
-                    MainWindow.ShowGlobalNotification(
-                        Strings.Menu_QuickPlay_BestRegionJoined_Title,
-                        string.Format(
-                            CultureInfo.InvariantCulture,
-                            Strings.Menu_QuickPlay_BestRegionJoined_Message,
-                            item.Name),
-                        FAInfoBarSeverity.Success,
-                        4000,
-                        LucideIconNames.Globe);
-                }
+                await JoinBestRegionCoreAsync(item);
             }
             finally
             {
@@ -420,7 +396,37 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
         _ = SafeInitializeAsync();
     }
 
-    private static async Task ShowRobloxServersDialogAsync(long placeId, long universeId, UniverseDetails? details, bool isTracked)
+    internal static async Task JoinBestRegionCoreAsync(QuickPlayGameItem item)
+    {
+        if (AccountManager.Shared?.ActiveAccount == null)
+        {
+            await Frontend.ShowMessageBox(
+                Strings.Menu_QuickPlay_PleaseSelectAccount,
+                MessageBoxImage.Warning);
+            return;
+        }
+
+        using var fetcher = new RobloxServerFetcher();
+        bool success = await fetcher.JoinBestServerAsync(
+            item.PlaceId,
+            showConfirmation: false
+        );
+
+        if (success)
+        {
+            MainWindow.ShowGlobalNotification(
+                Strings.Menu_QuickPlay_BestRegionJoined_Title,
+                string.Format(
+                    CultureInfo.InvariantCulture,
+                    Strings.Menu_QuickPlay_BestRegionJoined_Message,
+                    item.Name),
+                FAInfoBarSeverity.Success,
+                4000,
+                LucideIconNames.Globe);
+        }
+    }
+
+    internal static async Task ShowRobloxServersDialogAsync(long placeId, long universeId, UniverseDetails? details, bool isTracked)
     {
         if (MainWindow.Instance is not { } owner) return;
         var vm = new RobloxServersDialogViewModel(placeId, universeId, details, isTracked);
@@ -428,7 +434,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
         await dialog.ShowDialog(owner);
     }
 
-    private static async Task ShowSubplaceJoinDialogAsync(long universeId)
+    internal static async Task ShowSubplaceJoinDialogAsync(long universeId)
     {
         if (MainWindow.Instance is not { } owner) return;
         var vm = new SubplaceJoinDialogViewModel(universeId);
@@ -436,7 +442,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
         await dialog.ShowDialog(owner);
     }
 
-    private static async Task ShowPrivateServerJoinDialogAsync(long placeId)
+    internal static async Task ShowPrivateServerJoinDialogAsync(long placeId)
     {
         var accountManager = AccountManager.Shared;
         if (accountManager?.ActiveAccount == null)
@@ -1073,7 +1079,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
         }
     }
 
-    private static async Task<List<QuickPlayGameItem>> FetchRecentlyVisitedFromApiAsync()
+    internal static async Task<List<QuickPlayGameItem>> FetchRecentlyVisitedFromApiAsync()
     {
         var accountManager = AccountManager.Shared;
         if (accountManager?.ActiveAccount == null) return [];
@@ -1152,7 +1158,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable
         return result;
     }
 
-    private static async Task EnrichGamesWithDetails(List<QuickPlayGameItem> games)
+    internal static async Task EnrichGamesWithDetails(List<QuickPlayGameItem> games)
     {
         var needDetails = games.Where(g => g.OriginalDetails == null && g.UniverseId > 0).ToList();
         if (needDetails.Count > 0)

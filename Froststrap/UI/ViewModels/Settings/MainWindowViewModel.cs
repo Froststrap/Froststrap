@@ -45,6 +45,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private static readonly Dictionary<string, LucideIconNames> _pageIconMap = new()
         {
+            ["home"] = LucideIconNames.House,
             ["integrations"] = LucideIconNames.Plus,
             ["bootstrapper"] = LucideIconNames.Play,
             ["linuxsettings"] = LucideIconNames.Settings,
@@ -145,6 +146,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public ICommand SetLaunchModeCommand { get; }
 
+        public IRelayCommand NavigateToHomeCommand { get; }
         public IRelayCommand NavigateToIntegrationsCommand { get; }
         public IRelayCommand NavigateToBootstrapperCommand { get; }
         public IRelayCommand NavigateToLinuxSettingsCommand { get; }
@@ -189,6 +191,7 @@ namespace Froststrap.UI.ViewModels.Settings
             BreadcrumbItemClickedCommand = new RelayCommand<BreadcrumbItemModel>(HandleBreadcrumbItemClicked);
             SearchBar = new();
 
+            NavigateToHomeCommand = new RelayCommand(() => Navigate("home", Strings.Menu_Home_Title, Strings.Menu_Home_Description, new HomeViewModel()));
             NavigateToIntegrationsCommand = new RelayCommand(() => Navigate("integrations", Strings.Menu_Integrations_Title, Strings.Menu_Integrations_Description, new IntegrationsViewModel()));
             NavigateToBootstrapperCommand = new RelayCommand(() => Navigate("bootstrapper", Strings.Menu_Bootstrapper_Title, Strings.Menu_Bootstrapper_Description, new BootstrapperViewModel()));
             NavigateToLinuxSettingsCommand = new RelayCommand(() => Navigate("linuxsettings", Strings.Menu_LinuxSettings_Title, null!, new LinuxSettingsViewModel()));
@@ -258,7 +261,7 @@ namespace Froststrap.UI.ViewModels.Settings
             if (lastPageName != null)
                 NavigateToLastPage(lastPageName);
             else
-                NavigateToIntegrationsCommand.Execute(null);
+                NavigateToHomeCommand.Execute(null);
 
             SelectedLaunchMode = App.State.Prop.LastLaunchMode;
         }
@@ -284,6 +287,9 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             switch (pageTypeName)
             {
+                case "Froststrap.UI.ViewModels.Settings.HomeViewModel":
+                    NavigateToHomeCommand.Execute(null);
+                    break;
                 case "Froststrap.UI.ViewModels.Settings.IntegrationsViewModel":
                     NavigateToIntegrationsCommand.Execute(null);
                     break;

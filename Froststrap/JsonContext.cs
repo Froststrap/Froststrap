@@ -73,6 +73,10 @@ namespace Froststrap
     [JsonSerializable(typeof(PresenceBatchRequest))]
     [JsonSerializable(typeof(JoinGameInstanceRequest))]
     [JsonSerializable(typeof(OmniRecommendationRequest))]
+    [JsonSerializable(typeof(Froststrap.UI.ViewModels.Settings.FriendsListResponse))]
+    [JsonSerializable(typeof(Froststrap.UI.ViewModels.Settings.HeadshotResponse))]
+    [JsonSerializable(typeof(Froststrap.UI.ViewModels.Settings.UserIdsRequest))]
+    [JsonSerializable(typeof(Froststrap.UI.ViewModels.Settings.UsersListResponse))]
     internal partial class JsonContext : JsonSerializerContext
     {
     }

@@ -1,0 +1,368 @@
+<!--
+SPDX-FileCopyrightText: 2026 Froststrap
+
+SPDX-License-Identifier: MPL-2.0
+-->
+
+<UserControl
+    x:Class="Froststrap.UI.Elements.Settings.Pages.HomePage"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:Froststrap.UI.ViewModels.Settings"
+    xmlns:models="using:Froststrap.Models"
+    xmlns:controls="using:Froststrap.UI.Elements.Controls"
+    xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
+    xmlns:ui="using:FluentAvalonia.UI.Controls"
+    xmlns:utility="using:Froststrap.UI.Utility"
+    xmlns:resources="using:Froststrap.Localisation"
+    x:Name="RootPage"
+    x:DataType="vm:HomeViewModel">
+
+    <UserControl.Resources>
+
+        <!-- friend bubble -->
+        <DataTemplate x:Key="FriendTemplate" x:DataType="vm:FriendItem">
+            <Button
+                Width="104"
+                Margin="4,0"
+                Padding="0"
+                Background="Transparent"
+                BorderThickness="0"
+                HorizontalContentAlignment="Center"
+                VerticalAlignment="Top"
+                ClickMode="Release">
+                <Button.Styles>
+                    <Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+                        <Setter Property="Background" Value="Transparent" />
+                    </Style>
+                </Button.Styles>
+
+                <Button.Flyout>
+                    <Flyout Placement="Bottom">
+                        <StackPanel Width="240" Spacing="8">
+                            <!-- in game: game info + join -->
+                            <StackPanel IsVisible="{Binding IsInGame}" Spacing="8">
+                                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                                    <Border
+                                        Width="40"
+                                        Height="40"
+                                        CornerRadius="6"
+                                        ClipToBounds="True"
+                                        Background="{DynamicResource ControlFillColorSecondaryBrush}">
+                                        <Image
+                                            utility:RemoteImage.SourceUrl="{Binding GameIconUrl}"
+                                            Stretch="UniformToFill"
+                                            RenderOptions.BitmapInterpolationMode="MediumQuality" />
+                                    </Border>
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                        <TextBlock
+                                            Text="{Binding PlayingText}"
+                                            FontSize="11"
+                                            Opacity="0.7"
+                                            TextTrimming="CharacterEllipsis" />
+                                        <TextBlock
+                                            Text="{Binding GameName}"
+                                            FontWeight="SemiBold"
+                                            TextTrimming="CharacterEllipsis" />
+                                    </StackPanel>
+                                </Grid>
+
+                                <controls:IconButton
+                                    Command="{Binding #RootPage.((vm:HomeViewModel)DataContext).JoinFriendCommand}"
+                                    CommandParameter="{Binding}"
+                                    IsEnabled="{Binding CanJoin}"
+                                    Icon="Play"
+                                    Content="{x:Static resources:Strings.Menu_Home_Join}"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Center"
+                                    Classes="Primary" />
+                            </StackPanel>
+
+                            <!-- not in game -->
+                            <StackPanel IsVisible="{Binding !IsInGame}" Spacing="2">
+                                <TextBlock
+                                    Text="{Binding DisplayName}"
+                                    FontWeight="SemiBold"
+                                    TextTrimming="CharacterEllipsis" />
+                                <TextBlock
+                                    Text="{Binding SubText}"
+                                    FontSize="11"
+                                    Opacity="0.6" />
+                            </StackPanel>
+
+                            <controls:IconButton
+                                Command="{Binding #RootPage.((vm:HomeViewModel)DataContext).ViewFriendProfileCommand}"
+                                CommandParameter="{Binding}"
+                                Icon="ExternalLink"
+                                Content="{x:Static resources:Strings.Menu_Home_ViewProfile}"
+                                HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Center" />
+                        </StackPanel>
+                    </Flyout>
+                </Button.Flyout>
+
+                <StackPanel Spacing="4" HorizontalAlignment="Center">
+                    <Panel Width="90" Height="90">
+                        <Border
+                            CornerRadius="45"
+                            ClipToBounds="True"
+                            Background="{DynamicResource ControlFillColorSecondaryBrush}">
+                            <Image
+                                utility:RemoteImage.SourceUrl="{Binding AvatarUrl}"
+                                Stretch="UniformToFill"
+                                RenderOptions.BitmapInterpolationMode="HighQuality" />
+                        </Border>
+
+                        <!-- in game badge -->
+                        <Border
+                            IsVisible="{Binding IsInGame}"
+                            Width="26"
+                            Height="26"
+                            CornerRadius="13"
+                            Background="#22C55E"
+                            BorderBrush="{DynamicResource SolidBackgroundFillColorBaseBrush}"
+                            BorderThickness="2"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Bottom">
+                            <ic:Lucide
+                                Icon="Gamepad2"
+                                Height="14"
+                                Width="14"
+                                Foreground="White"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center" />
+                        </Border>
+
+                        <!-- online badge -->
+                        <Border
+                            IsVisible="{Binding IsOnlineNotInGame}"
+                            Width="20"
+                            Height="20"
+                            CornerRadius="10"
+                            Background="#3B82F6"
+                            BorderBrush="{DynamicResource SolidBackgroundFillColorBaseBrush}"
+                            BorderThickness="3"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Bottom" />
+                    </Panel>
+
+                    <TextBlock
+                        Text="{Binding DisplayName}"
+                        FontSize="12"
+                        FontWeight="SemiBold"
+                        TextAlignment="Center"
+                        TextTrimming="CharacterEllipsis"
+                        HorizontalAlignment="Center" />
+                    <TextBlock
+                        Text="{Binding SubText}"
+                        FontSize="11"
+                        Opacity="0.6"
+                        TextAlignment="Center"
+                        TextTrimming="CharacterEllipsis"
+                        HorizontalAlignment="Center" />
+                </StackPanel>
+            </Button>
+        </DataTemplate>
+
+        <!-- continue playing card -->
+        <DataTemplate x:Key="RecentGameTemplate" x:DataType="models:QuickPlayGameItem">
+            <Button
+                Margin="4"
+                Padding="0"
+                Background="Transparent"
+                BorderThickness="0"
+                ClickMode="Press">
+                <Button.Styles>
+                    <Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+                        <Setter Property="Background" Value="Transparent" />
+                    </Style>
+                </Button.Styles>
+                <Button.Flyout>
+                    <controls:GameMenuFlyout />
+                </Button.Flyout>
+
+                <controls:Card
+                    MaxWidth="190"
+                    Padding="0"
+                    CornerRadius="12,12,4,4"
+                    ClipToBounds="True">
+                    <StackPanel>
+                        <Border CornerRadius="12,12,0,0" ClipToBounds="True">
+                            <Image
+                                Source="{Binding ThumbnailBitmap}"
+                                Height="190"
+                                MinWidth="190"
+                                Stretch="Fill"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                RenderOptions.BitmapInterpolationMode="HighQuality" />
+                        </Border>
+                        <StackPanel Margin="8" Spacing="4">
+                            <TextBlock
+                                Text="{Binding Name}"
+                                FontWeight="SemiBold"
+                                TextTrimming="CharacterEllipsis" />
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <ic:Lucide
+                                    Icon="Users"
+                                    Height="12"
+                                    Width="12"
+                                    VerticalAlignment="Center" />
+                                <TextBlock
+                                    Text="{Binding Playing, Converter={StaticResource NumberAbbreviationConverter}}"
+                                    FontSize="11"
+                                    FontWeight="Medium" />
+                                <TextBlock
+                                    Text="{x:Static resources:Strings.Menu_Home_Active}"
+                                    FontSize="11"
+                                    Opacity="0.5" />
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+                </controls:Card>
+            </Button>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <ScrollViewer
+        HorizontalScrollBarVisibility="Disabled"
+        VerticalScrollBarVisibility="Hidden">
+        <StackPanel Margin="14,10" Spacing="20">
+
+            <!-- header -->
+            <Grid ColumnDefinitions="*,Auto">
+                <TextBlock
+                    Text="{x:Static resources:Strings.Menu_Home_Title}"
+                    FontSize="28"
+                    FontWeight="Bold" />
+                <controls:IconButton
+                    Grid.Column="1"
+                    Command="{Binding RefreshCommand}"
+                    Icon="RefreshCw"
+                    IconSize="16"
+                    Width="34"
+                    Height="34"
+                    Padding="0"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    VerticalAlignment="Center"
+                    ToolTip.Tip="{x:Static resources:Strings.Menu_Home_Refresh}" />
+            </Grid>
+
+            <!-- friends -->
+            <StackPanel Spacing="10">
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                    <TextBlock
+                        Text="{x:Static resources:Strings.Menu_Home_Friends}"
+                        FontSize="18"
+                        FontWeight="SemiBold" />
+                    <TextBlock
+                        Text="{Binding FriendCount, StringFormat='({0})'}"
+                        FontSize="18"
+                        FontWeight="SemiBold"
+                        IsVisible="{Binding HasFriends}" />
+                    <TextBlock
+                        Text="{Binding OnlineCount, StringFormat='· {0} online'}"
+                        FontSize="12"
+                        Opacity="0.6"
+                        VerticalAlignment="Center"
+                        IsVisible="{Binding HasFriends}" />
+                </StackPanel>
+
+                <Grid MinHeight="140">
+                    <ScrollViewer
+                        HorizontalScrollBarVisibility="Hidden"
+                        VerticalScrollBarVisibility="Disabled">
+                        <ItemsControl
+                            ItemsSource="{Binding Friends}"
+                            ItemTemplate="{StaticResource FriendTemplate}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                    </ScrollViewer>
+
+                    <StackPanel
+                        IsVisible="{Binding ShowFriendsEmpty}"
+                        IsHitTestVisible="False"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center">
+                        <TextBlock
+                            IsVisible="{Binding IsLoggedIn}"
+                            Text="{x:Static resources:Strings.Menu_Home_NoFriends}"
+                            Opacity="0.6"
+                            HorizontalAlignment="Center" />
+                        <TextBlock
+                            IsVisible="{Binding !IsLoggedIn}"
+                            Text="{x:Static resources:Strings.Menu_Home_LoginFriends}"
+                            Opacity="0.6"
+                            HorizontalAlignment="Center" />
+                    </StackPanel>
+
+                    <ui:FAProgressRing
+                        IsVisible="{Binding IsFriendsLoading}"
+                        IsActive="{Binding IsFriendsLoading}"
+                        Width="40"
+                        Height="40"
+                        IsHitTestVisible="False"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Foreground="{DynamicResource SystemAccentColor}" />
+                </Grid>
+            </StackPanel>
+
+            <!-- continue playing -->
+            <StackPanel Spacing="10">
+                <TextBlock
+                    Text="{x:Static resources:Strings.Menu_Home_ContinuePlaying}"
+                    FontSize="18"
+                    FontWeight="SemiBold" />
+
+                <Grid MinHeight="200">
+                    <ScrollViewer
+                        HorizontalScrollBarVisibility="Disabled"
+                        VerticalScrollBarVisibility="Disabled">
+                        <ItemsControl
+                            ItemsSource="{Binding RecentGames}"
+                            ItemTemplate="{StaticResource RecentGameTemplate}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                    </ScrollViewer>
+
+                    <StackPanel
+                        IsVisible="{Binding ShowRecentEmpty}"
+                        IsHitTestVisible="False"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center">
+                        <TextBlock
+                            IsVisible="{Binding IsLoggedIn}"
+                            Text="{x:Static resources:Strings.Menu_Home_NoRecent}"
+                            Opacity="0.6"
+                            HorizontalAlignment="Center" />
+                        <TextBlock
+                            IsVisible="{Binding !IsLoggedIn}"
+                            Text="{x:Static resources:Strings.Menu_Home_LoginRecent}"
+                            Opacity="0.6"
+                            HorizontalAlignment="Center" />
+                    </StackPanel>
+
+                    <ui:FAProgressRing
+                        IsVisible="{Binding IsRecentLoading}"
+                        IsActive="{Binding IsRecentLoading}"
+                        Width="40"
+                        Height="40"
+                        IsHitTestVisible="False"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Foreground="{DynamicResource SystemAccentColor}" />
+                </Grid>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
