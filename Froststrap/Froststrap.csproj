@@ -28,6 +28,7 @@ SPDX-License-Identifier: MPL-2.0
     <Description>Froststrap - A Fishstrap fork</Description>
     <ApplicationIcon>../build/win.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <WindowsPackageType>None</WindowsPackageType>
   </PropertyGroup>
 
   <!-- Resources needed by Avalonia -->
