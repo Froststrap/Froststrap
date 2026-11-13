@@ -66,7 +66,7 @@ namespace Froststrap.UI
 
             var nativeMenu = NativeMenu.GetMenu(_menuContainer);
 
-            var iconUri = new Uri("avares://Froststrap/Resources/AppIcon.ico");
+            var iconUri = new Uri("avares://Froststrap/Resources/Froststrap.png");
             long iconBytes;
             using (var s = AssetLoader.Open(iconUri)) iconBytes = s.Length;
 
