@@ -16,7 +16,7 @@ namespace Froststrap
         static readonly IHandler? Handler =
             OperatingSystem.IsWindows() ? new WindowsHandler() :
             OperatingSystem.IsLinux() ? new LinuxHandler() :
-            null; // macOS registers through the app bundle's Info.plist
+            null; // macOS registers through other methods.
 
         public static void RegisterProtocolHandlers() => Safely(() => Handler?.Register());
 

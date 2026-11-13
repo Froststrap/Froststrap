@@ -28,7 +28,7 @@ pub fn request_notification_permission() -> i32 {
 }
 
 #[unsafe(no_mangle)]
-pub fn send_notification(title: String, body: String) -> i32 {
+pub fn send_notification(title: String, body: String, timeout: Duration) -> i32 {
     if !runtime::has_bundle_id() {
         log::error!("No bundle context!");
         return Send::NoBundleContext as i32;
@@ -51,7 +51,7 @@ pub fn send_notification(title: String, body: String) -> i32 {
         }
         None => return Send::TimedOut as i32,
     }
-    match center.post(&title, &body, Duration::from_secs(5)) {
+    match center.post(&title, &body, timeout) {
         Ok(()) => Send::Sent as i32,
         Err(PostError::Os | PostError::Unavailable) => Send::OsError as i32,
         Err(PostError::TimedOut) => Send::TimedOut as i32,
