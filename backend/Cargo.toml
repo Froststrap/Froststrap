@@ -53,7 +53,9 @@ version = "0.3"
 default-features = false
 features = [
   "alloc",
+  "NSBundle",
   "NSString",
+  "NSUUID",
 ]
 
 [workspace.dependencies.objc2-core-services]

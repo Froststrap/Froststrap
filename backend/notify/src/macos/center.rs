@@ -7,9 +7,8 @@ use super::runtime::class;
 use block2::RcBlock;
 use objc2::rc::Retained;
 use objc2::runtime::{AnyObject, Bool};
-use objc2::{class, msg_send};
-use objc2_foundation::NSString;
-use std::ffi::{CStr, c_char};
+use objc2::msg_send;
+use objc2_foundation::{NSUUID, NSString};
 use std::sync::mpsc::{RecvTimeoutError, channel};
 use std::time::Duration;
 
@@ -64,17 +63,6 @@ impl std::error::Error for PostError {}
 
 pub(super) struct NotificationCenter(Retained<AnyObject>);
 
-fn ns_to_string(obj: &AnyObject) -> String {
-    unsafe {
-        let p: *const c_char = msg_send![obj, UTF8String];
-        if p.is_null() {
-            String::new()
-        } else {
-            CStr::from_ptr(p).to_string_lossy().into_owned()
-        }
-    }
-}
-
 impl NotificationCenter {
     pub fn current() -> Option<Self> {
         let cls = class(c"UNUserNotificationCenter")?;
@@ -88,13 +76,13 @@ impl NotificationCenter {
             if let Some(err) = err {
                 unsafe {
                     let code: isize = msg_send![err, code];
-                    let domain: Retained<AnyObject> = msg_send![err, domain];
-                    let desc: Retained<AnyObject> = msg_send![err, localizedDescription];
+                    let domain: Retained<NSString> = msg_send![err, domain];
+                    let desc: Retained<NSString> = msg_send![err, localizedDescription];
                     log::error!(
                         "requestAuthorization error: domain={} code={} desc={}",
-                        ns_to_string(&domain),
+                        domain.to_string(),
                         code,
-                        ns_to_string(&desc)
+                        desc.to_string()
                     );
                 }
             }
@@ -140,8 +128,8 @@ impl NotificationCenter {
             let _: () = msg_send![&*content, setTitle: &*ns_title];
             let _: () = msg_send![&*content, setBody: &*ns_body];
 
-            let uuid: Retained<AnyObject> = msg_send![class!(NSUUID), UUID];
-            let id: Retained<AnyObject> = msg_send![&*uuid, UUIDString];
+            let uuid = NSUUID::new();
+            let id = uuid.UUIDString();
 
             msg_send![
                 request_cls,
