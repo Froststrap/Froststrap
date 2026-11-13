@@ -1,0 +1,9 @@
+[[language]]
+name = "xml"
+file-types = [
+  "xml",
+  "resx",
+  "xaml",
+  "axaml",
+  { glob = "app.manifest" },
+]
