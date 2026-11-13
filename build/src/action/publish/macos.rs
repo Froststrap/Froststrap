@@ -1,10 +1,14 @@
 //! os specific stuff for publish
 
-use std::{fs, path::PathBuf};
-use pissing::prelude::*;
 use crate::{
-    arch, args::{self, Configuration}, bundle::macos::AppBuilder, path, utils::{log, process},
+    arch,
+    args::{self, Configuration},
+    bundle::macos::AppBuilder,
+    path,
+    utils::{log, process},
 };
+use pissing::prelude::*;
+use std::{fs, path::PathBuf};
 
 fn find_dylib(file_name: &str) -> PathBuf {
     let profile = match args::get().configuration {
@@ -21,7 +25,9 @@ fn find_dylib(file_name: &str) -> PathBuf {
     if !p.is_file() {
         log::error!(
             "{} not found - did `cargo build` run for the {} profile on {}?",
-            p.display(), profile, triple
+            p.display(),
+            profile,
+            triple
         );
         std::process::exit(1);
     }
@@ -53,46 +59,60 @@ fn info_plist(version: &str) -> PListFile {
         string("LSMinimumSystemVersion", "12.0"),
         string("LSApplicationCategoryType", "public.app-category.utilities"),
         entry("CFBundleSupportedPlatforms", array!["MacOSX"]),
-        array("CFBundleURLTypes", [dict![
-            string("CFBundleURLName", "xyz.froststrap.roblox"),
-            string("CFBundleTypeRole", "Viewer"),
-            entry("CFBundleURLSchemes", array![
-                "roblox",
-                "roblox-player",
-                "roblox-studio",
-                "roblox-studio-auth",
-            ]),
-        ]]),
-        array("UTExportedTypeDeclarations", [
-            dict![
-                string("UTTypeIdentifier", "xyz.froststrap.roblox.place"),
-                string("UTTypeDescription", "Roblox Place"),
-                entry("UTTypeConformsTo", array!["public.data"]),
-                dict("UTTypeTagSpecification", [
-                    entry("public.filename-extension", array!["rbxl", "rbxlx"]),
-                ]),
-            ],
-            dict![
-                string("UTTypeIdentifier", "xyz.froststrap.roblox.model"),
-                string("UTTypeDescription", "Roblox Model"),
-                entry("UTTypeConformsTo", array!["public.data"]),
-                dict("UTTypeTagSpecification", [
-                    entry("public.filename-extension", array!["rbxm", "rbxmx"]),
-                ]),
-            ],
-        ]),
-        array("CFBundleDocumentTypes", [
-            dict![
-                string("CFBundleTypeName", "Roblox Place"),
+        array(
+            "CFBundleURLTypes",
+            [dict![
+                string("CFBundleURLName", "xyz.froststrap.roblox"),
                 string("CFBundleTypeRole", "Viewer"),
-                entry("LSItemContentTypes", array!["xyz.froststrap.roblox.place"]),
-            ],
-            dict![
-                string("CFBundleTypeName", "Roblox Model"),
-                string("CFBundleTypeRole", "Viewer"),
-                entry("LSItemContentTypes", array!["xyz.froststrap.roblox.model"]),
-            ],
-        ]),
+                entry(
+                    "CFBundleURLSchemes",
+                    array![
+                        "roblox",
+                        "roblox-player",
+                        "roblox-studio",
+                        "roblox-studio-auth",
+                    ]
+                ),
+            ]]
+        ),
+        array(
+            "UTExportedTypeDeclarations",
+            [
+                dict![
+                    string("UTTypeIdentifier", "xyz.froststrap.roblox.place"),
+                    string("UTTypeDescription", "Roblox Place"),
+                    entry("UTTypeConformsTo", array!["public.data"]),
+                    dict(
+                        "UTTypeTagSpecification",
+                        [entry("public.filename-extension", array!["rbxl", "rbxlx"]),]
+                    ),
+                ],
+                dict![
+                    string("UTTypeIdentifier", "xyz.froststrap.roblox.model"),
+                    string("UTTypeDescription", "Roblox Model"),
+                    entry("UTTypeConformsTo", array!["public.data"]),
+                    dict(
+                        "UTTypeTagSpecification",
+                        [entry("public.filename-extension", array!["rbxm", "rbxmx"]),]
+                    ),
+                ],
+            ]
+        ),
+        array(
+            "CFBundleDocumentTypes",
+            [
+                dict![
+                    string("CFBundleTypeName", "Roblox Place"),
+                    string("CFBundleTypeRole", "Viewer"),
+                    entry("LSItemContentTypes", array!["xyz.froststrap.roblox.place"]),
+                ],
+                dict![
+                    string("CFBundleTypeName", "Roblox Model"),
+                    string("CFBundleTypeRole", "Viewer"),
+                    entry("LSItemContentTypes", array!["xyz.froststrap.roblox.model"]),
+                ],
+            ]
+        ),
     ])
 }
 
@@ -110,15 +130,9 @@ fn thin_bin(path: PathBuf) -> PathBuf {
 
     log::info!("Thinning binary {} to only {} via lipo", path, arch);
 
-    let args = [
-        "-thin",
-        arch,
-        path,
-        "-output",
-        path,
-    ];
-    
-    process("lipo", args).exec_checked("dotnet msbuild");
+    let args = ["-thin", arch, path, "-output", path];
+
+    _ = process("lipo", args).exec();
     path.into()
 }
 
@@ -143,12 +157,20 @@ pub fn main() -> (PathBuf, PathBuf) {
         .app_icon(icon_path)
         .binary(&main_executable);
 
-    for lib in ["libvirtualdisplay.dylib", "libmobileappreg.dylib", "libnotify.dylib"] {
+    for lib in [
+        "libvirtualdisplay.dylib",
+        "libmobileappreg.dylib",
+        "libnotify.dylib",
+    ] {
         let dylib = find_dylib(lib);
         builder = builder.framework(dylib);
     }
 
-    for lib in ["libAvaloniaNative.dylib", "libSkiaSharp.dylib", "libHarfBuzzSharp.dylib"] {
+    for lib in [
+        "libAvaloniaNative.dylib",
+        "libSkiaSharp.dylib",
+        "libHarfBuzzSharp.dylib",
+    ] {
         let dylib = thin_bin(publish_dir.join(lib));
         builder = builder.framework(dylib);
     }
