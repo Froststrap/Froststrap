@@ -10,7 +10,7 @@ use center::{AuthStatus, NotificationCenter, PostError};
 use objc2_foundation::NSBundle;
 use std::time::Duration;
 
-pub fn request_notification_permission() -> i32 {
+pub fn request_permission() -> i32 {
     if NSBundle::mainBundle().bundleIdentifier().is_none() {
         log::error!("No bundle context!");
         return Perm::NoBundleContext as i32;

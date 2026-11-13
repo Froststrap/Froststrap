@@ -27,12 +27,17 @@ logger::export_set_logger!();
 ///
 /// On Windows it will set the thread AUMID.
 #[unsafe(no_mangle)]
-pub extern "C" fn init() -> i32 {
+pub extern "C" fn init(bundle_id: *const c_char) -> i32 {
+    _ = bundle_id;
+
     #[cfg(target_os = "macos")]
-    return macos::request_notification_permission();
+    return macos::request_permission();
 
     #[cfg(target_os = "windows")]
-    return win::set_application("xyz.froststrap.desktop".into());
+    {
+        let bundle_id = IStr::from(bundle_id).into();
+        return win::set_application(bundle_id);
+    }
 
     #[cfg(target_os = "linux")]
     return 0;
