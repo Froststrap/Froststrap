@@ -9,7 +9,7 @@ use data_types::{NotificationMeta, ReplacesId};
 use dbus::blocking::Connection;
 use std::{collections::HashMap, time::Duration};
 
-pub fn send_notification(title: String, description: String, time: Duration) -> i32 {
+pub fn send_notification(title: String, description: String, timeout: Duration) -> i32 {
     let conn = match Connection::new_session() {
         Ok(c) => c,
         Err(_) => return SendNotificationResult::ConnectionFailed as i32,
@@ -23,13 +23,13 @@ pub fn send_notification(title: String, description: String, time: Duration) -> 
         body: description,
         actions: Vec::new(),
         hints: HashMap::new(),
-        timeout: 3000,
+        timeout: timeout.as_millis(),
     };
 
     let proxy = conn.with_proxy(
         "org.freedesktop.Notifications",
         "/org/freedesktop/Notifications",
-        timeout,
+        Duration::from_secs(2),
     );
 
     let result: Result<(u32,), dbus::Error> =
