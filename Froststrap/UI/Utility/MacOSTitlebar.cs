@@ -110,6 +110,7 @@ internal static class MacOSTitleBar
             _window.Opened -= OnOpened;
             _window.PropertyChanged -= OnWindowPropertyChanged;
             _window.Resized -= OnWindowResized;
+            _window.Closed -= OnWindowClosed;
 
             if (!_attached)
                 return;
@@ -152,6 +153,26 @@ internal static class MacOSTitleBar
             Setup();
         }
 
+        private void OnWindowClosed(object? sender, EventArgs e)
+        {
+            _window.Opened -= OnOpened;
+            _window.PropertyChanged -= OnWindowPropertyChanged;
+            _window.Resized -= OnWindowResized;
+            _window.Closed -= OnWindowClosed;
+
+            _attached = false;
+            _haveOriginals = false;
+
+            if (_nsToolbar != IntPtr.Zero)
+            {
+                objc_msgSend_ret(_nsToolbar, sel_registerName("release"));
+                _nsToolbar = IntPtr.Zero;
+            }
+
+            _nsWindow = IntPtr.Zero;
+            States.Remove(_window);
+        }
+
         private void Setup()
         {
             try
@@ -180,6 +201,8 @@ internal static class MacOSTitleBar
                 // 4. AppKit re-lays out the traffic lights on resize, which resets any
                 //    frames we set — so re-apply our placement after every resize.
                 _window.Resized += OnWindowResized;
+
+                _window.Closed += OnWindowClosed;
 
                 _attached = true;
 
