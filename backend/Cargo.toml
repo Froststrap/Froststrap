@@ -48,6 +48,14 @@ features = [
   "CFCGTypes",
 ]
 
+[workspace.dependencies.objc2-foundation]
+version = "0.3"
+default-features = false
+features = [
+  "alloc",
+  "NSString",
+]
+
 [workspace.dependencies.objc2-core-services]
 version = "0.3"
 default-features = false

@@ -2,13 +2,14 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-use super::data_types::{NSString, opts};
+use super::data_types::opts;
 use super::runtime::class;
-use std::ffi::{CStr, c_char};
 use block2::RcBlock;
 use objc2::rc::Retained;
 use objc2::runtime::{AnyObject, Bool};
 use objc2::{class, msg_send};
+use objc2_foundation::NSString;
+use std::ffi::{CStr, c_char};
 use std::sync::mpsc::{RecvTimeoutError, channel};
 use std::time::Duration;
 
@@ -66,10 +67,13 @@ pub(super) struct NotificationCenter(Retained<AnyObject>);
 fn ns_to_string(obj: &AnyObject) -> String {
     unsafe {
         let p: *const c_char = msg_send![obj, UTF8String];
-        if p.is_null() { String::new() } else { CStr::from_ptr(p).to_string_lossy().into_owned() }
+        if p.is_null() {
+            String::new()
+        } else {
+            CStr::from_ptr(p).to_string_lossy().into_owned()
+        }
     }
 }
-
 
 impl NotificationCenter {
     pub fn current() -> Option<Self> {
@@ -88,7 +92,9 @@ impl NotificationCenter {
                     let desc: Retained<AnyObject> = msg_send![err, localizedDescription];
                     log::error!(
                         "requestAuthorization error: domain={} code={} desc={}",
-                        ns_to_string(&domain), code, ns_to_string(&desc)
+                        ns_to_string(&domain),
+                        code,
+                        ns_to_string(&desc)
                     );
                 }
             }
@@ -129,8 +135,10 @@ impl NotificationCenter {
 
         let request: Retained<AnyObject> = unsafe {
             let content: Retained<AnyObject> = msg_send![content_cls, new];
-            let _: () = msg_send![&*content, setTitle: NSString::new(title).as_obj()];
-            let _: () = msg_send![&*content, setBody: NSString::new(body).as_obj()];
+            let ns_title = NSString::from_str(title);
+            let ns_body = NSString::from_str(body);
+            let _: () = msg_send![&*content, setTitle: &*ns_title];
+            let _: () = msg_send![&*content, setBody: &*ns_body];
 
             let uuid: Retained<AnyObject> = msg_send![class!(NSUUID), UUID];
             let id: Retained<AnyObject> = msg_send![&*uuid, UUIDString];
