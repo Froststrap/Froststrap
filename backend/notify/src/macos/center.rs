@@ -2,15 +2,20 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-use super::data_types::opts;
 use super::runtime::class;
 use block2::RcBlock;
+use objc2::msg_send;
 use objc2::rc::Retained;
 use objc2::runtime::{AnyObject, Bool};
-use objc2::msg_send;
-use objc2_foundation::{NSUUID, NSString};
+use objc2_foundation::{NSString, NSUUID};
 use std::sync::mpsc::{RecvTimeoutError, channel};
 use std::time::Duration;
+
+pub mod opts {
+    pub const BADGE: usize = 1 << 0;
+    pub const SOUND: usize = 1 << 1;
+    pub const ALERT: usize = 1 << 2;
+}
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(isize)]
