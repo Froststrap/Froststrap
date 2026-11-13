@@ -36,6 +36,7 @@ log = "0.4"
 objc2 = "0.6"
 block2 = "0.6"
 dispatch2 = "0.3"
+libloading = "0.9"
 
 [workspace.dependencies.logger]
 path = "logger"

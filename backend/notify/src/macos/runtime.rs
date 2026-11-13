@@ -2,32 +2,22 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+use libloading::os::unix::{Library, RTLD_LAZY};
 use objc2::runtime::AnyClass;
-use objc2_foundation::NSBundle;
-use std::ffi::{CStr, c_char, c_int, c_void};
-use std::sync::OnceLock;
+use std::{ffi::CStr, sync::OnceLock};
 
-fn ensure_frameworks() {
-    const RTLD_LAZY: c_int = 0x1;
-
-    unsafe extern "C" {
-        fn dlopen(path: *const c_char, mode: c_int) -> *mut c_void;
-    }
-
-    static FRAMEWORKS_LOADED: OnceLock<()> = OnceLock::new();
-    FRAMEWORKS_LOADED.get_or_init(|| unsafe {
-        dlopen(
-            c"/System/Library/Frameworks/UserNotifications.framework/UserNotifications".as_ptr(),
-            RTLD_LAZY,
-        );
-    });
-}
+static FRAMEWORKS_LOADED: OnceLock<()> = OnceLock::new();
 
 pub(super) fn class(name: &CStr) -> Option<&'static AnyClass> {
-    ensure_frameworks();
-    AnyClass::get(name)
-}
+    FRAMEWORKS_LOADED.get_or_init(|| unsafe {
+        match Library::open(
+            Some("/System/Library/Frameworks/UserNotifications.framework/UserNotifications"),
+            RTLD_LAZY,
+        ) {
+            Ok(l) => _ = l.into_raw(),
+            Err(e) => log::error!("Could not load `UserNotifications.framework`: {e}"),
+        }
+    });
 
-pub(super) fn has_bundle_id() -> bool {
-    NSBundle::mainBundle().bundleIdentifier().is_some()
+    AnyClass::get(name)
 }
