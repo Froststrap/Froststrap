@@ -23,7 +23,7 @@ pub fn send_notification(title: String, description: String, timeout: Duration) 
         body: description,
         actions: Vec::new(),
         hints: HashMap::new(),
-        timeout: timeout.as_millis(),
+        timeout: timeout.as_millis().try_into().unwrap_or(3000),
     };
 
     let proxy = conn.with_proxy(
