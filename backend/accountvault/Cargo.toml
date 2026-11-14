@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: 2026 Froststrap
+#
+# SPDX-License-Identifier: MPL-2.0
+
+[package]
+name = "accountvault"
+version = "0.1.0"
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+argon2.workspace = true
+aes-gcm.workspace = true
+getrandom.workspace = true
+zeroize.workspace = true

@@ -6,7 +6,7 @@ SPDX-License-Identifier: MPL-2.0
 
 <Project>
   <PropertyGroup>
-    <BackendMacDylibs>libvirtualdisplay.dylib;libmobileappreg.dylib;libnotify.dylib</BackendMacDylibs>
+    <BackendMacDylibs>libvirtualdisplay.dylib;libmobileappreg.dylib;libnotify.dylib;libaccountvault.dylib</BackendMacDylibs>
     <_BackendMacDylibsDelimited>;$(BackendMacDylibs);</_BackendMacDylibsDelimited>
     <BackendNativeLibraryFolder Condition="'$(BackendNativeLibraryFolder)' == ''">libs</BackendNativeLibraryFolder>
   </PropertyGroup>

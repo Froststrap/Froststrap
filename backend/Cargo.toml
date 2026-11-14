@@ -9,9 +9,11 @@ members = [
   "logger",
   "mobileappreg",
   "virtualdisplay",
+  "accountvault",
 ]
 default-members = [
   "notify",
+  "accountvault",
 ]
 
 [workspace.package]
@@ -31,12 +33,42 @@ strip = "symbols"
 panic = "abort"
 incremental = false
 
+# key derivation is unbearably slow unoptimised, which makes the vault tests crawl
+[profile.dev.package.argon2]
+opt-level = 3
+
+[profile.dev.package.blake2]
+opt-level = 3
+
 [workspace.dependencies]
 log = "0.4"
 objc2 = "0.6"
 block2 = "0.6"
 dispatch2 = "0.3"
 libloading = "0.9"
+
+[workspace.dependencies.argon2]
+version = "0.5"
+default-features = false
+features = [
+  "alloc",
+  "zeroize",
+]
+
+[workspace.dependencies.aes-gcm]
+version = "0.10"
+default-features = false
+features = [
+  "aes",
+  "alloc",
+  "zeroize",
+]
+
+[workspace.dependencies.getrandom]
+version = "0.3"
+
+[workspace.dependencies.zeroize]
+version = "1"
 
 [workspace.dependencies.logger]
 path = "logger"
