@@ -26,6 +26,7 @@ SPDX-License-Identifier: MPL-2.0
                 Margin="2"
                 CornerRadius="14"
                 BorderThickness="2"
+                VerticalAlignment="Top"
                 BorderBrush="{Binding IsSelected, Converter={StaticResource NewsSelectionBorderConverter}}">
                 <Button
                     Width="360"
@@ -385,7 +386,7 @@ SPDX-License-Identifier: MPL-2.0
                                 </LinearGradientBrush>
                             </Border.Background>
                             <StackPanel Margin="16,0,60,12" VerticalAlignment="Bottom" Spacing="6">
-                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
                                     <TextBlock
                                         Text="{Binding SelectedNewsCard.Entry.Title}"
                                         FontSize="18"
@@ -409,8 +410,10 @@ SPDX-License-Identifier: MPL-2.0
                                     FontSize="12"
                                     Opacity="0.85"
                                     TextWrapping="Wrap"
+                                    TextAlignment="Center"
                                     MaxLines="2"
-                                    TextTrimming="CharacterEllipsis" />
+                                    TextTrimming="CharacterEllipsis"
+                                    HorizontalAlignment="Center" />
                                 <ItemsControl
                                     IsVisible="{Binding SelectedNewsCard.Entry.HasButtons}"
                                     ItemsSource="{Binding SelectedNewsCard.Entry.Buttons}"
