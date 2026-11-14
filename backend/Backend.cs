@@ -29,9 +29,9 @@ internal static class NativeLibraryFailure
 
         Logger.Error(
             ex,
-            "Failed to load the '{Library}' library. The file has been removed or quarantined by antivirus software." +
-            "Reinstall Froststrap or add an exclusion for its installation folder. Features that depend on this library are disabled.",
-            library);
+            "Failed to load '{Library}'. The file couln't be searched for in known resolver paths.",
+            library
+        );
     }
 }
 
@@ -171,7 +171,9 @@ internal partial class InternalNativeNotify
         "notify",
         EntryPoint = "init"
     )]
-    public static partial int Init();
+    public static partial int Init(
+        [MarshalAs(UnmanagedType.LPUTF8Str)] string bundle_id
+    );
 
     [LibraryImport(
         "notify",
@@ -183,13 +185,14 @@ internal partial class InternalNativeNotify
 /// A native notifier
 public class NativeNotify
 {
+    private static string _bundleId = string.Empty;
     private static readonly Lazy<bool> Initialized = new(InitializeNative);
 
     private static bool InitializeNative()
     {
         try
         {
-            InternalNativeNotify.Init();
+            InternalNativeNotify.Init(_bundleId);
             return true;
         }
         catch (Exception ex) when (NativeLibraryFailure.IsLoadFailure(ex))
@@ -201,8 +204,9 @@ public class NativeNotify
 
     public static bool Available => Initialized.Value;
 
-    public static void Init()
+    public static void Init(string bundleId)
     {
+        _bundleId = bundleId;
         _ = Initialized.Value;
     }
 

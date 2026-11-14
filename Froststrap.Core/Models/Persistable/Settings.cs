@@ -84,7 +84,7 @@ namespace Froststrap.Models.Persistable
         public string? BackgroundImagePath { get; set; } = "";
         public BackgroundStretch BackgroundStretch { get; set; } = BackgroundStretch.Fill;
         public double BackgroundOpacity { get; set; } = 1.0;
-        public string BootstrapperTitle { get; set; } = App.ProjectName;
+        public string BootstrapperTitle { get; set; } = ProjectInfo.Name;
         public string BootstrapperIconCustomLocation { get; set; } = "";
         public Theme Theme { get; set; } = Theme.Default;
         public bool EnableWindowManipulation { get; set; }
@@ -98,10 +98,10 @@ namespace Froststrap.Models.Persistable
         public bool UpdateRoblox { get; set; } = true;
         public bool AutomaticallyUpdateSober { get; set; } = true;
         public int MaxThreadDownload { get; set; } = 3;
-        public string RobloxDomain { get; set; } = RobloxInterfaces.Deployment.DefaultRobloxDomain;
+        public string RobloxDomain { get; set; } = RobloxDefaults.Domain;
         public bool StaticDirectory { get; set; }
-        public string PlayerChannel { get; set; } = RobloxInterfaces.Deployment.DefaultChannel;
-        public string StudioChannel { get; set; } = RobloxInterfaces.Deployment.DefaultChannel;
+        public string PlayerChannel { get; set; } = RobloxDefaults.Channel;
+        public string StudioChannel { get; set; } = RobloxDefaults.Channel;
         public ChannelChangeMode ChannelChangeMode { get; set; } = ChannelChangeMode.Prompt;
         public bool StudioVersionOverrideEnabled { get; set; }
         public string StudioVersionOverrideHash { get; set; } = string.Empty;

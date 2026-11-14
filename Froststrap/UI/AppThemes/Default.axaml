@@ -8,7 +8,7 @@ SPDX-License-Identifier: MPL-2.0
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ui="using:FluentAvalonia.UI.Controls"
         xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
-        xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls">
+        xmlns:controls="using:Froststrap.UI.Elements.Controls">
 
     <Style Selector="WindowDrawnDecorations /template/ Button#PART_FullScreenButton">
         <Setter Property="IsVisible" Value="False" />

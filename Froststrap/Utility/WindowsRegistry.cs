@@ -145,7 +145,7 @@ namespace Froststrap.Utility
             string keyName = isStudio ? "StudioPath" : "PlayerPath";
             clientPath ??= "";
 
-            using var apisKey = Registry.CurrentUser.CreateSubKey(App.ApisKey);
+            using var apisKey = Registry.CurrentUser.CreateSubKey(ProjectInfo.RegistryKey);
             apisKey.SetValueSafe(keyName, clientPath);
         }
 
@@ -186,7 +186,7 @@ namespace Froststrap.Utility
                         totalBytes += file.Length;
 
                     int totalKB = (int)Math.Min(totalBytes / 1024, int.MaxValue);
-                    using var uninstallKey = Registry.CurrentUser.CreateSubKey(App.UninstallKey);
+                    using var uninstallKey = Registry.CurrentUser.CreateSubKey(ProjectInfo.UninstallKey);
                     uninstallKey?.SetValueSafe("EstimatedSize", totalKB);
                     App.Logger.Info($"Updated EstimatedSize to {totalKB} KB");
                 }

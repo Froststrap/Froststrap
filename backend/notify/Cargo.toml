@@ -25,3 +25,5 @@ windows.workspace = true
 [target.'cfg(target_os = "macos")'.dependencies]
 objc2.workspace = true
 block2.workspace = true
+libloading.workspace = true
+objc2-foundation.workspace = true

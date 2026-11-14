@@ -1,7 +1,7 @@
 [package]
 name = "xtask"
 description = "Build system for Froststrap"
-version = "1.0.0"
+version = "1.1.0"
 edition = "2024"
 license = "MPL-2.0"
 

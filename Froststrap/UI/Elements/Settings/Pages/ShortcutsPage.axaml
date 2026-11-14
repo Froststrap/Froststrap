@@ -10,10 +10,10 @@ SPDX-License-Identifier: MPL-2.0
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:resources="using:Froststrap.Localisation"
     xmlns:ui="using:FluentAvalonia.UI.Controls"
-    xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
-    xmlns:apis="clr-namespace:Froststrap.Models.APIs.Roblox"
+    xmlns:vm="using:Froststrap.UI.ViewModels.Settings"
+    xmlns:apis="using:Froststrap.Models.APIs.Roblox"
     xmlns:gv="using:Froststrap.UI.ViewModels"
-    xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+    xmlns:controls="using:Froststrap.UI.Elements.Controls"
     xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
     x:DataType="vm:ShortcutsViewModel">
 

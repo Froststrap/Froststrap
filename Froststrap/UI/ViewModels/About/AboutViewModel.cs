@@ -10,6 +10,6 @@ namespace Froststrap.UI.ViewModels.About
         public static BuildMetadataAttribute BuildMetadata => App.BuildMetadata;
 
         public static string BuildTimestamp => BuildMetadata.LocalTimestamp.ToFriendlyString();
-        public static string BuildCommitHashUrl => $"https://github.com/{App.ProjectRepository}/commit/{BuildMetadata.CommitHash}";
+        public static string BuildCommitHashUrl => $"https://github.com/{ProjectInfo.Repository}/commit/{BuildMetadata.CommitHash}";
     }
 }

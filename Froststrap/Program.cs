@@ -111,7 +111,7 @@ sealed partial class Program
         try
         {
 #if __APPLE__
-            NativeNotify.Init();
+            NativeNotify.Init(ProjectInfo.BundleId);
 #endif
             BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
         }

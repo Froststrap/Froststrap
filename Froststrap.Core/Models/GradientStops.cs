@@ -2,8 +2,6 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-using Avalonia.Media;
-using Froststrap.UI.ViewModels;
 
 namespace Froststrap.Models
 {

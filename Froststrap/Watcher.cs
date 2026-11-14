@@ -27,6 +27,11 @@ namespace Froststrap
 
         private readonly CancellationTokenSource _cancellationTokenSource = new();
         private bool _isDisposed;
+        private int _closingRoblox;
+        private readonly Lock _closeLock = new();
+#pragma warning disable CA2213 // borrowed from CloseRobloxAsync, which disposes it
+        private CancellationTokenSource? _closeCancel;
+#pragma warning restore CA2213
         private int _gameModeHandle = -1;
 
         public static int? ProcessId { get; private set; }
@@ -70,11 +75,16 @@ namespace Froststrap
 
                 if (App.Settings.Prop.UseDisableAppPatch)
                 {
-                    ActivityWatcher.OnAppClose += delegate
+                    ActivityWatcher.OnAppClose += (_, _) => _ = CloseRobloxAsync(_watcherData.ProcessId);
+
+                    // joining another game during the wait cancels the force-close (the close request was already sent)
+                    ActivityWatcher.OnLogEntry += (_, entry) =>
                     {
-                        App.Logger.Info("Received desktop app exit, closing Roblox");
-                        using var process = Process.GetProcessById(_watcherData.ProcessId);
-                        process.CloseMainWindow();
+                        if (!entry.Contains(Integrations.ActivityWatcher.GameJoiningEntry, StringComparison.Ordinal))
+                            return;
+
+                        lock (_closeLock)
+                            _closeCancel?.Cancel();
                     };
                 }
 
@@ -415,6 +425,108 @@ namespace Froststrap
 
             if (App.LaunchSettings.TestModeFlag.Active)
                 Process.Start(Paths.Process, "--settings --test-mode");
+        }
+
+        // "Close To Desktop": asks Roblox to close, then ends it if it's still running
+        // (newer Roblox builds can keep running in the system tray when their window is closed)
+        private async Task CloseRobloxAsync(int pid)
+        {
+            // one attempt at a time; a repeat leave line while closing is ignored
+            if (Interlocked.Exchange(ref _closingRoblox, 1) == 1)
+            {
+                App.Logger.Info("Already closing Roblox, ignoring repeat desktop app exit");
+                return;
+            }
+
+            App.Logger.Info("Received desktop app exit, closing Roblox");
+            using var joined = new CancellationTokenSource();
+
+            lock (_closeLock)
+                _closeCancel = joined;
+
+            try
+            {
+                using var process = Process.GetProcessById(pid);
+
+                if (!process.CloseMainWindow())
+                    App.Logger.Warn($"Roblox (PID {pid}) has no main window to close");
+
+                using (var wait = CancellationTokenSource.CreateLinkedTokenSource(joined.Token))
+                {
+                    wait.CancelAfter(TimeSpan.FromSeconds(5));
+
+                    try
+                    {
+                        await process.WaitForExitAsync(wait.Token);
+                        return;
+                    }
+                    catch (OperationCanceledException) when (joined.IsCancellationRequested)
+                    {
+                        App.Logger.Info("Joined another game, leaving Roblox open");
+                        return;
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        // still running after 5 seconds
+                    }
+                }
+
+                // a join can land right as the wait times out
+                if (joined.IsCancellationRequested)
+                {
+                    App.Logger.Info("Joined another game, leaving Roblox open");
+                    return;
+                }
+
+                // forced on purpose: this setting means "don't keep Roblox running after leaving"
+                App.Logger.Warn($"Roblox (PID {pid}) didn't close, ending it");
+
+                try
+                {
+                    process.Kill();
+                }
+                catch (Exception) when (HasExited(process))
+                {
+                    // exited on its own just before Kill
+                    return;
+                }
+
+                // Kill only starts termination; stay "closing" until it's gone
+                if (!await Task.Run(() => process.WaitForExit(TimeSpan.FromSeconds(3))))
+                    App.Logger.Warn($"Roblox (PID {pid}) still hasn't exited");
+            }
+            catch (ArgumentException)
+            {
+                // already gone
+            }
+            catch (InvalidOperationException)
+            {
+                // exited between being found and being asked to close
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error(ex, $"Couldn't close Roblox (PID {pid})");
+            }
+            finally
+            {
+                // cleared under the lock so the log reader can't cancel it after it's disposed
+                lock (_closeLock)
+                    _closeCancel = null;
+
+                Interlocked.Exchange(ref _closingRoblox, 0);
+            }
+        }
+
+        private static bool HasExited(Process process)
+        {
+            try
+            {
+                return process.HasExited;
+            }
+            catch (InvalidOperationException)
+            {
+                return true;
+            }
         }
 
         public void Dispose()

@@ -5,7 +5,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace Froststrap.UI.ViewModels
+namespace Froststrap
 {
     internal class NotifyPropertyChangedViewModel : INotifyPropertyChanged
     {

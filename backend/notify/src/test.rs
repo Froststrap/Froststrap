@@ -4,20 +4,18 @@
 
 #[cfg(test)]
 mod test {
-    use crate::{send_notification_message, init};
-    use std::ffi::CString;
+    use crate::{init, send_notification_message};
 
     #[test]
     fn test_init() {
-        assert_eq!(init(), 0)
+        assert_eq!(init(c"test".as_ptr()), 0)
     }
 
     #[test]
     fn test_notification_send() {
-        init();
-        let title = CString::new("Notification Test").unwrap();
-        let description = CString::new("A description came with the test too!").unwrap();
-
+        init(c"test".as_ptr());
+        let title = c"Notification Test";
+        let description = c"A description came with the test too!";
         let result = unsafe { send_notification_message(title.as_ptr(), description.as_ptr(), 5) };
 
         assert_eq!(result, 0)

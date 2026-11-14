@@ -26,7 +26,7 @@ namespace Froststrap.UI.Elements.Dialogs
             if (!Logging.Initialized)
                 LocateLogFileButton.Content = Strings.Dialog_Exception_CopyLogContents;
 
-            string repoUrl = $"https://github.com/{App.ProjectRepository}";
+            string repoUrl = $"https://github.com/{ProjectInfo.Repository}";
             string wikiUrl = $"{repoUrl}/wiki";
 
             string title = HttpUtility.UrlEncode($"[BUG] {exception.GetType()}: {exception.Message}");

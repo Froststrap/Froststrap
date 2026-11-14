@@ -50,21 +50,8 @@ internal partial class App : Application
     private const string MockReleaseTagEnvironmentVariable = "MOCK_RELEASE_TAG";
     private const string MockCurrentVersionEnvironmentVariable = "MOCK_CURRENT_VERSION";
 
-    public const string ProjectName = "Froststrap";
-    public const string ProjectOwner = "Froststrap";
-    public const string ProjectRepository = "Froststrap/Froststrap";
-    public const string ProjectDownloadLink = "https://github.com/Froststrap/Froststrap/releases";
-    public const string ProjectHelpLink = "https://github.com/bloxstraplabs/bloxstrap/wiki";
-    public const string ProjectSupportLink = "https://github.com/Froststrap/Froststrap/issues/new";
-    public const string ProjectRemoteDataLink = "https://raw.githubusercontent.com/Froststrap/config/refs/heads/main/Data.json";
-
     public static string RobloxPlayerAppName => OperatingSystem.IsMacOS() ? "RobloxPlayer.app" : "RobloxPlayerBeta.exe";
     public static string RobloxStudioAppName => OperatingSystem.IsMacOS() ? "RobloxStudio.app" : "RobloxStudioBeta.exe";
-
-    // simple shorthand for extremely frequently used and long string - this goes under HKCU
-    public const string UninstallKey = $@"Software\Microsoft\Windows\CurrentVersion\Uninstall\{ProjectName}";
-
-    public const string ApisKey = @$"Software\{ProjectName}";
 
     public static LaunchSettings LaunchSettings { get; internal set; } = null!;
 
@@ -365,12 +352,12 @@ internal partial class App : Application
 
         string iconPath = Path.Combine(AppContext.BaseDirectory, "AppIcon.ico");
 
-        const string aumidKeyPath = @"Software\Classes\AppUserModelId\xyz.froststrap.desktop";
+        const string aumidKeyPath = $@"Software\Classes\AppUserModelId\{ProjectInfo.BundleId}";
         using var baseKey = Registry.CurrentUser;
 
         if (
             baseKey.GetSubKeyNames().Contains("AppUserModelId")
-            && baseKey.OpenSubKey("AppUserModelId")?.GetSubKeyNames().Contains("xyz.froststrap.desktop") == true
+            && baseKey.OpenSubKey("AppUserModelId")?.GetSubKeyNames().Contains(ProjectInfo.BundleId) == true
         )
         {
             using var aumidKeys = baseKey.OpenSubKey(aumidKeyPath, writable: true);
@@ -534,11 +521,11 @@ internal partial class App : Application
         NLog.GlobalDiagnosticsContext.Set("logRoot", Paths.Logs);
         NLog.GlobalDiagnosticsContext.Set("startTime", DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss", CultureInfo.InvariantCulture));
 
-        Logger.Debug($"Starting {ProjectName} {Version} ({Paths.Process})");
+        Logger.Debug($"Starting {ProjectInfo.Name} {Version} ({Paths.Process})");
         Logger.Debug($"OS Description: {RuntimeInformation.OSDescription}");
         Logger.Debug($"Built for RID: {RuntimeInformation.RuntimeIdentifier}");
 
-        var userAgent = new StringBuilder($"{ProjectName}/{Version}");
+        var userAgent = new StringBuilder($"{ProjectInfo.Name}/{Version}");
 
         Logger.Debug($"Compiled {BuildMetadata.LocalTimestamp.ToFriendlyString()}");
         userAgent.Append(string.Format(CultureInfo.InvariantCulture, " (Build {0})", Convert.ToBase64String(Encoding.UTF8.GetBytes(BuildMetadata.Machine))));

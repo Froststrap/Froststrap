@@ -53,7 +53,7 @@ namespace Froststrap.UI.Elements.Dialogs
                 IconImage.Source = new Bitmap(stream);
             }
 
-            Title = App.ProjectName;
+            Title = ProjectInfo.Name;
 
             MessageMarkdownTextBlock.MarkdownText = message;
 

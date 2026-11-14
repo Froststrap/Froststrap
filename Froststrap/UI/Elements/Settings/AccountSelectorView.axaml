@@ -10,9 +10,9 @@ SPDX-License-Identifier: MPL-2.0
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
              xmlns:resources="using:Froststrap.Localisation"
-             xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
-             xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
-             xmlns:utility="clr-namespace:Froststrap.UI.Utility"
+             xmlns:controls="using:Froststrap.UI.Elements.Controls"
+             xmlns:vm="using:Froststrap.UI.ViewModels.Settings"
+             xmlns:utility="using:Froststrap.UI.Utility"
              x:Class="Froststrap.UI.Elements.Settings.AccountSelectorView"
              x:DataType="vm:AccountSelectorViewModel"
              mc:Ignorable="d" d:DesignHeight="220" d:DesignWidth="450">

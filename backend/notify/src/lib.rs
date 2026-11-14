@@ -2,9 +2,9 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-pub mod util;
-pub mod test;
 pub mod data_types;
+pub mod test;
+pub mod util;
 
 #[cfg(target_os = "linux")]
 pub mod linux;
@@ -16,20 +16,28 @@ pub mod win;
 use std::os::raw::c_char;
 use util::IStr;
 
+#[cfg(not(target_os = "windows"))]
+use std::time::Duration;
+
 logger::export_set_logger!();
 
 /// Runtime initialzer, will No-op on Linux systems
-/// 
+///
 /// On macOS it will request notification permission.
 ///
 /// On Windows it will set the thread AUMID.
 #[unsafe(no_mangle)]
-pub extern "C" fn init() -> i32 {
+pub extern "C" fn init(bundle_id: *const c_char) -> i32 {
+    _ = bundle_id;
+
     #[cfg(target_os = "macos")]
-    return macos::request_notification_permission();
-    
+    return macos::request_permission();
+
     #[cfg(target_os = "windows")]
-    return win::set_application("xyz.froststrap.desktop".into());
+    {
+        let bundle_id = IStr::from(bundle_id).into();
+        return win::set_application(bundle_id);
+    }
 
     #[cfg(target_os = "linux")]
     return 0;
@@ -47,10 +55,10 @@ pub unsafe extern "C" fn send_notification_message(
     let description = IStr::from(description).into();
 
     #[cfg(target_os = "macos")]
-    let r = macos::send_notification(title, description);
+    let r = macos::send_notification(title, description, Duration::from_secs(2));
 
     #[cfg(target_os = "linux")]
-    let r = linux::send_notification(title, description);
+    let r = linux::send_notification(title, description, Duration::from_secs(2));
 
     #[cfg(target_os = "windows")]
     let r = win::send_notification(title, description);
