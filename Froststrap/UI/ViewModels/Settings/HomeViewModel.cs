@@ -4,7 +4,9 @@
 
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
+using Froststrap.Integrations;
 using Froststrap.Integrations.AccountManager;
+using Froststrap.Models;
 using Froststrap.UI.Elements.Controls;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
@@ -29,8 +31,10 @@ internal class HomeViewModel : NotifyPropertyChangedViewModel, IDisposable, IGam
 
     private bool _isFriendsLoading;
     private bool _isRecentLoading;
+    private bool _isNewsLoading;
     private ObservableCollection<FriendItem> _friends = [];
     private ObservableCollection<QuickPlayGameItem> _recentGames = [];
+    private ObservableCollection<NewsEntry> _news = [];
 
     public ObservableCollection<FriendItem> Friends
     {
@@ -42,6 +46,12 @@ internal class HomeViewModel : NotifyPropertyChangedViewModel, IDisposable, IGam
     {
         get => _recentGames;
         private set => SetProperty(ref _recentGames, value);
+    }
+
+    public ObservableCollection<NewsEntry> News
+    {
+        get => _news;
+        private set => SetProperty(ref _news, value);
     }
 
     public bool IsFriendsLoading
@@ -64,6 +74,15 @@ internal class HomeViewModel : NotifyPropertyChangedViewModel, IDisposable, IGam
         }
     }
 
+    public bool IsNewsLoading
+    {
+        get => _isNewsLoading;
+        private set => SetProperty(ref _isNewsLoading, value);
+    }
+
+    public bool HasNews => News.Count > 0;
+    public bool ShowNewsEmpty => !IsNewsLoading && !HasNews;
+
 #pragma warning disable CA1822
     public bool IsLoggedIn => AccountManager.Shared?.ActiveAccount != null;
     public bool HasActiveAccount => AccountManager.Shared?.ActiveAccount != null;
@@ -77,7 +96,7 @@ internal class HomeViewModel : NotifyPropertyChangedViewModel, IDisposable, IGam
     public int FriendCount => Friends.Count;
     public int OnlineCount => Friends.Count(f => f.IsOnline);
 
-    public ICommand JoinFriendCommand { get; }
+public ICommand JoinFriendCommand { get; }
     public ICommand ViewFriendProfileCommand { get; }
     public ICommand JoinGameCommand { get; }
     public ICommand VisitPageCommand { get; }
@@ -88,6 +107,7 @@ internal class HomeViewModel : NotifyPropertyChangedViewModel, IDisposable, IGam
     public ICommand ViewRobloxServersCommand { get; }
     public ICommand ShowPrivateServersCommand { get; }
     public ICommand ViewSubplacesCommand { get; }
+    public ICommand OpenNewsLinkCommand { get; }
 
     public HomeViewModel()
     {
@@ -161,10 +181,17 @@ internal class HomeViewModel : NotifyPropertyChangedViewModel, IDisposable, IGam
                 Process.Start(new ProcessStartInfo($"https://www.roblox.com/games/{item.PlaceId}") { UseShellExecute = true });
         });
 
+        OpenNewsLinkCommand = new RelayCommand<string>(link =>
+        {
+            if (!string.IsNullOrWhiteSpace(link) && link.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+                Process.Start(new ProcessStartInfo(link) { UseShellExecute = true });
+        });
+
         RefreshCommand = new RelayCommand(() =>
         {
             _ = LoadFriendsAsync(showSpinner: true);
             _ = LoadRecentAsync();
+            _ = LoadNewsAsync();
         });
 
         _onAccountChanged = account =>
@@ -188,6 +215,7 @@ internal class HomeViewModel : NotifyPropertyChangedViewModel, IDisposable, IGam
 
         _ = LoadFriendsAsync(showSpinner: true);
         _ = LoadRecentAsync();
+        _ = LoadNewsAsync();
     }
 
     private void NotifyFriendsChanged()
@@ -463,7 +491,7 @@ internal class HomeViewModel : NotifyPropertyChangedViewModel, IDisposable, IGam
 
             await Dispatcher.UIThread.InvokeAsync(() => IsRecentLoading = true);
 
-            =            var games = await QuickPlayViewModel.FetchRecentlyVisitedFromApiAsync();
+            var games = await QuickPlayViewModel.FetchRecentlyVisitedFromApiAsync();
             games = [.. games.Take(MaxRecent)];
             await QuickPlayViewModel.EnrichGamesWithDetails(games);
 
@@ -482,6 +510,31 @@ internal class HomeViewModel : NotifyPropertyChangedViewModel, IDisposable, IGam
         finally
         {
             await Dispatcher.UIThread.InvokeAsync(() => IsRecentLoading = false);
+        }
+    }
+
+    private async Task LoadNewsAsync()
+    {
+        try
+        {
+            await Dispatcher.UIThread.InvokeAsync(() => IsNewsLoading = true);
+
+            var news = await NewsService.GetNewsAsync();
+
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                News = new ObservableCollection<NewsEntry>(news);
+                OnPropertyChanged(nameof(HasNews));
+                OnPropertyChanged(nameof(ShowNewsEmpty));
+            });
+        }
+        catch (Exception ex)
+        {
+            App.Logger.Error($"Home news load failed: {ex.Message}");
+        }
+        finally
+        {
+            await Dispatcher.UIThread.InvokeAsync(() => IsNewsLoading = false);
         }
     }
 

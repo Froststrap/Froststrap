@@ -77,6 +77,9 @@ namespace Froststrap
     [JsonSerializable(typeof(Froststrap.UI.ViewModels.Settings.HeadshotResponse))]
     [JsonSerializable(typeof(Froststrap.UI.ViewModels.Settings.UserIdsRequest))]
     [JsonSerializable(typeof(Froststrap.UI.ViewModels.Settings.UsersListResponse))]
+    [JsonSerializable(typeof(Froststrap.Models.NewsFile))]
+    [JsonSerializable(typeof(Froststrap.Models.NewsEntry))]
+    [JsonSerializable(typeof(Froststrap.Models.NewsButton))]
     internal partial class JsonContext : JsonSerializerContext
     {
     }

@@ -20,6 +20,121 @@ SPDX-License-Identifier: MPL-2.0
 
     <UserControl.Resources>
 
+        <!-- news card -->
+        <DataTemplate x:Key="NewsCardTemplate" x:DataType="models:NewsEntry">
+            <Button
+                Width="360"
+                Margin="4,0"
+                Padding="0"
+                Background="Transparent"
+                BorderThickness="0"
+                HorizontalContentAlignment="Stretch"
+                VerticalAlignment="Top"
+                ClickMode="Release">
+                <Button.Styles>
+                    <Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+                        <Setter Property="Background" Value="Transparent" />
+                    </Style>
+                </Button.Styles>
+
+                <controls:Card
+                    MaxWidth="360"
+                    Padding="0"
+                    CornerRadius="12"
+                    ClipToBounds="True">
+                    <StackPanel>
+                        <!-- image -->
+                        <Border
+                            Height="160"
+                            CornerRadius="12,12,0,0"
+                            ClipToBounds="True"
+                            Background="{DynamicResource ControlFillColorSecondaryBrush}">
+                            <Image
+                                utility:RemoteImage.SourceUrl="{Binding Image}"
+                                Stretch="UniformToFill"
+                                RenderOptions.BitmapInterpolationMode="HighQuality" />
+                        </Border>
+
+                        <StackPanel Margin="16" Spacing="8">
+                            <!-- header with pinned badge -->
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                <TextBlock
+                                    Text="{Binding Title}"
+                                    FontSize="16"
+                                    FontWeight="SemiBold"
+                                    TextTrimming="CharacterEllipsis"
+                                    VerticalAlignment="Center" />
+                                <Border
+                                    Grid.Column="1"
+                                    IsVisible="{Binding Pinned}"
+                                    Padding="4,2"
+                                    CornerRadius="4"
+                                    Background="{DynamicResource SystemAccentColorBrush}">
+                                    <TextBlock
+                                        Text="Pinned"
+                                        FontSize="10"
+                                        FontWeight="Bold"
+                                        Foreground="White" />
+                                </Border>
+                            </Grid>
+
+                            <TextBlock
+                                Text="{Binding Description}"
+                                FontSize="12"
+                                Opacity="0.7"
+                                TextWrapping="Wrap"
+                                MaxLines="3"
+                                TextTrimming="CharacterEllipsis" />
+
+                            <!-- buttons -->
+                            <ItemsControl
+                                IsVisible="{Binding HasButtons}"
+                                ItemsSource="{Binding Buttons}"
+                                Margin="0,8,0,0">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal" Spacing="8" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="models:NewsButton">
+                                        <Panel>
+                                            <controls:IconButton
+                                                IsVisible="{Binding Primary}"
+                                                Classes="Primary"
+                                                Command="{Binding #RootPage.((vm:HomeViewModel)DataContext).OpenNewsLinkCommand}"
+                                                CommandParameter="{Binding Link}"
+                                                Padding="12,6"
+                                                FontSize="12"
+                                                FontWeight="SemiBold"
+                                                CornerRadius="6"
+                                                Content="{Binding Name}" />
+                                            <controls:IconButton
+                                                IsVisible="{Binding !Primary}"
+                                                Command="{Binding #RootPage.((vm:HomeViewModel)DataContext).OpenNewsLinkCommand}"
+                                                CommandParameter="{Binding Link}"
+                                                Padding="12,6"
+                                                FontSize="12"
+                                                FontWeight="SemiBold"
+                                                CornerRadius="6"
+                                                Content="{Binding Name}" />
+                                        </Panel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                            <!-- timestamp -->
+                            <TextBlock
+                                Text="{Binding Timestamp, Converter={StaticResource UnixTimeToRelativeConverter}}"
+                                FontSize="10"
+                                Opacity="0.5"
+                                HorizontalAlignment="Right" />
+                        </StackPanel>
+                    </StackPanel>
+                </controls:Card>
+            </Button>
+        </DataTemplate>
+
         <!-- friend bubble -->
         <DataTemplate x:Key="FriendTemplate" x:DataType="vm:FriendItem">
             <Button
@@ -229,25 +344,42 @@ SPDX-License-Identifier: MPL-2.0
         VerticalScrollBarVisibility="Hidden">
         <StackPanel Margin="14,10" Spacing="20">
 
-            <!-- header -->
-            <Grid ColumnDefinitions="*,Auto">
-                <TextBlock
-                    Text="{x:Static resources:Strings.Menu_Home_Title}"
-                    FontSize="28"
-                    FontWeight="Bold" />
-                <controls:IconButton
-                    Grid.Column="1"
-                    Command="{Binding RefreshCommand}"
-                    Icon="RefreshCw"
-                    IconSize="16"
-                    Width="34"
-                    Height="34"
-                    Padding="0"
-                    HorizontalContentAlignment="Center"
-                    VerticalContentAlignment="Center"
-                    VerticalAlignment="Center"
-                    ToolTip.Tip="{x:Static resources:Strings.Menu_Home_Refresh}" />
-            </Grid>
+            <!-- news carousel -->
+            <StackPanel Spacing="10" IsVisible="{Binding HasNews}">
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                    <TextBlock
+                        Text="News"
+                        FontSize="18"
+                        FontWeight="SemiBold" />
+                </StackPanel>
+
+                <Grid MinHeight="280">
+                    <ScrollViewer
+                        HorizontalScrollBarVisibility="Auto"
+                        VerticalScrollBarVisibility="Disabled"
+                        Margin="0,4,0,-4">
+                        <ItemsControl
+                            ItemsSource="{Binding News}"
+                            ItemTemplate="{StaticResource NewsCardTemplate}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                    </ScrollViewer>
+
+                    <ui:FAProgressRing
+                        IsVisible="{Binding IsNewsLoading}"
+                        IsActive="{Binding IsNewsLoading}"
+                        Width="40"
+                        Height="40"
+                        IsHitTestVisible="False"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Foreground="{DynamicResource SystemAccentColor}" />
+                </Grid>
+            </StackPanel>
 
             <!-- friends -->
             <StackPanel Spacing="10">
