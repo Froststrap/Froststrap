@@ -9,6 +9,7 @@ using Froststrap.Integrations.AccountManager;
 using Froststrap.Models;
 using Froststrap.UI.Elements.Controls;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Settings;
@@ -32,9 +33,10 @@ internal class HomeViewModel : NotifyPropertyChangedViewModel, IDisposable, IGam
     private bool _isFriendsLoading;
     private bool _isRecentLoading;
     private bool _isNewsLoading;
+    private int _newsIndex;
     private ObservableCollection<FriendItem> _friends = [];
     private ObservableCollection<QuickPlayGameItem> _recentGames = [];
-    private ObservableCollection<NewsEntry> _news = [];
+    private ObservableCollection<NewsCardViewModel> _news = [];
 
     public ObservableCollection<FriendItem> Friends
     {
@@ -48,11 +50,17 @@ internal class HomeViewModel : NotifyPropertyChangedViewModel, IDisposable, IGam
         private set => SetProperty(ref _recentGames, value);
     }
 
-    public ObservableCollection<NewsEntry> News
+    public ObservableCollection<NewsCardViewModel> News
     {
         get => _news;
         private set => SetProperty(ref _news, value);
     }
+
+    public NewsCardViewModel? SelectedNewsCard =>
+        News.Count == 0 ? null : News[Math.Clamp(_newsIndex, 0, News.Count - 1)];
+
+    public bool CanPreviousNews => _newsIndex > 0;
+    public bool CanNextNews => News.Count > 0 && _newsIndex < News.Count - 1;
 
     public bool IsFriendsLoading
     {
@@ -108,6 +116,9 @@ public ICommand JoinFriendCommand { get; }
     public ICommand ShowPrivateServersCommand { get; }
     public ICommand ViewSubplacesCommand { get; }
     public ICommand OpenNewsLinkCommand { get; }
+    public ICommand PreviousNewsCommand { get; }
+    public ICommand NextNewsCommand { get; }
+    public ICommand SelectNewsCommand { get; }
 
     public HomeViewModel()
     {
@@ -185,6 +196,14 @@ public ICommand JoinFriendCommand { get; }
         {
             if (!string.IsNullOrWhiteSpace(link) && link.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
                 Process.Start(new ProcessStartInfo(link) { UseShellExecute = true });
+        });
+
+        PreviousNewsCommand = new RelayCommand(() => SelectNewsAt(_newsIndex - 1));
+        NextNewsCommand = new RelayCommand(() => SelectNewsAt(_newsIndex + 1));
+        SelectNewsCommand = new RelayCommand<NewsCardViewModel>(card =>
+        {
+            if (card != null)
+                SelectNewsAt(News.IndexOf(card));
         });
 
         RefreshCommand = new RelayCommand(() =>
@@ -523,7 +542,8 @@ public ICommand JoinFriendCommand { get; }
 
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
-                News = new ObservableCollection<NewsEntry>(news);
+                News = new ObservableCollection<NewsCardViewModel>(news.Select(n => new NewsCardViewModel(n)));
+                SelectNewsAt(0);
                 OnPropertyChanged(nameof(HasNews));
                 OnPropertyChanged(nameof(ShowNewsEmpty));
             });
@@ -536,6 +556,19 @@ public ICommand JoinFriendCommand { get; }
         {
             await Dispatcher.UIThread.InvokeAsync(() => IsNewsLoading = false);
         }
+    }
+
+    private void SelectNewsAt(int index)
+    {
+        if (News.Count == 0) return;
+
+        _newsIndex = Math.Clamp(index, 0, News.Count - 1);
+        for (int i = 0; i < News.Count; i++)
+            News[i].IsSelected = i == _newsIndex;
+
+        OnPropertyChanged(nameof(SelectedNewsCard));
+        OnPropertyChanged(nameof(CanPreviousNews));
+        OnPropertyChanged(nameof(CanNextNews));
     }
 
     private static void LaunchRoblox(long placeId, string? jobId)
@@ -567,6 +600,30 @@ public ICommand JoinFriendCommand { get; }
 
         _disposed = true;
     }
+}
+
+internal class NewsCardViewModel : INotifyPropertyChanged
+{
+    public NewsEntry Entry { get; }
+
+    private bool _isSelected;
+    public bool IsSelected
+    {
+        get => _isSelected;
+        set
+        {
+            if (_isSelected == value) return;
+            _isSelected = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsSelected)));
+        }
+    }
+
+    public NewsCardViewModel(NewsEntry entry)
+    {
+        Entry = entry;
+    }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
 }
 
 internal class FriendItem

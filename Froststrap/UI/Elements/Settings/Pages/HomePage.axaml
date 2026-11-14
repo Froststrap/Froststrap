@@ -21,118 +21,127 @@ SPDX-License-Identifier: MPL-2.0
     <UserControl.Resources>
 
         <!-- news card -->
-        <DataTemplate x:Key="NewsCardTemplate" x:DataType="models:NewsEntry">
-            <Button
-                Width="360"
-                Margin="4,0"
-                Padding="0"
-                Background="Transparent"
-                BorderThickness="0"
-                HorizontalContentAlignment="Stretch"
-                VerticalAlignment="Top"
-                ClickMode="Release">
-                <Button.Styles>
-                    <Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
-                        <Setter Property="Background" Value="Transparent" />
-                    </Style>
-                </Button.Styles>
-
-                <controls:Card
-                    MaxWidth="360"
+        <DataTemplate x:Key="NewsCardTemplate" x:DataType="vm:NewsCardViewModel">
+            <Border
+                Margin="2"
+                CornerRadius="14"
+                BorderThickness="2"
+                BorderBrush="{Binding IsSelected, Converter={StaticResource NewsSelectionBorderConverter}}">
+                <Button
+                    Width="360"
+                    Margin="2,0"
                     Padding="0"
-                    CornerRadius="12"
-                    ClipToBounds="True">
-                    <StackPanel>
-                        <!-- image -->
-                        <Border
-                            Height="160"
-                            CornerRadius="12,12,0,0"
-                            ClipToBounds="True"
-                            Background="{DynamicResource ControlFillColorSecondaryBrush}">
-                            <Image
-                                utility:RemoteImage.SourceUrl="{Binding Image}"
-                                Stretch="UniformToFill"
-                                RenderOptions.BitmapInterpolationMode="HighQuality" />
-                        </Border>
+                    Background="Transparent"
+                    BorderThickness="0"
+                    HorizontalContentAlignment="Stretch"
+                    VerticalAlignment="Top"
+                    ClickMode="Release"
+                    Command="{Binding #RootPage.((vm:HomeViewModel)DataContext).SelectNewsCommand}"
+                    CommandParameter="{Binding}">
+                    <Button.Styles>
+                        <Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+                            <Setter Property="Background" Value="Transparent" />
+                        </Style>
+                    </Button.Styles>
 
-                        <StackPanel Margin="16" Spacing="8">
-                            <!-- header with pinned badge -->
-                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
-                                <TextBlock
-                                    Text="{Binding Title}"
-                                    FontSize="16"
-                                    FontWeight="SemiBold"
-                                    TextTrimming="CharacterEllipsis"
-                                    VerticalAlignment="Center" />
-                                <Border
-                                    Grid.Column="1"
-                                    IsVisible="{Binding Pinned}"
-                                    Padding="4,2"
-                                    CornerRadius="4"
-                                    Background="{DynamicResource SystemAccentColorBrush}">
+                    <controls:Card
+                        Height="310"
+                        Padding="0"
+                        CornerRadius="12"
+                        ClipToBounds="True">
+                        <Grid RowDefinitions="160,*,Auto">
+                            <!-- image -->
+                            <Border
+                                CornerRadius="12,12,0,0"
+                                ClipToBounds="True"
+                                Background="{DynamicResource ControlFillColorSecondaryBrush}">
+                                <Image
+                                    utility:RemoteImage.SourceUrl="{Binding Entry.Image}"
+                                    Stretch="Uniform"
+                                    RenderOptions.BitmapInterpolationMode="HighQuality" />
+                            </Border>
+
+                            <StackPanel Grid.Row="1" Margin="16,12" Spacing="8">
+                                <!-- header with pinned badge -->
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
                                     <TextBlock
-                                        Text="Pinned"
-                                        FontSize="10"
-                                        FontWeight="Bold"
-                                        Foreground="White" />
-                                </Border>
-                            </Grid>
+                                        Text="{Binding Entry.Title}"
+                                        FontSize="16"
+                                        FontWeight="SemiBold"
+                                        TextTrimming="CharacterEllipsis"
+                                        VerticalAlignment="Center" />
+                                    <Border
+                                        Grid.Column="1"
+                                        IsVisible="{Binding Entry.Pinned}"
+                                        Padding="4,2"
+                                        CornerRadius="4"
+                                        Background="{DynamicResource SystemAccentColor}">
+                                        <TextBlock
+                                            Text="Pinned"
+                                            FontSize="10"
+                                            FontWeight="Bold"
+                                            Foreground="White" />
+                                    </Border>
+                                </Grid>
 
-                            <TextBlock
-                                Text="{Binding Description}"
-                                FontSize="12"
-                                Opacity="0.7"
-                                TextWrapping="Wrap"
-                                MaxLines="3"
-                                TextTrimming="CharacterEllipsis" />
+                                <TextBlock
+                                    Text="{Binding Entry.Description}"
+                                    FontSize="12"
+                                    Opacity="0.7"
+                                    TextWrapping="Wrap"
+                                    MaxLines="3"
+                                    TextTrimming="CharacterEllipsis" />
 
-                            <!-- buttons -->
-                            <ItemsControl
-                                IsVisible="{Binding HasButtons}"
-                                ItemsSource="{Binding Buttons}"
-                                Margin="0,8,0,0">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <StackPanel Orientation="Horizontal" Spacing="8" />
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate x:DataType="models:NewsButton">
-                                        <Panel>
-                                            <controls:IconButton
-                                                IsVisible="{Binding Primary}"
-                                                Classes="Primary"
-                                                Command="{Binding #RootPage.((vm:HomeViewModel)DataContext).OpenNewsLinkCommand}"
-                                                CommandParameter="{Binding Link}"
-                                                Padding="12,6"
-                                                FontSize="12"
-                                                FontWeight="SemiBold"
-                                                CornerRadius="6"
-                                                Content="{Binding Name}" />
-                                            <controls:IconButton
-                                                IsVisible="{Binding !Primary}"
-                                                Command="{Binding #RootPage.((vm:HomeViewModel)DataContext).OpenNewsLinkCommand}"
-                                                CommandParameter="{Binding Link}"
-                                                Padding="12,6"
-                                                FontSize="12"
-                                                FontWeight="SemiBold"
-                                                CornerRadius="6"
-                                                Content="{Binding Name}" />
-                                        </Panel>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
+                                <!-- buttons -->
+                                <ItemsControl
+                                    IsVisible="{Binding Entry.HasButtons}"
+                                    ItemsSource="{Binding Entry.Buttons}"
+                                    Margin="0,4,0,0">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Horizontal" Spacing="8" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="models:NewsButton">
+                                            <Panel>
+                                                <controls:IconButton
+                                                    IsVisible="{Binding Primary}"
+                                                    Classes="Primary"
+                                                    Command="{Binding #RootPage.((vm:HomeViewModel)DataContext).OpenNewsLinkCommand}"
+                                                    CommandParameter="{Binding Link}"
+                                                    Padding="12,6"
+                                                    FontSize="12"
+                                                    FontWeight="SemiBold"
+                                                    CornerRadius="6"
+                                                    Content="{Binding Name}" />
+                                                <controls:IconButton
+                                                    IsVisible="{Binding !Primary}"
+                                                    Command="{Binding #RootPage.((vm:HomeViewModel)DataContext).OpenNewsLinkCommand}"
+                                                    CommandParameter="{Binding Link}"
+                                                    Padding="12,6"
+                                                    FontSize="12"
+                                                    FontWeight="SemiBold"
+                                                    CornerRadius="6"
+                                                    Content="{Binding Name}" />
+                                            </Panel>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
 
                             <!-- timestamp -->
                             <TextBlock
-                                Text="{Binding Timestamp, Converter={StaticResource UnixTimeToRelativeConverter}}"
+                                Grid.Row="2"
+                                Text="{Binding Entry.Timestamp, Converter={StaticResource UnixTimeToRelativeConverter}}"
                                 FontSize="10"
                                 Opacity="0.5"
+                                Margin="16,0,16,10"
                                 HorizontalAlignment="Right" />
-                        </StackPanel>
-                    </StackPanel>
-                </controls:Card>
-            </Button>
+                        </Grid>
+                    </controls:Card>
+                </Button>
+            </Border>
         </DataTemplate>
 
         <!-- friend bubble -->
@@ -344,7 +353,7 @@ SPDX-License-Identifier: MPL-2.0
         VerticalScrollBarVisibility="Hidden">
         <StackPanel Margin="14,10" Spacing="20">
 
-            <!-- news carousel -->
+            <!-- news -->
             <StackPanel Spacing="10" IsVisible="{Binding HasNews}">
                 <StackPanel Orientation="Horizontal" Spacing="6">
                     <TextBlock
@@ -353,11 +362,135 @@ SPDX-License-Identifier: MPL-2.0
                         FontWeight="SemiBold" />
                 </StackPanel>
 
-                <Grid MinHeight="280">
+                <!-- hero preview -->
+                <Border
+                    Height="280"
+                    CornerRadius="12"
+                    ClipToBounds="True"
+                    Background="{DynamicResource ControlFillColorSecondaryBrush}">
+                    <Panel>
+                        <Image
+                            utility:RemoteImage.SourceUrl="{Binding SelectedNewsCard.Entry.Image}"
+                            Stretch="UniformToFill"
+                            RenderOptions.BitmapInterpolationMode="HighQuality" />
+
+                        <!-- bottom fade overlay -->
+                        <Border VerticalAlignment="Bottom" Height="168">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                    <GradientStop Color="#00000000" Offset="0" />
+                                    <GradientStop Color="#66000000" Offset="0.45" />
+                                    <GradientStop Color="#F2000000" Offset="1" />
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <StackPanel Margin="16,0,60,12" VerticalAlignment="Bottom" Spacing="6">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <TextBlock
+                                        Text="{Binding SelectedNewsCard.Entry.Title}"
+                                        FontSize="18"
+                                        FontWeight="Bold"
+                                        TextTrimming="CharacterEllipsis" />
+                                    <Border
+                                        IsVisible="{Binding SelectedNewsCard.Entry.Pinned}"
+                                        Padding="4,2"
+                                        CornerRadius="4"
+                                        Background="{DynamicResource SystemAccentColor}"
+                                        VerticalAlignment="Center">
+                                        <TextBlock
+                                            Text="Pinned"
+                                            FontSize="10"
+                                            FontWeight="Bold"
+                                            Foreground="White" />
+                                    </Border>
+                                </StackPanel>
+                                <TextBlock
+                                    Text="{Binding SelectedNewsCard.Entry.Description}"
+                                    FontSize="12"
+                                    Opacity="0.85"
+                                    TextWrapping="Wrap"
+                                    MaxLines="2"
+                                    TextTrimming="CharacterEllipsis" />
+                                <ItemsControl
+                                    IsVisible="{Binding SelectedNewsCard.Entry.HasButtons}"
+                                    ItemsSource="{Binding SelectedNewsCard.Entry.Buttons}"
+                                    HorizontalAlignment="Center"
+                                    Margin="44,4,0,0">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="models:NewsButton">
+                                            <controls:IconButton
+                                                Classes.Primary="{Binding Primary}"
+                                                Command="{Binding #RootPage.((vm:HomeViewModel)DataContext).OpenNewsLinkCommand}"
+                                                CommandParameter="{Binding Link}"
+                                                MinWidth="120"
+                                                Height="32"
+                                                Padding="12,0"
+                                                FontSize="12"
+                                                FontWeight="SemiBold"
+                                                CornerRadius="6"
+                                                HorizontalContentAlignment="Center"
+                                                VerticalContentAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Content="{Binding Name}" />
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                                <TextBlock
+                                    Text="{Binding SelectedNewsCard.Entry.Timestamp, Converter={StaticResource UnixTimeToRelativeConverter}}"
+                                    FontSize="10"
+                                    Opacity="0.6"
+                                    HorizontalAlignment="Right" />
+                            </StackPanel>
+                        </Border>
+
+                        <!-- arrows -->
+                        <controls:IconButton
+                            Visual.ZIndex="2"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Margin="12,0,0,0"
+                            Width="36"
+                            Height="36"
+                            Padding="0"
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            IconSize="18"
+                            Icon="ChevronLeft"
+                            Classes="Primary"
+                            CornerRadius="8"
+                            Command="{Binding PreviousNewsCommand}"
+                            IsEnabled="{Binding CanPreviousNews}"
+                            ToolTip.Tip="Previous" />
+                        <controls:IconButton
+                            Visual.ZIndex="2"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Margin="0,0,12,0"
+                            Width="36"
+                            Height="36"
+                            Padding="0"
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            IconSize="18"
+                            Icon="ChevronRight"
+                            Classes="Primary"
+                            CornerRadius="8"
+                            Command="{Binding NextNewsCommand}"
+                            IsEnabled="{Binding CanNextNews}"
+                            ToolTip.Tip="Next" />
+                    </Panel>
+                </Border>
+
+                <!-- strip -->
+                <Grid MinHeight="334">
                     <ScrollViewer
                         HorizontalScrollBarVisibility="Auto"
                         VerticalScrollBarVisibility="Disabled"
-                        Margin="0,4,0,-4">
+                        Margin="0,4,0,0">
                         <ItemsControl
                             ItemsSource="{Binding News}"
                             ItemTemplate="{StaticResource NewsCardTemplate}">

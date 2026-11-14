@@ -2,7 +2,9 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+using Avalonia;
 using Avalonia.Data.Converters;
+using Avalonia.Media;
 using System;
 using System.Globalization;
 
@@ -40,6 +42,21 @@ internal class UnixTimeToRelativeConverter : IValueConverter
         {
             return "";
         }
+    }
+
+    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        => throw new NotSupportedException();
+}
+internal class NewsSelectionBorderConverter : IValueConverter
+{
+    public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        if (value is true &&
+            Application.Current?.TryGetResource("SystemAccentColor", null, out var resource) == true &&
+            resource is Color color)
+            return new SolidColorBrush(color);
+
+        return Brushes.Transparent;
     }
 
     public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)

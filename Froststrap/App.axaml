@@ -78,6 +78,7 @@ SPDX-License-Identifier: MPL-2.0
             <converters:NumberAbbreviationConverter x:Key="NumberAbbreviationConverter" />
             <converters:UrlToBitmapConverter x:Key="UrlToBitmapConverter" />
             <converters:UnixTimeToRelativeConverter x:Key="UnixTimeToRelativeConverter" />
+            <converters:NewsSelectionBorderConverter x:Key="NewsSelectionBorderConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>
