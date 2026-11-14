@@ -108,10 +108,94 @@ SPDX-License-Identifier: MPL-2.0
             </DockPanel>
         </Button>
 
+        <Button Name="LargeAccountButton"
+                IsVisible="False"
+                Background="{DynamicResource ControlFillColorSecondaryBrush}"
+                BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                BorderThickness="1"
+                CornerRadius="10"
+                Padding="0"
+                Height="64"
+                HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Stretch"
+                VerticalContentAlignment="Center"
+                Command="{Binding ToggleDropdownCommand}">
+            <Button.Styles>
+                <Style Selector="Button:pointerover /template/ ContentPresenter">
+                    <Setter Property="Background" Value="{DynamicResource ControlFillColorTertiaryBrush}"/>
+                </Style>
+            </Button.Styles>
+
+            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12" Margin="12,10">
+                <Grid x:Name="LargeAvatarHost" Width="40" Height="40">
+                    <Border CornerRadius="20"
+                            Background="{DynamicResource ControlFillColorDefaultBrush}"
+                            BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                            BorderThickness="1"
+                            ClipToBounds="True">
+                        <Panel>
+                            <ic:Lucide Icon="User"
+                                       Height="20"
+                                       Width="20"
+                                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       IsVisible="{Binding CurrentAccountAvatarUrl, Converter={x:Static StringConverters.IsNullOrEmpty}}"/>
+                            <Image utility:RemoteImage.SourceUrl="{Binding CurrentAccountAvatarUrl}"
+                                   Stretch="UniformToFill"
+                                   IsVisible="{Binding CurrentAccountAvatarUrl, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+                        </Panel>
+                    </Border>
+
+                    <Ellipse Width="11" Height="11"
+                             HorizontalAlignment="Right"
+                             VerticalAlignment="Bottom"
+                             Margin="0,0,-2,-2"
+                             ToolTip.Tip="{Binding PresenceTooltip}"
+                             Fill="{Binding PresenceBrush}"
+                             IsVisible="{Binding CurrentAccount, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                </Grid>
+
+                <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
+                    <TextBlock Text="{Binding CurrentAccount.DisplayName}"
+                               FontSize="14"
+                               FontWeight="SemiBold"
+                               Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                               TextTrimming="CharacterEllipsis"
+                               IsVisible="{Binding CurrentAccount, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+                    <TextBlock Text="{Binding CurrentAccountDisplayName}"
+                               FontSize="11"
+                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                               TextTrimming="CharacterEllipsis"
+                               IsVisible="{Binding CurrentAccount, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+                    <TextBlock Text="{x:Static resources:Strings.Menu_AccountSelector_NotLoggedIn}"
+                               FontSize="13"
+                               FontWeight="SemiBold"
+                               Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                               VerticalAlignment="Center"
+                               IsVisible="{Binding CurrentAccount, Converter={x:Static ObjectConverters.IsNull}}"/>
+                </StackPanel>
+
+                <Border Grid.Column="2"
+                        Width="36"
+                        Height="36"
+                        CornerRadius="8"
+                        Background="{DynamicResource ControlFillColorDefaultBrush}"
+                        BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                        BorderThickness="1">
+                    <ic:Lucide Icon="Ellipsis"
+                               Height="16"
+                               Width="16"
+                               Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"/>
+                </Border>
+            </Grid>
+        </Button>
+
         <Popup Name="AccountDropdown"
                IsOpen="{Binding IsDropdownOpen}"
                Placement="Top"
-               PlacementTarget="{Binding #AccountButton}"
                PlacementConstraintAdjustment="SlideX"
                VerticalOffset="-6"
                IsLightDismissEnabled="True"

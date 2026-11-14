@@ -41,6 +41,8 @@ namespace Froststrap.UI.Elements.Settings
 
             _viewModel = new AccountSelectorViewModel();
             DataContext = _viewModel;
+
+            AccountDropdown.PlacementTarget = AccountButton;
         }
 
         protected override void OnInitialized()
@@ -242,6 +244,16 @@ namespace Froststrap.UI.Elements.Settings
         {
             PhotoPositionProperty.Changed.AddClassHandler<AccountSelectorView>((view, _) => view.UpdatePhotoPosition());
             DropdownDirectionProperty.Changed.AddClassHandler<AccountSelectorView>((view, _) => view.UpdateDropdownPlacement());
+            LargeLayoutProperty.Changed.AddClassHandler<AccountSelectorView>((view, _) => view.UpdateLayoutMode());
+        }
+
+        private void UpdateLayoutMode()
+        {
+            bool large = LargeLayout;
+
+            AccountButton.IsVisible = !large;
+            LargeAccountButton.IsVisible = large;
+            UpdateDropdownPlacement();
         }
 
         private void UpdatePhotoPosition()
@@ -261,10 +273,20 @@ namespace Froststrap.UI.Elements.Settings
             set => SetValue(DropdownDirectionProperty, value);
         }
 
+        public static readonly StyledProperty<bool> LargeLayoutProperty =
+            AvaloniaProperty.Register<AccountSelectorView, bool>(nameof(LargeLayout), false);
+
+        public bool LargeLayout
+        {
+            get => GetValue(LargeLayoutProperty);
+            set => SetValue(LargeLayoutProperty, value);
+        }
+
         private void UpdateDropdownPlacement()
         {
             bool down = DropdownDirection == DropdownSide.Down;
 
+            AccountDropdown.PlacementTarget = LargeLayout ? LargeAccountButton : AccountButton;
             AccountDropdown.Placement = down ? PlacementMode.Bottom : PlacementMode.Top;
             AccountDropdown.VerticalOffset = down ? 6 : -6; // small gap away from the button
         }

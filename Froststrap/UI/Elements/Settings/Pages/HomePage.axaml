@@ -15,6 +15,7 @@ SPDX-License-Identifier: MPL-2.0
     xmlns:ui="using:FluentAvalonia.UI.Controls"
     xmlns:utility="using:Froststrap.UI.Utility"
     xmlns:resources="using:Froststrap.Localisation"
+    xmlns:settings="using:Froststrap.UI.Elements.Settings"
     x:Name="RootPage"
     x:DataType="vm:HomeViewModel">
 
@@ -353,6 +354,17 @@ SPDX-License-Identifier: MPL-2.0
         HorizontalScrollBarVisibility="Disabled"
         VerticalScrollBarVisibility="Hidden">
         <StackPanel Margin="14,10" Spacing="20">
+
+            <!-- accounts -->
+            <StackPanel Spacing="10">
+                <TextBlock
+                    Text="{x:Static resources:Strings.Menu_Home_Accounts}"
+                    FontSize="18"
+                    FontWeight="SemiBold" />
+                <settings:AccountSelectorView
+                    LargeLayout="True"
+                    DropdownDirection="Down" />
+            </StackPanel>
 
             <!-- news -->
             <StackPanel Spacing="10" IsVisible="{Binding HasNews}">

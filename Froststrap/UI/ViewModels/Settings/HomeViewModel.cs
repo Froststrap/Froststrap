@@ -24,6 +24,7 @@ internal class HomeViewModel : NotifyPropertyChangedViewModel, IDisposable, IGam
 
     private readonly DispatcherTimer _presenceTimer;
     private readonly Action<AccountManagerAccount?> _onAccountChanged;
+    private readonly Dictionary<long, FriendItem> _friendsById = [];
     private int _friendsSeq;
     private int _recentSeq;
     private bool _friendsBusy;
@@ -219,6 +220,7 @@ public ICommand JoinFriendCommand { get; }
             {
                 OnPropertyChanged(nameof(IsLoggedIn));
                 Friends = [];
+                _friendsById.Clear();
                 RecentGames = [];
                 NotifyFriendsChanged();
                 NotifyRecentChanged();
@@ -268,6 +270,7 @@ public ICommand JoinFriendCommand { get; }
                 await Dispatcher.UIThread.InvokeAsync(() =>
                 {
                     Friends = [];
+                    _friendsById.Clear();
                     NotifyFriendsChanged();
                 });
                 return;
@@ -290,45 +293,28 @@ public ICommand JoinFriendCommand { get; }
                 await Dispatcher.UIThread.InvokeAsync(() =>
                 {
                     Friends = [];
+                    _friendsById.Clear();
                     NotifyFriendsChanged();
                 });
                 return;
             }
 
-            var ids = friendEntries.Select(f => f.Id).ToList();
+            var ids = friendEntries.Select(f => f.Id).ToHashSet();
+            bool needsFullRebuild = showSpinner || _friendsById.Count == 0;
+            var fetchIds = needsFullRebuild ? [.. ids] : ids.Where(id => !_friendsById.ContainsKey(id)).ToList();
 
-            var presenceTask = FetchPresenceAsync(ids, cookie);
-            var headshotTask = FetchHeadshotsAsync(ids);
-            var namesTask = FetchDisplayNamesAsync(ids, cookie);
+            var presenceTask = FetchPresenceAsync([.. ids], cookie);
+            var headshotTask = fetchIds.Count > 0 ? FetchHeadshotsAsync(fetchIds) : Task.FromResult<Dictionary<long, string>>([]);
+            var namesTask = fetchIds.Count > 0 ? FetchDisplayNamesAsync(fetchIds, cookie) : Task.FromResult<Dictionary<long, string>>([]);
             var presence = await presenceTask;
             var headshots = await headshotTask;
             var displayNames = await namesTask;
 
-            var items = new List<FriendItem>(friendEntries.Count);
-            foreach (var f in friendEntries)
-            {
-                presence.TryGetValue(f.Id, out var p);
-                int type = p?.UserPresenceType ?? 0;
-                long placeId = p?.PlaceId ?? p?.RootPlaceId ?? 0;
+            var universes = presence.Values
+                .Where(p => p.UserPresenceType == 2 && (p.UniverseId ?? 0) > 0)
+                .Select(p => p.UniverseId!.Value).Distinct().ToList();
 
-                displayNames.TryGetValue(f.Id, out var displayName);
-
-                items.Add(new FriendItem
-                {
-                    UserId = f.Id,
-                    Name = f.Name ?? "",
-                    DisplayName = string.IsNullOrEmpty(displayName) ? (f.Name ?? "") : displayName,
-                    AvatarUrl = headshots.GetValueOrDefault(f.Id, ""),
-                    PresenceType = type,
-                    GameName = type == 2 ? (p?.LastLocation ?? "") : "",
-                    PlaceId = placeId,
-                    UniverseId = p?.UniverseId ?? 0,
-                    JobId = Guid.TryParse(p?.GameId, out _) ? p!.GameId : null
-                });
-            }
-
-            var universes = items.Where(i => i.IsInGame && i.UniverseId > 0)
-                                 .Select(i => i.UniverseId).Distinct().ToList();
+            var iconMap = new Dictionary<long, string>();
             if (universes.Count > 0)
             {
                 try
@@ -342,15 +328,11 @@ public ICommand JoinFriendCommand { get; }
                     }).ToList();
 
                     var urls = await Thumbnails.GetThumbnailUrlsAsync(reqs, CancellationToken.None);
-                    var map = new Dictionary<long, string>();
                     for (int i = 0; i < universes.Count; i++)
                     {
                         string? u = urls.ElementAtOrDefault(i);
-                        if (!string.IsNullOrEmpty(u)) map[universes[i]] = u;
+                        if (!string.IsNullOrEmpty(u)) iconMap[universes[i]] = u;
                     }
-                    foreach (var item in items)
-                        if (map.TryGetValue(item.UniverseId, out var icon))
-                            item.GameIconUrl = icon;
                 }
                 catch (Exception ex)
                 {
@@ -358,17 +340,57 @@ public ICommand JoinFriendCommand { get; }
                 }
             }
 
-            var sorted = items
-                .OrderByDescending(i => i.IsInGame)
-                .ThenByDescending(i => i.IsOnline)
-                .ThenBy(i => i.DisplayName, StringComparer.OrdinalIgnoreCase)
-                .ToList();
-
             if (seq != _friendsSeq) return;
 
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
-                Friends = new ObservableCollection<FriendItem>(sorted);
+                foreach (var stale in _friendsById.Keys.Where(id => !ids.Contains(id)).ToList())
+                {
+                    _ = Friends.Remove(_friendsById[stale]);
+                    _friendsById.Remove(stale);
+                }
+
+                if (needsFullRebuild)
+                {
+                    var rebuilt = new List<FriendItem>(friendEntries.Count);
+                    foreach (var f in friendEntries)
+                    {
+                        var item = CreateFriendItem(f, presence.GetValueOrDefault(f.Id), headshots, displayNames);
+                        ApplyGameIcon(item, iconMap);
+                        rebuilt.Add(item);
+                    }
+
+                    var sorted = rebuilt
+                        .OrderByDescending(i => i.IsInGame)
+                        .ThenByDescending(i => i.IsOnline)
+                        .ThenBy(i => i.DisplayName, StringComparer.OrdinalIgnoreCase)
+                        .ToList();
+
+                    Friends = new ObservableCollection<FriendItem>(sorted);
+                    _friendsById.Clear();
+                    foreach (var item in Friends)
+                        _friendsById[item.UserId] = item;
+                }
+                else
+                {
+                    foreach (var f in friendEntries)
+                    {
+                        var p = presence.GetValueOrDefault(f.Id);
+
+                        if (!_friendsById.TryGetValue(f.Id, out var item))
+                        {
+                            item = CreateFriendItem(f, p, headshots, displayNames);
+                            ApplyGameIcon(item, iconMap);
+                            _friendsById[f.Id] = item;
+                            Friends.Add(item);
+                        }
+                        else
+                        {
+                            PatchFriendItem(item, p, iconMap);
+                        }
+                    }
+                }
+
                 NotifyFriendsChanged();
             });
         }
@@ -381,6 +403,44 @@ public ICommand JoinFriendCommand { get; }
             _friendsBusy = false;
             await Dispatcher.UIThread.InvokeAsync(() => IsFriendsLoading = false);
         }
+    }
+
+    private static FriendItem CreateFriendItem(FriendEntry f, UserPresence? p, Dictionary<long, string> headshots, Dictionary<long, string> names)
+    {
+        int type = p?.UserPresenceType ?? 0;
+        string displayName = names.GetValueOrDefault(f.Id) ?? "";
+
+        return new FriendItem
+        {
+            UserId = f.Id,
+            Name = f.Name ?? "",
+            DisplayName = string.IsNullOrEmpty(displayName) ? (f.Name ?? "") : displayName,
+            AvatarUrl = headshots.GetValueOrDefault(f.Id, ""),
+            PresenceType = type,
+            GameName = type == 2 ? (p?.LastLocation ?? "") : "",
+            PlaceId = p?.PlaceId ?? p?.RootPlaceId ?? 0,
+            UniverseId = p?.UniverseId ?? 0,
+            JobId = Guid.TryParse(p?.GameId, out _) ? p!.GameId : null
+        };
+    }
+
+    private static void ApplyGameIcon(FriendItem item, Dictionary<long, string> iconMap)
+    {
+        item.GameIconUrl = item.IsInGame && item.UniverseId > 0 && iconMap.TryGetValue(item.UniverseId, out var icon)
+            ? icon
+            : "";
+    }
+
+    private static void PatchFriendItem(FriendItem item, UserPresence? p, Dictionary<long, string> iconMap)
+    {
+        int type = p?.UserPresenceType ?? 0;
+
+        item.PresenceType = type;
+        item.GameName = type == 2 ? (p?.LastLocation ?? "") : "";
+        item.PlaceId = p?.PlaceId ?? p?.RootPlaceId ?? 0;
+        item.UniverseId = p?.UniverseId ?? 0;
+        item.JobId = Guid.TryParse(p?.GameId, out _) ? p!.GameId : null;
+        ApplyGameIcon(item, iconMap);
     }
 
     private static async Task<Dictionary<long, UserPresence>> FetchPresenceAsync(List<long> ids, string cookie)
@@ -631,7 +691,7 @@ internal class NewsCardViewModel : INotifyPropertyChanged
     public event PropertyChangedEventHandler? PropertyChanged;
 }
 
-internal class FriendItem
+internal class FriendItem : INotifyPropertyChanged
 {
     public long UserId { get; init; }
     public string Name { get; init; } = "";
@@ -639,12 +699,19 @@ internal class FriendItem
     public string AvatarUrl { get; init; } = "";
 
     // 0 offline, 1 online, 2 in game, 3 in studio
-    public int PresenceType { get; init; }
-    public string GameName { get; init; } = "";
-    public long PlaceId { get; init; }
-    public long UniverseId { get; init; }
-    public string? JobId { get; init; }
-    public string GameIconUrl { get; set; } = "";
+    private int _presenceType;
+    private string _gameName = "";
+    private long _placeId;
+    private long _universeId;
+    private string? _jobId;
+    private string _gameIconUrl = "";
+
+    public int PresenceType { get => _presenceType; set => SetField(ref _presenceType, value, nameof(PresenceType), nameof(IsInGame), nameof(IsOnline), nameof(IsOnlineNotInGame), nameof(CanJoin), nameof(SubText), nameof(PlayingText)); }
+    public string GameName { get => _gameName; set => SetField(ref _gameName, value, nameof(GameName), nameof(SubText)); }
+    public long PlaceId { get => _placeId; set => SetField(ref _placeId, value, nameof(PlaceId), nameof(CanJoin)); }
+    public long UniverseId { get => _universeId; set => SetField(ref _universeId, value, nameof(UniverseId)); }
+    public string? JobId { get => _jobId; set => SetField(ref _jobId, value, nameof(JobId)); }
+    public string GameIconUrl { get => _gameIconUrl; set => SetField(ref _gameIconUrl, value, nameof(GameIconUrl)); }
 
     public bool IsInGame => PresenceType == 2;
     public bool IsOnline => PresenceType is 1 or 2 or 3;
@@ -660,6 +727,20 @@ internal class FriendItem
     };
 
     public string PlayingText => $"{Name} is playing";
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    private void SetField<T>(ref T field, T value, string propertyName, params string[] additional)
+    {
+        if (EqualityComparer<T>.Default.Equals(field, value)) return;
+        field = value;
+        OnPropertyChanged(propertyName);
+        foreach (var name in additional)
+            OnPropertyChanged(name);
+    }
+
+    private void OnPropertyChanged(string propertyName) =>
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 }
 
 internal class FriendsListResponse

@@ -107,7 +107,17 @@ namespace Froststrap.UI.ViewModels.Settings
         private LaunchMode _selectedLaunchMode = LaunchMode.Player;
 
         private string _selectedPage = "integrations";
-        public string SelectedPage { get => _selectedPage; set => SetProperty(ref _selectedPage, value); }
+        public string SelectedPage
+        {
+            get => _selectedPage;
+            set
+            {
+                if (SetProperty(ref _selectedPage, value))
+                    OnPropertyChanged(nameof(ShowTopAccountSelector));
+            }
+        }
+
+        public bool ShowTopAccountSelector => SelectedPage != "home";
 
         private string _currentPageTitle = Strings.Menu_Integrations_Title;
         public string CurrentPageTitle { get => _currentPageTitle; set => SetProperty(ref _currentPageTitle, value); }

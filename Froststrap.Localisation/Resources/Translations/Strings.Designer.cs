@@ -6291,6 +6291,15 @@ namespace Froststrap.Localisation {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Accounts.
+        /// </summary>
+        public static string Menu_Home_Accounts {
+            get {
+                return ResourceManager.GetString("Menu.Home.Accounts", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Active.
         /// </summary>
         public static string Menu_Home_Active {

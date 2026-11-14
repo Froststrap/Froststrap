@@ -6,6 +6,7 @@ SPDX-License-Identifier: MPL-2.0
 
 <base:AvaloniaWindow
     x:Class="Froststrap.UI.Elements.Settings.MainWindow"
+    x:Name="RootWindow"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:base="using:Froststrap.UI.Elements.Base"
@@ -152,6 +153,7 @@ SPDX-License-Identifier: MPL-2.0
                     Grid.Column="2"
                     PhotoPosition="Right"
                     DropdownDirection="Down"
+                    IsVisible="{Binding #RootWindow.DataContext.ShowTopAccountSelector}"
                 />
             </Grid>
         </Border>

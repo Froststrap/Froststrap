@@ -914,6 +914,9 @@ More information:
   <data name="Menu.Integrations.QueryServerLocation.Title" xml:space="preserve">
     <value>Query Server Location</value>
   </data>
+  <data name="Menu.Home.Accounts" xml:space="preserve">
+    <value>Accounts</value>
+  </data>
   <data name="Menu.Home.Active" xml:space="preserve">
     <value>Active</value>
   </data>
