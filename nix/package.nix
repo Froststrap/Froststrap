@@ -93,7 +93,7 @@ buildDotnetModule {
 
   cargoDeps = rustPlatform.fetchCargoVendor {
     src = "${src}/backend";
-    hash = "sha256-KqFpWnP1SgVWs//PM0nqgzpmxDTGuHhy2ffHils4U2Q=";
+    hash = "sha256-30TGDP5xGnqfws4nHk7bRLTj8ugkCoLrfHLtVEu0fk8=";
   };
 
   nativeBuildInputs = [
