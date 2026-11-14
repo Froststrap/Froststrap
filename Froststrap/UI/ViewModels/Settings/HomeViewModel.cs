@@ -277,7 +277,12 @@ public ICommand JoinFriendCommand { get; }
                 await Dispatcher.UIThread.InvokeAsync(() => IsFriendsLoading = true);
 
             var friendsUrl = UrlBuilder.BuildApiUrl("friends", $"v1/users/{account.UserId}/friends");
-            var friendsResponse = await Http.GetJson<FriendsListResponse>(friendsUrl);
+            using var friendsRequest = new HttpRequestMessage(HttpMethod.Get, friendsUrl);
+            friendsRequest.Headers.Add("Cookie", $".ROBLOSECURITY={cookie}");
+            using var friendsResponse2 = await App.HttpClient.SendAsync(friendsRequest);
+            friendsResponse2.EnsureSuccessStatusCode();
+            string friendsJson = await friendsResponse2.Content.ReadAsStringAsync();
+            var friendsResponse = JsonHelper.Deserialize<FriendsListResponse>(friendsJson);
             var friendEntries = friendsResponse?.Data?.Take(MaxFriends).ToList() ?? [];
 
             if (friendEntries.Count == 0)
