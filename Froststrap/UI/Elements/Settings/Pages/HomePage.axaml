@@ -377,10 +377,11 @@ SPDX-License-Identifier: MPL-2.0
                         <!-- bottom fade overlay -->
                         <Border VerticalAlignment="Bottom" Height="168">
                             <Border.Background>
-                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
                                     <GradientStop Color="#00000000" Offset="0" />
-                                    <GradientStop Color="#66000000" Offset="0.45" />
-                                    <GradientStop Color="#F2000000" Offset="1" />
+                                    <GradientStop Color="#99000000" Offset="0.35" />
+                                    <GradientStop Color="#F2000000" Offset="0.65" />
+                                    <GradientStop Color="#FF000000" Offset="1" />
                                 </LinearGradientBrush>
                             </Border.Background>
                             <StackPanel Margin="16,0,60,12" VerticalAlignment="Bottom" Spacing="6">
