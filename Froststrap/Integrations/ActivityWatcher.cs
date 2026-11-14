@@ -729,18 +729,18 @@ namespace Froststrap.Integrations
                 string json = reader.ReadToEnd();
                 var message = JsonHelper.Deserialize<StudioMessage>(json);
 
-                if (message != null)
-                {
-                    if (message.StudioCommand == "SetRichPresence")
-                    {
-                        var richPresenceData = JsonHelper.Deserialize<StudioRichPresence>(message.Data);
-                        if (richPresenceData != null)
-                            message.Data = JsonHelper.SerializeToElement(richPresenceData);
-                    }
+                if (message == null)
+                    return;
 
-                    OnStudioRPCMessage?.Invoke(this, message);
-                    response.StatusCode = 200;
+                if (message.StudioCommand == "SetRichPresence")
+                {
+                    var richPresenceData = JsonHelper.Deserialize<StudioRichPresence>(message.Data);
+                    if (richPresenceData != null)
+                        message.Data = JsonHelper.SerializeToElement(richPresenceData);
                 }
+
+                OnStudioRPCMessage?.Invoke(this, message);
+                response.StatusCode = 200;
             }
             catch (Exception ex)
             {
@@ -763,44 +763,42 @@ namespace Froststrap.Integrations
                 string json = File.ReadAllText(GameHistoryCachePath);
                 var gameHistory = JsonHelper.Deserialize<List<GameHistoryEntry>>(json, _loadOptions);
 
-                if (gameHistory != null)
-                {
-                    var loadedHistory = new List<ActivityData>();
-
-                    foreach (var entry in gameHistory)
-                    {
-                        if (entry.UniverseId == 0 || entry.PlaceId == 0) continue;
-
-                        foreach (var server in entry.Servers)
-                        {
-                            if (server.JoinedAt == default) continue;
-
-                            var activity = new ActivityData
-                            {
-                                UniverseId = entry.UniverseId,
-                                PlaceId = entry.PlaceId,
-                                JobId = server.JobId,
-                                ServerType = server.ServerType,
-                                TimeJoined = server.JoinedAt,
-                                TimeLeft = server.TimeLeft,
-                                Region = server.Region
-                            };
-
-                            activity.UniverseDetails = UniverseDetails.LoadFromCache(activity.UniverseId);
-                            loadedHistory.Add(activity);
-                        }
-                    }
-
-                    History = [.. loadedHistory
-                        .OrderByDescending(x => x.TimeJoined)
-                        .Take(300)];
-
-                    App.Logger.Info($"Loaded {History.Count} sessions from cache");
-                }
-                else
+                if (gameHistory is null)
                 {
                     History = [];
+                    return;
                 }
+                var loadedHistory = new List<ActivityData>();
+
+                foreach (var entry in gameHistory)
+                {
+                    if (entry.UniverseId == 0 || entry.PlaceId == 0) continue;
+
+                    foreach (var server in entry.Servers)
+                    {
+                        if (server.JoinedAt == default) continue;
+
+                        var activity = new ActivityData
+                        {
+                            UniverseId = entry.UniverseId,
+                            PlaceId = entry.PlaceId,
+                            JobId = server.JobId,
+                            ServerType = server.ServerType,
+                            TimeJoined = server.JoinedAt,
+                            TimeLeft = server.TimeLeft,
+                            Region = server.Region
+                        };
+
+                        activity.UniverseDetails = UniverseDetails.LoadFromCache(activity.UniverseId);
+                        loadedHistory.Add(activity);
+                    }
+                }
+
+                History = [.. loadedHistory
+                    .OrderByDescending(x => x.TimeJoined)
+                    .Take(300)];
+
+                App.Logger.Info($"Loaded {History.Count} sessions from cache");
             }
             catch (Exception ex)
             {
@@ -815,21 +813,15 @@ namespace Froststrap.Integrations
             if (activity.UniverseId == 0 || activity.PlaceId == 0 || activity.TimeJoined == default) return;
 
             if (activity.MachineAddressValid && string.IsNullOrEmpty(activity.Region))
-            {
                 activity.Region = await activity.QueryServerLocation() ?? "Unknown";
-            }
 
             if (!string.IsNullOrEmpty(activity.JobId))
-            {
                 History.RemoveAll(x => x.JobId == activity.JobId);
-            }
 
             History.Insert(0, activity);
 
             if (History.Count > 300)
-            {
                 History = [.. History.OrderByDescending(x => x.TimeJoined).Take(300)];
-            }
 
             SaveGameHistory();
             OnHistoryUpdated?.Invoke(this, EventArgs.Empty);
