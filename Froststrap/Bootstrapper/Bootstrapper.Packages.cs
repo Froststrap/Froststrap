@@ -786,7 +786,7 @@ internal partial class Bootstrapper : IDisposable
                         : Deployment.DefaultChannel;
 
                     var promptResult = await Frontend.ShowMessageBox(
-                        String.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_Bootstrapper_Dialog_PromptChannelChange, displayChannel, Deployment.Channel),
+                        String.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_Dialog_PromptChannelChange, displayChannel, Deployment.Channel),
                         MessageBoxImage.Question,
                         MessageBoxButton.YesNo
                     );
@@ -877,7 +877,7 @@ internal partial class Bootstrapper : IDisposable
                     {
                         await Frontend.ShowMessageBox(
                             String.Format(CultureInfo.InvariantCulture,
-                                Strings.Boostrapper_Dialog_UnauthorizedChannel,
+                                Strings.Bootstrapper_Dialog_UnauthorizedChannel,
                                 Deployment.Channel,
                                 Deployment.DefaultChannel
                             ),

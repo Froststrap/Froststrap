@@ -389,6 +389,36 @@ internal sealed partial class App : Application
         Logger.Info("Created AUMID registry key.");
     }
 
+    public static void LoadRemoteTranslations()
+    {
+        string cacheDirectory = Path.Combine(Paths.Cache, "Translations");
+
+        try
+        {
+            int cached = RemoteTranslations.LoadCached(cacheDirectory);
+            if (cached > 0)
+                Logger.Debug($"Loaded {cached} cached remote translations for {Localizer.CultureName}");
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or JsonException)
+        {
+            Logger.Warn(ex, "Failed to load cached remote translations");
+        }
+
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                int updated = await RemoteTranslations.RefreshAsync(HttpClient, cacheDirectory);
+                if (updated > 0)
+                    Logger.Info($"Updated {updated} remote translations for {Localizer.CultureName}");
+            }
+            catch (Exception ex)
+            {
+                Logger.Warn(ex, "Failed to refresh remote translations");
+            }
+        });
+    }
+
     public static void ApplyAnimationSettings()
     {
         var app = Application.Current;
@@ -528,12 +558,10 @@ internal sealed partial class App : Application
 
         Logger.Debug($"Starting {ProjectInfo.Name} {Version} ({Paths.Process})");
         Logger.Debug($"OS Description: {RuntimeInformation.OSDescription}");
-        Logger.Debug($"Built for RID: {RuntimeInformation.RuntimeIdentifier}");
+        Logger.Debug($"Compiled for RID: {RuntimeInformation.RuntimeIdentifier}");
+        Logger.Debug($"Compiled {BuildMetadata.LocalTimestamp.ToFriendlyString()}");
 
         var userAgent = new StringBuilder($"{ProjectInfo.Name}/{Version}");
-
-        Logger.Debug($"Compiled {BuildMetadata.LocalTimestamp.ToFriendlyString()}");
-        userAgent.Append(string.Format(CultureInfo.InvariantCulture, " (Build {0})", Convert.ToBase64String(Encoding.UTF8.GetBytes(BuildMetadata.Machine))));
 
         HttpClient.Timeout = TimeSpan.FromSeconds(60);
         if (HttpClient.DefaultRequestHeaders.UserAgent.Count == 0)
@@ -556,8 +584,17 @@ internal sealed partial class App : Application
             Settings.Save();
         }
 
+        string locale = Locale.Normalise(Settings.Prop.Locale);
+        if (locale != Settings.Prop.Locale)
+        {
+            Logger.Info($"Migrating locale setting '{Settings.Prop.Locale}' to '{locale}'");
+            Settings.Prop.Locale = locale;
+            Settings.Save();
+        }
+
         AvaloniaWindow.ApplyTheme();
-        Locale.Set(Settings.Prop.Locale);
+        Locale.Set(locale);
+        LoadRemoteTranslations();
 
         if (Settings.Prop.DisableAnimations)
             ApplyAnimationSettings();

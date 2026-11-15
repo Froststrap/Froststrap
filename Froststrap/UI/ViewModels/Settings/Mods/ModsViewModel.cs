@@ -194,7 +194,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             if (Directory.Exists(folderPath))
                 Froststrap.Utility.Threading.ShellExecute(folderPath);
             else
-                _ = Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Menu_Mods_FolderDosentExist, mod.FolderName), MessageBoxImage.Error, MessageBoxButton.OK);
+                _ = Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Menu_Mods_FolderDoesntExist, mod.FolderName), MessageBoxImage.Error, MessageBoxButton.OK);
         }
 
         [RelayCommand]
@@ -352,7 +352,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
             if (Modifications.Any(m => m.FolderName.Equals(safeName, StringComparison.OrdinalIgnoreCase) && m != SelectedMod))
             {
-                _ = Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Menu_Mods_AlreadyExist, safeName), MessageBoxImage.Warning, MessageBoxButton.OK);
+                _ = Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Menu_Mods_AlreadyExists, safeName), MessageBoxImage.Warning, MessageBoxButton.OK);
                 return;
             }
 
