@@ -528,12 +528,10 @@ internal sealed partial class App : Application
 
         Logger.Debug($"Starting {ProjectInfo.Name} {Version} ({Paths.Process})");
         Logger.Debug($"OS Description: {RuntimeInformation.OSDescription}");
-        Logger.Debug($"Built for RID: {RuntimeInformation.RuntimeIdentifier}");
+        Logger.Debug($"Compiled for RID: {RuntimeInformation.RuntimeIdentifier}");
+        Logger.Debug($"Compiled {BuildMetadata.LocalTimestamp.ToFriendlyString()}");
 
         var userAgent = new StringBuilder($"{ProjectInfo.Name}/{Version}");
-
-        Logger.Debug($"Compiled {BuildMetadata.LocalTimestamp.ToFriendlyString()}");
-        userAgent.Append(string.Format(CultureInfo.InvariantCulture, " (Build {0})", Convert.ToBase64String(Encoding.UTF8.GetBytes(BuildMetadata.Machine))));
 
         HttpClient.Timeout = TimeSpan.FromSeconds(60);
         if (HttpClient.DefaultRequestHeaders.UserAgent.Count == 0)
