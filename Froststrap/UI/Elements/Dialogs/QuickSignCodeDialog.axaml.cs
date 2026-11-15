@@ -20,7 +20,7 @@ namespace Froststrap.UI.Elements.Dialogs
             InitializeComponent();
             SignInSuccessful = false;
 
-            StatusText.Text = Strings.Menu_QuickSignIn_Waitting;
+            StatusText.Text = Strings.Menu_QuickSignIn_Waiting;
         }
 
         public void StartNewSignIn(string code)
@@ -32,7 +32,7 @@ namespace Froststrap.UI.Elements.Dialogs
 
             CodeTextBox.Text = code ?? string.Empty;
             CodeBox.IsVisible = true;
-            StatusText.Text = Strings.Menu_QuickSignIn_Waitting;
+            StatusText.Text = Strings.Menu_QuickSignIn_Waiting;
 
             if (!IsVisible)
             {
@@ -74,7 +74,7 @@ namespace Froststrap.UI.Elements.Dialogs
                     {
                         Dispatcher.UIThread.Post(() =>
                         {
-                            StatusText.Text = Strings.Menu_QuickSignIn_Waitting;
+                            StatusText.Text = Strings.Menu_QuickSignIn_Waiting;
                         });
                     }, TaskScheduler.Default);
                 }
