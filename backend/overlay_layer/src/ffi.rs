@@ -1,11 +1,14 @@
+use std::os::raw::c_char;
 use std::sync::{Mutex, MutexGuard};
 
 use crate::input::{GlobalInput, KeyState};
+use crate::portal::Portal;
 use crate::wayland::{GameState, InputEvent, Overlay};
 
 struct Backend {
     overlay: Overlay,
     input: GlobalInput,
+    portal: Option<Portal>,
 }
 
 static BACKEND: Mutex<Option<Backend>> = Mutex::new(None);
@@ -27,6 +30,7 @@ pub extern "C" fn overlay_init() -> i32 {
     *slot = Some(Backend {
         overlay: Overlay::start(),
         input: GlobalInput::start(),
+        portal: Portal::start(),
     });
 
     0
@@ -39,6 +43,10 @@ pub extern "C" fn overlay_shutdown() {
     if let Some(backend) = backend {
         backend.input.stop();
         backend.overlay.shutdown();
+
+        if let Some(portal) = backend.portal {
+            portal.shutdown();
+        }
     }
 }
 
@@ -186,7 +194,18 @@ pub extern "C" fn overlay_hotkey_unregister(id: i32) {
 #[unsafe(no_mangle)]
 pub extern "C" fn overlay_poll_hotkey() -> i32 {
     match slot().as_ref() {
-        Some(backend) => backend.input.poll(),
+        Some(backend) => {
+            let from_input = backend.input.poll();
+
+            if from_input >= 0 {
+                return from_input;
+            }
+
+            match backend.portal.as_ref() {
+                Some(portal) => portal.poll(),
+                None => -1,
+            }
+        }
         None => -1,
     }
 }
@@ -202,6 +221,60 @@ pub unsafe extern "C" fn overlay_key_state(out: *mut KeyState) -> i32 {
             unsafe { *out = backend.input.snapshot() };
             0
         }
+        None => -1,
+    }
+}
+
+#[unsafe(no_mangle)]
+pub extern "C" fn overlay_portal_supported() -> i32 {
+    match slot().as_ref() {
+        Some(backend) if backend.portal.is_some() => 1,
+        _ => 0,
+    }
+}
+
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn overlay_portal_register(
+    id: i32,
+    shortcut_id: *const c_char,
+    description: *const c_char,
+    trigger: *const c_char,
+) -> i32 {
+    if shortcut_id.is_null() || description.is_null() || trigger.is_null() {
+        return -1;
+    }
+
+    let shortcut_id = match unsafe { std::ffi::CStr::from_ptr(shortcut_id) }.to_str() {
+        Ok(value) => value.to_owned(),
+        Err(_) => return -1,
+    };
+
+    let description = match unsafe { std::ffi::CStr::from_ptr(description) }.to_str() {
+        Ok(value) => value.to_owned(),
+        Err(_) => return -1,
+    };
+
+    let trigger = match unsafe { std::ffi::CStr::from_ptr(trigger) }.to_str() {
+        Ok(value) => value.to_owned(),
+        Err(_) => return -1,
+    };
+
+    match slot().as_ref() {
+        Some(backend) => match backend.portal.as_ref() {
+            Some(portal) if portal.register(id, shortcut_id, description, trigger) => 0,
+            _ => -1,
+        },
+        None => -1,
+    }
+}
+
+#[unsafe(no_mangle)]
+pub extern "C" fn overlay_portal_unregister(id: i32) -> i32 {
+    match slot().as_ref() {
+        Some(backend) => match backend.portal.as_ref() {
+            Some(portal) if portal.unregister(id) => 0,
+            _ => -1,
+        },
         None => -1,
     }
 }

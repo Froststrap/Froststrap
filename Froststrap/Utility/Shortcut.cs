@@ -382,6 +382,7 @@ namespace Froststrap.Utility
                 Exec="{exePath}" {exeArgs}
                 Icon={icon}
                 Terminal=false
+                X-GNOME-Autostart-enabled=false
                 """;
 
             File.WriteAllText(finalDesktopPath, content);

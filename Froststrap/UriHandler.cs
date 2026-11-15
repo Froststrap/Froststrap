@@ -1,5 +1,11 @@
+// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
 using System.Runtime.Versioning;
 using Microsoft.Win32;
+
+using Froststrap.Utility;
 
 namespace Froststrap
 {
@@ -75,50 +81,52 @@ namespace Froststrap
         [SupportedOSPlatform("linux")]
         sealed class LinuxHandler : IHandler
         {
-            static string DesktopFile => Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "applications", "froststrap.desktop");
+            static string DesktopFile => LinuxDesktopEntry.FullPath;
 
-            // Inside an AppImage, ProcessPath is a temporary mount, APPIMAGE is the real file.
-            static string ExePath => Environment.GetEnvironmentVariable("APPIMAGE") ?? Environment.ProcessPath!;
+            static string DesktopId => LinuxDesktopEntry.FileName;
 
             public void Register()
             {
-                string mime = string.Concat(Schemes.Select(s => $"x-scheme-handler/{s};"));
-
-                Directory.CreateDirectory(Path.GetDirectoryName(DesktopFile)!);
-                File.WriteAllText(DesktopFile,
-                    $"[Desktop Entry]\nType=Application\nName=Froststrap\nExec=\"{ExePath}\" %u\nTerminal=false\nNoDisplay=true\nMimeType={mime}\n");
+                LinuxDesktopEntry.EnsureInstalled();
 
                 foreach (string scheme in Schemes)
-                    Run("xdg-mime", $"default froststrap.desktop x-scheme-handler/{scheme}");
-                Run("update-desktop-database", $"\"{Path.GetDirectoryName(DesktopFile)}\"");
+                    Run("xdg-mime", $"default {DesktopId} x-scheme-handler/{scheme}");
+
+                Run("update-desktop-database", $"\"{LinuxDesktopEntry.ApplicationsDirectory}\"");
             }
 
             public void Unregister()
             {
-                if (File.Exists(DesktopFile)) File.Delete(DesktopFile);
+                if (File.Exists(DesktopFile))
+                    File.Delete(DesktopFile);
             }
 
             public bool IsRegistered()
             {
-                if (!File.Exists(DesktopFile)) return false;
-                if (!File.ReadAllText(DesktopFile).Contains($"Exec=\"{ExePath}\"", StringComparison.Ordinal)) return false;
+                if (!File.Exists(DesktopFile))
+                    return false;
 
                 using var query = Process.Start(new ProcessStartInfo("xdg-mime", "query default x-scheme-handler/roblox-player")
                 {
                     UseShellExecute = false,
                     RedirectStandardOutput = true
                 });
+
                 string current = query?.StandardOutput.ReadToEnd().Trim() ?? "";
                 query?.WaitForExit(5000);
-                return current == "froststrap.desktop";
+
+                return current == DesktopId;
             }
 
             static void Run(string file, string args)
             {
-                try { Process.Start(new ProcessStartInfo(file, args) { UseShellExecute = false })?.WaitForExit(5000); }
-                catch { /* tool may be missing, not fatal */ }
+                try
+                {
+                    Process.Start(new ProcessStartInfo(file, args) { UseShellExecute = false })?.WaitForExit(5000);
+                }
+                catch
+                {
+                }
             }
         }
     }

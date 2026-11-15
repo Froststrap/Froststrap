@@ -9,13 +9,14 @@ using Avalonia.Threading;
 
 using Froststrap.Backend;
 using Froststrap.Integrations.Overlay;
+using Froststrap.Integrations.Overlay.Platform.Linux;
 using Froststrap.Integrations.OverlayModules;
 using Froststrap.Models.Overlay;
 using Froststrap.UI.Elements.Overlay;
 
 using System.Runtime.InteropServices;
 
-namespace Froststrap.Integrations.Overlay.Platform.Linux
+namespace Froststrap.Integrations.Overlay.Platform
 {
     internal sealed class LinuxOverlayHost : IOverlayHost
     {
@@ -77,7 +78,7 @@ namespace Froststrap.Integrations.Overlay.Platform.Linux
                 App.Logger.Error(ex);
             }
 
-            App.Logger.Info($"LinuxOverlayHost: created pid={robloxProcessId} initialised={_initialised}");
+            App.Logger.Info($"LinuxOverlayHost: created pid={robloxProcessId} initialised={_initialised} portal={LinuxHotkeys.PortalSupported}");
         }
 
         public bool UsesRenderedSurfaces => true;
@@ -508,22 +509,14 @@ namespace Froststrap.Integrations.Overlay.Platform.Linux
         {
             _ = window;
 
-            (uint code, uint mapped) = LinuxKeyMap.Resolve(modifiers, key, defaultModifiers, defaultKey, description);
-
-            if (code == 0)
-            {
-                App.Logger.Warn($"Could not map the {description} hotkey to a Linux key code");
-                return false;
-            }
-
-            LinuxOverlay.UnregisterHotkey(id);
-            return LinuxOverlay.RegisterHotkey(id, code, mapped);
+            return LinuxHotkeys.Register(id, modifiers, key, defaultModifiers, defaultKey, description);
         }
 
         public void UnregisterHotkey(Window window, int id)
         {
             _ = window;
-            LinuxOverlay.UnregisterHotkey(id);
+
+            LinuxHotkeys.Unregister(id);
         }
 
         private static int[] FullRegion => [0, 0, 16384, 16384];

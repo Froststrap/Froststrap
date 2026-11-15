@@ -8,6 +8,7 @@ using Velopack;
 using Froststrap;
 using Froststrap.Backend;
 using Froststrap.Cli;
+using Froststrap.Utility;
 
 namespace Froststrap;
 
@@ -55,6 +56,10 @@ sealed partial class Program
 #endif
 
         Logging.Configure(Paths.Logs);
+
+        if (OperatingSystem.IsLinux())
+            LinuxDesktopEntry.EnsureInstalled();
+
         _ = Task.Run(() => AppInitializer.RunMacSecurityDiagnostics());
         NativeLog.Register();
 

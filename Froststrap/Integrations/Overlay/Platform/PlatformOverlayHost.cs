@@ -7,7 +7,6 @@ using Avalonia.Controls;
 using Avalonia.Input;
 
 using Froststrap.Enums;
-using Froststrap.Integrations.Overlay.Platform.Linux;
 using Froststrap.Integrations.OverlayModules;
 using Froststrap.Models.Overlay;
 

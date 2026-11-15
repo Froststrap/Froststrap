@@ -10,3 +10,6 @@ crate-type = ["cdylib", "rlib"]
 [dependencies]
 smithay-client-toolkit = "0.19"
 tinyjson = "2.5.1"
+ashpd = { version = "0.11", default-features = false }
+async-io = "2"
+futures = "0.3"

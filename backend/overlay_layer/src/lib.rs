@@ -5,4 +5,7 @@ pub mod ffi;
 pub mod input;
 
 #[cfg(target_os = "linux")]
+pub mod portal;
+
+#[cfg(target_os = "linux")]
 pub mod wayland;

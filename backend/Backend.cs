@@ -308,6 +308,19 @@ internal partial class InternalOverlay
 
     [LibraryImport("froststrap_overlay_layer", EntryPoint = "overlay_key_state")]
     public static partial int KeyState(IntPtr state);
+
+    [LibraryImport("froststrap_overlay_layer", EntryPoint = "overlay_portal_supported")]
+    public static partial int PortalSupported();
+
+    [LibraryImport("froststrap_overlay_layer", EntryPoint = "overlay_portal_register")]
+    public static partial int PortalRegister(
+        int id,
+        [MarshalAs(UnmanagedType.LPUTF8Str)] string shortcutId,
+        [MarshalAs(UnmanagedType.LPUTF8Str)] string description,
+        [MarshalAs(UnmanagedType.LPUTF8Str)] string trigger);
+
+    [LibraryImport("froststrap_overlay_layer", EntryPoint = "overlay_portal_unregister")]
+    public static partial int PortalUnregister(int id);
 }
 
 public class LinuxOverlay
@@ -392,4 +405,11 @@ public class LinuxOverlay
     public static int PollHotkey() => InternalOverlay.PollHotkey();
 
     public static bool GetKeyState(IntPtr state) => InternalOverlay.KeyState(state) == 0;
+
+    public static bool PortalSupported() => InternalOverlay.PortalSupported() != 0;
+
+    public static bool PortalRegister(int id, string shortcutId, string description, string trigger) =>
+        InternalOverlay.PortalRegister(id, shortcutId, description, trigger) == 0;
+
+    public static bool PortalUnregister(int id) => InternalOverlay.PortalUnregister(id) == 0;
 }
