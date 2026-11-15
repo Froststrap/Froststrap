@@ -11,8 +11,8 @@ using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using Froststrap.UI.Elements.Controls;
 using Froststrap.UI.Elements.Dialogs;
+using Froststrap.UI.Utility;
 using LucideAvalonia.Enum;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -20,7 +20,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
 {
     internal sealed partial class FastFlagEditor : UserControl, INotifyPropertyChanged, IDisposable
     {
-        private readonly ObservableCollection<FastFlag> _fastFlagList = [];
+        private readonly ResettableObservableCollection<FastFlag> _fastFlagList = [];
         private bool _showPresets = true;
         private bool _disposed;
         private string _searchFilter = string.Empty;
@@ -72,26 +72,19 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
         {
             if (_dataGrid is null) return;
 
-            _fastFlagList.Clear();
+            var presetFlags = FastFlagManager.PresetFlags.Values.ToHashSet(StringComparer.Ordinal);
 
-            var presetFlags = FastFlagManager.PresetFlags.Values;
-
-            foreach (var pair in App.FastFlags.Prop.OrderBy(x => x.Key))
-            {
-                if (!pair.Key.Contains(_searchFilter, StringComparison.OrdinalIgnoreCase))
-                    continue;
-
-                var entry = new FastFlag
+            _fastFlagList.ReplaceAll(App.FastFlags.Prop
+                .Where(pair => pair.Key.Contains(_searchFilter, StringComparison.OrdinalIgnoreCase))
+                .OrderBy(pair => pair.Key)
+                .Select(pair => new FastFlag
                 {
                     Name = pair.Key,
                     Value = pair.Value?.ToString() ?? "",
                     Preset = presetFlags.Contains(pair.Key)
                         ? LucideIconNames.CircleCheck
                         : LucideIconNames.CircleX
-                };
-
-                _fastFlagList.Add(entry);
-            }
+                }));
 
             _dataGrid.ItemsSource ??= _fastFlagList;
 
