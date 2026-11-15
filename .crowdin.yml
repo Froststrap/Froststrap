@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Froststrap
+#
+# SPDX-License-Identifier: MPL-2.0
+
 project_id: froststrap
 base_path: .
 preserve_hierarchy: true

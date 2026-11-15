@@ -1,4 +1,8 @@
-﻿// Credits to fishstrap for originally making this
+﻿// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
+// Credits to fishstrap for originally making this
 
 using System.Runtime.Versioning;
 using Avalonia.Threading;
