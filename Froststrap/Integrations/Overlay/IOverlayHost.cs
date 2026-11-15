@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 
@@ -51,6 +52,18 @@ namespace Froststrap.Integrations.Overlay
         void RaiseOverlayWindow(Window window);
 
         bool CanDetectFocus => true;
+
+        bool UsesRenderedSurfaces => false;
+
+        bool IsRenderedVisible(Window window) => window.IsVisible;
+
+        void ShowRendered(Window window) => window.Show();
+
+        void HideRendered(Window window) => window.Hide();
+
+        void FocusRendered(Window window) => window.Activate();
+
+        Size MeasureRendered(Window window) => new(window.Width, window.Height);
 
         bool RegisterHotkey(
             Window window,

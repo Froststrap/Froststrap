@@ -1,7 +1,5 @@
 mod hyprland;
 
-use std::sync::mpsc::Receiver;
-
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct SoberRect {
     pub monitor: i64,
@@ -11,9 +9,18 @@ pub struct SoberRect {
     pub height: i32,
 }
 
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub struct GameInfo {
+    pub rect: Option<SoberRect>,
+    pub present: bool,
+    pub visible: bool,
+    pub foreground: bool,
+    pub fullscreen: bool,
+}
+
 pub trait WindowTracker: Send {
-    fn query(&self) -> Option<SoberRect>;
-    fn watch(&self) -> Option<Receiver<()>>;
+    fn game_info(&self) -> GameInfo;
+    fn focus_game(&self) -> bool;
 }
 
 pub fn detect() -> Option<Box<dyn WindowTracker>> {

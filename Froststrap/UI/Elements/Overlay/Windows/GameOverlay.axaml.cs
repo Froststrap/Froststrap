@@ -64,6 +64,34 @@ namespace Froststrap.UI.Elements.Overlay
 
         private bool SeparatePinned => _overlay?.UsesSeparatePinnedWindows == true;
 
+        private bool Rendered => _overlay?.UsesRenderedSurfaces == true;
+
+        private bool WindowVisible => Rendered ? _overlay!.IsRenderedVisible(this) : IsVisible;
+
+        private void ShowWindow()
+        {
+            if (Rendered)
+                _overlay!.ShowRendered(this);
+            else
+                Show();
+        }
+
+        private void HideWindow()
+        {
+            if (Rendered)
+                _overlay!.HideRendered(this);
+            else
+                Hide();
+        }
+
+        private void ActivateWindow()
+        {
+            if (Rendered)
+                _overlay!.FocusRendered(this);
+            else
+                Activate();
+        }
+
         private DispatcherTimer? _regionTimer;
         private int _draggingPanels;
 
@@ -329,7 +357,8 @@ namespace Froststrap.UI.Elements.Overlay
             Width = 1280;
             Height = 720;
 
-            Show();
+            if (!Rendered)
+                Show();
 
             Position = Offscreen;
 
@@ -357,7 +386,7 @@ namespace Froststrap.UI.Elements.Overlay
                 return;
             }
 
-            bool visible = IsVisible;
+            bool visible = WindowVisible;
             bool inFront = IsInFront();
             bool minimised = _overlay?.IsGameMinimised() == true;
 
@@ -384,7 +413,7 @@ namespace Froststrap.UI.Elements.Overlay
 
             if (_pinnedMode)
             {
-                Hide();
+                HideWindow();
                 ExitPinnedMode();
                 return;
             }
@@ -395,7 +424,7 @@ namespace Froststrap.UI.Elements.Overlay
                 return;
             }
 
-            Hide();
+            HideWindow();
         }
 
         private void ScrimClicked(object? sender, PointerPressedEventArgs e)
@@ -469,15 +498,18 @@ namespace Froststrap.UI.Elements.Overlay
 
             _overlay?.SetWindowCloaked(this, false);
 
-            if (!IsVisible)
-                Show();
+            if (_overlay != null && _overlay.CanDetectFocus)
+                _overlay.FocusGame();
+
+            if (!WindowVisible)
+                ShowWindow();
 
             if (WindowState == WindowState.Minimized)
                 WindowState = WindowState.Normal;
 
             Reanchor();
 
-            Activate();
+            ActivateWindow();
 
             Dispatcher.UIThread.Post(() => _ = _viewModel.SyncAccountAsync(), DispatcherPriority.Background);
 
@@ -528,12 +560,12 @@ namespace Froststrap.UI.Elements.Overlay
 
             if (shouldShow)
             {
-                if (!IsVisible)
-                    Show();
+                if (!WindowVisible)
+                    ShowWindow();
             }
-            else if (_pinnedMode && IsVisible)
+            else if (_pinnedMode && WindowVisible)
             {
-                Hide();
+                HideWindow();
             }
         }
 
@@ -632,7 +664,7 @@ namespace Froststrap.UI.Elements.Overlay
             if (_disposed || !_preloading)
                 return;
 
-            Hide();
+            HideWindow();
 
             _overlay?.SetWindowCloaked(this, false);
 
@@ -654,6 +686,9 @@ namespace Froststrap.UI.Elements.Overlay
 
         private double GetBoundsScaling(OverlayBounds bounds)
         {
+            if (Rendered)
+                return 1;
+
             PixelPoint center = new(
                 (int)(bounds.Rect.Left + (bounds.Rect.Width / 2)),
                 (int)(bounds.Rect.Top + (bounds.Rect.Height / 2)));
@@ -904,7 +939,7 @@ namespace Froststrap.UI.Elements.Overlay
 
                 if (!AnyPinnedPanels())
                 {
-                    Hide();
+                    HideWindow();
                     ExitPinnedMode();
                     return;
                 }
@@ -921,7 +956,7 @@ namespace Froststrap.UI.Elements.Overlay
 
             if (!AnyPinnedPanels())
             {
-                Hide();
+                HideWindow();
                 ExitPinnedMode();
                 return;
             }
@@ -944,7 +979,7 @@ namespace Froststrap.UI.Elements.Overlay
 
                 if (!AnyPinnedPanels())
                 {
-                    Hide();
+                    HideWindow();
                     ExitPinnedMode();
                     return;
                 }
@@ -959,7 +994,7 @@ namespace Froststrap.UI.Elements.Overlay
                 return;
             }
 
-            Hide();
+            HideWindow();
             ExitPinnedMode();
         }
 
@@ -990,7 +1025,7 @@ namespace Froststrap.UI.Elements.Overlay
                 panel.IsHitTestVisible = false;
             }
 
-            Hide();
+            HideWindow();
             RefreshPinned();
         }
 
@@ -1212,7 +1247,7 @@ namespace Froststrap.UI.Elements.Overlay
 
             if (!AnyPinnedPanels())
             {
-                Hide();
+                HideWindow();
                 ExitPinnedMode();
             }
         }
@@ -1346,6 +1381,8 @@ namespace Froststrap.UI.Elements.Overlay
 
             _viewModel.PanelOpened -= OnPanelOpened;
             _viewModel.Dispose();
+
+            _overlay?.ReleaseOverlayWindow(this);
 
             GC.SuppressFinalize(this);
         }

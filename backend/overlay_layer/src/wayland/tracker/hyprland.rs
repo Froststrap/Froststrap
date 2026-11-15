@@ -1,11 +1,8 @@
-use super::{SoberRect, WindowTracker};
+use super::{GameInfo, SoberRect, WindowTracker};
 use std::collections::HashMap;
-use std::io::{BufRead, BufReader, Read, Write};
+use std::io::{Read, Write};
 use std::os::unix::net::UnixStream;
 use std::path::PathBuf;
-use std::sync::mpsc::{self, Receiver};
-use std::thread;
-use std::time::Duration;
 use tinyjson::JsonValue;
 
 const SOBER_CLASS: &str = "org.vinegarhq.Sober";
@@ -21,12 +18,16 @@ fn socket_path(name: &str) -> Option<PathBuf> {
     )
 }
 
-fn request(command: &str) -> Option<JsonValue> {
+fn exchange(payload: &[u8]) -> Option<String> {
     let mut stream = UnixStream::connect(socket_path(".socket.sock")?).ok()?;
-    stream.write_all(command.as_bytes()).ok()?;
+    stream.write_all(payload).ok()?;
     let mut reply = String::new();
     stream.read_to_string(&mut reply).ok()?;
-    reply.parse::<JsonValue>().ok()
+    Some(reply)
+}
+
+fn request(command: &str) -> Option<JsonValue> {
+    exchange(command.as_bytes())?.parse::<JsonValue>().ok()
 }
 
 fn field<'a>(value: &'a JsonValue, key: &str) -> Option<&'a JsonValue> {
@@ -50,15 +51,6 @@ fn text(value: &JsonValue) -> Option<&str> {
 }
 
 fn rect_for(client: &JsonValue, monitors: &[JsonValue]) -> Option<SoberRect> {
-    if text(field(client, "class")?)? != SOBER_CLASS {
-        return None;
-    }
-    if flag(field(client, "mapped")?)? != true
-        || field(client, "hidden").and_then(flag) == Some(true)
-    {
-        return None;
-    }
-
     let monitor_id = int(field(client, "monitor")?)?;
     let workspace_id = int(field(field(client, "workspace")?, "id")?)?;
     let monitor = monitors
@@ -83,67 +75,76 @@ fn rect_for(client: &JsonValue, monitors: &[JsonValue]) -> Option<SoberRect> {
     })
 }
 
-fn query() -> Option<SoberRect> {
-    let clients = request("j/clients")?;
-    let monitors = request("j/monitors")?;
-    let monitors = array(&monitors)?;
-
-    array(&clients)?
-        .iter()
-        .find_map(|client| rect_for(client, monitors))
+fn is_sober(client: &JsonValue) -> bool {
+    text(field(client, "class").unwrap_or(&JsonValue::Null)) == Some(SOBER_CLASS)
 }
 
-fn frame_interval() -> Duration {
-    let hz = request("j/monitors")
-        .and_then(|monitors| {
-            array(&monitors).map(|list| {
-                list.iter()
-                    .filter_map(|monitor| field(monitor, "refreshRate")?.get::<f64>().copied())
-                    .fold(0.0, f64::max)
-            })
-        })
-        .filter(|hz| *hz >= 1.0)
-        .unwrap_or(60.0);
+fn game_info() -> GameInfo {
+    let Some(clients) = request("j/clients") else {
+        return GameInfo::default();
+    };
+    let monitors = request("j/monitors").and_then(|value| array(&value).cloned());
 
-    Duration::from_secs_f64(1.0 / hz)
+    let active = request("j/activewindow")
+        .map(|value| text(field(&value, "class").unwrap_or(&JsonValue::Null)) == Some(SOBER_CLASS))
+        .unwrap_or(false);
+
+    let Some(list) = array(&clients) else {
+        return GameInfo::default();
+    };
+
+    let mut best: Option<GameInfo> = None;
+    let mut best_area = -1i64;
+
+    for client in list {
+        if !is_sober(client) {
+            continue;
+        }
+
+        if flag(field(client, "mapped").unwrap_or(&JsonValue::Null)) != Some(true) {
+            continue;
+        }
+
+        let hidden = field(client, "hidden").and_then(flag) == Some(true);
+        let fullscreen = field(client, "fullscreen").and_then(int).unwrap_or(0) > 0;
+        let rect = monitors
+            .as_deref()
+            .and_then(|monitors| rect_for(client, monitors))
+            .filter(|rect| rect.width > 0 && rect.height > 0);
+
+        let candidate = GameInfo {
+            rect,
+            present: true,
+            visible: !hidden && rect.is_some(),
+            foreground: active && !hidden,
+            fullscreen,
+        };
+
+        let area = rect.map(|r| (r.width as i64) * (r.height as i64)).unwrap_or(0);
+
+        if best.is_none() || area > best_area {
+            best_area = area;
+            best = Some(candidate);
+        }
+    }
+
+    best.unwrap_or_default()
 }
 
-fn watch() -> Option<Receiver<()>> {
-    let stream = UnixStream::connect(socket_path(".socket2.sock")?).ok()?;
-    let (tx, rx) = mpsc::channel();
-
-    let ticker = tx.clone();
-    thread::spawn(move || {
-        let mut interval = frame_interval();
-        let mut ticks = 0u32;
-        while ticker.send(()).is_ok() {
-            thread::sleep(interval);
-            ticks += 1;
-            if ticks % 120 == 0 {
-                interval = frame_interval();
-            }
-        }
-    });
-
-    thread::spawn(move || {
-        for line in BufReader::new(stream).lines() {
-            if line.is_err() || tx.send(()).is_err() {
-                break;
-            }
-        }
-    });
-
-    Some(rx)
+fn focus_game() -> bool {
+    exchange(b"dispatch focuswindow class:org.vinegarhq.Sober")
+        .map(|reply| reply.trim().eq_ignore_ascii_case("ok") || reply.is_empty())
+        .unwrap_or(false)
 }
 
 pub struct Hyprland;
 
 impl WindowTracker for Hyprland {
-    fn query(&self) -> Option<SoberRect> {
-        query()
+    fn game_info(&self) -> GameInfo {
+        game_info()
     }
 
-    fn watch(&self) -> Option<Receiver<()>> {
-        watch()
+    fn focus_game(&self) -> bool {
+        focus_game()
     }
 }

@@ -264,68 +264,132 @@ internal partial class InternalOverlay
     [LibraryImport("froststrap_overlay_layer", EntryPoint = "overlay_init")]
     public static partial int Init();
 
-    [LibraryImport("froststrap_overlay_layer", EntryPoint = "overlay_width")]
-    public static partial int Width();
-
-    [LibraryImport("froststrap_overlay_layer", EntryPoint = "overlay_height")]
-    public static partial int Height();
-
-    [LibraryImport("froststrap_overlay_layer", EntryPoint = "overlay_submit")]
-    public static partial int Submit(IntPtr pixels, int width, int height, int stride);
-
-    [LibraryImport("froststrap_overlay_layer", EntryPoint = "overlay_set_visible")]
-    public static partial void SetVisible(int visible);
-
     [LibraryImport("froststrap_overlay_layer", EntryPoint = "overlay_shutdown")]
     public static partial void Shutdown();
 
+    [LibraryImport("froststrap_overlay_layer", EntryPoint = "overlay_create_surface")]
+    public static partial int CreateSurface(int tracked);
+
+    [LibraryImport("froststrap_overlay_layer", EntryPoint = "overlay_destroy_surface")]
+    public static partial void DestroySurface(int id);
+
+    [LibraryImport("froststrap_overlay_layer", EntryPoint = "overlay_set_visible")]
+    public static partial void SetVisible(int id, int visible);
+
+    [LibraryImport("froststrap_overlay_layer", EntryPoint = "overlay_set_rect")]
+    public static partial void SetRect(int id, int x, int y, int width, int height);
+
+    [LibraryImport("froststrap_overlay_layer", EntryPoint = "overlay_set_keyboard")]
+    public static partial void SetKeyboard(int id, int mode);
+
     [LibraryImport("froststrap_overlay_layer", EntryPoint = "overlay_set_regions")]
-    public static partial int SetRegions([In] int[] rects, int count);
+    public static partial int SetRegions(int id, [In] int[] rects, int count);
+
+    [LibraryImport("froststrap_overlay_layer", EntryPoint = "overlay_submit")]
+    public static partial int Submit(int id, IntPtr pixels, int width, int height, int stride);
+
+    [LibraryImport("froststrap_overlay_layer", EntryPoint = "overlay_game_state")]
+    public static partial int GameState(out LinuxOverlay.GameState state);
+
+    [LibraryImport("froststrap_overlay_layer", EntryPoint = "overlay_focus_game")]
+    public static partial int FocusGame();
 
     [LibraryImport("froststrap_overlay_layer", EntryPoint = "overlay_poll_input")]
     public static partial int PollInput(IntPtr events, int max);
+
+    [LibraryImport("froststrap_overlay_layer", EntryPoint = "overlay_hotkey_register")]
+    public static partial int HotkeyRegister(int id, uint code, uint modifiers);
+
+    [LibraryImport("froststrap_overlay_layer", EntryPoint = "overlay_hotkey_unregister")]
+    public static partial void HotkeyUnregister(int id);
+
+    [LibraryImport("froststrap_overlay_layer", EntryPoint = "overlay_poll_hotkey")]
+    public static partial int PollHotkey();
+
+    [LibraryImport("froststrap_overlay_layer", EntryPoint = "overlay_key_state")]
+    public static partial int KeyState(IntPtr state);
 }
 
 public class LinuxOverlay
 {
+    public const uint GamePresent = 1;
+    public const uint GameVisible = 2;
+    public const uint GameForeground = 4;
+    public const uint GameMinimised = 8;
+    public const uint GameMaximised = 16;
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct GameState
+    {
+        public int X;
+        public int Y;
+        public int Width;
+        public int Height;
+        public uint Flags;
+    }
 
     [StructLayout(LayoutKind.Sequential)]
     public struct InputEvent
     {
+        public int Surface;
         public int Kind;
         public uint Code;
+        public uint Modifiers;
         public float X;
         public float Y;
         public float Dx;
         public float Dy;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 32)]
+        public byte[] Text;
     }
 
-    public static bool Init()
+    [StructLayout(LayoutKind.Sequential)]
+    public struct KeyState
     {
-        return InternalOverlay.Init() == 0;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 96)]
+        public byte[] Keys;
+
+        public uint Mouse;
+        public float LeftCps;
+        public float RightCps;
     }
 
-    public static (int Width, int Height) Size()
-    {
-        return (InternalOverlay.Width(), InternalOverlay.Height());
-    }
+    public static int KeyStateSize => Marshal.SizeOf<KeyState>();
 
-    public static bool Submit(IntPtr pixels, int width, int height, int stride)
-    {
-        return InternalOverlay.Submit(pixels, width, height, stride) == 0;
-    }
+    public static bool Init() => InternalOverlay.Init() == 0;
 
-    public static void SetVisible(bool visible)
-    {
-        InternalOverlay.SetVisible(visible ? 1 : 0);
-    }
+    public static void Shutdown() => InternalOverlay.Shutdown();
 
-    public static void Shutdown()
-    {
-        InternalOverlay.Shutdown();
-    }
+    public static int CreateSurface(bool tracked) => InternalOverlay.CreateSurface(tracked ? 1 : 0);
 
-    public static bool SetRegions(int[] rects) => InternalOverlay.SetRegions(rects, rects.Length / 4) == 0;
+    public static void DestroySurface(int id) => InternalOverlay.DestroySurface(id);
+
+    public static void SetVisible(int id, bool visible) => InternalOverlay.SetVisible(id, visible ? 1 : 0);
+
+    public static void SetRect(int id, int x, int y, int width, int height) =>
+        InternalOverlay.SetRect(id, x, y, width, height);
+
+    public static void SetKeyboard(int id, int mode) => InternalOverlay.SetKeyboard(id, mode);
+
+    public static bool SetRegions(int id, int[] rects) =>
+        InternalOverlay.SetRegions(id, rects, rects.Length / 4) == 0;
+
+    public static bool Submit(int id, IntPtr pixels, int width, int height, int stride) =>
+        InternalOverlay.Submit(id, pixels, width, height, stride) == 0;
+
+    public static bool GetGameState(out GameState state) => InternalOverlay.GameState(out state) == 0;
+
+    public static bool FocusGame() => InternalOverlay.FocusGame() != 0;
 
     public static int PollInput(IntPtr events, int max) => InternalOverlay.PollInput(events, max);
+
+    public static bool RegisterHotkey(int id, uint code, uint modifiers) =>
+        InternalOverlay.HotkeyRegister(id, code, modifiers) == 0;
+
+    public static void UnregisterHotkey(int id) => InternalOverlay.HotkeyUnregister(id);
+
+    public static int PollHotkey() => InternalOverlay.PollHotkey();
+
+    public static bool GetKeyState(IntPtr state) => InternalOverlay.KeyState(state) == 0;
 }

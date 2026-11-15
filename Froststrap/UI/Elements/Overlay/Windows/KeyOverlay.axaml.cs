@@ -35,7 +35,7 @@ namespace Froststrap.UI.Elements.Overlay
 
         private bool _moveMode;
         private bool _dragging;
-        private PixelPoint _dragPointer;
+        private Point _dragPointer;
         private int _dragLeft;
         private int _dragTop;
 
@@ -43,6 +43,47 @@ namespace Froststrap.UI.Elements.Overlay
         private bool _gameVisible = true;
         private bool _sessionVisible = true;
         private bool _disposed;
+
+        private bool Rendered => _host?.UsesRenderedSurfaces == true;
+
+        private bool WindowVisible => Rendered ? _host!.IsRenderedVisible(this) : IsVisible;
+
+        private Size SurfaceSize => Rendered ? _host!.MeasureRendered(this) : Bounds.Size;
+
+        private void ShowWindow()
+        {
+            if (Rendered)
+                _host!.ShowRendered(this);
+            else
+                Show();
+        }
+
+        private void HideWindow()
+        {
+            if (Rendered)
+                _host!.HideRendered(this);
+            else
+                Hide();
+        }
+
+        private void ActivateWindow()
+        {
+            if (Rendered)
+                _host!.FocusRendered(this);
+            else
+                Activate();
+        }
+
+        private Point DragPoint(PointerEventArgs e)
+        {
+            if (!Rendered)
+            {
+                PixelPoint screen = this.PointToScreen(e.GetPosition(this));
+                return new Point(screen.X, screen.Y);
+            }
+
+            return Content is Visual visual ? e.GetPosition(visual) : e.GetPosition(this);
+        }
 
         public KeyOverlay()
         {
@@ -76,7 +117,10 @@ namespace Froststrap.UI.Elements.Overlay
 
             Opacity = 0;
             Position = Offscreen;
-            Show();
+
+            if (!Rendered)
+                Show();
+
             Position = Offscreen;
 
             host.PrepareKeyOverlayWindow(this);
@@ -109,6 +153,12 @@ namespace Froststrap.UI.Elements.Overlay
             if (_disposed)
                 return;
 
+            if (Rendered)
+            {
+                Dispose();
+                return;
+            }
+
             Close();
         }
 
@@ -119,8 +169,8 @@ namespace Froststrap.UI.Elements.Overlay
 
             if (_sessionVisible && _gameVisible)
             {
-                if (!IsVisible)
-                    Show();
+                if (!WindowVisible)
+                    ShowWindow();
 
                 UpdatePosition();
                 _timer.Start();
@@ -129,8 +179,8 @@ namespace Froststrap.UI.Elements.Overlay
             {
                 _timer.Stop();
 
-                if (IsVisible)
-                    Hide();
+                if (WindowVisible)
+                    HideWindow();
             }
         }
 
@@ -152,7 +202,7 @@ namespace Froststrap.UI.Elements.Overlay
 
         private void UpdatePosition()
         {
-            if (!_prepared || _disposed || !IsVisible)
+            if (!_prepared || _disposed || !WindowVisible)
                 return;
 
             if (_lastBounds is not OverlayBounds bounds)
@@ -164,9 +214,13 @@ namespace Froststrap.UI.Elements.Overlay
             if (_host?.IsGameMinimised() == true)
                 return;
 
+            if (_dragging)
+                return;
+
             double scaling = GetBoundsScaling(bounds);
-            double width = Bounds.Width * scaling;
-            double height = Bounds.Height * scaling;
+            Size surface = SurfaceSize;
+            double width = surface.Width * scaling;
+            double height = surface.Height * scaling;
 
             if (width <= 0 || height <= 0)
                 return;
@@ -188,6 +242,9 @@ namespace Froststrap.UI.Elements.Overlay
 
         private double GetBoundsScaling(OverlayBounds bounds)
         {
+            if (Rendered)
+                return 1;
+
             PixelPoint center = new(
                 (int)(bounds.Rect.Left + (bounds.Rect.Width / 2)),
                 (int)(bounds.Rect.Top + (bounds.Rect.Height / 2)));
@@ -220,7 +277,7 @@ namespace Froststrap.UI.Elements.Overlay
                 return;
 
             _dragging = true;
-            _dragPointer = this.PointToScreen(e.GetPosition(this));
+            _dragPointer = DragPoint(e);
             _dragLeft = Position.X;
             _dragTop = Position.Y;
 
@@ -233,9 +290,9 @@ namespace Froststrap.UI.Elements.Overlay
             if (!_dragging)
                 return;
 
-            PixelPoint pointer = this.PointToScreen(e.GetPosition(this));
+            Point pointer = DragPoint(e);
 
-            DragTo(_dragLeft + (pointer.X - _dragPointer.X), _dragTop + (pointer.Y - _dragPointer.Y));
+            DragTo(_dragLeft + (int)Math.Round(pointer.X - _dragPointer.X), _dragTop + (int)Math.Round(pointer.Y - _dragPointer.Y));
 
             e.Handled = true;
         }
@@ -266,8 +323,8 @@ namespace Froststrap.UI.Elements.Overlay
             if (_lastBounds is not OverlayBounds bounds)
                 return;
 
-            double width = Bounds.Width * _lastScaling;
-            double height = Bounds.Height * _lastScaling;
+            double width = SurfaceSize.Width * _lastScaling;
+            double height = SurfaceSize.Height * _lastScaling;
 
             int minLeft = (int)Math.Round(bounds.Rect.Left);
             int minTop = (int)Math.Round(bounds.Rect.Top);
@@ -289,7 +346,7 @@ namespace Froststrap.UI.Elements.Overlay
 
         private void UpdateRegion()
         {
-            if (!IsVisible || _disposed)
+            if (!WindowVisible || _disposed)
                 return;
 
             if (_lastBounds is not OverlayBounds bounds)
@@ -298,8 +355,8 @@ namespace Froststrap.UI.Elements.Overlay
             if (bounds.Rect.Width <= 0 || bounds.Rect.Height <= 0)
                 return;
 
-            int width = (int)Math.Round(Bounds.Width * _lastScaling);
-            int height = (int)Math.Round(Bounds.Height * _lastScaling);
+            int width = (int)Math.Round(SurfaceSize.Width * _lastScaling);
+            int height = (int)Math.Round(SurfaceSize.Height * _lastScaling);
 
             if (width <= 0 || height <= 0)
                 return;
@@ -423,6 +480,8 @@ namespace Froststrap.UI.Elements.Overlay
             KeyOverlayHotkey.SuspendedChanged -= OnHotkeySuspended;
             KeyOverlayMoveHotkey.Changed -= OnMoveHotkeyChanged;
             KeyOverlayMoveHotkey.SuspendedChanged -= OnMoveHotkeySuspended;
+
+            _host?.ReleaseOverlayWindow(this);
 
             GC.SuppressFinalize(this);
         }

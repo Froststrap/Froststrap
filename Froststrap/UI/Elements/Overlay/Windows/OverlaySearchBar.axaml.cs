@@ -39,6 +39,34 @@ namespace Froststrap.UI.Elements.Overlay
 
         public bool IsPresented { get; private set; }
 
+        private bool Rendered => _host?.UsesRenderedSurfaces == true;
+
+        private bool WindowVisible => Rendered ? _host!.IsRenderedVisible(this) : IsVisible;
+
+        private void ShowWindow()
+        {
+            if (Rendered)
+                _host!.ShowRendered(this);
+            else
+                Show();
+        }
+
+        private void HideWindow()
+        {
+            if (Rendered)
+                _host!.HideRendered(this);
+            else
+                Hide();
+        }
+
+        private void ActivateWindow()
+        {
+            if (Rendered)
+                _host!.FocusRendered(this);
+            else
+                Activate();
+        }
+
         public OverlaySearchBar()
         {
             _viewModel = new OverlaySearchBarViewModel();
@@ -84,7 +112,8 @@ namespace Froststrap.UI.Elements.Overlay
             Height = 720;
             WindowStartupLocation = WindowStartupLocation.Manual;
 
-            Show();
+            if (!Rendered)
+                Show();
 
             Position = Offscreen;
 
@@ -167,6 +196,9 @@ namespace Froststrap.UI.Elements.Overlay
 
         private double GetBoundsScaling(OverlayBounds bounds)
         {
+            if (Rendered)
+                return 1;
+
             PixelPoint center = new(
                 (int)(bounds.Rect.Left + (bounds.Rect.Width / 2)),
                 (int)(bounds.Rect.Top + (bounds.Rect.Height / 2)));
@@ -197,7 +229,7 @@ namespace Froststrap.UI.Elements.Overlay
             if (_disposed || !_preloading)
                 return;
 
-            Hide();
+            HideWindow();
 
             _host?.SetWindowCloaked(this, false);
 
@@ -214,8 +246,8 @@ namespace Froststrap.UI.Elements.Overlay
 
             _host?.SetWindowCloaked(this, false);
 
-            if (!IsVisible)
-                Show();
+            if (!WindowVisible)
+                ShowWindow();
 
             if (WindowState == WindowState.Minimized)
                 WindowState = WindowState.Normal;
@@ -227,7 +259,7 @@ namespace Froststrap.UI.Elements.Overlay
             IsPresented = true;
             Opacity = 1;
 
-            Activate();
+            ActivateWindow();
 
             Dispatcher.UIThread.Post(() =>
             {
@@ -249,7 +281,7 @@ namespace Froststrap.UI.Elements.Overlay
 
             _viewModel.OnHidden();
 
-            Hide();
+            HideWindow();
         }
 
         private void OnDeactivated(object? sender, EventArgs e)
@@ -388,6 +420,8 @@ namespace Froststrap.UI.Elements.Overlay
 
             OverlaySearchBarHotkey.Changed -= OnHotkeyChanged;
             OverlaySearchBarHotkey.SuspendedChanged -= OnHotkeySuspended;
+
+            _host?.ReleaseOverlayWindow(this);
 
             GC.SuppressFinalize(this);
         }
