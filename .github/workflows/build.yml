@@ -197,8 +197,7 @@ jobs:
           apt install -y libdbus-1-dev pkg-config
 
       - name: Test account vault
-        working-directory: backend
-        run: cargo test -p accountvault --locked
+        run: dotnet test Froststrap.Tests -c Release
 
       - name: Fetch previous release (for deltas)
         if: startsWith(github.ref, 'refs/tags/v')

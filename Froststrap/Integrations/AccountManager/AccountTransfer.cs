@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-using Froststrap.Backend;
 using System.Security.Cryptography;
 
 namespace Froststrap.Integrations.AccountManager
@@ -60,8 +59,7 @@ namespace Froststrap.Integrations.AccountManager
         public const string FileExtension = "fsaccounts";
         public const int MinPasswordLength = 12;
 
-        // matches accountvault: 45-byte header, 1 MiB payload, 16-byte tag
-        public const long MaxFileSize = 45 + 1024 * 1024 + 16;
+        public const long MaxFileSize = AccountVault.MaxDataLength;
         public const int MaxAccounts = 200;
 
         private static readonly TimeSpan CheckTimeout = TimeSpan.FromSeconds(20);

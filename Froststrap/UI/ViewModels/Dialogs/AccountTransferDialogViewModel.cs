@@ -4,7 +4,6 @@
 
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.Input;
-using Froststrap.Backend;
 using Froststrap.Integrations.AccountManager;
 using Froststrap.UI.Elements.Base;
 using System.Collections.ObjectModel;
@@ -13,7 +12,7 @@ namespace Froststrap.UI.ViewModels.Dialogs
 {
     /// Export: pick accounts and a password, closes with the sealed bytes.
     /// Import: asks for the file's password, confirms replacements, then imports with progress.
-    internal partial class AccountTransferDialogViewModel : NotifyPropertyChangedViewModel
+    internal sealed partial class AccountTransferDialogViewModel : NotifyPropertyChangedViewModel
     {
         private readonly AvaloniaWindow _window;
         private readonly byte[]? _importData;
@@ -297,8 +296,9 @@ namespace Froststrap.UI.ViewModels.Dialogs
         {
             AccountVaultResult.WrongPassword => Strings.Menu_AccountTransfer_Error_WrongPassword,
             AccountVaultResult.NotAVault => Strings.Menu_AccountTransfer_Error_NotAnExport,
+            AccountVaultResult.OldFormat => Strings.Menu_AccountTransfer_Error_OldFormat,
             AccountVaultResult.UnsupportedVersion => Strings.Menu_AccountTransfer_Error_NewerVersion,
-            AccountVaultResult.LibraryUnavailable => Strings.Menu_AccountTransfer_Error_Unavailable,
+            AccountVaultResult.Unavailable => Strings.Menu_AccountTransfer_Error_Unavailable,
             _ => Strings.Menu_AccountTransfer_Error_Internal,
         };
     }

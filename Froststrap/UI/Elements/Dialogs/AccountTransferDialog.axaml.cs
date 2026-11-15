@@ -6,7 +6,7 @@ using Froststrap.UI.ViewModels.Dialogs;
 
 namespace Froststrap.UI.Elements.Dialogs
 {
-    internal partial class AccountTransferDialog : Base.AvaloniaWindow
+    internal sealed partial class AccountTransferDialog : Base.AvaloniaWindow
     {
         public AccountTransferDialogViewModel ViewModel { get; }
 
