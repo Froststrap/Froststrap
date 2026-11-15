@@ -7,6 +7,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 using Avalonia.Styling;
 using Avalonia.Threading;
 using Froststrap.AppData;
@@ -389,6 +390,18 @@ internal sealed partial class App : Application
         Logger.Info("Created AUMID registry key.");
     }
 
+    private static void OnSystemColorValuesChanged(object? sender, PlatformColorValues e)
+    {
+        if (Settings.Prop.Theme != Theme.Default)
+            return;
+
+        Dispatcher.UIThread.Post(() =>
+        {
+            if (Settings.Prop.Theme == Theme.Default)
+                AvaloniaWindow.ApplyTheme();
+        });
+    }
+
     public static void LoadRemoteTranslations()
     {
         string cacheDirectory = Path.Combine(Paths.Cache, "Translations");
@@ -593,6 +606,10 @@ internal sealed partial class App : Application
         }
 
         AvaloniaWindow.ApplyTheme();
+
+        if (PlatformSettings is { } platformSettings)
+            platformSettings.ColorValuesChanged += OnSystemColorValuesChanged;
+
         Locale.Set(locale);
         LoadRemoteTranslations();
 
