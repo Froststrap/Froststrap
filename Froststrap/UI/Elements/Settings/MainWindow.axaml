@@ -51,7 +51,7 @@ SPDX-License-Identifier: MPL-2.0
             Background="{DynamicResource ControlFillColorDefaultBrush}"
             PointerPressed="TitleBarGrid_PointerPressed"
         >      
-            <Grid ColumnDefinitions="Auto, *, Auto">
+            <Grid ColumnDefinitions="Auto, *, Auto, Auto">
                 <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
                     <controls:IconButton
                         Icon="PanelLeft"
@@ -148,8 +148,11 @@ SPDX-License-Identifier: MPL-2.0
                             IsVisible="{Binding ShowPageTitle}" />
                     </StackPanel>
                 </StackPanel>
-                <local:AccountSelectorView
+                <local:MusicControlView
                     Grid.Column="2"
+                    Margin="0,0,4,0" />
+                <local:AccountSelectorView
+                    Grid.Column="3"
                     PhotoPosition="Right"
                     DropdownDirection="Down"
                 />
