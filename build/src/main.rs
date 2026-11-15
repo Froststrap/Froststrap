@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
 //! Build system for Froststrap
 
 #[cfg(target_os = "macos")]
