@@ -300,6 +300,7 @@ namespace Froststrap.Utility
             }
         }
 
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         [DllImport("ole32.dll", ExactSpelling = true, PreserveSig = true)]
         private static extern int CoCreateInstance(
             ref Guid rclsid,

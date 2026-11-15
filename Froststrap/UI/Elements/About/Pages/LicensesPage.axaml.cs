@@ -6,7 +6,7 @@ using Avalonia.Controls;
 
 namespace Froststrap.UI.Elements.About.Pages;
 
-internal partial class LicensesPage : UserControl
+internal sealed partial class LicensesPage : UserControl
 {
     public LicensesPage()
     {

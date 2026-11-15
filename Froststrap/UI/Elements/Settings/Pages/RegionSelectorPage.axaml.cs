@@ -9,7 +9,7 @@ using Froststrap.UI.ViewModels.Settings;
 
 namespace Froststrap.UI.Elements.Settings.Pages
 {
-    internal partial class RegionSelectorPage : UserControl
+    internal sealed partial class RegionSelectorPage : UserControl
     {
         public RegionSelectorPage()
         {

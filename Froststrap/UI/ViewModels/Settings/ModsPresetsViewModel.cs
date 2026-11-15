@@ -17,7 +17,7 @@ using Windows.Win32.Foundation;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
-    internal class ModsPresetsViewModel : NotifyPropertyChangedViewModel
+    internal sealed class ModsPresetsViewModel : NotifyPropertyChangedViewModel
     {
         public event EventHandler? OpenModsEvent;
         public event EventHandler? OpenCommunityModsEvent;
@@ -180,6 +180,9 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public static void ShowFileProperties(string filePath, string tabName)
         {
+            if (!OperatingSystem.IsWindowsVersionAtLeast(5, 1, 2600))
+                return;
+
             _ = PInvoke.SHObjectProperties(
                 HWND.Null,
                 (Windows.Win32.UI.Shell.SHOP_TYPE)SHOP_FILEPATH,
@@ -697,10 +700,15 @@ namespace Froststrap.UI.ViewModels.Settings
         private void UpdateCursorPathAndPreview(string fileName, string path)
         {
             var image = LoadImageSafely(path);
+
             if (fileName == "MouseLockedCursor.png") { ShiftlockCursorSelectedPath = path; ShiftlockCursorPreview = image; OnPropertyChanged(nameof(ShiftlockCursorPreview)); }
             else if (fileName == "ArrowCursor.png") { ArrowCursorSelectedPath = path; ArrowCursorPreview = image; OnPropertyChanged(nameof(ArrowCursorPreview)); }
             else if (fileName == "ArrowFarCursor.png") { ArrowFarCursorSelectedPath = path; ArrowFarCursorPreview = image; OnPropertyChanged(nameof(ArrowFarCursorPreview)); }
             else if (fileName == "IBeamCursor.png") { IBeamCursorSelectedPath = path; IBeamCursorPreview = image; OnPropertyChanged(nameof(IBeamCursorPreview)); }
+            else
+            {
+                image?.Dispose();
+            }
         }
 
         private void LoadCursorPathsForSelectedSet()

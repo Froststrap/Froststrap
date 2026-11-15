@@ -1,0 +1,7 @@
+project_id: froststrap
+base_path: .
+preserve_hierarchy: true
+files:
+  - source: /Froststrap.Localisation/Resources/Translations/en-US.json
+    translation: /Froststrap.Localisation/Resources/Translations/%locale%.json
+    skip_untranslated_strings: true

@@ -4,6 +4,7 @@
 
 using Avalonia.Controls;
 using Avalonia.Threading;
+using System.Diagnostics.CodeAnalysis;
 using Froststrap.Integrations;
 using Avalonia.Controls.ApplicationLifetimes;
 using Froststrap.UI.Elements.Dialogs;
@@ -71,6 +72,7 @@ namespace Froststrap
             }
         }
 
+        [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "Deliberate: the inter-process lock and cancellation source are owned by the settings window and disposed in its Closed handler")]
         public static void LaunchSettings(bool quitIfAlreadyRunning = false)
         {
             if (App.SettingsOpen)
@@ -89,6 +91,7 @@ namespace Froststrap
 
             if (!interlock.IsAcquired)
             {
+                interlock.Dispose();
                 App.Logger.Info("Found an already existing settings window");
 
                 RequestSettingsActivation();
@@ -100,40 +103,52 @@ namespace Froststrap
             }
 
             App.SettingsOpen = true;
-            var window = new UI.Elements.Settings.MainWindow(false);
 
-            window.Loaded += (s, e) =>
+            CancellationTokenSource? activationCts = null;
+
+            try
             {
-                if (!App.PlayerState.Loaded)
-                    _ = Task.Run(() => App.PlayerState.Prop);
-                if (!App.StudioState.Loaded)
-                    _ = Task.Run(() => App.StudioState.Prop);
+                var window = new UI.Elements.Settings.MainWindow(false);
 
-                if (App.Settings.Prop.ShowUsingFroststrapRPC && App.FrostRPC == null)
+                window.Loaded += (s, e) =>
                 {
-                    App.FrostRPC = new FroststrapRichPresence();
-                }
-            };
+                    if (!App.PlayerState.Loaded)
+                        _ = Task.Run(() => App.PlayerState.Prop);
+                    if (!App.StudioState.Loaded)
+                        _ = Task.Run(() => App.StudioState.Prop);
 
-            var activationCts = new CancellationTokenSource();
-            CancellationToken activationToken = activationCts.Token;
+                    if (App.Settings.Prop.ShowUsingFroststrapRPC && App.FrostRPC == null)
+                    {
+                        App.FrostRPC = new FroststrapRichPresence();
+                    }
+                };
 
-            window.Closed += (s, e) =>
+                activationCts = new CancellationTokenSource();
+                CancellationToken activationToken = activationCts.Token;
+
+                window.Closed += (s, e) =>
+                {
+                    activationCts.Cancel();
+                    activationCts.Dispose();
+                    interlock.Dispose();
+                    App.FrostRPC = null;
+                    App.SettingsOpen = false;
+
+                    NextAction nextAction = window.CloseAction;
+
+                    Dispatcher.UIThread.Post(() => ProcessNextAction(nextAction), DispatcherPriority.Background);
+                };
+
+                window.Show();
+
+                _ = Task.Run(() => WaitForActivationRequestsAsync(window, activationToken), activationToken);
+            }
+            catch
             {
-                activationCts.Cancel();
-                activationCts.Dispose();
+                activationCts?.Dispose();
                 interlock.Dispose();
-                App.FrostRPC = null;
-                App.SettingsOpen = false;
-
-                NextAction nextAction = window.CloseAction;
-
-                Dispatcher.UIThread.Post(() => ProcessNextAction(nextAction), DispatcherPriority.Background);
-            };
-
-            window.Show();
-
-            _ = Task.Run(() => WaitForActivationRequestsAsync(window, activationToken), activationToken);
+                throw;
+            }
         }
 
         private static string ActivationRequestPath => Path.Combine(

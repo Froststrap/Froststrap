@@ -8,7 +8,7 @@ using System.Xml.XPath;
 
 namespace Froststrap;
 
-internal class GBSEditor
+internal sealed class GBSEditor
 {
     public XDocument? Document { get; set; } = null!;
 
@@ -429,7 +429,7 @@ internal class GBSEditor
         App.Logger.Warn($"Removed {strayRoot.Count + badNames.Count} malformed element(s) left over from an older editor build.");
     }
 
-    public virtual bool Save()
+    public bool Save()
     {
         App.Logger.Info($"Saving to {FileLocation}...");
 

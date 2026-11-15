@@ -6,7 +6,7 @@ using LucideAvalonia.Enum;
 
 namespace Froststrap.Models
 {
-    internal class SearchBarItem
+    internal sealed class SearchBarItem
     {
         public string DisplayName { get; set; } = string.Empty;
         public string Tag { get; set; } = string.Empty;

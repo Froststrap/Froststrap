@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 
 namespace Froststrap;
 
-internal class Updater
+internal sealed class Updater
 {
     public static async Task RunMigrations(string? previousVersion = null)
     {

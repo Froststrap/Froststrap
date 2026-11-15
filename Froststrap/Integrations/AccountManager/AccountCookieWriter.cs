@@ -3,6 +3,7 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+using System.Runtime.Versioning;
 using System.Security.Cryptography;
 
 namespace Froststrap.Integrations.AccountManager
@@ -41,6 +42,7 @@ namespace Froststrap.Integrations.AccountManager
             }
         }
 
+        [SupportedOSPlatform("windows")]
         private static bool WriteWindowsCookieFile(string plainCookie, string filePath)
         {
             string guestData = GenerateGuestData();

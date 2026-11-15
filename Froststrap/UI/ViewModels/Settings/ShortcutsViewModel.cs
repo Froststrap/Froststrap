@@ -10,7 +10,7 @@ using Avalonia.Media.Imaging;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
-    internal class ShortcutsViewModel : NotifyPropertyChangedViewModel, IDisposable
+    internal sealed class ShortcutsViewModel : NotifyPropertyChangedViewModel, IDisposable
     {
         // Use .lnk as the canonical name.
         // Shortcut.cs resolves the correct filename internally
@@ -759,7 +759,7 @@ namespace Froststrap.UI.ViewModels.Settings
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (_disposed)
                 return;

@@ -2,7 +2,7 @@
 
 namespace Froststrap.Extensions;
 
-internal class RobloxThemeEx
+internal sealed class RobloxThemeEx
 {
     public static IReadOnlyCollection<RobloxTheme> Selections =>
     [

@@ -4,7 +4,7 @@
 
 namespace Froststrap.Models.SettingTasks
 {
-    internal class EmojiModPresetTask : EnumBaseTask<EmojiType>
+    internal sealed class EmojiModPresetTask : EnumBaseTask<EmojiType>
     {
         private static string FilePath => Path.Combine(Paths.Modifications, "content", "fonts", "TwemojiMozilla.ttf");
 

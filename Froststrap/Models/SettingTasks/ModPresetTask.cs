@@ -4,7 +4,7 @@
 
 namespace Froststrap.Models.SettingTasks
 {
-    internal class ModPresetTask : BoolBaseTask
+    internal sealed class ModPresetTask : BoolBaseTask
     {
         private readonly Dictionary<string, ModPresetFileData> _fileDataMap = [];
 

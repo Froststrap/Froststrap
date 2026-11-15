@@ -7,7 +7,7 @@ using LucideAvalonia.Enum;
 
 namespace Froststrap
 {
-    internal class FastFlagManager : JsonManager<Dictionary<string, object>>
+    internal sealed class FastFlagManager : JsonManager<Dictionary<string, object>>
     {
         private Dictionary<string, object> OriginalProp = [];
 

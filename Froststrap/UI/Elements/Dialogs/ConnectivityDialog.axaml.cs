@@ -7,7 +7,7 @@ using Avalonia.Platform;
 
 namespace Froststrap.UI.Elements.Dialogs
 {
-    internal partial class ConnectivityDialog : Base.AvaloniaWindow
+    internal sealed partial class ConnectivityDialog : Base.AvaloniaWindow
     {
         public ConnectivityDialog()
         {

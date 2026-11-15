@@ -4,7 +4,7 @@
 
 namespace Froststrap.Integrations
 {
-    internal class ActivityWatcher : IDisposable
+    internal sealed class ActivityWatcher : IDisposable
     {
         private const string GameMessageEntry = "[FLog::CreatorOutput] [BloxstrapRPC]";
         internal const string GameJoiningEntry = "[FLog::Output] ! Joining game";

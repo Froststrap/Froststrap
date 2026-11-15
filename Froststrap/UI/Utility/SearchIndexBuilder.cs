@@ -13,7 +13,7 @@ namespace Froststrap.UI.Utility
     /// Scans majoirty of elements in search page (OptionControls, CardExpanders, CardActions) etc.
     /// Should be fairly competent at doing its job.
     /// </summary>
-    internal partial class SearchIndexBuilder
+    internal sealed partial class SearchIndexBuilder
     {
         private readonly Dictionary<string, List<SearchBarItem>> _pageIndexCache = [];
         private List<SearchBarItem>? _navigationItemsCache;

@@ -4,7 +4,7 @@
 
 namespace Froststrap.Integrations
 {
-    internal class Cleaner
+    internal sealed class Cleaner
     {
         private const int MaxFiles = 2000;
 

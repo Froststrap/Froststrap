@@ -16,7 +16,7 @@ namespace Froststrap.UI.ViewModels.Settings
         Task OpenGlobalSettingsEditorAsync();
     }
 
-    internal class DefaultGlobalDialogService : IDialogServiceGlobal
+    internal sealed class DefaultGlobalDialogService : IDialogServiceGlobal
     {
         public Task OpenGlobalSettingsEditorAsync()
         {
@@ -24,7 +24,7 @@ namespace Froststrap.UI.ViewModels.Settings
         }
     }
 
-    internal class GlobalSettingsViewModel(IDialogServiceGlobal dialogService) : NotifyPropertyChangedViewModel
+    internal sealed class GlobalSettingsViewModel(IDialogServiceGlobal dialogService) : NotifyPropertyChangedViewModel
     {
         private readonly IDialogServiceGlobal _dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
 

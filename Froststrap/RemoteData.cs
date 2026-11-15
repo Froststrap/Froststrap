@@ -7,7 +7,7 @@ using System.Security.Cryptography;
 
 namespace Froststrap
 {
-    internal class RemoteDataManager : JsonManager<RemoteDataBase>
+    internal sealed class RemoteDataManager : JsonManager<RemoteDataBase>
     {
         public override string ClassName => nameof(RemoteDataManager);
 

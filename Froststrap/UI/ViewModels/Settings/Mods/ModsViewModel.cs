@@ -23,7 +23,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
         Task OpenModGeneratorAsync();
     }
 
-    internal partial class ModsViewModel : NotifyPropertyChangedViewModel
+    internal sealed partial class ModsViewModel : NotifyPropertyChangedViewModel
     {
         private readonly IModsDialogService _dialogService;
 
@@ -194,7 +194,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             if (Directory.Exists(folderPath))
                 Froststrap.Utility.Threading.ShellExecute(folderPath);
             else
-                _ = Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Menu_Mods_FolderDosentExist, mod.FolderName), MessageBoxImage.Error, MessageBoxButton.OK);
+                _ = Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Menu_Mods_FolderDoesntExist, mod.FolderName), MessageBoxImage.Error, MessageBoxButton.OK);
         }
 
         [RelayCommand]
@@ -352,7 +352,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
             if (Modifications.Any(m => m.FolderName.Equals(safeName, StringComparison.OrdinalIgnoreCase) && m != SelectedMod))
             {
-                _ = Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Menu_Mods_AlreadyExist, safeName), MessageBoxImage.Warning, MessageBoxButton.OK);
+                _ = Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Menu_Mods_AlreadyExists, safeName), MessageBoxImage.Warning, MessageBoxButton.OK);
                 return;
             }
 
@@ -953,7 +953,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
         }
     }
 
-    internal class DefaultModsDialogService : IModsDialogService
+    internal sealed class DefaultModsDialogService : IModsDialogService
     {
         public Task OpenCommunityModsAsync() => Task.CompletedTask;
         public Task OpenPresetModsAsync() => Task.CompletedTask;

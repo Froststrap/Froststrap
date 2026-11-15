@@ -18,7 +18,7 @@ using System.Runtime.CompilerServices;
 
 namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
 {
-    internal partial class FastFlagEditor : UserControl, INotifyPropertyChanged, IDisposable
+    internal sealed partial class FastFlagEditor : UserControl, INotifyPropertyChanged, IDisposable
     {
         private readonly ObservableCollection<FastFlag> _fastFlagList = [];
         private bool _showPresets = true;
@@ -36,10 +36,10 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
 
         public new event PropertyChangedEventHandler? PropertyChanged;
 
-        protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+        private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
-        protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
+        private bool SetProperty<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
         {
             if (EqualityComparer<T>.Default.Equals(field, value))
                 return false;
@@ -853,7 +853,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (_disposed)
                 return;

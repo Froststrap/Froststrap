@@ -6,7 +6,7 @@ using Avalonia.Media.Imaging;
 
 namespace Froststrap.Models.APIs.Roblox;
 
-internal class OmniSearchContent
+internal sealed class OmniSearchContent
 {
     [JsonPropertyName("universeId")]
     public ulong UniverseId { get; set; }
@@ -35,7 +35,7 @@ internal class OmniSearchContent
     }
 }
 
-internal class FavoriteGamesResponse
+internal sealed class FavoriteGamesResponse
 {
     [JsonPropertyName("previousPageCursor")]
     public string? PreviousPageCursor { get; set; }
@@ -47,7 +47,7 @@ internal class FavoriteGamesResponse
     public List<FavoriteGameData>? Data { get; set; }
 }
 
-internal class FavoriteGameData
+internal sealed class FavoriteGameData
 {
     [JsonPropertyName("id")]
     public long Id { get; set; }
@@ -74,7 +74,7 @@ internal class FavoriteGameData
     public long PlaceVisits { get; set; }
 }
 
-internal class CreatorData
+internal sealed class CreatorData
 {
     [JsonPropertyName("id")]
     public long Id { get; set; }
@@ -86,7 +86,7 @@ internal class CreatorData
     public string? Name { get; set; }
 }
 
-internal class RootPlaceData
+internal sealed class RootPlaceData
 {
     [JsonPropertyName("id")]
     public long Id { get; set; }

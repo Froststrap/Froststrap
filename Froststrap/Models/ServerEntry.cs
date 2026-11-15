@@ -3,7 +3,7 @@ using Froststrap.UI.ViewModels;
 
 namespace Froststrap.Models
 {
-    internal class ServerEntry : NotifyPropertyChangedViewModel
+    internal sealed class ServerEntry : NotifyPropertyChangedViewModel
     {
         public int Number { get; set; }
         public string ServerId { get; set; } = null!;

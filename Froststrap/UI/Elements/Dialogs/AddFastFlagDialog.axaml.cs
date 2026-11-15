@@ -12,7 +12,7 @@ namespace Froststrap.UI.Elements.Dialogs
     /// <summary>
     /// Interaction logic for AddFastFlagDialog.xaml
     /// </summary>
-    internal partial class AddFastFlagDialog : AvaloniaWindow
+    internal sealed partial class AddFastFlagDialog : AvaloniaWindow
     {
         public MessageBoxResult Result = MessageBoxResult.Cancel;
 

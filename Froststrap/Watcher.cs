@@ -6,7 +6,7 @@ using Froststrap.Integrations;
 
 namespace Froststrap
 {
-    internal class Watcher : IDisposable
+    internal sealed class Watcher : IDisposable
     {
         private readonly InterProcessLock _lock = new("Watcher");
 
@@ -50,7 +50,7 @@ namespace Froststrap
 
             ProcessId = _watcherData.ProcessId;
 
-            if (OperatingSystem.IsWindows() && App.Settings.Prop.EnableWindowManipulation && App.Settings.Prop.EnableActivityTracking)
+            if (OperatingSystem.IsWindowsVersionAtLeast(5, 0) && App.Settings.Prop.EnableWindowManipulation && App.Settings.Prop.EnableActivityTracking)
                 WindowManipulation = new(_watcherData.ProcessId);
 
             if (OperatingSystem.IsLinux() && App.Settings.Prop.StudioGameMode && (_watcherData.LaunchMode == LaunchMode.Studio || _watcherData.LaunchMode == LaunchMode.StudioAuth))
@@ -93,7 +93,7 @@ namespace Froststrap
                 else if (_watcherData.LaunchMode == LaunchMode.Player && App.Settings.Prop.UseDiscordRichPresence)
                     PlayerRichPresence = new(ActivityWatcher);
 
-                if (_watcherData.LaunchMode == LaunchMode.Player)
+                if (_watcherData.LaunchMode == LaunchMode.Player && OperatingSystem.IsWindows())
                     IntegrationWatcher = new IntegrationWatcher(ActivityWatcher, WindowManipulation);
 
                 if (_watcherData.LaunchMode == LaunchMode.Player && App.Settings.Prop.SoftKeyEnabled)
@@ -362,7 +362,9 @@ namespace Froststrap
                 return;
 
             ActivityWatcher?.Start();
-            WindowManipulation?.Start();
+
+            if (OperatingSystem.IsWindowsVersionAtLeast(5, 0))
+                WindowManipulation?.Start();
 
             bool isStudio = _watcherData.LaunchMode == LaunchMode.Studio || _watcherData.LaunchMode == LaunchMode.StudioAuth;
 
@@ -544,8 +546,11 @@ namespace Froststrap
                 _gameModeHandle = -1;
             }
 
-            IntegrationWatcher?.Dispose();
-            WindowManipulation?.Dispose();
+            if (OperatingSystem.IsWindowsVersionAtLeast(5, 0))
+            {
+                IntegrationWatcher?.Dispose();
+                WindowManipulation?.Dispose();
+            }
             Softkey?.Dispose();
             _notifyIcon?.Dispose();
             PlayerRichPresence?.Dispose();

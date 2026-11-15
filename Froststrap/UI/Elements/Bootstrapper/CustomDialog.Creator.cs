@@ -11,7 +11,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
     {
         const int Version = 1;
 
-        private class DummyControl : Control { }
+        private sealed class DummyControl : Control { }
 
         private const int MaxElements = 150;
 

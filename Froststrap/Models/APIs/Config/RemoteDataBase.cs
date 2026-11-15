@@ -6,7 +6,7 @@ using FluentAvalonia.UI.Controls;
 
 namespace Froststrap.Models.APIs.Config
 {
-    internal class RemoteDataBase
+    internal sealed class RemoteDataBase
     {
         [JsonPropertyName("alertEnabled")]
         public bool AlertEnabled { get; set; } = false!;

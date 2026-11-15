@@ -7,7 +7,7 @@ using Froststrap.UI.ViewModels;
 
 namespace Froststrap.Models
 {
-    internal class RobloxIconEntry : NotifyPropertyChangedViewModel
+    internal sealed class RobloxIconEntry : NotifyPropertyChangedViewModel
     {
         public RobloxIcon IconType { get; set; }
         public IImage ImageSource => IconType.GetIcon().GetImageSource();

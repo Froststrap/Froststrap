@@ -9,7 +9,7 @@ using Froststrap.UI.ViewModels.Bootstrapper;
 
 namespace Froststrap.UI.Elements.Bootstrapper
 {
-    internal partial class FluentDialog : AvaloniaDialogBase
+    internal sealed partial class FluentDialog : AvaloniaDialogBase
     {
         private readonly FluentDialogViewModel? _viewModel;
 

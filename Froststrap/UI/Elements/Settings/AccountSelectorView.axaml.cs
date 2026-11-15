@@ -24,7 +24,7 @@ namespace Froststrap.UI.Elements.Settings
         Down
     }
 
-    internal partial class AccountSelectorView : UserControl, IDisposable
+    internal sealed partial class AccountSelectorView : UserControl, IDisposable
     {
         private readonly AccountSelectorViewModel? _viewModel;
         private bool _disposed;
@@ -217,7 +217,7 @@ namespace Froststrap.UI.Elements.Settings
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (_disposed)
                 return;

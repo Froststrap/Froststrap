@@ -4,7 +4,7 @@
 
 namespace Froststrap.UI.ViewModels.About
 {
-    internal class AboutViewModel : NotifyPropertyChangedViewModel
+    internal sealed class AboutViewModel : NotifyPropertyChangedViewModel
     {
         public static string Version => $"v{App.Version}";
         public static BuildMetadataAttribute BuildMetadata => App.BuildMetadata;

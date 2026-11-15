@@ -8,7 +8,7 @@ using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
-    internal class LinuxSettingsViewModel : NotifyPropertyChangedViewModel
+    internal sealed class LinuxSettingsViewModel : NotifyPropertyChangedViewModel
     {
         public static bool SoberEnabled => App.SoberSettings.Loaded;
 
@@ -176,7 +176,7 @@ namespace Froststrap.UI.ViewModels.Settings
         public ObservableCollection<EnvEntry> StudioEnvEntries { get; set; }
         public ICommand AddStudioEnvCommand { get; }
 
-        internal class EnvEntry : NotifyPropertyChangedViewModel
+        internal sealed class EnvEntry : NotifyPropertyChangedViewModel
         {
             private string _key;
             private string _value;

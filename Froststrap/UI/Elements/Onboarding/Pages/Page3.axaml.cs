@@ -9,7 +9,7 @@ using LucideAvalonia.Enum;
 
 namespace Froststrap.UI.Elements.Onboarding.Pages
 {
-    internal partial class Page3 : UserControl, IDisposable
+    internal sealed partial class Page3 : UserControl, IDisposable
     {
         private static readonly LucideIconNames[] IconCycle = [LucideIconNames.Users, LucideIconNames.UserLock];
         private static readonly TimeSpan HoldDuration = TimeSpan.FromSeconds(2.5);
@@ -65,7 +65,7 @@ namespace Froststrap.UI.Elements.Onboarding.Pages
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (_disposed)
                 return;

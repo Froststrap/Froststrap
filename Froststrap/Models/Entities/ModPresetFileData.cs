@@ -4,7 +4,7 @@
 
 namespace Froststrap.Models.Entities
 {
-    internal class ModPresetFileData
+    internal sealed class ModPresetFileData
     {
         public string FilePath { get; private set; }
 

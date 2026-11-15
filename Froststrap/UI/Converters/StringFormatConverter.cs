@@ -6,7 +6,7 @@ using Avalonia.Data.Converters;
 
 namespace Froststrap.UI.Converters
 {
-    internal class StringFormatConverter : IValueConverter
+    internal sealed class StringFormatConverter : IValueConverter
     {
         private static readonly char[] Separator = ['|'];
 

@@ -10,7 +10,7 @@ using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
-    internal class BootstrapperViewModel : NotifyPropertyChangedViewModel
+    internal sealed class BootstrapperViewModel : NotifyPropertyChangedViewModel
     {
         private List<string> _availableRegions = [];
         private bool _isLoadingRegions;
@@ -207,7 +207,7 @@ namespace Froststrap.UI.ViewModels.Settings
             App.Settings.Save();
         }
 
-        internal class HzEntry
+        internal sealed class HzEntry
         {
             public double Value { get; }
             public string Display => $"{Value.ToString("0.##", CultureInfo.InvariantCulture)} Hz";

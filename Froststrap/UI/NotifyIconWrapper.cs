@@ -11,7 +11,7 @@ using Froststrap.UI.Elements.ContextMenu;
 
 namespace Froststrap.UI
 {
-    internal class NotifyIconWrapper : IDisposable
+    internal sealed class NotifyIconWrapper : IDisposable
     {
         private bool _isDisposed;
 #pragma warning disable CA2213

@@ -6,6 +6,7 @@ using Avalonia.Media;
 using Avalonia.Media.Fonts;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using System.Diagnostics.CodeAnalysis;
 using System.Xml.Linq;
 using FontFamily = Avalonia.Media.FontFamily;
 
@@ -253,6 +254,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
         private static readonly Dictionary<string, LoadedFont?> _customFontCache = new(StringComparer.OrdinalIgnoreCase);
         private static readonly Lock _customFontLock = new();
 
+        [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "Deliberate: the font collection is owned by the Avalonia FontManager for the app lifetime")]
         private static LoadedFont? LoadSingleFontFile(string path)
         {
             lock (_customFontLock)

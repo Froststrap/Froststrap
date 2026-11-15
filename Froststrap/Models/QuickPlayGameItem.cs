@@ -6,7 +6,7 @@ using Avalonia.Media.Imaging;
 
 namespace Froststrap.Models
 {
-    internal class QuickPlayGameItem
+    internal sealed class QuickPlayGameItem
     {
         public long UniverseId { get; set; }
         public long PlaceId { get; set; }

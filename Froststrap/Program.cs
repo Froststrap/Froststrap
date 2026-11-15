@@ -40,12 +40,18 @@ sealed partial class Program
     {
         AppInitializer.InitializeNativeResolvers();
 
-        VelopackApp.Build()
-            .SetAutoApplyOnStartup(false)
-            .OnAfterInstallFastCallback(v => UriHandler.RegisterProtocolHandlers())
-            .OnAfterUpdateFastCallback(v => UriHandler.RegisterProtocolHandlers())
-            .OnBeforeUninstallFastCallback(v => UriHandler.UnregisterProtocolHandlers())
-            .Run();
+        var velopackBuilder = VelopackApp.Build()
+            .SetAutoApplyOnStartup(false);
+
+        if (OperatingSystem.IsWindows())
+        {
+            velopackBuilder = velopackBuilder
+                .OnAfterInstallFastCallback(v => UriHandler.RegisterProtocolHandlers())
+                .OnAfterUpdateFastCallback(v => UriHandler.RegisterProtocolHandlers())
+                .OnBeforeUninstallFastCallback(v => UriHandler.UnregisterProtocolHandlers());
+        }
+
+        velopackBuilder.Run();
 
         // shim to convert old args to new ones
         string[] launchArgs = args.Length == 0 ? [] : LegacyArgs.Normalize(args);

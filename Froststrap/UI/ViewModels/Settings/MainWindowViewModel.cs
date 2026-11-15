@@ -16,14 +16,14 @@ using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
-    internal class BreadcrumbItemModel
+    internal sealed class BreadcrumbItemModel
     {
         public string Content { get; set; } = string.Empty;
         public string? Tag { get; set; }
         public bool IsLast { get; set; }
     }
 
-    internal class MainWindowViewModel : ObservableObject
+    internal sealed class MainWindowViewModel : ObservableObject
     {
         private bool _isNotLinux = !OperatingSystem.IsLinux();
         public bool IsNotLinux { get => _isNotLinux; }

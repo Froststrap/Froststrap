@@ -8,7 +8,7 @@ using Froststrap.UI.ViewModels.Dialogs;
 
 namespace Froststrap.UI.Elements.Dialogs;
 
-internal partial class SubplaceJoinDialog : Base.AvaloniaWindow
+internal sealed partial class SubplaceJoinDialog : Base.AvaloniaWindow
 {
     protected override bool ApplyTopPadding => false;
 

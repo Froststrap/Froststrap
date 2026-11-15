@@ -10,7 +10,7 @@ namespace Froststrap.UI.Elements.Dialogs
     /// <summary>
     /// Interaction logic for LaunchMenuDialog.axaml
     /// </summary>
-    internal partial class LaunchMenuDialog : Base.AvaloniaWindow
+    internal sealed partial class LaunchMenuDialog : Base.AvaloniaWindow
     {
         public NextAction CloseAction = NextAction.Terminate;
 

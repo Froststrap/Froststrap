@@ -8,7 +8,7 @@ using Avalonia.Interactivity;
 
 namespace Froststrap.UI.Elements.Settings
 {
-    internal partial class VirtualDisplayEntropyDialog : Base.AvaloniaWindow
+    internal sealed partial class VirtualDisplayEntropyDialog : Base.AvaloniaWindow
     {
         private const int SamplesPerPass = 500;
 
