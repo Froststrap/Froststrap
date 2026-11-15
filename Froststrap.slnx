@@ -1,4 +1,9 @@
-﻿<Solution>
+﻿<!--
+SPDX-FileCopyrightText: 2026 Froststrap
+
+SPDX-License-Identifier: MPL-2.0
+-->
+<Solution>
   <Project Path="./Froststrap/Froststrap.csproj" />
   <Project Path="./Froststrap.Core/Froststrap.Core.csproj" />
   <Project Path="./Froststrap.Localisation/Froststrap.Localisation.csproj" />

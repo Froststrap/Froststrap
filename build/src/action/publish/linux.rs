@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
 //! os specific stuff for publish
 
 use crate::{args, arch, path::{self, dist, dotnet_publish_artifacts}, utils::{dedent, log, process}};
