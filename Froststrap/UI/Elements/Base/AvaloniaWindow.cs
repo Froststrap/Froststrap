@@ -184,6 +184,11 @@ namespace Froststrap.UI.Elements.Base
             bool isCustomImage = finalTheme == Enums.Theme.Image;
             bool isBackgroundTheme = isCustomColors || isCustomImage;
 
+            var faTheme = app.Styles.OfType<FluentAvaloniaTheme>().FirstOrDefault();
+
+            if (faTheme != null)
+                ApplyAccentColor(faTheme);
+
             bool themeChanged = isBackgroundTheme
                 || _activeThemeDictionary == null
                 || _activeColorStyle == null
@@ -199,12 +204,10 @@ namespace Froststrap.UI.Elements.Base
                 ? ThemeVariant.Light
                 : ThemeVariant.Dark;
 
-            var faTheme = app.Styles.OfType<FluentAvaloniaTheme>().FirstOrDefault();
-
             if (faTheme != null)
             {
                 faTheme.PreferSystemTheme = false;
-                faTheme.PreferUserAccentColor = true;
+                ApplyAccentColor(faTheme);
             }
 
             if (_activeThemeDictionary != null)
@@ -308,6 +311,14 @@ namespace Froststrap.UI.Elements.Base
             UpdateBackdropForAllWindows();
 
             bitmapToDispose?.Dispose();
+        }
+
+        private static void ApplyAccentColor(FluentAvaloniaTheme faTheme)
+        {
+            if (App.Settings.Prop.AccentColorMode == Enums.AccentColorMode.Custom
+                && Color.TryParse(App.Settings.Prop.CustomAccentColor, out var customAccent))
+                faTheme.CustomAccentColor = customAccent;
+            else faTheme.CustomAccentColor = null;
         }
 
         private static readonly Color DefaultCustomColor = Color.Parse("#80272F48");

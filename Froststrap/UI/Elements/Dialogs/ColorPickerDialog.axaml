@@ -23,7 +23,8 @@ SPDX-License-Identifier: MPL-2.0
                    HorizontalAlignment="Center"
                    VerticalAlignment="Top"
                    IsAlphaEnabled="False"
-                   IsAlphaVisible="False" />
+                   IsAlphaVisible="False"
+                   IsColorPaletteVisible="False" />
 
         <Border Grid.Row="1" Padding="15" Background="{DynamicResource ControlFillColorDefaultBrush}">
             <StackPanel Orientation="Horizontal"
