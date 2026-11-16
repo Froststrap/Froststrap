@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
 use std::os::raw::c_char;
 use std::sync::{Mutex, MutexGuard};
 

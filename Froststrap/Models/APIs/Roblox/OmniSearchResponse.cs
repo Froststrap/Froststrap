@@ -4,13 +4,13 @@
 
 namespace Froststrap.Models.APIs.Roblox;
 
-internal class OmniSearchResponse
+internal sealed class OmniSearchResponse
 {
     [JsonPropertyName("searchResults")]
     public List<OmniSearchGroup>? SearchResults { get; set; }
 }
 
-internal class OmniSearchGroup
+internal sealed class OmniSearchGroup
 {
     [JsonPropertyName("contentGroupType")]
     public string ContentGroupType { get; set; } = String.Empty;

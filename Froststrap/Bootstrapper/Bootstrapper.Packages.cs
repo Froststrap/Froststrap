@@ -55,9 +55,7 @@ internal partial class Bootstrapper : IDisposable
             App.Logger.Info("Upgrading disabled, cancelling the upgrade.");
 
             if (!Directory.Exists(_latestVersionDirectory))
-            {
                 _ = Frontend.ShowMessageBox(Strings.Bootstrapper_Dialog_NoUpgradeWithoutClient, MessageBoxImage.Warning, MessageBoxButton.OK);
-            }
             else
             {
                 await Task.Delay(2000);
@@ -790,7 +788,7 @@ internal partial class Bootstrapper : IDisposable
                         : Deployment.DefaultChannel;
 
                     var promptResult = await Frontend.ShowMessageBox(
-                        String.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_Bootstrapper_Dialog_PromptChannelChange, displayChannel, Deployment.Channel),
+                        String.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_Dialog_PromptChannelChange, displayChannel, Deployment.Channel),
                         MessageBoxImage.Question,
                         MessageBoxButton.YesNo
                     );

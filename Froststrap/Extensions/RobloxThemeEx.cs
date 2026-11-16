@@ -1,8 +1,12 @@
-﻿using Froststrap.Enums.AppStoragePresets;
+﻿// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
+using Froststrap.Enums.AppStoragePresets;
 
 namespace Froststrap.Extensions;
 
-internal class RobloxThemeEx
+internal sealed class RobloxThemeEx
 {
     public static IReadOnlyCollection<RobloxTheme> Selections =>
     [

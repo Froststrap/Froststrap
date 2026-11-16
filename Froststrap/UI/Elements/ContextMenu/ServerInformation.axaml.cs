@@ -8,7 +8,7 @@ using Froststrap.UI.ViewModels.ContextMenu;
 
 namespace Froststrap.UI.Elements.ContextMenu;
 
-internal partial class ServerInformation : Base.AvaloniaWindow
+internal sealed partial class ServerInformation : Base.AvaloniaWindow
 {
     private readonly Watcher? _watcher;
     private readonly ServerInformationViewModel _viewModel;

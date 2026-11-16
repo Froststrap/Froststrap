@@ -11,7 +11,7 @@ SPDX-License-Identifier: MPL-2.0
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:control="clr-namespace:Froststrap.UI.Elements.Overlay.Controls"
         xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
-        xmlns:resources="using:Froststrap.Resources"
+        xmlns:resources="using:Froststrap.Localisation"
         xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
         xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Overlay"
         x:DataType="vm:GameOverlayViewModel"

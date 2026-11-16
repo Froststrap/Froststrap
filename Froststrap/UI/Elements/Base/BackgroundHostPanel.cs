@@ -8,7 +8,7 @@ using Avalonia.Markup.Xaml;
 
 namespace Froststrap.UI.Elements.Base
 {
-    internal partial class BackgroundHostPanel : Panel
+    internal sealed partial class BackgroundHostPanel : Panel
     {
         public BackgroundHostPanel()
         {

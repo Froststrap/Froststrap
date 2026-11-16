@@ -8,7 +8,7 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace Froststrap.UI.ViewModels.Dialogs
 {
-    internal class LaunchMenuViewModel : NotifyPropertyChangedViewModel
+    internal sealed class LaunchMenuViewModel : NotifyPropertyChangedViewModel
     {
         private LaunchMode _selectedLaunchMode = LaunchMode.Player;
         public LaunchMode SelectedLaunchMode

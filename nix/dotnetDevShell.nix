@@ -14,6 +14,7 @@
   pkg-config,
   libX11,
   libICE,
+  icu,
   libXi,
   libXrandr,
   libSM,
@@ -21,17 +22,24 @@
   xcbutil,
   libxcursor,
   libsecret,
-  dotnetCorePackages,
   glib,
   callPackage,
   nspr,
   dbus,
+  openssl,
   squashfsTools,
   skia,
 }:
+{
+  dotnix,
+  ...
+}:
 let
   inherit (callPackage ./devshell-tools.nix { }) mkFragment;
-  dotnet-tc = dotnetCorePackages.sdk_10_0;
+  dotnet = dotnix.packages.${stdenv.hostPlatform.system};
+  dotnet-tc = dotnet.combine [
+    dotnet."10-0".stable.sdk
+  ];
 in
 mkFragment (finalAttrs: {
   name = "dotnet";
@@ -57,7 +65,9 @@ mkFragment (finalAttrs: {
     libxcursor
     libxcb
     xcbutil
+    icu
     glib
+    openssl
   ];
 
   buildInputs = [

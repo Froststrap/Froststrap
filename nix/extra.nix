@@ -9,10 +9,14 @@
   cargo-bloat,
   callPackage,
 }:
+{
+  ...
+}
+@inputs:
 let
   inherit (callPackage ./devshell-tools.nix { }) mkFragment;
-  avdt = callPackage ./avdt.nix { };
-  vpk = callPackage ./vpk.nix { };
+  avdt = (callPackage ./avdt.nix { }) inputs;
+  vpk = (callPackage ./vpk.nix { }) inputs;
 in
 mkFragment {
   name = "extra";

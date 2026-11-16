@@ -1940,7 +1940,7 @@ internal partial class Bootstrapper : IDisposable
     private static readonly X509Certificate2 _webView2RootCert = X509Certificate2.CreateFromPem(WebView2MicrosoftRootPem);
     private static HttpClient CreateWebView2HttpClient()
     {
-        var handler = new HttpClientHandler
+        HttpClientHandler? handler = new HttpClientHandler
         {
             ServerCertificateCustomValidationCallback = (_, cert, chain, sslPolicyErrors) =>
             {
@@ -1958,7 +1958,16 @@ internal partial class Bootstrapper : IDisposable
             }
         };
 
-        return new HttpClient(handler);
+        try
+        {
+            var client = new HttpClient(handler);
+            handler = null;
+            return client;
+        }
+        finally
+        {
+            handler?.Dispose();
+        }
     }
 
     private async Task<string?> GetWebView2LatestVersionAsync()
@@ -2579,17 +2588,6 @@ internal partial class Bootstrapper : IDisposable
             string rel = Path.Combine("ClientSettings", "ClientAppSettings.json");
             string dest = Path.Combine(clientSettingsBaseDirectory, rel);
 
-            if (_joinData.PlaceId.HasValue && _joinData.PlaceId.Value > 0)
-            {
-                profileApplied = await ApplyFastFlagsBasedOnPlaceId(_joinData.PlaceId.Value, clientSettingsBaseDirectory);
-                if (profileApplied && File.Exists(dest))
-                {
-                    var destInfo = new FileInfo(dest);
-                    lock (currentModManifest)
-                        currentModManifest[rel] = new ModFileEntry { Size = destInfo.Length, LastModified = destInfo.LastWriteTime };
-                }
-            }
-
             if (!profileApplied && !OperatingSystem.IsLinux() || IsStudioLaunch && File.Exists(source))
             {
                 try
@@ -2793,61 +2791,6 @@ internal partial class Bootstrapper : IDisposable
         App.Logger.Info("Mod folder initialization complete.");
     }
 
-    private static async Task<bool> ApplyFastFlagsBasedOnPlaceId(long placeId, string clientSettingsBaseDirectory)
-    {
-        if (placeId <= 0 || !App.Settings.Prop.UseFastFlagManager)
-            return false;
-
-        App.Logger.Info($"Checking for FastFlag profile matching place ID: {placeId}");
-
-        foreach (var kvp in App.Settings.Prop.ProfilePlaceIds)
-        {
-            string profileName = kvp.Key;
-            List<string> placeIds = kvp.Value;
-
-            if (!placeIds.Contains(placeId.ToString(CultureInfo.InvariantCulture)))
-                return false;
-
-            App.Logger.Info($"Found matching profile '{profileName}' for place ID {placeId}");
-
-            try
-            {
-                string profilePath = Path.Combine(Paths.SavedFlagProfiles, profileName);
-
-                if (!File.Exists(profilePath))
-                {
-                    App.Logger.Warn($"Profile file '{profileName}' not found at {profilePath}");
-                    return false;
-                }
-
-                string profileJson = await File.ReadAllTextAsync(profilePath);
-                var flags = JsonHelper.Deserialize<Dictionary<string, object>>(profileJson);
-
-                if (flags == null || flags.Count == 0)
-                {
-                    App.Logger.Warn($"Profile '{profileName}' is empty or invalid");
-                    return false;
-                }
-
-                Directory.CreateDirectory(Path.Combine(clientSettingsBaseDirectory, "ClientSettings"));
-                string destPath = Path.Combine(clientSettingsBaseDirectory, "ClientSettings", "ClientAppSettings.json");
-
-                await File.WriteAllTextAsync(destPath, profileJson);
-
-                App.Logger.Info($"Successfully applied FastFlag profile '{profileName}' for place ID {placeId} ({flags.Count} flags)");
-                return true;
-            }
-            catch (Exception ex)
-            {
-                App.Logger.Error($"Failed to apply FastFlag profile '{profileName}': {ex.Message}");
-                return false;
-            }
-        }
-
-        App.Logger.Info($"No FastFlag profile found for place ID {placeId}");
-        return false;
-    }
-
     private static bool IsClientSettingsRelativePath(string relativePath)
     {
         string normalizedPath = relativePath.Replace('\\', '/');
@@ -2917,7 +2860,7 @@ internal partial class Bootstrapper : IDisposable
         GC.SuppressFinalize(this);
     }
 
-    protected virtual void Dispose(bool disposing)
+    private void Dispose(bool disposing)
     {
         if (_disposed)
             return;

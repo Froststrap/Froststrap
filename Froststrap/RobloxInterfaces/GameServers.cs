@@ -1,4 +1,8 @@
-﻿using Froststrap.AppData;
+﻿// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
+using Froststrap.AppData;
 using Froststrap.Enums.Overlay;
 using Froststrap.Utility;
 using System;

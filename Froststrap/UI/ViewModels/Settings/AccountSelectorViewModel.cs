@@ -17,7 +17,7 @@ using System.Collections.ObjectModel;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
-    internal partial class AccountSelectorViewModel : NotifyPropertyChangedViewModel, IDisposable
+    internal sealed partial class AccountSelectorViewModel : NotifyPropertyChangedViewModel, IDisposable
     {
         private readonly AccountManager _accountManager = null!;
         private readonly Dictionary<long, string?> _accountAvatarUrls = [];
@@ -626,7 +626,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        internal class AccountWithAvatar : NotifyPropertyChangedViewModel
+        internal sealed class AccountWithAvatar : NotifyPropertyChangedViewModel
         {
             public AccountManagerAccount Account { get; }
 

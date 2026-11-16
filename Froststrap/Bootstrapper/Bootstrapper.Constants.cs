@@ -4,7 +4,7 @@
 
 namespace Froststrap;
 
-internal partial class Bootstrapper : IDisposable
+internal sealed partial class Bootstrapper : IDisposable
 {
     private const int ProgressBarMaximum = 10000;
     private const double TaskbarProgressMaximum = 1.0;

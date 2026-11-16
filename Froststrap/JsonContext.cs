@@ -9,7 +9,6 @@ using Froststrap.Models.APIs.RobloxParty;
 using Froststrap.Models.APIs.RobloxParty.Events;
 using Froststrap.Models.APIs.RealtimeMessaging;
 using Froststrap.Models.APIs.Roblox;
-using Froststrap.UI.Elements.Editor;
 
 namespace Froststrap
 {
@@ -72,6 +71,7 @@ namespace Froststrap
     [JsonSerializable(typeof(List<ThumbnailRequest>))]
     [JsonSerializable(typeof(ThumbnailResponse))]
     [JsonSerializable(typeof(GameDetailResponse))]
+    [JsonSerializable(typeof(UniverseIdResponse))]
     [JsonSerializable(typeof(GradientStops))]
     [JsonSerializable(typeof(GradientExport))]
     [JsonSerializable(typeof(ModGeneratorInfo))]
@@ -82,7 +82,6 @@ namespace Froststrap
     [JsonSerializable(typeof(PresenceBatchRequest))]
     [JsonSerializable(typeof(JoinGameInstanceRequest))]
     [JsonSerializable(typeof(OmniRecommendationRequest))]
-    [JsonSerializable(typeof(BootstrapperEditorWindow.CustomBootstrapperSchema.Schema))]
     [JsonSerializable(typeof(OverlayNotes))]
     [JsonSerializable(typeof(ConversationsPage))]
     [JsonSerializable(typeof(UserMessagesPage))]

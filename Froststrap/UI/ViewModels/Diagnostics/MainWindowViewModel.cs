@@ -7,12 +7,11 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
-using Froststrap.Resources;
 using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Diagnostics
 {
-    internal partial class MainWindowViewModel : NotifyPropertyChangedViewModel
+    internal sealed partial class MainWindowViewModel : NotifyPropertyChangedViewModel
     {
         public bool IsNotLinux { get; } = !OperatingSystem.IsLinux();
         public int TitlebarSpaceHeight { get; } = OperatingSystem.IsMacOS() ? 52 : 40;
@@ -81,7 +80,7 @@ namespace Froststrap.UI.ViewModels.Diagnostics
             }
             catch (Exception ex)
             {
-                App.Logger.Error("Failed to take screenshot:", ex);
+                App.Logger.Error(ex, "Failed to take screenshot:");
                 ScreenshotStatus = Strings.Menu_Diagnostics_Screenshot_Failed;
             }
         }

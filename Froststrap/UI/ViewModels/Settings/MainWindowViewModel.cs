@@ -16,14 +16,14 @@ using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
-    internal class BreadcrumbItemModel
+    internal sealed class BreadcrumbItemModel
     {
         public string Content { get; set; } = string.Empty;
         public string? Tag { get; set; }
         public bool IsLast { get; set; }
     }
 
-    internal class MainWindowViewModel : ObservableObject
+    internal sealed class MainWindowViewModel : ObservableObject
     {
         private bool _isNotLinux = !OperatingSystem.IsLinux();
         public bool IsNotLinux { get => _isNotLinux; }
@@ -32,9 +32,9 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private int _titlebarSpaceHeight = OperatingSystem.IsMacOS() ? 52 : 40;
         public int TitlebarSpaceHeight { get => _titlebarSpaceHeight; }
-        private Thickness _titlebarPadding = OperatingSystem.IsMacOS() ? new Thickness(95,0,12,0) : OperatingSystem.IsLinux() ? new Thickness(8, 0) : new Thickness(8, 0, 140, 0);
+        private Thickness _titlebarPadding = OperatingSystem.IsMacOS() ? new Thickness(95, 0, 12, 0) : OperatingSystem.IsLinux() ? new Thickness(8, 0) : new Thickness(8, 0, 140, 0);
         public Thickness TitlebarPadding { get => _titlebarPadding; }
-        private Thickness _openSidebarTitleMargin = OperatingSystem.IsMacOS() ? new Thickness(56,0,0,0) : new Thickness(155,0,0,0);
+        private Thickness _openSidebarTitleMargin = OperatingSystem.IsMacOS() ? new Thickness(56, 0, 0, 0) : new Thickness(155, 0, 0, 0);
         public Thickness OpenSidebarTitleMargin { get => _openSidebarTitleMargin; }
         private int _iconButtonSize = OperatingSystem.IsMacOS() ? 28 : 24;
         public int IconButtonSize { get => _iconButtonSize; }
@@ -46,7 +46,7 @@ namespace Froststrap.UI.ViewModels.Settings
         private static readonly Dictionary<string, LucideIconNames> _pageIconMap = new()
         {
             ["integrations"] = LucideIconNames.Plus,
-            ["behaviour"] = LucideIconNames.Play,
+            ["bootstrapper"] = LucideIconNames.Play,
             ["linuxsettings"] = LucideIconNames.Settings,
             ["mods"] = LucideIconNames.BookOpen,
             ["fastflags"] = LucideIconNames.Flag,
@@ -92,7 +92,8 @@ namespace Froststrap.UI.ViewModels.Settings
                 Check("Settings", App.Settings.HasUnsavedChanges, App.Settings.DescribeChanges);
                 Check("State", App.State.HasUnsavedChanges, App.State.DescribeChanges);
                 Check("FastFlags", App.FastFlags.HasUnsavedChanges, App.FastFlags.DescribeChanges);
-                if (OperatingSystem.IsLinux())
+                // without Sober's config there's nothing to save, so it never counts
+                if (OperatingSystem.IsLinux() && App.SoberSettings.Loaded)
                     Check("SoberSettings", App.SoberSettings.HasUnsavedChanges);
                 Check("GlobalSettings", App.GlobalSettings.HasUnsavedChanges);
                 Check("PendingSettingTasks", App.PendingSettingTasks.Count > 0,
@@ -145,7 +146,7 @@ namespace Froststrap.UI.ViewModels.Settings
         public ICommand SetLaunchModeCommand { get; }
 
         public IRelayCommand NavigateToIntegrationsCommand { get; }
-        public IRelayCommand NavigateToBehaviourCommand { get; }
+        public IRelayCommand NavigateToBootstrapperCommand { get; }
         public IRelayCommand NavigateToLinuxSettingsCommand { get; }
         public IRelayCommand NavigateToMyModsCommand { get; }
         public IRelayCommand NavigateToFastFlagsCommand { get; }
@@ -193,7 +194,7 @@ namespace Froststrap.UI.ViewModels.Settings
             SearchBar = new();
 
             NavigateToIntegrationsCommand = new RelayCommand(() => Navigate("integrations", Strings.Menu_Integrations_Title, Strings.Menu_Integrations_Description, new IntegrationsViewModel()));
-            NavigateToBehaviourCommand = new RelayCommand(() => Navigate("behaviour", Strings.Menu_Behaviour_Title, Strings.Menu_Behaviour_Description, new BehaviourViewModel()));
+            NavigateToBootstrapperCommand = new RelayCommand(() => Navigate("bootstrapper", Strings.Menu_Bootstrapper_Title, Strings.Menu_Bootstrapper_Description, new BootstrapperViewModel()));
             NavigateToLinuxSettingsCommand = new RelayCommand(() => Navigate("linuxsettings", Strings.Menu_LinuxSettings_Title, null!, new LinuxSettingsViewModel()));
             NavigateToPresetModsCommand = new RelayCommand(() => Navigate("mods", Strings.Menu_PresetMods_Title, Strings.Menu_PresetMods_Description, new ModsPresetsViewModel()));
             NavigateToFastFlagsCommand = new RelayCommand(() =>
@@ -290,8 +291,8 @@ namespace Froststrap.UI.ViewModels.Settings
                 case "Froststrap.UI.ViewModels.Settings.IntegrationsViewModel":
                     NavigateToIntegrationsCommand.Execute(null);
                     break;
-                case "Froststrap.UI.ViewModels.Settings.BehaviourViewModel":
-                    NavigateToBehaviourCommand.Execute(null);
+                case "Froststrap.UI.ViewModels.Settings.BootstrapperViewModel":
+                    NavigateToBootstrapperCommand.Execute(null);
                     break;
                 case "Froststrap.UI.ViewModels.Settings.LinuxSettingsViewModel":
                     if (OperatingSystem.IsLinux())

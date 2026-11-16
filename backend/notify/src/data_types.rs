@@ -7,6 +7,7 @@ pub enum NotificationPermissionResult {
     Granted,
     Denied,
     TimedOut,
+    OsError,
     NoBundleContext,
 }
 

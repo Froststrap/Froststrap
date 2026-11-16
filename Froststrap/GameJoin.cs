@@ -7,7 +7,7 @@ using System.Web;
 
 namespace Froststrap
 {
-    internal class GameJoin
+    internal sealed class GameJoin
     {
         /// Converts a pasted Roblox link into a launch command
         public static async Task<string?> GetLaunchCommandByLink(string link)

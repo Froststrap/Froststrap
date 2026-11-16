@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
 use super::{GameInfo, SoberRect, WindowTracker};
 use std::collections::HashMap;
 use std::io::{Read, Write};

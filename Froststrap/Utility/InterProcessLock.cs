@@ -4,7 +4,7 @@
 
 namespace Froststrap.Utility
 {
-    internal class InterProcessLock : IDisposable
+    internal sealed class InterProcessLock : IDisposable
     {
         private readonly string _lockFilePath;
         private readonly FileStream? _lockFileStream;

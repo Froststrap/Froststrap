@@ -66,7 +66,7 @@ namespace Froststrap.Models.Persistable
         public string VirtualDisplayName { get; set; } = "";
         public int VirtualDisplayWidth { get; set; }
         public int VirtualDisplayHeight { get; set; }
-        public double[] VirtualDisplayHzModes { get; set; } = [ 24.0, 25.0, 30.0, 60.0, 120.0, 144.0, 240.0 ];
+        public double[] VirtualDisplayHzModes { get; set; } = [24.0, 25.0, 30.0, 60.0, 120.0, 144.0, 240.0];
         public uint VirtualDisplaySerial { get; set; }
         public bool SoftKeyEnabled { get; set; }
         public SoftKeyProfile SoftKeyProfile { get; set; } = SoftKeyProfile.WASD;
@@ -83,6 +83,7 @@ namespace Froststrap.Models.Persistable
         public bool BootstrapperShowInfo { get; set; }
         public BootstrapperStyle BootstrapperStyle { get; set; } = BootstrapperStyle.FluentAeroDialog;
         public string? SelectedCustomTheme { get; set; }
+        public ExternalEditorKind ExternalEditor { get; set; } = ExternalEditorKind.Auto;
         public bool CycleEnabled { get; set; }
         public CycleFrequency CycleFrequency { get; set; } = CycleFrequency.EveryLaunch;
         public int CycleIntervalValue { get; set; } = 1;
@@ -103,7 +104,7 @@ namespace Froststrap.Models.Persistable
         public string? BackgroundImagePath { get; set; } = "";
         public BackgroundStretch BackgroundStretch { get; set; } = BackgroundStretch.Fill;
         public double BackgroundOpacity { get; set; } = 1.0;
-        public string BootstrapperTitle { get; set; } = App.ProjectName;
+        public string BootstrapperTitle { get; set; } = ProjectInfo.Name;
         public string BootstrapperIconCustomLocation { get; set; } = "";
         public Theme Theme { get; set; } = Theme.Default;
         public bool EnableWindowManipulation { get; set; }
@@ -118,10 +119,10 @@ namespace Froststrap.Models.Persistable
         public bool AutomaticallyUpdateSober { get; set; } = true;
         public DistributorType DistributorType { get; set; } = DistributorType.Global;
         public int MaxThreadDownload { get; set; } = 3;
-        public string RobloxDomain { get; set; } = RobloxInterfaces.Deployment.DefaultRobloxDomain;
+        public string RobloxDomain { get; set; } = RobloxDefaults.Domain;
         public bool StaticDirectory { get; set; }
-        public string PlayerChannel { get; set; } = RobloxInterfaces.Deployment.DefaultChannel;
-        public string StudioChannel { get; set; } = RobloxInterfaces.Deployment.DefaultChannel;
+        public string PlayerChannel { get; set; } = RobloxDefaults.Channel;
+        public string StudioChannel { get; set; } = RobloxDefaults.Channel;
         public ChannelChangeMode ChannelChangeMode { get; set; } = ChannelChangeMode.Prompt;
         public bool StudioVersionOverrideEnabled { get; set; }
         public string StudioVersionOverrideHash { get; set; } = string.Empty;

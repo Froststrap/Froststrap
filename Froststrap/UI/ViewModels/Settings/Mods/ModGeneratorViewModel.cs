@@ -18,7 +18,7 @@ using Color = Avalonia.Media.Color;
 
 namespace Froststrap.UI.ViewModels.Settings.Mods
 {
-    internal partial class ModGeneratorViewModel : NotifyPropertyChangedViewModel
+    internal sealed partial class ModGeneratorViewModel : NotifyPropertyChangedViewModel
     {
         private Color _solidColor = Colors.White;
 
@@ -270,7 +270,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             }
             catch (Exception ex)
             {
-                App.Logger.Error($"Unhandled exception: {ex}");
+                App.Logger.Error(ex, "Failed to load font files");
                 StatusText = Strings.Menu_ModGenerator_FailedPreview;
             }
         }
@@ -327,14 +327,14 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
                             glyphItems.Add(new GlyphItem { Data = geometry, Brush = glyphBrush });
                         }
-                        catch (Exception ex) { App.Logger.Error($"Unhandled exception: {ex}"); }
+                        catch (Exception ex) { App.Logger.Error(ex, "Failed to load glyph preview"); }
                     });
                 }
                 GlyphItems = glyphItems;
             }
             catch (Exception ex)
             {
-                App.Logger.Error($"Unhandled exception: {ex}");
+                App.Logger.Error(ex, "Failed to load glyph previews");
                 StatusText = Strings.Menu_ModGenerator_FailedPreview;
             }
         }
@@ -510,7 +510,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
                     var preservePaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
                     foreach (var entry in mappings.Values)
-                        preservePaths.Add(Path.GetFullPath(Path.Combine(TempRoot, Path.Combine(entry))));
+                        preservePaths.Add(Path.GetFullPath(Path.Combine([TempRoot, .. entry])));
 
                     string builderIconsFontDir = Path.Combine(TempRoot, "ExtraContent", "LuaPackages", "Packages", "_Index", "BuilderIcons", "BuilderIcons", "Font");
                     if (Directory.Exists(builderIconsFontDir))
@@ -684,7 +684,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             }
             catch (Exception ex)
             {
-                App.Logger.Error($"Unhandled exception: {ex}");
+                App.Logger.Error(ex, "Failed to generate mod");
                 StatusText = $"Error: {ex.Message}";
             }
             finally
@@ -790,7 +790,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
         private void UpdateSolidColorFromGradient()
         {
-            if (GradientStops.Any())
+            if (GradientStops.Count > 0)
             {
                 var firstHex = GradientStops[0].Color;
                 if (IsValidHexColor(firstHex))
@@ -843,7 +843,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             catch (Exception ex)
             {
                 StatusText = $"Color picker error: {ex.Message}";
-                App.Logger.Error("Unhandled exception: ", ex);
+                App.Logger.Error(ex, "Failed to open colour picker");
             }
         }
 

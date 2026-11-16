@@ -9,7 +9,7 @@ using Froststrap.UI.ViewModels.Bootstrapper;
 
 namespace Froststrap.UI.Elements.Bootstrapper
 {
-    internal partial class TwentyFiveDialog : AvaloniaDialogBase
+    internal sealed partial class TwentyFiveDialog : AvaloniaDialogBase
     {
         private readonly TwentyFiveDialogViewModel _viewModel;
 

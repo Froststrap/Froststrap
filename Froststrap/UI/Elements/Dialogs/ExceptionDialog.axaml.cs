@@ -8,7 +8,7 @@ using System.Web;
 
 namespace Froststrap.UI.Elements.Dialogs
 {
-    internal partial class ExceptionDialog : Base.AvaloniaWindow
+    internal sealed partial class ExceptionDialog : Base.AvaloniaWindow
     {
         const int MAX_GITHUB_URL_LENGTH = 8192;
 
@@ -26,7 +26,7 @@ namespace Froststrap.UI.Elements.Dialogs
             if (!Logging.Initialized)
                 LocateLogFileButton.Content = Strings.Dialog_Exception_CopyLogContents;
 
-            string repoUrl = $"https://github.com/{App.ProjectRepository}";
+            string repoUrl = $"https://github.com/{ProjectInfo.Repository}";
             string wikiUrl = $"{repoUrl}/wiki";
 
             string title = HttpUtility.UrlEncode($"[BUG] {exception.GetType()}: {exception.Message}");
@@ -46,9 +46,6 @@ namespace Froststrap.UI.Elements.Dialogs
 
             string helpMessage = String.Format(CultureInfo.InvariantCulture, Strings.Dialog_Exception_Info_2, wikiUrl, issueUrl);
 
-            if (!App.IsActionBuild)
-                helpMessage = String.Format(CultureInfo.InvariantCulture, Strings.Dialog_Exception_Info_2_Alt, wikiUrl);
-
             HelpMessageMarkdown.MarkdownText = helpMessage;
             VersionText.Text = String.Format(CultureInfo.InvariantCulture, Strings.Menu_About_Version, App.Version);
 
@@ -57,16 +54,12 @@ namespace Froststrap.UI.Elements.Dialogs
             LocateLogFileButton.Click += async delegate
             {
                 if (Logging.Initialized && !String.IsNullOrEmpty(Logging.FileLocation))
-                {
                     Froststrap.Utility.Threading.ShellExecute(Logging.FileLocation);
-                }
                 else
                 {
                     var topLevel = TopLevel.GetTopLevel(this);
                     if (topLevel?.Clipboard != null)
-                    {
                         await topLevel.Clipboard.SetTextAsync(Logging.AsDocument);
-                    }
                 }
             };
 
@@ -74,9 +67,7 @@ namespace Froststrap.UI.Elements.Dialogs
             {
                 var topLevel = TopLevel.GetTopLevel(this);
                 if (topLevel?.Clipboard != null)
-                {
                     await topLevel.Clipboard.SetTextAsync(Logging.AsDocument);
-                }
             };
 
             Loaded += (_, _) =>

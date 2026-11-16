@@ -4,7 +4,7 @@
 
 namespace Froststrap.Models.SettingTasks
 {
-    internal class ShortcutTask : BoolBaseTask
+    internal sealed class ShortcutTask : BoolBaseTask
     {
         private readonly string _shortcutPath;
 
@@ -21,7 +21,7 @@ namespace Froststrap.Models.SettingTasks
         public override void Execute()
         {
             if (NewState)
-                Shortcut.Create(Paths.Process, _exeFlags, _shortcutPath);
+                _ = Shortcut.Create(Paths.Process, _exeFlags, _shortcutPath);
             else
                 Shortcut.Delete(_shortcutPath);
 

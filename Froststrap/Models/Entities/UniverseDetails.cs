@@ -7,7 +7,7 @@ namespace Froststrap.Models.Entities
     /// <summary>
     /// Explicit loading. Load from cache before and after a fetch.
     /// </summary>
-    internal class UniverseDetails
+    internal sealed class UniverseDetails
     {
         private static readonly Lock CacheLock = new();
         private static readonly SemaphoreSlim FetchLock = new(1, 1);
@@ -31,6 +31,14 @@ namespace Froststrap.Models.Entities
         }
 
         public static Task FetchSingle(long id) => FetchBulk(id.ToString(CultureInfo.InvariantCulture));
+
+        public static async Task<long?> ResolveUniverseId(long placeId)
+        {
+            UniverseIdResponse response = await Http.GetJson<UniverseIdResponse>(
+                UrlBuilder.BuildApiUrl("apis", $"universes/v1/places/{placeId}/universe"));
+
+            return response.UniverseId;
+        }
 
         public static async Task FetchBulk(string ids)
         {

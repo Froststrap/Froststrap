@@ -15,7 +15,7 @@ source = "git+https://github.com/Froststrap/pissing.git#8c4ffdef094701b90eb1c134
 
 [[package]]
 name = "xtask"
-version = "1.0.0"
+version = "1.1.0"
 dependencies = [
  "pico-args",
  "pissing",

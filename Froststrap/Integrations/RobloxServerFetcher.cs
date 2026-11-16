@@ -1,10 +1,14 @@
+// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
 using System.Collections.Concurrent;
 using System.Net.Http.Headers;
 using Froststrap.RobloxInterfaces;
 
 namespace Froststrap.Integrations
 {
-    internal class RobloxServerFetcher : IDisposable
+    internal sealed class RobloxServerFetcher : IDisposable
     {
         private static readonly Lazy<HttpClient> _sharedClient = new(CreateSharedClient);
         private static readonly Lazy<RobloxServerFetcher> _sharedInstance = new(() => new RobloxServerFetcher());
@@ -43,7 +47,7 @@ namespace Froststrap.Integrations
 
         private bool _disposed;
 
-        internal class ServerSelectionResult
+        internal sealed class ServerSelectionResult
         {
             public string? ServerId { get; set; }
             public string? Region { get; set; }
@@ -122,7 +126,7 @@ namespace Froststrap.Integrations
             }
             catch (Exception ex)
             {
-                App.Logger.Error("Unhandled exception:", ex);
+                App.Logger.Error(ex, "Failed to fetch datacenters");
                 return null;
             }
         }
@@ -437,7 +441,7 @@ namespace Froststrap.Integrations
             }
             catch (Exception ex)
             {
-                App.Logger.Error("Unhandled exception:", ex);
+                App.Logger.Error(ex, "Failed to get cookie from account manager");
             }
 
             return Task.FromResult<string?>(null);
@@ -452,7 +456,7 @@ namespace Froststrap.Integrations
             }
             catch (Exception ex)
             {
-                App.Logger.Error("Unhandled exception:", ex);
+                App.Logger.Error(ex, "Failed to get cookie from cookies manager");
             }
             return Task.FromResult<string?>(null);
         }
@@ -557,7 +561,7 @@ namespace Froststrap.Integrations
             }
             catch (Exception ex)
             {
-                App.Logger.Error("Failed to resolve IP info:", ex);
+                App.Logger.Error(ex, "Failed to resolve IP info:");
                 return _ipinfoCache;
             }
         }
@@ -616,7 +620,7 @@ namespace Froststrap.Integrations
             }
             catch (Exception ex)
             {
-                App.Logger.Error("Unhandled exception:", ex);
+                App.Logger.Error(ex, "Failed to get closest regions for auto mode");
                 return [];
             }
         }
@@ -704,7 +708,7 @@ namespace Froststrap.Integrations
             }
             catch (Exception ex)
             {
-                App.Logger.Error("Unhandled exception:", ex);
+                App.Logger.Error(ex, "Failed to find best server in region");
                 return new ServerSelectionResult();
             }
         }
@@ -777,7 +781,7 @@ namespace Froststrap.Integrations
             }
             catch (Exception ex)
             {
-                App.Logger.Error("Unhandled exception:", ex);
+                App.Logger.Error(ex, "Failed to join best server");
                 return false;
             }
         }
@@ -788,7 +792,7 @@ namespace Froststrap.Integrations
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (!_disposed)
             {

@@ -37,6 +37,7 @@ log = "0.4"
 objc2 = "0.6"
 block2 = "0.6"
 dispatch2 = "0.3"
+libloading = "0.9"
 
 [workspace.dependencies.logger]
 path = "logger"
@@ -47,6 +48,16 @@ default-features = false
 features = [
   "CFString",
   "CFCGTypes",
+]
+
+[workspace.dependencies.objc2-foundation]
+version = "0.3"
+default-features = false
+features = [
+  "alloc",
+  "NSBundle",
+  "NSString",
+  "NSUUID",
 ]
 
 [workspace.dependencies.objc2-core-services]

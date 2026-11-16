@@ -1,0 +1,15 @@
+<!--
+SPDX-FileCopyrightText: 2026 Froststrap
+
+SPDX-License-Identifier: MPL-2.0
+-->
+
+<Project>
+  <ItemGroup>
+    <AssemblyAttribute Include="Froststrap.Models.Attributes.BuildMetadataAttribute">
+      <_Parameter1>$([System.DateTime]::UtcNow.ToString("s"))Z</_Parameter1>
+      <_Parameter2>$(CommitHash)</_Parameter2>
+      <_Parameter3>$(CommitRef)</_Parameter3>
+    </AssemblyAttribute>
+  </ItemGroup>
+</Project>

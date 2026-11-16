@@ -23,8 +23,6 @@
 //      FROSTSTRAP_UPDATE_SOURCE="/path/to/Releases" ./Releases/old/<old installer/AppImage>
 //
 //   6. Click "Check for Updates" in Deployment settings
-//
-// Leave the variable unset for normal behaviour.
 
 using Velopack;
 using Velopack.Sources;

@@ -11,7 +11,7 @@ using Froststrap.UI.Elements.Base;
 
 namespace Froststrap.UI.Elements.Dialogs
 {
-    internal partial class FlagProfilesDialog : AvaloniaWindow
+    internal sealed partial class FlagProfilesDialog : AvaloniaWindow
     {
         public MessageBoxResult Result = MessageBoxResult.Cancel;
 
@@ -406,7 +406,8 @@ namespace Froststrap.UI.Elements.Dialogs
             var presetAssets = AssetLoader.GetAssets(new Uri("avares://Froststrap/Resources/PresetFlags/"), null);
             foreach (var assetUri in presetAssets)
             {
-                string profileName = Path.GetFileName(assetUri.AbsolutePath);
+                // AbsolutePath is URL-escaped, so spaces come out as %20
+                string profileName = Uri.UnescapeDataString(Path.GetFileName(assetUri.AbsolutePath));
                 LoadPresetProfile.Items.Add(profileName);
             }
         }

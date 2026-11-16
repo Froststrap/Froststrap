@@ -4,7 +4,7 @@
 
 namespace Froststrap.UI.ViewModels.Dialogs;
 
-internal class AddCustomThemeViewModel : NotifyPropertyChangedViewModel
+internal sealed class AddCustomThemeViewModel : NotifyPropertyChangedViewModel
 {
     public static CustomThemeTemplate[] Templates => Enum.GetValues<CustomThemeTemplate>();
 

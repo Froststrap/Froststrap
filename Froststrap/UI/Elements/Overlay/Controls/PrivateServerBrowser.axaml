@@ -1,3 +1,9 @@
+<!--
+    SPDX-FileCopyrightText: 2026 Froststrap
+
+    SPDX-License-Identifier: MPL-2.0
+-->
+
 <UserControl
     x:Class="Froststrap.UI.Elements.Overlay.Controls.PrivateServerBrowser"
     xmlns="https://github.com/avaloniaui"
@@ -6,7 +12,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:resources="using:Froststrap.Resources"
+    xmlns:resources="using:Froststrap.Localisation"
     xmlns:ui="using:FluentAvalonia.UI.Controls"
     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Overlay.Controls"
     d:DesignHeight="560"

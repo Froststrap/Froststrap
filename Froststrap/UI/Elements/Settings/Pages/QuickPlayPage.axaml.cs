@@ -7,7 +7,7 @@ using Froststrap.UI.ViewModels.Settings;
 
 namespace Froststrap.UI.Elements.Settings.Pages
 {
-    internal partial class QuickPlayPage : UserControl
+    internal sealed partial class QuickPlayPage : UserControl
     {
         public QuickPlayPage()
         {

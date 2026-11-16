@@ -4,20 +4,18 @@
     SPDX-License-Identifier: MPL-2.0
 -->
 
-<UserControl
-    x:Class="Froststrap.UI.Elements.Settings.AccountSelectorView"
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:resources="clr-namespace:Froststrap.Resources"
-    xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
-    d:DesignHeight="220"
-    d:DesignWidth="450"
-    x:DataType="vm:AccountSelectorViewModel"
-    mc:Ignorable="d">
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
+             xmlns:resources="using:Froststrap.Localisation"
+             xmlns:controls="using:Froststrap.UI.Elements.Controls"
+             xmlns:vm="using:Froststrap.UI.ViewModels.Settings"
+             xmlns:utility="using:Froststrap.UI.Utility"
+             x:Class="Froststrap.UI.Elements.Settings.AccountSelectorView"
+             x:DataType="vm:AccountSelectorViewModel"
+             mc:Ignorable="d" d:DesignHeight="220" d:DesignWidth="450">
 
     <UserControl.Styles>
         <Style Selector="Button#AccountButton">

@@ -6,7 +6,7 @@ using System.Collections.Concurrent;
 
 namespace Froststrap.Models.Entities
 {
-    internal class UserDetails
+    internal sealed class UserDetails
     {
         private static ConcurrentDictionary<long, UserDetails> Cache { get; } = new();
 

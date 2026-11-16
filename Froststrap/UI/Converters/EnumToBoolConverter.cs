@@ -7,7 +7,7 @@ using Avalonia.Data.Converters;
 
 namespace Froststrap.UI.Converters
 {
-    internal class EnumToBoolConverter : IValueConverter
+    internal sealed class EnumToBoolConverter : IValueConverter
     {
         public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {

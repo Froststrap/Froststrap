@@ -1,7 +1,15 @@
-﻿<Solution>
+﻿<!--
+SPDX-FileCopyrightText: 2026 Froststrap
+
+SPDX-License-Identifier: MPL-2.0
+-->
+<Solution>
   <Project Path="./Froststrap/Froststrap.csproj" />
+  <Project Path="./Froststrap.Core/Froststrap.Core.csproj" />
+  <Project Path="./Froststrap.Localisation/Froststrap.Localisation.csproj" />
   <Project Path="./libs/LucideAvalonia/LucideAvalonia/LucideAvalonia.csproj" />
   <Project Path="./libs/FluentAvalonia/src/FluentAvalonia/FluentAvalonia.csproj" />
+  <Project Path="./libs/DiscordRPC-NativeAOT/DiscordRPC-NativeAOT.csproj" />
   <Properties Name="ExtensibilityGlobals" Scope="PostLoad">
     <Property Name="RESX_NeutralResourcesLanguage" Value="en-GB" />
   </Properties>

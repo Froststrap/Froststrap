@@ -10,7 +10,7 @@ using Froststrap.UI.Elements.Base;
 
 namespace Froststrap.UI.Elements.Dialogs
 {
-    internal partial class QuickSignCodeDialog : AvaloniaWindow
+    internal sealed partial class QuickSignCodeDialog : AvaloniaWindow
     {
         public bool SignInSuccessful { get; private set; }
         private DispatcherTimer? _autoCloseTimer;

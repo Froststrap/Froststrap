@@ -6,7 +6,7 @@ using Avalonia.Data.Converters;
 
 namespace Froststrap.UI.Converters
 {
-    internal class NumberAbbreviationConverter : IValueConverter
+    internal sealed class NumberAbbreviationConverter : IValueConverter
     {
         public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {

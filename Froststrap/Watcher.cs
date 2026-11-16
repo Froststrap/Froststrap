@@ -9,7 +9,7 @@ using Froststrap.Integrations.OverlayModules;
 
 namespace Froststrap
 {
-    internal class Watcher : IDisposable
+    internal sealed class Watcher : IDisposable
     {
         private readonly InterProcessLock _lock = new("Watcher");
 
@@ -32,7 +32,13 @@ namespace Froststrap
 
         private readonly CancellationTokenSource _cancellationTokenSource = new();
         private bool _isDisposed;
+        private int _closingRoblox;
+        private readonly Lock _closeLock = new();
+#pragma warning disable CA2213 // borrowed from CloseRobloxAsync, which disposes it
+        private CancellationTokenSource? _closeCancel;
+#pragma warning restore CA2213
         private int _gameModeHandle = -1;
+        private int _fallbackPid;
 
         public static int? ProcessId { get; private set; }
 
@@ -50,7 +56,7 @@ namespace Froststrap
 
             ProcessId = _watcherData.ProcessId;
 
-            if (OperatingSystem.IsWindows() && (App.Settings.Prop.EnableWindowManipulation || App.Settings.Prop.FullscreenMode == FullscreenMode.Borderless) && App.Settings.Prop.EnableActivityTracking)
+            if (OperatingSystem.IsWindowsVersionAtLeast(5, 0) && (App.Settings.Prop.EnableWindowManipulation || App.Settings.Prop.FullscreenMode == FullscreenMode.Borderless) && App.Settings.Prop.EnableActivityTracking)
                 WindowManipulation = new(_watcherData.ProcessId);
 
             if (OperatingSystem.IsLinux() && App.Settings.Prop.StudioGameMode && (_watcherData.LaunchMode == LaunchMode.Studio || _watcherData.LaunchMode == LaunchMode.StudioAuth))
@@ -75,11 +81,16 @@ namespace Froststrap
 
                 if (App.Settings.Prop.UseDisableAppPatch)
                 {
-                    ActivityWatcher.OnAppClose += delegate
+                    ActivityWatcher.OnAppClose += (_, _) => _ = CloseRobloxAsync(_watcherData.ProcessId);
+
+                    // joining another game during the wait cancels the force-close (the close request was already sent)
+                    ActivityWatcher.OnLogEntry += (_, entry) =>
                     {
-                        App.Logger.Info("Received desktop app exit, closing Roblox");
-                        using var process = Process.GetProcessById(_watcherData.ProcessId);
-                        process.CloseMainWindow();
+                        if (!entry.Contains(Integrations.ActivityWatcher.GameJoiningEntry, StringComparison.Ordinal))
+                            return;
+
+                        lock (_closeLock)
+                            _closeCancel?.Cancel();
                     };
                 }
 
@@ -88,7 +99,7 @@ namespace Froststrap
                 else if (_watcherData.LaunchMode == LaunchMode.Player && App.Settings.Prop.UseDiscordRichPresence)
                     PlayerRichPresence = new(ActivityWatcher);
 
-                if (_watcherData.LaunchMode == LaunchMode.Player)
+                if (_watcherData.LaunchMode == LaunchMode.Player && OperatingSystem.IsWindows())
                     IntegrationWatcher = new IntegrationWatcher(ActivityWatcher, WindowManipulation);
 
                 if (_watcherData.LaunchMode == LaunchMode.Player && App.Settings.Prop.SoftKeyEnabled)
@@ -117,10 +128,11 @@ namespace Froststrap
                                     App.Logger.Info($"Found crash handler: {crashProc.ProcessName} (PID {crashProc.Id})");
 
                                     crashProc.Kill();
-                                            await Task.WhenAny(
-                                        crashProc.WaitForExitAsync(),
-                                        Task.Delay(3000)
-                                    );
+                                    using var cts = new CancellationTokenSource();
+                                    var delay = Task.Delay(3000, cts.Token);
+                                    var wait = crashProc.WaitForExitAsync();
+                                    await Task.WhenAny(wait, delay);
+                                    await cts.CancelAsync();
 
                                     App.Logger.Info(
                                         crashProc.HasExited
@@ -353,13 +365,92 @@ namespace Froststrap
             return newestPid;
         }
 
+        private static bool IsProcessRunning(int pid)
+        {
+            if (pid <= 0)
+                return false;
+
+            try
+            {
+                using var process = Process.GetProcessById(pid);
+                return true;
+            }
+            catch (ArgumentException)
+            {
+                return false;
+            }
+        }
+
+        private bool IsRobloxRunning(WatcherData watcherData, bool isStudio)
+        {
+            if (IsProcessRunning(watcherData.ProcessId))
+                return true;
+
+            if (_fallbackPid != 0 && IsProcessRunning(_fallbackPid))
+                return true;
+
+            _fallbackPid = 0;
+
+            var processes = Utility.Processes.GetProcessesSafe();
+
+            try
+            {
+                if (isStudio)
+                {
+                    var studioProcesses = processes.Where(IsStudioProcess).ToList();
+
+                    if (studioProcesses.Count == 0)
+                        return false;
+
+                    int newestStudioPid = GetNewestStudioProcessId(studioProcesses);
+
+                    if (newestStudioPid != 0)
+                    {
+                        App.Logger.Info($"Studio process {watcherData.ProcessId} is no longer running, now tracking PID {newestStudioPid}");
+                        watcherData.ProcessId = newestStudioPid;
+                        ProcessId = newestStudioPid;
+                    }
+
+                    return true;
+                }
+
+                if (watcherData.LaunchMode != LaunchMode.Player)
+                    return false;
+
+                string? playerName = OperatingSystem.IsLinux() ? "sober"
+                    : OperatingSystem.IsMacOS() ? "RobloxPlayer"
+                    : null;
+
+                if (playerName is null)
+                    return false;
+
+                var player = processes.FirstOrDefault(x => x.ProcessName == playerName);
+
+                if (player is null)
+                    return false;
+
+                App.Logger.Info($"Roblox process {watcherData.ProcessId} is no longer running, watching '{playerName}' (PID {player.Id}) instead");
+                _fallbackPid = player.Id;
+
+                return true;
+            }
+            finally
+            {
+                foreach (var process in processes)
+                    process.Dispose();
+            }
+        }
+
         public async Task Run()
         {
             if (!_lock.IsAcquired || _watcherData is null)
                 return;
 
             ActivityWatcher?.Start();
-            WindowManipulation?.Start();
+
+            if (OperatingSystem.IsWindowsVersionAtLeast(5, 0))
+                WindowManipulation?.Start();
+
             Overlay?.Start();
 
             bool isStudio = _watcherData.LaunchMode == LaunchMode.Studio || _watcherData.LaunchMode == LaunchMode.StudioAuth;
@@ -368,40 +459,8 @@ namespace Froststrap
             {
                 while (!_cancellationTokenSource.Token.IsCancellationRequested)
                 {
-                    var processes = Utility.Processes.GetProcessesSafe();
-                    var processExists = processes.Any(x => x.Id == _watcherData.ProcessId);
-
-                    if (!processExists && _watcherData.LaunchMode == LaunchMode.Player)
-                    {
-                        if (OperatingSystem.IsLinux())
-                            processExists = processes.Any(x => x.ProcessName == "sober");
-                        else if (OperatingSystem.IsMacOS())
-                            processExists = processes.Any(x => x.ProcessName == "RobloxPlayer");
-                    }
-
-                    if (isStudio)
-                    {
-                        var studioProcesses = processes.Where(IsStudioProcess).ToList();
-
-                        if (studioProcesses.Count > 0)
-                        {
-                            processExists = true;
-
-                            if (!studioProcesses.Any(x => x.Id == _watcherData.ProcessId))
-                            {
-                                int newestStudioPid = GetNewestStudioProcessId(studioProcesses);
-
-                                if (newestStudioPid != 0)
-                                {
-                                    App.Logger.Info($"Studio process {_watcherData.ProcessId} is no longer running, now tracking PID {newestStudioPid}");
-                                    _watcherData.ProcessId = newestStudioPid;
-                                    ProcessId = newestStudioPid;
-                                }
-                            }
-                        }
-                    }
-
-                    if (!processExists) break;
+                    if (!IsRobloxRunning(_watcherData, isStudio))
+                        break;
 
                     await Task.Delay(1000, _cancellationTokenSource.Token);
                 }
@@ -425,6 +484,108 @@ namespace Froststrap
                 Process.Start(Paths.Process, "--settings --test-mode");
         }
 
+        // "Close To Desktop": asks Roblox to close, then ends it if it's still running
+        // (newer Roblox builds can keep running in the system tray when their window is closed)
+        private async Task CloseRobloxAsync(int pid)
+        {
+            // one attempt at a time; a repeat leave line while closing is ignored
+            if (Interlocked.Exchange(ref _closingRoblox, 1) == 1)
+            {
+                App.Logger.Info("Already closing Roblox, ignoring repeat desktop app exit");
+                return;
+            }
+
+            App.Logger.Info("Received desktop app exit, closing Roblox");
+            using var joined = new CancellationTokenSource();
+
+            lock (_closeLock)
+                _closeCancel = joined;
+
+            try
+            {
+                using var process = Process.GetProcessById(pid);
+
+                if (!process.CloseMainWindow())
+                    App.Logger.Warn($"Roblox (PID {pid}) has no main window to close");
+
+                using (var wait = CancellationTokenSource.CreateLinkedTokenSource(joined.Token))
+                {
+                    wait.CancelAfter(TimeSpan.FromSeconds(5));
+
+                    try
+                    {
+                        await process.WaitForExitAsync(wait.Token);
+                        return;
+                    }
+                    catch (OperationCanceledException) when (joined.IsCancellationRequested)
+                    {
+                        App.Logger.Info("Joined another game, leaving Roblox open");
+                        return;
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        // still running after 5 seconds
+                    }
+                }
+
+                // a join can land right as the wait times out
+                if (joined.IsCancellationRequested)
+                {
+                    App.Logger.Info("Joined another game, leaving Roblox open");
+                    return;
+                }
+
+                // forced on purpose: this setting means "don't keep Roblox running after leaving"
+                App.Logger.Warn($"Roblox (PID {pid}) didn't close, ending it");
+
+                try
+                {
+                    process.Kill();
+                }
+                catch (Exception) when (HasExited(process))
+                {
+                    // exited on its own just before Kill
+                    return;
+                }
+
+                // Kill only starts termination; stay "closing" until it's gone
+                if (!await Task.Run(() => process.WaitForExit(TimeSpan.FromSeconds(3))))
+                    App.Logger.Warn($"Roblox (PID {pid}) still hasn't exited");
+            }
+            catch (ArgumentException)
+            {
+                // already gone
+            }
+            catch (InvalidOperationException)
+            {
+                // exited between being found and being asked to close
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error(ex, $"Couldn't close Roblox (PID {pid})");
+            }
+            finally
+            {
+                // cleared under the lock so the log reader can't cancel it after it's disposed
+                lock (_closeLock)
+                    _closeCancel = null;
+
+                Interlocked.Exchange(ref _closingRoblox, 0);
+            }
+        }
+
+        private static bool HasExited(Process process)
+        {
+            try
+            {
+                return process.HasExited;
+            }
+            catch (InvalidOperationException)
+            {
+                return true;
+            }
+        }
+
         public void Dispose()
         {
             if (_isDisposed)
@@ -441,8 +602,12 @@ namespace Froststrap
             }
 
             Overlay?.Dispose();
-            IntegrationWatcher?.Dispose();
-            WindowManipulation?.Dispose();
+
+            if (OperatingSystem.IsWindowsVersionAtLeast(5, 0))
+            {
+                IntegrationWatcher?.Dispose();
+                WindowManipulation?.Dispose();
+            }
             Softkey?.Dispose();
             _notifyIcon?.Dispose();
             PlayerRichPresence?.Dispose();

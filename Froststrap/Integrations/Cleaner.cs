@@ -4,7 +4,7 @@
 
 namespace Froststrap.Integrations
 {
-    internal class Cleaner
+    internal sealed class Cleaner
     {
         private const int MaxFiles = 2000;
 
@@ -100,7 +100,7 @@ namespace Froststrap.Integrations
                 return false;
 
             if (!file.Contains("Roblox", StringComparison.OrdinalIgnoreCase) &&
-                !file.Contains(App.ProjectName, StringComparison.OrdinalIgnoreCase) &&
+                !file.Contains(ProjectInfo.Name, StringComparison.OrdinalIgnoreCase) &&
                 !file.Contains(Paths.Base, StringComparison.OrdinalIgnoreCase))
             {
                 throw new InvalidOperationException($"{file} was in disallowed directory");

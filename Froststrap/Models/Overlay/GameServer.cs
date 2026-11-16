@@ -1,9 +1,12 @@
-﻿﻿using System;
+﻿// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-using Froststrap.Resources;
 
 namespace Froststrap.Models.Overlay
 {

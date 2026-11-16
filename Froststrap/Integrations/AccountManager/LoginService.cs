@@ -13,7 +13,7 @@ using System.Text.Json.Nodes;
 
 namespace Froststrap.Integrations.AccountManager
 {
-    internal class LoginService
+    internal sealed class LoginService
     {
         private static readonly Uri LoginUri = new("https://www.roblox.com/login");
 

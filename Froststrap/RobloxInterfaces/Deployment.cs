@@ -6,9 +6,9 @@ namespace Froststrap.RobloxInterfaces
 {
     internal static class Deployment
     {
-        public const string DefaultRobloxDomain = "roblox.com";
+        public const string DefaultRobloxDomain = RobloxDefaults.Domain;
 
-        public const string DefaultChannel = "production";
+        public const string DefaultChannel = RobloxDefaults.Channel;
 
         public static event EventHandler<string>? ChannelChanged;
 

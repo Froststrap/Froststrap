@@ -30,7 +30,7 @@ namespace Froststrap
 
             var config = new LoggingConfiguration();
 
-            var fileTarget = new FileTarget("latestfile_inner")
+            FileTarget? fileTarget = new("latestfile_inner")
             {
                 FileName = Path.Combine(logRoot, "latest.log"),
                 ArchiveOldFileOnStartup = true,
@@ -41,30 +41,46 @@ namespace Froststrap
                 Layout = FileLayout
             };
 
-            var asyncFile = new AsyncTargetWrapper("latestfile", fileTarget)
+            AsyncTargetWrapper? asyncFile = null;
+            ColoredConsoleTarget? console = null;
+
+            try
             {
-                QueueLimit = 10000,
-                BatchSize = 200,
-                OverflowAction = AsyncTargetWrapperOverflowAction.Discard,
-            };
+                asyncFile = new AsyncTargetWrapper("latestfile", fileTarget)
+                {
+                    QueueLimit = 10000,
+                    BatchSize = 200,
+                    OverflowAction = AsyncTargetWrapperOverflowAction.Discard,
+                };
+                fileTarget = null;
 
-            var console = new ColoredConsoleTarget("console")
+                console = new ColoredConsoleTarget("console")
+                {
+                    Layout = ConsoleLayout,
+                    UseDefaultRowHighlightingRules = false
+                };
+
+                AddHighlight(console, "Trace", ConsoleOutputColor.Gray);
+                AddHighlight(console, "Debug", ConsoleOutputColor.Blue);
+                AddHighlight(console, "Info", ConsoleOutputColor.Green);
+                AddHighlight(console, "Warn", ConsoleOutputColor.Yellow);
+                AddHighlight(console, "Error", ConsoleOutputColor.Red);
+                AddHighlight(console, "Fatal", ConsoleOutputColor.Yellow, ConsoleOutputColor.Red);
+
+                config.AddRule(LogLevel.Debug, LogLevel.Fatal, asyncFile);
+                asyncFile = null;
+
+                config.AddRule(LogLevel.Debug, LogLevel.Fatal, console);
+                console = null;
+
+                LogManager.Configuration = config;
+            }
+            finally
             {
-                Layout = ConsoleLayout,
-                UseDefaultRowHighlightingRules = false
-            };
-
-            AddHighlight(console, "Trace", ConsoleOutputColor.Gray);
-            AddHighlight(console, "Debug", ConsoleOutputColor.Blue);
-            AddHighlight(console, "Info", ConsoleOutputColor.Green);
-            AddHighlight(console, "Warn", ConsoleOutputColor.Yellow);
-            AddHighlight(console, "Error", ConsoleOutputColor.Red);
-            AddHighlight(console, "Fatal", ConsoleOutputColor.Yellow, ConsoleOutputColor.Red);
-
-            config.AddRule(LogLevel.Debug, LogLevel.Fatal, asyncFile);
-            config.AddRule(LogLevel.Debug, LogLevel.Fatal, console);
-
-            LogManager.Configuration = config;
+                fileTarget?.Dispose();
+                asyncFile?.Dispose();
+                console?.Dispose();
+            }
         }
 
         private static void AddHighlight(

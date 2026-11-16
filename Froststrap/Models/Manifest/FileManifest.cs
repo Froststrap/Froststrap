@@ -6,7 +6,7 @@ using Froststrap.RobloxInterfaces;
 
 namespace Froststrap.Models.Manifest
 {
-    internal class FileManifest : List<ManifestFile>
+    internal sealed class FileManifest : List<ManifestFile>
     {
         private FileManifest(string data)
         {

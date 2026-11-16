@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
 use froststrap_overlay_layer::wayland::Overlay;
 use std::{thread, time::Duration};
 

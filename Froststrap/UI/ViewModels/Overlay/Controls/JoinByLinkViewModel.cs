@@ -307,18 +307,18 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                 string body = await response.Content.ReadAsStringAsync(token);
                 UniverseIdResponse? universe = JsonHelper.Deserialize<UniverseIdResponse>(body);
 
-                if (universe is null || universe.UniverseId == 0)
+                if (universe?.UniverseId is not { } universeId || universeId == 0)
                 {
                     Show(Strings.Menu_Overlay_JoinByLink_Failed);
                     return;
                 }
 
-                await UniverseDetails.FetchBulk(universe.UniverseId.ToString(CultureInfo.InvariantCulture));
+                await UniverseDetails.FetchBulk(universeId.ToString(CultureInfo.InvariantCulture));
 
                 if (token.IsCancellationRequested)
                     return;
 
-                UniverseDetails? details = UniverseDetails.LoadFromCache(universe.UniverseId);
+                UniverseDetails? details = UniverseDetails.LoadFromCache(universeId);
 
                 GameName = details?.Data?.Name ?? String.Empty;
                 GameCreator = details?.Data?.Creator?.Name ?? String.Empty;

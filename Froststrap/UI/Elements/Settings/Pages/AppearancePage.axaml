@@ -8,13 +8,13 @@ SPDX-License-Identifier: MPL-2.0
     x:Class="Froststrap.UI.Elements.Settings.Pages.AppearancePage"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+    xmlns:controls="using:Froststrap.UI.Elements.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:resources="using:Froststrap.Resources"
+    xmlns:resources="using:Froststrap.Localisation"
     xmlns:gv="using:Froststrap.UI.ViewModels"
     xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
-    xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
+    xmlns:vm="using:Froststrap.UI.ViewModels.Settings"
     d:DesignHeight="2500"
     d:DesignWidth="1200"
     x:DataType="vm:AppearanceViewModel"
@@ -48,25 +48,12 @@ SPDX-License-Identifier: MPL-2.0
                 </controls:CardExpander.HeaderContent>
 
                 <StackPanel Spacing="16">
-                    <StackPanel Spacing="4">
-                        <TextBlock
-                            Text="{x:Static resources:Strings.Menu_Appearance_BackgroundMode}"
-                            FontWeight="Bold" />
-                        <ComboBox
-                            ItemsSource="{Binding BackgroundTypes}"
-                            SelectedItem="{Binding BackgroundType}"
-                            HorizontalAlignment="Stretch">
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding ., Converter={StaticResource EnumNameConverter}}" />
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
-                    </StackPanel>
-
                     <StackPanel
                         Spacing="16"
-                        IsVisible="{Binding IsGradientMode}">
+                        IsVisible="{Binding IsColorTheme}">
+                        <TextBlock
+                            Text="{x:Static resources:Strings.Menu_Appearance_CustomColors}"
+                            FontWeight="Bold" />
                         <WrapPanel
                             ItemSpacing="16"
                             LineSpacing="8"
@@ -141,6 +128,7 @@ SPDX-License-Identifier: MPL-2.0
                                         <Button
                                             Grid.Column="5"
                                             Content="{x:Static resources:Strings.Common_Remove}"
+                                            IsEnabled="{Binding $parent[ItemsControl].((vm:AppearanceViewModel)DataContext).CanRemoveGradientStop}"
                                             Command="{Binding $parent[ItemsControl].((vm:AppearanceViewModel)DataContext).RemoveGradientStopCommand}"
                                             CommandParameter="{Binding}" />
                                     </Grid>
@@ -151,7 +139,10 @@ SPDX-License-Identifier: MPL-2.0
 
                     <StackPanel
                         Spacing="16"
-                        IsVisible="{Binding IsImageMode}">
+                        IsVisible="{Binding IsImageTheme}">
+                        <TextBlock
+                            Text="{x:Static resources:Strings.Menu_Appearance_BackgroundImage}"
+                            FontWeight="Bold" />
                         <Grid
                             ColumnDefinitions="*,Auto,Auto"
                             ColumnSpacing="8">
@@ -345,7 +336,7 @@ SPDX-License-Identifier: MPL-2.0
                 ColumnDefinitions="*,128"
                 ColumnSpacing="8">
                 <controls:SectionHeader
-                    Title="{x:Static resources:Strings.Menu_Behaviour_Title}"
+                    Title="{x:Static resources:Strings.Menu_Bootstrapper_Title}"
                     Description="{x:Static resources:Strings.Menu_Appearance_Bootstrapper_Description}"
                     VerticalAlignment="Bottom" />
                 <Button
@@ -442,7 +433,7 @@ SPDX-License-Identifier: MPL-2.0
                         <TextBox Text="{Binding SelectedCustomThemeName, Mode=TwoWay}" />
 
                         <Grid
-                            ColumnDefinitions="*,*,*"
+                            ColumnDefinitions="*,*,*,*"
                             ColumnSpacing="8">
                             <controls:IconButton
                                 Grid.Column="0"
@@ -459,6 +450,12 @@ SPDX-License-Identifier: MPL-2.0
                                 HorizontalAlignment="Stretch" />
                             <controls:IconButton
                                 Grid.Column="2"
+                                Icon="Play"
+                                Content="{x:Static resources:Strings.Menu_Appearance_Preview}"
+                                Command="{Binding PreviewCustomThemeCommand}"
+                                HorizontalAlignment="Stretch" />
+                            <controls:IconButton
+                                Grid.Column="3"
                                 Icon="ArrowRightFromLine"
                                 Content="{x:Static resources:Strings.Common_Export}"
                                 Command="{Binding ExportCustomThemeCommand}"

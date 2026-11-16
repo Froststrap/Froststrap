@@ -12,7 +12,7 @@ using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.ContextMenu;
 
-internal class ServerInformationViewModel : NotifyPropertyChangedViewModel
+internal sealed class ServerInformationViewModel : NotifyPropertyChangedViewModel
 {
     private ActivityWatcher? _activityWatcher;
     private string _serverType = string.Empty;

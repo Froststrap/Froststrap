@@ -7,7 +7,7 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace Froststrap.UI.ViewModels.Onboarding
 {
-    internal class MainWindowViewModel : NotifyPropertyChangedViewModel
+    internal sealed class MainWindowViewModel : NotifyPropertyChangedViewModel
     {
         public string NextButtonText { get; private set; } = Strings.Common_Next;
         private bool _backButtonEnabled;

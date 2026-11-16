@@ -12,7 +12,7 @@ using System.IO.Compression;
 
 namespace Froststrap.UI.ViewModels.Settings.Mods
 {
-    internal partial class CommunityModsViewModel : NotifyPropertyChangedViewModel, IDisposable
+    internal sealed partial class CommunityModsViewModel : NotifyPropertyChangedViewModel, IDisposable
     {
         private List<CommunityMod> _allMods = [];
         private CancellationTokenSource? _searchCts;
@@ -112,7 +112,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             {
                 HasError = true;
                 ErrorMessage = $"Failed to load mods: {ex.Message}";
-                App.Logger.Error($"Unhandled exception: {ex}");
+                App.Logger.Error(ex, "Failed to refresh community mods");
             }
             finally { IsLoading = false; }
         }
@@ -172,6 +172,12 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                 string baseName = mod.Name;
                 string finalName = baseName;
 
+                // the name comes from the remote catalog and is used as a folder name that may get
+                // deleted below, so it has to be a plain name inside the target folder
+                string targetRoot = mod.IsCustomTheme ? Paths.CustomThemes : Paths.Modifications;
+                if (!Paths.TryGetChildDirectory(targetRoot, baseName, out _))
+                    throw new InvalidOperationException($"Refusing to install community item with invalid name '{baseName}'");
+
                 if (mod.IsCustomTheme)
                 {
                     string themePath = Path.Combine(Paths.CustomThemes, finalName);
@@ -198,6 +204,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                     }
 
                     await ExtractZipAsync(tempFile, themePath);
+                    ThemeEditorWorkspace.RemoveEditorConfiguration(themePath);
 
                     App.Settings.Prop.SelectedCustomTheme = finalName;
                     App.Settings.Prop.BootstrapperStyle = BootstrapperStyle.CustomDialog;
@@ -287,7 +294,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             }
             catch (Exception ex)
             {
-                App.Logger.Error($"Unhandled exception: {ex.Message}");
+                App.Logger.Error(ex, "Failed to open mod info dialog");
             }
             finally
             {
@@ -398,7 +405,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (_disposed)
                 return;

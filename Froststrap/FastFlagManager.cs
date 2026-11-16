@@ -7,7 +7,7 @@ using LucideAvalonia.Enum;
 
 namespace Froststrap
 {
-    internal class FastFlagManager : JsonManager<Dictionary<string, object>>
+    internal sealed class FastFlagManager : JsonManager<Dictionary<string, object>>
     {
         private Dictionary<string, object> OriginalProp = [];
 
@@ -246,21 +246,34 @@ namespace Froststrap
             bool result = base.Load(alertFailure);
             OriginalProp = new(Prop);
 
+            bool changed = false;
+
             switch (App.Settings.Prop.FullscreenMode)
             {
                 case FullscreenMode.Exclusive:
                     if (GetPreset("Rendering.ManualFullscreen") != "False")
+                    {
                         SetPreset("Rendering.ManualFullscreen", "False");
+                        changed = true;
+                    }
                     break;
 
                 case FullscreenMode.Borderless:
                     if (GetPreset("Rendering.ManualFullscreen") is not null)
+                    {
                         SetPreset("Rendering.ManualFullscreen", null);
+                        changed = true;
+                    }
                     break;
 
                 case FullscreenMode.Normal:
                 default:
                     break;
+            }
+
+            if (changed)
+            {
+                Save();
             }
 
             return result;

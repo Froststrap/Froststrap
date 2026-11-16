@@ -13,7 +13,6 @@ SendMessage
 SHObjectProperties
 GetSystemMetrics
 SYSTEM_METRICS_INDEX
-LookupIconIdFromDirectoryEx
 CreateIconFromResourceEx
 MoveWindow
 GetWindowRect

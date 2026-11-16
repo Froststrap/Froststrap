@@ -4,7 +4,7 @@
 
 namespace Froststrap.Models.SettingTasks
 {
-    internal class EmojiModPresetTask : EnumBaseTask<EmojiType>
+    internal sealed class EmojiModPresetTask : EnumBaseTask<EmojiType>
     {
         private static string FilePath => Path.Combine(Paths.Modifications, "content", "fonts", "TwemojiMozilla.ttf");
 
@@ -49,7 +49,7 @@ namespace Froststrap.Models.SettingTasks
                     }
                     catch (Exception ex)
                     {
-                        App.Logger.Error("Unhandled exception: ", ex);
+                        App.Logger.Error(ex, "Failed to apply emoji mod preset");
                         await Frontend.ShowConnectivityDialog(
                             string.Format(CultureInfo.CurrentCulture, Strings.Dialog_Connectivity_UnableToConnect, "GitHub"),
                             $"{Strings.Menu_PresetMods_Presets_EmojiType_Error}\n\n{Strings.Dialog_Connectivity_TryAgainLater}",

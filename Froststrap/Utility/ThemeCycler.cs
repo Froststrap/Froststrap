@@ -39,7 +39,7 @@ namespace Froststrap.Utility
                 return;
 
             var validThemes = App.Settings.Prop.CycleEnabledCustomThemes
-                .Where(name => Directory.Exists(Path.Combine(Paths.CustomThemes, name)))
+                .Where(name => Paths.TryGetCustomThemeDirectory(name, out string? dir) && Directory.Exists(dir))
                 .ToList();
 
             if (validThemes.Count != App.Settings.Prop.CycleEnabledCustomThemes.Count)

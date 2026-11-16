@@ -8,7 +8,7 @@ using System.Text.Json.Nodes;
 
 namespace Froststrap.Integrations.AccountManager
 {
-    internal class AccountManager
+    internal sealed class AccountManager
     {
         private const string AccountsFile = "AccountManager.json";
 
@@ -67,7 +67,7 @@ namespace Froststrap.Integrations.AccountManager
             }
             catch (Exception ex)
             {
-                App.Logger.Error("Unhandled exception: ", ex);
+                App.Logger.Error(ex, "Failed to load accounts");
             }
         }
 
@@ -173,7 +173,7 @@ namespace Froststrap.Integrations.AccountManager
             }
             catch (Exception ex)
             {
-                App.Logger.Error("Unhandled exception: ", ex);
+                App.Logger.Error(ex, "Failed to save accounts");
             }
         }
 

@@ -13,7 +13,7 @@ using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Dialogs;
 
-internal class PrivateServerInfo : NotifyPropertyChangedViewModel
+internal sealed class PrivateServerInfo : NotifyPropertyChangedViewModel
 {
     public PrivateServerInfo(
         long vipServerId,
@@ -98,7 +98,7 @@ internal class PrivateServerInfo : NotifyPropertyChangedViewModel
     }
 }
 
-internal class PrivateServerJoinDialogViewModel : NotifyPropertyChangedViewModel
+internal sealed class PrivateServerJoinDialogViewModel : NotifyPropertyChangedViewModel
 {
     private readonly long _placeId;
 

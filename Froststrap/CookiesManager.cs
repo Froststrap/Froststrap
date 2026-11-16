@@ -4,11 +4,12 @@
 
 using Froststrap.RobloxInterfaces;
 using System.Net.WebSockets;
+using System.Runtime.Versioning;
 using System.Security.Cryptography;
 
 namespace Froststrap
 {
-    internal class CookiesManager : IDisposable
+    internal sealed class CookiesManager : IDisposable
     {
         private CookieState _state = CookieState.Unknown;
 
@@ -474,6 +475,7 @@ namespace Froststrap
             return buffer.ToArray();
         }
 
+        [SupportedOSPlatform("windows")]
         private static async Task<CookieLoadResult> LoadWindowsCookies()
         {
             string content = await ReadTextShared(CookiesPath);

@@ -4,7 +4,7 @@
 
 namespace Froststrap;
 
-internal class SoberSettingsManager : JsonManager<Dictionary<string, object>>
+internal sealed class SoberSettingsManager : JsonManager<Dictionary<string, object>>
 {
     private static readonly JsonSerializerOptions _writeOptions = new() { WriteIndented = true };
     private static readonly JsonSerializerOptions _readOptions = new() { ReadCommentHandling = JsonCommentHandling.Skip, AllowTrailingCommas = true };

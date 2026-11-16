@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
 //! helpers to be able to do hot
 //! functions quick
 
@@ -30,8 +34,17 @@ pub mod log {
     }
 
     pub fn emit(to_stderr: bool, color: &str, level: &str, args: std::fmt::Arguments<'_>) {
-        let line = format!("{} [{}] {}", paint(GRAY, &timestamp()), paint(color, level), args);
-        if to_stderr { eprintln!("{line}"); } else { println!("{line}"); }
+        let line = format!(
+            "{} [{}] {}",
+            paint(GRAY, &timestamp()),
+            paint(color, level),
+            args
+        );
+        if to_stderr {
+            eprintln!("{line}");
+        } else {
+            println!("{line}");
+        }
     }
 
     pub struct Purple<T>(pub T);

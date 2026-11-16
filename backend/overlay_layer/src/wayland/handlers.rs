@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
 use smithay_client_toolkit::{
     compositor::CompositorHandler,
     delegate_compositor, delegate_keyboard, delegate_layer, delegate_output, delegate_pointer,

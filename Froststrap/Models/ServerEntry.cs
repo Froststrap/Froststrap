@@ -1,9 +1,13 @@
-﻿﻿using System.Windows.Input;
+﻿// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
+using System.Windows.Input;
 using Froststrap.Models.Overlay;
 
 namespace Froststrap.Models
 {
-    internal class ServerEntry : GameServer
+    internal sealed class ServerEntry : GameServer
     {
         public int Number { get; set; }
         public int? DataCenterId { get; set; }

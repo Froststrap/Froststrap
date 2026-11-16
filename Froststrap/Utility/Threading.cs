@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace Froststrap.Utility;
 
-internal class Threading
+internal sealed class Threading
 {
     public static async Task RunAsync(string cmd, string args)
     {

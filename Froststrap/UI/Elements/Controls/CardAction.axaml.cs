@@ -7,7 +7,7 @@ using Avalonia.Controls;
 
 namespace Froststrap.UI.Elements.Controls
 {
-    internal class CardAction : Button
+    internal sealed class CardAction : Button
     {
         public static readonly StyledProperty<string> HeaderProperty =
             AvaloniaProperty.Register<CardAction, string>(nameof(Header));

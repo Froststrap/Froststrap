@@ -7,7 +7,7 @@ using Froststrap.UI.ViewModels.Dialogs;
 
 namespace Froststrap.UI.Elements.Dialogs
 {
-    internal partial class CommunityModInfoDialog : AvaloniaWindow
+    internal sealed partial class CommunityModInfoDialog : AvaloniaWindow
     {
         public CommunityModInfoViewModel? ViewModel { get; }
 

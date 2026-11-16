@@ -10,7 +10,7 @@ namespace Froststrap.UI.Elements.Settings.Pages
     /// <summary>
     /// Implementation of IDialogService for FastFlags editing
     /// </summary>
-    internal class FastFlagsDialogService(MainWindowViewModel mainVm) : IDialogService
+    internal sealed class FastFlagsDialogService(MainWindowViewModel mainVm) : IDialogService
     {
         private readonly MainWindowViewModel _mainVm = mainVm ?? throw new ArgumentNullException(nameof(mainVm));
 
@@ -21,7 +21,7 @@ namespace Froststrap.UI.Elements.Settings.Pages
         }
     }
 
-    internal partial class FastFlagsPage : UserControl
+    internal sealed partial class FastFlagsPage : UserControl
     {
         public FastFlagsPage()
         {
