@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+using System.Collections.Concurrent;
 using System.Runtime.InteropServices;
 
 namespace Froststrap.Integrations.Overlay.Platform.Mac
@@ -9,127 +10,127 @@ namespace Froststrap.Integrations.Overlay.Platform.Mac
     internal static unsafe partial class MacAccessibility
     {
         private const string Library = "/usr/lib/libobjc.A.dylib";
-        private const string SubclassPrefix = "FroststrapAXHidden_";
 
-        private static readonly Dictionary<IntPtr, IntPtr> Subclasses = [];
+        private static readonly ConcurrentDictionary<IntPtr, byte> HiddenWindows = new();
+        private static readonly ConcurrentDictionary<(IntPtr Class, IntPtr Selector), IntPtr> OriginalImplementations = new();
+        private static readonly HashSet<IntPtr> HookedClasses = [];
         private static readonly Lock Gate = new();
+
+        private static readonly IntPtr IsAccessibilityElementSelector = sel_registerName("isAccessibilityElement");
+        private static readonly IntPtr AccessibilityIsIgnoredSelector = sel_registerName("accessibilityIsIgnored");
+        private static readonly IntPtr AccessibilityChildrenSelector = sel_registerName("accessibilityChildren");
+        private static readonly IntPtr ClassSelector = sel_registerName("class");
 
         public static bool HideWindow(IntPtr nsWindow)
         {
             if (nsWindow == IntPtr.Zero)
                 return false;
 
-            IntPtr windowClass = object_getClass(nsWindow);
-            string? className = Marshal.PtrToStringUTF8(class_getName(windowClass));
+            IntPtr windowClass = MacObjC.SendPtr(nsWindow, ClassSelector);
 
-            if (className is null)
+            if (windowClass == IntPtr.Zero)
                 return false;
-
-            if (className.StartsWith(SubclassPrefix, StringComparison.Ordinal))
-                return true;
-
-            if (className.StartsWith("NSKVONotifying_", StringComparison.Ordinal))
-            {
-                App.Logger.Warn($"Not hiding overlay window from accessibility, class {className} is observed");
-                return false;
-            }
-
-            IntPtr subclass;
 
             lock (Gate)
             {
-                if (!Subclasses.TryGetValue(windowClass, out subclass))
-                {
-                    subclass = CreateSubclass(windowClass, className);
-
-                    if (subclass == IntPtr.Zero)
-                        return false;
-
-                    Subclasses[windowClass] = subclass;
-                }
+                if (HookedClasses.Add(windowClass))
+                    HookClass(windowClass);
             }
 
-            object_setClass(nsWindow, subclass);
+            HiddenWindows[nsWindow] = 0;
 
             return true;
         }
 
-        private static IntPtr CreateSubclass(IntPtr baseClass, string baseName)
+        public static void ForgetWindow(IntPtr nsWindow)
         {
-            string name = SubclassPrefix + baseName;
+            if (nsWindow != IntPtr.Zero)
+                HiddenWindows.TryRemove(nsWindow, out _);
+        }
 
-            IntPtr existing = objc_getClass(name);
+        private static void HookClass(IntPtr windowClass)
+        {
+            Hook(windowClass, IsAccessibilityElementSelector, (IntPtr)(delegate* unmanaged<IntPtr, IntPtr, byte>)&IsAccessibilityElement);
+            Hook(windowClass, AccessibilityIsIgnoredSelector, (IntPtr)(delegate* unmanaged<IntPtr, IntPtr, byte>)&AccessibilityIsIgnored);
+            Hook(windowClass, AccessibilityChildrenSelector, (IntPtr)(delegate* unmanaged<IntPtr, IntPtr, IntPtr>)&AccessibilityChildren);
+        }
 
-            if (existing != IntPtr.Zero)
-                return existing;
+        private static void Hook(IntPtr windowClass, IntPtr selector, IntPtr replacement)
+        {
+            IntPtr original = class_getMethodImplementation(windowClass, selector);
 
-            IntPtr subclass = objc_allocateClassPair(baseClass, name, 0);
+            if (original == IntPtr.Zero || original == replacement)
+                return;
 
-            if (subclass == IntPtr.Zero)
+            IntPtr method = class_getInstanceMethod(windowClass, selector);
+
+            if (method == IntPtr.Zero)
+                return;
+
+            OriginalImplementations[(windowClass, selector)] = original;
+            class_replaceMethod(windowClass, selector, replacement, method_getTypeEncoding(method));
+        }
+
+        private static IntPtr FindOriginal(IntPtr self, IntPtr selector)
+        {
+            for (IntPtr cls = MacObjC.SendPtr(self, ClassSelector); cls != IntPtr.Zero; cls = class_getSuperclass(cls))
             {
-                App.Logger.Warn($"Failed to create accessibility-hidden subclass of {baseName}");
-                return IntPtr.Zero;
+                if (OriginalImplementations.TryGetValue((cls, selector), out IntPtr original))
+                    return original;
             }
 
-            AddBoolMethod(subclass, baseClass, "isAccessibilityElement", (IntPtr)(delegate* unmanaged<IntPtr, IntPtr, byte>)&ReturnNo);
-            AddBoolMethod(subclass, baseClass, "accessibilityIsIgnored", (IntPtr)(delegate* unmanaged<IntPtr, IntPtr, byte>)&ReturnYes);
-            AddMethod(subclass, baseClass, "accessibilityChildren", (IntPtr)(delegate* unmanaged<IntPtr, IntPtr, IntPtr>)&ReturnNil, "@@:");
-
-            objc_registerClassPair(subclass);
-
-            return subclass;
+            return IntPtr.Zero;
         }
 
-        private static void AddBoolMethod(IntPtr subclass, IntPtr baseClass, string selectorName, IntPtr implementation) =>
-            AddMethod(subclass, baseClass, selectorName, implementation, RuntimeInformation.ProcessArchitecture == Architecture.Arm64 ? "B@:" : "c@:");
-
-        private static void AddMethod(IntPtr subclass, IntPtr baseClass, string selectorName, IntPtr implementation, string fallbackTypes)
+        [UnmanagedCallersOnly]
+        private static byte IsAccessibilityElement(IntPtr self, IntPtr selector)
         {
-            IntPtr selector = sel_registerName(selectorName);
-            IntPtr method = class_getInstanceMethod(baseClass, selector);
-            string? types = method != IntPtr.Zero ? Marshal.PtrToStringUTF8(method_getTypeEncoding(method)) : null;
+            if (HiddenWindows.ContainsKey(self))
+                return 0;
 
-            class_addMethod(subclass, selector, implementation, types ?? fallbackTypes);
+            IntPtr original = FindOriginal(self, selector);
+
+            return original == IntPtr.Zero ? (byte)1 : ((delegate* unmanaged<IntPtr, IntPtr, byte>)original)(self, selector);
         }
 
         [UnmanagedCallersOnly]
-        private static byte ReturnNo(IntPtr self, IntPtr selector) => 0;
+        private static byte AccessibilityIsIgnored(IntPtr self, IntPtr selector)
+        {
+            if (HiddenWindows.ContainsKey(self))
+                return 1;
+
+            IntPtr original = FindOriginal(self, selector);
+
+            return original == IntPtr.Zero ? (byte)0 : ((delegate* unmanaged<IntPtr, IntPtr, byte>)original)(self, selector);
+        }
 
         [UnmanagedCallersOnly]
-        private static byte ReturnYes(IntPtr self, IntPtr selector) => 1;
+        private static IntPtr AccessibilityChildren(IntPtr self, IntPtr selector)
+        {
+            if (HiddenWindows.ContainsKey(self))
+                return IntPtr.Zero;
 
-        [UnmanagedCallersOnly]
-        private static IntPtr ReturnNil(IntPtr self, IntPtr selector) => IntPtr.Zero;
+            IntPtr original = FindOriginal(self, selector);
 
-        [LibraryImport(Library)]
-        private static partial IntPtr object_getClass(IntPtr instance);
-
-        [LibraryImport(Library)]
-        private static partial IntPtr object_setClass(IntPtr instance, IntPtr newClass);
-
-        [LibraryImport(Library)]
-        private static partial IntPtr class_getName(IntPtr cls);
-
-        [LibraryImport(Library, StringMarshalling = StringMarshalling.Utf8)]
-        private static partial IntPtr objc_getClass(string name);
-
-        [LibraryImport(Library, StringMarshalling = StringMarshalling.Utf8)]
-        private static partial IntPtr objc_allocateClassPair(IntPtr superclass, string name, nuint extraBytes);
-
-        [LibraryImport(Library)]
-        private static partial void objc_registerClassPair(IntPtr cls);
+            return original == IntPtr.Zero ? IntPtr.Zero : ((delegate* unmanaged<IntPtr, IntPtr, IntPtr>)original)(self, selector);
+        }
 
         [LibraryImport(Library, StringMarshalling = StringMarshalling.Utf8)]
         private static partial IntPtr sel_registerName(string name);
 
         [LibraryImport(Library)]
+        private static partial IntPtr class_getMethodImplementation(IntPtr cls, IntPtr selector);
+
+        [LibraryImport(Library)]
         private static partial IntPtr class_getInstanceMethod(IntPtr cls, IntPtr selector);
+
+        [LibraryImport(Library)]
+        private static partial IntPtr class_getSuperclass(IntPtr cls);
 
         [LibraryImport(Library)]
         private static partial IntPtr method_getTypeEncoding(IntPtr method);
 
-        [LibraryImport(Library, StringMarshalling = StringMarshalling.Utf8)]
-        [return: MarshalAs(UnmanagedType.U1)]
-        private static partial bool class_addMethod(IntPtr cls, IntPtr selector, IntPtr implementation, string types);
+        [LibraryImport(Library)]
+        private static partial IntPtr class_replaceMethod(IntPtr cls, IntPtr selector, IntPtr implementation, IntPtr types);
     }
 }

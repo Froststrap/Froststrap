@@ -40,6 +40,7 @@ SPDX-License-Identifier: MPL-2.0
                                    ShowMaximize="False"
                                    ShowClose="True"
                                    ShowPin="True"
+                                   AlwaysShowControls="True"
                                    IsPinned="{Binding IsPinned, ElementName=Root, Mode=TwoWay}"
                                    PinCommand="{Binding TogglePinCommand, ElementName=Root}"
                                    CloseCommand="{Binding CloseCommand, ElementName=Root}"

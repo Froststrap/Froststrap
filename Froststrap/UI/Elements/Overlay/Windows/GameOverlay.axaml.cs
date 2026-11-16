@@ -903,7 +903,7 @@ namespace Froststrap.UI.Elements.Overlay
             StopRegionTimer();
             ClearWindowRegion();
 
-            Scrim.Background = _scrimBrush ?? new SolidColorBrush(Color.FromArgb(0xB3, 0, 0, 0));
+            Scrim.Background = _scrimBrush ?? new SolidColorBrush(Color.FromArgb(0x59, 0, 0, 0));
 
             ChromeDock.IsVisible = true;
 
@@ -1036,7 +1036,7 @@ namespace Froststrap.UI.Elements.Overlay
             foreach (OverlayPanel panel in _pinnedWindows.Keys.ToList())
                 RestoreDetachedPanel(panel);
 
-            Scrim.Background = _scrimBrush ?? new SolidColorBrush(Color.FromArgb(0xB3, 0, 0, 0));
+            Scrim.Background = _scrimBrush ?? new SolidColorBrush(Color.FromArgb(0x59, 0, 0, 0));
 
             ChromeDock.IsVisible = true;
 

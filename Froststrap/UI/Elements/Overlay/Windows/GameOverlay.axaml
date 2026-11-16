@@ -65,7 +65,7 @@ SPDX-License-Identifier: MPL-2.0
     </Window.Styles>
 
     <Border x:Name="Scrim"
-            Background="#B3000000"
+            Background="#59000000"
             CornerRadius="{Binding ScrimCornerRadius}"
             PointerPressed="ScrimClicked">
         <Grid>

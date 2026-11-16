@@ -179,7 +179,7 @@ namespace Froststrap.UI.Elements.Overlay
             Width = Math.Max(bounds.Rect.Width / scaling, 0);
             Height = Math.Max(bounds.Rect.Height / scaling, 0);
 
-            double radius = bounds.IsMaximised ? 0 : 8;
+            double radius = bounds.IsMaximised ? 0 : bounds.CornerRadius;
 
             Scrim.CornerRadius = new CornerRadius(0, 0, radius, radius);
         }

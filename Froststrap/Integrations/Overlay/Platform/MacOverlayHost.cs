@@ -36,6 +36,7 @@ namespace Froststrap.Integrations.Overlay.Platform
         private bool _friendsWatched;
         private bool _disposed;
         private volatile bool _gameForeground;
+        private double _lastCornerRadius;
 
         public MacOverlayHost(int robloxProcessId, ActivityWatcher? activityWatcher)
         {
@@ -170,6 +171,8 @@ namespace Froststrap.Integrations.Overlay.Platform
             window.Closed += OnOverlayWindowClosed;
 
             _overlayWindows[window] = state;
+
+            state.SetCornerRadius(_lastCornerRadius);
         }
 
         private void OnOverlayWindowClosed(object? sender, EventArgs e)
@@ -256,10 +259,20 @@ namespace Froststrap.Integrations.Overlay.Platform
 
         private void OnTrackerBounds(object? sender, OverlayBounds bounds)
         {
+            ApplyCornerRadius(bounds);
+
             OverlaySearchBarService.SetGameBounds(bounds);
 
             if (!_disposed)
                 BoundsChanged?.Invoke(this, bounds);
+        }
+
+        private void ApplyCornerRadius(OverlayBounds bounds)
+        {
+            _lastCornerRadius = bounds.IsMaximised ? 0 : bounds.CornerRadius;
+
+            foreach (MacWindow state in _overlayWindows.Values)
+                state.SetCornerRadius(_lastCornerRadius);
         }
 
         private void OnTrackerVisibility(object? sender, bool visible)

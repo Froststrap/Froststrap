@@ -616,7 +616,7 @@ namespace Froststrap.UI.ViewModels.Overlay
 
         private void ApplyBounds(OverlayBounds bounds)
         {
-            double radius = bounds.IsMaximised ? 0 : 8;
+            double radius = bounds.IsMaximised ? 0 : bounds.CornerRadius;
 
             ScrimCornerRadius = new CornerRadius(0, 0, radius, radius);
 

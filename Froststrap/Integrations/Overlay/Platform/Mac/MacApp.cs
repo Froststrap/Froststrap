@@ -160,6 +160,14 @@ namespace Froststrap.Integrations.Overlay.Platform.Mac
                 MacObjC.SendVoid(_nsWindow, MacObjC.Sel("orderFrontRegardless"));
         }
 
+        public bool ClipsToGame => _kind is WindowKind.Game or WindowKind.SearchBar;
+
+        public void SetCornerRadius(double radius)
+        {
+            if (_nsWindow != IntPtr.Zero && ClipsToGame)
+                MacWindowMetrics.ClipBottomCorners(_nsWindow, radius);
+        }
+
         public bool IsForeground() =>
             !_cloaked && _window.IsVisible && MacApp.IsOwnProcessForeground();
 
@@ -171,6 +179,7 @@ namespace Froststrap.Integrations.Overlay.Platform.Mac
 
         public void Release()
         {
+            MacAccessibility.ForgetWindow(_nsWindow);
             _nsWindow = IntPtr.Zero;
             _clickThrough = false;
             _cloaked = false;

@@ -27,6 +27,9 @@ namespace Froststrap.UI.Elements.Controls
         public static readonly StyledProperty<bool> ShowCloseProperty =
             AvaloniaProperty.Register<TitleBar, bool>(nameof(ShowClose), true);
 
+        public static readonly StyledProperty<bool> AlwaysShowControlsProperty =
+            AvaloniaProperty.Register<TitleBar, bool>(nameof(AlwaysShowControls), defaultValue: false);
+
         public static readonly StyledProperty<bool> ShowPinProperty =
             AvaloniaProperty.Register<TitleBar, bool>(nameof(ShowPin), defaultValue: false);
 
@@ -59,6 +62,7 @@ namespace Froststrap.UI.Elements.Controls
         public bool ShowMaximize { get => GetValue(ShowMaximizeProperty); set => SetValue(ShowMaximizeProperty, value); }
         public bool ShowClose { get => GetValue(ShowCloseProperty); set => SetValue(ShowCloseProperty, value); }
         public bool ShowPin { get => GetValue(ShowPinProperty); set => SetValue(ShowPinProperty, value); }
+        public bool AlwaysShowControls { get => GetValue(AlwaysShowControlsProperty); set => SetValue(AlwaysShowControlsProperty, value); }
         public IImage? Icon { get => GetValue(IconProperty); set => SetValue(IconProperty, value); }
         public object? LucideIcon { get => GetValue(LucideIconProperty); set => SetValue(LucideIconProperty, value); }
         public ICommand? CloseCommand { get => GetValue(CloseCommandProperty); set => SetValue(CloseCommandProperty, value); }
@@ -83,7 +87,7 @@ namespace Froststrap.UI.Elements.Controls
             foreach (var it in new[] { "PART_LeftPanel", "PART_RightPanel" })
             {
                 var ctrl = e.NameScope.Find<StackPanel>(it);
-                ctrl?.IsVisible = !OperatingSystem.IsMacOS();
+                ctrl?.IsVisible = AlwaysShowControls || !OperatingSystem.IsMacOS();
             }
 
             _window?.PropertyChanged += OnWindowPropertyChanged;

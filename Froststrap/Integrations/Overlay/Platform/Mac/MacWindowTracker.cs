@@ -18,6 +18,19 @@ namespace Froststrap.Integrations.Overlay.Platform.Mac
             uint display = DisplayFor(rect);
             CGRect displayBounds = MacCG.CGDisplayBounds(display);
 
+            bool fullscreen =
+                rect.Width >= displayBounds.Width - 1
+                && rect.Height >= displayBounds.Height - 1;
+
+            double cornerRadius = fullscreen ? 0 : MacWindowMetrics.CornerRadius;
+
+            if (!fullscreen)
+            {
+                double titleBar = Math.Min(MacWindowMetrics.TitleBarHeight, rect.Height);
+                rect.Y += titleBar;
+                rect.Height -= titleBar;
+            }
+
             Screen? screen = null;
 
             if (screens is not null)
@@ -38,7 +51,7 @@ namespace Froststrap.Integrations.Overlay.Platform.Mac
                 screen = primary;
 
             if (screen is null || displayBounds.Width <= 0 || displayBounds.Height <= 0)
-                return new OverlayBounds(new Rect(rect.X, rect.Y, rect.Width, rect.Height), false);
+                return new OverlayBounds(new Rect(rect.X, rect.Y, rect.Width, rect.Height), fullscreen, cornerRadius);
 
             double scaleX = screen.Bounds.Width / displayBounds.Width;
             double scaleY = screen.Bounds.Height / displayBounds.Height;
@@ -46,13 +59,10 @@ namespace Froststrap.Integrations.Overlay.Platform.Mac
             double left = screen.Bounds.X + ((rect.X - displayBounds.X) * scaleX);
             double top = screen.Bounds.Y + ((rect.Y - displayBounds.Y) * scaleY);
 
-            bool maximised =
-                rect.Width >= displayBounds.Width - 1
-                && rect.Height >= displayBounds.Height - 1;
-
             return new OverlayBounds(
                 new Rect(left, top, Math.Max(rect.Width * scaleX, 0), Math.Max(rect.Height * scaleY, 0)),
-                maximised);
+                fullscreen,
+                cornerRadius);
         }
 
         private static uint DisplayFor(CGRect rect)
