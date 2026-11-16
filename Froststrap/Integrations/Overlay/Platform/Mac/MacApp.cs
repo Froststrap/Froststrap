@@ -67,7 +67,7 @@ namespace Froststrap.Integrations.Overlay.Platform.Mac
             PinnedPanel
         }
 
-        private const long OverlayWindowLevel = 25;
+        private const long OverlayWindowLevel = 3;
 
         private const nuint OverlayCollectionBehavior =
             (1 << 0)
@@ -98,6 +98,9 @@ namespace Froststrap.Integrations.Overlay.Platform.Mac
                 return false;
 
             _nsWindow = handle.Handle;
+
+            if (!MacAccessibility.HideWindow(_nsWindow))
+                App.Logger.Warn($"Overlay window ({_kind}) is visible to accessibility clients, window managers may manage it");
 
             ApplyBaseWindowBehaviour();
 
